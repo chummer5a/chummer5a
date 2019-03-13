@@ -45,14 +45,15 @@ namespace Chummer
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
-            MoveControls();
             _xmlBaseCritterPowerDataNode = XmlManager.Load("critterpowers.xml").GetFastNavigator().SelectSingleNode("/chummer");
             if (_objCharacter.IsCritter)
             {
                 _xmlMetatypeDataNode = XmlManager.Load("critters.xml").GetFastNavigator().SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
                 if (_xmlMetatypeDataNode != null && !string.IsNullOrEmpty(_objCharacter.Metavariant) && _objCharacter.Metavariant != "None")
                 {
-                    _xmlMetatypeDataNode = _xmlMetatypeDataNode.SelectSingleNode("/metavariants/metavariant[name = \"" + _objCharacter.Metavariant + "\"]") ?? _xmlMetatypeDataNode;
+                    XPathNavigator xmlMetavariantNode = _xmlMetatypeDataNode.SelectSingleNode("/metavariants/metavariant[name = \"" + _objCharacter.Metavariant + "\"]");
+                    if (xmlMetavariantNode != null)
+                        _xmlMetatypeDataNode = xmlMetavariantNode;
                 }
             }
             if (_xmlMetatypeDataNode == null)
@@ -60,7 +61,9 @@ namespace Chummer
                 _xmlMetatypeDataNode = XmlManager.Load("metatypes.xml").GetFastNavigator().SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
                 if (_xmlMetatypeDataNode != null && !string.IsNullOrEmpty(_objCharacter.Metavariant) && _objCharacter.Metavariant != "None")
                 {
-                    _xmlMetatypeDataNode = _xmlMetatypeDataNode.SelectSingleNode("/metavariants/metavariant[name = \"" + _objCharacter.Metavariant + "\"]") ?? _xmlMetatypeDataNode;
+                    XPathNavigator xmlMetavariantNode = _xmlMetatypeDataNode.SelectSingleNode("/metavariants/metavariant[name = \"" + _objCharacter.Metavariant + "\"]");
+                    if (xmlMetavariantNode != null)
+                        _xmlMetatypeDataNode = xmlMetavariantNode;
                 }
             }
         }
@@ -114,7 +117,7 @@ namespace Chummer
             }
 
             // Remove Emergent Powers if the critter is not a Sprite or A.I.
-            if (!_objCharacter.MetatypeCategory.EndsWith("Sprites") && !_objCharacter.MetatypeCategory.EndsWith("Sprite") && !_objCharacter.MetatypeCategory.EndsWith("A.I.s") & _objCharacter.MetatypeCategory != "Technocritters" && _objCharacter.MetatypeCategory != "Protosapients")
+            if (!_objCharacter.MetatypeCategory.EndsWith("Sprites") && !_objCharacter.MetatypeCategory.EndsWith("Sprite") && !_objCharacter.MetatypeCategory.EndsWith("A.I.s") && _objCharacter.MetatypeCategory != "Technocritters" && _objCharacter.MetatypeCategory != "Protosapients")
             {
                 foreach (ListItem objItem in _lstCategory)
                 {
@@ -286,9 +289,9 @@ namespace Chummer
                     string strPage = objXmlPower.SelectSingleNode("altpage")?.Value ?? objXmlPower.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
                     string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                     lblCritterPowerSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
-                    GlobalOptions.ToolTipProcessor.SetToolTip(lblCritterPowerSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+                    lblCritterPowerSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
 
-                    nudCritterPowerRating.Enabled = objXmlPower.SelectSingleNode("rating") != null;
+                    nudCritterPowerRating.Visible = objXmlPower.SelectSingleNode("rating") != null;
 
                     lblKarma.Text = objXmlPower.SelectSingleNode("karma")?.Value ?? "0";
 
@@ -305,6 +308,13 @@ namespace Chummer
                     }
                 }
             }
+
+            lblCritterPowerTypeLabel.Visible = !string.IsNullOrEmpty(lblCritterPowerType.Text);
+            lblCritterPowerActionLabel.Visible = !string.IsNullOrEmpty(lblCritterPowerAction.Text);
+            lblCritterPowerRangeLabel.Visible = !string.IsNullOrEmpty(lblCritterPowerRange.Text);
+            lblCritterPowerDurationLabel.Visible = !string.IsNullOrEmpty(lblCritterPowerDuration.Text);
+            lblCritterPowerSourceLabel.Visible = !string.IsNullOrEmpty(lblCritterPowerSource.Text);
+            lblKarmaLabel.Visible = !string.IsNullOrEmpty(lblKarma.Text);
         }
 
         private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
@@ -409,10 +419,13 @@ namespace Chummer
                 if (!blnHasToxic)
                     strFilter += " and (not(toxic) or toxic != \"True\")";
             }
+
+            strFilter += CommonFunctions.GenerateSearchXPath(txtSearch.Text);
             foreach (XPathNavigator objXmlPower in _xmlBaseCritterPowerDataNode.Select("powers/power[" + strFilter + "]"))
             {
                 string strPowerName = objXmlPower.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
                 if (!lstPowerWhitelist.Contains(strPowerName) && lstPowerWhitelist.Count != 0) continue;
+                if (!objXmlPower.RequirementsMet(_objCharacter, string.Empty, string.Empty)) continue;
                 TreeNode objNode = new TreeNode
                 {
                     Tag = objXmlPower.SelectSingleNode("id")?.Value ?? string.Empty,
@@ -434,6 +447,11 @@ namespace Chummer
             _blnAddAgain = true;
             AcceptForm();
         }
+
+        private void txtSearch_TextChanged(object sender, EventArgs e)
+        {
+            cboCategory_SelectedIndexChanged(sender, e);
+        }
         #endregion
 
         #region Methods
@@ -450,7 +468,7 @@ namespace Chummer
             if (objXmlPower == null)
                 return;
 
-            if (nudCritterPowerRating.Enabled)
+            if (nudCritterPowerRating.Visible)
                 _intSelectedRating = decimal.ToInt32(nudCritterPowerRating.Value);
 
             s_StrSelectCategory = cboCategory.SelectedValue?.ToString() ?? string.Empty;
@@ -466,25 +484,10 @@ namespace Chummer
 
             DialogResult = DialogResult.OK;
         }
-
-        private void MoveControls()
+        
+        private void OpenSourceFromLabel(object sender, EventArgs e)
         {
-            int intWidth = Math.Max(lblCritterPowerCategoryLabel.Width, lblCritterPowerTypeLabel.Width);
-            intWidth = Math.Max(intWidth, lblCritterPowerActionLabel.Width);
-            intWidth = Math.Max(intWidth, lblCritterPowerRangeLabel.Width);
-            intWidth = Math.Max(intWidth, lblCritterPowerDurationLabel.Width);
-            intWidth = Math.Max(intWidth, lblCritterPowerRatingLabel.Width);
-            intWidth = Math.Max(intWidth, lblCritterPowerSourceLabel.Width);
-            intWidth = Math.Max(intWidth, lblPowerPointsLabel.Width);
-
-            lblCritterPowerCategory.Left = lblCritterPowerCategoryLabel.Left + intWidth + 6;
-            lblCritterPowerType.Left = lblCritterPowerTypeLabel.Left + intWidth + 6;
-            lblCritterPowerAction.Left = lblCritterPowerActionLabel.Left + intWidth + 6;
-            lblCritterPowerRange.Left = lblCritterPowerRangeLabel.Left + intWidth + 6;
-            lblCritterPowerDuration.Left = lblCritterPowerDurationLabel.Left + intWidth + 6;
-            nudCritterPowerRating.Left = lblCritterPowerRatingLabel.Left + intWidth + 6;
-            lblCritterPowerSource.Left = lblCritterPowerSourceLabel.Left + intWidth + 6;
-            lblPowerPoints.Left = lblPowerPointsLabel.Left + intWidth + 6;
+            CommonFunctions.OpenPDFFromControl(sender, e);
         }
         #endregion
 

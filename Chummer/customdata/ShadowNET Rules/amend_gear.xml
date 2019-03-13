@@ -57,6 +57,10 @@
       <name>Ghost Box</name>
       <hide />
     </gear>
+	<gear>
+		<name>ProCam</name>
+		<hide />
+	</gear>
 
     <!-- Magical Supplies -->
     <gear>
@@ -71,6 +75,20 @@
       <name>Shaman Tuxedo</name>
       <hide />
     </gear>
+	
+	<!-- Kill Codes Ammo -->
+	<gear>
+		<name>Ammo: Zapper</name>
+		<hide />
+	</gear>
+	<gear>
+		<name>Grenade: COS</name>
+		<hide />
+	</gear>
+	<gear>
+		<name>Grenade: DumDum</name>
+		<hide />
+	</gear>
 
     <!-- Contracts and Upkeep -->
     <gear>

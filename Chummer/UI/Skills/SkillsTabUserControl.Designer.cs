@@ -53,7 +53,7 @@ namespace Chummer.UI.Skills
             this.lblKnowledgeSkillPointsTitle = new System.Windows.Forms.Label();
             this.lblKnowledgeSkills = new System.Windows.Forms.Label();
             this.btnKnowledge = new System.Windows.Forms.Button();
-            this.tlpKnoweldgeSkillsHeader = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpKnoweldgeSkillsHeader = new Chummer.BufferedTableLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.splitSkills)).BeginInit();
             this.splitSkills.Panel1.SuspendLayout();
             this.splitSkills.Panel2.SuspendLayout();
@@ -406,6 +406,6 @@ namespace Chummer.UI.Skills
         private System.Windows.Forms.Label lblCustomKnowledgeSkillsReminder;
         private ElasticComboBox cboSortKnowledge;
         private ElasticComboBox cboDisplayFilterKnowledge;
-        private System.Windows.Forms.TableLayoutPanel tlpKnoweldgeSkillsHeader;
+        private Chummer.BufferedTableLayoutPanel tlpKnoweldgeSkillsHeader;
     }
 }

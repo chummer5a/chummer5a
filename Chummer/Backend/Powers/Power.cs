@@ -25,6 +25,7 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Windows.Forms;
 using System.Xml;
 using Chummer.Annotations;
 using Chummer.Backend.Attributes;
@@ -37,8 +38,9 @@ namespace Chummer
     /// <summary>
     /// An Adept Power.
     /// </summary>
+    [HubClassTag("SourceID", true, "Name", "Extra")]
     [DebuggerDisplay("{DisplayNameMethod(GlobalOptions.DefaultLanguage)}")]
-    public class Power : INotifyMultiplePropertyChanged, IHasInternalId, IHasName, IHasXmlNode, IHasNotes
+    public class Power : INotifyMultiplePropertyChanged, IHasInternalId, IHasName, IHasXmlNode, IHasNotes, IHasSource
     {
         private Guid _guiID;
         private Guid _sourceID = Guid.Empty;
@@ -133,6 +135,7 @@ namespace Chummer
             objWriter.WriteEndElement();
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteEndElement();
+            
             CharacterObject.SourceProcess(_strSource);
         }
 
@@ -164,7 +167,9 @@ namespace Chummer
             if (nodEnhancements != null)
             {
                 using (XmlNodeList xmlEnhancementList = nodEnhancements.SelectNodes("enhancement"))
+                {
                     if (xmlEnhancementList != null)
+                    {
                         foreach (XmlNode nodEnhancement in xmlEnhancementList)
                         {
                             Enhancement objEnhancement = new Enhancement(CharacterObject);
@@ -172,6 +177,8 @@ namespace Chummer
                             objEnhancement.Parent = this;
                             Enhancements.Add(objEnhancement);
                         }
+                    }
+                }
             }
             if (blnCreateImprovements && Bonus != null && Bonus.HasChildNodes)
             {
@@ -194,6 +201,10 @@ namespace Chummer
             }
             return true;
         }
+
+        private SourceString _objCachedSourceDetail;
+        public SourceString SourceDetail => _objCachedSourceDetail ?? (_objCachedSourceDetail =
+                                                new SourceString(Source, Page(GlobalOptions.Language), GlobalOptions.Language));
 
         /// <summary>
         /// Load the Power from the XmlNode.
@@ -274,6 +285,18 @@ namespace Chummer
                     }
                 }
             }
+
+            //TODO: Seems that the MysAd Second Attribute house rule gets accidentally enabled sometimes?
+            if (Rating > TotalMaximumLevels)
+            {
+                Utils.BreakIfDebug();
+                Rating = TotalMaximumLevels;
+            }
+            else if (Rating + FreeLevels > TotalMaximumLevels)
+            {
+                Utils.BreakIfDebug();
+                TotalRating = TotalMaximumLevels;
+            }
         }
 
         /// <summary>
@@ -286,6 +309,7 @@ namespace Chummer
         {
             objWriter.WriteStartElement("power");
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
+            objWriter.WriteElementString("fullname", DisplayName);
             objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(Extra, strLanguageToPrint));
             objWriter.WriteElementString("pointsperlevel", PointsPerLevel.ToString(objCulture));
             objWriter.WriteElementString("adeptway", AdeptWayDiscount.ToString(objCulture));
@@ -354,6 +378,8 @@ namespace Chummer
         /// Internal identifier which will be used to identify this Power in the Improvement system.
         /// </summary>
         public string InternalId => _guiID.ToString("D");
+
+        public Guid SourceID => _sourceID;
 
         /// <summary>
         /// Power's name.
@@ -508,11 +534,17 @@ namespace Chummer
         private decimal Discount => DiscountedAdeptWay ? AdeptWayDiscount : 0;
 
         /// <summary>
-        /// The current Rating of the Power.
+        /// The current 'paid' Rating of the Power.
         /// </summary>
         public int Rating
         {
-            get => _intRating;
+            get
+            {
+                //TODO: This isn't super safe, but it's more reliable than checking it at load as improvement effects like Essence Loss take effect after powers are loaded. Might need another solution. 
+                if (_intRating <= TotalMaximumLevels) return _intRating;
+                _intRating = TotalMaximumLevels;
+                return _intRating;
+            }
             set
             {
                 if (_intRating != value)
@@ -570,7 +602,7 @@ namespace Chummer
                         intReturn += 1;
                     }
                 }
-                return _intCachedFreeLevels = Math.Min(intReturn, MAGAttributeObject.TotalValue);
+                return _intCachedFreeLevels = Math.Min(intReturn, MAGAttributeObject?.TotalValue ?? 0);
             }
         }
 
@@ -809,7 +841,8 @@ namespace Chummer
                 int intReturn = MaxLevels;
                 if (intReturn == 0)
                 {
-                    intReturn = Math.Max(intReturn, MAGAttributeObject.TotalValue);
+                    // if unspecified, max rating = MAG
+                    intReturn = MAGAttributeObject?.TotalValue ?? 0;
                 }
                 if (BoostedSkill != null)
                 {
@@ -818,7 +851,7 @@ namespace Chummer
                 }
                 if (!CharacterObject.IgnoreRules)
                 {
-                    intReturn = Math.Min(intReturn, MAGAttributeObject.TotalValue);
+                    intReturn = Math.Min(intReturn, MAGAttributeObject?.TotalValue ?? 0);
                 }
                 return intReturn;
             }
@@ -841,7 +874,7 @@ namespace Chummer
                 {
                     blnReturn = CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.MagiciansWayDiscount && x.Enabled);
                 }
-                if (!blnReturn && _nodAdeptWayRequirements != null)
+                if (!blnReturn && _nodAdeptWayRequirements?.ChildNodes.Count > 0)
                 {
                     blnReturn = _nodAdeptWayRequirements.RequirementsMet(CharacterObject);
                 }
@@ -890,6 +923,9 @@ namespace Chummer
                 ),
                 new DependancyGraphNode<string>(nameof(DoesNotHaveFreeLevels),
                     new DependancyGraphNode<string>(nameof(FreeLevels))
+                ),
+                new DependancyGraphNode<string>(nameof(AdeptWayDiscountEnabled),
+                    new DependancyGraphNode<string>(nameof(AdeptWayDiscount))
                 )
             );
 
@@ -940,12 +976,14 @@ namespace Chummer
                 }
             }
 
-            if (PropertyChanged != null)
+            if (lstNamesOfChangedProperties.Contains(nameof(AdeptWayDiscountEnabled)))
             {
-                foreach (string strPropertyToChange in lstNamesOfChangedProperties)
-                {
-                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
-                }
+                RefreshDiscountedAdeptWay(AdeptWayDiscountEnabled);
+            }
+
+            foreach (string strPropertyToChange in lstNamesOfChangedProperties)
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
             }
         }
 
@@ -1018,5 +1056,12 @@ namespace Chummer
             }
         }
         #endregion
+
+        public void SetSourceDetail(Control sourceControl)
+        {
+            if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
+                _objCachedSourceDetail = null;
+            SourceDetail.SetControl(sourceControl);
+        }
     }
 }

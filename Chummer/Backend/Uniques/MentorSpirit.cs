@@ -18,12 +18,14 @@
  */
 using System;
 using System.Diagnostics;
+using System.Windows.Forms;
 using System.Xml;
 
 namespace Chummer
 {
+    [HubClassTag("SourceID", true, "Name", "Extra")]
     [DebuggerDisplay("{DisplayNameShort(GlobalOptions.DefaultLanguage)}")]
-    public class MentorSpirit : IHasInternalId, IHasName, IHasXmlNode
+    public class MentorSpirit : IHasInternalId, IHasName, IHasXmlNode, IHasSource
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -57,10 +59,8 @@ namespace Chummer
         /// <param name="strForceValueChoice1">Name/Text for Choice 1.</param>
         /// <param name="strForceValueChoice2">Name/Text for Choice 2.</param>
         /// <param name="strForceValue">Force a value to be selected for the Mentor Spirit.</param>
-        /// <param name="blnMentorMask">Whether the Mentor's Mask is enabled.</param>
-        public void Create(XmlNode xmlMentor, Improvement.ImprovementType eMentorType, string strForceValue = "", string strForceValueChoice1 = "", string strForceValueChoice2 = "", bool blnMentorMask = false)
+        public void Create(XmlNode xmlMentor, Improvement.ImprovementType eMentorType, string strForceValue = "", string strForceValueChoice1 = "", string strForceValueChoice2 = "")
         {
-            _blnMentorMask = blnMentorMask;
             _eMentorType = eMentorType;
             _objCachedMyXmlNode = null;
             xmlMentor.TryGetStringFieldQuickly("name", ref _strName);
@@ -105,7 +105,7 @@ namespace Chummer
             {
                 string strOldForce = ImprovementManager.ForcedValue;
                 string strOldSelected = ImprovementManager.SelectedValue;
-                ImprovementManager.ForcedValue = strForceValueChoice1;
+                //ImprovementManager.ForcedValue = strForceValueChoice1;
                 if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.MentorSpirit, _guiID.ToString("D"), _nodChoice1, false, 1, DisplayNameShort(GlobalOptions.Language)))
                 {
                     _guiID = Guid.Empty;
@@ -127,7 +127,7 @@ namespace Chummer
             {
                 string strOldForce = ImprovementManager.ForcedValue;
                 string strOldSelected = ImprovementManager.SelectedValue;
-                ImprovementManager.ForcedValue = strForceValueChoice2;
+                //ImprovementManager.ForcedValue = strForceValueChoice2;
                 if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.MentorSpirit, _guiID.ToString("D"), _nodChoice2, false, 1, DisplayNameShort(GlobalOptions.Language)))
                 {
                     _guiID = Guid.Empty;
@@ -144,12 +144,6 @@ namespace Chummer
             {
                 _strExtra = strForceValueChoice2;
             }
-            if (_blnMentorMask)
-            {
-                ImprovementManager.CreateImprovement(_objCharacter, string.Empty, Improvement.ImprovementSource.MentorSpirit, _guiID.ToString("D"), Improvement.ImprovementType.AdeptPowerPoints, string.Empty, 1);
-                ImprovementManager.CreateImprovement(_objCharacter, string.Empty, Improvement.ImprovementSource.MentorSpirit, _guiID.ToString("D"), Improvement.ImprovementType.DrainValue, string.Empty, -1);
-                ImprovementManager.Commit(_objCharacter);
-            }
 
             /*
             if (string.IsNullOrEmpty(_strNotes))
@@ -161,6 +155,10 @@ namespace Chummer
                 }
             }*/
         }
+
+        private SourceString _objCachedSourceDetail;
+        public SourceString SourceDetail => _objCachedSourceDetail ?? (_objCachedSourceDetail =
+                                                new SourceString(Source, Page(GlobalOptions.Language), GlobalOptions.Language));
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -192,12 +190,13 @@ namespace Chummer
                 objWriter.WriteElementString("choice2", string.Empty);
             objWriter.WriteElementString("notes", _strNotes);
 
-            if (!string.IsNullOrEmpty(SourceID))
+            if (!string.IsNullOrEmpty(strSourceID))
             {
-                objWriter.WriteElementString("id", SourceID);
+                objWriter.WriteElementString("id", strSourceID);
             }
 
             objWriter.WriteEndElement();
+
             _objCharacter.SourceProcess(_strSource);
         }
 
@@ -257,6 +256,9 @@ namespace Chummer
         #endregion
 
         #region Properties
+
+        public Guid SourceID { get { return _guiID; } }
+
         /// <summary>
         /// Name of the Mentor Spirit or Paragon.
         /// </summary>
@@ -385,7 +387,7 @@ namespace Chummer
         /// <summary>
         /// Guid of the Xml Node containing data on this Mentor Spirit or Paragon.
         /// </summary>
-        public string SourceID => _sourceID.Equals(Guid.Empty) ? string.Empty : _sourceID.ToString("D");
+        public string strSourceID => _sourceID.Equals(Guid.Empty) ? string.Empty : _sourceID.ToString("D");
 
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
@@ -408,5 +410,12 @@ namespace Chummer
         public string InternalId => _guiID.ToString("D");
 
         #endregion
+
+        public void SetSourceDetail(Control sourceControl)
+        {
+            if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
+                _objCachedSourceDetail = null;
+            SourceDetail.SetControl(sourceControl);
+        }
     }
 }

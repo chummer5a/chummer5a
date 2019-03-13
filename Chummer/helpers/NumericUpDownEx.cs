@@ -281,7 +281,7 @@ namespace Chummer
                 _textbox.SelectAll();
             }
             // Update UpDownButtons visibility
-            if (_showUpDownButtons == ShowUpDownButtonsMode.WhenFocus | _showUpDownButtons == ShowUpDownButtonsMode.WhenFocusOrMouseOver)
+            if (_showUpDownButtons == ShowUpDownButtonsMode.WhenFocus || _showUpDownButtons == ShowUpDownButtonsMode.WhenFocusOrMouseOver)
             {
                 UpdateUpDownButtonsVisibility();
             }
@@ -294,7 +294,7 @@ namespace Chummer
         {
             _haveFocus = false;
             // Update UpDownButtons visibility
-            if (_showUpDownButtons == ShowUpDownButtonsMode.WhenFocus | _showUpDownButtons == ShowUpDownButtonsMode.WhenFocusOrMouseOver)
+            if (_showUpDownButtons == ShowUpDownButtonsMode.WhenFocus || _showUpDownButtons == ShowUpDownButtonsMode.WhenFocusOrMouseOver)
             {
                 UpdateUpDownButtonsVisibility();
             }
@@ -434,7 +434,7 @@ namespace Chummer
                     newVisible = _haveFocus;
                     break;
                 case ShowUpDownButtonsMode.WhenFocusOrMouseOver:
-                    newVisible = _mouseOver | _haveFocus;
+                    newVisible = _mouseOver || _haveFocus;
                     break;
                 case ShowUpDownButtonsMode.Never:
                     newVisible = false;

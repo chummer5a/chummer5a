@@ -77,7 +77,7 @@ namespace Chummer
         private bool _blnFamily;
         private bool _blnGroupEnabled = true;
         private bool _blnReadOnly;
-
+        private bool _blnFree;
         private readonly List<Image> _lstMugshots = new List<Image>();
         private int _intMainMugshotIndex = -1;
 
@@ -116,15 +116,12 @@ namespace Chummer
             }
             if (lstNamesOfChangedProperties.Contains(nameof(Free)))
             {
-                _intCachedFree = -1;
+                _intCachedFreeFromImprovement = -1;
             }
 
-            if (PropertyChanged != null)
+            foreach (string strPropertyToChange in lstNamesOfChangedProperties)
             {
-                foreach (string strPropertyToChange in lstNamesOfChangedProperties)
-                {
-                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
-                }
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
             }
         }
 
@@ -254,6 +251,7 @@ namespace Chummer
             objWriter.WriteElementString("group", _blnIsGroup.ToString());
             objWriter.WriteElementString("family", _blnFamily.ToString());
             objWriter.WriteElementString("blackmail", _blnBlackmail.ToString());
+            objWriter.WriteElementString("free", _blnFree.ToString());
             objWriter.WriteElementString("groupenabled", _blnGroupEnabled.ToString());
 
             if (_blnReadOnly)
@@ -302,6 +300,7 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("guid", ref _strUnique);
             objNode.TryGetBoolFieldQuickly("family", ref _blnFamily);
             objNode.TryGetBoolFieldQuickly("blackmail", ref _blnBlackmail);
+            objNode.TryGetBoolFieldQuickly("free", ref _blnFree);
             if (objNode.SelectSingleNode("colour") != null)
             {
                 int intTmp = _objColour.ToArgb();
@@ -364,7 +363,7 @@ namespace Chummer
         public bool ReadOnly => _blnReadOnly;
 
         public bool NotReadOnly => !ReadOnly;
-
+        
         /// <summary>
         /// Total points used for this contact.
         /// </summary>
@@ -458,7 +457,7 @@ namespace Chummer
             get => Math.Min(_intConnection, ConnectionMaximum);
             set
             {
-                value = Math.Min(value, ConnectionMaximum);
+                value = Math.Max(Math.Min(value, ConnectionMaximum), 1);
                 if (_intConnection != value)
                 {
                     _intConnection = value;
@@ -484,7 +483,7 @@ namespace Chummer
             {
                 if (_intLoyalty != value)
                 {
-                    _intLoyalty = value;
+                    _intLoyalty = Math.Max(value, 1);
                     OnPropertyChanged();
                 }
             }
@@ -866,7 +865,7 @@ namespace Chummer
             }
         }
 
-        private int _intCachedFree = -1;
+        private int _intCachedFreeFromImprovement = -1;
 
         /// <summary>
         /// Whether or not this is a free contact.
@@ -875,14 +874,20 @@ namespace Chummer
         {
             get
             {
-                if (_intCachedFree < 0)
+                if (_blnFree)
+                    return _blnFree;
+
+                if (_intCachedFreeFromImprovement < 0)
                 {
-                    _intCachedFree = CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.ContactMakeFree && GUID == x.ImprovedName && x.Enabled) ? 1 : 0;
+                    _intCachedFreeFromImprovement = CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.ContactMakeFree && GUID == x.ImprovedName && x.Enabled) ? 1 : 0;
                 }
 
-                return _intCachedFree > 0;
+                return _intCachedFreeFromImprovement > 0;
             }
+            set => _blnFree = value;
         }
+
+        public bool FreeEnabled => _intCachedFreeFromImprovement < 1;
 
         /// <summary>
         /// Unique ID for this contact
@@ -981,7 +986,8 @@ namespace Chummer
 
                 if (blnError && blnShowError)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_FileNotFound", GlobalOptions.Language).Replace("{0}", FileName), LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(string.Format(LanguageManager.GetString("Message_FileNotFound", GlobalOptions.Language), FileName),
+                        LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             if (!blnError)
@@ -1174,7 +1180,7 @@ namespace Chummer
                 // Since IE is retarded and can't handle base64 images before IE9, we need to dump the image to a temporary directory and re-write the information.
                 // If you give it an extension of jpg, gif, or png, it expects the file to be in that format and won't render the image unless it was originally that type.
                 // But if you give it the extension img, it will render whatever you give it (which doesn't make any damn sense, but that's IE for you).
-                string strMugshotsDirectoryPath = Path.Combine(Application.StartupPath, "mugshots");
+                string strMugshotsDirectoryPath = Path.Combine(Utils.GetStartupPath, "mugshots");
                 if (!Directory.Exists(strMugshotsDirectoryPath))
                 {
                     try

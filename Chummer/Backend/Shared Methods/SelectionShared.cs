@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using Chummer.Backend.Attributes;
+using Chummer.Backend.Equipment;
 using Chummer.Backend.Skills;
 using System;
 using System.Collections.Generic;
@@ -55,8 +56,8 @@ namespace Chummer
                 {
                     if (blnShowMessage)
                     {
-                        MessageBox.Show(LanguageManager.GetString("Message_SelectGeneric_ChargenRestriction", GlobalOptions.Language).Replace("{0}", strLocalName),
-                            LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", GlobalOptions.Language).Replace("{0}", strLocalName),
+                        MessageBox.Show(string.Format(LanguageManager.GetString("Message_SelectGeneric_ChargenRestriction", GlobalOptions.Language), strLocalName),
+                            string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", GlobalOptions.Language), strLocalName),
                             MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     return false;
@@ -69,8 +70,8 @@ namespace Chummer
                 {
                     if (blnShowMessage)
                     {
-                        MessageBox.Show(LanguageManager.GetString("Message_SelectGeneric_CareerOnlyRestriction", GlobalOptions.Language).Replace("{0}", strLocalName),
-                            LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", GlobalOptions.Language).Replace("{0}", strLocalName),
+                        MessageBox.Show(string.Format(LanguageManager.GetString("Message_SelectGeneric_CareerOnlyRestriction", GlobalOptions.Language), strLocalName),
+                            string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", GlobalOptions.Language), strLocalName),
                             MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     return false;
@@ -81,8 +82,8 @@ namespace Chummer
                     {
                         if (blnShowMessage)
                         {
-                            MessageBox.Show(LanguageManager.GetString("MessageTitle_SelectGeneric_PriorityRestriction", GlobalOptions.Language).Replace("{0}", strLocalName),
-                                LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", GlobalOptions.Language).Replace("{0}", strLocalName),
+                            MessageBox.Show(string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_PriorityRestriction", GlobalOptions.Language), strLocalName),
+                                string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", GlobalOptions.Language), strLocalName),
                                 MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         return false;
@@ -241,9 +242,8 @@ namespace Chummer
                     {
                         if (blnShowMessage)
                         {
-                            string limitTitle = LanguageManager.GetString("MessageTitle_SelectGeneric_Limit", GlobalOptions.Language).Replace("{0}", strLocalName);
-                            string limitMessage = LanguageManager.GetString("Message_SelectGeneric_Limit", GlobalOptions.Language).Replace("{0}", strLocalName).Replace("{1}", intLimit == 0 ? "1" : intLimit.ToString());
-                            MessageBox.Show(limitMessage, limitTitle, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            MessageBox.Show(string.Format(LanguageManager.GetString("Message_SelectGeneric_Limit", GlobalOptions.Language), strLocalName, intLimit == 0 ? "1" : intLimit.ToString(GlobalOptions.CultureInfo)),
+                                string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Limit", GlobalOptions.Language), strLocalName), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         return false;
                     }
@@ -288,9 +288,8 @@ namespace Chummer
                         {
                             if (blnShowMessage)
                             {
-                                string forbiddenTitle = LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", GlobalOptions.Language).Replace("{0}", strLocalName);
-                                string forbiddenMessage = LanguageManager.GetString("Message_SelectGeneric_Restriction", GlobalOptions.Language).Replace("{0}", strLocalName) + strName;
-                                MessageBox.Show(forbiddenMessage, forbiddenTitle, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                MessageBox.Show(string.Format(LanguageManager.GetString("Message_SelectGeneric_Restriction", GlobalOptions.Language), strLocalName) + strName,
+                                    string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", GlobalOptions.Language), strLocalName), MessageBoxButtons.OK, MessageBoxIcon.Information);
                             }
                             return false;
                         }
@@ -366,9 +365,8 @@ namespace Chummer
                 {
                     if (blnShowMessage)
                     {
-                        string requiredTitle = LanguageManager.GetString("MessageTitle_SelectGeneric_Requirement", GlobalOptions.Language).Replace("{0}", strLocalName);
-                        string requiredMessage = LanguageManager.GetString("Message_SelectGeneric_Requirement", GlobalOptions.Language).Replace("{0}", strLocalName) + objRequirement;
-                        MessageBox.Show(requiredMessage, requiredTitle, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show(string.Format(LanguageManager.GetString("Message_SelectGeneric_Requirement", GlobalOptions.Language), strLocalName) + objRequirement.ToString(),
+                            string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Requirement", GlobalOptions.Language), strLocalName), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     return false;
                 }
@@ -433,7 +431,7 @@ namespace Chummer
                     {
                         // Check Career Karma requirement.
                         if (blnShowMessage)
-                            strName = Environment.NewLine + '\t' + LanguageManager.GetString("Message_SelectQuality_RequireKarma", GlobalOptions.Language).Replace("{0}", strNodeInnerText);
+                            strName = Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_SelectQuality_RequireKarma", GlobalOptions.Language), strNodeInnerText);
                         return objCharacter.CareerKarma >= Convert.ToInt32(strNodeInnerText);
                     }
                 case "critterpower":
@@ -451,7 +449,7 @@ namespace Chummer
                         }
                         if (blnShowMessage)
                         {
-                            string strTranslate = XmlManager.Load("critterpowers.xml").SelectSingleNode($"/chummer/powers/power[name = \"{strNodeInnerText}\"]/translate")?.InnerText;
+                            string strTranslate = XmlManager.Load("critterpowers.xml").SelectSingleNode($"/chummer/powers/power[name = {strNodeInnerText.CleanXPath()}]/translate")?.InnerText;
                             strName = !string.IsNullOrEmpty(strTranslate)
                                 ? $"{Environment.NewLine}\t{strTranslate} ({LanguageManager.GetString("Tab_Critter", GlobalOptions.Language)})"
                                 : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("Tab_Critter", GlobalOptions.Language)})";
@@ -463,7 +461,7 @@ namespace Chummer
                         int count = Convert.ToInt32(xmlNode.Attributes?["count"]?.InnerText ?? "1");
                         if (blnShowMessage)
                         {
-                            string strTranslate = XmlManager.Load("bioware.xml").SelectSingleNode($"/chummer/biowares/bioware[name = \"{strNodeInnerText}\"]/translate")?.InnerText;
+                            string strTranslate = XmlManager.Load("bioware.xml").SelectSingleNode($"/chummer/biowares/bioware[name = {strNodeInnerText.CleanXPath()}]/translate")?.InnerText;
                             strName = !string.IsNullOrEmpty(strTranslate)
                                 ? $"{Environment.NewLine}\t{LanguageManager.GetString("Label_Bioware", GlobalOptions.Language)} {strTranslate}"
                                 : $"{Environment.NewLine}\t{LanguageManager.GetString("Label_Bioware", GlobalOptions.Language)} {strNodeInnerText}";
@@ -478,7 +476,7 @@ namespace Chummer
                         int count = Convert.ToInt32(xmlNode.Attributes?["count"]?.InnerText ?? "1");
                         if (blnShowMessage)
                         {
-                            string strTranslate = XmlManager.Load("cyberware.xml").SelectSingleNode($"/chummer/cyberwares/cyberware[name = \"{strNodeInnerText}\"]/translate")?.InnerText;
+                            string strTranslate = XmlManager.Load("cyberware.xml").SelectSingleNode($"/chummer/cyberwares/cyberware[name = {strNodeInnerText.CleanXPath()}]/translate")?.InnerText;
                             strName = !string.IsNullOrEmpty(strTranslate)
                                 ? $"{Environment.NewLine}\t{LanguageManager.GetString("Label_Cyberware", GlobalOptions.Language)} {strTranslate}"
                                 : $"{Environment.NewLine}\t{LanguageManager.GetString("Label_Cyberware", GlobalOptions.Language)} {strNodeInnerText}";
@@ -493,7 +491,7 @@ namespace Chummer
                         int count = Convert.ToInt32(xmlNode.Attributes?["count"]?.InnerText ?? "1");
                         if (blnShowMessage)
                         {
-                            string strTranslate = XmlManager.Load("bioware.xml").SelectSingleNode($"/chummer/biowares/bioware[name = \"{strNodeInnerText}\"]/translate")?.InnerText;
+                            string strTranslate = XmlManager.Load("bioware.xml").SelectSingleNode($"/chummer/biowares/bioware[name = {strNodeInnerText.CleanXPath()}]/translate")?.InnerText;
                             strName = !string.IsNullOrEmpty(strTranslate)
                                 ? $"{Environment.NewLine}\t{LanguageManager.GetString("Label_Bioware", GlobalOptions.Language)} {strTranslate}"
                                 : $"{Environment.NewLine}\t{LanguageManager.GetString("Label_Bioware", GlobalOptions.Language)} {strNodeInnerText}";
@@ -508,7 +506,7 @@ namespace Chummer
                         int count = Convert.ToInt32(xmlNode.Attributes?["count"]?.InnerText ?? "1");
                         if (blnShowMessage)
                         {
-                            string strTranslate = XmlManager.Load("cyberware.xml").SelectSingleNode($"/chummer/cyberwares/cyberware[name = \"{strNodeInnerText}\"]/translate")?.InnerText;
+                            string strTranslate = XmlManager.Load("cyberware.xml").SelectSingleNode($"/chummer/cyberwares/cyberware[name = {strNodeInnerText.CleanXPath()}]/translate")?.InnerText;
                             strName = !string.IsNullOrEmpty(strTranslate)
                                 ? $"{Environment.NewLine}\t{LanguageManager.GetString("Label_Cyberware", GlobalOptions.Language)} {strTranslate}"
                                 : $"{Environment.NewLine}\t{LanguageManager.GetString("Label_Cyberware", GlobalOptions.Language)} {strNodeInnerText}";
@@ -527,32 +525,33 @@ namespace Chummer
                     }
                 case "ess":
                     {
-                        string objEssNodeGradeAttributeText = xmlNode.Attributes?["grade"]?.InnerText ?? string.Empty;
-                        if (!string.IsNullOrEmpty(objEssNodeGradeAttributeText))
+                        string strEssNodeGradeAttributeText = xmlNode.Attributes?["grade"]?.InnerText ?? string.Empty;
+                        if (!string.IsNullOrEmpty(strEssNodeGradeAttributeText))
                         {
+                            HashSet<string> setEssNodeGradeAttributeText = new HashSet<string>(strEssNodeGradeAttributeText.Split(','));
                             decimal decGrade =
                                 objCharacter.Cyberware.Where(
                                         objCyberware =>
-                                            objCyberware.Grade.Name.Contains(objEssNodeGradeAttributeText))
+                                            setEssNodeGradeAttributeText.Any(func => objCyberware.Grade.Name.Contains(func)))
                                     .AsParallel().Sum(objCyberware => objCyberware.CalculatedESS());
                             if (strNodeInnerText.StartsWith('-'))
                             {
                                 // Essence must be less than the value.
                                 if (blnShowMessage)
                                     strName = Environment.NewLine + '\t' +
-                                       LanguageManager.GetString("Message_SelectQuality_RequireESSGradeBelow", GlobalOptions.Language)
-                                           .Replace("{0}", strNodeInnerText)
-                                           .Replace("{1}", objEssNodeGradeAttributeText)
-                                           .Replace("{2}", decGrade.ToString(GlobalOptions.InvariantCultureInfo));
+                                              string.Format(LanguageManager.GetString("Message_SelectQuality_RequireESSGradeBelow", GlobalOptions.Language)
+                                                  , strNodeInnerText
+                                                  , strEssNodeGradeAttributeText
+                                                  , decGrade.ToString(GlobalOptions.CultureInfo));
                                 return decGrade < Convert.ToDecimal(strNodeInnerText.TrimStart('-'), GlobalOptions.InvariantCultureInfo);
                             }
                             // Essence must be equal to or greater than the value.
                             if (blnShowMessage)
                                 strName = Environment.NewLine + '\t' +
-                                   LanguageManager.GetString("Message_SelectQuality_RequireESSGradeAbove", GlobalOptions.Language)
-                                       .Replace("{0}", strNodeInnerText)
-                                       .Replace("{1}", objEssNodeGradeAttributeText)
-                                       .Replace("{2}", decGrade.ToString(GlobalOptions.InvariantCultureInfo));
+                                          string.Format(LanguageManager.GetString("Message_SelectQuality_RequireESSAbove", GlobalOptions.Language)
+                                              , strNodeInnerText
+                                              , strEssNodeGradeAttributeText
+                                              , decGrade.ToString(GlobalOptions.CultureInfo));
                             return decGrade >= Convert.ToDecimal(strNodeInnerText, GlobalOptions.InvariantCultureInfo);
                         }
                         // Check Essence requirement.
@@ -561,17 +560,17 @@ namespace Chummer
                             // Essence must be less than the value.
                             if (blnShowMessage)
                                 strName = Environment.NewLine + '\t' +
-                                   LanguageManager.GetString("Message_SelectQuality_RequireESSBelow", GlobalOptions.Language)
-                                       .Replace("{0}", strNodeInnerText)
-                                       .Replace("{1}", objCharacter.Essence().ToString(GlobalOptions.InvariantCultureInfo));
+                                          string.Format(LanguageManager.GetString("Message_SelectQuality_RequireESSBelow", GlobalOptions.Language)
+                                              , strNodeInnerText
+                                              , objCharacter.Essence().ToString(GlobalOptions.CultureInfo));
                             return objCharacter.Essence() < Convert.ToDecimal(strNodeInnerText.TrimStart('-'), GlobalOptions.InvariantCultureInfo);
                         }
                         // Essence must be equal to or greater than the value.
                         if (blnShowMessage)
                             strName = Environment.NewLine + '\t' +
-                               LanguageManager.GetString("Message_SelectQuality_RequireESSAbove", GlobalOptions.Language)
-                                   .Replace("{0}", strNodeInnerText)
-                                   .Replace("{1}", objCharacter.Essence().ToString(GlobalOptions.InvariantCultureInfo));
+                                      string.Format(LanguageManager.GetString("Message_SelectQuality_RequireESSAbove", GlobalOptions.Language)
+                                          , strNodeInnerText
+                                          , objCharacter.Essence().ToString(GlobalOptions.CultureInfo));
                         return objCharacter.Essence() >= Convert.ToDecimal(strNodeInnerText, GlobalOptions.InvariantCultureInfo);
                     }
                 case "echo":
@@ -585,10 +584,45 @@ namespace Chummer
                         }
                         if (blnShowMessage)
                         {
-                            string strTranslate = XmlManager.Load("echoes.xml").SelectSingleNode($"/chummer/echoes/echo[name = \"{strNodeInnerText}\"]/translate")?.InnerText;
+                            string strTranslate = XmlManager.Load("echoes.xml").SelectSingleNode($"/chummer/echoes/echo[name = {strNodeInnerText.CleanXPath()}]/translate")?.InnerText;
                             strName = !string.IsNullOrEmpty(strTranslate)
-                                ? $"{Environment.NewLine}\t{strTranslate} ({LanguageManager.GetString("String_Echo", GlobalOptions.Language)})"
-                                : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_Echo", GlobalOptions.Language)})";
+                                ? $"{Environment.NewLine}\t{strTranslate}{LanguageManager.GetString("String_Space", GlobalOptions.Language)}({LanguageManager.GetString("String_Echo", GlobalOptions.Language)})"
+                                : $"{Environment.NewLine}\t{strNodeInnerText}{LanguageManager.GetString("String_Space", GlobalOptions.Language)}({LanguageManager.GetString("String_Echo", GlobalOptions.Language)})";
+                        }
+                        return false;
+                    }
+                case "gear":
+                    {
+                        Gear objGear = objCharacter.Gear.FirstOrDefault(x => x.Name == strNodeInnerText);
+                        //TODO: Probably a better way to handle minrating/rating/maxrating but eh, YAGNI.
+                        if (xmlNode.Attributes?["minrating"]?.InnerText != null)
+                        {
+                            int rating = Convert.ToInt32(xmlNode.Attributes?["minrating"]?.InnerText);
+                            objGear = objCharacter.Gear.FirstOrDefault(x => x.Name == strNodeInnerText && x.Rating >= rating);
+                        }
+                        else if (xmlNode.Attributes?["rating"]?.InnerText != null)
+                        {
+                            int rating = Convert.ToInt32(xmlNode.Attributes?["rating"]?.InnerText);
+                            objGear = objCharacter.Gear.FirstOrDefault(x => x.Name == strNodeInnerText && x.Rating == rating);
+                        }
+                        else if (xmlNode.Attributes?["maxrating"]?.InnerText != null)
+                        {
+                            int rating = Convert.ToInt32(xmlNode.Attributes?["maxrating"]?.InnerText);
+                            objGear = objCharacter.Gear.FirstOrDefault(x => x.Name == strNodeInnerText && x.Rating <= rating);
+                        }
+                        if (objGear != null)
+                        {
+                            if (blnShowMessage)
+                                strName = objGear.DisplayNameShort(GlobalOptions.Language);
+                            return true;
+                        }
+                        if (blnShowMessage)
+                        {
+                            // Character needs a specific Gear.
+                            string strTranslate = XmlManager.Load("gear.xml").SelectSingleNode($"/chummer/gears/gear[name = {strNodeInnerText.CleanXPath()}]/translate")?.InnerText;
+                            strName = !string.IsNullOrEmpty(strTranslate)
+                                ? $"{Environment.NewLine}\t{strTranslate} ({LanguageManager.GetString("String_Gear", GlobalOptions.Language)})"
+                                : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_Gear", GlobalOptions.Language)})";
                         }
                         return false;
                     }
@@ -673,7 +707,7 @@ namespace Chummer
                         if (blnShowMessage)
                         {
                             // Character needs a specific Martial Art.
-                            string strTranslate = XmlManager.Load("martialarts.xml").SelectSingleNode($"/chummer/martialarts/martialart[name = \"{strNodeInnerText}\"]/translate")?.InnerText;
+                            string strTranslate = XmlManager.Load("martialarts.xml").SelectSingleNode($"/chummer/martialarts/martialart[name = {strNodeInnerText.CleanXPath()}]/translate")?.InnerText;
                             strName = !string.IsNullOrEmpty(strTranslate)
                                 ? $"{Environment.NewLine}\t{strTranslate} ({LanguageManager.GetString("String_MartialArt", GlobalOptions.Language)})"
                                 : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_MartialArt", GlobalOptions.Language)})";
@@ -695,7 +729,7 @@ namespace Chummer
                         if (blnShowMessage)
                         {
                             // Character needs a specific Martial Arts technique.
-                            string strTranslate = XmlManager.Load("martialarts.xml").SelectSingleNode($"/chummer/techniques/technique[name = \"{strNodeInnerText}\"]/translate")?.InnerText;
+                            string strTranslate = XmlManager.Load("martialarts.xml").SelectSingleNode($"/chummer/techniques/technique[name = {strNodeInnerText.CleanXPath()}]/translate")?.InnerText;
                             strName = !string.IsNullOrEmpty(strTranslate)
                                 ? $"{Environment.NewLine}\t{strTranslate} ({LanguageManager.GetString("String_MartialArt", GlobalOptions.Language)})"
                                 : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_MartialArt", GlobalOptions.Language)})";
@@ -713,7 +747,7 @@ namespace Chummer
                         }
                         if (blnShowMessage)
                         {
-                            string strTranslate = XmlManager.Load("metamagic.xml").SelectSingleNode($"/chummer/metamagics/metamagic[name = \"{strNodeInnerText}\"]/translate")?.InnerText;
+                            string strTranslate = XmlManager.Load("metamagic.xml").SelectSingleNode($"/chummer/metamagics/metamagic[name = {strNodeInnerText.CleanXPath()}]/translate")?.InnerText;
                             strName = !string.IsNullOrEmpty(strTranslate)
                                 ? $"{Environment.NewLine}\t{strTranslate} ({LanguageManager.GetString("String_Metamagic", GlobalOptions.Language)})"
                                 : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_Metamagic", GlobalOptions.Language)})";
@@ -729,7 +763,7 @@ namespace Chummer
                             XmlDocument xmlMetamagicDoc = XmlManager.Load("metamagic.xml");
                             if (blnShowMessage)
                             {
-                                string strTranslateArt = xmlMetamagicDoc.SelectSingleNode($"/chummer/arts/art[name = \"{strNodeInnerText}\"]/translate")?.InnerText;
+                                string strTranslateArt = xmlMetamagicDoc.SelectSingleNode($"/chummer/arts/art[name = {strNodeInnerText.CleanXPath()}]/translate")?.InnerText;
                                 strName = !string.IsNullOrEmpty(strTranslateArt)
                                     ? $"{Environment.NewLine}\t{strTranslateArt} ({LanguageManager.GetString("String_Art", GlobalOptions.Language)})"
                                     : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_Art", GlobalOptions.Language)})";
@@ -740,14 +774,14 @@ namespace Chummer
                             }
                             foreach (Metamagic metamagic in objCharacter.Metamagics)
                             {
-                                XmlNode xmlMetamagicNode = xmlMetamagicDoc.SelectSingleNode($"/chummer/metamagics/metamagic[name = \"{metamagic.Name}\"]");
+                                XmlNode xmlMetamagicNode = xmlMetamagicDoc.SelectSingleNode($"/chummer/metamagics/metamagic[name = {metamagic.Name.CleanXPath()}]");
                                 if (xmlMetamagicNode != null)
                                 {
-                                    if (xmlMetamagicNode.SelectSingleNode($"required/art[text() = \"{strNodeInnerText}\"]") != null)
+                                    if (xmlMetamagicNode.SelectSingleNode($"required/art[text() = {strNodeInnerText.CleanXPath()}]") != null)
                                     {
                                         return true;
                                     }
-                                    if (xmlMetamagicNode.SelectSingleNode($"forbidden/art[text() = \"{strNodeInnerText}\"]") != null)
+                                    if (xmlMetamagicNode.SelectSingleNode($"forbidden/art[text() = {strNodeInnerText.CleanXPath()}]") != null)
                                     {
                                         return false;
                                     }
@@ -766,7 +800,7 @@ namespace Chummer
                         }
                         if (blnShowMessage)
                         {
-                            string strTranslate = XmlManager.Load("metamagic.xml").SelectSingleNode($"/chummer/arts/art[name = \"{strNodeInnerText}\"]/translate")?.InnerText;
+                            string strTranslate = XmlManager.Load("metamagic.xml").SelectSingleNode($"/chummer/arts/art[name = {strNodeInnerText.CleanXPath()}]/translate")?.InnerText;
                             strName = !string.IsNullOrEmpty(strTranslate)
                                 ? $"{Environment.NewLine}\t{strTranslate} ({LanguageManager.GetString("String_Art", GlobalOptions.Language)})"
                                 : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_Art", GlobalOptions.Language)})";
@@ -777,7 +811,7 @@ namespace Chummer
                     {
                         if (blnShowMessage)
                         {
-                            string strXPathFilter = $"/chummer/metatypes/metatype[name = \"{strNodeInnerText}\"]/translate";
+                            string strXPathFilter = $"/chummer/metatypes/metatype[name = {strNodeInnerText.CleanXPath()}]/translate";
                             // Check the Metatype restriction.
                             string strTranslate = XmlManager.Load("metatypes.xml").SelectSingleNode(strXPathFilter)?.InnerText ??
                                                     XmlManager.Load("critters.xml").SelectSingleNode(strXPathFilter)?.InnerText;
@@ -791,7 +825,7 @@ namespace Chummer
                     {
                         if (blnShowMessage)
                         {
-                            string strXPathFilter = $"/chummer/categories/category[. = \"{strNodeInnerText}\"]/@translate";
+                            string strXPathFilter = $"/chummer/categories/category[text() = {strNodeInnerText.CleanXPath()}]/@translate";
                             // Check the Metatype Category restriction.
                             string strTranslate = XmlManager.Load("metatypes.xml").SelectSingleNode(strXPathFilter)?.InnerText ??
                                                     XmlManager.Load("critters.xml").SelectSingleNode(strXPathFilter)?.InnerText;
@@ -805,7 +839,7 @@ namespace Chummer
                     {
                         if (blnShowMessage)
                         {
-                            string strXPathFilter = $"/chummer/metatypes/metatype/metavariants/metavariant[name = \"{strNodeInnerText}\"]/translate";
+                            string strXPathFilter = $"/chummer/metatypes/metatype/metavariants/metavariant[name = {strNodeInnerText.CleanXPath()}]/translate";
                             // Check the Metavariant restriction.
                             string strTranslate = XmlManager.Load("metatypes.xml").SelectSingleNode(strXPathFilter)?.InnerText ??
                                                     XmlManager.Load("critters.xml").SelectSingleNode(strXPathFilter)?.InnerText;
@@ -827,7 +861,7 @@ namespace Chummer
                         }
                         if (blnShowMessage)
                         {
-                            string strTranslate = XmlManager.Load("powers.xml").SelectSingleNode($"/chummer/powers/power[name = \"{strNodeInnerText}\"]/translate")?.InnerText;
+                            string strTranslate = XmlManager.Load("powers.xml").SelectSingleNode($"/chummer/powers/power[name = {strNodeInnerText.CleanXPath()}]/translate")?.InnerText;
                             strName = !string.IsNullOrEmpty(strTranslate)
                                 ? $"{Environment.NewLine}\t{strTranslate} ({LanguageManager.GetString("Tab_Adept", GlobalOptions.Language)})"
                                 : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("Tab_Adept", GlobalOptions.Language)})";
@@ -846,7 +880,7 @@ namespace Chummer
                             return true;
                         }
                         if (!blnShowMessage) return false;
-                        string strTranslate = XmlManager.Load("qualities.xml").SelectSingleNode($"/chummer/qualities/quality[name = \"{strNodeInnerText}\"]/translate")?.InnerText;
+                        string strTranslate = XmlManager.Load("qualities.xml").SelectSingleNode($"/chummer/qualities/quality[name = {strNodeInnerText.CleanXPath()}]/translate")?.InnerText;
                         strName = !string.IsNullOrEmpty(strTranslate)
                             ? $"{Environment.NewLine}\t{strTranslate} ({LanguageManager.GetString("String_Quality", GlobalOptions.Language)})"
                             : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_Quality", GlobalOptions.Language)})";
@@ -890,7 +924,7 @@ namespace Chummer
                                 Skill objSkill = objCharacter.SkillsSection.GetActiveSkill(strNodeName);
                                 // Exotic Skill
                                 if (objSkill == null && !string.IsNullOrEmpty(strSpec))
-                                    objSkill = objCharacter.SkillsSection.GetActiveSkill(strNodeName + " (" + strSpec + ")");
+                                    objSkill = objCharacter.SkillsSection.GetActiveSkill(strNodeName + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + strSpec + ')');
                                 if (objSkill != null && (xmlNode["spec"] == null || objSkill.Specializations.Any(objSpec => objSpec.Name == strSpec)) && objSkill.TotalBaseRating >= intValue)
                                 {
                                     if (blnShowMessage)
@@ -912,8 +946,8 @@ namespace Chummer
                         if (blnShowMessage)
                         {
                             XmlDocument xmlSkillDoc = XmlManager.Load("skills.xml");
-                            string strTranslate = xmlSkillDoc.SelectSingleNode($"/chummer/skills/skill[name = \"{strNodeInnerText}\"]/translate")?.InnerText ??
-                                                    xmlSkillDoc.SelectSingleNode($"/chummer/knowledgeskills/skill[name = \"{strNodeInnerText}\"]/translate")?.InnerText;
+                            string strTranslate = xmlSkillDoc.SelectSingleNode($"/chummer/skills/skill[name = {strNodeInnerText.CleanXPath()}]/translate")?.InnerText ??
+                                                    xmlSkillDoc.SelectSingleNode($"/chummer/knowledgeskills/skill[name = {strNodeInnerText.CleanXPath()}]/translate")?.InnerText;
                             strName = !string.IsNullOrEmpty(strTranslate) ? $"{Environment.NewLine}\t{strTranslate}" : $"{Environment.NewLine}\t{strNodeInnerText}";
                             if (!string.IsNullOrEmpty(strSpec))
                             {
@@ -970,7 +1004,7 @@ namespace Chummer
                         if (blnShowMessage)
                         {
                             // Check for a specific Spell.
-                            string strTranslate = XmlManager.Load("spells.xml").SelectSingleNode($"/chummer/spells/spell[name = \"{strNodeInnerText}\"]/translate")?.InnerText;
+                            string strTranslate = XmlManager.Load("spells.xml").SelectSingleNode($"/chummer/spells/spell[name = {strNodeInnerText.CleanXPath()}]/translate")?.InnerText;
                             strName = !string.IsNullOrEmpty(strTranslate)
                                 ? $"{Environment.NewLine}\t{strTranslate} ({LanguageManager.GetString("String_DescSpell", GlobalOptions.Language)})"
                                 : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_DescSpell", GlobalOptions.Language)})";
@@ -982,7 +1016,7 @@ namespace Chummer
                         // Check for a specified amount of a particular Spell category.
                         if (blnShowMessage)
                         {
-                            string strTranslate = XmlManager.Load("spells.xml").SelectSingleNode($"/chummer/categories/category[. = \"{strNodeName}\"]/@translate")?.InnerText;
+                            string strTranslate = XmlManager.Load("spells.xml").SelectSingleNode($"/chummer/categories/category[text() = {strNodeName.CleanXPath()}]/@translate")?.InnerText;
                             strName = !string.IsNullOrEmpty(strTranslate)
                                 ? $"{Environment.NewLine}\t{strTranslate} ({LanguageManager.GetString("String_SpellCategory", GlobalOptions.Language)})"
                                 : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_SpellCategory", GlobalOptions.Language)})";
@@ -1016,12 +1050,12 @@ namespace Chummer
                         // Character needs a specific Tradition.
                         if (blnShowMessage)
                         {
-                            string strTranslate = XmlManager.Load("traditions.xml").SelectSingleNode($"/chummer/traditions/tradition[name = \"{strNodeInnerText}\"]/translate")?.InnerText;
+                            string strTranslate = XmlManager.Load("traditions.xml").SelectSingleNode($"/chummer/traditions/tradition[name = {strNodeInnerText.CleanXPath()}]/translate")?.InnerText;
                             strName = !string.IsNullOrEmpty(strTranslate)
                                 ? $"{Environment.NewLine}\t{strTranslate} ({LanguageManager.GetString("String_Tradition", GlobalOptions.Language)})"
                                 : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_Tradition", GlobalOptions.Language)})";
                         }
-                        return objCharacter.MagicTradition == strNodeInnerText;
+                        return objCharacter.MagicTradition.Name == strNodeInnerText;
                     }
                 default:
                     Utils.BreakIfDebug();
@@ -1045,7 +1079,7 @@ namespace Chummer
             if (objXmlGear == null)
                 return false;
             //TODO: Better handler for restricted gear
-            if (objCharacter.Created || objCharacter.RestrictedGear || objCharacter.IgnoreRules)
+            if (objCharacter.Created || objCharacter.RestrictedGear > 0 || objCharacter.IgnoreRules)
                 return true;
             // Avail.
 
@@ -1098,17 +1132,66 @@ namespace Chummer
             return intAvail <= objCharacter.MaximumAvailability;
         }
 
+        public static bool CheckNuyenRestriction(XmlNode objXmlGear, decimal decMaxNuyen, decimal decCostMultiplier = 1.0m, int intRating = 1)
+        {
+            // Cost.
+            decimal decCost = 0.0m;
+            XmlNode objCostNode = objXmlGear["cost"];
+            if (objCostNode == null)
+            {
+                int intCostRating = 1;
+                XmlNodeList xmlChildNodesList = objXmlGear.SelectNodes("*");
+                if (xmlChildNodesList?.Count > 0)
+                {
+                    foreach (XmlNode objLoopNode in xmlChildNodesList)
+                    {
+                        if (objLoopNode.Name.StartsWith("cost"))
+                        {
+                            string strLoopCostString = objLoopNode.Name.Substring(4);
+                            if (int.TryParse(strLoopCostString, out int intTmp) && intTmp <= intRating)
+                            {
+                                intCostRating = Math.Max(intCostRating, intTmp);
+                            }
+                        }
+                    }
+                }
+
+                objCostNode = objXmlGear.SelectSingleNode("cost" + intCostRating.ToString(GlobalOptions.InvariantCultureInfo));
+            }
+            string strCost = objCostNode?.InnerText;
+            if (!string.IsNullOrEmpty(strCost))
+            {
+                if (strCost.StartsWith("FixedValues("))
+                {
+                    string[] strValues = strCost.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                    strCost = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
+                }
+                else if (strCost.StartsWith("Variable"))
+                {
+                    strCost = strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
+                    int intHyphenIndex = strCost.IndexOf('-');
+                    strCost = intHyphenIndex != -1 ? strCost.Substring(0, intHyphenIndex) : strCost.FastEscape('+');
+                }
+
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(strCost.Replace("Rating", intRating.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
+                if (blnIsSuccess)
+                    decCost = Convert.ToDecimal(objProcess, GlobalOptions.InvariantCultureInfo);
+            }
+            return decMaxNuyen >= decCost * decCostMultiplier;
+        }
+
         //TODO: Might be a better location for this; Class names are screwy.
         /// <summary>Evaluates requirements of a given node against a given Character object.</summary>
         /// <param name="xmlNode">XmlNode of the object.</param>
         /// <param name="objCharacter">Character object against which to check.</param>
+        /// <param name="objParent">Parent object against which to check.</param>
         /// <param name="strLocalName">Name of the type of item being checked for displaying messages. If empty or null, no message is displayed.</param>
         /// <param name="strIgnoreQuality">Name of a Quality that should be ignored. Typically used when swapping Qualities in career mode.</param>
         /// <param name="strSourceName">Name of the improvement that called this (if it was called by an improvement adding it)</param>
         /// <param name="strLocation">Limb side to use if we need a specific limb side (Left or Right)</param>
         /// <param name="blnIgnoreLimit">Whether to ignore checking for limits on the total amount of this item the character can have.</param>
         /// <returns></returns>
-        public static bool RequirementsMet(this XPathNavigator xmlNode, Character objCharacter, string strLocalName = "", string strIgnoreQuality = "", string strSourceName = "", string strLocation = "", bool blnIgnoreLimit = false)
+        public static bool RequirementsMet(this XPathNavigator xmlNode, Character objCharacter, object objParent = null, string strLocalName = "", string strIgnoreQuality = "", string strSourceName = "", string strLocation = "", bool blnIgnoreLimit = false)
         {
             if (xmlNode == null || objCharacter == null)
                 return false;
@@ -1123,8 +1206,8 @@ namespace Chummer
                 {
                     if (blnShowMessage)
                     {
-                        MessageBox.Show(LanguageManager.GetString("Message_SelectGeneric_ChargenRestriction", GlobalOptions.Language).Replace("{0}", strLocalName),
-                            LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", GlobalOptions.Language).Replace("{0}", strLocalName),
+                        MessageBox.Show(string.Format(LanguageManager.GetString("Message_SelectGeneric_ChargenRestriction", GlobalOptions.Language), strLocalName),
+                            string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", GlobalOptions.Language), strLocalName),
                             MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     return false;
@@ -1137,8 +1220,8 @@ namespace Chummer
                 {
                     if (blnShowMessage)
                     {
-                        MessageBox.Show(LanguageManager.GetString("Message_SelectGeneric_CareerOnlyRestriction", GlobalOptions.Language).Replace("{0}", strLocalName),
-                            LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", GlobalOptions.Language).Replace("{0}", strLocalName),
+                        MessageBox.Show(string.Format(LanguageManager.GetString("Message_SelectGeneric_CareerOnlyRestriction", GlobalOptions.Language), strLocalName),
+                            string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", GlobalOptions.Language), strLocalName),
                             MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     return false;
@@ -1149,8 +1232,8 @@ namespace Chummer
                     {
                         if (blnShowMessage)
                         {
-                            MessageBox.Show(LanguageManager.GetString("Message_SelectGeneric_PriorityRestriction", GlobalOptions.Language).Replace("{0}", strLocalName),
-                                LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", GlobalOptions.Language).Replace("{0}", strLocalName),
+                            MessageBox.Show(string.Format(LanguageManager.GetString("Message_SelectGeneric_PriorityRestriction", GlobalOptions.Language), strLocalName),
+                                string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", GlobalOptions.Language), strLocalName),
                                 MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         return false;
@@ -1238,10 +1321,19 @@ namespace Chummer
                             }
                         case "technique":
                             {
-                                List<MartialArtTechnique> objTempList = new List<MartialArtTechnique>(objCharacter.MartialArts.Count);
-                                foreach (MartialArt objMartialArt in objCharacter.MartialArts)
+                                List<MartialArtTechnique> objTempList;
+                                if (objParent is MartialArt objArt)
                                 {
-                                    objTempList.AddRange(objMartialArt.Techniques);
+                                    objTempList = new List<MartialArtTechnique>(objArt.Techniques.Count);
+                                    objTempList.AddRange(objArt.Techniques);
+                                }
+                                else
+                                {
+                                    objTempList = new List<MartialArtTechnique>(objCharacter.MartialArts.Count);
+                                    foreach (MartialArt objMartialArt in objCharacter.MartialArts)
+                                    {
+                                        objTempList.AddRange(objMartialArt.Techniques);
+                                    }
                                 }
                                 objListToCheck = objTempList;
                                 break;
@@ -1309,9 +1401,8 @@ namespace Chummer
                     {
                         if (blnShowMessage)
                         {
-                            string limitTitle = LanguageManager.GetString("MessageTitle_SelectGeneric_Limit", GlobalOptions.Language).Replace("{0}", strLocalName);
-                            string limitMessage = LanguageManager.GetString("Message_SelectGeneric_Limit", GlobalOptions.Language).Replace("{0}", strLocalName).Replace("{1}", intLimit == 0 ? "1" : intLimit.ToString());
-                            MessageBox.Show(limitMessage, limitTitle, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            MessageBox.Show(string.Format(LanguageManager.GetString("Message_SelectGeneric_Limit", GlobalOptions.Language), strLocalName, intLimit == 0 ? "1" : intLimit.ToString()),
+                                string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Limit", GlobalOptions.Language), strLocalName), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         return false;
                     }
@@ -1331,9 +1422,8 @@ namespace Chummer
                         {
                             if (blnShowMessage)
                             {
-                                string forbiddenTitle = LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", GlobalOptions.Language).Replace("{0}", strLocalName);
-                                string forbiddenMessage = LanguageManager.GetString("Message_SelectGeneric_Restriction", GlobalOptions.Language).Replace("{0}", strLocalName) + strName;
-                                MessageBox.Show(forbiddenMessage, forbiddenTitle, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                MessageBox.Show(string.Format(LanguageManager.GetString("Message_SelectGeneric_Restriction", GlobalOptions.Language), strLocalName) + strName,
+                                    string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", GlobalOptions.Language), strLocalName), MessageBoxButtons.OK, MessageBoxIcon.Information);
                             }
                             return false;
                         }
@@ -1366,7 +1456,7 @@ namespace Chummer
                     // Update the flag for requirements met.
                     if (!blnOneOfMet)
                         blnRequirementMet = false;
-                    if (blnShowMessage)
+                    if (blnShowMessage && !blnOneOfMet)
                         objRequirement.Append(objThisRequirement);
                     else if (!blnRequirementMet)
                         break;
@@ -1407,9 +1497,8 @@ namespace Chummer
                 {
                     if (blnShowMessage)
                     {
-                        string requiredTitle = LanguageManager.GetString("MessageTitle_SelectGeneric_Requirement", GlobalOptions.Language).Replace("{0}", strLocalName);
-                        string requiredMessage = LanguageManager.GetString("Message_SelectGeneric_Requirement", GlobalOptions.Language).Replace("{0}", strLocalName) + objRequirement;
-                        MessageBox.Show(requiredMessage, requiredTitle, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show(string.Format(LanguageManager.GetString("Message_SelectGeneric_Requirement", GlobalOptions.Language), strLocalName) + objRequirement.ToString(),
+                            string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Requirement", GlobalOptions.Language), strLocalName), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     return false;
                 }
@@ -1474,7 +1563,7 @@ namespace Chummer
                     {
                         // Check Career Karma requirement.
                         if (blnShowMessage)
-                            strName = Environment.NewLine + '\t' + LanguageManager.GetString("Message_SelectQuality_RequireKarma", GlobalOptions.Language).Replace("{0}", strNodeInnerText);
+                            strName = Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_SelectQuality_RequireKarma", GlobalOptions.Language), strNodeInnerText);
                         return objCharacter.CareerKarma >= Convert.ToInt32(strNodeInnerText);
                     }
                 case "critterpower":
@@ -1492,7 +1581,7 @@ namespace Chummer
                         }
                         if (blnShowMessage)
                         {
-                            string strTranslate = XmlManager.Load("critterpowers.xml").SelectSingleNode($"/chummer/powers/power[name = \"{strNodeInnerText}\"]/translate")?.InnerText;
+                            string strTranslate = XmlManager.Load("critterpowers.xml").SelectSingleNode($"/chummer/powers/power[name = {strNodeInnerText.CleanXPath()}]/translate")?.InnerText;
                             strName = !string.IsNullOrEmpty(strTranslate)
                                 ? $"{Environment.NewLine}\t{strTranslate} ({LanguageManager.GetString("Tab_Critter", GlobalOptions.Language)})"
                                 : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("Tab_Critter", GlobalOptions.Language)})";
@@ -1504,7 +1593,7 @@ namespace Chummer
                         int count = Convert.ToInt32(xmlNode.SelectSingleNode("@count")?.Value ?? "1");
                         if (blnShowMessage)
                         {
-                            string strTranslate = XmlManager.Load("bioware.xml").SelectSingleNode($"/chummer/biowares/bioware[name = \"{strNodeInnerText}\"]/translate")?.InnerText;
+                            string strTranslate = XmlManager.Load("bioware.xml").SelectSingleNode($"/chummer/biowares/bioware[name = {strNodeInnerText.CleanXPath()}]/translate")?.InnerText;
                             strName = !string.IsNullOrEmpty(strTranslate)
                                 ? $"{Environment.NewLine}\t{LanguageManager.GetString("Label_Bioware", GlobalOptions.Language)} {strTranslate}"
                                 : $"{Environment.NewLine}\t{LanguageManager.GetString("Label_Bioware", GlobalOptions.Language)} {strNodeInnerText}";
@@ -1519,7 +1608,7 @@ namespace Chummer
                         int count = Convert.ToInt32(xmlNode.SelectSingleNode("@count")?.Value ?? "1");
                         if (blnShowMessage)
                         {
-                            string strTranslate = XmlManager.Load("cyberware.xml").SelectSingleNode($"/chummer/cyberwares/cyberware[name = \"{strNodeInnerText}\"]/translate")?.InnerText;
+                            string strTranslate = XmlManager.Load("cyberware.xml").SelectSingleNode($"/chummer/cyberwares/cyberware[name = {strNodeInnerText.CleanXPath()}]/translate")?.InnerText;
                             strName = !string.IsNullOrEmpty(strTranslate)
                                 ? $"{Environment.NewLine}\t{LanguageManager.GetString("Label_Cyberware", GlobalOptions.Language)} {strTranslate}"
                                 : $"{Environment.NewLine}\t{LanguageManager.GetString("Label_Cyberware", GlobalOptions.Language)} {strNodeInnerText}";
@@ -1534,7 +1623,7 @@ namespace Chummer
                         int count = Convert.ToInt32(xmlNode.SelectSingleNode("@count")?.Value ?? "1");
                         if (blnShowMessage)
                         {
-                            string strTranslate = XmlManager.Load("bioware.xml").SelectSingleNode($"/chummer/biowares/bioware[name = \"{strNodeInnerText}\"]/translate")?.InnerText;
+                            string strTranslate = XmlManager.Load("bioware.xml").SelectSingleNode($"/chummer/biowares/bioware[name = {strNodeInnerText.CleanXPath()}]/translate")?.InnerText;
                             strName = !string.IsNullOrEmpty(strTranslate)
                                 ? $"{Environment.NewLine}\t{LanguageManager.GetString("Label_Bioware", GlobalOptions.Language)} {strTranslate}"
                                 : $"{Environment.NewLine}\t{LanguageManager.GetString("Label_Bioware", GlobalOptions.Language)} {strNodeInnerText}";
@@ -1549,7 +1638,7 @@ namespace Chummer
                         int count = Convert.ToInt32(xmlNode.SelectSingleNode("@count")?.Value ?? "1");
                         if (blnShowMessage)
                         {
-                            string strTranslate = XmlManager.Load("cyberware.xml").SelectSingleNode($"/chummer/cyberwares/cyberware[name = \"{strNodeInnerText}\"]/translate")?.InnerText;
+                            string strTranslate = XmlManager.Load("cyberware.xml").SelectSingleNode($"/chummer/cyberwares/cyberware[name = {strNodeInnerText.CleanXPath()}]/translate")?.InnerText;
                             strName = !string.IsNullOrEmpty(strTranslate)
                                 ? $"{Environment.NewLine}\t{LanguageManager.GetString("Label_Cyberware", GlobalOptions.Language)} {strTranslate}"
                                 : $"{Environment.NewLine}\t{LanguageManager.GetString("Label_Cyberware", GlobalOptions.Language)} {strNodeInnerText}";
@@ -1568,32 +1657,33 @@ namespace Chummer
                     }
                 case "ess":
                     {
-                        string objEssNodeGradeAttributeText = xmlNode.SelectSingleNode("@grade")?.Value ?? string.Empty;
-                        if (!string.IsNullOrEmpty(objEssNodeGradeAttributeText))
+                        string strEssNodeGradeAttributeText = xmlNode.SelectSingleNode("@grade")?.Value ?? string.Empty;
+                        if (!string.IsNullOrEmpty(strEssNodeGradeAttributeText))
                         {
+                            HashSet<string> setEssNodeGradeAttributeText = new HashSet<string>(strEssNodeGradeAttributeText.Split(','));
                             decimal decGrade =
                                 objCharacter.Cyberware.Where(
                                         objCyberware =>
-                                            objCyberware.Grade.Name.Contains(objEssNodeGradeAttributeText))
+                                            setEssNodeGradeAttributeText.Any(func => objCyberware.Grade.Name.Contains(func)))
                                     .AsParallel().Sum(objCyberware => objCyberware.CalculatedESS());
                             if (strNodeInnerText.StartsWith('-'))
                             {
                                 // Essence must be less than the value.
                                 if (blnShowMessage)
                                     strName = Environment.NewLine + '\t' +
-                                       LanguageManager.GetString("Message_SelectQuality_RequireESSGradeBelow", GlobalOptions.Language)
-                                           .Replace("{0}", strNodeInnerText)
-                                           .Replace("{1}", objEssNodeGradeAttributeText)
-                                           .Replace("{2}", decGrade.ToString(GlobalOptions.InvariantCultureInfo));
+                                              string.Format(LanguageManager.GetString("Message_SelectQuality_RequireESSGradeBelow", GlobalOptions.Language)
+                                                  , strNodeInnerText
+                                                  , strEssNodeGradeAttributeText
+                                                  , decGrade.ToString(GlobalOptions.CultureInfo));
                                 return decGrade < Convert.ToDecimal(strNodeInnerText.TrimStart('-'), GlobalOptions.InvariantCultureInfo);
                             }
                             // Essence must be equal to or greater than the value.
                             if (blnShowMessage)
                                 strName = Environment.NewLine + '\t' +
-                                   LanguageManager.GetString("Message_SelectQuality_RequireESSGradeAbove", GlobalOptions.Language)
-                                       .Replace("{0}", strNodeInnerText)
-                                       .Replace("{1}", objEssNodeGradeAttributeText)
-                                       .Replace("{2}", decGrade.ToString(GlobalOptions.InvariantCultureInfo));
+                                          string.Format(LanguageManager.GetString("Message_SelectQuality_RequireESSAbove", GlobalOptions.Language)
+                                              , strNodeInnerText
+                                              , strEssNodeGradeAttributeText
+                                              , decGrade.ToString(GlobalOptions.CultureInfo));
                             return decGrade >= Convert.ToDecimal(strNodeInnerText, GlobalOptions.InvariantCultureInfo);
                         }
                         // Check Essence requirement.
@@ -1602,17 +1692,17 @@ namespace Chummer
                             // Essence must be less than the value.
                             if (blnShowMessage)
                                 strName = Environment.NewLine + '\t' +
-                                   LanguageManager.GetString("Message_SelectQuality_RequireESSBelow", GlobalOptions.Language)
-                                       .Replace("{0}", strNodeInnerText)
-                                       .Replace("{1}", objCharacter.Essence().ToString(GlobalOptions.InvariantCultureInfo));
+                                          string.Format(LanguageManager.GetString("Message_SelectQuality_RequireESSBelow", GlobalOptions.Language)
+                                              , strNodeInnerText
+                                              , objCharacter.Essence().ToString(GlobalOptions.CultureInfo));
                             return objCharacter.Essence() < Convert.ToDecimal(strNodeInnerText.TrimStart('-'), GlobalOptions.InvariantCultureInfo);
                         }
                         // Essence must be equal to or greater than the value.
                         if (blnShowMessage)
                             strName = Environment.NewLine + '\t' +
-                               LanguageManager.GetString("Message_SelectQuality_RequireESSAbove", GlobalOptions.Language)
-                                   .Replace("{0}", strNodeInnerText)
-                                   .Replace("{1}", objCharacter.Essence().ToString(GlobalOptions.InvariantCultureInfo));
+                                      string.Format(LanguageManager.GetString("Message_SelectQuality_RequireESSAbove", GlobalOptions.Language)
+                                          , strNodeInnerText
+                                          , objCharacter.Essence().ToString(GlobalOptions.CultureInfo));
                         return objCharacter.Essence() >= Convert.ToDecimal(strNodeInnerText, GlobalOptions.InvariantCultureInfo);
                     }
                 case "echo":
@@ -1626,10 +1716,46 @@ namespace Chummer
                         }
                         if (blnShowMessage)
                         {
-                            string strTranslate = XmlManager.Load("echoes.xml").SelectSingleNode($"/chummer/echoes/echo[name = \"{strNodeInnerText}\"]/translate")?.InnerText;
+                            string strTranslate = XmlManager.Load("echoes.xml").SelectSingleNode($"/chummer/echoes/echo[name = {strNodeInnerText.CleanXPath()}]/translate")?.InnerText;
                             strName = !string.IsNullOrEmpty(strTranslate)
                                 ? $"{Environment.NewLine}\t{strTranslate} ({LanguageManager.GetString("String_Echo", GlobalOptions.Language)})"
                                 : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_Echo", GlobalOptions.Language)})";
+                        }
+                        return false;
+                    }
+                case "gear":
+                    {
+                        Gear objGear = objCharacter.Gear.FirstOrDefault(x => x.Name == strNodeInnerText);
+                        //TODO: Probably a better way to handle minrating/rating/maxrating but eh, YAGNI.
+                        
+                        if (xmlNode.SelectSingleNode("@minrating")?.Value != null)
+                        {
+                            int rating = Convert.ToInt32(xmlNode.SelectSingleNode("@minrating")?.Value);
+                            objGear = objCharacter.Gear.FirstOrDefault(x => x.Name == strNodeInnerText && x.Rating >= rating);
+                        }
+                        else if (xmlNode.SelectSingleNode("@rating")?.Value != null)
+                        {
+                            int rating = Convert.ToInt32(xmlNode.SelectSingleNode("@rating")?.Value);
+                            objGear = objCharacter.Gear.FirstOrDefault(x => x.Name == strNodeInnerText && x.Rating == rating);
+                        }
+                        else if (xmlNode.SelectSingleNode("@maxrating")?.Value != null)
+                        {
+                            int rating = Convert.ToInt32(xmlNode.SelectSingleNode("@maxrating")?.Value);
+                            objGear = objCharacter.Gear.FirstOrDefault(x => x.Name == strNodeInnerText && x.Rating <= rating);
+                        }
+                        if (objGear != null)
+                        {
+                            if (blnShowMessage)
+                                strName = objGear.DisplayNameShort(GlobalOptions.Language);
+                            return true;
+                        }
+                        if (blnShowMessage)
+                        {
+                            // Character needs a specific Martial Art.
+                            string strTranslate = XmlManager.Load("gear.xml").SelectSingleNode($"/chummer/gears/gear[name = {strNodeInnerText.CleanXPath()}]/translate")?.InnerText;
+                            strName = !string.IsNullOrEmpty(strTranslate)
+                                ? $"{Environment.NewLine}\t{strTranslate} ({LanguageManager.GetString("String_Gear", GlobalOptions.Language)})"
+                                : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_Gear", GlobalOptions.Language)})";
                         }
                         return false;
                     }
@@ -1694,7 +1820,7 @@ namespace Chummer
                         if (blnShowMessage)
                         {
                             // Character needs a specific Martial Art.
-                            string strTranslate = XmlManager.Load("martialarts.xml").SelectSingleNode($"/chummer/martialarts/martialart[name = \"{strNodeInnerText}\"]/translate")?.InnerText;
+                            string strTranslate = XmlManager.Load("martialarts.xml").SelectSingleNode($"/chummer/martialarts/martialart[name = {strNodeInnerText.CleanXPath()}]/translate")?.InnerText;
                             strName = !string.IsNullOrEmpty(strTranslate)
                                 ? $"{Environment.NewLine}\t{strTranslate} ({LanguageManager.GetString("String_MartialArt", GlobalOptions.Language)})"
                                 : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_MartialArt", GlobalOptions.Language)})";
@@ -1716,7 +1842,7 @@ namespace Chummer
                         if (blnShowMessage)
                         {
                             // Character needs a specific Martial Arts technique.
-                            string strTranslate = XmlManager.Load("martialarts.xml").SelectSingleNode($"/chummer/techniques/technique[name = \"{strNodeInnerText}\"]/translate")?.InnerText;
+                            string strTranslate = XmlManager.Load("martialarts.xml").SelectSingleNode($"/chummer/techniques/technique[name = {strNodeInnerText.CleanXPath()}]/translate")?.InnerText;
                             strName = !string.IsNullOrEmpty(strTranslate)
                                 ? $"{Environment.NewLine}\t{strTranslate} ({LanguageManager.GetString("String_MartialArt", GlobalOptions.Language)})"
                                 : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_MartialArt", GlobalOptions.Language)})";
@@ -1734,7 +1860,7 @@ namespace Chummer
                         }
                         if (blnShowMessage)
                         {
-                            string strTranslate = XmlManager.Load("metamagic.xml").SelectSingleNode($"/chummer/metamagics/metamagic[name = \"{strNodeInnerText}\"]/translate")?.InnerText;
+                            string strTranslate = XmlManager.Load("metamagic.xml").SelectSingleNode($"/chummer/metamagics/metamagic[name = {strNodeInnerText.CleanXPath()}]/translate")?.InnerText;
                             strName = !string.IsNullOrEmpty(strTranslate)
                                 ? $"{Environment.NewLine}\t{strTranslate} ({LanguageManager.GetString("String_Metamagic", GlobalOptions.Language)})"
                                 : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_Metamagic", GlobalOptions.Language)})";
@@ -1743,66 +1869,102 @@ namespace Chummer
                     }
                 case "metamagicart":
                 case "art":
+                {
+                    // Street Grimoire adds High Arts, which group metamagics and such together. If we're ignoring this requirement 
+                    if (objCharacter.Options.IgnoreArt)
                     {
-                        if (objCharacter.Options.IgnoreArt)
+                        // If we're looking for an art, return true. 
+                        if (xmlNode.Name == "art")
                         {
-                            XPathNavigator xmlMetamagicDoc = XmlManager.Load("metamagic.xml").GetFastNavigator().SelectSingleNode("/chummer");
-                            if (blnShowMessage)
-                            {
-                                string strTranslateArt = xmlMetamagicDoc?.SelectSingleNode($"arts/art[name = \"{strNodeInnerText}\"]/translate")?.Value;
-                                strName = !string.IsNullOrEmpty(strTranslateArt)
-                                    ? $"{Environment.NewLine}\t{strTranslateArt} ({LanguageManager.GetString("String_Art", GlobalOptions.Language)})"
-                                    : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_Art", GlobalOptions.Language)})";
-                            }
-                            if (xmlNode.Name == "art")
-                            {
-                                return true;
-                            }
+                            return true;
+                        }
 
-                            if (xmlMetamagicDoc != null)
+                        XPathNavigator xmlMetamagicDoc = XmlManager.Load("metamagic.xml").GetFastNavigator()
+                            .SelectSingleNode("/chummer");
+                        if (blnShowMessage)
+                        {
+                            string strTranslateArt = xmlMetamagicDoc
+                                ?.SelectSingleNode($"arts/art[name = {strNodeInnerText.CleanXPath()}]/translate")?.Value;
+                            strName = !string.IsNullOrEmpty(strTranslateArt)
+                                ? $"{Environment.NewLine}\t{strTranslateArt} ({LanguageManager.GetString("String_Art", GlobalOptions.Language)})"
+                                : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_Art", GlobalOptions.Language)})";
+                        }
+
+                        if (xmlMetamagicDoc != null)
+                        {
+                            // Loop through the data file for each metamagic to find the Required and Forbidden nodes. 
+                            foreach (Metamagic metamagic in objCharacter.Metamagics)
                             {
-                                foreach (Metamagic metamagic in objCharacter.Metamagics)
+                                XPathNavigator xmlMetamagicNode =
+                                    xmlMetamagicDoc.SelectSingleNode(
+                                        $"metamagics/metamagic[name = {metamagic.Name.CleanXPath()}]");
+                                if (xmlMetamagicNode != null)
                                 {
-                                    XPathNavigator xmlMetamagicNode = xmlMetamagicDoc.SelectSingleNode($"metamagics/metamagic[name = \"{metamagic.Name}\"]");
-                                    if (xmlMetamagicNode != null)
+                                    if (xmlMetamagicNode.SelectSingleNode(
+                                            $"required/art[text() = {strNodeInnerText.CleanXPath()}]") != null)
                                     {
-                                        if (xmlMetamagicNode.SelectSingleNode($"required/art[text() = \"{strNodeInnerText}\"]") != null)
-                                        {
-                                            return true;
-                                        }
-
-                                        if (xmlMetamagicNode.SelectSingleNode($"forbidden/art[text() = \"{strNodeInnerText}\"]") != null)
-                                        {
-                                            return false;
-                                        }
+                                        return true;
                                     }
+
+                                    if (xmlMetamagicNode.SelectSingleNode(
+                                            $"forbidden/art[text() = {strNodeInnerText.CleanXPath()}]") != null)
+                                    {
+                                        return false;
+                                    }
+                                }
+                                else
+                                {
+                                    // We couldn't find a metamagic with this name, so it's probably an art. Try and find the node.
+                                    // If we can't, it's probably a data entry error. 
+                                    xmlMetamagicNode =
+                                        xmlMetamagicDoc.SelectSingleNode($"arts/art[name = {metamagic.Name.CleanXPath()}]");
+                                    if (xmlMetamagicNode == null)
+                                        Utils.BreakIfDebug();
+                                    else
+                                        return true;
                                 }
                             }
                         }
-                        else
+
+                        return true;
+                    }
+                    else
+                    {
+                        Art objArt = objCharacter.Arts.FirstOrDefault(x => x.Name == strNodeInnerText);
+                        if (objArt != null)
                         {
-                            Art objArt = objCharacter.Arts.FirstOrDefault(x => x.Name == strNodeInnerText);
-                            if (objArt != null)
+                            if (blnShowMessage)
+                                strName = objArt.DisplayNameShort(GlobalOptions.Language);
+                            return true;
+                        }
+
+                        // In some cases, we want to proxy metamagics for arts. If we haven't found a match yet, check it here. 
+                        if (xmlNode.Name == "metamagicart")
+                        {
+                            Metamagic objMetamagic =
+                                objCharacter.Metamagics.FirstOrDefault(x => x.Name == strNodeInnerText);
+                            if (objMetamagic != null)
                             {
                                 if (blnShowMessage)
-                                    strName = objArt.DisplayNameShort(GlobalOptions.Language);
+                                    strName = objMetamagic.DisplayNameShort(GlobalOptions.Language);
                                 return true;
                             }
                         }
-                        if (blnShowMessage)
-                        {
-                            string strTranslate = XmlManager.Load("metamagic.xml").SelectSingleNode($"/chummer/arts/art[name = \"{strNodeInnerText}\"]/translate")?.InnerText;
-                            strName = !string.IsNullOrEmpty(strTranslate)
-                                ? $"{Environment.NewLine}\t{strTranslate} ({LanguageManager.GetString("String_Art", GlobalOptions.Language)})"
-                                : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_Art", GlobalOptions.Language)})";
-                        }
+
+                        if (!blnShowMessage) return false;
+                        string strTranslate = XmlManager.Load("metamagic.xml")
+                            .SelectSingleNode($"/chummer/arts/art[name = {strNodeInnerText.CleanXPath()}]/translate")?.InnerText;
+                        strName = !string.IsNullOrEmpty(strTranslate)
+                            ? $"{Environment.NewLine}\t{strTranslate} ({LanguageManager.GetString("String_Art", GlobalOptions.Language)})"
+                            : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_Art", GlobalOptions.Language)})";
                         return false;
                     }
+                }
                 case "metatype":
                     {
                         if (blnShowMessage)
                         {
-                            string strXPathFilter = $"/chummer/metatypes/metatype[name = \"{strNodeInnerText}\"]/translate";
+                            string strXPathFilter = $"/chummer/metatypes/metatype[name = {strNodeInnerText.CleanXPath()}]/translate";
                             // Check the Metatype restriction.
                             string strTranslate = XmlManager.Load("metatypes.xml").SelectSingleNode(strXPathFilter)?.InnerText ??
                                                     XmlManager.Load("critters.xml").SelectSingleNode(strXPathFilter)?.InnerText;
@@ -1816,7 +1978,7 @@ namespace Chummer
                     {
                         if (blnShowMessage)
                         {
-                            string strXPathFilter = $"/chummer/categories/category[. = \"{strNodeInnerText}\"]/@translate";
+                            string strXPathFilter = $"/chummer/categories/category[text() = {strNodeInnerText.CleanXPath()}]/@translate";
                             // Check the Metatype Category restriction.
                             string strTranslate = XmlManager.Load("metatypes.xml").SelectSingleNode(strXPathFilter)?.InnerText ??
                                                     XmlManager.Load("critters.xml").SelectSingleNode(strXPathFilter)?.InnerText;
@@ -1830,7 +1992,7 @@ namespace Chummer
                     {
                         if (blnShowMessage)
                         {
-                            string strXPathFilter = $"/chummer/metatypes/metatype/metavariants/metavariant[name = \"{strNodeInnerText}\"]/translate";
+                            string strXPathFilter = $"/chummer/metatypes/metatype/metavariants/metavariant[name = {strNodeInnerText.CleanXPath()}]/translate";
                             // Check the Metavariant restriction.
                             string strTranslate = XmlManager.Load("metatypes.xml").SelectSingleNode(strXPathFilter)?.InnerText ??
                                                     XmlManager.Load("critters.xml").SelectSingleNode(strXPathFilter)?.InnerText;
@@ -1852,13 +2014,23 @@ namespace Chummer
                         }
                         if (blnShowMessage)
                         {
-                            string strTranslate = XmlManager.Load("powers.xml").SelectSingleNode($"/chummer/powers/power[name = \"{strNodeInnerText}\"]/translate")?.InnerText;
+                            string strTranslate = XmlManager.Load("powers.xml").SelectSingleNode($"/chummer/powers/power[name = {strNodeInnerText.CleanXPath()}]/translate")?.InnerText;
                             strName = !string.IsNullOrEmpty(strTranslate)
                                 ? $"{Environment.NewLine}\t{strTranslate} ({LanguageManager.GetString("Tab_Adept", GlobalOptions.Language)})"
                                 : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("Tab_Adept", GlobalOptions.Language)})";
                         }
                         return false;
                     }
+                case "program":
+                {
+                    // Character needs a specific Program.
+                    if (!blnShowMessage) return objCharacter.AIPrograms.Any(p => p.Name == strNodeInnerText);
+                    string strTranslate = XmlManager.Load("programs.xml").SelectSingleNode($"/chummer/programs/program[name = {strNodeInnerText.CleanXPath()}]/translate")?.InnerText;
+                    strName = !string.IsNullOrEmpty(strTranslate)
+                        ? $"{Environment.NewLine}\t{strTranslate} ({LanguageManager.GetString("String_Program", GlobalOptions.Language)})"
+                        : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_Program", GlobalOptions.Language)})";
+                    return objCharacter.AIPrograms.Any(p => p.Name == strNodeInnerText);
+                }
                 case "quality":
                 {
                     string strExtra = xmlNode.SelectSingleNode("@extra")?.Value;
@@ -1872,7 +2044,7 @@ namespace Chummer
                             return true;
                         }
                         if (!blnShowMessage) return false;
-                        string strTranslate = XmlManager.Load("qualities.xml").SelectSingleNode($"/chummer/qualities/quality[name = \"{strNodeInnerText}\"]/translate")?.InnerText;
+                        string strTranslate = XmlManager.Load("qualities.xml").SelectSingleNode($"/chummer/qualities/quality[name = {strNodeInnerText.CleanXPath()}]/translate")?.InnerText;
                         strName = !string.IsNullOrEmpty(strTranslate)
                             ? $"{Environment.NewLine}\t{strTranslate} ({LanguageManager.GetString("String_Quality", GlobalOptions.Language)})"
                             : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_Quality", GlobalOptions.Language)})";
@@ -1916,7 +2088,7 @@ namespace Chummer
                                 Skill objSkill = objCharacter.SkillsSection.GetActiveSkill(strNodeName);
                                 // Exotic Skill
                                 if (objSkill == null && !string.IsNullOrEmpty(strSpec))
-                                    objSkill = objCharacter.SkillsSection.GetActiveSkill(strNodeName + " (" + strSpec + ")");
+                                    objSkill = objCharacter.SkillsSection.GetActiveSkill(strNodeName + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + strSpec + ')');
                                 if (objSkill != null && (xmlNode.SelectSingleNode("spec") == null || objSkill.Specializations.Any(objSpec => objSpec.Name == strSpec)) && objSkill.TotalBaseRating >= intValue)
                                 {
                                     if (blnShowMessage)
@@ -1938,9 +2110,10 @@ namespace Chummer
                         if (blnShowMessage)
                         {
                             XmlDocument xmlSkillDoc = XmlManager.Load("skills.xml");
-                            string strTranslate = xmlSkillDoc.SelectSingleNode($"/chummer/skills/skill[name = \"{strNodeInnerText}\"]/translate")?.InnerText ??
-                                                    xmlSkillDoc.SelectSingleNode($"/chummer/knowledgeskills/skill[name = \"{strNodeInnerText}\"]/translate")?.InnerText;
-                            strName = !string.IsNullOrEmpty(strTranslate) ? $"{Environment.NewLine}\t{strTranslate}" : $"{Environment.NewLine}\t{strNodeInnerText}";
+                            string strSkillName = xmlNode.SelectSingleNode("name")?.Value;
+                            string strTranslate = xmlSkillDoc.SelectSingleNode($"/chummer/skills/skill[name = {strSkillName.CleanXPath()}]/translate")?.InnerText ??
+                                                    xmlSkillDoc.SelectSingleNode($"/chummer/knowledgeskills/skill[name = {strSkillName.CleanXPath()}]/translate")?.InnerText;
+                            strName = !string.IsNullOrEmpty(strTranslate) ? $"{Environment.NewLine}\t{strTranslate}" : $"{Environment.NewLine}\t{xmlNode.SelectSingleNode("name")?.Value}";
                             if (!string.IsNullOrEmpty(strSpec))
                             {
                                 strName += $" ({strSpec})";
@@ -1996,7 +2169,7 @@ namespace Chummer
                         if (blnShowMessage)
                         {
                             // Check for a specific Spell.
-                            string strTranslate = XmlManager.Load("spells.xml").SelectSingleNode($"/chummer/spells/spell[name = \"{strNodeInnerText}\"]/translate")?.InnerText;
+                            string strTranslate = XmlManager.Load("spells.xml").SelectSingleNode($"/chummer/spells/spell[name = {strNodeInnerText.CleanXPath()}]/translate")?.InnerText;
                             strName = !string.IsNullOrEmpty(strTranslate)
                                 ? $"{Environment.NewLine}\t{strTranslate} ({LanguageManager.GetString("String_DescSpell", GlobalOptions.Language)})"
                                 : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_DescSpell", GlobalOptions.Language)})";
@@ -2042,12 +2215,12 @@ namespace Chummer
                         // Character needs a specific Tradition.
                         if (blnShowMessage)
                         {
-                            string strTranslate = XmlManager.Load("traditions.xml").SelectSingleNode($"/chummer/traditions/tradition[name = \"{strNodeInnerText}\"]/translate")?.InnerText;
+                            string strTranslate = XmlManager.Load("traditions.xml").SelectSingleNode($"/chummer/traditions/tradition[name = {strNodeInnerText.CleanXPath()}]/translate")?.InnerText;
                             strName = !string.IsNullOrEmpty(strTranslate)
                                 ? $"{Environment.NewLine}\t{strTranslate} ({LanguageManager.GetString("String_Tradition", GlobalOptions.Language)})"
                                 : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_Tradition", GlobalOptions.Language)})";
                         }
-                        return objCharacter.MagicTradition == strNodeInnerText;
+                        return objCharacter.MagicTradition.Name == strNodeInnerText;
                     }
                 default:
                     Utils.BreakIfDebug();
@@ -2063,7 +2236,7 @@ namespace Chummer
             if (objXmlGear == null)
                 return false;
             //TODO: Better handler for restricted gear
-            if (objCharacter.Created || objCharacter.RestrictedGear || objCharacter.IgnoreRules)
+            if (objCharacter.Created || objCharacter.RestrictedGear > 0 || objCharacter.IgnoreRules)
                 return true;
             // Avail.
 
@@ -2116,27 +2289,27 @@ namespace Chummer
             return intAvail <= objCharacter.MaximumAvailability;
         }
 
-        public static bool CheckNuyenRestriction(XPathNavigator objXmlGear, decimal decMaxNuyen, decimal decCostMultiplier = 1.0m)
+        public static bool CheckNuyenRestriction(XPathNavigator objXmlGear, decimal decMaxNuyen, decimal decCostMultiplier = 1.0m, int intRating = 1)
         {
             // Cost.
             decimal decCost = 0.0m;
             XPathNavigator objCostNode = objXmlGear.SelectSingleNode("cost");
-            int intRating = 1;
             if (objCostNode == null)
             {
-                intRating = int.MaxValue;
-                foreach (XPathNavigator objLoopNode in objXmlGear.SelectChildren(XPathNodeType.Element))
+                int intCostRating = 1;
+                foreach (XmlNode objLoopNode in objXmlGear.SelectChildren(XPathNodeType.Element))
                 {
                     if (objLoopNode.Name.StartsWith("cost"))
                     {
                         string strLoopCostString = objLoopNode.Name.Substring(4);
-                        if (int.TryParse(strLoopCostString, out int intTmp))
+                        if (int.TryParse(strLoopCostString, out int intTmp) && intTmp <= intRating)
                         {
-                            intRating = Math.Min(intRating, intTmp);
+                            intCostRating = Math.Max(intCostRating, intTmp);
                         }
                     }
                 }
-                objCostNode = objXmlGear.SelectSingleNode("cost" + intRating.ToString(GlobalOptions.InvariantCultureInfo));
+                
+                objCostNode = objXmlGear.SelectSingleNode("cost" + intCostRating.ToString(GlobalOptions.InvariantCultureInfo));
             }
             string strCost = objCostNode?.Value;
             if (!string.IsNullOrEmpty(strCost))

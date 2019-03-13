@@ -28,7 +28,7 @@ using System.Xml;
 namespace Chummer.Backend.Equipment
 {
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class LifestyleQuality : IHasInternalId, IHasName, IHasXmlNode, IHasNotes
+    public class LifestyleQuality : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, IHasSource
     {
         private Guid _guiID;
         private Guid _SourceGuid;
@@ -92,7 +92,7 @@ namespace Chummer.Backend.Equipment
         }
     #endregion
 
-    #region Constructor, Create, Save, Load, and Print Methods
+        #region Constructor, Create, Save, Load, and Print Methods
     public LifestyleQuality(Character objCharacter)
         {
             // Create the GUID for the new LifestyleQuality.
@@ -166,6 +166,10 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        private SourceString _objCachedSourceDetail;
+        public SourceString SourceDetail => _objCachedSourceDetail ?? (_objCachedSourceDetail =
+                                                new SourceString(Source, Page(GlobalOptions.Language), GlobalOptions.Language));
+
         /// <summary>
         /// Save the object's XML to the XmlWriter.
         /// </summary>
@@ -195,7 +199,9 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteElementString("bonus", string.Empty);
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteEndElement();
-            _objCharacter.SourceProcess(_strSource);
+
+            if (OriginSource != QualitySource.BuiltIn)
+                _objCharacter.SourceProcess(_strSource);
         }
 
         /// <summary>
@@ -242,7 +248,7 @@ namespace Chummer.Backend.Equipment
             _lstAllowedFreeLifestyles = strAllowedFreeLifestyles.Split(',').ToList();
             _nodBonus = objNode["bonus"];
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
-
+            
             LegacyShim();
         }
 
@@ -269,7 +275,7 @@ namespace Chummer.Backend.Equipment
                     frmSelectItem frmSelect = new frmSelectItem
                     {
                         GeneralItems = lstQualities,
-                        Description = LanguageManager.GetString("String_CannotFindLifestyleQuality", GlobalOptions.Language).Replace("{0}", _strName)
+                        Description = string.Format(LanguageManager.GetString("String_CannotFindLifestyleQuality", GlobalOptions.Language), _strName)
                     };
                     frmSelect.ShowDialog();
                     if (frmSelect.DialogResult == DialogResult.Cancel)
@@ -314,6 +320,7 @@ namespace Chummer.Backend.Equipment
                 return;
             objWriter.WriteStartElement("quality");
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
+            objWriter.WriteElementString("fullname", DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("formattedname", FormattedDisplayName(objCulture, strLanguageToPrint));
             objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(Extra, strLanguageToPrint));
             objWriter.WriteElementString("lp", LP.ToString(objCulture));
@@ -335,7 +342,7 @@ namespace Chummer.Backend.Equipment
         }
 #endregion
 
-#region Properties
+        #region Properties
         /// <summary>
         /// Internal identifier which will be used to identify this LifestyleQuality in the Improvement system.
         /// </summary>
@@ -466,12 +473,16 @@ namespace Chummer.Backend.Equipment
             }
             else if (Multiplier < 0)
             {
-                strReturn += $" [-{Multiplier}%]";
+                strReturn += $" [{Multiplier}%]";
             }
 
             if (Cost > 0)
             {
                 strReturn += " [+" + Cost.ToString(_objCharacter.Options.NuyenFormat, objCulture) + "¥]";
+            }
+            else if (Cost < 0)
+            {
+                strReturn += " [" + Cost.ToString(_objCharacter.Options.NuyenFormat, objCulture) + "¥]";
             }
             return strReturn;
         }
@@ -666,5 +677,12 @@ namespace Chummer.Backend.Equipment
             }
         }
         #endregion
+
+        public void SetSourceDetail(Control sourceControl)
+        {
+            if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
+                _objCachedSourceDetail = null;
+            SourceDetail.SetControl(sourceControl);
+        }
     }
 }

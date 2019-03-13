@@ -37,9 +37,6 @@ namespace Translator
         private bool _blnLoading;
         private readonly XmlDocument _objDataDoc = new XmlDocument();
         private readonly XmlDocument _objTranslationDoc = new XmlDocument();
-        private readonly string _strCode;
-        private readonly string _strLanguage;
-        private readonly string _strPath;
         private readonly BackgroundWorker _workerSectionLoader = new BackgroundWorker();
         private bool _blnQueueSectionLoaderRun;
         private readonly string[] _strSectionLoaderArgs = new string[2];
@@ -54,10 +51,10 @@ namespace Translator
 
         public frmTranslate(string strLanguage)
         {
-            _strPath = Application.StartupPath;
-            _strLanguage = strLanguage;
+            ApplicationPath = Application.StartupPath;
+            Language = strLanguage;
             // ReSharper disable once StringIndexOfIsCultureSpecific.1
-            _strCode = Language.Substring(Language.IndexOf('(') + 1, 5).ToLower();
+            Code = Language.Substring(Language.IndexOf('(') + 1, 5).ToLower();
 
             InitializeComponent();
 
@@ -629,11 +626,9 @@ namespace Translator
 
                             if (!blnTranslated || !chkOnlyTranslation.Checked)
                             {
-                                object[] objArray;
-                                if (blnHasNameOnPage)
-                                    objArray = new object[] {strId, strName, strTranslated, strSource, strPage, blnTranslated, strNameOnPage};
-                                else
-                                    objArray = new object[] {strId, strName, strTranslated, strSource, strPage, blnTranslated};
+                                object[] objArray = blnHasNameOnPage
+                                    ? new object[] {strId, strName, strTranslated, strSource, strPage, blnTranslated, strNameOnPage}
+                                    : new object[] {strId, strName, strTranslated, strSource, strPage, blnTranslated};
                                 lock (arrayRowsToDisplayLock)
                                     arrayRowsToDisplay[i] = objArray;
                             }
@@ -800,11 +795,11 @@ namespace Translator
 
         #region Properties
 
-        public string Language => _strLanguage;
+        public string Language { get; }
 
-        public string Code => _strCode;
+        public string Code { get; }
 
-        public string ApplicationPath => _strPath;
+        public string ApplicationPath { get; }
 
         #endregion
     }

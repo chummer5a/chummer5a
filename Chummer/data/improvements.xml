@@ -22,6 +22,17 @@
   <version>0</version>
   <improvements>
     <improvement>
+      <name>Action Dice-Pool Modifier</name>
+      <id>actiondicepool</id>
+      <internal>actiondicepool</internal>
+      <fields>
+        <field>SelectActionDicePool</field>
+        <field>val</field>
+      </fields>
+      <xml><![CDATA[<name>{select}</name><<val>{val}</val>]]></xml>
+      <page>Adjusts the number of boxes the character has in their Stun Condition Monitor. Positive numbers increase the number of boxes in the Condition Monitor. Negative numbers reduce the number of boxes in the Condition Monitor.</page>
+    </improvement>
+    <improvement>
       <name>Enable Special Attribute</name>
       <id>enableattribute</id>
       <internal>enableattribute</internal>
@@ -76,13 +87,6 @@
       <internal>disabletab</internal>
       <xml><![CDATA[<name>initiation</name>]]></xml>
       <page>Forcibly disables the character's Initiation or Submersion tab, forbidding them from getting metamagics or echoes.</page>
-    </improvement>
-    <improvement>
-      <name>Enable Spells and Spirits Tab</name>
-      <id>enablemagiciantab</id>
-      <internal>enabletab</internal>
-      <xml><![CDATA[<name>magician</name>]]></xml>
-      <page>Enables the character's Spells and Spirits tab, allowing them to buy spells and bind spirits. The character is flagged as a Magician, but does not receive access to the Initiation tab, unlock their Magic attribute or receive any of the Magical skills.</page>
     </improvement>
     <improvement>
       <name>Enable Critter Tab</name>
@@ -312,24 +316,14 @@
       <page>Adjusts the value for all of the Skills linked to an Attribute by the value entered. Positive numbers increase the Skills. Negative numbers decrease the Skills. Select a linked Attribute to affect by clicking the Select Value button. The modifier can be applied to the Skills' Ratings by selecting Apply to Rating, otherwise the modifier is applied as a dice pool modifier.</page>
     </improvement>
     <improvement>
-      <name>Armor, Ballistic</name>
-      <id>armorb</id>
+      <name>Armor</name>
+      <id>armor</id>
       <internal>armor</internal>
       <fields>
         <field>val</field>
       </fields>
-      <xml><![CDATA[<b>{val}</b>]]></xml>
-      <page>Adjusts the character's Ballistic Armor Rating by the value entered. Positive numbers improve Ballistic Armor. Negative numbers reduce Ballistic Armor.</page>
-    </improvement>
-    <improvement>
-      <name>Armor, Impact</name>
-      <id>armori</id>
-      <internal>armor</internal>
-      <fields>
-        <field>val</field>
-      </fields>
-      <xml><![CDATA[<i>{val}</i>]]></xml>
-      <page>Adjusts the character's Impact Armor Rating by the value entered. Positive numbers improve Impact Armor. Negative numbers reduce Impact Armor.</page>
+      <xml><![CDATA[{val}]]></xml>
+      <page>Adjusts the character's Armor Rating by the value entered. Positive numbers improve Armor. Negative numbers reduce Armor.</page>
     </improvement>
     <improvement>
       <name>Reach</name>
@@ -703,6 +697,13 @@
       <internal>streetcred</internal>
       <xml><![CDATA[{val}]]></xml>
       <page>Increases the character's Street Cred by the listed value.</page>
+    </improvement>
+    <improvement>
+      <name>Dodge</name>
+      <id>dodge</id>
+      <internal>dodge</internal>
+      <xml><![CDATA[{val}]]></xml>
+      <page>Increases the character's Dodge pool by the listed value.</page>
     </improvement>
   </improvements>
 </chummer>

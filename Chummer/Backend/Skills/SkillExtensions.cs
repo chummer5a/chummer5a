@@ -25,22 +25,22 @@ namespace Chummer.Backend.Skills
     {
         public static int TotalCostSp(this IEnumerable<Skill> list)
         {
-            return list.Sum(skill => skill.CurrentSpCost);
+            return list.AsParallel().Sum(skill => skill.CurrentSpCost);
         }
 
         public static int TotalCostKarma(this IEnumerable<Skill> list)
         {
-            return list.Sum(skill => skill.CurrentKarmaCost);
+            return list.AsParallel().Sum(skill => skill.CurrentKarmaCost);
         }
 
         public static int TotalCostSp(this IEnumerable<SkillGroup> list)
         {
-            return list.Sum(skill => skill.CurrentSpCost);
+            return list.AsParallel().Sum(skill => skill.CurrentSpCost);
         }
 
         public static int TotalCostKarma(this IEnumerable<SkillGroup> list)
         {
-            return list.Sum(skill => skill.CurrentKarmaCost);
+            return list.AsParallel().Sum(skill => skill.CurrentKarmaCost);
         }
 
     }

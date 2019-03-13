@@ -224,11 +224,7 @@
       <avail>12</avail>
       <cost>24000</cost>
       <bonus>
-        <limitmodifier>
-          <limit>Physical</limit>
-          <value>1</value>
-          <condition>Only for Escape Artist</condition>
-        </limitmodifier>
+        <physicallimit>1</physicallimit>
         <specificskill>
           <name>Escape Artist</name>
           <bonus>1</bonus>
@@ -237,6 +233,7 @@
       <forbidden>
         <oneof>
           <cyberware>Smart Articulation</cyberware>
+          <bioware>Elastic Joints</bioware>
         </oneof>
       </forbidden>
       <source>SR5</source>
@@ -836,6 +833,13 @@
           <condition>Only for Escape Artist</condition>
         </limitmodifier>
       </bonus>
+        <forbidden>
+          <oneof>
+            <bioware>Elastic Joints</bioware>
+            <bioware>Enhanced Articulation</bioware>
+            <cyberware>Smart Articulation</cyberware>
+          </oneof>
+        </forbidden>
       <source>CF</source>
       <page>112</page>
     </bioware>
@@ -862,6 +866,7 @@
       <avail>8</avail>
       <cost>1000</cost>
       <selectside />
+      <limit>{arm}</limit>
       <bonus>
         <limitmodifier>
           <limit>Physical</limit>
@@ -879,7 +884,7 @@
       <page>113</page>
     </bioware>
     <bioware>
-      <id>11d6fbc9-c2cf-4686-8f95-ef46a83cc0ff</id>
+      <id>c60d9b5f-080b-4209-8a8e-19a76eca7a5b</id>
       <name>Hand and Foot Webbing (Feet)</name>
       <category>Basic</category>
       <ess>0.05</ess>
@@ -887,6 +892,7 @@
       <avail>8</avail>
       <cost>1000</cost>
       <selectside />
+      <limit>{leg}</limit>
       <bonus>
         <limitmodifier>
           <limit>Physical</limit>
@@ -2376,7 +2382,7 @@
       <ess>0.4</ess>
       <capacity>0</capacity>
       <avail>10</avail>
-      <cost>75000</cost>
+      <cost>73000</cost>
       <forcegrade>None</forcegrade>
       <bonus>
         <dodge>2</dodge>
@@ -2596,6 +2602,21 @@
       <cost>15000</cost>
       <bonus unique="microadaptation">
         <radiationresist>2</radiationresist>
+      </bonus>
+      <forcegrade>None</forcegrade>
+      <source>CF</source>
+      <page>164</page>
+    </bioware>
+    <bioware>
+      <id>a950129b-00a6-4445-a1b6-d82f158e83dc</id>
+      <name>Transgenic Alteration</name>
+      <category>Genemods</category>
+      <ess>0.3</ess>
+      <capacity>0</capacity>
+      <avail>10</avail>
+      <cost>Variable(30000-1000000)</cost>
+      <bonus>
+        <selecttext />
       </bonus>
       <forcegrade>None</forcegrade>
       <source>CF</source>
@@ -3641,5 +3662,35 @@
       <page>205</page>
     </bioware>
     <!-- Ende SR5 2050 -->
+    <!-- Region Kill Code -->
+    <bioware>
+      <id>b5af679d-e70d-43f3-9aa4-f3638796e948</id>
+      <name>MCT Biolink</name>
+      <category>Basic</category>
+      <ess>0.5</ess>
+      <capacity>0</capacity>
+      <avail>10</avail>
+      <cost>15000</cost>
+      <source>KC</source>
+      <page>67</page>
+    </bioware>
+    <!-- End Region -->
+    <!-- Region No Future -->
+    <!-- Region Cybersenses -->
+    <bioware>
+      <id>ac03e91f-4a00-4df7-8ab8-cd840ac5c67f</id>
+      <name>Vocal Expansion</name>
+      <limit>1</limit>
+      <category>Basic</category>
+      <ess>0.1</ess>
+      <rating>3</rating>
+      <capacity>0</capacity>
+      <avail>Rating*6</avail>
+      <cost>Rating*8000</cost>
+      <source>NF</source>
+      <page>175</page>
+    </bioware>
+    <!-- End Region -->
+    <!-- End Region -->
   </biowares>
 </chummer>

@@ -127,7 +127,7 @@ namespace Chummer
             this.cmdRegister.TabIndex = 6;
             this.cmdRegister.Tag = "Button_Omae_Register";
             this.cmdRegister.Text = "Register";
-            this.GlobalOptions.ToolTipProcessor.SetToolTip(this.cmdRegister, "Register an Omae account. You only need to register if you want to upload charact" +
+            this.ToolTipFactory.SetToolTip(this.cmdRegister, "Register an Omae account. You only need to register if you want to upload charact" +
         "ers. No registration is need to browse and download.");
             this.cmdRegister.UseVisualStyleBackColor = true;
             this.cmdRegister.Click += new System.EventHandler(this.cmdRegister_Click);
@@ -141,7 +141,7 @@ namespace Chummer
             this.cmdLogin.TabIndex = 5;
             this.cmdLogin.Tag = "Button_Omae_Login";
             this.cmdLogin.Text = "Login";
-            this.GlobalOptions.ToolTipProcessor.SetToolTip(this.cmdLogin, "Login to Omae.");
+            this.ToolTipFactory.SetToolTip(this.cmdLogin, "Login to Omae.");
             this.cmdLogin.UseVisualStyleBackColor = true;
             this.cmdLogin.Click += new System.EventHandler(this.cmdLogin_Click);
             // 
@@ -184,7 +184,7 @@ namespace Chummer
             this.cmdPasswordReset.TabIndex = 7;
             this.cmdPasswordReset.Tag = "Button_Omae_PasswordReset";
             this.cmdPasswordReset.Text = "PW Reset";
-            this.GlobalOptions.ToolTipProcessor.SetToolTip(this.cmdPasswordReset, "Forgot your password? Click here to have a new password emailed to you.");
+            this.ToolTipFactory.SetToolTip(this.cmdPasswordReset, "Forgot your password? Click here to have a new password emailed to you.");
             this.cmdPasswordReset.UseVisualStyleBackColor = true;
             this.cmdPasswordReset.Click += new System.EventHandler(this.cmdPasswordReset_Click);
             // 
@@ -197,7 +197,7 @@ namespace Chummer
             this.cmdMyAccount.TabIndex = 8;
             this.cmdMyAccount.Tag = "Button_Omae_MyAccount";
             this.cmdMyAccount.Text = "My Account";
-            this.GlobalOptions.ToolTipProcessor.SetToolTip(this.cmdMyAccount, "Edit your Omae account information.");
+            this.ToolTipFactory.SetToolTip(this.cmdMyAccount, "Edit your Omae account information.");
             this.cmdMyAccount.UseVisualStyleBackColor = true;
             this.cmdMyAccount.Click += new System.EventHandler(this.cmdMyAccount_Click);
             // 

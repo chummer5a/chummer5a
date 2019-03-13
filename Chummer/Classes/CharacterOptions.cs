@@ -52,7 +52,6 @@ namespace Chummer
         private bool _blnCalculateCommlinkResponse = true;
         private bool _blnConfirmDelete = true;
         private bool _blnConfirmKarmaExpense = true;
-        private bool _blnCreateBackupOnCareer;
         private bool _blnCyberlegMovement;
         private bool _blnDontDoubleQualityPurchaseCost;
         private bool _blnDontDoubleQualityRefundCost;
@@ -195,7 +194,7 @@ namespace Chummer
                 return;
 
             // Create the settings directory if it does not exist.
-            string settingsDirectoryPath = Path.Combine(Application.StartupPath, "settings");
+            string settingsDirectoryPath = Path.Combine(Utils.GetStartupPath, "settings");
             if (!Directory.Exists(settingsDirectoryPath))
             {
                 try
@@ -223,7 +222,7 @@ namespace Chummer
         /// </summary>
         public void Save()
         {
-            string strFilePath = Path.Combine(Application.StartupPath, "settings", _strFileName);
+            string strFilePath = Path.Combine(Utils.GetStartupPath, "settings", _strFileName);
             FileStream objStream = new FileStream(strFilePath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
             XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
             {
@@ -377,8 +376,6 @@ namespace Chummer
             objWriter.WriteElementString("alternatemetatypeattributekarma", _blnAlternateMetatypeAttributeKarma.ToString());
             // <reversekarmapriorityorder />
             objWriter.WriteElementString("reverseattributepriorityorder", ReverseAttributePriorityOrder.ToString());
-            // <createbackuponcareer />
-            objWriter.WriteElementString("createbackuponcareer", _blnCreateBackupOnCareer.ToString());
             // <printnotes />
             objWriter.WriteElementString("printnotes", _blnPrintNotes.ToString());
             // <allowobsolescentupgrade />
@@ -540,7 +537,7 @@ namespace Chummer
         public bool Load(string strFileName)
         {
             _strFileName = strFileName;
-            string strFilePath = Path.Combine(Application.StartupPath, "settings", _strFileName);
+            string strFilePath = Path.Combine(Utils.GetStartupPath, "settings", _strFileName);
             XmlDocument objXmlDocument = new XmlDocument();
             // Make sure the settings file exists. If not, ask the user if they would like to use the default settings file instead. A character cannot be loaded without a settings file.
             if (File.Exists(strFilePath))
@@ -565,7 +562,7 @@ namespace Chummer
             }
             else
             {
-                if (MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_CannotLoadSetting", GlobalOptions.Language).Replace("{0}", _strFileName), LanguageManager.GetString("MessageTitle_CharacterOptions_CannotLoadSetting", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                if (MessageBox.Show(string.Format(LanguageManager.GetString("Message_CharacterOptions_CannotLoadSetting", GlobalOptions.Language), _strFileName), LanguageManager.GetString("MessageTitle_CharacterOptions_CannotLoadSetting", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 {
                     MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
@@ -573,7 +570,7 @@ namespace Chummer
                 else
                 {
                     _strFileName = "default.xml";
-                    strFilePath = Path.Combine(Application.StartupPath, "settings", _strFileName);
+                    strFilePath = Path.Combine(Utils.GetStartupPath, "settings", _strFileName);
                     try
                     {
                         using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))
@@ -742,8 +739,6 @@ namespace Chummer
             objXmlNode.TryGetBoolFieldQuickly("dontusecyberlimbcalculation", ref _blnDontUseCyberlimbCalculation);
             // House rule: Treat the Metatype Attribute Minimum as 1 for the purpose of calculating Karma costs.
             objXmlNode.TryGetBoolFieldQuickly("alternatemetatypeattributekarma", ref _blnAlternateMetatypeAttributeKarma);
-            // Whether or not a backup copy of the character should be created before they are placed into Career Mode.
-            objXmlNode.TryGetBoolFieldQuickly("createbackuponcareer", ref _blnCreateBackupOnCareer);
             // Whether or not Notes should be printed.
             objXmlNode.TryGetBoolFieldQuickly("printnotes", ref _blnPrintNotes);
             // Whether or not Obsolescent can be removed/upgrade in the same manner as Obsolete.
@@ -770,7 +765,7 @@ namespace Chummer
                 objXmlNode.TryGetInt32FieldQuickly("karmaattribute", ref _intKarmaAttribute);
                 objXmlNode.TryGetInt32FieldQuickly("karmaquality", ref _intKarmaQuality);
                 objXmlNode.TryGetInt32FieldQuickly("karmaspecialization", ref _intKarmaSpecialization);
-                objXmlNode.TryGetInt32FieldQuickly("karmaknowspecialization", ref _intKarmaKnoSpecialization);
+                objXmlNode.TryGetInt32FieldQuickly("karmaknospecialization", ref _intKarmaKnoSpecialization);
                 objXmlNode.TryGetInt32FieldQuickly("karmanewknowledgeskill", ref _intKarmaNewKnowledgeSkill);
                 objXmlNode.TryGetInt32FieldQuickly("karmanewactiveskill", ref _intKarmaNewActiveSkill);
                 objXmlNode.TryGetInt32FieldQuickly("karmanewskillgroup", ref _intKarmaNewSkillGroup);
@@ -868,7 +863,7 @@ namespace Chummer
             // Spirit Force Based on Total MAG.
             GlobalOptions.LoadBoolFromRegistry(ref _blnSpiritForceBasedOnTotalMAG, "spiritforcebasedontotalmag", string.Empty, true);
 
-            // Skill Defaulting Includes Modifers.
+            // Skill Defaulting Includes modifiers.
             bool blnTemp = false;
             GlobalOptions.LoadBoolFromRegistry(ref blnTemp, "skilldefaultingincludesmodifiers", string.Empty, true);
 
@@ -952,7 +947,7 @@ namespace Chummer
 
             foreach (string strBookName in strBooks)
             {
-                string strCode = objXmlDocument.SelectSingleNode("/chummer/books/book[name = \"" + strBookName + "\" and not(hide)]/code")?.InnerText;
+                string strCode = objXmlDocument.SelectSingleNode("/chummer/books/book[name = " + strBookName.CleanXPath() + " and not(hide)]/code")?.InnerText;
                 if (!string.IsNullOrEmpty(strCode))
                 {
                     _lstBooks.Add(strCode);
@@ -1081,7 +1076,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not UnarmedAP and UnarmedDV Improvements apply to weapons that use the Unarmed Combat skill.
+        /// Whether or not UnarmedAP, UnarmedReach and UnarmedDV Improvements apply to weapons that use the Unarmed Combat skill.
         /// </summary>
         public bool UnarmedImprovementsApplyToWeapons
         {
@@ -1264,15 +1259,6 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Optional Rule: Whether or not Armor Encumbrance is ignored if only a single piece of Armor is worn.
-        /// </summary>
-        public bool NoSingleArmorEncumbrance
-        {
-            get => _blnNoSingleArmorEncumbrance;
-            set => _blnNoSingleArmorEncumbrance = value;
-        }
-
-        /// <summary>
         /// House Rule: Ignore Armor Encumbrance entirely.
         /// </summary>
         public bool NoArmorEncumbrance
@@ -1381,15 +1367,6 @@ namespace Chummer
             set => _blnAllowCyberwareESSDiscounts = value;
         }
         
-        /// <summary>
-        /// Whether or not Maximum Armor Modifications is in use.
-        /// </summary>
-        public bool MaximumArmorModifications
-        {
-            get => _blnMaximumArmorModifications;
-            set => _blnMaximumArmorModifications = value;
-        }
-
         /// <summary>
         /// Whether or not Armor Degredation is allowed.
         /// </summary>
@@ -1698,15 +1675,6 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not a Commlink's Response should be calculated based on the number of programs running on it.
-        /// </summary>
-        public bool CalculateCommlinkResponse
-        {
-            get => _blnCalculateCommlinkResponse;
-            set => _blnCalculateCommlinkResponse = value;
-        }
-
-        /// <summary>
         /// Whether or not Stacked Foci can have a combined Force higher than 6.
         /// </summary>
         public bool AllowHigherStackedFoci
@@ -1785,15 +1753,6 @@ namespace Chummer
         {
             get => _blnCompensateSkillGroupKarmaDifference;
             set => _blnCompensateSkillGroupKarmaDifference = value;
-        }
-
-        /// <summary>
-        /// Whether or not a backup copy of the character should be created before they are placed into Career Mode.
-        /// </summary>
-        public bool CreateBackupOnCareer
-        {
-            get => _blnCreateBackupOnCareer;
-            set => _blnCreateBackupOnCareer = value;
         }
 
         /// <summary>
@@ -2258,33 +2217,6 @@ namespace Chummer
         #endregion
 
         #region Default Build
-        /// <summary>
-        /// Default build method.
-        /// </summary>
-        public string BuildMethod
-        {
-            get => _strBuildMethod;
-            set => _strBuildMethod = value;
-        }
-
-        /// <summary>
-        /// Default number of build points.
-        /// </summary>
-        public int BuildPoints
-        {
-            get => _intBuildPoints;
-            set => _intBuildPoints = value;
-        }
-
-        /// <summary>
-        /// Default Availability.
-        /// </summary>
-        public int Availability
-        {
-            get => _intAvailability;
-            set => _intAvailability = value;
-        }
-
         /// <summary>
         /// Whether Life Modules should automatically generate a character background.
         /// </summary>

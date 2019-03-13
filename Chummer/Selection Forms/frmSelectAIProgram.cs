@@ -48,7 +48,6 @@ namespace Chummer
             _objCharacter = objCharacter;
             _blnAdvancedProgramAllowed = blnAdvancedProgramAllowed;
             _blnInherentProgram = blnInherentProgram;
-            MoveControls();
             // Load the Programs information.
             _xmlBaseChummerNode = XmlManager.Load("programs.xml").GetFastNavigator().SelectSingleNode("/chummer");
             if (_objCharacter.IsCritter)
@@ -237,35 +236,38 @@ namespace Chummer
                         {
                             string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                             lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
-                            GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                            lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
                         }
                         else
                         {
                             string strUnknown = LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
                             lblSource.Text = strUnknown;
-                            GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, strUnknown);
+                            lblSource.SetToolTip(strUnknown);
                         }
                     }
                     else
                     {
                         string strUnknown = LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
                         lblSource.Text = strUnknown;
-                        GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, strUnknown);
+                        lblSource.SetToolTip(strUnknown);
                     }
                 }
                 else
                 {
                     lblRequiresProgram.Text = string.Empty;
                     lblSource.Text = string.Empty;
-                    GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, string.Empty);
+                    lblSource.SetToolTip(string.Empty);
                 }
             }
             else
             {
                 lblRequiresProgram.Text = string.Empty;
                 lblSource.Text = string.Empty;
-                GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, string.Empty);
+                lblSource.SetToolTip(string.Empty);
             }
+
+            lblRequiresProgramLabel.Visible = !string.IsNullOrEmpty(lblRequiresProgram.Text);
+            lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
         }
 
         /// <summary>
@@ -377,25 +379,9 @@ namespace Chummer
                     return;
 
                 // Check to make sure requirement is met
-                string strRequiresProgram = xmlProgram.SelectSingleNode("require")?.Value;
-                if (!string.IsNullOrEmpty(strRequiresProgram))
+                if (!xmlProgram.RequirementsMet(_objCharacter, null, LanguageManager.GetString("String_Program", GlobalOptions.Language)))
                 {
-                    bool blnRequirementsMet = false;
-                    foreach (AIProgram objLoopAIProgram in _objCharacter.AIPrograms)
-                    {
-                        if (objLoopAIProgram.Name == strRequiresProgram)
-                        {
-                            blnRequirementsMet = true;
-                            break;
-                        }
-                    }
-                    if (!blnRequirementsMet)
-                    {
-                        MessageBox.Show(LanguageManager.GetString("Message_SelectAIProgram_AdvancedProgramRequirement", GlobalOptions.Language) + strRequiresProgram,
-                            LanguageManager.GetString("MessageTitle_SelectAIProgram_AdvancedProgramRequirement", GlobalOptions.Language),
-                            MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        return;
-                    }
+                    return;
                 }
 
                 _strSelectedAIProgram = strSelectedId;
@@ -405,15 +391,9 @@ namespace Chummer
             }
         }
 
-        private void MoveControls()
+        private void OpenSourceFromLabel(object sender, EventArgs e)
         {
-            int intLeft = lblRequiresProgramLabel.Width;
-            intLeft = Math.Max(intLeft, lblSourceLabel.Width);
-
-            lblRequiresProgram.Left = lblRequiresProgramLabel.Left + intLeft + 6;
-            lblSource.Left = lblSourceLabel.Left + intLeft + 6;
-
-            lblSearchLabel.Left = txtSearch.Left - 6 - lblSearchLabel.Width;
+            CommonFunctions.OpenPDFFromControl(sender, e);
         }
         #endregion
     }

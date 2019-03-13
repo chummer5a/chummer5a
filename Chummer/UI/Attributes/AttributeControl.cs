@@ -17,9 +17,12 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Windows.Forms;
 using Chummer.Backend.Attributes;
+using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace Chummer.UI.Attributes
 {
@@ -38,7 +41,10 @@ namespace Chummer.UI.Attributes
         {
             _objAttribute = attribute;
             _objCharacter = attribute.CharacterObject;
+
             InitializeComponent();
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+
             _dataSource = _objCharacter.AttributeSection.GetAttributeBindingByName(AttributeName);
             _objCharacter.AttributeSection.PropertyChanged += AttributePropertyChanged;
             //Display
@@ -60,6 +66,9 @@ namespace Chummer.UI.Attributes
             {
                 while (_objAttribute.KarmaMaximum < 0 && _objAttribute.Base > 0)
                     _objAttribute.Base -= 1;
+                // Very rough fix for when Karma values somehow exceed KarmaMaximum after loading in. This shouldn't happen in the first place, but this ad-hoc patch will help fix crashes.
+                if (_objAttribute.Karma > _objAttribute.KarmaMaximum)
+                    _objAttribute.Karma = _objAttribute.KarmaMaximum;
 
                 nudBase.DataBindings.Add("Visible", _objCharacter, nameof(Character.BuildMethodHasSkillPoints), false, DataSourceUpdateMode.OnPropertyChanged);
                 nudBase.DataBindings.Add("Maximum", _dataSource, nameof(CharacterAttrib.PriorityMaximum), false, DataSourceUpdateMode.OnPropertyChanged);
@@ -84,11 +93,14 @@ namespace Chummer.UI.Attributes
             if (e.PropertyName == nameof(AttributeSection.AttributeCategory))
             {
                 _dataSource.DataSource = _objCharacter.AttributeSection.GetAttributeByName(_objAttribute.Abbrev);
+                _dataSource.ResetBindings(false);
             }
         }
 
         public void UnbindAttributeControl()
         {
+            _objCharacter.AttributeSection.PropertyChanged -= AttributePropertyChanged;
+
             foreach (Control objControl in Controls)
             {
                 objControl.DataBindings.Clear();
@@ -116,32 +128,56 @@ namespace Chummer.UI.Attributes
 
         private void nudBase_ValueChanged(object sender, EventArgs e)
         {
-            decimal d = ((NumericUpDownEx) sender).Value;
-            if (d != _oldBase)
+            decimal d = ((NumericUpDownEx)sender).Value;
+            if (d == _oldBase) return;
+            if (!ShowAttributeRule(Math.Max(decimal.ToInt32(d + nudKarma.Value) + _objAttribute.FreeBase + _objAttribute.RawMinimum + _objAttribute.AttributeValueModifiers, _objAttribute.TotalMinimum) + decimal.ToInt32(nudKarma.Value)))
             {
-                if (!ShowAttributeRule(Math.Max(decimal.ToInt32(d) + _objAttribute.FreeBase + _objAttribute.RawMinimum + _objAttribute.AttributeValueModifiers, _objAttribute.TotalMinimum) + decimal.ToInt32(nudKarma.Value)))
+                decimal newValue = Math.Max(nudBase.Value - 1, 0);
+                if (newValue > nudBase.Maximum)
                 {
-                    nudBase.Value = _oldBase;
-                    return;
+                    newValue = nudBase.Maximum;
                 }
-                ValueChanged?.Invoke(this, e);
-                _oldBase = d;
+                if (newValue < nudBase.Minimum)
+                {
+                    newValue = nudBase.Minimum;
+                }
+                nudBase.Value = newValue;
+                return;
             }
+            ValueChanged?.Invoke(this, e);
+            _oldBase = d;
         }
 
         private void nudKarma_ValueChanged(object sender, EventArgs e)
         {
             decimal d = ((NumericUpDownEx)sender).Value;
-            if (d != _oldKarma)
+            if (d == _oldKarma) return;
+            if (!ShowAttributeRule(Math.Max(decimal.ToInt32(nudBase.Value) + _objAttribute.FreeBase + _objAttribute.RawMinimum + _objAttribute.AttributeValueModifiers, _objAttribute.TotalMinimum) + decimal.ToInt32(d)))
             {
-                if (!ShowAttributeRule(Math.Max(decimal.ToInt32(nudBase.Value) + _objAttribute.FreeBase + _objAttribute.RawMinimum + _objAttribute.AttributeValueModifiers, _objAttribute.TotalMinimum) + decimal.ToInt32(d)))
+                // It's possible that the attribute maximum was reduced by an improvement, so confirm the appropriate value to bounce up/down to. 
+                if (_oldKarma > _objAttribute.KarmaMaximum)
                 {
-                    nudKarma.Value = _oldKarma;
-                    return;
+                    _oldKarma = _objAttribute.KarmaMaximum - 1;
                 }
-                ValueChanged?.Invoke(this, e);
-                _oldKarma = d;
+                if (_oldKarma < 0)
+                {
+                    decimal newValue = Math.Max(nudBase.Value - _oldKarma, 0);
+                    if (newValue > nudBase.Maximum)
+                    {
+                        newValue = nudBase.Maximum;
+                    }
+                    if (newValue < nudBase.Minimum)
+                    {
+                        newValue = nudBase.Minimum;
+                    }
+                    nudBase.Value = newValue;
+                    _oldKarma = 0;
+                }
+                nudKarma.Value = _oldKarma;
+                return;
             }
+            ValueChanged?.Invoke(this, e);
+            _oldKarma = d;
         }
 
         /// <summary>
@@ -224,5 +260,48 @@ namespace Chummer.UI.Attributes
                 e.Cancel = true;
             }
         }
+
+        /// <summary>
+        /// I'm not super pleased with how this works, but it's functional so w/e.
+        /// The goal is for controls to retain the ability to display tooltips even while disabled. IT DOES NOT WORK VERY WELL.
+        /// </summary>
+        #region ButtonWithToolTip Visibility workaround
+
+        ButtonWithToolTip _activeButton;
+        protected ButtonWithToolTip ActiveButton
+        {
+            get => _activeButton;
+            set
+            {
+                if (value == ActiveButton) return;
+                ActiveButton?.ToolTipObject.Hide(this);
+                _activeButton = value;
+                if (_activeButton?.Visible == true)
+                {
+                    ActiveButton?.ToolTipObject.Show(ActiveButton?.ToolTipText, this);
+                }
+            }
+        }
+
+        protected Control FindToolTipControl(Point pt)
+        {
+            foreach (Control c in Controls)
+            {
+                if (!(c is ButtonWithToolTip)) continue;
+                if (c.Bounds.Contains(pt)) return c;
+            }
+            return null;
+        }
+
+        private void OnMouseMove(object sender, MouseEventArgs e)
+        {
+            ActiveButton = FindToolTipControl(e.Location) as ButtonWithToolTip;
+        }
+
+        private void OnMouseLeave(object sender, EventArgs e)
+        {
+            ActiveButton = null;
+        }
+#endregion
     }
 }

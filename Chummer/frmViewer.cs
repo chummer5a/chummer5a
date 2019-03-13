@@ -106,7 +106,6 @@ namespace Chummer
                     }
                 }
             }
-            MoveControls();
         }
 
         private void frmViewer_Load(object sender, EventArgs e)
@@ -182,7 +181,7 @@ namespace Chummer
             webBrowser1.ShowPrintPreviewDialog();
         }
 
-        private void cmdSaveHTML_Click(object sender, EventArgs e)
+        private void tsSaveAsHTML_Click(object sender, EventArgs e)
         {
             // Save the generated output as HTML.
             SaveFileDialog1.Filter = LanguageManager.GetString("DialogFilter_Html", GlobalOptions.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language);
@@ -233,7 +232,7 @@ namespace Chummer
                 _workerOutputGenerator.CancelAsync();
 
             // Remove the mugshots directory when the form closes.
-            string mugshotsDirectoryPath = Path.Combine(Application.StartupPath, "mugshots");
+            string mugshotsDirectoryPath = Path.Combine(Utils.GetStartupPath, "mugshots");
             if (Directory.Exists(mugshotsDirectoryPath))
             {
                 try
@@ -260,8 +259,8 @@ namespace Chummer
         {
             cmdPrint.Enabled = false;
             tsPrintPreview.Enabled = false;
-            cmdSaveHTML.Enabled = false;
-            tsSaveAsPdf.Enabled = false;
+            tsSaveAsHtml.Enabled = false;
+            cmdSaveAsPdf.Enabled = false;
             webBrowser1.DocumentText =
                 "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">" +
                 "<head><meta http-equiv=\"x - ua - compatible\" content=\"IE = Edge\"/><meta charset = \"UTF-8\" /></head>" +
@@ -374,7 +373,7 @@ namespace Chummer
         private void AsyncGenerateOutput(object sender, DoWorkEventArgs e)
         {
             _blnQueueOutputGeneratorRun = false;
-            string strXslPath = Path.Combine(Application.StartupPath, "sheets", _strSelectedSheet + ".xsl");
+            string strXslPath = Path.Combine(Utils.GetStartupPath, "sheets", _strSelectedSheet + ".xsl");
             if (!File.Exists(strXslPath))
             {
                 string strReturn = $"File not found when attempting to load {_strSelectedSheet}{Environment.NewLine}";
@@ -446,27 +445,16 @@ namespace Chummer
             {
                 cmdPrint.Enabled = true;
                 tsPrintPreview.Enabled = true;
-                cmdSaveHTML.Enabled = true;
-                tsSaveAsPdf.Enabled = true;
+                tsSaveAsHtml.Enabled = true;
+                cmdSaveAsPdf.Enabled = true;
             }
             if (GlobalOptions.PrintToFileFirst)
                 File.Delete(_strName);
 
             Cursor = Cursors.Default;
         }
-
-        private void MoveControls()
-        {
-            int intWidth = cmdPrint.Width;
-            cmdPrint.AutoSize = false;
-            cmdPrint.Width = intWidth + 20;
-            cmdSaveHTML.Left = cmdPrint.Right + 6;
-
-            lblCharacterSheet.Left = cboLanguage.Left - lblCharacterSheet.Width - 6;
-            MinimumSize = new System.Drawing.Size(2 * cmdPrint.Left + cmdPrint.Width + cmdSaveHTML.Width + lblCharacterSheet.Width + cboLanguage.Width + cboXSLT.Width + 24, 73);
-        }
-
-        private void tsSaveAsPdf_Click(object sender, EventArgs e)
+        
+        private void cmdSaveAsPdf_Click(object sender, EventArgs e)
         {
             // Save the generated output as PDF.
             SaveFileDialog1.Filter = LanguageManager.GetString("DialogFilter_Pdf", GlobalOptions.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language);
@@ -517,7 +505,7 @@ namespace Chummer
             {
                 PdfConvert.ConvertHtmlToPdf(objPdfDocument, new PdfConvertEnvironment
                 {
-                    WkHtmlToPdfPath = Path.Combine(Application.StartupPath, "wkhtmltopdf.exe"),
+                    WkHtmlToPdfPath = Path.Combine(Utils.GetStartupPath, "wkhtmltopdf.exe"),
                     Timeout = 60000,
                     TempFolderPath = Path.GetTempPath()
                 }, new PdfOutput
@@ -535,7 +523,8 @@ namespace Chummer
                     ProcessStartInfo objPdfProgramProcess = new ProcessStartInfo
                     {
                         FileName = GlobalOptions.PDFAppPath,
-                        Arguments = strParams
+                        Arguments = strParams,
+                        WindowStyle = ProcessWindowStyle.Hidden
                     };
                     Process.Start(objPdfProgramProcess);
                 }
@@ -551,7 +540,7 @@ namespace Chummer
             List<ListItem> lstSheets = new List<ListItem>();
 
             // Populate the XSL list with all of the manifested XSL files found in the sheets\[language] directory.
-            using (XmlNodeList lstSheetNodes = XmlManager.Load("sheets.xml").SelectNodes($"/chummer/sheets[@lang='{strLanguage}']/sheet[not(hide)]"))
+            using (XmlNodeList lstSheetNodes = XmlManager.Load("sheets.xml",strLanguage,true).SelectNodes($"/chummer/sheets[@lang='{strLanguage}']/sheet[not(hide)]"))
                 if (lstSheetNodes != null)
                     foreach (XmlNode xmlSheet in lstSheetNodes)
                     {
@@ -566,14 +555,14 @@ namespace Chummer
             List<ListItem> lstItems = new List<ListItem>();
 
             // Populate the XSLT list with all of the XSL files found in the sheets\omae directory.
-            string omaeDirectoryPath = Path.Combine(Application.StartupPath, "sheets", "omae");
+            string omaeDirectoryPath = Path.Combine(Utils.GetStartupPath, "sheets", "omae");
             string menuMainOmae = LanguageManager.GetString("Menu_Main_Omae", GlobalOptions.Language);
 
             // Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets
             // (hidden because they are partial templates that cannot be used on their own).
             foreach (string fileName in ReadXslFileNamesWithoutExtensionFromDirectory(omaeDirectoryPath))
             {
-                lstItems.Add(new ListItem(Path.Combine("omae", fileName), menuMainOmae + ": " + fileName));
+                lstItems.Add(new ListItem(Path.Combine("omae", fileName), menuMainOmae + LanguageManager.GetString("String_Colon", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + fileName));
             }
 
             return lstItems;
@@ -607,7 +596,7 @@ namespace Chummer
         private void PopulateLanguageList()
         {
             List<ListItem> lstLanguages = new List<ListItem>();
-            string languageDirectoryPath = Path.Combine(Application.StartupPath, "lang");
+            string languageDirectoryPath = Path.Combine(Utils.GetStartupPath, "lang");
             string[] languageFilePaths = Directory.GetFiles(languageDirectoryPath, "*.xml");
 
             foreach (string filePath in languageFilePaths)
@@ -701,6 +690,7 @@ namespace Chummer
         private void cboLanguage_SelectedIndexChanged(object sender, EventArgs e)
         {
             _strPrintLanguage = cboLanguage.SelectedValue?.ToString() ?? GlobalOptions.Language;
+            imgSheetLanguageFlag.Image = FlagImageGetter.GetFlagFromCountryCode(_strPrintLanguage.Substring(3, 2));
             try
             {
                 _objPrintCulture = CultureInfo.GetCultureInfo(_strPrintLanguage);

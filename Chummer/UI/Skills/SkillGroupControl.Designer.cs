@@ -56,7 +56,6 @@ namespace Chummer.UI.Skills
             this.lblGroupRating.Size = new System.Drawing.Size(41, 13);
             this.lblGroupRating.TabIndex = 7;
             this.lblGroupRating.Text = "label1";
-            this.lblGroupRating.Visible = false;
             // 
             // btnCareerIncrease
             // 
@@ -66,7 +65,6 @@ namespace Chummer.UI.Skills
             this.btnCareerIncrease.Size = new System.Drawing.Size(24, 24);
             this.btnCareerIncrease.TabIndex = 22;
             this.btnCareerIncrease.UseVisualStyleBackColor = true;
-            this.btnCareerIncrease.Visible = false;
             this.btnCareerIncrease.Click += new System.EventHandler(this.btnCareerIncrease_Click);
             // 
             // nudKarma
@@ -109,6 +107,8 @@ namespace Chummer.UI.Skills
             this.Size = new System.Drawing.Size(225, 23);
             ((System.ComponentModel.ISupportInitialize)(this.nudKarma)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSkill)).EndInit();
+            this.MouseLeave += new System.EventHandler(this.OnMouseLeave);
+            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.OnMouseMove);
             this.ResumeLayout(false);
             this.PerformLayout();
 

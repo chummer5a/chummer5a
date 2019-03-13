@@ -30,11 +30,11 @@ namespace Chummer.UI.Skills
         private void InitializeComponent()
         {
             this.lblModifiedRating = new LabelWithToolTip();
-            this.cboSpec = new System.Windows.Forms.ComboBox();
+            this.cboSpec = new ElasticComboBox();
             this.chkKarma = new System.Windows.Forms.CheckBox();
             this.cmdDelete = new System.Windows.Forms.Button();
-            this.cboSkill = new System.Windows.Forms.ComboBox();
-            this.cboType = new System.Windows.Forms.ComboBox();
+            this.cboSkill = new ElasticComboBox();
+            this.cboType = new ElasticComboBox();
             this.lblRating = new System.Windows.Forms.Label();
             this.lblName = new LabelWithToolTip();
             this.lblSpec = new System.Windows.Forms.Label();
@@ -63,7 +63,6 @@ namespace Chummer.UI.Skills
             this.cboSpec.Name = "cboSpec";
             this.cboSpec.Size = new System.Drawing.Size(177, 21);
             this.cboSpec.TabIndex = 17;
-            this.cboSpec.TextChanged += new System.EventHandler(this.cboSpec_TextChanged);
             // 
             // chkKarma
             // 
@@ -113,7 +112,6 @@ namespace Chummer.UI.Skills
             this.lblRating.Size = new System.Drawing.Size(13, 13);
             this.lblRating.TabIndex = 22;
             this.lblRating.Text = "0";
-            this.lblRating.Visible = false;
             // 
             // lblName
             // 
@@ -123,7 +121,6 @@ namespace Chummer.UI.Skills
             this.lblName.Size = new System.Drawing.Size(44, 13);
             this.lblName.TabIndex = 23;
             this.lblName.Text = "[NAME]";
-            this.lblName.Visible = false;
             // 
             // lblSpec
             // 
@@ -133,7 +130,6 @@ namespace Chummer.UI.Skills
             this.lblSpec.Size = new System.Drawing.Size(41, 13);
             this.lblSpec.TabIndex = 24;
             this.lblSpec.Text = "[SPEC]";
-            this.lblSpec.Visible = false;
             // 
             // btnCareerIncrease
             // 
@@ -143,7 +139,6 @@ namespace Chummer.UI.Skills
             this.btnCareerIncrease.Size = new System.Drawing.Size(24, 24);
             this.btnCareerIncrease.TabIndex = 25;
             this.btnCareerIncrease.UseVisualStyleBackColor = true;
-            this.btnCareerIncrease.Visible = false;
             this.btnCareerIncrease.Click += new System.EventHandler(this.btnCareerIncrease_Click);
             // 
             // btnAddSpec
@@ -154,7 +149,6 @@ namespace Chummer.UI.Skills
             this.btnAddSpec.Size = new System.Drawing.Size(24, 24);
             this.btnAddSpec.TabIndex = 26;
             this.btnAddSpec.UseVisualStyleBackColor = true;
-            this.btnAddSpec.Visible = false;
             this.btnAddSpec.Click += new System.EventHandler(this.btnAddSpec_Click);
             // 
             // nudSkill
@@ -205,6 +199,8 @@ namespace Chummer.UI.Skills
             this.Size = new System.Drawing.Size(800, 24);
             ((System.ComponentModel.ISupportInitialize)(this.nudSkill)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarma)).EndInit();
+            this.MouseLeave += new System.EventHandler(this.OnMouseLeave);
+            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.OnMouseMove);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -214,11 +210,11 @@ namespace Chummer.UI.Skills
         private NumericUpDownEx nudKarma;
         private NumericUpDownEx nudSkill;
         private LabelWithToolTip lblModifiedRating;
-        private System.Windows.Forms.ComboBox cboSpec;
+        private ElasticComboBox cboSpec;
         private System.Windows.Forms.CheckBox chkKarma;
         private System.Windows.Forms.Button cmdDelete;
-        private System.Windows.Forms.ComboBox cboSkill;
-        private System.Windows.Forms.ComboBox cboType;
+        private ElasticComboBox cboSkill;
+        private ElasticComboBox cboType;
         private System.Windows.Forms.Label lblRating;
         private LabelWithToolTip lblName;
         private System.Windows.Forms.Label lblSpec;

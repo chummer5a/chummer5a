@@ -2036,9 +2036,9 @@
           <strmin>0</strmin>
           <strmax>0</strmax>
           <straug>0</straug>
-          <chamin>2</chamin>
-          <chamax>7</chamax>
-          <chaaug>11</chaaug>
+          <chamin>1</chamin>
+          <chamax>4</chamax>
+          <chaaug>8</chaaug>
           <intmin>2</intmin>
           <intmax>7</intmax>
           <intaug>11</intaug>
@@ -2506,6 +2506,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -2576,6 +2579,12 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -2645,6 +2654,12 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -2715,6 +2730,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -2788,6 +2806,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -2858,6 +2879,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -2928,6 +2952,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -2999,6 +3026,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -3057,6 +3087,9 @@
           <run alt="4/1/0">4/1/0</run>
           <sprint alt="1/1/0">1/1/0</sprint>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -3128,6 +3161,9 @@
           <run alt="4/1/0">4/1/0</run>
           <sprint alt="1/1/0">1/1/0</sprint>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -3201,6 +3237,9 @@
           <run alt="4/1/0">4/1/0</run>
           <sprint alt="1/1/0">4/1/0</sprint>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -3286,6 +3325,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -3353,6 +3395,9 @@
             </positive>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -3421,6 +3466,9 @@
             </positive>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -3487,6 +3535,9 @@
             </positive>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -3556,6 +3607,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -3623,6 +3677,9 @@
           </qualities>
           <karma>120</karma>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -3692,6 +3749,9 @@
             <armor group="0">1</armor>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -3766,6 +3826,9 @@
           <bonus>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -3834,6 +3897,9 @@
           <bonus>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -3902,6 +3968,9 @@
           <bonus>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -3971,6 +4040,9 @@
           <bonus>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -4106,6 +4178,9 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -4187,6 +4262,9 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -4264,6 +4342,9 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -4344,6 +4425,9 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -4427,6 +4511,9 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -4509,6 +4596,9 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -4587,6 +4677,9 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -4667,6 +4760,9 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -4749,6 +4845,9 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -4833,6 +4932,9 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -4917,6 +5019,9 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -4999,6 +5104,9 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -5077,6 +5185,9 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -5157,6 +5268,9 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -5234,6 +5348,9 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -5314,6 +5431,9 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -5392,6 +5512,9 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -5474,6 +5597,9 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -5558,6 +5684,9 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -5639,6 +5768,9 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -5720,6 +5852,9 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -5802,6 +5937,9 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -5922,6 +6060,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -5992,6 +6133,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -6061,6 +6205,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -6131,6 +6278,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -6204,6 +6354,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -6274,6 +6427,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -6344,6 +6500,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -6415,6 +6574,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -6476,6 +6638,9 @@
           <run alt="4/1/0">4/1/0</run>
           <sprint alt="1/1/0">4/1/0</sprint>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -6547,6 +6712,9 @@
           <run alt="4/1/0">4/1/0</run>
           <sprint alt="1/1/0">4/1/0</sprint>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -6620,6 +6788,9 @@
           <run alt="4/1/0">4/1/0</run>
           <sprint alt="1/1/0">4/1/0</sprint>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -6702,6 +6873,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -6771,6 +6945,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -6841,6 +7018,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -6911,6 +7091,9 @@
           </qualities>
           <karma>8</karma>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -6981,6 +7164,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -7051,6 +7237,9 @@
           </qualities>
           <karma>140</karma>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -7121,6 +7310,9 @@
           </qualities>
           <bonus>
             <armor group="0">1</armor>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -7195,6 +7387,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -7267,6 +7462,9 @@
           </qualities>
           <karma>12</karma>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -7335,6 +7533,9 @@
             </positive>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -7407,6 +7608,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -7535,6 +7739,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -7625,6 +7832,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -7714,6 +7924,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -7804,6 +8017,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -7897,6 +8113,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -7987,6 +8206,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -8077,6 +8299,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -8168,6 +8393,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -8259,6 +8487,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -8352,6 +8583,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -8445,6 +8679,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -8539,6 +8776,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -8629,6 +8869,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -8720,6 +8963,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -8809,6 +9055,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -8899,6 +9148,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -8988,6 +9240,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -9081,6 +9336,9 @@
             <armor group="0">1</armor>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -9175,6 +9433,9 @@
           <bonus>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -9266,6 +9527,9 @@
           <bonus>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -9357,6 +9621,9 @@
           <bonus>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -9449,6 +9716,9 @@
           <bonus>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -9594,6 +9864,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -9686,6 +9959,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -9776,6 +10052,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -9867,6 +10146,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -9961,6 +10243,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -10052,6 +10337,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -10143,6 +10431,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -10236,6 +10527,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -10329,6 +10623,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -10424,6 +10721,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -10519,6 +10819,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -10613,6 +10916,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -10703,6 +11009,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -10794,6 +11103,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -10884,6 +11196,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -10975,6 +11290,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -11065,6 +11383,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -11160,6 +11481,9 @@
             <armor group="0">1</armor>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -11257,6 +11581,9 @@
             <armor group="0">1</armor>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -11350,6 +11677,9 @@
           <bonus>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -11443,6 +11773,9 @@
           <bonus>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -11536,6 +11869,9 @@
           <bonus>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -11681,6 +12017,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -11763,6 +12102,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -11843,6 +12185,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -11924,6 +12269,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -12008,6 +12356,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -12089,6 +12440,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -12170,6 +12524,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -12253,6 +12610,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -12337,6 +12697,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -12423,6 +12786,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -12508,6 +12874,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -12593,6 +12962,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -12674,6 +13046,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -12755,6 +13130,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -12835,6 +13213,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -12916,6 +13297,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -12996,6 +13380,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -13078,6 +13465,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -13165,6 +13555,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -13249,6 +13642,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -13332,6 +13728,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -13416,6 +13815,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -13553,6 +13955,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -13644,6 +14049,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -13733,6 +14141,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -13823,6 +14234,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -13916,6 +14330,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -14006,6 +14423,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -14097,6 +14517,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -14189,6 +14612,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -14281,6 +14707,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -14375,6 +14804,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -14469,6 +14901,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -14563,6 +14998,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -14653,6 +15091,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -14744,6 +15185,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -14834,6 +15278,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -14924,6 +15371,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -15013,6 +15463,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -15104,6 +15557,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -15200,6 +15656,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -15292,6 +15751,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -15384,6 +15846,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -15476,6 +15941,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -15623,6 +16091,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -15715,6 +16186,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -15805,6 +16279,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -15896,6 +16373,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -15990,6 +16470,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -16081,6 +16564,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -16172,6 +16658,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -16265,6 +16754,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -16358,6 +16850,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -16453,6 +16948,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -16548,6 +17046,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -16643,6 +17144,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -16733,6 +17237,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -16824,6 +17331,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -16915,6 +17425,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -17006,6 +17519,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -17096,6 +17612,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -17190,6 +17709,9 @@
           <bonus>
             <armor group="0">1</armor>
             <reach>1</reach>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -17286,6 +17808,9 @@
           </qualities>
           <bonus>
             <reach>1</reach>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -17379,6 +17904,9 @@
           </qualities>
           <bonus>
             <reach>1</reach>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -17472,6 +18000,9 @@
           </qualities>
           <bonus>
             <reach>1</reach>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -17565,6 +18096,9 @@
           </qualities>
           <bonus>
             <reach>1</reach>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -17712,6 +18246,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -17805,6 +18342,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -17896,6 +18436,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -17988,6 +18531,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -18082,6 +18628,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -18174,6 +18723,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -18266,6 +18818,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -18360,6 +18915,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -18455,6 +19013,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -18552,6 +19113,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -18648,6 +19212,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -18744,6 +19311,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -18840,6 +19410,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -18932,6 +19505,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -19024,6 +19600,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -19116,6 +19695,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -19207,6 +19789,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -19300,6 +19885,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -19398,6 +19986,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -19492,6 +20083,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -19586,6 +20180,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -19680,6 +20277,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -19828,6 +20428,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -19911,6 +20514,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -19992,6 +20598,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -20074,6 +20683,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -20158,6 +20770,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -20240,6 +20855,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -20322,6 +20940,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -20406,6 +21027,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -20491,6 +21115,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -20578,6 +21205,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -20664,6 +21294,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -20750,6 +21383,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -20832,6 +21468,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -20914,6 +21553,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -20995,6 +21637,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -21077,6 +21722,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -21158,6 +21806,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -21242,6 +21893,9 @@
           </qualities>
           <bonus>
             <armor group="0">1</armor>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -21329,6 +21983,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -21413,6 +22070,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -21497,6 +22157,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -21581,6 +22244,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -21722,6 +22388,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -21807,6 +22476,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -21890,6 +22562,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -21973,6 +22648,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -22059,6 +22737,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -22144,6 +22825,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -22229,6 +22913,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -22314,6 +23001,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -22382,6 +23072,9 @@
           <run alt="4/1/0">2/8/0</run>
           <sprint alt="1/1/0">1/4/0</sprint>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -22468,6 +23161,9 @@
           <run alt="4/1/0">2/8/0</run>
           <sprint alt="1/1/0">1/4/0</sprint>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -22559,6 +23255,9 @@
             <power>Shift (Metahuman Form)</power>
           </powers>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -22662,6 +23361,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -22746,6 +23448,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -22830,6 +23535,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -22914,6 +23622,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -22998,6 +23709,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -23079,6 +23793,9 @@
             </positive>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -23167,6 +23884,9 @@
             <armor group="0">1</armor>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -23258,6 +23978,9 @@
           <bonus>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -23344,6 +24067,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -23432,6 +24158,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -23520,6 +24249,9 @@
             </negative>
           </qualities>
           <bonus>
+            <enableattribute>
+              <name>MAG</name>
+            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>

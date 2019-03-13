@@ -3,6 +3,14 @@
   <xs:complexType name="bonusTypes">
     <xs:sequence>
       <xs:element name="acidarmor" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="actiondicepool" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+            <xs:element name="val" type="xs:integer" minOccurs="1" maxOccurs="1" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
       <xs:element name="activeskillkarmacost" minOccurs="0" maxOccurs="unbounded">
         <xs:complexType>
           <xs:sequence>
@@ -466,7 +474,9 @@
           <xs:sequence>
             <xs:element name="attack" type="xs:string" minOccurs="0" maxOccurs="1" />
             <xs:element name="dataprocessing" type="xs:string" minOccurs="0" maxOccurs="1" />
+            <xs:element name="devicerating" type="xs:string" minOccurs="0" maxOccurs="1" />
             <xs:element name="firewall" type="xs:string" minOccurs="0" maxOccurs="1" />
+            <xs:element name="matrixcm" type="xs:string" minOccurs="0" maxOccurs="1" />
             <xs:element name="programlimit" type="xs:string" minOccurs="0" maxOccurs="1" />
             <xs:element name="sleaze" type="xs:string" minOccurs="0" maxOccurs="1" />
           </xs:sequence>
@@ -1136,6 +1146,7 @@
         </xs:complexType>
       </xs:element>
       <xs:element name="throwrange" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="throwrangestr" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="throwstr" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="toxincontactimmune" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="toxincontactresist" type="xs:string" minOccurs="0" maxOccurs="1" />

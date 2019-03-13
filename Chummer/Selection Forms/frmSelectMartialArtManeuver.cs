@@ -95,13 +95,13 @@ namespace Chummer
                 string strPage = xmlManeuver["altpage"]?.InnerText ?? xmlManeuver["page"].InnerText;
                 string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                 lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
-                GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
+                ToolTipFactory.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
             }
             else
             {
                 lblSource.Text = string.Empty;
 
-                GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, string.Empty);
+                ToolTipFactory.SetToolTip(lblSource, string.Empty);
             }
         }
 
@@ -147,6 +147,11 @@ namespace Chummer
         {
             _strSelectedManeuver = lstManeuvers.SelectedValue.ToString();
             DialogResult = DialogResult.OK;
+        }
+
+        private void OpenSourceFromLabel(object sender, EventArgs e)
+        {
+            CommonFunctions.OpenPDFFromControl(sender, e);
         }
         #endregion
     }

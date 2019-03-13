@@ -34,6 +34,7 @@ namespace Chummer.Backend.Attributes
     /// Character CharacterAttribute.
     /// If using databinding, you should generally be using AttributeSection.{ATT}Binding
     /// </summary>
+    [HubClassTag("Abbrev", true, "TotalValue", null)]
     [DebuggerDisplay("{" + nameof(_strAbbrev) + "}")]
     public class CharacterAttrib : INotifyMultiplePropertyChanged
     {
@@ -192,7 +193,7 @@ namespace Chummer.Backend.Attributes
                 if (value != _intMetatypeMin)
                 {
                     _intMetatypeMin = value;
-                    OnPropertyChanged(nameof(TotalMinimum));
+                    OnPropertyChanged();
                 }
             }
         }
@@ -225,7 +226,7 @@ namespace Chummer.Backend.Attributes
                 if (value != _intMetatypeMax)
                 {
                     _intMetatypeMax = value;
-                    OnPropertyChanged(nameof(TotalMaximum));
+                    OnPropertyChanged();
                 }
             }
         }
@@ -235,13 +236,23 @@ namespace Chummer.Backend.Attributes
         /// </summary>
         public int MetatypeAugmentedMaximum
         {
-            get => _intMetatypeAugMax;
+            get
+            {
+                int intReturn = _intMetatypeAugMax;
+                Improvement objImprovement = _objCharacter.Improvements.LastOrDefault(x => x.ImproveType == Improvement.ImprovementType.ReplaceAttribute && x.ImprovedName == Abbrev && x.Enabled);
+                if (objImprovement != null)
+                {
+                    intReturn = objImprovement.AugmentedMaximum;
+                }
+
+                return intReturn;
+            }
             set
             {
                 if (value != _intMetatypeAugMax)
                 {
                     _intMetatypeAugMax = value;
-                    OnPropertyChanged(nameof(TotalAugmentedMaximum));
+                    OnPropertyChanged();
                 }
             }
         }
@@ -257,7 +268,7 @@ namespace Chummer.Backend.Attributes
                 if (value != _intBase)
                 {
                     _intBase = value;
-                    OnPropertyChanged(nameof(Base));
+                    OnPropertyChanged();
                 }
             }
         }
@@ -280,7 +291,7 @@ namespace Chummer.Backend.Attributes
                 if (value != _intKarma)
                 {
                     _intKarma = value;
-                    OnPropertyChanged(nameof(Karma));
+                    OnPropertyChanged();
                 }
             }
         }
@@ -465,7 +476,9 @@ namespace Chummer.Backend.Attributes
             if (_objCharacter.MetatypeCategory == "Cyberzombie" && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
                 return 1;
 
-            int intMeat = Value + AttributeModifiers;
+            //The most that any attribute can be increased by is 4, plus/minus any improvements that affect the augmented max. 
+            //TODO: Should probably be in AttributeModifiers property directly?
+            int intMeat = Value + Math.Min(AttributeModifiers, MetatypeAugmentedMaximum - MetatypeMaximum + AugmentedMaximumModifiers);
             int intReturn = intMeat;
 
             //// If this is AGI or STR, factor in any Cyberlimbs.
@@ -484,6 +497,24 @@ namespace Chummer.Backend.Attributes
                         case "AGI":
                             intLimbTotal += objCyberware.TotalAgility * objCyberware.LimbSlotCount;
                             break;
+                    }
+                }
+                //TODO: TEST THIS. There's probably some stupid combination of cybersuites that will cause a weird conflict with this and regular limbs. Something something extra limbs, idk. 
+                foreach (Cyberware objCyberSuite in _objCharacter.Cyberware.Where(objCyberware =>
+                    objCyberware.Category == "Cybersuite"))
+                {
+                    foreach (Cyberware objCyberware in objCyberSuite.Children.Where(objCyberware => objCyberware.Category == "Cyberlimb" && !string.IsNullOrWhiteSpace(objCyberware.LimbSlot) && !_objCharacter.Options.ExcludeLimbSlot.Contains(objCyberware.LimbSlot)))
+                    {
+                        intLimbCount += objCyberware.LimbSlotCount;
+                        switch (Abbrev)
+                        {
+                            case "STR":
+                                intLimbTotal += objCyberware.TotalStrength * objCyberware.LimbSlotCount;
+                                break;
+                            case "AGI":
+                                intLimbTotal += objCyberware.TotalAgility * objCyberware.LimbSlotCount;
+                                break;
+                        }
                     }
                 }
 
@@ -563,13 +594,8 @@ namespace Chummer.Backend.Attributes
                 // If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
                 if (_objCharacter.MetatypeCategory == "Cyberzombie" && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
                     return 1;
-
-                int intReturn = MetatypeMaximum + MaximumModifiers;
-
-                if (intReturn < 0)
-                    intReturn = 0;
-
-                return intReturn;
+                
+                return Math.Max(0, MetatypeMaximum + MaximumModifiers);
             }
         }
 
@@ -583,18 +609,8 @@ namespace Chummer.Backend.Attributes
                 // If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
                 if (_objCharacter.MetatypeCategory == "Cyberzombie" && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
                     return 1;
-
-                int intReturn;
-                if (Abbrev == "EDG" || Abbrev == "MAG" || Abbrev == "MAGAdept" || Abbrev == "RES" || Abbrev == "DEP")
-                    intReturn = TotalMaximum + AugmentedMaximumModifiers;
-                else
-                    intReturn = TotalMaximum + 4 + AugmentedMaximumModifiers;
-                // intReturn = TotalMaximum + Convert.ToInt32(Math.Floor((Convert.ToDecimal(TotalMaximum, GlobalOptions.CultureInfo) / 2))) + AugmentedMaximumModifiers;
-
-                if (intReturn < 0)
-                    intReturn = 0;
-
-                return intReturn;
+                
+                return Math.Max(0, MetatypeAugmentedMaximum + MaximumModifiers + AugmentedMaximumModifiers);
             }
         }
 
@@ -624,7 +640,8 @@ namespace Chummer.Backend.Attributes
         public string GetDisplayNameFormatted(string strLanguage)
         {
             if (Abbrev == "MAGAdept")
-                return LanguageManager.GetString("String_AttributeMAGLong", strLanguage) + LanguageManager.GetString("String_Space", strLanguage) + '(' + LanguageManager.GetString("String_AttributeMAGShort", strLanguage) + ") (" + LanguageManager.GetString("String_DescAdept", strLanguage) + ')';
+                return LanguageManager.GetString("String_AttributeMAGLong", strLanguage) + LanguageManager.GetString("String_Space", strLanguage) + '(' + LanguageManager.GetString("String_AttributeMAGShort", strLanguage) + ')'
+                       + LanguageManager.GetString("String_Space", strLanguage) + '(' + LanguageManager.GetString("String_DescAdept", strLanguage) + ')';
 
             return DisplayNameLong(strLanguage) + LanguageManager.GetString("String_Space", strLanguage) + '(' + DisplayNameShort(strLanguage) + ')';
         }
@@ -678,27 +695,26 @@ namespace Chummer.Backend.Attributes
                 HashSet<string> lstUniqueName = new HashSet<string>();
                 List<Tuple<string, int, string>> lstUniquePair = new List<Tuple<string, int, string>>();
                 int intBaseValue = 0;
-                foreach (Improvement objImprovement in _objCharacter.Improvements)
+                foreach (Improvement objImprovement in _objCharacter.Improvements
+                    .Where(objImprovement => objImprovement.Enabled && !objImprovement.Custom && objImprovement.ImproveType == Improvement.ImprovementType.Attribute &&
+                                             objImprovement.ImprovedName == Abbrev && string.IsNullOrEmpty(objImprovement.Condition)))
                 {
-                    if (objImprovement.Enabled && !objImprovement.Custom && objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == Abbrev && string.IsNullOrEmpty(objImprovement.Condition))
+                    string strUniqueName = objImprovement.UniqueName;
+                    if (!string.IsNullOrEmpty(strUniqueName) && strUniqueName != "enableattribute" && objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == Abbrev)
                     {
-                        string strUniqueName = objImprovement.UniqueName;
-                        if (!string.IsNullOrEmpty(strUniqueName) && strUniqueName != "enableattribute" && objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == Abbrev)
-                        {
-                            // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
-                            if (!lstUniqueName.Contains(strUniqueName))
-                                lstUniqueName.Add(strUniqueName);
+                        // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
+                        if (!lstUniqueName.Contains(strUniqueName))
+                            lstUniqueName.Add(strUniqueName);
 
-                            // Add the values to the UniquePair List so we can check them later.
-                            lstUniquePair.Add(new Tuple<string, int, string>(strUniqueName, objImprovement.Augmented * objImprovement.Rating, _objCharacter.GetObjectName(objImprovement, GlobalOptions.Language)));
-                        }
-                        else if (!(objImprovement.Value == 0 && objImprovement.Augmented == 0))
-                        {
-                            int intValue = objImprovement.Augmented * objImprovement.Rating;
-                            strModifier.Append(strSpaceCharacter + '+' + strSpaceCharacter + _objCharacter.GetObjectName(objImprovement, GlobalOptions.Language) + strSpaceCharacter + '(' +
+                        // Add the values to the UniquePair List so we can check them later.
+                        lstUniquePair.Add(new Tuple<string, int, string>(strUniqueName, objImprovement.Augmented * objImprovement.Rating, _objCharacter.GetObjectName(objImprovement, GlobalOptions.Language)));
+                    }
+                    else if (!(objImprovement.Value == 0 && objImprovement.Augmented == 0))
+                    {
+                        int intValue = objImprovement.Augmented * objImprovement.Rating;
+                        strModifier.Append(strSpaceCharacter + '+' + strSpaceCharacter + _objCharacter.GetObjectName(objImprovement, GlobalOptions.Language) + strSpaceCharacter + '(' +
                                            (intValue).ToString(GlobalOptions.CultureInfo) + ')');
-                            intBaseValue += intValue;
-                        }
+                        intBaseValue += intValue;
                     }
                 }
 
@@ -732,7 +748,7 @@ namespace Chummer.Backend.Attributes
                         }
                     }
 
-                    if (intHighest > intBaseValue)
+                    if (intHighest >= intBaseValue)
                         strModifier = strNewModifier;
                 }
                 else if (lstUniqueName.Contains("precedence1"))
@@ -748,7 +764,7 @@ namespace Chummer.Backend.Attributes
                             intHighest += strValues.Item2;
                         }
                     }
-                    if (intHighest > intBaseValue)
+                    if (intHighest >= intBaseValue)
                         strModifier = strNewModifier;
                 }
                 else
@@ -774,25 +790,24 @@ namespace Chummer.Backend.Attributes
                 // Factor in Custom Improvements.
                 lstUniqueName.Clear();
                 lstUniquePair.Clear();
-                foreach (Improvement objImprovement in _objCharacter.Improvements)
+                foreach (Improvement objImprovement in _objCharacter.Improvements
+                    .Where(objImprovement => objImprovement.Enabled && objImprovement.Custom && objImprovement.ImproveType == Improvement.ImprovementType.Attribute &&
+                                             objImprovement.ImprovedName == Abbrev && string.IsNullOrEmpty(objImprovement.Condition)))
                 {
-                    if (objImprovement.Enabled && objImprovement.Custom && objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == Abbrev && string.IsNullOrEmpty(objImprovement.Condition))
+                    string strUniqueName = objImprovement.UniqueName;
+                    if (!string.IsNullOrEmpty(strUniqueName))
                     {
-                        string strUniqueName = objImprovement.UniqueName;
-                        if (!string.IsNullOrEmpty(strUniqueName))
-                        {
-                            // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
-                            if (!lstUniqueName.Contains(strUniqueName))
-                                lstUniqueName.Add(strUniqueName);
+                        // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
+                        if (!lstUniqueName.Contains(strUniqueName))
+                            lstUniqueName.Add(strUniqueName);
 
-                            // Add the values to the UniquePair List so we can check them later.
-                            lstUniquePair.Add(new Tuple<string, int, string>(strUniqueName, objImprovement.Augmented * objImprovement.Rating, _objCharacter.GetObjectName(objImprovement, GlobalOptions.Language)));
-                        }
-                        else
-                        {
-                            strModifier.Append(strSpaceCharacter + '+' + strSpaceCharacter + _objCharacter.GetObjectName(objImprovement, GlobalOptions.Language) + strSpaceCharacter + '(' +
-                                               (objImprovement.Augmented * objImprovement.Rating).ToString(GlobalOptions.CultureInfo) + ')');
-                        }
+                        // Add the values to the UniquePair List so we can check them later.
+                        lstUniquePair.Add(new Tuple<string, int, string>(strUniqueName, objImprovement.Augmented * objImprovement.Rating, _objCharacter.GetObjectName(objImprovement, GlobalOptions.Language)));
+                    }
+                    else
+                    {
+                        strModifier.Append(strSpaceCharacter + '+' + strSpaceCharacter + _objCharacter.GetObjectName(objImprovement, GlobalOptions.Language) + strSpaceCharacter + '(' +
+                                           (objImprovement.Augmented * objImprovement.Rating).ToString(GlobalOptions.CultureInfo) + ')');
                     }
                 }
 
@@ -863,8 +878,8 @@ namespace Chummer.Backend.Attributes
 
         public bool AtMetatypeMaximum => Value == TotalMaximum && TotalMinimum > 0;
 
-        public int KarmaMaximum => TotalMaximum - TotalBase;
-        public int PriorityMaximum => TotalMaximum - Karma - FreeBase - RawMinimum;
+        public int KarmaMaximum => Math.Max(TotalMaximum - TotalBase, 0);
+        public int PriorityMaximum => Math.Max(TotalMaximum - Karma - FreeBase - RawMinimum, 0);
 
         private int _intCachedUpgradeKarmaCost = int.MinValue;
         /// <summary>
@@ -902,7 +917,7 @@ namespace Chummer.Backend.Attributes
                 {
                     if ((objLoopImprovement.ImprovedName == Abbrev || string.IsNullOrEmpty(objLoopImprovement.ImprovedName)) &&
                         (string.IsNullOrEmpty(objLoopImprovement.Condition) || (objLoopImprovement.Condition == "career") == _objCharacter.Created || (objLoopImprovement.Condition == "create") != _objCharacter.Created) &&
-                            (objLoopImprovement.Maximum == 0 || intValue <= objLoopImprovement.Maximum) && objLoopImprovement.Minimum <= intValue && objLoopImprovement.Enabled)
+                            (objLoopImprovement.Maximum == 0 || intValue + 1 <= objLoopImprovement.Maximum) && objLoopImprovement.Minimum <= intValue + 1 && objLoopImprovement.Enabled)
                     {
                         if (objLoopImprovement.ImproveType == Improvement.ImprovementType.AttributeKarmaCost)
                             intExtra += objLoopImprovement.Value;
@@ -980,11 +995,20 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        private void OnCharacterChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        private void OnCharacterChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (propertyChangedEventArgs.PropertyName == nameof(Character.Karma))
+            if (e.PropertyName == nameof(Character.Karma))
             {
                 OnPropertyChanged(nameof(CanUpgradeCareer));
+            }
+            else if (e.PropertyName == nameof(Character.LimbCount))
+            {
+                if (!CharacterObject.Options.DontUseCyberlimbCalculation &&
+                    (Abbrev == "AGI" || Abbrev == "STR") &&
+                    CharacterObject.Cyberware.Any(objCyberware => objCyberware.Category == "Cyberlimb" && !string.IsNullOrWhiteSpace(objCyberware.LimbSlot) && !CharacterObject.Options.ExcludeLimbSlot.Contains(objCyberware.LimbSlot)))
+                {
+                    OnPropertyChanged(nameof(TotalValue));
+                }
             }
         }
 
@@ -1021,12 +1045,9 @@ namespace Chummer.Backend.Attributes
                 _intCachedUpgradeKarmaCost = int.MinValue;
             if (lstNamesOfChangedProperties.Contains(nameof(ToolTip)))
                 _strCachedToolTip = string.Empty;
-            if (PropertyChanged != null)
+            foreach (string strPropertyToChange in lstNamesOfChangedProperties)
             {
-                foreach (string strPropertyToChange in lstNamesOfChangedProperties)
-                {
-                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
-                }
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
             }
         }
 
@@ -1078,12 +1099,12 @@ namespace Chummer.Backend.Attributes
                         new DependancyGraphNode<string>(nameof(HasModifiers)),
                         new DependancyGraphNode<string>(nameof(TotalValue),
                             new DependancyGraphNode<string>(nameof(AttributeModifiers)),
+                            new DependancyGraphNode<string>(nameof(MetatypeAugmentedMaximum)),
+                            new DependancyGraphNode<string>(nameof(MetatypeMaximum)),
                             new DependancyGraphNode<string>(nameof(TotalAugmentedMaximum),
                                 new DependancyGraphNode<string>(nameof(AugmentedMaximumModifiers)),
-                                new DependancyGraphNode<string>(nameof(TotalMaximum),
-                                    new DependancyGraphNode<string>(nameof(MetatypeMaximum)),
-                                    new DependancyGraphNode<string>(nameof(MaximumModifiers))
-                                )
+                                new DependancyGraphNode<string>(nameof(MetatypeAugmentedMaximum)),
+                                new DependancyGraphNode<string>(nameof(MaximumModifiers))
                             ),
                             new DependancyGraphNode<string>(nameof(Value),
                                 new DependancyGraphNode<string>(nameof(Karma)),
@@ -1096,7 +1117,10 @@ namespace Chummer.Backend.Attributes
                                         new DependancyGraphNode<string>(nameof(MinimumModifiers))
                                     )
                                 ),
-                                new DependancyGraphNode<string>(nameof(TotalMaximum))
+                                new DependancyGraphNode<string>(nameof(TotalMaximum),
+                                    new DependancyGraphNode<string>(nameof(MetatypeMaximum)),
+                                    new DependancyGraphNode<string>(nameof(MaximumModifiers))
+                                )
                             )
                         )
                     )

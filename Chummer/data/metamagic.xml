@@ -777,7 +777,7 @@
           <quality>Infected: Wendigo</quality>
         </oneof>
       </required>
-      <source>FA</source>
+      <source>DTR</source>
       <page>165</page>
     </metamagic>
     <metamagic>
@@ -790,7 +790,7 @@
           <critterpower>Mist Form</critterpower>
         </allof>
       </required>
-      <source>FA</source>
+      <source>DTR</source>
       <page>165</page>
     </metamagic>
     <!-- End Region -->

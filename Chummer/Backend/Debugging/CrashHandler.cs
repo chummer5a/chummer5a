@@ -57,7 +57,7 @@ namespace Chummer.Backend
                     {"commandline", Environment.CommandLine},
                     {"visible-version", Application.ProductVersion},
                     {"machine-name", Environment.MachineName},
-                    {"current-dir", Application.StartupPath},
+                    {"current-dir", Utils.GetStartupPath},
                     {"application-dir", Application.ExecutablePath},
                     {"os-type", Environment.OSVersion.VersionString},
                     {"visible-error-friendly", ex?.Message ?? "No description available"}
@@ -133,13 +133,15 @@ namespace Chummer.Backend
 
             // JavaScriptSerializer requires that all properties it accesses be public.
             // ReSharper disable once MemberCanBePrivate.Local
-            private readonly ConcurrentDictionary<string, string> _dicCapturedFiles = new ConcurrentDictionary<string, string>();
+            public readonly ConcurrentDictionary<string, string> _dicCapturedFiles = new ConcurrentDictionary<string, string>();
             // ReSharper disable once MemberCanBePrivate.Local
-            private readonly Dictionary<string, string> _dicPretendFiles;
+            public readonly Dictionary<string, string> _dicPretendFiles;
             // ReSharper disable once MemberCanBePrivate.Local
-            private readonly Dictionary<string, string> _dicAttributes;
-            private readonly int _intProcessId = Process.GetCurrentProcess().Id;
-            private readonly uint _uintThreadId = NativeMethods.GetCurrentThreadId();
+            public readonly Dictionary<string, string> _dicAttributes;
+            // ReSharper disable once MemberCanBePrivate.Local
+            public readonly int _intProcessId = Process.GetCurrentProcess().Id;
+            // ReSharper disable once MemberCanBePrivate.Local
+            public readonly uint _uintThreadId = NativeMethods.GetCurrentThreadId();
 
             public string SerializeBase64()
             {
@@ -165,8 +167,8 @@ namespace Chummer.Backend
 
             public void GetObjectData(SerializationInfo info, StreamingContext context)
             {
-                info.AddValue("ProcessId", _intProcessId);
-                info.AddValue("ThreadId", _uintThreadId);
+                info.AddValue("procesid", _intProcessId);
+                info.AddValue("threadid", _uintThreadId);
                 foreach (KeyValuePair<string, string> objLoopKeyValuePair in _dicAttributes)
                     info.AddValue(objLoopKeyValuePair.Key, objLoopKeyValuePair.Value);
                 foreach (KeyValuePair<string, string> objLoopKeyValuePair in _dicPretendFiles)
@@ -181,14 +183,14 @@ namespace Chummer.Backend
             try
             {
                 DumpData dump = new DumpData(ex);
-                dump.AddFile(Path.Combine(Application.StartupPath, "settings", "default.xml"));
-                dump.AddFile(Path.Combine(Application.StartupPath, "chummerlog.txt"));
+                dump.AddFile(Path.Combine(Utils.GetStartupPath, "settings", "default.xml"));
+                dump.AddFile(Path.Combine(Utils.GetStartupPath, "chummerlog.txt"));
 
                 byte[] info = new UTF8Encoding(true).GetBytes(dump.SerializeBase64());
-                File.WriteAllBytes(Path.Combine(Application.StartupPath, "json.txt"), info);
+                File.WriteAllBytes(Path.Combine(Utils.GetStartupPath, "json.txt"), info);
 
-                //Process crashHandler = Process.Start("crashhandler", "crash " + Path.Combine(Application.StartupPath, "json.txt") + " --debug");
-                Process crashHandler = Process.Start("crashhandler", "crash " + Path.Combine(Application.StartupPath, "json.txt"));
+                //Process crashHandler = Process.Start("crashhandler", "crash " + Path.Combine(Utils.GetStartupPath, "json.txt") + " --debug");
+                Process crashHandler = Process.Start("crashhandler", "crash " + Path.Combine(Utils.GetStartupPath, "json.txt"));
 
                 crashHandler?.WaitForExit();
             }

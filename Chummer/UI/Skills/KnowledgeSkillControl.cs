@@ -34,9 +34,11 @@ namespace Chummer.UI.Skills
             _skill = skill;
             InitializeComponent();
 
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+
             //Display
-            lblModifiedRating.DataBindings.Add("Text", skill, nameof(KnowledgeSkill.DisplayPool), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblModifiedRating.DataBindings.Add("ToolTipText", skill, nameof(Skill.PoolToolTip));
+            lblModifiedRating.DoDatabinding("Text", skill, nameof(KnowledgeSkill.DisplayPool));
+            lblModifiedRating.DoDatabinding("ToolTipText", skill, nameof(KnowledgeSkill.PoolToolTip));
 
             List<ListItem> lstTypes = KnowledgeSkill.KnowledgeTypes(GlobalOptions.Language).ToList();
             lstTypes.Sort(CompareListItems.CompareNames);
@@ -44,11 +46,22 @@ namespace Chummer.UI.Skills
             cboType.BeginUpdate();
             cboSkill.BeginUpdate();
             cboSpec.BeginUpdate();
+            cboType.DataSource = lstTypes;
             cboType.DisplayMember = nameof(ListItem.Name);
             cboType.ValueMember = nameof(ListItem.Value);
-            cboType.DataSource = lstTypes;
             cboType.DataBindings.Add("SelectedValue", skill, nameof(KnowledgeSkill.Type), false, DataSourceUpdateMode.OnPropertyChanged);
-            
+
+            nudSkill.Visible = !skill.CharacterObject.Created && skill.CharacterObject.SkillsSection.HasKnowledgePoints;
+            nudKarma.Visible = !skill.CharacterObject.Created;
+            chkKarma.Visible = !skill.CharacterObject.Created;
+            cboSpec.Visible = !skill.CharacterObject.Created;
+            //cboType.Visible = !skill.CharacterObject.Created;
+
+            btnCareerIncrease.Visible = skill.CharacterObject.Created;
+            lblSpec.Visible = skill.CharacterObject.Created;
+            btnAddSpec.Visible = skill.CharacterObject.Created;
+            lblRating.Visible = skill.CharacterObject.Created;
+
             if (skill.CharacterObject.Created)
             {
                 nudKarma.Visible = false;
@@ -93,18 +106,18 @@ namespace Chummer.UI.Skills
 
                 chkKarma.DataBindings.Add("Checked", skill, nameof(Skill.BuyWithKarma), false,
                         DataSourceUpdateMode.OnPropertyChanged);
-                cboSkill.DisplayMember = nameof(ListItem.Name);
-                cboSkill.ValueMember = nameof(ListItem.Value);
                 List<ListItem> lstDefaultKnowledgeSkills = KnowledgeSkill.DefaultKnowledgeSkills(GlobalOptions.Language).ToList();
                 lstDefaultKnowledgeSkills.Sort(CompareListItems.CompareNames);
                 cboSkill.DataSource = lstDefaultKnowledgeSkills;
+                cboSkill.DisplayMember = nameof(ListItem.Name);
+                cboSkill.ValueMember = nameof(ListItem.Value);
                 cboSkill.SelectedIndex = -1;
                 cboSkill.DataBindings.Add("Text", skill, nameof(KnowledgeSkill.WriteableName), false, DataSourceUpdateMode.OnPropertyChanged);
 
                 //dropdown/spec
+                cboSpec.DataSource = skill.CGLSpecializations;
                 cboSpec.DisplayMember = nameof(ListItem.Name);
                 cboSpec.ValueMember = nameof(ListItem.Value);
-                cboSpec.DataSource = skill.CGLSpecializations;
                 cboSpec.SelectedIndex = -1;
 
                 if (skill.ForcedName && skill.ForcedRating)
@@ -167,22 +180,27 @@ namespace Chummer.UI.Skills
                     all = true;
                     goto case nameof(Skill.CGLSpecializations);
                 case nameof(Skill.CGLSpecializations):
-                    string strOldSpec = cboSpec.SelectedValue?.ToString();
-                    cboSpec.SuspendLayout();
-                    cboSpec.DataSource = null;
-                    cboSpec.DisplayMember = nameof(ListItem.Name);
-                    cboSpec.ValueMember = nameof(ListItem.Value);
-                    cboSpec.DataSource = _skill.CGLSpecializations;
-                    cboSpec.MaxDropDownItems = Math.Max(1, _skill.CGLSpecializations.Count);
-                    if (string.IsNullOrEmpty(strOldSpec))
-                        cboSpec.SelectedIndex = -1;
-                    else
+                    if (!_skill.CharacterObject.Created)
                     {
-                        cboSpec.SelectedValue = strOldSpec;
-                        if (cboSpec.SelectedIndex == -1)
-                            cboSpec.Text = strOldSpec;
+                        string strOldSpec = _skill.CGLSpecializations.Count != 0 ? cboSpec.SelectedItem?.ToString() : cboSpec.Text;
+                        cboSpec.SuspendLayout();
+                        cboSpec.DataSource = null;
+                        cboSpec.DataSource = _skill.CGLSpecializations;
+                        cboSpec.DisplayMember = nameof(ListItem.Name);
+                        cboSpec.ValueMember = nameof(ListItem.Value);
+                        cboSpec.MaxDropDownItems = Math.Max(1, _skill.CGLSpecializations.Count);
+                        if (string.IsNullOrEmpty(strOldSpec))
+                            cboSpec.SelectedIndex = -1;
+                        else
+                        {
+                            cboSpec.SelectedValue = strOldSpec;
+                            if (cboSpec.SelectedIndex == -1)
+                                cboSpec.Text = strOldSpec;
+                        }
+
+                        cboSpec.ResumeLayout();
                     }
-                    cboSpec.ResumeLayout();
+
                     if (all)
                         goto case nameof(KnowledgeSkill.Type);
                     break;
@@ -263,17 +281,53 @@ namespace Chummer.UI.Skills
                 frmParent.IsCharacterUpdateRequested = true;
         }
 
-        private void cboSpec_TextChanged(object sender, EventArgs e)
-        {
-            if (!_skill.CharacterObject.Options.AllowPointBuySpecializationsOnKarmaSkills && nudSkill.Value == 0 && !string.IsNullOrWhiteSpace(cboSpec.Text))
-            {
-                chkKarma.Checked = true;
-            }
-        }
-
         public void MoveControls(int i)
         {
             lblName.Width = i;
         }
+
+        /// <summary>
+        /// I'm not super pleased with how this works, but it's functional so w/e.
+        /// The goal is for controls to retain the ability to display tooltips even while disabled. IT DOES NOT WORK VERY WELL.
+        /// </summary>
+        #region ButtonWithToolTip Visibility workaround
+
+        ButtonWithToolTip _activeButton;
+
+        private ButtonWithToolTip ActiveButton
+        {
+            get => _activeButton;
+            set
+            {
+                if (value == ActiveButton) return;
+                ActiveButton?.ToolTipObject.Hide(this);
+                _activeButton = value;
+                if (_activeButton?.Visible == true)
+                {
+                    ActiveButton?.ToolTipObject.Show(ActiveButton?.ToolTipText, this);
+                }
+            }
+        }
+
+        private Control FindToolTipControl(Point pt)
+        {
+            foreach (Control c in Controls)
+            {
+                if (!(c is ButtonWithToolTip)) continue;
+                if (c.Bounds.Contains(pt)) return c;
+            }
+            return null;
+        }
+
+        private void OnMouseMove(object sender, MouseEventArgs e)
+        {
+            ActiveButton = FindToolTipControl(e.Location) as ButtonWithToolTip;
+        }
+
+        private void OnMouseLeave(object sender, EventArgs e)
+        {
+            ActiveButton = null;
+        }
+        #endregion
     }
 }

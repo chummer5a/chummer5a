@@ -34,8 +34,8 @@ namespace Chummer.Backend.Equipment
     /// Weapon Accessory.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class WeaponAccessory : IHasInternalId, IHasName, IHasXmlNode, IHasNotes
-    {
+    public class WeaponAccessory : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, ICanEquip, IHasSource, IHasRating, ICanSort, IHasWirelessBonus, IHasStolenProperty
+	{
         private Guid _guiID;
         private readonly Character _objCharacter;
         private XmlNode _nodAllowGear;
@@ -60,13 +60,15 @@ namespace Chummer.Backend.Equipment
         private string _strNotes = string.Empty;
         private string _strDicePool = string.Empty;
         private int _intAccuracy;
+        private int _intMaxRating;
         private int _intRating;
         private int _intRCGroup;
         private int _intAmmoSlots;
+        private string _strModifyAmmoCapacity;
         private bool _blnDeployable;
         private bool _blnDiscountCost;
         private bool _blnIncludedInWeapon;
-        private bool _blnInstalled = true;
+        private bool _blnEquipped = true;
         private int _intAccessoryCostMultiplier = 1;
         private string _strExtra = string.Empty;
         private int _intRangeBonus;
@@ -75,6 +77,10 @@ namespace Chummer.Backend.Equipment
         private string _strAddMode = string.Empty;
         private string _strAmmoReplace = string.Empty;
         private int _intAmmoBonus;
+        private int _intSortOrder;
+        private bool _blnWirelessOn = false;
+        private XmlNode _nodWirelessBonus;
+	    private bool _blnStolen;
 
         #region Constructor, Create, Save, Load, and Print Methods
         public WeaponAccessory(Character objCharacter)
@@ -90,7 +96,7 @@ namespace Chummer.Backend.Equipment
         {
             if (e.Action != NotifyCollectionChangedAction.Add &&
                 e.Action != NotifyCollectionChangedAction.Replace) return;
-            if (Installed && Parent?.ParentVehicle == null) return;
+            if (Equipped && Parent?.ParentVehicle == null) return;
             foreach (Gear objGear in e.NewItems)
             {
                 objGear.ChangeEquippedStatus(false);
@@ -111,6 +117,7 @@ namespace Chummer.Backend.Equipment
             _strMount = strMount.Item1;
             _strExtraMount = strMount.Item2;
             _intRating = intRating;
+            objXmlAccessory.TryGetInt32FieldQuickly("rating", ref _intMaxRating);
             objXmlAccessory.TryGetStringFieldQuickly("avail", ref _strAvail);
             // Check for a Variable Cost.
             if (blnSkipCost)
@@ -139,7 +146,7 @@ namespace Chummer.Backend.Equipment
                             decMax = 1000000;
                         frmPickNumber.Minimum = decMin;
                         frmPickNumber.Maximum = decMax;
-                        frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language).Replace("{0}", DisplayNameShort(GlobalOptions.Language));
+                        frmPickNumber.Description = string.Format(LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language), DisplayNameShort(GlobalOptions.Language));
                         frmPickNumber.AllowCancel = false;
                         frmPickNumber.ShowDialog();
                         _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
@@ -157,6 +164,7 @@ namespace Chummer.Backend.Equipment
             objXmlAccessory.TryGetInt32FieldQuickly("rcgroup", ref _intRCGroup);
             objXmlAccessory.TryGetStringFieldQuickly("conceal", ref _strConceal);
             objXmlAccessory.TryGetInt32FieldQuickly("ammoslots", ref _intAmmoSlots);
+            objXmlAccessory.TryGetStringFieldQuickly("modifyammocapacity", ref _strModifyAmmoCapacity);
             objXmlAccessory.TryGetStringFieldQuickly("ammoreplace", ref _strAmmoReplace);
             objXmlAccessory.TryGetInt32FieldQuickly("accuracy", ref _intAccuracy);
             objXmlAccessory.TryGetStringFieldQuickly("dicepool", ref _strDicePool);
@@ -198,7 +206,7 @@ namespace Chummer.Backend.Equipment
                             if (objXmlAccessoryGearNameAttributes?["qty"] != null)
                                 decGearQty = Convert.ToDecimal(objXmlAccessoryGearNameAttributes["qty"].InnerText, GlobalOptions.InvariantCultureInfo);
 
-                            XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlAccessoryGearName?.InnerText + "\" and category = \"" + objXmlAccessoryGear["category"].InnerText + "\"]");
+                            XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = " + objXmlAccessoryGearName?.InnerText.CleanXPath() + " and category = " + objXmlAccessoryGear["category"].InnerText.CleanXPath() + "]");
                             Gear objGear = new Gear(_objCharacter);
 
                             List<Weapon> lstWeapons = new List<Weapon>();
@@ -207,8 +215,6 @@ namespace Chummer.Backend.Equipment
 
                             objGear.Quantity = decGearQty;
                             objGear.Cost = "0";
-                            objGear.MinRating = intGearRating;
-                            objGear.MaxRating = intGearRating;
                             objGear.ParentID = InternalId;
                             if (!string.IsNullOrEmpty(strChildForceSource))
                                 objGear.Source = strChildForceSource;
@@ -221,7 +227,12 @@ namespace Chummer.Backend.Equipment
                                 objGear.Capacity = '[' + objXmlAccessoryGear["capacity"].InnerText + ']';
                         }
             }
+            _nodWirelessBonus = objXmlAccessory["wirelessbonus"];
         }
+
+        private SourceString _objCachedSourceDetail;
+	    public SourceString SourceDetail => _objCachedSourceDetail ?? (_objCachedSourceDetail =
+	                                            new SourceString(Source, Page(GlobalOptions.Language), GlobalOptions.Language));
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -235,6 +246,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("mount", _strMount);
             objWriter.WriteElementString("extramount", _strExtraMount);
             objWriter.WriteElementString("rc", _strRC);
+            objWriter.WriteElementString("maxrating", _intMaxRating.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("rcgroup", _intRCGroup.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("rcdeployable", _blnDeployable.ToString());
@@ -244,7 +256,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("avail", _strAvail);
             objWriter.WriteElementString("cost", _strCost);
             objWriter.WriteElementString("included", _blnIncludedInWeapon.ToString());
-            objWriter.WriteElementString("installed", _blnInstalled.ToString());
+            objWriter.WriteElementString("equipped", _blnEquipped.ToString());
             if (_nodAllowGear != null)
                 objWriter.WriteRaw(_nodAllowGear.OuterXml);
             objWriter.WriteElementString("source", _strSource);
@@ -260,6 +272,7 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteEndElement();
             }
             objWriter.WriteElementString("ammoslots", _intAmmoSlots.ToString());
+            objWriter.WriteElementString("modifyammocapacity", _strModifyAmmoCapacity);
             objWriter.WriteElementString("damagetype", _strDamageType);
             objWriter.WriteElementString("damage", _strDamage);
             objWriter.WriteElementString("damagereplace", _strDamageReplace);
@@ -275,8 +288,17 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("rangebonus", _intRangeBonus.ToString());
             objWriter.WriteElementString("extra", _strExtra);
             objWriter.WriteElementString("ammobonus", _intAmmoBonus.ToString());
+            objWriter.WriteElementString("wirelesson", _blnWirelessOn.ToString());
+            if (_nodWirelessBonus != null)
+                objWriter.WriteRaw(_nodWirelessBonus.OuterXml);
+            else
+                objWriter.WriteElementString("wirelessbonus", string.Empty);
+            objWriter.WriteElementString("stolen", _blnStolen.ToString());
+            objWriter.WriteElementString("sortorder", _intSortOrder.ToString());
             objWriter.WriteEndElement();
-            _objCharacter.SourceProcess(_strSource);
+
+            if (!IncludedInWeapon)
+                _objCharacter.SourceProcess(_strSource);
         }
 
         /// <summary>
@@ -298,13 +320,23 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
             objNode.TryGetInt32FieldQuickly("rcgroup", ref _intRCGroup);
             objNode.TryGetInt32FieldQuickly("accuracy", ref _intAccuracy);
-            objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
+            if (!objNode.TryGetInt32FieldQuickly("maxrating", ref _intMaxRating))
+            {
+                // Loading older save before maxrating was tracked for Weapon Accessories
+                GetNode()?.TryGetInt32FieldQuickly("rating", ref _intMaxRating);
+            }
             objNode.TryGetStringFieldQuickly("conceal", ref _strConceal);
             objNode.TryGetBoolFieldQuickly("rcdeployable", ref _blnDeployable);
             objNode.TryGetStringFieldQuickly("avail", ref _strAvail);
             objNode.TryGetStringFieldQuickly("cost", ref _strCost);
             objNode.TryGetBoolFieldQuickly("included", ref _blnIncludedInWeapon);
-            objNode.TryGetBoolFieldQuickly("installed", ref _blnInstalled);
+            objNode.TryGetBoolFieldQuickly("equipped", ref _blnEquipped);
+            if (!_blnEquipped)
+            {
+                objNode.TryGetBoolFieldQuickly("installed", ref _blnEquipped);
+            }
+            if (!objNode.TryGetBoolFieldQuickly("wirelesson", ref _blnWirelessOn))
+                _blnWirelessOn = false;
             _nodAllowGear = objNode["allowgear"];
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
 
@@ -312,6 +344,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("dicepool", ref _strDicePool);
 
             objNode.TryGetInt32FieldQuickly("ammoslots", ref _intAmmoSlots);
+            objNode.TryGetStringFieldQuickly("modifyammocapacity", ref _strModifyAmmoCapacity);
 
             XmlNode xmlGearsNode = objNode["gears"];
             if (xmlGearsNode != null)
@@ -342,12 +375,14 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetInt32FieldQuickly("rangebonus", ref _intRangeBonus);
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetInt32FieldQuickly("ammobonus", ref _intAmmoBonus);
-
-            if (blnCopy && !Installed)
+            objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
+            objNode.TryGetBoolFieldQuickly("stolen", ref _blnStolen);
+            if (blnCopy && !Equipped)
             {
-                _blnInstalled = true;
-                Installed = false;
+                _blnEquipped = true;
+                Equipped = false;
             }
+            ToggleWirelessBonuses(WirelessOn);
         }
 
         /// <summary>
@@ -393,6 +428,11 @@ namespace Chummer.Backend.Equipment
         public string InternalId => _guiID.ToString("D");
 
         /// <summary>
+        /// XmlNode for the wireless bonuses (if any) this accessory provides. 
+        /// </summary>
+        public XmlNode WirelessBonus => _nodWirelessBonus;
+
+        /// <summary>
         /// Name.
         /// </summary>
         public string Name
@@ -414,6 +454,14 @@ namespace Chummer.Backend.Equipment
         {
             get => _intAmmoSlots;
             set => _intAmmoSlots = value;
+        }
+        /// <summary>
+        /// The accessory modifies the weapon's ammunition capacity.
+        /// </summary>
+        public string ModifyAmmoCapacity
+        {
+            get => _strModifyAmmoCapacity;
+            set => _strModifyAmmoCapacity = value;
         }
         /// <summary>
         /// The accessory adds to the weapon's damage value.
@@ -588,7 +636,34 @@ namespace Chummer.Backend.Equipment
         public int Rating
         {
             get => _intRating;
-            set => _intRating = value;
+            set
+            {
+                _intRating = value;
+                if (Gear.Count > 0)
+                {
+                    foreach (Gear objChild in Gear.Where(x => x.MaxRating.Contains("Parent") || x.MinRating.Contains("Parent")))
+                    {
+                        // This will update a child's rating if it would become out of bounds due to its parent's rating changing
+                        objChild.Rating = objChild.Rating;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Maximum Rating of the Weapon Accessory
+        /// </summary>
+        public int MaxRating
+        {
+            get => _intMaxRating;
+            set
+            {
+                _intMaxRating = value;
+                if (Rating > value)
+                {
+                    Rating = value;
+                }
+            }
         }
 
         /// <summary>
@@ -648,14 +723,14 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Whether or not this Accessory is installed and contributing towards the Weapon's stats.
         /// </summary>
-        public bool Installed
+        public bool Equipped
         {
-            get => _blnInstalled;
+            get => _blnEquipped;
             set
             {
-                if (_blnInstalled != value)
+                if (_blnEquipped != value)
                 {
-                    _blnInstalled = value;
+                    _blnEquipped = value;
                     if (Parent?.ParentVehicle == null)
                     {
                         foreach (Gear objGear in Gear)
@@ -799,7 +874,7 @@ namespace Chummer.Backend.Equipment
                                 objGear.ChangeEquippedStatus(false);
                             }
                         }
-                        else if (Installed)
+                        else if (Equipped)
                         {
                             foreach (Gear objGear in Gear)
                             {
@@ -827,6 +902,24 @@ namespace Chummer.Backend.Equipment
                 return decReturn;
             }
         }
+
+	    /// <summary>
+	    /// Total cost of the Weapon Accessory.
+	    /// </summary>
+	    public decimal StolenTotalCost
+	    {
+	        get
+	        {
+	            decimal decReturn = 0;
+                if (Stolen)
+	                decReturn = OwnCost;
+
+	            // Add in the cost of any Gear the Weapon Accessory has attached to it.
+	            decReturn += Gear.Sum(g => g.StolenTotalCost);
+
+	            return decReturn;
+	        }
+	    }
 
         /// <summary>
         /// The cost of just the Weapon Accessory itself.
@@ -940,6 +1033,15 @@ namespace Chummer.Backend.Equipment
             get => _strExtra;
             set => _strExtra = value;
         }
+
+        /// <summary>
+        /// Used by our sorting algorithm to remember which order the user moves things to
+        /// </summary>
+        public int SortOrder
+        {
+            get => _intSortOrder;
+            set => _intSortOrder = value;
+        }
         
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
@@ -958,9 +1060,73 @@ namespace Chummer.Backend.Equipment
             }
             return _objCachedMyXmlNode;
         }
+
+        /// <summary>
+        /// Whether or not this Accessory's wireless bonus is enabled
+        /// </summary>
+        public bool WirelessOn
+        {
+            get => _blnWirelessOn;
+            set
+            {
+                if (value == _blnWirelessOn)
+                    return;
+                ToggleWirelessBonuses(value);
+                _blnWirelessOn = value;
+            }
+        }
+
+        /// <summary>
+        /// Is the object stolen via the Stolen Gear quality?
+        /// </summary>
+	    public bool Stolen
+	    {
+	        get => _blnStolen;
+	        set => _blnStolen = value;
+	    }
         #endregion
 
         #region Methods
+
+        /// <summary>
+        /// Toggle the Wireless Bonus for this armor mod. 
+        /// </summary>
+        /// <param name="enable"></param>
+        public void ToggleWirelessBonuses(bool enable)
+        {
+            if (enable)
+            {
+                if (WirelessBonus?.Attributes?.Count > 0)
+                {
+                    if (WirelessBonus.Attributes["mode"].InnerText == "replace")
+                    {
+                        ImprovementManager.DisableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.WeaponAccessory && x.SourceName == InternalId).ToList());
+                    }
+                }
+                if (WirelessBonus?.InnerText != null)
+                {
+                    ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.WeaponAccessory,
+                        _guiID.ToString("D") + "Wireless", WirelessBonus, false, Rating,
+                        DisplayNameShort(GlobalOptions.Language));
+                }
+
+                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))
+                    _strExtra = ImprovementManager.SelectedValue;
+            }
+            else
+            {
+                if (WirelessBonus?.Attributes?.Count > 0)
+                {
+                    if (WirelessBonus.Attributes?["mode"].InnerText == "replace")
+                    {
+                        ImprovementManager.EnableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.WeaponAccessory && x.SourceName == InternalId).ToList());
+                    }
+                }
+                ImprovementManager.DisableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.WeaponAccessory && x.SourceName == InternalId + "Wireless").ToList());
+            }
+        }
+
+
         public decimal DeleteWeaponAccessory()
         {
             decimal decReturn = 0;
@@ -981,7 +1147,7 @@ namespace Chummer.Backend.Equipment
             {
                 Name = InternalId,
                 Text = DisplayName(GlobalOptions.Language),
-                Tag = InternalId,
+                Tag = this,
                 ContextMenuStrip = cmsWeaponAccessory,
                 ForeColor = PreferredColor,
                 ToolTipText = Notes.WordWrap(100)
@@ -1019,5 +1185,38 @@ namespace Chummer.Backend.Equipment
         }
         #endregion
         #endregion
+
+        public bool Remove(Character characterObject, bool blnConfirmDelete = true)
+        {
+            if (blnConfirmDelete)
+            {
+                if (!characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteWeapon",
+                    GlobalOptions.Language)))
+                    return false;
+            }
+            DeleteWeaponAccessory();
+            return Parent.WeaponAccessories.Remove(this);
+        }
+
+        public void Sell(Character characterObject, decimal percentage)
+        {
+            if (IncludedInWeapon) return;
+            Parent.WeaponAccessories.Remove(this);
+
+            // Create the Expense Log Entry for the sale.
+            decimal decAmount = TotalCost * percentage;
+            decAmount += DeleteWeaponAccessory() * percentage;
+            ExpenseLogEntry objExpense = new ExpenseLogEntry(characterObject);
+            objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldWeaponAccessory", GlobalOptions.Language) + ' ' + DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+            characterObject.ExpenseEntries.AddWithSort(objExpense);
+            characterObject.Nuyen += decAmount;
+        }
+
+        public void SetSourceDetail(Control sourceControl)
+        {
+            if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
+                _objCachedSourceDetail = null;
+            SourceDetail.SetControl(sourceControl);
+        }
     }
 }

@@ -18,9 +18,9 @@
  */
 using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.Windows.Forms;
 using Chummer.Backend.Skills;
-using System.ComponentModel;
 
 namespace Chummer.UI.Skills
 {
@@ -32,22 +32,25 @@ namespace Chummer.UI.Skills
             _skillGroup = skillGroup;
             InitializeComponent();
 
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+
             //This is apparently a factor 30 faster than placed in load. NFI why
             Stopwatch sw = Stopwatch.StartNew();
             SuspendLayout();
             lblName.DataBindings.Add("Text", _skillGroup, nameof(SkillGroup.DisplayName), false, DataSourceUpdateMode.OnPropertyChanged);
             lblName.DataBindings.Add("ToolTipText", _skillGroup, nameof(SkillGroup.ToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
 
+            nudSkill.Visible = !skillGroup.CharacterObject.Created && skillGroup.CharacterObject.BuildMethodHasSkillPoints;
+            nudKarma.Visible = !skillGroup.CharacterObject.Created;
+
+            btnCareerIncrease.Visible = skillGroup.CharacterObject.Created;
+            lblGroupRating.Visible = skillGroup.CharacterObject.Created;
+
             if (_skillGroup.CharacterObject.Created)
             {
-                nudKarma.Visible = false;
-                nudSkill.Visible = false;
-
-                btnCareerIncrease.Visible = true;
                 btnCareerIncrease.DataBindings.Add("Enabled", _skillGroup, nameof(SkillGroup.CareerCanIncrease), false, DataSourceUpdateMode.OnPropertyChanged);
                 btnCareerIncrease.DataBindings.Add("ToolTipText", _skillGroup, nameof(SkillGroup.UpgradeToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
 
-                lblGroupRating.Visible = true;
                 lblGroupRating.DataBindings.Add("Text", _skillGroup, nameof(SkillGroup.DisplayRating), false, DataSourceUpdateMode.OnPropertyChanged);
             }
             else
@@ -110,6 +113,49 @@ namespace Chummer.UI.Skills
                 nudSkill.Left = lblName.Left + nameWidth + 6;
                 nudKarma.Left = nudSkill.Left + ratingWidth + 6;
             }
+        }
+        #endregion
+
+        /// <summary>
+        /// I'm not super pleased with how this works, but it's functional so w/e.
+        /// The goal is for controls to retain the ability to display tooltips even while disabled. IT DOES NOT WORK VERY WELL.
+        /// </summary>
+        #region ButtonWithToolTip Visibility workaround
+
+        ButtonWithToolTip _activeButton;
+        protected ButtonWithToolTip ActiveButton
+        {
+            get => _activeButton;
+            set
+            {
+                if (value == ActiveButton) return;
+                ActiveButton?.ToolTipObject.Hide(this);
+                _activeButton = value;
+                if (_activeButton?.Visible == true)
+                {
+                    ActiveButton?.ToolTipObject.Show(ActiveButton?.ToolTipText, this);
+                }
+            }
+        }
+
+        protected Control FindToolTipControl(Point pt)
+        {
+            foreach (Control c in Controls)
+            {
+                if (!(c is ButtonWithToolTip)) continue;
+                if (c.Bounds.Contains(pt)) return c;
+            }
+            return null;
+        }
+
+        private void OnMouseMove(object sender, MouseEventArgs e)
+        {
+            ActiveButton = FindToolTipControl(e.Location) as ButtonWithToolTip;
+        }
+
+        private void OnMouseLeave(object sender, EventArgs e)
+        {
+            ActiveButton = null;
         }
         #endregion
     }
