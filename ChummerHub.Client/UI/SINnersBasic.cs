@@ -52,63 +52,63 @@ namespace ChummerHub.Client.UI
 
         public async Task<bool> CheckSINnerStatus()
         {
-            try
-            {
-                if ((myUC?.MyCE?.MySINnerFile?.Id == null) || (myUC.MyCE.MySINnerFile.Id == Guid.Empty))
+        
+                try
                 {
-                    this.bUpload.Text = "SINless Character/Error";
+                    if ((myUC?.MyCE?.MySINnerFile?.Id == null) || (myUC.MyCE.MySINnerFile.Id == Guid.Empty))
+                    {
+                        this.bUpload.Text = "SINless Character/Error";
+                        return false;
+                    }
+                    var response = await StaticUtils.Client.GetSINByIdWithHttpMessagesAsync(myUC.MyCE.MySINnerFile.Id.Value);
+                    if (response.Response.StatusCode == HttpStatusCode.OK)
+                    {
+                        myUC.MyCE.SetSINner(response.Body);
+                        this.bUpload.Text = "Remove from SINners";
+                        this.bGroupSearch.Enabled = true;
+                        this.lUploadStatus.Text = "online";
+                        this.bUpload.Enabled = true;
+                    }
+                    else if (response.Response.StatusCode == HttpStatusCode.NotFound)
+                    {
+                        this.lUploadStatus.Text = "not online";
+                        this.bGroupSearch.Enabled = false;
+                        this.bGroupSearch.SetToolTip("SINner needs to be uploaded first, before he/she can join a group.");
+                        this.bUpload.Enabled = true;
+                        this.bUpload.Text = "Upload";
+                    }
+                    else
+                    {
+                        this.lUploadStatus.Text = "Statuscode: " + response.Response.StatusCode;
+                        this.bGroupSearch.Enabled = false;
+                        this.bGroupSearch.SetToolTip("SINner needs to be uploaded first, before he/she can join a group.");
+                        this.bUpload.Text = "Upload";
+                        this.bUpload.Enabled = true;
+                    }
+                    this.cbTagArchetype.Enabled = false;
+                    this.tbArchetypeName.Enabled = false;
+                    var resroles = await StaticUtils.Client.GetRolesWithHttpMessagesAsync();
+                    if (response.Response.StatusCode == HttpStatusCode.OK)
+                    {
+                        var archetypeseq = from a in resroles.Body where a.ToLowerInvariant() == "ArchetypeAdmin".ToLowerInvariant() select a;
+                        if (archetypeseq.Any())
+                        {
+                            this.cbTagArchetype.Enabled = true;
+                            this.tbArchetypeName.Enabled = true;
+                        }
+                    }
+
+                    if (myUC?.MyCE?.MySINnerFile?.MyGroup != null)
+                        this.lGourpForSinner.Text = myUC.MyCE.MySINnerFile.MyGroup.Groupname;
+
+
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Trace.TraceError(ex.ToString());
+                    this.bUpload.Text = "unknown Status";
                     return false;
                 }
-                var response = await StaticUtils.Client.GetSINByIdWithHttpMessagesAsync(myUC.MyCE.MySINnerFile.Id.Value);
-                if (response.Response.StatusCode == HttpStatusCode.OK)
-                {
-                    myUC.MyCE.SetSINner(response.Body);
-                    this.bUpload.Text = "Remove from SINners";
-                    this.bGroupSearch.Enabled = true;
-                    this.lUploadStatus.Text = "online";
-                    this.bUpload.Enabled = true;
-                }
-                else if(response.Response.StatusCode == HttpStatusCode.NotFound)
-                {
-                    this.lUploadStatus.Text = "not online";
-                    this.bGroupSearch.Enabled = false;
-                    this.bGroupSearch.SetToolTip("SINner needs to be uploaded first, before he/she can join a group.");
-                    this.bUpload.Enabled = true;
-                    this.bUpload.Text = "Upload";
-                }
-                else
-                {
-                    this.lUploadStatus.Text = "Statuscode: " + response.Response.StatusCode;
-                    this.bGroupSearch.Enabled = false;
-                    this.bGroupSearch.SetToolTip("SINner needs to be uploaded first, before he/she can join a group.");
-                    this.bUpload.Text = "Upload";
-                    this.bUpload.Enabled = true;
-                }
-                this.cbTagArchetype.Enabled = false;
-                this.tbArchetypeName.Enabled = false;
-                var resroles = await StaticUtils.Client.GetRolesWithHttpMessagesAsync();
-                if(response.Response.StatusCode == HttpStatusCode.OK)
-                {
-                    var archetypeseq = from a in resroles.Body where a.ToLowerInvariant() == "ArchetypeAdmin".ToLowerInvariant() select a;
-                    if (archetypeseq.Any())
-                    {
-                        this.cbTagArchetype.Enabled = true;
-                        this.tbArchetypeName.Enabled = true;
-                    }
-                }
-
-                if(myUC?.MyCE?.MySINnerFile?.MyGroup != null)
-                    this.lGourpForSinner.Text = myUC.MyCE.MySINnerFile.MyGroup.Groupname;
-
-
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Trace.TraceError(ex.ToString());
-                this.bUpload.Text = "unknown Status";
-                return false;
-            }
-
             return true;
         }
 
@@ -148,21 +148,30 @@ namespace ChummerHub.Client.UI
 
         private async void bUpload_Click(object sender, EventArgs e)
         {
-            try
+            using (new CursorWait(true, this))
             {
-                if (bUpload.Text.Contains("Upload"))
+                try
                 {
-                    await myUC.MyCE.Upload();
-                }
+                    if (bUpload.Text.Contains("Upload"))
+                    {
+                        this.lUploadStatus.Text = "uploading";
+                        await myUC.MyCE.Upload();
+                    }
+                    else
+                    {
+                        this.lUploadStatus.Text = "removing";
+                        await myUC.RemoveSINnerAsync();
+                    }
 
-                else
-                    await myUC.RemoveSINnerAsync();
+                }
+                catch (Exception exception)
+                {
+                    MessageBox.Show(exception.Message);
+                }
             }
-            catch (Exception exception)
-            {
-                MessageBox.Show(exception.Message);
-            }
-            CheckSINnerStatus();
+            await CheckSINnerStatus();
+
+
         }
 
         private void bGroupSearch_Click(object sender, EventArgs e)

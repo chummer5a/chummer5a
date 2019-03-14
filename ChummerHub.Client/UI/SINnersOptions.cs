@@ -171,11 +171,21 @@ namespace ChummerHub.Client.UI
 
         private void InitializeMe()
         {
+            
+            string tip = "Milestone builds always user sinners." + Environment.NewLine + "Nightly builds always user sinners-beta.";
+            cbSINnerUrl.SetToolTip(tip);
             cbSINnerUrl.SelectedValueChanged -= CbSINnerUrl_SelectedValueChanged;
             Properties.Settings.Default.Reload();
-            var sinnerurl = Properties.Settings.Default.SINnerUrl;
+            var sinnerurl = StaticUtils.Client.BaseUri.ToString();
+            if (Properties.Settings.Default.SINnerUrls.Contains("http://sinners-beta.azurewebsites.net/"))
+            {
+                Properties.Settings.Default.SINnerUrls.Remove("http://sinners-beta.azurewebsites.net/");
+                Properties.Settings.Default.SINnerUrls.Add("https://sinners-beta.azurewebsites.net/");
+                Properties.Settings.Default.Save();
+            }
             this.cbSINnerUrl.DataSource = Properties.Settings.Default.SINnerUrls;
             this.cbSINnerUrl.SelectedItem = sinnerurl;
+            cbSINnerUrl.Enabled = false;
             this.cbVisibilityIsPublic.BindingContext = new BindingContext();
             var t = StartSTATask(
                 async () =>
@@ -267,11 +277,9 @@ namespace ChummerHub.Client.UI
                 {
                     if(LoginStatus == true)
                     {
-                        
                         var t = GetUserEmail();
                         t.ContinueWith((emailtask) =>
                         {
-
                             string mail = emailtask.Result;
                             if(!String.IsNullOrEmpty(mail))
                             {
@@ -322,18 +330,13 @@ namespace ChummerHub.Client.UI
                                 {
                                     PluginHandler.MainForm.CharacterRoster.LoadCharacters(true, true, true, true);
                                 });
-                                
                             }
-                                
                         });
-                        
                         this.bLogin.Text = "Logout";
                         string status = Roles.Aggregate((a, b) => a + ", " + b);
                         labelAccountStatus.Text = status;
                         labelAccountStatus.ForeColor = Color.DarkGreen;
                         HideWebBrowser();
-
-
                     }
                     else if(LoginStatus == false)
                     {

@@ -539,33 +539,63 @@ namespace ChummerHub.Controllers.V1
         public async Task<ActionResult<SINSearchGroupResult>> GetSearchGroups(string Groupname, string UsernameOrEmail, string SINnerName)
         {
             _logger.LogTrace("GetSearchGroups: " + Groupname + "/" + UsernameOrEmail + "/" + SINnerName + ".");
-            
-            
+            try
+            {
+                return await GetSearchGroupsInternal(Groupname, UsernameOrEmail, SINnerName);
+            }
+            catch(Exception e)
+            {
+                try
+                {
+                    var user = await _signInManager.UserManager.GetUserAsync(User);
+                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
+                    telemetry.Properties.Add("User", user?.Email);
+                    tc.TrackException(telemetry);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex.ToString());
+                }
+                HubException hue = new HubException("Exception in GetSearchGroups: " + e.Message, e);
+                return new BadRequestObjectResult(hue);
+            }
+
+       
+        }
+
+        private async Task<ActionResult<SINSearchGroupResult>> GetSearchGroupsInternal(string Groupname, string UsernameOrEmail, string sINnerName)
+        {
             ApplicationUser user = null;
             try
             {
-                if(!ModelState.IsValid)
+                if (!ModelState.IsValid)
                 {
                     var errors = ModelState.Select(x => x.Value.Errors)
                                                .Where(y => y.Count > 0)
                                                .ToList();
                     string msg = "ModelState is invalid: ";
-                    foreach(var err in errors)
+                    foreach (var err in errors)
                     {
-                        foreach(var singleerr in err)
+                        foreach (var singleerr in err)
                         {
                             msg += Environment.NewLine + "\t" + singleerr.ToString();
                         }
                     }
                     return new BadRequestObjectResult(new HubException(msg));
                 }
-                var returncode = HttpStatusCode.OK;
-                var groupfoundseq = await (from a in _context.SINnerGroups
-                    where a.Groupname == Groupname select a).ToListAsync();
-                var groupid = groupfoundseq.FirstOrDefault().Id;
                 SINSearchGroupResult result = new SINSearchGroupResult();
+                var groupfoundseq = await(from a in _context.SINnerGroups
+                                          where a.Groupname == Groupname
+                                          select a).ToListAsync();
+                if (!groupfoundseq.Any())
+                {
+                    return NotFound(result);
+                }
+                var groupid = groupfoundseq.FirstOrDefault().Id;
+
                 var range = await GetSinSearchGroupResultById(groupid);
-                result.SINGroups.Add(range); 
+                result.SINGroups.Add(range);
 
                 if (!String.IsNullOrEmpty(UsernameOrEmail))
                 {
@@ -592,8 +622,8 @@ namespace ChummerHub.Controllers.V1
                         {
                             SINnerSearchGroup ssg = null;
                             var foundseq = (from a in result.SINGroups
-                                where a.Groupname?.ToLowerInvariant() == sin.MyGroup?.Groupname.ToLowerInvariant()
-                                select a).ToList();
+                                            where a.Groupname?.ToLowerInvariant() == sin.MyGroup?.Groupname.ToLowerInvariant()
+                                            select a).ToList();
                             if (foundseq.Any())
                             {
                                 ssg = foundseq.FirstOrDefault();
@@ -614,9 +644,9 @@ namespace ChummerHub.Controllers.V1
                 }
 
                 return Ok(result);
-       
+
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 try
                 {
@@ -626,7 +656,7 @@ namespace ChummerHub.Controllers.V1
                     telemetry.Properties.Add("Groupname", Groupname?.ToString());
                     tc.TrackException(telemetry);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     _logger.LogError(ex.ToString());
                 }
@@ -651,7 +681,7 @@ namespace ChummerHub.Controllers.V1
             _logger.LogTrace("GetGroupMembers: " + groupid + ".");
 
 
-            ApplicationUser user = null;
+            
             try
             {
                 if (!ModelState.IsValid)
@@ -680,6 +710,7 @@ namespace ChummerHub.Controllers.V1
             {
                 try
                 {
+                    var user = await _signInManager.UserManager.GetUserAsync(User);
                     var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
                     telemetry.Properties.Add("User", user?.Email);

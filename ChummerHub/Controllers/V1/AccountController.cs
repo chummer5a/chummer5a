@@ -275,9 +275,9 @@ namespace ChummerHub.Controllers
                 var user = await _userManager.FindByEmailAsync(email);
                 if(user == null)
                     return NotFound();
+                await SeedData.EnsureRole(Program.MyHost.Services, user.Id, userrole, _roleManager, _userManager);
                 user.PasswordHash = "";
                 user.SecurityStamp = "";
-                await SeedData.EnsureRole(Program.MyHost.Services, user.Id, userrole, _roleManager, _userManager);
                 return Ok(user);
             }
             catch(Exception e)

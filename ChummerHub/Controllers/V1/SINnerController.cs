@@ -408,9 +408,24 @@ namespace ChummerHub.Controllers.V1
                     }
                     else
                     {
-                        foreach(var ur in sinner.SINnerMetaData.Visibility.UserRights)
+                        var ownuserfound = false;
+                        var list = sinner.SINnerMetaData.Visibility.UserRights.ToList();
+                        foreach (var ur in list)
                         {
                             ur.SINnerId = sinner.Id;
+                            if (ur.EMail.ToLowerInvariant() == "delete.this.and.add@your.mail".ToLowerInvariant())
+                                sinner.SINnerMetaData.Visibility.UserRights.Remove(ur);
+                            if (ur.EMail.ToLowerInvariant() == user.Email.ToLowerInvariant())
+                                ownuserfound = true;
+                        }
+                        if (!ownuserfound)
+                        {
+                            SINerUserRight ownright = new SINerUserRight();
+                            ownright.CanEdit = true;
+                            ownright.EMail = user.Email;
+                            ownright.SINnerId = sinner.Id;
+                            ownright.Id = Guid.NewGuid();
+                            sinner.SINnerMetaData.Visibility.UserRights.Add(ownright);
                         }
                     }
                
@@ -654,13 +669,22 @@ namespace ChummerHub.Controllers.V1
                     }
                     if (admin)
                         return dbsinner;
+                    if (dbsinner.MyGroup != null)
+                    {
+                        if (!String.IsNullOrEmpty(dbsinner.MyGroup.MyAdminIdentityRole))
+                        {
+                            var localadmins = await _userManager.GetUsersInRoleAsync(dbsinner.MyGroup.MyAdminIdentityRole);
+                            if (localadmins.Contains(user))
+                                return dbsinner;
+                        }
+                    }
                     throw new ChummerHub.NoUserRightException(user.UserName, dbsinner.Id);
                 }
                 return null;
             }
             catch (Exception e)
             {
-                HubException hue = new HubException("Exception in SINnerFileExists: " + e.Message, e);
+                HubException hue = new HubException("Exception in CheckIfUpdateSINnerFile: " + e.Message, e);
                 throw hue;
             }
         }
