@@ -15,9 +15,10 @@
             </summary>
         </member>
         <member name="P:ChummerHub.Models.V1.Tag.TagComment">
-            <summary>
-            This has NO FUNCTION and is only here for Debugging reasons.
-            </summary>
+             <summary>
+             This has NO FUNCTION and is only here for Debugging reasons.
+             </summary>
+            
         </member>
         <member name="M:ChummerHub.Controllers.V1.SINnerController.GetDownloadFile(System.Guid)">
             <summary>
@@ -51,20 +52,23 @@
             <param name="groupname">In case you want to rename the group</param>
             <returns></returns>
         </member>
-        <member name="M:ChummerHub.Controllers.V1.SINnerGroupController.PostGroup(System.String,System.Guid)">
+        <member name="M:ChummerHub.Controllers.V1.SINnerGroupController.PostGroup(System.String,System.Guid,System.String,System.String)">
             <summary>
             Store the new group
             </summary>
             <param name="Groupname"></param>
             <param name="SinnerId"></param>
+            <param name="language"></param>
+            <param name="pwhash"></param>
             <returns></returns>
         </member>
-        <member name="M:ChummerHub.Controllers.V1.SINnerGroupController.PutSINerInGroup(System.Guid,System.Guid)">
+        <member name="M:ChummerHub.Controllers.V1.SINnerGroupController.PutSINerInGroup(System.Guid,System.Guid,System.String)">
             <summary>
             Store the new group
             </summary>
             <param name="GroupId"></param>
             <param name="SinnerId"></param>
+            <param name="pwhash"></param>
             <returns></returns>
         </member>
         <member name="M:ChummerHub.Controllers.V1.SINnerGroupController.GetGroupById(System.Guid)">
@@ -81,6 +85,14 @@
             <param name="Groupname"></param>
             <param name="UsernameOrEmail"></param>
             <param name="SINnerName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ChummerHub.Controllers.V1.SINnerGroupController.DeleteLeaveGroup(System.Guid,System.Guid)">
+            <summary>
+            Remove a sinner from a group. If this sinner is the last member of it's group, the group will be deleted as well!
+            </summary>
+            <param name="groupid"></param>
+            <param name="sinnerid"></param>
             <returns></returns>
         </member>
         <member name="M:ChummerHub.Controllers.V1.SINnerGroupController.GetGroupMembers(System.Guid)">

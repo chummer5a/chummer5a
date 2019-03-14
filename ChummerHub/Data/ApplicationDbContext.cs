@@ -67,6 +67,8 @@ namespace ChummerHub.Data
                 .HasIndex(b => b.Groupname);
             builder.Entity<ChummerHub.Models.V1.SINerUserRight>()
                 .HasIndex(b => b.EMail);
+            builder.Entity<ChummerHub.Models.V1.SINnerGroup>()
+                .HasIndex(b => b.Language);
         }
 
         public DbSet<ChummerHub.Models.V1.SINner> SINners { get; set; }

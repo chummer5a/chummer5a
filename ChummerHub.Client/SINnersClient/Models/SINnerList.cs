@@ -43,5 +43,25 @@ namespace SINners.Models
         [JsonProperty(PropertyName = "sinList")]
         public IList<SINnerList> SinList { get; set; }
 
+        /// <summary>
+        /// Validate the object. Throws ValidationException if validation fails.
+        /// </summary>
+        public virtual void Validate()
+        {
+            if (this.SiNner != null)
+            {
+                this.SiNner.Validate();
+            }
+            if (this.SinList != null)
+            {
+                foreach (var element in this.SinList)
+                {
+                    if (element != null)
+                    {
+                        element.Validate();
+                    }
+                }
+            }
+        }
     }
 }

@@ -37,5 +37,15 @@ namespace SINners.Models
         [JsonProperty(PropertyName = "username")]
         public string Username { get; set; }
 
+        /// <summary>
+        /// Validate the object. Throws ValidationException if validation fails.
+        /// </summary>
+        public virtual void Validate()
+        {
+            if (this.MySINner != null)
+            {
+                this.MySINner.Validate();
+            }
+        }
     }
 }

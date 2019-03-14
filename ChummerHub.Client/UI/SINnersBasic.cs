@@ -15,6 +15,7 @@ using SINners;
 using System.Net;
 using SINners.Models;
 using ChummerHub.Client.Backend;
+using Chummer.Plugins;
 
 namespace ChummerHub.Client.UI
 {
@@ -53,14 +54,22 @@ namespace ChummerHub.Client.UI
         public async Task<bool> CheckSINnerStatus()
         {
         
-                try
+            try
+            {
+                if ((myUC?.MyCE?.MySINnerFile?.Id == null) || (myUC.MyCE.MySINnerFile.Id == Guid.Empty))
                 {
-                    if ((myUC?.MyCE?.MySINnerFile?.Id == null) || (myUC.MyCE.MySINnerFile.Id == Guid.Empty))
+                    PluginHandler.MainForm.DoThreadSafe(() =>
                     {
+
                         this.bUpload.Text = "SINless Character/Error";
-                        return false;
-                    }
-                    var response = await StaticUtils.Client.GetSINByIdWithHttpMessagesAsync(myUC.MyCE.MySINnerFile.Id.Value);
+
+                    });
+                    return false;
+                }
+
+                var response = await StaticUtils.Client.GetSINByIdWithHttpMessagesAsync(myUC.MyCE.MySINnerFile.Id.Value);
+                PluginHandler.MainForm.DoThreadSafe(() =>
+                {
                     if (response.Response.StatusCode == HttpStatusCode.OK)
                     {
                         myUC.MyCE.SetSINner(response.Body);
@@ -87,7 +96,10 @@ namespace ChummerHub.Client.UI
                     }
                     this.cbTagArchetype.Enabled = false;
                     this.tbArchetypeName.Enabled = false;
-                    var resroles = await StaticUtils.Client.GetRolesWithHttpMessagesAsync();
+                });
+                var resroles = await StaticUtils.Client.GetRolesWithHttpMessagesAsync();
+                PluginHandler.MainForm.DoThreadSafe(() =>
+                {
                     if (response.Response.StatusCode == HttpStatusCode.OK)
                     {
                         var archetypeseq = from a in resroles.Body where a.ToLowerInvariant() == "ArchetypeAdmin".ToLowerInvariant() select a;
@@ -100,15 +112,17 @@ namespace ChummerHub.Client.UI
 
                     if (myUC?.MyCE?.MySINnerFile?.MyGroup != null)
                         this.lGourpForSinner.Text = myUC.MyCE.MySINnerFile.MyGroup.Groupname;
-
-
-                }
-                catch (Exception ex)
+                });
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Trace.TraceError(ex.ToString());
+                PluginHandler.MainForm.DoThreadSafe(() =>
                 {
-                    System.Diagnostics.Trace.TraceError(ex.ToString());
                     this.bUpload.Text = "unknown Status";
-                    return false;
-                }
+                });
+                return false;
+            }
             return true;
         }
 
@@ -179,11 +193,7 @@ namespace ChummerHub.Client.UI
             frmSINnerGroupSearch gs = new frmSINnerGroupSearch(myUC.MyCE);
             gs.MySINnerGroupSearch.OnGroupJoinCallback += (o, group) =>
             {
-                if (this.CheckSINnerStatus().Result == true)
-                {
-                    MessageBox.Show("Status and group refreshed!");
-                }
-
+                PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false, true);
             };
             var res = gs.ShowDialog();
             

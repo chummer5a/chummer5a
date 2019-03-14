@@ -46,12 +46,16 @@ namespace ChummerHub.Models.V1
         [XmlIgnore]
         public Guid UploadClientId { get; set; }
 
+        [MaxLength(6)]
+        public string Language { get; set; }
+
         public SINnerMetaData SINnerMetaData { get; set; }
 
         public String JsonSummary { get; set; }
 
         public SINnerGroup MyGroup { get; set; }
 
+        [MaxLength(64)]
         public string Alias { get; set; }
 
         [JsonIgnore]
@@ -68,25 +72,6 @@ namespace ChummerHub.Models.V1
         [XmlIgnore]
         [NotMapped]
         private List<Tag> _AllTags { get; set; }
-
-        //[JsonIgnore]
-        //[XmlIgnore]
-        //[NotMapped]
-        //public List<Tag> AllTags
-        //{
-        //    get
-        //    {
-        //        if (_AllTags == null)
-        //        {
-        //            _AllTags = GetTagsForSinnerFlat(this.Id);
-        //        }
-        //        return _AllTags;
-        //    }
-        //    set
-        //    {
-        //        _AllTags = value;
-        //    }
-        //}
 
         public async Task<List<Tag>> GetTagsForSinnerFlat(ApplicationDbContext context)
         {

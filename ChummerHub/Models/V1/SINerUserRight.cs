@@ -33,6 +33,8 @@ namespace ChummerHub.Models.V1
         public Guid? SINnerId { get; set; }
 
         private string _email = null;
+
+        [MaxLength(64)]
         public string EMail { get { return _email; } set { _email = value.ToUpperInvariant(); } }
 
         public bool CanEdit { get; set; }

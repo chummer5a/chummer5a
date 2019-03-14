@@ -21,7 +21,7 @@ namespace SINners.Models
         /// <summary>
         /// Initializes a new instance of the SINnerSearchGroup class.
         /// </summary>
-        public SINnerSearchGroup(SINnerSearchGroup mySINSearchGroup = default(SINnerSearchGroup), string errorText = default(string), IList<SINnerSearchGroupMember> myMembers = default(IList<SINnerSearchGroupMember>), Guid? id = default(Guid?), bool? isPublic = default(bool?), string gameMasterUsername = default(string), SINnerGroupSetting mySettings = default(SINnerGroupSetting), string groupname = default(string), IList<SINnerGroup> myGroups = default(IList<SINnerGroup>), SINnerGroup myParentGroup = default(SINnerGroup), string myAdminIdentityRole = default(string))
+        public SINnerSearchGroup(SINnerSearchGroup mySINSearchGroup = default(SINnerSearchGroup), string errorText = default(string), IList<SINnerSearchGroupMember> myMembers = default(IList<SINnerSearchGroupMember>), Guid? id = default(Guid?), bool? isPublic = default(bool?), string gameMasterUsername = default(string), SINnerGroupSetting mySettings = default(SINnerGroupSetting), string groupname = default(string), string language = default(string), IList<SINnerGroup> myGroups = default(IList<SINnerGroup>), SINnerGroup myParentGroup = default(SINnerGroup), string myAdminIdentityRole = default(string))
         {
             MySINSearchGroup = mySINSearchGroup;
             ErrorText = errorText;
@@ -31,6 +31,7 @@ namespace SINners.Models
             GameMasterUsername = gameMasterUsername;
             MySettings = mySettings;
             Groupname = groupname;
+            Language = language;
             MyGroups = myGroups;
             MyParentGroup = myParentGroup;
             MyAdminIdentityRole = myAdminIdentityRole;
@@ -78,6 +79,11 @@ namespace SINners.Models
 
         /// <summary>
         /// </summary>
+        [JsonProperty(PropertyName = "language")]
+        public string Language { get; set; }
+
+        /// <summary>
+        /// </summary>
         [JsonProperty(PropertyName = "myGroups")]
         public IList<SINnerGroup> MyGroups { get; set; }
 
@@ -92,5 +98,60 @@ namespace SINners.Models
         [JsonProperty(PropertyName = "myAdminIdentityRole")]
         public string MyAdminIdentityRole { get; set; }
 
+        /// <summary>
+        /// Validate the object. Throws ValidationException if validation fails.
+        /// </summary>
+        public virtual void Validate()
+        {
+            if (this.MySINSearchGroup != null)
+            {
+                this.MySINSearchGroup.Validate();
+            }
+            if (this.MyMembers != null)
+            {
+                foreach (var element in this.MyMembers)
+                {
+                    if (element != null)
+                    {
+                        element.Validate();
+                    }
+                }
+            }
+            if (this.Groupname != null)
+            {
+                if (this.Groupname.Length > 64)
+                {
+                    throw new ValidationException(ValidationRules.MaxLength, "Groupname", 64);
+                }
+            }
+            if (this.Language != null)
+            {
+                if (this.Language.Length > 6)
+                {
+                    throw new ValidationException(ValidationRules.MaxLength, "Language", 6);
+                }
+            }
+            if (this.MyGroups != null)
+            {
+                foreach (var element1 in this.MyGroups)
+                {
+                    if (element1 != null)
+                    {
+                        element1.Validate();
+                    }
+                }
+            }
+            if (this.MyParentGroup != null)
+            {
+                this.MyParentGroup.Validate();
+            }
+            if (this.MyAdminIdentityRole != null)
+            {
+                if (this.MyAdminIdentityRole.Length > 64)
+                {
+                    throw new ValidationException(ValidationRules.MaxLength, "MyAdminIdentityRole", 64);
+                }
+            }
+        }
     }
 }
