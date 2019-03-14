@@ -1109,8 +1109,10 @@ namespace Chummer
                     if (!SelectionShared.CheckNuyenRestriction(xmlCyberware, _objCharacter.Nuyen, decCostMultiplier))
                         continue;
                 }
-                if (ParentVehicle == null && !xmlCyberware.RequirementsMet(_objCharacter))
+
+                if (!Upgrading && ParentVehicle == null && !xmlCyberware.RequirementsMet(_objCharacter))
                     continue;
+
                 lstCyberwares.Add(new ListItem(xmlCyberware.SelectSingleNode("id")?.Value, xmlCyberware.SelectSingleNode("translate")?.Value ?? xmlCyberware.SelectSingleNode("name")?.Value));
                 if (blnTerminateAfterFirst)
                     break;
@@ -1137,6 +1139,10 @@ namespace Chummer
 
             return lstCyberwares;
         }
+        /// <summary>
+        /// Is a given piece of ware being Upgraded?
+        /// </summary>
+        public bool Upgrading { get; set; }
 
         /// <summary>
         /// Lock the Grade so it cannot be changed.
@@ -1203,7 +1209,7 @@ namespace Chummer
                     }
                 }
             }
-            if (ParentVehicle == null && !objCyberwareNode.RequirementsMet(_objCharacter, null, LanguageManager.GetString(_objMode == Mode.Cyberware ? "String_SelectPACKSKit_Cyberware" : "String_SelectPACKSKit_Bioware", GlobalOptions.Language)))
+            if (!Upgrading && ParentVehicle == null && !objCyberwareNode.RequirementsMet(_objCharacter, null, LanguageManager.GetString(_objMode == Mode.Cyberware ? "String_SelectPACKSKit_Cyberware" : "String_SelectPACKSKit_Bioware", GlobalOptions.Language)))
                 return;
 
             string strForceGrade = objCyberwareNode.SelectSingleNode("forcegrade")?.Value;

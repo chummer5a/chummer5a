@@ -1,5 +1,9 @@
 Future Build 206
 
+Application Fixes:
+
+- Slightly better implementation of the Upgrade mechanism for cyberware. Still needs work, but shouldn't improperly consume Essence anymore. 
+
 UI Changes:
 
 - Fixed some behaviour with non-maximised windows to prevent new windows from being opened maximised, or windows being maximised on gaining focus. 
