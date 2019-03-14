@@ -18,14 +18,23 @@ namespace ChummerHub.Models.V1
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid? Id { get; set; }
 
+        
+        public Guid? MyParentGroupId { get; set; }
+        
         public bool IsPublic { get; set; }
 
         public string GameMasterUsername { get; set; }
 
         public SINnerGroupSetting MySettings { get; set; }
 
-
+        [MaxLength(64)]
         public string Groupname { get; set; }
+
+        [JsonIgnore]
+        public string PasswordHash { get; set; }
+
+        [MaxLength(6)]
+        public string Language { get; set; }
 
         public SINnerGroup()
         {
@@ -57,11 +66,13 @@ namespace ChummerHub.Models.V1
 
         public List<SINnerGroup> MyGroups { get; set; }
 
+        [ForeignKey("MyParentGroupId")]
         public SINnerGroup MyParentGroup { get; set; }
 
         /// <summary>
         /// Only users of the specified Role can join this group
         /// </summary>
+        [MaxLength(64)]
         public string MyAdminIdentityRole { get; set; }
 
         //public async Task<List<SINerUserRight>> GetUserRights(ApplicationDbContext context)

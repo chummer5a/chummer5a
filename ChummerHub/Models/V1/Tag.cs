@@ -18,12 +18,18 @@ namespace ChummerHub.Models.V1
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 
         public Guid Id { get; set; }
+
+        [MaxLength(64)]
         public string TagName { get; set; }
+
+        [MaxLength(64)]
         public string TagValue { get; set; }
 
         /// <summary>
         /// This has NO FUNCTION and is only here for Debugging reasons.
         /// </summary>
+        ///
+        [MaxLength(64)]
         public string TagComment { get; set; }
         
         public Guid? ParentTagId { get; set; }

@@ -130,6 +130,12 @@
     <Compile Include="SINnersClient\Models\UploadInfoObject.cs" />
     <Compile Include="SINnersClient\SINnersClient.cs" />
     <Compile Include="SINnersClient\SINnersClientExtensions.cs" />
+    <Compile Include="UI\frmSINnerGroupEdit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\frmSINnerGroupEdit.Designer.cs">
+      <DependentUpon>frmSINnerGroupEdit.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\frmSINnerGroupSearch.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -147,6 +153,12 @@
     </Compile>
     <Compile Include="UI\frmWebBrowser.Designer.cs">
       <DependentUpon>frmWebBrowser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\SINnerGroupCreate.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\SINnerGroupCreate.Designer.cs">
+      <DependentUpon>SINnerGroupCreate.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\SINnerGroupSearch.cs">
       <SubType>UserControl</SubType>
@@ -192,6 +204,9 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\frmSINnerGroupEdit.resx">
+      <DependentUpon>frmSINnerGroupEdit.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\frmSINnerGroupSearch.resx">
       <DependentUpon>frmSINnerGroupSearch.cs</DependentUpon>
     </EmbeddedResource>
@@ -200,6 +215,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\frmWebBrowser.resx">
       <DependentUpon>frmWebBrowser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\SINnerGroupCreate.resx">
+      <DependentUpon>SINnerGroupCreate.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\SINnerGroupSearch.resx">
       <DependentUpon>SINnerGroupSearch.cs</DependentUpon>
