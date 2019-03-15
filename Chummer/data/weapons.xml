@@ -11129,7 +11129,7 @@
       <ap>-</ap>
       <mode>SA/BF/FA</mode>
       <rc>0</rc>
-      <ammo>28(c)</ammo>
+      <ammo>16(c)</ammo> <!-- Ammo is 24 but because of extended clip-factor '1,5' amount must be 16 -->
       <avail>9R</avail>
       <cost>2300</cost>
       <source>SAG</source>
