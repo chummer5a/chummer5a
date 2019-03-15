@@ -93,6 +93,16 @@ namespace ChummerHub
                 }
                 catch(Exception e)
                 {
+                    try
+                    {
+                        var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                        var telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
+                        tc.TrackException(telemetry);
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.LogError(ex.ToString());
+                    }
                     logger.LogError(e.Message, "An error occurred migrating the DB: " + e.ToString());
                     context.Database.EnsureDeleted();
                     context.Database.EnsureCreated();
@@ -109,6 +119,16 @@ namespace ChummerHub
                 }
                 catch(Exception ex)
                 {
+                    try
+                    {
+                        var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                        var telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(ex);
+                        tc.TrackException(telemetry);
+                    }
+                    catch (Exception e1)
+                    {
+                        logger.LogError(e1.ToString());
+                    }
                     logger.LogError(ex.Message, "An error occurred seeding the DB: " + ex.ToString());
                 }
             }
