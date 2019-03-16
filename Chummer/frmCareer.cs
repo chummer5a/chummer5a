@@ -17359,6 +17359,8 @@ private void RefreshSelectedSpell()
                     return;
 
                 objCyberware.Upgrade(CharacterObject, pickCyber.SelectedGrade, pickCyber.SelectedRating, frmSell.SellPercent);
+                //TODO: Bind displayname to selectednode text properly. 
+                treCyberware.SelectedNode.Text = objCyberware.DisplayName(GlobalOptions.Language);
             }
             else { Utils.BreakIfDebug(); }
 

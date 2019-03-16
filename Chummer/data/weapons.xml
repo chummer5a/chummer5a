@@ -12818,7 +12818,7 @@
       <avail>8R</avail>
       <cost>650</cost>
       <source>SL</source>
-      <page>29</page>
+      <page>30</page>
       <accessories>
         <accessory>
           <name>Long Barrel</name>
@@ -12832,7 +12832,6 @@
       </accessorymounts>
       <ammocategory>Sporting Rifles</ammocategory>
       <range>Submachine Guns</range>
-      <spec>Semi-Automatics</spec>
     </weapon>
     <weapon>
       <id>cbac989a-92f4-4eb8-a6ff-a9b5f7571d5d</id>

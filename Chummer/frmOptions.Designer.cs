@@ -1345,6 +1345,7 @@ namespace Chummer
             this.chkEnablePlugins.Name = "chkEnablePlugins";
             this.chkEnablePlugins.Size = new System.Drawing.Size(267, 19);
             this.chkEnablePlugins.TabIndex = 51;
+            this.chkEnablePlugins.Tag = "Checkbox_Options_EnablePlugins";
             this.chkEnablePlugins.Text = "Enable Plugins (experimental)";
             this.chkEnablePlugins.UseVisualStyleBackColor = true;
             this.chkEnablePlugins.CheckedChanged += new System.EventHandler(this.chkEnablePlugins_CheckedChanged);

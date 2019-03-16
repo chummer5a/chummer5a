@@ -1,5 +1,6 @@
 Future Build 206
 
+
 Application Fixes:
 
 - Slightly better implementation of the Upgrade mechanism for cyberware. Still needs work, but shouldn't improperly consume Essence anymore. 
@@ -7,10 +8,16 @@ Application Fixes:
 UI Changes:
 
 - Fixed some behaviour with non-maximised windows to prevent new windows from being opened maximised, or windows being maximised on gaining focus. 
+- Added Minimise and Maximise buttons to the Character Roster. Closes #3495
 
 Data Changes:
 
 - Fixed incorrect spelling of Limit Modifiers on the Retractable Climbing Claws cyberware.
+- Fixed incorrect Page and Specialisation category for the Cavalier Champion. Closes #3496
+
+String Changes:
+
+- Added a string tag for the Enable Plugins menu option. Closes #3486
 
 Build 205
 
