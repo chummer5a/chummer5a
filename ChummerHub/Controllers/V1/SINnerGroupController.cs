@@ -148,6 +148,8 @@ namespace ChummerHub.Controllers.V1
         /// </summary>
         /// <param name="Groupname"></param>
         /// <param name="SinnerId"></param>
+        /// <param name="language"></param>
+        /// <param name="pwhash"></param>
         /// <returns></returns>
         [HttpPost()]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
@@ -157,7 +159,7 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Conflict)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("PostGroup")]
         [Authorize]
-        public async Task<IActionResult> PostGroup([FromBody] string Groupname, Guid SinnerId )
+        public async Task<IActionResult> PostGroup([FromBody] string Groupname, Guid SinnerId, string language, string pwhash )
         {
             _logger.LogTrace("Post SINnerGroupInternal: " + Groupname + " (" + SinnerId + ").");
             ApplicationUser user = null;
@@ -243,7 +245,9 @@ namespace ChummerHub.Controllers.V1
                     {
                         Id = Guid.NewGuid(),
                         Groupname = Groupname,
-                        MyParentGroup = parentGroup
+                        MyParentGroup = parentGroup,
+                        Language = language,
+                        PasswordHash = pwhash
                     };
                     parentGroup?.MyGroups.Add(group);
                     _context.SINnerGroups.Add(group);
@@ -336,6 +340,7 @@ namespace ChummerHub.Controllers.V1
         /// </summary>
         /// <param name="GroupId"></param>
         /// <param name="SinnerId"></param>
+        /// <param name="pwhash"></param>
         /// <returns></returns>
         [HttpPut()]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
@@ -343,7 +348,7 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("PutSINerInGroup")]
         [Authorize]
-        public async Task<ActionResult<SINner>> PutSINerInGroup(Guid GroupId, Guid SinnerId)
+        public async Task<ActionResult<SINner>> PutSINerInGroup(Guid GroupId, Guid SinnerId, string pwhash)
         {
             _logger.LogTrace("PutSINerInGroup: " + GroupId + " (" + SinnerId + ").");
             ApplicationUser user = null;
@@ -367,8 +372,8 @@ namespace ChummerHub.Controllers.V1
 
                     return new BadRequestObjectResult(new HubException(msg));
                 }
-
-                var sin = await PutSiNerInGroupInternal(GroupId, SinnerId, user, _context, _logger);
+                var roles = await _userManager.GetRolesAsync(user);
+                var sin = await PutSiNerInGroupInternal(GroupId, SinnerId, user, _context, _logger, pwhash, roles);
                 return Ok(sin);
             }
             catch (Exception e)
@@ -391,7 +396,7 @@ namespace ChummerHub.Controllers.V1
 
         }
 
-        internal static async Task<ActionResult<SINner>> PutSiNerInGroupInternal(Guid GroupId, Guid SinnerId, ApplicationUser user, ApplicationDbContext context, ILogger logger)
+        internal static async Task<ActionResult<SINner>> PutSiNerInGroupInternal(Guid GroupId, Guid SinnerId, ApplicationUser user, ApplicationDbContext context, ILogger logger, string pwhash, IList<string> userroles)
         {
             try
             {
@@ -413,6 +418,22 @@ namespace ChummerHub.Controllers.V1
                     throw new ArgumentException("GroupId not found", nameof(GroupId));
                 }
 
+                var group = groupset.FirstOrDefault();
+
+                if ((!String.IsNullOrEmpty(group.PasswordHash))
+                    && (group.PasswordHash != pwhash))
+                {
+                    throw new NoUserRightException("PW is wrong!");
+                }
+
+                if (!String.IsNullOrEmpty(group.MyAdminIdentityRole))
+                {
+                    if (!userroles.Contains(group.MyAdminIdentityRole))
+                    {
+                        throw new NoUserRightException("User " + user.UserName + " has not the role " + group.MyAdminIdentityRole + ".");
+                    }
+                }
+
                 var sinnerseq = await (from a in context.SINners
                         .Include(a => a.MyGroup)
                         .Include(a => a.SINnerMetaData)
@@ -429,7 +450,7 @@ namespace ChummerHub.Controllers.V1
                 {
                     sin = sinnerseq.FirstOrDefault();
                     if (sin != null)
-                        sin.MyGroup = groupset.FirstOrDefault();
+                        sin.MyGroup = group;
                 }
 
                 await context.SaveChangesAsync();
@@ -499,6 +520,7 @@ namespace ChummerHub.Controllers.V1
                     return NotFound(groupid);
 
                 var group = groupfoundseq.FirstOrDefault();
+                group.PasswordHash = null;
                 return Ok(group);
 
             }
@@ -560,8 +582,86 @@ namespace ChummerHub.Controllers.V1
                 HubException hue = new HubException("Exception in GetSearchGroups: " + e.Message, e);
                 return new BadRequestObjectResult(hue);
             }
+        }
 
-       
+        /// <summary>
+        /// Remove a sinner from a group. If this sinner is the last member of it's group, the group will be deleted as well!
+        /// </summary>
+        /// <param name="groupid"></param>
+        /// <param name="sinnerid"></param>
+        /// <returns></returns>
+        [HttpDelete()]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("DeleteLeaveGroup")]
+        [Authorize]
+        public async Task<ActionResult<bool>> DeleteLeaveGroup(Guid groupid, Guid sinnerid)
+        {
+            _logger.LogTrace("DeleteLeaveGroup: " + groupid + "/" + sinnerid + ".");
+            try
+            {
+                return await DeleteLeaveGroupInternal(groupid, sinnerid);
+            }
+            catch (Exception e)
+            {
+                try
+                {
+                    var user = await _signInManager.UserManager.GetUserAsync(User);
+                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
+                    telemetry.Properties.Add("User", user?.Email);
+                    tc.TrackException(telemetry);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex.ToString());
+                }
+                HubException hue = new HubException("Exception in DeleteLeaveGroup: " + e.Message, e);
+                return new BadRequestObjectResult(hue);
+            }
+        }
+
+        private async Task<ActionResult<bool>> DeleteLeaveGroupInternal(Guid groupid, Guid sinnerid)
+        {
+            if ((groupid == null) || (groupid == Guid.Empty))
+                throw new ArgumentNullException(nameof(groupid));
+            if ((sinnerid == null) || (sinnerid == Guid.Empty))
+                throw new ArgumentNullException(nameof(sinnerid));
+
+            var groupbyidseq = await(from a in _context.SINnerGroups
+                   .Include(a => a.MyGroups)
+                                     where a.Id == groupid
+                                     select a).Take(1).ToListAsync();
+
+            if (!groupbyidseq.Any())
+                return NotFound(groupid);
+
+            var group = groupbyidseq.FirstOrDefault();
+
+            var members = await group.GetGroupMembers(_context);
+
+            var sinnerseq = await (from a in _context.SINners.Include(a => a.MyGroup)
+                                   where a.Id == sinnerid
+                                   select a).Take(1).ToListAsync();
+            if (!sinnerseq.Any())
+                return NotFound(sinnerid);
+
+            var sinner = sinnerseq.FirstOrDefault();
+
+            sinner.MyGroup = null;
+
+            if ((members.Count < 2) && (members.Contains(sinner)))
+            {
+                if ((group.MyGroups == null) || (!group.MyGroups.Any()))
+                {
+                    //delete group
+                    _context.SINnerGroups.Remove(group);
+                }
+            }
+            await _context.SaveChangesAsync();
+            return true;
+            
+
         }
 
         private async Task<ActionResult<SINSearchGroupResult>> GetSearchGroupsInternal(string Groupname, string UsernameOrEmail, string sINnerName)
@@ -642,6 +742,7 @@ namespace ChummerHub.Controllers.V1
                         }
                     }
                 }
+                result.SINGroups = RemovePWHashRecursive(result.SINGroups);
 
                 return Ok(result);
 
@@ -704,6 +805,7 @@ namespace ChummerHub.Controllers.V1
                 SINSearchGroupResult result = new SINSearchGroupResult();
                 var range = await GetSinSearchGroupResultById(groupid);
                 result.SINGroups.Add(range);
+                result.SINGroups = RemovePWHashRecursive(result.SINGroups);
                 Ok(result);
             }
             catch (Exception e)
@@ -726,6 +828,11 @@ namespace ChummerHub.Controllers.V1
             }
 
             return BadRequest();
+        }
+
+        private List<SINnerSearchGroup> RemovePWHashRecursive(List<SINnerSearchGroup> sINGroups)
+        {
+            throw new NotImplementedException();
         }
 
         private async Task<SINnerSearchGroup> GetSinSearchGroupResultById(Guid? groupid)

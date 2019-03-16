@@ -82,5 +82,42 @@ namespace SINners.Models
         [JsonProperty(PropertyName = "tagType")]
         public string TagType { get; set; }
 
+        /// <summary>
+        /// Validate the object. Throws ValidationException if validation fails.
+        /// </summary>
+        public virtual void Validate()
+        {
+            if (this.TagName != null)
+            {
+                if (this.TagName.Length > 64)
+                {
+                    throw new ValidationException(ValidationRules.MaxLength, "TagName", 64);
+                }
+            }
+            if (this.TagValue != null)
+            {
+                if (this.TagValue.Length > 64)
+                {
+                    throw new ValidationException(ValidationRules.MaxLength, "TagValue", 64);
+                }
+            }
+            if (this.TagComment != null)
+            {
+                if (this.TagComment.Length > 64)
+                {
+                    throw new ValidationException(ValidationRules.MaxLength, "TagComment", 64);
+                }
+            }
+            if (this.Tags != null)
+            {
+                foreach (var element in this.Tags)
+                {
+                    if (element != null)
+                    {
+                        element.Validate();
+                    }
+                }
+            }
+        }
     }
 }

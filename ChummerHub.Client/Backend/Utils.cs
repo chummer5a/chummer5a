@@ -54,9 +54,28 @@ namespace ChummerHub.Client.Backend
         static StaticUtils()
         {
         }
+
         public static bool IsUnitTest { get { return MyUtils.IsUnitTest; } }
 
         private static CookieContainer _AuthorizationCookieContainer = null;
+
+        private static List<string> _userRoles = null;
+        public static List<string> UserRoles
+        {
+            get
+            {
+                if (_userRoles == null)
+                {
+                    var result = StaticUtils.Client.GetRolesAsync().Result;
+                    _userRoles = result.ToList();
+                }
+                return _userRoles;
+            }
+            set
+            {
+                _userRoles = value;
+            }
+        }
 
         public static CookieContainer AuthorizationCookieContainer
         {

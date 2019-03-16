@@ -49,27 +49,25 @@ namespace ChummerHub
                 if (_preventOverflow)
                     return;
                 _preventOverflow = true;
+                string msg = e.Exception.ToString() + Environment.NewLine + Environment.NewLine;
+
                 if (!e.Exception.Message.Contains("Non-static method requires a target."))
                 {
-
-                    string msg = e.Exception.ToString() + Environment.NewLine + Environment.NewLine;
-                    System.Diagnostics.Trace.TraceError(msg, e.Exception);
                     Console.WriteLine(msg);
+                    //System.Diagnostics.Trace.TraceError(msg, e.Exception);
                     System.Diagnostics.Debug.WriteLine(msg);
-                    System.Diagnostics.StackTrace st = new System.Diagnostics.StackTrace(true);
                     var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     ExceptionTelemetry et = new ExceptionTelemetry(e.Exception);
                     tc.TrackException(et);
                 }
                 else
                 {
-                    System.Diagnostics.Debugger.Break();
+                    Console.WriteLine(msg);
                 }
             }
             catch (Exception ex)
             {
                 string msg = ex.ToString() + Environment.NewLine + Environment.NewLine;
-                System.Diagnostics.Trace.TraceError(msg, ex);
                 Console.WriteLine(msg);
                 System.Diagnostics.Debug.WriteLine(msg);
                 //AggregateException ae = new AggregateException(new List<Exception>() { e.Exception, ex });

@@ -478,8 +478,9 @@ namespace ChummerHub.Controllers.V1
                         await _context.SaveChangesAsync();
                         if (oldgroup != null)
                         {
+                            var roles = await _userManager.GetRolesAsync(user);
                             await SINnerGroupController.PutSiNerInGroupInternal(oldgroup.Id.Value, sinner.Id.Value, user, _context,
-                                _logger);
+                                _logger, oldgroup.PasswordHash, roles);
                         }
                     }
                     catch(DbUpdateConcurrencyException ex)

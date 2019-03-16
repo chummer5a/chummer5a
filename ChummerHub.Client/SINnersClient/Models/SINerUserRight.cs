@@ -43,5 +43,18 @@ namespace SINners.Models
         [JsonProperty(PropertyName = "canEdit")]
         public bool? CanEdit { get; set; }
 
+        /// <summary>
+        /// Validate the object. Throws ValidationException if validation fails.
+        /// </summary>
+        public virtual void Validate()
+        {
+            if (this.EMail != null)
+            {
+                if (this.EMail.Length > 64)
+                {
+                    throw new ValidationException(ValidationRules.MaxLength, "EMail", 64);
+                }
+            }
+        }
     }
 }

@@ -29,7 +29,7 @@ namespace ChummerHub.Client.UI
     public partial class SINnersOptions : UserControl
     {
         private bool? LoginStatus = null;
-        public IList<String> Roles = null;
+        
 
         private static SINners.Models.SINnerVisibility _SINnerVisibility = null;
         public static SINners.Models.SINnerVisibility SINnerVisibility
@@ -190,7 +190,7 @@ namespace ChummerHub.Client.UI
             var t = StartSTATask(
                 async () =>
                 {
-                    var roles = await GetRolesStatus();
+                    var roles = await GetRolesStatus(this);
                     UpdateDisplay();
                     if(!roles.Any())
                         ShowWebBrowser();
@@ -271,6 +271,7 @@ namespace ChummerHub.Client.UI
 
         public async void UpdateDisplay()
         {
+           
             PluginHandler.MainForm.DoThreadSafe(new Action(() =>
             {
                 try
@@ -333,7 +334,7 @@ namespace ChummerHub.Client.UI
                             }
                         });
                         this.bLogin.Text = "Logout";
-                        string status = Roles.Aggregate((a, b) => a + ", " + b);
+                        string status = StaticUtils.UserRoles.Aggregate((a, b) => a + ", " + b);
                         labelAccountStatus.Text = status;
                         labelAccountStatus.ForeColor = Color.DarkGreen;
                         HideWebBrowser();
@@ -407,11 +408,11 @@ namespace ChummerHub.Client.UI
                               var signout = StaticUtils.Client.LogoutWithHttpMessagesAsync().Result;
                               if (signout.Response.StatusCode != HttpStatusCode.OK)
                               {
-                                  var roles = GetRolesStatus().Result;
+                                  var roles = GetRolesStatus(this).Result;
                               }
                               else
                               {
-                                  Roles = new List<String>();
+                                  StaticUtils.UserRoles = null;
                               }
                               UpdateDisplay();
                           }
@@ -451,7 +452,7 @@ namespace ChummerHub.Client.UI
                         var t = StartSTATask(
                         async () =>
                         {
-                            var roles = await GetRolesStatus();
+                            var roles = await GetRolesStatus(this);
                             UpdateDisplay();
                         });
                     })
@@ -463,7 +464,7 @@ namespace ChummerHub.Client.UI
                     var t = StartSTATask(
                            async () =>
                            {
-                               var roles = await GetRolesStatus();
+                               var roles = await GetRolesStatus(this);
                                UpdateDisplay();
                            });
                 }
@@ -479,27 +480,27 @@ namespace ChummerHub.Client.UI
 
        
 
-        private async Task<IList<String>> GetRolesStatus()
+        private async Task<IList<String>> GetRolesStatus(UserControl sender)
         {
             try
             {
-                this.UseWaitCursor = true;
-                var myresult = StaticUtils.Client.GetRolesWithHttpMessagesAsync().Result;
-                //var result = StaticUtils.Client.GetRolesWithHttpMessagesAsync();
-                //await result;
-                var roles = myresult.Body as IList<string>; //result.Result.Body as IList<string>;
-                if (roles != null && roles.Any())
+                using (new CursorWait(true, sender))
                 {
-                    this.LoginStatus = true;
-                    Roles = roles;
+                    var myresult = await StaticUtils.Client.GetRolesWithHttpMessagesAsync();
+
+                    PluginHandler.MainForm.DoThreadSafe(new Action(() =>
+                    {
+                        StaticUtils.UserRoles = (myresult.Body as IList<string>).ToList(); //result.Result.Body as IList<string>;
+                        if (StaticUtils.UserRoles != null && StaticUtils.UserRoles.Any())
+                        {
+                            this.LoginStatus = true;
+                        }
+
+                        bBackup.Visible = StaticUtils.UserRoles.Contains("Administrator");
+                        bRestore.Visible = StaticUtils.UserRoles.Contains("Administrator");
+                    }));
                 }
-                PluginHandler.MainForm.DoThreadSafe(new Action(() =>
-                {
-                    bBackup.Visible = Roles.Contains("Administrator");
-                    bRestore.Visible = Roles.Contains("Administrator");
-                }));
-                
-                return roles;
+                return StaticUtils.UserRoles;
             }
             catch(Microsoft.Rest.SerializationException ex)
             {
@@ -513,10 +514,6 @@ namespace ChummerHub.Client.UI
             catch(Exception ex)
             {
                 System.Diagnostics.Trace.TraceWarning(ex.ToString());
-            }
-            finally
-            {
-                this.UseWaitCursor = false;
             }
             return null;
             
