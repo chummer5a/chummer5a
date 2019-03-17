@@ -14,6 +14,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Xml;
@@ -66,31 +67,27 @@ namespace Chummer.Plugins
 
         IEnumerable<TabPage> IPlugin.GetTabPages(frmCareer input)
         {
-#if DEBUG
             SINnersUserControl uc = new SINnersUserControl();
             var ce = uc.SetCharacterFrom(input);
             TabPage page = new TabPage("SINners");
+            page.Name = "SINners";
             page.Controls.Add(uc);
             return new List<TabPage>() { page };
-#else
-            return null;
-#endif
         }
 
         IEnumerable<TabPage> IPlugin.GetTabPages(frmCreate input)
         {
-#if DEBUG
             SINnersUserControl uc = new SINnersUserControl();
             var ce = uc.SetCharacterFrom(input);
             TabPage page = new TabPage("SINners");
+            page.Name = "SINners";
             page.Controls.Add(uc);
             return new List<TabPage>() { page };
-#else
-            return null;
-#endif
         }
 
-        private bool IsSaving = false;
+        private static bool IsSaving = false;
+
+        public static SINner MySINnerLoading { get; internal set; }
 
         string IPlugin.GetSaveToFileElement(Character input)
         {
@@ -103,35 +100,56 @@ namespace Chummer.Plugins
             {
                 IsSaving = true;
                 //removing a handler that is not registered is legal - that way only one handler is registered EVER!
-                input.OnSaveCompleted -= MyOnSaveUpload;
+                try
+                {
+                    input.OnSaveCompleted -= MyOnSaveUpload;
+                }
+                catch (Exception e)
+                {
+                    System.Diagnostics.Trace.TraceInformation(e.ToString());
+                }
                 input.OnSaveCompleted += MyOnSaveUpload;
             }
             return JsonConvert.SerializeObject(ce.MySINnerFile.SiNnerMetaData);
         }
 
-        private async void MyOnSaveUpload(object sender, Character input)
+        public async static void MyOnSaveUpload(object sender, Character input)
         {
             try
             {
                 input.OnSaveCompleted -= MyOnSaveUpload;
                 CharacterExtended ce = new CharacterExtended(input, null);
-                var found = await StaticUtils.Client.GetByIdWithHttpMessagesAsync(ce.MySINnerFile.Id.Value);
-                if(found.Response.StatusCode == System.Net.HttpStatusCode.OK)
+                await ce.Upload();
+                var found = (from a in MainForm.OpenCharacterForms where a.CharacterObject == input select a)
+                    .FirstOrDefault();
+                if (found == null)
                 {
-                    var sinjson = await found.Response.Content.ReadAsStringAsync();
-                    var foundobj = Newtonsoft.Json.JsonConvert.DeserializeObject<SINner>(sinjson);
-                    SINner foundsin = foundobj as SINner;
-                    if(foundsin.LastChange >= ce.MyCharacter.FileLastWriteTime)
-                    {
-                        //is already up to date!
-                        return;
-                    }
-
+                    return;
                 }
-                ce.MySINnerFile.SiNnerMetaData.Tags = ce.PopulateTags();
-                ce.PrepareModel();
-                await ChummerHub.Client.Backend.Utils.PostSINnerAsync(ce);
-                await ChummerHub.Client.Backend.Utils.UploadChummerFileAsync(ce);
+                TabPage tabPage = null;
+                if ((found is frmCreate frm) && (frm.TabCharacterTabs.TabPages.ContainsKey("SINners")))
+                {
+                    var index = frm.TabCharacterTabs.TabPages.IndexOfKey("SINners");
+                    tabPage = frm.TabCharacterTabs.TabPages[index];
+                }
+
+                if ((found is frmCareer frm2) && (frm2.TabCharacterTabs.TabPages.ContainsKey("SINners")))
+                {
+                    var index = frm2.TabCharacterTabs.TabPages.IndexOfKey("SINners");
+                    tabPage = frm2.TabCharacterTabs.TabPages[index];
+                }
+
+                if (tabPage == null)
+                    return;
+                var ucseq = tabPage.Controls.Find("SINnersBasic", true);
+                foreach (var uc in ucseq)
+                {
+                    var sb = uc as SINnersBasic;
+                    if (sb != null)
+                        await sb?.CheckSINnerStatus();
+                }
+                var ucseq2 = tabPage.Controls.Find("SINnersAdvanced", true);
+
             }
             catch(Exception e)
             {
@@ -145,13 +163,24 @@ namespace Chummer.Plugins
 
         void IPlugin.LoadFileElement(Character input, string fileElement)
         {
-            CharacterExtended ce;
-            if(MyCharExtendedDic.TryGetValue(input.FileName, out ce))
-            {
-                ce.MyCharacter = input;
-            }
-            else
-                ce = new CharacterExtended(input, fileElement);
+            //not used right now, because all the information comes from the WebService...
+
+            //but this is how it COULD work
+
+            //CharacterExtended ce;
+            //if(MyCharExtendedDic.TryGetValue(input.FileName, out ce))
+            //{
+            //    ce.MyCharacter = input;
+            //}
+            //else
+            //{
+            //    if (PluginHandler.MySINnerLoading != null)
+            //    {
+            //        ce = new CharacterExtended(input, fileElement, PluginHandler.MySINnerLoading);
+                    
+            //    }
+            //}
+                
             
         }
 
@@ -200,7 +229,36 @@ namespace Chummer.Plugins
 
         public async Task<IEnumerable<TreeNode>> GetCharacterRosterTreeNode(ConcurrentDictionary<string, frmCharacterRoster.CharacterCache> CharDic, bool forceUpdate)
         {
-            return await ChummerHub.Client.Backend.Utils.GetCharacterRosterTreeNode(CharDic, forceUpdate);
+            try
+            {
+                return await ChummerHub.Client.Backend.Utils.GetCharacterRosterTreeNode(CharDic, forceUpdate);
+            }
+            catch(Microsoft.Rest.SerializationException e)
+            {
+                if (e.Content.Contains("Log in - ChummerHub"))
+                {
+                    TreeNode node = new TreeNode("Online, but not logged in!");
+                    node.ToolTipText = "Please log in (Options -> Plugins -> Sinners (Cloud) -> Login";
+                    node.Tag = e;
+                    return new List<TreeNode>() { node };
+                }
+                else
+                {
+                    TreeNode node = new TreeNode("Error: " + e.Message);
+                    node.ToolTipText = e.ToString();
+                    node.Tag = e;
+                    return new List<TreeNode>() { node };
+                }
+            }
+            catch(Exception e)
+            {
+                TreeNode node = new TreeNode("SINners Error: please log in");
+                node.ToolTipText = e.ToString();
+                node.Tag = e;
+                return new List<TreeNode>() { node };
+            }
+            
+            
         }
 
         public void CustomInitialize(frmChummerMain mainControl)

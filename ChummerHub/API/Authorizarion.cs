@@ -18,8 +18,10 @@ namespace ChummerHub.API
 
             public static readonly string AdministratorsRole = "Administrator";
             public static readonly string ManagersRole = "Manager";
-            public static readonly string RegisteredUserRole = "RegisteredUser";
-            public static readonly string ConfirmedUserRole = "ConfirmedUser";
+            public static readonly string UserRoleRegistered = "RegisteredUser";
+            public static readonly string UserRoleConfirmed = "ConfirmedUser";
+            public static readonly string UserRoleArchetype = "ArchetypeAdmin";
+            
 
         }
     }

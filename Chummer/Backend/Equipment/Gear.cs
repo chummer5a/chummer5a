@@ -2818,7 +2818,11 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public bool Stolen { get; set; }
+        public bool Stolen
+        {
+            get => _blnStolen;
+            set => _blnStolen = value;
+        }
 
         /// <summary>
         /// Build up the Tree for the current piece of Gear's children.

@@ -54,9 +54,28 @@ namespace ChummerHub.Client.Backend
         static StaticUtils()
         {
         }
+
         public static bool IsUnitTest { get { return MyUtils.IsUnitTest; } }
 
         private static CookieContainer _AuthorizationCookieContainer = null;
+
+        private static List<string> _userRoles = null;
+        public static List<string> UserRoles
+        {
+            get
+            {
+                if (_userRoles == null)
+                {
+                    var result = StaticUtils.Client.GetRolesAsync().Result;
+                    _userRoles = result.ToList();
+                }
+                return _userRoles;
+            }
+            set
+            {
+                _userRoles = value;
+            }
+        }
 
         public static CookieContainer AuthorizationCookieContainer
         {
@@ -193,25 +212,40 @@ namespace ChummerHub.Client.Backend
                 {
                     try
                     {
-                        if (String.IsNullOrEmpty(Properties.Settings.Default.SINnerUrl))
+                        var assembly = System.Reflection.Assembly.GetAssembly(typeof(frmChummerMain));
+                        if (assembly.GetName().Version.Build == 0)
                         {
-                            if (!StaticUtils.IsUnitTest)
-                                return null;
-                            Properties.Settings.Default.SINnerUrl = "https://sinners.azurewebsites.net/";
+                            Properties.Settings.Default.SINnerUrl = "https://sinners.azurewebsites.net";
                         }
-                            
+                        else
+                        {
+                            Properties.Settings.Default.SINnerUrl = "https://sinners-beta.azurewebsites.net";
+                        }
+                        if (System.Diagnostics.Debugger.IsAttached)
+                        {
+                            try
+                            {
+
+                                string local = "http://localhost:5000/";
+                                var request = WebRequest.Create("http://localhost:5000/");
+                                WebResponse response = request.GetResponse();
+                                Properties.Settings.Default.SINnerUrl = local;
+                                System.Diagnostics.Trace.TraceInformation("Connected to " + local + ".");
+                            }
+                            catch(Exception e)
+                            {
+                                System.Diagnostics.Trace.TraceInformation("Connected to " + Properties.Settings.Default.SINnerUrl + ".");
+                            }
+                        }
                         ServicePointManager.ServerCertificateValidationCallback += delegate { return true; };
                         ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
-                        //ServiceClientCredentials credentials = new TokenCredentials("Bearer");
                         Uri baseUri = new Uri(Properties.Settings.Default.SINnerUrl);
                         Microsoft.Rest.ServiceClientCredentials credentials = new MyCredentials();
-                        //ServiceClientCredentials creds = new ServiceClientCredentials();
                         DelegatingHandler delegatingHandler = new MyMessageHandler();
                         HttpClientHandler httpClientHandler = new HttpClientHandler();
                         httpClientHandler.CookieContainer = AuthorizationCookieContainer;
                         _client = new SINnersClient(baseUri, credentials, httpClientHandler, delegatingHandler);
                         var version = _client.GetVersion();
-                        //var version = _client.GetVersionWithHttpMessagesAsync().Result;
                         System.Diagnostics.Trace.TraceInformation("Connected to SINners in version " + version.AssemblyVersion + ".");
                     }
                     catch (Exception ex)
@@ -264,8 +298,6 @@ namespace ChummerHub.Client.Backend
                 return MyTreeNodeList;
             try
             {
-                var response = await StaticUtils.Client.GetSINnersByAuthorizationWithHttpMessagesAsync();
-
                 if (MyOnlineTreeNode == null)
                 {
                     MyOnlineTreeNode = new TreeNode()
@@ -280,84 +312,124 @@ namespace ChummerHub.Client.Backend
                     {
                         MyOnlineTreeNode.Nodes.Clear();
                     });
-                    
+
                 }
+
+                HttpOperationResponse<SINSearchResult> response = null;
+                try
+                {
+                    response = await StaticUtils.Client.GetSINnersByAuthorizationWithHttpMessagesAsync();
+                }
+                catch(Microsoft.Rest.SerializationException e)
+                {
+                    if (e.Content.Contains("Log in - ChummerHub"))
+                    {
+                        PluginHandler.MainForm.DoThreadSafe(() =>
+                        {
+                            TreeNode node = new TreeNode("Online, not logged in");
+                            node.Tag = node.Text;
+                            node.ToolTipText = "Please log in (Options -> Plugins -> Sinners (Cloud) -> Login";
+                            MyOnlineTreeNode.Nodes.Add(node);
+                        });
+                        return MyTreeNodeList = new List<TreeNode>() { MyOnlineTreeNode };
+                    }
+                }
+                
+
+                
                 if (response.Response.StatusCode == HttpStatusCode.BadRequest)
                 {
                     string msg = "Could not load online Sinners: " + response.Response.ReasonPhrase;
                     var content = await response.Response.Content.ReadAsStringAsync();
                     msg += Environment.NewLine + "Content: " + content;
                     System.Diagnostics.Trace.TraceWarning(msg);
-                    MyOnlineTreeNode.ToolTipText = msg;
+                    PluginHandler.MainForm.DoThreadSafe(() =>
+                    {
+                        MyOnlineTreeNode.ToolTipText = msg;
+                    });
                     return new List<TreeNode>() { MyOnlineTreeNode };
                 }
                 if (response == null || response.Body == null || response.Body?.SinLists == null)
                 {
                     return new List<TreeNode>() { MyOnlineTreeNode }; 
                 }
-                foreach (var list in response.Body.SinLists)
+                foreach (var parentlist in response.Body.SinLists)
                 {
                     try
                     {
-                        if(!list.SiNners.Any())
-                            continue;
-                        TreeNode objListNode = new TreeNode
+                        foreach(var list in parentlist.MySINnersList)
                         {
-                            Text = list.Header,
-                            Tag = list,
-                            ContextMenuStrip = PluginHandler.MainForm.CharacterRoster.ContextMenuStrip
-                        };
-                        foreach(var sinner in list.SiNners)
-                        {
-                            if(String.IsNullOrEmpty(sinner.JsonSummary))
-                                continue;
-                            CharacterCache objCache = Newtonsoft.Json.JsonConvert.DeserializeObject<CharacterCache>(sinner.JsonSummary);
-                            SetEventHandlers(sinner, objCache);
-
-                            TreeNode objNode = new TreeNode
-                            {
-                                Text = objCache.CalculatedName(),
-                                Tag = sinner.Id.Value.ToString(),
-                                ToolTipText = "Last Change: " + sinner.LastChange,
-                                ContextMenuStrip = PluginHandler.MainForm.CharacterRoster.ContextMenuStrip
-
-                            };
-                            if(!string.IsNullOrEmpty(objCache.ErrorText))
-                            {
-                                objNode.ForeColor = Color.Red;
-                                objNode.ToolTipText += Environment.NewLine + Environment.NewLine + LanguageManager.GetString("String_Error", GlobalOptions.Language)
-                                                        + LanguageManager.GetString("String_Colon", GlobalOptions.Language) + Environment.NewLine + objCache.ErrorText;
-                            }
-                            CharacterCache delObj;
-                            CharCache.TryRemove(sinner.Id.Value.ToString(), out delObj);
-                            CharCache.TryAdd(sinner.Id.Value.ToString(), objCache);
+                            var objListNode = GetCharacterRosterTreeNodeRecursive(list, ref CharCache);
+                            
                             PluginHandler.MainForm.DoThreadSafe(() =>
                             {
-                                objListNode.Nodes.Add(objNode);
+                                if (objListNode != null)
+                                    MyOnlineTreeNode.Nodes.Add(objListNode);
+                                else
+                                {
+                                    TreeNode node = new TreeNode("no owned chummers found");
+                                    node.Tag = "";
+                                    node.Name = "no owned chummers found";
+                                    node.ToolTipText = "To upload a chummer go into the sinners-tabpage after opening a character and press upload (and wait a bit).";
+                                    MyOnlineTreeNode.Nodes.Add(node);
+                                }
                             });
                         }
-
-                        PluginHandler.MainForm.DoThreadSafe(() =>
-                        {
-                            MyOnlineTreeNode.Nodes.Add(objListNode);
-                        });
-                        
                     }
                     catch (Exception e)
                     {
-                        System.Diagnostics.Trace.TraceWarning("Could not deserialize CharacterCache-Object: " + list.Header);
+                        System.Diagnostics.Trace.TraceWarning("Could not deserialize CharacterCache-Object: " + e.ToString());
                     }
                 }
-                if (MyOnlineTreeNode.Nodes.Count > 0)
-                    return MyTreeNodeList = new List<TreeNode>() { MyOnlineTreeNode };
-                else
-                    return MyTreeNodeList = null;
+                if (MyOnlineTreeNode.Nodes.Count == 0)
+                {
+                    PluginHandler.MainForm.DoThreadSafe(() =>
+                    {
+                        TreeNode node = new TreeNode("Online, but no chummers uploaded");
+                        node.Tag = node.Text;
+                        node.ToolTipText = "To upload a chummer, open it go to the sinners-tabpage and click upload (and wait a bit).";
+                        MyOnlineTreeNode.Nodes.Add(node);
+                    });
+                }
+                return MyTreeNodeList = new List<TreeNode>() { MyOnlineTreeNode };
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Trace.TraceError(ex.ToString());
                 throw;
             }
+        }
+
+        private static TreeNode GetCharacterRosterTreeNodeRecursive(SINnerList list, ref ConcurrentDictionary<string, CharacterCache> CharCache)
+        {
+            var sinner = list.SiNner;
+            if(String.IsNullOrEmpty(sinner?.JsonSummary))
+                return null; ;
+            CharacterCache objCache = Newtonsoft.Json.JsonConvert.DeserializeObject<CharacterCache>(sinner.JsonSummary);
+            SetEventHandlers(sinner, objCache);
+            TreeNode objListNode = new TreeNode
+            {
+                Text = objCache.CalculatedName(),
+                Tag = sinner.Id.Value.ToString(),
+                ToolTipText = "Last Change: " + sinner.LastChange,
+                ContextMenuStrip = PluginHandler.MainForm.CharacterRoster.ContextMenuStrip
+            };
+            if(!string.IsNullOrEmpty(objCache.ErrorText))
+            {
+                objListNode.ForeColor = Color.Red;
+                objListNode.ToolTipText += Environment.NewLine + Environment.NewLine + LanguageManager.GetString("String_Error", GlobalOptions.Language)
+                                        + LanguageManager.GetString("String_Colon", GlobalOptions.Language) + Environment.NewLine + objCache.ErrorText;
+            }
+            CharacterCache delObj;
+            CharCache.TryRemove(sinner.Id.Value.ToString(), out delObj);
+            CharCache.TryAdd(sinner.Id.Value.ToString(), objCache);
+            foreach(var childlist in list.SinList)
+            {
+                var childnode = GetCharacterRosterTreeNodeRecursive(childlist, ref CharCache);
+                if (childnode != null)
+                    objListNode.Nodes.Add(childnode);
+            }
+            return objListNode;
         }
 
 
@@ -384,14 +456,22 @@ namespace ChummerHub.Client.Backend
                     var t = DownloadFileTask(sinner, objCache);
                     t.ContinueWith((downloadtask) =>
                     {
+                        PluginHandler.MySINnerLoading = sinner;
                         PluginHandler.MainForm.CharacterRoster.SetMyEventHandlers(true);
-                        Character c = downloadtask.Result as Character;
-                        if(c != null)
+                        string filepath = downloadtask.Result as string;
+                        PluginHandler.MainForm.DoThreadSafe(() =>
                         {
-                            SwitchToCharacter(c);
-                        }
-                        SwitchToCharacter(objCache);
-                        PluginHandler.MainForm.CharacterRoster.SetMyEventHandlers(false);
+                            Character c = PluginHandler.MainForm.LoadCharacter(filepath);
+                            if(c != null)
+                            {
+                                SwitchToCharacter(c);
+                            }
+                            SwitchToCharacter(objCache);
+                            
+                            PluginHandler.MainForm.CharacterRoster.SetMyEventHandlers(false);
+                            PluginHandler.MySINnerLoading = null;
+                        });
+                        
                     });
                
                 
@@ -400,24 +480,25 @@ namespace ChummerHub.Client.Backend
             objCache.OnMyAfterSelect -= objCache.OnDefaultAfterSelect;
             objCache.OnMyAfterSelect += (sender, treeViewEventArgs) =>
             {
-                DownloadFileTask(sinner, objCache);
+                objCache.FilePath = DownloadFileTask(sinner, objCache).Result;
             };
             objCache.OnMyKeyDown -= objCache.OnDefaultKeyDown;
             objCache.OnMyKeyDown += (sender, args) =>
             {
                 try
                 {
-                    PluginHandler.MainForm.Cursor = Cursors.WaitCursor;
-                    if (args.Item1.KeyCode == Keys.Delete)
+                    using (new CursorWait(true, PluginHandler.MainForm))
                     {
-                        StaticUtils.Client.Delete(sinner.Id.Value);
-                        objCache.ErrorText = "deleted!";
-                        PluginHandler.MainForm.DoThreadSafe(() =>
+                        if (args.Item1.KeyCode == Keys.Delete)
                         {
-                            PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false, true);
-                        });
+                            StaticUtils.Client.Delete(sinner.Id.Value);
+                            objCache.ErrorText = "deleted!";
+                            PluginHandler.MainForm.DoThreadSafe(() =>
+                            {
+                                PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false, true);
+                            });
+                        }
                     }
-                    PluginHandler.MainForm.Cursor = Cursors.Default;
                 }
                 catch(HttpOperationException e)
                 {
@@ -430,10 +511,6 @@ namespace ChummerHub.Client.Backend
                     objCache.ErrorText = e.Message;
                     System.Diagnostics.Trace.TraceWarning(e.ToString());
                 }
-                finally
-                {
-                    PluginHandler.MainForm.Cursor = Cursors.Default;
-                }
             };
         }
 
@@ -441,22 +518,30 @@ namespace ChummerHub.Client.Backend
         {
             PluginHandler.MainForm.DoThreadSafe(() =>
             {
-                PluginHandler.MainForm.Cursor = Cursors.WaitCursor;
-                if (objOpenCharacter == null || !PluginHandler.MainForm.SwitchToOpenCharacter(objOpenCharacter, false))
-                {
-                    PluginHandler.MainForm.OpenCharacter(objOpenCharacter, false);
-                }
-                PluginHandler.MainForm.Cursor = Cursors.Default;
+                    using (new CursorWait(true, PluginHandler.MainForm))
+                    {
+                        if (objOpenCharacter == null ||
+                        !PluginHandler.MainForm.SwitchToOpenCharacter(objOpenCharacter, false))
+                        {
+                            PluginHandler.MainForm.OpenCharacter(objOpenCharacter, false);
+                        }
+                    }
+                
             });
         }
 
         private static void SwitchToCharacter(CharacterCache objCache)
         {
-            Character objOpenCharacter = PluginHandler.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == objCache.FilePath);
-            if (objOpenCharacter == null) 
-                objOpenCharacter = PluginHandler.MainForm.LoadCharacter(objCache.FilePath);
-            SwitchToCharacter(objOpenCharacter);
-        
+            PluginHandler.MainForm.DoThreadSafe(() =>
+            {
+                    using (new CursorWait(true, PluginHandler.MainForm))
+                    {
+                        Character objOpenCharacter = PluginHandler.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == objCache.FilePath);
+                        if (objOpenCharacter == null)
+                            objOpenCharacter = PluginHandler.MainForm.LoadCharacter(objCache.FilePath);
+                        SwitchToCharacter(objOpenCharacter);
+                    }
+            });
 
         }
 
@@ -465,14 +550,6 @@ namespace ChummerHub.Client.Backend
             HttpOperationResponse res = null;
             try
             {
-                
-                if (!StaticUtils.IsUnitTest)
-                {
-                  PluginHandler.MainForm.DoThreadSafe(() =>
-                  {
-                      PluginHandler.MainForm.Cursor = Cursors.WaitCursor;
-                  });
-                }
                 UploadInfoObject uploadInfoObject = new UploadInfoObject();
                 uploadInfoObject.Client = PluginHandler.MyUploadClient;
                 uploadInfoObject.UploadDateTime = DateTime.Now;
@@ -481,7 +558,7 @@ namespace ChummerHub.Client.Backend
                 System.Diagnostics.Trace.TraceInformation("Posting " + ce.MySINnerFile.Id + "...");
                 if (!StaticUtils.IsUnitTest)
                 {
-                    res = await StaticUtils.Client.PostWithHttpMessagesAsync(uploadInfoObject);
+                    res = await StaticUtils.Client.PostSINWithHttpMessagesAsync(uploadInfoObject);
                     if ((res.Response.StatusCode != HttpStatusCode.OK)
                         && (res.Response.StatusCode != HttpStatusCode.Accepted)
                         && (res.Response.StatusCode != HttpStatusCode.Created))
@@ -500,7 +577,7 @@ namespace ChummerHub.Client.Backend
                 }
                 else
                 {
-                    StaticUtils.Client.PostWithHttpMessagesAsync(uploadInfoObject).RunSynchronously();
+                    StaticUtils.Client.PostSINWithHttpMessagesAsync(uploadInfoObject).RunSynchronously();
                 }
                 System.Diagnostics.Trace.TraceInformation("Post of " + ce.MySINnerFile.Id + " finished.");
                
@@ -510,18 +587,10 @@ namespace ChummerHub.Client.Backend
                 System.Diagnostics.Trace.TraceError(ex.ToString());
                 throw;
             }
-            finally
-            {
-                if (!StaticUtils.IsUnitTest)
-                {
-                    PluginHandler.MainForm.DoThreadSafe(() =>
-                    {
-                        PluginHandler.MainForm.Cursor = Cursors.Default;
-                    });
-                }
-            }
             return res;
         }
+
+     
 
         public static async Task<HttpOperationResponse> UploadChummerFileAsync(CharacterExtended ce)
         {
@@ -537,12 +606,8 @@ namespace ChummerHub.Client.Backend
                     {
                         if (!StaticUtils.IsUnitTest)
                         {
-                            PluginHandler.MainForm.DoThreadSafe(() =>
-                            {
-                                PluginHandler.MainForm.Cursor = Cursors.WaitCursor;
-                            });
                             HttpStatusCode myStatus = HttpStatusCode.Unused;
-                            res = await StaticUtils.Client.PutWithHttpMessagesAsync(ce.MySINnerFile.Id.Value, fs);
+                            res = await StaticUtils.Client.PutSINWithHttpMessagesAsync(ce.MySINnerFile.Id.Value, fs);
                             //var task = res.ContinueWith((sender) =>
                             //{
 
@@ -560,8 +625,10 @@ namespace ChummerHub.Client.Backend
                                         {
                                             MessageBox.Show(msg);
                                         }
-                                        Chummer.Plugins.PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false, true);
-                                        PluginHandler.MainForm.Cursor = Cursors.Default;
+                                        using (new CursorWait(true, PluginHandler.MainForm))
+                                        {
+                                            Chummer.Plugins.PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false, true);
+                                        }   
                                     });
                                 }
                                 else
@@ -572,7 +639,7 @@ namespace ChummerHub.Client.Backend
                         }
                         else
                         {
-                            StaticUtils.Client.Put(ce.MySINnerFile.Id.Value, fs);
+                            StaticUtils.Client.PutSIN(ce.MySINnerFile.Id.Value, fs);
                         }
                     }
                     catch (Exception e)
@@ -582,16 +649,6 @@ namespace ChummerHub.Client.Backend
                         {
                             MessageBox.Show(e.Message);
                         });
-                    }
-                    finally
-                    {
-                        if (!StaticUtils.IsUnitTest)
-                        {
-                            PluginHandler.MainForm.DoThreadSafe(() =>
-                            {
-                                PluginHandler.MainForm.Cursor = Cursors.Default;
-                            });
-                        }
                     }
                 }
             }
@@ -603,7 +660,7 @@ namespace ChummerHub.Client.Backend
             return res;
         }
 
-        public static Character DownloadFile(SINners.Models.SINner sinner, CharacterCache objCache)
+        public static string DownloadFile(SINners.Models.SINner sinner, CharacterCache objCache)
         {
             try
             {
@@ -621,6 +678,7 @@ namespace ChummerHub.Client.Backend
                             || sinner.LastChange == null)
                         {
                             loadFilePath = file;
+                            objCache.FilePath = loadFilePath;
                             break;
                         }
                         //no recent file found - download it (again).
@@ -635,16 +693,12 @@ namespace ChummerHub.Client.Backend
                 objOpenCharacter = PluginHandler.MainForm?.OpenCharacters?.FirstOrDefault(x => x.FileName == loadFilePath);
                 if ((objOpenCharacter != null))
                 {
-                    return objOpenCharacter;
+                    return loadFilePath;
                 }
                 if (String.IsNullOrEmpty(loadFilePath))
                 {
                     try
                     {
-                        PluginHandler.MainForm?.DoThreadSafe(() =>
-                        {
-                            PluginHandler.MainForm.Cursor = Cursors.WaitCursor;
-                        });
                         string zippedFile = Path.Combine(System.IO.Path.GetTempPath(), "SINner", sinner.Id.Value + ".chum5z");
                         if (File.Exists(zippedFile))
                             File.Delete(zippedFile);
@@ -660,6 +714,7 @@ namespace ChummerHub.Client.Backend
                             if (sinner.LastChange != null)
                                 File.SetLastWriteTime(file, sinner.LastChange.Value);
                             loadFilePath = file;
+                            objCache.FilePath = loadFilePath;
                         }
                     }
                     catch (Exception ex)
@@ -668,16 +723,8 @@ namespace ChummerHub.Client.Backend
                         if (objCache != null)
                             objCache.ErrorText = ex.Message;
                     }
-                    finally
-                    {
-                        PluginHandler.MainForm?.DoThreadSafe(() =>
-                        {
-                            PluginHandler.MainForm.Cursor = Cursors.Default;
-                        });
-                    }
-                    
                 }
-                return null;
+                return objCache.FilePath;
             }
             catch (Exception e)
             {
@@ -687,16 +734,18 @@ namespace ChummerHub.Client.Backend
             }
         }
 
-        public static Task<Character> DownloadFileTask(SINners.Models.SINner sinner, CharacterCache objCache)
+        public static Task<string> DownloadFileTask(SINners.Models.SINner sinner, CharacterCache objCache)
         {
             try
             {
-                if(objCache.DownLoadRunning != null)
+                if ((objCache.DownLoadRunning != null)&& (objCache.DownLoadRunning.Status == TaskStatus.Running))
                     return objCache.DownLoadRunning;
 
-                objCache.DownLoadRunning = Task.Factory.StartNew<Character>(() =>
+                objCache.DownLoadRunning = Task.Factory.StartNew<string>(() =>
                 {
-                    return DownloadFile(sinner, objCache);
+                    string filepath = DownloadFile(sinner, objCache);
+                    objCache.FilePath = filepath;
+                    return objCache.FilePath;
                 });
                 return objCache.DownLoadRunning;
             }
@@ -705,6 +754,8 @@ namespace ChummerHub.Client.Backend
                 objCache.ErrorText = ex.ToString();
                 throw;
             }
+
+          
         }
 
 

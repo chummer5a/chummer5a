@@ -5522,6 +5522,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Karma spent on enemies counts towards negative Quality limit in create mode</text>
     </string>
     <string>
+      <key>Checkbox_Options_EnablePlugins</key>
+      <text>Enable Plugins (experimental)</text>
+    </string>
+    <string>
       <key>Checkbox_Options_HideCharacterRoster</key>
       <text>Hide the Character Roster</text>
     </string>

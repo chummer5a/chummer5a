@@ -15,6 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
 using System.Reflection;
 using System.IO;
+using System.Net;
 using ChummerHub.Controllers;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
@@ -32,11 +33,43 @@ using ChummerHub.API;
 using ChummerHub.Controllers.V1;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.ApplicationInsights.SnapshotCollector;
+using Microsoft.Extensions.Options;
+using Microsoft.ApplicationInsights.AspNetCore;
+using Microsoft.ApplicationInsights.Channel;
+using Microsoft.ApplicationInsights.DataContracts;
+using Microsoft.ApplicationInsights.Extensibility;
 
 namespace ChummerHub
 {
     public class Startup
     {
+        
+        private class SnapshotCollectorTelemetryProcessorFactory : ITelemetryProcessorFactory
+        {
+            private readonly IServiceProvider _serviceProvider;
+
+            public SnapshotCollectorTelemetryProcessorFactory(IServiceProvider serviceProvider) =>
+                _serviceProvider = serviceProvider;
+
+            public ITelemetryProcessor Create(ITelemetryProcessor next)
+            {
+                try
+                {
+                    var snapshotConfigurationOptions = _serviceProvider.GetService<IOptions<SnapshotCollectorConfiguration>>();
+                    ITelemetryProcessor ret = new SnapshotCollectorTelemetryProcessor(next, configuration: snapshotConfigurationOptions.Value);
+                    return ret;
+                }
+                catch (Exception e)
+                {
+                    System.Diagnostics.Trace.TraceError(e.ToString(), e);
+                    Console.WriteLine(e.ToString());
+                    return null;
+                }
+
+            }
+        }
+
         private readonly ILogger<Startup> _logger;
 
         private static DriveHandler _gdrive = null;
@@ -47,6 +80,18 @@ namespace ChummerHub
                 return _gdrive;
             }
         }
+
+        /// <summary>
+        /// This leads to the master-azure-db to create/edit/delete users
+        /// </summary>
+        public static string ConnectionStringToMasterSqlDb { get; set; }
+
+        /// <summary>
+        /// This leads to the master-azure-db to create/edit/delete users
+        /// </summary>
+        public static string ConnectionStringSinnersDb { get; set; }
+
+        
 
         public Startup(ILogger<Startup> logger, IConfiguration configuration)
         {
@@ -65,7 +110,16 @@ namespace ChummerHub
         {
             MyServices = services;
 
-           
+            ConnectionStringToMasterSqlDb = Configuration.GetConnectionString("MasterSqlConnection");
+            ConnectionStringSinnersDb = Configuration.GetConnectionString("DefaultConnection");
+
+            // Configure SnapshotCollector from application settings
+            services.Configure<SnapshotCollectorConfiguration>(Configuration.GetSection(nameof(SnapshotCollectorConfiguration)));
+
+            // Add SnapshotCollector telemetry processor.
+            services.AddSingleton<ITelemetryProcessorFactory>(sp => new SnapshotCollectorTelemetryProcessorFactory(sp));
+
+
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -81,22 +135,8 @@ namespace ChummerHub
 
             services.AddScoped<SignInManager<ApplicationUser>, SignInManager<ApplicationUser>>();
 
-            //services.AddDefaultIdentity<ApplicationUser>()
-            //    .AddEntityFrameworkStores<ApplicationDbContext>()
-            //    .AddSignInManager()
-            //    .AddRoleManager<RoleManager<ApplicationRole>>()
-            //    .AddDefaultTokenProviders();
-
-            //services.AddIdentityCore<ApplicationUser>(options => { });
-            //new IdentityBuilder(typeof(ApplicationUser), typeof(IdentityRole), services)
-            //    .AddRoleManager<RoleManager<IdentityRole>>()
-            //    .AddSignInManager<SignInManager<ApplicationUser>>()
-            //    .AddEntityFrameworkStores<ApplicationDbContext>()
-            //    .AddDefaultTokenProviders();
-
-
+          
             services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
-            //services.AddDefaultIdentity<ApplicationUser>(options =>
             {
 
               })
@@ -115,8 +155,6 @@ namespace ChummerHub
 
             services.AddMvc(options =>
             {
-                // using Microsoft.AspNetCore.Mvc.Authorization;
-                // using Microsoft.AspNetCore.Authorization;
                 var policy = new AuthorizationPolicyBuilder()
                                  .RequireAuthenticatedUser()
                                  .Build();
@@ -229,18 +267,6 @@ namespace ChummerHub
                 })
                 .AddAuthorization();
 
-//            services.AddAuthentication("Bearer")
-//                .AddIdentityServerAuthentication(options =>
-//                {
-//#if DEBUG
-//                    options.Authority = "http://localhost:5000";
-//#else
-//                    options.Authority = "http://sinners.azurewebsites.net";
-//#endif
-//                    options.RequireHttpsMetadata = false;
-//                    options.ApiName = "api1";
-//                });
-
             services.AddApiVersioning(o =>
             {
                 o.ReportApiVersions = true;
@@ -274,7 +300,7 @@ namespace ChummerHub
 
                 foreach (var description in provider.ApiVersionDescriptions)
                 {
-                    options.SwaggerDoc(description.GroupName, new Swashbuckle.AspNetCore.Swagger.Info
+                    options.SwaggerDoc(description.GroupName, new Info
                     {
                         Version = description.GroupName,
                         Title = "ChummerHub",
@@ -407,8 +433,5 @@ namespace ChummerHub
           
 
         }
-
-
-        
     }
 }

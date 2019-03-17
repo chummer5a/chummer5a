@@ -2776,7 +2776,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>1</value>
-          <condition>Only for Gymanstics (Climbing)</condition>
+          <condition>Only for Gymnastics (Climbing)</condition>
         </limitmodifier>
       </bonus>
       <required>
@@ -2808,7 +2808,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>1</value>
-          <condition>Only for Gymanstics (Climbing)</condition>
+          <condition>Only for Gymnastics (Climbing)</condition>
         </limitmodifier>
       </bonus>
       <required>

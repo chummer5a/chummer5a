@@ -40,15 +40,24 @@ namespace ChummerHub.Client.UI
 
         public CharacterExtended SetCharacterFrom(CharacterShared mySINner)
         {
+            InitializeComponent();
             _mySINner = mySINner;
-            TabSINnersBasic = new SINnersBasic(this);
-            TabSINnersBasic.Visible = true;
-            TabSINnersAdvanced = new SINnersAdvanced(this);
-            TabSINnersAdvanced.Visible = true;
-            MyCE = new CharacterExtended(mySINner.CharacterObject, null);
+            MyCE = new CharacterExtended(mySINner.CharacterObject, null, PluginHandler.MySINnerLoading);
             MyCE.MySINnerFile.SiNnerMetaData.Tags = MyCE.PopulateTags();
             MyCE.ZipFilePath = MyCE.PrepareModel();
-            InitializeComponent();
+            TabSINnersBasic = new SINnersBasic(this)
+            {
+                Visible = true
+            };
+            TabSINnersAdvanced = new SINnersAdvanced(this);
+#if DEBUG
+            TabSINnersAdvanced.Visible = true;
+#else
+            TabSINnersAdvanced.Visible = false;
+#endif
+
+           
+            
             this.tabPageBasic.Controls.Add(TabSINnersBasic);
             this.tabPageAdvanced.Controls.Add(TabSINnersAdvanced);
            
@@ -65,7 +74,7 @@ namespace ChummerHub.Client.UI
         {
             try
             {
-                    await StaticUtils.Client.DeleteAsync(MyCE.MySINnerFile.Id.Value);
+                await StaticUtils.Client.DeleteAsync(MyCE.MySINnerFile.Id.Value);
             }
             catch (Exception ex)
             {

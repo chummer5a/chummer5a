@@ -463,11 +463,26 @@ namespace Chummer
             // Which Plugins are enabled.
             LoadBoolFromRegistry(ref _blnPluginsEnabled, "pluginsenabled");
 
-            string jsonstring = "";
-            LoadStringFromRegistry(ref jsonstring, "plugins");
-            if(!String.IsNullOrEmpty(jsonstring))
-                _pluginsEnabledDic = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, bool>>(jsonstring);
+            try
+            {
+                string jsonstring = "";
+                LoadStringFromRegistry(ref jsonstring, "plugins");
+                if(!String.IsNullOrEmpty(jsonstring))
+                    _pluginsEnabledDic = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, bool>>(jsonstring);
 
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Trace.TraceError(e.Message, e);
+#if DEBUG
+                throw;
+//#else
+                string msg = "Error while loading PluginOptions from registry: " + Environment.NewLine;
+                msg += e.Message;
+                MessageBox.Show(msg);
+#endif
+            }
+            
             // Prefer Nightly Updates.
             LoadBoolFromRegistry(ref _blnPreferNightlyUpdates, "prefernightlybuilds");
 

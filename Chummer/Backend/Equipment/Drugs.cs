@@ -617,7 +617,11 @@ namespace Chummer.Backend.Equipment
             }
         }
         public Guid SourceID => _sourceID;
-        public bool Stolen { get; set; }
+        public bool Stolen
+        {
+            get => _blnStolen;
+            set => _blnStolen = value;
+        }
 
         #endregion
 

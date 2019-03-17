@@ -702,7 +702,10 @@ namespace Chummer
             // If there are no child forms, hide the tab control.
             if(ActiveMdiChild != null)
             {
-                ActiveMdiChild.WindowState = FormWindowState.Maximized;
+                if (ActiveMdiChild.WindowState == FormWindowState.Minimized)
+                {
+                    ActiveMdiChild.WindowState = FormWindowState.Normal;
+                }
 
                 // If this is a new child form and does not have a tab page, create one.
                 if(!(ActiveMdiChild.Tag is TabPage))
@@ -1093,7 +1096,11 @@ namespace Chummer
 
             Cursor objOldCursor = Cursor;
             Cursor = Cursors.WaitCursor;
-
+            FormWindowState wsPreference = FormWindowState.Maximized;
+            if (OpenCharacterForms.Any(x => x.WindowState != wsPreference))
+            {
+                wsPreference = FormWindowState.Normal;
+            }
             foreach(Character objCharacter in lstCharacters)
             {
                 if(objCharacter == null || OpenCharacterForms.Any(x => x.CharacterObject == objCharacter))
@@ -1105,7 +1112,7 @@ namespace Chummer
                     frmCreate frmCharacter = new frmCreate(objCharacter)
                     {
                         MdiParent = this,
-                        WindowState = FormWindowState.Maximized
+                        WindowState = wsPreference
                     };
                     frmCharacter.Show();
                 }
@@ -1114,7 +1121,7 @@ namespace Chummer
                     frmCareer frmCharacter = new frmCareer(objCharacter)
                     {
                         MdiParent = this,
-                        WindowState = FormWindowState.Maximized
+                        WindowState = wsPreference
                     };
                     frmCharacter.DiceRollerOpened += objCareer_DiceRollerOpened;
                     frmCharacter.DiceRollerOpenedInt += objCareer_DiceRollerOpenedInt;

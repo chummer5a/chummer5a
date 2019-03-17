@@ -35,14 +35,23 @@ namespace ChummerHub.Client.UI
         private void SINnersAdvancedConstructor(SINnersUserControl parent)
         {
             InitializeComponent();
+            this.Name = "SINnersAdvanced";
             this.AutoSize = true;
             this.cbSINnerUrl.SelectedIndex = 0;
             MySINnersUsercontrol = parent;
+            TreeNode root = null;
+            MySINnersUsercontrol.MyCE.PopulateTree(ref root, null, null);
+            MyTagTreeView.Nodes.Add(root);
         }
 
        
 
         private void cmdPopulateTags_Click(object sender, EventArgs e)
+        {
+            PopulateTags();
+        }
+
+        private void PopulateTags()
         {
             MyTagTreeView.Nodes.Clear();
             MySINnersUsercontrol.MyCE.MySINnerFile.SiNnerMetaData.Tags = MySINnersUsercontrol.MyCE.PopulateTags();
@@ -51,7 +60,7 @@ namespace ChummerHub.Client.UI
             MyTagTreeView.Nodes.Add(root);
         }
 
-       
+
         private void cmdPrepareModel_Click(object sender, EventArgs e)
         {
             MySINnersUsercontrol.MyCE.PrepareModel();

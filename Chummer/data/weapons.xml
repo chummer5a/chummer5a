@@ -11129,7 +11129,7 @@
       <ap>-</ap>
       <mode>SA/BF/FA</mode>
       <rc>0</rc>
-      <ammo>28(c)</ammo>
+      <ammo>16(c)</ammo> <!-- Ammo is 24 but because of extended clip-factor '1,5' amount must be 16 -->
       <avail>9R</avail>
       <cost>2300</cost>
       <source>SAG</source>
@@ -11534,7 +11534,7 @@
       <damage>9P</damage>
       <ap>-2</ap>
       <mode>SA/BF/FA</mode>
-      <rc>3</rc>
+      <rc>0</rc>
       <ammo>32(c)</ammo>
       <avail>9F</avail>
       <cost>2850</cost>
@@ -12818,7 +12818,7 @@
       <avail>8R</avail>
       <cost>650</cost>
       <source>SL</source>
-      <page>29</page>
+      <page>30</page>
       <accessories>
         <accessory>
           <name>Long Barrel</name>
@@ -12832,7 +12832,6 @@
       </accessorymounts>
       <ammocategory>Sporting Rifles</ammocategory>
       <range>Submachine Guns</range>
-      <spec>Semi-Automatics</spec>
     </weapon>
     <weapon>
       <id>cbac989a-92f4-4eb8-a6ff-a9b5f7571d5d</id>

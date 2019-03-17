@@ -4325,6 +4325,7 @@ namespace Chummer.Backend.Equipment
         {
             decimal saleCost = TotalCost * refundPercentage;
             int oldRating = Rating;
+            decimal oldEssence = CalculatedESS();
             Grade oldGrade = Grade;
 
             Rating = intRating;
@@ -4365,6 +4366,12 @@ namespace Chummer.Backend.Equipment
             ExpenseUndo objUndo = new ExpenseUndo();
             objUndo.CreateNuyen(NuyenExpenseType.AddGear, InternalId);
             objExpense.Undo = objUndo;
+            
+            if (oldEssence - CalculatedESS() > 0)
+            {
+                //The new Essence cost is greater than the old one. 
+                characterObject.IncreaseEssenceHole((int)(CalculatedESS() * 100));
+            }
         }
 
         /// <summary>

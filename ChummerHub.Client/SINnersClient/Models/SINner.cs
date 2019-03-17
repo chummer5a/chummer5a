@@ -21,14 +21,17 @@ namespace SINners.Models
         /// <summary>
         /// Initializes a new instance of the SINner class.
         /// </summary>
-        public SINner(Guid? id = default(Guid?), string downloadUrl = default(string), DateTime? uploadDateTime = default(DateTime?), DateTime? lastChange = default(DateTime?), SINnerMetaData siNnerMetaData = default(SINnerMetaData), string jsonSummary = default(string))
+        public SINner(Guid? id = default(Guid?), string downloadUrl = default(string), DateTime? uploadDateTime = default(DateTime?), DateTime? lastChange = default(DateTime?), string language = default(string), SINnerMetaData siNnerMetaData = default(SINnerMetaData), string jsonSummary = default(string), SINnerGroup myGroup = default(SINnerGroup), string alias = default(string))
         {
             Id = id;
             DownloadUrl = downloadUrl;
             UploadDateTime = uploadDateTime;
             LastChange = lastChange;
+            Language = language;
             SiNnerMetaData = siNnerMetaData;
             JsonSummary = jsonSummary;
+            MyGroup = myGroup;
+            Alias = alias;
         }
 
         /// <summary>
@@ -53,6 +56,11 @@ namespace SINners.Models
 
         /// <summary>
         /// </summary>
+        [JsonProperty(PropertyName = "language")]
+        public string Language { get; set; }
+
+        /// <summary>
+        /// </summary>
         [JsonProperty(PropertyName = "siNnerMetaData")]
         public SINnerMetaData SiNnerMetaData { get; set; }
 
@@ -61,5 +69,39 @@ namespace SINners.Models
         [JsonProperty(PropertyName = "jsonSummary")]
         public string JsonSummary { get; set; }
 
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "myGroup")]
+        public SINnerGroup MyGroup { get; set; }
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "alias")]
+        public string Alias { get; set; }
+
+        /// <summary>
+        /// Validate the object. Throws ValidationException if validation fails.
+        /// </summary>
+        public virtual void Validate()
+        {
+            if (this.Language != null)
+            {
+                if (this.Language.Length > 6)
+                {
+                    throw new ValidationException(ValidationRules.MaxLength, "Language", 6);
+                }
+            }
+            if (this.MyGroup != null)
+            {
+                this.MyGroup.Validate();
+            }
+            if (this.Alias != null)
+            {
+                if (this.Alias.Length > 64)
+                {
+                    throw new ValidationException(ValidationRules.MaxLength, "Alias", 64);
+                }
+            }
+        }
     }
 }

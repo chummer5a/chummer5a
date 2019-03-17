@@ -17352,14 +17352,15 @@ private void RefreshSelectedSpell()
                     return;
                 frmSelectCyberware pickCyber = new frmSelectCyberware(CharacterObject, objCyberware.SourceType);
                 pickCyber.DefaultSearchText = objCyberware.DisplayNameShort(GlobalOptions.Language);
+                pickCyber.Upgrading = true;
                 pickCyber.ShowDialog(this);
 
                 if (pickCyber.DialogResult == DialogResult.Cancel)
                     return;
 
                 objCyberware.Upgrade(CharacterObject, pickCyber.SelectedGrade, pickCyber.SelectedRating, frmSell.SellPercent);
-
-                CharacterObject.IncreaseEssenceHole((int)(objCyberware.CalculatedESS() * 100));
+                //TODO: Bind displayname to selectednode text properly. 
+                treCyberware.SelectedNode.Text = objCyberware.DisplayName(GlobalOptions.Language);
             }
             else { Utils.BreakIfDebug(); }
 

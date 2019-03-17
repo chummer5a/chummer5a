@@ -32,12 +32,21 @@ namespace ChummerHub.Client.Backend
         protected async override Task<HttpResponseMessage> SendAsync(
             HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            Debug.WriteLine("Process request");
-            // Call the inner handler.
-            request.Headers.TryAddWithoutValidation("ContentType", "application/json");
-            var response = await base.SendAsync(request, cancellationToken);
-            Debug.WriteLine("Process response");
-            return response;
+            try
+            {
+                Debug.WriteLine("Process request");
+                // Call the inner handler.
+                request.Headers.TryAddWithoutValidation("ContentType", "application/json");
+                var response = await base.SendAsync(request, cancellationToken);
+                Debug.WriteLine("Process response");
+                return response;
+            }
+            catch(Exception e)
+            {
+                System.Diagnostics.Trace.TraceError(e.ToString(), e);
+                throw;
+            }
+            
         }
     }
 }

@@ -23,6 +23,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+using Microsoft.AspNetCore.Identity;
 
 namespace ChummerHub.Models.V1
 {
@@ -45,9 +46,17 @@ namespace ChummerHub.Models.V1
         [XmlIgnore]
         public Guid UploadClientId { get; set; }
 
+        [MaxLength(6)]
+        public string Language { get; set; }
+
         public SINnerMetaData SINnerMetaData { get; set; }
 
         public String JsonSummary { get; set; }
+
+        public SINnerGroup MyGroup { get; set; }
+
+        [MaxLength(64)]
+        public string Alias { get; set; }
 
         [JsonIgnore]
         [XmlIgnore]
@@ -64,33 +73,31 @@ namespace ChummerHub.Models.V1
         [NotMapped]
         private List<Tag> _AllTags { get; set; }
 
-        [JsonIgnore]
-        [XmlIgnore]
-        [NotMapped]
-        public List<Tag> AllTags
+        public async Task<List<Tag>> GetTagsForSinnerFlat(ApplicationDbContext context)
         {
-            get
-            {
-                if (_AllTags == null)
-                {
-                    _AllTags = GetTagsForSinnerFlat(this.Id);
-                }
-                return _AllTags;
-            }
-            set
-            {
-                _AllTags = value;
-            }
+            return await (from a in context.Tags where a.SINnerId == this.Id select a).ToListAsync();
+            
         }
 
-        private List<Tag> GetTagsForSinnerFlat(Guid? id)
+        internal static async Task<List<SINner>> GetSINnersFromUser(ApplicationUser user, ApplicationDbContext context, bool canEdit)
         {
-            using(var scope = Program.MyHost.Services.CreateScope())
+            List<SINner> result = new List<SINner>();
+            var userseq = (from a in context.UserRights where a.EMail == user.NormalizedEmail && a.CanEdit == canEdit select a).ToList();
+            foreach(var ur in userseq)
             {
-                var services = scope.ServiceProvider;
-                Data.ApplicationDbContext context = services.GetRequiredService<Data.ApplicationDbContext>();
-                return (from a in context.Tags where a.SINnerId == id select a).ToList();
+                if(ur?.SINnerId == null) continue;
+                var sin = await context.SINners.Include(a => a.SINnerMetaData.Visibility.UserRights)
+                    .Include(b => b.MyGroup)
+                    .ThenInclude( a => a.MyGroups)
+                    .ThenInclude( a => a.MyGroups)
+                    .ThenInclude(a => a.MyGroups)
+                    .FirstOrDefaultAsync(a => a.Id == ur.SINnerId);
+                if(sin != null)
+                {
+                    result.Add(sin);
+                }
             }
+            return result;
         }
     }
 }
