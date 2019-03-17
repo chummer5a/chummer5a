@@ -10057,7 +10057,7 @@
       <armor>12</armor>
       <avail>8R</avail>
       <body>16</body>
-      <category>General</category>
+      <category>Trucks</category>
       <cost>50000</cost>
       <handling>3/3</handling>
       <pilot>2</pilot>
@@ -10081,7 +10081,7 @@
       <armor>9</armor>
       <avail>12R</avail>
       <body>12</body>
-      <category>General</category>
+      <category>Rotorcraft</category>
       <cost>120000</cost>
       <handling>4</handling>
       <pilot>2</pilot>
