@@ -1,4 +1,4 @@
-/*  This file is part of Chummer5a.
+﻿/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -68,6 +68,7 @@ namespace Chummer
         private bool _blnFreeSpiritPowerPointsMAG;
         private bool _blnNoArmorEncumbrance;
         private bool _blnIgnoreArt;
+        private bool _blnIgnoreComplexFormLimit;
         private bool _blnUnarmedImprovementsApplyToWeapons;
         private bool _blnLicenseRestrictedItems;
         private bool _blnMaximumArmorModifications;
@@ -298,6 +299,8 @@ namespace Chummer
             objWriter.WriteElementString("usetotalvalueforcontacts", _blnUseTotalValueForFreeContacts.ToString());
             // <nosinglearmorencumbrance />
             objWriter.WriteElementString("nosinglearmorencumbrance", _blnNoSingleArmorEncumbrance.ToString());
+            // <ignorecomplexformlimit />
+            objWriter.WriteElementString("ignorecomplexformlimit", _blnIgnoreComplexFormLimit.ToString());
             // <NoArmorEncumbrance />
             objWriter.WriteElementString("noarmorencumbrance", _blnNoArmorEncumbrance.ToString());
             // <esslossreducesmaximumonly />
@@ -653,6 +656,8 @@ namespace Chummer
             objXmlNode.TryGetBoolFieldQuickly("nosinglearmorencumbrance", ref _blnNoSingleArmorEncumbrance);
             // Ignore Armor Encumbrance
             objXmlNode.TryGetBoolFieldQuickly("noarmorencumbrance", ref _blnNoArmorEncumbrance);
+            // Ignore Complex Form Limit
+            objXmlNode.TryGetBoolFieldQuickly("ignorecomplexformlimit", ref _blnIgnoreComplexFormLimit);
             // Essence Loss Reduces Maximum Only.
             objXmlNode.TryGetBoolFieldQuickly("esslossreducesmaximumonly", ref _blnESSLossReducesMaximumOnly);
             // Allow Skill Regrouping.
@@ -1135,6 +1140,16 @@ namespace Chummer
             get => _blnIgnoreArt;
             set => _blnIgnoreArt = value;
         }
+
+        /// <summary>
+        /// Whether or not to ignore the limit on Complex Forms in Career mode.
+        /// </summary>
+        public bool IgnoreComplexFormLimit
+        {
+            get => _blnIgnoreComplexFormLimit;
+            set => _blnIgnoreComplexFormLimit = value;
+        }
+
 
         /// <summary>
         /// Whether or not to use stats from Cyberlegs when calculating movement rates
