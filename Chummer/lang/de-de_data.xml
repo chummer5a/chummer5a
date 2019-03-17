@@ -30851,8 +30851,8 @@
 				<specs>
 					<spec translate="Schrotflinten">Shotguns</spec>
 					<spec translate="Scharfschützengewehre">Sniper Rifles</spec>
-					<spec translate="Schließen auf Lange Entfernung">Extended-Range Shots</spec>
-					<spec translate="Schließen auf Maximale Entfernung">Long-Range Shots</spec>
+					<spec translate="Schießen auf Lange Entfernung">Extended-Range Shots</spec>
+					<spec translate="Schießen auf Maximale Entfernung">Long-Range Shots</spec>
 					<spec translate="Sportgewehre">Sporting Rifles</spec>
 				</specs>
 				<altpage>130</altpage>
