@@ -65,13 +65,9 @@ namespace ChummerHub.Controllers.V1
         [HttpGet("{sinnerid}")]
         [Authorize]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("SINnerDownloadFile")]
-        //[Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
-        //[Swashbuckle.AspNetCore.Annotations.SwaggerResponse(200, type: typeof(FileResult))]
-        //[ProducesResponseType(typeof(FileResult), 200)]
         [ProducesResponseType(typeof(FileStreamResult), (int)HttpStatusCode.OK)]
-        //[ProducesResponseType(typeof(FileContentResult), 200)]
         [Produces(@"application/json", @"application/octet-stream")]
         public async Task<FileResult> GetDownloadFile([FromRoute] Guid sinnerid)
         {

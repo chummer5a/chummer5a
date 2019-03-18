@@ -227,11 +227,15 @@ namespace Chummer.Plugins
             return new SINnersOptions();
         }
 
-        public async Task<IEnumerable<TreeNode>> GetCharacterRosterTreeNode(ConcurrentDictionary<string, frmCharacterRoster.CharacterCache> CharDic, bool forceUpdate)
+        public async Task<IEnumerable<TreeNode>> GetCharacterRosterTreeNode(frmCharacterRoster frmCharRoster, bool forceUpdate)
         {
             try
             {
-                return await ChummerHub.Client.Backend.Utils.GetCharacterRosterTreeNode(CharDic, forceUpdate);
+                using (new CursorWait(true, frmCharRoster))
+                {
+                    return await ChummerHub.Client.Backend.Utils.GetCharacterRosterTreeNode(frmCharRoster.MyCharacterCacheDic, forceUpdate);
+                }
+                    
             }
             catch(Microsoft.Rest.SerializationException e)
             {
@@ -264,6 +268,18 @@ namespace Chummer.Plugins
         public void CustomInitialize(frmChummerMain mainControl)
         {
             MainForm = mainControl;
+            Task.Factory.StartNew(() =>
+            {
+                try
+                {
+                    var res = StaticUtils.Client.GetRolesWithHttpMessagesAsync().Result;
+                    StaticUtils.UserRoles = res.Body.ToList();
+                }
+                catch(Exception e)
+                {
+                    System.Diagnostics.Trace.TraceError(e.ToString());
+                }
+            });
         }
     }
 }

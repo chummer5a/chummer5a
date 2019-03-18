@@ -21,12 +21,13 @@ namespace SINners.Models
         /// <summary>
         /// Initializes a new instance of the SINnerSearchGroup class.
         /// </summary>
-        public SINnerSearchGroup(SINnerSearchGroup mySINSearchGroup = default(SINnerSearchGroup), string errorText = default(string), IList<SINnerSearchGroupMember> myMembers = default(IList<SINnerSearchGroupMember>), Guid? id = default(Guid?), bool? isPublic = default(bool?), string gameMasterUsername = default(string), SINnerGroupSetting mySettings = default(SINnerGroupSetting), string groupname = default(string), string language = default(string), IList<SINnerGroup> myGroups = default(IList<SINnerGroup>), SINnerGroup myParentGroup = default(SINnerGroup), string myAdminIdentityRole = default(string))
+        public SINnerSearchGroup(SINnerSearchGroup mySINSearchGroup = default(SINnerSearchGroup), string errorText = default(string), IList<SINnerSearchGroupMember> myMembers = default(IList<SINnerSearchGroupMember>), Guid? id = default(Guid?), Guid? myParentGroupId = default(Guid?), bool? isPublic = default(bool?), string gameMasterUsername = default(string), SINnerGroupSetting mySettings = default(SINnerGroupSetting), string groupname = default(string), string language = default(string), IList<SINnerGroup> myGroups = default(IList<SINnerGroup>), SINnerGroup myParentGroup = default(SINnerGroup), string myAdminIdentityRole = default(string))
         {
             MySINSearchGroup = mySINSearchGroup;
             ErrorText = errorText;
             MyMembers = myMembers;
             Id = id;
+            MyParentGroupId = myParentGroupId;
             IsPublic = isPublic;
             GameMasterUsername = gameMasterUsername;
             MySettings = mySettings;
@@ -56,6 +57,11 @@ namespace SINners.Models
         /// </summary>
         [JsonProperty(PropertyName = "id")]
         public Guid? Id { get; set; }
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "myParentGroupId")]
+        public Guid? MyParentGroupId { get; set; }
 
         /// <summary>
         /// </summary>

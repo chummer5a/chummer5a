@@ -66,8 +66,11 @@ namespace ChummerHub.Client.Backend
             {
                 if (_userRoles == null)
                 {
-                    var result = StaticUtils.Client.GetRolesAsync().Result;
-                    _userRoles = result.ToList();
+                    using (new CursorWait(false))
+                    {
+                        var result = StaticUtils.Client.GetRolesAsync().Result;
+                        _userRoles = result.ToList();
+                    }
                 }
                 return _userRoles;
             }

@@ -21,9 +21,10 @@ namespace SINners.Models
         /// <summary>
         /// Initializes a new instance of the SINnerGroup class.
         /// </summary>
-        public SINnerGroup(Guid? id = default(Guid?), bool? isPublic = default(bool?), string gameMasterUsername = default(string), SINnerGroupSetting mySettings = default(SINnerGroupSetting), string groupname = default(string), string language = default(string), IList<SINnerGroup> myGroups = default(IList<SINnerGroup>), SINnerGroup myParentGroup = default(SINnerGroup), string myAdminIdentityRole = default(string))
+        public SINnerGroup(Guid? id = default(Guid?), Guid? myParentGroupId = default(Guid?), bool? isPublic = default(bool?), string gameMasterUsername = default(string), SINnerGroupSetting mySettings = default(SINnerGroupSetting), string groupname = default(string), string language = default(string), IList<SINnerGroup> myGroups = default(IList<SINnerGroup>), SINnerGroup myParentGroup = default(SINnerGroup), string myAdminIdentityRole = default(string))
         {
             Id = id;
+            MyParentGroupId = myParentGroupId;
             IsPublic = isPublic;
             GameMasterUsername = gameMasterUsername;
             MySettings = mySettings;
@@ -38,6 +39,11 @@ namespace SINners.Models
         /// </summary>
         [JsonProperty(PropertyName = "id")]
         public Guid? Id { get; set; }
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "myParentGroupId")]
+        public Guid? MyParentGroupId { get; set; }
 
         /// <summary>
         /// </summary>

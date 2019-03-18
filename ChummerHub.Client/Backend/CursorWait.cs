@@ -18,24 +18,37 @@ namespace ChummerHub.Client.Backend
         public CursorWait(bool appStarting = false, UserControl control = null)
         {
             // Wait
+            _control = control;
             Cursor.Current = appStarting ? Cursors.AppStarting : Cursors.WaitCursor;
             PluginHandler.MainForm.DoThreadSafe(() =>
             {
-                if (control == null) Application.UseWaitCursor = true;
-                else control.Cursor = Cursor.Current;
+                if (_control == null) Application.UseWaitCursor = true;
+                else _control.Cursor = Cursor.Current;
             });
 
             
         }
 
-        public CursorWait(bool appStarting = false, Form form = null)
+        public CursorWait(bool appStarting = false)
         {
-            // Wait
             Cursor.Current = appStarting ? Cursors.AppStarting : Cursors.WaitCursor;
             PluginHandler.MainForm.DoThreadSafe(() =>
             {
-                if (form == null) Application.UseWaitCursor = true;
-                else form.Cursor = Cursor.Current;
+                Application.UseWaitCursor = true;
+            });
+
+
+        }
+
+        public CursorWait(bool appStarting = false, Form form = null)
+        {
+            // Wait
+            _form = form;
+            Cursor.Current = appStarting ? Cursors.AppStarting : Cursors.WaitCursor;
+            PluginHandler.MainForm.DoThreadSafe(() =>
+            {
+                if (_form == null) Application.UseWaitCursor = true;
+                else _form.Cursor = Cursor.Current;
             });
 
         }

@@ -556,6 +556,7 @@ namespace ChummerHub.Controllers.V1
         [HttpGet()]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GetSearchGroups")]
         [Authorize]
         public async Task<ActionResult<SINSearchGroupResult>> GetSearchGroups(string Groupname, string UsernameOrEmail, string SINnerName)
@@ -775,6 +776,7 @@ namespace ChummerHub.Controllers.V1
         [HttpGet()]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int) HttpStatusCode.OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int) HttpStatusCode.BadRequest)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GetGroupMembers")]
         [Authorize]
         public async Task<ActionResult<SINSearchGroupResult>> GetGroupMembers(Guid groupid)
@@ -832,7 +834,26 @@ namespace ChummerHub.Controllers.V1
 
         private List<SINnerSearchGroup> RemovePWHashRecursive(List<SINnerSearchGroup> sINGroups)
         {
-            throw new NotImplementedException();
+            if (sINGroups == null)
+                return sINGroups;
+            foreach(var group in sINGroups)
+            {
+                group.PasswordHash = "";
+                group.MyGroups = RemovePWHashRecursive(group.MyGroups);
+            }
+            return sINGroups;
+        }
+
+        private List<SINnerGroup> RemovePWHashRecursive(List<SINnerGroup> sINGroups)
+        {
+            if (sINGroups == null)
+                return sINGroups;
+            foreach (var group in sINGroups)
+            {
+                group.PasswordHash = "";
+                group.MyGroups = RemovePWHashRecursive(group.MyGroups);
+            }
+            return sINGroups;
         }
 
         private async Task<SINnerSearchGroup> GetSinSearchGroupResultById(Guid? groupid)

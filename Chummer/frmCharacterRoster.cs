@@ -39,6 +39,8 @@ namespace Chummer
     {
         private readonly ConcurrentDictionary<string, CharacterCache> _lstCharacterCache = new ConcurrentDictionary<string, CharacterCache>();
 
+        public ConcurrentDictionary<string, CharacterCache> MyCharacterCacheDic { get { return _lstCharacterCache; } }
+
         private readonly FileSystemWatcher watcherCharacterRosterFolder;
         private bool _blnSkipUpdate;
 
@@ -346,7 +348,7 @@ namespace Chummer
                         {
                             System.Diagnostics.Trace.TraceInformation("Starting new Task to get CharacterRosterTreeNodes for plugin:" + plugin.ToString());
                             var result = new List<List<TreeNode>>();
-                            var task = plugin.GetCharacterRosterTreeNode(_lstCharacterCache, blnRefreshPlugins);
+                            var task = plugin.GetCharacterRosterTreeNode(this, blnRefreshPlugins);
                             if(task.Result != null)
                             {
                                 result.Add(task.Result.ToList());
