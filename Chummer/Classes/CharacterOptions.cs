@@ -1150,7 +1150,6 @@ namespace Chummer
             set => _blnIgnoreComplexFormLimit = value;
         }
 
-
         /// <summary>
         /// Whether or not to use stats from Cyberlegs when calculating movement rates
         /// </summary>
