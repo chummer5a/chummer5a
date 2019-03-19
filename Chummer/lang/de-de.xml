@@ -7153,6 +7153,10 @@
 			<text>Karmakosten zum Erhöhen von Spezialattributen werden bei Essenzverlust nicht reduziert</text>
 		</string>
 		<string>
+			<key>Checkbox_Options_IgnoreComplexFormLimit</key>
+			<text>TL NEEDED: Ignore complex form limit in career mode</text>
+		</string>
+		<string>
 			<key>Label_SelectAdvancedLifestyle_Qualities</key>
 			<text>Lebensstiloptionen</text>
 		</string>
