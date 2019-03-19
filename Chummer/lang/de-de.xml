@@ -7154,7 +7154,7 @@
 		</string>
 		<string>
 			<key>Checkbox_Options_IgnoreComplexFormLimit</key>
-			<text>TL NEEDED: Ignore complex form limit in career mode</text>
+			<text>Maximum für komplexe Formen im Karrieremodus ignorieren</text>
 		</string>
 		<string>
 			<key>Label_SelectAdvancedLifestyle_Qualities</key>
