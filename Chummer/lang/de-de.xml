@@ -9502,5 +9502,9 @@
 			<key>Message_Files_Cannot_Be_Removed</key>
 			<text>Chummer5 konnte die nachfolgenden Dateien während des Updates nicht entfernen, da auf sie nicht zugegriffen werden konnte:</text>
 		</string>
+		<string>
+			<key>Checkbox_Options_EnablePlugins</key>
+			<text>Module aktivieren (experimentell)</text>
+		</string>
 	</strings>
 </chummer>

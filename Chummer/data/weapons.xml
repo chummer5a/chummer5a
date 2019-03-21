@@ -14423,6 +14423,138 @@
           <useskill>Throwing Weapons</useskill>
       </weapon>
     <!-- End Region -->
+    <!-- Region Datapuls Sota 2080 -->
+      <weapon>
+        <id>e1670cec-28ff-4281-94f4-2bda59556f27</id>
+        <name>Abräumer</name>
+        <category>Blades</category>
+        <type>Melee</type>
+        <conceal>0</conceal>
+        <accuracy>5</accuracy>
+        <reach>0</reach>
+        <damage>(STR+3)P</damage>
+        <ap>-2</ap>
+        <mode>0</mode>
+        <rc>0</rc>
+        <ammo>0</ammo>
+        <avail>7R</avail>
+        <cost>850</cost>
+        <source>SOTG</source>
+        <page>8</page>
+        <spec>Swords</spec>
+      </weapon>
+      <weapon>
+        <id>2f49233d-f747-476a-98cb-996def3714ed</id>
+        <name>Katzbalger</name>
+        <category>Blades</category>
+        <type>Melee</type>
+        <conceal>0</conceal>
+        <accuracy>7</accuracy>
+        <reach>0</reach>
+        <damage>(STR+3)P</damage>
+        <ap>-1</ap>
+        <mode>0</mode>
+        <rc>0</rc>
+        <ammo>0</ammo>
+        <avail>8R</avail>
+        <cost>2000</cost>
+        <source>SOTG</source>
+        <page>7</page>
+        <spec>Swords</spec>
+      </weapon>
+      <weapon>
+        <id>c97d8ffb-1c2d-484f-8c8b-a1428d630d9d</id>
+        <name>Folding Spade</name>
+        <category>Blades</category>
+        <type>Melee</type>
+        <conceal>0</conceal>
+        <accuracy>5</accuracy>
+        <reach>1</reach>
+        <damage>(STR+2)P</damage>
+        <ap>-2</ap>
+        <mode>0</mode>
+        <rc>0</rc>
+        <ammo>0</ammo>
+        <avail>4</avail>
+        <cost>100</cost>
+        <source>SOTG</source>
+        <page>8</page>
+        <spec>Swords</spec>
+      </weapon>
+      <weapon>
+        <id>71d149df-bec0-46d5-9d67-2568fd48bd67</id>
+        <name>Sabre</name>
+        <category>Blades</category>
+        <type>Melee</type>
+        <conceal>0</conceal>
+        <accuracy>5</accuracy>
+        <reach>1</reach>
+        <damage>(STR+3)P</damage>
+        <ap>-2</ap>
+        <mode>0</mode>
+        <rc>0</rc>
+        <ammo>0</ammo>
+        <avail>7E</avail>
+        <cost>2500</cost>
+        <source>SOTG</source>
+        <page>7</page>
+        <spec>Swords</spec>
+      </weapon>
+      <weapon>
+        <id>baf12a42-8dbc-4144-9e46-304c3b08295d</id>
+        <name>Walther Battle Sword</name>
+        <category>Blades</category>
+        <type>Melee</type>
+        <conceal>0</conceal>
+        <accuracy>8</accuracy>
+        <reach>1</reach>
+        <damage>(STR+4)P</damage>
+        <ap>-4</ap>
+        <mode>0</mode>
+        <rc>0</rc>
+        <ammo>0</ammo>
+        <avail>10E</avail>
+        <cost>8600</cost>
+        <source>SOTG</source>
+        <page>7</page>
+        <spec>Swords</spec>
+      </weapon>
+      <weapon>
+        <id>f41e735d-44f3-4eae-8538-71d8ae14b3e1</id>
+        <name>HK Urban Assassin</name>
+        <category>Heavy Pistols</category>
+        <type>Ranged</type>
+        <conceal>0</conceal>
+        <accuracy>6</accuracy>
+        <reach>0</reach>
+        <damage>7P</damage>
+        <ap>-1</ap>
+        <mode>SA</mode>
+        <rc>0</rc>
+        <ammo>10(c)</ammo>
+        <avail>16F</avail>
+        <cost>3400</cost>
+        <source>SOTG</source>
+        <page>12</page>
+		<accessories>
+		  <accessory>
+            <name>Maker Mag</name>
+          </accessory>
+		  <accessory>
+            <name>Personalized Grip</name>
+          </accessory>
+          <accessory>
+            <name>Silencer/Suppressor</name>
+          </accessory>        
+		  <accessory>
+            <name>Smartgun System, Internal</name>
+          </accessory>
+		  <accessory>
+            <name>Plastic Components 6</name>
+          </accessory>
+        </accessories>
+	  </weapon>
+    <!-- End Region -->
   </weapons>
   <accessories>
     <!-- Region Shadowrun 5 -->
@@ -16596,6 +16728,28 @@
       <page>47</page>
       <rating>0</rating>
     </accessory>
+    <!-- End Region -->
+    <!-- Region Datapuls Sota 2080 -->
+    <accessory>
+      <id>2d5cd697-4754-420c-ba11-27cf957a4d09</id>
+      <name>Maker Mag</name>
+      <mount />
+      <avail>18R</avail>
+      <cost>1000</cost>
+      <source>SOTG</source>
+      <page>12</page>
+      <rating>0</rating>
+    </accessory>
+    <accessory>
+      <id>63a4c7fe-847e-46e6-a99d-da0f39e63b8a</id>
+      <name>Plastic Components 6</name>
+      <mount />
+      <avail>18R</avail>
+      <cost>1000</cost>
+      <source>SOTG</source>
+      <page>12</page>
+      <rating>6</rating>
+    </accessory>	
     <!-- End Region -->
   </accessories>
 </chummer>

@@ -3225,6 +3225,13 @@
 				<translate>Lifestyle 2080</translate>
 				<altcode>NF</altcode>
 			</book>
+			<book>
+				<id>b20a20e5-e9d4-4f54-9caa-57a001cb904e</id>
+				<name>Datapuls SOTA 2080 (German-exclusive)</name>
+				<translate>Datapuls SOTA 2080 (German-exclusive)</translate>
+				<altcode>SOTG</altcode>
+			</book>			
+
 		</books>
 	</chummer>
 	<chummer file="critterpowers.xml">
@@ -22017,6 +22024,224 @@
 					<choice>
 						<name>Adept: Free Empathic Healing power</name>
 						<translate>Adept: Kraft Empathische Heilung gratis</translate>
+					</choice>
+				</choices>
+			</mentor>
+			<mentor>
+				<id>5593f724-7b72-4927-a8c8-2c73844cc1b1</id>
+				<name>Architekt (SOTA 2080)</name>
+				<translate>Architekt (SOTA 2080)</translate>
+				<altadvantage>Allgemein: +2 Würfel für Proben auf Führung</altadvantage>
+				<altdisadvantage>Ein Anhänger dieses Schutzgeistes behält gerne die Initiative. Immer dann, wenn die Umstände eines Runs ihn in die Defensive drängen, muss ihm eine Probe auf Willenskraft + Intuition (3) gelingen. Misslingt die Probe, erhält der Anhänger von Architekt einen Würfelpoolmalus von -2 auf seine Proben, bis er das Heft wieder in der Hand hält.</altdisadvantage>
+				<altpage>29</altpage>
+				<choices>
+					<choice>
+						<name>Magician: +2 dice for Combat spells</name>
+						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Manipulation</translate>
+					</choice>
+					<choice>
+						<name>Adept: Gain 2 free level of Analytics.</name>
+						<translate>Adept: 2 Stufen Analytik gratis</translate>
+					</choice>
+				</choices>
+			</mentor>
+			<mentor>
+				<id>db42c229-3403-4947-8626-3f70f87c8a3c</id>
+				<name>Deutscher Schäferhund</name>
+				<translate>Deutscher Schäferhund</translate>
+				<altadvantage>Allgemein: +2 Würfel für Proben auf Führung</altadvantage>
+				<altdisadvantage>Bisweilen bricht die Ungeduld bei Schäferhund durch. Wird die Geduld eines Anhängers von Schäferhund auf die Probe gestellt (nach Spielleiterentscheid), muss ihm eine Willenskraft + Charisma (3) gelingen, um nicht scharf zu reagieren.</altdisadvantage>
+				<altpage>29</altpage>
+				<choices>
+					<choice>
+						<name>Magician: +1 dice for Combat and Detection spells</name>
+						<translate>Zauberer: +1 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Kampf und Wahrnehmung</translate>
+					</choice>
+					<choice>
+						<name>Adept: Danger Sense level 2</name>
+						<translate>Adept: 2 Stufen Gefahrensinn gratis</translate>
+					</choice>
+				</choices>
+			</mentor>
+			<mentor>
+				<id>bdb4fa0b-3c9d-4164-b2d6-76b7c04c43d8</id>
+				<name>Dobermann</name>
+				<translate>Dobermann</translate>
+				<altadvantage>Allgemein: +1 Würfel für Proben auf Wahrnehmung und eine Waffenfertigkeit nach Wahl</altadvantage>
+				<altdisadvantage>Dobermann ist sehr selbstbewusst. Um sich anderen unterzuordnen bzw. fremden Plänen zu folgen, muss einem Anhänger von Dobermann eine Probe auf Willenskraft + Charisma (3) gelingen.</altdisadvantage>
+				<altpage>29</altpage>
+				<choices>
+					<choice>
+						<name>+1 dice on Archery</name>
+						<translate>+1 Würfel für Proben auf Klingenwaffen</translate>
+					</choice>
+					<choice>
+						<name>+1 dice on Automatics</name>
+						<translate>+1 Würfel für Proben auf Schnellfeuerwaffen</translate>
+					</choice>
+					<choice>
+						<name>+1 dice on Blades</name>
+						<translate>+1 Würfel für Proben auf Klingenwaffen</translate>
+					</choice>
+					<choice>
+						<name>+1 dice on Clubs</name>
+						<translate>+1 Würfel für Proben auf Knüppel</translate>
+					</choice>
+					<choice>
+						<name>+1 dice on Gunnery</name>
+						<translate>+1 Würfel für Proben auf Geschütze</translate>
+					</choice>
+					<choice>
+						<name>+1 dice on Heavy Weapons</name>
+						<translate>+1 Würfel für Proben auf Schwere Waffen</translate>
+					</choice>
+					<choice>
+						<name>+1 dice on Longarms</name>
+						<translate>+1 Würfel für Proben auf Gewehre</translate>
+					</choice>
+					<choice>
+						<name>+1 dice on Pistols</name>
+						<translate>+1 Würfel für Proben auf Pistolen</translate>
+					</choice>
+					<choice>
+						<name>+1 dice on Throwing Weapons</name>
+						<translate>+1 Würfel für Proben auf Wurfwaffen</translate>
+					</choice>
+					<choice>
+						<name>+1 dice on Unarmed Combat</name>
+						<translate>+1 Würfel für Proben auf Waffenloser Kampf</translate>
+					</choice>
+					<choice set="2">
+						<name>Magician: +2 dice for Combat spells</name>
+						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Kampf</translate>
+					</choice>
+					<choice set="2">
+						<name>Adept: 1 free level of Combat Sense</name>
+						<translate>Adept: 1 Stufe Kampfsinn gratis</translate>
+					</choice>
+				</choices>
+			</mentor>
+			<mentor>
+				<id>240ab0aa-6be1-452b-88c2-f10f6f6eabfb</id>
+				<name>Weimaraner</name>
+				<translate>Weimaraner</translate>
+				<altadvantage>Allgemein: +1 Würfel für Proben auf Laufen und Spurenlesen</altadvantage>
+				<altdisadvantage>Kann ein Anhänger von Weimaraner seine Fähigkeiten länger als zwölf Stunden nicht einsetzen, muss ihm eine Probe auf Willenskraft + Charisma (3) gelingen, sonst erleidet er einen Würfelpoolmodifikator von -1 auf alle Handlungen, bis er wieder seine Fähigkeiten einsetzt.</altdisadvantage>
+				<altpage>31</altpage>
+				<choices>
+					<choice>
+						<name>Magician: +2 dice for Detection spells</name>
+						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Wahrnehmung</translate>
+					</choice>
+					<choice>
+						<name>Adept: 1 free levels of Enhanced Perception</name>
+						<translate>Adept: 1 Stufe Verbesserte Wahrnehmung gratis</translate>
+					</choice>
+				</choices>
+			</mentor>
+			<mentor>
+				<id>5c465bf3-665f-41f2-865e-41abb879ee1f</id>
+				<name>Dachs</name>
+				<translate>Dachs</translate>
+				<altadvantage>Allgemein: Vorteil Aufmerksamkeit Stufe 2</altadvantage>
+				<altdisadvantage>Dachs beschützt sein Revier unerbittlich. Dringen Feinde in das Gebiet ein, das ein Anhänger von Dachs beschützt (zum Beispiel ein Gebäude), oder entwenden einen Gegenstand, der unter dem Schutz eines Anhängers von Dachs steht, muss ihm eine Probe auf Willenskraft + Charisma (3) gelingen, um nicht sofort mit allen Mitteln gegen die Eindringlinge bzw. Diebe vorzugehen.</altdisadvantage>
+				<altpage>31</altpage>
+				<choices>
+					<choice>
+						<name>Magician: +1 dice for Counterspelling and Combat Spells</name>
+						<translate>Zauberer: +1 Würfel für Proben auf Antimagie und +1 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Kampf</translate>
+					</choice>
+					<choice>
+						<name>Adept: Danger Sense level 2</name>
+						<translate>Adept: 2 Stufen Gefahrensinn gratis</translate>
+					</choice>
+				</choices>
+			</mentor>
+			<mentor>
+				<id>b01976a5-2343-4308-846e-da5fb12328a8</id>
+				<name>Mystischer Wächter</name>
+				<translate>Mystischer Wächter</translate>
+				<altadvantage>Allgemein: +2 Würfel für Proben auf eine Nahkampffertigkeit</altadvantage>
+				<altdisadvantage>Was macht ein Mystischer Wächter, wenn es nichts zu bewachen gibt? Solange ein Anhänger des Mystischen Wächters keinen konkreten Auftrag, Auftraggeber oder Schutzbefohlenen hat (beziehungsweise seinen selbstauferlegten Pflichten nicht nachkommt), erleidet er einen Würfelpoolmalus von -2 auf alle Proben.</altdisadvantage>
+				<altpage>31</altpage>
+				<choices>
+					<choice>
+						<name>+1 dice on Blades</name>
+						<translate>+1 Würfel für Proben auf Klingenwaffen</translate>
+					</choice>
+					<choice>
+						<name>+1 dice on Clubs</name>
+						<translate>+1 Würfel für Proben auf Knüppel</translate>
+					</choice>
+					<choice>
+						<name>+1 dice on Longarms</name>
+						<translate>+1 Würfel für Proben auf Gewehre</translate>
+					</choice>
+					<choice>
+						<name>+1 dice on Unarmed Combat</name>
+						<translate>+1 Würfel für Proben auf Waffenloser Kampf</translate>
+					</choice>
+					<choice set="2">
+						<name>Magician: +2 dice pool bonus when summoning guardian or animal spirits (chose 1 when selecting this mentor spirit).</name>
+						<translate>Zauberer: +2 Würfel für das Herbeirufen von Beschützer- oder Tiergeistern (bitte per Hand ergänzen)</translate>
+					</choice>
+					<choice set="2">
+						<name>Adept: 1 free level of Magic Sense</name>
+						<translate>Adept: Magiegespür gratis</translate>
+					</choice>
+				</choices>
+			</mentor>
+			<mentor>
+				<id>296dc353-df11-4c94-a101-04bc501edf5e</id>
+				<name>Rotkäppchen</name>
+				<translate>Rotkäppchen</translate>
+				<altadvantage>Allgemein: + 2 Würfel für Proben auf Überreden</altadvantage>
+				<altdisadvantage>In ihrer ungezügelten Neugier übersehen Anhänger von Rotkäppchen manchmal das Offensichtliche und Wichtige. Sie erhalten einen Würfelpoolmalus von -1 bei Wahrnehmungsproben in unbekannten Gebieten.</altdisadvantage>
+				<altpage>32</altpage>
+				<choices>
+					<choice>
+						<name>Magician: +2 dice to Contractual Rituals (please add manually)</name>
+						<translate>Zauberer: +2 Würfel für das Besiegeln von Kontraktritualen (bitte selbst ergänzen)</translate>
+					</choice>
+					<choice>
+						<name>Adept: Gain Linguist for free</name>
+						<translate>Adept: Sprachtalent kostenlos</translate>
+					</choice>
+				</choices>
+			</mentor>
+			<mentor>
+				<id>bea9796a-c5d3-4388-97ec-14969db470fe</id>
+				<name>Schatzjäger</name>
+				<translate>Schatzjäger</translate>
+				<altadvantage>Allgemein: +1 Würfel für Proben auf Navigation und Schlosser</altadvantage>
+				<altdisadvantage>Ein Anhänger dieses Schutzgeistes ist so sehr auf das Objekt seines Strebens fixiert, dass er Aufgaben, die nichts damit zu tun haben, lustlos und halbherzig angeht: Nach dem Briefing mit Schmidt muss ihm eine Probe auf Willenskraft + Willenskraft (3) gelingen, damit er bei der Erledigung eines Runs, der nichts mit dem Objekt seines Strebens zu tun hat, keinen Würfelpoolmalus von -1 auf alle Proben erleidet.</altdisadvantage>
+				<altpage>32</altpage>
+				<choices>
+					<choice>
+						<name>Magician: +2 dice to Contractual Rituals (please add manually)</name>
+						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Wahrnehmung</translate>
+					</choice>
+					<choice>
+						<name>Adept: Gain Three-Dimensional Memory for free</name>
+						<translate>Adept: Dreidimensionales Gedächtnis gratis</translate>
+					</choice>
+				</choices>
+			</mentor>
+			<mentor>
+				<id>f2cc5e2b-6538-4271-9f7f-5434076f9a6b</id>
+				<name>Waffenbruder</name>
+				<translate>Waffenbruder</translate>
+				<altadvantage>Allgemein: +1 Würfel für Proben auf Gebräuche und Unterricht</altadvantage>
+				<altdisadvantage>Anhänger von Waffenbruder erwählen in jedem Run drei Personen mit direkter Plot-Relevanz – das können Spielercharaktere sein, aber auch wichtige NSC – als diejenigen Leute, denen während der Mission ihre Loyalität gilt. Ihnen muss eine Probe auf Willenskraft + Intuition (3) gelingen, bevor sie diesen Personenkreis übervorteilen, anlügen oder gar im Stich lassen können. Selbst wenn sie sich dazu überwinden können, erleiden sie einen Würfelpoolmalus von -2 auf alle Proben, bis sie ihre Verfehlung wieder ausgebügelt haben.</altdisadvantage>
+				<altpage>32</altpage>
+				<choices>
+					<choice>
+						<name>Magician: Magician: +2 dice summoning spirits of guardian spirits, task spirits or spirits of man</name>
+						<translate>Zauberer: +2 Würfel für das Herbeirufen von Beschützergeistern, Helfergeistern oder Geistern des Menschen</translate>
+					</choice>
+					<choice>
+						<name>Adept: 1 free level of Mystic Armor</name>
+						<translate>Adept: 1 Stufe Mystischer Panzer gratis</translate>
 					</choice>
 				</choices>
 			</mentor>
@@ -43818,6 +44043,42 @@
 				<translate>Wuxing-Armtec PTL-02</translate>
 				<altpage>141</altpage>
 			</weapon>
+			<weapon translated="True">
+				<id>f41e735d-44f3-4eae-8538-71d8ae14b3e1</id>
+				<name>HK Urban Assassin</name>
+				<translate>HK Urban Assassin</translate>
+				<altpage>12</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>e1670cec-28ff-4281-94f4-2bda59556f27</id>
+				<name>Abräumer</name>
+				<translate>Abräumer (Teleskop-Hellebarde)</translate>
+				<altpage>8</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>2f49233d-f747-476a-98cb-996def3714ed</id>
+				<name>Katzbalger</name>
+				<translate>Katzbalger (Landsknechtschwert)</translate>
+				<altpage>7</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>c97d8ffb-1c2d-484f-8c8b-a1428d630d9d</id>
+				<name>Folding Spade</name>
+				<translate>Klappspaten</translate>
+				<altpage>8</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>71d149df-bec0-46d5-9d67-2568fd48bd67</id>
+				<name>Sabre</name>
+				<translate>Säbel</translate>
+				<altpage>7</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>baf12a42-8dbc-4144-9e46-304c3b08295d</id>
+				<name>Walther Battle Sword</name>
+				<translate>Walther Schlachtschwert</translate>
+				<altpage>7</altpage>
+			</weapon>
 		</weapons>
 		<accessories>
 			<accessory>
@@ -44545,6 +44806,18 @@
 				<name>Additional Clip/Magazine (Pistol)</name>
 				<translate>Zusätzlicher Ladestreifen/Magazin (Pistole)</translate>
 				<altpage>47</altpage>
+			</accessory>
+			<accessory>
+				<id>2d5cd697-4754-420c-ba11-27cf957a4d09</id>
+				<name>Maker Mag</name>
+				<translate>Adaptives Magazin</translate>
+				<altpage>12</altpage>
+			</accessory>
+			<accessory>
+				<id>63a4c7fe-847e-46e6-a99d-da0f39e63b8a</id>
+				<name>Plastic Components 6</name>
+				<translate>Plastik-Komponenten 6</translate>
+				<altpage>12</altpage>
 			</accessory>
 		</accessories>
 	</chummer>
