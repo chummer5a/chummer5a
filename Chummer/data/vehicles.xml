@@ -10097,6 +10097,60 @@
       <seats>2</seats>
     </vehicle>
     <!-- End Region -->
+    <!-- Region SOTA 2080 -->	
+	<vehicle>
+      <id>1b47defa-56d5-4827-b57b-2b4d7b1051a0</id>
+      <name>BMW GGX Sandleopard</name>
+      <page>15</page>
+      <source>SOTG</source>
+      <accel>2</accel>
+      <armor>9</armor>
+      <avail>0</avail>
+      <body>8</body>
+      <category>Bikes</category>
+      <cost>15000</cost>
+      <handling>3/5</handling>
+      <pilot>2</pilot>
+      <sensor>3</sensor>
+      <speed>4</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>2</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name>Off-Road Suspension</name>
+        <name rating="1">Anti-Theft System</name>
+        <name>Multifuel Engine</name>
+      </mods>
+      <seats>2</seats>
+    </vehicle>
+    <vehicle>
+      <id>e5fc5640-a49c-4b01-98b0-6456b867fb4c</id>
+      <name>Jena Robotik Mewero (Minidrone)</name>
+      <page>23</page>
+      <source>SOTG</source>
+      <accel>1</accel>
+      <armor>0</armor>
+      <avail>6</avail>
+      <body>1</body>
+      <category>Drones: Mini</category>
+      <cost>2500</cost>
+      <handling>3</handling>
+      <pilot>2</pilot>
+      <sensor>3</sensor>
+      <speed>1</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>3</rating>
+          <maxrating>3</maxrating>
+        </gear>
+      </gears>
+    </vehicle>
+    <!-- End Region -->	
   </vehicles>
   <mods>
     <!-- Region Vehicle Weapon Mount -->

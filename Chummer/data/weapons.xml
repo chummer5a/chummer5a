@@ -14554,6 +14554,88 @@
           </accessory>
         </accessories>
 	  </weapon>
+      <weapon>
+        <id>08a0ab4f-e5db-4306-875b-df552d0811f7</id>
+        <name>Kanonenschlag</name>
+        <category>Holdouts</category>
+        <type>Ranged</type>
+        <conceal>-4</conceal>
+        <accuracy>Physical</accuracy>
+        <reach>0</reach>
+        <damage>9P</damage>
+        <ap>-3</ap>
+        <mode>SS</mode>
+        <rc>0</rc>
+        <ammo>1(b)</ammo>
+        <avail>6F</avail>
+        <cost>100</cost>
+        <source>SOTG</source>
+        <page>9</page>
+      </weapon>
+      <weapon>
+        <id>330c3fdf-f64f-482c-9dd9-85d8a8f05f61</id>
+        <name>Donnerbüchse</name>
+        <category>Shotguns</category>
+        <type>Ranged</type>
+        <conceal>6</conceal>
+        <accuracy>3</accuracy>
+        <reach>0</reach>
+        <damage>9P(f)</damage>
+        <ap>-1</ap>
+        <mode>SS</mode>
+        <rc>0</rc>
+        <ammo>2(b)</ammo>
+        <avail>4F</avail>
+        <cost>150</cost>
+        <source>SOTG</source>
+        <page>10</page>
+      </weapon>
+      <weapon>
+        <id>3d07b871-2d0f-49ad-8c4f-7cb98487ffe4</id>
+        <name>Blaser R11 Conqueror</name>
+        <category>Sniper Rifles</category>
+        <type>Ranged</type>
+        <conceal>6</conceal>
+        <accuracy>7</accuracy>
+        <reach>0</reach>
+        <damage>12P</damage>
+        <ap>-3</ap>
+        <mode>SA</mode>
+        <rc>1</rc>
+        <ammo>5(c)</ammo>
+        <avail>9R</avail>
+        <cost>8500</cost>
+        <source>SOTG</source>
+        <page>11</page>
+        <accessories>
+          <accessory>
+            <name>Silencer/Suppressor</name>
+          </accessory>
+          <accessory>
+            <name>Shock Pad</name>
+          </accessory>
+          <accessory>
+            <name>Imaging Scope</name>
+          </accessory>
+          <accessory>
+            <name>Smartgun System, Internal</name>
+          </accessory>
+		  <accessory>
+            <name>Easy Breakdown (Unpowered)</name>
+		  </accessory>
+        </accessories>
+        <accessorymounts>
+          <mount>Stock</mount>
+          <mount>Side</mount>
+          <mount>Internal</mount>
+          <mount>Barrel</mount>
+          <mount>Top</mount>
+          <mount>Under</mount>
+        </accessorymounts>
+        <range>Sniper Rifles</range>
+        <spec>Sniper Rifles</spec>
+        <useskill>Longarms</useskill>
+      </weapon>
     <!-- End Region -->
   </weapons>
   <accessories>

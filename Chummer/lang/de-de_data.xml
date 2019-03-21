@@ -39446,6 +39446,18 @@
 				<translate>CrashCart-Krankenwagen (S-K LT-21), Nachahmung</translate>
 				<altpage>203</altpage>
 			</vehicle>
+			<vehicle translated="True">
+				<id>1b47defa-56d5-4827-b57b-2b4d7b1051a0</id>
+				<name>BMW GGX Sandleopard</name>
+				<translate>BMW GGX Sandleopard</translate>
+				<altpage>15</altpage>
+			</vehicle>
+			<vehicle translated="True">
+				<id>e5fc5640-a49c-4b01-98b0-6456b867fb4c</id>
+				<name>Jena Robotik Mewero (Minidrone)</name>
+				<translate>Jena Robotik Mewero (Minidrohne)</translate>
+				<altpage>15</altpage>
+			</vehicle>
 		</vehicles>
 		<mods>
 			<mod>
@@ -44078,6 +44090,24 @@
 				<name>Walther Battle Sword</name>
 				<translate>Walther Schlachtschwert</translate>
 				<altpage>7</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>08a0ab4f-e5db-4306-875b-df552d0811f7</id>
+				<name>Kanonenschlag</name>
+				<translate>Kanonenschlag</translate>
+				<altpage>9</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>330c3fdf-f64f-482c-9dd9-85d8a8f05f61</id>
+				<name>Donnerbüchse</name>
+				<translate>Donnerbüchse</translate>
+				<altpage>10</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>3d07b871-2d0f-49ad-8c4f-7cb98487ffe4</id>
+				<name>Blaser R11 Conqueror</name>
+				<translate>Blaser R11 Conqueror</translate>
+				<altpage>11</altpage>
 			</weapon>
 		</weapons>
 		<accessories>
