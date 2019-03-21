@@ -4790,6 +4790,10 @@
 			<text>提升特殊属性的业力消耗不会因为损失精华而减少</text>
 		</string>
 		<string>
+			<key>Checkbox_Options_IgnoreComplexFormLimit</key>
+			<text>TL NEEDED: Ignore complex form limit in career mode</text>
+		</string>
+		<string>
 			<key>Checkbox_Options_UseRestrictionsToRecoilCompensation</key>
 			<text>使用后坐力补偿兼容性的限制（R&amp;G 53）</text>
 		</string>

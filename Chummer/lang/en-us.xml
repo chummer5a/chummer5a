@@ -7629,6 +7629,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Karma cost for increasing Special Attributes is not reduced with Essence Loss</text>
     </string>
     <string>
+      <key>Checkbox_Options_IgnoreComplexFormLimit</key>
+      <text>Ignore 2*RES Complex Form limit in Career Mode</text>
+    </string>
+    <string>
       <key>Checkbox_Options_UseRestrictionsToRecoilCompensation</key>
       <text>Use Restrictions to Recoil Compensation (RG 53)</text>
     </string>        

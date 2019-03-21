@@ -5293,6 +5293,10 @@
 			<text>特殊能力値を成長させる際のカルマは、【エッセンス】の減少に基づいて削減される</text>
 		</string>
 		<string>
+			<key>Checkbox_Options_IgnoreComplexFormLimit</key>
+			<text>TL NEEDED: Ignore complex form limit in career mode</text>
+		</string>
+		<string>
 			<key>Checkbox_Options_UseRestrictionsToRecoilCompensation</key>
 			<text>反動補正の制限を適用する  (RG 53)</text>
 		</string>

@@ -6921,6 +6921,10 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<text>Coût en Karma de l'augmentation Attributs spéciaux est réduite avec la perte d'essence</text>
 		</string>
 		<string>
+			<key>Checkbox_Options_IgnoreComplexFormLimit</key>
+			<text>Ignorer la limite RES*2 sur les Formes Complexes en mode Carrière</text>
+		</string>
+		<string>
 			<key>Label_SelectAdvancedLifestyle_Qualities</key>
 			<text>Qualité</text>
 		</string>
