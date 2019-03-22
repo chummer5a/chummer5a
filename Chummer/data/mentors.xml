@@ -3042,7 +3042,7 @@
               <name>Combat</name>
               <val>2</val>
             </spellcategory>
-          </bonus>        </choice>
+          </bonus>
         </choice>
         <choice set="2">
           <name>Adept: 1 free level of Combat Sense</name>
@@ -3125,7 +3125,6 @@
             </spellcategory>
           </bonus>
         </choice>
-        <choice>
         <choice>
           <name>Adept: Danger Sense level 2</name>
           <bonus>
