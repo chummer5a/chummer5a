@@ -136,6 +136,7 @@ namespace Chummer
                 }
 
                 xmlTestNode = objXmlAccessory.SelectSingleNode("forbidden/oneof");
+                if (objXmlAccessory.RequirementsMet(_objCharacter, string.Empty, string.Empty)) continue;
                 XPathNodeIterator objXmlForbiddenList = xmlTestNode?.Select("accessory");
                 if (objXmlForbiddenList?.Count > 0)
                 {
@@ -157,6 +158,8 @@ namespace Chummer
                 xmlTestNode = objXmlAccessory.SelectSingleNode("required/oneof");
                 if (xmlTestNode != null)
                 {
+                    if (!objXmlAccessory.RequirementsMet(_objCharacter, string.Empty, string.Empty)) continue;
+
                     XPathNodeIterator objXmlRequiredList = xmlTestNode.Select("accessory");
                     if (objXmlRequiredList.Count > 0)
                     {

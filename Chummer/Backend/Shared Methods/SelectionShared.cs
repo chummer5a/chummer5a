@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -1005,6 +1006,36 @@ namespace Chummer
                                 : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_Tradition", GlobalOptions.Language)})";
                         }
                         return objCharacter.MagicTradition.Name == strNodeInnerText;
+                    }
+                case "specialmodificationlimit":
+                    {
+                        // Add in the cost of all child components.
+                        int intMods = 0;
+                        object intLock = new object();
+                        Parallel.ForEach(objCharacter.Weapons, objChild =>
+                        {
+                            int i = objChild.WeaponAccessories.Count(y => y.Name.StartsWith("Special Modification"));
+                            lock (intLock)
+                                intMods += i;
+                        });
+                        Parallel.ForEach(objCharacter.Vehicles, objVehicle =>
+                        {
+                            int i = objVehicle.Weapons.SelectMany(x => x.WeaponAccessories).Count(y => y.Name.StartsWith("Special Modification"));
+                            lock (intLock)
+                                intMods += i;
+
+                            Parallel.ForEach(objVehicle.WeaponMounts, objMount =>
+                            {
+                                int j = objMount.Weapons.SelectMany(x => x.WeaponAccessories).Count(y => y.Name.StartsWith("Special Modification"));
+                                lock (intLock)
+                                    intMods += i;
+                            });
+                        });
+                        if (blnShowMessage)
+                        {
+                            strName = Environment.NewLine + '\t' + LanguageManager.GetString("String_SubmersionGrade", GlobalOptions.Language) + " >= " + strNodeInnerText;
+                        }
+                        return intMods >= objCharacter.SpecialModificationLimit;
                     }
                 default:
                     Utils.BreakIfDebug();

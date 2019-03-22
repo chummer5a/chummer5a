@@ -17767,6 +17767,9 @@
       <name>Prototype Materials</name>
       <karma>5</karma>
       <category>Positive</category>
+      <bonus>
+        <specialmodificationlimit>1</specialmodificationlimit>
+      </bonus>
       <forbidden>
         <oneof>
           <attributetotal>
@@ -17797,6 +17800,9 @@
       <karma>5</karma>
       <category>Positive</category>
       <limit>2</limit>
+      <bonus>
+        <specialmodificationlimit>1</specialmodificationlimit>
+      </bonus>
       <forbidden>
         <oneof>
           <attributetotal>

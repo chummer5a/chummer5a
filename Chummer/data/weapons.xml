@@ -16596,6 +16596,38 @@
       <page>47</page>
       <rating>0</rating>
     </accessory>
+    <accessory>
+      <id>78019586-491e-4bec-888e-0cb92d86395b</id>
+      <name>Special Modification: Improved Concealment</name>
+      <mount />
+      <avail>4R</avail>
+      <cost>350</cost>
+      <source>SR5</source>
+      <page>432</page>
+      <conceal>-1</conceal>
+      <rating>0</rating>
+      <required>
+        <oneof>
+          <specialmodificationlimit>1</specialmodificationlimit>
+        </oneof>
+      </required>
+    </accessory>
+    <accessory>
+      <id>18cc5d89-fed7-4347-ac95-abee3d743c41</id>
+      <name>Special Modification: Improved Recoil Comp</name>
+      <mount />
+      <avail>4R</avail>
+      <cost>350</cost>
+      <source>SR5</source>
+      <page>432</page>
+      <rating>0</rating>
+      <rc>1</rc>
+      <required>
+        <oneof>
+          <specialmodificationlimit>1</specialmodificationlimit>
+        </oneof>
+      </required>
+    </accessory>
     <!-- End Region -->
   </accessories>
 </chummer>

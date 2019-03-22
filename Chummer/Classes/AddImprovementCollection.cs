@@ -6181,6 +6181,13 @@ namespace Chummer.Classes
                 ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
+        public void specialmodificationlimit(XmlNode bonusNode)
+        {
+            Log.Info("spellresistance");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialModificationLimit, _strUnique,
+                ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
         public void cyberadeptdaemon(XmlNode bonusNode)
         {
             //TODO: I'm not happy with this. 
