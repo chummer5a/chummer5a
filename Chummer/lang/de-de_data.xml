@@ -30699,6 +30699,12 @@
 				<translate>Gestohlene Ausrüstung</translate>
 				<altpage>185</altpage>
 			</quality>
+			<quality translated="True">
+				<id>bf68095e-35b9-49dc-a008-f67bbac9b83b</id>
+				<name>Mentor's Mask</name>
+				<translate>Schutzgeistmaske</translate>
+				<altpage>175</altpage>
+			</quality>
 		</qualities>
 	</chummer>
 	<chummer file="skills.xml">
