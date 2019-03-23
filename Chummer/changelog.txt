@@ -9,6 +9,7 @@ UI Changes:
 
 - Fixed some behaviour with non-maximised windows to prevent new windows from being opened maximised, or windows being maximised on gaining focus. 
 - Added Minimise and Maximise buttons to the Character Roster. Closes #3495
+- Made some changes to the PoolToolTip property to properly account for custom attributes.
 
 Data Changes:
 
