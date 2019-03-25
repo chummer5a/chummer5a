@@ -213,8 +213,10 @@ namespace ChummerHub.Client.Backend
         {
             get
             {
-                if (_client == null)
+                if (_client != null) return _client;
+                try
                 {
+
                     if (!_clientNOTworking)
                         _client = GetSINnersClient().Result;
                 }
@@ -256,6 +258,28 @@ namespace ChummerHub.Client.Backend
                     {
                         System.Diagnostics.Trace.TraceInformation("Connected to " + Properties.Settings.Default.SINnerUrl + ".");
                     }
+                    ServicePointManager.ServerCertificateValidationCallback += delegate { return true; };
+                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
+                    Uri baseUri = new Uri(Properties.Settings.Default.SINnerUrl);
+                    Microsoft.Rest.ServiceClientCredentials credentials = new MyCredentials();
+                    DelegatingHandler delegatingHandler = new MyMessageHandler();
+                    HttpClientHandler httpClientHandler = new HttpClientHandler();
+                    httpClientHandler.CookieContainer = AuthorizationCookieContainer;
+                    _client = new SINnersClient(baseUri, credentials, httpClientHandler, delegatingHandler);
+                    var version = _client.GetVersion();
+                    System.Diagnostics.Trace.TraceInformation("Connected to SINners in version " + version.AssemblyVersion + ".");
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Trace.TraceError(ex.ToString());
+                    if (clientErrorShown || !GlobalOptions.PluginsEnabledDic["SINners (Cloud)"]) return _client;
+                    Exception inner = ex;
+                    while (inner.InnerException != null)
+                        inner = inner.InnerException;
+                    string msg = "Error connecting to SINners: " + Environment.NewLine + Environment.NewLine + inner.Message;
+                    msg += Environment.NewLine + Environment.NewLine + "Please check the Plugin-Options dialog.";
+                    MessageBox.Show(msg, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    clientErrorShown = true;
                 }
                 ServicePointManager.ServerCertificateValidationCallback += delegate { return true; };
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
