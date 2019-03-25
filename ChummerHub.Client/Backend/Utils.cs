@@ -211,68 +211,53 @@ namespace ChummerHub.Client.Backend
         {
             get
             {
-                if (_client == null)
+                if (_client != null) return _client;
+                try
                 {
-                    try
+                    var assembly = System.Reflection.Assembly.GetAssembly(typeof(frmChummerMain));
+                    Properties.Settings.Default.SINnerUrl = assembly.GetName().Version.Build == 0 ? "https://sinners.azurewebsites.net" : "https://sinners-beta.azurewebsites.net";
+                    if (System.Diagnostics.Debugger.IsAttached)
                     {
-                        var assembly = System.Reflection.Assembly.GetAssembly(typeof(frmChummerMain));
-                        if (assembly.GetName().Version.Build == 0)
+                        try
                         {
-                            Properties.Settings.Default.SINnerUrl = "https://sinners.azurewebsites.net";
-                        }
-                        else
-                        {
-                            Properties.Settings.Default.SINnerUrl = "https://sinners-beta.azurewebsites.net";
-                        }
-                        if (System.Diagnostics.Debugger.IsAttached)
-                        {
-                            try
-                            {
 
-                                string local = "http://localhost:5000/";
-                                var request = WebRequest.Create("http://localhost:5000/");
-                                WebResponse response = request.GetResponse();
-                                Properties.Settings.Default.SINnerUrl = local;
-                                System.Diagnostics.Trace.TraceInformation("Connected to " + local + ".");
-                            }
-                            catch(Exception e)
-                            {
-                                System.Diagnostics.Trace.TraceInformation("Connected to " + Properties.Settings.Default.SINnerUrl + ".");
-                            }
+                            string local = "http://localhost:5000/";
+                            var request = WebRequest.Create("http://localhost:5000/");
+                            WebResponse response = request.GetResponse();
+                            Properties.Settings.Default.SINnerUrl = local;
+                            System.Diagnostics.Trace.TraceInformation("Connected to " + local + ".");
                         }
-                        ServicePointManager.ServerCertificateValidationCallback += delegate { return true; };
-                        ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
-                        Uri baseUri = new Uri(Properties.Settings.Default.SINnerUrl);
-                        Microsoft.Rest.ServiceClientCredentials credentials = new MyCredentials();
-                        DelegatingHandler delegatingHandler = new MyMessageHandler();
-                        HttpClientHandler httpClientHandler = new HttpClientHandler();
-                        httpClientHandler.CookieContainer = AuthorizationCookieContainer;
-                        _client = new SINnersClient(baseUri, credentials, httpClientHandler, delegatingHandler);
-                        var version = _client.GetVersion();
-                        System.Diagnostics.Trace.TraceInformation("Connected to SINners in version " + version.AssemblyVersion + ".");
-                    }
-                    catch (Exception ex)
-                    {
-                        System.Diagnostics.Trace.TraceError(ex.ToString());
-                        if (!clientErrorShown)
+                        catch(Exception e)
                         {
-                            Exception inner = ex;
-                            while (inner.InnerException != null)
-                                inner = inner.InnerException;
-                            string msg = "Error connecting to SINners: " + Environment.NewLine + Environment.NewLine + inner.Message;
-                            msg += Environment.NewLine + Environment.NewLine + "Please check the Plugin-Options dialog.";
-                            MessageBox.Show(msg, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                            clientErrorShown = true;
+                            System.Diagnostics.Trace.TraceInformation("Connected to " + Properties.Settings.Default.SINnerUrl + ".");
                         }
                     }
+                    ServicePointManager.ServerCertificateValidationCallback += delegate { return true; };
+                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
+                    Uri baseUri = new Uri(Properties.Settings.Default.SINnerUrl);
+                    Microsoft.Rest.ServiceClientCredentials credentials = new MyCredentials();
+                    DelegatingHandler delegatingHandler = new MyMessageHandler();
+                    HttpClientHandler httpClientHandler = new HttpClientHandler();
+                    httpClientHandler.CookieContainer = AuthorizationCookieContainer;
+                    _client = new SINnersClient(baseUri, credentials, httpClientHandler, delegatingHandler);
+                    var version = _client.GetVersion();
+                    System.Diagnostics.Trace.TraceInformation("Connected to SINners in version " + version.AssemblyVersion + ".");
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Trace.TraceError(ex.ToString());
+                    if (clientErrorShown || !GlobalOptions.PluginsEnabledDic["SINners (Cloud)"]) return _client;
+                    Exception inner = ex;
+                    while (inner.InnerException != null)
+                        inner = inner.InnerException;
+                    string msg = "Error connecting to SINners: " + Environment.NewLine + Environment.NewLine + inner.Message;
+                    msg += Environment.NewLine + Environment.NewLine + "Please check the Plugin-Options dialog.";
+                    MessageBox.Show(msg, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    clientErrorShown = true;
                 }
                 return _client;
             }
-            set
-            {
-                _client = value;
-            }
-
+            set => _client = value;
         }
     }
 
