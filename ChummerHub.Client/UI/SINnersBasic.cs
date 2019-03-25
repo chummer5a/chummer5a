@@ -66,8 +66,8 @@ namespace ChummerHub.Client.UI
                     });
                     return false;
                 }
-
-                var response = await StaticUtils.Client.GetSINByIdWithHttpMessagesAsync(myUC.MyCE.MySINnerFile.Id.Value);
+                var client = await StaticUtils.GetClient();
+                var response = await client.GetSINByIdWithHttpMessagesAsync(myUC.MyCE.MySINnerFile.Id.Value);
                 PluginHandler.MainForm.DoThreadSafe(() =>
                 {
                     if (response.Response.StatusCode == HttpStatusCode.OK)
@@ -97,7 +97,7 @@ namespace ChummerHub.Client.UI
                     this.cbTagArchetype.Enabled = false;
                     this.tbArchetypeName.Enabled = false;
                 });
-                var resroles = await StaticUtils.Client.GetRolesWithHttpMessagesAsync();
+                var resroles = await client.GetRolesWithHttpMessagesAsync();
                 PluginHandler.MainForm.DoThreadSafe(() =>
                 {
                     if (response.Response.StatusCode == HttpStatusCode.OK)

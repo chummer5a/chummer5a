@@ -68,7 +68,8 @@ namespace ChummerHub.Client.Backend
                 {
                     using (new CursorWait(false))
                     {
-                        var result = StaticUtils.Client.GetRolesAsync().Result;
+                        var client = StaticUtils.GetClient().Result;
+                        var result = client.GetRolesAsync().Result;
                         _userRoles = result.ToList();
                     }
                 }
@@ -208,23 +209,29 @@ namespace ChummerHub.Client.Backend
 
         private static bool _clientNOTworking = false;
 
-        private static SINnersClient _client = null;
-        public static SINnersClient Client
-        {
-            get
-            {
-                if (_client == null)
-                {
-                    if (!_clientNOTworking)
-                        _client = GetSINnersClient().Result;
-                }
-                return _client;
-            }
-            set
-            {
-                _client = value;
-            }
+        private static Task<SINnersClient> _clientTask = null;
 
+        private static SINnersClient _client = null;
+        public static async Task<SINnersClient> GetClient(bool reset = false)
+        {
+            if (reset)
+            {
+                _client = null;
+                _clientNOTworking = false;
+                _clientTask = null;
+            }
+            if (_client == null)
+            {
+                if (!_clientNOTworking)
+                {
+                    if (_clientTask == null)
+                    {
+                        _clientTask = GetSINnersClient();
+                    }
+                    _client = await _clientTask;
+                }
+            }
+            return _client;
         }
 
         private static async Task<SINnersClient> GetSINnersClient()
@@ -338,7 +345,8 @@ namespace ChummerHub.Client.Backend
                 HttpOperationResponse<SINSearchResult> response = null;
                 try
                 {
-                    response = await StaticUtils.Client.GetSINnersByAuthorizationWithHttpMessagesAsync();
+                    var client = await StaticUtils.GetClient();
+                    response = await client.GetSINnersByAuthorizationWithHttpMessagesAsync();
                 }
                 catch(Microsoft.Rest.SerializationException e)
                 {
@@ -503,7 +511,7 @@ namespace ChummerHub.Client.Backend
                 objCache.FilePath = DownloadFileTask(sinner, objCache).Result;
             };
             objCache.OnMyKeyDown -= objCache.OnDefaultKeyDown;
-            objCache.OnMyKeyDown += (sender, args) =>
+            objCache.OnMyKeyDown += async (sender, args) =>
             {
                 try
                 {
@@ -511,7 +519,8 @@ namespace ChummerHub.Client.Backend
                     {
                         if (args.Item1.KeyCode == Keys.Delete)
                         {
-                            StaticUtils.Client.Delete(sinner.Id.Value);
+                            var client = await StaticUtils.GetClient();
+                            client.Delete(sinner.Id.Value);
                             objCache.ErrorText = "deleted!";
                             PluginHandler.MainForm.DoThreadSafe(() =>
                             {
@@ -576,9 +585,11 @@ namespace ChummerHub.Client.Backend
                 ce.MySINnerFile.UploadDateTime = DateTime.Now;
                 uploadInfoObject.SiNners = new List<SINner>() { ce.MySINnerFile };
                 System.Diagnostics.Trace.TraceInformation("Posting " + ce.MySINnerFile.Id + "...");
+                var client = await StaticUtils.GetClient();
                 if (!StaticUtils.IsUnitTest)
                 {
-                    res = await StaticUtils.Client.PostSINWithHttpMessagesAsync(uploadInfoObject);
+                    
+                    res = await client.PostSINWithHttpMessagesAsync(uploadInfoObject);
                     if ((res.Response.StatusCode != HttpStatusCode.OK)
                         && (res.Response.StatusCode != HttpStatusCode.Accepted)
                         && (res.Response.StatusCode != HttpStatusCode.Created))
@@ -597,7 +608,7 @@ namespace ChummerHub.Client.Backend
                 }
                 else
                 {
-                    StaticUtils.Client.PostSINWithHttpMessagesAsync(uploadInfoObject).RunSynchronously();
+                    client.PostSINWithHttpMessagesAsync(uploadInfoObject).RunSynchronously();
                 }
                 System.Diagnostics.Trace.TraceInformation("Post of " + ce.MySINnerFile.Id + " finished.");
                
@@ -624,10 +635,11 @@ namespace ChummerHub.Client.Backend
                 {
                     try
                     {
+                        var client = await StaticUtils.GetClient();
                         if (!StaticUtils.IsUnitTest)
                         {
                             HttpStatusCode myStatus = HttpStatusCode.Unused;
-                            res = await StaticUtils.Client.PutSINWithHttpMessagesAsync(ce.MySINnerFile.Id.Value, fs);
+                            res = await client.PutSINWithHttpMessagesAsync(ce.MySINnerFile.Id.Value, fs);
                             //var task = res.ContinueWith((sender) =>
                             //{
 
@@ -659,7 +671,7 @@ namespace ChummerHub.Client.Backend
                         }
                         else
                         {
-                            StaticUtils.Client.PutSIN(ce.MySINnerFile.Id.Value, fs);
+                            client.PutSIN(ce.MySINnerFile.Id.Value, fs);
                         }
                     }
                     catch (Exception e)
@@ -680,7 +692,7 @@ namespace ChummerHub.Client.Backend
             return res;
         }
 
-        public static string DownloadFile(SINners.Models.SINner sinner, CharacterCache objCache)
+        public static async Task<string> DownloadFile(SINners.Models.SINner sinner, CharacterCache objCache)
         {
             try
             {
@@ -722,7 +734,8 @@ namespace ChummerHub.Client.Backend
                         string zippedFile = Path.Combine(System.IO.Path.GetTempPath(), "SINner", sinner.Id.Value + ".chum5z");
                         if (File.Exists(zippedFile))
                             File.Delete(zippedFile);
-                        var filestream = StaticUtils.Client.GetDownloadFile(sinner.Id.Value);
+                        var client = await StaticUtils.GetClient();
+                        var filestream = client.GetDownloadFile(sinner.Id.Value);
                         var array = ReadFully(filestream);
                         File.WriteAllBytes(zippedFile, array);
                         System.IO.Compression.ZipFile.ExtractToDirectory(zippedFile, zipPath);
@@ -763,7 +776,7 @@ namespace ChummerHub.Client.Backend
 
                 objCache.DownLoadRunning = Task.Factory.StartNew<string>(() =>
                 {
-                    string filepath = DownloadFile(sinner, objCache);
+                    string filepath = DownloadFile(sinner, objCache).Result;
                     objCache.FilePath = filepath;
                     return objCache.FilePath;
                 });

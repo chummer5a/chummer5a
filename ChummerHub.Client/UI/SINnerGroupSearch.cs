@@ -105,7 +105,8 @@ namespace ChummerHub.Client.UI
                     return null;
                 }
 
-                var Result = await StaticUtils.Client.PostGroupWithHttpMessagesAsync(
+                var client = await StaticUtils.GetClient();
+                var Result = await client.PostGroupWithHttpMessagesAsync(
                     this.tbSearchGroupname.Text,
                     MyCE.MySINnerFile.Id,
                     language,
@@ -126,11 +127,12 @@ namespace ChummerHub.Client.UI
                             throw new ArgumentException(msg);
                         }
 
-                        var join = await StaticUtils.Client.PutSINerInGroupWithHttpMessagesAsync(id,
+                      
+                        var join = await client.PutSINerInGroupWithHttpMessagesAsync(id,
                             MyCE.MySINnerFile.Id);
                         if (join.Response.StatusCode == HttpStatusCode.OK)
                         {
-                            var getgroup = await StaticUtils.Client.GetGroupByIdWithHttpMessagesAsync(id);
+                            var getgroup = await client.GetGroupByIdWithHttpMessagesAsync(id);
                             MyCE.MySINnerFile.MyGroup = getgroup.Body;
                             if (OnGroupJoinCallback != null)
                                 OnGroupJoinCallback(this, getgroup.Body);
@@ -211,7 +213,8 @@ namespace ChummerHub.Client.UI
             try
             {
                 SINSearchGroupResult ssgr = null;
-                var response = await StaticUtils.Client.GetSearchGroupsWithHttpMessagesAsync(groupname, userName, sinnername);
+                var client = await StaticUtils.GetClient();
+                var response = await client.GetSearchGroupsWithHttpMessagesAsync(groupname, userName, sinnername);
                 if ((response.Response.StatusCode == HttpStatusCode.OK))
                 {
                     return response.Body;
@@ -315,7 +318,8 @@ namespace ChummerHub.Client.UI
         {
             try
             {
-                var response = await StaticUtils.Client.DeleteLeaveGroupWithHttpMessagesAsync(myGroup.Id, mySINnerFile.Id);
+                var client = await StaticUtils.GetClient();
+                var response = await client.DeleteLeaveGroupWithHttpMessagesAsync(myGroup.Id, mySINnerFile.Id);
                 if ((response.Response.StatusCode == HttpStatusCode.OK))
                 {
                     MySINSearchGroupResult = await SearchForGroups(myGroup.Groupname, null, null);
@@ -341,8 +345,9 @@ namespace ChummerHub.Client.UI
             SINSearchGroupResult ssgr = null;
             try
             {
+                var client = await StaticUtils.GetClient();
                 var response =
-                    await StaticUtils.Client.PutSINerInGroupWithHttpMessagesAsync(searchgroup.Id, myCE.MySINnerFile.Id);
+                    await client.PutSINerInGroupWithHttpMessagesAsync(searchgroup.Id, myCE.MySINnerFile.Id);
                 if ((response.Response.StatusCode == HttpStatusCode.OK))
                 {
                     MySINSearchGroupResult = await SearchForGroups(searchgroup.Groupname, null, myCE.MyCharacter.CharacterName);

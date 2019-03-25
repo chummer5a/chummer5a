@@ -151,7 +151,8 @@ namespace ChummerHub.Client.Model
         {
             try
             {
-                var found = await StaticUtils.Client.GetSINByIdWithHttpMessagesAsync(this.MySINnerFile.Id.Value);
+                var client = await StaticUtils.GetClient();
+                var found = await client.GetSINByIdWithHttpMessagesAsync(this.MySINnerFile.Id.Value);
                 if(found.Response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     var sinjson = await found.Response.Content.ReadAsStringAsync();
