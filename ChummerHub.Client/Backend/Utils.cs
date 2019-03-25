@@ -206,6 +206,8 @@ namespace ChummerHub.Client.Backend
 
         private static bool clientErrorShown = false;
 
+        private static bool _clientNOTworking = false;
+
         private static SINnersClient _client = null;
         public static SINnersClient Client
         {
@@ -214,23 +216,47 @@ namespace ChummerHub.Client.Backend
                 if (_client != null) return _client;
                 try
                 {
-                    var assembly = System.Reflection.Assembly.GetAssembly(typeof(frmChummerMain));
-                    Properties.Settings.Default.SINnerUrl = assembly.GetName().Version.Build == 0 ? "https://sinners.azurewebsites.net" : "https://sinners-beta.azurewebsites.net";
-                    if (System.Diagnostics.Debugger.IsAttached)
-                    {
-                        try
-                        {
 
-                            string local = "http://localhost:5000/";
-                            var request = WebRequest.Create("http://localhost:5000/");
-                            WebResponse response = request.GetResponse();
-                            Properties.Settings.Default.SINnerUrl = local;
-                            System.Diagnostics.Trace.TraceInformation("Connected to " + local + ".");
-                        }
-                        catch(Exception e)
-                        {
-                            System.Diagnostics.Trace.TraceInformation("Connected to " + Properties.Settings.Default.SINnerUrl + ".");
-                        }
+                    if (!_clientNOTworking)
+                        _client = GetSINnersClient().Result;
+                }
+                return _client;
+            }
+            set
+            {
+                _client = value;
+            }
+
+        }
+
+        private static async Task<SINnersClient> GetSINnersClient()
+        {
+            SINnersClient client = null;
+            try
+            {
+                var assembly = System.Reflection.Assembly.GetAssembly(typeof(frmChummerMain));
+                if (assembly.GetName().Version.Build == 0)
+                {
+                    Properties.Settings.Default.SINnerUrl = "https://sinners.azurewebsites.net";
+                }
+                else
+                {
+                    Properties.Settings.Default.SINnerUrl = "https://sinners-beta.azurewebsites.net";
+                }
+                if (System.Diagnostics.Debugger.IsAttached)
+                {
+                    try
+                    {
+
+                        string local = "http://localhost:5000/";
+                        var request = WebRequest.Create("http://localhost:5000/");
+                        WebResponse response = request.GetResponse();
+                        Properties.Settings.Default.SINnerUrl = local;
+                        System.Diagnostics.Trace.TraceInformation("Connected to " + local + ".");
+                    }
+                    catch (Exception e)
+                    {
+                        System.Diagnostics.Trace.TraceInformation("Connected to " + Properties.Settings.Default.SINnerUrl + ".");
                     }
                     ServicePointManager.ServerCertificateValidationCallback += delegate { return true; };
                     ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
@@ -255,9 +281,39 @@ namespace ChummerHub.Client.Backend
                     MessageBox.Show(msg, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     clientErrorShown = true;
                 }
-                return _client;
+                ServicePointManager.ServerCertificateValidationCallback += delegate { return true; };
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
+                Uri baseUri = new Uri(Properties.Settings.Default.SINnerUrl);
+                Microsoft.Rest.ServiceClientCredentials credentials = new MyCredentials();
+                DelegatingHandler delegatingHandler = new MyMessageHandler();
+                HttpClientHandler httpClientHandler = new HttpClientHandler();
+                httpClientHandler.CookieContainer = AuthorizationCookieContainer;
+                client = new SINnersClient(baseUri, credentials, httpClientHandler, delegatingHandler);
+                var verresp = await client.GetVersionWithHttpMessagesAsync();
+                if (verresp.Response.StatusCode == HttpStatusCode.OK)
+                    System.Diagnostics.Trace.TraceInformation("Connected to SINners in version " + verresp.Body.AssemblyVersion + ".");
+                else if (verresp.Response.StatusCode == HttpStatusCode.Forbidden)
+                {
+                    _clientNOTworking = true;
+                    throw new System.Web.HttpException(403, "WebService disabled by Admin!");
+                }
             }
-            set => _client = value;
+            catch (Exception ex)
+            {
+                System.Diagnostics.Trace.TraceError(ex.ToString());
+                if (!clientErrorShown)
+                {
+                    clientErrorShown = true;
+                    Exception inner = ex;
+                    while (inner.InnerException != null)
+                        inner = inner.InnerException;
+                    string msg = "Error connecting to SINners: " + Environment.NewLine + Environment.NewLine + inner.Message;
+                    msg += Environment.NewLine + Environment.NewLine + "Please check the Plugin-Options dialog.";
+                    MessageBox.Show(msg, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    
+                }
+            }
+            return client;
         }
     }
 
