@@ -382,6 +382,7 @@ namespace ChummerHub.Controllers
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Unauthorized)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Forbidden)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GetSinnersByAuthorization")]
         [Authorize]
         public async Task<ActionResult<SINSearchResult>> GetSINnersByAuthorization()

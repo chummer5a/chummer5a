@@ -42,6 +42,7 @@ namespace ChummerHub.Controllers.V1
         [HttpGet]
         [AllowAnonymous]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Forbidden)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("ChummerHelperVersion")]
         public async Task<ActionResult<ChummerHubVersion>> GetVersion()
         {

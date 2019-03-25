@@ -176,7 +176,12 @@ namespace ChummerHub.Client.UI
             cbSINnerUrl.SetToolTip(tip);
             cbSINnerUrl.SelectedValueChanged -= CbSINnerUrl_SelectedValueChanged;
             Properties.Settings.Default.Reload();
-            var sinnerurl = StaticUtils.Client.BaseUri.ToString();
+            var client = StaticUtils.Client;
+            if (client == null)
+            {
+                return;
+            }
+            var sinnerurl = client.BaseUri.ToString();
             if (Properties.Settings.Default.SINnerUrls.Contains("http://sinners-beta.azurewebsites.net/"))
             {
                 Properties.Settings.Default.SINnerUrls.Remove("http://sinners-beta.azurewebsites.net/");
@@ -670,26 +675,38 @@ namespace ChummerHub.Client.UI
                 string folderName = folderBrowserDialog1.SelectedPath;
                 try
                 {
-                    var t = StaticUtils.Client.AdminGetSINnersWithHttpMessagesAsync();
-                    t.ContinueWith((getsinnertask) =>
+                    using (new CursorWait(true, this))
                     {
-                        foreach(var sinner in getsinnertask.Result.Body)
+                        var t = StaticUtils.Client.AdminGetSINnersWithHttpMessagesAsync();
+                        t.ContinueWith((getsinnertask) =>
                         {
-                            if (!sinner.SiNnerMetaData.Tags.Any())
+                            using (new CursorWait(true, this))
                             {
-                                System.Diagnostics.Trace.TraceError("Sinner " + sinner.Id + " has no Tags!");
-                                continue;
+                                foreach (var sinner in getsinnertask.Result.Body)
+                                {
+                                    try
+                                    {
+                                        if (!sinner.SiNnerMetaData.Tags.Any())
+                                        {
+                                            System.Diagnostics.Trace.TraceError("Sinner " + sinner.Id + " has no Tags!");
+                                            continue;
+                                        }
+                                        string jsonsinner = Newtonsoft.Json.JsonConvert.SerializeObject(sinner);
+                                        string filePath = Path.Combine(folderName, sinner.Id.ToString() + ".chum5json");
+                                        if (File.Exists(filePath))
+                                            File.Delete(filePath);
+                                        File.WriteAllText(filePath, jsonsinner);
+                                        System.Diagnostics.Trace.TraceInformation("Sinner " + sinner.Id + " saved to " + filePath);
+                                    }
+                                    catch (Exception e2)
+                                    {
+                                        System.Diagnostics.Trace.TraceError(e2.ToString());
+                                        Invoke(new Action(() => MessageBox.Show(e2.Message)));
+                                    }
+                                }
                             }
-                            string jsonsinner = Newtonsoft.Json.JsonConvert.SerializeObject(sinner);
-                            string filePath = Path.Combine(folderName, sinner.Id.ToString()+ ".chum5json");
-                            if(File.Exists(filePath))
-                                File.Delete(filePath);
-                            File.WriteAllText(filePath, jsonsinner);
-                            //frmCharacterRoster.CharacterCache cache = Newtonsoft.Json.JsonConvert.DeserializeObject<frmCharacterRoster.CharacterCache>(sinner.JsonSummary);
-                            //Character c = Utils.DownloadFile(sinner, cache);
-                            System.Diagnostics.Trace.TraceInformation("Sinner " + sinner.Id + " saved to " + filePath);
-                        }
-                    });
+                        });
+                    }
                 }
                 catch(Exception ex)
                 {
@@ -718,30 +735,33 @@ namespace ChummerHub.Client.UI
                     {
                         try
                         {
-                            string sinjson = File.ReadAllText(file.FullName);
-                            SINner sin = Newtonsoft.Json.JsonConvert.DeserializeObject<SINner>(sinjson);
-                            UploadInfoObject uploadInfoObject = new UploadInfoObject();
-                            uploadInfoObject.Client = PluginHandler.MyUploadClient;
-                            uploadInfoObject.UploadDateTime = DateTime.Now;
-                            uploadInfoObject.SiNners = new List<SINner>
+                            using (new CursorWait(true, this))
                             {
-                                sin
-                            };
-                            var t = StaticUtils.Client.PostSINWithHttpMessagesAsync(uploadInfoObject);
-                            t.ContinueWith((posttask) =>
-                            {
-                                if(posttask.Result.Response.IsSuccessStatusCode)
+                                string sinjson = File.ReadAllText(file.FullName);
+                                SINner sin = Newtonsoft.Json.JsonConvert.DeserializeObject<SINner>(sinjson);
+                                UploadInfoObject uploadInfoObject = new UploadInfoObject();
+                                uploadInfoObject.Client = PluginHandler.MyUploadClient;
+                                uploadInfoObject.UploadDateTime = DateTime.Now;
+                                uploadInfoObject.SiNners = new List<SINner>
                                 {
-                                    System.Diagnostics.Trace.TraceInformation("SINner " + sin.Id + " posted!");
-                                }
-                                else
+                                    sin
+                                };
+                                var t = StaticUtils.Client.PostSINWithHttpMessagesAsync(uploadInfoObject);
+                                t.ContinueWith((posttask) =>
                                 {
-                                    string msg = posttask.Result.Response.ReasonPhrase + ": " + Environment.NewLine;
-                                    var content = posttask.Result.Response.Content.ReadAsStringAsync().Result;
-                                    msg += content;
-                                    System.Diagnostics.Trace.TraceWarning("SINner " + sin.Id + " not posted: " + msg);
-                                }
-                            });
+                                    if (posttask.Result.Response.IsSuccessStatusCode)
+                                    {
+                                        System.Diagnostics.Trace.TraceInformation("SINner " + sin.Id + " posted!");
+                                    }
+                                    else
+                                    {
+                                        string msg = posttask.Result.Response.ReasonPhrase + ": " + Environment.NewLine;
+                                        var content = posttask.Result.Response.Content.ReadAsStringAsync().Result;
+                                        msg += content;
+                                        System.Diagnostics.Trace.TraceWarning("SINner " + sin.Id + " not posted: " + msg);
+                                    }
+                                });
+                            }
                         }
                         catch(Exception ex)
                         {

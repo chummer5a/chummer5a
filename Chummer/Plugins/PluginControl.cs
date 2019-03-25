@@ -54,8 +54,17 @@ namespace Chummer.Plugins
             container.ComposeParts(this);
             foreach (var plugin in MyPlugins)
             {
-                plugin.CustomInitialize(Program.MainForm);
-                plugin.SetIsUnitTest(Utils.IsUnitTest);
+                try
+                {
+                    plugin.CustomInitialize(Program.MainForm);
+                    plugin.SetIsUnitTest(Utils.IsUnitTest);
+                }
+                catch(Exception e)
+                {
+                    string msg = "Exception while calling CustomInitialize for " + plugin.ToString() + ":" + Environment.NewLine + Environment.NewLine;
+                    msg += e.ToString();
+                    System.Diagnostics.Trace.TraceWarning(msg);
+                }
             }
         }
 
