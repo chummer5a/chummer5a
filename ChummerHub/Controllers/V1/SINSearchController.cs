@@ -8,13 +8,10 @@ using ChummerHub.Data;
 using ChummerHub.Models.V1;
 using ChummerHub.Models.V1.Examples;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.Filters;
-using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace ChummerHub.Controllers.V1
 {

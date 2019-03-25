@@ -272,8 +272,10 @@ namespace Chummer.Plugins
             {
                 try
                 {
-                    var res = await StaticUtils.Client.GetRolesWithHttpMessagesAsync();
-                    StaticUtils.UserRoles = res.Body.ToList();
+                    var client = await StaticUtils.GetClient();
+                    var res = await client?.GetRolesWithHttpMessagesAsync();
+                    if (res != null)
+                        StaticUtils.UserRoles = res.Body.ToList();
                 }
                 catch(Exception e)
                 {

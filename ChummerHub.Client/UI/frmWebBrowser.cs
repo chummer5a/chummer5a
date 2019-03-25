@@ -70,7 +70,8 @@ namespace ChummerHub.Client.UI
             {
                 //we are logged in!
                 GetCookieContainer();
-                var user = await StaticUtils.Client.GetUserByAuthorizationWithHttpMessagesAsync();
+                var client = await StaticUtils.GetClient();
+                var user = await client.GetUserByAuthorizationWithHttpMessagesAsync();
                 SINnersOptions.AddVisibilityForEmail(user.Body.Email);
                 this.Close();
             }
@@ -85,7 +86,7 @@ namespace ChummerHub.Client.UI
                 Properties.Settings.Default.Save();
                 //recreate cookiecontainer
                 var cookies = StaticUtils.AuthorizationCookieContainer.GetCookies(new Uri(Properties.Settings.Default.SINnerUrl));
-                StaticUtils.Client = null;
+                var client = StaticUtils.GetClient(true);
             }
             catch(Exception ex)
             {
