@@ -11,6 +11,7 @@ using SINners.Models;
 using Chummer.Plugins;
 using ChummerHub.Client.Backend;
 
+
 namespace ChummerHub.Client.UI
 {
     public partial class SINnerGroupCreate : UserControl
@@ -71,11 +72,15 @@ namespace ChummerHub.Client.UI
             Guid id = Guid.Empty;
             if (Guid.TryParse(this.tbGroupId.Text, out id))
                 myGroup.Id = id;
-            //if (Guid.TryParse(this.tbParentGroupId.Text, out id))
-            //    myGroup.MyParentGroupId = id;
+            else
+                myGroup.Id = Guid.NewGuid();
+            if (Guid.TryParse(this.tbParentGroupId.Text, out id))
+                myGroup.MyParentGroupId = id;
+            myGroup.Password = tbPassword.Text;
 
             return myGroup;
 
         }
+
     }
 }

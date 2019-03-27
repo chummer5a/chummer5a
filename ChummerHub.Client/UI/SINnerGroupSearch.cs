@@ -34,9 +34,8 @@ namespace ChummerHub.Client.UI
                 try
                 {
                     _mySINSearchGroupResult = value;
-                    
-                    this.lbGroupSearchResult.DataSource = MySINSearchGroupResult;
-                    lbGroupSearchResult.ValueMember = "SinGroups";
+                    this.lbGroupSearchResult.DataSource = MySINSearchGroupResult?.SinGroups;
+                    //lbGroupSearchResult.ValueMember = "SinGroups";
                     this.lbGroupSearchResult.DisplayMember = "Groupname";
                     if (this.lbGroupSearchResult.Items.Count > 0)
                     {
@@ -179,7 +178,7 @@ namespace ChummerHub.Client.UI
             catch(Exception ex)
             {
                 System.Diagnostics.Trace.TraceError(ex.Message, ex);
-                MessageBox.Show(e.ToString());
+                MessageBox.Show(ex.ToString());
             }
             finally
             {
@@ -385,6 +384,12 @@ namespace ChummerHub.Client.UI
                     this.bJoinGroup.Text = "leave group";
                 }
             }
+        }
+
+        private void TbSearchGroupname_TextChanged(object sender, EventArgs e)
+        {
+            bCreateGroup.Enabled = false;
+            bJoinGroup.Enabled = false;
         }
     }
 }

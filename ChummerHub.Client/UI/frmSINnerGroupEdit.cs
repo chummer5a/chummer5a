@@ -22,6 +22,8 @@ namespace ChummerHub.Client.UI
         {
             InitializeComponent();
             MySINnerGroupCreate.MyGroup = group;
+            if (group.Id == null || group.Id == Guid.Empty)
+                MySINnerGroupCreate.EditMode = true;
             MySINnerGroupCreate.InitializeMe();
         }
         
