@@ -231,13 +231,9 @@ namespace SINners
         /// <summary>
         /// Store the new group
         /// </summary>
-        /// <param name='groupname'>
+        /// <param name='mygroup'>
         /// </param>
         /// <param name='sinnerId'>
-        /// </param>
-        /// <param name='language'>
-        /// </param>
-        /// <param name='pwhash'>
         /// </param>
         /// <param name='customHeaders'>
         /// The headers that will be added to request.
@@ -245,7 +241,7 @@ namespace SINners
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse> PostGroupWithHttpMessagesAsync(string groupname = default(string), Guid? sinnerId = default(Guid?), string language = default(string), string pwhash = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse> PostGroupWithHttpMessagesAsync(SINnerGroup mygroup = default(SINnerGroup), Guid? sinnerId = default(Guid?), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Store the new group

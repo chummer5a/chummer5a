@@ -2225,13 +2225,9 @@ namespace SINners
         /// <summary>
         /// Store the new group
         /// </summary>
-        /// <param name='groupname'>
+        /// <param name='mygroup'>
         /// </param>
         /// <param name='sinnerId'>
-        /// </param>
-        /// <param name='language'>
-        /// </param>
-        /// <param name='pwhash'>
         /// </param>
         /// <param name='customHeaders'>
         /// Headers that will be added to request.
@@ -2242,8 +2238,12 @@ namespace SINners
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
-        public async Task<HttpOperationResponse> PostGroupWithHttpMessagesAsync(string groupname = default(string), Guid? sinnerId = default(Guid?), string language = default(string), string pwhash = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<HttpOperationResponse> PostGroupWithHttpMessagesAsync(SINnerGroup mygroup = default(SINnerGroup), Guid? sinnerId = default(Guid?), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
+            if (mygroup != null)
+            {
+                mygroup.Validate();
+            }
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
             string _invocationId = null;
@@ -2251,10 +2251,8 @@ namespace SINners
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("groupname", groupname);
+                tracingParameters.Add("mygroup", mygroup);
                 tracingParameters.Add("sinnerId", sinnerId);
-                tracingParameters.Add("language", language);
-                tracingParameters.Add("pwhash", pwhash);
                 tracingParameters.Add("cancellationToken", cancellationToken);
                 ServiceClientTracing.Enter(_invocationId, this, "PostGroup", tracingParameters);
             }
@@ -2265,14 +2263,6 @@ namespace SINners
             if (sinnerId != null)
             {
                 _queryParameters.Add(string.Format("SinnerId={0}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(sinnerId, this.SerializationSettings).Trim('"'))));
-            }
-            if (language != null)
-            {
-                _queryParameters.Add(string.Format("language={0}", Uri.EscapeDataString(language)));
-            }
-            if (pwhash != null)
-            {
-                _queryParameters.Add(string.Format("pwhash={0}", Uri.EscapeDataString(pwhash)));
             }
             if (_queryParameters.Count > 0)
             {
@@ -2298,9 +2288,9 @@ namespace SINners
 
             // Serialize Request
             string _requestContent = null;
-            if(groupname != null)
+            if(mygroup != null)
             {
-                _requestContent = SafeJsonConvert.SerializeObject(groupname, this.SerializationSettings);
+                _requestContent = SafeJsonConvert.SerializeObject(mygroup, this.SerializationSettings);
                 _httpRequest.Content = new StringContent(_requestContent, Encoding.UTF8);
                 _httpRequest.Content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json-patch+json; charset=utf-8");
             }

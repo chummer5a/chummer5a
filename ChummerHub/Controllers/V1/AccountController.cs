@@ -69,7 +69,10 @@ namespace ChummerHub.Controllers
             }
             catch(Exception e)
             {
-                return BadRequest(e);
+                if (e is HubException)
+                    return BadRequest(e);
+                HubException hue = new HubException(e.Message, e);
+                return BadRequest(hue);
             }
         }
 
@@ -92,7 +95,10 @@ namespace ChummerHub.Controllers
             }
             catch (Exception e)
             {
-                return BadRequest(e);
+                if (e is HubException)
+                    return BadRequest(e);
+                HubException hue = new HubException(e.Message, e);
+                return BadRequest(hue);
             }
         }
 
@@ -258,7 +264,10 @@ namespace ChummerHub.Controllers
                         _logger.LogError(ex.ToString());
                 }
                 result += Environment.NewLine + e;
-                return BadRequest(result);
+                if (e is HubException)
+                    return BadRequest(e);
+                HubException hue = new HubException(result, e);
+                return BadRequest(hue);
             }
         }
 
@@ -282,7 +291,10 @@ namespace ChummerHub.Controllers
             }
             catch(Exception e)
             {
-                return BadRequest(e);
+                if (e is HubException)
+                    return BadRequest(e);
+                HubException hue = new HubException(e.Message, e);
+                return BadRequest(hue);
             }
         }
 
@@ -306,7 +318,10 @@ namespace ChummerHub.Controllers
             }
             catch (Exception e)
             {
-                return BadRequest(e);
+                if (e is HubException)
+                    return BadRequest(e);
+                HubException hue = new HubException(e.Message, e);
+                return BadRequest(hue);
             }
         }
 
@@ -345,7 +360,10 @@ namespace ChummerHub.Controllers
             }
             catch (Exception e)
             {
-                return BadRequest(e);
+                if (e is HubException)
+                    return BadRequest(e);
+                HubException hue = new HubException(e.Message, e);
+                return BadRequest(hue);
             }
         }
 
@@ -374,7 +392,10 @@ namespace ChummerHub.Controllers
             }
             catch(Exception e)
             {
-                return BadRequest(e);
+                if (e is HubException)
+                    return BadRequest(e);
+                HubException hue = new HubException(e.Message, e);
+                return BadRequest(hue);
             }
         }
 
@@ -431,8 +452,10 @@ namespace ChummerHub.Controllers
             }
             catch (Exception e)
             {
-                ret.ErrorText = e.ToString();
-                throw;
+                if (e is HubException)
+                    return BadRequest(e);
+                HubException hue = new HubException(e.Message, e);
+                return BadRequest(hue);
             }
         }
 
@@ -454,7 +477,10 @@ namespace ChummerHub.Controllers
             }
             catch (Exception e)
             {
-                return BadRequest(e);
+                if (e is HubException)
+                    return BadRequest(e);
+                HubException hue = new HubException(e.Message, e);
+                return BadRequest(hue);
             }
         }
 

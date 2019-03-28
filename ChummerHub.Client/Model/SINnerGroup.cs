@@ -22,6 +22,15 @@ namespace SINners.Models
             }
         }
 
+        public SINnerGroup(SINnerSearchGroup searchGroup)
+        {
+            Id = searchGroup.Id;
+            Groupname = searchGroup.Groupname;
+            IsPublic = searchGroup.IsPublic;
+            MyParentGroupId = searchGroup.MyParentGroupId;
+            Language = searchGroup.Language;
+            MyAdminIdentityRole = searchGroup.MyAdminIdentityRole;
+        }
         public static byte[] GetHash(string inputString)
         {
             HashAlgorithm algorithm = SHA256.Create();
