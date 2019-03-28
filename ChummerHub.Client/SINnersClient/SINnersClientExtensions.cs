@@ -489,17 +489,13 @@ namespace SINners
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
-            /// <param name='groupname'>
+            /// <param name='mygroup'>
             /// </param>
             /// <param name='sinnerId'>
             /// </param>
-            /// <param name='language'>
-            /// </param>
-            /// <param name='pwhash'>
-            /// </param>
-            public static void PostGroup(this ISINnersClient operations, string groupname = default(string), Guid? sinnerId = default(Guid?), string language = default(string), string pwhash = default(string))
+            public static void PostGroup(this ISINnersClient operations, SINnerGroup mygroup = default(SINnerGroup), Guid? sinnerId = default(Guid?))
             {
-                Task.Factory.StartNew(s => ((ISINnersClient)s).PostGroupAsync(groupname, sinnerId, language, pwhash), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
+                Task.Factory.StartNew(s => ((ISINnersClient)s).PostGroupAsync(mygroup, sinnerId), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
             }
 
             /// <summary>
@@ -508,20 +504,16 @@ namespace SINners
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
-            /// <param name='groupname'>
+            /// <param name='mygroup'>
             /// </param>
             /// <param name='sinnerId'>
-            /// </param>
-            /// <param name='language'>
-            /// </param>
-            /// <param name='pwhash'>
             /// </param>
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task PostGroupAsync(this ISINnersClient operations, string groupname = default(string), Guid? sinnerId = default(Guid?), string language = default(string), string pwhash = default(string), CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task PostGroupAsync(this ISINnersClient operations, SINnerGroup mygroup = default(SINnerGroup), Guid? sinnerId = default(Guid?), CancellationToken cancellationToken = default(CancellationToken))
             {
-                await operations.PostGroupWithHttpMessagesAsync(groupname, sinnerId, language, pwhash, null, cancellationToken).ConfigureAwait(false);
+                await operations.PostGroupWithHttpMessagesAsync(mygroup, sinnerId, null, cancellationToken).ConfigureAwait(false);
             }
 
             /// <summary>

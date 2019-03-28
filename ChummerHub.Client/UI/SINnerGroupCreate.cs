@@ -10,6 +10,8 @@ using System.Windows.Forms;
 using SINners.Models;
 using Chummer.Plugins;
 using ChummerHub.Client.Backend;
+using Chummer;
+
 
 namespace ChummerHub.Client.UI
 {
@@ -17,12 +19,14 @@ namespace ChummerHub.Client.UI
     {
         public SINnerGroup MyGroup = null;
         public bool EditMode = false;
-        public SINnerGroupCreate(SINnerGroup group, bool editMode)
+        private string _strSelectedLanguage = GlobalOptions.Language;
+
+        public SINnerGroupCreate(SINnerGroup group, bool editMode, bool onlyPWHash)
         {
             MyGroup = group;
             EditMode = editMode;
             InitializeComponent();
-            InitializeMe();
+            InitializeMe(onlyPWHash);
         }
 
         public SINnerGroupCreate()
@@ -30,21 +34,20 @@ namespace ChummerHub.Client.UI
             InitializeComponent();
         }
 
-        public void InitializeMe()
+        public void InitializeMe(bool onlyPWHash)
         {
             if (MyGroup != null)
             {
                 tbAdminRole.Text = MyGroup.MyAdminIdentityRole;
                 tbGroupId.Text = MyGroup.Id?.ToString();
                 tbGroupname.Text = MyGroup.Groupname;
-                tbLanguage.Text = MyGroup.Language;
                 tbParentGroupId.Text = MyGroup.MyParentGroup?.ToString();
                 tbPassword.Text = "";
             }
             tbAdminRole.Enabled = false;
             tbGroupId.Enabled = false;
             tbGroupname.Enabled = EditMode;
-            tbLanguage.Enabled = EditMode;
+            cboLanguage1.Enabled = EditMode;
             tbParentGroupId.Enabled = false;
             tbPassword.Enabled = EditMode;
 
@@ -54,7 +57,20 @@ namespace ChummerHub.Client.UI
                 tbGroupId.Enabled = false;
                 tbParentGroupId.Enabled = EditMode;
             }
-            
+
+            this.cboLanguage1 = frmViewer.PopulateLanguageList(cboLanguage1, null);
+            imgLanguageFlag.Image = FlagImageGetter.GetFlagFromCountryCode(_strSelectedLanguage.Substring(3, 2));
+
+            if (onlyPWHash)
+            {
+                tbAdminRole.Enabled = false;
+                tbGroupId.Enabled = false;
+                tbGroupname.Enabled = false;
+                cboLanguage1.Enabled = false;
+                tbParentGroupId.Enabled = false;
+                tbPassword.Enabled = true;
+            }
+
         }
 
         private void BOk_Click(object sender, EventArgs e)
@@ -71,10 +87,23 @@ namespace ChummerHub.Client.UI
             Guid id = Guid.Empty;
             if (Guid.TryParse(this.tbGroupId.Text, out id))
                 myGroup.Id = id;
-            //if (Guid.TryParse(this.tbParentGroupId.Text, out id))
-            //    myGroup.MyParentGroupId = id;
+            else
+                myGroup.Id = Guid.NewGuid();
+            if (Guid.TryParse(this.tbParentGroupId.Text, out id))
+                myGroup.MyParentGroupId = id;
+            myGroup.Password = tbPassword.Text;
+            myGroup.Language = cboLanguage1.SelectedItem.ToString();
 
             return myGroup;
+
+        }
+
+        private void CboLanguage1_SelectedIndexChanged_1(object sender, EventArgs e)
+        {
+            _strSelectedLanguage = cboLanguage1.SelectedValue?.ToString() ?? GlobalOptions.DefaultLanguage;
+            imgLanguageFlag.Image = FlagImageGetter.GetFlagFromCountryCode(_strSelectedLanguage.Substring(3, 2));
+
+            bool isEnabled = !string.IsNullOrEmpty(_strSelectedLanguage) && _strSelectedLanguage != GlobalOptions.DefaultLanguage;
 
         }
     }

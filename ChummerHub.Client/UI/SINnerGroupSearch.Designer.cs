@@ -202,6 +202,8 @@ namespace ChummerHub.Client.UI
             this.tbSearchGroupname.Name = "tbSearchGroupname";
             this.tbSearchGroupname.Size = new System.Drawing.Size(481, 20);
             this.tbSearchGroupname.TabIndex = 7;
+            this.tbSearchGroupname.TextChanged += new System.EventHandler(this.TbSearchGroupname_TextChanged);
+            this.tbSearchGroupname.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TbSearchGroupname_KeyDown);
             // 
             // bJoinGroup
             // 
