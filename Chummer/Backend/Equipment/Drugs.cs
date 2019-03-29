@@ -488,7 +488,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 if (_intCachedInitiative != int.MinValue) return _intCachedInitiative;
-                _intCachedInitiative = Components.Sum(d => d.ActiveDrugEffect.Initiative);
+                _intCachedInitiative = Components.Sum(d => d.ActiveDrugEffect?.Initiative ?? 0);
                 return _intCachedInitiative;
             }
         }
@@ -499,7 +499,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 if (_intCachedInitiativeDice != int.MinValue) return _intCachedInitiativeDice;
-                _intCachedInitiativeDice = Components.Sum(d => d.ActiveDrugEffect.InitiativeDice);
+                _intCachedInitiativeDice = Components.Sum(d => d.ActiveDrugEffect?.InitiativeDice ?? 0);
                 return _intCachedInitiativeDice;
             }
         }
@@ -510,7 +510,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 if (_intCachedSpeed != int.MinValue) return _intCachedSpeed;
-                _intCachedSpeed = Components.Sum(d => d.ActiveDrugEffect.Speed);
+                _intCachedSpeed = Components.Sum(d => d.ActiveDrugEffect?.Speed ?? 0);
                 return _intCachedSpeed;
             }
         }
@@ -521,7 +521,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 if (_intCachedDuration != int.MinValue) return _intCachedDuration;
-                _intCachedDuration = Components.Sum(d => d.ActiveDrugEffect.Duration);
+                _intCachedDuration = Components.Sum(d => d.ActiveDrugEffect?.Duration ?? 0);
                 return _intCachedDuration;
             }
         }
@@ -532,7 +532,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 if (_intCachedCrashDamage != int.MinValue) return _intCachedCrashDamage;
-                _intCachedCrashDamage = Components.Sum(d => d.ActiveDrugEffect.Duration);
+                _intCachedCrashDamage = Components.Sum(d => d.ActiveDrugEffect?.CrashDamage ?? 0);
                 return _intCachedCrashDamage;
             }
         }
