@@ -1,4 +1,4 @@
-﻿namespace Chummer
+namespace Chummer
 {
     partial class frmOptions
     {
@@ -293,6 +293,7 @@
             this.chkExtendAnyDetectionSpell = new System.Windows.Forms.CheckBox();
             this.chkMoreLethalGameplay = new System.Windows.Forms.CheckBox();
             this.chkSpecialKarmaCost = new System.Windows.Forms.CheckBox();
+            this.chkIgnoreComplexFormLimit = new System.Windows.Forms.CheckBox();
             this.tabGitHubIssues = new System.Windows.Forms.TabPage();
             this.cmdUploadPastebin = new System.Windows.Forms.Button();
             this.tabPlugins = new System.Windows.Forms.TabPage();
@@ -301,7 +302,6 @@
             this.clbPlugins = new System.Windows.Forms.CheckedListBox();
             this.panelPluginOption = new System.Windows.Forms.Panel();
             this.flpOKCancel = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkIgnoreComplexFormLimit = new System.Windows.Forms.CheckBox();
             this.tlpOptions.SuspendLayout();
             this.tabOptions.SuspendLayout();
             this.tabGlobal.SuspendLayout();
@@ -4315,6 +4315,22 @@
             this.chkSpecialKarmaCost.UseVisualStyleBackColor = true;
             this.chkSpecialKarmaCost.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
+            // chkIgnoreComplexFormLimit
+            // 
+            this.chkIgnoreComplexFormLimit.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkIgnoreComplexFormLimit.AutoSize = true;
+            this.tlpHouseRules.SetColumnSpan(this.chkIgnoreComplexFormLimit, 4);
+            this.chkIgnoreComplexFormLimit.Location = new System.Drawing.Point(434, 332);
+            this.chkIgnoreComplexFormLimit.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkIgnoreComplexFormLimit.Name = "chkIgnoreComplexFormLimit";
+            this.chkIgnoreComplexFormLimit.Size = new System.Drawing.Size(381, 17);
+            this.chkIgnoreComplexFormLimit.TabIndex = 43;
+            this.chkIgnoreComplexFormLimit.Tag = "Checkbox_Options_IgnoreComplexFormLimit";
+            this.chkIgnoreComplexFormLimit.Text = "Ignore complex form limit in Career mode";
+            this.chkIgnoreComplexFormLimit.UseVisualStyleBackColor = true;
+            // 
             // tabGitHubIssues
             // 
             this.tabGitHubIssues.BackColor = System.Drawing.SystemColors.Control;
@@ -4417,22 +4433,6 @@
             this.flpOKCancel.Name = "flpOKCancel";
             this.flpOKCancel.Size = new System.Drawing.Size(166, 23);
             this.flpOKCancel.TabIndex = 5;
-            // 
-            // chkIgnoreComplexFormLimit
-            // 
-            this.chkIgnoreComplexFormLimit.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.chkIgnoreComplexFormLimit.AutoSize = true;
-            this.tlpHouseRules.SetColumnSpan(this.chkIgnoreComplexFormLimit, 4);
-            this.chkIgnoreComplexFormLimit.Location = new System.Drawing.Point(434, 332);
-            this.chkIgnoreComplexFormLimit.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chkIgnoreComplexFormLimit.Name = "chkIgnoreComplexFormLimit";
-            this.chkIgnoreComplexFormLimit.Size = new System.Drawing.Size(381, 17);
-            this.chkIgnoreComplexFormLimit.TabIndex = 43;
-            this.chkIgnoreComplexFormLimit.Tag = "Checkbox_Options_IgnoreComplexFormLimit";
-            this.chkIgnoreComplexFormLimit.Text = "Ignore complex form limit in Career mode";
-            this.chkIgnoreComplexFormLimit.UseVisualStyleBackColor = true;
             // 
             // frmOptions
             // 

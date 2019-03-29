@@ -272,6 +272,7 @@ namespace Chummer.Plugins
             {
                 try
                 {
+                    await Task.Delay(1000*20);
                     var client = await StaticUtils.GetClient();
                     var res = await client?.GetRolesWithHttpMessagesAsync();
                     if (res != null)

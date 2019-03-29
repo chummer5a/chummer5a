@@ -23,6 +23,8 @@ namespace ChummerHub.Models.V1
         
         public bool IsPublic { get; set; }
 
+        [Obsolete]
+        [NotMapped]
         public string GameMasterUsername { get; set; }
 
         public SINnerGroupSetting MySettings { get; set; }
@@ -30,7 +32,6 @@ namespace ChummerHub.Models.V1
         [MaxLength(64)]
         public string Groupname { get; set; }
 
-        [JsonIgnore]
         public string PasswordHash { get; set; }
 
         [MaxLength(6)]

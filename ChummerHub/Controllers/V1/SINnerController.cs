@@ -118,6 +118,8 @@ namespace ChummerHub.Controllers.V1
             }
             catch (Exception e)
             {
+                if (e is HubException)
+                    throw;
                 HubException hue = new HubException("Exception in GetDownloadFile: " + e.Message, e);
                 throw hue;
             }
@@ -147,6 +149,8 @@ namespace ChummerHub.Controllers.V1
             }
             catch (Exception e)
             {
+                if (e is HubException)
+                    throw;
                 HubException hue = new HubException("Exception in GetSINner: " + e.Message, e);
                 throw hue;
             }
@@ -195,6 +199,8 @@ namespace ChummerHub.Controllers.V1
             }
             catch (Exception e)
             {
+                if (e is HubException)
+                    throw;
                 HubException hue = new HubException("Exception in GetSINById: " + e.Message, e);
                 throw hue;
             }
@@ -284,9 +290,9 @@ namespace ChummerHub.Controllers.V1
                 {
                     _logger.LogError(ex.ToString());
                 }
-                //_logger.LogError("Could not store file on GDrive: " + e.ToString());
+                if (e is HubException)
+                    return BadRequest(e);
                 HubException hue = new HubException("Exception in PutSINnerFile: " + e.Message, e);
-
                 return BadRequest(hue);
             }
         }
@@ -314,7 +320,7 @@ namespace ChummerHub.Controllers.V1
                         }
 
                     }
-                    return new BadRequestObjectResult(new HubException(msg));
+                    return BadRequest(new HubException(msg));
                 }
                 if (uploadInfo.UploadDateTime == null)
                     uploadInfo.UploadDateTime = DateTime.Now;
@@ -513,6 +519,9 @@ namespace ChummerHub.Controllers.V1
                         {
                             _logger.LogError(ex.ToString());
                         }
+                        if (e is HubException)
+                            return Conflict(e);
+
                         HubException hue = new HubException("Exception in PostSINnerFile: " + e.ToString(), e);
                         //var msg = new System.Net.Http.HttpResponseMessage(HttpStatusCode.Conflict) { ReasonPhrase = e.Message };
                         return Conflict(hue);
@@ -545,6 +554,9 @@ namespace ChummerHub.Controllers.V1
                 {
                     _logger.LogError(ex.ToString());
                 }
+                if (e is HubException)
+                    return BadRequest(e);
+
                 HubException hue = new HubException("Exception in PostSINnerFile: " + e.Message, e);
                 return BadRequest(hue);
             }
@@ -634,6 +646,9 @@ namespace ChummerHub.Controllers.V1
             }
             catch (Exception e)
             {
+                if (e is HubException)
+                    return BadRequest(e);
+
                 HubException hue = new HubException("Exception in DeleteSINnerFile: " + e.Message, e);
                 return BadRequest(hue);
             }
@@ -681,6 +696,9 @@ namespace ChummerHub.Controllers.V1
             }
             catch (Exception e)
             {
+                if (e is HubException)
+                    throw;
+
                 HubException hue = new HubException("Exception in CheckIfUpdateSINnerFile: " + e.Message, e);
                 throw hue;
             }

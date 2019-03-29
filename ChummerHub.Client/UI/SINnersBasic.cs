@@ -190,10 +190,13 @@ namespace ChummerHub.Client.UI
 
         private void bGroupSearch_Click(object sender, EventArgs e)
         {
-            frmSINnerGroupSearch gs = new frmSINnerGroupSearch(myUC.MyCE);
+            frmSINnerGroupSearch gs = new frmSINnerGroupSearch(myUC.MyCE, this);
             gs.MySINnerGroupSearch.OnGroupJoinCallback += (o, group) =>
             {
-                PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false, true);
+                PluginHandler.MainForm.DoThreadSafe(() =>
+                {
+                    PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false, true);
+                });
             };
             var res = gs.ShowDialog();
             

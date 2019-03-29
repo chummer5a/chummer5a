@@ -272,14 +272,18 @@ namespace ChummerHub.Client.Backend
                 HttpClientHandler httpClientHandler = new HttpClientHandler();
                 httpClientHandler.CookieContainer = AuthorizationCookieContainer;
                 client = new SINnersClient(baseUri, credentials, httpClientHandler, delegatingHandler);
-                var verresp = await client.GetVersionWithHttpMessagesAsync();
-                if (verresp.Response.StatusCode == HttpStatusCode.OK)
-                    System.Diagnostics.Trace.TraceInformation("Connected to SINners in version " + verresp.Body.AssemblyVersion + ".");
-                else if (verresp.Response.StatusCode == HttpStatusCode.Forbidden)
-                {
-                    _clientNOTworking = true;
-                    throw new System.Web.HttpException(403, "WebService disabled by Admin!");
-                }
+                var resptask = client.GetVersionWithHttpMessagesAsync();
+                resptask.ContinueWith((respresult) =>
+                  {
+                      var verresp = respresult.Result;
+                      if (verresp.Response.StatusCode == HttpStatusCode.OK)
+                          System.Diagnostics.Trace.TraceInformation("Connected to SINners in version " + verresp.Body.AssemblyVersion + ".");
+                      else if (verresp.Response.StatusCode == HttpStatusCode.Forbidden)
+                      {
+                          _clientNOTworking = true;
+                          throw new System.Web.HttpException(403, "WebService disabled by Admin!");
+                      }
+                  });
             }
             catch (Exception ex)
             {

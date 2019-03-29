@@ -52,14 +52,12 @@
             <param name="groupname">In case you want to rename the group</param>
             <returns></returns>
         </member>
-        <member name="M:ChummerHub.Controllers.V1.SINnerGroupController.PostGroup(System.String,System.Guid,System.String,System.String)">
+        <member name="M:ChummerHub.Controllers.V1.SINnerGroupController.PostGroup(ChummerHub.Models.V1.SINnerGroup,System.Guid)">
             <summary>
             Store the new group
             </summary>
-            <param name="Groupname"></param>
+            <param name="mygroup"></param>
             <param name="SinnerId"></param>
-            <param name="language"></param>
-            <param name="pwhash"></param>
             <returns></returns>
         </member>
         <member name="M:ChummerHub.Controllers.V1.SINnerGroupController.PutSINerInGroup(System.Guid,System.Guid,System.String)">

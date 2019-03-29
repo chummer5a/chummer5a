@@ -112,7 +112,7 @@ namespace Chummer
         {
             _blnLoading = true;
             // Populate the XSLT list with all of the XSL files found in the sheets directory.
-            PopulateLanguageList();
+            cboLanguage  = PopulateLanguageList(cboLanguage, _strSelectedSheet);
             PopulateXsltList();
 
             cboXSLT.SelectedValue = _strSelectedSheet;
@@ -593,7 +593,7 @@ namespace Chummer
             cboXSLT.EndUpdate();
         }
 
-        private void PopulateLanguageList()
+        public static ElasticComboBox PopulateLanguageList(ElasticComboBox myCboLanguage, string myStrSelectedSheet)
         {
             List<ListItem> lstLanguages = new List<ListItem>();
             string languageDirectoryPath = Path.Combine(Utils.GetStartupPath, "lang");
@@ -634,22 +634,23 @@ namespace Chummer
             lstLanguages.Sort(CompareListItems.CompareNames);
 
             string strDefaultSheetLanguage = GlobalOptions.Language;
-            int intLastIndexDirectorySeparator = _strSelectedSheet.LastIndexOf(Path.DirectorySeparatorChar);
-            if (intLastIndexDirectorySeparator != -1)
+            int? intLastIndexDirectorySeparator = myStrSelectedSheet?.LastIndexOf(Path.DirectorySeparatorChar);
+            if (intLastIndexDirectorySeparator.HasValue && (intLastIndexDirectorySeparator != -1))
             {
-                string strSheetLanguage = _strSelectedSheet.Substring(0, intLastIndexDirectorySeparator);
+                string strSheetLanguage = myStrSelectedSheet.Substring(0, intLastIndexDirectorySeparator.Value);
                 if (strSheetLanguage.Length == 5)
                     strDefaultSheetLanguage = strSheetLanguage;
             }
 
-            cboLanguage.BeginUpdate();
-            cboLanguage.ValueMember = "Value";
-            cboLanguage.DisplayMember = "Name";
-            cboLanguage.DataSource = lstLanguages;
-            cboLanguage.SelectedValue = strDefaultSheetLanguage;
-            if (cboLanguage.SelectedIndex == -1)
-                cboLanguage.SelectedValue = GlobalOptions.DefaultLanguage;
-            cboLanguage.EndUpdate();
+            myCboLanguage.BeginUpdate();
+            myCboLanguage.ValueMember = "Value";
+            myCboLanguage.DisplayMember = "Name";
+            myCboLanguage.DataSource = lstLanguages;
+            myCboLanguage.SelectedValue = strDefaultSheetLanguage;
+            if (myCboLanguage.SelectedIndex == -1)
+                myCboLanguage.SelectedValue = GlobalOptions.DefaultLanguage;
+            myCboLanguage.EndUpdate();
+            return myCboLanguage;
         }
         #endregion
 

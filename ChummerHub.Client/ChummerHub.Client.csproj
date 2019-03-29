@@ -96,6 +96,7 @@
     <Compile Include="Backend\TagExtractor.cs" />
     <Compile Include="Model\CharacterExtended.cs" />
     <Compile Include="Model\SearchTag.cs" />
+    <Compile Include="Model\SINnerGroup.cs" />
     <Compile Include="Model\SINnerSearchGroupMember.cs" />
     <Compile Include="Model\SINnerVisibility.cs" />
     <Compile Include="Model\Tag.cs" />
