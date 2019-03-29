@@ -438,7 +438,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 if (_blnCachedLimitFlag) return _dicCachedLimits;
-                _dicCachedLimits = Components.Where(d => d.ActiveDrugEffect.Limits.Count > 0)
+                _dicCachedLimits = Components.Where(d => d.ActiveDrugEffect?.Limits.Count > 0)
                     .SelectMany(d => d.ActiveDrugEffect.Limits)
                     .GroupBy(x => x.Key).ToDictionary(x => x.Key, x => x.Sum(y => y.Value));
                 _blnCachedLimitFlag = true;
@@ -453,7 +453,7 @@ namespace Chummer.Backend.Equipment
 	        get
 	        {
 	            if (_blnCachedQualityFlag) return _lstCachedQualities;
-	            foreach (DrugComponent d in Components)
+	            foreach (DrugComponent d in Components.Where(d => d.ActiveDrugEffect != null))
 	            {
 	                _lstCachedQualities.AddRange(d.ActiveDrugEffect.Qualities);
                 }
@@ -470,7 +470,7 @@ namespace Chummer.Backend.Equipment
 	        get
 	        {
 	            if (_blnCachedInfoFlag) return _lstCachedInfos;
-	            foreach (DrugComponent d in Components)
+	            foreach (DrugComponent d in Components.Where(d => d.ActiveDrugEffect != null))
 	            {
 	                _lstCachedInfos.AddRange(d.ActiveDrugEffect.Infos);
                 }
