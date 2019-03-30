@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<chummer>
+  <tips>
+    <tip>
+      <id>528f605f-9994-46b5-8583-cafe006507e4</id>
+      <text>Looks like you're building a street samurai. Don't you need a code of honor?</text>
+      <required>
+        <allof>
+          <attributetotal>
+            <attributes>AGI</attributes>
+            <val>6</val>
+          </attributetotal>
+        </allof>
+        <oneof>
+          <skill>
+            <name>Automatics</name>
+            <val>6</val>
+          </skill>
+        </oneof>
+      </required>
+      <forbidden>
+        <oneof>
+          <attributetotal>
+            <attributes>RES,MAG,DEP</attributes>
+            <val>1</val>
+          </attributetotal>
+          <quality>Code of Honor</quality>
+          <quality>Code of Honor: Like a Boss</quality>
+          <quality>Code of Honor: Avenging Angel</quality>
+          <quality>Code of Honor: Black Hat</quality>
+        </oneof>
+      </forbidden>
+    </tip>
+  </tips>
+</chummer>

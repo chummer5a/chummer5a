@@ -58,6 +58,7 @@ namespace Chummer
         private readonly Version _objCurrentVersion = Assembly.GetExecutingAssembly().GetName().Version;
         private readonly string _strCurrentVersion;
         public readonly PluginControl PluginLoader = new PluginControl();
+        private Chummy _mascotChummy;
 
 
         #region Control Events
@@ -107,6 +108,9 @@ namespace Chummer
 
             Program.MainForm = this;
             PluginLoader.LoadPlugins();
+
+            _mascotChummy = new Chummy();
+            _mascotChummy.Show(this);
 
             // Set the Tag for each ToolStrip item so it can be translated.
             foreach(ToolStripMenuItem objItem in menuStrip.Items.OfType<ToolStripMenuItem>())
@@ -720,6 +724,7 @@ namespace Chummer
                     if(ActiveMdiChild is CharacterShared frmCharacterShared)
                     {
                         tp.Text = frmCharacterShared.CharacterObject.CharacterName;
+                        _mascotChummy.CharacterObject = frmCharacterShared.CharacterObject;
                     }
                     else
                     {
@@ -769,6 +774,7 @@ namespace Chummer
                         if(objTabPage.Tag == objCharacterForm)
                         {
                             tabForms.SelectTab(objTabPage);
+                            _mascotChummy.CharacterObject = objCharacter;
                             return true;
                         }
                     }

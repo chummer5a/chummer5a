@@ -464,6 +464,12 @@
     <Compile Include="UI\Attributes\AttributeControl.Designer.cs">
       <DependentUpon>AttributeControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\Chummy.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Chummy.Designer.cs">
+      <DependentUpon>Chummy.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\Shared\LimitTabUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -1098,6 +1104,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Attributes\AttributeControl.resx">
       <DependentUpon>AttributeControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Chummy.resx">
+      <DependentUpon>Chummy.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Shared\LimitTabUserControl.resx">
       <DependentUpon>LimitTabUserControl.cs</DependentUpon>
@@ -2094,6 +2103,9 @@
     </Content>
     <Content Include="customdata\SR Missions 1.4 Rules\amend_vehicles.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="data\tips.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="icons\accept.png" />
     <Content Include="icons\anchor.png" />
