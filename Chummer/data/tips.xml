@@ -10,6 +10,7 @@
             <attributes>AGI</attributes>
             <val>6</val>
           </attributetotal>
+          <chargenonly />
         </allof>
         <oneof>
           <skill>
@@ -30,6 +31,115 @@
           <quality>Code of Honor: Black Hat</quality>
         </oneof>
       </forbidden>
+    </tip>
+    <tip>
+      <id>42262ca7-b414-4dde-b1b3-b7f72bc160c1</id>
+      <text>You have enough money to retire with a Low Lifestyle. Keep at it! A nuyen saved is a nuyen earned!</text>
+      <forbidden>
+        <allof>
+          <nuyen>500000</nuyen>
+        </allof>
+      </forbidden>
+      <required>
+        <allof>
+          <nuyen>200000</nuyen>
+          <careeronly />
+        </allof>
+      </required>
+    </tip>
+    <tip>
+      <id>42262ca7-b414-4dde-b1b3-b7f72bc160c1</id>
+      <text>You have enough money to retire with a Medium Lifestyle. 2.5 kids, picket fence AR overlay, loving partner. Is it really worth saving up for that next upgrade?</text>
+      <forbidden>
+        <allof>
+          <nuyen>1000000</nuyen>
+        </allof>
+      </forbidden>
+        <required>
+        <allof>
+          <nuyen>500000</nuyen>
+          <careeronly />
+        </allof>
+      </required>
+    </tip>
+    <tip>
+      <id>42262ca7-b414-4dde-b1b3-b7f72bc160c1</id>
+      <text>You have enough money to retire with a Luxury Lifestyle. Molly Millions has nothing on you!</text>
+        <required>
+        <allof>
+          <nuyen>100000000</nuyen>
+          <careeronly />
+        </allof>
+      </required>
+    </tip>
+    <tip>
+      <id>42262ca7-b414-4dde-b1b3-b7f72bc160c1</id>
+      <text>Why bother with any other weapon when you can have the Ares Alpha, the last word in automatics! This message brought to you by Ares Macrotech.</text>
+      <forbidden>
+        <oneof>
+          <weapon>Ares Alpha</weapon>
+        </oneof>
+      </forbidden>
+      <required>
+        <allof>
+          <skill>
+            <name>Automatics</name>
+            <val>6</val>
+          </skill>
+        </allof>
+      </required>
+    </tip>
+    <tip>
+      <id>42262ca7-b414-4dde-b1b3-b7f72bc160c1</id>
+      <text>You appear to be making an Alchemist. Are you sure you want to do that?</text>
+      <required>
+        <allof>
+          <skill>
+            <name>Alchemy</name>
+            <val>6</val>
+          </skill>
+        </allof>
+      </required>
+    </tip>
+    <tip>
+      <id>42262ca7-b414-4dde-b1b3-b7f72bc160c1</id>
+      <text>Looks like you've chosen to make an A.I. Are you sure you wouldn't rather be playing Eclipse Phase?</text>
+      <required>
+        <allof>
+          <metatype>A.I.</metatype>
+        </allof>
+      </required>
+    </tip>
+    <tip>
+      <id>42262ca7-b414-4dde-b1b3-b7f72bc160c1</id>
+      <text>Oni? More like horny elves!</text>
+      <required>
+        <allof>
+          <metavariant>Oni</metavariant>
+        </allof>
+      </required>
+    </tip>
+    <tip>
+      <id>42262ca7-b414-4dde-b1b3-b7f72bc160c1</id>
+      <text>Looks like you don't have any hobbies. Might I suggest competitive basket-weaving?</text>
+      <forbidden>
+        <allof>
+          <skill>
+              <type>Interest</type>
+              <val>1</val>
+          </skill>
+        </allof>
+      </forbidden>
+    </tip>
+    <tip>
+      <id>42262ca7-b414-4dde-b1b3-b7f72bc160c1</id>
+      <text>Looks like you're into some pretty fine shootin' there, Tex.</text>
+      <required>
+        <allof>
+          <quality>Sharpshooter</quality>
+          <quality>Strive For Perfection</quality>
+        </allof>
+      </required>
     </tip>
   </tips>
 </chummer>

@@ -24,7 +24,7 @@ namespace Chummer
         private readonly Pen ThickPen = new Pen(Color.Black, 3);
         readonly XPathNavigator objXmlDocument = XmlManager.Load("tips.xml").GetFastNavigator().SelectSingleNode("/chummer/tips");
         private List<string> UsedTips = new List<string>();
-
+        
         readonly ToolTip _myToolTip = new ToolTip
         {
             IsBalloon = true
@@ -40,12 +40,16 @@ namespace Chummer
 
             this.Paint += panel1_Paint;
 
-            var tmr = new Timer {Interval = 100};
-            tmr.Tick += tmr_Tick;
-            tmr.Start();
+            var tmrDraw = new Timer {Interval = 100};
+            tmrDraw.Tick += tmr_DrawTick;
+            tmrDraw.Start();
+
+            var tmrTip = new Timer { Interval = 300000 };
+            tmrTip.Tick += tmr_TipTick;
+            tmrTip.Start();
         }
         #region Event Handlers
-        void tmr_Tick(object sender, EventArgs e)
+        private void tmr_DrawTick(object sender, EventArgs e)
         {
             // See if the cursor has moved.
             Point newPos = Control.MousePosition;
@@ -56,7 +60,12 @@ namespace Chummer
             this.Invalidate();
         }
 
-        void panel1_Paint(object sender, PaintEventArgs e)
+        private void tmr_TipTick(object sender, EventArgs e)
+        {
+            ShowBalloonTip();
+        }
+
+        private void panel1_Paint(object sender, PaintEventArgs e)
         {
             DrawEyes(e.Graphics);
         }
