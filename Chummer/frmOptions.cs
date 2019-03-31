@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -852,6 +852,7 @@ namespace Chummer
                 objRegistry.SetValue("hidecharacterroster", chkHideCharacterRoster.Checked);
                 objRegistry.SetValue("createbackuponcareer", chkCreateBackupOnCareer.Checked);
                 objRegistry.SetValue("pluginsenabled", chkEnablePlugins.Checked);
+                //objRegistry.SetValue("alloweastereggs", chkAll.Checked);
 
                 //Save the Plugins-Dictionary
                 string jsonstring = Newtonsoft.Json.JsonConvert.SerializeObject(GlobalOptions.PluginsEnabledDic);
@@ -1528,25 +1529,25 @@ namespace Chummer
         {
 #if DEBUG
             string strFilePath = "Insert local file here";
-            System.Collections.Specialized.NameValueCollection Data = new System.Collections.Specialized.NameValueCollection();
+            System.Collections.Specialized.NameValueCollection data = new System.Collections.Specialized.NameValueCollection();
             string line;
             using(StreamReader sr = new StreamReader(strFilePath, Encoding.UTF8, true))
             {
                 line = sr.ReadToEnd();
             }
-            Data["api_paste_name"] = "Chummer";
-            Data["api_paste_expire_date"] = "N";
-            Data["api_paste_format"] = "xml";
-            Data["api_paste_code"] = line;
-            Data["api_dev_key"] = "7845fd372a1050899f522f2d6bab9666";
-            Data["api_option"] = "paste";
+            data["api_paste_name"] = "Chummer";
+            data["api_paste_expire_date"] = "N";
+            data["api_paste_format"] = "xml";
+            data["api_paste_code"] = line;
+            data["api_dev_key"] = "7845fd372a1050899f522f2d6bab9666";
+            data["api_option"] = "paste";
 
             using(WebClient wb = new WebClient())
             {
                 byte[] bytes;
                 try
                 {
-                    bytes = wb.UploadValues("http://pastebin.com/api/api_post.php", Data);
+                    bytes = wb.UploadValues("http://pastebin.com/api/api_post.php", data);
                 }
                 catch(WebException)
                 {
@@ -1583,27 +1584,25 @@ namespace Chummer
 
         private void chkLifeModules_CheckedChanged(object sender, EventArgs e)
         {
-            if(chkLifeModule.Checked && !_blnLoading)
+            if (!chkLifeModule.Checked || _blnLoading) return;
+            if(MessageBox.Show(LanguageManager.GetString("Tip_LifeModule_Warning", _strSelectedLanguage), Application.ProductName,
+                   MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) != DialogResult.OK)
+                chkLifeModule.Checked = false;
+            else
             {
-                if(MessageBox.Show(LanguageManager.GetString("Tip_LifeModule_Warning", _strSelectedLanguage), Application.ProductName, MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) != DialogResult.OK)
-                    chkLifeModule.Checked = false;
-                else
-                {
-                    OptionsChanged(sender, e);
-                }
+                OptionsChanged(sender, e);
             }
         }
 
         private void chkOmaeEnabled_CheckedChanged(object sender, EventArgs e)
         {
-            if(chkOmaeEnabled.Checked && !_blnLoading)
+            if (!chkOmaeEnabled.Checked || _blnLoading) return;
+            if(MessageBox.Show(LanguageManager.GetString("Tip_Omae_Warning", _strSelectedLanguage), Application.ProductName,
+                   MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) != DialogResult.OK)
+                chkOmaeEnabled.Checked = false;
+            else
             {
-                if(MessageBox.Show(LanguageManager.GetString("Tip_Omae_Warning", _strSelectedLanguage), Application.ProductName, MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) != DialogResult.OK)
-                    chkOmaeEnabled.Checked = false;
-                else
-                {
-                    OptionsChanged(sender, e);
-                }
+                OptionsChanged(sender, e);
             }
         }
 
@@ -1636,30 +1635,27 @@ namespace Chummer
             {
                 dlgSelectFolder.SelectedPath = Utils.GetStartupPath;
 
-                if(dlgSelectFolder.ShowDialog(this) == DialogResult.OK)
+                if (dlgSelectFolder.ShowDialog(this) != DialogResult.OK) return;
+                frmSelectText frmSelectCustomDirectoryName = new frmSelectText
                 {
-                    frmSelectText frmSelectCustomDirectoryName = new frmSelectText
-                    {
-                        Description = LanguageManager.GetString("String_CustomItem_SelectText", _strSelectedLanguage)
-                    };
-                    if(frmSelectCustomDirectoryName.ShowDialog(this) == DialogResult.OK)
-                    {
-                        CustomDataDirectoryInfo objNewCustomDataDirectory = new CustomDataDirectoryInfo
-                        {
-                            Name = frmSelectCustomDirectoryName.SelectedValue,
-                            Path = dlgSelectFolder.SelectedPath
-                        };
+                    Description = LanguageManager.GetString("String_CustomItem_SelectText", _strSelectedLanguage)
+                };
+                if (frmSelectCustomDirectoryName.ShowDialog(this) != DialogResult.OK) return;
+                CustomDataDirectoryInfo objNewCustomDataDirectory = new CustomDataDirectoryInfo
+                {
+                    Name = frmSelectCustomDirectoryName.SelectedValue,
+                    Path = dlgSelectFolder.SelectedPath
+                };
 
-                        if(_lstCustomDataDirectoryInfos.Any(x => x.Name == objNewCustomDataDirectory.Name))
-                        {
-                            MessageBox.Show(LanguageManager.GetString("Message_Duplicate_CustomDataDirectoryName", _strSelectedLanguage), LanguageManager.GetString("Message_Duplicate_CustomDataDirectoryName_Title", _strSelectedLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
-                        else
-                        {
-                            _lstCustomDataDirectoryInfos.Add(objNewCustomDataDirectory);
-                            PopulateCustomDataDirectoryTreeView();
-                        }
-                    }
+                if(_lstCustomDataDirectoryInfos.Any(x => x.Name == objNewCustomDataDirectory.Name))
+                {
+                    MessageBox.Show(LanguageManager.GetString("Message_Duplicate_CustomDataDirectoryName", _strSelectedLanguage),
+                        LanguageManager.GetString("Message_Duplicate_CustomDataDirectoryName_Title", _strSelectedLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                {
+                    _lstCustomDataDirectoryInfos.Add(objNewCustomDataDirectory);
+                    PopulateCustomDataDirectoryTreeView();
                 }
             }
         }
@@ -1667,74 +1663,61 @@ namespace Chummer
         private void cmdRemoveCustomDirectory_Click(object sender, EventArgs e)
         {
             TreeNode objSelectedCustomDataDirectory = treCustomDataDirectories.SelectedNode;
-            if(objSelectedCustomDataDirectory != null)
-            {
-                CustomDataDirectoryInfo objInfoToRemove = _lstCustomDataDirectoryInfos.FirstOrDefault(x => x.Name == objSelectedCustomDataDirectory.Tag.ToString());
-                if(objInfoToRemove != null)
-                {
-                    if(objInfoToRemove.Enabled)
-                        OptionsChanged(sender, e);
-                    _lstCustomDataDirectoryInfos.Remove(objInfoToRemove);
-                    PopulateCustomDataDirectoryTreeView();
-                }
-            }
+            if (objSelectedCustomDataDirectory == null) return;
+            CustomDataDirectoryInfo objInfoToRemove = _lstCustomDataDirectoryInfos.FirstOrDefault(x => x.Name == objSelectedCustomDataDirectory.Tag.ToString());
+            if (objInfoToRemove == null) return;
+            if(objInfoToRemove.Enabled)
+                OptionsChanged(sender, e);
+            _lstCustomDataDirectoryInfos.Remove(objInfoToRemove);
+            PopulateCustomDataDirectoryTreeView();
         }
 
         private void cmdRenameCustomDataDirectory_Click(object sender, EventArgs e)
         {
             TreeNode objSelectedCustomDataDirectory = treCustomDataDirectories.SelectedNode;
-            if(objSelectedCustomDataDirectory != null)
+            if (objSelectedCustomDataDirectory == null) return;
+            CustomDataDirectoryInfo objInfoToRename = _lstCustomDataDirectoryInfos.FirstOrDefault(x => x.Name == objSelectedCustomDataDirectory.Tag.ToString());
+            if (objInfoToRename == null) return;
+            frmSelectText frmSelectCustomDirectoryName = new frmSelectText
             {
-                CustomDataDirectoryInfo objInfoToRename = _lstCustomDataDirectoryInfos.FirstOrDefault(x => x.Name == objSelectedCustomDataDirectory.Tag.ToString());
-                if(objInfoToRename != null)
-                {
-                    frmSelectText frmSelectCustomDirectoryName = new frmSelectText
-                    {
-                        Description = LanguageManager.GetString("String_CustomItem_SelectText", _strSelectedLanguage)
-                    };
-                    if(frmSelectCustomDirectoryName.ShowDialog(this) == DialogResult.OK)
-                    {
-                        if(_lstCustomDataDirectoryInfos.Any(x => x.Name == frmSelectCustomDirectoryName.Name))
-                        {
-                            MessageBox.Show(LanguageManager.GetString("Message_Duplicate_CustomDataDirectoryName", _strSelectedLanguage), LanguageManager.GetString("Message_Duplicate_CustomDataDirectoryName_Title", _strSelectedLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
-                        else
-                        {
-                            objInfoToRename.Name = frmSelectCustomDirectoryName.SelectedValue;
-                            PopulateCustomDataDirectoryTreeView();
-                        }
-                    }
-                }
+                Description = LanguageManager.GetString("String_CustomItem_SelectText", _strSelectedLanguage)
+            };
+            if (frmSelectCustomDirectoryName.ShowDialog(this) != DialogResult.OK) return;
+            if (_lstCustomDataDirectoryInfos.Any(x => x.Name == frmSelectCustomDirectoryName.Name))
+            {
+                MessageBox.Show(LanguageManager.GetString("Message_Duplicate_CustomDataDirectoryName", _strSelectedLanguage),
+                    LanguageManager.GetString("Message_Duplicate_CustomDataDirectoryName_Title", _strSelectedLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else
+            {
+                objInfoToRename.Name = frmSelectCustomDirectoryName.SelectedValue;
+                PopulateCustomDataDirectoryTreeView();
             }
         }
 
         private void cmdIncreaseCustomDirectoryLoadOrder_Click(object sender, EventArgs e)
         {
             TreeNode objSelectedCustomDataDirectory = treCustomDataDirectories.SelectedNode;
-            if(objSelectedCustomDataDirectory != null)
+            if (objSelectedCustomDataDirectory == null) return;
+            CustomDataDirectoryInfo objInfoToRaise = null;
+            int intIndex = 0;
+            for(; intIndex < _lstCustomDataDirectoryInfos.Count; ++intIndex)
             {
-                CustomDataDirectoryInfo objInfoToRaise = null;
-                int intIndex = 0;
-                for(; intIndex < _lstCustomDataDirectoryInfos.Count; ++intIndex)
-                {
-                    if(_lstCustomDataDirectoryInfos.ElementAt(intIndex).Name == objSelectedCustomDataDirectory.Tag.ToString())
-                    {
-                        objInfoToRaise = _lstCustomDataDirectoryInfos.ElementAt(intIndex);
-                        break;
-                    }
-                }
-                if(objInfoToRaise != null && intIndex > 0)
-                {
-                    CustomDataDirectoryInfo objTempInfo = _lstCustomDataDirectoryInfos.ElementAt(intIndex - 1);
-                    bool blnOptionsChanged = objInfoToRaise.Enabled || objTempInfo.Enabled;
-                    _lstCustomDataDirectoryInfos[intIndex - 1] = objInfoToRaise;
-                    _lstCustomDataDirectoryInfos[intIndex] = objTempInfo;
-
-                    PopulateCustomDataDirectoryTreeView();
-                    if(blnOptionsChanged)
-                        OptionsChanged(sender, e);
-                }
+                if (_lstCustomDataDirectoryInfos.ElementAt(intIndex).Name !=
+                    objSelectedCustomDataDirectory.Tag.ToString()) continue;
+                objInfoToRaise = _lstCustomDataDirectoryInfos.ElementAt(intIndex);
+                break;
             }
+
+            if (objInfoToRaise == null || intIndex <= 0) return;
+            CustomDataDirectoryInfo objTempInfo = _lstCustomDataDirectoryInfos.ElementAt(intIndex - 1);
+            bool blnOptionsChanged = objInfoToRaise.Enabled || objTempInfo.Enabled;
+            _lstCustomDataDirectoryInfos[intIndex - 1] = objInfoToRaise;
+            _lstCustomDataDirectoryInfos[intIndex] = objTempInfo;
+
+            PopulateCustomDataDirectoryTreeView();
+            if(blnOptionsChanged)
+                OptionsChanged(sender, e);
         }
 
         private void cmdDecreaseCustomDirectoryLoadOrder_Click(object sender, EventArgs e)
@@ -1752,17 +1735,16 @@ namespace Chummer
                         break;
                     }
                 }
-                if(objInfoToLower != null && intIndex < _lstCustomDataDirectoryInfos.Count - 1)
-                {
-                    CustomDataDirectoryInfo objTempInfo = _lstCustomDataDirectoryInfos.ElementAt(intIndex + 1);
-                    bool blnOptionsChanged = objInfoToLower.Enabled || objTempInfo.Enabled;
-                    _lstCustomDataDirectoryInfos[intIndex + 1] = objInfoToLower;
-                    _lstCustomDataDirectoryInfos[intIndex] = objTempInfo;
 
-                    PopulateCustomDataDirectoryTreeView();
-                    if(blnOptionsChanged)
-                        OptionsChanged(sender, e);
-                }
+                if (objInfoToLower == null || intIndex >= _lstCustomDataDirectoryInfos.Count - 1) return;
+                CustomDataDirectoryInfo objTempInfo = _lstCustomDataDirectoryInfos.ElementAt(intIndex + 1);
+                bool blnOptionsChanged = objInfoToLower.Enabled || objTempInfo.Enabled;
+                _lstCustomDataDirectoryInfos[intIndex + 1] = objInfoToLower;
+                _lstCustomDataDirectoryInfos[intIndex] = objTempInfo;
+
+                PopulateCustomDataDirectoryTreeView();
+                if(blnOptionsChanged)
+                    OptionsChanged(sender, e);
             }
         }
 
@@ -1791,15 +1773,11 @@ namespace Chummer
         private void treCustomDataDirectories_AfterCheck(object sender, TreeViewEventArgs e)
         {
             TreeNode objNode = e.Node;
-            if(objNode != null)
-            {
-                CustomDataDirectoryInfo objInfoToRemove = _lstCustomDataDirectoryInfos.FirstOrDefault(x => x.Name == objNode.Tag.ToString());
-                if(objInfoToRemove != null)
-                {
-                    objInfoToRemove.Enabled = objNode.Checked;
-                    OptionsChanged(sender, e);
-                }
-            }
+            if (objNode == null) return;
+            CustomDataDirectoryInfo objInfoToRemove = _lstCustomDataDirectoryInfos.FirstOrDefault(x => x.Name == objNode.Tag.ToString());
+            if (objInfoToRemove == null) return;
+            objInfoToRemove.Enabled = objNode.Checked;
+            OptionsChanged(sender, e);
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -1831,30 +1809,27 @@ namespace Chummer
         private void clbPlugins_VisibleChanged(object sender, EventArgs e)
         {
             clbPlugins.Items.Clear();
-            if(Program.MainForm?.PluginLoader?.MyPlugins?.Any() == true)
+            if (Program.MainForm?.PluginLoader?.MyPlugins?.Any() != true) return;
+            foreach(var plugin in Program.MainForm.PluginLoader.MyPlugins)
             {
-                foreach(var plugin in Program.MainForm.PluginLoader.MyPlugins)
+                if(GlobalOptions.PluginsEnabledDic.TryGetValue(plugin.ToString(), out var check))
                 {
-                    bool check = false;
-                    if(GlobalOptions.PluginsEnabledDic.TryGetValue(plugin.ToString(), out check))
-                    {
-                        clbPlugins.Items.Add(plugin, check);
-                    }
-                    else
-                    {
-                        clbPlugins.Items.Add(plugin);
-                    }
+                    clbPlugins.Items.Add(plugin, check);
                 }
-                if(clbPlugins.Items.Count > 0)
+                else
                 {
-                    clbPlugins.SelectedIndex = 0;
+                    clbPlugins.Items.Add(plugin);
                 }
+            }
+            if(clbPlugins.Items.Count > 0)
+            {
+                clbPlugins.SelectedIndex = 0;
             }
         }
 
         private void clbPlugins_SelectedValueChanged(object sender, EventArgs e)
         {
-            UserControl pluginControl = (clbPlugins.SelectedItem as Plugins.IPlugin).GetOptionsControl();
+            UserControl pluginControl = (clbPlugins.SelectedItem as Plugins.IPlugin)?.GetOptionsControl();
             panelPluginOption.Controls.Clear();
             panelPluginOption.Controls.Add(pluginControl);
         }
@@ -1864,14 +1839,9 @@ namespace Chummer
             var plugin = clbPlugins.Items[e.Index];
             if(GlobalOptions.PluginsEnabledDic.ContainsKey(plugin.ToString()))
                 GlobalOptions.PluginsEnabledDic.Remove(plugin.ToString());
-            if(e.NewValue == CheckState.Checked)
-                GlobalOptions.PluginsEnabledDic.Add(plugin.ToString(), true);
-            else
-                GlobalOptions.PluginsEnabledDic.Add(plugin.ToString(), false);
+            GlobalOptions.PluginsEnabledDic.Add(plugin.ToString(), e.NewValue == CheckState.Checked);
             OptionsChanged(sender, e);
 
         }
-
-
     }
 }

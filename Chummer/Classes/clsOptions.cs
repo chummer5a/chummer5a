@@ -182,6 +182,7 @@ namespace Chummer
         private static bool _blnHideCharacterRoster;
         private static bool _blnCreateBackupOnCareer;
         private static bool _blnPluginsEnabled;
+        private static bool _blnAllowEasterEggs = true;
         private static string _strDefaultBuildMethod = DefaultBuildMethodDefaultValue;
         private static string _strDefaultGameplayOption = DefaultGameplayOptionDefaultValue;
 
@@ -415,6 +416,8 @@ namespace Chummer
 
             LoadStringFromRegistry(ref _strDefaultGameplayOption, "defaultgameplayoption");
 
+            LoadBoolFromRegistry(ref _blnAllowEasterEggs, "alloweastereggs");
+
             // Omae Settings.
             // Username.
             LoadStringFromRegistry(ref _strOmaeUserName, "omaeusername");
@@ -532,6 +535,15 @@ namespace Chummer
         {
             get => _blnPluginsEnabled;
             set => _blnPluginsEnabled = value;
+        }
+
+        /// <summary>
+        /// Should Chummer present Easter Eggs to the user?
+        /// </summary>
+        public static bool AllowEasterEggs
+        {
+            get => _blnAllowEasterEggs;
+            set => _blnAllowEasterEggs = value;
         }
 
         /// <summary>

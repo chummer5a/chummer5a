@@ -21,18 +21,16 @@ namespace Chummer
         private const int DistanceBetweenEyes = 10;
         private readonly Point _eyeballCenter = new Point(95, 15);
         private readonly Point _mouthCenter = new Point(100, 50);
-        private readonly Pen ThickPen = new Pen(Color.Black, 3);
-        readonly XPathNavigator objXmlDocument = XmlManager.Load("tips.xml").GetFastNavigator().SelectSingleNode("/chummer/tips");
-        private List<string> UsedTips = new List<string>();
-        
+        private readonly Pen _thickPen = new Pen(Color.Black, 3);
+        readonly XPathNavigator _objXmlDocument = XmlManager.Load("tips.xml").GetFastNavigator().SelectSingleNode("/chummer/tips");
+        private readonly List<string> _usedTips = new List<string>();
+        private Point _oldMousePos = new Point(-1, -1);
+        private Character _characterObject;
+
         readonly ToolTip _myToolTip = new ToolTip
         {
             IsBalloon = true
         };
-
-        // The previous mouse location.
-        private Point _oldMousePos = new Point(-1, -1);
-        private Character _characterObject;
 
         public Chummy()
         {
@@ -125,7 +123,7 @@ namespace Chummer
         {
             // Draw the outside.
             gr.FillEllipse(Brushes.White, x1, y1, wid, hgt);
-            gr.DrawEllipse(ThickPen, x1, y1, wid, hgt);
+            gr.DrawEllipse(_thickPen, x1, y1, wid, hgt);
 
             // Find the center of the eye.
             int cx = x1 + wid / 2;
@@ -153,16 +151,16 @@ namespace Chummer
 
         private string HelpfulAdvice()
         {
-            if (UsedTips.Count == objXmlDocument.Select("tip").Count)
+            if (_usedTips.Count == _objXmlDocument.Select("tip").Count)
             {
-                UsedTips.Clear();
+                _usedTips.Clear();
             }
-            foreach (XPathNavigator objXmlTip in objXmlDocument.Select("tip"))
+            foreach (XPathNavigator objXmlTip in _objXmlDocument.Select("tip"))
             {
                 var strId = objXmlTip.SelectSingleNode("id")?.Value;
-                if (string.IsNullOrEmpty(strId) || UsedTips.Contains(strId)) continue;
+                if (string.IsNullOrEmpty(strId) || _usedTips.Contains(strId)) continue;
                 if (!objXmlTip.RequirementsMet(CharacterObject)) continue;
-                UsedTips.Add(strId);
+                _usedTips.Add(strId);
                 return objXmlTip.SelectSingleNode("text")?.Value;
             }
             return string.Empty;
@@ -176,52 +174,6 @@ namespace Chummer
         {
             _myToolTip.Hide(this);
         }
-        public static void DrawRoundedRectangle(Graphics g, Color color, Rectangle rec, int radius,
-            RoundedCorners corners)
-        {
-            using (var b = new SolidBrush(color))
-            {
-                int x = rec.X;
-                int y = rec.Y;
-                int diameter = radius * 2;
-                var horiz = new Rectangle(x, y + radius, rec.Width, rec.Height - diameter);
-                var vert = new Rectangle(x + radius, y, rec.Width - diameter, rec.Height);
-
-                g.FillRectangle(b, horiz);
-                g.FillRectangle(b, vert);
-
-                if ((corners & RoundedCorners.TopLeft) == RoundedCorners.TopLeft)
-                    g.FillEllipse(b, x, y, diameter, diameter);
-                else
-                    g.FillRectangle(b, x, y, diameter, diameter);
-
-                if ((corners & RoundedCorners.TopRight) == RoundedCorners.TopRight)
-                    g.FillEllipse(b, x + rec.Width - (diameter + 1), y, diameter, diameter);
-                else
-                    g.FillRectangle(b, x + rec.Width - (diameter + 1), y, diameter, diameter);
-
-                if ((corners & RoundedCorners.BottomLeft) == RoundedCorners.BottomLeft)
-                    g.FillEllipse(b, x, y + rec.Height - (diameter + 1), diameter, diameter);
-                else
-                    g.FillRectangle(b, x, y + rec.Height - (diameter + 1), diameter, diameter);
-
-                if ((corners & RoundedCorners.BottomRight) == RoundedCorners.BottomRight)
-                    g.FillEllipse(b, x + rec.Width - (diameter + 1), y + rec.Height - (diameter + 1), diameter, diameter);
-                else
-                    g.FillRectangle(b, x + rec.Width - (diameter + 1), y + rec.Height - (diameter + 1), diameter,
-                        diameter);
-            }
-        }
-
-        public enum RoundedCorners
-        {
-            None = 0x00,
-            TopLeft = 0x02,
-            TopRight = 0x04,
-            BottomLeft = 0x08,
-            BottomRight = 0x10,
-            All = 0x1F
-        }
         #endregion
         #region Properties
 
@@ -230,7 +182,7 @@ namespace Chummer
             get => _characterObject;
             set
             {
-                UsedTips.Clear();
+                _usedTips.Clear();
                 _characterObject = value;
             }
         }

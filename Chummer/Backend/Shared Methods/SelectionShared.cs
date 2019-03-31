@@ -2190,6 +2190,18 @@ namespace Chummer
                         }
                         return objCharacter.MagicTradition.Name == strNodeInnerText;
                     }
+                case "weapon":
+                {
+                    // Character needs a specific Weapon.
+                    if (blnShowMessage)
+                    {
+                        string strTranslate = XmlManager.Load("weapons.xml").SelectSingleNode($"/chummer/traditions/tradition[name = {strNodeInnerText.CleanXPath()}]/translate")?.InnerText;
+                        strName = !string.IsNullOrEmpty(strTranslate)
+                            ? $"{Environment.NewLine}\t{strTranslate} ({LanguageManager.GetString("String_Weapon", GlobalOptions.Language)})"
+                            : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_Weapon", GlobalOptions.Language)})";
+                    }
+                    return objCharacter.Weapons.Any(w => w.Name == strNodeInnerText);
+                }
                 default:
                     Utils.BreakIfDebug();
                     break;

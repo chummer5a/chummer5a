@@ -58,7 +58,7 @@ namespace Chummer
         private readonly Version _objCurrentVersion = Assembly.GetExecutingAssembly().GetName().Version;
         private readonly string _strCurrentVersion;
         public readonly PluginControl PluginLoader = new PluginControl();
-        private Chummy _mascotChummy;
+        private readonly Chummy _mascotChummy;
 
 
         #region Control Events
@@ -108,9 +108,11 @@ namespace Chummer
 
             Program.MainForm = this;
             PluginLoader.LoadPlugins();
-
-            _mascotChummy = new Chummy();
-            _mascotChummy.Show(this);
+            if (GlobalOptions.AllowEasterEggs)
+            {
+                _mascotChummy = new Chummy();
+                _mascotChummy.Show(this);
+            }
 
             // Set the Tag for each ToolStrip item so it can be translated.
             foreach(ToolStripMenuItem objItem in menuStrip.Items.OfType<ToolStripMenuItem>())
