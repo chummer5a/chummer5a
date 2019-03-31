@@ -45,6 +45,8 @@ namespace Chummer
             var tmrTip = new Timer { Interval = 300000 };
             tmrTip.Tick += tmr_TipTick;
             tmrTip.Start();
+
+            _myToolTip.Show("Hi! I'm Chummy, the Chummer AI Assistant! I've got plenty of helpful tips and advice about your characters!".WordWrap(100), this, _mouthCenter);
         }
         #region Event Handlers
         private void tmr_DrawTick(object sender, EventArgs e)
