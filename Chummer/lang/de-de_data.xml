@@ -36861,6 +36861,60 @@
 			</spirit>
 		</spirits>
 	</chummer>
+	<chummer file="tips.xml">
+		<tips>
+			<tip>
+				<id>528f605f-9994-46b5-8583-cafe006507e4</id>
+				<text>Looks like you're building a street samurai. Don't you need a code of honor?</text>
+				<translate>Es scheint, als würden Sie einen Straßensamurai erschaffen. Brauchen Sie keinen Ehrenkodex?</translate>
+			</tip>
+			<tip>
+				<id>ccaae7df-40ba-4da9-837e-c0df92f07038</id>
+				<name>You have enough money to retire with a Low Lifestyle. Keep at it! A nuyen saved is a nuyen earned!</name>
+				<translate>Sie haben genug Geld, um sich mit einem Lebenstil der Unterschicht zurückzuziehen. Nicht aufgeben! Ein gesparter Nuyen ist ein verdienter Nuyen!</translate>
+			</tip>
+			<tip>
+				<id>ff26b01d-1aa4-45ac-8685-0d199e115d1f</id>
+				<name>You have enough money to retire with a Low Lifestyle. Keep at it! A nuyen saved is a nuyen earned!</name>
+				<translate>Sie haben genug Geld, um sich mit einem Lebenstil der Mittelschicht zurückzuziehen. Zweieinhalb Kinder, vier Wände, Virtuelle Realität, liebevoller Partner. Lohnt es sich wirklich, für mehr zu sparen?</translate>
+			</tip>
+			<tip>
+				<id>b6da9d78-024d-4516-821c-93ad8207075d</id>
+				<name>You have enough money to retire with a Luxury Lifestyle. Molly Millions has nothing on you!</name>
+				<translate>Sie haben genug Geld, um sich mit einem luxuriösen Lebensstil zurückzuziehen. Molly Millions kann Ihnen nichts anhaben!</translate>
+			</tip>
+			<tip>
+				<id>b669df07-528b-4df3-829b-54d095af1791</id>
+				<name>Why bother with any other weapon when you can have the Ares Alpha, the last word in automatics! This message brought to you by Ares Macrotech.</name>
+				<translate>Warum sich mit jeder anderen Waffe beschäftigen, wenn man die Ares Alpha haben kann, das Highend-Produkt der Automatik! Diese Nachricht wurde Ihnen von Ares Macrotech übermittelt.</translate>
+			</tip>
+			<tip>
+				<id>1e98f6d1-dfca-4dc3-9248-dd3da3589989</id>
+				<name>You appear to be making an Alchemist. Are you sure you want to do that?</name>
+				<translate>Sie scheinen ein Alchemist zu werden. Sind Sie sicher, dass Sie das tun wollen?</translate>
+			</tip>
+			<tip>
+				<id>42262ca7-b414-4dde-b1b3-b7f72bc160c1</id>
+				<name>Looks like you've chosen to make an A.I. Are you sure you wouldn't rather be playing Eclipse Phase?</name>
+				<translate>Sieht so aus, als hätten Sie sich für eine KI entschieden. Sind Sie sicher, dass Sie nicht lieber Eclipse Phase spielen möchten?</translate>
+			</tip>
+			<tip>
+				<id>8bdb4ade-46e2-4ff6-b440-d8a8955766ed</id>
+				<name>Oni? More like horny elves!</name>
+				<translate>Oni? Eher wie heiße Elfen!</translate>
+			</tip>
+			<tip>
+				<id>ab52155b-d99e-4e2e-816b-16535afc206f</id>
+				<name>Looks like you don't have any hobbies. Might I suggest competitive basket-weaving?</name>
+				<translate>Sieht so aus, als hätten Sie keine Hobbys. Darf ich ein Korbflechtwettkampf vorschlagen?</translate>
+			</tip>
+			<tip>
+				<id>4bf9379e-101a-4664-8049-7db867073943</id>
+				<name>Looks like you're into some pretty fine shootin' there, Tex.</name>
+				<translate>Sieht so aus, als wären Sie in einer ziemlich guten Lage, Tex.</translate>
+			</tip>
+		</tips>
+	</chummer>
 	<chummer file="traditions.xml">
 		<traditions>
 			<tradition>
