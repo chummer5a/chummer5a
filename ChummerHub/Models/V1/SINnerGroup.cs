@@ -39,7 +39,6 @@ namespace ChummerHub.Models.V1
 
         public SINnerGroup()
         {
-            //MySINners = new List<SINner>();
             MyGroups = new List<SINnerGroup>();
         }
 
@@ -75,31 +74,7 @@ namespace ChummerHub.Models.V1
         /// </summary>
         [MaxLength(64)]
         public string MyAdminIdentityRole { get; set; }
-
-        //public async Task<List<SINerUserRight>> GetUserRights(ApplicationDbContext context)
-        //{
-        //    List<SINerUserRight> result = new List<SINerUserRight>();
-        //    try
-        //    {
-        //        var sinners = await this.GetSinners(context);
-
-        //        foreach(var sinner in sinners)
-        //        {
-        //            var members = (from a in sinner.SINnerMetaData.Visibility.UserRights select a);
-        //            foreach(var member in members)
-        //            {
-        //                if(!result.Contains(member))
-        //                    result.Add(member);
-        //            }
-        //        }
-        //        return result;
-        //    }
-        //    catch(Exception e)
-        //    {
-        //        System.Diagnostics.Trace.TraceError(e.Message, e);
-        //        throw;
-        //    }
-        //}
+        
     }
 
     public class SINnerGroupSetting

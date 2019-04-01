@@ -438,11 +438,15 @@ namespace ChummerHub.Controllers
                                 || (member.SINnerMetaData.Visibility.IsPublic)
                                 )
                             {
+                                member.MyGroup = sin.MyGroup;
+                                member.MyGroup.MyGroups = new List<SINnerGroup>();
                                 SINnerList memberlist = new SINnerList();
                                 memberlist.SINner = member;
                                 owndSINner.SINList.Add(memberlist);
                             }
                         }
+                        sin.MyGroup.MyGroups = new List<SINnerGroup>();
+                        ;
                     }
                     list.MySINnersList.Add(owndSINner);
                 }
