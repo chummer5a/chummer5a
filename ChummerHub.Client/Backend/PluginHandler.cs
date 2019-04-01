@@ -241,24 +241,21 @@ namespace Chummer.Plugins
             {
                 if (e.Content.Contains("Log in - ChummerHub"))
                 {
-                    TreeNode node = new TreeNode("Online, but not logged in!");
-                    node.ToolTipText = "Please log in (Options -> Plugins -> Sinners (Cloud) -> Login";
-                    node.Tag = e;
+                    TreeNode node = new TreeNode("Online, but not logged in!")
+                    {
+                        ToolTipText = "Please log in (Options -> Plugins -> Sinners (Cloud) -> Login", Tag = e
+                    };
                     return new List<TreeNode>() { node };
                 }
                 else
                 {
-                    TreeNode node = new TreeNode("Error: " + e.Message);
-                    node.ToolTipText = e.ToString();
-                    node.Tag = e;
+                    TreeNode node = new TreeNode("Error: " + e.Message) {ToolTipText = e.ToString(), Tag = e};
                     return new List<TreeNode>() { node };
                 }
             }
             catch(Exception e)
             {
-                TreeNode node = new TreeNode("SINners Error: please log in");
-                node.ToolTipText = e.ToString();
-                node.Tag = e;
+                TreeNode node = new TreeNode("SINners Error: please log in") {ToolTipText = e.ToString(), Tag = e};
                 return new List<TreeNode>() { node };
             }
             

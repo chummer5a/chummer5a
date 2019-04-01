@@ -365,15 +365,30 @@ namespace ChummerHub.Client.Backend
                         });
                         return MyTreeNodeList = new List<TreeNode>() { MyOnlineTreeNode };
                     }
+                    else
+                    {
+                        string msg = "Could not load response from SINners:" + Environment.NewLine;
+                        msg += e.Message;
+                        if (e.InnerException != null)
+                        {
+                            msg += Environment.NewLine + e.InnerException.Message;
+                        }
+                        System.Diagnostics.Trace.TraceWarning(msg);
+                        PluginHandler.MainForm.DoThreadSafe(() =>
+                        {
+                            MyOnlineTreeNode.ToolTipText = msg;
+                        });
+                        return new List<TreeNode>() { MyOnlineTreeNode };
+                    }
                 }
-                
-
-                
-                if (response.Response.StatusCode == HttpStatusCode.BadRequest)
+                if (response == null || (response.Response.StatusCode == HttpStatusCode.BadRequest))
                 {
-                    string msg = "Could not load online Sinners: " + response.Response.ReasonPhrase;
-                    var content = await response.Response.Content.ReadAsStringAsync();
-                    msg += Environment.NewLine + "Content: " + content;
+                    string msg = "Could not load online Sinners: " + response?.Response.ReasonPhrase;
+                    if (response != null)
+                    {
+                        var content = await response.Response.Content.ReadAsStringAsync();
+                        msg += Environment.NewLine + "Content: " + content;
+                    }
                     System.Diagnostics.Trace.TraceWarning(msg);
                     PluginHandler.MainForm.DoThreadSafe(() =>
                     {
@@ -381,7 +396,7 @@ namespace ChummerHub.Client.Backend
                     });
                     return new List<TreeNode>() { MyOnlineTreeNode };
                 }
-                if (response == null || response.Body == null || response.Body?.SinLists == null)
+                if (response.Body?.SinLists == null)
                 {
                     return new List<TreeNode>() { MyOnlineTreeNode }; 
                 }
@@ -391,6 +406,7 @@ namespace ChummerHub.Client.Backend
                     {
                         foreach(var list in parentlist.MySINnersList)
                         {
+                            list.SiNner.DownloadedFromSINnersTime = DateTime.Now;
                             var objListNode = GetCharacterRosterTreeNodeRecursive(list, ref CharCache);
                             
                             PluginHandler.MainForm.DoThreadSafe(() =>

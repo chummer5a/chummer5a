@@ -97,6 +97,7 @@
     <Compile Include="Model\CharacterExtended.cs" />
     <Compile Include="Model\SearchTag.cs" />
     <Compile Include="Model\SINnerGroup.cs" />
+    <Compile Include="Model\SINnerSearchGroup.cs" />
     <Compile Include="Model\SINnerSearchGroupMember.cs" />
     <Compile Include="Model\SINnerVisibility.cs" />
     <Compile Include="Model\Tag.cs" />
@@ -110,6 +111,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="Model\SINner.cs" />
     <Compile Include="SINnersClient\ISINnersClient.cs" />
     <Compile Include="SINnersClient\Models\ApplicationUser.cs" />
     <Compile Include="SINnersClient\Models\ChummerHubVersion.cs" />

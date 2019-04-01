@@ -172,7 +172,6 @@ namespace ChummerHub.Client.UI
             // 
             this.tbGroupId.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.SetColumnSpan(this.tbGroupId, 2);
-            this.tbGroupId.Enabled = false;
             this.tbGroupId.Location = new System.Drawing.Point(112, 136);
             this.tbGroupId.Name = "tbGroupId";
             this.tbGroupId.Size = new System.Drawing.Size(198, 20);
