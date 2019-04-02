@@ -21,6 +21,7 @@ Data Changes:
 - Fixed incorrect spelling of Limit Modifiers on the Retractable Climbing Claws cyberware.
 - Fixed incorrect Page and Specialisation category for the Cavalier Champion. Closes #3496
 - Added a new customdata entry for German Data Changes to add Machine Pistols and Submachine Guns to Standard and Heavy Weapon Mounts.
+- Added missing side prompts to the synthetic modular full arm and leg.
 
 String Changes:
 
