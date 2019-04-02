@@ -1,9 +1,14 @@
 Future Build 206
 
+New Features:
+
+- Added a 'helpful' digital assistant, Chummy! Chummy is designed to offer tips via tooltip based on your character's content. It's designed for expansion through tips.xml, using the same forbidden/required structure as qualities. Yes, it's an April Fool's gag. I'm sorry, I thought it was cute and/or amusing. It can be toggled off by deselecting the Allow Easter Eggs option in the Global Options menu. 
 
 Application Fixes:
 
 - Slightly better implementation of the Upgrade mechanism for cyberware. Still needs work, but shouldn't improperly consume Essence anymore. 
+- Fixed an issue with cyberware that should not permit subsystems still doing so. 
+- Fixed incorrect consumption of capacity by modular limbs connecting to modular connectors. 
 
 UI Changes:
 

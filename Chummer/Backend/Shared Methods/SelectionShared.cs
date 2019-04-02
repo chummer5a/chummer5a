@@ -1970,6 +1970,13 @@ namespace Chummer
                         }
                         return strNodeInnerText == objCharacter.Metavariant;
                     }
+                case "nuyen":
+                {
+                    // Character's nuyen must be higher than or equal to the required value.
+                    if (blnShowMessage)
+                        strName = Environment.NewLine + '\t' + LanguageManager.GetString("String_Nuyen", GlobalOptions.Language) + " >= " + strNodeInnerText;
+                    return objCharacter.Nuyen >= Convert.ToInt32(strNodeInnerText);
+                }
                 case "power":
                     {
                         // Run through all of the Powers the character has and see if the current required item exists.
