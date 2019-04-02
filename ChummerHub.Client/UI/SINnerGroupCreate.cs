@@ -44,18 +44,18 @@ namespace ChummerHub.Client.UI
                 tbParentGroupId.Text = MyGroup.MyParentGroup?.ToString();
                 tbPassword.Text = "";
             }
-            tbAdminRole.Enabled = false;
-            tbGroupId.Enabled = false;
-            tbGroupname.Enabled = EditMode;
+            tbAdminRole.ReadOnly = true;
+            tbGroupId.ReadOnly = true;
+            tbGroupname.ReadOnly = !EditMode;
             cboLanguage1.Enabled = EditMode;
-            tbParentGroupId.Enabled = false;
-            tbPassword.Enabled = EditMode;
+            tbParentGroupId.ReadOnly = true;
+            tbPassword.ReadOnly = !EditMode;
 
             if (StaticUtils.UserRoles?.Contains("GroupAdmin") == true)
             {
-                tbAdminRole.Enabled = EditMode;
-                tbGroupId.Enabled = false;
-                tbParentGroupId.Enabled = EditMode;
+                tbAdminRole.ReadOnly = !EditMode;
+                tbGroupId.ReadOnly = true;
+                tbParentGroupId.ReadOnly = !EditMode;
             }
 
             this.cboLanguage1 = frmViewer.PopulateLanguageList(cboLanguage1, null);
@@ -63,12 +63,12 @@ namespace ChummerHub.Client.UI
 
             if (onlyPWHash)
             {
-                tbAdminRole.Enabled = false;
-                tbGroupId.Enabled = false;
-                tbGroupname.Enabled = false;
+                tbAdminRole.ReadOnly = true;
+                tbGroupId.ReadOnly = true;
+                tbGroupname.ReadOnly = true;
                 cboLanguage1.Enabled = false;
-                tbParentGroupId.Enabled = false;
-                tbPassword.Enabled = true;
+                tbParentGroupId.ReadOnly = true;
+                tbPassword.ReadOnly = false;
             }
 
         }
@@ -105,6 +105,14 @@ namespace ChummerHub.Client.UI
 
             bool isEnabled = !string.IsNullOrEmpty(_strSelectedLanguage) && _strSelectedLanguage != GlobalOptions.DefaultLanguage;
 
+        }
+
+        private void TbPassword_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                BOk_Click(this, new EventArgs());
+            }
         }
     }
 }

@@ -1281,6 +1281,15 @@ namespace Chummer
 
         private void PopulateSheetLanguageList()
         {
+            cboSheetLanguage.BeginUpdate();
+            cboSheetLanguage.ValueMember = "Value";
+            cboSheetLanguage.DisplayMember = "Name";
+            cboSheetLanguage.DataSource = GetSheetLanguageList();
+            cboSheetLanguage.EndUpdate();
+        }
+
+        public static List<ListItem> GetSheetLanguageList()
+        {
             HashSet<string> setLanguagesWithSheets = new HashSet<string>();
 
             // Populate the XSL list with all of the manifested XSL files found in the sheets\[language] directory.
@@ -1329,11 +1338,8 @@ namespace Chummer
 
             lstSheetLanguages.Sort(CompareListItems.CompareNames);
 
-            cboSheetLanguage.BeginUpdate();
-            cboSheetLanguage.ValueMember = "Value";
-            cboSheetLanguage.DisplayMember = "Name";
-            cboSheetLanguage.DataSource = lstSheetLanguages;
-            cboSheetLanguage.EndUpdate();
+            return lstSheetLanguages;
+
         }
 
         private void PopulateGlobalOptions()

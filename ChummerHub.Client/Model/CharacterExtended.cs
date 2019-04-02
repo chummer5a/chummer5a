@@ -22,6 +22,7 @@ namespace ChummerHub.Client.Model
         {
             MyCharacter = character;
             _MySINnerFile = new SINner();
+            _MySINnerFile.Language = GlobalOptions.Language;
             if (string.IsNullOrEmpty(fileElement))
             {
                 MySINnerFile.SiNnerMetaData = new SINnerMetaData
@@ -90,6 +91,7 @@ namespace ChummerHub.Client.Model
         public void SetSINner(SINner sinner)
         {
             _MySINnerFile = sinner;
+            _MySINnerFile.DownloadedFromSINnersTime = DateTime.Now;
         }
 
         public string ZipFilePath { get; set; }
@@ -151,6 +153,8 @@ namespace ChummerHub.Client.Model
         {
             try
             {
+                if (MySINnerFile.DownloadedFromSINnersTime > this.MyCharacter.FileLastWriteTime)
+                    return true;
                 var client = await StaticUtils.GetClient();
                 var found = await client.GetSINByIdWithHttpMessagesAsync(this.MySINnerFile.Id.Value);
                 if(found.Response.StatusCode == System.Net.HttpStatusCode.OK)

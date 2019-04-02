@@ -560,12 +560,12 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GetSearchGroups")]
         [Authorize]
-        public async Task<ActionResult<SINSearchGroupResult>> GetSearchGroups(string Groupname, string UsernameOrEmail, string SINnerName)
+        public async Task<ActionResult<SINSearchGroupResult>> GetSearchGroups(string Groupname, string UsernameOrEmail, string SINnerName, string Language)
         {
             _logger.LogTrace("GetSearchGroups: " + Groupname + "/" + UsernameOrEmail + "/" + SINnerName + ".");
             try
             {
-                return await GetSearchGroupsInternal(Groupname, UsernameOrEmail, SINnerName);
+                return await GetSearchGroupsInternal(Groupname, UsernameOrEmail, SINnerName, Language);
             }
             catch(Exception e)
             {
@@ -670,7 +670,7 @@ namespace ChummerHub.Controllers.V1
 
         }
 
-        private async Task<ActionResult<SINSearchGroupResult>> GetSearchGroupsInternal(string Groupname, string UsernameOrEmail, string sINnerName)
+        private async Task<ActionResult<SINSearchGroupResult>> GetSearchGroupsInternal(string Groupname, string UsernameOrEmail, string sINnerName, string language)
         {
             ApplicationUser user = null;
             try
@@ -678,8 +678,8 @@ namespace ChummerHub.Controllers.V1
                 if (!ModelState.IsValid)
                 {
                     var errors = ModelState.Select(x => x.Value.Errors)
-                                               .Where(y => y.Count > 0)
-                                               .ToList();
+                        .Where(y => y.Count > 0)
+                        .ToList();
                     string msg = "ModelState is invalid: ";
                     foreach (var err in errors)
                     {
@@ -688,20 +688,25 @@ namespace ChummerHub.Controllers.V1
                             msg += Environment.NewLine + "\t" + singleerr.ToString();
                         }
                     }
+
                     return BadRequest(new HubException(msg));
                 }
+
                 SINSearchGroupResult result = new SINSearchGroupResult();
-                var groupfoundseq = await(from a in _context.SINnerGroups
-                                          where a.Groupname == Groupname
-                                          select a).ToListAsync();
+                var groupfoundseq = await (from a in _context.SINnerGroups
+                    where a.Groupname.ToLowerInvariant().Contains(Groupname.ToLowerInvariant())
+                        && (a.Language == language || String.IsNullOrEmpty(language))
+                    select a.Id).ToListAsync();
                 if (!groupfoundseq.Any())
                 {
                     return NotFound(Groupname);
                 }
-                var groupid = groupfoundseq.FirstOrDefault().Id;
 
-                var range = await GetSinSearchGroupResultById(groupid);
-                result.SINGroups.Add(range);
+                foreach (var groupid in groupfoundseq)
+                {
+                    var ssg = await GetSinSearchGroupResultById(groupid);
+                    result.SINGroups.Add(ssg);
+                }
 
                 if (!String.IsNullOrEmpty(UsernameOrEmail))
                 {
