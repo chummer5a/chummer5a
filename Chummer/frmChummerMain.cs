@@ -57,7 +57,17 @@ namespace Chummer
         private readonly BackgroundWorker _workerVersionUpdateChecker = new BackgroundWorker();
         private readonly Version _objCurrentVersion = Assembly.GetExecutingAssembly().GetName().Version;
         private readonly string _strCurrentVersion;
-        public readonly PluginControl PluginLoader = new PluginControl();
+        private PluginControl _PluginLoader = null;
+        public PluginControl PluginLoader
+        {
+            get
+            {
+                if (_PluginLoader == null)
+                    _PluginLoader = new PluginControl();
+                return _PluginLoader;
+            }
+            set { _PluginLoader = value; }
+        }
         private readonly Chummy _mascotChummy;
 
 

@@ -296,22 +296,24 @@ namespace ChummerHub.Client.UI
                     if (this.MyCE.MySINnerFile.MyGroup == null)
                     {
                         this.bJoinGroup.Enabled = true;
+                        this.bCreateGroup.Text = "view group";
                         this.bJoinGroup.Text = "join group";
                     }
                     else if (((this.MyCE.MySINnerFile.MyGroup?.Id != item.Id)
                               || (this.MyCE.MySINnerFile.MyGroup.Groupname != this.tbSearchGroupname.Text))
                              && (MyCE.MySINnerFile.MyGroup.Groupname != item.Groupname))
                     {
-                        this.bCreateGroup.Enabled = false;
+                        this.bCreateGroup.Enabled = true;
+                        this.bCreateGroup.Text = "view group";
                         this.bJoinGroup.Enabled = true;
                         this.bJoinGroup.Text = "switch to group";
                     }
                     else
                     {
-                        this.bCreateGroup.Enabled = false;
+                        this.bCreateGroup.Enabled = true;
+                        this.bCreateGroup.Text = "view group";
                         this.bJoinGroup.Text = "leave group";
                     }
-
                     var members = item.MyMembers;
                     lbGroupMembers.DataSource = members;
                     lbGroupMembers.DisplayMember = "Display";
@@ -323,10 +325,12 @@ namespace ChummerHub.Client.UI
                     if (!String.IsNullOrEmpty(this.tbSearchGroupname.Text))
                     {
                         this.bCreateGroup.Enabled = true;
+                        this.bCreateGroup.Text = "create group";
                     }
                     else
                     {
                         this.bCreateGroup.Enabled = false;
+                        this.bCreateGroup.Text = "create group";
                     }
                 }
             });
@@ -582,7 +586,8 @@ namespace ChummerHub.Client.UI
 
         private void TbSearchGroupname_TextChanged(object sender, EventArgs e)
         {
-            bCreateGroup.Enabled = false;
+            bCreateGroup.Enabled = true;
+            bCreateGroup.Text = "create group";
             bJoinGroup.Enabled = false;
             
         }
