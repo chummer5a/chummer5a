@@ -1,5 +1,6 @@
 using System;
 using System.CodeDom;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -77,9 +78,23 @@ namespace ChummerHub.Client.UI
         {
             try
             {
+
+                
                 var group = new SINnerGroup();
                 group.Groupname = this.tbSearchGroupname.Text;
                 group.IsPublic = false;
+                if ((MyCE.MySINnerFile.MyGroup != null)
+                    && ((String.IsNullOrEmpty(tbSearchGroupname.Text))
+                    || (tbSearchGroupname.Text == MyCE.MySINnerFile.MyGroup?.Groupname)))
+                    group = MyCE.MySINnerFile.MyGroup;
+                if (this.lbGroupSearchResult.SelectedItem != null)
+                {
+                    SINnerSearchGroup sel = lbGroupSearchResult.SelectedItem as SINnerSearchGroup;
+                    if (sel != null)
+                    {
+                        group = new SINnerGroup(sel);
+                    }
+                }
                 frmSINnerGroupEdit ge = new frmSINnerGroupEdit(group, false);
                 var result = ge.ShowDialog(this);
                 if (result == DialogResult.OK)
@@ -88,12 +103,41 @@ namespace ChummerHub.Client.UI
                     {
                         using (new CursorWait(false, this))
                         {
-                            var a = await CreateGroup(ge.MySINnerGroupCreate.MyGroup);
-                            if (a != null)
+                            if (group == MyCE.MySINnerFile.MyGroup)
                             {
-                                MySINSearchGroupResult = await SearchForGroups(a.Groupname, null, null);
-                                if (MyParentForm?.MyParentForm != null)
-                                    await MyParentForm.MyParentForm.CheckSINnerStatus();
+                                var client = await StaticUtils.GetClient();
+                                var response = await client.PostGroupWithHttpMessagesAsync(group, MyCE.MySINnerFile.Id);
+                                if ((response.Response.StatusCode == HttpStatusCode.Accepted)
+                                    ||(response.Response.StatusCode == HttpStatusCode.Created)
+                                    || (response.Response.StatusCode == HttpStatusCode.OK)) 
+                                {
+                                    //ok
+                                }
+                                else if ((response.Response.StatusCode == HttpStatusCode.NotFound))
+                                {
+                                    var rescontent = await response.Response.Content.ReadAsStringAsync();
+                                    string msg = "StatusCode: " + response.Response.StatusCode + Environment.NewLine;
+                                    msg += rescontent;
+                                    throw new ArgumentNullException(nameof(group), msg);
+                                }
+                                else
+                                {
+                                    var rescontent = await response.Response.Content.ReadAsStringAsync();
+                                    throw new ArgumentException(rescontent);
+                                }
+                            }
+                            else
+                            {
+                                //create mode
+
+                                var a = await CreateGroup(ge.MySINnerGroupCreate.MyGroup);
+                                if (a != null)
+                                {
+                                    MySINSearchGroupResult = await SearchForGroups(a.Groupname, null, null);
+                                    if (MyParentForm?.MyParentForm != null)
+                                        await MyParentForm.MyParentForm.CheckSINnerStatus();
+                                }
+
                             }
                         }
                     }
@@ -180,7 +224,7 @@ namespace ChummerHub.Client.UI
                     if (jsonResultString?.Contains("already exists!") == true)
                     {
                         var searchgroup = await client.GetSearchGroupsWithHttpMessagesAsync(mygroup.Groupname, null, null);
-                        var id = searchgroup.Body.SinGroups.FirstOrDefault().Id;
+                        var id = searchgroup.Body as Guid?;
                         var getgroup = await client.GetGroupByIdWithHttpMessagesAsync(id);
                         MyCE.MySINnerFile.MyGroup = getgroup.Body;
                         if (OnGroupJoinCallback != null)
@@ -257,7 +301,7 @@ namespace ChummerHub.Client.UI
                 var response = await client.GetSearchGroupsWithHttpMessagesAsync(groupname, userName, sinnername);
                 if ((response.Response.StatusCode == HttpStatusCode.OK))
                 {
-                    return response.Body;
+                    return (SINSearchGroupResult)response.Body;
                 }
                 else if ((response.Response.StatusCode == HttpStatusCode.NotFound))
                 {
@@ -555,8 +599,11 @@ namespace ChummerHub.Client.UI
                         {
                             MySINSearchGroupResult = null;
                             if (String.IsNullOrEmpty(this.tbSearchGroupname.Text))
-                                MySINSearchGroupResult =
-                                    await SearchForGroups(MyCE.MySINnerFile.MyGroup.Groupname, null, null);
+                            {
+                                var temp = new SINSearchGroupResult(MyCE.MySINnerFile.MyGroup);
+                                MySINSearchGroupResult = temp;
+
+                            }
                             else
                             {
                                 MySINSearchGroupResult =

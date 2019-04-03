@@ -44,12 +44,14 @@ namespace ChummerHub.Client.UI
             this.bOk = new System.Windows.Forms.Button();
             this.cboLanguage1 = new Chummer.ElasticComboBox();
             this.imgLanguageFlag = new System.Windows.Forms.PictureBox();
+            this.cbIsPublic = new System.Windows.Forms.CheckBox();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imgLanguageFlag)).BeginInit();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
             // 
+            this.tableLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tableLayoutPanel1.ColumnCount = 3;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 10F));
@@ -65,21 +67,24 @@ namespace ChummerHub.Client.UI
             this.tableLayoutPanel1.Controls.Add(this.label6, 0, 5);
             this.tableLayoutPanel1.Controls.Add(this.tbGroupId, 1, 5);
             this.tableLayoutPanel1.Controls.Add(this.label1, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.bOk, 0, 6);
+            this.tableLayoutPanel1.Controls.Add(this.bOk, 0, 7);
             this.tableLayoutPanel1.Controls.Add(this.cboLanguage1, 2, 1);
             this.tableLayoutPanel1.Controls.Add(this.imgLanguageFlag, 1, 1);
+            this.tableLayoutPanel1.Controls.Add(this.cbIsPublic, 1, 6);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
+            this.tableLayoutPanel1.MinimumSize = new System.Drawing.Size(350, 200);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 7;
+            this.tableLayoutPanel1.RowCount = 8;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(313, 199);
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(389, 238);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // label2
@@ -126,36 +131,36 @@ namespace ChummerHub.Client.UI
             // 
             this.tbGroupname.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.SetColumnSpan(this.tbGroupname, 2);
-            this.tbGroupname.Location = new System.Drawing.Point(112, 3);
+            this.tbGroupname.Location = new System.Drawing.Point(139, 3);
             this.tbGroupname.Name = "tbGroupname";
-            this.tbGroupname.Size = new System.Drawing.Size(198, 20);
+            this.tbGroupname.Size = new System.Drawing.Size(247, 20);
             this.tbGroupname.TabIndex = 5;
             // 
             // tbAdminRole
             // 
             this.tbAdminRole.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.SetColumnSpan(this.tbAdminRole, 2);
-            this.tbAdminRole.Location = new System.Drawing.Point(112, 58);
+            this.tbAdminRole.Location = new System.Drawing.Point(139, 58);
             this.tbAdminRole.Name = "tbAdminRole";
-            this.tbAdminRole.Size = new System.Drawing.Size(198, 20);
+            this.tbAdminRole.Size = new System.Drawing.Size(247, 20);
             this.tbAdminRole.TabIndex = 7;
             // 
             // tbPassword
             // 
             this.tbPassword.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.SetColumnSpan(this.tbPassword, 2);
-            this.tbPassword.Location = new System.Drawing.Point(112, 84);
+            this.tbPassword.Location = new System.Drawing.Point(139, 84);
             this.tbPassword.Name = "tbPassword";
-            this.tbPassword.Size = new System.Drawing.Size(198, 20);
+            this.tbPassword.Size = new System.Drawing.Size(247, 20);
             this.tbPassword.TabIndex = 8;
             // 
             // tbParentGroupId
             // 
             this.tbParentGroupId.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.SetColumnSpan(this.tbParentGroupId, 2);
-            this.tbParentGroupId.Location = new System.Drawing.Point(112, 110);
+            this.tbParentGroupId.Location = new System.Drawing.Point(139, 110);
             this.tbParentGroupId.Name = "tbParentGroupId";
-            this.tbParentGroupId.Size = new System.Drawing.Size(198, 20);
+            this.tbParentGroupId.Size = new System.Drawing.Size(247, 20);
             this.tbParentGroupId.TabIndex = 9;
             // 
             // label6
@@ -172,9 +177,9 @@ namespace ChummerHub.Client.UI
             // 
             this.tbGroupId.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.SetColumnSpan(this.tbGroupId, 2);
-            this.tbGroupId.Location = new System.Drawing.Point(112, 136);
+            this.tbGroupId.Location = new System.Drawing.Point(139, 136);
             this.tbGroupId.Name = "tbGroupId";
-            this.tbGroupId.Size = new System.Drawing.Size(198, 20);
+            this.tbGroupId.Size = new System.Drawing.Size(247, 20);
             this.tbGroupId.TabIndex = 11;
             // 
             // label1
@@ -190,11 +195,14 @@ namespace ChummerHub.Client.UI
             // bOk
             // 
             this.bOk.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.bOk.AutoSize = true;
+            this.bOk.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tableLayoutPanel1.SetColumnSpan(this.bOk, 3);
             this.bOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.bOk.Location = new System.Drawing.Point(119, 167);
+            this.bOk.Location = new System.Drawing.Point(149, 202);
             this.bOk.Name = "bOk";
-            this.bOk.Size = new System.Drawing.Size(75, 23);
+            this.bOk.Padding = new System.Windows.Forms.Padding(30, 0, 30, 0);
+            this.bOk.Size = new System.Drawing.Size(91, 23);
             this.bOk.TabIndex = 12;
             this.bOk.Text = "Ok";
             this.bOk.UseVisualStyleBackColor = true;
@@ -204,9 +212,9 @@ namespace ChummerHub.Client.UI
             // 
             this.cboLanguage1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cboLanguage1.FormattingEnabled = true;
-            this.cboLanguage1.Location = new System.Drawing.Point(143, 29);
+            this.cboLanguage1.Location = new System.Drawing.Point(177, 29);
             this.cboLanguage1.Name = "cboLanguage1";
-            this.cboLanguage1.Size = new System.Drawing.Size(167, 21);
+            this.cboLanguage1.Size = new System.Drawing.Size(209, 21);
             this.cboLanguage1.TabIndex = 13;
             this.cboLanguage1.TooltipText = "";
             this.cboLanguage1.SelectedIndexChanged += new System.EventHandler(this.CboLanguage1_SelectedIndexChanged_1);
@@ -216,12 +224,24 @@ namespace ChummerHub.Client.UI
             this.imgLanguageFlag.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.imgLanguageFlag.Location = new System.Drawing.Point(112, 29);
+            this.imgLanguageFlag.Location = new System.Drawing.Point(139, 29);
             this.imgLanguageFlag.Name = "imgLanguageFlag";
-            this.imgLanguageFlag.Size = new System.Drawing.Size(25, 23);
+            this.imgLanguageFlag.Size = new System.Drawing.Size(32, 23);
             this.imgLanguageFlag.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.imgLanguageFlag.TabIndex = 50;
             this.imgLanguageFlag.TabStop = false;
+            // 
+            // cbIsPublic
+            // 
+            this.cbIsPublic.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.cbIsPublic.AutoSize = true;
+            this.tableLayoutPanel1.SetColumnSpan(this.cbIsPublic, 2);
+            this.cbIsPublic.Location = new System.Drawing.Point(139, 165);
+            this.cbIsPublic.Name = "cbIsPublic";
+            this.cbIsPublic.Size = new System.Drawing.Size(66, 17);
+            this.cbIsPublic.TabIndex = 51;
+            this.cbIsPublic.Text = "Is Public";
+            this.cbIsPublic.UseVisualStyleBackColor = true;
             // 
             // SINnerGroupCreate
             // 
@@ -229,7 +249,7 @@ namespace ChummerHub.Client.UI
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.tableLayoutPanel1);
             this.Name = "SINnerGroupCreate";
-            this.Size = new System.Drawing.Size(313, 199);
+            this.Size = new System.Drawing.Size(389, 238);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imgLanguageFlag)).EndInit();
@@ -254,5 +274,6 @@ namespace ChummerHub.Client.UI
         private System.Windows.Forms.Button bOk;
         private ElasticComboBox cboLanguage1;
         private System.Windows.Forms.PictureBox imgLanguageFlag;
+        private System.Windows.Forms.CheckBox cbIsPublic;
     }
 }

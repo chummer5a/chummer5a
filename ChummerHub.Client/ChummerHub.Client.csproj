@@ -100,6 +100,7 @@
     <Compile Include="Model\SINnerSearchGroup.cs" />
     <Compile Include="Model\SINnerSearchGroupMember.cs" />
     <Compile Include="Model\SINnerVisibility.cs" />
+    <Compile Include="Model\SINSearchGroupResult.cs" />
     <Compile Include="Model\Tag.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

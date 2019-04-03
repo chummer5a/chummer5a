@@ -789,7 +789,8 @@ namespace Chummer
                         if(objTabPage.Tag == objCharacterForm)
                         {
                             tabForms.SelectTab(objTabPage);
-                            _mascotChummy.CharacterObject = objCharacter;
+                            if (_mascotChummy != null)
+                                _mascotChummy.CharacterObject = objCharacter;
                             return true;
                         }
                     }

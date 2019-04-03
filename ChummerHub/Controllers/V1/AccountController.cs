@@ -440,8 +440,10 @@ namespace ChummerHub.Controllers
                             {
                                 member.MyGroup = sin.MyGroup;
                                 member.MyGroup.MyGroups = new List<SINnerGroup>();
-                                SINnerList memberlist = new SINnerList();
-                                memberlist.SINner = member;
+                                SINnerList memberlist = new SINnerList
+                                {
+                                    SINner = member
+                                };
                                 owndSINner.SINList.Add(memberlist);
                             }
                         }

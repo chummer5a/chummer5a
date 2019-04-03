@@ -493,9 +493,9 @@ namespace SINners
             /// </param>
             /// <param name='sinnerId'>
             /// </param>
-            public static void PostGroup(this ISINnersClient operations, SINnerGroup mygroup = default(SINnerGroup), Guid? sinnerId = default(Guid?))
+            public static object PostGroup(this ISINnersClient operations, SINnerGroup mygroup = default(SINnerGroup), Guid? sinnerId = default(Guid?))
             {
-                Task.Factory.StartNew(s => ((ISINnersClient)s).PostGroupAsync(mygroup, sinnerId), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
+                return Task.Factory.StartNew(s => ((ISINnersClient)s).PostGroupAsync(mygroup, sinnerId), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
             }
 
             /// <summary>
@@ -511,9 +511,12 @@ namespace SINners
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task PostGroupAsync(this ISINnersClient operations, SINnerGroup mygroup = default(SINnerGroup), Guid? sinnerId = default(Guid?), CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task<object> PostGroupAsync(this ISINnersClient operations, SINnerGroup mygroup = default(SINnerGroup), Guid? sinnerId = default(Guid?), CancellationToken cancellationToken = default(CancellationToken))
             {
-                await operations.PostGroupWithHttpMessagesAsync(mygroup, sinnerId, null, cancellationToken).ConfigureAwait(false);
+                using (var _result = await operations.PostGroupWithHttpMessagesAsync(mygroup, sinnerId, null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Body;
+                }
             }
 
             /// <summary>
@@ -528,7 +531,7 @@ namespace SINners
             /// </param>
             /// <param name='pwhash'>
             /// </param>
-            public static SINner PutSINerInGroup(this ISINnersClient operations, Guid? groupId = default(Guid?), Guid? sinnerId = default(Guid?), string pwhash = default(string))
+            public static object PutSINerInGroup(this ISINnersClient operations, Guid? groupId = default(Guid?), Guid? sinnerId = default(Guid?), string pwhash = default(string))
             {
                 return Task.Factory.StartNew(s => ((ISINnersClient)s).PutSINerInGroupAsync(groupId, sinnerId, pwhash), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
             }
@@ -548,7 +551,7 @@ namespace SINners
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task<SINner> PutSINerInGroupAsync(this ISINnersClient operations, Guid? groupId = default(Guid?), Guid? sinnerId = default(Guid?), string pwhash = default(string), CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task<object> PutSINerInGroupAsync(this ISINnersClient operations, Guid? groupId = default(Guid?), Guid? sinnerId = default(Guid?), string pwhash = default(string), CancellationToken cancellationToken = default(CancellationToken))
             {
                 using (var _result = await operations.PutSINerInGroupWithHttpMessagesAsync(groupId, sinnerId, pwhash, null, cancellationToken).ConfigureAwait(false))
                 {
@@ -600,9 +603,11 @@ namespace SINners
             /// </param>
             /// <param name='sINnerName'>
             /// </param>
-            public static SINSearchGroupResult GetSearchGroups(this ISINnersClient operations, string groupname = default(string), string usernameOrEmail = default(string), string sINnerName = default(string))
+            /// <param name='language'>
+            /// </param>
+            public static object GetSearchGroups(this ISINnersClient operations, string groupname = default(string), string usernameOrEmail = default(string), string sINnerName = default(string), string language = default(string))
             {
-                return Task.Factory.StartNew(s => ((ISINnersClient)s).GetSearchGroupsAsync(groupname, usernameOrEmail, sINnerName), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
+                return Task.Factory.StartNew(s => ((ISINnersClient)s).GetSearchGroupsAsync(groupname, usernameOrEmail, sINnerName, language), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
             }
 
             /// <summary>
@@ -617,12 +622,14 @@ namespace SINners
             /// </param>
             /// <param name='sINnerName'>
             /// </param>
+            /// <param name='language'>
+            /// </param>
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task<SINSearchGroupResult> GetSearchGroupsAsync(this ISINnersClient operations, string groupname = default(string), string usernameOrEmail = default(string), string sINnerName = default(string), CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task<object> GetSearchGroupsAsync(this ISINnersClient operations, string groupname = default(string), string usernameOrEmail = default(string), string sINnerName = default(string), string language = default(string), CancellationToken cancellationToken = default(CancellationToken))
             {
-                using (var _result = await operations.GetSearchGroupsWithHttpMessagesAsync(groupname, usernameOrEmail, sINnerName, null, cancellationToken).ConfigureAwait(false))
+                using (var _result = await operations.GetSearchGroupsWithHttpMessagesAsync(groupname, usernameOrEmail, sINnerName, language, null, cancellationToken).ConfigureAwait(false))
                 {
                     return _result.Body;
                 }
