@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -5992,7 +5992,7 @@ namespace Chummer
         private void tsCyberwareAddAsPlugin_Click(object sender, EventArgs e)
         {
             // Make sure a parent items is selected, then open the Select Cyberware window.
-            if (!(treCyberware.SelectedNode?.Tag is Cyberware objCyberware))
+            if (!(treCyberware.SelectedNode?.Tag is Cyberware objCyberware && !string.IsNullOrWhiteSpace(objCyberware?.AllowedSubsystems)))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectCyberware", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectCyberware", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -6008,7 +6008,7 @@ namespace Chummer
         private void tsVehicleCyberwareAddAsPlugin_Click(object sender, EventArgs e)
         {
             // Make sure a parent items is selected, then open the Select Cyberware window.
-            if (!(treVehicles.SelectedNode?.Tag is Cyberware objCyberware))
+            if (!(treVehicles.SelectedNode?.Tag is Cyberware objCyberware && !string.IsNullOrWhiteSpace(objCyberware?.AllowedSubsystems)))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectCyberware", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectCyberware", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;

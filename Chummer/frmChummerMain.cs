@@ -736,7 +736,10 @@ namespace Chummer
                     if(ActiveMdiChild is CharacterShared frmCharacterShared)
                     {
                         tp.Text = frmCharacterShared.CharacterObject.CharacterName;
-                        _mascotChummy.CharacterObject = frmCharacterShared.CharacterObject;
+                        if (GlobalOptions.AllowEasterEggs && _mascotChummy != null)
+                        {
+                            _mascotChummy.CharacterObject = frmCharacterShared.CharacterObject;
+                        }
                     }
                     else
                     {
