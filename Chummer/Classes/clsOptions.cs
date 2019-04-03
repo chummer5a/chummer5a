@@ -182,7 +182,7 @@ namespace Chummer
         private static bool _blnHideCharacterRoster;
         private static bool _blnCreateBackupOnCareer;
         private static bool _blnPluginsEnabled;
-        private static bool _blnAllowEasterEggs = true;
+        private static bool _blnAllowEasterEggs;
         private static string _strDefaultBuildMethod = DefaultBuildMethodDefaultValue;
         private static string _strDefaultGameplayOption = DefaultGameplayOptionDefaultValue;
 
