@@ -1805,11 +1805,13 @@ namespace Chummer
             {
                 if(!tabOptions.TabPages.Contains(tabPlugins))
                     tabOptions.TabPages.Add(tabPlugins);
+                Program.MainForm.PluginLoader.LoadPlugins();
             }
             else
             {
                 if(tabOptions.TabPages.Contains(tabPlugins))
                     tabOptions.TabPages.Remove(tabPlugins);
+                Program.MainForm.PluginLoader = null;
             }
         }
 

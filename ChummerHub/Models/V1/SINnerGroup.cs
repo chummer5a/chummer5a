@@ -49,7 +49,10 @@ namespace ChummerHub.Models.V1
             try
             {
                 var groupmembers = await (from a in context.SINners
-                                   where a.MyGroup.Id == this.Id
+                            .Include(a => a.MyGroup)
+                            .Include(a => a.SINnerMetaData)
+                            .Include(a => a.SINnerMetaData.Visibility)
+                             where a.MyGroup.Id == this.Id
                                          && this.Id != null
                                          && ((a.SINnerMetaData.Visibility.IsGroupVisible == true)
                                          || (a.SINnerMetaData.Visibility.IsPublic == true))

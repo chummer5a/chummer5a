@@ -172,10 +172,17 @@ namespace ChummerHub.Controllers.V1
                 {
                     return BadRequest(ModelState);
                 }
+                var user = await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
+                if (user == null)
+                {
+                    return BadRequest("Could not find user: " + User.Identity.Name);
+                }
 
                 var sin = await _context.SINners
                     .Include(a => a.SINnerMetaData.Visibility.UserRights)
+                    .Include( a => a.MyGroup)
                     .Include(b => b.MyGroup.MySettings)
+                    .Where(a => a.Id == id).Take(1)
                     .FirstOrDefaultAsync(a => a.Id == id);
                 if(sin == null)
                 {
@@ -185,11 +192,7 @@ namespace ChummerHub.Controllers.V1
                 if(sin.SINnerMetaData.Visibility.IsPublic == true)
                     return Ok(sin);
 
-                var user = await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
-                if(user == null)
-                {
-                    return BadRequest("Could not find user: " + User.Identity.Name);
-                }
+              
                 var list = (from a in sin.SINnerMetaData.Visibility.UserRights where a.EMail.ToUpperInvariant() == user.NormalizedEmail select a);
                 if(list.Any())
                     return Ok(sin);
