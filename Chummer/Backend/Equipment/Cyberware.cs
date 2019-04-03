@@ -3148,14 +3148,14 @@ namespace Chummer.Backend.Equipment
                     // Run through its Children and deduct the Capacity costs.
                     foreach (Cyberware objChildCyberware in Children)
                     {
-                        if (objChildCyberware.ParentID == InternalId)
-                        {
-                            continue;
-                        }
+                        // Children that are built into the parent 
+                        if (objChildCyberware.PlugsIntoModularMount == HasModularMount ||
+                            objChildCyberware.ParentID == InternalId) continue;
                         string strCapacity = objChildCyberware.CalculatedCapacity;
                         int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
                         if (intPos != -1)
-                            strCapacity = strCapacity.Substring(intPos + 2, strCapacity.LastIndexOf(']') - intPos - 2);
+                            strCapacity = strCapacity.Substring(intPos + 2,
+                                strCapacity.LastIndexOf(']') - intPos - 2);
                         else if (strCapacity.StartsWith('['))
                             strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
                         if (strCapacity == "*")
@@ -3190,10 +3190,8 @@ namespace Chummer.Backend.Equipment
                     // Run through its Children and deduct the Capacity costs.
                     foreach (Cyberware objChildCyberware in Children)
                     {
-                        if (objChildCyberware.ParentID == InternalId)
-                        {
-                            continue;
-                        }
+                        if (objChildCyberware.PlugsIntoModularMount == HasModularMount ||
+                            objChildCyberware.ParentID == InternalId) continue;
                         string strCapacity = objChildCyberware.CalculatedCapacity;
                         int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
                         if (intPos != -1)

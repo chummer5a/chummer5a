@@ -4071,6 +4071,7 @@
         <category>Headware</category>
         <category>Nanocybernetics</category>
       </allowsubsystems>
+      <selectside />
       <bonus>
         <conditionmonitor>
           <physical>1</physical>
@@ -4102,6 +4103,7 @@
         <category>Headware</category>
         <category>Nanocybernetics</category>
       </allowsubsystems>
+      <selectside />
       <bonus>
         <conditionmonitor>
           <physical>1</physical>
