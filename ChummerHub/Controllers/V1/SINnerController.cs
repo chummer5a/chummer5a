@@ -348,7 +348,7 @@ namespace ChummerHub.Controllers.V1
                     if (sinner.Id.ToString() == "string")
                         sinner.Id = Guid.Empty;
 
-                    if(String.IsNullOrEmpty(sinner.JsonSummary))
+                    if(String.IsNullOrEmpty(sinner.MyExtendedAttributes.JsonSummary))
                         return BadRequest("sinner " + sinner.Id +": JsonSummary == null");
 
                     if (sinner.SINnerMetaData.Visibility.UserRights.Any() == false)

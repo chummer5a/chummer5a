@@ -595,44 +595,6 @@ namespace Chummer
 
         public static ElasticComboBox PopulateLanguageList(ElasticComboBox myCboLanguage, string myStrSelectedSheet)
         {
-            List<ListItem> lstLanguages = new List<ListItem>();
-            string languageDirectoryPath = Path.Combine(Utils.GetStartupPath, "lang");
-            string[] languageFilePaths = Directory.GetFiles(languageDirectoryPath, "*.xml");
-
-            foreach (string filePath in languageFilePaths)
-            {
-                XmlDocument xmlDocument = new XmlDocument();
-
-                try
-                {
-                    using (StreamReader objStreamReader = new StreamReader(filePath, Encoding.UTF8, true))
-                    {
-                        xmlDocument.Load(objStreamReader);
-                    }
-                }
-                catch (IOException)
-                {
-                    continue;
-                }
-                catch (XmlException)
-                {
-                    continue;
-                }
-
-                XmlNode node = xmlDocument.SelectSingleNode("/chummer/name");
-
-                if (node == null)
-                    continue;
-
-                string strLanguageCode = Path.GetFileNameWithoutExtension(filePath);
-                if (GetXslFilesFromLocalDirectory(strLanguageCode).Count > 0)
-                {
-                    lstLanguages.Add(new ListItem(strLanguageCode, node.InnerText));
-                }
-            }
-
-            lstLanguages.Sort(CompareListItems.CompareNames);
-
             string strDefaultSheetLanguage = GlobalOptions.Language;
             int? intLastIndexDirectorySeparator = myStrSelectedSheet?.LastIndexOf(Path.DirectorySeparatorChar);
             if (intLastIndexDirectorySeparator.HasValue && (intLastIndexDirectorySeparator != -1))
@@ -645,13 +607,64 @@ namespace Chummer
             myCboLanguage.BeginUpdate();
             myCboLanguage.ValueMember = "Value";
             myCboLanguage.DisplayMember = "Name";
-            myCboLanguage.DataSource = lstLanguages;
+            myCboLanguage.DataSource = LstLanguages;
             myCboLanguage.SelectedValue = strDefaultSheetLanguage;
             if (myCboLanguage.SelectedIndex == -1)
                 myCboLanguage.SelectedValue = GlobalOptions.DefaultLanguage;
             myCboLanguage.EndUpdate();
             return myCboLanguage;
         }
+
+        private static List<ListItem> _lstLanguages = null;
+
+        public static List<ListItem> LstLanguages
+        {
+            get
+            {
+                if (_lstLanguages == null)
+                {
+                    _lstLanguages = new List<ListItem>();
+                    string languageDirectoryPath = Path.Combine(Utils.GetStartupPath, "lang");
+                    string[] languageFilePaths = Directory.GetFiles(languageDirectoryPath, "*.xml");
+
+                    foreach (string filePath in languageFilePaths)
+                    {
+                        XmlDocument xmlDocument = new XmlDocument();
+
+                        try
+                        {
+                            using (StreamReader objStreamReader = new StreamReader(filePath, Encoding.UTF8, true))
+                            {
+                                xmlDocument.Load(objStreamReader);
+                            }
+                        }
+                        catch (IOException)
+                        {
+                            continue;
+                        }
+                        catch (XmlException)
+                        {
+                            continue;
+                        }
+
+                        XmlNode node = xmlDocument.SelectSingleNode("/chummer/name");
+
+                        if (node == null)
+                            continue;
+
+                        string strLanguageCode = Path.GetFileNameWithoutExtension(filePath);
+                        if (GetXslFilesFromLocalDirectory(strLanguageCode).Count > 0)
+                        {
+                            _lstLanguages.Add(new ListItem(strLanguageCode, node.InnerText));
+                        }
+                    }
+                    _lstLanguages.Sort(CompareListItems.CompareNames);
+                }
+
+                return _lstLanguages;
+            }
+        }
+
         #endregion
 
         #region Properties

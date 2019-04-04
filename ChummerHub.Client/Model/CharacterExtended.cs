@@ -21,8 +21,12 @@ namespace ChummerHub.Client.Model
         public CharacterExtended(Character character, string fileElement = null)
         {
             MyCharacter = character;
-            _MySINnerFile = new SINner();
-            _MySINnerFile.Language = GlobalOptions.Language;
+            _MySINnerFile = new SINner
+            {
+                MyExtendedAttributes = new SINnerExtended(),
+                SiNnerMetaData = new SINnerMetaData(),
+                Language = GlobalOptions.Language
+            };
             if (string.IsNullOrEmpty(fileElement))
             {
                 MySINnerFile.SiNnerMetaData = new SINnerMetaData
@@ -69,7 +73,7 @@ namespace ChummerHub.Client.Model
                 MySINnerIds.Add(MyCharacter.Alias, MySINnerFile.Id.Value);
                 MySINnerIds = MySINnerIds; //Save it!
             }
-            this.MySINnerFile.JsonSummary = JsonConvert.SerializeObject(cache);
+            this.MySINnerFile.MyExtendedAttributes.JsonSummary = JsonConvert.SerializeObject(cache);
         }
 
         public CharacterExtended(Character character, string fileElement = null, SINner mySINnerLoading = null) : this(character, fileElement)
@@ -304,7 +308,7 @@ namespace ChummerHub.Client.Model
             }
 
             var summary = new frmCharacterRoster.CharacterCache(MyCharacter.FileName);
-            MySINnerFile.JsonSummary = JsonConvert.SerializeObject(summary);
+            MySINnerFile.MyExtendedAttributes.JsonSummary = JsonConvert.SerializeObject(summary);
             MySINnerFile.LastChange = MyCharacter.FileLastWriteTime;
             var tempfile = Path.Combine(tempDir, summary.FileName);
             if (!File.Exists(tempfile))

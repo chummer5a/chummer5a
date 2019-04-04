@@ -68,9 +68,11 @@ namespace ChummerHub.Client.Backend
                 {
                     using (new CursorWait(false))
                     {
-                        var client = StaticUtils.GetClient().Result;
-                        var result = client.GetRolesAsync().Result;
-                        _userRoles = result.ToList();
+                        //just wait until the task from the startup finishes...
+                        while (_userRoles == null)
+                        {
+                            System.Threading.Thread.SpinWait(100);
+                        }
                     }
                 }
                 return _userRoles;
@@ -451,9 +453,9 @@ namespace ChummerHub.Client.Backend
         private static TreeNode GetCharacterRosterTreeNodeRecursive(SINnerList list, ref ConcurrentDictionary<string, CharacterCache> CharCache)
         {
             var sinner = list.SiNner;
-            if(String.IsNullOrEmpty(sinner?.JsonSummary))
+            if(String.IsNullOrEmpty(sinner?.MyExtendedAttributes?.JsonSummary))
                 return null; ;
-            CharacterCache objCache = Newtonsoft.Json.JsonConvert.DeserializeObject<CharacterCache>(sinner.JsonSummary);
+            CharacterCache objCache = Newtonsoft.Json.JsonConvert.DeserializeObject<CharacterCache>(sinner.MyExtendedAttributes.JsonSummary);
             SetEventHandlers(sinner, objCache);
             TreeNode objListNode = new TreeNode
             {
