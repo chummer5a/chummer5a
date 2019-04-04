@@ -29,13 +29,18 @@ namespace ChummerHub.Models.V1
         public SINnerSearchGroup()
         {
             MyMembers = new List<SINnerSearchGroupMember>();
+            this.MyGroups = new List<SINnerGroup>();
         }
 
         public SINnerSearchGroup(SINnerGroup groupbyname)
         {
-            this.IsPublic = groupbyname.IsPublic;
-            this.Groupname = groupbyname.Groupname;
+            this.MyParentGroupId = groupbyname?.MyParentGroupId;
+            this.Id = groupbyname?.Id;
+            if (groupbyname != null)
+                this.IsPublic = groupbyname.IsPublic;
+            this.Groupname = groupbyname?.Groupname;
             MyMembers = new List<SINnerSearchGroupMember>();
+            this.MyGroups = new List<SINnerGroup>();
         }
         
     }

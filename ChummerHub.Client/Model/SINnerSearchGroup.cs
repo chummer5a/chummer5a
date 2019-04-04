@@ -10,10 +10,28 @@ namespace SINners.Models
 {
     public partial class SINnerSearchGroup
     {
+
+        public SINnerSearchGroup(SINnerGroup myGroup)
+        {
+            MyMembers = new List<SINnerSearchGroupMember>();
+            
+            Id = myGroup.Id;
+            MyParentGroupId = myGroup.MyParentGroupId;
+            IsPublic = myGroup.IsPublic;
+            MySettings = myGroup.MySettings;
+            Groupname = myGroup.Groupname;
+            //PasswordHash = myGroup.PasswordHash;
+            Language = myGroup.Language;
+            MyGroups = myGroup.MyGroups;
+            MyParentGroup = myGroup.MyParentGroup;
+            MyAdminIdentityRole = myGroup.MyAdminIdentityRole;
+        }
+
         public override string ToString()
         {
             return GroupDisplayname;
         }
+
         public string GroupDisplayname
         {
             get

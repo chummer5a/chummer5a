@@ -29,16 +29,24 @@ namespace ChummerHub.Client.Backend
 
             this.InnerHandler = httpClientHandler;   
         }
+
+        public static int requestCounter = 0;
+
         protected async override Task<HttpResponseMessage> SendAsync(
             HttpRequestMessage request, CancellationToken cancellationToken)
         {
             try
             {
-                Debug.WriteLine("Process request");
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+                int myCounter = requestCounter++;
+                string msg = "Process request " + myCounter + ":" + request.RequestUri;
+                Debug.WriteLine(msg);
                 // Call the inner handler.
                 request.Headers.TryAddWithoutValidation("ContentType", "application/json");
                 var response = await base.SendAsync(request, cancellationToken);
-                Debug.WriteLine("Process response");
+                msg = "Process response " + myCounter + " (" + (((double)sw.ElapsedMilliseconds)/1000) + "): " + response.StatusCode;
+                Debug.WriteLine(msg);
                 return response;
             }
             catch(Exception e)

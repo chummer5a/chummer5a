@@ -36,18 +36,27 @@ namespace ChummerHub.Client.UI
 
         public void InitializeMe(bool onlyPWHash)
         {
+            cbIsPublic.Checked = false;
+            if (StaticUtils.UserRoles?.Contains("GroupAdmin") == true)
+            {
+                EditMode = true;
+            }
+
             if (MyGroup != null)
             {
                 tbAdminRole.Text = MyGroup.MyAdminIdentityRole;
                 tbGroupId.Text = MyGroup.Id?.ToString();
                 tbGroupname.Text = MyGroup.Groupname;
-                tbParentGroupId.Text = MyGroup.MyParentGroup?.ToString();
+                tbParentGroupId.Text = MyGroup.MyParentGroupId?.ToString();
                 tbPassword.Text = "";
+                if (MyGroup.IsPublic.HasValue)
+                    cbIsPublic.Checked = MyGroup.IsPublic.Value;
             }
             tbAdminRole.ReadOnly = true;
             tbGroupId.ReadOnly = true;
             tbGroupname.ReadOnly = !EditMode;
             cboLanguage1.Enabled = EditMode;
+            cbIsPublic.Enabled = EditMode;
             tbParentGroupId.ReadOnly = true;
             tbPassword.ReadOnly = !EditMode;
 
@@ -93,6 +102,8 @@ namespace ChummerHub.Client.UI
                 myGroup.MyParentGroupId = id;
             myGroup.Password = tbPassword.Text;
             myGroup.Language = cboLanguage1.SelectedItem.ToString();
+            myGroup.IsPublic = cbIsPublic.Checked;
+            myGroup.MyAdminIdentityRole = tbAdminRole.Text;
 
             return myGroup;
 

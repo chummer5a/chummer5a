@@ -13,7 +13,7 @@ namespace SINners.Models
         {
             set
             {
-                if (value != null)
+                if (!String.IsNullOrEmpty(value))
                     this.PasswordHash = GetHashString(value);
                 else
                 {
