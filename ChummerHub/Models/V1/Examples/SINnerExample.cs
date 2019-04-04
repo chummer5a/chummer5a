@@ -74,7 +74,7 @@ namespace ChummerHub.Models.V1.Examples
                 }
             };
             sin.SINnerMetaData.Tags.Add(parenttag);
-            sin.JsonSummary = "{}";
+            sin.MyExtendedAttributes.JsonSummary = "{}";
             sin.LastChange = DateTime.Now;
             return sin;
         }

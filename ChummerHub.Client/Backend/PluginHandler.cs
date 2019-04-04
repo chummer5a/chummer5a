@@ -269,13 +269,13 @@ namespace Chummer.Plugins
             {
                 try
                 {
-                    await Task.Delay(1000*20);
+                    await Task.Delay(1000 * 2);
                     var client = await StaticUtils.GetClient();
                     var res = await client?.GetRolesWithHttpMessagesAsync();
                     if (res != null)
                         StaticUtils.UserRoles = res.Body.ToList();
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     System.Diagnostics.Trace.TraceError(e.ToString());
                 }

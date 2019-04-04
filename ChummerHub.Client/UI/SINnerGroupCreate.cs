@@ -84,7 +84,7 @@ namespace ChummerHub.Client.UI
 
         private void BOk_Click(object sender, EventArgs e)
         {
-            var group = SaveValues(MyGroup);
+            MyGroup = SaveValues(MyGroup);
         }
 
         private SINnerGroup SaveValues(SINnerGroup myGroup)
@@ -94,13 +94,12 @@ namespace ChummerHub.Client.UI
 
             myGroup.Groupname = this.tbGroupname.Text;
             Guid id = Guid.Empty;
-            if (Guid.TryParse(this.tbGroupId.Text, out id))
-                myGroup.Id = id;
-            else
-                myGroup.Id = Guid.NewGuid();
+            myGroup.Id = Guid.TryParse(this.tbGroupId.Text, out id) ? id : Guid.NewGuid();
             if (Guid.TryParse(this.tbParentGroupId.Text, out id))
                 myGroup.MyParentGroupId = id;
             myGroup.Password = tbPassword.Text;
+            if (String.IsNullOrEmpty(tbPassword.Text))
+                myGroup.PasswordHash = null;
             myGroup.Language = cboLanguage1.SelectedItem.ToString();
             myGroup.IsPublic = cbIsPublic.Checked;
             myGroup.MyAdminIdentityRole = tbAdminRole.Text;

@@ -40,7 +40,7 @@ namespace ChummerHub.Client.Backend
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
                 int myCounter = requestCounter++;
-                string msg = "Process request " + myCounter + ":" + request.RequestUri;
+                string msg = "Process request " + myCounter + ": " + request.RequestUri;
                 Debug.WriteLine(msg);
                 // Call the inner handler.
                 request.Headers.TryAddWithoutValidation("ContentType", "application/json");

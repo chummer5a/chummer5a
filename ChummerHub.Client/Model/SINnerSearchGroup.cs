@@ -39,16 +39,10 @@ namespace SINners.Models
                 string ret = Groupname;
                 if (!(String.IsNullOrEmpty(Language)))
                 {
-                    var list = frmOptions.GetSheetLanguageList();
-                    var found = from a in list where a.Value != null && (string)a.Value == Language select a;
-                    if (found.Any())
-                        ret += " - " + found.FirstOrDefault();
-                    else
-                        ret += " - " + Language;
                     if ((this.MyMembers != null)
                         && (this.MyMembers.Any()))
                     {
-                        ret += ": " + MyMembers.Count;
+                        ret += ": " + MyMembers.Count + " members";
                     }
                 }
                 return ret;

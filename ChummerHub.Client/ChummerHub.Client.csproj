@@ -119,6 +119,7 @@
     <Compile Include="SINnersClient\Models\SearchTag.cs" />
     <Compile Include="SINnersClient\Models\SINerUserRight.cs" />
     <Compile Include="SINnersClient\Models\SINner.cs" />
+    <Compile Include="SINnersClient\Models\SINnerExtended.cs" />
     <Compile Include="SINnersClient\Models\SINnerGroup.cs" />
     <Compile Include="SINnersClient\Models\SINnerGroupSetting.cs" />
     <Compile Include="SINnersClient\Models\SINnerList.cs" />

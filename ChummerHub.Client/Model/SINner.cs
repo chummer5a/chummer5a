@@ -10,5 +10,6 @@ namespace SINners.Models
     {
         public DateTime DownloadedFromSINnersTime { get;
             set; }
+
     }
 }

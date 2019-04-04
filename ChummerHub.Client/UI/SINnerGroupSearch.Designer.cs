@@ -1,3 +1,5 @@
+using System.Windows.Forms;
+
 namespace ChummerHub.Client.UI
 {
     partial class SINnerGroupSearch
@@ -43,7 +45,7 @@ namespace ChummerHub.Client.UI
             this.gbGroupMembers = new System.Windows.Forms.GroupBox();
             this.lbGroupMembers = new System.Windows.Forms.ListBox();
             this.gpGroupsFound = new System.Windows.Forms.GroupBox();
-            this.lbGroupSearchResult = new System.Windows.Forms.ListBox();
+            this.tvGroupSearchResult = new System.Windows.Forms.TreeView();
             this.tlpGroupSearch.SuspendLayout();
             this.gpSearchForGroups.SuspendLayout();
             this.tlpSearchGroups.SuspendLayout();
@@ -240,7 +242,7 @@ namespace ChummerHub.Client.UI
             // gpGroupsFound
             // 
             this.gpGroupsFound.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.gpGroupsFound.Controls.Add(this.lbGroupSearchResult);
+            this.gpGroupsFound.Controls.Add(this.tvGroupSearchResult);
             this.gpGroupsFound.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gpGroupsFound.Location = new System.Drawing.Point(3, 115);
             this.gpGroupsFound.Name = "gpGroupsFound";
@@ -249,16 +251,15 @@ namespace ChummerHub.Client.UI
             this.gpGroupsFound.TabStop = false;
             this.gpGroupsFound.Text = "Groups found";
             // 
-            // lbGroupSearchResult
+            // tvGroupSearchResult
             // 
-            this.lbGroupSearchResult.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbGroupSearchResult.FormattingEnabled = true;
-            this.lbGroupSearchResult.Location = new System.Drawing.Point(3, 16);
-            this.lbGroupSearchResult.Name = "lbGroupSearchResult";
-            this.lbGroupSearchResult.Size = new System.Drawing.Size(454, 288);
-            this.lbGroupSearchResult.Sorted = true;
-            this.lbGroupSearchResult.TabIndex = 3;
-            this.lbGroupSearchResult.SelectedIndexChanged += new System.EventHandler(this.lbGroupSearchResult_SelectedIndexChanged);
+            this.tvGroupSearchResult.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tvGroupSearchResult.Location = new System.Drawing.Point(3, 16);
+            this.tvGroupSearchResult.Name = "tvGroupSearchResult";
+            this.tvGroupSearchResult.Size = new System.Drawing.Size(454, 288);
+            this.tvGroupSearchResult.Sorted = true;
+            this.tvGroupSearchResult.TabIndex = 3;
+            this.tvGroupSearchResult.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TvGroupSearchResult_AfterSelect);
             // 
             // SINnerGroupSearch
             // 
@@ -297,6 +298,6 @@ namespace ChummerHub.Client.UI
         private System.Windows.Forms.GroupBox gbGroupMembers;
         private System.Windows.Forms.ListBox lbGroupMembers;
         private System.Windows.Forms.GroupBox gpGroupsFound;
-        private System.Windows.Forms.ListBox lbGroupSearchResult;
+        private System.Windows.Forms.TreeView tvGroupSearchResult;
     }
 }

@@ -121,6 +121,13 @@ namespace ChummerHub.Controllers.V1
                 }
                 
                 await _context.SaveChangesAsync();
+                if (myGroup.MyParentGroup != null)
+                {
+                    myGroup.MyParentGroup.PasswordHash = "";
+                    myGroup.MyParentGroup.MyGroups = new List<SINnerGroup>();
+                }
+                myGroup.PasswordHash = "";
+                myGroup.MyGroups = RemovePWHashRecursive(myGroup.MyGroups);
                 return Ok(myGroup);
             }
             catch (Exception e)
@@ -425,6 +432,11 @@ namespace ChummerHub.Controllers.V1
                     else
                     {
                         returncode = HttpStatusCode.Accepted;
+                        if ((String.IsNullOrEmpty(mygroup.MyAdminIdentityRole))
+                            && (!String.IsNullOrEmpty(storegroup.MyAdminIdentityRole)))
+                        {
+                            mygroup.MyAdminIdentityRole = storegroup.MyAdminIdentityRole;
+                        }
                         _context.Entry(storegroup).CurrentValues.SetValues(mygroup);
                     }
 
@@ -638,6 +650,12 @@ namespace ChummerHub.Controllers.V1
 
                 await context.SaveChangesAsync();
                 sin.MyGroup.MyGroups = RemovePWHashRecursive(sin.MyGroup.MyGroups);
+                if (sin.MyGroup.MyParentGroup != null)
+                {
+                    sin.MyGroup.MyParentGroup.PasswordHash = "";
+                    sin.MyGroup.MyParentGroup.MyGroups = new List<SINnerGroup>();
+                }
+
                 return sin;
             }
             catch (Exception e)
@@ -704,7 +722,14 @@ namespace ChummerHub.Controllers.V1
                     return NotFound(groupid);
 
                 var group = groupfoundseq.FirstOrDefault();
+                group.MyGroups = RemovePWHashRecursive(group.MyGroups);
                 group.PasswordHash = null;
+                if (group.MyParentGroup != null)
+                {
+                    group.MyParentGroup.PasswordHash = "";
+                    group.MyParentGroup.MyGroups = new List<SINnerGroup>();
+                }
+
                 return Ok(group);
 
             }
@@ -744,8 +769,7 @@ namespace ChummerHub.Controllers.V1
         [ProducesResponseType(typeof(SINSearchGroupResult), StatusCodes.Status200OK )]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest, "an error occured", typeof(HubException))]
         [ProducesResponseType(typeof(HubException), StatusCodes.Status400BadRequest)]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound, "Group not found", typeof(string))]
-        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound, "Group not found")]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GetSearchGroups")]
         [Authorize]
         public async Task<IActionResult> GetSearchGroups(string Groupname, string UsernameOrEmail, string SINnerName, string Language)
@@ -882,16 +906,12 @@ namespace ChummerHub.Controllers.V1
 
                 SINSearchGroupResult result = new SINSearchGroupResult();
                 var groupfoundseq = await (from a in _context.SINnerGroups
-                        .Include(a => a.MyParentGroup)
-                        .Include(a => a.MySettings)
-                        .Include(a => a.MyGroups)
-                        .ThenInclude(b => b.MyGroups)
                         where a.Groupname.ToLowerInvariant().Contains(Groupname.ToLowerInvariant())
                         && (a.Language == language || String.IsNullOrEmpty(language))
                     select a.Id).ToListAsync();
                 if (!groupfoundseq.Any())
                 {
-                    return NotFound(Groupname);
+                    return NotFound();
                 }
 
                 foreach (var groupid in groupfoundseq)
@@ -1070,6 +1090,8 @@ namespace ChummerHub.Controllers.V1
                 throw new ArgumentNullException(nameof(groupid));
             SINnerSearchGroup ssg = null;
             var groupbyidseq = await (from a in _context.SINnerGroups
+                    .Include(a => a.MyParentGroup)
+                    .Include(a => a.MyGroups)
                     .Include(a => a.MySettings)
                     .Include(a => a.MyGroups)
                     .ThenInclude(b => b.MyGroups)
@@ -1087,7 +1109,6 @@ namespace ChummerHub.Controllers.V1
                 var members = await ssg.GetGroupMembers(_context);
                 foreach (var member in members)
                 {
-                    member.JsonSummary = null;
                     member.MyGroup = null;
                     SINnerSearchGroupMember ssgm = new SINnerSearchGroupMember
                     {
@@ -1099,7 +1120,7 @@ namespace ChummerHub.Controllers.V1
                 foreach (var child in group.MyGroups)
                 {
                     var childresult = await GetSinSearchGroupResultById(child.Id);
-                    ssg.MySINSearchGroup = childresult;
+                    ssg.MySINSearchGroups.Add(childresult); 
                 }
             }
             ssg.MyGroups = RemovePWHashRecursive(ssg.MyGroups);

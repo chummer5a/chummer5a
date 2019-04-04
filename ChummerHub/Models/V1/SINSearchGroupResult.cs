@@ -20,7 +20,7 @@ namespace ChummerHub.Models.V1
     public class SINnerSearchGroup : SINnerGroup
     {
 
-        public SINnerSearchGroup MySINSearchGroup { get; set; }
+        public List<SINnerSearchGroup> MySINSearchGroups { get; set; }
 
         public string ErrorText { get; set; }
 
@@ -30,6 +30,7 @@ namespace ChummerHub.Models.V1
         {
             MyMembers = new List<SINnerSearchGroupMember>();
             this.MyGroups = new List<SINnerGroup>();
+            MySINSearchGroups = new List<SINnerSearchGroup>();
         }
 
         public SINnerSearchGroup(SINnerGroup groupbyname)
@@ -41,6 +42,11 @@ namespace ChummerHub.Models.V1
             this.Groupname = groupbyname?.Groupname;
             MyMembers = new List<SINnerSearchGroupMember>();
             this.MyGroups = new List<SINnerGroup>();
+            MySINSearchGroups = new List<SINnerSearchGroup>();
+            this.MyAdminIdentityRole = groupbyname.MyAdminIdentityRole;
+            this.Language = groupbyname.Language;
+            this.PasswordHash = groupbyname.PasswordHash;
+            this.MySettings = groupbyname.MySettings;
         }
         
     }

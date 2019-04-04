@@ -447,6 +447,8 @@ namespace ChummerHub.Controllers
                                 owndSINner.SINList.Add(memberlist);
                             }
                         }
+
+                        sin.MyGroup.PasswordHash = "";
                         sin.MyGroup.MyGroups = new List<SINnerGroup>();
                         ;
                     }
