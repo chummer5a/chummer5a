@@ -36,6 +36,7 @@ namespace Chummer
     public class ComplexForm : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove, IHasSource
     {
         private Guid _guiID;
+        private Guid _sourceID = Guid.Empty;
         private string _strName = string.Empty;
         private string _strTarget = string.Empty;
         private string _strDuration = string.Empty;
@@ -62,6 +63,7 @@ namespace Chummer
         {
             if (objXmlComplexFormNode.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
+            objXmlComplexFormNode.TryGetField("id", Guid.TryParse, out _sourceID);
             objXmlComplexFormNode.TryGetStringFieldQuickly("target", ref _strTarget);
             objXmlComplexFormNode.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlComplexFormNode.TryGetStringFieldQuickly("page", ref _strPage);
@@ -93,6 +95,7 @@ namespace Chummer
         public void Save(XmlTextWriter objWriter)
         {
             objWriter.WriteStartElement("complexform");
+            objWriter.WriteElementString("sourceid", _sourceID.ToString("D"));
             objWriter.WriteElementString("guid", _guiID.ToString("D"));
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("target", _strTarget);
@@ -118,6 +121,12 @@ namespace Chummer
             objNode.TryGetField("guid", Guid.TryParse, out _guiID);
             if (objNode.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
+
+            if (objNode["sourceid"] == null || !objNode.TryGetField("sourceid", Guid.TryParse, out _sourceID))
+            {
+                XmlNode objCfNode = GetNode();
+                objCfNode?.TryGetField("id", Guid.TryParse, out _sourceID);
+            }
             objNode.TryGetStringFieldQuickly("target", ref _strTarget);
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
@@ -152,7 +161,7 @@ namespace Chummer
 
         #region Properties
 
-        public Guid SourceID { get { return _guiID; } }
+        public Guid SourceID => _sourceID;
 
         /// <summary>
         /// Internal identifier which will be used to identify this Complex Form in the Improvement system.
@@ -467,11 +476,7 @@ namespace Chummer
                 Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill("Software");
                 if (objSkill != null)
                 {
-                    int intPool = objSkill.Pool;
-                    strReturn = objSkill.DisplayNameMethod(GlobalOptions.Language) + strSpaceCharacter + '(' + intPool.ToString(GlobalOptions.CultureInfo) + ')';
-                    // Add any Specialization bonus if applicable.
-                    if (objSkill.HasSpecialization(DisplayName))
-                        strReturn += strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("String_ExpenseSpecialization", GlobalOptions.Language) + strSpaceCharacter + '(' + 2.ToString(GlobalOptions.CultureInfo) + ')';
+                    strReturn = objSkill.FormattedDicePool(objSkill.Pool, strSpaceCharacter, DisplayName);
                 }
 
                 // Include any Improvements to the Spell Category.
@@ -479,7 +484,8 @@ namespace Chummer
                     .Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.ActionDicePool && objImprovement.Enabled
                     && objImprovement.ImprovedName == "Threading"))
                 {
-                    strReturn += $"{strSpaceCharacter}+{strSpaceCharacter}{_objCharacter.GetObjectName(objImprovement, GlobalOptions.Language)}{strSpaceCharacter}({objImprovement.Value.ToString(GlobalOptions.CultureInfo)})";
+                    strReturn += $"{strSpaceCharacter}+{strSpaceCharacter}{_objCharacter.GetObjectName(objImprovement, GlobalOptions.Language)}" +
+                                 $"{strSpaceCharacter}({objImprovement.Value.ToString(GlobalOptions.CultureInfo)})";
                 }
 
                 return strReturn;

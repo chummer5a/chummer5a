@@ -3,12 +3,20 @@ Future Build 206
 New Features:
 
 - Added a 'helpful' digital assistant, Chummy! Chummy is designed to offer tips via tooltip based on your character's content. It's designed for expansion through tips.xml, using the same forbidden/required structure as qualities. Yes, it's an April Fool's gag. I'm sorry, I thought it was cute and/or amusing. It can be toggled off by deselecting the Allow Easter Eggs option in the Global Options menu. 
+- Created a new Improvement Type that improves the dicepool of a specific spell; the spelldicepool improvement is available in the Custom Improvement creator. 
 
 Application Fixes:
 
 - Slightly better implementation of the Upgrade mechanism for cyberware. Still needs work, but shouldn't improperly consume Essence anymore. 
 - Fixed an issue with cyberware that should not permit subsystems still doing so. 
 - Fixed incorrect consumption of capacity by modular limbs connecting to modular connectors. 
+- Fixed the behaviour of the Death Mentor Spirit's Magician benefit to allow dicepool benefits for specific skills. Uses the spelldicepool improvement.
+
+Application Changes:
+
+- Spells now properly store their Source ID. Used for some Improvements. 
+- Small refactor to the Spell class to use RelevantImprovements method. Doesn't actually reduce complexity, but makes me feel a bit better about having less boilerplate. 
+- Added a string to the Skill.Core class that allows for formatting the skill's dicepool, specialisations and such instead of reprocessing it in multiple other locations.
 
 UI Changes:
 
@@ -18,6 +26,7 @@ UI Changes:
 
 Data Changes:
 
+- Fixed incorrect bonuses of the Death Mentor Spirit for Adepts. Properly allows taking one of the two powers provided. Fix provided by Gidoran. 
 - Fixed incorrect spelling of Limit Modifiers on the Retractable Climbing Claws cyberware.
 - Fixed incorrect Page and Specialisation category for the Cavalier Champion. Closes #3496
 - Added a new customdata entry for German Data Changes to add Machine Pistols and Submachine Guns to Standard and Heavy Weapon Mounts.

@@ -2026,17 +2026,46 @@
         <choice>
           <name>Magician: +2 dice pool modifier when casting the spells Death Touch, Manaball, Manabolt, One Less, Slaughter, Slay.</name>
           <bonus>
-            <!-- TODO: Dicepool modifiers for individual spells -->
+            <spelldicepool>
+              <id>9baed162-5e84-4f19-9b94-d543a560c067</id>
+              <val>2</val>
+            </spelldicepool>
+            <spelldicepool>
+              <id>85c12bae-3954-483c-a211-d8ee43a1c65e</id>
+              <val>2</val>
+            </spelldicepool>
+            <spelldicepool>
+              <id>d866f612-7160-41d2-8ce9-b64262327559</id>
+              <val>2</val>
+            </spelldicepool>
+            <spelldicepool>
+              <id>894e4bea-883e-421b-8a6f-6ca61274cca3</id>
+              <val>2</val>
+            </spelldicepool>
+            <spelldicepool>
+              <id>50f1bfce-a64d-4fac-b25d-d870e7ff312f</id>
+              <val>2</val>
+            </spelldicepool>
+            <spelldicepool>
+              <id>06d5a10b-b353-44bc-936a-4d6c08ebeaf8</id>
+              <val>2</val>
+            </spelldicepool>
           </bonus>
         </choice>
         <choice>
-          <name>Adept: Gain 1 free level of Killing Hands or Plague Cloud (choose one).</name>
+          <name>Adept: Gain 1 free level of Killing Hands</name>
           <bonus>
-            <selectpowers>
-              <selectpower limittopowers="Killing Hands,Plague Cloud">
-                <val>1</val>
-              </selectpower>
-            </selectpowers>
+            <specificpower>
+              <name>Killing Hands</name>
+            </specificpower>
+          </bonus>
+        </choice>
+        <choice>
+          <name>Adept: Gain 1 free level of Plague Cloud</name>
+          <bonus>
+            <specificpower>
+              <name>Plague Cloud</name>
+            </specificpower>
           </bonus>
         </choice>
       </choices>

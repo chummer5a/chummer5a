@@ -4637,7 +4637,7 @@ namespace Chummer.Classes
         }
 
         // Check for Spell Category bonuses.
-        public void spellcategory(XmlNode bonusNode)
+        public void spellcategorydicepool(XmlNode bonusNode)
         {
             Log.Info("spellcategory");
             Log.Info("spellcategory = " + bonusNode.OuterXml);
@@ -4645,6 +4645,17 @@ namespace Chummer.Classes
             Log.Info("Calling CreateImprovement");
             CreateImprovement(bonusNode["name"]?.InnerText, _objImprovementSource, SourceName,
                 Improvement.ImprovementType.SpellCategory, _strUnique, ImprovementManager.ValueToInt(_objCharacter, bonusNode["val"]?.InnerText, _intRating));
+        }
+
+        // Check for dicepool bonuses for a specific Spell.
+        public void spelldicepool(XmlNode bonusNode)
+        {
+            Log.Info("spelldicepool");
+            Log.Info("spelldicepool = " + bonusNode.OuterXml);
+
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(bonusNode["id"]?.InnerText ?? bonusNode["name"]?.InnerText, _objImprovementSource, SourceName,
+                Improvement.ImprovementType.SpellDicePool, _strUnique, ImprovementManager.ValueToInt(_objCharacter, bonusNode["val"]?.InnerText, _intRating));
         }
 
         // Check for Spell Category Drain bonuses.
