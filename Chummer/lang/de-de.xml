@@ -9506,5 +9506,9 @@
 			<key>Checkbox_Options_EnablePlugins</key>
 			<text>Module aktivieren (experimentell)</text>
 		</string>
+		<string>
+			<key>Checkbox_Options_AllowEasterEggs</key>
+			<text>Ostereier erlauben</text>
+		</string>
 	</strings>
 </chummer>
