@@ -6374,7 +6374,7 @@
       <source>SS</source>
       <accel>1</accel>
       <armor>1</armor>
-      <avail>50</avail>
+      <avail>0</avail>
       <body>2</body>
       <category>Drones: Medium</category>
       <cost>Variable(700-1500)</cost>
