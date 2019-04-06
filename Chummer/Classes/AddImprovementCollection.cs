@@ -461,6 +461,7 @@ namespace Chummer.Classes
             string strVal = bonusNode["val"]?.InnerText;
             string strMax = bonusNode["max"]?.InnerText;
             bool blnDisableSpec = bonusNode.InnerXml.Contains("disablespecializationeffects");
+            bool blnAllowUpgrade = !bonusNode.InnerXml.Contains("disableupgrades");
             // Find the selected Skill.
             if (blnIsKnowledgeSkill)
             {
@@ -502,7 +503,7 @@ namespace Chummer.Classes
                 }
                 else
                 {
-                    KnowledgeSkill k = new KnowledgeSkill(_objCharacter, strSelectedSkill);
+                    KnowledgeSkill k = new KnowledgeSkill(_objCharacter, strSelectedSkill, blnAllowUpgrade);
                     _objCharacter.SkillsSection.KnowledgeSkills.Add(k);
                     // We've found the selected Skill.
                     if (!string.IsNullOrEmpty(strVal))
@@ -2178,7 +2179,7 @@ namespace Chummer.Classes
 
             if (bonusNode["addknowledge"] != null)
             {
-                KnowledgeSkill objKnowledgeSkill = new KnowledgeSkill(_objCharacter, SelectedValue);
+                KnowledgeSkill objKnowledgeSkill = new KnowledgeSkill(_objCharacter, SelectedValue, false);
 
                 _objCharacter.SkillsSection.KnowsoftSkills.Add(objKnowledgeSkill);
                 if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.SkillsoftAccess) > 0)
@@ -2209,7 +2210,7 @@ namespace Chummer.Classes
             Log.Info("_strSelectedValue = " + SelectedValue);
             Log.Info("SourceName = " + SourceName);
             
-            KnowledgeSkill objSkill = new KnowledgeSkill(_objCharacter, SelectedValue);
+            KnowledgeSkill objSkill = new KnowledgeSkill(_objCharacter, SelectedValue, false);
 
             _objCharacter.SkillsSection.KnowsoftSkills.Add(objSkill);
             if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.SkillsoftAccess) > 0)

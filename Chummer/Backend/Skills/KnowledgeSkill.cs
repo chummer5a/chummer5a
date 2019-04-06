@@ -18,6 +18,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml;
 
 namespace Chummer.Backend.Skills
@@ -67,7 +68,7 @@ namespace Chummer.Backend.Skills
                     }
         }
 
-        public override bool AllowDelete => true;
+        public override bool AllowDelete => !ForcedName;
 
         private string _strType = string.Empty;
         public bool ForcedName { get; }
@@ -77,11 +78,17 @@ namespace Chummer.Backend.Skills
             AttributeObject = objCharacter.LOG;
         }
 
-        public KnowledgeSkill(Character objCharacter, string strForcedName) : this(objCharacter)
+        public KnowledgeSkill(Character objCharacter, string strForcedName, bool allowUpgrade) : this(objCharacter)
         {
             WriteableName = strForcedName;
             ForcedName = true;
+            AllowUpgrade = allowUpgrade;
         }
+
+        /// <summary>
+        /// Is the skill allowed to be upgraded through karma or points?
+        /// </summary>
+        public bool AllowUpgrade { get; set; }
 
         public string WriteableName
         {
@@ -180,36 +187,25 @@ namespace Chummer.Backend.Skills
                     return _intCachedCyberwareRating;
 
                 string strTranslatedName = DisplayNameMethod(GlobalOptions.Language);
-                //this might do hardwires if i understand how they works correctly
-                int intMaxHardwire = -1;
-                foreach (Improvement objImprovement in CharacterObject.Improvements)
-                {
-                    if (objImprovement.ImproveType == Improvement.ImprovementType.Hardwire && (objImprovement.ImprovedName == Name || objImprovement.ImprovedName == strTranslatedName) && objImprovement.Enabled && objImprovement.Value > intMaxHardwire)
-                    {
-                        intMaxHardwire = objImprovement.Value;
-                    }
-                }
+                int intMaxHardwire = CharacterObject.Improvements
+                    .Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.Hardwire &&
+                                            (objImprovement.ImprovedName == Name || objImprovement.ImprovedName == strTranslatedName) &&
+                                             objImprovement.Enabled)
+                    .Select(objImprovement => objImprovement.Value).Concat(new[] {-1}).Max();
                 if (intMaxHardwire >= 0)
                 {
                     return _intCachedCyberwareRating = intMaxHardwire;
                 }
 
                 int intMaxSkillsoftRating = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.SkillsoftAccess);
-                if (intMaxSkillsoftRating > 0)
-                {
-                    int intMax = 0;
-                    foreach (Improvement objSkillsoftImprovement in CharacterObject.Improvements)
-                    {
-                        if (objSkillsoftImprovement.ImproveType == Improvement.ImprovementType.Skillsoft && objSkillsoftImprovement.ImprovedName == InternalId && objSkillsoftImprovement.Enabled)
-                        {
-                            intMax = Math.Max(intMax, objSkillsoftImprovement.Value);
-                        }
-                    }
+                if (intMaxSkillsoftRating <= 0) return _intCachedCyberwareRating = 0;
+                int intMax = CharacterObject.Improvements
+                    .Where(objSkillsoftImprovement => objSkillsoftImprovement.ImproveType == Improvement.ImprovementType.Skillsoft &&
+                                                      objSkillsoftImprovement.ImprovedName == InternalId && objSkillsoftImprovement.Enabled)
+                    .Select(objSkillsoftImprovement => objSkillsoftImprovement.Value).Concat(new[] {0}).Max();
 
-                    return _intCachedCyberwareRating = Math.Min(intMax, intMaxSkillsoftRating);
-                }
+                return _intCachedCyberwareRating = Math.Min(intMax, intMaxSkillsoftRating);
 
-                return _intCachedCyberwareRating = 0;
             }
         }
 

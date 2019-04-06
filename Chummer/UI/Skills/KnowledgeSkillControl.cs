@@ -112,6 +112,7 @@ namespace Chummer.UI.Skills
                 cboSkill.ValueMember = nameof(ListItem.Value);
                 cboSkill.SelectedIndex = -1;
                 cboSkill.DataBindings.Add("Text", skill, nameof(KnowledgeSkill.WriteableName), false, DataSourceUpdateMode.OnPropertyChanged);
+                cboSkill.DataBindings.Add(new NegatableBinding("Enabled", skill, nameof(KnowledgeSkill.ForcedName), true));
 
                 //dropdown/spec
                 cboSpec.DataSource = skill.CGLSpecializations;
@@ -128,7 +129,8 @@ namespace Chummer.UI.Skills
                 skill.PropertyChanged += Skill_PropertyChanged;
             }
 
-            if (skill.ForcedName)
+
+            if (skill.ForcedName && !skill.AllowUpgrade)
             {
                 DataBindings.Add("Enabled", skill, nameof(KnowledgeSkill.Enabled), false, DataSourceUpdateMode.OnPropertyChanged);
 
