@@ -3166,7 +3166,7 @@ namespace Chummer.Backend.Equipment
                     foreach (Cyberware objChildCyberware in Children)
                     {
                         // Children that are built into the parent 
-                        if (objChildCyberware.PlugsIntoModularMount == HasModularMount ||
+                        if (objChildCyberware.PlugsIntoModularMount == HasModularMount && !string.IsNullOrWhiteSpace(HasModularMount) ||
                             objChildCyberware.ParentID == InternalId) continue;
                         string strCapacity = objChildCyberware.CalculatedCapacity;
                         int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
@@ -3207,7 +3207,7 @@ namespace Chummer.Backend.Equipment
                     // Run through its Children and deduct the Capacity costs.
                     foreach (Cyberware objChildCyberware in Children)
                     {
-                        if (objChildCyberware.PlugsIntoModularMount == HasModularMount ||
+                        if (objChildCyberware.PlugsIntoModularMount == HasModularMount && !string.IsNullOrWhiteSpace(HasModularMount) ||
                             objChildCyberware.ParentID == InternalId) continue;
                         string strCapacity = objChildCyberware.CalculatedCapacity;
                         int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
