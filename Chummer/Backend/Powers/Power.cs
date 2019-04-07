@@ -1045,7 +1045,11 @@ namespace Chummer
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load("powers.xml", strLanguage).SelectSingleNode("/chummer/powers/power[id = \"" + _guiSourceID.ToString("D") + "\"]");
+                _objCachedMyXmlNode = SourceID == Guid.Empty
+                    ? XmlManager.Load("powers.xml", strLanguage)
+                        .SelectSingleNode($"/chummer/powers/power[name = \"{Name}\"]")
+                    : XmlManager.Load("powers.xml", strLanguage)
+                        .SelectSingleNode($"/chummer/powers/power[id = \"{SourceIDString} or id = \"{SourceIDString.ToUpperInvariant()}\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

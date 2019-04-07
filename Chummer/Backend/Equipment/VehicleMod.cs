@@ -1248,7 +1248,12 @@ namespace Chummer.Backend.Equipment
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
                 XmlDocument objDoc = XmlManager.Load("vehicles.xml", strLanguage);
-                _objCachedMyXmlNode = objDoc.SelectSingleNode("/chummer/mods/mod[name = \"" + Name + "\"]") ?? objDoc.SelectSingleNode("/chummer/weaponmountmods/mod[name = \"" + Name + "\"]");
+                _objCachedMyXmlNode = (XmlManager.Load("vehicles.xml", strLanguage)
+                                             .SelectSingleNode($"/chummer/mods/mod[id = \"{SourceIDString} or id = \"{SourceIDString}\"]") ??
+                                       objDoc.SelectSingleNode($"/chummer/weaponmountmods/mod[id = \"{SourceIDString} or id = \"{SourceIDString}\"]")) ??
+                                       objDoc.SelectSingleNode($"/chummer/mods/mod[name = \"{Name}\"]") ??
+                                       objDoc.SelectSingleNode($"/chummer/weaponmountmods/mod[name = \"{Name}\"]");
+
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

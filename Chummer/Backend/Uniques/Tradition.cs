@@ -892,7 +892,10 @@ namespace Chummer.Backend.Uniques
                 return null;
             if(_xmlCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _xmlCachedMyXmlNode = GetTraditionDocument(strLanguage).SelectSingleNode("/chummer/traditions/tradition[id = \"" + SourceIDString + "\"]");
+                _xmlCachedMyXmlNode = SourceID == Guid.Empty
+                    ? GetTraditionDocument(strLanguage).SelectSingleNode($"/chummer/traditions/tradition[name = \"{Name}\"]")
+                    : GetTraditionDocument(strLanguage).SelectSingleNode($"/chummer/traditions/tradition[id = \"{SourceIDString} or id = \"{SourceIDString.ToUpperInvariant()}\"]");
+
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _xmlCachedMyXmlNode;

@@ -880,7 +880,11 @@ namespace Chummer.Backend.Equipment
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load("lifestyles.xml", strLanguage).SelectSingleNode("/chummer/lifestyles/lifestyle[id = \"" + SourceIDString + "\"]");
+                _objCachedMyXmlNode = SourceID == Guid.Empty
+                    ? XmlManager.Load("lifestyles.xml", strLanguage)
+                        .SelectSingleNode($"/chummer/lifestyles/lifestyle[name = \"{Name}\"]")
+                    : XmlManager.Load("lifestyles.xml", strLanguage)
+                        .SelectSingleNode($"/chummer/lifestyles/lifestyle[id = \"{SourceIDString} or id = \"{SourceIDString}\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

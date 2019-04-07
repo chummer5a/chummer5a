@@ -975,11 +975,12 @@ namespace Chummer.Backend.Equipment
 
         public XmlNode GetNode(string strLanguage)
         {
-            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
-            {
-                _objCachedMyXmlNode = XmlManager.Load("armor.xml", strLanguage).SelectSingleNode("/chummer/mods/mod[name = \"" + Name + "\"]");
-                _strCachedXmlNodeLanguage = strLanguage;
-            }
+            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.LiveCustomData) return _objCachedMyXmlNode;
+            _objCachedMyXmlNode = SourceID == Guid.Empty
+                ? XmlManager.Load("armor.xml", strLanguage)
+                    .SelectSingleNode("/chummer/mods/mod[name = \"" + Name + "\"]")
+                : XmlManager.Load("armor.xml", strLanguage)
+                    .SelectSingleNode("/chummer/mods/mod[id = \"" + SourceIDString + " or id = \"" + SourceIDString.ToUpperInvariant() + "\"]");
             return _objCachedMyXmlNode;
         }
         #endregion

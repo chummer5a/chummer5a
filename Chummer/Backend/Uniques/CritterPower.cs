@@ -563,7 +563,11 @@ namespace Chummer
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load("critterpowers.xml", strLanguage).SelectSingleNode("/chummer/powers/power[name = \"" + Name + "\"]");
+                _objCachedMyXmlNode = SourceID == Guid.Empty
+                    ? XmlManager.Load("critterpowers.xml", strLanguage)
+                        .SelectSingleNode($"/chummer/critterpowers/critterpower[name = \"{Name}\"]")
+                    : XmlManager.Load("critterpowers.xml", strLanguage)
+                        .SelectSingleNode($"/chummer/critterpowers/critterpower[id = \"{SourceIDString} or id = \"{SourceIDString.ToUpperInvariant()}\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

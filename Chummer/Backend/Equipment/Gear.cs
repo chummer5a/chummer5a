@@ -1965,11 +1965,11 @@ namespace Chummer.Backend.Equipment
             {
                 XmlDocument objDoc = XmlManager.Load("gear.xml", strLanguage);
                 string strNameWithQuotes = Name.CleanXPath();
-                _objCachedMyXmlNode = objDoc.SelectSingleNode("/chummer/gears/gear[(id = \"" + SourceIDString + "\") or (name = " + strNameWithQuotes + " and category = \"" + Category + "\")]");
+                _objCachedMyXmlNode = objDoc.SelectSingleNode($"/chummer/gears/gear[(id = \"id = \"{SourceIDString} or id = \"{SourceIDString}\"]) or (name = {strNameWithQuotes} and category = \"{Category}\")]");
                 if (_objCachedMyXmlNode == null)
                 {
-                    _objCachedMyXmlNode = objDoc.SelectSingleNode("/chummer/gears/gear[(name = " + strNameWithQuotes + ")]") ??
-                                          objDoc.SelectSingleNode("/chummer/gears/gear[contains(name, " + strNameWithQuotes + ")]");
+                    _objCachedMyXmlNode = objDoc.SelectSingleNode($"/chummer/gears/gear[(name = {strNameWithQuotes})]") ??
+                                          objDoc.SelectSingleNode($"/chummer/gears/gear[contains(name, {strNameWithQuotes})]");
                     _objCachedMyXmlNode?.TryGetField("id", Guid.TryParse, out _guiSourceID);
                 }
                 _strCachedXmlNodeLanguage = strLanguage;
