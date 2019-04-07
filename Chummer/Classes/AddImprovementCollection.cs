@@ -354,7 +354,7 @@ namespace Chummer.Classes
                 frmSelectItem frmPickItem = new frmSelectItem
                 {
                     DropdownItems = lstTraditions,
-                    SelectedItem = _objCharacter.MagicTradition.strSourceID,
+                    SelectedItem = _objCharacter.MagicTradition.SourceIDString,
                     AllowAutoSelect = false
                 };
                 frmPickItem.ShowDialog();

@@ -38,7 +38,7 @@ namespace Chummer.Backend.Equipment
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     public class Weapon : IHasChildren<Weapon>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName, IHasLocation, ICanEquip, IHasSource, ICanSort, IHasWirelessBonus, IHasStolenProperty
 	{
-        private Guid _sourceID = Guid.Empty;
+        private Guid _guiSourceID = Guid.Empty;
         private Guid _guiID;
         private string _strName = string.Empty;
         private string _strCategory = string.Empty;
@@ -167,7 +167,12 @@ namespace Chummer.Backend.Equipment
         /// <param name="blnSkipCost">Whether or not forms asking to determine variable costs should be displayed.</param>
         public void Create(XmlNode objXmlWeapon, IList<Weapon> lstWeapons, bool blnCreateChildren = true, bool blnCreateImprovements = true, bool blnSkipCost = false)
         {
-            if (objXmlWeapon.TryGetField("id", Guid.TryParse, out _sourceID))
+            if (!objXmlWeapon.TryGetField("id", Guid.TryParse, out _guiSourceID))
+            {
+                Log.Warning(new object[] { "Missing id field for weapon xmlnode", objXmlWeapon });
+                Utils.BreakIfDebug();
+            }
+            else
                 _objCachedMyXmlNode = null;
             objXmlWeapon.TryGetStringFieldQuickly("name", ref _strName);
             objXmlWeapon.TryGetStringFieldQuickly("category", ref _strCategory);
@@ -448,8 +453,8 @@ namespace Chummer.Backend.Equipment
         public void Save(XmlTextWriter objWriter)
         {
             objWriter.WriteStartElement("weapon");
-            objWriter.WriteElementString("sourceid", _sourceID.ToString("D"));
-            objWriter.WriteElementString("guid", _guiID.ToString("D"));
+            objWriter.WriteElementString("sourceid", SourceIDString);
+            objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("category", _strCategory);
             objWriter.WriteElementString("type", _strType);
@@ -555,15 +560,23 @@ namespace Chummer.Backend.Equipment
         /// <param name="blnCopy">Are we loading a copy of an existing weapon?</param>
         public void Load(XmlNode objNode, bool blnCopy = false)
         {
-            if (blnCopy)
+            if (blnCopy || !objNode.TryGetField("guid", Guid.TryParse, out _guiID))
             {
                 _guiID = Guid.NewGuid();
+            }
+            if (objNode["sourceid"] == null || !objNode.TryGetField("sourceid", Guid.TryParse, out _guiSourceID))
+            {
+                XmlNode node = GetNode(GlobalOptions.Language);
+                node?.TryGetField("id", Guid.TryParse, out _guiSourceID);
+            }
+
+            if (blnCopy)
+            {
                 _lstAmmo = new List<Clip>();
                 _intActiveAmmoSlot = 1;
             }
             else
             {
-                objNode.TryGetField("guid", Guid.TryParse, out _guiID);
                 _lstAmmo.Clear();
                 if (objNode["clips"] != null)
                 {
@@ -595,15 +608,6 @@ namespace Chummer.Backend.Equipment
             }
 
             objNode.TryGetStringFieldQuickly("name", ref _strName);
-            XmlDocument objXmlDocument = XmlManager.Load("weapons.xml");
-            if (!objNode.TryGetField("sourceid", Guid.TryParse, out _sourceID) || _sourceID.Equals(Guid.Empty))
-            {
-                XmlNode objWeaponNode = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + _strName + "\"]");
-                if (objWeaponNode?.TryGetField("id", Guid.TryParse, out _sourceID) == true)
-                    _objCachedMyXmlNode = null;
-            }
-            else
-                _objCachedMyXmlNode = null;
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
             if (_strCategory == "Hold-Outs")
                 _strCategory = "Holdouts";
@@ -624,7 +628,7 @@ namespace Chummer.Backend.Equipment
                 if (objNewOsmiumMaceNode != null)
                 {
                     objNewOsmiumMaceNode.TryGetStringFieldQuickly("name", ref _strName);
-                    objNewOsmiumMaceNode.TryGetField("id", Guid.TryParse, out _sourceID);
+                    objNewOsmiumMaceNode.TryGetField("id", Guid.TryParse, out _guiSourceID);
                     _objCachedMyXmlNode = objNewOsmiumMaceNode;
                     objNewOsmiumMaceNode.TryGetStringFieldQuickly("accuracy", ref _strAccuracy);
                     objNewOsmiumMaceNode.TryGetStringFieldQuickly("damage", ref _strDamage);
@@ -1555,7 +1559,16 @@ namespace Chummer.Backend.Equipment
         }
 
 
-        public Guid SourceID => _sourceID;
+
+	    /// <summary>
+	    /// Identifier of the object within data files.
+	    /// </summary>
+	    public Guid SourceID => _guiSourceID;
+
+	    /// <summary>
+	    /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
+	    /// </summary>
+	    public string SourceIDString => _guiSourceID.ToString("D");
 
         public XmlNode GetNode()
         {
@@ -1566,7 +1579,7 @@ namespace Chummer.Backend.Equipment
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load("weapons.xml", strLanguage).SelectSingleNode("/chummer/weapons/weapon[id = \"" + _sourceID.ToString("D") + "\"]");
+                _objCachedMyXmlNode = XmlManager.Load("weapons.xml", strLanguage).SelectSingleNode("/chummer/weapons/weapon[id = \"" + _guiSourceID.ToString("D") + "\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

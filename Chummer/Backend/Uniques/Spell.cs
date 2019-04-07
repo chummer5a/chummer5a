@@ -37,7 +37,7 @@ namespace Chummer
     public class Spell : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove, IHasSource
     {
         private Guid _guiID;
-        private Guid _sourceID = Guid.Empty;
+        private Guid _guiSourceID = Guid.Empty;
         private string _strName = string.Empty;
         private string _strDescriptors = string.Empty;
         private string _strCategory = string.Empty;
@@ -76,9 +76,12 @@ namespace Chummer
         /// <param name="objSource">Enum representing the actual type of spell this object represents. Used for initiation benefits that would grant spells.</param>
         public void Create(XmlNode objXmlSpellNode, string strForcedValue = "", bool blnLimited = false, bool blnExtended = false, bool blnAlchemical = false, Improvement.ImprovementSource objSource = Improvement.ImprovementSource.Spell)
         {
-            if (objXmlSpellNode.TryGetStringFieldQuickly("name", ref _strName))
-                _objCachedMyXmlNode = null;
-            objXmlSpellNode.TryGetField("id", Guid.TryParse, out _sourceID);
+            if (!objXmlSpellNode.TryGetField("id", Guid.TryParse, out _guiSourceID))
+            {
+                Log.Warning(new object[] { "Missing id field for xmlnode", objXmlSpellNode });
+                Utils.BreakIfDebug();
+            }
+            objXmlSpellNode.TryGetStringFieldQuickly("name", ref _strName);
             _blnExtended = blnExtended;
 
             ImprovementManager.ForcedValue = strForcedValue;
@@ -127,8 +130,8 @@ namespace Chummer
         public void Save(XmlTextWriter objWriter)
         {
             objWriter.WriteStartElement("spell");
-            objWriter.WriteElementString("sourceid", _sourceID.ToString("D"));
-            objWriter.WriteElementString("guid", _guiID.ToString("D"));
+            objWriter.WriteElementString("sourceid", SourceIDString);
+            objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("descriptors", _strDescriptors);
             objWriter.WriteElementString("category", _strCategory);
@@ -160,15 +163,17 @@ namespace Chummer
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
-            objNode.TryGetField("guid", Guid.TryParse, out _guiID);
-            if (objNode.TryGetStringFieldQuickly("name", ref _strName))
-                _objCachedMyXmlNode = null;
-
-            if (objNode["sourceid"] == null || !objNode.TryGetField("sourceid", Guid.TryParse, out _sourceID))
+            if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
             {
-                XmlNode objSpellNode = GetNode();
-                objSpellNode?.TryGetField("id", Guid.TryParse, out _sourceID);
+                _guiID = Guid.NewGuid();
             }
+            if (objNode["sourceid"] == null || !objNode.TryGetField("sourceid", Guid.TryParse, out _guiSourceID))
+            {
+                XmlNode node = GetNode(GlobalOptions.Language);
+                node?.TryGetField("id", Guid.TryParse, out _guiSourceID);
+            }
+
+            objNode.TryGetStringFieldQuickly("name", ref _strName);
             objNode.TryGetStringFieldQuickly("descriptors", ref _strDescriptors);
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
             objNode.TryGetStringFieldQuickly("type", ref _strType);
@@ -233,7 +238,16 @@ namespace Chummer
 
         #region Properties
 
-        public Guid SourceID => _sourceID;
+
+        /// <summary>
+        /// Identifier of the object within data files.
+        /// </summary>
+        public Guid SourceID => _guiSourceID;
+
+        /// <summary>
+        /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
+        /// </summary>
+        public string SourceIDString => _guiSourceID.ToString("D");
 
         /// <summary>
         /// Internal identifier which will be used to identify this Spell in the Improvement system.

@@ -44,7 +44,7 @@ namespace Chummer.Backend.Uniques
     public class Tradition : IHasInternalId, IHasName, IHasXmlNode, IHasSource, INotifyMultiplePropertyChanged
     {
         private Guid _guiID;
-        private string _strSourceGuid;
+        private Guid _guiSourceID;
         private string _strName = string.Empty;
         private string _strExtra = string.Empty;
         private string _strSource = string.Empty;
@@ -100,7 +100,7 @@ namespace Chummer.Backend.Uniques
         {
             ResetTradition();
             Type = blnIsTechnomancerTradition ? TraditionType.RES : TraditionType.MAG;
-            if(xmlTraditionNode.TryGetStringFieldQuickly("id", ref _strSourceGuid))
+            if(xmlTraditionNode.TryGetField("id", Guid.TryParse, out _guiSourceID))
                 _xmlCachedMyXmlNode = null;
             xmlTraditionNode.TryGetStringFieldQuickly("name", ref _strName);
             xmlTraditionNode.TryGetStringFieldQuickly("source", ref _strSource);
@@ -203,9 +203,9 @@ namespace Chummer.Backend.Uniques
             if(_eTraditionType == TraditionType.None)
                 return;
             objWriter.WriteStartElement("tradition");
-            objWriter.WriteElementString("guid", _guiID.ToString("D"));
+            objWriter.WriteElementString("sourceid", SourceIDString);
+            objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("traditiontype", _eTraditionType.ToString());
-            objWriter.WriteElementString("id", _strSourceGuid);
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("extra", _strExtra);
             objWriter.WriteElementString("spiritform", _strSpiritForm);
@@ -243,9 +243,16 @@ namespace Chummer.Backend.Uniques
                 _eTraditionType = TraditionType.None;
                 return;
             }
-            xmlNode.TryGetField("guid", Guid.TryParse, out _guiID);
-            if(xmlNode.TryGetStringFieldQuickly("id", ref _strSourceGuid))
-                _xmlCachedMyXmlNode = null;
+            if (!xmlNode.TryGetField("guid", Guid.TryParse, out _guiID))
+            {
+                _guiID = Guid.NewGuid();
+            }
+            if (xmlNode["sourceid"] == null || !xmlNode.TryGetField("sourceid", Guid.TryParse, out _guiSourceID))
+            {
+                XmlNode node = GetNode(GlobalOptions.Language);
+                node?.TryGetField("id", Guid.TryParse, out _guiSourceID);
+            }
+
             xmlNode.TryGetStringFieldQuickly("name", ref _strName);
             xmlNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             xmlNode.TryGetStringFieldQuickly("spiritform", ref _strSpiritForm);
@@ -303,9 +310,9 @@ namespace Chummer.Backend.Uniques
             _eTraditionType = TraditionType.MAG;
             _strName = xmlHeroLabNode.SelectSingleNode("@name")?.InnerText;
             XmlNode xmlTraditionDataNode = !string.IsNullOrEmpty(_strName) ? XmlManager.Load("traditions.xml").SelectSingleNode("/chummer/traditions/tradition[name = \"" + _strName + "\"]") : null;
-            if(xmlTraditionDataNode?.TryGetStringFieldQuickly("id", ref _strSourceGuid) != true)
+            if(xmlTraditionDataNode?.TryGetField("id", Guid.TryParse, out _guiSourceID) != true)
             {
-                _strSourceGuid = CustomMagicalTraditionGuid;
+                _guiSourceID = new Guid(CustomMagicalTraditionGuid);
                 xmlTraditionDataNode = GetNode();
             }
             Create(xmlTraditionDataNode);
@@ -352,18 +359,21 @@ namespace Chummer.Backend.Uniques
 
         #region Properties
 
-        public Guid SourceID => Guid.TryParse(_strSourceGuid, out var result) ? result : Guid.NewGuid();
+
+        /// <summary>
+        /// Identifier of the object within data files.
+        /// </summary>
+        public Guid SourceID => _guiSourceID;
+
+        /// <summary>
+        /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
+        /// </summary>
+        public string SourceIDString => Type == TraditionType.None ? string.Empty : _guiSourceID.ToString("D");
 
         /// <summary>
         /// Internal identifier which will be used to identify this Tradition in the Improvement system.
         /// </summary>
         public string InternalId => _guiID.ToString("D");
-
-        /// <summary>
-        /// GUID used to identify the original data node of this tradition
-        /// </summary>
-        /// <remarks>So why not make it an Guid?</remarks>
-        public string strSourceID => Type == TraditionType.None ? string.Empty : _strSourceGuid;
 
         private SourceString _objCachedSourceDetail;
         public SourceString SourceDetail => _objCachedSourceDetail ?? (_objCachedSourceDetail =
@@ -403,7 +413,7 @@ namespace Chummer.Backend.Uniques
         /// <summary>
         /// Whether or not a Tradition is a custom one (i.e. it has a custom name and custom spirit settings)
         /// </summary>
-        public bool IsCustomTradition => strSourceID == CustomMagicalTraditionGuid; // TODO: If Custom Technomancer Tradition added to streams.xml, check for that GUID as well
+        public bool IsCustomTradition => SourceIDString == CustomMagicalTraditionGuid; // TODO: If Custom Technomancer Tradition added to streams.xml, check for that GUID as well
 
         /// <summary>
         /// Tradition name.
@@ -882,7 +892,7 @@ namespace Chummer.Backend.Uniques
                 return null;
             if(_xmlCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _xmlCachedMyXmlNode = GetTraditionDocument(strLanguage).SelectSingleNode("/chummer/traditions/tradition[id = \"" + strSourceID + "\"]");
+                _xmlCachedMyXmlNode = GetTraditionDocument(strLanguage).SelectSingleNode("/chummer/traditions/tradition[id = \"" + SourceIDString + "\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _xmlCachedMyXmlNode;

@@ -32,7 +32,7 @@ namespace Chummer.Backend.Equipment
 {
     public class Drug : IHasName, IHasXmlNode, ICanSort, IHasStolenProperty
     {
-        private Guid _sourceID = Guid.Empty;
+        private Guid _guiSourceID = Guid.Empty;
         private Guid _guiID;
         private string _strName = "";
         private string _strCategory = "";
@@ -78,7 +78,11 @@ namespace Chummer.Backend.Equipment
 
         public void Load(XmlNode objXmlData)
         {
-            objXmlData.TryGetField("guid", Guid.TryParse, out _guiID);
+            if (objXmlData["sourceid"] == null || !objXmlData.TryGetField("sourceid", Guid.TryParse, out _guiSourceID))
+            {
+                XmlNode node = GetNode(GlobalOptions.Language);
+                node?.TryGetField("id", Guid.TryParse, out _guiSourceID);
+            }
             objXmlData.TryGetStringFieldQuickly("name", ref _strName);
             objXmlData.TryGetStringFieldQuickly("category", ref _strCategory);
             XmlNodeList xmlComponentsNodeList = objXmlData.SelectNodes("drugcomponents/drugcomponent");
@@ -92,10 +96,10 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            if (objXmlData["sourceid"] == null || !objXmlData.TryGetField("sourceid", Guid.TryParse, out _sourceID))
+            if (objXmlData["sourceid"] == null || !objXmlData.TryGetField("sourceid", Guid.TryParse, out _guiSourceID))
             {
                 XmlNode node = GetNode(GlobalOptions.Language);
-                node?.TryGetField("id", Guid.TryParse, out _sourceID);
+                node?.TryGetField("id", Guid.TryParse, out _guiSourceID);
             }
             objXmlData.TryGetStringFieldQuickly("availability", ref _strAvailability);
             objXmlData.TryGetDecFieldQuickly("cost", ref _decCost);
@@ -112,8 +116,8 @@ namespace Chummer.Backend.Equipment
         public void Save(XmlWriter objXmlWriter)
         {
             objXmlWriter.WriteStartElement("drug");
-            objXmlWriter.WriteElementString("id", _sourceID.ToString("D"));
-            objXmlWriter.WriteElementString("guid", _guiID.ToString());
+            objXmlWriter.WriteElementString("sourceid", SourceIDString);
+            objXmlWriter.WriteElementString("guid", InternalId);
             objXmlWriter.WriteElementString("name", _strName);
             objXmlWriter.WriteElementString("category", _strCategory);
             objXmlWriter.WriteElementString("quantity", _decQty.ToString(GlobalOptions.InvariantCultureInfo));
@@ -616,7 +620,18 @@ namespace Chummer.Backend.Equipment
                 return SystemColors.WindowText;
             }
         }
-        public Guid SourceID => _sourceID;
+
+
+        /// <summary>
+        /// Identifier of the object within data files.
+        /// </summary>
+        public Guid SourceID => _guiSourceID;
+
+        /// <summary>
+        /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
+        /// </summary>
+        public string SourceIDString => _guiSourceID.ToString("D");
+
         public bool Stolen
         {
             get => _blnStolen;
@@ -778,7 +793,7 @@ namespace Chummer.Backend.Equipment
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load("gear.xml", strLanguage).SelectSingleNode("/chummer/gears/gear[id = \"" + SourceID.ToString("D") + "\"]");
+                _objCachedMyXmlNode = XmlManager.Load("gear.xml", strLanguage).SelectSingleNode("/chummer/gears/gear[id = \"" + SourceIDString + "\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;
@@ -791,7 +806,7 @@ namespace Chummer.Backend.Equipment
 	public class DrugComponent : IHasName, IHasInternalId, IHasXmlNode
 	{
 	    private Guid _guidId;
-	    private Guid _sourceID;
+	    private Guid _guiSourceID;
         private string _strName;
 		private string _strCategory;
 	    private string _strAvailability = "0";
@@ -815,8 +830,12 @@ namespace Chummer.Backend.Equipment
 		#region Constructor, Create, Save, Load, and Print Methods
 		public void Load(XmlNode objXmlData)
 		{
-		    objXmlData.TryGetField("internalid", Guid.TryParse, out _guidId);
-            objXmlData.TryGetField("id", Guid.TryParse, out _sourceID);
+		    if (objXmlData["sourceid"] == null || !objXmlData.TryGetField("sourceid", Guid.TryParse, out _guiSourceID))
+		    {
+		        XmlNode node = GetNode(GlobalOptions.Language);
+		        node?.TryGetField("id", Guid.TryParse, out _guiSourceID);
+		    }
+            objXmlData.TryGetField("internalid", Guid.TryParse, out _guidId);
             objXmlData.TryGetStringFieldQuickly("name", ref _strName);
 			objXmlData.TryGetStringFieldQuickly("category", ref _strCategory);
 		    XmlNodeList xmlEffectsList = objXmlData.SelectNodes("effects/effect");
@@ -908,8 +927,8 @@ namespace Chummer.Backend.Equipment
 
 		public void Save(XmlWriter objXmlWriter)
         {
-            objXmlWriter.WriteElementString("internalid", _guidId.ToString("D"));
-            objXmlWriter.WriteElementString("id", _sourceID.ToString("D"));
+            objXmlWriter.WriteElementString("sourceid", SourceIDString);
+            objXmlWriter.WriteElementString("guid", InternalId);
             objXmlWriter.WriteElementString("name", _strName);
 			objXmlWriter.WriteElementString("category", _strCategory);
 
@@ -1156,7 +1175,16 @@ namespace Chummer.Backend.Equipment
 		    set => _intLevel = value;
 	    }
 
-	    public Guid SourceID => _sourceID;
+
+	    /// <summary>
+	    /// Identifier of the object within data files.
+	    /// </summary>
+	    public Guid SourceID => _guiSourceID;
+
+	    /// <summary>
+	    /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
+	    /// </summary>
+	    public string SourceIDString => _guiSourceID.ToString("D");
 
         public string InternalId => _guidId.ToString("D");
         #endregion
@@ -1281,7 +1309,7 @@ namespace Chummer.Backend.Equipment
 	    {
 	        if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
 	        {
-	            _objCachedMyXmlNode = XmlManager.Load("drugcomponents.xml", strLanguage).SelectSingleNode("/chummer/drugcomponents/drugcomponent[id = \"" + SourceID.ToString("D") + "\"]");
+	            _objCachedMyXmlNode = XmlManager.Load("drugcomponents.xml", strLanguage).SelectSingleNode("/chummer/drugcomponents/drugcomponent[id = \"" + SourceIDString + "\"]");
 	            _strCachedXmlNodeLanguage = strLanguage;
 	        }
 	        return _objCachedMyXmlNode;

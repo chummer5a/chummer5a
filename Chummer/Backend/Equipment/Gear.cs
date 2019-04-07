@@ -42,7 +42,7 @@ namespace Chummer.Backend.Equipment
     public class Gear : IHasChildrenAndCost<Gear>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasLocation, ICanEquip, IHasSource, IHasRating, INotifyMultiplePropertyChanged, ICanSort, IHasStolenProperty
     {
         private Guid _guiID;
-        private string _SourceGuid;
+        private Guid _guiSourceID;
         private string _strName = string.Empty;
         private string _strCategory = string.Empty;
         private string _strMaxRating = string.Empty;
@@ -145,7 +145,12 @@ namespace Chummer.Backend.Equipment
                 return;
             _strForcedValue = strForceValue;
             XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
-            if (objXmlGear.TryGetStringFieldQuickly("id", ref _SourceGuid))
+            if (!objXmlGear.TryGetField("id", Guid.TryParse, out _guiSourceID))
+            {
+                Log.Warning(new object[] { "Missing id field for armor xmlnode", objXmlGear });
+                Utils.BreakIfDebug();
+            }
+            else
                 _objCachedMyXmlNode = null;
             if (objXmlGear.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
@@ -623,7 +628,7 @@ namespace Chummer.Backend.Equipment
         public void Copy(Gear objGear)
         {
             _objCachedMyXmlNode = objGear.GetNode();
-            _SourceGuid = objGear._SourceGuid;
+            SourceID = objGear.SourceID;
             _blnAllowRename = objGear.AllowRename;
             _strName = objGear.Name;
             _strCategory = objGear.Category;
@@ -683,8 +688,8 @@ namespace Chummer.Backend.Equipment
         {
             objWriter.WriteStartElement("gear");
 
-            objWriter.WriteElementString("guid", _guiID.ToString("D"));
-            objWriter.WriteElementString("id", _SourceGuid);
+            objWriter.WriteElementString("sourceid", SourceIDString);
+            objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("category", _strCategory);
             objWriter.WriteElementString("capacity", _strCapacity);
@@ -768,9 +773,15 @@ namespace Chummer.Backend.Equipment
         /// <param name="blnCopy">Whether or not we are loading a copy of an existing gear.</param>
         public void Load(XmlNode objNode, bool blnCopy = false)
         {
-            objNode.TryGetField("guid", Guid.TryParse, out _guiID);
-            if (objNode.TryGetStringFieldQuickly("id", ref _SourceGuid))
-                _objCachedMyXmlNode = null;
+            if (blnCopy || !objNode.TryGetField("guid", Guid.TryParse, out _guiID))
+            {
+                _guiID = Guid.NewGuid();
+            }
+            if (objNode["sourceid"] == null || !objNode.TryGetField("sourceid", Guid.TryParse, out _guiSourceID))
+            {
+                XmlNode node = GetNode(GlobalOptions.Language);
+                node?.TryGetField("id", Guid.TryParse, out _guiSourceID);
+            }
             if (objNode.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
             if (objNode.TryGetStringFieldQuickly("category", ref _strCategory))
@@ -918,7 +929,6 @@ namespace Chummer.Backend.Equipment
 
             if (blnCopy)
             {
-                _guiID = Guid.NewGuid();
                 _objLocation = null;
 
                 if (Bonus != null || WirelessBonus != null)
@@ -1186,13 +1196,24 @@ namespace Chummer.Backend.Equipment
 
         #region Properties
 
-        public Guid SourceID => Guid.TryParse(_SourceGuid, out var result) ? result : Guid.NewGuid();
+        /// <summary>
+        /// Guid of the object from the data. You probably want to use SourceIDString instead. 
+        /// </summary>
+        public Guid SourceID
+        {
+            get => _guiSourceID;
+            set => _guiSourceID = value;
+        }
+
+        /// <summary>
+        /// String-formatted Guid of the <inheritdoc cref="SourceID"/> from the data files.
+        /// </summary>
+        public string SourceIDString => _guiSourceID.ToString("D");
+
         /// <summary>
         /// Internal identifier which will be used to identify this piece of Gear in the Character.
         /// </summary>
         public string InternalId => _guiID.ToString("D");
-
-        public string strSourceID => _SourceGuid;
 
         /// <summary>
         /// Guid of a Cyberware Weapon.
@@ -1944,12 +1965,12 @@ namespace Chummer.Backend.Equipment
             {
                 XmlDocument objDoc = XmlManager.Load("gear.xml", strLanguage);
                 string strNameWithQuotes = Name.CleanXPath();
-                _objCachedMyXmlNode = objDoc.SelectSingleNode("/chummer/gears/gear[(id = \"" + _SourceGuid + "\") or (name = " + strNameWithQuotes + " and category = \"" + Category + "\")]");
+                _objCachedMyXmlNode = objDoc.SelectSingleNode("/chummer/gears/gear[(id = \"" + SourceIDString + "\") or (name = " + strNameWithQuotes + " and category = \"" + Category + "\")]");
                 if (_objCachedMyXmlNode == null)
                 {
                     _objCachedMyXmlNode = objDoc.SelectSingleNode("/chummer/gears/gear[(name = " + strNameWithQuotes + ")]") ??
                                           objDoc.SelectSingleNode("/chummer/gears/gear[contains(name, " + strNameWithQuotes + ")]");
-                    _objCachedMyXmlNode?.TryGetStringFieldQuickly("id", ref _SourceGuid);
+                    _objCachedMyXmlNode?.TryGetField("id", Guid.TryParse, out _guiSourceID);
                 }
                 _strCachedXmlNodeLanguage = strLanguage;
             }

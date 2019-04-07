@@ -119,7 +119,7 @@ namespace Chummer
                 nudPercentage.Value = _objSourceLifestyle.Percentage;
                 foreach (LifestyleQuality objQuality in _objSourceLifestyle.LifestyleQualities)
                 {
-                    TreeNode objNode = treQualities.FindNode(objQuality.SourceID);
+                    TreeNode objNode = treQualities.FindNode(objQuality.SourceIDString);
                     if (objNode != null)
                         objNode.Checked = true;
                 }
@@ -252,18 +252,16 @@ namespace Chummer
                 }
                 else
                 {
-                    Log.Warning(new object[] { "Missing id field for lifestyle xmlnode", objXmlLifestyle });
+                    Log.Warning(new object[] { "Missing id field for xmlnode", objXmlLifestyle });
                     Utils.BreakIfDebug();
                 }
                 foreach (TreeNode objNode in treQualities.Nodes)
                 {
-                    if (objNode.Checked)
-                    {
-                        XmlNode objXmlLifestyleQuality = _objXmlDocument.SelectSingleNode($"/chummer/qualities/quality[id = \"{objNode.Tag}\"]");
-                        LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
-                        objQuality.Create(objXmlLifestyleQuality, _objLifestyle, _objCharacter, QualitySource.Selected);
-                        _objLifestyle.LifestyleQualities.Add(objQuality);
-                    }
+                    if (!objNode.Checked) continue;
+                    XmlNode objXmlLifestyleQuality = _objXmlDocument.SelectSingleNode($"/chummer/qualities/quality[id = \"{objNode.Tag}\"]");
+                    LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
+                    objQuality.Create(objXmlLifestyleQuality, _objLifestyle, _objCharacter, QualitySource.Selected);
+                    _objLifestyle.LifestyleQualities.Add(objQuality);
                 }
                 DialogResult = DialogResult.OK;
             }

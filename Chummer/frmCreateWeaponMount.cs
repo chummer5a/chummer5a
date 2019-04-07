@@ -107,7 +107,7 @@ namespace Chummer
                 }
                 _lstMods.AddRange(_objMount.Mods);
 
-                cboSize.SelectedValue = _objMount.SourceId;
+                cboSize.SelectedValue = _objMount.SourceIDString;
             }
             if (cboSize.SelectedIndex == -1)
                 if (lstSize.Count > 0)
@@ -261,7 +261,7 @@ namespace Chummer
 		        _objMount = new WeaponMount(_objCharacter, _objVehicle);
 		        _objMount.Create(xmlSelectedMount);
 		    }
-            else if (_objMount.SourceId != strSelectedMount)
+            else if (_objMount.SourceIDString != strSelectedMount)
             {
                 _objMount.Create(xmlSelectedMount);
             }

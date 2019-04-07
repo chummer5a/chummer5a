@@ -350,6 +350,13 @@ namespace Chummer.Backend.Equipment
             Parent = objParent;
             _strForced = strForced;
             _objParentVehicle = objParentVehicle;
+            if (!objXmlCyberware.TryGetField("id", Guid.TryParse, out _guiSourceID))
+            {
+                Log.Warning(new object[] { "Missing id field for armor xmlnode", objXmlCyberware });
+                Utils.BreakIfDebug();
+            }
+            else
+                _objCachedMyXmlNode = null;
             objXmlCyberware.TryGetStringFieldQuickly("name", ref _strName);
             objXmlCyberware.TryGetStringFieldQuickly("category", ref _strCategory);
             objXmlCyberware.TryGetStringFieldQuickly("limbslot", ref _strLimbSlot);
@@ -371,8 +378,6 @@ namespace Chummer.Backend.Equipment
             _nodWirelessPairBonus = objXmlCyberware["wirelesspairbonus"];
             _blnWirelessOn = false || _nodWirelessPairBonus != null;
             _nodAllowGear = objXmlCyberware["allowgear"];
-            if (objXmlCyberware.TryGetField("id", Guid.TryParse, out _guiSourceID))
-                _objCachedMyXmlNode = null;
             objXmlCyberware.TryGetStringFieldQuickly("mountsto", ref _strPlugsIntoModularMount);
             objXmlCyberware.TryGetStringFieldQuickly("modularmount", ref _strHasModularMount);
             objXmlCyberware.TryGetStringFieldQuickly("blocksmounts", ref _strBlocksMounts);
@@ -770,8 +775,8 @@ namespace Chummer.Backend.Equipment
         public void Save(XmlTextWriter objWriter)
         {
             objWriter.WriteStartElement("cyberware");
-            objWriter.WriteElementString("sourceid", _guiSourceID.ToString("D"));
-            objWriter.WriteElementString("guid", _guiID.ToString("D"));
+            objWriter.WriteElementString("sourceid", SourceIDString);
+            objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("category", _strCategory);
             objWriter.WriteElementString("limbslot", _strLimbSlot);
@@ -893,8 +898,11 @@ namespace Chummer.Backend.Equipment
         /// <param name="blnCopy">Whether this is a copy of an existing cyberware being loaded.</param>
         public void Load(XmlNode objNode, bool blnCopy = false)
         {
-            if (objNode.TryGetField("sourceid", Guid.TryParse, out _guiSourceID))
-                _objCachedMyXmlNode = null;
+            if (objNode["sourceid"] == null || !objNode.TryGetField("sourceid", Guid.TryParse, out _guiSourceID))
+            {
+                XmlNode node = GetNode(GlobalOptions.Language);
+                node?.TryGetField("id", Guid.TryParse, out _guiSourceID);
+            }
             if (blnCopy)
             {
                 _guiID = Guid.NewGuid();
@@ -1428,7 +1436,16 @@ namespace Chummer.Backend.Equipment
 
         public bool InheritAttributes => _blnInheritAttributes;
 
+
+        /// <summary>
+        /// Identifier of the object within data files.
+        /// </summary>
         public Guid SourceID => _guiSourceID;
+
+        /// <summary>
+        /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
+        /// </summary>
+        public string SourceIDString => _guiSourceID.ToString("D");
 
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
@@ -2451,7 +2468,7 @@ namespace Chummer.Backend.Equipment
         {
             if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.LiveCustomData)
                 return _objCachedMyXmlNode;
-            string strGuid = SourceID.ToString("D");
+            string strGuid = SourceIDString;
             XmlDocument objDoc;
             if (_objImprovementSource == Improvement.ImprovementSource.Bioware)
             {

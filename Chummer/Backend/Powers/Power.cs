@@ -43,7 +43,7 @@ namespace Chummer
     public class Power : INotifyMultiplePropertyChanged, IHasInternalId, IHasName, IHasXmlNode, IHasNotes, IHasSource
     {
         private Guid _guiID;
-        private Guid _sourceID = Guid.Empty;
+        private Guid _guiSourceID = Guid.Empty;
         private string _strName = string.Empty;
         private string _strExtra = string.Empty;
         private string _strSource = string.Empty;
@@ -102,8 +102,8 @@ namespace Chummer
         public void Save(XmlTextWriter objWriter)
         {
             objWriter.WriteStartElement("power");
-            objWriter.WriteElementString("id", _sourceID.ToString("D"));
-            objWriter.WriteElementString("guid", _guiID.ToString("D"));
+            objWriter.WriteElementString("sourceid", SourceIDString);
+            objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("extra", Extra);
             objWriter.WriteElementString("pointsperlevel", _strPointsPerLevel);
@@ -142,7 +142,7 @@ namespace Chummer
         public bool Create(XmlNode objNode, int intRating = 1, XmlNode objBonusNodeOverride = null, bool blnCreateImprovements = true)
         {
             objNode.TryGetStringFieldQuickly("name", ref _strName);
-            objNode.TryGetField("id", Guid.TryParse, out _sourceID);
+            objNode.TryGetField("id", Guid.TryParse, out _guiSourceID);
             _objCachedMyXmlNode = null;
             objNode.TryGetStringFieldQuickly("points", ref _strPointsPerLevel);
             objNode.TryGetStringFieldQuickly("adeptway", ref _strAdeptWayDiscount);
@@ -212,25 +212,29 @@ namespace Chummer
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
-            objNode.TryGetField("guid", Guid.TryParse, out _guiID);
-            objNode.TryGetStringFieldQuickly("name", ref _strName);
-            if (objNode.TryGetField("id", Guid.TryParse, out _sourceID))
+            if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
             {
-                _objCachedMyXmlNode = null;
+                _guiID = Guid.NewGuid();
             }
-            else
+            if (objNode["sourceid"] == null || !objNode.TryGetField("sourceid", Guid.TryParse, out _guiSourceID))
             {
-                string strPowerName = Name;
-                int intPos = strPowerName.IndexOf('(');
-                if (intPos != -1)
-                    strPowerName = strPowerName.Substring(0, intPos - 1);
-                XmlDocument objXmlDocument = XmlManager.Load("powers.xml");
-                XmlNode xmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[starts-with(./name,\"" + strPowerName + "\")]");
-                if (xmlPower.TryGetField("id", Guid.TryParse, out _sourceID))
+                XmlNode node = GetNode(GlobalOptions.Language);
+                if (!(node.TryGetField("id", Guid.TryParse, out _guiSourceID)))
                 {
-                    _objCachedMyXmlNode = null;
+                    string strPowerName = Name;
+                    int intPos = strPowerName.IndexOf('(');
+                    if (intPos != -1)
+                        strPowerName = strPowerName.Substring(0, intPos - 1);
+                    XmlDocument objXmlDocument = XmlManager.Load("powers.xml");
+                    XmlNode xmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[starts-with(./name,\"" + strPowerName + "\")]");
+                    if (xmlPower.TryGetField("id", Guid.TryParse, out _guiSourceID))
+                    {
+                        _objCachedMyXmlNode = null;
+                    }
                 }
             }
+
+            objNode.TryGetStringFieldQuickly("name", ref _strName);
             Extra = objNode["extra"]?.InnerText ?? string.Empty;
             _strPointsPerLevel = objNode["pointsperlevel"]?.InnerText;
             objNode.TryGetStringFieldQuickly("action", ref _strAction);
@@ -379,7 +383,16 @@ namespace Chummer
         /// </summary>
         public string InternalId => _guiID.ToString("D");
 
-        public Guid SourceID => _sourceID;
+
+        /// <summary>
+        /// Identifier of the object within data files.
+        /// </summary>
+        public Guid SourceID => _guiSourceID;
+
+        /// <summary>
+        /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
+        /// </summary>
+        public string SourceIDString => _guiSourceID.ToString("D");
 
         /// <summary>
         /// Power's name.
@@ -1032,7 +1045,7 @@ namespace Chummer
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load("powers.xml", strLanguage).SelectSingleNode("/chummer/powers/power[id = \"" + _sourceID.ToString("D") + "\"]");
+                _objCachedMyXmlNode = XmlManager.Load("powers.xml", strLanguage).SelectSingleNode("/chummer/powers/power[id = \"" + _guiSourceID.ToString("D") + "\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;
