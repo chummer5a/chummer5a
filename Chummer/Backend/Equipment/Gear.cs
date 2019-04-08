@@ -779,8 +779,11 @@ namespace Chummer.Backend.Equipment
             }
             if (objNode["sourceid"] == null || !objNode.TryGetField("sourceid", Guid.TryParse, out _guiSourceID))
             {
-                XmlNode node = GetNode(GlobalOptions.Language);
-                node?.TryGetField("id", Guid.TryParse, out _guiSourceID);
+                if (!objNode.TryGetField("id", Guid.TryParse, out _guiSourceID))
+                {
+                    XmlNode node = GetNode(GlobalOptions.Language,objNode["name"].InnerText,objNode["category"].InnerText);
+                    node?.TryGetField("id", Guid.TryParse, out _guiSourceID);
+                }
             }
             if (objNode.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
@@ -1959,16 +1962,18 @@ namespace Chummer.Backend.Equipment
             return GetNode(GlobalOptions.Language);
         }
 
-        public XmlNode GetNode(string strLanguage)
+        public XmlNode GetNode(string strLanguage, string strName = "", string strCategory = "")
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
                 XmlDocument objDoc = XmlManager.Load("gear.xml", strLanguage);
                 string strNameWithQuotes = Name.CleanXPath();
-                _objCachedMyXmlNode = objDoc.SelectSingleNode($"/chummer/gears/gear[(id = \"id = \"{SourceIDString} or id = \"{SourceIDString}\"]) or (name = {strNameWithQuotes} and category = \"{Category}\")]");
+                _objCachedMyXmlNode = !string.IsNullOrWhiteSpace(strName)
+                    ? objDoc.SelectSingleNode($"/chummer/gears/gear[(name = \"{strName}\" and category = \"{strCategory}\")]")
+                    : objDoc.SelectSingleNode($"/chummer/gears/gear[(id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\") or (name = {strNameWithQuotes} and category = \"{Category}\")]");
                 if (_objCachedMyXmlNode == null)
                 {
-                    _objCachedMyXmlNode = objDoc.SelectSingleNode($"/chummer/gears/gear[(name = {strNameWithQuotes})]") ??
+                    _objCachedMyXmlNode = objDoc.SelectSingleNode($"/chummer/gears/gear[name = {strNameWithQuotes}]") ??
                                           objDoc.SelectSingleNode($"/chummer/gears/gear[contains(name, {strNameWithQuotes})]");
                     _objCachedMyXmlNode?.TryGetField("id", Guid.TryParse, out _guiSourceID);
                 }

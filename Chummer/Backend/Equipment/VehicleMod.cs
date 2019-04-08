@@ -1249,8 +1249,8 @@ namespace Chummer.Backend.Equipment
             {
                 XmlDocument objDoc = XmlManager.Load("vehicles.xml", strLanguage);
                 _objCachedMyXmlNode = (XmlManager.Load("vehicles.xml", strLanguage)
-                                             .SelectSingleNode($"/chummer/mods/mod[id = \"{SourceIDString} or id = \"{SourceIDString}\"]") ??
-                                       objDoc.SelectSingleNode($"/chummer/weaponmountmods/mod[id = \"{SourceIDString} or id = \"{SourceIDString}\"]")) ??
+                                             .SelectSingleNode($"/chummer/mods/mod[id = \"{SourceIDString}\" or id = \"{SourceIDString}\"]") ??
+                                       objDoc.SelectSingleNode($"/chummer/weaponmountmods/mod[id = \"{SourceIDString}\" or id = \"{SourceIDString}\"]")) ??
                                        objDoc.SelectSingleNode($"/chummer/mods/mod[name = \"{Name}\"]") ??
                                        objDoc.SelectSingleNode($"/chummer/weaponmountmods/mod[name = \"{Name}\"]");
 

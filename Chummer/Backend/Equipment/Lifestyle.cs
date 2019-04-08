@@ -884,7 +884,7 @@ namespace Chummer.Backend.Equipment
                     ? XmlManager.Load("lifestyles.xml", strLanguage)
                         .SelectSingleNode($"/chummer/lifestyles/lifestyle[name = \"{Name}\"]")
                     : XmlManager.Load("lifestyles.xml", strLanguage)
-                        .SelectSingleNode($"/chummer/lifestyles/lifestyle[id = \"{SourceIDString} or id = \"{SourceIDString}\"]");
+                        .SelectSingleNode($"/chummer/lifestyles/lifestyle[id = \"{SourceIDString}\" or id = \"{SourceIDString}\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

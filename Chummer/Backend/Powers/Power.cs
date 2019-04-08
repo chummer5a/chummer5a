@@ -1049,7 +1049,7 @@ namespace Chummer
                     ? XmlManager.Load("powers.xml", strLanguage)
                         .SelectSingleNode($"/chummer/powers/power[name = \"{Name}\"]")
                     : XmlManager.Load("powers.xml", strLanguage)
-                        .SelectSingleNode($"/chummer/powers/power[id = \"{SourceIDString} or id = \"{SourceIDString.ToUpperInvariant()}\"]");
+                        .SelectSingleNode($"/chummer/powers/power[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

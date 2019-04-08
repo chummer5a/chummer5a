@@ -1273,7 +1273,7 @@ namespace Chummer.Backend.Skills
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load("skills.xml", strLanguage).SelectSingleNode("/chummer/" + (IsKnowledgeSkill ? "knowledgeskills" : "skills") + "/skill[id = \"" + SkillId.ToString("D") + " or id = \"" + SkillId.ToString("D").ToUpperInvariant() + "\"]");
+                _objCachedMyXmlNode = XmlManager.Load("skills.xml", strLanguage).SelectSingleNode("/chummer/" + (IsKnowledgeSkill ? "knowledgeskills" : "skills") + "/skill[id = \"" + SkillId.ToString("D") + "\" or id = \"" + SkillId.ToString("D").ToUpperInvariant() + "\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

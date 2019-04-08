@@ -567,7 +567,7 @@ namespace Chummer
                     ? XmlManager.Load("critterpowers.xml", strLanguage)
                         .SelectSingleNode($"/chummer/critterpowers/critterpower[name = \"{Name}\"]")
                     : XmlManager.Load("critterpowers.xml", strLanguage)
-                        .SelectSingleNode($"/chummer/critterpowers/critterpower[id = \"{SourceIDString} or id = \"{SourceIDString.ToUpperInvariant()}\"]");
+                        .SelectSingleNode($"/chummer/critterpowers/critterpower[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

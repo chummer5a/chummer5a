@@ -529,7 +529,7 @@ namespace Chummer
                     ? XmlManager.Load("complexforms.xml", strLanguage)
                         .SelectSingleNode($"/chummer/complexforms/complexform[name = \"{Name}\"]")
                     : XmlManager.Load("complexforms.xml", strLanguage)
-                        .SelectSingleNode($"/chummer/complexforms/complexform[id = \"{SourceIDString} or id = \"{SourceIDString.ToUpperInvariant()}\"]");
+                        .SelectSingleNode($"/chummer/complexforms/complexform[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

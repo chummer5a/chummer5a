@@ -326,7 +326,7 @@ namespace Chummer
                     ? XmlManager.Load("martialarts.xml", strLanguage)
                         .SelectSingleNode($"/chummer/martialarts/martialart[name = \"{Name}\"]")
                     : XmlManager.Load("martialarts.xml", strLanguage)
-                        .SelectSingleNode($"/chummer/martialarts/martialart[id = \"{SourceIDString} or id = \"{SourceIDString.ToUpperInvariant()}\"]");
+                        .SelectSingleNode($"/chummer/martialarts/martialart[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

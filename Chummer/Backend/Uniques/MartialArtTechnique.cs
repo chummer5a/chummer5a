@@ -220,7 +220,7 @@ namespace Chummer
                     ? XmlManager.Load("martialarts.xml", strLanguage)
                         .SelectSingleNode($"/chummer/techniques/technique[name = \"{Name}\"]")
                     : XmlManager.Load("martialarts.xml", strLanguage)
-                        .SelectSingleNode($"/chummer/techniques/technique[id = \"{SourceIDString} or id = \"{SourceIDString.ToUpperInvariant()}\"]");
+                        .SelectSingleNode($"/chummer/techniques/technique[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

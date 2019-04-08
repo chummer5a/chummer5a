@@ -298,7 +298,7 @@ namespace Chummer
                     ? XmlManager.Load("programs.xml", strLanguage)
                         .SelectSingleNode($"/chummer/programs/program[name = \"{Name}\"]")
                     : XmlManager.Load("programs.xml", strLanguage)
-                        .SelectSingleNode($"/chummer/programs/program[id = \"{SourceIDString} or id = \"{SourceIDString.ToUpperInvariant()}\"]");
+                        .SelectSingleNode($"/chummer/programs/program[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

@@ -425,7 +425,7 @@ namespace Chummer
                 _objCachedMyXmlNode = XmlManager.Load(_eMentorType == Improvement.ImprovementType.MentorSpirit ? "mentors.xml" : "paragons.xml", strLanguage)
                     .SelectSingleNode(SourceID == Guid.Empty
                         ? $"/chummer/mentors/mentor[name = \"{Name}\"]"
-                        : $"/chummer/mentors/mentor[id = \"{SourceIDString} or id = \"{SourceIDString.ToUpperInvariant()}\"]");
+                        : $"/chummer/mentors/mentor[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

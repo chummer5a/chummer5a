@@ -797,7 +797,7 @@ namespace Chummer.Backend.Equipment
                     ? XmlManager.Load("drugcomponents.xml", strLanguage)
                         .SelectSingleNode($"/chummer/drugcomponents/drugcomponent[name = \"{Name}\"]")
                     : XmlManager.Load("drugcomponents.xml", strLanguage)
-                        .SelectSingleNode($"/chummer/drugcomponents/drugcomponent[id = \"{SourceIDString} or id = \"{SourceIDString}\"]");
+                        .SelectSingleNode($"/chummer/drugcomponents/drugcomponent[id = \"{SourceIDString}\" or id = \"{SourceIDString}\"]");
 
                 _strCachedXmlNodeLanguage = strLanguage;
             }
@@ -1318,7 +1318,7 @@ namespace Chummer.Backend.Equipment
 	                ? XmlManager.Load("drugcomponents.xml", strLanguage)
 	                    .SelectSingleNode($"/chummer/drugcomponents/drugcomponent[name = \"{Name}\"]")
 	                : XmlManager.Load("drugcomponents.xml", strLanguage)
-	                    .SelectSingleNode($"/chummer/drugcomponents/drugcomponent[id = \"{SourceIDString} or id = \"{SourceIDString}\"]");
+	                    .SelectSingleNode($"/chummer/drugcomponents/drugcomponent[id = \"{SourceIDString}\" or id = \"{SourceIDString}\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
 	        }
 	        return _objCachedMyXmlNode;

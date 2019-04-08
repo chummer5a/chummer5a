@@ -790,7 +790,7 @@ namespace Chummer
                     ? XmlManager.Load("qualities.xml", strLanguage)
                         .SelectSingleNode($"/chummer/qualities/quality[name = \"{Name}\"]")
                     : XmlManager.Load("qualities.xml", strLanguage)
-                        .SelectSingleNode($"/chummer/qualities/quality[id = \"{SourceIDString} or id = \"{SourceIDString.ToUpperInvariant()}\"]");
+                        .SelectSingleNode($"/chummer/qualities/quality[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

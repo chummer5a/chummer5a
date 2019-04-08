@@ -298,7 +298,7 @@ namespace Chummer
                     ? XmlManager.Load("metamagic.xml", strLanguage)
                         .SelectSingleNode($"/chummer/arts/art[name = \"{Name}\"]")
                     : XmlManager.Load("metamagic.xml", strLanguage)
-                        .SelectSingleNode($"/chummer/arts/art[id = \"{SourceIDString} or id = \"{SourceIDString.ToUpperInvariant()}\"]");
+                        .SelectSingleNode($"/chummer/arts/art[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

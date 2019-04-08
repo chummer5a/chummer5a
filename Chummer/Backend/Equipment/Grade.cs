@@ -100,7 +100,7 @@ namespace Chummer.Backend.Equipment
                         strLanguage).SelectSingleNode($"/chummer/grades/grade[name = \"{Name}\"]")
                 : XmlManager
                     .Load(_eSource == Improvement.ImprovementSource.Bioware ? "bioware.xml" : "cyberware.xml",
-                        strLanguage).SelectSingleNode($"/chummer/grades/grade[id = \"{SourceIDString} or id = \"{SourceIDString}\"]");
+                        strLanguage).SelectSingleNode($"/chummer/grades/grade[id = \"{SourceIDString}\" or id = \"{SourceIDString}\"]");
 
             _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;

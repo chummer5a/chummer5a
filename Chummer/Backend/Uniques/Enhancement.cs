@@ -308,7 +308,7 @@ namespace Chummer
                     ? XmlManager.Load("powers.xml", strLanguage)
                         .SelectSingleNode($"/chummer/enhancements/enhancement[name = \"{Name}\"]")
                     : XmlManager.Load("powers.xml", strLanguage)
-                        .SelectSingleNode($"/chummer/enhancements/enhancement[id = \"{SourceIDString} or id = \"{SourceIDString.ToUpperInvariant()}\"]");
+                        .SelectSingleNode($"/chummer/enhancements/enhancement[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

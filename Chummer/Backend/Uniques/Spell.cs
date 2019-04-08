@@ -890,7 +890,7 @@ namespace Chummer
                     ? XmlManager.Load("spells.xml", strLanguage)
                         .SelectSingleNode($"/chummer/spells/spell[name = \"{Name}\"]")
                     : XmlManager.Load("spells.xml", strLanguage)
-                        .SelectSingleNode($"/chummer/spells/spell[id = \"{SourceIDString} or id = \"{SourceIDString.ToUpperInvariant()}\"]");
+                        .SelectSingleNode($"/chummer/spells/spell[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

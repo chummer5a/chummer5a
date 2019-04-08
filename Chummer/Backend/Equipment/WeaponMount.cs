@@ -807,7 +807,7 @@ namespace Chummer.Backend.Equipment
                     ? XmlManager.Load("vehicles.xml", strLanguage)
                         .SelectSingleNode($"/chummer/weaponmounts/weaponmount[name = \"{Name}\"]")
                     : XmlManager.Load("vehicles.xml", strLanguage)
-                        .SelectSingleNode($"/chummer/weaponmounts/weaponmount[id = \"{SourceIDString} or id = \"{SourceIDString.ToUpperInvariant()}\"]");
+                        .SelectSingleNode($"/chummer/weaponmounts/weaponmount[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;
@@ -1207,7 +1207,7 @@ namespace Chummer.Backend.Equipment
                     ? XmlManager.Load("vehicles.xml", strLanguage)
                         .SelectSingleNode($"/chummer/weaponmounts/weaponmount[name = \"{Name}\"]")
                     : XmlManager.Load("vehicles.xml", strLanguage)
-                        .SelectSingleNode($"/chummer/weaponmounts/weaponmount[id = \"{SourceIDString} or id = \"{SourceIDString.ToUpperInvariant()}\"]");
+                        .SelectSingleNode($"/chummer/weaponmounts/weaponmount[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;
