@@ -453,10 +453,23 @@ namespace ChummerHub.Client.Backend
         private static TreeNode GetCharacterRosterTreeNodeRecursive(SINnerList list, ref ConcurrentDictionary<string, CharacterCache> CharCache)
         {
             var sinner = list.SiNner;
-            if(String.IsNullOrEmpty(sinner?.MyExtendedAttributes?.JsonSummary))
-                return null; ;
-            CharacterCache objCache = Newtonsoft.Json.JsonConvert.DeserializeObject<CharacterCache>(sinner.MyExtendedAttributes.JsonSummary);
-            SetEventHandlers(sinner, objCache);
+            CharacterCache objCache = null;
+            if (!String.IsNullOrEmpty(sinner?.MyExtendedAttributes?.JsonSummary))
+            {
+                objCache =
+                    Newtonsoft.Json.JsonConvert.DeserializeObject<CharacterCache>(sinner.MyExtendedAttributes
+                        .JsonSummary);
+                SetEventHandlers(sinner, objCache);
+            }
+            else
+            {
+                objCache = new CharacterCache();
+                objCache.CharacterName = "pending";
+                objCache.CharacterAlias = sinner.Alias;
+                objCache.BuildMethod = "online";
+                SetEventHandlers(sinner, objCache);
+            }
+
             TreeNode objListNode = new TreeNode
             {
                 Text = objCache.CalculatedName(),
@@ -530,7 +543,16 @@ namespace ChummerHub.Client.Backend
             objCache.OnMyAfterSelect -= objCache.OnDefaultAfterSelect;
             objCache.OnMyAfterSelect += (sender, treeViewEventArgs) =>
             {
-                objCache.FilePath = DownloadFileTask(sinner, objCache).Result;
+                using (new CursorWait(true, PluginHandler.MainForm))
+                {
+                    if (String.IsNullOrEmpty(objCache.MugshotBase64))
+                    {
+                        var jsonString = DownloadSINnerExtendedTask(sinner, objCache).Result;
+                    }
+
+                    objCache.FilePath = DownloadFileTask(sinner, objCache).Result;
+                    treeViewEventArgs.Node.Text = objCache.CalculatedName();
+                }
             };
             objCache.OnMyKeyDown -= objCache.OnDefaultKeyDown;
             objCache.OnMyKeyDown += async (sender, args) =>
@@ -714,6 +736,55 @@ namespace ChummerHub.Client.Backend
             return res;
         }
 
+        
+        public static async Task<CharacterCache> DownloadSINnerExtended(SINners.Models.SINner sinner, CharacterCache objCache)
+        {
+            try
+            {
+
+                try
+                {
+                    var client = await StaticUtils.GetClient();
+                    var onlinesinner = await client.GetSINByIdWithHttpMessagesAsync(sinner.Id.Value);
+                    var json = onlinesinner.Body.MyExtendedAttributes.JsonSummary;
+                    var onlineCache = Newtonsoft.Json.JsonConvert.DeserializeObject<CharacterCache>(json);
+                    objCache.CharacterAlias = onlineCache.CharacterAlias;
+                    objCache.CharacterName = onlineCache.CharacterName;
+                    objCache.MugshotBase64 = onlineCache.MugshotBase64;
+                    objCache.Background = onlineCache.Background;
+                    objCache.CharacterNotes = onlineCache.CharacterNotes;
+                    objCache.BuildMethod = onlineCache.BuildMethod;
+                    objCache.Concept = onlineCache.Concept;
+                    objCache.Created = onlineCache.Created;
+                    objCache.Description = onlineCache.Description;
+                    objCache.ErrorText = onlineCache.ErrorText;
+                    objCache.Essence = onlineCache.Essence;
+                    objCache.FileName = onlineCache.FileName;
+                    objCache.FilePath = onlineCache.FilePath;
+                    objCache.GameNotes = onlineCache.GameNotes;
+                    objCache.Karma = onlineCache.Karma;
+                    objCache.Metatype = onlineCache.Metatype;
+                    objCache.Metavariant = onlineCache.Metavariant;
+                    objCache.Mugshot = onlineCache.Mugshot;
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Trace.TraceError(ex.Message);
+                    if (objCache != null)
+                        objCache.ErrorText = ex.Message;
+                }
+
+                return objCache;
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Trace.TraceError(e.Message);
+                objCache.ErrorText = e.Message;
+                throw;
+            }
+        }
+
+
         public static async Task<string> DownloadFile(SINners.Models.SINner sinner, CharacterCache objCache)
         {
             try
@@ -787,6 +858,31 @@ namespace ChummerHub.Client.Backend
                 objCache.ErrorText = e.Message;
                 throw;
             }
+        }
+
+        
+        public static Task<string> DownloadSINnerExtendedTask(SINners.Models.SINner sinner, CharacterCache objCache)
+        {
+            try
+            {
+                if ((objCache.DownLoadRunning != null) && (objCache.DownLoadRunning.Status == TaskStatus.Running))
+                    return objCache.DownLoadRunning;
+
+                objCache.DownLoadRunning = Task.Factory.StartNew<string>(() =>
+                {
+                    objCache = DownloadSINnerExtended(sinner, objCache).Result;
+                    //objCache.FilePath = filepath;
+                    return objCache.ErrorText;
+                });
+                return objCache.DownLoadRunning;
+            }
+            catch (Exception ex)
+            {
+                objCache.ErrorText = ex.ToString();
+                throw;
+            }
+
+
         }
 
         public static Task<string> DownloadFileTask(SINners.Models.SINner sinner, CharacterCache objCache)
