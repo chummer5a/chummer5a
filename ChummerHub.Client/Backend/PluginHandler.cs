@@ -28,7 +28,7 @@ namespace Chummer.Plugins
     public class PluginHandler : IPlugin
     {
         //public static CharacterExtended MyCharacterExtended = null;
-        private static Dictionary<string, CharacterExtended> MyCharExtendedDic = new Dictionary<string, CharacterExtended>();
+        public static Dictionary<string, CharacterExtended> MyCharExtendedDic = new Dictionary<string, CharacterExtended>();
 
         //public static CharacterExtended GetCharExtended(Character c, string fileElement)
         //{
@@ -92,10 +92,16 @@ namespace Chummer.Plugins
         string IPlugin.GetSaveToFileElement(Character input)
         {
             CharacterExtended ce;
-            if(MyCharExtendedDic.ContainsKey(input.FileName))
-                MyCharExtendedDic.Remove(input.FileName);
-            ce = new CharacterExtended(input, null);
-            MyCharExtendedDic.Add(ce.MyCharacter.FileName, ce);
+            if (MyCharExtendedDic.ContainsKey(input.FileName))
+            {
+                if (!MyCharExtendedDic.TryGetValue(input.FileName, out ce))
+                    throw new ArgumentException("Could not load char from Dic!", nameof(input));
+            }
+            else
+            {
+                ce = new CharacterExtended(input, null);
+            }
+
             if((SINnersOptions.UploadOnSave == true) && (IsSaving == false))
             {
                 IsSaving = true;
@@ -118,7 +124,17 @@ namespace Chummer.Plugins
             try
             {
                 input.OnSaveCompleted -= MyOnSaveUpload;
-                CharacterExtended ce = new CharacterExtended(input, null);
+                CharacterExtended ce;
+                if (MyCharExtendedDic.ContainsKey(input.FileName))
+                {
+                    MyCharExtendedDic.TryGetValue(input.FileName, out ce);
+                }
+                else
+                {
+                    ce = new CharacterExtended(input, null);
+                    MyCharExtendedDic.Add(input.FileName, ce);
+                }
+
                 await ce.Upload();
                 var found = (from a in MainForm.OpenCharacterForms where a.CharacterObject == input select a)
                     .FirstOrDefault();
