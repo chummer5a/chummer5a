@@ -905,14 +905,30 @@ namespace ChummerHub.Controllers.V1
                 }
 
                 SINSearchGroupResult result = new SINSearchGroupResult();
-                var groupfoundseq = await (from a in _context.SINnerGroups
-                        where a.Groupname.ToLowerInvariant().Contains(Groupname.ToLowerInvariant())
-                        && (a.Language == language || String.IsNullOrEmpty(language))
-                    select a.Id).ToListAsync();
-                if (!groupfoundseq.Any())
+
+                List<Guid?> groupfoundseq = new List<Guid?>();
+                if (!String.IsNullOrEmpty(Groupname))
                 {
-                    return NotFound();
+                    groupfoundseq = await (from a in _context.SINnerGroups
+                                           where a.Groupname.ToLowerInvariant().Contains(Groupname.ToLowerInvariant())
+                                           && (a.Language == language || String.IsNullOrEmpty(language))
+                                           select a.Id).ToListAsync();
+                    if (!groupfoundseq.Any())
+                    {
+                        return NotFound();
+                    }
                 }
+                else if (String.IsNullOrEmpty(UsernameOrEmail) && String.IsNullOrEmpty(sINnerName))
+                {
+                    groupfoundseq = await (from a in _context.SINnerGroups
+                                           where a.IsPublic == true && a.MyParentGroupId == null
+                                           select a.Id).ToListAsync();
+                    if (!groupfoundseq.Any())
+                    {
+                        return NotFound();
+                    }
+                }
+                
 
                 foreach (var groupid in groupfoundseq)
                 {

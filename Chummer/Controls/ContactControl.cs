@@ -349,6 +349,35 @@ namespace Chummer
                 cmdExpand.Image = value ? Properties.Resources.Collapse : cmdExpand.Image = Properties.Resources.Expand;
             }
         }
+
+        private static List<ListItem> _ContactProfession;
+
+        public static List<ListItem> ContactProfession
+        {
+            get
+            {
+                if (_ContactProfession == null)
+                {
+                    _ContactProfession = new List<ListItem>() {ListItem.Blank};
+                    XmlNode xmlContactsBaseNode = XmlManager.Load("contacts.xml").SelectSingleNode("/chummer");
+                    if (xmlContactsBaseNode != null)
+                    {
+                        using (XmlNodeList xmlNodeList = xmlContactsBaseNode.SelectNodes("contacts/contact"))
+                            if (xmlNodeList != null)
+                                foreach (XmlNode xmlNode in xmlNodeList)
+                                {
+                                    string strName = xmlNode.InnerText;
+                                    ContactProfession.Add(new ListItem(strName,
+                                        xmlNode.Attributes?["translate"]?.InnerText ?? strName));
+                                }
+                    }
+                }
+
+                return _ContactProfession;
+            }
+            set { _ContactProfession = value; }
+
+        }
         #endregion
 
         #region Methods
@@ -363,10 +392,6 @@ namespace Chummer
             }
 
             // Read the list of Categories from the XML file.
-            List<ListItem> lstCategories = new List<ListItem>
-            {
-                ListItem.Blank
-            };
             List<ListItem> lstMetatypes = new List<ListItem>
             {
                 ListItem.Blank
@@ -399,13 +424,13 @@ namespace Chummer
             XmlNode xmlContactsBaseNode = XmlManager.Load("contacts.xml").SelectSingleNode("/chummer");
             if (xmlContactsBaseNode != null)
             {
-                using (XmlNodeList xmlNodeList = xmlContactsBaseNode.SelectNodes("contacts/contact"))
-                    if (xmlNodeList != null)
-                        foreach (XmlNode xmlNode in xmlNodeList)
-                        {
-                            string strName = xmlNode.InnerText;
-                            lstCategories.Add(new ListItem(strName, xmlNode.Attributes?["translate"]?.InnerText ?? strName));
-                        }
+                //using (XmlNodeList xmlNodeList = xmlContactsBaseNode.SelectNodes("contacts/contact"))
+                //    if (xmlNodeList != null)
+                //        foreach (XmlNode xmlNode in xmlNodeList)
+                //        {
+                //            string strName = xmlNode.InnerText;
+                //            ContactProfession.Add(new ListItem(strName, xmlNode.Attributes?["translate"]?.InnerText ?? strName));
+                //        }
 
                 using (XmlNodeList xmlNodeList = xmlContactsBaseNode.SelectNodes("sexes/sex"))
                     if (xmlNodeList != null)
@@ -476,7 +501,7 @@ namespace Chummer
                         }
                     }
 
-            lstCategories.Sort(CompareListItems.CompareNames);
+            ContactProfession.Sort(CompareListItems.CompareNames);
             lstMetatypes.Sort(CompareListItems.CompareNames);
             lstSexes.Sort(CompareListItems.CompareNames);
             lstAges.Sort(CompareListItems.CompareNames);
@@ -488,7 +513,7 @@ namespace Chummer
             cboContactRole.BeginUpdate();
             cboContactRole.ValueMember = "Value";
             cboContactRole.DisplayMember = "Name";
-            cboContactRole.DataSource = lstCategories;
+            cboContactRole.DataSource = ContactProfession;
             cboContactRole.EndUpdate();
 
             cboMetatype.BeginUpdate();

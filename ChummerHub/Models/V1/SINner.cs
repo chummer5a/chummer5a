@@ -88,7 +88,7 @@ namespace ChummerHub.Models.V1
             {
                 if(ur?.SINnerId == null) continue;
                 var sin = await context.SINners.Include(a => a.SINnerMetaData.Visibility.UserRights)
-                    .Include(a => a.MyExtendedAttributes)
+                    //.Include(a => a.MyExtendedAttributes)
                     .Include(b => b.MyGroup)
                     .ThenInclude( a => a.MyGroups)
                     .ThenInclude( a => a.MyGroups)

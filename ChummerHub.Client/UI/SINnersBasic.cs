@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Data;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -37,6 +38,9 @@ namespace ChummerHub.Client.UI
         private void SINnersBasicConstructor(SINnersUserControl parent)
         {
             InitializeComponent();
+           
+
+            this.TagValueProfession.DataSource = ContactControl.ContactProfession;
             this.Name = "SINnersBasic";
             this.bGroupSearch.Enabled = false;
             this.AutoSize = true;
@@ -50,6 +54,11 @@ namespace ChummerHub.Client.UI
                                                         myUC.MyCE.MySINnerFile.Id);
                 }
             });
+            foreach (var cb in gpTags.Controls)
+            {
+                if ((cb is Control cont))
+                    cont.Click += OnGroupBoxTagsClick;
+            }
         }
 
         public async Task<bool> CheckSINnerStatus()
@@ -100,23 +109,10 @@ namespace ChummerHub.Client.UI
                             this.bUpload.Text = "Upload";
                             this.bUpload.Enabled = true;
                         }
-
                         this.cbTagArchetype.Enabled = false;
-                        this.tbArchetypeName.Enabled = false;
+                        this.TagValueArchetypeName.Enabled = false;
                     });
-                    PluginHandler.MainForm.DoThreadSafe(() =>
-                    {
-                        var archetypeseq = from a in StaticUtils.UserRoles
-                            where a.ToLowerInvariant() == "ArchetypeAdmin".ToLowerInvariant()
-                            select a;
-                        if (archetypeseq.Any())
-                        {
-                            this.cbTagArchetype.Enabled = true;
-                            this.tbArchetypeName.Enabled = true;
-                        }
-                        if (myUC?.MyCE?.MySINnerFile?.MyGroup != null)
-                            this.lGourpForSinner.Text = myUC.MyCE.MySINnerFile.MyGroup.Groupname;
-                    });
+                    PluginHandler.MainForm.DoThreadSafe(() => { UpdateTags(); });
                 }
             }
             catch (Exception ex)
@@ -131,40 +127,160 @@ namespace ChummerHub.Client.UI
             return true;
         }
 
-        private void cbSRMReady_Click(object sender, EventArgs e)
+        private void UpdateTags()
         {
-            
-            var tagseq = (from a in myUC.MyCE.MySINnerFile.SiNnerMetaData.Tags
-                         where a.TagName == "SRM_ready"
-                         select a).ToList();
-            if (cbSRMReady.Checked == true)
+            var archetypeseq = from a in StaticUtils.UserRoles
+                where a.ToLowerInvariant() == "ArchetypeAdmin".ToLowerInvariant()
+                select a;
+            if (archetypeseq.Any())
             {
+                this.cbTagArchetype.Enabled = true;
+                this.TagValueArchetypeName.Enabled = true;
+            }
+            if (myUC?.MyCE?.MySINnerFile?.MyGroup != null)
+                this.lGourpForSinner.Text = myUC.MyCE.MySINnerFile.MyGroup.Groupname;
+
+            var gpControlSeq = (from a in GetAllControls(gpTags, new List<Control>())
+                where a.Name.Contains("cbTag")
+                select a).ToList();
+
+            var gpControlValueSeq = (from a in GetAllControls(gpTags, new List<Control>())
+                where a.Name.Contains("TagValue")
+                select a).ToList();
+
+            foreach (var cb in gpControlSeq)
+            {
+                if (cb is CheckBox cbTag)
+                    cbTag.CheckState = CheckState.Unchecked;
+            }
+
+            foreach (var tag in myUC.MyCE.MySINnerFile.SiNnerMetaData.Tags.ToList())
+            {
+                //search for a CheckBox that is named like the tag
+                string checkBoxKey = "cbTag" + tag.TagName;
+                var tagsCB = (from a in gpControlSeq where a.Name == checkBoxKey select a).ToList();
+                if (!tagsCB.Any())
+                    continue;
+                if (!(tagsCB.FirstOrDefault() is CheckBox cbTag))
+                    throw new ArgumentNullException("Control " + checkBoxKey + " is NOT a Checkbox!");
                 
-                if (!tagseq.Any())
+                if (Boolean.TryParse(tag.TagValue, out var value))
                 {
-                    Tag tag = new Tag(true);
-                    tag.SiNnerId = myUC.MyCE.MySINnerFile.Id;
-                    tag.TagName = "SRM_ready";
-                    tag.TagValue = "True";
-                    tag.TagType = "bool";
-                    myUC.MyCE.MySINnerFile.SiNnerMetaData.Tags.Add(tag);
+                    cbTag.Checked = value;
+                }
+                else
+                {
+                    cbTag.Checked = false;
+                }
+                //search for the value-control (whatever that may be)
+                var tagValueControlKey = "TagValue" + tag.TagName;
+                var tagValueControlSeq = (from a in gpControlValueSeq where a.Name == tagValueControlKey select a).ToList();
+                if (!tagValueControlSeq.Any())
+                {
+                    continue;
+                }
+
+                if (tagValueControlSeq.FirstOrDefault() is TextBox tbTagValue)
+                {
+                    tbTagValue.Text = tag.TagValue;
+                }
+                else if (tagValueControlSeq.FirstOrDefault() is ComboBox comboTagValue)
+                {
+                    if (!comboTagValue.Items.Contains(tag.TagValue))
+                        comboTagValue.Items.Add(tag.TagValue);
+                    comboTagValue.SelectedItem = tag.TagValue;
+                }
+                else if (tagValueControlSeq.FirstOrDefault() is NumericUpDown upDownTagValue)
+                {
+                    if (Decimal.TryParse(tag.TagValue, out var val))
+                        upDownTagValue.Value = val;
                 }
             }
-            else
-            {
-                if (tagseq.Any())
-                {
-                    foreach(var tag in tagseq)
-                    {
-                        myUC.MyCE.MySINnerFile.SiNnerMetaData.Tags.Remove(tag);
-                    }
-                }
-            }
-            
         }
 
-        
+        private void OnGroupBoxTagsClick(object sender, EventArgs e)
+        {
+            // Call the base class
+            base.OnClick(e);
+            SaveTagsToSinner();
+        }
 
+        private List<Control> GetAllControls(Control container, List<Control> list)
+        {
+            foreach (Control c in container.Controls)
+            {
+                list.Add(c);
+                if (c.Controls.Count > 0)
+                    list = GetAllControls(c, list);
+            }
+
+            return list;
+        }
+
+        private void SaveTagsToSinner()
+        {
+            if (myUC == null)
+                return;
+            var gpControlSeq = (from a in GetAllControls(gpTags, new List<Control>())
+                where a.Name.Contains("cbTag") select a).ToList();
+
+            var gpControlValueSeq = (from a in GetAllControls(gpTags, new List<Control>())
+                where a.Name.Contains("TagValue")
+                select a).ToList();
+
+            foreach (var cb in gpControlSeq)
+            {
+                if (!(cb is CheckBox cbTag))
+                    continue;
+                
+                string tagName = cbTag.Name.Substring("cbTag".Length);
+                Tag tag = null;
+                if (myUC.MyCE.MySINnerFile.SiNnerMetaData.Tags.All(a => a.TagName != tagName))
+                {
+                    tag = new Tag(true)
+                    {
+                        SiNnerId = myUC.MyCE.MySINnerFile.Id,
+                        TagName = tagName
+                    };
+                    
+                }
+                else
+                {
+                    tag = myUC.MyCE.MySINnerFile.SiNnerMetaData.Tags.FirstOrDefault(a => a.TagName == tagName);
+                }
+                if (tag == null) continue;
+                if (myUC.MyCE.MySINnerFile.SiNnerMetaData.Tags.Contains(tag))
+                    myUC.MyCE.MySINnerFile.SiNnerMetaData.Tags.Remove(tag);
+                if (cbTag.Checked == false)
+                    continue;
+                else if (cbTag.CheckState == CheckState.Checked)
+                {
+                    tag.TagValue = (true).ToString();
+                }
+                myUC.MyCE.MySINnerFile.SiNnerMetaData.Tags.Add(tag);
+                //search for the value
+                var tagValueControlKey = "TagValue" + tag.TagName;
+                var tagValueControlSeq =
+                    (from a in gpControlValueSeq where a.Name == tagValueControlKey select a).ToList();
+                if (!tagValueControlSeq.Any())
+                    continue;
+                if (tagValueControlSeq.FirstOrDefault() is TextBox tbTagValue)
+                {
+                    tag.TagValue = tbTagValue.Text;
+                }
+                else if (tagValueControlSeq.FirstOrDefault() is ComboBox comboTagValue)
+                {
+                    tag.TagValue = comboTagValue.SelectedItem?.ToString();
+                }
+                else if (tagValueControlSeq.FirstOrDefault() is NumericUpDown upDownTagValue)
+                {
+                    tag.TagValue = upDownTagValue.Value.ToString(CultureInfo.InvariantCulture);
+                }
+
+            }
+        }
+
+       
         private async void bUpload_Click(object sender, EventArgs e)
         {
             using (new CursorWait(true, this))
@@ -207,33 +323,6 @@ namespace ChummerHub.Client.UI
             
         }
 
-        private void cbTagArchetype_Click(object sender, EventArgs e)
-        {
-            var tagseq = (from a in myUC.MyCE.MySINnerFile.SiNnerMetaData.Tags
-                         where a.TagName == "Archetype"
-                         select a).ToList();
-            if(cbSRMReady.Checked == true)
-            {
-                if(!tagseq.Any())
-                {
-                    Tag tag = new Tag(true);
-                    tag.SiNnerId = myUC.MyCE.MySINnerFile.Id;
-                    tag.TagName = "Archetype";
-                    tag.TagValue = tbArchetypeName.Text;
-                    tag.TagType = "string";
-                    myUC.MyCE.MySINnerFile.SiNnerMetaData.Tags.Add(tag);
-                }
-            }
-            else
-            {
-                if(tagseq.Any())
-                {
-                    foreach(var tag in tagseq)
-                    {
-                        myUC.MyCE.MySINnerFile.SiNnerMetaData.Tags.Remove(tag);
-                    }
-                }
-            }
-        }
+       
     }
 }
