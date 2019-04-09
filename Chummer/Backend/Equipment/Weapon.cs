@@ -1581,9 +1581,9 @@ namespace Chummer.Backend.Equipment
             {
                 _objCachedMyXmlNode = SourceID == Guid.Empty
                     ? XmlManager.Load("weapons.xml", strLanguage)
-                        .SelectSingleNode("/chummer/weapons/weapon[name = \"" + Name + "\"]")
+                        .SelectSingleNode($"/chummer/weapons/weapon[name = \"{Name}\"]")
                     : XmlManager.Load("weapons.xml", strLanguage)
-                        .SelectSingleNode("/chummer/weapons/weapon[id = \"" + SourceIDString + " or id = \"" + SourceIDString.ToUpperInvariant() + "\"]");
+                        .SelectSingleNode($"/chummer/weapons/weapon[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;
