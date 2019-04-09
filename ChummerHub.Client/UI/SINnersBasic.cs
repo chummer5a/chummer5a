@@ -40,7 +40,7 @@ namespace ChummerHub.Client.UI
             InitializeComponent();
            
 
-            this.TagValueProfession.DataSource = ContactControl.ContactProfession;
+            this.TagValueArchetype.DataSource = ContactControl.ContactArchetype;
             this.Name = "SINnersBasic";
             this.bGroupSearch.Enabled = false;
             this.AutoSize = true;
@@ -109,8 +109,8 @@ namespace ChummerHub.Client.UI
                             this.bUpload.Text = "Upload";
                             this.bUpload.Enabled = true;
                         }
-                        this.cbTagArchetype.Enabled = false;
-                        this.TagValueArchetypeName.Enabled = false;
+                        this.cbTagCustom.Enabled = false;
+                        this.TagValueCustomName.Enabled = false;
                     });
                     PluginHandler.MainForm.DoThreadSafe(() => { UpdateTags(); });
                 }
@@ -134,8 +134,8 @@ namespace ChummerHub.Client.UI
                 select a;
             if (archetypeseq.Any())
             {
-                this.cbTagArchetype.Enabled = true;
-                this.TagValueArchetypeName.Enabled = true;
+                this.cbTagCustom.Enabled = true;
+                this.TagValueCustomName.Enabled = true;
             }
             if (myUC?.MyCE?.MySINnerFile?.MyGroup != null)
                 this.lGourpForSinner.Text = myUC.MyCE.MySINnerFile.MyGroup.Groupname;

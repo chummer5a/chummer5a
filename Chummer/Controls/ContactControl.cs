@@ -350,15 +350,15 @@ namespace Chummer
             }
         }
 
-        private static List<ListItem> _ContactProfession;
+        private static List<ListItem> _ContactArchetype;
 
-        public static List<ListItem> ContactProfession
+        public static List<ListItem> ContactArchetype
         {
             get
             {
-                if (_ContactProfession == null)
+                if (_ContactArchetype == null)
                 {
-                    _ContactProfession = new List<ListItem>() {ListItem.Blank};
+                    _ContactArchetype = new List<ListItem>() {ListItem.Blank};
                     XmlNode xmlContactsBaseNode = XmlManager.Load("contacts.xml").SelectSingleNode("/chummer");
                     if (xmlContactsBaseNode != null)
                     {
@@ -367,15 +367,15 @@ namespace Chummer
                                 foreach (XmlNode xmlNode in xmlNodeList)
                                 {
                                     string strName = xmlNode.InnerText;
-                                    ContactProfession.Add(new ListItem(strName,
+                                    ContactArchetype.Add(new ListItem(strName,
                                         xmlNode.Attributes?["translate"]?.InnerText ?? strName));
                                 }
                     }
                 }
 
-                return _ContactProfession;
+                return _ContactArchetype;
             }
-            set { _ContactProfession = value; }
+            set { _ContactArchetype = value; }
 
         }
         #endregion
@@ -501,7 +501,7 @@ namespace Chummer
                         }
                     }
 
-            ContactProfession.Sort(CompareListItems.CompareNames);
+            ContactArchetype.Sort(CompareListItems.CompareNames);
             lstMetatypes.Sort(CompareListItems.CompareNames);
             lstSexes.Sort(CompareListItems.CompareNames);
             lstAges.Sort(CompareListItems.CompareNames);
@@ -513,7 +513,7 @@ namespace Chummer
             cboContactRole.BeginUpdate();
             cboContactRole.ValueMember = "Value";
             cboContactRole.DisplayMember = "Name";
-            cboContactRole.DataSource = ContactProfession;
+            cboContactRole.DataSource = ContactArchetype;
             cboContactRole.EndUpdate();
 
             cboMetatype.BeginUpdate();
