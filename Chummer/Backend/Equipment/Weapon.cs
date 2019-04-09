@@ -564,6 +564,7 @@ namespace Chummer.Backend.Equipment
             {
                 _guiID = Guid.NewGuid();
             }
+            objNode.TryGetStringFieldQuickly("name", ref _strName);
             if (objNode["sourceid"] == null || !objNode.TryGetField("sourceid", Guid.TryParse, out _guiSourceID))
             {
                 XmlNode node = GetNode(GlobalOptions.Language);
@@ -607,7 +608,6 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            objNode.TryGetStringFieldQuickly("name", ref _strName);
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
             if (_strCategory == "Hold-Outs")
                 _strCategory = "Holdouts";

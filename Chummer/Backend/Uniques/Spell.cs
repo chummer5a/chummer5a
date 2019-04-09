@@ -167,13 +167,13 @@ namespace Chummer
             {
                 _guiID = Guid.NewGuid();
             }
+            objNode.TryGetStringFieldQuickly("name", ref _strName);
             if (objNode["sourceid"] == null || !objNode.TryGetField("sourceid", Guid.TryParse, out _guiSourceID))
             {
                 XmlNode node = GetNode(GlobalOptions.Language);
                 node?.TryGetField("id", Guid.TryParse, out _guiSourceID);
             }
 
-            objNode.TryGetStringFieldQuickly("name", ref _strName);
             objNode.TryGetStringFieldQuickly("descriptors", ref _strDescriptors);
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
             objNode.TryGetStringFieldQuickly("type", ref _strType);

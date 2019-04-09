@@ -216,6 +216,7 @@ namespace Chummer
             {
                 _guiID = Guid.NewGuid();
             }
+            objNode.TryGetStringFieldQuickly("name", ref _strName);
             if (objNode["sourceid"] == null || !objNode.TryGetField("sourceid", Guid.TryParse, out _guiSourceID))
             {
                 XmlNode node = GetNode(GlobalOptions.Language);
@@ -234,7 +235,6 @@ namespace Chummer
                 }
             }
 
-            objNode.TryGetStringFieldQuickly("name", ref _strName);
             Extra = objNode["extra"]?.InnerText ?? string.Empty;
             _strPointsPerLevel = objNode["pointsperlevel"]?.InnerText;
             objNode.TryGetStringFieldQuickly("action", ref _strAction);

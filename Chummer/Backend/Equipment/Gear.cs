@@ -777,6 +777,8 @@ namespace Chummer.Backend.Equipment
             {
                 _guiID = Guid.NewGuid();
             }
+            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            objNode.TryGetStringFieldQuickly("category", ref _strCategory);
             if (objNode["sourceid"] == null || !objNode.TryGetField("sourceid", Guid.TryParse, out _guiSourceID))
             {
                 if (!objNode.TryGetField("id", Guid.TryParse, out _guiSourceID))
@@ -785,9 +787,6 @@ namespace Chummer.Backend.Equipment
                     node?.TryGetField("id", Guid.TryParse, out _guiSourceID);
                 }
             }
-            if (objNode.TryGetStringFieldQuickly("name", ref _strName))
-                _objCachedMyXmlNode = null;
-            if (objNode.TryGetStringFieldQuickly("category", ref _strCategory))
                 _objCachedMyXmlNode = null;
             objNode.TryGetInt32FieldQuickly("matrixcmfilled", ref _intMatrixCMFilled);
             objNode.TryGetInt32FieldQuickly("matrixcmbonus", ref _intMatrixCMBonus);

@@ -898,6 +898,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="blnCopy">Whether this is a copy of an existing cyberware being loaded.</param>
         public void Load(XmlNode objNode, bool blnCopy = false)
         {
+            objNode.TryGetStringFieldQuickly("name", ref _strName);
             if (objNode["sourceid"] == null || !objNode.TryGetField("sourceid", Guid.TryParse, out _guiSourceID))
             {
                 XmlNode node = GetNode(GlobalOptions.Language);
@@ -910,7 +911,6 @@ namespace Chummer.Backend.Equipment
             else
                 objNode.TryGetField("guid", Guid.TryParse, out _guiID);
 
-            objNode.TryGetStringFieldQuickly("name", ref _strName);
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
             if (objNode["improvementsource"] != null)
             {
