@@ -184,7 +184,7 @@ namespace Chummer
         private int _intAvailability = 12;
 
         // List of names of custom data directories
-        private readonly List<string> _lstCustomDataDirectoryNames = new List<string>();
+        private readonly Dictionary<string,bool> _dicCustomDataDirectoryNames = new Dictionary<string, bool>();
 
         // Sourcebook list.
         private readonly HashSet<string> _lstBooks = new HashSet<string>();
@@ -522,8 +522,13 @@ namespace Chummer
 
             // <customdatadirectorynames>
             objWriter.WriteStartElement("customdatadirectorynames");
-            foreach (string strDirectoryName in _lstCustomDataDirectoryNames)
-                objWriter.WriteElementString("directoryname", strDirectoryName);
+            foreach (KeyValuePair<string, bool> dicDirectoryName in _dicCustomDataDirectoryNames)
+            {
+                objWriter.WriteStartElement("customdatadirectoryname");
+                objWriter.WriteElementString("directoryname", dicDirectoryName.Key);
+                objWriter.WriteElementString("enabled", dicDirectoryName.Value.ToString(GlobalOptions.InvariantCultureInfo));
+                objWriter.WriteEndElement();
+            }
             // </customdatadirectorynames>
             objWriter.WriteEndElement();
             // <hascustomdirectories>
@@ -847,11 +852,26 @@ namespace Chummer
             RecalculateBookXPath();
 
             // Load Custom Data Directory names.
-            _lstCustomDataDirectoryNames.Clear();
-            using (XmlNodeList xmlDirectoryList = objXmlDocument.SelectNodes("/settings/customdatadirectorynames/directoryname"))
+            _dicCustomDataDirectoryNames.Clear();
+            using (XmlNodeList xmlDirectoryList =
+                objXmlDocument.SelectNodes("/settings/customdatadirectorynames/customdatadirectoryname"))
+            {
                 if (xmlDirectoryList != null)
                     foreach (XmlNode objXmlDirectoryName in xmlDirectoryList)
-                _lstCustomDataDirectoryNames.Add(objXmlDirectoryName.InnerText);
+                    {
+                        _dicCustomDataDirectoryNames.Add(objXmlDirectoryName["directoryname"].InnerText,
+                            Convert.ToBoolean(objXmlDirectoryName["enabled"].InnerText));
+                    }
+            }
+
+            if (_dicCustomDataDirectoryNames.Count == 0)
+            {
+                using (XmlNodeList xmlDirectoryList =
+                    objXmlDocument.SelectNodes("/settings/customdatadirectorynames/directoryname"))
+                    if (xmlDirectoryList != null)
+                        foreach (XmlNode objXmlDirectoryName in xmlDirectoryList)
+                            _dicCustomDataDirectoryNames.Add(objXmlDirectoryName.InnerText, true);
+            }
 
             // Load default build settings.
             objXmlNode = objXmlDocument.SelectSingleNode("//settings/defaultbuild");
@@ -1359,7 +1379,7 @@ namespace Chummer
         /// <summary>
         /// Names of custom data directories
         /// </summary>
-        public IList<string> CustomDataDirectoryNames => _lstCustomDataDirectoryNames;
+        public Dictionary<string,bool> CustomDataDirectoryNames => _dicCustomDataDirectoryNames;
 
         /// <summary>
         /// Setting name.

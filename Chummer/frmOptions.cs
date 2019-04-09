@@ -990,16 +990,14 @@ namespace Chummer
             foreach(TreeNode objNode in treCustomDataDirectories.Nodes)
             {
                 CustomDataDirectoryInfo objCustomDataDirectory = _lstCustomDataDirectoryInfos.FirstOrDefault(x => x.Name == objNode.Tag.ToString());
-                if(objCustomDataDirectory != null)
+                if (objCustomDataDirectory == null) continue;
+                if(objNode.Checked)
                 {
-                    if(objNode.Checked)
-                    {
-                        _characterOptions.CustomDataDirectoryNames.Add(objNode.Tag.ToString());
-                        objCustomDataDirectory.Enabled = true;
-                    }
-                    else
-                        objCustomDataDirectory.Enabled = false;
+                    _characterOptions.CustomDataDirectoryNames.Add(objNode.Tag.ToString(), true);
+                    objCustomDataDirectory.Enabled = true;
                 }
+                else
+                    objCustomDataDirectory.Enabled = false;
             }
         }
 
