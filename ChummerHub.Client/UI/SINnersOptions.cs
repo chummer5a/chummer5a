@@ -38,7 +38,7 @@ namespace ChummerHub.Client.UI
             {
                 if (_SINnerVisibility != null)
                     return _SINnerVisibility;
-                //Properties.Settings.Default.Reload();
+                Properties.Settings.Default.Reload();
                 if(String.IsNullOrEmpty(Properties.Settings.Default.SINnerVisibility))
                 {
                     _SINnerVisibility = new SINners.Models.SINnerVisibility()
@@ -123,7 +123,10 @@ namespace ChummerHub.Client.UI
                     _SINnerVisibility = value;
                 }
                 else
+                {
                     Properties.Settings.Default.SINnerVisibility = null;
+                    _SINnerVisibility = null;
+                }
             }
         }
 
@@ -310,17 +313,31 @@ namespace ChummerHub.Client.UI
                                 }
                                 if (createVis)
                                 {
-                                    SINnerVisibility vis = new SINnerVisibility();
-                                    vis.Id = Guid.NewGuid();
-                                    vis.IsGroupVisible = true;
-                                    vis.IsPublic = true;
-                                    vis.UserRights = new List<SINerUserRight>();
-                                    SINerUserRight ur = new SINerUserRight();
-                                    ur.Id = Guid.NewGuid();
-                                    ur.EMail = mail;
-                                    ur.CanEdit = true;
-                                    vis.UserRights.Add(ur);
-                                    SINnersOptions.SINnerVisibility = null;
+
+                                    SINnerVisibility vis = SINnersOptions.SINnerVisibility;
+                                    if (vis == null)
+                                    {
+                                        vis = new SINnerVisibility();
+                                        vis.Id = Guid.NewGuid();
+                                        vis.IsGroupVisible = true;
+                                        vis.IsPublic = true;
+                                        vis.UserRights = new List<SINerUserRight>();
+                                        
+                                        SINnersOptions.SINnerVisibility = null;
+                                        SINnersOptions.SINnerVisibility = vis;
+                                    }
+                                    var foundseq = from a in vis.UserRights.ToList()
+                                        where a.EMail.ToLowerInvariant() == mail.ToLowerInvariant()
+                                        select a;
+                                    if (!foundseq.Any())
+                                    {
+                                        SINerUserRight ur = new SINerUserRight();
+                                        ur.Id = Guid.NewGuid();
+                                        ur.EMail = mail;
+                                        ur.CanEdit = true;
+                                        vis.UserRights.Add(ur);
+                                    }
+
                                     SINnersOptions.SINnerVisibility = vis;
                                     Properties.Settings.Default.SINnerVisibility = Newtonsoft.Json.JsonConvert.SerializeObject(vis);
                                     Properties.Settings.Default.Save();

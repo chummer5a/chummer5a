@@ -179,6 +179,7 @@ namespace ChummerHub.Controllers.V1
                 }
 
                 var sin = await _context.SINners
+                    .Include( a => a.MyExtendedAttributes)
                     .Include(a => a.SINnerMetaData.Visibility.UserRights)
                     .Include( a => a.MyGroup)
                     .Include(b => b.MyGroup.MySettings)
