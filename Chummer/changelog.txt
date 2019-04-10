@@ -34,6 +34,7 @@ Data Changes:
 - Added a new customdata entry for German Data Changes to add Machine Pistols and Submachine Guns to Standard and Heavy Weapon Mounts.
 - Added missing side prompts to the synthetic modular full arm and leg.
 - Fixed a typo in the Cavalier Arms Adder Slivergun's name.
+- Added a new customdata entry for the Ram Plate Vehicle Modification that sets it to use the stats as provided in Hero Lab. 
 
 String Changes:
 
