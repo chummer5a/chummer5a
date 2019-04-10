@@ -98,7 +98,6 @@ namespace Chummer
         private XmlNode _nodDiscounts;
         private readonly Character _objCharacter;
         private Guid _guiWeaponID;
-        private Guid _guiQualityId;
         private string _strStage;
 
         public string Stage => _strStage;
@@ -196,13 +195,6 @@ namespace Chummer
             if (_eQualityType == QualityType.LifeModule)
             {
                 objXmlQuality.TryGetStringFieldQuickly("stage", ref _strStage);
-            }
-
-            if (objXmlQuality.TryGetField("id", Guid.TryParse, out Guid guiTemp))
-            {
-                _guiSourceID = guiTemp;
-                _guiQualityId = guiTemp;
-                _objCachedMyXmlNode = null;
             }
 
             // Add Weapons if applicable.
@@ -367,11 +359,6 @@ namespace Chummer
                 objWriter.WriteElementString("stage", _strStage);
             }
 
-            if (!_guiQualityId.Equals(Guid.Empty))
-            {
-                objWriter.WriteElementString("id", _guiQualityId.ToString("D"));
-            }
-
             objWriter.WriteEndElement();
 
             if (OriginSource != QualitySource.BuiltIn &&
@@ -486,11 +473,6 @@ namespace Chummer
         /// Internal identifier which will be used to identify this Quality in the Improvement system.
         /// </summary>
         public string InternalId => _guiID.ToString("D");
-
-        /// <summary>
-        /// Internal identifier for the quality type
-        /// </summary>
-        public string QualityId => _guiQualityId.Equals(Guid.Empty) ? string.Empty : _guiQualityId.ToString("D");
 
         /// <summary>
         /// Guid of a Weapon.
@@ -681,7 +663,7 @@ namespace Chummer
         {
             get
             {
-                return _objCharacter.Qualities.Count(objExistingQuality => objExistingQuality.QualityId == QualityId && objExistingQuality.Extra == Extra && objExistingQuality.SourceName == SourceName && objExistingQuality.Type == Type);
+                return _objCharacter.Qualities.Count(objExistingQuality => objExistingQuality.SourceIDString == SourceIDString && objExistingQuality.Extra == Extra && objExistingQuality.SourceName == SourceName && objExistingQuality.Type == Type);
             }
         }
 
@@ -879,7 +861,7 @@ namespace Chummer
             {
                 foreach (Quality objQuality in objCharacter.Qualities)
                 {
-                    if (objQuality.QualityId == objXmlQuality["id"]?.InnerText)
+                    if (objQuality.SourceIDString == objXmlQuality["id"]?.InnerText)
                     {
                         reason |= QualityFailureReason.LimitExceeded; //QualityFailureReason is a flag enum, meaning each bit represents a different thing
                         //So instead of changing it, |= adds rhs to list of reasons on lhs, if it is not present

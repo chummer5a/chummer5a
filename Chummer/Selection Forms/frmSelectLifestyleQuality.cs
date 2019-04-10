@@ -408,14 +408,14 @@ namespace Chummer
         /// </summary>
         private void AcceptForm()
         {
-            string strSelectedQualityId = lstLifestyleQualities.SelectedValue?.ToString();
-            if (string.IsNullOrEmpty(strSelectedQualityId))
+            string strSelectedSourceIDString = lstLifestyleQualities.SelectedValue?.ToString();
+            if (string.IsNullOrEmpty(strSelectedSourceIDString))
                 return;
-            XmlNode objNode = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + strSelectedQualityId + "\"]");
+            XmlNode objNode = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + strSelectedSourceIDString + "\"]");
             if (objNode == null || !RequirementMet(objNode, true))
                 return;
 
-            _strSelectedQuality = strSelectedQualityId;
+            _strSelectedQuality = strSelectedSourceIDString;
             s_StrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode["category"]?.InnerText;
 
             DialogResult = DialogResult.OK;

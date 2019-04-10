@@ -175,10 +175,10 @@ namespace Chummer
         {
             string strSource = string.Empty;
             string strPage = string.Empty;
-            string strQualityId = treQualities.SelectedNode?.Tag.ToString();
-            if (!string.IsNullOrEmpty(strQualityId))
+            string strSourceIDString = treQualities.SelectedNode?.Tag.ToString();
+            if (!string.IsNullOrEmpty(strSourceIDString))
             {
-                XmlNode objXmlQuality = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + strQualityId + "\"]");
+                XmlNode objXmlQuality = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + strSourceIDString + "\"]");
                 if (objXmlQuality != null)
                 {
                     strSource = objXmlQuality["source"]?.InnerText ?? string.Empty;

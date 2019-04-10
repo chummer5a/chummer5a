@@ -1941,7 +1941,7 @@ namespace Chummer
                         for (int k = 0; k < CharacterObject.Qualities.Count; ++k)
                         {
                             Quality objCheckQuality = CharacterObject.Qualities[k];
-                            if (j != k && objCheckQuality.QualityId == objQuality.QualityId && objCheckQuality.Extra == objQuality.Extra && objCheckQuality.SourceName == objQuality.SourceName)
+                            if (j != k && objCheckQuality.SourceIDString == objQuality.SourceIDString && objCheckQuality.Extra == objQuality.Extra && objCheckQuality.SourceName == objQuality.SourceName)
                             {
                                 if (k < j || objCheckQuality.OriginSource == QualitySource.Improvement || (lstInternalIdFilter != null && !lstInternalIdFilter.Contains(objCheckQuality.InternalId)))
                                 {
@@ -5050,7 +5050,7 @@ namespace Chummer
                     CharacterObject.Karma += intKarmaCost;
 
                     ExpenseUndo objUndo = new ExpenseUndo();
-                    objUndo.CreateKarma(KarmaExpenseType.RemoveQuality, objSelectedQuality.QualityId);
+                    objUndo.CreateKarma(KarmaExpenseType.RemoveQuality, objSelectedQuality.SourceIDString);
                     objUndo.Extra = objSelectedQuality.Extra;
                     objEntry.Undo = objUndo;
                 }
@@ -5093,7 +5093,7 @@ namespace Chummer
                 CharacterObject.Karma -= intKarmaCost;
 
                 ExpenseUndo objUndo = new ExpenseUndo();
-                objUndo.CreateKarma(KarmaExpenseType.RemoveQuality, objSelectedQuality.QualityId);
+                objUndo.CreateKarma(KarmaExpenseType.RemoveQuality, objSelectedQuality.SourceIDString);
                 objUndo.Extra = objSelectedQuality.Extra;
                 objExpense.Undo = objUndo;
             }
@@ -5131,7 +5131,7 @@ namespace Chummer
                 for (int i = CharacterObject.Qualities.Count - 1; i >= 0; i--)
                 {
                     Quality objLoopQuality = CharacterObject.Qualities[i];
-                    if (objLoopQuality.QualityId == objSelectedQuality.QualityId && objLoopQuality.Extra == objSelectedQuality.Extra &&
+                    if (objLoopQuality.SourceIDString == objSelectedQuality.SourceIDString && objLoopQuality.Extra == objSelectedQuality.Extra &&
                         objLoopQuality.SourceName == objSelectedQuality.SourceName && objLoopQuality.Type == objSelectedQuality.Type)
                     {
                         // Remove the Improvements that were created by the Quality.
@@ -5348,7 +5348,7 @@ namespace Chummer
                 // Removing a level
                 for (; nudQualityLevel.Value < intCurrentLevels; --intCurrentLevels)
                 {
-                    Quality objInvisibleQuality = CharacterObject.Qualities.FirstOrDefault(x => x.QualityId == objSelectedQuality.QualityId && x.Extra == objSelectedQuality.Extra && x.SourceName == objSelectedQuality.SourceName && x.InternalId != objSelectedQuality.InternalId);
+                    Quality objInvisibleQuality = CharacterObject.Qualities.FirstOrDefault(x => x.SourceIDString == objSelectedQuality.SourceIDString && x.Extra == objSelectedQuality.Extra && x.SourceName == objSelectedQuality.SourceName && x.InternalId != objSelectedQuality.InternalId);
                     if (objInvisibleQuality != null && RemoveQuality(objInvisibleQuality, false, false))
                     {
                         IsCharacterUpdateRequested = true;
