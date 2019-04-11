@@ -135,6 +135,10 @@ namespace Chummer.Plugins
                     MyCharExtendedDic.Add(input.FileName, ce);
                 }
 
+                if (!ce.MySINnerFile.SiNnerMetaData.Tags.Any(a => a.TagName == "Reflection"))
+                {
+                    ce.MySINnerFile.SiNnerMetaData.Tags = ce.PopulateTags();
+                }
                 await ce.Upload();
                 var found = (from a in MainForm.OpenCharacterForms where a.CharacterObject == input select a)
                     .FirstOrDefault();
