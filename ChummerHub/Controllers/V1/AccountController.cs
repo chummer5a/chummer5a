@@ -399,16 +399,24 @@ namespace ChummerHub.Controllers
             }
         }
 
+        /// <summary>
+        /// Search for Sinners for one user
+        /// </summary>
+        /// <returns>SINSearchGroupResult</returns>
         [HttpGet]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Unauthorized)]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Forbidden)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(SINSearchGroupResult), StatusCodes.Status200OK)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse(StatusCodes.Status400BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GetSinnersByAuthorization")]
         [Authorize]
-        public async Task<ActionResult<SINSearchResult>> GetSINnersByAuthorization()
+        public async Task<ActionResult<SINSearchGroupResult>> GetSINnersByAuthorization()
         {
-            SINSearchResult ret = new SINSearchResult();
+            SINSearchGroupResult ret = new SINSearchGroupResult();
+            SINnerGroup sg = new SINnerGroup();
+            SINnerSearchGroup ssg = new SINnerSearchGroup(sg)
+            {
+                MyMembers = new List<SINnerSearchGroupMember>()
+            };
             try
             {
                 var user = await _signInManager.UserManager.GetUserAsync(User);
@@ -417,17 +425,31 @@ namespace ChummerHub.Controllers
                     ret.ErrorText = "Unauthorized";
                     throw new AuthenticationException("User is not authenticated.");
                 }
+                ssg.Groupname = user.Email;
+                ssg.Id = Guid.Empty;
                 //get all from visibility
-                SINnersList list = new SINnersList();
+                //SINnersList list = new SINnersList();
                 List<SINner> mySinners = await SINner.GetSINnersFromUser(user, _context, true);
                 foreach(var sin in mySinners)
                 {
-                    SINnerList owndSINner = new SINnerList
+                    SINnerSearchGroupMember ssgm = new SINnerSearchGroupMember
                     {
-                        SINner = sin
+                        MySINner = sin,
+                        Username = user.UserName
                     };
-                    if(sin.MyGroup != null)
+                    ssg.MyMembers.Add(ssgm);
+                    if (sin.MyGroup != null)
                     {
+                        SINnerSearchGroup ssgFromSIN;
+                        if (ssg.MySINSearchGroups.Any(a => a.Id == sin.MyGroup.Id))
+                        {
+                            ssgFromSIN = ssg.MySINSearchGroups.FirstOrDefault(a => a.Id == sin.MyGroup.Id);
+                        }
+                        else
+                        {
+                            ssgFromSIN = new SINnerSearchGroup(sin.MyGroup);
+                            ssg.MySINSearchGroups.Add(ssgFromSIN);
+                        }
                         //add all members of his group
                         var members = await sin.MyGroup.GetGroupMembers(_context);
                         foreach(var member in members)
@@ -440,22 +462,20 @@ namespace ChummerHub.Controllers
                             {
                                 member.MyGroup = sin.MyGroup;
                                 member.MyGroup.MyGroups = new List<SINnerGroup>();
-                                SINnerList memberlist = new SINnerList
+                                SINnerSearchGroupMember sinssgGroupMember = new SINnerSearchGroupMember
                                 {
-                                    SINner = member
+                                    MySINner = member
                                 };
-                                owndSINner.SINList.Add(memberlist);
+                                ssgFromSIN.MyMembers.Add(sinssgGroupMember);
                             }
                         }
-
                         sin.MyGroup.PasswordHash = "";
                         sin.MyGroup.MyGroups = new List<SINnerGroup>();
-                        ;
+                        
                     }
-                    list.MySINnersList.Add(owndSINner);
                 }
-
-                ret.SINLists.Add(list);
+                
+                ret.SINGroups.Add(ssg);
                 return Ok(ret);
             }
             catch (Exception e)
@@ -466,6 +486,7 @@ namespace ChummerHub.Controllers
                 return BadRequest(hue);
             }
         }
+      
 
         [HttpGet]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]

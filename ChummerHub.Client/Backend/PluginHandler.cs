@@ -11,7 +11,9 @@ using System.Collections.Generic;
 using System.Composition;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Reflection;
+using System.Runtime.Remoting.Channels;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -19,6 +21,8 @@ using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
+using Microsoft.Rest;
+using System.Threading;
 
 namespace Chummer.Plugins
 {
@@ -208,19 +212,30 @@ namespace Chummer.Plugins
 
         IEnumerable<ToolStripMenuItem> IPlugin.GetMenuItems(ToolStripMenuItem input)
         {
+            var list = new List<ToolStripMenuItem>();
 #if DEBUG
-            ToolStripMenuItem mnuSINners = new ToolStripMenuItem();
-            mnuSINners.Name = "mnuSINners";
-            mnuSINners.Text = "&SINners";
+            ToolStripMenuItem mnuSINners = new ToolStripMenuItem
+            {
+                Name = "mnuSINners",
+                Text = "&SINners"
+            };
             mnuSINners.Click += new System.EventHandler(mnuSINners_Click);
             mnuSINners.Image = ChummerHub.Client.Properties.Resources.group;
             mnuSINners.ImageTransparentColor = System.Drawing.Color.Black;
             mnuSINners.Size = new System.Drawing.Size(148, 22);
-            mnuSINners.Tag = "Menu_SINners";
-            return new List<ToolStripMenuItem>() { mnuSINners };
-#else
-            return null;
+            mnuSINners.Tag = "Menu_Main_SINners";
+            list.Add(mnuSINners);
 #endif
+            ToolStripMenuItem mnuNPCs = new ToolStripMenuItem();
+            mnuNPCs.Name = "mnuNPCs";
+            mnuNPCs.Text = "&NPCs";
+            mnuNPCs.Click += new System.EventHandler(mnuNPCs_Click);
+            mnuNPCs.Image = ChummerHub.Client.Properties.Resources.group;
+            mnuNPCs.ImageTransparentColor = System.Drawing.Color.Black;
+            mnuNPCs.Size = new System.Drawing.Size(148, 22);
+            mnuNPCs.Tag = "Menu_Main_NPCs";
+            list.Add(mnuNPCs);
+            return list;
         }
 
         private void mnuSINners_Click(object sender, EventArgs e)
@@ -228,6 +243,56 @@ namespace Chummer.Plugins
             frmSINnerSearch search = new frmSINnerSearch();
             search.Show();
         }
+
+        public static ConcurrentDictionary<string, TreeNode> MyTreeNodes2Add = new ConcurrentDictionary<string, TreeNode>();
+
+        private async void mnuNPCs_Click(object sender, EventArgs ea)
+        {
+            try
+            {
+                using (new CursorWait(true, PluginHandler.MainForm))
+                {
+                    MyTreeNodes2Add.Clear();
+                    Func<Task<HttpOperationResponse<SINSearchGroupResult>>> myGetNPCs = async () =>
+                    {
+                        var client = await StaticUtils.GetClient();
+                        var res = await client.GetPublicGroupWithHttpMessagesAsync("NPC", GlobalOptions.Language, null, new CancellationToken());
+                        return res;
+                    };
+                    var nodelist = await ChummerHub.Client.Backend.Utils.GetCharacterRosterTreeNode(PluginHandler.MainForm.CharacterRoster.MyCharacterCacheDic, true, myGetNPCs);
+                    foreach (var node in nodelist)
+                    {
+                        MyTreeNodes2Add.AddOrUpdate(node.Name, node, (key, oldValue) => node);
+                    }
+                    PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false, true);
+                    PluginHandler.MainForm.CharacterRoster.BringToFront();
+                }
+
+            }
+            catch (Microsoft.Rest.SerializationException e)
+            {
+                if (e.Content.Contains("Log in - ChummerHub"))
+                {
+                    TreeNode node = new TreeNode("Online, but not logged in!")
+                    {
+                        ToolTipText = "Please log in (Options -> Plugins -> Sinners (Cloud) -> Login",
+                        Tag = e
+                    };
+                    //return new List<TreeNode>() { node };
+                }
+                else
+                {
+                    TreeNode node = new TreeNode("Error: " + e.Message) { ToolTipText = e.ToString(), Tag = e };
+                    //return new List<TreeNode>() { node };
+                }
+            }
+            catch (Exception e)
+            {
+                TreeNode node = new TreeNode("SINners Error: please log in") { ToolTipText = e.ToString(), Tag = e };
+                //return new List<TreeNode>() { node };
+            }
+        }
+        
 
         public Assembly GetPluginAssembly()
         {
@@ -255,7 +320,20 @@ namespace Chummer.Plugins
             {
                 using (new CursorWait(true, frmCharRoster))
                 {
-                    return await ChummerHub.Client.Backend.Utils.GetCharacterRosterTreeNode(frmCharRoster.MyCharacterCacheDic, forceUpdate);
+                    Func<Task<HttpOperationResponse<SINSearchGroupResult>>> myMethodName = async () =>
+                    {
+                        var client = await StaticUtils.GetClient();
+                        var ret = await client.GetSINnersByAuthorizationWithHttpMessagesAsync();
+                        return ret;
+                    }; 
+                    var res = await ChummerHub.Client.Backend.Utils.GetCharacterRosterTreeNode(frmCharRoster.MyCharacterCacheDic, forceUpdate, myMethodName);
+                    var list = res.ToList();
+                    var myadd = MyTreeNodes2Add.ToList();
+                    foreach (var addme in myadd)
+                    {
+                        list.Add(addme.Value);
+                    }
+                    return list;
                 }
                     
             }

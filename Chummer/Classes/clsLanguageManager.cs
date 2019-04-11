@@ -757,6 +757,7 @@ namespace Chummer
         /// <param name="strIntoLanguage">Language into which the string should be translated</param>
         public static string TranslateExtra(string strExtra, string strIntoLanguage)
         {
+            if (String.IsNullOrEmpty(strExtra)) return "";
             string strReturn = string.Empty;
 
             // Only attempt to translate if we're not using English. Don't attempt to translate an empty string either.

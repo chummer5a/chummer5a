@@ -20,6 +20,12 @@
              </summary>
             
         </member>
+        <member name="M:ChummerHub.Controllers.AccountController.GetSINnersByAuthorization">
+            <summary>
+            Search for Sinners for one user
+            </summary>
+            <returns>SINSearchGroupResult</returns>
+        </member>
         <member name="M:ChummerHub.Controllers.V1.SINnerController.GetDownloadFile(System.Guid)">
             <summary>
             Returns the Chummer-Save-File
@@ -75,6 +81,14 @@
             </summary>
             <param name="groupid"></param>
             <returns></returns>
+        </member>
+        <member name="M:ChummerHub.Controllers.V1.SINnerGroupController.GetPublicGroup(System.String,System.String)">
+            <summary>
+            Search for public Groups (without authorization)
+            </summary>
+            <param name="Groupname"></param>
+            <param name="Language"></param>
+            <returns>SINSearchGroupResult</returns>
         </member>
         <member name="M:ChummerHub.Controllers.V1.SINnerGroupController.GetSearchGroups(System.String,System.String,System.String,System.String)">
             <summary>

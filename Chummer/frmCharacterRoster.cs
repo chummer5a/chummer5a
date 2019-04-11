@@ -157,6 +157,8 @@ namespace Chummer
             {
                 foreach(TreeNode objCharacterNode in objTypeNode.Nodes)
                 {
+                    if (objCharacterNode.Tag == null)
+                        continue;
                     string strFile = objCharacterNode.Tag.ToString();
                     if(_lstCharacterCache.TryGetValue(strFile, out CharacterCache objCache) && objCache != null)
                     {
@@ -373,7 +375,7 @@ namespace Chummer
                                         }
                                         if(node.Nodes.Count > 0 || !String.IsNullOrEmpty(node.ToolTipText))
                                             treCharacterList.Nodes.Insert(1, node);
-                                        node.ExpandAll();
+                                        node.Expand();
                                     });
                                 }
                             }
@@ -567,7 +569,8 @@ namespace Chummer
         {
             CharacterCache objCache = null;
             TreeNode objSelectedNode = treCharacterList.SelectedNode;
-            if(objSelectedNode != null && objSelectedNode.Level > 0)
+            if((objSelectedNode != null && objSelectedNode.Level > 0)
+                && (objSelectedNode?.Tag != null))
             {
                 _lstCharacterCache.TryGetValue(objSelectedNode.Tag.ToString(), out objCache);
             }
@@ -582,6 +585,7 @@ namespace Chummer
             TreeNode objSelectedNode = treCharacterList.SelectedNode;
             if(objSelectedNode != null && objSelectedNode.Level > 0)
             {
+                if (objSelectedNode.Tag == null) return;
                 string strFile = objSelectedNode.Tag.ToString();
                 if(!string.IsNullOrEmpty(strFile) && _lstCharacterCache.TryGetValue(strFile, out CharacterCache objCache) && string.IsNullOrEmpty(objCache.ErrorText))
                 {
@@ -604,7 +608,7 @@ namespace Chummer
 
             TreeNode t = treCharacterList.SelectedNode;
 
-            if(t != null && _lstCharacterCache.TryGetValue(t.Tag.ToString(), out CharacterCache objCache) && objCache != null)
+            if(t?.Tag != null && _lstCharacterCache.TryGetValue(t.Tag.ToString(), out CharacterCache objCache) && objCache != null)
             {
                 objCache.OnMyKeyDown(sender, new Tuple<KeyEventArgs, TreeNode>(e, t));
             }
