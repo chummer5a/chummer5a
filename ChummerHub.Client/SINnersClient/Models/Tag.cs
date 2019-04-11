@@ -21,11 +21,12 @@ namespace SINners.Models
         /// <summary>
         /// Initializes a new instance of the Tag class.
         /// </summary>
-        public Tag(Guid? id = default(Guid?), string tagName = default(string), string tagValue = default(string), string tagComment = default(string), Guid? parentTagId = default(Guid?), Guid? siNnerId = default(Guid?), IList<Tag> tags = default(IList<Tag>), bool? isUserGenerated = default(bool?), string tagType = default(string))
+        public Tag(Guid? id = default(Guid?), string tagName = default(string), string tagValue = default(string), double? tagValueDouble = default(double?), string tagComment = default(string), Guid? parentTagId = default(Guid?), Guid? siNnerId = default(Guid?), IList<Tag> tags = default(IList<Tag>), bool? isUserGenerated = default(bool?), string tagType = default(string))
         {
             Id = id;
             TagName = tagName;
             TagValue = tagValue;
+            TagValueDouble = tagValueDouble;
             TagComment = tagComment;
             ParentTagId = parentTagId;
             SiNnerId = siNnerId;
@@ -48,6 +49,11 @@ namespace SINners.Models
         /// </summary>
         [JsonProperty(PropertyName = "tagValue")]
         public string TagValue { get; set; }
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "tagValueDouble")]
+        public double? TagValueDouble { get; set; }
 
         /// <summary>
         /// This has NO FUNCTION and is only here for Debugging reasons.

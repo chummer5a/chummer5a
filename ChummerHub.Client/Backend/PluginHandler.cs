@@ -183,24 +183,26 @@ namespace Chummer.Plugins
 
         void IPlugin.LoadFileElement(Character input, string fileElement)
         {
-            //not used right now, because all the information comes from the WebService...
-
-            //but this is how it COULD work
-
-            //CharacterExtended ce;
-            //if(MyCharExtendedDic.TryGetValue(input.FileName, out ce))
-            //{
-            //    ce.MyCharacter = input;
-            //}
-            //else
-            //{
-            //    if (PluginHandler.MySINnerLoading != null)
-            //    {
-            //        ce = new CharacterExtended(input, fileElement, PluginHandler.MySINnerLoading);
-                    
-            //    }
-            //}
-                
+            try
+            {
+                CharacterExtended ce;
+                if (MyCharExtendedDic.TryGetValue(input.FileName, out ce))
+                {
+                    ce.MyCharacter = input;
+                }
+                else
+                {
+                    ce = new CharacterExtended(input, fileElement, PluginHandler.MySINnerLoading);
+                }
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Trace.TraceError(e.ToString());
+                Console.Write(e.ToString());
+#if DEBUG
+                throw;
+#endif
+            }
             
         }
 
