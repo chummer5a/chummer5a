@@ -21,37 +21,15 @@ namespace SINners.Models
         /// <summary>
         /// Initializes a new instance of the SINnerExtended class.
         /// </summary>
-        public SINnerExtended(SINner mySINner = default(SINner), Guid? id = default(Guid?), string jsonSummary = default(string))
+        public SINnerExtended(string jsonSummary = default(string))
         {
-            MySINner = mySINner;
-            Id = id;
             JsonSummary = jsonSummary;
         }
-
-        /// <summary>
-        /// </summary>
-        [JsonProperty(PropertyName = "mySINner")]
-        public SINner MySINner { get; set; }
-
-        /// <summary>
-        /// </summary>
-        [JsonProperty(PropertyName = "id")]
-        public Guid? Id { get; set; }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "jsonSummary")]
         public string JsonSummary { get; set; }
 
-        /// <summary>
-        /// Validate the object. Throws ValidationException if validation fails.
-        /// </summary>
-        public virtual void Validate()
-        {
-            if (this.MySINner != null)
-            {
-                this.MySINner.Validate();
-            }
-        }
     }
 }

@@ -323,6 +323,32 @@ namespace SINners
             /// </param>
             /// <param name='id'>
             /// </param>
+            public static SINnerGroup GetSINnerGroupFromSINerById(this ISINnersClient operations, Guid id)
+            {
+                return Task.Factory.StartNew(s => ((ISINnersClient)s).GetSINnerGroupFromSINerByIdAsync(id), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
+            }
+
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='id'>
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task<SINnerGroup> GetSINnerGroupFromSINerByIdAsync(this ISINnersClient operations, Guid id, CancellationToken cancellationToken = default(CancellationToken))
+            {
+                using (var _result = await operations.GetSINnerGroupFromSINerByIdWithHttpMessagesAsync(id, null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Body;
+                }
+            }
+
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='id'>
+            /// </param>
             public static SINner GetSINById(this ISINnersClient operations, Guid id)
             {
                 return Task.Factory.StartNew(s => ((ISINnersClient)s).GetSINByIdAsync(id), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();

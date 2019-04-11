@@ -25,6 +25,9 @@ namespace ChummerHub.Models.V1
         [MaxLength(64)]
         public string TagValue { get; set; }
 
+
+        public double? TagValueDouble { get; set; }
+
         /// <summary>
         /// This has NO FUNCTION and is only here for Debugging reasons.
         /// </summary>
@@ -85,6 +88,7 @@ namespace ChummerHub.Models.V1
             this.ParentTag = parent;
             this.TagName = "";
             this.TagValue = "";
+            this.TagValueDouble = null;
             this.ParentTagId = Guid.Empty;
             if (parent != null)
                 this.ParentTagId = parent.Id;
