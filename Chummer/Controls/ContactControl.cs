@@ -350,15 +350,15 @@ namespace Chummer
             }
         }
 
-        private static List<ListItem> _ContactArchetype;
+        private static List<ListItem> _lstContactArchetypes;
 
-        public static List<ListItem> ContactArchetype
+        public static List<ListItem> lstContactArchetypes
         {
             get
             {
-                if (_ContactArchetype == null)
+                if (_lstContactArchetypes == null)
                 {
-                    _ContactArchetype = new List<ListItem>() {ListItem.Blank};
+                    _lstContactArchetypes = new List<ListItem>() {ListItem.Blank};
                     XmlNode xmlContactsBaseNode = XmlManager.Load("contacts.xml").SelectSingleNode("/chummer");
                     if (xmlContactsBaseNode != null)
                     {
@@ -367,15 +367,15 @@ namespace Chummer
                                 foreach (XmlNode xmlNode in xmlNodeList)
                                 {
                                     string strName = xmlNode.InnerText;
-                                    ContactArchetype.Add(new ListItem(strName,
+                                    lstContactArchetypes.Add(new ListItem(strName,
                                         xmlNode.Attributes?["translate"]?.InnerText ?? strName));
                                 }
                     }
                 }
 
-                return _ContactArchetype;
+                return _lstContactArchetypes;
             }
-            set { _ContactArchetype = value; }
+            set { _lstContactArchetypes = value; }
 
         }
         #endregion
@@ -424,6 +424,8 @@ namespace Chummer
             XmlNode xmlContactsBaseNode = XmlManager.Load("contacts.xml").SelectSingleNode("/chummer");
             if (xmlContactsBaseNode != null)
             {
+                //the values are now loaded direct in the (new) property lstContactArchetypes (see above).
+                //I only left this in here for better understanding what happend before (and because of bug #3566) 
                 //using (XmlNodeList xmlNodeList = xmlContactsBaseNode.SelectNodes("contacts/contact"))
                 //    if (xmlNodeList != null)
                 //        foreach (XmlNode xmlNode in xmlNodeList)
@@ -501,7 +503,7 @@ namespace Chummer
                         }
                     }
 
-            ContactArchetype.Sort(CompareListItems.CompareNames);
+            lstContactArchetypes.Sort(CompareListItems.CompareNames);
             lstMetatypes.Sort(CompareListItems.CompareNames);
             lstSexes.Sort(CompareListItems.CompareNames);
             lstAges.Sort(CompareListItems.CompareNames);
@@ -513,7 +515,7 @@ namespace Chummer
             cboContactRole.BeginUpdate();
             cboContactRole.ValueMember = "Value";
             cboContactRole.DisplayMember = "Name";
-            cboContactRole.DataSource = ContactArchetype;
+            cboContactRole.DataSource = lstContactArchetypes;
             cboContactRole.EndUpdate();
 
             cboMetatype.BeginUpdate();
