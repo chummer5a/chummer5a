@@ -40,7 +40,7 @@ namespace ChummerHub.Client.UI
             InitializeComponent();
            
 
-            this.TagValueArchetype.DataSource = ContactControl.lstContactArchetypes;
+            this.TagValueArchetype.DataSource = ContactControl.ContactArchetypes;
             this.Name = "SINnersBasic";
             this.bGroupSearch.Enabled = false;
             this.AutoSize = true;
