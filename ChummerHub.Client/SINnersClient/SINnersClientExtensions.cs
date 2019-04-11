@@ -199,21 +199,27 @@ namespace SINners
                 }
             }
 
+            /// <summary>
+            /// Search for Sinners for one user
+            /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
-            public static SINSearchResult GetSINnersByAuthorization(this ISINnersClient operations)
+            public static SINSearchGroupResult GetSINnersByAuthorization(this ISINnersClient operations)
             {
                 return Task.Factory.StartNew(s => ((ISINnersClient)s).GetSINnersByAuthorizationAsync(), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
             }
 
+            /// <summary>
+            /// Search for Sinners for one user
+            /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task<SINSearchResult> GetSINnersByAuthorizationAsync(this ISINnersClient operations, CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task<SINSearchGroupResult> GetSINnersByAuthorizationAsync(this ISINnersClient operations, CancellationToken cancellationToken = default(CancellationToken))
             {
                 using (var _result = await operations.GetSINnersByAuthorizationWithHttpMessagesAsync(null, cancellationToken).ConfigureAwait(false))
                 {
@@ -612,6 +618,42 @@ namespace SINners
             public static async Task<SINnerGroup> GetGroupByIdAsync(this ISINnersClient operations, Guid? groupid = default(Guid?), CancellationToken cancellationToken = default(CancellationToken))
             {
                 using (var _result = await operations.GetGroupByIdWithHttpMessagesAsync(groupid, null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Body;
+                }
+            }
+
+            /// <summary>
+            /// Search for public Groups (without authorization)
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='groupname'>
+            /// </param>
+            /// <param name='language'>
+            /// </param>
+            public static SINSearchGroupResult GetPublicGroup(this ISINnersClient operations, string groupname = default(string), string language = default(string))
+            {
+                return Task.Factory.StartNew(s => ((ISINnersClient)s).GetPublicGroupAsync(groupname, language), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
+            }
+
+            /// <summary>
+            /// Search for public Groups (without authorization)
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='groupname'>
+            /// </param>
+            /// <param name='language'>
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task<SINSearchGroupResult> GetPublicGroupAsync(this ISINnersClient operations, string groupname = default(string), string language = default(string), CancellationToken cancellationToken = default(CancellationToken))
+            {
+                using (var _result = await operations.GetPublicGroupWithHttpMessagesAsync(groupname, language, null, cancellationToken).ConfigureAwait(false))
                 {
                     return _result.Body;
                 }

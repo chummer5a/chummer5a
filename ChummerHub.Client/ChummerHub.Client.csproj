@@ -122,14 +122,11 @@
     <Compile Include="SINnersClient\Models\SINnerExtended.cs" />
     <Compile Include="SINnersClient\Models\SINnerGroup.cs" />
     <Compile Include="SINnersClient\Models\SINnerGroupSetting.cs" />
-    <Compile Include="SINnersClient\Models\SINnerList.cs" />
     <Compile Include="SINnersClient\Models\SINnerMetaData.cs" />
     <Compile Include="SINnersClient\Models\SINnerSearchGroup.cs" />
     <Compile Include="SINnersClient\Models\SINnerSearchGroupMember.cs" />
-    <Compile Include="SINnersClient\Models\SINnersList.cs" />
     <Compile Include="SINnersClient\Models\SINnerVisibility.cs" />
     <Compile Include="SINnersClient\Models\SINSearchGroupResult.cs" />
-    <Compile Include="SINnersClient\Models\SINSearchResult.cs" />
     <Compile Include="SINnersClient\Models\Tag.cs" />
     <Compile Include="SINnersClient\Models\UploadClient.cs" />
     <Compile Include="SINnersClient\Models\UploadInfoObject.cs" />

@@ -206,7 +206,7 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GetSINById")]
-        [Authorize]
+        [AllowAnonymous]
         public async Task<ActionResult<SINner>> GetSINById([FromRoute] Guid id)
         {
             try
