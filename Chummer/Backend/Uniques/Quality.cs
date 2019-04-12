@@ -385,6 +385,11 @@ namespace Chummer
                 XmlNode node = GetNode(GlobalOptions.Language);
                 node?.TryGetField("id", Guid.TryParse, out _guiSourceID);
             }
+            if (_guiSourceID == Guid.Empty)
+            {
+                XmlNode node = GetNode(GlobalOptions.Language);
+                node?.TryGetField("id", Guid.TryParse, out _guiSourceID);
+            }
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetInt32FieldQuickly("bp", ref _intBP);
             objNode.TryGetBoolFieldQuickly("implemented", ref _blnImplemented);
