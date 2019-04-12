@@ -63,7 +63,7 @@ namespace ChummerHub.Controllers.V1
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("{sinnerid}")]
-        [Authorize]
+        [AllowAnonymous]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("SINnerDownloadFile")]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
@@ -78,8 +78,18 @@ namespace ChummerHub.Controllers.V1
                     throw new ArgumentException("ModelState is invalid!");
                 }
 
-                var chummerFile = await _context.SINners.FindAsync(sinnerid);
-
+                var sinnerseq = await (from a in _context.SINners
+                                .Include(a => a.MyGroup)
+                                .Include(a => a.SINnerMetaData.Visibility.UserRights)
+                                where a.Id == sinnerid select a).ToListAsync();
+                if (!sinnerseq.Any())
+                {
+                    throw new ArgumentException("Could not find id " + sinnerid.ToString());
+                }
+                ApplicationUser user = null;
+                if (!String.IsNullOrEmpty(User?.Identity?.Name))
+                    user = await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
+                var chummerFile = sinnerseq.FirstOrDefault();
                 if (chummerFile == null)
                 {
                     throw new ArgumentException("Could not find id " + sinnerid.ToString());
@@ -89,10 +99,27 @@ namespace ChummerHub.Controllers.V1
                     string msg = "Chummer " + chummerFile.Id + " does not have a valid DownloadUrl!";
                     throw new ArgumentException(msg);
                 }
+                bool oktoDownload = false;
+                if ((!oktoDownload) && (chummerFile.SINnerMetaData.Visibility.IsPublic == true))
+                {
+                    oktoDownload = true;
+                }
+                if ((!oktoDownload) && (chummerFile.MyGroup != null && chummerFile.MyGroup.IsPublic == true))
+                {
+                    oktoDownload = true;
+                }
+                if ((!oktoDownload) && (user != null && chummerFile.SINnerMetaData.Visibility.UserRights.Any(a => a.EMail.ToLowerInvariant() == user.Email.ToLowerInvariant())))
+                {
+                    oktoDownload = true;
+                }
+                if (!oktoDownload)
+                {
+                    throw new ArgumentException("User " + user?.UserName + " or public is not allowed to download " + sinnerid.ToString());
+                }
                 //string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.InternetCache), chummerFile.Id.ToString() + ".chum5z");
                 var stream = await MyHttpClient.GetStreamAsync(new Uri(chummerFile.DownloadUrl));
                 string downloadname = chummerFile.Id.ToString() + ".chum5z";
-                var user = await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
+                
                 if(user == null)
                 {
                     throw new NoUserRightException("User not found!");
@@ -101,7 +128,7 @@ namespace ChummerHub.Controllers.V1
                 {
                     var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     Microsoft.ApplicationInsights.DataContracts.EventTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.EventTelemetry("GetDownloadFile");
-                    telemetry.Properties.Add("User", user.Email);
+                    telemetry.Properties.Add("User", user?.Email);
                     telemetry.Properties.Add("SINnerId", sinnerid.ToString());
                     telemetry.Metrics.Add("FileSize", stream.Length);
                     tc.TrackEvent(telemetry);
@@ -215,23 +242,38 @@ namespace ChummerHub.Controllers.V1
                 {
                     return BadRequest(ModelState);
                 }
-                var user = await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
-                if (user == null)
-                {
-                    return BadRequest("Could not find user: " + User.Identity.Name);
-                }
-
+                ApplicationUser user = null;
+                if (!String.IsNullOrEmpty(User?.Identity?.Name))
+                    user = await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
                 var sin = await _context.SINners
-                    .Include( a => a.MyExtendedAttributes)
+                    .Include(a => a.MyExtendedAttributes)
                     .Include(a => a.SINnerMetaData.Visibility.UserRights)
-                    .Include( a => a.MyGroup)
+                    .Include(a => a.MyGroup)
                     .Include(b => b.MyGroup.MySettings)
                     .Where(a => a.Id == id).Take(1)
                     .FirstOrDefaultAsync(a => a.Id == id);
-                if(sin == null)
+                if (sin == null)
                 {
                     return NotFound("SINner with id " + id + " does not exist.");
                 }
+                bool oktoDownload = false;
+                if ((!oktoDownload) && (sin.SINnerMetaData.Visibility.IsPublic == true))
+                {
+                    oktoDownload = true;
+                }
+                if ((!oktoDownload) && (sin.MyGroup != null && sin.MyGroup.IsPublic == true))
+                {
+                    oktoDownload = true;
+                }
+                if ((!oktoDownload) && (user != null && sin.SINnerMetaData.Visibility.UserRights.Any(a => a.EMail.ToLowerInvariant() == user.Email.ToLowerInvariant())))
+                {
+                    oktoDownload = true;
+                }
+                if (!oktoDownload)
+                {
+                    throw new ArgumentException("User " + user?.UserName + " or public is not allowed to download " + id.ToString());
+                }
+                
 
                 if(sin.SINnerMetaData.Visibility.IsPublic == true)
                     return Ok(sin);

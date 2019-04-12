@@ -68,10 +68,17 @@ namespace ChummerHub.Client.Backend
                 {
                     using (new CursorWait(false))
                     {
+                        int counter = 0;
                         //just wait until the task from the startup finishes...
                         while (_userRoles == null)
                         {
-                            System.Threading.Thread.SpinWait(100);
+                            counter++;
+                            if (counter > 10 * 5)
+                            {
+                                _userRoles = new List<string>() { "none" };
+                                break;
+                            }
+                            System.Threading.Thread.Sleep(100);
                         }
                     }
                 }
