@@ -40,7 +40,7 @@ namespace ChummerHub.Client.UI
             InitializeComponent();
            
 
-            this.TagValueArchetype.DataSource = ContactControl.lstContactArchetypes;
+            this.TagValueArchetype.DataSource = ContactControl.ContactArchetypes;
             this.Name = "SINnersBasic";
             this.bGroupSearch.Enabled = false;
             this.AutoSize = true;
@@ -80,12 +80,12 @@ namespace ChummerHub.Client.UI
                 using (new CursorWait(true, this))
                 {
                     var client = await StaticUtils.GetClient();
-                    var response = await client.GetSINByIdWithHttpMessagesAsync(myUC.MyCE.MySINnerFile.Id.Value);
+                    var response = await client.GetSINnerGroupFromSINerByIdWithHttpMessagesAsync(myUC.MyCE.MySINnerFile.Id.Value);
                     PluginHandler.MainForm.DoThreadSafe(() =>
                     {
                         if (response.Response.StatusCode == HttpStatusCode.OK)
                         {
-                            myUC.MyCE.SetSINner(response.Body);
+                            myUC.MyCE.MySINnerFile.MyGroup = response.Body;
                             this.bUpload.Text = "Remove from SINners";
                             this.bGroupSearch.Enabled = true;
                             this.lUploadStatus.Text = "online";
@@ -93,6 +93,7 @@ namespace ChummerHub.Client.UI
                         }
                         else if (response.Response.StatusCode == HttpStatusCode.NotFound)
                         {
+                            myUC.MyCE.MySINnerFile.MyGroup = null;
                             this.lUploadStatus.Text = "not online";
                             this.bGroupSearch.Enabled = false;
                             this.bGroupSearch.SetToolTip(
@@ -100,13 +101,15 @@ namespace ChummerHub.Client.UI
                             this.bUpload.Enabled = true;
                             this.bUpload.Text = "Upload";
                         }
-                        else
+                        else if (response.Response.StatusCode == HttpStatusCode.NoContent)
                         {
+                            myUC.MyCE.MySINnerFile.MyGroup = null;
                             this.lUploadStatus.Text = "Statuscode: " + response.Response.StatusCode;
-                            this.bGroupSearch.Enabled = false;
+                            this.bGroupSearch.Enabled = true;
                             this.bGroupSearch.SetToolTip(
-                                "SINner needs to be uploaded first, before he/she can join a group.");
-                            this.bUpload.Text = "Upload";
+                                "SINner does not belong to a group.");
+                            this.bUpload.Text = "Remove from SINners";
+                            this.lUploadStatus.Text = "online";
                             this.bUpload.Enabled = true;
                         }
                         this.cbTagCustom.Enabled = false;
@@ -180,6 +183,7 @@ namespace ChummerHub.Client.UI
                     continue;
                 }
 
+                cbTag.Checked = true;
                 if (tagValueControlSeq.FirstOrDefault() is TextBox tbTagValue)
                 {
                     tbTagValue.Text = tag.TagValue;

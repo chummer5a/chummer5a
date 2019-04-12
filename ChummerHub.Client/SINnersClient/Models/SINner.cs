@@ -91,10 +91,6 @@ namespace SINners.Models
                     throw new ValidationException(ValidationRules.MaxLength, "Language", 6);
                 }
             }
-            if (this.MyExtendedAttributes != null)
-            {
-                this.MyExtendedAttributes.Validate();
-            }
             if (this.MyGroup != null)
             {
                 this.MyGroup.Validate();

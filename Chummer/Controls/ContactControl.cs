@@ -352,31 +352,26 @@ namespace Chummer
 
         private static List<ListItem> _lstContactArchetypes;
 
-        public static List<ListItem> lstContactArchetypes
+        public static List<ListItem> ContactArchetypes
         {
             get
             {
-                if (_lstContactArchetypes == null)
-                {
-                    _lstContactArchetypes = new List<ListItem>() {ListItem.Blank};
-                    XmlNode xmlContactsBaseNode = XmlManager.Load("contacts.xml").SelectSingleNode("/chummer");
-                    if (xmlContactsBaseNode != null)
-                    {
-                        using (XmlNodeList xmlNodeList = xmlContactsBaseNode.SelectNodes("contacts/contact"))
-                            if (xmlNodeList != null)
-                                foreach (XmlNode xmlNode in xmlNodeList)
-                                {
-                                    string strName = xmlNode.InnerText;
-                                    lstContactArchetypes.Add(new ListItem(strName,
-                                        xmlNode.Attributes?["translate"]?.InnerText ?? strName));
-                                }
-                    }
-                }
+                if (_lstContactArchetypes != null) return _lstContactArchetypes;
+                _lstContactArchetypes = new List<ListItem>{ListItem.Blank};
+                XmlNode xmlContactsBaseNode = XmlManager.Load("contacts.xml").SelectSingleNode("/chummer");
+                if (xmlContactsBaseNode == null) return _lstContactArchetypes;
+                using (XmlNodeList xmlNodeList = xmlContactsBaseNode.SelectNodes("contacts/contact"))
+                    if (xmlNodeList != null)
+                        foreach (XmlNode xmlNode in xmlNodeList)
+                        {
+                            string strName = xmlNode.InnerText;
+                            _lstContactArchetypes.Add(new ListItem(strName,
+                                xmlNode.Attributes?["translate"]?.InnerText ?? strName));
+                        }
 
                 return _lstContactArchetypes;
             }
-            set { _lstContactArchetypes = value; }
-
+            set => _lstContactArchetypes = value;
         }
         #endregion
 
@@ -503,7 +498,7 @@ namespace Chummer
                         }
                     }
 
-            lstContactArchetypes.Sort(CompareListItems.CompareNames);
+            ContactArchetypes.Sort(CompareListItems.CompareNames);
             lstMetatypes.Sort(CompareListItems.CompareNames);
             lstSexes.Sort(CompareListItems.CompareNames);
             lstAges.Sort(CompareListItems.CompareNames);
@@ -515,7 +510,7 @@ namespace Chummer
             cboContactRole.BeginUpdate();
             cboContactRole.ValueMember = "Value";
             cboContactRole.DisplayMember = "Name";
-            cboContactRole.DataSource = lstContactArchetypes;
+            cboContactRole.DataSource = new BindingSource { DataSource = ContactArchetypes };
             cboContactRole.EndUpdate();
 
             cboMetatype.BeginUpdate();

@@ -158,12 +158,55 @@ namespace ChummerHub.Controllers.V1
 
         // GET: api/ChummerFiles/5
         [HttpGet("{id}")]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NoContent)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GetSINnerGroupFromSINerById")]
+        [AllowAnonymous]
+        public async Task<ActionResult<SINnerGroup>> GetSINnerGroupFromSINerById([FromRoute] Guid id)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                if (!_context.SINners.Any(a => a.Id == id))
+                {
+                    return NotFound("SINner with id " + id + " does not exist.");
+                }
+
+                var groupseq = await (from a in _context.SINners.Include(a => a.MyGroup)
+                        .Include(b => b.MyGroup.MySettings)
+                    where a.Id == id
+                    select a.MyGroup).ToListAsync();
+
+                if (!groupseq.Any())
+                    return NoContent();
+                else
+                {
+                    return Ok(groupseq.FirstOrDefault());
+                }
+
+            }
+            catch (Exception e)
+            {
+                if (e is HubException)
+                    throw;
+                HubException hue = new HubException("Exception in GetSINById: " + e.Message, e);
+                throw hue;
+            }
+        }
+
+        // GET: api/ChummerFiles/5
+        [HttpGet("{id}")]
         [SwaggerResponseExample((int)HttpStatusCode.OK, typeof(SINnerExample))]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GetSINById")]
-        [Authorize]
+        [AllowAnonymous]
         public async Task<ActionResult<SINner>> GetSINById([FromRoute] Guid id)
         {
             try
