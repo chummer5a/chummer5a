@@ -374,6 +374,8 @@ namespace Chummer.Plugins
                     var res = await client?.GetRolesWithHttpMessagesAsync();
                     if (res != null)
                         StaticUtils.UserRoles = res.Body.ToList();
+                    else
+                        StaticUtils.UserRoles = new List<string>() { "none " };
                 }
                 catch (Exception e)
                 {
