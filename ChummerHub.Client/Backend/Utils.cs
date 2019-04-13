@@ -303,7 +303,9 @@ namespace ChummerHub.Client.Backend
                     Exception inner = ex;
                     while (inner.InnerException != null)
                         inner = inner.InnerException;
-                    string msg = "Error connecting to SINners: " + Environment.NewLine + Environment.NewLine + inner.Message;
+                    string msg = "Error connecting to SINners: " + Environment.NewLine;
+                    msg += "(the complete error description is copied to clipboard)" + Environment.NewLine + Environment.NewLine + inner.ToString();
+                    System.Windows.Forms.Clipboard.SetText(ex.ToString());
                     msg += Environment.NewLine + Environment.NewLine + "Please check the Plugin-Options dialog.";
                     MessageBox.Show(msg, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     
