@@ -78,10 +78,10 @@ namespace Chummer.Backend.Equipment
 
         public void Load(XmlNode objXmlData)
         {
-            if (objXmlData["sourceid"] == null || !objXmlData.TryGetField("sourceid", Guid.TryParse, out _guiSourceID))
+            if (!objXmlData.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
                 XmlNode node = GetNode(GlobalOptions.Language);
-                node?.TryGetField("id", Guid.TryParse, out _guiSourceID);
+                node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
             objXmlData.TryGetStringFieldQuickly("name", ref _strName);
             objXmlData.TryGetStringFieldQuickly("category", ref _strCategory);
@@ -96,10 +96,10 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            if (objXmlData["sourceid"] == null || !objXmlData.TryGetField("sourceid", Guid.TryParse, out _guiSourceID))
+            if (!objXmlData.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
                 XmlNode node = GetNode(GlobalOptions.Language);
-                node?.TryGetField("id", Guid.TryParse, out _guiSourceID);
+                node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
             objXmlData.TryGetStringFieldQuickly("availability", ref _strAvailability);
             objXmlData.TryGetDecFieldQuickly("cost", ref _decCost);
@@ -835,10 +835,10 @@ namespace Chummer.Backend.Equipment
 		#region Constructor, Create, Save, Load, and Print Methods
 		public void Load(XmlNode objXmlData)
 		{
-		    if (objXmlData["sourceid"] == null || !objXmlData.TryGetField("sourceid", Guid.TryParse, out _guiSourceID))
+		    if (!objXmlData.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
 		    {
 		        XmlNode node = GetNode(GlobalOptions.Language);
-		        node?.TryGetField("id", Guid.TryParse, out _guiSourceID);
+		        node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
 		    }
             objXmlData.TryGetField("internalid", Guid.TryParse, out _guidId);
             objXmlData.TryGetStringFieldQuickly("name", ref _strName);

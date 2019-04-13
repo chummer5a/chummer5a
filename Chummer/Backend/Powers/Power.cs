@@ -217,7 +217,7 @@ namespace Chummer
                 _guiID = Guid.NewGuid();
             }
             objNode.TryGetStringFieldQuickly("name", ref _strName);
-            if (objNode["sourceid"] == null || !objNode.TryGetField("sourceid", Guid.TryParse, out _guiSourceID))
+            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
                 XmlNode node = GetNode(GlobalOptions.Language);
                 if (!(node.TryGetField("id", Guid.TryParse, out _guiSourceID)))

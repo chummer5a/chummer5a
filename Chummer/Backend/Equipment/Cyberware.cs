@@ -899,10 +899,10 @@ namespace Chummer.Backend.Equipment
         public void Load(XmlNode objNode, bool blnCopy = false)
         {
             objNode.TryGetStringFieldQuickly("name", ref _strName);
-            if (objNode["sourceid"] == null || !objNode.TryGetField("sourceid", Guid.TryParse, out _guiSourceID))
+            if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
                 XmlNode node = GetNode(GlobalOptions.Language);
-                node?.TryGetField("id", Guid.TryParse, out _guiSourceID);
+                node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
             if (blnCopy)
             {
@@ -2477,7 +2477,7 @@ namespace Chummer.Backend.Equipment
                 if (_objCachedMyXmlNode == null)
                 {
                     _objCachedMyXmlNode = objDoc.SelectSingleNode("/chummer/biowares/bioware[name = \"" + Name + "\"]");
-                    _objCachedMyXmlNode?.TryGetField("id", Guid.TryParse, out _guiSourceID);
+                    _objCachedMyXmlNode?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
                 }
             }
             else
@@ -2487,7 +2487,7 @@ namespace Chummer.Backend.Equipment
                 if (_objCachedMyXmlNode == null)
                 {
                     _objCachedMyXmlNode = objDoc.SelectSingleNode("/chummer/cyberwares/cyberware[name = \"" + Name + "\"]");
-                    _objCachedMyXmlNode?.TryGetField("id", Guid.TryParse, out _guiSourceID);
+                    _objCachedMyXmlNode?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
                 }
             }
             _strCachedXmlNodeLanguage = strLanguage;

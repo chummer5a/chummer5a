@@ -250,7 +250,7 @@ namespace Chummer.Backend.Uniques
             if (xmlNode["sourceid"] == null || !xmlNode.TryGetField("sourceid", Guid.TryParse, out _guiSourceID))
             {
                 XmlNode node = GetNode(GlobalOptions.Language);
-                node?.TryGetField("id", Guid.TryParse, out _guiSourceID);
+                node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
 
             xmlNode.TryGetStringFieldQuickly("name", ref _strName);

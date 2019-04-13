@@ -779,12 +779,12 @@ namespace Chummer.Backend.Equipment
             }
             objNode.TryGetStringFieldQuickly("name", ref _strName);
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
-            if (objNode["sourceid"] == null || !objNode.TryGetField("sourceid", Guid.TryParse, out _guiSourceID))
+            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
-                if (!objNode.TryGetField("id", Guid.TryParse, out _guiSourceID))
+                if (!objNode.TryGetGuidFieldQuickly("id", ref _guiSourceID))
                 {
                     XmlNode node = GetNode(GlobalOptions.Language,objNode["name"].InnerText,objNode["category"].InnerText);
-                    node?.TryGetField("id", Guid.TryParse, out _guiSourceID);
+                    node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
                 }
             }
                 _objCachedMyXmlNode = null;
@@ -1974,7 +1974,7 @@ namespace Chummer.Backend.Equipment
                 {
                     _objCachedMyXmlNode = objDoc.SelectSingleNode($"/chummer/gears/gear[name = {strNameWithQuotes}]") ??
                                           objDoc.SelectSingleNode($"/chummer/gears/gear[contains(name, {strNameWithQuotes})]");
-                    _objCachedMyXmlNode?.TryGetField("id", Guid.TryParse, out _guiSourceID);
+                    _objCachedMyXmlNode?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
                 }
                 _strCachedXmlNodeLanguage = strLanguage;
             }

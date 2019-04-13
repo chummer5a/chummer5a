@@ -199,10 +199,10 @@ namespace Chummer.Backend.Equipment
 		        _guiID = Guid.NewGuid();
 		    }
 		    objNode.TryGetStringFieldQuickly("name", ref _strName);
-            if (objNode["sourceid"] == null || !objNode.TryGetField("sourceid", Guid.TryParse, out _guiSourceID))
+            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
 		    {
 		        XmlNode node = GetNode(GlobalOptions.Language);
-		        node?.TryGetField("id", Guid.TryParse, out _guiSourceID);
+		        node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
 		    }
 
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
@@ -1049,10 +1049,10 @@ namespace Chummer.Backend.Equipment
                 _guiID = Guid.NewGuid();
             }
             objNode.TryGetStringFieldQuickly("name", ref _strName);
-            if (objNode["sourceid"] == null || !objNode.TryGetField("sourceid", Guid.TryParse, out _guiSourceID))
+            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
                 XmlNode node = GetNode(GlobalOptions.Language);
-                node?.TryGetField("id", Guid.TryParse, out _guiSourceID);
+                node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
             objNode.TryGetInt32FieldQuickly("slots", ref _intSlots);

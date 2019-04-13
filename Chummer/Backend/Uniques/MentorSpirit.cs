@@ -214,10 +214,14 @@ namespace Chummer
             {
                 _guiID = Guid.NewGuid();
             }
-            if (objNode["sourceid"] == null || !objNode.TryGetField("sourceid", Guid.TryParse, out _guiSourceID))
+            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
                 XmlNode node = GetNode(GlobalOptions.Language);
-                node?.TryGetField("id", Guid.TryParse, out _guiSourceID);
+                if (node?.TryGetGuidFieldQuickly("id", ref _guiSourceID) == false)
+                {
+                    XmlNode objNewNode = XmlManager.Load("qualities.xml").SelectSingleNode("/chummer/mentors/mentor[name = \"" + Name + "\"]");
+                    objNewNode?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                }
             }
             if (objNode.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
@@ -236,12 +240,6 @@ namespace Chummer
             _nodChoice1 = objNode["choice1"];
             _nodChoice2 = objNode["choice2"];
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
-
-            if (!objNode.TryGetField("id", Guid.TryParse, out _guiSourceID))
-            {
-                XmlNode objNewNode = XmlManager.Load("qualities.xml").SelectSingleNode("/chummer/mentors/mentor[name = \"" + Name + "\"]");
-                objNewNode?.TryGetField("id", Guid.TryParse, out _guiSourceID);
-            }
         }
 
         /// <summary>

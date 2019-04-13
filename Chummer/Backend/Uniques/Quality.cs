@@ -380,15 +380,10 @@ namespace Chummer
                 _guiID = Guid.NewGuid();
             }
             objNode.TryGetStringFieldQuickly("name", ref _strName);
-            if (objNode["sourceid"] == null || !objNode.TryGetField("sourceid", Guid.TryParse, out _guiSourceID))
+            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
                 XmlNode node = GetNode(GlobalOptions.Language);
-                node?.TryGetField("id", Guid.TryParse, out _guiSourceID);
-            }
-            if (_guiSourceID == Guid.Empty)
-            {
-                XmlNode node = GetNode(GlobalOptions.Language);
-                node?.TryGetField("id", Guid.TryParse, out _guiSourceID);
+                node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetInt32FieldQuickly("bp", ref _intBP);
