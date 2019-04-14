@@ -35,6 +35,8 @@ Data Changes:
 - Added missing side prompts to the synthetic modular full arm and leg.
 - Fixed a typo in the Cavalier Arms Adder Slivergun's name.
 - Added a new customdata entry for the Ram Plate Vehicle Modification that sets it to use the stats as provided in Hero Lab. 
+- Fixed incorrect restrictions on the Special Modications and Prototype Materials qualities. 
+- Removed incorrrect mundane restriction on the Quadriplegic quality.
 
 String Changes:
 
