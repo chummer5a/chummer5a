@@ -24,6 +24,7 @@ namespace ChummerHub.Client.Backend
 {
     public static class StaticUtils
     {
+
         public static Type GetListType(object someList)
         {
             if (someList == null)
@@ -235,7 +236,7 @@ namespace ChummerHub.Client.Backend
                 {
                     if (_clientTask == null)
                     {
-                        _clientTask = GetSINnersClient();
+                        _clientTask = GetSINnersClient().CancelAfter(4000);
                     }
                     _client = await _clientTask;
                 }
@@ -281,7 +282,7 @@ namespace ChummerHub.Client.Backend
                 HttpClientHandler httpClientHandler = new HttpClientHandler();
                 httpClientHandler.CookieContainer = AuthorizationCookieContainer;
                 client = new SINnersClient(baseUri, credentials, httpClientHandler, delegatingHandler);
-                var resptask = client.GetVersionWithHttpMessagesAsync();
+                var resptask = client.GetVersionWithHttpMessagesAsync().CancelAfter(3000);
                 resptask.ContinueWith((respresult) =>
                   {
                       var verresp = respresult.Result;

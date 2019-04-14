@@ -202,7 +202,7 @@ namespace ChummerHub.Client.UI
             this.cbTagSRM_ready.AutoSize = true;
             this.cbTagSRM_ready.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cbTagSRM_ready.Location = new System.Drawing.Point(8, 48);
-            this.cbTagSRM_ready.Margin = new System.Windows.Forms.Padding(8, 8, 8, 8);
+            this.cbTagSRM_ready.Margin = new System.Windows.Forms.Padding(8);
             this.cbTagSRM_ready.Name = "cbTagSRM_ready";
             this.cbTagSRM_ready.Size = new System.Drawing.Size(123, 24);
             this.cbTagSRM_ready.TabIndex = 10;
@@ -215,7 +215,7 @@ namespace ChummerHub.Client.UI
             this.cbTagCustom.AutoSize = true;
             this.cbTagCustom.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cbTagCustom.Location = new System.Drawing.Point(8, 168);
-            this.cbTagCustom.Margin = new System.Windows.Forms.Padding(8, 8, 8, 8);
+            this.cbTagCustom.Margin = new System.Windows.Forms.Padding(8);
             this.cbTagCustom.Name = "cbTagCustom";
             this.cbTagCustom.Size = new System.Drawing.Size(123, 159);
             this.cbTagCustom.TabIndex = 8;
@@ -238,7 +238,7 @@ namespace ChummerHub.Client.UI
             this.cbTagArchetype.AutoSize = true;
             this.cbTagArchetype.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cbTagArchetype.Location = new System.Drawing.Point(8, 88);
-            this.cbTagArchetype.Margin = new System.Windows.Forms.Padding(8, 8, 8, 8);
+            this.cbTagArchetype.Margin = new System.Windows.Forms.Padding(8);
             this.cbTagArchetype.Name = "cbTagArchetype";
             this.cbTagArchetype.Size = new System.Drawing.Size(123, 24);
             this.cbTagArchetype.TabIndex = 11;
@@ -262,7 +262,7 @@ namespace ChummerHub.Client.UI
             this.cbTagPowerRating.AutoSize = true;
             this.cbTagPowerRating.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cbTagPowerRating.Location = new System.Drawing.Point(8, 128);
-            this.cbTagPowerRating.Margin = new System.Windows.Forms.Padding(8, 8, 8, 8);
+            this.cbTagPowerRating.Margin = new System.Windows.Forms.Padding(8);
             this.cbTagPowerRating.Name = "cbTagPowerRating";
             this.cbTagPowerRating.Size = new System.Drawing.Size(123, 24);
             this.cbTagPowerRating.TabIndex = 13;
@@ -275,7 +275,7 @@ namespace ChummerHub.Client.UI
             this.cbTagIsNPC.AutoSize = true;
             this.cbTagIsNPC.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cbTagIsNPC.Location = new System.Drawing.Point(8, 8);
-            this.cbTagIsNPC.Margin = new System.Windows.Forms.Padding(8, 8, 8, 8);
+            this.cbTagIsNPC.Margin = new System.Windows.Forms.Padding(8);
             this.cbTagIsNPC.Name = "cbTagIsNPC";
             this.cbTagIsNPC.Size = new System.Drawing.Size(123, 24);
             this.cbTagIsNPC.TabIndex = 16;
