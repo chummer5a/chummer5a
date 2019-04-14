@@ -91,6 +91,7 @@
     <Compile Include="Backend\CursorWait.cs" />
     <Compile Include="Backend\PluginHandler.cs" />
     <Compile Include="Backend\Search\SearchTagExtractor.cs" />
+    <Compile Include="Backend\TaskCancellationExtension.cs" />
     <Compile Include="Backend\Utils.cs" />
     <Compile Include="Backend\MyMessageHandler.cs" />
     <Compile Include="Backend\TagExtractor.cs" />

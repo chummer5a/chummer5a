@@ -26,10 +26,11 @@
                 <div class="form-group">
                     <div class="checkbox">
                         <label asp-for="Input.RememberMe">
-                            <input asp-for="Input.RememberMe" />
+                            <input asp-for="Input.RememberMe" checked />
                             @Html.DisplayNameFor(m => m.Input.RememberMe)
                         </label>
                     </div>
+                    <p>If you don't check "Remember Me?", the Chummer-Client will not be able to login after the next restart of the program and you will have to login again.</p>
                 </div>
                 <div class="form-group">
                     <button type="submit" class="btn btn-default">Log in</button>
