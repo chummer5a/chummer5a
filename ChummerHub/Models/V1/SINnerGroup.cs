@@ -23,8 +23,12 @@ namespace ChummerHub.Models.V1
         
         public bool IsPublic { get; set; }
 
+        public string GroupCreatorUserName { get; set; }
+
         [Obsolete]
         [NotMapped]
+        [JsonIgnore]
+        [XmlIgnore]
         public string GameMasterUsername { get; set; }
 
         public SINnerGroupSetting MySettings { get; set; }
@@ -41,8 +45,6 @@ namespace ChummerHub.Models.V1
         {
             MyGroups = new List<SINnerGroup>();
         }
-
-        //public List<SINner> MySINners { get; set; }
 
         public async Task<List<SINner>> GetGroupMembers(ApplicationDbContext context)
         {

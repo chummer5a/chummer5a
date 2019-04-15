@@ -41,6 +41,8 @@ namespace ChummerHub.Client.UI
             {
                 EditMode = true;
             }
+            this.cboLanguage1 = frmViewer.PopulateLanguageList(cboLanguage1, null);
+            imgLanguageFlag.Image = FlagImageGetter.GetFlagFromCountryCode(_strSelectedLanguage.Substring(3, 2));
 
             if (MyGroup != null)
             {
@@ -49,9 +51,13 @@ namespace ChummerHub.Client.UI
                 tbGroupname.Text = MyGroup.Groupname;
                 tbParentGroupId.Text = MyGroup.MyParentGroupId?.ToString();
                 tbPassword.Text = "";
+                tbGroupCreatorUsername.Text = MyGroup.GroupCreatorUserName;
+                this.cboLanguage1.SelectedValue = MyGroup.Language;
                 if (MyGroup.IsPublic.HasValue)
                     cbIsPublic.Checked = MyGroup.IsPublic.Value;
             }
+
+            tbGroupCreatorUsername.ReadOnly = true;
             tbAdminRole.ReadOnly = true;
             tbGroupId.ReadOnly = true;
             tbGroupname.ReadOnly = !EditMode;
@@ -65,10 +71,11 @@ namespace ChummerHub.Client.UI
                 tbAdminRole.ReadOnly = !EditMode;
                 tbGroupId.ReadOnly = true;
                 tbParentGroupId.ReadOnly = !EditMode;
+                tbGroupCreatorUsername.ReadOnly = !EditMode;
             }
 
-            this.cboLanguage1 = frmViewer.PopulateLanguageList(cboLanguage1, null);
-            imgLanguageFlag.Image = FlagImageGetter.GetFlagFromCountryCode(_strSelectedLanguage.Substring(3, 2));
+           
+            
 
             if (onlyPWHash)
             {
@@ -103,6 +110,7 @@ namespace ChummerHub.Client.UI
             myGroup.Language = cboLanguage1.SelectedItem.ToString();
             myGroup.IsPublic = cbIsPublic.Checked;
             myGroup.MyAdminIdentityRole = tbAdminRole.Text;
+            myGroup.GroupCreatorUserName = tbGroupCreatorUsername.Text;
 
             return myGroup;
 

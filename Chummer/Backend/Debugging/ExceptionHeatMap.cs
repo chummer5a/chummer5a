@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -27,7 +28,7 @@ namespace Chummer.Backend
 {
     public sealed class ExceptionHeatMap
     {
-        readonly Dictionary<string, int> _map = new Dictionary<string, int>();
+        readonly ConcurrentDictionary<string, int> _map = new ConcurrentDictionary<string, int>();
 
         public void OnException(object sender, FirstChanceExceptionEventArgs e)
         {
@@ -48,7 +49,7 @@ namespace Chummer.Backend
             }
             else
             {
-                _map.Add(heat, 1);
+                _map.TryAdd(heat, 1);
             }
         }
 

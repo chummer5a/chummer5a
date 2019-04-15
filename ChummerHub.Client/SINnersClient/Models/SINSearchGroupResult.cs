@@ -21,11 +21,23 @@ namespace SINners.Models
         /// <summary>
         /// Initializes a new instance of the SINSearchGroupResult class.
         /// </summary>
-        public SINSearchGroupResult(IList<SINnerSearchGroup> sinGroups = default(IList<SINnerSearchGroup>), string errorText = default(string))
+        public SINSearchGroupResult(IList<string> roles = default(IList<string>), ChummerHubVersion version = default(ChummerHubVersion), IList<SINnerSearchGroup> sinGroups = default(IList<SINnerSearchGroup>), string errorText = default(string))
         {
+            Roles = roles;
+            Version = version;
             SinGroups = sinGroups;
             ErrorText = errorText;
         }
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "roles")]
+        public IList<string> Roles { get; set; }
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "version")]
+        public ChummerHubVersion Version { get; set; }
 
         /// <summary>
         /// </summary>

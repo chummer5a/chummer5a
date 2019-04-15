@@ -373,7 +373,8 @@ namespace Chummer
                                         {
                                             treCharacterList.Nodes.Remove(found.FirstOrDefault());
                                         }
-                                        if(node.Nodes.Count > 0 || !String.IsNullOrEmpty(node.ToolTipText))
+                                        if ((node.Nodes.Count > 0 || !String.IsNullOrEmpty(node.ToolTipText))
+                                            || (node.Tag != null))
                                             treCharacterList.Nodes.Insert(1, node);
                                         node.Expand();
                                     });
@@ -536,6 +537,12 @@ namespace Chummer
                 else
                     lblMetatype.Text = "Error loading metatype!";
                 tabCharacterText.Visible = true;
+                if (!String.IsNullOrEmpty(objCache.ErrorText))
+                {
+                    txtCharacterBio.Text = objCache.ErrorText;
+                    txtCharacterBio.ForeColor = Color.Red;
+                    txtCharacterBio.BringToFront();                    
+                }
             }
             else
             {
@@ -578,6 +585,10 @@ namespace Chummer
                 && (objSelectedNode?.Tag != null))
             {
                 _lstCharacterCache.TryGetValue(objSelectedNode.Tag.ToString(), out objCache);
+            }
+            else if (objSelectedNode?.Tag is CharacterCache)
+            {
+                objCache = objSelectedNode.Tag as CharacterCache;
             }
             if(objCache != null)
                 objCache.OnMyAfterSelect(sender, e);

@@ -8,9 +8,15 @@ namespace ChummerHub.Models.V1
 {
     public class SINSearchGroupResult
     {
+        public List<String> Roles { get; set; }
+
+        public ChummerHubVersion Version { get; set; }
+
         public SINSearchGroupResult()
         {
             SINGroups = new List<SINnerSearchGroup>();
+            Roles = new List<string>();
+            Version = new ChummerHubVersion();
         }
         public List<SINnerSearchGroup> SINGroups { get; set; }
 

@@ -86,7 +86,6 @@ namespace ChummerHub.Controllers.V1
                         }
 
                     }
-
                     return BadRequest(new HubException(msg));
                 }
 
@@ -273,11 +272,14 @@ namespace ChummerHub.Controllers.V1
                         }
                         
                     }
-
+                    
                     if (storegroup == null)
                     {
                         if (mygroup.Id == null || mygroup.Id == Guid.Empty)
+                        {
                             mygroup.Id = Guid.NewGuid();
+                            mygroup.GroupCreatorUserName = user.UserName;
+                        }
                         mygroup.MyParentGroup = parentGroup;
                         parentGroup?.MyGroups.Add(mygroup);
                         _context.SINnerGroups.Add(mygroup);
@@ -731,6 +733,108 @@ namespace ChummerHub.Controllers.V1
             }
         }
 
+        /// <summary>
+        /// Delete a Group (recursive - only Admins can do that)
+        /// </summary>
+        /// <param name="groupid"></param>
+        /// <returns></returns>
+        [HttpDelete()]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("DeleteGroup")]
+        [Authorize]
+        public async Task<ActionResult<bool>> DeleteGroup(Guid groupid)
+        {
+            _logger.LogTrace("DeleteLeaveGroup: " + groupid +  ".");
+            try
+            {
+                var group =  await DeleteGroupInternal(groupid);
+                _context.SINnerGroups.Remove(group);
+                await _context.SaveChangesAsync();
+                return Ok(true);
+
+            }
+            catch (Exception e)
+            {
+                try
+                {
+                    var user = await _signInManager.UserManager.GetUserAsync(User);
+                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
+                    telemetry.Properties.Add("User", user?.Email);
+                    tc.TrackException(telemetry);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex.ToString());
+                }
+                if (e is HubException)
+                    return BadRequest(e);
+                HubException hue = new HubException("Exception in DeleteLeaveGroup: " + e.Message, e);
+                return BadRequest(hue);
+            }
+        }
+
+        private async Task<SINnerGroup> DeleteGroupInternal(Guid? groupid)
+        {
+            if ((groupid == null) || (groupid == Guid.Empty))
+                throw new ArgumentNullException(nameof(groupid));
+            var groupbyidseq = await(from a in _context.SINnerGroups
+                    .Include(a => a.MyGroups)
+                where a.Id == groupid
+                select a).Take(1).ToListAsync();
+            if (!groupbyidseq.Any())
+                return null;
+
+            var mygroup = groupbyidseq.FirstOrDefault();
+
+            ApplicationUser user = await _signInManager.UserManager.GetUserAsync(User);
+            if (user == null)
+                throw new NoUserRightException("Could not verify ApplicationUser!");
+
+            bool candelete = false;
+            if (mygroup.IsPublic == false)
+            {
+                if (mygroup.GroupCreatorUserName != user.UserName)
+                {
+                    throw new NoUserRightException("Only " + mygroup.GroupCreatorUserName + " can delete this group.");
+                }
+            }
+            else
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                if ((roles.Contains("GroupAdmin")) || roles.Contains(mygroup.MyAdminIdentityRole))
+                {
+                    candelete = true;
+                }
+                else
+                {
+                    throw new NoUserRightException("Group is public - can only be deleted by GroupAdmins or " + mygroup.MyAdminIdentityRole + ".");
+                }
+            }
+
+            var members = (from a in _context.SINners where a.MyGroup == mygroup select a).ToList();
+            foreach (var member in members)
+            {
+                member.MyGroup = null;
+                _context.Entry(member).CurrentValues.SetValues(member);
+            }
+
+            await _context.SaveChangesAsync();
+            foreach (var childgroup in mygroup.MyGroups)
+            {
+                var result = await DeleteGroupInternal(childgroup.Id);
+                if (result == null)
+                {
+                    throw new ArgumentException("Could not delete (child-)group " + childgroup.Groupname + " (Id: " +
+                                                childgroup.Id + ").");
+                }
+                _context.SINnerGroups.Remove(result);
+            }
+            await _context.SaveChangesAsync();
+            return mygroup;
+        }
+
         private async Task<ActionResult<bool>> DeleteLeaveGroupInternal(Guid groupid, Guid sinnerid)
         {
             if ((groupid == null) || (groupid == Guid.Empty))
@@ -779,6 +883,8 @@ namespace ChummerHub.Controllers.V1
             ApplicationUser user = null;
             try
             {
+                if (User != null)
+                    user = await _signInManager.UserManager.GetUserAsync(User);
                 if (!ModelState.IsValid)
                 {
                     var errors = ModelState.Select(x => x.Value.Errors)
@@ -824,7 +930,7 @@ namespace ChummerHub.Controllers.V1
 
                 foreach (var groupid in groupfoundseq)
                 {
-                    var ssg = await GetSinSearchGroupResultById(groupid);
+                    var ssg = await GetSinSearchGroupResultById(groupid, user);
                     result.SINGroups.Add(ssg);
                 }
 
@@ -917,10 +1023,12 @@ namespace ChummerHub.Controllers.V1
         {
             _logger.LogTrace("GetGroupMembers: " + groupid + ".");
 
-
+            ApplicationUser user = null;
             
             try
             {
+                if (User != null)
+                    user = await _signInManager.UserManager.GetUserAsync(User);
                 if (!ModelState.IsValid)
                 {
                     var errors = ModelState.Select(x => x.Value.Errors)
@@ -939,7 +1047,7 @@ namespace ChummerHub.Controllers.V1
                 }
 
                 SINSearchGroupResult result = new SINSearchGroupResult();
-                var range = await GetSinSearchGroupResultById(groupid);
+                var range = await GetSinSearchGroupResultById(groupid, user);
                 result.SINGroups.Add(range);
                 result.SINGroups = RemovePWHashRecursive(result.SINGroups);
                 Ok(result);
@@ -948,7 +1056,6 @@ namespace ChummerHub.Controllers.V1
             {
                 try
                 {
-                    var user = await _signInManager.UserManager.GetUserAsync(User);
                     var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
                     telemetry.Properties.Add("User", user?.Email);
@@ -992,10 +1099,13 @@ namespace ChummerHub.Controllers.V1
             return sINGroups;
         }
 
-        private async Task<SINnerSearchGroup> GetSinSearchGroupResultById(Guid? groupid)
+        private async Task<SINnerSearchGroup> GetSinSearchGroupResultById(Guid? groupid, ApplicationUser askingUser)
         {
             if ((groupid == null) || (groupid == Guid.Empty))
                 throw new ArgumentNullException(nameof(groupid));
+            ApplicationUser user = null;
+            if (User != null)
+                user = await _signInManager.UserManager.GetUserAsync(User);
             SINnerSearchGroup ssg = null;
             var groupbyidseq = await (from a in _context.SINnerGroups
                     .Include(a => a.MyParentGroup)
@@ -1013,7 +1123,7 @@ namespace ChummerHub.Controllers.V1
                 if (group.MyGroups == null)
                     group.MyGroups = new List<SINnerGroup>();
                 ssg = new SINnerSearchGroup(group);
-                
+
                 var members = await ssg.GetGroupMembers(_context);
                 foreach (var member in members)
                 {
@@ -1027,8 +1137,36 @@ namespace ChummerHub.Controllers.V1
 
                 foreach (var child in group.MyGroups)
                 {
-                    var childresult = await GetSinSearchGroupResultById(child.Id);
-                    ssg.MySINSearchGroups.Add(childresult); 
+                    bool okToShow = false;
+                    if ((child.IsPublic == false) && user == null)
+                    {
+                        continue;
+                    }
+                    else if (child.IsPublic == false && user != null)
+                    {
+                        //check if the user has the right to see this group
+                        var roles = await _userManager.GetRolesAsync(user);
+                        if (roles.Contains(child.MyAdminIdentityRole) == true)
+                        {
+                            okToShow = true;
+                        }
+                        else
+                        {
+                            //check if the user has a chummer that is part of the group
+                            //maybe later
+                        }
+                    }
+                    else if (child.IsPublic == true)
+                    {
+                        okToShow = true;
+                    }
+
+                    if (okToShow)
+                    {
+                        var childresult = await GetSinSearchGroupResultById(child.Id, user);
+                        ssg.MySINSearchGroups.Add(childresult);
+                    }
+                    
                 }
             }
             ssg.MyGroups = RemovePWHashRecursive(ssg.MyGroups);

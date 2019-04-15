@@ -337,6 +337,19 @@ namespace SINners
         Task<HttpOperationResponse<bool?>> DeleteLeaveGroupWithHttpMessagesAsync(Guid? groupid = default(Guid?), Guid? sinnerid = default(Guid?), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
+        /// Delete a Group (recursive - only Admins can do that)
+        /// </summary>
+        /// <param name='groupid'>
+        /// </param>
+        /// <param name='customHeaders'>
+        /// The headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        Task<HttpOperationResponse<bool?>> DeleteGroupWithHttpMessagesAsync(Guid? groupid = default(Guid?), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
         /// Search for all members and subgroups of a group
         /// </summary>
         /// <param name='groupid'>

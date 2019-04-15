@@ -425,6 +425,8 @@ namespace ChummerHub.Controllers
                     ret.ErrorText = "Unauthorized";
                     throw new AuthenticationException("User is not authenticated.");
                 }
+                var roles = await _userManager.GetRolesAsync(user);
+                ret.Roles = roles.ToList();
                 ssg.Groupname = user.Email;
                 ssg.Id = Guid.Empty;
                 //get all from visibility
@@ -454,8 +456,6 @@ namespace ChummerHub.Controllers
                         var members = await sin.MyGroup.GetGroupMembers(_context);
                         foreach(var member in members)
                         {
-                            if (member.Id == sin.Id)
-                                continue;
                             if((member.SINnerMetaData.Visibility.IsGroupVisible == true)
                                 || (member.SINnerMetaData.Visibility.IsPublic)
                                 )

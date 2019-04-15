@@ -217,7 +217,7 @@ namespace ChummerHub.Client.Backend
 
         private static bool clientErrorShown = false;
 
-        private static bool _clientNOTworking = false;
+        private static bool? _clientNOTworking = null;
 
         private static Task<SINnersClient> _clientTask = null;
 
@@ -232,19 +232,20 @@ namespace ChummerHub.Client.Backend
             }
             if (_client == null)
             {
-                if (!_clientNOTworking)
+                if (_clientNOTworking.HasValue == false ||
+                    (_clientNOTworking == false))
                 {
-                    if (_clientTask == null)
-                    {
-                        _clientTask = GetSINnersClient().CancelAfter(4000);
+                    { 
+                        _client = GetSINnersClient();
+                        if (_client != null)
+                            _clientNOTworking = false;
                     }
-                    _client = await _clientTask;
                 }
             }
             return _client;
         }
 
-        private static async Task<SINnersClient> GetSINnersClient()
+        private static SINnersClient GetSINnersClient()
         {
             SINnersClient client = null;
             try
@@ -282,18 +283,38 @@ namespace ChummerHub.Client.Backend
                 HttpClientHandler httpClientHandler = new HttpClientHandler();
                 httpClientHandler.CookieContainer = AuthorizationCookieContainer;
                 client = new SINnersClient(baseUri, credentials, httpClientHandler, delegatingHandler);
-                var resptask = client.GetVersionWithHttpMessagesAsync().CancelAfter(3000);
-                resptask.ContinueWith((respresult) =>
-                  {
-                      var verresp = respresult.Result;
-                      if (verresp.Response.StatusCode == HttpStatusCode.OK)
-                          System.Diagnostics.Trace.TraceInformation("Connected to SINners in version " + verresp.Body.AssemblyVersion + ".");
-                      else if (verresp.Response.StatusCode == HttpStatusCode.Forbidden)
-                      {
-                          _clientNOTworking = true;
-                          throw new System.Web.HttpException(403, "WebService disabled by Admin!");
-                      }
-                  });
+                //double waitTime = 30;
+                //var resptask = client.GetVersionWithHttpMessagesAsync().CancelAfter((int)(1000 * waitTime));
+                //resptask.ContinueWith((respresult) =>
+                //    {
+                //        try
+                //        {
+                //            if (respresult.IsCanceled)
+                //            {
+                //                System.Diagnostics.Trace.TraceInformation("Could not connected to SINners in " + waitTime + " seconds.");
+                //                if (_clientNOTworking.HasValue == false)
+                //                    _clientNOTworking = true;
+                //                return;
+                //            }
+                //            var verresp = respresult.Result;
+                //            if (verresp.Response.StatusCode == HttpStatusCode.OK)
+                //                System.Diagnostics.Trace.TraceInformation("Connected to SINners in version " + verresp.Body.AssemblyVersion + ".");
+                //            else if (verresp.Response.StatusCode == HttpStatusCode.Forbidden)
+                //            {
+                //                if (_clientNOTworking.HasValue == false)
+                //                    _clientNOTworking = true;
+                //                throw new System.Web.HttpException(403, "WebService disabled by Admin!");
+                //            }
+                //            _clientNOTworking = false;
+                //        }
+                //        catch (Exception e)
+                //        {
+                //            System.Diagnostics.Trace.TraceError(e.ToString());
+                //            Console.WriteLine(e);
+                //            throw;
+                //        }
+
+                //    });
             }
             catch (Exception ex)
             {
@@ -335,7 +356,7 @@ namespace ChummerHub.Client.Backend
         /// Generates a character cache, which prevents us from repeatedly loading XmlNodes or caching a full character.
         /// </summary>
         /// <param name="strFile"></param>
-        internal async static Task<IEnumerable<TreeNode>> GetCharacterRosterTreeNode(ConcurrentDictionary<string, CharacterCache> CharCache, bool forceUpdate, Func<Task<HttpOperationResponse<SINSearchGroupResult>>> myGetSINnersFunction)
+        internal async static Task<IEnumerable<TreeNode>> GetCharacterRosterTreeNode(bool forceUpdate, Func<Task<HttpOperationResponse<SINSearchGroupResult>>> myGetSINnersFunction)
         {
             if ((MyTreeNodeList != null) && !forceUpdate)
                 return MyTreeNodeList;
@@ -356,11 +377,10 @@ namespace ChummerHub.Client.Backend
                 {
                     if (e.Content.Contains("Log in - ChummerHub"))
                     {
+                        TreeNode node = new TreeNode("Online, not logged in");
+                        node.ToolTipText = "Please log in (Options -> Plugins -> Sinners (Cloud) -> Login";
                         PluginHandler.MainForm.DoThreadSafe(() =>
                         {
-                            TreeNode node = new TreeNode("Online, not logged in");
-                            node.Tag = node.Text;
-                            node.ToolTipText = "Please log in (Options -> Plugins -> Sinners (Cloud) -> Login";
                             MyTreeNodeList.Add(node);
                         });
                         return MyTreeNodeList;
@@ -393,61 +413,36 @@ namespace ChummerHub.Client.Backend
                         msg += Environment.NewLine + "Content: " + content;
                     }
                     System.Diagnostics.Trace.TraceWarning(msg);
+                   
+                    var errornode = new TreeNode()
+                    {
+                        Text = "Error contacting SINners"
+                    };
+
+                    CharacterCache errorCache = new CharacterCache
+                    {
+                        ErrorText = "Error is copied to clipboard!" + Environment.NewLine + Environment.NewLine + msg,
+                        CharacterAlias = "Error loading SINners"
+                    };
+                    errorCache.OnMyAfterSelect += (sender, args) =>
+                    {
+                        System.Windows.Forms.Clipboard.SetText(msg);
+                    };
+                    errornode.Tag = errorCache;
                     PluginHandler.MainForm.DoThreadSafe(() =>
                     {
-                        MyTreeNodeList.Add(new TreeNode()
-                        {
-                            Text = "Error contacting SINners",
-                            ToolTipText = msg
-                        });
+                            MyTreeNodeList.Add(errornode);
                     });
                     return MyTreeNodeList;
                 }
 
                 SINSearchGroupResult result = response.Body as SINSearchGroupResult;
-                if (result?.SinGroups == null)
-                {
-                    return MyTreeNodeList;
-                }
-                foreach (var parentlist in result.SinGroups)
-                {
-                    try
-                    {
-                            //list.SiNner.DownloadedFromSINnersTime = DateTime.Now;
-                            var objListNode = GetCharacterRosterTreeNodeRecursive(parentlist, ref CharCache);
-                            
-                            PluginHandler.MainForm.DoThreadSafe(() =>
-                            {
-                                if (objListNode != null)
-                                    MyTreeNodeList.Add(objListNode);
-                                else
-                                {
-                                    TreeNode node = new TreeNode("no owned chummers found")
-                                    {
-                                        Tag = "",
-                                        Name = "no owned chummers found",
-                                        ToolTipText = "To upload a chummer go into the sinners-tabpage after opening a character and press upload (and wait a bit)."
-                                    };
-                                    MyTreeNodeList.Add(node);
-                                }
-                            });
-                    }
-                    catch (Exception e)
-                    {
-                        System.Diagnostics.Trace.TraceWarning("Could not deserialize CharacterCache-Object: " + e.ToString());
-                    }
-                }
-                if (MyTreeNodeList.Count == 0)
-                {
-                    PluginHandler.MainForm.DoThreadSafe(() =>
-                    {
-                        TreeNode node = new TreeNode("Online, but no chummers uploaded");
-                        node.Tag = node.Text;
-                        node.ToolTipText = "To upload a chummer, open it go to the sinners-tabpage and click upload (and wait a bit).";
-                        MyTreeNodeList.Add(node);
-                    });
-                }
-
+                if (result?.Roles != null)
+                    StaticUtils.UserRoles = result.Roles?.ToList();
+                System.Diagnostics.Trace.TraceInformation("Connected to SINners in version " + result?.Version?.AssemblyVersion + ".");
+                var groups = result?.SinGroups.ToList();
+                MyTreeNodeList = CharacterRosterTreeNodifyGroupList(groups);
+                
                 return MyTreeNodeList;
             }
             catch (Exception ex)
@@ -457,7 +452,67 @@ namespace ChummerHub.Client.Backend
             }
         }
 
-        private static TreeNode GetCharacterRosterTreeNodeRecursive(SINnerSearchGroup ssg, ref ConcurrentDictionary<string, CharacterCache> CharCache)
+        public static List<TreeNode> CharacterRosterTreeNodifyGroupList(List<SINnerSearchGroup> groups)
+        {
+            if (groups == null)
+            {
+                return MyTreeNodeList;
+            }
+
+            foreach (var parentlist in groups)
+            {
+                try
+                {
+                    //list.SiNner.DownloadedFromSINnersTime = DateTime.Now;
+                    var objListNode = GetCharacterRosterTreeNodeRecursive(parentlist);
+
+                    PluginHandler.MainForm.DoThreadSafe(() =>
+                    {
+                        if (objListNode != null)
+                            MyTreeNodeList.Add(objListNode);
+                        else
+                        {
+                            TreeNode node = new TreeNode("no owned chummers found")
+                            {
+                                Tag = "",
+                                Name = "no owned chummers found",
+                                ToolTipText =
+                                    "To upload a chummer go into the sinners-tabpage after opening a character and press upload (and wait a bit)."
+                            };
+                            MyTreeNodeList.Add(node);
+                        }
+                    });
+                }
+                catch (Exception e)
+                {
+                    System.Diagnostics.Trace.TraceWarning("Could not deserialize CharacterCache-Object: " + e.ToString());
+                    TreeNode errorNode = new TreeNode()
+                    {
+                        Text = "Error loading Char from WebService"
+                    };
+                    var objCache = new CharacterCache();
+                    objCache.ErrorText = e.ToString();
+                    errorNode.Tag = objCache;
+                    return new List<TreeNode>() {errorNode};
+                }
+            }
+
+            if (MyTreeNodeList.Count == 0)
+            {
+                PluginHandler.MainForm.DoThreadSafe(() =>
+                {
+                    TreeNode node = new TreeNode("Online, but no chummers uploaded");
+                    node.Tag = node.Text;
+                    node.ToolTipText =
+                        "To upload a chummer, open it go to the sinners-tabpage and click upload (and wait a bit).";
+                    MyTreeNodeList.Add(node);
+                });
+            }
+
+            return MyTreeNodeList;
+        }
+
+        private static TreeNode GetCharacterRosterTreeNodeRecursive(SINnerSearchGroup ssg)
         {
             TreeNode objListNode = new TreeNode
             {
@@ -507,41 +562,47 @@ namespace ChummerHub.Client.Backend
                 }
 
                 CharacterCache delObj;
-                CharCache.TryRemove(sinner.Id.Value.ToString(), out delObj);
-                CharCache.TryAdd(sinner.Id.Value.ToString(), objCache);
-                foreach (var childlist in ssg.MySINSearchGroups)
+                PluginHandler.MainForm.CharacterRoster.MyCharacterCacheDic.TryRemove(sinner.Id.Value.ToString(), out delObj);
+                PluginHandler.MainForm.CharacterRoster.MyCharacterCacheDic.TryAdd(sinner.Id.Value.ToString(), objCache);
+                if (ssg.MySINSearchGroups != null)
                 {
-                    var childnode = GetCharacterRosterTreeNodeRecursive(childlist, ref CharCache);
-                    if (childnode != null)
+                    foreach (var childlist in ssg.MySINSearchGroups)
                     {
-                        if (!objListNode.Nodes.ContainsKey(childnode.Text))
-                            objListNode.Nodes.Add(childnode);
+                        var childnode = GetCharacterRosterTreeNodeRecursive(childlist);
+                        if (childnode != null)
+                        {
+                            if (!objListNode.Nodes.ContainsKey(childnode.Text))
+                                objListNode.Nodes.Add(childnode);
+                        }
                     }
                 }
             }
 
-            foreach (var childssg in ssg.MySINSearchGroups)
+            if (ssg.MySINSearchGroups != null)
             {
-                var childnode = GetCharacterRosterTreeNodeRecursive(childssg, ref CharCache);
-                if (childnode != null)
+                foreach (var childssg in ssg.MySINSearchGroups)
                 {
-                    if (!objListNode.Nodes.ContainsKey(childnode.Name))
-                        objListNode.Nodes.Add(childnode);
-                    else
+                    var childnode = GetCharacterRosterTreeNodeRecursive(childssg);
+                    if (childnode != null)
                     {
-                        var list = objListNode.Nodes.Find(childnode.Name, false).ToList();
-                        foreach (var mergenode in list)
+                        if (!objListNode.Nodes.ContainsKey(childnode.Name))
+                            objListNode.Nodes.Add(childnode);
+                        else
                         {
-                            foreach (TreeNode what in childnode.Nodes)
+                            var list = objListNode.Nodes.Find(childnode.Name, false).ToList();
+                            foreach (var mergenode in list)
                             {
-                                if (!mergenode.Nodes.ContainsKey(what.Name))
-                                    mergenode.Nodes.Add(what);
+                                foreach (TreeNode what in childnode.Nodes)
+                                {
+                                    if (!mergenode.Nodes.ContainsKey(what.Name))
+                                        mergenode.Nodes.Add(what);
+                                }
                             }
                         }
                     }
                 }
-                    
             }
+
             return objListNode;
         }
 
@@ -601,14 +662,53 @@ namespace ChummerHub.Client.Backend
 
         private static void OnMyAfterSelect(SINner sinner, CharacterCache objCache, TreeViewEventArgs treeViewEventArgs)
         {
+            string loadFilePath = null;
             using (new CursorWait(true, PluginHandler.MainForm))
             {
-                if (String.IsNullOrEmpty(objCache.MugshotBase64))
+                string zipPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "SINner", sinner.Id.Value.ToString());
+                if (Directory.Exists(zipPath))
                 {
-                    var jsonString = DownloadSINnerExtendedTask(sinner, objCache).Result;
+                    var files = Directory.EnumerateFiles(zipPath, "*.chum5", SearchOption.TopDirectoryOnly);
+                    foreach (var file in files)
+                    {
+                        DateTime lastwrite = File.GetLastWriteTime(file);
+                        if ((lastwrite >= sinner.LastChange)
+                            || sinner.LastChange == null)
+                        {
+                            loadFilePath = file;
+                            objCache.FilePath = loadFilePath;
+                            break;
+                        }
+                        File.Delete(file);
+                    }
                 }
-
-                objCache.FilePath = DownloadFileTask(sinner, objCache).Result;
+                if (String.IsNullOrEmpty(objCache.FilePath))
+                { 
+                    var jsonString = DownloadSINnerExtendedTask(sinner, objCache).Result;
+                    objCache.FilePath = DownloadFileTask(sinner, objCache).Result;
+                }
+                else
+                {
+                    //I copy the values, because I dont know what callbacks are registered...
+                    var tempCache = new CharacterCache(objCache.FilePath);
+                    objCache.Background = tempCache.Background;
+                    objCache.MugshotBase64 = tempCache.MugshotBase64;
+                    objCache.BuildMethod = tempCache.BuildMethod;
+                    objCache.CharacterAlias = tempCache.CharacterAlias;
+                    objCache.CharacterName = tempCache.CharacterName;
+                    objCache.CharacterNotes = tempCache.CharacterNotes;
+                    objCache.Concept = tempCache.Concept;
+                    objCache.Created = tempCache.Created;
+                    objCache.Description = tempCache.Description;
+                    objCache.Essence = tempCache.Essence;
+                    objCache.GameNotes = tempCache.GameNotes;
+                    objCache.Karma = tempCache.Karma;
+                    objCache.FileName = tempCache.FileName;
+                    objCache.Metatype = tempCache.Metatype;
+                    objCache.Metavariant = tempCache.Metavariant;
+                    objCache.PlayerName = tempCache.PlayerName;
+                    objCache.SettingsFile = tempCache.SettingsFile;
+                }
                 treeViewEventArgs.Node.Text = objCache.CalculatedName();
             }
         }
