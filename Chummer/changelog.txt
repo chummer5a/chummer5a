@@ -12,6 +12,7 @@ Application Fixes:
 - Fixed incorrect consumption of capacity by modular limbs connecting to modular connectors. 
 - Fixed the behaviour of the Death Mentor Spirit's Magician benefit to allow dicepool benefits for specific skills. Uses the spelldicepool improvement.
 - Fixed an issue with traditions not probably updating.
+- Fixed issues with use of Essence Antiholes in create mode that prevented them from working reliably.
 
 Application Changes:
 
