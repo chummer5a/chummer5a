@@ -195,14 +195,23 @@ namespace ChummerHub.Client.UI
             this.cbSINnerUrl.SelectedItem = sinnerurl;
             cbSINnerUrl.Enabled = false;
             this.cbVisibilityIsPublic.BindingContext = new BindingContext();
-            var t = StartSTATask(
-                async () =>
-                {
-                    var roles = await GetRolesStatus(this);
-                    UpdateDisplay();
-                    if(!roles.Any())
-                        ShowWebBrowser();
-                });
+            if ((StaticUtils.UserRoles == null)
+                || (!StaticUtils.UserRoles.Any()))
+            {
+                var t = StartSTATask(
+                    async () =>
+                    {
+                        var roles = await GetRolesStatus(this);
+                        UpdateDisplay();
+                        if (!roles.Any())
+                            ShowWebBrowser();
+                    });
+            }
+            else
+            {
+                LoginStatus = true;
+                UpdateDisplay();
+            }
             FillVisibilityListBox();
             cbUploadOnSave.Checked = SINnersOptions.UploadOnSave;
             cbSINnerUrl.SelectedValueChanged += CbSINnerUrl_SelectedValueChanged;
@@ -261,12 +270,12 @@ namespace ChummerHub.Client.UI
             Properties.Settings.Default.Save();
             var client = await StaticUtils.GetClient();
             if (client != null)
-                StaticUtils.GetClient(true);
+                await StaticUtils.GetClient(true);
             this.bLogin.Text = "Logout";
             this.labelAccountStatus.Text = "logged out";
             this.labelAccountStatus.ForeColor = Color.DarkRed;
             this.LoginStatus = false;
-            InitializeMe();
+            await InitializeMe();
 
         }
 
