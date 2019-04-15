@@ -86,7 +86,6 @@ namespace ChummerHub.Controllers.V1
                         }
 
                     }
-
                     return BadRequest(new HubException(msg));
                 }
 
@@ -779,6 +778,8 @@ namespace ChummerHub.Controllers.V1
             ApplicationUser user = null;
             try
             {
+                if (User != null)
+                    user = await _signInManager.UserManager.GetUserAsync(User);
                 if (!ModelState.IsValid)
                 {
                     var errors = ModelState.Select(x => x.Value.Errors)
@@ -824,7 +825,7 @@ namespace ChummerHub.Controllers.V1
 
                 foreach (var groupid in groupfoundseq)
                 {
-                    var ssg = await GetSinSearchGroupResultById(groupid);
+                    var ssg = await GetSinSearchGroupResultById(groupid, user);
                     result.SINGroups.Add(ssg);
                 }
 
@@ -917,10 +918,12 @@ namespace ChummerHub.Controllers.V1
         {
             _logger.LogTrace("GetGroupMembers: " + groupid + ".");
 
-
+            ApplicationUser user = null;
             
             try
             {
+                if (User != null)
+                    user = await _signInManager.UserManager.GetUserAsync(User);
                 if (!ModelState.IsValid)
                 {
                     var errors = ModelState.Select(x => x.Value.Errors)
@@ -939,7 +942,7 @@ namespace ChummerHub.Controllers.V1
                 }
 
                 SINSearchGroupResult result = new SINSearchGroupResult();
-                var range = await GetSinSearchGroupResultById(groupid);
+                var range = await GetSinSearchGroupResultById(groupid, user);
                 result.SINGroups.Add(range);
                 result.SINGroups = RemovePWHashRecursive(result.SINGroups);
                 Ok(result);
@@ -948,7 +951,6 @@ namespace ChummerHub.Controllers.V1
             {
                 try
                 {
-                    var user = await _signInManager.UserManager.GetUserAsync(User);
                     var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
                     telemetry.Properties.Add("User", user?.Email);
@@ -992,10 +994,13 @@ namespace ChummerHub.Controllers.V1
             return sINGroups;
         }
 
-        private async Task<SINnerSearchGroup> GetSinSearchGroupResultById(Guid? groupid)
+        private async Task<SINnerSearchGroup> GetSinSearchGroupResultById(Guid? groupid, ApplicationUser askingUser)
         {
             if ((groupid == null) || (groupid == Guid.Empty))
                 throw new ArgumentNullException(nameof(groupid));
+            ApplicationUser user = null;
+            if (User != null)
+                user = await _signInManager.UserManager.GetUserAsync(User);
             SINnerSearchGroup ssg = null;
             var groupbyidseq = await (from a in _context.SINnerGroups
                     .Include(a => a.MyParentGroup)
@@ -1013,7 +1018,7 @@ namespace ChummerHub.Controllers.V1
                 if (group.MyGroups == null)
                     group.MyGroups = new List<SINnerGroup>();
                 ssg = new SINnerSearchGroup(group);
-                
+
                 var members = await ssg.GetGroupMembers(_context);
                 foreach (var member in members)
                 {
@@ -1027,8 +1032,36 @@ namespace ChummerHub.Controllers.V1
 
                 foreach (var child in group.MyGroups)
                 {
-                    var childresult = await GetSinSearchGroupResultById(child.Id);
-                    ssg.MySINSearchGroups.Add(childresult); 
+                    bool okToShow = false;
+                    if ((child.IsPublic == false) && user == null)
+                    {
+                        continue;
+                    }
+                    else if (child.IsPublic == false && user != null)
+                    {
+                        //check if the user has the right to see this group
+                        var roles = await _userManager.GetRolesAsync(user);
+                        if (roles.Contains(child.MyAdminIdentityRole) == true)
+                        {
+                            okToShow = true;
+                        }
+                        else
+                        {
+                            //check if the user has a chummer that is part of the group
+                            //maybe later
+                        }
+                    }
+                    else if (child.IsPublic == true)
+                    {
+                        okToShow = true;
+                    }
+
+                    if (okToShow)
+                    {
+                        var childresult = await GetSinSearchGroupResultById(child.Id, user);
+                        ssg.MySINSearchGroups.Add(childresult);
+                    }
+                    
                 }
             }
             ssg.MyGroups = RemovePWHashRecursive(ssg.MyGroups);

@@ -369,13 +369,21 @@ namespace Chummer.Plugins
             {
                 try
                 {
-                    await Task.Delay(1000 * 2);
-                    var client = await StaticUtils.GetClient();
-                    var res = await client?.GetRolesWithHttpMessagesAsync();
-                    if (res != null)
-                        StaticUtils.UserRoles = res.Body.ToList();
-                    else
-                        StaticUtils.UserRoles = new List<string>() { "none " };
+                    using (new CursorWait(true, MainForm))
+                    {
+                        await Task.Delay(1000 * 2);
+                        var client = await StaticUtils.GetClient();
+                        if (client != null)
+                        {
+                            var res = await client.GetRolesWithHttpMessagesAsync();
+                            if (res != null)
+                            {
+                                StaticUtils.UserRoles = res.Body.ToList();
+                            }
+                            else
+                                StaticUtils.UserRoles = new List<string>() {"none "};
+                        }
+                    }
                 }
                 catch (Exception e)
                 {

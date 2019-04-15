@@ -217,7 +217,7 @@ namespace ChummerHub.Client.Backend
 
         private static bool clientErrorShown = false;
 
-        private static bool _clientNOTworking = false;
+        private static bool? _clientNOTworking = null;
 
         private static Task<SINnersClient> _clientTask = null;
 
@@ -232,19 +232,20 @@ namespace ChummerHub.Client.Backend
             }
             if (_client == null)
             {
-                if (!_clientNOTworking)
+                if (_clientNOTworking.HasValue == false ||
+                    (_clientNOTworking == false))
                 {
-                    if (_clientTask == null)
-                    {
-                        _clientTask = GetSINnersClient().CancelAfter(4000);
+                    { 
+                        _client = GetSINnersClient();
+                        if (_client != null)
+                            _clientNOTworking = false;
                     }
-                    _client = await _clientTask;
                 }
             }
             return _client;
         }
 
-        private static async Task<SINnersClient> GetSINnersClient()
+        private static SINnersClient GetSINnersClient()
         {
             SINnersClient client = null;
             try
@@ -282,18 +283,38 @@ namespace ChummerHub.Client.Backend
                 HttpClientHandler httpClientHandler = new HttpClientHandler();
                 httpClientHandler.CookieContainer = AuthorizationCookieContainer;
                 client = new SINnersClient(baseUri, credentials, httpClientHandler, delegatingHandler);
-                var resptask = client.GetVersionWithHttpMessagesAsync().CancelAfter(3000);
-                resptask.ContinueWith((respresult) =>
-                  {
-                      var verresp = respresult.Result;
-                      if (verresp.Response.StatusCode == HttpStatusCode.OK)
-                          System.Diagnostics.Trace.TraceInformation("Connected to SINners in version " + verresp.Body.AssemblyVersion + ".");
-                      else if (verresp.Response.StatusCode == HttpStatusCode.Forbidden)
-                      {
-                          _clientNOTworking = true;
-                          throw new System.Web.HttpException(403, "WebService disabled by Admin!");
-                      }
-                  });
+                double waitTime = 10;
+                var resptask = client.GetVersionWithHttpMessagesAsync().CancelAfter((int)(1000 * waitTime));
+                var fireAndForgetTask = resptask.ContinueWith((respresult) =>
+                    {
+                        try
+                        {
+                            if (respresult.IsCanceled)
+                            {
+                                System.Diagnostics.Trace.TraceInformation("Could not connected to SINners in " + waitTime + " seconds.");
+                                if (_clientNOTworking.HasValue == false)
+                                    _clientNOTworking = true;
+                                return;
+                            }
+                            var verresp = respresult.Result;
+                            if (verresp.Response.StatusCode == HttpStatusCode.OK)
+                                System.Diagnostics.Trace.TraceInformation("Connected to SINners in version " + verresp.Body.AssemblyVersion + ".");
+                            else if (verresp.Response.StatusCode == HttpStatusCode.Forbidden)
+                            {
+                                if (_clientNOTworking.HasValue == false)
+                                    _clientNOTworking = true;
+                                throw new System.Web.HttpException(403, "WebService disabled by Admin!");
+                            }
+                            _clientNOTworking = false;
+                        }
+                        catch (Exception e)
+                        {
+                            System.Diagnostics.Trace.TraceError(e.ToString());
+                            Console.WriteLine(e);
+                            throw;
+                        }
+
+                    });
             }
             catch (Exception ex)
             {

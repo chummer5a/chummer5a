@@ -508,7 +508,7 @@ namespace Chummer
             this.panGameNotes.ResumeLayout(false);
             this.panGameNotes.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picMugshot)).EndInit();
-            this.ResumeLayout(false);
+            this.ResumeLayout(true);
 
         }
 

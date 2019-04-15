@@ -1801,7 +1801,8 @@ namespace Chummer
 
         private void PluginsShowOrHide(bool show)
         {
-            if(show)
+            GlobalOptions.PluginsEnabled = show;
+            if (show)
             {
                 if(!tabOptions.TabPages.Contains(tabPlugins))
                     tabOptions.TabPages.Add(tabPlugins);

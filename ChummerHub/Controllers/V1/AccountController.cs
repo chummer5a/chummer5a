@@ -454,8 +454,6 @@ namespace ChummerHub.Controllers
                         var members = await sin.MyGroup.GetGroupMembers(_context);
                         foreach(var member in members)
                         {
-                            if (member.Id == sin.Id)
-                                continue;
                             if((member.SINnerMetaData.Visibility.IsGroupVisible == true)
                                 || (member.SINnerMetaData.Visibility.IsPublic)
                                 )
