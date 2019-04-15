@@ -693,5 +693,75 @@ namespace ChummerHub.Client.UI
                 }
             });
         }
+
+        private void BGroupFoundLoadInCharacterRoster_Click(object sender, EventArgs e)
+        {
+            PluginHandler.MainForm.DoThreadSafe(() =>
+            {
+
+                var item = tvGroupSearchResult.SelectedNode?.Tag as SINnerSearchGroup;
+                if (item != null)
+                {
+                    var list = new List<SINnerSearchGroup>() {item};
+                    var nodelist = ChummerHub.Client.Backend.Utils.CharacterRosterTreeNodifyGroupList(list);
+                    foreach (var node in nodelist)
+                    {
+                        PluginHandler.MyTreeNodes2Add.AddOrUpdate(node.Name, node, (key, oldValue) => node);
+                    }
+                    PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false, true);
+                    PluginHandler.MainForm.CharacterRoster.BringToFront();
+                    this.MyParentForm.Close();
+                }
+            });
+        }
+
+        private async void BGroupsFoundDeleteGroup_Click(object sender, EventArgs e)
+        {
+            var item = tvGroupSearchResult.SelectedNode?.Tag as SINnerSearchGroup;
+            if (item != null)
+            {
+                try
+                {
+                    var client = await StaticUtils.GetClient();
+                    var response = await client.DeleteGroupWithHttpMessagesAsync(item.Id).CancelAfter(1000 * 30);
+                    if ((response.Response.StatusCode == HttpStatusCode.OK))
+                    {
+                        bSearch_Click(sender, e);
+                        MessageBox.Show("Group deleted.");
+                    }
+                    else if ((response.Response.StatusCode == HttpStatusCode.NotFound))
+                    {
+                        var rescontent = await response.Response.Content.ReadAsStringAsync();
+                        string msg = "StatusCode: " + response.Response.StatusCode + Environment.NewLine;
+                        msg += rescontent;
+                        throw new ArgumentNullException(item.Groupname, msg);
+                    }
+                    else
+                    {
+                        var rescontent = await response.Response.Content.ReadAsStringAsync();
+                        Exception ex = null;
+                        try
+                        {
+                            ex = Newtonsoft.Json.JsonConvert.DeserializeObject<Exception>(rescontent);
+                        }
+                        catch (Exception exception)
+                        {
+                            throw new ArgumentException(rescontent);
+                        }
+                        if (ex != null)
+                            throw ex;
+                    }
+                }
+                catch (Exception exception)
+                {
+                    System.Diagnostics.Trace.TraceError(exception.ToString());
+                    Console.WriteLine(exception);
+                    MessageBox.Show(exception.ToString(), "Error deleting Group", MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                }
+            
+               
+            }
+        }
     }
 }

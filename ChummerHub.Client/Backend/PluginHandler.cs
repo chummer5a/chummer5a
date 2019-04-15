@@ -259,7 +259,7 @@ namespace Chummer.Plugins
                         var res = await client.GetPublicGroupWithHttpMessagesAsync("NPC", GlobalOptions.Language, null, new CancellationToken());
                         return res;
                     };
-                    var nodelist = await ChummerHub.Client.Backend.Utils.GetCharacterRosterTreeNode(PluginHandler.MainForm.CharacterRoster.MyCharacterCacheDic, true, myGetNPCs);
+                    var nodelist = await ChummerHub.Client.Backend.Utils.GetCharacterRosterTreeNode(true, myGetNPCs);
                     foreach (var node in nodelist)
                     {
                         MyTreeNodes2Add.AddOrUpdate(node.Name, node, (key, oldValue) => node);
@@ -326,7 +326,11 @@ namespace Chummer.Plugins
                         var ret = await client.GetSINnersByAuthorizationWithHttpMessagesAsync();
                         return ret;
                     }; 
-                    var res = await ChummerHub.Client.Backend.Utils.GetCharacterRosterTreeNode(frmCharRoster.MyCharacterCacheDic, forceUpdate, myMethodName);
+                    var res = await ChummerHub.Client.Backend.Utils.GetCharacterRosterTreeNode(forceUpdate, myMethodName);
+                    if (res == null)
+                    {
+                        throw new ArgumentException("Could not load owned SINners from WebService.");
+                    }
                     var list = res.ToList();
                     var myadd = MyTreeNodes2Add.ToList();
                     foreach (var addme in myadd)
@@ -356,6 +360,9 @@ namespace Chummer.Plugins
             catch(Exception e)
             {
                 TreeNode node = new TreeNode("SINners Error: please log in") {ToolTipText = e.ToString(), Tag = e};
+                var objCache = new frmCharacterRoster.CharacterCache();
+                objCache.ErrorText = e.ToString();
+                node.Tag = objCache;
                 return new List<TreeNode>() { node };
             }
             
@@ -365,31 +372,32 @@ namespace Chummer.Plugins
         public void CustomInitialize(frmChummerMain mainControl)
         {
             MainForm = mainControl;
-            Task.Factory.StartNew(async () =>
-            {
-                try
-                {
-                    using (new CursorWait(true, MainForm))
-                    {
-                        await Task.Delay(1000 * 2);
-                        var client = await StaticUtils.GetClient();
-                        if (client != null)
-                        {
-                            var res = await client.GetRolesWithHttpMessagesAsync();
-                            if (res != null)
-                            {
-                                StaticUtils.UserRoles = res.Body.ToList();
-                            }
-                            else
-                                StaticUtils.UserRoles = new List<string>() {"none "};
-                        }
-                    }
-                }
-                catch (Exception e)
-                {
-                    System.Diagnostics.Trace.TraceError(e.ToString());
-                }
-            });
+            //Not necessary anymore - see GetSINnerByAuthorization
+            //Task.Factory.StartNew(async () =>
+            //{
+            //    try
+            //    {
+            //        using (new CursorWait(true, MainForm))
+            //        {
+            //            await Task.Delay(1000 * 10);
+            //            var client = await StaticUtils.GetClient();
+            //            if (client != null)
+            //            {
+            //                var res = await client.GetRolesWithHttpMessagesAsync();
+            //                if (res != null)
+            //                {
+            //                    StaticUtils.UserRoles = res.Body.ToList();
+            //                }
+            //                else
+            //                    StaticUtils.UserRoles = new List<string>() {"none "};
+            //            }
+            //        }
+            //    }
+            //    catch (Exception e)
+            //    {
+            //        System.Diagnostics.Trace.TraceError(e.ToString());
+            //    }
+            //});
         }
     }
 }

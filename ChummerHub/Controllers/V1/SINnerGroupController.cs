@@ -272,11 +272,14 @@ namespace ChummerHub.Controllers.V1
                         }
                         
                     }
-
+                    
                     if (storegroup == null)
                     {
                         if (mygroup.Id == null || mygroup.Id == Guid.Empty)
+                        {
                             mygroup.Id = Guid.NewGuid();
+                            mygroup.GroupCreatorUserName = user.UserName;
+                        }
                         mygroup.MyParentGroup = parentGroup;
                         parentGroup?.MyGroups.Add(mygroup);
                         _context.SINnerGroups.Add(mygroup);
@@ -728,6 +731,108 @@ namespace ChummerHub.Controllers.V1
                 HubException hue = new HubException("Exception in DeleteLeaveGroup: " + e.Message, e);
                 return BadRequest(hue);
             }
+        }
+
+        /// <summary>
+        /// Delete a Group (recursive - only Admins can do that)
+        /// </summary>
+        /// <param name="groupid"></param>
+        /// <returns></returns>
+        [HttpDelete()]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("DeleteGroup")]
+        [Authorize]
+        public async Task<ActionResult<bool>> DeleteGroup(Guid groupid)
+        {
+            _logger.LogTrace("DeleteLeaveGroup: " + groupid +  ".");
+            try
+            {
+                var group =  await DeleteGroupInternal(groupid);
+                _context.SINnerGroups.Remove(group);
+                await _context.SaveChangesAsync();
+                return Ok(true);
+
+            }
+            catch (Exception e)
+            {
+                try
+                {
+                    var user = await _signInManager.UserManager.GetUserAsync(User);
+                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
+                    telemetry.Properties.Add("User", user?.Email);
+                    tc.TrackException(telemetry);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex.ToString());
+                }
+                if (e is HubException)
+                    return BadRequest(e);
+                HubException hue = new HubException("Exception in DeleteLeaveGroup: " + e.Message, e);
+                return BadRequest(hue);
+            }
+        }
+
+        private async Task<SINnerGroup> DeleteGroupInternal(Guid? groupid)
+        {
+            if ((groupid == null) || (groupid == Guid.Empty))
+                throw new ArgumentNullException(nameof(groupid));
+            var groupbyidseq = await(from a in _context.SINnerGroups
+                    .Include(a => a.MyGroups)
+                where a.Id == groupid
+                select a).Take(1).ToListAsync();
+            if (!groupbyidseq.Any())
+                return null;
+
+            var mygroup = groupbyidseq.FirstOrDefault();
+
+            ApplicationUser user = await _signInManager.UserManager.GetUserAsync(User);
+            if (user == null)
+                throw new NoUserRightException("Could not verify ApplicationUser!");
+
+            bool candelete = false;
+            if (mygroup.IsPublic == false)
+            {
+                if (mygroup.GroupCreatorUserName != user.UserName)
+                {
+                    throw new NoUserRightException("Only " + mygroup.GroupCreatorUserName + " can delete this group.");
+                }
+            }
+            else
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                if ((roles.Contains("GroupAdmin")) || roles.Contains(mygroup.MyAdminIdentityRole))
+                {
+                    candelete = true;
+                }
+                else
+                {
+                    throw new NoUserRightException("Group is public - can only be deleted by GroupAdmins or " + mygroup.MyAdminIdentityRole + ".");
+                }
+            }
+
+            var members = (from a in _context.SINners where a.MyGroup == mygroup select a).ToList();
+            foreach (var member in members)
+            {
+                member.MyGroup = null;
+                _context.Entry(member).CurrentValues.SetValues(member);
+            }
+
+            await _context.SaveChangesAsync();
+            foreach (var childgroup in mygroup.MyGroups)
+            {
+                var result = await DeleteGroupInternal(childgroup.Id);
+                if (result == null)
+                {
+                    throw new ArgumentException("Could not delete (child-)group " + childgroup.Groupname + " (Id: " +
+                                                childgroup.Id + ").");
+                }
+                _context.SINnerGroups.Remove(result);
+            }
+            await _context.SaveChangesAsync();
+            return mygroup;
         }
 
         private async Task<ActionResult<bool>> DeleteLeaveGroupInternal(Guid groupid, Guid sinnerid)

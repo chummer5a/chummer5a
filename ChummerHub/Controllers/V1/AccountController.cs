@@ -425,6 +425,8 @@ namespace ChummerHub.Controllers
                     ret.ErrorText = "Unauthorized";
                     throw new AuthenticationException("User is not authenticated.");
                 }
+                var roles = await _userManager.GetRolesAsync(user);
+                ret.Roles = roles.ToList();
                 ssg.Groupname = user.Email;
                 ssg.Id = Guid.Empty;
                 //get all from visibility

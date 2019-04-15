@@ -107,6 +107,13 @@
             <param name="sinnerid"></param>
             <returns></returns>
         </member>
+        <member name="M:ChummerHub.Controllers.V1.SINnerGroupController.DeleteGroup(System.Guid)">
+            <summary>
+            Delete a Group (recursive - only Admins can do that)
+            </summary>
+            <param name="groupid"></param>
+            <returns></returns>
+        </member>
         <member name="M:ChummerHub.Controllers.V1.SINnerGroupController.GetGroupMembers(System.Guid)">
             <summary>
             Search for all members and subgroups of a group
