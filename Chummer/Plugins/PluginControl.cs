@@ -54,7 +54,7 @@ namespace Chummer.Plugins
           
             StartWatch();
             container.ComposeParts(this);
-            foreach (var plugin in MyPlugins)
+            foreach (var plugin in MyActivePlugins)
             {
                 try
                 {
