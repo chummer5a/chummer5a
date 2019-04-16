@@ -165,26 +165,30 @@ namespace ChummerHub.Client.Model
         {
             try
             {
-                if (MySINnerFile.DownloadedFromSINnersTime > this.MyCharacter.FileLastWriteTime)
-                    return true;
-                var client = await StaticUtils.GetClient();
-                var found = await client.GetSINByIdWithHttpMessagesAsync(this.MySINnerFile.Id.Value);
-                if(found.Response.StatusCode == System.Net.HttpStatusCode.OK)
+                using (new CursorWait(true, PluginHandler.MainForm))
                 {
-                    var sinjson = await found.Response.Content.ReadAsStringAsync();
-                    var foundobj = Newtonsoft.Json.JsonConvert.DeserializeObject<SINner>(sinjson);
-                    SINner foundsin = foundobj as SINner;
-                    if(foundsin.LastChange >= this.MyCharacter.FileLastWriteTime)
-                    {
-                        //is already up to date!
+                    if (MySINnerFile.DownloadedFromSINnersTime > this.MyCharacter.FileLastWriteTime)
                         return true;
+                    var client = await StaticUtils.GetClient();
+                    var found = await client.GetSINByIdWithHttpMessagesAsync(this.MySINnerFile.Id.Value);
+                    if (found.Response.StatusCode == System.Net.HttpStatusCode.OK)
+                    {
+                        var sinjson = await found.Response.Content.ReadAsStringAsync();
+                        var foundobj = Newtonsoft.Json.JsonConvert.DeserializeObject<SINner>(sinjson);
+                        SINner foundsin = foundobj as SINner;
+                        if (foundsin.LastChange >= this.MyCharacter.FileLastWriteTime)
+                        {
+                            //is already up to date!
+                            return true;
+                        }
                     }
+                    this.MySINnerFile.SiNnerMetaData.Tags = this.PopulateTags();
+                    this.PrepareModel();
+
+                    await ChummerHub.Client.Backend.Utils.PostSINnerAsync(this);
+                    await ChummerHub.Client.Backend.Utils.UploadChummerFileAsync(this);
+                    return true;
                 }
-                this.MySINnerFile.SiNnerMetaData.Tags = this.PopulateTags();
-                this.PrepareModel();
-                await ChummerHub.Client.Backend.Utils.PostSINnerAsync(this);
-                await ChummerHub.Client.Backend.Utils.UploadChummerFileAsync(this);
-                return true;
             }
             catch(Exception e)
             {
@@ -294,6 +298,14 @@ namespace ChummerHub.Client.Model
                 //make the visibility your own and dont reuse the id from the general options!
                 MySINnerFile.SiNnerMetaData.Visibility.Id = Guid.NewGuid();
             }
+            foreach(var visnow in SINnersOptions.SINnerVisibility.UserRights)
+            {
+                if (!MySINnerFile.SiNnerMetaData.Visibility.UserRights.Any(a => a.EMail.ToLowerInvariant() == visnow.EMail.ToLowerInvariant()))
+                {
+                    MySINnerFile.SiNnerMetaData.Visibility.UserRights.Add(visnow);
+                }
+            }
+            
             foreach(var ur in MySINnerFile.SiNnerMetaData.Visibility.UserRights)
             {
                 if (SINnersOptions.SINnerVisibility.UserRights.Any(a => a.Id == ur.Id))
@@ -314,11 +326,18 @@ namespace ChummerHub.Client.Model
                 if (fi.LastWriteTimeUtc < MyCharacter.FileLastWriteTime)
                     File.Delete(file);
             }
-
             var summary = new frmCharacterRoster.CharacterCache(MyCharacter.FileName);
             MySINnerFile.MyExtendedAttributes.JsonSummary = JsonConvert.SerializeObject(summary);
             MySINnerFile.LastChange = MyCharacter.FileLastWriteTime;
             var tempfile = Path.Combine(tempDir, summary.FileName);
+            if (File.Exists(tempfile))
+                File.Delete(tempfile);
+
+            MyCharacter.OnSaveCompleted -= Chummer.Plugins.PluginHandler.MyOnSaveUpload;
+            MyCharacter.Save();
+            MyCharacter.OnSaveCompleted += Chummer.Plugins.PluginHandler.MyOnSaveUpload;
+
+            
             if (!File.Exists(tempfile))
             {
                 File.Copy(MyCharacter.FileName, tempfile);

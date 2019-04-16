@@ -26,7 +26,7 @@ namespace ChummerHub.Models.V1
         public string TagValue { get; set; }
 
 
-        public double? TagValueDouble { get; set; }
+        public float? TagValueDouble { get; set; }
 
         /// <summary>
         /// This has NO FUNCTION and is only here for Debugging reasons.
