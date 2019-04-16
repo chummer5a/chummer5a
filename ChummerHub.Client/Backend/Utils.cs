@@ -327,7 +327,10 @@ namespace ChummerHub.Client.Backend
                         inner = inner.InnerException;
                     string msg = "Error connecting to SINners: " + Environment.NewLine;
                     msg += "(the complete error description is copied to clipboard)" + Environment.NewLine + Environment.NewLine + inner.ToString();
-                    System.Windows.Forms.Clipboard.SetText(ex.ToString());
+                    PluginHandler.MainForm.DoThreadSafe(() =>
+                    {
+                        System.Windows.Forms.Clipboard.SetText(ex.ToString());
+                    });
                     msg += Environment.NewLine + Environment.NewLine + "Please check the Plugin-Options dialog.";
                     MessageBox.Show(msg, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     
@@ -426,7 +429,10 @@ namespace ChummerHub.Client.Backend
                     };
                     errorCache.OnMyAfterSelect += (sender, args) =>
                     {
-                        System.Windows.Forms.Clipboard.SetText(msg);
+                        PluginHandler.MainForm.DoThreadSafe(() =>
+                        {
+                            System.Windows.Forms.Clipboard.SetText(msg);
+                        });
                     };
                     errornode.Tag = errorCache;
                     PluginHandler.MainForm.DoThreadSafe(() =>
