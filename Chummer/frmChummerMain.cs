@@ -70,6 +70,18 @@ namespace Chummer
         }
         private readonly Chummy _mascotChummy;
 
+        public string MainTitle
+        {
+            get
+            {
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                string title = Application.ProductName + strSpaceCharacter + '-' + strSpaceCharacter + LanguageManager.GetString("String_Version", GlobalOptions.Language) + strSpaceCharacter + _strCurrentVersion;
+#if DEBUG
+                title += " DEBUG BUILD";
+#endif
+                return title;
+            }
+        }
 
         #region Control Events
         public frmChummerMain(bool isUnitTest = false)
@@ -77,15 +89,11 @@ namespace Chummer
             Utils.IsUnitTest = isUnitTest;
             InitializeComponent();
 
-
-
-
-            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
             _strCurrentVersion = $"{_objCurrentVersion.Major}.{_objCurrentVersion.Minor}.{_objCurrentVersion.Build}";
-            Text = Application.ProductName + strSpaceCharacter + '-' + strSpaceCharacter + LanguageManager.GetString("String_Version", GlobalOptions.Language) + strSpaceCharacter + _strCurrentVersion;
-#if DEBUG
-            Text += " DEBUG BUILD";
-#endif
+
+            this.Text = MainTitle;
+
+
 
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 
