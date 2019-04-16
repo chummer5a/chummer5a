@@ -12,6 +12,7 @@ Application Fixes:
 - Fixed incorrect consumption of capacity by modular limbs connecting to modular connectors. 
 - Fixed the behaviour of the Death Mentor Spirit's Magician benefit to allow dicepool benefits for specific skills. Uses the spelldicepool improvement.
 - Fixed an issue with traditions not probably updating.
+- Fixed issues with use of Essence Antiholes in create mode that prevented them from working reliably.
 
 Application Changes:
 
@@ -37,6 +38,7 @@ Data Changes:
 - Added a new customdata entry for the Ram Plate Vehicle Modification that sets it to use the stats as provided in Hero Lab. 
 - Fixed incorrect restrictions on the Special Modications and Prototype Materials qualities. 
 - Removed incorrrect mundane restriction on the Quadriplegic quality.
+- Fixed behaviour of partial cyberlimbs giving incorrect condition monitor boxes.
 
 String Changes:
 
