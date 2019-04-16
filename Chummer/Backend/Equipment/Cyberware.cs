@@ -2745,9 +2745,13 @@ namespace Chummer.Backend.Equipment
                 return 0;
             if (Parent != null && !AddToParentESS)
                 return 0;
-            if (SourceID == EssenceHoleGUID || SourceID == EssenceAntiHoleGUID) // Essence hole or antihole
+            if (SourceID == EssenceHoleGUID) // Essence hole
             {
                 return Convert.ToDecimal(Rating, GlobalOptions.InvariantCultureInfo) / 100m;
+            }
+            if (SourceID == EssenceAntiHoleGUID) // Essence antihole
+            {
+                return Convert.ToDecimal(Rating, GlobalOptions.InvariantCultureInfo) / 100m * -1;
             }
 
             decimal decReturn;
@@ -4306,11 +4310,11 @@ namespace Chummer.Backend.Equipment
 
             if (SourceID == EssenceAntiHoleGUID)
             {
-                _objCharacter.DecreaseEssenceHole((int)(CalculatedESS() * 100));
+                _objCharacter.DecreaseEssenceHole(Rating * 100);
             }
             else if (SourceID == EssenceHoleGUID)
             {
-                _objCharacter.IncreaseEssenceHole((int)(CalculatedESS() * 100));
+                _objCharacter.IncreaseEssenceHole(Rating * 100);
             }
             else
             {

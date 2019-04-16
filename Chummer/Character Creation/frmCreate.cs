@@ -11572,14 +11572,14 @@ namespace Chummer
             objCyberware.Create(objXmlCyberware, frmPickCyberware.SelectedGrade, objSource, frmPickCyberware.SelectedRating, lstWeapons, lstVehicles, true, true, string.Empty, objSelectedCyberware);
             if (objCyberware.InternalId.IsEmptyGuid())
                 return false;
-            
+
             if (objCyberware.SourceID == Cyberware.EssenceAntiHoleGUID)
             {
-                CharacterObject.DecreaseEssenceHole((int)(objCyberware.CalculatedESS() * 100));
+                CharacterObject.DecreaseEssenceHole(objCyberware.Rating);
             }
             else if (objCyberware.SourceID == Cyberware.EssenceHoleGUID)
             {
-                CharacterObject.IncreaseEssenceHole((int)(objCyberware.CalculatedESS() * 100));
+                CharacterObject.IncreaseEssenceHole(objCyberware.Rating);
             }
             else
             {
