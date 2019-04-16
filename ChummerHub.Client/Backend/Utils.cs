@@ -963,7 +963,6 @@ namespace ChummerHub.Client.Backend
                             objCache.FilePath = loadFilePath;
                             break;
                         }
-                        //no recent file found - download it (again).
                         File.Delete(file);
                     }
                 }
@@ -984,10 +983,43 @@ namespace ChummerHub.Client.Backend
                         string zippedFile = Path.Combine(System.IO.Path.GetTempPath(), "SINner", sinner.Id.Value + ".chum5z");
                         if (File.Exists(zippedFile))
                             File.Delete(zippedFile);
-                        var client = await StaticUtils.GetClient();
-                        var filestream = client.GetDownloadFile(sinner.Id.Value);
-                        var array = ReadFully(filestream);
-                        File.WriteAllBytes(zippedFile, array);
+                        bool downloadedFromGoogle = false;
+                        using (WebClient wc = new WebClient())
+                        {
+                            wc.DownloadProgressChanged += wc_DownloadProgressChanged;
+                            wc.DownloadFileCompleted += (sender, e) =>
+                            {
+                                if (e.Error == null)
+                                {
+                                    PluginHandler.MainForm.DoThreadSafe(() =>
+                                    {
+                                        PluginHandler.MainForm.Text = PluginHandler.MainForm.MainTitle;
+                                    });
+                                }
+                                else
+                                {
+                                    PluginHandler.MainForm.DoThreadSafe(() =>
+                                    {
+                                        PluginHandler.MainForm.Text = PluginHandler.MainForm.MainTitle + "Error while loading " + sinner.Alias + " from SINners-WebService";
+                                    });
+                                }
+
+                            };
+                            wc.DownloadFile(
+                                // Param1 = Link of file
+                                new System.Uri(sinner.DownloadUrl),
+                                // Param2 = Path to save
+                                zippedFile
+                            );
+                        }
+                        if (!File.Exists(zippedFile))
+                        {
+                            var client = await StaticUtils.GetClient();
+                            var filestream = client.GetDownloadFile(sinner.Id.Value);
+                            var array = ReadFully(filestream);
+                            File.WriteAllBytes(zippedFile, array);
+                        }
+                        
                         System.IO.Compression.ZipFile.ExtractToDirectory(zippedFile, zipPath);
                         var files = Directory.EnumerateFiles(zipPath, "*.chum5", SearchOption.TopDirectoryOnly);
                         foreach (var file in files)
@@ -1018,6 +1050,18 @@ namespace ChummerHub.Client.Backend
         }
 
         
+
+       
+        private static void wc_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
+        {
+            PluginHandler.MainForm.DoThreadSafe(() =>
+            {
+                string substring = "Downloading: " + e.ProgressPercentage;
+                PluginHandler.MainForm.Text = PluginHandler.MainForm.MainTitle + " " + substring;
+            });
+            
+        }
+
         public static Task<string> DownloadSINnerExtendedTask(SINners.Models.SINner sinner, CharacterCache objCache)
         {
             try
