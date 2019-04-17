@@ -6000,6 +6000,22 @@
         </parentdetails>
       </required>
     </cyberware>
+    <cyberware>
+      <id>f05492b3-de9b-44c3-8622-89840587cc3a</id>
+      <name>Foot Blade</name>
+      <limit>False</limit>
+      <category>Cyber Implant Weapon</category>
+      <ess>0.2</ess>
+      <capacity>0</capacity>
+      <avail>20F</avail>
+      <cost>28000</cost>
+      <source>HT</source>
+      <page>185</page>
+      <addweapon>Foot Blade</addweapon>
+      <allowsubsystems>
+        <category>Cyber Implant Weapon Accessory</category>
+      </allowsubsystems>
+    </cyberware>
     <!-- End Region -->
     <!-- Region Boston Lockdown -->
     <cyberware>
