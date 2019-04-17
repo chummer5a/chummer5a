@@ -51,8 +51,16 @@ namespace ChummerHub.Client.UI
                 tbGroupname.Text = MyGroup.Groupname;
                 tbParentGroupId.Text = MyGroup.MyParentGroupId?.ToString();
                 tbPassword.Text = "";
-                tbGroupCreatorUsername.Text = MyGroup.GroupCreatorUserName;
-                this.cboLanguage1.SelectedValue = MyGroup.Language;
+                if (!String.IsNullOrEmpty(MyGroup.GroupCreatorUserName))
+                    tbGroupCreatorUsername.Text = MyGroup.GroupCreatorUserName;
+                else
+                    tbGroupCreatorUsername.Text = Properties.Settings.Default.UserEmail;
+                if (!String.IsNullOrEmpty(MyGroup.Language))
+                    this.cboLanguage1.SelectedValue = MyGroup.Language;
+                else
+                {
+                    this.cboLanguage1.SelectedValue = GlobalOptions.Language;
+                }
                 if (MyGroup.IsPublic.HasValue)
                     cbIsPublic.Checked = MyGroup.IsPublic.Value;
             }

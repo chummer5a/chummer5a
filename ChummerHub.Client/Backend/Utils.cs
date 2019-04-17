@@ -690,31 +690,27 @@ namespace ChummerHub.Client.Backend
                 }
                 if (String.IsNullOrEmpty(objCache.FilePath))
                 { 
-                    var jsonString = DownloadSINnerExtendedTask(sinner, objCache).Result;
                     objCache.FilePath = DownloadFileTask(sinner, objCache).Result;
                 }
-                else
-                {
-                    //I copy the values, because I dont know what callbacks are registered...
-                    var tempCache = new CharacterCache(objCache.FilePath);
-                    objCache.Background = tempCache.Background;
-                    objCache.MugshotBase64 = tempCache.MugshotBase64;
-                    objCache.BuildMethod = tempCache.BuildMethod;
-                    objCache.CharacterAlias = tempCache.CharacterAlias;
-                    objCache.CharacterName = tempCache.CharacterName;
-                    objCache.CharacterNotes = tempCache.CharacterNotes;
-                    objCache.Concept = tempCache.Concept;
-                    objCache.Created = tempCache.Created;
-                    objCache.Description = tempCache.Description;
-                    objCache.Essence = tempCache.Essence;
-                    objCache.GameNotes = tempCache.GameNotes;
-                    objCache.Karma = tempCache.Karma;
-                    objCache.FileName = tempCache.FileName;
-                    objCache.Metatype = tempCache.Metatype;
-                    objCache.Metavariant = tempCache.Metavariant;
-                    objCache.PlayerName = tempCache.PlayerName;
-                    objCache.SettingsFile = tempCache.SettingsFile;
-                }
+                //I copy the values, because I dont know what callbacks are registered...
+                var tempCache = new CharacterCache(objCache.FilePath);
+                objCache.Background = tempCache.Background;
+                objCache.MugshotBase64 = tempCache.MugshotBase64;
+                objCache.BuildMethod = tempCache.BuildMethod;
+                objCache.CharacterAlias = tempCache.CharacterAlias;
+                objCache.CharacterName = tempCache.CharacterName;
+                objCache.CharacterNotes = tempCache.CharacterNotes;
+                objCache.Concept = tempCache.Concept;
+                objCache.Created = tempCache.Created;
+                objCache.Description = tempCache.Description;
+                objCache.Essence = tempCache.Essence;
+                objCache.GameNotes = tempCache.GameNotes;
+                objCache.Karma = tempCache.Karma;
+                objCache.FileName = tempCache.FileName;
+                objCache.Metatype = tempCache.Metatype;
+                objCache.Metavariant = tempCache.Metavariant;
+                objCache.PlayerName = tempCache.PlayerName;
+                objCache.SettingsFile = tempCache.SettingsFile;
                 treeViewEventArgs.Node.Text = objCache.CalculatedName();
             }
         }
@@ -734,7 +730,8 @@ namespace ChummerHub.Client.Backend
                     {
                         SwitchToCharacter(c);
                     }
-                    SwitchToCharacter(objCache);
+                    //else
+                    //    SwitchToCharacter(objCache);
 
                     PluginHandler.MainForm.CharacterRoster.SetMyEventHandlers(false);
                     PluginHandler.MySINnerLoading = null;
@@ -983,43 +980,60 @@ namespace ChummerHub.Client.Backend
                         string zippedFile = Path.Combine(System.IO.Path.GetTempPath(), "SINner", sinner.Id.Value + ".chum5z");
                         if (File.Exists(zippedFile))
                             File.Delete(zippedFile);
+                        Exception rethrow = null;
                         bool downloadedFromGoogle = false;
-                        using (WebClient wc = new WebClient())
+                        try
                         {
-                            wc.DownloadProgressChanged += wc_DownloadProgressChanged;
-                            wc.DownloadFileCompleted += (sender, e) =>
+                            using (WebClient wc = new WebClient())
                             {
-                                if (e.Error == null)
-                                {
-                                    PluginHandler.MainForm.DoThreadSafe(() =>
-                                    {
-                                        PluginHandler.MainForm.Text = PluginHandler.MainForm.MainTitle;
-                                    });
-                                }
-                                else
-                                {
-                                    PluginHandler.MainForm.DoThreadSafe(() =>
-                                    {
-                                        PluginHandler.MainForm.Text = PluginHandler.MainForm.MainTitle + "Error while loading " + sinner.Alias + " from SINners-WebService";
-                                    });
-                                }
+                                //wc.DownloadProgressChanged += wc_DownloadProgressChanged;
+                                //wc.DownloadFileCompleted += (sender, e) =>
+                                //{
+                                //    if (e.Error == null)
+                                //    {
+                                //        PluginHandler.MainForm.DoThreadSafe(() =>
+                                //        {
+                                //            PluginHandler.MainForm.Text = PluginHandler.MainForm.MainTitle;
+                                //        });
+                                //    }
+                                //    else
+                                //    {
+                                //        PluginHandler.MainForm.DoThreadSafe(() =>
+                                //        {
+                                //            PluginHandler.MainForm.Text =
+                                //                PluginHandler.MainForm.MainTitle + "Error while loading " +
+                                //                sinner.Alias + " from SINners-WebService";
+                                //        });
+                                //    }
 
-                            };
-                            wc.DownloadFile(
-                                // Param1 = Link of file
-                                new System.Uri(sinner.DownloadUrl),
-                                // Param2 = Path to save
-                                zippedFile
-                            );
+                                //};
+                                wc.DownloadFile(
+                                    // Param1 = Link of file
+                                    new System.Uri(sinner.DownloadUrl),
+                                    // Param2 = Path to save
+                                    zippedFile
+                                );
+                            }
                         }
+                        catch (Exception e)
+                        {
+                            rethrow = e;
+                            if (!File.Exists(zippedFile))
+                            {
+                                var client = await StaticUtils.GetClient();
+                                var filestream = client.GetDownloadFile(sinner.Id.Value);
+                                var array = ReadFully(filestream);
+                                File.WriteAllBytes(zippedFile, array);
+                            }
+                        }
+
                         if (!File.Exists(zippedFile))
                         {
-                            var client = await StaticUtils.GetClient();
-                            var filestream = client.GetDownloadFile(sinner.Id.Value);
-                            var array = ReadFully(filestream);
-                            File.WriteAllBytes(zippedFile, array);
+                            if (rethrow != null)
+                                throw rethrow;
                         }
-                        
+
+
                         System.IO.Compression.ZipFile.ExtractToDirectory(zippedFile, zipPath);
                         var files = Directory.EnumerateFiles(zipPath, "*.chum5", SearchOption.TopDirectoryOnly);
                         foreach (var file in files)
