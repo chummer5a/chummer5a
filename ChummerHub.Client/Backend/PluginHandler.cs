@@ -252,20 +252,22 @@ namespace Chummer.Plugins
             {
                 using (new CursorWait(true, PluginHandler.MainForm))
                 {
-                    MyTreeNodes2Add.Clear();
-                    Func<Task<HttpOperationResponse<SINSearchGroupResult>>> myGetNPCs = async () =>
-                    {
-                        var client = await StaticUtils.GetClient();
-                        var res = await client.GetPublicGroupWithHttpMessagesAsync("NPC", GlobalOptions.Language, null, new CancellationToken());
-                        return res;
-                    };
-                    var nodelist = await ChummerHub.Client.Backend.Utils.GetCharacterRosterTreeNode(true, myGetNPCs);
-                    foreach (var node in nodelist)
-                    {
-                        MyTreeNodes2Add.AddOrUpdate(node.Name, node, (key, oldValue) => node);
-                    }
-                    PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false, true);
-                    PluginHandler.MainForm.CharacterRoster.BringToFront();
+                    frmSINnerGroupSearch frmSearch = new frmSINnerGroupSearch(null, null);
+                    frmSearch.Show(PluginHandler.MainForm);
+                    //MyTreeNodes2Add.Clear();
+                    //Func<Task<HttpOperationResponse<SINSearchGroupResult>>> myGetNPCs = async () =>
+                    //{
+                    //    var client = await StaticUtils.GetClient();
+                    //    var res = await client.GetPublicGroupWithHttpMessagesAsync("NPC", GlobalOptions.Language, null, new CancellationToken());
+                    //    return res;
+                    //};
+                    //var nodelist = await ChummerHub.Client.Backend.Utils.GetCharacterRosterTreeNode(true, myGetNPCs);
+                    //foreach (var node in nodelist)
+                    //{
+                    //    MyTreeNodes2Add.AddOrUpdate(node.Name, node, (key, oldValue) => node);
+                    //}
+                    //PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false, true);
+                    //PluginHandler.MainForm.CharacterRoster.BringToFront();
                 }
 
             }

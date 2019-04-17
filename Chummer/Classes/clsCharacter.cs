@@ -1956,7 +1956,7 @@ if (!Utils.IsUnitTest){
 
             if(!string.IsNullOrEmpty(strMissingBooks) && !Utils.IsUnitTest)
             {
-                if(MessageBox.Show(string.Format(LanguageManager.GetString("Message_MissingSourceBooks", GlobalOptions.Language), TranslatedBookList(strMissingBooks, GlobalOptions.Language)),
+                if(MessageBox.Show(new Form { TopMost = true }, string.Format(LanguageManager.GetString("Message_MissingSourceBooks", GlobalOptions.Language), TranslatedBookList(strMissingBooks, GlobalOptions.Language)),
                         LanguageManager.GetString("Message_MissingSourceBooks_Title", GlobalOptions.Language),
                         MessageBoxButtons.YesNo) == DialogResult.No)
                 {

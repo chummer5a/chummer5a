@@ -58,7 +58,7 @@
             <param name="groupname">In case you want to rename the group</param>
             <returns></returns>
         </member>
-        <member name="M:ChummerHub.Controllers.V1.SINnerGroupController.PostGroup(ChummerHub.Models.V1.SINnerGroup,System.Guid)">
+        <member name="M:ChummerHub.Controllers.V1.SINnerGroupController.PostGroup(ChummerHub.Models.V1.SINnerGroup,System.Nullable{System.Guid})">
             <summary>
             Store the new group
             </summary>
