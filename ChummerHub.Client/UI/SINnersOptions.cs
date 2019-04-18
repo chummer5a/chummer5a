@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using IdentityModel.Client;
 using System.Net.Http;
 using Newtonsoft.Json.Linq;
 using System.Runtime.InteropServices;

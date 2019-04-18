@@ -42,6 +42,7 @@ using System.Net;
 using System.Text;
 using Chummer.Plugins;
 using System.IO.Compression;
+using System.Runtime.Remoting.Channels;
 
 namespace Chummer
 {
@@ -112,7 +113,13 @@ namespace Chummer
             _workerVersionUpdateChecker.RunWorkerAsync();
 #endif
 
-            GlobalOptions.MRUChanged += PopulateMRUToolstripMenu;
+            GlobalOptions.MRUChanged += (sender, e) =>
+            {
+                this.DoThreadSafe(() =>
+                {
+                    PopulateMRUToolstripMenu(sender, e);
+                });
+            };
 
             // Delete the old executable if it exists (created by the update process).
             foreach(string strLoopOldFilePath in Directory.GetFiles(Utils.GetStartupPath, "*.old", SearchOption.AllDirectories))

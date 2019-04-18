@@ -183,7 +183,7 @@ namespace ChummerHub.Client.Model
                         }
                     }
                     this.MySINnerFile.SiNnerMetaData.Tags = this.PopulateTags();
-                    this.PrepareModel();
+                    await this.PrepareModel();
 
                     await ChummerHub.Client.Backend.Utils.PostSINnerAsync(this);
                     await ChummerHub.Client.Backend.Utils.UploadChummerFileAsync(this);
@@ -252,7 +252,7 @@ namespace ChummerHub.Client.Model
         }
 
 
-        public string PrepareModel()
+        public async Task<string> PrepareModel()
         {
             string zipPath = Path.Combine(Path.GetTempPath(), "SINner", MySINnerFile.Id + ".chum5z");
             if (PluginHandler.MySINnerLoading != null)
@@ -271,7 +271,61 @@ namespace ChummerHub.Client.Model
                     return zipPath;
                 }
                 else
-                    MySINnerFile.Id = Guid.NewGuid();
+                {
+                    if (String.IsNullOrEmpty(MySINnerFile.Alias))
+                    {
+                        MySINnerFile.Alias = MyCharacter.Alias;
+                        if (String.IsNullOrEmpty(MySINnerFile.Alias))
+                            MySINnerFile.Alias = MyCharacter.Name;
+                    }
+                    var client = await StaticUtils.GetClient();
+                    var res = await client.GetOwnedSINByAliasWithHttpMessagesAsync(MySINnerFile.Alias);
+                    if (res.Response.StatusCode == HttpStatusCode.NotFound)
+                    {
+                        MySINnerFile.Id = Guid.NewGuid();
+                    }
+                    else if (res.Response.StatusCode == HttpStatusCode.OK)
+                    {
+                        string message = MySINnerFile.Alias +
+                                         " is already available online, but the current client uses a local version of that file." +
+                                         Environment.NewLine + Environment.NewLine;
+                        message += "Do you want to use only one version and update it through SINner?" +
+                                   Environment.NewLine + Environment.NewLine;
+                        message += "YES:\tuse the same (= only one) version and get" +
+                                   Environment.NewLine;
+                        message += "\tupdates on this client when you save" + Environment.NewLine;
+                        message += "\tthe chummer on another client(recommended)" + Environment.NewLine
+                                                                            + Environment.NewLine;
+                        message +=
+                            "NO:\tgenerate a new \"Fork\" of this character," +
+                            Environment.NewLine;
+                        message += "\tthat is not linked to the online one" + Environment.NewLine;
+                        message +=
+                            "\tand use this new version from now on," + Environment.NewLine;
+                        message += "but only on this client (NOT recommended)."
+                                   + Environment.NewLine + Environment.NewLine;
+                        var result = MessageBox.Show(message, "SIN already found online", MessageBoxButtons.YesNoCancel,
+                            MessageBoxIcon.Asterisk, MessageBoxDefaultButton.Button1);
+                        if (result == DialogResult.Cancel)
+                            throw new ArgumentException("User aborted perparation for upload!");
+                        else if (result == DialogResult.No)
+                        {
+                            MySINnerFile.Id = Guid.NewGuid();
+                        }
+                        else
+                        {
+                            foreach (var sin in res.Body)
+                            {
+                                if (sin.Id != null)
+                                {
+                                    MySINnerFile.Id = sin.Id;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+
                 MySINnerIds.Add(MyCharacter.Alias, MySINnerFile.Id.Value);
                 MySINnerIds = MySINnerIds; //Save it!
             }

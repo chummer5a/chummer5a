@@ -38,7 +38,7 @@ namespace ChummerHub.Client.UI
 
         
 
-        public CharacterExtended SetCharacterFrom(CharacterShared mySINner)
+        public async Task<CharacterExtended> SetCharacterFrom(CharacterShared mySINner)
         {
             InitializeComponent();
             _mySINner = mySINner;
@@ -55,7 +55,7 @@ namespace ChummerHub.Client.UI
             else
             {
                 MyCE = new CharacterExtended(mySINner.CharacterObject, null, PluginHandler.MySINnerLoading);
-                MyCE.ZipFilePath = MyCE.PrepareModel();
+                MyCE.ZipFilePath = await MyCE.PrepareModel();
             }
             MyCE.MySINnerFile.SiNnerMetaData.Tags = MyCE.PopulateTags();
 

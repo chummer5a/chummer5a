@@ -69,16 +69,16 @@ namespace ChummerHub.Models.V1
             this.MyExtendedAttributes = new SINnerExtended();
         }
 
-        [JsonIgnore]
-        [XmlIgnore]
-        [NotMapped]
-        private List<Tag> _AllTags { get; set; }
+        //[JsonIgnore]
+        //[XmlIgnore]
+        //[NotMapped]
+        //private List<Tag> _AllTags { get; set; }
 
-        public async Task<List<Tag>> GetTagsForSinnerFlat(ApplicationDbContext context)
-        {
-            return await (from a in context.Tags where a.SINnerId == this.Id select a).ToListAsync();
+        //public async Task<List<Tag>> GetTagsForSinnerFlat(ApplicationDbContext context)
+        //{
+        //    return await (from a in context.Tags where a.SINnerId == this.Id select a).ToListAsync();
             
-        }
+        //}
 
         internal static async Task<List<SINner>> GetSINnersFromUser(ApplicationUser user, ApplicationDbContext context, bool canEdit)
         {
