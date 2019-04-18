@@ -247,13 +247,13 @@ namespace Chummer.Backend.Uniques
             {
                 _guiID = Guid.NewGuid();
             }
-            if (xmlNode["sourceid"] == null || !xmlNode.TryGetField("sourceid", Guid.TryParse, out _guiSourceID))
+            xmlNode.TryGetStringFieldQuickly("name", ref _strName);
+            if (!xmlNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
                 XmlNode node = GetNode(GlobalOptions.Language);
                 node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
 
-            xmlNode.TryGetStringFieldQuickly("name", ref _strName);
             xmlNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             xmlNode.TryGetStringFieldQuickly("spiritform", ref _strSpiritForm);
             xmlNode.TryGetStringFieldQuickly("drain", ref _strDrainExpression);
