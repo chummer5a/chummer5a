@@ -142,7 +142,7 @@
             <knowledgeskilllevel>
               <group>Street</group>
               <name>Seattle</name>
-              <value>2</value>
+              <val>2</val>
             </knowledgeskilllevel>
             <freenegativequalities>-5</freenegativequalities>
             <pushtext>United Canadian American States</pushtext>
