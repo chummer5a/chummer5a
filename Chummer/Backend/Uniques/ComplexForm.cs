@@ -68,6 +68,7 @@ namespace Chummer
                 Utils.BreakIfDebug();
             }
             objXmlComplexFormNode.TryGetField("id", Guid.TryParse, out _guiSourceID);
+            objXmlComplexFormNode.TryGetStringFieldQuickly("name", ref _strName);
             objXmlComplexFormNode.TryGetStringFieldQuickly("target", ref _strTarget);
             objXmlComplexFormNode.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlComplexFormNode.TryGetStringFieldQuickly("page", ref _strPage);
