@@ -53,6 +53,12 @@ namespace Chummer.Plugins
         [ImportingConstructor]
         public PluginHandler()
         {
+            if (ChummerHub.Client.Properties.Settings.Default.UpgradeRequired)
+            {
+                ChummerHub.Client.Properties.Settings.Default.Upgrade();
+                ChummerHub.Client.Properties.Settings.Default.UpgradeRequired = false;
+                ChummerHub.Client.Properties.Settings.Default.Save();
+            }
             System.Diagnostics.Trace.TraceInformation("Plugin ChummerHub.Client importing (Constructor).");
             MyUploadClient = new UploadClient();
             if (Properties.Settings.Default.UploadClientId == Guid.Empty)
@@ -128,52 +134,57 @@ namespace Chummer.Plugins
             try
             {
                 input.OnSaveCompleted -= MyOnSaveUpload;
-                CharacterExtended ce;
-                if (MyCharExtendedDic.ContainsKey(input.FileName))
+                using (new CursorWait(true, MainForm))
                 {
-                    MyCharExtendedDic.TryGetValue(input.FileName, out ce);
-                }
-                else
-                {
-                    ce = new CharacterExtended(input, null);
-                    MyCharExtendedDic.Add(input.FileName, ce);
-                }
+                    CharacterExtended ce;
+                    if (MyCharExtendedDic.ContainsKey(input.FileName))
+                    {
+                        MyCharExtendedDic.TryGetValue(input.FileName, out ce);
+                    }
+                    else
+                    {
+                        ce = new CharacterExtended(input, null);
+                        MyCharExtendedDic.Add(input.FileName, ce);
+                    }
 
-                if (!ce.MySINnerFile.SiNnerMetaData.Tags.Any(a => a.TagName == "Reflection"))
-                {
-                    ce.MySINnerFile.SiNnerMetaData.Tags = ce.PopulateTags();
-                }
-                await ce.Upload();
-                var found = (from a in MainForm.OpenCharacterForms where a.CharacterObject == input select a)
-                    .FirstOrDefault();
-                if (found == null)
-                {
-                    return;
-                }
-                TabPage tabPage = null;
-                if ((found is frmCreate frm) && (frm.TabCharacterTabs.TabPages.ContainsKey("SINners")))
-                {
-                    var index = frm.TabCharacterTabs.TabPages.IndexOfKey("SINners");
-                    tabPage = frm.TabCharacterTabs.TabPages[index];
-                }
+                    if (!ce.MySINnerFile.SiNnerMetaData.Tags.Any(a => a.TagName == "Reflection"))
+                    {
+                        ce.MySINnerFile.SiNnerMetaData.Tags = ce.PopulateTags();
+                    }
 
-                if ((found is frmCareer frm2) && (frm2.TabCharacterTabs.TabPages.ContainsKey("SINners")))
-                {
-                    var index = frm2.TabCharacterTabs.TabPages.IndexOfKey("SINners");
-                    tabPage = frm2.TabCharacterTabs.TabPages[index];
-                }
+                    await ce.Upload();
+                    var found = (from a in MainForm.OpenCharacterForms where a.CharacterObject == input select a)
+                        .FirstOrDefault();
+                    if (found == null)
+                    {
+                        return;
+                    }
 
-                if (tabPage == null)
-                    return;
-                var ucseq = tabPage.Controls.Find("SINnersBasic", true);
-                foreach (var uc in ucseq)
-                {
-                    var sb = uc as SINnersBasic;
-                    if (sb != null)
-                        await sb?.CheckSINnerStatus();
-                }
-                var ucseq2 = tabPage.Controls.Find("SINnersAdvanced", true);
+                    TabPage tabPage = null;
+                    if ((found is frmCreate frm) && (frm.TabCharacterTabs.TabPages.ContainsKey("SINners")))
+                    {
+                        var index = frm.TabCharacterTabs.TabPages.IndexOfKey("SINners");
+                        tabPage = frm.TabCharacterTabs.TabPages[index];
+                    }
 
+                    if ((found is frmCareer frm2) && (frm2.TabCharacterTabs.TabPages.ContainsKey("SINners")))
+                    {
+                        var index = frm2.TabCharacterTabs.TabPages.IndexOfKey("SINners");
+                        tabPage = frm2.TabCharacterTabs.TabPages[index];
+                    }
+
+                    if (tabPage == null)
+                        return;
+                    var ucseq = tabPage.Controls.Find("SINnersBasic", true);
+                    foreach (var uc in ucseq)
+                    {
+                        var sb = uc as SINnersBasic;
+                        if (sb != null)
+                            await sb?.CheckSINnerStatus();
+                    }
+
+                    var ucseq2 = tabPage.Controls.Find("SINnersAdvanced", true);
+                }
             }
             catch(Exception e)
             {
