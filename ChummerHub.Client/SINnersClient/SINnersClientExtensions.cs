@@ -376,6 +376,32 @@ namespace SINners
                 }
             }
 
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='id'>
+            /// </param>
+            public static IList<SINner> GetOwnedSINByAlias(this ISINnersClient operations, string id)
+            {
+                return Task.Factory.StartNew(s => ((ISINnersClient)s).GetOwnedSINByAliasAsync(id), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
+            }
+
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='id'>
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task<IList<SINner>> GetOwnedSINByAliasAsync(this ISINnersClient operations, string id, CancellationToken cancellationToken = default(CancellationToken))
+            {
+                using (var _result = await operations.GetOwnedSINByAliasWithHttpMessagesAsync(id, null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Body;
+                }
+            }
+
             /// <summary>
             /// The Xml or Zip File can be uploaded (knowing the previously stored Id)
             /// </summary>

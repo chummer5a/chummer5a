@@ -26,7 +26,7 @@ namespace ChummerHub.Models.V1
         public string TagValue { get; set; }
 
 
-        public float? TagValueDouble { get; set; }
+        public Double? TagValueDouble { get; set; }
 
         /// <summary>
         /// This has NO FUNCTION and is only here for Debugging reasons.
@@ -42,12 +42,6 @@ namespace ChummerHub.Models.V1
         [XmlIgnore]
         [NotMapped]
         public Tag ParentTag { get; set; }
-
-        //[IgnoreDataMember]
-        //[JsonIgnore]
-        //[XmlIgnore]
-        //[NotMapped]
-        //public SINner SINner { get; set; }
 
         public Guid? SINnerId { get; set; }
 
