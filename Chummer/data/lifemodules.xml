@@ -421,7 +421,7 @@
               <group>Language</group>
             </knowledgeskilllevel>
             <skillgrouplevel>
-              <name>Outdoor</name>
+              <name>Outdoors</name>
               <val>1</val>
             </skillgrouplevel>
             <skilllevel>
@@ -579,7 +579,7 @@
               <group>Language</group>
             </knowledgeskilllevel>
             <skillgrouplevel>
-              <name>Outdoor</name>
+              <name>Outdoors</name>
             </skillgrouplevel>
             <skilllevel>
               <name>Blades</name>
@@ -4581,7 +4581,7 @@
           <val>2</val>
         </knowledgeskilllevel>
         <addqualities>
-          <addqiality>In Debt V</addqiality>
+          <addquality>In Debt V</addquality>
         </addqualities>
       </bonus>
       <!--<required>
@@ -4915,9 +4915,9 @@
           <bonus>
             <skillgrouplevel>
               <options>
-                <alchemy>Alchemy</alchemy>
+                <enchanting>Enchanting</enchanting>
                 <conjuring>Conjuring</conjuring>
-                <spellcasting>Spellcasting</spellcasting>
+                <sorcery>Sorcery</sorcery>
               </options>
             </skillgrouplevel>
             <skilllevel>
@@ -5609,7 +5609,7 @@
               <name>Demolitions</name>
             </skilllevel>
             <skillgrouplevel>
-              <name>Engineer</name>
+              <name>Engineering</name>
               <val>1</val>
             </skillgrouplevel>
             <skilllevel>
@@ -6875,12 +6875,12 @@
           <val>3</val>
         </knowledgeskilllevel>
         <nuyenamt>32000</nuyenamt>
+        <addqualities>
+          <!--per raw, there is no rating for flashbacks-->
+          <addquality>Flashbacks I</addquality>
+          <addquality>Uneducated</addquality>
+        </addqualities>
       </bonus>
-      <addqialities>
-        <!--per raw, there is no rating for flashbacks-->
-        <addquality>Flashbacks I</addquality>
-        <addquality>Uneducated</addquality>
-      </addqialities>
       <!--todo: Special: You may pick 32,000 nuyen worth of bioware. Normal Essence costs apply-->
       <story>$real was used as a host for bioware, as implanting it in a metahuman is cheaper than keeping it on ice. One day, $real knew they would be killed, and their organs $BAGORGAN . On the other hand, free bioware! Score!</story>
       <source>CF</source>
@@ -9374,7 +9374,7 @@
         <addqualities>
           <addquality>Prejudiced (Common, Outspoken)</addquality>
           <addquality>Uneducated</addquality>
-          <addqiality>Toughness</addqiality>
+          <addquality>Toughness</addquality>
         </addqualities>
       </bonus>
       <story>$real was brought up consistently exposed to the Anarchist's way of seeing the world.</story>
@@ -9411,7 +9411,7 @@
         </knowledgeskilllevel>
         <addqualities>
           <addquality>Uneducated</addquality>
-          <addqiality>Toughness</addqiality>
+          <addquality>Toughness</addquality>
         </addqualities>
       </bonus>
       <story>$real was brought up in one of the few small coastal towns around the world.</story>
@@ -9452,9 +9452,9 @@
         </knowledgeskilllevel>
         <addqualities>
           <addquality>Uneducated</addquality>
-          <addqiality>Toughness</addqiality>
-          <addqiality>Blighted (24 Months)</addqiality>
-          <addqiality>Perceptive</addqiality>
+          <addquality>Toughness</addquality>
+          <addquality>Blighted (24 Months)</addquality>
+          <addquality>Perceptive</addquality>
         </addqualities>
       </bonus>
       <story>$real was brought up in proximity to of the world's many blighted coasts.</story>
@@ -9495,7 +9495,7 @@
         </knowledgeskilllevel>
         <addqualities>
           <addquality>Driven</addquality>
-          <addqiality>Bilingual</addqiality>
+          <addquality>Bilingual</addquality>
         </addqualities>
       </bonus>
       <story>$real and their family may have been war refugees or hoping for a better life elsewhere, as they where leaving their home country. You are part of the next generation, brought in between two cultures.</story>
@@ -9715,7 +9715,7 @@
           <group>Street</group>
         </knowledgeskilllevel>
         <addqualities>
-          <addqiality>Blighted (24 Months)</addqiality>
+          <addquality>Blighted (24 Months)</addquality>
         </addqualities>
       </bonus>
       <story>$real spent his teen years helping his small community at the toxic coast.</story>
