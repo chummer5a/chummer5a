@@ -7153,6 +7153,10 @@
 			<text>Karmakosten zum Erhöhen von Spezialattributen werden bei Essenzverlust nicht reduziert</text>
 		</string>
 		<string>
+			<key>Checkbox_Options_IgnoreComplexFormLimit</key>
+			<text>Maximum für komplexe Formen im Karrieremodus ignorieren</text>
+		</string>
+		<string>
 			<key>Label_SelectAdvancedLifestyle_Qualities</key>
 			<text>Lebensstiloptionen</text>
 		</string>
@@ -9497,6 +9501,26 @@
 		<string>
 			<key>Message_Files_Cannot_Be_Removed</key>
 			<text>Chummer5 konnte die nachfolgenden Dateien während des Updates nicht entfernen, da auf sie nicht zugegriffen werden konnte:</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_EnablePlugins</key>
+			<text>Module aktivieren (experimentell)</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_AllowEasterEggs</key>
+			<text>Ostereier erlauben</text>
+		</string>
+		<string>
+			<key>String_online</key>
+			<text>Online</text>
+		</string>
+		<string>
+			<key>Menu_Main_NPCs</key>
+			<text>NSCs</text>
+		</string>
+		<string>
+			<key>Menu_Main_SINners</key>
+			<text>SINners</text>
 		</string>
 	</strings>
 </chummer>

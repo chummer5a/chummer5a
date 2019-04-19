@@ -1,3 +1,5 @@
+using System.Windows.Forms;
+
 namespace ChummerHub.Client.UI
 {
     partial class SINnerGroupSearch
@@ -40,15 +42,16 @@ namespace ChummerHub.Client.UI
             this.bCreateGroup = new System.Windows.Forms.Button();
             this.tbSearchGroupname = new System.Windows.Forms.TextBox();
             this.bJoinGroup = new System.Windows.Forms.Button();
-            this.gbGroupMembers = new System.Windows.Forms.GroupBox();
-            this.lbGroupMembers = new System.Windows.Forms.ListBox();
             this.gpGroupsFound = new System.Windows.Forms.GroupBox();
-            this.lbGroupSearchResult = new System.Windows.Forms.ListBox();
+            this.tlpGroupsFoundPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.tvGroupSearchResult = new System.Windows.Forms.TreeView();
+            this.bGroupFoundLoadInCharacterRoster = new System.Windows.Forms.Button();
+            this.bGroupsFoundDeleteGroup = new System.Windows.Forms.Button();
             this.tlpGroupSearch.SuspendLayout();
             this.gpSearchForGroups.SuspendLayout();
             this.tlpSearchGroups.SuspendLayout();
-            this.gbGroupMembers.SuspendLayout();
             this.gpGroupsFound.SuspendLayout();
+            this.tlpGroupsFoundPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // tlpGroupSearch
@@ -60,7 +63,6 @@ namespace ChummerHub.Client.UI
             this.tlpGroupSearch.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 66.66666F));
             this.tlpGroupSearch.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tlpGroupSearch.Controls.Add(this.gpSearchForGroups, 0, 0);
-            this.tlpGroupSearch.Controls.Add(this.gbGroupMembers, 1, 1);
             this.tlpGroupSearch.Controls.Add(this.gpGroupsFound, 0, 1);
             this.tlpGroupSearch.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpGroupSearch.Location = new System.Drawing.Point(0, 0);
@@ -68,7 +70,7 @@ namespace ChummerHub.Client.UI
             this.tlpGroupSearch.RowCount = 2;
             this.tlpGroupSearch.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpGroupSearch.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpGroupSearch.Size = new System.Drawing.Size(700, 425);
+            this.tlpGroupSearch.Size = new System.Drawing.Size(403, 425);
             this.tlpGroupSearch.TabIndex = 0;
             this.tlpGroupSearch.VisibleChanged += new System.EventHandler(this.TlpGroupSearch_VisibleChanged);
             // 
@@ -83,7 +85,7 @@ namespace ChummerHub.Client.UI
             this.gpSearchForGroups.Controls.Add(this.tlpSearchGroups);
             this.gpSearchForGroups.Location = new System.Drawing.Point(3, 3);
             this.gpSearchForGroups.Name = "gpSearchForGroups";
-            this.gpSearchForGroups.Size = new System.Drawing.Size(694, 106);
+            this.gpSearchForGroups.Size = new System.Drawing.Size(397, 106);
             this.gpSearchForGroups.TabIndex = 1;
             this.gpSearchForGroups.TabStop = false;
             this.gpSearchForGroups.Text = "search for groups";
@@ -113,7 +115,7 @@ namespace ChummerHub.Client.UI
             this.tlpSearchGroups.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tlpSearchGroups.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tlpSearchGroups.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tlpSearchGroups.Size = new System.Drawing.Size(688, 87);
+            this.tlpSearchGroups.Size = new System.Drawing.Size(391, 87);
             this.tlpSearchGroups.TabIndex = 0;
             // 
             // lSearchGroupname
@@ -133,7 +135,7 @@ namespace ChummerHub.Client.UI
             this.tbSearchByAlias.Enabled = false;
             this.tbSearchByAlias.Location = new System.Drawing.Point(97, 33);
             this.tbSearchByAlias.Name = "tbSearchByAlias";
-            this.tbSearchByAlias.Size = new System.Drawing.Size(481, 20);
+            this.tbSearchByAlias.Size = new System.Drawing.Size(184, 20);
             this.tbSearchByAlias.TabIndex = 3;
             this.tbSearchByAlias.Text = "not implemented yet";
             // 
@@ -165,7 +167,7 @@ namespace ChummerHub.Client.UI
             this.tbSearchByUsername.Enabled = false;
             this.tbSearchByUsername.Location = new System.Drawing.Point(97, 4);
             this.tbSearchByUsername.Name = "tbSearchByUsername";
-            this.tbSearchByUsername.Size = new System.Drawing.Size(481, 20);
+            this.tbSearchByUsername.Size = new System.Drawing.Size(184, 20);
             this.tbSearchByUsername.TabIndex = 2;
             this.tbSearchByUsername.Text = "not implemented yet";
             // 
@@ -174,7 +176,7 @@ namespace ChummerHub.Client.UI
             this.bSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.bSearch.AutoSize = true;
             this.bSearch.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.bSearch.Location = new System.Drawing.Point(584, 3);
+            this.bSearch.Location = new System.Drawing.Point(287, 3);
             this.bSearch.Name = "bSearch";
             this.bSearch.Size = new System.Drawing.Size(101, 23);
             this.bSearch.TabIndex = 4;
@@ -187,7 +189,7 @@ namespace ChummerHub.Client.UI
             this.bCreateGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.bCreateGroup.AutoSize = true;
             this.bCreateGroup.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.bCreateGroup.Location = new System.Drawing.Point(584, 32);
+            this.bCreateGroup.Location = new System.Drawing.Point(287, 32);
             this.bCreateGroup.Name = "bCreateGroup";
             this.bCreateGroup.Size = new System.Drawing.Size(101, 23);
             this.bCreateGroup.TabIndex = 5;
@@ -200,13 +202,15 @@ namespace ChummerHub.Client.UI
             this.tbSearchGroupname.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.tbSearchGroupname.Location = new System.Drawing.Point(97, 62);
             this.tbSearchGroupname.Name = "tbSearchGroupname";
-            this.tbSearchGroupname.Size = new System.Drawing.Size(481, 20);
+            this.tbSearchGroupname.Size = new System.Drawing.Size(184, 20);
             this.tbSearchGroupname.TabIndex = 7;
+            this.tbSearchGroupname.TextChanged += new System.EventHandler(this.TbSearchGroupname_TextChanged);
+            this.tbSearchGroupname.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TbSearchGroupname_KeyDown);
             // 
             // bJoinGroup
             // 
             this.bJoinGroup.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.bJoinGroup.Location = new System.Drawing.Point(584, 61);
+            this.bJoinGroup.Location = new System.Drawing.Point(287, 61);
             this.bJoinGroup.Name = "bJoinGroup";
             this.bJoinGroup.Size = new System.Drawing.Size(101, 23);
             this.bJoinGroup.TabIndex = 8;
@@ -214,49 +218,77 @@ namespace ChummerHub.Client.UI
             this.bJoinGroup.UseVisualStyleBackColor = true;
             this.bJoinGroup.Click += new System.EventHandler(this.bJoinGroup_Click);
             // 
-            // gbGroupMembers
-            // 
-            this.gbGroupMembers.Controls.Add(this.lbGroupMembers);
-            this.gbGroupMembers.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.gbGroupMembers.Location = new System.Drawing.Point(469, 115);
-            this.gbGroupMembers.Name = "gbGroupMembers";
-            this.gbGroupMembers.Size = new System.Drawing.Size(228, 307);
-            this.gbGroupMembers.TabIndex = 3;
-            this.gbGroupMembers.TabStop = false;
-            this.gbGroupMembers.Text = "Members";
-            // 
-            // lbGroupMembers
-            // 
-            this.lbGroupMembers.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbGroupMembers.FormattingEnabled = true;
-            this.lbGroupMembers.Location = new System.Drawing.Point(3, 16);
-            this.lbGroupMembers.Name = "lbGroupMembers";
-            this.lbGroupMembers.Size = new System.Drawing.Size(222, 288);
-            this.lbGroupMembers.Sorted = true;
-            this.lbGroupMembers.TabIndex = 4;
-            // 
             // gpGroupsFound
             // 
             this.gpGroupsFound.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.gpGroupsFound.Controls.Add(this.lbGroupSearchResult);
+            this.tlpGroupSearch.SetColumnSpan(this.gpGroupsFound, 2);
+            this.gpGroupsFound.Controls.Add(this.tlpGroupsFoundPanel);
             this.gpGroupsFound.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gpGroupsFound.Location = new System.Drawing.Point(3, 115);
             this.gpGroupsFound.Name = "gpGroupsFound";
-            this.gpGroupsFound.Size = new System.Drawing.Size(460, 307);
+            this.gpGroupsFound.Size = new System.Drawing.Size(397, 307);
             this.gpGroupsFound.TabIndex = 4;
             this.gpGroupsFound.TabStop = false;
             this.gpGroupsFound.Text = "Groups found";
             // 
-            // lbGroupSearchResult
+            // tlpGroupsFoundPanel
             // 
-            this.lbGroupSearchResult.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbGroupSearchResult.FormattingEnabled = true;
-            this.lbGroupSearchResult.Location = new System.Drawing.Point(3, 16);
-            this.lbGroupSearchResult.Name = "lbGroupSearchResult";
-            this.lbGroupSearchResult.Size = new System.Drawing.Size(454, 288);
-            this.lbGroupSearchResult.Sorted = true;
-            this.lbGroupSearchResult.TabIndex = 3;
-            this.lbGroupSearchResult.SelectedIndexChanged += new System.EventHandler(this.lbGroupSearchResult_SelectedIndexChanged);
+            this.tlpGroupsFoundPanel.AutoSize = true;
+            this.tlpGroupsFoundPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpGroupsFoundPanel.ColumnCount = 2;
+            this.tlpGroupsFoundPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpGroupsFoundPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpGroupsFoundPanel.Controls.Add(this.tvGroupSearchResult, 0, 0);
+            this.tlpGroupsFoundPanel.Controls.Add(this.bGroupFoundLoadInCharacterRoster, 0, 1);
+            this.tlpGroupsFoundPanel.Controls.Add(this.bGroupsFoundDeleteGroup, 1, 1);
+            this.tlpGroupsFoundPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpGroupsFoundPanel.Location = new System.Drawing.Point(3, 16);
+            this.tlpGroupsFoundPanel.Name = "tlpGroupsFoundPanel";
+            this.tlpGroupsFoundPanel.RowCount = 2;
+            this.tlpGroupsFoundPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 90F));
+            this.tlpGroupsFoundPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
+            this.tlpGroupsFoundPanel.Size = new System.Drawing.Size(391, 288);
+            this.tlpGroupsFoundPanel.TabIndex = 4;
+            // 
+            // tvGroupSearchResult
+            // 
+            this.tvGroupSearchResult.AllowDrop = true;
+            this.tlpGroupsFoundPanel.SetColumnSpan(this.tvGroupSearchResult, 2);
+            this.tvGroupSearchResult.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tvGroupSearchResult.Location = new System.Drawing.Point(3, 3);
+            this.tvGroupSearchResult.Name = "tvGroupSearchResult";
+            this.tvGroupSearchResult.Size = new System.Drawing.Size(385, 253);
+            this.tvGroupSearchResult.Sorted = true;
+            this.tvGroupSearchResult.TabIndex = 3;
+            this.tvGroupSearchResult.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.TvGroupSearchResult_ItemDrag);
+            this.tvGroupSearchResult.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TvGroupSearchResult_AfterSelect);
+            this.tvGroupSearchResult.DragDrop += new System.Windows.Forms.DragEventHandler(this.TvGroupSearchResult_DragDrop);
+            this.tvGroupSearchResult.DragEnter += new System.Windows.Forms.DragEventHandler(this.TvGroupSearchResult_DragEnter);
+            // 
+            // bGroupFoundLoadInCharacterRoster
+            // 
+            this.bGroupFoundLoadInCharacterRoster.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.bGroupFoundLoadInCharacterRoster.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.bGroupFoundLoadInCharacterRoster.Location = new System.Drawing.Point(3, 262);
+            this.bGroupFoundLoadInCharacterRoster.Name = "bGroupFoundLoadInCharacterRoster";
+            this.bGroupFoundLoadInCharacterRoster.Size = new System.Drawing.Size(189, 23);
+            this.bGroupFoundLoadInCharacterRoster.TabIndex = 4;
+            this.bGroupFoundLoadInCharacterRoster.Text = "show in Character Roster";
+            this.bGroupFoundLoadInCharacterRoster.UseVisualStyleBackColor = true;
+            this.bGroupFoundLoadInCharacterRoster.Click += new System.EventHandler(this.BGroupFoundLoadInCharacterRoster_Click);
+            // 
+            // bGroupsFoundDeleteGroup
+            // 
+            this.bGroupsFoundDeleteGroup.AutoSize = true;
+            this.bGroupsFoundDeleteGroup.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.bGroupsFoundDeleteGroup.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.bGroupsFoundDeleteGroup.Location = new System.Drawing.Point(198, 262);
+            this.bGroupsFoundDeleteGroup.Name = "bGroupsFoundDeleteGroup";
+            this.bGroupsFoundDeleteGroup.Size = new System.Drawing.Size(190, 23);
+            this.bGroupsFoundDeleteGroup.TabIndex = 5;
+            this.bGroupsFoundDeleteGroup.Text = "Delete Group";
+            this.bGroupsFoundDeleteGroup.UseVisualStyleBackColor = true;
+            this.bGroupsFoundDeleteGroup.Click += new System.EventHandler(this.BGroupsFoundDeleteGroup_Click);
             // 
             // SINnerGroupSearch
             // 
@@ -264,15 +296,18 @@ namespace ChummerHub.Client.UI
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.tlpGroupSearch);
             this.Name = "SINnerGroupSearch";
-            this.Size = new System.Drawing.Size(700, 425);
+            this.Size = new System.Drawing.Size(403, 425);
+            this.VisibleChanged += new System.EventHandler(this.SINnerGroupSearch_VisibleChanged);
             this.tlpGroupSearch.ResumeLayout(false);
             this.tlpGroupSearch.PerformLayout();
             this.gpSearchForGroups.ResumeLayout(false);
             this.gpSearchForGroups.PerformLayout();
             this.tlpSearchGroups.ResumeLayout(false);
             this.tlpSearchGroups.PerformLayout();
-            this.gbGroupMembers.ResumeLayout(false);
             this.gpGroupsFound.ResumeLayout(false);
+            this.gpGroupsFound.PerformLayout();
+            this.tlpGroupsFoundPanel.ResumeLayout(false);
+            this.tlpGroupsFoundPanel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -292,9 +327,10 @@ namespace ChummerHub.Client.UI
         private System.Windows.Forms.Label lSearchGroupname;
         private System.Windows.Forms.TextBox tbSearchGroupname;
         private System.Windows.Forms.Button bJoinGroup;
-        private System.Windows.Forms.GroupBox gbGroupMembers;
-        private System.Windows.Forms.ListBox lbGroupMembers;
         private System.Windows.Forms.GroupBox gpGroupsFound;
-        private System.Windows.Forms.ListBox lbGroupSearchResult;
+        private System.Windows.Forms.TreeView tvGroupSearchResult;
+        private TableLayoutPanel tlpGroupsFoundPanel;
+        private Button bGroupFoundLoadInCharacterRoster;
+        private Button bGroupsFoundDeleteGroup;
     }
 }

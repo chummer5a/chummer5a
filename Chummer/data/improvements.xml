@@ -585,6 +585,17 @@
       <page>Adjusts the size of the character's Spellcasting pool when casting Spell in the selected category. Positive values improve Spellcasting. Negative values reduce Spellcasting.</page>
     </improvement>
     <improvement>
+      <name>Specific Spell Dicepool</name>
+      <id>spellcategory</id>
+      <internal>spelldicepool</internal>
+      <fields>
+        <field>SelectSpell</field>
+        <field>val</field>
+      </fields>
+      <xml><![CDATA[<name>{select}</name><val>{val}</val>]]></xml>
+      <page>Adjusts the size of the character's Spellcasting pool when casting the Spell with the selected name. Positive values improve Spellcasting. Negative values reduce Spellcasting.</page>
+    </improvement>
+    <improvement>
       <name>Skillsoft Access</name>
       <id>skillsoftaccess</id>
       <internal>skillsoftaccess</internal>

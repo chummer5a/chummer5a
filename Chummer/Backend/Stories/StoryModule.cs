@@ -32,7 +32,7 @@ namespace Chummer
         private readonly Dictionary<string, string> _dicEnglishTexts = new Dictionary<string, string>();
         private readonly Guid _guiInternalId;
         private string _strName;
-        private string _strSourceId;
+        private Guid _guiSourceID;
         private readonly Character _objCharacter;
         private string _strDefaultTextKey;
 
@@ -47,7 +47,7 @@ namespace Chummer
 
         public void Create(XmlNode xmlStoryModuleDataNode)
         {
-            xmlStoryModuleDataNode.TryGetStringFieldQuickly("id", ref _strSourceId);
+            xmlStoryModuleDataNode.TryGetField("id", Guid.TryParse, out _guiSourceID);
             xmlStoryModuleDataNode.TryGetStringFieldQuickly("name", ref _strName);
 
             XmlNode xmlTextsNode = xmlStoryModuleDataNode.SelectSingleNode("texts");
@@ -71,7 +71,7 @@ namespace Chummer
 
         public void Create(XPathNavigator xmlStoryModuleDataNode)
         {
-            xmlStoryModuleDataNode.TryGetStringFieldQuickly("id", ref _strSourceId);
+            xmlStoryModuleDataNode.TryGetField("id", Guid.TryParse, out _guiSourceID);
             xmlStoryModuleDataNode.TryGetStringFieldQuickly("name", ref _strName);
 
             XPathNavigator xmlTextsNode = xmlStoryModuleDataNode.SelectSingleNode("texts");
@@ -101,6 +101,25 @@ namespace Chummer
             get => _strName;
             set => _strName = value;
         }
+
+        /// <summary>
+        /// Identifier of the object within data files.
+        /// </summary>
+        public Guid SourceID
+        {
+            get => _guiSourceID;
+            set
+            {
+                if (_guiSourceID == value) return;
+                _guiSourceID = value;
+                _objCachedMyXmlNode = null;
+            }
+        }
+
+        /// <summary>
+        /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
+        /// </summary>
+        public string SourceIDString => _guiSourceID.ToString("D");
 
         public string DisplayName => DisplayNameMethod(GlobalOptions.Language);
 
@@ -387,19 +406,6 @@ namespace Chummer
             return LanguageManager.GetString("String_Error", strLanguage);
         }
 
-        public string SourceId
-        {
-            get => _strSourceId;
-            set
-            {
-                if (_strSourceId != value)
-                {
-                    _strSourceId = value;
-                    _objCachedMyXmlNode = null;
-                }
-            }
-        }
-
         public string InternalId => _guiInternalId == Guid.Empty ? string.Empty : _guiInternalId.ToString("D");
 
         public XmlNode GetNode()
@@ -409,11 +415,9 @@ namespace Chummer
 
         public XmlNode GetNode(string strLanguage)
         {
-            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
-            {
-                _objCachedMyXmlNode = XmlManager.Load("stories.xml", strLanguage).SelectSingleNode("/chummer/stories/story[id = \"" + SourceId + "\"]");
-                _strCachedXmlNodeLanguage = strLanguage;
-            }
+            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.LiveCustomData) return _objCachedMyXmlNode;
+            _objCachedMyXmlNode = XmlManager.Load("stories.xml", strLanguage).SelectSingleNode($"/chummer/stories/story[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
+            _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;
         }
     }

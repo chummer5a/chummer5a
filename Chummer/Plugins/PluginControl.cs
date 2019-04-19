@@ -22,7 +22,7 @@ namespace Chummer.Plugins
         IEnumerable<TabPage> GetTabPages(frmCreate input);
         IEnumerable<ToolStripMenuItem> GetMenuItems(ToolStripMenuItem menu);
 
-        Task<IEnumerable<TreeNode>> GetCharacterRosterTreeNode(ConcurrentDictionary<string, frmCharacterRoster.CharacterCache> CharDic, bool forceUpdate);
+        Task<IEnumerable<TreeNode>> GetCharacterRosterTreeNode(frmCharacterRoster frmCharRoster, bool forceUpdate);
 
         UserControl GetOptionsControl();
 
@@ -44,6 +44,8 @@ namespace Chummer.Plugins
 
         public void Initialize()
         {
+            if (GlobalOptions.PluginsEnabled == false)
+                return;
             catalog = new AggregateCatalog();
             catalog.Catalogs.Add(new DirectoryCatalog(path: "Plugins", searchPattern: "*.exe"));
             catalog.Catalogs.Add(new DirectoryCatalog(path: "Plugins", searchPattern: "*.dll"));
@@ -52,10 +54,19 @@ namespace Chummer.Plugins
           
             StartWatch();
             container.ComposeParts(this);
-            foreach (var plugin in MyPlugins)
+            foreach (var plugin in MyActivePlugins)
             {
-                plugin.CustomInitialize(Program.MainForm);
-                plugin.SetIsUnitTest(Utils.IsUnitTest);
+                try
+                {
+                    plugin.CustomInitialize(Program.MainForm);
+                    plugin.SetIsUnitTest(Utils.IsUnitTest);
+                }
+                catch(Exception e)
+                {
+                    string msg = "Exception while calling CustomInitialize for " + plugin.ToString() + ":" + Environment.NewLine + Environment.NewLine;
+                    msg += e.ToString();
+                    System.Diagnostics.Trace.TraceWarning(msg);
+                }
             }
         }
 

@@ -399,8 +399,11 @@ namespace Chummer
                     return objImprovementAdder.spelllimit;
                 case "FREESPELLS":
                     return objImprovementAdder.freespells;
+                case "SPELLDICEPOOL":
+                    return objImprovementAdder.spelldicepool;
                 case "SPELLCATEGORY":
-                    return objImprovementAdder.spellcategory;
+                case "SPELLCATEGORYDICEPOOL":
+                    return objImprovementAdder.spellcategorydicepool;
                 case "SPELLCATEGORYDRAIN":
                     return objImprovementAdder.spellcategorydrain;
                 case "SPELLCATEGORYDAMAGE":

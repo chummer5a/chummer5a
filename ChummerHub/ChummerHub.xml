@@ -20,6 +20,12 @@
              </summary>
             
         </member>
+        <member name="M:ChummerHub.Controllers.AccountController.GetSINnersByAuthorization">
+            <summary>
+            Search for Sinners for one user
+            </summary>
+            <returns>SINSearchGroupResult</returns>
+        </member>
         <member name="M:ChummerHub.Controllers.V1.SINnerController.GetDownloadFile(System.Guid)">
             <summary>
             Returns the Chummer-Save-File
@@ -52,14 +58,12 @@
             <param name="groupname">In case you want to rename the group</param>
             <returns></returns>
         </member>
-        <member name="M:ChummerHub.Controllers.V1.SINnerGroupController.PostGroup(System.String,System.Guid,System.String,System.String)">
+        <member name="M:ChummerHub.Controllers.V1.SINnerGroupController.PostGroup(ChummerHub.Models.V1.SINnerGroup,System.Nullable{System.Guid})">
             <summary>
             Store the new group
             </summary>
-            <param name="Groupname"></param>
+            <param name="mygroup"></param>
             <param name="SinnerId"></param>
-            <param name="language"></param>
-            <param name="pwhash"></param>
             <returns></returns>
         </member>
         <member name="M:ChummerHub.Controllers.V1.SINnerGroupController.PutSINerInGroup(System.Guid,System.Guid,System.String)">
@@ -78,7 +82,15 @@
             <param name="groupid"></param>
             <returns></returns>
         </member>
-        <member name="M:ChummerHub.Controllers.V1.SINnerGroupController.GetSearchGroups(System.String,System.String,System.String)">
+        <member name="M:ChummerHub.Controllers.V1.SINnerGroupController.GetPublicGroup(System.String,System.String)">
+            <summary>
+            Search for public Groups (without authorization)
+            </summary>
+            <param name="Groupname"></param>
+            <param name="Language"></param>
+            <returns>SINSearchGroupResult</returns>
+        </member>
+        <member name="M:ChummerHub.Controllers.V1.SINnerGroupController.GetSearchGroups(System.String,System.String,System.String,System.String)">
             <summary>
             Search for Groups
             </summary>
@@ -93,6 +105,13 @@
             </summary>
             <param name="groupid"></param>
             <param name="sinnerid"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ChummerHub.Controllers.V1.SINnerGroupController.DeleteGroup(System.Guid)">
+            <summary>
+            Delete a Group (recursive - only Admins can do that)
+            </summary>
+            <param name="groupid"></param>
             <returns></returns>
         </member>
         <member name="M:ChummerHub.Controllers.V1.SINnerGroupController.GetGroupMembers(System.Guid)">

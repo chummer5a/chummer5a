@@ -799,6 +799,13 @@ namespace Chummer
                         }
                         return strNodeInnerText == objCharacter.Metavariant;
                     }
+                case "nuyen":
+                {
+                    // Character's nuyen must be higher than or equal to the required value.
+                    if (blnShowMessage)
+                        strName = Environment.NewLine + '\t' + LanguageManager.GetString("String_Nuyen", GlobalOptions.Language) + " >= " + strNodeInnerText;
+                    return objCharacter.Nuyen >= Convert.ToInt32(strNodeInnerText);
+                }
                 case "power":
                     {
                         // Run through all of the Powers the character has and see if the current required item exists.
@@ -865,6 +872,12 @@ namespace Chummer
                                     }
                                 }
                                 return true;
+                            }
+
+                            if (string.IsNullOrWhiteSpace(strNodeName))
+                            {
+                                //We're only interested in the total number of skills of a given category.
+                                return objCharacter.SkillsSection.KnowledgeSkills.Count(s => s.SkillCategory == xmlNode["type"].InnerText) >= intValue;
                             }
                         }
                         else
@@ -1007,6 +1020,18 @@ namespace Chummer
                         }
                         return objCharacter.MagicTradition.Name == strNodeInnerText;
                     }
+                case "weapon":
+                {
+                    // Character needs a specific Weapon.
+                    if (blnShowMessage)
+                    {
+                        string strTranslate = XmlManager.Load("weapons.xml").SelectSingleNode($"/chummer/weapons/weapon[name = {strNodeInnerText.CleanXPath()}]/translate")?.InnerText;
+                        strName = !string.IsNullOrEmpty(strTranslate)
+                            ? $"{Environment.NewLine}\t{strTranslate} ({LanguageManager.GetString("String_Weapon", GlobalOptions.Language)})"
+                            : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_Weapon", GlobalOptions.Language)})";
+                    }
+                    return objCharacter.Weapons.Any(w => w.Name == strNodeInnerText);
+                }
                 case "specialmodificationlimit":
                     {
                         // Add in the cost of all child components.
@@ -1976,6 +2001,13 @@ namespace Chummer
                         }
                         return strNodeInnerText == objCharacter.Metavariant;
                     }
+                case "nuyen":
+                {
+                    // Character's nuyen must be higher than or equal to the required value.
+                    if (blnShowMessage)
+                        strName = Environment.NewLine + '\t' + LanguageManager.GetString("String_Nuyen", GlobalOptions.Language) + " >= " + strNodeInnerText;
+                    return objCharacter.Nuyen >= Convert.ToInt32(strNodeInnerText);
+                }
                 case "power":
                     {
                         // Run through all of the Powers the character has and see if the current required item exists.
@@ -2196,6 +2228,18 @@ namespace Chummer
                         }
                         return objCharacter.MagicTradition.Name == strNodeInnerText;
                     }
+                case "weapon":
+                {
+                    // Character needs a specific Weapon.
+                    if (blnShowMessage)
+                    {
+                        string strTranslate = XmlManager.Load("weapons.xml").SelectSingleNode($"/chummer/traditions/tradition[name = {strNodeInnerText.CleanXPath()}]/translate")?.InnerText;
+                        strName = !string.IsNullOrEmpty(strTranslate)
+                            ? $"{Environment.NewLine}\t{strTranslate} ({LanguageManager.GetString("String_Weapon", GlobalOptions.Language)})"
+                            : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_Weapon", GlobalOptions.Language)})";
+                    }
+                    return objCharacter.Weapons.Any(w => w.Name == strNodeInnerText);
+                }
                 default:
                     Utils.BreakIfDebug();
                     break;

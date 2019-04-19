@@ -18,11 +18,13 @@ namespace ChummerHub.Client.UI
         //    InitializeComponent();
         //}
 
-        public frmSINnerGroupEdit(SINnerGroup group)
+        public frmSINnerGroupEdit(SINnerGroup group, bool onlyPWHash)
         {
             InitializeComponent();
             MySINnerGroupCreate.MyGroup = group;
-            MySINnerGroupCreate.InitializeMe();
+            if (group.Id == null || group.Id == Guid.Empty)
+                MySINnerGroupCreate.EditMode = true;
+            MySINnerGroupCreate.InitializeMe(onlyPWHash);
         }
         
 

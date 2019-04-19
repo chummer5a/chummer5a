@@ -1,19 +1,45 @@
 Future Build 206
 
+New Features:
+
+- Added a 'helpful' digital assistant, Chummy! Chummy is designed to offer tips via tooltip based on your character's content. It's designed for expansion through tips.xml, using the same forbidden/required structure as qualities. Yes, it's an April Fool's gag. I'm sorry, I thought it was cute and/or amusing. It can be toggled off by deselecting the Allow Easter Eggs option in the Global Options menu. 
+- Created a new Improvement Type that improves the dicepool of a specific spell; the spelldicepool improvement is available in the Custom Improvement creator. 
 
 Application Fixes:
 
 - Slightly better implementation of the Upgrade mechanism for cyberware. Still needs work, but shouldn't improperly consume Essence anymore. 
+- Fixed an issue with cyberware that should not permit subsystems still doing so. 
+- Fixed incorrect consumption of capacity by modular limbs connecting to modular connectors. 
+- Fixed the behaviour of the Death Mentor Spirit's Magician benefit to allow dicepool benefits for specific skills. Uses the spelldicepool improvement.
+- Fixed an issue with traditions not probably updating.
+- Fixed issues with use of Essence Antiholes in create mode that prevented them from working reliably.
+- Fixed an issue with the selectatributes improvement that caused it to improperly allow Exceptional Attribute to select Edge.
+
+Application Changes:
+
+- Spells now properly store their Source ID. Used for some Improvements. 
+- Small refactor to the Spell class to use RelevantImprovements method. Doesn't actually reduce complexity, but makes me feel a bit better about having less boilerplate. 
+- Added a string to the Skill.Core class that allows for formatting the skill's dicepool, specialisations and such instead of reprocessing it in multiple other locations.
+- Refactored the creation, saving and loading of GUIDs for the Internal ID and Source ID of all objects to provide more consistency. There is a small risk that this will impact the stored improvements of some characters. I haven't been able to prove that it will happen, but logically it should based on this change. 
 
 UI Changes:
 
 - Fixed some behaviour with non-maximised windows to prevent new windows from being opened maximised, or windows being maximised on gaining focus. 
 - Added Minimise and Maximise buttons to the Character Roster. Closes #3495
+- Made some changes to the PoolToolTip property to properly account for custom attributes.
 
 Data Changes:
 
+- Fixed incorrect bonuses of the Death Mentor Spirit for Adepts. Properly allows taking one of the two powers provided. Fix provided by Gidoran. 
 - Fixed incorrect spelling of Limit Modifiers on the Retractable Climbing Claws cyberware.
 - Fixed incorrect Page and Specialisation category for the Cavalier Champion. Closes #3496
+- Added a new customdata entry for German Data Changes to add Machine Pistols and Submachine Guns to Standard and Heavy Weapon Mounts.
+- Added missing side prompts to the synthetic modular full arm and leg.
+- Fixed a typo in the Cavalier Arms Adder Slivergun's name.
+- Added a new customdata entry for the Ram Plate Vehicle Modification that sets it to use the stats as provided in Hero Lab. 
+- Fixed incorrect restrictions on the Special Modications and Prototype Materials qualities. 
+- Removed incorrrect mundane restriction on the Quadriplegic quality.
+- Fixed behaviour of partial cyberlimbs giving incorrect condition monitor boxes.
 
 String Changes:
 

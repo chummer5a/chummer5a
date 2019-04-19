@@ -350,6 +350,13 @@ namespace Chummer.Backend.Equipment
             Parent = objParent;
             _strForced = strForced;
             _objParentVehicle = objParentVehicle;
+            if (!objXmlCyberware.TryGetField("id", Guid.TryParse, out _guiSourceID))
+            {
+                Log.Warning(new object[] { "Missing id field for armor xmlnode", objXmlCyberware });
+                Utils.BreakIfDebug();
+            }
+            else
+                _objCachedMyXmlNode = null;
             objXmlCyberware.TryGetStringFieldQuickly("name", ref _strName);
             objXmlCyberware.TryGetStringFieldQuickly("category", ref _strCategory);
             objXmlCyberware.TryGetStringFieldQuickly("limbslot", ref _strLimbSlot);
@@ -371,8 +378,6 @@ namespace Chummer.Backend.Equipment
             _nodWirelessPairBonus = objXmlCyberware["wirelesspairbonus"];
             _blnWirelessOn = false || _nodWirelessPairBonus != null;
             _nodAllowGear = objXmlCyberware["allowgear"];
-            if (objXmlCyberware.TryGetField("id", Guid.TryParse, out _guiSourceID))
-                _objCachedMyXmlNode = null;
             objXmlCyberware.TryGetStringFieldQuickly("mountsto", ref _strPlugsIntoModularMount);
             objXmlCyberware.TryGetStringFieldQuickly("modularmount", ref _strHasModularMount);
             objXmlCyberware.TryGetStringFieldQuickly("blocksmounts", ref _strBlocksMounts);
@@ -770,8 +775,8 @@ namespace Chummer.Backend.Equipment
         public void Save(XmlTextWriter objWriter)
         {
             objWriter.WriteStartElement("cyberware");
-            objWriter.WriteElementString("sourceid", _guiSourceID.ToString("D"));
-            objWriter.WriteElementString("guid", _guiID.ToString("D"));
+            objWriter.WriteElementString("sourceid", SourceIDString);
+            objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("category", _strCategory);
             objWriter.WriteElementString("limbslot", _strLimbSlot);
@@ -893,8 +898,12 @@ namespace Chummer.Backend.Equipment
         /// <param name="blnCopy">Whether this is a copy of an existing cyberware being loaded.</param>
         public void Load(XmlNode objNode, bool blnCopy = false)
         {
-            if (objNode.TryGetField("sourceid", Guid.TryParse, out _guiSourceID))
-                _objCachedMyXmlNode = null;
+            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+            {
+                XmlNode node = GetNode(GlobalOptions.Language);
+                node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+            }
             if (blnCopy)
             {
                 _guiID = Guid.NewGuid();
@@ -902,7 +911,6 @@ namespace Chummer.Backend.Equipment
             else
                 objNode.TryGetField("guid", Guid.TryParse, out _guiID);
 
-            objNode.TryGetStringFieldQuickly("name", ref _strName);
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
             if (objNode["improvementsource"] != null)
             {
@@ -1428,7 +1436,16 @@ namespace Chummer.Backend.Equipment
 
         public bool InheritAttributes => _blnInheritAttributes;
 
+
+        /// <summary>
+        /// Identifier of the object within data files.
+        /// </summary>
         public Guid SourceID => _guiSourceID;
+
+        /// <summary>
+        /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
+        /// </summary>
+        public string SourceIDString => _guiSourceID.ToString("D");
 
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
@@ -2451,7 +2468,7 @@ namespace Chummer.Backend.Equipment
         {
             if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.LiveCustomData)
                 return _objCachedMyXmlNode;
-            string strGuid = SourceID.ToString("D");
+            string strGuid = SourceIDString;
             XmlDocument objDoc;
             if (_objImprovementSource == Improvement.ImprovementSource.Bioware)
             {
@@ -2460,7 +2477,7 @@ namespace Chummer.Backend.Equipment
                 if (_objCachedMyXmlNode == null)
                 {
                     _objCachedMyXmlNode = objDoc.SelectSingleNode("/chummer/biowares/bioware[name = \"" + Name + "\"]");
-                    _objCachedMyXmlNode?.TryGetField("id", Guid.TryParse, out _guiSourceID);
+                    _objCachedMyXmlNode?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
                 }
             }
             else
@@ -2470,7 +2487,7 @@ namespace Chummer.Backend.Equipment
                 if (_objCachedMyXmlNode == null)
                 {
                     _objCachedMyXmlNode = objDoc.SelectSingleNode("/chummer/cyberwares/cyberware[name = \"" + Name + "\"]");
-                    _objCachedMyXmlNode?.TryGetField("id", Guid.TryParse, out _guiSourceID);
+                    _objCachedMyXmlNode?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
                 }
             }
             _strCachedXmlNodeLanguage = strLanguage;
@@ -2728,9 +2745,13 @@ namespace Chummer.Backend.Equipment
                 return 0;
             if (Parent != null && !AddToParentESS)
                 return 0;
-            if (SourceID == EssenceHoleGUID || SourceID == EssenceAntiHoleGUID) // Essence hole or antihole
+            if (SourceID == EssenceHoleGUID) // Essence hole
             {
                 return Convert.ToDecimal(Rating, GlobalOptions.InvariantCultureInfo) / 100m;
+            }
+            if (SourceID == EssenceAntiHoleGUID) // Essence antihole
+            {
+                return Convert.ToDecimal(Rating, GlobalOptions.InvariantCultureInfo) / 100m * -1;
             }
 
             decimal decReturn;
@@ -3148,14 +3169,14 @@ namespace Chummer.Backend.Equipment
                     // Run through its Children and deduct the Capacity costs.
                     foreach (Cyberware objChildCyberware in Children)
                     {
-                        if (objChildCyberware.ParentID == InternalId)
-                        {
-                            continue;
-                        }
+                        // Children that are built into the parent 
+                        if (objChildCyberware.PlugsIntoModularMount == HasModularMount && !string.IsNullOrWhiteSpace(HasModularMount) ||
+                            objChildCyberware.ParentID == InternalId) continue;
                         string strCapacity = objChildCyberware.CalculatedCapacity;
                         int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
                         if (intPos != -1)
-                            strCapacity = strCapacity.Substring(intPos + 2, strCapacity.LastIndexOf(']') - intPos - 2);
+                            strCapacity = strCapacity.Substring(intPos + 2,
+                                strCapacity.LastIndexOf(']') - intPos - 2);
                         else if (strCapacity.StartsWith('['))
                             strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
                         if (strCapacity == "*")
@@ -3190,10 +3211,8 @@ namespace Chummer.Backend.Equipment
                     // Run through its Children and deduct the Capacity costs.
                     foreach (Cyberware objChildCyberware in Children)
                     {
-                        if (objChildCyberware.ParentID == InternalId)
-                        {
-                            continue;
-                        }
+                        if (objChildCyberware.PlugsIntoModularMount == HasModularMount && !string.IsNullOrWhiteSpace(HasModularMount) ||
+                            objChildCyberware.ParentID == InternalId) continue;
                         string strCapacity = objChildCyberware.CalculatedCapacity;
                         int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
                         if (intPos != -1)
@@ -4291,11 +4310,11 @@ namespace Chummer.Backend.Equipment
 
             if (SourceID == EssenceAntiHoleGUID)
             {
-                _objCharacter.DecreaseEssenceHole((int)(CalculatedESS() * 100));
+                _objCharacter.DecreaseEssenceHole(Rating * 100);
             }
             else if (SourceID == EssenceHoleGUID)
             {
-                _objCharacter.IncreaseEssenceHole((int)(CalculatedESS() * 100));
+                _objCharacter.IncreaseEssenceHole(Rating * 100);
             }
             else
             {

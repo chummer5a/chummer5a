@@ -11,25 +11,25 @@ namespace SINners.Models
     using Microsoft.Rest;
     using Microsoft.Rest.Serialization;
 
-    public partial class SINnersList
+    public partial class SINnerExtended
     {
         /// <summary>
-        /// Initializes a new instance of the SINnersList class.
+        /// Initializes a new instance of the SINnerExtended class.
         /// </summary>
-        public SINnersList() { }
+        public SINnerExtended() { }
 
         /// <summary>
-        /// Initializes a new instance of the SINnersList class.
+        /// Initializes a new instance of the SINnerExtended class.
         /// </summary>
-        public SINnersList(IList<SINnerList> mySINnersList = default(IList<SINnerList>))
+        public SINnerExtended(string jsonSummary = default(string))
         {
-            MySINnersList = mySINnersList;
+            JsonSummary = jsonSummary;
         }
 
         /// <summary>
         /// </summary>
-        [JsonProperty(PropertyName = "mySINnersList")]
-        public IList<SINnerList> MySINnersList { get; set; }
+        [JsonProperty(PropertyName = "jsonSummary")]
+        public string JsonSummary { get; set; }
 
     }
 }

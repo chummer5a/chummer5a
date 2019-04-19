@@ -41,11 +41,10 @@
       <HintPath>..\packages\IdentityModel.3.10.6\lib\net452\IdentityModel.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Rest.ClientRuntime, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Rest.ClientRuntime.2.3.2\lib\net45\Microsoft.Rest.ClientRuntime.dll</HintPath>
+      <HintPath>..\packages\Microsoft.Rest.ClientRuntime.2.3.20\lib\net452\Microsoft.Rest.ClientRuntime.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -91,13 +90,17 @@
     <Compile Include="Backend\CursorWait.cs" />
     <Compile Include="Backend\PluginHandler.cs" />
     <Compile Include="Backend\Search\SearchTagExtractor.cs" />
+    <Compile Include="Backend\TaskCancellationExtension.cs" />
     <Compile Include="Backend\Utils.cs" />
     <Compile Include="Backend\MyMessageHandler.cs" />
     <Compile Include="Backend\TagExtractor.cs" />
     <Compile Include="Model\CharacterExtended.cs" />
     <Compile Include="Model\SearchTag.cs" />
+    <Compile Include="Model\SINnerGroup.cs" />
+    <Compile Include="Model\SINnerSearchGroup.cs" />
     <Compile Include="Model\SINnerSearchGroupMember.cs" />
     <Compile Include="Model\SINnerVisibility.cs" />
+    <Compile Include="Model\SINSearchGroupResult.cs" />
     <Compile Include="Model\Tag.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -109,22 +112,21 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="Model\SINner.cs" />
     <Compile Include="SINnersClient\ISINnersClient.cs" />
     <Compile Include="SINnersClient\Models\ApplicationUser.cs" />
     <Compile Include="SINnersClient\Models\ChummerHubVersion.cs" />
     <Compile Include="SINnersClient\Models\SearchTag.cs" />
     <Compile Include="SINnersClient\Models\SINerUserRight.cs" />
     <Compile Include="SINnersClient\Models\SINner.cs" />
+    <Compile Include="SINnersClient\Models\SINnerExtended.cs" />
     <Compile Include="SINnersClient\Models\SINnerGroup.cs" />
     <Compile Include="SINnersClient\Models\SINnerGroupSetting.cs" />
-    <Compile Include="SINnersClient\Models\SINnerList.cs" />
     <Compile Include="SINnersClient\Models\SINnerMetaData.cs" />
     <Compile Include="SINnersClient\Models\SINnerSearchGroup.cs" />
     <Compile Include="SINnersClient\Models\SINnerSearchGroupMember.cs" />
-    <Compile Include="SINnersClient\Models\SINnersList.cs" />
     <Compile Include="SINnersClient\Models\SINnerVisibility.cs" />
     <Compile Include="SINnersClient\Models\SINSearchGroupResult.cs" />
-    <Compile Include="SINnersClient\Models\SINSearchResult.cs" />
     <Compile Include="SINnersClient\Models\Tag.cs" />
     <Compile Include="SINnersClient\Models\UploadClient.cs" />
     <Compile Include="SINnersClient\Models\UploadInfoObject.cs" />

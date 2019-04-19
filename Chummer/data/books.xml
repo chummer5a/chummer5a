@@ -257,5 +257,10 @@
       <name>No Future</name>
       <code>NF</code>
     </book>
+    <book>
+      <id>b20a20e5-e9d4-4f54-9caa-57a001cb904e</id>
+      <name>Datapuls SOTA 2080 (German-exclusive)</name>
+      <code>SOTG</code>
+    </book>
   </books>
 </chummer>

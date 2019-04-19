@@ -1,21 +1,11 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using ChummerHub.Data;
 using ChummerHub.Models.V1;
 using Microsoft.AspNetCore.Authorization;
-using Swashbuckle.AspNetCore.Filters;
 using System.Net;
-using System.IO;
 using ChummerHub.API;
-using ChummerHub.Models.V1.Examples;
-using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.Reflection;
 
 namespace ChummerHub.Controllers.V1
 {
@@ -42,6 +32,7 @@ namespace ChummerHub.Controllers.V1
         [HttpGet]
         [AllowAnonymous]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Forbidden)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("ChummerHelperVersion")]
         public async Task<ActionResult<ChummerHubVersion>> GetVersion()
         {

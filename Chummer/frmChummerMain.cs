@@ -42,6 +42,7 @@ using System.Net;
 using System.Text;
 using Chummer.Plugins;
 using System.IO.Compression;
+using System.Runtime.Remoting.Channels;
 
 namespace Chummer
 {
@@ -57,8 +58,31 @@ namespace Chummer
         private readonly BackgroundWorker _workerVersionUpdateChecker = new BackgroundWorker();
         private readonly Version _objCurrentVersion = Assembly.GetExecutingAssembly().GetName().Version;
         private readonly string _strCurrentVersion;
-        public readonly PluginControl PluginLoader = new PluginControl();
+        private PluginControl _PluginLoader = null;
+        public PluginControl PluginLoader
+        {
+            get
+            {
+                if (_PluginLoader == null)
+                    _PluginLoader = new PluginControl();
+                return _PluginLoader;
+            }
+            set { _PluginLoader = value; }
+        }
+        private readonly Chummy _mascotChummy;
 
+        public string MainTitle
+        {
+            get
+            {
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                string title = Application.ProductName + strSpaceCharacter + '-' + strSpaceCharacter + LanguageManager.GetString("String_Version", GlobalOptions.Language) + strSpaceCharacter + _strCurrentVersion;
+#if DEBUG
+                title += " DEBUG BUILD";
+#endif
+                return title;
+            }
+        }
 
         #region Control Events
         public frmChummerMain(bool isUnitTest = false)
@@ -66,15 +90,11 @@ namespace Chummer
             Utils.IsUnitTest = isUnitTest;
             InitializeComponent();
 
-
-
-
-            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
             _strCurrentVersion = $"{_objCurrentVersion.Major}.{_objCurrentVersion.Minor}.{_objCurrentVersion.Build}";
-            Text = Application.ProductName + strSpaceCharacter + '-' + strSpaceCharacter + LanguageManager.GetString("String_Version", GlobalOptions.Language) + strSpaceCharacter + _strCurrentVersion;
-#if DEBUG
-            Text += " DEBUG BUILD";
-#endif
+
+            this.Text = MainTitle;
+
+
 
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 
@@ -93,7 +113,13 @@ namespace Chummer
             _workerVersionUpdateChecker.RunWorkerAsync();
 #endif
 
-            GlobalOptions.MRUChanged += PopulateMRUToolstripMenu;
+            GlobalOptions.MRUChanged += (sender, e) =>
+            {
+                this.DoThreadSafe(() =>
+                {
+                    PopulateMRUToolstripMenu(sender, e);
+                });
+            };
 
             // Delete the old executable if it exists (created by the update process).
             foreach(string strLoopOldFilePath in Directory.GetFiles(Utils.GetStartupPath, "*.old", SearchOption.AllDirectories))
@@ -107,6 +133,11 @@ namespace Chummer
 
             Program.MainForm = this;
             PluginLoader.LoadPlugins();
+            if (GlobalOptions.AllowEasterEggs)
+            {
+                _mascotChummy = new Chummy();
+                _mascotChummy.Show(this);
+            }
 
             // Set the Tag for each ToolStrip item so it can be translated.
             foreach(ToolStripMenuItem objItem in menuStrip.Items.OfType<ToolStripMenuItem>())
@@ -720,6 +751,10 @@ namespace Chummer
                     if(ActiveMdiChild is CharacterShared frmCharacterShared)
                     {
                         tp.Text = frmCharacterShared.CharacterObject.CharacterName;
+                        if (GlobalOptions.AllowEasterEggs && _mascotChummy != null)
+                        {
+                            _mascotChummy.CharacterObject = frmCharacterShared.CharacterObject;
+                        }
                     }
                     else
                     {
@@ -769,6 +804,8 @@ namespace Chummer
                         if(objTabPage.Tag == objCharacterForm)
                         {
                             tabForms.SelectTab(objTabPage);
+                            if (_mascotChummy != null)
+                                _mascotChummy.CharacterObject = objCharacter;
                             return true;
                         }
                     }

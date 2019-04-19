@@ -354,7 +354,7 @@ namespace Chummer.Classes
                 frmSelectItem frmPickItem = new frmSelectItem
                 {
                     DropdownItems = lstTraditions,
-                    SelectedItem = _objCharacter.MagicTradition.strSourceID,
+                    SelectedItem = _objCharacter.MagicTradition.SourceIDString,
                     AllowAutoSelect = false
                 };
                 frmPickItem.ShowDialog();
@@ -461,6 +461,7 @@ namespace Chummer.Classes
             string strVal = bonusNode["val"]?.InnerText;
             string strMax = bonusNode["max"]?.InnerText;
             bool blnDisableSpec = bonusNode.InnerXml.Contains("disablespecializationeffects");
+            bool blnAllowUpgrade = !bonusNode.InnerXml.Contains("disableupgrades");
             // Find the selected Skill.
             if (blnIsKnowledgeSkill)
             {
@@ -502,7 +503,7 @@ namespace Chummer.Classes
                 }
                 else
                 {
-                    KnowledgeSkill k = new KnowledgeSkill(_objCharacter, strSelectedSkill);
+                    KnowledgeSkill k = new KnowledgeSkill(_objCharacter, strSelectedSkill, blnAllowUpgrade);
                     _objCharacter.SkillsSection.KnowledgeSkills.Add(k);
                     // We've found the selected Skill.
                     if (!string.IsNullOrEmpty(strVal))
@@ -680,10 +681,10 @@ namespace Chummer.Classes
                     {
                         Log.Info("selectattribute");
 
-                        Log.Info("selectattribute = " + bonusNode.OuterXml);
+                        Log.Info("selectattribute = " + objXmlAttribute.OuterXml);
 
                         List<string> lstAbbrevs = new List<string>();
-                        XmlNodeList xmlAttributeList = bonusNode.SelectNodes("attribute");
+                        XmlNodeList xmlAttributeList = objXmlAttribute.SelectNodes("attribute");
                         if (xmlAttributeList?.Count > 0)
                         {
                             foreach (XmlNode objSubNode in xmlAttributeList)
@@ -692,7 +693,7 @@ namespace Chummer.Classes
                         else
                         {
                             lstAbbrevs.AddRange(AttributeSection.AttributeStrings);
-                            xmlAttributeList = bonusNode.SelectNodes("excludeattribute");
+                            xmlAttributeList = objXmlAttribute.SelectNodes("excludeattribute");
                             if (xmlAttributeList?.Count > 0)
                             {
                                 foreach (XmlNode objSubNode in xmlAttributeList)
@@ -2178,7 +2179,7 @@ namespace Chummer.Classes
 
             if (bonusNode["addknowledge"] != null)
             {
-                KnowledgeSkill objKnowledgeSkill = new KnowledgeSkill(_objCharacter, SelectedValue);
+                KnowledgeSkill objKnowledgeSkill = new KnowledgeSkill(_objCharacter, SelectedValue, false);
 
                 _objCharacter.SkillsSection.KnowsoftSkills.Add(objKnowledgeSkill);
                 if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.SkillsoftAccess) > 0)
@@ -2209,7 +2210,7 @@ namespace Chummer.Classes
             Log.Info("_strSelectedValue = " + SelectedValue);
             Log.Info("SourceName = " + SourceName);
             
-            KnowledgeSkill objSkill = new KnowledgeSkill(_objCharacter, SelectedValue);
+            KnowledgeSkill objSkill = new KnowledgeSkill(_objCharacter, SelectedValue, false);
 
             _objCharacter.SkillsSection.KnowsoftSkills.Add(objSkill);
             if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.SkillsoftAccess) > 0)
@@ -4637,7 +4638,7 @@ namespace Chummer.Classes
         }
 
         // Check for Spell Category bonuses.
-        public void spellcategory(XmlNode bonusNode)
+        public void spellcategorydicepool(XmlNode bonusNode)
         {
             Log.Info("spellcategory");
             Log.Info("spellcategory = " + bonusNode.OuterXml);
@@ -4645,6 +4646,17 @@ namespace Chummer.Classes
             Log.Info("Calling CreateImprovement");
             CreateImprovement(bonusNode["name"]?.InnerText, _objImprovementSource, SourceName,
                 Improvement.ImprovementType.SpellCategory, _strUnique, ImprovementManager.ValueToInt(_objCharacter, bonusNode["val"]?.InnerText, _intRating));
+        }
+
+        // Check for dicepool bonuses for a specific Spell.
+        public void spelldicepool(XmlNode bonusNode)
+        {
+            Log.Info("spelldicepool");
+            Log.Info("spelldicepool = " + bonusNode.OuterXml);
+
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(bonusNode["id"]?.InnerText ?? bonusNode["name"]?.InnerText, _objImprovementSource, SourceName,
+                Improvement.ImprovementType.SpellDicePool, _strUnique, ImprovementManager.ValueToInt(_objCharacter, bonusNode["val"]?.InnerText, _intRating));
         }
 
         // Check for Spell Category Drain bonuses.

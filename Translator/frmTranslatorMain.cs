@@ -750,6 +750,7 @@ namespace Translator
             ProcessSpells,
             ProcessSpiritPowers,
             ProcessStreams,
+            ProcessTips,
             ProcessTraditions,
             ProcessVehicles,
             ProcessVessels,
@@ -7288,6 +7289,130 @@ namespace Translator
 #else
                                 {
                                     xmlSpiritNodesParent.RemoveChild(xmlSpiritNode);
+                                }
+#endif
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private static void ProcessTips(XmlDocument objDataDoc, BackgroundWorker objWorker, bool blnRemoveTranslationIfSourceNotFound)
+        {
+            XmlDocument xmlDataDocument = new XmlDocument();
+            xmlDataDocument.Load(Path.Combine(PATH, "data", "tips.xml"));
+            XPathNavigator xmlDataDocumentBaseChummerNode = xmlDataDocument.GetFastNavigator().SelectSingleNode("/chummer");
+
+            XmlNode xmlRootNode = objDataDoc.SelectSingleNode("/chummer");
+            if (xmlRootNode == null)
+            {
+                xmlRootNode = objDataDoc.CreateElement("chummer");
+                objDataDoc.AppendChild(xmlRootNode);
+            }
+
+            XmlNode xmlRootTipFileNode = objDataDoc.SelectSingleNode("/chummer/chummer[@file = \"tips.xml\"]");
+            if (xmlRootTipFileNode == null)
+            {
+                xmlRootTipFileNode = objDataDoc.CreateElement("chummer");
+                XmlAttribute xmlAttribute = objDataDoc.CreateAttribute("file");
+                xmlAttribute.Value = "tips.xml";
+                xmlRootTipFileNode.Attributes?.Append(xmlAttribute);
+                xmlRootNode.AppendChild(xmlRootTipFileNode);
+            }
+
+            // Process Tips
+
+            XmlNode xmlTipNodesParent = xmlRootTipFileNode.SelectSingleNode("tips");
+            if (xmlTipNodesParent == null)
+            {
+                xmlTipNodesParent = objDataDoc.CreateElement("tips");
+                xmlRootTipFileNode.AppendChild(xmlTipNodesParent);
+            }
+
+            XPathNavigator xmlDataTipNodeList = xmlDataDocumentBaseChummerNode?.SelectSingleNode("tips");
+            if (xmlDataTipNodeList != null)
+            {
+                foreach (XPathNavigator xmlDataTipNode in xmlDataTipNodeList.Select("tip"))
+                {
+                    if (objWorker.CancellationPending)
+                        return;
+                    string strDataTipText = xmlDataTipNode.SelectSingleNode("text")?.Value ?? string.Empty;
+                    string strDataTipId = xmlDataTipNode.SelectSingleNode("id")?.Value ?? string.Empty;
+                    XmlNode xmlTipNode = xmlTipNodesParent.SelectSingleNode("tip[id=\"" + strDataTipId + "\"]");
+                    if (xmlTipNode != null)
+                    {
+                        if (xmlTipNode["id"] == null)
+                        {
+                            XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                            xmlIdElement.InnerText = strDataTipId;
+                            xmlTipNode.PrependChild(xmlIdElement);
+                        }
+
+                        if (xmlTipNode["text"] == null)
+                        {
+                            XmlNode xmlNameElement = objDataDoc.CreateElement("text");
+                            xmlNameElement.InnerText = strDataTipText;
+                            xmlTipNode.AppendChild(xmlNameElement);
+                        }
+
+                        if (xmlTipNode["translate"] == null)
+                        {
+                            XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                            xmlTranslateElement.InnerText = strDataTipText;
+                            xmlTipNode.AppendChild(xmlTranslateElement);
+                        }
+                    }
+                    else
+                    {
+                        xmlTipNode = objDataDoc.CreateElement("tip");
+
+                        XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                        xmlIdElement.InnerText = strDataTipId;
+                        xmlTipNode.AppendChild(xmlIdElement);
+
+                        XmlNode xmlNameElement = objDataDoc.CreateElement("text");
+                        xmlNameElement.InnerText = strDataTipText;
+                        xmlTipNode.AppendChild(xmlNameElement);
+
+                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                        xmlTranslateElement.InnerText = strDataTipText;
+                        xmlTipNode.AppendChild(xmlTranslateElement);
+
+                        xmlTipNodesParent.AppendChild(xmlTipNode);
+                    }
+                }
+            }
+
+            if (blnRemoveTranslationIfSourceNotFound)
+            {
+                using (XmlNodeList xmlTipNodeList = xmlTipNodesParent.SelectNodes("tip"))
+                {
+                    if (xmlTipNodeList?.Count > 0)
+                    {
+                        foreach (XmlNode xmlTipNode in xmlTipNodeList)
+                        {
+                            if (objWorker.CancellationPending)
+                                return;
+                            if (xmlTipNode.Attributes != null)
+                                for (int i = xmlTipNode.Attributes.Count - 1; i >= 0; --i)
+                                {
+                                    XmlAttribute xmlAttribute = xmlTipNode.Attributes[i];
+                                    if (xmlAttribute.Name != "translated" && !xmlAttribute.Name.StartsWith("xml:"))
+                                        xmlTipNode.Attributes.RemoveAt(i);
+                                }
+
+                            if (xmlDataTipNodeList?.SelectSingleNode("tip[id = \"" + xmlTipNode["id"]?.InnerText + "\"]") == null)
+                            {
+#if !DELETE
+                            {
+                                XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
+                                xmlExistsAttribute.Value = "False";
+                                xmlTipNode.Attributes?.Append(xmlExistsAttribute);
+                            }
+#else
+                                {
+                                    xmlTipNodesParent.RemoveChild(xmlTipNode);
                                 }
 #endif
                             }

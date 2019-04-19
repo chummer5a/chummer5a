@@ -21,13 +21,15 @@ namespace SINners.Models
         /// <summary>
         /// Initializes a new instance of the SINnerGroup class.
         /// </summary>
-        public SINnerGroup(Guid? id = default(Guid?), bool? isPublic = default(bool?), string gameMasterUsername = default(string), SINnerGroupSetting mySettings = default(SINnerGroupSetting), string groupname = default(string), string language = default(string), IList<SINnerGroup> myGroups = default(IList<SINnerGroup>), SINnerGroup myParentGroup = default(SINnerGroup), string myAdminIdentityRole = default(string))
+        public SINnerGroup(Guid? id = default(Guid?), Guid? myParentGroupId = default(Guid?), bool? isPublic = default(bool?), string groupCreatorUserName = default(string), SINnerGroupSetting mySettings = default(SINnerGroupSetting), string groupname = default(string), string passwordHash = default(string), string language = default(string), IList<SINnerGroup> myGroups = default(IList<SINnerGroup>), SINnerGroup myParentGroup = default(SINnerGroup), string myAdminIdentityRole = default(string))
         {
             Id = id;
+            MyParentGroupId = myParentGroupId;
             IsPublic = isPublic;
-            GameMasterUsername = gameMasterUsername;
+            GroupCreatorUserName = groupCreatorUserName;
             MySettings = mySettings;
             Groupname = groupname;
+            PasswordHash = passwordHash;
             Language = language;
             MyGroups = myGroups;
             MyParentGroup = myParentGroup;
@@ -41,13 +43,18 @@ namespace SINners.Models
 
         /// <summary>
         /// </summary>
+        [JsonProperty(PropertyName = "myParentGroupId")]
+        public Guid? MyParentGroupId { get; set; }
+
+        /// <summary>
+        /// </summary>
         [JsonProperty(PropertyName = "isPublic")]
         public bool? IsPublic { get; set; }
 
         /// <summary>
         /// </summary>
-        [JsonProperty(PropertyName = "gameMasterUsername")]
-        public string GameMasterUsername { get; set; }
+        [JsonProperty(PropertyName = "groupCreatorUserName")]
+        public string GroupCreatorUserName { get; set; }
 
         /// <summary>
         /// </summary>
@@ -58,6 +65,11 @@ namespace SINners.Models
         /// </summary>
         [JsonProperty(PropertyName = "groupname")]
         public string Groupname { get; set; }
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "passwordHash")]
+        public string PasswordHash { get; set; }
 
         /// <summary>
         /// </summary>

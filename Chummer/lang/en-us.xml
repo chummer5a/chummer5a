@@ -5530,6 +5530,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Hide the Character Roster</text>
     </string>
     <string>
+      <key>Checkbox_Options_AllowEasterEggs</key>
+      <text>Allow Easter Eggs</text>
+    </string>
+    <string>
       <key>String_SelectBP_LifeModuleSummary</key>
       <text>Enter the maximum availability and karma you are allowed to create your character with (Default {0})</text>
     </string>
@@ -7629,6 +7633,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Karma cost for increasing Special Attributes is not reduced with Essence Loss</text>
     </string>
     <string>
+      <key>Checkbox_Options_IgnoreComplexFormLimit</key>
+      <text>Ignore 2*RES Complex Form limit in Career Mode</text>
+    </string>
+    <string>
       <key>Checkbox_Options_UseRestrictionsToRecoilCompensation</key>
       <text>Use Restrictions to Recoil Compensation (RG 53)</text>
     </string>        
@@ -9663,5 +9671,19 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <key>Message_NonGuidIdWarning</key>
       <text>{0} items were found in the file {1} with IDs that are not parsable as GUIDs. If you are using custom content, please ensure that ID fields are always filled with a unique GUID and only a unique GUID.\n\nItems with non-GUID ID fields:\n{2}</text>
     </string>
+    <!-- Region SINners Plugin -->
+    <string>
+      <key>String_online</key>
+      <text>Online</text>
+    </string>
+    <string>
+      <key>Menu_Main_NPCs</key>
+      <text>NPCs</text>
+    </string>
+    <string>
+      <key>Menu_Main_SINners</key>
+      <text>SINners</text>
+    </string>
+    <!-- End Region SINners Plugin-->
   </strings>
 </chummer>

@@ -17674,14 +17674,6 @@
           </replaceattribute>
         </replaceattributes>
       </bonus>
-      <forbidden>
-        <oneof>
-          <attributetotal>
-            <attributes>RES,MAG</attributes>
-            <val>1</val>
-          </attributetotal>
-        </oneof>
-      </forbidden>
       <source>BTB</source>
       <page>139</page>
     </quality>
@@ -17773,7 +17765,7 @@
       <forbidden>
         <oneof>
           <attributetotal>
-            <attributes>RES,MAG</attributes>
+            <attributes>RES+MAG</attributes>
             <val>1</val>
           </attributetotal>
         </oneof>
@@ -17806,7 +17798,7 @@
       <forbidden>
         <oneof>
           <attributetotal>
-            <attributes>RES,MAG</attributes>
+            <attributes>RES+MAG</attributes>
             <val>1</val>
           </attributetotal>
         </oneof>

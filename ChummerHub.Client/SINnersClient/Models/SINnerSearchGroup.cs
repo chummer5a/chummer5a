@@ -21,16 +21,18 @@ namespace SINners.Models
         /// <summary>
         /// Initializes a new instance of the SINnerSearchGroup class.
         /// </summary>
-        public SINnerSearchGroup(SINnerSearchGroup mySINSearchGroup = default(SINnerSearchGroup), string errorText = default(string), IList<SINnerSearchGroupMember> myMembers = default(IList<SINnerSearchGroupMember>), Guid? id = default(Guid?), bool? isPublic = default(bool?), string gameMasterUsername = default(string), SINnerGroupSetting mySettings = default(SINnerGroupSetting), string groupname = default(string), string language = default(string), IList<SINnerGroup> myGroups = default(IList<SINnerGroup>), SINnerGroup myParentGroup = default(SINnerGroup), string myAdminIdentityRole = default(string))
+        public SINnerSearchGroup(IList<SINnerSearchGroup> mySINSearchGroups = default(IList<SINnerSearchGroup>), string errorText = default(string), IList<SINnerSearchGroupMember> myMembers = default(IList<SINnerSearchGroupMember>), Guid? id = default(Guid?), Guid? myParentGroupId = default(Guid?), bool? isPublic = default(bool?), string groupCreatorUserName = default(string), SINnerGroupSetting mySettings = default(SINnerGroupSetting), string groupname = default(string), string passwordHash = default(string), string language = default(string), IList<SINnerGroup> myGroups = default(IList<SINnerGroup>), SINnerGroup myParentGroup = default(SINnerGroup), string myAdminIdentityRole = default(string))
         {
-            MySINSearchGroup = mySINSearchGroup;
+            MySINSearchGroups = mySINSearchGroups;
             ErrorText = errorText;
             MyMembers = myMembers;
             Id = id;
+            MyParentGroupId = myParentGroupId;
             IsPublic = isPublic;
-            GameMasterUsername = gameMasterUsername;
+            GroupCreatorUserName = groupCreatorUserName;
             MySettings = mySettings;
             Groupname = groupname;
+            PasswordHash = passwordHash;
             Language = language;
             MyGroups = myGroups;
             MyParentGroup = myParentGroup;
@@ -39,8 +41,8 @@ namespace SINners.Models
 
         /// <summary>
         /// </summary>
-        [JsonProperty(PropertyName = "mySINSearchGroup")]
-        public SINnerSearchGroup MySINSearchGroup { get; set; }
+        [JsonProperty(PropertyName = "mySINSearchGroups")]
+        public IList<SINnerSearchGroup> MySINSearchGroups { get; set; }
 
         /// <summary>
         /// </summary>
@@ -59,13 +61,18 @@ namespace SINners.Models
 
         /// <summary>
         /// </summary>
+        [JsonProperty(PropertyName = "myParentGroupId")]
+        public Guid? MyParentGroupId { get; set; }
+
+        /// <summary>
+        /// </summary>
         [JsonProperty(PropertyName = "isPublic")]
         public bool? IsPublic { get; set; }
 
         /// <summary>
         /// </summary>
-        [JsonProperty(PropertyName = "gameMasterUsername")]
-        public string GameMasterUsername { get; set; }
+        [JsonProperty(PropertyName = "groupCreatorUserName")]
+        public string GroupCreatorUserName { get; set; }
 
         /// <summary>
         /// </summary>
@@ -76,6 +83,11 @@ namespace SINners.Models
         /// </summary>
         [JsonProperty(PropertyName = "groupname")]
         public string Groupname { get; set; }
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "passwordHash")]
+        public string PasswordHash { get; set; }
 
         /// <summary>
         /// </summary>
@@ -103,17 +115,23 @@ namespace SINners.Models
         /// </summary>
         public virtual void Validate()
         {
-            if (this.MySINSearchGroup != null)
+            if (this.MySINSearchGroups != null)
             {
-                this.MySINSearchGroup.Validate();
-            }
-            if (this.MyMembers != null)
-            {
-                foreach (var element in this.MyMembers)
+                foreach (var element in this.MySINSearchGroups)
                 {
                     if (element != null)
                     {
                         element.Validate();
+                    }
+                }
+            }
+            if (this.MyMembers != null)
+            {
+                foreach (var element1 in this.MyMembers)
+                {
+                    if (element1 != null)
+                    {
+                        element1.Validate();
                     }
                 }
             }
@@ -133,11 +151,11 @@ namespace SINners.Models
             }
             if (this.MyGroups != null)
             {
-                foreach (var element1 in this.MyGroups)
+                foreach (var element2 in this.MyGroups)
                 {
-                    if (element1 != null)
+                    if (element2 != null)
                     {
-                        element1.Validate();
+                        element2.Validate();
                     }
                 }
             }

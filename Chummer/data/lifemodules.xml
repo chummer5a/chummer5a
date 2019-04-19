@@ -142,7 +142,7 @@
             <knowledgeskilllevel>
               <group>Street</group>
               <name>Seattle</name>
-              <value>2</value>
+              <val>2</val>
             </knowledgeskilllevel>
             <freenegativequalities>-5</freenegativequalities>
             <pushtext>United Canadian American States</pushtext>
@@ -421,7 +421,7 @@
               <group>Language</group>
             </knowledgeskilllevel>
             <skillgrouplevel>
-              <name>Outdoor</name>
+              <name>Outdoors</name>
               <val>1</val>
             </skillgrouplevel>
             <skilllevel>
@@ -579,7 +579,7 @@
               <group>Language</group>
             </knowledgeskilllevel>
             <skillgrouplevel>
-              <name>Outdoor</name>
+              <name>Outdoors</name>
             </skillgrouplevel>
             <skilllevel>
               <name>Blades</name>
@@ -988,7 +988,7 @@
           <val>2</val>
         </skillgrouplevel>
         <skilllevel>
-          <name>Negotiation&gt;</name>
+          <name>Negotiation</name>
         </skilllevel>
         <skilllevel>
           <name>Perception</name>
@@ -3301,7 +3301,7 @@
           <name>LOG</name>
         </attributelevel>
         <skilllevel>
-          <name>Computers</name>
+          <name>Computer</name>
         </skilllevel>
         <skilllevel>
           <name>Gymnastics</name>
@@ -3314,7 +3314,7 @@
           <name>LOG</name>
         </attributelevel>
         <skilllevel>
-          <name>Computers</name>
+          <name>Computer</name>
         </skilllevel>
         <skilllevel>
           <name>Gymnastics</name>
@@ -3846,12 +3846,12 @@
           <id>2c0070c5-2284-4161-8a90-2c89e0482b85</id>
           <name>Wage Slave</name>
           <bonus>
-            <skilllevel>
-              <name>Charisma</name>
-            </skilllevel>
-            <skilllevel>
-              <name>Willpower</name>
-            </skilllevel>
+            <attributelevel>
+              <name>CHA</name>
+            </attributelevel>
+            <attributelevel>
+              <name>WIL</name>
+            </attributelevel>
             <skilllevel>
               <name>Con</name>
             </skilllevel>
@@ -4383,7 +4383,7 @@
           <val>2</val>
         </skilllevel>
         <skilllevel>
-          <name>Piloting Ground Craft</name>
+          <name>Pilot Ground Craft</name>
         </skilllevel>
         <skillgrouplevel>
           <name>Stealth</name>
@@ -4459,7 +4459,7 @@
           <val>2</val>
         </skilllevel>
         <skilllevel>
-          <name>Piloting Ground Craft</name>
+          <name>Pilot Ground Craft</name>
         </skilllevel>
         <skilllevel>
           <name>Pistols</name>
@@ -4581,7 +4581,7 @@
           <val>2</val>
         </knowledgeskilllevel>
         <addqualities>
-          <addqiality>In Debt V</addqiality>
+          <addquality>In Debt V</addquality>
         </addqualities>
       </bonus>
       <!--<required>
@@ -4700,9 +4700,9 @@
             <skilllevel>
               <name>Forgery</name>
             </skilllevel>
-            <skilllevel>
-              <name>Intuition</name>
-            </skilllevel>
+            <attributelevel>
+              <name>INT</name>
+            </attributelevel>
             <skilllevel>
               <name>Perception</name>
             </skilllevel>
@@ -4915,9 +4915,9 @@
           <bonus>
             <skillgrouplevel>
               <options>
-                <alchemy>Alchemy</alchemy>
+                <enchanting>Enchanting</enchanting>
                 <conjuring>Conjuring</conjuring>
-                <spellcasting>Spellcasting</spellcasting>
+                <sorcery>Sorcery</sorcery>
               </options>
             </skillgrouplevel>
             <skilllevel>
@@ -5487,7 +5487,7 @@
               <name>Blades</name>
             </skilllevel>
             <skilllevel>
-              <name>Demolition</name>
+              <name>Demolitions</name>
             </skilllevel>
             <skilllevel>
               <name>Perception</name>
@@ -5609,7 +5609,7 @@
               <name>Demolitions</name>
             </skilllevel>
             <skillgrouplevel>
-              <name>Engineer</name>
+              <name>Engineering</name>
               <val>1</val>
             </skillgrouplevel>
             <skilllevel>
@@ -5790,9 +5790,9 @@
               <name>Pilot Aircraft</name>
               <val>2</val>
             </skilllevel>
-            <skilllevel>
-              <name>Reaction</name>
-            </skilllevel>
+            <attributelevel>
+              <name>REA</name>
+            </attributelevel>
             <skilllevel>
               <name>Survival</name>
             </skilllevel>
@@ -5958,9 +5958,9 @@
             <skilllevel>
               <name>Swimming</name>
             </skilllevel>
-            <skilllevel>
-              <name>Body</name>
-            </skilllevel>
+            <attributelevel>
+              <name>BOD</name>
+            </attributelevel>
           </bonus>
         </version>
         <version>
@@ -5975,9 +5975,9 @@
               <name>Electronics</name>
               <val>1</val>
             </skillgrouplevel>
-            <skilllevel>
-              <name>Intuition</name>
-            </skilllevel>
+            <attributelevel>
+              <name>INT</name>
+            </attributelevel>
             <skilllevel>
               <name>Perception</name>
             </skilllevel>
@@ -6834,7 +6834,7 @@
           <name>Sneaking</name>
         </skilllevel>
         <skilllevel>
-          <name>Unarmed</name>
+          <name>Unarmed Combat</name>
         </skilllevel>
         <addqualities>
           <addquality>Blandness</addquality>
@@ -6875,12 +6875,12 @@
           <val>3</val>
         </knowledgeskilllevel>
         <nuyenamt>32000</nuyenamt>
+        <addqualities>
+          <!--per raw, there is no rating for flashbacks-->
+          <addquality>Flashbacks I</addquality>
+          <addquality>Uneducated</addquality>
+        </addqualities>
       </bonus>
-      <addqialities>
-        <!--per raw, there is no rating for flashbacks-->
-        <addquality>Flashbacks I</addquality>
-        <addquality>Uneducated</addquality>
-      </addqialities>
       <!--todo: Special: You may pick 32,000 nuyen worth of bioware. Normal Essence costs apply-->
       <story>$real was used as a host for bioware, as implanting it in a metahuman is cheaper than keeping it on ice. One day, $real knew they would be killed, and their organs $BAGORGAN . On the other hand, free bioware! Score!</story>
       <source>CF</source>
@@ -8832,7 +8832,7 @@
               <name>BOD</name>
             </attributelevel>
             <skilllevel>
-              <name>Stealth</name>
+              <name>Sneaking</name>
             </skilllevel>
             <skilllevel>
               <name>Survival</name>
@@ -9374,7 +9374,7 @@
         <addqualities>
           <addquality>Prejudiced (Common, Outspoken)</addquality>
           <addquality>Uneducated</addquality>
-          <addqiality>Toughness</addqiality>
+          <addquality>Toughness</addquality>
         </addqualities>
       </bonus>
       <story>$real was brought up consistently exposed to the Anarchist's way of seeing the world.</story>
@@ -9411,7 +9411,7 @@
         </knowledgeskilllevel>
         <addqualities>
           <addquality>Uneducated</addquality>
-          <addqiality>Toughness</addqiality>
+          <addquality>Toughness</addquality>
         </addqualities>
       </bonus>
       <story>$real was brought up in one of the few small coastal towns around the world.</story>
@@ -9452,9 +9452,9 @@
         </knowledgeskilllevel>
         <addqualities>
           <addquality>Uneducated</addquality>
-          <addqiality>Toughness</addqiality>
-          <addqiality>Blighted (24 Months)</addqiality>
-          <addqiality>Perceptive</addqiality>
+          <addquality>Toughness</addquality>
+          <addquality>Blighted (24 Months)</addquality>
+          <addquality>Perceptive</addquality>
         </addqualities>
       </bonus>
       <story>$real was brought up in proximity to of the world's many blighted coasts.</story>
@@ -9495,7 +9495,7 @@
         </knowledgeskilllevel>
         <addqualities>
           <addquality>Driven</addquality>
-          <addqiality>Bilingual</addqiality>
+          <addquality>Bilingual</addquality>
         </addqualities>
       </bonus>
       <story>$real and their family may have been war refugees or hoping for a better life elsewhere, as they where leaving their home country. You are part of the next generation, brought in between two cultures.</story>
@@ -9567,7 +9567,7 @@
           <name>First Aid</name>
         </skilllevel>
         <skilllevel>
-          <name>Industrial Mechanics</name>
+          <name>Industrial Mechanic</name>
         </skilllevel>
         <skilllevel>
           <name>Clubs</name>
@@ -9715,7 +9715,7 @@
           <group>Street</group>
         </knowledgeskilllevel>
         <addqualities>
-          <addqiality>Blighted (24 Months)</addqiality>
+          <addquality>Blighted (24 Months)</addquality>
         </addqualities>
       </bonus>
       <story>$real spent his teen years helping his small community at the toxic coast.</story>

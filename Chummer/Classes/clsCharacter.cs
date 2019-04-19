@@ -1956,7 +1956,7 @@ if (!Utils.IsUnitTest){
 
             if(!string.IsNullOrEmpty(strMissingBooks) && !Utils.IsUnitTest)
             {
-                if(MessageBox.Show(string.Format(LanguageManager.GetString("Message_MissingSourceBooks", GlobalOptions.Language), TranslatedBookList(strMissingBooks, GlobalOptions.Language)),
+                if(MessageBox.Show(new Form { TopMost = true }, string.Format(LanguageManager.GetString("Message_MissingSourceBooks", GlobalOptions.Language), TranslatedBookList(strMissingBooks, GlobalOptions.Language)),
                         LanguageManager.GetString("Message_MissingSourceBooks_Title", GlobalOptions.Language),
                         MessageBoxButtons.YesNo) == DialogResult.No)
                 {
@@ -2323,7 +2323,7 @@ if (!Utils.IsUnitTest){
                                     foreach(Quality objCheckQuality in Qualities)
                                     {
                                         if(objCheckQuality != objQuality &&
-                                            objCheckQuality.QualityId == objQuality.QualityId &&
+                                            objCheckQuality.SourceIDString == objQuality.SourceIDString &&
                                             objCheckQuality.Extra == objQuality.Extra &&
                                             objCheckQuality.SourceName == objQuality.SourceName)
                                         {
@@ -3040,7 +3040,7 @@ if (!Utils.IsUnitTest){
                         foreach(Quality objCheckQuality in Qualities)
                         {
                             if(objCheckQuality != objLivingPersonaQuality &&
-                                objCheckQuality.QualityId == objLivingPersonaQuality.QualityId &&
+                                objCheckQuality.SourceIDString == objLivingPersonaQuality.SourceIDString &&
                                 objCheckQuality.Extra == objLivingPersonaQuality.Extra &&
                                 objCheckQuality.SourceName == objLivingPersonaQuality.SourceName)
                             {
@@ -4084,7 +4084,7 @@ if (!Utils.IsUnitTest){
             Dictionary<string, int> strQualitiesToPrint = new Dictionary<string, int>(Qualities.Count);
             foreach(Quality objQuality in Qualities)
             {
-                string strKey = objQuality.QualityId + '|' + objQuality.SourceName + '|' + objQuality.Extra;
+                string strKey = objQuality.SourceIDString + '|' + objQuality.SourceName + '|' + objQuality.Extra;
                 if(strQualitiesToPrint.ContainsKey(strKey))
                 {
                     strQualitiesToPrint[strKey] += 1;
@@ -4098,7 +4098,7 @@ if (!Utils.IsUnitTest){
             objWriter.WriteStartElement("qualities");
             foreach(Quality objQuality in Qualities)
             {
-                string strKey = objQuality.QualityId + '|' + objQuality.SourceName + '|' + objQuality.Extra;
+                string strKey = objQuality.SourceIDString + '|' + objQuality.SourceName + '|' + objQuality.Extra;
                 if(strQualitiesToPrint.TryGetValue(strKey, out int intLoopRating))
                 {
                     objQuality.Print(objWriter, intLoopRating, objCulture, strLanguageToPrint);

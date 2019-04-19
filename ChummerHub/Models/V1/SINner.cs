@@ -50,8 +50,8 @@ namespace ChummerHub.Models.V1
         public string Language { get; set; }
 
         public SINnerMetaData SINnerMetaData { get; set; }
-
-        public String JsonSummary { get; set; }
+        
+        public SINnerExtended MyExtendedAttributes { get; set; }
 
         public SINnerGroup MyGroup { get; set; }
 
@@ -66,18 +66,19 @@ namespace ChummerHub.Models.V1
         {
             Id = Guid.NewGuid();
             this.SINnerMetaData = new SINnerMetaData();
+            this.MyExtendedAttributes = new SINnerExtended();
         }
 
-        [JsonIgnore]
-        [XmlIgnore]
-        [NotMapped]
-        private List<Tag> _AllTags { get; set; }
+        //[JsonIgnore]
+        //[XmlIgnore]
+        //[NotMapped]
+        //private List<Tag> _AllTags { get; set; }
 
-        public async Task<List<Tag>> GetTagsForSinnerFlat(ApplicationDbContext context)
-        {
-            return await (from a in context.Tags where a.SINnerId == this.Id select a).ToListAsync();
+        //public async Task<List<Tag>> GetTagsForSinnerFlat(ApplicationDbContext context)
+        //{
+        //    return await (from a in context.Tags where a.SINnerId == this.Id select a).ToListAsync();
             
-        }
+        //}
 
         internal static async Task<List<SINner>> GetSINnersFromUser(ApplicationUser user, ApplicationDbContext context, bool canEdit)
         {
@@ -87,6 +88,7 @@ namespace ChummerHub.Models.V1
             {
                 if(ur?.SINnerId == null) continue;
                 var sin = await context.SINners.Include(a => a.SINnerMetaData.Visibility.UserRights)
+                    //.Include(a => a.MyExtendedAttributes)
                     .Include(b => b.MyGroup)
                     .ThenInclude( a => a.MyGroups)
                     .ThenInclude( a => a.MyGroups)

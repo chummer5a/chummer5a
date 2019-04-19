@@ -23,6 +23,12 @@ namespace ChummerHub.Models.V1
         
         public bool IsPublic { get; set; }
 
+        public string GroupCreatorUserName { get; set; }
+
+        [Obsolete]
+        [NotMapped]
+        [JsonIgnore]
+        [XmlIgnore]
         public string GameMasterUsername { get; set; }
 
         public SINnerGroupSetting MySettings { get; set; }
@@ -30,7 +36,6 @@ namespace ChummerHub.Models.V1
         [MaxLength(64)]
         public string Groupname { get; set; }
 
-        [JsonIgnore]
         public string PasswordHash { get; set; }
 
         [MaxLength(6)]
@@ -38,18 +43,18 @@ namespace ChummerHub.Models.V1
 
         public SINnerGroup()
         {
-            //MySINners = new List<SINner>();
             MyGroups = new List<SINnerGroup>();
         }
-
-        //public List<SINner> MySINners { get; set; }
 
         public async Task<List<SINner>> GetGroupMembers(ApplicationDbContext context)
         {
             try
             {
                 var groupmembers = await (from a in context.SINners
-                                   where a.MyGroup.Id == this.Id
+                            .Include(a => a.MyGroup)
+                            .Include(a => a.SINnerMetaData)
+                            .Include(a => a.SINnerMetaData.Visibility)
+                             where a.MyGroup.Id == this.Id
                                          && this.Id != null
                                          && ((a.SINnerMetaData.Visibility.IsGroupVisible == true)
                                          || (a.SINnerMetaData.Visibility.IsPublic == true))
@@ -74,31 +79,7 @@ namespace ChummerHub.Models.V1
         /// </summary>
         [MaxLength(64)]
         public string MyAdminIdentityRole { get; set; }
-
-        //public async Task<List<SINerUserRight>> GetUserRights(ApplicationDbContext context)
-        //{
-        //    List<SINerUserRight> result = new List<SINerUserRight>();
-        //    try
-        //    {
-        //        var sinners = await this.GetSinners(context);
-
-        //        foreach(var sinner in sinners)
-        //        {
-        //            var members = (from a in sinner.SINnerMetaData.Visibility.UserRights select a);
-        //            foreach(var member in members)
-        //            {
-        //                if(!result.Contains(member))
-        //                    result.Add(member);
-        //            }
-        //        }
-        //        return result;
-        //    }
-        //    catch(Exception e)
-        //    {
-        //        System.Diagnostics.Trace.TraceError(e.Message, e);
-        //        throw;
-        //    }
-        //}
+        
     }
 
     public class SINnerGroupSetting

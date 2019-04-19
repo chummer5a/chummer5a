@@ -1823,7 +1823,7 @@
         </choice>
       </choices>
       <source>BOTL</source>
-      <page>129</page>
+      <page>132</page>
     </mentor>
     <mentor>
       <id>d1089dd2-68b8-4e2a-977e-718e720f44d3</id>
@@ -2026,17 +2026,46 @@
         <choice>
           <name>Magician: +2 dice pool modifier when casting the spells Death Touch, Manaball, Manabolt, One Less, Slaughter, Slay.</name>
           <bonus>
-            <!-- TODO: Dicepool modifiers for individual spells -->
+            <spelldicepool>
+              <id>9baed162-5e84-4f19-9b94-d543a560c067</id>
+              <val>2</val>
+            </spelldicepool>
+            <spelldicepool>
+              <id>85c12bae-3954-483c-a211-d8ee43a1c65e</id>
+              <val>2</val>
+            </spelldicepool>
+            <spelldicepool>
+              <id>d866f612-7160-41d2-8ce9-b64262327559</id>
+              <val>2</val>
+            </spelldicepool>
+            <spelldicepool>
+              <id>894e4bea-883e-421b-8a6f-6ca61274cca3</id>
+              <val>2</val>
+            </spelldicepool>
+            <spelldicepool>
+              <id>50f1bfce-a64d-4fac-b25d-d870e7ff312f</id>
+              <val>2</val>
+            </spelldicepool>
+            <spelldicepool>
+              <id>06d5a10b-b353-44bc-936a-4d6c08ebeaf8</id>
+              <val>2</val>
+            </spelldicepool>
           </bonus>
         </choice>
         <choice>
-          <name>Adept: Gain 1 free level of Killing Hands or Plague Cloud (choose one).</name>
+          <name>Adept: Gain 1 free level of Killing Hands</name>
           <bonus>
-            <selectpowers>
-              <selectpower limittopowers="Killing Hands,Plague Cloud">
-                <val>1</val>
-              </selectpower>
-            </selectpowers>
+            <specificpower>
+              <name>Killing Hands</name>
+            </specificpower>
+          </bonus>
+        </choice>
+        <choice>
+          <name>Adept: Gain 1 free level of Plague Cloud</name>
+          <bonus>
+            <specificpower>
+              <name>Plague Cloud</name>
+            </specificpower>
           </bonus>
         </choice>
       </choices>
@@ -2854,6 +2883,445 @@
       </choices>
       <source>BTB</source>
       <page>139</page>
+    </mentor>
+    <mentor>
+      <id>5593f724-7b72-4927-a8c8-2c73844cc1b1</id>
+      <name>Architekt (SOTA 2080)</name>
+      <advantage>All: +2 to dice to Leadership</advantage>
+      <disadvantage>Ein Anhänger dieses Schutzgeistes behält gerne die Initiative. Immer dann, wenn die Umstände eines Runs ihn in die Defensive drängen, muss ihm eine Probe auf Willenskraft + Intuition (3) gelingen. Misslingt die Probe, erhält der Anhänger von Architekt einen Würfelpoolmalus von -2 auf seine Proben, bis er das Heft wieder in der Hand hält.</disadvantage>
+      <bonus>
+        <specificskill>
+          <name>Leadership</name>
+          <bonus>2</bonus>
+        </specificskill>
+      </bonus>
+      <choices>
+        <choice>
+          <name>Magician: +2 dice for Combat spells</name>
+          <bonus>
+            <spellcategory>
+              <name>Combat</name>
+              <val>2</val>
+            </spellcategory>
+          </bonus>
+        </choice>
+		<choice>
+          <name>Adept: Gain 2 free level of Analytics</name>
+          <bonus>
+            <specificpower>
+              <name>Analytics</name>
+              <val>2</val>
+            </specificpower>
+          </bonus>
+        </choice>
+      </choices>
+      <source>SOTG</source>
+      <page>29</page>
+    </mentor>
+    <mentor>
+      <id>db42c229-3403-4947-8626-3f70f87c8a3c</id>
+      <name>Deutscher Schäferhund</name>
+      <advantage>All: +1 to dice to Leadership and Perception</advantage>
+      <disadvantage>Bisweilen bricht die Ungeduld bei Schäferhund durch. Wird die Geduld eines Anhängers von Schäferhund auf die Probe gestellt (nach Spielleiterentscheid), muss ihm eine Willenskraft + Charisma (3) gelingen, um nicht scharf zu reagieren.</disadvantage>
+      <bonus>
+        <specificskill>
+          <name>Leadership</name>
+          <bonus>1</bonus>
+        </specificskill>
+        <specificskill>
+          <name>Perception</name>
+          <bonus>1</bonus>
+        </specificskill>
+      </bonus>
+      <choices>
+        <choice>
+          <name>Magician: +1 dice for Combat and Detection spells</name>
+          <bonus>
+            <spellcategory>
+              <name>Combat</name>
+              <val>1</val>
+            </spellcategory>
+          </bonus>
+          <bonus>
+            <spellcategory>
+              <name>Detection</name>
+              <val>1</val>
+            </spellcategory>
+          </bonus>
+        </choice>
+		<choice>
+          <name>Adept: Danger Sense level 2</name>
+          <bonus>
+            <specificpower>
+              <name>Danger Sense</name>
+              <val>2</val>
+            </specificpower>
+          </bonus>
+        </choice>
+      </choices>
+      <source>SOTG</source>
+      <page>29</page>
+    </mentor>
+    <mentor>
+      <id>bdb4fa0b-3c9d-4164-b2d6-76b7c04c43d8</id>
+      <name>Dobermann</name>
+      <advantage>All: +1 to dice to Perception and one Weapon Skill (chose one)</advantage>
+      <disadvantage>Dobermann ist sehr selbstbewusst. Um sich anderen unterzuordnen bzw. fremden Plänen zu folgen, muss einem Anhänger von Dobermann eine Probe auf Willenskraft + Charisma (3) gelingen.</disadvantage>
+      <bonus>
+        <specificskill>
+          <name>Perception</name>
+          <bonus>1</bonus>
+        </specificskill>
+	  </bonus>
+      <choices>
+        <choice>
+          <name>+1 dice on Archery</name>
+          <bonus>
+            <specificskill>
+              <name>Archery</name>
+              <bonus>1</bonus>
+            </specificskill>
+          </bonus>
+        </choice>
+        <choice>
+          <name>+1 dice on Automatics</name>
+          <bonus>
+            <specificskill>
+              <name>Automatics</name>
+              <bonus>1</bonus>
+            </specificskill>
+          </bonus>
+        </choice>
+        <choice>
+          <name>+1 dice on Blades</name>
+          <bonus>
+            <specificskill>
+              <name>Blades</name>
+              <bonus>1</bonus>
+            </specificskill>
+          </bonus>
+        </choice>
+        <choice>
+          <name>+1 dice on Clubs</name>
+          <bonus>
+            <specificskill>
+              <name>Clubs</name>
+              <bonus>1</bonus>
+            </specificskill>
+          </bonus>
+        </choice>
+        <choice>
+          <name>+1 dice on Gunnery</name>
+          <bonus>
+            <specificskill>
+              <name>Gunnery</name>
+              <bonus>1</bonus>
+            </specificskill>
+          </bonus>
+        </choice>
+        <choice>
+          <name>+1 dice on Heavy Weapons</name>
+          <bonus>
+            <specificskill>
+              <name>Heavy Weapons</name>
+              <bonus>1</bonus>
+            </specificskill>
+          </bonus>
+        </choice>
+        <choice>
+          <name>+1 dice on Longarms</name>
+          <bonus>
+            <specificskill>
+              <name>Longarms</name>
+              <bonus>1</bonus>
+            </specificskill>
+          </bonus>
+        </choice>
+        <choice>
+          <name>+1 dice on Pistols</name>
+          <bonus>
+            <specificskill>
+              <name>Pistols</name>
+              <bonus>1</bonus>
+            </specificskill>
+          </bonus>
+        </choice>
+        <choice>
+          <name>+1 dice on Throwing Weapons</name>
+          <bonus>
+            <specificskill>
+              <name>Throwing Weapons</name>
+              <bonus>1</bonus>
+            </specificskill>
+          </bonus>
+        </choice>
+        <choice>
+          <name>+1 dice on Unarmed Combat</name>
+          <bonus>
+            <specificskill>
+              <name>Unarmed Combat</name>
+              <bonus>1</bonus>
+            </specificskill>
+          </bonus>
+        </choice>
+        <choice set="2">
+          <name>Magician: +2 dice for Combat spells</name>
+          <bonus>
+            <spellcategory>
+              <name>Combat</name>
+              <val>2</val>
+            </spellcategory>
+          </bonus>
+        </choice>
+        <choice set="2">
+          <name>Adept: 1 free level of Combat Sense</name>
+          <bonus>
+            <specificpower>
+              <name>Combat Sense</name>
+              <val>1</val>
+            </specificpower>
+          </bonus>
+        </choice>
+      </choices>		
+      <source>SOTG</source>
+      <page>29</page>
+    </mentor>
+    <mentor>
+      <id>240ab0aa-6be1-452b-88c2-f10f6f6eabfb</id>
+      <name>Weimaraner</name>
+      <advantage>All: +1 to dice to Running and Tracking</advantage>
+      <disadvantage>Kann ein Anhänger von Weimaraner seine Fähigkeiten länger als zwölf Stunden nicht einsetzen, muss ihm eine Probe auf Willenskraft + Charisma (3) gelingen, sonst erleidet er einen Würfelpoolmodifikator von -1 auf alle Handlungen, bis er wieder seine Fähigkeiten einsetzt.</disadvantage>
+      <bonus>
+        <specificskill>
+          <name>Running</name>
+          <bonus>1</bonus>
+        </specificskill>
+        <specificskill>
+          <name>Tracking</name>
+          <bonus>1</bonus>
+        </specificskill>
+      </bonus>
+      <choices>
+        <choice>
+          <name>Magician: +2 dice for Detection spells</name>
+          <bonus>
+            <spellcategory>
+              <name>Detection</name>
+              <val>2</val>
+            </spellcategory>
+          </bonus>
+        </choice>
+		<choice>
+          <name>Adept: 1 free levels of Enhanced Perception</name>
+          <bonus>
+            <specificpower>
+              <name>Enhanced Perception</name>
+              <val>1</val>
+            </specificpower>
+          </bonus>
+        </choice>
+      </choices>
+      <source>SOTG</source>
+      <page>31</page>
+    </mentor>
+    <mentor>
+      <id>5c465bf3-665f-41f2-865e-41abb879ee1f</id>
+      <name>Dachs</name>
+      <advantage>All: Perception Quality is gained for free</advantage>
+      <disadvantage>Dachs beschützt sein Revier unerbittlich. Dringen Feinde in das Gebiet ein, das ein Anhänger von Dachs beschützt (zum Beispiel ein Gebäude), oder entwenden einen Gegenstand, der unter dem Schutz eines Anhängers von Dachs steht, muss ihm eine Probe auf Willenskraft + Charisma (3) gelingen, um nicht sofort mit allen Mitteln gegen die Eindringlinge bzw. Diebe vorzugehen.</disadvantage>
+      <bonus>
+        <addqualities>
+          <addquality>Perceptive</addquality>
+        </addqualities>
+        <specificskill>
+          <name>Perception</name>
+          <bonus>2</bonus>
+        </specificskill>
+      </bonus>
+      <choices>
+        <choice>
+          <name>Magician: +1 dice for Counterspelling and Combat Spells</name>
+          <bonus>
+            <spellcategory>
+              <name>Counterspelling</name>
+              <bonus>1</bonus>
+            </spellcategory>
+          </bonus>
+		  <bonus>
+            <spellcategory>
+              <name>Combat</name>
+              <val>2</val>
+            </spellcategory>
+          </bonus>
+        </choice>
+        <choice>
+          <name>Adept: Danger Sense level 2</name>
+          <bonus>
+            <specificpower>
+              <name>Danger Sense</name>
+              <val>2</val>
+            </specificpower>
+          </bonus>
+        </choice>
+      </choices>
+      <source>SOTG</source>
+      <page>31</page>
+    </mentor>
+    <mentor>
+      <id>b01976a5-2343-4308-846e-da5fb12328a8</id>
+      <name>Mystischer Wächter</name>
+      <advantage>All: +2 to dice to one melee combat capability (chose one)</advantage>
+      <disadvantage>Was macht ein Mystischer Wächter, wenn es nichts zu bewachen gibt? Solange ein Anhänger des Mystischen Wächters keinen konkreten Auftrag, Auftraggeber oder Schutzbefohlenen hat (beziehungsweise seinen selbstauferlegten Pflichten nicht nachkommt), erleidet er einen Würfelpoolmalus von -2 auf alle Proben.</disadvantage>
+      <choices>
+        <choice>
+          <name>+1 dice on Blades</name>
+          <bonus>
+            <specificskill>
+              <name>Blades</name>
+              <bonus>1</bonus>
+            </specificskill>
+          </bonus>
+        </choice>
+        <choice>
+          <name>+1 dice on Clubs</name>
+          <bonus>
+            <specificskill>
+              <name>Clubs</name>
+              <bonus>1</bonus>
+            </specificskill>
+          </bonus>
+        </choice>
+        <choice>
+          <name>+1 dice on Longarms</name>
+          <bonus>
+            <specificskill>
+              <name>Longarms</name>
+              <bonus>1</bonus>
+            </specificskill>
+          </bonus>
+        </choice>
+        <choice>
+          <name>+1 dice on Unarmed Combat</name>
+          <bonus>
+            <specificskill>
+              <name>Unarmed Combat</name>
+              <bonus>1</bonus>
+            </specificskill>
+          </bonus>
+        </choice>
+        <choice set="2">
+          <name>Magician: +2 dice pool bonus when summoning guardian or animal spirits (chose 1 when selecting this mentor spirit).</name>
+          <bonus />
+        </choice>
+        <choice set="2">
+          <name>Adept: 1 free level of Magic Sense</name>
+          <bonus>
+            <specificpower>
+              <name>Magic Sense</name>
+              <val>1</val>
+            </specificpower>
+          </bonus>
+        </choice>
+      </choices>
+      <source>SOTG</source>
+      <page>31</page>
+    </mentor>
+    <mentor>
+      <id>296dc353-df11-4c94-a101-04bc501edf5e</id>
+      <name>Rotkäppchen</name>
+      <advantage>All: +2 to dice to con skills</advantage>
+      <disadvantage>In ihrer ungezügelten Neugier übersehen Anhänger von Rotkäppchen manchmal das Offensichtliche und Wichtige. Sie erhalten einen Würfelpoolmalus von -1 bei Wahrnehmungsproben in unbekannten Gebieten.</disadvantage>
+      <bonus>
+        <specificskill>
+          <name>Con</name>
+          <bonus>2</bonus>
+        </specificskill>
+      </bonus>
+      <choices>
+        <choice>
+          <name>Magician: +2 dice to Contractual Rituals (please add manually)</name>
+          <bonus />
+        </choice>
+        <choice>
+          <name>Adept: Gain Linguist for free</name>
+          <bonus>
+			<addqualities>
+			  <addquality>Linguist</addquality>
+			</addqualities>
+          </bonus>
+        </choice>
+      </choices>
+      <source>SOTG</source>
+      <page>32</page>
+    </mentor>
+    <mentor>
+      <id>bea9796a-c5d3-4388-97ec-14969db470fe</id>
+      <name>Schatzjäger</name>
+      <advantage>All: +1 dice to navigation and locksmith tests</advantage>
+      <disadvantage>Ein Anhänger dieses Schutzgeistes ist so sehr auf das Objekt seines Strebens fixiert, dass er Aufgaben, die nichts damit zu tun haben, lustlos und halbherzig angeht: Nach dem Briefing mit Schmidt muss ihm eine Probe auf Willenskraft + Willenskraft (3) gelingen, damit er bei der Erledigung eines Runs, der nichts mit dem Objekt seines Strebens zu tun hat, keinen Würfelpoolmalus von -1 auf alle Proben erleidet.</disadvantage>
+      <bonus>
+        <specificskill>
+          <name>Navigation</name>
+          <bonus>1</bonus>
+        </specificskill>
+        <specificskill>
+          <name>Locksmith</name>
+          <bonus>1</bonus>
+        </specificskill>
+      </bonus>
+      <choices>
+        <choice>
+          <name>Magician: +2 dice for Detection spells</name>
+          <bonus>
+            <spellcategory>
+              <name>Detection</name>
+              <val>2</val>
+            </spellcategory>
+          </bonus>
+        </choice>
+        <choice>
+          <name>Adept: Gain Three-Dimensional Memory for free</name>
+          <bonus>
+            <specificpower>
+              <name>Three-Dimensional Memory</name>
+            </specificpower>
+          </bonus>
+        </choice>
+      </choices>
+      <source>SOTG</source>
+      <page>32</page>
+    </mentor>
+    <mentor>
+      <id>f2cc5e2b-6538-4271-9f7f-5434076f9a6b</id>
+      <name>Waffenbruder</name>
+      <advantage>All: +1 dice to etiquette and instruction tests</advantage>
+      <disadvantage>Anhänger von Waffenbruder erwählen in jedem Run drei Personen mit direkter Plot-Relevanz – das können Spielercharaktere sein, aber auch wichtige NSC – als diejenigen Leute, denen während der Mission ihre Loyalität gilt. Ihnen muss eine Probe auf Willenskraft + Intuition (3) gelingen, bevor sie diesen Personenkreis übervorteilen, anlügen oder gar im Stich lassen können. Selbst wenn sie sich dazu überwinden können, erleiden sie einen Würfelpoolmalus von -2 auf alle Proben, bis sie ihre Verfehlung wieder ausgebügelt haben.</disadvantage>
+      <bonus>
+        <specificskill>
+          <name>Etiquette</name>
+          <bonus>1</bonus>
+        </specificskill>
+        <specificskill>
+          <name>Instruction</name>
+          <bonus>1</bonus>
+        </specificskill>
+      </bonus>
+	  <choices>
+        <choice>
+          <name>Magician: +2 dice summoning spirits of guardian spirits, task spirits or spirits of man</name>
+        </choice>
+        <choice>
+          <name>Adept: 1 free level of Mystic Armor</name>
+          <bonus>
+            <specificpower>
+              <name>Mystic Armor</name>
+              <val>1</val>
+            </specificpower>
+          </bonus>
+        </choice>
+	  </choices>
+      <source>SOTG</source>
+      <page>32</page>
     </mentor>
   </mentors>
 </chummer>

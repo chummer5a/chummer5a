@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using IdentityModel.Client;
 using System.Net.Http;
 using Newtonsoft.Json.Linq;
 using System.Runtime.InteropServices;
@@ -38,7 +37,7 @@ namespace ChummerHub.Client.UI
             {
                 if (_SINnerVisibility != null)
                     return _SINnerVisibility;
-                //Properties.Settings.Default.Reload();
+                Properties.Settings.Default.Reload();
                 if(String.IsNullOrEmpty(Properties.Settings.Default.SINnerVisibility))
                 {
                     _SINnerVisibility = new SINners.Models.SINnerVisibility()
@@ -123,7 +122,10 @@ namespace ChummerHub.Client.UI
                     _SINnerVisibility = value;
                 }
                 else
+                {
                     Properties.Settings.Default.SINnerVisibility = null;
+                    _SINnerVisibility = null;
+                }
             }
         }
 
@@ -169,14 +171,19 @@ namespace ChummerHub.Client.UI
             return tcs.Task;
         }
 
-        private void InitializeMe()
+        private async Task InitializeMe()
         {
             
             string tip = "Milestone builds always user sinners." + Environment.NewLine + "Nightly builds always user sinners-beta.";
             cbSINnerUrl.SetToolTip(tip);
             cbSINnerUrl.SelectedValueChanged -= CbSINnerUrl_SelectedValueChanged;
             Properties.Settings.Default.Reload();
-            var sinnerurl = StaticUtils.Client.BaseUri.ToString();
+            var client = await StaticUtils.GetClient(); 
+            if (client == null)
+            {
+                return;
+            }
+            var sinnerurl = client.BaseUri.ToString();
             if (Properties.Settings.Default.SINnerUrls.Contains("http://sinners-beta.azurewebsites.net/"))
             {
                 Properties.Settings.Default.SINnerUrls.Remove("http://sinners-beta.azurewebsites.net/");
@@ -187,20 +194,23 @@ namespace ChummerHub.Client.UI
             this.cbSINnerUrl.SelectedItem = sinnerurl;
             cbSINnerUrl.Enabled = false;
             this.cbVisibilityIsPublic.BindingContext = new BindingContext();
-            var t = StartSTATask(
-                async () =>
-                {
-                    var roles = await GetRolesStatus(this);
-                    UpdateDisplay();
-                    if(!roles.Any())
-                        ShowWebBrowser();
-                });
-            //var t = Task.Run(
-            //    async () =>
-            //    {
-            //        await GetRolesStatus();
-            //        UpdateDisplay();
-            //    });
+            if ((StaticUtils.UserRoles == null)
+                || (!StaticUtils.UserRoles.Any()))
+            {
+                var t = StartSTATask(
+                    async () =>
+                    {
+                        var roles = await GetRolesStatus(this);
+                        UpdateDisplay();
+                        if (!roles.Any())
+                            ShowWebBrowser();
+                    });
+            }
+            else
+            {
+                LoginStatus = true;
+                UpdateDisplay();
+            }
             FillVisibilityListBox();
             cbUploadOnSave.Checked = SINnersOptions.UploadOnSave;
             cbSINnerUrl.SelectedValueChanged += CbSINnerUrl_SelectedValueChanged;
@@ -257,13 +267,14 @@ namespace ChummerHub.Client.UI
         {
             Properties.Settings.Default.SINnerUrl = cbSINnerUrl.SelectedValue.ToString();
             Properties.Settings.Default.Save();
-            if (StaticUtils.Client != null)
-                StaticUtils.Client = null;
+            var client = await StaticUtils.GetClient();
+            if (client != null)
+                await StaticUtils.GetClient(true);
             this.bLogin.Text = "Logout";
             this.labelAccountStatus.Text = "logged out";
             this.labelAccountStatus.ForeColor = Color.DarkRed;
             this.LoginStatus = false;
-            InitializeMe();
+            await InitializeMe();
 
         }
 
@@ -310,17 +321,31 @@ namespace ChummerHub.Client.UI
                                 }
                                 if (createVis)
                                 {
-                                    SINnerVisibility vis = new SINnerVisibility();
-                                    vis.Id = Guid.NewGuid();
-                                    vis.IsGroupVisible = true;
-                                    vis.IsPublic = true;
-                                    vis.UserRights = new List<SINerUserRight>();
-                                    SINerUserRight ur = new SINerUserRight();
-                                    ur.Id = Guid.NewGuid();
-                                    ur.EMail = mail;
-                                    ur.CanEdit = true;
-                                    vis.UserRights.Add(ur);
-                                    SINnersOptions.SINnerVisibility = null;
+
+                                    SINnerVisibility vis = SINnersOptions.SINnerVisibility;
+                                    if (vis == null)
+                                    {
+                                        vis = new SINnerVisibility();
+                                        vis.Id = Guid.NewGuid();
+                                        vis.IsGroupVisible = true;
+                                        vis.IsPublic = true;
+                                        vis.UserRights = new List<SINerUserRight>();
+                                        
+                                        SINnersOptions.SINnerVisibility = null;
+                                        SINnersOptions.SINnerVisibility = vis;
+                                    }
+                                    var foundseq = from a in vis.UserRights.ToList()
+                                        where a.EMail.ToLowerInvariant() == mail.ToLowerInvariant()
+                                        select a;
+                                    if (!foundseq.Any())
+                                    {
+                                        SINerUserRight ur = new SINerUserRight();
+                                        ur.Id = Guid.NewGuid();
+                                        ur.EMail = mail;
+                                        ur.CanEdit = true;
+                                        vis.UserRights.Add(ur);
+                                    }
+
                                     SINnersOptions.SINnerVisibility = vis;
                                     Properties.Settings.Default.SINnerVisibility = Newtonsoft.Json.JsonConvert.SerializeObject(vis);
                                     Properties.Settings.Default.Save();
@@ -366,7 +391,8 @@ namespace ChummerHub.Client.UI
             try
             {
                 this.UseWaitCursor = true;
-                var result = StaticUtils.Client.GetUserByAuthorizationWithHttpMessagesAsync();
+                var client = await StaticUtils.GetClient();
+                var result = client.GetUserByAuthorizationWithHttpMessagesAsync();
                 await result;
                 var user = result.Result.Body;
                 if (user != null)
@@ -405,7 +431,8 @@ namespace ChummerHub.Client.UI
                       {
                           try
                           {
-                              var signout = StaticUtils.Client.LogoutWithHttpMessagesAsync().Result;
+                              var client = await StaticUtils.GetClient();
+                              var signout = client.LogoutWithHttpMessagesAsync().Result;
                               if (signout.Response.StatusCode != HttpStatusCode.OK)
                               {
                                   var roles = GetRolesStatus(this).Result;
@@ -486,7 +513,8 @@ namespace ChummerHub.Client.UI
             {
                 using (new CursorWait(true, sender))
                 {
-                    var myresult = await StaticUtils.Client.GetRolesWithHttpMessagesAsync();
+                    var client = await StaticUtils.GetClient();
+                    var myresult = await client.GetRolesWithHttpMessagesAsync();
 
                     PluginHandler.MainForm.DoThreadSafe(new Action(() =>
                     {
@@ -667,38 +695,57 @@ namespace ChummerHub.Client.UI
             DialogResult result = folderBrowserDialog1.ShowDialog();
             if(result == DialogResult.OK)
             {
-                string folderName = folderBrowserDialog1.SelectedPath;
-                try
+                BackupTask(folderBrowserDialog1).ContinueWith((a) =>
                 {
-                    var t = StaticUtils.Client.AdminGetSINnersWithHttpMessagesAsync();
-                    t.ContinueWith((getsinnertask) =>
-                    {
-                        foreach(var sinner in getsinnertask.Result.Body)
-                        {
-                            if (!sinner.SiNnerMetaData.Tags.Any())
-                            {
-                                System.Diagnostics.Trace.TraceError("Sinner " + sinner.Id + " has no Tags!");
-                                continue;
-                            }
-                            string jsonsinner = Newtonsoft.Json.JsonConvert.SerializeObject(sinner);
-                            string filePath = Path.Combine(folderName, sinner.Id.ToString()+ ".chum5json");
-                            if(File.Exists(filePath))
-                                File.Delete(filePath);
-                            File.WriteAllText(filePath, jsonsinner);
-                            //frmCharacterRoster.CharacterCache cache = Newtonsoft.Json.JsonConvert.DeserializeObject<frmCharacterRoster.CharacterCache>(sinner.JsonSummary);
-                            //Character c = Utils.DownloadFile(sinner, cache);
-                            System.Diagnostics.Trace.TraceInformation("Sinner " + sinner.Id + " saved to " + filePath);
-                        }
-                    });
-                }
-                catch(Exception ex)
-                {
-                    System.Diagnostics.Trace.TraceError(ex.ToString());
-                    Invoke(new Action(() => MessageBox.Show(ex.Message)));
+                    MessageBox.Show(a.Status.ToString());
+                });
+            }
 
+        }
+
+        private async Task BackupTask(FolderBrowserDialog folderBrowserDialog1)
+        {
+            string folderName = folderBrowserDialog1.SelectedPath;
+            try
+            {
+                using (new CursorWait(true, this))
+                {
+                    var client = await StaticUtils.GetClient();
+                    var getsinnertask = client.AdminGetSINnersWithHttpMessagesAsync();
+                    await getsinnertask;
+                    using (new CursorWait(true, this))
+                    {
+                        foreach (var sinner in getsinnertask.Result.Body)
+                        {
+                            try
+                            {
+                                if (!sinner.SiNnerMetaData.Tags.Any())
+                                {
+                                    System.Diagnostics.Trace.TraceError("Sinner " + sinner.Id + " has no Tags!");
+                                    continue;
+                                }
+                                string jsonsinner = Newtonsoft.Json.JsonConvert.SerializeObject(sinner);
+                                string filePath = Path.Combine(folderName, sinner.Id.ToString() + ".chum5json");
+                                if (File.Exists(filePath))
+                                    File.Delete(filePath);
+                                File.WriteAllText(filePath, jsonsinner);
+                                System.Diagnostics.Trace.TraceInformation("Sinner " + sinner.Id + " saved to " + filePath);
+                            }
+                            catch (Exception e2)
+                            {
+                                System.Diagnostics.Trace.TraceError(e2.ToString());
+                                Invoke(new Action(() => MessageBox.Show(e2.Message)));
+                            }
+                        }
+                    }
                 }
             }
-           
+            catch (Exception ex)
+            {
+                System.Diagnostics.Trace.TraceError(ex.ToString());
+                Invoke(new Action(() => MessageBox.Show(ex.Message)));
+
+            }
         }
 
         private void bRestore_Click(object sender, EventArgs e)
@@ -709,14 +756,25 @@ namespace ChummerHub.Client.UI
             DialogResult result = folderBrowserDialog1.ShowDialog();
             if(result == DialogResult.OK)
             {
-                string folderName = folderBrowserDialog1.SelectedPath;
-                try
+                RestoreTask(folderBrowserDialog1).ContinueWith((a) =>
                 {
-                    DirectoryInfo d = new DirectoryInfo(folderName);//Assuming Test is your Folder
-                    FileInfo[] Files = d.GetFiles("*.chum5json"); //Getting Text files
-                    foreach(FileInfo file in Files)
+                    MessageBox.Show(a.Status.ToString());
+                });
+            }
+        }
+
+        private async Task RestoreTask(FolderBrowserDialog folderBrowserDialog1)
+        {
+            string folderName = folderBrowserDialog1.SelectedPath;
+            try
+            {
+                DirectoryInfo d = new DirectoryInfo(folderName);//Assuming Test is your Folder
+                FileInfo[] Files = d.GetFiles("*.chum5json"); //Getting Text files
+                foreach (FileInfo file in Files)
+                {
+                    try
                     {
-                        try
+                        using (new CursorWait(true, this))
                         {
                             string sinjson = File.ReadAllText(file.FullName);
                             SINner sin = Newtonsoft.Json.JsonConvert.DeserializeObject<SINner>(sinjson);
@@ -724,39 +782,40 @@ namespace ChummerHub.Client.UI
                             uploadInfoObject.Client = PluginHandler.MyUploadClient;
                             uploadInfoObject.UploadDateTime = DateTime.Now;
                             uploadInfoObject.SiNners = new List<SINner>
-                            {
-                                sin
-                            };
-                            var t = StaticUtils.Client.PostSINWithHttpMessagesAsync(uploadInfoObject);
-                            t.ContinueWith((posttask) =>
-                            {
-                                if(posttask.Result.Response.IsSuccessStatusCode)
                                 {
-                                    System.Diagnostics.Trace.TraceInformation("SINner " + sin.Id + " posted!");
-                                }
-                                else
-                                {
-                                    string msg = posttask.Result.Response.ReasonPhrase + ": " + Environment.NewLine;
-                                    var content = posttask.Result.Response.Content.ReadAsStringAsync().Result;
-                                    msg += content;
-                                    System.Diagnostics.Trace.TraceWarning("SINner " + sin.Id + " not posted: " + msg);
-                                }
-                            });
+                                    sin
+                                };
+                            var client = await StaticUtils.GetClient();
+                            var posttask = client.PostSINWithHttpMessagesAsync(uploadInfoObject);
+                            await posttask;
+
+                            if (posttask.Result.Response.IsSuccessStatusCode)
+                            {
+                                System.Diagnostics.Trace.TraceInformation("SINner " + sin.Id + " posted!");
+                            }
+                            else
+                            {
+                                string msg = posttask.Result.Response.ReasonPhrase + ": " + Environment.NewLine;
+                                var content = posttask.Result.Response.Content.ReadAsStringAsync().Result;
+                                msg += content;
+                                System.Diagnostics.Trace.TraceWarning("SINner " + sin.Id + " not posted: " + msg);
+                            }
+
                         }
-                        catch(Exception ex)
-                        {
-                            System.Diagnostics.Trace.TraceError("Could not read file " + file.FullName + ": " + ex.ToString());
-                            continue;
-                        }
-                        
                     }
-                }
-                catch(Exception ex)
-                {
-                    System.Diagnostics.Trace.TraceError(ex.ToString());
-                    Invoke(new Action(() => MessageBox.Show(ex.Message)));
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Trace.TraceError("Could not read file " + file.FullName + ": " + ex.ToString());
+                        continue;
+                    }
 
                 }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Trace.TraceError(ex.ToString());
+                Invoke(new Action(() => MessageBox.Show(ex.Message)));
+
             }
         }
     }

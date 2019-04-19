@@ -130,6 +130,7 @@ namespace Chummer
             SpellCategory,
             SpellCategoryDamage,
             SpellCategoryDrain,
+            SpellDicePool,
             ThrowRange,
             ThrowRangeSTR,
             SkillsoftAccess,
