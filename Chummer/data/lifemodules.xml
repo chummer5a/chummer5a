@@ -3486,6 +3486,77 @@
             </knowledgeskilllevel>
           </bonus>
         </version>
+	<version>
+	  <id>53720714-f91b-43d9-97d8-317f4def9d29</id>
+	  <name>Divinity School/Seminary</name>
+	  <bonus>
+	    <skilllevel>
+	      <name>Etiquette</name>
+	    </skilllevel>
+	    <skilllevel>
+	      <name>Negotiation</name>
+	    </skilllevel>
+	    <skilllevel>
+	      <name>Performance</name>
+	    </skilllevel>
+	    <knowledgeskilllevel>
+	      <name>[Ancient Language]</name>
+	      <val>2</val>
+	      <group>Academic</group>
+	    </knowledgeskilllevel>
+	    <knowledgeskilllevel>
+	      <name>[Religion]</name>
+	      <val>5</val>
+	      <group>Academic</group>
+	    </knowledgeskilllevel>
+	  </bonus>
+	  <source>BTB</source>
+	  <page>163</page>
+	</version>
+	<version>
+	  <id>83e7a3b7-0d32-4288-839d-3de22389da33</id>
+	  <name>Divinity School Dropout</name>
+	  <bonus>
+	    <addqualities>
+	      <addquality>Cynic</addquality>
+	    </addqualities>
+	    <skilllevel>
+	      <name>Performance</name>
+	    </skilllevel>
+	    <knowledgeskilllevel>
+	      <name>[Religion]</name>
+	      <val>4</val>
+	      <group>Academic</group>
+	    </knowledgeskilllevel>
+	    <knowledgeskilllevel>
+	      <name>[Ancient Language]</name>
+	      <val>2</val>
+	      <group>Academic</group>
+	    </knowledgeskilllevel>
+	  </bonus>
+	  <source>BTB</source>
+	  <page>163</page>
+	</version>
+	<version>
+	  <id>e1ba9a64-a528-493f-b2d2-86b1eeeaca47</id>
+	  <name>Counseling/Behavioral Therapy</name>
+	  <bonus>
+	    <skilllevel>
+	      <name>Etiquette</name>
+	    </skilllevel>
+	    <skilllevel>
+	      <name>Negotiation</name>
+	    </skilllevel>
+	    <knowledgeskilllevel>
+	      <name>Psychology</name>
+	      <val>4</val>
+	      <group>Professional</group>
+	    </knowledgeskilllevel>
+	  </bonus>
+	  <source>BTB</source>
+	  <page>163</page>
+	</version>
+    <!--End Region-->
       </versions>
       <story>Not even capable of making it into a community college, $real had to settle for a trade school, which taught practical things they could use in their future life.</story>
       <source>RF</source>
@@ -10780,6 +10851,7 @@
 	      </options>
 	      <val>2</val>
 	    </skilllevel>
+	  </bonus>
 	</version>
 	<version>
 	  <id>b697c892-67e5-4298-8784-33bdb0c405ce</id>
@@ -10967,6 +11039,424 @@
     </module>
     <!-- End Region -->
     <!-- End Region -->
+    <!--Region Better Than Bad-->
+    <!--Region Nationality-->
+    <module>
+      <id>baa9a6cc-2fb8-49d3-b503-d1f74bd0d915</id>
+      <stage>Nationality</stage>
+      <category>LifeModule</category>
+      <name>Azanian Confederation</name>
+      <karma>15</karma>
+      <bonus>
+	<knowledgeskilllevel>
+	  <option>
+	    <afrikaans>Afrikaans</afrikaans>
+	    <bantu>Bantu</bantu>
+	    <english>English</english>
+	    <german>German</german>
+	    <isindebele>IsiNdebele</isindebele>
+	    <isixhosa>IsiXhosa</isixhosa>
+	    <isizulu>IsiZulu</isizulu>
+	    <sedepi>Sedepi</sedepi>
+	    <sesotho>Sesotho</sesotho>
+	    <setswana>Setswana</setswana>
+	    <siswati>SiSwati</siswati>
+	    <tshivenda>Tshivenda</tshivenda>
+	    <xitsonga>Xitsonga</xitsonga>
+	  </option>
+	  <val>0</val>
+	</knowledgeskilllevel>
+	<knowledgeskilllevel>
+	  <option>
+	    <afrikaans>Afrikaans</afrikaans>
+	    <bantu>Bantu</bantu>
+	    <english>English</english>
+	    <german>German</german>
+	    <isindebele>IsiNdebele</isindebele>
+	    <isixhosa>IsiXhosa</isixhosa>
+	    <isizulu>IsiZulu</isizulu>
+	    <sedepi>Sedepi</sedepi>
+	    <sesotho>Sesotho</sesotho>
+	    <setswana>Setswana</setswana>
+	    <siswati>SiSwati</siswati>
+	    <tshivenda>Tshivenda</tshivenda>
+	    <xitsonga>Xitsonga</xitsonga>
+	  </option>
+	  <val>1</val>
+	</knowledgeskilllevel>
+	<knowledgeskilllevel>
+	  <name>History</name>
+	  <group>Academic</group>
+	</knowledgeskilllevel>
+	<knowledgeskilllevel>
+	  <name>Azanian Confederation</name>
+	  <group>Academic</group>
+	</knowledgeskilllevel>
+      </bonus>
+      <versions>
+	<version>
+	  <id>dd15394c-da02-49d4-9f12-bc07b781dbdd</id>
+	  <name>General Azania</name>
+	  <bonus>
+	    <attributelevel>
+	      <name>WIL</name>
+	    </attributelevel>
+	    <skilllevel>
+	      <name>Survival</name>
+	    </skilllevel>
+	    <skilllevel>
+	      <name>Negotiation</name>
+	    </skilllevel>
+	    <knowledgeskilllevel>
+	      <name>[City]</name>
+	      <group>Street</group>
+	      <val>2</val>
+	    </knowledgeskilllevel>
+	    <addqualities>
+	      <addquality>SINner: National</addquality>
+	    </addqualities>
+	  </bonus>
+	</version>
+	<version>
+	  <id>b715f0ad-4385-44d8-a9d9-415ed7219a4a</id>
+	  <name>Pretoria (PWV Metroplex)</name>
+	  <bonus>
+	    <attributelevel>
+	      <name>BOD</name>
+	    </attributelevel>
+	    <skilllevel>
+	      <name>Perception</name>
+	    </skilllevel>
+	    <skilllevel>
+	      <name>Etiquette</name>
+	    </skilllevel>
+	    <knowledgeskilllevel>
+	      <name>Pretoria</name>
+	      <group>Street</group>
+	      <val>2</val>
+	    </knowledgeskilllevel>
+	    <addqualities>
+	      <addquality>SINner: National</addquality>
+	    </addqualities>
+	  </bonus>
+	</version>
+	<version>
+	  <id>614be459-0eb9-4eb8-b75f-92b6520d6661</id>
+	  <name></name>
+	  <bonus>
+	    <attributelevel>
+	      <name>REA</name>
+	    </attributelevel>
+	    <knowledgeskilllevel>
+	      <name>[City]</name>
+	      <group>Street</group>
+	      <val>2</val>
+	    </knowledgeskilllevel>
+	  </bonus>
+	</version>
+	<version>
+	  <id>c36e13c7-561b-4fe5-9335-7f300b5b70fe</id>
+	  <name></name>
+	  <bonus>
+	    <attributelevel>
+	      <name>CHA</name>
+	    </attributelevel>
+	    <skilllevel>
+	      <name>Etiquette</name>
+	    </skilllevel>
+	    <knowledgeskilllevel>
+	      <option>
+		<newhlobane>New Hlobane</newhlobane>
+		<city>[City]</city>
+	      </option>
+	      <group>Street</group>
+	      <val>2</val>
+	    </knowledgeskilllevel>
+	    <addqualities>
+	      <addquality>SINner: National</addquality>
+	    </addqualities>
+	  </bonus>
+	</version>
+      </versions>
+      <source>BTB</source>
+      <page>162</page>
+      <story />
+    </module>
+    <!--End Region-->
+    <!--Region Formative Years-->
+    <module>
+      <id>476490f9-24d8-4eef-b397-22cad0d578f6</id>
+      <stage>Formative Years</stage>
+      <category>LifeModule</category>
+      <name>Devout</name>
+      <karma>40</karma>
+      <bonus>
+	<attributelevel>
+	  <name>CHA</name>
+	</attributelevel>
+	<attributelevel>
+	  <name>INT</name>
+	</attributelevel>
+	<addqualities>
+	  <addquality>Trustworthy</addquality>
+	</addqualities>
+	<knowledgeskilllevel>
+	  <name>[Religious Text]</name>
+	  <group>Academic</group>
+	  <val>3</val>
+	</knowledgeskilllevel>
+	<skilllevel>
+	  <name>Etiquette</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Performance</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Artisan</name>
+	  <val>2</val>
+	</skilllevel>
+      </bonus>
+      <story />
+      <source>BTB</source>
+      <page></page>
+    </module>
+    <module>
+      <id>4c51d90e-7bcd-486f-b119-3adcc4cfd050</id>
+      <stage>Formative Years</stage>
+      <category>LifeModule</category>
+      <name>Pastor's Kid</name>
+      <karma>40</karma>
+      <bonus>
+	<attributelevel>
+	  <name>CHA</name>
+	</attributelevel>
+	<attributelevel>
+	  <name>INT</name>
+	</attributelevel>
+	<addqualities>
+	  <addquality>First Impression</addquality>
+	</addqualities>
+	<skilllevel>
+	  <name>Con</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Etiquette</name>
+	  <val>2</val>
+	</skilllevel>
+	<skilllevel>
+	  <name>Perception</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Performance</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Artisan</name>
+	</skilllevel>
+	<knowledgeskilllevel>
+	  <name>[Religion]</name>
+	  <val>2</val>
+	</knowledgeskilllevel>
+      </bonus>
+      <story />
+      <source>BTB</source>
+      <page>163</page>
+    </module>
+    <module>
+      <id>39fe4e90-e3ba-463d-9a6d-410c863c41a4</id>
+      <stage>Formative Years</stage>
+      <category>LifeModule</category>
+      <name>Raised By Hooders</name>
+      <karma>40</karma>
+      <bonus>
+	<attributelevel>
+	  <name>INT</name>
+	</attributelevel>
+	<attributelevel>
+	  <name>WIL</name>
+	</attributelevel>
+	<addqualities>
+	  <addquality>Cynic</addquality>
+	</addqualities>
+	<skilllevel>
+	  <name>Escape Artist</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>First Aid</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Perception</name>
+	  <val>2</val>
+	</skilllevel>
+	<skilllevel>
+	  <name>Running</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Sneaking</name>
+	</skilllevel>
+      </bonus>
+      <story />
+      <source>BTB</source>
+      <page>163</page>
+    </module>
+    <module>
+      <id>550d0752-da63-400d-a8bb-4f0778abafc5</id>
+      <stage>Formative Years</stage>
+      <category>LifeModule</category>
+      <name>Tribal</name>
+      <karma>40</karma>
+      <bonus>
+	<attributelevel>
+	  <name>INT</name>
+	</attributelevel>
+	<attributelevel>
+	  <name>BOD</name>
+	</attributelevel>
+	<addqualities>
+	  <addquality>Favored (Specific Target, Biased)</addquality>
+	</addqualities>
+	<skilllevel>
+	  <name>Throwing Weapons</name>
+	</skilllevel>
+	<skillgrouplevel>
+	  <name>Outdoors</name>
+	  <val>2</val>
+	</skillgrouplevel>
+	<skilllevel>
+	  <name>Perception</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Running</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Survival</name>
+	</skilllevel>
+      </bonus>
+      <story />
+      <source>BTB</source>
+      <page>163</page>
+    </module>
+    <module>
+      <id>b5d7eafe-1d7e-493a-b0de-7e8dfc1502b8</id>
+      <stage>Formative Years</stage>
+      <category>LifeModule</category>
+      <name>Poor Kid</name>
+      <karma>40</karma>
+      <bonus>
+	<attributelevel>
+	  <name>INT</name>
+	</attributelevel>
+	<addqualities>
+	  <addquality>Home Ground (You Know A Guy)</addquality>
+	</addqualities>
+	<skilllevel>
+	  <name>Survival</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Etiquette</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Perception</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Unarmed Combat</name>
+	</skilllevel>
+	<knowledgeskilllevel>
+	  <name>Food Banks</name>
+	  <group>Street</group>
+	  <val>2</val>
+	</knowledgeskilllevel>
+      </bonus>
+      <story />
+      <source>BTB</source>
+      <page>163</page>
+    </module>
+    <!--End Region-->
+    <!--Region Teen Years-->
+    <!--End Region-->
+    <!--Region Real Life-->
+    <module>
+      <id>cc2de2db-31c3-470d-b209-3ef019bd797b</id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Framed</name>
+      <karma>100</karma>
+      <bonus>
+	<attributelevel>
+	  <name>REA</name>
+	</attributelevel>
+	<attributelevel>
+	  <name>INT</name>
+	</attributelevel>
+	<addqualities>
+	  <addquality>SINner (Criminal)</addquality>
+	</addqualities>
+	<skilllevel>
+	  <name>Disguise</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Sneaking</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Perception</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Running</name>
+	  <val>2</val>
+	</skilllevel>
+	<skilllevel>
+	  <name>Survival</name>
+	</skilllevel>
+      </bonus>
+      <story />
+      <source>BTB</source>
+      <page>163</page>
+    </module>
+    <module>
+      <id>64250875-5ffe-425e-9651-f09737f2bb2b</id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Dead</name>
+      <karma>100</karma>
+      <bonus>
+	<attributelevel>
+	  <name>REA</name>
+	</attributelevel>
+	<addqualities>
+	  <addquality>Blandness</addquality>
+	  <addquality>Dead SIN</addquality>
+	</addqualities>
+	<skilllevel>
+	  <name>Con</name>
+	  <val>2</val>
+	</skilllevel>
+	<skilllevel>
+	  <name>Escape Artist</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Negotiation</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Running</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Sneaking</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Survival</name>
+	  <val>2</val>
+	</skilllevel>
+	<knowledgeskilllevel>
+	  <name>Police Hangouts and Checkpoints</name>
+	  <group>Street</group>
+	  <val>3</val>
+	</knowledgeskilllevel>
+      </bonus>
+      <story />
+      <source>BTB</source>
+      <page>164</page>
+    </module>
+    <!--End Region-->
+    <!--End Region-->
   </modules>
   <storybuilder>
     <macros>
