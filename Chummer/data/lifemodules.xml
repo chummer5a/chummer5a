@@ -10070,6 +10070,453 @@
     <!--Region Real Life-->
     <!-- End Region -->
     <!-- End Region -->
+    <!--Region The Complete Trog-->
+    <!--Region Formative Years-->
+    <module>
+      <id>db8443eb-94e0-4922-a2a2-f3824e4f6e2c</id>
+      <stage>Formative Years</stage>
+      <category>LifeModule</category>
+      <name>Ork/Troll Slum Dweller</name>
+      <karma>40</karma>
+      <required>
+	<oneof>
+	  <metatype>Ork</metatype>
+	  <metatype>Troll</metatype>
+	</oneof>
+      </required>
+      <bonus>
+	<attributelevel>
+	  <name>WIL</name>
+	</attributelevel>
+	<attributelevel>
+	  <name>INT</name>
+	</attributelevel>
+	<addqualities>
+	  <addquality>Trog Networker</addquality>
+	</addqualities>
+	<skilllevel>
+	  <name>Clubs</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Perception</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Sneaking</name>
+	  <val>2</val>
+	</skilllevel>
+	<skilllevel>
+	  <name>Survival</name>
+	  <spec>Urban</spec>
+	</skilllevel>
+	<skilllevel>
+	  <name>Unarmed Combat</name>
+	</skilllevel>
+	<knowledgeskilllevel>
+	  <name>[City]</name>
+	  <group>Street</group>
+	  <val>3</val>
+	</knowledgeskilllevel>
+      </bonus>
+      <story>$real lived in the sprawl and learned how to survive in difficult circumstances.</story>
+      <source>TCG</source>
+      <page>189</page>
+    </module>
+    <module>
+      <id>054a1a00-7745-495b-86b0-301c7917ac76</id>
+      <stage>Formative Years</stage>
+      <category>LifeModule</category>
+      <name>Black Forest Baby</name>
+      <karma>40</karma>
+      <required>
+	<oneof>
+	  <metatype>Ork</metatype>
+	  <metatype>Troll</metatype>
+	</oneof>
+      </required>
+      <bonus>
+	<attributelevel>
+	  <name>WIL</name>
+	</attributelevel>
+	<attributelevel>
+	  <name>LOG</name>
+	</attributelevel>
+	<addqualities>
+	  <addquality>Black Forest Native</addquality>
+	</addqualities>
+	<skilllevel>
+	  <name>Etiquette</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Leadership</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Longarms</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Negotiation</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Survival</name>
+	  <spec>Forests</spec>
+	</skilllevel>
+	<knowledgeskilllevel>
+	  <name>Black Forest Government</name>
+	  <group>Street</group>
+	</knowledgeskilllevel>
+	<knowledgeskilllevel>
+	  <name>Black Forest History</name>
+	  <group>Street</group>
+	</knowledgeskilllevel>
+	<knowledgeskilllevel>
+	  <name>Black Forest People</name>
+	  <group>Street</group>
+	</knowledgeskilllevel>
+      </bonus>
+      <story>$real was born in the Black Forest Kingdom and saw it evolve into the Black Forest Troll Republic.</story>
+      <source>TCG</source>
+      <page>190</page>
+    </module>
+    <!-- End Region -->
+    <!-- Region Teen Years -->
+    <module>
+      <id>ce6dbac8-6016-44dc-90f0-719a8928bf98</id>
+      <stage>Teen Years</stage>
+      <category>LifeModule</category>
+      <name>Trog Ganger</name>
+      <karma>50</karma>
+      <required>
+	<oneof>
+	  <metatype>Ork</metatype>
+	  <metatype>Troll</metatype>
+	</oneof>
+      </required>
+      <bonus>
+	<attributelevel>
+	  <name>AGI</name>
+	  <val>1</val>
+	</attributelevel>
+	<attributelevel>
+	  <name>WIL</name>
+	  <val>1</val>
+	</attributelevel>
+	<addqualities>
+	  <addquality>Bad Rep</addquality>
+	  <addquality>Nasty Trog</addquality>
+	</addqualities>
+	<skillgrouplevel>
+	  <name>Close Combat</name>
+	  <val>2</val>
+	</skillgrouplevel>
+	<skilllevel>
+	  <name>Escape Artist</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Gymnastics</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Intimidation</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Palming</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Sneaking</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Survival</name>
+	</skilllevel>
+	<knowledgeskilllevel>
+	  <name>[City]</name>
+	  <group>Street</group>
+	</knowledgeskilllevel>
+      </bonus>
+      <story>$real was involved in trog gangs.</story>
+      <source>TCG</source>
+      <page>190</page>
+    </module>
+    <module>
+      <id>a9007966-38dd-429f-a661-cff06a776729</id>
+      <stage>Teen Years</stage>
+      <category>LifeModule</category>
+      <name>Survivor</name>
+      <karma>50</karma>
+      <required>
+	<oneof>
+	  <metatype>Ork</metatype>
+	  <metatype>Troll</metatype>
+	</oneof>
+      </required>
+      <bonus>
+	<attributelevel>
+	  <name>BOD</name>
+	</attributelevel>
+	<attributelevel>
+	  <name>WIL</name>
+	</attributelevel>
+	<attributelevel>
+	  <name>INT</name>
+	</attributelevel>
+	<addqualities>
+	  <addquality>Bad Credit</addquality>
+	  <addquality>Trog Networker</addquality>
+	</addqualities>
+	<skilllevel>
+	  <name>Blades</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Clubs</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Con</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>First Aid</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Gymnastics</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Running</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Sneaking</name>
+	  <val>2</val>
+	</skilllevel>
+	<skilllevel>
+	  <name>Survival</name>
+	  <val>2</val>
+	</skilllevel>
+	<skilllevel>
+	  <name>Swimming</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Tracking</name>
+	</skilllevel>
+	<knowledgeskilllevel>
+	  <name>[City]</name>
+	  <group>Street</group>
+	</knowledgeskilllevel>
+      </bonus>
+      <story>$real had a tough set of teen years but managed to survive.</story>
+      <source>TCG</source>
+      <page>190</page>
+    </module>
+    <!-- End Region -->
+    <!--Region Further Education -->
+    <module>
+      <id>9220f169-be3f-48f1-bfa3-cb7fb4dec985</id>
+      <stage>Further Education</stage>
+      <category>LifeModule</category>
+      <name>Biloxi Technical Institute</name>
+      <karma>65</karma>
+      <required>
+	<oneof>
+	  <metatype>Ork</metatype>
+	  <metatype>Troll</metatype>
+	</oneof>
+      </required>
+      <versions>
+	<version>
+	  <id>d381b167-b5f5-425c-ba33-5a6876b4e45c</id>
+	  <name>Computer Science</name>
+	  <story>$name studied Computer Science.</story>
+	  <bonus>
+	    <skilllevel>
+	      <name>Cybercombat</name>
+	    </skilllevel>
+	    <skilllevel>
+	      <name>Hacking</name>
+	    </skilllevel>
+	    <skillgrouplevel>
+	      <name>Electronics</name>
+	    </skillgrouplevel>
+	    <knowledgeskilllevel>
+	      <name>Hardware Design</name>
+	      <group>Academic</group>
+	      <val>2</val>
+	    </knowledgeskilllevel>
+	  </bonus>
+	</version>
+	<version>
+	  <id>57893be6-0a91-4d93-bc4f-f1484e93c889</id>
+	  <name>Computer Science</name>
+	  <story>$name studied Engineering.</story>
+	  <bonus>
+	    <skilllevel>
+	      <name>Chemistry</name>
+	    </skilllevel>
+	    <skilllevel>
+	      <name>Hardware</name>
+	    </skilllevel>
+	    <skilllevel>
+	      <name>Industrial Mechanic</name>
+	    </skilllevel>
+	    <knowledgeskilllevel>
+	      <name>Engineering</name>
+	      <group>Academic</group>
+	      <val>4</val>
+	    </knowledgeskilllevel>
+	  </bonus>
+	</version>
+      </versions>
+      <bonus>
+	<attributelevel>
+	  <name>LOG</name>
+	</attributelevel>
+	<attributelevel>
+	  <name>WIL</name>
+	</attributelevel>
+	<addqualities>
+	  <addquality>Trog Historian</addquality>
+	</addqualities>
+	<skilllevel>
+	  <name>Computer</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Perception</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Etiquette</name>
+	</skilllevel>
+	<knowledgeskilllevel>
+	  <name>[Any]</name>
+	  <group>Academic</group>
+	  <val>2</val>
+	</knowledgeskilllevel>
+      </bonus>
+      <story>$real had a tough set of teen years but managed to survive.</story>
+      <source>TCG</source>
+      <page>190</page>
+    </module>
+    <!-- End Region -->
+    <!--Region Real Life-->
+    <module>
+      <id>6b55f9a1-257f-4ee2-b735-7a61772c8a3c</id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Trog Professional</name>
+      <karma>100</karma>
+      <required>
+	<oneof>
+	  <metatype>Ork</metatype>
+	  <metatype>Troll</metatype>
+	</oneof>
+      </required>
+      <bonus>
+        <addqualities>
+          <addquality>SINner (Corporate Limited)</addquality>
+        </addqualities>
+	<attributelevel>
+	  <name>LOG</name>
+	</attributelevel>
+	<attributelevel>
+	  <name>INT</name>
+	</attributelevel>
+	<skilllevel>
+	  <name>Computer</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Etiquette</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Hardware</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Instruction</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Leadership</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Medicine</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Perception</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Pilot Ground Craft</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Software</name>
+	</skilllevel>
+	<skillgrouplevel>
+	  <name>Firearms</name>
+	  <val>2</val>
+	</skillgrouplevel>
+	<knowledgeskilllevel>
+	  <name>Corporate Procedures</name>
+	  <group>Professional</group>
+	  <val>3</val>
+	</knowledgeskilllevel>
+      </bonus>
+      <story>$real worked for a corp.</story>
+      <source>TCG</source>
+      <page>191</page>
+    </module>
+    <module>
+      <id>d20c08f7-0e54-4a48-bd61-31279d99689f</id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Trog Rebel</name>
+      <karma>100</karma>
+      <required>
+	<oneof>
+	  <metatype>Ork</metatype>
+	  <metatype>Troll</metatype>
+	</oneof>
+      </required>
+      <bonus>
+	<attributelevel>
+	  <name>WIL</name>
+	</attributelevel>
+	<attributelevel>
+	  <name>INT</name>
+	</attributelevel>
+        <addqualities>
+          <addquality>Force of Chaos</addquality>
+          <addquality>Nasty Trog</addquality>
+        </addqualities>
+	<skilllevel>
+	  <name>Con</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Demolitions</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Escape Artist</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Gymnastics</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Perception</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Sneaking</name>
+	  <val>2</val>
+	</skilllevel>
+	<skilllevel>
+	  <name>Survival</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Tracking</name>
+	</skilllevel>
+	<skillgrouplevel>
+	  <name>Firearms</name>
+	  <val>2</val>
+	</skillgrouplevel>
+	<knowledgeskilllevel>
+	  <name>Covert Tactics</name>
+	  <group>Professional</group>
+	  <val>3</val>
+	</knowledgeskilllevel>
+      </bonus>
+      <story>$real spent time rebelling against society with explosives.</story>
+      <source>TCG</source>
+      <page>191</page>
+    </module>
+    <!-- End Region -->
+    <!-- End Region -->
   </modules>
   <storybuilder>
     <macros>
