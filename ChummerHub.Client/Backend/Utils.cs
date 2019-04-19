@@ -272,6 +272,7 @@ namespace ChummerHub.Client.Backend
                     }
                     catch (Exception e)
                     {
+                        Properties.Settings.Default.SINnerUrl = "https://sinners-beta.azurewebsites.net";
                         System.Diagnostics.Trace.TraceInformation("Connected to " + Properties.Settings.Default.SINnerUrl + ".");
                     }
                 }
@@ -556,12 +557,24 @@ namespace ChummerHub.Client.Backend
                     ToolTipText = "Last Change: " + sinner.LastChange,
                     ContextMenuStrip = PluginHandler.MainForm.CharacterRoster.ContextMenuStrip
                 };
+                if (String.IsNullOrEmpty(sinner.DownloadUrl))
+                {
+                    objCache.ErrorText = "File is not uploaded - only metadata available." + Environment.NewLine
+                                      + "Please upload this file again from a client," +
+                                      Environment.NewLine
+                                      + "that has saved a local copy." +
+                                      Environment.NewLine + Environment.NewLine
+                                      + "Open the character locally, make sure to have \"online mode\"" +
+                                      Environment.NewLine
+                                      + "selected in option->plugins->sinner and press the \"save\" symbol.";
+
+                }
                 if (!objListNode.Nodes.ContainsKey(memberNode.Name))
                     objListNode.Nodes.Insert(0, memberNode);
                 if (!string.IsNullOrEmpty(objCache.ErrorText))
                 {
-                    objListNode.ForeColor = Color.Red;
-                    objListNode.ToolTipText += Environment.NewLine + Environment.NewLine +
+                    memberNode.ForeColor = Color.Red;
+                    memberNode.ToolTipText += Environment.NewLine + Environment.NewLine +
                                                LanguageManager.GetString("String_Error", GlobalOptions.Language)
                                                + LanguageManager.GetString("String_Colon", GlobalOptions.Language) +
                                                Environment.NewLine + objCache.ErrorText;
@@ -666,7 +679,7 @@ namespace ChummerHub.Client.Backend
             };
         }
 
-        private static void OnMyAfterSelect(SINner sinner, CharacterCache objCache, TreeViewEventArgs treeViewEventArgs)
+        private async static void OnMyAfterSelect(SINner sinner, CharacterCache objCache, TreeViewEventArgs treeViewEventArgs)
         {
             string loadFilePath = null;
             using (new CursorWait(true, PluginHandler.MainForm))
@@ -690,27 +703,31 @@ namespace ChummerHub.Client.Backend
                 }
                 if (String.IsNullOrEmpty(objCache.FilePath))
                 { 
-                    objCache.FilePath = DownloadFileTask(sinner, objCache).Result;
+                    objCache.FilePath = await DownloadFileTask(sinner, objCache);
                 }
-                //I copy the values, because I dont know what callbacks are registered...
-                var tempCache = new CharacterCache(objCache.FilePath);
-                objCache.Background = tempCache.Background;
-                objCache.MugshotBase64 = tempCache.MugshotBase64;
-                objCache.BuildMethod = tempCache.BuildMethod;
-                objCache.CharacterAlias = tempCache.CharacterAlias;
-                objCache.CharacterName = tempCache.CharacterName;
-                objCache.CharacterNotes = tempCache.CharacterNotes;
-                objCache.Concept = tempCache.Concept;
-                objCache.Created = tempCache.Created;
-                objCache.Description = tempCache.Description;
-                objCache.Essence = tempCache.Essence;
-                objCache.GameNotes = tempCache.GameNotes;
-                objCache.Karma = tempCache.Karma;
-                objCache.FileName = tempCache.FileName;
-                objCache.Metatype = tempCache.Metatype;
-                objCache.Metavariant = tempCache.Metavariant;
-                objCache.PlayerName = tempCache.PlayerName;
-                objCache.SettingsFile = tempCache.SettingsFile;
+
+                if (!String.IsNullOrEmpty(objCache.FilePath))
+                {
+                    //I copy the values, because I dont know what callbacks are registered...
+                    var tempCache = new CharacterCache(objCache.FilePath);
+                    objCache.Background = tempCache.Background;
+                    objCache.MugshotBase64 = tempCache.MugshotBase64;
+                    objCache.BuildMethod = tempCache.BuildMethod;
+                    objCache.CharacterAlias = tempCache.CharacterAlias;
+                    objCache.CharacterName = tempCache.CharacterName;
+                    objCache.CharacterNotes = tempCache.CharacterNotes;
+                    objCache.Concept = tempCache.Concept;
+                    objCache.Created = tempCache.Created;
+                    objCache.Description = tempCache.Description;
+                    objCache.Essence = tempCache.Essence;
+                    objCache.GameNotes = tempCache.GameNotes;
+                    objCache.Karma = tempCache.Karma;
+                    objCache.FileName = tempCache.FileName;
+                    objCache.Metatype = tempCache.Metatype;
+                    objCache.Metavariant = tempCache.Metavariant;
+                    objCache.PlayerName = tempCache.PlayerName;
+                    objCache.SettingsFile = tempCache.SettingsFile;
+                }
                 treeViewEventArgs.Node.Text = objCache.CalculatedName();
             }
         }
@@ -827,7 +844,7 @@ namespace ChummerHub.Client.Backend
             try
             {
                 if (String.IsNullOrEmpty(ce.ZipFilePath))
-                    ce.ZipFilePath = ce.PrepareModel();
+                    ce.ZipFilePath = await ce.PrepareModel();
 
                 using (FileStream fs = new FileStream(ce.ZipFilePath, FileMode.Open, FileAccess.Read))
                 {

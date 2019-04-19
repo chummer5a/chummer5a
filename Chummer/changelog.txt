@@ -13,6 +13,7 @@ Application Fixes:
 - Fixed the behaviour of the Death Mentor Spirit's Magician benefit to allow dicepool benefits for specific skills. Uses the spelldicepool improvement.
 - Fixed an issue with traditions not probably updating.
 - Fixed issues with use of Essence Antiholes in create mode that prevented them from working reliably.
+- Fixed an issue with the selectatributes improvement that caused it to improperly allow Exceptional Attribute to select Edge.
 
 Application Changes:
 

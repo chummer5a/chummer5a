@@ -43,7 +43,7 @@ namespace ChummerHub.Client.Tests
                         {
                             career.Show();
                             SINnersUserControl sINnersUsercontrol = new SINnersUserControl();
-                            var ce = sINnersUsercontrol.SetCharacterFrom(career);
+                            var ce = await sINnersUsercontrol.SetCharacterFrom(career);
                             await ChummerHub.Client.Backend.Utils.PostSINnerAsync(ce);
                             await ChummerHub.Client.Backend.Utils.UploadChummerFileAsync(ce);
                             career.Hide();
@@ -56,7 +56,7 @@ namespace ChummerHub.Client.Tests
                         {
                             create.Show();
                             SINnersUserControl sINnersUsercontrol = new SINnersUserControl();
-                            var ce = sINnersUsercontrol.SetCharacterFrom(create);
+                            var ce = await sINnersUsercontrol.SetCharacterFrom(create);
                             await ChummerHub.Client.Backend.Utils.PostSINnerAsync(ce);
                             await ChummerHub.Client.Backend.Utils.UploadChummerFileAsync(ce);
                             create.Hide();

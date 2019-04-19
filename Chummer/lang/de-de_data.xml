@@ -3264,10 +3264,9 @@
 			<book>
 				<id>b20a20e5-e9d4-4f54-9caa-57a001cb904e</id>
 				<name>Datapuls SOTA 2080 (German-exclusive)</name>
-				<translate>Datapuls SOTA 2080 (German-exclusive)</translate>
+				<translate>Datapuls SOTA 2080 (Deutsch-exklusiv)</translate>
 				<altcode>SOTG</altcode>
 			</book>			
-
 		</books>
 	</chummer>
 	<chummer file="critterpowers.xml">
@@ -9718,7 +9717,7 @@
 			<cyberware>
 				<id>0260f9dd-7f5b-4ed7-b2d5-bd89f3ada24f</id>
 				<name>Custom Heavy Pistol</name>
-				<translate>Ausgewählte schwere Pistole</translate>
+				<translate>Ausgewählte Schwere Pistole</translate>
 				<altpage>94</altpage>
 			</cyberware>
 			<cyberware>
@@ -9796,7 +9795,7 @@
 			<cyberware>
 				<id>1619b516-2909-46db-90f3-4ac1784acad5</id>
 				<name>Custom Submachine Gun</name>
-				<translate>Ausgewählter Maschinenpistole</translate>
+				<translate>Ausgewählte Maschinenpistole</translate>
 				<altpage>94</altpage>
 			</cyberware>
 			<cyberware>
@@ -10542,6 +10541,12 @@
 				<name>Autovoice (Hacked)</name>
 				<translate>Autostimme (gehackt)</translate>
 				<altpage>184</altpage>
+			</cyberware>
+			<cyberware translated="True">
+				<id>f05492b3-de9b-44c3-8622-89840587cc3a</id>
+				<name>Foot Blade</name>
+				<translate>Fußklinge</translate>
+				<altpage>178</altpage>
 			</cyberware>
 		</cyberwares>
 	</chummer>
@@ -14567,12 +14572,6 @@
 				<id>6ba3c374-0d8d-4458-81a5-c7f330cecae9</id>
 				<name>Spellcasting Focus, Manipulation (2050)</name>
 				<translate>Zauberspruchfocus, Manipulation</translate>
-				<altpage>207</altpage>
-			</gear>
-			<gear>
-				<id>26fe675a-35ec-4cdb-8a54-e0aae0efce74</id>
-				<name>Elemental Binding Materials (2050)</name>
-				<translate>Bindungsmaterial für Elementare</translate>
 				<altpage>207</altpage>
 			</gear>
 			<gear>
@@ -35361,7 +35360,7 @@
 			<spell>
 				<id>444adc27-26c7-4ff1-894f-a55fea22e24a</id>
 				<name>Trid Phantasm</name>
-				<translate>Trideotrugbild</translate>
+				<translate>Trideo-Trugbild</translate>
 				<altpage>284</altpage>
 			</spell>
 			<spell>
@@ -41965,7 +41964,7 @@
 			<weapon>
 				<id>fe835c72-a973-4976-bf5f-751aff1371d4</id>
 				<name>Spurs</name>
-				<translate>Sporen</translate>
+				<translate>Sporn</translate>
 				<altpage>425</altpage>
 			</weapon>
 			<weapon>
@@ -43314,7 +43313,7 @@
 			</weapon>
 			<weapon translated="True">
 				<id>431b07eb-8eb8-4091-a47c-5ffe8736bb50</id>
-				<name>Colt Manhunter</name>
+				<name>Colt Manhunter A1</name>
 				<translate>Colt Manhunter</translate>
 				<altpage>170</altpage>
 			</weapon>
@@ -43455,12 +43454,6 @@
 				<name>Ultamax MMG</name>
 				<translate>Ultimax MMG</translate>
 				<altpage>44</altpage>
-			</weapon>
-			<weapon>
-				<id>431b07eb-8eb8-4091-a47c-5ffe8736bb50</id>
-				<name>Colt Manhunter A1</name>
-				<translate>Colt Manhunter A1</translate>
-				<altpage>178</altpage>
 			</weapon>
 			<weapon>
 				<id>a1924b0d-3cc6-4a37-9783-c75145ca929e</id>
@@ -44737,12 +44730,6 @@
 				<altpage>50</altpage>
 			</accessory>
 			<accessory>
-				<id>627f212a-ac15-4739-afbc-f44676dfe508</id>
-				<name>Gecko Grip</name>
-				<translate>Geckogriff</translate>
-				<altpage>51</altpage>
-			</accessory>
-			<accessory>
 				<id>21bc8b85-3fd7-4bde-ac8d-35e1fa099f21</id>
 				<name>Improved Range Finder</name>
 				<translate>Verbesserter Entfernungsmesser</translate>
@@ -45841,6 +45828,12 @@
 				<name>Dodge</name>
 				<translate>Ausweichen</translate>
 				<altpage>Erhöht den Pool des Charakters zum Ausweichen um den angegebenen Wert.</altpage>
+			</improvement>
+			<improvement>
+				<id>spellcategory</id>
+				<name>Specific Spell Dicepool</name>
+				<translate>Spezieller Zauberwürfelpool</translate>
+				<altpage>Passt den Zauberpool des Charakters an, wenn er Zauber in der ausgewählten Kategorie wirkt. Positive Werte erhöhen die Fähigkeit für Zauber. Negative Werte reduzieren die Fähigkeit für Zauber.</altpage>
 			</improvement>
 		</improvements>
 	</chummer>

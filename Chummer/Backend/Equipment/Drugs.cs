@@ -78,12 +78,12 @@ namespace Chummer.Backend.Equipment
 
         public void Load(XmlNode objXmlData)
         {
+            objXmlData.TryGetStringFieldQuickly("name", ref _strName);
             if (!objXmlData.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
                 XmlNode node = GetNode(GlobalOptions.Language);
                 node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
-            objXmlData.TryGetStringFieldQuickly("name", ref _strName);
             objXmlData.TryGetStringFieldQuickly("category", ref _strCategory);
             XmlNodeList xmlComponentsNodeList = objXmlData.SelectNodes("drugcomponents/drugcomponent");
             if (xmlComponentsNodeList?.Count > 0)
@@ -835,13 +835,13 @@ namespace Chummer.Backend.Equipment
 		#region Constructor, Create, Save, Load, and Print Methods
 		public void Load(XmlNode objXmlData)
 		{
-		    if (!objXmlData.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+		    objXmlData.TryGetStringFieldQuickly("name", ref _strName);
+            if (!objXmlData.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
 		    {
 		        XmlNode node = GetNode(GlobalOptions.Language);
 		        node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
 		    }
             objXmlData.TryGetField("internalid", Guid.TryParse, out _guidId);
-            objXmlData.TryGetStringFieldQuickly("name", ref _strName);
 			objXmlData.TryGetStringFieldQuickly("category", ref _strCategory);
 		    XmlNodeList xmlEffectsList = objXmlData.SelectNodes("effects/effect");
 		    if (xmlEffectsList?.Count > 0)

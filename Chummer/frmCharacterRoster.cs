@@ -907,7 +907,12 @@ namespace Chummer
                 }
 
                 FilePath = strFile;
-                FileName = strFile.Substring(strFile.LastIndexOf(Path.DirectorySeparatorChar) + 1);
+                if (!String.IsNullOrEmpty(strFile))
+                {
+                    int last = strFile.LastIndexOf(Path.DirectorySeparatorChar) + 1;
+                    if (strFile.Length > last)
+                        FileName = strFile.Substring(last);
+                }
 
                 HandlePlugins();
             }
