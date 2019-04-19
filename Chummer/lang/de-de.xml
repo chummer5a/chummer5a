@@ -9510,5 +9510,17 @@
 			<key>Checkbox_Options_AllowEasterEggs</key>
 			<text>Ostereier erlauben</text>
 		</string>
+		<string>
+			<key>String_online</key>
+			<text>Online</text>
+		</string>
+		<string>
+			<key>Menu_Main_NPCs</key>
+			<text>NPCs</text>
+		</string>
+		<string>
+			<key>Menu_Main_SINners</key>
+			<text>SINners</text>
+		</string>
 	</strings>
 </chummer>
