@@ -10517,6 +10517,456 @@
     </module>
     <!-- End Region -->
     <!-- End Region -->
+    <!--Region No Future-->
+    <!-- Region Further Education -->
+    <module>
+      <id>c674ae2c-e5ef-4bfa-8993-884769560644</id>
+      <stage>Further Education</stage>
+      <category>LifeModule</category>
+      <name>Student Athlete</name>
+      <karma>55</karma>
+      <bonus>
+	<attributelevel>
+	  <name>BOD</name>
+	</attributelevel>
+	<attributelevel>
+	  <name>LOG</name>
+	</attributelevel>
+	<addqualities>
+	  <addquality>Fame: Local</addquality>
+	</addqualities>
+	<skilllevel>
+	  <name>Computer</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Etiquette</name>
+	</skilllevel>
+	<knowledgeskilllevel>
+	  <name>[Any]</name>
+	  <val>1</val>
+	</knowledgeskilllevel>
+	<knowledgeskilllevel>
+	  <name>[Any]</name>
+	  <val>1</val>
+	</knowledgeskilllevel>
+      </bonus>
+      <versions>
+	<version>
+	  <id>e3a7c927-6e82-453d-b24c-80bcbe8f6bc3</id>
+	  <name>E-Sports</name>
+	  <bonus>
+	    <skilllevel>
+	      <name>Computer</name>
+	    </skilllevel>
+	    <skilllevel>
+	      <name>Electronic Warfare</name>
+	    </skilllevel>
+	    <skilllevel>
+	      <name>Hardware</name>
+	    </skilllevel>
+	    <skilllevel>
+	      <name>Software</name>
+	    </skilllevel>
+	  </bonus>
+	  <story>$real did E-Sports.</story>
+	</version>
+	<version>
+	  <id>9b9f3b96-10ed-497c-816c-9692cfe3e523</id>
+	  <name>Vehicle/Drone Sports</name>
+	  <bonus>
+	    <skilllevel>
+	      <options>
+		<pilotaircraft>Pilot Aircraft</pilotaircraft>
+		<pilotexoticvehicle>Pilot Exotic Vehicle</pilotexoticvehicle>
+		<pilotgroundcraft>Pilot Ground Craft</pilotgroundcraft>
+		<pilotwalker>Pilot Walker</pilotwalker>
+		<pilotwatercraft>Pilot Watercraft</pilotwatercraft>
+	      </options>
+	    </skilllevel>
+	    <skillgrouplevel>
+	      <name>Engineering</name>
+	    </skillgrouplevel>
+	  </bonus>
+	  <story>$real did drone sports.</story>
+	</version>
+	<version>
+	  <id>14dfb0c8-4748-490c-876d-f65f55e81d95</id>
+	  <name>Physical Sports</name>
+	  <bonus>
+	    <addqualities>
+	      <addquality>Natural Athlete</addquality>
+	    </addqualities>
+	    <skillgrouplevel>
+	      <name>Athletics</name>
+	    </skillgrouplevel>
+	  </bonus>
+	  <story>$real did physical sports.</story>
+	</version>
+      </versions>
+      <story>$real was a student athlete.</story>
+    </module>
+    <!-- End Region -->
+    <!-- Region Real Life -->
+    <module>
+      <id>d886934b-b937-4791-9512-cd7257ca721d</id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Professional Athlete</name>
+      <karma>100</karma>
+      <bonus>
+	<attributelevel>
+	  <name>REA</name>
+	</attributelevel>
+	<attributelevel>
+	  <name>INT</name>
+	</attributelevel>
+	<addqualities>
+	  <addquality>Fame: National</addquality>
+	  <addquality>SINner (Corporate Limited)</addquality>
+	</addqualities>
+	<knowledgeskilllevel>
+	  <name>[Any]</name>
+	  <group>Language</group>
+	</knowledgeskilllevel>
+	<knowledgeskilllevel>
+	  <name>[Chosen Sport]</name>
+	  <group>Professional</group>
+	  <val>4</val>
+	</knowledgeskilllevel>
+	<skilllevel>
+	  <name>Etiquette</name>
+	  <val>2</val>
+	</skilllevel>
+      </bonus>
+      <versions>
+	<version>
+	  <id>45057214-38fd-4824-ba7c-985a3da22ef5</id>
+	  <name>Awakened Athlete</name>
+	  <bonus>
+	    <attributelevel>
+	      <name>BOD</name>
+	    </attributelevel>
+	    <attributelevel>
+	      <name>WIL</name>
+	    </attributelevel>
+	    <skillgrouplevel>
+	      <name>Sorcery</name>
+	      <val>2</val>
+	    </skillgrouplevel>
+	    <addqualities>
+	      <addquality>Focused Concentration</addquality>
+	    </addqualities>
+	    <knowledgeskilllevel>
+	      <name>Magical Theory</name>
+	      <group>Professional</group>
+	      <val>2</val>
+	    </knowledgeskilllevel>
+	    <knowledgeskilllevel>
+	      <name>Magical Law</name>
+	      <group>Professional</group>
+	      <val>2</val>
+	    </knowledgeskilllevel>
+	  </bonus>
+	</version>
+	<version>
+	  <id>d3036633-bbd5-4f6e-af7d-56b71285918c</id>
+	  <name>Combat Biker/Urban Brawl Outrider</name>
+	  <bonus>
+	    <attributelevel>
+	      <name>BOD</name>
+	    </attributelevel>
+	    <attributelevel>
+	      <name>REA</name>
+	    </attributelevel>
+	    <addqualities>
+	      <addquality>Steely Eyed Wheelman</addquality>
+	    </addqualities>
+	    <skilllevel>
+	      <name>Automotive Mechanic</name>
+	    </skilllevel>
+	    <skilllevel>
+	      <name>Pilot Ground Craft</name>
+	      <val>2</val>
+	    </skilllevel>
+	    <!-- todo: shouldn't be able to select the same skill twice for these -->
+	    <skilllevel>
+	      <options>
+		<clubs>Clubs</clubs>
+		<gunnery>Gunnery</gunnery>
+		<longarms>Longarms</longarms>
+		<unarmedcombat>Unarmed Combat</unarmedcombat>
+	      </options>
+	      <val>2</val>
+	    </skilllevel>
+	    <skilllevel>
+	      <options>
+		<clubs>Clubs</clubs>
+		<gunnery>Gunnery</gunnery>
+		<longarms>Longarms</longarms>
+		<unarmedcombat>Unarmed Combat</unarmedcombat>
+	      </options>
+	      <val>2</val>
+	    </skilllevel>
+	  </bonus>
+	</version>
+	<version>
+	  <id>f68a6aee-f1d5-47b0-bbac-a610e1fbe7df</id>
+	  <name>Courtballer</name>
+	  <bonus>
+	    <attributelevel>
+	      <name>BOD</name>
+	    </attributelevel>
+	    <attributelevel>
+	      <name>STR</name>
+	    </attributelevel>
+	    <knowledgeskilllevel>
+	      <name>Spanish</name>
+	      <group>Language</group>
+	      <val>2</val>
+	    </knowledgeskilllevel>
+	    <skilllevel>
+	      <name>Blades</name>
+	      <val>2</val>
+	    </skilllevel>
+	    <skilllevel>
+	      <name>Clubs</name>
+	    </skilllevel>
+	    <skilllevel>
+	      <name>Intimidation</name>
+	    </skilllevel>
+	    <skilllevel>
+	      <name>Unarmed Combat</name>
+	    </skilllevel>
+	    <addqualities>
+	      <addquality>Toughness</addquality>
+	    </addqualities>
+	</bonus>
+	</version>
+	<version>
+	  <id>4bb46314-5447-4ddb-bb71-ee5037fa5f5f</id>
+	  <name>Drone Racer</name>
+	  <bonus>
+	    <attributelevel>
+	      <name>REA</name>
+	    </attributelevel>
+	    <skilllevel>
+	      <name>Electronic Warfare</name>
+	    </skilllevel>
+	    <skillgrouplevel>
+	      <name>Engineering</name>
+	      <val>2</val>
+	    </skillgrouplevel>
+	    <addqualities>
+	      <addquality>Gearhead</addquality>
+	    </addqualities>
+	    <!-- todo: should not be able to double up on these -->
+	    <skilllevel>
+	      <options>
+		<pilotaircraft>Pilot Aircraft</pilotaircraft>
+		<pilotexoticvehicle>Pilot Exotic Vehicle</pilotexoticvehicle>
+		<pilotgroundcraft>Pilot Ground Craft</pilotgroundcraft>
+		<pilotwalker>Pilot Walker</pilotwalker>
+		<pilotwatercraft>Pilot Watercraft</pilotwatercraft>
+	      </options>
+	      <val>2</val>
+	    </skilllevel>
+	    <skilllevel>
+	      <options>
+		<pilotaircraft>Pilot Aircraft</pilotaircraft>
+		<pilotexoticvehicle>Pilot Exotic Vehicle</pilotexoticvehicle>
+		<pilotgroundcraft>Pilot Ground Craft</pilotgroundcraft>
+		<pilotwalker>Pilot Walker</pilotwalker>
+		<pilotwatercraft>Pilot Watercraft</pilotwatercraft>
+	      </options>
+	      <val>2</val>
+	    </skilllevel>
+	</version>
+	<version>
+	  <id>b697c892-67e5-4298-8784-33bdb0c405ce</id>
+	  <name>Freestyle Fighter</name>
+	  <bonus>
+	    <attributelevel>
+	      <name>REA</name>
+	    </attributelevel>
+	    <attributelevel>
+	      <name>STR</name>
+	    </attributelevel>
+	    <skilllevel>
+	      <name>First Aid</name>
+	      <val>2</val>
+	    </skilllevel>
+	    <skilllevel>
+	      <name>Intimidation</name>
+	      <val>2</val>
+	    </skilllevel>
+	    <skilllevel>
+	      <name>Unarmed Combat</name>
+	      <val>2</val>
+	    </skilllevel>
+	    <knowledgeskilllevel>
+	      <name>Martial Arts</name>
+	      <group>Professional</group>
+	      <val>2</val>
+	    </knowledgeskilllevel>
+	  </bonus>
+	</version>
+	<version>
+	  <id>4de8cbb4-de52-480c-9113-30bbe6454436</id>
+	  <name>Hurler/Stickballer</name>
+	  <bonus>
+	    <attributelevel>
+	      <name>REA</name>
+	    </attributelevel>
+	    <skilllevel>
+	      <name>Clubs</name>
+	      <val>2</val>
+	    </skilllevel>
+	    <skilllevel>
+	      <name>Running</name>
+	      <val>2</val>
+	    </skilllevel>
+	    <skilllevel>
+	      <name>Gymnastics</name>
+	    </skilllevel>
+	    <skilllevel>
+	      <name>Throwing Weapons</name>
+	    </skilllevel>
+	    <knowledgeskilllevel>
+	      <name>[Sperethiel or any NAN]</name>
+	      <group>Language</group>
+	      <val>2</val>
+	    </knowledgeskilllevel>
+	    <addqualities>
+	      <addquality>Natural Athlete</addquality>
+	    </addqualities>
+	  </bonus>
+	</version>
+	<version>
+	  <id>3f2de14d-6538-410d-bcb0-a877f855af92</id>
+	  <name>Miracle Shooter</name>
+	  <bonus>
+	    <attributelevel>
+	      <name>AGI</name>
+	    </attributelevel>
+	    <skilllevel>
+	      <name>Computer</name>
+	    </skilllevel>
+	    <skilllevel>
+	      <name>Gymnastics</name>
+	    </skilllevel>
+	    <skilllevel>
+	      <name>Running</name>
+	    </skilllevel>
+	    <skilllevel>
+	      <name>Software</name>
+	    </skilllevel>
+	    <skilllevel>
+	      <name>Running</name>
+	    </skilllevel>
+	    <skillgrouplevel>
+	      <name>Firearms</name>
+	      <val>2</val>
+	    </skillgrouplevel>
+	  </bonus>
+	</version>
+	<version>
+	  <id>6f06bb2c-a3e6-425a-bde9-fb8488bc558f</id>
+	  <name>Professional Gamer</name>
+	  <bonus>
+	    <attributelevel>
+	      <name>LOG</name>
+	    </attributelevel>
+	    <skilllevel>
+	      <name>Computer</name>
+	      <val>2</val>
+	    </skilllevel>
+	    <skilllevel>
+	      <name>Cybercombat</name>
+	      <val>2</val>
+	    </skilllevel>
+	    <skilllevel>
+	      <name>Electronic Warfare</name>
+	      <val>2</val>
+	    </skilllevel>
+	    <skilllevel>
+	      <name>Leadership</name>
+	    </skilllevel>
+	    <skilllevel>
+	      <name>Software</name>
+	      <val>2</val>
+	    </skilllevel>
+	    <addqualities>
+	      <addquality>Overclocker</addquality>
+	    </addqualities>
+	    <knowledgeskilllevel>
+	      <name>Video Games</name>
+	      <val>3</val>
+	      <group>Professional</group>
+	    </knowledgeskilllevel>
+	  </bonus>
+	</version>
+      </versions>
+      <story />
+      <source>NF</source>
+      <page>178</page>
+    </module>
+    <module>
+      <id>5b6feab4-e5dc-4c71-aa06-8303faf010a3</id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Teen Diva</name>
+      <karma>100</karma>
+      <bonus>
+	<attributelevel>
+	  <name>AGI</name>
+	</attributelevel>
+	<attributelevel>
+	  <name>CHA</name>
+	</attributelevel>
+	<addqualities>
+	  <addquality>Fame: National</addquality>
+	</addqualities>
+	<skillgrouplevel>
+	  <name>Athletics</name>
+	</skillgrouplevel>
+	<skilllevel>
+	  <name>Artisan</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Performance</name>
+	  <val>2</val>
+	</skilllevel>
+	<knowledgeskilllevel>
+	  <name>Dance</name>
+	  <group>Interest</group>
+	  <val>2</val>
+	</knowledgeskilllevel>
+	<knowledgeskilllevel>
+	  <name>High Fashion</name>
+	  <group>Interest</group>
+	</knowledgeskilllevel>
+	<knowledgeskilllevel>
+	  <name>Music</name>
+	  <group>Interest</group>
+	  <val>2</val>
+	</knowledgeskilllevel>
+	<knowledgeskilllevel>
+	  <name>Entertainment Industry</name>
+	  <group>Street</group>
+	  <val>2</val>
+	</knowledgeskilllevel>
+	<knowledgeskilllevel>
+	  <name>[Corporate Sponsor]</name>
+	  <group>Street</group>
+	  <val>1</val>
+	</knowledgeskilllevel>
+      </bonus>
+      <story />
+      <source>NF</source>
+      <page>179</page>
+    </module>
+    <!-- End Region -->
+    <!-- End Region -->
   </modules>
   <storybuilder>
     <macros>
