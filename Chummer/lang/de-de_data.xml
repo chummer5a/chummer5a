@@ -10542,6 +10542,12 @@
 				<translate>Autostimme (gehackt)</translate>
 				<altpage>184</altpage>
 			</cyberware>
+			<cyberware translated="True">
+				<id>f05492b3-de9b-44c3-8622-89840587cc3a</id>
+				<name>Foot Blade</name>
+				<translate>Fußklinge</translate>
+				<altpage>178</altpage>
+			</cyberware>
 		</cyberwares>
 	</chummer>
 	<chummer file="echoes.xml">
@@ -45822,6 +45828,12 @@
 				<name>Dodge</name>
 				<translate>Ausweichen</translate>
 				<altpage>Erhöht den Pool des Charakters zum Ausweichen um den angegebenen Wert.</altpage>
+			</improvement>
+			<improvement>
+				<id>spellcategory</id>
+				<name>Specific Spell Dicepool</name>
+				<translate>Spezieller Zauberwürfelpool</translate>
+				<altpage>Passt den Zauberpool des Charakters an, wenn er Zauber in der ausgewählten Kategorie wirkt. Positive Werte erhöhen die Fähigkeit für Zauber. Negative Werte reduzieren die Fähigkeit für Zauber.</altpage>
 			</improvement>
 		</improvements>
 	</chummer>
