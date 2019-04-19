@@ -12486,8 +12486,474 @@
       <source>SL</source>
       <page>180</page>
     </module>
-    <!--End Region-->
-    <!--End Region-->
+    <!-- End Region -->
+    <!-- End Region -->
+    <!--Region Kill Code-->
+    <!--Region Formative Years-->
+    <module>
+      <id>bab07751-2d37-4079-aa0d-274cf1038c92</id>
+      <stage>Formative Years</stage>
+      <category>LifeModule</category>
+      <name>Bootstrap Cliche</name>
+      <karma>40</karma>
+      <bonus>
+	<attributelevel>
+	  <name>LOG</name>
+	</attributelevel>
+	<attributelevel>
+	  <name>WIL</name>
+	</attributelevel>
+	<addqualities>
+	  <addquality>Deck Builder</addquality>
+	</addqualities>
+	<skilllevel>
+	  <name>Hardware</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Locksmith</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Sneaking</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Software</name>
+	  <spec>Data Bombs</spec>
+	</skilllevel>
+	<knowledgeskilllevel>
+	  <name>Sprawl Life</name>
+	  <group>Street</group>
+	  <val>2</val>
+	</knowledgeskilllevel>
+	<knowledgeskilllevel>
+	  <name>Public Grid</name>
+	  <group>Professional</group>
+	</knowledgeskilllevel>
+      </bonus>
+      <story />
+      <source>KC</source>
+      <page>79</page>
+    </module>
+    <module>
+      <id>516ece95-6b51-48b6-9806-24087dc344c2</id>
+      <stage>Formative Years</stage>
+      <category>LifeModule</category>
+      <name>Hacking Savant</name>
+      <karma>40</karma>
+      <bonus>
+	<attributelevel>
+	  <name>INT</name>
+	</attributelevel>
+	<attributelevel>
+	  <name>LOG</name>
+	</attributelevel>
+	<skilllevel>
+	  <name>Computer</name>
+	  <val>2</val>
+	</skilllevel>
+	<skilllevel>
+	  <name>Hacking</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Hardware</name>
+	  <val>2</val>
+	</skilllevel>
+	<skilllevel>
+	  <name>Software</name>
+	  <val>2</val>
+	</skilllevel>
+	<knowledgeskilllevel>
+	  <name>[Matrix-related]</name>
+	  <group>Interest</group>
+	</knowledgeskilllevel>
+	<knowledgeskilllevel>
+	  <name>Grid</name>
+	  <group>Interest</group>
+	</knowledgeskilllevel>
+      </bonus>
+      <story />
+      <source>KC</source>
+      <page>80</page>
+    </module>
+    <module>
+      <id>22d06d59-ccf0-49ce-a17d-5bb3431a03cf</id>
+      <stage>Formative Years</stage>
+      <category>LifeModule</category>
+      <name>Have You Heard The Good Word?</name>
+      <karma>40</karma>
+      <bonus>
+	<attributelevel>
+	  <name>CHA</name>
+	</attributelevel>
+	<attributelevel>
+	  <name>INT</name>
+	</attributelevel>
+	<addqualities>
+	  <addquality>Silence Is Golden</addquality>
+	</addqualities>
+	<skilllevel>
+	  <name>Computer</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Con</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Hardware</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Perception</name>
+	</skilllevel>
+	<knowledgeskilllevel>
+	  <name>[Hobby]</name>
+	  <group>Interest</group>
+	</knowledgeskilllevel>
+	<knowledgeskilllevel>
+	  <name>[Religion]</name>
+	  <group>Academic</group>
+	</knowledgeskilllevel>
+      </bonus>
+      <story />
+      <source>KC</source>
+      <page>80</page>
+    </module>
+    <module>
+      <id>ed378222-f6c4-4d7f-971c-6d6b2d01a6b3</id>
+      <stage>Formative Years</stage>
+      <category>LifeModule</category>
+      <name>The Itsy-Bitsy Spider</name>
+      <karma>40</karma>
+      <bonus>
+	<attributelevel>
+	  <name>LOG</name>
+	</attributelevel>
+	<attributelevel>
+	  <name>WIL</name>
+	</attributelevel>
+	<skilllevel>
+	  <name>Cybercombat</name>
+	  <spec>Personas</spec>
+	</skilllevel>
+	<skilllevel>
+	  <name>Electronic Warfare</name>
+	  <spec>Communications</spec>
+	</skilllevel>
+	<skilllevel>
+	  <name>Hacking</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Software</name>
+	</skilllevel>
+	<knowledgeskilllevel>
+	  <name>Matrix Security</name>
+	  <group>Academic</group>
+	</knowledgeskilllevel>
+	<knowledgeskilllevel>
+	  <name>[Technical]</name>
+	  <group>Academic</group>
+	</knowledgeskilllevel>
+      </bonus>
+      <story />
+      <source>KC</source>
+      <page>80</page>
+    </module>
+    <!-- End Region -->
+    <!--Region Teen Years-->
+    <!-- End Region -->
+    <module>
+      <id>2dff667c-7d61-496c-9999-cffdebb56007</id>
+      <stage>Teen Years</stage>
+      <category>LifeModule</category>
+      <name></name>
+      <karma>50</karma>
+      <bonus>
+	<attributelevel>
+	  <name>RES</name>
+	</attributelevel>
+	<attributelevel>
+	  <name>STR</name>
+	</attributelevel>
+	<addqualities>
+	  <addquality>Will to Live</addquality>
+	</addqualities>
+	<skilllevel>
+	  <name>Software</name>
+	  <val>2</val>
+	</skilllevel>
+	<skilllevel>
+	  <name>Unarmed Combat</name>
+	</skilllevel>
+	<skillgrouplevel>
+	  <name>Athletics</name>
+	</skillgrouplevel>
+	<knowledgeskilllevel>
+	  <name>[Sports]</name>
+	  <group>Professional</group>
+	</knowledgeskilllevel>
+	<knowledgeskilllevel>
+	  <name>[Technomancers]</name>
+	  <group>Interest</group>
+	</knowledgeskilllevel>
+      </bonus>
+      <story />
+      <source>KC</source>
+      <page>80</page>
+    </module>
+    <module>
+      <id>8e34871f-d1e0-4c3b-8c63-5c06b21553f0</id>
+      <stage>Teen Years</stage>
+      <category>LifeModule</category>
+      <name>Destined For Greatness</name>
+      <karma>50</karma>
+      <bonus>
+	<attributelevel>
+	  <name>RES</name>
+	</attributelevel>
+	<attributelevel>
+	  <name>LOG</name>
+	</attributelevel>
+	<addqualities>
+	  <addquality>Focused Concentration</addquality>
+	</addqualities>
+	<skilllevel>
+	  <name>Leadership</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Negotiation</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Registering</name>
+	  <val>2</val>
+	</skilllevel>
+	<skilllevel>
+	  <name>Software</name>
+	  <val>2</val>
+	</skilllevel>
+	<knowledgeskilllevel>
+	  <name>Corp Culture</name>
+	  <group>Interest</group>
+	</knowledgeskilllevel>
+	<knowledgeskilllevel>
+	  <name>Business</name>
+	  <group>Professional</group>
+	</knowledgeskilllevel>
+      </bonus>
+      <story />
+      <source>KC</source>
+      <page>80</page>
+    </module>
+    <module>
+      <id>4ba4b426-c333-4216-af95-58c1114c447a</id>
+      <stage>Teen Years</stage>
+      <category>LifeModule</category>
+      <name>Hack-A-Thon Medalist</name>
+      <karma>50</karma>
+      <bonus>
+	<attributelevel>
+	  <name>LOG</name>
+	</attributelevel>
+	<attributelevel>
+	  <name>AGI</name>
+	</attributelevel>
+	<addqualities>
+	  <addquality>Quick Healer</addquality>
+	</addqualities>
+	<skilllevel>
+	  <name>First Aid</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Perception</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Software</name>
+	  <val>2</val>
+	</skilllevel>
+	<skilllevel>
+	  <name>Sneaking</name>
+	</skilllevel>
+	<knowledgeskilllevel>
+	  <name>[Matrix Related]</name>
+	  <group>Interest</group>
+	</knowledgeskilllevel>
+	<knowledgeskilllevel>
+	  <name>[Any]</name>
+	  <group>Academic</group>
+	  <val>2</val>
+	</knowledgeskilllevel>
+      </bonus>
+      <story />
+      <source>KC</source>
+      <page>80</page>
+    </module>
+    <module>
+      <id>30f5af48-0df1-431e-9ae7-6d5266e0ab92</id>
+      <stage>Teen Years</stage>
+      <category>LifeModule</category>
+      <name>The Flow</name>
+      <karma>50</karma>
+      <bonus>
+	<attributelevel>
+	  <name>WIL</name>
+	</attributelevel>
+	<attributelevel>
+	  <name>BOD</name>
+	</attributelevel>
+	<addqualities>
+	  <addquality>Common Sense</addquality>
+	</addqualities>
+	<skilllevel>
+	  <name>Chemistry</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Hacking</name>
+	  <val>2</val>
+	</skilllevel>
+	<skilllevel>
+	  <name>Palming</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Software</name>
+	</skilllevel>
+	<knowledgeskilllevel>
+	  <name>[Matrix Related]</name>
+	  <group>Interest</group>
+	  <val>2</val>
+	</knowledgeskilllevel>
+	<knowledgeskilllevel>
+	  <name>[Drug Related]</name>
+	  <group>Interest</group>
+	</knowledgeskilllevel>
+      </bonus>
+      <story />
+      <source>KC</source>
+      <page>81</page>
+    </module>
+    <module>
+      <id>fc502702-45f4-4b70-9e09-cb3c6cad5da0</id>
+      <stage>Teen Years</stage>
+      <category>LifeModule</category>
+      <name>Jacked Out</name>
+      <karma>50</karma>
+      <bonus>
+	<attributelevel>
+	  <name>RES</name>
+	</attributelevel>
+	<attributelevel>
+	  <name>WIL</name>
+	</attributelevel>
+	<addqualities>
+	  <addquality>Profiler</addquality>
+	</addqualities>
+	<skilllevel>
+	  <name>Perception</name>
+	  <val>2</val>
+	</skilllevel>
+	<skilllevel>
+	  <name>Registering</name>
+	  <val>2</val>
+	</skilllevel>
+	<skilllevel>
+	  <name>Software</name>
+	</skilllevel>
+	<knowledgeskilllevel>
+	  <name>[Any]</name>
+	  <group>Interest</group>
+	</knowledgeskilllevel>
+	<knowledgeskilllevel>
+	  <name>[Matrix Related]</name>
+	  <group>Professional</group>
+	  <val>2</val>
+	</knowledgeskilllevel>
+      </bonus>
+      <story />
+      <source>KC</source>
+      <page>79</page>
+    </module>
+    <module>
+      <id>c1133c0e-1c5a-4ba0-a207-0274cd90b25c</id>
+      <stage>Teen Years</stage>
+      <category>LifeModule</category>
+      <name>Matrix Royalty</name>
+      <karma>50</karma>
+      <bonus>
+	<attributelevel>
+	  <name>LOG</name>
+	</attributelevel>
+	<attributelevel>
+	  <name>CHA</name>
+	</attributelevel>
+	<addqualities>
+	  <addquality>Too Pretty to Hit</addquality>
+	</addqualities>
+	<skilllevel>
+	  <name>Computer</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Con</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Electronic Warfare</name>
+	  <val>2</val>
+	</skilllevel>
+	<skilllevel>
+	  <name>Intimidation</name>
+	</skilllevel>
+	<knowledgeskilllevel>
+	  <name>Psychology</name>
+	  <group>Professional</group>
+	  <val>2</val>
+	</knowledgeskilllevel>
+	<knowledgeskilllevel>
+	  <name>[Matrix Related]</name>
+	  <group>Interest</group>
+	</knowledgeskilllevel>
+      </bonus>
+      <story />
+      <source>KC</source>
+      <page>81</page>
+    </module>
+    <module>
+      <id>801d6ce7-080b-4a87-b49e-cc83c467a1bf</id>
+      <stage>Teen Years</stage>
+      <category>LifeModule</category>
+      <name>Techno-Rigger, Qu'est Que C'est</name>
+      <karma>50</karma>
+      <bonus>
+	<attributelevel>
+	  <name>RES</name>
+	</attributelevel>
+	<attributelevel>
+	  <name>REA</name>
+	</attributelevel>
+	<addqualities>
+	  <addquality>Dealer Connection</addquality>
+	</addqualities>
+	<skilllevel>
+	  <name>Compiling</name>
+	  <val>2</val>
+	</skilllevel>
+	<skilllevel>
+	  <name>Pilot Aircraft</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Pilot Ground Craft</name>
+	</skilllevel>
+	<skilllevel>
+	  <name>Registering</name>
+	</skilllevel>
+	<knowledgeskilllevel>
+	  <name>Vehicles</name>
+	  <group>Professional</group>
+	</knowledgeskilllevel>
+	<knowledgeskilllevel>
+	  <name>[City]</name>
+	  <group>Street</group>
+	</knowledgeskilllevel>
+      </bonus>
+      <story />
+      <source>KC</source>
+      <page>81</page>
+    </module>
+    <!-- End Region -->
+    <!-- End Region -->
   </modules>
   <storybuilder>
     <macros>
