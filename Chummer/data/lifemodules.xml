@@ -988,7 +988,7 @@
           <val>2</val>
         </skillgrouplevel>
         <skilllevel>
-          <name>Negotiation&gt;</name>
+          <name>Negotiation</name>
         </skilllevel>
         <skilllevel>
           <name>Perception</name>
@@ -3301,7 +3301,7 @@
           <name>LOG</name>
         </attributelevel>
         <skilllevel>
-          <name>Computers</name>
+          <name>Computer</name>
         </skilllevel>
         <skilllevel>
           <name>Gymnastics</name>
@@ -3314,7 +3314,7 @@
           <name>LOG</name>
         </attributelevel>
         <skilllevel>
-          <name>Computers</name>
+          <name>Computer</name>
         </skilllevel>
         <skilllevel>
           <name>Gymnastics</name>
@@ -3846,12 +3846,12 @@
           <id>2c0070c5-2284-4161-8a90-2c89e0482b85</id>
           <name>Wage Slave</name>
           <bonus>
-            <skilllevel>
-              <name>Charisma</name>
-            </skilllevel>
-            <skilllevel>
-              <name>Willpower</name>
-            </skilllevel>
+            <attributelevel>
+              <name>CHA</name>
+            </attributelevel>
+            <attributelevel>
+              <name>WIL</name>
+            </attributelevel>
             <skilllevel>
               <name>Con</name>
             </skilllevel>
@@ -4383,7 +4383,7 @@
           <val>2</val>
         </skilllevel>
         <skilllevel>
-          <name>Piloting Ground Craft</name>
+          <name>Pilot Ground Craft</name>
         </skilllevel>
         <skillgrouplevel>
           <name>Stealth</name>
@@ -4459,7 +4459,7 @@
           <val>2</val>
         </skilllevel>
         <skilllevel>
-          <name>Piloting Ground Craft</name>
+          <name>Pilot Ground Craft</name>
         </skilllevel>
         <skilllevel>
           <name>Pistols</name>
@@ -4700,9 +4700,9 @@
             <skilllevel>
               <name>Forgery</name>
             </skilllevel>
-            <skilllevel>
-              <name>Intuition</name>
-            </skilllevel>
+            <attributelevel>
+              <name>INT</name>
+            </attributelevel>
             <skilllevel>
               <name>Perception</name>
             </skilllevel>
@@ -5487,7 +5487,7 @@
               <name>Blades</name>
             </skilllevel>
             <skilllevel>
-              <name>Demolition</name>
+              <name>Demolitions</name>
             </skilllevel>
             <skilllevel>
               <name>Perception</name>
@@ -5790,9 +5790,9 @@
               <name>Pilot Aircraft</name>
               <val>2</val>
             </skilllevel>
-            <skilllevel>
-              <name>Reaction</name>
-            </skilllevel>
+            <attributelevel>
+              <name>REA</name>
+            </attributelevel>
             <skilllevel>
               <name>Survival</name>
             </skilllevel>
@@ -5958,9 +5958,9 @@
             <skilllevel>
               <name>Swimming</name>
             </skilllevel>
-            <skilllevel>
-              <name>Body</name>
-            </skilllevel>
+            <attributelevel>
+              <name>BOD</name>
+            </attributelevel>
           </bonus>
         </version>
         <version>
@@ -5975,9 +5975,9 @@
               <name>Electronics</name>
               <val>1</val>
             </skillgrouplevel>
-            <skilllevel>
-              <name>Intuition</name>
-            </skilllevel>
+            <attributelevel>
+              <name>INT</name>
+            </attributelevel>
             <skilllevel>
               <name>Perception</name>
             </skilllevel>
@@ -6834,7 +6834,7 @@
           <name>Sneaking</name>
         </skilllevel>
         <skilllevel>
-          <name>Unarmed</name>
+          <name>Unarmed Combat</name>
         </skilllevel>
         <addqualities>
           <addquality>Blandness</addquality>
@@ -8832,7 +8832,7 @@
               <name>BOD</name>
             </attributelevel>
             <skilllevel>
-              <name>Stealth</name>
+              <name>Sneaking</name>
             </skilllevel>
             <skilllevel>
               <name>Survival</name>
@@ -9567,7 +9567,7 @@
           <name>First Aid</name>
         </skilllevel>
         <skilllevel>
-          <name>Industrial Mechanics</name>
+          <name>Industrial Mechanic</name>
         </skilllevel>
         <skilllevel>
           <name>Clubs</name>
