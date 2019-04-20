@@ -36,7 +36,6 @@ namespace Chummer
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             dlgOpenFile.Filter = LanguageManager.GetString("DialogFilter_Chum5", GlobalOptions.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language);
-            MoveControls();
 
             _workerPrinter.WorkerReportsProgress = true;
             _workerPrinter.WorkerSupportsCancellation = true;
@@ -166,24 +165,6 @@ namespace Chummer
                 }
                 _frmPrintView.RefreshCharacters();
             }
-        }
-        #endregion
-
-        #region Methods
-        private void MoveControls()
-        {
-            int intWidth = Math.Max(cmdSelectCharacter.Width, cmdPrint.Width);
-            intWidth = Math.Max(intWidth, cmdDelete.Width);
-            cmdSelectCharacter.AutoSize = false;
-            cmdPrint.AutoSize = false;
-            cmdDelete.AutoSize = false;
-
-            cmdSelectCharacter.Width = intWidth;
-            cmdPrint.Width = intWidth;
-            cmdDelete.Width = intWidth;
-            Width = cmdPrint.Left + cmdPrint.Width + 19;
-
-            prgProgress.Width = Width - prgProgress.Left - 19;
         }
         #endregion
     }
