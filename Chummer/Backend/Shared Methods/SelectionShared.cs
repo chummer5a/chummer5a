@@ -1039,26 +1039,27 @@ namespace Chummer
                         object intLock = new object();
                         Parallel.ForEach(objCharacter.Weapons, objChild =>
                         {
-                            int i = objChild.WeaponAccessories.Count(y => y.Name.StartsWith("Special Modification"));
+                            int i = objChild.WeaponAccessories.Count(y => y.SpecialModification);
                             lock (intLock)
                                 intMods += i;
                         });
                         Parallel.ForEach(objCharacter.Vehicles, objVehicle =>
                         {
-                            int i = objVehicle.Weapons.SelectMany(x => x.WeaponAccessories).Count(y => y.Name.StartsWith("Special Modification"));
+                            int i = objVehicle.Weapons.SelectMany(x => x.WeaponAccessories).Count(y => y.SpecialModification);
                             lock (intLock)
                                 intMods += i;
 
                             Parallel.ForEach(objVehicle.WeaponMounts, objMount =>
                             {
-                                int j = objMount.Weapons.SelectMany(x => x.WeaponAccessories).Count(y => y.Name.StartsWith("Special Modification"));
+                                int j = objMount.Weapons.SelectMany(x => x.WeaponAccessories).Count(y => y.SpecialModification);
                                 lock (intLock)
                                     intMods += i;
                             });
                         });
                         if (blnShowMessage)
                         {
-                            strName = Environment.NewLine + '\t' + LanguageManager.GetString("String_SubmersionGrade", GlobalOptions.Language) + " >= " + strNodeInnerText;
+                            strName =
+                                $"{Environment.NewLine}{'\t'}{LanguageManager.GetString("String_SpecialModificationLimit")} >= {strNodeInnerText}";
                         }
                         return intMods >= objCharacter.SpecialModificationLimit;
                     }
