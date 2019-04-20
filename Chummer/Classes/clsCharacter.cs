@@ -7151,6 +7151,11 @@ if (!Utils.IsUnitTest){
         public int MetageneticLimit => ImprovementManager.ValueOf(this, Improvement.ImprovementType.MetageneticLimit);
 
         /// <summary>
+        /// The highest number of free metagenetic qualities the character can have.
+        /// </summary>
+        public int SpecialModificationLimit => ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpecialModificationLimit);
+
+        /// <summary>
         /// Whether or not the character is possessed by a Spirit.
         /// </summary>
         public bool Possessed

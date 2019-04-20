@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -1024,13 +1025,44 @@ namespace Chummer
                     // Character needs a specific Weapon.
                     if (blnShowMessage)
                     {
-                        string strTranslate = XmlManager.Load("weapons.xml").SelectSingleNode($"/chummer/traditions/tradition[name = {strNodeInnerText.CleanXPath()}]/translate")?.InnerText;
+                        string strTranslate = XmlManager.Load("weapons.xml").SelectSingleNode($"/chummer/weapons/weapon[name = {strNodeInnerText.CleanXPath()}]/translate")?.InnerText;
                         strName = !string.IsNullOrEmpty(strTranslate)
                             ? $"{Environment.NewLine}\t{strTranslate} ({LanguageManager.GetString("String_Weapon", GlobalOptions.Language)})"
                             : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_Weapon", GlobalOptions.Language)})";
                     }
                     return objCharacter.Weapons.Any(w => w.Name == strNodeInnerText);
                 }
+                case "specialmodificationlimit":
+                    {
+                        // Add in the cost of all child components.
+                        int intMods = 0;
+                        object intLock = new object();
+                        Parallel.ForEach(objCharacter.Weapons, objChild =>
+                        {
+                            int i = objChild.WeaponAccessories.Count(y => y.SpecialModification);
+                            lock (intLock)
+                                intMods += i;
+                        });
+                        Parallel.ForEach(objCharacter.Vehicles, objVehicle =>
+                        {
+                            int i = objVehicle.Weapons.SelectMany(x => x.WeaponAccessories).Count(y => y.SpecialModification);
+                            lock (intLock)
+                                intMods += i;
+
+                            Parallel.ForEach(objVehicle.WeaponMounts, objMount =>
+                            {
+                                int j = objMount.Weapons.SelectMany(x => x.WeaponAccessories).Count(y => y.SpecialModification);
+                                lock (intLock)
+                                    intMods += i;
+                            });
+                        });
+                        if (blnShowMessage)
+                        {
+                            strName =
+                                $"{Environment.NewLine}{'\t'}{LanguageManager.GetString("String_SpecialModificationLimit")} >= {strNodeInnerText}";
+                        }
+                        return intMods >= objCharacter.SpecialModificationLimit;
+                    }
                 default:
                     Utils.BreakIfDebug();
                     break;

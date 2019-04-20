@@ -1000,6 +1000,7 @@
       <xs:element name="sociallimit" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="softweave" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="sonicresist" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="specialmodificationlimit" type="xs:integer" minOccurs="0" maxOccurs="1" />
       <xs:element name="specificattribute" minOccurs="0" maxOccurs="unbounded">
         <xs:complexType>
           <xs:sequence>

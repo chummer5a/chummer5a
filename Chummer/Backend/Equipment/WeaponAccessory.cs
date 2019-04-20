@@ -69,6 +69,7 @@ namespace Chummer.Backend.Equipment
         private bool _blnDeployable;
         private bool _blnDiscountCost;
         private bool _blnIncludedInWeapon;
+	    private bool _blnSpecialModification;
         private bool _blnEquipped = true;
         private int _intAccessoryCostMultiplier = 1;
         private string _strExtra = string.Empty;
@@ -190,6 +191,7 @@ namespace Chummer.Backend.Equipment
             objXmlAccessory.TryGetStringFieldQuickly("extra", ref _strExtra);
             objXmlAccessory.TryGetInt32FieldQuickly("ammobonus", ref _intAmmoBonus);
             objXmlAccessory.TryGetInt32FieldQuickly("accessorycostmultiplier", ref _intAccessoryCostMultiplier);
+            objXmlAccessory.TryGetBoolFieldQuickly("specialmodification", ref _blnSpecialModification);
 
             // Add any Gear that comes with the Weapon Accessory.
             XmlNode xmlGearsNode = objXmlAccessory["gears"];
@@ -259,6 +261,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("rcgroup", _intRCGroup.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("rcdeployable", _blnDeployable.ToString());
+            objWriter.WriteElementString("specialmodification", _blnSpecialModification.ToString());
             objWriter.WriteElementString("conceal", _strConceal);
             if (!string.IsNullOrEmpty(_strDicePool))
                 objWriter.WriteElementString("dicepool", _strDicePool);
@@ -346,6 +349,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("cost", ref _strCost);
             objNode.TryGetBoolFieldQuickly("included", ref _blnIncludedInWeapon);
             objNode.TryGetBoolFieldQuickly("equipped", ref _blnEquipped);
+            objNode.TryGetBoolFieldQuickly("specialmodification", ref _blnSpecialModification);
             if (!_blnEquipped)
             {
                 objNode.TryGetBoolFieldQuickly("installed", ref _blnEquipped);
@@ -497,6 +501,15 @@ namespace Chummer.Backend.Equipment
             get => _strModifyAmmoCapacity;
             set => _strModifyAmmoCapacity = value;
         }
+
+        /// <summary>
+        /// Is the accessory a Special Modification, limited by the character's Special Modifications property?
+        /// </summary>
+	    public bool SpecialModification
+	    {
+	        get => _blnSpecialModification;
+	        set => _blnSpecialModification = value;
+	    }
         /// <summary>
         /// The accessory adds to the weapon's damage value.
         /// </summary>

@@ -308,6 +308,7 @@ namespace Chummer
             MetageneticLimit,
             Tradition,
             ActionDicePool,
+            SpecialModificationLimit,
             NumImprovementTypes, // 🡐 This one should always be the last defined enum
         }
 
@@ -1810,10 +1811,15 @@ namespace Chummer
                     break;
                 case ImprovementType.WeaponAccuracy:
                     break;
+                case ImprovementType.SpecialModificationLimit:
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.SpecialModificationLimit));
+                    }
+                    break;
                 case ImprovementType.MetageneticLimit:
-                {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.MetageneticLimit));
-                }
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.MetageneticLimit));
+                    }
                     break;
             }
         }

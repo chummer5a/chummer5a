@@ -16810,6 +16810,124 @@
       <page>47</page>
       <rating>0</rating>
     </accessory>
+    <!-- Region Special Modifications -->
+    <accessory>
+      <id>b741b729-106e-46f2-9143-0f745fd48789</id>
+      <name>Special Modification: Improved AP</name>
+      <mount />
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>BTB</source>
+      <page>161</page>
+      <rating>0</rating>
+      <ap>-1</ap>
+      <required>
+        <oneof>
+          <specialmodificationlimit>1</specialmodificationlimit>
+        </oneof>
+      </required>
+    </accessory>
+    <accessory>
+      <id>56b17280-27c6-414a-9957-f628ae5efefa</id>
+      <name>Special Modification: Improved Accuracy</name>
+      <mount />
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>BTB</source>
+      <page>161</page>
+      <rating>0</rating>
+      <accuracy>1</accuracy>
+      <specialmodification>True</specialmodification>
+      <required>
+        <oneof>
+          <specialmodificationlimit>1</specialmodificationlimit>
+        </oneof>
+      </required>
+    </accessory>
+    <accessory>
+      <id>9084d801-c654-4eec-960e-4186a6de81d6</id>
+      <name>Special Modification: Improved Ammunition Capacity</name>
+      <mount />
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>BTB</source>
+      <page>161</page>
+      <rating>0</rating>
+      <modifyammocapacity>* 1.5</modifyammocapacity>
+      <specialmodification>True</specialmodification>
+      <required>
+        <oneof>
+          <specialmodificationlimit>1</specialmodificationlimit>
+        </oneof>
+      </required>
+    </accessory>
+    <accessory>
+      <id>93be91c1-3f77-4e7b-9ac2-eb349b76d017</id>
+      <name>Special Modification: Improved Concealment</name>
+      <mount />
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>BTB</source>
+      <page>161</page>
+      <rating>0</rating>
+      <conceal>1</conceal>
+      <specialmodification>True</specialmodification>
+      <required>
+        <oneof>
+          <specialmodificationlimit>1</specialmodificationlimit>
+        </oneof>
+      </required>
+    </accessory>
+    <accessory>
+      <id>3c82e17b-76cd-47b9-9bda-c3131a64e0ee</id>
+      <name>Special Modification: Damage</name>
+      <mount />
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>BTB</source>
+      <page>161</page>
+      <rating>0</rating>
+      <damage>1</damage>
+      <specialmodification>True</specialmodification>
+      <required>
+        <oneof>
+          <specialmodificationlimit>2</specialmodificationlimit>
+        </oneof>
+      </required>
+    </accessory>
+    <accessory>
+      <id>15d159e8-d3db-4cf3-8964-0eb2235ed6c2</id>
+      <name>Special Modification: Improved Reach</name>
+      <mount />
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>BTB</source>
+      <page>161</page>
+      <rating>0</rating>
+      <reach>1</reach>
+      <required>
+        <oneof>
+          <specialmodificationlimit>1</specialmodificationlimit>
+        </oneof>
+      </required>
+    </accessory>
+    <accessory>
+      <id>09abdea8-df9a-4e74-86aa-0f79ce96f422</id>
+      <name>Special Modification: Improved Recoil Comp</name>
+      <mount />
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>BTB</source>
+      <page>161</page>
+      <rating>0</rating>
+      <rc>1</rc>
+      <required>
+        <oneof>
+          <specialmodificationlimit>1</specialmodificationlimit>
+        </oneof>
+      </required>
+    </accessory>
+    <!-- End Region -->
     <!-- End Region -->
     <!-- Region Datapuls Sota 2080 -->
     <accessory>
