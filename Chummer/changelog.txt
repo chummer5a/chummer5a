@@ -14,6 +14,7 @@ Application Fixes:
 - Fixed an issue with traditions not probably updating.
 - Fixed issues with use of Essence Antiholes in create mode that prevented them from working reliably.
 - Fixed an issue with the selectatributes improvement that caused it to improperly allow Exceptional Attribute to select Edge.
+- Fixed issues with Dedicated Spellslinger not working properly in career mode.
 
 Application Changes:
 
