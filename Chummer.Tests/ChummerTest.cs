@@ -19,7 +19,11 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Xml.Schema;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Org.XmlUnit;
+using Org.XmlUnit.Builder;
+using Org.XmlUnit.Diff;
 
 namespace Chummer.Tests
 {
@@ -80,6 +84,60 @@ namespace Chummer.Tests
                 };
                 Assert.IsTrue(c.Load());
             }
+            //objTestPath.Delete(true);
+        }
+
+        [TestMethod]
+        public void LoadSaveCompare()
+        {
+            Debug.WriteLine("Unit test initialized for: LoadCharacter()");
+
+            string strPath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, "TestFiles");
+            string strTestPath = Path.Combine(strPath, DateTime.Now.ToString("yyyy-MM-dd-HH-mm", GlobalOptions.InvariantCultureInfo));
+            DirectoryInfo objTestPath = Directory.CreateDirectory(strTestPath);
+            DirectoryInfo objPathInfo = new DirectoryInfo(strPath);//Assuming Test is your Folder
+            FileInfo[] aobjFiles = objPathInfo.GetFiles("*.chum5"); //Getting Text files
+            foreach (FileInfo objFileInfo in aobjFiles)
+            {
+                Character c = LoadCharacter(objFileInfo);
+                FileStream controlFileStream = File.Open(objFileInfo.FullName,
+                    FileMode.Open, FileAccess.Read);
+                string destination = Path.Combine(objTestPath.FullName, objFileInfo.Name);
+
+                SaveCharacter(c, destination);
+
+                FileStream testFileStream = File.Open(destination,
+                    FileMode.Open, FileAccess.Read);
+
+                try
+                {
+                    var myDiff = DiffBuilder
+                        .Compare(controlFileStream)
+                        .WithTest(testFileStream)
+                        .WithNodeFilter(x => !x.Name.Equals("appversion"))
+                        .CheckForSimilar()
+                        .WithNodeMatcher(new DefaultNodeMatcher(ElementSelectors.Or(ElementSelectors.ByNameAndText,
+                            ElementSelectors.ByName)))
+                        .IgnoreWhitespace()
+                        .Build();
+                    foreach (Difference diff in myDiff.Differences)
+                    {
+                        Console.WriteLine(diff.Comparison);
+                        Console.WriteLine();
+                    }
+                    Assert.IsFalse(myDiff.HasDifferences(), myDiff.ToString());
+
+                }
+                catch (XmlSchemaException e)
+                {
+                    Assert.Fail("Unexpected validation failure: " + e.Message);
+                }
+                finally
+                {
+                    controlFileStream.Close();
+                    testFileStream.Close();
+                }
+            }
             objTestPath.Delete(true);
         }
 
@@ -98,19 +156,7 @@ namespace Chummer.Tests
                 };
                 Assert.IsTrue(objCharacter.Load());
                 Debug.WriteLine("Character loaded: " + c.Name);
-                /*
-                if (c.Created)
-                {
-                    frmCareer _ = new frmCareer(c);
-                    //SINnersUsercontrol sINnersUsercontrol = new SINnersUsercontrol(career);
-                    //sINnersUsercontrol.UploadSINnerAsync();
-                }
-                else
-                {
-                    frmCreate _ = new frmCreate(c);
-                }
-                Debug.WriteLine("Test Form Created: " + c.Name);
-                */
+                c = objCharacter;
             }
             catch (AssertFailedException e)
             {
