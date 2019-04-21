@@ -17764,10 +17764,8 @@
       </bonus>
       <forbidden>
         <oneof>
-          <attributetotal>
-            <attributes>RES+MAG</attributes>
-            <val>1</val>
-          </attributetotal>
+          <magenabled />
+          <resenabled />
         </oneof>
       </forbidden>
       <required>
@@ -17797,10 +17795,8 @@
       </bonus>
       <forbidden>
         <oneof>
-          <attributetotal>
-            <attributes>RES+MAG</attributes>
-            <val>1</val>
-          </attributetotal>
+          <magenabled />
+          <resenabled />
         </oneof>
       </forbidden>
       <source>BTB</source>

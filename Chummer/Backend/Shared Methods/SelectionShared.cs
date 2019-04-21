@@ -1869,7 +1869,7 @@ namespace Chummer
                     }
                 case "metamagicart":
                 case "art":
-                {
+                    {
                     // Street Grimoire adds High Arts, which group metamagics and such together. If we're ignoring this requirement 
                     if (objCharacter.Options.IgnoreArt)
                     {
@@ -1959,6 +1959,15 @@ namespace Chummer
                             : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_Art", GlobalOptions.Language)})";
                         return false;
                     }
+                }
+                case "magenabled":
+                {
+                    // Character must be Awakened.
+                    if (blnShowMessage)
+                        strName = Environment.NewLine + '\t' +
+                                  LanguageManager.GetString("String_AttributeMAGLong", GlobalOptions.Language) +
+                                  " >= 1";
+                    return objCharacter.MAGEnabled;
                 }
                 case "metatype":
                     {
@@ -2057,6 +2066,11 @@ namespace Chummer
                             : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_Quality", GlobalOptions.Language)})";
                         return false;
                     }
+                case "resenabled":
+                    // Character must be Emerged.
+                    if (blnShowMessage)
+                        strName = Environment.NewLine + '\t' + LanguageManager.GetString("String_AttributeRESLong", GlobalOptions.Language) + " >= 1";
+                    return objCharacter.RESEnabled;
                 case "skill":
                     {
                         string strSpec = xmlNode.SelectSingleNode("spec")?.Value;
@@ -2164,6 +2178,38 @@ namespace Chummer
                         }
                         return intTotal >= Convert.ToInt32(xmlNode.SelectSingleNode("val")?.Value);
                     }
+                case "specialmodificationlimit":
+                {
+                    // Add in the cost of all child components.
+                    int intMods = 0;
+                    object intLock = new object();
+                    Parallel.ForEach(objCharacter.Weapons, objChild =>
+                    {
+                        int i = objChild.WeaponAccessories.Count(y => y.SpecialModification);
+                        lock (intLock)
+                            intMods += i;
+                    });
+                    Parallel.ForEach(objCharacter.Vehicles, objVehicle =>
+                    {
+                        int i = objVehicle.Weapons.SelectMany(x => x.WeaponAccessories).Count(y => y.SpecialModification);
+                        lock (intLock)
+                            intMods += i;
+
+                        Parallel.ForEach(objVehicle.WeaponMounts, objMount =>
+                        {
+                            int j = objMount.Weapons.SelectMany(x => x.WeaponAccessories).Count(y => y.SpecialModification);
+                            lock (intLock)
+                                intMods += i;
+                        });
+                    });
+                    if (blnShowMessage)
+                    {
+                        strName =
+                            $"{Environment.NewLine}{'\t'}{LanguageManager.GetString("String_SpecialModificationLimit")} >= {strNodeInnerText}";
+                    }
+
+                    return (intMods + Convert.ToInt32(strNodeInnerText)) <= objCharacter.SpecialModificationLimit;
+                }
                 case "spell":
                     {
                         Spell objSpell = objCharacter.Spells.FirstOrDefault(x => x.Name == strNodeInnerText);
@@ -2241,6 +2287,8 @@ namespace Chummer
                     }
                     return objCharacter.Weapons.Any(w => w.Name == strNodeInnerText);
                 }
+                case "accessory":
+                    return true;
                 default:
                     Utils.BreakIfDebug();
                     break;
