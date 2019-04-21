@@ -79,14 +79,14 @@ namespace Chummer
             RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey("Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION");
             if (objRegistry != null)
             {
-                objRegistry.SetValue(AppDomain.CurrentDomain.FriendlyName, 0x1F40, RegistryValueKind.DWord);
+                objRegistry.SetValue(AppDomain.CurrentDomain.FriendlyName, GlobalOptions.EmulatedBrowserVersion * 1000, RegistryValueKind.DWord);
                 objRegistry.Close();
             }
 
             objRegistry = Registry.CurrentUser.CreateSubKey("Software\\WOW6432Node\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION");
             if (objRegistry != null)
             {
-                objRegistry.SetValue(AppDomain.CurrentDomain.FriendlyName, 0x1F40, RegistryValueKind.DWord);
+                objRegistry.SetValue(AppDomain.CurrentDomain.FriendlyName, GlobalOptions.EmulatedBrowserVersion * 1000, RegistryValueKind.DWord);
                 objRegistry.Close();
             }
 

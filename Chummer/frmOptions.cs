@@ -803,6 +803,7 @@ namespace Chummer
             GlobalOptions.DefaultCharacterSheet = cboXSLT.SelectedValue?.ToString() ?? GlobalOptions.DefaultCharacterSheetDefaultValue;
             GlobalOptions.DatesIncludeTime = chkDatesIncludeTime.Checked;
             GlobalOptions.PrintToFileFirst = chkPrintToFileFirst.Checked;
+            GlobalOptions.EmulatedBrowserVersion = decimal.ToInt32(nudBrowserVersion.Value);
             GlobalOptions.PDFAppPath = txtPDFAppPath.Text;
             GlobalOptions.PDFParameters = cboPDFParameters.SelectedValue?.ToString() ?? string.Empty;
             GlobalOptions.LifeModuleEnabled = chkLifeModule.Checked;
@@ -841,6 +842,7 @@ namespace Chummer
                 objRegistry.SetValue("defaultbuildmethod", cboBuildMethod.SelectedValue?.ToString() ?? GlobalOptions.DefaultBuildMethodDefaultValue);
                 objRegistry.SetValue("datesincludetime", chkDatesIncludeTime.Checked.ToString());
                 objRegistry.SetValue("printtofilefirst", chkPrintToFileFirst.Checked.ToString());
+                objRegistry.SetValue("emulatedbrowserversion", nudBrowserVersion.Value.ToString());
                 objRegistry.SetValue("pdfapppath", txtPDFAppPath.Text);
                 objRegistry.SetValue("pdfparameters", cboPDFParameters.SelectedValue.ToString());
                 objRegistry.SetValue("lifemodule", chkLifeModule.Checked.ToString());
@@ -1149,6 +1151,12 @@ namespace Chummer
             cboPDFParameters.EndUpdate();
         }
 
+
+        private void nudBrowserVersion_ValueChanged(object sender, EventArgs e)
+        {
+            OptionsChanged(sender, e);
+        }
+
         private void SetToolTips()
         {
             const int width = 100;
@@ -1357,6 +1365,7 @@ namespace Chummer
             chkDronemods.Checked = GlobalOptions.Dronemods;
             chkDronemodsMaximumPilot.Checked = GlobalOptions.DronemodsMaximumPilot;
             chkPrintToFileFirst.Checked = GlobalOptions.PrintToFileFirst;
+            nudBrowserVersion.Value = GlobalOptions.EmulatedBrowserVersion;
             txtPDFAppPath.Text = GlobalOptions.PDFAppPath;
             txtCharacterRosterPath.Text = GlobalOptions.CharacterRosterPath;
             chkHideCharacterRoster.Checked = GlobalOptions.HideCharacterRoster;

@@ -60,6 +60,7 @@ namespace Chummer
             this.lblPDFParametersLabel = new System.Windows.Forms.Label();
             this.cboPDFParameters = new Chummer.ElasticComboBox();
             this.txtPDFAppPath = new System.Windows.Forms.TextBox();
+			this.nudBrowserVersion = new System.Windows.Forms.NumericUpDown();
             this.grpSelectedSourcebook = new System.Windows.Forms.GroupBox();
             this.tlpSelectedSourcebook = new Chummer.BufferedTableLayoutPanel();
             this.txtPDFLocation = new System.Windows.Forms.TextBox();
@@ -546,6 +547,7 @@ namespace Chummer
             this.tlpGlobal.Controls.Add(this.lblPDFParametersLabel, 1, 18);
             this.tlpGlobal.Controls.Add(this.cboPDFParameters, 2, 18);
             this.tlpGlobal.Controls.Add(this.txtPDFAppPath, 2, 19);
+			this.tlpGlobal.Controls.Add(this.nudBrowserVersion, 2, 20);
             this.tlpGlobal.Controls.Add(this.grpSelectedSourcebook, 1, 20);
             this.tlpGlobal.Controls.Add(this.cboLanguage, 3, 0);
             this.tlpGlobal.Controls.Add(this.cboSheetLanguage, 3, 1);
@@ -920,6 +922,27 @@ namespace Chummer
             this.txtPDFAppPath.TabIndex = 10;
             this.txtPDFAppPath.TextChanged += new System.EventHandler(this.OptionsChanged);
             // 
+			// nudBrowserVersion
+			//
+			this.nudBrowserVersion.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.tlpGlobal.SetColumnSpan(this.nudBrowserVersion, 3);
+			this.nudBrowserVersion.Location = new System.Drawing.Point(467, 469);
+			this.nudBrowserVersion.Minimum = new decimal(new int[] {
+            8,
+            0,
+            0,
+            0});
+			this.nudBrowserVersion.Maximum = new decimal(new int[] {
+            11,
+            0,
+            0,
+            0});
+			this.nudBrowserVersion.Name = "nudBrowserVersion";
+			this.nudBrowserVersion.Size = new System.Drawing.Size(36, 20);
+			this.nudBrowserVersion.TabIndex = 26;
+			this.nudBrowserVersion.ValueChanged += new System.EventHandler(this.nudBrowserVersion_ValueChanged);
+			// 
             // grpSelectedSourcebook
             // 
             this.grpSelectedSourcebook.AutoSize = true;
@@ -4856,5 +4879,6 @@ namespace Chummer
         private System.Windows.Forms.Panel panelPluginOption;
         private System.Windows.Forms.CheckBox chkIgnoreComplexFormLimit;
         private System.Windows.Forms.CheckBox chkAllowEasterEggs;
+        private System.Windows.Forms.NumericUpDown nudBrowserVersion;
     }
 }
