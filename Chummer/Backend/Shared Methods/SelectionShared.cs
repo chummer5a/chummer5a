@@ -1424,7 +1424,7 @@ namespace Chummer
                     foreach (XPathNavigator xmlForbiddenItemNode in objXmlOneOf.SelectChildren(XPathNodeType.Element))
                     {
                         // The character is not allowed to take the Quality, so display a message and uncheck the item.
-                        if (xmlForbiddenItemNode.TestNodeRequirements(objCharacter, out string strName, strIgnoreQuality, blnShowMessage))
+                        if (xmlForbiddenItemNode.TestNodeRequirements(objCharacter, objParent, out string strName, strIgnoreQuality, blnShowMessage))
                         {
                             if (blnShowMessage)
                             {
@@ -1450,7 +1450,7 @@ namespace Chummer
                     StringBuilder objThisRequirement = new StringBuilder(Environment.NewLine + LanguageManager.GetString("Message_SelectQuality_OneOf", GlobalOptions.Language));
                     foreach (XPathNavigator xmlRequiredItemNode in objXmlOneOf.SelectChildren(XPathNodeType.Element))
                     {
-                        if (xmlRequiredItemNode.TestNodeRequirements(objCharacter, out string strName, strIgnoreQuality, blnShowMessage))
+                        if (xmlRequiredItemNode.TestNodeRequirements(objCharacter, objParent, out string strName, strIgnoreQuality, blnShowMessage))
                         {
                             blnOneOfMet = true;
                             break;
@@ -1478,7 +1478,7 @@ namespace Chummer
                         foreach (XPathNavigator xmlRequiredItemNode in objXmlAllOf.SelectChildren(XPathNodeType.Element))
                         {
                             // If this item was not found, fail the AllOfMet condition.
-                            if (!xmlRequiredItemNode.TestNodeRequirements(objCharacter, out string strName, strIgnoreQuality, blnShowMessage))
+                            if (!xmlRequiredItemNode.TestNodeRequirements(objCharacter, objParent, out string strName, strIgnoreQuality, blnShowMessage))
                             {
                                 blnAllOfMet = false;
                                 if (blnShowMessage)
@@ -1512,7 +1512,7 @@ namespace Chummer
             return true;
         }
 
-        public static bool TestNodeRequirements(this XPathNavigator xmlNode, Character objCharacter, out string strName, string strIgnoreQuality = "", bool blnShowMessage = true)
+        public static bool TestNodeRequirements(this XPathNavigator xmlNode, Character objCharacter, object objParent, out string strName, string strIgnoreQuality = "", bool blnShowMessage = true)
         {
             strName = string.Empty;
             if (xmlNode == null || objCharacter == null)
@@ -1772,7 +1772,7 @@ namespace Chummer
                         string strResultName = string.Empty;
                         foreach (XPathNavigator xmlChildNode in xmlNode.SelectChildren(XPathNodeType.Element))
                         {
-                            blnResult = xmlChildNode.TestNodeRequirements(objCharacter, out strResultName, strIgnoreQuality, blnShowMessage);
+                            blnResult = xmlChildNode.TestNodeRequirements(objCharacter, objParent, out strResultName, strIgnoreQuality, blnShowMessage);
                             if (!blnResult)
                             {
                                 break;
@@ -1789,7 +1789,7 @@ namespace Chummer
                     string strResultName = LanguageManager.GetString("Message_SelectQuality_OneOf", GlobalOptions.Language);
                     foreach (XPathNavigator xmlChildNode in xmlNode.SelectChildren(XPathNodeType.Element))
                     {
-                        blnResult = xmlChildNode.TestNodeRequirements(objCharacter, out string strLoopResult, strIgnoreQuality, blnShowMessage);
+                        blnResult = xmlChildNode.TestNodeRequirements(objCharacter, objParent, out string strLoopResult, strIgnoreQuality, blnShowMessage);
                         if (blnResult)
                         {
                             break;
@@ -2287,8 +2287,10 @@ namespace Chummer
                     }
                     return objCharacter.Weapons.Any(w => w.Name == strNodeInnerText);
                 }
-                case "accessory":
-                    return true;
+                case "accessory" when objParent is Weapon objWeapon:
+                {
+                    return objWeapon.WeaponAccessories.Any(objAccessory => objAccessory.Name == strNodeInnerText);
+                }
                 default:
                     Utils.BreakIfDebug();
                     break;

@@ -116,7 +116,7 @@ namespace Chummer
                     }
                 }
 
-                if (!objXmlAccessory.RequirementsMet(_objCharacter, string.Empty, string.Empty)) continue;
+                if (!objXmlAccessory.RequirementsMet(_objCharacter, _objParentWeapon, string.Empty, string.Empty)) continue;
 
                 XPathNavigator xmlTestNode = objXmlAccessory.SelectSingleNode("forbidden/weapondetails");
                 if (xmlTestNode != null)
@@ -134,47 +134,6 @@ namespace Chummer
                     if (!xmlParentWeaponDataNode.ProcessFilterOperationNode(xmlTestNode, false))
                     {
                         continue;
-                    }
-                }
-
-                xmlTestNode = objXmlAccessory.SelectSingleNode("forbidden/oneof");
-                XPathNodeIterator objXmlForbiddenList = xmlTestNode?.Select("accessory");
-                if (objXmlForbiddenList?.Count > 0)
-                {
-                    //Add to set for O(N log M) runtime instead of O(N * M)
-
-                    HashSet<string> objForbiddenAccessory = new HashSet<string>();
-                    foreach (XPathNavigator node in objXmlForbiddenList)
-                    {
-                        objForbiddenAccessory.Add(node.Value);
-                    }
-
-                    if (_objParentWeapon.WeaponAccessories.Any(objAccessory =>
-                        objForbiddenAccessory.Contains(objAccessory.Name)))
-                    {
-                        continue;
-                    }
-                }
-
-                xmlTestNode = objXmlAccessory.SelectSingleNode("required/oneof");
-                if (xmlTestNode != null)
-                {
-                    XPathNodeIterator objXmlRequiredList = xmlTestNode.Select("accessory");
-                    if (objXmlRequiredList.Count > 0)
-                    {
-                        //Add to set for O(N log M) runtime instead of O(N * M)
-
-                        HashSet<string> objRequiredAccessory = new HashSet<string>();
-                        foreach (XPathNavigator node in objXmlRequiredList)
-                        {
-                            objRequiredAccessory.Add(node.Value);
-                        }
-
-                        if (!_objParentWeapon.WeaponAccessories.Any(objAccessory =>
-                            objRequiredAccessory.Contains(objAccessory.Name)))
-                        {
-                            continue;
-                        }
                     }
                 }
 
