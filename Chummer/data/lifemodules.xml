@@ -11142,7 +11142,7 @@
         </version>
         <version>
           <id>614be459-0eb9-4eb8-b75f-92b6520d6661</id>
-          <name></name>
+          <name>SINless</name>
           <bonus>
             <attributelevel>
               <name>REA</name>
@@ -11156,7 +11156,7 @@
         </version>
         <version>
           <id>c36e13c7-561b-4fe5-9335-7f300b5b70fe</id>
-          <name></name>
+          <name>Zulu Nation</name>
           <bonus>
             <attributelevel>
               <name>CHA</name>
@@ -12662,7 +12662,7 @@
       <id>2dff667c-7d61-496c-9999-cffdebb56007</id>
       <stage>Teen Years</stage>
       <category>LifeModule</category>
-      <name></name>
+      <name>ATH133T</name>
       <karma>50</karma>
       <bonus>
         <attributelevel>
