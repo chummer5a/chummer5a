@@ -1391,7 +1391,7 @@ namespace Chummer
             0,
             0});
             this.nudBrowserVersion.Name = "nudBrowserVersion";
-            this.nudBrowserVersion.Size = new System.Drawing.Size(101, 20);
+            this.nudBrowserVersion.Size = new System.Drawing.Size(40, 20);
             this.nudBrowserVersion.TabIndex = 54;
             this.nudBrowserVersion.Value = new decimal(new int[] {
             8,
