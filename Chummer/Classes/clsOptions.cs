@@ -174,7 +174,7 @@ namespace Chummer
         private static string _strDefaultCharacterSheet = DefaultCharacterSheetDefaultValue;
         private static bool _blnDatesIncludeTime = true;
         private static bool _blnPrintToFileFirst;
-        private static int _intEmulatedBrowserVersion;
+        private static int _intEmulatedBrowserVersion = 8;
         private static bool _lifeModuleEnabled;
         private static bool _blnDronemods;
         private static bool _blnDronemodsMaximumPilot;

@@ -1151,12 +1151,6 @@ namespace Chummer
             cboPDFParameters.EndUpdate();
         }
 
-
-        private void nudBrowserVersion_ValueChanged(object sender, EventArgs e)
-        {
-            OptionsChanged(sender, e);
-        }
-
         private void SetToolTips()
         {
             const int width = 100;
@@ -1347,7 +1341,6 @@ namespace Chummer
             lstSheetLanguages.Sort(CompareListItems.CompareNames);
 
             return lstSheetLanguages;
-
         }
 
         private void PopulateGlobalOptions()

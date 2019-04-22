@@ -7765,6 +7765,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Apply Linux printing fix</text>
     </string>
     <string>
+      <key>Label_Options_BrowserVersion</key>
+      <text>Preview uses Internet Explorer version</text>
+    </string>
+    <string>
       <key>Label_Options_EssenceDecimals</key>
       <text>Number of decimal places to round Essence to:</text>
     </string>
