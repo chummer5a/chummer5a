@@ -9522,5 +9522,9 @@
 			<key>Menu_Main_SINners</key>
 			<text>SINners</text>
 		</string>
+		<string>
+			<key>String_SpecialModificationLimit</key>
+			<text>Maximum für Spezialmodifikationen</text>
+		</string>
 	</strings>
 </chummer>
