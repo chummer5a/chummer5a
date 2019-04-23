@@ -20655,7 +20655,7 @@
 					</choice>
 				</choices>
 				<altadvantage>Allgemein: +2 Würfel für Proben auf Erste Hilfe</altadvantage>
-				<altdisadvantage>Immer wenn ein Anhänger der Großen Mutter absichtlich oder unabsichtlich dem lebensspendenden Wesen der Natur (seiner Auslegung) zuwiderhandelt, erleidet er einen Würfelpoolmodifikator von -1 auf alle Handlungen bis er seine Zuwiderhandlung wiedergutgemacht hat.</altdisadvantage>
+				<altdisadvantage>Anhänger der Großen Mutter sind Liebhaber und Heiler, keine Kämpfer. Dadurch leiden sie unter einem –1 Würfel-Pool Modifikator für alle Aktionen, die mit Kämpfen in Verbindung stehen (Kampffertigkeit, oder einen Zauberspruch aus der Kategorie Kampf).</altdisadvantage>
 				<altpage>33</altpage>
 			</mentor>    
 			<mentor>
@@ -45172,6 +45172,48 @@
 				<name>Plastic Components 6</name>
 				<translate>Plastik-Komponenten 6</translate>
 				<altpage>12</altpage>
+			</accessory>
+			<accessory>
+				<id>b741b729-106e-46f2-9143-0f745fd48789</id>
+				<name>Special Modification: Improved AP</name>
+				<translate>Spezialmodifikation: Verbesserte DK</translate>
+				<altpage>167</altpage>
+			</accessory>
+			<accessory>
+				<id>56b17280-27c6-414a-9957-f628ae5efefa</id>
+				<name>Special Modification: Improved Accuracy</name>
+				<translate>Spezialmodifikation: Verbesserte Präzision</translate>
+				<altpage>167</altpage>
+			</accessory>
+			<accessory>
+				<id>9084d801-c654-4eec-960e-4186a6de81d6</id>
+				<name>Special Modification: Improved Ammunition Capacity</name>
+				<translate>Spezialmodifikation: Verbesserter Munitionsvorrat</translate>
+				<altpage>167</altpage>
+			</accessory>
+			<accessory>
+				<id>93be91c1-3f77-4e7b-9ac2-eb349b76d017</id>
+				<name>Special Modification: Improved Concealment</name>
+				<translate>Spezialmodifikation: Verbesserter Tarnmodifikator</translate>
+				<altpage>167</altpage>
+			</accessory>
+			<accessory>
+				<id>3c82e17b-76cd-47b9-9bda-c3131a64e0ee</id>
+				<name>Special Modification: Damage</name>
+				<translate>Spezialmodifikation: Verbesserter Schadenscode</translate>
+				<altpage>167</altpage>
+			</accessory>
+			<accessory>
+				<id>15d159e8-d3db-4cf3-8964-0eb2235ed6c2</id>
+				<name>Special Modification: Improved Reach</name>
+				<translate>Spezialmodifikation: Verbesserte Reichweite</translate>
+				<altpage>167</altpage>
+			</accessory>
+			<accessory>
+				<id>09abdea8-df9a-4e74-86aa-0f79ce96f422</id>
+				<name>Special Modification: Improved Recoil Comp</name>
+				<translate>Spezialmodifikation: Verbesserte Rückstoßkompensation</translate>
+				<altpage>167</altpage>
 			</accessory>
 		</accessories>
 	</chummer>
