@@ -174,6 +174,7 @@ namespace Chummer
         private static string _strDefaultCharacterSheet = DefaultCharacterSheetDefaultValue;
         private static bool _blnDatesIncludeTime = true;
         private static bool _blnPrintToFileFirst;
+        private static int _intEmulatedBrowserVersion = 8;
         private static bool _lifeModuleEnabled;
         private static bool _blnDronemods;
         private static bool _blnDronemodsMaximumPilot;
@@ -407,6 +408,9 @@ namespace Chummer
             // Whether or not printouts should be sent to a file before loading them in the browser. This is a fix for getting printing to work properly on Linux using Wine.
             LoadBoolFromRegistry(ref _blnPrintToFileFirst, "printtofilefirst");
 
+            // Which version of the Internet Explorer's rendering engine will be emulated for rendering the character view.
+            LoadInt32FromRegistry(ref _intEmulatedBrowserVersion, "emulatedbrowserversion");
+
             // Default character sheet.
             LoadStringFromRegistry(ref _strDefaultCharacterSheet, "defaultsheet");
             if(_strDefaultCharacterSheet == "Shadowrun (Rating greater 0)")
@@ -634,6 +638,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Which version of the Internet Explorer's rendering engine will be emulated for rendering the character view. Defaults to 8
+        /// </summary>
+        public static int EmulatedBrowserVersion
+        {
+            get => _intEmulatedBrowserVersion;
+            set => _intEmulatedBrowserVersion = value;
+        }
+
+        /// <summary>
         /// Omae user name.
         /// </summary>
         public static string OmaeUserName
@@ -782,6 +795,7 @@ namespace Chummer
             get => _strPDFParameters;
             set => _strPDFParameters = value;
         }
+
         /// <summary>
         /// List of SourcebookInfo.
         /// </summary>

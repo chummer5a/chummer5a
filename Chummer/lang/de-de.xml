@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -6572,6 +6572,10 @@
 			<key>Checkbox_Option_PrintToFileFirst</key>
 			<text>Linux Druckfehler-Fix nutzen</text>
 		</string>
+		<string>
+      <key>Label_Options_BrowserVersion</key>
+      <text>Internet-Explorer-Version für Vorschau</text>
+    </string>
 		<string>
 			<key>Checkbox_Aerodynamic</key>
 			<text>Aerodynamisch</text>
