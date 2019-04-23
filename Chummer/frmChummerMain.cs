@@ -600,17 +600,15 @@ namespace Chummer
             Process.Start("https://github.com/chummer5a/chummer5a/issues/");
         }
 
-        private frmPrintMultiple _frmPrintMultipleCharacters;
+		public frmPrintMultiple PrintMultipleCharactersForm { get; private set; }
 
-        public frmPrintMultiple PrintMultipleCharactersForm => _frmPrintMultipleCharacters;
-
-        private void mnuFilePrintMultiple_Click(object sender, EventArgs e)
+		private void mnuFilePrintMultiple_Click(object sender, EventArgs e)
         {
-            if(_frmPrintMultipleCharacters == null)
-                _frmPrintMultipleCharacters = new frmPrintMultiple();
+            if(PrintMultipleCharactersForm == null || PrintMultipleCharactersForm.IsDisposed)
+                PrintMultipleCharactersForm = new frmPrintMultiple();
             else
-                _frmPrintMultipleCharacters.Activate();
-            _frmPrintMultipleCharacters.Show(this);
+                PrintMultipleCharactersForm.Activate();
+            PrintMultipleCharactersForm.Show(this);
         }
 
         private void mnuHelpRevisionHistory_Click(object sender, EventArgs e)

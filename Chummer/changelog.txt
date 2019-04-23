@@ -16,6 +16,7 @@ Application Fixes:
 - Fixed issues with use of Essence Antiholes in create mode that prevented them from working reliably.
 - Fixed an issue with the selectatributes improvement that caused it to improperly allow Exceptional Attribute to select Edge.
 - Fixed issues with Dedicated Spellslinger not working properly in career mode.
+- Fixed a crash when opening the Print Multiple Characters dialog multiple times.
 
 Application Changes:
 
