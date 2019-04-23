@@ -2926,7 +2926,6 @@
           <free />
           <group />
           <forcegroup />
-          <canwrite />
         </addcontact>
       </bonus>
       <source>RF</source>

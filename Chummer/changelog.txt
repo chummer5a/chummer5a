@@ -43,6 +43,7 @@ Data Changes:
 - Fixed incorrect restrictions on the Special Modications and Prototype Materials qualities. 
 - Removed incorrrect mundane restriction on the Quadriplegic quality.
 - Fixed behaviour of partial cyberlimbs giving incorrect condition monitor boxes.
+Removed <canwrite /> from the Made Man quality; this improperly allowed for the group to be removed from the character.
 
 String Changes:
 
