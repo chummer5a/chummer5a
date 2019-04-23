@@ -90,6 +90,8 @@ namespace Chummer
             this.lstGlobalSourcebookInfos = new System.Windows.Forms.ListBox();
             this.imgLanguageFlag = new System.Windows.Forms.PictureBox();
             this.chkEnablePlugins = new System.Windows.Forms.CheckBox();
+            this.nudBrowserVersion = new System.Windows.Forms.NumericUpDown();
+            this.lblBrowserVersion = new System.Windows.Forms.Label();
             this.tabCharacterOptions = new System.Windows.Forms.TabPage();
             this.tlpCharacterOptions = new Chummer.BufferedTableLayoutPanel();
             this.treSourcebook = new System.Windows.Forms.TreeView();
@@ -314,6 +316,7 @@ namespace Chummer
             this.grpCharacterDefaults.SuspendLayout();
             this.tableLayoutPanel7.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imgLanguageFlag)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudBrowserVersion)).BeginInit();
             this.tabCharacterOptions.SuspendLayout();
             this.tlpCharacterOptions.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudNuyenDecimalsMinimum)).BeginInit();
@@ -565,6 +568,8 @@ namespace Chummer
             this.tlpGlobal.Controls.Add(this.lstGlobalSourcebookInfos, 0, 1);
             this.tlpGlobal.Controls.Add(this.imgLanguageFlag, 2, 0);
             this.tlpGlobal.Controls.Add(this.chkEnablePlugins, 4, 6);
+            this.tlpGlobal.Controls.Add(this.nudBrowserVersion, 3, 15);
+            this.tlpGlobal.Controls.Add(this.lblBrowserVersion, 1, 15);
             this.tlpGlobal.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpGlobal.Location = new System.Drawing.Point(9, 9);
             this.tlpGlobal.Name = "tlpGlobal";
@@ -1371,6 +1376,43 @@ namespace Chummer
             this.chkEnablePlugins.Text = "Enable Plugins (experimental)";
             this.chkEnablePlugins.UseVisualStyleBackColor = true;
             this.chkEnablePlugins.CheckedChanged += new System.EventHandler(this.chkEnablePlugins_CheckedChanged);
+            // 
+            // nudBrowserVersion
+            // 
+            this.nudBrowserVersion.Location = new System.Drawing.Point(489, 386);
+            this.nudBrowserVersion.Maximum = new decimal(new int[] {
+            11,
+            0,
+            0,
+            0});
+            this.nudBrowserVersion.Minimum = new decimal(new int[] {
+            8,
+            0,
+            0,
+            0});
+            this.nudBrowserVersion.Name = "nudBrowserVersion";
+            this.nudBrowserVersion.Size = new System.Drawing.Size(40, 20);
+            this.nudBrowserVersion.TabIndex = 54;
+            this.nudBrowserVersion.Value = new decimal(new int[] {
+            8,
+            0,
+            0,
+            0});
+            // 
+            // lblBrowserVersion
+            // 
+            this.lblBrowserVersion.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblBrowserVersion.AutoSize = true;
+            this.tlpGlobal.SetColumnSpan(this.lblBrowserVersion, 2);
+            this.lblBrowserVersion.Location = new System.Drawing.Point(304, 389);
+            this.lblBrowserVersion.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblBrowserVersion.Name = "lblBrowserVersion";
+            this.lblBrowserVersion.Size = new System.Drawing.Size(179, 17);
+            this.lblBrowserVersion.TabIndex = 53;
+            this.lblBrowserVersion.Tag = "Label_Options_BrowserVersion";
+            this.lblBrowserVersion.Text = "Browser Engine Version";
             // 
             // tabCharacterOptions
             // 
@@ -4496,6 +4538,7 @@ namespace Chummer
             this.grpCharacterDefaults.PerformLayout();
             this.tableLayoutPanel7.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.imgLanguageFlag)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudBrowserVersion)).EndInit();
             this.tabCharacterOptions.ResumeLayout(false);
             this.tabCharacterOptions.PerformLayout();
             this.tlpCharacterOptions.ResumeLayout(false);
@@ -4856,5 +4899,7 @@ namespace Chummer
         private System.Windows.Forms.Panel panelPluginOption;
         private System.Windows.Forms.CheckBox chkIgnoreComplexFormLimit;
         private System.Windows.Forms.CheckBox chkAllowEasterEggs;
+        private System.Windows.Forms.NumericUpDown nudBrowserVersion;
+        private System.Windows.Forms.Label lblBrowserVersion;
     }
 }
