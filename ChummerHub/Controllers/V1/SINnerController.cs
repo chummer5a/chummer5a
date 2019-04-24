@@ -317,56 +317,6 @@ namespace ChummerHub.Controllers.V1
             }
         }
 
-        // GET: api/ChummerFiles/5
-        [HttpGet("{id}", Name = "GetOwnedSINByAlias")]
-        [SwaggerResponseExample((int)HttpStatusCode.OK, typeof(SINnerExample))]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GetOwnedSINByAlias")]
-        [Authorize]
-        public async Task<ActionResult<List<SINner>>> GetOwnedSINByAlias([FromRoute] string id)
-        {
-            try
-            {
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
-                ApplicationUser user = null;
-                if (!String.IsNullOrEmpty(User?.Identity?.Name))
-                    user = await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
-                var sinseq = await _context.SINners
-                    .Include(a => a.MyExtendedAttributes)
-                    .Include(a => a.SINnerMetaData.Visibility.UserRights)
-                    .Include(a => a.MyGroup)
-                    .Include(b => b.MyGroup.MySettings)
-                    .Where(a => a.Alias == id).ToListAsync();
-                if (!sinseq.Any())
-                {
-                       return NotFound("SINner with Alias " + id + " does not exist.");
-                }
-                List<SINner> download = new List<SINner>();
-                foreach (var sin in sinseq)
-                {
-                    if ((user != null &&
-                                            sin.SINnerMetaData.Visibility.UserRights.Any(a =>
-                                                a.EMail.ToLowerInvariant() == user.Email.ToLowerInvariant())))
-                    {
-                        download.Add(sin);
-                    }
-                }
-
-                return Ok(download);
-            }
-            catch (Exception e)
-            {
-                if (e is HubException)
-                    throw;
-                HubException hue = new HubException("Exception in GetOwnedSINByAlias: " + e.Message, e);
-                throw hue;
-            }
-        }
 
         // PUT: api/ChummerFiles/5
         /// <summary>
