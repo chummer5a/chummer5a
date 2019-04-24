@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -6573,6 +6573,10 @@
 			<text>Linux Druckfehler-Fix nutzen</text>
 		</string>
 		<string>
+      <key>Label_Options_BrowserVersion</key>
+      <text>Internet-Explorer-Version für Vorschau</text>
+    </string>
+		<string>
 			<key>Checkbox_Aerodynamic</key>
 			<text>Aerodynamisch</text>
 		</string>
@@ -9509,6 +9513,22 @@
 		<string>
 			<key>Checkbox_Options_AllowEasterEggs</key>
 			<text>Ostereier erlauben</text>
+		</string>
+		<string>
+			<key>String_online</key>
+			<text>Online</text>
+		</string>
+		<string>
+			<key>Menu_Main_NPCs</key>
+			<text>NSCs</text>
+		</string>
+		<string>
+			<key>Menu_Main_SINners</key>
+			<text>SINners</text>
+		</string>
+		<string>
+			<key>String_SpecialModificationLimit</key>
+			<text>Maximum für Spezialmodifikationen</text>
 		</string>
 	</strings>
 </chummer>

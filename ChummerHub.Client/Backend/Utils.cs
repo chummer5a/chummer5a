@@ -704,6 +704,7 @@ namespace ChummerHub.Client.Backend
                 if (String.IsNullOrEmpty(objCache.FilePath))
                 { 
                     objCache.FilePath = await DownloadFileTask(sinner, objCache);
+
                 }
 
                 if (!String.IsNullOrEmpty(objCache.FilePath))
@@ -732,6 +733,7 @@ namespace ChummerHub.Client.Backend
                 {
                     PluginHandler.MainForm.CharacterRoster.UpdateCharacter(objCache);
                 });
+
                 treeViewEventArgs.Node.Text = objCache.CalculatedName();
             }
         }

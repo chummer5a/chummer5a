@@ -681,10 +681,10 @@ namespace Chummer.Classes
                     {
                         Log.Info("selectattribute");
 
-                        Log.Info("selectattribute = " + bonusNode.OuterXml);
+                        Log.Info("selectattribute = " + objXmlAttribute.OuterXml);
 
                         List<string> lstAbbrevs = new List<string>();
-                        XmlNodeList xmlAttributeList = bonusNode.SelectNodes("attribute");
+                        XmlNodeList xmlAttributeList = objXmlAttribute.SelectNodes("attribute");
                         if (xmlAttributeList?.Count > 0)
                         {
                             foreach (XmlNode objSubNode in xmlAttributeList)
@@ -693,7 +693,7 @@ namespace Chummer.Classes
                         else
                         {
                             lstAbbrevs.AddRange(AttributeSection.AttributeStrings);
-                            xmlAttributeList = bonusNode.SelectNodes("excludeattribute");
+                            xmlAttributeList = objXmlAttribute.SelectNodes("excludeattribute");
                             if (xmlAttributeList?.Count > 0)
                             {
                                 foreach (XmlNode objSubNode in xmlAttributeList)
@@ -6190,6 +6190,13 @@ namespace Chummer.Classes
         {
             Log.Info("spellresistance");
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.MetageneticLimit, _strUnique,
+                ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
+        public void specialmodificationlimit(XmlNode bonusNode)
+        {
+            Log.Info("spellresistance");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialModificationLimit, _strUnique,
                 ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 

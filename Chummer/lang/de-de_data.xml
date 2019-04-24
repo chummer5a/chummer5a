@@ -3264,10 +3264,9 @@
 			<book>
 				<id>b20a20e5-e9d4-4f54-9caa-57a001cb904e</id>
 				<name>Datapuls SOTA 2080 (German-exclusive)</name>
-				<translate>Datapuls SOTA 2080 (German-exclusive)</translate>
+				<translate>Datapuls SOTA 2080 (Deutsch-exklusiv)</translate>
 				<altcode>SOTG</altcode>
 			</book>			
-
 		</books>
 	</chummer>
 	<chummer file="critterpowers.xml">
@@ -9718,7 +9717,7 @@
 			<cyberware>
 				<id>0260f9dd-7f5b-4ed7-b2d5-bd89f3ada24f</id>
 				<name>Custom Heavy Pistol</name>
-				<translate>Ausgewählte schwere Pistole</translate>
+				<translate>Ausgewählte Schwere Pistole</translate>
 				<altpage>94</altpage>
 			</cyberware>
 			<cyberware>
@@ -9796,7 +9795,7 @@
 			<cyberware>
 				<id>1619b516-2909-46db-90f3-4ac1784acad5</id>
 				<name>Custom Submachine Gun</name>
-				<translate>Ausgewählter Maschinenpistole</translate>
+				<translate>Ausgewählte Maschinenpistole</translate>
 				<altpage>94</altpage>
 			</cyberware>
 			<cyberware>
@@ -10542,6 +10541,12 @@
 				<name>Autovoice (Hacked)</name>
 				<translate>Autostimme (gehackt)</translate>
 				<altpage>184</altpage>
+			</cyberware>
+			<cyberware translated="True">
+				<id>f05492b3-de9b-44c3-8622-89840587cc3a</id>
+				<name>Foot Blade</name>
+				<translate>Fußklinge</translate>
+				<altpage>178</altpage>
 			</cyberware>
 		</cyberwares>
 	</chummer>
@@ -14567,12 +14572,6 @@
 				<id>6ba3c374-0d8d-4458-81a5-c7f330cecae9</id>
 				<name>Spellcasting Focus, Manipulation (2050)</name>
 				<translate>Zauberspruchfocus, Manipulation</translate>
-				<altpage>207</altpage>
-			</gear>
-			<gear>
-				<id>26fe675a-35ec-4cdb-8a54-e0aae0efce74</id>
-				<name>Elemental Binding Materials (2050)</name>
-				<translate>Bindungsmaterial für Elementare</translate>
 				<altpage>207</altpage>
 			</gear>
 			<gear>
@@ -20656,7 +20655,7 @@
 					</choice>
 				</choices>
 				<altadvantage>Allgemein: +2 Würfel für Proben auf Erste Hilfe</altadvantage>
-				<altdisadvantage>Immer wenn ein Anhänger der Großen Mutter absichtlich oder unabsichtlich dem lebensspendenden Wesen der Natur (seiner Auslegung) zuwiderhandelt, erleidet er einen Würfelpoolmodifikator von -1 auf alle Handlungen bis er seine Zuwiderhandlung wiedergutgemacht hat.</altdisadvantage>
+				<altdisadvantage>Anhänger der Großen Mutter sind Liebhaber und Heiler, keine Kämpfer. Dadurch leiden sie unter einem –1 Würfel-Pool Modifikator für alle Aktionen, die mit Kämpfen in Verbindung stehen (Kampffertigkeit, oder einen Zauberspruch aus der Kategorie Kampf).</altdisadvantage>
 				<altpage>33</altpage>
 			</mentor>    
 			<mentor>
@@ -35361,7 +35360,7 @@
 			<spell>
 				<id>444adc27-26c7-4ff1-894f-a55fea22e24a</id>
 				<name>Trid Phantasm</name>
-				<translate>Trideotrugbild</translate>
+				<translate>Trideo-Trugbild</translate>
 				<altpage>284</altpage>
 			</spell>
 			<spell>
@@ -41965,7 +41964,7 @@
 			<weapon>
 				<id>fe835c72-a973-4976-bf5f-751aff1371d4</id>
 				<name>Spurs</name>
-				<translate>Sporen</translate>
+				<translate>Sporn</translate>
 				<altpage>425</altpage>
 			</weapon>
 			<weapon>
@@ -43314,7 +43313,7 @@
 			</weapon>
 			<weapon translated="True">
 				<id>431b07eb-8eb8-4091-a47c-5ffe8736bb50</id>
-				<name>Colt Manhunter</name>
+				<name>Colt Manhunter A1</name>
 				<translate>Colt Manhunter</translate>
 				<altpage>170</altpage>
 			</weapon>
@@ -43455,12 +43454,6 @@
 				<name>Ultamax MMG</name>
 				<translate>Ultimax MMG</translate>
 				<altpage>44</altpage>
-			</weapon>
-			<weapon>
-				<id>431b07eb-8eb8-4091-a47c-5ffe8736bb50</id>
-				<name>Colt Manhunter A1</name>
-				<translate>Colt Manhunter A1</translate>
-				<altpage>178</altpage>
 			</weapon>
 			<weapon>
 				<id>a1924b0d-3cc6-4a37-9783-c75145ca929e</id>
@@ -44737,12 +44730,6 @@
 				<altpage>50</altpage>
 			</accessory>
 			<accessory>
-				<id>627f212a-ac15-4739-afbc-f44676dfe508</id>
-				<name>Gecko Grip</name>
-				<translate>Geckogriff</translate>
-				<altpage>51</altpage>
-			</accessory>
-			<accessory>
 				<id>21bc8b85-3fd7-4bde-ac8d-35e1fa099f21</id>
 				<name>Improved Range Finder</name>
 				<translate>Verbesserter Entfernungsmesser</translate>
@@ -45185,6 +45172,48 @@
 				<name>Plastic Components 6</name>
 				<translate>Plastik-Komponenten 6</translate>
 				<altpage>12</altpage>
+			</accessory>
+			<accessory>
+				<id>b741b729-106e-46f2-9143-0f745fd48789</id>
+				<name>Special Modification: Improved AP</name>
+				<translate>Spezialmodifikation: Verbesserte DK</translate>
+				<altpage>167</altpage>
+			</accessory>
+			<accessory>
+				<id>56b17280-27c6-414a-9957-f628ae5efefa</id>
+				<name>Special Modification: Improved Accuracy</name>
+				<translate>Spezialmodifikation: Verbesserte Präzision</translate>
+				<altpage>167</altpage>
+			</accessory>
+			<accessory>
+				<id>9084d801-c654-4eec-960e-4186a6de81d6</id>
+				<name>Special Modification: Improved Ammunition Capacity</name>
+				<translate>Spezialmodifikation: Verbesserter Munitionsvorrat</translate>
+				<altpage>167</altpage>
+			</accessory>
+			<accessory>
+				<id>93be91c1-3f77-4e7b-9ac2-eb349b76d017</id>
+				<name>Special Modification: Improved Concealment</name>
+				<translate>Spezialmodifikation: Verbesserter Tarnmodifikator</translate>
+				<altpage>167</altpage>
+			</accessory>
+			<accessory>
+				<id>3c82e17b-76cd-47b9-9bda-c3131a64e0ee</id>
+				<name>Special Modification: Damage</name>
+				<translate>Spezialmodifikation: Verbesserter Schadenscode</translate>
+				<altpage>167</altpage>
+			</accessory>
+			<accessory>
+				<id>15d159e8-d3db-4cf3-8964-0eb2235ed6c2</id>
+				<name>Special Modification: Improved Reach</name>
+				<translate>Spezialmodifikation: Verbesserte Reichweite</translate>
+				<altpage>167</altpage>
+			</accessory>
+			<accessory>
+				<id>09abdea8-df9a-4e74-86aa-0f79ce96f422</id>
+				<name>Special Modification: Improved Recoil Comp</name>
+				<translate>Spezialmodifikation: Verbesserte Rückstoßkompensation</translate>
+				<altpage>167</altpage>
 			</accessory>
 		</accessories>
 	</chummer>
@@ -45841,6 +45870,12 @@
 				<name>Dodge</name>
 				<translate>Ausweichen</translate>
 				<altpage>Erhöht den Pool des Charakters zum Ausweichen um den angegebenen Wert.</altpage>
+			</improvement>
+			<improvement>
+				<id>spellcategory</id>
+				<name>Specific Spell Dicepool</name>
+				<translate>Spezieller Zauberwürfelpool</translate>
+				<altpage>Passt den Zauberpool des Charakters an, wenn er Zauber in der ausgewählten Kategorie wirkt. Positive Werte erhöhen die Fähigkeit für Zauber. Negative Werte reduzieren die Fähigkeit für Zauber.</altpage>
 			</improvement>
 		</improvements>
 	</chummer>

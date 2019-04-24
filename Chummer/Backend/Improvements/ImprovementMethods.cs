@@ -570,6 +570,8 @@ namespace Chummer
                     return objImprovementAdder.cyberadeptdaemon;
                 case "ACTIONDICEPOOL":
                     return objImprovementAdder.actiondicepool;
+                case "SPECIALMODIFICATIONLIMIT":
+                    return objImprovementAdder.specialmodificationlimit;
                 // No method matches, return a null pointer
                 default:
                     return null;

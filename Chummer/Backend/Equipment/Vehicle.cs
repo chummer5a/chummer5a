@@ -519,6 +519,7 @@ namespace Chummer.Backend.Equipment
 
             if (string.IsNullOrEmpty(ParentID))
                 _objCharacter.SourceProcess(_strSource);
+            objWriter.WriteEndElement();
         }
 
         /// <summary>

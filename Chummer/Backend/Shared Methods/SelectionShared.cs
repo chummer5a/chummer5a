@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -1024,13 +1025,44 @@ namespace Chummer
                     // Character needs a specific Weapon.
                     if (blnShowMessage)
                     {
-                        string strTranslate = XmlManager.Load("weapons.xml").SelectSingleNode($"/chummer/traditions/tradition[name = {strNodeInnerText.CleanXPath()}]/translate")?.InnerText;
+                        string strTranslate = XmlManager.Load("weapons.xml").SelectSingleNode($"/chummer/weapons/weapon[name = {strNodeInnerText.CleanXPath()}]/translate")?.InnerText;
                         strName = !string.IsNullOrEmpty(strTranslate)
                             ? $"{Environment.NewLine}\t{strTranslate} ({LanguageManager.GetString("String_Weapon", GlobalOptions.Language)})"
                             : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_Weapon", GlobalOptions.Language)})";
                     }
                     return objCharacter.Weapons.Any(w => w.Name == strNodeInnerText);
                 }
+                case "specialmodificationlimit":
+                    {
+                        // Add in the cost of all child components.
+                        int intMods = 0;
+                        object intLock = new object();
+                        Parallel.ForEach(objCharacter.Weapons, objChild =>
+                        {
+                            int i = objChild.WeaponAccessories.Count(y => y.SpecialModification);
+                            lock (intLock)
+                                intMods += i;
+                        });
+                        Parallel.ForEach(objCharacter.Vehicles, objVehicle =>
+                        {
+                            int i = objVehicle.Weapons.SelectMany(x => x.WeaponAccessories).Count(y => y.SpecialModification);
+                            lock (intLock)
+                                intMods += i;
+
+                            Parallel.ForEach(objVehicle.WeaponMounts, objMount =>
+                            {
+                                int j = objMount.Weapons.SelectMany(x => x.WeaponAccessories).Count(y => y.SpecialModification);
+                                lock (intLock)
+                                    intMods += i;
+                            });
+                        });
+                        if (blnShowMessage)
+                        {
+                            strName =
+                                $"{Environment.NewLine}{'\t'}{LanguageManager.GetString("String_SpecialModificationLimit")} >= {strNodeInnerText}";
+                        }
+                        return intMods >= objCharacter.SpecialModificationLimit;
+                    }
                 default:
                     Utils.BreakIfDebug();
                     break;
@@ -1392,7 +1424,7 @@ namespace Chummer
                     foreach (XPathNavigator xmlForbiddenItemNode in objXmlOneOf.SelectChildren(XPathNodeType.Element))
                     {
                         // The character is not allowed to take the Quality, so display a message and uncheck the item.
-                        if (xmlForbiddenItemNode.TestNodeRequirements(objCharacter, out string strName, strIgnoreQuality, blnShowMessage))
+                        if (xmlForbiddenItemNode.TestNodeRequirements(objCharacter, objParent, out string strName, strIgnoreQuality, blnShowMessage))
                         {
                             if (blnShowMessage)
                             {
@@ -1418,7 +1450,7 @@ namespace Chummer
                     StringBuilder objThisRequirement = new StringBuilder(Environment.NewLine + LanguageManager.GetString("Message_SelectQuality_OneOf", GlobalOptions.Language));
                     foreach (XPathNavigator xmlRequiredItemNode in objXmlOneOf.SelectChildren(XPathNodeType.Element))
                     {
-                        if (xmlRequiredItemNode.TestNodeRequirements(objCharacter, out string strName, strIgnoreQuality, blnShowMessage))
+                        if (xmlRequiredItemNode.TestNodeRequirements(objCharacter, objParent, out string strName, strIgnoreQuality, blnShowMessage))
                         {
                             blnOneOfMet = true;
                             break;
@@ -1446,7 +1478,7 @@ namespace Chummer
                         foreach (XPathNavigator xmlRequiredItemNode in objXmlAllOf.SelectChildren(XPathNodeType.Element))
                         {
                             // If this item was not found, fail the AllOfMet condition.
-                            if (!xmlRequiredItemNode.TestNodeRequirements(objCharacter, out string strName, strIgnoreQuality, blnShowMessage))
+                            if (!xmlRequiredItemNode.TestNodeRequirements(objCharacter, objParent, out string strName, strIgnoreQuality, blnShowMessage))
                             {
                                 blnAllOfMet = false;
                                 if (blnShowMessage)
@@ -1480,7 +1512,7 @@ namespace Chummer
             return true;
         }
 
-        public static bool TestNodeRequirements(this XPathNavigator xmlNode, Character objCharacter, out string strName, string strIgnoreQuality = "", bool blnShowMessage = true)
+        public static bool TestNodeRequirements(this XPathNavigator xmlNode, Character objCharacter, object objParent, out string strName, string strIgnoreQuality = "", bool blnShowMessage = true)
         {
             strName = string.Empty;
             if (xmlNode == null || objCharacter == null)
@@ -1740,7 +1772,7 @@ namespace Chummer
                         string strResultName = string.Empty;
                         foreach (XPathNavigator xmlChildNode in xmlNode.SelectChildren(XPathNodeType.Element))
                         {
-                            blnResult = xmlChildNode.TestNodeRequirements(objCharacter, out strResultName, strIgnoreQuality, blnShowMessage);
+                            blnResult = xmlChildNode.TestNodeRequirements(objCharacter, objParent, out strResultName, strIgnoreQuality, blnShowMessage);
                             if (!blnResult)
                             {
                                 break;
@@ -1757,7 +1789,7 @@ namespace Chummer
                     string strResultName = LanguageManager.GetString("Message_SelectQuality_OneOf", GlobalOptions.Language);
                     foreach (XPathNavigator xmlChildNode in xmlNode.SelectChildren(XPathNodeType.Element))
                     {
-                        blnResult = xmlChildNode.TestNodeRequirements(objCharacter, out string strLoopResult, strIgnoreQuality, blnShowMessage);
+                        blnResult = xmlChildNode.TestNodeRequirements(objCharacter, objParent, out string strLoopResult, strIgnoreQuality, blnShowMessage);
                         if (blnResult)
                         {
                             break;
@@ -1837,7 +1869,7 @@ namespace Chummer
                     }
                 case "metamagicart":
                 case "art":
-                {
+                    {
                     // Street Grimoire adds High Arts, which group metamagics and such together. If we're ignoring this requirement 
                     if (objCharacter.Options.IgnoreArt)
                     {
@@ -1927,6 +1959,15 @@ namespace Chummer
                             : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_Art", GlobalOptions.Language)})";
                         return false;
                     }
+                }
+                case "magenabled":
+                {
+                    // Character must be Awakened.
+                    if (blnShowMessage)
+                        strName = Environment.NewLine + '\t' +
+                                  LanguageManager.GetString("String_AttributeMAGLong", GlobalOptions.Language) +
+                                  " >= 1";
+                    return objCharacter.MAGEnabled;
                 }
                 case "metatype":
                     {
@@ -2025,6 +2066,11 @@ namespace Chummer
                             : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_Quality", GlobalOptions.Language)})";
                         return false;
                     }
+                case "resenabled":
+                    // Character must be Emerged.
+                    if (blnShowMessage)
+                        strName = Environment.NewLine + '\t' + LanguageManager.GetString("String_AttributeRESLong", GlobalOptions.Language) + " >= 1";
+                    return objCharacter.RESEnabled;
                 case "skill":
                     {
                         string strSpec = xmlNode.SelectSingleNode("spec")?.Value;
@@ -2132,6 +2178,38 @@ namespace Chummer
                         }
                         return intTotal >= Convert.ToInt32(xmlNode.SelectSingleNode("val")?.Value);
                     }
+                case "specialmodificationlimit":
+                {
+                    // Add in the cost of all child components.
+                    int intMods = 0;
+                    object intLock = new object();
+                    Parallel.ForEach(objCharacter.Weapons, objChild =>
+                    {
+                        int i = objChild.WeaponAccessories.Count(y => y.SpecialModification);
+                        lock (intLock)
+                            intMods += i;
+                    });
+                    Parallel.ForEach(objCharacter.Vehicles, objVehicle =>
+                    {
+                        int i = objVehicle.Weapons.SelectMany(x => x.WeaponAccessories).Count(y => y.SpecialModification);
+                        lock (intLock)
+                            intMods += i;
+
+                        Parallel.ForEach(objVehicle.WeaponMounts, objMount =>
+                        {
+                            int j = objMount.Weapons.SelectMany(x => x.WeaponAccessories).Count(y => y.SpecialModification);
+                            lock (intLock)
+                                intMods += i;
+                        });
+                    });
+                    if (blnShowMessage)
+                    {
+                        strName =
+                            $"{Environment.NewLine}{'\t'}{LanguageManager.GetString("String_SpecialModificationLimit")} >= {strNodeInnerText}";
+                    }
+
+                    return (intMods + Convert.ToInt32(strNodeInnerText)) <= objCharacter.SpecialModificationLimit;
+                }
                 case "spell":
                     {
                         Spell objSpell = objCharacter.Spells.FirstOrDefault(x => x.Name == strNodeInnerText);
@@ -2208,6 +2286,10 @@ namespace Chummer
                             : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_Weapon", GlobalOptions.Language)})";
                     }
                     return objCharacter.Weapons.Any(w => w.Name == strNodeInnerText);
+                }
+                case "accessory" when objParent is Weapon objWeapon:
+                {
+                    return objWeapon.WeaponAccessories.Any(objAccessory => objAccessory.Name == strNodeInnerText);
                 }
                 default:
                     Utils.BreakIfDebug();

@@ -4,6 +4,7 @@ New Features:
 
 - Added a 'helpful' digital assistant, Chummy! Chummy is designed to offer tips via tooltip based on your character's content. It's designed for expansion through tips.xml, using the same forbidden/required structure as qualities. Yes, it's an April Fool's gag. I'm sorry, I thought it was cute and/or amusing. It can be toggled off by deselecting the Allow Easter Eggs option in the Global Options menu. 
 - Created a new Improvement Type that improves the dicepool of a specific spell; the spelldicepool improvement is available in the Custom Improvement creator. 
+- Implemented the Special Modifications and Prototype Materials qualities from Better Than Bad. The assorted bonuses are added through the Select Weapon Accessories form, allowing for custom content to be created. Note for content creators, the specialmodificationlimit property is used to indicate how many 'points' of the quality are consumed; this isn't super close to rules as written, but it's viable for our purposes. 
 
 Application Fixes:
 
@@ -13,6 +14,9 @@ Application Fixes:
 - Fixed the behaviour of the Death Mentor Spirit's Magician benefit to allow dicepool benefits for specific skills. Uses the spelldicepool improvement.
 - Fixed an issue with traditions not probably updating.
 - Fixed issues with use of Essence Antiholes in create mode that prevented them from working reliably.
+- Fixed an issue with the selectatributes improvement that caused it to improperly allow Exceptional Attribute to select Edge.
+- Fixed issues with Dedicated Spellslinger not working properly in career mode.
+- Fixed a crash when opening the Print Multiple Characters dialog multiple times.
 
 Application Changes:
 
@@ -39,6 +43,7 @@ Data Changes:
 - Fixed incorrect restrictions on the Special Modications and Prototype Materials qualities. 
 - Removed incorrrect mundane restriction on the Quadriplegic quality.
 - Fixed behaviour of partial cyberlimbs giving incorrect condition monitor boxes.
+Removed <canwrite /> from the Made Man quality; this improperly allowed for the group to be removed from the character.
 
 String Changes:
 

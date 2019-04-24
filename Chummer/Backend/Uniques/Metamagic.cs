@@ -327,13 +327,19 @@ namespace Chummer
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = (_eImprovementSource == Improvement.ImprovementSource.Metamagic
-                                          ? XmlManager.Load("metamagic.xml", strLanguage).SelectSingleNode($"/chummer/metamagics/metamagic[id = \"{SourceIDString}\" or id = \"{SourceIDString}\"]")
-                                          : XmlManager.Load("metamagic.xml", strLanguage).SelectSingleNode($"/chummer/metamagics/metamagic[name = \"{Name}\"]")
-                                      ) ??
-                                      (_eImprovementSource == Improvement.ImprovementSource.Echo
-                                          ? XmlManager.Load("echoes.xml", strLanguage).SelectSingleNode($"/chummer/echoes/echo[id = \"{SourceIDString}\" or id = \"{SourceIDString}\"]")
-                                          : XmlManager.Load("echoes.xml", strLanguage).SelectSingleNode($"/chummer/echoes/echo[name = \"{Name}\"]"));
+                string doc = "metamagic.xml";
+                string path = "metamagics/metamagic";
+                if (_eImprovementSource == Improvement.ImprovementSource.Echo)
+                {
+                    doc = "echoes.xml";
+                    path = "echoes/echo";
+                }
+                _objCachedMyXmlNode = SourceID == Guid.Empty
+                    ? XmlManager.Load(doc, strLanguage)
+                        .SelectSingleNode($"/chummer/{path}[name = \"{Name}\"]")
+                    : XmlManager.Load(doc, strLanguage).SelectSingleNode(
+                        $"/chummer/{path}[id = \"{SourceIDString}\" or id = \"{SourceIDString}\"]");
+
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

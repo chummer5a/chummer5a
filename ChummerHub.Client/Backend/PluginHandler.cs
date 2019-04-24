@@ -167,6 +167,7 @@ namespace Chummer.Plugins
                         tabPage = frm.TabCharacterTabs.TabPages[index];
                     }
 
+
                     if ((found is frmCareer frm2) && (frm2.TabCharacterTabs.TabPages.ContainsKey("SINners")))
                     {
                         var index = frm2.TabCharacterTabs.TabPages.IndexOfKey("SINners");
