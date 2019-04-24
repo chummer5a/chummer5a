@@ -381,8 +381,10 @@ namespace ChummerHub.Client.Backend
                 {
                     if (e.Content.Contains("Log in - ChummerHub"))
                     {
-                        TreeNode node = new TreeNode("Online, not logged in");
-                        node.ToolTipText = "Please log in (Options -> Plugins -> Sinners (Cloud) -> Login";
+                        TreeNode node = new TreeNode("Online, not logged in")
+                        {
+                            ToolTipText = "Please log in (Options -> Plugins -> Sinners (Cloud) -> Login"
+                        };
                         PluginHandler.MainForm.DoThreadSafe(() =>
                         {
                             MyTreeNodeList.Add(node);
@@ -553,7 +555,7 @@ namespace ChummerHub.Client.Backend
                     
                     Text = objCache.CalculatedName(),
                     Name = objCache.CalculatedName(),
-                    Tag = sinner.Id.Value.ToString(),
+                    Tag = objCache,
                     ToolTipText = "Last Change: " + sinner.LastChange,
                     ContextMenuStrip = PluginHandler.MainForm.CharacterRoster.ContextMenuStrip
                 };
@@ -581,8 +583,6 @@ namespace ChummerHub.Client.Backend
                 }
 
                 CharacterCache delObj;
-                PluginHandler.MainForm.CharacterRoster.MyCharacterCacheDic.TryRemove(sinner.Id.Value.ToString(), out delObj);
-                PluginHandler.MainForm.CharacterRoster.MyCharacterCacheDic.TryAdd(sinner.Id.Value.ToString(), objCache);
                 if (ssg.MySINSearchGroups != null)
                 {
                     foreach (var childlist in ssg.MySINSearchGroups)
@@ -728,6 +728,10 @@ namespace ChummerHub.Client.Backend
                     objCache.PlayerName = tempCache.PlayerName;
                     objCache.SettingsFile = tempCache.SettingsFile;
                 }
+                PluginHandler.MainForm.CharacterRoster.DoThreadSafe(() =>
+                {
+                    PluginHandler.MainForm.CharacterRoster.UpdateCharacter(objCache);
+                });
                 treeViewEventArgs.Node.Text = objCache.CalculatedName();
             }
         }

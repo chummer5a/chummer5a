@@ -264,21 +264,8 @@ namespace Chummer.Plugins
                 using (new CursorWait(true, PluginHandler.MainForm))
                 {
                     frmSINnerGroupSearch frmSearch = new frmSINnerGroupSearch(null, null);
+                    frmSearch.TopMost = true;
                     frmSearch.Show(PluginHandler.MainForm);
-                    //MyTreeNodes2Add.Clear();
-                    //Func<Task<HttpOperationResponse<SINSearchGroupResult>>> myGetNPCs = async () =>
-                    //{
-                    //    var client = await StaticUtils.GetClient();
-                    //    var res = await client.GetPublicGroupWithHttpMessagesAsync("NPC", GlobalOptions.Language, null, new CancellationToken());
-                    //    return res;
-                    //};
-                    //var nodelist = await ChummerHub.Client.Backend.Utils.GetCharacterRosterTreeNode(true, myGetNPCs);
-                    //foreach (var node in nodelist)
-                    //{
-                    //    MyTreeNodes2Add.AddOrUpdate(node.Name, node, (key, oldValue) => node);
-                    //}
-                    //PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false, true);
-                    //PluginHandler.MainForm.CharacterRoster.BringToFront();
                 }
 
             }
@@ -291,18 +278,15 @@ namespace Chummer.Plugins
                         ToolTipText = "Please log in (Options -> Plugins -> Sinners (Cloud) -> Login",
                         Tag = e
                     };
-                    //return new List<TreeNode>() { node };
                 }
                 else
                 {
                     TreeNode node = new TreeNode("Error: " + e.Message) { ToolTipText = e.ToString(), Tag = e };
-                    //return new List<TreeNode>() { node };
                 }
             }
             catch (Exception e)
             {
                 TreeNode node = new TreeNode("SINners Error: please log in") { ToolTipText = e.ToString(), Tag = e };
-                //return new List<TreeNode>() { node };
             }
         }
         
@@ -373,8 +357,10 @@ namespace Chummer.Plugins
             catch(Exception e)
             {
                 TreeNode node = new TreeNode("SINners Error: please log in") {ToolTipText = e.ToString(), Tag = e};
-                var objCache = new frmCharacterRoster.CharacterCache();
-                objCache.ErrorText = e.ToString();
+                var objCache = new frmCharacterRoster.CharacterCache
+                {
+                    ErrorText = e.ToString()
+                };
                 node.Tag = objCache;
                 return new List<TreeNode>() { node };
             }
