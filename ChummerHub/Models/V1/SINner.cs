@@ -69,34 +69,24 @@ namespace ChummerHub.Models.V1
             this.MyExtendedAttributes = new SINnerExtended();
         }
 
-        //[JsonIgnore]
-        //[XmlIgnore]
-        //[NotMapped]
-        //private List<Tag> _AllTags { get; set; }
-
-        //public async Task<List<Tag>> GetTagsForSinnerFlat(ApplicationDbContext context)
-        //{
-        //    return await (from a in context.Tags where a.SINnerId == this.Id select a).ToListAsync();
-            
-        //}
-
         internal static async Task<List<SINner>> GetSINnersFromUser(ApplicationUser user, ApplicationDbContext context, bool canEdit)
         {
             List<SINner> result = new List<SINner>();
-            var userseq = (from a in context.UserRights where a.EMail == user.NormalizedEmail && a.CanEdit == canEdit select a).ToList();
+            var userseq = await (from a in context.UserRights
+                where a.EMail == user.NormalizedEmail && a.CanEdit == canEdit
+                select a.SINnerId).ToListAsync();
             foreach(var ur in userseq)
             {
-                if(ur?.SINnerId == null) continue;
                 var sin = await context.SINners.Include(a => a.SINnerMetaData.Visibility.UserRights)
                     //.Include(a => a.MyExtendedAttributes)
                     .Include(b => b.MyGroup)
                     .ThenInclude( a => a.MyGroups)
                     .ThenInclude( a => a.MyGroups)
                     .ThenInclude(a => a.MyGroups)
-                    .FirstOrDefaultAsync(a => a.Id == ur.SINnerId);
+                    .Where(a => a.Id == ur).ToListAsync();
                 if(sin != null)
                 {
-                    result.Add(sin);
+                    result.AddRange(sin);
                 }
             }
             return result;

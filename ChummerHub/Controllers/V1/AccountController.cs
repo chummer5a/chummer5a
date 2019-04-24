@@ -54,8 +54,9 @@ namespace ChummerHub.Controllers
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("AccountGetRoles")]
         [Authorize]
 
-        public async Task<ActionResult<List<String>>> GetRoles()
+        public async Task<ActionResult<ResultAccountGetRoles>> GetRoles()
         {
+            ResultAccountGetRoles res;
             try
             {
                 //var user = _userManager.FindByEmailAsync(email).Result;
@@ -65,14 +66,14 @@ namespace ChummerHub.Controllers
                     await SeedData.EnsureRole(Program.MyHost.Services, user.Id, API.Authorizarion.Constants.UserRoleConfirmed, _roleManager, _userManager);
                 }
                 var roles = await _userManager.GetRolesAsync(user);
-                return Ok(roles.ToList());
+                res = new ResultAccountGetRoles(roles);
+                
+                return Ok(res);
             }
             catch(Exception e)
             {
-                if (e is HubException)
-                    return BadRequest(e);
-                HubException hue = new HubException(e.Message, e);
-                return BadRequest(hue);
+                res = new ResultAccountGetRoles(e);
+                return BadRequest(res);
             }
         }
 
@@ -80,25 +81,25 @@ namespace ChummerHub.Controllers
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Unauthorized)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("AccountByEmail")]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("AccountGetUserByEmail")]
         [Authorize]
-        public async Task<ActionResult<ApplicationUser>> GetUserByEmail(string email)
+        public async Task<ActionResult<ResultAccountGetUserByEmail>> GetUserByEmail(string email)
         {
+            ResultAccountGetUserByEmail res;
             try
             {
                 var user = await _userManager.FindByEmailAsync(email);
+                res = new ResultAccountGetUserByEmail(user);
                 if (user == null)
-                    return NotFound();
+                    return NotFound(res);
                 user.PasswordHash = "";
                 user.SecurityStamp = "";
-                return Ok(user);
+                return Ok(res);
             }
             catch (Exception e)
             {
-                if (e is HubException)
-                    return BadRequest(e);
-                HubException hue = new HubException(e.Message, e);
-                return BadRequest(hue);
+                res = new ResultAccountGetUserByEmail(e);
+                return BadRequest(res);
             }
         }
 
@@ -302,26 +303,26 @@ namespace ChummerHub.Controllers
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Unauthorized)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("AccountByAuthorization")]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("AccountGetUserByAuthorization")]
         [Authorize]
-        public async Task<ActionResult<ApplicationUser>> GetUserByAuthorization()
+        public async Task<ActionResult<ResultAccountGetUserByAuthorization>> GetUserByAuthorization()
         {
+            ResultAccountGetUserByAuthorization res;
             try
             {
                 var user = await _signInManager.UserManager.GetUserAsync(User);
-                
+                res = new ResultAccountGetUserByAuthorization(user);
                 if (user == null)
-                    return NotFound();
+                    return NotFound(res);
+                
                 user.PasswordHash = "";
                 user.SecurityStamp = "";
-                return Ok(user);
+                return Ok(res);
             }
             catch (Exception e)
             {
-                if (e is HubException)
-                    return BadRequest(e);
-                HubException hue = new HubException(e.Message, e);
-                return BadRequest(hue);
+                res = new ResultAccountGetUserByAuthorization(e);
+                return BadRequest(res);
             }
         }
 
@@ -407,11 +408,14 @@ namespace ChummerHub.Controllers
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(SINSearchGroupResult), StatusCodes.Status200OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse(StatusCodes.Status400BadRequest)]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GetSinnersByAuthorization")]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("AccountGetSinnersByAuthorization")]
         [Authorize]
-        public async Task<ActionResult<SINSearchGroupResult>> GetSINnersByAuthorization()
+        public async Task<ActionResult<ResultAccountGetSinnersByAuthorization>> GetSINnersByAuthorization()
         {
+            ResultAccountGetSinnersByAuthorization res;
+            
             SINSearchGroupResult ret = new SINSearchGroupResult();
+            res = new ResultAccountGetSinnersByAuthorization(ret);
             SINnerGroup sg = new SINnerGroup();
             SINnerSearchGroup ssg = new SINnerSearchGroup(sg)
             {
@@ -422,15 +426,18 @@ namespace ChummerHub.Controllers
                 var user = await _signInManager.UserManager.GetUserAsync(User);
                 if(user == null)
                 {
-                    ret.ErrorText = "Unauthorized";
-                    throw new AuthenticationException("User is not authenticated.");
+                    var e =  new AuthenticationException("User is not authenticated.");
+                    res = new ResultAccountGetSinnersByAuthorization(e)
+                    {
+                        ErrorText = "Unauthorized"
+                    };
+                    return BadRequest(res);
                 }
                 var roles = await _userManager.GetRolesAsync(user);
                 ret.Roles = roles.ToList();
                 ssg.Groupname = user.Email;
                 ssg.Id = Guid.Empty;
                 //get all from visibility
-                //SINnersList list = new SINnersList();
                 List<SINner> mySinners = await SINner.GetSINnersFromUser(user, _context, true);
                 foreach(var sin in mySinners)
                 {
@@ -476,17 +483,106 @@ namespace ChummerHub.Controllers
                 }
                 
                 ret.SINGroups.Add(ssg);
-                return Ok(ret);
+                res = new ResultAccountGetSinnersByAuthorization(ret);
+                return Ok(res);
             }
             catch (Exception e)
             {
-                if (e is HubException)
-                    return BadRequest(e);
-                HubException hue = new HubException(e.Message, e);
-                return BadRequest(hue);
+                res = new ResultAccountGetSinnersByAuthorization(e);
+                return BadRequest(res);
             }
         }
-      
+
+
+        // GET: api/ChummerFiles
+        [HttpGet]
+        [Authorize(Roles = "Administrator")]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NoContent)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("AccountGetSinnerAsAdmin")]
+        public async Task<ActionResult<ResultGroupGetSearchGroups>> GetSinnerAsAdmin()
+        {
+            ResultAccountGetSinnersByAuthorization res;
+
+            SINSearchGroupResult ret = new SINSearchGroupResult();
+            res = new ResultAccountGetSinnersByAuthorization(ret);
+            SINnerGroup sg = new SINnerGroup();
+            SINnerSearchGroup ssg = new SINnerSearchGroup(sg)
+            {
+                MyMembers = new List<SINnerSearchGroupMember>()
+            };
+            try
+            {
+                var user = await _signInManager.UserManager.GetUserAsync(User);
+                if (user == null)
+                {
+                    var e = new AuthenticationException("User is not authenticated.");
+                    res = new ResultAccountGetSinnersByAuthorization(e)
+                    {
+                        ErrorText = "Unauthorized"
+                    };
+                    return BadRequest(res);
+                }
+                var roles = await _userManager.GetRolesAsync(user);
+                ret.Roles = roles.ToList();
+                ssg.Groupname = user.Email;
+                ssg.Id = Guid.Empty;
+                //get all from visibility
+                List<SINner> mySinners = await _context.SINners.Include(a => a.MyGroup)
+                    .Include(a => a.SINnerMetaData.Visibility.UserRights)
+                    .OrderByDescending(a => a.UploadDateTime)
+                    .Take(200)
+                    .ToListAsync();
+                foreach (var sin in mySinners)
+                {
+                    SINnerSearchGroupMember ssgm = new SINnerSearchGroupMember
+                    {
+                        MySINner = sin,
+                        Username = user.UserName
+                    };
+                    ssg.MyMembers.Add(ssgm);
+                    if (sin.MyGroup != null)
+                    {
+                        SINnerSearchGroup ssgFromSIN;
+                        if (ssg.MySINSearchGroups.Any(a => a.Id == sin.MyGroup.Id))
+                        {
+                            ssgFromSIN = ssg.MySINSearchGroups.FirstOrDefault(a => a.Id == sin.MyGroup.Id);
+                        }
+                        else
+                        {
+                            ssgFromSIN = new SINnerSearchGroup(sin.MyGroup);
+                            ssg.MySINSearchGroups.Add(ssgFromSIN);
+                        }
+                        //add all members of his group
+                        var members = await sin.MyGroup.GetGroupMembers(_context);
+                        foreach (var member in members)
+                        {
+                            member.MyGroup = sin.MyGroup;
+                            member.MyGroup.MyGroups = new List<SINnerGroup>();
+                            SINnerSearchGroupMember sinssgGroupMember = new SINnerSearchGroupMember
+                            {
+                                MySINner = member
+                            };
+                            ssgFromSIN.MyMembers.Add(sinssgGroupMember);
+                        }
+                        sin.MyGroup.PasswordHash = "";
+                        sin.MyGroup.MyGroups = new List<SINnerGroup>();
+
+                    }
+                }
+
+                ret.SINGroups.Add(ssg);
+                res = new ResultAccountGetSinnersByAuthorization(ret);
+                return Ok(res);
+            }
+            catch (Exception e)
+            {
+                res = new ResultAccountGetSinnersByAuthorization(e);
+                return BadRequest(res);
+            }
+        }
 
         [HttpGet]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
