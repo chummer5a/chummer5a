@@ -42,21 +42,21 @@ namespace ChummerHub.Client.UI
         {
             InitializeComponent();
             _mySINner = mySINner;
-            if (PluginHandler.MyCharExtendedDic.ContainsKey(mySINner.CharacterObject.FileName))
-            {
-                CharacterExtended outce;
-                if (!PluginHandler.MyCharExtendedDic.TryGetValue(mySINner.CharacterObject.FileName, out outce))
-                {
-                    throw new ArgumentException("Could not get character from MyCharExtendedDic", nameof(mySINner));
-                }
+            //if (PluginHandler.MyCharExtendedDic.ContainsKey(mySINner.CharacterObject.FileName))
+            //{
+            //    CharacterExtended outce;
+            //    if (!PluginHandler.MyCharExtendedDic.TryGetValue(mySINner.CharacterObject.FileName, out outce))
+            //    {
+            //        throw new ArgumentException("Could not get character from MyCharExtendedDic", nameof(mySINner));
+            //    }
 
-                MyCE = outce;
-            }
-            else
-            {
+            //    MyCE = outce;
+            //}
+            //else
+            //{
                 MyCE = new CharacterExtended(mySINner.CharacterObject, null, PluginHandler.MySINnerLoading);
                 MyCE.ZipFilePath = await MyCE.PrepareModel();
-            }
+            //}
             MyCE.MySINnerFile.SiNnerMetaData.Tags = MyCE.PopulateTags();
 
             TabSINnersBasic = new SINnersBasic(this)

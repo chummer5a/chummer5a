@@ -529,7 +529,7 @@ namespace ChummerHub.Client.Backend
                 Text = ssg.Groupname,
                 Name = ssg.Groupname
             };
-            var mlist = (from a in ssg.MyMembers orderby a.Display descending select a).ToList();
+            var mlist = (from a in ssg.MyMembers orderby a.Display select a).ToList();
             foreach (var member in mlist)
             {
                 var sinner = member.MySINner;
@@ -550,7 +550,6 @@ namespace ChummerHub.Client.Backend
                         BuildMethod = "online"
                     };
                 }
-
                 SetEventHandlers(sinner, objCache);
                 TreeNode memberNode = new TreeNode
                 {
@@ -573,8 +572,13 @@ namespace ChummerHub.Client.Backend
                                       + "selected in option->plugins->sinner and press the \"save\" symbol.";
 
                 }
-                if (!objListNode.Nodes.ContainsKey(memberNode.Name))
-                    objListNode.Nodes.Insert(0, memberNode);
+                var foundseq = (from a in objListNode.Nodes.Find(memberNode.Name, false) where a.Tag == memberNode.Tag select a).ToList();
+                if (foundseq.Any())
+                {
+                    objListNode.Nodes.Remove(foundseq.FirstOrDefault());
+                }
+                objListNode.Nodes.Add(memberNode);
+                
                 if (!string.IsNullOrEmpty(objCache.ErrorText))
                 {
                     memberNode.ForeColor = Color.Red;
@@ -584,19 +588,23 @@ namespace ChummerHub.Client.Backend
                                                Environment.NewLine + objCache.ErrorText;
                 }
 
-                CharacterCache delObj;
-                if (ssg.MySINSearchGroups != null)
-                {
-                    foreach (var childlist in ssg.MySINSearchGroups)
-                    {
-                        var childnode = GetCharacterRosterTreeNodeRecursive(childlist);
-                        if (childnode != null)
-                        {
-                            if (!objListNode.Nodes.ContainsKey(childnode.Text))
-                                objListNode.Nodes.Add(childnode);
-                        }
-                    }
-                }
+                //CharacterCache delObj;
+                //if (ssg.MySINSearchGroups != null)
+                //{
+                //    foreach (var childlist in ssg.MySINSearchGroups)
+                //    {
+                //        var childnode = GetCharacterRosterTreeNodeRecursive(childlist);
+                //        if (childnode != null)
+                //        {
+                //            var found1seq = (from a in objListNode.Nodes.Find(childnode.Name, false) where a.Tag == childnode.Tag select a).ToList();
+                //            if (found1seq.Any())
+                //            {
+                //                objListNode.Nodes.Remove(found1seq.FirstOrDefault());
+                //            }
+                //            objListNode.Nodes.Add(childnode);
+                //        }
+                //    }
+                //}
             }
 
             if (ssg.MySINSearchGroups != null)
@@ -615,8 +623,25 @@ namespace ChummerHub.Client.Backend
                             {
                                 foreach (TreeNode what in childnode.Nodes)
                                 {
-                                    if (!mergenode.Nodes.ContainsKey(what.Name))
+                                    if (mergenode.Nodes.ContainsKey(what.Name))
+                                    {
+                                        var compare = mergenode.Nodes.Find(what.Name, false);
+                                        bool found = false;
+                                        foreach (var singlecompare in compare)
+                                        {
+                                            if (singlecompare.Tag == what.Tag)
+                                            {
+                                                found = true;
+                                                mergenode.Nodes.Remove(singlecompare);
+                                            }
+                                        }
+                                        if (!found)
+                                            mergenode.Nodes.Add(what);
+                                    }
+                                    else
+                                    {
                                         mergenode.Nodes.Add(what);
+                                    }
                                 }
                             }
                         }

@@ -21,13 +21,13 @@ namespace ChummerHub.Client.Model
         public CharacterExtended(Character character, string fileElement = null)
         {
             MyCharacter = character;
-            if (PluginHandler.MyCharExtendedDic.ContainsKey(character.FileName))
-            {
-                throw new ArgumentException(
-                    "CharacterExtended already exists for this char - dont create a new instantce!", nameof(character));
-            }
+            //if (PluginHandler.MyCharExtendedDic.ContainsKey(character.FileName))
+            //{
+            //    throw new ArgumentException(
+            //        "CharacterExtended already exists for this char - dont create a new instantce!", nameof(character));
+            //}
 
-            PluginHandler.MyCharExtendedDic.Add(character.FileName, this);
+            //PluginHandler.MyCharExtendedDic.Add(character.FileName, this);
 
             _MySINnerFile = new SINner
             {

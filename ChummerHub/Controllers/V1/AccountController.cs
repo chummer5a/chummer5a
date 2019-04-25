@@ -465,6 +465,10 @@ namespace ChummerHub.Controllers
                 List<SINner> mySinners = await SINner.GetSINnersFromUser(user, _context, true);
                 foreach(var sin in mySinners)
                 {
+                    //check if that char is already added:
+                    var foundseq = (from a in ssg.MyMembers where a.MySINner == sin select a);
+                    if (foundseq.Any())
+                        continue;
                     SINnerSearchGroupMember ssgm = new SINnerSearchGroupMember
                     {
                         MySINner = sin,
@@ -497,6 +501,10 @@ namespace ChummerHub.Controllers
                                 {
                                     MySINner = member
                                 };
+                                //check if it is already added:
+                                var groupseq = from a in ssgFromSIN.MyMembers where a.MySINner == member select a;
+                                if (groupseq.Any())
+                                    continue;
                                 ssgFromSIN.MyMembers.Add(sinssgGroupMember);
                             }
                         }
