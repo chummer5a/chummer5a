@@ -85,7 +85,7 @@ namespace ChummerHub.Client.UI
                     {
                         if (response.Response.StatusCode == HttpStatusCode.OK)
                         {
-                            myUC.MyCE.MySINnerFile.MyGroup = response.Body;
+                            myUC.MyCE.MySINnerFile.MyGroup = response.Body.MySINnerGroup;
                             this.bUpload.Text = "Remove from SINners";
                             this.bGroupSearch.Enabled = true;
                             this.lUploadStatus.Text = "online";

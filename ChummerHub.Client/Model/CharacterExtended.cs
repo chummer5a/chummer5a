@@ -279,7 +279,7 @@ namespace ChummerHub.Client.Model
                             MySINnerFile.Alias = MyCharacter.Name;
                     }
                     var client = await StaticUtils.GetClient();
-                    var res = await client.GetOwnedSINByAliasWithHttpMessagesAsync(MySINnerFile.Alias);
+                    var res = await client.SinnerGetOwnedSINByAliasWithHttpMessagesAsync(MySINnerFile.Alias);
                     if (res.Response.StatusCode == HttpStatusCode.NotFound)
                     {
                         MySINnerFile.Id = Guid.NewGuid();
@@ -314,7 +314,8 @@ namespace ChummerHub.Client.Model
                         }
                         else
                         {
-                            foreach (var sin in res.Body)
+                            var list = res.Body.MySINners;
+                            foreach (var sin in list)
                             {
                                 if (sin.Id != null)
                                 {

@@ -45,17 +45,18 @@ namespace ChummerHub.Client.UI
                             this.bCreateGroup.Enabled = !String.IsNullOrEmpty(this.tbSearchGroupname.Text);
                             this.bJoinGroup.Enabled = false;
                         }
-                        else
+                        else if (_mySINSearchGroupResult.SinGroups != null)
                         {
                             this.bCreateGroup.Enabled = !_mySINSearchGroupResult.SinGroups.Any();
                             this.bJoinGroup.Enabled = _mySINSearchGroupResult.SinGroups.Any();
+                            var rootseq = (from a in MySINSearchGroupResult?.SinGroups select a).ToList();
+                            List<TreeNode> nodes = CreateTreeViewNodes(rootseq);
+                            this.DoThreadSafe(() =>
+                            {
+                                this.tvGroupSearchResult.Nodes.AddRange(nodes.ToArray());
+                            });
                         }
-                        var rootseq = (from a in MySINSearchGroupResult?.SinGroups select a).ToList();
-                        List<TreeNode> nodes = CreateTreeViewNodes(rootseq);
-                        this.DoThreadSafe(() =>
-                        {
-                            this.tvGroupSearchResult.Nodes.AddRange(nodes.ToArray());
-                        });
+
                         
                     });
                 }
@@ -228,9 +229,9 @@ namespace ChummerHub.Client.UI
                                 MyCE.MySINnerFile.Id, mygroup.PasswordHash);
                             if (join.Response.StatusCode == HttpStatusCode.OK)
                             {
-                                MyCE.MySINnerFile.MyGroup = getgroup.Body;
+                                MyCE.MySINnerFile.MyGroup = getgroup.Body.MyGroup;
                                 if (OnGroupJoinCallback != null)
-                                    OnGroupJoinCallback(this, getgroup.Body);
+                                    OnGroupJoinCallback(this, getgroup.Body.MyGroup);
                             }
                             else
                             {
@@ -247,21 +248,30 @@ namespace ChummerHub.Client.UI
                     }
                     
                     
-                    return getgroup.Body;
+                    return getgroup.Body.MyGroup;
                 }
                 else if (Result.Response.StatusCode == HttpStatusCode.BadRequest)
                 {
                     var jsonResultString = Result.Response.Content.ReadAsStringAsync().Result;
                     if (jsonResultString?.Contains("already exists!") == true)
                     {
-                        var searchgroup = await client.GetSearchGroupsWithHttpMessagesAsync(mygroup.Groupname, null, null);
-                        var id = searchgroup.Body as Guid?;
-                        var getgroup = await client.GetGroupByIdWithHttpMessagesAsync(id);
-                        if (MyCE?.MySINnerFile != null)
-                            MyCE.MySINnerFile.MyGroup = getgroup.Body;
-                        if (OnGroupJoinCallback != null)
-                            OnGroupJoinCallback(this, getgroup.Body);
-                        return getgroup.Body;
+                        var searchgroup = await client.GetSearchGroupsWithHttpMessagesAsync(mygroup.Groupname, null, null, GlobalOptions.DefaultLanguage);
+                        if (searchgroup.Body?.MySearchGroupResult?.SinGroups?.Any() == true)
+                        {
+                            var getgroup = searchgroup.Body.MySearchGroupResult.SinGroups.FirstOrDefault();
+                            if (getgroup?.Id != null)
+                            {
+                                var group = await client.GetGroupByIdWithHttpMessagesAsync(getgroup.Id);
+                                if ((group.Body != null) && (group.Body.MyGroup != null))
+                                {
+                                    if (MyCE?.MySINnerFile != null)
+                                        MyCE.MySINnerFile.MyGroup = group.Body.MyGroup;
+                                    if (OnGroupJoinCallback != null)
+                                        OnGroupJoinCallback(this, group.Body.MyGroup);
+                                    return group.Body.MyGroup;
+                                }
+                            }
+                        }
                     }
                 }
                 else
@@ -332,7 +342,7 @@ namespace ChummerHub.Client.UI
                 var response = await client.GetSearchGroupsWithHttpMessagesAsync(groupname, userName, sinnername);
                 if ((response.Response.StatusCode == HttpStatusCode.OK))
                 {
-                    return (SINSearchGroupResult)response.Body;
+                    return (SINSearchGroupResult)response.Body.MySearchGroupResult;
                 }
                 else if ((response.Response.StatusCode == HttpStatusCode.NotFound))
                 {
@@ -601,8 +611,7 @@ namespace ChummerHub.Client.UI
                             }
                             else
                             {
-                                MySINSearchGroupResult =
-                                    await SearchForGroups(this.tbSearchGroupname.Text, null, null);
+                                MySINSearchGroupResult = await SearchForGroups(this.tbSearchGroupname.Text, null, null);
                             }
                         }
                     }

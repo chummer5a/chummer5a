@@ -6,8 +6,6 @@ using Microsoft.AspNetCore.Identity;
 
 namespace ChummerHub.Models.V1
 {
-    [DataContract]
-    [Serializable]
     public class ResultSinnerDelete : ResultBase
     {
         private bool Deleted { get; set; }

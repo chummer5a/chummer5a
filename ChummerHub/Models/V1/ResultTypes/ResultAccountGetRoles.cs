@@ -5,8 +5,6 @@ using System.Runtime.Serialization;
 
 namespace ChummerHub.Models.V1
 {
-    [DataContract]
-    [Serializable]
     public class ResultAccountGetRoles : ResultBase
     {
         public List<String> Roles { get; set; }

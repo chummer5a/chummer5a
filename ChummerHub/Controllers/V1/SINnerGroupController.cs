@@ -177,10 +177,10 @@ namespace ChummerHub.Controllers.V1
             /// <returns></returns>
             [HttpPost()]
         //[Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK, "")]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Accepted, "Group existed", typeof(SINnerGroup))]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Created, "Group created", typeof(SINnerGroup))]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest, "an error occured", typeof(HubException))]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Conflict, "an error occured", typeof(HubException))]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Accepted)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Created)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Conflict)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GroupPostGroup")]
         [Authorize]
         public async Task<ActionResult<ResultGroupPostGroup>> PostGroup([FromBody] SINnerGroup mygroup, Guid? SinnerId)
@@ -698,11 +698,9 @@ namespace ChummerHub.Controllers.V1
         /// <param name="SINnerName"></param>
         /// <returns></returns>
         [HttpGet()]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK, "Groups found", typeof(SINSearchGroupResult))]
-        [ProducesResponseType(typeof(SINSearchGroupResult), StatusCodes.Status200OK )]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest, "an error occured", typeof(HubException))]
-        [ProducesResponseType(typeof(HubException), StatusCodes.Status400BadRequest)]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound, "Group not found")]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GroupGetSearchGroups")]
         [Authorize]
         public async Task<ActionResult<ResultGroupGetSearchGroups>> GetSearchGroups(string Groupname, string UsernameOrEmail, string SINnerName, string Language)
@@ -1023,6 +1021,32 @@ namespace ChummerHub.Controllers.V1
                 }
                 result.SINGroups = RemovePWHashRecursive(result.SINGroups);
 
+                //now add owned SINners
+                SINnerSearchGroup ownedGroup = new SINnerSearchGroup()
+                {
+                    Groupname = "My SINners"
+                };
+                result.SINGroups.Add(ownedGroup);
+                List<SINner> mySinners;
+                var roles = await _userManager.GetRolesAsync(user);
+                if (!roles.Contains("SeeAllSInners"))
+                    mySinners = await SINner.GetSINnersFromUser(user, _context, true);
+                else
+                {
+                    mySinners = await _context.SINners.Include(a => a.MyGroup)
+                        .Include(a => a.SINnerMetaData.Visibility.UserRights)
+                        .ToListAsync();
+                }
+                foreach (var ownedSin in mySinners)
+                {
+                    SINnerSearchGroupMember ssgm = new SINnerSearchGroupMember
+                    {
+                        MySINner = ownedSin,
+                        Username = user.UserName
+                    };
+                    ownedGroup.MyMembers.Add(ssgm);
+                }
+                result.SINGroups = RemovePWHashRecursive(result.SINGroups);
                 return result;
 
             }

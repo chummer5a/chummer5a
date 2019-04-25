@@ -7,12 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ChummerHub.Models.V1
 {
-    [DataContract]
-    [Serializable]
     public class ResultGroupGetSearchGroups : ResultBase
     {
-        private ActionResult<SINSearchGroupResult> ssg;
-
         public SINSearchGroupResult MySearchGroupResult { get; set; }
 
         public ResultGroupGetSearchGroups(SINSearchGroupResult ssg)

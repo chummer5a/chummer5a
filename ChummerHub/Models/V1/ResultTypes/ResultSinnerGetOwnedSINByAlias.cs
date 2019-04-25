@@ -6,8 +6,6 @@ using Microsoft.AspNetCore.Identity;
 
 namespace ChummerHub.Models.V1
 {
-    [DataContract]
-    [Serializable]
     public class ResultSinnerGetOwnedSINByAlias : ResultBase
     {
         public List<SINner> MySINners { get; set; }

@@ -6,8 +6,6 @@ using Microsoft.AspNetCore.Identity;
 
 namespace ChummerHub.Models.V1
 {
-    [DataContract]
-    [Serializable]
     public class ResultAccountGetUserByEmail : ResultBase
     {
         public ApplicationUser MyApplicationUser { get; set; }

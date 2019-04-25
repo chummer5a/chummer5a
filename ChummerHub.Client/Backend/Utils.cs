@@ -360,7 +360,7 @@ namespace ChummerHub.Client.Backend
         /// Generates a character cache, which prevents us from repeatedly loading XmlNodes or caching a full character.
         /// </summary>
         /// <param name="strFile"></param>
-        internal async static Task<IEnumerable<TreeNode>> GetCharacterRosterTreeNode(bool forceUpdate, Func<Task<HttpOperationResponse<SINSearchGroupResult>>> myGetSINnersFunction)
+        internal async static Task<IEnumerable<TreeNode>> GetCharacterRosterTreeNode(bool forceUpdate, Func<Task<HttpOperationResponse<ResultAccountGetSinnersByAuthorization>>> myGetSINnersFunction)
         {
             if ((MyTreeNodeList != null) && !forceUpdate)
                 return MyTreeNodeList;
@@ -372,7 +372,7 @@ namespace ChummerHub.Client.Backend
                     MyTreeNodeList.Clear();
                 });
 
-                HttpOperationResponse<SINSearchGroupResult> response = null;
+                HttpOperationResponse<ResultAccountGetSinnersByAuthorization> response = null;
                 try
                 {
                     response = await myGetSINnersFunction();
@@ -445,7 +445,8 @@ namespace ChummerHub.Client.Backend
                     return MyTreeNodeList;
                 }
 
-                SINSearchGroupResult result = response.Body as SINSearchGroupResult;
+                ResultAccountGetSinnersByAuthorization res = response.Body as ResultAccountGetSinnersByAuthorization;
+                var result = res.MySINSearchGroupResult;
                 if (result?.Roles != null)
                     StaticUtils.UserRoles = result.Roles?.ToList();
                 System.Diagnostics.Trace.TraceInformation("Connected to SINners in version " + result?.Version?.AssemblyVersion + ".");
@@ -528,7 +529,8 @@ namespace ChummerHub.Client.Backend
                 Text = ssg.Groupname,
                 Name = ssg.Groupname
             };
-            foreach (var member in ssg.MyMembers)
+            var mlist = (from a in ssg.MyMembers orderby a.Display descending select a).ToList();
+            foreach (var member in mlist)
             {
                 var sinner = member.MySINner;
                 sinner.DownloadedFromSINnersTime = DateTime.Now;
@@ -923,7 +925,7 @@ namespace ChummerHub.Client.Backend
                 {
                     var client = await StaticUtils.GetClient();
                     var onlinesinner = await client.GetSINByIdWithHttpMessagesAsync(sinner.Id.Value);
-                    var json = onlinesinner.Body.MyExtendedAttributes.JsonSummary;
+                    var json = onlinesinner.Body.MySINner.MyExtendedAttributes.JsonSummary;
                     var onlineCache = Newtonsoft.Json.JsonConvert.DeserializeObject<CharacterCache>(json);
                     objCache.CharacterAlias = onlineCache.CharacterAlias;
                     objCache.CharacterName = onlineCache.CharacterName;

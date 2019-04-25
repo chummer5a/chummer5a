@@ -349,7 +349,7 @@ namespace Chummer
                             var task = plugin.GetCharacterRosterTreeNode(this, blnRefreshPlugins);
                             if(task.Result != null)
                             {
-                                result.Add(task.Result.ToList());
+                                result.Add(task.Result.OrderBy(a => a.Text).ToList());
                             }
                             return result;
                         });

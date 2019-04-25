@@ -23,6 +23,7 @@ using System.Xml;
 using System.Xml.Serialization;
 using Microsoft.Rest;
 using System.Threading;
+using MessageBox = System.Windows.MessageBox;
 
 namespace Chummer.Plugins
 {
@@ -237,10 +238,24 @@ namespace Chummer.Plugins
             mnuSINners.Size = new System.Drawing.Size(148, 22);
             mnuSINners.Tag = "Menu_Main_SINners";
             list.Add(mnuSINners);
+
+            ToolStripMenuItem mnuAdminSinners = new ToolStripMenuItem
+            {
+                Name = "mnuAdminSinners",
+                Text = "&Get all SINners"
+            };
+            mnuSINners.Click += new System.EventHandler(mnuAdminSinners_Click);
+            mnuSINners.Image = ChummerHub.Client.Properties.Resources.group;
+            mnuSINners.ImageTransparentColor = System.Drawing.Color.Black;
+            mnuSINners.Size = new System.Drawing.Size(148, 22);
+            mnuSINners.Tag = "Menu_Main_AdminSinners";
+            list.Add(mnuAdminSinners);
 #endif
-            ToolStripMenuItem mnuNPCs = new ToolStripMenuItem();
-            mnuNPCs.Name = "mnuNPCs";
-            mnuNPCs.Text = "&NPCs";
+            ToolStripMenuItem mnuNPCs = new ToolStripMenuItem
+            {
+                Name = "mnuNPCs",
+                Text = "&NPCs"
+            };
             mnuNPCs.Click += new System.EventHandler(mnuNPCs_Click);
             mnuNPCs.Image = ChummerHub.Client.Properties.Resources.group;
             mnuNPCs.ImageTransparentColor = System.Drawing.Color.Black;
@@ -290,7 +305,45 @@ namespace Chummer.Plugins
                 TreeNode node = new TreeNode("SINners Error: please log in") { ToolTipText = e.ToString(), Tag = e };
             }
         }
+
         
+        private async void mnuAdminSinners_Click(object sender, EventArgs ea)
+        {
+            try
+            {
+                using (new CursorWait(true, PluginHandler.MainForm))
+                {
+                    if (!StaticUtils.UserRoles.Contains("Administrator"))
+                    {
+                        MessageBox.Show("This function may only be called by admins!");
+                        return;
+                    }
+                    frmSINnerGroupSearch frmSearch = new frmSINnerGroupSearch(null, null);
+                    frmSearch.TopMost = true;
+                    frmSearch.Show(PluginHandler.MainForm);
+                }
+
+            }
+            catch (Microsoft.Rest.SerializationException e)
+            {
+                if (e.Content.Contains("Log in - ChummerHub"))
+                {
+                    TreeNode node = new TreeNode("Online, but not logged in!")
+                    {
+                        ToolTipText = "Please log in (Options -> Plugins -> Sinners (Cloud) -> Login",
+                        Tag = e
+                    };
+                }
+                else
+                {
+                    TreeNode node = new TreeNode("Error: " + e.Message) { ToolTipText = e.ToString(), Tag = e };
+                }
+            }
+            catch (Exception e)
+            {
+                TreeNode node = new TreeNode("SINners Error: please log in") { ToolTipText = e.ToString(), Tag = e };
+            }
+        }
 
         public Assembly GetPluginAssembly()
         {
@@ -318,7 +371,7 @@ namespace Chummer.Plugins
             {
                 using (new CursorWait(true, frmCharRoster))
                 {
-                    Func<Task<HttpOperationResponse<SINSearchGroupResult>>> myMethodName = async () =>
+                    Func<Task<HttpOperationResponse<ResultAccountGetSinnersByAuthorization>>> myMethodName = async () =>
                     {
                         var client = await StaticUtils.GetClient();
                         var ret = await client.GetSINnersByAuthorizationWithHttpMessagesAsync();
@@ -331,7 +384,8 @@ namespace Chummer.Plugins
                     }
                     var list = res.ToList();
                     var myadd = MyTreeNodes2Add.ToList();
-                    foreach (var addme in myadd)
+                    var mysortadd = (from a in myadd orderby a.Value.Text select a).ToList();
+                    foreach (var addme in mysortadd)
                     {
                         list.Add(addme.Value);
                     }
