@@ -4792,7 +4792,7 @@ namespace Chummer
             {
                 XmlNode objXmlArmor = objArmor.GetNode();
 
-                frmSelectArmorMod frmPickArmorMod = new frmSelectArmorMod(CharacterObject)
+                frmSelectArmorMod frmPickArmorMod = new frmSelectArmorMod(CharacterObject, objArmor)
                 {
                     ArmorCost = objArmor.OwnCost,
                     ArmorCapacity = Convert.ToDecimal(objArmor.CalculatedCapacity, GlobalOptions.CultureInfo),

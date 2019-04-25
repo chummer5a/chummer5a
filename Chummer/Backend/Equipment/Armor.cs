@@ -248,7 +248,7 @@ namespace Chummer.Backend.Equipment
                     // More than one Weapon can be added, so loop through all occurrences.
                     foreach (XmlNode objXmlCategoryNode in xmlSelectModesFromCategory)
                     {
-                        frmSelectArmorMod frmPickArmorMod = new frmSelectArmorMod(_objCharacter)
+                        frmSelectArmorMod frmPickArmorMod = new frmSelectArmorMod(_objCharacter, this)
                         {
                             AllowedCategories = objXmlCategoryNode.InnerText,
                             ExcludeGeneralCategory = true
