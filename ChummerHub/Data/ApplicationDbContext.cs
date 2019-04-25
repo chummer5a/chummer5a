@@ -110,6 +110,22 @@ namespace ChummerHub.Data
                 .HasIndex(b => b.Language);
             builder.Entity<ChummerHub.Models.V1.Tag>()
                 .HasIndex(b => b.TagValueDouble);
+            try
+            {
+                this.Database.ExecuteSqlCommand(
+                    @"CREATE VIEW View_SINnerUserRights AS 
+        SELECT        dbo.SINners.Alias, dbo.UserRights.EMail, dbo.SINners.Id, dbo.UserRights.CanEdit, dbo.SINners.GoogleDriveFileId, dbo.SINners.MyGroupId, dbo.SINners.LastChange
+                         
+FROM            dbo.SINners INNER JOIN
+                         dbo.SINnerMetaData ON dbo.SINners.SINnerMetaDataId = dbo.SINnerMetaData.Id INNER JOIN
+                         dbo.SINnerVisibility ON dbo.SINnerMetaData.VisibilityId = dbo.SINnerVisibility.Id INNER JOIN
+                         dbo.UserRights ON dbo.SINnerVisibility.Id = dbo.UserRights.SINnerVisibilityId"
+                );
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Trace.TraceInformation(e.Message);
+            }
         }
 
         public DbSet<ChummerHub.Models.V1.SINner> SINners { get; set; }

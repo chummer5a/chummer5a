@@ -37,9 +37,9 @@ namespace Chummer
 {
     public partial class frmCharacterRoster : Form
     {
-        private readonly ConcurrentDictionary<string, CharacterCache> _lstCharacterCache = new ConcurrentDictionary<string, CharacterCache>();
+        //private readonly ConcurrentDictionary<string, CharacterCache> _lstCharacterCache = new ConcurrentDictionary<string, CharacterCache>();
 
-        public ConcurrentDictionary<string, CharacterCache> MyCharacterCacheDic { get { return _lstCharacterCache; } }
+        //public ConcurrentDictionary<string, CharacterCache> MyCharacterCacheDic { get { return _lstCharacterCache; } }
 
         private readonly FileSystemWatcher watcherCharacterRosterFolder;
         private bool _blnSkipUpdate;
@@ -140,7 +140,7 @@ namespace Chummer
             if(e?.Text != "mru")
             {
                 treCharacterList.Nodes.Clear();
-                _lstCharacterCache.Clear();
+                //_lstCharacterCache.Clear();
                 LoadCharacters(true, true, true, false);
                 GC.Collect();
             }
@@ -157,31 +157,27 @@ namespace Chummer
             {
                 foreach(TreeNode objCharacterNode in objTypeNode.Nodes)
                 {
-                    if (objCharacterNode.Tag == null)
-                        continue;
-                    string strFile = objCharacterNode.Tag.ToString();
-                    if(_lstCharacterCache.TryGetValue(strFile, out CharacterCache objCache) && objCache != null)
+                    CharacterCache objCache = objCharacterNode.Tag as CharacterCache;
+                    if (objCache != null)
                     {
                         objCharacterNode.Text = objCache.CalculatedName();
-                        objCharacterNode.ToolTipText = objCache.FilePath.CheapReplace(Utils.GetStartupPath, () => '<' + Application.ProductName + '>');
-                        if(!string.IsNullOrEmpty(objCache.ErrorText))
+                        objCharacterNode.ToolTipText = objCache.FilePath.CheapReplace(Utils.GetStartupPath,
+                            () => '<' + Application.ProductName + '>');
+                        if (!string.IsNullOrEmpty(objCache.ErrorText))
                         {
                             objCharacterNode.ForeColor = Color.Red;
                             objCharacterNode.ToolTipText += Environment.NewLine + Environment.NewLine
-                                                                                + LanguageManager.GetString("String_Error", GlobalOptions.Language) + LanguageManager.GetString("String_Colon", GlobalOptions.Language)
-                                                                                + Environment.NewLine + objCache.ErrorText;
+                                                                                + LanguageManager.GetString(
+                                                                                    "String_Error",
+                                                                                    GlobalOptions.Language) +
+                                                                                LanguageManager.GetString(
+                                                                                    "String_Colon",
+                                                                                    GlobalOptions.Language)
+                                                                                + Environment.NewLine +
+                                                                                objCache.ErrorText;
                         }
                         else
                             objCharacterNode.ForeColor = SystemColors.WindowText;
-                    }
-                    else
-                    {
-
-                        objCharacterNode.Text = Path.GetFileNameWithoutExtension(strFile) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + LanguageManager.GetString("String_Error", GlobalOptions.Language) + ')';
-                        objCharacterNode.ToolTipText = strFile.CheapReplace(Utils.GetStartupPath, () => '<' + Application.ProductName + '>') + Environment.NewLine + Environment.NewLine
-                                                       + LanguageManager.GetString("String_Error", GlobalOptions.Language) + LanguageManager.GetString("String_Colon", GlobalOptions.Language)
-                                                       + Environment.NewLine + LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language);
-                        objCharacterNode.ForeColor = Color.Red;
                     }
                 }
             }
@@ -353,7 +349,7 @@ namespace Chummer
                             var task = plugin.GetCharacterRosterTreeNode(this, blnRefreshPlugins);
                             if(task.Result != null)
                             {
-                                result.Add(task.Result.ToList());
+                                result.Add(task.Result.OrderBy(a => a.Text).ToList());
                             }
                             return result;
                         });
@@ -452,15 +448,12 @@ namespace Chummer
         private TreeNode CacheCharacter(string strFile)
         {
             CharacterCache objCache = new CharacterCache(strFile);
-            if(!_lstCharacterCache.TryAdd(strFile, objCache))
-                _lstCharacterCache[strFile] = objCache;
-
             TreeNode objNode = new TreeNode
             {
                 ContextMenuStrip = cmsRoster,
                 Text = objCache.CalculatedName(),
                 ToolTipText = objCache.FilePath.CheapReplace(Utils.GetStartupPath, () => '<' + Application.ProductName + '>'),
-                Tag = strFile
+                Tag = objCache
             };
             if(!string.IsNullOrEmpty(objCache.ErrorText))
             {
@@ -478,7 +471,7 @@ namespace Chummer
         /// Update the labels and images based on the selected treenode.
         /// </summary>
         /// <param name="objCache"></param>
-        private void UpdateCharacter(CharacterCache objCache)
+        public void UpdateCharacter(CharacterCache objCache)
         {
             if(objCache != null)
             {
@@ -581,17 +574,10 @@ namespace Chummer
         {
             CharacterCache objCache = null;
             TreeNode objSelectedNode = treCharacterList.SelectedNode;
-            if((objSelectedNode != null && objSelectedNode.Level > 0)
-                && (objSelectedNode?.Tag != null))
-            {
-                _lstCharacterCache.TryGetValue(objSelectedNode.Tag.ToString(), out objCache);
-            }
-            else if (objSelectedNode?.Tag is CharacterCache)
-            {
-                objCache = objSelectedNode.Tag as CharacterCache;
-            }
-            if(objCache != null)
-                objCache.OnMyAfterSelect(sender, e);
+            if (objSelectedNode == null)
+                return;
+            objCache = objSelectedNode.Tag as CharacterCache;
+            objCache?.OnMyAfterSelect(sender, e);
             UpdateCharacter(objCache);
             treCharacterList.ClearNodeBackground(treCharacterList.SelectedNode);
         }
@@ -602,8 +588,7 @@ namespace Chummer
             if(objSelectedNode != null && objSelectedNode.Level > 0)
             {
                 if (objSelectedNode.Tag == null) return;
-                string strFile = objSelectedNode.Tag.ToString();
-                if(!string.IsNullOrEmpty(strFile) && _lstCharacterCache.TryGetValue(strFile, out CharacterCache objCache) && string.IsNullOrEmpty(objCache.ErrorText))
+                if(objSelectedNode.Tag is CharacterCache objCache)
                 {
                     try
                     {
@@ -624,10 +609,8 @@ namespace Chummer
 
             TreeNode t = treCharacterList.SelectedNode;
 
-            if(t?.Tag != null && _lstCharacterCache.TryGetValue(t.Tag.ToString(), out CharacterCache objCache) && objCache != null)
-            {
-                objCache.OnMyKeyDown(sender, new Tuple<KeyEventArgs, TreeNode>(e, t));
-            }
+            var objCache = t?.Tag as CharacterCache;
+            objCache?.OnMyKeyDown(sender, new Tuple<KeyEventArgs, TreeNode>(e, t));
 
         }
 
@@ -678,7 +661,7 @@ namespace Chummer
 
                     if(nodNewNode.Level == 0 || nodNewNode.Parent == nodDestinationNode)
                         return;
-                    if(_lstCharacterCache.TryGetValue(nodNewNode.Tag.ToString(), out CharacterCache objCache) && objCache != null)
+                    if (nodNewNode.Tag is CharacterCache objCache)
                     {
                         switch(strDestinationNode)
                         {
@@ -984,7 +967,7 @@ namespace Chummer
         {
             TreeNode t = treCharacterList.SelectedNode;
 
-            if(t != null && _lstCharacterCache.TryGetValue(t.Tag.ToString(), out CharacterCache objCache) && objCache != null)
+            if (t?.Tag is CharacterCache objCache)
             {
                 switch(t.Parent.Tag.ToString())
                 {
@@ -998,77 +981,77 @@ namespace Chummer
             }
         }
 
-        private void tsSort_Click(object sender, EventArgs e)
-        {
-            TreeNode t = treCharacterList.SelectedNode;
+        //private void tsSort_Click(object sender, EventArgs e)
+        //{
+        //    TreeNode t = treCharacterList.SelectedNode;
 
-            if(t != null)
-            {
-                string strSelectedTag = t.Tag.ToString();
-                if(_lstCharacterCache.TryGetValue(t.Tag.ToString(), out CharacterCache objCache) && objCache != null)
-                {
-                    switch(t.Parent.Tag.ToString())
-                    {
-                        case "Recent":
-                            {
-                                _blnSkipUpdate = true;
-                                SuspendLayout();
+        //    if(t != null)
+        //    {
+        //        if (t?.Tag is CharacterCache objCache)
+        //        {
+        //            switch(t.Parent.Tag.ToString())
+        //            {
+        //                case "Recent":
+        //                    {
+        //                        _blnSkipUpdate = true;
+        //                        SuspendLayout();
 
-                                List<Tuple<string, string>> lstSorted = new List<Tuple<string, string>>();
-                                for(int i = 0; i < GlobalOptions.MostRecentlyUsedCharacters.Count; ++i)
-                                {
-                                    string strLoopFile = GlobalOptions.MostRecentlyUsedCharacters[i];
-                                    if(_lstCharacterCache.TryGetValue(strLoopFile, out CharacterCache objLoopCache) && objLoopCache != null)
-                                        lstSorted.Add(new Tuple<string, string>(objLoopCache.CalculatedName(false), strLoopFile));
-                                    else
-                                        lstSorted.Add(new Tuple<string, string>(Path.GetFileNameWithoutExtension(strLoopFile), strLoopFile));
-                                }
+        //                        List<Tuple<string, string>> lstSorted = new List<Tuple<string, string>>();
+        //                        for(int i = 0; i < GlobalOptions.MostRecentlyUsedCharacters.Count; ++i)
+        //                        {
+        //                            string strLoopFile = GlobalOptions.MostRecentlyUsedCharacters[i];
 
-                                lstSorted.Sort();
-                                for(int i = 0; i < lstSorted.Count; ++i)
-                                    GlobalOptions.MostRecentlyUsedCharacters.Move(GlobalOptions.MostRecentlyUsedCharacters.IndexOf(lstSorted[i].Item2), i);
+        //                            if(_lstCharacterCache.TryGetValue(strLoopFile, out CharacterCache objLoopCache) && objLoopCache != null)
+        //                                lstSorted.Add(new Tuple<string, string>(objLoopCache.CalculatedName(false), strLoopFile));
+        //                            else
+        //                                lstSorted.Add(new Tuple<string, string>(Path.GetFileNameWithoutExtension(strLoopFile), strLoopFile));
+        //                        }
 
-                                LoadCharacters(false, true, false);
-                                ResumeLayout();
-                                treCharacterList.SelectedNode = treCharacterList.FindNode(strSelectedTag);
-                                break;
-                            }
-                        case "Favourite":
-                            {
-                                _blnSkipUpdate = true;
-                                SuspendLayout();
+        //                        lstSorted.Sort();
+        //                        for(int i = 0; i < lstSorted.Count; ++i)
+        //                            GlobalOptions.MostRecentlyUsedCharacters.Move(GlobalOptions.MostRecentlyUsedCharacters.IndexOf(lstSorted[i].Item2), i);
 
-                                List<Tuple<string, string>> lstSorted = new List<Tuple<string, string>>();
-                                for(int i = 0; i < GlobalOptions.FavoritedCharacters.Count; ++i)
-                                {
-                                    string strLoopFile = GlobalOptions.FavoritedCharacters[i];
-                                    if(_lstCharacterCache.TryGetValue(strLoopFile, out CharacterCache objLoopCache) && objLoopCache != null)
-                                        lstSorted.Add(new Tuple<string, string>(objLoopCache.CalculatedName(false), strLoopFile));
-                                    else
-                                        lstSorted.Add(new Tuple<string, string>(Path.GetFileNameWithoutExtension(strLoopFile), strLoopFile));
-                                }
+        //                        LoadCharacters(false, true, false);
+        //                        ResumeLayout();
+        //                        treCharacterList.SelectedNode = treCharacterList.FindNode(strSelectedTag);
+        //                        break;
+        //                    }
+        //                case "Favourite":
+        //                    {
+        //                        _blnSkipUpdate = true;
+        //                        SuspendLayout();
 
-                                lstSorted.Sort();
-                                for(int i = 0; i < lstSorted.Count; ++i)
-                                    GlobalOptions.FavoritedCharacters.Move(GlobalOptions.FavoritedCharacters.IndexOf(lstSorted[i].Item2), i);
+        //                        List<Tuple<string, string>> lstSorted = new List<Tuple<string, string>>();
+        //                        for(int i = 0; i < GlobalOptions.FavoritedCharacters.Count; ++i)
+        //                        {
+        //                            string strLoopFile = GlobalOptions.FavoritedCharacters[i];
+        //                            if(_lstCharacterCache.TryGetValue(strLoopFile, out CharacterCache objLoopCache) && objLoopCache != null)
+        //                                lstSorted.Add(new Tuple<string, string>(objLoopCache.CalculatedName(false), strLoopFile));
+        //                            else
+        //                                lstSorted.Add(new Tuple<string, string>(Path.GetFileNameWithoutExtension(strLoopFile), strLoopFile));
+        //                        }
 
-                                _blnSkipUpdate = false;
+        //                        lstSorted.Sort();
+        //                        for(int i = 0; i < lstSorted.Count; ++i)
+        //                            GlobalOptions.FavoritedCharacters.Move(GlobalOptions.FavoritedCharacters.IndexOf(lstSorted[i].Item2), i);
 
-                                LoadCharacters(true, false, false);
-                                ResumeLayout();
-                                treCharacterList.SelectedNode = treCharacterList.FindNode(strSelectedTag);
-                                break;
-                            }
-                    }
-                }
-            }
-        }
+        //                        _blnSkipUpdate = false;
+
+        //                        LoadCharacters(true, false, false);
+        //                        ResumeLayout();
+        //                        treCharacterList.SelectedNode = treCharacterList.FindNode(strSelectedTag);
+        //                        break;
+        //                    }
+        //            }
+        //        }
+        //    }
+        //}
 
         private void tsToggleFav_Click(object sender, EventArgs e)
         {
             TreeNode t = treCharacterList.SelectedNode;
 
-            if(t != null && _lstCharacterCache.TryGetValue(t.Tag.ToString(), out CharacterCache objCache) && objCache != null)
+            if(t?.Tag is CharacterCache objCache)
             {
                 switch(t.Parent.Tag.ToString())
                 {

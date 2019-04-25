@@ -63,10 +63,11 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("PutGroupInGroup")]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GroupPutGroupInGroup")]
         [Authorize(Roles = "Administrator,GroupAdmin")]
-        public async Task<ActionResult<SINner>> PutGroupInGroup(Guid GroupId, string groupname, Guid? parentGroupId, string adminIdentityRole, bool isPublicVisible)
+        public async Task<ActionResult<ResultGroupPutGroupInGroup>> PutGroupInGroup(Guid GroupId, string groupname, Guid? parentGroupId, string adminIdentityRole, bool isPublicVisible)
         {
+            ResultGroupPutGroupInGroup res;
             _logger.LogTrace("PutGroupInGroup: " + GroupId + " (" + parentGroupId + ", " + adminIdentityRole +").");
             ApplicationUser user = null;
             try
@@ -86,7 +87,10 @@ namespace ChummerHub.Controllers.V1
                         }
 
                     }
-                    return BadRequest(new HubException(msg));
+
+                    var e = new HubException(msg);
+                    res = new ResultGroupPutGroupInGroup(e);
+                    return BadRequest(res);
                 }
 
                 SINnerGroup parentGroup = null;
@@ -96,7 +100,11 @@ namespace ChummerHub.Controllers.V1
                         where a.Id == parentGroupId
                         select a).Take(1);
                     if (!getParentseq.Any())
-                        return NotFound("Parentgroup with Id " + parentGroupId?.ToString() + " not found.");
+                    {
+                        var e = new ArgumentException("Parentgroup with Id " + parentGroupId?.ToString() + " not found.");
+                        res = new ResultGroupPutGroupInGroup(e);
+                        return NotFound(res);
+                    }
                     parentGroup = getParentseq.FirstOrDefault();
                 }
 
@@ -105,7 +113,12 @@ namespace ChummerHub.Controllers.V1
                                 where a.Id == GroupId
                                    select a).Take(1);
                 if (!getGroupseq.Any())
-                    return NotFound("Group with Id " + parentGroupId.ToString() + " not found.");
+                {
+                    var e = new ArgumentException("Group with Id " + parentGroupId.ToString() + " not found.");
+                    res = new ResultGroupPutGroupInGroup(e);
+                    return NotFound(res);
+                }
+
                 myGroup = getGroupseq.FirstOrDefault();
                 myGroup.Groupname = groupname;
                 myGroup.IsPublic = isPublicVisible;
@@ -131,7 +144,8 @@ namespace ChummerHub.Controllers.V1
                 }
                 myGroup.PasswordHash = "";
                 myGroup.MyGroups = RemovePWHashRecursive(myGroup.MyGroups);
-                return Ok(myGroup);
+                res = new ResultGroupPutGroupInGroup(myGroup);
+                return Ok(res);
             }
             catch (Exception e)
             {
@@ -147,8 +161,8 @@ namespace ChummerHub.Controllers.V1
                 {
                     _logger.LogError(ex.ToString());
                 }
-                HubException hue = new HubException("Exception in PutSINerInGroup: " + e.Message, e);
-                return BadRequest(hue);
+                res = new ResultGroupPutGroupInGroup(e);
+                return BadRequest(res);
             }
 
         }
@@ -163,14 +177,15 @@ namespace ChummerHub.Controllers.V1
             /// <returns></returns>
             [HttpPost()]
         //[Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK, "")]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Accepted, "Group existed", typeof(SINnerGroup))]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Created, "Group created", typeof(SINnerGroup))]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest, "an error occured", typeof(HubException))]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Conflict, "an error occured", typeof(HubException))]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("PostGroup")]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Accepted)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Created)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Conflict)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GroupPostGroup")]
         [Authorize]
-        public async Task<IActionResult> PostGroup([FromBody] SINnerGroup mygroup, Guid? SinnerId)
+        public async Task<ActionResult<ResultGroupPostGroup>> PostGroup([FromBody] SINnerGroup mygroup, Guid? SinnerId)
         {
+            ResultGroupPostGroup res;
             _logger.LogTrace("Post SINnerGroupInternal: " + mygroup?.Groupname + " (" + SinnerId + ").");
             ApplicationUser user = null;
             var returncode = HttpStatusCode.OK;
@@ -193,18 +208,20 @@ namespace ChummerHub.Controllers.V1
                             }
 
                         }
-
-                        return BadRequest(new HubException(msg));
+                        res = new ResultGroupPostGroup(new HubException(msg));
+                        return BadRequest(res);
                     }
 
                     if (mygroup == null)
                     {
-                        return BadRequest(new HubException("group == null."));
+                        res = new ResultGroupPostGroup(new HubException("group == null."));
+                        return BadRequest(res);
                     }
 
                     if (String.IsNullOrEmpty(mygroup?.Groupname))
                     {
-                        return BadRequest(new HubException("Groupname may not be empty."));
+                        res = new ResultGroupPostGroup(new HubException("Groupname may not be empty."));
+                        return BadRequest(res);
                     }
 
                     SINnerGroup parentGroup = null;
@@ -237,7 +254,9 @@ namespace ChummerHub.Controllers.V1
                             string msg = "A group with the name " + mygroup.Groupname +
                                          " already exists and user is not GroupAdmin or " +
                                          storegroup?.MyAdminIdentityRole + "!";
-                            return BadRequest(new HubException(msg));
+
+                            res = new ResultGroupPostGroup(new HubException(msg));
+                            return BadRequest(res);
                         }
 
                     }
@@ -276,22 +295,17 @@ namespace ChummerHub.Controllers.V1
                         if (!sinnerseq.Any())
                         {
                             string msg = "Please upload SINner prior to adding him/her to a group!";
-                            return BadRequest(new HubException(msg));
+                            res = new ResultGroupPostGroup(new HubException(msg));
+                            return BadRequest(res);
                         }
 
                         foreach (var sinner in sinnerseq)
                         {
                             if (sinner.SINnerMetaData.Visibility.UserRights.Any() == false)
                             {
-                                return BadRequest(
-                                    new HubException("Sinner  " + sinner.Id + ": Visibility contains no entries!"));
+                                res = new ResultGroupPostGroup(new HubException("Sinner  " + sinner.Id + ": Visibility contains no entries!"));
+                                return BadRequest(res);
                             }
-
-                            if (sinner.LastChange == null)
-                            {
-                                return BadRequest(new HubException("Sinner  " + sinner.Id + ": LastChange not set!"));
-                            }
-
                             if (sinner.SINnerMetaData.Visibility.Id == null)
                             {
                                 sinner.SINnerMetaData.Visibility.Id = Guid.NewGuid();
@@ -311,7 +325,9 @@ namespace ChummerHub.Controllers.V1
                             if (!found)
                             {
                                 string msg = "Sinner " + sinner.Id + " is not editable for user " + user.UserName + ".";
-                                return BadRequest(new HubException(msg));
+
+                                res = new ResultGroupPostGroup(new HubException(msg));
+                                return BadRequest(res);
                             }
                         }
                     }
@@ -322,23 +338,25 @@ namespace ChummerHub.Controllers.V1
                 {
                     foreach (var entry in ex.Entries)
                     {
-                        if (entry.Entity is SINner)
+                        if (entry.Entity is SINner || entry.Entity is Tag || entry.Entity is SINnerGroup)
                         {
-                            Utils.DbUpdateConcurrencyExceptionHandler(entry, _logger);
-                        }
-                        else if (entry.Entity is Tag)
-                        {
-                            Utils.DbUpdateConcurrencyExceptionHandler(entry, _logger);
-                        }
-                        else if (entry.Entity is SINnerGroup)
-                        {
-                            Utils.DbUpdateConcurrencyExceptionHandler(entry, _logger);
+                            try
+                            {
+                                Utils.DbUpdateConcurrencyExceptionHandler(entry, _logger);
+                            }
+                            catch (Exception e)
+                            {
+                                res = new ResultGroupPostGroup(e);
+                                return BadRequest(res);
+                            }
                         }
                         else
                         {
-                            throw new NotSupportedException(
+                            var e = new NotSupportedException(
                                 "Don't know how to handle concurrency conflicts for "
                                 + entry.Metadata.Name);
+                            res = new ResultGroupPostGroup(e);
+                            return BadRequest(res);
                         }
                     }
                 }
@@ -357,23 +375,20 @@ namespace ChummerHub.Controllers.V1
                         _logger.LogError(ex.ToString());
                     }
 
-                    HubException hue = new HubException("Exception in PostGroup: " + e.ToString(), e);
-                    var msg = new System.Net.Http.HttpResponseMessage(HttpStatusCode.Conflict)
-                        {ReasonPhrase = e.Message};
-                    return Conflict(hue);
+                    var re = new ResultGroupPostGroup(e);
+                    return Conflict(re);
                 }
-
+            res = new ResultGroupPostGroup(mygroup);
             switch (returncode)
             {
                 case HttpStatusCode.Accepted:
-                    return Accepted("PostGroup", mygroup);
+                    return Accepted("PostGroup", res);
                 case HttpStatusCode.Created:
-                    return CreatedAtAction("PostGroup", mygroup);
+                    return CreatedAtAction("PostGroup", res);
                 default:
+                    return Ok(res);
                     break;
             }
-
-            return BadRequest();
         }
         catch(Exception e)
         {
@@ -389,11 +404,10 @@ namespace ChummerHub.Controllers.V1
             {
                 _logger.LogError(ex.ToString());
             }
-            HubException hue = new HubException("Exception in PostGroup: " + e.Message, e);
-            return BadRequest(hue);
-          
+            var re = new ResultGroupPostGroup(e);
+            return BadRequest(re);
+            }
         }
-    }
 
 
         /// <summary>
@@ -406,10 +420,11 @@ namespace ChummerHub.Controllers.V1
         [HttpPut()]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK, "SINner joined the group", typeof(SINner))]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest, "an error occured", typeof(HubException))]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("PutSINerInGroup")]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GroupPutSINerInGroup")]
         [Authorize]
-        public async Task<ActionResult<SINner>> PutSINerInGroup(Guid GroupId, Guid SinnerId, string pwhash)
+        public async Task<ActionResult<ResultGroupPutSINerInGroup>> PutSINerInGroup(Guid GroupId, Guid SinnerId, string pwhash)
         {
+            ResultGroupPutSINerInGroup res;
             _logger.LogTrace("PutSINerInGroup: " + GroupId + " (" + SinnerId + ").");
             ApplicationUser user = null;
             try
@@ -429,11 +444,14 @@ namespace ChummerHub.Controllers.V1
                         }
 
                     }
-                    return BadRequest(new HubException(msg));
+
+                    res = new ResultGroupPutSINerInGroup(new HubException(msg));
+                    return BadRequest(res);
                 }
                 var roles = await _userManager.GetRolesAsync(user);
                 var sin = await PutSiNerInGroupInternal(GroupId, SinnerId, user, _context, _logger, pwhash, roles);
-                return Ok(sin);
+                res = new ResultGroupPutSINerInGroup(sin);
+                return Ok(res);
             }
             catch (Exception e)
             {
@@ -449,15 +467,13 @@ namespace ChummerHub.Controllers.V1
                 {
                     _logger.LogError(ex.ToString());
                 }
-                if (e is HubException)
-                    return BadRequest(e);
-                HubException hue = new HubException("Exception in PutSINerInGroup: " + e.Message, e);
-                return BadRequest(hue);
+                res = new ResultGroupPutSINerInGroup(e);
+                return BadRequest(res);
             }
 
         }
 
-        internal static async Task<ActionResult<SINner>> PutSiNerInGroupInternal(Guid GroupId, Guid SinnerId, ApplicationUser user, ApplicationDbContext context, ILogger logger, string pwhash, IList<string> userroles)
+        internal static async Task<SINner> PutSiNerInGroupInternal(Guid GroupId, Guid SinnerId, ApplicationUser user, ApplicationDbContext context, ILogger logger, string pwhash, IList<string> userroles)
         {
             try
             {
@@ -561,10 +577,11 @@ namespace ChummerHub.Controllers.V1
         [HttpGet()]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GetGroupById")]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GroupGetGroupById")]
         [Authorize]
-        public async Task<ActionResult<SINnerGroup>> GetGroupById(Guid groupid)
+        public async Task<ActionResult<ResultGroupGetGroupById>> GetGroupById(Guid groupid)
         {
+            ResultGroupGetGroupById res;
             _logger.LogTrace("GetById: " + groupid + ".");
            
             try
@@ -582,7 +599,8 @@ namespace ChummerHub.Controllers.V1
                             msg += Environment.NewLine + "\t" + singleerr.ToString();
                         }
                     }
-                    return BadRequest(new HubException(msg));
+                    res = new ResultGroupGetGroupById(new HubException(msg));
+                    return BadRequest(res);
                 }
 
                 var groupfoundseq = await (from a in _context.SINnerGroups
@@ -593,7 +611,12 @@ namespace ChummerHub.Controllers.V1
                     where a.Id == groupid select a).ToListAsync();
 
                 if (!groupfoundseq.Any())
-                    return NotFound(groupid);
+                {
+                    var e = new ArgumentException("Could not find group with id " + groupid + ".");
+                    res = new ResultGroupGetGroupById(e);
+                    return NotFound(res);
+                }
+                    
 
                 var group = groupfoundseq.FirstOrDefault();
                 group.MyGroups = RemovePWHashRecursive(group.MyGroups);
@@ -603,8 +626,8 @@ namespace ChummerHub.Controllers.V1
                     group.MyParentGroup.PasswordHash = "";
                     group.MyParentGroup.MyGroups = new List<SINnerGroup>();
                 }
-
-                return Ok(group);
+                res = new ResultGroupGetGroupById(group);
+                return Ok(res);
 
             }
             catch(Exception e)
@@ -620,11 +643,8 @@ namespace ChummerHub.Controllers.V1
                 {
                     _logger.LogError(ex.ToString());
                 }
-                if (e is HubException)
-                    return BadRequest(e);
-                HubException hue = new HubException("Exception in GetGroupById: " + e.Message, e);
-                return BadRequest(hue);
-
+                res = new ResultGroupGetGroupById(e);
+                return BadRequest(res);
             }
         }
 
@@ -638,14 +658,17 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GetPublicGroup")]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GroupGetPublicGroup")]
         [AllowAnonymous]
-        public async Task<ActionResult<SINSearchGroupResult>> GetPublicGroup(string Groupname, string Language)
+        public async Task<ActionResult<ResultGroupGetSearchGroups>> GetPublicGroup(string Groupname, string Language)
         {
+            ResultGroupGetSearchGroups res;
             _logger.LogTrace("GetPublicGroup: " + Groupname + ".");
             try
             {
-                return await GetSearchGroupsInternal(Groupname, null, null, Language);
+                var ssg = await GetSearchGroupsInternal(Groupname, null, null, Language);
+                res = new ResultGroupGetSearchGroups(ssg);
+                return Ok(res);
             }
             catch (Exception e)
             {
@@ -661,10 +684,8 @@ namespace ChummerHub.Controllers.V1
                 {
                     _logger.LogError(ex.ToString());
                 }
-                if (e is HubException)
-                    return BadRequest(e);
-                HubException hue = new HubException("Exception in GetSearchGroups: " + e.Message, e);
-                return BadRequest(hue);
+                res = new ResultGroupGetSearchGroups(e);
+                return BadRequest(res);
             }
         }
 
@@ -677,19 +698,20 @@ namespace ChummerHub.Controllers.V1
         /// <param name="SINnerName"></param>
         /// <returns></returns>
         [HttpGet()]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK, "Groups found", typeof(SINSearchGroupResult))]
-        [ProducesResponseType(typeof(SINSearchGroupResult), StatusCodes.Status200OK )]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest, "an error occured", typeof(HubException))]
-        [ProducesResponseType(typeof(HubException), StatusCodes.Status400BadRequest)]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound, "Group not found")]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GetSearchGroups")]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GroupGetSearchGroups")]
         [Authorize]
-        public async Task<ActionResult<SINSearchGroupResult>> GetSearchGroups(string Groupname, string UsernameOrEmail, string SINnerName, string Language)
+        public async Task<ActionResult<ResultGroupGetSearchGroups>> GetSearchGroups(string Groupname, string UsernameOrEmail, string SINnerName, string Language)
         {
+            ResultGroupGetSearchGroups res;
             _logger.LogTrace("GetSearchGroups: " + Groupname + "/" + UsernameOrEmail + "/" + SINnerName + ".");
             try
             {
-                return await GetSearchGroupsInternal(Groupname, UsernameOrEmail, SINnerName, Language);
+                var r =  await GetSearchGroupsInternal(Groupname, UsernameOrEmail, SINnerName, Language);
+                res = new ResultGroupGetSearchGroups(r);
+                return Ok(res);
             }
             catch(Exception e)
             {
@@ -705,10 +727,8 @@ namespace ChummerHub.Controllers.V1
                 {
                     _logger.LogError(ex.ToString());
                 }
-                if (e is HubException)
-                    return BadRequest(e);
-                HubException hue = new HubException("Exception in GetSearchGroups: " + e.Message, e);
-                return BadRequest(hue);
+                res = new ResultGroupGetSearchGroups(e);
+                return BadRequest(res);
             }
         }
 
@@ -896,7 +916,7 @@ namespace ChummerHub.Controllers.V1
 
         }
 
-        private async Task<ActionResult<SINSearchGroupResult>> GetSearchGroupsInternal(string Groupname, string UsernameOrEmail, string sINnerName, string language)
+        private async Task<SINSearchGroupResult> GetSearchGroupsInternal(string Groupname, string UsernameOrEmail, string sINnerName, string language)
         {
             ApplicationUser user = null;
             try
@@ -917,7 +937,7 @@ namespace ChummerHub.Controllers.V1
                         }
                     }
 
-                    return BadRequest(new HubException(msg));
+                    throw new HubException(msg);
                 }
 
                 SINSearchGroupResult result = new SINSearchGroupResult();
@@ -931,7 +951,7 @@ namespace ChummerHub.Controllers.V1
                                            select a.Id).ToListAsync();
                     if (!groupfoundseq.Any())
                     {
-                        return NotFound();
+                        throw new ArgumentException("No group found with the given parameter: " + Groupname);
                     }
                 }
                 else if (String.IsNullOrEmpty(UsernameOrEmail) && String.IsNullOrEmpty(sINnerName))
@@ -941,7 +961,7 @@ namespace ChummerHub.Controllers.V1
                                            select a.Id).ToListAsync();
                     if (!groupfoundseq.Any())
                     {
-                        return NotFound();
+                        throw new ArgumentException("No group found with the given parameter IsPublic");
                     }
                 }
                 
@@ -1001,7 +1021,33 @@ namespace ChummerHub.Controllers.V1
                 }
                 result.SINGroups = RemovePWHashRecursive(result.SINGroups);
 
-                return Ok(result);
+                //now add owned SINners
+                SINnerSearchGroup ownedGroup = new SINnerSearchGroup()
+                {
+                    Groupname = "My SINners"
+                };
+                result.SINGroups.Add(ownedGroup);
+                List<SINner> mySinners;
+                var roles = await _userManager.GetRolesAsync(user);
+                if (!roles.Contains("SeeAllSInners"))
+                    mySinners = await SINner.GetSINnersFromUser(user, _context, true);
+                else
+                {
+                    mySinners = await _context.SINners.Include(a => a.MyGroup)
+                        .Include(a => a.SINnerMetaData.Visibility.UserRights)
+                        .ToListAsync();
+                }
+                foreach (var ownedSin in mySinners)
+                {
+                    SINnerSearchGroupMember ssgm = new SINnerSearchGroupMember
+                    {
+                        MySINner = ownedSin,
+                        Username = user.UserName
+                    };
+                    ownedGroup.MyMembers.Add(ssgm);
+                }
+                result.SINGroups = RemovePWHashRecursive(result.SINGroups);
+                return result;
 
             }
             catch (Exception e)
@@ -1018,11 +1064,7 @@ namespace ChummerHub.Controllers.V1
                 {
                     _logger.LogError(ex.ToString());
                 }
-                if (e is HubException)
-                    return BadRequest(e);
-                HubException hue = new HubException("Exception in GetSearchGroups: " + e.Message, e);
-                return BadRequest(hue);
-
+                throw;
             }
         }
 
@@ -1037,8 +1079,9 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GetGroupMembers")]
         [Authorize]
-        public async Task<ActionResult<SINSearchGroupResult>> GetGroupMembers(Guid groupid)
+        public async Task<ActionResult<ResultGroupGetSearchGroups>> GetGroupMembers(Guid groupid)
         {
+            ResultGroupGetSearchGroups res;
             _logger.LogTrace("GetGroupMembers: " + groupid + ".");
 
             ApplicationUser user = null;
@@ -1060,15 +1103,16 @@ namespace ChummerHub.Controllers.V1
                             msg += Environment.NewLine + "\t" + singleerr.ToString();
                         }
                     }
-
-                    return BadRequest(new HubException(msg));
+                    res = new ResultGroupGetSearchGroups(new HubException(msg));
+                    return BadRequest(res);
                 }
 
                 SINSearchGroupResult result = new SINSearchGroupResult();
                 var range = await GetSinSearchGroupResultById(groupid, user);
                 result.SINGroups.Add(range);
                 result.SINGroups = RemovePWHashRecursive(result.SINGroups);
-                Ok(result);
+                res = new ResultGroupGetSearchGroups(result);
+                Ok(res);
             }
             catch (Exception e)
             {
@@ -1084,13 +1128,11 @@ namespace ChummerHub.Controllers.V1
                 {
                     _logger.LogError(ex.ToString());
                 }
-                if (e is HubException)
-                    return BadRequest(e);
-                HubException hue = new HubException("Exception in GetSearchGroups: " + e.Message, e);
-                return BadRequest(hue);
+                res = new ResultGroupGetSearchGroups(e);
+                return BadRequest(res);
             }
 
-            return BadRequest();
+            return NotFound(res);
         }
 
         private static List<SINnerSearchGroup> RemovePWHashRecursive(List<SINnerSearchGroup> sINGroups)
