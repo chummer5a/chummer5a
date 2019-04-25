@@ -6,8 +6,6 @@ using Microsoft.AspNetCore.Identity;
 
 namespace ChummerHub.Models.V1
 {
-    [DataContract]
-    [Serializable]
     public class ResultAccountGetSinnersByAuthorization : ResultBase
     {
         public SINSearchGroupResult MySINSearchGroupResult { get; set; }

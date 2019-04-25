@@ -21,13 +21,13 @@ namespace ChummerHub.Client.Model
         public CharacterExtended(Character character, string fileElement = null)
         {
             MyCharacter = character;
-            if (PluginHandler.MyCharExtendedDic.ContainsKey(character.FileName))
-            {
-                throw new ArgumentException(
-                    "CharacterExtended already exists for this char - dont create a new instantce!", nameof(character));
-            }
+            //if (PluginHandler.MyCharExtendedDic.ContainsKey(character.FileName))
+            //{
+            //    throw new ArgumentException(
+            //        "CharacterExtended already exists for this char - dont create a new instantce!", nameof(character));
+            //}
 
-            PluginHandler.MyCharExtendedDic.Add(character.FileName, this);
+            //PluginHandler.MyCharExtendedDic.Add(character.FileName, this);
 
             _MySINnerFile = new SINner
             {
@@ -279,7 +279,7 @@ namespace ChummerHub.Client.Model
                             MySINnerFile.Alias = MyCharacter.Name;
                     }
                     var client = await StaticUtils.GetClient();
-                    var res = await client.GetOwnedSINByAliasWithHttpMessagesAsync(MySINnerFile.Alias);
+                    var res = await client.SinnerGetOwnedSINByAliasWithHttpMessagesAsync(MySINnerFile.Alias);
                     if (res.Response.StatusCode == HttpStatusCode.NotFound)
                     {
                         MySINnerFile.Id = Guid.NewGuid();
@@ -314,7 +314,8 @@ namespace ChummerHub.Client.Model
                         }
                         else
                         {
-                            foreach (var sin in res.Body)
+                            var list = res.Body.MySINners;
+                            foreach (var sin in list)
                             {
                                 if (sin.Id != null)
                                 {

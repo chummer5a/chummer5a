@@ -76,15 +76,18 @@ namespace ChummerHub.Client.UI
                     GetCookieContainer();
                     var client = await StaticUtils.GetClient();
                     var user = await client.GetUserByAuthorizationWithHttpMessagesAsync();
-                    if (user.Body != null)
+                    if (user.Body?.CallSuccess == true)
                     {
-                        login = true;
-                        SINnersOptions.AddVisibilityForEmail(user.Body.Email);
-                        this.Close();
-                    }
-                    else
-                    {
-                        login = false;
+                        if (user.Body != null)
+                        {
+                            login = true;
+                            SINnersOptions.AddVisibilityForEmail(user.Body.MyApplicationUser.Email);
+                            this.Close();
+                        }
+                        else
+                        {
+                            login = false;
+                        }
                     }
 
                 }

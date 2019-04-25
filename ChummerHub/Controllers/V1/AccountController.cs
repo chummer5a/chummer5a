@@ -51,6 +51,31 @@ namespace ChummerHub.Controllers
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Unauthorized)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Forbidden)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("AccountGetPossibleRoles")]
+        [Authorize]
+
+        public async Task<ActionResult<ResultAccountGetPossibleRoles>> GetPossibleRoles()
+        {
+            ResultAccountGetPossibleRoles res;
+            try
+            {
+                var roles = await _context.Roles.ToListAsync();
+                var list = (from a in roles select a.Name).ToList();
+                res = new ResultAccountGetPossibleRoles(list);
+                return Ok(res);
+            }
+            catch (Exception e)
+            {
+                res = new ResultAccountGetPossibleRoles(e);
+                return BadRequest(res);
+            }
+        }
+
+        [HttpGet]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Unauthorized)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Forbidden)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("AccountGetRoles")]
         [Authorize]
 
@@ -406,7 +431,6 @@ namespace ChummerHub.Controllers
         /// <returns>SINSearchGroupResult</returns>
         [HttpGet]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse(StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(SINSearchGroupResult), StatusCodes.Status200OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse(StatusCodes.Status400BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("AccountGetSinnersByAuthorization")]
         [Authorize]
@@ -441,6 +465,10 @@ namespace ChummerHub.Controllers
                 List<SINner> mySinners = await SINner.GetSINnersFromUser(user, _context, true);
                 foreach(var sin in mySinners)
                 {
+                    //check if that char is already added:
+                    var foundseq = (from a in ssg.MyMembers where a.MySINner == sin select a);
+                    if (foundseq.Any())
+                        continue;
                     SINnerSearchGroupMember ssgm = new SINnerSearchGroupMember
                     {
                         MySINner = sin,
@@ -473,6 +501,10 @@ namespace ChummerHub.Controllers
                                 {
                                     MySINner = member
                                 };
+                                //check if it is already added:
+                                var groupseq = from a in ssgFromSIN.MyMembers where a.MySINner == member select a;
+                                if (groupseq.Any())
+                                    continue;
                                 ssgFromSIN.MyMembers.Add(sinssgGroupMember);
                             }
                         }

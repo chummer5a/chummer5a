@@ -23,6 +23,7 @@ using System.Xml;
 using System.Xml.Serialization;
 using Microsoft.Rest;
 using System.Threading;
+using MessageBox = System.Windows.MessageBox;
 
 namespace Chummer.Plugins
 {
@@ -32,7 +33,7 @@ namespace Chummer.Plugins
     public class PluginHandler : IPlugin
     {
         //public static CharacterExtended MyCharacterExtended = null;
-        public static Dictionary<string, CharacterExtended> MyCharExtendedDic = new Dictionary<string, CharacterExtended>();
+        //public static Dictionary<string, CharacterExtended> MyCharExtendedDic = new Dictionary<string, CharacterExtended>();
 
         //public static CharacterExtended GetCharExtended(Character c, string fileElement)
         //{
@@ -102,17 +103,17 @@ namespace Chummer.Plugins
         string IPlugin.GetSaveToFileElement(Character input)
         {
             CharacterExtended ce;
-            if (MyCharExtendedDic.ContainsKey(input.FileName))
-            {
-                if (!MyCharExtendedDic.TryGetValue(input.FileName, out ce))
-                    throw new ArgumentException("Could not load char from Dic!", nameof(input));
-            }
-            else
-            {
-                ce = new CharacterExtended(input, null);
-            }
-
-            if((SINnersOptions.UploadOnSave == true) && (IsSaving == false))
+            //if (MyCharExtendedDic.ContainsKey(input.FileName))
+            //{
+            //    if (!MyCharExtendedDic.TryGetValue(input.FileName, out ce))
+            //        throw new ArgumentException("Could not load char from Dic!", nameof(input));
+            //}
+            //else
+            //{
+                
+            //}
+            ce = new CharacterExtended(input, null);
+            if ((SINnersOptions.UploadOnSave == true) && (IsSaving == false))
             {
                 IsSaving = true;
                 //removing a handler that is not registered is legal - that way only one handler is registered EVER!
@@ -137,15 +138,15 @@ namespace Chummer.Plugins
                 using (new CursorWait(true, MainForm))
                 {
                     CharacterExtended ce;
-                    if (MyCharExtendedDic.ContainsKey(input.FileName))
-                    {
-                        MyCharExtendedDic.TryGetValue(input.FileName, out ce);
-                    }
-                    else
-                    {
-                        ce = new CharacterExtended(input, null);
-                        MyCharExtendedDic.Add(input.FileName, ce);
-                    }
+                    //if (MyCharExtendedDic.ContainsKey(input.FileName))
+                    //{
+                    //    MyCharExtendedDic.TryGetValue(input.FileName, out ce);
+                    //}
+                    //else
+                    //{
+                    ce = new CharacterExtended(input, null);
+                    //    MyCharExtendedDic.Add(input.FileName, ce);
+                    //}
 
                     if (!ce.MySINnerFile.SiNnerMetaData.Tags.Any(a => a.TagName == "Reflection"))
                     {
@@ -202,14 +203,14 @@ namespace Chummer.Plugins
             try
             {
                 CharacterExtended ce;
-                if (MyCharExtendedDic.TryGetValue(input.FileName, out ce))
-                {
-                    ce.MyCharacter = input;
-                }
-                else
-                {
-                    ce = new CharacterExtended(input, fileElement, PluginHandler.MySINnerLoading);
-                }
+                //if (MyCharExtendedDic.TryGetValue(input.FileName, out ce))
+                //{
+                //    ce.MyCharacter = input;
+                //}
+                //else
+                //{
+                ce = new CharacterExtended(input, fileElement, PluginHandler.MySINnerLoading);
+                //}
             }
             catch (Exception e)
             {
@@ -237,10 +238,13 @@ namespace Chummer.Plugins
             mnuSINners.Size = new System.Drawing.Size(148, 22);
             mnuSINners.Tag = "Menu_Main_SINners";
             list.Add(mnuSINners);
+
 #endif
-            ToolStripMenuItem mnuNPCs = new ToolStripMenuItem();
-            mnuNPCs.Name = "mnuNPCs";
-            mnuNPCs.Text = "&NPCs";
+            ToolStripMenuItem mnuNPCs = new ToolStripMenuItem
+            {
+                Name = "mnuNPCs",
+                Text = "&NPCs"
+            };
             mnuNPCs.Click += new System.EventHandler(mnuNPCs_Click);
             mnuNPCs.Image = ChummerHub.Client.Properties.Resources.group;
             mnuNPCs.ImageTransparentColor = System.Drawing.Color.Black;
@@ -290,8 +294,8 @@ namespace Chummer.Plugins
                 TreeNode node = new TreeNode("SINners Error: please log in") { ToolTipText = e.ToString(), Tag = e };
             }
         }
-        
 
+        
         public Assembly GetPluginAssembly()
         {
             return typeof(SINnersUserControl).Assembly;
@@ -318,7 +322,7 @@ namespace Chummer.Plugins
             {
                 using (new CursorWait(true, frmCharRoster))
                 {
-                    Func<Task<HttpOperationResponse<SINSearchGroupResult>>> myMethodName = async () =>
+                    Func<Task<HttpOperationResponse<ResultAccountGetSinnersByAuthorization>>> myMethodName = async () =>
                     {
                         var client = await StaticUtils.GetClient();
                         var ret = await client.GetSINnersByAuthorizationWithHttpMessagesAsync();
@@ -331,7 +335,8 @@ namespace Chummer.Plugins
                     }
                     var list = res.ToList();
                     var myadd = MyTreeNodes2Add.ToList();
-                    foreach (var addme in myadd)
+                    var mysortadd = (from a in myadd orderby a.Value.Text select a).ToList();
+                    foreach (var addme in mysortadd)
                     {
                         list.Add(addme.Value);
                     }

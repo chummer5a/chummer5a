@@ -397,9 +397,9 @@ namespace ChummerHub.Client.UI
                 var user = result.Result.Body;
                 if (user != null)
                 {
-                    Properties.Settings.Default.UserEmail = user.Email;
+                    Properties.Settings.Default.UserEmail = user.MyApplicationUser.Email;
                     Properties.Settings.Default.Save();
-                    return user.Email;
+                    return user.MyApplicationUser.Email;
                 }
                 return null;
             }

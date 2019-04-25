@@ -4,8 +4,6 @@ using ChummerHub.API;
 
 namespace ChummerHub.Models.V1
 {
-    [DataContract]
-    [Serializable]
     public class ResultBase
     {
         public HubException MyException { get; set; }
