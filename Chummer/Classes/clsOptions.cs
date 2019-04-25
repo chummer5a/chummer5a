@@ -124,41 +124,6 @@ namespace Chummer
         #endregion
     }
 
-    public class CustomDataDirectoryInfo : IComparable
-    {
-        #region Properties
-
-        public string Name { get; set; } = string.Empty;
-
-        public string Path { get; set; } = string.Empty;
-
-        public bool Enabled { get; set; }
-
-        #endregion
-
-        public int CompareTo(object obj)
-        {
-            if(obj == null)
-                return 1;
-            if(obj is CustomDataDirectoryInfo objOtherDirectoryInfo)
-            {
-                int intReturn = string.Compare(Name, objOtherDirectoryInfo.Name, StringComparison.Ordinal);
-                if(intReturn == 0)
-                {
-                    intReturn = string.Compare(Path, objOtherDirectoryInfo.Path, StringComparison.Ordinal);
-                    if(intReturn == 0)
-                    {
-                        intReturn = Enabled == objOtherDirectoryInfo.Enabled ? 0 : (Enabled ? -1 : 1);
-                    }
-                }
-
-                return intReturn;
-            }
-
-            return string.Compare(Name, obj.ToString(), StringComparison.Ordinal);
-        }
-    }
-
     /// <summary>
     /// Global Options. A single instance class since Options are common for all characters, reduces execution time and memory usage.
     /// </summary>
@@ -983,7 +948,7 @@ namespace Chummer
         /// <summary>
         /// List of CustomDataDirectoryInfo.
         /// </summary>
-        public static IList<CustomDataDirectoryInfo> CustomDataDirectoryInfo => _lstCustomDataDirectoryInfo;
+        public static IList<CustomDataDirectoryInfo> CustomDataDirectoryPaths => _lstCustomDataDirectoryInfo;
 
         public static bool OmaeEnabled
         {

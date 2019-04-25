@@ -56,7 +56,7 @@ namespace Chummer
             LanguageManager.TranslateWinForm(_strSelectedLanguage, this);
 
             _lstCustomDataDirectoryInfos = new List<CustomDataDirectoryInfo>();
-            foreach(CustomDataDirectoryInfo objInfo in GlobalOptions.CustomDataDirectoryInfo)
+            foreach(CustomDataDirectoryInfo objInfo in GlobalOptions.CustomDataDirectoryPaths)
             {
                 CustomDataDirectoryInfo objCustomDataDirectory = new CustomDataDirectoryInfo
                 {
@@ -918,12 +918,12 @@ namespace Chummer
                 }
 
                 // Save the Custom Data Directory Info.
-                bool blnDoCustomDataDirectoryRefresh = _lstCustomDataDirectoryInfos.Count != GlobalOptions.CustomDataDirectoryInfo.Count;
+                bool blnDoCustomDataDirectoryRefresh = _lstCustomDataDirectoryInfos.Count != GlobalOptions.CustomDataDirectoryPaths.Count;
                 if(!blnDoCustomDataDirectoryRefresh)
                 {
                     for(int i = 0; i < _lstCustomDataDirectoryInfos.Count; ++i)
                     {
-                        if(_lstCustomDataDirectoryInfos[i].CompareTo(GlobalOptions.CustomDataDirectoryInfo[i]) != 0)
+                        if(_lstCustomDataDirectoryInfos[i].CompareTo(GlobalOptions.CustomDataDirectoryPaths[i]) != 0)
                         {
                             blnDoCustomDataDirectoryRefresh = true;
                             break;
