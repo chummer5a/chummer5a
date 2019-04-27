@@ -80,13 +80,13 @@ namespace Chummer
         #endregion
 
         #region Methods
-        public static void RebuildDataDirectoryInfo()
+        public static void RebuildDataDirectoryInfo(List<CustomDataDirectoryInfo> customDirectories)
         {
             lock (s_SetFilesWithCachedDocsLock)
                 s_SetFilesWithCachedDocs.Clear();
             s_LstDataDirectories.Clear();
             s_LstDataDirectories.Add(Path.Combine(Utils.GetStartupPath, "data"));
-            foreach (CustomDataDirectoryInfo objCustomDataDirectory in GlobalOptions.CustomDataDirectoryPaths.Where(x => x.Enabled))
+            foreach (CustomDataDirectoryInfo objCustomDataDirectory in customDirectories)
             {
                 s_LstDataDirectories.Add(objCustomDataDirectory.Path);
             }

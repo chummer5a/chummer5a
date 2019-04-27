@@ -56,31 +56,29 @@ namespace Chummer
             LanguageManager.TranslateWinForm(_strSelectedLanguage, this);
 
             _lstCustomDataDirectoryInfos = new List<CustomDataDirectoryInfo>();
+            //Load paths from the registry. In most cases this will just be customdata, but users can put stuff wherever. 
             foreach(CustomDataDirectoryInfo objInfo in GlobalOptions.CustomDataDirectoryPaths)
             {
                 CustomDataDirectoryInfo objCustomDataDirectory = new CustomDataDirectoryInfo
                 {
                     Name = objInfo.Name,
-                    Path = objInfo.Path,
-                    Enabled = objInfo.Enabled
+                    Path = objInfo.Path
                 };
                 _lstCustomDataDirectoryInfos.Add(objCustomDataDirectory);
             }
             string strCustomDataRootPath = Path.Combine(Utils.GetStartupPath, "customdata");
-            if(Directory.Exists(strCustomDataRootPath))
+            if (!Directory.Exists(strCustomDataRootPath)) return;
             {
                 foreach(string strLoopDirectoryPath in Directory.GetDirectories(strCustomDataRootPath))
                 {
                     // Only add directories for which we don't already have entries loaded from registry
-                    if(_lstCustomDataDirectoryInfos.All(x => x.Path != strLoopDirectoryPath))
+                    if (_lstCustomDataDirectoryInfos.Any(x => x.Path == strLoopDirectoryPath)) continue;
+                    CustomDataDirectoryInfo objCustomDataDirectory = new CustomDataDirectoryInfo
                     {
-                        CustomDataDirectoryInfo objCustomDataDirectory = new CustomDataDirectoryInfo
-                        {
-                            Name = Path.GetFileName(strLoopDirectoryPath),
-                            Path = strLoopDirectoryPath
-                        };
-                        _lstCustomDataDirectoryInfos.Add(objCustomDataDirectory);
-                    }
+                        Name = Path.GetFileName(strLoopDirectoryPath),
+                        Path = strLoopDirectoryPath
+                    };
+                    _lstCustomDataDirectoryInfos.Add(objCustomDataDirectory);
                 }
             }
         }
@@ -101,6 +99,7 @@ namespace Chummer
             PopulateXsltList();
             SetDefaultValueForXsltList();
             PopulatePDFParameters();
+            PopulateCustomDataDirectoryTreeView();
             _blnLoading = false;
         }
         #endregion
@@ -646,8 +645,10 @@ namespace Chummer
                 {
                     TreeNode objNode = new TreeNode
                     {
-
-                        Text = objCustomDataDirectory.Name + LanguageManager.GetString("String_Space", _strSelectedLanguage) + '(' + objCustomDataDirectory.Path.Replace(Utils.GetStartupPath, '<' + Application.ProductName + '>') + ')',
+                        Text = objCustomDataDirectory.Name +
+                               LanguageManager.GetString("String_Space", _strSelectedLanguage) + '(' +
+                               objCustomDataDirectory.Path.Replace(Utils.GetStartupPath,
+                                   '<' + Application.ProductName + '>') + ')',
 
                         Tag = objCustomDataDirectory.Name,
                         Checked = objCustomDataDirectory.Enabled
@@ -663,7 +664,7 @@ namespace Chummer
                     CustomDataDirectoryInfo objLoopInfo = _lstCustomDataDirectoryInfos[i];
                     objLoopNode.Text = objLoopInfo.Name + LanguageManager.GetString("String_Space", _strSelectedLanguage) + '(' + objLoopInfo.Path.Replace(Utils.GetStartupPath, '<' + Application.ProductName + '>') + ')';
                     objLoopNode.Tag = objLoopInfo.Name;
-                    objLoopNode.Checked = objLoopInfo.Enabled;
+                    objLoopNode.Checked  = _characterOptions.CustomDataDirectories.FirstOrDefault(objInfo => objInfo.Name == objLoopInfo.Name)?.Enabled ?? false;
                 }
             }
 
@@ -945,7 +946,6 @@ namespace Chummer
                             if(objLoopKey != null)
                             {
                                 objLoopKey.SetValue("Path", objCustomDataDirectory.Path.Replace(Utils.GetStartupPath, "$CHUMMER"));
-                                objLoopKey.SetValue("Enabled", objCustomDataDirectory.Enabled);
                                 objLoopKey.SetValue("LoadOrder", i);
                                 objLoopKey.Close();
                             }
@@ -985,20 +985,8 @@ namespace Chummer
 
         private void BuildCustomDataDirectoryNamesList()
         {
-            _characterOptions.CustomDataDirectoryNames.Clear();
-
-            foreach(TreeNode objNode in treCustomDataDirectories.Nodes)
-            {
-                CustomDataDirectoryInfo objCustomDataDirectory = _lstCustomDataDirectoryInfos.FirstOrDefault(x => x.Name == objNode.Tag.ToString());
-                if (objCustomDataDirectory == null) continue;
-                if(objNode.Checked)
-                {
-                    _characterOptions.CustomDataDirectoryNames.Add(objNode.Tag.ToString(), true);
-                    objCustomDataDirectory.Enabled = true;
-                }
-                else
-                    objCustomDataDirectory.Enabled = false;
-            }
+            _characterOptions.CustomDataDirectories.Clear();
+            _characterOptions.CustomDataDirectories.AddRange(_lstCustomDataDirectoryInfos);
         }
 
         private void RestoreDefaultKarmaValues()
