@@ -211,72 +211,22 @@ namespace ChummerHub.Client.UI
                 var Result = await client.PostGroupWithHttpMessagesAsync(
                     mygroup,
                     MyCE?.MySINnerFile?.Id);
-                var rescontent = await Result.Response.Content.ReadAsStringAsync();
                 if ((Result.Response.StatusCode == HttpStatusCode.OK)
                     || (Result.Response.StatusCode == HttpStatusCode.Created))
                 {
-                    var jsonResultString = Result.Response.Content.ReadAsStringAsync().Result;
-                    SINnerGroup newgroup =
-                        Newtonsoft.Json.JsonConvert.DeserializeObject<SINnerGroup>(jsonResultString);
-                    var getgroup = await client.GetGroupByIdWithHttpMessagesAsync(newgroup.Id);
-                    if (MyCE?.MySINnerFile != null)
-                    {
-
-                        try
-                        {
-                            
-                            var join = await client.PutSINerInGroupWithHttpMessagesAsync(newgroup.Id,
-                                MyCE.MySINnerFile.Id, mygroup.PasswordHash);
-                            if (join.Response.StatusCode == HttpStatusCode.OK)
-                            {
-                                MyCE.MySINnerFile.MyGroup = getgroup.Body.MyGroup;
-                                if (OnGroupJoinCallback != null)
-                                    OnGroupJoinCallback(this, getgroup.Body.MyGroup);
-                            }
-                            else
-                            {
-                                var joinresp = join.Response.Content.ReadAsStringAsync().Result;
-                                System.Diagnostics.Trace.TraceInformation(joinresp);
-                                MessageBox.Show(joinresp);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            System.Diagnostics.Trace.TraceError(ex.ToString());
-                            throw;
-                        }
-                    }
-                    
-                    
-                    return getgroup.Body.MyGroup;
+                    return Result?.Body?.MyGroup;
                 }
-                else if (Result.Response.StatusCode == HttpStatusCode.BadRequest)
+                else if (Result?.Body?.MyException != null)
                 {
-                    var jsonResultString = Result.Response.Content.ReadAsStringAsync().Result;
-                    if (jsonResultString?.Contains("already exists!") == true)
-                    {
-                        var searchgroup = await client.GetSearchGroupsWithHttpMessagesAsync(mygroup.Groupname, null, null, GlobalOptions.DefaultLanguage);
-                        if (searchgroup.Body?.MySearchGroupResult?.SinGroups?.Any() == true)
-                        {
-                            var getgroup = searchgroup.Body.MySearchGroupResult.SinGroups.FirstOrDefault();
-                            if (getgroup?.Id != null)
-                            {
-                                var group = await client.GetGroupByIdWithHttpMessagesAsync(getgroup.Id);
-                                if ((group.Body != null) && (group.Body.MyGroup != null))
-                                {
-                                    if (MyCE?.MySINnerFile != null)
-                                        MyCE.MySINnerFile.MyGroup = group.Body.MyGroup;
-                                    if (OnGroupJoinCallback != null)
-                                        OnGroupJoinCallback(this, group.Body.MyGroup);
-                                    return group.Body.MyGroup;
-                                }
-                            }
-                        }
-                    }
+                    MessageBox.Show(Result.Body.MyException.ToString());
+                }
+                else if (!String.IsNullOrEmpty(Result?.Body.ErrorText))
+                {
+                    MessageBox.Show(Result.Body.ErrorText);
                 }
                 else
                 {
-                    MessageBox.Show(rescontent);
+                    MessageBox.Show("Error: " + Result?.Response?.StatusCode);
                 }
 
             }
