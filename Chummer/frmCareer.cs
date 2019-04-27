@@ -15778,58 +15778,6 @@ namespace Chummer
                 }
             }
 
-            // Charting test for Expenses.
-            Series objKarmaSeries;
-            if (chtKarma.Series.Count > 0)
-            {
-                objKarmaSeries = chtKarma.Series[0];
-                objKarmaSeries.Points.Clear();
-            }
-            else
-            {
-                objKarmaSeries = new Series
-                {
-                    Name = "KarmaSeries",
-                    Color = Color.Blue,
-                    IsVisibleInLegend = false,
-                    IsXValueIndexed = false,
-                    ChartType = SeriesChartType.Area
-                };
-                chtKarma.Series.Add(objKarmaSeries);
-            }
-            Series objNuyenSeries;
-            if (chtNuyen.Series.Count > 0)
-            {
-                objNuyenSeries = chtNuyen.Series[0];
-                objNuyenSeries.Points.Clear();
-            }
-            else
-            {
-                objNuyenSeries = new Series
-                {
-                    Name = "NuyenSeries",
-                    Color = Color.Green,
-                    IsVisibleInLegend = false,
-                    IsXValueIndexed = false,
-                    ChartType = SeriesChartType.Area
-                };
-                chtNuyen.Series.Add(objNuyenSeries);
-            }
-
-            // Configure the Karma chart.
-            ChartArea objKarmaChartArea = chtKarma.ChartAreas[0];
-            objKarmaChartArea.AxisX.LabelStyle.Enabled = false;
-            objKarmaChartArea.AxisY.Title = LanguageManager.GetString("String_KarmaRemaining", GlobalOptions.Language);
-            objKarmaChartArea.AxisX.Minimum = 0;
-            objKarmaChartArea.AxisX.Maximum = (KarmaLast - KarmaFirst).TotalDays;
-
-            // Configure the Nuyen chart.
-            ChartArea objNuyenChartArea = chtNuyen.ChartAreas[0];
-            objNuyenChartArea.AxisX.LabelStyle.Enabled = false;
-            objNuyenChartArea.AxisY.Title = LanguageManager.GetString("String_NuyenRemaining", GlobalOptions.Language);
-            objNuyenChartArea.AxisX.Minimum = 0;
-            objNuyenChartArea.AxisX.Maximum = (NuyenLast - NuyenFirst).TotalDays;
-
             double dblKarmaValue = 0;
             double dblNuyenValue = 0;
 
@@ -15838,20 +15786,19 @@ namespace Chummer
                 if (objExpense.Type == ExpenseType.Karma)
                 {
                     dblKarmaValue += decimal.ToDouble(objExpense.Amount);
-                    objKarmaSeries.Points.AddXY((objExpense.Date - KarmaFirst).TotalDays, dblKarmaValue);
+                    expenseChart1.Karma.Add(dblKarmaValue);
+                    expenseChart2.Karma.Add(Convert.ToDouble(objExpense.Amount));
                 }
                 else
                 {
                     dblNuyenValue += decimal.ToDouble(objExpense.Amount);
-                    objNuyenSeries.Points.AddXY((objExpense.Date - NuyenFirst).TotalDays, dblNuyenValue);
+                    expenseChart1.Nuyen.Add(dblNuyenValue/1000);
+                    expenseChart2.Nuyen.Add(Convert.ToDouble(objExpense.Amount/1000));
                 }
             }
 
-            objKarmaSeries.Points.AddXY((KarmaLast - KarmaFirst).TotalDays, CharacterObject.Karma);
-            objNuyenSeries.Points.AddXY((NuyenLast - NuyenFirst).TotalDays, CharacterObject.Nuyen);
-
-            chtKarma.Invalidate();
-            chtNuyen.Invalidate();
+            expenseChart1.Karma.Add(dblKarmaValue);
+            expenseChart1.Nuyen.Add(dblNuyenValue/1000);
         }
 
         /// <summary>

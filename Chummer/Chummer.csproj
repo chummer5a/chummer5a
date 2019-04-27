@@ -102,6 +102,15 @@
     <Reference Include="itextsharp, Version=5.5.13.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
       <HintPath>..\packages\iTextSharp.5.5.13\lib\itextsharp.dll</HintPath>
     </Reference>
+    <Reference Include="LiveCharts, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
+      <HintPath>..\packages\LiveCharts.0.9.7\lib\net45\LiveCharts.dll</HintPath>
+    </Reference>
+    <Reference Include="LiveCharts.WinForms, Version=0.9.7.1, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
+      <HintPath>..\packages\LiveCharts.WinForms.0.9.7.1\lib\net45\LiveCharts.WinForms.dll</HintPath>
+    </Reference>
+    <Reference Include="LiveCharts.Wpf, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
+      <HintPath>..\packages\LiveCharts.Wpf.0.9.7\lib\net45\LiveCharts.Wpf.dll</HintPath>
+    </Reference>
     <Reference Include="MersenneTwister, Version=1.0.6146.4688, Culture=neutral, PublicKeyToken=9c84633ec57842f3, processorArchitecture=MSIL">
       <HintPath>..\packages\MersenneTwister.1.0.5\lib\portable-net45+netcore45+win8+wp8\MersenneTwister.dll</HintPath>
     </Reference>
@@ -149,6 +158,7 @@
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Windows.Forms.DataVisualization" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
@@ -156,6 +166,7 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Backend\Attributes\AttributeSection.cs" />
@@ -464,6 +475,12 @@
     </Compile>
     <Compile Include="UI\Attributes\AttributeControl.Designer.cs">
       <DependentUpon>AttributeControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Charts\ExpenseChart.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Charts\ExpenseChart.Designer.cs">
+      <DependentUpon>ExpenseChart.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Chummy.cs">
       <SubType>Form</SubType>
@@ -1105,6 +1122,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Attributes\AttributeControl.resx">
       <DependentUpon>AttributeControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Charts\ExpenseChart.resx">
+      <DependentUpon>ExpenseChart.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Chummy.resx">
       <DependentUpon>Chummy.cs</DependentUpon>
