@@ -18,6 +18,7 @@ Application Fixes:
 - Fixed an issue with the selectatributes improvement that caused it to improperly allow Exceptional Attribute to select Edge.
 - Fixed issues with Dedicated Spellslinger not working properly in career mode.
 - Fixed a crash when opening the Print Multiple Characters dialog multiple times.
+- Fixed incorrect metatype minimums for metasapients when using priority generation.
 
 Application Changes:
 
