@@ -128,6 +128,8 @@ namespace ChummerHub.Client.Backend
             CookieContainer cookies = null;
             if (String.IsNullOrEmpty(cookieData))
                 cookieData = GetUriCookieData(uri);
+            if (cookieData == null)
+                return null;
             if (cookieData.Length > 0)
             {
                 cookies = new CookieContainer();
