@@ -13446,7 +13446,7 @@ namespace Chummer
             {
                 if (treCyberware.SelectedNode?.Tag is IHasMatrixConditionMonitor objMatrixCM)
                 {
-                    ProcessEquipmentConditionMonitorBoxDisplays(tabCyberwareCM, objMatrixCM.MatrixCM, objMatrixCM.MatrixCMFilled);
+                    ProcessEquipmentConditionMonitorBoxDisplays(tabCyberwareCM.SelectedTab, objMatrixCM.MatrixCM, objMatrixCM.MatrixCMFilled);
                 }
                 else
                 {
@@ -13899,7 +13899,7 @@ namespace Chummer
             if (treWeapons.SelectedNode?.Tag is IHasMatrixConditionMonitor objMatrixCM)
             {
                 tabWeaponMatrixCM.Visible = true;
-                ProcessEquipmentConditionMonitorBoxDisplays(tabWeaponMatrixCM, objMatrixCM.MatrixCM, objMatrixCM.MatrixCMFilled);
+                ProcessEquipmentConditionMonitorBoxDisplays(tabWeaponMatrixCM.SelectedTab, objMatrixCM.MatrixCM, objMatrixCM.MatrixCMFilled);
             }
             else
                 tabWeaponMatrixCM.Visible = false;
@@ -14284,7 +14284,7 @@ namespace Chummer
 
                 treGear.SelectedNode.Text = objGear.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
 
-                ProcessEquipmentConditionMonitorBoxDisplays(tabGearMatrixCM, objGear.MatrixCM, objGear.MatrixCMFilled);
+                ProcessEquipmentConditionMonitorBoxDisplays(tabGearMatrixCM.SelectedTab, objGear.MatrixCM, objGear.MatrixCMFilled);
             }
             else
             {

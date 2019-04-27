@@ -19,6 +19,7 @@ Application Fixes:
 - Fixed issues with Dedicated Spellslinger not working properly in career mode.
 - Fixed a crash when opening the Print Multiple Characters dialog multiple times.
 - Fixed incorrect metatype minimums for metasapients when using priority generation.
+- Fixed missing matrix condition monitors for equipment.
 
 Application Changes:
 
