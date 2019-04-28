@@ -6,6 +6,7 @@ New Features:
 - Created a new Improvement Type that improves the dicepool of a specific spell; the spelldicepool improvement is available in the Custom Improvement creator. 
 - Implemented the Special Modifications and Prototype Materials qualities from Better Than Bad. The assorted bonuses are added through the Select Weapon Accessories form, allowing for custom content to be created. Note for content creators, the specialmodificationlimit property is used to indicate how many 'points' of the quality are consumed; this isn't super close to rules as written, but it's viable for our purposes. 
 - Exposed ParentDetails requirement checks to Armor Mods. This allows for filtering mods based on the XML properties of their parent, such as filtering based on name or armour value.
+- Gameplay Options can now be used as a forbidden/required choice for items; currently this is used for the Free Insect Spirit qualities, which require the Prime Runner gameplay choice. 
 
 Application Fixes:
 
@@ -46,7 +47,8 @@ Data Changes:
 - Fixed incorrect restrictions on the Special Modications and Prototype Materials qualities. 
 - Removed incorrrect mundane restriction on the Quadriplegic quality.
 - Fixed behaviour of partial cyberlimbs giving incorrect condition monitor boxes.
-Removed <canwrite /> from the Made Man quality; this improperly allowed for the group to be removed from the character.
+- Removed <canwrite /> from the Made Man quality; this improperly allowed for the group to be removed from the character.
+- Added Free Insect quality choices from Dark Terrors. These are hidden behind a Prime Runner gameplay requirement. 
 
 String Changes:
 

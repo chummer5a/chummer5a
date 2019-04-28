@@ -567,6 +567,13 @@ namespace Chummer
                         }
                         return false;
                     }
+                case "gameplayoption":
+                    {
+                    // A particular gameplay option is required.
+                    if (blnShowMessage)
+                        strName = $"{Environment.NewLine}\t{LanguageManager.GetString("String_GameplayOption", GlobalOptions.Language)} = {strNodeInnerText}";
+                    return objCharacter.GameplayOption == strNodeInnerText;
+                    }
                 case "gear":
                     {
                         Gear objGear = objCharacter.Gear.FirstOrDefault(x => x.Name == strNodeInnerText);
@@ -1729,6 +1736,13 @@ namespace Chummer
                         }
                         return false;
                     }
+                case "gameplayoption":
+                {
+                    // A particular gameplay option is required.
+                    if (blnShowMessage)
+                        strName = $"{Environment.NewLine}\t{LanguageManager.GetString("String_GameplayOption", GlobalOptions.Language)} = {strNodeInnerText}";
+                    return objCharacter.GameplayOption == strNodeInnerText;
+                }
                 case "gear":
                     {
                         Gear objGear = objCharacter.Gear.FirstOrDefault(x => x.Name == strNodeInnerText);
