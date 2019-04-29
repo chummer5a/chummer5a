@@ -38,19 +38,31 @@ namespace ChummerHub.Models.V1
 
         public string PasswordHash { get; set; }
 
+        [NotMapped]
+        public bool HasPassword { get
+        {
+            if (String.IsNullOrEmpty(PasswordHash))
+                return false;
+            else
+                return true;
+        }}
+
+        public string Description { get; set; }
+
         [MaxLength(6)]
         public string Language { get; set; }
 
         public SINnerGroup()
         {
             MyGroups = new List<SINnerGroup>();
+            MySettings = new SINnerGroupSetting();
         }
 
-        public async Task<List<SINner>> GetGroupMembers(ApplicationDbContext context)
+        public async Task<List<SINner>> GetGroupMembers(ApplicationDbContext context, bool addTags)
         {
             try
             {
-                var groupmembers = await (from a in context.SINners
+                var groupmembers = (from a in context.SINners
                             .Include(a => a.MyGroup)
                             .Include(a => a.SINnerMetaData)
                             .Include(a => a.SINnerMetaData.Visibility)
@@ -58,8 +70,42 @@ namespace ChummerHub.Models.V1
                                          && this.Id != null
                                          && ((a.SINnerMetaData.Visibility.IsGroupVisible == true)
                                          || (a.SINnerMetaData.Visibility.IsPublic == true))
-                                   select a).ToListAsync();
-                return groupmembers;
+                                   select a);
+                if (addTags == true)
+                {
+                    groupmembers = (from a in context.SINners
+                            .Include(a => a.MyGroup)
+                            .Include(a => a.SINnerMetaData)
+                            .Include(a => a.MyExtendedAttributes)
+                            .Include(a => a.SINnerMetaData.Visibility)
+                            .Include(a => a.SINnerMetaData.Tags)
+                            .ThenInclude(b => b.Tags)
+                            .ThenInclude(b => b.Tags)
+                            .ThenInclude(b => b.Tags)
+                            .ThenInclude(b => b.Tags)
+                            .ThenInclude(b => b.Tags)
+                        where a.MyGroup.Id == this.Id
+                              && this.Id != null
+                              && ((a.SINnerMetaData.Visibility.IsGroupVisible == true)
+                                  || (a.SINnerMetaData.Visibility.IsPublic == true))
+                        select a);
+                }
+
+                var res = await groupmembers.ToListAsync();
+                foreach (var member in res)
+                {
+                    if (member.MyExtendedAttributes == null)
+                        member.MyExtendedAttributes = new SINnerExtended();
+                    if (member.SINnerMetaData == null)
+                        member.SINnerMetaData = new SINnerMetaData();
+                    if (member.SINnerMetaData.Tags == null)
+                        member.SINnerMetaData.Tags = new List<Tag>();
+                    if (member.SINnerMetaData.Visibility == null)
+                        member.SINnerMetaData.Visibility = new SINnerVisibility();
+                    if (member.SINnerMetaData.Visibility.UserRights == null)
+                        member.SINnerMetaData.Visibility.UserRights = new List<SINerUserRight>();
+                }
+                return res;
 
             }
             catch(Exception e)

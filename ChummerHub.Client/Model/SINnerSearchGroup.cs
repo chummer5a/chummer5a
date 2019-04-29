@@ -39,11 +39,11 @@ namespace SINners.Models
                 string ret = Groupname;
                 if (!(String.IsNullOrEmpty(Language)))
                 {
-                    if ((this.MyMembers != null)
-                        && (this.MyMembers.Any()))
-                    {
-                        ret += ": " + MyMembers.Count + " members";
-                    }
+                    //if ((this.MyMembers != null)
+                    //    && (this.MyMembers.Any()))
+                    //{
+                    //    ret += ": " + MyMembers.Count + " members";
+                    //}
                 }
                 return ret;
             }

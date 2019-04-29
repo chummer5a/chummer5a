@@ -178,7 +178,13 @@ namespace ChummerHub.Client.UI
             cbSINnerUrl.SetToolTip(tip);
             cbSINnerUrl.SelectedValueChanged -= CbSINnerUrl_SelectedValueChanged;
             Properties.Settings.Default.Reload();
-            var client = await StaticUtils.GetClient(); 
+            if (String.IsNullOrEmpty(Properties.Settings.Default.TempDownloadPath))
+            {
+                Properties.Settings.Default.TempDownloadPath = Path.GetTempPath();
+                Properties.Settings.Default.Save();
+            }
+            tbTempDownloadPath.SetToolTip("Where should chummer download the temporary files from the WebService?");
+            var client = StaticUtils.GetClient(); 
             if (client == null)
             {
                 return;
@@ -267,9 +273,9 @@ namespace ChummerHub.Client.UI
         {
             Properties.Settings.Default.SINnerUrl = cbSINnerUrl.SelectedValue.ToString();
             Properties.Settings.Default.Save();
-            var client = await StaticUtils.GetClient();
+            var client = StaticUtils.GetClient();
             if (client != null)
-                await StaticUtils.GetClient(true);
+                StaticUtils.GetClient(true);
             this.bLogin.Text = "Logout";
             this.labelAccountStatus.Text = "logged out";
             this.labelAccountStatus.ForeColor = Color.DarkRed;
@@ -287,7 +293,8 @@ namespace ChummerHub.Client.UI
             {
                 try
                 {
-                    if(LoginStatus == true)
+                    this.tbTempDownloadPath.Text = Properties.Settings.Default.TempDownloadPath;
+                    if (LoginStatus == true)
                     {
                         var t = GetUserEmail();
                         t.ContinueWith((emailtask) =>
@@ -391,7 +398,7 @@ namespace ChummerHub.Client.UI
             try
             {
                 this.UseWaitCursor = true;
-                var client = await StaticUtils.GetClient();
+                var client = StaticUtils.GetClient();
                 var result = client.GetUserByAuthorizationWithHttpMessagesAsync();
                 await result;
                 var user = result.Result.Body;
@@ -431,7 +438,7 @@ namespace ChummerHub.Client.UI
                       {
                           try
                           {
-                              var client = await StaticUtils.GetClient();
+                              var client = StaticUtils.GetClient();
                               var signout = client.LogoutWithHttpMessagesAsync().Result;
                               if (signout.Response.StatusCode != HttpStatusCode.OK)
                               {
@@ -513,7 +520,7 @@ namespace ChummerHub.Client.UI
             {
                 using (new CursorWait(true, sender))
                 {
-                    var client = await StaticUtils.GetClient();
+                    var client = StaticUtils.GetClient();
                     var myresult = await client.GetRolesWithHttpMessagesAsync();
 
                     PluginHandler.MainForm.DoThreadSafe(new Action(() =>
@@ -554,7 +561,7 @@ namespace ChummerHub.Client.UI
 
         private void OptionsUpdate()
         {
-
+            Properties.Settings.Default.TempDownloadPath = this.tbTempDownloadPath.Text;
             SINnersOptions.SINnerVisibility.IsPublic = this.cbVisibilityIsPublic.Checked      ;
             SINnersOptions.SINnerVisibility.IsGroupVisible  = this.cbVisibilityIsGroupVisible.Checked;
             SINnerVisibility.Save(this.clbVisibilityToUsers);
@@ -710,7 +717,7 @@ namespace ChummerHub.Client.UI
             {
                 using (new CursorWait(true, this))
                 {
-                    var client = await StaticUtils.GetClient();
+                    var client = StaticUtils.GetClient();
                     var getsinnertask = client.AdminGetSINnersWithHttpMessagesAsync();
                     await getsinnertask;
                     using (new CursorWait(true, this))
@@ -785,7 +792,7 @@ namespace ChummerHub.Client.UI
                                 {
                                     sin
                                 };
-                            var client = await StaticUtils.GetClient();
+                            var client = StaticUtils.GetClient();
                             var posttask = client.PostSINWithHttpMessagesAsync(uploadInfoObject);
                             await posttask;
 
@@ -816,6 +823,21 @@ namespace ChummerHub.Client.UI
                 System.Diagnostics.Trace.TraceError(ex.ToString());
                 Invoke(new Action(() => MessageBox.Show(ex.Message)));
 
+            }
+        }
+
+        private void BTempPathBrowse_Click(object sender, EventArgs e)
+        {
+            using (var fbd = new FolderBrowserDialog())
+            {
+                DialogResult result = fbd.ShowDialog();
+
+                if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                {
+                    this.tbTempDownloadPath.Text = fbd.SelectedPath;
+                    OptionsUpdate();
+                    Properties.Settings.Default.Save();
+                }
             }
         }
     }

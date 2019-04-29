@@ -488,7 +488,7 @@ namespace ChummerHub.Controllers
                             ssg.MySINSearchGroups.Add(ssgFromSIN);
                         }
                         //add all members of his group
-                        var members = await sin.MyGroup.GetGroupMembers(_context);
+                        var members = await sin.MyGroup.GetGroupMembers(_context, false);
                         foreach(var member in members)
                         {
                             if((member.SINnerMetaData.Visibility.IsGroupVisible == true)
@@ -588,7 +588,7 @@ namespace ChummerHub.Controllers
                             ssg.MySINSearchGroups.Add(ssgFromSIN);
                         }
                         //add all members of his group
-                        var members = await sin.MyGroup.GetGroupMembers(_context);
+                        var members = await sin.MyGroup.GetGroupMembers(_context, false);
                         foreach (var member in members)
                         {
                             member.MyGroup = sin.MyGroup;

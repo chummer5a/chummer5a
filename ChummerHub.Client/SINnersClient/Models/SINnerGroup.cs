@@ -21,7 +21,7 @@ namespace SINners.Models
         /// <summary>
         /// Initializes a new instance of the SINnerGroup class.
         /// </summary>
-        public SINnerGroup(Guid? id = default(Guid?), Guid? myParentGroupId = default(Guid?), bool? isPublic = default(bool?), string groupCreatorUserName = default(string), SINnerGroupSetting mySettings = default(SINnerGroupSetting), string groupname = default(string), string passwordHash = default(string), string language = default(string), IList<SINnerGroup> myGroups = default(IList<SINnerGroup>), SINnerGroup myParentGroup = default(SINnerGroup), string myAdminIdentityRole = default(string))
+        public SINnerGroup(Guid? id = default(Guid?), Guid? myParentGroupId = default(Guid?), bool? isPublic = default(bool?), string groupCreatorUserName = default(string), SINnerGroupSetting mySettings = default(SINnerGroupSetting), string groupname = default(string), string passwordHash = default(string), bool? hasPassword = default(bool?), string description = default(string), string language = default(string), IList<SINnerGroup> myGroups = default(IList<SINnerGroup>), SINnerGroup myParentGroup = default(SINnerGroup), string myAdminIdentityRole = default(string))
         {
             Id = id;
             MyParentGroupId = myParentGroupId;
@@ -30,6 +30,8 @@ namespace SINners.Models
             MySettings = mySettings;
             Groupname = groupname;
             PasswordHash = passwordHash;
+            HasPassword = hasPassword;
+            Description = description;
             Language = language;
             MyGroups = myGroups;
             MyParentGroup = myParentGroup;
@@ -70,6 +72,16 @@ namespace SINners.Models
         /// </summary>
         [JsonProperty(PropertyName = "passwordHash")]
         public string PasswordHash { get; set; }
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "hasPassword")]
+        public bool? HasPassword { get; private set; }
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "description")]
+        public string Description { get; set; }
 
         /// <summary>
         /// </summary>

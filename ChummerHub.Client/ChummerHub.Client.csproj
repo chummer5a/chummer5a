@@ -92,6 +92,7 @@
     <Compile Include="Backend\MyMessageHandler.cs" />
     <Compile Include="Backend\TagExtractor.cs" />
     <Compile Include="Model\CharacterExtended.cs" />
+    <Compile Include="Model\ResultBase.cs" />
     <Compile Include="Model\SearchTag.cs" />
     <Compile Include="Model\SINnerGroup.cs" />
     <Compile Include="Model\SINnerSearchGroup.cs" />
@@ -156,6 +157,12 @@
     <Compile Include="UI\frmSINnerGroupSearch.Designer.cs">
       <DependentUpon>frmSINnerGroupSearch.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\frmSINnerResponse.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\frmSINnerResponse.Designer.cs">
+      <DependentUpon>frmSINnerResponse.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\frmSINnerSearch.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -179,6 +186,12 @@
     </Compile>
     <Compile Include="UI\SINnerGroupSearch.Designer.cs">
       <DependentUpon>SINnerGroupSearch.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\SINnerResponseUI.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\SINnerResponseUI.Designer.cs">
+      <DependentUpon>SINnerResponseUI.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\SINnersAdvanced.cs">
       <SubType>UserControl</SubType>
@@ -224,6 +237,9 @@
     <EmbeddedResource Include="UI\frmSINnerGroupSearch.resx">
       <DependentUpon>frmSINnerGroupSearch.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\frmSINnerResponse.resx">
+      <DependentUpon>frmSINnerResponse.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\frmSINnerSearch.resx">
       <DependentUpon>frmSINnerSearch.cs</DependentUpon>
     </EmbeddedResource>
@@ -235,6 +251,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\SINnerGroupSearch.resx">
       <DependentUpon>SINnerGroupSearch.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\SINnerResponseUI.resx">
+      <DependentUpon>SINnerResponseUI.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\SINnersAdvanced.resx">
       <DependentUpon>SINnersAdvanced.cs</DependentUpon>
@@ -262,6 +281,7 @@
     <None Include="app.config" />
     <None Include="libman.json" />
     <None Include="packages.config" />
+    <None Include="Properties\DataSources\ChummerHub.Client.UI.SINnerResponseUI.datasource" />
     <None Include="Properties\DataSources\SINners.Models.Tag.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>PublicSettingsSingleFileGenerator</Generator>

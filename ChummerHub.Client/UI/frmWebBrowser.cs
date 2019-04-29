@@ -74,7 +74,7 @@ namespace ChummerHub.Client.UI
                 {
                     //we are logged in!
                     GetCookieContainer();
-                    var client = await StaticUtils.GetClient();
+                    var client = StaticUtils.GetClient();
                     var user = await client.GetUserByAuthorizationWithHttpMessagesAsync();
                     if (user.Body?.CallSuccess == true)
                     {

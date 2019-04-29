@@ -13,8 +13,8 @@ namespace ChummerHub.Models.V1
 
         public ResultBase(Exception e)
         {
-            if (e is HubException)
-                MyException = e as HubException;
+            if (e is HubException exception)
+                MyException = exception;
             else
             {
                 MyException = new HubException(e.Message, e);

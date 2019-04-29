@@ -18,6 +18,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ChummerHub.Client.UI;
 using static Chummer.frmCharacterRoster;
 
 namespace ChummerHub.Client.Backend
@@ -221,10 +222,10 @@ namespace ChummerHub.Client.Backend
 
         private static bool? _clientNOTworking = null;
 
-        private static Task<SINnersClient> _clientTask = null;
+        private static SINnersClient _clientTask = null;
 
         private static SINnersClient _client = null;
-        public static async Task<SINnersClient> GetClient(bool reset = false)
+        public static SINnersClient GetClient(bool reset = false)
         {
             if (reset)
             {
@@ -464,6 +465,81 @@ namespace ChummerHub.Client.Backend
             }
         }
 
+        public static async Task<object> HandleError(HttpOperationResponse response)
+        {
+            return await HandleError(response, null);
+        }
+
+        public static async Task<object> HandleError(Exception e)
+        {
+            ResultBase rb = new ResultBase();
+            rb.ErrorText = e.Message;
+            rb.MyException = e;
+            rb.CallSuccess = false;
+            if ((!String.IsNullOrEmpty(rb.ErrorText)
+                 || (rb.MyException != null)))
+            {
+                var frmSIN = new frmSINnerResponse();
+                frmSIN.SINnerResponseUI.Result = rb;
+                frmSIN.TopMost = true;
+                frmSIN.ShowDialog(PluginHandler.MainForm);
+            }
+            return rb;
+        }
+
+        public static async Task<object> HandleError(HttpOperationResponse response,
+            object ResponseBody)
+        {
+            ResultBase rb = null;
+            string content = "not set";
+            try
+            {
+                if (ResponseBody == null)
+                {
+                    content = await response.Response.Content.ReadAsStringAsync();
+                    rb = Newtonsoft.Json.JsonConvert.DeserializeObject<ResultBase>(content);
+                    ResponseBody = rb;
+                }
+            }
+            catch (Exception e)
+            {
+                rb = new ResultBase();
+                rb.ErrorText = content;
+                rb.MyException = e;
+                rb.CallSuccess = false;
+                ResponseBody = rb;
+            }
+
+            try
+            {
+                if (ResponseBody != null)
+                {
+                    content = Newtonsoft.Json.JsonConvert.SerializeObject(ResponseBody);
+                    rb = Newtonsoft.Json.JsonConvert.DeserializeObject<ResultBase>(content);
+                }
+            }
+            catch (Exception e)
+            {
+                rb = new ResultBase();
+                rb.ErrorText = content;
+                rb.MyException = e;
+                rb.CallSuccess = false;
+                ResponseBody = rb;
+            }
+
+
+            if ((!String.IsNullOrEmpty(rb.ErrorText)
+                     || (rb.MyException != null)))
+            {
+                var frmSIN = new frmSINnerResponse();
+                frmSIN.SINnerResponseUI.Result = rb;
+                frmSIN.TopMost = true;
+                frmSIN.ShowDialog(PluginHandler.MainForm);
+            }
+            return ResponseBody;
+        }
+
+
         public static List<TreeNode> CharacterRosterTreeNodifyGroupList(List<SINnerSearchGroup> groups)
         {
             if (groups == null)
@@ -684,7 +760,7 @@ namespace ChummerHub.Client.Backend
                     {
                         if (args.Item1.KeyCode == Keys.Delete)
                         {
-                            var client = await StaticUtils.GetClient();
+                            var client = StaticUtils.GetClient();
                             client.Delete(sinner.Id.Value);
                             objCache.ErrorText = "deleted!";
                             PluginHandler.MainForm.DoThreadSafe(() =>
@@ -835,7 +911,7 @@ namespace ChummerHub.Client.Backend
                 ce.MySINnerFile.UploadDateTime = DateTime.Now;
                 uploadInfoObject.SiNners = new List<SINner>() { ce.MySINnerFile };
                 System.Diagnostics.Trace.TraceInformation("Posting " + ce.MySINnerFile.Id + "...");
-                var client = await StaticUtils.GetClient();
+                var client = StaticUtils.GetClient();
                 if (!StaticUtils.IsUnitTest)
                 {
                     
@@ -885,7 +961,7 @@ namespace ChummerHub.Client.Backend
                 {
                     try
                     {
-                        var client = await StaticUtils.GetClient();
+                        var client = StaticUtils.GetClient();
                         if (!StaticUtils.IsUnitTest)
                         {
                             HttpStatusCode myStatus = HttpStatusCode.Unused;
@@ -950,7 +1026,7 @@ namespace ChummerHub.Client.Backend
 
                 try
                 {
-                    var client = await StaticUtils.GetClient();
+                    var client = StaticUtils.GetClient();
                     var onlinesinner = await client.GetSINByIdWithHttpMessagesAsync(sinner.Id.Value);
                     var json = onlinesinner.Body.MySINner.MyExtendedAttributes.JsonSummary;
                     var onlineCache = Newtonsoft.Json.JsonConvert.DeserializeObject<CharacterCache>(json);
@@ -1072,7 +1148,7 @@ namespace ChummerHub.Client.Backend
                             rethrow = e;
                             if (!File.Exists(zippedFile))
                             {
-                                var client = await StaticUtils.GetClient();
+                                var client = StaticUtils.GetClient();
                                 var filestream = client.GetDownloadFile(sinner.Id.Value);
                                 var array = ReadFully(filestream);
                                 File.WriteAllBytes(zippedFile, array);

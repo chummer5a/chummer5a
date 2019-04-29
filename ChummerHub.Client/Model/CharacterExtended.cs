@@ -21,14 +21,6 @@ namespace ChummerHub.Client.Model
         public CharacterExtended(Character character, string fileElement = null)
         {
             MyCharacter = character;
-            //if (PluginHandler.MyCharExtendedDic.ContainsKey(character.FileName))
-            //{
-            //    throw new ArgumentException(
-            //        "CharacterExtended already exists for this char - dont create a new instantce!", nameof(character));
-            //}
-
-            //PluginHandler.MyCharExtendedDic.Add(character.FileName, this);
-
             _MySINnerFile = new SINner
             {
                 MyExtendedAttributes = new SINnerExtended(),
@@ -169,7 +161,7 @@ namespace ChummerHub.Client.Model
                 {
                     if (MySINnerFile.DownloadedFromSINnersTime > this.MyCharacter.FileLastWriteTime)
                         return true;
-                    var client = await StaticUtils.GetClient();
+                    var client = StaticUtils.GetClient();
                     var found = await client.GetSINByIdWithHttpMessagesAsync(this.MySINnerFile.Id.Value);
                     if (found.Response.StatusCode == System.Net.HttpStatusCode.OK)
                     {
@@ -254,7 +246,7 @@ namespace ChummerHub.Client.Model
 
         public async Task<string> PrepareModel()
         {
-            string zipPath = Path.Combine(Path.GetTempPath(), "SINner", MySINnerFile.Id + ".chum5z");
+            string zipPath = Path.Combine(Properties.Settings.Default.TempDownloadPath, "SINner", MySINnerFile.Id + ".chum5z");
             if (PluginHandler.MySINnerLoading != null)
             {
                 if (MySINnerIds.ContainsKey(MyCharacter.Alias))
@@ -278,7 +270,7 @@ namespace ChummerHub.Client.Model
                         if (String.IsNullOrEmpty(MySINnerFile.Alias))
                             MySINnerFile.Alias = MyCharacter.Name;
                     }
-                    var client = await StaticUtils.GetClient();
+                    var client = StaticUtils.GetClient();
                     var res = await client.SinnerGetOwnedSINByAliasWithHttpMessagesAsync(MySINnerFile.Alias);
                     if (res.Response.StatusCode == HttpStatusCode.NotFound)
                     {
@@ -417,40 +409,43 @@ namespace ChummerHub.Client.Model
         }
 
    
-        public void UploadInBackground()
+        public async Task<bool> UploadInBackground()
         {
             try
             {
                 Cursor.Current = Cursors.AppStarting;
                 this.PopulateTags();
-                this.PrepareModel();
-                ChummerHub.Client.Backend.Utils.PostSINnerAsync(this).ContinueWith((posttask) =>
+                await this.PrepareModel();
+                var res = await ChummerHub.Client.Backend.Utils.PostSINnerAsync(this);
+                
+                var response = await Backend.Utils.HandleError(res) as ResultBase;
+                
+                if (response.CallSuccess == true)
                 {
-                    if (posttask.Status != TaskStatus.RanToCompletion)
-                    {
-                        if (posttask.Exception != null)
-                            throw posttask.Exception;
-                        return;
-                    }
-                    var jsonResultString = posttask.Result.Response.Content.ReadAsStringAsync().Result;
+                    var jsonResultString = res.Response.Content.ReadAsStringAsync().Result;
                     try
                     {
-                        Object objIds = Newtonsoft.Json.JsonConvert.DeserializeObject<Object>(jsonResultString);
+                        ResultSinnerPostSIN objIds = Newtonsoft.Json.JsonConvert.DeserializeObject<ResultSinnerPostSIN>(jsonResultString);
+                        throw new NotImplementedException("Just keep coding!");
                         System.Collections.ICollection ids = objIds as System.Collections.ICollection;
                         if (ids == null || ids.Count == 0)
                         {
-                            string msg = "ChummerHub did not return a valid Id for sinner " + this.MyCharacter.Name + ".";
+                            string msg = "ChummerHub did not return a valid Id for sinner " +
+                                         this.MyCharacter.Name + ".";
                             System.Diagnostics.Trace.TraceError(msg);
                             throw new ArgumentException(msg);
                         }
+
                         var cur = ids.GetEnumerator();
                         cur.MoveNext();
                         if (!Guid.TryParse(cur.Current.ToString(), out var sinGuid))
                         {
-                            string msg = "ChummerHub did not return a valid IdArray for sinner " + this.MyCharacter.Alias + ".";
+                            string msg = "ChummerHub did not return a valid IdArray for sinner " +
+                                         this.MyCharacter.Alias + ".";
                             System.Diagnostics.Trace.TraceError(msg);
                             throw new ArgumentException(msg);
                         }
+
                         this.MySINnerFile.Id = sinGuid;
                     }
                     catch (Exception ex)
@@ -458,23 +453,24 @@ namespace ChummerHub.Client.Model
                         System.Diagnostics.Trace.TraceError(ex.ToString());
                         throw;
                     }
-                    System.Diagnostics.Trace.TraceInformation("Character " + this.MyCharacter.Alias + " posted with ID " + this.MySINnerFile.Id);
-                    ChummerHub.Client.Backend.Utils.UploadChummerFileAsync(this).ContinueWith((uploadtask) =>
-                    {
-                        if (uploadtask.Status != TaskStatus.RanToCompletion)
-                        {
-                            if (uploadtask.Exception != null)
-                                throw uploadtask.Exception;
-                            return;
-                        }
-                        if (uploadtask.Result?.Response?.StatusCode != HttpStatusCode.OK)
-                        {
-                            System.Diagnostics.Trace.TraceWarning("Upload failed for Character " + this.MyCharacter.Alias + ": " + uploadtask.Result?.Response?.StatusCode);
-                        }
-                        else
-                            System.Diagnostics.Trace.TraceInformation("Character " + this.MyCharacter.Alias + " uploaded.");
-                    });
-                }).ConfigureAwait(false);
+                }
+
+                //System.Diagnostics.Trace.TraceInformation("Character " + this.MyCharacter.Alias + " posted with ID " + this.MySINnerFile.Id);
+                //ChummerHub.Client.Backend.Utils.UploadChummerFileAsync(this).ContinueWith((uploadtask) =>
+                //{
+                //    if (uploadtask.Status != TaskStatus.RanToCompletion)
+                //    {
+                //        if (uploadtask.Exception != null)
+                //            throw uploadtask.Exception;
+                //        return;
+                //    }
+                //    if (uploadtask.Result?.Response?.StatusCode != HttpStatusCode.OK)
+                //    {
+                //        System.Diagnostics.Trace.TraceWarning("Upload failed for Character " + this.MyCharacter.Alias + ": " + uploadtask.Result?.Response?.StatusCode);
+                //    }
+                //    else
+                //        System.Diagnostics.Trace.TraceInformation("Character " + this.MyCharacter.Alias + " uploaded.");
+                //});
             }
             catch(Exception e)
             {
@@ -486,6 +482,7 @@ namespace ChummerHub.Client.Model
             {
                 Cursor.Current = Cursors.Default;
             }
+            throw new NotImplementedException("Just keep coding!");
         }
 
     }

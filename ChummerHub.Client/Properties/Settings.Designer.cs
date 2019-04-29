@@ -123,5 +123,17 @@ namespace ChummerHub.Client.Properties {
                 this["UpgradeRequired"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string TempDownloadPath {
+            get {
+                return ((string)(this["TempDownloadPath"]));
+            }
+            set {
+                this["TempDownloadPath"] = value;
+            }
+        }
     }
 }
