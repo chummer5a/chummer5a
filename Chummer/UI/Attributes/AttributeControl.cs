@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using Chummer.Backend.Attributes;
 using MessageBox = System.Windows.Forms.MessageBox;
@@ -130,7 +131,11 @@ namespace Chummer.UI.Attributes
         {
             decimal d = ((NumericUpDownEx)sender).Value;
             if (d == _oldBase) return;
-            if (!ShowAttributeRule(Math.Max(decimal.ToInt32(d + nudKarma.Value) + _objAttribute.FreeBase + _objAttribute.RawMinimum + _objAttribute.AttributeValueModifiers, _objAttribute.TotalMinimum) + decimal.ToInt32(nudKarma.Value)))
+            if (!CanBeMetatypeMax(
+                Math.Max(
+                    decimal.ToInt32(d + nudKarma.Value) + _objAttribute.FreeBase + _objAttribute.RawMinimum +
+                    _objAttribute.AttributeValueModifiers, _objAttribute.TotalMinimum) +
+                decimal.ToInt32(nudKarma.Value)))
             {
                 decimal newValue = Math.Max(nudBase.Value - 1, 0);
                 if (newValue > nudBase.Maximum)
@@ -152,7 +157,10 @@ namespace Chummer.UI.Attributes
         {
             decimal d = ((NumericUpDownEx)sender).Value;
             if (d == _oldKarma) return;
-            if (!ShowAttributeRule(Math.Max(decimal.ToInt32(nudBase.Value) + _objAttribute.FreeBase + _objAttribute.RawMinimum + _objAttribute.AttributeValueModifiers, _objAttribute.TotalMinimum) + decimal.ToInt32(d)))
+            if (!CanBeMetatypeMax(
+                Math.Max(
+                    decimal.ToInt32(nudBase.Value) + _objAttribute.FreeBase + _objAttribute.RawMinimum +
+                    _objAttribute.AttributeValueModifiers, _objAttribute.TotalMinimum) + decimal.ToInt32(d)))
             {
                 // It's possible that the attribute maximum was reduced by an improvement, so confirm the appropriate value to bounce up/down to. 
                 if (_oldKarma > _objAttribute.KarmaMaximum)
@@ -181,37 +189,27 @@ namespace Chummer.UI.Attributes
         }
 
         /// <summary>
-        /// Show the dialogue that notifies the user that characters cannot have more than 1 Attribute at its maximum value during character creation.
+        /// Is the attribute allowed to reach the Metatype Maximum?
+        /// SR5 66: Characters at character creation may only have 1 Mental or Physical
+        /// attribute at their natural maximum limit; the special attributes of Magic, Edge,
+        /// and Resonance are not included in this limitation.
         /// </summary>
-        private bool ShowAttributeRule(int intValue)
+        private bool CanBeMetatypeMax(int intValue)
         {
-            if (!_objCharacter.IgnoreRules)
-            {
-                int intTotalMaximum = _objAttribute.TotalMaximum;
-                if (intValue >= intTotalMaximum && intTotalMaximum != 0)
-                {
-                    bool blnAttributeListContainsThisAbbrev = false;
-                    int intNumOtherAttributeAtMax = 0;
-                    int intMaxOtherAttributesAtMax = _objCharacter.Options.Allow2ndMaxAttribute ? 1 : 0;
-                    foreach (CharacterAttrib objLoopAttrib in _objCharacter.AttributeSection.AttributeList)
-                    {
-                        if (objLoopAttrib.Abbrev == AttributeName)
-                            blnAttributeListContainsThisAbbrev = true;
-                        else if (objLoopAttrib.AtMetatypeMaximum)
-                            intNumOtherAttributeAtMax += 1;
-                        if (intNumOtherAttributeAtMax > intMaxOtherAttributesAtMax && blnAttributeListContainsThisAbbrev)
-                            break;
-                    }
-                    if (intNumOtherAttributeAtMax > intMaxOtherAttributesAtMax && blnAttributeListContainsThisAbbrev)
-                    {
-                        MessageBox.Show(LanguageManager.GetString("Message_AttributeMaximum", GlobalOptions.Language),
-                            LanguageManager.GetString("MessageTitle_Attribute", GlobalOptions.Language), MessageBoxButtons.OK,
-                            MessageBoxIcon.Information);
-                        return false;
-                    }
-                }
-            }
-            return true;
+            if (_objCharacter.IgnoreRules) return true;
+            int intTotalMaximum = _objAttribute.TotalMaximum;
+            if (intValue < intTotalMaximum || intTotalMaximum == 0) return true;
+            //TODO: This should be in AttributeSection, but I can't be bothered finagling the option into working.
+            //Ideally return 2 or 1, allow for an improvement type to increase or decrease the value. 
+            int intMaxOtherAttributesAtMax = _objCharacter.Options.Allow2ndMaxAttribute ? 1 : 0;
+            int intNumOtherAttributeAtMax = _objCharacter.AttributeSection.AttributeList.Count(att =>
+                att.AtMetatypeMaximum && att.Abbrev != AttributeName);
+
+            if (intNumOtherAttributeAtMax <= intMaxOtherAttributesAtMax) return true;
+            MessageBox.Show(LanguageManager.GetString("Message_AttributeMaximum", GlobalOptions.Language),
+                LanguageManager.GetString("MessageTitle_Attribute", GlobalOptions.Language), MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
+            return false;
         }
 
         public string AttributeName => _objAttribute.Abbrev;

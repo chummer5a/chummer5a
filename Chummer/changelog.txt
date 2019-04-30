@@ -21,6 +21,7 @@ Application Fixes:
 - Fixed a crash when opening the Print Multiple Characters dialog multiple times.
 - Fixed incorrect metatype minimums for metasapients when using priority generation.
 - Fixed missing matrix condition monitors for equipment.
+- Fixed a parsing issue with the check for if multiple attributes could be at metatype max that could occasionally cause a clash.
 
 Application Changes:
 
