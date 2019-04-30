@@ -525,12 +525,15 @@ namespace ChummerHub.Client.UI
 
                     PluginHandler.MainForm.DoThreadSafe(new Action(() =>
                     {
-                        StaticUtils.UserRoles = (myresult.Body as IList<string>).ToList(); //result.Result.Body as IList<string>;
-                        if (StaticUtils.UserRoles != null && StaticUtils.UserRoles.Any())
+                        Backend.Utils.HandleError(myresult, myresult.Body);
+                        if (myresult.Body.CallSuccess == true)
                         {
-                            this.LoginStatus = true;
+                            StaticUtils.UserRoles = myresult.Body.Roles.ToList();
+                            if (StaticUtils.UserRoles != null && StaticUtils.UserRoles.Any())
+                            {
+                                this.LoginStatus = true;
+                            }
                         }
-
                         bBackup.Visible = StaticUtils.UserRoles.Contains("Administrator");
                         bRestore.Visible = StaticUtils.UserRoles.Contains("Administrator");
                     }));

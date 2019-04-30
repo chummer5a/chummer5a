@@ -807,19 +807,35 @@ namespace ChummerHub.Controllers.V1
         public async Task<ActionResult<ResultGroupGetSearchGroups>> GetSearchGroups(string Groupname, string UsernameOrEmail, string SINnerName, string Language)
         {
             ResultGroupGetSearchGroups res;
+            var user = await _signInManager.UserManager.GetUserAsync(User);
+            var tc = new Microsoft.ApplicationInsights.TelemetryClient();
             _logger.LogTrace("GetSearchGroups: " + Groupname + "/" + UsernameOrEmail + "/" + SINnerName + ".");
+            string teststring = "not set";
             try
             {
                 var r =  await GetSearchGroupsInternal(Groupname, UsernameOrEmail, SINnerName, Language);
                 res = new ResultGroupGetSearchGroups(r);
+                teststring = Newtonsoft.Json.JsonConvert.SerializeObject(res);
+                var returnObj = Newtonsoft.Json.JsonConvert.DeserializeObject<ResultGroupGetSearchGroups>(teststring);
+                try
+                {
+                    
+                    Microsoft.ApplicationInsights.DataContracts.EventTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.EventTelemetry("GroupGetSearchGroups");
+                    telemetry.Properties.Add("User", user?.Email);
+                    telemetry.Properties.Add("JSON", teststring);
+                    telemetry.Properties.Add("Object", res.ToString());
+                    tc.TrackEvent(telemetry);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex.ToString());
+                }
                 return Ok(res);
             }
             catch(Exception e)
             {
                 try
                 {
-                    var user = await _signInManager.UserManager.GetUserAsync(User);
-                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
                     telemetry.Properties.Add("User", user?.Email);
                     tc.TrackException(telemetry);
