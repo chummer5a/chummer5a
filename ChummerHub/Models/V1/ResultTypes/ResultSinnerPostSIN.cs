@@ -10,6 +10,11 @@ namespace ChummerHub.Models.V1
     {
         public List<SINner> MySINners { get; set; }
 
+        public ResultSinnerPostSIN()
+        {
+            MySINners = new List<SINner>();
+        }
+
         public ResultSinnerPostSIN(List<SINner> list)
         {
             MySINners = list;

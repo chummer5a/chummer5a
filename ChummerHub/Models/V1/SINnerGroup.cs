@@ -118,6 +118,7 @@ namespace ChummerHub.Models.V1
         public List<SINnerGroup> MyGroups { get; set; }
 
         [ForeignKey("MyParentGroupId")]
+        [JsonIgnore]
         public SINnerGroup MyParentGroup { get; set; }
 
         /// <summary>

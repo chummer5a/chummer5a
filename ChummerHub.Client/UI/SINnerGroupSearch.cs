@@ -682,10 +682,10 @@ namespace ChummerHub.Client.UI
                 {
                     // Yes. Move the node, expand it, and select it.
 
-
+                    var client = StaticUtils.GetClient();
                     if (draggedGroup != null)
                     {
-                        var client = StaticUtils.GetClient();
+                        
                         var res = await client.PutGroupInGroupWithHttpMessagesAsync(draggedGroup.Id,
                             draggedGroup.Groupname, targetGroup?.Id,
                             draggedGroup.MyAdminIdentityRole, draggedGroup.IsPublic);
@@ -706,14 +706,23 @@ namespace ChummerHub.Client.UI
                             }
                         }
                     }
-
-                    if ((draggedSINner != null) && (targetGroup != null))
+                    if ((draggedSINner?.MySINner?.MyGroup != null) && (targetGroup != null))
                     {
+                        if (targetGroup.Groupname == "My SINners")
+                        {
+                            var res = await client.DeleteLeaveGroupWithHttpMessagesAsync(
+                                draggedSINner.MySINner.MyGroup.Id, draggedSINner.MySINner.Id);
+                            var response = Backend.Utils.HandleError(res, res.Body);
+                            if (res.Response.StatusCode == HttpStatusCode.OK)
+                            {
+                                bSearch_Click(sender, e);
+                            }
+                        }
                         if ((draggedSINner.MySINner.MyGroup?.Id == targetGroup.Id))
                             return;
                         if (draggedSINner.MySINner.MyGroup == null && targetGroup.Id == null)
                             return;
-                        var client = StaticUtils.GetClient();
+                        
                         try
                         {
                             var res = await client.PutSINerInGroupWithHttpMessagesAsync(targetGroup.Id, draggedSINner.MySINner.Id);
@@ -728,6 +737,17 @@ namespace ChummerHub.Client.UI
                             await Backend.Utils.HandleError(exception);
                         }
                        
+                    }
+
+                    if ((draggedSINner?.MySINner?.MyGroup?.Id != null) && (targetNode == null))
+                    {
+                        var res = await client.DeleteLeaveGroupWithHttpMessagesAsync(
+                            draggedSINner.MySINner.MyGroup.Id, draggedSINner.MySINner.Id);
+                        var response = Backend.Utils.HandleError(res, res.Body);
+                        if (res.Response.StatusCode == HttpStatusCode.OK)
+                        {
+                            bSearch_Click(sender, e);
+                        }
                     }
 
 

@@ -10,6 +10,11 @@ namespace ChummerHub.Models.V1
     {
         public SINSearchGroupResult MySINSearchGroupResult { get; set; }
 
+        public ResultAccountGetSinnersByAuthorization()
+        {
+            MySINSearchGroupResult = new SINSearchGroupResult();
+        }
+
         public ResultAccountGetSinnersByAuthorization(SINSearchGroupResult ssg)
         {
             MySINSearchGroupResult = ssg;

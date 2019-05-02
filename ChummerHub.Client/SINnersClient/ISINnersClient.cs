@@ -324,6 +324,23 @@ namespace SINners
         /// </summary>
         /// <param name='groupname'>
         /// </param>
+        /// <param name='language'>
+        /// </param>
+        /// <param name='email'>
+        /// </param>
+        /// <param name='customHeaders'>
+        /// The headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        Task<HttpOperationResponse<ResultGroupGetSearchGroups>> GetGroupmembersWithHttpMessagesAsync(string groupname = default(string), string language = default(string), string email = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Search for Groups
+        /// </summary>
+        /// <param name='groupname'>
+        /// </param>
         /// <param name='usernameOrEmail'>
         /// </param>
         /// <param name='sINnerName'>
@@ -378,7 +395,7 @@ namespace SINners
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse<ResultGroupGetSearchGroups>> GetGroupMembersWithHttpMessagesAsync(Guid? groupid = default(Guid?), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<ResultGroupGetSearchGroups>> GetGroupmembersByIdWithHttpMessagesAsync(Guid? groupid = default(Guid?), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <param name='searchTag'>
         /// </param>

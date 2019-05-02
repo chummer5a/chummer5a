@@ -23,7 +23,6 @@ namespace SINners.Models
             //PasswordHash = myGroup.PasswordHash;
             Language = myGroup.Language;
             MyGroups = myGroup.MyGroups;
-            MyParentGroup = myGroup.MyParentGroup;
             MyAdminIdentityRole = myGroup.MyAdminIdentityRole;
         }
 

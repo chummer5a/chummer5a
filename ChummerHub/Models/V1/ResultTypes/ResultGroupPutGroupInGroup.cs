@@ -10,6 +10,11 @@ namespace ChummerHub.Models.V1
     {
         public SINnerGroup MyGroup { get; set; }
 
+        public ResultGroupPutGroupInGroup()
+        {
+            MyGroup = new SINnerGroup();
+        }
+
         public ResultGroupPutGroupInGroup(SINnerGroup group)
         {
             MyGroup = group;
