@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Serialization;
+using Chummer;
 
 namespace SINners.Models
 {
@@ -28,7 +29,8 @@ namespace SINners.Models
             {
                 if (_UserRightsObservable == null)
                 {
-                    _UserRightsObservable = new BindingList<SINerUserRight>(UserRights);
+                    if (UserRights != null)
+                        _UserRightsObservable = new BindingList<SINerUserRight>(UserRights);
                 }
                 return _UserRightsObservable;
             }
@@ -40,17 +42,54 @@ namespace SINners.Models
 
         public void Save(CheckedListBox clbVisibilityToUsers)
         {
-            var test = ChummerHub.Client.Properties.Settings.Default.SINnerVisibility = Newtonsoft.Json.JsonConvert.SerializeObject(this);
-            ChummerHub.Client.Properties.Settings.Default.Save();
+            
             if (clbVisibilityToUsers != null)
             {
-                for (int i = 0; i < clbVisibilityToUsers.Items.Count; i++)
+                clbVisibilityToUsers.DoThreadSafe(() =>
                 {
-                    SINerUserRight obj = (SINerUserRight)clbVisibilityToUsers.Items[i];
-                    clbVisibilityToUsers.SetItemChecked(i, obj.CanEdit.Value);
-                }
+                    for (int i = 0; i < clbVisibilityToUsers.Items.Count; i++)
+                    {
+                        SINerUserRight obj = (SINerUserRight)clbVisibilityToUsers.Items[i];
+                        clbVisibilityToUsers.SetItemChecked(i, obj.CanEdit.Value);
+                    }
+                });
+                
             }
         }
-        
+
+        public void AddVisibilityForEmail(string email)
+        {
+            if (!IsValidEmail(email))
+            {
+                MessageBox.Show("Please enter a valid email address!");
+                return;
+            }
+            SINerUserRight ur = new SINerUserRight()
+            {
+                EMail = email,
+                CanEdit = true,
+                Id = Guid.NewGuid()
+            };
+            var found = from a in this.UserRightsObservable where a.EMail.ToLowerInvariant() == email.ToLowerInvariant() select a;
+            if (found.Any())
+                ur = found.FirstOrDefault();
+            if (!this.UserRightsObservable.Contains(ur))
+                this.UserRightsObservable.Add(ur);
+
+        }
+
+        private static bool IsValidEmail(string email)
+        {
+            try
+            {
+                var addr = new System.Net.Mail.MailAddress(email);
+                return addr.Address == email;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
     }
 }

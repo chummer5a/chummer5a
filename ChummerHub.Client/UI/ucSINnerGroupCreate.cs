@@ -15,13 +15,13 @@ using Chummer;
 
 namespace ChummerHub.Client.UI
 {
-    public partial class SINnerGroupCreate : UserControl
+    public partial class ucSINnerGroupCreate : UserControl
     {
         public SINnerGroup MyGroup = null;
         public bool EditMode = false;
         private string _strSelectedLanguage = GlobalOptions.Language;
 
-        public SINnerGroupCreate(SINnerGroup group, bool editMode, bool onlyPWHash)
+        public ucSINnerGroupCreate(SINnerGroup group, bool editMode, bool onlyPWHash)
         {
             MyGroup = group;
             EditMode = editMode;
@@ -29,7 +29,7 @@ namespace ChummerHub.Client.UI
             InitializeMe(onlyPWHash);
         }
 
-        public SINnerGroupCreate()
+        public ucSINnerGroupCreate()
         {
             InitializeComponent();
         }

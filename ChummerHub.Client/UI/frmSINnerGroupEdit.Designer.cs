@@ -28,7 +28,7 @@ namespace ChummerHub.Client.UI
         /// </summary>
         private void InitializeComponent()
         {
-            this.siNnerGroupCreate1 = new ChummerHub.Client.UI.SINnerGroupCreate();
+            this.siNnerGroupCreate1 = new ChummerHub.Client.UI.ucSINnerGroupCreate();
             this.SuspendLayout();
             // 
             // siNnerGroupCreate1
@@ -53,7 +53,7 @@ namespace ChummerHub.Client.UI
 
         #endregion
 
-        private SINnerGroupCreate siNnerGroupCreate1;
+        private ucSINnerGroupCreate siNnerGroupCreate1;
 
       
     }

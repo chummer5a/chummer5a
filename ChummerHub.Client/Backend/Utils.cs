@@ -92,6 +92,37 @@ namespace ChummerHub.Client.Backend
             }
         }
 
+        private static List<string> _possibleRoles = null;
+        public static List<string> PossibleRoles
+        {
+            get
+            {
+                if (_possibleRoles == null)
+                {
+                    using (new CursorWait(false))
+                    {
+                        int counter = 0;
+                        //just wait until the task from the startup finishes...
+                        while (_possibleRoles == null)
+                        {
+                            counter++;
+                            if (counter > 10 * 5)
+                            {
+                                _possibleRoles = new List<string>() { "none" };
+                                break;
+                            }
+                            System.Threading.Thread.Sleep(100);
+                        }
+                    }
+                }
+                return _possibleRoles;
+            }
+            set
+            {
+                _possibleRoles = value;
+            }
+        }
+
         public static CookieContainer AuthorizationCookieContainer
         {
             get

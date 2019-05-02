@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.siNnerResponseUI1 = new ChummerHub.Client.UI.SINnerResponseUI();
+            this.siNnerResponseUI1 = new ChummerHub.Client.UI.ucSINnerResponseUI();
             this.SuspendLayout();
             // 
             // siNnerResponseUI1
@@ -57,6 +57,6 @@
 
         #endregion
 
-        private SINnerResponseUI siNnerResponseUI1;
+        private ucSINnerResponseUI siNnerResponseUI1;
     }
 }

@@ -23,7 +23,7 @@ using Point = System.Drawing.Point;
 
 namespace ChummerHub.Client.UI
 {
-    public partial class SINnerGroupSearch : UserControl
+    public partial class ucSINnerGroupSearch : UserControl
     {
         public CharacterExtended MyCE { get; set; }
         public EventHandler<SINnerGroup> OnGroupJoinCallback = null;
@@ -119,7 +119,7 @@ namespace ChummerHub.Client.UI
 
         public frmSINnerGroupSearch MyParentForm { get; internal set; }
 
-        public SINnerGroupSearch()
+        public ucSINnerGroupSearch()
         {
             InitializeComponent();
             

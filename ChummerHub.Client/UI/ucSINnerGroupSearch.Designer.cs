@@ -2,7 +2,7 @@ using System.Windows.Forms;
 
 namespace ChummerHub.Client.UI
 {
-    partial class SINnerGroupSearch
+    partial class ucSINnerGroupSearch
     {
         /// <summary> 
         /// Required designer variable.

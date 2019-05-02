@@ -17,7 +17,7 @@ namespace ChummerHub.Client.UI
             InitializeComponent();
         }
 
-        public SINnerResponseUI SINnerResponseUI
+        public ucSINnerResponseUI SINnerResponseUI
         {
             get { return this.siNnerResponseUI1; }
         }

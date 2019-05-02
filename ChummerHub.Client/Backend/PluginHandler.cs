@@ -78,7 +78,7 @@ namespace Chummer.Plugins
 
         IEnumerable<TabPage> IPlugin.GetTabPages(frmCareer input)
         {
-            SINnersUserControl uc = new SINnersUserControl();
+            ucSINnersUserControl uc = new ucSINnersUserControl();
             var ce = uc.SetCharacterFrom(input);
             TabPage page = new TabPage("SINners");
             page.Name = "SINners";
@@ -88,7 +88,7 @@ namespace Chummer.Plugins
 
         IEnumerable<TabPage> IPlugin.GetTabPages(frmCreate input)
         {
-            SINnersUserControl uc = new SINnersUserControl();
+            ucSINnersUserControl uc = new ucSINnersUserControl();
             var ce = uc.SetCharacterFrom(input);
             TabPage page = new TabPage("SINners");
             page.Name = "SINners";
@@ -113,7 +113,7 @@ namespace Chummer.Plugins
                 
             //}
             ce = new CharacterExtended(input, null);
-            if ((SINnersOptions.UploadOnSave == true) && (IsSaving == false))
+            if ((ucSINnersOptions.UploadOnSave == true) && (IsSaving == false))
             {
                 IsSaving = true;
                 //removing a handler that is not registered is legal - that way only one handler is registered EVER!
@@ -171,7 +171,7 @@ namespace Chummer.Plugins
                     var ucseq = tabPage.Controls.Find("SINnersBasic", true);
                     foreach (var uc in ucseq)
                     {
-                        var sb = uc as SINnersBasic;
+                        var sb = uc as ucSINnersBasic;
                         if (sb != null)
                             await sb?.CheckSINnerStatus();
                     }
@@ -282,7 +282,7 @@ namespace Chummer.Plugins
         
         public Assembly GetPluginAssembly()
         {
-            return typeof(SINnersUserControl).Assembly;
+            return typeof(ucSINnersUserControl).Assembly;
         }
 
         public void SetIsUnitTest(bool isUnitTest)
@@ -297,7 +297,7 @@ namespace Chummer.Plugins
 
         public System.Windows.Forms.UserControl GetOptionsControl()
         {
-            return new SINnersOptions();
+            return new ucSINnersOptions();
         }
 
         public async Task<IEnumerable<TreeNode>> GetCharacterRosterTreeNode(frmCharacterRoster frmCharRoster, bool forceUpdate)

@@ -1,7 +1,7 @@
 namespace ChummerHub.Client.UI
 {
     using Chummer;
-    partial class SINnerGroupCreate
+    partial class ucSINnerGroupCreate
     {
         /// <summary> 
         /// Required designer variable.

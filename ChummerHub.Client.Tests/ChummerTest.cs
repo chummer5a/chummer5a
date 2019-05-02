@@ -42,7 +42,7 @@ namespace ChummerHub.Client.Tests
                         using (frmCareer career = new frmCareer(c))
                         {
                             career.Show();
-                            SINnersUserControl sINnersUsercontrol = new SINnersUserControl();
+                            ucSINnersUserControl sINnersUsercontrol = new ucSINnersUserControl();
                             var ce = await sINnersUsercontrol.SetCharacterFrom(career);
                             await ChummerHub.Client.Backend.Utils.PostSINnerAsync(ce);
                             await ChummerHub.Client.Backend.Utils.UploadChummerFileAsync(ce);
@@ -55,7 +55,7 @@ namespace ChummerHub.Client.Tests
                         using (frmCreate create = new frmCreate(c))
                         {
                             create.Show();
-                            SINnersUserControl sINnersUsercontrol = new SINnersUserControl();
+                            ucSINnersUserControl sINnersUsercontrol = new ucSINnersUserControl();
                             var ce = await sINnersUsercontrol.SetCharacterFrom(create);
                             await ChummerHub.Client.Backend.Utils.PostSINnerAsync(ce);
                             await ChummerHub.Client.Backend.Utils.UploadChummerFileAsync(ce);

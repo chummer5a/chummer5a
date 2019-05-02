@@ -21,21 +21,21 @@ using Utils = Chummer.Utils;
 
 namespace ChummerHub.Client.UI
 {
-    public partial class SINnersBasic : UserControl
+    public partial class ucSINnersBasic : UserControl
     {
-        public SINnersUserControl myUC { get; private set; }
+        public ucSINnersUserControl myUC { get; private set; }
 
-        public SINnersBasic()
+        public ucSINnersBasic()
         {
             SINnersBasicConstructor(null);
         }
 
-        public SINnersBasic(SINnersUserControl parent)
+        public ucSINnersBasic(ucSINnersUserControl parent)
         {
             SINnersBasicConstructor(parent);
         }
 
-        private void SINnersBasicConstructor(SINnersUserControl parent)
+        private void SINnersBasicConstructor(ucSINnersUserControl parent)
         {
             InitializeComponent();
            
@@ -327,6 +327,16 @@ namespace ChummerHub.Client.UI
             
         }
 
-       
+        private void BVisibility_Click(object sender, EventArgs e)
+        {
+            var visfrm = new frmSINnerVisibility();
+            visfrm.MyVisibility = this.myUC.MyCE.MySINnerFile.SiNnerMetaData.Visibility;
+            var result = visfrm.ShowDialog(this);
+            if (result == DialogResult.OK)
+            {
+                this.myUC.MyCE.MySINnerFile.SiNnerMetaData.Visibility = visfrm.MyVisibility;
+            }
+
+        }
     }
 }

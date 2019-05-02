@@ -15,13 +15,13 @@ namespace ChummerHub.Client.UI
     public partial class frmSINnerGroupSearch : Form
     {
         private CharacterExtended MyCE { get; }
-        public SINnersBasic MyParentForm { get; }
+        public ucSINnersBasic MyParentForm { get; }
 
-        public SINnerGroupSearch MySINnerGroupSearch
+        public ucSINnerGroupSearch MySINnerGroupSearch
         {
             get { return this.siNnerGroupSearch1; }
         }
-        public frmSINnerGroupSearch(CharacterExtended ce, SINnersBasic parentBasic)
+        public frmSINnerGroupSearch(CharacterExtended ce, ucSINnersBasic parentBasic)
         {
             MyCE = ce;
             MyParentForm = parentBasic;

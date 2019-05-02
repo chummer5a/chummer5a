@@ -28,6 +28,6 @@ namespace ChummerHub.Client.UI
         }
         
 
-        public SINnerGroupCreate MySINnerGroupCreate { get { return this.siNnerGroupCreate1; } }
+        public ucSINnerGroupCreate MySINnerGroupCreate { get { return this.siNnerGroupCreate1; } }
     }
 }
