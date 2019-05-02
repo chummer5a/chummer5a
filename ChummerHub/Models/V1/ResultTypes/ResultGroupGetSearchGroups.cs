@@ -11,6 +11,11 @@ namespace ChummerHub.Models.V1
     {
         public SINSearchGroupResult MySearchGroupResult { get; set; }
 
+        public ResultGroupGetSearchGroups()
+        {
+            MySearchGroupResult = new SINSearchGroupResult();
+        }
+
         public ResultGroupGetSearchGroups(SINSearchGroupResult ssg)
         {
             MySearchGroupResult = ssg;

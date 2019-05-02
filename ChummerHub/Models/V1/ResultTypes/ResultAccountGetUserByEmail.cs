@@ -10,6 +10,11 @@ namespace ChummerHub.Models.V1
     {
         public ApplicationUser MyApplicationUser { get; set; }
 
+        public ResultAccountGetUserByEmail()
+        {
+            MyApplicationUser = null;
+        }
+
         public ResultAccountGetUserByEmail(ApplicationUser user)
         {
             MyApplicationUser = user;

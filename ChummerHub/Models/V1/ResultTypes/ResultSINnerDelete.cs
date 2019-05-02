@@ -19,5 +19,10 @@ namespace ChummerHub.Models.V1
         {
             Deleted = deleted;
         }
+
+        public ResultSinnerDelete()
+        {
+            Deleted = false;
+        }
     }
 }

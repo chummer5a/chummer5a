@@ -768,6 +768,13 @@ namespace Chummer
                 case "zw":
                     objReturn = Properties.Resources.zw;
                     break;
+                case "default":
+                    objReturn = Properties.Resources.defaulted;
+                    break;
+                case "noimagedots":
+                    objReturn = Properties.Resources.noimagedots;
+                    break;
+                    
                 default:
                     Utils.BreakIfDebug();
                     objReturn = Properties.Resources.defaulted;

@@ -724,6 +724,46 @@ namespace SINners
             /// </param>
             /// <param name='groupname'>
             /// </param>
+            /// <param name='language'>
+            /// </param>
+            /// <param name='email'>
+            /// </param>
+            public static ResultGroupGetSearchGroups GetGroupmembers(this ISINnersClient operations, string groupname = default(string), string language = default(string), string email = default(string))
+            {
+                return Task.Factory.StartNew(s => ((ISINnersClient)s).GetGroupmembersAsync(groupname, language, email), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
+            }
+
+            /// <summary>
+            /// Search for Groups
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='groupname'>
+            /// </param>
+            /// <param name='language'>
+            /// </param>
+            /// <param name='email'>
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task<ResultGroupGetSearchGroups> GetGroupmembersAsync(this ISINnersClient operations, string groupname = default(string), string language = default(string), string email = default(string), CancellationToken cancellationToken = default(CancellationToken))
+            {
+                using (var _result = await operations.GetGroupmembersWithHttpMessagesAsync(groupname, language, email, null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Body;
+                }
+            }
+
+            /// <summary>
+            /// Search for Groups
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='groupname'>
+            /// </param>
             /// <param name='usernameOrEmail'>
             /// </param>
             /// <param name='sINnerName'>
@@ -838,9 +878,9 @@ namespace SINners
             /// </param>
             /// <param name='groupid'>
             /// </param>
-            public static ResultGroupGetSearchGroups GetGroupMembers(this ISINnersClient operations, Guid? groupid = default(Guid?))
+            public static ResultGroupGetSearchGroups GetGroupmembersById(this ISINnersClient operations, Guid? groupid = default(Guid?))
             {
-                return Task.Factory.StartNew(s => ((ISINnersClient)s).GetGroupMembersAsync(groupid), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
+                return Task.Factory.StartNew(s => ((ISINnersClient)s).GetGroupmembersByIdAsync(groupid), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
             }
 
             /// <summary>
@@ -854,9 +894,9 @@ namespace SINners
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task<ResultGroupGetSearchGroups> GetGroupMembersAsync(this ISINnersClient operations, Guid? groupid = default(Guid?), CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task<ResultGroupGetSearchGroups> GetGroupmembersByIdAsync(this ISINnersClient operations, Guid? groupid = default(Guid?), CancellationToken cancellationToken = default(CancellationToken))
             {
-                using (var _result = await operations.GetGroupMembersWithHttpMessagesAsync(groupid, null, cancellationToken).ConfigureAwait(false))
+                using (var _result = await operations.GetGroupmembersByIdWithHttpMessagesAsync(groupid, null, cancellationToken).ConfigureAwait(false))
                 {
                     return _result.Body;
                 }

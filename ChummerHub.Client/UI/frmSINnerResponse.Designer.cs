@@ -1,6 +1,6 @@
-namespace ChummerHub.Client.UI
+﻿namespace ChummerHub.Client.UI
 {
-    partial class frmSINnerGroupEdit
+    partial class frmSINnerResponse
     {
         /// <summary>
         /// Required designer variable.
@@ -28,33 +28,35 @@ namespace ChummerHub.Client.UI
         /// </summary>
         private void InitializeComponent()
         {
-            this.siNnerGroupCreate1 = new ChummerHub.Client.UI.SINnerGroupCreate();
+            this.siNnerResponseUI1 = new ChummerHub.Client.UI.SINnerResponseUI();
             this.SuspendLayout();
             // 
-            // siNnerGroupCreate1
+            // siNnerResponseUI1
             // 
-            this.siNnerGroupCreate1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.siNnerGroupCreate1.Location = new System.Drawing.Point(0, 0);
-            this.siNnerGroupCreate1.Name = "siNnerGroupCreate1";
-            this.siNnerGroupCreate1.Size = new System.Drawing.Size(369, 309);
-            this.siNnerGroupCreate1.TabIndex = 0;
+            this.siNnerResponseUI1.AutoSize = true;
+            this.siNnerResponseUI1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.siNnerResponseUI1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.siNnerResponseUI1.Location = new System.Drawing.Point(0, 0);
+            this.siNnerResponseUI1.MinimumSize = new System.Drawing.Size(200, 200);
+            this.siNnerResponseUI1.Name = "siNnerResponseUI1";
+            this.siNnerResponseUI1.Size = new System.Drawing.Size(401, 255);
+            this.siNnerResponseUI1.TabIndex = 0;
             // 
-            // frmSINnerGroupEdit
+            // frmSINnerResponse
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(369, 309);
-            this.Controls.Add(this.siNnerGroupCreate1);
-            this.Name = "frmSINnerGroupEdit";
-            this.Text = "frmSINnerGroupEdit";
+            this.ClientSize = new System.Drawing.Size(401, 255);
+            this.Controls.Add(this.siNnerResponseUI1);
+            this.Name = "frmSINnerResponse";
+            this.Text = "frmSINnerResponse";
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
 
-        private SINnerGroupCreate siNnerGroupCreate1;
-
-      
+        private SINnerResponseUI siNnerResponseUI1;
     }
 }

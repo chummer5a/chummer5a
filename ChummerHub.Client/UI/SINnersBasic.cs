@@ -79,7 +79,7 @@ namespace ChummerHub.Client.UI
 
                 using (new CursorWait(true, this))
                 {
-                    var client = await StaticUtils.GetClient();
+                    var client = StaticUtils.GetClient();
                     var response = await client.GetSINnerGroupFromSINerByIdWithHttpMessagesAsync(myUC.MyCE.MySINnerFile.Id.Value);
                     PluginHandler.MainForm.DoThreadSafe(() =>
                     {

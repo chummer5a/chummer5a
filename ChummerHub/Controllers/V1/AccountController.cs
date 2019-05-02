@@ -91,7 +91,9 @@ namespace ChummerHub.Controllers
                     await SeedData.EnsureRole(Program.MyHost.Services, user.Id, API.Authorizarion.Constants.UserRoleConfirmed, _roleManager, _userManager);
                 }
                 var roles = await _userManager.GetRolesAsync(user);
-                res = new ResultAccountGetRoles(roles);
+                var possibleRoles = await _context.Roles.ToListAsync();
+                var list = (from a in possibleRoles select a.Name).ToList();
+                res = new ResultAccountGetRoles(roles, list);
                 
                 return Ok(res);
             }
@@ -488,7 +490,7 @@ namespace ChummerHub.Controllers
                             ssg.MySINSearchGroups.Add(ssgFromSIN);
                         }
                         //add all members of his group
-                        var members = await sin.MyGroup.GetGroupMembers(_context);
+                        var members = await sin.MyGroup.GetGroupMembers(_context, false);
                         foreach(var member in members)
                         {
                             if((member.SINnerMetaData.Visibility.IsGroupVisible == true)
@@ -588,7 +590,7 @@ namespace ChummerHub.Controllers
                             ssg.MySINSearchGroups.Add(ssgFromSIN);
                         }
                         //add all members of his group
-                        var members = await sin.MyGroup.GetGroupMembers(_context);
+                        var members = await sin.MyGroup.GetGroupMembers(_context, false);
                         foreach (var member in members)
                         {
                             member.MyGroup = sin.MyGroup;

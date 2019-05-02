@@ -88,7 +88,7 @@ namespace ChummerHub.Client.UI
         {
             try
             {
-                var client = await StaticUtils.GetClient();
+                var client = StaticUtils.GetClient();
                 await client.DeleteAsync(MyCE.MySINnerFile.Id.Value);
             }
             catch (Exception ex)

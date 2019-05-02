@@ -138,16 +138,7 @@ namespace Chummer.Plugins
                 using (new CursorWait(true, MainForm))
                 {
                     CharacterExtended ce;
-                    //if (MyCharExtendedDic.ContainsKey(input.FileName))
-                    //{
-                    //    MyCharExtendedDic.TryGetValue(input.FileName, out ce);
-                    //}
-                    //else
-                    //{
                     ce = new CharacterExtended(input, null);
-                    //    MyCharExtendedDic.Add(input.FileName, ce);
-                    //}
-
                     if (!ce.MySINnerFile.SiNnerMetaData.Tags.Any(a => a.TagName == "Reflection"))
                     {
                         ce.MySINnerFile.SiNnerMetaData.Tags = ce.PopulateTags();
@@ -203,14 +194,7 @@ namespace Chummer.Plugins
             try
             {
                 CharacterExtended ce;
-                //if (MyCharExtendedDic.TryGetValue(input.FileName, out ce))
-                //{
-                //    ce.MyCharacter = input;
-                //}
-                //else
-                //{
                 ce = new CharacterExtended(input, fileElement, PluginHandler.MySINnerLoading);
-                //}
             }
             catch (Exception e)
             {
@@ -324,7 +308,7 @@ namespace Chummer.Plugins
                 {
                     Func<Task<HttpOperationResponse<ResultAccountGetSinnersByAuthorization>>> myMethodName = async () =>
                     {
-                        var client = await StaticUtils.GetClient();
+                        var client = StaticUtils.GetClient();
                         var ret = await client.GetSINnersByAuthorizationWithHttpMessagesAsync();
                         return ret;
                     }; 
@@ -377,32 +361,10 @@ namespace Chummer.Plugins
         public void CustomInitialize(frmChummerMain mainControl)
         {
             MainForm = mainControl;
-            //Not necessary anymore - see GetSINnerByAuthorization
-            //Task.Factory.StartNew(async () =>
-            //{
-            //    try
-            //    {
-            //        using (new CursorWait(true, MainForm))
-            //        {
-            //            await Task.Delay(1000 * 10);
-            //            var client = await StaticUtils.GetClient();
-            //            if (client != null)
-            //            {
-            //                var res = await client.GetRolesWithHttpMessagesAsync();
-            //                if (res != null)
-            //                {
-            //                    StaticUtils.UserRoles = res.Body.ToList();
-            //                }
-            //                else
-            //                    StaticUtils.UserRoles = new List<string>() {"none "};
-            //            }
-            //        }
-            //    }
-            //    catch (Exception e)
-            //    {
-            //        System.Diagnostics.Trace.TraceError(e.ToString());
-            //    }
-            //});
+            if (String.IsNullOrEmpty(ChummerHub.Client.Properties.Settings.Default.TempDownloadPath))
+            {
+                ChummerHub.Client.Properties.Settings.Default.TempDownloadPath = Path.GetTempPath();
+            }
         }
     }
 }
