@@ -196,7 +196,7 @@ namespace Chummer.UI.Attributes
         /// </summary>
         private bool CanBeMetatypeMax(int intValue)
         {
-            if (_objCharacter.IgnoreRules) return true;
+            if (_objCharacter.IgnoreRules || _objAttribute.MetatypeCategory == CharacterAttrib.AttributeCategory.Special) return true;
             int intTotalMaximum = _objAttribute.TotalMaximum;
             if (intValue < intTotalMaximum || intTotalMaximum == 0) return true;
             //TODO: This should be in AttributeSection, but I can't be bothered finagling the option into working.
