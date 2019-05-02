@@ -127,7 +127,7 @@ namespace Chummer.Plugins
                 }
                 input.OnSaveCompleted += MyOnSaveUpload;
             }
-            return JsonConvert.SerializeObject(ce.MySINnerFile.SiNnerMetaData);
+            return JsonConvert.SerializeObject(ce.MySINnerFile);
         }
 
         public async static void MyOnSaveUpload(object sender, Character input)
@@ -211,6 +211,19 @@ namespace Chummer.Plugins
         {
             var list = new List<ToolStripMenuItem>();
 #if DEBUG
+            ToolStripMenuItem mnuSINnerSearchs = new ToolStripMenuItem
+            {
+                Name = "mnuSINSearch",
+                Text = "&SINner Search"
+            };
+            mnuSINnerSearchs.Click += new System.EventHandler(mnuSINnerSearchs_Click);
+            mnuSINnerSearchs.Image = ChummerHub.Client.Properties.Resources.group;
+            mnuSINnerSearchs.ImageTransparentColor = System.Drawing.Color.Black;
+            mnuSINnerSearchs.Size = new System.Drawing.Size(148, 22);
+            mnuSINnerSearchs.Tag = "Menu_Main_SINnerSearch";
+            list.Add(mnuSINnerSearchs);
+
+#endif
             ToolStripMenuItem mnuSINners = new ToolStripMenuItem
             {
                 Name = "mnuSINners",
@@ -222,23 +235,10 @@ namespace Chummer.Plugins
             mnuSINners.Size = new System.Drawing.Size(148, 22);
             mnuSINners.Tag = "Menu_Main_SINners";
             list.Add(mnuSINners);
-
-#endif
-            ToolStripMenuItem mnuNPCs = new ToolStripMenuItem
-            {
-                Name = "mnuNPCs",
-                Text = "&NPCs"
-            };
-            mnuNPCs.Click += new System.EventHandler(mnuNPCs_Click);
-            mnuNPCs.Image = ChummerHub.Client.Properties.Resources.group;
-            mnuNPCs.ImageTransparentColor = System.Drawing.Color.Black;
-            mnuNPCs.Size = new System.Drawing.Size(148, 22);
-            mnuNPCs.Tag = "Menu_Main_NPCs";
-            list.Add(mnuNPCs);
             return list;
         }
 
-        private void mnuSINners_Click(object sender, EventArgs e)
+        private void mnuSINnerSearchs_Click(object sender, EventArgs e)
         {
             frmSINnerSearch search = new frmSINnerSearch();
             search.Show();
@@ -246,7 +246,7 @@ namespace Chummer.Plugins
 
         public static ConcurrentDictionary<string, TreeNode> MyTreeNodes2Add = new ConcurrentDictionary<string, TreeNode>();
 
-        private async void mnuNPCs_Click(object sender, EventArgs ea)
+        private async void mnuSINners_Click(object sender, EventArgs ea)
         {
             try
             {

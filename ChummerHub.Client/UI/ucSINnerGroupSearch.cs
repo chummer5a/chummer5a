@@ -87,6 +87,7 @@ namespace ChummerHub.Client.UI
                     tn.SelectedImageIndex = index;
                 }
                 tn.Tag = ssg;
+                tn.ToolTipText = ssg.Description;
                 if (this.cbShowMembers.Checked == true)
                 {
                     foreach (var member in ssg.MyMembers)
@@ -241,6 +242,8 @@ namespace ChummerHub.Client.UI
 
         private async void bJoinGroup_Click(object sender, EventArgs e)
         {
+            if (MyCE == null)
+                return;
             if (tvGroupSearchResult.SelectedNode == null)
                 return;
 
@@ -515,14 +518,16 @@ namespace ChummerHub.Client.UI
         {
             PluginHandler.MainForm.DoThreadSafe(() =>
             {
-
+                if (MyCE == null)
+                    this.bJoinGroup.Enabled = false;
+                
                 var item = tvGroupSearchResult.SelectedNode?.Tag as SINnerSearchGroup;
                 if (item != null)
                 {
                     if (this.MyCE?.MySINnerFile.MyGroup == null)
                     {
                         this.bCreateGroup.Enabled = true;
-                        this.bJoinGroup.Enabled = true;
+                        //this.bJoinGroup.Enabled = true;
                     }
                     else if (((this.MyCE?.MySINnerFile.MyGroup?.Id != item.Id)
                               || (this.MyCE?.MySINnerFile.MyGroup.Groupname != this.tbSearchGroupname.Text))
@@ -534,6 +539,7 @@ namespace ChummerHub.Client.UI
                     else
                     {
                         this.bCreateGroup.Enabled = true;
+                        this.bJoinGroup.Enabled = true;
                         this.bJoinGroup.Text = "leave group";
                     }
                     var members = item.MyMembers;
@@ -743,6 +749,16 @@ namespace ChummerHub.Client.UI
                     {
                         var res = await client.DeleteLeaveGroupWithHttpMessagesAsync(
                             draggedSINner.MySINner.MyGroup.Id, draggedSINner.MySINner.Id);
+                        var response = Backend.Utils.HandleError(res, res.Body);
+                        if (res.Response.StatusCode == HttpStatusCode.OK)
+                        {
+                            bSearch_Click(sender, e);
+                        }
+                    }
+                    else if ((draggedSINner?.MySINner != null && (targetNode == null)))
+
+                    {
+                        var res = await client.PutSINerInGroupWithHttpMessagesAsync(null, draggedSINner.MySINner.Id);
                         var response = Backend.Utils.HandleError(res, res.Body);
                         if (res.Response.StatusCode == HttpStatusCode.OK)
                         {

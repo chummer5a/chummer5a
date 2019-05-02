@@ -14,7 +14,6 @@ namespace ChummerHub.Models.V1
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [JsonIgnore]
         public Guid? Id { get; set; }
 
         [JsonIgnore]

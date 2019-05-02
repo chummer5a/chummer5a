@@ -19,6 +19,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ChummerHub.Client.UI;
+using Newtonsoft.Json;
 using static Chummer.frmCharacterRoster;
 
 namespace ChummerHub.Client.Backend

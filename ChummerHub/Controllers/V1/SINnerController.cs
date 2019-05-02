@@ -499,6 +499,12 @@ namespace ChummerHub.Controllers.V1
                     {
                         sinner.SINnerMetaData.Visibility.Id = Guid.NewGuid();
                     }
+
+                    if ((sinner.MyExtendedAttributes.Id == null) || (sinner.MyExtendedAttributes.Id == Guid.Empty))
+                    {
+                        sinner.MyExtendedAttributes.Id = Guid.NewGuid();
+                    }
+
                     var oldsinner = (from a in _context.SINners.Include(a => a.SINnerMetaData.Visibility.UserRights)
                                                         .Include(b => b.MyGroup)
                                      where a.Id == sinner.Id

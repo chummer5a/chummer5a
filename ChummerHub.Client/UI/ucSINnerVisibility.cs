@@ -39,13 +39,14 @@ namespace ChummerHub.Client.UI
             {
                 UserRights = new List<SINerUserRight>()
             };
+            this.clbVisibilityToUsers.ItemCheck += clbVisibilityToUsers_ItemCheck;
         }
 
         public ucSINnerVisibility(SINnerVisibility vis)
         {
             MyVisibility = vis;
             InitializeComponent();
-            
+            this.clbVisibilityToUsers.ItemCheck += clbVisibilityToUsers_ItemCheck;
         }
 
         private void FillVisibilityListBox()
@@ -54,7 +55,7 @@ namespace ChummerHub.Client.UI
             {
                 try
                 {
-                    ((ListBox)clbVisibilityToUsers).DataSource = null;
+                    //((ListBox)clbVisibilityToUsers).DataSource = null;
                     if (MyVisibility != null)
                     {
                         ((ListBox)clbVisibilityToUsers).DataSource = MyVisibility.UserRightsObservable;
@@ -84,20 +85,34 @@ namespace ChummerHub.Client.UI
         {
             string email = this.tbVisibilityAddEmail.Text;
             MyVisibility.AddVisibilityForEmail(email);
-            //Save it!
-            //MyVisibility.Save(clbVisibilityToUsers);
+            FillVisibilityListBox();
         }
 
         
 
         private void clbVisibilityToUsers_ItemCheck(object sender, ItemCheckEventArgs e)
         {
-            var obj = clbVisibilityToUsers.Items[e.Index];
-            var userright = obj as SINerUserRight;
-            if (e.NewValue == CheckState.Checked)
-                userright.CanEdit = true;
+            ListBox.SelectedObjectCollection selectedItems = new ListBox.SelectedObjectCollection(clbVisibilityToUsers);
+            selectedItems = clbVisibilityToUsers.SelectedItems;
+
+            if (clbVisibilityToUsers.SelectedIndex != -1)
+            {
+                for (int i = selectedItems.Count - 1; i >= 0; i--)
+                {
+                    var userright = selectedItems[i] as SINerUserRight;
+                    if (userright != null)
+                    {
+                        if (e.NewValue == CheckState.Checked)
+                            userright.CanEdit = true;
+                        else
+                        {
+                            userright.CanEdit = false;
+                        }
+                    }
+                }
+            }
             else
-                userright.CanEdit = false;
+                MessageBox.Show("No email selected!");
         }
 
         private void bVisibilityRemove_Click(object sender, EventArgs e)
@@ -112,15 +127,12 @@ namespace ChummerHub.Client.UI
                     var userright = selectedItems[i] as SINerUserRight;
                     MyVisibility.UserRightsObservable.Remove(userright);
                 }
-                //Save it!
-                //MyVisibility.Save(clbVisibilityToUsers);
+                FillVisibilityListBox();
             }
             else
                 MessageBox.Show("No email selected!");
         }
 
-        
-
-
+     
     }
 }
