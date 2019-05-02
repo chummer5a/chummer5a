@@ -21,21 +21,21 @@ using Utils = Chummer.Utils;
 
 namespace ChummerHub.Client.UI
 {
-    public partial class SINnersBasic : UserControl
+    public partial class ucSINnersBasic : UserControl
     {
-        public SINnersUserControl myUC { get; private set; }
+        public ucSINnersUserControl myUC { get; private set; }
 
-        public SINnersBasic()
+        public ucSINnersBasic()
         {
             SINnersBasicConstructor(null);
         }
 
-        public SINnersBasic(SINnersUserControl parent)
+        public ucSINnersBasic(ucSINnersUserControl parent)
         {
             SINnersBasicConstructor(parent);
         }
 
-        private void SINnersBasicConstructor(SINnersUserControl parent)
+        private void SINnersBasicConstructor(ucSINnersUserControl parent)
         {
             InitializeComponent();
            
@@ -46,6 +46,13 @@ namespace ChummerHub.Client.UI
             this.AutoSize = true;
             myUC = parent;
             myUC.MyCE = parent.MyCE;
+            if (myUC.MyCE?.MySINnerFile?.Id != null)
+                this.tbID.Text = myUC.MyCE?.MySINnerFile?.Id?.ToString();
+            string tip =
+                "Assigning this SINner a new Id enables you to save multiple versions of this chummer on SINnersHub." +
+                Environment.NewLine;
+            tip += "";
+            this.bGenerateNewId.SetToolTip(tip);
             CheckSINnerStatus().ContinueWith(a =>
             {
                 if (!a.Result)
@@ -53,6 +60,7 @@ namespace ChummerHub.Client.UI
                     System.Diagnostics.Trace.TraceError("somehow I couldn't check the onlinestatus of " +
                                                         myUC.MyCE.MySINnerFile.Id);
                 }
+                
             });
             foreach (var cb in gpTags.Controls)
             {
@@ -79,7 +87,7 @@ namespace ChummerHub.Client.UI
 
                 using (new CursorWait(true, this))
                 {
-                    var client = await StaticUtils.GetClient();
+                    var client = StaticUtils.GetClient();
                     var response = await client.GetSINnerGroupFromSINerByIdWithHttpMessagesAsync(myUC.MyCE.MySINnerFile.Id.Value);
                     PluginHandler.MainForm.DoThreadSafe(() =>
                     {
@@ -327,6 +335,36 @@ namespace ChummerHub.Client.UI
             
         }
 
-       
+        private void BVisibility_Click(object sender, EventArgs e)
+        {
+            var visfrm = new frmSINnerVisibility();
+            visfrm.MyVisibility = this.myUC.MyCE.MySINnerFile.SiNnerMetaData.Visibility;
+            var result = visfrm.ShowDialog(this);
+            if (result == DialogResult.OK)
+            {
+                this.myUC.MyCE.MySINnerFile.SiNnerMetaData.Visibility = visfrm.MyVisibility;
+            }
+
+        }
+
+        private void BGenerateNewId_Click(object sender, EventArgs e)
+        {
+            var oldId = this.myUC.MyCE.MySINnerFile.Id;
+            this.myUC.MyCE.MySINnerFile.Id = Guid.NewGuid();
+            this.myUC.MyCE.MySINnerFile.SiNnerMetaData.Id = Guid.NewGuid();
+            this.myUC.MyCE.MySINnerFile.SiNnerMetaData.Visibility.Id = Guid.NewGuid();
+            foreach (var user in this.myUC.MyCE.MySINnerFile.SiNnerMetaData.Visibility.UserRights)
+            {
+                user.Id = Guid.NewGuid();
+            }
+            this.myUC.MyCE.PopulateTags();
+            this.myUC.MyCE.MySINnerFile.MyExtendedAttributes.Id = Guid.NewGuid();
+            if (oldId != null)
+            {
+                this.myUC.CharacterObject.FileName =  this.myUC.CharacterObject.FileName.Replace(oldId.ToString(), this.myUC.MyCE.MySINnerFile.Id.ToString());
+            }
+            this.myUC.CharacterObject.Save(this.myUC.MyCE.MySINnerFile.Id + ".chum5", false, true);
+            this.tbID.Text = this.myUC.MyCE.MySINnerFile.Id.ToString();
+        }
     }
 }

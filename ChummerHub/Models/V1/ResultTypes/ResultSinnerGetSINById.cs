@@ -10,6 +10,11 @@ namespace ChummerHub.Models.V1
     {
         public SINner MySINner { get; set; }
 
+        public ResultSinnerGetSINById()
+        {
+            MySINner = new SINner();
+        }
+
         public ResultSinnerGetSINById(SINner sinner)
         {
             MySINner = sinner;

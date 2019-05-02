@@ -145,6 +145,8 @@ namespace ChummerHub.Migrations
                     b.Property<Guid?>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("Description");
+
                     b.Property<string>("GroupCreatorUserName");
 
                     b.Property<string>("Groupname")

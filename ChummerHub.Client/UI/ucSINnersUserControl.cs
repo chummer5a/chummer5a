@@ -22,15 +22,15 @@ using System.Windows.Threading;
 
 namespace ChummerHub.Client.UI
 {
-    public partial class SINnersUserControl : UserControl
+    public partial class ucSINnersUserControl : UserControl
     {
         
         private CharacterShared _mySINner = null;
-        private SINnersBasic TabSINnersBasic;
+        private ucSINnersBasic TabSINnersBasic;
 
         public CharacterShared MySINner => _mySINner;
 
-        public SINnersAdvanced TabSINnersAdvanced = null;
+        public ucSINnersAdvanced TabSINnersAdvanced = null;
 
         public CharacterExtended MyCE { get; set; }
 
@@ -59,11 +59,11 @@ namespace ChummerHub.Client.UI
             //}
             MyCE.MySINnerFile.SiNnerMetaData.Tags = MyCE.PopulateTags();
 
-            TabSINnersBasic = new SINnersBasic(this)
+            TabSINnersBasic = new ucSINnersBasic(this)
             {
                 Visible = true
             };
-            TabSINnersAdvanced = new SINnersAdvanced(this);
+            TabSINnersAdvanced = new ucSINnersAdvanced(this);
 #if DEBUG
             TabSINnersAdvanced.Visible = true;
 #else
@@ -88,7 +88,7 @@ namespace ChummerHub.Client.UI
         {
             try
             {
-                var client = await StaticUtils.GetClient();
+                var client = StaticUtils.GetClient();
                 await client.DeleteAsync(MyCE.MySINnerFile.Id.Value);
             }
             catch (Exception ex)

@@ -63,6 +63,11 @@ namespace ChummerHub.Models.V1
 
         public string Username { get; set; }
 
+        public SINnerSearchGroupMember()
+        {
+            MySINner = new SINner();
+        }
+
     }
 
 }

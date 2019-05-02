@@ -92,6 +92,7 @@
     <Compile Include="Backend\MyMessageHandler.cs" />
     <Compile Include="Backend\TagExtractor.cs" />
     <Compile Include="Model\CharacterExtended.cs" />
+    <Compile Include="Model\ResultBase.cs" />
     <Compile Include="Model\SearchTag.cs" />
     <Compile Include="Model\SINnerGroup.cs" />
     <Compile Include="Model\SINnerSearchGroup.cs" />
@@ -156,11 +157,23 @@
     <Compile Include="UI\frmSINnerGroupSearch.Designer.cs">
       <DependentUpon>frmSINnerGroupSearch.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\frmSINnerResponse.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\frmSINnerResponse.Designer.cs">
+      <DependentUpon>frmSINnerResponse.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\frmSINnerSearch.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="UI\frmSINnerSearch.Designer.cs">
       <DependentUpon>frmSINnerSearch.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\frmSINnerVisibility.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\frmSINnerVisibility.Designer.cs">
+      <DependentUpon>frmSINnerVisibility.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\frmWebBrowser.cs">
       <SubType>Form</SubType>
@@ -168,48 +181,60 @@
     <Compile Include="UI\frmWebBrowser.Designer.cs">
       <DependentUpon>frmWebBrowser.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\SINnerGroupCreate.cs">
+    <Compile Include="UI\ucSINnerGroupCreate.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\SINnerGroupCreate.Designer.cs">
-      <DependentUpon>SINnerGroupCreate.cs</DependentUpon>
+    <Compile Include="UI\ucSINnerGroupCreate.Designer.cs">
+      <DependentUpon>ucSINnerGroupCreate.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\SINnerGroupSearch.cs">
+    <Compile Include="UI\ucSINnerGroupSearch.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\SINnerGroupSearch.Designer.cs">
-      <DependentUpon>SINnerGroupSearch.cs</DependentUpon>
+    <Compile Include="UI\ucSINnerGroupSearch.Designer.cs">
+      <DependentUpon>ucSINnerGroupSearch.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\SINnersAdvanced.cs">
+    <Compile Include="UI\ucSINnerResponseUI.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\SINnersAdvanced.Designer.cs">
-      <DependentUpon>SINnersAdvanced.cs</DependentUpon>
+    <Compile Include="UI\ucSINnerResponseUI.Designer.cs">
+      <DependentUpon>ucSINnerResponseUI.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\ucSINnersAdvanced.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\ucSINnersAdvanced.Designer.cs">
+      <DependentUpon>ucSINnersAdvanced.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UI\SINnersBasic.cs">
+    <Compile Include="UI\ucSINnersBasic.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\SINnersBasic.Designer.cs">
-      <DependentUpon>SINnersBasic.cs</DependentUpon>
+    <Compile Include="UI\ucSINnersBasic.Designer.cs">
+      <DependentUpon>ucSINnersBasic.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\SINnersOptions.cs">
+    <Compile Include="UI\ucSINnersOptions.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\SINnersOptions.Designer.cs">
-      <DependentUpon>SINnersOptions.cs</DependentUpon>
+    <Compile Include="UI\ucSINnersOptions.Designer.cs">
+      <DependentUpon>ucSINnersOptions.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\SINnersUserControl.cs">
+    <Compile Include="UI\ucSINnersUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\SINnersUserControl.Designer.cs">
-      <DependentUpon>SINnersUserControl.cs</DependentUpon>
+    <Compile Include="UI\ucSINnersUserControl.Designer.cs">
+      <DependentUpon>ucSINnersUserControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\SINnersSearch.cs">
+    <Compile Include="UI\ucSINnersSearch.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\SINnersSearch.Designer.cs">
-      <DependentUpon>SINnersSearch.cs</DependentUpon>
+    <Compile Include="UI\ucSINnersSearch.Designer.cs">
+      <DependentUpon>ucSINnersSearch.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\ucSINnerVisibility.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\ucSINnerVisibility.Designer.cs">
+      <DependentUpon>ucSINnerVisibility.cs</DependentUpon>
     </Compile>
     <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
   </ItemGroup>
@@ -224,32 +249,44 @@
     <EmbeddedResource Include="UI\frmSINnerGroupSearch.resx">
       <DependentUpon>frmSINnerGroupSearch.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\frmSINnerResponse.resx">
+      <DependentUpon>frmSINnerResponse.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\frmSINnerSearch.resx">
       <DependentUpon>frmSINnerSearch.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\frmSINnerVisibility.resx">
+      <DependentUpon>frmSINnerVisibility.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\frmWebBrowser.resx">
       <DependentUpon>frmWebBrowser.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\SINnerGroupCreate.resx">
-      <DependentUpon>SINnerGroupCreate.cs</DependentUpon>
+    <EmbeddedResource Include="UI\ucSINnerGroupCreate.resx">
+      <DependentUpon>ucSINnerGroupCreate.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\SINnerGroupSearch.resx">
-      <DependentUpon>SINnerGroupSearch.cs</DependentUpon>
+    <EmbeddedResource Include="UI\ucSINnerGroupSearch.resx">
+      <DependentUpon>ucSINnerGroupSearch.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\SINnersAdvanced.resx">
-      <DependentUpon>SINnersAdvanced.cs</DependentUpon>
+    <EmbeddedResource Include="UI\ucSINnerResponseUI.resx">
+      <DependentUpon>ucSINnerResponseUI.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\SINnersBasic.resx">
-      <DependentUpon>SINnersBasic.cs</DependentUpon>
+    <EmbeddedResource Include="UI\ucSINnersAdvanced.resx">
+      <DependentUpon>ucSINnersAdvanced.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\SINnersOptions.resx">
-      <DependentUpon>SINnersOptions.cs</DependentUpon>
+    <EmbeddedResource Include="UI\ucSINnersBasic.resx">
+      <DependentUpon>ucSINnersBasic.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\SINnersUserControl.resx">
-      <DependentUpon>SINnersUserControl.cs</DependentUpon>
+    <EmbeddedResource Include="UI\ucSINnersOptions.resx">
+      <DependentUpon>ucSINnersOptions.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\SINnersSearch.resx">
-      <DependentUpon>SINnersSearch.cs</DependentUpon>
+    <EmbeddedResource Include="UI\ucSINnersUserControl.resx">
+      <DependentUpon>ucSINnersUserControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\ucSINnersSearch.resx">
+      <DependentUpon>ucSINnersSearch.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\ucSINnerVisibility.resx">
+      <DependentUpon>ucSINnerVisibility.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -262,6 +299,7 @@
     <None Include="app.config" />
     <None Include="libman.json" />
     <None Include="packages.config" />
+    <None Include="Properties\DataSources\ChummerHub.Client.UI.SINnerResponseUI.datasource" />
     <None Include="Properties\DataSources\SINners.Models.Tag.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>PublicSettingsSingleFileGenerator</Generator>

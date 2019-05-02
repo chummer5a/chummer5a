@@ -67,6 +67,9 @@ namespace ChummerHub.Models.V1
             Id = Guid.NewGuid();
             this.SINnerMetaData = new SINnerMetaData();
             this.MyExtendedAttributes = new SINnerExtended();
+            this.DownloadUrl = "";
+            this.MyGroup = null;
+            this.Language = "";
         }
 
         internal static async Task<List<SINner>> GetSINnersFromUser(ApplicationUser user, ApplicationDbContext context, bool canEdit)

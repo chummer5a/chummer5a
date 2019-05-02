@@ -28,7 +28,7 @@ namespace ChummerHub.Client.UI
         /// </summary>
         private void InitializeComponent()
         {
-            this.siNnerGroupSearch1 = new ChummerHub.Client.UI.SINnerGroupSearch();
+            this.siNnerGroupSearch1 = new ChummerHub.Client.UI.ucSINnerGroupSearch();
             this.SuspendLayout();
             // 
             // siNnerGroupSearch1
@@ -55,6 +55,6 @@ namespace ChummerHub.Client.UI
 
         #endregion
 
-        private SINnerGroupSearch siNnerGroupSearch1;
+        private ucSINnerGroupSearch siNnerGroupSearch1;
     }
 }

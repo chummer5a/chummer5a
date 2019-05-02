@@ -9685,8 +9685,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Online</text>
     </string>
     <string>
-      <key>Menu_Main_NPCs</key>
-      <text>NPCs</text>
+      <key>Menu_Main_SINnerSearch</key>
+      <text>Search SIN Database</text>
     </string>
     <string>
       <key>Menu_Main_SINners</key>

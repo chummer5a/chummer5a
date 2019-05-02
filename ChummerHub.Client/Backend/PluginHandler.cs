@@ -78,7 +78,7 @@ namespace Chummer.Plugins
 
         IEnumerable<TabPage> IPlugin.GetTabPages(frmCareer input)
         {
-            SINnersUserControl uc = new SINnersUserControl();
+            ucSINnersUserControl uc = new ucSINnersUserControl();
             var ce = uc.SetCharacterFrom(input);
             TabPage page = new TabPage("SINners");
             page.Name = "SINners";
@@ -88,7 +88,7 @@ namespace Chummer.Plugins
 
         IEnumerable<TabPage> IPlugin.GetTabPages(frmCreate input)
         {
-            SINnersUserControl uc = new SINnersUserControl();
+            ucSINnersUserControl uc = new ucSINnersUserControl();
             var ce = uc.SetCharacterFrom(input);
             TabPage page = new TabPage("SINners");
             page.Name = "SINners";
@@ -113,7 +113,7 @@ namespace Chummer.Plugins
                 
             //}
             ce = new CharacterExtended(input, null);
-            if ((SINnersOptions.UploadOnSave == true) && (IsSaving == false))
+            if ((ucSINnersOptions.UploadOnSave == true) && (IsSaving == false))
             {
                 IsSaving = true;
                 //removing a handler that is not registered is legal - that way only one handler is registered EVER!
@@ -127,7 +127,7 @@ namespace Chummer.Plugins
                 }
                 input.OnSaveCompleted += MyOnSaveUpload;
             }
-            return JsonConvert.SerializeObject(ce.MySINnerFile.SiNnerMetaData);
+            return JsonConvert.SerializeObject(ce.MySINnerFile);
         }
 
         public async static void MyOnSaveUpload(object sender, Character input)
@@ -138,16 +138,7 @@ namespace Chummer.Plugins
                 using (new CursorWait(true, MainForm))
                 {
                     CharacterExtended ce;
-                    //if (MyCharExtendedDic.ContainsKey(input.FileName))
-                    //{
-                    //    MyCharExtendedDic.TryGetValue(input.FileName, out ce);
-                    //}
-                    //else
-                    //{
                     ce = new CharacterExtended(input, null);
-                    //    MyCharExtendedDic.Add(input.FileName, ce);
-                    //}
-
                     if (!ce.MySINnerFile.SiNnerMetaData.Tags.Any(a => a.TagName == "Reflection"))
                     {
                         ce.MySINnerFile.SiNnerMetaData.Tags = ce.PopulateTags();
@@ -180,7 +171,7 @@ namespace Chummer.Plugins
                     var ucseq = tabPage.Controls.Find("SINnersBasic", true);
                     foreach (var uc in ucseq)
                     {
-                        var sb = uc as SINnersBasic;
+                        var sb = uc as ucSINnersBasic;
                         if (sb != null)
                             await sb?.CheckSINnerStatus();
                     }
@@ -203,14 +194,7 @@ namespace Chummer.Plugins
             try
             {
                 CharacterExtended ce;
-                //if (MyCharExtendedDic.TryGetValue(input.FileName, out ce))
-                //{
-                //    ce.MyCharacter = input;
-                //}
-                //else
-                //{
                 ce = new CharacterExtended(input, fileElement, PluginHandler.MySINnerLoading);
-                //}
             }
             catch (Exception e)
             {
@@ -227,6 +211,19 @@ namespace Chummer.Plugins
         {
             var list = new List<ToolStripMenuItem>();
 #if DEBUG
+            ToolStripMenuItem mnuSINnerSearchs = new ToolStripMenuItem
+            {
+                Name = "mnuSINSearch",
+                Text = "&SINner Search"
+            };
+            mnuSINnerSearchs.Click += new System.EventHandler(mnuSINnerSearchs_Click);
+            mnuSINnerSearchs.Image = ChummerHub.Client.Properties.Resources.group;
+            mnuSINnerSearchs.ImageTransparentColor = System.Drawing.Color.Black;
+            mnuSINnerSearchs.Size = new System.Drawing.Size(148, 22);
+            mnuSINnerSearchs.Tag = "Menu_Main_SINnerSearch";
+            list.Add(mnuSINnerSearchs);
+
+#endif
             ToolStripMenuItem mnuSINners = new ToolStripMenuItem
             {
                 Name = "mnuSINners",
@@ -238,23 +235,10 @@ namespace Chummer.Plugins
             mnuSINners.Size = new System.Drawing.Size(148, 22);
             mnuSINners.Tag = "Menu_Main_SINners";
             list.Add(mnuSINners);
-
-#endif
-            ToolStripMenuItem mnuNPCs = new ToolStripMenuItem
-            {
-                Name = "mnuNPCs",
-                Text = "&NPCs"
-            };
-            mnuNPCs.Click += new System.EventHandler(mnuNPCs_Click);
-            mnuNPCs.Image = ChummerHub.Client.Properties.Resources.group;
-            mnuNPCs.ImageTransparentColor = System.Drawing.Color.Black;
-            mnuNPCs.Size = new System.Drawing.Size(148, 22);
-            mnuNPCs.Tag = "Menu_Main_NPCs";
-            list.Add(mnuNPCs);
             return list;
         }
 
-        private void mnuSINners_Click(object sender, EventArgs e)
+        private void mnuSINnerSearchs_Click(object sender, EventArgs e)
         {
             frmSINnerSearch search = new frmSINnerSearch();
             search.Show();
@@ -262,7 +246,7 @@ namespace Chummer.Plugins
 
         public static ConcurrentDictionary<string, TreeNode> MyTreeNodes2Add = new ConcurrentDictionary<string, TreeNode>();
 
-        private async void mnuNPCs_Click(object sender, EventArgs ea)
+        private async void mnuSINners_Click(object sender, EventArgs ea)
         {
             try
             {
@@ -298,7 +282,7 @@ namespace Chummer.Plugins
         
         public Assembly GetPluginAssembly()
         {
-            return typeof(SINnersUserControl).Assembly;
+            return typeof(ucSINnersUserControl).Assembly;
         }
 
         public void SetIsUnitTest(bool isUnitTest)
@@ -313,7 +297,7 @@ namespace Chummer.Plugins
 
         public System.Windows.Forms.UserControl GetOptionsControl()
         {
-            return new SINnersOptions();
+            return new ucSINnersOptions();
         }
 
         public async Task<IEnumerable<TreeNode>> GetCharacterRosterTreeNode(frmCharacterRoster frmCharRoster, bool forceUpdate)
@@ -324,7 +308,7 @@ namespace Chummer.Plugins
                 {
                     Func<Task<HttpOperationResponse<ResultAccountGetSinnersByAuthorization>>> myMethodName = async () =>
                     {
-                        var client = await StaticUtils.GetClient();
+                        var client = StaticUtils.GetClient();
                         var ret = await client.GetSINnersByAuthorizationWithHttpMessagesAsync();
                         return ret;
                     }; 
@@ -377,32 +361,10 @@ namespace Chummer.Plugins
         public void CustomInitialize(frmChummerMain mainControl)
         {
             MainForm = mainControl;
-            //Not necessary anymore - see GetSINnerByAuthorization
-            //Task.Factory.StartNew(async () =>
-            //{
-            //    try
-            //    {
-            //        using (new CursorWait(true, MainForm))
-            //        {
-            //            await Task.Delay(1000 * 10);
-            //            var client = await StaticUtils.GetClient();
-            //            if (client != null)
-            //            {
-            //                var res = await client.GetRolesWithHttpMessagesAsync();
-            //                if (res != null)
-            //                {
-            //                    StaticUtils.UserRoles = res.Body.ToList();
-            //                }
-            //                else
-            //                    StaticUtils.UserRoles = new List<string>() {"none "};
-            //            }
-            //        }
-            //    }
-            //    catch (Exception e)
-            //    {
-            //        System.Diagnostics.Trace.TraceError(e.ToString());
-            //    }
-            //});
+            if (String.IsNullOrEmpty(ChummerHub.Client.Properties.Settings.Default.TempDownloadPath))
+            {
+                ChummerHub.Client.Properties.Settings.Default.TempDownloadPath = Path.GetTempPath();
+            }
         }
     }
 }

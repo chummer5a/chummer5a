@@ -139,7 +139,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(strShowFileName))
                 strShowFileName = _objCharacter.CharacterName;
             string strFilePath = Path.Combine(strAutosavePath, strShowFileName);
-            _objCharacter.Save(strFilePath);
+            _objCharacter.Save(strFilePath, false, false);
             Cursor = objOldCursor;
             AutosaveStopWatch.Restart();
         }

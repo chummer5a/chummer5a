@@ -10,6 +10,11 @@ namespace ChummerHub.Models.V1
     {
         public List<SINner> MySINners { get; set; }
 
+        public ResultSinnerGetOwnedSINByAlias()
+        {
+            MySINners = new List<SINner>();
+        }
+
         public ResultSinnerGetOwnedSINByAlias(List<SINner> list)
         {
             MySINners = list;

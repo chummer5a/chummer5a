@@ -2664,6 +2664,7 @@
     <Content Include="icons\flags\ng.png" />
     <Content Include="icons\flags\ni.png" />
     <Content Include="icons\flags\nl.png" />
+    <Content Include="icons\flags\noimagedots.png" />
     <Content Include="icons\flags\no.png" />
     <Content Include="icons\flags\np.png" />
     <Content Include="icons\flags\nr.png" />

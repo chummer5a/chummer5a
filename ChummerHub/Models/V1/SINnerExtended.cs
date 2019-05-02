@@ -14,14 +14,19 @@ namespace ChummerHub.Models.V1
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [JsonIgnore]
-
         public Guid? Id { get; set; }
 
         [JsonIgnore]
         public SINner MySINner;
 
         public String JsonSummary { get; set; }
+
+        public SINnerExtended()
+        {
+            JsonSummary = "";
+            MySINner = null;
+            Id = Guid.Empty;
+        }
 
     }
 }

@@ -123,5 +123,41 @@ namespace ChummerHub.Client.Properties {
                 this["UpgradeRequired"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string TempDownloadPath {
+            get {
+                return ((string)(this["TempDownloadPath"]));
+            }
+            set {
+                this["TempDownloadPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool VisibilityIsPublic {
+            get {
+                return ((bool)(this["VisibilityIsPublic"]));
+            }
+            set {
+                this["VisibilityIsPublic"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool VisibilityIsGroupVisible {
+            get {
+                return ((bool)(this["VisibilityIsGroupVisible"]));
+            }
+            set {
+                this["VisibilityIsGroupVisible"] = value;
+            }
+        }
     }
 }

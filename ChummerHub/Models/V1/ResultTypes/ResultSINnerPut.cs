@@ -10,6 +10,11 @@ namespace ChummerHub.Models.V1
     {
         public SINner MySINner { get; set; }
 
+        public ResultSINnerPut()
+        {
+            MySINner = new SINner();
+        }
+
         public ResultSINnerPut(SINner sin)
         {
             MySINner = sin;

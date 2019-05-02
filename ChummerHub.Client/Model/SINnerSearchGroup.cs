@@ -23,7 +23,6 @@ namespace SINners.Models
             //PasswordHash = myGroup.PasswordHash;
             Language = myGroup.Language;
             MyGroups = myGroup.MyGroups;
-            MyParentGroup = myGroup.MyParentGroup;
             MyAdminIdentityRole = myGroup.MyAdminIdentityRole;
         }
 
@@ -39,11 +38,11 @@ namespace SINners.Models
                 string ret = Groupname;
                 if (!(String.IsNullOrEmpty(Language)))
                 {
-                    if ((this.MyMembers != null)
-                        && (this.MyMembers.Any()))
-                    {
-                        ret += ": " + MyMembers.Count + " members";
-                    }
+                    //if ((this.MyMembers != null)
+                    //    && (this.MyMembers.Any()))
+                    //{
+                    //    ret += ": " + MyMembers.Count + " members";
+                    //}
                 }
                 return ret;
             }

@@ -8,6 +8,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Chummer;
+using Newtonsoft.Json;
+using SINners.Models;
 
 namespace ChummerHub.Client.UI
 {
@@ -74,14 +77,25 @@ namespace ChummerHub.Client.UI
                 {
                     //we are logged in!
                     GetCookieContainer();
-                    var client = await StaticUtils.GetClient();
+                    var client = StaticUtils.GetClient();
                     var user = await client.GetUserByAuthorizationWithHttpMessagesAsync();
                     if (user.Body?.CallSuccess == true)
                     {
                         if (user.Body != null)
                         {
                             login = true;
-                            SINnersOptions.AddVisibilityForEmail(user.Body.MyApplicationUser.Email);
+                            SINnerVisibility tempvis;
+                            if (!String.IsNullOrEmpty(Properties.Settings.Default.SINnerVisibility))
+                            {
+                                tempvis = JsonConvert.DeserializeObject<SINnerVisibility>(Properties.Settings.Default
+                                    .SINnerVisibility);
+                            }
+                            else
+                            {
+                                tempvis = new SINnerVisibility();
+                            }
+
+                            tempvis.AddVisibilityForEmail(user.Body.MyApplicationUser?.Email);
                             this.Close();
                         }
                         else

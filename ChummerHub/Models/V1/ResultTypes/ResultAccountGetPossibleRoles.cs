@@ -10,6 +10,11 @@ namespace ChummerHub.Models.V1
     {
         public List<string> AllRoles { get; set; }
 
+        public ResultAccountGetPossibleRoles()
+        {
+            AllRoles = new List<string>();
+        }
+
         public ResultAccountGetPossibleRoles(List<string> list)
         {
             AllRoles = list;

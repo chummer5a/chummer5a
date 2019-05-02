@@ -21,9 +21,10 @@ namespace SINners.Models
         /// <summary>
         /// Initializes a new instance of the ResultAccountGetRoles class.
         /// </summary>
-        public ResultAccountGetRoles(IList<string> roles = default(IList<string>), object myException = default(object), bool? callSuccess = default(bool?), string errorText = default(string))
+        public ResultAccountGetRoles(IList<string> roles = default(IList<string>), IList<string> possibleRoles = default(IList<string>), object myException = default(object), bool? callSuccess = default(bool?), string errorText = default(string))
         {
             Roles = roles;
+            PossibleRoles = possibleRoles;
             MyException = myException;
             CallSuccess = callSuccess;
             ErrorText = errorText;
@@ -33,6 +34,11 @@ namespace SINners.Models
         /// </summary>
         [JsonProperty(PropertyName = "roles")]
         public IList<string> Roles { get; set; }
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "possibleRoles")]
+        public IList<string> PossibleRoles { get; set; }
 
         /// <summary>
         /// </summary>
