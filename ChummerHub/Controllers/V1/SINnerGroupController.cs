@@ -423,7 +423,7 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest, "an error occured", typeof(HubException))]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GroupPutSINerInGroup")]
         [Authorize]
-        public async Task<ActionResult<ResultGroupPutSINerInGroup>> PutSINerInGroup(Guid GroupId, Guid SinnerId, string pwhash)
+        public async Task<ActionResult<ResultGroupPutSINerInGroup>> PutSINerInGroup(Guid? GroupId, Guid? SinnerId, string pwhash)
         {
             ResultGroupPutSINerInGroup res;
             _logger.LogTrace("PutSINerInGroup: " + GroupId + " (" + SinnerId + ").");
@@ -475,10 +475,11 @@ namespace ChummerHub.Controllers.V1
 
         }
 
-        internal static async Task<SINner> PutSiNerInGroupInternal(Guid GroupId, Guid SinnerId, ApplicationUser user, ApplicationDbContext context, ILogger logger, string pwhash, IList<string> userroles)
+        internal static async Task<SINner> PutSiNerInGroupInternal(Guid? GroupId, Guid? SinnerId, ApplicationUser user, ApplicationDbContext context, ILogger logger, string pwhash, IList<string> userroles)
         {
             try
             {
+                SINnerGroup MyTargetGroup = null;
                 if (GroupId == Guid.Empty)
                 {
                     throw new ArgumentNullException(nameof(GroupId), "GroupId may not be empty.");
@@ -489,32 +490,36 @@ namespace ChummerHub.Controllers.V1
                     throw new ArgumentNullException(nameof(SinnerId), "SinnerId may not be empty.");
                 }
 
-                var groupset = await (from a in context.SINnerGroups
-                        .Include(a => a.MySettings)
-                        .Include(a => a.MyParentGroup)
-                        .Include(a => a.MyParentGroup.MyGroups)
-                        .Include(a => a.MyGroups)
-                        .ThenInclude(a => a.MyGroups)
+                if (GroupId != null)
+                {
+                    var groupset = await (from a in context.SINnerGroups
+                            .Include(a => a.MySettings)
+                            .Include(a => a.MyParentGroup)
+                            .Include(a => a.MyParentGroup.MyGroups)
+                            .Include(a => a.MyGroups)
+                            .ThenInclude(a => a.MyGroups)
                         where a.Id == GroupId
-                    select a).ToListAsync();
-                if (!groupset.Any())
-                {
-                    throw new ArgumentException("GroupId not found", nameof(GroupId));
-                }
-
-                var group = groupset.FirstOrDefault();
-
-                if ((!String.IsNullOrEmpty(group.PasswordHash))
-                    && (group.PasswordHash != pwhash))
-                {
-                    throw new NoUserRightException("PW is wrong!");
-                }
-
-                if (!String.IsNullOrEmpty(group.MyAdminIdentityRole))
-                {
-                    if (!userroles.Contains(group.MyAdminIdentityRole))
+                        select a).ToListAsync();
+                    if (!groupset.Any())
                     {
-                        throw new NoUserRightException("User " + user.UserName + " has not the role " + group.MyAdminIdentityRole + ".");
+                        throw new ArgumentException("GroupId not found", nameof(GroupId));
+                    }
+
+                    MyTargetGroup = groupset.FirstOrDefault();
+
+                    if ((!String.IsNullOrEmpty(MyTargetGroup.PasswordHash))
+                        && (MyTargetGroup.PasswordHash != pwhash))
+                    {
+                        throw new NoUserRightException("PW is wrong!");
+                    }
+
+                    if (!String.IsNullOrEmpty(MyTargetGroup.MyAdminIdentityRole))
+                    {
+                        if (!userroles.Contains(MyTargetGroup.MyAdminIdentityRole))
+                        {
+                            throw new NoUserRightException("User " + user.UserName + " has not the role " +
+                                                           MyTargetGroup.MyAdminIdentityRole + ".");
+                        }
                     }
                 }
 
@@ -543,16 +548,19 @@ namespace ChummerHub.Controllers.V1
                             throw new ArgumentException("Sinner " + sin.Alias + " does not have a DownloadURL!");
                         if (String.IsNullOrEmpty(sin.MyExtendedAttributes?.JsonSummary))
                             throw new ArgumentException("Sinner " + sin.Alias + " does not have a valid JsonSummary!");
-                        sin.MyGroup = group;
+                        sin.MyGroup = MyTargetGroup;
                     }
                 }
 
                 await context.SaveChangesAsync();
-                sin.MyGroup.MyGroups = RemovePWHashRecursive(sin.MyGroup.MyGroups);
-                if (sin.MyGroup.MyParentGroup != null)
+                if (sin?.MyGroup != null)
                 {
-                    sin.MyGroup.MyParentGroup.PasswordHash = "";
-                    sin.MyGroup.MyParentGroup.MyGroups = new List<SINnerGroup>();
+                    sin.MyGroup.MyGroups = RemovePWHashRecursive(sin.MyGroup.MyGroups);
+                    if (sin.MyGroup.MyParentGroup != null)
+                    {
+                        sin.MyGroup.MyParentGroup.PasswordHash = "";
+                        sin.MyGroup.MyParentGroup.MyGroups = new List<SINnerGroup>();
+                    }
                 }
 
                 return sin;
@@ -1141,7 +1149,10 @@ namespace ChummerHub.Controllers.V1
                 //now add owned SINners
                 SINnerSearchGroup ownedGroup = new SINnerSearchGroup()
                 {
-                    Groupname = "My SINners"
+                    Groupname = "My SINners",
+                    Description = "This isn't a group, but only a list of all the Chummers you \"own\"."
+                    + Environment.NewLine + "You can't delete this fictional group or remove your Chummers from here."
+                    + Environment.NewLine + "But you can drag'n'drop from here to have a Chummer of yours join another group."
                 };
                 result.SINGroups.Add(ownedGroup);
                 List<SINner> mySinners;

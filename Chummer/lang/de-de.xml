@@ -9519,8 +9519,8 @@
 			<text>Online</text>
 		</string>
 		<string>
-			<key>Menu_Main_NPCs</key>
-			<text>NSCs</text>
+			<key>Menu_Main_SINnerSearch</key>
+			<text>SIN Datenbank durchsuchen</text>
 		</string>
 		<string>
 			<key>Menu_Main_SINners</key>

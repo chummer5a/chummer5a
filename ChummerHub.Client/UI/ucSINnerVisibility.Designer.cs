@@ -101,6 +101,7 @@ namespace ChummerHub.Client.UI
             this.bVisibilityAddEmail.TabIndex = 2;
             this.bVisibilityAddEmail.Text = "Add";
             this.bVisibilityAddEmail.UseVisualStyleBackColor = true;
+            this.bVisibilityAddEmail.Click += new System.EventHandler(this.bVisibilityAddEmail_Click);
             // 
             // bVisibilityRemove
             // 
@@ -111,14 +112,15 @@ namespace ChummerHub.Client.UI
             this.bVisibilityRemove.TabIndex = 3;
             this.bVisibilityRemove.Text = "Remove";
             this.bVisibilityRemove.UseVisualStyleBackColor = true;
+            this.bVisibilityRemove.Click += new System.EventHandler(this.bVisibilityRemove_Click);
             // 
-            // SINnerVisibility
+            // ucSINnerVisibility
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.Controls.Add(this.gpVisibilityToUserList);
-            this.Name = "SINnerVisibility";
+            this.Name = "ucSINnerVisibility";
             this.Size = new System.Drawing.Size(320, 231);
             this.gpVisibilityToUserList.ResumeLayout(false);
             this.gpVisibilityToUserList.PerformLayout();

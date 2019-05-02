@@ -21,31 +21,45 @@ namespace ChummerHub.Client.Model
         public CharacterExtended(Character character, string fileElement = null)
         {
             MyCharacter = character;
-            _MySINnerFile = new SINner
+            
+            if (!string.IsNullOrEmpty(fileElement))
             {
-                MyExtendedAttributes = new SINnerExtended(),
-                SiNnerMetaData = new SINnerMetaData(),
-                Language = GlobalOptions.Language
-            };
-            if (string.IsNullOrEmpty(fileElement))
+                try
+                {
+                    
+                    _MySINnerFile = JsonConvert.DeserializeObject<SINner>(fileElement);
+                    if (_MySINnerFile.MyExtendedAttributes?.Id == null)
+                    {
+                        _MySINnerFile = new SINner
+                        {
+                            MyExtendedAttributes = new SINnerExtended(),
+                            SiNnerMetaData = new SINnerMetaData(),
+                            Language = GlobalOptions.Language
+                        };
+                        _MySINnerFile.SiNnerMetaData = JsonConvert.DeserializeObject<SINnerMetaData>(fileElement);
+                        _MySINnerFile.MyExtendedAttributes.Id = Guid.NewGuid();
+                    }
+                }
+                catch (Exception e)
+                {
+                    System.Diagnostics.Trace.TraceWarning(e.ToString());
+                }
+            }
+
+            if (_MySINnerFile == null)
             {
+                _MySINnerFile = new SINner
+                {
+                    MyExtendedAttributes = new SINnerExtended(),
+                    SiNnerMetaData = new SINnerMetaData(),
+                    Language = GlobalOptions.Language
+                };
                 MySINnerFile.SiNnerMetaData = new SINnerMetaData
                 {
                     Id = Guid.NewGuid(),
                     Tags = new List<Tag>(),
                     Visibility = new SINners.Models.SINnerVisibility()
                 };
-            }
-            else
-            {
-                try
-                {
-                    MySINnerFile.SiNnerMetaData = JsonConvert.DeserializeObject<SINnerMetaData>(fileElement);
-                }
-                catch(Exception e)
-                {
-                    System.Diagnostics.Trace.TraceWarning(e.ToString());
-                }
             }
 
             if(MySINnerFile.SiNnerMetaData.Visibility != null)
@@ -65,15 +79,17 @@ namespace ChummerHub.Client.Model
         
             this.MySINnerFile.LastChange = MyCharacter.FileLastWriteTime;
 
-            if(MySINnerIds.TryGetValue(MyCharacter.Alias, out var singuid))
+            if(MySINnerIds.TryGetValue(MyCharacter.FileName, out var singuid))
                 MySINnerFile.Id = singuid;
             else
             {
                 MySINnerFile.Id = Guid.NewGuid();
-                MySINnerIds.Add(MyCharacter.Alias, MySINnerFile.Id.Value);
+                MySINnerIds.Add(MyCharacter.FileName, MySINnerFile.Id.Value);
                 MySINnerIds = MySINnerIds; //Save it!
             }
             this.MySINnerFile.MyExtendedAttributes.JsonSummary = JsonConvert.SerializeObject(cache);
+            if (this.MySINnerFile.MyExtendedAttributes.Id == null)
+                this.MySINnerFile.MyExtendedAttributes.Id = Guid.NewGuid();
         }
 
         public CharacterExtended(Character character, string fileElement = null, SINner mySINnerLoading = null) : this(character, fileElement)
@@ -249,18 +265,19 @@ namespace ChummerHub.Client.Model
             string zipPath = Path.Combine(Properties.Settings.Default.TempDownloadPath, "SINner", MySINnerFile.Id + ".chum5z");
             if (PluginHandler.MySINnerLoading != null)
             {
-                if (MySINnerIds.ContainsKey(MyCharacter.Alias))
-                    MySINnerIds.Remove(MyCharacter.Alias);
+                if (MySINnerIds.ContainsKey(MyCharacter.FileName))
+                    MySINnerIds.Remove(MyCharacter.FileName);
             }
-            if (MySINnerIds.TryGetValue(MyCharacter.Alias, out var singuid))
+            if (MySINnerIds.TryGetValue(MyCharacter.FileName, out var singuid))
                 MySINnerFile.Id = singuid;
             else
             {
                 if (PluginHandler.MySINnerLoading != null)
                 {
                     _MySINnerFile = PluginHandler.MySINnerLoading;
-                    MySINnerIds.Add(MyCharacter.Alias, MySINnerFile.Id.Value);
-                    return zipPath;
+                    MySINnerIds.Add(MyCharacter.FileName, MySINnerFile.Id.Value);
+                    if (File.Exists(zipPath))
+                        return zipPath;
                 }
                 else
                 {
@@ -319,7 +336,7 @@ namespace ChummerHub.Client.Model
                     }
                 }
 
-                MySINnerIds.Add(MyCharacter.Alias, MySINnerFile.Id.Value);
+                MySINnerIds.Add(MyCharacter.FileName, MySINnerFile.Id.Value);
                 MySINnerIds = MySINnerIds; //Save it!
             }
             zipPath = Path.Combine(Path.GetTempPath(), "SINner", MySINnerFile.Id.Value + ".chum5z");
@@ -362,7 +379,14 @@ namespace ChummerHub.Client.Model
             }
 
             if (!File.Exists(MyCharacter.FileName))
-                return null;
+            {
+                MyCharacter.OnSaveCompleted -= PluginHandler.MyOnSaveUpload;
+                string path = MyCharacter.FileName.Substring(0, MyCharacter.FileName.LastIndexOf('\\'));
+                CreateDirectoryRecursively(path);
+                MyCharacter.Save(MyCharacter.FileName, false, false);
+                MyCharacter.OnSaveCompleted += PluginHandler.MyOnSaveUpload;
+            }
+                
 
             var tempDir = Path.Combine(Path.GetTempPath(), "SINner", MySINnerFile.Id.Value.ToString());
             if (!Directory.Exists(tempDir))
@@ -380,9 +404,9 @@ namespace ChummerHub.Client.Model
             if (File.Exists(tempfile))
                 File.Delete(tempfile);
 
-            MyCharacter.OnSaveCompleted -= Chummer.Plugins.PluginHandler.MyOnSaveUpload;
-            MyCharacter.Save();
-            MyCharacter.OnSaveCompleted += Chummer.Plugins.PluginHandler.MyOnSaveUpload;
+            //MyCharacter.OnSaveCompleted -= Chummer.Plugins.PluginHandler.MyOnSaveUpload;
+            //MyCharacter.Save();
+            //MyCharacter.OnSaveCompleted += Chummer.Plugins.PluginHandler.MyOnSaveUpload;
 
             
             if (!File.Exists(tempfile))
@@ -408,7 +432,21 @@ namespace ChummerHub.Client.Model
             return zipPath;
         }
 
-   
+        void CreateDirectoryRecursively(string path)
+        {
+            string[] pathParts = path.Split('\\');
+
+            for (int i = 0; i < pathParts.Length; i++)
+            {
+                if (i > 0)
+                    pathParts[i] = Path.Combine(pathParts[i - 1], pathParts[i]);
+
+                if (!Directory.Exists(pathParts[i]))
+                    Directory.CreateDirectory(pathParts[i]);
+            }
+        }
+
+
         public async Task<bool> UploadInBackground()
         {
             try
