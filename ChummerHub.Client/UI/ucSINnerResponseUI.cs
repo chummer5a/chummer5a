@@ -15,11 +15,11 @@ using ChummerHub.Client.Model;
 
 namespace ChummerHub.Client.UI
 {
-    public partial class SINnerResponseUI : UserControl
+    public partial class ucSINnerResponseUI : UserControl
     {
         public ResultBase Result { get; internal set; }
 
-        public SINnerResponseUI()
+        public ucSINnerResponseUI()
         {
             InitializeComponent();
             this.tbSINnerResponseMyExpection.SetToolTip("In case you want to report this error, please make sure that the whole errortext is visible/available for the developer.");

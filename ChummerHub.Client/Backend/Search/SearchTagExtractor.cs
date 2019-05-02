@@ -60,7 +60,7 @@ namespace ChummerHub.Client.Backend
                     Type listtype = StaticUtils.GetListType(islist);
                     try
                     {
-                        Object generic = Activator.CreateInstance(listtype, new object[] { SINnersSearch.MySearchCharacter.MyCharacter });
+                        Object generic = Activator.CreateInstance(listtype, new object[] { ucSINnersSearch.MySearchCharacter.MyCharacter });
                         var result = ExtractTagsFromAttributes(generic, parenttag);
                         return result;
                     }

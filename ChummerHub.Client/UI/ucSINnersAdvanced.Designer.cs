@@ -1,6 +1,6 @@
 namespace ChummerHub.Client.UI
 {
-    partial class SINnersAdvanced
+    partial class ucSINnersAdvanced
     {
         /// <summary> 
         /// Required designer variable.

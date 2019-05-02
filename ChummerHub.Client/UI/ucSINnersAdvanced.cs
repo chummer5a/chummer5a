@@ -18,21 +18,21 @@ using ChummerHub.Client.Backend;
 
 namespace ChummerHub.Client.UI
 {
-    public partial class SINnersAdvanced : UserControl
+    public partial class ucSINnersAdvanced : UserControl
     {
-        public SINnersUserControl MySINnersUsercontrol { get; private set; }
+        public ucSINnersUserControl MySINnersUsercontrol { get; private set; }
 
-        public SINnersAdvanced()
+        public ucSINnersAdvanced()
         {
             SINnersAdvancedConstructor(null);
         }
 
-        public SINnersAdvanced(SINnersUserControl parent)
+        public ucSINnersAdvanced(ucSINnersUserControl parent)
         {
             SINnersAdvancedConstructor(parent);
         }
 
-        private void SINnersAdvancedConstructor(SINnersUserControl parent)
+        private void SINnersAdvancedConstructor(ucSINnersUserControl parent)
         {
             InitializeComponent();
             this.Name = "SINnersAdvanced";

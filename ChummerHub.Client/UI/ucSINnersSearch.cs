@@ -19,7 +19,7 @@ using Chummer.Backend.Equipment;
 
 namespace ChummerHub.Client.UI
 {
-    public partial class SINnersSearch : UserControl
+    public partial class ucSINnersSearch : UserControl
     {
         public static CharacterExtended MySearchCharacter = null;
 
@@ -28,7 +28,7 @@ namespace ChummerHub.Client.UI
 
         public string SelectedId { get; private set; }
 
-        public SINnersSearch()
+        public ucSINnersSearch()
         {
             MySearchCharacter = new CharacterExtended(new Character(), null);
             InitializeComponent();
@@ -151,7 +151,7 @@ namespace ChummerHub.Client.UI
                     }
                 case "Chummer.Backend.Uniques.Tradition":
                     {
-                        var traditions = Chummer.Backend.Uniques.Tradition.GetTraditions(SINnersSearch.MySearchCharacter.MyCharacter);
+                        var traditions = Chummer.Backend.Uniques.Tradition.GetTraditions(ucSINnersSearch.MySearchCharacter.MyCharacter);
                         cb = new ComboBox
                         {
                             DataSource = traditions,

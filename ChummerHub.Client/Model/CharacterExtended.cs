@@ -33,7 +33,7 @@ namespace ChummerHub.Client.Model
                 {
                     Id = Guid.NewGuid(),
                     Tags = new List<Tag>(),
-                    Visibility = new SINnerVisibility()
+                    Visibility = new SINners.Models.SINnerVisibility()
                 };
             }
             else
@@ -56,7 +56,7 @@ namespace ChummerHub.Client.Model
             
             if (!string.IsNullOrEmpty(Properties.Settings.Default.SINnerVisibility))
                 MySINnerFile.SiNnerMetaData.Visibility =
-                    JsonConvert.DeserializeObject<SINnerVisibility>(Properties.Settings.Default.SINnerVisibility);
+                    JsonConvert.DeserializeObject<SINners.Models.SINnerVisibility>(Properties.Settings.Default.SINnerVisibility);
 
             if(MySINnerFile.SiNnerMetaData.Visibility?.Id == null)
                 MySINnerFile.SiNnerMetaData.Visibility.Id = Guid.NewGuid();
@@ -332,20 +332,20 @@ namespace ChummerHub.Client.Model
             if (MySINnerFile.SiNnerMetaData.Visibility?.UserRights == null)
             {
                 MySINnerFile.SiNnerMetaData.Visibility =
-                    new SINnerVisibility
+                    new SINners.Models.SINnerVisibility
                     {
                         Id = Guid.NewGuid(),
-                        IsGroupVisible = SINnersOptions.SINnerVisibility.IsGroupVisible,
-                        IsPublic = SINnersOptions.SINnerVisibility.IsPublic,
-                        UserRights = SINnersOptions.SINnerVisibility.UserRights
+                        IsGroupVisible = ucSINnersOptions.SINnerVisibility.IsGroupVisible,
+                        IsPublic = ucSINnersOptions.SINnerVisibility.IsPublic,
+                        UserRights = ucSINnersOptions.SINnerVisibility.UserRights
                     };
             }
-            if (MySINnerFile.SiNnerMetaData.Visibility.Id == SINnersOptions.SINnerVisibility.Id)
+            if (MySINnerFile.SiNnerMetaData.Visibility.Id == ucSINnersOptions.SINnerVisibility.Id)
             {
                 //make the visibility your own and dont reuse the id from the general options!
                 MySINnerFile.SiNnerMetaData.Visibility.Id = Guid.NewGuid();
             }
-            foreach(var visnow in SINnersOptions.SINnerVisibility.UserRights)
+            foreach(var visnow in ucSINnersOptions.SINnerVisibility.UserRights)
             {
                 if (!MySINnerFile.SiNnerMetaData.Visibility.UserRights.Any(a => a.EMail.ToLowerInvariant() == visnow.EMail.ToLowerInvariant()))
                 {
@@ -355,7 +355,7 @@ namespace ChummerHub.Client.Model
             
             foreach(var ur in MySINnerFile.SiNnerMetaData.Visibility.UserRights)
             {
-                if (SINnersOptions.SINnerVisibility.UserRights.Any(a => a.Id == ur.Id))
+                if (ucSINnersOptions.SINnerVisibility.UserRights.Any(a => a.Id == ur.Id))
                 {
                     ur.Id = Guid.NewGuid();
                 }

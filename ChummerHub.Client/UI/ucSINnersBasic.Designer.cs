@@ -1,6 +1,6 @@
 namespace ChummerHub.Client.UI
 {
-    partial class SINnersBasic
+    partial class ucSINnersBasic
     {
         /// <summary> 
         /// Required designer variable.
@@ -45,6 +45,7 @@ namespace ChummerHub.Client.UI
             this.cbTagPowerRating = new System.Windows.Forms.CheckBox();
             this.cbTagIsNPC = new System.Windows.Forms.CheckBox();
             this.TagValuePowerRating = new System.Windows.Forms.NumericUpDown();
+            this.bVisibility = new System.Windows.Forms.Button();
             this.tabLayoutPanel.SuspendLayout();
             this.gpTags.SuspendLayout();
             this.tlpTags.SuspendLayout();
@@ -64,17 +65,15 @@ namespace ChummerHub.Client.UI
             this.tabLayoutPanel.Controls.Add(this.lUploadStatus, 1, 0);
             this.tabLayoutPanel.Controls.Add(this.lStatuslabel, 0, 0);
             this.tabLayoutPanel.Controls.Add(this.bUpload, 2, 0);
-            this.tabLayoutPanel.Controls.Add(this.gpTags, 0, 2);
+            this.tabLayoutPanel.Controls.Add(this.gpTags, 0, 3);
+            this.tabLayoutPanel.Controls.Add(this.bVisibility, 0, 2);
             this.tabLayoutPanel.Location = new System.Drawing.Point(0, 0);
             this.tabLayoutPanel.Name = "tabLayoutPanel";
-            this.tabLayoutPanel.RowCount = 3;
+            this.tabLayoutPanel.RowCount = 4;
             this.tabLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tabLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tabLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tabLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tabLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tabLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tabLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tabLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tabLayoutPanel.Size = new System.Drawing.Size(300, 296);
             this.tabLayoutPanel.TabIndex = 0;
             // 
@@ -93,7 +92,7 @@ namespace ChummerHub.Client.UI
             // 
             this.lGourpForSinner.AutoSize = true;
             this.lGourpForSinner.Dock = System.Windows.Forms.DockStyle.Left;
-            this.lGourpForSinner.Location = new System.Drawing.Point(49, 26);
+            this.lGourpForSinner.Location = new System.Drawing.Point(84, 26);
             this.lGourpForSinner.Name = "lGourpForSinner";
             this.lGourpForSinner.Size = new System.Drawing.Size(92, 29);
             this.lGourpForSinner.TabIndex = 6;
@@ -105,7 +104,7 @@ namespace ChummerHub.Client.UI
             this.bGroupSearch.AutoSize = true;
             this.bGroupSearch.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.bGroupSearch.Dock = System.Windows.Forms.DockStyle.Left;
-            this.bGroupSearch.Location = new System.Drawing.Point(147, 29);
+            this.bGroupSearch.Location = new System.Drawing.Point(182, 29);
             this.bGroupSearch.Name = "bGroupSearch";
             this.bGroupSearch.Size = new System.Drawing.Size(86, 23);
             this.bGroupSearch.TabIndex = 7;
@@ -117,7 +116,7 @@ namespace ChummerHub.Client.UI
             // 
             this.lUploadStatus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.lUploadStatus.AutoSize = true;
-            this.lUploadStatus.Location = new System.Drawing.Point(49, 6);
+            this.lUploadStatus.Location = new System.Drawing.Point(84, 6);
             this.lUploadStatus.Name = "lUploadStatus";
             this.lUploadStatus.Size = new System.Drawing.Size(92, 13);
             this.lUploadStatus.TabIndex = 10;
@@ -140,7 +139,7 @@ namespace ChummerHub.Client.UI
             this.bUpload.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
             this.bUpload.Enabled = false;
-            this.bUpload.Location = new System.Drawing.Point(147, 3);
+            this.bUpload.Location = new System.Drawing.Point(182, 3);
             this.bUpload.Name = "bUpload";
             this.bUpload.Size = new System.Drawing.Size(75, 20);
             this.bUpload.TabIndex = 5;
@@ -155,9 +154,9 @@ namespace ChummerHub.Client.UI
             this.tabLayoutPanel.SetColumnSpan(this.gpTags, 3);
             this.gpTags.Controls.Add(this.tlpTags);
             this.gpTags.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.gpTags.Location = new System.Drawing.Point(3, 58);
+            this.gpTags.Location = new System.Drawing.Point(3, 87);
             this.gpTags.Name = "gpTags";
-            this.gpTags.Size = new System.Drawing.Size(294, 235);
+            this.gpTags.Size = new System.Drawing.Size(294, 206);
             this.gpTags.TabIndex = 12;
             this.gpTags.TabStop = false;
             this.gpTags.Text = "Tags";
@@ -185,7 +184,7 @@ namespace ChummerHub.Client.UI
             this.tlpTags.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpTags.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpTags.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpTags.Size = new System.Drawing.Size(288, 216);
+            this.tlpTags.Size = new System.Drawing.Size(288, 187);
             this.tlpTags.TabIndex = 0;
             // 
             // cbTagSRM_ready
@@ -193,7 +192,7 @@ namespace ChummerHub.Client.UI
             this.cbTagSRM_ready.AutoSize = true;
             this.cbTagSRM_ready.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cbTagSRM_ready.Location = new System.Drawing.Point(5, 32);
-            this.cbTagSRM_ready.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.cbTagSRM_ready.Margin = new System.Windows.Forms.Padding(5);
             this.cbTagSRM_ready.Name = "cbTagSRM_ready";
             this.cbTagSRM_ready.Size = new System.Drawing.Size(85, 17);
             this.cbTagSRM_ready.TabIndex = 10;
@@ -206,9 +205,9 @@ namespace ChummerHub.Client.UI
             this.cbTagCustom.AutoSize = true;
             this.cbTagCustom.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cbTagCustom.Location = new System.Drawing.Point(5, 113);
-            this.cbTagCustom.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.cbTagCustom.Margin = new System.Windows.Forms.Padding(5);
             this.cbTagCustom.Name = "cbTagCustom";
-            this.cbTagCustom.Size = new System.Drawing.Size(85, 98);
+            this.cbTagCustom.Size = new System.Drawing.Size(85, 69);
             this.cbTagCustom.TabIndex = 8;
             this.cbTagCustom.Text = "Custom";
             this.cbTagCustom.UseVisualStyleBackColor = true;
@@ -217,7 +216,7 @@ namespace ChummerHub.Client.UI
             // TagValueCustomName
             // 
             this.TagValueCustomName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.TagValueCustomName.Location = new System.Drawing.Point(98, 152);
+            this.TagValueCustomName.Location = new System.Drawing.Point(98, 137);
             this.TagValueCustomName.Name = "TagValueCustomName";
             this.TagValueCustomName.Size = new System.Drawing.Size(187, 20);
             this.TagValueCustomName.TabIndex = 9;
@@ -228,7 +227,7 @@ namespace ChummerHub.Client.UI
             this.cbTagArchetype.AutoSize = true;
             this.cbTagArchetype.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cbTagArchetype.Location = new System.Drawing.Point(5, 59);
-            this.cbTagArchetype.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.cbTagArchetype.Margin = new System.Windows.Forms.Padding(5);
             this.cbTagArchetype.Name = "cbTagArchetype";
             this.cbTagArchetype.Size = new System.Drawing.Size(85, 17);
             this.cbTagArchetype.TabIndex = 11;
@@ -251,7 +250,7 @@ namespace ChummerHub.Client.UI
             this.cbTagPowerRating.AutoSize = true;
             this.cbTagPowerRating.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cbTagPowerRating.Location = new System.Drawing.Point(5, 86);
-            this.cbTagPowerRating.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.cbTagPowerRating.Margin = new System.Windows.Forms.Padding(5);
             this.cbTagPowerRating.Name = "cbTagPowerRating";
             this.cbTagPowerRating.Size = new System.Drawing.Size(85, 17);
             this.cbTagPowerRating.TabIndex = 13;
@@ -264,7 +263,7 @@ namespace ChummerHub.Client.UI
             this.cbTagIsNPC.AutoSize = true;
             this.cbTagIsNPC.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cbTagIsNPC.Location = new System.Drawing.Point(5, 5);
-            this.cbTagIsNPC.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.cbTagIsNPC.Margin = new System.Windows.Forms.Padding(5);
             this.cbTagIsNPC.Name = "cbTagIsNPC";
             this.cbTagIsNPC.Size = new System.Drawing.Size(85, 17);
             this.cbTagIsNPC.TabIndex = 16;
@@ -296,7 +295,17 @@ namespace ChummerHub.Client.UI
             0});
             this.TagValuePowerRating.ValueChanged += new System.EventHandler(this.OnGroupBoxTagsClick);
             // 
-            // SINnersBasic
+            // bVisibility
+            // 
+            this.bVisibility.Location = new System.Drawing.Point(3, 58);
+            this.bVisibility.Name = "bVisibility";
+            this.bVisibility.Size = new System.Drawing.Size(75, 23);
+            this.bVisibility.TabIndex = 13;
+            this.bVisibility.Text = "Visibility";
+            this.bVisibility.UseVisualStyleBackColor = true;
+            this.bVisibility.Click += new System.EventHandler(this.BVisibility_Click);
+            // 
+            // ucSINnersBasic
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -304,7 +313,7 @@ namespace ChummerHub.Client.UI
             this.AutoSize = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.Controls.Add(this.tabLayoutPanel);
-            this.Name = "SINnersBasic";
+            this.Name = "ucSINnersBasic";
             this.Size = new System.Drawing.Size(303, 299);
             this.tabLayoutPanel.ResumeLayout(false);
             this.tabLayoutPanel.PerformLayout();
@@ -336,5 +345,6 @@ namespace ChummerHub.Client.UI
         private System.Windows.Forms.CheckBox cbTagPowerRating;
         private System.Windows.Forms.CheckBox cbTagIsNPC;
         private System.Windows.Forms.NumericUpDown TagValuePowerRating;
+        private System.Windows.Forms.Button bVisibility;
     }
 }
