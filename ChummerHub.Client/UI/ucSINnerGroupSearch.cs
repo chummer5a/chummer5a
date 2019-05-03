@@ -134,7 +134,7 @@ namespace ChummerHub.Client.UI
             var empty = FlagImageGetter.GetFlagFromCountryCode("noimagedots");
             myCountryImageList.Images.Add(empty);
             tvGroupSearchResult.ImageList = myCountryImageList;
-            bCreateGroup.Enabled = false;
+            bCreateGroup.Enabled = true;
             bJoinGroup.Enabled = false;
             
         }
@@ -527,7 +527,7 @@ namespace ChummerHub.Client.UI
                     if (this.MyCE?.MySINnerFile.MyGroup == null)
                     {
                         this.bCreateGroup.Enabled = true;
-                        //this.bJoinGroup.Enabled = true;
+                        this.bJoinGroup.Enabled = true;
                     }
                     else if (((this.MyCE?.MySINnerFile.MyGroup?.Id != item.Id)
                               || (this.MyCE?.MySINnerFile.MyGroup.Groupname != this.tbSearchGroupname.Text))
@@ -886,7 +886,8 @@ namespace ChummerHub.Client.UI
 
         private void CbShowMembers_CheckedChanged(object sender, EventArgs e)
         {
-
+            var setMeAgain = MySINSearchGroupResult;
+            MySINSearchGroupResult = setMeAgain;
         }
     }
 }

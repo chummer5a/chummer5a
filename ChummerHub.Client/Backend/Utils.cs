@@ -610,8 +610,10 @@ namespace ChummerHub.Client.Backend
                     {
                         Text = "Error loading Char from WebService"
                     };
-                    var objCache = new CharacterCache();
-                    objCache.ErrorText = e.ToString();
+                    var objCache = new CharacterCache
+                    {
+                        ErrorText = e.ToString()
+                    };
                     errorNode.Tag = objCache;
                     return new List<TreeNode>() {errorNode};
                 }
@@ -632,6 +634,34 @@ namespace ChummerHub.Client.Backend
             return MyTreeNodeList;
         }
 
+        /// <summary>
+        /// Generates a name for the treenode based on values contained in the CharacterCache object.
+        /// </summary>
+        /// <param name="objCache">Cache from which to generate name.</param>
+        /// <returns></returns>
+        public static string CalculateCharName(CharacterCache objCache)
+        {
+            if (objCache.BuildMethod != "online")
+                return objCache.CalculatedName(false);
+            string strReturn;
+            if (!string.IsNullOrEmpty(objCache.ErrorText))
+            {
+                strReturn = Path.GetFileNameWithoutExtension(objCache.FileName) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + LanguageManager.GetString("String_Error", GlobalOptions.Language) + ')';
+            }
+            else
+            {
+                strReturn = objCache.CharacterAlias;
+                if (string.IsNullOrEmpty(strReturn))
+                {
+                    strReturn = objCache.CharacterName;
+                    if (string.IsNullOrEmpty(strReturn))
+                        strReturn = LanguageManager.GetString("String_UnnamedCharacter", GlobalOptions.Language);
+                }
+                strReturn += " (online)";
+            }
+            return strReturn;
+        }
+
         private static TreeNode GetCharacterRosterTreeNodeRecursive(SINnerSearchGroup ssg)
         {
             TreeNode objListNode = new TreeNode
@@ -644,28 +674,30 @@ namespace ChummerHub.Client.Backend
             {
                 var sinner = member.MySINner;
                 sinner.DownloadedFromSINnersTime = DateTime.Now;
-                CharacterCache objCache = null;
-                if (!String.IsNullOrEmpty(sinner?.MyExtendedAttributes?.JsonSummary))
+                CharacterCache objCache = sinner.GetCharacterCache();
+                if (objCache == null)
                 {
-                    objCache =
-                        Newtonsoft.Json.JsonConvert.DeserializeObject<CharacterCache>(sinner.MyExtendedAttributes
-                            .JsonSummary);
-                }
-                else
-                {
-                    objCache = new CharacterCache
+                    if (!String.IsNullOrEmpty(sinner?.MyExtendedAttributes?.JsonSummary))
                     {
-                        CharacterName = "pending",
-                        CharacterAlias = sinner.Alias,
-                        BuildMethod = "online"
-                    };
+                        objCache =
+                            Newtonsoft.Json.JsonConvert.DeserializeObject<CharacterCache>(sinner.MyExtendedAttributes
+                                .JsonSummary);
+                    }
+                    else
+                    {
+                        objCache = new CharacterCache
+                        {
+                            CharacterName = "pending",
+                            CharacterAlias = sinner.Alias,
+                            BuildMethod = "online"
+                        };
+                    }
                 }
                 SetEventHandlers(sinner, objCache);
                 TreeNode memberNode = new TreeNode
                 {
-                    
-                    Text = objCache.CalculatedName(),
-                    Name = objCache.CalculatedName(),
+                    Text = CalculateCharName(objCache),
+                    Name = CalculateCharName(objCache),
                     Tag = objCache,
                     ToolTipText = "Last Change: " + sinner.LastChange,
                     ContextMenuStrip = PluginHandler.MainForm.CharacterRoster.ContextMenuStrip
@@ -697,24 +729,6 @@ namespace ChummerHub.Client.Backend
                                                + LanguageManager.GetString("String_Colon", GlobalOptions.Language) +
                                                Environment.NewLine + objCache.ErrorText;
                 }
-
-                //CharacterCache delObj;
-                //if (ssg.MySINSearchGroups != null)
-                //{
-                //    foreach (var childlist in ssg.MySINSearchGroups)
-                //    {
-                //        var childnode = GetCharacterRosterTreeNodeRecursive(childlist);
-                //        if (childnode != null)
-                //        {
-                //            var found1seq = (from a in objListNode.Nodes.Find(childnode.Name, false) where a.Tag == childnode.Tag select a).ToList();
-                //            if (found1seq.Any())
-                //            {
-                //                objListNode.Nodes.Remove(found1seq.FirstOrDefault());
-                //            }
-                //            objListNode.Nodes.Add(childnode);
-                //        }
-                //    }
-                //}
             }
 
             if (ssg.MySINSearchGroups != null)
@@ -821,27 +835,9 @@ namespace ChummerHub.Client.Backend
             string loadFilePath = null;
             using (new CursorWait(true, PluginHandler.MainForm))
             {
-                string zipPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "SINner", sinner.Id.Value.ToString());
-                if (Directory.Exists(zipPath))
-                {
-                    var files = Directory.EnumerateFiles(zipPath, "*.chum5", SearchOption.TopDirectoryOnly);
-                    foreach (var file in files)
-                    {
-                        DateTime lastwrite = File.GetLastWriteTime(file);
-                        if ((lastwrite >= sinner.LastChange)
-                            || sinner.LastChange == null)
-                        {
-                            loadFilePath = file;
-                            objCache.FilePath = loadFilePath;
-                            break;
-                        }
-                        File.Delete(file);
-                    }
-                }
-                if (String.IsNullOrEmpty(objCache.FilePath))
+                if (String.IsNullOrEmpty(sinner.FilePath))
                 { 
                     objCache.FilePath = await DownloadFileTask(sinner, objCache);
-
                 }
 
                 if (!String.IsNullOrEmpty(objCache.FilePath))

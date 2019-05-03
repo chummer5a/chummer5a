@@ -18,6 +18,9 @@ using Microsoft.AspNetCore.Http.Internal;
 using System.IO;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Newtonsoft.Json;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Jpeg;
 
 //using Swashbuckle.AspNetCore.Filters;
 
@@ -1199,6 +1202,9 @@ namespace ChummerHub.Controllers.V1
                 throw;
             }
         }
+
+        
+       
 
         /// <summary>
         /// Search for all members and subgroups of a group
