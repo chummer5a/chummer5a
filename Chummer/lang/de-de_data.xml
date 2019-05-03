@@ -33762,7 +33762,7 @@
 			<skill>
 				<id>99d3b5ed-7862-410f-b3d9-ca7427bc2791</id>
 				<name>Astronomy</name>
-				<translate>Atronomie</translate>
+				<translate>Astronomie</translate>
 				<specs>
 					<spec translate="Kometen">Comets</spec>
 					<spec translate="Mars">Mars</spec>
