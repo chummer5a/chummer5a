@@ -203,7 +203,7 @@ namespace Chummer.UI.Attributes
             //Ideally return 2 or 1, allow for an improvement type to increase or decrease the value. 
             int intMaxOtherAttributesAtMax = _objCharacter.Options.Allow2ndMaxAttribute ? 1 : 0;
             int intNumOtherAttributeAtMax = _objCharacter.AttributeSection.AttributeList.Count(att =>
-                att.AtMetatypeMaximum && att.Abbrev != AttributeName);
+                att.AtMetatypeMaximum && att.Abbrev != AttributeName && att.MetatypeCategory == CharacterAttrib.AttributeCategory.Standard);
 
             if (intNumOtherAttributeAtMax <= intMaxOtherAttributesAtMax) return true;
             MessageBox.Show(LanguageManager.GetString("Message_AttributeMaximum", GlobalOptions.Language),
