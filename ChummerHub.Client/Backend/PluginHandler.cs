@@ -103,15 +103,6 @@ namespace Chummer.Plugins
         string IPlugin.GetSaveToFileElement(Character input)
         {
             CharacterExtended ce;
-            //if (MyCharExtendedDic.ContainsKey(input.FileName))
-            //{
-            //    if (!MyCharExtendedDic.TryGetValue(input.FileName, out ce))
-            //        throw new ArgumentException("Could not load char from Dic!", nameof(input));
-            //}
-            //else
-            //{
-                
-            //}
             ce = new CharacterExtended(input, null);
             if ((ucSINnersOptions.UploadOnSave == true) && (IsSaving == false))
             {

@@ -378,14 +378,7 @@ namespace ChummerHub.Client.Model
                 }
             }
 
-            if (!File.Exists(MyCharacter.FileName))
-            {
-                MyCharacter.OnSaveCompleted -= PluginHandler.MyOnSaveUpload;
-                string path = MyCharacter.FileName.Substring(0, MyCharacter.FileName.LastIndexOf('\\'));
-                CreateDirectoryRecursively(path);
-                MyCharacter.Save(MyCharacter.FileName, false, false);
-                MyCharacter.OnSaveCompleted += PluginHandler.MyOnSaveUpload;
-            }
+           
                 
 
             var tempDir = Path.Combine(Path.GetTempPath(), "SINner", MySINnerFile.Id.Value.ToString());
@@ -404,11 +397,16 @@ namespace ChummerHub.Client.Model
             if (File.Exists(tempfile))
                 File.Delete(tempfile);
 
-            //MyCharacter.OnSaveCompleted -= Chummer.Plugins.PluginHandler.MyOnSaveUpload;
-            //MyCharacter.Save();
-            //MyCharacter.OnSaveCompleted += Chummer.Plugins.PluginHandler.MyOnSaveUpload;
+            if (!File.Exists(MyCharacter.FileName))
+            {
+                MyCharacter.OnSaveCompleted -= PluginHandler.MyOnSaveUpload;
+                string path = MyCharacter.FileName.Substring(0, MyCharacter.FileName.LastIndexOf('\\'));
+                CreateDirectoryRecursively(path);
+                MyCharacter.Save(MyCharacter.FileName, false, false);
+                MyCharacter.OnSaveCompleted += PluginHandler.MyOnSaveUpload;
+            }
 
-            
+
             if (!File.Exists(tempfile))
             {
                 File.Copy(MyCharacter.FileName, tempfile);

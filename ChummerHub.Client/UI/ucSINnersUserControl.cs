@@ -63,15 +63,12 @@ namespace ChummerHub.Client.UI
             {
                 Visible = true
             };
-            TabSINnersAdvanced = new ucSINnersAdvanced(this);
-#if DEBUG
-            TabSINnersAdvanced.Visible = true;
-#else
-            TabSINnersAdvanced.Visible = false;
-#endif
+            TabSINnersAdvanced = new ucSINnersAdvanced(this)
+            {
+                Visible = true
+            };
 
-           
-            
+
             this.tabPageBasic.Controls.Add(TabSINnersBasic);
             this.tabPageAdvanced.Controls.Add(TabSINnersAdvanced);
            
