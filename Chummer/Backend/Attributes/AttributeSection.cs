@@ -629,16 +629,18 @@ namespace Chummer.Backend.Attributes
 			SpecialAttributeList.Clear();
 			foreach (string strAttribute in AttributeStrings)
 			{
-				CharacterAttrib objAttribute = new CharacterAttrib(_objCharacter, strAttribute);
-				switch (CharacterAttrib.ConvertToAttributeCategory(objAttribute.Abbrev))
+			    CharacterAttrib objAttribute;
+				switch (CharacterAttrib.ConvertToAttributeCategory(strAttribute))
 				{
-					case CharacterAttrib.AttributeCategory.Special:
-						SpecialAttributeList.Add(objAttribute);
-						break;
-					case CharacterAttrib.AttributeCategory.Standard:
-						AttributeList.Add(objAttribute);
-						break;
-				}
+				    case CharacterAttrib.AttributeCategory.Special:
+				        objAttribute = new CharacterAttrib(_objCharacter, strAttribute, CharacterAttrib.AttributeCategory.Special);
+				        SpecialAttributeList.Add(objAttribute);
+				        break;
+				    case CharacterAttrib.AttributeCategory.Standard:
+				        objAttribute = new CharacterAttrib(_objCharacter, strAttribute);
+				        AttributeList.Add(objAttribute);
+				        break;
+                }
 			}
 			BuildBindingList();
 		}
