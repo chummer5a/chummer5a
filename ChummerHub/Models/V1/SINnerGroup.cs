@@ -76,8 +76,6 @@ namespace ChummerHub.Models.V1
                     groupmembers = (from a in context.SINners
                             .Include(a => a.MyGroup)
                             .Include(a => a.SINnerMetaData)
-                            .Include(a => a.MyExtendedAttributes)
-                            .Include(a => a.SINnerMetaData.Visibility)
                             .Include(a => a.SINnerMetaData.Tags)
                             .ThenInclude(b => b.Tags)
                             .ThenInclude(b => b.Tags)
@@ -86,8 +84,17 @@ namespace ChummerHub.Models.V1
                             .ThenInclude(b => b.Tags)
                         where a.MyGroup.Id == this.Id
                               && this.Id != null
-                              && ((a.SINnerMetaData.Visibility.IsGroupVisible == true)
-                                  || (a.SINnerMetaData.Visibility.IsPublic == true))
+                        select a);
+                }
+                else
+                {
+                    groupmembers = (from a in context.SINners
+                            .Include(a => a.MyGroup)
+                            .Include(a => a.SINnerMetaData)
+                            .Include(a => a.MyExtendedAttributes)
+                            .Include(a => a.SINnerMetaData.Visibility)
+                        where a.MyGroup.Id == this.Id
+                              && this.Id != null
                         select a);
                 }
 

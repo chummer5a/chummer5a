@@ -17,6 +17,7 @@ using ChummerHub.Services.GoogleDrive;
 using Microsoft.AspNetCore.Http.Internal;
 using System.IO;
 using Microsoft.AspNetCore.Identity;
+using Newtonsoft.Json;
 
 //using Swashbuckle.AspNetCore.Filters;
 
@@ -417,7 +418,31 @@ namespace ChummerHub.Controllers.V1
             }
         }
 
-       
+        [HttpGet]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GetMugshotById")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetMugshotById(Guid? SINnerId)
+        {
+            var extendedseq = await (from a in _context.SINners.Include(a => a.MyExtendedAttributes)
+                where a.Id == SINnerId
+                select a).ToListAsync();
+
+            if (!extendedseq.Any())
+                return NotFound("SINner " + SINnerId + " not found!");
+
+            var json = extendedseq.FirstOrDefault().MyExtendedAttributes.JsonSummary;
+            var definition = new { MugshotBase64 = "" };
+            var MugshotBase64 = JsonConvert.DeserializeAnonymousType(json, definition);
+
+            byte[] bytes = Convert.FromBase64String(MugshotBase64.MugshotBase64);
+
+            return File(bytes, "image/jpeg");
+
+        }
+
+
 
         private async Task<ActionResult<ResultSinnerPostSIN>> PostSINnerInternal(UploadInfoObject uploadInfo)
         {
