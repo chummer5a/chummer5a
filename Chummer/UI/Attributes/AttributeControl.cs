@@ -91,11 +91,9 @@ namespace Chummer.UI.Attributes
 
         private void AttributePropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(AttributeSection.AttributeCategory))
-            {
-                _dataSource.DataSource = _objCharacter.AttributeSection.GetAttributeByName(_objAttribute.Abbrev);
-                _dataSource.ResetBindings(false);
-            }
+            if (e.PropertyName != nameof(AttributeSection.AttributeCategory)) return;
+            _dataSource.DataSource = _objCharacter.AttributeSection.GetAttributeByName(AttributeName);
+            _dataSource.ResetBindings(false);
         }
 
         public void UnbindAttributeControl()
@@ -109,8 +107,9 @@ namespace Chummer.UI.Attributes
         }
 
 		private void cmdImproveATT_Click(object sender, EventArgs e)
-        {
-            int intUpgradeKarmaCost = _objAttribute.UpgradeKarmaCost;
+		{
+		    CharacterAttrib attrib = _objCharacter.AttributeSection.GetAttributeByName(AttributeName);
+            int intUpgradeKarmaCost = attrib.UpgradeKarmaCost;
 
             if (intUpgradeKarmaCost == -1) return; //TODO: more descriptive
             if (intUpgradeKarmaCost > _objCharacter.Karma)
@@ -119,22 +118,23 @@ namespace Chummer.UI.Attributes
                 return;
             }
 
-            string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpense", GlobalOptions.Language), _objAttribute.DisplayNameFormatted, _objAttribute.Value + 1, intUpgradeKarmaCost);
-            if (!_objAttribute.CharacterObject.ConfirmKarmaExpense(confirmstring))
+            string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpense", GlobalOptions.Language), attrib.DisplayNameFormatted, attrib.Value + 1, intUpgradeKarmaCost);
+            if (!attrib.CharacterObject.ConfirmKarmaExpense(confirmstring))
                 return;
 
-            _objAttribute.Upgrade();
+		    attrib.Upgrade();
 	        ValueChanged?.Invoke(this, e);
         }
 
         private void nudBase_ValueChanged(object sender, EventArgs e)
         {
+            CharacterAttrib attrib = _objCharacter.AttributeSection.GetAttributeByName(AttributeName);
             decimal d = ((NumericUpDownEx)sender).Value;
             if (d == _oldBase) return;
             if (!CanBeMetatypeMax(
                 Math.Max(
-                    decimal.ToInt32(d + nudKarma.Value) + _objAttribute.FreeBase + _objAttribute.RawMinimum +
-                    _objAttribute.AttributeValueModifiers, _objAttribute.TotalMinimum) +
+                    decimal.ToInt32(d + nudKarma.Value) + attrib.FreeBase + attrib.RawMinimum +
+                    attrib.AttributeValueModifiers, attrib.TotalMinimum) +
                 decimal.ToInt32(nudKarma.Value)))
             {
                 decimal newValue = Math.Max(nudBase.Value - 1, 0);
@@ -155,17 +155,18 @@ namespace Chummer.UI.Attributes
 
         private void nudKarma_ValueChanged(object sender, EventArgs e)
         {
+            CharacterAttrib attrib = _objCharacter.AttributeSection.GetAttributeByName(AttributeName);
             decimal d = ((NumericUpDownEx)sender).Value;
             if (d == _oldKarma) return;
             if (!CanBeMetatypeMax(
                 Math.Max(
-                    decimal.ToInt32(nudBase.Value) + _objAttribute.FreeBase + _objAttribute.RawMinimum +
-                    _objAttribute.AttributeValueModifiers, _objAttribute.TotalMinimum) + decimal.ToInt32(d)))
+                    decimal.ToInt32(nudBase.Value) + attrib.FreeBase + attrib.RawMinimum +
+                    attrib.AttributeValueModifiers, attrib.TotalMinimum) + decimal.ToInt32(d)))
             {
                 // It's possible that the attribute maximum was reduced by an improvement, so confirm the appropriate value to bounce up/down to. 
-                if (_oldKarma > _objAttribute.KarmaMaximum)
+                if (_oldKarma > attrib.KarmaMaximum)
                 {
-                    _oldKarma = _objAttribute.KarmaMaximum - 1;
+                    _oldKarma = attrib.KarmaMaximum - 1;
                 }
                 if (_oldKarma < 0)
                 {
@@ -196,8 +197,9 @@ namespace Chummer.UI.Attributes
         /// </summary>
         private bool CanBeMetatypeMax(int intValue)
         {
-            if (_objCharacter.IgnoreRules || _objAttribute.MetatypeCategory == CharacterAttrib.AttributeCategory.Special) return true;
-            int intTotalMaximum = _objAttribute.TotalMaximum;
+            CharacterAttrib attrib = _objCharacter.AttributeSection.GetAttributeByName(AttributeName);
+            if (_objCharacter.IgnoreRules || attrib.MetatypeCategory == CharacterAttrib.AttributeCategory.Special) return true;
+            int intTotalMaximum = attrib.TotalMaximum;
             if (intValue < intTotalMaximum || intTotalMaximum == 0) return true;
             //TODO: This should be in AttributeSection, but I can't be bothered finagling the option into working.
             //Ideally return 2 or 1, allow for an improvement type to increase or decrease the value. 
@@ -233,7 +235,8 @@ namespace Chummer.UI.Attributes
 
         private void nudBase_BeforeValueIncrement(object sender, CancelEventArgs e)
         {
-            if (nudBase.Value + Math.Max(nudKarma.Value, 0) != _objAttribute.TotalMaximum || nudKarma.Value == nudKarma.Minimum)
+            CharacterAttrib attrib = _objCharacter.AttributeSection.GetAttributeByName(AttributeName);
+            if (nudBase.Value + Math.Max(nudKarma.Value, 0) != attrib.TotalMaximum || nudKarma.Value == nudKarma.Minimum)
                 return;
             if (nudKarma.Value - nudBase.Increment >= 0)
             {
@@ -247,7 +250,8 @@ namespace Chummer.UI.Attributes
 
         private void nudKarma_BeforeValueIncrement(object sender, CancelEventArgs e)
         {
-            if (nudBase.Value + nudKarma.Value != _objAttribute.TotalMaximum || nudBase.Value == nudBase.Minimum)
+            CharacterAttrib attrib = _objCharacter.AttributeSection.GetAttributeByName(AttributeName);
+            if (nudBase.Value + nudKarma.Value != attrib.TotalMaximum || nudBase.Value == nudBase.Minimum)
                 return;
             if (nudBase.Value - nudKarma.Increment >= 0)
             {

@@ -22,6 +22,7 @@ Application Fixes:
 - Fixed incorrect metatype minimums for metasapients when using priority generation.
 - Fixed missing matrix condition monitors for equipment.
 - Fixed a parsing issue with the check for if multiple attributes could be at metatype max that could occasionally cause a clash.
+- Fixed issues with the implementation of the dual attribute connection for shapeshifters that caused them to inconsistently use the correct attribute.
 
 Application Changes:
 
