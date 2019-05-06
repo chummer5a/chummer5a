@@ -855,15 +855,16 @@ namespace ChummerHub.Controllers.V1
         {
             if (dbsinner != null)
             {
-                var roles = await _userManager.GetRolesAsync(user);
-                foreach (var role in roles)
+                if (dbsinner.SINnerMetaData?.Visibility?.UserRights == null)
                 {
-                    if (role.ToUpperInvariant() == "Administrator".ToUpperInvariant())
-                    {
-                        return dbsinner;
-                    }
+                    dbsinner = await (from a in _context.SINners
+                            .Include(a => a.SINnerMetaData)
+                            .Include(a => a.SINnerMetaData.Visibility)
+                            .Include(a => a.SINnerMetaData.Visibility.UserRights)
+                            .Include(a => a.MyGroup)
+                        select a).FirstOrDefaultAsync();
                 }
-                var editseq = (from a in dbsinner.SINnerMetaData.Visibility.UserRights where a.EMail.ToUpperInvariant() == user.NormalizedEmail select a).ToList();
+                var editseq = (from a in dbsinner.SINnerMetaData.Visibility.UserRights where a.EMail == user.NormalizedEmail select a).ToList();
                 foreach (var edit in editseq)
                 {
                     if (edit.CanEdit == true)

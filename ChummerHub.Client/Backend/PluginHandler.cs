@@ -24,6 +24,7 @@ using System.Xml.Serialization;
 using Microsoft.Rest;
 using System.Threading;
 using MessageBox = System.Windows.MessageBox;
+using TabControl = System.Windows.Forms.TabControl;
 
 namespace Chummer.Plugins
 {
@@ -102,8 +103,8 @@ namespace Chummer.Plugins
 
         string IPlugin.GetSaveToFileElement(Character input)
         {
-            CharacterExtended ce;
-            ce = new CharacterExtended(input, null);
+            CharacterExtended ce = GetMyCe(input);
+            //ce = new CharacterExtended(input, null);
             if ((ucSINnersOptions.UploadOnSave == true) && (IsSaving == false))
             {
                 IsSaving = true;
@@ -128,22 +129,19 @@ namespace Chummer.Plugins
                 input.OnSaveCompleted -= MyOnSaveUpload;
                 using (new CursorWait(true, MainForm))
                 {
-                    CharacterExtended ce;
-                    ce = new CharacterExtended(input, null);
+                    var ce = GetMyCe(input);
+                    //ce = new CharacterExtended(input, null);
                     if (!ce.MySINnerFile.SiNnerMetaData.Tags.Any(a => a.TagName == "Reflection"))
                     {
                         ce.MySINnerFile.SiNnerMetaData.Tags = ce.PopulateTags();
                     }
 
                     await ce.Upload();
-                    var found = (from a in MainForm.OpenCharacterForms where a.CharacterObject == input select a)
-                        .FirstOrDefault();
-                    if (found == null)
-                    {
-                        return;
-                    }
+                    
 
                     TabPage tabPage = null;
+                    var found = (from a in MainForm.OpenCharacterForms where a.CharacterObject == input select a)
+                        .FirstOrDefault();
                     if ((found is frmCreate frm) && (frm.TabCharacterTabs.TabPages.ContainsKey("SINners")))
                     {
                         var index = frm.TabCharacterTabs.TabPages.IndexOfKey("SINners");
@@ -178,6 +176,56 @@ namespace Chummer.Plugins
             {
                 IsSaving = false;
             }
+        }
+
+        private static CharacterExtended GetMyCe(Character input)
+        {
+            CharacterExtended ce = null;
+            var found = (from a in MainForm.OpenCharacterForms where a.CharacterObject == input select a)
+                .FirstOrDefault();
+            if (found == null)
+            {
+                return ce;
+            }
+
+            TabPage sinnertab = null;
+            TabControl.TabPageCollection myCollection = null;
+            if (found is frmCreate foundcreate)
+            {
+                myCollection = foundcreate.TabCharacterTabs.TabPages;
+            }
+
+            if (found is frmCareer foundcareer)
+            {
+                myCollection = foundcareer.TabCharacterTabs.TabPages;
+            }
+
+            if (myCollection == null)
+                return ce;
+
+            foreach (TabPage tab in myCollection)
+            {
+                if (tab.Name == "SINners")
+                {
+                    sinnertab = tab;
+                    break;
+                }
+            }
+
+            if (sinnertab == null)
+                return ce;
+            ucSINnersUserControl myUcSIN = null;
+            foreach (ucSINnersUserControl ucSIN in sinnertab.Controls)
+            {
+                myUcSIN = ucSIN;
+                break;
+            }
+
+            if (myUcSIN == null)
+                return ce;
+
+            ce = myUcSIN.MyCE;
+            return ce;
         }
 
         void IPlugin.LoadFileElement(Character input, string fileElement)

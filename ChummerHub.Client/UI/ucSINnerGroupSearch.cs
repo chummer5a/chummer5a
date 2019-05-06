@@ -697,19 +697,7 @@ namespace ChummerHub.Client.UI
                             draggedGroup.MyAdminIdentityRole, draggedGroup.IsPublic);
                         if (res.Response.StatusCode == HttpStatusCode.OK)
                         {
-                            draggedNode.Remove();
-                            if (targetNode != null)
-                            {
-                                targetNode.Nodes.Add(draggedNode);
-                                targetNode.Expand();
-                            }
-                            else
-                            {
-                                // The user dropped the node on the treeview control instead
-                                // of another node so lets place the node at the bottom of the tree.
-                                tvGroupSearchResult.Nodes.Add(draggedNode);
-                                draggedNode.Expand();
-                            }
+                            MoveNode(draggedNode, targetNode);
                         }
                     }
                     if ((draggedSINner?.MySINner?.MyGroup != null) && (targetGroup != null))
@@ -752,17 +740,25 @@ namespace ChummerHub.Client.UI
                         var response = Backend.Utils.HandleError(res, res.Body);
                         if (res.Response.StatusCode == HttpStatusCode.OK)
                         {
-                            bSearch_Click(sender, e);
+                            MoveNode(draggedNode, targetNode);
                         }
                     }
                     else if ((draggedSINner?.MySINner != null && (targetNode == null)))
-
                     {
                         var res = await client.PutSINerInGroupWithHttpMessagesAsync(null, draggedSINner.MySINner.Id);
                         var response = Backend.Utils.HandleError(res, res.Body);
                         if (res.Response.StatusCode == HttpStatusCode.OK)
                         {
-                            bSearch_Click(sender, e);
+                            MoveNode(draggedNode, targetNode);
+                        }
+                    }
+                    else if (draggedSINner != null && targetGroup != null)
+                    {
+                        var res = await client.PutSINerInGroupWithHttpMessagesAsync(targetGroup.Id, draggedSINner.MySINner.Id);
+                        var response = Backend.Utils.HandleError(res, res.Body);
+                        if (res.Response.StatusCode == HttpStatusCode.OK)
+                        {
+                            MoveNode(draggedNode, targetNode);
                         }
                     }
 
@@ -777,7 +773,28 @@ namespace ChummerHub.Client.UI
           
         }
 
-        
+        private void MoveNode(TreeNode draggedNode, TreeNode targetNode)
+        {
+            draggedNode.Remove();
+            if (targetNode != null)
+            {
+                TreeNode targetGroup = targetNode;
+                while (!(targetGroup.Tag is SINnerSearchGroup && targetGroup.Parent != null))
+                    targetGroup = targetGroup.Parent;
+                if (targetGroup == null)
+                    return;
+                targetGroup.Nodes.Add(draggedNode);
+                targetGroup.Expand();
+            }
+            else
+            {
+                // The user dropped the node on the treeview control instead
+                // of another node so lets place the node at the bottom of the tree.
+                //tvGroupSearchResult.Nodes.Add(draggedNode);
+                //draggedNode.Expand();
+            }
+        }
+
 
         private void SINnerGroupSearch_VisibleChanged(object sender, EventArgs e)
         {

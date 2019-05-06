@@ -673,7 +673,7 @@ namespace ChummerHub.Client.Backend
             foreach (var member in mlist)
             {
                 var sinner = member.MySINner;
-                sinner.DownloadedFromSINnersTime = DateTime.Now;
+                sinner.DownloadedFromSINnersTime = DateTime.Now.ToUniversalTime();
                 CharacterCache objCache = sinner.GetCharacterCache();
                 if (objCache == null)
                 {
@@ -951,12 +951,15 @@ namespace ChummerHub.Client.Backend
                         var msg = "Post of " + ce.MyCharacter.Alias + " completed with StatusCode: " + res?.Response?.StatusCode;
                         msg += Environment.NewLine + "Reason: " + res?.Response?.ReasonPhrase;
                         var content = await res.Response.Content.ReadAsStringAsync();
-                        msg += Environment.NewLine + "Content: " + content;
-                        System.Diagnostics.Trace.TraceWarning(msg);
-                        PluginHandler.MainForm.DoThreadSafe(() =>
-                        {
-                            MessageBox.Show(msg);
-                        });
+                        ResultSinnerPostSIN myres =
+                            Newtonsoft.Json.JsonConvert.DeserializeObject<ResultSinnerPostSIN>(content);
+                        var myrealres = HandleError(res, myres);
+                        //msg += Environment.NewLine + "Content: " + content;
+                        //System.Diagnostics.Trace.TraceWarning(msg);
+                        //PluginHandler.MainForm.DoThreadSafe(() =>
+                        //{
+                        //    MessageBox.Show(msg);
+                        //});
                         throw new ArgumentException(msg);
                     }
                 }

@@ -111,7 +111,7 @@ namespace ChummerHub.Client.Model
         public void SetSINner(SINner sinner)
         {
             _MySINnerFile = sinner;
-            _MySINnerFile.DownloadedFromSINnersTime = DateTime.Now;
+            _MySINnerFile.DownloadedFromSINnersTime = DateTime.Now.ToUniversalTime();
         }
 
         public string ZipFilePath { get; set; }
@@ -400,24 +400,23 @@ namespace ChummerHub.Client.Model
             if (!File.Exists(MyCharacter.FileName))
             {
                 MyCharacter.OnSaveCompleted -= PluginHandler.MyOnSaveUpload;
-                string path = MyCharacter.FileName.Substring(0, MyCharacter.FileName.LastIndexOf('\\'));
-                CreateDirectoryRecursively(path);
+                string path2 = MyCharacter.FileName.Substring(0, MyCharacter.FileName.LastIndexOf('\\'));
+                CreateDirectoryRecursively(path2);
                 MyCharacter.Save(MyCharacter.FileName, false, false);
                 MyCharacter.OnSaveCompleted += PluginHandler.MyOnSaveUpload;
             }
 
+            MyCharacter.OnSaveCompleted -= PluginHandler.MyOnSaveUpload;
+            string path = MyCharacter.FileName.Substring(0, MyCharacter.FileName.LastIndexOf('\\'));
+            CreateDirectoryRecursively(path);
+            MyCharacter.Save(tempfile, false, false);
+            MyCharacter.OnSaveCompleted += PluginHandler.MyOnSaveUpload;
 
-            if (!File.Exists(tempfile))
-            {
-                File.Copy(MyCharacter.FileName, tempfile);
-            }
-
-            ;
             if (File.Exists(zipPath))
             {
-                ZipFilePath = zipPath;
-                FileInfo fi = new FileInfo(zipPath);
-                if (fi.LastWriteTimeUtc < MyCharacter.FileLastWriteTime)
+                //ZipFilePath = zipPath;
+                //FileInfo fi = new FileInfo(zipPath);
+                //if (fi.LastWriteTimeUtc < MyCharacter.FileLastWriteTime)
                     File.Delete(zipPath);
             }
 

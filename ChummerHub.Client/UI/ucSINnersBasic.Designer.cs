@@ -45,8 +45,8 @@ namespace ChummerHub.Client.UI
             this.cbTagPowerRating = new System.Windows.Forms.CheckBox();
             this.cbTagIsNPC = new System.Windows.Forms.CheckBox();
             this.TagValuePowerRating = new System.Windows.Forms.NumericUpDown();
-            this.bVisibility = new System.Windows.Forms.Button();
             this.bGenerateNewId = new System.Windows.Forms.Button();
+            this.bVisibility = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.tbID = new System.Windows.Forms.TextBox();
             this.tabLayoutPanel.SuspendLayout();
@@ -204,7 +204,6 @@ namespace ChummerHub.Client.UI
             this.cbTagSRM_ready.TabIndex = 10;
             this.cbTagSRM_ready.Text = "SRM ready";
             this.cbTagSRM_ready.UseVisualStyleBackColor = true;
-            this.cbTagSRM_ready.CheckedChanged += new System.EventHandler(this.OnGroupBoxTagsClick);
             // 
             // cbTagCustom
             // 
@@ -217,7 +216,6 @@ namespace ChummerHub.Client.UI
             this.cbTagCustom.TabIndex = 8;
             this.cbTagCustom.Text = "Custom";
             this.cbTagCustom.UseVisualStyleBackColor = true;
-            this.cbTagCustom.CheckedChanged += new System.EventHandler(this.OnGroupBoxTagsClick);
             // 
             // TagValueCustomName
             // 
@@ -226,7 +224,6 @@ namespace ChummerHub.Client.UI
             this.TagValueCustomName.Name = "TagValueCustomName";
             this.TagValueCustomName.Size = new System.Drawing.Size(187, 20);
             this.TagValueCustomName.TabIndex = 9;
-            this.TagValueCustomName.TextChanged += new System.EventHandler(this.OnGroupBoxTagsClick);
             // 
             // cbTagArchetype
             // 
@@ -239,7 +236,6 @@ namespace ChummerHub.Client.UI
             this.cbTagArchetype.TabIndex = 11;
             this.cbTagArchetype.Text = "Archetype";
             this.cbTagArchetype.UseVisualStyleBackColor = true;
-            this.cbTagArchetype.CheckedChanged += new System.EventHandler(this.OnGroupBoxTagsClick);
             // 
             // TagValueArchetype
             // 
@@ -249,7 +245,6 @@ namespace ChummerHub.Client.UI
             this.TagValueArchetype.Name = "TagValueArchetype";
             this.TagValueArchetype.Size = new System.Drawing.Size(187, 21);
             this.TagValueArchetype.TabIndex = 12;
-            this.TagValueArchetype.SelectedIndexChanged += new System.EventHandler(this.OnGroupBoxTagsClick);
             // 
             // cbTagPowerRating
             // 
@@ -262,7 +257,6 @@ namespace ChummerHub.Client.UI
             this.cbTagPowerRating.TabIndex = 13;
             this.cbTagPowerRating.Text = "Power rating";
             this.cbTagPowerRating.UseVisualStyleBackColor = true;
-            this.cbTagPowerRating.CheckedChanged += new System.EventHandler(this.OnGroupBoxTagsClick);
             // 
             // cbTagIsNPC
             // 
@@ -275,7 +269,6 @@ namespace ChummerHub.Client.UI
             this.cbTagIsNPC.TabIndex = 16;
             this.cbTagIsNPC.Text = "Is NPC";
             this.cbTagIsNPC.UseVisualStyleBackColor = true;
-            this.cbTagIsNPC.CheckedChanged += new System.EventHandler(this.OnGroupBoxTagsClick);
             // 
             // TagValuePowerRating
             // 
@@ -301,17 +294,6 @@ namespace ChummerHub.Client.UI
             0});
             this.TagValuePowerRating.ValueChanged += new System.EventHandler(this.OnGroupBoxTagsClick);
             // 
-            // bVisibility
-            // 
-            this.bVisibility.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.bVisibility.Location = new System.Drawing.Point(49, 58);
-            this.bVisibility.Name = "bVisibility";
-            this.bVisibility.Size = new System.Drawing.Size(156, 23);
-            this.bVisibility.TabIndex = 13;
-            this.bVisibility.Text = "Visibility";
-            this.bVisibility.UseVisualStyleBackColor = true;
-            this.bVisibility.Click += new System.EventHandler(this.BVisibility_Click);
-            // 
             // bGenerateNewId
             // 
             this.bGenerateNewId.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -322,6 +304,17 @@ namespace ChummerHub.Client.UI
             this.bGenerateNewId.Text = "new Id";
             this.bGenerateNewId.UseVisualStyleBackColor = true;
             this.bGenerateNewId.Click += new System.EventHandler(this.BGenerateNewId_Click);
+            // 
+            // bVisibility
+            // 
+            this.bVisibility.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.bVisibility.Location = new System.Drawing.Point(49, 58);
+            this.bVisibility.Name = "bVisibility";
+            this.bVisibility.Size = new System.Drawing.Size(156, 23);
+            this.bVisibility.TabIndex = 13;
+            this.bVisibility.Text = "Visibility";
+            this.bVisibility.UseVisualStyleBackColor = true;
+            this.bVisibility.Click += new System.EventHandler(this.BVisibility_Click);
             // 
             // label2
             // 

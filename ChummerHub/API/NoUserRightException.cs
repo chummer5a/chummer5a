@@ -23,7 +23,7 @@ namespace ChummerHub
         {
         }
 
-        public NoUserRightException(string userName, Guid? id)
+        public NoUserRightException(string userName, Guid? id) : base(message: "User " + userName + " may not edit SINner with Id " + id + "!")
         {
             this.userName = userName;
             this.id = id;
