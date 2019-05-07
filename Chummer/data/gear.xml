@@ -6116,7 +6116,7 @@
       <avail>3</avail>
       <addoncategory>Sensors</addoncategory>
       <addoncategory>Custom</addoncategory>
-      <capacity>[2]</capacity>
+      <capacity>2</capacity>
       <cost>100</cost>
       <minrating>2</minrating>
     </gear>
@@ -6130,7 +6130,7 @@
       <avail>6</avail>
       <addoncategory>Sensors</addoncategory>
       <addoncategory>Custom</addoncategory>
-      <capacity>[2]</capacity>
+      <capacity>1</capacity>
       <cost>50</cost>
       <minrating>2</minrating>
     </gear>

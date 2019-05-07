@@ -535,6 +535,7 @@ Data Changes:
 - Ambidextrous quality can now be taken up to three times to support the Shiva Arms quality. Fixes #2893
 - The Cavalier Flash can now add a Hidden Arm Slide accessory.  Fixes #2908
 - Added missing Recoil Compensation for the Colt M23A2. Fixes #2907
+- Fixed capacities of the Bug Promotional Pen and Concealable Surveillance Gear.
 
 New Strings:
 
