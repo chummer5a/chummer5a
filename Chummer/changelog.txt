@@ -31,6 +31,7 @@ Application Changes:
 - Small refactor to the Spell class to use RelevantImprovements method. Doesn't actually reduce complexity, but makes me feel a bit better about having less boilerplate. 
 - Added a string to the Skill.Core class that allows for formatting the skill's dicepool, specialisations and such instead of reprocessing it in multiple other locations.
 - Refactored the creation, saving and loading of GUIDs for the Internal ID and Source ID of all objects to provide more consistency. There is a small risk that this will impact the stored improvements of some characters. I haven't been able to prove that it will happen, but logically it should based on this change. 
+- Fixed an issue with adding gear to weapon accessories when the weapon accessory was installed with the weapon.
 
 UI Changes:
 
@@ -52,6 +53,7 @@ Data Changes:
 - Fixed behaviour of partial cyberlimbs giving incorrect condition monitor boxes.
 - Removed <canwrite /> from the Made Man quality; this improperly allowed for the group to be removed from the character.
 - Added Free Insect quality choices from Dark Terrors. These are hidden behind a Prime Runner gameplay requirement. 
+- Fixed capacities of the Bug Promotional Pen and Concealable Surveillance Gear.
 
 String Changes:
 
@@ -535,7 +537,6 @@ Data Changes:
 - Ambidextrous quality can now be taken up to three times to support the Shiva Arms quality. Fixes #2893
 - The Cavalier Flash can now add a Hidden Arm Slide accessory.  Fixes #2908
 - Added missing Recoil Compensation for the Colt M23A2. Fixes #2907
-- Fixed capacities of the Bug Promotional Pen and Concealable Surveillance Gear.
 
 New Strings:
 

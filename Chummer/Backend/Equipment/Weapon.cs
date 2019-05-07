@@ -4917,7 +4917,7 @@ namespace Chummer.Backend.Equipment
             if (blnAdd)
             {
                 UnderbarrelWeapons.AddTaggedCollectionChanged(treWeapons, (x, y) => this.RefreshChildrenWeapons(treWeapons, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, null, y));
-                WeaponAccessories.AddTaggedCollectionChanged(treWeapons, (x, y) => this.RefreshWeaponAccessories(treWeapons, cmsWeaponAccessory, cmsWeaponAccessoryGear, () => UnderbarrelWeapons.Count, y));
+                WeaponAccessories.AddTaggedCollectionChanged(treWeapons, funcDelegateToAdd: (x, y) => this.RefreshWeaponAccessories(treWeapons, cmsWeaponAccessory, cmsWeaponAccessoryGear, () => UnderbarrelWeapons.Count, y));
                 foreach (Weapon objChild in UnderbarrelWeapons)
                 {
                     objChild.SetupChildrenWeaponsCollectionChanged(true, treWeapons, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
@@ -4925,6 +4925,7 @@ namespace Chummer.Backend.Equipment
 
                 foreach (WeaponAccessory objChild in WeaponAccessories)
                 {
+                    objChild.Gear.AddTaggedCollectionChanged(treWeapons, (x, y) => objChild.RefreshChildrenGears(treWeapons, cmsWeaponAccessoryGear, null, y));
                     foreach (Gear objGear in objChild.Gear)
                         objGear.SetupChildrenGearsCollectionChanged(true, treWeapons, cmsWeaponAccessoryGear);
                 }
@@ -4939,6 +4940,7 @@ namespace Chummer.Backend.Equipment
                 }
                 foreach (WeaponAccessory objChild in WeaponAccessories)
                 {
+                    objChild.Gear.RemoveTaggedCollectionChanged(treWeapons);
                     foreach (Gear objGear in objChild.Gear)
                         objGear.SetupChildrenGearsCollectionChanged(false, treWeapons);
                 }
