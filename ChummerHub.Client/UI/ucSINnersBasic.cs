@@ -35,8 +35,11 @@ namespace ChummerHub.Client.UI
             SINnersBasicConstructor(parent);
         }
 
+        private bool _inConstructor = false;
+
         private void SINnersBasicConstructor(ucSINnersUserControl parent)
         {
+            _inConstructor = true;
             InitializeComponent();
            
 
@@ -66,7 +69,19 @@ namespace ChummerHub.Client.UI
             {
                 if ((cb is Control cont))
                     cont.Click += OnGroupBoxTagsClick;
+                if ((cb is CheckBox cccb))
+                {
+                    cccb.CheckedChanged += OnGroupBoxTagsClick;
+                    cccb.CheckStateChanged += OnGroupBoxTagsClick;
+                }
+
+                if ((cb is ComboBox ccb))
+                    ccb.TextChanged += OnGroupBoxTagsClick;
+                if ((cb is TextBox ctb))
+                    ctb.TextChanged += OnGroupBoxTagsClick;
             }
+
+            _inConstructor = false;
         }
 
         public async Task<bool> CheckSINnerStatus()
@@ -210,10 +225,10 @@ namespace ChummerHub.Client.UI
             }
         }
 
-        private void OnGroupBoxTagsClick(object sender, EventArgs e)
+        private void OnGroupBoxTagsClick(object sender, object eventargs)
         {
             // Call the base class
-            base.OnClick(e);
+            //base.OnClick(eventargs);
             SaveTagsToSinner();
         }
 
@@ -231,6 +246,8 @@ namespace ChummerHub.Client.UI
 
         private void SaveTagsToSinner()
         {
+            if (_inConstructor)
+                return;
             if (myUC == null)
                 return;
             var gpControlSeq = (from a in GetAllControls(gpTags, new List<Control>())

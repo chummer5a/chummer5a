@@ -23,6 +23,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+using System.Transactions;
 using Microsoft.AspNetCore.Identity;
 
 namespace ChummerHub.Models.V1
@@ -74,25 +75,22 @@ namespace ChummerHub.Models.V1
 
         internal static async Task<List<SINner>> GetSINnersFromUser(ApplicationUser user, ApplicationDbContext context, bool canEdit)
         {
-            List<SINner> result = new List<SINner>();
-            var userseq = await (from a in context.UserRights
-                where a.EMail == user.NormalizedEmail && a.CanEdit == canEdit
-                select a.SINnerId).ToListAsync();
-            foreach(var ur in userseq)
-            {
-                var sin = await context.SINners.Include(a => a.SINnerMetaData.Visibility.UserRights)
-                    //.Include(a => a.MyExtendedAttributes)
-                    .Include(b => b.MyGroup)
-                    .ThenInclude( a => a.MyGroups)
-                    .ThenInclude( a => a.MyGroups)
-                    .ThenInclude(a => a.MyGroups)
-                    .Where(a => a.Id == ur).ToListAsync();
-                if(sin != null)
+            using (var t = new TransactionScope(TransactionScopeOption.Required,
+                new TransactionOptions
                 {
-                    result.AddRange(sin);
-                }
+                    IsolationLevel = System.Transactions.IsolationLevel.ReadUncommitted
+                }, TransactionScopeAsyncFlowOption.Enabled))
+            {
+                List<SINner> result = new List<SINner>();
+                var userseq = await (from a in context.UserRights
+                    where a.EMail == user.NormalizedEmail && a.CanEdit == canEdit
+                    select a.SINnerId).ToListAsync();
+                var sinseq = await context.SINners
+                    .Include(a => a.MyGroup)
+                    .Where(a => userseq.Contains(a.Id)).ToListAsync();
+                t.Complete();
+                return sinseq;
             }
-            return result;
         }
     }
 }

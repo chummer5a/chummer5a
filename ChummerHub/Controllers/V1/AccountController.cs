@@ -3,11 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Security.Authentication;
 using System.Threading.Tasks;
-using ChummerHub.API;
+ using System.Transactions;
+ using ChummerHub.API;
 using ChummerHub.Data;
 using ChummerHub.Models.V1;
 using Microsoft.ApplicationInsights.DataContracts;
@@ -319,6 +321,19 @@ namespace ChummerHub.Controllers
             }
             catch(Exception e)
             {
+                try
+                {
+                    var user = await _signInManager.UserManager.GetUserAsync(User);
+                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    ExceptionTelemetry et = new ExceptionTelemetry(e);
+                    et.Properties.Add("user", User.Identity.Name);
+                    tc.TrackException(et);
+                }
+                catch (Exception ex)
+                {
+                    if (_logger != null)
+                        _logger.LogError(ex.ToString());
+                }
                 if (e is HubException)
                     return BadRequest(e);
                 HubException hue = new HubException(e.Message, e);
@@ -348,6 +363,19 @@ namespace ChummerHub.Controllers
             }
             catch (Exception e)
             {
+                try
+                {
+                    var user = await _signInManager.UserManager.GetUserAsync(User);
+                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    ExceptionTelemetry et = new ExceptionTelemetry(e);
+                    et.Properties.Add("user", User.Identity.Name);
+                    tc.TrackException(et);
+                }
+                catch (Exception ex)
+                {
+                    if (_logger != null)
+                        _logger.LogError(ex.ToString());
+                }
                 res = new ResultAccountGetUserByAuthorization(e);
                 return BadRequest(res);
             }
@@ -388,6 +416,19 @@ namespace ChummerHub.Controllers
             }
             catch (Exception e)
             {
+                try
+                {
+                    var user = await _signInManager.UserManager.GetUserAsync(User);
+                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    ExceptionTelemetry et = new ExceptionTelemetry(e);
+                    et.Properties.Add("user", User.Identity.Name);
+                    tc.TrackException(et);
+                }
+                catch (Exception ex)
+                {
+                    if (_logger != null)
+                        _logger.LogError(ex.ToString());
+                }
                 if (e is HubException)
                     return BadRequest(e);
                 HubException hue = new HubException(e.Message, e);
@@ -420,6 +461,19 @@ namespace ChummerHub.Controllers
             }
             catch(Exception e)
             {
+                try
+                {
+                    var user = await _signInManager.UserManager.GetUserAsync(User);
+                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    ExceptionTelemetry et = new ExceptionTelemetry(e);
+                    et.Properties.Add("user", User.Identity.Name);
+                    tc.TrackException(et);
+                }
+                catch (Exception ex)
+                {
+                    if (_logger != null)
+                        _logger.LogError(ex.ToString());
+                }
                 if (e is HubException)
                     return BadRequest(e);
                 HubException hue = new HubException(e.Message, e);
@@ -438,8 +492,11 @@ namespace ChummerHub.Controllers
         [Authorize]
         public async Task<ActionResult<ResultAccountGetSinnersByAuthorization>> GetSINnersByAuthorization()
         {
-            ResultAccountGetSinnersByAuthorization res;
-            
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+            var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+            ResultAccountGetSinnersByAuthorization res = null;
+
             SINSearchGroupResult ret = new SINSearchGroupResult();
             res = new ResultAccountGetSinnersByAuthorization(ret);
             SINnerGroup sg = new SINnerGroup();
@@ -447,84 +504,123 @@ namespace ChummerHub.Controllers
             {
                 MyMembers = new List<SINnerSearchGroupMember>()
             };
-            try
-            {
-                var user = await _signInManager.UserManager.GetUserAsync(User);
-                if(user == null)
+            using (var t = new TransactionScope(TransactionScopeOption.Required,
+                new TransactionOptions
                 {
-                    var e =  new AuthenticationException("User is not authenticated.");
-                    res = new ResultAccountGetSinnersByAuthorization(e)
+                    IsolationLevel = System.Transactions.IsolationLevel.ReadUncommitted
+
+                }, TransactionScopeAsyncFlowOption.Enabled))
+            {
+                try
+                {
+
+                    var user = await _signInManager.UserManager.GetUserAsync(User);
+                    if (user == null)
                     {
-                        ErrorText = "Unauthorized"
-                    };
+                        var e = new AuthenticationException("User is not authenticated.");
+                        res = new ResultAccountGetSinnersByAuthorization(e)
+                        {
+                            ErrorText = "Unauthorized"
+                        };
+                        return BadRequest(res);
+                    }
+
+                    var roles = await _userManager.GetRolesAsync(user);
+                    ret.Roles = roles.ToList();
+                    ssg.Groupname = user.Email;
+                    ssg.Id = Guid.Empty;
+                    //get all from visibility
+                    List<SINner> mySinners = await SINner.GetSINnersFromUser(user, _context, true);
+                    MetricTelemetry mt = new MetricTelemetry("GetSINersByAuthorization", "SINners found",
+                        mySinners.Count, 0, 0, 0, 0);
+                    tc.TrackMetric(mt);
+                    foreach (var sin in mySinners)
+                    {
+                        //check if that char is already added:
+                        var foundseq = (from a in ssg.MyMembers where a.MySINner.Id == sin.Id select a);
+                        if (foundseq.Any())
+                            continue;
+                        SINnerSearchGroupMember ssgm = new SINnerSearchGroupMember
+                        {
+                            MySINner = sin,
+                            Username = user.UserName
+                        };
+                        ssg.MyMembers.Add(ssgm);
+                        if (sin.MyGroup != null)
+                        {
+                            SINnerSearchGroup ssgFromSIN;
+                            if (ssg.MySINSearchGroups.Any(a => a.Id == sin.MyGroup.Id))
+                            {
+                                ssgFromSIN = ssg.MySINSearchGroups.FirstOrDefault(a => a.Id == sin.MyGroup.Id);
+                            }
+                            else
+                            {
+                                ssgFromSIN = new SINnerSearchGroup(sin.MyGroup);
+                                ssg.MySINSearchGroups.Add(ssgFromSIN);
+                            }
+
+                            //add all members of his group
+                            var members = await sin.MyGroup.GetGroupMembers(_context, false);
+                            foreach (var member in members)
+                            {
+                                if ((member.SINnerMetaData.Visibility.IsGroupVisible == true)
+                                    || (member.SINnerMetaData.Visibility.IsPublic)
+                                )
+                                {
+                                    member.MyGroup = sin.MyGroup;
+                                    member.MyGroup.MyGroups = new List<SINnerGroup>();
+                                    SINnerSearchGroupMember sinssgGroupMember = new SINnerSearchGroupMember
+                                    {
+                                        MySINner = member
+                                    };
+                                    //check if it is already added:
+                                    var groupseq = from a in ssgFromSIN.MyMembers where a.MySINner == member select a;
+                                    if (groupseq.Any())
+                                        continue;
+                                    ssgFromSIN.MyMembers.Add(sinssgGroupMember);
+                                }
+                            }
+
+                            sin.MyGroup.PasswordHash = "";
+                            sin.MyGroup.MyGroups = new List<SINnerGroup>();
+
+                        }
+                    }
+
+                    ret.SINGroups.Add(ssg);
+                    res = new ResultAccountGetSinnersByAuthorization(ret);
+
+                    return Ok(res);
+                
+                }
+                catch (Exception e)
+                {
+                    try
+                    {
+                        var user = await _signInManager.UserManager.GetUserAsync(User);
+                        ExceptionTelemetry et = new ExceptionTelemetry(e);
+                        et.Properties.Add("user", User.Identity.Name);
+                        tc.TrackException(et);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger?.LogError(ex.ToString());
+                    }
+                    res = new ResultAccountGetSinnersByAuthorization(e);
                     return BadRequest(res);
                 }
-                var roles = await _userManager.GetRolesAsync(user);
-                ret.Roles = roles.ToList();
-                ssg.Groupname = user.Email;
-                ssg.Id = Guid.Empty;
-                //get all from visibility
-                List<SINner> mySinners = await SINner.GetSINnersFromUser(user, _context, true);
-                foreach(var sin in mySinners)
+                finally
                 {
-                    //check if that char is already added:
-                    var foundseq = (from a in ssg.MyMembers where a.MySINner == sin select a);
-                    if (foundseq.Any())
-                        continue;
-                    SINnerSearchGroupMember ssgm = new SINnerSearchGroupMember
-                    {
-                        MySINner = sin,
-                        Username = user.UserName
-                    };
-                    ssg.MyMembers.Add(ssgm);
-                    if (sin.MyGroup != null)
-                    {
-                        SINnerSearchGroup ssgFromSIN;
-                        if (ssg.MySINSearchGroups.Any(a => a.Id == sin.MyGroup.Id))
-                        {
-                            ssgFromSIN = ssg.MySINSearchGroups.FirstOrDefault(a => a.Id == sin.MyGroup.Id);
-                        }
-                        else
-                        {
-                            ssgFromSIN = new SINnerSearchGroup(sin.MyGroup);
-                            ssg.MySINSearchGroups.Add(ssgFromSIN);
-                        }
-                        //add all members of his group
-                        var members = await sin.MyGroup.GetGroupMembers(_context, false);
-                        foreach(var member in members)
-                        {
-                            if((member.SINnerMetaData.Visibility.IsGroupVisible == true)
-                                || (member.SINnerMetaData.Visibility.IsPublic)
-                                )
-                            {
-                                member.MyGroup = sin.MyGroup;
-                                member.MyGroup.MyGroups = new List<SINnerGroup>();
-                                SINnerSearchGroupMember sinssgGroupMember = new SINnerSearchGroupMember
-                                {
-                                    MySINner = member
-                                };
-                                //check if it is already added:
-                                var groupseq = from a in ssgFromSIN.MyMembers where a.MySINner == member select a;
-                                if (groupseq.Any())
-                                    continue;
-                                ssgFromSIN.MyMembers.Add(sinssgGroupMember);
-                            }
-                        }
-                        sin.MyGroup.PasswordHash = "";
-                        sin.MyGroup.MyGroups = new List<SINnerGroup>();
-                        
-                    }
+
+                    Microsoft.ApplicationInsights.DataContracts.AvailabilityTelemetry telemetry =
+                        new Microsoft.ApplicationInsights.DataContracts.AvailabilityTelemetry("GetSINnersByAuthorization",
+                            DateTimeOffset.Now, sw.Elapsed, "Azure", res?.CallSuccess ?? false, res?.ErrorText);
+                    tc.TrackAvailability(telemetry);
                 }
-                
-                ret.SINGroups.Add(ssg);
-                res = new ResultAccountGetSinnersByAuthorization(ret);
-                return Ok(res);
+                t.Complete();
             }
-            catch (Exception e)
-            {
-                res = new ResultAccountGetSinnersByAuthorization(e);
-                return BadRequest(res);
-            }
+
+
         }
 
 
@@ -613,6 +709,19 @@ namespace ChummerHub.Controllers
             }
             catch (Exception e)
             {
+                try
+                {
+                    var user = await _signInManager.UserManager.GetUserAsync(User);
+                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    ExceptionTelemetry et = new ExceptionTelemetry(e);
+                    et.Properties.Add("user", User.Identity.Name);
+                    tc.TrackException(et);
+                }
+                catch (Exception ex)
+                {
+                    if (_logger != null)
+                        _logger.LogError(ex.ToString());
+                }
                 res = new ResultAccountGetSinnersByAuthorization(e);
                 return BadRequest(res);
             }
@@ -636,6 +745,19 @@ namespace ChummerHub.Controllers
             }
             catch (Exception e)
             {
+                try
+                {
+                    var user = await _signInManager.UserManager.GetUserAsync(User);
+                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    ExceptionTelemetry et = new ExceptionTelemetry(e);
+                    et.Properties.Add("user", User.Identity.Name);
+                    tc.TrackException(et);
+                }
+                catch (Exception ex)
+                {
+                    if (_logger != null)
+                        _logger.LogError(ex.ToString());
+                }
                 if (e is HubException)
                     return BadRequest(e);
                 HubException hue = new HubException(e.Message, e);

@@ -107,12 +107,12 @@ namespace ChummerHub.Client.UI
             this.textBox1.TabIndex = 7;
             this.textBox1.Text = "This functionality is currently under development and not available yet.";
             // 
-            // SINnersSearch
+            // ucSINnersSearch
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.tableLayoutPanel1);
-            this.Name = "SINnersSearch";
+            this.Name = "ucSINnersSearch";
             this.Size = new System.Drawing.Size(781, 433);
             this.Load += new System.EventHandler(this.SINnersSearchSearch_Load);
             this.tableLayoutPanel1.ResumeLayout(false);
