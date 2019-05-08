@@ -460,6 +460,29 @@ namespace SINners
                 }
             }
 
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='sINnerId'>
+            /// </param>
+            public static void GetMugshotById(this ISINnersClient operations, Guid? sINnerId = default(Guid?))
+            {
+                Task.Factory.StartNew(s => ((ISINnersClient)s).GetMugshotByIdAsync(sINnerId), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
+            }
+
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='sINnerId'>
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task GetMugshotByIdAsync(this ISINnersClient operations, Guid? sINnerId = default(Guid?), CancellationToken cancellationToken = default(CancellationToken))
+            {
+                await operations.GetMugshotByIdWithHttpMessagesAsync(sINnerId, null, cancellationToken).ConfigureAwait(false);
+            }
+
             /// <summary>
             /// Store the MetaData for chummerfiles (to get a Id).
             /// This Id can be used to store the actual file with PUT afterwards.
@@ -728,9 +751,11 @@ namespace SINners
             /// </param>
             /// <param name='email'>
             /// </param>
-            public static ResultGroupGetSearchGroups GetGroupmembers(this ISINnersClient operations, string groupname = default(string), string language = default(string), string email = default(string))
+            /// <param name='password'>
+            /// </param>
+            public static ResultGroupGetSearchGroups GetGroupmembers(this ISINnersClient operations, string groupname = default(string), string language = default(string), string email = default(string), string password = default(string))
             {
-                return Task.Factory.StartNew(s => ((ISINnersClient)s).GetGroupmembersAsync(groupname, language, email), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
+                return Task.Factory.StartNew(s => ((ISINnersClient)s).GetGroupmembersAsync(groupname, language, email, password), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
             }
 
             /// <summary>
@@ -745,12 +770,14 @@ namespace SINners
             /// </param>
             /// <param name='email'>
             /// </param>
+            /// <param name='password'>
+            /// </param>
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task<ResultGroupGetSearchGroups> GetGroupmembersAsync(this ISINnersClient operations, string groupname = default(string), string language = default(string), string email = default(string), CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task<ResultGroupGetSearchGroups> GetGroupmembersAsync(this ISINnersClient operations, string groupname = default(string), string language = default(string), string email = default(string), string password = default(string), CancellationToken cancellationToken = default(CancellationToken))
             {
-                using (var _result = await operations.GetGroupmembersWithHttpMessagesAsync(groupname, language, email, null, cancellationToken).ConfigureAwait(false))
+                using (var _result = await operations.GetGroupmembersWithHttpMessagesAsync(groupname, language, email, password, null, cancellationToken).ConfigureAwait(false))
                 {
                     return _result.Body;
                 }

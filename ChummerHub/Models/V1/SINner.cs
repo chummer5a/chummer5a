@@ -36,6 +36,8 @@ namespace ChummerHub.Models.V1
 
         public Guid? Id { get; set; }
 
+        [MaxLength(2)]
+        public string EditionNumber { get; set; }
         
         public string DownloadUrl { get; set; }
 
@@ -67,10 +69,11 @@ namespace ChummerHub.Models.V1
         {
             Id = Guid.NewGuid();
             this.SINnerMetaData = new SINnerMetaData();
-            this.MyExtendedAttributes = new SINnerExtended();
+            this.MyExtendedAttributes = new SINnerExtended(this);
             this.DownloadUrl = "";
             this.MyGroup = null;
             this.Language = "";
+            EditionNumber = "5e";
         }
 
         internal static async Task<List<SINner>> GetSINnersFromUser(ApplicationUser user, ApplicationDbContext context, bool canEdit)

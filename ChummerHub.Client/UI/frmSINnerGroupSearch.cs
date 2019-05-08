@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Chummer.Plugins;
 
 namespace ChummerHub.Client.UI
 {
@@ -28,6 +29,23 @@ namespace ChummerHub.Client.UI
             InitializeComponent();
             this.siNnerGroupSearch1.MyCE = ce;
             this.siNnerGroupSearch1.MyParentForm = this;
+            this.VisibleChanged += (sender, args) =>
+            {
+                if (this.Visible == true)
+                    ReallyCenterToScreen();
+            };
+
+        }
+        protected void ReallyCenterToScreen()
+        {
+            Screen screen = Screen.FromControl(PluginHandler.MainForm);
+
+            Rectangle workingArea = screen.WorkingArea;
+            this.Location = new Point()
+            {
+                X = Math.Max(workingArea.X, workingArea.X + (workingArea.Width - this.Width) / 2),
+                Y = Math.Max(workingArea.Y, workingArea.Y + (workingArea.Height - this.Height) / 2)
+            };
         }
     }
 }

@@ -212,6 +212,16 @@ namespace SINners
         /// </param>
         Task<HttpOperationResponse<ResultSINnerPut>> PutSINWithHttpMessagesAsync(Guid id, System.IO.Stream uploadedFile = default(System.IO.Stream), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
+        /// <param name='sINnerId'>
+        /// </param>
+        /// <param name='customHeaders'>
+        /// The headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        Task<HttpOperationResponse> GetMugshotByIdWithHttpMessagesAsync(Guid? sINnerId = default(Guid?), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+
         /// <summary>
         /// Store the MetaData for chummerfiles (to get a Id).
         /// This Id can be used to store the actual file with PUT afterwards.
@@ -328,13 +338,15 @@ namespace SINners
         /// </param>
         /// <param name='email'>
         /// </param>
+        /// <param name='password'>
+        /// </param>
         /// <param name='customHeaders'>
         /// The headers that will be added to request.
         /// </param>
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse<ResultGroupGetSearchGroups>> GetGroupmembersWithHttpMessagesAsync(string groupname = default(string), string language = default(string), string email = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<ResultGroupGetSearchGroups>> GetGroupmembersWithHttpMessagesAsync(string groupname = default(string), string language = default(string), string email = default(string), string password = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Search for Groups
