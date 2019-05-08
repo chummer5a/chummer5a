@@ -4795,6 +4795,18 @@
 				<translate>Spurloser Schritt</translate>
 				<altpage>163</altpage>
 			</power>
+			<power translated="True">
+				<id>3fe334d3-f0e3-4bd7-ac39-57fa395ce0be</id>
+				<name>Animal Control (Insect Type)</name>
+				<translate>Tierbeherrschung (Insektenart)</translate>
+				<altpage>400</altpage>
+			</power>
+			<power translated="True">
+				<id>ac9855da-519a-44ac-b120-a605c20450e6</id>
+				<name>Enhanced Senses (Ultrasound)</name>
+				<translate>Gesteigere Sinne (Ultraschall)</translate>
+				<altpage>397</altpage>
+			</power>
 		</powers>
 	</chummer>
 	<chummer file="critters.xml">
@@ -30704,6 +30716,156 @@
 				<translate>Schutzgeistmaske</translate>
 				<altpage>175</altpage>
 			</quality>
+			<quality translated="True">
+				<id>e59e5011-61be-44d8-be87-8924555956cb</id>
+				<name>Free Insect Spirit: Cutter Ant</name>
+				<translate>Freier Insektengeist: Blattschneiderameise</translate>
+				<altpage>21</altpage>
+			</quality>
+			<quality translated="True">
+				<id>61008635-56be-4a0f-885e-c69cdad6381c</id>
+				<name>Free Insect Spirit: Fire Ant</name>
+				<translate>Freier Insektengeist: Feuerameise</translate>
+				<altpage>21</altpage>
+			</quality>
+			<quality translated="True">
+				<id>128a7a7d-7bd2-400c-a388-fd444672cc07</id>
+				<name>Free Insect Spirit: Desert Locust</name>
+				<translate>Freier Insektengeist: Wüstenheuschrecke</translate>
+				<altpage>24</altpage>
+			</quality>
+			<quality translated="True">
+				<id>791a36c5-3fff-447e-bf47-ae5c186d5e00</id>
+				<name>Free Insect Spirit: Mole Cricket</name>
+				<translate>Freier Insektengeist: Maulwurfsgrille</translate>
+				<altpage>24</altpage>
+			</quality>
+			<quality translated="True">
+				<id>64cd8760-41ac-4280-a1bb-ccbe470cb36a</id>
+				<name>Free Insect Spirit: Subterranean Termite</name>
+				<translate>Freier Insektengeist: Erdtermite</translate>
+				<altpage>28</altpage>
+			</quality>
+			<quality translated="True">
+				<id>3c7f9965-3cf9-4d18-92cd-00b07d18bd96</id>
+				<name>Free Insect Spirit: Hunter Wasp</name>
+				<translate>Freier Insektengeist: Schlupfwespe</translate>
+				<altpage>29</altpage>
+			</quality>
+			<quality translated="True">
+				<id>b18aa02f-5259-43ce-9f42-108d4cee192c</id>
+				<name>Free Insect Spirit: Bee</name>
+				<translate>Freier Insektengeist: Biene</translate>
+				<altpage>28</altpage>
+			</quality>
+			<quality translated="True">
+				<id>f6f960ff-f4eb-48ac-ab6e-95e73f523777</id>
+				<name>Free Insect Spirit: Goliath Beetle</name>
+				<translate>Freier Insektengeist: Goliathkäfer</translate>
+				<altpage>25</altpage>
+			</quality>
+			<quality translated="True">
+				<id>a752d652-d59b-4bc5-89b4-3a4d2cf763cb</id>
+				<name>Free Insect Spirit: Water Beetle</name>
+				<translate>Freier Insektengeist: Wasserkäfer</translate>
+				<altpage>26</altpage>
+			</quality>
+			<quality translated="True">
+				<id>a2680005-2e89-4054-8941-91ac53cde39d</id>
+				<name>Free Insect Spirit: House Centipede</name>
+				<translate>Freier Insektengeist: Spinnenläufer</translate>
+				<altpage>25</altpage>
+			</quality>
+			<quality translated="True">
+				<id>8726c88b-0c03-41c9-b67c-c0bd8b8f7547</id>
+				<name>Free Insect Spirit: Tropical Centipede</name>
+				<translate>Freier Insektengeist: Riesenläufer</translate>
+				<altpage>25</altpage>
+			</quality>
+			<quality translated="True">
+				<id>7c99a5ee-a98a-429c-a27a-dd007ba9f680</id>
+				<name>Free Insect Spirit: Century Cicada</name>
+				<translate>Freier Insektengeist: Jahrhundertzikade</translate>
+				<altpage>31</altpage>
+			</quality>
+			<quality translated="True">
+				<id>e55ea45c-c1c2-47cb-91f3-528683d58c49</id>
+				<name>Free Insect Spirit: Trapdoor Spider</name>
+				<translate>Freier Insektengeist: Falltürspinne</translate>
+				<altpage>30</altpage>
+			</quality>
+			<quality translated="True">
+				<id>218a86f5-e292-418d-a3f6-fdb1b9ce5891</id>
+				<name>Free Insect Spirit: Black Widow</name>
+				<translate>Freier Insektengeist: Schwarze Witwe</translate>
+				<altpage>30</altpage>
+			</quality>
+			<quality translated="True">
+				<id>578fedfb-a533-413c-ae88-4171cbbcf595</id>
+				<name>Free Insect Spirit: Burster Firefly</name>
+				<translate>Freier Insektengeist: Blendwürmchen</translate>
+				<altpage>22</altpage>
+			</quality>
+			<quality translated="True">
+				<id>75b52efb-39a2-471d-8c5a-94341eafb5df</id>
+				<name>Free Insect Spirit: Botfly</name>
+				<translate>Freier Insektengeist: Dasselfliege</translate>
+				<altpage>22</altpage>
+			</quality>
+			<quality translated="True">
+				<id>5be18c92-264a-48ea-8438-79adfffa88f5</id>
+				<name>Free Insect Spirit: Dragonfly</name>
+				<translate>Freier Insektengeist: Libelle</translate>
+				<altpage>22</altpage>
+			</quality>
+			<quality translated="True">
+				<id>0833bbaf-db69-4956-9ad6-1fa6c7674536</id>
+				<name>Free Insect Spirit: Mimic Mantis</name>
+				<translate>Freier Insektengeist: Täuschmantis</translate>
+				<altpage>23</altpage>
+			</quality>
+			<quality translated="True">
+				<id>b22312fc-ccfb-4ad2-ae79-9d988c2e5ad0</id>
+				<name>Free Insect Spirit: Orchid Mantis</name>
+				<translate>Freier Insektengeist: Orchideenmantis</translate>
+				<altpage>23</altpage>
+			</quality>
+			<quality translated="True">
+				<id>bce09acf-46b8-4b27-af72-f2ed0909fd9c</id>
+				<name>Free Insect Spirit: Vampire Mosquito</name>
+				<translate>Freier Insektengeist: Vampirmoskito</translate>
+				<altpage>26</altpage>
+			</quality>
+			<quality translated="True">
+				<id>2570b568-dea1-40b7-a9eb-dfab2e69fde7</id>
+				<name>Free Insect Spirit: Tick</name>
+				<translate>Freier Insektengeist: Zecke</translate>
+				<altpage>26</altpage>
+			</quality>
+			<quality translated="True">
+				<id>e1d20998-d6b8-4019-8b55-c3a66a6a239b</id>
+				<name>Free Insect Spirit: Death's Head Moth</name>
+				<translate>Freier Insektengeist: Totenkopfschwärmer</translate>
+				<altpage>27</altpage>
+			</quality>
+			<quality translated="True">
+				<id>20543040-e552-4894-ba3b-f05eabcf58ab</id>
+				<name>Free Insect Spirit: Cryptid Moth</name>
+				<translate>Freier Insektengeist: Schreckensmotte</translate>
+				<altpage>27</altpage>
+			</quality>
+			<quality translated="True">
+				<id>f34b7ccf-5624-492a-938e-fd39a8887a54</id>
+				<name>Free Insect Spirit: Cave Roach</name>
+				<translate>Freier Insektengeist: Höhlenschabe</translate>
+				<altpage>27</altpage>
+			</quality>
+			<quality translated="True">
+				<id>fe67d03c-1394-41e0-a82a-532f5fe85d2e</id>
+				<name>Free Insect Spirit: Silverfish</name>
+				<translate>Freier Insektengeist: Silberfisch</translate>
+				<altpage>27</altpage>
+			</quality>
 		</qualities>
 	</chummer>
 	<chummer file="skills.xml">
@@ -33600,7 +33762,7 @@
 			<skill>
 				<id>99d3b5ed-7862-410f-b3d9-ca7427bc2791</id>
 				<name>Astronomy</name>
-				<translate>Atronomie</translate>
+				<translate>Astronomie</translate>
 				<specs>
 					<spec translate="Kometen">Comets</spec>
 					<spec translate="Mars">Mars</spec>
