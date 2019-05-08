@@ -260,58 +260,63 @@ namespace ChummerHub.Client.UI
                     if (item == null)
                         return;
 
-                    var uploadtask = MyCE.Upload();
-                    await uploadtask.ContinueWith(b =>
+                    //var uploadtask = MyCE.Upload();
+                    //await uploadtask.ContinueWith(b =>
+                    //{
+                    using (new CursorWait(false, this))
                     {
-                        using (new CursorWait(false, this))
+                        var task = JoinGroupTask(item, MyCE);
+                        await task.ContinueWith(a =>
                         {
-                            var task = JoinGroupTask(item, MyCE);
-                            task.ContinueWith(a =>
+                            using (new CursorWait(false, this))
                             {
-                                using (new CursorWait(false, this))
+                                if (a.IsFaulted)
                                 {
-                                    if (a.IsFaulted)
+                                    string msg = "JoinGroupTask returned faulted!";
+                                    if ((a.Exception != null) && (a.Exception is AggregateException))
                                     {
-                                        string msg = "JoinGroupTask returned faulted!";
-                                        if ((a.Exception != null) && (a.Exception is AggregateException))
+                                        msg = "";
+                                        foreach (var exp in (a.Exception as AggregateException).InnerExceptions)
                                         {
-                                            msg = "";
-                                            foreach (var exp in (a.Exception as AggregateException).InnerExceptions)
-                                            {
-                                                msg += exp.Message + Environment.NewLine;
-                                            }
+                                            msg += exp.Message + Environment.NewLine;
                                         }
-                                        else
-                                        {
-                                            if (a.Exception != null)
-                                                msg = a.Exception.Message;
-                                        }
-
-                                        MessageBox.Show(msg);
-                                        return;
-                                    }
-
-                                    if (!String.IsNullOrEmpty(a.Result?.ErrorText))
-                                    {
-                                        System.Diagnostics.Trace.TraceError(a.Result.ErrorText);
                                     }
                                     else
                                     {
+                                        if (a.Exception != null)
+                                            msg = a.Exception.Message;
+                                    }
 
-                                        MyCE.MySINnerFile.MyGroup = new SINnerGroup(item);
-                                        //if (OnGroupJoinCallback != null)
-                                        //    OnGroupJoinCallback(this, MyCE.MySINnerFile.MyGroup);
-                                        string msg = "Char " + MyCE.MyCharacter.CharacterName + " joined group " +
-                                                     item.Groupname +
-                                                     ".";
-                                        System.Diagnostics.Trace.TraceInformation(msg);
+                                    MessageBox.Show(msg);
+                                    return;
+                                }
+
+                                if (!String.IsNullOrEmpty(a.Result?.ErrorText))
+                                {
+                                    System.Diagnostics.Trace.TraceError(a.Result.ErrorText);
+                                }
+                                else
+                                {
+
+                                    MyCE.MySINnerFile.MyGroup = new SINnerGroup(item);
+                                    //if (OnGroupJoinCallback != null)
+                                    //    OnGroupJoinCallback(this, MyCE.MySINnerFile.MyGroup);
+                                    string msg = "Char " + MyCE.MyCharacter.CharacterName + " joined group " +
+                                                 item.Groupname +
+                                                 ".";
+                                    System.Diagnostics.Trace.TraceInformation(msg);
+                                    this.DoThreadSafe(() =>
+                                    {
                                         MessageBox.Show(msg, "", MessageBoxButtons.OK, MessageBoxIcon.Information);
                                         TlpGroupSearch_VisibleChanged(null, new EventArgs());
-                                    }
+                                    });
+
                                 }
-                            });
-                        }
-                    });
+                            }
+                        });
+                    }
+
+                    //});
                 }
             }
             catch (Exception ex)
@@ -372,15 +377,19 @@ namespace ChummerHub.Client.UI
             SINSearchGroupResult ssgr = null;
             try
             {
-                SINnerGroup joinGroup = new SINnerGroup(searchgroup);
                 DialogResult result = DialogResult.Cancel;
                 frmSINnerGroupEdit groupEdit = null;
-                PluginHandler.MainForm.DoThreadSafe(() =>
+                if (searchgroup.HasPassword == true)
                 {
-                    groupEdit = new frmSINnerGroupEdit(joinGroup, true);
-                    result = groupEdit.ShowDialog(this);
-                });
-                if (result == DialogResult.OK)
+                    SINnerGroup joinGroup = new SINnerGroup(searchgroup);
+                    PluginHandler.MainForm.DoThreadSafe(() =>
+                    {
+                        groupEdit = new frmSINnerGroupEdit(joinGroup, true);
+                        result = groupEdit.ShowDialog(this);
+                    });
+                }
+
+                if ((result == DialogResult.OK) || (searchgroup.HasPassword == false))
                 {
                     try
                     {
@@ -389,7 +398,7 @@ namespace ChummerHub.Client.UI
                             var client = StaticUtils.GetClient();
                             var response =
                                 await client.PutSINerInGroupWithHttpMessagesAsync(searchgroup.Id, myCE.MySINnerFile.Id,
-                                    groupEdit.MySINnerGroupCreate.MyGroup.PasswordHash);
+                                    groupEdit?.MySINnerGroupCreate?.MyGroup?.PasswordHash);
                             if ((response.Response.StatusCode != HttpStatusCode.OK))
                             {
                                 var rescontent = await response.Response.Content.ReadAsStringAsync();

@@ -545,7 +545,6 @@ namespace ChummerHub.Controllers
                             MySINner = sin,
                             Username = user.UserName
                         };
-                        ssg.MyMembers.Add(ssgm);
                         if (sin.MyGroup != null)
                         {
                             SINnerSearchGroup ssgFromSIN;
@@ -558,15 +557,14 @@ namespace ChummerHub.Controllers
                                 ssgFromSIN = new SINnerSearchGroup(sin.MyGroup);
                                 ssg.MySINSearchGroups.Add(ssgFromSIN);
                             }
-
                             //add all members of his group
                             var members = await sin.MyGroup.GetGroupMembers(_context, false);
                             foreach (var member in members)
                             {
-                                if ((member.SINnerMetaData.Visibility.IsGroupVisible == true)
-                                    || (member.SINnerMetaData.Visibility.IsPublic)
-                                )
-                                {
+                                //if ((member.SINnerMetaData.Visibility.IsGroupVisible == true)
+                                //    || (member.SINnerMetaData.Visibility.IsPublic)
+                                //)
+                                //{
                                     member.MyGroup = sin.MyGroup;
                                     member.MyGroup.MyGroups = new List<SINnerGroup>();
                                     SINnerSearchGroupMember sinssgGroupMember = new SINnerSearchGroupMember
@@ -578,12 +576,14 @@ namespace ChummerHub.Controllers
                                     if (groupseq.Any())
                                         continue;
                                     ssgFromSIN.MyMembers.Add(sinssgGroupMember);
-                                }
+                                //}
                             }
-
                             sin.MyGroup.PasswordHash = "";
                             sin.MyGroup.MyGroups = new List<SINnerGroup>();
-
+                        }
+                        else
+                        {
+                            ssg.MyMembers.Add(ssgm);
                         }
                     }
 

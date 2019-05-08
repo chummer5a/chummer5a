@@ -17,6 +17,8 @@ using ChummerHub.Models.V1.Examples;
 using ChummerHub.Services.GoogleDrive;
 using Microsoft.AspNetCore.Http.Internal;
 using System.IO;
+using System.Security.Cryptography;
+using System.Text;
 using System.Transactions;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.DataContracts;
@@ -737,13 +739,13 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GroupGetGroupmembers")]
         [AllowAnonymous]
-        public async Task<ActionResult<ResultGroupGetSearchGroups>> GetGroupmembers(string Groupname, string Language, string email)
+        public async Task<ActionResult<ResultGroupGetSearchGroups>> GetGroupmembers(string Groupname, string Language, string email, string password)
         {
             ResultGroupGetSearchGroups res;
             _logger.LogTrace("GetGroupmembers: " + Groupname + "/" + Language + "/" + email + ".");
             try
             {
-                var r = await GetGroupmembersInternal(Groupname, Language, email);
+                var r = await GetGroupmembersInternal(Groupname, Language, email, password);
                 res = new ResultGroupGetSearchGroups(r);
                 return Ok(res);
             }
@@ -766,13 +768,26 @@ namespace ChummerHub.Controllers.V1
             }
         }
 
-        private async Task<SINSearchGroupResult> GetGroupmembersInternal(string Groupname, string language, string email)
+        public static byte[] GetHash(string inputString)
+        {
+            HashAlgorithm algorithm = SHA256.Create();
+            return algorithm.ComputeHash(Encoding.UTF8.GetBytes(inputString));
+        }
+
+        public static string GetHashString(string inputString)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (byte b in GetHash(inputString))
+                sb.Append(b.ToString("X2"));
+
+            return sb.ToString();
+        }
+
+        private async Task<SINSearchGroupResult> GetGroupmembersInternal(string Groupname, string language, string email, string password)
         {
             try
             {
-            
                 SINSearchGroupResult result = new SINSearchGroupResult();
-
                 List<Guid?> groupfoundseq = new List<Guid?>();
                 if (!String.IsNullOrEmpty(Groupname))
                 {
@@ -787,9 +802,20 @@ namespace ChummerHub.Controllers.V1
                 }
 
                 var user = await _userManager.FindByEmailAsync(email);
-
                 foreach (var groupid in groupfoundseq)
                 {
+                    //check for the password
+                    var group = await _context.SINnerGroups.FindAsync(groupid);
+                    if (group == null)
+                        continue;
+                    if (group.HasPassword)
+                    {
+                        string pwhash = GetHashString(password);
+                        if (!group.PasswordHash.Equals(password))
+                        {
+                            throw new ArgumentException("Wrong password provided for group: " + Groupname);
+                        }
+                    }
                     var ssg = await GetSinSearchGroupResultById(groupid, user, true);
                     result.SINGroups.Add(ssg);
                 }

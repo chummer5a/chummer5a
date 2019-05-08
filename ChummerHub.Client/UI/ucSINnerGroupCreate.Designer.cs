@@ -298,12 +298,12 @@ namespace ChummerHub.Client.UI
             this.cbIsPublic.Text = "Is Public";
             this.cbIsPublic.UseVisualStyleBackColor = true;
             // 
-            // SINnerGroupCreate
+            // ucSINnerGroupCreate
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.tableLayoutPanel1);
-            this.Name = "SINnerGroupCreate";
+            this.Name = "ucSINnerGroupCreate";
             this.Size = new System.Drawing.Size(438, 307);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();

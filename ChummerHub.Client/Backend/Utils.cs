@@ -933,9 +933,11 @@ namespace ChummerHub.Client.Backend
             HttpOperationResponse res = null;
             try
             {
-                UploadInfoObject uploadInfoObject = new UploadInfoObject();
-                uploadInfoObject.Client = PluginHandler.MyUploadClient;
-                uploadInfoObject.UploadDateTime = DateTime.Now;
+                UploadInfoObject uploadInfoObject = new UploadInfoObject
+                {
+                    Client = PluginHandler.MyUploadClient,
+                    UploadDateTime = DateTime.Now
+                };
                 ce.MySINnerFile.UploadDateTime = DateTime.Now;
                 uploadInfoObject.SiNners = new List<SINner>() { ce.MySINnerFile };
                 System.Diagnostics.Trace.TraceInformation("Posting " + ce.MySINnerFile.Id + "...");
@@ -951,15 +953,11 @@ namespace ChummerHub.Client.Backend
                         var msg = "Post of " + ce.MyCharacter.Alias + " completed with StatusCode: " + res?.Response?.StatusCode;
                         msg += Environment.NewLine + "Reason: " + res?.Response?.ReasonPhrase;
                         var content = await res.Response.Content.ReadAsStringAsync();
+                        msg += Environment.NewLine + "Content: " + content;
+                        System.Diagnostics.Trace.TraceWarning(msg);
                         ResultSinnerPostSIN myres =
                             Newtonsoft.Json.JsonConvert.DeserializeObject<ResultSinnerPostSIN>(content);
                         var myrealres = HandleError(res, myres);
-                        //msg += Environment.NewLine + "Content: " + content;
-                        //System.Diagnostics.Trace.TraceWarning(msg);
-                        //PluginHandler.MainForm.DoThreadSafe(() =>
-                        //{
-                        //    MessageBox.Show(msg);
-                        //});
                         throw new ArgumentException(msg);
                     }
                 }
@@ -997,34 +995,30 @@ namespace ChummerHub.Client.Backend
                         {
                             HttpStatusCode myStatus = HttpStatusCode.Unused;
                             res = await client.PutSINWithHttpMessagesAsync(ce.MySINnerFile.Id.Value, fs);
-                            //var task = res.ContinueWith((sender) =>
-                            //{
-
-                                string msg = "Upload ended with statuscode: ";
-                                msg += res?.Response?.StatusCode + Environment.NewLine;
-                                msg += res?.Response?.ReasonPhrase;
-                                msg += Environment.NewLine + res?.Response?.Content.ReadAsStringAsync().Result;
-                                System.Diagnostics.Trace.TraceInformation(msg);
-                                myStatus = res.Response.StatusCode;
-                                if(!StaticUtils.IsUnitTest)
+                            string msg = "Upload ended with statuscode: ";
+                            msg += res?.Response?.StatusCode + Environment.NewLine;
+                            msg += res?.Response?.ReasonPhrase;
+                            msg += Environment.NewLine + res?.Response?.Content.ReadAsStringAsync().Result;
+                            System.Diagnostics.Trace.TraceInformation(msg);
+                            myStatus = res.Response.StatusCode;
+                            if(!StaticUtils.IsUnitTest)
+                            {
+                                PluginHandler.MainForm.DoThreadSafe(() =>
                                 {
-                                    PluginHandler.MainForm.DoThreadSafe(() =>
+                                    if(myStatus != HttpStatusCode.OK)
                                     {
-                                        if(myStatus != HttpStatusCode.OK)
-                                        {
-                                            MessageBox.Show(msg);
-                                        }
-                                        using (new CursorWait(true, PluginHandler.MainForm))
-                                        {
-                                            Chummer.Plugins.PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false, true);
-                                        }   
-                                    });
-                                }
-                                else
-                                {
-                                    System.Diagnostics.Trace.TraceInformation(msg);
-                                }
-                            //});
+                                        MessageBox.Show(msg);
+                                    }
+                                    using (new CursorWait(true, PluginHandler.MainForm))
+                                    {
+                                        Chummer.Plugins.PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false, true);
+                                    }   
+                                });
+                            }
+                            else
+                            {
+                                System.Diagnostics.Trace.TraceInformation(msg);
+                            }
                         }
                         else
                         {

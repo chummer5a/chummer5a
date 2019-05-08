@@ -114,7 +114,7 @@ namespace ChummerHub.Models.V1
                         foreach (var member in res)
                         {
                             if (member.MyExtendedAttributes == null)
-                                member.MyExtendedAttributes = new SINnerExtended();
+                                member.MyExtendedAttributes = new SINnerExtended(member);
                             if (member.SINnerMetaData == null)
                                 member.SINnerMetaData = new SINnerMetaData();
                             if (member.SINnerMetaData.Tags == null)
