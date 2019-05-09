@@ -230,7 +230,7 @@ namespace Chummer.Plugins
                     break;
                 }
             }
-
+            CharacterExtended ce;
             if (sinnertab == null)
             {
                 ce = new CharacterExtended(input, null);
@@ -244,10 +244,7 @@ namespace Chummer.Plugins
                     break;
                 }
 
-                if (myUcSIN == null)
-                    ce = new CharacterExtended(input, null);
-                else
-                    ce = myUcSIN.MyCE;
+                ce = myUcSIN == null ? new CharacterExtended(input, null) : myUcSIN.MyCE;
             }
             return ce;
         }
