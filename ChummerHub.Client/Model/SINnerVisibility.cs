@@ -18,19 +18,19 @@ namespace SINners.Models
     public partial class SINnerVisibility
     {
 
-        private BindingList<SINerUserRight> _UserRightsObservable = null;
+        private BindingList<SINnerUserRight> _UserRightsObservable = null;
 
         [JsonIgnore]
         [XmlIgnore]
         [IgnoreDataMember]
-        public BindingList<SINerUserRight> UserRightsObservable
+        public BindingList<SINnerUserRight> UserRightsObservable
         {
             get
             {
                 if (_UserRightsObservable == null)
                 {
                     if (UserRights != null)
-                        _UserRightsObservable = new BindingList<SINerUserRight>(UserRights);
+                        _UserRightsObservable = new BindingList<SINnerUserRight>(UserRights);
                 }
                 return _UserRightsObservable;
             }
@@ -49,7 +49,7 @@ namespace SINners.Models
                 {
                     for (int i = 0; i < clbVisibilityToUsers.Items.Count; i++)
                     {
-                        SINerUserRight obj = (SINerUserRight)clbVisibilityToUsers.Items[i];
+                        SINnerUserRight obj = (SINnerUserRight)clbVisibilityToUsers.Items[i];
                         clbVisibilityToUsers.SetItemChecked(i, obj.CanEdit.Value);
                     }
                 });
@@ -64,7 +64,7 @@ namespace SINners.Models
                 MessageBox.Show("Please enter a valid email address!");
                 return;
             }
-            SINerUserRight ur = new SINerUserRight()
+            SINnerUserRight ur = new SINnerUserRight()
             {
                 EMail = email,
                 CanEdit = true,

@@ -18,11 +18,11 @@ namespace ChummerHub.Models.V1
 
         public bool IsGroupVisible { get; set; }
 
-        public List<SINerUserRight> UserRights { get; set; }
+        public List<SINnerUserRight> UserRights { get; set; }
 
         public SINnerVisibility()
         {
-            UserRights = new List<SINerUserRight>();
+            UserRights = new List<SINnerUserRight>();
          
         }
     }

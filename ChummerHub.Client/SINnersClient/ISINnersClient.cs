@@ -280,6 +280,22 @@ namespace SINners
         Task<HttpOperationResponse<ResultGroupPutGroupInGroup>> PutGroupInGroupWithHttpMessagesAsync(Guid? groupId = default(Guid?), string groupname = default(string), Guid? parentGroupId = default(Guid?), string adminIdentityRole = default(string), bool? isPublicVisible = default(bool?), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
+        /// The Xml or Zip File can be uploaded (knowing the previously stored
+        /// Id)
+        /// </summary>
+        /// <param name='id'>
+        /// </param>
+        /// <param name='uploadedFile'>
+        /// </param>
+        /// <param name='customHeaders'>
+        /// The headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        Task<HttpOperationResponse<ResultGroupPutSetting>> PutGroupSettingWithHttpMessagesAsync(Guid id, System.IO.Stream uploadedFile = default(System.IO.Stream), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
         /// Store the new group
         /// </summary>
         /// <param name='mygroup'>

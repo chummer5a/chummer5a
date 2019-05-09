@@ -176,15 +176,105 @@ namespace ChummerHub.Controllers.V1
 
         }
 
-       
+        // PUT: api/ChummerFiles/5
+        /// <summary>
+        /// The Xml or Zip File can be uploaded (knowing the previously stored Id)
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="uploadedFile"></param>
+        /// <returns></returns>
+        [HttpPut("{id}")]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Conflict)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("PutGroupSetting")]
+        [Authorize]
+        public async Task<ActionResult<ResultGroupPutSetting>> PutGroupSetting([FromRoute] Guid id, IFormFile uploadedFile)
+        {
+            ResultGroupPutSetting res;
+            ApplicationUser user = null;
+            SINnerGroup dbgroup = null;
+            try
+            {
+                var group = await _context.SINnerGroups.Include(a => a.MySettings).FirstOrDefaultAsync(a => a.Id == id);
+                if (group == null)
+                {
+                    var e = new ArgumentException("Group with Id " + id + " not found!");
+                    res = new ResultGroupPutSetting(e);
+                    return NotFound(res);
+                }
+                user = await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
+
+                if (user == null)
+                {
+                    var e = new NoUserRightException("User not found!");
+                    res = new ResultGroupPutSetting(e);
+                    return NotFound(res);
+                }
+
+                dbgroup.MySettings.DownloadUrl = Startup.GDrive.StoreXmlInCloud(dbgroup.MySettings, uploadedFile);
+                try
+                {
+                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    Microsoft.ApplicationInsights.DataContracts.EventTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.EventTelemetry("PutStoreXmlInCloud");
+                    telemetry.Properties.Add("User", user.Email);
+                    telemetry.Properties.Add("SINnerGroupId", dbgroup.Id.ToString());
+                    telemetry.Properties.Add("FileName", uploadedFile.FileName?.ToString());
+                    telemetry.Metrics.Add("FileSize", uploadedFile.Length);
+                    tc.TrackEvent(telemetry);
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError(e.ToString());
+                }
+                try
+                {
+                    int x = await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException e)
+                {
+                    res = new ResultGroupPutSetting(e);
+                    return Conflict(res);
+                }
+
+                res = new ResultGroupPutSetting(dbgroup);
+                return Ok(res);
+            }
+            catch (NoUserRightException e)
+            {
+                res = new ResultGroupPutSetting(e);
+                return BadRequest(res);
+            }
+            catch (Exception e)
+            {
+                try
+                {
+                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
+                    telemetry.Properties.Add("User", user?.Email);
+                    telemetry.Properties.Add("SINnerGroupId", dbgroup.Id.ToString());
+                    telemetry.Properties.Add("FileName", uploadedFile.FileName?.ToString());
+                    telemetry.Metrics.Add("FileSize", uploadedFile.Length);
+                    tc.TrackException(telemetry);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex.ToString());
+                }
+                res = new ResultGroupPutSetting(e);
+                return BadRequest(res);
+            }
+        }
+
 
         /// <summary>
-            /// Store the new group
-            /// </summary>
-            /// <param name="mygroup"></param>
-            /// <param name="SinnerId"></param>
-            /// <returns></returns>
-            [HttpPost()]
+        /// Store the new group
+        /// </summary>
+        /// <param name="mygroup"></param>
+        /// <param name="SinnerId"></param>
+        /// <returns></returns>
+        [HttpPost()]
         //[Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK, "")]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Accepted)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Created)]

@@ -122,7 +122,7 @@ namespace ChummerHub.Models.V1
                             if (member.SINnerMetaData.Visibility == null)
                                 member.SINnerMetaData.Visibility = new SINnerVisibility();
                             if (member.SINnerMetaData.Visibility.UserRights == null)
-                                member.SINnerMetaData.Visibility.UserRights = new List<SINerUserRight>();
+                                member.SINnerMetaData.Visibility.UserRights = new List<SINnerUserRight>();
                         }
                         t.Complete();
                         return res;
@@ -152,17 +152,11 @@ namespace ChummerHub.Models.V1
         
     }
 
-    public class SINnerGroupSetting
+    public class SINnerGroupSetting : SINnerUploadAble
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid? Id { get; set; }
-
-        public string DownloadUrl { get; set; }
-
-        [JsonIgnore]
-        [XmlIgnore]
-        public string GoogleDriveFileId { get; set; }
 
         public Guid MyGroupId { get; set; }
     }

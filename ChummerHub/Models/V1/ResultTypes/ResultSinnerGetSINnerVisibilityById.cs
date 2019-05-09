@@ -5,14 +5,14 @@ namespace ChummerHub.Models.V1
 {
     public class ResultSinnerGetSINnerVisibilityById : ResultBase
     {
-        public List<SINerUserRight> UserRights { get; set; }
+        public List<SINnerUserRight> UserRights { get; set; }
 
         public ResultSinnerGetSINnerVisibilityById()
         {
-            UserRights = new List<SINerUserRight>();
+            UserRights = new List<SINnerUserRight>();
         }
 
-        public ResultSinnerGetSINnerVisibilityById(List<SINerUserRight> list)
+        public ResultSinnerGetSINnerVisibilityById(List<SINnerUserRight> list)
         {
             UserRights = list;
         }

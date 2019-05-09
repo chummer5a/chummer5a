@@ -11,30 +11,22 @@ namespace SINners.Models
     using Microsoft.Rest;
     using Microsoft.Rest.Serialization;
 
-    public partial class ResultSinnerGetSINnerVisibilityById
+    public partial class ResultGroupPutSetting
     {
         /// <summary>
-        /// Initializes a new instance of the
-        /// ResultSinnerGetSINnerVisibilityById class.
+        /// Initializes a new instance of the ResultGroupPutSetting class.
         /// </summary>
-        public ResultSinnerGetSINnerVisibilityById() { }
+        public ResultGroupPutSetting() { }
 
         /// <summary>
-        /// Initializes a new instance of the
-        /// ResultSinnerGetSINnerVisibilityById class.
+        /// Initializes a new instance of the ResultGroupPutSetting class.
         /// </summary>
-        public ResultSinnerGetSINnerVisibilityById(IList<SINnerUserRight> userRights = default(IList<SINnerUserRight>), object myException = default(object), bool? callSuccess = default(bool?), string errorText = default(string))
+        public ResultGroupPutSetting(object myException = default(object), bool? callSuccess = default(bool?), string errorText = default(string))
         {
-            UserRights = userRights;
             MyException = myException;
             CallSuccess = callSuccess;
             ErrorText = errorText;
         }
-
-        /// <summary>
-        /// </summary>
-        [JsonProperty(PropertyName = "userRights")]
-        public IList<SINnerUserRight> UserRights { get; set; }
 
         /// <summary>
         /// </summary>

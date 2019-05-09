@@ -98,13 +98,13 @@ namespace ChummerHub.Data
                 .HasIndex(b => new { b.TagName, b.TagValue });
             builder.Entity<ChummerHub.Models.V1.Tag>()
                 .HasIndex(b => b.SINnerId);
-            builder.Entity<ChummerHub.Models.V1.SINerUserRight>()
+            builder.Entity<ChummerHub.Models.V1.SINnerUserRight>()
                 .HasIndex(b => b.SINnerId);
             builder.Entity<ChummerHub.Models.V1.SINner>()
                 .HasIndex(b => b.Alias);
             builder.Entity<ChummerHub.Models.V1.SINnerGroup>()
                 .HasIndex(b => b.Groupname);
-            builder.Entity<ChummerHub.Models.V1.SINerUserRight>()
+            builder.Entity<ChummerHub.Models.V1.SINnerUserRight>()
                 .HasIndex(b => b.EMail);
             builder.Entity<ChummerHub.Models.V1.SINnerGroup>()
                 .HasIndex(b => b.Language);
@@ -138,7 +138,7 @@ FROM            dbo.SINners INNER JOIN
 
         public DbSet<ChummerHub.Models.V1.Tag> Tags { get; set; }
 
-        public DbSet<ChummerHub.Models.V1.SINerUserRight> UserRights { get; set; }
+        public DbSet<ChummerHub.Models.V1.SINnerUserRight> UserRights { get; set; }
 
         public DbSet<ChummerHub.Models.V1.UploadClient> UploadClients { get; set; }
 

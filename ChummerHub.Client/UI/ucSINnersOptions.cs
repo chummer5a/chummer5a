@@ -47,7 +47,7 @@ namespace ChummerHub.Client.UI
                         Id = Guid.NewGuid(),
                         IsPublic = Properties.Settings.Default.VisibilityIsPublic,
                         IsGroupVisible = Properties.Settings.Default.VisibilityIsGroupVisible,
-                        UserRights = new List<SINerUserRight>()
+                        UserRights = new List<SINnerUserRight>()
                         {
 
 
@@ -55,7 +55,7 @@ namespace ChummerHub.Client.UI
                     };
                     if(!String.IsNullOrEmpty(Properties.Settings.Default.UserEmail))
                     {
-                        var ur = new SINerUserRight()
+                        var ur = new SINnerUserRight()
                         {
                             EMail = Properties.Settings.Default.UserEmail,
                             CanEdit = true,
@@ -65,7 +65,7 @@ namespace ChummerHub.Client.UI
                     }
                     else
                     {
-                        var ur = new SINerUserRight()
+                        var ur = new SINnerUserRight()
                         {
                             EMail = "delete.this.and.add@your.mail",
                             CanEdit = true,
@@ -88,7 +88,7 @@ namespace ChummerHub.Client.UI
                     Id = Guid.NewGuid(),
                     IsPublic = Properties.Settings.Default.VisibilityIsPublic,
                     IsGroupVisible = Properties.Settings.Default.VisibilityIsGroupVisible,
-                    UserRights = new List<SINerUserRight>()
+                    UserRights = new List<SINnerUserRight>()
                     {
 
 
@@ -97,7 +97,7 @@ namespace ChummerHub.Client.UI
                 };
                 if(!String.IsNullOrEmpty(Properties.Settings.Default.UserEmail))
                 {
-                    var ur = new SINerUserRight()
+                    var ur = new SINnerUserRight()
                     {
                         EMail = Properties.Settings.Default.UserEmail,
                         CanEdit = true,
@@ -107,7 +107,7 @@ namespace ChummerHub.Client.UI
                 }
                 else
                 {
-                    var ur = new SINerUserRight()
+                    var ur = new SINnerUserRight()
                     {
                         EMail = "delete.this.and.add@your.mail",
                         CanEdit = true,

@@ -592,7 +592,7 @@ namespace ChummerHub.Controllers.V1
                             }
                             if (!userfound)
                             {
-                                SINerUserRight ownUser = new SINerUserRight();
+                                SINnerUserRight ownUser = new SINnerUserRight();
                                 ownUser.Id = Guid.NewGuid();
                                 ownUser.SINnerId = sinner.Id;
                                 ownUser.CanEdit = true;
@@ -621,7 +621,7 @@ namespace ChummerHub.Controllers.V1
                         }
                         if (!ownuserfound)
                         {
-                            SINerUserRight ownright = new SINerUserRight();
+                            SINnerUserRight ownright = new SINnerUserRight();
                             ownright.CanEdit = true;
                             ownright.EMail = user.Email;
                             ownright.SINnerId = sinner.Id;
@@ -681,7 +681,7 @@ namespace ChummerHub.Controllers.V1
                                     || entry.Entity is Tag
                                     || entry.Entity is SINnerExtended
                                     || entry.Entity is SINnerGroup
-                                    || entry.Entity is SINerUserRight
+                                    || entry.Entity is SINnerUserRight
                                     || entry.Entity is SINnerMetaData)
                                 {
                                     try
