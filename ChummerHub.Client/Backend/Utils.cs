@@ -523,7 +523,7 @@ namespace ChummerHub.Client.Backend
             object ResponseBody)
         {
             ResultBase rb = null;
-            string content = "not set";
+            string content = ResponseBody?.ToString();
             try
             {
                 if (ResponseBody == null)
@@ -955,10 +955,18 @@ namespace ChummerHub.Client.Backend
                         var content = await res.Response.Content.ReadAsStringAsync();
                         msg += Environment.NewLine + "Content: " + content;
                         System.Diagnostics.Trace.TraceWarning(msg);
-                        ResultSinnerPostSIN myres =
-                            Newtonsoft.Json.JsonConvert.DeserializeObject<ResultSinnerPostSIN>(content);
-                        var myrealres = HandleError(res, myres);
-                        throw new ArgumentException(msg);
+                        try
+                        {
+                            ResultSinnerPostSIN myres =
+                                JsonConvert.DeserializeObject<ResultSinnerPostSIN>(content);
+                            var myrealres = HandleError(res, myres);
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleError(res, msg);
+                        }
+
+                        return res;
                     }
                 }
                 else

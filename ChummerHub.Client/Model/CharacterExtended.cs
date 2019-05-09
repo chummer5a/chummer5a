@@ -201,23 +201,33 @@ namespace ChummerHub.Client.Model
                         return true;
                     var client = StaticUtils.GetClient();
                     var found = await client.GetSINByIdWithHttpMessagesAsync(this.MySINnerFile.Id.Value);
+                    await Backend.Utils.HandleError(found, found.Body);
                     if (found.Response.StatusCode == System.Net.HttpStatusCode.OK)
                     {
-                        var sinjson = await found.Response.Content.ReadAsStringAsync();
-                        var foundobj = Newtonsoft.Json.JsonConvert.DeserializeObject<SINner>(sinjson);
-                        SINner foundsin = foundobj as SINner;
-                        if (foundsin.LastChange >= this.MyCharacter.FileLastWriteTime)
-                        {
-                            //is already up to date!
-                            return true;
-                        }
+                       if (found.Body.MySINner.LastChange >= this.MyCharacter.FileLastWriteTime)
+                       {
+                           //is already up to date!
+                           return true;
+                       }
+                       if (!MySINnerFile.SiNnerMetaData.Visibility.UserRights.Any())
+                       {
+                           MySINnerFile.SiNnerMetaData.Visibility.UserRights =
+                               found.Body.MySINner.SiNnerMetaData.Visibility.UserRights;
+                       }
                     }
+
                     this.MySINnerFile.SiNnerMetaData.Tags = this.PopulateTags();
                     await this.PrepareModel();
 
-                    await ChummerHub.Client.Backend.Utils.PostSINnerAsync(this);
-                    await ChummerHub.Client.Backend.Utils.UploadChummerFileAsync(this);
-                    return true;
+                    var res = await ChummerHub.Client.Backend.Utils.PostSINnerAsync(this);
+                    if (res.Response.IsSuccessStatusCode)
+                    {
+                        var uploadres = await ChummerHub.Client.Backend.Utils.UploadChummerFileAsync(this);
+                        if (uploadres.Response.IsSuccessStatusCode)
+                            return true;
+                    }
+                    return false;
+
                 }
             }
             catch(Exception e)

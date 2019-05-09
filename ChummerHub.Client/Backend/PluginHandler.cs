@@ -67,6 +67,11 @@ namespace Chummer.Plugins
         {
             ucSINnersUserControl uc = new ucSINnersUserControl();
             var ce = uc.SetCharacterFrom(input);
+            if (ce.Status == TaskStatus.Faulted)
+            {
+                ChummerHub.Client.Backend.Utils.HandleError(ce.Exception);
+                return new List<TabPage>();
+            }
             TabPage page = new TabPage("SINners");
             page.Name = "SINners";
             page.Controls.Add(uc);
@@ -77,6 +82,11 @@ namespace Chummer.Plugins
         {
             ucSINnersUserControl uc = new ucSINnersUserControl();
             var ce = uc.SetCharacterFrom(input);
+            if (ce.Status == TaskStatus.Faulted)
+            {
+                ChummerHub.Client.Backend.Utils.HandleError(ce.Exception);
+                return new List<TabPage>();
+            }
             TabPage page = new TabPage("SINners");
             page.Name = "SINners";
             page.Controls.Add(uc);
@@ -134,7 +144,7 @@ namespace Chummer.Plugins
                 {
                     var ce = GetMyCe(input);
                     //ce = new CharacterExtended(input, null);
-                    if (ce.MySINnerFile.SiNnerMetaData.Tags.All(a => a.TagName != "Reflection"))
+                    if (ce.MySINnerFile.SiNnerMetaData.Tags.Any(a => a.TagName == "Reflection"))
                     {
                         ce.MySINnerFile.SiNnerMetaData.Tags = ce.PopulateTags();
                     }
@@ -176,6 +186,7 @@ namespace Chummer.Plugins
             }
             finally
             {
+                input.OnSaveCompleted += MyOnSaveUpload;
                 IsSaving = false;
             }
         }
