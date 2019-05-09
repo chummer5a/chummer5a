@@ -426,6 +426,8 @@ namespace ChummerHub.Client.Model
             var summary = new frmCharacterRoster.CharacterCache(MyCharacter.FileName);
             MySINnerFile.MyExtendedAttributes.JsonSummary = JsonConvert.SerializeObject(summary);
             MySINnerFile.LastChange = MyCharacter.FileLastWriteTime;
+            if (String.IsNullOrEmpty(summary.FileName))
+                return null;
             var tempfile = Path.Combine(tempDir, summary.FileName);
             if (File.Exists(tempfile))
                 File.Delete(tempfile);
@@ -452,10 +454,7 @@ namespace ChummerHub.Client.Model
 
             if (File.Exists(zipPath))
             {
-                //ZipFilePath = zipPath;
-                //FileInfo fi = new FileInfo(zipPath);
-                //if (fi.LastWriteTimeUtc < MyCharacter.FileLastWriteTime)
-                    File.Delete(zipPath);
+                File.Delete(zipPath);
             }
 
             if (!File.Exists(zipPath))
