@@ -111,6 +111,8 @@ namespace ChummerHub
         {
             MyServices = services;
 
+         
+
             ConnectionStringToMasterSqlDb = Configuration.GetConnectionString("MasterSqlConnection");
             ConnectionStringSinnersDb = Configuration.GetConnectionString("DefaultConnection");
 
@@ -261,7 +263,13 @@ namespace ChummerHub
                 //};
             });
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc(options => { }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+                .AddJsonOptions(x =>
+                {
+                    x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                    x.SerializerSettings.PreserveReferencesHandling =
+                        Newtonsoft.Json.PreserveReferencesHandling.Objects;
+                });
 
 
             services.AddVersionedApiExplorer(options =>

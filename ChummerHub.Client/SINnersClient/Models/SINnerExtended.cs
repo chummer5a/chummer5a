@@ -21,9 +21,10 @@ namespace SINners.Models
         /// <summary>
         /// Initializes a new instance of the SINnerExtended class.
         /// </summary>
-        public SINnerExtended(Guid? id = default(Guid?), string jsonSummary = default(string))
+        public SINnerExtended(Guid? id = default(Guid?), Guid? siNnerId = default(Guid?), string jsonSummary = default(string))
         {
             Id = id;
+            SiNnerId = siNnerId;
             JsonSummary = jsonSummary;
         }
 
@@ -31,6 +32,11 @@ namespace SINners.Models
         /// </summary>
         [JsonProperty(PropertyName = "id")]
         public Guid? Id { get; set; }
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "siNnerId")]
+        public Guid? SiNnerId { get; set; }
 
         /// <summary>
         /// </summary>

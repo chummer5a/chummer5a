@@ -249,7 +249,12 @@ namespace Chummer
         [Newtonsoft.Json.JsonIgnore]
         [XmlIgnore]
         [IgnoreDataMember]
-        public EventHandler<Character> OnSaveCompleted;
+        [CanBeNull]
+        public EventHandler<Character> OnSaveCompleted
+        {
+            get;
+            set;
+        }
 
         #region Initialization, Save, Load, Print, and Reset Methods
 

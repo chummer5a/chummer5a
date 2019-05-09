@@ -192,6 +192,7 @@ namespace ChummerHub.Client.UI
             this.tlpTags.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpTags.Size = new System.Drawing.Size(288, 158);
             this.tlpTags.TabIndex = 0;
+            this.tlpTags.MouseLeave += new System.EventHandler(this.TlpTags_MouseLeave);
             // 
             // cbTagSRM_ready
             // 

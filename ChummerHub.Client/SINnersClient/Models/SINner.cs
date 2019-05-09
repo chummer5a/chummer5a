@@ -21,9 +21,10 @@ namespace SINners.Models
         /// <summary>
         /// Initializes a new instance of the SINner class.
         /// </summary>
-        public SINner(Guid? id = default(Guid?), string downloadUrl = default(string), DateTime? uploadDateTime = default(DateTime?), DateTime? lastChange = default(DateTime?), string language = default(string), SINnerMetaData siNnerMetaData = default(SINnerMetaData), SINnerExtended myExtendedAttributes = default(SINnerExtended), SINnerGroup myGroup = default(SINnerGroup), string alias = default(string))
+        public SINner(Guid? id = default(Guid?), string editionNumber = default(string), string downloadUrl = default(string), DateTime? uploadDateTime = default(DateTime?), DateTime? lastChange = default(DateTime?), string language = default(string), SINnerMetaData siNnerMetaData = default(SINnerMetaData), SINnerExtended myExtendedAttributes = default(SINnerExtended), SINnerGroup myGroup = default(SINnerGroup), string alias = default(string))
         {
             Id = id;
+            EditionNumber = editionNumber;
             DownloadUrl = downloadUrl;
             UploadDateTime = uploadDateTime;
             LastChange = lastChange;
@@ -38,6 +39,11 @@ namespace SINners.Models
         /// </summary>
         [JsonProperty(PropertyName = "id")]
         public Guid? Id { get; set; }
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "editionNumber")]
+        public string EditionNumber { get; set; }
 
         /// <summary>
         /// </summary>
@@ -84,6 +90,13 @@ namespace SINners.Models
         /// </summary>
         public virtual void Validate()
         {
+            if (this.EditionNumber != null)
+            {
+                if (this.EditionNumber.Length > 2)
+                {
+                    throw new ValidationException(ValidationRules.MaxLength, "EditionNumber", 2);
+                }
+            }
             if (this.Language != null)
             {
                 if (this.Language.Length > 6)

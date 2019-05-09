@@ -351,7 +351,7 @@ namespace ChummerHub.Controllers.V1
                 dbsinner = await CheckIfUpdateSINnerFile(id, user);
                 if (dbsinner == null)
                 {
-                    var e = new ArgumentException("You may not edit this (existing) sinner!");
+                    var e = new NoUserRightException("You may not edit this (existing) sinner with id " + id + ".");
                     res = new ResultSINnerPut(e);
                     return Conflict(res);
                 }
@@ -364,7 +364,8 @@ namespace ChummerHub.Controllers.V1
                 }
                 
                 sin.DownloadUrl = Startup.GDrive.StoreXmlInCloud(sin, uploadedFile);
-                _context.Entry(dbsinner).CurrentValues.SetValues(sin);
+                dbsinner.DownloadUrl = sin.DownloadUrl;
+                //_context.Entry(dbsinner).CurrentValues.SetValues(sin);
                 try
                 {
                     var tc = new Microsoft.ApplicationInsights.TelemetryClient();
@@ -530,13 +531,17 @@ namespace ChummerHub.Controllers.V1
                         sinner.MyExtendedAttributes.Id = Guid.NewGuid();
                     }
 
-                    var oldsinner = (from a in _context.SINners.Include(a => a.SINnerMetaData.Visibility.UserRights)
-                                                        .Include(b => b.MyGroup)
-                                     where a.Id == sinner.Id
-                                     select a).FirstOrDefault();
+                    var oldsinner = (from a in _context.SINners
+                            .Include(a => a.MyExtendedAttributes)
+                            .Include(a => a.SINnerMetaData)
+                            .Include(a => a.SINnerMetaData.Visibility)
+                            .Include(a => a.SINnerMetaData.Visibility.UserRights)
+                            .Include(b => b.MyGroup)
+                            where a.Id == sinner.Id
+                            select a).FirstOrDefault();
                     if(oldsinner != null)
                     {
-                        var canedit = await CheckIfUpdateSINnerFile(oldsinner, user);
+                        var canedit = await CheckIfUpdateSINnerFile(oldsinner.Id.Value, user);
                         if (canedit == null)
                         {
                             string msg = "SINner " + sinner.Id + " is not editable for user " + user.Email + ".";
@@ -622,8 +627,18 @@ namespace ChummerHub.Controllers.V1
                                 _context.Tags.Remove(tag.FirstOrDefault());
                             }
                         }
+
+                        if (dbsinner.MyExtendedAttributes == null)
+                        {
+                            dbsinner.MyExtendedAttributes =
+                                await _context.SINnerExtendedMetaData.FirstOrDefaultAsync(
+                                    a => a.SINnerId == dbsinner.Id);
+                        }
+                        if (dbsinner.MyExtendedAttributes != null)
+                            _context.SINnerExtendedMetaData.Remove(dbsinner.MyExtendedAttributes);
                         _context.SINnerMetaData.Remove(dbsinner.SINnerMetaData);
                         _context.SINners.Remove(dbsinner);
+                        
                         dbsinner.SINnerMetaData.Visibility.UserRights.Clear();
                         dbsinner.SINnerMetaData.Visibility = null;
                         dbsinner.SINnerMetaData.Tags = null;
@@ -836,10 +851,7 @@ namespace ChummerHub.Controllers.V1
         {
             try
             {
-                var dbsinner = await _context.SINners.Include(a => a.SINnerMetaData.Visibility.UserRights)
-                    .Include(b => b.MyGroup)
-                    .FirstOrDefaultAsync(e => e.Id == id);
-                return await CheckIfUpdateSINnerFile(dbsinner, user);
+                return await CheckIfUpdateSINnerFileInternal(id, user);
             }
             catch (Exception e)
             {
@@ -851,42 +863,44 @@ namespace ChummerHub.Controllers.V1
             }
         }
 
-        private async Task<SINner> CheckIfUpdateSINnerFile(SINner dbsinner, ApplicationUser user)
+        private async Task<SINner> CheckIfUpdateSINnerFileInternal(Guid id, ApplicationUser user)
         {
-            if (dbsinner != null)
+            if (id == Guid.Empty)
             {
-                if (dbsinner.SINnerMetaData?.Visibility?.UserRights == null)
+                throw new ArgumentNullException("id", "Id is empty!");
+            }
+
+            var dbsinner = await (from a in _context.SINners
+                    .Include(a => a.MyGroup)
+                where a.Id == id
+                select a).FirstOrDefaultAsync();
+            if (dbsinner == null)
+                return null;
+            var dbsinnerseq = await (from a in _context.UserRights
+                where a.SINnerId == id
+                      && a.EMail.ToUpperInvariant() == user.NormalizedEmail
+                      && a.CanEdit == true
+                select a).ToListAsync();
+            if (dbsinnerseq.Any())
+            {
+                return dbsinner;
+            }
+            if (dbsinner.MyGroup != null)
+            {
+                if (!String.IsNullOrEmpty(dbsinner.MyGroup.MyAdminIdentityRole))
                 {
-                    dbsinner = await (from a in _context.SINners
-                            .Include(a => a.SINnerMetaData)
-                            .Include(a => a.SINnerMetaData.Visibility)
-                            .Include(a => a.SINnerMetaData.Visibility.UserRights)
-                            .Include(a => a.MyGroup)
-                        select a).FirstOrDefaultAsync();
-                }
-                var editseq = (from a in dbsinner.SINnerMetaData.Visibility.UserRights where a.EMail == user.NormalizedEmail select a).ToList();
-                foreach (var edit in editseq)
-                {
-                    if (edit.CanEdit == true)
+                    var localadmins = await _userManager.GetUsersInRoleAsync(dbsinner.MyGroup.MyAdminIdentityRole);
+                    if (localadmins.Contains(user))
                         return dbsinner;
                 }
-                if (dbsinner.MyGroup != null)
+                if (!String.IsNullOrEmpty(dbsinner.MyGroup.GroupCreatorUserName))
                 {
-                    if (!String.IsNullOrEmpty(dbsinner.MyGroup.MyAdminIdentityRole))
-                    {
-                        var localadmins = await _userManager.GetUsersInRoleAsync(dbsinner.MyGroup.MyAdminIdentityRole);
-                        if (localadmins.Contains(user))
-                            return dbsinner;
-                    }
-                    if (!String.IsNullOrEmpty(dbsinner.MyGroup.GroupCreatorUserName))
-                    {
-                        if (dbsinner.MyGroup.GroupCreatorUserName == user.UserName)
-                            return dbsinner;
-                    }
+                    if (dbsinner.MyGroup.GroupCreatorUserName == user.UserName)
+                        return dbsinner;
                 }
-                throw new ChummerHub.NoUserRightException(user.UserName, dbsinner.Id);
             }
-            return null;
+            throw new ChummerHub.NoUserRightException(user.UserName, dbsinner.Id);
+         
         }
 
         private bool UploadClientExists(Guid id)

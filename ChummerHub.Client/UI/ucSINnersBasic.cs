@@ -383,5 +383,10 @@ namespace ChummerHub.Client.UI
             this.myUC.CharacterObject.Save(this.myUC.MyCE.MySINnerFile.Id + ".chum5", false, true);
             this.tbID.Text = this.myUC.MyCE.MySINnerFile.Id.ToString();
         }
+
+        private void TlpTags_MouseLeave(object sender, EventArgs e)
+        {
+            this.SaveTagsToSinner();
+        }
     }
 }

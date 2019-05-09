@@ -4,14 +4,16 @@ using ChummerHub.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ChummerHub.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190508131200_editionnumber")]
+    partial class editionnumber
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -90,6 +92,8 @@ namespace ChummerHub.Migrations
 
                     b.Property<DateTime>("LastChange");
 
+                    b.Property<Guid?>("MyExtendedAttributesId");
+
                     b.Property<Guid?>("MyGroupId");
 
                     b.Property<Guid?>("SINnerMetaDataId");
@@ -102,7 +106,7 @@ namespace ChummerHub.Migrations
 
                     b.HasIndex("Alias");
 
-                    b.HasIndex("EditionNumber");
+                    b.HasIndex("MyExtendedAttributesId");
 
                     b.HasIndex("MyGroupId");
 
@@ -136,13 +140,7 @@ namespace ChummerHub.Migrations
 
                     b.Property<string>("JsonSummary");
 
-                    b.Property<Guid?>("SINnerId");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("SINnerId")
-                        .IsUnique()
-                        .HasFilter("[SINnerId] IS NOT NULL");
 
                     b.ToTable("SINnerExtendedMetaData");
                 });
@@ -434,6 +432,10 @@ namespace ChummerHub.Migrations
 
             modelBuilder.Entity("ChummerHub.Models.V1.SINner", b =>
                 {
+                    b.HasOne("ChummerHub.Models.V1.SINnerExtended", "MyExtendedAttributes")
+                        .WithMany()
+                        .HasForeignKey("MyExtendedAttributesId");
+
                     b.HasOne("ChummerHub.Models.V1.SINnerGroup", "MyGroup")
                         .WithMany()
                         .HasForeignKey("MyGroupId");
@@ -441,13 +443,6 @@ namespace ChummerHub.Migrations
                     b.HasOne("ChummerHub.Models.V1.SINnerMetaData", "SINnerMetaData")
                         .WithMany()
                         .HasForeignKey("SINnerMetaDataId");
-                });
-
-            modelBuilder.Entity("ChummerHub.Models.V1.SINnerExtended", b =>
-                {
-                    b.HasOne("ChummerHub.Models.V1.SINner")
-                        .WithOne("MyExtendedAttributes")
-                        .HasForeignKey("ChummerHub.Models.V1.SINnerExtended", "SINnerId");
                 });
 
             modelBuilder.Entity("ChummerHub.Models.V1.SINnerGroup", b =>
