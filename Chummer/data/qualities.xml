@@ -2564,7 +2564,12 @@
       <name>Animal Empathy</name>
       <karma>3</karma>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+        <specificskill>
+          <name>Animal Handling</name>
+          <bonus>2</bonus>
+        </specificskill>
+	  </bonus>
       <source>RF</source>
       <page>145</page>
     </quality>
