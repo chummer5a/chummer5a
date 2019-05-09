@@ -42,21 +42,8 @@ namespace ChummerHub.Client.UI
         {
             InitializeComponent();
             _mySINner = mySINner;
-            //if (PluginHandler.MyCharExtendedDic.ContainsKey(mySINner.CharacterObject.FileName))
-            //{
-            //    CharacterExtended outce;
-            //    if (!PluginHandler.MyCharExtendedDic.TryGetValue(mySINner.CharacterObject.FileName, out outce))
-            //    {
-            //        throw new ArgumentException("Could not get character from MyCharExtendedDic", nameof(mySINner));
-            //    }
-
-            //    MyCE = outce;
-            //}
-            //else
-            //{
-                MyCE = new CharacterExtended(mySINner.CharacterObject, null, PluginHandler.MySINnerLoading);
-                MyCE.ZipFilePath = await MyCE.PrepareModel();
-            //}
+            MyCE = new CharacterExtended(mySINner.CharacterObject, null, PluginHandler.MySINnerLoading);
+            MyCE.ZipFilePath = await MyCE.PrepareModel();
             MyCE.MySINnerFile.SiNnerMetaData.Tags = MyCE.PopulateTags();
 
             TabSINnersBasic = new ucSINnersBasic(this)
@@ -73,7 +60,20 @@ namespace ChummerHub.Client.UI
             this.tabPageAdvanced.Controls.Add(TabSINnersAdvanced);
            
             this.AutoSize = true;
-          
+
+            if ((ucSINnersOptions.UploadOnSave == true))
+            {
+                try
+                {
+                    mySINner.CharacterObject.OnSaveCompleted = null;
+                    mySINner.CharacterObject.OnSaveCompleted += PluginHandler.MyOnSaveUpload;
+                }
+                catch (Exception e)
+                {
+                    System.Diagnostics.Trace.TraceInformation(e.ToString());
+                }
+                
+            }
             return MyCE;
         }
 

@@ -58,6 +58,14 @@
             <param name="groupname">In case you want to rename the group</param>
             <returns></returns>
         </member>
+        <member name="M:ChummerHub.Controllers.V1.SINnerGroupController.PutGroupSetting(System.Guid,Microsoft.AspNetCore.Http.IFormFile)">
+            <summary>
+            The Xml or Zip File can be uploaded (knowing the previously stored Id)
+            </summary>
+            <param name="id"></param>
+            <param name="uploadedFile"></param>
+            <returns></returns>
+        </member>
         <member name="M:ChummerHub.Controllers.V1.SINnerGroupController.PostGroup(ChummerHub.Models.V1.SINnerGroup,System.Nullable{System.Guid})">
             <summary>
             Store the new group
@@ -90,7 +98,7 @@
             <param name="Language"></param>
             <returns>SINSearchGroupResult</returns>
         </member>
-        <member name="M:ChummerHub.Controllers.V1.SINnerGroupController.GetGroupmembers(System.String,System.String,System.String)">
+        <member name="M:ChummerHub.Controllers.V1.SINnerGroupController.GetGroupmembers(System.String,System.String,System.String,System.String)">
             <summary>
             Search for Groups
             </summary>

@@ -23,6 +23,7 @@ using System.Xml;
 using System.Xml.Serialization;
 using Microsoft.Rest;
 using System.Threading;
+using Formatting = Newtonsoft.Json.Formatting;
 using MessageBox = System.Windows.MessageBox;
 using TabControl = System.Windows.Forms.TabControl;
 
@@ -33,21 +34,6 @@ namespace Chummer.Plugins
     //[ExportMetadata("frmCareer", "true")]
     public class PluginHandler : IPlugin
     {
-        //public static CharacterExtended MyCharacterExtended = null;
-        //public static Dictionary<string, CharacterExtended> MyCharExtendedDic = new Dictionary<string, CharacterExtended>();
-
-        //public static CharacterExtended GetCharExtended(Character c, string fileElement)
-        //{
-        //    CharacterExtended ce;
-        //    if (!MyCharExtendedDic.TryGetValue(c.GetHashCode(), out ce))
-        //    {
-        //        ce = new CharacterExtended(c, fileElement);
-        //        MyCharExtendedDic.Add(ce.GetHashCode(), ce);
-        //    }
-        //    return ce;    
-            
-        //}
-
         public static UploadClient MyUploadClient = null;
 
         public static frmChummerMain MainForm = null;
@@ -81,6 +67,11 @@ namespace Chummer.Plugins
         {
             ucSINnersUserControl uc = new ucSINnersUserControl();
             var ce = uc.SetCharacterFrom(input);
+            if (ce.Status == TaskStatus.Faulted)
+            {
+                ChummerHub.Client.Backend.Utils.HandleError(ce.Exception);
+                return new List<TabPage>();
+            }
             TabPage page = new TabPage("SINners");
             page.Name = "SINners";
             page.Controls.Add(uc);
@@ -91,6 +82,11 @@ namespace Chummer.Plugins
         {
             ucSINnersUserControl uc = new ucSINnersUserControl();
             var ce = uc.SetCharacterFrom(input);
+            if (ce.Status == TaskStatus.Faulted)
+            {
+                ChummerHub.Client.Backend.Utils.HandleError(ce.Exception);
+                return new List<TabPage>();
+            }
             TabPage page = new TabPage("SINners");
             page.Name = "SINners";
             page.Controls.Add(uc);
@@ -104,34 +100,51 @@ namespace Chummer.Plugins
         string IPlugin.GetSaveToFileElement(Character input)
         {
             CharacterExtended ce = GetMyCe(input);
-            //ce = new CharacterExtended(input, null);
-            if ((ucSINnersOptions.UploadOnSave == true) && (IsSaving == false))
+            
+            var jsonResolver = new PropertyRenameAndIgnoreSerializerContractResolver();
+            //jsonResolver.IgnoreProperty(typeof(String), "MugshotBase64");
+            jsonResolver.IgnoreProperty(typeof(SINnerExtended), "jsonSummary");
+            //jsonResolver.RenameProperty(typeof(Person), "FirstName", "firstName");
+            JsonSerializerSettings settings = new JsonSerializerSettings
             {
-                IsSaving = true;
-                //removing a handler that is not registered is legal - that way only one handler is registered EVER!
-                try
+                ContractResolver = jsonResolver,
+                
+            };
+            //remove the reflection tag - no need to save it
+            Tag refTag = null;
+            string returnme = null;
+            if (ce?.MySINnerFile?.SiNnerMetaData?.Tags != null)
+            {
+                var reflectionseq =
+                    (from a in ce.MySINnerFile.SiNnerMetaData.Tags where a.TagName == "Reflection" select a);
+                if (reflectionseq?.Any() == true)
                 {
-                    input.OnSaveCompleted -= MyOnSaveUpload;
+                    refTag = reflectionseq.FirstOrDefault();
+                    ce.MySINnerFile.SiNnerMetaData.Tags.Remove(refTag);
                 }
-                catch (Exception e)
-                {
-                    System.Diagnostics.Trace.TraceInformation(e.ToString());
-                }
-                input.OnSaveCompleted += MyOnSaveUpload;
+                returnme = JsonConvert.SerializeObject(ce.MySINnerFile, Formatting.Indented, settings);
+                ce.MySINnerFile.SiNnerMetaData.Tags.Add(refTag);
+                return returnme;
             }
-            return JsonConvert.SerializeObject(ce.MySINnerFile);
+            else
+            {
+                returnme = JsonConvert.SerializeObject(ce.MySINnerFile, Formatting.Indented, settings);
+            }
+
+            return returnme;
+
         }
 
         public static async void MyOnSaveUpload(object sender, Character input)
         {
             try
             {
-                input.OnSaveCompleted -= MyOnSaveUpload;
+                input.OnSaveCompleted = null;
                 using (new CursorWait(true, MainForm))
                 {
                     var ce = GetMyCe(input);
                     //ce = new CharacterExtended(input, null);
-                    if (ce.MySINnerFile.SiNnerMetaData.Tags.Any(a => a.TagName != "Reflection"))
+                    if (ce.MySINnerFile.SiNnerMetaData.Tags.Any(a => a.TagName == "Reflection"))
                     {
                         ce.MySINnerFile.SiNnerMetaData.Tags = ce.PopulateTags();
                     }
@@ -173,6 +186,7 @@ namespace Chummer.Plugins
             }
             finally
             {
+                input.OnSaveCompleted += MyOnSaveUpload;
                 IsSaving = false;
             }
         }
@@ -218,15 +232,24 @@ namespace Chummer.Plugins
             }
 
             if (sinnertab == null)
-                return null;
-            ucSINnersUserControl myUcSIN = null;
-            foreach (ucSINnersUserControl ucSIN in sinnertab.Controls)
             {
-                myUcSIN = ucSIN;
-                break;
+                ce = new CharacterExtended(input, null);
             }
+            else
+            {
+                ucSINnersUserControl myUcSIN = null;
+                foreach (ucSINnersUserControl ucSIN in sinnertab.Controls)
+                {
+                    myUcSIN = ucSIN;
+                    break;
+                }
 
-            return myUcSIN?.MyCE;
+                if (myUcSIN == null)
+                    ce = new CharacterExtended(input, null);
+                else
+                    ce = myUcSIN.MyCE;
+            }
+            return ce;
         }
 
         void IPlugin.LoadFileElement(Character input, string fileElement)

@@ -12,13 +12,13 @@ using System.Xml.Serialization;
 namespace ChummerHub.Models.V1
 {
     [DebuggerDisplay("UserRight {EMail}: {CanEdit}")]
-    public class SINerUserRight
+    public class SINnerUserRight
     {
-        public SINerUserRight()
+        public SINnerUserRight()
         {
         }
 
-        public SINerUserRight(Guid sinnerId)
+        public SINnerUserRight(Guid sinnerId)
         {
             SINnerId = sinnerId;
         }

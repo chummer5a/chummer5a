@@ -29,19 +29,12 @@ using Microsoft.AspNetCore.Identity;
 namespace ChummerHub.Models.V1
 {
     [DebuggerDisplay("SINner {Id}")]
-    public class SINner
+    public class SINner : SINnerUploadAble
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-
-        public Guid? Id { get; set; }
-
+       
+        [MaxLength(2)]
+        public string EditionNumber { get; set; }
         
-        public string DownloadUrl { get; set; }
-
-        public DateTime? UploadDateTime { get; set; }
-
-        public DateTime LastChange { get; set; }
 
         [JsonIgnore]
         [XmlIgnore]
@@ -59,18 +52,15 @@ namespace ChummerHub.Models.V1
         [MaxLength(64)]
         public string Alias { get; set; }
 
-        [JsonIgnore]
-        [XmlIgnore]
-        public string GoogleDriveFileId { get; set; }
-
-        public SINner()
+      public SINner()
         {
             Id = Guid.NewGuid();
             this.SINnerMetaData = new SINnerMetaData();
-            this.MyExtendedAttributes = new SINnerExtended();
+            this.MyExtendedAttributes = new SINnerExtended(this);
             this.DownloadUrl = "";
             this.MyGroup = null;
             this.Language = "";
+            EditionNumber = "5e";
         }
 
         internal static async Task<List<SINner>> GetSINnersFromUser(ApplicationUser user, ApplicationDbContext context, bool canEdit)

@@ -270,6 +270,40 @@ namespace ChummerHub.Controllers.V1
         }
 
         // GET: api/ChummerFiles/5
+        [HttpGet("{id}")]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GetSINnerVisibilityById")]
+        [ProducesResponseType(typeof(ResultSinnerGetSINnerVisibilityById), (int)HttpStatusCode.OK)]
+        [Authorize]
+        public async Task<ActionResult<ResultSinnerGetSINnerVisibilityById>> GetSINnerVisibilityById([FromRoute] Guid id)
+        {
+            ResultSinnerGetSINnerVisibilityById res;
+            try
+            {
+
+                ApplicationUser user = null;
+                if (!String.IsNullOrEmpty(User?.Identity?.Name))
+                    user = await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
+                var list = await _context.UserRights
+                    .Where(a => a.SINnerId == id)
+                    .ToListAsync();
+                res = new ResultSinnerGetSINnerVisibilityById(list);
+                if ((list == null || (!list.Any())))
+                {
+                    return NotFound(res);
+                }
+                return Ok(res);
+            }
+            catch (Exception e)
+            {
+                res = new ResultSinnerGetSINnerVisibilityById(e);
+                return BadRequest(res);
+            }
+        }
+
+        // GET: api/ChummerFiles/5
         [HttpGet("{id}", Name = "SinnerGetOwnedSINByAlias")]
         [SwaggerResponseExample((int)HttpStatusCode.OK, typeof(SINnerExample))]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
@@ -351,7 +385,7 @@ namespace ChummerHub.Controllers.V1
                 dbsinner = await CheckIfUpdateSINnerFile(id, user);
                 if (dbsinner == null)
                 {
-                    var e = new ArgumentException("You may not edit this (existing) sinner!");
+                    var e = new NoUserRightException("You may not edit this (existing) sinner with id " + id + ".");
                     res = new ResultSINnerPut(e);
                     return Conflict(res);
                 }
@@ -364,7 +398,8 @@ namespace ChummerHub.Controllers.V1
                 }
                 
                 sin.DownloadUrl = Startup.GDrive.StoreXmlInCloud(sin, uploadedFile);
-                _context.Entry(dbsinner).CurrentValues.SetValues(sin);
+                dbsinner.DownloadUrl = sin.DownloadUrl;
+                //_context.Entry(dbsinner).CurrentValues.SetValues(sin);
                 try
                 {
                     var tc = new Microsoft.ApplicationInsights.TelemetryClient();
@@ -499,20 +534,7 @@ namespace ChummerHub.Controllers.V1
                         res = new ResultSinnerPostSIN(e);
                         return BadRequest(res);
                     }
-                        
-
-                    //check for own visibility
-                    if (!sinner.SINnerMetaData.Visibility.UserRights.Any(a => a.EMail.ToLowerInvariant() == user.Email.ToLowerInvariant() && a.CanEdit == true))
-                    {
-                        var addme = new SINerUserRight()
-                        {
-                            CanEdit = true,
-                            EMail = user.Email,
-                            SINnerId = sinner.Id
-                        };
-                        sinner.SINnerMetaData.Visibility.UserRights.Add(addme);
-                    }
-
+                    
                     if (sinner.LastChange == null)
                     {
                         var e = new ArgumentException("Sinner  " + sinner.Id + ": LastChange not set!");
@@ -530,13 +552,17 @@ namespace ChummerHub.Controllers.V1
                         sinner.MyExtendedAttributes.Id = Guid.NewGuid();
                     }
 
-                    var oldsinner = (from a in _context.SINners.Include(a => a.SINnerMetaData.Visibility.UserRights)
-                                                        .Include(b => b.MyGroup)
-                                     where a.Id == sinner.Id
-                                     select a).FirstOrDefault();
+                    var oldsinner = (from a in _context.SINners
+                            .Include(a => a.MyExtendedAttributes)
+                            .Include(a => a.SINnerMetaData)
+                            .Include(a => a.SINnerMetaData.Visibility)
+                            .Include(a => a.SINnerMetaData.Visibility.UserRights)
+                            .Include(b => b.MyGroup)
+                            where a.Id == sinner.Id
+                            select a).FirstOrDefault();
                     if(oldsinner != null)
                     {
-                        var canedit = await CheckIfUpdateSINnerFile(oldsinner, user);
+                        var canedit = await CheckIfUpdateSINnerFile(oldsinner.Id.Value, user);
                         if (canedit == null)
                         {
                             string msg = "SINner " + sinner.Id + " is not editable for user " + user.Email + ".";
@@ -548,27 +574,37 @@ namespace ChummerHub.Controllers.V1
                         var olduserrights = oldsinner.SINnerMetaData.Visibility.UserRights.ToList();
                         oldsinner.SINnerMetaData.Visibility.UserRights.Clear();
                         _context.UserRights.RemoveRange(olduserrights);
-                        bool userfound = false;
-                        foreach(var ur in sinner.SINnerMetaData.Visibility.UserRights)
+                        //check if ANY visibility-data was uploaded
+                        if (sinner.SINnerMetaData.Visibility.UserRights.Any())
                         {
-                            if (ur.EMail.ToLowerInvariant() == user.Email.ToLowerInvariant())
+                            bool userfound = false;
+                            foreach (var ur in sinner.SINnerMetaData.Visibility.UserRights)
                             {
-                                ur.CanEdit = true;
-                                userfound = true;
+                                if (ur.EMail.ToLowerInvariant() == user.Email.ToLowerInvariant())
+                                {
+                                    ur.CanEdit = true;
+                                    userfound = true;
+                                }
+
+                                ur.Id = Guid.NewGuid();
+                                ur.SINnerId = sinner.Id;
+                                _context.UserRights.Add(ur);
                             }
-                            ur.Id = Guid.NewGuid();
-                            ur.SINnerId = sinner.Id;
-                            _context.UserRights.Add(ur);
+                            if (!userfound)
+                            {
+                                SINnerUserRight ownUser = new SINnerUserRight();
+                                ownUser.Id = Guid.NewGuid();
+                                ownUser.SINnerId = sinner.Id;
+                                ownUser.CanEdit = true;
+                                ownUser.EMail = user.Email;
+                                sinner.SINnerMetaData.Visibility.UserRights.Add(ownUser);
+                                _context.UserRights.Add(ownUser);
+                            }
                         }
-                        if (!userfound)
+                        else
                         {
-                            SINerUserRight ownUser = new SINerUserRight();
-                            ownUser.Id = Guid.NewGuid();
-                            ownUser.SINnerId = sinner.Id;
-                            ownUser.CanEdit = true;
-                            ownUser.EMail = user.Email;
-                            sinner.SINnerMetaData.Visibility.UserRights.Add(ownUser);
-                            _context.UserRights.Add(ownUser);                                
+                            //no userrights where uploaded.
+                            sinner.SINnerMetaData.Visibility.UserRights = olduserrights;
                         }
                     }
                     else
@@ -585,7 +621,7 @@ namespace ChummerHub.Controllers.V1
                         }
                         if (!ownuserfound)
                         {
-                            SINerUserRight ownright = new SINerUserRight();
+                            SINnerUserRight ownright = new SINnerUserRight();
                             ownright.CanEdit = true;
                             ownright.EMail = user.Email;
                             ownright.SINnerId = sinner.Id;
@@ -600,19 +636,17 @@ namespace ChummerHub.Controllers.V1
                     }
 
                     sinner.UploadClientId = uploadInfo.Client.Id;
-                    SINner dbsinner = await CheckIfUpdateSINnerFile(sinner.Id.Value, user);
+                    SINner dbsinner = await CheckIfUpdateSINnerFile(sinner.Id.Value, user, true);
                     SINnerGroup oldgroup = null;
                     if (dbsinner != null)
                     {
                         oldgroup = dbsinner.MyGroup;
-                        _context.SINners.Attach(dbsinner);
+                        //_context.SINners.Attach(dbsinner);
                         if (String.IsNullOrEmpty(sinner.GoogleDriveFileId))
                             sinner.GoogleDriveFileId = dbsinner.GoogleDriveFileId;
                         if(String.IsNullOrEmpty(sinner.DownloadUrl))
                             sinner.DownloadUrl = dbsinner.DownloadUrl;
                         
-                        _context.UserRights.RemoveRange(dbsinner.SINnerMetaData.Visibility.UserRights);
-                        _context.SINnerVisibility.Remove(dbsinner.SINnerMetaData.Visibility);
                         var alltags = await _context.Tags.Where(a => a.SINnerId == dbsinner.Id).Select(a => a.Id).ToListAsync();
                         foreach (var id in alltags)
                         {
@@ -622,14 +656,60 @@ namespace ChummerHub.Controllers.V1
                                 _context.Tags.Remove(tag.FirstOrDefault());
                             }
                         }
+                        _context.UserRights.RemoveRange(dbsinner.SINnerMetaData.Visibility.UserRights);
+                        _context.SINnerVisibility.Remove(dbsinner.SINnerMetaData.Visibility);
+                        _context.SINnerExtendedMetaData.Remove(dbsinner.MyExtendedAttributes);
                         _context.SINnerMetaData.Remove(dbsinner.SINnerMetaData);
                         _context.SINners.Remove(dbsinner);
+                        
                         dbsinner.SINnerMetaData.Visibility.UserRights.Clear();
+                        dbsinner.SINnerMetaData.Visibility.UserRights = null;
                         dbsinner.SINnerMetaData.Visibility = null;
                         dbsinner.SINnerMetaData.Tags = null;
                         dbsinner.SINnerMetaData = null;
-                        
-                        await _context.SaveChangesAsync();
+                        dbsinner.MyExtendedAttributes = null;
+
+                        try
+                        {
+                            await _context.SaveChangesAsync();
+                        }
+                        catch (DbUpdateConcurrencyException ex)
+                        {
+                            foreach (var entry in ex.Entries)
+                            {
+                                if (entry.Entity is SINner
+                                    || entry.Entity is Tag
+                                    || entry.Entity is SINnerExtended
+                                    || entry.Entity is SINnerGroup
+                                    || entry.Entity is SINnerUserRight
+                                    || entry.Entity is SINnerMetaData)
+                                {
+                                    try
+                                    {
+                                        Utils.DbUpdateConcurrencyExceptionHandler(entry, _logger);
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        res = new ResultSinnerPostSIN(e);
+                                        return BadRequest(res);
+                                    }
+                                }
+                                else
+                                {
+                                    var e = new NotSupportedException(
+                                        "(Codepoint 1) Don't know how to handle concurrency conflicts for "
+                                        + entry.Metadata.Name);
+                                    res = new ResultSinnerPostSIN(e);
+                                    return BadRequest(res);
+                                }
+                            }
+                        }
+                        catch (DbUpdateException ex)
+                        {
+                            res = new ResultSinnerPostSIN(ex);
+                            return BadRequest(res);
+                        }
+
                         
                         await _context.SINners.AddAsync(sinner);
                         string msg = "Sinner " + sinner.Id + " updated: " + _context.Entry(dbsinner).State.ToString();
@@ -832,14 +912,11 @@ namespace ChummerHub.Controllers.V1
             }
         }
 
-        private async Task<SINner> CheckIfUpdateSINnerFile(Guid id, ApplicationUser user)
+        private async Task<SINner> CheckIfUpdateSINnerFile(Guid id, ApplicationUser user, bool allincludes = false)
         {
             try
             {
-                var dbsinner = await _context.SINners.Include(a => a.SINnerMetaData.Visibility.UserRights)
-                    .Include(b => b.MyGroup)
-                    .FirstOrDefaultAsync(e => e.Id == id);
-                return await CheckIfUpdateSINnerFile(dbsinner, user);
+                return await CheckIfUpdateSINnerFileInternal(id, user, allincludes);
             }
             catch (Exception e)
             {
@@ -851,42 +928,60 @@ namespace ChummerHub.Controllers.V1
             }
         }
 
-        private async Task<SINner> CheckIfUpdateSINnerFile(SINner dbsinner, ApplicationUser user)
+        private async Task<SINner> CheckIfUpdateSINnerFileInternal(Guid id, ApplicationUser user, bool allincludes)
         {
-            if (dbsinner != null)
+            if (id == Guid.Empty)
             {
-                if (dbsinner.SINnerMetaData?.Visibility?.UserRights == null)
+                throw new ArgumentNullException("id", "Id is empty!");
+            }
+
+            SINner dbsinner = null;
+            if (allincludes)
+            {
+                dbsinner = await (from a in _context.SINners
+                        .Include(a => a.SINnerMetaData)
+                        .Include(a => a.SINnerMetaData.Visibility)
+                        .Include(a => a.SINnerMetaData.Visibility.UserRights)
+                        .Include(a => a.MyExtendedAttributes)
+                        .Include(a => a.MyGroup)
+                    where a.Id == id
+                    select a).FirstOrDefaultAsync();
+            }
+            else
+            {
+                dbsinner = await (from a in _context.SINners
+                        .Include(a => a.MyGroup)
+                    where a.Id == id
+                    select a).FirstOrDefaultAsync();
+            }
+            
+            if (dbsinner == null)
+                return null;
+            var dbsinnerseq = await (from a in _context.UserRights
+                where a.SINnerId == id
+                      && a.EMail.ToUpperInvariant() == user.NormalizedEmail
+                      && a.CanEdit == true
+                select a).ToListAsync();
+            if (dbsinnerseq.Any())
+            {
+                return dbsinner;
+            }
+            if (dbsinner.MyGroup != null)
+            {
+                if (!String.IsNullOrEmpty(dbsinner.MyGroup.MyAdminIdentityRole))
                 {
-                    dbsinner = await (from a in _context.SINners
-                            .Include(a => a.SINnerMetaData)
-                            .Include(a => a.SINnerMetaData.Visibility)
-                            .Include(a => a.SINnerMetaData.Visibility.UserRights)
-                            .Include(a => a.MyGroup)
-                        select a).FirstOrDefaultAsync();
-                }
-                var editseq = (from a in dbsinner.SINnerMetaData.Visibility.UserRights where a.EMail == user.NormalizedEmail select a).ToList();
-                foreach (var edit in editseq)
-                {
-                    if (edit.CanEdit == true)
+                    var localadmins = await _userManager.GetUsersInRoleAsync(dbsinner.MyGroup.MyAdminIdentityRole);
+                    if (localadmins.Contains(user))
                         return dbsinner;
                 }
-                if (dbsinner.MyGroup != null)
+                if (!String.IsNullOrEmpty(dbsinner.MyGroup.GroupCreatorUserName))
                 {
-                    if (!String.IsNullOrEmpty(dbsinner.MyGroup.MyAdminIdentityRole))
-                    {
-                        var localadmins = await _userManager.GetUsersInRoleAsync(dbsinner.MyGroup.MyAdminIdentityRole);
-                        if (localadmins.Contains(user))
-                            return dbsinner;
-                    }
-                    if (!String.IsNullOrEmpty(dbsinner.MyGroup.GroupCreatorUserName))
-                    {
-                        if (dbsinner.MyGroup.GroupCreatorUserName == user.UserName)
-                            return dbsinner;
-                    }
+                    if (dbsinner.MyGroup.GroupCreatorUserName == user.UserName)
+                        return dbsinner;
                 }
-                throw new ChummerHub.NoUserRightException(user.UserName, dbsinner.Id);
             }
-            return null;
+            throw new ChummerHub.NoUserRightException(user.UserName, dbsinner.Id);
+         
         }
 
         private bool UploadClientExists(Guid id)

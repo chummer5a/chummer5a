@@ -21,7 +21,7 @@ namespace SINners.Models
         /// <summary>
         /// Initializes a new instance of the SINnerVisibility class.
         /// </summary>
-        public SINnerVisibility(Guid? id = default(Guid?), bool? isPublic = default(bool?), bool? isGroupVisible = default(bool?), IList<SINerUserRight> userRights = default(IList<SINerUserRight>))
+        public SINnerVisibility(Guid? id = default(Guid?), bool? isPublic = default(bool?), bool? isGroupVisible = default(bool?), IList<SINnerUserRight> userRights = default(IList<SINnerUserRight>))
         {
             Id = id;
             IsPublic = isPublic;
@@ -47,7 +47,7 @@ namespace SINners.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "userRights")]
-        public IList<SINerUserRight> UserRights { get; set; }
+        public IList<SINnerUserRight> UserRights { get; set; }
 
     }
 }

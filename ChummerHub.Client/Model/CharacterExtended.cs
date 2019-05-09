@@ -36,7 +36,10 @@ namespace ChummerHub.Client.Model
                             SiNnerMetaData = new SINnerMetaData(),
                             Language = GlobalOptions.Language
                         };
+                       
                         _MySINnerFile.SiNnerMetaData = JsonConvert.DeserializeObject<SINnerMetaData>(fileElement);
+                        if (_MySINnerFile.SiNnerMetaData.Id == Guid.Empty)
+                            _MySINnerFile.SiNnerMetaData.Id = Guid.NewGuid();
                         _MySINnerFile.MyExtendedAttributes.Id = Guid.NewGuid();
                     }
                 }
@@ -50,16 +53,15 @@ namespace ChummerHub.Client.Model
             {
                 _MySINnerFile = new SINner
                 {
-                    MyExtendedAttributes = new SINnerExtended(),
-                    SiNnerMetaData = new SINnerMetaData(),
                     Language = GlobalOptions.Language
                 };
-                MySINnerFile.SiNnerMetaData = new SINnerMetaData
+                _MySINnerFile.SiNnerMetaData = new SINnerMetaData
                 {
                     Id = Guid.NewGuid(),
                     Tags = new List<Tag>(),
                     Visibility = new SINners.Models.SINnerVisibility()
                 };
+                _MySINnerFile.MyExtendedAttributes = new SINnerExtended(_MySINnerFile);
             }
 
             if(MySINnerFile.SiNnerMetaData.Visibility != null)
@@ -88,14 +90,34 @@ namespace ChummerHub.Client.Model
                 MySINnerIds = MySINnerIds; //Save it!
             }
             this.MySINnerFile.MyExtendedAttributes.JsonSummary = JsonConvert.SerializeObject(cache);
-            if (this.MySINnerFile.MyExtendedAttributes.Id == null)
+            if ((this.MySINnerFile.MyExtendedAttributes.Id == null)
+                || (this.MySINnerFile.MyExtendedAttributes.Id == Guid.Empty))
                 this.MySINnerFile.MyExtendedAttributes.Id = Guid.NewGuid();
         }
 
         public CharacterExtended(Character character, string fileElement = null, SINner mySINnerLoading = null) : this(character, fileElement)
         {
             if (mySINnerLoading != null)
+            {
+                var backup = this._MySINnerFile;
                 this._MySINnerFile = mySINnerLoading;
+                if ((this._MySINnerFile.MyExtendedAttributes?.Id == null)
+                    || (this._MySINnerFile.MyExtendedAttributes?.Id == Guid.Empty)
+                    || (String.IsNullOrEmpty(this._MySINnerFile.MyExtendedAttributes?.JsonSummary)))
+                {
+                    this._MySINnerFile.MyExtendedAttributes = backup.MyExtendedAttributes;
+                }
+                if ((this._MySINnerFile.SiNnerMetaData?.Id == null)
+                    || (this._MySINnerFile.SiNnerMetaData?.Id == Guid.Empty))
+                {
+                    this._MySINnerFile.SiNnerMetaData.Id = backup.SiNnerMetaData.Id;
+                }
+
+                if (this._MySINnerFile.SiNnerMetaData.Tags.Count() < backup.SiNnerMetaData.Tags.Count())
+                    this._MySINnerFile.SiNnerMetaData.Tags = backup.SiNnerMetaData.Tags;
+
+            }
+                
         }
 
         public Character MyCharacter { get; set; }
@@ -179,27 +201,38 @@ namespace ChummerHub.Client.Model
                         return true;
                     var client = StaticUtils.GetClient();
                     var found = await client.GetSINByIdWithHttpMessagesAsync(this.MySINnerFile.Id.Value);
+                    await Backend.Utils.HandleError(found, found.Body);
                     if (found.Response.StatusCode == System.Net.HttpStatusCode.OK)
                     {
-                        var sinjson = await found.Response.Content.ReadAsStringAsync();
-                        var foundobj = Newtonsoft.Json.JsonConvert.DeserializeObject<SINner>(sinjson);
-                        SINner foundsin = foundobj as SINner;
-                        if (foundsin.LastChange >= this.MyCharacter.FileLastWriteTime)
-                        {
-                            //is already up to date!
-                            return true;
-                        }
+                       if (found.Body.MySINner.LastChange >= this.MyCharacter.FileLastWriteTime)
+                       {
+                           //is already up to date!
+                           return true;
+                       }
+                       if (!MySINnerFile.SiNnerMetaData.Visibility.UserRights.Any())
+                       {
+                           MySINnerFile.SiNnerMetaData.Visibility.UserRights =
+                               found.Body.MySINner.SiNnerMetaData.Visibility.UserRights;
+                       }
                     }
+
                     this.MySINnerFile.SiNnerMetaData.Tags = this.PopulateTags();
                     await this.PrepareModel();
 
-                    await ChummerHub.Client.Backend.Utils.PostSINnerAsync(this);
-                    await ChummerHub.Client.Backend.Utils.UploadChummerFileAsync(this);
-                    return true;
+                    var res = await ChummerHub.Client.Backend.Utils.PostSINnerAsync(this);
+                    if (res.Response.IsSuccessStatusCode)
+                    {
+                        var uploadres = await ChummerHub.Client.Backend.Utils.UploadChummerFileAsync(this);
+                        if (uploadres.Response.IsSuccessStatusCode)
+                            return true;
+                    }
+                    return false;
+
                 }
             }
             catch(Exception e)
             {
+                await Backend.Utils.HandleError(e);
                 System.Diagnostics.Trace.TraceError(e.Message, e);
                 Debug.WriteLine(e.ToString());
                 throw;
@@ -393,31 +426,35 @@ namespace ChummerHub.Client.Model
             var summary = new frmCharacterRoster.CharacterCache(MyCharacter.FileName);
             MySINnerFile.MyExtendedAttributes.JsonSummary = JsonConvert.SerializeObject(summary);
             MySINnerFile.LastChange = MyCharacter.FileLastWriteTime;
+            if (String.IsNullOrEmpty(summary.FileName))
+                return null;
             var tempfile = Path.Combine(tempDir, summary.FileName);
             if (File.Exists(tempfile))
                 File.Delete(tempfile);
 
+            bool readdCallback = false;
+            if (MyCharacter.OnSaveCompleted != null)
+            {
+                readdCallback = true;
+                MyCharacter.OnSaveCompleted = null;
+            }
+
             if (!File.Exists(MyCharacter.FileName))
             {
-                MyCharacter.OnSaveCompleted -= PluginHandler.MyOnSaveUpload;
                 string path2 = MyCharacter.FileName.Substring(0, MyCharacter.FileName.LastIndexOf('\\'));
                 CreateDirectoryRecursively(path2);
                 MyCharacter.Save(MyCharacter.FileName, false, false);
-                MyCharacter.OnSaveCompleted += PluginHandler.MyOnSaveUpload;
             }
 
-            MyCharacter.OnSaveCompleted -= PluginHandler.MyOnSaveUpload;
             string path = MyCharacter.FileName.Substring(0, MyCharacter.FileName.LastIndexOf('\\'));
             CreateDirectoryRecursively(path);
             MyCharacter.Save(tempfile, false, false);
-            MyCharacter.OnSaveCompleted += PluginHandler.MyOnSaveUpload;
+            if (readdCallback)
+                MyCharacter.OnSaveCompleted += PluginHandler.MyOnSaveUpload;
 
             if (File.Exists(zipPath))
             {
-                //ZipFilePath = zipPath;
-                //FileInfo fi = new FileInfo(zipPath);
-                //if (fi.LastWriteTimeUtc < MyCharacter.FileLastWriteTime)
-                    File.Delete(zipPath);
+                File.Delete(zipPath);
             }
 
             if (!File.Exists(zipPath))

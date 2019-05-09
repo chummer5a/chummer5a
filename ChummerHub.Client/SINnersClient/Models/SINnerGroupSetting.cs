@@ -21,11 +21,14 @@ namespace SINners.Models
         /// <summary>
         /// Initializes a new instance of the SINnerGroupSetting class.
         /// </summary>
-        public SINnerGroupSetting(Guid? id = default(Guid?), string downloadUrl = default(string), Guid? myGroupId = default(Guid?))
+        public SINnerGroupSetting(Guid? id = default(Guid?), Guid? myGroupId = default(Guid?), string downloadUrl = default(string), DateTime? uploadDateTime = default(DateTime?), DateTime? lastChange = default(DateTime?), string fileName = default(string))
         {
             Id = id;
-            DownloadUrl = downloadUrl;
             MyGroupId = myGroupId;
+            DownloadUrl = downloadUrl;
+            UploadDateTime = uploadDateTime;
+            LastChange = lastChange;
+            FileName = fileName;
         }
 
         /// <summary>
@@ -35,13 +38,28 @@ namespace SINners.Models
 
         /// <summary>
         /// </summary>
+        [JsonProperty(PropertyName = "myGroupId")]
+        public Guid? MyGroupId { get; set; }
+
+        /// <summary>
+        /// </summary>
         [JsonProperty(PropertyName = "downloadUrl")]
         public string DownloadUrl { get; set; }
 
         /// <summary>
         /// </summary>
-        [JsonProperty(PropertyName = "myGroupId")]
-        public Guid? MyGroupId { get; set; }
+        [JsonProperty(PropertyName = "uploadDateTime")]
+        public DateTime? UploadDateTime { get; set; }
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "lastChange")]
+        public DateTime? LastChange { get; set; }
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "fileName")]
+        public string FileName { get; private set; }
 
     }
 }

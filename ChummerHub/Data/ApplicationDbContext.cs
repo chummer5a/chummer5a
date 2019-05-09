@@ -98,16 +98,20 @@ namespace ChummerHub.Data
                 .HasIndex(b => new { b.TagName, b.TagValue });
             builder.Entity<ChummerHub.Models.V1.Tag>()
                 .HasIndex(b => b.SINnerId);
-            builder.Entity<ChummerHub.Models.V1.SINerUserRight>()
+            builder.Entity<ChummerHub.Models.V1.SINnerUserRight>()
                 .HasIndex(b => b.SINnerId);
             builder.Entity<ChummerHub.Models.V1.SINner>()
                 .HasIndex(b => b.Alias);
             builder.Entity<ChummerHub.Models.V1.SINnerGroup>()
                 .HasIndex(b => b.Groupname);
-            builder.Entity<ChummerHub.Models.V1.SINerUserRight>()
+            builder.Entity<ChummerHub.Models.V1.SINnerUserRight>()
                 .HasIndex(b => b.EMail);
             builder.Entity<ChummerHub.Models.V1.SINnerGroup>()
                 .HasIndex(b => b.Language);
+            builder.Entity<ChummerHub.Models.V1.SINner>()
+                .HasIndex(b => b.EditionNumber);
+            builder.Entity<ChummerHub.Models.V1.SINnerExtended>()
+                .HasIndex(b => b.SINnerId);
             builder.Entity<ChummerHub.Models.V1.Tag>()
                 .HasIndex(b => b.TagValueDouble);
             try
@@ -134,9 +138,11 @@ FROM            dbo.SINners INNER JOIN
 
         public DbSet<ChummerHub.Models.V1.Tag> Tags { get; set; }
 
-        public DbSet<ChummerHub.Models.V1.SINerUserRight> UserRights { get; set; }
+        public DbSet<ChummerHub.Models.V1.SINnerUserRight> UserRights { get; set; }
 
         public DbSet<ChummerHub.Models.V1.UploadClient> UploadClients { get; set; }
+
+        public DbSet<ChummerHub.Models.V1.SINnerExtended> SINnerExtendedMetaData { get; set; }
 
         public DbSet<ChummerHub.Models.V1.SINnerComment> SINnerComments { get; set; }
         public DbSet<ChummerHub.Models.V1.SINnerVisibility> SINnerVisibility { get; set; }

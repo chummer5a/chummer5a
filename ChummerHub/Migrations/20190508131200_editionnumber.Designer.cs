@@ -4,14 +4,16 @@ using ChummerHub.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ChummerHub.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190508131200_editionnumber")]
+    partial class editionnumber
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -45,6 +47,31 @@ namespace ChummerHub.Migrations
                     b.ToTable("AspNetRoles");
                 });
 
+            modelBuilder.Entity("ChummerHub.Models.V1.SINerUserRight", b =>
+                {
+                    b.Property<Guid?>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<bool>("CanEdit");
+
+                    b.Property<string>("EMail")
+                        .HasMaxLength(64);
+
+                    b.Property<Guid?>("SINnerId");
+
+                    b.Property<Guid?>("SINnerVisibilityId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EMail");
+
+                    b.HasIndex("SINnerId");
+
+                    b.HasIndex("SINnerVisibilityId");
+
+                    b.ToTable("UserRights");
+                });
+
             modelBuilder.Entity("ChummerHub.Models.V1.SINner", b =>
                 {
                     b.Property<Guid?>("Id")
@@ -65,6 +92,8 @@ namespace ChummerHub.Migrations
 
                     b.Property<DateTime>("LastChange");
 
+                    b.Property<Guid?>("MyExtendedAttributesId");
+
                     b.Property<Guid?>("MyGroupId");
 
                     b.Property<Guid?>("SINnerMetaDataId");
@@ -77,7 +106,7 @@ namespace ChummerHub.Migrations
 
                     b.HasIndex("Alias");
 
-                    b.HasIndex("EditionNumber");
+                    b.HasIndex("MyExtendedAttributesId");
 
                     b.HasIndex("MyGroupId");
 
@@ -111,13 +140,7 @@ namespace ChummerHub.Migrations
 
                     b.Property<string>("JsonSummary");
 
-                    b.Property<Guid?>("SINnerId");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("SINnerId")
-                        .IsUnique()
-                        .HasFilter("[SINnerId] IS NOT NULL");
 
                     b.ToTable("SINnerExtendedMetaData");
                 });
@@ -170,11 +193,7 @@ namespace ChummerHub.Migrations
 
                     b.Property<string>("GoogleDriveFileId");
 
-                    b.Property<DateTime>("LastChange");
-
                     b.Property<Guid>("MyGroupId");
-
-                    b.Property<DateTime?>("UploadDateTime");
 
                     b.HasKey("Id");
 
@@ -193,31 +212,6 @@ namespace ChummerHub.Migrations
                     b.HasIndex("VisibilityId");
 
                     b.ToTable("SINnerMetaData");
-                });
-
-            modelBuilder.Entity("ChummerHub.Models.V1.SINnerUserRight", b =>
-                {
-                    b.Property<Guid?>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<bool>("CanEdit");
-
-                    b.Property<string>("EMail")
-                        .HasMaxLength(64);
-
-                    b.Property<Guid?>("SINnerId");
-
-                    b.Property<Guid?>("SINnerVisibilityId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EMail");
-
-                    b.HasIndex("SINnerId");
-
-                    b.HasIndex("SINnerVisibilityId");
-
-                    b.ToTable("UserRights");
                 });
 
             modelBuilder.Entity("ChummerHub.Models.V1.SINnerVisibility", b =>
@@ -429,8 +423,19 @@ namespace ChummerHub.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("ChummerHub.Models.V1.SINerUserRight", b =>
+                {
+                    b.HasOne("ChummerHub.Models.V1.SINnerVisibility")
+                        .WithMany("UserRights")
+                        .HasForeignKey("SINnerVisibilityId");
+                });
+
             modelBuilder.Entity("ChummerHub.Models.V1.SINner", b =>
                 {
+                    b.HasOne("ChummerHub.Models.V1.SINnerExtended", "MyExtendedAttributes")
+                        .WithMany()
+                        .HasForeignKey("MyExtendedAttributesId");
+
                     b.HasOne("ChummerHub.Models.V1.SINnerGroup", "MyGroup")
                         .WithMany()
                         .HasForeignKey("MyGroupId");
@@ -438,13 +443,6 @@ namespace ChummerHub.Migrations
                     b.HasOne("ChummerHub.Models.V1.SINnerMetaData", "SINnerMetaData")
                         .WithMany()
                         .HasForeignKey("SINnerMetaDataId");
-                });
-
-            modelBuilder.Entity("ChummerHub.Models.V1.SINnerExtended", b =>
-                {
-                    b.HasOne("ChummerHub.Models.V1.SINner")
-                        .WithOne("MyExtendedAttributes")
-                        .HasForeignKey("ChummerHub.Models.V1.SINnerExtended", "SINnerId");
                 });
 
             modelBuilder.Entity("ChummerHub.Models.V1.SINnerGroup", b =>
@@ -463,13 +461,6 @@ namespace ChummerHub.Migrations
                     b.HasOne("ChummerHub.Models.V1.SINnerVisibility", "Visibility")
                         .WithMany()
                         .HasForeignKey("VisibilityId");
-                });
-
-            modelBuilder.Entity("ChummerHub.Models.V1.SINnerUserRight", b =>
-                {
-                    b.HasOne("ChummerHub.Models.V1.SINnerVisibility")
-                        .WithMany("UserRights")
-                        .HasForeignKey("SINnerVisibilityId");
                 });
 
             modelBuilder.Entity("ChummerHub.Models.V1.Tag", b =>

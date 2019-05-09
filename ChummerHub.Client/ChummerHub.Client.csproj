@@ -38,10 +38,10 @@
       <HintPath>..\packages\GroupControls.1.8.0\lib\net45\GroupControls.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Rest.ClientRuntime, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Rest.ClientRuntime.2.3.20\lib\net452\Microsoft.Rest.ClientRuntime.dll</HintPath>
+      <HintPath>..\packages\Microsoft.Rest.ClientRuntime.2.3.2\lib\net45\Microsoft.Rest.ClientRuntime.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -86,6 +86,7 @@
     <Compile Include="Backend\ApiKeyCredentials.cs" />
     <Compile Include="Backend\CursorWait.cs" />
     <Compile Include="Backend\PluginHandler.cs" />
+    <Compile Include="Backend\PropertyRenameAndIgnoreSerializerContractResolver.cs" />
     <Compile Include="Backend\Search\SearchTagExtractor.cs" />
     <Compile Include="Backend\TaskCancellationExtension.cs" />
     <Compile Include="Backend\Utils.cs" />
@@ -94,6 +95,7 @@
     <Compile Include="Model\CharacterExtended.cs" />
     <Compile Include="Model\ResultBase.cs" />
     <Compile Include="Model\SearchTag.cs" />
+    <Compile Include="Model\SINnerExtended.cs" />
     <Compile Include="Model\SINnerGroup.cs" />
     <Compile Include="Model\SINnerSearchGroup.cs" />
     <Compile Include="Model\SINnerSearchGroupMember.cs" />
@@ -123,14 +125,15 @@
     <Compile Include="SINnersClient\Models\ResultGroupGetSearchGroups.cs" />
     <Compile Include="SINnersClient\Models\ResultGroupPostGroup.cs" />
     <Compile Include="SINnersClient\Models\ResultGroupPutGroupInGroup.cs" />
+    <Compile Include="SINnersClient\Models\ResultGroupPutSetting.cs" />
     <Compile Include="SINnersClient\Models\ResultSinnerDelete.cs" />
     <Compile Include="SINnersClient\Models\ResultSinnerGetOwnedSINByAlias.cs" />
     <Compile Include="SINnersClient\Models\ResultSinnerGetSINById.cs" />
     <Compile Include="SINnersClient\Models\ResultSinnerGetSINnerGroupFromSINerById.cs" />
+    <Compile Include="SINnersClient\Models\ResultSinnerGetSINnerVisibilityById.cs" />
     <Compile Include="SINnersClient\Models\ResultSinnerPostSIN.cs" />
     <Compile Include="SINnersClient\Models\ResultSINnerPut.cs" />
     <Compile Include="SINnersClient\Models\SearchTag.cs" />
-    <Compile Include="SINnersClient\Models\SINerUserRight.cs" />
     <Compile Include="SINnersClient\Models\SINner.cs" />
     <Compile Include="SINnersClient\Models\SINnerExtended.cs" />
     <Compile Include="SINnersClient\Models\SINnerGroup.cs" />
@@ -138,6 +141,7 @@
     <Compile Include="SINnersClient\Models\SINnerMetaData.cs" />
     <Compile Include="SINnersClient\Models\SINnerSearchGroup.cs" />
     <Compile Include="SINnersClient\Models\SINnerSearchGroupMember.cs" />
+    <Compile Include="SINnersClient\Models\SINnerUserRight.cs" />
     <Compile Include="SINnersClient\Models\SINnerVisibility.cs" />
     <Compile Include="SINnersClient\Models\SINSearchGroupResult.cs" />
     <Compile Include="SINnersClient\Models\Tag.cs" />

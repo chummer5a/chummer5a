@@ -36,7 +36,7 @@ namespace ChummerHub.Controllers.V1
                 }
                 entry.OriginalValues.SetValues(databaseValues);
                 var e = new NotSupportedException(
-                    "Don't know how to handle concurrency conflicts for "
+                    "(Codepoint 3) Don't know how to handle concurrency conflicts for "
                     + entry.Metadata.Name + ": " + msg);
                 throw e;
 
@@ -44,7 +44,7 @@ namespace ChummerHub.Controllers.V1
             catch (Exception exception)
             {
                 var e = new NotSupportedException(
-                    "Don't know how to handle concurrency conflicts for "
+                    "(Codepoint 2) Don't know how to handle concurrency conflicts for "
                     + entry.Metadata.Name + ": " + msg, exception);
                 throw e;
             }

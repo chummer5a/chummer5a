@@ -17,6 +17,8 @@ using ChummerHub.Models.V1.Examples;
 using ChummerHub.Services.GoogleDrive;
 using Microsoft.AspNetCore.Http.Internal;
 using System.IO;
+using System.Security.Cryptography;
+using System.Text;
 using System.Transactions;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.DataContracts;
@@ -174,15 +176,105 @@ namespace ChummerHub.Controllers.V1
 
         }
 
-       
+        // PUT: api/ChummerFiles/5
+        /// <summary>
+        /// The Xml or Zip File can be uploaded (knowing the previously stored Id)
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="uploadedFile"></param>
+        /// <returns></returns>
+        [HttpPut("{id}")]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Conflict)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("PutGroupSetting")]
+        [Authorize]
+        public async Task<ActionResult<ResultGroupPutSetting>> PutGroupSetting([FromRoute] Guid id, IFormFile uploadedFile)
+        {
+            ResultGroupPutSetting res;
+            ApplicationUser user = null;
+            SINnerGroup dbgroup = null;
+            try
+            {
+                var group = await _context.SINnerGroups.Include(a => a.MySettings).FirstOrDefaultAsync(a => a.Id == id);
+                if (group == null)
+                {
+                    var e = new ArgumentException("Group with Id " + id + " not found!");
+                    res = new ResultGroupPutSetting(e);
+                    return NotFound(res);
+                }
+                user = await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
+
+                if (user == null)
+                {
+                    var e = new NoUserRightException("User not found!");
+                    res = new ResultGroupPutSetting(e);
+                    return NotFound(res);
+                }
+
+                dbgroup.MySettings.DownloadUrl = Startup.GDrive.StoreXmlInCloud(dbgroup.MySettings, uploadedFile);
+                try
+                {
+                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    Microsoft.ApplicationInsights.DataContracts.EventTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.EventTelemetry("PutStoreXmlInCloud");
+                    telemetry.Properties.Add("User", user.Email);
+                    telemetry.Properties.Add("SINnerGroupId", dbgroup.Id.ToString());
+                    telemetry.Properties.Add("FileName", uploadedFile.FileName?.ToString());
+                    telemetry.Metrics.Add("FileSize", uploadedFile.Length);
+                    tc.TrackEvent(telemetry);
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError(e.ToString());
+                }
+                try
+                {
+                    int x = await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException e)
+                {
+                    res = new ResultGroupPutSetting(e);
+                    return Conflict(res);
+                }
+
+                res = new ResultGroupPutSetting(dbgroup);
+                return Ok(res);
+            }
+            catch (NoUserRightException e)
+            {
+                res = new ResultGroupPutSetting(e);
+                return BadRequest(res);
+            }
+            catch (Exception e)
+            {
+                try
+                {
+                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
+                    telemetry.Properties.Add("User", user?.Email);
+                    telemetry.Properties.Add("SINnerGroupId", dbgroup.Id.ToString());
+                    telemetry.Properties.Add("FileName", uploadedFile.FileName?.ToString());
+                    telemetry.Metrics.Add("FileSize", uploadedFile.Length);
+                    tc.TrackException(telemetry);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex.ToString());
+                }
+                res = new ResultGroupPutSetting(e);
+                return BadRequest(res);
+            }
+        }
+
 
         /// <summary>
-            /// Store the new group
-            /// </summary>
-            /// <param name="mygroup"></param>
-            /// <param name="SinnerId"></param>
-            /// <returns></returns>
-            [HttpPost()]
+        /// Store the new group
+        /// </summary>
+        /// <param name="mygroup"></param>
+        /// <param name="SinnerId"></param>
+        /// <returns></returns>
+        [HttpPost()]
         //[Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK, "")]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Accepted)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Created)]
@@ -737,13 +829,13 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GroupGetGroupmembers")]
         [AllowAnonymous]
-        public async Task<ActionResult<ResultGroupGetSearchGroups>> GetGroupmembers(string Groupname, string Language, string email)
+        public async Task<ActionResult<ResultGroupGetSearchGroups>> GetGroupmembers(string Groupname, string Language, string email, string password)
         {
             ResultGroupGetSearchGroups res;
             _logger.LogTrace("GetGroupmembers: " + Groupname + "/" + Language + "/" + email + ".");
             try
             {
-                var r = await GetGroupmembersInternal(Groupname, Language, email);
+                var r = await GetGroupmembersInternal(Groupname, Language, email, password);
                 res = new ResultGroupGetSearchGroups(r);
                 return Ok(res);
             }
@@ -766,13 +858,26 @@ namespace ChummerHub.Controllers.V1
             }
         }
 
-        private async Task<SINSearchGroupResult> GetGroupmembersInternal(string Groupname, string language, string email)
+        public static byte[] GetHash(string inputString)
+        {
+            HashAlgorithm algorithm = SHA256.Create();
+            return algorithm.ComputeHash(Encoding.UTF8.GetBytes(inputString));
+        }
+
+        public static string GetHashString(string inputString)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (byte b in GetHash(inputString))
+                sb.Append(b.ToString("X2"));
+
+            return sb.ToString();
+        }
+
+        private async Task<SINSearchGroupResult> GetGroupmembersInternal(string Groupname, string language, string email, string password)
         {
             try
             {
-            
                 SINSearchGroupResult result = new SINSearchGroupResult();
-
                 List<Guid?> groupfoundseq = new List<Guid?>();
                 if (!String.IsNullOrEmpty(Groupname))
                 {
@@ -787,9 +892,20 @@ namespace ChummerHub.Controllers.V1
                 }
 
                 var user = await _userManager.FindByEmailAsync(email);
-
                 foreach (var groupid in groupfoundseq)
                 {
+                    //check for the password
+                    var group = await _context.SINnerGroups.FindAsync(groupid);
+                    if (group == null)
+                        continue;
+                    if (group.HasPassword)
+                    {
+                        string pwhash = GetHashString(password);
+                        if (!group.PasswordHash.Equals(password))
+                        {
+                            throw new ArgumentException("Wrong password provided for group: " + Groupname);
+                        }
+                    }
                     var ssg = await GetSinSearchGroupResultById(groupid, user, true);
                     result.SINGroups.Add(ssg);
                 }
