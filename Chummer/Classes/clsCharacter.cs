@@ -1781,11 +1781,11 @@ namespace Chummer
 
 
             //Plugins
-            if(Program.MainForm?.PluginLoader?.MyPlugins?.Any() == true)
+            if(Program.MainForm?.PluginLoader?.MyActivePlugins?.Any() == true)
             {
                 // <plugins>
                 objWriter.WriteStartElement("plugins");
-                foreach(var plugin in Program.MainForm.PluginLoader.MyPlugins)
+                foreach(var plugin in Program.MainForm.PluginLoader.MyActivePlugins)
                 {
                     System.Reflection.Assembly pluginAssm = plugin.GetPluginAssembly();
                     objWriter.WriteStartElement(pluginAssm.GetName().Name);
@@ -3332,9 +3332,9 @@ if (!Utils.IsUnitTest){
 
             //Plugins
             Timekeeper.Start("load_plugins");
-            if(Program.MainForm?.PluginLoader?.MyPlugins?.Any() == true)
+            if(Program.MainForm?.PluginLoader?.MyActivePlugins?.Any() == true)
             {
-                foreach(var plugin in Program.MainForm.PluginLoader.MyPlugins)
+                foreach(var plugin in Program.MainForm.PluginLoader.MyActivePlugins)
                 {
                     objXmlNodeList = objXmlCharacter.SelectNodes("plugins/" + plugin.GetPluginAssembly().GetName().Name);
                     foreach(XmlNode objXmlPlugin in objXmlNodeList)

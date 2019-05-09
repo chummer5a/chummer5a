@@ -122,7 +122,7 @@ namespace Chummer.Plugins
             return JsonConvert.SerializeObject(ce.MySINnerFile);
         }
 
-        public async static void MyOnSaveUpload(object sender, Character input)
+        public static async void MyOnSaveUpload(object sender, Character input)
         {
             try
             {
@@ -131,7 +131,7 @@ namespace Chummer.Plugins
                 {
                     var ce = GetMyCe(input);
                     //ce = new CharacterExtended(input, null);
-                    if (!ce.MySINnerFile.SiNnerMetaData.Tags.Any(a => a.TagName == "Reflection"))
+                    if (ce.MySINnerFile.SiNnerMetaData.Tags.Any(a => a.TagName != "Reflection"))
                     {
                         ce.MySINnerFile.SiNnerMetaData.Tags = ce.PopulateTags();
                     }
@@ -160,8 +160,7 @@ namespace Chummer.Plugins
                     var ucseq = tabPage.Controls.Find("SINnersBasic", true);
                     foreach (var uc in ucseq)
                     {
-                        var sb = uc as ucSINnersBasic;
-                        if (sb != null)
+                        if (uc is ucSINnersBasic sb)
                             await sb?.CheckSINnerStatus();
                     }
 
@@ -180,28 +179,34 @@ namespace Chummer.Plugins
 
         private static CharacterExtended GetMyCe(Character input)
         {
-            CharacterExtended ce = null;
-            var found = (from a in MainForm.OpenCharacterForms where a.CharacterObject == input select a)
-                .FirstOrDefault();
+            CharacterShared found = null;
+            if (MainForm?.OpenCharacterForms != null)
+                foreach (CharacterShared a in (MainForm?.OpenCharacterForms))
+                {
+                    if (a?.CharacterObject != input) continue;
+                    found = a;
+                    break;
+                }
+
             if (found == null)
             {
-                return ce;
+                return null;
             }
 
             TabPage sinnertab = null;
             TabControl.TabPageCollection myCollection = null;
-            if (found is frmCreate foundcreate)
+            switch (found)
             {
-                myCollection = foundcreate.TabCharacterTabs.TabPages;
-            }
-
-            if (found is frmCareer foundcareer)
-            {
-                myCollection = foundcareer.TabCharacterTabs.TabPages;
+                case frmCreate foundcreate:
+                    myCollection = foundcreate.TabCharacterTabs.TabPages;
+                    break;
+                case frmCareer foundcareer:
+                    myCollection = foundcareer.TabCharacterTabs.TabPages;
+                    break;
             }
 
             if (myCollection == null)
-                return ce;
+                return null;
 
             foreach (TabPage tab in myCollection)
             {
@@ -213,7 +218,7 @@ namespace Chummer.Plugins
             }
 
             if (sinnertab == null)
-                return ce;
+                return null;
             ucSINnersUserControl myUcSIN = null;
             foreach (ucSINnersUserControl ucSIN in sinnertab.Controls)
             {
@@ -221,11 +226,7 @@ namespace Chummer.Plugins
                 break;
             }
 
-            if (myUcSIN == null)
-                return ce;
-
-            ce = myUcSIN.MyCE;
-            return ce;
+            return myUcSIN?.MyCE;
         }
 
         void IPlugin.LoadFileElement(Character input, string fileElement)
