@@ -352,9 +352,25 @@ namespace ChummerHub.Client.UI
             
         }
 
-        private void BVisibility_Click(object sender, EventArgs e)
+        private async void BVisibility_Click(object sender, EventArgs e)
         {
             var visfrm = new frmSINnerVisibility();
+            using (new CursorWait(true, this))
+            {
+                if (!this.myUC.MyCE.MySINnerFile.SiNnerMetaData.Visibility.UserRights.Any())
+                {
+                    var client = Backend.StaticUtils.GetClient();
+                    HttpOperationResponse<ResultSinnerGetSINnerVisibilityById> res =
+                        await client.GetSINnerVisibilityByIdWithHttpMessagesAsync(
+                            this.myUC.MyCE.MySINnerFile.Id.Value);
+                    var obj = await Backend.Utils.HandleError(res, res.Body);
+                    if (res.Body.CallSuccess == true)
+                    {
+                        this.myUC.MyCE.MySINnerFile.SiNnerMetaData.Visibility.UserRights = res.Body.UserRights;
+                    }
+                }
+            }
+
             visfrm.MyVisibility = this.myUC.MyCE.MySINnerFile.SiNnerMetaData.Visibility;
             var result = visfrm.ShowDialog(this);
             if (result == DialogResult.OK)

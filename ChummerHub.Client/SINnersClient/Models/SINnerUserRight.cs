@@ -11,17 +11,17 @@ namespace SINners.Models
     using Microsoft.Rest;
     using Microsoft.Rest.Serialization;
 
-    public partial class SINerUserRight
+    public partial class SINnerUserRight
     {
         /// <summary>
-        /// Initializes a new instance of the SINerUserRight class.
+        /// Initializes a new instance of the SINnerUserRight class.
         /// </summary>
-        public SINerUserRight() { }
+        public SINnerUserRight() { }
 
         /// <summary>
-        /// Initializes a new instance of the SINerUserRight class.
+        /// Initializes a new instance of the SINnerUserRight class.
         /// </summary>
-        public SINerUserRight(Guid? id = default(Guid?), string eMail = default(string), bool? canEdit = default(bool?))
+        public SINnerUserRight(Guid? id = default(Guid?), string eMail = default(string), bool? canEdit = default(bool?))
         {
             Id = id;
             EMail = eMail;

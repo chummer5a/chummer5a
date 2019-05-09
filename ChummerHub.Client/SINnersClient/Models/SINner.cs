@@ -21,44 +21,25 @@ namespace SINners.Models
         /// <summary>
         /// Initializes a new instance of the SINner class.
         /// </summary>
-        public SINner(Guid? id = default(Guid?), string editionNumber = default(string), string downloadUrl = default(string), DateTime? uploadDateTime = default(DateTime?), DateTime? lastChange = default(DateTime?), string language = default(string), SINnerMetaData siNnerMetaData = default(SINnerMetaData), SINnerExtended myExtendedAttributes = default(SINnerExtended), SINnerGroup myGroup = default(SINnerGroup), string alias = default(string))
+        public SINner(string editionNumber = default(string), string language = default(string), SINnerMetaData siNnerMetaData = default(SINnerMetaData), SINnerExtended myExtendedAttributes = default(SINnerExtended), SINnerGroup myGroup = default(SINnerGroup), string alias = default(string), Guid? id = default(Guid?), string downloadUrl = default(string), DateTime? uploadDateTime = default(DateTime?), DateTime? lastChange = default(DateTime?), string fileName = default(string))
         {
-            Id = id;
             EditionNumber = editionNumber;
-            DownloadUrl = downloadUrl;
-            UploadDateTime = uploadDateTime;
-            LastChange = lastChange;
             Language = language;
             SiNnerMetaData = siNnerMetaData;
             MyExtendedAttributes = myExtendedAttributes;
             MyGroup = myGroup;
             Alias = alias;
+            Id = id;
+            DownloadUrl = downloadUrl;
+            UploadDateTime = uploadDateTime;
+            LastChange = lastChange;
+            FileName = fileName;
         }
-
-        /// <summary>
-        /// </summary>
-        [JsonProperty(PropertyName = "id")]
-        public Guid? Id { get; set; }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "editionNumber")]
         public string EditionNumber { get; set; }
-
-        /// <summary>
-        /// </summary>
-        [JsonProperty(PropertyName = "downloadUrl")]
-        public string DownloadUrl { get; set; }
-
-        /// <summary>
-        /// </summary>
-        [JsonProperty(PropertyName = "uploadDateTime")]
-        public DateTime? UploadDateTime { get; set; }
-
-        /// <summary>
-        /// </summary>
-        [JsonProperty(PropertyName = "lastChange")]
-        public DateTime? LastChange { get; set; }
 
         /// <summary>
         /// </summary>
@@ -84,6 +65,31 @@ namespace SINners.Models
         /// </summary>
         [JsonProperty(PropertyName = "alias")]
         public string Alias { get; set; }
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "id")]
+        public Guid? Id { get; set; }
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "downloadUrl")]
+        public string DownloadUrl { get; set; }
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "uploadDateTime")]
+        public DateTime? UploadDateTime { get; set; }
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "lastChange")]
+        public DateTime? LastChange { get; set; }
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "fileName")]
+        public string FileName { get; private set; }
 
         /// <summary>
         /// Validate the object. Throws ValidationException if validation fails.

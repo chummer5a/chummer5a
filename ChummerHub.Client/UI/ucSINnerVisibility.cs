@@ -37,7 +37,7 @@ namespace ChummerHub.Client.UI
             InitializeComponent();
             MyVisibility = new SINnerVisibility()
             {
-                UserRights = new List<SINerUserRight>()
+                UserRights = new List<SINnerUserRight>()
             };
             this.clbVisibilityToUsers.ItemCheck += clbVisibilityToUsers_ItemCheck;
         }
@@ -64,7 +64,7 @@ namespace ChummerHub.Client.UI
                     ((ListBox)clbVisibilityToUsers).ValueMember = "CanEdit";
                     for (int i = 0; i < clbVisibilityToUsers.Items.Count; i++)
                     {
-                        SINerUserRight obj = (SINerUserRight)clbVisibilityToUsers.Items[i];
+                        SINnerUserRight obj = (SINnerUserRight)clbVisibilityToUsers.Items[i];
                         clbVisibilityToUsers.SetItemChecked(i, obj.CanEdit != null && obj.CanEdit.Value);
                     }
                     clbVisibilityToUsers.Refresh();
@@ -99,7 +99,7 @@ namespace ChummerHub.Client.UI
             {
                 for (int i = selectedItems.Count - 1; i >= 0; i--)
                 {
-                    var userright = selectedItems[i] as SINerUserRight;
+                    var userright = selectedItems[i] as SINnerUserRight;
                     if (userright != null)
                     {
                         if (e.NewValue == CheckState.Checked)
@@ -124,7 +124,7 @@ namespace ChummerHub.Client.UI
             {
                 for (int i = selectedItems.Count - 1; i >= 0; i--)
                 {
-                    var userright = selectedItems[i] as SINerUserRight;
+                    var userright = selectedItems[i] as SINnerUserRight;
                     MyVisibility.UserRightsObservable.Remove(userright);
                 }
                 FillVisibilityListBox();
