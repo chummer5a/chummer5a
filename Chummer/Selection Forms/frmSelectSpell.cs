@@ -328,7 +328,7 @@ namespace Chummer
                     if (_objCharacter.AdeptEnabled && !_objCharacter.MagicianEnabled)
                     {
                         if (!((strSpellCategory == "Rituals" && !strDescriptor.Contains("Spell")) ||
-                            (_blnCanTouchOnlySpellBeFree && objXmlSpell.SelectSingleNode("range")?.Value == "T")))
+                            (_blnCanTouchOnlySpellBeFree && (objXmlSpell.SelectSingleNode("range")?.Value == "T") || objXmlSpell.SelectSingleNode("range")?.Value == "T (A)")))
                             continue;
                     }
                     else if (!_objCharacter.AdeptEnabled && strDescriptor.Contains("Adept"))
