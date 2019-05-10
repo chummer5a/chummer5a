@@ -2493,7 +2493,7 @@ if (!Utils.IsUnitTest){
             {
                 XPathNavigator xpathTraditionNavigator = xmlCharacterNavigator.SelectSingleNode("tradition");
                 // Regular tradition load
-                if(xpathTraditionNavigator?.SelectSingleNode("id") != null)
+                if(xpathTraditionNavigator?.SelectSingleNode("guid") != null || xpathTraditionNavigator?.SelectSingleNode("id") != null)
                 {
                     _objTradition.Load(objXmlCharacter.SelectSingleNode("tradition"));
                 }

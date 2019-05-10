@@ -567,7 +567,7 @@ namespace Chummer.Backend.Attributes
 
 		        xmlNode = xmlNode?.SelectSingleNode($"metavariants/metavariant[name = \"{_objCharacter.Metavariant}\"]/name/@translate");
 
-		        if (AttributeCategory == CharacterAttrib.AttributeCategory.Shapeshifter)
+		        if (AttributeCategory == CharacterAttrib.AttributeCategory.Standard)
 		        {
 		            objWriter.WriteElementString("attributecategory", xmlNode?.SelectSingleNode("name/@translate")?.InnerText ?? _objCharacter.Metatype);
                 }
