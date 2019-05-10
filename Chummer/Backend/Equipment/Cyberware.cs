@@ -108,6 +108,7 @@ namespace Chummer.Backend.Equipment
         private int _intSortOrder;
 
         private readonly Character _objCharacter;
+        private static char[] MathOperators = new char[] { '"', '*', '/', '+', '-' };
 
         #region Helper Methods
         /// <summary>
@@ -2759,12 +2760,19 @@ namespace Chummer.Backend.Equipment
             string strESS = ESS;
             if (strESS.StartsWith("FixedValues("))
             {
+                string strSuffix = string.Empty;
+                if (!strESS.EndsWith(")"))
+                {
+                    strSuffix = strESS.Substring(strESS.LastIndexOf(')') + 1);
+                    strESS = strESS.TrimEndOnce(strSuffix);
+                }
                 string[] strValues = strESS.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
                 strESS = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
+                strESS += strSuffix;
             }
-            if (strESS.Contains("Rating"))
+            if (strESS.Contains("Rating") || strESS.IndexOfAny(MathOperators) >= 0)
             {
-                // If the cost is determined by the Rating, evaluate the expression.
+                // If the cost is determined by the Rating or there's a math operation in play, evaluate the expression.
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(strESS.Replace("Rating", Rating.ToString()), out bool blnIsSuccess);
                 decReturn = blnIsSuccess ? Convert.ToDecimal(objProcess, GlobalOptions.InvariantCultureInfo) : 0;
             }
@@ -2968,8 +2976,15 @@ namespace Chummer.Backend.Equipment
 
                 if (strCostExpression.StartsWith("FixedValues("))
                 {
+                    string strSuffix = string.Empty;
+                    if (!strCostExpression.EndsWith(")"))
+                    {
+                        strSuffix = strCostExpression.Substring(strCostExpression.LastIndexOf(')') + 1);
+                        strCostExpression = strCostExpression.TrimEndOnce(strSuffix);
+                    }
                     string[] strValues = strCostExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
                     strCostExpression = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)].Trim('[', ']');
+                    strCostExpression += strSuffix;
                 }
 
                 string strParentCost = "0";

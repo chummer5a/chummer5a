@@ -7,6 +7,7 @@ New Features:
 - Implemented the Special Modifications and Prototype Materials qualities from Better Than Bad. The assorted bonuses are added through the Select Weapon Accessories form, allowing for custom content to be created. Note for content creators, the specialmodificationlimit property is used to indicate how many 'points' of the quality are consumed; this isn't super close to rules as written, but it's viable for our purposes. 
 - Exposed ParentDetails requirement checks to Armor Mods. This allows for filtering mods based on the XML properties of their parent, such as filtering based on name or armour value.
 - Gameplay Options can now be used as a forbidden/required choice for items; currently this is used for the Free Insect Spirit qualities, which require the Prime Runner gameplay choice. 
+- Cyberware now supports the use of math operators in the ess and cost values. This allows for customdata files to easily make bulk changes to cyberware Essence and Cost entries.
 
 Application Fixes:
 

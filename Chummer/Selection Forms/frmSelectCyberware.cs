@@ -739,8 +739,15 @@ namespace Chummer
                 {
                     if (strCost.StartsWith("FixedValues("))
                     {
+                        string strSuffix = string.Empty;
+                        if (!strCost.EndsWith(")"))
+                        {
+                            strSuffix = strCost.Substring(strCost.LastIndexOf(')') + 1);
+                            strCost = strCost.TrimEndOnce(strSuffix);
+                        }
                         string[] strValues = strCost.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
                         strCost = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
+                        strCost += strSuffix;
                     }
                     // Check for a Variable Cost.
                     if (strCost.StartsWith("Variable("))
@@ -834,8 +841,15 @@ namespace Chummer
                     string strEss = objXmlCyberware.SelectSingleNode("ess")?.Value ?? string.Empty;
                     if (strEss.StartsWith("FixedValues("))
                     {
+                        string strSuffix = string.Empty;
+                        if (!strEss.EndsWith(")"))
+                        {
+                            strSuffix = strEss.Substring(strEss.LastIndexOf(')') + 1);
+                            strEss = strEss.TrimEndOnce(strSuffix);
+                        }
                         string[] strValues = strEss.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
                         strEss = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
+                        strEss += strSuffix;
                     }
 
                     object objProcess = CommonFunctions.EvaluateInvariantXPath(strEss.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
