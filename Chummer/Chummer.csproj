@@ -1910,6 +1910,9 @@
     </Content>
     <Content Include="customdata\German Data Changes - Weapon Mounts Can Use SMGs\amend_vehicles.xml" />
     <Content Include="customdata\Hand-Based Cyberware Can Go Anywhere\amend_cyberware.xml" />
+    <Content Include="customdata\Helmets Are Mods, SWAT and MilSpec Are FBA\amend_armor.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\Herolab Vehicle Ram Plate Stats\amend_ramplate_vehicles.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

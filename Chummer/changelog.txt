@@ -26,6 +26,7 @@ Application Fixes:
 - Fixed issues with the implementation of the dual attribute connection for shapeshifters that caused them to inconsistently use the correct attribute.
 - Fixed an issue with the adding of One Trick Pony's free technique.
 - Fixed behaviour of the selectweapon improvement that caused it to freeze if the ForcedItem quality were specified but the list of weapons did not contain the forced item.
+- Fixed an issue with adding gear to weapon accessories when the weapon accessory was installed with the weapon.
 
 Application Changes:
 
@@ -33,7 +34,6 @@ Application Changes:
 - Small refactor to the Spell class to use RelevantImprovements method. Doesn't actually reduce complexity, but makes me feel a bit better about having less boilerplate. 
 - Added a string to the Skill.Core class that allows for formatting the skill's dicepool, specialisations and such instead of reprocessing it in multiple other locations.
 - Refactored the creation, saving and loading of GUIDs for the Internal ID and Source ID of all objects to provide more consistency. There is a small risk that this will impact the stored improvements of some characters. I haven't been able to prove that it will happen, but logically it should based on this change. 
-- Fixed an issue with adding gear to weapon accessories when the weapon accessory was installed with the weapon.
 
 UI Changes:
 
@@ -58,6 +58,7 @@ Data Changes:
 - Fixed capacities of the Bug Promotional Pen and Concealable Surveillance Gear.
 - Removed unnecessary Rating properties from Sensor Functions.
 - Fixed missing Ratings for several instances of Metahuman Adjustment on vehicles.
+- Added customdata to allow the helmets for the SWAT Armor, Milspec Armor, Security Armor and Daedelus Jumpsuit. This also assigns the SWAT Armor, Milspec Armor and Security Armor as Full Body Armor, providing access to the FBA mods. 
 
 String Changes:
 
