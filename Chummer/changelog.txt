@@ -56,10 +56,16 @@ Data Changes:
 - Removed <canwrite /> from the Made Man quality; this improperly allowed for the group to be removed from the character.
 - Added Free Insect quality choices from Dark Terrors. These are hidden behind a Prime Runner gameplay requirement. 
 - Fixed capacities of the Bug Promotional Pen and Concealable Surveillance Gear.
+- Removed unnecessary Rating properties from Sensor Functions.
 
 String Changes:
 
 - Added a string tag for the Enable Plugins menu option. Closes #3486
+
+New Strings:
+
+- String_SpellPoints
+- Tip_SelectSpell_MasteryQuality
 
 Build 205
 
