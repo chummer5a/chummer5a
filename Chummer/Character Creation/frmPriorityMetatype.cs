@@ -754,7 +754,7 @@ namespace Chummer
                             int intTemp = 0;
                             _objCharacter.MAG.MetatypeMinimum =
                                 xmlTalentPriorityNode.TryGetInt32FieldQuickly("magic", ref intTemp) ? intTemp : 1;
-                            _objCharacter.SpellLimit = xmlTalentPriorityNode.TryGetInt32FieldQuickly("spells", ref intTemp) ? intTemp : 0;
+                            _objCharacter.FreeSpells = xmlTalentPriorityNode.TryGetInt32FieldQuickly("spells", ref intTemp) ? intTemp : 0;
                             _objCharacter.MAG.MetatypeMaximum = xmlTalentPriorityNode.TryGetInt32FieldQuickly("maxmagic", ref intTemp) ? intTemp : Convert.ToInt32(CommonFunctions.ExpressionToString(charNode["magmax"]?.InnerText, intForce, intMaxModifier));
                             // Set starting resonance
                             _objCharacter.RES.MetatypeMinimum = xmlTalentPriorityNode.TryGetInt32FieldQuickly("resonance", ref intTemp) ? intTemp : 1;

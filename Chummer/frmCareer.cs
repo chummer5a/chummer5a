@@ -1048,7 +1048,7 @@ namespace Chummer
                 case nameof(Character.MetatypeBP):
                 case nameof(Character.BuildKarma):
                 case nameof(Character.ContactPoints):
-                case nameof(Character.SpellLimit):
+                case nameof(Character.FreeSpells):
                 case nameof(Character.CFPLimit):
                 case nameof(Character.AIAdvancedProgramLimit):
                 case nameof(Character.SpellKarmaCost):

@@ -8763,6 +8763,14 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <key>Tip_SelectSpell_ExtendedSpell</key>
       <text>Extended range Spells have a range of (Force × MAG × 10) meters but have their DV increased by +2.</text>
     </string>
+    <string>
+      <key>String_SpellPoints</key>
+      <text>Spell Points</text>
+    </string>
+    <string>
+      <key>Tip_SelectSpell_MasteryQuality</key>
+      <text>Mastery Qualities will spend Spell Points before they spend Karma. [FA 31]</text>
+    </string>
     <!-- End Region-->
     <!-- Region Select Text Window -->
     <string>

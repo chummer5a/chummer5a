@@ -81,7 +81,7 @@ namespace Chummer
         private int _intTotalSpecial;
         private int _intAttributes;
         private int _intTotalAttributes;
-        private int _intSpellLimit;
+        private int _intFreeSpells;
         private int _intCFPLimit;
         private int _intAINormalProgramLimit;
         private int _intAIAdvancedProgramLimit;
@@ -1304,7 +1304,7 @@ namespace Chummer
             // <contactpoints />
             objWriter.WriteElementString("contactpointsused", _intContactPointsUsed.ToString());
             // <spelllimit />
-            objWriter.WriteElementString("spelllimit", _intSpellLimit.ToString());
+            objWriter.WriteElementString("spelllimit", _intFreeSpells.ToString());
             // <cfplimit />
             objWriter.WriteElementString("cfplimit", _intCFPLimit.ToString());
             // <totalaiprogramlimit />
@@ -2143,7 +2143,7 @@ if (!Utils.IsUnitTest){
             xmlCharacterNavigator.TryGetInt32FieldQuickly("aiadvancedprogramlimit", ref _intAIAdvancedProgramLimit);
             xmlCharacterNavigator.TryGetInt32FieldQuickly("currentcounterspellingdice",
                 ref _intCurrentCounterspellingDice);
-            xmlCharacterNavigator.TryGetInt32FieldQuickly("spelllimit", ref _intSpellLimit);
+            xmlCharacterNavigator.TryGetInt32FieldQuickly("spelllimit", ref _intFreeSpells);
             xmlCharacterNavigator.TryGetInt32FieldQuickly("karma", ref _intKarma);
             xmlCharacterNavigator.TryGetInt32FieldQuickly("totalkarma", ref _intTotalKarma);
 
@@ -3575,7 +3575,7 @@ if (!Utils.IsUnitTest){
             // <aiadvancedprogramlimit />
             objWriter.WriteElementString("aiadvancedprogramlimit", AIAdvancedProgramLimit.ToString(objCulture));
             // <spelllimit />
-            objWriter.WriteElementString("spelllimit", SpellLimit.ToString(objCulture));
+            objWriter.WriteElementString("spelllimit", FreeSpells.ToString(objCulture));
             // <karma />
             objWriter.WriteElementString("karma", Karma.ToString(objCulture));
             // <totalkarma />
@@ -4312,7 +4312,7 @@ if (!Utils.IsUnitTest){
             _intSumtoTen = 10;
 
             _decNuyenMaximumBP = 50;
-            _intSpellLimit = 0;
+            _intFreeSpells = 0;
             _intCFPLimit = 0;
             _intAINormalProgramLimit = 0;
             _intAIAdvancedProgramLimit = 0;
@@ -5221,7 +5221,7 @@ if (!Utils.IsUnitTest){
                 }
 
                 // Value from free spells
-                intTemp = SpellLimit * SpellKarmaCost("Spells");
+                intTemp = FreeSpells * SpellKarmaCost("Spells");
                 if(intTemp != 0)
                 {
                     strMessage += Environment.NewLine + LanguageManager.GetString("String_FreeSpells", strLanguage) +
@@ -6982,14 +6982,14 @@ if (!Utils.IsUnitTest){
         /// <summary>
         /// Spell Limit.
         /// </summary>
-        public int SpellLimit
+        public int FreeSpells
         {
-            get => _intSpellLimit;
+            get => _intFreeSpells;
             set
             {
-                if(_intSpellLimit != value)
+                if(_intFreeSpells != value)
                 {
-                    _intSpellLimit = value;
+                    _intFreeSpells = value;
                     OnPropertyChanged();
                 }
             }

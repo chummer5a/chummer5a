@@ -876,7 +876,7 @@ namespace Chummer
                 case nameof(Character.MetatypeBP):
                 case nameof(Character.BuildKarma):
                 case nameof(Character.ContactPoints):
-                case nameof(Character.SpellLimit):
+                case nameof(Character.FreeSpells):
                 case nameof(Character.CFPLimit):
                 case nameof(Character.AIAdvancedProgramLimit):
                 case nameof(Character.SpellKarmaCost):
@@ -9580,7 +9580,7 @@ namespace Chummer
                 int spellCost = CharacterObject.SpellKarmaCost("Spells");
                 int ritualCost = CharacterObject.SpellKarmaCost("Rituals");
                 int prepCost = CharacterObject.SpellKarmaCost("Preparations");
-                int limit = CharacterObject.SpellLimit;
+                int limit = CharacterObject.FreeSpells;
 
                 // It is only karma-efficient to use spell points for Mastery qualities if real spell karma cost is not greater than unmodified spell karma cost
                 if (spellCost <= CharacterObjectOptions.KarmaSpell)
