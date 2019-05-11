@@ -392,7 +392,7 @@
         </gear>
       </gears>
       <mods>
-        <name rating="1">Metahuman Adjustment</name>
+        <name rating="2">Metahuman Adjustment</name>
       </mods>
       <seats>2</seats>
     </vehicle>
@@ -3364,7 +3364,7 @@
         </gear>
       </gears>
       <mods>
-        <name rating="1">Metahuman Adjustment</name>
+        <name rating="10">Metahuman Adjustment</name>
       </mods>
       <seats>20</seats>
     </vehicle>
@@ -7852,7 +7852,7 @@
       <mods>
         <name>Off-Road Suspension</name>
         <name rating="2">Anti-Theft System</name>
-        <name>Metahuman Adjustment</name>
+        <name rating="3">Metahuman Adjustment</name>
       </mods>
       <seats>3</seats>
     </vehicle>
@@ -8037,7 +8037,7 @@
         </gear>
       </gears>
       <mods>
-        <name>Metahuman Adjustment</name>
+        <name rating="4">Metahuman Adjustment</name>
       </mods>
       <seats>4</seats>
     </vehicle>
@@ -8100,7 +8100,7 @@
         <name>Amenities (Middle)</name>
         <name>Interior Cameras</name>
         <name>SunCell</name>
-        <name>Metahuman Adjustment</name>
+        <name rating="25">Metahuman Adjustment</name>
       </mods>
       <seats>50</seats>
     </vehicle>
@@ -8919,7 +8919,7 @@
         </gear>
       </gears>
       <mods>
-        <name>Metahuman Adjustment</name>
+        <name rating="1">Metahuman Adjustment</name>
       </mods>
       <seats>1</seats>
     </vehicle>
@@ -8946,7 +8946,7 @@
         </gear>
       </gears>
       <mods>
-        <name>Metahuman Adjustment</name>
+        <name rating="8">Metahuman Adjustment</name>
       </mods>
       <seats>8</seats>
     </vehicle>
@@ -9493,7 +9493,7 @@
         <name>Removed Manual Controls</name>
         <name>Off-Road Suspension</name>
         <name>GridLink</name>
-        <name>Metahuman Adjustment</name>
+        <name rating="4">Metahuman Adjustment</name>
         <name>Rigger Interface</name>
       </mods>
       <seats>4</seats>

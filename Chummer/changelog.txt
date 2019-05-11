@@ -57,6 +57,7 @@ Data Changes:
 - Added Free Insect quality choices from Dark Terrors. These are hidden behind a Prime Runner gameplay requirement. 
 - Fixed capacities of the Bug Promotional Pen and Concealable Surveillance Gear.
 - Removed unnecessary Rating properties from Sensor Functions.
+- Fixed missing Ratings for several instances of Metahuman Adjustment on vehicles.
 
 String Changes:
 
