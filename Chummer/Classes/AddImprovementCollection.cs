@@ -5062,38 +5062,54 @@ namespace Chummer.Classes
                 {
                     if ((string.IsNullOrEmpty(strExclude) || objWeapon.WeaponType != strExclude) && (blnIncludeUnarmed || objWeapon.Name != "Unarmed Attack"))
                     {
-                        lstWeapons.Add(new ListItem(objWeapon.InternalId, objWeapon.DisplayName(GlobalOptions.Language)));
+                        lstWeapons.Add(new ListItem(objWeapon.InternalId, objWeapon.DisplayNameShort(GlobalOptions.Language)));
                     }
                 }
 
-                frmSelectItem frmPickItem = new frmSelectItem
+                if (string.IsNullOrWhiteSpace(LimitSelection) || lstWeapons.Any(item => item.Name == LimitSelection))
                 {
-                    Description = string.Format(LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language), _strFriendlyName),
-                    GeneralItems = lstWeapons
-                };
+                    frmSelectItem frmPickItem = new frmSelectItem
+                    {
+                        Description =
+                            string.Format(
+                                LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language),
+                                _strFriendlyName),
+                        GeneralItems = lstWeapons
+                    };
 
-                Log.Info("_strLimitSelection = " + LimitSelection);
-                Log.Info("_strForcedValue = " + ForcedValue);
+                    Log.Info("_strLimitSelection = " + LimitSelection);
+                    Log.Info("_strForcedValue = " + ForcedValue);
 
-                if (!string.IsNullOrEmpty(LimitSelection))
-                {
-                    frmPickItem.ForceItem = LimitSelection;
-                    frmPickItem.Opacity = 0;
+                    if (!string.IsNullOrEmpty(LimitSelection))
+                    {
+                        frmPickItem.ForceItem = LimitSelection;
+                        frmPickItem.Opacity = 0;
+                    }
+
+                    frmPickItem.ShowDialog();
+
+                    // Make sure the dialogue window was not canceled.
+                    if (frmPickItem.DialogResult == DialogResult.Cancel)
+                    {
+                        throw new AbortedException();
+                    }
+
+                    SelectedValue = frmPickItem.SelectedName;
+                    if (_blnConcatSelectedValue)
+                        SourceName += " (" + frmPickItem.SelectedName + ')';
+
+                    Log.Info("_strSelectedValue = " + SelectedValue);
+                    Log.Info("SelectedValue = " + SelectedValue);
                 }
-
-                frmPickItem.ShowDialog();
-
-                // Make sure the dialogue window was not canceled.
-                if (frmPickItem.DialogResult == DialogResult.Cancel)
+                else
                 {
-                    throw new AbortedException();
-                }
-                SelectedValue = frmPickItem.SelectedName;
-                if (_blnConcatSelectedValue)
-                    SourceName += " (" + frmPickItem.SelectedName + ')';
+                    SelectedValue = LimitSelection;
+                    if (_blnConcatSelectedValue)
+                        SourceName += " (" + LimitSelection + ')';
 
-                Log.Info("_strSelectedValue = " + SelectedValue);
-                Log.Info("SelectedValue = " + SelectedValue);
+                    Log.Info("_strSelectedValue = " + SelectedValue);
+                    Log.Info("SelectedValue = " + SelectedValue);
+                }
             }
 
             // Create the Improvement.

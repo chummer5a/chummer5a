@@ -25,6 +25,7 @@ Application Fixes:
 - Fixed a parsing issue with the check for if multiple attributes could be at metatype max that could occasionally cause a clash.
 - Fixed issues with the implementation of the dual attribute connection for shapeshifters that caused them to inconsistently use the correct attribute.
 - Fixed an issue with the adding of One Trick Pony's free technique.
+- Fixed behaviour of the selectweapon improvement that caused it to freeze if the ForcedItem quality were specified but the list of weapons did not contain the forced item.
 
 Application Changes:
 
