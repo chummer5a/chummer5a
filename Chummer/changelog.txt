@@ -34,6 +34,7 @@ Application Changes:
 - Small refactor to the Spell class to use RelevantImprovements method. Doesn't actually reduce complexity, but makes me feel a bit better about having less boilerplate. 
 - Added a string to the Skill.Core class that allows for formatting the skill's dicepool, specialisations and such instead of reprocessing it in multiple other locations.
 - Refactored the creation, saving and loading of GUIDs for the Internal ID and Source ID of all objects to provide more consistency. There is a small risk that this will impact the stored improvements of some characters. I haven't been able to prove that it will happen, but logically it should based on this change. 
+- Removed the caching of Mugshot images in the character roster. Prevents high memory usage for large watch folder content.
 
 UI Changes:
 

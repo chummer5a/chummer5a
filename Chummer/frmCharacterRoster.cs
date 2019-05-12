@@ -726,25 +726,8 @@ namespace Chummer
             [IgnoreDataMember]
             public Image Mugshot
             {
-                get
-                {
-                    if(_mugshot == null)
-                    {
-                        if(!String.IsNullOrEmpty(MugshotBase64))
-                            _mugshot = MugshotBase64.ToImage();
-                    }
-                    return _mugshot;
-
-                }
-                set
-                {
-                    _mugshot = value;
-                    if(value != null)
-                    {
-                        MugshotBase64 = value.ToBase64String();
-                    }
-
-                }
+                get => MugshotBase64.ToImage();
+                set => MugshotBase64 = value.ToBase64String();
             }
 
             public string MugshotBase64 { get; set; }
