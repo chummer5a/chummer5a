@@ -309,7 +309,8 @@ namespace Chummer
             Tradition,
             ActionDicePool,
             SpecialModificationLimit,
-            NumImprovementTypes, // 🡐 This one should always be the last defined enum
+            AddSpirit,
+            NumImprovementTypes // 🡐 This one should always be the last defined enum
         }
 
         public enum ImprovementSource

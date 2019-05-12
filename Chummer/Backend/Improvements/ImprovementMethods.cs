@@ -468,6 +468,10 @@ namespace Chummer
                     return objImprovementAdder.limitspelldescriptor;
                 case "LIMITSPIRITCATEGORY":
                     return objImprovementAdder.limitspiritcategory;
+                case "ADDSPRITE":
+                    return objImprovementAdder.addsprite;
+                case "ADDSPIRIT":
+                    return objImprovementAdder.addspirit;
                 case "MOVEMENTREPLACE":
                     return objImprovementAdder.movementreplace;
                 case "ADDLIMB":

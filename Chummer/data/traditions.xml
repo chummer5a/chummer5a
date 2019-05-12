@@ -851,7 +851,7 @@
     <!-- End Region -->
   </traditions>
   <spirits>
-    <!--Corebook spirits-->
+    <!-- Region Corebook spirits-->
     <spirit>
       <id>380a4860-e5b7-4d07-9b8f-24951c1d656a</id>
       <name>Spirit of Air</name>
@@ -1098,6 +1098,357 @@
       <weaknesses>
         <weakness>Allergy (Fire, Severe)</weakness>
       </weaknesses>
+    </spirit>
+    <!-- Region Homonculi -->
+    <spirit>
+      <id>de5f01da-a334-4b64-b491-549e420ac6d3</id>
+      <name>Homonculus (Fragile)</name>
+      <bod>1</bod>
+      <agi>F-2</agi>
+      <rea>F-2</rea>
+      <str>F</str>
+      <cha>0</cha>
+      <int>1</int>
+      <log>1</log>
+      <wil>1</wil>
+      <ini>0</ini>
+      <edg>F</edg>
+      <mag>F</mag>
+      <res>0</res>
+      <dep>0</dep>
+      <ess>F</ess>
+      <walk>2/1/0</walk>
+      <run>4/0/0</run>
+      <sprint>1/1/0</sprint>
+      <skills>
+        <skill>Assensing</skill>
+        <skill>Astral Combat</skill>
+      </skills>
+      <powers>
+        <power>Sapience</power>
+      </powers>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <source>SR5</source>
+      <page>298</page>
+    </spirit>
+    <spirit>
+          <id>28d8859b-21da-43f7-b401-181cf1284f97</id>
+          <name>Homonculus (Cheap Material)</name>
+          <bod>2</bod>
+          <agi>F-2</agi>
+          <rea>F-2</rea>
+          <str>F</str>
+          <cha>0</cha>
+          <int>1</int>
+          <log>1</log>
+          <wil>1</wil>
+          <ini>0</ini>
+          <edg>F</edg>
+          <mag>F</mag>
+          <res>0</res>
+          <dep>0</dep>
+          <ess>F</ess>
+          <walk>2/1/0</walk>
+          <run>4/0/0</run>
+          <sprint>1/1/0</sprint>
+          <skills>
+              <skill>Assensing</skill>
+              <skill>Astral Combat</skill>
+          </skills>
+          <powers>
+              <power>Sapience</power>
+          </powers>
+          <bonus>
+              <enabletab>
+                  <name>critter</name>
+              </enabletab>
+          </bonus>
+          <source>SR5</source>
+          <page>298</page>
+      </spirit>
+    <spirit>
+          <id>2ed43bda-6773-462d-b850-db4b82d9bac0</id>
+          <name>Homonculus (Average Material)</name>
+          <bod>1</bod>
+          <agi>F-2</agi>
+          <rea>F-2</rea>
+          <str>F</str>
+          <cha>0</cha>
+          <int>1</int>
+          <log>1</log>
+          <wil>1</wil>
+          <ini>0</ini>
+          <edg>F</edg>
+          <mag>F</mag>
+          <res>0</res>
+          <dep>0</dep>
+          <ess>F</ess>
+          <walk>2/1/0</walk>
+          <run>4/0/0</run>
+          <sprint>1/1/0</sprint>
+          <skills>
+              <skill>Assensing</skill>
+              <skill>Astral Combat</skill>
+          </skills>
+          <powers>
+              <power>Sapience</power>
+          </powers>
+          <bonus>
+              <enabletab>
+                  <name>critter</name>
+              </enabletab>
+          </bonus>
+          <source>SR5</source>
+          <page>298</page>
+      </spirit>
+    <spirit>
+          <id>f1262445-f4fd-43ab-b874-b9111f02ac96</id>
+          <name>Homonculus (Heavy Material)</name>
+          <bod>6</bod>
+          <agi>F-2</agi>
+          <rea>F-2</rea>
+          <str>F</str>
+          <cha>0</cha>
+          <int>1</int>
+          <log>1</log>
+          <wil>1</wil>
+          <ini>0</ini>
+          <edg>F</edg>
+          <mag>F</mag>
+          <res>0</res>
+          <dep>0</dep>
+          <ess>F</ess>
+          <walk>2/1/0</walk>
+          <run>4/0/0</run>
+          <sprint>1/1/0</sprint>
+          <skills>
+              <skill>Assensing</skill>
+              <skill>Astral Combat</skill>
+          </skills>
+          <powers>
+              <power>Sapience</power>
+          </powers>
+          <bonus>
+              <enabletab>
+                  <name>critter</name>
+              </enabletab>
+          </bonus>
+          <source>SR5</source>
+          <page>298</page>
+      </spirit>
+    <spirit>
+          <id>eb454ca4-2260-4f1c-91c4-901abf010f2b</id>
+          <name>Homonculus (Reinforced Material)</name>
+          <bod>8</bod>
+          <agi>F-2</agi>
+          <rea>F-2</rea>
+          <str>F</str>
+          <cha>0</cha>
+          <int>1</int>
+          <log>1</log>
+          <wil>1</wil>
+          <ini>0</ini>
+          <edg>F</edg>
+          <mag>F</mag>
+          <res>0</res>
+          <dep>0</dep>
+          <ess>F</ess>
+          <walk>2/1/0</walk>
+          <run>4/0/0</run>
+          <sprint>1/1/0</sprint>
+          <skills>
+              <skill>Assensing</skill>
+              <skill>Astral Combat</skill>
+          </skills>
+          <powers>
+              <power>Sapience</power>
+          </powers>
+          <bonus>
+              <enabletab>
+                  <name>critter</name>
+              </enabletab>
+          </bonus>
+          <source>SR5</source>
+          <page>298</page>
+      </spirit>
+    <spirit>
+          <id>ce4e5b8b-3d15-4cbe-b0ed-3ed150300779</id>
+          <name>Homonculus (Structural Material)</name>
+          <bod>1</bod>
+          <agi>F-2</agi>
+          <rea>F-2</rea>
+          <str>F</str>
+          <cha>0</cha>
+          <int>1</int>
+          <log>1</log>
+          <wil>1</wil>
+          <ini>0</ini>
+          <edg>F</edg>
+          <mag>F</mag>
+          <res>0</res>
+          <dep>0</dep>
+          <ess>F</ess>
+          <walk>2/1/0</walk>
+          <run>4/0/0</run>
+          <sprint>1/1/0</sprint>
+          <skills>
+              <skill>Assensing</skill>
+              <skill>Astral Combat</skill>
+          </skills>
+          <powers>
+              <power>Sapience</power>
+          </powers>
+          <bonus>
+              <enabletab>
+                  <name>critter</name>
+              </enabletab>
+          </bonus>
+          <source>SR5</source>
+          <page>298</page>
+      </spirit>
+    <spirit>
+          <id>d19a52fe-1c68-4032-9459-662b0b80a633</id>
+          <name>Homonculus (Heavy Structural Material)</name>
+          <bod>1</bod>
+          <agi>F-2</agi>
+          <rea>F-2</rea>
+          <str>F</str>
+          <cha>0</cha>
+          <int>1</int>
+          <log>1</log>
+          <wil>1</wil>
+          <ini>0</ini>
+          <edg>F</edg>
+          <mag>F</mag>
+          <res>0</res>
+          <dep>0</dep>
+          <ess>F</ess>
+          <walk>2/1/0</walk>
+          <run>4/0/0</run>
+          <sprint>1/1/0</sprint>
+          <skills>
+              <skill>Assensing</skill>
+              <skill>Astral Combat</skill>
+          </skills>
+          <powers>
+              <power>Sapience</power>
+          </powers>
+          <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <source>SR5</source>
+      <page>298</page>
+    </spirit>
+    <spirit>
+      <id>d8a0781e-c5bf-451a-939c-97f68a3ceacb</id>
+      <name>Homonculus (Armored Material)</name>
+      <bod>1</bod>
+      <agi>F-2</agi>
+      <rea>F-2</rea>
+      <str>F</str>
+      <cha>0</cha>
+      <int>1</int>
+      <log>1</log>
+      <wil>1</wil>
+      <ini>0</ini>
+      <edg>F</edg>
+      <mag>F</mag>
+      <res>0</res>
+      <dep>0</dep>
+      <ess>F</ess>
+      <walk>2/1/0</walk>
+      <run>4/0/0</run>
+      <sprint>1/1/0</sprint>
+      <skills>
+        <skill>Assensing</skill>
+        <skill>Astral Combat</skill>
+      </skills>
+      <powers>
+        <power>Sapience</power>
+      </powers>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <source>SR5</source>
+      <page>298</page>
+    </spirit>
+    <spirit>
+      <id>01cea6c7-1b92-4e71-a56c-4059ab105382</id>
+      <name>Homonculus (Hardened Material)</name>
+      <bod>1</bod>
+      <agi>F-2</agi>
+      <rea>F-2</rea>
+      <str>F</str>
+      <cha>0</cha>
+      <int>1</int>
+      <log>1</log>
+      <wil>1</wil>
+      <ini>0</ini>
+      <edg>F</edg>
+      <mag>F</mag>
+      <res>0</res>
+      <dep>0</dep>
+      <ess>F</ess>
+      <walk>2/1/0</walk>
+      <run>4/0/0</run>
+      <sprint>1/1/0</sprint>
+      <skills>
+        <skill>Assensing</skill>
+        <skill>Astral Combat</skill>
+      </skills>
+      <powers>
+        <power>Sapience</power>
+      </powers>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <source>SR5</source>
+      <page>298</page>
+    </spirit>
+    <!-- End Region -->
+    <spirit>
+      <id>  </id>
+      <name>Watcher</name>
+      <bod>0</bod>
+      <agi>0</agi>
+      <rea>0</rea>
+      <str>0</str>
+      <cha>F-2</cha>
+      <int>F-2</int>
+      <log>F-2</log>
+      <wil>F-2</wil>
+      <ini>0</ini>
+      <edg>F</edg>
+      <mag>F</mag>
+      <res>0</res>
+      <dep>0</dep>
+      <ess>F</ess>
+      <skills>
+        <skill>Assensing</skill>
+        <skill>Astral Combat</skill>
+      </skills>
+      <powers>
+        <power>Astral Form</power>
+        <power>Manifest</power>
+        <power>Search</power>
+      </powers>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <source>SR5</source>
+      <page>298</page>
     </spirit>
     <!--SG normal spirits-->
     <spirit>

@@ -5575,51 +5575,95 @@ namespace Chummer.Classes
             Log.Info("Calling CreateImprovement");
             CreateImprovement(strSelected, _objImprovementSource, SourceName, Improvement.ImprovementType.LimitSpellDescriptor, _strUnique);
         }
+        #region addspiritorsprite
+        /// <summary>
+        /// Improvement type that adds to the available sprite types a character can summon.
+        /// </summary>
+        /// <param name="bonusNode"></param>
+        public void addsprite(XmlNode bonusNode)
+        {
+            Log.Info("addspirit");
+            XmlNodeList xmlAllowedSpirits = bonusNode.SelectNodes("spirit");
+            bool addToSelected = true;
+            if (bonusNode.SelectSingleNode("addtoselected") != null)
+            {
+                addToSelected = Convert.ToBoolean(bonusNode.SelectSingleNode("addtoselected")?.Value);
+            }
+            AddSpiritOrSprite("streams.xml", xmlAllowedSpirits, Improvement.ImprovementType.AddSprite, addToSelected);
+        }
 
+        /// <summary>
+        /// Improvement type that adds to the available spirit types a character can summon.
+        /// </summary>
+        /// <param name="bonusNode"></param>
+        public void addspirit(XmlNode bonusNode)
+        {
+            Log.Info("addspirit");
+            XmlNodeList xmlAllowedSpirits = bonusNode.SelectNodes("spirit");
+            bool addToSelected = true;
+            if (bonusNode.SelectSingleNode("addtoselected") != null)
+            {
+                addToSelected = Convert.ToBoolean(bonusNode.SelectSingleNode("addtoselected")?.Value);
+            }
+            AddSpiritOrSprite("traditions.xml",xmlAllowedSpirits, Improvement.ImprovementType.AddSpirit, addToSelected);
+        }
+        /// <summary>
+        /// Improvement type that limits the spirits a character can summon to a particular category.
+        /// </summary>
+        /// <param name="bonusNode"></param>
         public void limitspiritcategory(XmlNode bonusNode)
         {
             Log.Info("limitspiritcategory");
-            XmlNodeList xmlLimitedSpirits = bonusNode.SelectNodes("spirit");
-            HashSet<string> limit = new HashSet<string>();
-            if (xmlLimitedSpirits != null)
+            XmlNodeList xmlAllowedSpirits = bonusNode.SelectNodes("spirit");
+            bool addToSelected = true;
+            if (bonusNode.SelectSingleNode("addtoselected") != null)
             {
-                foreach (XmlNode n in xmlLimitedSpirits)
-                {
-                    limit.Add(n.InnerText);
-                }
+                addToSelected = Convert.ToBoolean(bonusNode.SelectSingleNode("addtoselected")?.Value);
             }
+            AddSpiritOrSprite("traditions.xml", xmlAllowedSpirits, Improvement.ImprovementType.LimitSpiritCategory, addToSelected);
+        }
+
+        private void AddSpiritOrSprite(string xmlDoc, XmlNodeList xmlAllowedSpirits, Improvement.ImprovementType impType, bool addToSelectedValue = true)
+        {
+            Log.Info("addspiritorsprite");
+            HashSet<string> setAllowed = new HashSet<string>();
+            foreach (XmlNode n in xmlAllowedSpirits)
+            {
+                setAllowed.Add(n.InnerText);
+            }
+
             List<ListItem> lstSpirits = new List<ListItem>();
-            using (XmlNodeList xmlSpirits = XmlManager.Load("traditions.xml").SelectNodes("/chummer/spirits/spirit"))
+            using (XmlNodeList xmlSpirits = XmlManager.Load(xmlDoc).SelectNodes("/chummer/spirits/spirit"))
                 if (xmlSpirits?.Count > 0)
                     foreach (XmlNode xmlSpirit in xmlSpirits)
                     {
                         string strSpiritName = xmlSpirit["name"]?.InnerText;
-                        if (limit.All(l => strSpiritName == l))
+                        if (setAllowed.Any(l => strSpiritName == l))
                         {
-                            lstSpirits.Add(new ListItem(strSpiritName, xmlSpirit["translate"]?.InnerText ?? strSpiritName));
+                            lstSpirits.Add(new ListItem(strSpiritName,
+                                xmlSpirit["translate"]?.InnerText ?? strSpiritName));
                         }
                     }
 
-            frmSelectItem frmSelect = new frmSelectItem {GeneralItems = lstSpirits};
+            frmSelectItem frmSelect = new frmSelectItem { GeneralItems = lstSpirits };
             frmSelect.ShowDialog();
-
             if (frmSelect.DialogResult == DialogResult.Cancel)
             {
                 throw new AbortedException();
             }
-            if (string.IsNullOrEmpty(SelectedValue))
-                SelectedValue = frmSelect.SelectedItem;
-            else
-                SelectedValue += ", " + frmSelect.SelectedItem;
-            if (_blnConcatSelectedValue)
-                SourceName += " (" + frmSelect.SelectedItem + ')';
-            
+
+            if (addToSelectedValue)
+            {
+                if (string.IsNullOrEmpty(SelectedValue)) SelectedValue = frmSelect.SelectedItem;
+                else SelectedValue += ", " + frmSelect.SelectedItem;
+            }
+            if (_blnConcatSelectedValue) SourceName += " (" + frmSelect.SelectedItem + ')';
             Log.Info("_strSelectedValue = " + frmSelect.SelectedItem);
             Log.Info("SourceName = " + SourceName);
-
             Log.Info("Calling CreateImprovement");
-            CreateImprovement(frmSelect.SelectedItem, _objImprovementSource, SourceName, Improvement.ImprovementType.LimitSpiritCategory, _strUnique);
+            CreateImprovement(frmSelect.SelectedItem, _objImprovementSource, SourceName, impType, _strUnique);
         }
+        #endregion
         public void movementreplace(XmlNode bonusNode)
         {
             Log.Info("movementreplace");

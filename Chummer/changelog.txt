@@ -8,6 +8,7 @@ New Features:
 - Exposed ParentDetails requirement checks to Armor Mods. This allows for filtering mods based on the XML properties of their parent, such as filtering based on name or armour value.
 - Gameplay Options can now be used as a forbidden/required choice for items; currently this is used for the Free Insect Spirit qualities, which require the Prime Runner gameplay choice. 
 - Cyberware now supports the use of math operators in the ess and cost values. This allows for customdata files to easily make bulk changes to cyberware Essence and Cost entries.
+- Reimplemented the addsprite and addspirit improvement types to support adding Watchers, Homonculi and other spirit types that are added separately to a tradition.
 
 Application Fixes:
 

@@ -415,22 +415,19 @@ namespace Chummer
 
             if (_objSpirit.CharacterObject.RESEnabled)
             {
-                // Add any additional Sprites the character has Access to through Sprite Link.
-                foreach (Improvement objImprovement in _objSpirit.CharacterObject.Improvements)
-                {
-                    if (objImprovement.ImproveType == Improvement.ImprovementType.AddSprite && objImprovement.Enabled)
-                    {
-                        XmlNode objXmlCritterNode = objXmlDocument.SelectSingleNode("/chummer/spirits/spirit[name = \"" + objImprovement.ImprovedName + "\"]");
-                        lstCritters.Add(new ListItem(objImprovement.ImprovedName, objXmlCritterNode?["translate"]?.InnerText ?? objImprovement.ImprovedName));
-                    }
-                }
+                // Add any additional Sprites the character has Access to through improvements.
+                lstCritters.AddRange(from objImprovement in _objSpirit.CharacterObject.Improvements
+                        .Where(imp => imp.ImproveType == Improvement.ImprovementType.AddSprite && imp.Enabled)
+                    let objXmlCritterNode = objXmlDocument.SelectSingleNode("/chummer/spirits/spirit[name = \"" + objImprovement.ImprovedName + "\"]")
+                    select new ListItem(objImprovement.ImprovedName, objXmlCritterNode?["translate"]?.InnerText ?? objImprovement.ImprovedName));
             }
-
-            //Add Ally Spirit to MAG-enabled traditions.
             if (_objSpirit.CharacterObject.MAGEnabled)
             {
-                XmlNode objXmlCritterNode = objXmlCritterDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"Ally Spirit\"]");
-                lstCritters.Add(new ListItem("Ally Spirit", objXmlCritterNode?["translate"]?.InnerText ?? "Ally Spirit"));
+                // Add any additional Spirits the character has Access to through improvements.
+                lstCritters.AddRange(from objImprovement in _objSpirit.CharacterObject.Improvements
+                    .Where(imp => imp.ImproveType == Improvement.ImprovementType.AddSpirit && imp.Enabled)
+                    let objXmlCritterNode = objXmlDocument.SelectSingleNode("/chummer/spirits/spirit[name = \"" + objImprovement.ImprovedName + "\"]")
+                    select new ListItem(objImprovement.ImprovedName, objXmlCritterNode?["translate"]?.InnerText ?? objImprovement.ImprovedName));
             }
 
             cboSpiritName.BeginUpdate();
