@@ -45,7 +45,7 @@ namespace ChummerHub.Models.V1
 
         public SINnerMetaData SINnerMetaData { get; set; }
         
-        public SINnerExtended MyExtendedAttributes { get; set; }
+        //public SINnerExtended MyExtendedAttributes { get; set; }
 
         public SINnerGroup MyGroup { get; set; }
 
@@ -56,7 +56,7 @@ namespace ChummerHub.Models.V1
         {
             Id = Guid.NewGuid();
             this.SINnerMetaData = new SINnerMetaData();
-            this.MyExtendedAttributes = new SINnerExtended(this);
+            //this.MyExtendedAttributes = new SINnerExtended(this);
             this.DownloadUrl = "";
             this.MyGroup = null;
             this.Language = "";
