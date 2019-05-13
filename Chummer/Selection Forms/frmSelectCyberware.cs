@@ -667,64 +667,8 @@ namespace Chummer
             // This is done using XPathExpression.
 
             int intRating = decimal.ToInt32(nudRating.Value);
-            // Avail.
-            // If avail contains "F" or "R", remove it from the string so we can use the expression.
-            string strAvail = objXmlCyberware.SelectSingleNode("avail")?.Value;
-            if (!string.IsNullOrEmpty(strAvail))
-            {
-                string strAvailExpr = strAvail;
-                if (strAvailExpr.StartsWith("FixedValues("))
-                {
-                    string[] strValues = strAvailExpr.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
-                    strAvailExpr = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
-                }
-
-                string strSuffix = string.Empty;
-                char chrSuffix = strAvailExpr[strAvailExpr.Length - 1];
-                if (chrSuffix == 'R')
-                {
-                    strSuffix = LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language);
-                    // Remove the trailing character if it is "F" or "R".
-                    strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
-                }
-                else if (chrSuffix == 'F')
-                {
-                    strSuffix = LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language);
-                    // Remove the trailing character if it is "F" or "R".
-                    strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
-                }
-
-                string strPrefix = string.Empty;
-                char chrPrefix = strAvailExpr[0];
-                if (chrPrefix == '+' || chrPrefix == '-')
-                {
-                    strPrefix = chrPrefix.ToString();
-                    strAvailExpr = strAvailExpr.Substring(1, strAvailExpr.Length - 1);
-                }
-
-                strAvailExpr = strAvailExpr.CheapReplace("MinRating", () => nudRating.Minimum.ToString(GlobalOptions.InvariantCultureInfo))
-                    .CheapReplace("Rating", () => nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo));
-
-                object objProcess = CommonFunctions.EvaluateInvariantXPath(strAvailExpr, out bool blnIsSuccess);
-                if (blnIsSuccess)
-                {
-                    int intAvail = Convert.ToInt32(objProcess) + _intAvailModifier;
-                    // Avail cannot go below 0.
-                    if (intAvail < 0)
-                        intAvail = 0;
-                    lblAvail.Text = strPrefix + intAvail.ToString() + strSuffix;
-                }
-                else
-                {
-                    lblAvail.Text = strAvail;
-                }
-            }
-            else
-            {
-                lblAvail.Text = 0.ToString(GlobalOptions.CultureInfo);
-            }
-
-            lblAvailLabel.Visible = !string.IsNullOrEmpty(lblAvail.Text);
+            AvailabilityValue objTotalAvail = new AvailabilityValue(Convert.ToInt32(nudRating.Value), objXmlCyberware.SelectSingleNode("avail")?.Value);
+            lblAvail.Text = objTotalAvail.ToString();
 
             // Cost.
             decimal decItemCost = 0;
@@ -803,7 +747,7 @@ namespace Chummer
             lblCostLabel.Visible = !string.IsNullOrEmpty(lblCost.Text);
 
             // Test required to find the item.
-            lblTest.Text = _objCharacter.AvailTest(decItemCost, lblAvail.Text);
+            lblTest.Text = _objCharacter.AvailTest(decItemCost, objTotalAvail);
             lblTestLabel.Visible = !string.IsNullOrEmpty(lblTest.Text);
 
             // Essence.
