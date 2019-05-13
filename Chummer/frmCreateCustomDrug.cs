@@ -143,8 +143,17 @@ namespace Chummer
 		        MessageBox.Show(LanguageManager.GetString("Message_CustomDrug_Name", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CustomDrug_Name", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
 		    }
+
+		    if (_objDrug.Components.Count(o => o.Category == "Foundation") != 1)
+		    {
+		        MessageBox.Show(LanguageManager.GetString("Message_CustomDrug_MissingFoundation", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CustomDrug_Foundation", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+		        return;
+            }
+
             _objDrug.Quantity = 1;
-		}
+		    DialogResult = DialogResult.OK;
+		    Close();
+        }
 
 		private void AddSelectedComponent()
         {
@@ -272,8 +281,6 @@ namespace Chummer
         private void btnOk_Click(object sender, EventArgs e)
         {
 	        AcceptForm();
-            DialogResult = DialogResult.OK;
-            Close();
         }
 
 		private void btnCancel_Click(object sender, EventArgs e)

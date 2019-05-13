@@ -29,6 +29,7 @@ Application Fixes:
 - Fixed behaviour of the selectweapon improvement that caused it to freeze if the ForcedItem quality were specified but the list of weapons did not contain the forced item.
 - Fixed an issue with adding gear to weapon accessories when the weapon accessory was installed with the weapon.
 - Fixed behaviour of Armor Mods improperly not showing their modification of parent items.
+- Added logic to prevent accepting a custom drug that does not have a Foundation or a Name without adding the drug successfully.
 
 Application Changes:
 
@@ -72,6 +73,8 @@ New Strings:
 
 - String_SpellPoints
 - Tip_SelectSpell_MasteryQuality
+- Message_CustomDrug_MissingFoundation
+- MessageTitle_CustomDrug_MissingFoundation
 
 Build 205
 
