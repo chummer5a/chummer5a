@@ -224,13 +224,15 @@ namespace SINners
 
         /// <param name='sINnerId'>
         /// </param>
+        /// <param name='index'>
+        /// </param>
         /// <param name='customHeaders'>
         /// The headers that will be added to request.
         /// </param>
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse> GetMugshotByIdWithHttpMessagesAsync(Guid? sINnerId = default(Guid?), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse> GetThumbnailByIdWithHttpMessagesAsync(Guid? sINnerId = default(Guid?), int? index = default(int?), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Store the MetaData for chummerfiles (to get a Id).

@@ -628,7 +628,7 @@ namespace ChummerHub.Controllers.V1
                         .Include(a => a.MyGroup.MyParentGroup.MyGroups)
                         .Include(a => a.MyGroup.MyGroups)
                         .Include(a => a.SINnerMetaData)
-                        .Include(a => a.MyExtendedAttributes)
+                        //.Include(a => a.MyExtendedAttributes)
                         .Include(a => a.SINnerMetaData.Visibility)
                         .Include(a => a.SINnerMetaData.Visibility.UserRights)
                     where a.Id == SinnerId
@@ -645,8 +645,8 @@ namespace ChummerHub.Controllers.V1
                     {
                         if (String.IsNullOrEmpty(sin.DownloadUrl))
                             throw new ArgumentException("Sinner " + sin.Alias + " does not have a DownloadURL!");
-                        if (String.IsNullOrEmpty(sin.MyExtendedAttributes?.JsonSummary))
-                            throw new ArgumentException("Sinner " + sin.Alias + " does not have a valid JsonSummary!");
+                        //if (String.IsNullOrEmpty(sin.MyExtendedAttributes?.JsonSummary))
+                        //    throw new ArgumentException("Sinner " + sin.Alias + " does not have a valid JsonSummary!");
                         sin.MyGroup = MyTargetGroup;
                     }
                 }

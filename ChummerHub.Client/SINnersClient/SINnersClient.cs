@@ -2345,6 +2345,8 @@ namespace SINners
 
         /// <param name='sINnerId'>
         /// </param>
+        /// <param name='index'>
+        /// </param>
         /// <param name='customHeaders'>
         /// Headers that will be added to request.
         /// </param>
@@ -2354,7 +2356,7 @@ namespace SINners
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
-        public async Task<HttpOperationResponse> GetMugshotByIdWithHttpMessagesAsync(Guid? sINnerId = default(Guid?), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<HttpOperationResponse> GetThumbnailByIdWithHttpMessagesAsync(Guid? sINnerId = default(Guid?), int? index = default(int?), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
@@ -2364,16 +2366,21 @@ namespace SINners
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
                 tracingParameters.Add("sINnerId", sINnerId);
+                tracingParameters.Add("index", index);
                 tracingParameters.Add("cancellationToken", cancellationToken);
-                ServiceClientTracing.Enter(_invocationId, this, "GetMugshotById", tracingParameters);
+                ServiceClientTracing.Enter(_invocationId, this, "GetThumbnailById", tracingParameters);
             }
             // Construct URL
             var _baseUrl = this.BaseUri.AbsoluteUri;
-            var _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SIN/GetMugshotById").ToString();
+            var _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SIN/GetThumbnailById").ToString();
             List<string> _queryParameters = new List<string>();
             if (sINnerId != null)
             {
                 _queryParameters.Add(string.Format("SINnerId={0}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(sINnerId, this.SerializationSettings).Trim('"'))));
+            }
+            if (index != null)
+            {
+                _queryParameters.Add(string.Format("index={0}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(index, this.SerializationSettings).Trim('"'))));
             }
             if (_queryParameters.Count > 0)
             {

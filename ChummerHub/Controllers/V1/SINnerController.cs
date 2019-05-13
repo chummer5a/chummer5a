@@ -16,8 +16,12 @@ using ChummerHub.Models.V1.Examples;
 using ChummerHub.Services.GoogleDrive;
 using Microsoft.AspNetCore.Http.Internal;
 using System.IO;
+using System.IO.Compression;
+using System.IO.Enumeration;
+using System.Xml;
 using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json;
+using Veldrid;
 
 //using Swashbuckle.AspNetCore.Filters;
 
@@ -216,7 +220,7 @@ namespace ChummerHub.Controllers.V1
                 if (!String.IsNullOrEmpty(User?.Identity?.Name))
                     user = await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
                 var sin = await _context.SINners
-                    .Include(a => a.MyExtendedAttributes)
+                    //.Include(a => a.MyExtendedAttributes)
                     .Include(a => a.SINnerMetaData.Visibility.UserRights)
                     .Include(a => a.MyGroup)
                     .Include(b => b.MyGroup.MySettings)
@@ -321,7 +325,7 @@ namespace ChummerHub.Controllers.V1
                 if (!String.IsNullOrEmpty(User?.Identity?.Name))
                     user = await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
                 var sinseq = await _context.SINners
-                    .Include(a => a.MyExtendedAttributes)
+                    //.Include(a => a.MyExtendedAttributes)
                     .Include(a => a.SINnerMetaData.Visibility.UserRights)
                     .Include(a => a.MyGroup)
                     .Include(b => b.MyGroup.MySettings)
@@ -464,35 +468,103 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GetThumbnailById")]
         [AllowAnonymous]
-        public async Task<IActionResult> GetThumbnailById(Guid? SINnerId, int index)
+        public async Task<IActionResult> GetThumbnailById(Guid? SINnerId, int? index)
         {
+            string filename = SINnerId.Value + ".zip";
             try
             {
-                var extendedseq = await (from a in _context.SINners.Include(a => a.MyExtendedAttributes)
+                if (index == null)
+                    index = 0;
+                var sinnerseq = await (from a in _context.SINners
                     where a.Id == SINnerId
                     select a).ToListAsync();
-
-                if (!extendedseq.Any())
+                if (!sinnerseq.Any())
                     return NotFound("SINner " + SINnerId + " not found!");
+                var net = new System.Net.WebClient();
 
-                var json = extendedseq.FirstOrDefault().MyExtendedAttributes?.JsonSummary;
-                if (String.IsNullOrEmpty(json))
+                if (System.IO.File.Exists(filename))
                 {
-                    return NotFound("SINner found but he/she has no MugShot saved.");
+                    System.IO.File.Delete(filename);
                 }
-                var definition = new { MugshotBase64 = "" };
-                var MugshotBase64 = JsonConvert.DeserializeAnonymousType(json, definition);
 
-                byte[] bytes = Convert.FromBase64String(MugshotBase64.MugshotBase64);
+                Uri downloadUri = new Uri(sinnerseq.FirstOrDefault()?.DownloadUrl);
+                net.DownloadFile(downloadUri, filename);
 
-                return File(bytes, "image/jpeg");
+                if (!System.IO.File.Exists(filename))
+                {
+                    return NotFound("Could not download sinner " + SINnerId + " from " +
+                                    sinnerseq.FirstOrDefault()?.DownloadUrl + ".");
+                }
+
+                using (var file = System.IO.File.OpenRead(filename))
+                {
+                    using (var zip = new ZipArchive(file, ZipArchiveMode.Read))
+                    {
+                        foreach (var entry in zip.Entries)
+                        {
+                            using (var stream = entry.Open())
+                            {
+                                try
+                                {
+                                    XmlDocument doc = new XmlDocument();
+                                    doc.Load(stream);
+                                    var node = doc.SelectSingleNode(
+                                        "/*[local-name()='character']/*[local-name()='mugshots']");
+                                    if (node == null)
+                                        return NotFound("SINner found but he/she has no MugShot saved.");
+                                    if (node.ChildNodes.Count <= index.Value)
+                                        return NotFound("SINner found but he/she has only " + node.ChildNodes.Count +
+                                                        "  Mugshots.");
+                                    var mugchild = node.ChildNodes.Item(index.Value);
+                                    if (mugchild != null)
+                                    {
+                                        //now we need to get the value of the Childnode
+                                        if (mugchild.FirstChild != null)
+                                        {
+                                            byte[] bytes = Convert.FromBase64String(mugchild.FirstChild.Value);
+                                            return File(bytes, "image/jpeg");
+                                        }
+                                        else
+                                        {
+                                            throw new ArgumentNullException("index",
+                                                "The FirstChild-Node with this index seems to be null!");
+                                        }
+                                    }
+                                    else
+                                    {
+                                        throw new ArgumentNullException("index",
+                                            "Childnode with this index seems to be null!");
+                                    }
+                                }
+                                catch (Exception e)
+                                {
+                                    try
+                                    {
+                                        var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                                        Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry =
+                                            new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
+                                        telemetry.Properties.Add("SINnerId", SINnerId?.ToString());
+                                        tc.TrackException(telemetry);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        _logger.LogError(ex.ToString());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                return NotFound("Could not find the mugshots-token.");
             }
             catch (Exception e)
             {
                 try
                 {
                     var tc = new Microsoft.ApplicationInsights.TelemetryClient();
-                    Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
+                    Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry =
+                        new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
                     telemetry.Properties.Add("SINnerId", SINnerId?.ToString());
                     tc.TrackException(telemetry);
                 }
@@ -500,7 +572,15 @@ namespace ChummerHub.Controllers.V1
                 {
                     _logger.LogError(ex.ToString());
                 }
+
                 return BadRequest(e);
+            }
+            finally
+            {
+                if (System.IO.File.Exists(filename))
+                {
+                    System.IO.File.Delete(filename);
+                }
             }
            
 
@@ -557,12 +637,12 @@ namespace ChummerHub.Controllers.V1
                     if (sinner.Id.ToString() == "string")
                         sinner.Id = Guid.Empty;
 
-                    if (String.IsNullOrEmpty(sinner.MyExtendedAttributes.JsonSummary))
-                    {
-                        var e = new ArgumentException("sinner " + sinner.Id + ": JsonSummary == null");
-                        res = new ResultSinnerPostSIN(e);
-                        return BadRequest(res);
-                    }
+                    //if (String.IsNullOrEmpty(sinner.MyExtendedAttributes.JsonSummary))
+                    //{
+                    //    var e = new ArgumentException("sinner " + sinner.Id + ": JsonSummary == null");
+                    //    res = new ResultSinnerPostSIN(e);
+                    //    return BadRequest(res);
+                    //}
                     
                     if (sinner.LastChange == null)
                     {
@@ -576,13 +656,13 @@ namespace ChummerHub.Controllers.V1
                         sinner.SINnerMetaData.Visibility.Id = Guid.NewGuid();
                     }
 
-                    if ((sinner.MyExtendedAttributes.Id == null) || (sinner.MyExtendedAttributes.Id == Guid.Empty))
-                    {
-                        sinner.MyExtendedAttributes.Id = Guid.NewGuid();
-                    }
+                    //if ((sinner.MyExtendedAttributes.Id == null) || (sinner.MyExtendedAttributes.Id == Guid.Empty))
+                    //{
+                    //    sinner.MyExtendedAttributes.Id = Guid.NewGuid();
+                    //}
 
                     var oldsinner = (from a in _context.SINners
-                            .Include(a => a.MyExtendedAttributes)
+                            //.Include(a => a.MyExtendedAttributes)
                             .Include(a => a.SINnerMetaData)
                             .Include(a => a.SINnerMetaData.Visibility)
                             .Include(a => a.SINnerMetaData.Visibility.UserRights)
@@ -687,7 +767,7 @@ namespace ChummerHub.Controllers.V1
                         }
                         _context.UserRights.RemoveRange(dbsinner.SINnerMetaData.Visibility.UserRights);
                         _context.SINnerVisibility.Remove(dbsinner.SINnerMetaData.Visibility);
-                        _context.SINnerExtendedMetaData.Remove(dbsinner.MyExtendedAttributes);
+                        //_context.SINnerExtendedMetaData.Remove(dbsinner.MyExtendedAttributes);
                         _context.SINnerMetaData.Remove(dbsinner.SINnerMetaData);
                         _context.SINners.Remove(dbsinner);
                         
@@ -696,7 +776,7 @@ namespace ChummerHub.Controllers.V1
                         dbsinner.SINnerMetaData.Visibility = null;
                         dbsinner.SINnerMetaData.Tags = null;
                         dbsinner.SINnerMetaData = null;
-                        dbsinner.MyExtendedAttributes = null;
+                        //dbsinner.MyExtendedAttributes = null;
 
                         try
                         {
@@ -708,7 +788,7 @@ namespace ChummerHub.Controllers.V1
                             {
                                 if (entry.Entity is SINner
                                     || entry.Entity is Tag
-                                    || entry.Entity is SINnerExtended
+                                    //|| entry.Entity is SINnerExtended
                                     || entry.Entity is SINnerGroup
                                     || entry.Entity is SINnerUserRight
                                     || entry.Entity is SINnerMetaData)
@@ -927,8 +1007,8 @@ namespace ChummerHub.Controllers.V1
                         _context.SINnerVisibility.Remove(oldsin.SINnerMetaData.Visibility);
                     if(_context.SINnerMetaData.Contains(oldsin.SINnerMetaData))
                         _context.SINnerMetaData.Remove(oldsin.SINnerMetaData);
-                    if (_context.SINnerExtendedMetaData.Contains(oldsin.MyExtendedAttributes))
-                        _context.SINnerExtendedMetaData.Remove(oldsin.MyExtendedAttributes);
+                    //if (_context.SINnerExtendedMetaData.Contains(oldsin.MyExtendedAttributes))
+                    //    _context.SINnerExtendedMetaData.Remove(oldsin.MyExtendedAttributes);
                 }
 
                 _context.SINners.RemoveRange(oldsinners);
@@ -973,7 +1053,7 @@ namespace ChummerHub.Controllers.V1
                         .Include(a => a.SINnerMetaData)
                         .Include(a => a.SINnerMetaData.Visibility)
                         .Include(a => a.SINnerMetaData.Visibility.UserRights)
-                        .Include(a => a.MyExtendedAttributes)
+                        //.Include(a => a.MyExtendedAttributes)
                         .Include(a => a.MyGroup)
                     where a.Id == id
                     select a).FirstOrDefaultAsync();

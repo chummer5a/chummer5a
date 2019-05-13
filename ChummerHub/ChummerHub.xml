@@ -41,7 +41,7 @@
             <param name="uploadedFile"></param>
             <returns></returns>
         </member>
-        <member name="M:ChummerHub.Controllers.V1.SINnerController.GetThumbnailById(System.Nullable{System.Guid},System.Int32)">
+        <member name="M:ChummerHub.Controllers.V1.SINnerController.GetThumbnailById(System.Nullable{System.Guid},System.Nullable{System.Int32})">
             <summary>
             
             </summary>

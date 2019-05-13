@@ -391,7 +391,7 @@ namespace ChummerHub.Client.UI
                 user.Id = Guid.NewGuid();
             }
             this.myUC.MyCE.PopulateTags();
-            this.myUC.MyCE.MySINnerFile.MyExtendedAttributes.Id = Guid.NewGuid();
+            //this.myUC.MyCE.MySINnerFile.MyExtendedAttributes.Id = Guid.NewGuid();
             if (oldId != null)
             {
                 this.myUC.CharacterObject.FileName =  this.myUC.CharacterObject.FileName.Replace(oldId.ToString(), this.myUC.MyCE.MySINnerFile.Id.ToString());

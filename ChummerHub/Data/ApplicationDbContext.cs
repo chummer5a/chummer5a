@@ -110,8 +110,8 @@ namespace ChummerHub.Data
                 .HasIndex(b => b.Language);
             builder.Entity<ChummerHub.Models.V1.SINner>()
                 .HasIndex(b => b.EditionNumber);
-            builder.Entity<ChummerHub.Models.V1.SINnerExtended>()
-                .HasIndex(b => b.SINnerId);
+            //builder.Entity<ChummerHub.Models.V1.SINnerExtended>()
+            //    .HasIndex(b => b.SINnerId);
             builder.Entity<ChummerHub.Models.V1.Tag>()
                 .HasIndex(b => b.TagValueDouble);
             try
@@ -142,7 +142,7 @@ FROM            dbo.SINners INNER JOIN
 
         public DbSet<ChummerHub.Models.V1.UploadClient> UploadClients { get; set; }
 
-        public DbSet<ChummerHub.Models.V1.SINnerExtended> SINnerExtendedMetaData { get; set; }
+        //public DbSet<ChummerHub.Models.V1.SINnerExtended> SINnerExtendedMetaData { get; set; }
 
         public DbSet<ChummerHub.Models.V1.SINnerComment> SINnerComments { get; set; }
         public DbSet<ChummerHub.Models.V1.SINnerVisibility> SINnerVisibility { get; set; }
