@@ -71,8 +71,7 @@ namespace ChummerHub.Client.UI
                 }
                 catch (Exception e)
                 {
-                    System.Diagnostics.Trace.TraceError(e.Message, e);
-                    Console.WriteLine(e);
+                    Log.Exception(e);
                     throw;
                 }
 

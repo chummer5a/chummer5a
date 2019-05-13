@@ -41,6 +41,14 @@
             <param name="uploadedFile"></param>
             <returns></returns>
         </member>
+        <member name="M:ChummerHub.Controllers.V1.SINnerController.GetThumbnailById(System.Nullable{System.Guid},System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="SINnerId"></param>
+            <param name="index"></param>
+            <returns></returns>
+        </member>
         <member name="M:ChummerHub.Controllers.V1.SINnerController.PostSIN(ChummerHub.Models.V1.UploadInfoObject)">
             <summary>
             Store the MetaData for chummerfiles (to get a Id).

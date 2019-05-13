@@ -25,7 +25,7 @@ using System.Text;
 
 namespace Chummer
 {
-    static class Log
+    public static class Log
     {
         private static StreamWriter s_LogWriter;
         private static readonly object s_LogWriterLock = new object();
@@ -185,20 +185,80 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Log something that could help with debug
+        /// </summary>
+        /// <param name="info">An optional array of objects providing additional data</param>
+        /// <param name="file">Do not use this</param>
+        /// <param name="method">Do not use this</param>
+        /// <param name="line">Do not use this</param>
+        public static void Debug
+        (
+            object info = null,
+#if LEGACY
+            string file = "LEGACY",
+            string method = "LEGACY",
+            int line = 0
+#else
+            [CallerFilePath] string file = "",
+            [CallerMemberName] string method = "",
+            [CallerLineNumber] int line = 0
+#endif
+        )
+        {
+            writeLog(new[] { info }, file, method, line, "Debug     ");
+        }
+
+        /// <summary>
+        /// Log a trace message (this should be off by default)
+        /// </summary>
+        /// <param name="info">An optional array of objects providing additional data</param>
+        /// <param name="file">Do not use this</param>
+        /// <param name="method">Do not use this</param>
+        /// <param name="line">Do not use this</param>
+        public static void Trace
+        (
+            object info = null,
+#if LEGACY
+            string file = "LEGACY",
+            string method = "LEGACY",
+            int line = 0
+#else
+            [CallerFilePath] string file = "",
+            [CallerMemberName] string method = "",
+            [CallerLineNumber] int line = 0
+#endif
+        )
+        {
+            writeLog(new[] { info }, file, method, line, "Trace     ");
+        }
+
+        /// <summary>
         /// Log an exception has occoured
         /// </summary>
         /// <param name="exception">Exception to log.</param>
-        public static void Exception(Exception exception)
+        public static void Exception(Exception exception, string message = null)
         {
             if(!IsLoggerEnabled)
                 return;
 
-            writeLog(
-                new object[]{exception, exception.StackTrace},
-                exception.Source,
-                exception.TargetSite.Name, 
-                (new StackTrace(exception, true)).GetFrame(0).GetFileLineNumber(), 
-                "Exception ");
+            if (String.IsNullOrEmpty(message))
+            {
+                writeLog(
+                    new object[] {exception, exception.StackTrace},
+                    exception.Source,
+                    exception.TargetSite.Name,
+                    (new StackTrace(exception, true)).GetFrame(0).GetFileLineNumber(),
+                    "Exception ");
+            }
+            else
+            {
+                writeLog(
+                    new object[] {message, exception, exception.StackTrace },
+                    exception.Source,
+                    exception.TargetSite.Name,
+                    (new StackTrace(exception, true)).GetFrame(0).GetFileLineNumber(),
+                    "Exception ");
+            }
         }
 
         /// <summary>
@@ -331,7 +391,7 @@ namespace Chummer
             lock (s_LogWriterLock)
                 s_LogWriter?.WriteLine(strTimeStamp);
             sw.TaskEnd("filewrite");
-            Trace.WriteLine(strTimeStamp);
+            System.Diagnostics.Trace.WriteLine(strTimeStamp);
             sw.TaskEnd("screenwrite");
         }
 

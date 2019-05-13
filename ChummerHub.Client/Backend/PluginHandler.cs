@@ -258,8 +258,7 @@ namespace Chummer.Plugins
             }
             catch (Exception e)
             {
-                System.Diagnostics.Trace.TraceError(e.ToString());
-                Console.Write(e.ToString());
+                Log.Exception(e);
 #if DEBUG
                 throw;
 #endif
@@ -327,14 +326,20 @@ namespace Chummer.Plugins
                         ToolTipText = "Please log in (Options -> Plugins -> Sinners (Cloud) -> Login",
                         Tag = e
                     };
+                    Log.Warning("Online, but not logged in!");
                 }
                 else
                 {
-                    TreeNode node = new TreeNode("Error: " + e.Message) { ToolTipText = e.ToString(), Tag = e };
+                    Log.Exception(e);
+                    TreeNode node = new TreeNode("Error: " + e.Message)
+                    {
+                        ToolTipText = e.ToString(), Tag = e
+                    };
                 }
             }
             catch (Exception e)
             {
+                Log.Exception(e);
                 TreeNode node = new TreeNode("SINners Error: please log in") { ToolTipText = e.ToString(), Tag = e };
             }
         }
@@ -364,6 +369,7 @@ namespace Chummer.Plugins
         {
             try
             {
+                Log.Info("Loading CharacterRoster from SINners...");
                 using (new CursorWait(true, frmCharRoster))
                 {
                     Func<Task<HttpOperationResponse<ResultAccountGetSinnersByAuthorization>>> myMethodName = async () =>
@@ -390,22 +396,26 @@ namespace Chummer.Plugins
             }
             catch(Microsoft.Rest.SerializationException e)
             {
+                
                 if (e.Content.Contains("Log in - ChummerHub"))
                 {
                     TreeNode node = new TreeNode("Online, but not logged in!")
                     {
                         ToolTipText = "Please log in (Options -> Plugins -> Sinners (Cloud) -> Login", Tag = e
                     };
+                    Log.Exception(e, "Online, but not logged in!");
                     return new List<TreeNode>() { node };
                 }
                 else
                 {
+                    Log.Exception(e);
                     TreeNode node = new TreeNode("Error: " + e.Message) {ToolTipText = e.ToString(), Tag = e};
                     return new List<TreeNode>() { node };
                 }
             }
             catch(Exception e)
             {
+                Log.Exception(e);
                 TreeNode node = new TreeNode("SINners Error: please log in") {ToolTipText = e.ToString(), Tag = e};
                 var objCache = new frmCharacterRoster.CharacterCache
                 {
@@ -420,6 +430,7 @@ namespace Chummer.Plugins
 
         public void CustomInitialize(frmChummerMain mainControl)
         {
+            Log.Info("CustomInitialize for Plugin ChummerHub.Client entered.");
             MainForm = mainControl;
             if (String.IsNullOrEmpty(ChummerHub.Client.Properties.Settings.Default.TempDownloadPath))
             {

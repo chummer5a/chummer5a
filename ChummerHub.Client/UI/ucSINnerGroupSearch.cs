@@ -63,7 +63,7 @@ namespace ChummerHub.Client.UI
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Trace.TraceError(ex.Message, ex);
+                    Log.Exception(ex);
                     throw;
                 }
             }
@@ -165,7 +165,7 @@ namespace ChummerHub.Client.UI
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Trace.TraceError(ex.ToString());
+                Log.Exception(ex);
                 MessageBox.Show(ex.Message);
                 throw;
             }
@@ -185,7 +185,7 @@ namespace ChummerHub.Client.UI
             }
             catch(Exception ex)
             {
-                System.Diagnostics.Trace.TraceError(ex.Message, ex);
+                Log.Exception(ex);
                 MessageBox.Show(ex.Message);
             }
             finally
@@ -205,7 +205,7 @@ namespace ChummerHub.Client.UI
             }
             catch(Exception e)
             {
-                System.Diagnostics.Trace.TraceError(e.Message, e);
+                Log.Exception(e);
                 throw;
             }
             
@@ -231,7 +231,7 @@ namespace ChummerHub.Client.UI
             }
             catch(Exception e)
             {
-                System.Diagnostics.Trace.TraceError(e.Message, e);
+                Log.Exception(e);
                 throw;
             }
             return null;
@@ -293,7 +293,7 @@ namespace ChummerHub.Client.UI
 
                                 if (!String.IsNullOrEmpty(a.Result?.ErrorText))
                                 {
-                                    System.Diagnostics.Trace.TraceError(a.Result.ErrorText);
+                                    Log.Error(a.Result.ErrorText);
                                 }
                                 else
                                 {
@@ -304,7 +304,7 @@ namespace ChummerHub.Client.UI
                                     string msg = "Char " + MyCE.MyCharacter.CharacterName + " joined group " +
                                                  item.Groupname +
                                                  ".";
-                                    System.Diagnostics.Trace.TraceInformation(msg);
+                                    Log.Info(msg);
                                     this.DoThreadSafe(() =>
                                     {
                                         MessageBox.Show(msg, "", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -321,7 +321,7 @@ namespace ChummerHub.Client.UI
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Trace.TraceError(ex.Message, ex);
+                Log.Exception(ex); 
                 throw;
             }
 
@@ -343,7 +343,7 @@ namespace ChummerHub.Client.UI
                     }
                     catch (Exception e)
                     {
-                        System.Diagnostics.Trace.TraceError("Group disbanded: "  + e.Message, e);
+                        Log.Warning("Group disbanded: "  + e.Message);
                         MessageBox.Show("Group " + myGroup.Groupname + " disbanded because of no members left.");
                     }
                     finally
@@ -359,12 +359,13 @@ namespace ChummerHub.Client.UI
                     var rescontent = await response.Response.Content.ReadAsStringAsync();
                     string msg = "StatusCode: " + response.Response.StatusCode + Environment.NewLine;
                     msg += rescontent;
+                    Log.Info(msg);
                     MessageBox.Show(msg);
                 }
             }
             catch (Exception e)
             {
-                System.Diagnostics.Trace.TraceError(e.Message, e);
+                Log.Exception(e);
                 MessageBox.Show(e.Message.ToString());
             }
             if (!noupdate)
@@ -431,7 +432,7 @@ namespace ChummerHub.Client.UI
                     }
                     catch (Exception e)
                     {
-                        System.Diagnostics.Trace.TraceInformation(e.Message, e);
+                        Log.Exception(e);
                         exceptionlogged = true;
                         throw;
                     }
@@ -446,7 +447,10 @@ namespace ChummerHub.Client.UI
             catch (Exception e)
             {
                 if (!exceptionlogged)
-                    System.Diagnostics.Trace.TraceError(e.Message, e);
+                {
+                    Log.Exception(e);
+                }
+
                 throw;
             }
             
@@ -487,7 +491,7 @@ namespace ChummerHub.Client.UI
                     }
                     catch (ArgumentNullException ex)
                     {
-                        System.Diagnostics.Trace.TraceInformation(
+                        Log.Info(
                             "No group found with name: " + MyCE?.MySINnerFile.MyGroup.Groupname);
                         if (MyCE?.MySINnerFile != null)
                             MyCE.MySINnerFile.MyGroup = null;
@@ -495,6 +499,7 @@ namespace ChummerHub.Client.UI
                     }
                     catch (Exception exception)
                     {
+                        Log.Exception(exception);
                         MessageBox.Show(exception.Message);
                     }
                     finally
@@ -620,8 +625,7 @@ namespace ChummerHub.Client.UI
                 }
                 catch (Exception exception)
                 {
-                    System.Diagnostics.Trace.TraceError(exception.ToString());
-                    Console.WriteLine(exception);
+                    Log.Exception(exception);
                     MessageBox.Show(exception.ToString(), "Error deleting Group", MessageBoxButtons.OK,
                         MessageBoxIcon.Error);
                 }
@@ -851,7 +855,7 @@ namespace ChummerHub.Client.UI
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Trace.TraceError(ex.ToString(), ex);
+                Log.Exception(ex);
                 MessageBox.Show(ex.ToString());
             }
         }
@@ -904,7 +908,7 @@ namespace ChummerHub.Client.UI
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Trace.TraceError(ex.ToString(), ex);
+                Log.Exception(ex);
                 MessageBox.Show(ex.ToString());
             }
 

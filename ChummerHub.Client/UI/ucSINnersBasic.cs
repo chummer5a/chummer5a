@@ -60,7 +60,7 @@ namespace ChummerHub.Client.UI
             {
                 if (!a.Result)
                 {
-                    System.Diagnostics.Trace.TraceError("somehow I couldn't check the onlinestatus of " +
+                    Log.Error("somehow I couldn't check the onlinestatus of " +
                                                         myUC.MyCE.MySINnerFile.Id);
                 }
                 
@@ -143,7 +143,7 @@ namespace ChummerHub.Client.UI
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Trace.TraceError(ex.ToString());
+                Log.Exception(ex);
                 PluginHandler.MainForm.DoThreadSafe(() =>
                 {
                     this.bUpload.Text = "unknown Status";
