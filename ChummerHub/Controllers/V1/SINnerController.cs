@@ -453,27 +453,56 @@ namespace ChummerHub.Controllers.V1
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="SINnerId"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
         [HttpGet]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GetMugshotById")]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GetThumbnailById")]
         [AllowAnonymous]
-        public async Task<IActionResult> GetMugshotById(Guid? SINnerId)
+        public async Task<IActionResult> GetThumbnailById(Guid? SINnerId, int index)
         {
-            var extendedseq = await (from a in _context.SINners.Include(a => a.MyExtendedAttributes)
-                where a.Id == SINnerId
-                select a).ToListAsync();
+            try
+            {
+                var extendedseq = await (from a in _context.SINners.Include(a => a.MyExtendedAttributes)
+                    where a.Id == SINnerId
+                    select a).ToListAsync();
 
-            if (!extendedseq.Any())
-                return NotFound("SINner " + SINnerId + " not found!");
+                if (!extendedseq.Any())
+                    return NotFound("SINner " + SINnerId + " not found!");
 
-            var json = extendedseq.FirstOrDefault().MyExtendedAttributes.JsonSummary;
-            var definition = new { MugshotBase64 = "" };
-            var MugshotBase64 = JsonConvert.DeserializeAnonymousType(json, definition);
+                var json = extendedseq.FirstOrDefault().MyExtendedAttributes?.JsonSummary;
+                if (String.IsNullOrEmpty(json))
+                {
+                    return NotFound("SINner found but he/she has no MugShot saved.");
+                }
+                var definition = new { MugshotBase64 = "" };
+                var MugshotBase64 = JsonConvert.DeserializeAnonymousType(json, definition);
 
-            byte[] bytes = Convert.FromBase64String(MugshotBase64.MugshotBase64);
+                byte[] bytes = Convert.FromBase64String(MugshotBase64.MugshotBase64);
 
-            return File(bytes, "image/jpeg");
+                return File(bytes, "image/jpeg");
+            }
+            catch (Exception e)
+            {
+                try
+                {
+                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
+                    telemetry.Properties.Add("SINnerId", SINnerId?.ToString());
+                    tc.TrackException(telemetry);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex.ToString());
+                }
+                return BadRequest(e);
+            }
+           
 
         }
 
@@ -898,6 +927,8 @@ namespace ChummerHub.Controllers.V1
                         _context.SINnerVisibility.Remove(oldsin.SINnerMetaData.Visibility);
                     if(_context.SINnerMetaData.Contains(oldsin.SINnerMetaData))
                         _context.SINnerMetaData.Remove(oldsin.SINnerMetaData);
+                    if (_context.SINnerExtendedMetaData.Contains(oldsin.MyExtendedAttributes))
+                        _context.SINnerExtendedMetaData.Remove(oldsin.MyExtendedAttributes);
                 }
 
                 _context.SINners.RemoveRange(oldsinners);

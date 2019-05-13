@@ -147,17 +147,5 @@ namespace ChummerHub.Client.Properties {
                 this["VisibilityIsPublic"] = value;
             }
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool VisibilityIsGroupVisible {
-            get {
-                return ((bool)(this["VisibilityIsGroupVisible"]));
-            }
-            set {
-                this["VisibilityIsGroupVisible"] = value;
-            }
-        }
     }
 }

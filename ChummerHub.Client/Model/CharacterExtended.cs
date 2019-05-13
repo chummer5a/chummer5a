@@ -45,7 +45,7 @@ namespace ChummerHub.Client.Model
                 }
                 catch (Exception e)
                 {
-                    System.Diagnostics.Trace.TraceWarning(e.ToString());
+                    Log.Exception(e);
                 }
             }
 
@@ -60,6 +60,10 @@ namespace ChummerHub.Client.Model
                     Id = Guid.NewGuid(),
                     Tags = new List<Tag>(),
                     Visibility = new SINners.Models.SINnerVisibility()
+                    {
+                        IsGroupVisible = true,
+                        IsPublic = true
+                    }
                 };
                 _MySINnerFile.MyExtendedAttributes = new SINnerExtended(_MySINnerFile);
             }
@@ -233,8 +237,6 @@ namespace ChummerHub.Client.Model
             catch(Exception e)
             {
                 await Backend.Utils.HandleError(e);
-                System.Diagnostics.Trace.TraceError(e.Message, e);
-                Debug.WriteLine(e.ToString());
                 throw;
             }
         }
@@ -504,7 +506,7 @@ namespace ChummerHub.Client.Model
                         {
                             string msg = "ChummerHub did not return a valid Id for sinner " +
                                          this.MyCharacter.Name + ".";
-                            System.Diagnostics.Trace.TraceError(msg);
+                            Log.Error(msg);
                             throw new ArgumentException(msg);
                         }
 
@@ -514,7 +516,7 @@ namespace ChummerHub.Client.Model
                         {
                             string msg = "ChummerHub did not return a valid IdArray for sinner " +
                                          this.MyCharacter.Alias + ".";
-                            System.Diagnostics.Trace.TraceError(msg);
+                            Log.Error(msg);
                             throw new ArgumentException(msg);
                         }
 
@@ -522,7 +524,7 @@ namespace ChummerHub.Client.Model
                     }
                     catch (Exception ex)
                     {
-                        System.Diagnostics.Trace.TraceError(ex.ToString());
+                        Log.Exception(ex);
                         throw;
                     }
                 }
@@ -546,8 +548,7 @@ namespace ChummerHub.Client.Model
             }
             catch(Exception e)
             {
-                System.Diagnostics.Trace.TraceError(e.Message, e);
-                Console.WriteLine(e.ToString());
+                Log.Exception(e);
                 MessageBox.Show(e.ToString());
             }
             finally

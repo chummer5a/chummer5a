@@ -1792,11 +1792,19 @@ namespace Chummer
                 objWriter.WriteStartElement("plugins");
                 foreach(var plugin in Program.MainForm.PluginLoader.MyActivePlugins)
                 {
-                    System.Reflection.Assembly pluginAssm = plugin.GetPluginAssembly();
-                    objWriter.WriteStartElement(pluginAssm.GetName().Name);
-                    objWriter.WriteAttributeString("version", pluginAssm.GetName().Version.ToString());
-                    objWriter.WriteString(plugin.GetSaveToFileElement(this));
-                    objWriter.WriteEndElement();
+                    try
+                    {
+                        System.Reflection.Assembly pluginAssm = plugin.GetPluginAssembly();
+                        objWriter.WriteStartElement(pluginAssm.GetName().Name);
+                        objWriter.WriteAttributeString("version", pluginAssm.GetName().Version.ToString());
+                        objWriter.WriteString(plugin.GetSaveToFileElement(this));
+                        objWriter.WriteEndElement();
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Exception(e, "Exception while writing saveFileElement for plugin " + plugin?.ToString() + ": ");
+                    }
+                   
                 }
                 //</plugins>
                 objWriter.WriteEndElement();

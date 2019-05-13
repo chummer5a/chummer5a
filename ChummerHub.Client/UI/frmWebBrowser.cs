@@ -33,7 +33,7 @@ namespace ChummerHub.Client.UI
                 {
                     Properties.Settings.Default.SINnerUrl = "https://sinners.azurewebsites.net/";
                     string msg = "if you are (want to be) a Beta-Tester, change this to http://sinners-beta.azurewebsites.net/!";
-                    System.Diagnostics.Trace.TraceWarning(msg);
+                    Log.Warning(msg);
                     Properties.Settings.Default.Save();
                 }
                 string path = Properties.Settings.Default.SINnerUrl.TrimEnd('/');
@@ -92,7 +92,11 @@ namespace ChummerHub.Client.UI
                             }
                             else
                             {
-                                tempvis = new SINnerVisibility();
+                                tempvis = new SINnerVisibility()
+                                {
+                                    IsGroupVisible = true,
+                                    IsPublic = true
+                                };
                             }
 
                             tempvis.AddVisibilityForEmail(user.Body.MyApplicationUser?.Email);
@@ -107,7 +111,7 @@ namespace ChummerHub.Client.UI
                 }
                 catch (Exception exception)
                 {
-                    Console.WriteLine(exception);
+                    Log.Exception(exception);
                     throw;
                 }
                 
@@ -130,7 +134,7 @@ namespace ChummerHub.Client.UI
             }
             catch(Exception ex)
             {
-                System.Diagnostics.Trace.TraceInformation(ex.ToString());
+                Log.Exception(ex);
             }
             
         }

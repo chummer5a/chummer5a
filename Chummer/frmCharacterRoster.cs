@@ -344,7 +344,7 @@ namespace Chummer
                     {
                         var t = Task.Factory.StartNew<IEnumerable<List<TreeNode>>>(() =>
                         {
-                            System.Diagnostics.Trace.TraceInformation("Starting new Task to get CharacterRosterTreeNodes for plugin:" + plugin.ToString());
+                            Log.Info("Starting new Task to get CharacterRosterTreeNodes for plugin:" + plugin.ToString());
                             var result = new List<List<TreeNode>>();
                             var task = plugin.GetCharacterRosterTreeNode(this, blnRefreshPlugins);
                             if(task.Result != null)
@@ -376,11 +376,11 @@ namespace Chummer
                                     });
                                 }
                             }
-                            System.Diagnostics.Trace.TraceInformation("Task to get and add CharacterRosterTreeNodes for plugin " + plugin.ToString() + " finished.");
+                            Log.Info("Task to get and add CharacterRosterTreeNodes for plugin " + plugin.ToString() + " finished.");
                         });
                     }
                 });
-            System.Diagnostics.Trace.TraceInformation("Populating CharacterRosterTreeNode (MainThread).");
+            Log.Info("Populating CharacterRosterTreeNode (MainThread).");
             if(objFavouriteNode != null)
             {
                 if(blnAddFavouriteNode)

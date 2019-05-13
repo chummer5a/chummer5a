@@ -70,7 +70,7 @@ namespace ChummerHub.Client.UI
                 }
                 catch (Exception e)
                 {
-                    System.Diagnostics.Trace.TraceInformation(e.ToString());
+                    Log.Exception(e);
                 }
                 
             }
@@ -90,7 +90,7 @@ namespace ChummerHub.Client.UI
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Trace.TraceError(ex.ToString());
+                Log.Exception(ex);
                 throw;
             }
         }

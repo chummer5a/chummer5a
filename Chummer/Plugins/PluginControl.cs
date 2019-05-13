@@ -44,30 +44,47 @@ namespace Chummer.Plugins
 
         public void Initialize()
         {
-            if (GlobalOptions.PluginsEnabled == false)
-                return;
-            catalog = new AggregateCatalog();
-            catalog.Catalogs.Add(new DirectoryCatalog(path: "Plugins", searchPattern: "*.exe"));
-            catalog.Catalogs.Add(new DirectoryCatalog(path: "Plugins", searchPattern: "*.dll"));
-            container = new CompositionContainer(catalog);
-            //Fill the imports of this object
-          
-            StartWatch();
-            container.ComposeParts(this);
-            foreach (var plugin in MyActivePlugins)
+            try
             {
-                try
+                if (GlobalOptions.PluginsEnabled == false)
                 {
-                    plugin.CustomInitialize(Program.MainForm);
-                    plugin.SetIsUnitTest(Utils.IsUnitTest);
+                    Log.Info("Plugins are globally disabled - exiting PluginControl.Initialize()");
+                    return;
                 }
-                catch(Exception e)
+                Log.Info("Plugins are globally enabled - entering PluginControl.Initialize()");
+                catalog = new AggregateCatalog();
+                var execat = new DirectoryCatalog(path: "Plugins", searchPattern: "*.exe");
+                Log.Info("Searching for exes in path " + execat.FullPath);
+                catalog.Catalogs.Add(execat);
+                catalog.Catalogs.Add(new DirectoryCatalog(path: "Plugins", searchPattern: "*.dll"));
+                container = new CompositionContainer(catalog);
+                //Fill the imports of this object
+                StartWatch();
+                container.ComposeParts(this);
+
+                Log.Info("Plugins found: " + MyPlugins.Count());
+                Log.Info("Plugins active: " + MyActivePlugins.Count());
+                foreach (var plugin in MyActivePlugins)
                 {
-                    string msg = "Exception while calling CustomInitialize for " + plugin.ToString() + ":" + Environment.NewLine + Environment.NewLine;
-                    msg += e.ToString();
-                    System.Diagnostics.Trace.TraceWarning(msg);
+                    try
+                    {
+                        Log.Info("Initializing Plugin " + plugin.ToString());
+                        plugin.CustomInitialize(Program.MainForm);
+                        plugin.SetIsUnitTest(Utils.IsUnitTest);
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Exception(e);
+                    }
                 }
+                Log.Info("Initializing Plugins finished.");
             }
+            catch (Exception e)
+            {
+                Log.Exception(e);
+                throw;
+            }
+            
         }
 
         [ImportMany(typeof(IPlugin))]
@@ -128,8 +145,7 @@ namespace Chummer.Plugins
 
                 msg += Environment.NewLine;
                 msg += e.ToString();
-                Console.WriteLine(msg);
-                System.Diagnostics.Debug.Write(msg);
+                Log.Exception(e, msg);
             }
             catch (CompositionException e)
             {
@@ -143,8 +159,7 @@ namespace Chummer.Plugins
 
                 msg += Environment.NewLine;
                 msg += e.ToString();
-                Console.WriteLine(msg);
-                System.Diagnostics.Debug.Write(msg);
+                Log.Exception(e, msg);
             }
             catch (Exception e)
             {
@@ -152,8 +167,7 @@ namespace Chummer.Plugins
 
                 msg += Environment.NewLine;
                 msg += e.ToString();
-                Console.WriteLine(msg);
-                System.Diagnostics.Debug.Write(msg);
+                Log.Exception(e, msg);
             }
         }
 

@@ -46,8 +46,7 @@ namespace Chummer
             }
             catch(Exception e)
             {
-                System.Diagnostics.Trace.TraceError(e.Message, e);
-                Console.WriteLine(e.ToString());
+                Log.Exception(e);
 #if DEBUG
                 MessageBox.Show(e.ToString());
 #endif
