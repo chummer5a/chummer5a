@@ -303,12 +303,12 @@ namespace ChummerHub.Client.Backend
                         var request = WebRequest.Create("http://localhost:5000/");
                         WebResponse response = request.GetResponse();
                         Properties.Settings.Default.SINnerUrl = local;
-                        System.Diagnostics.Trace.TraceInformation("Connected to " + local + ".");
+                        Chummer.Log.Info("Connected to " + local + ".");
                     }
                     catch (Exception e)
                     {
                         Properties.Settings.Default.SINnerUrl = "https://sinners-beta.azurewebsites.net";
-                        System.Diagnostics.Trace.TraceInformation("Connected to " + Properties.Settings.Default.SINnerUrl + ".");
+                        Chummer.Log.Info("Connected to " + Properties.Settings.Default.SINnerUrl + ".");
                     }
                 }
                 ServicePointManager.ServerCertificateValidationCallback += delegate { return true; };
@@ -319,42 +319,10 @@ namespace ChummerHub.Client.Backend
                 HttpClientHandler httpClientHandler = new HttpClientHandler();
                 httpClientHandler.CookieContainer = AuthorizationCookieContainer;
                 client = new SINnersClient(baseUri, credentials, httpClientHandler, delegatingHandler);
-                //double waitTime = 30;
-                //var resptask = client.GetVersionWithHttpMessagesAsync().CancelAfter((int)(1000 * waitTime));
-                //resptask.ContinueWith((respresult) =>
-                //    {
-                //        try
-                //        {
-                //            if (respresult.IsCanceled)
-                //            {
-                //                System.Diagnostics.Trace.TraceInformation("Could not connected to SINners in " + waitTime + " seconds.");
-                //                if (_clientNOTworking.HasValue == false)
-                //                    _clientNOTworking = true;
-                //                return;
-                //            }
-                //            var verresp = respresult.Result;
-                //            if (verresp.Response.StatusCode == HttpStatusCode.OK)
-                //                System.Diagnostics.Trace.TraceInformation("Connected to SINners in version " + verresp.Body.AssemblyVersion + ".");
-                //            else if (verresp.Response.StatusCode == HttpStatusCode.Forbidden)
-                //            {
-                //                if (_clientNOTworking.HasValue == false)
-                //                    _clientNOTworking = true;
-                //                throw new System.Web.HttpException(403, "WebService disabled by Admin!");
-                //            }
-                //            _clientNOTworking = false;
-                //        }
-                //        catch (Exception e)
-                //        {
-                //            System.Diagnostics.Trace.TraceError(e.ToString());
-                //            Console.WriteLine(e);
-                //            throw;
-                //        }
-
-                //    });
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Trace.TraceError(ex.ToString());
+                Chummer.Log.Exception(ex);
                 if (!clientErrorShown)
                 {
                     clientErrorShown = true;
@@ -420,6 +388,7 @@ namespace ChummerHub.Client.Backend
                         {
                             ToolTipText = "Please log in (Options -> Plugins -> Sinners (Cloud) -> Login"
                         };
+                        Log.Exception(e, "Online, not logged in");
                         PluginHandler.MainForm.DoThreadSafe(() =>
                         {
                             MyTreeNodeList.Add(node);
@@ -434,7 +403,7 @@ namespace ChummerHub.Client.Backend
                         {
                             msg += Environment.NewLine + e.InnerException.Message;
                         }
-                        System.Diagnostics.Trace.TraceWarning(msg);
+                        Log.Exception(e, msg);
                         PluginHandler.MainForm.DoThreadSafe(() =>
                         {
                             MyTreeNodeList.Add(new TreeNode()
@@ -453,8 +422,7 @@ namespace ChummerHub.Client.Backend
                         var content = await response.Response.Content.ReadAsStringAsync();
                         msg += Environment.NewLine + "Content: " + content;
                     }
-                    System.Diagnostics.Trace.TraceWarning(msg);
-                   
+                    Log.Warning(msg);
                     var errornode = new TreeNode()
                     {
                         Text = "Error contacting SINners"
@@ -484,7 +452,8 @@ namespace ChummerHub.Client.Backend
                 var result = res.MySINSearchGroupResult;
                 if (result?.Roles != null)
                     StaticUtils.UserRoles = result.Roles?.ToList();
-                System.Diagnostics.Trace.TraceInformation("Connected to SINners in version " + result?.Version?.AssemblyVersion + ".");
+                string info = "Connected to SINners in version " + result?.Version?.AssemblyVersion + ".";
+                Log.Info(info);
                 var groups = result?.SinGroups.ToList();
                 MyTreeNodeList = CharacterRosterTreeNodifyGroupList(groups);
                 
@@ -492,7 +461,7 @@ namespace ChummerHub.Client.Backend
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Trace.TraceError(ex.ToString());
+                Log.Exception(ex);
                 throw;
             }
         }
@@ -511,6 +480,7 @@ namespace ChummerHub.Client.Backend
             if ((!String.IsNullOrEmpty(rb.ErrorText)
                  || (rb.MyException != null)))
             {
+                Log.Exception(e, "Response from SINners WebService: ");
                 var frmSIN = new frmSINnerResponse();
                 frmSIN.SINnerResponseUI.Result = rb;
                 frmSIN.TopMost = true;
@@ -540,6 +510,7 @@ namespace ChummerHub.Client.Backend
                 rb.MyException = e;
                 rb.CallSuccess = false;
                 ResponseBody = rb;
+                Log.Exception(e, "Error parsing response from SINners WebService as response.Response.Content: " + content);
             }
 
             try
@@ -557,12 +528,14 @@ namespace ChummerHub.Client.Backend
                 rb.MyException = e;
                 rb.CallSuccess = false;
                 ResponseBody = rb;
+                Log.Exception(e, "Error parsing response from SINners WebService as ResponseBody: " + content);
             }
 
 
             if ((!String.IsNullOrEmpty(rb.ErrorText)
                      || (rb.MyException != null)))
             {
+                Log.Warning("SINners WebService returned: " + rb.ErrorText);
                 var frmSIN = new frmSINnerResponse();
                 frmSIN.SINnerResponseUI.Result = rb;
                 frmSIN.TopMost = true;
@@ -605,7 +578,7 @@ namespace ChummerHub.Client.Backend
                 }
                 catch (Exception e)
                 {
-                    System.Diagnostics.Trace.TraceWarning("Could not deserialize CharacterCache-Object: " + e.ToString());
+                    Log.Exception(e, "Could not deserialize CharacterCache-Object: ");
                     TreeNode errorNode = new TreeNode()
                     {
                         Text = "Error loading Char from WebService"
@@ -627,6 +600,7 @@ namespace ChummerHub.Client.Backend
                     node.Tag = node.Text;
                     node.ToolTipText =
                         "To upload a chummer, open it go to the sinners-tabpage and click upload (and wait a bit).";
+                    Log.Info("Online, but no chummers uploaded");
                     MyTreeNodeList.Add(node);
                 });
             }
@@ -704,6 +678,7 @@ namespace ChummerHub.Client.Backend
                 };
                 if (String.IsNullOrEmpty(sinner.DownloadUrl))
                 {
+
                     objCache.ErrorText = "File is not uploaded - only metadata available." + Environment.NewLine
                                       + "Please upload this file again from a client," +
                                       Environment.NewLine
@@ -712,6 +687,8 @@ namespace ChummerHub.Client.Backend
                                       + "Open the character locally, make sure to have \"online mode\"" +
                                       Environment.NewLine
                                       + "selected in option->plugins->sinner and press the \"save\" symbol.";
+
+                    Log.Warning(objCache.ErrorText);
 
                 }
                 var foundseq = (from a in objListNode.Nodes.Find(memberNode.Name, false) where a.Tag == memberNode.Tag select a).ToList();
@@ -820,12 +797,13 @@ namespace ChummerHub.Client.Backend
                 {
                     objCache.ErrorText = e.Message;
                     objCache.ErrorText += Environment.NewLine + e.Response.Content;
-                    System.Diagnostics.Trace.TraceWarning(e.ToString());
+                    Chummer.Log.Exception(e, e.Response.Content);
+                    
                 }
                 catch (Exception e)
                 {
                     objCache.ErrorText = e.Message;
-                    System.Diagnostics.Trace.TraceWarning(e.ToString());
+                    Chummer.Log.Exception(e);
                 }
             };
         }
@@ -940,7 +918,7 @@ namespace ChummerHub.Client.Backend
                 };
                 ce.MySINnerFile.UploadDateTime = DateTime.Now;
                 uploadInfoObject.SiNners = new List<SINner>() { ce.MySINnerFile };
-                System.Diagnostics.Trace.TraceInformation("Posting " + ce.MySINnerFile.Id + "...");
+                Log.Info("Posting " + ce.MySINnerFile.Id + "...");
                 var client = StaticUtils.GetClient();
                 if (!StaticUtils.IsUnitTest)
                 {
@@ -954,7 +932,7 @@ namespace ChummerHub.Client.Backend
                         msg += Environment.NewLine + "Reason: " + res?.Response?.ReasonPhrase;
                         var content = await res.Response.Content.ReadAsStringAsync();
                         msg += Environment.NewLine + "Content: " + content;
-                        System.Diagnostics.Trace.TraceWarning(msg);
+                        Log.Warning(msg);
                         try
                         {
                             ResultSinnerPostSIN myres =
@@ -973,12 +951,12 @@ namespace ChummerHub.Client.Backend
                 {
                     client.PostSINWithHttpMessagesAsync(uploadInfoObject).RunSynchronously();
                 }
-                System.Diagnostics.Trace.TraceInformation("Post of " + ce.MySINnerFile.Id + " finished.");
+                Log.Info("Post of " + ce.MySINnerFile.Id + " finished.");
                
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Trace.TraceError(ex.ToString());
+                Log.Exception(ex);
                 throw;
             }
             return res;
@@ -1007,7 +985,7 @@ namespace ChummerHub.Client.Backend
                             msg += res?.Response?.StatusCode + Environment.NewLine;
                             msg += res?.Response?.ReasonPhrase;
                             msg += Environment.NewLine + res?.Response?.Content.ReadAsStringAsync().Result;
-                            System.Diagnostics.Trace.TraceInformation(msg);
+                            Log.Info(msg);
                             myStatus = res.Response.StatusCode;
                             if(!StaticUtils.IsUnitTest)
                             {
@@ -1023,10 +1001,6 @@ namespace ChummerHub.Client.Backend
                                     }   
                                 });
                             }
-                            else
-                            {
-                                System.Diagnostics.Trace.TraceInformation(msg);
-                            }
                         }
                         else
                         {
@@ -1035,7 +1009,7 @@ namespace ChummerHub.Client.Backend
                     }
                     catch (Exception e)
                     {
-                        System.Diagnostics.Trace.TraceError(e.ToString());
+                        Log.Exception(e);
                         PluginHandler.MainForm.DoThreadSafe(() =>
                         {
                             MessageBox.Show(e.Message);
@@ -1045,7 +1019,7 @@ namespace ChummerHub.Client.Backend
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Trace.TraceError(ex.ToString());
+                Log.Exception(ex);
                 throw;
             }
             return res;
@@ -1084,7 +1058,7 @@ namespace ChummerHub.Client.Backend
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Trace.TraceError(ex.Message);
+                    Log.Exception(ex);
                     if (objCache != null)
                         objCache.ErrorText = ex.Message;
                 }
@@ -1093,7 +1067,7 @@ namespace ChummerHub.Client.Backend
             }
             catch (Exception e)
             {
-                System.Diagnostics.Trace.TraceError(e.Message);
+                Log.Exception(e);
                 objCache.ErrorText = e.Message;
                 throw;
             }
@@ -1147,27 +1121,6 @@ namespace ChummerHub.Client.Backend
                         {
                             using (WebClient wc = new WebClient())
                             {
-                                //wc.DownloadProgressChanged += wc_DownloadProgressChanged;
-                                //wc.DownloadFileCompleted += (sender, e) =>
-                                //{
-                                //    if (e.Error == null)
-                                //    {
-                                //        PluginHandler.MainForm.DoThreadSafe(() =>
-                                //        {
-                                //            PluginHandler.MainForm.Text = PluginHandler.MainForm.MainTitle;
-                                //        });
-                                //    }
-                                //    else
-                                //    {
-                                //        PluginHandler.MainForm.DoThreadSafe(() =>
-                                //        {
-                                //            PluginHandler.MainForm.Text =
-                                //                PluginHandler.MainForm.MainTitle + "Error while loading " +
-                                //                sinner.Alias + " from SINners-WebService";
-                                //        });
-                                //    }
-
-                                //};
                                 wc.DownloadFile(
                                     // Param1 = Link of file
                                     new System.Uri(sinner.DownloadUrl),
@@ -1209,7 +1162,7 @@ namespace ChummerHub.Client.Backend
                     }
                     catch (Exception ex)
                     {
-                        System.Diagnostics.Trace.TraceError(ex.Message);
+                        Log.Exception(ex);
                         if (objCache != null)
                             objCache.ErrorText = ex.Message;
                     }
@@ -1218,7 +1171,7 @@ namespace ChummerHub.Client.Backend
             }
             catch (Exception e)
             {
-                System.Diagnostics.Trace.TraceError(e.Message);
+                Log.Exception(e);
                 objCache.ErrorText = e.Message;
                 throw;
             }
@@ -1247,13 +1200,13 @@ namespace ChummerHub.Client.Backend
                 objCache.DownLoadRunning = Task.Factory.StartNew<string>(() =>
                 {
                     objCache = DownloadSINnerExtended(sinner, objCache).Result;
-                    //objCache.FilePath = filepath;
                     return objCache.ErrorText;
                 });
                 return objCache.DownLoadRunning;
             }
             catch (Exception ex)
             {
+                Log.Exception(ex);
                 objCache.ErrorText = ex.ToString();
                 throw;
             }
@@ -1267,7 +1220,7 @@ namespace ChummerHub.Client.Backend
             {
                 if ((objCache.DownLoadRunning != null)&& (objCache.DownLoadRunning.Status == TaskStatus.Running))
                     return objCache.DownLoadRunning;
-
+                Log.Info("Downloading SINner: " + sinner?.Id);
                 objCache.DownLoadRunning = Task.Factory.StartNew<string>(() =>
                 {
                     string filepath = DownloadFile(sinner, objCache).Result;
@@ -1278,6 +1231,7 @@ namespace ChummerHub.Client.Backend
             }
              catch(Exception ex)
             {
+                Log.Exception(ex, "Error downloading sinner " + sinner?.Id + ": ");
                 objCache.ErrorText = ex.ToString();
                 throw;
             }

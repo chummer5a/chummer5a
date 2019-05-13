@@ -46,7 +46,6 @@ namespace ChummerHub.Client.UI
                     {
                         Id = Guid.NewGuid(),
                         IsPublic = Properties.Settings.Default.VisibilityIsPublic,
-                        IsGroupVisible = Properties.Settings.Default.VisibilityIsGroupVisible,
                         UserRights = new List<SINnerUserRight>()
                         {
 
@@ -81,13 +80,13 @@ namespace ChummerHub.Client.UI
                 }
                 catch(Exception e)
                 {
-                    System.Diagnostics.Trace.TraceError(e.ToString());
+                    Log.Exception(e);
+                    
                 }
                 _SINnerVisibility = new SINners.Models.SINnerVisibility()
                 {
                     Id = Guid.NewGuid(),
                     IsPublic = Properties.Settings.Default.VisibilityIsPublic,
-                    IsGroupVisible = Properties.Settings.Default.VisibilityIsGroupVisible,
                     UserRights = new List<SINnerUserRight>()
                     {
 
@@ -201,7 +200,7 @@ namespace ChummerHub.Client.UI
             this.cbSINnerUrl.DataSource = Properties.Settings.Default.SINnerUrls;
             this.cbSINnerUrl.SelectedItem = sinnerurl;
             this.cbVisibilityIsPublic.Checked = Properties.Settings.Default.VisibilityIsPublic;
-            this.cbVisibilityIsGroupVisible.Checked = Properties.Settings.Default.VisibilityIsGroupVisible;
+            //this.cbVisibilityIsGroupVisible.Checked = Properties.Settings.Default.VisibilityIsGroupVisible;
             cbSINnerUrl.Enabled = false;
             this.cbVisibilityIsPublic.BindingContext = new BindingContext();
             if ((StaticUtils.UserRoles == null)
@@ -283,7 +282,8 @@ namespace ChummerHub.Client.UI
                 }
                 catch(Exception ex)
                 {
-                    System.Diagnostics.Trace.TraceError(ex.ToString());
+                    Log.Exception(ex);
+
                 }
                 
             }));
@@ -314,7 +314,7 @@ namespace ChummerHub.Client.UI
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Trace.TraceWarning(ex.ToString());
+                Log.Exception(ex);
             }
             finally
             {
@@ -349,7 +349,7 @@ namespace ChummerHub.Client.UI
                           }
                           catch(Exception ex)
                           {
-                              System.Diagnostics.Trace.TraceWarning(ex.ToString());
+                              Log.Exception(ex);
                           }
                       });
             }
@@ -404,7 +404,7 @@ namespace ChummerHub.Client.UI
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Trace.TraceError(ex.ToString());
+                Log.Exception(ex);
             }
         }
 
@@ -450,11 +450,13 @@ namespace ChummerHub.Client.UI
             }
             catch(TaskCanceledException ex)
             {
-                System.Diagnostics.Trace.TraceWarning(ex.ToString());
+                Log.Exception(ex);
+                
             }
             catch(Exception ex)
             {
-                System.Diagnostics.Trace.TraceWarning(ex.ToString());
+                Log.Exception(ex);
+                
             }
             return null;
             
@@ -469,7 +471,6 @@ namespace ChummerHub.Client.UI
         {
             Properties.Settings.Default.TempDownloadPath = this.tbTempDownloadPath.Text;
             Properties.Settings.Default.VisibilityIsPublic = this.cbVisibilityIsPublic.Checked      ;
-            Properties.Settings.Default.VisibilityIsGroupVisible  = this.cbVisibilityIsGroupVisible.Checked;
             Properties.Settings.Default.Save();
         }
 
@@ -511,8 +512,7 @@ namespace ChummerHub.Client.UI
                 {
                     string msg = "Exception while loading " + file + ":";
                     msg += Environment.NewLine + ex.ToString();
-                    Debug.Write(msg);
-                    System.Diagnostics.Trace.TraceWarning(msg);
+                    Log.Warning(msg);
                     throw;
                 }
             }
@@ -559,7 +559,7 @@ namespace ChummerHub.Client.UI
                             {
                                 if (!sinner.SiNnerMetaData.Tags.Any())
                                 {
-                                    System.Diagnostics.Trace.TraceError("Sinner " + sinner.Id + " has no Tags!");
+                                    Log.Error("Sinner " + sinner.Id + " has no Tags!");
                                     continue;
                                 }
                                 string jsonsinner = Newtonsoft.Json.JsonConvert.SerializeObject(sinner);
@@ -567,11 +567,11 @@ namespace ChummerHub.Client.UI
                                 if (File.Exists(filePath))
                                     File.Delete(filePath);
                                 File.WriteAllText(filePath, jsonsinner);
-                                System.Diagnostics.Trace.TraceInformation("Sinner " + sinner.Id + " saved to " + filePath);
+                                Log.Info("Sinner " + sinner.Id + " saved to " + filePath);
                             }
                             catch (Exception e2)
                             {
-                                System.Diagnostics.Trace.TraceError(e2.ToString());
+                                Log.Exception(e2);
                                 Invoke(new Action(() => MessageBox.Show(e2.Message)));
                             }
                         }
@@ -580,7 +580,7 @@ namespace ChummerHub.Client.UI
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Trace.TraceError(ex.ToString());
+                Log.Exception(ex); 
                 Invoke(new Action(() => MessageBox.Show(ex.Message)));
 
             }
@@ -629,21 +629,22 @@ namespace ChummerHub.Client.UI
 
                             if (posttask.Result.Response.IsSuccessStatusCode)
                             {
-                                System.Diagnostics.Trace.TraceInformation("SINner " + sin.Id + " posted!");
+                                Log.Info("SINner " + sin.Id + " posted!");
                             }
                             else
                             {
                                 string msg = posttask.Result.Response.ReasonPhrase + ": " + Environment.NewLine;
                                 var content = posttask.Result.Response.Content.ReadAsStringAsync().Result;
                                 msg += content;
-                                System.Diagnostics.Trace.TraceWarning("SINner " + sin.Id + " not posted: " + msg);
+                                Log.Warning("SINner " + sin.Id + " not posted: " + msg);
                             }
 
                         }
                     }
                     catch (Exception ex)
                     {
-                        System.Diagnostics.Trace.TraceError("Could not read file " + file.FullName + ": " + ex.ToString());
+
+                        Log.Exception(ex,"Could not read file " + file.FullName + ": " );
                         continue;
                     }
 
@@ -651,7 +652,7 @@ namespace ChummerHub.Client.UI
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Trace.TraceError(ex.ToString());
+                Log.Exception(ex);
                 Invoke(new Action(() => MessageBox.Show(ex.Message)));
 
             }

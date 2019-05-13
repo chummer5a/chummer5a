@@ -41,17 +41,17 @@ namespace ChummerHub.Client.Backend
                 sw.Start();
                 int myCounter = requestCounter++;
                 string msg = "Process request " + myCounter + ": " + request.RequestUri;
-                Debug.WriteLine(msg);
+                Chummer.Log.Debug(msg);
                 // Call the inner handler.
                 request.Headers.TryAddWithoutValidation("ContentType", "application/json");
                 var response = await base.SendAsync(request, cancellationToken);
                 msg = "Process response " + myCounter + " (" + (((double)sw.ElapsedMilliseconds)/1000) + "): " + response.StatusCode;
-                Debug.WriteLine(msg);
+                Chummer.Log.Debug(msg);
                 return response;
             }
             catch(Exception e)
             {
-                System.Diagnostics.Trace.TraceError(e.ToString(), e);
+                Chummer.Log.Exception(e);
                 throw;
             }
             

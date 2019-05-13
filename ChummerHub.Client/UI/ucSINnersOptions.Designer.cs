@@ -34,7 +34,6 @@ namespace ChummerHub.Client.UI
             this.gbVisibility = new System.Windows.Forms.GroupBox();
             this.tlpVisibility = new System.Windows.Forms.TableLayoutPanel();
             this.cbVisibilityIsPublic = new System.Windows.Forms.CheckBox();
-            this.cbVisibilityIsGroupVisible = new System.Windows.Forms.CheckBox();
             this.bEditDefaultVisibility = new System.Windows.Forms.Button();
             this.cbSINnerUrl = new System.Windows.Forms.ComboBox();
             this.lSINnerUrl = new System.Windows.Forms.Label();
@@ -43,11 +42,11 @@ namespace ChummerHub.Client.UI
             this.tlpOptions = new System.Windows.Forms.TableLayoutPanel();
             this.bTempPathBrowse = new System.Windows.Forms.Button();
             this.tbHelptext = new System.Windows.Forms.TextBox();
-            this.cbRoles = new System.Windows.Forms.ComboBox();
             this.flpTempFolder = new System.Windows.Forms.FlowLayoutPanel();
             this.label3 = new System.Windows.Forms.Label();
             this.tbTempDownloadPath = new System.Windows.Forms.TextBox();
             this.tlpAccount = new System.Windows.Forms.TableLayoutPanel();
+            this.cbRoles = new System.Windows.Forms.ComboBox();
             this.lUsername = new System.Windows.Forms.Label();
             this.gbVisibility.SuspendLayout();
             this.tlpVisibility.SuspendLayout();
@@ -60,7 +59,7 @@ namespace ChummerHub.Client.UI
             // 
             this.cbUploadOnSave.AutoSize = true;
             this.tlpOptions.SetColumnSpan(this.cbUploadOnSave, 3);
-            this.cbUploadOnSave.Location = new System.Drawing.Point(3, 140);
+            this.cbUploadOnSave.Location = new System.Drawing.Point(3, 128);
             this.cbUploadOnSave.Name = "cbUploadOnSave";
             this.cbUploadOnSave.Size = new System.Drawing.Size(240, 17);
             this.cbUploadOnSave.TabIndex = 10;
@@ -71,7 +70,7 @@ namespace ChummerHub.Client.UI
             // bMultiUpload
             // 
             this.bMultiUpload.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.bMultiUpload.Location = new System.Drawing.Point(613, 83);
+            this.bMultiUpload.Location = new System.Drawing.Point(613, 77);
             this.bMultiUpload.MinimumSize = new System.Drawing.Size(100, 10);
             this.bMultiUpload.Name = "bMultiUpload";
             this.bMultiUpload.Size = new System.Drawing.Size(107, 30);
@@ -89,7 +88,7 @@ namespace ChummerHub.Client.UI
             this.gbVisibility.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gbVisibility.Location = new System.Drawing.Point(3, 63);
             this.gbVisibility.Name = "gbVisibility";
-            this.gbVisibility.Size = new System.Drawing.Size(604, 71);
+            this.gbVisibility.Size = new System.Drawing.Size(604, 59);
             this.gbVisibility.TabIndex = 7;
             this.gbVisibility.TabStop = false;
             this.gbVisibility.Text = "Visibility of uploaded SINner";
@@ -101,8 +100,7 @@ namespace ChummerHub.Client.UI
             this.tlpVisibility.ColumnCount = 2;
             this.tlpVisibility.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpVisibility.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpVisibility.Controls.Add(this.cbVisibilityIsPublic, 0, 1);
-            this.tlpVisibility.Controls.Add(this.cbVisibilityIsGroupVisible, 0, 0);
+            this.tlpVisibility.Controls.Add(this.cbVisibilityIsPublic, 0, 0);
             this.tlpVisibility.Controls.Add(this.bEditDefaultVisibility, 1, 0);
             this.tlpVisibility.Dock = System.Windows.Forms.DockStyle.Top;
             this.tlpVisibility.Location = new System.Drawing.Point(3, 16);
@@ -114,7 +112,7 @@ namespace ChummerHub.Client.UI
             this.tlpVisibility.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpVisibility.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpVisibility.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpVisibility.Size = new System.Drawing.Size(598, 52);
+            this.tlpVisibility.Size = new System.Drawing.Size(598, 40);
             this.tlpVisibility.TabIndex = 0;
             // 
             // cbVisibilityIsPublic
@@ -123,27 +121,13 @@ namespace ChummerHub.Client.UI
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cbVisibilityIsPublic.AutoSize = true;
-            this.cbVisibilityIsPublic.Location = new System.Drawing.Point(3, 32);
+            this.cbVisibilityIsPublic.Location = new System.Drawing.Point(3, 3);
             this.cbVisibilityIsPublic.Name = "cbVisibilityIsPublic";
-            this.cbVisibilityIsPublic.Size = new System.Drawing.Size(176, 17);
+            this.cbVisibilityIsPublic.Size = new System.Drawing.Size(176, 23);
             this.cbVisibilityIsPublic.TabIndex = 0;
             this.cbVisibilityIsPublic.Text = "discoverable (upcoming search)";
             this.cbVisibilityIsPublic.UseVisualStyleBackColor = true;
             this.cbVisibilityIsPublic.CheckedChanged += new System.EventHandler(this.cbVisibilityIsPublic_CheckedChanged);
-            // 
-            // cbVisibilityIsGroupVisible
-            // 
-            this.cbVisibilityIsGroupVisible.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.cbVisibilityIsGroupVisible.AutoSize = true;
-            this.cbVisibilityIsGroupVisible.Location = new System.Drawing.Point(3, 3);
-            this.cbVisibilityIsGroupVisible.Name = "cbVisibilityIsGroupVisible";
-            this.cbVisibilityIsGroupVisible.Size = new System.Drawing.Size(176, 23);
-            this.cbVisibilityIsGroupVisible.TabIndex = 1;
-            this.cbVisibilityIsGroupVisible.Text = "visible to members of my group";
-            this.cbVisibilityIsGroupVisible.UseVisualStyleBackColor = true;
-            this.cbVisibilityIsGroupVisible.CheckedChanged += new System.EventHandler(this.cbVisibilityIsGroupVisible_CheckedChanged);
             // 
             // bEditDefaultVisibility
             // 
@@ -232,13 +216,13 @@ namespace ChummerHub.Client.UI
             this.tlpOptions.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpOptions.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpOptions.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpOptions.Size = new System.Drawing.Size(723, 519);
+            this.tlpOptions.Size = new System.Drawing.Size(723, 511);
             this.tlpOptions.TabIndex = 1;
             // 
             // bTempPathBrowse
             // 
             this.bTempPathBrowse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.bTempPathBrowse.Location = new System.Drawing.Point(613, 166);
+            this.bTempPathBrowse.Location = new System.Drawing.Point(613, 154);
             this.bTempPathBrowse.Name = "bTempPathBrowse";
             this.bTempPathBrowse.Size = new System.Drawing.Size(107, 23);
             this.bTempPathBrowse.TabIndex = 15;
@@ -251,23 +235,13 @@ namespace ChummerHub.Client.UI
             this.tbHelptext.BackColor = System.Drawing.SystemColors.Control;
             this.tlpOptions.SetColumnSpan(this.tbHelptext, 3);
             this.tbHelptext.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tbHelptext.Location = new System.Drawing.Point(3, 199);
+            this.tbHelptext.Location = new System.Drawing.Point(3, 187);
             this.tbHelptext.Multiline = true;
             this.tbHelptext.Name = "tbHelptext";
             this.tbHelptext.ScrollBars = System.Windows.Forms.ScrollBars.Horizontal;
-            this.tbHelptext.Size = new System.Drawing.Size(717, 317);
+            this.tbHelptext.Size = new System.Drawing.Size(717, 321);
             this.tbHelptext.TabIndex = 8;
             this.tbHelptext.Text = resources.GetString("tbHelptext.Text");
-            // 
-            // cbRoles
-            // 
-            this.cbRoles.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.cbRoles.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbRoles.FormattingEnabled = true;
-            this.cbRoles.Location = new System.Drawing.Point(277, 3);
-            this.cbRoles.Name = "cbRoles";
-            this.cbRoles.Size = new System.Drawing.Size(268, 21);
-            this.cbRoles.TabIndex = 16;
             // 
             // flpTempFolder
             // 
@@ -275,7 +249,7 @@ namespace ChummerHub.Client.UI
             this.flpTempFolder.Controls.Add(this.label3);
             this.flpTempFolder.Controls.Add(this.tbTempDownloadPath);
             this.flpTempFolder.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flpTempFolder.Location = new System.Drawing.Point(3, 163);
+            this.flpTempFolder.Location = new System.Drawing.Point(3, 151);
             this.flpTempFolder.Name = "flpTempFolder";
             this.flpTempFolder.Size = new System.Drawing.Size(604, 30);
             this.flpTempFolder.TabIndex = 17;
@@ -315,6 +289,16 @@ namespace ChummerHub.Client.UI
             this.tlpAccount.Size = new System.Drawing.Size(548, 27);
             this.tlpAccount.TabIndex = 18;
             // 
+            // cbRoles
+            // 
+            this.cbRoles.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbRoles.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbRoles.FormattingEnabled = true;
+            this.cbRoles.Location = new System.Drawing.Point(277, 3);
+            this.cbRoles.Name = "cbRoles";
+            this.cbRoles.Size = new System.Drawing.Size(268, 21);
+            this.cbRoles.TabIndex = 16;
+            // 
             // lUsername
             // 
             this.lUsername.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
@@ -334,7 +318,7 @@ namespace ChummerHub.Client.UI
             this.Controls.Add(this.tlpOptions);
             this.MinimumSize = new System.Drawing.Size(723, 511);
             this.Name = "ucSINnersOptions";
-            this.Size = new System.Drawing.Size(723, 519);
+            this.Size = new System.Drawing.Size(723, 511);
             this.gbVisibility.ResumeLayout(false);
             this.gbVisibility.PerformLayout();
             this.tlpVisibility.ResumeLayout(false);
@@ -360,7 +344,6 @@ namespace ChummerHub.Client.UI
         private System.Windows.Forms.GroupBox gbVisibility;
         private System.Windows.Forms.TableLayoutPanel tlpVisibility;
         private System.Windows.Forms.CheckBox cbVisibilityIsPublic;
-        private System.Windows.Forms.CheckBox cbVisibilityIsGroupVisible;
         private System.Windows.Forms.Button bMultiUpload;
         private System.Windows.Forms.TextBox tbHelptext;
         private System.Windows.Forms.Label label3;
