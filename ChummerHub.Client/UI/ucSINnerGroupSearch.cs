@@ -569,8 +569,13 @@ namespace ChummerHub.Client.UI
         {
             PluginHandler.MainForm.DoThreadSafe(() =>
             {
-
-                var item = tvGroupSearchResult.SelectedNode?.Tag as SINnerSearchGroup;
+                TreeNode selectedNode = tvGroupSearchResult.SelectedNode;
+                var item = selectedNode?.Tag as SINnerSearchGroup;
+                while (item == null && selectedNode?.Parent != null)
+                {
+                    selectedNode = selectedNode.Parent;
+                    item = selectedNode?.Tag as SINnerSearchGroup;
+                }
                 if (item != null)
                 {
                     var list = new List<SINnerSearchGroup>() {item};

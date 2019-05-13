@@ -44,6 +44,10 @@ namespace Chummer
                 else
                     funcToRun.Invoke();
             }
+            catch (ObjectDisposedException)
+            {
+                //we really don't need to care about that.
+            }
             catch(Exception e)
             {
                 Log.Exception(e);
