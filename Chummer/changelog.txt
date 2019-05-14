@@ -30,6 +30,7 @@ Application Fixes:
 - Fixed an issue with adding gear to weapon accessories when the weapon accessory was installed with the weapon.
 - Fixed behaviour of Armor Mods improperly not showing their modification of parent items.
 - Added logic to prevent accepting a custom drug that does not have a Foundation or a Name without adding the drug successfully.
+- Fixed behaviour of deletion of custom drug recipes in create mode.
 
 Application Changes:
 

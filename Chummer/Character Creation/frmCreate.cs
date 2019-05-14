@@ -16019,6 +16019,15 @@ namespace Chummer
             IsDirty = true;
         }
         #endregion
+
+        private void btnDeleteCustomDrug_Click(object sender, EventArgs e)
+        {
+            if (!(treCustomDrugs.SelectedNode?.Tag is ICanRemove selectedObject)) return;
+            if (!selectedObject.Remove(CharacterObject, CharacterObjectOptions.ConfirmDelete)) return;
+
+            IsCharacterUpdateRequested = true;
+            IsDirty = true;
+        }
     }
 }
 

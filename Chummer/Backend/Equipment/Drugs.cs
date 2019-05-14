@@ -30,7 +30,7 @@ using Chummer.Backend.Attributes;
 
 namespace Chummer.Backend.Equipment
 {
-    public class Drug : IHasName, IHasXmlNode, ICanSort, IHasStolenProperty
+    public class Drug : IHasName, IHasXmlNode, ICanSort, IHasStolenProperty, ICanRemove
     {
         private Guid _guiSourceID = Guid.Empty;
         private Guid _guiID;
@@ -803,7 +803,20 @@ namespace Chummer.Backend.Equipment
             }
             return _objCachedMyXmlNode;
         }
+
+        public bool Remove(Character characterObject, bool blnConfirmDelete)
+        {
+            if (blnConfirmDelete && !characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteDrug",
+                    GlobalOptions.Language)))
+            {
+                return false;
+            }
+            characterObject.Drugs.Remove(this);
+            ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Drug, InternalId);
+            return true;
+        }
         #endregion
+
     }
 	/// <summary>
 	/// Drug Component.

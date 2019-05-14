@@ -2049,10 +2049,14 @@
       <key>Message_DeletePositiveQualityCareer</key>
       <text>Are you sure you want to delete this Positive Quality? You will not receive any Karma for removing it.</text>
     </string>
-	<string>
-	  <key>Message_LowerPositiveQualityLevelCareer</key>
-	  <text>Are you sure you want to remove a level from this Positive Quality? You will not receive any Karma for removing it.</text>
-	</string>
+    <string>
+      <key>Message_DeleteDrug</key>
+      <text>Are you sure you want to delete this drug recipe?</text>
+    </string>
+	  <string>
+	    <key>Message_LowerPositiveQualityLevelCareer</key>
+	    <text>Are you sure you want to remove a level from this Positive Quality? You will not receive any Karma for removing it.</text>
+	  </string>
     <string>
       <key>Message_DeleteImprovement</key>
       <text>Are you sure you want to delete this Improvement?</text>
