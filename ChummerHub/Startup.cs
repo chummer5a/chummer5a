@@ -40,6 +40,7 @@ using Microsoft.ApplicationInsights.Channel;
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.ResponseCompression;
 
 namespace ChummerHub
 {
@@ -129,6 +130,17 @@ namespace ChummerHub
                 options.CheckConsentNeeded = context => false;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
+
+            services.AddResponseCompression(options =>
+            {
+                options.Providers.Add<BrotliCompressionProvider>();
+                options.Providers.Add<GzipCompressionProvider>();
+                //options.Providers.Add<CustomCompressionProvider>();
+                //options.MimeTypes =
+                //    ResponseCompressionDefaults.MimeTypes.Concat(
+                //        new[] { "image/svg+xml" });
+            });
+
 
             services.Configure<FormOptions>(options =>
             {

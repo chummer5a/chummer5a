@@ -113,8 +113,8 @@ namespace ChummerHub.Models.V1
                         var res = groupmembers;
                         foreach (var member in res)
                         {
-                            if (member.MyExtendedAttributes == null)
-                                member.MyExtendedAttributes = new SINnerExtended(member);
+                            //if (member.MyExtendedAttributes == null)
+                            //    member.MyExtendedAttributes = new SINnerExtended(member);
                             if (member.SINnerMetaData == null)
                                 member.SINnerMetaData = new SINnerMetaData();
                             if (member.SINnerMetaData.Tags == null)

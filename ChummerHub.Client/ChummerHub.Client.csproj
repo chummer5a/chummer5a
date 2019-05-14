@@ -95,7 +95,6 @@
     <Compile Include="Model\CharacterExtended.cs" />
     <Compile Include="Model\ResultBase.cs" />
     <Compile Include="Model\SearchTag.cs" />
-    <Compile Include="Model\SINnerExtended.cs" />
     <Compile Include="Model\SINnerGroup.cs" />
     <Compile Include="Model\SINnerSearchGroup.cs" />
     <Compile Include="Model\SINnerSearchGroupMember.cs" />
@@ -135,7 +134,6 @@
     <Compile Include="SINnersClient\Models\ResultSINnerPut.cs" />
     <Compile Include="SINnersClient\Models\SearchTag.cs" />
     <Compile Include="SINnersClient\Models\SINner.cs" />
-    <Compile Include="SINnersClient\Models\SINnerExtended.cs" />
     <Compile Include="SINnersClient\Models\SINnerGroup.cs" />
     <Compile Include="SINnersClient\Models\SINnerGroupSetting.cs" />
     <Compile Include="SINnersClient\Models\SINnerMetaData.cs" />

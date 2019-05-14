@@ -491,9 +491,11 @@ namespace SINners
             /// </param>
             /// <param name='sINnerId'>
             /// </param>
-            public static void GetMugshotById(this ISINnersClient operations, Guid? sINnerId = default(Guid?))
+            /// <param name='index'>
+            /// </param>
+            public static void GetThumbnailById(this ISINnersClient operations, Guid? sINnerId = default(Guid?), int? index = default(int?))
             {
-                Task.Factory.StartNew(s => ((ISINnersClient)s).GetMugshotByIdAsync(sINnerId), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
+                Task.Factory.StartNew(s => ((ISINnersClient)s).GetThumbnailByIdAsync(sINnerId, index), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
             }
 
             /// <param name='operations'>
@@ -501,12 +503,14 @@ namespace SINners
             /// </param>
             /// <param name='sINnerId'>
             /// </param>
+            /// <param name='index'>
+            /// </param>
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task GetMugshotByIdAsync(this ISINnersClient operations, Guid? sINnerId = default(Guid?), CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task GetThumbnailByIdAsync(this ISINnersClient operations, Guid? sINnerId = default(Guid?), int? index = default(int?), CancellationToken cancellationToken = default(CancellationToken))
             {
-                await operations.GetMugshotByIdWithHttpMessagesAsync(sINnerId, null, cancellationToken).ConfigureAwait(false);
+                await operations.GetThumbnailByIdWithHttpMessagesAsync(sINnerId, index, null, cancellationToken).ConfigureAwait(false);
             }
 
             /// <summary>

@@ -21,12 +21,11 @@ namespace SINners.Models
         /// <summary>
         /// Initializes a new instance of the SINner class.
         /// </summary>
-        public SINner(string editionNumber = default(string), string language = default(string), SINnerMetaData siNnerMetaData = default(SINnerMetaData), SINnerExtended myExtendedAttributes = default(SINnerExtended), SINnerGroup myGroup = default(SINnerGroup), string alias = default(string), Guid? id = default(Guid?), string downloadUrl = default(string), DateTime? uploadDateTime = default(DateTime?), DateTime? lastChange = default(DateTime?), string fileName = default(string))
+        public SINner(string editionNumber = default(string), string language = default(string), SINnerMetaData siNnerMetaData = default(SINnerMetaData), SINnerGroup myGroup = default(SINnerGroup), string alias = default(string), Guid? id = default(Guid?), string downloadUrl = default(string), DateTime? uploadDateTime = default(DateTime?), DateTime? lastChange = default(DateTime?), string fileName = default(string))
         {
             EditionNumber = editionNumber;
             Language = language;
             SiNnerMetaData = siNnerMetaData;
-            MyExtendedAttributes = myExtendedAttributes;
             MyGroup = myGroup;
             Alias = alias;
             Id = id;
@@ -50,11 +49,6 @@ namespace SINners.Models
         /// </summary>
         [JsonProperty(PropertyName = "siNnerMetaData")]
         public SINnerMetaData SiNnerMetaData { get; set; }
-
-        /// <summary>
-        /// </summary>
-        [JsonProperty(PropertyName = "myExtendedAttributes")]
-        public SINnerExtended MyExtendedAttributes { get; set; }
 
         /// <summary>
         /// </summary>

@@ -103,7 +103,7 @@ namespace Chummer.Plugins
             
             var jsonResolver = new PropertyRenameAndIgnoreSerializerContractResolver();
             //jsonResolver.IgnoreProperty(typeof(String), "MugshotBase64");
-            jsonResolver.IgnoreProperty(typeof(SINnerExtended), "jsonSummary");
+            //jsonResolver.IgnoreProperty(typeof(SINnerExtended), "jsonSummary");
             //jsonResolver.RenameProperty(typeof(Person), "FirstName", "firstName");
             JsonSerializerSettings settings = new JsonSerializerSettings
             {
