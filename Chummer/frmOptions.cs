@@ -1352,6 +1352,7 @@ namespace Chummer
             chkLiveCustomData.Checked = GlobalOptions.LiveCustomData;
             chkLiveUpdateCleanCharacterFiles.Checked = GlobalOptions.LiveUpdateCleanCharacterFiles;
             chkUseLogging.Checked = GlobalOptions.UseLogging;
+            chkUseLoggingApplicationInsights.Checked = GlobalOptions.UseLoggingApplicationInsights;
             chkLifeModule.Checked = GlobalOptions.LifeModuleEnabled;
             chkOmaeEnabled.Checked = GlobalOptions.OmaeEnabled;
             chkPreferNightlyBuilds.Checked = GlobalOptions.PreferNightlyBuilds;
@@ -1861,6 +1862,8 @@ namespace Chummer
 
         private void chkUseLoggingApplicationInsights_CheckedChanged(object sender, EventArgs e)
         {
+            if (this._blnLoading)
+                return;
             if (chkUseLoggingApplicationInsights.Checked)
             {
                 string msg = "Please use this option only, if you have previously spoken ";
@@ -1880,6 +1883,10 @@ namespace Chummer
                     GlobalOptions.UseLoggingApplicationInsights = false;
                     chkUseLoggingApplicationInsights.Checked = false;
                 }
+            }
+            else
+            {
+                GlobalOptions.UseLoggingApplicationInsights = false;
             }
         }
     }

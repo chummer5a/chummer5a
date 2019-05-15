@@ -24,6 +24,8 @@ using System.Linq;
  using System.Threading;
  using System.Windows.Forms;
 ﻿using Chummer.Backend;
+ using Microsoft.ApplicationInsights;
+ using Microsoft.ApplicationInsights.Extensibility;
  using Microsoft.ApplicationInsights.NLogTarget;
  using NLog;
  using NLog.Config;
@@ -33,26 +35,31 @@ namespace Chummer
 {
     internal static class Program
     {
-        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private static Logger Log = null;
         private const string strChummerGuid = "eb0759c1-3599-495e-8bc5-57c8b3e1b31c";
-        private static ApplicationInsightsTarget _myApplicationInsightsTarget = null;
 
-        private static ApplicationInsightsTarget MyApplicationInsightsTarget =>
-            _myApplicationInsightsTarget ?? (_myApplicationInsightsTarget = new ApplicationInsightsTarget
-            {
-                //maybe replace this with a value the user enters in the options, especially if it gets abused in the future...
-                InstrumentationKey = "012fd080-80dc-4c10-97df-4f2cf8c805d5"
-            });
+        //private static ApplicationInsightsTarget _myApplicationInsightsTarget = null;
 
-        private static LoggingRule _myLoggingRule = null;
-        public static LoggingRule MyApplicationInsightsRule
-        {
-            get
-            {
-                return _myLoggingRule ??
-                       (_myLoggingRule = new LoggingRule("*", LogLevel.Trace, MyApplicationInsightsTarget));
-            }
-        }
+        //private static ApplicationInsightsTarget MyApplicationInsightsTarget =>
+        //    _myApplicationInsightsTarget ?? (_myApplicationInsightsTarget = new ApplicationInsightsTarget
+        //    {
+                
+        //        //maybe replace this with a value the user enters in the options, especially if it gets abused in the future...
+        //        InstrumentationKey = "012fd080-80dc-4c10-97df-4f2cf8c805d5"
+        //    });
+
+        //private static LoggingRule _myLoggingRule = null;
+        //public static LoggingRule MyApplicationInsightsRule
+        //{
+        //    get
+        //    {
+        //        return _myLoggingRule ??
+        //               (_myLoggingRule = new LoggingRule("*", LogLevel.Trace, MyApplicationInsightsTarget));
+        //    }
+        //}
+        private static TelemetryConfiguration config = new TelemetryConfiguration { InstrumentationKey = "012fd080-80dc-4c10-97df-4f2cf8c805d5" };
+        private static TelemetryClient tc = new TelemetryClient(config);
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -97,8 +104,7 @@ namespace Chummer
                 string strInfo =
                     $"Application Chummer5a build {System.Reflection.Assembly.GetExecutingAssembly().GetName().Version} started at {DateTime.UtcNow} with command line arguments {Environment.CommandLine}";
                 sw.TaskEnd("infogen");
-
-                Log.Info(strInfo);
+             
                 sw.TaskEnd("infoprnt");
 
                 Application.EnableVisualStyles();
@@ -134,17 +140,36 @@ namespace Chummer
 
                 try
                 {
+                    LogManager.ThrowExceptions = true;
+                    ConfigurationItemFactory.Default.Targets.RegisterDefinition(
+                        "ApplicationInsightsTarget",
+                        typeof(Microsoft.ApplicationInsights.NLogTarget.ApplicationInsightsTarget)
+                    );
+                    Log = NLog.LogManager.GetCurrentClassLogger();
+                    Log.Info(strInfo);
                     if (GlobalOptions.UseLogging)
                     {
                         foreach (var rule in NLog.LogManager.Configuration.LoggingRules.ToList())
                         {
-                            rule.EnableLoggingForLevels(LogLevel.Debug, LogLevel.Fatal);
+                            rule.EnableLoggingForLevels(LogLevel.Trace, LogLevel.Fatal);
                         }
                     }
-
+                    Log.Info("NLog initialized");
                     if (GlobalOptions.UseLoggingApplicationInsights)
                     {
-                        LogManager.Configuration.LoggingRules.Add(MyApplicationInsightsRule);
+                        // Set session data:
+                        tc.Context.User.Id = Environment.UserName;
+                        tc.Context.Session.Id = Guid.NewGuid().ToString();
+                        tc.Context.Device.OperatingSystem = Environment.OSVersion.ToString();
+
+                        // Log a page view:
+                        tc.TrackPageView("Program.Main()");
+                        //TelemetryConfiguration.Active.InstrumentationKey = MyApplicationInsightsTarget.InstrumentationKey;
+                        //LogManager.Configuration.LoggingRules.Add(MyApplicationInsightsRule);
+                    }
+                    else
+                    {
+                        TelemetryConfiguration.Active.DisableTelemetry = true;
                     }
                 }
                 catch (Exception e)
@@ -167,6 +192,11 @@ namespace Chummer
 
                 MainForm = new frmChummerMain();
                 Application.Run(MainForm);
+                if (GlobalOptions.UseLoggingApplicationInsights)
+                {
+                    if (tc != null)
+                        tc.Flush();
+                }
 
                 Log.Info(ExceptionHeatmap.GenerateInfo());
             }

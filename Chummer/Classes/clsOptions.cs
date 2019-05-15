@@ -632,13 +632,13 @@ namespace Chummer
                     // Sets up logging if the option is changed during runtime
                     if (value)
                     {
-                        if (!LogManager.Configuration.LoggingRules.Contains(Program.MyApplicationInsightsRule))
-                            LogManager.Configuration.LoggingRules.Add(Program.MyApplicationInsightsRule);
+                        //if (!LogManager.Configuration.LoggingRules.Contains(Program.MyApplicationInsightsRule))
+                        //    LogManager.Configuration.LoggingRules.Add(Program.MyApplicationInsightsRule);
                     }
                     else
                     {
-                        if (LogManager.Configuration.LoggingRules.Contains(Program.MyApplicationInsightsRule))
-                            LogManager.Configuration.LoggingRules.Remove(Program.MyApplicationInsightsRule);
+                        //if (LogManager.Configuration.LoggingRules.Contains(Program.MyApplicationInsightsRule))
+                        //    LogManager.Configuration.LoggingRules.Remove(Program.MyApplicationInsightsRule);
                     }
 
                 }

@@ -81,7 +81,8 @@ namespace ChummerHub.Client.Model
                     JsonConvert.DeserializeObject<SINners.Models.SINnerVisibility>(Properties.Settings.Default.SINnerVisibility);
 
             if(MySINnerFile.SiNnerMetaData.Visibility?.Id == null)
-                MySINnerFile.SiNnerMetaData.Visibility.Id = Guid.NewGuid();
+                if (MySINnerFile?.SiNnerMetaData?.Visibility != null)
+                    MySINnerFile.SiNnerMetaData.Visibility.Id = Guid.NewGuid();
 
             var cache = new frmCharacterRoster.CharacterCache(character.FileName);
         
@@ -113,13 +114,14 @@ namespace ChummerHub.Client.Model
                 //{
                 //    this._MySINnerFile.MyExtendedAttributes = backup.MyExtendedAttributes;
                 //}
-                if ((this._MySINnerFile.SiNnerMetaData?.Id == null)
+                if ((this._MySINnerFile?.SiNnerMetaData?.Id == null)
                     || (this._MySINnerFile.SiNnerMetaData?.Id == Guid.Empty))
                 {
-                    this._MySINnerFile.SiNnerMetaData.Id = backup.SiNnerMetaData.Id;
+                    if (this._MySINnerFile?.SiNnerMetaData != null)
+                        this._MySINnerFile.SiNnerMetaData.Id = backup.SiNnerMetaData.Id;
                 }
 
-                if (this._MySINnerFile.SiNnerMetaData.Tags.Count() < backup.SiNnerMetaData.Tags.Count())
+                if (this._MySINnerFile?.SiNnerMetaData?.Tags?.Count() < backup?.SiNnerMetaData?.Tags?.Count())
                     this._MySINnerFile.SiNnerMetaData.Tags = backup.SiNnerMetaData.Tags;
 
             }
