@@ -138,7 +138,7 @@ namespace Chummer
                     {
                         foreach (var rule in NLog.LogManager.Configuration.LoggingRules.ToList())
                         {
-                            rule.EnableLoggingForLevel(LogLevel.Trace);
+                            rule.EnableLoggingForLevel(LogLevel.Debug);
                         }
                     }
 
