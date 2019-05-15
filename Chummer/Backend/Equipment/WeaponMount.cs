@@ -26,6 +26,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Backend.Attributes;
+using NLog;
 
 namespace Chummer.Backend.Equipment
 {
@@ -35,7 +36,8 @@ namespace Chummer.Backend.Equipment
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     public class WeaponMount : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, ICanEquip, IHasSource, ICanSort, IHasStolenProperty
     {
-		private Guid _guiID;
+        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private Guid _guiID;
         private Guid _guiSourceID;
 		private decimal _decMarkup;
 		private string _strAvail = string.Empty;
@@ -81,7 +83,7 @@ namespace Chummer.Backend.Equipment
             if (objXmlMod == null) Utils.BreakIfDebug();
             if (!objXmlMod.TryGetField("id", Guid.TryParse, out _guiSourceID))
             {
-                Log.Warning(new object[] { "Missing id field for xmlnode", objXmlMod });
+                Log.Warn(new object[] { "Missing id field for xmlnode", objXmlMod });
                 Utils.BreakIfDebug();
             }
             else

@@ -29,11 +29,13 @@ using Codaxy.WkHtmlToPdf;
 using System.Diagnostics;
 using System.Globalization;
 using Microsoft.Win32;
+using NLog;
 
 namespace Chummer
 {
     public partial class frmViewer : Form
     {
+        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private List<Character> _lstCharacters = new List<Character>();
         private XmlDocument _objCharacterXml = new XmlDocument();
         private string _strSelectedSheet = GlobalOptions.DefaultCharacterSheet;
@@ -377,7 +379,7 @@ namespace Chummer
             if (!File.Exists(strXslPath))
             {
                 string strReturn = $"File not found when attempting to load {_strSelectedSheet}{Environment.NewLine}";
-                Log.Enter(strReturn);
+                Log.Debug(strReturn);
                 MessageBox.Show(strReturn);
                 return;
             }
@@ -393,7 +395,7 @@ namespace Chummer
             catch (Exception ex)
             {
                 string strReturn = $"Error attempting to load {_strSelectedSheet}{Environment.NewLine}";
-                Log.Enter(strReturn);
+                Log.Debug(strReturn);
                 Log.Error("ERROR Message = " + ex.Message);
                 strReturn += ex.Message;
                 MessageBox.Show(strReturn);

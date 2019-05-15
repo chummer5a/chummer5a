@@ -25,6 +25,7 @@ using System.Xml.XPath;
 using Chummer.Backend.Attributes;
 using Chummer.Backend.Equipment;
 using Chummer.Backend.Skills;
+using NLog;
 
 // ReSharper disable InconsistentNaming
 
@@ -32,6 +33,7 @@ namespace Chummer.Classes
 {
     public class AddImprovementCollection
     {
+        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private readonly Character _objCharacter;
 
         public AddImprovementCollection(Character character, Improvement.ImprovementSource objImprovementSource, string sourceName, string strUnique, string forcedValue, string limitSelection, string selectedValue, bool blnConcatSelectedValue, string strFriendlyName, int intRating)

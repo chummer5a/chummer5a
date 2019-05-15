@@ -32,11 +32,13 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
 using System.Xml.XPath;
+using NLog;
 
 namespace Chummer
 {
     public partial class frmCharacterRoster : Form
     {
+        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
         //private readonly ConcurrentDictionary<string, CharacterCache> _lstCharacterCache = new ConcurrentDictionary<string, CharacterCache>();
 
         //public ConcurrentDictionary<string, CharacterCache> MyCharacterCacheDic { get { return _lstCharacterCache; } }

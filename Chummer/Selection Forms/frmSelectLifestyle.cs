@@ -21,11 +21,13 @@ using System.Collections.Generic;
  using System.Windows.Forms;
 using System.Xml;
  using Chummer.Backend.Equipment;
+ using NLog;
 
 namespace Chummer
 {
     public partial class frmSelectLifestyle : Form
     {
+        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private bool _blnAddAgain;
         private readonly Lifestyle _objLifestyle;
         private Lifestyle _objSourceLifestyle;
@@ -252,7 +254,7 @@ namespace Chummer
                 }
                 else
                 {
-                    Log.Warning(new object[] { "Missing id field for xmlnode", objXmlLifestyle });
+                    Log.Warn(new object[] { "Missing id field for xmlnode", objXmlLifestyle });
                     Utils.BreakIfDebug();
                 }
                 foreach (TreeNode objNode in treQualities.Nodes)

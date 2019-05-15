@@ -24,12 +24,14 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
+using NLog;
 
 namespace Chummer.Backend.Equipment
 {
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     public class LifestyleQuality : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, IHasSource
     {
+        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private Guid _guiID;
         private Guid _guiSourceID;
         private string _strName = string.Empty;
@@ -113,7 +115,7 @@ namespace Chummer.Backend.Equipment
             _objParentLifestyle = objParentLifestyle;
             if (!objXmlLifestyleQuality.TryGetField("id", Guid.TryParse, out _guiSourceID))
             {
-                Log.Warning(new object[] { "Missing id field for xmlnode", objXmlLifestyleQuality });
+                Log.Warn(new object[] { "Missing id field for xmlnode", objXmlLifestyleQuality });
                 Utils.BreakIfDebug();
             }
             else

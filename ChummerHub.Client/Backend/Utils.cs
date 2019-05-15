@@ -20,12 +20,14 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using ChummerHub.Client.UI;
 using Newtonsoft.Json;
+using NLog;
 using static Chummer.frmCharacterRoster;
 
 namespace ChummerHub.Client.Backend
 {
     public static class StaticUtils
     {
+        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
 
         public static Type GetListType(object someList)
         {
@@ -303,12 +305,12 @@ namespace ChummerHub.Client.Backend
                         var request = WebRequest.Create("http://localhost:5000/");
                         WebResponse response = request.GetResponse();
                         Properties.Settings.Default.SINnerUrl = local;
-                        Chummer.Log.Info("Connected to " + local + ".");
+                        Log.Info("Connected to " + local + ".");
                     }
                     catch (Exception e)
                     {
                         Properties.Settings.Default.SINnerUrl = "https://sinners-beta.azurewebsites.net";
-                        Chummer.Log.Info("Connected to " + Properties.Settings.Default.SINnerUrl + ".");
+                        Log.Info("Connected to " + Properties.Settings.Default.SINnerUrl + ".");
                     }
                 }
                 ServicePointManager.ServerCertificateValidationCallback += delegate { return true; };
@@ -322,7 +324,7 @@ namespace ChummerHub.Client.Backend
             }
             catch (Exception ex)
             {
-                Chummer.Log.Exception(ex);
+                Log.Error(ex);
                 if (!clientErrorShown)
                 {
                     clientErrorShown = true;
@@ -346,7 +348,7 @@ namespace ChummerHub.Client.Backend
 
     public class Utils
     {
-       
+        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
 
         public Utils()
         {
@@ -388,7 +390,7 @@ namespace ChummerHub.Client.Backend
                         {
                             ToolTipText = "Please log in (Options -> Plugins -> Sinners (Cloud) -> Login"
                         };
-                        Log.Exception(e, "Online, not logged in");
+                        Log.Warn(e, "Online, not logged in");
                         PluginHandler.MainForm.DoThreadSafe(() =>
                         {
                             MyTreeNodeList.Add(node);
@@ -403,7 +405,7 @@ namespace ChummerHub.Client.Backend
                         {
                             msg += Environment.NewLine + e.InnerException.Message;
                         }
-                        Log.Exception(e, msg);
+                        Log.Error(e, msg);
                         PluginHandler.MainForm.DoThreadSafe(() =>
                         {
                             MyTreeNodeList.Add(new TreeNode()
@@ -422,7 +424,7 @@ namespace ChummerHub.Client.Backend
                         var content = await response.Response.Content.ReadAsStringAsync();
                         msg += Environment.NewLine + "Content: " + content;
                     }
-                    Log.Warning(msg);
+                    Log.Warn(msg);
                     var errornode = new TreeNode()
                     {
                         Text = "Error contacting SINners"
@@ -461,7 +463,7 @@ namespace ChummerHub.Client.Backend
             }
             catch (Exception ex)
             {
-                Log.Exception(ex);
+                Log.Error(ex);
                 throw;
             }
         }
@@ -480,7 +482,7 @@ namespace ChummerHub.Client.Backend
             if ((!String.IsNullOrEmpty(rb.ErrorText)
                  || (rb.MyException != null)))
             {
-                Log.Exception(e, "Response from SINners WebService: ");
+                Log.Error(e, "Response from SINners WebService: ");
                 var frmSIN = new frmSINnerResponse();
                 frmSIN.SINnerResponseUI.Result = rb;
                 frmSIN.TopMost = true;
@@ -510,7 +512,7 @@ namespace ChummerHub.Client.Backend
                 rb.MyException = e;
                 rb.CallSuccess = false;
                 ResponseBody = rb;
-                Log.Exception(e, "Error parsing response from SINners WebService as response.Response.Content: " + content);
+                Log.Error(e, "Error parsing response from SINners WebService as response.Response.Content: " + content);
             }
 
             try
@@ -528,14 +530,14 @@ namespace ChummerHub.Client.Backend
                 rb.MyException = e;
                 rb.CallSuccess = false;
                 ResponseBody = rb;
-                Log.Exception(e, "Error parsing response from SINners WebService as ResponseBody: " + content);
+                Log.Error(e, "Error parsing response from SINners WebService as ResponseBody: " + content);
             }
 
 
             if ((!String.IsNullOrEmpty(rb.ErrorText)
                      || (rb.MyException != null)))
             {
-                Log.Warning("SINners WebService returned: " + rb.ErrorText);
+                Log.Warn("SINners WebService returned: " + rb.ErrorText);
                 var frmSIN = new frmSINnerResponse();
                 frmSIN.SINnerResponseUI.Result = rb;
                 frmSIN.TopMost = true;
@@ -578,7 +580,7 @@ namespace ChummerHub.Client.Backend
                 }
                 catch (Exception e)
                 {
-                    Log.Exception(e, "Could not deserialize CharacterCache-Object: ");
+                    Log.Error(e, "Could not deserialize CharacterCache-Object: ");
                     TreeNode errorNode = new TreeNode()
                     {
                         Text = "Error loading Char from WebService"
@@ -688,7 +690,7 @@ namespace ChummerHub.Client.Backend
                                       Environment.NewLine
                                       + "selected in option->plugins->sinner and press the \"save\" symbol.";
 
-                    Log.Warning(objCache.ErrorText);
+                    Log.Warn(objCache.ErrorText);
 
                 }
                 var foundseq = (from a in objListNode.Nodes.Find(memberNode.Name, false) where a.Tag == memberNode.Tag select a).ToList();
@@ -797,13 +799,13 @@ namespace ChummerHub.Client.Backend
                 {
                     objCache.ErrorText = e.Message;
                     objCache.ErrorText += Environment.NewLine + e.Response.Content;
-                    Chummer.Log.Exception(e, e.Response.Content);
+                    Log.Error(e, e.Response.Content);
                     
                 }
                 catch (Exception e)
                 {
                     objCache.ErrorText = e.Message;
-                    Chummer.Log.Exception(e);
+                    Log.Error(e);
                 }
             };
         }
@@ -932,7 +934,7 @@ namespace ChummerHub.Client.Backend
                         msg += Environment.NewLine + "Reason: " + res?.Response?.ReasonPhrase;
                         var content = await res.Response.Content.ReadAsStringAsync();
                         msg += Environment.NewLine + "Content: " + content;
-                        Log.Warning(msg);
+                        Log.Warn(msg);
                         try
                         {
                             ResultSinnerPostSIN myres =
@@ -956,7 +958,7 @@ namespace ChummerHub.Client.Backend
             }
             catch (Exception ex)
             {
-                Log.Exception(ex);
+                Log.Error(ex);
                 throw;
             }
             return res;
@@ -1009,7 +1011,7 @@ namespace ChummerHub.Client.Backend
                     }
                     catch (Exception e)
                     {
-                        Log.Exception(e);
+                        Log.Error(e);
                         PluginHandler.MainForm.DoThreadSafe(() =>
                         {
                             MessageBox.Show(e.Message);
@@ -1019,7 +1021,7 @@ namespace ChummerHub.Client.Backend
             }
             catch (Exception ex)
             {
-                Log.Exception(ex);
+                Log.Error(ex);
                 throw;
             }
             return res;
@@ -1162,7 +1164,7 @@ namespace ChummerHub.Client.Backend
                     }
                     catch (Exception ex)
                     {
-                        Log.Exception(ex);
+                        Log.Error(ex);
                         if (objCache != null)
                             objCache.ErrorText = ex.Message;
                     }
@@ -1171,7 +1173,7 @@ namespace ChummerHub.Client.Backend
             }
             catch (Exception e)
             {
-                Log.Exception(e);
+                Log.Error(e);
                 objCache.ErrorText = e.Message;
                 throw;
             }
@@ -1231,7 +1233,7 @@ namespace ChummerHub.Client.Backend
             }
              catch(Exception ex)
             {
-                Log.Exception(ex, "Error downloading sinner " + sinner?.Id + ": ");
+                Log.Error(ex, "Error downloading sinner " + sinner?.Id + ": ");
                 objCache.ErrorText = ex.ToString();
                 throw;
             }

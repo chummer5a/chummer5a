@@ -28,6 +28,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Backend.Attributes;
+using NLog;
 
 namespace Chummer.Backend.Equipment
 {
@@ -38,6 +39,7 @@ namespace Chummer.Backend.Equipment
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     public class Cyberware : IHasChildren<Cyberware>, IHasGear, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasRating, IHasSource, ICanSort, IHasStolenProperty, IHasWirelessBonus
     {
+        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private Guid _guiSourceID = Guid.Empty;
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -353,7 +355,7 @@ namespace Chummer.Backend.Equipment
             _objParentVehicle = objParentVehicle;
             if (!objXmlCyberware.TryGetField("id", Guid.TryParse, out _guiSourceID))
             {
-                Log.Warning(new object[] { "Missing id field for armor xmlnode", objXmlCyberware });
+                Log.Warn(new object[] { "Missing id field for armor xmlnode", objXmlCyberware });
                 Utils.BreakIfDebug();
             }
             else

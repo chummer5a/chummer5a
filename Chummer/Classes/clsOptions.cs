@@ -29,6 +29,7 @@ using System.Windows.Forms;
 using Microsoft.Win32;
 using iTextSharp.text.pdf;
 using MersenneTwister;
+using NLog;
 
 namespace Chummer
 {
@@ -150,6 +151,7 @@ namespace Chummer
     /// </summary>
     public static class GlobalOptions
     {
+        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private static CultureInfo s_ObjLanguageCultureInfo = CultureInfo.CurrentCulture;
 
         public static string ErrorMessage { get; } = string.Empty;
@@ -601,7 +603,11 @@ namespace Chummer
                 {
                     _blnUseLogging = value;
                     // Sets up logging if the option is changed during runtime
-                    Log.IsLoggerEnabled = value;
+                    if (value)
+                        NLog.LogManager.EnableLogging();
+                    else
+                        NLog.LogManager.DisableLogging();
+                    
                 }
             }
         }

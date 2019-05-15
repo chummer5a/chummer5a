@@ -24,12 +24,14 @@ using System.Linq;
  using System.Threading;
  using System.Windows.Forms;
 ﻿using Chummer.Backend;
+ using NLog;
 
 [assembly: CLSCompliant(true)]
 namespace Chummer
 {
     internal static class Program
     {
+        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private const string strChummerGuid = "eb0759c1-3599-495e-8bc5-57c8b3e1b31c";
         /// <summary>
         /// The main entry point for the application.
@@ -64,7 +66,10 @@ namespace Chummer
 
                 sw.TaskEnd("fixcwd");
                 //Log exceptions that is caught. Wanting to know about this cause of performance
-                AppDomain.CurrentDomain.FirstChanceException += Log.FirstChanceException;
+                AppDomain.CurrentDomain.FirstChanceException += (sender, e) =>
+                {
+                    //Console.WriteLine(e.Exception.ToString());
+                };
                 AppDomain.CurrentDomain.FirstChanceException += ExceptionHeatmap.OnException;
 
                 sw.TaskEnd("appdomain 2");
@@ -106,6 +111,22 @@ namespace Chummer
                     MessageBox.Show(GlobalOptions.ErrorMessage, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
+
+                try
+                {
+                    if (GlobalOptions.UseLogging)
+                    {
+                        foreach (var rule in NLog.LogManager.Configuration.LoggingRules.ToList())
+                        {
+                            rule.EnableLoggingForLevel(LogLevel.Trace);
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
+                
 
                 //make sure the Settings are upgraded/preserved after an upgrade
                 //see for details: https://stackoverflow.com/questions/534261/how-do-you-keep-user-config-settings-across-different-assembly-versions-in-net/534335#534335

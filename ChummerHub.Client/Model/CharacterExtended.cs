@@ -13,11 +13,13 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Chummer.Plugins;
+using NLog;
 
 namespace ChummerHub.Client.Model
 {
     public class CharacterExtended
     {
+        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
         public CharacterExtended(Character character, string fileElement = null)
         {
             MyCharacter = character;
@@ -45,7 +47,7 @@ namespace ChummerHub.Client.Model
                 }
                 catch (Exception e)
                 {
-                    Log.Exception(e);
+                    Log.Error(e);
                 }
             }
 
@@ -524,7 +526,7 @@ namespace ChummerHub.Client.Model
                     }
                     catch (Exception ex)
                     {
-                        Log.Exception(ex);
+                        Log.Error(ex);
                         throw;
                     }
                 }
@@ -548,7 +550,7 @@ namespace ChummerHub.Client.Model
             }
             catch(Exception e)
             {
-                Log.Exception(e);
+                Log.Error(e);
                 MessageBox.Show(e.ToString());
             }
             finally

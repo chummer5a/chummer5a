@@ -22,11 +22,13 @@
 ﻿using System.IO;
 using System.Reflection;
  using System.Windows.Forms;
+ using NLog;
 
 namespace Chummer
 {
     public static class Utils
     {
+        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
         public static void BreakIfDebug()
         {
 #if DEBUG

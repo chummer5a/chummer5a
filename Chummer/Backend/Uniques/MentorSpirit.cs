@@ -20,6 +20,7 @@ using System;
 using System.Diagnostics;
 using System.Windows.Forms;
 using System.Xml;
+using NLog;
 
 namespace Chummer
 {
@@ -27,6 +28,8 @@ namespace Chummer
     [DebuggerDisplay("{DisplayNameShort(GlobalOptions.DefaultLanguage)}")]
     public class MentorSpirit : IHasInternalId, IHasName, IHasXmlNode, IHasSource
     {
+
+        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private Guid _guiID;
         private string _strName = string.Empty;
         private string _strAdvantage = string.Empty;
@@ -70,7 +73,7 @@ namespace Chummer
                 xmlMentor.TryGetStringFieldQuickly("notes", ref _strNotes);
             if (!xmlMentor.TryGetField("id", Guid.TryParse, out _guiSourceID))
             {
-                Log.Warning(new object[] { "Missing id field for xmlnode", xmlMentor });
+                Log.Warn(new object[] { "Missing id field for xmlnode", xmlMentor });
                 Utils.BreakIfDebug();
             }
 

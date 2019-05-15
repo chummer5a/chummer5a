@@ -10,12 +10,14 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Chummer;
 using Newtonsoft.Json;
+using NLog;
 using SINners.Models;
 
 namespace ChummerHub.Client.UI
 {
     public partial class frmWebBrowser : Form
     {
+        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
         public frmWebBrowser()
         {
             InitializeComponent();
@@ -33,7 +35,7 @@ namespace ChummerHub.Client.UI
                 {
                     Properties.Settings.Default.SINnerUrl = "https://sinners.azurewebsites.net/";
                     string msg = "if you are (want to be) a Beta-Tester, change this to http://sinners-beta.azurewebsites.net/!";
-                    Log.Warning(msg);
+                    Log.Warn(msg);
                     Properties.Settings.Default.Save();
                 }
                 string path = Properties.Settings.Default.SINnerUrl.TrimEnd('/');
@@ -111,7 +113,7 @@ namespace ChummerHub.Client.UI
                 }
                 catch (Exception exception)
                 {
-                    Log.Exception(exception);
+                    Log.Error(exception);
                     throw;
                 }
                 
@@ -134,7 +136,7 @@ namespace ChummerHub.Client.UI
             }
             catch(Exception ex)
             {
-                Log.Exception(ex);
+                Log.Warn(ex);
             }
             
         }
