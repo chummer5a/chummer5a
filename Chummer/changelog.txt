@@ -28,6 +28,8 @@ Application Fixes:
 - Fixed an issue with the adding of One Trick Pony's free technique.
 - Fixed behaviour of the selectweapon improvement that caused it to freeze if the ForcedItem quality were specified but the list of weapons did not contain the forced item.
 - Fixed an issue with adding gear to weapon accessories when the weapon accessory was installed with the weapon.
+- Fixed behaviour of Armor Mods improperly not showing their modification of parent items.
+- Added logic to prevent accepting a custom drug that does not have a Foundation or a Name without adding the drug successfully.
 
 Application Changes:
 
@@ -36,6 +38,7 @@ Application Changes:
 - Added a string to the Skill.Core class that allows for formatting the skill's dicepool, specialisations and such instead of reprocessing it in multiple other locations.
 - Refactored the creation, saving and loading of GUIDs for the Internal ID and Source ID of all objects to provide more consistency. There is a small risk that this will impact the stored improvements of some characters. I haven't been able to prove that it will happen, but logically it should based on this change. 
 - Removed the caching of Mugshot images in the character roster. Prevents high memory usage for large watch folder content.
+- Unified some uses of Availability processing into the AvailabilityValue object.
 
 UI Changes:
 
@@ -70,6 +73,8 @@ New Strings:
 
 - String_SpellPoints
 - Tip_SelectSpell_MasteryQuality
+- Message_CustomDrug_MissingFoundation
+- MessageTitle_CustomDrug_MissingFoundation
 
 Build 205
 

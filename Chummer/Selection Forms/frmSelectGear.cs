@@ -577,72 +577,7 @@ namespace Chummer
             lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
             lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
-
-            // Extract the Avil and Cost values from the Gear info since these may contain formulas and/or be based off of the Rating.
-            // This is done using XPathExpression.
-
-            // Avail.
-            // If avail contains "F" or "R", remove it from the string so we can use the expression.
-            string strAvail = string.Empty;
-            string strPrefix = string.Empty;
-            XPathNavigator objAvailNode = objXmlGear.SelectSingleNode("avail");
-            if (objAvailNode == null)
-            {
-                int intHighestAvailNode = 0;
-                foreach (XPathNavigator objLoopNode in objXmlGear.SelectChildren(XPathNodeType.Element))
-                {
-                    if (objLoopNode.Name.StartsWith("avail"))
-                    {
-                        string strLoopCostString = objLoopNode.Name.Substring(5);
-                        if (int.TryParse(strLoopCostString, out int intTmp))
-                        {
-                            intHighestAvailNode = Math.Max(intHighestAvailNode, intTmp);
-                        }
-                    }
-                }
-                objAvailNode = objXmlGear.SelectSingleNode("avail" + intHighestAvailNode);
-                for (int i = decimal.ToInt32(nudRating.Value); i <= intHighestAvailNode; ++i)
-                {
-                    XPathNavigator objLoopNode = objXmlGear.SelectSingleNode("avail" + i.ToString(GlobalOptions.InvariantCultureInfo));
-                    if (objLoopNode != null)
-                    {
-                        objAvailNode = objLoopNode;
-                        break;
-                    }
-                }
-            }
-            string strAvailExpr = objAvailNode?.Value ?? string.Empty;
-
-            if (!string.IsNullOrEmpty(strAvailExpr))
-            {
-                if (strAvailExpr.StartsWith("FixedValues("))
-                {
-                    string[] strValues = strAvailExpr.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
-                    strAvailExpr = strValues[(int) Math.Max(Math.Min(nudRating.Value, strValues.Length) - 1, 0)];
-                }
-
-                char chrLastChar = strAvailExpr[strAvailExpr.Length - 1];
-                if (chrLastChar == 'R')
-                {
-                    strAvail = LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language);
-                    // Remove the trailing character if it is "F" or "R".
-                    strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
-                }
-                else if (chrLastChar == 'F')
-                {
-                    strAvail = LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language);
-                    // Remove the trailing character if it is "F" or "R".
-                    strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
-                }
-                if (strAvailExpr[0] == '+')
-                {
-                    strPrefix = "+";
-                    strAvailExpr = strAvailExpr.Substring(1, strAvailExpr.Length - 1);
-                }
-            }
-
-            object objProcess = CommonFunctions.EvaluateInvariantXPath(strAvailExpr.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
-            lblAvail.Text = strPrefix + (blnIsSuccess ? (Convert.ToInt32(objProcess) + _intAvailModifier).ToString() : strAvailExpr) + strAvail;
+            lblAvail.Text = new AvailabilityValue(Convert.ToInt32(nudRating.Value), objXmlGear.SelectSingleNode("avail")?.Value).ToString();
             lblAvailLabel.Visible = !string.IsNullOrEmpty(lblAvail.Text);
             
             decimal decMultiplier = nudGearQty.Value / nudGearQty.Increment;
@@ -653,6 +588,8 @@ namespace Chummer
             chkBlackMarketDiscount.Checked = _setBlackMarketMaps.Contains(objXmlGear.SelectSingleNode("category")?.Value);
 
             decimal decItemCost = 0.0m;
+            bool blnIsSuccess;
+            object objProcess;
             if (chkFreeItem.Checked)
             {
                 lblCost.Text = (0.0m).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';

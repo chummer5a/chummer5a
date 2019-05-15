@@ -720,9 +720,7 @@ namespace Chummer
             public string CharacterAlias { get; set; }
             public string BuildMethod { get; set; }
             public string Essence { get; set; }
-
-            private Image _mugshot = null;
-
+            
             [JsonIgnore]
             [XmlIgnore]
             [IgnoreDataMember]
@@ -732,7 +730,7 @@ namespace Chummer
                 set => MugshotBase64 = value.ToBase64String();
             }
 
-            public string MugshotBase64 { get; set; }
+            public string MugshotBase64 { get; set; } = String.Empty;
 
             public bool Created { get; set; }
             public string SettingsFile { get; set; }
@@ -840,26 +838,21 @@ namespace Chummer
                     Essence = xmlSourceNode.SelectSingleNode("totaless")?.Value;
                     string strSettings = xmlSourceNode.SelectSingleNode("settings")?.Value ?? string.Empty;
                     SettingsFile = !File.Exists(Path.Combine(Utils.GetStartupPath, "settings", strSettings)) ? LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language) : strSettings;
-                    MugshotBase64 = xmlSourceNode.SelectSingleNode("mugshot")?.Value;
-                    if(!string.IsNullOrEmpty(MugshotBase64))
-                    {
-                        _mugshot = MugshotBase64.ToImage();
-                    }
-                    else
+                    MugshotBase64 = xmlSourceNode.SelectSingleNode("mugshot")?.Value ?? string.Empty;
+                    if(string.IsNullOrEmpty(MugshotBase64))
                     {
                         XPathNavigator xmlMainMugshotIndex = xmlSourceNode.SelectSingleNode("mainmugshotindex");
-                        if(xmlMainMugshotIndex != null && int.TryParse(xmlMainMugshotIndex.Value, out int intMainMugshotIndex) && intMainMugshotIndex >= 0)
+                        if (xmlMainMugshotIndex != null && int.TryParse(xmlMainMugshotIndex.Value, out int intMainMugshotIndex) && intMainMugshotIndex >= 0)
                         {
                             XPathNodeIterator xmlMugshotList = xmlSourceNode.Select("mugshots/mugshot");
-                            if(xmlMugshotList.Count > intMainMugshotIndex)
+                            if (xmlMugshotList.Count > intMainMugshotIndex)
                             {
                                 int intIndex = 0;
-                                foreach(XPathNavigator xmlMugshot in xmlMugshotList)
+                                foreach (XPathNavigator xmlMugshot in xmlMugshotList)
                                 {
-                                    if(intMainMugshotIndex == intIndex)
+                                    if (intMainMugshotIndex == intIndex)
                                     {
                                         MugshotBase64 = xmlMugshot.Value;
-                                        _mugshot = MugshotBase64.ToImage();
                                         break;
                                     }
 

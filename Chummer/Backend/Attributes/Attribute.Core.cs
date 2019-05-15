@@ -131,8 +131,7 @@ namespace Chummer.Backend.Attributes
                 _intBase = 0;
             if (_intKarma < 0)
                 _intKarma = 0;
-            if (_objCharacter.LastSavedVersion <= Version.Parse("5.205.66") &&
-                (Abbrev == "MAG" || Abbrev == "RES" || Abbrev == "DEP" || Abbrev == "EDG"))
+            if (Abbrev == "MAG" || Abbrev == "MAGAdept" || Abbrev == "RES" || Abbrev == "DEP" || Abbrev == "EDG")
             {
                 _enumMetatypeCategory = AttributeCategory.Special;
             }

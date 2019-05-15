@@ -474,29 +474,7 @@ namespace Chummer
             lblExtraMountLabel.Visible = cboExtraMount.Visible;
             // Avail.
             // If avail contains "F" or "R", remove it from the string so we can use the expression.
-            string strSuffix = string.Empty;
-            string strAvail = xmlAccessory.SelectSingleNode("avail")?.Value;
-            if (!string.IsNullOrWhiteSpace(strAvail))
-            {
-                char chrLastAvailChar = strAvail[strAvail.Length - 1];
-                if (chrLastAvailChar == 'F')
-                {
-                    strSuffix = LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language);
-                    strAvail = strAvail.Substring(0, strAvail.Length - 1);
-                }
-                else if (chrLastAvailChar == 'R')
-                {
-                    strSuffix = LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language);
-                    strAvail = strAvail.Substring(0, strAvail.Length - 1);
-                }
-
-                object objProcess = CommonFunctions.EvaluateInvariantXPath(strAvail.Replace("Rating", nudRating.Value.ToString(GlobalOptions.CultureInfo)), out bool blnIsSuccess);
-                lblAvail.Text = blnIsSuccess ? Convert.ToInt32(objProcess).ToString() : strAvail + strSuffix;
-            }
-            else
-            {
-                lblAvail.Text = "0";
-            }
+            lblAvail.Text = new AvailabilityValue(Convert.ToInt32(nudRating.Value), xmlAccessory.SelectSingleNode("avail")?.Value).ToString();
             lblAvailLabel.Visible = !string.IsNullOrEmpty(lblAvail.Text);
 
             if (!chkFreeItem.Checked)

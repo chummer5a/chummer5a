@@ -4992,6 +4992,14 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Drug Name</text>
     </string>
     <string>
+      <key>Message_CustomDrug_MissingFoundation</key>
+      <text>Drugs must have have a Foundation block.</text>
+    </string>
+    <string>
+      <key>MessageTitle_CustomDrug_MissingFoundation</key>
+      <text>Missing Foundation</text>
+    </string>
+    <string>
       <key>Label_CrashEffect</key>
       <text>Crash Effect:</text>
     </string>
