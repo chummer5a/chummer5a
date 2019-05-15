@@ -28,16 +28,17 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.cmdOK = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
-            this.tlpOptions = new Chummer.BufferedTableLayoutPanel();
+            this.tlpOptions = new Chummer.BufferedTableLayoutPanel(this.components);
             this.txtSettingName = new System.Windows.Forms.TextBox();
             this.lblSetting = new System.Windows.Forms.Label();
             this.lblSettingName = new System.Windows.Forms.Label();
             this.cboSetting = new Chummer.ElasticComboBox();
             this.tabOptions = new System.Windows.Forms.TabControl();
             this.tabGlobal = new System.Windows.Forms.TabPage();
-            this.tlpGlobal = new Chummer.BufferedTableLayoutPanel();
+            this.tlpGlobal = new Chummer.BufferedTableLayoutPanel(this.components);
             this.chkAllowEasterEggs = new System.Windows.Forms.CheckBox();
             this.imgSheetLanguageFlag = new System.Windows.Forms.PictureBox();
             this.chkSearchInCategoryOnly = new System.Windows.Forms.CheckBox();
@@ -61,7 +62,7 @@ namespace Chummer
             this.cboPDFParameters = new Chummer.ElasticComboBox();
             this.txtPDFAppPath = new System.Windows.Forms.TextBox();
             this.grpSelectedSourcebook = new System.Windows.Forms.GroupBox();
-            this.tlpSelectedSourcebook = new Chummer.BufferedTableLayoutPanel();
+            this.tlpSelectedSourcebook = new Chummer.BufferedTableLayoutPanel(this.components);
             this.txtPDFLocation = new System.Windows.Forms.TextBox();
             this.lblPDFLocation = new System.Windows.Forms.Label();
             this.cmdPDFLocation = new System.Windows.Forms.Button();
@@ -83,7 +84,7 @@ namespace Chummer
             this.chkCreateBackupOnCareer = new System.Windows.Forms.CheckBox();
             this.chkPrintToFileFirst = new System.Windows.Forms.CheckBox();
             this.grpCharacterDefaults = new System.Windows.Forms.GroupBox();
-            this.tableLayoutPanel7 = new Chummer.BufferedTableLayoutPanel();
+            this.tableLayoutPanel7 = new Chummer.BufferedTableLayoutPanel(this.components);
             this.cboBuildMethod = new Chummer.ElasticComboBox();
             this.cboDefaultGameplayOption = new System.Windows.Forms.ComboBox();
             this.lblEditSourcebookInfo = new System.Windows.Forms.Label();
@@ -93,7 +94,7 @@ namespace Chummer
             this.nudBrowserVersion = new System.Windows.Forms.NumericUpDown();
             this.lblBrowserVersion = new System.Windows.Forms.Label();
             this.tabCharacterOptions = new System.Windows.Forms.TabPage();
-            this.tlpCharacterOptions = new Chummer.BufferedTableLayoutPanel();
+            this.tlpCharacterOptions = new Chummer.BufferedTableLayoutPanel(this.components);
             this.treSourcebook = new System.Windows.Forms.TreeView();
             this.chkPrintNotes = new System.Windows.Forms.CheckBox();
             this.lblSourcebooksToUse = new System.Windows.Forms.Label();
@@ -119,7 +120,7 @@ namespace Chummer
             this.cmdEnableSourcebooks = new System.Windows.Forms.Button();
             this.tabKarmaCosts = new System.Windows.Forms.TabPage();
             this.tlpKarmaCosts = new System.Windows.Forms.TableLayoutPanel();
-            this.tlpKarmaCostsList = new Chummer.BufferedTableLayoutPanel();
+            this.tlpKarmaCostsList = new Chummer.BufferedTableLayoutPanel(this.components);
             this.nudKarmaMysticAdeptPowerPoint = new System.Windows.Forms.NumericUpDown();
             this.lblKarmaSpecialization = new System.Windows.Forms.Label();
             this.lblKarmaMysticAdeptPowerPoint = new System.Windows.Forms.Label();
@@ -246,7 +247,7 @@ namespace Chummer
             this.nudNuyenPerBP = new System.Windows.Forms.NumericUpDown();
             this.cmdRestoreDefaultsKarma = new System.Windows.Forms.Button();
             this.tabOptionalRules = new System.Windows.Forms.TabPage();
-            this.tlpOptionalRules = new Chummer.BufferedTableLayoutPanel();
+            this.tlpOptionalRules = new Chummer.BufferedTableLayoutPanel(this.components);
             this.cmdDecreaseCustomDirectoryLoadOrder = new System.Windows.Forms.Button();
             this.cmdIncreaseCustomDirectoryLoadOrder = new System.Windows.Forms.Button();
             this.lblCustomDataDirectoriesLabel = new System.Windows.Forms.Label();
@@ -255,7 +256,7 @@ namespace Chummer
             this.cmdRenameCustomDataDirectory = new System.Windows.Forms.Button();
             this.cmdRemoveCustomDirectory = new System.Windows.Forms.Button();
             this.tabHouseRules = new System.Windows.Forms.TabPage();
-            this.tlpHouseRules = new Chummer.BufferedTableLayoutPanel();
+            this.tlpHouseRules = new Chummer.BufferedTableLayoutPanel(this.components);
             this.chkNoArmorEncumbrance = new System.Windows.Forms.CheckBox();
             this.chkIgnoreArt = new System.Windows.Forms.CheckBox();
             this.chkExceedNegativeQualitiesLimit = new System.Windows.Forms.CheckBox();
@@ -299,11 +300,12 @@ namespace Chummer
             this.tabGitHubIssues = new System.Windows.Forms.TabPage();
             this.cmdUploadPastebin = new System.Windows.Forms.Button();
             this.tabPlugins = new System.Windows.Forms.TabPage();
-            this.bufferedTableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel();
+            this.bufferedTableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel(this.components);
             this.grpAvailablePlugins = new System.Windows.Forms.GroupBox();
             this.clbPlugins = new System.Windows.Forms.CheckedListBox();
             this.panelPluginOption = new System.Windows.Forms.Panel();
             this.flpOKCancel = new System.Windows.Forms.FlowLayoutPanel();
+            this.chkUseLoggingApplicationInsights = new System.Windows.Forms.CheckBox();
             this.tlpOptions.SuspendLayout();
             this.tabOptions.SuspendLayout();
             this.tabGlobal.SuspendLayout();
@@ -570,6 +572,7 @@ namespace Chummer
             this.tlpGlobal.Controls.Add(this.chkEnablePlugins, 4, 6);
             this.tlpGlobal.Controls.Add(this.nudBrowserVersion, 3, 15);
             this.tlpGlobal.Controls.Add(this.lblBrowserVersion, 1, 15);
+            this.tlpGlobal.Controls.Add(this.chkUseLoggingApplicationInsights, 2, 3);
             this.tlpGlobal.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpGlobal.Location = new System.Drawing.Point(9, 9);
             this.tlpGlobal.Name = "tlpGlobal";
@@ -791,11 +794,10 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.chkUseLogging.AutoSize = true;
-            this.tlpGlobal.SetColumnSpan(this.chkUseLogging, 3);
             this.chkUseLogging.Location = new System.Drawing.Point(304, 87);
             this.chkUseLogging.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkUseLogging.Name = "chkUseLogging";
-            this.chkUseLogging.Size = new System.Drawing.Size(286, 17);
+            this.chkUseLogging.Size = new System.Drawing.Size(157, 17);
             this.chkUseLogging.TabIndex = 4;
             this.chkUseLogging.Tag = "Checkbox_Options_UseLogging";
             this.chkUseLogging.Text = "Use Debug Logging";
@@ -4497,6 +4499,18 @@ namespace Chummer
             this.flpOKCancel.Size = new System.Drawing.Size(166, 23);
             this.flpOKCancel.TabIndex = 5;
             // 
+            // chkUseLoggingApplicationInsights
+            // 
+            this.chkUseLoggingApplicationInsights.AutoSize = true;
+            this.tlpGlobal.SetColumnSpan(this.chkUseLoggingApplicationInsights, 2);
+            this.chkUseLoggingApplicationInsights.Location = new System.Drawing.Point(467, 86);
+            this.chkUseLoggingApplicationInsights.Name = "chkUseLoggingApplicationInsights";
+            this.chkUseLoggingApplicationInsights.Size = new System.Drawing.Size(101, 17);
+            this.chkUseLoggingApplicationInsights.TabIndex = 55;
+            this.chkUseLoggingApplicationInsights.Text = "Upload Logging";
+            this.chkUseLoggingApplicationInsights.UseVisualStyleBackColor = true;
+            this.chkUseLoggingApplicationInsights.CheckedChanged += new System.EventHandler(this.chkUseLoggingApplicationInsights_CheckedChanged);
+            // 
             // frmOptions
             // 
             this.AcceptButton = this.cmdOK;
@@ -4901,5 +4915,6 @@ namespace Chummer
         private System.Windows.Forms.CheckBox chkAllowEasterEggs;
         private System.Windows.Forms.NumericUpDown nudBrowserVersion;
         private System.Windows.Forms.Label lblBrowserVersion;
+        private System.Windows.Forms.CheckBox chkUseLoggingApplicationInsights;
     }
 }

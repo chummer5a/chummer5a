@@ -222,6 +222,7 @@ namespace Chummer
         private static string _strPDFParameters = string.Empty;
         private static HashSet<SourcebookInfo> _lstSourcebookInfo;
         private static bool _blnUseLogging;
+        private static bool _blnUseLoggingApplicationInsights;
         private static string _strCharacterRosterPath;
 
         // Custom Data Directory information.
@@ -395,6 +396,9 @@ namespace Chummer
 
             // Whether or not the app should use logging.
             LoadBoolFromRegistry(ref _blnUseLogging, "uselogging");
+
+            //Should the App "Phone home"
+            LoadBoolFromRegistry(ref _blnUseLoggingApplicationInsights, "useloggingApplicationInsights");
 
             // Whether or not dates should include the time.
             LoadBoolFromRegistry(ref _blnDatesIncludeTime, "datesincludetime");
@@ -612,6 +616,34 @@ namespace Chummer
             }
         }
 
+        
+
+        /// <summary>
+        /// Whether or not the app should use logging.
+        /// </summary>
+        public static bool UseLoggingApplicationInsights
+        {
+            get => _blnUseLoggingApplicationInsights;
+            set
+            {
+                if (_blnUseLoggingApplicationInsights != value)
+                {
+                    _blnUseLoggingApplicationInsights = value;
+                    // Sets up logging if the option is changed during runtime
+                    if (value)
+                    {
+                        if (!LogManager.Configuration.LoggingRules.Contains(Program.MyApplicationInsightsRule))
+                            LogManager.Configuration.LoggingRules.Add(Program.MyApplicationInsightsRule);
+                    }
+                    else
+                    {
+                        if (LogManager.Configuration.LoggingRules.Contains(Program.MyApplicationInsightsRule))
+                            LogManager.Configuration.LoggingRules.Remove(Program.MyApplicationInsightsRule);
+                    }
+
+                }
+            }
+        }
         /// <summary>
         /// Whether or not dates should include the time.
         /// </summary>

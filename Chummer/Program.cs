@@ -24,7 +24,9 @@ using System.Linq;
  using System.Threading;
  using System.Windows.Forms;
 ﻿using Chummer.Backend;
+ using Microsoft.ApplicationInsights.NLogTarget;
  using NLog;
+ using NLog.Config;
 
 [assembly: CLSCompliant(true)]
 namespace Chummer
@@ -33,6 +35,24 @@ namespace Chummer
     {
         private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private const string strChummerGuid = "eb0759c1-3599-495e-8bc5-57c8b3e1b31c";
+        private static ApplicationInsightsTarget _myApplicationInsightsTarget = null;
+
+        private static ApplicationInsightsTarget MyApplicationInsightsTarget =>
+            _myApplicationInsightsTarget ?? (_myApplicationInsightsTarget = new ApplicationInsightsTarget
+            {
+                //maybe replace this with a value the user enters in the options, especially if it gets abused in the future...
+                InstrumentationKey = "012fd080-80dc-4c10-97df-4f2cf8c805d5"
+            });
+
+        private static LoggingRule _myLoggingRule = null;
+        public static LoggingRule MyApplicationInsightsRule
+        {
+            get
+            {
+                return _myLoggingRule ??
+                       (_myLoggingRule = new LoggingRule("*", LogLevel.Trace, MyApplicationInsightsTarget));
+            }
+        }
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -120,6 +140,11 @@ namespace Chummer
                         {
                             rule.EnableLoggingForLevel(LogLevel.Trace);
                         }
+                    }
+
+                    if (GlobalOptions.UseLoggingApplicationInsights)
+                    {
+                        LogManager.Configuration.LoggingRules.Add(MyApplicationInsightsRule);
                     }
                 }
                 catch (Exception e)

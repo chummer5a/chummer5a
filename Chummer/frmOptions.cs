@@ -792,7 +792,9 @@ namespace Chummer
             GlobalOptions.LiveCustomData = chkLiveCustomData.Checked;
             GlobalOptions.LiveUpdateCleanCharacterFiles = chkLiveUpdateCleanCharacterFiles.Checked;
             GlobalOptions.UseLogging = chkUseLogging.Checked;
-            if(string.IsNullOrEmpty(_strSelectedLanguage))
+            GlobalOptions.UseLoggingApplicationInsights = chkUseLoggingApplicationInsights.Checked;
+            
+            if (string.IsNullOrEmpty(_strSelectedLanguage))
             {
                 // We have this set differently because changing the selected language also changes the selected default character sheet
                 _strSelectedLanguage = GlobalOptions.DefaultLanguage;
@@ -835,6 +837,7 @@ namespace Chummer
                 objRegistry.SetValue("livecustomdata", chkLiveCustomData.Checked.ToString());
                 objRegistry.SetValue("liveupdatecleancharacterfiles", chkLiveUpdateCleanCharacterFiles.Checked.ToString());
                 objRegistry.SetValue("uselogging", chkUseLogging.Checked.ToString());
+                objRegistry.SetValue("useloggingApplicationInsights", chkUseLoggingApplicationInsights.Checked.ToString());
                 objRegistry.SetValue("language", _strSelectedLanguage);
                 objRegistry.SetValue("startupfullscreen", chkStartupFullscreen.Checked.ToString());
                 objRegistry.SetValue("singlediceroller", chkSingleDiceRoller.Checked.ToString());
@@ -1854,6 +1857,30 @@ namespace Chummer
             GlobalOptions.PluginsEnabledDic.Add(plugin.ToString(), e.NewValue == CheckState.Checked);
             OptionsChanged(sender, e);
 
+        }
+
+        private void chkUseLoggingApplicationInsights_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkUseLoggingApplicationInsights.Checked)
+            {
+                string msg = "Please use this option only, if you have previously spoken ";
+                msg += Environment.NewLine + "to a Dev on Discord and he agreed to ";
+                msg += Environment.NewLine + "take a look at your logs, because ";
+                msg += Environment.NewLine + "uploading logs costs real money for Chummer and ";
+                msg += Environment.NewLine + "should not be used as a default. ";
+                msg += Environment.NewLine + Environment.NewLine;
+                msg += "Do you really want to upload your logs?";
+                var result = MessageBox.Show(msg, "Really enable upload?", MessageBoxButtons.YesNo);
+                if (result == DialogResult.Yes)
+                {
+                    GlobalOptions.UseLoggingApplicationInsights = true;
+                }
+                else
+                {
+                    GlobalOptions.UseLoggingApplicationInsights = false;
+                    chkUseLoggingApplicationInsights.Checked = false;
+                }
+            }
         }
     }
 }
