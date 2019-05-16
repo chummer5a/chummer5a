@@ -62,10 +62,9 @@ namespace Chummer
             }
 
             _chrSuffix = strAvailExpr[strAvailExpr.Length - 1];
+            _blnAddToParent = strAvailExpr.StartsWith('+') || strAvailExpr.StartsWith('-');
             if (_chrSuffix == 'F' || _chrSuffix == 'R') strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
             object objProcess = CommonFunctions.EvaluateInvariantXPath(strAvailExpr.Replace("Rating", intRating.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
-
-            _blnAddToParent = (_chrSuffix == 'F' || _chrSuffix == 'R');
             _intValue = blnIsSuccess ? Convert.ToInt32(objProcess) : 0;
         }
 
