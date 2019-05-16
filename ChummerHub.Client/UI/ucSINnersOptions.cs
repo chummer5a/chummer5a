@@ -20,6 +20,7 @@ using System.Threading;
 using ChummerHub.Client.Model;
 using System.IO;
 using System.Windows;
+using NLog;
 using MessageBox = System.Windows.Forms.MessageBox;
 
 //using Nemiro.OAuth;
@@ -29,6 +30,7 @@ namespace ChummerHub.Client.UI
 {
     public partial class ucSINnersOptions : UserControl
     {
+        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private bool? LoginStatus = null;
         
 
@@ -80,7 +82,7 @@ namespace ChummerHub.Client.UI
                 }
                 catch(Exception e)
                 {
-                    Log.Exception(e);
+                    Log.Warn(e);
                     
                 }
                 _SINnerVisibility = new SINners.Models.SINnerVisibility()
@@ -282,7 +284,7 @@ namespace ChummerHub.Client.UI
                 }
                 catch(Exception ex)
                 {
-                    Log.Exception(ex);
+                    Log.Warn(ex);
 
                 }
                 
@@ -314,7 +316,7 @@ namespace ChummerHub.Client.UI
             }
             catch (Exception ex)
             {
-                Log.Exception(ex);
+                Log.Warn(ex);
             }
             finally
             {
@@ -349,7 +351,7 @@ namespace ChummerHub.Client.UI
                           }
                           catch(Exception ex)
                           {
-                              Log.Exception(ex);
+                              Log.Warn(ex);
                           }
                       });
             }
@@ -404,7 +406,7 @@ namespace ChummerHub.Client.UI
             }
             catch (Exception ex)
             {
-                Log.Exception(ex);
+                Log.Warn(ex);
             }
         }
 
@@ -450,12 +452,12 @@ namespace ChummerHub.Client.UI
             }
             catch(TaskCanceledException ex)
             {
-                Log.Exception(ex);
+                Log.Info(ex);
                 
             }
             catch(Exception ex)
             {
-                Log.Exception(ex);
+                Log.Warn(ex);
                 
             }
             return null;
@@ -512,7 +514,7 @@ namespace ChummerHub.Client.UI
                 {
                     string msg = "Exception while loading " + file + ":";
                     msg += Environment.NewLine + ex.ToString();
-                    Log.Warning(msg);
+                    Log.Warn(msg);
                     throw;
                 }
             }
@@ -571,7 +573,7 @@ namespace ChummerHub.Client.UI
                             }
                             catch (Exception e2)
                             {
-                                Log.Exception(e2);
+                                Log.Error(e2);
                                 Invoke(new Action(() => MessageBox.Show(e2.Message)));
                             }
                         }
@@ -580,7 +582,7 @@ namespace ChummerHub.Client.UI
             }
             catch (Exception ex)
             {
-                Log.Exception(ex); 
+                Log.Error(ex); 
                 Invoke(new Action(() => MessageBox.Show(ex.Message)));
 
             }
@@ -636,7 +638,7 @@ namespace ChummerHub.Client.UI
                                 string msg = posttask.Result.Response.ReasonPhrase + ": " + Environment.NewLine;
                                 var content = posttask.Result.Response.Content.ReadAsStringAsync().Result;
                                 msg += content;
-                                Log.Warning("SINner " + sin.Id + " not posted: " + msg);
+                                Log.Warn("SINner " + sin.Id + " not posted: " + msg);
                             }
 
                         }
@@ -644,7 +646,7 @@ namespace ChummerHub.Client.UI
                     catch (Exception ex)
                     {
 
-                        Log.Exception(ex,"Could not read file " + file.FullName + ": " );
+                        Log.Error(ex,"Could not read file " + file.FullName + ": " );
                         continue;
                     }
 
@@ -652,7 +654,7 @@ namespace ChummerHub.Client.UI
             }
             catch (Exception ex)
             {
-                Log.Exception(ex);
+                Log.Error(ex);
                 Invoke(new Action(() => MessageBox.Show(ex.Message)));
 
             }

@@ -27,11 +27,13 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Backend.Attributes;
+using NLog;
 
 namespace Chummer.Backend.Equipment
 {
     public class Drug : IHasName, IHasXmlNode, ICanSort, IHasStolenProperty, ICanRemove
     {
+        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private Guid _guiSourceID = Guid.Empty;
         private Guid _guiID;
         private string _strName = "";
@@ -823,7 +825,8 @@ namespace Chummer.Backend.Equipment
 	/// </summary>
 	public class DrugComponent : IHasName, IHasInternalId, IHasXmlNode
 	{
-	    private Guid _guidId;
+        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private Guid _guidId;
 	    private Guid _guiSourceID;
         private string _strName;
 		private string _strCategory;
@@ -924,7 +927,7 @@ namespace Chummer.Backend.Equipment
                                     break;
                                 }
                                 default:
-                                    Log.Warning(info: $"Unknown drug effect {objXmlEffect.Name} in component {strEffectName}");
+                                    Log.Warn($"Unknown drug effect {objXmlEffect.Name} in component {strEffectName}");
                                     break;
                             }
                         }

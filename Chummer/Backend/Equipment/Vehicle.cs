@@ -28,6 +28,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
+using NLog;
 
 namespace Chummer.Backend.Equipment
 {
@@ -38,6 +39,7 @@ namespace Chummer.Backend.Equipment
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     public class Vehicle : IHasInternalId, IHasName, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName, IHasMatrixConditionMonitor, IHasPhysicalConditionMonitor, IHasLocation, IHasSource, ICanSort, IHasGear, IHasStolenProperty
     {
+        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private Guid _guiID;
         private string _strName = string.Empty;
         private string _strCategory = string.Empty;
@@ -130,7 +132,7 @@ namespace Chummer.Backend.Equipment
         {
             if (!objXmlVehicle.TryGetField("id", Guid.TryParse, out _guiSourceID))
             {
-                Log.Warning(new object[] { "Missing id field for xmlnode", objXmlVehicle });
+                Log.Warn(new object[] { "Missing id field for xmlnode", objXmlVehicle });
                 Utils.BreakIfDebug();
             }
             else

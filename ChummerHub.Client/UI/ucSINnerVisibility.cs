@@ -10,12 +10,14 @@ using System.Windows.Forms;
 using Chummer;
 using Chummer.Plugins;
 using GroupControls;
+using NLog;
 using SINners.Models;
 
 namespace ChummerHub.Client.UI
 {
     public partial class ucSINnerVisibility : UserControl
     {
+        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private SINnerVisibility _mySINnerVisibility;
         public SINnerVisibility MyVisibility
         {
@@ -71,7 +73,7 @@ namespace ChummerHub.Client.UI
                 }
                 catch (Exception e)
                 {
-                    Log.Exception(e);
+                    Log.Error(e);
                     throw;
                 }
 

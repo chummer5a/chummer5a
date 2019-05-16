@@ -23,6 +23,7 @@ using System.Xml;
 using System.Xml.Serialization;
 using Microsoft.Rest;
 using System.Threading;
+using NLog;
 using Formatting = Newtonsoft.Json.Formatting;
 using MessageBox = System.Windows.MessageBox;
 using TabControl = System.Windows.Forms.TabControl;
@@ -34,6 +35,7 @@ namespace Chummer.Plugins
     //[ExportMetadata("frmCareer", "true")]
     public class PluginHandler : IPlugin
     {
+        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
         public static UploadClient MyUploadClient = null;
 
         public static frmChummerMain MainForm = null;
@@ -258,7 +260,7 @@ namespace Chummer.Plugins
             }
             catch (Exception e)
             {
-                Log.Exception(e);
+                Log.Error(e);
 #if DEBUG
                 throw;
 #endif
@@ -326,11 +328,11 @@ namespace Chummer.Plugins
                         ToolTipText = "Please log in (Options -> Plugins -> Sinners (Cloud) -> Login",
                         Tag = e
                     };
-                    Log.Warning("Online, but not logged in!");
+                    Log.Warn("Online, but not logged in!");
                 }
                 else
                 {
-                    Log.Exception(e);
+                    Log.Warn(e);
                     TreeNode node = new TreeNode("Error: " + e.Message)
                     {
                         ToolTipText = e.ToString(), Tag = e
@@ -339,7 +341,7 @@ namespace Chummer.Plugins
             }
             catch (Exception e)
             {
-                Log.Exception(e);
+                Log.Warn(e);
                 TreeNode node = new TreeNode("SINners Error: please log in") { ToolTipText = e.ToString(), Tag = e };
             }
         }
@@ -403,19 +405,19 @@ namespace Chummer.Plugins
                     {
                         ToolTipText = "Please log in (Options -> Plugins -> Sinners (Cloud) -> Login", Tag = e
                     };
-                    Log.Exception(e, "Online, but not logged in!");
+                    Log.Warn(e, "Online, but not logged in!");
                     return new List<TreeNode>() { node };
                 }
                 else
                 {
-                    Log.Exception(e);
+                    Log.Error(e);
                     TreeNode node = new TreeNode("Error: " + e.Message) {ToolTipText = e.ToString(), Tag = e};
                     return new List<TreeNode>() { node };
                 }
             }
             catch(Exception e)
             {
-                Log.Exception(e);
+                Log.Error(e);
                 TreeNode node = new TreeNode("SINners Error: please log in") {ToolTipText = e.ToString(), Tag = e};
                 var objCache = new frmCharacterRoster.CharacterCache
                 {

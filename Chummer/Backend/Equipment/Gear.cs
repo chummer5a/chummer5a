@@ -31,6 +31,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Annotations;
+using NLog;
 
 namespace Chummer.Backend.Equipment
 {
@@ -41,6 +42,7 @@ namespace Chummer.Backend.Equipment
     [DebuggerDisplay("{DisplayName(GlobalOptions.InvariantCultureInfo, GlobalOptions.DefaultLanguage)}")]
     public class Gear : IHasChildrenAndCost<Gear>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasLocation, ICanEquip, IHasSource, IHasRating, INotifyMultiplePropertyChanged, ICanSort, IHasStolenProperty
     {
+        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private Guid _guiID;
         private Guid _guiSourceID;
         private string _strName = string.Empty;
@@ -147,7 +149,7 @@ namespace Chummer.Backend.Equipment
             XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
             if (!objXmlGear.TryGetField("id", Guid.TryParse, out _guiSourceID))
             {
-                Log.Warning(new object[] { "Missing id field for armor xmlnode", objXmlGear });
+                Log.Warn(new object[] { "Missing id field for armor xmlnode", objXmlGear });
                 Utils.BreakIfDebug();
             }
             else

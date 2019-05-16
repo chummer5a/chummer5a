@@ -23,11 +23,13 @@ using System.Diagnostics;
  using System.Globalization;
 using System.Xml;
 using System.Runtime.CompilerServices;
+using NLog;
 
 namespace Chummer
 {
     internal static class XmlExtensions
     {
+        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
         //QUESTION: TrySelectField<T> that uses SelectSingleNode instead of this[node]?
 
         public delegate bool TryParseFunction<T>(string input, out T result);

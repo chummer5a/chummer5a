@@ -7,13 +7,16 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using NLog;
 
 namespace ChummerHub.Client.Backend
 {
     public class MyMessageHandler : DelegatingHandler
     {
+        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
         public MyMessageHandler()
         {
+        
             var httpClientHandler = new HttpClientHandler()
             {
                 Proxy = WebRequest.DefaultWebProxy,// new WebProxy("http://localhost:8888"),
@@ -41,17 +44,17 @@ namespace ChummerHub.Client.Backend
                 sw.Start();
                 int myCounter = requestCounter++;
                 string msg = "Process request " + myCounter + ": " + request.RequestUri;
-                Chummer.Log.Debug(msg);
+                Log.Debug((object)msg);
                 // Call the inner handler.
                 request.Headers.TryAddWithoutValidation("ContentType", "application/json");
                 var response = await base.SendAsync(request, cancellationToken);
                 msg = "Process response " + myCounter + " (" + (((double)sw.ElapsedMilliseconds)/1000) + "): " + response.StatusCode;
-                Chummer.Log.Debug(msg);
+                Log.Debug((object)msg);
                 return response;
             }
             catch(Exception e)
             {
-                Chummer.Log.Exception(e);
+                Log.Error(e);
                 throw;
             }
             

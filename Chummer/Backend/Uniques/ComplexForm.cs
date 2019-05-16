@@ -25,6 +25,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Backend.Skills;
+using NLog;
 
 namespace Chummer
 {
@@ -35,6 +36,7 @@ namespace Chummer
     [DebuggerDisplay("{DisplayNameShort(GlobalOptions.DefaultLanguage)}")]
     public class ComplexForm : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove, IHasSource
     {
+        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private Guid _guiID;
         private Guid _guiSourceID = Guid.Empty;
         private string _strName = string.Empty;
@@ -64,7 +66,7 @@ namespace Chummer
         {
             if (!objXmlComplexFormNode.TryGetField("id", Guid.TryParse, out _guiSourceID))
             {
-                Log.Warning(new object[] { "Missing id field for complex form xmlnode", objXmlComplexFormNode });
+                Log.Warn(new object[] { "Missing id field for complex form xmlnode", objXmlComplexFormNode });
                 Utils.BreakIfDebug();
             }
             objXmlComplexFormNode.TryGetField("id", Guid.TryParse, out _guiSourceID);

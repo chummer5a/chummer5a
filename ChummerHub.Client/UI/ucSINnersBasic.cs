@@ -17,12 +17,14 @@ using System.Net;
 using SINners.Models;
 using ChummerHub.Client.Backend;
 using Chummer.Plugins;
+using NLog;
 using Utils = Chummer.Utils;
 
 namespace ChummerHub.Client.UI
 {
     public partial class ucSINnersBasic : UserControl
     {
+        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
         public ucSINnersUserControl myUC { get; private set; }
 
         public ucSINnersBasic()
@@ -143,7 +145,7 @@ namespace ChummerHub.Client.UI
             }
             catch (Exception ex)
             {
-                Log.Exception(ex);
+                Log.Error(ex);
                 PluginHandler.MainForm.DoThreadSafe(() =>
                 {
                     this.bUpload.Text = "unknown Status";

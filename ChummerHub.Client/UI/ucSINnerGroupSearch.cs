@@ -20,11 +20,13 @@ using Chummer.Plugins;
 using Microsoft.Rest;
 using MessageBox = System.Windows.Forms.MessageBox;
 using Point = System.Drawing.Point;
+using NLog;
 
 namespace ChummerHub.Client.UI
 {
     public partial class ucSINnerGroupSearch : UserControl
     {
+        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
         public CharacterExtended MyCE { get; set; }
         public EventHandler<SINnerGroup> OnGroupJoinCallback = null;
 
@@ -63,7 +65,7 @@ namespace ChummerHub.Client.UI
                 }
                 catch (Exception ex)
                 {
-                    Log.Exception(ex);
+                    Log.Error(ex);
                     throw;
                 }
             }
@@ -165,7 +167,7 @@ namespace ChummerHub.Client.UI
             }
             catch (Exception ex)
             {
-                Log.Exception(ex);
+                Log.Error(ex);
                 MessageBox.Show(ex.Message);
                 throw;
             }
@@ -185,7 +187,7 @@ namespace ChummerHub.Client.UI
             }
             catch(Exception ex)
             {
-                Log.Exception(ex);
+                Log.Error(ex);
                 MessageBox.Show(ex.Message);
             }
             finally
@@ -205,7 +207,7 @@ namespace ChummerHub.Client.UI
             }
             catch(Exception e)
             {
-                Log.Exception(e);
+                Log.Error(e);
                 throw;
             }
             
@@ -231,7 +233,7 @@ namespace ChummerHub.Client.UI
             }
             catch(Exception e)
             {
-                Log.Exception(e);
+                Log.Error(e);
                 throw;
             }
             return null;
@@ -321,7 +323,7 @@ namespace ChummerHub.Client.UI
             }
             catch (Exception ex)
             {
-                Log.Exception(ex); 
+                Log.Error(ex); 
                 throw;
             }
 
@@ -343,7 +345,7 @@ namespace ChummerHub.Client.UI
                     }
                     catch (Exception e)
                     {
-                        Log.Warning("Group disbanded: "  + e.Message);
+                        Log.Warn("Group disbanded: "  + e.Message);
                         MessageBox.Show("Group " + myGroup.Groupname + " disbanded because of no members left.");
                     }
                     finally
@@ -365,7 +367,7 @@ namespace ChummerHub.Client.UI
             }
             catch (Exception e)
             {
-                Log.Exception(e);
+                Log.Error(e);
                 MessageBox.Show(e.Message.ToString());
             }
             if (!noupdate)
@@ -432,7 +434,7 @@ namespace ChummerHub.Client.UI
                     }
                     catch (Exception e)
                     {
-                        Log.Exception(e);
+                        Log.Error(e);
                         exceptionlogged = true;
                         throw;
                     }
@@ -448,7 +450,7 @@ namespace ChummerHub.Client.UI
             {
                 if (!exceptionlogged)
                 {
-                    Log.Exception(e);
+                    Log.Error(e);
                 }
 
                 throw;
@@ -499,7 +501,7 @@ namespace ChummerHub.Client.UI
                     }
                     catch (Exception exception)
                     {
-                        Log.Exception(exception);
+                        Log.Error(exception);
                         MessageBox.Show(exception.Message);
                     }
                     finally
@@ -630,7 +632,7 @@ namespace ChummerHub.Client.UI
                 }
                 catch (Exception exception)
                 {
-                    Log.Exception(exception);
+                    Log.Error(exception);
                     MessageBox.Show(exception.ToString(), "Error deleting Group", MessageBoxButtons.OK,
                         MessageBoxIcon.Error);
                 }
@@ -860,7 +862,7 @@ namespace ChummerHub.Client.UI
             }
             catch (Exception ex)
             {
-                Log.Exception(ex);
+                Log.Error(ex);
                 MessageBox.Show(ex.ToString());
             }
         }
@@ -913,7 +915,7 @@ namespace ChummerHub.Client.UI
             }
             catch (Exception ex)
             {
-                Log.Exception(ex);
+                Log.Error(ex);
                 MessageBox.Show(ex.ToString());
             }
 

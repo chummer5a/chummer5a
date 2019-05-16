@@ -13,11 +13,13 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Chummer.Plugins;
+using NLog;
 
 namespace ChummerHub.Client.Model
 {
     public class CharacterExtended
     {
+        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
         public CharacterExtended(Character character, string fileElement = null)
         {
             MyCharacter = character;
@@ -45,7 +47,7 @@ namespace ChummerHub.Client.Model
                 }
                 catch (Exception e)
                 {
-                    Log.Exception(e);
+                    Log.Error(e);
                 }
             }
 
@@ -79,7 +81,8 @@ namespace ChummerHub.Client.Model
                     JsonConvert.DeserializeObject<SINners.Models.SINnerVisibility>(Properties.Settings.Default.SINnerVisibility);
 
             if(MySINnerFile.SiNnerMetaData.Visibility?.Id == null)
-                MySINnerFile.SiNnerMetaData.Visibility.Id = Guid.NewGuid();
+                if (MySINnerFile?.SiNnerMetaData?.Visibility != null)
+                    MySINnerFile.SiNnerMetaData.Visibility.Id = Guid.NewGuid();
 
             var cache = new frmCharacterRoster.CharacterCache(character.FileName);
         
@@ -93,10 +96,6 @@ namespace ChummerHub.Client.Model
                 MySINnerIds.Add(MyCharacter.FileName, MySINnerFile.Id.Value);
                 MySINnerIds = MySINnerIds; //Save it!
             }
-            //this.MySINnerFile.MyExtendedAttributes.JsonSummary = JsonConvert.SerializeObject(cache);
-            //if ((this.MySINnerFile.MyExtendedAttributes.Id == null)
-            //    || (this.MySINnerFile.MyExtendedAttributes.Id == Guid.Empty))
-            //    this.MySINnerFile.MyExtendedAttributes.Id = Guid.NewGuid();
         }
 
         public CharacterExtended(Character character, string fileElement = null, SINner mySINnerLoading = null) : this(character, fileElement)
@@ -105,19 +104,14 @@ namespace ChummerHub.Client.Model
             {
                 var backup = this._MySINnerFile;
                 this._MySINnerFile = mySINnerLoading;
-                //if ((this._MySINnerFile.MyExtendedAttributes?.Id == null)
-                //    || (this._MySINnerFile.MyExtendedAttributes?.Id == Guid.Empty)
-                //    || (String.IsNullOrEmpty(this._MySINnerFile.MyExtendedAttributes?.JsonSummary)))
-                //{
-                //    this._MySINnerFile.MyExtendedAttributes = backup.MyExtendedAttributes;
-                //}
-                if ((this._MySINnerFile.SiNnerMetaData?.Id == null)
+                if ((this._MySINnerFile?.SiNnerMetaData?.Id == null)
                     || (this._MySINnerFile.SiNnerMetaData?.Id == Guid.Empty))
                 {
-                    this._MySINnerFile.SiNnerMetaData.Id = backup.SiNnerMetaData.Id;
+                    if (this._MySINnerFile?.SiNnerMetaData != null)
+                        this._MySINnerFile.SiNnerMetaData.Id = backup.SiNnerMetaData.Id;
                 }
 
-                if (this._MySINnerFile.SiNnerMetaData.Tags.Count() < backup.SiNnerMetaData.Tags.Count())
+                if (this._MySINnerFile?.SiNnerMetaData?.Tags?.Count() < backup?.SiNnerMetaData?.Tags?.Count())
                     this._MySINnerFile.SiNnerMetaData.Tags = backup.SiNnerMetaData.Tags;
 
             }
@@ -524,7 +518,7 @@ namespace ChummerHub.Client.Model
                     }
                     catch (Exception ex)
                     {
-                        Log.Exception(ex);
+                        Log.Error(ex);
                         throw;
                     }
                 }
@@ -548,7 +542,7 @@ namespace ChummerHub.Client.Model
             }
             catch(Exception e)
             {
-                Log.Exception(e);
+                Log.Error(e);
                 MessageBox.Show(e.ToString());
             }
             finally

@@ -19,12 +19,13 @@ using Chummer.Plugins;
 using System.IO;
 using SINners.Models;
 using System.Windows.Threading;
+using NLog;
 
 namespace ChummerHub.Client.UI
 {
     public partial class ucSINnersUserControl : UserControl
     {
-        
+        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private CharacterShared _mySINner = null;
         private ucSINnersBasic TabSINnersBasic;
 
@@ -70,7 +71,7 @@ namespace ChummerHub.Client.UI
                 }
                 catch (Exception e)
                 {
-                    Log.Exception(e);
+                    Log.Warn(e);
                 }
                 
             }
@@ -90,7 +91,7 @@ namespace ChummerHub.Client.UI
             }
             catch (Exception ex)
             {
-                Log.Exception(ex);
+                Log.Error(ex);
                 throw;
             }
         }

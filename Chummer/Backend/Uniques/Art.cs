@@ -21,6 +21,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Xml;
+using NLog;
 
 namespace Chummer
 {
@@ -30,6 +31,7 @@ namespace Chummer
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     public class Art : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove, IHasSource
     {
+        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private Guid _guiID;
         private Guid _guiSourceID;
         private SourceString _objCachedSourceDetail;
@@ -58,7 +60,7 @@ namespace Chummer
         {
             if (!objXmlArtNode.TryGetField("id", Guid.TryParse, out _guiSourceID))
             {
-                Log.Warning(new object[] { "Missing id field for xmlnode", objXmlArtNode });
+                Log.Warn(new object[] { "Missing id field for xmlnode", objXmlArtNode });
                 Utils.BreakIfDebug();
             }
             if (objXmlArtNode.TryGetStringFieldQuickly("name", ref _strName))

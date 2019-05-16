@@ -23,11 +23,13 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using NLog;
 
 namespace Chummer
 {
     public static class WinFormsExtensions
     {
+        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
         #region Controls Extensions
         /// <summary>
         /// Runs code on a WinForms control in a thread-safe manner.
@@ -39,18 +41,20 @@ namespace Chummer
         {
             try
             {
-                if (objControl?.InvokeRequired == true)
-                    objControl.Invoke(funcToRun);
+                Control myControlCopy = objControl; //to have the Object for sure, regardless of other threads
+                if ((myControlCopy != null) && (myControlCopy?.InvokeRequired == true))
+                    myControlCopy.Invoke(funcToRun);
                 else
                     funcToRun.Invoke();
             }
-            catch (ObjectDisposedException)
+            catch (ObjectDisposedException e)
             {
                 //we really don't need to care about that.
+                Log.Trace(e);
             }
             catch(Exception e)
             {
-                Log.Exception(e);
+                Log.Error(e);
 #if DEBUG
                 MessageBox.Show(e.ToString());
 #endif

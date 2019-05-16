@@ -43,11 +43,13 @@ using System.Text;
 using Chummer.Plugins;
 using System.IO.Compression;
 using System.Runtime.Remoting.Channels;
+using NLog;
 
 namespace Chummer
 {
     public sealed partial class frmChummerMain : Form
     {
+        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
 #if LEGACY
         private frmOmae _frmOmae;
 #endif

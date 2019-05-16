@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
+using NLog;
 
 namespace Chummer.Plugins
 {
@@ -37,6 +38,7 @@ namespace Chummer.Plugins
 
     public class PluginControl
     {
+        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private static CompositionContainer container = null;
         public static CompositionContainer Container { get { return container; } }
 
@@ -74,14 +76,14 @@ namespace Chummer.Plugins
                     }
                     catch (Exception e)
                     {
-                        Log.Exception(e);
+                        Log.Error(e);
                     }
                 }
                 Log.Info("Initializing Plugins finished.");
             }
             catch (Exception e)
             {
-                Log.Exception(e);
+                Log.Fatal(e);
                 throw;
             }
             
@@ -145,7 +147,7 @@ namespace Chummer.Plugins
 
                 msg += Environment.NewLine;
                 msg += e.ToString();
-                Log.Exception(e, msg);
+                Log.Error(e, msg);
             }
             catch (CompositionException e)
             {
@@ -159,7 +161,7 @@ namespace Chummer.Plugins
 
                 msg += Environment.NewLine;
                 msg += e.ToString();
-                Log.Exception(e, msg);
+                Log.Error(e, msg);
             }
             catch (Exception e)
             {
@@ -167,7 +169,7 @@ namespace Chummer.Plugins
 
                 msg += Environment.NewLine;
                 msg += e.ToString();
-                Log.Exception(e, msg);
+                Log.Error(e, msg);
             }
         }
 

@@ -29,6 +29,8 @@ using System.Windows.Forms;
 using Microsoft.Win32;
 using iTextSharp.text.pdf;
 using MersenneTwister;
+using Microsoft.ApplicationInsights.Extensibility;
+using NLog;
 
 namespace Chummer
 {
@@ -150,6 +152,7 @@ namespace Chummer
     /// </summary>
     public static class GlobalOptions
     {
+        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private static CultureInfo s_ObjLanguageCultureInfo = CultureInfo.CurrentCulture;
 
         public static string ErrorMessage { get; } = string.Empty;
@@ -220,6 +223,7 @@ namespace Chummer
         private static string _strPDFParameters = string.Empty;
         private static HashSet<SourcebookInfo> _lstSourcebookInfo;
         private static bool _blnUseLogging;
+        private static bool _blnUseLoggingApplicationInsights;
         private static string _strCharacterRosterPath;
 
         // Custom Data Directory information.
@@ -393,6 +397,9 @@ namespace Chummer
 
             // Whether or not the app should use logging.
             LoadBoolFromRegistry(ref _blnUseLogging, "uselogging");
+
+            //Should the App "Phone home"
+            LoadBoolFromRegistry(ref _blnUseLoggingApplicationInsights, "useloggingApplicationInsights");
 
             // Whether or not dates should include the time.
             LoadBoolFromRegistry(ref _blnDatesIncludeTime, "datesincludetime");
@@ -601,11 +608,41 @@ namespace Chummer
                 {
                     _blnUseLogging = value;
                     // Sets up logging if the option is changed during runtime
-                    Log.IsLoggerEnabled = value;
+                    if (value)
+                        NLog.LogManager.EnableLogging();
+                    else
+                        NLog.LogManager.DisableLogging();
+                    
                 }
             }
         }
 
+        
+
+        /// <summary>
+        /// Whether or not the app should use logging.
+        /// </summary>
+        public static bool UseLoggingApplicationInsights
+        {
+            get => _blnUseLoggingApplicationInsights;
+            set
+            {
+                if (_blnUseLoggingApplicationInsights != value)
+                {
+                    _blnUseLoggingApplicationInsights = value;
+                    // Sets up logging if the option is changed during runtime
+                    if (value)
+                    {
+                        TelemetryConfiguration.Active.DisableTelemetry = false;
+                    }
+                    else
+                    {
+                        TelemetryConfiguration.Active.DisableTelemetry = true;
+                    }
+
+                }
+            }
+        }
         /// <summary>
         /// Whether or not dates should include the time.
         /// </summary>

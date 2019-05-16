@@ -21,6 +21,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Xml;
+using NLog;
 
 namespace Chummer
 {
@@ -30,6 +31,7 @@ namespace Chummer
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     public class MartialArtManeuver : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, IHasSource
     {
+        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private Guid _guiID;
         private Guid _guiSourceID;
         private string _strName = string.Empty;
@@ -52,7 +54,7 @@ namespace Chummer
         {
             if (!objXmlManeuverNode.TryGetField("id", Guid.TryParse, out _guiSourceID))
             {
-                Log.Warning(new object[] { "Missing id field for xmlnode", objXmlManeuverNode });
+                Log.Warn(new object[] { "Missing id field for xmlnode", objXmlManeuverNode });
                 Utils.BreakIfDebug();
             }
             if (objXmlManeuverNode.TryGetStringFieldQuickly("name", ref _strName))

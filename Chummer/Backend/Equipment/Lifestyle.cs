@@ -25,6 +25,8 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
+using NLog;
+
 // ReSharper disable ConvertToAutoProperty
 
 namespace Chummer.Backend.Equipment
@@ -45,6 +47,7 @@ namespace Chummer.Backend.Equipment
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     public class Lifestyle : IHasInternalId, IHasXmlNode, IHasNotes, ICanRemove, IHasCustomName, IHasSource, ICanSort
     {
+        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
         // ReSharper disable once InconsistentNaming
         private Guid _guiID;
         // ReSharper disable once InconsistentNaming
@@ -134,7 +137,7 @@ namespace Chummer.Backend.Equipment
         {
             if (!objXmlLifestyle.TryGetField("id", Guid.TryParse, out _guiSourceID))
             {
-                Log.Warning(new object[] { "Missing id field for xmlnode", objXmlLifestyle });
+                Log.Warn(new object[] { "Missing id field for xmlnode", objXmlLifestyle });
                 Utils.BreakIfDebug();
             }
             else

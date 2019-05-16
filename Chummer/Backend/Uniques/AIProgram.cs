@@ -21,6 +21,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Xml;
+using NLog;
 
 namespace Chummer
 {
@@ -31,6 +32,7 @@ namespace Chummer
     [DebuggerDisplay("{DisplayNameShort(GlobalOptions.DefaultLanguage)}")]
     public class AIProgram : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove, IHasSource
     {
+        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private Guid _guiID;
         private Guid _guiSourceID;
         private string _strName = string.Empty;
@@ -59,7 +61,7 @@ namespace Chummer
         {
             if (!objXmlProgramNode.TryGetField("id", Guid.TryParse, out _guiSourceID))
             {
-                Log.Warning(new object[] { "Missing id field for program xmlnode", objXmlProgramNode });
+                Log.Warn(new object[] { "Missing id field for program xmlnode", objXmlProgramNode });
                 Utils.BreakIfDebug();
             }
             if (objXmlProgramNode.TryGetStringFieldQuickly("name", ref _strName))

@@ -40,6 +40,7 @@ using System.Xml.XPath;
 using Chummer.Backend.Uniques;
 using System.Xml.Serialization;
 using System.Runtime.Serialization;
+using NLog;
 
 namespace Chummer
 {
@@ -57,6 +58,7 @@ namespace Chummer
     [DebuggerDisplay("{CharacterName} ({FileName})")]
     public sealed class Character : INotifyMultiplePropertyChanged, IHasMugshots, IHasName
     {
+        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private XmlNode _oldSkillsBackup;
         private XmlNode _oldSkillGroupBackup;
 
@@ -1802,7 +1804,7 @@ namespace Chummer
                     }
                     catch (Exception e)
                     {
-                        Log.Exception(e, "Exception while writing saveFileElement for plugin " + plugin?.ToString() + ": ");
+                        Log.Warn(e, "Exception while writing saveFileElement for plugin " + plugin?.ToString() + ": ");
                     }
                    
                 }

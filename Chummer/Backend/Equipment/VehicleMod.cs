@@ -26,6 +26,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
+using NLog;
 
 namespace Chummer.Backend.Equipment
 {
@@ -35,6 +36,7 @@ namespace Chummer.Backend.Equipment
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     public class VehicleMod : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanEquip, IHasSource, IHasRating, ICanSort, IHasStolenProperty
     {
+        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private Guid _guiID;
         private Guid _guiSourceID;
         private string _strName = string.Empty;
@@ -137,7 +139,7 @@ namespace Chummer.Backend.Equipment
             if (objXmlMod == null) Utils.BreakIfDebug();
             if (!objXmlMod.TryGetField("id", Guid.TryParse, out _guiSourceID))
             {
-                Log.Warning(new object[] { "Missing id field for xmlnode", objXmlMod });
+                Log.Warn(new object[] { "Missing id field for xmlnode", objXmlMod });
                 Utils.BreakIfDebug();
             }
             else
