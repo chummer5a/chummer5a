@@ -93,6 +93,7 @@ namespace Chummer
             this.chkEnablePlugins = new System.Windows.Forms.CheckBox();
             this.nudBrowserVersion = new System.Windows.Forms.NumericUpDown();
             this.lblBrowserVersion = new System.Windows.Forms.Label();
+            this.chkUseLoggingApplicationInsights = new System.Windows.Forms.CheckBox();
             this.tabCharacterOptions = new System.Windows.Forms.TabPage();
             this.tlpCharacterOptions = new Chummer.BufferedTableLayoutPanel(this.components);
             this.treSourcebook = new System.Windows.Forms.TreeView();
@@ -305,7 +306,6 @@ namespace Chummer
             this.clbPlugins = new System.Windows.Forms.CheckedListBox();
             this.panelPluginOption = new System.Windows.Forms.Panel();
             this.flpOKCancel = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkUseLoggingApplicationInsights = new System.Windows.Forms.CheckBox();
             this.tlpOptions.SuspendLayout();
             this.tabOptions.SuspendLayout();
             this.tabGlobal.SuspendLayout();
@@ -802,7 +802,7 @@ namespace Chummer
             this.chkUseLogging.Tag = "Checkbox_Options_UseLogging";
             this.chkUseLogging.Text = "Use Debug Logging";
             this.chkUseLogging.UseVisualStyleBackColor = true;
-            this.chkUseLogging.CheckedChanged += new System.EventHandler(this.OptionsChanged);
+            this.chkUseLogging.CheckedChanged += new System.EventHandler(this.ChkUseLogging_CheckedChanged);
             // 
             // chkAutomaticUpdate
             // 
@@ -1415,6 +1415,18 @@ namespace Chummer
             this.lblBrowserVersion.TabIndex = 53;
             this.lblBrowserVersion.Tag = "Label_Options_BrowserVersion";
             this.lblBrowserVersion.Text = "Browser Engine Version";
+            // 
+            // chkUseLoggingApplicationInsights
+            // 
+            this.chkUseLoggingApplicationInsights.AutoSize = true;
+            this.tlpGlobal.SetColumnSpan(this.chkUseLoggingApplicationInsights, 2);
+            this.chkUseLoggingApplicationInsights.Location = new System.Drawing.Point(467, 86);
+            this.chkUseLoggingApplicationInsights.Name = "chkUseLoggingApplicationInsights";
+            this.chkUseLoggingApplicationInsights.Size = new System.Drawing.Size(101, 17);
+            this.chkUseLoggingApplicationInsights.TabIndex = 55;
+            this.chkUseLoggingApplicationInsights.Text = "Upload Logging";
+            this.chkUseLoggingApplicationInsights.UseVisualStyleBackColor = true;
+            this.chkUseLoggingApplicationInsights.CheckedChanged += new System.EventHandler(this.chkUseLoggingApplicationInsights_CheckedChanged);
             // 
             // tabCharacterOptions
             // 
@@ -4498,18 +4510,6 @@ namespace Chummer
             this.flpOKCancel.Name = "flpOKCancel";
             this.flpOKCancel.Size = new System.Drawing.Size(166, 23);
             this.flpOKCancel.TabIndex = 5;
-            // 
-            // chkUseLoggingApplicationInsights
-            // 
-            this.chkUseLoggingApplicationInsights.AutoSize = true;
-            this.tlpGlobal.SetColumnSpan(this.chkUseLoggingApplicationInsights, 2);
-            this.chkUseLoggingApplicationInsights.Location = new System.Drawing.Point(467, 86);
-            this.chkUseLoggingApplicationInsights.Name = "chkUseLoggingApplicationInsights";
-            this.chkUseLoggingApplicationInsights.Size = new System.Drawing.Size(101, 17);
-            this.chkUseLoggingApplicationInsights.TabIndex = 55;
-            this.chkUseLoggingApplicationInsights.Text = "Upload Logging";
-            this.chkUseLoggingApplicationInsights.UseVisualStyleBackColor = true;
-            this.chkUseLoggingApplicationInsights.CheckedChanged += new System.EventHandler(this.chkUseLoggingApplicationInsights_CheckedChanged);
             // 
             // frmOptions
             // 

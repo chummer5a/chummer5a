@@ -27,6 +27,7 @@ using System.Net;
 #endif
 using Application = System.Windows.Forms.Application;
 using System.Text;
+using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.Win32;
 
 namespace Chummer
@@ -1353,6 +1354,7 @@ namespace Chummer
             chkLiveUpdateCleanCharacterFiles.Checked = GlobalOptions.LiveUpdateCleanCharacterFiles;
             chkUseLogging.Checked = GlobalOptions.UseLogging;
             chkUseLoggingApplicationInsights.Checked = GlobalOptions.UseLoggingApplicationInsights;
+            chkUseLoggingApplicationInsights.Enabled = chkUseLogging.Checked;
             chkLifeModule.Checked = GlobalOptions.LifeModuleEnabled;
             chkOmaeEnabled.Checked = GlobalOptions.OmaeEnabled;
             chkPreferNightlyBuilds.Checked = GlobalOptions.PreferNightlyBuilds;
@@ -1888,6 +1890,15 @@ namespace Chummer
             {
                 GlobalOptions.UseLoggingApplicationInsights = false;
             }
+        }
+
+        private void ChkUseLogging_CheckedChanged(object sender, EventArgs e)
+        {
+            if (this.chkUseLogging.Checked)
+                this.chkUseLoggingApplicationInsights.Enabled = true;
+            else
+                this.chkUseLoggingApplicationInsights.Enabled = false;
+            OptionsChanged(sender, e);
         }
     }
 }

@@ -323,6 +323,7 @@
     <Compile Include="frmLoading.Designer.cs">
       <DependentUpon>frmLoading.cs</DependentUpon>
     </Compile>
+    <Compile Include="helpers\Application Insights\CustomTelemetryInitializer.cs" />
     <Compile Include="helpers\BufferedTableLayoutPanel.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -341,6 +342,7 @@
     <Compile Include="helpers\LabelWithToolTip.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="helpers\Application Insights\LiveStreamProvider.cs" />
     <Compile Include="helpers\NegateBinding.cs" />
     <Compile Include="helpers\NumericUpDownEx.cs">
       <SubType>Component</SubType>

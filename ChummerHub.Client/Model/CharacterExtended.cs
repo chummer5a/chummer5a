@@ -96,10 +96,6 @@ namespace ChummerHub.Client.Model
                 MySINnerIds.Add(MyCharacter.FileName, MySINnerFile.Id.Value);
                 MySINnerIds = MySINnerIds; //Save it!
             }
-            //this.MySINnerFile.MyExtendedAttributes.JsonSummary = JsonConvert.SerializeObject(cache);
-            //if ((this.MySINnerFile.MyExtendedAttributes.Id == null)
-            //    || (this.MySINnerFile.MyExtendedAttributes.Id == Guid.Empty))
-            //    this.MySINnerFile.MyExtendedAttributes.Id = Guid.NewGuid();
         }
 
         public CharacterExtended(Character character, string fileElement = null, SINner mySINnerLoading = null) : this(character, fileElement)
@@ -108,12 +104,6 @@ namespace ChummerHub.Client.Model
             {
                 var backup = this._MySINnerFile;
                 this._MySINnerFile = mySINnerLoading;
-                //if ((this._MySINnerFile.MyExtendedAttributes?.Id == null)
-                //    || (this._MySINnerFile.MyExtendedAttributes?.Id == Guid.Empty)
-                //    || (String.IsNullOrEmpty(this._MySINnerFile.MyExtendedAttributes?.JsonSummary)))
-                //{
-                //    this._MySINnerFile.MyExtendedAttributes = backup.MyExtendedAttributes;
-                //}
                 if ((this._MySINnerFile?.SiNnerMetaData?.Id == null)
                     || (this._MySINnerFile.SiNnerMetaData?.Id == Guid.Empty))
                 {

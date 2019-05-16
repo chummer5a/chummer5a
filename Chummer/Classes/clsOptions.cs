@@ -29,6 +29,7 @@ using System.Windows.Forms;
 using Microsoft.Win32;
 using iTextSharp.text.pdf;
 using MersenneTwister;
+using Microsoft.ApplicationInsights.Extensibility;
 using NLog;
 
 namespace Chummer
@@ -632,13 +633,11 @@ namespace Chummer
                     // Sets up logging if the option is changed during runtime
                     if (value)
                     {
-                        //if (!LogManager.Configuration.LoggingRules.Contains(Program.MyApplicationInsightsRule))
-                        //    LogManager.Configuration.LoggingRules.Add(Program.MyApplicationInsightsRule);
+                        TelemetryConfiguration.Active.DisableTelemetry = false;
                     }
                     else
                     {
-                        //if (LogManager.Configuration.LoggingRules.Contains(Program.MyApplicationInsightsRule))
-                        //    LogManager.Configuration.LoggingRules.Remove(Program.MyApplicationInsightsRule);
+                        TelemetryConfiguration.Active.DisableTelemetry = true;
                     }
 
                 }
