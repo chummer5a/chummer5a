@@ -81,6 +81,12 @@ namespace Chummer.Plugins
                 }
                 Log.Info("Initializing Plugins finished.");
             }
+            catch(System.Security.SecurityException e)
+            {
+                string msg = "Well, the Plugin wanted to do something that requires Admin rights. Let's just ignore this: " + Environment.NewLine + Environment.NewLine;
+                msg += e.ToString();
+                Log.Warn(e, msg);
+            }
             catch (Exception e)
             {
                 Log.Fatal(e);
@@ -137,6 +143,14 @@ namespace Chummer.Plugins
             {
                 this.Initialize();
             }
+            catch(System.Security.SecurityException e)
+            {
+                string msg = "Well, something went wrong probably because we are not Admins. Let's just ignore it and move on." + Environment.NewLine + Environment.NewLine;
+                Console.WriteLine(msg + e.Message);
+                System.Diagnostics.Trace.TraceWarning(msg + e.Message);
+                return;
+            }
+
             catch (ReflectionTypeLoadException e)
             {
                 string msg = "Exception loading plugins: " + Environment.NewLine;

@@ -307,9 +307,6 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="libman.json" />
-    <Content Include="NLog.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <None Include="packages.config" />
     <None Include="Properties\DataSources\ChummerHub.Client.UI.SINnerResponseUI.datasource" />
     <None Include="Properties\DataSources\SINners.Models.Tag.datasource" />
