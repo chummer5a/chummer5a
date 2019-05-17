@@ -75,11 +75,7 @@ namespace Chummer
 
 
                 sw.TaskEnd("fixcwd");
-                //Log exceptions that is caught. Wanting to know about this cause of performance
-                AppDomain.CurrentDomain.FirstChanceException += (sender, e) =>
-                {
-                    //Console.WriteLine(e.Exception.ToString());
-                };
+                
                 AppDomain.CurrentDomain.FirstChanceException += ExceptionHeatmap.OnException;
 
                 sw.TaskEnd("appdomain 2");
@@ -158,7 +154,7 @@ namespace Chummer
                         ApplicationInsightsTelemetryClient.Context.Location.Ip = GetLocalIPAddress();
                         TelemetryConfiguration.Active.TelemetryInitializers.Add(new CustomTelemetryInitializer());
                         //for now lets disable live view. We may make another GlobalOption to enable it at a later stage...
-                        //var live = new LiveStreamProvider(ApplicationInsightsConfig);
+                        var live = new LiveStreamProvider(ApplicationInsightsConfig);
                         //live.Enable();
 
                         // Log a page view:
@@ -166,6 +162,7 @@ namespace Chummer
                         pvt.Properties.Add("version", System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString());
                         pvt.Properties.Add("parameters", Environment.CommandLine);
                         ApplicationInsightsTelemetryClient.TrackPageView(pvt);
+                        
                     }
                     else
                     {

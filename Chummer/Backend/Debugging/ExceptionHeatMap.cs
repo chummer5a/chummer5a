@@ -32,6 +32,7 @@ namespace Chummer.Backend
 
         public void OnException(object sender, FirstChanceExceptionEventArgs e)
         {
+            Microsoft.ApplicationInsights.Metric mt = null;
             //Notes down the line number of every first chance exception.
             //Then counts the occurences. Should make it easier to find what throws the most exceptions
             StackTrace trace = new StackTrace(e.Exception, true);
@@ -42,7 +43,25 @@ namespace Chummer.Backend
             // In theory shouldn't mask any existing issues?
             if (frame == null) return;
             string heat = $"{frame.GetFileName()}:{frame.GetFileLineNumber()}";
-
+            mt = Program.ApplicationInsightsTelemetryClient?.GetMetric("Linenumber", "Filename");
+            if (mt != null)
+            {
+                StackFrame tempframe = frame;
+                int countparent = 0;
+                int line = frame.GetFileLineNumber();
+                string file = frame.GetFileName();
+                while (tempframe != null && String.IsNullOrEmpty(file))
+                {
+                    tempframe = trace.GetFrame(countparent++);
+                    if (tempframe != null)
+                    {
+                        line = tempframe.GetFileLineNumber();
+                        file = tempframe.GetFileName();
+                    }
+                }
+                if (!String.IsNullOrEmpty(file))
+                    mt.TrackValue(line, file);
+            }
             if (_map.TryGetValue(heat, out int intTmp))
             {
                 _map[heat] += intTmp + 1;
@@ -51,6 +70,7 @@ namespace Chummer.Backend
             {
                 _map.TryAdd(heat, 1);
             }
+            return;
         }
 
         public string GenerateInfo()
