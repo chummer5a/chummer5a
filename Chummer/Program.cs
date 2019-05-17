@@ -157,8 +157,10 @@ namespace Chummer
                             .GetExecutingAssembly().GetName().Version.ToString();
                         ApplicationInsightsTelemetryClient.Context.Location.Ip = GetLocalIPAddress();
                         TelemetryConfiguration.Active.TelemetryInitializers.Add(new CustomTelemetryInitializer());
-                        var live = new LiveStreamProvider(ApplicationInsightsConfig);
-                        live.Enable();
+                        //for now lets disable live view. We may make another GlobalOption to enable it at a later stage...
+                        //var live = new LiveStreamProvider(ApplicationInsightsConfig);
+                        //live.Enable();
+
                         // Log a page view:
                         PageViewTelemetry pvt = new PageViewTelemetry("Program.Main()");
                         pvt.Properties.Add("version", System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString());
