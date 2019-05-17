@@ -1868,15 +1868,20 @@ namespace Chummer
                 return;
             if (chkUseLoggingApplicationInsights.Checked)
             {
-                string msg = "Please use this option only, if you have previously spoken ";
-                msg += Environment.NewLine + "to a Dev on Discord and he agreed to ";
-                msg += Environment.NewLine + "take a look at your logs, because ";
-                msg += Environment.NewLine + "uploading logs costs real money for Chummer and ";
-                msg += Environment.NewLine + "should not be used as a default. ";
+                //string msg = "Please use this option only, if you have previously spoken ";
+                //msg += Environment.NewLine + "to a Dev on Discord and he agreed to ";
+                //msg += Environment.NewLine + "take a look at your logs, because ";
+                //msg += Environment.NewLine + "uploading logs costs real money for Chummer and ";
+                //msg += Environment.NewLine + "should not be used as a default. ";
+                //msg += Environment.NewLine + Environment.NewLine;
+                string msg = "Thank you for sharing logs and metrics";
+                msg += Environment.NewLine + "with the Chummer Dev-Team. You can";
+                msg += Environment.NewLine + "help us gain insight of what needs to";
+                msg += Environment.NewLine + "be improved and adressed most.";
                 msg += Environment.NewLine + Environment.NewLine;
-                msg += "Do you really want to upload your logs?";
-                var result = MessageBox.Show(msg, "Really enable upload?", MessageBoxButtons.YesNo);
-                if (result == DialogResult.Yes)
+                msg += "Do you want to share your logs?";
+                var result = MessageBox.Show(msg, "Really enable upload?", MessageBoxButtons.OKCancel);
+                if (result == DialogResult.OK)
                 {
                     GlobalOptions.UseLoggingApplicationInsights = true;
                 }
