@@ -2784,7 +2784,7 @@ namespace Chummer.Backend.Equipment
                         decMultiplier = _objCharacter.Improvements
                             .Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.CyberwareEssCost && objImprovement.Enabled)
                             .Aggregate(decMultiplier, (current, objImprovement) => current - (1m - Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100m));
-                        decESSMultiplier -= 1.0m - decMultiplier;
+                        decESSMultiplier = Math.Floor( (decESSMultiplier - 1.0m + decMultiplier) * 10.0m) / 10;
                     }
                     if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.CyberwareTotalEssMultiplier) != 0)
                     {
@@ -2803,7 +2803,7 @@ namespace Chummer.Backend.Equipment
                         decMultiplier = _objCharacter.Improvements
                             .Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.BiowareEssCost && objImprovement.Enabled)
                             .Aggregate(decMultiplier, (current, objImprovement) => current - (1m - Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100m));
-                        decESSMultiplier -= 1.0m - decMultiplier;
+                        decESSMultiplier = Math.Floor( (decESSMultiplier - 1.0m + decMultiplier) * 10.0m) / 10; // round down to nearest 0.1 as per biocompatibility text
                     }
                     if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.BiowareTotalEssMultiplier) != 0)
                     {
