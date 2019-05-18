@@ -21,12 +21,15 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+using NLog;
 
 namespace Chummer
 {
     public static class WinFormsExtensions
     {
+        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
         #region Controls Extensions
         /// <summary>
         /// Runs code on a WinForms control in a thread-safe manner.
@@ -38,15 +41,20 @@ namespace Chummer
         {
             try
             {
-                if (objControl?.InvokeRequired == true)
-                    objControl.Invoke(funcToRun);
+                Control myControlCopy = objControl; //to have the Object for sure, regardless of other threads
+                if ((myControlCopy != null) && (myControlCopy?.InvokeRequired == true))
+                    myControlCopy.Invoke(funcToRun);
                 else
                     funcToRun.Invoke();
             }
+            catch (ObjectDisposedException e)
+            {
+                //we really don't need to care about that.
+                Log.Trace(e);
+            }
             catch(Exception e)
             {
-                System.Diagnostics.Trace.TraceError(e.Message, e);
-                Console.WriteLine(e.ToString());
+                Log.Error(e);
 #if DEBUG
                 MessageBox.Show(e.ToString());
 #endif
@@ -310,7 +318,7 @@ namespace Chummer
             if (treTree == null || string.IsNullOrEmpty(strGuid) || strGuid.IsEmptyGuid()) return null;
             foreach (TreeNode objNode in treTree.Nodes)
             {
-                if (objNode.Tag is IHasInternalId node && node.InternalId == strGuid || objNode.Tag.ToString() == strGuid)
+                if (objNode?.Tag != null &&  objNode.Tag is IHasInternalId node && node.InternalId == strGuid || objNode?.Tag?.ToString() == strGuid)
                     return objNode;
 
                 if (!blnDeep) continue;

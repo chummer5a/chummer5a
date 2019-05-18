@@ -20,6 +20,7 @@ using System;
 using System.Diagnostics;
 using System.Windows.Forms;
 using System.Xml;
+using NLog;
 
 namespace Chummer
 {
@@ -27,6 +28,8 @@ namespace Chummer
     [DebuggerDisplay("{DisplayNameShort(GlobalOptions.DefaultLanguage)}")]
     public class MentorSpirit : IHasInternalId, IHasName, IHasXmlNode, IHasSource
     {
+
+        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private Guid _guiID;
         private string _strName = string.Empty;
         private string _strAdvantage = string.Empty;
@@ -39,7 +42,7 @@ namespace Chummer
         private XmlNode _nodChoice1;
         private XmlNode _nodChoice2;
         private Improvement.ImprovementType _eMentorType;
-        private Guid _sourceID;
+        private Guid _guiSourceID;
         private readonly Character _objCharacter;
         private bool _blnMentorMask;
 
@@ -68,8 +71,11 @@ namespace Chummer
             xmlMentor.TryGetStringFieldQuickly("page", ref _strPage);
             if (!xmlMentor.TryGetStringFieldQuickly("altnotes", ref _strNotes))
                 xmlMentor.TryGetStringFieldQuickly("notes", ref _strNotes);
-            if (xmlMentor.TryGetField("id", Guid.TryParse, out Guid guiTemp))
-                _sourceID = guiTemp;
+            if (!xmlMentor.TryGetField("id", Guid.TryParse, out _guiSourceID))
+            {
+                Log.Warn(new object[] { "Missing id field for xmlnode", xmlMentor });
+                Utils.BreakIfDebug();
+            }
 
             // Build the list of advantages gained through the Mentor Spirit.
             if (!xmlMentor.TryGetStringFieldQuickly("altadvantage", ref _strAdvantage))
@@ -167,7 +173,8 @@ namespace Chummer
         public void Save(XmlTextWriter objWriter)
         {
             objWriter.WriteStartElement("mentorspirit");
-            objWriter.WriteElementString("guid", _guiID.ToString("D"));
+            objWriter.WriteElementString("sourceid", SourceIDString);
+            objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("mentortype", _eMentorType.ToString());
             objWriter.WriteElementString("extra", _strExtra);
@@ -206,7 +213,19 @@ namespace Chummer
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
-            objNode.TryGetField("guid", Guid.TryParse, out _guiID);
+            if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
+            {
+                _guiID = Guid.NewGuid();
+            }
+            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+            {
+                XmlNode node = GetNode(GlobalOptions.Language);
+                if (node?.TryGetGuidFieldQuickly("id", ref _guiSourceID) == false)
+                {
+                    XmlNode objNewNode = XmlManager.Load("qualities.xml").SelectSingleNode("/chummer/mentors/mentor[name = \"" + Name + "\"]");
+                    objNewNode?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                }
+            }
             if (objNode.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
             if (objNode["mentortype"] != null)
@@ -224,12 +243,6 @@ namespace Chummer
             _nodChoice1 = objNode["choice1"];
             _nodChoice2 = objNode["choice2"];
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
-
-            if (!objNode.TryGetField("id", Guid.TryParse, out _sourceID))
-            {
-                XmlNode objNewNode = XmlManager.Load("qualities.xml").SelectSingleNode("/chummer/mentors/mentor[name = \"" + Name + "\"]");
-                objNewNode?.TryGetField("id", Guid.TryParse, out _sourceID);
-            }
         }
 
         /// <summary>
@@ -257,7 +270,16 @@ namespace Chummer
 
         #region Properties
 
-        public Guid SourceID { get { return _guiID; } }
+
+        /// <summary>
+        /// Identifier of the object within data files.
+        /// </summary>
+        public Guid SourceID => _guiSourceID;
+
+        /// <summary>
+        /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
+        /// </summary>
+        public string SourceIDString => _guiSourceID.ToString("D");
 
         /// <summary>
         /// Name of the Mentor Spirit or Paragon.
@@ -387,7 +409,7 @@ namespace Chummer
         /// <summary>
         /// Guid of the Xml Node containing data on this Mentor Spirit or Paragon.
         /// </summary>
-        public string strSourceID => _sourceID.Equals(Guid.Empty) ? string.Empty : _sourceID.ToString("D");
+        public string strSourceID => _guiSourceID.Equals(Guid.Empty) ? string.Empty : _guiSourceID.ToString("D");
 
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
@@ -401,7 +423,10 @@ namespace Chummer
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load(_eMentorType == Improvement.ImprovementType.MentorSpirit ? "mentors.xml" : "paragons.xml", strLanguage).SelectSingleNode("/chummer/mentors/mentor[id = \"" + _sourceID.ToString("D") + "\"]");
+                _objCachedMyXmlNode = XmlManager.Load(_eMentorType == Improvement.ImprovementType.MentorSpirit ? "mentors.xml" : "paragons.xml", strLanguage)
+                    .SelectSingleNode(SourceID == Guid.Empty
+                        ? $"/chummer/mentors/mentor[name = \"{Name}\"]"
+                        : $"/chummer/mentors/mentor[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

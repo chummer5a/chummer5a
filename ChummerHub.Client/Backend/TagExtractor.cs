@@ -77,6 +77,8 @@ namespace ChummerHub.Client.Backend
                                 if (!childprop.Any())
                                     throw new ArgumentOutOfRangeException("Could not find property " + classprop.Item1.ListInstanceNameFromProperty + " on instance of type " + obj.GetType().ToString() + ".");
                                 tag.TagValue += childprop.FirstOrDefault().GetValue(obj);
+                                if (Double.TryParse(tag.TagValue, out double outdouble))
+                                    tag.TagValueDouble = outdouble;
                             }
                             if (String.IsNullOrEmpty(tag.TagName))
                                 tag.TagName = obj.ToString();
@@ -120,6 +122,8 @@ namespace ChummerHub.Client.Backend
                                 if (!childprop.Any())
                                     throw new ArgumentOutOfRangeException("Could not find property " + classprop.Item1.ListInstanceNameFromProperty + " on instance of type " + item.GetType().ToString() + ".");
                                 tag.TagValue += childprop.FirstOrDefault().GetValue(item);
+                                if (Double.TryParse(tag.TagValue, out double outdouble))
+                                    tag.TagValueDouble = outdouble;
                             }
                             if (String.IsNullOrEmpty(tag.TagName))
                                 tag.TagName = item.ToString();
@@ -187,6 +191,8 @@ namespace ChummerHub.Client.Backend
                     instanceTag.TagName = includeprop;
                     SetTagTypeEnumFromCLRType(instanceTag, obj.GetType());
                     instanceTag.TagValue = includeInstance.ToString();
+                    if (Double.TryParse(tag.TagValue, out double outdouble))
+                        tag.TagValueDouble = outdouble;
                 }
             }
             
@@ -244,12 +250,16 @@ namespace ChummerHub.Client.Backend
                 tag.TagName += String.Format("{0}", addObject);
             }
             tag.TagValue = String.Format("{0}", tag.MyRuntimeObject);
+            if (Double.TryParse(tag.TagValue, out double outdouble1))
+                tag.TagValueDouble = outdouble1;
             Type typeValue = tag.MyRuntimeObject.GetType();
             SetTagTypeEnumFromCLRType(tag, typeValue);
             if(!String.IsNullOrEmpty(attribute.TagValueFromProperty))
             {
                 var addObject = t.GetProperty(attribute.TagValueFromProperty).GetValue(prop.Item3, null);
                 tag.TagValue = String.Format("{0}", addObject);
+                if (Double.TryParse(tag.TagValue, out double outdouble2))
+                    tag.TagValueDouble = outdouble2;
             }
             proptaglist.Add(tag);
             if(prop.Item1 != null)
@@ -297,14 +307,20 @@ namespace ChummerHub.Client.Backend
 
                 tag.TagType = "other";
             }
-            if(tag.TagValue == typeValue.FullName)
+
+            if (tag.TagValue == typeValue.FullName)
+            {
                 tag.TagValue = "";
+                tag.TagValueDouble = null;
+            }
+
             if((typeof(IEnumerable).IsAssignableFrom(typeValue)
                 || typeof(ICollection).IsAssignableFrom(typeValue))
                 && !typeof(string).IsAssignableFrom(typeValue))
             {
                 tag.TagType = "list";
                 tag.TagValue = "";
+                tag.TagValueDouble = null;
             }
         }
 
@@ -381,6 +397,9 @@ namespace ChummerHub.Client.Backend
                 
                     tag.MyRuntimeObject = propValue1;
                     tag.TagValue = String.Format("{0}", propValue1);
+                    if (Double.TryParse(tag.TagValue, out double outdouble))
+                        tag.TagValueDouble = outdouble;
+
                     if (level > 0)
                     {
                         var childtags = ExtractTags(propValue, level-1, tag);

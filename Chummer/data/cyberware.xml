@@ -1168,11 +1168,6 @@
         <category>Nanocybernetics</category>
       </allowsubsystems>
       <selectside />
-      <bonus>
-        <conditionmonitor>
-          <physical>1</physical>
-        </conditionmonitor>
-      </bonus>
       <forbidden>
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
@@ -1206,11 +1201,6 @@
         <category>Nanocybernetics</category>
       </allowsubsystems>
       <selectside />
-      <bonus>
-        <conditionmonitor>
-          <physical>1</physical>
-        </conditionmonitor>
-      </bonus>
       <forbidden>
         <oneof>
           <cyberware>Smart Articulation</cyberware>
@@ -1242,16 +1232,25 @@
         <category>Nanocybernetics</category>
       </allowsubsystems>
       <selectside />
-      <bonus>
-        <conditionmonitor>
-          <physical>1</physical>
-        </conditionmonitor>
-      </bonus>
       <forbidden>
         <oneof>
           <cyberware>Smart Articulation</cyberware>
         </oneof>
       </forbidden>
+      <pairbonus>
+        <conditionmonitor>
+          <physical>1</physical>
+        </conditionmonitor>
+      </pairbonus>
+      <pairinclude>
+        <name>Obvious Lower Leg</name>
+        <name>Synthetic Lower Arm</name>
+        <name>Synthetic Lower Leg</name>
+        <name>Obvious Lower Leg, Modular</name>
+        <name>Obvious Lower Arm, Modular</name>
+        <name>Synthetic Lower Arm, Modular</name>
+        <name>Synthetic Lower Leg, Modular</name>
+      </pairinclude>
     </cyberware>
     <cyberware>
       <id>f769235c-c295-4c31-9843-e9d413d77adf</id>
@@ -1278,17 +1277,26 @@
         <category>Nanocybernetics</category>
       </allowsubsystems>
       <selectside />
-      <bonus>
-        <conditionmonitor>
-          <physical>1</physical>
-        </conditionmonitor>
-      </bonus>
       <forbidden>
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
           <quality>Celerity</quality>
         </oneof>
       </forbidden>
+      <pairbonus>
+        <conditionmonitor>
+          <physical>1</physical>
+        </conditionmonitor>
+      </pairbonus>
+      <pairinclude>
+        <name>Obvious Lower Arm</name>
+        <name>Synthetic Lower Arm</name>
+        <name>Synthetic Lower Leg</name>
+        <name>Obvious Lower Leg, Modular</name>
+        <name>Obvious Lower Arm, Modular</name>
+        <name>Synthetic Lower Arm, Modular</name>
+        <name>Synthetic Lower Leg, Modular</name>
+      </pairinclude>
     </cyberware>
     <cyberware>
       <id>48e490fb-fe6a-482c-a47d-40cb04985897</id>
@@ -1464,11 +1472,6 @@
         <category>Nanocybernetics</category>
       </allowsubsystems>
       <selectside />
-      <bonus>
-        <conditionmonitor>
-          <physical>1</physical>
-        </conditionmonitor>
-      </bonus>
       <forbidden>
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
@@ -1502,11 +1505,6 @@
         <category>Nanocybernetics</category>
       </allowsubsystems>
       <selectside />
-      <bonus>
-        <conditionmonitor>
-          <physical>1</physical>
-        </conditionmonitor>
-      </bonus>
       <forbidden>
         <oneof>
           <cyberware>Smart Articulation</cyberware>
@@ -1538,16 +1536,25 @@
         <category>Nanocybernetics</category>
       </allowsubsystems>
       <selectside />
-      <bonus>
-        <conditionmonitor>
-          <physical>1</physical>
-        </conditionmonitor>
-      </bonus>
       <forbidden>
         <oneof>
           <cyberware>Smart Articulation</cyberware>
         </oneof>
       </forbidden>
+      <pairbonus>
+        <conditionmonitor>
+          <physical>1</physical>
+        </conditionmonitor>
+      </pairbonus>
+      <pairinclude>
+        <name>Obvious Lower Leg</name>
+        <name>Obvious Lower Arm</name>
+        <name>Synthetic Lower Leg</name>
+        <name>Obvious Lower Leg, Modular</name>
+        <name>Obvious Lower Arm, Modular</name>
+        <name>Synthetic Lower Arm, Modular</name>
+        <name>Synthetic Lower Leg, Modular</name>
+      </pairinclude>
     </cyberware>
     <cyberware>
       <id>d3a7e6f2-cb8c-42c0-9aef-c88b26648859</id>
@@ -1574,11 +1581,6 @@
         <category>Nanocybernetics</category>
       </allowsubsystems>
       <selectside />
-      <bonus>
-        <conditionmonitor>
-          <physical>1</physical>
-        </conditionmonitor>
-      </bonus>
       <forbidden>
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
@@ -1586,6 +1588,20 @@
           <cyberware>Smart Articulation</cyberware>
         </oneof>
       </forbidden>
+      <pairbonus>
+        <conditionmonitor>
+          <physical>1</physical>
+        </conditionmonitor>
+      </pairbonus>
+      <pairinclude>
+        <name>Obvious Lower Leg</name>
+        <name>Obvious Lower Arm</name>
+        <name>Synthetic Lower Arm</name>
+        <name>Obvious Lower Leg, Modular</name>
+        <name>Obvious Lower Arm, Modular</name>
+        <name>Synthetic Lower Arm, Modular</name>
+        <name>Synthetic Lower Leg, Modular</name>
+      </pairinclude>
     </cyberware>
     <cyberware>
       <id>40878e5d-cabc-4980-ad87-0dd5d5f5c037</id>
@@ -3752,11 +3768,6 @@
         <category>Nanocybernetics</category>
       </allowsubsystems>
       <selectside />
-      <bonus>
-        <conditionmonitor>
-          <physical>1</physical>
-        </conditionmonitor>
-      </bonus>
     </cyberware>
     <cyberware>
       <id>f34449f5-e7e4-4c73-ac0a-52629b25066e</id>
@@ -3784,11 +3795,6 @@
         <category>Nanocybernetics</category>
       </allowsubsystems>
       <selectside />
-      <bonus>
-        <conditionmonitor>
-          <physical>1</physical>
-        </conditionmonitor>
-      </bonus>
     </cyberware>
     <cyberware>
       <id>41e8fa49-c2e7-46d5-bc75-50024b937483</id>
@@ -3816,11 +3822,6 @@
         <category>Nanocybernetics</category>
       </allowsubsystems>
       <selectside />
-      <bonus>
-        <conditionmonitor>
-          <physical>1</physical>
-        </conditionmonitor>
-      </bonus>
     </cyberware>
     <cyberware>
       <id>caab6000-8907-417d-acdb-8ba6cc2f6492</id>
@@ -3848,11 +3849,6 @@
         <category>Nanocybernetics</category>
       </allowsubsystems>
       <selectside />
-      <bonus>
-        <conditionmonitor>
-          <physical>1</physical>
-        </conditionmonitor>
-      </bonus>
     </cyberware>
     <cyberware>
       <id>26170cc6-e538-4c2a-b508-72448431b55d</id>
@@ -3880,11 +3876,21 @@
         <category>Nanocybernetics</category>
       </allowsubsystems>
       <selectside />
-      <bonus>
+      <pairbonus>
         <conditionmonitor>
           <physical>1</physical>
         </conditionmonitor>
-      </bonus>
+      </pairbonus>
+      <pairinclude>
+        <name>Obvious Lower Leg</name>
+        <name>Obvious Lower Arm</name>
+        <name>Synthetic Lower Arm</name>
+        <name>Synthetic Lower Leg</name>
+        <name>Obvious Lower Leg, Modular</name>
+        <name>Obvious Lower Arm, Modular</name>
+        <name>Synthetic Lower Arm, Modular</name>
+        <name>Synthetic Lower Leg, Modular</name>
+      </pairinclude>
     </cyberware>
     <cyberware>
       <id>78da1ab2-4af1-48f9-ac14-42ef49bb768d</id>
@@ -3912,11 +3918,21 @@
         <category>Nanocybernetics</category>
       </allowsubsystems>
       <selectside />
-      <bonus>
+      <pairbonus>
         <conditionmonitor>
           <physical>1</physical>
         </conditionmonitor>
-      </bonus>
+      </pairbonus>
+      <pairinclude>
+        <name>Obvious Lower Leg</name>
+        <name>Obvious Lower Arm</name>
+        <name>Synthetic Lower Arm</name>
+        <name>Synthetic Lower Leg</name>
+        <name>Obvious Lower Leg, Modular</name>
+        <name>Obvious Lower Arm, Modular</name>
+        <name>Synthetic Lower Arm, Modular</name>
+        <name>Synthetic Lower Leg, Modular</name>
+      </pairinclude>
     </cyberware>
     <cyberware>
       <id>fe8d9997-f263-4f8d-9b0f-afb8d08b8408</id>
@@ -3944,11 +3960,21 @@
         <category>Nanocybernetics</category>
       </allowsubsystems>
       <selectside />
-      <bonus>
+      <pairbonus>
         <conditionmonitor>
           <physical>1</physical>
         </conditionmonitor>
-      </bonus>
+      </pairbonus>
+      <pairinclude>
+        <name>Obvious Lower Leg</name>
+        <name>Obvious Lower Arm</name>
+        <name>Synthetic Lower Arm</name>
+        <name>Synthetic Lower Leg</name>
+        <name>Obvious Lower Leg, Modular</name>
+        <name>Obvious Lower Arm, Modular</name>
+        <name>Synthetic Lower Arm, Modular</name>
+        <name>Synthetic Lower Leg, Modular</name>
+      </pairinclude>
     </cyberware>
     <cyberware>
       <id>1edf519a-74ee-42ee-8441-6f7e5c7a8f64</id>
@@ -3976,11 +4002,21 @@
         <category>Nanocybernetics</category>
       </allowsubsystems>
       <selectside />
-      <bonus>
+      <pairbonus>
         <conditionmonitor>
           <physical>1</physical>
         </conditionmonitor>
-      </bonus>
+      </pairbonus>
+      <pairinclude>
+        <name>Obvious Lower Leg</name>
+        <name>Obvious Lower Arm</name>
+        <name>Synthetic Lower Arm</name>
+        <name>Synthetic Lower Leg</name>
+        <name>Obvious Lower Leg, Modular</name>
+        <name>Obvious Lower Arm, Modular</name>
+        <name>Synthetic Lower Arm, Modular</name>
+        <name>Synthetic Lower Leg, Modular</name>
+      </pairinclude>
     </cyberware>
     <cyberware>
       <id>edc913d5-ff6e-469b-9bcc-dada26dccc10</id>
@@ -4071,6 +4107,7 @@
         <category>Headware</category>
         <category>Nanocybernetics</category>
       </allowsubsystems>
+      <selectside />
       <bonus>
         <conditionmonitor>
           <physical>1</physical>
@@ -4102,6 +4139,7 @@
         <category>Headware</category>
         <category>Nanocybernetics</category>
       </allowsubsystems>
+      <selectside />
       <bonus>
         <conditionmonitor>
           <physical>1</physical>
@@ -5961,6 +5999,22 @@
           </OR>
         </parentdetails>
       </required>
+    </cyberware>
+    <cyberware>
+      <id>f05492b3-de9b-44c3-8622-89840587cc3a</id>
+      <name>Foot Blade</name>
+      <limit>False</limit>
+      <category>Cyber Implant Weapon</category>
+      <ess>0.2</ess>
+      <capacity>0</capacity>
+      <avail>20F</avail>
+      <cost>28000</cost>
+      <source>HT</source>
+      <page>185</page>
+      <addweapon>Foot Blade</addweapon>
+      <allowsubsystems>
+        <category>Cyber Implant Weapon Accessory</category>
+      </allowsubsystems>
     </cyberware>
     <!-- End Region -->
     <!-- Region Boston Lockdown -->

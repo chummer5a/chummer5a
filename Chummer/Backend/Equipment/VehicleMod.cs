@@ -26,6 +26,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
+using NLog;
 
 namespace Chummer.Backend.Equipment
 {
@@ -35,7 +36,9 @@ namespace Chummer.Backend.Equipment
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     public class VehicleMod : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanEquip, IHasSource, IHasRating, ICanSort, IHasStolenProperty
     {
+        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private Guid _guiID;
+        private Guid _guiSourceID;
         private string _strName = string.Empty;
         private string _strCategory = string.Empty;
         private string _strLimit = string.Empty;
@@ -134,6 +137,13 @@ namespace Chummer.Backend.Equipment
         {
             Parent = objParent ?? throw new ArgumentNullException(nameof(objParent));
             if (objXmlMod == null) Utils.BreakIfDebug();
+            if (!objXmlMod.TryGetField("id", Guid.TryParse, out _guiSourceID))
+            {
+                Log.Warn(new object[] { "Missing id field for xmlnode", objXmlMod });
+                Utils.BreakIfDebug();
+            }
+            else
+                _objCachedMyXmlNode = null;
             if (objXmlMod.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
             objXmlMod.TryGetStringFieldQuickly("category", ref _strCategory);
@@ -230,7 +240,8 @@ namespace Chummer.Backend.Equipment
         public void Save(XmlTextWriter objWriter)
         {
             objWriter.WriteStartElement("mod");
-            objWriter.WriteElementString("guid", _guiID.ToString("D"));
+            objWriter.WriteElementString("sourceid", SourceIDString);
+            objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("category", _strCategory);
             objWriter.WriteElementString("limit", _strLimit);
@@ -284,14 +295,16 @@ namespace Chummer.Backend.Equipment
         /// <param name="blnCopy">Indicates whether a new item will be created as a copy of this one.</param>
         public void Load(XmlNode objNode, bool blnCopy = false)
         {
-            if (blnCopy)
+            if (blnCopy || !objNode.TryGetField("guid", Guid.TryParse, out _guiID))
             {
                 _guiID = Guid.NewGuid();
             }
-            else
+            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
-                objNode.TryGetField("guid", Guid.TryParse, out _guiID);
+                XmlNode node = GetNode(GlobalOptions.Language);
+                node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
+
             if (objNode.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
@@ -421,6 +434,16 @@ namespace Chummer.Backend.Equipment
         public TaggedObservableCollection<Cyberware> Cyberware => _lstCyberware;
 
         public WeaponMount WeaponMountParent { get; set; }
+
+        /// <summary>
+        /// Identifier of the object within data files.
+        /// </summary>
+        public Guid SourceID => _guiSourceID;
+
+        /// <summary>
+        /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
+        /// </summary>
+        public string SourceIDString => _guiSourceID.ToString("D");
 
         /// <summary>
         /// Internal identifier which will be used to identify this piece of Gear in the Character.
@@ -1227,7 +1250,12 @@ namespace Chummer.Backend.Equipment
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
                 XmlDocument objDoc = XmlManager.Load("vehicles.xml", strLanguage);
-                _objCachedMyXmlNode = objDoc.SelectSingleNode("/chummer/mods/mod[name = \"" + Name + "\"]") ?? objDoc.SelectSingleNode("/chummer/weaponmountmods/mod[name = \"" + Name + "\"]");
+                _objCachedMyXmlNode = (XmlManager.Load("vehicles.xml", strLanguage)
+                                             .SelectSingleNode($"/chummer/mods/mod[id = \"{SourceIDString}\" or id = \"{SourceIDString}\"]") ??
+                                       objDoc.SelectSingleNode($"/chummer/weaponmountmods/mod[id = \"{SourceIDString}\" or id = \"{SourceIDString}\"]")) ??
+                                       objDoc.SelectSingleNode($"/chummer/mods/mod[name = \"{Name}\"]") ??
+                                       objDoc.SelectSingleNode($"/chummer/weaponmountmods/mod[name = \"{Name}\"]");
+
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

@@ -31,12 +31,14 @@ using System.Drawing;
 using System.Text;
 using static Chummer.Backend.Skills.SkillsSection;
 using Chummer.Backend.Uniques;
+using NLog;
 
 namespace Chummer
 {
     [DebuggerDisplay("{" + nameof(DisplayDebug) + "()}")]
     public class Improvement: IHasNotes, IHasInternalId, ICanSort
     {
+        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private string DisplayDebug()
         {
             return $"{_objImprovementType} ({_intVal}, {_intRating}) 🡐 {_objImprovementSource}, {_strSourceName}, {_strImprovedName}";
@@ -130,6 +132,7 @@ namespace Chummer
             SpellCategory,
             SpellCategoryDamage,
             SpellCategoryDrain,
+            SpellDicePool,
             ThrowRange,
             ThrowRangeSTR,
             SkillsoftAccess,
@@ -307,7 +310,9 @@ namespace Chummer
             MetageneticLimit,
             Tradition,
             ActionDicePool,
-            NumImprovementTypes, // 🡐 This one should always be the last defined enum
+            SpecialModificationLimit,
+            AddSpirit,
+            NumImprovementTypes // 🡐 This one should always be the last defined enum
         }
 
         public enum ImprovementSource
@@ -420,7 +425,7 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         public void Save(XmlTextWriter objWriter)
         {
-            Log.Enter("Save");
+            Log.Debug("Save enter");
 
             objWriter.WriteStartElement("improvement");
             if (!string.IsNullOrEmpty(_strUniqueName))
@@ -448,7 +453,7 @@ namespace Chummer
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteEndElement();
 
-            Log.Exit("Save");
+            Log.Debug("Save end");
         }
 
         /// <summary>
@@ -459,7 +464,7 @@ namespace Chummer
         {
             if (objNode == null)
                 return;
-            Log.Enter("Load");
+            Log.Debug("Load enter");
 
             objNode.TryGetStringFieldQuickly("unique", ref _strUniqueName);
             objNode.TryGetStringFieldQuickly("target", ref _strTarget);
@@ -496,7 +501,7 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             objNode.TryGetInt32FieldQuickly("order", ref _intOrder);
 
-            Log.Exit("Load");
+            Log.Debug("Load exit");
         }
 
         #endregion
@@ -1809,10 +1814,15 @@ namespace Chummer
                     break;
                 case ImprovementType.WeaponAccuracy:
                     break;
+                case ImprovementType.SpecialModificationLimit:
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.SpecialModificationLimit));
+                    }
+                    break;
                 case ImprovementType.MetageneticLimit:
-                {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.MetageneticLimit));
-                }
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.MetageneticLimit));
+                    }
                     break;
             }
         }
@@ -1927,6 +1937,7 @@ namespace Chummer
 
     public static class ImprovementManager
     {
+        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
         // String that will be used to limit the selection in Pick forms.
         private static string s_StrLimitSelection = string.Empty;
 
@@ -2875,7 +2886,7 @@ namespace Chummer
         public static bool CreateImprovements(Character objCharacter, Improvement.ImprovementSource objImprovementSource, string strSourceName,
             XmlNode nodBonus, bool blnConcatSelectedValue = false, int intRating = 1, string strFriendlyName = "", bool blnAddImprovementsToCharacter = true)
         {
-            Log.Enter("CreateImprovements");
+            Log.Debug("CreateImprovements enter");
             Log.Info("objImprovementSource = " + objImprovementSource.ToString());
             Log.Info("strSourceName = " + strSourceName);
             Log.Info("nodBonus = " + nodBonus?.OuterXml);
@@ -2890,7 +2901,7 @@ namespace Chummer
             {
                 s_StrForcedValue = string.Empty;
                 s_StrLimitSelection = string.Empty;
-                Log.Exit("CreateImprovements");
+                Log.Debug("CreateImprovements exit");
                 return true;
             }
 
@@ -2903,7 +2914,7 @@ namespace Chummer
             if (objCharacter == null && blnAddImprovementsToCharacter)
             {
                 Log.Info("_objCharacter = Null");
-                Log.Exit("CreateImprovements");
+                Log.Debug("CreateImprovements exit");
                 return true;
             }
 
@@ -2950,7 +2961,7 @@ namespace Chummer
                             Rollback(objCharacter);
                             ForcedValue = string.Empty;
                             LimitSelection = string.Empty;
-                            Log.Exit("CreateImprovements");
+                            Log.Debug("CreateImprovements exit");
                             return false;
                         }
 
@@ -3011,7 +3022,7 @@ namespace Chummer
                 Rollback();
                 throw;
             }*/
-            Log.Exit("CreateImprovements");
+            Log.Debug("CreateImprovements exit");
             return true;
 
         }
@@ -3054,7 +3065,7 @@ namespace Chummer
             else if (bonusNode.NodeType != XmlNodeType.Comment)
             {
                 Utils.BreakIfDebug();
-                Log.Warning(new object[] {"Tried to get unknown bonus", bonusNode.OuterXml});
+                Log.Warn(new object[] {"Tried to get unknown bonus", bonusNode.OuterXml});
                 return false;
             }
             return true;
@@ -3641,12 +3652,12 @@ namespace Chummer
         /// <param name="blnAllowDuplicatesFromSameSource">If we ignore checking whether a potential duplicate improvement has the same SourceName</param>
         public static decimal RemoveImprovements(Character objCharacter, IList<Improvement> objImprovementList, bool blnReapplyImprovements = false, bool blnAllowDuplicatesFromSameSource = false)
         {
-            Log.Enter("RemoveImprovements");
+            Log.Debug("RemoveImprovements enter");
 
             // If there is no character object, don't try to remove any Improvements.
             if (objCharacter == null)
             {
-                Log.Exit("RemoveImprovements");
+                Log.Debug("RemoveImprovements exit");
                 return 0;
             }
 
@@ -3988,7 +3999,7 @@ namespace Chummer
             }
             objImprovementList.ProcessRelevantEvents();
 
-            Log.Exit("RemoveImprovements");
+            Log.Debug("RemoveImprovements exit");
             return decReturn;
         }
 
@@ -4016,7 +4027,7 @@ namespace Chummer
             int intValue = 0, int intRating = 1, int intMinimum = 0, int intMaximum = 0, int intAugmented = 0,
             int intAugmentedMaximum = 0, string strExclude = "", bool blnAddToRating = false, string strTarget = "", string strCondition = "")
         {
-            Log.Enter("CreateImprovement");
+            Log.Debug("CreateImprovement");
             Log.Info(
                 "strImprovedName = " + strImprovedName);
             Log.Info(
@@ -4075,7 +4086,7 @@ namespace Chummer
                     s_DictionaryTransactions[objCharacter].Add(new TransactingImprovement(objImprovement));
             }
 
-            Log.Exit("CreateImprovement");
+            Log.Debug("CreateImprovement exit");
         }
 
         /// <summary>
@@ -4083,7 +4094,7 @@ namespace Chummer
         /// </summary>
         public static void Commit(Character objCharacter)
         {
-            Log.Enter("Commit");
+            Log.Debug("Commit");
             // Clear all of the Improvements from the Transaction List.
             if (s_DictionaryTransactions.TryGetValue(objCharacter, out List<TransactingImprovement> lstTransaction))
             {
@@ -4100,7 +4111,7 @@ namespace Chummer
                 lstTransaction.Clear();
             }
 
-            Log.Exit("Commit");
+            Log.Debug("Commit exit");
         }
 
         /// <summary>
@@ -4108,7 +4119,7 @@ namespace Chummer
         /// </summary>
         private static void Rollback(Character objCharacter)
         {
-            Log.Enter("Rollback");
+            Log.Debug("Rollback enter");
             if (s_DictionaryTransactions.TryGetValue(objCharacter, out List<TransactingImprovement> lstTransaction))
             {
                 // Remove all of the Improvements that were added.
@@ -4121,7 +4132,7 @@ namespace Chummer
                 lstTransaction.Clear();
             }
 
-            Log.Exit("Rollback");
+            Log.Debug("Rollback exit");
         }
 
         /// <summary>

@@ -111,5 +111,41 @@ namespace ChummerHub.Client.Properties {
                 this["SINnerUrls"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool UpgradeRequired {
+            get {
+                return ((bool)(this["UpgradeRequired"]));
+            }
+            set {
+                this["UpgradeRequired"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string TempDownloadPath {
+            get {
+                return ((string)(this["TempDownloadPath"]));
+            }
+            set {
+                this["TempDownloadPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool VisibilityIsPublic {
+            get {
+                return ((bool)(this["VisibilityIsPublic"]));
+            }
+            set {
+                this["VisibilityIsPublic"] = value;
+            }
+        }
     }
 }

@@ -21,11 +21,13 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
  using System.Diagnostics;
  using System.Text;
+ using NLog;
 
 namespace Chummer
 {
-    static class Timekeeper
+    public static class Timekeeper
     {
+        private static Logger Logger = NLog.LogManager.GetCurrentClassLogger();
         private static readonly Stopwatch s_Time = new Stopwatch();
         private static readonly ConcurrentDictionary<string, TimeSpan> s_DictionaryStarts = new ConcurrentDictionary<string, TimeSpan>();
         private static readonly ConcurrentDictionary<string, Tuple<TimeSpan, int>> s_DictionaryStatistics = new ConcurrentDictionary<string, Tuple<TimeSpan, int>>();
@@ -59,7 +61,7 @@ namespace Chummer
                 TimeSpan final = s_Time.Elapsed - objStartTimeSpan;
 
                 string logentry = $"Task \"{taskname}\" finished in {final}";
-                Chummer.Log.Info(logentry);
+                Logger.Info(logentry);
 
                 Debug.WriteLine(logentry);
 
@@ -92,7 +94,7 @@ namespace Chummer
 
             string strined = sb.ToString();
             Debug.WriteLine(strined);
-            Chummer.Log.Info(strined);
+            Logger.Info(strined);
         }
 
     }

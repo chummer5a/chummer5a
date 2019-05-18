@@ -287,7 +287,7 @@ namespace Chummer
                     Weapon objWeapon = new Weapon(_objCharacter);
                     objWeapon.Create(objXmlWeapon, null, true, false, true);
 
-                    string strID = objWeapon.SourceID.ToString("D");
+                    string strID = objWeapon.SourceIDString;
                     string strWeaponName = objWeapon.DisplayName(GlobalOptions.Language);
                     string strDice = objWeapon.GetDicePool(GlobalOptions.CultureInfo, GlobalOptions.Language);
                     string strAccuracy = objWeapon.DisplayAccuracy(GlobalOptions.CultureInfo, GlobalOptions.Language);

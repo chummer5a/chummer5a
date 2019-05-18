@@ -21,11 +21,13 @@ using System.Collections.Generic;
  using System.Windows.Forms;
 using System.Xml;
  using Chummer.Backend.Equipment;
+ using NLog;
 
 namespace Chummer
 {
     public partial class frmSelectLifestyle : Form
     {
+        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private bool _blnAddAgain;
         private readonly Lifestyle _objLifestyle;
         private Lifestyle _objSourceLifestyle;
@@ -119,7 +121,7 @@ namespace Chummer
                 nudPercentage.Value = _objSourceLifestyle.Percentage;
                 foreach (LifestyleQuality objQuality in _objSourceLifestyle.LifestyleQualities)
                 {
-                    TreeNode objNode = treQualities.FindNode(objQuality.SourceID);
+                    TreeNode objNode = treQualities.FindNode(objQuality.SourceIDString);
                     if (objNode != null)
                         objNode.Checked = true;
                 }
@@ -175,10 +177,10 @@ namespace Chummer
         {
             string strSource = string.Empty;
             string strPage = string.Empty;
-            string strQualityId = treQualities.SelectedNode?.Tag.ToString();
-            if (!string.IsNullOrEmpty(strQualityId))
+            string strSourceIDString = treQualities.SelectedNode?.Tag.ToString();
+            if (!string.IsNullOrEmpty(strSourceIDString))
             {
-                XmlNode objXmlQuality = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + strQualityId + "\"]");
+                XmlNode objXmlQuality = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + strSourceIDString + "\"]");
                 if (objXmlQuality != null)
                 {
                     strSource = objXmlQuality["source"]?.InnerText ?? string.Empty;
@@ -252,18 +254,16 @@ namespace Chummer
                 }
                 else
                 {
-                    Log.Warning(new object[] { "Missing id field for lifestyle xmlnode", objXmlLifestyle });
+                    Log.Warn(new object[] { "Missing id field for xmlnode", objXmlLifestyle });
                     Utils.BreakIfDebug();
                 }
                 foreach (TreeNode objNode in treQualities.Nodes)
                 {
-                    if (objNode.Checked)
-                    {
-                        XmlNode objXmlLifestyleQuality = _objXmlDocument.SelectSingleNode($"/chummer/qualities/quality[id = \"{objNode.Tag}\"]");
-                        LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
-                        objQuality.Create(objXmlLifestyleQuality, _objLifestyle, _objCharacter, QualitySource.Selected);
-                        _objLifestyle.LifestyleQualities.Add(objQuality);
-                    }
+                    if (!objNode.Checked) continue;
+                    XmlNode objXmlLifestyleQuality = _objXmlDocument.SelectSingleNode($"/chummer/qualities/quality[id = \"{objNode.Tag}\"]");
+                    LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
+                    objQuality.Create(objXmlLifestyleQuality, _objLifestyle, _objCharacter, QualitySource.Selected);
+                    _objLifestyle.LifestyleQualities.Add(objQuality);
                 }
                 DialogResult = DialogResult.OK;
             }

@@ -344,31 +344,31 @@ namespace Chummer
                 string strSpiritIllusion = objTradition.SpiritIllusion;
                 string strSpiritManipulation = objTradition.SpiritManipulation;
 
-                if (lstLimitCategories.Count == 0 || lstLimitCategories.Contains(strSpiritCombat))
+                if ((lstLimitCategories.Count == 0 || lstLimitCategories.Contains(strSpiritCombat)) && !string.IsNullOrWhiteSpace(strSpiritCombat))
                 {
                     XmlNode objXmlCritterNode = objXmlDocument.SelectSingleNode("/chummer/spirits/spirit[name = \"" + strSpiritCombat + "\"]");
                     lstCritters.Add(new ListItem(strSpiritCombat, objXmlCritterNode?["translate"]?.InnerText ?? strSpiritCombat));
                 }
 
-                if (lstLimitCategories.Count == 0 || lstLimitCategories.Contains(strSpiritDetection))
+                if ((lstLimitCategories.Count == 0 || lstLimitCategories.Contains(strSpiritDetection)) && !string.IsNullOrWhiteSpace(strSpiritDetection))
                 {
                     XmlNode objXmlCritterNode = objXmlDocument.SelectSingleNode("/chummer/spirits/spirit[name = \"" + strSpiritDetection + "\"]");
                     lstCritters.Add(new ListItem(strSpiritDetection, objXmlCritterNode?["translate"]?.InnerText ?? strSpiritDetection));
                 }
 
-                if (lstLimitCategories.Count == 0 || lstLimitCategories.Contains(strSpiritHealth))
+                if ((lstLimitCategories.Count == 0 || lstLimitCategories.Contains(strSpiritHealth)) && !string.IsNullOrWhiteSpace(strSpiritHealth))
                 {
                     XmlNode objXmlCritterNode = objXmlDocument.SelectSingleNode("/chummer/spirits/spirit[name = \"" + strSpiritHealth + "\"]");
                     lstCritters.Add(new ListItem(strSpiritHealth, objXmlCritterNode?["translate"]?.InnerText ?? strSpiritHealth));
                 }
 
-                if (lstLimitCategories.Count == 0 || lstLimitCategories.Contains(strSpiritIllusion))
+                if ((lstLimitCategories.Count == 0 || lstLimitCategories.Contains(strSpiritIllusion)) && !string.IsNullOrWhiteSpace(strSpiritIllusion))
                 {
                     XmlNode objXmlCritterNode = objXmlDocument.SelectSingleNode("/chummer/spirits/spirit[name = \"" + strSpiritIllusion + "\"]");
                     lstCritters.Add(new ListItem(strSpiritIllusion, objXmlCritterNode?["translate"]?.InnerText ?? strSpiritIllusion));
                 }
 
-                if (lstLimitCategories.Count == 0 || lstLimitCategories.Contains(strSpiritManipulation))
+                if ((lstLimitCategories.Count == 0 || lstLimitCategories.Contains(strSpiritManipulation)) && !string.IsNullOrWhiteSpace(strSpiritManipulation))
                 {
                     XmlNode objXmlCritterNode = objXmlDocument.SelectSingleNode("/chummer/spirits/spirit[name = \"" + strSpiritManipulation + "\"]");
                     lstCritters.Add(new ListItem(strSpiritManipulation, objXmlCritterNode?["translate"]?.InnerText ?? strSpiritManipulation));
@@ -415,22 +415,19 @@ namespace Chummer
 
             if (_objSpirit.CharacterObject.RESEnabled)
             {
-                // Add any additional Sprites the character has Access to through Sprite Link.
-                foreach (Improvement objImprovement in _objSpirit.CharacterObject.Improvements)
-                {
-                    if (objImprovement.ImproveType == Improvement.ImprovementType.AddSprite && objImprovement.Enabled)
-                    {
-                        XmlNode objXmlCritterNode = objXmlDocument.SelectSingleNode("/chummer/spirits/spirit[name = \"" + objImprovement.ImprovedName + "\"]");
-                        lstCritters.Add(new ListItem(objImprovement.ImprovedName, objXmlCritterNode?["translate"]?.InnerText ?? objImprovement.ImprovedName));
-                    }
-                }
+                // Add any additional Sprites the character has Access to through improvements.
+                lstCritters.AddRange(from objImprovement in _objSpirit.CharacterObject.Improvements
+                        .Where(imp => imp.ImproveType == Improvement.ImprovementType.AddSprite && imp.Enabled)
+                    let objXmlCritterNode = objXmlDocument.SelectSingleNode("/chummer/spirits/spirit[name = \"" + objImprovement.ImprovedName + "\"]")
+                    select new ListItem(objImprovement.ImprovedName, objXmlCritterNode?["translate"]?.InnerText ?? objImprovement.ImprovedName));
             }
-
-            //Add Ally Spirit to MAG-enabled traditions.
             if (_objSpirit.CharacterObject.MAGEnabled)
             {
-                XmlNode objXmlCritterNode = objXmlCritterDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"Ally Spirit\"]");
-                lstCritters.Add(new ListItem("Ally Spirit", objXmlCritterNode?["translate"]?.InnerText ?? "Ally Spirit"));
+                // Add any additional Spirits the character has Access to through improvements.
+                lstCritters.AddRange(from objImprovement in _objSpirit.CharacterObject.Improvements
+                    .Where(imp => imp.ImproveType == Improvement.ImprovementType.AddSpirit && imp.Enabled)
+                    let objXmlCritterNode = objXmlDocument.SelectSingleNode("/chummer/spirits/spirit[name = \"" + objImprovement.ImprovedName + "\"]")
+                    select new ListItem(objImprovement.ImprovedName, objXmlCritterNode?["translate"]?.InnerText ?? objImprovement.ImprovedName));
             }
 
             cboSpiritName.BeginUpdate();

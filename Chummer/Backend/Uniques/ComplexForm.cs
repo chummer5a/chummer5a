@@ -25,6 +25,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Backend.Skills;
+using NLog;
 
 namespace Chummer
 {
@@ -35,7 +36,9 @@ namespace Chummer
     [DebuggerDisplay("{DisplayNameShort(GlobalOptions.DefaultLanguage)}")]
     public class ComplexForm : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove, IHasSource
     {
+        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private Guid _guiID;
+        private Guid _guiSourceID = Guid.Empty;
         private string _strName = string.Empty;
         private string _strTarget = string.Empty;
         private string _strDuration = string.Empty;
@@ -46,6 +49,7 @@ namespace Chummer
         private string _strExtra = string.Empty;
         private int _intGrade;
         private readonly Character _objCharacter;
+        private SourceString _objCachedSourceDetail;
 
         #region Constructor, Create, Save, Load, and Print Methods
         public ComplexForm(Character objCharacter)
@@ -60,8 +64,13 @@ namespace Chummer
         /// <param name="strExtra">Value to forcefully select for any ImprovementManager prompts.</param>
         public void Create(XmlNode objXmlComplexFormNode, string strExtra = "")
         {
-            if (objXmlComplexFormNode.TryGetStringFieldQuickly("name", ref _strName))
-                _objCachedMyXmlNode = null;
+            if (!objXmlComplexFormNode.TryGetField("id", Guid.TryParse, out _guiSourceID))
+            {
+                Log.Warn(new object[] { "Missing id field for complex form xmlnode", objXmlComplexFormNode });
+                Utils.BreakIfDebug();
+            }
+            objXmlComplexFormNode.TryGetField("id", Guid.TryParse, out _guiSourceID);
+            objXmlComplexFormNode.TryGetStringFieldQuickly("name", ref _strName);
             objXmlComplexFormNode.TryGetStringFieldQuickly("target", ref _strTarget);
             objXmlComplexFormNode.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlComplexFormNode.TryGetStringFieldQuickly("page", ref _strPage);
@@ -82,9 +91,6 @@ namespace Chummer
             }*/
         }
 
-        private SourceString _objCachedSourceDetail;
-        public SourceString SourceDetail => _objCachedSourceDetail ?? (_objCachedSourceDetail =
-                                                new SourceString(Source, Page(GlobalOptions.Language), GlobalOptions.Language));
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -93,7 +99,8 @@ namespace Chummer
         public void Save(XmlTextWriter objWriter)
         {
             objWriter.WriteStartElement("complexform");
-            objWriter.WriteElementString("guid", _guiID.ToString("D"));
+            objWriter.WriteElementString("sourceid", SourceIDString);
+            objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("target", _strTarget);
             objWriter.WriteElementString("duration", _strDuration);
@@ -115,9 +122,17 @@ namespace Chummer
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
-            objNode.TryGetField("guid", Guid.TryParse, out _guiID);
-            if (objNode.TryGetStringFieldQuickly("name", ref _strName))
-                _objCachedMyXmlNode = null;
+            if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
+            {
+                _guiID = Guid.NewGuid();
+            }
+            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+            {
+                XmlNode node = GetNode(GlobalOptions.Language);
+                node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+            }
+
             objNode.TryGetStringFieldQuickly("target", ref _strTarget);
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
@@ -151,8 +166,24 @@ namespace Chummer
         #endregion
 
         #region Properties
+        /// <summary>
+        /// Identifier of the object within data files.
+        /// </summary>
+        public Guid SourceID
+        {
+            get => _guiSourceID;
+            set
+            {
+                if (_guiSourceID == value) return;
+                _guiSourceID = value;
+                _objCachedMyXmlNode = null;
+            }
+        }
 
-        public Guid SourceID { get { return _guiID; } }
+        /// <summary>
+        /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
+        /// </summary>
+        public string SourceIDString => _guiSourceID.ToString("D");
 
         /// <summary>
         /// Internal identifier which will be used to identify this Complex Form in the Improvement system.
@@ -172,6 +203,8 @@ namespace Chummer
                 _strName = value;
             }
         }
+        public SourceString SourceDetail => _objCachedSourceDetail ?? (_objCachedSourceDetail =
+                                                new SourceString(Source, Page(GlobalOptions.Language), GlobalOptions.Language));
 
         /// <summary>
         /// Complex Form's extra info.
@@ -467,11 +500,7 @@ namespace Chummer
                 Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill("Software");
                 if (objSkill != null)
                 {
-                    int intPool = objSkill.Pool;
-                    strReturn = objSkill.DisplayNameMethod(GlobalOptions.Language) + strSpaceCharacter + '(' + intPool.ToString(GlobalOptions.CultureInfo) + ')';
-                    // Add any Specialization bonus if applicable.
-                    if (objSkill.HasSpecialization(DisplayName))
-                        strReturn += strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("String_ExpenseSpecialization", GlobalOptions.Language) + strSpaceCharacter + '(' + 2.ToString(GlobalOptions.CultureInfo) + ')';
+                    strReturn = objSkill.FormattedDicePool(objSkill.Pool, strSpaceCharacter, DisplayName);
                 }
 
                 // Include any Improvements to the Spell Category.
@@ -479,7 +508,8 @@ namespace Chummer
                     .Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.ActionDicePool && objImprovement.Enabled
                     && objImprovement.ImprovedName == "Threading"))
                 {
-                    strReturn += $"{strSpaceCharacter}+{strSpaceCharacter}{_objCharacter.GetObjectName(objImprovement, GlobalOptions.Language)}{strSpaceCharacter}({objImprovement.Value.ToString(GlobalOptions.CultureInfo)})";
+                    strReturn += $"{strSpaceCharacter}+{strSpaceCharacter}{_objCharacter.GetObjectName(objImprovement, GlobalOptions.Language)}" +
+                                 $"{strSpaceCharacter}({objImprovement.Value.ToString(GlobalOptions.CultureInfo)})";
                 }
 
                 return strReturn;
@@ -498,7 +528,11 @@ namespace Chummer
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load("complexforms.xml", strLanguage).SelectSingleNode("/chummer/complexforms/complexform[name = \"" + Name + "\"]");
+                _objCachedMyXmlNode = SourceID == Guid.Empty
+                    ? XmlManager.Load("complexforms.xml", strLanguage)
+                        .SelectSingleNode($"/chummer/complexforms/complexform[name = \"{Name}\"]")
+                    : XmlManager.Load("complexforms.xml", strLanguage)
+                        .SelectSingleNode($"/chummer/complexforms/complexform[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

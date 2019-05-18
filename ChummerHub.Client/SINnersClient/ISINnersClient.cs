@@ -46,7 +46,15 @@ namespace SINners
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse<IList<string>>> GetRolesWithHttpMessagesAsync(Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<ResultAccountGetPossibleRoles>> GetPossibleRolesWithHttpMessagesAsync(Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <param name='customHeaders'>
+        /// The headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        Task<HttpOperationResponse<ResultAccountGetRoles>> GetRolesWithHttpMessagesAsync(Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <param name='email'>
         /// </param>
@@ -56,7 +64,7 @@ namespace SINners
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse<ApplicationUser>> GetUserByEmailWithHttpMessagesAsync(string email = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<ResultAccountGetUserByEmail>> GetUserByEmailWithHttpMessagesAsync(string email = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <param name='username'>
         /// </param>
@@ -92,7 +100,7 @@ namespace SINners
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse<ApplicationUser>> GetUserByAuthorizationWithHttpMessagesAsync(Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<ResultAccountGetUserByAuthorization>> GetUserByAuthorizationWithHttpMessagesAsync(Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <param name='customHeaders'>
         /// The headers that will be added to request.
@@ -110,13 +118,24 @@ namespace SINners
         /// </param>
         Task<HttpOperationResponse<string>> GetDeleteAndRecreateDbWithHttpMessagesAsync(Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
+        /// <summary>
+        /// Search for Sinners for one user
+        /// </summary>
         /// <param name='customHeaders'>
         /// The headers that will be added to request.
         /// </param>
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse<SINSearchResult>> GetSINnersByAuthorizationWithHttpMessagesAsync(Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<ResultAccountGetSinnersByAuthorization>> GetSINnersByAuthorizationWithHttpMessagesAsync(Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <param name='customHeaders'>
+        /// The headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        Task<HttpOperationResponse<ResultGroupGetSearchGroups>> GetSinnerAsAdminWithHttpMessagesAsync(Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <param name='customHeaders'>
         /// The headers that will be added to request.
@@ -147,13 +166,15 @@ namespace SINners
         /// </param>
         Task<HttpOperationResponse<System.IO.Stream>> GetDownloadFileWithHttpMessagesAsync(Guid sinnerid, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
+        /// <param name='id'>
+        /// </param>
         /// <param name='customHeaders'>
         /// The headers that will be added to request.
         /// </param>
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse<IList<SINner>>> GetWithHttpMessagesAsync(Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<ResultSinnerGetSINnerGroupFromSINerById>> GetSINnerGroupFromSINerByIdWithHttpMessagesAsync(Guid id, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <param name='id'>
         /// </param>
@@ -163,7 +184,27 @@ namespace SINners
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse<SINner>> GetSINByIdWithHttpMessagesAsync(Guid id, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<ResultSinnerGetSINById>> GetSINByIdWithHttpMessagesAsync(Guid id, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <param name='id'>
+        /// </param>
+        /// <param name='customHeaders'>
+        /// The headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        Task<HttpOperationResponse<ResultSinnerGetSINnerVisibilityById>> GetSINnerVisibilityByIdWithHttpMessagesAsync(Guid id, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <param name='id'>
+        /// </param>
+        /// <param name='customHeaders'>
+        /// The headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        Task<HttpOperationResponse<ResultSinnerGetOwnedSINByAlias>> SinnerGetOwnedSINByAliasWithHttpMessagesAsync(string id, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// The Xml or Zip File can be uploaded (knowing the previously stored
@@ -179,7 +220,19 @@ namespace SINners
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse> PutSINWithHttpMessagesAsync(Guid id, System.IO.Stream uploadedFile = default(System.IO.Stream), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<ResultSINnerPut>> PutSINWithHttpMessagesAsync(Guid id, System.IO.Stream uploadedFile = default(System.IO.Stream), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <param name='sINnerId'>
+        /// </param>
+        /// <param name='index'>
+        /// </param>
+        /// <param name='customHeaders'>
+        /// The headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        Task<HttpOperationResponse> GetThumbnailByIdWithHttpMessagesAsync(Guid? sINnerId = default(Guid?), int? index = default(int?), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Store the MetaData for chummerfiles (to get a Id).
@@ -194,7 +247,7 @@ namespace SINners
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse> PostSINWithHttpMessagesAsync(UploadInfoObject uploadInfo = default(UploadInfoObject), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<ResultSinnerPostSIN>> PostSINWithHttpMessagesAsync(UploadInfoObject uploadInfo = default(UploadInfoObject), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <param name='id'>
         /// </param>
@@ -204,7 +257,7 @@ namespace SINners
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse> DeleteWithHttpMessagesAsync(Guid id, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<ResultSinnerDelete>> DeleteWithHttpMessagesAsync(Guid id, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Store the new group
@@ -226,18 +279,15 @@ namespace SINners
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse<SINner>> PutGroupInGroupWithHttpMessagesAsync(Guid? groupId = default(Guid?), string groupname = default(string), Guid? parentGroupId = default(Guid?), string adminIdentityRole = default(string), bool? isPublicVisible = default(bool?), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<ResultGroupPutGroupInGroup>> PutGroupInGroupWithHttpMessagesAsync(Guid? groupId = default(Guid?), string groupname = default(string), Guid? parentGroupId = default(Guid?), string adminIdentityRole = default(string), bool? isPublicVisible = default(bool?), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
-        /// Store the new group
+        /// The Xml or Zip File can be uploaded (knowing the previously stored
+        /// Id)
         /// </summary>
-        /// <param name='groupname'>
+        /// <param name='id'>
         /// </param>
-        /// <param name='sinnerId'>
-        /// </param>
-        /// <param name='language'>
-        /// </param>
-        /// <param name='pwhash'>
+        /// <param name='uploadedFile'>
         /// </param>
         /// <param name='customHeaders'>
         /// The headers that will be added to request.
@@ -245,7 +295,22 @@ namespace SINners
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse> PostGroupWithHttpMessagesAsync(string groupname = default(string), Guid? sinnerId = default(Guid?), string language = default(string), string pwhash = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<ResultGroupPutSetting>> PutGroupSettingWithHttpMessagesAsync(Guid id, System.IO.Stream uploadedFile = default(System.IO.Stream), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Store the new group
+        /// </summary>
+        /// <param name='mygroup'>
+        /// </param>
+        /// <param name='sinnerId'>
+        /// </param>
+        /// <param name='customHeaders'>
+        /// The headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        Task<HttpOperationResponse<ResultGroupPostGroup>> PostGroupWithHttpMessagesAsync(SINnerGroup mygroup = default(SINnerGroup), Guid? sinnerId = default(Guid?), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Store the new group
@@ -262,7 +327,7 @@ namespace SINners
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse<SINner>> PutSINerInGroupWithHttpMessagesAsync(Guid? groupId = default(Guid?), Guid? sinnerId = default(Guid?), string pwhash = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<object>> PutSINerInGroupWithHttpMessagesAsync(Guid? groupId = default(Guid?), Guid? sinnerId = default(Guid?), string pwhash = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Search for Groups
@@ -275,7 +340,41 @@ namespace SINners
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse<SINnerGroup>> GetGroupByIdWithHttpMessagesAsync(Guid? groupid = default(Guid?), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<ResultGroupGetGroupById>> GetGroupByIdWithHttpMessagesAsync(Guid? groupid = default(Guid?), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Search for public Groups (without authorization)
+        /// </summary>
+        /// <param name='groupname'>
+        /// </param>
+        /// <param name='language'>
+        /// </param>
+        /// <param name='customHeaders'>
+        /// The headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        Task<HttpOperationResponse<ResultGroupGetSearchGroups>> GetPublicGroupWithHttpMessagesAsync(string groupname = default(string), string language = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Search for Groups
+        /// </summary>
+        /// <param name='groupname'>
+        /// </param>
+        /// <param name='language'>
+        /// </param>
+        /// <param name='email'>
+        /// </param>
+        /// <param name='password'>
+        /// </param>
+        /// <param name='customHeaders'>
+        /// The headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        Task<HttpOperationResponse<ResultGroupGetSearchGroups>> GetGroupmembersWithHttpMessagesAsync(string groupname = default(string), string language = default(string), string email = default(string), string password = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Search for Groups
@@ -286,13 +385,15 @@ namespace SINners
         /// </param>
         /// <param name='sINnerName'>
         /// </param>
+        /// <param name='language'>
+        /// </param>
         /// <param name='customHeaders'>
         /// The headers that will be added to request.
         /// </param>
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse<SINSearchGroupResult>> GetSearchGroupsWithHttpMessagesAsync(string groupname = default(string), string usernameOrEmail = default(string), string sINnerName = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<ResultGroupGetSearchGroups>> GetSearchGroupsWithHttpMessagesAsync(string groupname = default(string), string usernameOrEmail = default(string), string sINnerName = default(string), string language = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Remove a sinner from a group. If this sinner is the last member of
@@ -311,6 +412,19 @@ namespace SINners
         Task<HttpOperationResponse<bool?>> DeleteLeaveGroupWithHttpMessagesAsync(Guid? groupid = default(Guid?), Guid? sinnerid = default(Guid?), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
+        /// Delete a Group (recursive - only Admins can do that)
+        /// </summary>
+        /// <param name='groupid'>
+        /// </param>
+        /// <param name='customHeaders'>
+        /// The headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        Task<HttpOperationResponse<bool?>> DeleteGroupWithHttpMessagesAsync(Guid? groupid = default(Guid?), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
         /// Search for all members and subgroups of a group
         /// </summary>
         /// <param name='groupid'>
@@ -321,7 +435,7 @@ namespace SINners
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse<SINSearchGroupResult>> GetGroupMembersWithHttpMessagesAsync(Guid? groupid = default(Guid?), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<ResultGroupGetSearchGroups>> GetGroupmembersByIdWithHttpMessagesAsync(Guid? groupid = default(Guid?), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <param name='searchTag'>
         /// </param>

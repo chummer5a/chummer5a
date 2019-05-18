@@ -57,7 +57,7 @@ namespace Chummer.Backend.Attributes
 		/// <param name="character"></param>
 		/// <param name="abbrev"></param>
 		/// <param name="enumCategory"></param>
-		public CharacterAttrib(Character character, string abbrev, AttributeCategory enumCategory = AttributeCategory.Standard)
+		public CharacterAttrib(Character character, string abbrev, AttributeCategory enumCategory)
         {
 	        _strAbbrev = abbrev;
             _enumMetatypeCategory = enumCategory;
@@ -131,7 +131,15 @@ namespace Chummer.Backend.Attributes
                 _intBase = 0;
             if (_intKarma < 0)
                 _intKarma = 0;
-	        _enumMetatypeCategory = ConvertToMetatypeAttributeCategory(objNode["metatypecategory"]?.InnerText ?? "Standard");
+            if (Abbrev == "MAG" || Abbrev == "MAGAdept" || Abbrev == "RES" || Abbrev == "DEP" || Abbrev == "EDG")
+            {
+                _enumMetatypeCategory = AttributeCategory.Special;
+            }
+            else
+            {
+                _enumMetatypeCategory =
+                    ConvertToMetatypeAttributeCategory(objNode["metatypecategory"]?.InnerText ?? "Standard");
+            }
         }
 
         /// <summary>

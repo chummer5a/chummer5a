@@ -20,17 +20,29 @@
  using System.Diagnostics;
 using System.IO;
 using System.Linq;
+ using System.Net;
+ using System.Net.Sockets;
  using System.Runtime;
  using System.Threading;
  using System.Windows.Forms;
 ﻿using Chummer.Backend;
+ using Microsoft.ApplicationInsights;
+ using Microsoft.ApplicationInsights.DataContracts;
+ using Microsoft.ApplicationInsights.Extensibility;
+ using Microsoft.ApplicationInsights.NLogTarget;
+ using NLog;
+ using NLog.Config;
 
 [assembly: CLSCompliant(true)]
 namespace Chummer
 {
     internal static class Program
     {
+        private static Logger Log = null;
         private const string strChummerGuid = "eb0759c1-3599-495e-8bc5-57c8b3e1b31c";
+        private static TelemetryConfiguration ApplicationInsightsConfig = new TelemetryConfiguration { InstrumentationKey = "012fd080-80dc-4c10-97df-4f2cf8c805d5" };
+        public static readonly TelemetryClient ApplicationInsightsTelemetryClient = new TelemetryClient(ApplicationInsightsConfig);
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -64,7 +76,10 @@ namespace Chummer
 
                 sw.TaskEnd("fixcwd");
                 //Log exceptions that is caught. Wanting to know about this cause of performance
-                AppDomain.CurrentDomain.FirstChanceException += Log.FirstChanceException;
+                AppDomain.CurrentDomain.FirstChanceException += (sender, e) =>
+                {
+                    //Console.WriteLine(e.Exception.ToString());
+                };
                 AppDomain.CurrentDomain.FirstChanceException += ExceptionHeatmap.OnException;
 
                 sw.TaskEnd("appdomain 2");
@@ -72,8 +87,7 @@ namespace Chummer
                 string strInfo =
                     $"Application Chummer5a build {System.Reflection.Assembly.GetExecutingAssembly().GetName().Version} started at {DateTime.UtcNow} with command line arguments {Environment.CommandLine}";
                 sw.TaskEnd("infogen");
-
-                Log.Info(strInfo);
+             
                 sw.TaskEnd("infoprnt");
 
                 Application.EnableVisualStyles();
@@ -107,14 +121,105 @@ namespace Chummer
                     return;
                 }
 
+                try
+                {
+                    LogManager.ThrowExceptions = true;
+                    ConfigurationItemFactory.Default.Targets.RegisterDefinition(
+                        "ApplicationInsightsTarget",
+                        typeof(Microsoft.ApplicationInsights.NLogTarget.ApplicationInsightsTarget)
+                    );
+                    Log = NLog.LogManager.GetCurrentClassLogger();
+                    if (GlobalOptions.UseLogging)
+                    {
+                        foreach (var rule in NLog.LogManager.Configuration.LoggingRules.ToList())
+                        {
+                            //only change the loglevel, if it's off - otherwise it has been changed manually
+                            if (rule.Levels.Count == 0)
+                                rule.EnableLoggingForLevels(LogLevel.Debug, LogLevel.Fatal);
+                        }
+                    }
+                    Log.Info(strInfo);
+                    Log.Info("NLog initialized");
+                    if (GlobalOptions.UseLoggingApplicationInsights)
+                    {
+#if DEBUG
+                        //If you set true as DeveloperMode (see above), you can see the sending telemetry in the debugging output window in IDE.
+                        TelemetryConfiguration.Active.TelemetryChannel.DeveloperMode = true;
+#else
+                        TelemetryConfiguration.Active.TelemetryChannel.DeveloperMode = false;
+#endif
+                        // Set session data:
+                        ApplicationInsightsTelemetryClient.Context.User.Id = Environment.UserName;
+                        ApplicationInsightsTelemetryClient.Context.Session.Id = Guid.NewGuid().ToString();
+                        ApplicationInsightsTelemetryClient.Context.Device.OperatingSystem = Environment.OSVersion.ToString();
+                        ApplicationInsightsTelemetryClient.Context.Device.Id = Dns.GetHostName();
+                        ApplicationInsightsTelemetryClient.Context.Component.Version = System.Reflection.Assembly
+                            .GetExecutingAssembly().GetName().Version.ToString();
+                        ApplicationInsightsTelemetryClient.Context.Location.Ip = GetLocalIPAddress();
+                        TelemetryConfiguration.Active.TelemetryInitializers.Add(new CustomTelemetryInitializer());
+                        //for now lets disable live view. We may make another GlobalOption to enable it at a later stage...
+                        //var live = new LiveStreamProvider(ApplicationInsightsConfig);
+                        //live.Enable();
+
+                        // Log a page view:
+                        PageViewTelemetry pvt = new PageViewTelemetry("Program.Main()");
+                        pvt.Properties.Add("version", System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString());
+                        pvt.Properties.Add("parameters", Environment.CommandLine);
+                        ApplicationInsightsTelemetryClient.TrackPageView(pvt);
+                    }
+                    else
+                    {
+                        TelemetryConfiguration.Active.DisableTelemetry = true;
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
+
+                
+
+                //make sure the Settings are upgraded/preserved after an upgrade
+                //see for details: https://stackoverflow.com/questions/534261/how-do-you-keep-user-config-settings-across-different-assembly-versions-in-net/534335#534335
+                if (Properties.Settings.Default.UpgradeRequired)
+                {
+                    Properties.Settings.Default.Upgrade();
+                    Properties.Settings.Default.UpgradeRequired = false;
+                    Properties.Settings.Default.Save();
+                }
+
                 // Make sure the default language has been loaded before attempting to open the Main Form.
                 LanguageManager.TranslateWinForm(GlobalOptions.Language, null);
 
                 MainForm = new frmChummerMain();
                 Application.Run(MainForm);
+                if (GlobalOptions.UseLoggingApplicationInsights)
+                {
+                    if (ApplicationInsightsTelemetryClient != null)
+                    {
+                        ApplicationInsightsTelemetryClient.Flush();
+                        //we have to wait a bit to give it time to upload the data
+                        Console.WriteLine("Waiting a bit to flush logging data...");
+                        Thread.Sleep(5000);
+                    }
 
+                }
                 Log.Info(ExceptionHeatmap.GenerateInfo());
             }
+        }
+
+        public static string GetLocalIPAddress()
+        {
+            var host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (var ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    return ip.ToString();
+                }
+            }
+            //throw new Exception("No network adapters with an IPv4 address in the system!");
+            return null;
         }
 
         /// <summary>

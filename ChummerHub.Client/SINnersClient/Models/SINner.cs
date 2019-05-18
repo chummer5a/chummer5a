@@ -21,18 +21,44 @@ namespace SINners.Models
         /// <summary>
         /// Initializes a new instance of the SINner class.
         /// </summary>
-        public SINner(Guid? id = default(Guid?), string downloadUrl = default(string), DateTime? uploadDateTime = default(DateTime?), DateTime? lastChange = default(DateTime?), string language = default(string), SINnerMetaData siNnerMetaData = default(SINnerMetaData), string jsonSummary = default(string), SINnerGroup myGroup = default(SINnerGroup), string alias = default(string))
+        public SINner(string editionNumber = default(string), string language = default(string), SINnerMetaData siNnerMetaData = default(SINnerMetaData), SINnerGroup myGroup = default(SINnerGroup), string alias = default(string), Guid? id = default(Guid?), string downloadUrl = default(string), DateTime? uploadDateTime = default(DateTime?), DateTime? lastChange = default(DateTime?), string fileName = default(string))
         {
+            EditionNumber = editionNumber;
+            Language = language;
+            SiNnerMetaData = siNnerMetaData;
+            MyGroup = myGroup;
+            Alias = alias;
             Id = id;
             DownloadUrl = downloadUrl;
             UploadDateTime = uploadDateTime;
             LastChange = lastChange;
-            Language = language;
-            SiNnerMetaData = siNnerMetaData;
-            JsonSummary = jsonSummary;
-            MyGroup = myGroup;
-            Alias = alias;
+            FileName = fileName;
         }
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "editionNumber")]
+        public string EditionNumber { get; set; }
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "language")]
+        public string Language { get; set; }
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "siNnerMetaData")]
+        public SINnerMetaData SiNnerMetaData { get; set; }
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "myGroup")]
+        public SINnerGroup MyGroup { get; set; }
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "alias")]
+        public string Alias { get; set; }
 
         /// <summary>
         /// </summary>
@@ -56,34 +82,21 @@ namespace SINners.Models
 
         /// <summary>
         /// </summary>
-        [JsonProperty(PropertyName = "language")]
-        public string Language { get; set; }
-
-        /// <summary>
-        /// </summary>
-        [JsonProperty(PropertyName = "siNnerMetaData")]
-        public SINnerMetaData SiNnerMetaData { get; set; }
-
-        /// <summary>
-        /// </summary>
-        [JsonProperty(PropertyName = "jsonSummary")]
-        public string JsonSummary { get; set; }
-
-        /// <summary>
-        /// </summary>
-        [JsonProperty(PropertyName = "myGroup")]
-        public SINnerGroup MyGroup { get; set; }
-
-        /// <summary>
-        /// </summary>
-        [JsonProperty(PropertyName = "alias")]
-        public string Alias { get; set; }
+        [JsonProperty(PropertyName = "fileName")]
+        public string FileName { get; private set; }
 
         /// <summary>
         /// Validate the object. Throws ValidationException if validation fails.
         /// </summary>
         public virtual void Validate()
         {
+            if (this.EditionNumber != null)
+            {
+                if (this.EditionNumber.Length > 2)
+                {
+                    throw new ValidationException(ValidationRules.MaxLength, "EditionNumber", 2);
+                }
+            }
             if (this.Language != null)
             {
                 if (this.Language.Length > 6)

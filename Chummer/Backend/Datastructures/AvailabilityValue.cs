@@ -24,11 +24,16 @@ namespace Chummer
     public struct AvailabilityValue : IComparable
     {
         private readonly bool _blnAddToParent;
-        private readonly int _intValue;
+        private int _intValue;
         private readonly char _chrSuffix;
 
         public bool AddToParent => _blnAddToParent;
-        public int Value => _intValue;
+        public int Value
+        {
+            get => _intValue;
+            set => _intValue = value;
+        }
+
         public char Suffix => _chrSuffix;
 
         public AvailabilityValue(int intValue, char chrSuffix, bool blnAddToParent)
@@ -45,6 +50,22 @@ namespace Chummer
                     _chrSuffix = 'Z';
                     break;
             }
+        }
+
+        public AvailabilityValue(int intRating, string strInput)
+        {
+            string strAvailExpr = strInput;
+            if (strAvailExpr.StartsWith("FixedValues("))
+            {
+                string[] strValues = strAvailExpr.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                strAvailExpr = strValues[(int)Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
+            }
+
+            _chrSuffix = strAvailExpr[strAvailExpr.Length - 1];
+            _blnAddToParent = strAvailExpr.StartsWith('+') || strAvailExpr.StartsWith('-');
+            if (_chrSuffix == 'F' || _chrSuffix == 'R') strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
+            object objProcess = CommonFunctions.EvaluateInvariantXPath(strAvailExpr.Replace("Rating", intRating.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
+            _intValue = blnIsSuccess ? Convert.ToInt32(objProcess) : 0;
         }
 
         public override string ToString()

@@ -70,36 +70,38 @@ namespace Chummer
             //in Career Mode. Create mode manages itself.
             int intFreeGenericSpells = ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.FreeSpells);
             int intFreeTouchOnlySpells = 0;
-            foreach (Improvement imp in _objCharacter.Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.FreeSpellsATT && i.Enabled))
+            foreach (Improvement imp in _objCharacter.Improvements.Where(i => (i.ImproveType == Improvement.ImprovementType.FreeSpellsATT || i.ImproveType == Improvement.ImprovementType.FreeSpellsSkill) && i.Enabled))
             {
-                if (imp.ImproveType == Improvement.ImprovementType.FreeSpellsATT)
+                switch (imp.ImproveType)
                 {
-                    int intAttValue = _objCharacter.GetAttribute(imp.ImprovedName).TotalValue;
-                    if (imp.UniqueName.Contains("half"))
-                        intAttValue = (intAttValue + 1) / 2;
-                    if (imp.UniqueName.Contains("touchonly"))
-                        intFreeTouchOnlySpells += intAttValue;
-                    else
-                        intFreeGenericSpells += intAttValue;
-                }
-                else if (imp.ImproveType == Improvement.ImprovementType.FreeSpellsSkill)
-                {
-                    Skill skill = _objCharacter.SkillsSection.GetActiveSkill(imp.ImprovedName);
-                    int intSkillValue = _objCharacter.SkillsSection.GetActiveSkill(imp.ImprovedName).TotalBaseRating;
-                    if (imp.UniqueName.Contains("half"))
-                        intSkillValue = (intSkillValue + 1) / 2;
-                    if (imp.UniqueName.Contains("touchonly"))
-                        intFreeTouchOnlySpells += intSkillValue;
-                    else
-                        intFreeGenericSpells += intSkillValue;
-                    //TODO: I don't like this being hardcoded, even though I know full well CGL are never going to reuse this.
-                    foreach (SkillSpecialization spec in skill.Specializations)
-                    {
-                        if (_objCharacter.Spells.Any(spell => spell.Category == spec.Name && !spell.FreeBonus))
+                    case Improvement.ImprovementType.FreeSpellsATT:
+                        int intAttValue = _objCharacter.GetAttribute(imp.ImprovedName).TotalValue;
+                        if (imp.UniqueName.Contains("half"))
+                            intAttValue = (intAttValue + 1) / 2;
+                        if (imp.UniqueName.Contains("touchonly"))
+                            intFreeTouchOnlySpells += intAttValue;
+                        else
+                            intFreeGenericSpells += intAttValue;
+                        break;
+                    case Improvement.ImprovementType.FreeSpellsSkill:
+                        Skill skill = _objCharacter.SkillsSection.GetActiveSkill(imp.ImprovedName);
+                        int intSkillValue = _objCharacter.SkillsSection.GetActiveSkill(imp.ImprovedName).TotalBaseRating;
+                        if (imp.UniqueName.Contains("half"))
+                            intSkillValue = (intSkillValue + 1) / 2;
+                        if (imp.UniqueName.Contains("touchonly"))
+                            intFreeTouchOnlySpells += intSkillValue;
+                        else
+                            intFreeGenericSpells += intSkillValue;
+                        //TODO: I don't like this being hardcoded, even though I know full well CGL are never going to reuse this.
+                        foreach (SkillSpecialization spec in skill.Specializations)
                         {
-                            intFreeGenericSpells++;
+                            if (_objCharacter.Spells.Any(spell => spell.Category == spec.Name && !spell.FreeBonus))
+                            {
+                                intFreeGenericSpells++;
+                            }
                         }
-                    }
+
+                        break;
                 }
             }
             int intTotalFreeNonTouchSpellsCount = _objCharacter.Spells.Count(spell => spell.FreeBonus && (spell.Range != "T" && spell.Range != "T (A)"));
@@ -326,7 +328,7 @@ namespace Chummer
                     if (_objCharacter.AdeptEnabled && !_objCharacter.MagicianEnabled)
                     {
                         if (!((strSpellCategory == "Rituals" && !strDescriptor.Contains("Spell")) ||
-                            (_blnCanTouchOnlySpellBeFree && objXmlSpell.SelectSingleNode("range")?.Value == "T")))
+                            (_blnCanTouchOnlySpellBeFree && (objXmlSpell.SelectSingleNode("range")?.Value == "T") || objXmlSpell.SelectSingleNode("range")?.Value == "T (A)")))
                             continue;
                     }
                     else if (!_objCharacter.AdeptEnabled && strDescriptor.Contains("Adept"))
@@ -498,49 +500,9 @@ namespace Chummer
             {
                 switch (strDescriptor.Trim())
                 {
-                    case "Active":
-                        objDescriptors.Append(LanguageManager.GetString("String_DescActive", GlobalOptions.Language));
-                        objDescriptors.Append(", ");
-                        break;
-                    case "Adept":
-                        objDescriptors.Append(LanguageManager.GetString("String_DescAdept", GlobalOptions.Language));
-                        objDescriptors.Append(", ");
-                        break;
                     case "Alchemical Preparation":
                         blnAlchemicalFound = true;
                         objDescriptors.Append(LanguageManager.GetString("String_DescAlchemicalPreparation", GlobalOptions.Language));
-                        objDescriptors.Append(", ");
-                        break;
-                    case "Area":
-                        objDescriptors.Append(LanguageManager.GetString("String_DescArea", GlobalOptions.Language));
-                        objDescriptors.Append(", ");
-                        break;
-                    case "Anchored":
-                        objDescriptors.Append(LanguageManager.GetString("String_DescAnchored", GlobalOptions.Language));
-                        objDescriptors.Append(", ");
-                        break;
-                    case "Blood":
-                        objDescriptors.Append(LanguageManager.GetString("String_DescBlood", GlobalOptions.Language));
-                        objDescriptors.Append(", ");
-                        break;
-                    case "Contractual":
-                        objDescriptors.Append(LanguageManager.GetString("String_DescContractual", GlobalOptions.Language));
-                        objDescriptors.Append(", ");
-                        break;
-                    case "Direct":
-                        objDescriptors.Append(LanguageManager.GetString("String_DescDirect", GlobalOptions.Language));
-                        objDescriptors.Append(", ");
-                        break;
-                    case "Directional":
-                        objDescriptors.Append(LanguageManager.GetString("String_DescDirectional", GlobalOptions.Language));
-                        objDescriptors.Append(", ");
-                        break;
-                    case "Elemental":
-                        objDescriptors.Append(LanguageManager.GetString("String_DescElemental", GlobalOptions.Language));
-                        objDescriptors.Append(", ");
-                        break;
-                    case "Environmental":
-                        objDescriptors.Append(LanguageManager.GetString("String_DescEnvironmental", GlobalOptions.Language));
                         objDescriptors.Append(", ");
                         break;
                     case "Extended Area":
@@ -548,78 +510,27 @@ namespace Chummer
                         objDescriptors.Append(LanguageManager.GetString("String_DescExtendedArea", GlobalOptions.Language));
                         objDescriptors.Append(", ");
                         break;
-                    case "Geomancy":
-                        objDescriptors.Append(LanguageManager.GetString("String_DescGeomancy", GlobalOptions.Language));
-                        objDescriptors.Append(", ");
-                        break;
-                    case "Indirect":
-                        objDescriptors.Append(LanguageManager.GetString("String_DescIndirect", GlobalOptions.Language));
-                        objDescriptors.Append(", ");
-                        break;
-                    case "Mana":
-                        objDescriptors.Append(LanguageManager.GetString("String_DescMana", GlobalOptions.Language));
-                        objDescriptors.Append(", ");
-                        break;
                     case "Material Link":
                         objDescriptors.Append(LanguageManager.GetString("String_DescMaterialLink", GlobalOptions.Language));
-                        objDescriptors.Append(", ");
-                        break;
-                    case "Mental":
-                        objDescriptors.Append(LanguageManager.GetString("String_DescMental", GlobalOptions.Language));
-                        objDescriptors.Append(", ");
-                        break;
-                    case "Minion":
-                        objDescriptors.Append(LanguageManager.GetString("String_DescMinion", GlobalOptions.Language));
                         objDescriptors.Append(", ");
                         break;
                     case "Multi-Sense":
                         objDescriptors.Append(LanguageManager.GetString("String_DescMultiSense", GlobalOptions.Language));
                         objDescriptors.Append(", ");
                         break;
-                    case "Negative":
-                        objDescriptors.Append(LanguageManager.GetString("String_DescNegative", GlobalOptions.Language));
-                        objDescriptors.Append(", ");
-                        break;
-                    case "Obvious":
-                        objDescriptors.Append(LanguageManager.GetString("String_DescObvious", GlobalOptions.Language));
-                        objDescriptors.Append(", ");
-                        break;
                     case "Organic Link":
                         objDescriptors.Append(LanguageManager.GetString("String_DescOrganicLink", GlobalOptions.Language));
-                        objDescriptors.Append(", ");
-                        break;
-                    case "Passive":
-                        objDescriptors.Append(LanguageManager.GetString("String_DescPassive", GlobalOptions.Language));
-                        objDescriptors.Append(", ");
-                        break;
-                    case "Physical":
-                        objDescriptors.Append(LanguageManager.GetString("String_DescPhysical", GlobalOptions.Language));
-                        objDescriptors.Append(", ");
-                        break;
-                    case "Psychic":
-                        objDescriptors.Append(LanguageManager.GetString("String_DescPsychic", GlobalOptions.Language));
-                        objDescriptors.Append(", ");
-                        break;
-                    case "Realistic":
-                        objDescriptors.Append(LanguageManager.GetString("String_DescRealistic", GlobalOptions.Language));
                         objDescriptors.Append(", ");
                         break;
                     case "Single-Sense":
                         objDescriptors.Append(LanguageManager.GetString("String_DescSingleSense", GlobalOptions.Language));
                         objDescriptors.Append(", ");
                         break;
-                    case "Touch":
-                        objDescriptors.Append(LanguageManager.GetString("String_DescTouch", GlobalOptions.Language));
+                    default:
+                        objDescriptors.Append(LanguageManager.GetString($"String_Desc{strDescriptor.Trim()}", GlobalOptions.Language));
                         objDescriptors.Append(", ");
                         break;
-                    case "Spell":
-                        objDescriptors.Append(LanguageManager.GetString("String_DescSpell", GlobalOptions.Language));
-                        objDescriptors.Append(", ");
-                        break;
-                    case "Spotter":
-                        objDescriptors.Append(LanguageManager.GetString("String_DescSpotter", GlobalOptions.Language));
-                        objDescriptors.Append(", ");
-                        break;
+
                 }
             }
 

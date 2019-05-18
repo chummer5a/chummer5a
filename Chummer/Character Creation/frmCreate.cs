@@ -529,7 +529,7 @@ namespace Chummer
 
             // Select the Magician's Tradition.
             if (CharacterObject.MagicTradition.Type == TraditionType.MAG)
-                cboTradition.SelectedValue = CharacterObject.MagicTradition.SourceID;
+                cboTradition.SelectedValue = CharacterObject.MagicTradition.SourceID.ToString();
             else if (cboTradition.SelectedIndex == -1 && cboTradition.Items.Count > 0)
                 cboTradition.SelectedIndex = 0;
 
@@ -537,7 +537,7 @@ namespace Chummer
 
             // Select the Technomancer's Stream.
             if (CharacterObject.MagicTradition.Type == TraditionType.RES)
-                cboStream.SelectedValue = CharacterObject.MagicTradition.SourceID;
+                cboStream.SelectedValue = CharacterObject.MagicTradition.SourceID.ToString();
             else if (cboStream.SelectedIndex == -1 && cboStream.Items.Count > 0)
                 cboStream.SelectedIndex = 0;
 
@@ -876,7 +876,7 @@ namespace Chummer
                 case nameof(Character.MetatypeBP):
                 case nameof(Character.BuildKarma):
                 case nameof(Character.ContactPoints):
-                case nameof(Character.SpellLimit):
+                case nameof(Character.FreeSpells):
                 case nameof(Character.CFPLimit):
                 case nameof(Character.AIAdvancedProgramLimit):
                 case nameof(Character.SpellKarmaCost):
@@ -1664,7 +1664,7 @@ namespace Chummer
                         for (int k = 0; k < CharacterObject.Qualities.Count; ++k)
                         {
                             Quality objCheckQuality = CharacterObject.Qualities[k];
-                            if (j != k && objCheckQuality.QualityId == objQuality.QualityId && objCheckQuality.Extra == objQuality.Extra && objCheckQuality.SourceName == objQuality.SourceName)
+                            if (j != k && objCheckQuality.SourceIDString == objQuality.SourceIDString && objCheckQuality.Extra == objQuality.Extra && objCheckQuality.SourceName == objQuality.SourceName)
                             {
                                 if (k < j || objCheckQuality.OriginSource == QualitySource.Improvement || (lstInternalIdFilter != null && !lstInternalIdFilter.Contains(objCheckQuality.InternalId)))
                                 {
@@ -1915,7 +1915,7 @@ namespace Chummer
                                 dicPairableCyberwares.Add(objCyberware, 1);
                         }
                         TreeNode objWareNode = objCyberware.SourceID == Cyberware.EssenceHoleGUID || objCyberware.SourceID == Cyberware.EssenceAntiHoleGUID
-                            ? treCyberware.FindNode(objCyberware.SourceID.ToString("D"))
+                            ? treCyberware.FindNode(objCyberware.SourceIDString)
                             : treCyberware.FindNode(objCyberware.InternalId);
                         if (objWareNode != null)
                             objWareNode.Text = objCyberware.DisplayName(GlobalOptions.Language);
@@ -1963,7 +1963,7 @@ namespace Chummer
                             if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(objCyberware.Extra))
                                 objCyberware.Extra = ImprovementManager.SelectedValue;
                             TreeNode objNode = objLoopCyberware.SourceID == Cyberware.EssenceHoleGUID || objCyberware.SourceID == Cyberware.EssenceAntiHoleGUID
-                                ? treCyberware.FindNode(objCyberware.SourceID.ToString("D"))
+                                ? treCyberware.FindNode(objCyberware.SourceIDString)
                                 : treCyberware.FindNode(objLoopCyberware.InternalId);
                             if (objNode != null)
                                 objNode.Text = objLoopCyberware.DisplayName(GlobalOptions.Language);
@@ -4278,7 +4278,7 @@ namespace Chummer
             
             if (objSelectedQuality.Type == QualityType.LifeModule)
             {
-                objXmlDeleteQuality = Quality.GetNodeOverrideable(objSelectedQuality.QualityId, XmlManager.Load("lifemodules.xml", GlobalOptions.Language));
+                objXmlDeleteQuality = Quality.GetNodeOverrideable(objSelectedQuality.SourceIDString, XmlManager.Load("lifemodules.xml", GlobalOptions.Language));
             }
             
             // Fix for legacy characters with old addqualities improvements.
@@ -4290,7 +4290,7 @@ namespace Chummer
                 for (int i = CharacterObject.Qualities.Count-1; i >= 0; i--)
                 {
                     Quality objLoopQuality = CharacterObject.Qualities[i];
-                    if (objLoopQuality.QualityId == objSelectedQuality.QualityId && objLoopQuality.Extra == objSelectedQuality.Extra &&
+                    if (objLoopQuality.SourceIDString == objSelectedQuality.SourceIDString && objLoopQuality.Extra == objSelectedQuality.Extra &&
                         objLoopQuality.SourceName == objSelectedQuality.SourceName && objLoopQuality.Type == objSelectedQuality.Type)
                     {
                         // Remove the Improvements that were created by the Quality.
@@ -4649,7 +4649,7 @@ namespace Chummer
         private void tsCyberwareAddAsPlugin_Click(object sender, EventArgs e)
         {
             // Make sure a parent items is selected, then open the Select Cyberware window.
-            if (!(treCyberware.SelectedNode?.Tag is Cyberware objCyberware))
+            if (!(treCyberware.SelectedNode?.Tag is Cyberware objCyberware && !string.IsNullOrWhiteSpace(objCyberware?.AllowedSubsystems)))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectCyberware", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectCyberware", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -4666,7 +4666,7 @@ namespace Chummer
         private void tsVehicleCyberwareAddAsPlugin_Click(object sender, EventArgs e)
         {
             // Make sure a parent items is selected, then open the Select Cyberware window.
-            if (!(treVehicles.SelectedNode?.Tag is Cyberware objCyberware))
+            if (!(treVehicles.SelectedNode?.Tag is Cyberware objCyberware && !string.IsNullOrWhiteSpace(objCyberware?.AllowedSubsystems)))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectCyberware", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectCyberware", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -4792,7 +4792,7 @@ namespace Chummer
             {
                 XmlNode objXmlArmor = objArmor.GetNode();
 
-                frmSelectArmorMod frmPickArmorMod = new frmSelectArmorMod(CharacterObject)
+                frmSelectArmorMod frmPickArmorMod = new frmSelectArmorMod(CharacterObject, objArmor)
                 {
                     ArmorCost = objArmor.OwnCost,
                     ArmorCapacity = Convert.ToDecimal(objArmor.CalculatedCapacity, GlobalOptions.CultureInfo),
@@ -7185,7 +7185,7 @@ namespace Chummer
                 // Removing levels
                 for (; nudQualityLevel.Value < intCurrentLevels; --intCurrentLevels)
                 {
-                    Quality objInvisibleQuality = CharacterObject.Qualities.FirstOrDefault(x => x.QualityId == objSelectedQuality.QualityId && x.Extra == objSelectedQuality.Extra && x.SourceName == objSelectedQuality.SourceName && x.InternalId != objSelectedQuality.InternalId);
+                    Quality objInvisibleQuality = CharacterObject.Qualities.FirstOrDefault(x => x.SourceIDString == objSelectedQuality.SourceIDString && x.Extra == objSelectedQuality.Extra && x.SourceName == objSelectedQuality.SourceName && x.InternalId != objSelectedQuality.InternalId);
                     if (objInvisibleQuality != null && RemoveQuality(objInvisibleQuality, false, false))
                     {
                         blnRequireUpdate = true;
@@ -8728,7 +8728,7 @@ namespace Chummer
                 else
                 {
                     CharacterObject.MagicTradition.ResetTradition();
-                    cboTradition.SelectedValue = CharacterObject.MagicTradition.SourceID;
+                    cboTradition.SelectedValue = CharacterObject.MagicTradition.SourceID.ToString();
                 }
             }
             else
@@ -8782,7 +8782,7 @@ namespace Chummer
             if (IsLoading || IsRefreshing || CharacterObject.MagicTradition.Type == TraditionType.MAG)
                 return;
             string strSelectedId = cboStream.SelectedValue?.ToString();
-            if (string.IsNullOrEmpty(strSelectedId) || strSelectedId == CharacterObject.MagicTradition.strSourceID)
+            if (string.IsNullOrEmpty(strSelectedId) || strSelectedId == CharacterObject.MagicTradition.SourceIDString)
                 return;
 
             XmlNode xmlNewStreamNode = XmlManager.Load("streams.xml").SelectSingleNode("/chummer/traditions/tradition[id = \"" + strSelectedId + "\"]");
@@ -9580,7 +9580,7 @@ namespace Chummer
                 int spellCost = CharacterObject.SpellKarmaCost("Spells");
                 int ritualCost = CharacterObject.SpellKarmaCost("Rituals");
                 int prepCost = CharacterObject.SpellKarmaCost("Preparations");
-                int limit = CharacterObject.SpellLimit;
+                int limit = CharacterObject.FreeSpells;
 
                 // It is only karma-efficient to use spell points for Mastery qualities if real spell karma cost is not greater than unmodified spell karma cost
                 if (spellCost <= CharacterObjectOptions.KarmaSpell)
@@ -11572,14 +11572,14 @@ namespace Chummer
             objCyberware.Create(objXmlCyberware, frmPickCyberware.SelectedGrade, objSource, frmPickCyberware.SelectedRating, lstWeapons, lstVehicles, true, true, string.Empty, objSelectedCyberware);
             if (objCyberware.InternalId.IsEmptyGuid())
                 return false;
-            
+
             if (objCyberware.SourceID == Cyberware.EssenceAntiHoleGUID)
             {
-                CharacterObject.DecreaseEssenceHole((int)(objCyberware.CalculatedESS() * 100));
+                CharacterObject.DecreaseEssenceHole(objCyberware.Rating);
             }
             else if (objCyberware.SourceID == Cyberware.EssenceHoleGUID)
             {
-                CharacterObject.IncreaseEssenceHole((int)(objCyberware.CalculatedESS() * 100));
+                CharacterObject.IncreaseEssenceHole(objCyberware.Rating);
             }
             else
             {
@@ -16019,6 +16019,15 @@ namespace Chummer
             IsDirty = true;
         }
         #endregion
+
+        private void btnDeleteCustomDrug_Click(object sender, EventArgs e)
+        {
+            if (!(treCustomDrugs.SelectedNode?.Tag is ICanRemove selectedObject)) return;
+            if (!selectedObject.Remove(CharacterObject, CharacterObjectOptions.ConfirmDelete)) return;
+
+            IsCharacterUpdateRequested = true;
+            IsDirty = true;
+        }
     }
 }
 

@@ -392,7 +392,7 @@
         </gear>
       </gears>
       <mods>
-        <name rating="1">Metahuman Adjustment</name>
+        <name rating="2">Metahuman Adjustment</name>
       </mods>
       <seats>2</seats>
     </vehicle>
@@ -3364,7 +3364,7 @@
         </gear>
       </gears>
       <mods>
-        <name rating="1">Metahuman Adjustment</name>
+        <name rating="10">Metahuman Adjustment</name>
       </mods>
       <seats>20</seats>
     </vehicle>
@@ -6374,7 +6374,7 @@
       <source>SS</source>
       <accel>1</accel>
       <armor>1</armor>
-      <avail>50</avail>
+      <avail>0</avail>
       <body>2</body>
       <category>Drones: Medium</category>
       <cost>Variable(700-1500)</cost>
@@ -7852,7 +7852,7 @@
       <mods>
         <name>Off-Road Suspension</name>
         <name rating="2">Anti-Theft System</name>
-        <name>Metahuman Adjustment</name>
+        <name rating="3">Metahuman Adjustment</name>
       </mods>
       <seats>3</seats>
     </vehicle>
@@ -8037,7 +8037,7 @@
         </gear>
       </gears>
       <mods>
-        <name>Metahuman Adjustment</name>
+        <name rating="4">Metahuman Adjustment</name>
       </mods>
       <seats>4</seats>
     </vehicle>
@@ -8100,7 +8100,7 @@
         <name>Amenities (Middle)</name>
         <name>Interior Cameras</name>
         <name>SunCell</name>
-        <name>Metahuman Adjustment</name>
+        <name rating="25">Metahuman Adjustment</name>
       </mods>
       <seats>50</seats>
     </vehicle>
@@ -8919,7 +8919,7 @@
         </gear>
       </gears>
       <mods>
-        <name>Metahuman Adjustment</name>
+        <name rating="1">Metahuman Adjustment</name>
       </mods>
       <seats>1</seats>
     </vehicle>
@@ -8946,7 +8946,7 @@
         </gear>
       </gears>
       <mods>
-        <name>Metahuman Adjustment</name>
+        <name rating="8">Metahuman Adjustment</name>
       </mods>
       <seats>8</seats>
     </vehicle>
@@ -9493,7 +9493,7 @@
         <name>Removed Manual Controls</name>
         <name>Off-Road Suspension</name>
         <name>GridLink</name>
-        <name>Metahuman Adjustment</name>
+        <name rating="4">Metahuman Adjustment</name>
         <name>Rigger Interface</name>
       </mods>
       <seats>4</seats>
@@ -10074,7 +10074,7 @@
     </vehicle>
     <vehicle>
       <id>8eaa5090-5fcb-42b4-9e96-ef408096d2a1</id>
-      <name>Skiorsky-Bell Condor</name>
+      <name>Sikorsky-Bell Condor</name>
       <page>174</page>
       <source>NF</source>
       <accel>2</accel>
@@ -10097,6 +10097,60 @@
       <seats>2</seats>
     </vehicle>
     <!-- End Region -->
+    <!-- Region SOTA 2080 -->	
+	<vehicle>
+      <id>1b47defa-56d5-4827-b57b-2b4d7b1051a0</id>
+      <name>BMW GGX Sandleopard</name>
+      <page>15</page>
+      <source>SOTG</source>
+      <accel>2</accel>
+      <armor>9</armor>
+      <avail>0</avail>
+      <body>8</body>
+      <category>Bikes</category>
+      <cost>15000</cost>
+      <handling>3/5</handling>
+      <pilot>2</pilot>
+      <sensor>3</sensor>
+      <speed>4</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>2</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name>Off-Road Suspension</name>
+        <name rating="1">Anti-Theft System</name>
+        <name>Multifuel Engine</name>
+      </mods>
+      <seats>2</seats>
+    </vehicle>
+    <vehicle>
+      <id>e5fc5640-a49c-4b01-98b0-6456b867fb4c</id>
+      <name>Jena Robotik Mewero (Minidrone)</name>
+      <page>23</page>
+      <source>SOTG</source>
+      <accel>1</accel>
+      <armor>0</armor>
+      <avail>6</avail>
+      <body>1</body>
+      <category>Drones: Mini</category>
+      <cost>2500</cost>
+      <handling>3</handling>
+      <pilot>2</pilot>
+      <sensor>3</sensor>
+      <speed>1</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>3</rating>
+          <maxrating>3</maxrating>
+        </gear>
+      </gears>
+    </vehicle>
+    <!-- End Region -->	
   </vehicles>
   <mods>
     <!-- Region Vehicle Weapon Mount -->

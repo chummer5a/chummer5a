@@ -26,6 +26,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Backend.Attributes;
+using NLog;
 
 namespace Chummer.Backend.Equipment
 {
@@ -35,7 +36,9 @@ namespace Chummer.Backend.Equipment
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     public class WeaponMount : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, ICanEquip, IHasSource, ICanSort, IHasStolenProperty
     {
-		private Guid _guiID;
+        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private Guid _guiID;
+        private Guid _guiSourceID;
 		private decimal _decMarkup;
 		private string _strAvail = string.Empty;
 		private string _strSource = string.Empty;
@@ -78,7 +81,13 @@ namespace Chummer.Backend.Equipment
         public void Create(XmlNode objXmlMod, decimal decMarkup = 0)
         {
             if (objXmlMod == null) Utils.BreakIfDebug();
-            objXmlMod.TryGetStringFieldQuickly("id", ref _strSourceId);
+            if (!objXmlMod.TryGetField("id", Guid.TryParse, out _guiSourceID))
+            {
+                Log.Warn(new object[] { "Missing id field for xmlnode", objXmlMod });
+                Utils.BreakIfDebug();
+            }
+            else
+                _objCachedMyXmlNode = null;
             objXmlMod.TryGetStringFieldQuickly("name", ref _strName);
             objXmlMod.TryGetStringFieldQuickly("category", ref _strCategory);
             objXmlMod.TryGetStringFieldQuickly("limit", ref _strLimit);
@@ -136,8 +145,8 @@ namespace Chummer.Backend.Equipment
 		public void Save(XmlTextWriter objWriter)
 		{
 			objWriter.WriteStartElement("weaponmount");
-			objWriter.WriteElementString("guid", _guiID.ToString("D"));
-            objWriter.WriteElementString("sourceid", _strSourceId);
+		    objWriter.WriteElementString("sourceid", SourceIDString);
+		    objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("name", _strName);
 			objWriter.WriteElementString("category", _strCategory);
 			objWriter.WriteElementString("limit", _strLimit);
@@ -187,19 +196,17 @@ namespace Chummer.Backend.Equipment
 		/// <param name="blnCopy">Indicates whether a new item will be created as a copy of this one.</param>
 		public void Load(XmlNode objNode, Vehicle objVehicle, bool blnCopy = false)
 		{
-			if (blnCopy)
-			{
-				_guiID = Guid.NewGuid();
-			}
-			else
-			{
-				objNode.TryGetField("guid", Guid.TryParse, out _guiID);
-			}
-            objNode.TryGetStringFieldQuickly("name", ref _strName);
-            if (!objNode.TryGetStringFieldQuickly("sourceid", ref _strSourceId))
-            {
-                _strSourceId = XmlManager.Load("vehicles.xml").SelectSingleNode("/chummer/weaponmounts/weaponmount[name = \"" + _strName + "\"]/id")?.InnerText ?? Guid.NewGuid().ToString("D");
-            }
+		    if (blnCopy || !objNode.TryGetField("guid", Guid.TryParse, out _guiID))
+		    {
+		        _guiID = Guid.NewGuid();
+		    }
+		    objNode.TryGetStringFieldQuickly("name", ref _strName);
+            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+		    {
+		        XmlNode node = GetNode(GlobalOptions.Language);
+		        node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+		    }
+
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
 			objNode.TryGetStringFieldQuickly("limit", ref _strLimit);
 			objNode.TryGetInt32FieldQuickly("slots", ref _intSlots);
@@ -370,11 +377,24 @@ namespace Chummer.Backend.Equipment
         /// Internal identifier which will be used to identify this piece of Gear in the Character.
         /// </summary>
         public string InternalId => _guiID.ToString("D");
+        /// <summary>
+        /// Identifier of the object within data files.
+        /// </summary>
+        public Guid SourceID
+        {
+            get => _guiSourceID;
+            set
+            {
+                if (_guiSourceID == value) return;
+                _guiSourceID = value;
+                _objCachedMyXmlNode = null;
+            }
+        }
 
         /// <summary>
-        /// Identifier of the WeaponMount's Size in the data files.
+        /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
         /// </summary>
-        public string SourceId => _strSourceId;
+        public string SourceIDString => _guiSourceID.ToString("D");
 
         /// <summary>
         /// Name.
@@ -785,7 +805,11 @@ namespace Chummer.Backend.Equipment
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load("vehicles.xml", strLanguage).SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + _strSourceId + "\"]");
+                _objCachedMyXmlNode = SourceID == Guid.Empty
+                    ? XmlManager.Load("vehicles.xml", strLanguage)
+                        .SelectSingleNode($"/chummer/weaponmounts/weaponmount[name = \"{Name}\"]")
+                    : XmlManager.Load("vehicles.xml", strLanguage)
+                        .SelectSingleNode($"/chummer/weaponmounts/weaponmount[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;
@@ -917,7 +941,8 @@ namespace Chummer.Backend.Equipment
         private readonly Character _objCharacter;
         private string _strAvail;
         private string _strName;
-        private Guid _sourceID;
+        private Guid _guiSourceID;
+        private Guid _guiID;
         private string _strCost;
         private string _strCategory;
         private int _intSlots;
@@ -941,7 +966,9 @@ namespace Chummer.Backend.Equipment
                 Utils.BreakIfDebug();
                 return false;
             }
-            objXmlMod.TryGetField("id", Guid.TryParse, out _sourceID);
+
+            _guiID = Guid.NewGuid();
+            objXmlMod.TryGetField("id", Guid.TryParse, out _guiSourceID);
             objXmlMod.TryGetStringFieldQuickly("name", ref _strName);
             objXmlMod.TryGetStringFieldQuickly("category", ref _strCategory);
             objXmlMod.TryGetInt32FieldQuickly("slots", ref _intSlots);
@@ -1002,7 +1029,8 @@ namespace Chummer.Backend.Equipment
         public void Save(XmlTextWriter objWriter)
         {
             objWriter.WriteStartElement("weaponmountoption");
-            objWriter.WriteElementString("id", _sourceID.ToString("D"));
+            objWriter.WriteElementString("sourceid", SourceIDString);
+            objWriter.WriteElementString("guid", InternalID);
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("category", _strCategory);
             objWriter.WriteElementString("slots", _intSlots.ToString());
@@ -1018,8 +1046,16 @@ namespace Chummer.Backend.Equipment
         public void Load(XmlNode objNode)
         {
             _objCachedMyXmlNode = null;
-            objNode.TryGetField("id", Guid.TryParse, out _sourceID);
+            if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
+            {
+                _guiID = Guid.NewGuid();
+            }
             objNode.TryGetStringFieldQuickly("name", ref _strName);
+            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+            {
+                XmlNode node = GetNode(GlobalOptions.Language);
+                node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+            }
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
             objNode.TryGetInt32FieldQuickly("slots", ref _intSlots);
             objNode.TryGetStringFieldQuickly("weaponmountcategories", ref _strAllowedWeaponCategories);
@@ -1030,6 +1066,27 @@ namespace Chummer.Backend.Equipment
         #endregion
 
         #region Properties
+
+        public string InternalID => _guiID.ToString("D");
+
+        /// <summary>
+        /// Identifier of the object within data files.
+        /// </summary>
+        public Guid SourceID
+        {
+            get => _guiSourceID;
+            set
+            {
+                if (_guiSourceID == value) return;
+                _guiSourceID = value;
+                _objCachedMyXmlNode = null;
+            }
+        }
+
+        /// <summary>
+        /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
+        /// </summary>
+        public string SourceIDString => _guiSourceID.ToString("D");
 
         /// <summary>
         /// The cost of just the WeaponMountOption itself.
@@ -1075,7 +1132,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Identifier of the WeaponMountOption in the data files.
         /// </summary>
-        public string SourceId => _sourceID.ToString("D");
+        public string SourceId => _guiSourceID.ToString("D");
 
         public int StolenTotalCost { get; set; }
 
@@ -1148,7 +1205,11 @@ namespace Chummer.Backend.Equipment
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load("vehicles.xml", strLanguage).SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + _sourceID.ToString("D") + "\"]");
+                _objCachedMyXmlNode = SourceID == Guid.Empty
+                    ? XmlManager.Load("vehicles.xml", strLanguage)
+                        .SelectSingleNode($"/chummer/weaponmounts/weaponmount[name = \"{Name}\"]")
+                    : XmlManager.Load("vehicles.xml", strLanguage)
+                        .SelectSingleNode($"/chummer/weaponmounts/weaponmount[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

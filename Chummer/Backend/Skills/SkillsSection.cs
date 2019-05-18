@@ -264,7 +264,7 @@ namespace Chummer.Backend.Skills
                         {
                             string strName = string.Empty;
                             if (xmlNode.TryGetStringFieldQuickly("name", ref strName))
-                                KnowsoftSkills.Add(new KnowledgeSkill(_objCharacter, strName));
+                                KnowsoftSkills.Add(new KnowledgeSkill(_objCharacter, strName, false));
                         }
                 Timekeeper.Finish("load_char_knowsoft_buffer");
             }

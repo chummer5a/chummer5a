@@ -39,6 +39,8 @@ using Microsoft.ApplicationInsights.AspNetCore;
 using Microsoft.ApplicationInsights.Channel;
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.ApplicationInsights.Extensibility;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.ResponseCompression;
 
 namespace ChummerHub
 {
@@ -110,6 +112,8 @@ namespace ChummerHub
         {
             MyServices = services;
 
+         
+
             ConnectionStringToMasterSqlDb = Configuration.GetConnectionString("MasterSqlConnection");
             ConnectionStringSinnersDb = Configuration.GetConnectionString("DefaultConnection");
 
@@ -125,6 +129,22 @@ namespace ChummerHub
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
                 options.CheckConsentNeeded = context => false;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
+
+            services.AddResponseCompression(options =>
+            {
+                options.Providers.Add<BrotliCompressionProvider>();
+                options.Providers.Add<GzipCompressionProvider>();
+                //options.Providers.Add<CustomCompressionProvider>();
+                //options.MimeTypes =
+                //    ResponseCompressionDefaults.MimeTypes.Concat(
+                //        new[] { "image/svg+xml" });
+            });
+
+
+            services.Configure<FormOptions>(options =>
+            {
+                options.MultipartBodyLengthLimit = 100000000;
             });
 
             services.AddDbContext<ApplicationDbContext>(options =>
@@ -255,7 +275,13 @@ namespace ChummerHub
                 //};
             });
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc(options => { }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+                .AddJsonOptions(x =>
+                {
+                    x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                    x.SerializerSettings.PreserveReferencesHandling =
+                        Newtonsoft.Json.PreserveReferencesHandling.Objects;
+                });
 
 
             services.AddVersionedApiExplorer(options =>

@@ -40,6 +40,7 @@ using System.Xml.XPath;
 using Chummer.Backend.Uniques;
 using System.Xml.Serialization;
 using System.Runtime.Serialization;
+using NLog;
 
 namespace Chummer
 {
@@ -57,6 +58,7 @@ namespace Chummer
     [DebuggerDisplay("{CharacterName} ({FileName})")]
     public sealed class Character : INotifyMultiplePropertyChanged, IHasMugshots, IHasName
     {
+        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private XmlNode _oldSkillsBackup;
         private XmlNode _oldSkillGroupBackup;
 
@@ -81,7 +83,7 @@ namespace Chummer
         private int _intTotalSpecial;
         private int _intAttributes;
         private int _intTotalAttributes;
-        private int _intSpellLimit;
+        private int _intFreeSpells;
         private int _intCFPLimit;
         private int _intAINormalProgramLimit;
         private int _intAIAdvancedProgramLimit;
@@ -249,7 +251,12 @@ namespace Chummer
         [Newtonsoft.Json.JsonIgnore]
         [XmlIgnore]
         [IgnoreDataMember]
-        public EventHandler<Character> OnSaveCompleted;
+        [CanBeNull]
+        public EventHandler<Character> OnSaveCompleted
+        {
+            get;
+            set;
+        }
 
         #region Initialization, Save, Load, Print, and Reset Methods
 
@@ -1299,7 +1306,7 @@ namespace Chummer
             // <contactpoints />
             objWriter.WriteElementString("contactpointsused", _intContactPointsUsed.ToString());
             // <spelllimit />
-            objWriter.WriteElementString("spelllimit", _intSpellLimit.ToString());
+            objWriter.WriteElementString("spelllimit", _intFreeSpells.ToString());
             // <cfplimit />
             objWriter.WriteElementString("cfplimit", _intCFPLimit.ToString());
             // <totalaiprogramlimit />
@@ -1781,17 +1788,25 @@ namespace Chummer
 
 
             //Plugins
-            if(Program.MainForm?.PluginLoader?.MyPlugins?.Any() == true)
+            if(Program.MainForm?.PluginLoader?.MyActivePlugins?.Any() == true)
             {
                 // <plugins>
                 objWriter.WriteStartElement("plugins");
-                foreach(var plugin in Program.MainForm.PluginLoader.MyPlugins)
+                foreach(var plugin in Program.MainForm.PluginLoader.MyActivePlugins)
                 {
-                    System.Reflection.Assembly pluginAssm = plugin.GetPluginAssembly();
-                    objWriter.WriteStartElement(pluginAssm.GetName().Name);
-                    objWriter.WriteAttributeString("version", pluginAssm.GetName().Version.ToString());
-                    objWriter.WriteString(plugin.GetSaveToFileElement(this));
-                    objWriter.WriteEndElement();
+                    try
+                    {
+                        System.Reflection.Assembly pluginAssm = plugin.GetPluginAssembly();
+                        objWriter.WriteStartElement(pluginAssm.GetName().Name);
+                        objWriter.WriteAttributeString("version", pluginAssm.GetName().Version.ToString());
+                        objWriter.WriteString(plugin.GetSaveToFileElement(this));
+                        objWriter.WriteEndElement();
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Warn(e, "Exception while writing saveFileElement for plugin " + plugin?.ToString() + ": ");
+                    }
+                   
                 }
                 //</plugins>
                 objWriter.WriteEndElement();
@@ -1830,7 +1845,7 @@ namespace Chummer
             IsSaving = false;
             _dateFileLastWriteTime = File.GetLastWriteTimeUtc(strFileName);
 
-            if(callOnSaveCallBack && OnSaveCompleted != null)
+            if(callOnSaveCallBack == true && OnSaveCompleted != null)
                 OnSaveCompleted(this, this);
             return blnErrorFree;
         }
@@ -1956,7 +1971,7 @@ if (!Utils.IsUnitTest){
 
             if(!string.IsNullOrEmpty(strMissingBooks) && !Utils.IsUnitTest)
             {
-                if(MessageBox.Show(string.Format(LanguageManager.GetString("Message_MissingSourceBooks", GlobalOptions.Language), TranslatedBookList(strMissingBooks, GlobalOptions.Language)),
+                if(MessageBox.Show(new Form { TopMost = true }, string.Format(LanguageManager.GetString("Message_MissingSourceBooks", GlobalOptions.Language), TranslatedBookList(strMissingBooks, GlobalOptions.Language)),
                         LanguageManager.GetString("Message_MissingSourceBooks_Title", GlobalOptions.Language),
                         MessageBoxButtons.YesNo) == DialogResult.No)
                 {
@@ -2138,7 +2153,7 @@ if (!Utils.IsUnitTest){
             xmlCharacterNavigator.TryGetInt32FieldQuickly("aiadvancedprogramlimit", ref _intAIAdvancedProgramLimit);
             xmlCharacterNavigator.TryGetInt32FieldQuickly("currentcounterspellingdice",
                 ref _intCurrentCounterspellingDice);
-            xmlCharacterNavigator.TryGetInt32FieldQuickly("spelllimit", ref _intSpellLimit);
+            xmlCharacterNavigator.TryGetInt32FieldQuickly("spelllimit", ref _intFreeSpells);
             xmlCharacterNavigator.TryGetInt32FieldQuickly("karma", ref _intKarma);
             xmlCharacterNavigator.TryGetInt32FieldQuickly("totalkarma", ref _intTotalKarma);
 
@@ -2323,7 +2338,7 @@ if (!Utils.IsUnitTest){
                                     foreach(Quality objCheckQuality in Qualities)
                                     {
                                         if(objCheckQuality != objQuality &&
-                                            objCheckQuality.QualityId == objQuality.QualityId &&
+                                            objCheckQuality.SourceIDString == objQuality.SourceIDString &&
                                             objCheckQuality.Extra == objQuality.Extra &&
                                             objCheckQuality.SourceName == objQuality.SourceName)
                                         {
@@ -2488,7 +2503,7 @@ if (!Utils.IsUnitTest){
             {
                 XPathNavigator xpathTraditionNavigator = xmlCharacterNavigator.SelectSingleNode("tradition");
                 // Regular tradition load
-                if(xpathTraditionNavigator?.SelectSingleNode("id") != null)
+                if(xpathTraditionNavigator?.SelectSingleNode("guid") != null || xpathTraditionNavigator?.SelectSingleNode("id") != null)
                 {
                     _objTradition.Load(objXmlCharacter.SelectSingleNode("tradition"));
                 }
@@ -3040,7 +3055,7 @@ if (!Utils.IsUnitTest){
                         foreach(Quality objCheckQuality in Qualities)
                         {
                             if(objCheckQuality != objLivingPersonaQuality &&
-                                objCheckQuality.QualityId == objLivingPersonaQuality.QualityId &&
+                                objCheckQuality.SourceIDString == objLivingPersonaQuality.SourceIDString &&
                                 objCheckQuality.Extra == objLivingPersonaQuality.Extra &&
                                 objCheckQuality.SourceName == objLivingPersonaQuality.SourceName)
                             {
@@ -3332,9 +3347,9 @@ if (!Utils.IsUnitTest){
 
             //Plugins
             Timekeeper.Start("load_plugins");
-            if(Program.MainForm?.PluginLoader?.MyPlugins?.Any() == true)
+            if(Program.MainForm?.PluginLoader?.MyActivePlugins?.Any() == true)
             {
-                foreach(var plugin in Program.MainForm.PluginLoader.MyPlugins)
+                foreach(var plugin in Program.MainForm.PluginLoader.MyActivePlugins)
                 {
                     objXmlNodeList = objXmlCharacter.SelectNodes("plugins/" + plugin.GetPluginAssembly().GetName().Name);
                     foreach(XmlNode objXmlPlugin in objXmlNodeList)
@@ -3570,7 +3585,7 @@ if (!Utils.IsUnitTest){
             // <aiadvancedprogramlimit />
             objWriter.WriteElementString("aiadvancedprogramlimit", AIAdvancedProgramLimit.ToString(objCulture));
             // <spelllimit />
-            objWriter.WriteElementString("spelllimit", SpellLimit.ToString(objCulture));
+            objWriter.WriteElementString("spelllimit", FreeSpells.ToString(objCulture));
             // <karma />
             objWriter.WriteElementString("karma", Karma.ToString(objCulture));
             // <totalkarma />
@@ -4084,7 +4099,7 @@ if (!Utils.IsUnitTest){
             Dictionary<string, int> strQualitiesToPrint = new Dictionary<string, int>(Qualities.Count);
             foreach(Quality objQuality in Qualities)
             {
-                string strKey = objQuality.QualityId + '|' + objQuality.SourceName + '|' + objQuality.Extra;
+                string strKey = objQuality.SourceIDString + '|' + objQuality.SourceName + '|' + objQuality.Extra;
                 if(strQualitiesToPrint.ContainsKey(strKey))
                 {
                     strQualitiesToPrint[strKey] += 1;
@@ -4098,7 +4113,7 @@ if (!Utils.IsUnitTest){
             objWriter.WriteStartElement("qualities");
             foreach(Quality objQuality in Qualities)
             {
-                string strKey = objQuality.QualityId + '|' + objQuality.SourceName + '|' + objQuality.Extra;
+                string strKey = objQuality.SourceIDString + '|' + objQuality.SourceName + '|' + objQuality.Extra;
                 if(strQualitiesToPrint.TryGetValue(strKey, out int intLoopRating))
                 {
                     objQuality.Print(objWriter, intLoopRating, objCulture, strLanguageToPrint);
@@ -4307,7 +4322,7 @@ if (!Utils.IsUnitTest){
             _intSumtoTen = 10;
 
             _decNuyenMaximumBP = 50;
-            _intSpellLimit = 0;
+            _intFreeSpells = 0;
             _intCFPLimit = 0;
             _intAINormalProgramLimit = 0;
             _intAIAdvancedProgramLimit = 0;
@@ -5216,7 +5231,7 @@ if (!Utils.IsUnitTest){
                 }
 
                 // Value from free spells
-                intTemp = SpellLimit * SpellKarmaCost("Spells");
+                intTemp = FreeSpells * SpellKarmaCost("Spells");
                 if(intTemp != 0)
                 {
                     strMessage += Environment.NewLine + LanguageManager.GetString("String_FreeSpells", strLanguage) +
@@ -6977,14 +6992,14 @@ if (!Utils.IsUnitTest){
         /// <summary>
         /// Spell Limit.
         /// </summary>
-        public int SpellLimit
+        public int FreeSpells
         {
-            get => _intSpellLimit;
+            get => _intFreeSpells;
             set
             {
-                if(_intSpellLimit != value)
+                if(_intFreeSpells != value)
                 {
-                    _intSpellLimit = value;
+                    _intFreeSpells = value;
                     OnPropertyChanged();
                 }
             }
@@ -7149,6 +7164,11 @@ if (!Utils.IsUnitTest){
         /// The highest number of free metagenetic qualities the character can have.
         /// </summary>
         public int MetageneticLimit => ImprovementManager.ValueOf(this, Improvement.ImprovementType.MetageneticLimit);
+
+        /// <summary>
+        /// The highest number of free metagenetic qualities the character can have.
+        /// </summary>
+        public int SpecialModificationLimit => ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpecialModificationLimit);
 
         /// <summary>
         /// Whether or not the character is possessed by a Spirit.

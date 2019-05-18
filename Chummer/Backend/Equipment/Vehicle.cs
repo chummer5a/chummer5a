@@ -28,6 +28,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
+using NLog;
 
 namespace Chummer.Backend.Equipment
 {
@@ -38,6 +39,7 @@ namespace Chummer.Backend.Equipment
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     public class Vehicle : IHasInternalId, IHasName, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName, IHasMatrixConditionMonitor, IHasPhysicalConditionMonitor, IHasLocation, IHasSource, ICanSort, IHasGear, IHasStolenProperty
     {
+        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private Guid _guiID;
         private string _strName = string.Empty;
         private string _strCategory = string.Empty;
@@ -97,7 +99,7 @@ namespace Chummer.Backend.Equipment
         // Condition Monitor Progress.
         private int _intPhysicalCMFilled;
         private int _intMatrixCMFilled;
-        private Guid _sourceID;
+        private Guid _guiSourceID;
 
         #region Constructor, Create, Save, Load, and Print Methods
         public Vehicle(Character objCharacter)
@@ -128,7 +130,12 @@ namespace Chummer.Backend.Equipment
         /// <param name="blnCreateChildren">Whether or not child items should be created.</param>
         public void Create(XmlNode objXmlVehicle, bool blnCreateChildren = true)
         {
-            if (objXmlVehicle.TryGetField("id", Guid.TryParse, out _sourceID))
+            if (!objXmlVehicle.TryGetField("id", Guid.TryParse, out _guiSourceID))
+            {
+                Log.Warn(new object[] { "Missing id field for xmlnode", objXmlVehicle });
+                Utils.BreakIfDebug();
+            }
+            else
                 _objCachedMyXmlNode = null;
             objXmlVehicle.TryGetStringFieldQuickly("name", ref _strName);
             objXmlVehicle.TryGetStringFieldQuickly("category", ref _strCategory);
@@ -429,8 +436,8 @@ namespace Chummer.Backend.Equipment
         public void Save(XmlTextWriter objWriter)
         {
             objWriter.WriteStartElement("vehicle");
-            objWriter.WriteElementString("id", _sourceID.ToString("D"));
-            objWriter.WriteElementString("guid", _guiID.ToString("D"));
+            objWriter.WriteElementString("sourceid", SourceIDString);
+            objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("category", _strCategory);
             objWriter.WriteElementString("handling", _intHandling.ToString(GlobalOptions.InvariantCultureInfo));
@@ -494,7 +501,6 @@ namespace Chummer.Backend.Equipment
                 // </locations>
                 objWriter.WriteEndElement();
             }
-            objWriter.WriteEndElement();
             objWriter.WriteElementString("active", this.IsActiveCommlink(_objCharacter).ToString());
             objWriter.WriteElementString("homenode", this.IsHomeNode(_objCharacter).ToString());
             objWriter.WriteElementString("devicerating", _strDeviceRating);
@@ -515,6 +521,7 @@ namespace Chummer.Backend.Equipment
 
             if (string.IsNullOrEmpty(ParentID))
                 _objCharacter.SourceProcess(_strSource);
+            objWriter.WriteEndElement();
         }
 
         /// <summary>
@@ -524,15 +531,23 @@ namespace Chummer.Backend.Equipment
         /// <param name="blnCopy">Whether or not we are copying an existing vehicle.</param>
         public void Load(XmlNode objNode, bool blnCopy = false)
         {
-            if (blnCopy)
+            if ( blnCopy || !objNode.TryGetField("guid", Guid.TryParse, out _guiID))
             {
                 _guiID = Guid.NewGuid();
+            }
+            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+            {
+                XmlNode node = GetNode(GlobalOptions.Language);
+                node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+            }
+
+            if (blnCopy)
+            {
                 this.SetHomeNode(_objCharacter, false);
             }
             else
             {
-                if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
-                    _guiID = Guid.NewGuid();
                 bool blnIsHomeNode = false;
                 if (objNode.TryGetBoolFieldQuickly("homenode", ref blnIsHomeNode) && blnIsHomeNode)
                 {
@@ -543,15 +558,6 @@ namespace Chummer.Backend.Equipment
             if (objNode.TryGetBoolFieldQuickly("active", ref blnIsActive) && blnIsActive)
                 this.SetActiveCommlink(_objCharacter, true);
 
-            objNode.TryGetStringFieldQuickly("name", ref _strName);
-            if (!objNode.TryGetField("id", Guid.TryParse, out _sourceID) || _sourceID.Equals(Guid.Empty))
-            {
-                XmlNode sourceNode = XmlManager.Load("vehicles.xml").SelectSingleNode("/chummer/vehicles/vehicle[name = \"" + Name + "\"]");
-                if (sourceNode?.TryGetField("id", Guid.TryParse, out _sourceID) == true)
-                    _objCachedMyXmlNode = null;
-            }
-            else
-                _objCachedMyXmlNode = null;
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
             string strTemp = objNode["handling"]?.InnerText;
             if (!string.IsNullOrEmpty(strTemp))
@@ -812,7 +818,16 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string InternalId => _guiID.ToString("D");
 
-        public Guid SourceID => _sourceID;
+
+        /// <summary>
+        /// Identifier of the object within data files.
+        /// </summary>
+        public Guid SourceID => _guiSourceID;
+
+        /// <summary>
+        /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
+        /// </summary>
+        public string SourceIDString => _guiSourceID.ToString("D");
 
         /// <summary>
         /// Name.
@@ -2518,11 +2533,13 @@ namespace Chummer.Backend.Equipment
 
         public XmlNode GetNode(string strLanguage)
         {
-            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
-            {
-                _objCachedMyXmlNode = XmlManager.Load("vehicles.xml", strLanguage).SelectSingleNode("/chummer/vehicles/vehicle[id = \"" + _sourceID.ToString("D") + "\"]");
-                _strCachedXmlNodeLanguage = strLanguage;
-            }
+            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.LiveCustomData) return _objCachedMyXmlNode;
+            _objCachedMyXmlNode = SourceID == Guid.Empty
+                ? XmlManager.Load("vehicles.xml", strLanguage)
+                    .SelectSingleNode($"/chummer/vehicles/vehicle[name = \"{Name}\"]")
+                : XmlManager.Load("vehicles.xml", strLanguage)
+                    .SelectSingleNode($"/chummer/vehicles/vehicle[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
+            _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;
         }
 

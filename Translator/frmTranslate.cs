@@ -547,7 +547,7 @@ namespace Translator
                 dataTable.Columns.Add("English Code");
                 dataTable.Columns.Add("Code");
             }
-            else
+            else if (strFileName != "tips.xml")
             {
                 dataTable.Columns.Add("Book");
                 dataTable.Columns.Add("Page");

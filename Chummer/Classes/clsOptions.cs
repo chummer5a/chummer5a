@@ -29,6 +29,8 @@ using System.Windows.Forms;
 using Microsoft.Win32;
 using iTextSharp.text.pdf;
 using MersenneTwister;
+using Microsoft.ApplicationInsights.Extensibility;
+using NLog;
 
 namespace Chummer
 {
@@ -150,6 +152,7 @@ namespace Chummer
     /// </summary>
     public static class GlobalOptions
     {
+        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private static CultureInfo s_ObjLanguageCultureInfo = CultureInfo.CurrentCulture;
 
         public static string ErrorMessage { get; } = string.Empty;
@@ -174,6 +177,7 @@ namespace Chummer
         private static string _strDefaultCharacterSheet = DefaultCharacterSheetDefaultValue;
         private static bool _blnDatesIncludeTime = true;
         private static bool _blnPrintToFileFirst;
+        private static int _intEmulatedBrowserVersion = 8;
         private static bool _lifeModuleEnabled;
         private static bool _blnDronemods;
         private static bool _blnDronemodsMaximumPilot;
@@ -182,6 +186,7 @@ namespace Chummer
         private static bool _blnHideCharacterRoster;
         private static bool _blnCreateBackupOnCareer;
         private static bool _blnPluginsEnabled;
+        private static bool _blnAllowEasterEggs;
         private static string _strDefaultBuildMethod = DefaultBuildMethodDefaultValue;
         private static string _strDefaultGameplayOption = DefaultGameplayOptionDefaultValue;
 
@@ -218,6 +223,7 @@ namespace Chummer
         private static string _strPDFParameters = string.Empty;
         private static HashSet<SourcebookInfo> _lstSourcebookInfo;
         private static bool _blnUseLogging;
+        private static bool _blnUseLoggingApplicationInsights;
         private static string _strCharacterRosterPath;
 
         // Custom Data Directory information.
@@ -392,6 +398,9 @@ namespace Chummer
             // Whether or not the app should use logging.
             LoadBoolFromRegistry(ref _blnUseLogging, "uselogging");
 
+            //Should the App "Phone home"
+            LoadBoolFromRegistry(ref _blnUseLoggingApplicationInsights, "useloggingApplicationInsights");
+
             // Whether or not dates should include the time.
             LoadBoolFromRegistry(ref _blnDatesIncludeTime, "datesincludetime");
 
@@ -406,6 +415,9 @@ namespace Chummer
             // Whether or not printouts should be sent to a file before loading them in the browser. This is a fix for getting printing to work properly on Linux using Wine.
             LoadBoolFromRegistry(ref _blnPrintToFileFirst, "printtofilefirst");
 
+            // Which version of the Internet Explorer's rendering engine will be emulated for rendering the character view.
+            LoadInt32FromRegistry(ref _intEmulatedBrowserVersion, "emulatedbrowserversion");
+
             // Default character sheet.
             LoadStringFromRegistry(ref _strDefaultCharacterSheet, "defaultsheet");
             if(_strDefaultCharacterSheet == "Shadowrun (Rating greater 0)")
@@ -414,6 +426,8 @@ namespace Chummer
             LoadStringFromRegistry(ref _strDefaultBuildMethod, "defaultbuildmethod");
 
             LoadStringFromRegistry(ref _strDefaultGameplayOption, "defaultgameplayoption");
+
+            LoadBoolFromRegistry(ref _blnAllowEasterEggs, "alloweastereggs");
 
             // Omae Settings.
             // Username.
@@ -535,6 +549,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Should Chummer present Easter Eggs to the user?
+        /// </summary>
+        public static bool AllowEasterEggs
+        {
+            get => _blnAllowEasterEggs;
+            set => _blnAllowEasterEggs = value;
+        }
+
+        /// <summary>
         /// Whether or not the Character Roster should be shown. If true, prevents the roster from being removed or hidden. 
         /// </summary>
         public static bool HideCharacterRoster
@@ -585,11 +608,41 @@ namespace Chummer
                 {
                     _blnUseLogging = value;
                     // Sets up logging if the option is changed during runtime
-                    Log.IsLoggerEnabled = value;
+                    if (value)
+                        NLog.LogManager.EnableLogging();
+                    else
+                        NLog.LogManager.DisableLogging();
+                    
                 }
             }
         }
 
+        
+
+        /// <summary>
+        /// Whether or not the app should use logging.
+        /// </summary>
+        public static bool UseLoggingApplicationInsights
+        {
+            get => _blnUseLoggingApplicationInsights;
+            set
+            {
+                if (_blnUseLoggingApplicationInsights != value)
+                {
+                    _blnUseLoggingApplicationInsights = value;
+                    // Sets up logging if the option is changed during runtime
+                    if (value)
+                    {
+                        TelemetryConfiguration.Active.DisableTelemetry = false;
+                    }
+                    else
+                    {
+                        TelemetryConfiguration.Active.DisableTelemetry = true;
+                    }
+
+                }
+            }
+        }
         /// <summary>
         /// Whether or not dates should include the time.
         /// </summary>
@@ -619,6 +672,15 @@ namespace Chummer
         {
             get => _blnPrintToFileFirst;
             set => _blnPrintToFileFirst = value;
+        }
+
+        /// <summary>
+        /// Which version of the Internet Explorer's rendering engine will be emulated for rendering the character view. Defaults to 8
+        /// </summary>
+        public static int EmulatedBrowserVersion
+        {
+            get => _intEmulatedBrowserVersion;
+            set => _intEmulatedBrowserVersion = value;
         }
 
         /// <summary>
@@ -770,6 +832,7 @@ namespace Chummer
             get => _strPDFParameters;
             set => _strPDFParameters = value;
         }
+
         /// <summary>
         /// List of SourcebookInfo.
         /// </summary>

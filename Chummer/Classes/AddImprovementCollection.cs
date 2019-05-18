@@ -25,6 +25,7 @@ using System.Xml.XPath;
 using Chummer.Backend.Attributes;
 using Chummer.Backend.Equipment;
 using Chummer.Backend.Skills;
+using NLog;
 
 // ReSharper disable InconsistentNaming
 
@@ -32,6 +33,7 @@ namespace Chummer.Classes
 {
     public class AddImprovementCollection
     {
+        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private readonly Character _objCharacter;
 
         public AddImprovementCollection(Character character, Improvement.ImprovementSource objImprovementSource, string sourceName, string strUnique, string forcedValue, string limitSelection, string selectedValue, bool blnConcatSelectedValue, string strFriendlyName, int intRating)
@@ -354,7 +356,7 @@ namespace Chummer.Classes
                 frmSelectItem frmPickItem = new frmSelectItem
                 {
                     DropdownItems = lstTraditions,
-                    SelectedItem = _objCharacter.MagicTradition.strSourceID,
+                    SelectedItem = _objCharacter.MagicTradition.SourceIDString,
                     AllowAutoSelect = false
                 };
                 frmPickItem.ShowDialog();
@@ -461,6 +463,7 @@ namespace Chummer.Classes
             string strVal = bonusNode["val"]?.InnerText;
             string strMax = bonusNode["max"]?.InnerText;
             bool blnDisableSpec = bonusNode.InnerXml.Contains("disablespecializationeffects");
+            bool blnAllowUpgrade = !bonusNode.InnerXml.Contains("disableupgrades");
             // Find the selected Skill.
             if (blnIsKnowledgeSkill)
             {
@@ -502,7 +505,7 @@ namespace Chummer.Classes
                 }
                 else
                 {
-                    KnowledgeSkill k = new KnowledgeSkill(_objCharacter, strSelectedSkill);
+                    KnowledgeSkill k = new KnowledgeSkill(_objCharacter, strSelectedSkill, blnAllowUpgrade);
                     _objCharacter.SkillsSection.KnowledgeSkills.Add(k);
                     // We've found the selected Skill.
                     if (!string.IsNullOrEmpty(strVal))
@@ -680,10 +683,10 @@ namespace Chummer.Classes
                     {
                         Log.Info("selectattribute");
 
-                        Log.Info("selectattribute = " + bonusNode.OuterXml);
+                        Log.Info("selectattribute = " + objXmlAttribute.OuterXml);
 
                         List<string> lstAbbrevs = new List<string>();
-                        XmlNodeList xmlAttributeList = bonusNode.SelectNodes("attribute");
+                        XmlNodeList xmlAttributeList = objXmlAttribute.SelectNodes("attribute");
                         if (xmlAttributeList?.Count > 0)
                         {
                             foreach (XmlNode objSubNode in xmlAttributeList)
@@ -692,7 +695,7 @@ namespace Chummer.Classes
                         else
                         {
                             lstAbbrevs.AddRange(AttributeSection.AttributeStrings);
-                            xmlAttributeList = bonusNode.SelectNodes("excludeattribute");
+                            xmlAttributeList = objXmlAttribute.SelectNodes("excludeattribute");
                             if (xmlAttributeList?.Count > 0)
                             {
                                 foreach (XmlNode objSubNode in xmlAttributeList)
@@ -2178,7 +2181,7 @@ namespace Chummer.Classes
 
             if (bonusNode["addknowledge"] != null)
             {
-                KnowledgeSkill objKnowledgeSkill = new KnowledgeSkill(_objCharacter, SelectedValue);
+                KnowledgeSkill objKnowledgeSkill = new KnowledgeSkill(_objCharacter, SelectedValue, false);
 
                 _objCharacter.SkillsSection.KnowsoftSkills.Add(objKnowledgeSkill);
                 if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.SkillsoftAccess) > 0)
@@ -2209,7 +2212,7 @@ namespace Chummer.Classes
             Log.Info("_strSelectedValue = " + SelectedValue);
             Log.Info("SourceName = " + SourceName);
             
-            KnowledgeSkill objSkill = new KnowledgeSkill(_objCharacter, SelectedValue);
+            KnowledgeSkill objSkill = new KnowledgeSkill(_objCharacter, SelectedValue, false);
 
             _objCharacter.SkillsSection.KnowsoftSkills.Add(objSkill);
             if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.SkillsoftAccess) > 0)
@@ -4637,7 +4640,7 @@ namespace Chummer.Classes
         }
 
         // Check for Spell Category bonuses.
-        public void spellcategory(XmlNode bonusNode)
+        public void spellcategorydicepool(XmlNode bonusNode)
         {
             Log.Info("spellcategory");
             Log.Info("spellcategory = " + bonusNode.OuterXml);
@@ -4645,6 +4648,17 @@ namespace Chummer.Classes
             Log.Info("Calling CreateImprovement");
             CreateImprovement(bonusNode["name"]?.InnerText, _objImprovementSource, SourceName,
                 Improvement.ImprovementType.SpellCategory, _strUnique, ImprovementManager.ValueToInt(_objCharacter, bonusNode["val"]?.InnerText, _intRating));
+        }
+
+        // Check for dicepool bonuses for a specific Spell.
+        public void spelldicepool(XmlNode bonusNode)
+        {
+            Log.Info("spelldicepool");
+            Log.Info("spelldicepool = " + bonusNode.OuterXml);
+
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(bonusNode["id"]?.InnerText ?? bonusNode["name"]?.InnerText, _objImprovementSource, SourceName,
+                Improvement.ImprovementType.SpellDicePool, _strUnique, ImprovementManager.ValueToInt(_objCharacter, bonusNode["val"]?.InnerText, _intRating));
         }
 
         // Check for Spell Category Drain bonuses.
@@ -5050,38 +5064,54 @@ namespace Chummer.Classes
                 {
                     if ((string.IsNullOrEmpty(strExclude) || objWeapon.WeaponType != strExclude) && (blnIncludeUnarmed || objWeapon.Name != "Unarmed Attack"))
                     {
-                        lstWeapons.Add(new ListItem(objWeapon.InternalId, objWeapon.DisplayName(GlobalOptions.Language)));
+                        lstWeapons.Add(new ListItem(objWeapon.InternalId, objWeapon.DisplayNameShort(GlobalOptions.Language)));
                     }
                 }
 
-                frmSelectItem frmPickItem = new frmSelectItem
+                if (string.IsNullOrWhiteSpace(LimitSelection) || lstWeapons.Any(item => item.Name == LimitSelection))
                 {
-                    Description = string.Format(LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language), _strFriendlyName),
-                    GeneralItems = lstWeapons
-                };
+                    frmSelectItem frmPickItem = new frmSelectItem
+                    {
+                        Description =
+                            string.Format(
+                                LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language),
+                                _strFriendlyName),
+                        GeneralItems = lstWeapons
+                    };
 
-                Log.Info("_strLimitSelection = " + LimitSelection);
-                Log.Info("_strForcedValue = " + ForcedValue);
+                    Log.Info("_strLimitSelection = " + LimitSelection);
+                    Log.Info("_strForcedValue = " + ForcedValue);
 
-                if (!string.IsNullOrEmpty(LimitSelection))
-                {
-                    frmPickItem.ForceItem = LimitSelection;
-                    frmPickItem.Opacity = 0;
+                    if (!string.IsNullOrEmpty(LimitSelection))
+                    {
+                        frmPickItem.ForceItem = LimitSelection;
+                        frmPickItem.Opacity = 0;
+                    }
+
+                    frmPickItem.ShowDialog();
+
+                    // Make sure the dialogue window was not canceled.
+                    if (frmPickItem.DialogResult == DialogResult.Cancel)
+                    {
+                        throw new AbortedException();
+                    }
+
+                    SelectedValue = frmPickItem.SelectedName;
+                    if (_blnConcatSelectedValue)
+                        SourceName += " (" + frmPickItem.SelectedName + ')';
+
+                    Log.Info("_strSelectedValue = " + SelectedValue);
+                    Log.Info("SelectedValue = " + SelectedValue);
                 }
-
-                frmPickItem.ShowDialog();
-
-                // Make sure the dialogue window was not canceled.
-                if (frmPickItem.DialogResult == DialogResult.Cancel)
+                else
                 {
-                    throw new AbortedException();
-                }
-                SelectedValue = frmPickItem.SelectedName;
-                if (_blnConcatSelectedValue)
-                    SourceName += " (" + frmPickItem.SelectedName + ')';
+                    SelectedValue = LimitSelection;
+                    if (_blnConcatSelectedValue)
+                        SourceName += " (" + LimitSelection + ')';
 
-                Log.Info("_strSelectedValue = " + SelectedValue);
-                Log.Info("SelectedValue = " + SelectedValue);
+                    Log.Info("_strSelectedValue = " + SelectedValue);
+                    Log.Info("SelectedValue = " + SelectedValue);
+                }
             }
 
             // Create the Improvement.
@@ -5547,51 +5577,95 @@ namespace Chummer.Classes
             Log.Info("Calling CreateImprovement");
             CreateImprovement(strSelected, _objImprovementSource, SourceName, Improvement.ImprovementType.LimitSpellDescriptor, _strUnique);
         }
+        #region addspiritorsprite
+        /// <summary>
+        /// Improvement type that adds to the available sprite types a character can summon.
+        /// </summary>
+        /// <param name="bonusNode"></param>
+        public void addsprite(XmlNode bonusNode)
+        {
+            Log.Info("addspirit");
+            XmlNodeList xmlAllowedSpirits = bonusNode.SelectNodes("spirit");
+            bool addToSelected = true;
+            if (bonusNode.SelectSingleNode("addtoselected") != null)
+            {
+                addToSelected = Convert.ToBoolean(bonusNode.SelectSingleNode("addtoselected")?.Value);
+            }
+            AddSpiritOrSprite("streams.xml", xmlAllowedSpirits, Improvement.ImprovementType.AddSprite, addToSelected);
+        }
 
+        /// <summary>
+        /// Improvement type that adds to the available spirit types a character can summon.
+        /// </summary>
+        /// <param name="bonusNode"></param>
+        public void addspirit(XmlNode bonusNode)
+        {
+            Log.Info("addspirit");
+            XmlNodeList xmlAllowedSpirits = bonusNode.SelectNodes("spirit");
+            bool addToSelected = true;
+            if (bonusNode.SelectSingleNode("addtoselected") != null)
+            {
+                addToSelected = Convert.ToBoolean(bonusNode.SelectSingleNode("addtoselected")?.Value);
+            }
+            AddSpiritOrSprite("traditions.xml",xmlAllowedSpirits, Improvement.ImprovementType.AddSpirit, addToSelected);
+        }
+        /// <summary>
+        /// Improvement type that limits the spirits a character can summon to a particular category.
+        /// </summary>
+        /// <param name="bonusNode"></param>
         public void limitspiritcategory(XmlNode bonusNode)
         {
             Log.Info("limitspiritcategory");
-            XmlNodeList xmlLimitedSpirits = bonusNode.SelectNodes("spirit");
-            HashSet<string> limit = new HashSet<string>();
-            if (xmlLimitedSpirits != null)
+            XmlNodeList xmlAllowedSpirits = bonusNode.SelectNodes("spirit");
+            bool addToSelected = true;
+            if (bonusNode.SelectSingleNode("addtoselected") != null)
             {
-                foreach (XmlNode n in xmlLimitedSpirits)
-                {
-                    limit.Add(n.InnerText);
-                }
+                addToSelected = Convert.ToBoolean(bonusNode.SelectSingleNode("addtoselected")?.Value);
             }
+            AddSpiritOrSprite("traditions.xml", xmlAllowedSpirits, Improvement.ImprovementType.LimitSpiritCategory, addToSelected);
+        }
+
+        private void AddSpiritOrSprite(string xmlDoc, XmlNodeList xmlAllowedSpirits, Improvement.ImprovementType impType, bool addToSelectedValue = true)
+        {
+            Log.Info("addspiritorsprite");
+            HashSet<string> setAllowed = new HashSet<string>();
+            foreach (XmlNode n in xmlAllowedSpirits)
+            {
+                setAllowed.Add(n.InnerText);
+            }
+
             List<ListItem> lstSpirits = new List<ListItem>();
-            using (XmlNodeList xmlSpirits = XmlManager.Load("traditions.xml").SelectNodes("/chummer/spirits/spirit"))
+            using (XmlNodeList xmlSpirits = XmlManager.Load(xmlDoc).SelectNodes("/chummer/spirits/spirit"))
                 if (xmlSpirits?.Count > 0)
                     foreach (XmlNode xmlSpirit in xmlSpirits)
                     {
                         string strSpiritName = xmlSpirit["name"]?.InnerText;
-                        if (limit.All(l => strSpiritName == l))
+                        if (setAllowed.Any(l => strSpiritName == l))
                         {
-                            lstSpirits.Add(new ListItem(strSpiritName, xmlSpirit["translate"]?.InnerText ?? strSpiritName));
+                            lstSpirits.Add(new ListItem(strSpiritName,
+                                xmlSpirit["translate"]?.InnerText ?? strSpiritName));
                         }
                     }
 
-            frmSelectItem frmSelect = new frmSelectItem {GeneralItems = lstSpirits};
+            frmSelectItem frmSelect = new frmSelectItem { GeneralItems = lstSpirits };
             frmSelect.ShowDialog();
-
             if (frmSelect.DialogResult == DialogResult.Cancel)
             {
                 throw new AbortedException();
             }
-            if (string.IsNullOrEmpty(SelectedValue))
-                SelectedValue = frmSelect.SelectedItem;
-            else
-                SelectedValue += ", " + frmSelect.SelectedItem;
-            if (_blnConcatSelectedValue)
-                SourceName += " (" + frmSelect.SelectedItem + ')';
-            
+
+            if (addToSelectedValue)
+            {
+                if (string.IsNullOrEmpty(SelectedValue)) SelectedValue = frmSelect.SelectedItem;
+                else SelectedValue += ", " + frmSelect.SelectedItem;
+            }
+            if (_blnConcatSelectedValue) SourceName += " (" + frmSelect.SelectedItem + ')';
             Log.Info("_strSelectedValue = " + frmSelect.SelectedItem);
             Log.Info("SourceName = " + SourceName);
-
             Log.Info("Calling CreateImprovement");
-            CreateImprovement(frmSelect.SelectedItem, _objImprovementSource, SourceName, Improvement.ImprovementType.LimitSpiritCategory, _strUnique);
+            CreateImprovement(frmSelect.SelectedItem, _objImprovementSource, SourceName, impType, _strUnique);
         }
+        #endregion
         public void movementreplace(XmlNode bonusNode)
         {
             Log.Info("movementreplace");
@@ -6178,6 +6252,13 @@ namespace Chummer.Classes
         {
             Log.Info("spellresistance");
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.MetageneticLimit, _strUnique,
+                ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
+        public void specialmodificationlimit(XmlNode bonusNode)
+        {
+            Log.Info("spellresistance");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialModificationLimit, _strUnique,
                 ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 

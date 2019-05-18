@@ -23,24 +23,18 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+using System.Transactions;
 using Microsoft.AspNetCore.Identity;
 
 namespace ChummerHub.Models.V1
 {
     [DebuggerDisplay("SINner {Id}")]
-    public class SINner
+    public class SINner : SINnerUploadAble
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-
-        public Guid? Id { get; set; }
-
+       
+        [MaxLength(2)]
+        public string EditionNumber { get; set; }
         
-        public string DownloadUrl { get; set; }
-
-        public DateTime? UploadDateTime { get; set; }
-
-        public DateTime LastChange { get; set; }
 
         [JsonIgnore]
         [XmlIgnore]
@@ -50,54 +44,43 @@ namespace ChummerHub.Models.V1
         public string Language { get; set; }
 
         public SINnerMetaData SINnerMetaData { get; set; }
-
-        public String JsonSummary { get; set; }
+        
+        //public SINnerExtended MyExtendedAttributes { get; set; }
 
         public SINnerGroup MyGroup { get; set; }
 
         [MaxLength(64)]
         public string Alias { get; set; }
 
-        [JsonIgnore]
-        [XmlIgnore]
-        public string GoogleDriveFileId { get; set; }
-
-        public SINner()
+      public SINner()
         {
             Id = Guid.NewGuid();
             this.SINnerMetaData = new SINnerMetaData();
-        }
-
-        [JsonIgnore]
-        [XmlIgnore]
-        [NotMapped]
-        private List<Tag> _AllTags { get; set; }
-
-        public async Task<List<Tag>> GetTagsForSinnerFlat(ApplicationDbContext context)
-        {
-            return await (from a in context.Tags where a.SINnerId == this.Id select a).ToListAsync();
-            
+            //this.MyExtendedAttributes = new SINnerExtended(this);
+            this.DownloadUrl = "";
+            this.MyGroup = null;
+            this.Language = "";
+            EditionNumber = "5e";
         }
 
         internal static async Task<List<SINner>> GetSINnersFromUser(ApplicationUser user, ApplicationDbContext context, bool canEdit)
         {
-            List<SINner> result = new List<SINner>();
-            var userseq = (from a in context.UserRights where a.EMail == user.NormalizedEmail && a.CanEdit == canEdit select a).ToList();
-            foreach(var ur in userseq)
-            {
-                if(ur?.SINnerId == null) continue;
-                var sin = await context.SINners.Include(a => a.SINnerMetaData.Visibility.UserRights)
-                    .Include(b => b.MyGroup)
-                    .ThenInclude( a => a.MyGroups)
-                    .ThenInclude( a => a.MyGroups)
-                    .ThenInclude(a => a.MyGroups)
-                    .FirstOrDefaultAsync(a => a.Id == ur.SINnerId);
-                if(sin != null)
+            using (var t = new TransactionScope(TransactionScopeOption.Required,
+                new TransactionOptions
                 {
-                    result.Add(sin);
-                }
+                    IsolationLevel = System.Transactions.IsolationLevel.ReadUncommitted
+                }, TransactionScopeAsyncFlowOption.Enabled))
+            {
+                List<SINner> result = new List<SINner>();
+                var userseq = await (from a in context.UserRights
+                    where a.EMail == user.NormalizedEmail && a.CanEdit == canEdit
+                    select a.SINnerId).ToListAsync();
+                var sinseq = await context.SINners
+                    .Include(a => a.MyGroup)
+                    .Where(a => userseq.Contains(a.Id)).ToListAsync();
+                t.Complete();
+                return sinseq;
             }
-            return result;
         }
     }
 }

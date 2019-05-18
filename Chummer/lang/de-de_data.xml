@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
 	Chummer5a is free software: you can redistribute it and/or modify
@@ -1209,6 +1209,36 @@
 				<name>Ares Victory Friesennerz</name>
 				<translate>Ares Victory Friesennerz</translate>
 				<altpage>173</altpage>
+			</armor>
+			<armor translated="True">
+				<id>c05c3865-7a13-4c49-989e-a258b71f0d0c</id>
+				<name>Trenchcoat</name>
+				<translate>Trenchcoat</translate>
+				<altpage>181</altpage>
+			</armor>
+			<armor translated="True">
+				<id>257d642f-c90b-4dac-90c8-7a4f9a1ccdd0</id>
+				<name>Fedora</name>
+				<translate>Fedora</translate>
+				<altpage>181</altpage>
+			</armor>
+			<armor translated="True">
+				<id>a9135760-65dd-4c77-84a1-ed6460cf350e</id>
+				<name>Trilby</name>
+				<translate>Trilby</translate>
+				<altpage>181</altpage>
+			</armor>
+			<armor translated="True">
+				<id>b91be09d-b428-495c-a334-31b316a4ef79</id>
+				<name>Hornburg</name>
+				<translate>Homburg</translate>
+				<altpage>181</altpage>
+			</armor>
+			<armor translated="True">
+				<id>90d87a38-fe51-4bbf-bbb3-5b26cacd9834</id>
+				<name>Bowler</name>
+				<translate>Melone</translate>
+				<altpage>181</altpage>
 			</armor>
 		</armors>
 		<mods>
@@ -2939,6 +2969,12 @@
 				<translate>Biolink</translate>
 				<altpage>65</altpage>
 			</bioware>
+			<bioware translated="True">
+				<id>ac03e91f-4a00-4df7-8ab8-cd840ac5c67f</id>
+				<name>Vocal Expansion</name>
+				<translate>Stimmverstärker</translate>
+				<altpage>185</altpage>
+			</bioware>
 		</biowares>
 	</chummer>
 	<chummer file="books.xml">
@@ -3225,6 +3261,12 @@
 				<translate>Lifestyle 2080</translate>
 				<altcode>NF</altcode>
 			</book>
+			<book>
+				<id>b20a20e5-e9d4-4f54-9caa-57a001cb904e</id>
+				<name>Datapuls SOTA 2080 (German-exclusive)</name>
+				<translate>Datapuls SOTA 2080 (Deutsch-exklusiv)</translate>
+				<altcode>SOTG</altcode>
+			</book>			
 		</books>
 	</chummer>
 	<chummer file="critterpowers.xml">
@@ -4752,6 +4794,18 @@
 				<name>Traceless Walk</name>
 				<translate>Spurloser Schritt</translate>
 				<altpage>163</altpage>
+			</power>
+			<power translated="True">
+				<id>3fe334d3-f0e3-4bd7-ac39-57fa395ce0be</id>
+				<name>Animal Control (Insect Type)</name>
+				<translate>Tierbeherrschung (Insektenart)</translate>
+				<altpage>400</altpage>
+			</power>
+			<power translated="True">
+				<id>ac9855da-519a-44ac-b120-a605c20450e6</id>
+				<name>Enhanced Senses (Ultrasound)</name>
+				<translate>Gesteigere Sinne (Ultraschall)</translate>
+				<altpage>397</altpage>
 			</power>
 		</powers>
 	</chummer>
@@ -9675,7 +9729,7 @@
 			<cyberware>
 				<id>0260f9dd-7f5b-4ed7-b2d5-bd89f3ada24f</id>
 				<name>Custom Heavy Pistol</name>
-				<translate>Ausgewählte schwere Pistole</translate>
+				<translate>Ausgewählte Schwere Pistole</translate>
 				<altpage>94</altpage>
 			</cyberware>
 			<cyberware>
@@ -9753,7 +9807,7 @@
 			<cyberware>
 				<id>1619b516-2909-46db-90f3-4ac1784acad5</id>
 				<name>Custom Submachine Gun</name>
-				<translate>Ausgewählter Maschinenpistole</translate>
+				<translate>Ausgewählte Maschinenpistole</translate>
 				<altpage>94</altpage>
 			</cyberware>
 			<cyberware>
@@ -10011,7 +10065,7 @@
 			<cyberware>
 				<id>8066a1cb-acf7-47ae-9b3d-c78742e74b28</id>
 				<name>Cyberfins (Feet)</name>
-				<translate>Cyberflossen (Füßet)</translate>
+				<translate>Cyberflossen (Füße)</translate>
 				<altpage>86</altpage>
 			</cyberware>
 			<cyberware>
@@ -10488,6 +10542,24 @@
 				<translate>STATscan</translate>
 				<altpage>24</altpage>
 			</cyberware>
+			<cyberware translated="True">
+				<id>3093590d-5021-441e-973e-38afb95225f6</id>
+				<name>Autovoice</name>
+				<translate>Autostimme</translate>
+				<altpage>184</altpage>
+			</cyberware>
+			<cyberware translated="True">
+				<id>6ba97aa3-8b79-43a5-8499-95d5760a724e</id>
+				<name>Autovoice (Hacked)</name>
+				<translate>Autostimme (gehackt)</translate>
+				<altpage>184</altpage>
+			</cyberware>
+			<cyberware translated="True">
+				<id>f05492b3-de9b-44c3-8622-89840587cc3a</id>
+				<name>Foot Blade</name>
+				<translate>Fußklinge</translate>
+				<altpage>178</altpage>
+			</cyberware>
 		</cyberwares>
 	</chummer>
 	<chummer file="echoes.xml">
@@ -10736,6 +10808,8 @@
 			<category translate="Attribute des angepassten Cyberdecks">Custom Cyberdeck Attributes</category>
 			<category translate="Maßgeschneiderte Drogen">Custom Drug</category>
 			<category translate="Erscheinungsmodifikatoren">Appearance Modification</category>
+			<category translate="Druckerpressen">Printing</category>
+			<category translate="Reporterausrüstung">Reporter Gear</category>
 		</categories>
 		<gears>
 			<gear translated="True">
@@ -14510,12 +14584,6 @@
 				<id>6ba3c374-0d8d-4458-81a5-c7f330cecae9</id>
 				<name>Spellcasting Focus, Manipulation (2050)</name>
 				<translate>Zauberspruchfocus, Manipulation</translate>
-				<altpage>207</altpage>
-			</gear>
-			<gear>
-				<id>26fe675a-35ec-4cdb-8a54-e0aae0efce74</id>
-				<name>Elemental Binding Materials (2050)</name>
-				<translate>Bindungsmaterial für Elementare</translate>
 				<altpage>207</altpage>
 			</gear>
 			<gear>
@@ -18692,6 +18760,126 @@
 				<translate>Minigranate: MCT/Winchester-Howe Hornet</translate>
 				<altpage>139</altpage>
 			</gear>
+			<gear translated="True">
+				<id>25641e84-a0ec-4bfa-a5fd-6a0effeeea04</id>
+				<name>Simple Instrument</name>
+				<translate>Einfaches Instrument</translate>
+				<altpage>178</altpage>
+			</gear>
+			<gear translated="True">
+				<id>cb8ede00-71f1-4cf0-9fd5-c70dbd312dec</id>
+				<name>Professional Instrument</name>
+				<translate>Professionelles Instrument</translate>
+				<altpage>178</altpage>
+			</gear>
+			<gear translated="True">
+				<id>93ead8c1-fb02-4031-bda9-d07cc43163bb</id>
+				<name>Rising Star Instrument</name>
+				<translate>Aufstrebender Stern Instrument</translate>
+				<altpage>178</altpage>
+			</gear>
+			<gear translated="True">
+				<id>ca849c10-6b44-486d-83b2-6329d0e075d0</id>
+				<name>Big Time Instrument</name>
+				<translate>Superstar Instrument</translate>
+				<altpage>178</altpage>
+			</gear>
+			<gear translated="True">
+				<id>79facff7-e96b-47b5-a65b-3ad40af5529a</id>
+				<name>Internal Synthlink</name>
+				<translate>Internes Synthlink</translate>
+				<altpage>178</altpage>
+			</gear>
+			<gear translated="True">
+				<id>357d77f6-0e9e-4e5f-87f2-9c4b5422d23c</id>
+				<name>External Synthlink</name>
+				<translate>Externes Synthlink</translate>
+				<altpage>178</altpage>
+			</gear>
+			<gear translated="True">
+				<id>3b0f2e22-827d-448e-95df-be872963bc23</id>
+				<name>Grenade: Molotov Cocktail</name>
+				<translate>Granate: Molotowcocktail</translate>
+				<altpage>180</altpage>
+			</gear>
+			<gear translated="True">
+				<id>ac40a996-daa5-4a63-bd2e-deba3e67dcf2</id>
+				<name>Grenade: Molotov Cocktail, Aerodynamic</name>
+				<translate>Granate: Molotowcocktail, Aerodynamisch</translate>
+				<altpage>180</altpage>
+			</gear>
+			<gear translated="True">
+				<id>132d65fa-132a-4f69-b007-a08860f47aa6</id>
+				<name>Litre of Milk</name>
+				<translate>Milch (1 Liter)</translate>
+				<altpage>180</altpage>
+			</gear>
+			<gear translated="True">
+				<id>e948b761-836f-4681-83c8-d5627df81ef0</id>
+				<name>Graffiti Kit</name>
+				<translate>Graffiti-Set</translate>
+				<altpage>181</altpage>
+			</gear>
+			<gear translated="True">
+				<id>e3230bd0-0de8-430a-a24b-4403ae8d05fe</id>
+				<name>Press Pass</name>
+				<translate>Presseausweis</translate>
+				<altpage>182</altpage>
+			</gear>
+			<gear translated="True">
+				<id>f1c739c1-4976-4536-ac5e-dd9da491eb36</id>
+				<name>ProCam</name>
+				<translate>ProCam</translate>
+				<altpage>182</altpage>
+			</gear>
+			<gear translated="True">
+				<id>731608b0-7146-4083-945e-69d95a1df78f</id>
+				<name>SmartCam External</name>
+				<translate>Externe SmartCam</translate>
+				<altpage>182</altpage>
+			</gear>
+			<gear translated="True">
+				<id>b2775dfc-5eda-4097-a12e-4e767bb8759e</id>
+				<name>SmartCam Internal</name>
+				<translate>Interne SmartCam</translate>
+				<altpage>182</altpage>
+			</gear>
+			<gear translated="True">
+				<id>c405db73-efd7-4c51-a749-5e733fe6f4ca</id>
+				<name>Basic Press</name>
+				<translate>Einfache Presse</translate>
+				<altpage>183</altpage>
+			</gear>
+			<gear translated="True">
+				<id>08edaa39-1045-4e8a-a0d9-ed8a75c6ebda</id>
+				<name>Small Press</name>
+				<translate>Kleine Presse</translate>
+				<altpage>183</altpage>
+			</gear>
+			<gear translated="True">
+				<id>1e70f54f-3c0c-413e-ab16-8f32e7aed835</id>
+				<name>Industrial Press</name>
+				<translate>Industriepresse</translate>
+				<altpage>183</altpage>
+			</gear>
+			<gear translated="True">
+				<id>3fd93a7a-3f55-4c36-a6be-d03bc835e60d</id>
+				<name>Paper (per 500)</name>
+				<translate>Papier (500 Blatt)</translate>
+				<altpage>183</altpage>
+			</gear>
+			<gear translated="True">
+				<id>0234cfa4-0658-45e8-9e66-a1fbc66b2526</id>
+				<name>Black Ink (per 500)</name>
+				<translate>Schwarze Tinte (für 500 Blatt)</translate>
+				<altpage>183</altpage>
+			</gear>
+			<gear translated="True">
+				<id>0f43622d-87bb-4288-9d10-b6dab64b0f64</id>
+				<name>Color Ink (per 500)</name>
+				<translate>Farbtinte (für 500 Blatt)</translate>
+				<altpage>183</altpage>
+			</gear>
 		</gears>
 	</chummer>
 	<chummer file="lifestyles.xml">
@@ -20479,9 +20667,9 @@
 					</choice>
 				</choices>
 				<altadvantage>Allgemein: +2 Würfel für Proben auf Erste Hilfe</altadvantage>
-				<altdisadvantage>Immer wenn ein Anhänger der Großen Mutter absichtlich oder unabsichtlich dem lebensspendenden Wesen der Natur (seiner Auslegung) zuwiderhandelt, erleidet er einen Würfelpoolmodifikator von -1 auf alle Handlungen bis er seine Zuwiderhandlung wiedergutgemacht hat.</altdisadvantage>
-				<altpage>232</altpage>
-			</mentor>
+				<altdisadvantage>Anhänger der Großen Mutter sind Liebhaber und Heiler, keine Kämpfer. Dadurch leiden sie unter einem –1 Würfel-Pool Modifikator für alle Aktionen, die mit Kämpfen in Verbindung stehen (Kampffertigkeit, oder einen Zauberspruch aus der Kategorie Kampf).</altdisadvantage>
+				<altpage>33</altpage>
+			</mentor>    
 			<mentor>
 				<id>a1faab23-0214-4c83-96ac-d5bb71d4aebb</id>
 				<name>Mountain</name>
@@ -22017,6 +22205,224 @@
 					<choice>
 						<name>Adept: Free Empathic Healing power</name>
 						<translate>Adept: Kraft Empathische Heilung gratis</translate>
+					</choice>
+				</choices>
+			</mentor>
+			<mentor>
+				<id>5593f724-7b72-4927-a8c8-2c73844cc1b1</id>
+				<name>Architekt (SOTA 2080)</name>
+				<translate>Architekt (SOTA 2080)</translate>
+				<altadvantage>Allgemein: +2 Würfel für Proben auf Führung</altadvantage>
+				<altdisadvantage>Ein Anhänger dieses Schutzgeistes behält gerne die Initiative. Immer dann, wenn die Umstände eines Runs ihn in die Defensive drängen, muss ihm eine Probe auf Willenskraft + Intuition (3) gelingen. Misslingt die Probe, erhält der Anhänger von Architekt einen Würfelpoolmalus von -2 auf seine Proben, bis er das Heft wieder in der Hand hält.</altdisadvantage>
+				<altpage>29</altpage>
+				<choices>
+					<choice>
+						<name>Magician: +2 dice for Combat spells</name>
+						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Manipulation</translate>
+					</choice>
+					<choice>
+						<name>Adept: Gain 2 free level of Analytics.</name>
+						<translate>Adept: 2 Stufen Analytik gratis</translate>
+					</choice>
+				</choices>
+			</mentor>
+			<mentor>
+				<id>db42c229-3403-4947-8626-3f70f87c8a3c</id>
+				<name>Deutscher Schäferhund</name>
+				<translate>Deutscher Schäferhund</translate>
+				<altadvantage>Allgemein: +2 Würfel für Proben auf Führung</altadvantage>
+				<altdisadvantage>Bisweilen bricht die Ungeduld bei Schäferhund durch. Wird die Geduld eines Anhängers von Schäferhund auf die Probe gestellt (nach Spielleiterentscheid), muss ihm eine Willenskraft + Charisma (3) gelingen, um nicht scharf zu reagieren.</altdisadvantage>
+				<altpage>29</altpage>
+				<choices>
+					<choice>
+						<name>Magician: +1 dice for Combat and Detection spells</name>
+						<translate>Zauberer: +1 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Kampf und Wahrnehmung</translate>
+					</choice>
+					<choice>
+						<name>Adept: Danger Sense level 2</name>
+						<translate>Adept: 2 Stufen Gefahrensinn gratis</translate>
+					</choice>
+				</choices>
+			</mentor>
+			<mentor>
+				<id>bdb4fa0b-3c9d-4164-b2d6-76b7c04c43d8</id>
+				<name>Dobermann</name>
+				<translate>Dobermann</translate>
+				<altadvantage>Allgemein: +1 Würfel für Proben auf Wahrnehmung und eine Waffenfertigkeit nach Wahl</altadvantage>
+				<altdisadvantage>Dobermann ist sehr selbstbewusst. Um sich anderen unterzuordnen bzw. fremden Plänen zu folgen, muss einem Anhänger von Dobermann eine Probe auf Willenskraft + Charisma (3) gelingen.</altdisadvantage>
+				<altpage>29</altpage>
+				<choices>
+					<choice>
+						<name>+1 dice on Archery</name>
+						<translate>+1 Würfel für Proben auf Klingenwaffen</translate>
+					</choice>
+					<choice>
+						<name>+1 dice on Automatics</name>
+						<translate>+1 Würfel für Proben auf Schnellfeuerwaffen</translate>
+					</choice>
+					<choice>
+						<name>+1 dice on Blades</name>
+						<translate>+1 Würfel für Proben auf Klingenwaffen</translate>
+					</choice>
+					<choice>
+						<name>+1 dice on Clubs</name>
+						<translate>+1 Würfel für Proben auf Knüppel</translate>
+					</choice>
+					<choice>
+						<name>+1 dice on Gunnery</name>
+						<translate>+1 Würfel für Proben auf Geschütze</translate>
+					</choice>
+					<choice>
+						<name>+1 dice on Heavy Weapons</name>
+						<translate>+1 Würfel für Proben auf Schwere Waffen</translate>
+					</choice>
+					<choice>
+						<name>+1 dice on Longarms</name>
+						<translate>+1 Würfel für Proben auf Gewehre</translate>
+					</choice>
+					<choice>
+						<name>+1 dice on Pistols</name>
+						<translate>+1 Würfel für Proben auf Pistolen</translate>
+					</choice>
+					<choice>
+						<name>+1 dice on Throwing Weapons</name>
+						<translate>+1 Würfel für Proben auf Wurfwaffen</translate>
+					</choice>
+					<choice>
+						<name>+1 dice on Unarmed Combat</name>
+						<translate>+1 Würfel für Proben auf Waffenloser Kampf</translate>
+					</choice>
+					<choice set="2">
+						<name>Magician: +2 dice for Combat spells</name>
+						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Kampf</translate>
+					</choice>
+					<choice set="2">
+						<name>Adept: 1 free level of Combat Sense</name>
+						<translate>Adept: 1 Stufe Kampfsinn gratis</translate>
+					</choice>
+				</choices>
+			</mentor>
+			<mentor>
+				<id>240ab0aa-6be1-452b-88c2-f10f6f6eabfb</id>
+				<name>Weimaraner</name>
+				<translate>Weimaraner</translate>
+				<altadvantage>Allgemein: +1 Würfel für Proben auf Laufen und Spurenlesen</altadvantage>
+				<altdisadvantage>Kann ein Anhänger von Weimaraner seine Fähigkeiten länger als zwölf Stunden nicht einsetzen, muss ihm eine Probe auf Willenskraft + Charisma (3) gelingen, sonst erleidet er einen Würfelpoolmodifikator von -1 auf alle Handlungen, bis er wieder seine Fähigkeiten einsetzt.</altdisadvantage>
+				<altpage>31</altpage>
+				<choices>
+					<choice>
+						<name>Magician: +2 dice for Detection spells</name>
+						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Wahrnehmung</translate>
+					</choice>
+					<choice>
+						<name>Adept: 1 free levels of Enhanced Perception</name>
+						<translate>Adept: 1 Stufe Verbesserte Wahrnehmung gratis</translate>
+					</choice>
+				</choices>
+			</mentor>
+			<mentor>
+				<id>5c465bf3-665f-41f2-865e-41abb879ee1f</id>
+				<name>Dachs</name>
+				<translate>Dachs</translate>
+				<altadvantage>Allgemein: Vorteil Aufmerksamkeit Stufe 2</altadvantage>
+				<altdisadvantage>Dachs beschützt sein Revier unerbittlich. Dringen Feinde in das Gebiet ein, das ein Anhänger von Dachs beschützt (zum Beispiel ein Gebäude), oder entwenden einen Gegenstand, der unter dem Schutz eines Anhängers von Dachs steht, muss ihm eine Probe auf Willenskraft + Charisma (3) gelingen, um nicht sofort mit allen Mitteln gegen die Eindringlinge bzw. Diebe vorzugehen.</altdisadvantage>
+				<altpage>31</altpage>
+				<choices>
+					<choice>
+						<name>Magician: +1 dice for Counterspelling and Combat Spells</name>
+						<translate>Zauberer: +1 Würfel für Proben auf Antimagie und +1 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Kampf</translate>
+					</choice>
+					<choice>
+						<name>Adept: Danger Sense level 2</name>
+						<translate>Adept: 2 Stufen Gefahrensinn gratis</translate>
+					</choice>
+				</choices>
+			</mentor>
+			<mentor>
+				<id>b01976a5-2343-4308-846e-da5fb12328a8</id>
+				<name>Mystischer Wächter</name>
+				<translate>Mystischer Wächter</translate>
+				<altadvantage>Allgemein: +2 Würfel für Proben auf eine Nahkampffertigkeit</altadvantage>
+				<altdisadvantage>Was macht ein Mystischer Wächter, wenn es nichts zu bewachen gibt? Solange ein Anhänger des Mystischen Wächters keinen konkreten Auftrag, Auftraggeber oder Schutzbefohlenen hat (beziehungsweise seinen selbstauferlegten Pflichten nicht nachkommt), erleidet er einen Würfelpoolmalus von -2 auf alle Proben.</altdisadvantage>
+				<altpage>31</altpage>
+				<choices>
+					<choice>
+						<name>+1 dice on Blades</name>
+						<translate>+1 Würfel für Proben auf Klingenwaffen</translate>
+					</choice>
+					<choice>
+						<name>+1 dice on Clubs</name>
+						<translate>+1 Würfel für Proben auf Knüppel</translate>
+					</choice>
+					<choice>
+						<name>+1 dice on Longarms</name>
+						<translate>+1 Würfel für Proben auf Gewehre</translate>
+					</choice>
+					<choice>
+						<name>+1 dice on Unarmed Combat</name>
+						<translate>+1 Würfel für Proben auf Waffenloser Kampf</translate>
+					</choice>
+					<choice set="2">
+						<name>Magician: +2 dice pool bonus when summoning guardian or animal spirits (chose 1 when selecting this mentor spirit).</name>
+						<translate>Zauberer: +2 Würfel für das Herbeirufen von Beschützer- oder Tiergeistern (bitte per Hand ergänzen)</translate>
+					</choice>
+					<choice set="2">
+						<name>Adept: 1 free level of Magic Sense</name>
+						<translate>Adept: Magiegespür gratis</translate>
+					</choice>
+				</choices>
+			</mentor>
+			<mentor>
+				<id>296dc353-df11-4c94-a101-04bc501edf5e</id>
+				<name>Rotkäppchen</name>
+				<translate>Rotkäppchen</translate>
+				<altadvantage>Allgemein: + 2 Würfel für Proben auf Überreden</altadvantage>
+				<altdisadvantage>In ihrer ungezügelten Neugier übersehen Anhänger von Rotkäppchen manchmal das Offensichtliche und Wichtige. Sie erhalten einen Würfelpoolmalus von -1 bei Wahrnehmungsproben in unbekannten Gebieten.</altdisadvantage>
+				<altpage>32</altpage>
+				<choices>
+					<choice>
+						<name>Magician: +2 dice to Contractual Rituals (please add manually)</name>
+						<translate>Zauberer: +2 Würfel für das Besiegeln von Kontraktritualen (bitte selbst ergänzen)</translate>
+					</choice>
+					<choice>
+						<name>Adept: Gain Linguist for free</name>
+						<translate>Adept: Sprachtalent kostenlos</translate>
+					</choice>
+				</choices>
+			</mentor>
+			<mentor>
+				<id>bea9796a-c5d3-4388-97ec-14969db470fe</id>
+				<name>Schatzjäger</name>
+				<translate>Schatzjäger</translate>
+				<altadvantage>Allgemein: +1 Würfel für Proben auf Navigation und Schlosser</altadvantage>
+				<altdisadvantage>Ein Anhänger dieses Schutzgeistes ist so sehr auf das Objekt seines Strebens fixiert, dass er Aufgaben, die nichts damit zu tun haben, lustlos und halbherzig angeht: Nach dem Briefing mit Schmidt muss ihm eine Probe auf Willenskraft + Willenskraft (3) gelingen, damit er bei der Erledigung eines Runs, der nichts mit dem Objekt seines Strebens zu tun hat, keinen Würfelpoolmalus von -1 auf alle Proben erleidet.</altdisadvantage>
+				<altpage>32</altpage>
+				<choices>
+					<choice>
+						<name>Magician: +2 dice to Contractual Rituals (please add manually)</name>
+						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Wahrnehmung</translate>
+					</choice>
+					<choice>
+						<name>Adept: Gain Three-Dimensional Memory for free</name>
+						<translate>Adept: Dreidimensionales Gedächtnis gratis</translate>
+					</choice>
+				</choices>
+			</mentor>
+			<mentor>
+				<id>f2cc5e2b-6538-4271-9f7f-5434076f9a6b</id>
+				<name>Waffenbruder</name>
+				<translate>Waffenbruder</translate>
+				<altadvantage>Allgemein: +1 Würfel für Proben auf Gebräuche und Unterricht</altadvantage>
+				<altdisadvantage>Anhänger von Waffenbruder erwählen in jedem Run drei Personen mit direkter Plot-Relevanz – das können Spielercharaktere sein, aber auch wichtige NSC – als diejenigen Leute, denen während der Mission ihre Loyalität gilt. Ihnen muss eine Probe auf Willenskraft + Intuition (3) gelingen, bevor sie diesen Personenkreis übervorteilen, anlügen oder gar im Stich lassen können. Selbst wenn sie sich dazu überwinden können, erleiden sie einen Würfelpoolmalus von -2 auf alle Proben, bis sie ihre Verfehlung wieder ausgebügelt haben.</altdisadvantage>
+				<altpage>32</altpage>
+				<choices>
+					<choice>
+						<name>Magician: Magician: +2 dice summoning spirits of guardian spirits, task spirits or spirits of man</name>
+						<translate>Zauberer: +2 Würfel für das Herbeirufen von Beschützergeistern, Helfergeistern oder Geistern des Menschen</translate>
+					</choice>
+					<choice>
+						<name>Adept: 1 free level of Mystic Armor</name>
+						<translate>Adept: 1 Stufe Mystischer Panzer gratis</translate>
 					</choice>
 				</choices>
 			</mentor>
@@ -30280,6 +30686,186 @@
 				<translate>Gern gesehen</translate>
 				<altpage>144</altpage>
 			</quality>
+			<quality translated="True">
+				<id>7d1bedb9-5d27-419f-bc15-0a39d9b67516</id>
+				<name>Candle in the Darkness</name>
+				<translate>Licht im Dunkel</translate>
+				<altpage>185</altpage>
+			</quality>
+			<quality translated="True">
+				<id>f8384574-ce99-4e33-8a94-b5aea7ddf4bd</id>
+				<name>Massive Network</name>
+				<translate>Gewaltiges Netzwerk</translate>
+				<altpage>185</altpage>
+			</quality>
+			<quality translated="True">
+				<id>fc195df5-83f6-4aff-aca8-4287a56e4d4c</id>
+				<name>Networker</name>
+				<translate>Netzwerker</translate>
+				<altpage>185</altpage>
+			</quality>
+			<quality translated="True">
+				<id>8b18a3aa-fd5a-4712-8dd4-117d7a73ba11</id>
+				<name>Stolen Gear</name>
+				<translate>Gestohlene Ausrüstung</translate>
+				<altpage>185</altpage>
+			</quality>
+			<quality translated="True">
+				<id>bf68095e-35b9-49dc-a008-f67bbac9b83b</id>
+				<name>Mentor's Mask</name>
+				<translate>Schutzgeistmaske</translate>
+				<altpage>175</altpage>
+			</quality>
+			<quality translated="True">
+				<id>e59e5011-61be-44d8-be87-8924555956cb</id>
+				<name>Free Insect Spirit: Cutter Ant</name>
+				<translate>Freier Insektengeist: Blattschneiderameise</translate>
+				<altpage>21</altpage>
+			</quality>
+			<quality translated="True">
+				<id>61008635-56be-4a0f-885e-c69cdad6381c</id>
+				<name>Free Insect Spirit: Fire Ant</name>
+				<translate>Freier Insektengeist: Feuerameise</translate>
+				<altpage>21</altpage>
+			</quality>
+			<quality translated="True">
+				<id>128a7a7d-7bd2-400c-a388-fd444672cc07</id>
+				<name>Free Insect Spirit: Desert Locust</name>
+				<translate>Freier Insektengeist: Wüstenheuschrecke</translate>
+				<altpage>24</altpage>
+			</quality>
+			<quality translated="True">
+				<id>791a36c5-3fff-447e-bf47-ae5c186d5e00</id>
+				<name>Free Insect Spirit: Mole Cricket</name>
+				<translate>Freier Insektengeist: Maulwurfsgrille</translate>
+				<altpage>24</altpage>
+			</quality>
+			<quality translated="True">
+				<id>64cd8760-41ac-4280-a1bb-ccbe470cb36a</id>
+				<name>Free Insect Spirit: Subterranean Termite</name>
+				<translate>Freier Insektengeist: Erdtermite</translate>
+				<altpage>28</altpage>
+			</quality>
+			<quality translated="True">
+				<id>3c7f9965-3cf9-4d18-92cd-00b07d18bd96</id>
+				<name>Free Insect Spirit: Hunter Wasp</name>
+				<translate>Freier Insektengeist: Schlupfwespe</translate>
+				<altpage>29</altpage>
+			</quality>
+			<quality translated="True">
+				<id>b18aa02f-5259-43ce-9f42-108d4cee192c</id>
+				<name>Free Insect Spirit: Bee</name>
+				<translate>Freier Insektengeist: Biene</translate>
+				<altpage>28</altpage>
+			</quality>
+			<quality translated="True">
+				<id>f6f960ff-f4eb-48ac-ab6e-95e73f523777</id>
+				<name>Free Insect Spirit: Goliath Beetle</name>
+				<translate>Freier Insektengeist: Goliathkäfer</translate>
+				<altpage>25</altpage>
+			</quality>
+			<quality translated="True">
+				<id>a752d652-d59b-4bc5-89b4-3a4d2cf763cb</id>
+				<name>Free Insect Spirit: Water Beetle</name>
+				<translate>Freier Insektengeist: Wasserkäfer</translate>
+				<altpage>26</altpage>
+			</quality>
+			<quality translated="True">
+				<id>a2680005-2e89-4054-8941-91ac53cde39d</id>
+				<name>Free Insect Spirit: House Centipede</name>
+				<translate>Freier Insektengeist: Spinnenläufer</translate>
+				<altpage>25</altpage>
+			</quality>
+			<quality translated="True">
+				<id>8726c88b-0c03-41c9-b67c-c0bd8b8f7547</id>
+				<name>Free Insect Spirit: Tropical Centipede</name>
+				<translate>Freier Insektengeist: Riesenläufer</translate>
+				<altpage>25</altpage>
+			</quality>
+			<quality translated="True">
+				<id>7c99a5ee-a98a-429c-a27a-dd007ba9f680</id>
+				<name>Free Insect Spirit: Century Cicada</name>
+				<translate>Freier Insektengeist: Jahrhundertzikade</translate>
+				<altpage>31</altpage>
+			</quality>
+			<quality translated="True">
+				<id>e55ea45c-c1c2-47cb-91f3-528683d58c49</id>
+				<name>Free Insect Spirit: Trapdoor Spider</name>
+				<translate>Freier Insektengeist: Falltürspinne</translate>
+				<altpage>30</altpage>
+			</quality>
+			<quality translated="True">
+				<id>218a86f5-e292-418d-a3f6-fdb1b9ce5891</id>
+				<name>Free Insect Spirit: Black Widow</name>
+				<translate>Freier Insektengeist: Schwarze Witwe</translate>
+				<altpage>30</altpage>
+			</quality>
+			<quality translated="True">
+				<id>578fedfb-a533-413c-ae88-4171cbbcf595</id>
+				<name>Free Insect Spirit: Burster Firefly</name>
+				<translate>Freier Insektengeist: Blendwürmchen</translate>
+				<altpage>22</altpage>
+			</quality>
+			<quality translated="True">
+				<id>75b52efb-39a2-471d-8c5a-94341eafb5df</id>
+				<name>Free Insect Spirit: Botfly</name>
+				<translate>Freier Insektengeist: Dasselfliege</translate>
+				<altpage>22</altpage>
+			</quality>
+			<quality translated="True">
+				<id>5be18c92-264a-48ea-8438-79adfffa88f5</id>
+				<name>Free Insect Spirit: Dragonfly</name>
+				<translate>Freier Insektengeist: Libelle</translate>
+				<altpage>22</altpage>
+			</quality>
+			<quality translated="True">
+				<id>0833bbaf-db69-4956-9ad6-1fa6c7674536</id>
+				<name>Free Insect Spirit: Mimic Mantis</name>
+				<translate>Freier Insektengeist: Täuschmantis</translate>
+				<altpage>23</altpage>
+			</quality>
+			<quality translated="True">
+				<id>b22312fc-ccfb-4ad2-ae79-9d988c2e5ad0</id>
+				<name>Free Insect Spirit: Orchid Mantis</name>
+				<translate>Freier Insektengeist: Orchideenmantis</translate>
+				<altpage>23</altpage>
+			</quality>
+			<quality translated="True">
+				<id>bce09acf-46b8-4b27-af72-f2ed0909fd9c</id>
+				<name>Free Insect Spirit: Vampire Mosquito</name>
+				<translate>Freier Insektengeist: Vampirmoskito</translate>
+				<altpage>26</altpage>
+			</quality>
+			<quality translated="True">
+				<id>2570b568-dea1-40b7-a9eb-dfab2e69fde7</id>
+				<name>Free Insect Spirit: Tick</name>
+				<translate>Freier Insektengeist: Zecke</translate>
+				<altpage>26</altpage>
+			</quality>
+			<quality translated="True">
+				<id>e1d20998-d6b8-4019-8b55-c3a66a6a239b</id>
+				<name>Free Insect Spirit: Death's Head Moth</name>
+				<translate>Freier Insektengeist: Totenkopfschwärmer</translate>
+				<altpage>27</altpage>
+			</quality>
+			<quality translated="True">
+				<id>20543040-e552-4894-ba3b-f05eabcf58ab</id>
+				<name>Free Insect Spirit: Cryptid Moth</name>
+				<translate>Freier Insektengeist: Schreckensmotte</translate>
+				<altpage>27</altpage>
+			</quality>
+			<quality translated="True">
+				<id>f34b7ccf-5624-492a-938e-fd39a8887a54</id>
+				<name>Free Insect Spirit: Cave Roach</name>
+				<translate>Freier Insektengeist: Höhlenschabe</translate>
+				<altpage>27</altpage>
+			</quality>
+			<quality translated="True">
+				<id>fe67d03c-1394-41e0-a82a-532f5fe85d2e</id>
+				<name>Free Insect Spirit: Silverfish</name>
+				<translate>Freier Insektengeist: Silberfisch</translate>
+				<altpage>27</altpage>
+			</quality>
 		</qualities>
 	</chummer>
 	<chummer file="skills.xml">
@@ -30851,8 +31437,8 @@
 				<specs>
 					<spec translate="Schrotflinten">Shotguns</spec>
 					<spec translate="Scharfschützengewehre">Sniper Rifles</spec>
-					<spec translate="Schließen auf Lange Entfernung">Extended-Range Shots</spec>
-					<spec translate="Schließen auf Maximale Entfernung">Long-Range Shots</spec>
+					<spec translate="Schießen auf Lange Entfernung">Extended-Range Shots</spec>
+					<spec translate="Schießen auf Maximale Entfernung">Long-Range Shots</spec>
 					<spec translate="Sportgewehre">Sporting Rifles</spec>
 				</specs>
 				<altpage>130</altpage>
@@ -33176,7 +33762,7 @@
 			<skill>
 				<id>99d3b5ed-7862-410f-b3d9-ca7427bc2791</id>
 				<name>Astronomy</name>
-				<translate>Atronomie</translate>
+				<translate>Astronomie</translate>
 				<specs>
 					<spec translate="Kometen">Comets</spec>
 					<spec translate="Mars">Mars</spec>
@@ -34212,6 +34798,11 @@
 					<spec translate="Lingo">Lingo</spec>
 				</specs>
 			</skill>
+			<skill>
+				<id>c0be1393-e4a1-4af6-8c0d-f9eef89a93b1</id>
+				<name>Zoology</name>
+				<translate>Zoologie</translate>
+			</skill>
 		</knowledgeskills>
 	</chummer>
 	<chummer file="spells.xml">
@@ -34931,7 +35522,7 @@
 			<spell>
 				<id>444adc27-26c7-4ff1-894f-a55fea22e24a</id>
 				<name>Trid Phantasm</name>
-				<translate>Trideotrugbild</translate>
+				<translate>Trideo-Trugbild</translate>
 				<altpage>284</altpage>
 			</spell>
 			<spell>
@@ -36430,6 +37021,60 @@
 				<altpage>100</altpage>
 			</spirit>
 		</spirits>
+	</chummer>
+	<chummer file="tips.xml">
+		<tips>
+			<tip>
+				<id>528f605f-9994-46b5-8583-cafe006507e4</id>
+				<text>Looks like you're building a street samurai. Don't you need a code of honor?</text>
+				<translate>Es scheint, als würden Sie einen Straßensamurai erschaffen. Brauchen Sie keinen Ehrenkodex?</translate>
+			</tip>
+			<tip>
+				<id>ccaae7df-40ba-4da9-837e-c0df92f07038</id>
+				<text>You have enough money to retire with a Low Lifestyle. Keep at it! A nuyen saved is a nuyen earned!</text>
+				<translate>Sie haben genug Geld, um sich mit einem Lebenstil der Unterschicht zurückzuziehen. Nicht aufgeben! Ein gesparter Nuyen ist ein verdienter Nuyen!</translate>
+			</tip>
+			<tip>
+				<id>ff26b01d-1aa4-45ac-8685-0d199e115d1f</id>
+				<text>You have enough money to retire with a Low Lifestyle. Keep at it! A nuyen saved is a nuyen earned!</text>
+				<translate>Sie haben genug Geld, um sich mit einem Lebenstil der Mittelschicht zurückzuziehen. Zweieinhalb Kinder, vier Wände, Virtuelle Realität, liebevoller Partner. Lohnt es sich wirklich, für mehr zu sparen?</translate>
+			</tip>
+			<tip>
+				<id>b6da9d78-024d-4516-821c-93ad8207075d</id>
+				<text>You have enough money to retire with a Luxury Lifestyle. Molly Millions has nothing on you!</text>
+				<translate>Sie haben genug Geld, um sich mit einem luxuriösen Lebensstil zurückzuziehen. Molly Millions kann Ihnen nichts anhaben!</translate>
+			</tip>
+			<tip>
+				<id>b669df07-528b-4df3-829b-54d095af1791</id>
+				<text>Why bother with any other weapon when you can have the Ares Alpha, the last word in automatics! This message brought to you by Ares Macrotech.</text>
+				<translate>Warum sich mit jeder anderen Waffe beschäftigen, wenn man die Ares Alpha haben kann, das Highend-Produkt der Automatik! Diese Nachricht wurde Ihnen von Ares Macrotech übermittelt.</translate>
+			</tip>
+			<tip>
+				<id>1e98f6d1-dfca-4dc3-9248-dd3da3589989</id>
+				<text>You appear to be making an Alchemist. Are you sure you want to do that?</text>
+				<translate>Sie scheinen ein Alchemist zu werden. Sind Sie sicher, dass Sie das tun wollen?</translate>
+			</tip>
+			<tip>
+				<id>42262ca7-b414-4dde-b1b3-b7f72bc160c1</id>
+				<text>Looks like you've chosen to make an A.I. Are you sure you wouldn't rather be playing Eclipse Phase?</text>
+				<translate>Sieht so aus, als hätten Sie sich für eine KI entschieden. Sind Sie sicher, dass Sie nicht lieber Eclipse Phase spielen möchten?</translate>
+			</tip>
+			<tip>
+				<id>8bdb4ade-46e2-4ff6-b440-d8a8955766ed</id>
+				<text>Oni? More like horny elves!</text>
+				<translate>Oni? Eher wie heiße Elfen!</translate>
+			</tip>
+			<tip>
+				<id>ab52155b-d99e-4e2e-816b-16535afc206f</id>
+				<text>Looks like you don't have any hobbies. Might I suggest competitive basket-weaving?</text>
+				<translate>Sieht so aus, als hätten Sie keine Hobbys. Darf ich ein Korbflechtwettkampf vorschlagen?</translate>
+			</tip>
+			<tip>
+				<id>4bf9379e-101a-4664-8049-7db867073943</id>
+				<text>Looks like you're into some pretty fine shootin' there, Tex.</text>
+				<translate>Sieht so aus, als wären Sie in einer ziemlich guten Lage, Tex.</translate>
+			</tip>
+		</tips>
 	</chummer>
 	<chummer file="traditions.xml">
 		<traditions>
@@ -39221,6 +39866,30 @@
 				<translate>CrashCart-Krankenwagen (S-K LT-21), Nachahmung</translate>
 				<altpage>203</altpage>
 			</vehicle>
+			<vehicle translated="True">
+				<id>1b47defa-56d5-4827-b57b-2b4d7b1051a0</id>
+				<name>BMW GGX Sandleopard</name>
+				<translate>BMW GGX Sandleopard</translate>
+				<altpage>15</altpage>
+			</vehicle>
+			<vehicle translated="True">
+				<id>e5fc5640-a49c-4b01-98b0-6456b867fb4c</id>
+				<name>Jena Robotik Mewero (Minidrone)</name>
+				<translate>Jena Robotik Mewero (Minidrohne)</translate>
+				<altpage>15</altpage>
+			</vehicle>
+			<vehicle translated="True">
+				<id>378178d4-e941-4f43-acc0-b14a551c0f7b</id>
+				<name>Ford Broadcast</name>
+				<translate>Ford Broadcast</translate>
+				<altpage>182</altpage>
+			</vehicle>
+			<vehicle translated="True">
+				<id>8eaa5090-5fcb-42b4-9e96-ef408096d2a1</id>
+				<name>Sikorsky-Bell Condor</name>
+				<translate>Sikorsky-Bell Condor</translate>
+				<altpage>182</altpage>
+			</vehicle>
 		</vehicles>
 		<mods>
 			<mod>
@@ -41457,7 +42126,7 @@
 			<weapon>
 				<id>fe835c72-a973-4976-bf5f-751aff1371d4</id>
 				<name>Spurs</name>
-				<translate>Sporen</translate>
+				<translate>Sporn</translate>
 				<altpage>425</altpage>
 			</weapon>
 			<weapon>
@@ -42776,8 +43445,8 @@
 			</weapon>
 			<weapon translated="True">
 				<id>1c738c1d-7abc-4756-a683-f5bf92902671</id>
-				<name>Cavalier Arms Adder Silvergun</name>
-				<translate>Cavalier Arms Adder Silvergun</translate>
+				<name>Cavalier Arms Adder Slivergun</name>
+				<translate>Cavalier Arms Adder Slivergun</translate>
 				<altpage>170</altpage>
 			</weapon>
 			<weapon>
@@ -42806,7 +43475,7 @@
 			</weapon>
 			<weapon translated="True">
 				<id>431b07eb-8eb8-4091-a47c-5ffe8736bb50</id>
-				<name>Colt Manhunter</name>
+				<name>Colt Manhunter A1</name>
 				<translate>Colt Manhunter</translate>
 				<altpage>170</altpage>
 			</weapon>
@@ -42947,12 +43616,6 @@
 				<name>Ultamax MMG</name>
 				<translate>Ultimax MMG</translate>
 				<altpage>44</altpage>
-			</weapon>
-			<weapon>
-				<id>431b07eb-8eb8-4091-a47c-5ffe8736bb50</id>
-				<name>Colt Manhunter A1</name>
-				<translate>Colt Manhunter A1</translate>
-				<altpage>178</altpage>
 			</weapon>
 			<weapon>
 				<id>a1924b0d-3cc6-4a37-9783-c75145ca929e</id>
@@ -43818,6 +44481,126 @@
 				<translate>Wuxing-Armtec PTL-02</translate>
 				<altpage>141</altpage>
 			</weapon>
+			<weapon translated="True">
+				<id>f41e735d-44f3-4eae-8538-71d8ae14b3e1</id>
+				<name>HK Urban Assassin</name>
+				<translate>HK Urban Assassin</translate>
+				<altpage>12</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>e1670cec-28ff-4281-94f4-2bda59556f27</id>
+				<name>Abräumer</name>
+				<translate>Abräumer (Teleskop-Hellebarde)</translate>
+				<altpage>8</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>2f49233d-f747-476a-98cb-996def3714ed</id>
+				<name>Katzbalger</name>
+				<translate>Katzbalger (Landsknechtschwert)</translate>
+				<altpage>7</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>c97d8ffb-1c2d-484f-8c8b-a1428d630d9d</id>
+				<name>Folding Spade</name>
+				<translate>Klappspaten</translate>
+				<altpage>8</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>71d149df-bec0-46d5-9d67-2568fd48bd67</id>
+				<name>Sabre</name>
+				<translate>Säbel</translate>
+				<altpage>7</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>baf12a42-8dbc-4144-9e46-304c3b08295d</id>
+				<name>Walther Battle Sword</name>
+				<translate>Walther Schlachtschwert</translate>
+				<altpage>7</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>08a0ab4f-e5db-4306-875b-df552d0811f7</id>
+				<name>Kanonenschlag</name>
+				<translate>Kanonenschlag</translate>
+				<altpage>9</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>330c3fdf-f64f-482c-9dd9-85d8a8f05f61</id>
+				<name>Donnerbüchse</name>
+				<translate>Donnerbüchse</translate>
+				<altpage>10</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>3d07b871-2d0f-49ad-8c4f-7cb98487ffe4</id>
+				<name>Blaser R11 Conqueror</name>
+				<translate>Blaser R11 Conqueror</translate>
+				<altpage>11</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>aedfc406-ebe3-4abf-8b9d-91d886479884</id>
+				<name>Hardened Yo-Yo</name>
+				<translate>Gehärtetes Jo-Jo</translate>
+				<altpage>179</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>cf9f71b2-0207-4da7-ac0c-b7d39e2d8cf7</id>
+				<name>Bladed Yo-Yo</name>
+				<translate>Klingen Jo-Jo</translate>
+				<altpage>179</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>e18c38e1-72b8-44e3-9afd-42c203b7b350</id>
+				<name>Monofilament Yo-Yo</name>
+				<translate>Monofilament Jo-Jo</translate>
+				<altpage>179</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>8be0faad-0a8f-4735-9928-2cfd662ba742</id>
+				<name>Hardened Skateboard</name>
+				<translate>Gehärtetes Kampfskate</translate>
+				<altpage>179</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>dc713ac6-122b-4fa0-9a70-63822412962f</id>
+				<name>Bladed Skateboard</name>
+				<translate>Kampfskate mit Klingen</translate>
+				<altpage>179</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>64efe703-1381-464a-b9ea-26c85b1837e3</id>
+				<name>Rolling Blades</name>
+				<translate>Rollschuhe mit Klingen</translate>
+				<altpage>179</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>68d76db6-3eb5-4f6c-b7d0-e3fcfeeef5c8</id>
+				<name>Torch</name>
+				<translate>Fackel</translate>
+				<altpage>180</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>9e04a42b-6e65-4a3f-b8ff-b91efefb1f5c</id>
+				<name>Pitchfork</name>
+				<translate>Mistgabel</translate>
+				<altpage>180</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>a83ce374-cb7b-45e2-b937-dff5520bd5ae</id>
+				<name>Rolling Blades</name>
+				<translate>Rollschuhe mit Klingen</translate>
+				<altpage>179</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>c5861520-b344-45b3-8497-ec1b935ef531</id>
+				<name>Grenade: Molotov Cocktail</name>
+				<translate>Granate: Molotowcocktail</translate>
+				<altpage>180</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>fc52a56b-3ae3-40e4-9812-86d35bcb9e51</id>
+				<name>Grenade: Molotov Cocktail (Aerodynamic)</name>
+				<translate>Granate: Molotowcocktail (Aerodynamisch)</translate>
+				<altpage>11</altpage>
+			</weapon>
 		</weapons>
 		<accessories>
 			<accessory>
@@ -44107,12 +44890,6 @@
 				<name>Folding Stock</name>
 				<translate>Ausklappbare Schulterstütze</translate>
 				<altpage>50</altpage>
-			</accessory>
-			<accessory>
-				<id>627f212a-ac15-4739-afbc-f44676dfe508</id>
-				<name>Gecko Grip</name>
-				<translate>Geckogriff</translate>
-				<altpage>51</altpage>
 			</accessory>
 			<accessory>
 				<id>21bc8b85-3fd7-4bde-ac8d-35e1fa099f21</id>
@@ -44545,6 +45322,60 @@
 				<name>Additional Clip/Magazine (Pistol)</name>
 				<translate>Zusätzlicher Ladestreifen/Magazin (Pistole)</translate>
 				<altpage>47</altpage>
+			</accessory>
+			<accessory>
+				<id>2d5cd697-4754-420c-ba11-27cf957a4d09</id>
+				<name>Maker Mag</name>
+				<translate>Adaptives Magazin</translate>
+				<altpage>12</altpage>
+			</accessory>
+			<accessory>
+				<id>63a4c7fe-847e-46e6-a99d-da0f39e63b8a</id>
+				<name>Plastic Components 6</name>
+				<translate>Plastik-Komponenten 6</translate>
+				<altpage>12</altpage>
+			</accessory>
+			<accessory>
+				<id>b741b729-106e-46f2-9143-0f745fd48789</id>
+				<name>Special Modification: Improved AP</name>
+				<translate>Spezialmodifikation: Verbesserte DK</translate>
+				<altpage>167</altpage>
+			</accessory>
+			<accessory>
+				<id>56b17280-27c6-414a-9957-f628ae5efefa</id>
+				<name>Special Modification: Improved Accuracy</name>
+				<translate>Spezialmodifikation: Verbesserte Präzision</translate>
+				<altpage>167</altpage>
+			</accessory>
+			<accessory>
+				<id>9084d801-c654-4eec-960e-4186a6de81d6</id>
+				<name>Special Modification: Improved Ammunition Capacity</name>
+				<translate>Spezialmodifikation: Verbesserter Munitionsvorrat</translate>
+				<altpage>167</altpage>
+			</accessory>
+			<accessory>
+				<id>93be91c1-3f77-4e7b-9ac2-eb349b76d017</id>
+				<name>Special Modification: Improved Concealment</name>
+				<translate>Spezialmodifikation: Verbesserter Tarnmodifikator</translate>
+				<altpage>167</altpage>
+			</accessory>
+			<accessory>
+				<id>3c82e17b-76cd-47b9-9bda-c3131a64e0ee</id>
+				<name>Special Modification: Damage</name>
+				<translate>Spezialmodifikation: Verbesserter Schadenscode</translate>
+				<altpage>167</altpage>
+			</accessory>
+			<accessory>
+				<id>15d159e8-d3db-4cf3-8964-0eb2235ed6c2</id>
+				<name>Special Modification: Improved Reach</name>
+				<translate>Spezialmodifikation: Verbesserte Reichweite</translate>
+				<altpage>167</altpage>
+			</accessory>
+			<accessory>
+				<id>09abdea8-df9a-4e74-86aa-0f79ce96f422</id>
+				<name>Special Modification: Improved Recoil Comp</name>
+				<translate>Spezialmodifikation: Verbesserte Rückstoßkompensation</translate>
+				<altpage>167</altpage>
 			</accessory>
 		</accessories>
 	</chummer>
@@ -45201,6 +46032,12 @@
 				<name>Dodge</name>
 				<translate>Ausweichen</translate>
 				<altpage>Erhöht den Pool des Charakters zum Ausweichen um den angegebenen Wert.</altpage>
+			</improvement>
+			<improvement>
+				<id>spellcategory</id>
+				<name>Specific Spell Dicepool</name>
+				<translate>Spezieller Zauberwürfelpool</translate>
+				<altpage>Passt den Zauberpool des Charakters an, wenn er Zauber in der ausgewählten Kategorie wirkt. Positive Werte erhöhen die Fähigkeit für Zauber. Negative Werte reduzieren die Fähigkeit für Zauber.</altpage>
 			</improvement>
 		</improvements>
 	</chummer>

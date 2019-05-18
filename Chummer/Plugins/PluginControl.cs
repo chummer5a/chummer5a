@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
+using NLog;
 
 namespace Chummer.Plugins
 {
@@ -22,7 +23,7 @@ namespace Chummer.Plugins
         IEnumerable<TabPage> GetTabPages(frmCreate input);
         IEnumerable<ToolStripMenuItem> GetMenuItems(ToolStripMenuItem menu);
 
-        Task<IEnumerable<TreeNode>> GetCharacterRosterTreeNode(ConcurrentDictionary<string, frmCharacterRoster.CharacterCache> CharDic, bool forceUpdate);
+        Task<IEnumerable<TreeNode>> GetCharacterRosterTreeNode(frmCharacterRoster frmCharRoster, bool forceUpdate);
 
         UserControl GetOptionsControl();
 
@@ -37,6 +38,7 @@ namespace Chummer.Plugins
 
     public class PluginControl
     {
+        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private static CompositionContainer container = null;
         public static CompositionContainer Container { get { return container; } }
 
@@ -44,19 +46,53 @@ namespace Chummer.Plugins
 
         public void Initialize()
         {
-            catalog = new AggregateCatalog();
-            catalog.Catalogs.Add(new DirectoryCatalog(path: "Plugins", searchPattern: "*.exe"));
-            catalog.Catalogs.Add(new DirectoryCatalog(path: "Plugins", searchPattern: "*.dll"));
-            container = new CompositionContainer(catalog);
-            //Fill the imports of this object
-          
-            StartWatch();
-            container.ComposeParts(this);
-            foreach (var plugin in MyPlugins)
+            try
             {
-                plugin.CustomInitialize(Program.MainForm);
-                plugin.SetIsUnitTest(Utils.IsUnitTest);
+                if (GlobalOptions.PluginsEnabled == false)
+                {
+                    Log.Info("Plugins are globally disabled - exiting PluginControl.Initialize()");
+                    return;
+                }
+                Log.Info("Plugins are globally enabled - entering PluginControl.Initialize()");
+                catalog = new AggregateCatalog();
+                var execat = new DirectoryCatalog(path: "Plugins", searchPattern: "*.exe");
+                Log.Info("Searching for exes in path " + execat.FullPath);
+                catalog.Catalogs.Add(execat);
+                catalog.Catalogs.Add(new DirectoryCatalog(path: "Plugins", searchPattern: "*.dll"));
+                container = new CompositionContainer(catalog);
+                //Fill the imports of this object
+                StartWatch();
+                container.ComposeParts(this);
+
+                Log.Info("Plugins found: " + MyPlugins.Count());
+                Log.Info("Plugins active: " + MyActivePlugins.Count());
+                foreach (var plugin in MyActivePlugins)
+                {
+                    try
+                    {
+                        Log.Info("Initializing Plugin " + plugin.ToString());
+                        plugin.CustomInitialize(Program.MainForm);
+                        plugin.SetIsUnitTest(Utils.IsUnitTest);
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Error(e);
+                    }
+                }
+                Log.Info("Initializing Plugins finished.");
             }
+            catch(System.Security.SecurityException e)
+            {
+                string msg = "Well, the Plugin wanted to do something that requires Admin rights. Let's just ignore this: " + Environment.NewLine + Environment.NewLine;
+                msg += e.ToString();
+                Log.Warn(e, msg);
+            }
+            catch (Exception e)
+            {
+                Log.Fatal(e);
+                throw;
+            }
+            
         }
 
         [ImportMany(typeof(IPlugin))]
@@ -107,6 +143,14 @@ namespace Chummer.Plugins
             {
                 this.Initialize();
             }
+            catch(System.Security.SecurityException e)
+            {
+                string msg = "Well, something went wrong probably because we are not Admins. Let's just ignore it and move on." + Environment.NewLine + Environment.NewLine;
+                Console.WriteLine(msg + e.Message);
+                System.Diagnostics.Trace.TraceWarning(msg + e.Message);
+                return;
+            }
+
             catch (ReflectionTypeLoadException e)
             {
                 string msg = "Exception loading plugins: " + Environment.NewLine;
@@ -117,8 +161,7 @@ namespace Chummer.Plugins
 
                 msg += Environment.NewLine;
                 msg += e.ToString();
-                Console.WriteLine(msg);
-                System.Diagnostics.Debug.Write(msg);
+                Log.Error(e, msg);
             }
             catch (CompositionException e)
             {
@@ -132,8 +175,7 @@ namespace Chummer.Plugins
 
                 msg += Environment.NewLine;
                 msg += e.ToString();
-                Console.WriteLine(msg);
-                System.Diagnostics.Debug.Write(msg);
+                Log.Error(e, msg);
             }
             catch (Exception e)
             {
@@ -141,8 +183,7 @@ namespace Chummer.Plugins
 
                 msg += Environment.NewLine;
                 msg += e.ToString();
-                Console.WriteLine(msg);
-                System.Diagnostics.Debug.Write(msg);
+                Log.Error(e, msg);
             }
         }
 

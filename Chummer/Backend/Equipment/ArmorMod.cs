@@ -27,6 +27,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Backend.Attributes;
+using NLog;
 
 namespace Chummer.Backend.Equipment
 {
@@ -36,7 +37,9 @@ namespace Chummer.Backend.Equipment
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     public class ArmorMod : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, ICanEquip, IHasSource, IHasRating, ICanSort, IHasWirelessBonus, IHasStolenProperty
 	{
+        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private Guid _guiID;
+	    private Guid _guiSourceID;
         private string _strName = string.Empty;
         private string _strCategory = string.Empty;
         private string _strArmorCapacity = "[0]";
@@ -78,8 +81,14 @@ namespace Chummer.Backend.Equipment
         /// <param name="blnSkipSelectForms">Whether or not to skip selection forms (related to improvements) when creating this ArmorMod.</param>
         public void Create(XmlNode objXmlArmorNode, int intRating, List<Weapon> lstWeapons, bool blnSkipCost = false, bool blnSkipSelectForms = false)
         {
-            if (objXmlArmorNode.TryGetStringFieldQuickly("name", ref _strName))
+            if (!objXmlArmorNode.TryGetField("id", Guid.TryParse, out _guiSourceID))
+            {
+                Log.Warn(new object[] { "Missing id field for armor mod xmlnode", objXmlArmorNode });
+                Utils.BreakIfDebug();
+            }
+            else
                 _objCachedMyXmlNode = null;
+            objXmlArmorNode.TryGetStringFieldQuickly("name", ref _strName);
             objXmlArmorNode.TryGetStringFieldQuickly("category", ref _strCategory);
             objXmlArmorNode.TryGetStringFieldQuickly("armorcapacity", ref _strArmorCapacity);
             objXmlArmorNode.TryGetStringFieldQuickly("gearcapacity", ref _strGearCapacity);
@@ -213,7 +222,8 @@ namespace Chummer.Backend.Equipment
         public void Save(XmlTextWriter objWriter)
         {
             objWriter.WriteStartElement("armormod");
-            objWriter.WriteElementString("guid", _guiID.ToString("D"));
+            objWriter.WriteElementString("sourceid", SourceIDString);
+            objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("category", _strCategory);
             objWriter.WriteElementString("armor", _intArmorValue.ToString(GlobalOptions.InvariantCultureInfo));
@@ -268,6 +278,11 @@ namespace Chummer.Backend.Equipment
             if (blnCopy || !objNode.TryGetField("guid", Guid.TryParse, out _guiID))
             {
                 _guiID = Guid.NewGuid();
+            }
+            if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+            {
+                XmlNode node = GetNode(GlobalOptions.Language);
+                node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
             if (objNode.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
@@ -365,6 +380,16 @@ namespace Chummer.Backend.Equipment
         /// Internal identifier which will be used to identify this piece of Armor in the Improvement system.
         /// </summary>
         public string InternalId => _guiID.ToString("D");
+
+	    /// <summary>
+	    /// Identifier of the object within data files.
+	    /// </summary>
+	    public Guid SourceID => _guiSourceID;
+
+	    /// <summary>
+	    /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
+	    /// </summary>
+	    public string SourceIDString => _guiSourceID.ToString("D");
 
         /// <summary>
         /// Guid of a Cyberware Weapon.
@@ -952,11 +977,12 @@ namespace Chummer.Backend.Equipment
 
         public XmlNode GetNode(string strLanguage)
         {
-            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
-            {
-                _objCachedMyXmlNode = XmlManager.Load("armor.xml", strLanguage).SelectSingleNode("/chummer/mods/mod[name = \"" + Name + "\"]");
-                _strCachedXmlNodeLanguage = strLanguage;
-            }
+            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.LiveCustomData) return _objCachedMyXmlNode;
+            _objCachedMyXmlNode = SourceID == Guid.Empty
+                ? XmlManager.Load("armor.xml", strLanguage)
+                    .SelectSingleNode($"/chummer/mods/mod[name = \"{Name}\"]")
+                : XmlManager.Load("armor.xml", strLanguage)
+                    .SelectSingleNode($"/chummer/mods/mod[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
             return _objCachedMyXmlNode;
         }
         #endregion

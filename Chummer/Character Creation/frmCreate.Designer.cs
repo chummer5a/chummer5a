@@ -1032,7 +1032,7 @@ namespace Chummer
 			this.tsGearAllowRenameExtra = new System.Windows.Forms.ToolStripMenuItem();
             this.chkVehicleStolen = new System.Windows.Forms.CheckBox();
             this.mnuFileSaveAsCreated = new System.Windows.Forms.ToolStripMenuItem();
-			this.StatusStrip.SuspendLayout();
+            this.StatusStrip.SuspendLayout();
 			this.cmsMartialArts.SuspendLayout();
 			this.cmsSpellButton.SuspendLayout();
 			this.cmsComplexForm.SuspendLayout();
@@ -9519,6 +9519,7 @@ namespace Chummer
 			this.btnDeleteCustomDrug.Tag = "String_Delete";
 			this.btnDeleteCustomDrug.Text = "Delete";
 			this.btnDeleteCustomDrug.UseVisualStyleBackColor = true;
+			this.btnDeleteCustomDrug.Click += new System.EventHandler(this.btnDeleteCustomDrug_Click);
 			// 
 			// flpDrugs
 			// 
@@ -13665,17 +13666,17 @@ namespace Chummer
             // mnuFileSaveAsCreated
             // 
             this.mnuFileSaveAsCreated.Image = global::Chummer.Properties.Resources.accept;
-			this.mnuFileSaveAsCreated.Name = "mnuFileSaveAsCreated";
+            this.mnuFileSaveAsCreated.Name = "mnuFileSaveAsCreated";
             this.mnuFileSaveAsCreated.MergeAction = System.Windows.Forms.MergeAction.Insert;
             this.mnuFileSaveAsCreated.MergeIndex = 5;
             this.mnuFileSaveAsCreated.Size = new System.Drawing.Size(180, 22);
-			this.mnuFileSaveAsCreated.Tag = "Menu_FileSaveAsCreated";
-			this.mnuFileSaveAsCreated.Text = "Save As &Created";
-			this.mnuFileSaveAsCreated.Click += new System.EventHandler(this.mnuFileSaveAsCreated_Click);
-			// 
-			// frmCreate
-			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.mnuFileSaveAsCreated.Tag = "Menu_FileSaveAsCreated";
+            this.mnuFileSaveAsCreated.Text = "Save As &Created";
+            this.mnuFileSaveAsCreated.Click += new System.EventHandler(this.mnuFileSaveAsCreated_Click);
+            // 
+            // frmCreate
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.AutoScroll = true;
 			this.ClientSize = new System.Drawing.Size(1085, 681);

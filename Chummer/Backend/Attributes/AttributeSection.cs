@@ -30,6 +30,7 @@ using Chummer.Annotations;
 
 namespace Chummer.Backend.Attributes
 {
+    
 	public class AttributeSection : INotifyMultiplePropertyChanged
 	{
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -67,8 +68,7 @@ namespace Chummer.Backend.Attributes
             new DependancyGraph<string>(
             );
 
-
-	    public ObservableCollection<CharacterAttrib> Attributes { get; set; }
+        public ObservableCollection<CharacterAttrib> Attributes { get; set; }
 
 	    private static readonly string[] s_LstAttributeStrings = { "BOD", "AGI", "REA", "STR", "CHA", "INT", "LOG", "WIL", "EDG", "MAG", "MAGAdept", "RES", "ESS", "DEP" };
         public static ReadOnlyCollection<string> AttributeStrings => Array.AsReadOnly(s_LstAttributeStrings);
@@ -166,13 +166,15 @@ namespace Chummer.Backend.Attributes
 
             foreach (string strAttribute in AttributeStrings)
             {
-                CharacterAttrib objAttribute = new CharacterAttrib(_objCharacter, strAttribute);
-                switch (CharacterAttrib.ConvertToAttributeCategory(objAttribute.Abbrev))
+                CharacterAttrib objAttribute;
+                switch (CharacterAttrib.ConvertToAttributeCategory(strAttribute))
                 {
                     case CharacterAttrib.AttributeCategory.Special:
+                        objAttribute = new CharacterAttrib(_objCharacter, strAttribute, CharacterAttrib.AttributeCategory.Special);
                         SpecialAttributeList.Add(objAttribute);
                         break;
                     case CharacterAttrib.AttributeCategory.Standard:
+                        objAttribute = new CharacterAttrib(_objCharacter, strAttribute, CharacterAttrib.AttributeCategory.Standard);
                         AttributeList.Add(objAttribute);
                         break;
                 }
@@ -242,45 +244,50 @@ namespace Chummer.Backend.Attributes
                 // Couldn't find the appopriate attribute in the loaded file, so regenerate it from scratch.
                 if (lstAttributeNodes == null || lstAttributeNodes.Count == 0 || xmlCharNodeAnimalForm != null && _objCharacter.LastSavedVersion < new Version("5.200.25"))
                 {
-                    CharacterAttrib objAttribute = new CharacterAttrib(_objCharacter, strAttribute);
-                    objAttribute = RemakeAttribute(objAttribute, xmlCharNode);
+                    CharacterAttrib objAttribute;
+                    switch (CharacterAttrib.ConvertToAttributeCategory(strAttribute))
+                    {
+                        case CharacterAttrib.AttributeCategory.Special:
+                            objAttribute = new CharacterAttrib(_objCharacter, strAttribute, CharacterAttrib.AttributeCategory.Special);
+                            objAttribute = RemakeAttribute(objAttribute, xmlCharNode);
+                            SpecialAttributeList.Add(objAttribute);
+                            break;
+                        case CharacterAttrib.AttributeCategory.Standard:
+                            objAttribute = new CharacterAttrib(_objCharacter, strAttribute, CharacterAttrib.AttributeCategory.Standard);
+                            objAttribute = RemakeAttribute(objAttribute, xmlCharNode);
+                            AttributeList.Add(objAttribute);
+                            break;
+                    }
+
+                    if (xmlCharNodeAnimalForm == null) continue;
+                    objAttribute = new CharacterAttrib(_objCharacter, strAttribute, CharacterAttrib.AttributeCategory.Shapeshifter);
+                    objAttribute = RemakeAttribute(objAttribute, xmlCharNodeAnimalForm);
                     switch (CharacterAttrib.ConvertToAttributeCategory(objAttribute.Abbrev))
                     {
                         case CharacterAttrib.AttributeCategory.Special:
                             SpecialAttributeList.Add(objAttribute);
                             break;
-                        case CharacterAttrib.AttributeCategory.Standard:
+                        case CharacterAttrib.AttributeCategory.Shapeshifter:
                             AttributeList.Add(objAttribute);
                             break;
-                    }
-                    if (xmlCharNodeAnimalForm != null)
-                    {
-                        objAttribute = new CharacterAttrib(_objCharacter, strAttribute, CharacterAttrib.AttributeCategory.Shapeshifter);
-                        objAttribute = RemakeAttribute(objAttribute, xmlCharNodeAnimalForm);
-                        switch (CharacterAttrib.ConvertToAttributeCategory(objAttribute.Abbrev))
-                        {
-                            case CharacterAttrib.AttributeCategory.Special:
-                                SpecialAttributeList.Add(objAttribute);
-                                break;
-                            case CharacterAttrib.AttributeCategory.Standard:
-                                AttributeList.Add(objAttribute);
-                                break;
-                        }
                     }
                 }
                 else
                 {
                     foreach (XmlNode xmlAttributeNode in lstAttributeNodes)
                     {
-                        CharacterAttrib att = new CharacterAttrib(_objCharacter, strAttribute);
-                        att.Load(xmlAttributeNode);
-                        switch (CharacterAttrib.ConvertToAttributeCategory(att.Abbrev))
+                        CharacterAttrib objAttribute;
+                        switch (CharacterAttrib.ConvertToAttributeCategory(strAttribute))
                         {
                             case CharacterAttrib.AttributeCategory.Special:
-                                SpecialAttributeList.Add(att);
+                                objAttribute = new CharacterAttrib(_objCharacter, strAttribute, CharacterAttrib.AttributeCategory.Special);
+                                objAttribute.Load(xmlAttributeNode);
+                                SpecialAttributeList.Add(objAttribute);
                                 break;
                             case CharacterAttrib.AttributeCategory.Standard:
-                                AttributeList.Add(att);
+                                objAttribute = new CharacterAttrib(_objCharacter, strAttribute, CharacterAttrib.AttributeCategory.Standard);
+                                objAttribute.Load(xmlAttributeNode);
+                                AttributeList.Add(objAttribute);
                                 break;
                         }
                     }
@@ -333,27 +340,33 @@ namespace Chummer.Backend.Attributes
             foreach (string strAttribute in AttributeStrings)
             {
                 // First, remake the attribute
-                CharacterAttrib objAttribute = new CharacterAttrib(_objCharacter, strAttribute);
-                objAttribute = RemakeAttribute(objAttribute, xmlCharNode);
-                switch (CharacterAttrib.ConvertToAttributeCategory(objAttribute.Abbrev))
+
+                CharacterAttrib objAttribute = null;
+                switch (CharacterAttrib.ConvertToAttributeCategory(strAttribute))
                 {
                     case CharacterAttrib.AttributeCategory.Special:
+                        objAttribute = new CharacterAttrib(_objCharacter, strAttribute, CharacterAttrib.AttributeCategory.Special);
+                        objAttribute = RemakeAttribute(objAttribute, xmlCharNode);
                         SpecialAttributeList.Add(objAttribute);
                         break;
                     case CharacterAttrib.AttributeCategory.Standard:
+                        objAttribute = new CharacterAttrib(_objCharacter, strAttribute, CharacterAttrib.AttributeCategory.Standard);
+                        objAttribute = RemakeAttribute(objAttribute, xmlCharNode);
                         AttributeList.Add(objAttribute);
                         break;
                 }
                 if (xmlCharNodeAnimalForm != null)
                 {
-                    objAttribute = new CharacterAttrib(_objCharacter, strAttribute, CharacterAttrib.AttributeCategory.Shapeshifter);
-                    objAttribute = RemakeAttribute(objAttribute, xmlCharNodeAnimalForm);
-                    switch (CharacterAttrib.ConvertToAttributeCategory(objAttribute.Abbrev))
+                    switch (CharacterAttrib.ConvertToAttributeCategory(strAttribute))
                     {
                         case CharacterAttrib.AttributeCategory.Special:
+                            objAttribute = new CharacterAttrib(_objCharacter, strAttribute, CharacterAttrib.AttributeCategory.Special);
+                            objAttribute = RemakeAttribute(objAttribute, xmlCharNodeAnimalForm);
                             SpecialAttributeList.Add(objAttribute);
                             break;
-                        case CharacterAttrib.AttributeCategory.Standard:
+                        case CharacterAttrib.AttributeCategory.Shapeshifter:
+                            objAttribute = new CharacterAttrib(_objCharacter, strAttribute, CharacterAttrib.AttributeCategory.Shapeshifter);
+                            objAttribute = RemakeAttribute(objAttribute, xmlCharNodeAnimalForm);
                             AttributeList.Add(objAttribute);
                             break;
                     }
@@ -368,10 +381,9 @@ namespace Chummer.Backend.Attributes
                     int.TryParse(xmlAttributeBaseNode.InnerText, out int intHeroLabAttributeBaseValue))
                 {
                     int intAttributeMinimumValue = GetAttributeByName(strAttribute).MetatypeMinimum;
-                    if (intHeroLabAttributeBaseValue != intAttributeMinimumValue)
-                    {
+                    if (intHeroLabAttributeBaseValue == intAttributeMinimumValue) continue;
+                    if (objAttribute != null)
                         objAttribute.Karma = intHeroLabAttributeBaseValue - intAttributeMinimumValue;
-                    }
                 }
             }
 
@@ -555,7 +567,7 @@ namespace Chummer.Backend.Attributes
 
 		        xmlNode = xmlNode?.SelectSingleNode($"metavariants/metavariant[name = \"{_objCharacter.Metavariant}\"]/name/@translate");
 
-		        if (AttributeCategory == CharacterAttrib.AttributeCategory.Shapeshifter)
+		        if (AttributeCategory == CharacterAttrib.AttributeCategory.Standard)
 		        {
 		            objWriter.WriteElementString("attributecategory", xmlNode?.SelectSingleNode("name/@translate")?.InnerText ?? _objCharacter.Metatype);
                 }
@@ -625,16 +637,18 @@ namespace Chummer.Backend.Attributes
 			SpecialAttributeList.Clear();
 			foreach (string strAttribute in AttributeStrings)
 			{
-				CharacterAttrib objAttribute = new CharacterAttrib(_objCharacter, strAttribute);
-				switch (CharacterAttrib.ConvertToAttributeCategory(objAttribute.Abbrev))
+			    CharacterAttrib objAttribute;
+				switch (CharacterAttrib.ConvertToAttributeCategory(strAttribute))
 				{
-					case CharacterAttrib.AttributeCategory.Special:
-						SpecialAttributeList.Add(objAttribute);
-						break;
-					case CharacterAttrib.AttributeCategory.Standard:
-						AttributeList.Add(objAttribute);
-						break;
-				}
+				    case CharacterAttrib.AttributeCategory.Special:
+				        objAttribute = new CharacterAttrib(_objCharacter, strAttribute, CharacterAttrib.AttributeCategory.Special);
+				        SpecialAttributeList.Add(objAttribute);
+				        break;
+				    case CharacterAttrib.AttributeCategory.Standard:
+				        objAttribute = new CharacterAttrib(_objCharacter, strAttribute, CharacterAttrib.AttributeCategory.Standard);
+				        AttributeList.Add(objAttribute);
+				        break;
+                }
 			}
 			BuildBindingList();
 		}
@@ -665,18 +679,20 @@ namespace Chummer.Backend.Attributes
                 objBindingEntry.Value.DataSource = GetAttributeByName(objBindingEntry.Key);
             }
 		}
-		#endregion
+        #endregion
 
-		#region Properties
-		/// <summary>
-		/// Character's Attributes.
-		/// </summary>
-		public IList<CharacterAttrib> AttributeList { get; } = new List<CharacterAttrib>();
+        #region Properties
+        /// <summary>
+        /// Character's Attributes.
+        /// </summary>
+        [HubTag(true)]
+        public List<CharacterAttrib> AttributeList { get; } = new List<CharacterAttrib>();
 
-	    /// <summary>
-		/// Character's Attributes.
-		/// </summary>
-		public IList<CharacterAttrib> SpecialAttributeList { get; } = new List<CharacterAttrib>();
+        /// <summary>
+        /// Character's Attributes.
+        /// </summary>
+        [HubTag(true)]
+        public List<CharacterAttrib> SpecialAttributeList { get; } = new List<CharacterAttrib>();
 
 	    public CharacterAttrib.AttributeCategory AttributeCategory
 	    {

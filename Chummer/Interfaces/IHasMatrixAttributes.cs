@@ -23,7 +23,7 @@ using System.Windows.Forms;
 
 namespace Chummer
 {
-    public interface IHasMatrixAttributes
+    public interface IHasMatrixAttributes : IHasMatrixConditionMonitor
     {
         int GetBaseMatrixAttribute(string strAttributeName);
         int GetBonusMatrixAttribute(string strAttributeName);

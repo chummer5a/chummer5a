@@ -26,6 +26,7 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
+using NLog;
 
 namespace Chummer
 {
@@ -75,7 +76,8 @@ namespace Chummer
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     public class Quality : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, IHasSource
     {
-        private Guid _sourceID = Guid.Empty;
+        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private Guid _guiSourceID = Guid.Empty;
         private Guid _guiID;
         private string _strName = string.Empty;
         private bool _blnMetagenetic;
@@ -98,7 +100,6 @@ namespace Chummer
         private XmlNode _nodDiscounts;
         private readonly Character _objCharacter;
         private Guid _guiWeaponID;
-        private Guid _guiQualityId;
         private string _strStage;
 
         public string Stage => _strStage;
@@ -171,6 +172,11 @@ namespace Chummer
         /// <param name="strSourceName">Friendly name for the improvement that added this quality.</param>
         public void Create(XmlNode objXmlQuality, QualitySource objQualitySource, IList<Weapon> lstWeapons, string strForceValue = "", string strSourceName = "")
         {
+            if (!objXmlQuality.TryGetField("id", Guid.TryParse, out _guiSourceID))
+            {
+                Log.Warn(new object[] { "Missing id field for xmlnode", objXmlQuality });
+                Utils.BreakIfDebug();
+            }
             _strSourceName = strSourceName;
             objXmlQuality.TryGetStringFieldQuickly("name", ref _strName);
             objXmlQuality.TryGetBoolFieldQuickly("metagenetic", ref _blnMetagenetic);
@@ -191,13 +197,6 @@ namespace Chummer
             if (_eQualityType == QualityType.LifeModule)
             {
                 objXmlQuality.TryGetStringFieldQuickly("stage", ref _strStage);
-            }
-
-            if (objXmlQuality.TryGetField("id", Guid.TryParse, out Guid guiTemp))
-            {
-                _sourceID = guiTemp;
-                _guiQualityId = guiTemp;
-                _objCachedMyXmlNode = null;
             }
 
             // Add Weapons if applicable.
@@ -327,7 +326,8 @@ namespace Chummer
         public void Save(XmlTextWriter objWriter)
         {
             objWriter.WriteStartElement("quality");
-            objWriter.WriteElementString("guid", _guiID.ToString("D"));
+            objWriter.WriteElementString("sourceid", SourceIDString);
+            objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("extra", _strExtra);
             objWriter.WriteElementString("bp", _intBP.ToString(GlobalOptions.InvariantCultureInfo));
@@ -361,11 +361,6 @@ namespace Chummer
                 objWriter.WriteElementString("stage", _strStage);
             }
 
-            if (!_guiQualityId.Equals(Guid.Empty))
-            {
-                objWriter.WriteElementString("id", _guiQualityId.ToString("D"));
-            }
-
             objWriter.WriteEndElement();
 
             if (OriginSource != QualitySource.BuiltIn &&
@@ -382,17 +377,16 @@ namespace Chummer
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
-            objNode.TryGetField("guid", Guid.TryParse, out _guiID);
-            objNode.TryGetStringFieldQuickly("name", ref _strName);
-            if (!objNode.TryGetField("id", Guid.TryParse, out _guiQualityId))
+            if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
             {
-                XmlNode objNewNode = XmlManager.Load("qualities.xml").SelectSingleNode("/chummer/qualities/quality[name = \"" + Name + "\"]");
-                if (objNewNode?.TryGetField("id", Guid.TryParse, out _guiQualityId) == true)
-                    _objCachedMyXmlNode = null;
+                _guiID = Guid.NewGuid();
             }
-            else
-                _objCachedMyXmlNode = null;
-            _sourceID = _guiQualityId;
+            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+            {
+                XmlNode node = GetNode(GlobalOptions.Language);
+                node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+            }
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetInt32FieldQuickly("bp", ref _intBP);
             objNode.TryGetBoolFieldQuickly("implemented", ref _blnImplemented);
@@ -467,18 +461,20 @@ namespace Chummer
         #endregion
 
         #region Properties
+        /// <summary>
+        /// Identifier of the object within data files.
+        /// </summary>
+        public Guid SourceID => _guiSourceID;
 
-        public Guid SourceID { get { return _sourceID; } }
+        /// <summary>
+        /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
+        /// </summary>
+        public string SourceIDString => _guiSourceID.ToString("D");
 
         /// <summary>
         /// Internal identifier which will be used to identify this Quality in the Improvement system.
         /// </summary>
         public string InternalId => _guiID.ToString("D");
-
-        /// <summary>
-        /// Internal identifier for the quality type
-        /// </summary>
-        public string QualityId => _guiQualityId.Equals(Guid.Empty) ? string.Empty : _guiQualityId.ToString("D");
 
         /// <summary>
         /// Guid of a Weapon.
@@ -669,7 +665,7 @@ namespace Chummer
         {
             get
             {
-                return _objCharacter.Qualities.Count(objExistingQuality => objExistingQuality.QualityId == QualityId && objExistingQuality.Extra == Extra && objExistingQuality.SourceName == SourceName && objExistingQuality.Type == Type);
+                return _objCharacter.Qualities.Count(objExistingQuality => objExistingQuality.SourceIDString == SourceIDString && objExistingQuality.Extra == Extra && objExistingQuality.SourceName == SourceName && objExistingQuality.Type == Type);
             }
         }
 
@@ -774,7 +770,11 @@ namespace Chummer
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load("qualities.xml", strLanguage).SelectSingleNode("/chummer/qualities/quality[id = \"" + QualityId + "\"]");
+                _objCachedMyXmlNode = SourceID == Guid.Empty
+                    ? XmlManager.Load("qualities.xml", strLanguage)
+                        .SelectSingleNode($"/chummer/qualities/quality[name = \"{Name}\"]")
+                    : XmlManager.Load("qualities.xml", strLanguage)
+                        .SelectSingleNode($"/chummer/qualities/quality[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;
@@ -863,7 +863,7 @@ namespace Chummer
             {
                 foreach (Quality objQuality in objCharacter.Qualities)
                 {
-                    if (objQuality.QualityId == objXmlQuality["id"]?.InnerText)
+                    if (objQuality.SourceIDString == objXmlQuality["id"]?.InnerText)
                     {
                         reason |= QualityFailureReason.LimitExceeded; //QualityFailureReason is a flag enum, meaning each bit represents a different thing
                         //So instead of changing it, |= adds rhs to list of reasons on lhs, if it is not present

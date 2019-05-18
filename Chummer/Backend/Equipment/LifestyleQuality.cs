@@ -24,14 +24,16 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
+using NLog;
 
 namespace Chummer.Backend.Equipment
 {
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     public class LifestyleQuality : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, IHasSource
     {
+        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private Guid _guiID;
-        private Guid _SourceGuid;
+        private Guid _guiSourceID;
         private string _strName = string.Empty;
         private string _strCategory = string.Empty;
         private string _strExtra = string.Empty;
@@ -111,7 +113,13 @@ namespace Chummer.Backend.Equipment
         public void Create(XmlNode objXmlLifestyleQuality, Lifestyle objParentLifestyle, Character objCharacter, QualitySource objLifestyleQualitySource, string strExtra = "")
         {
             _objParentLifestyle = objParentLifestyle;
-            objXmlLifestyleQuality.TryGetField("id", Guid.TryParse, out _SourceGuid);
+            if (!objXmlLifestyleQuality.TryGetField("id", Guid.TryParse, out _guiSourceID))
+            {
+                Log.Warn(new object[] { "Missing id field for xmlnode", objXmlLifestyleQuality });
+                Utils.BreakIfDebug();
+            }
+            else
+                _objCachedMyXmlNode = null;
             if (objXmlLifestyleQuality.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
             objXmlLifestyleQuality.TryGetInt32FieldQuickly("lp", ref _intLP);
@@ -177,8 +185,8 @@ namespace Chummer.Backend.Equipment
         public void Save(XmlTextWriter objWriter)
         {
             objWriter.WriteStartElement("lifestylequality");
-            objWriter.WriteElementString("id", _SourceGuid.ToString("D"));
-            objWriter.WriteElementString("guid", _guiID.ToString("D"));
+            objWriter.WriteElementString("sourceid", SourceIDString);
+            objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("category", _strCategory);
             objWriter.WriteElementString("extra", _strExtra);
@@ -212,13 +220,17 @@ namespace Chummer.Backend.Equipment
         public void Load(XmlNode objNode, Lifestyle objParentLifestyle)
         {
             ParentLifestyle = objParentLifestyle;
-            objNode.TryGetField("guid", Guid.TryParse, out _guiID);
+            if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
+            {
+                _guiID = Guid.NewGuid();
+            }
+            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+            {
+                XmlNode node = GetNode(GlobalOptions.Language);
+                node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+            }
             if (objNode.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
-            if (!objNode.TryGetField("id", Guid.TryParse, out _SourceGuid))
-            {
-                XmlManager.Load("lifestyles.xml").SelectSingleNode("/chummer/qualities/quality[name = \"" + _strName + "\"]")?.TryGetField("id", Guid.TryParse, out _SourceGuid);
-            }
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetInt32FieldQuickly("lp", ref _intLP);
             objNode.TryGetStringFieldQuickly("cost", ref _strCost);
@@ -349,9 +361,14 @@ namespace Chummer.Backend.Equipment
         public string InternalId => _guiID.ToString("D");
 
         /// <summary>
-        /// Source identifier that will be used to identify this Lifestyle Quality in data.
+        /// Identifier of the object within data files.
         /// </summary>
-        public string SourceID => _SourceGuid.ToString("D");
+        public Guid SourceID => _guiSourceID;
+
+        /// <summary>
+        /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
+        /// </summary>
+        public string SourceIDString => _guiSourceID.ToString("D");
 
         /// <summary>
         /// LifestyleQuality's name.
@@ -637,8 +654,15 @@ namespace Chummer.Backend.Equipment
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load("lifestyles.xml", strLanguage).SelectSingleNode("/chummer/qualities/quality[id = \"" + SourceID + "\"]");
+
+                if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.LiveCustomData) return _objCachedMyXmlNode;
+                _objCachedMyXmlNode = SourceID == Guid.Empty
+                    ? XmlManager.Load("lifestyles.xml", strLanguage)
+                        .SelectSingleNode($"/chummer/qualities/quality[name = \"{Name}\"]")
+                    : XmlManager.Load("lifestyles.xml", strLanguage)
+                        .SelectSingleNode($"/chummer/qualities/quality[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
+                return _objCachedMyXmlNode;
             }
             return _objCachedMyXmlNode;
         }

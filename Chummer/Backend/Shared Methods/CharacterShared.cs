@@ -139,7 +139,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(strShowFileName))
                 strShowFileName = _objCharacter.CharacterName;
             string strFilePath = Path.Combine(strAutosavePath, strShowFileName);
-            _objCharacter.Save(strFilePath);
+            _objCharacter.Save(strFilePath, false, false);
             Cursor = objOldCursor;
             AutosaveStopWatch.Restart();
         }
@@ -1625,13 +1625,13 @@ namespace Chummer
                 HashSet<string> strQualitiesToPrint = new HashSet<string>();
                 foreach (Quality objQuality in _objCharacter.Qualities)
                 {
-                    strQualitiesToPrint.Add(objQuality.QualityId + '|' + objQuality.GetSourceName(GlobalOptions.Language) + '|' + objQuality.Extra);
+                    strQualitiesToPrint.Add(objQuality.SourceIDString + '|' + objQuality.GetSourceName(GlobalOptions.Language) + '|' + objQuality.Extra);
                 }
 
                 // Add Qualities
                 foreach (Quality objQuality in _objCharacter.Qualities)
                 {
-                    if (!strQualitiesToPrint.Remove(objQuality.QualityId + '|' + objQuality.GetSourceName(GlobalOptions.Language) + '|' + objQuality.Extra))
+                    if (!strQualitiesToPrint.Remove(objQuality.SourceIDString + '|' + objQuality.GetSourceName(GlobalOptions.Language) + '|' + objQuality.Extra))
                         continue;
 
                     AddToTree(objQuality, false);
