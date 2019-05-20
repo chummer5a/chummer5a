@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -1562,6 +1562,8 @@ namespace Chummer
         }
 
         private int _intCachedEssenceDecimals = -1;
+        private bool _cyberwareRounding;
+
         /// <summary>
         /// Number of decimal places to round to when calculating Essence.
         /// </summary>
@@ -2337,6 +2339,16 @@ namespace Chummer
         }
 
         public NumericUpDownEx.InterceptMouseWheelMode InterceptMode => AllowHoverIncrement ? NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver : NumericUpDownEx.InterceptMouseWheelMode.WhenFocus;
+
+        /// <summary>
+        /// Whether to use floor-based rounding for Cyberware. If enabled, 
+        /// </summary>
+        public bool CyberwareRounding
+        {
+            get => _cyberwareRounding;
+            set => _cyberwareRounding = value;
+        }
+
         #endregion
     }
 }
