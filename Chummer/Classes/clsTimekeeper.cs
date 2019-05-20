@@ -21,6 +21,8 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
  using System.Diagnostics;
  using System.Text;
+ using System.Threading.Tasks;
+ using Microsoft.ApplicationInsights;
  using Microsoft.ApplicationInsights.Channel;
  using Microsoft.ApplicationInsights.DataContracts;
  using Microsoft.ApplicationInsights.Extensibility;
@@ -40,9 +42,24 @@ namespace Chummer
             s_Time.Start();
         }
 
-        public static void Start(string taskname)
+        public static CustomActivity StartSyncron(string taskname, CustomActivity parentActivity)
         {
+            return RunMyStartTask(taskname, parentActivity);
+        }
+
+        public static async Task<CustomActivity> Start(string taskname, CustomActivity parentActivity)
+        {
+            var task1 = Task.Run(() => RunMyStartTask(taskname, parentActivity));
+            await Task.WhenAll(task1);
+            return task1.Result;
+        }
+
+        private static CustomActivity RunMyStartTask(string taskname, CustomActivity parentActivity)
+        {
+            var dependencyActivity = new CustomActivity(taskname, parentActivity);
             s_DictionaryStarts.TryAdd(taskname, s_Time.Elapsed);
+            dependencyActivity.myOperationDependencyHolder = Program.ApplicationInsightsTelemetryClient.StartOperation<DependencyTelemetry>(dependencyActivity);
+            return dependencyActivity;
         }
 
         public static TimeSpan Elapsed(string taskname)
@@ -57,18 +74,15 @@ namespace Chummer
             }
         }
 
-        public static TimeSpan Finish(string taskname, IOperationHolder<DependencyTelemetry> telemetry)
+        public static TimeSpan Finish(string taskname)
         {
+            TimeSpan final = TimeSpan.Zero;
             if (s_DictionaryStarts.TryRemove(taskname, out TimeSpan objStartTimeSpan))
             {
-                TimeSpan final = s_Time.Elapsed - objStartTimeSpan;
+                final = s_Time.Elapsed - objStartTimeSpan;
 
                 string logentry = $"Task \"{taskname}\" finished in {final}";
-                if (telemetry?.Telemetry?.Properties != null) 
-                {
-                    telemetry.Telemetry.Properties.Add(taskname, final.ToString());
-                }
-                Logger.Info(logentry);
+                //Logger.Trace(logentry);
 
                 Debug.WriteLine(logentry);
 
@@ -80,14 +94,12 @@ namespace Chummer
                 {
                     s_DictionaryStatistics.TryAdd(taskname, new Tuple<TimeSpan, int>(final, 1));
                 }
-                
-                return final;
             }
             else
             {
                 Debug.WriteLine("Non started task \"" + taskname + "\" finished");
-                return TimeSpan.Zero;
             }
+            return final;
         }
 
         public static void Log()

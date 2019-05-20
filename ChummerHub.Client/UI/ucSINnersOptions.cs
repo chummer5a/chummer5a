@@ -487,7 +487,7 @@ namespace ChummerHub.Client.UI
         }
 
 
-        private void bMultiUpload_Click(object sender, EventArgs e)
+        private async void bMultiUpload_Click(object sender, EventArgs e)
         {
             OpenFileDialog thisDialog = new OpenFileDialog();
 
@@ -504,11 +504,11 @@ namespace ChummerHub.Client.UI
                 {
                     Debug.WriteLine("Loading: " + file);
                     var c = new Character { FileName = file };
-                    if(!c.Load())
+                    if(!(await c.Load()))
                         continue;
                     Debug.WriteLine("Character loaded: " + c.Name);
                     CharacterExtended ce = new CharacterExtended(c, null);
-                    ce.UploadInBackground();
+                    await ce.UploadInBackground();
                 }
                 catch (Exception ex)
                 {

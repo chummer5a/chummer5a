@@ -155,7 +155,7 @@ namespace Chummer
                         ApplicationInsightsTelemetryClient.Context.Device.Id = Dns.GetHostName();
                         ApplicationInsightsTelemetryClient.Context.Component.Version = System.Reflection.Assembly
                             .GetExecutingAssembly().GetName().Version.ToString();
-                        ApplicationInsightsTelemetryClient.Context.Location.Ip = GetLocalIPAddress();
+                        ApplicationInsightsTelemetryClient.Context.Location.Ip = GetPublicIPAddress();
                         TelemetryConfiguration.Active.TelemetryInitializers.Add(new CustomTelemetryInitializer());
                         //for now lets disable live view. We may make another GlobalOption to enable it at a later stage...
                         //var live = new LiveStreamProvider(ApplicationInsightsConfig);
@@ -193,6 +193,7 @@ namespace Chummer
 
                 MainForm = new frmChummerMain();
                 Application.Run(MainForm);
+                Log.Info(ExceptionHeatmap.GenerateInfo());
                 if (GlobalOptions.UseLoggingApplicationInsights)
                 {
                     if (ApplicationInsightsTelemetryClient != null)
@@ -204,12 +205,22 @@ namespace Chummer
                     }
 
                 }
-                Log.Info(ExceptionHeatmap.GenerateInfo());
+                
             }
         }
 
-        public static string GetLocalIPAddress()
+        public static string GetPublicIPAddress()
         {
+            try
+            {
+                string pubIp = new System.Net.WebClient().DownloadString("https://api.ipify.org");
+                return pubIp;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+            
             var host = Dns.GetHostEntry(Dns.GetHostName());
             foreach (var ip in host.AddressList)
             {

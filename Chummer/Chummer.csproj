@@ -323,6 +323,7 @@
     <Compile Include="frmLoading.Designer.cs">
       <DependentUpon>frmLoading.cs</DependentUpon>
     </Compile>
+    <Compile Include="helpers\Application Insights\CustomActivity.cs" />
     <Compile Include="helpers\Application Insights\CustomTelemetryInitializer.cs" />
     <Compile Include="helpers\BufferedTableLayoutPanel.cs">
       <SubType>Component</SubType>

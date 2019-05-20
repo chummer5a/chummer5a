@@ -55,7 +55,7 @@ namespace Chummer
         /// Loads the character
         /// </summary>
         /// <param name="fileName"></param>
-        private void LoadCharacter(string fileName)
+        private async void LoadCharacter(string fileName)
         {
             if (File.Exists(fileName) && fileName.EndsWith("chum5"))
             {
@@ -64,7 +64,7 @@ namespace Chummer
                 {
                     FileName = fileName
                 };
-                if (!objCharacter.Load())
+                if (!(await objCharacter.Load()))
                 {
                     Cursor = Cursors.Default;   // TODO edward setup error page
                     return; // we obviously cannot init
