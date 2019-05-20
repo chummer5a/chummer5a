@@ -43,6 +43,8 @@ using System.Text;
 using Chummer.Plugins;
 using System.IO.Compression;
 using System.Runtime.Remoting.Channels;
+using Microsoft.ApplicationInsights;
+using Microsoft.ApplicationInsights.DataContracts;
 using NLog;
 
 namespace Chummer
@@ -86,20 +88,31 @@ namespace Chummer
         {
             Utils.IsUnitTest = isUnitTest;
             InitializeComponent();
+            Microsoft.ApplicationInsights.Extensibility.IOperationHolder<Microsoft.ApplicationInsights.DataContracts.DependencyTelemetry> loadOperation = null;
+            try
+            {
+                _strCurrentVersion =
+                    $"{_objCurrentVersion.Major}.{_objCurrentVersion.Minor}.{_objCurrentVersion.Build}";
 
-            _strCurrentVersion = $"{_objCurrentVersion.Major}.{_objCurrentVersion.Minor}.{_objCurrentVersion.Build}";
+                loadOperation =
+                    Program.ApplicationInsightsTelemetryClient
+                        .StartOperation<DependencyTelemetry>("loadfrmChummerMain");
+                loadOperation.Telemetry.Type = "loadfrmChummerMain";
+                loadOperation.Telemetry.Target = _strCurrentVersion;
 
-            this.Text = MainTitle;
+
+
+                this.Text = MainTitle;
 
 
 
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+                LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 
-            /** Dashboard **/
-            //this.toolsMenu.DropDownItems.Add("GM Dashboard").Click += this.dashboardToolStripMenuItem_Click;
-            /** End Dashboard **/
+                /** Dashboard **/
+                //this.toolsMenu.DropDownItems.Add("GM Dashboard").Click += this.dashboardToolStripMenuItem_Click;
+                /** End Dashboard **/
 
-            // If Automatic Updates are enabled, check for updates immediately.
+                // If Automatic Updates are enabled, check for updates immediately.
 
 #if !DEBUG
             _workerVersionUpdateChecker.WorkerReportsProgress = false;
@@ -110,135 +123,150 @@ namespace Chummer
             _workerVersionUpdateChecker.RunWorkerAsync();
 #endif
 
-            GlobalOptions.MRUChanged += (sender, e) =>
-            {
-                this.DoThreadSafe(() =>
+                GlobalOptions.MRUChanged += (sender, e) =>
                 {
-                    PopulateMRUToolstripMenu(sender, e);
-                });
-            };
-
-            // Delete the old executable if it exists (created by the update process).
-            foreach(string strLoopOldFilePath in Directory.GetFiles(Utils.GetStartupPath, "*.old", SearchOption.AllDirectories))
-            {
-                if(File.Exists(strLoopOldFilePath))
-                    File.Delete(strLoopOldFilePath);
-            }
-
-            // Populate the MRU list.
-            PopulateMRUToolstripMenu(this, null);
-
-            Program.MainForm = this;
-            PluginLoader.LoadPlugins();
-            if (GlobalOptions.AllowEasterEggs)
-            {
-                _mascotChummy = new Chummy();
-                _mascotChummy.Show(this);
-            }
-
-            // Set the Tag for each ToolStrip item so it can be translated.
-            foreach(ToolStripMenuItem objItem in menuStrip.Items.OfType<ToolStripMenuItem>())
-            {
-                LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Language);
-            }
-
-            frmLoading frmLoadingForm = new frmLoading { CharacterFile = Text };
-            frmLoadingForm.Reset(3);
-            frmLoadingForm.Show();
-
-            // Attempt to cache all XML files that are used the most.
-            Timekeeper.Start("cache_load");
-            Parallel.Invoke(
-                () => XmlManager.Load("armor.xml"),
-                () => XmlManager.Load("bioware.xml"),
-                () => XmlManager.Load("books.xml"),
-                () => XmlManager.Load("complexforms.xml"),
-                () => XmlManager.Load("contacts.xml"),
-                () => XmlManager.Load("critters.xml"),
-                () => XmlManager.Load("critterpowers.xml"),
-                () => XmlManager.Load("cyberware.xml"),
-                () => XmlManager.Load("drugcomponents.xml"),
-                () => XmlManager.Load("echoes.xml"),
-                () => XmlManager.Load("gameplayoptions.xml"),
-                () => XmlManager.Load("gear.xml"),
-                () => XmlManager.Load("improvements.xml"),
-                () => XmlManager.Load("licenses.xml"),
-                () => XmlManager.Load("lifemodules.xml"),
-                () => XmlManager.Load("lifestyles.xml"),
-                () => XmlManager.Load("martialarts.xml"),
-                () => XmlManager.Load("mentors.xml"),
-                () => XmlManager.Load("metamagic.xml"),
-                () => XmlManager.Load("metatypes.xml"),
-                () => XmlManager.Load("options.xml"),
-                () => XmlManager.Load("packs.xml"),
-                () => XmlManager.Load("powers.xml"),
-                () => XmlManager.Load("priorities.xml"),
-                () => XmlManager.Load("programs.xml"),
-                () => XmlManager.Load("qualities.xml"),
-                () => XmlManager.Load("ranges.xml"),
-                () => XmlManager.Load("sheets.xml"),
-                () => XmlManager.Load("skills.xml"),
-                () => XmlManager.Load("spells.xml"),
-                () => XmlManager.Load("spiritpowers.xml"),
-                () => XmlManager.Load("streams.xml"),
-                () => XmlManager.Load("traditions.xml"),
-                () => XmlManager.Load("vehicles.xml"),
-                () => XmlManager.Load("weapons.xml")
-            );
-            Timekeeper.Finish("cache_load");
-            frmLoadingForm.PerformStep(LanguageManager.GetString("String_UI"));
-            CharacterRoster = GlobalOptions.HideCharacterRoster
-                ? null
-                : new frmCharacterRoster
-                {
-                    MdiParent = this
+                    this.DoThreadSafe(() => { PopulateMRUToolstripMenu(sender, e); });
                 };
 
-            _lstCharacters.CollectionChanged += LstCharactersOnCollectionChanged;
-            _lstOpenCharacterForms.CollectionChanged += LstOpenCharacterFormsOnCollectionChanged;
-
-            frmLoadingForm.PerformStep(LanguageManager.GetString("String_UI"));
-            // Retrieve the arguments passed to the application. If more than 1 is passed, we're being given the name of a file to open.
-            string[] strArgs = Environment.GetCommandLineArgs();
-            ConcurrentBag<Character> lstCharactersToLoad = new ConcurrentBag<Character>();
-            bool blnShowTest = false;
-            object blnShowTestLock = new object();
-            if(!Utils.IsUnitTest)
-            {
-                Parallel.For(1, strArgs.Length, i =>
+                // Delete the old executable if it exists (created by the update process).
+                foreach (string strLoopOldFilePath in Directory.GetFiles(Utils.GetStartupPath, "*.old",
+                    SearchOption.AllDirectories))
                 {
-                    if (strArgs[i] == "/test")
-                    {
-                        lock(blnShowTestLock)
-                            blnShowTest = true;
-                    }
-                    else if(!strArgs[i].StartsWith('/'))
-                    {
-                        if(!File.Exists(strArgs[i]))
-                        {
-                            throw new ArgumentException("Chummer started with unknown command line arguments: " + strArgs.Aggregate((j, k) => j + " " + k));
-                        }
+                    if (File.Exists(strLoopOldFilePath))
+                        File.Delete(strLoopOldFilePath);
+                }
 
-                        if (lstCharactersToLoad.Any(x => x.FileName == strArgs[i])) return;
-                        Character objLoopCharacter = LoadCharacter(strArgs[i]);
-                        lstCharactersToLoad.Add(objLoopCharacter);
-                    }
-                });
+                // Populate the MRU list.
+                PopulateMRUToolstripMenu(this, null);
+
+                Program.MainForm = this;
+                PluginLoader.LoadPlugins();
+                if (GlobalOptions.AllowEasterEggs)
+                {
+                    _mascotChummy = new Chummy();
+                    _mascotChummy.Show(this);
+                }
+
+                // Set the Tag for each ToolStrip item so it can be translated.
+                foreach (ToolStripMenuItem objItem in menuStrip.Items.OfType<ToolStripMenuItem>())
+                {
+                    LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Language);
+                }
+
+                frmLoading frmLoadingForm = new frmLoading {CharacterFile = Text};
+                frmLoadingForm.Reset(3);
+                frmLoadingForm.Show();
+
+                // Attempt to cache all XML files that are used the most.
+                Timekeeper.Start("cache_load");
+                Parallel.Invoke(
+                    () => XmlManager.Load("armor.xml"),
+                    () => XmlManager.Load("bioware.xml"),
+                    () => XmlManager.Load("books.xml"),
+                    () => XmlManager.Load("complexforms.xml"),
+                    () => XmlManager.Load("contacts.xml"),
+                    () => XmlManager.Load("critters.xml"),
+                    () => XmlManager.Load("critterpowers.xml"),
+                    () => XmlManager.Load("cyberware.xml"),
+                    () => XmlManager.Load("drugcomponents.xml"),
+                    () => XmlManager.Load("echoes.xml"),
+                    () => XmlManager.Load("gameplayoptions.xml"),
+                    () => XmlManager.Load("gear.xml"),
+                    () => XmlManager.Load("improvements.xml"),
+                    () => XmlManager.Load("licenses.xml"),
+                    () => XmlManager.Load("lifemodules.xml"),
+                    () => XmlManager.Load("lifestyles.xml"),
+                    () => XmlManager.Load("martialarts.xml"),
+                    () => XmlManager.Load("mentors.xml"),
+                    () => XmlManager.Load("metamagic.xml"),
+                    () => XmlManager.Load("metatypes.xml"),
+                    () => XmlManager.Load("options.xml"),
+                    () => XmlManager.Load("packs.xml"),
+                    () => XmlManager.Load("powers.xml"),
+                    () => XmlManager.Load("priorities.xml"),
+                    () => XmlManager.Load("programs.xml"),
+                    () => XmlManager.Load("qualities.xml"),
+                    () => XmlManager.Load("ranges.xml"),
+                    () => XmlManager.Load("sheets.xml"),
+                    () => XmlManager.Load("skills.xml"),
+                    () => XmlManager.Load("spells.xml"),
+                    () => XmlManager.Load("spiritpowers.xml"),
+                    () => XmlManager.Load("streams.xml"),
+                    () => XmlManager.Load("traditions.xml"),
+                    () => XmlManager.Load("vehicles.xml"),
+                    () => XmlManager.Load("weapons.xml")
+                );
+                Timekeeper.Finish("cache_load", loadOperation);
+                frmLoadingForm.PerformStep(LanguageManager.GetString("String_UI"));
+                CharacterRoster = GlobalOptions.HideCharacterRoster
+                    ? null
+                    : new frmCharacterRoster
+                    {
+                        MdiParent = this
+                    };
+
+                _lstCharacters.CollectionChanged += LstCharactersOnCollectionChanged;
+                _lstOpenCharacterForms.CollectionChanged += LstOpenCharacterFormsOnCollectionChanged;
+
+                frmLoadingForm.PerformStep(LanguageManager.GetString("String_UI"));
+                // Retrieve the arguments passed to the application. If more than 1 is passed, we're being given the name of a file to open.
+                string[] strArgs = Environment.GetCommandLineArgs();
+                ConcurrentBag<Character> lstCharactersToLoad = new ConcurrentBag<Character>();
+                bool blnShowTest = false;
+                object blnShowTestLock = new object();
+                if (!Utils.IsUnitTest)
+                {
+                    Parallel.For(1, strArgs.Length, i =>
+                    {
+                        if (strArgs[i] == "/test")
+                        {
+                            lock (blnShowTestLock)
+                                blnShowTest = true;
+                        }
+                        else if (!strArgs[i].StartsWith('/'))
+                        {
+                            if (!File.Exists(strArgs[i]))
+                            {
+                                throw new ArgumentException("Chummer started with unknown command line arguments: " +
+                                                            strArgs.Aggregate((j, k) => j + " " + k));
+                            }
+
+                            if (lstCharactersToLoad.Any(x => x.FileName == strArgs[i])) return;
+                            Character objLoopCharacter = LoadCharacter(strArgs[i]);
+                            lstCharactersToLoad.Add(objLoopCharacter);
+                        }
+                    });
+                }
+
+                frmLoadingForm.PerformStep(LanguageManager.GetString("String_UI"));
+                if (blnShowTest)
+                {
+                    frmTest frmTestData = new frmTest();
+                    frmTestData.Show();
+                }
+
+                OpenCharacterList(lstCharactersToLoad);
+                if (!GlobalOptions.HideCharacterRoster)
+                {
+                    CharacterRoster.WindowState = FormWindowState.Maximized;
+                    CharacterRoster.Show();
+                }
+
+                PluginLoader.CallPlugins(toolsMenu);
+                frmLoadingForm.Close();
             }
-            frmLoadingForm.PerformStep(LanguageManager.GetString("String_UI"));
-            if(blnShowTest)
+            catch (Exception e)
             {
-                frmTest frmTestData = new frmTest();
-                frmTestData.Show();
+                if (loadOperation != null)
+                    loadOperation.Telemetry.Success = false;
+                Log.Error(e);
+                throw;
             }
-            OpenCharacterList(lstCharactersToLoad);
-            if(!GlobalOptions.HideCharacterRoster)
+            finally
             {
-                CharacterRoster.WindowState = FormWindowState.Maximized;
-                CharacterRoster.Show();
+                if (loadOperation != null)
+                    Program.ApplicationInsightsTelemetryClient.StopOperation(loadOperation);
             }
-            PluginLoader.CallPlugins(toolsMenu);
-            frmLoadingForm.Close();
         }
 
         private void LstOpenCharacterFormsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -1076,7 +1104,7 @@ namespace Chummer
 
             if(openFileDialog.ShowDialog(this) == DialogResult.OK)
             {
-                Timekeeper.Start("load_sum");
+                //Timekeeper.Start("load_sum");
                 Cursor objOldCursor = Cursor;
                 Cursor = Cursors.WaitCursor;
                 List<string> lstFilesToOpen = new List<string>(openFileDialog.FileNames.Length);
@@ -1103,8 +1131,8 @@ namespace Chummer
 
                 Cursor = objOldCursor;
                 Application.DoEvents();
-                Timekeeper.Finish("load_sum");
-                Timekeeper.Log();
+                //Timekeeper.Finish("load_sum", loadOperation);
+                //Timekeeper.Log();
             }
         }
 
@@ -1137,7 +1165,7 @@ namespace Chummer
             {
                 if(objCharacter == null || OpenCharacterForms.Any(x => x.CharacterObject == objCharacter))
                     continue;
-                Timekeeper.Start("load_event_time");
+                //Timekeeper.Start("load_event_time");
                 // Show the character form.
                 if(!objCharacter.Created)
                 {
@@ -1165,7 +1193,7 @@ namespace Chummer
 
                 UpdateCharacterTabTitle(objCharacter, new PropertyChangedEventArgs(nameof(Character.CharacterName)));
 
-                Timekeeper.Finish("load_event_time");
+                //Timekeeper.Finish("load_event_time", loadOperation);
             }
 
             Cursor = objOldCursor;
@@ -1183,76 +1211,86 @@ namespace Chummer
             Character objCharacter = null;
             if(File.Exists(strFileName) && strFileName.EndsWith("chum5"))
             {
-                Timekeeper.Start("loading");
-                objCharacter = new Character
-                {
-                    FileName = strFileName
-                };
-                frmLoading frmLoadingForm = null;
-                if(blnShowErrors)
-                {
-                    frmLoadingForm = new frmLoading { CharacterFile = objCharacter.FileName };
-                    frmLoadingForm.Reset(35);
-                    frmLoadingForm.Show();
-                }
+               
+                    //Timekeeper.Start("loading");
+                  
 
-                XmlDocument objXmlDocument = new XmlDocument();
-                //StreamReader is used to prevent encoding errors
-                using(StreamReader sr = new StreamReader(strFileName, Encoding.UTF8, true))
-                {
-                    try
+                    objCharacter = new Character
                     {
-                        objXmlDocument.Load(sr);
+                        FileName = strFileName
+                    };
+                    frmLoading frmLoadingForm = null;
+                    if (blnShowErrors)
+                    {
+                        frmLoadingForm = new frmLoading {CharacterFile = objCharacter.FileName};
+                        frmLoadingForm.Reset(35);
+                        frmLoadingForm.Show();
                     }
-                    catch(XmlException ex)
+
+                    XmlDocument objXmlDocument = new XmlDocument();
+                    //StreamReader is used to prevent encoding errors
+                    using (StreamReader sr = new StreamReader(strFileName, Encoding.UTF8, true))
                     {
-                        if(blnShowErrors)
-                            MessageBox.Show(string.Format(LanguageManager.GetString("Message_FailedLoad", GlobalOptions.Language), ex.Message),
-                                LanguageManager.GetString("MessageTitle_FailedLoad", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        try
+                        {
+                            objXmlDocument.Load(sr);
+                        }
+                        catch (XmlException ex)
+                        {
+                            if (blnShowErrors)
+                                MessageBox.Show(
+                                    string.Format(
+                                        LanguageManager.GetString("Message_FailedLoad", GlobalOptions.Language),
+                                        ex.Message),
+                                    LanguageManager.GetString("MessageTitle_FailedLoad", GlobalOptions.Language),
+                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            frmLoadingForm?.Close();
+                            return null;
+                        }
+                    }
+
+                    XmlNode objXmlCharacter = objXmlDocument.SelectSingleNode("/character");
+                    if (!string.IsNullOrEmpty(objXmlCharacter?["appversion"]?.InnerText))
+                    {
+                        string strVersion = objXmlCharacter["appversion"].InnerText;
+                        if (strVersion.StartsWith("0."))
+                        {
+                            strVersion = strVersion.Substring(2);
+                        }
+
+                        Version.TryParse(strVersion, out Version verSavedVersion);
+                        Version.TryParse("5.188.34", out Version verCorrectedVersion);
+                        if (verCorrectedVersion != null && verSavedVersion != null)
+                        {
+                            int intResult = verSavedVersion.CompareTo(verCorrectedVersion);
+                            //Check for typo in Corrupter quality and correct it
+                            if (intResult == -1)
+                            {
+                                File.WriteAllText(strFileName,
+                                    Regex.Replace(File.ReadAllText(strFileName), "Corruptor", "Corrupter"));
+                            }
+                        }
+                    }
+
+                    OpenCharacters.Add(objCharacter);
+                    //Timekeeper.Start("load_file");
+                    bool blnLoaded = objCharacter.Load(frmLoadingForm);
+                    //Timekeeper.Finish("load_file", loadOperation);
+                    if (!blnLoaded)
+                    {
+                        OpenCharacters.Remove(objCharacter);
+                        objCharacter.DeleteCharacter();
                         frmLoadingForm?.Close();
                         return null;
                     }
-                }
-                XmlNode objXmlCharacter = objXmlDocument.SelectSingleNode("/character");
-                if(!string.IsNullOrEmpty(objXmlCharacter?["appversion"]?.InnerText))
-                {
-                    string strVersion = objXmlCharacter["appversion"].InnerText;
-                    if(strVersion.StartsWith("0."))
-                    {
-                        strVersion = strVersion.Substring(2);
-                    }
-                    Version.TryParse(strVersion, out Version verSavedVersion);
-                    Version.TryParse("5.188.34", out Version verCorrectedVersion);
-                    if(verCorrectedVersion != null && verSavedVersion != null)
-                    {
-                        int intResult = verSavedVersion.CompareTo(verCorrectedVersion);
-                        //Check for typo in Corrupter quality and correct it
-                        if(intResult == -1)
-                        {
-                            File.WriteAllText(strFileName, Regex.Replace(File.ReadAllText(strFileName), "Corruptor", "Corrupter"));
-                        }
-                    }
-                }
 
-                OpenCharacters.Add(objCharacter);
-                Timekeeper.Start("load_file");
-                bool blnLoaded = objCharacter.Load(frmLoadingForm);
-                Timekeeper.Finish("load_file");
-                if(!blnLoaded)
-                {
-                    OpenCharacters.Remove(objCharacter);
-                    objCharacter.DeleteCharacter();
+                    // If a new name is given, set the character's name to match (used in cloning).
+                    if (!string.IsNullOrEmpty(strNewName))
+                        objCharacter.Name = strNewName;
+                    // Clear the File Name field so that this does not accidentally overwrite the original save file (used in cloning).
+                    if (blnClearFileName)
+                        objCharacter.FileName = string.Empty;
                     frmLoadingForm?.Close();
-                    return null;
-                }
-
-                // If a new name is given, set the character's name to match (used in cloning).
-                if(!string.IsNullOrEmpty(strNewName))
-                    objCharacter.Name = strNewName;
-                // Clear the File Name field so that this does not accidentally overwrite the original save file (used in cloning).
-                if(blnClearFileName)
-                    objCharacter.FileName = string.Empty;
-                frmLoadingForm?.Close();
             }
             else if(blnShowErrors)
             {

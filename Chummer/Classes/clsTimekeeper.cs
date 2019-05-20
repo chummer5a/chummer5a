@@ -21,6 +21,9 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
  using System.Diagnostics;
  using System.Text;
+ using Microsoft.ApplicationInsights.Channel;
+ using Microsoft.ApplicationInsights.DataContracts;
+ using Microsoft.ApplicationInsights.Extensibility;
  using NLog;
 
 namespace Chummer
@@ -54,13 +57,17 @@ namespace Chummer
             }
         }
 
-        public static TimeSpan Finish(string taskname)
+        public static TimeSpan Finish(string taskname, IOperationHolder<DependencyTelemetry> telemetry)
         {
             if (s_DictionaryStarts.TryRemove(taskname, out TimeSpan objStartTimeSpan))
             {
                 TimeSpan final = s_Time.Elapsed - objStartTimeSpan;
 
                 string logentry = $"Task \"{taskname}\" finished in {final}";
+                if (telemetry?.Telemetry?.Properties != null) 
+                {
+                    telemetry.Telemetry.Properties.Add(taskname, final.ToString());
+                }
                 Logger.Info(logentry);
 
                 Debug.WriteLine(logentry);
@@ -73,7 +80,7 @@ namespace Chummer
                 {
                     s_DictionaryStatistics.TryAdd(taskname, new Tuple<TimeSpan, int>(final, 1));
                 }
-
+                
                 return final;
             }
             else

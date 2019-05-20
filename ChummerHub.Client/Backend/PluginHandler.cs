@@ -23,7 +23,10 @@ using System.Xml;
 using System.Xml.Serialization;
 using Microsoft.Rest;
 using System.Threading;
+using Chummer.Properties;
 using NLog;
+using Microsoft.ApplicationInsights.Channel;
+using Microsoft.ApplicationInsights.DataContracts;
 using Formatting = Newtonsoft.Json.Formatting;
 using MessageBox = System.Windows.MessageBox;
 using TabControl = System.Windows.Forms.TabControl;
@@ -63,6 +66,16 @@ namespace Chummer.Plugins
         public override string ToString()
         {
             return "SINners (Cloud)";
+        }
+
+        public ITelemetry SetTelemetryInitialize(ITelemetry telemetry)
+        {
+            if (!String.IsNullOrEmpty(ChummerHub.Client.Properties.Settings.Default.UserEmail))
+            {
+                if (telemetry?.Context?.User != null)
+                    telemetry.Context.User.AccountId = ChummerHub.Client.Properties.Settings.Default.UserEmail;
+            }
+            return telemetry;
         }
 
         IEnumerable<TabPage> IPlugin.GetTabPages(frmCareer input)

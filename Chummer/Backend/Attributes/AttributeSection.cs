@@ -223,12 +223,12 @@ namespace Chummer.Backend.Attributes
             }
             ResetBindings();
             _objCharacter.RefreshAttributeBindings();
-            Timekeeper.Finish("create_char_attrib");
+            //Timekeeper.Finish("create_char_attrib", loadOperation);
         }
 
 		public void Load(XmlNode xmlSavedCharacterNode)
 		{
-			Timekeeper.Start("load_char_attrib");
+			//Timekeeper.Start("load_char_attrib");
             foreach (CharacterAttrib objAttribute in AttributeList.Concat(SpecialAttributeList))
                 objAttribute.UnbindAttribute();
             AttributeList.Clear();
@@ -322,10 +322,10 @@ namespace Chummer.Backend.Attributes
 		    }
             ResetBindings();
 		    _objCharacter.RefreshAttributeBindings();
-            Timekeeper.Finish("load_char_attrib");
+            //Timekeeper.Finish("load_char_attrib");
 		}
 
-	    public void LoadFromHeroLab(XmlNode xmlStatBlockBaseNode)
+	    public void LoadFromHeroLab(XmlNode xmlStatBlockBaseNode, Microsoft.ApplicationInsights.Extensibility.IOperationHolder<Microsoft.ApplicationInsights.DataContracts.DependencyTelemetry> loadOperation)
 	    {
             Timekeeper.Start("load_char_attrib");
             foreach (CharacterAttrib objAttribute in AttributeList.Concat(SpecialAttributeList))
@@ -508,7 +508,7 @@ namespace Chummer.Backend.Attributes
             }
             ResetBindings();
             _objCharacter.RefreshAttributeBindings();
-            Timekeeper.Finish("load_char_attrib");
+            Timekeeper.Finish("load_char_attrib", loadOperation);
         }
 
         private static CharacterAttrib RemakeAttribute(CharacterAttrib objNewAttribute, XmlNode objCharacterNode)
