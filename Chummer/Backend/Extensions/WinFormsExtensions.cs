@@ -18,6 +18,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -48,6 +49,11 @@ namespace Chummer
                     funcToRun.Invoke();
             }
             catch (ObjectDisposedException e)
+            {
+                //we really don't need to care about that.
+                Log.Trace(e);
+            }
+            catch (InvalidAsynchronousStateException e)
             {
                 //we really don't need to care about that.
                 Log.Trace(e);

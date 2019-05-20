@@ -183,7 +183,8 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        internal void Load(XmlNode xmlSkillNode, bool blnLegacy = false)
+        internal void Load(XmlNode xmlSkillNode, bool blnLegacy,
+            Microsoft.ApplicationInsights.Extensibility.IOperationHolder<Microsoft.ApplicationInsights.DataContracts.DependencyTelemetry> loadOperation)
         {
             if (xmlSkillNode == null)
                 return;
@@ -206,7 +207,7 @@ namespace Chummer.Backend.Skills
                 {
                     SkillGroups.Add(skillgroup);
                 }
-                Timekeeper.Finish("load_char_skills_groups");
+                Timekeeper.Finish("load_char_skills_groups", loadOperation);
 
                 Timekeeper.Start("load_char_skills_normal");
                 //Load skills. Because sorting a BindingList is complicated we use a temporery normal list
@@ -244,7 +245,7 @@ namespace Chummer.Backend.Skills
                 {
                     g.OnPropertyChanged(nameof(SkillGroup.SkillList));
                 }
-                Timekeeper.Finish("load_char_skills_normal");
+                Timekeeper.Finish("load_char_skills_normal", loadOperation);
 
                 Timekeeper.Start("load_char_skills_kno");
                 using (XmlNodeList xmlSkillsList = xmlSkillNode.SelectNodes("knoskills/skill"))
@@ -254,7 +255,7 @@ namespace Chummer.Backend.Skills
                             if (Skill.Load(_objCharacter, xmlNode) is KnowledgeSkill objSkill)
                                 KnowledgeSkills.Add(objSkill);
                         }
-                Timekeeper.Finish("load_char_skills_kno");
+                Timekeeper.Finish("load_char_skills_kno", loadOperation);
 
                 Timekeeper.Start("load_char_knowsoft_buffer");
                 // Knowsoft Buffer.
@@ -266,7 +267,7 @@ namespace Chummer.Backend.Skills
                             if (xmlNode.TryGetStringFieldQuickly("name", ref strName))
                                 KnowsoftSkills.Add(new KnowledgeSkill(_objCharacter, strName, false));
                         }
-                Timekeeper.Finish("load_char_knowsoft_buffer");
+                Timekeeper.Finish("load_char_knowsoft_buffer", loadOperation);
             }
             else
             {
@@ -355,10 +356,10 @@ namespace Chummer.Backend.Skills
             if (xmlSkillNode.TryGetInt32FieldQuickly("skillgrpsmax", ref intTmp))
                 SkillGroupPointsMaximum = intTmp;
 
-            Timekeeper.Finish("load_char_skills");
+            Timekeeper.Finish("load_char_skills", loadOperation);
         }
 
-        internal void LoadFromHeroLab(XmlNode xmlSkillNode)
+        internal void LoadFromHeroLab(XmlNode xmlSkillNode, Microsoft.ApplicationInsights.Extensibility.IOperationHolder<Microsoft.ApplicationInsights.DataContracts.DependencyTelemetry> loadOperation)
         {
             Timekeeper.Start("load_char_skills_groups");
             List<SkillGroup> lstLoadingSkillGroups = new List<SkillGroup>();
@@ -375,7 +376,7 @@ namespace Chummer.Backend.Skills
             {
                 SkillGroups.Add(skillgroup);
             }
-            Timekeeper.Finish("load_char_skills_groups");
+            Timekeeper.Finish("load_char_skills_groups", loadOperation);
             Timekeeper.Start("load_char_skills");
             
             List<Skill> lstTempSkillList = new List<Skill>();
@@ -597,9 +598,10 @@ namespace Chummer.Backend.Skills
                         objKnowledgeSkillToPutPointsInto.Karma -= intKnowledgeSkillPointCount;
                     }
                 }
+                
             }
+            Timekeeper.Finish("load_char_skills", loadOperation);
 
-            Timekeeper.Finish("load_char_skills");
         }
 
         private void UpdateUndoList(XmlNode skillNode)

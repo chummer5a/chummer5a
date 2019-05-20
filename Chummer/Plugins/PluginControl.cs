@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
+using Microsoft.ApplicationInsights.Channel;
 using NLog;
 
 namespace Chummer.Plugins
@@ -22,6 +23,7 @@ namespace Chummer.Plugins
         IEnumerable<TabPage> GetTabPages(frmCareer input);
         IEnumerable<TabPage> GetTabPages(frmCreate input);
         IEnumerable<ToolStripMenuItem> GetMenuItems(ToolStripMenuItem menu);
+        ITelemetry SetTelemetryInitialize(ITelemetry telemetry);
 
         Task<IEnumerable<TreeNode>> GetCharacterRosterTreeNode(frmCharacterRoster frmCharRoster, bool forceUpdate);
 
@@ -103,6 +105,8 @@ namespace Chummer.Plugins
           {
                 List<IPlugin> result = new List<IPlugin>();
                 if (GlobalOptions.PluginsEnabled == false)
+                    return result;
+                if (MyPlugins == null)
                     return result;
                 var list = MyPlugins.ToList();
                 foreach(var plugin in list)
