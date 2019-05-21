@@ -139,7 +139,7 @@ namespace Chummer
                         }
                     }
                     Log.Info(strInfo);
-                    Log.Info("NLog initialized");
+                    TelemetryConfiguration.Active.DisableTelemetry = System.Diagnostics.Debugger.IsAttached;
                     if (GlobalOptions.UseLoggingApplicationInsights)
                     {
 #if DEBUG
@@ -171,6 +171,7 @@ namespace Chummer
                     {
                         TelemetryConfiguration.Active.DisableTelemetry = true;
                     }
+                    
                 }
                 catch (Exception e)
                 {

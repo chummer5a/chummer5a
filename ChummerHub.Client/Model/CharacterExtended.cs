@@ -57,6 +57,11 @@ namespace ChummerHub.Client.Model
                 {
                     Language = GlobalOptions.Language
                 };
+                
+                //_MySINnerFile.MyExtendedAttributes = new SINnerExtended(_MySINnerFile);
+            }
+            if (MySINnerFile.SiNnerMetaData == null)
+            {
                 _MySINnerFile.SiNnerMetaData = new SINnerMetaData
                 {
                     Id = Guid.NewGuid(),
@@ -67,9 +72,7 @@ namespace ChummerHub.Client.Model
                         IsPublic = true
                     }
                 };
-                //_MySINnerFile.MyExtendedAttributes = new SINnerExtended(_MySINnerFile);
             }
-
             if(MySINnerFile.SiNnerMetaData.Visibility != null)
             {
                 if(MySINnerFile.SiNnerMetaData.Visibility.Id == null)
