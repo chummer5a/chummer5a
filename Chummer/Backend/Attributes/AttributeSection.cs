@@ -158,7 +158,7 @@ namespace Chummer.Backend.Attributes
 
 	    public async void Create(XmlNode charNode, int intValue, int intMinModifier = 0, int intMaxModifier = 0)
         {
-            using (var op_create_char_attrib = await Timekeeper.Start("create_char_attrib", null))
+            using (var op_create_char_attrib = Timekeeper.StartSyncron("create_char_attrib", null))
             {
                 foreach (CharacterAttrib objAttribute in AttributeList.Concat(SpecialAttributeList))
                     objAttribute.UnbindAttribute();
@@ -376,7 +376,7 @@ namespace Chummer.Backend.Attributes
 
 	    public async void LoadFromHeroLab(XmlNode xmlStatBlockBaseNode, CustomActivity parentActivity)
 	    {
-            using (var op_load_char_attrib = await Timekeeper.Start("load_char_attrib", parentActivity))
+            using (var op_load_char_attrib = Timekeeper.StartSyncron("load_char_attrib", parentActivity))
             {
                 foreach (CharacterAttrib objAttribute in AttributeList.Concat(SpecialAttributeList))
                     objAttribute.UnbindAttribute();

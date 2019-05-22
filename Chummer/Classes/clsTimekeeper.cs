@@ -42,23 +42,17 @@ namespace Chummer
             s_Time.Start();
         }
 
+        public static CustomActivity StartSyncron(string taskname, CustomActivity parentActivity, CustomActivity.OperationType operationType, string target)
+        {
+            var dependencyActivity = new CustomActivity(taskname, parentActivity, operationType, target);
+            s_DictionaryStarts.TryAdd(taskname, s_Time.Elapsed);
+            return dependencyActivity;
+        }
+
         public static CustomActivity StartSyncron(string taskname, CustomActivity parentActivity)
-        {
-            return RunMyStartTask(taskname, parentActivity);
-        }
-
-        public static async Task<CustomActivity> Start(string taskname, CustomActivity parentActivity)
-        {
-            var task1 = Task.Run(() => RunMyStartTask(taskname, parentActivity));
-            await Task.WhenAll(task1);
-            return task1.Result;
-        }
-
-        private static CustomActivity RunMyStartTask(string taskname, CustomActivity parentActivity)
         {
             var dependencyActivity = new CustomActivity(taskname, parentActivity);
             s_DictionaryStarts.TryAdd(taskname, s_Time.Elapsed);
-            dependencyActivity.myOperationDependencyHolder = Program.ApplicationInsightsTelemetryClient.StartOperation<DependencyTelemetry>(dependencyActivity);
             return dependencyActivity;
         }
 

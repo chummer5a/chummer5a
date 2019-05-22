@@ -34,6 +34,8 @@ using System.Text;
 using System.ComponentModel;
 using Chummer.UI.Attributes;
 using System.Collections.ObjectModel;
+using Microsoft.ApplicationInsights;
+using Microsoft.ApplicationInsights.DataContracts;
 
 namespace Chummer
 {
@@ -43,6 +45,7 @@ namespace Chummer
     [DesignerCategory("")]
     public class CharacterShared : Form
     {
+        private static readonly TelemetryClient TelemetryClient = new TelemetryClient();
         private readonly Character _objCharacter;
         private readonly CharacterOptions _objOptions;
         private bool _blnIsDirty;
@@ -54,6 +57,21 @@ namespace Chummer
         {
             _objCharacter = objCharacter;
             _objOptions = _objCharacter.Options;
+            string name = "Show_" + this.GetType();
+            if (objCharacter != null)
+                name += "_" + objCharacter.CharacterName;
+            PageViewTelemetry pvt = new PageViewTelemetry();
+            pvt.Timestamp = DateTimeOffset.UtcNow;
+            this.Shown += delegate(object sender, EventArgs args)
+            {
+                pvt.Duration = DateTimeOffset.UtcNow-pvt.Timestamp;
+                if (objCharacter != null)
+                {
+                    pvt.Url = new Uri(objCharacter.FileName);
+                }
+                TelemetryClient.TrackPageView(pvt);
+            };
+            
         }
 
         [Obsolete("This constructor is for use by form designers only.", true)]

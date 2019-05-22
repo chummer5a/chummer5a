@@ -84,11 +84,11 @@ namespace Chummer
         }
 
         #region Control Events
-        public frmChummerMain(bool isUnitTest = false)
+        public frmChummerMain(bool isUnitTest = false, PageViewTelemetry pvt = null)
         {
             Utils.IsUnitTest = isUnitTest;
             InitializeComponent();
-            using (var op_frmChummerMain = Timekeeper.StartSyncron("frmChummerMain Constructor", null))
+            using (var op_frmChummerMain = Timekeeper.StartSyncron("frmChummerMain Constructor", null, CustomActivity.OperationType.DependencyOperation, _strCurrentVersion))
             {
                 try
                 {
@@ -96,10 +96,14 @@ namespace Chummer
                         $"{_objCurrentVersion.Major}.{_objCurrentVersion.Minor}.{_objCurrentVersion.Build}";
 
 
-                    op_frmChummerMain.myOperationDependencyHolder.Telemetry.Type = "loadfrmChummerMain";
-                    op_frmChummerMain.myOperationDependencyHolder.Telemetry.Target = _strCurrentVersion;
+                    op_frmChummerMain.MyDependencyTelemetry.Type = "loadfrmChummerMain";
+                    op_frmChummerMain.MyDependencyTelemetry.Target = _strCurrentVersion;
 
-
+                    if (pvt != null)
+                    {
+                        pvt.Duration = DateTimeOffset.UtcNow - pvt.Timestamp;
+                        op_frmChummerMain.tc.TrackPageView(pvt);
+                    }
 
                     this.Text = MainTitle;
 
@@ -139,7 +143,7 @@ namespace Chummer
                     PopulateMRUToolstripMenu(this, null);
 
                     Program.MainForm = this;
-                    PluginLoader.LoadPlugins();
+                    PluginLoader.LoadPlugins(op_frmChummerMain);
                     if (GlobalOptions.AllowEasterEggs)
                     {
                         _mascotChummy = new Chummy();
@@ -255,7 +259,7 @@ namespace Chummer
                         CharacterRoster.Show();
                     }
 
-                    PluginLoader.CallPlugins(toolsMenu);
+                    PluginLoader.CallPlugins(toolsMenu, op_frmChummerMain);
                     frmLoadingForm.Close();
 
                 }
@@ -263,13 +267,19 @@ namespace Chummer
                 {
                     if (op_frmChummerMain != null)
                     {
-                        op_frmChummerMain.myOperationDependencyHolder.Telemetry.Success = false;
-                        Program.ApplicationInsightsTelemetryClient.TrackException(e);
+                        if (op_frmChummerMain.MyDependencyTelemetry != null)
+                            op_frmChummerMain.MyDependencyTelemetry.Success = false;
+                        if (op_frmChummerMain.MyRequestTelemetry != null)
+                            op_frmChummerMain.MyRequestTelemetry.Success = false;
+                        op_frmChummerMain.tc.TrackException(e);
                     }
                     Log.Error(e);
                     throw;
                 }
+                
             }
+
+            
         }
 
         private void LstOpenCharacterFormsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -954,11 +964,6 @@ namespace Chummer
                 WindowState = FormWindowState.Maximized;
 
             mnuToolsOmae.Visible = GlobalOptions.OmaeEnabled;
-
-            //        if (GlobalOptions.UseLogging)
-            //        {
-            //CommonFunctions objFunctions = new CommonFunctions();
-            //        }
         }
 
         private static bool IsVisibleOnAnyScreen()

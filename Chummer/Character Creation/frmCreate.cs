@@ -43,6 +43,7 @@ namespace Chummer
     [DesignerCategory("Form")]
     public partial class frmCreate : CharacterShared
     {
+        private static readonly TelemetryClient TelemetryClient = new TelemetryClient();
         private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
         // Set the default culture to en-US so we work with decimals correctly.
         private bool _blnSkipUpdate;
@@ -179,16 +180,14 @@ namespace Chummer
         private async void frmCreate_Load(object sender, EventArgs e)
         {
             //Timekeeper.Finish("load_free"); <- there is no corresponding Timekeeper.Start in the Soluation
-            using (var op_load_frm_create = await Timekeeper.Start("load_frm_create", null))
+            using (var op_load_frm_create = Timekeeper.StartSyncron("load_frm_create", null, CustomActivity.OperationType.RequestOperation, CharacterObject?.FileName))
             {
                 try
                 {
-                    op_load_frm_create.myOperationRequestHolder =
-                        Program.ApplicationInsightsTelemetryClient.StartOperation<RequestTelemetry>(op_load_frm_create);
-                    if (op_load_frm_create.myOperationRequestHolder != null)
+                    if (op_load_frm_create.MyRequestTelemetry != null)
                     {
-                        op_load_frm_create.myOperationRequestHolder.Telemetry.Name = "frmCreateLoad";
-                        op_load_frm_create.myOperationRequestHolder.Telemetry.Source = CharacterObject?.FileName;
+                        op_load_frm_create.MyRequestTelemetry.Name = "frmCreateLoad";
+                        op_load_frm_create.MyRequestTelemetry.Source = CharacterObject?.FileName;
                     }
 
 
@@ -800,10 +799,8 @@ namespace Chummer
                     // Stupid hack to get the MDI icon to show up properly.
                     Icon = Icon.Clone() as Icon;
 
-                    Program.MainForm.PluginLoader.CallPlugins(this);
-                    Timekeeper.Finish("load_frm_create");
-                    Timekeeper.Finish("loading");
-
+                    Program.MainForm.PluginLoader.CallPlugins(this, op_load_frm_create);
+                    
                     if (CharacterObject.InternalIdsNeedingReapplyImprovements.Count > 0)
                     {
                         if (MessageBox.Show(
@@ -818,14 +815,16 @@ namespace Chummer
 
                     ResumeLayout();
                     Cursor = Cursors.Default;
-                    op_load_frm_create.myOperationDependencyHolder.Telemetry.Success = true;
+                    if (op_load_frm_create.MyDependencyTelemetry != null)
+                        op_load_frm_create.MyDependencyTelemetry.Success = true;
                 }
                 catch (Exception ex)
                 {
                     if (op_load_frm_create != null)
                     {
-                        op_load_frm_create.myOperationDependencyHolder.Telemetry.Success = false;
-                        Program.ApplicationInsightsTelemetryClient.TrackException(ex);
+                        if (op_load_frm_create.MyDependencyTelemetry != null)
+                            op_load_frm_create.MyDependencyTelemetry.Success = false;
+                        TelemetryClient.TrackException(ex);
                     }
 
                     Log.Error(ex);

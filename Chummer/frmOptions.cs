@@ -1814,7 +1814,7 @@ namespace Chummer
             {
                 if(!tabOptions.TabPages.Contains(tabPlugins))
                     tabOptions.TabPages.Add(tabPlugins);
-                Program.MainForm.PluginLoader.LoadPlugins();
+                Program.MainForm.PluginLoader.LoadPlugins(null);
             }
             else
             {
