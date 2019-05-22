@@ -794,7 +794,7 @@
       <name>Workshop/Facility</name>
       <category>Entertainment - Asset</category>
       <lp>2</lp>
-      <allowed>Medium,Commercial</allowed>
+      <allowed>Commercial</allowed>
       <bonus>
         <selectskill />
       </bonus>
@@ -810,7 +810,7 @@
       <bonus>
         <selectskill />
       </bonus>
-      <allowed>Medium,Commercial</allowed>
+      <allowed>Commercial</allowed>
       <source>RF</source>
       <cost>2250</cost>
       <page>224</page>
