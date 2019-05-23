@@ -325,6 +325,7 @@
     </Compile>
     <Compile Include="helpers\Application Insights\CustomActivity.cs" />
     <Compile Include="helpers\Application Insights\CustomTelemetryInitializer.cs" />
+    <Compile Include="helpers\Application Insights\TranslateExceptionTelemetryProcessor.cs" />
     <Compile Include="helpers\BufferedTableLayoutPanel.cs">
       <SubType>Component</SubType>
     </Compile>

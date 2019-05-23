@@ -16,6 +16,9 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
+using System;
+
 namespace Chummer
 {
     public static class FlagImageGetter
@@ -28,6 +31,8 @@ namespace Chummer
         public static System.Drawing.Image GetFlagFromCountryCode(string strCode)
         {
             System.Drawing.Image objReturn;
+            if (String.IsNullOrEmpty(strCode))
+                strCode = "";
             switch (strCode.ToLowerInvariant())
             {
                 case "ad":

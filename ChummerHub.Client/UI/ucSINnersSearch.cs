@@ -16,12 +16,14 @@ using System.Collections;
 using GroupControls;
 using System.Reflection;
 using Chummer.Backend.Equipment;
+using NLog;
 
 namespace ChummerHub.Client.UI
 {
     public partial class ucSINnersSearch : UserControl
     {
         public static CharacterExtended MySearchCharacter = null;
+        private static Logger Log = LogManager.GetCurrentClassLogger();
 
         public SearchTag motherTag = null;
         private Action<string> GetSelectedObjectCallback;
@@ -58,6 +60,7 @@ namespace ChummerHub.Client.UI
                     flpReflectionMembers.Controls.Add(input);
                     return input;
                 }
+
                 var list = SearchTagExtractor.ExtractTagsFromAttributes(stag.MyRuntimePropertyValue, stag);
                 if (list.Any())
                 {
@@ -77,12 +80,19 @@ namespace ChummerHub.Client.UI
                     };
                     return cb;
                 }
+
                 return null;
+            }
+            catch (Exception e)
+            {
+                Log.Warn(e);
             }
             finally
             {
                 this.loading = false;
             }
+
+            return null;
         }
 
         public List<SearchTag> MySetTags = new List<SearchTag>();

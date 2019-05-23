@@ -81,11 +81,7 @@ namespace Chummer
 
 
                 sw.TaskEnd("fixcwd");
-                //Log exceptions that is caught. Wanting to know about this cause of performance
-                AppDomain.CurrentDomain.FirstChanceException += (sender, e) =>
-                {
-                    //Console.WriteLine(e.Exception.ToString());
-                };
+                
                 AppDomain.CurrentDomain.FirstChanceException += ExceptionHeatmap.OnException;
 
                 sw.TaskEnd("appdomain 2");
@@ -110,9 +106,26 @@ namespace Chummer
                     //main.ShowInTaskbar = false;
                 };
 #endif
+                AppDomain.CurrentDomain.UnhandledException += (o, e) =>
+                {
+                    try
+                    {
+                        if (e.ExceptionObject is Exception myException)
+                        {
+                            TelemetryClient tc = new TelemetryClient();
+                            tc.TrackException(myException);
+                        }
+                    }
+                    catch (Exception exception)
+                    {
+                        Console.WriteLine(exception);
+                    }
+                };
 
+           
                 sw.TaskEnd("Startup");
 
+                
                 Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
 
                 if (!string.IsNullOrEmpty(LanguageManager.ManagerErrorMessage))
@@ -156,6 +169,9 @@ namespace Chummer
                         TelemetryConfiguration.Active.TelemetryChannel.DeveloperMode = false;
 #endif
                         TelemetryConfiguration.Active.TelemetryInitializers.Add(new CustomTelemetryInitializer());
+                        TelemetryConfiguration.Active.TelemetryProcessorChainBuilder.Use((next) =>
+                            new TranslateExceptionTelemetryProcessor(next));
+                        TelemetryConfiguration.Active.TelemetryProcessorChainBuilder.Build();
                         //for now lets disable live view. We may make another GlobalOption to enable it at a later stage...
                         //var live = new LiveStreamProvider(ApplicationInsightsConfig);
                         //live.Enable();
