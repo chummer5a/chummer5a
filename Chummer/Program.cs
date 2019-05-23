@@ -161,9 +161,13 @@ namespace Chummer
                         //live.Enable();
 
                         // Log a page view:
-                        pvt = new PageViewTelemetry("Program.Main()");
-                        pvt.Id = Guid.NewGuid().ToString();
-                        pvt.Name = "Chummer Startup";
+                        pvt = new PageViewTelemetry("Program.Main()")
+                        {
+                           Name = "Chummer Startup: " +
+                                   System.Reflection.Assembly.GetExecutingAssembly().GetName().Version
+                        };
+                        if (Properties.Settings.Default.UploadClientId != Guid.Empty)
+                            pvt.Id = Properties.Settings.Default.UploadClientId.ToString();
                         pvt.Context.Operation.Name = "Operation Program.Main()";
                         pvt.Properties.Add("parameters", Environment.CommandLine);
                         pvt.Timestamp = startTime;
