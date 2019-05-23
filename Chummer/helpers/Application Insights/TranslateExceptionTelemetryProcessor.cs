@@ -1,5 +1,9 @@
 using System;
+using System.Collections;
 using System.Globalization;
+using System.Reflection;
+using System.Resources;
+using System.Text.RegularExpressions;
 using System.Threading;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.ApplicationInsights.Channel;
@@ -43,20 +47,57 @@ namespace Chummer
         {
             ExceptionTelemetry exceptionTelemetry = item as ExceptionTelemetry;
             if (exceptionTelemetry == null) return;
-            CultureInfo oldCI = Thread.CurrentThread.CurrentCulture;
-
-            Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-US");
-            Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
+            var translateCultureInfo = new CultureInfo("en");
             try
             {
-                throw exceptionTelemetry.Exception;
+                string msg =
+                    TranslateExceptionMessage(exceptionTelemetry.Exception, translateCultureInfo);
+                exceptionTelemetry.Properties.Add("Translated", msg); 
             }
             catch (Exception ex)
             {
-                exceptionTelemetry.Exception = ex;
+                //string msg = ex.ToString();
+                //exceptionTelemetry.Properties.Add("Message", ex.Message);
+                //exceptionTelemetry.Properties.Add("Translated", msg);
             }
-            Thread.CurrentThread.CurrentCulture = oldCI;
-            Thread.CurrentThread.CurrentUICulture = oldCI;
+        }
+
+        public static string TranslateExceptionMessage(Exception exception, CultureInfo targetCulture)
+        {
+            Assembly a = exception.GetType().Assembly;
+            ResourceManager rm = new ResourceManager(a.GetName().Name, a);
+            ResourceSet rsOriginal = rm.GetResourceSet(Thread.CurrentThread.CurrentUICulture, true, true);
+            ResourceSet rsTranslated = rm.GetResourceSet(targetCulture, true, true);
+
+            var result = exception.Message;
+
+            foreach (DictionaryEntry item in rsOriginal)
+            {
+                if (!(item.Value is string message))
+                    continue;
+
+                string translated = rsTranslated.GetString(item.Key.ToString(), false);
+
+                if (!message.Contains("{"))
+                {
+                    result = result.Replace(message, translated);
+                }
+                else
+                {
+                    var pattern = $"{Regex.Escape(message)}";
+                    pattern = Regex.Replace(pattern, @"\\{([0-9]+)\}", "(?<group$1>.*)");
+
+                    var regex = new Regex(pattern);
+
+                    var replacePattern = translated;
+                    replacePattern = Regex.Replace(replacePattern, @"{([0-9]+)}", @"${group$1}");
+                    replacePattern = replacePattern.Replace("\\$", "$");
+
+                    result = regex.Replace(result, replacePattern);
+                }
+            }
+
+            return result;
         }
     }
 }
