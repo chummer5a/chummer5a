@@ -57,17 +57,23 @@ namespace Chummer
         {
             _objCharacter = objCharacter;
             _objOptions = _objCharacter.Options;
-            string name = "Show_" + this.GetType();
+            string name = "Show_Form_" + this.GetType();
             if (objCharacter != null)
                 name += "_" + objCharacter.CharacterName;
-            PageViewTelemetry pvt = new PageViewTelemetry();
+            PageViewTelemetry pvt = new PageViewTelemetry(name);
+            pvt.Id = Guid.NewGuid().ToString();
+            pvt.Name = name;
+            pvt.Context.Operation.Name = "Operation CharacterShared.Constructor()";
+            pvt.Properties.Add("Name", objCharacter?.Name);
+            pvt.Properties.Add("Path", objCharacter?.FileName);
             pvt.Timestamp = DateTimeOffset.UtcNow;
             this.Shown += delegate(object sender, EventArgs args)
             {
                 pvt.Duration = DateTimeOffset.UtcNow-pvt.Timestamp;
                 if (objCharacter != null)
                 {
-                    pvt.Url = new Uri(objCharacter.FileName);
+                    if (Uri.TryCreate(objCharacter.FileName, UriKind.Absolute, out Uri Uriresult))
+                        pvt.Url = Uriresult;
                 }
                 TelemetryClient.TrackPageView(pvt);
             };

@@ -158,7 +158,7 @@ namespace Chummer.Backend.Attributes
 
 	    public async void Create(XmlNode charNode, int intValue, int intMinModifier = 0, int intMaxModifier = 0)
         {
-            using (var op_create_char_attrib = Timekeeper.StartSyncron("create_char_attrib", null))
+            using (var op_create_char_attrib = Timekeeper.StartSyncron("create_char_attrib", null, CustomActivity.OperationType.RequestOperation, charNode?.InnerText))
             {
                 foreach (CharacterAttrib objAttribute in AttributeList.Concat(SpecialAttributeList))
                     objAttribute.UnbindAttribute();

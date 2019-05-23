@@ -197,7 +197,6 @@ namespace Chummer
 
         private async void frmCareer_Load(object sender, EventArgs e)
         {
-            //Timekeeper.Finish("load_free"); <- there is no corresponding Timekeeper.Start in the Soluation
             using (var op_load_frm_career = Timekeeper.StartSyncron("load_frm_career", null, CustomActivity.OperationType.RequestOperation, CharacterObject?.FileName))
             {
                 try

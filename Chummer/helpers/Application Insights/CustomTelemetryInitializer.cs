@@ -44,7 +44,13 @@ namespace Chummer
         {
             try
             {
-                string pubIp = new System.Net.WebClient().DownloadString("https://api.ipify.org");
+                var client = new System.Net.WebClient();
+                client.Proxy = WebRequest.DefaultWebProxy;
+                if (client.Proxy != null)
+                {
+                    client.Proxy.Credentials = CredentialCache.DefaultCredentials;
+                }
+                string pubIp = client.DownloadString("https://api.ipify.org");
                 return pubIp;
             }
             catch (Exception e)

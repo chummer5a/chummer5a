@@ -134,6 +134,7 @@ namespace Chummer
                         "ApplicationInsightsTarget",
                         typeof(Microsoft.ApplicationInsights.NLogTarget.ApplicationInsightsTarget)
                     );
+                    LogManager.ThrowExceptions = false;
                     Log = NLog.LogManager.GetCurrentClassLogger();
                     if (GlobalOptions.UseLogging)
                     {
@@ -145,7 +146,7 @@ namespace Chummer
                         }
                     }
                     Log.Info(strInfo);
-                    TelemetryConfiguration.Active.DisableTelemetry = System.Diagnostics.Debugger.IsAttached;
+                    //TelemetryConfiguration.Active.DisableTelemetry = System.Diagnostics.Debugger.IsAttached;
                     if (GlobalOptions.UseLoggingApplicationInsights)
                     {
 #if DEBUG
@@ -161,8 +162,8 @@ namespace Chummer
 
                         // Log a page view:
                         pvt = new PageViewTelemetry("Program.Main()");
-                        pvt.Id = "Program.Main()";
-                        pvt.Name = strInfo;
+                        pvt.Id = Guid.NewGuid().ToString();
+                        pvt.Name = "Chummer Startup";
                         pvt.Context.Operation.Name = "Operation Program.Main()";
                         pvt.Properties.Add("parameters", Environment.CommandLine);
                         pvt.Timestamp = startTime;
