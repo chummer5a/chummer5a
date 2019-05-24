@@ -425,7 +425,7 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         public void Save(XmlTextWriter objWriter)
         {
-            Log.Debug("Save enter");
+            Log.Trace("Save enter");
 
             objWriter.WriteStartElement("improvement");
             if (!string.IsNullOrEmpty(_strUniqueName))
@@ -453,7 +453,7 @@ namespace Chummer
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteEndElement();
 
-            Log.Debug("Save end");
+            Log.Trace("Save end");
         }
 
         /// <summary>
@@ -464,7 +464,7 @@ namespace Chummer
         {
             if (objNode == null)
                 return;
-            Log.Debug("Load enter");
+            Log.Trace("Load enter");
 
             objNode.TryGetStringFieldQuickly("unique", ref _strUniqueName);
             objNode.TryGetStringFieldQuickly("target", ref _strTarget);
@@ -501,7 +501,7 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             objNode.TryGetInt32FieldQuickly("order", ref _intOrder);
 
-            Log.Debug("Load exit");
+            Log.Trace("Load exit");
         }
 
         #endregion

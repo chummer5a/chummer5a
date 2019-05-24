@@ -126,7 +126,7 @@ namespace Chummer
             {
                 if (_workerPrinter.CancellationPending)
                     throw new OperationCanceledException();
-                objCharacter.Load();
+                objCharacter.Load().RunSynchronously();
                 prgProgress.Invoke((Action) FuncIncreaseProgress);
             });
 

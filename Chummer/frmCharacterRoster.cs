@@ -21,6 +21,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -362,19 +363,45 @@ namespace Chummer
                                 foreach(var node in nodelist)
                                 {
                                     var querycoll = treCharacterList.Nodes.Cast<TreeNode>();
-                                    var found = from a in querycoll
+                                    var found = (from a in querycoll
                                                 where a.Text == node.Text && a.Tag == node.Tag
-                                                select a;
+                                                select a).ToList();
                                     Program.MainForm.DoThreadSafe(() =>
                                     {
-                                        if(found.Any())
+                                        try
                                         {
-                                            treCharacterList.Nodes.Remove(found.FirstOrDefault());
+                                            if (found.Any() == true)
+                                            {
+                                                treCharacterList.Nodes.Remove(found.FirstOrDefault());
+                                            }
+
+                                            if ((node.Nodes.Count > 0 || !String.IsNullOrEmpty(node.ToolTipText))
+                                                || (node.Tag != null))
+                                            {
+                                                if (treCharacterList.IsDisposed)
+                                                    return;
+                                                treCharacterList.Nodes.Insert(1, node);
+                                            }
+
+                                            node.Expand();
                                         }
-                                        if ((node.Nodes.Count > 0 || !String.IsNullOrEmpty(node.ToolTipText))
-                                            || (node.Tag != null))
-                                            treCharacterList.Nodes.Insert(1, node);
-                                        node.Expand();
+                                        catch (ObjectDisposedException e)
+                                        {
+                                            Log.Trace(e);
+                                        }
+                                        catch (InvalidAsynchronousStateException e)
+                                        {
+                                            Log.Trace(e);
+                                        }
+                                        catch (ArgumentException e)
+                                        {
+                                            Log.Trace(e);
+                                        }
+                                        catch (Exception e)
+                                        {
+                                            Log.Warn(e);
+                                        }
+                                        
                                     });
                                 }
                             }
@@ -779,13 +806,13 @@ namespace Chummer
 
             }
 
-            public void OnDefaultDoubleClick(object sender, EventArgs e)
+            public async void OnDefaultDoubleClick(object sender, EventArgs e)
             {
                 Character objOpenCharacter = Program.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == this.FileName);
 
                 if(objOpenCharacter == null || !Program.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
                 {
-                    objOpenCharacter = Program.MainForm.LoadCharacter(this.FilePath);
+                    objOpenCharacter = await Program.MainForm.LoadCharacter(this.FilePath);
                     Program.MainForm.OpenCharacter(objOpenCharacter);
                 }
             }

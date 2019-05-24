@@ -165,7 +165,7 @@ namespace Chummer
                 ContactDetailChanged?.Invoke(this, e);
         }
 
-        private void tsContactOpen_Click(object sender, EventArgs e)
+        private async void tsContactOpen_Click(object sender, EventArgs e)
         {
             if (_objSpirit.LinkedCharacter != null)
             {
@@ -173,7 +173,7 @@ namespace Chummer
                 Cursor = Cursors.WaitCursor;
                 if (objOpenCharacter == null || !Program.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
                 {
-                    objOpenCharacter = Program.MainForm.LoadCharacter(_objSpirit.LinkedCharacter.FileName);
+                    objOpenCharacter = await Program.MainForm.LoadCharacter(_objSpirit.LinkedCharacter.FileName);
                     Program.MainForm.OpenCharacter(objOpenCharacter);
                 }
                 Cursor = Cursors.Default;
@@ -445,7 +445,7 @@ namespace Chummer
         /// </summary>
         /// <param name="strCritterName">Name of the Critter's Metatype.</param>
         /// <param name="intForce">Critter's Force.</param>
-        private void CreateCritter(string strCritterName, int intForce)
+        private async void CreateCritter(string strCritterName, int intForce)
         {
             // Code from frmMetatype.
             XmlDocument objXmlDocument = XmlManager.Load("critters.xml");
@@ -670,7 +670,7 @@ namespace Chummer
             imgLink.SetToolTip(LanguageManager.GetString(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_OpenFile" : "Tip_Sprite_OpenFile", GlobalOptions.Language));
             ContactDetailChanged?.Invoke(this, null);
 
-            Character objOpenCharacter = Program.MainForm.LoadCharacter(strOpenFile);
+            Character objOpenCharacter = await Program.MainForm.LoadCharacter(strOpenFile);
             Cursor = Cursors.Default;
             Program.MainForm.OpenCharacter(objOpenCharacter);
         }

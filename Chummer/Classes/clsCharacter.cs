@@ -60,6 +60,7 @@ namespace Chummer
     [DebuggerDisplay("{CharacterName} ({FileName})")]
     public sealed class Character : INotifyMultiplePropertyChanged, IHasMugshots, IHasName
     {
+        private static readonly TelemetryClient TelemetryClient = new TelemetryClient();
         private Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private XmlNode _oldSkillsBackup;
         private XmlNode _oldSkillGroupBackup;
@@ -1859,91 +1860,98 @@ namespace Chummer
         /// </summary>
         /// <param name="frmLoadingForm">Instancs of frmLoading to use to update with loading progress. frmLoading::PerformStep() is called 35 times within this method, so plan accordingly.</param>
         /// <param name="showWarnings">Whether warnings about book content and other character content should be loaded.</param>
-        public bool Load(frmLoading frmLoadingForm = null, bool showWarnings = true)
+        public async Task<bool> Load(frmLoading frmLoadingForm = null, bool showWarnings = true)
         {
             if(!File.Exists(_strFileName))
                 return false;
-            Microsoft.ApplicationInsights.Extensibility.IOperationHolder<Microsoft.ApplicationInsights.DataContracts.DependencyTelemetry> loadOperation = null;
-            try
+            using (var loadActivity = Timekeeper.StartSyncron("clsCharacter.Load", null, CustomActivity.OperationType.DependencyOperation, _strFileName))
             {
-
-
-                loadOperation =
-                    Program.ApplicationInsightsTelemetryClient.StartOperation<DependencyTelemetry>("load");
-                loadOperation.Telemetry.Type = "Load";
-                loadOperation.Telemetry.Target = _strFileName;
-
-                Timekeeper.Start("load_xml");
-                frmLoadingForm?.PerformStep("XML");
-                XmlDocument objXmlDocument = new XmlDocument();
-                if (!File.Exists(_strFileName))
-                    return false;
-                using (StreamReader sr = new StreamReader(_strFileName, Encoding.UTF8, true))
+                try
                 {
-                    try
+                    XmlDocument objXmlDocument = new XmlDocument();
+                    XmlNode objXmlCharacter;
+                    XPathNavigator xmlCharacterNavigator;
+                    XmlNodeList objXmlNodeList;
+                    XmlNodeList objXmlLocationList;
+                    Quality objLivingPersonaQuality = null;
+                    XmlNode xmlRootQualitiesNode;
+                    using (var operation = Timekeeper.StartSyncron("load_xml", loadActivity))
                     {
-                        objXmlDocument.Load(sr);
-                    }
-                    catch (XmlException ex)
-                    {
-                        if (showWarnings)
+                        frmLoadingForm?.PerformStep("XML");
+
+                        if (!File.Exists(_strFileName))
+                            return false;
+                        using (StreamReader sr = new StreamReader(_strFileName, Encoding.UTF8, true))
                         {
-                            MessageBox.Show(
-                                string.Format(LanguageManager.GetString("Message_FailedLoad", GlobalOptions.Language),
-                                    ex.Message),
-                                LanguageManager.GetString("MessageTitle_FailedLoad", GlobalOptions.Language),
-                                MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            try
+                            {
+                                objXmlDocument.Load(sr);
+                            }
+                            catch (XmlException ex)
+                            {
+                                if (showWarnings)
+                                {
+                                    MessageBox.Show(
+                                        string.Format(
+                                            LanguageManager.GetString("Message_FailedLoad", GlobalOptions.Language),
+                                            ex.Message),
+                                        LanguageManager.GetString("MessageTitle_FailedLoad", GlobalOptions.Language),
+                                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                }
+
+                                return false;
+                            }
                         }
 
-                        return false;
+                        //Timekeeper.Finish("load_xml");
                     }
-                }
 
-                Timekeeper.Finish("load_xml", loadOperation);
-                Timekeeper.Start("load_char_misc");
-                frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Settings"));
-                XmlNode objXmlCharacter = objXmlDocument.SelectSingleNode("/character");
-                XPathNavigator xmlCharacterNavigator = objXmlDocument.GetFastNavigator().SelectSingleNode("/character");
-
-                if (objXmlCharacter == null || xmlCharacterNavigator == null)
-                    return false;
-
-                IsLoading = true;
-
-                _dateFileLastWriteTime = File.GetLastWriteTimeUtc(_strFileName);
-
-                xmlCharacterNavigator.TryGetBoolFieldQuickly("ignorerules", ref _blnIgnoreRules);
-                xmlCharacterNavigator.TryGetBoolFieldQuickly("created", ref _blnCreated);
-
-                ResetCharacter();
-
-                // Get the game edition of the file if possible and make sure it's intended to be used with this version of the application.
-                string strGameEdition = string.Empty;
-                if (xmlCharacterNavigator.TryGetStringFieldQuickly("gameedition", ref strGameEdition) &&
-                    !string.IsNullOrEmpty(strGameEdition) && strGameEdition != "SR5" && showWarnings &&
-                    !Utils.IsUnitTest)
-                {
-                    MessageBox.Show(
-                        LanguageManager.GetString("Message_IncorrectGameVersion_SR4", GlobalOptions.Language),
-                        LanguageManager.GetString("MessageTitle_IncorrectGameVersion", GlobalOptions.Language),
-                        MessageBoxButtons.YesNo,
-                        MessageBoxIcon.Error);
-                    IsLoading = false;
-                    return false;
-                }
-
-                string strVersion = string.Empty;
-                //Check to see if the character was created in a version of Chummer later than the currently installed one.
-                if (xmlCharacterNavigator.TryGetStringFieldQuickly("appversion", ref strVersion) &&
-                    !string.IsNullOrEmpty(strVersion) && !Utils.IsUnitTest)
-                {
-                    if (strVersion.StartsWith("0."))
+                    using (var op_load_char_misc = Timekeeper.StartSyncron("load_char_misc", loadActivity))
                     {
-                        strVersion = strVersion.Substring(2);
-                    }
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Settings"));
+                        objXmlCharacter = objXmlDocument.SelectSingleNode("/character");
+                        xmlCharacterNavigator =
+                            objXmlDocument.GetFastNavigator().SelectSingleNode("/character");
 
-                    Version.TryParse(strVersion, out _verSavedVersion);
-                }
+                        if (objXmlCharacter == null || xmlCharacterNavigator == null)
+                            return false;
+
+                        IsLoading = true;
+
+                        _dateFileLastWriteTime = File.GetLastWriteTimeUtc(_strFileName);
+
+                        xmlCharacterNavigator.TryGetBoolFieldQuickly("ignorerules", ref _blnIgnoreRules);
+                        xmlCharacterNavigator.TryGetBoolFieldQuickly("created", ref _blnCreated);
+
+                        ResetCharacter();
+
+                        // Get the game edition of the file if possible and make sure it's intended to be used with this version of the application.
+                        string strGameEdition = string.Empty;
+                        if (xmlCharacterNavigator.TryGetStringFieldQuickly("gameedition", ref strGameEdition) &&
+                            !string.IsNullOrEmpty(strGameEdition) && strGameEdition != "SR5" && showWarnings &&
+                            !Utils.IsUnitTest)
+                        {
+                            MessageBox.Show(
+                                LanguageManager.GetString("Message_IncorrectGameVersion_SR4", GlobalOptions.Language),
+                                LanguageManager.GetString("MessageTitle_IncorrectGameVersion", GlobalOptions.Language),
+                                MessageBoxButtons.YesNo,
+                                MessageBoxIcon.Error);
+                            IsLoading = false;
+                            return false;
+                        }
+
+                        string strVersion = string.Empty;
+                        //Check to see if the character was created in a version of Chummer later than the currently installed one.
+                        if (xmlCharacterNavigator.TryGetStringFieldQuickly("appversion", ref strVersion) &&
+                            !string.IsNullOrEmpty(strVersion) && !Utils.IsUnitTest)
+                        {
+                            if (strVersion.StartsWith("0."))
+                            {
+                                strVersion = strVersion.Substring(2);
+                            }
+
+                            Version.TryParse(strVersion, out _verSavedVersion);
+                        }
 #if !DEBUG
 if (!Utils.IsUnitTest){
                 Version verCurrentversion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
@@ -1961,1510 +1969,1658 @@ if (!Utils.IsUnitTest){
                     }
                 }}
 #endif
-                // Get the name of the settings file in use if possible.
-                xmlCharacterNavigator.TryGetStringFieldQuickly("settings", ref _strSettingsFileName);
+                        // Get the name of the settings file in use if possible.
+                        xmlCharacterNavigator.TryGetStringFieldQuickly("settings", ref _strSettingsFileName);
 
-                // Load the character's settings file.
-                if (!_objOptions.Load(_strSettingsFileName))
-                {
-                    IsLoading = false;
-                    return false;
-                }
-
-                // Get the sourcebooks that were used to create the character and throw up a warning if there's a mismatch.
-                string strMissingBooks = string.Empty;
-                //Does the list of enabled books contain the current item?
-                foreach (XPathNavigator xmlSourceNode in xmlCharacterNavigator.Select("sources/source"))
-                {
-                    string strLoopString = xmlSourceNode.Value;
-                    if (strLoopString.Length > 0 && !_objOptions.Books.Contains(strLoopString))
-                    {
-                        strMissingBooks += strLoopString + ';';
-                    }
-                }
-
-                if (!string.IsNullOrEmpty(strMissingBooks) && !Utils.IsUnitTest)
-                {
-                    if (MessageBox.Show(new Form {TopMost = true},
-                            string.Format(
-                                LanguageManager.GetString("Message_MissingSourceBooks", GlobalOptions.Language),
-                                TranslatedBookList(strMissingBooks, GlobalOptions.Language)),
-                            LanguageManager.GetString("Message_MissingSourceBooks_Title", GlobalOptions.Language),
-                            MessageBoxButtons.YesNo) == DialogResult.No)
-                    {
-                        IsLoading = false;
-                        return false;
-                    }
-                }
-
-                // Get the sourcebooks that were used to create the character and throw up a warning if there's a mismatch.
-                string strMissingSourceNames = string.Empty;
-                //Does the list of enabled books contain the current item?
-                foreach (XPathNavigator xmlDirectoryName in xmlCharacterNavigator.Select(
-                    "customdatadirectorynames/directoryname"))
-                {
-                    string strLoopString = xmlDirectoryName.Value;
-                    if (strLoopString.Length > 0 && !_objOptions.CustomDataDirectoryNames.Contains(strLoopString))
-                    {
-                        strMissingSourceNames += strLoopString + ';' + Environment.NewLine;
-                    }
-                }
-
-                if (!string.IsNullOrEmpty(strMissingSourceNames) && !Utils.IsUnitTest)
-                {
-                    if (MessageBox.Show(
-                            string.Format(
-                                LanguageManager.GetString("Message_MissingCustomDataDirectories",
-                                    GlobalOptions.Language), strMissingSourceNames),
-                            LanguageManager.GetString("Message_MissingCustomDataDirectories_Title",
-                                GlobalOptions.Language),
-                            MessageBoxButtons.YesNo) == DialogResult.No)
-                    {
-                        IsLoading = false;
-                        return false;
-                    }
-                }
-
-                if (xmlCharacterNavigator.TryGetDecFieldQuickly("essenceatspecialstart", ref _decEssenceAtSpecialStart))
-                {
-                    // fix to work around a mistake made when saving decimal values in previous versions.
-                    if (_decEssenceAtSpecialStart > ESS.MetatypeMaximum)
-                        _decEssenceAtSpecialStart /= 10;
-                }
-
-                xmlCharacterNavigator.TryGetStringFieldQuickly("createdversion", ref _strVersionCreated);
-
-                // Metatype information.
-                xmlCharacterNavigator.TryGetStringFieldQuickly("metatype", ref _strMetatype);
-                xmlCharacterNavigator.TryGetStringFieldQuickly("movement", ref _strMovement);
-
-                xmlCharacterNavigator.TryGetStringFieldQuickly("walk", ref _strWalk);
-                xmlCharacterNavigator.TryGetStringFieldQuickly("run", ref _strRun);
-                xmlCharacterNavigator.TryGetStringFieldQuickly("sprint", ref _strSprint);
-
-                _strRunAlt = xmlCharacterNavigator.SelectSingleNode("run/@alt")?.Value ?? string.Empty;
-                _strWalkAlt = xmlCharacterNavigator.SelectSingleNode("walk/@alt")?.Value ?? string.Empty;
-                _strSprintAlt = xmlCharacterNavigator.SelectSingleNode("sprint/@alt")?.Value ?? string.Empty;
-
-                xmlCharacterNavigator.TryGetInt32FieldQuickly("metatypebp", ref _intMetatypeBP);
-                xmlCharacterNavigator.TryGetStringFieldQuickly("metavariant", ref _strMetavariant);
-
-                //Shim for characters created prior to Run Faster Errata
-                if (_strMetavariant == "Cyclopean")
-                {
-                    _strMetavariant = "Cyclops";
-                }
-
-                xmlCharacterNavigator.TryGetStringFieldQuickly("metatypecategory", ref _strMetatypeCategory);
-
-                // General character information.
-                xmlCharacterNavigator.TryGetStringFieldQuickly("name", ref _strName);
-                LoadMugshots(xmlCharacterNavigator);
-                xmlCharacterNavigator.TryGetStringFieldQuickly("sex", ref _strSex);
-                xmlCharacterNavigator.TryGetStringFieldQuickly("age", ref _strAge);
-                xmlCharacterNavigator.TryGetStringFieldQuickly("eyes", ref _strEyes);
-                xmlCharacterNavigator.TryGetStringFieldQuickly("height", ref _strHeight);
-                xmlCharacterNavigator.TryGetStringFieldQuickly("weight", ref _strWeight);
-                xmlCharacterNavigator.TryGetStringFieldQuickly("skin", ref _strSkin);
-                xmlCharacterNavigator.TryGetStringFieldQuickly("hair", ref _strHair);
-                xmlCharacterNavigator.TryGetStringFieldQuickly("description", ref _strDescription);
-                xmlCharacterNavigator.TryGetStringFieldQuickly("background", ref _strBackground);
-                xmlCharacterNavigator.TryGetStringFieldQuickly("concept", ref _strConcept);
-                xmlCharacterNavigator.TryGetStringFieldQuickly("notes", ref _strNotes);
-                xmlCharacterNavigator.TryGetStringFieldQuickly("alias", ref _strAlias);
-                xmlCharacterNavigator.TryGetStringFieldQuickly("playername", ref _strPlayerName);
-                xmlCharacterNavigator.TryGetStringFieldQuickly("gamenotes", ref _strGameNotes);
-                if (!xmlCharacterNavigator.TryGetStringFieldQuickly("primaryarm", ref _strPrimaryArm))
-                    _strPrimaryArm = "Right";
-
-                if (!xmlCharacterNavigator.TryGetStringFieldQuickly("gameplayoption", ref _strGameplayOption))
-                {
-                    if (xmlCharacterNavigator.TryGetInt32FieldQuickly("buildkarma", ref _intBuildKarma) &&
-                        _intBuildKarma == 35)
-                        _strGameplayOption = "Prime Runner";
-                    else
-                        _strGameplayOption = "Standard";
-                }
-
-                xmlCharacterNavigator.TryGetField("buildmethod", Enum.TryParse, out _objBuildMethod);
-                if (!xmlCharacterNavigator.TryGetDecFieldQuickly("maxnuyen", ref _decMaxNuyen) || _decMaxNuyen == 0)
-                    _decMaxNuyen = 25;
-                xmlCharacterNavigator.TryGetInt32FieldQuickly("contactmultiplier", ref _intContactMultiplier);
-                xmlCharacterNavigator.TryGetInt32FieldQuickly("sumtoten", ref _intSumtoTen);
-                xmlCharacterNavigator.TryGetInt32FieldQuickly("buildkarma", ref _intBuildKarma);
-                if (!xmlCharacterNavigator.TryGetInt32FieldQuickly("maxkarma", ref _intMaxKarma) || _intMaxKarma == 0)
-                    _intMaxKarma = _intBuildKarma;
-
-                //Maximum number of Karma that can be spent/gained on Qualities.
-                xmlCharacterNavigator.TryGetInt32FieldQuickly("gameplayoptionqualitylimit",
-                    ref _intGameplayOptionQualityLimit);
-
-                xmlCharacterNavigator.TryGetDecFieldQuickly("nuyenmaxbp", ref _decNuyenMaximumBP);
-                xmlCharacterNavigator.TryGetInt32FieldQuickly("maxavail", ref _intMaxAvail);
-
-                XmlDocument objXmlDocumentGameplayOptions = XmlManager.Load("gameplayoptions.xml");
-                XmlNode xmlGameplayOption =
-                    objXmlDocumentGameplayOptions.SelectSingleNode(
-                        "/chummer/gameplayoptions/gameplayoption[name = \"" + GameplayOption + "\"]");
-                if (xmlGameplayOption == null)
-                {
-                    if (MessageBox.Show(
-                            string.Format(
-                                LanguageManager.GetString("Message_MissingGameplayOption", GlobalOptions.Language),
-                                GameplayOption),
-                            LanguageManager.GetString("Message_MissingGameplayOption_Title", GlobalOptions.Language),
-                            MessageBoxButtons.OKCancel, MessageBoxIcon.Error) == DialogResult.OK)
-                    {
-                        frmSelectBuildMethod frmPickBP = new frmSelectBuildMethod(this, true);
-                        frmPickBP.ShowDialog();
-
-                        if (frmPickBP.DialogResult != DialogResult.OK)
+                        // Load the character's settings file.
+                        if (!_objOptions.Load(_strSettingsFileName))
                         {
                             IsLoading = false;
                             return false;
                         }
-                    }
-                    else
-                    {
-                        IsLoading = false;
-                        return false;
-                    }
-                }
 
-                xmlCharacterNavigator.TryGetStringFieldQuickly("prioritymetatype", ref _strPriorityMetatype);
-                xmlCharacterNavigator.TryGetStringFieldQuickly("priorityattributes", ref _strPriorityAttributes);
-                xmlCharacterNavigator.TryGetStringFieldQuickly("priorityspecial", ref _strPrioritySpecial);
-                xmlCharacterNavigator.TryGetStringFieldQuickly("priorityskills", ref _strPrioritySkills);
-                xmlCharacterNavigator.TryGetStringFieldQuickly("priorityresources", ref _strPriorityResources);
-                xmlCharacterNavigator.TryGetStringFieldQuickly("prioritytalent", ref _strPriorityTalent);
-                _lstPrioritySkills.Clear();
-                foreach (XPathNavigator xmlSkillName in xmlCharacterNavigator.Select("priorityskills/priorityskill"))
-                {
-                    _lstPrioritySkills.Add(xmlSkillName.Value);
-                }
-
-                BannedWareGrades.Clear();
-                XPathNavigator xmlTempNode = xmlCharacterNavigator.SelectSingleNode("bannedwaregrades");
-                if (xmlTempNode != null)
-                {
-                    foreach (XPathNavigator xmlNode in xmlTempNode.Select("grade"))
-                        BannedWareGrades.Add(xmlNode.Value);
-                }
-                else
-                {
-                    XmlNodeList xmlBannedGradesList = xmlGameplayOption?.SelectNodes("bannedwaregrades/grade");
-                    if (xmlBannedGradesList?.Count > 0)
-                        foreach (XmlNode xmlNode in xmlBannedGradesList)
-                            BannedWareGrades.Add(xmlNode.InnerText);
-                }
-
-                string strSkill1 = string.Empty;
-                string strSkill2 = string.Empty;
-                if (xmlCharacterNavigator.TryGetStringFieldQuickly("priorityskill1", ref strSkill1) &&
-                    !string.IsNullOrEmpty(strSkill1))
-                    _lstPrioritySkills.Add(strSkill1);
-                if (xmlCharacterNavigator.TryGetStringFieldQuickly("priorityskill2", ref strSkill2) &&
-                    !string.IsNullOrEmpty(strSkill2))
-                    _lstPrioritySkills.Add(strSkill2);
-
-                xmlCharacterNavigator.TryGetBoolFieldQuickly("iscritter", ref _blnIsCritter);
-                xmlCharacterNavigator.TryGetBoolFieldQuickly("possessed", ref _blnPossessed);
-
-                xmlCharacterNavigator.TryGetInt32FieldQuickly("contactpoints", ref _intCachedContactPoints);
-                xmlCharacterNavigator.TryGetInt32FieldQuickly("contactpointsused", ref _intContactPointsUsed);
-                xmlCharacterNavigator.TryGetInt32FieldQuickly("cfplimit", ref _intCFPLimit);
-                xmlCharacterNavigator.TryGetInt32FieldQuickly("ainormalprogramlimit", ref _intAINormalProgramLimit);
-                xmlCharacterNavigator.TryGetInt32FieldQuickly("aiadvancedprogramlimit", ref _intAIAdvancedProgramLimit);
-                xmlCharacterNavigator.TryGetInt32FieldQuickly("currentcounterspellingdice",
-                    ref _intCurrentCounterspellingDice);
-                xmlCharacterNavigator.TryGetInt32FieldQuickly("spelllimit", ref _intFreeSpells);
-                xmlCharacterNavigator.TryGetInt32FieldQuickly("karma", ref _intKarma);
-                xmlCharacterNavigator.TryGetInt32FieldQuickly("totalkarma", ref _intTotalKarma);
-
-                xmlCharacterNavigator.TryGetInt32FieldQuickly("special", ref _intSpecial);
-                xmlCharacterNavigator.TryGetInt32FieldQuickly("totalspecial", ref _intTotalSpecial);
-                //objXmlCharacter.tryGetInt32FieldQuickly("attributes", ref _intAttributes); //wonkey
-                xmlCharacterNavigator.TryGetInt32FieldQuickly("totalattributes", ref _intTotalAttributes);
-                xmlCharacterNavigator.TryGetInt32FieldQuickly("contactpoints", ref _intCachedContactPoints);
-                xmlCharacterNavigator.TryGetInt32FieldQuickly("contactpointsused", ref _intContactPointsUsed);
-                xmlCharacterNavigator.TryGetInt32FieldQuickly("streetcred", ref _intStreetCred);
-                xmlCharacterNavigator.TryGetInt32FieldQuickly("notoriety", ref _intNotoriety);
-                xmlCharacterNavigator.TryGetInt32FieldQuickly("publicawareness", ref _intPublicAwareness);
-                xmlCharacterNavigator.TryGetInt32FieldQuickly("burntstreetcred", ref _intBurntStreetCred);
-                xmlCharacterNavigator.TryGetDecFieldQuickly("nuyen", ref _decNuyen);
-                xmlCharacterNavigator.TryGetDecFieldQuickly("startingnuyen", ref _decStartingNuyen);
-                xmlCharacterNavigator.TryGetDecFieldQuickly("nuyenbp", ref _decNuyenBP);
-
-                xmlCharacterNavigator.TryGetBoolFieldQuickly("adept", ref _blnAdeptEnabled);
-                xmlCharacterNavigator.TryGetBoolFieldQuickly("magician", ref _blnMagicianEnabled);
-                xmlCharacterNavigator.TryGetBoolFieldQuickly("technomancer", ref _blnTechnomancerEnabled);
-                xmlCharacterNavigator.TryGetBoolFieldQuickly("ai", ref _blnAdvancedProgramsEnabled);
-                xmlCharacterNavigator.TryGetBoolFieldQuickly("cyberwaredisabled", ref _blnCyberwareDisabled);
-                xmlCharacterNavigator.TryGetBoolFieldQuickly("initiationdisabled", ref _blnInitiationDisabled);
-                xmlCharacterNavigator.TryGetBoolFieldQuickly("critter", ref _blnCritterEnabled);
-
-                xmlCharacterNavigator.TryGetDecFieldQuickly("prototypetranshuman", ref _decPrototypeTranshuman);
-                xmlCharacterNavigator.TryGetBoolFieldQuickly("magenabled", ref _blnMAGEnabled);
-                xmlCharacterNavigator.TryGetInt32FieldQuickly("initiategrade", ref _intInitiateGrade);
-                xmlCharacterNavigator.TryGetBoolFieldQuickly("resenabled", ref _blnRESEnabled);
-                xmlCharacterNavigator.TryGetInt32FieldQuickly("submersiongrade", ref _intSubmersionGrade);
-                xmlCharacterNavigator.TryGetBoolFieldQuickly("depenabled", ref _blnDEPEnabled);
-                // Legacy shim
-                if (!_blnCreated && !_blnMAGEnabled && !_blnRESEnabled && !_blnDEPEnabled)
-                    _decEssenceAtSpecialStart = decimal.MinValue;
-                xmlCharacterNavigator.TryGetBoolFieldQuickly("groupmember", ref _blnGroupMember);
-                xmlCharacterNavigator.TryGetStringFieldQuickly("groupname", ref _strGroupName);
-                xmlCharacterNavigator.TryGetStringFieldQuickly("groupnotes", ref _strGroupNotes);
-                Timekeeper.Finish("load_char_misc", loadOperation);
-                Timekeeper.Start("load_char_mentorspirit");
-                frmLoadingForm?.PerformStep(LanguageManager.GetString("String_MentorSpirit"));
-                // Improvements.
-                XmlNodeList objXmlNodeList = objXmlCharacter.SelectNodes("mentorspirits/mentorspirit");
-                foreach (XmlNode objXmlMentor in objXmlNodeList)
-                {
-                    MentorSpirit objMentor = new MentorSpirit(this);
-                    objMentor.Load(objXmlMentor);
-                    _lstMentorSpirits.Add(objMentor);
-                }
-
-                Timekeeper.Finish("load_char_mentorspirit", loadOperation);
-                _lstInternalIdsNeedingReapplyImprovements.Clear();
-                Timekeeper.Start("load_char_imp");
-                frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Improvements"));
-                // Improvements.
-                objXmlNodeList = objXmlCharacter.SelectNodes("improvements/improvement");
-                string strCharacterInnerXml = objXmlCharacter.InnerXml;
-                bool removeImprovements = false;
-                foreach (XmlNode objXmlImprovement in objXmlNodeList)
-                {
-                    string strImprovementSource = objXmlImprovement["improvementsource"]?.InnerText;
-                    // Do not load condition monitor improvements from older versions of Chummer
-                    if (strImprovementSource == "ConditionMonitor")
-                        continue;
-
-                    // Do not load essence loss improvements if this character does not have any attributes affected by essence loss
-                    if (_decEssenceAtSpecialStart == decimal.MinValue &&
-                        (strImprovementSource == "EssenceLoss" || strImprovementSource == "EssenceLossChargen"))
-                        continue;
-
-                    string strLoopSourceName = objXmlImprovement["sourcename"]?.InnerText;
-                    if (!string.IsNullOrEmpty(strLoopSourceName) && strLoopSourceName.IsGuid() &&
-                        objXmlImprovement["custom"]?.InnerText != bool.TrueString)
-                    {
-                        // Hacky way to make sure this character isn't loading in any orphaned improvements.
-                        // SourceName ID will pop up minimum twice in the save if the improvement's source is actually present: once in the improvement and once in the parent that added it.
-                        if (strCharacterInnerXml.IndexOf(strLoopSourceName, StringComparison.Ordinal) ==
-                            strCharacterInnerXml.LastIndexOf(strLoopSourceName, StringComparison.Ordinal))
+                        // Get the sourcebooks that were used to create the character and throw up a warning if there's a mismatch.
+                        string strMissingBooks = string.Empty;
+                        //Does the list of enabled books contain the current item?
+                        foreach (XPathNavigator xmlSourceNode in xmlCharacterNavigator.Select("sources/source"))
                         {
-                            if (!Utils.IsUnitTest)
+                            string strLoopString = xmlSourceNode.Value;
+                            if (strLoopString.Length > 0 && !_objOptions.Books.Contains(strLoopString))
                             {
-                                //Utils.BreakIfDebug();
-                                if (removeImprovements || (MessageBox.Show(
-                                                               LanguageManager.GetString(
-                                                                   "Message_OrphanedImprovements"),
-                                                               LanguageManager.GetString(
-                                                                   "MessageTitle_OrphanedImprovements"),
-                                                               MessageBoxButtons.YesNo,
-                                                               MessageBoxIcon.Error) == DialogResult.Yes))
+                                strMissingBooks += strLoopString + ';';
+                            }
+                        }
+
+                        if (!string.IsNullOrEmpty(strMissingBooks) && !Utils.IsUnitTest)
+                        {
+                            if (MessageBox.Show(new Form {TopMost = true},
+                                    string.Format(
+                                        LanguageManager.GetString("Message_MissingSourceBooks", GlobalOptions.Language),
+                                        TranslatedBookList(strMissingBooks, GlobalOptions.Language)),
+                                    LanguageManager.GetString("Message_MissingSourceBooks_Title",
+                                        GlobalOptions.Language),
+                                    MessageBoxButtons.YesNo) == DialogResult.No)
+                            {
+                                IsLoading = false;
+                                return false;
+                            }
+                        }
+
+                        // Get the sourcebooks that were used to create the character and throw up a warning if there's a mismatch.
+                        string strMissingSourceNames = string.Empty;
+                        //Does the list of enabled books contain the current item?
+                        foreach (XPathNavigator xmlDirectoryName in xmlCharacterNavigator.Select(
+                            "customdatadirectorynames/directoryname"))
+                        {
+                            string strLoopString = xmlDirectoryName.Value;
+                            if (strLoopString.Length > 0 &&
+                                !_objOptions.CustomDataDirectoryNames.Contains(strLoopString))
+                            {
+                                strMissingSourceNames += strLoopString + ';' + Environment.NewLine;
+                            }
+                        }
+
+                        if (!string.IsNullOrEmpty(strMissingSourceNames) && !Utils.IsUnitTest)
+                        {
+                            if (MessageBox.Show(
+                                    string.Format(
+                                        LanguageManager.GetString("Message_MissingCustomDataDirectories",
+                                            GlobalOptions.Language), strMissingSourceNames),
+                                    LanguageManager.GetString("Message_MissingCustomDataDirectories_Title",
+                                        GlobalOptions.Language),
+                                    MessageBoxButtons.YesNo) == DialogResult.No)
+                            {
+                                IsLoading = false;
+                                return false;
+                            }
+                        }
+
+                        if (xmlCharacterNavigator.TryGetDecFieldQuickly("essenceatspecialstart",
+                            ref _decEssenceAtSpecialStart))
+                        {
+                            // fix to work around a mistake made when saving decimal values in previous versions.
+                            if (_decEssenceAtSpecialStart > ESS.MetatypeMaximum)
+                                _decEssenceAtSpecialStart /= 10;
+                        }
+
+                        xmlCharacterNavigator.TryGetStringFieldQuickly("createdversion", ref _strVersionCreated);
+
+                        // Metatype information.
+                        xmlCharacterNavigator.TryGetStringFieldQuickly("metatype", ref _strMetatype);
+                        xmlCharacterNavigator.TryGetStringFieldQuickly("movement", ref _strMovement);
+
+                        xmlCharacterNavigator.TryGetStringFieldQuickly("walk", ref _strWalk);
+                        xmlCharacterNavigator.TryGetStringFieldQuickly("run", ref _strRun);
+                        xmlCharacterNavigator.TryGetStringFieldQuickly("sprint", ref _strSprint);
+
+                        _strRunAlt = xmlCharacterNavigator.SelectSingleNode("run/@alt")?.Value ?? string.Empty;
+                        _strWalkAlt = xmlCharacterNavigator.SelectSingleNode("walk/@alt")?.Value ?? string.Empty;
+                        _strSprintAlt = xmlCharacterNavigator.SelectSingleNode("sprint/@alt")?.Value ?? string.Empty;
+
+                        xmlCharacterNavigator.TryGetInt32FieldQuickly("metatypebp", ref _intMetatypeBP);
+                        xmlCharacterNavigator.TryGetStringFieldQuickly("metavariant", ref _strMetavariant);
+
+                        //Shim for characters created prior to Run Faster Errata
+                        if (_strMetavariant == "Cyclopean")
+                        {
+                            _strMetavariant = "Cyclops";
+                        }
+
+                        xmlCharacterNavigator.TryGetStringFieldQuickly("metatypecategory", ref _strMetatypeCategory);
+
+                        // General character information.
+                        xmlCharacterNavigator.TryGetStringFieldQuickly("name", ref _strName);
+                        LoadMugshots(xmlCharacterNavigator);
+                        xmlCharacterNavigator.TryGetStringFieldQuickly("sex", ref _strSex);
+                        xmlCharacterNavigator.TryGetStringFieldQuickly("age", ref _strAge);
+                        xmlCharacterNavigator.TryGetStringFieldQuickly("eyes", ref _strEyes);
+                        xmlCharacterNavigator.TryGetStringFieldQuickly("height", ref _strHeight);
+                        xmlCharacterNavigator.TryGetStringFieldQuickly("weight", ref _strWeight);
+                        xmlCharacterNavigator.TryGetStringFieldQuickly("skin", ref _strSkin);
+                        xmlCharacterNavigator.TryGetStringFieldQuickly("hair", ref _strHair);
+                        xmlCharacterNavigator.TryGetStringFieldQuickly("description", ref _strDescription);
+                        xmlCharacterNavigator.TryGetStringFieldQuickly("background", ref _strBackground);
+                        xmlCharacterNavigator.TryGetStringFieldQuickly("concept", ref _strConcept);
+                        xmlCharacterNavigator.TryGetStringFieldQuickly("notes", ref _strNotes);
+                        xmlCharacterNavigator.TryGetStringFieldQuickly("alias", ref _strAlias);
+                        xmlCharacterNavigator.TryGetStringFieldQuickly("playername", ref _strPlayerName);
+                        xmlCharacterNavigator.TryGetStringFieldQuickly("gamenotes", ref _strGameNotes);
+                        if (!xmlCharacterNavigator.TryGetStringFieldQuickly("primaryarm", ref _strPrimaryArm))
+                            _strPrimaryArm = "Right";
+
+                        if (!xmlCharacterNavigator.TryGetStringFieldQuickly("gameplayoption", ref _strGameplayOption))
+                        {
+                            if (xmlCharacterNavigator.TryGetInt32FieldQuickly("buildkarma", ref _intBuildKarma) &&
+                                _intBuildKarma == 35)
+                                _strGameplayOption = "Prime Runner";
+                            else
+                                _strGameplayOption = "Standard";
+                        }
+
+                        xmlCharacterNavigator.TryGetField("buildmethod", Enum.TryParse, out _objBuildMethod);
+                        if (!xmlCharacterNavigator.TryGetDecFieldQuickly("maxnuyen", ref _decMaxNuyen) ||
+                            _decMaxNuyen == 0)
+                            _decMaxNuyen = 25;
+                        xmlCharacterNavigator.TryGetInt32FieldQuickly("contactmultiplier", ref _intContactMultiplier);
+                        xmlCharacterNavigator.TryGetInt32FieldQuickly("sumtoten", ref _intSumtoTen);
+                        xmlCharacterNavigator.TryGetInt32FieldQuickly("buildkarma", ref _intBuildKarma);
+                        if (!xmlCharacterNavigator.TryGetInt32FieldQuickly("maxkarma", ref _intMaxKarma) ||
+                            _intMaxKarma == 0)
+                            _intMaxKarma = _intBuildKarma;
+
+                        //Maximum number of Karma that can be spent/gained on Qualities.
+                        xmlCharacterNavigator.TryGetInt32FieldQuickly("gameplayoptionqualitylimit",
+                            ref _intGameplayOptionQualityLimit);
+
+                        xmlCharacterNavigator.TryGetDecFieldQuickly("nuyenmaxbp", ref _decNuyenMaximumBP);
+                        xmlCharacterNavigator.TryGetInt32FieldQuickly("maxavail", ref _intMaxAvail);
+
+                        XmlDocument objXmlDocumentGameplayOptions = XmlManager.Load("gameplayoptions.xml");
+                        XmlNode xmlGameplayOption =
+                            objXmlDocumentGameplayOptions.SelectSingleNode(
+                                "/chummer/gameplayoptions/gameplayoption[name = \"" + GameplayOption + "\"]");
+                        if (xmlGameplayOption == null)
+                        {
+                            if (MessageBox.Show(
+                                    string.Format(
+                                        LanguageManager.GetString("Message_MissingGameplayOption",
+                                            GlobalOptions.Language),
+                                        GameplayOption),
+                                    LanguageManager.GetString("Message_MissingGameplayOption_Title",
+                                        GlobalOptions.Language),
+                                    MessageBoxButtons.OKCancel, MessageBoxIcon.Error) == DialogResult.OK)
+                            {
+                                frmSelectBuildMethod frmPickBP = new frmSelectBuildMethod(this, true);
+                                frmPickBP.ShowDialog();
+
+                                if (frmPickBP.DialogResult != DialogResult.OK)
                                 {
-                                    removeImprovements = true;
-                                    continue;
-                                }
-                                else
-                                {
+                                    IsLoading = false;
                                     return false;
                                 }
                             }
-                        }
-                    }
-
-                    Improvement objImprovement = new Improvement(this);
-                    try
-                    {
-                        objImprovement.Load(objXmlImprovement);
-                        _lstImprovements.Add(objImprovement);
-
-                        if (objImprovement.ImproveType == Improvement.ImprovementType.SkillsoftAccess &&
-                            objImprovement.Value == 0)
-                        {
-                            _lstInternalIdsNeedingReapplyImprovements.Add(objImprovement.SourceName);
-                        }
-                    }
-                    catch (ArgumentException)
-                    {
-                        _lstInternalIdsNeedingReapplyImprovements.Add(objXmlImprovement["sourcename"]?.InnerText);
-                    }
-                }
-
-                Timekeeper.Finish("load_char_imp", loadOperation);
-
-                Timekeeper.Start("load_char_contacts");
-                frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_Contacts"));
-                // Contacts.
-                foreach (XPathNavigator xmlContact in xmlCharacterNavigator.Select("contacts/contact"))
-                {
-                    Contact objContact = new Contact(this);
-                    objContact.Load(xmlContact);
-                    _lstContacts.Add(objContact);
-                }
-
-                Timekeeper.Finish("load_char_contacts", loadOperation);
-                Timekeeper.Start("load_char_quality");
-                frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Qualities"));
-                // Qualities
-                Quality objLivingPersonaQuality = null;
-                objXmlNodeList = objXmlCharacter.SelectNodes("qualities/quality");
-                bool blnHasOldQualities = false;
-                XmlNode xmlRootQualitiesNode = XmlManager.Load("qualities.xml").SelectSingleNode("/chummer/qualities");
-                foreach (XmlNode objXmlQuality in objXmlNodeList)
-                {
-                    if (objXmlQuality["name"] != null)
-                    {
-                        if (!CorrectedUnleveledQuality(objXmlQuality, xmlRootQualitiesNode))
-                        {
-                            Quality objQuality = new Quality(this);
-                            objQuality.Load(objXmlQuality);
-                            // Corrects an issue arising from older versions of CorrectedUnleveledQuality()
-                            if (_lstQualities.Any(x => x.InternalId == objQuality.InternalId))
-                                objQuality.SetGUID(Guid.NewGuid());
-                            _lstQualities.Add(objQuality);
-                            if (objQuality.GetNode()?.SelectSingleNode("bonus/addgear/name")?.InnerText ==
-                                "Living Persona")
-                                objLivingPersonaQuality = objQuality;
-                            // Legacy shim
-                            if (LastSavedVersion <= new Version("5.195.1") && (objQuality.Name == "The Artisan's Way" ||
-                                                                               objQuality.Name == "The Artist's Way" ||
-                                                                               objQuality.Name == "The Athlete's Way" ||
-                                                                               objQuality.Name == "The Burnout's Way" ||
-                                                                               objQuality.Name == "The Invisible Way" ||
-                                                                               objQuality.Name ==
-                                                                               "The Magician's Way" ||
-                                                                               objQuality.Name == "The Speaker's Way" ||
-                                                                               objQuality.Name ==
-                                                                               "The Warrior's Way") &&
-                                objQuality.Bonus?.HasChildNodes == false)
+                            else
                             {
-                                ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Quality,
-                                    objQuality.InternalId);
-                                XmlNode objNode = objQuality.GetNode();
-                                if (objNode != null)
-                                {
-                                    objQuality.Bonus = objNode["bonus"];
-                                    if (objQuality.Bonus != null)
-                                    {
-                                        ImprovementManager.ForcedValue = objQuality.Extra;
-                                        ImprovementManager.CreateImprovements(this,
-                                            Improvement.ImprovementSource.Quality,
-                                            objQuality.InternalId, objQuality.Bonus, false, 1,
-                                            objQuality.DisplayNameShort(GlobalOptions.Language));
-                                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
-                                        {
-                                            objQuality.Extra = ImprovementManager.SelectedValue;
-                                        }
-                                    }
-
-                                    objQuality.FirstLevelBonus = objNode["firstlevelbonus"];
-                                    if (objQuality.FirstLevelBonus?.HasChildNodes == true)
-                                    {
-                                        bool blnDoFirstLevel = true;
-                                        foreach (Quality objCheckQuality in Qualities)
-                                        {
-                                            if (objCheckQuality != objQuality &&
-                                                objCheckQuality.SourceIDString == objQuality.SourceIDString &&
-                                                objCheckQuality.Extra == objQuality.Extra &&
-                                                objCheckQuality.SourceName == objQuality.SourceName)
-                                            {
-                                                blnDoFirstLevel = false;
-                                                break;
-                                            }
-                                        }
-
-                                        if (blnDoFirstLevel)
-                                        {
-                                            ImprovementManager.ForcedValue = objQuality.Extra;
-                                            ImprovementManager.CreateImprovements(this,
-                                                Improvement.ImprovementSource.Quality, objQuality.InternalId,
-                                                objQuality.FirstLevelBonus, false, 1,
-                                                objQuality.DisplayNameShort(GlobalOptions.Language));
-                                            if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
-                                            {
-                                                objQuality.Extra = ImprovementManager.SelectedValue;
-                                            }
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    // Failed to re-apply the improvements immediately, so let's just add it for processing when the character is opened
-                                    _lstInternalIdsNeedingReapplyImprovements.Add(objQuality.InternalId);
-                                }
-                            }
-
-                            if (LastSavedVersion <= new Version("5.200.0") && objQuality.Name == "Made Man" &&
-                                objQuality.Bonus["selectcontact"] != null)
-                            {
-                                string selectedContactGUID = (Improvements.FirstOrDefault(x =>
-                                    x.SourceName == objQuality.InternalId &&
-                                    x.ImproveType == Improvement.ImprovementType.ContactForcedLoyalty))?.ImprovedName;
-                                if (string.IsNullOrWhiteSpace(selectedContactGUID))
-                                {
-                                    selectedContactGUID =
-                                        Contacts.FirstOrDefault(x => x.Name == objQuality.Extra)?.GUID;
-                                }
-
-                                if (string.IsNullOrWhiteSpace(selectedContactGUID))
-                                {
-                                    // Populate the Magician Traditions list.
-                                    List<ListItem> lstContacts = new List<ListItem>();
-                                    foreach (Contact objContact in Contacts.Where(contact => contact.IsGroup))
-                                    {
-                                        lstContacts.Add(new ListItem(objContact.Name, objContact.GUID));
-                                    }
-
-                                    if (lstContacts.Count > 1)
-                                    {
-                                        lstContacts.Sort(CompareListItems.CompareNames);
-                                    }
-
-                                    frmSelectItem frmPickItem = new frmSelectItem
-                                    {
-                                        DropdownItems = lstContacts
-                                    };
-                                    frmPickItem.ShowDialog();
-
-                                    // Make sure the dialogue window was not canceled.
-                                    if (frmPickItem.DialogResult == DialogResult.Cancel)
-                                    {
-                                        return false;
-                                    }
-
-                                    selectedContactGUID = frmPickItem.SelectedItem;
-                                    frmPickItem.Dispose();
-                                }
-
-                                objQuality.Bonus =
-                                    xmlRootQualitiesNode.SelectSingleNode("quality[name=\"Made Man\"]/bonus");
-                                objQuality.Extra = string.Empty;
-                                ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Quality,
-                                    objQuality.InternalId);
-                                ImprovementManager.CreateImprovement(this, string.Empty,
-                                    Improvement.ImprovementSource.Quality, objQuality.InternalId,
-                                    Improvement.ImprovementType.MadeMan,
-                                    objQuality.DisplayNameShort(GlobalOptions.Language));
-                                ImprovementManager.CreateImprovement(this, selectedContactGUID,
-                                    Improvement.ImprovementSource.Quality, objQuality.InternalId,
-                                    Improvement.ImprovementType.AddContact,
-                                    objQuality.DisplayNameShort(GlobalOptions.Language));
-                                ImprovementManager.CreateImprovement(this, selectedContactGUID,
-                                    Improvement.ImprovementSource.Quality, objQuality.InternalId,
-                                    Improvement.ImprovementType.ContactForcedLoyalty,
-                                    objQuality.DisplayNameShort(GlobalOptions.Language));
-                                ImprovementManager.CreateImprovement(this, selectedContactGUID,
-                                    Improvement.ImprovementSource.Quality, objQuality.InternalId,
-                                    Improvement.ImprovementType.ContactForceGroup,
-                                    objQuality.DisplayNameShort(GlobalOptions.Language));
-                                ImprovementManager.CreateImprovement(this, selectedContactGUID,
-                                    Improvement.ImprovementSource.Quality, objQuality.InternalId,
-                                    Improvement.ImprovementType.ContactMakeFree,
-                                    objQuality.DisplayNameShort(GlobalOptions.Language));
+                                IsLoading = false;
+                                return false;
                             }
                         }
-                    }
-                    else
-                    {
-                        // If the Quality does not have a name tag, it is in the old format. Set the flag to show that old Qualities are in use.
-                        blnHasOldQualities = true;
-                    }
-                }
 
-                // If old Qualities are in use, they need to be converted before loading can continue.
-                if (blnHasOldQualities)
-                    ConvertOldQualities(objXmlNodeList);
-                Timekeeper.Finish("load_char_quality", loadOperation);
-                frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_Attributes"));
-                AttributeSection.Load(objXmlCharacter);
-                Timekeeper.Start("load_char_misc2");
-
-                // Attempt to load the split MAG CharacterAttribute information for Mystic Adepts.
-                if (_blnAdeptEnabled && _blnMagicianEnabled)
-                {
-                    xmlCharacterNavigator.TryGetInt32FieldQuickly("magsplitadept", ref _intMAGAdept);
-                    xmlCharacterNavigator.TryGetInt32FieldQuickly("magsplitmagician", ref _intMAGMagician);
-                }
-
-                frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Tradition"));
-                // Attempt to load in the character's tradition (or equivalent for Technomancers)
-                string strTemp = string.Empty;
-                if (xmlCharacterNavigator.TryGetStringFieldQuickly("stream", ref strTemp) &&
-                    !string.IsNullOrEmpty(strTemp) && RESEnabled)
-                {
-                    // Legacy load a Technomancer tradition
-                    XmlNode xmlTraditionListDataNode =
-                        XmlManager.Load("streams.xml").SelectSingleNode("/chummer/traditions");
-                    if (xmlTraditionListDataNode != null)
-                    {
-                        XmlNode xmlTraditionDataNode =
-                            xmlTraditionListDataNode.SelectSingleNode("tradition[name = \"" + strTemp + "\"]");
-                        if (xmlTraditionDataNode != null)
+                        xmlCharacterNavigator.TryGetStringFieldQuickly("prioritymetatype", ref _strPriorityMetatype);
+                        xmlCharacterNavigator.TryGetStringFieldQuickly("priorityattributes",
+                            ref _strPriorityAttributes);
+                        xmlCharacterNavigator.TryGetStringFieldQuickly("priorityspecial", ref _strPrioritySpecial);
+                        xmlCharacterNavigator.TryGetStringFieldQuickly("priorityskills", ref _strPrioritySkills);
+                        xmlCharacterNavigator.TryGetStringFieldQuickly("priorityresources", ref _strPriorityResources);
+                        xmlCharacterNavigator.TryGetStringFieldQuickly("prioritytalent", ref _strPriorityTalent);
+                        _lstPrioritySkills.Clear();
+                        foreach (XPathNavigator xmlSkillName in xmlCharacterNavigator.Select(
+                            "priorityskills/priorityskill")
+                        )
                         {
-                            if (!_objTradition.Create(xmlTraditionDataNode, true))
-                                _objTradition.ResetTradition();
+                            _lstPrioritySkills.Add(xmlSkillName.Value);
+                        }
+
+                        BannedWareGrades.Clear();
+                        XPathNavigator xmlTempNode = xmlCharacterNavigator.SelectSingleNode("bannedwaregrades");
+                        if (xmlTempNode != null)
+                        {
+                            foreach (XPathNavigator xmlNode in xmlTempNode.Select("grade"))
+                                BannedWareGrades.Add(xmlNode.Value);
                         }
                         else
                         {
-                            xmlTraditionDataNode =
-                                xmlTraditionListDataNode.SelectSingleNode("tradition[name = \"Default\"]");
-                            if (xmlTraditionDataNode != null)
+                            XmlNodeList xmlBannedGradesList = xmlGameplayOption?.SelectNodes("bannedwaregrades/grade");
+                            if (xmlBannedGradesList?.Count > 0)
+                                foreach (XmlNode xmlNode in xmlBannedGradesList)
+                                    BannedWareGrades.Add(xmlNode.InnerText);
+                        }
+
+                        string strSkill1 = string.Empty;
+                        string strSkill2 = string.Empty;
+                        if (xmlCharacterNavigator.TryGetStringFieldQuickly("priorityskill1", ref strSkill1) &&
+                            !string.IsNullOrEmpty(strSkill1))
+                            _lstPrioritySkills.Add(strSkill1);
+                        if (xmlCharacterNavigator.TryGetStringFieldQuickly("priorityskill2", ref strSkill2) &&
+                            !string.IsNullOrEmpty(strSkill2))
+                            _lstPrioritySkills.Add(strSkill2);
+
+                        xmlCharacterNavigator.TryGetBoolFieldQuickly("iscritter", ref _blnIsCritter);
+                        xmlCharacterNavigator.TryGetBoolFieldQuickly("possessed", ref _blnPossessed);
+
+                        xmlCharacterNavigator.TryGetInt32FieldQuickly("contactpoints", ref _intCachedContactPoints);
+                        xmlCharacterNavigator.TryGetInt32FieldQuickly("contactpointsused", ref _intContactPointsUsed);
+                        xmlCharacterNavigator.TryGetInt32FieldQuickly("cfplimit", ref _intCFPLimit);
+                        xmlCharacterNavigator.TryGetInt32FieldQuickly("ainormalprogramlimit",
+                            ref _intAINormalProgramLimit);
+                        xmlCharacterNavigator.TryGetInt32FieldQuickly("aiadvancedprogramlimit",
+                            ref _intAIAdvancedProgramLimit);
+                        xmlCharacterNavigator.TryGetInt32FieldQuickly("currentcounterspellingdice",
+                            ref _intCurrentCounterspellingDice);
+                        xmlCharacterNavigator.TryGetInt32FieldQuickly("spelllimit", ref _intFreeSpells);
+                        xmlCharacterNavigator.TryGetInt32FieldQuickly("karma", ref _intKarma);
+                        xmlCharacterNavigator.TryGetInt32FieldQuickly("totalkarma", ref _intTotalKarma);
+
+                        xmlCharacterNavigator.TryGetInt32FieldQuickly("special", ref _intSpecial);
+                        xmlCharacterNavigator.TryGetInt32FieldQuickly("totalspecial", ref _intTotalSpecial);
+                        //objXmlCharacter.tryGetInt32FieldQuickly("attributes", ref _intAttributes); //wonkey
+                        xmlCharacterNavigator.TryGetInt32FieldQuickly("totalattributes", ref _intTotalAttributes);
+                        xmlCharacterNavigator.TryGetInt32FieldQuickly("contactpoints", ref _intCachedContactPoints);
+                        xmlCharacterNavigator.TryGetInt32FieldQuickly("contactpointsused", ref _intContactPointsUsed);
+                        xmlCharacterNavigator.TryGetInt32FieldQuickly("streetcred", ref _intStreetCred);
+                        xmlCharacterNavigator.TryGetInt32FieldQuickly("notoriety", ref _intNotoriety);
+                        xmlCharacterNavigator.TryGetInt32FieldQuickly("publicawareness", ref _intPublicAwareness);
+                        xmlCharacterNavigator.TryGetInt32FieldQuickly("burntstreetcred", ref _intBurntStreetCred);
+                        xmlCharacterNavigator.TryGetDecFieldQuickly("nuyen", ref _decNuyen);
+                        xmlCharacterNavigator.TryGetDecFieldQuickly("startingnuyen", ref _decStartingNuyen);
+                        xmlCharacterNavigator.TryGetDecFieldQuickly("nuyenbp", ref _decNuyenBP);
+
+                        xmlCharacterNavigator.TryGetBoolFieldQuickly("adept", ref _blnAdeptEnabled);
+                        xmlCharacterNavigator.TryGetBoolFieldQuickly("magician", ref _blnMagicianEnabled);
+                        xmlCharacterNavigator.TryGetBoolFieldQuickly("technomancer", ref _blnTechnomancerEnabled);
+                        xmlCharacterNavigator.TryGetBoolFieldQuickly("ai", ref _blnAdvancedProgramsEnabled);
+                        xmlCharacterNavigator.TryGetBoolFieldQuickly("cyberwaredisabled", ref _blnCyberwareDisabled);
+                        xmlCharacterNavigator.TryGetBoolFieldQuickly("initiationdisabled", ref _blnInitiationDisabled);
+                        xmlCharacterNavigator.TryGetBoolFieldQuickly("critter", ref _blnCritterEnabled);
+
+                        xmlCharacterNavigator.TryGetDecFieldQuickly("prototypetranshuman", ref _decPrototypeTranshuman);
+                        xmlCharacterNavigator.TryGetBoolFieldQuickly("magenabled", ref _blnMAGEnabled);
+                        xmlCharacterNavigator.TryGetInt32FieldQuickly("initiategrade", ref _intInitiateGrade);
+                        xmlCharacterNavigator.TryGetBoolFieldQuickly("resenabled", ref _blnRESEnabled);
+                        xmlCharacterNavigator.TryGetInt32FieldQuickly("submersiongrade", ref _intSubmersionGrade);
+                        xmlCharacterNavigator.TryGetBoolFieldQuickly("depenabled", ref _blnDEPEnabled);
+                        // Legacy shim
+                        if (!_blnCreated && !_blnMAGEnabled && !_blnRESEnabled && !_blnDEPEnabled)
+                            _decEssenceAtSpecialStart = decimal.MinValue;
+                        xmlCharacterNavigator.TryGetBoolFieldQuickly("groupmember", ref _blnGroupMember);
+                        xmlCharacterNavigator.TryGetStringFieldQuickly("groupname", ref _strGroupName);
+                        xmlCharacterNavigator.TryGetStringFieldQuickly("groupnotes", ref _strGroupNotes);
+                        //end load_char_misc
+                    }
+
+                    using (var op_load_char_mentorspirit = Timekeeper.StartSyncron("load_char_mentorspirit", loadActivity))
+                    {
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("String_MentorSpirit"));
+                        // Improvements.
+                        objXmlNodeList = objXmlCharacter.SelectNodes("mentorspirits/mentorspirit");
+                        foreach (XmlNode objXmlMentor in objXmlNodeList)
+                        {
+                            MentorSpirit objMentor = new MentorSpirit(this);
+                            objMentor.Load(objXmlMentor);
+                            _lstMentorSpirits.Add(objMentor);
+                        }
+
+                        //using finish("load_char_mentorspirit");
+                    }
+
+                    _lstInternalIdsNeedingReapplyImprovements.Clear();
+                    using (var op_load_char_imp = Timekeeper.StartSyncron("load_char_imp", loadActivity))
+                    {
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Improvements"));
+                        // Improvements.
+                        objXmlNodeList = objXmlCharacter.SelectNodes("improvements/improvement");
+                        string strCharacterInnerXml = objXmlCharacter.InnerXml;
+                        bool removeImprovements = false;
+                        foreach (XmlNode objXmlImprovement in objXmlNodeList)
+                        {
+                            string strImprovementSource = objXmlImprovement["improvementsource"]?.InnerText;
+                            // Do not load condition monitor improvements from older versions of Chummer
+                            if (strImprovementSource == "ConditionMonitor")
+                                continue;
+
+                            // Do not load essence loss improvements if this character does not have any attributes affected by essence loss
+                            if (_decEssenceAtSpecialStart == decimal.MinValue &&
+                                (strImprovementSource == "EssenceLoss" || strImprovementSource == "EssenceLossChargen"))
+                                continue;
+
+                            string strLoopSourceName = objXmlImprovement["sourcename"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strLoopSourceName) && strLoopSourceName.IsGuid() &&
+                                objXmlImprovement["custom"]?.InnerText != bool.TrueString)
                             {
-                                if (!_objTradition.Create(xmlTraditionDataNode, true))
-                                    _objTradition.ResetTradition();
+                                // Hacky way to make sure this character isn't loading in any orphaned improvements.
+                                // SourceName ID will pop up minimum twice in the save if the improvement's source is actually present: once in the improvement and once in the parent that added it.
+                                if (strCharacterInnerXml.IndexOf(strLoopSourceName, StringComparison.Ordinal) ==
+                                    strCharacterInnerXml.LastIndexOf(strLoopSourceName, StringComparison.Ordinal))
+                                {
+                                    if (!Utils.IsUnitTest)
+                                    {
+                                        //Utils.BreakIfDebug();
+                                        if (removeImprovements || (MessageBox.Show(
+                                                                       LanguageManager.GetString(
+                                                                           "Message_OrphanedImprovements"),
+                                                                       LanguageManager.GetString(
+                                                                           "MessageTitle_OrphanedImprovements"),
+                                                                       MessageBoxButtons.YesNo,
+                                                                       MessageBoxIcon.Error) == DialogResult.Yes))
+                                        {
+                                            removeImprovements = true;
+                                            continue;
+                                        }
+                                        else
+                                        {
+                                            return false;
+                                        }
+                                    }
+                                }
+                            }
+
+                            Improvement objImprovement = new Improvement(this);
+                            try
+                            {
+                                objImprovement.Load(objXmlImprovement);
+                                _lstImprovements.Add(objImprovement);
+
+                                if (objImprovement.ImproveType == Improvement.ImprovementType.SkillsoftAccess &&
+                                    objImprovement.Value == 0)
+                                {
+                                    _lstInternalIdsNeedingReapplyImprovements.Add(objImprovement.SourceName);
+                                }
+                            }
+                            catch (ArgumentException)
+                            {
+                                _lstInternalIdsNeedingReapplyImprovements.Add(
+                                    objXmlImprovement["sourcename"]?.InnerText);
+                            }
+                        }
+
+                        //Timekeeper.Finish("load_char_imp");
+                    }
+
+                    using (var op_load_char_contacts = Timekeeper.StartSyncron("load_char_contacts", loadActivity))
+                    {
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_Contacts"));
+                        // Contacts.
+                        foreach (XPathNavigator xmlContact in xmlCharacterNavigator.Select("contacts/contact"))
+                        {
+                            Contact objContact = new Contact(this);
+                            objContact.Load(xmlContact);
+                            _lstContacts.Add(objContact);
+                        }
+
+                        //Timekeeper.Finish("load_char_contacts");
+                    }
+
+                    using (var op_load_char_quality = Timekeeper.StartSyncron("load_char_quality", loadActivity))
+                    {
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Qualities"));
+                        // Qualities
+
+                        objXmlNodeList = objXmlCharacter.SelectNodes("qualities/quality");
+                        bool blnHasOldQualities = false;
+                        xmlRootQualitiesNode =
+                            XmlManager.Load("qualities.xml").SelectSingleNode("/chummer/qualities");
+                        foreach (XmlNode objXmlQuality in objXmlNodeList)
+                        {
+                            if (objXmlQuality["name"] != null)
+                            {
+                                if (!CorrectedUnleveledQuality(objXmlQuality, xmlRootQualitiesNode))
+                                {
+                                    Quality objQuality = new Quality(this);
+                                    objQuality.Load(objXmlQuality);
+                                    // Corrects an issue arising from older versions of CorrectedUnleveledQuality()
+                                    if (_lstQualities.Any(x => x.InternalId == objQuality.InternalId))
+                                        objQuality.SetGUID(Guid.NewGuid());
+                                    _lstQualities.Add(objQuality);
+                                    if (objQuality.GetNode()?.SelectSingleNode("bonus/addgear/name")?.InnerText ==
+                                        "Living Persona")
+                                        objLivingPersonaQuality = objQuality;
+                                    // Legacy shim
+                                    if (LastSavedVersion <= new Version("5.195.1") &&
+                                        (objQuality.Name == "The Artisan's Way" ||
+                                         objQuality.Name == "The Artist's Way" ||
+                                         objQuality.Name == "The Athlete's Way" ||
+                                         objQuality.Name == "The Burnout's Way" ||
+                                         objQuality.Name == "The Invisible Way" ||
+                                         objQuality.Name ==
+                                         "The Magician's Way" ||
+                                         objQuality.Name == "The Speaker's Way" ||
+                                         objQuality.Name ==
+                                         "The Warrior's Way") &&
+                                        objQuality.Bonus?.HasChildNodes == false)
+                                    {
+                                        ImprovementManager.RemoveImprovements(this,
+                                            Improvement.ImprovementSource.Quality,
+                                            objQuality.InternalId);
+                                        XmlNode objNode = objQuality.GetNode();
+                                        if (objNode != null)
+                                        {
+                                            objQuality.Bonus = objNode["bonus"];
+                                            if (objQuality.Bonus != null)
+                                            {
+                                                ImprovementManager.ForcedValue = objQuality.Extra;
+                                                ImprovementManager.CreateImprovements(this,
+                                                    Improvement.ImprovementSource.Quality,
+                                                    objQuality.InternalId, objQuality.Bonus, false, 1,
+                                                    objQuality.DisplayNameShort(GlobalOptions.Language));
+                                                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                                                {
+                                                    objQuality.Extra = ImprovementManager.SelectedValue;
+                                                }
+                                            }
+
+                                            objQuality.FirstLevelBonus = objNode["firstlevelbonus"];
+                                            if (objQuality.FirstLevelBonus?.HasChildNodes == true)
+                                            {
+                                                bool blnDoFirstLevel = true;
+                                                foreach (Quality objCheckQuality in Qualities)
+                                                {
+                                                    if (objCheckQuality != objQuality &&
+                                                        objCheckQuality.SourceIDString == objQuality.SourceIDString &&
+                                                        objCheckQuality.Extra == objQuality.Extra &&
+                                                        objCheckQuality.SourceName == objQuality.SourceName)
+                                                    {
+                                                        blnDoFirstLevel = false;
+                                                        break;
+                                                    }
+                                                }
+
+                                                if (blnDoFirstLevel)
+                                                {
+                                                    ImprovementManager.ForcedValue = objQuality.Extra;
+                                                    ImprovementManager.CreateImprovements(this,
+                                                        Improvement.ImprovementSource.Quality, objQuality.InternalId,
+                                                        objQuality.FirstLevelBonus, false, 1,
+                                                        objQuality.DisplayNameShort(GlobalOptions.Language));
+                                                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                                                    {
+                                                        objQuality.Extra = ImprovementManager.SelectedValue;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            // Failed to re-apply the improvements immediately, so let's just add it for processing when the character is opened
+                                            _lstInternalIdsNeedingReapplyImprovements.Add(objQuality.InternalId);
+                                        }
+                                    }
+
+                                    if (LastSavedVersion <= new Version("5.200.0") && objQuality.Name == "Made Man" &&
+                                        objQuality.Bonus["selectcontact"] != null)
+                                    {
+                                        string selectedContactGUID = (Improvements.FirstOrDefault(x =>
+                                                x.SourceName == objQuality.InternalId &&
+                                                x.ImproveType == Improvement.ImprovementType.ContactForcedLoyalty))
+                                            ?.ImprovedName;
+                                        if (string.IsNullOrWhiteSpace(selectedContactGUID))
+                                        {
+                                            selectedContactGUID =
+                                                Contacts.FirstOrDefault(x => x.Name == objQuality.Extra)?.GUID;
+                                        }
+
+                                        if (string.IsNullOrWhiteSpace(selectedContactGUID))
+                                        {
+                                            // Populate the Magician Traditions list.
+                                            List<ListItem> lstContacts = new List<ListItem>();
+                                            foreach (Contact objContact in Contacts.Where(contact => contact.IsGroup))
+                                            {
+                                                lstContacts.Add(new ListItem(objContact.Name, objContact.GUID));
+                                            }
+
+                                            if (lstContacts.Count > 1)
+                                            {
+                                                lstContacts.Sort(CompareListItems.CompareNames);
+                                            }
+
+                                            frmSelectItem frmPickItem = new frmSelectItem
+                                            {
+                                                DropdownItems = lstContacts
+                                            };
+                                            frmPickItem.ShowDialog();
+
+                                            // Make sure the dialogue window was not canceled.
+                                            if (frmPickItem.DialogResult == DialogResult.Cancel)
+                                            {
+                                                return false;
+                                            }
+
+                                            selectedContactGUID = frmPickItem.SelectedItem;
+                                            frmPickItem.Dispose();
+                                        }
+
+                                        objQuality.Bonus =
+                                            xmlRootQualitiesNode.SelectSingleNode("quality[name=\"Made Man\"]/bonus");
+                                        objQuality.Extra = string.Empty;
+                                        ImprovementManager.RemoveImprovements(this,
+                                            Improvement.ImprovementSource.Quality,
+                                            objQuality.InternalId);
+                                        ImprovementManager.CreateImprovement(this, string.Empty,
+                                            Improvement.ImprovementSource.Quality, objQuality.InternalId,
+                                            Improvement.ImprovementType.MadeMan,
+                                            objQuality.DisplayNameShort(GlobalOptions.Language));
+                                        ImprovementManager.CreateImprovement(this, selectedContactGUID,
+                                            Improvement.ImprovementSource.Quality, objQuality.InternalId,
+                                            Improvement.ImprovementType.AddContact,
+                                            objQuality.DisplayNameShort(GlobalOptions.Language));
+                                        ImprovementManager.CreateImprovement(this, selectedContactGUID,
+                                            Improvement.ImprovementSource.Quality, objQuality.InternalId,
+                                            Improvement.ImprovementType.ContactForcedLoyalty,
+                                            objQuality.DisplayNameShort(GlobalOptions.Language));
+                                        ImprovementManager.CreateImprovement(this, selectedContactGUID,
+                                            Improvement.ImprovementSource.Quality, objQuality.InternalId,
+                                            Improvement.ImprovementType.ContactForceGroup,
+                                            objQuality.DisplayNameShort(GlobalOptions.Language));
+                                        ImprovementManager.CreateImprovement(this, selectedContactGUID,
+                                            Improvement.ImprovementSource.Quality, objQuality.InternalId,
+                                            Improvement.ImprovementType.ContactMakeFree,
+                                            objQuality.DisplayNameShort(GlobalOptions.Language));
+                                    }
+                                }
                             }
                             else
                             {
-                                xmlTraditionDataNode = xmlTraditionListDataNode.SelectSingleNode("tradition");
+                                // If the Quality does not have a name tag, it is in the old format. Set the flag to show that old Qualities are in use.
+                                blnHasOldQualities = true;
+                            }
+                        }
+
+                        // If old Qualities are in use, they need to be converted before loading can continue.
+                        if (blnHasOldQualities)
+                            ConvertOldQualities(objXmlNodeList);
+                        //Timekeeper.Finish("load_char_quality");
+                    }
+
+                    frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_Attributes"));
+                    AttributeSection.Load(objXmlCharacter);
+                    using (var op_load_char_misc2 = Timekeeper.StartSyncron("load_char_misc2", loadActivity))
+                    {
+
+                        // Attempt to load the split MAG CharacterAttribute information for Mystic Adepts.
+                        if (_blnAdeptEnabled && _blnMagicianEnabled)
+                        {
+                            xmlCharacterNavigator.TryGetInt32FieldQuickly("magsplitadept", ref _intMAGAdept);
+                            xmlCharacterNavigator.TryGetInt32FieldQuickly("magsplitmagician", ref _intMAGMagician);
+                        }
+
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Tradition"));
+                        // Attempt to load in the character's tradition (or equivalent for Technomancers)
+                        string strTemp = string.Empty;
+                        if (xmlCharacterNavigator.TryGetStringFieldQuickly("stream", ref strTemp) &&
+                            !string.IsNullOrEmpty(strTemp) && RESEnabled)
+                        {
+                            // Legacy load a Technomancer tradition
+                            XmlNode xmlTraditionListDataNode =
+                                XmlManager.Load("streams.xml").SelectSingleNode("/chummer/traditions");
+                            if (xmlTraditionListDataNode != null)
+                            {
+                                XmlNode xmlTraditionDataNode =
+                                    xmlTraditionListDataNode.SelectSingleNode("tradition[name = \"" + strTemp + "\"]");
                                 if (xmlTraditionDataNode != null)
                                 {
                                     if (!_objTradition.Create(xmlTraditionDataNode, true))
                                         _objTradition.ResetTradition();
                                 }
-                            }
-                        }
-                    }
-
-                    if (_objTradition.Type != TraditionType.None)
-                    {
-                        _objTradition.LegacyLoad(xmlCharacterNavigator);
-                    }
-                }
-                else
-                {
-                    XPathNavigator xpathTraditionNavigator = xmlCharacterNavigator.SelectSingleNode("tradition");
-                    // Regular tradition load
-                    if (xpathTraditionNavigator?.SelectSingleNode("guid") != null ||
-                        xpathTraditionNavigator?.SelectSingleNode("id") != null)
-                    {
-                        _objTradition.Load(objXmlCharacter.SelectSingleNode("tradition"));
-                    }
-                    // Not null but doesn't have children -> legacy load a magical tradition
-                    else if (xpathTraditionNavigator != null && MAGEnabled)
-                    {
-                        XmlNode xmlTraditionListDataNode =
-                            XmlManager.Load("traditions.xml").SelectSingleNode("/chummer/traditions");
-                        if (xmlTraditionListDataNode != null)
-                        {
-                            xmlCharacterNavigator.TryGetStringFieldQuickly("tradition", ref strTemp);
-                            XmlNode xmlTraditionDataNode =
-                                xmlTraditionListDataNode.SelectSingleNode("tradition[name = \"" + strTemp + "\"]");
-                            if (xmlTraditionDataNode != null)
-                            {
-                                if (!_objTradition.Create(xmlTraditionDataNode))
-                                    _objTradition.ResetTradition();
-                            }
-                            else
-                            {
-                                xmlTraditionDataNode =
-                                    xmlTraditionListDataNode.SelectSingleNode(
-                                        "tradition[id = \"" + Tradition.CustomMagicalTraditionGuid + "\"]");
-                                if (xmlTraditionDataNode != null)
+                                else
                                 {
-                                    if (!_objTradition.Create(xmlTraditionDataNode))
-                                        _objTradition.ResetTradition();
+                                    xmlTraditionDataNode =
+                                        xmlTraditionListDataNode.SelectSingleNode("tradition[name = \"Default\"]");
+                                    if (xmlTraditionDataNode != null)
+                                    {
+                                        if (!_objTradition.Create(xmlTraditionDataNode, true))
+                                            _objTradition.ResetTradition();
+                                    }
+                                    else
+                                    {
+                                        xmlTraditionDataNode = xmlTraditionListDataNode.SelectSingleNode("tradition");
+                                        if (xmlTraditionDataNode != null)
+                                        {
+                                            if (!_objTradition.Create(xmlTraditionDataNode, true))
+                                                _objTradition.ResetTradition();
+                                        }
+                                    }
                                 }
                             }
-                        }
 
-                        if (_objTradition.Type != TraditionType.None)
-                        {
-                            _objTradition.LegacyLoad(xmlCharacterNavigator);
-                        }
-                    }
-                }
-
-                // Attempt to load Condition Monitor Progress.
-                xmlCharacterNavigator.TryGetInt32FieldQuickly("physicalcmfilled", ref _intPhysicalCMFilled);
-                xmlCharacterNavigator.TryGetInt32FieldQuickly("stuncmfilled", ref _intStunCMFilled);
-                Timekeeper.Finish("load_char_misc2", loadOperation);
-                Timekeeper.Start("load_char_skills"); //slightly messy
-                frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Skills"));
-                _oldSkillsBackup = objXmlCharacter.SelectSingleNode("skills")?.Clone();
-                _oldSkillGroupBackup = objXmlCharacter.SelectSingleNode("skillgroups")?.Clone();
-
-                XmlNode objSkillNode = objXmlCharacter.SelectSingleNode("newskills");
-                if (objSkillNode != null)
-                {
-                    SkillsSection.Load(objSkillNode, false, loadOperation);
-                }
-                else
-                {
-                    SkillsSection.Load(objXmlCharacter, true, loadOperation);
-                }
-
-                Timekeeper.Finish("load_char_skills", loadOperation);
-                Timekeeper.Start("load_char_loc");
-                frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Locations"));
-                // Locations.
-                XmlNodeList objXmlLocationList = objXmlCharacter.SelectNodes("gearlocations/gearlocation");
-                foreach (XmlNode objXmlLocation in objXmlLocationList)
-                {
-                    Location objLocation = new Location(this, _lstGearLocations);
-                    objLocation.Load(objXmlLocation);
-                }
-
-                objXmlLocationList = objXmlCharacter.SelectNodes("locations/location");
-                foreach (XmlNode objXmlLocation in objXmlLocationList)
-                {
-                    Location objLocation = new Location(this, _lstGearLocations);
-                    objLocation.Load(objXmlLocation);
-                }
-
-                objXmlLocationList = objXmlCharacter.SelectNodes("gearlocations/location");
-                foreach (XmlNode objXmlLocation in objXmlLocationList)
-                {
-                    Location objLocation = new Location(this, _lstGearLocations);
-                    objLocation.Load(objXmlLocation);
-                }
-
-                Timekeeper.Finish("load_char_loc", loadOperation);
-                Timekeeper.Start("load_char_abundle");
-
-                // Armor Bundles.
-                objXmlLocationList = objXmlCharacter.SelectNodes("armorbundles/armorbundle");
-                foreach (XmlNode objXmlLocation in objXmlLocationList)
-                {
-                    Location objLocation = new Location(this, _lstArmorLocations);
-                    objLocation.Load(objXmlLocation);
-                }
-
-                objXmlLocationList = objXmlCharacter.SelectNodes("armorlocations/armorlocation");
-                foreach (XmlNode objXmlLocation in objXmlLocationList)
-                {
-                    Location objLocation = new Location(this, _lstArmorLocations);
-                    objLocation.Load(objXmlLocation);
-                }
-
-                objXmlLocationList = objXmlCharacter.SelectNodes("armorlocations/location");
-                foreach (XmlNode objXmlLocation in objXmlLocationList)
-                {
-                    Location objLocation = new Location(this, _lstArmorLocations);
-                    objLocation.Load(objXmlLocation);
-                }
-
-                Timekeeper.Finish("load_char_abundle", loadOperation);
-                Timekeeper.Start("load_char_vloc");
-
-                // Vehicle Locations.
-                XmlNodeList objXmlVehicleLocationList = objXmlCharacter.SelectNodes("vehiclelocations/vehiclelocation");
-                foreach (XmlNode objXmlLocation in objXmlVehicleLocationList)
-                {
-                    Location objLocation = new Location(this, _lstVehicleLocations);
-                    objLocation.Load(objXmlLocation);
-                }
-
-                objXmlVehicleLocationList = objXmlCharacter.SelectNodes("vehiclelocations/location");
-                foreach (XmlNode objXmlLocation in objXmlVehicleLocationList)
-                {
-                    Location objLocation = new Location(this, _lstVehicleLocations);
-                    objLocation.Load(objXmlLocation);
-                }
-
-                Timekeeper.Finish("load_char_vloc", loadOperation);
-                Timekeeper.Start("load_char_wloc");
-
-                // Weapon Locations.
-                XmlNodeList objXmlWeaponLocationList = objXmlCharacter.SelectNodes("weaponlocations/weaponlocation");
-                foreach (XmlNode objXmlLocation in objXmlWeaponLocationList)
-                {
-                    Location objLocation = new Location(this, _lstWeaponLocations);
-                    objLocation.Load(objXmlLocation);
-                }
-
-                objXmlWeaponLocationList = objXmlCharacter.SelectNodes("weaponlocations/location");
-                foreach (XmlNode objXmlLocation in objXmlWeaponLocationList)
-                {
-                    Location objLocation = new Location(this, _lstWeaponLocations);
-                    objLocation.Load(objXmlLocation);
-                }
-
-                Timekeeper.Finish("load_char_wloc", loadOperation);
-
-                Timekeeper.Start("load_char_sfoci");
-
-                // Stacked Foci.
-                objXmlNodeList = objXmlCharacter.SelectNodes("stackedfoci/stackedfocus");
-                foreach (XmlNode objXmlStack in objXmlNodeList)
-                {
-                    StackedFocus objStack = new StackedFocus(this);
-                    objStack.Load(objXmlStack);
-                    _lstStackedFoci.Add(objStack);
-                }
-
-                Timekeeper.Finish("load_char_sfoci", loadOperation);
-
-                Timekeeper.Start("load_char_armor");
-                frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Armor"));
-                // Armor.
-                objXmlNodeList = objXmlCharacter.SelectNodes("armors/armor");
-                foreach (XmlNode objXmlArmor in objXmlNodeList)
-                {
-                    Armor objArmor = new Armor(this);
-                    objArmor.Load(objXmlArmor);
-                    _lstArmor.Add(objArmor);
-                }
-
-                Timekeeper.Finish("load_char_armor", loadOperation);
-                Timekeeper.Start("load_char_weapons");
-                frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Weapons"));
-                // Weapons.
-                objXmlNodeList = objXmlCharacter.SelectNodes("weapons/weapon");
-                foreach (XmlNode objXmlWeapon in objXmlNodeList)
-                {
-                    Weapon objWeapon = new Weapon(this);
-                    objWeapon.Load(objXmlWeapon);
-                    _lstWeapons.Add(objWeapon);
-                }
-
-                Timekeeper.Finish("load_char_weapons", loadOperation);
-                Timekeeper.Start("load_char_drugs");
-                frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Drugs"));
-                // Drugs.
-                objXmlNodeList = objXmlDocument.SelectNodes("/character/drugs/drug");
-                foreach (XmlNode objXmlDrug in objXmlNodeList)
-                {
-                    Drug objDrug = new Drug(this);
-                    objDrug.Load(objXmlDrug);
-                    _lstDrugs.Add(objDrug);
-                }
-
-                Timekeeper.Finish("load_char_drugs", loadOperation);
-                Timekeeper.Start("load_char_ware");
-                frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Cyberware"));
-                // Dictionary for instantly re-applying outdated improvements for 'ware with pair bonuses in legacy shim
-                Dictionary<Cyberware, int> dicPairableCyberwares = new Dictionary<Cyberware, int>();
-                // Cyberware/Bioware.
-                objXmlNodeList = objXmlCharacter.SelectNodes("cyberwares/cyberware");
-                foreach (XmlNode objXmlCyberware in objXmlNodeList)
-                {
-                    Cyberware objCyberware = new Cyberware(this);
-                    objCyberware.Load(objXmlCyberware);
-                    _lstCyberware.Add(objCyberware);
-                    // Legacy shim #1
-                    if (objCyberware.Name == "Myostatin Inhibitor" && LastSavedVersion <= new Version("5.195.1") &&
-                        !Improvements.Any(x =>
-                            x.SourceName == objCyberware.InternalId &&
-                            x.ImproveType == Improvement.ImprovementType.AttributeKarmaCost))
-                    {
-                        XmlNode objNode = objCyberware.GetNode();
-                        if (objNode != null)
-                        {
-                            ImprovementManager.RemoveImprovements(this, objCyberware.SourceType,
-                                objCyberware.InternalId);
-                            ImprovementManager.RemoveImprovements(this, objCyberware.SourceType,
-                                objCyberware.InternalId + "Pair");
-                            objCyberware.Bonus = objNode["bonus"];
-                            objCyberware.WirelessBonus = objNode["wirelessbonus"];
-                            objCyberware.PairBonus = objNode["pairbonus"];
-                            if (!string.IsNullOrEmpty(objCyberware.Forced) && objCyberware.Forced != "Right" &&
-                                objCyberware.Forced != "Left")
-                                ImprovementManager.ForcedValue = objCyberware.Forced;
-                            if (objCyberware.Bonus != null)
+                            if (_objTradition.Type != TraditionType.None)
                             {
-                                ImprovementManager.CreateImprovements(this, objCyberware.SourceType,
-                                    objCyberware.InternalId, objCyberware.Bonus, false, objCyberware.Rating,
-                                    objCyberware.DisplayNameShort(GlobalOptions.Language));
-                                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
-                                    objCyberware.Extra = ImprovementManager.SelectedValue;
-                            }
-
-                            if (objCyberware.WirelessOn && objCyberware.WirelessBonus != null)
-                            {
-                                ImprovementManager.CreateImprovements(this, objCyberware.SourceType,
-                                    objCyberware.InternalId, objCyberware.WirelessBonus, false, objCyberware.Rating,
-                                    objCyberware.DisplayNameShort(GlobalOptions.Language));
-                                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) &&
-                                    string.IsNullOrEmpty(objCyberware.Extra))
-                                    objCyberware.Extra = ImprovementManager.SelectedValue;
-                            }
-
-                            if (!objCyberware.IsModularCurrentlyEquipped)
-                                objCyberware.ChangeModularEquip(false);
-                            else if (objCyberware.PairBonus != null)
-                            {
-                                Cyberware objMatchingCyberware = dicPairableCyberwares.Keys.FirstOrDefault(x =>
-                                    x.Name == objCyberware.Name && x.Extra == objCyberware.Extra);
-                                if (objMatchingCyberware != null)
-                                    dicPairableCyberwares[objMatchingCyberware] =
-                                        dicPairableCyberwares[objMatchingCyberware] + 1;
-                                else
-                                    dicPairableCyberwares.Add(objCyberware, 1);
+                                _objTradition.LegacyLoad(xmlCharacterNavigator);
                             }
                         }
                         else
                         {
-                            _lstInternalIdsNeedingReapplyImprovements.Add(objCyberware.InternalId);
-                        }
-                    }
-                }
+                            XPathNavigator xpathTraditionNavigator =
+                                xmlCharacterNavigator.SelectSingleNode("tradition");
+                            // Regular tradition load
+                            if (xpathTraditionNavigator?.SelectSingleNode("guid") != null ||
+                                xpathTraditionNavigator?.SelectSingleNode("id") != null)
+                            {
+                                _objTradition.Load(objXmlCharacter.SelectSingleNode("tradition"));
+                            }
+                            // Not null but doesn't have children -> legacy load a magical tradition
+                            else if (xpathTraditionNavigator != null && MAGEnabled)
+                            {
+                                XmlNode xmlTraditionListDataNode =
+                                    XmlManager.Load("traditions.xml").SelectSingleNode("/chummer/traditions");
+                                if (xmlTraditionListDataNode != null)
+                                {
+                                    xmlCharacterNavigator.TryGetStringFieldQuickly("tradition", ref strTemp);
+                                    XmlNode xmlTraditionDataNode =
+                                        xmlTraditionListDataNode.SelectSingleNode(
+                                            "tradition[name = \"" + strTemp + "\"]");
+                                    if (xmlTraditionDataNode != null)
+                                    {
+                                        if (!_objTradition.Create(xmlTraditionDataNode))
+                                            _objTradition.ResetTradition();
+                                    }
+                                    else
+                                    {
+                                        xmlTraditionDataNode =
+                                            xmlTraditionListDataNode.SelectSingleNode(
+                                                "tradition[id = \"" + Tradition.CustomMagicalTraditionGuid + "\"]");
+                                        if (xmlTraditionDataNode != null)
+                                        {
+                                            if (!_objTradition.Create(xmlTraditionDataNode))
+                                                _objTradition.ResetTradition();
+                                        }
+                                    }
+                                }
 
-                // Legacy Shim #2 (needed to be separate because we're dealing with PairBonuses here, and we don't know if something needs its PairBonus reapplied until all Cyberwares have been loaded)
-                if (LastSavedVersion <= new Version("5.200.0"))
-                {
-                    foreach (Cyberware objCyberware in Cyberware)
+                                if (_objTradition.Type != TraditionType.None)
+                                {
+                                    _objTradition.LegacyLoad(xmlCharacterNavigator);
+                                }
+                            }
+                        }
+
+                        // Attempt to load Condition Monitor Progress.
+                        xmlCharacterNavigator.TryGetInt32FieldQuickly("physicalcmfilled", ref _intPhysicalCMFilled);
+                        xmlCharacterNavigator.TryGetInt32FieldQuickly("stuncmfilled", ref _intStunCMFilled);
+                        //Timekeeper.Finish("load_char_misc2");
+                    }
+
+                    using (var op_load_char_skills = Timekeeper.StartSyncron("load_char_skills", loadActivity)) //slightly messy
                     {
-                        if (objCyberware.PairBonus?.HasChildNodes == true &&
-                            !Cyberware.DeepAny(x => x.Children, x =>
-                                objCyberware.IncludePair.Contains(x.Name) && x.Extra == objCyberware.Extra &&
-                                x.IsModularCurrentlyEquipped &&
-                                Improvements.Any(y => y.SourceName == x.InternalId + "Pair")))
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Skills"));
+                        _oldSkillsBackup = objXmlCharacter.SelectSingleNode("skills")?.Clone();
+                        _oldSkillGroupBackup = objXmlCharacter.SelectSingleNode("skillgroups")?.Clone();
+
+                        XmlNode objSkillNode = objXmlCharacter.SelectSingleNode("newskills");
+                        if (objSkillNode != null)
                         {
-                            XmlNode objNode = objCyberware.GetNode();
+                            SkillsSection.Load(objSkillNode, false, loadActivity);
+                        }
+                        else
+                        {
+                            SkillsSection.Load(objXmlCharacter, true, loadActivity);
+                        }
+
+                        //Timekeeper.Finish("load_char_skills");
+                    }
+
+                    using (var op_load_char_loc = Timekeeper.StartSyncron("load_char_loc", loadActivity))
+                    {
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Locations"));
+                        // Locations.
+                        objXmlLocationList = objXmlCharacter.SelectNodes("gearlocations/gearlocation");
+                        foreach (XmlNode objXmlLocation in objXmlLocationList)
+                        {
+                            Location objLocation = new Location(this, _lstGearLocations);
+                            objLocation.Load(objXmlLocation);
+                        }
+
+                        objXmlLocationList = objXmlCharacter.SelectNodes("locations/location");
+                        foreach (XmlNode objXmlLocation in objXmlLocationList)
+                        {
+                            Location objLocation = new Location(this, _lstGearLocations);
+                            objLocation.Load(objXmlLocation);
+                        }
+
+                        objXmlLocationList = objXmlCharacter.SelectNodes("gearlocations/location");
+                        foreach (XmlNode objXmlLocation in objXmlLocationList)
+                        {
+                            Location objLocation = new Location(this, _lstGearLocations);
+                            objLocation.Load(objXmlLocation);
+                        }
+
+                        //Timekeeper.Finish("load_char_loc");
+                    }
+
+                    using (var op_load_char_abundle = Timekeeper.StartSyncron("load_char_abundle", loadActivity))
+                    {
+
+                        // Armor Bundles.
+                        objXmlLocationList = objXmlCharacter.SelectNodes("armorbundles/armorbundle");
+                        foreach (XmlNode objXmlLocation in objXmlLocationList)
+                        {
+                            Location objLocation = new Location(this, _lstArmorLocations);
+                            objLocation.Load(objXmlLocation);
+                        }
+
+                        objXmlLocationList = objXmlCharacter.SelectNodes("armorlocations/armorlocation");
+                        foreach (XmlNode objXmlLocation in objXmlLocationList)
+                        {
+                            Location objLocation = new Location(this, _lstArmorLocations);
+                            objLocation.Load(objXmlLocation);
+                        }
+
+                        objXmlLocationList = objXmlCharacter.SelectNodes("armorlocations/location");
+                        foreach (XmlNode objXmlLocation in objXmlLocationList)
+                        {
+                            Location objLocation = new Location(this, _lstArmorLocations);
+                            objLocation.Load(objXmlLocation);
+                        }
+
+                        //Timekeeper.Finish("load_char_abundle");
+                    }
+
+                    using (var op_load_char_vloc = Timekeeper.StartSyncron("load_char_vloc", loadActivity))
+                    {
+
+                        // Vehicle Locations.
+                        XmlNodeList objXmlVehicleLocationList =
+                            objXmlCharacter.SelectNodes("vehiclelocations/vehiclelocation");
+                        foreach (XmlNode objXmlLocation in objXmlVehicleLocationList)
+                        {
+                            Location objLocation = new Location(this, _lstVehicleLocations);
+                            objLocation.Load(objXmlLocation);
+                        }
+
+                        objXmlVehicleLocationList = objXmlCharacter.SelectNodes("vehiclelocations/location");
+                        foreach (XmlNode objXmlLocation in objXmlVehicleLocationList)
+                        {
+                            Location objLocation = new Location(this, _lstVehicleLocations);
+                            objLocation.Load(objXmlLocation);
+                        }
+
+                        //Timekeeper.Finish("load_char_vloc");
+                    }
+
+                    using (var op_load_char_xloc = Timekeeper.StartSyncron("load_char_wloc", loadActivity))
+                    {
+
+                        // Weapon Locations.
+                        XmlNodeList objXmlWeaponLocationList =
+                            objXmlCharacter.SelectNodes("weaponlocations/weaponlocation");
+                        foreach (XmlNode objXmlLocation in objXmlWeaponLocationList)
+                        {
+                            Location objLocation = new Location(this, _lstWeaponLocations);
+                            objLocation.Load(objXmlLocation);
+                        }
+
+                        objXmlWeaponLocationList = objXmlCharacter.SelectNodes("weaponlocations/location");
+                        foreach (XmlNode objXmlLocation in objXmlWeaponLocationList)
+                        {
+                            Location objLocation = new Location(this, _lstWeaponLocations);
+                            objLocation.Load(objXmlLocation);
+                        }
+
+                        //Timekeeper.Finish("load_char_wloc");
+                    }
+
+                    using (var op_load_char_sfoci = Timekeeper.StartSyncron("load_char_sfoci", loadActivity))
+                    {
+
+                        // Stacked Foci.
+                        objXmlNodeList = objXmlCharacter.SelectNodes("stackedfoci/stackedfocus");
+                        foreach (XmlNode objXmlStack in objXmlNodeList)
+                        {
+                            StackedFocus objStack = new StackedFocus(this);
+                            objStack.Load(objXmlStack);
+                            _lstStackedFoci.Add(objStack);
+                        }
+
+                        //Timekeeper.Finish("load_char_sfoci");
+                    }
+
+                    using (var op_load_char_armor = Timekeeper.StartSyncron("load_char_armor", loadActivity))
+                    {
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Armor"));
+                        // Armor.
+                        objXmlNodeList = objXmlCharacter.SelectNodes("armors/armor");
+                        foreach (XmlNode objXmlArmor in objXmlNodeList)
+                        {
+                            Armor objArmor = new Armor(this);
+                            objArmor.Load(objXmlArmor);
+                            _lstArmor.Add(objArmor);
+                        }
+
+                        //Timekeeper.Finish("load_char_armor");
+                    }
+
+                    using (var op_load_char_weapons = Timekeeper.StartSyncron("load_char_weapons", loadActivity))
+                    {
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Weapons"));
+                        // Weapons.
+                        objXmlNodeList = objXmlCharacter.SelectNodes("weapons/weapon");
+                        foreach (XmlNode objXmlWeapon in objXmlNodeList)
+                        {
+                            Weapon objWeapon = new Weapon(this);
+                            objWeapon.Load(objXmlWeapon);
+                            _lstWeapons.Add(objWeapon);
+                        }
+
+                        //Timekeeper.Finish("load_char_weapons");
+                    }
+
+                    using (var op_load_char_drugs = Timekeeper.StartSyncron("load_char_drugs", loadActivity))
+                    {
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Drugs"));
+                        // Drugs.
+                        objXmlNodeList = objXmlDocument.SelectNodes("/character/drugs/drug");
+                        foreach (XmlNode objXmlDrug in objXmlNodeList)
+                        {
+                            Drug objDrug = new Drug(this);
+                            objDrug.Load(objXmlDrug);
+                            _lstDrugs.Add(objDrug);
+                        }
+
+                        //Timekeeper.Finish("load_char_drugs");
+                    }
+
+                    using (var op_load_char_ware = Timekeeper.StartSyncron("load_char_ware", loadActivity))
+                    {
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Cyberware"));
+                        // Dictionary for instantly re-applying outdated improvements for 'ware with pair bonuses in legacy shim
+                        Dictionary<Cyberware, int> dicPairableCyberwares = new Dictionary<Cyberware, int>();
+                        // Cyberware/Bioware.
+                        objXmlNodeList = objXmlCharacter.SelectNodes("cyberwares/cyberware");
+                        foreach (XmlNode objXmlCyberware in objXmlNodeList)
+                        {
+                            Cyberware objCyberware = new Cyberware(this);
+                            objCyberware.Load(objXmlCyberware);
+                            _lstCyberware.Add(objCyberware);
+                            // Legacy shim #1
+                            if (objCyberware.Name == "Myostatin Inhibitor" &&
+                                LastSavedVersion <= new Version("5.195.1") &&
+                                !Improvements.Any(x =>
+                                    x.SourceName == objCyberware.InternalId &&
+                                    x.ImproveType == Improvement.ImprovementType.AttributeKarmaCost))
+                            {
+                                XmlNode objNode = objCyberware.GetNode();
+                                if (objNode != null)
+                                {
+                                    ImprovementManager.RemoveImprovements(this, objCyberware.SourceType,
+                                        objCyberware.InternalId);
+                                    ImprovementManager.RemoveImprovements(this, objCyberware.SourceType,
+                                        objCyberware.InternalId + "Pair");
+                                    objCyberware.Bonus = objNode["bonus"];
+                                    objCyberware.WirelessBonus = objNode["wirelessbonus"];
+                                    objCyberware.PairBonus = objNode["pairbonus"];
+                                    if (!string.IsNullOrEmpty(objCyberware.Forced) && objCyberware.Forced != "Right" &&
+                                        objCyberware.Forced != "Left")
+                                        ImprovementManager.ForcedValue = objCyberware.Forced;
+                                    if (objCyberware.Bonus != null)
+                                    {
+                                        ImprovementManager.CreateImprovements(this, objCyberware.SourceType,
+                                            objCyberware.InternalId, objCyberware.Bonus, false, objCyberware.Rating,
+                                            objCyberware.DisplayNameShort(GlobalOptions.Language));
+                                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                                            objCyberware.Extra = ImprovementManager.SelectedValue;
+                                    }
+
+                                    if (objCyberware.WirelessOn && objCyberware.WirelessBonus != null)
+                                    {
+                                        ImprovementManager.CreateImprovements(this, objCyberware.SourceType,
+                                            objCyberware.InternalId, objCyberware.WirelessBonus, false,
+                                            objCyberware.Rating,
+                                            objCyberware.DisplayNameShort(GlobalOptions.Language));
+                                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) &&
+                                            string.IsNullOrEmpty(objCyberware.Extra))
+                                            objCyberware.Extra = ImprovementManager.SelectedValue;
+                                    }
+
+                                    if (!objCyberware.IsModularCurrentlyEquipped)
+                                        objCyberware.ChangeModularEquip(false);
+                                    else if (objCyberware.PairBonus != null)
+                                    {
+                                        Cyberware objMatchingCyberware = dicPairableCyberwares.Keys.FirstOrDefault(x =>
+                                            x.Name == objCyberware.Name && x.Extra == objCyberware.Extra);
+                                        if (objMatchingCyberware != null)
+                                            dicPairableCyberwares[objMatchingCyberware] =
+                                                dicPairableCyberwares[objMatchingCyberware] + 1;
+                                        else
+                                            dicPairableCyberwares.Add(objCyberware, 1);
+                                    }
+                                }
+                                else
+                                {
+                                    _lstInternalIdsNeedingReapplyImprovements.Add(objCyberware.InternalId);
+                                }
+                            }
+                        }
+
+                        // Legacy Shim #2 (needed to be separate because we're dealing with PairBonuses here, and we don't know if something needs its PairBonus reapplied until all Cyberwares have been loaded)
+                        if (LastSavedVersion <= new Version("5.200.0"))
+                        {
+                            foreach (Cyberware objCyberware in Cyberware)
+                            {
+                                if (objCyberware.PairBonus?.HasChildNodes == true &&
+                                    !Cyberware.DeepAny(x => x.Children, x =>
+                                        objCyberware.IncludePair.Contains(x.Name) && x.Extra == objCyberware.Extra &&
+                                        x.IsModularCurrentlyEquipped &&
+                                        Improvements.Any(y => y.SourceName == x.InternalId + "Pair")))
+                                {
+                                    XmlNode objNode = objCyberware.GetNode();
+                                    if (objNode != null)
+                                    {
+                                        ImprovementManager.RemoveImprovements(this, objCyberware.SourceType,
+                                            objCyberware.InternalId);
+                                        ImprovementManager.RemoveImprovements(this, objCyberware.SourceType,
+                                            objCyberware.InternalId + "Pair");
+                                        objCyberware.Bonus = objNode["bonus"];
+                                        objCyberware.WirelessBonus = objNode["wirelessbonus"];
+                                        objCyberware.PairBonus = objNode["pairbonus"];
+                                        if (!string.IsNullOrEmpty(objCyberware.Forced) &&
+                                            objCyberware.Forced != "Right" &&
+                                            objCyberware.Forced != "Left")
+                                            ImprovementManager.ForcedValue = objCyberware.Forced;
+                                        if (objCyberware.Bonus != null)
+                                        {
+                                            ImprovementManager.CreateImprovements(this, objCyberware.SourceType,
+                                                objCyberware.InternalId, objCyberware.Bonus, false, objCyberware.Rating,
+                                                objCyberware.DisplayNameShort(GlobalOptions.Language));
+                                            if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                                                objCyberware.Extra = ImprovementManager.SelectedValue;
+                                        }
+
+                                        if (objCyberware.WirelessOn && objCyberware.WirelessBonus != null)
+                                        {
+                                            ImprovementManager.CreateImprovements(this, objCyberware.SourceType,
+                                                objCyberware.InternalId, objCyberware.WirelessBonus, false,
+                                                objCyberware.Rating,
+                                                objCyberware.DisplayNameShort(GlobalOptions.Language));
+                                            if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) &&
+                                                string.IsNullOrEmpty(objCyberware.Extra))
+                                                objCyberware.Extra = ImprovementManager.SelectedValue;
+                                        }
+
+                                        if (!objCyberware.IsModularCurrentlyEquipped)
+                                            objCyberware.ChangeModularEquip(false);
+                                        else if (objCyberware.PairBonus != null)
+                                        {
+                                            Cyberware objMatchingCyberware = dicPairableCyberwares.Keys.FirstOrDefault(
+                                                x =>
+                                                    x.Name == objCyberware.Name && x.Extra == objCyberware.Extra);
+                                            if (objMatchingCyberware != null)
+                                                dicPairableCyberwares[objMatchingCyberware] =
+                                                    dicPairableCyberwares[objMatchingCyberware] + 1;
+                                            else
+                                                dicPairableCyberwares.Add(objCyberware, 1);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        _lstInternalIdsNeedingReapplyImprovements.Add(objCyberware.InternalId);
+                                    }
+                                }
+                            }
+                        }
+
+                        // Separate Pass for PairBonuses
+                        foreach (KeyValuePair<Cyberware, int> objItem in dicPairableCyberwares)
+                        {
+                            Cyberware objCyberware = objItem.Key;
+                            int intCyberwaresCount = objItem.Value;
+                            List<Cyberware> lstPairableCyberwares = Cyberware.DeepWhere(x => x.Children,
+                                x => objCyberware.IncludePair.Contains(x.Name) && x.Extra == objCyberware.Extra &&
+                                     x.IsModularCurrentlyEquipped).ToList();
+                            // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
+                            if (!string.IsNullOrEmpty(objCyberware.Location) &&
+                                objCyberware.IncludePair.All(x => x == objCyberware.Name))
+                            {
+                                int intMatchLocationCount = 0;
+                                int intNotMatchLocationCount = 0;
+                                foreach (Cyberware objPairableCyberware in lstPairableCyberwares)
+                                {
+                                    if (objPairableCyberware.Location != objCyberware.Location)
+                                        intNotMatchLocationCount += 1;
+                                    else
+                                        intMatchLocationCount += 1;
+                                }
+
+                                // Set the count to the total number of cyberwares in matching pairs, which would mean 2x the number of whichever location contains the fewest members (since every single one of theirs would have a pair)
+                                intCyberwaresCount = Math.Min(intNotMatchLocationCount, intMatchLocationCount) * 2;
+                            }
+
+                            if (intCyberwaresCount > 0)
+                            {
+                                foreach (Cyberware objLoopCyberware in lstPairableCyberwares)
+                                {
+                                    if ((intCyberwaresCount & 1) == 0)
+                                    {
+                                        if (!string.IsNullOrEmpty(objCyberware.Forced) &&
+                                            objCyberware.Forced != "Right" &&
+                                            objCyberware.Forced != "Left")
+                                            ImprovementManager.ForcedValue = objCyberware.Forced;
+                                        ImprovementManager.CreateImprovements(this, objLoopCyberware.SourceType,
+                                            objLoopCyberware.InternalId + "Pair", objLoopCyberware.PairBonus, false,
+                                            objLoopCyberware.Rating,
+                                            objLoopCyberware.DisplayNameShort(GlobalOptions.Language));
+                                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) &&
+                                            string.IsNullOrEmpty(objCyberware.Extra))
+                                            objCyberware.Extra = ImprovementManager.SelectedValue;
+                                    }
+
+                                    intCyberwaresCount -= 1;
+                                    if (intCyberwaresCount <= 0)
+                                        break;
+                                }
+                            }
+                        }
+
+                        //Timekeeper.Finish("load_char_ware");
+                    }
+
+                    using (var op_load_char_spells = Timekeeper.StartSyncron("load_char_spells", loadActivity))
+                    {
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_SelectedSpells"));
+                        // Spells.
+                        objXmlNodeList = objXmlCharacter.SelectNodes("spells/spell");
+                        foreach (XmlNode objXmlSpell in objXmlNodeList)
+                        {
+                            Spell objSpell = new Spell(this);
+                            objSpell.Load(objXmlSpell);
+                            _lstSpells.Add(objSpell);
+                        }
+
+                        //Timekeeper.Finish("load_char_spells");
+                    }
+
+                    using (var op_load_char_powers = Timekeeper.StartSyncron("load_char_powers", loadActivity))
+                    {
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Adept"));
+                        // Powers.
+                        bool blnDoEnhancedAccuracyRefresh = LastSavedVersion <= new Version("5.198.26");
+                        List<ListItem> lstPowerOrder = new List<ListItem>();
+                        objXmlNodeList = objXmlCharacter.SelectNodes("powers/power");
+                        // Sort the Powers in alphabetical order.
+                        foreach (XmlNode xmlPower in objXmlNodeList)
+                        {
+                            string strGuid = xmlPower["guid"]?.InnerText;
+                            string strPowerName = xmlPower["name"]?.InnerText ?? string.Empty;
+                            if (blnDoEnhancedAccuracyRefresh && strPowerName == "Enhanced Accuracy (skill)")
+                            {
+                                _lstInternalIdsNeedingReapplyImprovements.Add(strGuid);
+                            }
+
+                            if (!string.IsNullOrEmpty(strGuid))
+                                lstPowerOrder.Add(new ListItem(strGuid,
+                                    strPowerName + (xmlPower["extra"]?.InnerText ?? string.Empty)));
+                            else
+                            {
+                                Power objPower = new Power(this);
+                                objPower.Load(xmlPower);
+                                _lstPowers.Add(objPower);
+                            }
+                        }
+
+                        lstPowerOrder.Sort(CompareListItems.CompareNames);
+
+                        foreach (ListItem objItem in lstPowerOrder)
+                        {
+                            XmlNode objNode =
+                                objXmlCharacter.SelectSingleNode(
+                                    "powers/power[guid = \"" + objItem.Value.ToString() + "\"]");
                             if (objNode != null)
                             {
-                                ImprovementManager.RemoveImprovements(this, objCyberware.SourceType,
-                                    objCyberware.InternalId);
-                                ImprovementManager.RemoveImprovements(this, objCyberware.SourceType,
-                                    objCyberware.InternalId + "Pair");
-                                objCyberware.Bonus = objNode["bonus"];
-                                objCyberware.WirelessBonus = objNode["wirelessbonus"];
-                                objCyberware.PairBonus = objNode["pairbonus"];
-                                if (!string.IsNullOrEmpty(objCyberware.Forced) && objCyberware.Forced != "Right" &&
-                                    objCyberware.Forced != "Left")
-                                    ImprovementManager.ForcedValue = objCyberware.Forced;
-                                if (objCyberware.Bonus != null)
-                                {
-                                    ImprovementManager.CreateImprovements(this, objCyberware.SourceType,
-                                        objCyberware.InternalId, objCyberware.Bonus, false, objCyberware.Rating,
-                                        objCyberware.DisplayNameShort(GlobalOptions.Language));
-                                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
-                                        objCyberware.Extra = ImprovementManager.SelectedValue;
-                                }
-
-                                if (objCyberware.WirelessOn && objCyberware.WirelessBonus != null)
-                                {
-                                    ImprovementManager.CreateImprovements(this, objCyberware.SourceType,
-                                        objCyberware.InternalId, objCyberware.WirelessBonus, false, objCyberware.Rating,
-                                        objCyberware.DisplayNameShort(GlobalOptions.Language));
-                                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) &&
-                                        string.IsNullOrEmpty(objCyberware.Extra))
-                                        objCyberware.Extra = ImprovementManager.SelectedValue;
-                                }
-
-                                if (!objCyberware.IsModularCurrentlyEquipped)
-                                    objCyberware.ChangeModularEquip(false);
-                                else if (objCyberware.PairBonus != null)
-                                {
-                                    Cyberware objMatchingCyberware = dicPairableCyberwares.Keys.FirstOrDefault(x =>
-                                        x.Name == objCyberware.Name && x.Extra == objCyberware.Extra);
-                                    if (objMatchingCyberware != null)
-                                        dicPairableCyberwares[objMatchingCyberware] =
-                                            dicPairableCyberwares[objMatchingCyberware] + 1;
-                                    else
-                                        dicPairableCyberwares.Add(objCyberware, 1);
-                                }
-                            }
-                            else
-                            {
-                                _lstInternalIdsNeedingReapplyImprovements.Add(objCyberware.InternalId);
+                                Power objPower = new Power(this);
+                                objPower.Load(objNode);
+                                _lstPowers.Add(objPower);
                             }
                         }
-                    }
-                }
 
-                // Separate Pass for PairBonuses
-                foreach (KeyValuePair<Cyberware, int> objItem in dicPairableCyberwares)
-                {
-                    Cyberware objCyberware = objItem.Key;
-                    int intCyberwaresCount = objItem.Value;
-                    List<Cyberware> lstPairableCyberwares = Cyberware.DeepWhere(x => x.Children,
-                        x => objCyberware.IncludePair.Contains(x.Name) && x.Extra == objCyberware.Extra &&
-                             x.IsModularCurrentlyEquipped).ToList();
-                    // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
-                    if (!string.IsNullOrEmpty(objCyberware.Location) &&
-                        objCyberware.IncludePair.All(x => x == objCyberware.Name))
+                        //Timekeeper.Finish("load_char_powers");
+                    }
+
+                    using (var op_load_char_spirits = Timekeeper.StartSyncron("load_char_spirits", loadActivity))
                     {
-                        int intMatchLocationCount = 0;
-                        int intNotMatchLocationCount = 0;
-                        foreach (Cyberware objPairableCyberware in lstPairableCyberwares)
+
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_Spirits"));
+                        // Spirits/Sprites.
+                        foreach (XPathNavigator xmlSpirit in xmlCharacterNavigator.Select("spirits/spirit"))
                         {
-                            if (objPairableCyberware.Location != objCyberware.Location)
-                                intNotMatchLocationCount += 1;
-                            else
-                                intMatchLocationCount += 1;
+                            Spirit objSpirit = new Spirit(this);
+                            objSpirit.Load(xmlSpirit);
+                            _lstSpirits.Add(objSpirit);
                         }
 
-                        // Set the count to the total number of cyberwares in matching pairs, which would mean 2x the number of whichever location contains the fewest members (since every single one of theirs would have a pair)
-                        intCyberwaresCount = Math.Min(intNotMatchLocationCount, intMatchLocationCount) * 2;
-                    }
-
-                    if (intCyberwaresCount > 0)
-                    {
-                        foreach (Cyberware objLoopCyberware in lstPairableCyberwares)
+                        if (!_lstSpirits.Any(s => s.Fettered) && Improvements.Any(imp =>
+                                imp.ImproveSource == Improvement.ImprovementSource.SpiritFettering))
                         {
-                            if ((intCyberwaresCount & 1) == 0)
-                            {
-                                if (!string.IsNullOrEmpty(objCyberware.Forced) && objCyberware.Forced != "Right" &&
-                                    objCyberware.Forced != "Left")
-                                    ImprovementManager.ForcedValue = objCyberware.Forced;
-                                ImprovementManager.CreateImprovements(this, objLoopCyberware.SourceType,
-                                    objLoopCyberware.InternalId + "Pair", objLoopCyberware.PairBonus, false,
-                                    objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort(GlobalOptions.Language));
-                                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) &&
-                                    string.IsNullOrEmpty(objCyberware.Extra))
-                                    objCyberware.Extra = ImprovementManager.SelectedValue;
-                            }
-
-                            intCyberwaresCount -= 1;
-                            if (intCyberwaresCount <= 0)
-                                break;
+                            // If we don't have any Fettered spirits, make sure that we 
+                            ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.SpiritFettering);
                         }
+
+                        //Timekeeper.Finish("load_char_spirits");
                     }
-                }
 
-                Timekeeper.Finish("load_char_ware", loadOperation);
-                Timekeeper.Start("load_char_spells");
-                frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_SelectedSpells"));
-                // Spells.
-                objXmlNodeList = objXmlCharacter.SelectNodes("spells/spell");
-                foreach (XmlNode objXmlSpell in objXmlNodeList)
-                {
-                    Spell objSpell = new Spell(this);
-                    objSpell.Load(objXmlSpell);
-                    _lstSpells.Add(objSpell);
-                }
-
-                Timekeeper.Finish("load_char_spells", loadOperation);
-                Timekeeper.Start("load_char_powers");
-                frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Adept"));
-                // Powers.
-                bool blnDoEnhancedAccuracyRefresh = LastSavedVersion <= new Version("5.198.26");
-                List<ListItem> lstPowerOrder = new List<ListItem>();
-                objXmlNodeList = objXmlCharacter.SelectNodes("powers/power");
-                // Sort the Powers in alphabetical order.
-                foreach (XmlNode xmlPower in objXmlNodeList)
-                {
-                    string strGuid = xmlPower["guid"]?.InnerText;
-                    string strPowerName = xmlPower["name"]?.InnerText ?? string.Empty;
-                    if (blnDoEnhancedAccuracyRefresh && strPowerName == "Enhanced Accuracy (skill)")
+                    using (var op_load_char_complex = Timekeeper.StartSyncron("load_char_complex", loadActivity))
                     {
-                        _lstInternalIdsNeedingReapplyImprovements.Add(strGuid);
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_ComplexForms"));
+                        // Compex Forms/Technomancer Programs.
+                        objXmlNodeList = objXmlCharacter.SelectNodes("complexforms/complexform");
+                        foreach (XmlNode objXmlComplexForm in objXmlNodeList)
+                        {
+                            ComplexForm objComplexForm = new ComplexForm(this);
+                            objComplexForm.Load(objXmlComplexForm);
+                            _lstComplexForms.Add(objComplexForm);
+                        }
+
+                        //Timekeeper.Finish("load_char_complex");
                     }
 
-                    if (!string.IsNullOrEmpty(strGuid))
-                        lstPowerOrder.Add(new ListItem(strGuid,
-                            strPowerName + (xmlPower["extra"]?.InnerText ?? string.Empty)));
-                    else
+                    using (var op_load_char_aiprogram = Timekeeper.StartSyncron("load_char_aiprogram", loadActivity))
                     {
-                        Power objPower = new Power(this);
-                        objPower.Load(xmlPower);
-                        _lstPowers.Add(objPower);
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_AdvancedPrograms"));
+                        // Compex Forms/Technomancer Programs.
+                        objXmlNodeList = objXmlCharacter.SelectNodes("aiprograms/aiprogram");
+                        foreach (XmlNode objXmlProgram in objXmlNodeList)
+                        {
+                            AIProgram objProgram = new AIProgram(this);
+                            objProgram.Load(objXmlProgram);
+                            _lstAIPrograms.Add(objProgram);
+                        }
+
+                        //Timekeeper.Finish("load_char_aiprogram");
                     }
-                }
 
-                lstPowerOrder.Sort(CompareListItems.CompareNames);
-
-                foreach (ListItem objItem in lstPowerOrder)
-                {
-                    XmlNode objNode =
-                        objXmlCharacter.SelectSingleNode("powers/power[guid = \"" + objItem.Value.ToString() + "\"]");
-                    if (objNode != null)
+                    using (var op_load_char_marts = Timekeeper.StartSyncron("load_char_marts", loadActivity))
                     {
-                        Power objPower = new Power(this);
-                        objPower.Load(objNode);
-                        _lstPowers.Add(objPower);
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_MartialArts"));
+                        // Martial Arts.
+                        objXmlNodeList = objXmlCharacter.SelectNodes("martialarts/martialart");
+                        foreach (XmlNode objXmlArt in objXmlNodeList)
+                        {
+                            MartialArt objMartialArt = new MartialArt(this);
+                            objMartialArt.Load(objXmlArt);
+                            _lstMartialArts.Add(objMartialArt);
+                        }
+
+                        //Timekeeper.Finish("load_char_marts");
                     }
-                }
-
-                Timekeeper.Finish("load_char_powers", loadOperation);
-                Timekeeper.Start("load_char_spirits");
-                frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_Spirits"));
-                // Spirits/Sprites.
-                foreach (XPathNavigator xmlSpirit in xmlCharacterNavigator.Select("spirits/spirit"))
-                {
-                    Spirit objSpirit = new Spirit(this);
-                    objSpirit.Load(xmlSpirit);
-                    _lstSpirits.Add(objSpirit);
-                }
-
-                if (!_lstSpirits.Any(s => s.Fettered) && Improvements.Any(imp =>
-                        imp.ImproveSource == Improvement.ImprovementSource.SpiritFettering))
-                {
-                    // If we don't have any Fettered spirits, make sure that we 
-                    ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.SpiritFettering);
-                }
-
-                Timekeeper.Finish("load_char_spirits", loadOperation);
-                Timekeeper.Start("load_char_complex");
-                frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_ComplexForms"));
-                // Compex Forms/Technomancer Programs.
-                objXmlNodeList = objXmlCharacter.SelectNodes("complexforms/complexform");
-                foreach (XmlNode objXmlComplexForm in objXmlNodeList)
-                {
-                    ComplexForm objComplexForm = new ComplexForm(this);
-                    objComplexForm.Load(objXmlComplexForm);
-                    _lstComplexForms.Add(objComplexForm);
-                }
-
-                Timekeeper.Finish("load_char_complex", loadOperation);
-                Timekeeper.Start("load_char_aiprogram");
-                frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_AdvancedPrograms"));
-                // Compex Forms/Technomancer Programs.
-                objXmlNodeList = objXmlCharacter.SelectNodes("aiprograms/aiprogram");
-                foreach (XmlNode objXmlProgram in objXmlNodeList)
-                {
-                    AIProgram objProgram = new AIProgram(this);
-                    objProgram.Load(objXmlProgram);
-                    _lstAIPrograms.Add(objProgram);
-                }
-
-                Timekeeper.Finish("load_char_aiprogram", loadOperation);
-                Timekeeper.Start("load_char_marts");
-                frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_MartialArts"));
-                // Martial Arts.
-                objXmlNodeList = objXmlCharacter.SelectNodes("martialarts/martialart");
-                foreach (XmlNode objXmlArt in objXmlNodeList)
-                {
-                    MartialArt objMartialArt = new MartialArt(this);
-                    objMartialArt.Load(objXmlArt);
-                    _lstMartialArts.Add(objMartialArt);
-                }
-
-                Timekeeper.Finish("load_char_marts", loadOperation);
 #if LEGACY
-            Timekeeper.Start("load_char_mam");
-
-            // Martial Art Maneuvers.
-            objXmlNodeList = objXmlCharacter.SelectNodes("martialartmaneuvers/martialartmaneuver");
-            foreach (XmlNode objXmlManeuver in objXmlNodeList)
-            {
-                MartialArtManeuver objManeuver = new MartialArtManeuver(this);
-                objManeuver.Load(objXmlManeuver);
-                _lstMartialArtManeuvers.Add(objManeuver);
-            }
-
-            Timekeeper.Finish("load_char_mam");
-#endif
-                Timekeeper.Start("load_char_mod");
-                frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Limits"));
-                // Limit Modifiers.
-                objXmlNodeList = objXmlCharacter.SelectNodes("limitmodifiers/limitmodifier");
-                foreach (XmlNode objXmlLimit in objXmlNodeList)
+                using (var op_load_char_mam = Timekeeper.StartSyncron("load_char_mam"))
                 {
-                    LimitModifier obLimitModifier = new LimitModifier(this);
-                    obLimitModifier.Load(objXmlLimit);
-                    _lstLimitModifiers.Add(obLimitModifier);
-                }
 
-                Timekeeper.Finish("load_char_mod", loadOperation);
-                Timekeeper.Start("load_char_lifestyle");
-                frmLoadingForm?.PerformStep(LanguageManager.GetString("String_SelectPACKSKit_Lifestyles"));
-                // Lifestyles.
-                objXmlNodeList = objXmlCharacter.SelectNodes("lifestyles/lifestyle");
-                foreach (XmlNode objXmlLifestyle in objXmlNodeList)
-                {
-                    Lifestyle objLifestyle = new Lifestyle(this);
-                    objLifestyle.Load(objXmlLifestyle);
-                    _lstLifestyles.Add(objLifestyle);
-                }
-
-                Timekeeper.Finish("load_char_lifestyle", loadOperation);
-                Timekeeper.Start("load_char_gear");
-                frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Gear"));
-                // <gears>
-                objXmlNodeList = objXmlCharacter.SelectNodes("gears/gear");
-                foreach (XmlNode objXmlGear in objXmlNodeList)
-                {
-                    Gear objGear = new Gear(this);
-                    objGear.Load(objXmlGear);
-                    _lstGear.Add(objGear);
-                }
-
-                // If the character has a technomancer quality but no Living Persona commlink, its improvements get re-applied immediately
-                if (objLivingPersonaQuality != null && LastSavedVersion <= new Version("5.195.1"))
-                {
-                    ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Quality,
-                        objLivingPersonaQuality.InternalId);
-
-                    XmlNode objNode = objLivingPersonaQuality.GetNode();
-                    if (objNode != null)
+                    // Martial Art Maneuvers.
+                    objXmlNodeList = objXmlCharacter.SelectNodes("martialartmaneuvers/martialartmaneuver");
+                    foreach (XmlNode objXmlManeuver in objXmlNodeList)
                     {
-                        objLivingPersonaQuality.Bonus = objNode["bonus"];
-                        if (objLivingPersonaQuality.Bonus != null)
+                        MartialArtManeuver objManeuver = new MartialArtManeuver(this);
+                        objManeuver.Load(objXmlManeuver);
+                        _lstMartialArtManeuvers.Add(objManeuver);
+                    }
+
+                    //Timekeeper.Finish("load_char_mam");
+                }
+#endif
+                    using (var op_load_char_mod = Timekeeper.StartSyncron("load_char_mod", loadActivity))
+                    {
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Limits"));
+                        // Limit Modifiers.
+                        objXmlNodeList = objXmlCharacter.SelectNodes("limitmodifiers/limitmodifier");
+                        foreach (XmlNode objXmlLimit in objXmlNodeList)
                         {
-                            ImprovementManager.ForcedValue = objLivingPersonaQuality.Extra;
-                            ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Quality,
-                                objLivingPersonaQuality.InternalId, objLivingPersonaQuality.Bonus, false, 1,
-                                objLivingPersonaQuality.DisplayNameShort(GlobalOptions.Language));
-                            if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                            LimitModifier obLimitModifier = new LimitModifier(this);
+                            obLimitModifier.Load(objXmlLimit);
+                            _lstLimitModifiers.Add(obLimitModifier);
+                        }
+
+                        //Timekeeper.Finish("load_char_mod");
+                    }
+
+                    using (var op_load_char_lifestyle = Timekeeper.StartSyncron("load_char_lifestyle", loadActivity))
+                    {
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("String_SelectPACKSKit_Lifestyles"));
+                        // Lifestyles.
+                        objXmlNodeList = objXmlCharacter.SelectNodes("lifestyles/lifestyle");
+                        foreach (XmlNode objXmlLifestyle in objXmlNodeList)
+                        {
+                            Lifestyle objLifestyle = new Lifestyle(this);
+                            objLifestyle.Load(objXmlLifestyle);
+                            _lstLifestyles.Add(objLifestyle);
+                        }
+
+                        //Timekeeper.Finish("load_char_lifestyle");
+                    }
+
+                    using (var op_load_char_gear = Timekeeper.StartSyncron("load_char_gear", loadActivity))
+                    {
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Gear"));
+                        // <gears>
+                        objXmlNodeList = objXmlCharacter.SelectNodes("gears/gear");
+                        foreach (XmlNode objXmlGear in objXmlNodeList)
+                        {
+                            Gear objGear = new Gear(this);
+                            objGear.Load(objXmlGear);
+                            _lstGear.Add(objGear);
+                        }
+
+                        // If the character has a technomancer quality but no Living Persona commlink, its improvements get re-applied immediately
+                        if (objLivingPersonaQuality != null && LastSavedVersion <= new Version("5.195.1"))
+                        {
+                            ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Quality,
+                                objLivingPersonaQuality.InternalId);
+
+                            XmlNode objNode = objLivingPersonaQuality.GetNode();
+                            if (objNode != null)
                             {
-                                objLivingPersonaQuality.Extra = ImprovementManager.SelectedValue;
+                                objLivingPersonaQuality.Bonus = objNode["bonus"];
+                                if (objLivingPersonaQuality.Bonus != null)
+                                {
+                                    ImprovementManager.ForcedValue = objLivingPersonaQuality.Extra;
+                                    ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Quality,
+                                        objLivingPersonaQuality.InternalId, objLivingPersonaQuality.Bonus, false, 1,
+                                        objLivingPersonaQuality.DisplayNameShort(GlobalOptions.Language));
+                                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                                    {
+                                        objLivingPersonaQuality.Extra = ImprovementManager.SelectedValue;
+                                    }
+                                }
+
+                                objLivingPersonaQuality.FirstLevelBonus = objNode["firstlevelbonus"];
+                                if (objLivingPersonaQuality.FirstLevelBonus?.HasChildNodes == true)
+                                {
+                                    bool blnDoFirstLevel = true;
+                                    foreach (Quality objCheckQuality in Qualities)
+                                    {
+                                        if (objCheckQuality != objLivingPersonaQuality &&
+                                            objCheckQuality.SourceIDString == objLivingPersonaQuality.SourceIDString &&
+                                            objCheckQuality.Extra == objLivingPersonaQuality.Extra &&
+                                            objCheckQuality.SourceName == objLivingPersonaQuality.SourceName)
+                                        {
+                                            blnDoFirstLevel = false;
+                                            break;
+                                        }
+                                    }
+
+                                    if (blnDoFirstLevel)
+                                    {
+                                        ImprovementManager.ForcedValue = objLivingPersonaQuality.Extra;
+                                        ImprovementManager.CreateImprovements(this,
+                                            Improvement.ImprovementSource.Quality,
+                                            objLivingPersonaQuality.InternalId, objLivingPersonaQuality.FirstLevelBonus,
+                                            false,
+                                            1,
+                                            objLivingPersonaQuality.DisplayNameShort(GlobalOptions.Language));
+                                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                                        {
+                                            objLivingPersonaQuality.Extra = ImprovementManager.SelectedValue;
+                                        }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                // Failed to re-apply the improvements immediately, so let's just add it for processing when the character is opened
+                                _lstInternalIdsNeedingReapplyImprovements.Add(objLivingPersonaQuality.InternalId);
                             }
                         }
 
-                        objLivingPersonaQuality.FirstLevelBonus = objNode["firstlevelbonus"];
-                        if (objLivingPersonaQuality.FirstLevelBonus?.HasChildNodes == true)
+                        //Timekeeper.Finish("load_char_gear");
+                    }
+
+                    using (var op_load_char_car = Timekeeper.StartSyncron("load_char_car", loadActivity))
+                    {
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_Vehicles"));
+                        // Vehicles.
+                        objXmlNodeList = objXmlCharacter.SelectNodes("vehicles/vehicle");
+                        foreach (XmlNode objXmlVehicle in objXmlNodeList)
                         {
-                            bool blnDoFirstLevel = true;
-                            foreach (Quality objCheckQuality in Qualities)
+                            Vehicle objVehicle = new Vehicle(this);
+                            objVehicle.Load(objXmlVehicle);
+                            _lstVehicles.Add(objVehicle);
+                        }
+
+                        //Timekeeper.Finish("load_char_car");
+                    }
+
+                    using (var op_load_char_mmagic = Timekeeper.StartSyncron("load_char_mmagic", loadActivity))
+                    {
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Metamagics"));
+                        // Metamagics/Echoes.
+                        objXmlNodeList = objXmlCharacter.SelectNodes("metamagics/metamagic");
+                        foreach (XmlNode objXmlMetamagic in objXmlNodeList)
+                        {
+                            Metamagic objMetamagic = new Metamagic(this);
+                            objMetamagic.Load(objXmlMetamagic);
+                            _lstMetamagics.Add(objMetamagic);
+                        }
+
+                        //Timekeeper.Finish("load_char_mmagic");
+                    }
+
+                    using (var op_load_char_arts = Timekeeper.StartSyncron("load_char_arts", loadActivity))
+                    {
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Arts"));
+                        // Arts
+                        objXmlNodeList = objXmlCharacter.SelectNodes("arts/art");
+                        foreach (XmlNode objXmlArt in objXmlNodeList)
+                        {
+                            Art objArt = new Art(this);
+                            objArt.Load(objXmlArt);
+                            _lstArts.Add(objArt);
+                        }
+
+                        //Timekeeper.Finish("load_char_arts");
+                    }
+
+                    using (var op_load_char_arts = Timekeeper.StartSyncron("load_char_ench", loadActivity))
+                    {
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Enhancements"));
+                        // Enhancements
+                        objXmlNodeList = objXmlCharacter.SelectNodes("enhancements/enhancement");
+                        foreach (XmlNode objXmlEnhancement in objXmlNodeList)
+                        {
+                            Enhancement objEnhancement = new Enhancement(this);
+                            objEnhancement.Load(objXmlEnhancement);
+                            _lstEnhancements.Add(objEnhancement);
+                        }
+
+                        //Timekeeper.Finish("load_char_ench");
+                    }
+
+                    using (var op_load_char_cpow = Timekeeper.StartSyncron("load_char_cpow", loadActivity))
+                    {
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Critter"));
+                        // Critter Powers.
+                        objXmlNodeList = objXmlCharacter.SelectNodes("critterpowers/critterpower");
+                        foreach (XmlNode objXmlPower in objXmlNodeList)
+                        {
+                            CritterPower objPower = new CritterPower(this);
+                            objPower.Load(objXmlPower);
+                            _lstCritterPowers.Add(objPower);
+                        }
+
+                        //Timekeeper.Finish("load_char_cpow");
+                    }
+
+                    using (var op_load_char_foci = Timekeeper.StartSyncron("load_char_foci", loadActivity))
+                    {
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_SummaryFoci"));
+                        // Foci.
+                        objXmlNodeList = objXmlCharacter.SelectNodes("foci/focus");
+                        foreach (XmlNode objXmlFocus in objXmlNodeList)
+                        {
+                            Focus objFocus = new Focus(this);
+                            objFocus.Load(objXmlFocus);
+                            _lstFoci.Add(objFocus);
+                        }
+
+                        //Timekeeper.Finish("load_char_foci");
+                    }
+
+                    using (var op_load_char_init = Timekeeper.StartSyncron("load_char_init", loadActivity))
+                    {
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_SummaryInitiation"));
+                        // Initiation Grades.
+                        objXmlNodeList = objXmlCharacter.SelectNodes("initiationgrades/initiationgrade");
+                        foreach (XmlNode objXmlGrade in objXmlNodeList)
+                        {
+                            InitiationGrade objGrade = new InitiationGrade(this);
+                            objGrade.Load(objXmlGrade);
+                            _lstInitiationGrades.Add(objGrade);
+                        }
+
+                        //Timekeeper.Finish("load_char_init");
+                    }
+
+                    frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Expenses"));
+                    // While expenses are to be saved in create mode due to starting nuyen and starting karma being logged as expense log entries,
+                    // they shouldn't get loaded in create mode because they shouldn't be there.
+                    if (Created)
+                    {
+                        using (var op_load_char_elog = Timekeeper.StartSyncron("load_char_elog", loadActivity))
+                        {
+
+                            // Expense Log Entries.
+                            XmlNodeList objXmlExpenseList = objXmlCharacter.SelectNodes("expenses/expense");
+                            foreach (XmlNode objXmlExpense in objXmlExpenseList)
                             {
-                                if (objCheckQuality != objLivingPersonaQuality &&
-                                    objCheckQuality.SourceIDString == objLivingPersonaQuality.SourceIDString &&
-                                    objCheckQuality.Extra == objLivingPersonaQuality.Extra &&
-                                    objCheckQuality.SourceName == objLivingPersonaQuality.SourceName)
-                                {
-                                    blnDoFirstLevel = false;
-                                    break;
-                                }
+                                ExpenseLogEntry objExpenseLogEntry = new ExpenseLogEntry(this);
+                                objExpenseLogEntry.Load(objXmlExpense);
+                                _lstExpenseLog.AddWithSort(objExpenseLogEntry);
                             }
 
-                            if (blnDoFirstLevel)
-                            {
-                                ImprovementManager.ForcedValue = objLivingPersonaQuality.Extra;
-                                ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Quality,
-                                    objLivingPersonaQuality.InternalId, objLivingPersonaQuality.FirstLevelBonus, false,
-                                    1,
-                                    objLivingPersonaQuality.DisplayNameShort(GlobalOptions.Language));
-                                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
-                                {
-                                    objLivingPersonaQuality.Extra = ImprovementManager.SelectedValue;
-                                }
-                            }
+                            //Timekeeper.Finish("load_char_elog");
                         }
                     }
+#if DEBUG
                     else
                     {
-                        // Failed to re-apply the improvements immediately, so let's just add it for processing when the character is opened
-                        _lstInternalIdsNeedingReapplyImprovements.Add(objLivingPersonaQuality.InternalId);
-                    }
-                }
-
-                Timekeeper.Finish("load_char_gear", loadOperation);
-                Timekeeper.Start("load_char_car");
-                frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_Vehicles"));
-                // Vehicles.
-                objXmlNodeList = objXmlCharacter.SelectNodes("vehicles/vehicle");
-                foreach (XmlNode objXmlVehicle in objXmlNodeList)
-                {
-                    Vehicle objVehicle = new Vehicle(this);
-                    objVehicle.Load(objXmlVehicle);
-                    _lstVehicles.Add(objVehicle);
-                }
-
-                Timekeeper.Finish("load_char_car", loadOperation);
-                Timekeeper.Start("load_char_mmagic");
-                frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Metamagics"));
-                // Metamagics/Echoes.
-                objXmlNodeList = objXmlCharacter.SelectNodes("metamagics/metamagic");
-                foreach (XmlNode objXmlMetamagic in objXmlNodeList)
-                {
-                    Metamagic objMetamagic = new Metamagic(this);
-                    objMetamagic.Load(objXmlMetamagic);
-                    _lstMetamagics.Add(objMetamagic);
-                }
-
-                Timekeeper.Finish("load_char_mmagic", loadOperation);
-                Timekeeper.Start("load_char_arts");
-                frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Arts"));
-                // Arts
-                objXmlNodeList = objXmlCharacter.SelectNodes("arts/art");
-                foreach (XmlNode objXmlArt in objXmlNodeList)
-                {
-                    Art objArt = new Art(this);
-                    objArt.Load(objXmlArt);
-                    _lstArts.Add(objArt);
-                }
-
-                Timekeeper.Finish("load_char_arts", loadOperation);
-                Timekeeper.Start("load_char_ench");
-                frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Enhancements"));
-                // Enhancements
-                objXmlNodeList = objXmlCharacter.SelectNodes("enhancements/enhancement");
-                foreach (XmlNode objXmlEnhancement in objXmlNodeList)
-                {
-                    Enhancement objEnhancement = new Enhancement(this);
-                    objEnhancement.Load(objXmlEnhancement);
-                    _lstEnhancements.Add(objEnhancement);
-                }
-
-                Timekeeper.Finish("load_char_ench", loadOperation);
-                Timekeeper.Start("load_char_cpow");
-                frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Critter"));
-                // Critter Powers.
-                objXmlNodeList = objXmlCharacter.SelectNodes("critterpowers/critterpower");
-                foreach (XmlNode objXmlPower in objXmlNodeList)
-                {
-                    CritterPower objPower = new CritterPower(this);
-                    objPower.Load(objXmlPower);
-                    _lstCritterPowers.Add(objPower);
-                }
-
-                Timekeeper.Finish("load_char_cpow", loadOperation);
-                Timekeeper.Start("load_char_foci");
-                frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_SummaryFoci"));
-                // Foci.
-                objXmlNodeList = objXmlCharacter.SelectNodes("foci/focus");
-                foreach (XmlNode objXmlFocus in objXmlNodeList)
-                {
-                    Focus objFocus = new Focus(this);
-                    objFocus.Load(objXmlFocus);
-                    _lstFoci.Add(objFocus);
-                }
-
-                Timekeeper.Finish("load_char_foci", loadOperation);
-                Timekeeper.Start("load_char_init");
-                frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_SummaryInitiation"));
-                // Initiation Grades.
-                objXmlNodeList = objXmlCharacter.SelectNodes("initiationgrades/initiationgrade");
-                foreach (XmlNode objXmlGrade in objXmlNodeList)
-                {
-                    InitiationGrade objGrade = new InitiationGrade(this);
-                    objGrade.Load(objXmlGrade);
-                    _lstInitiationGrades.Add(objGrade);
-                }
-
-                Timekeeper.Finish("load_char_init", loadOperation);
-                frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Expenses"));
-                // While expenses are to be saved in create mode due to starting nuyen and starting karma being logged as expense log entries,
-                // they shouldn't get loaded in create mode because they shouldn't be there.
-                if (Created)
-                {
-                    Timekeeper.Start("load_char_elog");
-
-                    // Expense Log Entries.
-                    XmlNodeList objXmlExpenseList = objXmlCharacter.SelectNodes("expenses/expense");
-                    foreach (XmlNode objXmlExpense in objXmlExpenseList)
-                    {
-                        ExpenseLogEntry objExpenseLogEntry = new ExpenseLogEntry(this);
-                        objExpenseLogEntry.Load(objXmlExpense);
-                        _lstExpenseLog.AddWithSort(objExpenseLogEntry);
-                    }
-
-                    Timekeeper.Finish("load_char_elog", loadOperation);
-                }
-#if DEBUG
-                else
-                {
-                    // There shouldn't be any expenses for a character loaded in create mode. This code is to help narrow down issues should expenses somehow be created.
-                    XmlNodeList objXmlExpenseList = objXmlCharacter.SelectNodes("expenses/expense");
-                    if (objXmlExpenseList?.Count > 0)
-                    {
-                        Utils.BreakIfDebug();
-                    }
-                }
-#endif
-                Timekeeper.Start("load_char_igroup");
-                frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Improvements"));
-                // Improvement Groups.
-                XmlNodeList objXmlGroupList = objXmlCharacter.SelectNodes("improvementgroups/improvementgroup");
-                foreach (XmlNode objXmlGroup in objXmlGroupList)
-                {
-                    _lstImprovementGroups.Add(objXmlGroup.InnerText);
-                }
-
-                Timekeeper.Finish("load_char_igroup", loadOperation);
-                Timekeeper.Start("load_char_calendar");
-                frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Calendar"));
-                // Calendar.
-                XmlNodeList objXmlWeekList = objXmlCharacter.SelectNodes("calendar/week");
-                foreach (XmlNode objXmlWeek in objXmlWeekList)
-                {
-                    CalendarWeek objWeek = new CalendarWeek();
-                    objWeek.Load(objXmlWeek);
-                    _lstCalendar.AddWithSort(objWeek, true);
-                }
-
-                Timekeeper.Finish("load_char_calendar", loadOperation);
-                Timekeeper.Start("load_char_unarmed");
-                frmLoadingForm?.PerformStep(LanguageManager.GetString("String_LegacyFixes"));
-                // Look for the unarmed attack
-                bool blnFoundUnarmed = false;
-                foreach (Weapon objWeapon in _lstWeapons)
-                {
-                    if (objWeapon.Name == "Unarmed Attack")
-                    {
-                        blnFoundUnarmed = true;
-                        break;
-                    }
-                }
-
-                if (!blnFoundUnarmed)
-                {
-                    // Add the Unarmed Attack Weapon to the character.
-                    XmlDocument objXmlWeaponDoc = XmlManager.Load("weapons.xml");
-                    XmlNode objXmlWeapon =
-                        objXmlWeaponDoc.SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
-                    if (objXmlWeapon != null)
-                    {
-                        Weapon objWeapon = new Weapon(this);
-                        objWeapon.Create(objXmlWeapon, _lstWeapons);
-                        objWeapon.IncludedInWeapon = true; // Unarmed attack can never be removed
-                        _lstWeapons.Add(objWeapon);
-                    }
-                }
-
-                Timekeeper.Finish("load_char_unarmed", loadOperation);
-                Timekeeper.Start("load_char_dwarffix");
-
-                // converting from old dwarven resistance to new dwarven resistance
-                if (Metatype.ToLower().Equals("dwarf"))
-                {
-                    Quality objOldQuality =
-                        Qualities.FirstOrDefault(x => x.Name.Equals("Resistance to Pathogens and Toxins"));
-                    if (objOldQuality != null)
-                    {
-                        Qualities.Remove(objOldQuality);
-                        if (Qualities.Any(x => x.Name.Equals("Resistance to Pathogens/Toxins")) == false &&
-                            Qualities.Any(x => x.Name.Equals("Dwarf Resistance")) == false)
+                        // There shouldn't be any expenses for a character loaded in create mode. This code is to help narrow down issues should expenses somehow be created.
+                        XmlNodeList objXmlExpenseList = objXmlCharacter.SelectNodes("expenses/expense");
+                        if (objXmlExpenseList?.Count > 0)
                         {
-                            XmlNode objXmlDwarfQuality =
-                                xmlRootQualitiesNode.SelectSingleNode(
-                                    "quality[name = \"Resistance to Pathogens/Toxins\"]") ??
-                                xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Dwarf Resistance\"]");
-
-                            List<Weapon> lstWeapons = new List<Weapon>();
-                            Quality objQuality = new Quality(this);
-
-                            objQuality.Create(objXmlDwarfQuality, QualitySource.Metatype, lstWeapons);
-                            foreach (Weapon objWeapon in lstWeapons)
-                                _lstWeapons.Add(objWeapon);
-                            _lstQualities.Add(objQuality);
+                            Utils.BreakIfDebug();
                         }
                     }
-                }
-
-                Timekeeper.Finish("load_char_dwarffix", loadOperation);
-                Timekeeper.Start("load_char_cfix");
-
-                // load issue where the contact multiplier was set to 0
-                if (_intContactMultiplier == 0 && !string.IsNullOrEmpty(_strGameplayOption))
-                {
-                    XmlNode objXmlGameplayOption = XmlManager.Load("gameplayoptions.xml")
-                        .SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" + _strGameplayOption +
-                                          "\"]");
-                    if (objXmlGameplayOption != null)
+#endif
+                    using (var op_load_char_igroup = Timekeeper.StartSyncron("load_char_igroup", loadActivity))
                     {
-                        string strKarma = objXmlGameplayOption["karma"]?.InnerText;
-                        string strNuyen = objXmlGameplayOption["maxnuyen"]?.InnerText;
-                        string strContactMultiplier = _objOptions.FreeContactsMultiplierEnabled
-                            ? _objOptions.FreeContactsMultiplier.ToString()
-                            : objXmlGameplayOption["contactmultiplier"]?.InnerText;
-                        _intMaxKarma = Convert.ToInt32(strKarma);
-                        _decMaxNuyen = Convert.ToDecimal(strNuyen);
-                        _intContactMultiplier = Convert.ToInt32(strContactMultiplier);
-                        _intCachedContactPoints = (CHA.Base + CHA.Karma) * _intContactMultiplier;
-                    }
-                }
-
-                Timekeeper.Finish("load_char_cfix", loadOperation);
-                Timekeeper.Start("load_char_maxkarmafix");
-                //Fixes an issue where the quality limit was not set. In most cases this should wind up equalling 25.
-                if (_intGameplayOptionQualityLimit == 0 && _intMaxKarma > 0)
-                {
-                    _intGameplayOptionQualityLimit = _intMaxKarma;
-                }
-
-                Timekeeper.Finish("load_char_maxkarmafix", loadOperation);
-                Timekeeper.Start("load_char_mentorspiritfix");
-                Quality objMentorQuality = Qualities.FirstOrDefault(q => q.Name == "Mentor Spirit");
-                if (objMentorQuality != null)
-                {
-                    // This character doesn't have any improvements tied to a cached Mentor Spirit value, so re-apply the improvement that adds the Mentor spirit
-                    if (!Improvements.Any(imp =>
-                        imp.ImproveType == Improvement.ImprovementType.MentorSpirit &&
-                        !string.IsNullOrEmpty(imp.ImprovedName)))
-                    {
-                        /* This gets confusing when selecting a mentor spirit mid-load, so just show the error and let the player manually re-apply
-                        ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Quality, objMentorQuality.InternalId);
-                        string strSelected = objMentorQuality.Extra;
-    
-                        XmlNode objNode = objMentorQuality.MyXmlNode;
-                        if (objNode != null)
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Improvements"));
+                        // Improvement Groups.
+                        XmlNodeList objXmlGroupList = objXmlCharacter.SelectNodes("improvementgroups/improvementgroup");
+                        foreach (XmlNode objXmlGroup in objXmlGroupList)
                         {
-                            if (objNode["bonus"] != null)
+                            _lstImprovementGroups.Add(objXmlGroup.InnerText);
+                        }
+
+                        //Timekeeper.Finish("load_char_igroup");
+                    }
+
+                    using (var op_load_char_calendar = Timekeeper.StartSyncron("load_char_calendar", loadActivity))
+                    {
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Calendar"));
+                        // Calendar.
+                        XmlNodeList objXmlWeekList = objXmlCharacter.SelectNodes("calendar/week");
+                        foreach (XmlNode objXmlWeek in objXmlWeekList)
+                        {
+                            CalendarWeek objWeek = new CalendarWeek();
+                            objWeek.Load(objXmlWeek);
+                            _lstCalendar.AddWithSort(objWeek, true);
+                        }
+
+                        //Timekeeper.Finish("load_char_calendar");
+                    }
+
+                    using (var op_load_char_unarmed = Timekeeper.StartSyncron("load_char_unarmed", loadActivity))
+                    {
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("String_LegacyFixes"));
+                        // Look for the unarmed attack
+                        bool blnFoundUnarmed = false;
+                        foreach (Weapon objWeapon in _lstWeapons)
+                        {
+                            if (objWeapon.Name == "Unarmed Attack")
                             {
-                                objMentorQuality.Bonus = objNode["bonus"];
-                                ImprovementManager.ForcedValue = strSelected;
-                                ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Quality, objMentorQuality.InternalId, objNode["bonus"], false, 1, objMentorQuality.DisplayNameShort);
-                                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                                blnFoundUnarmed = true;
+                                break;
+                            }
+                        }
+
+                        if (!blnFoundUnarmed)
+                        {
+                            // Add the Unarmed Attack Weapon to the character.
+                            XmlDocument objXmlWeaponDoc = XmlManager.Load("weapons.xml");
+                            XmlNode objXmlWeapon =
+                                objXmlWeaponDoc.SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
+                            if (objXmlWeapon != null)
+                            {
+                                Weapon objWeapon = new Weapon(this);
+                                objWeapon.Create(objXmlWeapon, _lstWeapons);
+                                objWeapon.IncludedInWeapon = true; // Unarmed attack can never be removed
+                                _lstWeapons.Add(objWeapon);
+                            }
+                        }
+
+                        //Timekeeper.Finish("load_char_unarmed");
+                    }
+
+                    using (var op_load_char_dwarffix = Timekeeper.StartSyncron("load_char_dwarffix", loadActivity))
+                    {
+
+                        // converting from old dwarven resistance to new dwarven resistance
+                        if (Metatype.ToLower().Equals("dwarf"))
+                        {
+                            Quality objOldQuality =
+                                Qualities.FirstOrDefault(x => x.Name.Equals("Resistance to Pathogens and Toxins"));
+                            if (objOldQuality != null)
+                            {
+                                Qualities.Remove(objOldQuality);
+                                if (Qualities.Any(x => x.Name.Equals("Resistance to Pathogens/Toxins")) == false &&
+                                    Qualities.Any(x => x.Name.Equals("Dwarf Resistance")) == false)
                                 {
-                                    objMentorQuality.Extra = ImprovementManager.SelectedValue;
+                                    XmlNode objXmlDwarfQuality =
+                                        xmlRootQualitiesNode.SelectSingleNode(
+                                            "quality[name = \"Resistance to Pathogens/Toxins\"]") ??
+                                        xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Dwarf Resistance\"]");
+
+                                    List<Weapon> lstWeapons = new List<Weapon>();
+                                    Quality objQuality = new Quality(this);
+
+                                    objQuality.Create(objXmlDwarfQuality, QualitySource.Metatype, lstWeapons);
+                                    foreach (Weapon objWeapon in lstWeapons)
+                                        _lstWeapons.Add(objWeapon);
+                                    _lstQualities.Add(objQuality);
                                 }
                             }
                         }
-                        else
-                        */
-                        {
-                            // Failed to re-apply the improvements immediately, so let's just add it for processing when the character is opened
-                            _lstInternalIdsNeedingReapplyImprovements.Add(objMentorQuality.InternalId);
-                        }
+
+                        //Timekeeper.Finish("load_char_dwarffix");
                     }
-                }
 
-                Timekeeper.Finish("load_char_mentorspiritfix", loadOperation);
-
-                //Plugins
-                Timekeeper.Start("load_plugins");
-                if (Program.MainForm?.PluginLoader?.MyActivePlugins?.Any() == true)
-                {
-                    foreach (var plugin in Program.MainForm.PluginLoader.MyActivePlugins)
+                    using (var op_load_char_cfix = Timekeeper.StartSyncron("load_char_cfix", loadActivity))
                     {
-                        objXmlNodeList =
-                            objXmlCharacter.SelectNodes("plugins/" + plugin.GetPluginAssembly().GetName().Name);
-                        foreach (XmlNode objXmlPlugin in objXmlNodeList)
+
+                        // load issue where the contact multiplier was set to 0
+                        if (_intContactMultiplier == 0 && !string.IsNullOrEmpty(_strGameplayOption))
                         {
-                            plugin.LoadFileElement(this, objXmlPlugin.InnerText);
+                            XmlNode objXmlGameplayOption = XmlManager.Load("gameplayoptions.xml")
+                                .SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" +
+                                                  _strGameplayOption +
+                                                  "\"]");
+                            if (objXmlGameplayOption != null)
+                            {
+                                string strKarma = objXmlGameplayOption["karma"]?.InnerText;
+                                string strNuyen = objXmlGameplayOption["maxnuyen"]?.InnerText;
+                                string strContactMultiplier = _objOptions.FreeContactsMultiplierEnabled
+                                    ? _objOptions.FreeContactsMultiplier.ToString()
+                                    : objXmlGameplayOption["contactmultiplier"]?.InnerText;
+                                _intMaxKarma = Convert.ToInt32(strKarma);
+                                _decMaxNuyen = Convert.ToDecimal(strNuyen);
+                                _intContactMultiplier = Convert.ToInt32(strContactMultiplier);
+                                _intCachedContactPoints = (CHA.Base + CHA.Karma) * _intContactMultiplier;
+                            }
                         }
+
+                        //Timekeeper.Finish("load_char_cfix");
                     }
+
+                    using (var op_load_char_maxkarmafix = Timekeeper.StartSyncron("load_char_maxkarmafix", loadActivity))
+                    {
+                        //Fixes an issue where the quality limit was not set. In most cases this should wind up equalling 25.
+                        if (_intGameplayOptionQualityLimit == 0 && _intMaxKarma > 0)
+                        {
+                            _intGameplayOptionQualityLimit = _intMaxKarma;
+                        }
+
+                        //Timekeeper.Finish("load_char_maxkarmafix");
+                    }
+
+                    using (var op_load_char_mentorspiritfix = Timekeeper.StartSyncron("load_char_mentorspiritfix", loadActivity))
+                    {
+                        Quality objMentorQuality = Qualities.FirstOrDefault(q => q.Name == "Mentor Spirit");
+                        if (objMentorQuality != null)
+                        {
+                            // This character doesn't have any improvements tied to a cached Mentor Spirit value, so re-apply the improvement that adds the Mentor spirit
+                            if (!Improvements.Any(imp =>
+                                imp.ImproveType == Improvement.ImprovementType.MentorSpirit &&
+                                !string.IsNullOrEmpty(imp.ImprovedName)))
+                            {
+                                /* This gets confusing when selecting a mentor spirit mid-load, so just show the error and let the player manually re-apply
+                                ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Quality, objMentorQuality.InternalId);
+                                string strSelected = objMentorQuality.Extra;
+
+                                XmlNode objNode = objMentorQuality.MyXmlNode;
+                                if (objNode != null)
+                                {
+                                    if (objNode["bonus"] != null)
+                                    {
+                                        objMentorQuality.Bonus = objNode["bonus"];
+                                        ImprovementManager.ForcedValue = strSelected;
+                                        ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Quality, objMentorQuality.InternalId, objNode["bonus"], false, 1, objMentorQuality.DisplayNameShort);
+                                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                                        {
+                                            objMentorQuality.Extra = ImprovementManager.SelectedValue;
+                                        }
+                                    }
+                                }
+                                else
+                                */
+                                {
+                                    // Failed to re-apply the improvements immediately, so let's just add it for processing when the character is opened
+                                    _lstInternalIdsNeedingReapplyImprovements.Add(objMentorQuality.InternalId);
+                                }
+                            }
+                        }
+
+                        //Timekeeper.Finish("load_char_mentorspiritfix");
+                    }
+
+                    //Plugins
+                    using (var op_load_plugins = Timekeeper.StartSyncron("load_plugins", loadActivity))
+                    {
+                        if (Program.MainForm?.PluginLoader?.MyActivePlugins?.Any() == true)
+                        {
+                            foreach (var plugin in Program.MainForm.PluginLoader.MyActivePlugins)
+                            {
+                                objXmlNodeList =
+                                    objXmlCharacter.SelectNodes("plugins/" + plugin.GetPluginAssembly().GetName().Name);
+                                foreach (XmlNode objXmlPlugin in objXmlNodeList)
+                                {
+                                    plugin.LoadFileElement(this, objXmlPlugin.InnerText);
+                                }
+                            }
+                        }
+
+                        //Timekeeper.Finish("load_plugins");
+                    }
+
+
+
+                    // Refresh certain improvements
+                    using (var op_load_char_improvementrefreshers = Timekeeper.StartSyncron("load_char_improvementrefreshers1", loadActivity))
+                    {
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("String_GeneratedImprovements"));
+                        IsLoading = false;
+                        // Refresh permanent attribute changes due to essence loss
+                        RefreshEssenceLossImprovements();
+                        // Refresh dicepool modifiers due to filled condition monitor boxes
+                        RefreshWoundPenalties();
+                        // Refresh encumbrance penalties
+                        RefreshEncumbrance();
+                        // Curb Mystic Adept power points if the values that were loaded in would be illegal
+                        if (MysticAdeptPowerPoints > 0)
+                        {
+                            int intMAGTotalValue = MAG.TotalValue;
+                            if (MysticAdeptPowerPoints > intMAGTotalValue)
+                                MysticAdeptPowerPoints = intMAGTotalValue;
+                        }
+
+                        if (!InitiationEnabled || !AddInitiationsAllowed)
+                            ClearInitiations();
+                        //Timekeeper.Finish("load_char_improvementrefreshers");
+                    }
+
+                    //// If the character had old Qualities that were converted, immediately save the file so they are in the new format.
+                    //      if (blnHasOldQualities)
+                    //      {
+                    //    Timekeeper.Start("load_char_resav");  //Lets not silently save file on load?
+
+
+                    //    Save();
+                    //    Timekeeper.Finish("load_char_resav");
+
+
+                    //}
+                    loadActivity.SetSuccess(true);
                 }
-
-                Timekeeper.Finish("load_plugins", loadOperation);
-
-
-
-                // Refresh certain improvements
-                Timekeeper.Start("load_char_improvementrefreshers");
-                frmLoadingForm?.PerformStep(LanguageManager.GetString("String_GeneratedImprovements"));
-                IsLoading = false;
-                // Refresh permanent attribute changes due to essence loss
-                RefreshEssenceLossImprovements();
-                // Refresh dicepool modifiers due to filled condition monitor boxes
-                RefreshWoundPenalties();
-                // Refresh encumbrance penalties
-                RefreshEncumbrance();
-                // Curb Mystic Adept power points if the values that were loaded in would be illegal
-                if (MysticAdeptPowerPoints > 0)
+                catch (Exception e)
                 {
-                    int intMAGTotalValue = MAG.TotalValue;
-                    if (MysticAdeptPowerPoints > intMAGTotalValue)
-                        MysticAdeptPowerPoints = intMAGTotalValue;
+                    loadActivity.SetSuccess(false);
+                    Log.Error(e);
+                    throw;
                 }
-
-                if (!InitiationEnabled || !AddInitiationsAllowed)
-                    ClearInitiations();
-                Timekeeper.Finish("load_char_improvementrefreshers", loadOperation);
-
-                //// If the character had old Qualities that were converted, immediately save the file so they are in the new format.
-                //      if (blnHasOldQualities)
-                //      {
-                //    Timekeeper.Start("load_char_resav");  //Lets not silently save file on load?
-
-
-                //    Save();
-                //    Timekeeper.Finish("load_char_resav");
-
-
-                //}
-                loadOperation.Telemetry.Success = true;
-            }
-            catch (Exception e)
-            {
-                if (loadOperation != null)
-                    loadOperation.Telemetry.Success = false;
-                Log.Error(e);
-                throw;
-            }
-            finally
-            {
-                if (loadOperation != null)
-                    Program.ApplicationInsightsTelemetryClient.StopOperation(loadOperation);
             }
 
             return true;
@@ -14563,7 +14719,7 @@ if (!Utils.IsUnitTest){
         /// <summary>
         /// Load the Character from an XML file.
         /// </summary>
-        public bool LoadFromHeroLabFile(string strPorFile, string strCharacterId, string strSettingsName)
+        public async Task<bool> LoadFromHeroLabFile(string strPorFile, string strCharacterId, string strSettingsName)
         {
             if(!File.Exists(strPorFile))
                 return false;
@@ -14572,1873 +14728,1987 @@ if (!Utils.IsUnitTest){
             XmlDocument xmlStatBlockDocument = null;
             XmlDocument xmlLeadsDocument = null;
             List<string> lstTextStatBlockLines = null;
-            Microsoft.ApplicationInsights.Extensibility.IOperationHolder<Microsoft.ApplicationInsights.DataContracts.DependencyTelemetry> loadOperation = null;
-            Timekeeper.Start("load_xml");
-            try
+            XmlNode xmlStatBlockBaseNode;
+            XmlNode xmlLeadsBaseNode;
+            XmlNodeList xmlNodeList;
+            XmlDocument xmlGearDocument;
+            using (var op_load = Timekeeper.StartSyncron("LoadFromHeroLabFile", null, CustomActivity.OperationType.DependencyOperation, strPorFile))
             {
-                loadOperation =
-                    Program.ApplicationInsightsTelemetryClient.StartOperation<DependencyTelemetry>("loadHeroLab");
-                loadOperation.Telemetry.Type = "loadHeroLab";
-                loadOperation.Telemetry.Target = strPorFile;
-
-
                 try
                 {
-                    using (ZipArchive zipArchive =
-                        ZipFile.Open(strPorFile, ZipArchiveMode.Read, Encoding.GetEncoding(850)))
+                    op_load.MyDependencyTelemetry.Type = "loadHeroLab";
+                    op_load.MyDependencyTelemetry.Target = strPorFile;
+
+
+                    try
                     {
-                        string strLeadsName = string.Empty;
-                        foreach (ZipArchiveEntry entry in zipArchive.Entries)
+                        using (ZipArchive zipArchive =
+                            ZipFile.Open(strPorFile, ZipArchiveMode.Read, Encoding.GetEncoding(850)))
                         {
-                            string strEntryFullName = entry.FullName;
-                            string strKey = Path.GetFileName(strEntryFullName);
-                            if ((xmlStatBlockDocument == null && strEntryFullName.StartsWith("statblocks_xml")) ||
-                                (string.IsNullOrEmpty(strLeadsName) && strEntryFullName.EndsWith("portfolio.xml")) ||
-                                lstTextStatBlockLines == null && strEntryFullName.StartsWith("statblocks_txt"))
-                            {
-                                if (strEntryFullName.EndsWith(".xml"))
-                                {
-                                    XmlDocument xmlSourceDoc = new XmlDocument();
-                                    try
-                                    {
-                                        using (StreamReader sr = new StreamReader(entry.Open(), true))
-                                        {
-                                            xmlSourceDoc.Load(sr);
-                                            if (strEntryFullName.StartsWith("statblocks_xml"))
-                                            {
-                                                if (xmlSourceDoc.SelectSingleNode(
-                                                        "/document/public/character[@name = " +
-                                                        strCharacterId.CleanXPath() + "]") != null)
-                                                    xmlStatBlockDocument = xmlSourceDoc;
-                                            }
-                                            else
-                                            {
-                                                strLeadsName = xmlSourceDoc
-                                                    .SelectSingleNode(
-                                                        "/document/portfolio/hero[@heroname = " +
-                                                        strCharacterId.CleanXPath() + "]/@leadfile")?.InnerText;
-                                            }
-                                        }
-                                    }
-                                    // If we run into any problems loading the character xml files, fail out early.
-                                    catch (IOException)
-                                    {
-                                    }
-                                    catch (XmlException)
-                                    {
-                                    }
-                                }
-                                else if (strEntryFullName.EndsWith(".txt") && !strKey.Contains('.'))
-                                {
-                                    lstTextStatBlockLines = new List<string>();
-
-                                    StreamReader objReader = File.OpenText(strEntryFullName);
-                                    string strLine;
-                                    while ((strLine = objReader.ReadLine()) != null)
-                                    {
-                                        // Trim away the newlines and empty spaces at the beginning and end of lines
-                                        strLine = strLine.Trim('\n').Trim('\r').Trim();
-
-                                        lstTextStatBlockLines.Add(strLine);
-                                    }
-                                }
-                            }
-                            else if (strEntryFullName.StartsWith("images") && strEntryFullName.Contains('.'))
-                            {
-                                Bitmap imgMugshot =
-                                    (new Bitmap(entry.Open(), true)).ConvertPixelFormat(System.Drawing.Imaging
-                                        .PixelFormat.Format32bppPArgb);
-                                if (dicImages.ContainsKey(strKey))
-                                    dicImages[strKey] = imgMugshot;
-                                else
-                                    dicImages.Add(strKey, imgMugshot);
-                            }
-                        }
-
-                        if (!string.IsNullOrEmpty(strLeadsName))
-                        {
-                            // Need a second sweep for the Leads file
+                            string strLeadsName = string.Empty;
                             foreach (ZipArchiveEntry entry in zipArchive.Entries)
                             {
                                 string strEntryFullName = entry.FullName;
-                                if (strEntryFullName.EndsWith(strLeadsName))
+                                string strKey = Path.GetFileName(strEntryFullName);
+                                if ((xmlStatBlockDocument == null && strEntryFullName.StartsWith("statblocks_xml")) ||
+                                    (string.IsNullOrEmpty(strLeadsName) &&
+                                     strEntryFullName.EndsWith("portfolio.xml")) ||
+                                    lstTextStatBlockLines == null && strEntryFullName.StartsWith("statblocks_txt"))
                                 {
-                                    XmlDocument xmlSourceDoc = new XmlDocument();
-                                    try
+                                    if (strEntryFullName.EndsWith(".xml"))
                                     {
-                                        using (StreamReader sr = new StreamReader(entry.Open(), true))
+                                        XmlDocument xmlSourceDoc = new XmlDocument();
+                                        try
                                         {
-                                            xmlSourceDoc.Load(sr);
-                                            xmlLeadsDocument = xmlSourceDoc;
+                                            using (StreamReader sr = new StreamReader(entry.Open(), true))
+                                            {
+                                                xmlSourceDoc.Load(sr);
+                                                if (strEntryFullName.StartsWith("statblocks_xml"))
+                                                {
+                                                    if (xmlSourceDoc.SelectSingleNode(
+                                                            "/document/public/character[@name = " +
+                                                            strCharacterId.CleanXPath() + "]") != null)
+                                                        xmlStatBlockDocument = xmlSourceDoc;
+                                                }
+                                                else
+                                                {
+                                                    strLeadsName = xmlSourceDoc
+                                                        .SelectSingleNode(
+                                                            "/document/portfolio/hero[@heroname = " +
+                                                            strCharacterId.CleanXPath() + "]/@leadfile")?.InnerText;
+                                                }
+                                            }
+                                        }
+                                        // If we run into any problems loading the character xml files, fail out early.
+                                        catch (IOException)
+                                        {
+                                        }
+                                        catch (XmlException)
+                                        {
                                         }
                                     }
-                                    // If we run into any problems loading the character xml files, fail out early.
-                                    catch (IOException)
+                                    else if (strEntryFullName.EndsWith(".txt") && !strKey.Contains('.'))
                                     {
-                                        continue;
-                                    }
-                                    catch (XmlException)
-                                    {
-                                        continue;
-                                    }
+                                        lstTextStatBlockLines = new List<string>();
 
+                                        StreamReader objReader = File.OpenText(strEntryFullName);
+                                        string strLine;
+                                        while ((strLine = objReader.ReadLine()) != null)
+                                        {
+                                            // Trim away the newlines and empty spaces at the beginning and end of lines
+                                            strLine = strLine.Trim('\n').Trim('\r').Trim();
+
+                                            lstTextStatBlockLines.Add(strLine);
+                                        }
+                                    }
+                                }
+                                else if (strEntryFullName.StartsWith("images") && strEntryFullName.Contains('.'))
+                                {
+                                    Bitmap imgMugshot =
+                                        (new Bitmap(entry.Open(), true)).ConvertPixelFormat(System.Drawing.Imaging
+                                            .PixelFormat.Format32bppPArgb);
+                                    if (dicImages.ContainsKey(strKey))
+                                        dicImages[strKey] = imgMugshot;
+                                    else
+                                        dicImages.Add(strKey, imgMugshot);
+                                }
+                            }
+
+                            if (!string.IsNullOrEmpty(strLeadsName))
+                            {
+                                // Need a second sweep for the Leads file
+                                foreach (ZipArchiveEntry entry in zipArchive.Entries)
+                                {
+                                    string strEntryFullName = entry.FullName;
+                                    if (strEntryFullName.EndsWith(strLeadsName))
+                                    {
+                                        XmlDocument xmlSourceDoc = new XmlDocument();
+                                        try
+                                        {
+                                            using (StreamReader sr = new StreamReader(entry.Open(), true))
+                                            {
+                                                xmlSourceDoc.Load(sr);
+                                                xmlLeadsDocument = xmlSourceDoc;
+                                            }
+                                        }
+                                        // If we run into any problems loading the character xml files, fail out early.
+                                        catch (IOException)
+                                        {
+                                            continue;
+                                        }
+                                        catch (XmlException)
+                                        {
+                                            continue;
+                                        }
+
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    catch (IOException ex)
+                    {
+                        if (op_load != null)
+                        {
+                            op_load.SetSuccess(false);
+                            op_load.AddBaggage(ex.GetType().Name, ex.Message);
+                            Log.Error(ex);
+                        }
+
+                        MessageBox.Show(
+                            LanguageManager.GetString("Message_FailedLoad", GlobalOptions.Language)
+                                .Replace("{0}", ex.Message),
+                            LanguageManager.GetString("MessageTitle_FailedLoad", GlobalOptions.Language),
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return false;
+                    }
+                    catch (NotSupportedException ex)
+                    {
+                        if (op_load != null)
+                        {
+                            op_load.SetSuccess(false);
+                            op_load.AddBaggage(ex.GetType().Name, ex.Message);
+                            Log.Error(ex);
+                        }
+                        MessageBox.Show(
+                            LanguageManager.GetString("Message_FailedLoad", GlobalOptions.Language)
+                                .Replace("{0}", ex.Message),
+                            LanguageManager.GetString("MessageTitle_FailedLoad", GlobalOptions.Language),
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return false;
+                    }
+                    catch (UnauthorizedAccessException ex)
+                    {
+                        if (op_load != null)
+                        {
+                            op_load.SetSuccess(false);
+                            op_load.AddBaggage(ex.GetType().Name, ex.Message);
+                            Log.Error(ex);
+                        }
+                        MessageBox.Show(
+                            LanguageManager.GetString("Message_FailedLoad", GlobalOptions.Language)
+                                .Replace("{0}", ex.Message),
+                            LanguageManager.GetString("MessageTitle_FailedLoad", GlobalOptions.Language),
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return false;
+                    }
+
+                    if (xmlLeadsDocument == null || xmlStatBlockDocument == null)
+                    {
+                        return false;
+                    }
+
+                    using (var op_load_char_misc = Timekeeper.StartSyncron("load_char_misc", op_load))
+                    {
+                        IsLoading = true;
+
+                        _dateFileLastWriteTime = File.GetLastWriteTimeUtc(strPorFile);
+
+                        xmlStatBlockBaseNode =
+                            xmlStatBlockDocument.SelectSingleNode("/document/public/character[@name = " +
+                                                                  strCharacterId.CleanXPath() + "]");
+                        xmlLeadsBaseNode =
+                            xmlLeadsDocument.SelectSingleNode("/document/hero[@heroname = " +
+                                                              strCharacterId.CleanXPath() +
+                                                              "]");
+
+                        _blnCreated = (xmlStatBlockBaseNode.SelectSingleNode("karma/@total")?.InnerText ?? "0") != "0";
+                        if (!_blnCreated)
+                        {
+                            XmlNodeList xmlJournalEntries = xmlStatBlockBaseNode.SelectNodes("journals/journal");
+                            if (xmlJournalEntries.Count > 1)
+                            {
+                                _blnCreated = true;
+                            }
+                            else if (xmlJournalEntries.Count == 1 &&
+                                     xmlJournalEntries[0].Attributes["name"]?.InnerText != "Title")
+                            {
+                                _blnCreated = true;
+                            }
+                        }
+
+                        ResetCharacter();
+
+                        // Get the name of the settings file in use if possible.
+                        _strSettingsFileName = strSettingsName;
+
+                        // Load the character's settings file.
+                        if (!_objOptions.Load(_strSettingsFileName))
+                            return false;
+
+                        // Metatype information.
+                        string strRaceString = xmlStatBlockBaseNode.SelectSingleNode("race/@name")?.InnerText;
+                        if (!string.IsNullOrEmpty(strRaceString))
+                        {
+                            if (strRaceString == "Metasapient")
+                                strRaceString = "A.I.";
+                            foreach (XmlNode xmlMetatype in XmlManager.Load("metatypes.xml")
+                                .SelectNodes("/chummer/metatypes/metatype"))
+                            {
+                                string strMetatypeName = xmlMetatype["name"].InnerText;
+                                if (strMetatypeName == strRaceString)
+                                {
+                                    _strMetatype = strMetatypeName;
+                                    _strMetatypeCategory = xmlMetatype["category"].InnerText;
+                                    _strMetavariant = "None";
+
+                                    XmlNode objRunNode = xmlMetatype?["run"];
+                                    XmlNode objWalkNode = xmlMetatype?["walk"];
+                                    XmlNode objSprintNode = xmlMetatype?["sprint"];
+
+                                    _strMovement = xmlMetatype?["movement"]?.InnerText ?? string.Empty;
+                                    _strRun = objRunNode?.InnerText ?? string.Empty;
+                                    _strWalk = objWalkNode?.InnerText ?? string.Empty;
+                                    _strSprint = objSprintNode?.InnerText ?? string.Empty;
+
+                                    objRunNode = objRunNode?.Attributes?["alt"];
+                                    objWalkNode = objWalkNode?.Attributes?["alt"];
+                                    objSprintNode = objSprintNode?.Attributes?["alt"];
+                                    _strRunAlt = objRunNode?.InnerText ?? string.Empty;
+                                    _strWalkAlt = objWalkNode?.InnerText ?? string.Empty;
+                                    _strSprintAlt = objSprintNode?.InnerText ?? string.Empty;
                                     break;
                                 }
-                            }
-                        }
-                    }
-                }
-                catch (IOException ex)
-                {
-                    if (loadOperation?.Telemetry != null)
-                        loadOperation.Telemetry.Success = false;
-                    MessageBox.Show(
-                        LanguageManager.GetString("Message_FailedLoad", GlobalOptions.Language)
-                            .Replace("{0}", ex.Message),
-                        LanguageManager.GetString("MessageTitle_FailedLoad", GlobalOptions.Language),
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return false;
-                }
-                catch (NotSupportedException ex)
-                {
-                    if (loadOperation?.Telemetry != null)
-                        loadOperation.Telemetry.Success = false;
-                    MessageBox.Show(
-                        LanguageManager.GetString("Message_FailedLoad", GlobalOptions.Language)
-                            .Replace("{0}", ex.Message),
-                        LanguageManager.GetString("MessageTitle_FailedLoad", GlobalOptions.Language),
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return false;
-                }
-                catch (UnauthorizedAccessException ex)
-                {
-                    if (loadOperation?.Telemetry != null)
-                        loadOperation.Telemetry.Success = false;
-                    MessageBox.Show(
-                        LanguageManager.GetString("Message_FailedLoad", GlobalOptions.Language)
-                            .Replace("{0}", ex.Message),
-                        LanguageManager.GetString("MessageTitle_FailedLoad", GlobalOptions.Language),
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return false;
-                }
 
-                if (xmlLeadsDocument == null || xmlStatBlockDocument == null)
-                {
-                    return false;
-                }
-
-                Timekeeper.Start("load_char_misc");
-                IsLoading = true;
-
-                _dateFileLastWriteTime = File.GetLastWriteTimeUtc(strPorFile);
-
-                XmlNode xmlStatBlockBaseNode =
-                    xmlStatBlockDocument.SelectSingleNode("/document/public/character[@name = " +
-                                                          strCharacterId.CleanXPath() + "]");
-                XmlNode xmlLeadsBaseNode =
-                    xmlLeadsDocument.SelectSingleNode("/document/hero[@heroname = " + strCharacterId.CleanXPath() +
-                                                      "]");
-
-                _blnCreated = (xmlStatBlockBaseNode.SelectSingleNode("karma/@total")?.InnerText ?? "0") != "0";
-                if (!_blnCreated)
-                {
-                    XmlNodeList xmlJournalEntries = xmlStatBlockBaseNode.SelectNodes("journals/journal");
-                    if (xmlJournalEntries.Count > 1)
-                    {
-                        _blnCreated = true;
-                    }
-                    else if (xmlJournalEntries.Count == 1 &&
-                             xmlJournalEntries[0].Attributes["name"]?.InnerText != "Title")
-                    {
-                        _blnCreated = true;
-                    }
-                }
-
-                ResetCharacter();
-
-                // Get the name of the settings file in use if possible.
-                _strSettingsFileName = strSettingsName;
-
-                // Load the character's settings file.
-                if (!_objOptions.Load(_strSettingsFileName))
-                    return false;
-
-                // Metatype information.
-                string strRaceString = xmlStatBlockBaseNode.SelectSingleNode("race/@name")?.InnerText;
-                if (!string.IsNullOrEmpty(strRaceString))
-                {
-                    if (strRaceString == "Metasapient")
-                        strRaceString = "A.I.";
-                    foreach (XmlNode xmlMetatype in XmlManager.Load("metatypes.xml")
-                        .SelectNodes("/chummer/metatypes/metatype"))
-                    {
-                        string strMetatypeName = xmlMetatype["name"].InnerText;
-                        if (strMetatypeName == strRaceString)
-                        {
-                            _strMetatype = strMetatypeName;
-                            _strMetatypeCategory = xmlMetatype["category"].InnerText;
-                            _strMetavariant = "None";
-
-                            XmlNode objRunNode = xmlMetatype?["run"];
-                            XmlNode objWalkNode = xmlMetatype?["walk"];
-                            XmlNode objSprintNode = xmlMetatype?["sprint"];
-
-                            _strMovement = xmlMetatype?["movement"]?.InnerText ?? string.Empty;
-                            _strRun = objRunNode?.InnerText ?? string.Empty;
-                            _strWalk = objWalkNode?.InnerText ?? string.Empty;
-                            _strSprint = objSprintNode?.InnerText ?? string.Empty;
-
-                            objRunNode = objRunNode?.Attributes?["alt"];
-                            objWalkNode = objWalkNode?.Attributes?["alt"];
-                            objSprintNode = objSprintNode?.Attributes?["alt"];
-                            _strRunAlt = objRunNode?.InnerText ?? string.Empty;
-                            _strWalkAlt = objWalkNode?.InnerText ?? string.Empty;
-                            _strSprintAlt = objSprintNode?.InnerText ?? string.Empty;
-                            break;
-                        }
-
-                        foreach (XmlNode xmlMetavariant in xmlMetatype.SelectNodes("metavariants/metavariant"))
-                        {
-                            string strMetavariantName = xmlMetavariant["name"].InnerText;
-                            if (strMetavariantName == strRaceString)
-                            {
-                                _strMetatype = strMetatypeName;
-                                _strMetatypeCategory = xmlMetatype["category"].InnerText;
-                                _strMetavariant = strMetavariantName;
-
-                                XmlNode objRunNode = xmlMetavariant?["run"] ?? xmlMetatype?["run"];
-                                XmlNode objWalkNode = xmlMetavariant?["walk"] ?? xmlMetatype?["walk"];
-                                XmlNode objSprintNode = xmlMetavariant?["sprint"] ?? xmlMetatype?["sprint"];
-
-                                _strMovement = xmlMetavariant?["movement"]?.InnerText ??
-                                               xmlMetatype?["movement"]?.InnerText ?? string.Empty;
-                                _strRun = objRunNode?.InnerText ?? string.Empty;
-                                _strWalk = objWalkNode?.InnerText ?? string.Empty;
-                                _strSprint = objSprintNode?.InnerText ?? string.Empty;
-
-                                objRunNode = objRunNode?.Attributes?["alt"];
-                                objWalkNode = objWalkNode?.Attributes?["alt"];
-                                objSprintNode = objSprintNode?.Attributes?["alt"];
-                                _strRunAlt = objRunNode?.InnerText ?? string.Empty;
-                                _strWalkAlt = objWalkNode?.InnerText ?? string.Empty;
-                                _strSprintAlt = objSprintNode?.InnerText ?? string.Empty;
-                                break;
-                            }
-                        }
-                    }
-                }
-
-                // General character information.
-                int intAsIndex = strCharacterId.IndexOf(" as ", StringComparison.Ordinal);
-                if (intAsIndex != -1)
-                {
-                    _strName = strCharacterId.Substring(0, intAsIndex);
-                    _strAlias = strCharacterId.Substring(intAsIndex).TrimStart(" as ").Trim('\'');
-                }
-                else
-                {
-                    _strAlias = strCharacterId;
-                }
-
-                XmlNode xmlPersonalNode = xmlStatBlockBaseNode.SelectSingleNode("personal");
-                if (xmlPersonalNode != null)
-                {
-                    _strBackground = xmlPersonalNode["description"]?.InnerText;
-                    _strHeight = xmlPersonalNode["charheight"]?.Attributes?["text"]?.InnerText;
-                    _strWeight = xmlPersonalNode["charweight"]?.Attributes?["text"]?.InnerText;
-                    XmlAttributeCollection xmlPersonalNodeAttributes = xmlPersonalNode.Attributes;
-                    if (xmlPersonalNodeAttributes != null)
-                    {
-                        _strSex = xmlPersonalNodeAttributes["gender"]?.InnerText;
-                        _strAge = xmlPersonalNodeAttributes["age"]?.InnerText;
-                        _strHair = xmlPersonalNodeAttributes["hair"]?.InnerText;
-                        _strEyes = xmlPersonalNodeAttributes["eyes"]?.InnerText;
-                        _strSkin = xmlPersonalNodeAttributes["skin"]?.InnerText;
-                    }
-                }
-
-                _strPlayerName = xmlStatBlockBaseNode.Attributes["playername"]?.InnerText;
-
-                foreach (XmlNode xmlImageFileNameNode in xmlStatBlockBaseNode.SelectNodes("images/image/@filename"))
-                {
-                    if (dicImages.TryGetValue(xmlImageFileNameNode.InnerText, out Bitmap objOutput))
-                        _lstMugshots.Add(objOutput);
-                }
-
-                if (_lstMugshots.Count > 0)
-                    _intMainMugshotIndex = 0;
-
-                string strSettingsSummary = xmlStatBlockBaseNode.SelectSingleNode("settings/@summary")?.InnerText;
-                if (!string.IsNullOrEmpty(strSettingsSummary))
-                {
-                    int intCharCreationSystemsIndex =
-                        strSettingsSummary.IndexOf("Character Creation Systems:", StringComparison.Ordinal);
-                    int intSemicolonIndex = strSettingsSummary.IndexOf(';');
-                    if (intCharCreationSystemsIndex + 28 <= intSemicolonIndex && intCharCreationSystemsIndex != -1)
-                    {
-                        _strGameplayOption = strSettingsSummary.Substring(intCharCreationSystemsIndex + 28,
-                            strSettingsSummary.IndexOf(';') - 28 - intCharCreationSystemsIndex).Trim();
-                        if (_strGameplayOption == "Established Runners")
-                            _strGameplayOption = "Standard";
-                    }
-                }
-
-                _intBuildKarma =
-                    Convert.ToInt32(xmlStatBlockBaseNode.SelectSingleNode("creation/bp/@total")?.InnerText);
-
-                if (_intBuildKarma >= 100)
-                {
-                    _objBuildMethod = CharacterBuildMethod.Karma;
-                }
-                else
-                {
-                    _strPriorityAttributes = ConvertPriorityString(xmlLeadsBaseNode
-                        .SelectSingleNode("container/pick[@thing = \"priAttr\"]/field[@id = \"priOrder\"]/@value")
-                        ?.InnerText);
-                    _strPrioritySpecial = ConvertPriorityString(xmlLeadsBaseNode
-                        .SelectSingleNode("container/pick[@thing = \"priMagic\"]/field[@id = \"priOrder\"]/@value")
-                        ?.InnerText);
-                    _strPriorityMetatype = ConvertPriorityString(xmlLeadsBaseNode
-                        .SelectSingleNode("container/pick[@thing = \"priMeta\"]/field[@id = \"priOrder\"]/@value")
-                        ?.InnerText);
-                    _strPriorityResources = ConvertPriorityString(xmlLeadsBaseNode
-                        .SelectSingleNode("container/pick[@thing = \"priResourc\"]/field[@id = \"priOrder\"]/@value")
-                        ?.InnerText);
-                    _strPrioritySkills = ConvertPriorityString(xmlLeadsBaseNode
-                        .SelectSingleNode("container/pick[@thing = \"priSkill\"]/field[@id = \"priOrder\"]/@value")
-                        ?.InnerText);
-
-                    string ConvertPriorityString(string strInput)
-                    {
-                        switch (strInput)
-                        {
-                            case "1.":
-                                return "A,4";
-                            case "2.":
-                                return "B,3";
-                            case "3.":
-                                return "C,2";
-                            case "4.":
-                                return "D,1";
-                            case "5.":
-                                return "E,0";
-                        }
-
-                        return string.Empty;
-                    }
-
-                    if (_strPriorityAttributes == _strPrioritySpecial ||
-                        _strPriorityAttributes == _strPriorityMetatype ||
-                        _strPriorityAttributes == _strPriorityResources ||
-                        _strPriorityAttributes == _strPrioritySkills ||
-                        _strPrioritySpecial == _strPrioritySkills ||
-                        _strPrioritySpecial == _strPriorityMetatype ||
-                        _strPrioritySpecial == _strPriorityResources ||
-                        _strPriorityMetatype == _strPriorityResources ||
-                        _strPriorityMetatype == _strPrioritySpecial ||
-                        _strPriorityResources == _strPrioritySkills)
-                        _objBuildMethod = CharacterBuildMethod.SumtoTen;
-                    else
-                        _objBuildMethod = CharacterBuildMethod.Priority;
-                }
-
-                XmlDocument xmlDocumentGameplayOptions = XmlManager.Load("gameplayoptions.xml");
-                XmlNode xmlGameplayOption =
-                    xmlDocumentGameplayOptions.SelectSingleNode(
-                        "/chummer/gameplayoptions/gameplayoption[name = \"" + GameplayOption + "\"]");
-                if (xmlGameplayOption == null)
-                {
-                    string strMessage = LanguageManager
-                        .GetString("Message_MissingGameplayOption", GlobalOptions.Language)
-                        .Replace("{0}", GameplayOption);
-                    if (MessageBox.Show(strMessage,
-                            LanguageManager.GetString("Message_MissingGameplayOption_Title", GlobalOptions.Language),
-                            MessageBoxButtons.OKCancel, MessageBoxIcon.Error) == DialogResult.OK)
-                    {
-                        frmSelectBuildMethod frmPickBP = new frmSelectBuildMethod(this, true);
-                        frmPickBP.ShowDialog();
-
-                        if (frmPickBP.DialogResult != DialogResult.OK)
-                            return false;
-                    }
-                    else
-                    {
-                        BannedWareGrades.Clear();
-                        foreach (XmlNode xmlNode in xmlGameplayOption.SelectNodes("bannedwaregrades/grade"))
-                            BannedWareGrades.Add(xmlNode.InnerText);
-
-                        if (!Options.FreeContactsMultiplierEnabled)
-                            _intContactMultiplier = Convert.ToInt32(xmlGameplayOption["contactmultiplier"].InnerText);
-                        _intGameplayOptionQualityLimit =
-                            _intMaxKarma = Convert.ToInt32(xmlGameplayOption["karma"].InnerText);
-                        _decNuyenMaximumBP = _decMaxNuyen = Convert.ToDecimal(xmlGameplayOption["maxnuyen"].InnerText,
-                            GlobalOptions.InvariantCultureInfo);
-                        _intMaxAvail = Convert.ToInt32(xmlGameplayOption["maxavailability"].InnerText);
-                    }
-                }
-
-                if (_objBuildMethod == CharacterBuildMethod.Priority ||
-                    _objBuildMethod == CharacterBuildMethod.SumtoTen)
-                {
-                    if (strRaceString == "A.I.")
-                        _strPriorityTalent = "AI";
-                    XmlNode xmlPriorityTalentPick =
-                        xmlLeadsBaseNode.SelectSingleNode(
-                            "container/pick[starts-with(@thing, \"qu\") and @source = \"heritage\"]");
-                    if (xmlPriorityTalentPick != null)
-                    {
-                        switch (xmlPriorityTalentPick.Attributes["thing"]?.InnerText)
-                        {
-                            case "quAware":
-                                _strPriorityTalent = "Aware";
-                                break;
-                            case "quEnchanter":
-                                _strPriorityTalent = "Enchanter";
-                                break;
-                            case "quExplorer":
-                                _strPriorityTalent = "Explorer";
-                                break;
-                            case "quApprentice":
-                                _strPriorityTalent = "Apprentice";
-                                break;
-                            case "quAspectedMagician":
-                                _strPriorityTalent = "Aspected Magician";
-                                break;
-                            case "quAdept":
-                                _strPriorityTalent = "Adept";
-                                break;
-                            case "quMagician":
-                                _strPriorityTalent = "Magician";
-                                break;
-                            case "quMysticAdept":
-                                _strPriorityTalent = "Mystic Adept";
-                                break;
-                            case "quTechnoma":
-                                _strPriorityTalent = "Technomancer";
-                                break;
-                        }
-
-                        _lstPrioritySkills.Clear();
-                        foreach (XmlNode xmlField in xmlPriorityTalentPick.SelectNodes("field"))
-                        {
-                            string strInnerText = xmlField.InnerText;
-                            if (!string.IsNullOrEmpty(strInnerText))
-                            {
-                                _lstPrioritySkills.Add(strInnerText);
-                            }
-                        }
-                    }
-
-                    frmPriorityMetatype frmSelectMetatype = new frmPriorityMetatype(this);
-                    frmSelectMetatype.ShowDialog();
-                    if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
-                        return false;
-                }
-                else
-                {
-                    frmKarmaMetatype frmSelectMetatype = new frmKarmaMetatype(this);
-                    frmSelectMetatype.ShowDialog();
-
-                    if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
-                        return false;
-                }
-
-                XmlNode xmlKarmaNode = xmlStatBlockBaseNode.SelectSingleNode("karma");
-                if (xmlKarmaNode != null)
-                {
-                    int.TryParse(xmlKarmaNode.Attributes["left"]?.InnerText, out _intKarma);
-                    int.TryParse(xmlKarmaNode.Attributes["total"]?.InnerText, out _intTotalKarma);
-                }
-
-                XmlNode xmlReputationsNode = xmlStatBlockBaseNode.SelectSingleNode("reputations");
-                if (xmlReputationsNode != null)
-                {
-                    int.TryParse(
-                        xmlReputationsNode.SelectSingleNode("reputation[@name = \"Street Cred\"]/@value").InnerText,
-                        out _intStreetCred);
-                    int.TryParse(
-                        xmlReputationsNode.SelectSingleNode("reputation[@name = \"Notoriety\"]/@value").InnerText,
-                        out _intNotoriety);
-                    int.TryParse(
-                        xmlReputationsNode.SelectSingleNode("reputation[@name = \"Public Awareness\"]/@value")
-                            .InnerText, out _intPublicAwareness);
-                }
-
-                if (Created)
-                {
-                    decimal.TryParse(xmlStatBlockBaseNode.SelectSingleNode("cash/@total")?.InnerText, NumberStyles.Any,
-                        GlobalOptions.InvariantCultureInfo, out _decNuyen);
-                }
-
-                /* TODO: Initiation, Submersion Grades
-                objXmlCharacter.TryGetInt32FieldQuickly("initiategrade", ref _intInitiateGrade);
-                objXmlCharacter.TryGetInt32FieldQuickly("submersiongrade", ref _intSubmersionGrade);
-                */
-                Timekeeper.Finish("load_char_misc", loadOperation);
-
-                List<Weapon> lstWeapons = new List<Weapon>();
-                List<Vehicle> lstVehicles = new List<Vehicle>();
-
-                Timekeeper.Start("load_char_quality");
-
-                // Qualities
-                XmlDocument xmlQualitiesDocument = XmlManager.Load("qualities.xml");
-                foreach (XmlNode xmlQualityToImport in xmlStatBlockBaseNode.SelectNodes(
-                    "qualities/positive/quality[traitcost/@bp != \"0\"]"))
-                {
-                    string strQualityName = xmlQualityToImport.Attributes["name"]?.InnerText;
-                    if (!string.IsNullOrEmpty(strQualityName))
-                    {
-                        int intDicepoolLabelIndex = strQualityName.LastIndexOf("dicepool", StringComparison.Ordinal);
-                        if (intDicepoolLabelIndex != -1)
-                        {
-                            int intCullIndex = strQualityName.LastIndexOf('(', intDicepoolLabelIndex);
-                            if (intCullIndex != -1)
-                                strQualityName = strQualityName.Substring(0, intCullIndex).Trim();
-                        }
-
-                        int intQuantity = 1;
-                        for (int i = 1; i <= 15; ++i)
-                        {
-                            string strLoopString = " (" + i.ToString(GlobalOptions.InvariantCultureInfo) + ')';
-                            if (strQualityName.EndsWith(strLoopString))
-                            {
-                                strQualityName = strQualityName.TrimEndOnce(strLoopString, true);
-                                intQuantity = i;
-                                break;
-                            }
-                        }
-
-                        string strForcedValue = string.Empty;
-                        XmlNode xmlQualityDataNode =
-                            xmlQualitiesDocument.SelectSingleNode(
-                                "/chummer/qualities/quality[name = \"" + strQualityName + "\"]");
-                        if (xmlQualityDataNode == null)
-                        {
-                            string[] astrOriginalNameSplit = strQualityName.Split(':');
-                            if (astrOriginalNameSplit.Length > 1)
-                            {
-                                string strName = astrOriginalNameSplit[0].Trim();
-                                xmlQualityDataNode =
-                                    xmlQualitiesDocument.SelectSingleNode(
-                                        "/chummer/qualities/quality[name = \"" + strName + "\"]");
-                                if (xmlQualityDataNode != null)
-                                    strForcedValue = astrOriginalNameSplit[1].Trim();
-                            }
-                        }
-
-                        if (xmlQualityDataNode == null)
-                        {
-                            string[] astrOriginalNameSplit = strQualityName.Split(',');
-                            if (astrOriginalNameSplit.Length > 1)
-                            {
-                                string strName = astrOriginalNameSplit[0].Trim();
-                                xmlQualityDataNode =
-                                    xmlQualitiesDocument.SelectSingleNode(
-                                        "/chummer/qualities/quality[name = \"" + strName + "\"]");
-                                if (xmlQualityDataNode != null)
-                                    strForcedValue = astrOriginalNameSplit[1].Trim();
-                            }
-                        }
-
-                        if (xmlQualityDataNode != null)
-                        {
-                            for (int i = 0; i < intQuantity; ++i)
-                            {
-                                Quality objQuality = new Quality(this);
-                                objQuality.Create(xmlQualityDataNode, QualitySource.Selected, lstWeapons,
-                                    strForcedValue);
-                                objQuality.Notes = xmlQualityToImport["description"]?.InnerText ?? string.Empty;
-                                _lstQualities.Add(objQuality);
-                            }
-                        }
-                    }
-                }
-
-                foreach (XmlNode xmlQualityToImport in xmlStatBlockBaseNode.SelectNodes(
-                    "qualities/negative/quality[traitcost/@bp != \"0\"]"))
-                {
-                    string strQualityName = xmlQualityToImport.Attributes["name"]?.InnerText;
-                    if (!string.IsNullOrEmpty(strQualityName))
-                    {
-                        int intDicepoolLabelIndex = strQualityName.LastIndexOf("dicepool", StringComparison.Ordinal);
-                        if (intDicepoolLabelIndex != -1)
-                        {
-                            int intCullIndex = strQualityName.LastIndexOf('(', intDicepoolLabelIndex);
-                            if (intCullIndex != -1)
-                                strQualityName = strQualityName.Substring(0, intCullIndex).Trim();
-                        }
-
-                        switch (strQualityName)
-                        {
-                            case "Reduced (hearing)":
-                                strQualityName = "Reduced Sense (Hearing)";
-                                break;
-                            case "Reduced (smell)":
-                                strQualityName = "Reduced Sense (Smell)";
-                                break;
-                            case "Reduced (taste)":
-                                strQualityName = "Reduced Sense (Taste)";
-                                break;
-                            case "Reduced (touch)":
-                                strQualityName = "Reduced Sense (Touch)";
-                                break;
-                            case "Reduced (sight)":
-                                strQualityName = "Reduced Sense (Sight)";
-                                break;
-                        }
-
-                        int intQuantity = 1;
-                        for (int i = 1; i <= 15; ++i)
-                        {
-                            string strLoopString = " (" + i.ToString(GlobalOptions.InvariantCultureInfo) + ')';
-                            if (strQualityName.EndsWith(strLoopString))
-                            {
-                                strQualityName = strQualityName.TrimEndOnce(strLoopString, true);
-                                intQuantity = i;
-                                break;
-                            }
-                        }
-
-                        string strForcedValue = string.Empty;
-                        XmlNode xmlQualityDataNode =
-                            xmlQualitiesDocument.SelectSingleNode(
-                                "/chummer/qualities/quality[name = \"" + strQualityName + "\"]");
-                        if (xmlQualityDataNode == null)
-                        {
-                            string[] astrOriginalNameSplit = strQualityName.Split(':');
-                            if (astrOriginalNameSplit.Length > 1)
-                            {
-                                string strName = astrOriginalNameSplit[0].Trim();
-                                xmlQualityDataNode =
-                                    xmlQualitiesDocument.SelectSingleNode(
-                                        "/chummer/qualities/quality[name = \"" + strName + "\"]");
-                                if (xmlQualityDataNode != null)
-                                    strForcedValue = astrOriginalNameSplit[1].Trim();
-                            }
-                        }
-
-                        if (xmlQualityDataNode == null)
-                        {
-                            string[] astrOriginalNameSplit = strQualityName.Split(',');
-                            if (astrOriginalNameSplit.Length > 1)
-                            {
-                                string strName = astrOriginalNameSplit[0].Trim();
-                                xmlQualityDataNode =
-                                    xmlQualitiesDocument.SelectSingleNode(
-                                        "/chummer/qualities/quality[name = \"" + strName + "\"]");
-                                if (xmlQualityDataNode != null)
-                                    strForcedValue = astrOriginalNameSplit[1].Trim();
-                            }
-                        }
-
-                        if (xmlQualityDataNode != null)
-                        {
-                            for (int i = 0; i < intQuantity; ++i)
-                            {
-                                Quality objQuality = new Quality(this);
-                                objQuality.Create(xmlQualityDataNode, QualitySource.Selected, lstWeapons,
-                                    strForcedValue);
-                                objQuality.Notes = xmlQualityToImport["description"]?.InnerText ?? string.Empty;
-                                _lstQualities.Add(objQuality);
-                            }
-                        }
-                    }
-                }
-
-                Timekeeper.Finish("load_char_quality", loadOperation);
-                AttributeSection.LoadFromHeroLab(xmlStatBlockBaseNode, loadOperation);
-                Timekeeper.Start("load_char_misc2");
-
-                /* TODO: Find some way to get Mystic Adept PPs from Hero Lab files
-                // Attempt to load the split MAG CharacterAttribute information for Mystic Adepts.
-                if (_blnAdeptEnabled && _blnMagicianEnabled)
-                {
-                    xmlCharacterNavigator.TryGetInt32FieldQuickly("magsplitadept", ref _intMAGAdept);
-                    xmlCharacterNavigator.TryGetInt32FieldQuickly("magsplitmagician", ref _intMAGMagician);
-                }
-                */
-
-                // Attempt to load in the character's tradition
-                if (xmlStatBlockBaseNode.SelectSingleNode("magic/tradition") != null)
-                {
-                    _objTradition.LoadFromHeroLab(xmlStatBlockBaseNode.SelectSingleNode("magic/tradition"));
-                }
-
-                // Attempt to load Condition Monitor Progress.
-                XmlNode xmlPhysicalCMFilledNode =
-                    xmlLeadsBaseNode.SelectSingleNode("usagepool[@id = \"DmgNet\" and @pickindex=\"5\"]/@quantity");
-                if (xmlPhysicalCMFilledNode != null)
-                    int.TryParse(xmlPhysicalCMFilledNode.InnerText, out _intPhysicalCMFilled);
-                XmlNode xmlStunCMFilledNode =
-                    xmlLeadsBaseNode.SelectSingleNode("usagepool[@id = \"DmgNet\" and @pickindex=\"6\"]/@quantity");
-                if (xmlStunCMFilledNode != null)
-                    int.TryParse(xmlStunCMFilledNode.InnerText, out _intStunCMFilled);
-                Timekeeper.Finish("load_char_misc2", loadOperation);
-                Timekeeper.Start("load_char_skills"); //slightly messy
-
-                SkillsSection.LoadFromHeroLab(xmlStatBlockBaseNode.SelectSingleNode("skills"), loadOperation);
-
-                Timekeeper.Finish("load_char_skills", loadOperation);
-                /* TODO: Add support for locations from HeroLab
-                Timekeeper.Start("load_char_loc");
-    
-                // Locations.
-                XmlNodeList objXmlLocationList = objXmlCharacter.SelectNodes("gearlocations/gearlocation");
-                foreach (XmlNode objXmlLocation in objXmlLocationList)
-                {
-                    Location objLocation = new Location(this, _lstGearLocations, string.Empty, false);
-                    objLocation.Load(objXmlLocation);
-                }
-    
-                objXmlLocationList = objXmlCharacter.SelectNodes("locations/location");
-                foreach (XmlNode objXmlLocation in objXmlLocationList)
-                {
-                    Location objLocation = new Location(this, _lstGearLocations, string.Empty, false);
-                    objLocation.Load(objXmlLocation);
-                }
-    
-                objXmlLocationList = objXmlCharacter.SelectNodes("gearlocations/location");
-                foreach (XmlNode objXmlLocation in objXmlLocationList)
-                {
-                    Location objLocation = new Location(this, _lstGearLocations, string.Empty, false);
-                    objLocation.Load(objXmlLocation);
-                }
-    
-                Timekeeper.Finish("load_char_loc");
-                Timekeeper.Start("load_char_abundle");
-    
-                // Armor Bundles.
-                objXmlLocationList = objXmlCharacter.SelectNodes("armorbundles/armorbundle");
-                foreach (XmlNode objXmlLocation in objXmlLocationList)
-                {
-                    Location objLocation = new Location(this, _lstArmorLocations, string.Empty, false);
-                    objLocation.Load(objXmlLocation);
-                }
-    
-                objXmlLocationList = objXmlCharacter.SelectNodes("armorlocations/armorlocation");
-                foreach (XmlNode objXmlLocation in objXmlLocationList)
-                {
-                    Location objLocation = new Location(this, _lstArmorLocations, string.Empty, false);
-                    objLocation.Load(objXmlLocation);
-                }
-    
-                objXmlLocationList = objXmlCharacter.SelectNodes("armorlocations/location");
-                foreach (XmlNode objXmlLocation in objXmlLocationList)
-                {
-                    Location objLocation = new Location(this, _lstArmorLocations, string.Empty, false);
-                    objLocation.Load(objXmlLocation);
-                }
-    
-                Timekeeper.Finish("load_char_abundle");
-                Timekeeper.Start("load_char_vloc");
-    
-                // Vehicle Locations.
-                XmlNodeList objXmlVehicleLocationList = objXmlCharacter.SelectNodes("vehiclelocations/vehiclelocation");
-                foreach (XmlNode objXmlLocation in objXmlVehicleLocationList)
-                {
-                    Location objLocation = new Location(this, _lstVehicleLocations, string.Empty, false);
-                    objLocation.Load(objXmlLocation);
-                }
-    
-                objXmlVehicleLocationList = objXmlCharacter.SelectNodes("vehiclelocations/location");
-                foreach (XmlNode objXmlLocation in objXmlVehicleLocationList)
-                {
-                    Location objLocation = new Location(this, _lstVehicleLocations, string.Empty, false);
-                    objLocation.Load(objXmlLocation);
-                }
-    
-                Timekeeper.Finish("load_char_vloc");
-                Timekeeper.Start("load_char_wloc");
-    
-                // Weapon Locations.
-                XmlNodeList objXmlWeaponLocationList = objXmlCharacter.SelectNodes("weaponlocations/weaponlocation");
-                foreach (XmlNode objXmlLocation in objXmlWeaponLocationList)
-                {
-                    Location objLocation = new Location(this, _lstWeaponLocations, string.Empty, false);
-                    objLocation.Load(objXmlLocation);
-                }
-    
-                objXmlWeaponLocationList = objXmlCharacter.SelectNodes("weaponlocations/location");
-                foreach (XmlNode objXmlLocation in objXmlWeaponLocationList)
-                {
-                    Location objLocation = new Location(this, _lstWeaponLocations, string.Empty, false);
-                    objLocation.Load(objXmlLocation);
-                }
-    
-                Timekeeper.Finish("load_char_wloc");
-                */
-                Timekeeper.Start("load_char_contacts");
-
-                // Contacts.
-                foreach (XmlNode xmlContactToImport in xmlStatBlockBaseNode.SelectNodes(
-                    "contacts/contact[@useradded != \"no\"]"))
-                {
-                    Contact objContact = new Contact(this)
-                    {
-                        EntityType = ContactType.Contact
-                    };
-                    XmlAttributeCollection xmlImportAttributes = xmlContactToImport.Attributes;
-                    objContact.Name = xmlImportAttributes["name"]?.InnerText ?? string.Empty;
-                    objContact.Role = xmlImportAttributes["type"]?.InnerText ?? string.Empty;
-                    objContact.Connection = Convert.ToInt32(xmlImportAttributes["connection"]?.InnerText ?? "1");
-                    objContact.Loyalty = Convert.ToInt32(xmlImportAttributes["loyalty"]?.InnerText ?? "1");
-                    string strDescription = xmlContactToImport["description"]?.InnerText;
-                    foreach (string strLine in strDescription.Split('\n'))
-                    {
-                        string[] astrLineColonSplit = strLine.Split(':');
-                        switch (astrLineColonSplit[0])
-                        {
-                            case "Metatype":
-                                objContact.Metatype = astrLineColonSplit[1].Trim();
-                                break;
-                            case "Sex":
-                                objContact.Sex = astrLineColonSplit[1].Trim();
-                                break;
-                            case "Age":
-                                objContact.Age = astrLineColonSplit[1].Trim();
-                                break;
-                            case "Preferred Payment Method":
-                                objContact.PreferredPayment = astrLineColonSplit[1].Trim();
-                                break;
-                            case "Hobbies/Vice":
-                                objContact.HobbiesVice = astrLineColonSplit[1].Trim();
-                                break;
-                            case "Personal Life":
-                                objContact.PersonalLife = astrLineColonSplit[1].Trim();
-                                break;
-                            case "Type":
-                                objContact.Type = astrLineColonSplit[1].Trim();
-                                break;
-                            default:
-                                objContact.Notes += strLine + '\n';
-                                break;
-                        }
-                    }
-
-                    objContact.Notes = objContact.Notes.TrimEnd('\n');
-                    _lstContacts.Add(objContact);
-                }
-
-                Timekeeper.Finish("load_char_contacts", loadOperation);
-                Timekeeper.Start("load_char_armor");
-
-                // Armor.
-                XmlDocument xmlGearDocument = XmlManager.Load("gear.xml");
-                XmlDocument xmlArmorDocument = XmlManager.Load("armor.xml");
-                foreach (XmlNode xmlArmorToImport in xmlStatBlockBaseNode.SelectNodes(
-                    "gear/armor/item[@useradded != \"no\"]"))
-                {
-                    string strArmorName = xmlArmorToImport.Attributes["name"]?.InnerText;
-                    if (!string.IsNullOrEmpty(strArmorName))
-                    {
-                        XmlNode xmlArmorData =
-                            xmlArmorDocument.SelectSingleNode("chummer/armors/armor[name = \"" + strArmorName + "\"]");
-                        if (xmlArmorData == null)
-                        {
-                            string[] astrOriginalNameSplit = strArmorName.Split(':');
-                            if (astrOriginalNameSplit.Length > 1)
-                            {
-                                string strName = astrOriginalNameSplit[0].Trim();
-                                xmlArmorData =
-                                    xmlArmorDocument.SelectSingleNode(
-                                        "/chummer/armors/armor[name = \"" + strName + "\"]");
-                            }
-
-                            if (xmlArmorData == null)
-                            {
-                                astrOriginalNameSplit = strArmorName.Split(',');
-                                if (astrOriginalNameSplit.Length > 1)
+                                foreach (XmlNode xmlMetavariant in xmlMetatype.SelectNodes("metavariants/metavariant"))
                                 {
-                                    string strName = astrOriginalNameSplit[0].Trim();
-                                    xmlArmorData =
-                                        xmlArmorDocument.SelectSingleNode(
-                                            "/chummer/armors/armor[name = \"" + strName + "\"]");
-                                }
-                            }
-                        }
-
-                        if (xmlArmorData != null)
-                        {
-                            Armor objArmor = new Armor(this);
-                            objArmor.Create(xmlArmorData,
-                                Convert.ToInt32(xmlArmorToImport.Attributes["rating"]?.InnerText), lstWeapons);
-                            objArmor.Notes = xmlArmorToImport["description"]?.InnerText;
-                            _lstArmor.Add(objArmor);
-
-                            foreach (string strName in HeroLabPluginNodeNames)
-                            {
-                                foreach (XmlNode xmlArmorModToImport in xmlArmorToImport.SelectNodes(
-                                    strName + "/item[@useradded != \"no\"]"))
-                                {
-                                    string strArmorModName = xmlArmorModToImport.Attributes["name"]?.InnerText;
-                                    if (!string.IsNullOrEmpty(strArmorModName))
+                                    string strMetavariantName = xmlMetavariant["name"].InnerText;
+                                    if (strMetavariantName == strRaceString)
                                     {
-                                        XmlNode xmlArmorModData =
-                                            xmlArmorDocument.SelectSingleNode(
-                                                "chummer/mods/mod[name = \"" + strArmorModName + "\"]");
-                                        if (xmlArmorModData != null)
-                                        {
-                                            ArmorMod objArmorMod = new ArmorMod(this);
-                                            objArmorMod.Create(xmlArmorModData,
-                                                Convert.ToInt32(xmlArmorModToImport.Attributes["rating"]?.InnerText),
-                                                lstWeapons);
-                                            objArmorMod.Notes = xmlArmorModToImport["description"]?.InnerText;
-                                            objArmorMod.Parent = objArmor;
-                                            objArmor.ArmorMods.Add(objArmorMod);
+                                        _strMetatype = strMetatypeName;
+                                        _strMetatypeCategory = xmlMetatype["category"].InnerText;
+                                        _strMetavariant = strMetavariantName;
 
-                                            foreach (string strPluginNodeName in HeroLabPluginNodeNames)
-                                            {
-                                                foreach (XmlNode xmlPluginToAdd in xmlArmorModToImport.SelectNodes(
-                                                    strPluginNodeName + "/item[@useradded != \"no\"]"))
-                                                {
-                                                    Gear objPlugin = new Gear(this);
-                                                    if (objPlugin.ImportHeroLabGear(xmlPluginToAdd, xmlArmorModData,
-                                                        lstWeapons))
-                                                        objArmorMod.Gear.Add(objPlugin);
-                                                }
+                                        XmlNode objRunNode = xmlMetavariant?["run"] ?? xmlMetatype?["run"];
+                                        XmlNode objWalkNode = xmlMetavariant?["walk"] ?? xmlMetatype?["walk"];
+                                        XmlNode objSprintNode = xmlMetavariant?["sprint"] ?? xmlMetatype?["sprint"];
 
-                                                foreach (XmlNode xmlPluginToAdd in xmlArmorModToImport.SelectNodes(
-                                                    strPluginNodeName + "/item[@useradded = \"no\"]"))
-                                                {
-                                                    string strGearName = xmlPluginToAdd.Attributes["name"]?.InnerText;
-                                                    if (!string.IsNullOrEmpty(strGearName))
-                                                    {
-                                                        Gear objPlugin = objArmorMod.Gear.FirstOrDefault(x =>
-                                                            x.IncludedInParent &&
-                                                            (x.Name.Contains(strGearName) ||
-                                                             strGearName.Contains(x.Name)));
-                                                        if (objPlugin != null)
-                                                        {
-                                                            objPlugin.Quantity =
-                                                                Convert.ToDecimal(
-                                                                    xmlPluginToAdd.Attributes["quantity"]?.InnerText ??
-                                                                    "1", GlobalOptions.InvariantCultureInfo);
-                                                            objPlugin.Notes = xmlPluginToAdd["description"]?.InnerText;
-                                                            objPlugin.ProcessHeroLabGearPlugins(xmlPluginToAdd,
-                                                                lstWeapons);
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        else
-                                        {
-                                            Gear objPlugin = new Gear(this);
-                                            if (objPlugin.ImportHeroLabGear(xmlArmorModToImport, xmlArmorData,
-                                                lstWeapons))
-                                                objArmor.Gear.Add(objPlugin);
-                                        }
-                                    }
-                                }
+                                        _strMovement = xmlMetavariant?["movement"]?.InnerText ??
+                                                       xmlMetatype?["movement"]?.InnerText ?? string.Empty;
+                                        _strRun = objRunNode?.InnerText ?? string.Empty;
+                                        _strWalk = objWalkNode?.InnerText ?? string.Empty;
+                                        _strSprint = objSprintNode?.InnerText ?? string.Empty;
 
-                                foreach (XmlNode xmlArmorModToImport in xmlArmorToImport.SelectNodes(
-                                    strName + "/item[@useradded = \"no\"]"))
-                                {
-                                    string strArmorModName = xmlArmorModToImport.Attributes["name"]?.InnerText;
-                                    if (!string.IsNullOrEmpty(strArmorModName))
-                                    {
-                                        ArmorMod objArmorMod = objArmor.ArmorMods.FirstOrDefault(x =>
-                                            x.IncludedInArmor &&
-                                            (x.Name.Contains(strArmorModName) || strArmorModName.Contains(x.Name)));
-                                        if (objArmorMod != null)
-                                        {
-                                            objArmorMod.Notes = xmlArmorModToImport["description"]?.InnerText;
-                                            foreach (string strPluginNodeName in HeroLabPluginNodeNames)
-                                            {
-                                                foreach (XmlNode xmlPluginToAdd in xmlArmorModToImport.SelectNodes(
-                                                    strPluginNodeName + "/item[@useradded != \"no\"]"))
-                                                {
-                                                    Gear objPlugin = new Gear(this);
-                                                    if (objPlugin.ImportHeroLabGear(xmlPluginToAdd,
-                                                        objArmorMod.GetNode(), lstWeapons))
-                                                        objArmorMod.Gear.Add(objPlugin);
-                                                }
-
-                                                foreach (XmlNode xmlPluginToAdd in xmlArmorModToImport.SelectNodes(
-                                                    strPluginNodeName + "/item[@useradded = \"no\"]"))
-                                                {
-                                                    string strGearName = xmlPluginToAdd.Attributes["name"]?.InnerText;
-                                                    if (!string.IsNullOrEmpty(strGearName))
-                                                    {
-                                                        Gear objPlugin = objArmorMod.Gear.FirstOrDefault(x =>
-                                                            x.IncludedInParent &&
-                                                            (x.Name.Contains(strGearName) ||
-                                                             strGearName.Contains(x.Name)));
-                                                        if (objPlugin != null)
-                                                        {
-                                                            objPlugin.Quantity =
-                                                                Convert.ToDecimal(
-                                                                    xmlPluginToAdd.Attributes["quantity"]?.InnerText ??
-                                                                    "1", GlobalOptions.InvariantCultureInfo);
-                                                            objPlugin.Notes = xmlPluginToAdd["description"]?.InnerText;
-                                                            objPlugin.ProcessHeroLabGearPlugins(xmlPluginToAdd,
-                                                                lstWeapons);
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        else
-                                        {
-                                            Gear objPlugin = objArmor.Gear.FirstOrDefault(x =>
-                                                x.IncludedInParent &&
-                                                (x.Name.Contains(strArmorModName) || strArmorModName.Contains(x.Name)));
-                                            if (objPlugin != null)
-                                            {
-                                                objPlugin.Quantity = Convert.ToDecimal(
-                                                    xmlArmorModToImport.Attributes["quantity"]?.InnerText ?? "1",
-                                                    GlobalOptions.InvariantCultureInfo);
-                                                objPlugin.Notes = xmlArmorModToImport["description"]?.InnerText;
-                                                objPlugin.ProcessHeroLabGearPlugins(xmlArmorModToImport, lstWeapons);
-                                            }
-                                        }
+                                        objRunNode = objRunNode?.Attributes?["alt"];
+                                        objWalkNode = objWalkNode?.Attributes?["alt"];
+                                        objSprintNode = objSprintNode?.Attributes?["alt"];
+                                        _strRunAlt = objRunNode?.InnerText ?? string.Empty;
+                                        _strWalkAlt = objWalkNode?.InnerText ?? string.Empty;
+                                        _strSprintAlt = objSprintNode?.InnerText ?? string.Empty;
+                                        break;
                                     }
                                 }
                             }
                         }
-                    }
-                }
 
-                Timekeeper.Finish("load_char_armor", loadOperation);
-                Timekeeper.Start("load_char_weapons");
-
-                // Weapons.
-                foreach (XmlNode xmlWeaponToImport in xmlStatBlockBaseNode.SelectNodes(
-                    "gear/weapons/item[@useradded != \"no\"]"))
-                {
-                    Weapon objWeapon = new Weapon(this);
-                    if (objWeapon.ImportHeroLabWeapon(xmlWeaponToImport, lstWeapons))
-                        _lstWeapons.Add(objWeapon);
-                }
-
-                foreach (XmlNode xmlPluginToAdd in xmlStatBlockBaseNode.SelectNodes(
-                    "gear/weapons/item[@useradded = \"no\"]"))
-                {
-                    string strName = xmlPluginToAdd.Attributes["name"]?.InnerText;
-                    if (!string.IsNullOrEmpty(strName))
-                    {
-                        Weapon objWeapon = _lstWeapons.FirstOrDefault(x =>
-                            !string.IsNullOrEmpty(x.ParentID) &&
-                            (x.Name.Contains(strName) || strName.Contains(x.Name)));
-                        if (objWeapon != null)
+                        // General character information.
+                        int intAsIndex = strCharacterId.IndexOf(" as ", StringComparison.Ordinal);
+                        if (intAsIndex != -1)
                         {
-                            objWeapon.Notes = xmlPluginToAdd["description"]?.InnerText;
-                            objWeapon.ProcessHeroLabWeaponPlugins(xmlPluginToAdd, lstWeapons);
+                            _strName = strCharacterId.Substring(0, intAsIndex);
+                            _strAlias = strCharacterId.Substring(intAsIndex).TrimStart(" as ").Trim('\'');
                         }
-                    }
-                }
-
-                Timekeeper.Finish("load_char_weapons", loadOperation);
-                Timekeeper.Start("load_char_ware");
-
-                // Cyberware/Bioware.
-                foreach (XmlNode xmlCyberwareToImport in xmlStatBlockBaseNode.SelectNodes(
-                    "gear/augmentations/cyberware/item[@useradded != \"no\"]"))
-                {
-                    Cyberware objCyberware = new Cyberware(this);
-                    if (objCyberware.ImportHeroLabCyberware(xmlCyberwareToImport, null, lstWeapons, lstVehicles))
-                        _lstCyberware.Add(objCyberware);
-                }
-
-                foreach (XmlNode xmlPluginToAdd in xmlStatBlockBaseNode.SelectNodes(
-                    "gear/augmentations/cyberware/item[@useradded = \"no\"]"))
-                {
-                    string strName = xmlPluginToAdd.Attributes["name"]?.InnerText;
-                    if (!string.IsNullOrEmpty(strName))
-                    {
-                        Cyberware objPlugin = _lstCyberware.FirstOrDefault(x =>
-                            !string.IsNullOrEmpty(x.ParentID) &&
-                            (x.Name.Contains(strName) || strName.Contains(x.Name)));
-                        if (objPlugin != null)
+                        else
                         {
-                            objPlugin.Notes = xmlPluginToAdd["description"]?.InnerText;
-                            objPlugin.ProcessHeroLabCyberwarePlugins(xmlPluginToAdd, objPlugin.Grade, lstWeapons,
-                                lstVehicles);
-                        }
-                    }
-                }
-
-                foreach (XmlNode xmlCyberwareToImport in xmlStatBlockBaseNode.SelectNodes(
-                    "gear/augmentations/bioware/item[@useradded != \"no\"]"))
-                {
-                    Cyberware objCyberware = new Cyberware(this);
-                    if (objCyberware.ImportHeroLabCyberware(xmlCyberwareToImport, null, lstWeapons, lstVehicles))
-                        _lstCyberware.Add(objCyberware);
-                }
-
-                foreach (XmlNode xmlPluginToAdd in xmlStatBlockBaseNode.SelectNodes(
-                    "gear/augmentations/bioware/item[@useradded = \"no\"]"))
-                {
-                    string strName = xmlPluginToAdd.Attributes["name"]?.InnerText;
-                    if (!string.IsNullOrEmpty(strName))
-                    {
-                        Cyberware objPlugin = _lstCyberware.FirstOrDefault(x =>
-                            !string.IsNullOrEmpty(x.ParentID) &&
-                            (x.Name.Contains(strName) || strName.Contains(x.Name)));
-                        if (objPlugin != null)
-                        {
-                            objPlugin.Notes = xmlPluginToAdd["description"]?.InnerText;
-                            objPlugin.ProcessHeroLabCyberwarePlugins(xmlPluginToAdd, objPlugin.Grade, lstWeapons,
-                                lstVehicles);
-                        }
-                    }
-                }
-
-                Timekeeper.Finish("load_char_ware", loadOperation);
-                Timekeeper.Start("load_char_spells");
-
-                // Spells.
-                XmlNodeList xmlNodeList = xmlStatBlockBaseNode.SelectNodes("magic/spells/spell");
-                XmlDocument xmlSpellDocument = XmlManager.Load("spells.xml");
-                foreach (XmlNode xmlHeroLabSpell in xmlNodeList)
-                {
-                    string strSpellName = xmlHeroLabSpell.Attributes["name"]?.InnerText;
-                    if (!string.IsNullOrEmpty(strSpellName))
-                    {
-                        bool blnIsLimited = strSpellName.EndsWith(" (limited)");
-                        if (blnIsLimited)
-                            strSpellName = strSpellName.TrimEndOnce(" (limited)");
-                        string strForcedValue = string.Empty;
-                        switch (strSpellName)
-                        {
-                            case "Increase Body":
-                                strForcedValue = "BOD";
-                                strSpellName = "Increase [Attribute]";
-                                break;
-                            case "Increase Agility":
-                                strForcedValue = "AGI";
-                                strSpellName = "Increase [Attribute]";
-                                break;
-                            case "Increase Reaction":
-                                strForcedValue = "REA";
-                                strSpellName = "Increase [Attribute]";
-                                break;
-                            case "Increase Strength":
-                                strForcedValue = "STR";
-                                strSpellName = "Increase [Attribute]";
-                                break;
-                            case "Increase Charisma":
-                                strForcedValue = "CHA";
-                                strSpellName = "Increase [Attribute]";
-                                break;
-                            case "Increase Intuition":
-                                strForcedValue = "INT";
-                                strSpellName = "Increase [Attribute]";
-                                break;
-                            case "Increase Logic":
-                                strForcedValue = "LOG";
-                                strSpellName = "Increase [Attribute]";
-                                break;
-                            case "Increase Willpower":
-                                strForcedValue = "WIL";
-                                strSpellName = "Increase [Attribute]";
-                                break;
-                            case "Decrease Body":
-                                strForcedValue = "BOD";
-                                strSpellName = "Decrease [Attribute]";
-                                break;
-                            case "Decrease Agility":
-                                strForcedValue = "AGI";
-                                strSpellName = "Decrease [Attribute]";
-                                break;
-                            case "Decrease Reaction":
-                                strForcedValue = "REA";
-                                strSpellName = "Decrease [Attribute]";
-                                break;
-                            case "Decrease Strength":
-                                strForcedValue = "STR";
-                                strSpellName = "Decrease [Attribute]";
-                                break;
-                            case "Decrease Charisma":
-                                strForcedValue = "CHA";
-                                strSpellName = "Decrease [Attribute]";
-                                break;
-                            case "Decrease Intuition":
-                                strForcedValue = "INT";
-                                strSpellName = "Decrease [Attribute]";
-                                break;
-                            case "Decrease Logic":
-                                strForcedValue = "LOG";
-                                strSpellName = "Decrease [Attribute]";
-                                break;
-                            case "Decrease Willpower":
-                                strForcedValue = "WIL";
-                                strSpellName = "Decrease [Attribute]";
-                                break;
+                            _strAlias = strCharacterId;
                         }
 
-                        if (strSpellName.StartsWith("Detect ") &&
-                            strSpellName != "Detect Life" &&
-                            strSpellName != "Detect Life, Extended" &&
-                            strSpellName != "Detect Magic" &&
-                            strSpellName != "Detect Magic, Extended" &&
-                            strSpellName != "Detect Enemies" &&
-                            strSpellName != "Detect Enemies, Extended" &&
-                            strSpellName != "Detect Individual" &&
-                            strSpellName != "Detect Life, Extended")
+                        XmlNode xmlPersonalNode = xmlStatBlockBaseNode.SelectSingleNode("personal");
+                        if (xmlPersonalNode != null)
                         {
-                            strForcedValue = strSpellName.TrimStartOnce("Clean ").TrimEndOnce(", Extended");
-                            if (xmlHeroLabSpell.Attributes["type"]?.InnerText == "Physical")
-                                strSpellName = "Detect [Object]";
-                            else if (strSpellName.EndsWith(", Extended"))
-                                strSpellName = "Detect [Life Form], Extended";
+                            _strBackground = xmlPersonalNode["description"]?.InnerText;
+                            _strHeight = xmlPersonalNode["charheight"]?.Attributes?["text"]?.InnerText;
+                            _strWeight = xmlPersonalNode["charweight"]?.Attributes?["text"]?.InnerText;
+                            XmlAttributeCollection xmlPersonalNodeAttributes = xmlPersonalNode.Attributes;
+                            if (xmlPersonalNodeAttributes != null)
+                            {
+                                _strSex = xmlPersonalNodeAttributes["gender"]?.InnerText;
+                                _strAge = xmlPersonalNodeAttributes["age"]?.InnerText;
+                                _strHair = xmlPersonalNodeAttributes["hair"]?.InnerText;
+                                _strEyes = xmlPersonalNodeAttributes["eyes"]?.InnerText;
+                                _strSkin = xmlPersonalNodeAttributes["skin"]?.InnerText;
+                            }
+                        }
+
+                        _strPlayerName = xmlStatBlockBaseNode.Attributes["playername"]?.InnerText;
+
+                        foreach (XmlNode xmlImageFileNameNode in xmlStatBlockBaseNode.SelectNodes(
+                            "images/image/@filename"))
+                        {
+                            if (dicImages.TryGetValue(xmlImageFileNameNode.InnerText, out Bitmap objOutput))
+                                _lstMugshots.Add(objOutput);
+                        }
+
+                        if (_lstMugshots.Count > 0)
+                            _intMainMugshotIndex = 0;
+
+                        string strSettingsSummary =
+                            xmlStatBlockBaseNode.SelectSingleNode("settings/@summary")?.InnerText;
+                        if (!string.IsNullOrEmpty(strSettingsSummary))
+                        {
+                            int intCharCreationSystemsIndex =
+                                strSettingsSummary.IndexOf("Character Creation Systems:", StringComparison.Ordinal);
+                            int intSemicolonIndex = strSettingsSummary.IndexOf(';');
+                            if (intCharCreationSystemsIndex + 28 <= intSemicolonIndex &&
+                                intCharCreationSystemsIndex != -1)
+                            {
+                                _strGameplayOption = strSettingsSummary.Substring(intCharCreationSystemsIndex + 28,
+                                    strSettingsSummary.IndexOf(';') - 28 - intCharCreationSystemsIndex).Trim();
+                                if (_strGameplayOption == "Established Runners")
+                                    _strGameplayOption = "Standard";
+                            }
+                        }
+
+                        _intBuildKarma =
+                            Convert.ToInt32(xmlStatBlockBaseNode.SelectSingleNode("creation/bp/@total")?.InnerText);
+
+                        if (_intBuildKarma >= 100)
+                        {
+                            _objBuildMethod = CharacterBuildMethod.Karma;
+                        }
+                        else
+                        {
+                            _strPriorityAttributes = ConvertPriorityString(xmlLeadsBaseNode
+                                .SelectSingleNode(
+                                    "container/pick[@thing = \"priAttr\"]/field[@id = \"priOrder\"]/@value")
+                                ?.InnerText);
+                            _strPrioritySpecial = ConvertPriorityString(xmlLeadsBaseNode
+                                .SelectSingleNode(
+                                    "container/pick[@thing = \"priMagic\"]/field[@id = \"priOrder\"]/@value")
+                                ?.InnerText);
+                            _strPriorityMetatype = ConvertPriorityString(xmlLeadsBaseNode
+                                .SelectSingleNode(
+                                    "container/pick[@thing = \"priMeta\"]/field[@id = \"priOrder\"]/@value")
+                                ?.InnerText);
+                            _strPriorityResources = ConvertPriorityString(xmlLeadsBaseNode
+                                .SelectSingleNode(
+                                    "container/pick[@thing = \"priResourc\"]/field[@id = \"priOrder\"]/@value")
+                                ?.InnerText);
+                            _strPrioritySkills = ConvertPriorityString(xmlLeadsBaseNode
+                                .SelectSingleNode(
+                                    "container/pick[@thing = \"priSkill\"]/field[@id = \"priOrder\"]/@value")
+                                ?.InnerText);
+
+                            string ConvertPriorityString(string strInput)
+                            {
+                                switch (strInput)
+                                {
+                                    case "1.":
+                                        return "A,4";
+                                    case "2.":
+                                        return "B,3";
+                                    case "3.":
+                                        return "C,2";
+                                    case "4.":
+                                        return "D,1";
+                                    case "5.":
+                                        return "E,0";
+                                }
+
+                                return string.Empty;
+                            }
+
+                            if (_strPriorityAttributes == _strPrioritySpecial ||
+                                _strPriorityAttributes == _strPriorityMetatype ||
+                                _strPriorityAttributes == _strPriorityResources ||
+                                _strPriorityAttributes == _strPrioritySkills ||
+                                _strPrioritySpecial == _strPrioritySkills ||
+                                _strPrioritySpecial == _strPriorityMetatype ||
+                                _strPrioritySpecial == _strPriorityResources ||
+                                _strPriorityMetatype == _strPriorityResources ||
+                                _strPriorityMetatype == _strPrioritySpecial ||
+                                _strPriorityResources == _strPrioritySkills)
+                                _objBuildMethod = CharacterBuildMethod.SumtoTen;
                             else
-                                strSpellName = "Detect [Life Form]";
-                        }
-                        else if (strSpellName.StartsWith("Corrode "))
-                        {
-                            strForcedValue = strSpellName.TrimStartOnce("Corrode ");
-                            strSpellName = "Corrode [Object]";
-                        }
-                        else if (strSpellName.StartsWith("Melt "))
-                        {
-                            strForcedValue = strSpellName.TrimStartOnce("Melt ");
-                            strSpellName = "Melt [Object]";
-                        }
-                        else if (strSpellName.StartsWith("Sludge "))
-                        {
-                            strForcedValue = strSpellName.TrimStartOnce("Sludge ");
-                            strSpellName = "Sludge [Object]";
-                        }
-                        else if (strSpellName.StartsWith("Disrupt "))
-                        {
-                            strForcedValue = strSpellName.TrimStartOnce("Disrupt ");
-                            strSpellName = "Disrupt [Object]";
-                        }
-                        else if (strSpellName.StartsWith("Destroy "))
-                        {
-                            strForcedValue = strSpellName.TrimStartOnce("Destroy ");
-                            strSpellName = xmlHeroLabSpell.Attributes["type"]?.InnerText == "Physical"
-                                ? "Destroy [Vehicle]"
-                                : "Destroy [Free Spirit]";
-                        }
-                        else if (strSpellName.StartsWith("Insecticide "))
-                        {
-                            strForcedValue = strSpellName.TrimStartOnce("Insecticide ");
-                            strSpellName = "Insecticide [Insect Spirit]";
-                        }
-                        else if (strSpellName.StartsWith("One Less "))
-                        {
-                            strForcedValue = strSpellName.TrimStartOnce("One Less ");
-                            strSpellName = "One Less [Metatype/Species]";
-                        }
-                        else if (strSpellName.StartsWith("Slay "))
-                        {
-                            strForcedValue = strSpellName.TrimStartOnce("Slay ");
-                            strSpellName = "Slay [Metatype/Species]";
-                        }
-                        else if (strSpellName.StartsWith("Slaughter "))
-                        {
-                            strForcedValue = strSpellName.TrimStartOnce("Slaughter ");
-                            strSpellName = "Slaughter [Metatype/Species]";
-                        }
-                        else if (strSpellName.StartsWith("Ram "))
-                        {
-                            strForcedValue = strSpellName.TrimStartOnce("Ram ");
-                            strSpellName = "Ram [Object]";
-                        }
-                        else if (strSpellName.StartsWith("Wreck "))
-                        {
-                            strForcedValue = strSpellName.TrimStartOnce("Wreck ");
-                            strSpellName = "Wreck [Object]";
-                        }
-                        else if (strSpellName.StartsWith("Demolish "))
-                        {
-                            strForcedValue = strSpellName.TrimStartOnce("Demolish ");
-                            strSpellName = "Demolish [Object]";
-                        }
-                        else if (strSpellName.EndsWith(" Cryptesthesia"))
-                        {
-                            strForcedValue = strSpellName.TrimEndOnce(" Cryptesthesia");
-                            strSpellName = "[Sense] Cryptesthesia";
-                        }
-                        else if (strSpellName.EndsWith(" Removal"))
-                        {
-                            strForcedValue = strSpellName.TrimStartOnce("Mass ").TrimEndOnce(" Removal");
-                            strSpellName = strSpellName.StartsWith("Mass ")
-                                ? "Mass [Sense] Removal"
-                                : "[Sense] Removal";
-                        }
-                        else if (strSpellName.StartsWith("Alleviate ") && strSpellName != "Alleviate Addiction")
-                        {
-                            strForcedValue = strSpellName.TrimStartOnce("Alleviate ");
-                            strSpellName = "Alleviate [Allergy]";
-                        }
-                        else if (strSpellName.StartsWith("Clean "))
-                        {
-                            strForcedValue = strSpellName.TrimStartOnce("Clean ");
-                            strSpellName = "Clean [Element]";
-                        }
-                        else if (strSpellName.EndsWith(" Grenade"))
-                        {
-                            strForcedValue = strSpellName.TrimEndOnce(" Grenade");
-                            strSpellName = "[Element] Grenade";
-                        }
-                        else if (strSpellName.EndsWith(" Aura"))
-                        {
-                            strForcedValue = strSpellName.TrimEndOnce(" Aura");
-                            strSpellName = "[Element] Aura";
-                        }
-                        else if (strSpellName != "Napalm Wall" && strSpellName.EndsWith(" Wall"))
-                        {
-                            strForcedValue = strSpellName.TrimEndOnce(" Wall");
-                            strSpellName = "[Element] Wall";
-                        }
-                        else if (strSpellName.StartsWith("Shape "))
-                        {
-                            strForcedValue = strSpellName.TrimStartOnce("Shape ");
-                            strSpellName = "Shape [Material]";
-                        }
-                        else if (strSpellName.EndsWith(" Form"))
-                        {
-                            strForcedValue = strSpellName.TrimEndOnce(" Form");
-                            strSpellName = "[Critter] Form";
-                        }
-                        else if (strSpellName.StartsWith("Calling "))
-                        {
-                            strForcedValue = strSpellName.TrimStartOnce("Calling ");
-                            strSpellName = "Calling [Spirit Type]";
-                        }
-                        else if (strSpellName != "Symbolic Link" && strSpellName.EndsWith(" Link"))
-                        {
-                            strForcedValue = strSpellName.TrimEndOnce(" Link");
-                            strSpellName = "[Sense] Link";
+                                _objBuildMethod = CharacterBuildMethod.Priority;
                         }
 
-                        string strSpellCategory = xmlHeroLabSpell.Attributes["category"]?.InnerText;
-                        XmlNode xmlSpellData = xmlSpellDocument.SelectSingleNode(
-                            "chummer/spells/spell[category = \"" + strSpellCategory + "\" and name = \"" +
-                            strSpellName + "\"]");
-                        if (xmlSpellData == null)
+                        XmlDocument xmlDocumentGameplayOptions = XmlManager.Load("gameplayoptions.xml");
+                        XmlNode xmlGameplayOption =
+                            xmlDocumentGameplayOptions.SelectSingleNode(
+                                "/chummer/gameplayoptions/gameplayoption[name = \"" + GameplayOption + "\"]");
+                        if (xmlGameplayOption == null)
                         {
-                            string[] astrOriginalNameSplit = strSpellName.Split(':');
-                            if (astrOriginalNameSplit.Length > 1)
+                            string strMessage = LanguageManager
+                                .GetString("Message_MissingGameplayOption", GlobalOptions.Language)
+                                .Replace("{0}", GameplayOption);
+                            if (MessageBox.Show(strMessage,
+                                    LanguageManager.GetString("Message_MissingGameplayOption_Title",
+                                        GlobalOptions.Language),
+                                    MessageBoxButtons.OKCancel, MessageBoxIcon.Error) == DialogResult.OK)
                             {
-                                string strName = astrOriginalNameSplit[0].Trim();
-                                xmlSpellData = xmlSpellDocument.SelectSingleNode(
-                                    "/chummer/spells/spell[category = \"" + strSpellCategory + "\" and name = \"" +
-                                    strName + "\"]");
+                                frmSelectBuildMethod frmPickBP = new frmSelectBuildMethod(this, true);
+                                frmPickBP.ShowDialog();
+
+                                if (frmPickBP.DialogResult != DialogResult.OK)
+                                    return false;
+                            }
+                            else
+                            {
+                                BannedWareGrades.Clear();
+                                foreach (XmlNode xmlNode in xmlGameplayOption.SelectNodes("bannedwaregrades/grade"))
+                                    BannedWareGrades.Add(xmlNode.InnerText);
+
+                                if (!Options.FreeContactsMultiplierEnabled)
+                                    _intContactMultiplier =
+                                        Convert.ToInt32(xmlGameplayOption["contactmultiplier"].InnerText);
+                                _intGameplayOptionQualityLimit =
+                                    _intMaxKarma = Convert.ToInt32(xmlGameplayOption["karma"].InnerText);
+                                _decNuyenMaximumBP = _decMaxNuyen = Convert.ToDecimal(
+                                    xmlGameplayOption["maxnuyen"].InnerText,
+                                    GlobalOptions.InvariantCultureInfo);
+                                _intMaxAvail = Convert.ToInt32(xmlGameplayOption["maxavailability"].InnerText);
+                            }
+                        }
+
+                        if (_objBuildMethod == CharacterBuildMethod.Priority ||
+                            _objBuildMethod == CharacterBuildMethod.SumtoTen)
+                        {
+                            if (strRaceString == "A.I.")
+                                _strPriorityTalent = "AI";
+                            XmlNode xmlPriorityTalentPick =
+                                xmlLeadsBaseNode.SelectSingleNode(
+                                    "container/pick[starts-with(@thing, \"qu\") and @source = \"heritage\"]");
+                            if (xmlPriorityTalentPick != null)
+                            {
+                                switch (xmlPriorityTalentPick.Attributes["thing"]?.InnerText)
+                                {
+                                    case "quAware":
+                                        _strPriorityTalent = "Aware";
+                                        break;
+                                    case "quEnchanter":
+                                        _strPriorityTalent = "Enchanter";
+                                        break;
+                                    case "quExplorer":
+                                        _strPriorityTalent = "Explorer";
+                                        break;
+                                    case "quApprentice":
+                                        _strPriorityTalent = "Apprentice";
+                                        break;
+                                    case "quAspectedMagician":
+                                        _strPriorityTalent = "Aspected Magician";
+                                        break;
+                                    case "quAdept":
+                                        _strPriorityTalent = "Adept";
+                                        break;
+                                    case "quMagician":
+                                        _strPriorityTalent = "Magician";
+                                        break;
+                                    case "quMysticAdept":
+                                        _strPriorityTalent = "Mystic Adept";
+                                        break;
+                                    case "quTechnoma":
+                                        _strPriorityTalent = "Technomancer";
+                                        break;
+                                }
+
+                                _lstPrioritySkills.Clear();
+                                foreach (XmlNode xmlField in xmlPriorityTalentPick.SelectNodes("field"))
+                                {
+                                    string strInnerText = xmlField.InnerText;
+                                    if (!string.IsNullOrEmpty(strInnerText))
+                                    {
+                                        _lstPrioritySkills.Add(strInnerText);
+                                    }
+                                }
                             }
 
-                            if (xmlSpellData == null)
+                            frmPriorityMetatype frmSelectMetatype = new frmPriorityMetatype(this);
+                            frmSelectMetatype.ShowDialog();
+                            if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
+                                return false;
+                        }
+                        else
+                        {
+                            frmKarmaMetatype frmSelectMetatype = new frmKarmaMetatype(this);
+                            frmSelectMetatype.ShowDialog();
+
+                            if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
+                                return false;
+                        }
+
+                        XmlNode xmlKarmaNode = xmlStatBlockBaseNode.SelectSingleNode("karma");
+                        if (xmlKarmaNode != null)
+                        {
+                            int.TryParse(xmlKarmaNode.Attributes["left"]?.InnerText, out _intKarma);
+                            int.TryParse(xmlKarmaNode.Attributes["total"]?.InnerText, out _intTotalKarma);
+                        }
+
+                        XmlNode xmlReputationsNode = xmlStatBlockBaseNode.SelectSingleNode("reputations");
+                        if (xmlReputationsNode != null)
+                        {
+                            int.TryParse(
+                                xmlReputationsNode.SelectSingleNode("reputation[@name = \"Street Cred\"]/@value")
+                                    .InnerText,
+                                out _intStreetCred);
+                            int.TryParse(
+                                xmlReputationsNode.SelectSingleNode("reputation[@name = \"Notoriety\"]/@value")
+                                    .InnerText,
+                                out _intNotoriety);
+                            int.TryParse(
+                                xmlReputationsNode.SelectSingleNode("reputation[@name = \"Public Awareness\"]/@value")
+                                    .InnerText, out _intPublicAwareness);
+                        }
+
+                        if (Created)
+                        {
+                            decimal.TryParse(xmlStatBlockBaseNode.SelectSingleNode("cash/@total")?.InnerText,
+                                NumberStyles.Any,
+                                GlobalOptions.InvariantCultureInfo, out _decNuyen);
+                        }
+
+                        /* TODO: Initiation, Submersion Grades
+                        objXmlCharacter.TryGetInt32FieldQuickly("initiategrade", ref _intInitiateGrade);
+                        objXmlCharacter.TryGetInt32FieldQuickly("submersiongrade", ref _intSubmersionGrade);
+                        */
+                        //Timekeeper.Finish("load_char_misc");
+                    }
+
+                    List<Weapon> lstWeapons = new List<Weapon>();
+                    List<Vehicle> lstVehicles = new List<Vehicle>();
+
+                    using (var op_load_char_quality = Timekeeper.StartSyncron("load_char_quality", op_load))
+                    {
+
+                        // Qualities
+                        XmlDocument xmlQualitiesDocument = XmlManager.Load("qualities.xml");
+                        foreach (XmlNode xmlQualityToImport in xmlStatBlockBaseNode.SelectNodes(
+                            "qualities/positive/quality[traitcost/@bp != \"0\"]"))
+                        {
+                            string strQualityName = xmlQualityToImport.Attributes["name"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strQualityName))
                             {
-                                astrOriginalNameSplit = strSpellName.Split(',');
-                                if (astrOriginalNameSplit.Length > 1)
+                                int intDicepoolLabelIndex =
+                                    strQualityName.LastIndexOf("dicepool", StringComparison.Ordinal);
+                                if (intDicepoolLabelIndex != -1)
                                 {
-                                    string strName = astrOriginalNameSplit[0].Trim();
-                                    xmlSpellData = xmlSpellDocument.SelectSingleNode(
-                                        "/chummer/spells/spell[category = \"" + strSpellCategory + "\" and name = \"" +
-                                        strName + "\"]");
+                                    int intCullIndex = strQualityName.LastIndexOf('(', intDicepoolLabelIndex);
+                                    if (intCullIndex != -1)
+                                        strQualityName = strQualityName.Substring(0, intCullIndex).Trim();
+                                }
+
+                                int intQuantity = 1;
+                                for (int i = 1; i <= 15; ++i)
+                                {
+                                    string strLoopString = " (" + i.ToString(GlobalOptions.InvariantCultureInfo) + ')';
+                                    if (strQualityName.EndsWith(strLoopString))
+                                    {
+                                        strQualityName = strQualityName.TrimEndOnce(strLoopString, true);
+                                        intQuantity = i;
+                                        break;
+                                    }
+                                }
+
+                                string strForcedValue = string.Empty;
+                                XmlNode xmlQualityDataNode =
+                                    xmlQualitiesDocument.SelectSingleNode(
+                                        "/chummer/qualities/quality[name = \"" + strQualityName + "\"]");
+                                if (xmlQualityDataNode == null)
+                                {
+                                    string[] astrOriginalNameSplit = strQualityName.Split(':');
+                                    if (astrOriginalNameSplit.Length > 1)
+                                    {
+                                        string strName = astrOriginalNameSplit[0].Trim();
+                                        xmlQualityDataNode =
+                                            xmlQualitiesDocument.SelectSingleNode(
+                                                "/chummer/qualities/quality[name = \"" + strName + "\"]");
+                                        if (xmlQualityDataNode != null)
+                                            strForcedValue = astrOriginalNameSplit[1].Trim();
+                                    }
+                                }
+
+                                if (xmlQualityDataNode == null)
+                                {
+                                    string[] astrOriginalNameSplit = strQualityName.Split(',');
+                                    if (astrOriginalNameSplit.Length > 1)
+                                    {
+                                        string strName = astrOriginalNameSplit[0].Trim();
+                                        xmlQualityDataNode =
+                                            xmlQualitiesDocument.SelectSingleNode(
+                                                "/chummer/qualities/quality[name = \"" + strName + "\"]");
+                                        if (xmlQualityDataNode != null)
+                                            strForcedValue = astrOriginalNameSplit[1].Trim();
+                                    }
+                                }
+
+                                if (xmlQualityDataNode != null)
+                                {
+                                    for (int i = 0; i < intQuantity; ++i)
+                                    {
+                                        Quality objQuality = new Quality(this);
+                                        objQuality.Create(xmlQualityDataNode, QualitySource.Selected, lstWeapons,
+                                            strForcedValue);
+                                        objQuality.Notes = xmlQualityToImport["description"]?.InnerText ?? string.Empty;
+                                        _lstQualities.Add(objQuality);
+                                    }
                                 }
                             }
                         }
 
-                        if (xmlSpellData != null)
+                        foreach (XmlNode xmlQualityToImport in xmlStatBlockBaseNode.SelectNodes(
+                            "qualities/negative/quality[traitcost/@bp != \"0\"]"))
                         {
-                            Spell objSpell = new Spell(this);
-                            objSpell.Create(xmlSpellData, strForcedValue, blnIsLimited);
-                            objSpell.Notes = xmlHeroLabSpell["description"]?.InnerText;
-                            _lstSpells.Add(objSpell);
-                        }
-                    }
-                }
-
-                Timekeeper.Finish("load_char_spells", loadOperation);
-                Timekeeper.Start("load_char_powers");
-
-                // Powers.
-                xmlNodeList = xmlStatBlockBaseNode.SelectNodes("magic/adeptpowers/adeptpower");
-                XmlDocument xmlPowersDocument = XmlManager.Load("powers.xml");
-                foreach (XmlNode xmlHeroLabPower in xmlNodeList)
-                {
-                    string strPowerName = xmlHeroLabPower.Attributes["name"]?.InnerText;
-                    if (!string.IsNullOrEmpty(strPowerName))
-                    {
-                        int intRating = 1;
-                        string strForcedValue = string.Empty;
-                        XmlNode xmlPowerData =
-                            xmlPowersDocument.SelectSingleNode(
-                                "chummer/powers/power[contains(name, \"" + strPowerName + "\")]");
-                        if (xmlPowerData == null)
-                        {
-                            string[] astrOriginalNameSplit = strPowerName.Split(':');
-                            if (astrOriginalNameSplit.Length > 1)
+                            string strQualityName = xmlQualityToImport.Attributes["name"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strQualityName))
                             {
-                                string strName = astrOriginalNameSplit[0].Trim();
-                                xmlPowerData =
-                                    xmlPowersDocument.SelectSingleNode(
-                                        "/chummer/powers/power[contains(name, \"" + strName + "\")]");
+                                int intDicepoolLabelIndex =
+                                    strQualityName.LastIndexOf("dicepool", StringComparison.Ordinal);
+                                if (intDicepoolLabelIndex != -1)
+                                {
+                                    int intCullIndex = strQualityName.LastIndexOf('(', intDicepoolLabelIndex);
+                                    if (intCullIndex != -1)
+                                        strQualityName = strQualityName.Substring(0, intCullIndex).Trim();
+                                }
 
-                                strForcedValue = astrOriginalNameSplit[1].Trim();
-                                int intForcedValueParenthesesStart = strForcedValue.IndexOf('(');
-                                if (intForcedValueParenthesesStart != -1)
-                                    strForcedValue = strForcedValue.Substring(0, intForcedValueParenthesesStart);
+                                switch (strQualityName)
+                                {
+                                    case "Reduced (hearing)":
+                                        strQualityName = "Reduced Sense (Hearing)";
+                                        break;
+                                    case "Reduced (smell)":
+                                        strQualityName = "Reduced Sense (Smell)";
+                                        break;
+                                    case "Reduced (taste)":
+                                        strQualityName = "Reduced Sense (Taste)";
+                                        break;
+                                    case "Reduced (touch)":
+                                        strQualityName = "Reduced Sense (Touch)";
+                                        break;
+                                    case "Reduced (sight)":
+                                        strQualityName = "Reduced Sense (Sight)";
+                                        break;
+                                }
+
+                                int intQuantity = 1;
+                                for (int i = 1; i <= 15; ++i)
+                                {
+                                    string strLoopString = " (" + i.ToString(GlobalOptions.InvariantCultureInfo) + ')';
+                                    if (strQualityName.EndsWith(strLoopString))
+                                    {
+                                        strQualityName = strQualityName.TrimEndOnce(strLoopString, true);
+                                        intQuantity = i;
+                                        break;
+                                    }
+                                }
+
+                                string strForcedValue = string.Empty;
+                                XmlNode xmlQualityDataNode =
+                                    xmlQualitiesDocument.SelectSingleNode(
+                                        "/chummer/qualities/quality[name = \"" + strQualityName + "\"]");
+                                if (xmlQualityDataNode == null)
+                                {
+                                    string[] astrOriginalNameSplit = strQualityName.Split(':');
+                                    if (astrOriginalNameSplit.Length > 1)
+                                    {
+                                        string strName = astrOriginalNameSplit[0].Trim();
+                                        xmlQualityDataNode =
+                                            xmlQualitiesDocument.SelectSingleNode(
+                                                "/chummer/qualities/quality[name = \"" + strName + "\"]");
+                                        if (xmlQualityDataNode != null)
+                                            strForcedValue = astrOriginalNameSplit[1].Trim();
+                                    }
+                                }
+
+                                if (xmlQualityDataNode == null)
+                                {
+                                    string[] astrOriginalNameSplit = strQualityName.Split(',');
+                                    if (astrOriginalNameSplit.Length > 1)
+                                    {
+                                        string strName = astrOriginalNameSplit[0].Trim();
+                                        xmlQualityDataNode =
+                                            xmlQualitiesDocument.SelectSingleNode(
+                                                "/chummer/qualities/quality[name = \"" + strName + "\"]");
+                                        if (xmlQualityDataNode != null)
+                                            strForcedValue = astrOriginalNameSplit[1].Trim();
+                                    }
+                                }
+
+                                if (xmlQualityDataNode != null)
+                                {
+                                    for (int i = 0; i < intQuantity; ++i)
+                                    {
+                                        Quality objQuality = new Quality(this);
+                                        objQuality.Create(xmlQualityDataNode, QualitySource.Selected, lstWeapons,
+                                            strForcedValue);
+                                        objQuality.Notes = xmlQualityToImport["description"]?.InnerText ?? string.Empty;
+                                        _lstQualities.Add(objQuality);
+                                    }
+                                }
+                            }
+                        }
+
+                        //Timekeeper.Finish("load_char_quality");
+                    }
+
+                    AttributeSection.LoadFromHeroLab(xmlStatBlockBaseNode, op_load);
+                    using (var op_load_char_quality = Timekeeper.StartSyncron("load_char_misc2", op_load))
+                    {
+
+                        /* TODO: Find some way to get Mystic Adept PPs from Hero Lab files
+                        // Attempt to load the split MAG CharacterAttribute information for Mystic Adepts.
+                        if (_blnAdeptEnabled && _blnMagicianEnabled)
+                        {
+                            xmlCharacterNavigator.TryGetInt32FieldQuickly("magsplitadept", ref _intMAGAdept);
+                            xmlCharacterNavigator.TryGetInt32FieldQuickly("magsplitmagician", ref _intMAGMagician);
+                        }
+                        */
+
+                        // Attempt to load in the character's tradition
+                        if (xmlStatBlockBaseNode.SelectSingleNode("magic/tradition") != null)
+                        {
+                            _objTradition.LoadFromHeroLab(xmlStatBlockBaseNode.SelectSingleNode("magic/tradition"));
+                        }
+
+                        // Attempt to load Condition Monitor Progress.
+                        XmlNode xmlPhysicalCMFilledNode =
+                            xmlLeadsBaseNode.SelectSingleNode(
+                                "usagepool[@id = \"DmgNet\" and @pickindex=\"5\"]/@quantity");
+                        if (xmlPhysicalCMFilledNode != null)
+                            int.TryParse(xmlPhysicalCMFilledNode.InnerText, out _intPhysicalCMFilled);
+                        XmlNode xmlStunCMFilledNode =
+                            xmlLeadsBaseNode.SelectSingleNode(
+                                "usagepool[@id = \"DmgNet\" and @pickindex=\"6\"]/@quantity");
+                        if (xmlStunCMFilledNode != null)
+                            int.TryParse(xmlStunCMFilledNode.InnerText, out _intStunCMFilled);
+                        //Timekeeper.Finish("load_char_misc2");
+                    }
+
+                    using (var op_load_char_skills = Timekeeper.StartSyncron("load_char_skills", op_load)) //slightly messy
+                    {
+
+                        SkillsSection.LoadFromHeroLab(xmlStatBlockBaseNode.SelectSingleNode("skills"), op_load_char_skills);
+
+                        //Timekeeper.Finish("load_char_skills");
+                    }
+
+                    /* TODO: Add support for locations from HeroLab
+                    Timekeeper.Start("load_char_loc");
+
+                    // Locations.
+                    XmlNodeList objXmlLocationList = objXmlCharacter.SelectNodes("gearlocations/gearlocation");
+                    foreach (XmlNode objXmlLocation in objXmlLocationList)
+                    {
+                        Location objLocation = new Location(this, _lstGearLocations, string.Empty, false);
+                        objLocation.Load(objXmlLocation);
+                    }
+
+                    objXmlLocationList = objXmlCharacter.SelectNodes("locations/location");
+                    foreach (XmlNode objXmlLocation in objXmlLocationList)
+                    {
+                        Location objLocation = new Location(this, _lstGearLocations, string.Empty, false);
+                        objLocation.Load(objXmlLocation);
+                    }
+
+                    objXmlLocationList = objXmlCharacter.SelectNodes("gearlocations/location");
+                    foreach (XmlNode objXmlLocation in objXmlLocationList)
+                    {
+                        Location objLocation = new Location(this, _lstGearLocations, string.Empty, false);
+                        objLocation.Load(objXmlLocation);
+                    }
+
+                    Timekeeper.Finish("load_char_loc");
+                    Timekeeper.Start("load_char_abundle");
+
+                    // Armor Bundles.
+                    objXmlLocationList = objXmlCharacter.SelectNodes("armorbundles/armorbundle");
+                    foreach (XmlNode objXmlLocation in objXmlLocationList)
+                    {
+                        Location objLocation = new Location(this, _lstArmorLocations, string.Empty, false);
+                        objLocation.Load(objXmlLocation);
+                    }
+
+                    objXmlLocationList = objXmlCharacter.SelectNodes("armorlocations/armorlocation");
+                    foreach (XmlNode objXmlLocation in objXmlLocationList)
+                    {
+                        Location objLocation = new Location(this, _lstArmorLocations, string.Empty, false);
+                        objLocation.Load(objXmlLocation);
+                    }
+
+                    objXmlLocationList = objXmlCharacter.SelectNodes("armorlocations/location");
+                    foreach (XmlNode objXmlLocation in objXmlLocationList)
+                    {
+                        Location objLocation = new Location(this, _lstArmorLocations, string.Empty, false);
+                        objLocation.Load(objXmlLocation);
+                    }
+
+                    Timekeeper.Finish("load_char_abundle");
+                    Timekeeper.Start("load_char_vloc");
+
+                    // Vehicle Locations.
+                    XmlNodeList objXmlVehicleLocationList = objXmlCharacter.SelectNodes("vehiclelocations/vehiclelocation");
+                    foreach (XmlNode objXmlLocation in objXmlVehicleLocationList)
+                    {
+                        Location objLocation = new Location(this, _lstVehicleLocations, string.Empty, false);
+                        objLocation.Load(objXmlLocation);
+                    }
+
+                    objXmlVehicleLocationList = objXmlCharacter.SelectNodes("vehiclelocations/location");
+                    foreach (XmlNode objXmlLocation in objXmlVehicleLocationList)
+                    {
+                        Location objLocation = new Location(this, _lstVehicleLocations, string.Empty, false);
+                        objLocation.Load(objXmlLocation);
+                    }
+
+                    Timekeeper.Finish("load_char_vloc");
+                    Timekeeper.Start("load_char_wloc");
+
+                    // Weapon Locations.
+                    XmlNodeList objXmlWeaponLocationList = objXmlCharacter.SelectNodes("weaponlocations/weaponlocation");
+                    foreach (XmlNode objXmlLocation in objXmlWeaponLocationList)
+                    {
+                        Location objLocation = new Location(this, _lstWeaponLocations, string.Empty, false);
+                        objLocation.Load(objXmlLocation);
+                    }
+
+                    objXmlWeaponLocationList = objXmlCharacter.SelectNodes("weaponlocations/location");
+                    foreach (XmlNode objXmlLocation in objXmlWeaponLocationList)
+                    {
+                        Location objLocation = new Location(this, _lstWeaponLocations, string.Empty, false);
+                        objLocation.Load(objXmlLocation);
+                    }
+
+                    Timekeeper.Finish("load_char_wloc");
+                    */
+                    using (var op_load_char_contacts = Timekeeper.StartSyncron("load_char_contacts", op_load))
+                    {
+
+                        // Contacts.
+                        foreach (XmlNode xmlContactToImport in xmlStatBlockBaseNode.SelectNodes(
+                            "contacts/contact[@useradded != \"no\"]"))
+                        {
+                            Contact objContact = new Contact(this)
+                            {
+                                EntityType = ContactType.Contact
+                            };
+                            XmlAttributeCollection xmlImportAttributes = xmlContactToImport.Attributes;
+                            objContact.Name = xmlImportAttributes["name"]?.InnerText ?? string.Empty;
+                            objContact.Role = xmlImportAttributes["type"]?.InnerText ?? string.Empty;
+                            objContact.Connection =
+                                Convert.ToInt32(xmlImportAttributes["connection"]?.InnerText ?? "1");
+                            objContact.Loyalty = Convert.ToInt32(xmlImportAttributes["loyalty"]?.InnerText ?? "1");
+                            string strDescription = xmlContactToImport["description"]?.InnerText;
+                            foreach (string strLine in strDescription.Split('\n'))
+                            {
+                                string[] astrLineColonSplit = strLine.Split(':');
+                                switch (astrLineColonSplit[0])
+                                {
+                                    case "Metatype":
+                                        objContact.Metatype = astrLineColonSplit[1].Trim();
+                                        break;
+                                    case "Sex":
+                                        objContact.Sex = astrLineColonSplit[1].Trim();
+                                        break;
+                                    case "Age":
+                                        objContact.Age = astrLineColonSplit[1].Trim();
+                                        break;
+                                    case "Preferred Payment Method":
+                                        objContact.PreferredPayment = astrLineColonSplit[1].Trim();
+                                        break;
+                                    case "Hobbies/Vice":
+                                        objContact.HobbiesVice = astrLineColonSplit[1].Trim();
+                                        break;
+                                    case "Personal Life":
+                                        objContact.PersonalLife = astrLineColonSplit[1].Trim();
+                                        break;
+                                    case "Type":
+                                        objContact.Type = astrLineColonSplit[1].Trim();
+                                        break;
+                                    default:
+                                        objContact.Notes += strLine + '\n';
+                                        break;
+                                }
                             }
 
-                            if (xmlPowerData == null)
-                            {
-                                astrOriginalNameSplit = strPowerName.Split('(');
-                                if (astrOriginalNameSplit.Length > 1)
-                                {
-                                    string strName = astrOriginalNameSplit[0].Trim();
-                                    xmlPowerData =
-                                        xmlPowersDocument.SelectSingleNode(
-                                            "/chummer/powers/power[contains(name, \"" + strName + "\")]");
+                            objContact.Notes = objContact.Notes.TrimEnd('\n');
+                            _lstContacts.Add(objContact);
+                        }
 
-                                    string strSecondPart = astrOriginalNameSplit[1].Trim();
-                                    int intSecondPartParenthesesEnd = strSecondPart.IndexOf(')');
-                                    if (intSecondPartParenthesesEnd != -1)
+                        //Timekeeper.Finish("load_char_contacts");
+                    }
+
+                    using (var op_load_char_armor = Timekeeper.StartSyncron("load_char_armor", op_load))
+                    {
+
+                        // Armor.
+                        xmlGearDocument = XmlManager.Load("gear.xml");
+                        XmlDocument xmlArmorDocument = XmlManager.Load("armor.xml");
+                        foreach (XmlNode xmlArmorToImport in xmlStatBlockBaseNode.SelectNodes(
+                            "gear/armor/item[@useradded != \"no\"]"))
+                        {
+                            string strArmorName = xmlArmorToImport.Attributes["name"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strArmorName))
+                            {
+                                XmlNode xmlArmorData =
+                                    xmlArmorDocument.SelectSingleNode(
+                                        "chummer/armors/armor[name = \"" + strArmorName + "\"]");
+                                if (xmlArmorData == null)
+                                {
+                                    string[] astrOriginalNameSplit = strArmorName.Split(':');
+                                    if (astrOriginalNameSplit.Length > 1)
                                     {
-                                        if (!int.TryParse(strSecondPart.Substring(0, intSecondPartParenthesesEnd),
-                                            out intRating))
-                                            intRating = 1;
+                                        string strName = astrOriginalNameSplit[0].Trim();
+                                        xmlArmorData =
+                                            xmlArmorDocument.SelectSingleNode(
+                                                "/chummer/armors/armor[name = \"" + strName + "\"]");
                                     }
 
-                                    astrOriginalNameSplit = strSecondPart.Split(':');
-                                    if (astrOriginalNameSplit.Length >= 2)
+                                    if (xmlArmorData == null)
                                     {
+                                        astrOriginalNameSplit = strArmorName.Split(',');
+                                        if (astrOriginalNameSplit.Length > 1)
+                                        {
+                                            string strName = astrOriginalNameSplit[0].Trim();
+                                            xmlArmorData =
+                                                xmlArmorDocument.SelectSingleNode(
+                                                    "/chummer/armors/armor[name = \"" + strName + "\"]");
+                                        }
+                                    }
+                                }
+
+                                if (xmlArmorData != null)
+                                {
+                                    Armor objArmor = new Armor(this);
+                                    objArmor.Create(xmlArmorData,
+                                        Convert.ToInt32(xmlArmorToImport.Attributes["rating"]?.InnerText), lstWeapons);
+                                    objArmor.Notes = xmlArmorToImport["description"]?.InnerText;
+                                    _lstArmor.Add(objArmor);
+
+                                    foreach (string strName in HeroLabPluginNodeNames)
+                                    {
+                                        foreach (XmlNode xmlArmorModToImport in xmlArmorToImport.SelectNodes(
+                                            strName + "/item[@useradded != \"no\"]"))
+                                        {
+                                            string strArmorModName = xmlArmorModToImport.Attributes["name"]?.InnerText;
+                                            if (!string.IsNullOrEmpty(strArmorModName))
+                                            {
+                                                XmlNode xmlArmorModData =
+                                                    xmlArmorDocument.SelectSingleNode(
+                                                        "chummer/mods/mod[name = \"" + strArmorModName + "\"]");
+                                                if (xmlArmorModData != null)
+                                                {
+                                                    ArmorMod objArmorMod = new ArmorMod(this);
+                                                    objArmorMod.Create(xmlArmorModData,
+                                                        Convert.ToInt32(xmlArmorModToImport.Attributes["rating"]
+                                                            ?.InnerText),
+                                                        lstWeapons);
+                                                    objArmorMod.Notes = xmlArmorModToImport["description"]?.InnerText;
+                                                    objArmorMod.Parent = objArmor;
+                                                    objArmor.ArmorMods.Add(objArmorMod);
+
+                                                    foreach (string strPluginNodeName in HeroLabPluginNodeNames)
+                                                    {
+                                                        foreach (XmlNode xmlPluginToAdd in xmlArmorModToImport
+                                                            .SelectNodes(
+                                                                strPluginNodeName + "/item[@useradded != \"no\"]"))
+                                                        {
+                                                            Gear objPlugin = new Gear(this);
+                                                            if (objPlugin.ImportHeroLabGear(xmlPluginToAdd,
+                                                                xmlArmorModData,
+                                                                lstWeapons))
+                                                                objArmorMod.Gear.Add(objPlugin);
+                                                        }
+
+                                                        foreach (XmlNode xmlPluginToAdd in xmlArmorModToImport
+                                                            .SelectNodes(
+                                                                strPluginNodeName + "/item[@useradded = \"no\"]"))
+                                                        {
+                                                            string strGearName = xmlPluginToAdd.Attributes["name"]
+                                                                ?.InnerText;
+                                                            if (!string.IsNullOrEmpty(strGearName))
+                                                            {
+                                                                Gear objPlugin = objArmorMod.Gear.FirstOrDefault(x =>
+                                                                    x.IncludedInParent &&
+                                                                    (x.Name.Contains(strGearName) ||
+                                                                     strGearName.Contains(x.Name)));
+                                                                if (objPlugin != null)
+                                                                {
+                                                                    objPlugin.Quantity =
+                                                                        Convert.ToDecimal(
+                                                                            xmlPluginToAdd.Attributes["quantity"]
+                                                                                ?.InnerText ??
+                                                                            "1", GlobalOptions.InvariantCultureInfo);
+                                                                    objPlugin.Notes = xmlPluginToAdd["description"]
+                                                                        ?.InnerText;
+                                                                    objPlugin.ProcessHeroLabGearPlugins(xmlPluginToAdd,
+                                                                        lstWeapons);
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    Gear objPlugin = new Gear(this);
+                                                    if (objPlugin.ImportHeroLabGear(xmlArmorModToImport, xmlArmorData,
+                                                        lstWeapons))
+                                                        objArmor.Gear.Add(objPlugin);
+                                                }
+                                            }
+                                        }
+
+                                        foreach (XmlNode xmlArmorModToImport in xmlArmorToImport.SelectNodes(
+                                            strName + "/item[@useradded = \"no\"]"))
+                                        {
+                                            string strArmorModName = xmlArmorModToImport.Attributes["name"]?.InnerText;
+                                            if (!string.IsNullOrEmpty(strArmorModName))
+                                            {
+                                                ArmorMod objArmorMod = objArmor.ArmorMods.FirstOrDefault(x =>
+                                                    x.IncludedInArmor &&
+                                                    (x.Name.Contains(strArmorModName) ||
+                                                     strArmorModName.Contains(x.Name)));
+                                                if (objArmorMod != null)
+                                                {
+                                                    objArmorMod.Notes = xmlArmorModToImport["description"]?.InnerText;
+                                                    foreach (string strPluginNodeName in HeroLabPluginNodeNames)
+                                                    {
+                                                        foreach (XmlNode xmlPluginToAdd in xmlArmorModToImport
+                                                            .SelectNodes(
+                                                                strPluginNodeName + "/item[@useradded != \"no\"]"))
+                                                        {
+                                                            Gear objPlugin = new Gear(this);
+                                                            if (objPlugin.ImportHeroLabGear(xmlPluginToAdd,
+                                                                objArmorMod.GetNode(), lstWeapons))
+                                                                objArmorMod.Gear.Add(objPlugin);
+                                                        }
+
+                                                        foreach (XmlNode xmlPluginToAdd in xmlArmorModToImport
+                                                            .SelectNodes(
+                                                                strPluginNodeName + "/item[@useradded = \"no\"]"))
+                                                        {
+                                                            string strGearName = xmlPluginToAdd.Attributes["name"]
+                                                                ?.InnerText;
+                                                            if (!string.IsNullOrEmpty(strGearName))
+                                                            {
+                                                                Gear objPlugin = objArmorMod.Gear.FirstOrDefault(x =>
+                                                                    x.IncludedInParent &&
+                                                                    (x.Name.Contains(strGearName) ||
+                                                                     strGearName.Contains(x.Name)));
+                                                                if (objPlugin != null)
+                                                                {
+                                                                    objPlugin.Quantity =
+                                                                        Convert.ToDecimal(
+                                                                            xmlPluginToAdd.Attributes["quantity"]
+                                                                                ?.InnerText ??
+                                                                            "1", GlobalOptions.InvariantCultureInfo);
+                                                                    objPlugin.Notes = xmlPluginToAdd["description"]
+                                                                        ?.InnerText;
+                                                                    objPlugin.ProcessHeroLabGearPlugins(xmlPluginToAdd,
+                                                                        lstWeapons);
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    Gear objPlugin = objArmor.Gear.FirstOrDefault(x =>
+                                                        x.IncludedInParent &&
+                                                        (x.Name.Contains(strArmorModName) ||
+                                                         strArmorModName.Contains(x.Name)));
+                                                    if (objPlugin != null)
+                                                    {
+                                                        objPlugin.Quantity = Convert.ToDecimal(
+                                                            xmlArmorModToImport.Attributes["quantity"]?.InnerText ??
+                                                            "1",
+                                                            GlobalOptions.InvariantCultureInfo);
+                                                        objPlugin.Notes = xmlArmorModToImport["description"]?.InnerText;
+                                                        objPlugin.ProcessHeroLabGearPlugins(xmlArmorModToImport,
+                                                            lstWeapons);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        //Timekeeper.Finish("load_char_armor");
+                    }
+
+                    using (var op_load_char_weapons = Timekeeper.StartSyncron("load_char_weapons", op_load))
+                    {
+
+                        // Weapons.
+                        foreach (XmlNode xmlWeaponToImport in xmlStatBlockBaseNode.SelectNodes(
+                            "gear/weapons/item[@useradded != \"no\"]"))
+                        {
+                            Weapon objWeapon = new Weapon(this);
+                            if (objWeapon.ImportHeroLabWeapon(xmlWeaponToImport, lstWeapons))
+                                _lstWeapons.Add(objWeapon);
+                        }
+
+                        foreach (XmlNode xmlPluginToAdd in xmlStatBlockBaseNode.SelectNodes(
+                            "gear/weapons/item[@useradded = \"no\"]"))
+                        {
+                            string strName = xmlPluginToAdd.Attributes["name"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strName))
+                            {
+                                Weapon objWeapon = _lstWeapons.FirstOrDefault(x =>
+                                    !string.IsNullOrEmpty(x.ParentID) &&
+                                    (x.Name.Contains(strName) || strName.Contains(x.Name)));
+                                if (objWeapon != null)
+                                {
+                                    objWeapon.Notes = xmlPluginToAdd["description"]?.InnerText;
+                                    objWeapon.ProcessHeroLabWeaponPlugins(xmlPluginToAdd, lstWeapons);
+                                }
+                            }
+                        }
+
+                        //Timekeeper.Finish("load_char_weapons");
+                    }
+
+                    using (var op_load_char_ware = Timekeeper.StartSyncron("load_char_ware", op_load))
+                    {
+
+                        // Cyberware/Bioware.
+                        foreach (XmlNode xmlCyberwareToImport in xmlStatBlockBaseNode.SelectNodes(
+                            "gear/augmentations/cyberware/item[@useradded != \"no\"]"))
+                        {
+                            Cyberware objCyberware = new Cyberware(this);
+                            if (objCyberware.ImportHeroLabCyberware(xmlCyberwareToImport, null, lstWeapons,
+                                lstVehicles))
+                                _lstCyberware.Add(objCyberware);
+                        }
+
+                        foreach (XmlNode xmlPluginToAdd in xmlStatBlockBaseNode.SelectNodes(
+                            "gear/augmentations/cyberware/item[@useradded = \"no\"]"))
+                        {
+                            string strName = xmlPluginToAdd.Attributes["name"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strName))
+                            {
+                                Cyberware objPlugin = _lstCyberware.FirstOrDefault(x =>
+                                    !string.IsNullOrEmpty(x.ParentID) &&
+                                    (x.Name.Contains(strName) || strName.Contains(x.Name)));
+                                if (objPlugin != null)
+                                {
+                                    objPlugin.Notes = xmlPluginToAdd["description"]?.InnerText;
+                                    objPlugin.ProcessHeroLabCyberwarePlugins(xmlPluginToAdd, objPlugin.Grade,
+                                        lstWeapons,
+                                        lstVehicles);
+                                }
+                            }
+                        }
+
+                        foreach (XmlNode xmlCyberwareToImport in xmlStatBlockBaseNode.SelectNodes(
+                            "gear/augmentations/bioware/item[@useradded != \"no\"]"))
+                        {
+                            Cyberware objCyberware = new Cyberware(this);
+                            if (objCyberware.ImportHeroLabCyberware(xmlCyberwareToImport, null, lstWeapons,
+                                lstVehicles))
+                                _lstCyberware.Add(objCyberware);
+                        }
+
+                        foreach (XmlNode xmlPluginToAdd in xmlStatBlockBaseNode.SelectNodes(
+                            "gear/augmentations/bioware/item[@useradded = \"no\"]"))
+                        {
+                            string strName = xmlPluginToAdd.Attributes["name"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strName))
+                            {
+                                Cyberware objPlugin = _lstCyberware.FirstOrDefault(x =>
+                                    !string.IsNullOrEmpty(x.ParentID) &&
+                                    (x.Name.Contains(strName) || strName.Contains(x.Name)));
+                                if (objPlugin != null)
+                                {
+                                    objPlugin.Notes = xmlPluginToAdd["description"]?.InnerText;
+                                    objPlugin.ProcessHeroLabCyberwarePlugins(xmlPluginToAdd, objPlugin.Grade,
+                                        lstWeapons,
+                                        lstVehicles);
+                                }
+                            }
+                        }
+
+                        //Timekeeper.Finish("load_char_ware");
+                    }
+
+                    using (var op_load_char_spells = Timekeeper.StartSyncron("load_char_spells", op_load))
+                    {
+                        // Spells.
+                        xmlNodeList = xmlStatBlockBaseNode.SelectNodes("magic/spells/spell");
+                        XmlDocument xmlSpellDocument = XmlManager.Load("spells.xml");
+                        foreach (XmlNode xmlHeroLabSpell in xmlNodeList)
+                        {
+                            string strSpellName = xmlHeroLabSpell.Attributes["name"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strSpellName))
+                            {
+                                bool blnIsLimited = strSpellName.EndsWith(" (limited)");
+                                if (blnIsLimited)
+                                    strSpellName = strSpellName.TrimEndOnce(" (limited)");
+                                string strForcedValue = string.Empty;
+                                switch (strSpellName)
+                                {
+                                    case "Increase Body":
+                                        strForcedValue = "BOD";
+                                        strSpellName = "Increase [Attribute]";
+                                        break;
+                                    case "Increase Agility":
+                                        strForcedValue = "AGI";
+                                        strSpellName = "Increase [Attribute]";
+                                        break;
+                                    case "Increase Reaction":
+                                        strForcedValue = "REA";
+                                        strSpellName = "Increase [Attribute]";
+                                        break;
+                                    case "Increase Strength":
+                                        strForcedValue = "STR";
+                                        strSpellName = "Increase [Attribute]";
+                                        break;
+                                    case "Increase Charisma":
+                                        strForcedValue = "CHA";
+                                        strSpellName = "Increase [Attribute]";
+                                        break;
+                                    case "Increase Intuition":
+                                        strForcedValue = "INT";
+                                        strSpellName = "Increase [Attribute]";
+                                        break;
+                                    case "Increase Logic":
+                                        strForcedValue = "LOG";
+                                        strSpellName = "Increase [Attribute]";
+                                        break;
+                                    case "Increase Willpower":
+                                        strForcedValue = "WIL";
+                                        strSpellName = "Increase [Attribute]";
+                                        break;
+                                    case "Decrease Body":
+                                        strForcedValue = "BOD";
+                                        strSpellName = "Decrease [Attribute]";
+                                        break;
+                                    case "Decrease Agility":
+                                        strForcedValue = "AGI";
+                                        strSpellName = "Decrease [Attribute]";
+                                        break;
+                                    case "Decrease Reaction":
+                                        strForcedValue = "REA";
+                                        strSpellName = "Decrease [Attribute]";
+                                        break;
+                                    case "Decrease Strength":
+                                        strForcedValue = "STR";
+                                        strSpellName = "Decrease [Attribute]";
+                                        break;
+                                    case "Decrease Charisma":
+                                        strForcedValue = "CHA";
+                                        strSpellName = "Decrease [Attribute]";
+                                        break;
+                                    case "Decrease Intuition":
+                                        strForcedValue = "INT";
+                                        strSpellName = "Decrease [Attribute]";
+                                        break;
+                                    case "Decrease Logic":
+                                        strForcedValue = "LOG";
+                                        strSpellName = "Decrease [Attribute]";
+                                        break;
+                                    case "Decrease Willpower":
+                                        strForcedValue = "WIL";
+                                        strSpellName = "Decrease [Attribute]";
+                                        break;
+                                }
+
+                                if (strSpellName.StartsWith("Detect ") &&
+                                    strSpellName != "Detect Life" &&
+                                    strSpellName != "Detect Life, Extended" &&
+                                    strSpellName != "Detect Magic" &&
+                                    strSpellName != "Detect Magic, Extended" &&
+                                    strSpellName != "Detect Enemies" &&
+                                    strSpellName != "Detect Enemies, Extended" &&
+                                    strSpellName != "Detect Individual" &&
+                                    strSpellName != "Detect Life, Extended")
+                                {
+                                    strForcedValue = strSpellName.TrimStartOnce("Clean ").TrimEndOnce(", Extended");
+                                    if (xmlHeroLabSpell.Attributes["type"]?.InnerText == "Physical")
+                                        strSpellName = "Detect [Object]";
+                                    else if (strSpellName.EndsWith(", Extended"))
+                                        strSpellName = "Detect [Life Form], Extended";
+                                    else
+                                        strSpellName = "Detect [Life Form]";
+                                }
+                                else if (strSpellName.StartsWith("Corrode "))
+                                {
+                                    strForcedValue = strSpellName.TrimStartOnce("Corrode ");
+                                    strSpellName = "Corrode [Object]";
+                                }
+                                else if (strSpellName.StartsWith("Melt "))
+                                {
+                                    strForcedValue = strSpellName.TrimStartOnce("Melt ");
+                                    strSpellName = "Melt [Object]";
+                                }
+                                else if (strSpellName.StartsWith("Sludge "))
+                                {
+                                    strForcedValue = strSpellName.TrimStartOnce("Sludge ");
+                                    strSpellName = "Sludge [Object]";
+                                }
+                                else if (strSpellName.StartsWith("Disrupt "))
+                                {
+                                    strForcedValue = strSpellName.TrimStartOnce("Disrupt ");
+                                    strSpellName = "Disrupt [Object]";
+                                }
+                                else if (strSpellName.StartsWith("Destroy "))
+                                {
+                                    strForcedValue = strSpellName.TrimStartOnce("Destroy ");
+                                    strSpellName = xmlHeroLabSpell.Attributes["type"]?.InnerText == "Physical"
+                                        ? "Destroy [Vehicle]"
+                                        : "Destroy [Free Spirit]";
+                                }
+                                else if (strSpellName.StartsWith("Insecticide "))
+                                {
+                                    strForcedValue = strSpellName.TrimStartOnce("Insecticide ");
+                                    strSpellName = "Insecticide [Insect Spirit]";
+                                }
+                                else if (strSpellName.StartsWith("One Less "))
+                                {
+                                    strForcedValue = strSpellName.TrimStartOnce("One Less ");
+                                    strSpellName = "One Less [Metatype/Species]";
+                                }
+                                else if (strSpellName.StartsWith("Slay "))
+                                {
+                                    strForcedValue = strSpellName.TrimStartOnce("Slay ");
+                                    strSpellName = "Slay [Metatype/Species]";
+                                }
+                                else if (strSpellName.StartsWith("Slaughter "))
+                                {
+                                    strForcedValue = strSpellName.TrimStartOnce("Slaughter ");
+                                    strSpellName = "Slaughter [Metatype/Species]";
+                                }
+                                else if (strSpellName.StartsWith("Ram "))
+                                {
+                                    strForcedValue = strSpellName.TrimStartOnce("Ram ");
+                                    strSpellName = "Ram [Object]";
+                                }
+                                else if (strSpellName.StartsWith("Wreck "))
+                                {
+                                    strForcedValue = strSpellName.TrimStartOnce("Wreck ");
+                                    strSpellName = "Wreck [Object]";
+                                }
+                                else if (strSpellName.StartsWith("Demolish "))
+                                {
+                                    strForcedValue = strSpellName.TrimStartOnce("Demolish ");
+                                    strSpellName = "Demolish [Object]";
+                                }
+                                else if (strSpellName.EndsWith(" Cryptesthesia"))
+                                {
+                                    strForcedValue = strSpellName.TrimEndOnce(" Cryptesthesia");
+                                    strSpellName = "[Sense] Cryptesthesia";
+                                }
+                                else if (strSpellName.EndsWith(" Removal"))
+                                {
+                                    strForcedValue = strSpellName.TrimStartOnce("Mass ").TrimEndOnce(" Removal");
+                                    strSpellName = strSpellName.StartsWith("Mass ")
+                                        ? "Mass [Sense] Removal"
+                                        : "[Sense] Removal";
+                                }
+                                else if (strSpellName.StartsWith("Alleviate ") && strSpellName != "Alleviate Addiction")
+                                {
+                                    strForcedValue = strSpellName.TrimStartOnce("Alleviate ");
+                                    strSpellName = "Alleviate [Allergy]";
+                                }
+                                else if (strSpellName.StartsWith("Clean "))
+                                {
+                                    strForcedValue = strSpellName.TrimStartOnce("Clean ");
+                                    strSpellName = "Clean [Element]";
+                                }
+                                else if (strSpellName.EndsWith(" Grenade"))
+                                {
+                                    strForcedValue = strSpellName.TrimEndOnce(" Grenade");
+                                    strSpellName = "[Element] Grenade";
+                                }
+                                else if (strSpellName.EndsWith(" Aura"))
+                                {
+                                    strForcedValue = strSpellName.TrimEndOnce(" Aura");
+                                    strSpellName = "[Element] Aura";
+                                }
+                                else if (strSpellName != "Napalm Wall" && strSpellName.EndsWith(" Wall"))
+                                {
+                                    strForcedValue = strSpellName.TrimEndOnce(" Wall");
+                                    strSpellName = "[Element] Wall";
+                                }
+                                else if (strSpellName.StartsWith("Shape "))
+                                {
+                                    strForcedValue = strSpellName.TrimStartOnce("Shape ");
+                                    strSpellName = "Shape [Material]";
+                                }
+                                else if (strSpellName.EndsWith(" Form"))
+                                {
+                                    strForcedValue = strSpellName.TrimEndOnce(" Form");
+                                    strSpellName = "[Critter] Form";
+                                }
+                                else if (strSpellName.StartsWith("Calling "))
+                                {
+                                    strForcedValue = strSpellName.TrimStartOnce("Calling ");
+                                    strSpellName = "Calling [Spirit Type]";
+                                }
+                                else if (strSpellName != "Symbolic Link" && strSpellName.EndsWith(" Link"))
+                                {
+                                    strForcedValue = strSpellName.TrimEndOnce(" Link");
+                                    strSpellName = "[Sense] Link";
+                                }
+
+                                string strSpellCategory = xmlHeroLabSpell.Attributes["category"]?.InnerText;
+                                XmlNode xmlSpellData = xmlSpellDocument.SelectSingleNode(
+                                    "chummer/spells/spell[category = \"" + strSpellCategory + "\" and name = \"" +
+                                    strSpellName + "\"]");
+                                if (xmlSpellData == null)
+                                {
+                                    string[] astrOriginalNameSplit = strSpellName.Split(':');
+                                    if (astrOriginalNameSplit.Length > 1)
+                                    {
+                                        string strName = astrOriginalNameSplit[0].Trim();
+                                        xmlSpellData = xmlSpellDocument.SelectSingleNode(
+                                            "/chummer/spells/spell[category = \"" + strSpellCategory +
+                                            "\" and name = \"" +
+                                            strName + "\"]");
+                                    }
+
+                                    if (xmlSpellData == null)
+                                    {
+                                        astrOriginalNameSplit = strSpellName.Split(',');
+                                        if (astrOriginalNameSplit.Length > 1)
+                                        {
+                                            string strName = astrOriginalNameSplit[0].Trim();
+                                            xmlSpellData = xmlSpellDocument.SelectSingleNode(
+                                                "/chummer/spells/spell[category = \"" + strSpellCategory +
+                                                "\" and name = \"" +
+                                                strName + "\"]");
+                                        }
+                                    }
+                                }
+
+                                if (xmlSpellData != null)
+                                {
+                                    Spell objSpell = new Spell(this);
+                                    objSpell.Create(xmlSpellData, strForcedValue, blnIsLimited);
+                                    objSpell.Notes = xmlHeroLabSpell["description"]?.InnerText;
+                                    _lstSpells.Add(objSpell);
+                                }
+                            }
+                        }
+
+                        //Timekeeper.Finish("load_char_spells");
+                    }
+
+                    using (var op_load_char_powers = Timekeeper.StartSyncron("load_char_powers", op_load))
+                    {
+
+                        // Powers.
+                        xmlNodeList = xmlStatBlockBaseNode.SelectNodes("magic/adeptpowers/adeptpower");
+                        XmlDocument xmlPowersDocument = XmlManager.Load("powers.xml");
+                        foreach (XmlNode xmlHeroLabPower in xmlNodeList)
+                        {
+                            string strPowerName = xmlHeroLabPower.Attributes["name"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strPowerName))
+                            {
+                                int intRating = 1;
+                                string strForcedValue = string.Empty;
+                                XmlNode xmlPowerData =
+                                    xmlPowersDocument.SelectSingleNode(
+                                        "chummer/powers/power[contains(name, \"" + strPowerName + "\")]");
+                                if (xmlPowerData == null)
+                                {
+                                    string[] astrOriginalNameSplit = strPowerName.Split(':');
+                                    if (astrOriginalNameSplit.Length > 1)
+                                    {
+                                        string strName = astrOriginalNameSplit[0].Trim();
+                                        xmlPowerData =
+                                            xmlPowersDocument.SelectSingleNode(
+                                                "/chummer/powers/power[contains(name, \"" + strName + "\")]");
+
                                         strForcedValue = astrOriginalNameSplit[1].Trim();
                                         int intForcedValueParenthesesStart = strForcedValue.IndexOf('(');
                                         if (intForcedValueParenthesesStart != -1)
                                             strForcedValue =
                                                 strForcedValue.Substring(0, intForcedValueParenthesesStart);
                                     }
+
+                                    if (xmlPowerData == null)
+                                    {
+                                        astrOriginalNameSplit = strPowerName.Split('(');
+                                        if (astrOriginalNameSplit.Length > 1)
+                                        {
+                                            string strName = astrOriginalNameSplit[0].Trim();
+                                            xmlPowerData =
+                                                xmlPowersDocument.SelectSingleNode(
+                                                    "/chummer/powers/power[contains(name, \"" + strName + "\")]");
+
+                                            string strSecondPart = astrOriginalNameSplit[1].Trim();
+                                            int intSecondPartParenthesesEnd = strSecondPart.IndexOf(')');
+                                            if (intSecondPartParenthesesEnd != -1)
+                                            {
+                                                if (!int.TryParse(
+                                                    strSecondPart.Substring(0, intSecondPartParenthesesEnd),
+                                                    out intRating))
+                                                    intRating = 1;
+                                            }
+
+                                            astrOriginalNameSplit = strSecondPart.Split(':');
+                                            if (astrOriginalNameSplit.Length >= 2)
+                                            {
+                                                strForcedValue = astrOriginalNameSplit[1].Trim();
+                                                int intForcedValueParenthesesStart = strForcedValue.IndexOf('(');
+                                                if (intForcedValueParenthesesStart != -1)
+                                                    strForcedValue =
+                                                        strForcedValue.Substring(0, intForcedValueParenthesesStart);
+                                            }
+                                        }
+                                    }
                                 }
-                            }
-                        }
 
-                        if (xmlPowerData != null)
-                        {
-                            Power objPower = new Power(this) {Extra = strForcedValue};
-                            objPower.Create(xmlPowerData, intRating);
-                            objPower.Notes = xmlHeroLabPower["description"]?.InnerText;
-                            _lstPowers.Add(objPower);
-                        }
-                    }
-                }
-
-                Timekeeper.Finish("load_char_powers", loadOperation);
-                /* TODO: Spirit/Sprite Importing
-                Timekeeper.Start("load_char_spirits");
-    
-                // Spirits/Sprites.
-                foreach (XPathNavigator xmlSpirit in xmlCharacterNavigator.Select("spirits/spirit"))
-                {
-                    Spirit objSpirit = new Spirit(this);
-                    objSpirit.Load(xmlSpirit);
-                    _lstSpirits.Add(objSpirit);
-                }
-    
-                Timekeeper.Finish("load_char_spirits");
-                */
-                Timekeeper.Start("load_char_complex");
-
-                // Compex Forms/Technomancer Programs.
-                string strComplexFormsLine = lstTextStatBlockLines?.FirstOrDefault(x => x.StartsWith("Complex Forms:"));
-                if (!string.IsNullOrEmpty(strComplexFormsLine))
-                {
-                    XmlDocument xmlComplexFormsDocument = XmlManager.Load("complexforms.xml");
-
-                    string[] astrComplexForms = strComplexFormsLine.TrimStartOnce("Complex Forms:").Trim().Split(',');
-                    foreach (string strComplexFormEntry in astrComplexForms)
-                    {
-                        string strComplexFormName = strComplexFormEntry.Trim();
-                        string strForcedValue = string.Empty;
-                        switch (strComplexFormName)
-                        {
-                            case "Diffusion of Attack":
-                                strComplexFormName = "Diffusion of [Matrix Attribute]";
-                                strForcedValue = "Attack";
-                                break;
-                            case "Diffusion of Sleaze":
-                                strComplexFormName = "Diffusion of [Matrix Attribute]";
-                                strForcedValue = "Sleaze";
-                                break;
-                            case "Diffusion of Data Processing":
-                                strComplexFormName = "Diffusion of [Matrix Attribute]";
-                                strForcedValue = "Data Processing";
-                                break;
-                            case "Diffusion of Firewall":
-                                strComplexFormName = "Diffusion of [Matrix Attribute]";
-                                strForcedValue = "Firewall";
-                                break;
-                            case "Infusion of Attack":
-                                strComplexFormName = "Infusion of [Matrix Attribute]";
-                                strForcedValue = "Attack";
-                                break;
-                            case "Infusion of Sleaze":
-                                strComplexFormName = "Infusion of [Matrix Attribute]";
-                                strForcedValue = "Sleaze";
-                                break;
-                            case "Infusion of Data Processing":
-                                strComplexFormName = "Infusion of [Matrix Attribute]";
-                                strForcedValue = "Data Processing";
-                                break;
-                            case "Infusion of Firewall":
-                                strComplexFormName = "Infusion of [Matrix Attribute]";
-                                strForcedValue = "Firewall";
-                                break;
-                        }
-
-                        XmlNode xmlComplexFormData =
-                            xmlComplexFormsDocument.SelectSingleNode(
-                                "chummer/complexforms/complexform[name = \"" + strComplexFormName + "\"]");
-                        if (xmlComplexFormData == null)
-                        {
-                            string[] astrOriginalNameSplit = strComplexFormName.Split(':');
-                            if (astrOriginalNameSplit.Length > 1)
-                            {
-                                string strName = astrOriginalNameSplit[0].Trim();
-                                xmlComplexFormData =
-                                    xmlComplexFormsDocument.SelectSingleNode(
-                                        "/chummer/complexforms/complexform[name = \"" + strName + "\"]");
-                            }
-
-                            if (xmlComplexFormData == null)
-                            {
-                                astrOriginalNameSplit = strComplexFormName.Split(',');
-                                if (astrOriginalNameSplit.Length > 1)
+                                if (xmlPowerData != null)
                                 {
-                                    string strName = astrOriginalNameSplit[0].Trim();
-                                    xmlComplexFormData =
-                                        xmlComplexFormsDocument.SelectSingleNode(
-                                            "/chummer/complexforms/complexform[name = \"" + strName + "\"]");
+                                    Power objPower = new Power(this) {Extra = strForcedValue};
+                                    objPower.Create(xmlPowerData, intRating);
+                                    objPower.Notes = xmlHeroLabPower["description"]?.InnerText;
+                                    _lstPowers.Add(objPower);
                                 }
                             }
                         }
 
-                        if (xmlComplexFormData != null)
-                        {
-                            ComplexForm objComplexForm = new ComplexForm(this);
-                            objComplexForm.Create(xmlComplexFormData, strForcedValue);
-                            _lstComplexForms.Add(objComplexForm);
-                        }
-                    }
-                }
-
-                Timekeeper.Finish("load_char_complex", loadOperation);
-                /* TODO: AI Advanced Program Importing
-                Timekeeper.Start("load_char_aiprogram");
-    
-                // AI Advanced Programs.
-                objXmlNodeList = objXmlCharacter.SelectNodes("aiprograms/aiprogram");
-                foreach (XmlNode xmlHeroLabProgram in xmlNodeList)
-                {
-                    AIProgram objProgram = new AIProgram(this);
-                    objProgram.Load(xmlHeroLabProgram);
-                    _lstAIPrograms.Add(objProgram);
-                }
-    
-                Timekeeper.Finish("load_char_aiprogram");
-                */
-                /* TODO: Martial Arts import, which are saved in TXT and HTML statblocks but not in XML statblock
-                Timekeeper.Start("load_char_marts");
-    
-                // Martial Arts.
-                xmlNodeList = objXmlCharacter.SelectNodes("martialarts/martialart");
-                foreach (XmlNode xmlHeroLabArt in xmlNodeList)
-                {
-                    MartialArt objMartialArt = new MartialArt(this);
-                    objMartialArt.Load(xmlHeroLabArt);
-                    _lstMartialArts.Add(objMartialArt);
-                }
-    
-                Timekeeper.Finish("load_char_marts");
-                */
-                Timekeeper.Start("load_char_lifestyle");
-
-                // Lifestyles.
-                XmlNode xmlFakeSINDataNode = xmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = 'Fake SIN']");
-                XmlNode xmlFakeLicenseDataNode =
-                    xmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = 'Fake License']");
-                xmlNodeList = xmlStatBlockBaseNode.SelectNodes("identities/identity");
-                foreach (XmlNode xmlHeroLabIdentity in xmlNodeList)
-                {
-                    string strIdentityName = xmlHeroLabIdentity.Attributes["name"]?.InnerText;
-                    int intIdentityNameParenthesesStart = strIdentityName.IndexOf('(');
-                    if (intIdentityNameParenthesesStart != -1)
-                        strIdentityName = strIdentityName.Substring(0, intIdentityNameParenthesesStart);
-                    XmlNode xmlHeroLabFakeSINNode =
-                        xmlHeroLabIdentity.SelectSingleNode("license[@name = \"Fake SIN\"]");
-                    if (xmlHeroLabFakeSINNode != null)
-                    {
-                        Gear objFakeSIN = new Gear(this);
-                        objFakeSIN.Create(xmlFakeSINDataNode,
-                            Convert.ToInt32(xmlHeroLabFakeSINNode.Attributes["rating"]?.InnerText), lstWeapons,
-                            strIdentityName);
-                        foreach (XmlNode xmlHeroLabFakeLicenseNode in xmlHeroLabIdentity.SelectNodes(
-                            "license[@name = \"Fake License\"]"))
-                        {
-                            Gear objFakeLicense = new Gear(this);
-                            objFakeLicense.Create(xmlFakeLicenseDataNode,
-                                Convert.ToInt32(xmlHeroLabFakeLicenseNode.Attributes["rating"]?.InnerText), lstWeapons,
-                                xmlHeroLabFakeLicenseNode.Attributes["for"]?.InnerText);
-                            objFakeLicense.Parent = objFakeSIN;
-                            objFakeSIN.Children.Add(objFakeLicense);
-                        }
-
-                        _lstGear.Add(objFakeSIN);
+                        //Timekeeper.Finish("load_char_powers");
                     }
 
-                    XmlNode xmlHeroLabLifestyleNode = xmlHeroLabIdentity.SelectSingleNode("lifestyle");
-                    if (xmlHeroLabLifestyleNode != null)
+                    /* TODO: Spirit/Sprite Importing
+                    Timekeeper.Start("load_char_spirits");
+
+                    // Spirits/Sprites.
+                    foreach (XPathNavigator xmlSpirit in xmlCharacterNavigator.Select("spirits/spirit"))
                     {
-                        string strLifestyleType = xmlHeroLabLifestyleNode.Attributes["name"]?.InnerText
-                            .TrimEndOnce(" Lifestyle");
+                        Spirit objSpirit = new Spirit(this);
+                        objSpirit.Load(xmlSpirit);
+                        _lstSpirits.Add(objSpirit);
+                    }
 
-                        XmlNode xmlLifestyleDataNode = XmlManager.Load("lifestyles.xml")
-                            .SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + strLifestyleType + "\"]");
+                    Timekeeper.Finish("load_char_spirits");
+                    */
+                    using (var op_load_char_complex = Timekeeper.StartSyncron("load_char_complex", op_load))
+                    {
 
-                        if (xmlLifestyleDataNode != null)
+                        // Compex Forms/Technomancer Programs.
+                        string strComplexFormsLine =
+                            lstTextStatBlockLines?.FirstOrDefault(x => x.StartsWith("Complex Forms:"));
+                        if (!string.IsNullOrEmpty(strComplexFormsLine))
                         {
-                            Lifestyle objLifestyle = new Lifestyle(this);
-                            objLifestyle.Create(xmlLifestyleDataNode);
-                            if (int.TryParse(xmlHeroLabLifestyleNode.Attributes["months"]?.InnerText,
-                                out int intMonths))
+                            XmlDocument xmlComplexFormsDocument = XmlManager.Load("complexforms.xml");
+
+                            string[] astrComplexForms =
+                                strComplexFormsLine.TrimStartOnce("Complex Forms:").Trim().Split(',');
+                            foreach (string strComplexFormEntry in astrComplexForms)
                             {
-                                objLifestyle.Increments = intMonths;
+                                string strComplexFormName = strComplexFormEntry.Trim();
+                                string strForcedValue = string.Empty;
+                                switch (strComplexFormName)
+                                {
+                                    case "Diffusion of Attack":
+                                        strComplexFormName = "Diffusion of [Matrix Attribute]";
+                                        strForcedValue = "Attack";
+                                        break;
+                                    case "Diffusion of Sleaze":
+                                        strComplexFormName = "Diffusion of [Matrix Attribute]";
+                                        strForcedValue = "Sleaze";
+                                        break;
+                                    case "Diffusion of Data Processing":
+                                        strComplexFormName = "Diffusion of [Matrix Attribute]";
+                                        strForcedValue = "Data Processing";
+                                        break;
+                                    case "Diffusion of Firewall":
+                                        strComplexFormName = "Diffusion of [Matrix Attribute]";
+                                        strForcedValue = "Firewall";
+                                        break;
+                                    case "Infusion of Attack":
+                                        strComplexFormName = "Infusion of [Matrix Attribute]";
+                                        strForcedValue = "Attack";
+                                        break;
+                                    case "Infusion of Sleaze":
+                                        strComplexFormName = "Infusion of [Matrix Attribute]";
+                                        strForcedValue = "Sleaze";
+                                        break;
+                                    case "Infusion of Data Processing":
+                                        strComplexFormName = "Infusion of [Matrix Attribute]";
+                                        strForcedValue = "Data Processing";
+                                        break;
+                                    case "Infusion of Firewall":
+                                        strComplexFormName = "Infusion of [Matrix Attribute]";
+                                        strForcedValue = "Firewall";
+                                        break;
+                                }
+
+                                XmlNode xmlComplexFormData =
+                                    xmlComplexFormsDocument.SelectSingleNode(
+                                        "chummer/complexforms/complexform[name = \"" + strComplexFormName + "\"]");
+                                if (xmlComplexFormData == null)
+                                {
+                                    string[] astrOriginalNameSplit = strComplexFormName.Split(':');
+                                    if (astrOriginalNameSplit.Length > 1)
+                                    {
+                                        string strName = astrOriginalNameSplit[0].Trim();
+                                        xmlComplexFormData =
+                                            xmlComplexFormsDocument.SelectSingleNode(
+                                                "/chummer/complexforms/complexform[name = \"" + strName + "\"]");
+                                    }
+
+                                    if (xmlComplexFormData == null)
+                                    {
+                                        astrOriginalNameSplit = strComplexFormName.Split(',');
+                                        if (astrOriginalNameSplit.Length > 1)
+                                        {
+                                            string strName = astrOriginalNameSplit[0].Trim();
+                                            xmlComplexFormData =
+                                                xmlComplexFormsDocument.SelectSingleNode(
+                                                    "/chummer/complexforms/complexform[name = \"" + strName + "\"]");
+                                        }
+                                    }
+                                }
+
+                                if (xmlComplexFormData != null)
+                                {
+                                    ComplexForm objComplexForm = new ComplexForm(this);
+                                    objComplexForm.Create(xmlComplexFormData, strForcedValue);
+                                    _lstComplexForms.Add(objComplexForm);
+                                }
+                            }
+                        }
+
+                        //Timekeeper.Finish("load_char_complex");
+                    }
+
+                    /* TODO: AI Advanced Program Importing
+                    Timekeeper.Start("load_char_aiprogram");
+
+                    // AI Advanced Programs.
+                    objXmlNodeList = objXmlCharacter.SelectNodes("aiprograms/aiprogram");
+                    foreach (XmlNode xmlHeroLabProgram in xmlNodeList)
+                    {
+                        AIProgram objProgram = new AIProgram(this);
+                        objProgram.Load(xmlHeroLabProgram);
+                        _lstAIPrograms.Add(objProgram);
+                    }
+
+                    Timekeeper.Finish("load_char_aiprogram");
+                    */
+                    /* TODO: Martial Arts import, which are saved in TXT and HTML statblocks but not in XML statblock
+                    Timekeeper.Start("load_char_marts");
+
+                    // Martial Arts.
+                    xmlNodeList = objXmlCharacter.SelectNodes("martialarts/martialart");
+                    foreach (XmlNode xmlHeroLabArt in xmlNodeList)
+                    {
+                        MartialArt objMartialArt = new MartialArt(this);
+                        objMartialArt.Load(xmlHeroLabArt);
+                        _lstMartialArts.Add(objMartialArt);
+                    }
+
+                    Timekeeper.Finish("load_char_marts");
+                    */
+                    using (var op_load_char_lifestype = Timekeeper.StartSyncron("load_char_lifestyle", op_load))
+                    {
+
+                        // Lifestyles.
+                        XmlNode xmlFakeSINDataNode =
+                            xmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = 'Fake SIN']");
+                        XmlNode xmlFakeLicenseDataNode =
+                            xmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = 'Fake License']");
+                        xmlNodeList = xmlStatBlockBaseNode.SelectNodes("identities/identity");
+                        foreach (XmlNode xmlHeroLabIdentity in xmlNodeList)
+                        {
+                            string strIdentityName = xmlHeroLabIdentity.Attributes["name"]?.InnerText;
+                            int intIdentityNameParenthesesStart = strIdentityName.IndexOf('(');
+                            if (intIdentityNameParenthesesStart != -1)
+                                strIdentityName = strIdentityName.Substring(0, intIdentityNameParenthesesStart);
+                            XmlNode xmlHeroLabFakeSINNode =
+                                xmlHeroLabIdentity.SelectSingleNode("license[@name = \"Fake SIN\"]");
+                            if (xmlHeroLabFakeSINNode != null)
+                            {
+                                Gear objFakeSIN = new Gear(this);
+                                objFakeSIN.Create(xmlFakeSINDataNode,
+                                    Convert.ToInt32(xmlHeroLabFakeSINNode.Attributes["rating"]?.InnerText), lstWeapons,
+                                    strIdentityName);
+                                foreach (XmlNode xmlHeroLabFakeLicenseNode in xmlHeroLabIdentity.SelectNodes(
+                                    "license[@name = \"Fake License\"]"))
+                                {
+                                    Gear objFakeLicense = new Gear(this);
+                                    objFakeLicense.Create(xmlFakeLicenseDataNode,
+                                        Convert.ToInt32(xmlHeroLabFakeLicenseNode.Attributes["rating"]?.InnerText),
+                                        lstWeapons,
+                                        xmlHeroLabFakeLicenseNode.Attributes["for"]?.InnerText);
+                                    objFakeLicense.Parent = objFakeSIN;
+                                    objFakeSIN.Children.Add(objFakeLicense);
+                                }
+
+                                _lstGear.Add(objFakeSIN);
                             }
 
-                            _lstLifestyles.Add(objLifestyle);
+                            XmlNode xmlHeroLabLifestyleNode = xmlHeroLabIdentity.SelectSingleNode("lifestyle");
+                            if (xmlHeroLabLifestyleNode != null)
+                            {
+                                string strLifestyleType = xmlHeroLabLifestyleNode.Attributes["name"]?.InnerText
+                                    .TrimEndOnce(" Lifestyle");
+
+                                XmlNode xmlLifestyleDataNode = XmlManager.Load("lifestyles.xml")
+                                    .SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + strLifestyleType +
+                                                      "\"]");
+
+                                if (xmlLifestyleDataNode != null)
+                                {
+                                    Lifestyle objLifestyle = new Lifestyle(this);
+                                    objLifestyle.Create(xmlLifestyleDataNode);
+                                    if (int.TryParse(xmlHeroLabLifestyleNode.Attributes["months"]?.InnerText,
+                                        out int intMonths))
+                                    {
+                                        objLifestyle.Increments = intMonths;
+                                    }
+
+                                    _lstLifestyles.Add(objLifestyle);
+                                }
+                            }
                         }
+
+                        //Timekeeper.Finish("load_char_lifestyle");
                     }
-                }
 
-                Timekeeper.Finish("load_char_lifestyle", loadOperation);
-                Timekeeper.Start("load_char_gear");
-
-                // <gears>
-                foreach (XmlNode xmlGearToImport in xmlStatBlockBaseNode.SelectNodes(
-                    "gear/equipment/item[@useradded != \"no\"]"))
-                {
-                    Gear objGear = new Gear(this);
-                    if (objGear.ImportHeroLabGear(xmlGearToImport, null, lstWeapons))
-                        _lstGear.Add(objGear);
-                }
-
-                foreach (XmlNode xmlPluginToAdd in xmlStatBlockBaseNode.SelectNodes(
-                    "gear/equipment/item[@useradded = \"no\"]"))
-                {
-                    string strName = xmlPluginToAdd.Attributes["name"]?.InnerText;
-                    if (!string.IsNullOrEmpty(strName))
+                    using (var op_load_char_gear = Timekeeper.StartSyncron("load_char_gear", op_load))
                     {
-                        Gear objPlugin = _lstGear.FirstOrDefault(x =>
-                            x.IncludedInParent && (x.Name.Contains(strName) || strName.Contains(x.Name)));
-                        if (objPlugin != null)
+
+                        // <gears>
+                        foreach (XmlNode xmlGearToImport in xmlStatBlockBaseNode.SelectNodes(
+                            "gear/equipment/item[@useradded != \"no\"]"))
                         {
-                            objPlugin.Quantity =
-                                Convert.ToDecimal(xmlPluginToAdd.Attributes["quantity"]?.InnerText ?? "1",
-                                    GlobalOptions.InvariantCultureInfo);
-                            objPlugin.Notes = xmlPluginToAdd["description"]?.InnerText;
-                            objPlugin.ProcessHeroLabGearPlugins(xmlPluginToAdd, lstWeapons);
+                            Gear objGear = new Gear(this);
+                            if (objGear.ImportHeroLabGear(xmlGearToImport, null, lstWeapons))
+                                _lstGear.Add(objGear);
                         }
+
+                        foreach (XmlNode xmlPluginToAdd in xmlStatBlockBaseNode.SelectNodes(
+                            "gear/equipment/item[@useradded = \"no\"]"))
+                        {
+                            string strName = xmlPluginToAdd.Attributes["name"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strName))
+                            {
+                                Gear objPlugin = _lstGear.FirstOrDefault(x =>
+                                    x.IncludedInParent && (x.Name.Contains(strName) || strName.Contains(x.Name)));
+                                if (objPlugin != null)
+                                {
+                                    objPlugin.Quantity =
+                                        Convert.ToDecimal(xmlPluginToAdd.Attributes["quantity"]?.InnerText ?? "1",
+                                            GlobalOptions.InvariantCultureInfo);
+                                    objPlugin.Notes = xmlPluginToAdd["description"]?.InnerText;
+                                    objPlugin.ProcessHeroLabGearPlugins(xmlPluginToAdd, lstWeapons);
+                                }
+                            }
+                        }
+
+                        //Timekeeper.Finish("load_char_gear");
                     }
-                }
 
-                Timekeeper.Finish("load_char_gear", loadOperation);
-                Timekeeper.Start("load_char_car");
-
-                foreach (Vehicle objVehicle in lstVehicles)
-                {
-                    _lstVehicles.Add(objVehicle);
-                }
-
-                /* TODO: Process HeroLab Vehicles entries, which are present in HTML and TXT statblocks but not in XML
-                // Vehicles.
-                xmlNodeList = objXmlCharacter.SelectNodes("vehicles/vehicle");
-                foreach (XmlNode xmlHeroLabVehicle in xmlNodeList)
-                {
-                    Vehicle objVehicle = new Vehicle(this);
-                    objVehicle.Load(xmlHeroLabVehicle);
-                    _lstVehicles.Add(objVehicle);
-                }
-                */
-                Timekeeper.Finish("load_char_car", loadOperation);
-                /* TODO: Process HeroLab Initiation/Submersion and related entries
-                Timekeeper.Start("load_char_mmagic");
-                // Metamagics/Echoes.
-                xmlNodeList = objXmlCharacter.SelectNodes("metamagics/metamagic");
-                foreach (XmlNode xmlHeroLabMetamagic in xmlNodeList)
-                {
-                    Metamagic objMetamagic = new Metamagic(this);
-                    objMetamagic.Load(xmlHeroLabMetamagic);
-                    _lstMetamagics.Add(objMetamagic);
-                }
-    
-                Timekeeper.Finish("load_char_mmagic");
-                Timekeeper.Start("load_char_arts");
-    
-                // Arts
-                xmlNodeList = objXmlCharacter.SelectNodes("arts/art");
-                foreach (XmlNode xmlHeroLabArt in xmlNodeList)
-                {
-                    Art objArt = new Art(this);
-                    objArt.Load(xmlHeroLabArt);
-                    _lstArts.Add(objArt);
-                }
-    
-                Timekeeper.Finish("load_char_arts");
-                Timekeeper.Start("load_char_ench");
-    
-                // Enhancements
-                xmlNodeList = objXmlCharacter.SelectNodes("enhancements/enhancement");
-                foreach (XmlNode xmlHeroLabEnhancement in objXmlNodeList)
-                {
-                    Enhancement objEnhancement = new Enhancement(this);
-                    objEnhancement.Load(xmlHeroLabEnhancement);
-                    _lstEnhancements.Add(objEnhancement);
-                }
-    
-                Timekeeper.Finish("load_char_ench");
-                Timekeeper.Start("load_char_cpow");
-    
-                // Critter Powers.
-                xmlNodeList = objXmlCharacter.SelectNodes("critterpowers/critterpower");
-                foreach (XmlNode xmlHeroLabPower in xmlNodeList)
-                {
-                    CritterPower objPower = new CritterPower(this);
-                    objPower.Load(xmlHeroLabPower);
-                    _lstCritterPowers.Add(objPower);
-                }
-    
-                Timekeeper.Finish("load_char_cpow");
-                Timekeeper.Start("load_char_foci");
-    
-                // Foci.
-                xmlNodeList = objXmlCharacter.SelectNodes("foci/focus");
-                foreach (XmlNode xmlHeroLabFocus in xmlNodeList)
-                {
-                    Focus objFocus = new Focus(this);
-                    objFocus.Load(xmlHeroLabFocus);
-                    _lstFoci.Add(objFocus);
-                }
-    
-                Timekeeper.Finish("load_char_foci");
-                Timekeeper.Start("load_char_init");
-    
-                // Initiation Grades.
-                xmlNodeList = objXmlCharacter.SelectNodes("initiationgrades/initiationgrade");
-                foreach (XmlNode xmlHeroLabGrade in xmlNodeList)
-                {
-                    InitiationGrade objGrade = new InitiationGrade(this);
-                    objGrade.Load(xmlHeroLabGrade);
-                    _lstInitiationGrades.Add(objGrade);
-                }
-    
-                Timekeeper.Finish("load_char_init");
-                */
-                /* TODO: Import HeroLab Expense Logs, which are different from Journal entries
-                Timekeeper.Start("load_char_elog");
-    
-                // Expense Log Entries.
-                XmlNodeList xmlExpenseList = objXmlCharacter.SelectNodes("expenses/expense");
-                foreach (XmlNode xmlHeroLabExpense in xmlExpenseList)
-                {
-                    ExpenseLogEntry objExpenseLogEntry = new ExpenseLogEntry(this);
-                    objExpenseLogEntry.Load(xmlHeroLabExpense);
-                    _lstExpenseLog.Add(objExpenseLogEntry);
-                }
-    
-                Timekeeper.Finish("load_char_elog");
-                */
-                _lstWeapons.AddRange(lstWeapons);
-
-                Timekeeper.Start("load_char_unarmed");
-
-                // Look for the unarmed attack
-                bool blnFoundUnarmed = false;
-                foreach (Weapon objWeapon in _lstWeapons)
-                {
-                    if (objWeapon.Name == "Unarmed Attack")
+                    using (var op_load_char_car = Timekeeper.StartSyncron("load_char_car", op_load))
                     {
-                        blnFoundUnarmed = true;
-                        break;
-                    }
-                }
 
-                if (!blnFoundUnarmed)
-                {
-                    // Add the Unarmed Attack Weapon to the character.
-                    XmlDocument objXmlWeaponDoc = XmlManager.Load("weapons.xml");
-                    XmlNode objXmlWeapon =
-                        objXmlWeaponDoc.SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
-                    if (objXmlWeapon != null)
+                        foreach (Vehicle objVehicle in lstVehicles)
+                        {
+                            _lstVehicles.Add(objVehicle);
+                        }
+
+                        /* TODO: Process HeroLab Vehicles entries, which are present in HTML and TXT statblocks but not in XML
+                        // Vehicles.
+                        xmlNodeList = objXmlCharacter.SelectNodes("vehicles/vehicle");
+                        foreach (XmlNode xmlHeroLabVehicle in xmlNodeList)
+                        {
+                            Vehicle objVehicle = new Vehicle(this);
+                            objVehicle.Load(xmlHeroLabVehicle);
+                            _lstVehicles.Add(objVehicle);
+                        }
+                        */
+                        //Timekeeper.Finish("load_char_car");
+                    }
+
+                    /* TODO: Process HeroLab Initiation/Submersion and related entries
+                    Timekeeper.Start("load_char_mmagic");
+                    // Metamagics/Echoes.
+                    xmlNodeList = objXmlCharacter.SelectNodes("metamagics/metamagic");
+                    foreach (XmlNode xmlHeroLabMetamagic in xmlNodeList)
                     {
-                        Weapon objWeapon = new Weapon(this);
-                        objWeapon.Create(objXmlWeapon, _lstWeapons);
-                        objWeapon.IncludedInWeapon = true; // Unarmed attack can never be removed
-                        _lstWeapons.Add(objWeapon);
+                        Metamagic objMetamagic = new Metamagic(this);
+                        objMetamagic.Load(xmlHeroLabMetamagic);
+                        _lstMetamagics.Add(objMetamagic);
                     }
-                }
 
-                Timekeeper.Finish("load_char_unarmed", loadOperation);
-                Timekeeper.Start("load_char_cfix");
+                    Timekeeper.Finish("load_char_mmagic");
+                    Timekeeper.Start("load_char_arts");
 
-                // load issue where the contact multiplier was set to 0
-                if (_intContactMultiplier == 0 && !string.IsNullOrEmpty(_strGameplayOption))
-                {
-                    XmlNode objXmlGameplayOption = XmlManager.Load("gameplayoptions.xml")
-                        .SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" + _strGameplayOption +
-                                          "\"]");
-                    if (objXmlGameplayOption != null)
+                    // Arts
+                    xmlNodeList = objXmlCharacter.SelectNodes("arts/art");
+                    foreach (XmlNode xmlHeroLabArt in xmlNodeList)
                     {
-                        string strKarma = objXmlGameplayOption["karma"]?.InnerText;
-                        string strNuyen = objXmlGameplayOption["maxnuyen"]?.InnerText;
-                        string strContactMultiplier = _objOptions.FreeContactsMultiplierEnabled
-                            ? _objOptions.FreeContactsMultiplier.ToString()
-                            : objXmlGameplayOption["contactmultiplier"]?.InnerText;
-                        _intMaxKarma = Convert.ToInt32(strKarma);
-                        _decMaxNuyen = Convert.ToDecimal(strNuyen);
-                        _intContactMultiplier = Convert.ToInt32(strContactMultiplier);
-                        _intCachedContactPoints = (CHA.Base + CHA.Karma) * _intContactMultiplier;
+                        Art objArt = new Art(this);
+                        objArt.Load(xmlHeroLabArt);
+                        _lstArts.Add(objArt);
                     }
-                }
 
-                Timekeeper.Finish("load_char_cfix", loadOperation);
-                Timekeeper.Start("load_char_maxkarmafix");
-                //Fixes an issue where the quality limit was not set. In most cases this should wind up equalling 25.
-                if (_intGameplayOptionQualityLimit == 0 && _intMaxKarma > 0)
+                    Timekeeper.Finish("load_char_arts");
+                    Timekeeper.Start("load_char_ench");
+
+                    // Enhancements
+                    xmlNodeList = objXmlCharacter.SelectNodes("enhancements/enhancement");
+                    foreach (XmlNode xmlHeroLabEnhancement in objXmlNodeList)
+                    {
+                        Enhancement objEnhancement = new Enhancement(this);
+                        objEnhancement.Load(xmlHeroLabEnhancement);
+                        _lstEnhancements.Add(objEnhancement);
+                    }
+
+                    Timekeeper.Finish("load_char_ench");
+                    Timekeeper.Start("load_char_cpow");
+
+                    // Critter Powers.
+                    xmlNodeList = objXmlCharacter.SelectNodes("critterpowers/critterpower");
+                    foreach (XmlNode xmlHeroLabPower in xmlNodeList)
+                    {
+                        CritterPower objPower = new CritterPower(this);
+                        objPower.Load(xmlHeroLabPower);
+                        _lstCritterPowers.Add(objPower);
+                    }
+
+                    Timekeeper.Finish("load_char_cpow");
+                    Timekeeper.Start("load_char_foci");
+
+                    // Foci.
+                    xmlNodeList = objXmlCharacter.SelectNodes("foci/focus");
+                    foreach (XmlNode xmlHeroLabFocus in xmlNodeList)
+                    {
+                        Focus objFocus = new Focus(this);
+                        objFocus.Load(xmlHeroLabFocus);
+                        _lstFoci.Add(objFocus);
+                    }
+
+                    Timekeeper.Finish("load_char_foci");
+                    Timekeeper.Start("load_char_init");
+
+                    // Initiation Grades.
+                    xmlNodeList = objXmlCharacter.SelectNodes("initiationgrades/initiationgrade");
+                    foreach (XmlNode xmlHeroLabGrade in xmlNodeList)
+                    {
+                        InitiationGrade objGrade = new InitiationGrade(this);
+                        objGrade.Load(xmlHeroLabGrade);
+                        _lstInitiationGrades.Add(objGrade);
+                    }
+
+                    Timekeeper.Finish("load_char_init");
+                    */
+                    /* TODO: Import HeroLab Expense Logs, which are different from Journal entries
+                    Timekeeper.Start("load_char_elog");
+
+                    // Expense Log Entries.
+                    XmlNodeList xmlExpenseList = objXmlCharacter.SelectNodes("expenses/expense");
+                    foreach (XmlNode xmlHeroLabExpense in xmlExpenseList)
+                    {
+                        ExpenseLogEntry objExpenseLogEntry = new ExpenseLogEntry(this);
+                        objExpenseLogEntry.Load(xmlHeroLabExpense);
+                        _lstExpenseLog.Add(objExpenseLogEntry);
+                    }
+
+                    Timekeeper.Finish("load_char_elog");
+                    */
+                    _lstWeapons.AddRange(lstWeapons);
+
+                    using (var op_load_char_unarmed = Timekeeper.StartSyncron("load_char_unarmed", op_load))
+                    {
+
+                        // Look for the unarmed attack
+                        bool blnFoundUnarmed = false;
+                        foreach (Weapon objWeapon in _lstWeapons)
+                        {
+                            if (objWeapon.Name == "Unarmed Attack")
+                            {
+                                blnFoundUnarmed = true;
+                                break;
+                            }
+                        }
+
+                        if (!blnFoundUnarmed)
+                        {
+                            // Add the Unarmed Attack Weapon to the character.
+                            XmlDocument objXmlWeaponDoc = XmlManager.Load("weapons.xml");
+                            XmlNode objXmlWeapon =
+                                objXmlWeaponDoc.SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
+                            if (objXmlWeapon != null)
+                            {
+                                Weapon objWeapon = new Weapon(this);
+                                objWeapon.Create(objXmlWeapon, _lstWeapons);
+                                objWeapon.IncludedInWeapon = true; // Unarmed attack can never be removed
+                                _lstWeapons.Add(objWeapon);
+                            }
+                        }
+
+                        //Timekeeper.Finish("load_char_unarmed");
+                    }
+
+                    using (var op_load_char_cfix = Timekeeper.StartSyncron("load_char_cfix", op_load))
+                    {
+
+                        // load issue where the contact multiplier was set to 0
+                        if (_intContactMultiplier == 0 && !string.IsNullOrEmpty(_strGameplayOption))
+                        {
+                            XmlNode objXmlGameplayOption = XmlManager.Load("gameplayoptions.xml")
+                                .SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" +
+                                                  _strGameplayOption +
+                                                  "\"]");
+                            if (objXmlGameplayOption != null)
+                            {
+                                string strKarma = objXmlGameplayOption["karma"]?.InnerText;
+                                string strNuyen = objXmlGameplayOption["maxnuyen"]?.InnerText;
+                                string strContactMultiplier = _objOptions.FreeContactsMultiplierEnabled
+                                    ? _objOptions.FreeContactsMultiplier.ToString()
+                                    : objXmlGameplayOption["contactmultiplier"]?.InnerText;
+                                _intMaxKarma = Convert.ToInt32(strKarma);
+                                _decMaxNuyen = Convert.ToDecimal(strNuyen);
+                                _intContactMultiplier = Convert.ToInt32(strContactMultiplier);
+                                _intCachedContactPoints = (CHA.Base + CHA.Karma) * _intContactMultiplier;
+                            }
+                        }
+
+                        //Timekeeper.Finish("load_char_cfix");
+                    }
+
+                    using (var op_load_char_cfix = Timekeeper.StartSyncron("load_char_maxkarmafix", op_load))
+                    {
+                        //Fixes an issue where the quality limit was not set. In most cases this should wind up equalling 25.
+                        if (_intGameplayOptionQualityLimit == 0 && _intMaxKarma > 0)
+                        {
+                            _intGameplayOptionQualityLimit = _intMaxKarma;
+                        }
+
+                        //Timekeeper.Finish("load_char_maxkarmafix");
+                    }
+
+                    // Refresh certain improvements
+                    using (var op_load_char_improvementrefreshers = Timekeeper.StartSyncron("load_char_improvementrefreshers2", op_load))
+                    {
+                        IsLoading = false;
+                        // Refresh permanent attribute changes due to essence loss
+                        RefreshEssenceLossImprovements();
+                        // Refresh dicepool modifiers due to filled condition monitor boxes
+                        RefreshWoundPenalties();
+                        // Refresh encumbrance penalties
+                        RefreshEncumbrance();
+                        // Curb Mystic Adept power points if the values that were loaded in would be illegal
+                        if (MysticAdeptPowerPoints > 0)
+                        {
+                            int intMAGTotalValue = MAG.TotalValue;
+                            if (MysticAdeptPowerPoints > intMAGTotalValue)
+                                MysticAdeptPowerPoints = intMAGTotalValue;
+                        }
+
+                        if (!InitiationEnabled || !AddInitiationsAllowed)
+                            ClearInitiations();
+                        //Timekeeper.Finish("load_char_improvementrefreshers");
+                    }
+
+
+                }
+                catch (Exception e)
                 {
-                    _intGameplayOptionQualityLimit = _intMaxKarma;
+                    op_load.SetSuccess(false);
+                    TelemetryClient.TrackException(e);
+                    Log.Error(e);
                 }
-
-                Timekeeper.Finish("load_char_maxkarmafix", loadOperation);
-
-                // Refresh certain improvements
-                Timekeeper.Start("load_char_improvementrefreshers");
-                IsLoading = false;
-                // Refresh permanent attribute changes due to essence loss
-                RefreshEssenceLossImprovements();
-                // Refresh dicepool modifiers due to filled condition monitor boxes
-                RefreshWoundPenalties();
-                // Refresh encumbrance penalties
-                RefreshEncumbrance();
-                // Curb Mystic Adept power points if the values that were loaded in would be illegal
-                if (MysticAdeptPowerPoints > 0)
-                {
-                    int intMAGTotalValue = MAG.TotalValue;
-                    if (MysticAdeptPowerPoints > intMAGTotalValue)
-                        MysticAdeptPowerPoints = intMAGTotalValue;
-                }
-
-                if (!InitiationEnabled || !AddInitiationsAllowed)
-                    ClearInitiations();
-                Timekeeper.Finish("load_char_improvementrefreshers", loadOperation);
-
-                
             }
-            catch (Exception e)
-            {
-                if (loadOperation?.Telemetry != null)
-                    loadOperation.Telemetry.Success = false;
-                Log.Error(e);
-            }
-            finally
-            {
-                if (loadOperation != null)
-                    Program.ApplicationInsightsTelemetryClient.StopOperation(loadOperation);
-            }
+
             return true;
         }
         #endregion

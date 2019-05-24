@@ -34,6 +34,8 @@ using System.Text;
 using System.ComponentModel;
 using Chummer.UI.Attributes;
 using System.Collections.ObjectModel;
+using Microsoft.ApplicationInsights;
+using Microsoft.ApplicationInsights.DataContracts;
 
 namespace Chummer
 {
@@ -43,6 +45,7 @@ namespace Chummer
     [DesignerCategory("")]
     public class CharacterShared : Form
     {
+        private static readonly TelemetryClient TelemetryClient = new TelemetryClient();
         private readonly Character _objCharacter;
         private readonly CharacterOptions _objOptions;
         private bool _blnIsDirty;
@@ -54,6 +57,27 @@ namespace Chummer
         {
             _objCharacter = objCharacter;
             _objOptions = _objCharacter.Options;
+            string name = "Show_Form_" + this.GetType();
+            if (objCharacter != null)
+                name += "_" + objCharacter.CharacterName;
+            PageViewTelemetry pvt = new PageViewTelemetry(name);
+            pvt.Id = Guid.NewGuid().ToString();
+            pvt.Name = name;
+            pvt.Context.Operation.Name = "Operation CharacterShared.Constructor()";
+            pvt.Properties.Add("Name", objCharacter?.Name);
+            pvt.Properties.Add("Path", objCharacter?.FileName);
+            pvt.Timestamp = DateTimeOffset.UtcNow;
+            this.Shown += delegate(object sender, EventArgs args)
+            {
+                pvt.Duration = DateTimeOffset.UtcNow-pvt.Timestamp;
+                if (objCharacter != null)
+                {
+                    if (Uri.TryCreate(objCharacter.FileName, UriKind.Absolute, out Uri Uriresult))
+                        pvt.Url = Uriresult;
+                }
+                TelemetryClient.TrackPageView(pvt);
+            };
+            
         }
 
         [Obsolete("This constructor is for use by form designers only.", true)]

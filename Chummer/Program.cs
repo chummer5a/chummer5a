@@ -40,8 +40,12 @@ namespace Chummer
     {
         private static Logger Log = null;
         private const string strChummerGuid = "eb0759c1-3599-495e-8bc5-57c8b3e1b31c";
-        private static TelemetryConfiguration ApplicationInsightsConfig = new TelemetryConfiguration { InstrumentationKey = "012fd080-80dc-4c10-97df-4f2cf8c805d5" };
-        public static readonly TelemetryClient ApplicationInsightsTelemetryClient = new TelemetryClient(ApplicationInsightsConfig);
+        //public static TelemetryConfiguration ApplicationInsightsConfig = new TelemetryConfiguration
+        //{
+        //    InstrumentationKey = "012fd080-80dc-4c10-97df-4f2cf8c805d5"
+        //};
+        private static readonly TelemetryClient TelemetryClient = new TelemetryClient();
+        
 
         /// <summary>
         /// The main entry point for the application.
@@ -49,6 +53,8 @@ namespace Chummer
         [STAThread]
         static void Main()
         {
+            PageViewTelemetry pvt = null;
+            var startTime = DateTimeOffset.UtcNow;
             using (GlobalChummerMutex = new Mutex(false, @"Global\" + strChummerGuid))
             {
                 IsMono = Type.GetType("Mono.Runtime") != null;
@@ -75,11 +81,7 @@ namespace Chummer
 
 
                 sw.TaskEnd("fixcwd");
-                //Log exceptions that is caught. Wanting to know about this cause of performance
-                AppDomain.CurrentDomain.FirstChanceException += (sender, e) =>
-                {
-                    //Console.WriteLine(e.Exception.ToString());
-                };
+                
                 AppDomain.CurrentDomain.FirstChanceException += ExceptionHeatmap.OnException;
 
                 sw.TaskEnd("appdomain 2");
@@ -104,9 +106,26 @@ namespace Chummer
                     //main.ShowInTaskbar = false;
                 };
 #endif
+                AppDomain.CurrentDomain.UnhandledException += (o, e) =>
+                {
+                    try
+                    {
+                        if (e.ExceptionObject is Exception myException)
+                        {
+                            TelemetryClient tc = new TelemetryClient();
+                            tc.TrackException(myException);
+                        }
+                    }
+                    catch (Exception exception)
+                    {
+                        Console.WriteLine(exception);
+                    }
+                };
 
+           
                 sw.TaskEnd("Startup");
 
+                
                 Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
 
                 if (!string.IsNullOrEmpty(LanguageManager.ManagerErrorMessage))
@@ -128,6 +147,7 @@ namespace Chummer
                         "ApplicationInsightsTarget",
                         typeof(Microsoft.ApplicationInsights.NLogTarget.ApplicationInsightsTarget)
                     );
+                    LogManager.ThrowExceptions = false;
                     Log = NLog.LogManager.GetCurrentClassLogger();
                     if (GlobalOptions.UseLogging)
                     {
@@ -139,7 +159,7 @@ namespace Chummer
                         }
                     }
                     Log.Info(strInfo);
-                    Log.Info("NLog initialized");
+                    //TelemetryConfiguration.Active.DisableTelemetry = System.Diagnostics.Debugger.IsAttached;
                     if (GlobalOptions.UseLoggingApplicationInsights)
                     {
 #if DEBUG
@@ -148,36 +168,36 @@ namespace Chummer
 #else
                         TelemetryConfiguration.Active.TelemetryChannel.DeveloperMode = false;
 #endif
-                        // Set session data:
-                        ApplicationInsightsTelemetryClient.Context.User.Id = Environment.UserName;
-                        ApplicationInsightsTelemetryClient.Context.Session.Id = Guid.NewGuid().ToString();
-                        ApplicationInsightsTelemetryClient.Context.Device.OperatingSystem = Environment.OSVersion.ToString();
-                        ApplicationInsightsTelemetryClient.Context.Device.Id = Dns.GetHostName();
-                        ApplicationInsightsTelemetryClient.Context.Component.Version = System.Reflection.Assembly
-                            .GetExecutingAssembly().GetName().Version.ToString();
-                        ApplicationInsightsTelemetryClient.Context.Location.Ip = GetLocalIPAddress();
                         TelemetryConfiguration.Active.TelemetryInitializers.Add(new CustomTelemetryInitializer());
+                        TelemetryConfiguration.Active.TelemetryProcessorChainBuilder.Use((next) =>
+                            new TranslateExceptionTelemetryProcessor(next));
+                        TelemetryConfiguration.Active.TelemetryProcessorChainBuilder.Build();
                         //for now lets disable live view. We may make another GlobalOption to enable it at a later stage...
                         //var live = new LiveStreamProvider(ApplicationInsightsConfig);
                         //live.Enable();
 
                         // Log a page view:
-                        PageViewTelemetry pvt = new PageViewTelemetry("Program.Main()");
-                        pvt.Properties.Add("version", System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString());
+                        pvt = new PageViewTelemetry("Program.Main()")
+                        {
+                           Name = "Chummer Startup: " +
+                                   System.Reflection.Assembly.GetExecutingAssembly().GetName().Version
+                        };
+                        if (Properties.Settings.Default.UploadClientId != Guid.Empty)
+                            pvt.Id = Properties.Settings.Default.UploadClientId.ToString();
+                        pvt.Context.Operation.Name = "Operation Program.Main()";
                         pvt.Properties.Add("parameters", Environment.CommandLine);
-                        ApplicationInsightsTelemetryClient.TrackPageView(pvt);
+                        pvt.Timestamp = startTime;
                     }
                     else
                     {
                         TelemetryConfiguration.Active.DisableTelemetry = true;
                     }
+                    
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine(e);
                 }
-
-                
 
                 //make sure the Settings are upgraded/preserved after an upgrade
                 //see for details: https://stackoverflow.com/questions/534261/how-do-you-keep-user-config-settings-across-different-assembly-versions-in-net/534335#534335
@@ -191,36 +211,30 @@ namespace Chummer
                 // Make sure the default language has been loaded before attempting to open the Main Form.
                 LanguageManager.TranslateWinForm(GlobalOptions.Language, null);
 
-                MainForm = new frmChummerMain();
+                MainForm = new frmChummerMain(false, pvt);
                 Application.Run(MainForm);
+                Log.Info(ExceptionHeatmap.GenerateInfo());
                 if (GlobalOptions.UseLoggingApplicationInsights)
                 {
-                    if (ApplicationInsightsTelemetryClient != null)
+                    if (TelemetryClient != null)
                     {
-                        ApplicationInsightsTelemetryClient.Flush();
+                        //if (pvt != null)
+                        //{
+                        //    pvt.Duration = DateTimeOffset.UtcNow - pvt.Timestamp;
+                        //    ApplicationInsightsTelemetryClient.TrackPageView(pvt);
+                        //}
+                        TelemetryClient.Flush();
                         //we have to wait a bit to give it time to upload the data
                         Console.WriteLine("Waiting a bit to flush logging data...");
                         Thread.Sleep(5000);
                     }
 
                 }
-                Log.Info(ExceptionHeatmap.GenerateInfo());
+                
             }
         }
 
-        public static string GetLocalIPAddress()
-        {
-            var host = Dns.GetHostEntry(Dns.GetHostName());
-            foreach (var ip in host.AddressList)
-            {
-                if (ip.AddressFamily == AddressFamily.InterNetwork)
-                {
-                    return ip.ToString();
-                }
-            }
-            //throw new Exception("No network adapters with an IPv4 address in the system!");
-            return null;
-        }
+        
 
         /// <summary>
         /// Main application form.
