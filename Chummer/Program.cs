@@ -168,6 +168,7 @@ namespace Chummer
 #else
                         TelemetryConfiguration.Active.TelemetryChannel.DeveloperMode = false;
 #endif
+                        CustomTelemetryInitializer.Ip = CustomTelemetryInitializer.GetPublicIPAddress();
                         TelemetryConfiguration.Active.TelemetryInitializers.Add(new CustomTelemetryInitializer());
                         TelemetryConfiguration.Active.TelemetryProcessorChainBuilder.Use((next) =>
                             new TranslateExceptionTelemetryProcessor(next));

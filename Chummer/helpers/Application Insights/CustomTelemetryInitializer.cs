@@ -13,7 +13,7 @@ namespace Chummer
         private static string Hostname =  Dns.GetHostName();
         private static string Version = System.Reflection.Assembly
             .GetExecutingAssembly().GetName().Version.ToString();
-        private static string Ip = GetPublicIPAddress();
+        public static string Ip = null;
 
         public void Initialize(ITelemetry telemetry)
         {
@@ -67,7 +67,7 @@ namespace Chummer
                 }
             }
             //throw new Exception("No network adapters with an IPv4 address in the system!");
-            return null;
+            return "";
         }
     }
 
