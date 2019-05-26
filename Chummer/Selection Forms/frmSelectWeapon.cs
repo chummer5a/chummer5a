@@ -524,7 +524,7 @@ namespace Chummer
         public string LimitToCategories
         {
             // If passed an empty string, consume it and keep _strLimitToCategories as an empty hash.
-            set => _hashLimitToCategories = string.IsNullOrWhiteSpace(value) ? null : new HashSet<string>(value.Split(','));
+            set => _hashLimitToCategories = string.IsNullOrWhiteSpace(value) ? new HashSet<string>() : new HashSet<string>(value.Split(','));
         }
 
         public bool Underbarrel { get; set; }
@@ -541,7 +541,7 @@ namespace Chummer
             else
             {
                 StringBuilder objCategoryFilter = new StringBuilder();
-                if (_hashLimitToCategories.Count > 0)
+                if (_hashLimitToCategories != null && _hashLimitToCategories.Count > 0)
                 {
                     foreach (string strLoopCategory in _hashLimitToCategories)
                     {
