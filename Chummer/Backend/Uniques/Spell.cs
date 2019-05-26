@@ -643,9 +643,8 @@ namespace Chummer
                     }
                 }
 
-                strDV = RelevantImprovements(i => i.ImproveType == Improvement.ImprovementType.DrainValue ||
-                                                  i.ImproveType == Improvement.ImprovementType.SpellCategoryDrain)
-                    .Aggregate(strDV, (current, imp) => current + $" + {imp.Value:0;-0;0}");
+                foreach (var improvement in RelevantImprovements(i => i.ImproveType == Improvement.ImprovementType.DrainValue || i.ImproveType == Improvement.ImprovementType.SpellCategoryDrain))
+                    strDV = strDV + $" + {improvement.Value:0;-0;0}";
                 if (Limited)
                 {
                     strDV += " + -2";
@@ -902,7 +901,7 @@ namespace Chummer
 
         private IEnumerable<Improvement> RelevantImprovements(Func<Improvement, bool> funcWherePredicate = null)
         {
-            foreach (Improvement objImprovement in _objCharacter.Improvements.Where(i => i.Enabled || funcWherePredicate?.Invoke(i) == true))
+            foreach (Improvement objImprovement in _objCharacter.Improvements.Where(i => i.Enabled && funcWherePredicate?.Invoke(i) == true))
             {
                 switch (objImprovement.ImproveType)
                 {
