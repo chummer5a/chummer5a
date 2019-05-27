@@ -44,16 +44,18 @@ namespace ChummerHub.Controllers.V1
         private readonly ILogger _logger;
         private SignInManager<ApplicationUser> _signInManager = null;
         private UserManager<ApplicationUser> _userManager = null;
+        private TelemetryClient tc;
 
         public SINnerGroupController(ApplicationDbContext context,
             ILogger<SINnerController> logger,
             SignInManager<ApplicationUser> signInManager,
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager, TelemetryClient telemetry)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _context = context;
             _logger = logger;
+            this.tc = telemetry;
         }
 
 
@@ -160,7 +162,7 @@ namespace ChummerHub.Controllers.V1
             {
                 try
                 {
-                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
                     telemetry.Properties.Add("User", user?.Email);
                     telemetry.Properties.Add("GroupId", GroupId.ToString());
@@ -216,7 +218,7 @@ namespace ChummerHub.Controllers.V1
                 dbgroup.MySettings.DownloadUrl = Startup.GDrive.StoreXmlInCloud(dbgroup.MySettings, uploadedFile);
                 try
                 {
-                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     Microsoft.ApplicationInsights.DataContracts.EventTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.EventTelemetry("PutStoreXmlInCloud");
                     telemetry.Properties.Add("User", user.Email);
                     telemetry.Properties.Add("SINnerGroupId", dbgroup.Id.ToString());
@@ -250,7 +252,7 @@ namespace ChummerHub.Controllers.V1
             {
                 try
                 {
-                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
                     telemetry.Properties.Add("User", user?.Email);
                     telemetry.Properties.Add("SINnerGroupId", dbgroup.Id.ToString());
@@ -463,7 +465,7 @@ namespace ChummerHub.Controllers.V1
                 {
                     try
                     {
-                        var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                        //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                         Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry =
                             new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
                         telemetry.Properties.Add("User", user?.Email);
@@ -494,7 +496,7 @@ namespace ChummerHub.Controllers.V1
         {
             try
             {
-                var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                 Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
                 telemetry.Properties.Add("User", user?.Email);
                 telemetry.Properties.Add("Groupname", mygroup?.Groupname?.ToString());
@@ -549,7 +551,7 @@ namespace ChummerHub.Controllers.V1
                     return BadRequest(res);
                 }
                 var roles = await _userManager.GetRolesAsync(user);
-                var sin = await PutSiNerInGroupInternal(GroupId, SinnerId, user, _context, _logger, pwhash, roles);
+                var sin = await PutSiNerInGroupInternal(GroupId, SinnerId, user, _context, _logger, pwhash, roles, tc);
                 res = new ResultGroupPutSINerInGroup(sin);
                 return Ok(res);
             }
@@ -557,7 +559,7 @@ namespace ChummerHub.Controllers.V1
             {
                 try
                 {
-                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
                     telemetry.Properties.Add("User", user?.Email);
                     telemetry.Properties.Add("GroupId", GroupId.ToString());
@@ -574,7 +576,7 @@ namespace ChummerHub.Controllers.V1
 
         }
 
-        internal static async Task<SINner> PutSiNerInGroupInternal(Guid? GroupId, Guid? SinnerId, ApplicationUser user, ApplicationDbContext context, ILogger logger, string pwhash, IList<string> userroles)
+        internal static async Task<SINner> PutSiNerInGroupInternal(Guid? GroupId, Guid? SinnerId, ApplicationUser user, ApplicationDbContext context, ILogger logger, string pwhash, IList<string> userroles, TelemetryClient tc)
         {
             try
             {
@@ -668,7 +670,8 @@ namespace ChummerHub.Controllers.V1
             {
                 try
                 {
-                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    if (tc == null)
+                        tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry =
                         new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
                     telemetry.Properties.Add("User", user?.Email);
@@ -749,7 +752,7 @@ namespace ChummerHub.Controllers.V1
             {
                 try
                 {
-                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
                     telemetry.Properties.Add("groupid", groupid.ToString());
                     tc.TrackException(telemetry);
@@ -779,7 +782,7 @@ namespace ChummerHub.Controllers.V1
         {
             Stopwatch sw = new Stopwatch();
             sw.Start();
-            var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+            //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
             ResultGroupGetSearchGroups res = null;
             _logger.LogTrace("GetPublicGroup: " + Groupname + ".");
             try
@@ -844,7 +847,7 @@ namespace ChummerHub.Controllers.V1
                 try
                 {
                     var user = await _signInManager.UserManager.GetUserAsync(User);
-                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
                     telemetry.Properties.Add("User", user?.Email);
                     tc.TrackException(telemetry);
@@ -919,7 +922,7 @@ namespace ChummerHub.Controllers.V1
             {
                 try
                 {
-                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
                     telemetry.Properties.Add("Groupname", Groupname?.ToString());
                     tc.TrackException(telemetry);
@@ -951,7 +954,7 @@ namespace ChummerHub.Controllers.V1
         {
             Stopwatch sw = new Stopwatch();
             sw.Start();
-            var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+            //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
             ResultGroupGetSearchGroups res = null;
             var user = await _signInManager.UserManager.GetUserAsync(User);
             _logger.LogTrace("GetSearchGroups: " + Groupname + "/" + UsernameOrEmail + "/" + SINnerName + ".");
@@ -1024,7 +1027,7 @@ namespace ChummerHub.Controllers.V1
                 try
                 {
                     var user = await _signInManager.UserManager.GetUserAsync(User);
-                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
                     telemetry.Properties.Add("User", user?.Email);
                     tc.TrackException(telemetry);
@@ -1066,7 +1069,7 @@ namespace ChummerHub.Controllers.V1
                 try
                 {
                     var user = await _signInManager.UserManager.GetUserAsync(User);
-                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
                     telemetry.Properties.Add("User", user?.Email);
                     tc.TrackException(telemetry);
@@ -1362,7 +1365,7 @@ namespace ChummerHub.Controllers.V1
             {
                 try
                 {
-                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
                     telemetry.Properties.Add("User", user?.Email);
                     telemetry.Properties.Add("Groupname", Groupname?.ToString());
@@ -1429,7 +1432,7 @@ namespace ChummerHub.Controllers.V1
             {
                 try
                 {
-                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
                     telemetry.Properties.Add("User", user?.Email);
                     telemetry.Properties.Add("groupid", groupid.ToString());

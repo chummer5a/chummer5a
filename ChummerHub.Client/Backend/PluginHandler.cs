@@ -159,7 +159,7 @@ namespace Chummer.Plugins
                 {
                     var ce = GetMyCe(input);
                     //ce = new CharacterExtended(input, null);
-                    if (ce.MySINnerFile.SiNnerMetaData.Tags.Any(a => a.TagName == "Reflection"))
+                    if (ce.MySINnerFile.SiNnerMetaData.Tags.Any(a => a != null && a.TagName == "Reflection") == false)
                     {
                         ce.MySINnerFile.SiNnerMetaData.Tags = ce.PopulateTags();
                     }

@@ -36,6 +36,7 @@ using Chummer.UI.Attributes;
 using System.Collections.ObjectModel;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.DataContracts;
+using NLog;
 
 namespace Chummer
 {
@@ -45,6 +46,7 @@ namespace Chummer
     [DesignerCategory("")]
     public class CharacterShared : Form
     {
+        private static Logger Log = LogManager.GetCurrentClassLogger();
         private static readonly TelemetryClient TelemetryClient = new TelemetryClient();
         private readonly Character _objCharacter;
         private readonly CharacterOptions _objOptions;
@@ -141,7 +143,17 @@ namespace Chummer
         {
             Cursor objOldCursor = Cursor;
             Cursor = Cursors.WaitCursor;
-            string strAutosavePath = Path.Combine(Utils.GetStartupPath, "saves", "autosave");
+            string strAutosavePath = "";
+            try
+            {
+                strAutosavePath = Path.Combine(Utils.GetStartupPath, "saves", "autosave");
+            }
+            catch (System.ArgumentException e)
+            {
+                Log.Error(e, "Path: " + Utils.GetStartupPath);
+                return;
+            }
+             
             if (!Directory.Exists(strAutosavePath))
             {
                 try

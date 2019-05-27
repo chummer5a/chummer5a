@@ -47,11 +47,21 @@ namespace Chummer
         private bool _blnMentorMask;
 
         #region Constructor
-        public MentorSpirit(Character objCharacter)
+        public MentorSpirit(Character objCharacter, XmlNode xmlNodeMentor = null)
         {
             // Create the GUID for the new Mentor Spirit.
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
+            var namenode = xmlNodeMentor?.SelectSingleNode($"name");
+            if(namenode != null)
+                this.Name = namenode.InnerText;
+            var typenode = xmlNodeMentor?.SelectSingleNode($"mentortype");
+            if (typenode != null)
+            {
+                Improvement.ImprovementType outEnum;
+                if(Enum.TryParse(typenode.InnerText, true, out outEnum))
+                    this._eMentorType = outEnum;
+            }
         }
 
         /// <summary>
@@ -286,7 +296,15 @@ namespace Chummer
         /// </summary>
         public string Name
         {
-            get => _strName;
+            get
+            {
+                if (String.IsNullOrEmpty(_strName))
+                {
+                    if (_objCharacter.MentorSpirits.Count > 0 && _objCharacter.MentorSpirits[0] == this)
+                        _strName = _objCharacter.MentorSpirits[0].Name;
+                }
+                return _strName;
+            } 
             set
             {
                 if (_strName != value)
@@ -423,8 +441,10 @@ namespace Chummer
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load(_eMentorType == Improvement.ImprovementType.MentorSpirit ? "mentors.xml" : "paragons.xml", strLanguage)
-                    .SelectSingleNode(SourceID == Guid.Empty
+                var xdoc = XmlManager.Load(
+                    _eMentorType == Improvement.ImprovementType.MentorSpirit ? "mentors.xml" : "paragons.xml",
+                    strLanguage);
+                _objCachedMyXmlNode = xdoc.SelectSingleNode(SourceID == Guid.Empty
                         ? $"/chummer/mentors/mentor[name = \"{Name}\"]"
                         : $"/chummer/mentors/mentor[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
                 _strCachedXmlNodeLanguage = strLanguage;

@@ -12,7 +12,8 @@ using System.Threading.Tasks;
  using ChummerHub.API;
 using ChummerHub.Data;
 using ChummerHub.Models.V1;
-using Microsoft.ApplicationInsights.DataContracts;
+ using Microsoft.ApplicationInsights;
+ using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -34,18 +35,21 @@ namespace ChummerHub.Controllers
         private ApplicationDbContext _context;
         private RoleManager<ApplicationRole> _roleManager;
         private readonly ILogger _logger;
+        private TelemetryClient tc;
 
         public AccountController(ApplicationDbContext context,
             ILogger<AccountController> logger,
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            RoleManager<ApplicationRole> roleManager)
+            RoleManager<ApplicationRole> roleManager,
+            TelemetryClient telemetry)
         {
             _context = context;
             _logger = logger;
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
+            tc = telemetry;
         }
 
         [HttpGet]
@@ -283,7 +287,7 @@ namespace ChummerHub.Controllers
                 try
                 {
                     var user = await _signInManager.UserManager.GetUserAsync(User);
-                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     ExceptionTelemetry et = new ExceptionTelemetry(e);
                     et.Properties.Add("user", User.Identity.Name);
                     tc.TrackException(et);
@@ -324,7 +328,7 @@ namespace ChummerHub.Controllers
                 try
                 {
                     var user = await _signInManager.UserManager.GetUserAsync(User);
-                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     ExceptionTelemetry et = new ExceptionTelemetry(e);
                     et.Properties.Add("user", User.Identity.Name);
                     tc.TrackException(et);
@@ -366,7 +370,7 @@ namespace ChummerHub.Controllers
                 try
                 {
                     var user = await _signInManager.UserManager.GetUserAsync(User);
-                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     ExceptionTelemetry et = new ExceptionTelemetry(e);
                     et.Properties.Add("user", User.Identity.Name);
                     tc.TrackException(et);
@@ -419,7 +423,7 @@ namespace ChummerHub.Controllers
                 try
                 {
                     var user = await _signInManager.UserManager.GetUserAsync(User);
-                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     ExceptionTelemetry et = new ExceptionTelemetry(e);
                     et.Properties.Add("user", User.Identity.Name);
                     tc.TrackException(et);
@@ -464,7 +468,7 @@ namespace ChummerHub.Controllers
                 try
                 {
                     var user = await _signInManager.UserManager.GetUserAsync(User);
-                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     ExceptionTelemetry et = new ExceptionTelemetry(e);
                     et.Properties.Add("user", User.Identity.Name);
                     tc.TrackException(et);
@@ -494,7 +498,7 @@ namespace ChummerHub.Controllers
         {
             Stopwatch sw = new Stopwatch();
             sw.Start();
-            var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+            //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
             ResultAccountGetSinnersByAuthorization res = null;
 
             SINSearchGroupResult ret = new SINSearchGroupResult();
@@ -712,7 +716,7 @@ namespace ChummerHub.Controllers
                 try
                 {
                     var user = await _signInManager.UserManager.GetUserAsync(User);
-                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     ExceptionTelemetry et = new ExceptionTelemetry(e);
                     et.Properties.Add("user", User.Identity.Name);
                     tc.TrackException(et);
@@ -748,7 +752,7 @@ namespace ChummerHub.Controllers
                 try
                 {
                     var user = await _signInManager.UserManager.GetUserAsync(User);
-                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     ExceptionTelemetry et = new ExceptionTelemetry(e);
                     et.Properties.Add("user", User.Identity.Name);
                     tc.TrackException(et);

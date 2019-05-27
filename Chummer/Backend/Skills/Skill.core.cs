@@ -166,6 +166,7 @@ namespace Chummer.Backend.Skills
         /// Levels in this skill. Read only. You probably want to increase
         /// Karma instead
         /// </summary>
+        [HubTag]
         public int Rating => Math.Max(CyberwareRating, TotalBaseRating);
 
         /// <summary>
