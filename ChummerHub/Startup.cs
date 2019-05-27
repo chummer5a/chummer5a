@@ -31,6 +31,7 @@ using ChummerHub.Services.GoogleDrive;
 using Microsoft.Extensions.Logging;
 using ChummerHub.API;
 using ChummerHub.Controllers.V1;
+using ChummerHub.Services.Application_Insights;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.ApplicationInsights.SnapshotCollector;
@@ -47,30 +48,7 @@ namespace ChummerHub
     public class Startup
     {
         
-        private class SnapshotCollectorTelemetryProcessorFactory : ITelemetryProcessorFactory
-        {
-            private readonly IServiceProvider _serviceProvider;
-
-            public SnapshotCollectorTelemetryProcessorFactory(IServiceProvider serviceProvider) =>
-                _serviceProvider = serviceProvider;
-
-            public ITelemetryProcessor Create(ITelemetryProcessor next)
-            {
-                try
-                {
-                    var snapshotConfigurationOptions = _serviceProvider.GetService<IOptions<SnapshotCollectorConfiguration>>();
-                    ITelemetryProcessor ret = new SnapshotCollectorTelemetryProcessor(next, configuration: snapshotConfigurationOptions.Value);
-                    return ret;
-                }
-                catch (Exception e)
-                {
-                    System.Diagnostics.Trace.TraceError(e.ToString(), e);
-                    Console.WriteLine(e.ToString());
-                    return null;
-                }
-
-            }
-        }
+        
 
         private readonly ILogger<Startup> _logger;
 
@@ -112,10 +90,13 @@ namespace ChummerHub
         {
             MyServices = services;
 
-         
+          
 
             ConnectionStringToMasterSqlDb = Configuration.GetConnectionString("MasterSqlConnection");
             ConnectionStringSinnersDb = Configuration.GetConnectionString("DefaultConnection");
+
+            // Use this if MyCustomTelemetryInitializer can be constructed without DI injected parameters
+            services.AddSingleton<ITelemetryInitializer>(new MyTelemetryInitializer());
 
             // Configure SnapshotCollector from application settings
             services.Configure<SnapshotCollectorConfiguration>(Configuration.GetSection(nameof(SnapshotCollectorConfiguration)));
@@ -190,8 +171,7 @@ namespace ChummerHub
                     options.Conventions.AuthorizeAreaPage("Identity", "/Account/ChummerLogin/Logout");                    
                 });
 
-
-
+            
             services.AddAuthentication(options =>
             {
                 options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;

@@ -204,12 +204,16 @@ namespace Chummer
                     }
 
                     frmLoadingForm.PerformStep(LanguageManager.GetString("String_UI"));
-                    CharacterRoster = GlobalOptions.HideCharacterRoster
-                        ? null
-                        : new frmCharacterRoster
+                    //lets write that in separate lines to see where the exception is thrown
+                    if (GlobalOptions.HideCharacterRoster == true)
+                        CharacterRoster = null;
+                    else
+                    {
+                        CharacterRoster = new frmCharacterRoster
                         {
                             MdiParent = this
                         };
+                    }
 
                     _lstCharacters.CollectionChanged += LstCharactersOnCollectionChanged;
                     _lstOpenCharacterForms.CollectionChanged += LstOpenCharacterFormsOnCollectionChanged;

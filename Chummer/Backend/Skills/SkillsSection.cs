@@ -776,6 +776,7 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// Active Skills
         /// </summary>
+        [HubTag(true)]
         public BindingList<Skill> Skills
         {
             get
@@ -814,11 +815,13 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// KnowsoftSkills.
         /// </summary>
+        [HubTag(true)]
         public IList<KnowledgeSkill> KnowsoftSkills { get; } = new List<KnowledgeSkill>();
 
         /// <summary>
         /// Skill Groups.
         /// </summary>
+        [HubTag(true)]
         public BindingList<SkillGroup> SkillGroups { get; } = new BindingList<SkillGroup>();
 
         public bool HasKnowledgePoints => KnowledgeSkillPoints > 0;

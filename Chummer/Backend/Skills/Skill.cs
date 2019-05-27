@@ -32,6 +32,8 @@ using System.Drawing;
 
 namespace Chummer.Backend.Skills
 {
+    //[HubClassTag("Name", true, "", "")]
+    [HubClassTag("SkillId", true, "Name", "Rating;Specialization")]
     [DebuggerDisplay("{_strName} {_intBase} {_intKarma}")]
     public partial class Skill : INotifyMultiplePropertyChanged, IHasName, IHasXmlNode, IHasNotes
     {
@@ -909,6 +911,7 @@ namespace Chummer.Backend.Skills
         //Or just ignore support for multiple specizalizations even if the rules say it is possible?
         public BindingList<SkillSpecialization> Specializations { get; } = new BindingList<SkillSpecialization>();
 
+        [HubTag(true)]
         public string Specialization
         {
             get
