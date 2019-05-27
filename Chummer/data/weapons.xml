@@ -15848,7 +15848,11 @@
       <rating>2</rating>
       <required>
         <weapondetails>
-          <ammo operation="contains">(c)</ammo>
+          <OR>
+            <ammo operation="contains">(belt)</ammo>
+            <ammo operation="contains">(c)</ammo>
+            <ammo operation="contains">(d)</ammo>
+          </OR>
         </weapondetails>
       </required>
     </accessory>

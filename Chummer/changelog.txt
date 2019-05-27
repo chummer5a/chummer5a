@@ -67,6 +67,7 @@ Data Changes:
 - Fixed missing Ratings for several instances of Metahuman Adjustment on vehicles.
 - Added customdata to allow the helmets for the SWAT Armor, Milspec Armor, Security Armor and Daedelus Jumpsuit. This also assigns the SWAT Armor, Milspec Armor and Security Armor as Full Body Armor, providing access to the FBA mods. 
 - Removed incorrect Medium lifestyle setting from the Workshop/Facility lifestyle qualities. Closes #3660
+- Extended Clip now allows Belt and Drum weapons instead of just Clips.
 
 String Changes:
 
