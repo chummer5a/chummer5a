@@ -13631,6 +13631,7 @@ if (!Utils.IsUnitTest){
         [HubTag]
         public SkillsSection SkillsSection { get; }
 
+        
         public int RedlinerBonus
         {
             get

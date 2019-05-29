@@ -776,7 +776,6 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// Active Skills
         /// </summary>
-        [HubTag(true)]
         public BindingList<Skill> Skills
         {
             get
@@ -809,19 +808,35 @@ namespace Chummer.Backend.Skills
             return objReturn;
         }
 
+        /// <summary>
+        /// This is only used for reflection, so that all zero ratings skills are not uploaded
+        /// </summary>
+        [HubTag]
+        public List<Skill> NotZeroRatingSkills
+        {
+            get
+            {
+                List<Skill> resultList = new List<Skill>();
+                foreach (Skill objLoopSkill in _lstSkills)
+                {
+                    if (objLoopSkill.Rating > 0)
+                        resultList.Add(objLoopSkill);
+                }
+                return resultList;
+            }
+        }
+
         public BindingList<KnowledgeSkill> KnowledgeSkills { get; } = new BindingList<KnowledgeSkill>();
 
 
         /// <summary>
         /// KnowsoftSkills.
         /// </summary>
-        [HubTag(true)]
         public IList<KnowledgeSkill> KnowsoftSkills { get; } = new List<KnowledgeSkill>();
 
         /// <summary>
         /// Skill Groups.
         /// </summary>
-        [HubTag(true)]
         public BindingList<SkillGroup> SkillGroups { get; } = new BindingList<SkillGroup>();
 
         public bool HasKnowledgePoints => KnowledgeSkillPoints > 0;

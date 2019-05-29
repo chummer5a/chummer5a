@@ -39,9 +39,10 @@ namespace ChummerHub.Client.UI
             this.AutoSize = true;
             this.cbSINnerUrl.SelectedIndex = 0;
             MySINnersUsercontrol = parent;
-            TreeNode root = null;
-            MySINnersUsercontrol.MyCE.PopulateTree(ref root, null, null);
-            MyTagTreeView.Nodes.Add(root);
+            
+            //TreeNode root = null;
+            //MySINnersUsercontrol.MyCE.PopulateTree(ref root, null, null);
+            //MyTagTreeView.Nodes.Add(root);
         }
 
        
@@ -76,8 +77,10 @@ namespace ChummerHub.Client.UI
         {
             MyTagTreeView.Nodes.Clear();
             TreeNode root = null;
-            MySINnersUsercontrol.MyCE.PopulateTree(ref root, null, null);
-            MyTagTreeView.Nodes.Add(root);
+            //if (MySINnersUsercontrol.MyCE?.MySINnerFile?.SiNnerMetaData?.Tags?.Any(a => a.TagName == "Reflection") == false)
+            PopulateTags();
+            //MySINnersUsercontrol.MyCE.PopulateTree(ref root, null, null);
+            //MyTagTreeView.Nodes.Add(root);
         }
 
         private async void cmdUploadChummerFile_Click(object sender, EventArgs e)

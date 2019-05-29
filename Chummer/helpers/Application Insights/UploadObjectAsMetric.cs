@@ -15,6 +15,7 @@ namespace Chummer
             if (obj == null)
                 throw new ArgumentNullException(nameof(obj));
 
+
             List<PropertyInfo> allProperties = null;
             String name = null;
             if (obj is Type)
