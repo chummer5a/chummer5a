@@ -33,6 +33,7 @@ using System.Linq;
  using NLog;
  using NLog.Config;
 
+
 [assembly: CLSCompliant(true)]
 namespace Chummer
 {
@@ -188,12 +189,15 @@ namespace Chummer
                         pvt.Context.Operation.Name = "Operation Program.Main()";
                         pvt.Properties.Add("parameters", Environment.CommandLine);
                         pvt.Timestamp = startTime;
+
+                        UploadObjectAsMetric.UploadObject(TelemetryClient, typeof(GlobalOptions));
                     }
                     else
                     {
                         TelemetryConfiguration.Active.DisableTelemetry = true;
                     }
-                    
+                    if (Utils.IsUnitTest)
+                        TelemetryConfiguration.Active.DisableTelemetry = true;
                 }
                 catch (Exception e)
                 {

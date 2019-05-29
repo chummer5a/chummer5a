@@ -353,6 +353,8 @@ namespace ChummerHub.Client.Model
                     }
                 }
 
+                if (MySINnerIds.ContainsKey(MyCharacter.FileName))
+                    MySINnerIds.Remove(MyCharacter.FileName);
                 MySINnerIds.Add(MyCharacter.FileName, MySINnerFile.Id.Value);
                 MySINnerIds = MySINnerIds; //Save it!
             }

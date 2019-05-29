@@ -1868,6 +1868,10 @@ namespace Chummer
             {
                 try
                 {
+                    using (var AIOptionsActivity = Timekeeper.StartSyncron("upload_AI_options", loadActivity))
+                    {
+                        UploadObjectAsMetric.UploadObject(TelemetryClient, this.Options);
+                    }
                     XmlDocument objXmlDocument = new XmlDocument();
                     XmlNode objXmlCharacter;
                     XPathNavigator xmlCharacterNavigator;
@@ -13627,6 +13631,7 @@ if (!Utils.IsUnitTest){
         [HubTag]
         public SkillsSection SkillsSection { get; }
 
+        
         public int RedlinerBonus
         {
             get

@@ -24,6 +24,7 @@ using Chummer.Backend.Attributes;
 
 namespace Chummer.Backend.Skills
 {
+    
     partial class Skill : IHasInternalId
     {
         private int _intBase;
@@ -166,7 +167,6 @@ namespace Chummer.Backend.Skills
         /// Levels in this skill. Read only. You probably want to increase
         /// Karma instead
         /// </summary>
-        [HubTag]
         public int Rating => Math.Max(CyberwareRating, TotalBaseRating);
 
         /// <summary>
