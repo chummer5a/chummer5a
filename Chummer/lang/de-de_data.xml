@@ -39950,6 +39950,18 @@
 				<translate>Sikorsky-Bell Condor</translate>
 				<altpage>182</altpage>
 			</vehicle>
+			<vehicle translated="True">
+				<id>8e710ab0-637a-43a1-93a2-66120e7dbea5</id>
+				<name>Porsche-Dornier Aqua 503</name>
+				<translate>Porsche-Dornier Aqua 503</translate>
+				<altpage>18</altpage>
+			</vehicle>
+			<vehicle translated="True">
+				<id>bb04e470-621f-4eec-9d3d-09a718a3402f</id>
+				<name>Ruhrmetall Hovawart</name>
+				<translate>Ruhrmetall Hovawart</translate>
+				<altpage>19</altpage>
+			</vehicle>
 		</vehicles>
 		<mods>
 			<mod>
