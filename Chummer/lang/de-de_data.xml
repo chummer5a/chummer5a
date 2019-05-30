@@ -37662,6 +37662,66 @@
 				<translate>Wasserelementar</translate>
 				<altpage>175</altpage>
 			</spirit>
+			<spirit>
+				<id>de5f01da-a334-4b64-b491-549e420ac6d3</id>
+				<name>Homonculus (Fragile)</name>
+				<translate>Homunkulus (zerbrechlich)</translate>
+				<altpage>297</altpage>
+			</spirit>
+			<spirit>
+				<id>28d8859b-21da-43f7-b401-181cf1284f97</id>
+				<name>Homonculus (Cheap Material)</name>
+				<translate>Homunkulus (billiges Material)</translate>
+				<altpage>297</altpage>
+			</spirit>
+			<spirit>
+				<id>2ed43bda-6773-462d-b850-db4b82d9bac0</id>
+				<name>Homonculus (Average Material)</name>
+				<translate>Homunkulus (durchschnittliches Material)</translate>
+				<altpage>297</altpage>
+			</spirit>
+			<spirit>
+				<id>f1262445-f4fd-43ab-b874-b9111f02ac96</id>
+				<name>Homonculus (Heavy Material)</name>
+				<translate>Homunkulus (schweres Material)</translate>
+				<altpage>297</altpage>
+			</spirit>
+			<spirit>
+				<id>eb454ca4-2260-4f1c-91c4-901abf010f2b</id>
+				<name>Homonculus (Reinforced Material)</name>
+				<translate>Homunkulus (verstärktes Material)</translate>
+				<altpage>297</altpage>
+			</spirit>
+			<spirit>
+				<id>ce4e5b8b-3d15-4cbe-b0ed-3ed150300779</id>
+				<name>Homonculus (Structural Material)</name>
+				<translate>Homunkulus (tragendes Material)</translate>
+				<altpage>297</altpage>
+			</spirit>
+			<spirit>
+				<id>d19a52fe-1c68-4032-9459-662b0b80a633</id>
+				<name>Homonculus (Heavy Structural Material)</name>
+				<translate>Homunkulus (schweres tragendes Material)</translate>
+				<altpage>297</altpage>
+			</spirit>
+			<spirit>
+				<id>d8a0781e-c5bf-451a-939c-97f68a3ceacb</id>
+				<name>Homonculus (Armored Material)</name>
+				<translate>Homunkulus (gepanzertes verstärktes Material)</translate>
+				<altpage>297</altpage>
+			</spirit>
+			<spirit>
+				<id>01cea6c7-1b92-4e71-a56c-4059ab105382</id>
+				<name>Homonculus (Hardened Material)</name>
+				<translate>Homunkulus (gehärtetes Material)</translate>
+				<altpage>297</altpage>
+			</spirit>
+			<spirit>
+				<id>04d2cdc8-7876-4865-93d6-76a46f628014</id>
+				<name>Watcher</name>
+				<translate>Watcher</translate>
+				<altpage>297</altpage>
+			</spirit>
 		</spirits>
 		<drainattributes>
 			<drainattribute translated="True">
