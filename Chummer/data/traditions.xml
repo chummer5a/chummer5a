@@ -478,11 +478,11 @@
       <source>SGG</source>
       <page>52</page>
       <spirits>
-        <spiritcombat>Guidance Spirit</spiritcombat>
-        <spiritdetection>Spirit of Water</spiritdetection>
-        <spirithealth>Spirit of Fire</spirithealth>
-        <spiritillusion>Spirit of Air</spiritillusion>
-        <spiritmanipulation>Spirit of Man</spiritmanipulation>
+        <spiritcombat>Spirit of Fire</spiritcombat>
+        <spiritdetection>Spirit of Man</spiritdetection>
+        <spirithealth>Guidance Spirit</spirithealth>
+        <spiritillusion>Spirit of Water</spiritillusion>
+        <spiritmanipulation>Spirit of Air</spiritmanipulation>
       </spirits>
     </tradition>
     <!-- Region Forbidden Arcana -->
