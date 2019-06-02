@@ -9,6 +9,9 @@ New Features:
 - Gameplay Options can now be used as a forbidden/required choice for items; currently this is used for the Free Insect Spirit qualities, which require the Prime Runner gameplay choice. 
 - Cyberware now supports the use of math operators in the ess and cost values. This allows for customdata files to easily make bulk changes to cyberware Essence and Cost entries.
 - Reimplemented the addsprite and addspirit improvement types to support adding Watchers, Homonculi and other spirit types that are added separately to a tradition.
+- Created new Improvement Types to support the Networker and Massive Network qualities from No Future.
+  - The ContactKarma improvement type changes the cost for all contacts by the listed amount.
+  - The ContactKarmaMinimum improvement type changes the minimum cost for contacts. The minimum is assumed to be 2.
 
 Application Fixes:
 

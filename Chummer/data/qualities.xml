@@ -18849,7 +18849,7 @@
       <karma>20</karma>
       <category>Positive</category>
       <bonus>
-          <!--<contactkarma>-2</contactkarma>-->
+          <contactkarma>-2</contactkarma>
       </bonus>
       <forbidden>
         <oneof>
@@ -18865,7 +18865,8 @@
       <karma>5</karma>
       <category>Positive</category>
       <bonus>
-        <!--<contactkarma>-1</contactkarma>-->
+        <contactkarma>-1</contactkarma>
+        <contactkarmaminimum>-1</contactkarmaminimum>
       </bonus>
       <forbidden>
         <oneof>

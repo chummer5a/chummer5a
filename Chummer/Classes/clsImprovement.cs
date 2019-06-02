@@ -312,6 +312,8 @@ namespace Chummer
             ActionDicePool,
             SpecialModificationLimit,
             AddSpirit,
+            ContactKarmaDiscount,
+            ContactKarmaMinimum,
             NumImprovementTypes // 🡐 This one should always be the last defined enum
         }
 

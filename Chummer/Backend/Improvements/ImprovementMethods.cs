@@ -576,6 +576,10 @@ namespace Chummer
                     return objImprovementAdder.actiondicepool;
                 case "SPECIALMODIFICATIONLIMIT":
                     return objImprovementAdder.specialmodificationlimit;
+                case "CONTACTKARMA":
+                    return objImprovementAdder.contactkarma;
+                case "CONTACTKARMAMINIMUM":
+                    return objImprovementAdder.contactkarmaminimum;
                 // No method matches, return a null pointer
                 default:
                     return null;
