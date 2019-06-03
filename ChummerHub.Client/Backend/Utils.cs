@@ -316,10 +316,21 @@ namespace ChummerHub.Client.Backend
                 ServicePointManager.ServerCertificateValidationCallback += delegate { return true; };
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
                 Uri baseUri = new Uri(Properties.Settings.Default.SINnerUrl);
-                Microsoft.Rest.ServiceClientCredentials credentials = new MyCredentials();
+                Microsoft.Rest.ServiceClientCredentials credentials = null;
+                try
+                {
+                    credentials = new MyCredentials();
+                }
+                catch (Exception e)
+                {
+                    Log.Error(e);
+                }
+                
                 DelegatingHandler delegatingHandler = new MyMessageHandler();
-                HttpClientHandler httpClientHandler = new HttpClientHandler();
-                httpClientHandler.CookieContainer = AuthorizationCookieContainer;
+                HttpClientHandler httpClientHandler = new HttpClientHandler
+                {
+                    CookieContainer = AuthorizationCookieContainer
+                };
                 client = new SINnersClient(baseUri, credentials, httpClientHandler, delegatingHandler);
             }
             catch (Exception ex)

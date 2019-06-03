@@ -226,27 +226,44 @@ namespace Chummer
                     object blnShowTestLock = new object();
                     if (!Utils.IsUnitTest)
                     {
-                        Parallel.For(1, strArgs.Length, i =>
+                        try
                         {
-                            if (strArgs[i] == "/test")
+                            Parallel.For(1, strArgs.Length, i =>
                             {
-                                lock (blnShowTestLock)
-                                    blnShowTest = true;
-                            }
-                            else if (!strArgs[i].StartsWith('/'))
-                            {
-                                if (!File.Exists(strArgs[i]))
+                                if (strArgs[i] == "/test")
                                 {
-                                    throw new ArgumentException(
-                                        "Chummer started with unknown command line arguments: " +
-                                        strArgs.Aggregate((j, k) => j + " " + k));
+                                    lock (blnShowTestLock)
+                                        blnShowTest = true;
                                 }
+                                else if (!strArgs[i].StartsWith('/'))
+                                {
+                                    if (!File.Exists(strArgs[i]))
+                                    {
+                                        throw new ArgumentException(
+                                            "Chummer started with unknown command line arguments: " +
+                                            strArgs.Aggregate((j, k) => j + " " + k));
+                                    }
 
-                                if (lstCharactersToLoad.Any(x => x.FileName == strArgs[i])) return;
-                                Character objLoopCharacter = LoadCharacter(strArgs[i]).Result;
-                                lstCharactersToLoad.Add(objLoopCharacter);
-                            }
-                        });
+                                    if (lstCharactersToLoad.Any(x => x.FileName == strArgs[i])) return;
+                                    Character objLoopCharacter = LoadCharacter(strArgs[i]).Result;
+                                    lstCharactersToLoad.Add(objLoopCharacter);
+                                }
+                            });
+                        }
+                        catch (Exception e)
+                        {
+                            if (op_frmChummerMain.MyDependencyTelemetry != null)
+                                op_frmChummerMain.MyDependencyTelemetry.Success = false;
+                            if (op_frmChummerMain.MyRequestTelemetry != null)
+                                op_frmChummerMain.MyRequestTelemetry.Success = false;
+                            ExceptionTelemetry ex = new ExceptionTelemetry(e)
+                            {
+                                SeverityLevel = SeverityLevel.Warning
+                            };
+                            op_frmChummerMain.tc.TrackException(ex);
+                            Log.Warn(e);
+                        }
+                        
                     }
 
                     frmLoadingForm.PerformStep(LanguageManager.GetString("String_UI"));

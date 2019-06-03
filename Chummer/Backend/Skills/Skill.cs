@@ -33,7 +33,7 @@ using System.Drawing;
 namespace Chummer.Backend.Skills
 {
     [DebuggerDisplay("{_strName} {_intBase} {_intKarma} {Rating}")]
-    [HubClassTag("SkillId", true, "Name", "Rating;Pool;Specialization")]
+    [HubClassTag("SkillId", true, "Name", "Rating;Specialization")]
     public partial class Skill : INotifyMultiplePropertyChanged, IHasName, IHasXmlNode, IHasNotes
     {
         private CharacterAttrib _objAttribute;

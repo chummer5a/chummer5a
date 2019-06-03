@@ -8388,6 +8388,12 @@ if (!Utils.IsUnitTest){
 
         public string DisplayEssence => Essence().ToString(_objOptions.EssenceFormat, GlobalOptions.CultureInfo);
 
+        /// <summary>
+        /// This is only here for Reflection
+        /// </summary>
+        [HubTag("Essence")]
+        public decimal EssenceDecimal => Essence();
+
         public string DisplayCyberwareEssence =>
             CyberwareEssence.ToString(_objOptions.EssenceFormat, GlobalOptions.CultureInfo);
 
@@ -10872,6 +10878,7 @@ if (!Utils.IsUnitTest){
         /// <summary>
         /// The Character's total Armor Rating.
         /// </summary>
+        [HubTag]
         public int TotalArmorRating =>
             ArmorRating + ImprovementManager.ValueOf(this, Improvement.ImprovementType.Armor);
 

@@ -18,10 +18,12 @@
  */
  using System;
  using System.Diagnostics;
-using System.IO;
+ using System.Globalization;
+ using System.IO;
 using System.Linq;
  using System.Net;
  using System.Net.Sockets;
+ using System.Reflection;
  using System.Runtime;
  using System.Threading;
  using System.Windows.Forms;
@@ -29,6 +31,7 @@ using System.Linq;
  using Microsoft.ApplicationInsights;
  using Microsoft.ApplicationInsights.DataContracts;
  using Microsoft.ApplicationInsights.Extensibility;
+ using Microsoft.ApplicationInsights.Metrics;
  using Microsoft.ApplicationInsights.NLogTarget;
  using NLog;
  using NLog.Config;
@@ -169,7 +172,7 @@ namespace Chummer
 #else
                         TelemetryConfiguration.Active.TelemetryChannel.DeveloperMode = false;
 #endif
-                        CustomTelemetryInitializer.Ip = CustomTelemetryInitializer.GetPublicIPAddress();
+                        //CustomTelemetryInitializer.Ip = CustomTelemetryInitializer.GetPublicIPAddress();
                         TelemetryConfiguration.Active.TelemetryInitializers.Add(new CustomTelemetryInitializer());
                         TelemetryConfiguration.Active.TelemetryProcessorChainBuilder.Use((next) =>
                             new TranslateExceptionTelemetryProcessor(next));
@@ -178,14 +181,26 @@ namespace Chummer
                         //var live = new LiveStreamProvider(ApplicationInsightsConfig);
                         //live.Enable();
 
-                        // Log a page view:
-                        pvt = new PageViewTelemetry("Program.Main()")
+                        //Log an Event with AssemblyVersion and CultureInfo
+                        
+                        if (Properties.Settings.Default.UploadClientId == Guid.Empty)
                         {
-                           Name = "Chummer Startup: " +
+                            Properties.Settings.Default.UploadClientId = Guid.NewGuid();
+                            Properties.Settings.Default.Save();
+                        }
+                        MetricIdentifier mi = new MetricIdentifier("Chummer", "Program Start","Version", "Culture");
+                        var metric = TelemetryClient.GetMetric(mi);
+                        metric.TrackValue(1,
+                            Assembly.GetExecutingAssembly().GetName().Version.ToString(),
+                            CultureInfo.CurrentUICulture.TwoLetterISOLanguageName);
+
+                        // Log a page view:
+                        pvt = new PageViewTelemetry("frmChummerMain()")
+                        {
+                            Name = "Chummer Startup: " +
                                    System.Reflection.Assembly.GetExecutingAssembly().GetName().Version
                         };
-                        if (Properties.Settings.Default.UploadClientId != Guid.Empty)
-                            pvt.Id = Properties.Settings.Default.UploadClientId.ToString();
+                        pvt.Id = Properties.Settings.Default.UploadClientId.ToString();
                         pvt.Context.Operation.Name = "Operation Program.Main()";
                         pvt.Properties.Add("parameters", Environment.CommandLine);
                         pvt.Timestamp = startTime;

@@ -22,7 +22,11 @@ namespace Chummer
             telemetry.Context.Device.OperatingSystem = Environment.OSVersion.ToString();
             telemetry.Context.Device.Id = Hostname;
             telemetry.Context.Component.Version = Version;
-            telemetry.Context.Location.Ip = Ip;
+            //telemetry.Context.Location.Ip = Ip;
+            if (System.Diagnostics.Debugger.IsAttached)
+            {
+                telemetry.Context.InstrumentationKey = "f4b2ea1b-afe4-4bd6-9175-f5bb167a4d8b";
+            }
             if (Program.MainForm?.PluginLoader?.MyActivePlugins != null)
             {
                 foreach (var plugin in Program.MainForm?.PluginLoader?.MyActivePlugins)
@@ -40,35 +44,35 @@ namespace Chummer
             }
         }
 
-        public static string GetPublicIPAddress()
-        {
-            try
-            {
-                var client = new System.Net.WebClient();
-                client.Proxy = WebRequest.DefaultWebProxy;
-                if (client.Proxy != null)
-                {
-                    client.Proxy.Credentials = CredentialCache.DefaultCredentials;
-                }
-                string pubIp = client.DownloadString("https://api.ipify.org");
-                return pubIp;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
+        //public static string GetPublicIPAddress()
+        //{
+        //    try
+        //    {
+        //        var client = new System.Net.WebClient();
+        //        client.Proxy = WebRequest.DefaultWebProxy;
+        //        if (client.Proxy != null)
+        //        {
+        //            client.Proxy.Credentials = CredentialCache.DefaultCredentials;
+        //        }
+        //        string pubIp = client.DownloadString("https://api.ipify.org");
+        //        return pubIp;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        Console.WriteLine(e);
+        //    }
 
-            var host = Dns.GetHostEntry(Dns.GetHostName());
-            foreach (var ip in host.AddressList)
-            {
-                if (ip.AddressFamily == AddressFamily.InterNetwork)
-                {
-                    return ip.ToString();
-                }
-            }
-            //throw new Exception("No network adapters with an IPv4 address in the system!");
-            return "";
-        }
+        //    var host = Dns.GetHostEntry(Dns.GetHostName());
+        //    foreach (var ip in host.AddressList)
+        //    {
+        //        if (ip.AddressFamily == AddressFamily.InterNetwork)
+        //        {
+        //            return ip.ToString();
+        //        }
+        //    }
+        //    //throw new Exception("No network adapters with an IPv4 address in the system!");
+        //    return "";
+        //}
     }
 
 }

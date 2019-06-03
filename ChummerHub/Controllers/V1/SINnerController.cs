@@ -474,7 +474,9 @@ namespace ChummerHub.Controllers.V1
         [AllowAnonymous]
         public async Task<IActionResult> GetThumbnailById(Guid? SINnerId, int? index)
         {
+            var temppath = Environment.GetFolderPath(Environment.SpecialFolder.InternetCache);
             string filename = SINnerId.Value + ".zip";
+            string filepath = Path.Combine(temppath, filename);
             try
             {
                 if (index == null)
@@ -486,13 +488,18 @@ namespace ChummerHub.Controllers.V1
                     return NotFound("SINner " + SINnerId + " not found!");
                 var net = new System.Net.WebClient();
 
-                if (System.IO.File.Exists(filename))
+                if (System.IO.File.Exists(filepath))
                 {
-                    System.IO.File.Delete(filename);
+                    FileInfo fi = new FileInfo(filepath);
+                    if (fi.CreationTimeUtc < DateTime.UtcNow - TimeSpan.FromHours(1))
+                        System.IO.File.Delete(filepath);
                 }
 
-                Uri downloadUri = new Uri(sinnerseq.FirstOrDefault()?.DownloadUrl);
-                net.DownloadFile(downloadUri, filename);
+                if (!System.IO.File.Exists(filename))
+                {
+                    Uri downloadUri = new Uri(sinnerseq.FirstOrDefault()?.DownloadUrl);
+                    net.DownloadFile(downloadUri, filename);
+                }
 
                 if (!System.IO.File.Exists(filename))
                 {
