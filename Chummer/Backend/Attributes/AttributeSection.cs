@@ -763,7 +763,6 @@ namespace Chummer.Backend.Attributes
         /// <summary>
         /// Character's Attributes.
         /// </summary>
-        [HubTag(true)]
         public List<CharacterAttrib> SpecialAttributeList { get; } = new List<CharacterAttrib>();
 
 	    public CharacterAttrib.AttributeCategory AttributeCategory
