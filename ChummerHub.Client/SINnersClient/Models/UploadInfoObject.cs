@@ -21,11 +21,12 @@ namespace SINners.Models
         /// <summary>
         /// Initializes a new instance of the UploadInfoObject class.
         /// </summary>
-        public UploadInfoObject(DateTime? uploadDateTime = default(DateTime?), UploadClient client = default(UploadClient), IList<SINner> siNners = default(IList<SINner>))
+        public UploadInfoObject(DateTime? uploadDateTime = default(DateTime?), UploadClient client = default(UploadClient), IList<SINner> siNners = default(IList<SINner>), string groupname = default(string))
         {
             UploadDateTime = uploadDateTime;
             Client = client;
             SiNners = siNners;
+            Groupname = groupname;
         }
 
         /// <summary>
@@ -42,6 +43,11 @@ namespace SINners.Models
         /// </summary>
         [JsonProperty(PropertyName = "siNners")]
         public IList<SINner> SiNners { get; set; }
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "groupname")]
+        public string Groupname { get; set; }
 
     }
 }

@@ -25,8 +25,17 @@
 &lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
   &lt;string&gt;https://sinners.azurewebsites.net/&lt;/string&gt;
   &lt;string&gt;https://localhost:5001/&lt;/string&gt;
-  &lt;string&gt;http://sinners-beta.azurewebsites.net/&lt;/string&gt;
+  &lt;string&gt;https://sinners-beta.azurewebsites.net/&lt;/string&gt;
 &lt;/ArrayOfString&gt;</Value>
+    </Setting>
+    <Setting Name="UpgradeRequired" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="TempDownloadPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="VisibilityIsPublic" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
     </Setting>
   </Settings>
 </SettingsFile>

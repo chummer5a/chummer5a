@@ -9,10 +9,22 @@
             Class to enalbe Swagger to generate an Example
             </summary>
         </member>
-        <member name="P:ChummerHub.Models.V1.Tag.TagComment">
+        <member name="P:ChummerHub.Models.V1.SINnerGroup.MyAdminIdentityRole">
             <summary>
-            This has NO FUNCTION and is only here for Debugging reasons.
+            Only users of the specified Role can join this group
             </summary>
+        </member>
+        <member name="P:ChummerHub.Models.V1.Tag.TagComment">
+             <summary>
+             This has NO FUNCTION and is only here for Debugging reasons.
+             </summary>
+            
+        </member>
+        <member name="M:ChummerHub.Controllers.AccountController.GetSINnersByAuthorization">
+            <summary>
+            Search for Sinners for one user
+            </summary>
+            <returns>SINSearchGroupResult</returns>
         </member>
         <member name="M:ChummerHub.Controllers.V1.SINnerController.GetDownloadFile(System.Guid)">
             <summary>
@@ -21,7 +33,7 @@
             <param name="id"></param>
             <returns></returns>
         </member>
-        <member name="M:ChummerHub.Controllers.V1.SINnerController.Put(System.Guid,Microsoft.AspNetCore.Http.IFormFile)">
+        <member name="M:ChummerHub.Controllers.V1.SINnerController.PutSIN(System.Guid,Microsoft.AspNetCore.Http.IFormFile)">
             <summary>
             The Xml or Zip File can be uploaded (knowing the previously stored Id)
             </summary>
@@ -29,13 +41,109 @@
             <param name="uploadedFile"></param>
             <returns></returns>
         </member>
-        <member name="M:ChummerHub.Controllers.V1.SINnerController.Post(ChummerHub.Models.V1.UploadInfoObject)">
+        <member name="M:ChummerHub.Controllers.V1.SINnerController.GetThumbnailById(System.Nullable{System.Guid},System.Nullable{System.Int32})">
+            <summary>
+            
+            </summary>
+            <param name="SINnerId"></param>
+            <param name="index"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ChummerHub.Controllers.V1.SINnerController.PostSIN(ChummerHub.Models.V1.UploadInfoObject)">
             <summary>
             Store the MetaData for chummerfiles (to get a Id).
             This Id can be used to store the actual file with PUT afterwards.
             Alternativly, the DownloadUrl can be set directly from the Client.
             </summary>
             <param name="uploadInfo"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ChummerHub.Controllers.V1.SINnerGroupController.PutGroupInGroup(System.Guid,System.String,System.Nullable{System.Guid},System.String,System.Boolean)">
+            <summary>
+            Store the new group
+            </summary>
+            <param name="GroupId"></param>
+            <param name="groupname">In case you want to rename the group</param>
+            <returns></returns>
+        </member>
+        <member name="M:ChummerHub.Controllers.V1.SINnerGroupController.PutGroupSetting(System.Guid,Microsoft.AspNetCore.Http.IFormFile)">
+            <summary>
+            The Xml or Zip File can be uploaded (knowing the previously stored Id)
+            </summary>
+            <param name="id"></param>
+            <param name="uploadedFile"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ChummerHub.Controllers.V1.SINnerGroupController.PostGroup(ChummerHub.Models.V1.SINnerGroup,System.Nullable{System.Guid})">
+            <summary>
+            Store the new group
+            </summary>
+            <param name="mygroup"></param>
+            <param name="SinnerId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ChummerHub.Controllers.V1.SINnerGroupController.PutSINerInGroup(System.Nullable{System.Guid},System.Nullable{System.Guid},System.String)">
+            <summary>
+            Store the new group
+            </summary>
+            <param name="GroupId"></param>
+            <param name="SinnerId"></param>
+            <param name="pwhash"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ChummerHub.Controllers.V1.SINnerGroupController.GetGroupById(System.Guid)">
+            <summary>
+            Search for Groups
+            </summary>
+            <param name="groupid"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ChummerHub.Controllers.V1.SINnerGroupController.GetPublicGroup(System.String,System.String)">
+            <summary>
+            Search for public Groups (without authorization)
+            </summary>
+            <param name="Groupname"></param>
+            <param name="Language"></param>
+            <returns>SINSearchGroupResult</returns>
+        </member>
+        <member name="M:ChummerHub.Controllers.V1.SINnerGroupController.GetGroupmembers(System.String,System.String,System.String,System.String)">
+            <summary>
+            Search for Groups
+            </summary>
+            <param name="Groupname"></param>
+            <param name="UsernameOrEmail"></param>
+            <param name="SINnerName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ChummerHub.Controllers.V1.SINnerGroupController.GetSearchGroups(System.String,System.String,System.String,System.String)">
+            <summary>
+            Search for Groups
+            </summary>
+            <param name="Groupname"></param>
+            <param name="UsernameOrEmail"></param>
+            <param name="SINnerName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ChummerHub.Controllers.V1.SINnerGroupController.DeleteLeaveGroup(System.Guid,System.Guid)">
+            <summary>
+            Remove a sinner from a group. If this sinner is the last member of it's group, the group will be deleted as well!
+            </summary>
+            <param name="groupid"></param>
+            <param name="sinnerid"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ChummerHub.Controllers.V1.SINnerGroupController.DeleteGroup(System.Guid)">
+            <summary>
+            Delete a Group (recursive - only Admins can do that)
+            </summary>
+            <param name="groupid"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ChummerHub.Controllers.V1.SINnerGroupController.GetGroupmembersById(System.Guid)">
+            <summary>
+            Search for all members and subgroups of a group
+            </summary>
+            <param name="groupid"></param>
             <returns></returns>
         </member>
         <member name="T:ChummerHub.Properties.Resources">
@@ -103,6 +211,16 @@
             <typeparam name="T"></typeparam>
             <param name="key"></param>
             <returns></returns>
+        </member>
+        <member name="P:ChummerHub.Startup.ConnectionStringToMasterSqlDb">
+            <summary>
+            This leads to the master-azure-db to create/edit/delete users
+            </summary>
+        </member>
+        <member name="P:ChummerHub.Startup.ConnectionStringSinnersDb">
+            <summary>
+            This leads to the master-azure-db to create/edit/delete users
+            </summary>
         </member>
         <member name="P:Microsoft.AspNetCore.Identity.ApplicationUser.Groupname">
             <summary>

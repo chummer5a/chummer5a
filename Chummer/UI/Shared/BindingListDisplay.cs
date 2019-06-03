@@ -24,11 +24,13 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using NLog;
 
 namespace Chummer.UI.Shared
 {
     public partial class BindingListDisplay<TType> : UserControl
     {
+        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
         public PropertyChangedEventHandler ChildPropertyChanged { get; set; }
 
         public IComparer<TType> DefaultComparer => _indexComparer;

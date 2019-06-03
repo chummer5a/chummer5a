@@ -27,6 +27,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Backend.Attributes;
+using NLog;
 
 namespace Chummer.Backend.Equipment
 {
@@ -36,7 +37,9 @@ namespace Chummer.Backend.Equipment
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     public class WeaponAccessory : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, ICanEquip, IHasSource, IHasRating, ICanSort, IHasWirelessBonus, IHasStolenProperty
 	{
+        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private Guid _guiID;
+	    private Guid _guiSourceID;
         private readonly Character _objCharacter;
         private XmlNode _nodAllowGear;
         private readonly TaggedObservableCollection<Gear> _lstGear = new TaggedObservableCollection<Gear>();
@@ -68,6 +71,7 @@ namespace Chummer.Backend.Equipment
         private bool _blnDeployable;
         private bool _blnDiscountCost;
         private bool _blnIncludedInWeapon;
+	    private bool _blnSpecialModification;
         private bool _blnEquipped = true;
         private int _intAccessoryCostMultiplier = 1;
         private string _strExtra = string.Empty;
@@ -112,8 +116,15 @@ namespace Chummer.Backend.Equipment
         /// <param name="blnSkipCost">Whether or not forms asking to determine variable costs should be displayed.</param>
         public void Create(XmlNode objXmlAccessory, Tuple<string, string> strMount, int intRating, bool blnSkipCost = false, bool blnCreateChildren = true, bool blnCreateImprovements = true)
         {
-            if (objXmlAccessory.TryGetStringFieldQuickly("name", ref _strName))
+            if (!objXmlAccessory.TryGetField("id", Guid.TryParse, out _guiSourceID))
+            {
+                Log.Warn(new object[] { "Missing id field for weapon accessory xmlnode", objXmlAccessory });
+                Utils.BreakIfDebug();
+            }
+            else
                 _objCachedMyXmlNode = null;
+
+            objXmlAccessory.TryGetStringFieldQuickly("name", ref _strName);
             _strMount = strMount.Item1;
             _strExtraMount = strMount.Item2;
             _intRating = intRating;
@@ -182,6 +193,7 @@ namespace Chummer.Backend.Equipment
             objXmlAccessory.TryGetStringFieldQuickly("extra", ref _strExtra);
             objXmlAccessory.TryGetInt32FieldQuickly("ammobonus", ref _intAmmoBonus);
             objXmlAccessory.TryGetInt32FieldQuickly("accessorycostmultiplier", ref _intAccessoryCostMultiplier);
+            objXmlAccessory.TryGetBoolFieldQuickly("specialmodification", ref _blnSpecialModification);
 
             // Add any Gear that comes with the Weapon Accessory.
             XmlNode xmlGearsNode = objXmlAccessory["gears"];
@@ -241,7 +253,8 @@ namespace Chummer.Backend.Equipment
         public void Save(XmlTextWriter objWriter)
         {
             objWriter.WriteStartElement("accessory");
-            objWriter.WriteElementString("guid", _guiID.ToString("D"));
+            objWriter.WriteElementString("sourceid", SourceIDString);
+            objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("mount", _strMount);
             objWriter.WriteElementString("extramount", _strExtraMount);
@@ -250,6 +263,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("rcgroup", _intRCGroup.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("rcdeployable", _blnDeployable.ToString());
+            objWriter.WriteElementString("specialmodification", _blnSpecialModification.ToString());
             objWriter.WriteElementString("conceal", _strConceal);
             if (!string.IsNullOrEmpty(_strDicePool))
                 objWriter.WriteElementString("dicepool", _strDicePool);
@@ -312,6 +326,12 @@ namespace Chummer.Backend.Equipment
             {
                 _guiID = Guid.NewGuid();
             }
+            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+            {
+                XmlNode node = GetNode(GlobalOptions.Language);
+                node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+            }
+
             if (objNode.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
             objNode.TryGetStringFieldQuickly("mount", ref _strMount);
@@ -331,6 +351,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("cost", ref _strCost);
             objNode.TryGetBoolFieldQuickly("included", ref _blnIncludedInWeapon);
             objNode.TryGetBoolFieldQuickly("equipped", ref _blnEquipped);
+            objNode.TryGetBoolFieldQuickly("specialmodification", ref _blnSpecialModification);
             if (!_blnEquipped)
             {
                 objNode.TryGetBoolFieldQuickly("installed", ref _blnEquipped);
@@ -427,6 +448,25 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string InternalId => _guiID.ToString("D");
 
+	    /// <summary>
+	    /// Identifier of the object within data files.
+	    /// </summary>
+	    public Guid SourceID
+	    {
+	        get => _guiSourceID;
+	        set
+	        {
+	            if (_guiSourceID == value) return;
+	            _guiSourceID = value;
+	            _objCachedMyXmlNode = null;
+	        }
+	    }
+
+	    /// <summary>
+	    /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
+	    /// </summary>
+	    public string SourceIDString => _guiSourceID.ToString("D");
+
         /// <summary>
         /// XmlNode for the wireless bonuses (if any) this accessory provides. 
         /// </summary>
@@ -463,6 +503,15 @@ namespace Chummer.Backend.Equipment
             get => _strModifyAmmoCapacity;
             set => _strModifyAmmoCapacity = value;
         }
+
+        /// <summary>
+        /// Is the accessory a Special Modification, limited by the character's Special Modifications property?
+        /// </summary>
+	    public bool SpecialModification
+	    {
+	        get => _blnSpecialModification;
+	        set => _blnSpecialModification = value;
+	    }
         /// <summary>
         /// The accessory adds to the weapon's damage value.
         /// </summary>
@@ -1055,7 +1104,11 @@ namespace Chummer.Backend.Equipment
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load("weapons.xml", strLanguage).SelectSingleNode("/chummer/accessories/accessory[name = \"" + Name + "\"]");
+                _objCachedMyXmlNode = SourceID == Guid.Empty
+                    ? XmlManager.Load("weapons.xml", strLanguage)
+                        .SelectSingleNode($"/chummer/accessories/accessory[name = \"{Name}\"]")
+                    : XmlManager.Load("weapons.xml", strLanguage)
+                        .SelectSingleNode($"/chummer/accessories/accessory[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

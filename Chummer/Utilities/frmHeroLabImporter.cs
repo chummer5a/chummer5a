@@ -426,7 +426,7 @@ namespace Chummer
         }
         #endregion
 
-        private void DoImport()
+        private async void DoImport()
         {
             TreeNode objSelectedNode = treCharacterList.SelectedNode;
             if (objSelectedNode != null && objSelectedNode.Level > 0)
@@ -474,9 +474,9 @@ namespace Chummer
                         }
                         
                         Program.MainForm.OpenCharacters.Add(objCharacter);
-                        Timekeeper.Start("load_file");
-                        bool blnLoaded = objCharacter.LoadFromHeroLabFile(strFile, strCharacterId, objCharacter.SettingsFile);
-                        Timekeeper.Finish("load_file");
+                        //Timekeeper.Start("load_file");
+                        bool blnLoaded = await objCharacter.LoadFromHeroLabFile(strFile, strCharacterId, objCharacter.SettingsFile);
+                        //Timekeeper.Finish("load_file");
                         if (!blnLoaded)
                         {
                             Program.MainForm.OpenCharacters.Remove(objCharacter);

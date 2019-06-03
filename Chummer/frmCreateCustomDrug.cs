@@ -23,11 +23,13 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Backend.Equipment;
+using NLog;
 
 namespace Chummer
 {
     public partial class frmCreateCustomDrug : Form
 	{
+        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
 		private readonly Dictionary<string, DrugComponent> _dicDrugComponents = new Dictionary<string, DrugComponent>();
         private readonly List<clsNodeData> _lstSelectedDrugComponents;
 		private readonly List<ListItem> _lstGrade = new List<ListItem>();
@@ -58,7 +60,7 @@ namespace Chummer
                 TreeNode nodCategoryNode = treAvailableComponents.FindNode("Node_" + strCategory);
                 if (nodCategoryNode == null)
                 {
-                    Log.Warning($"Unknown category {strCategory} in component {objItem.Key}");
+                    Log.Warn($"Unknown category {strCategory} in component {objItem.Key}");
                     return;
                 }
                 TreeNode objNode = nodCategoryNode.Nodes.Add(objItem.Value.DisplayNameShort(GlobalOptions.Language));
@@ -150,7 +152,7 @@ namespace Chummer
             TreeNode nodCategoryNode = treChosenComponents.FindNode("Node_" + strCategory);
             if (nodCategoryNode == null)
             {
-                Log.Warning($"Unknown category {strCategory} in component {objNodeData.DrugComponent.Name}");
+                Log.Warn($"Unknown category {strCategory} in component {objNodeData.DrugComponent.Name}");
                 return;
             }
 
@@ -268,6 +270,13 @@ namespace Chummer
                 MessageBox.Show(LanguageManager.GetString("Message_CustomDrug_Name", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CustomDrug_Name", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
+
+            if (_objDrug.Components.Count(o => o.Category == "Foundation") != 1)
+            {
+                MessageBox.Show(LanguageManager.GetString("Message_CustomDrug_MissingFoundation", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CustomDrug_Foundation", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
             _objDrug.Quantity = 1;
 
             DialogResult = DialogResult.OK;

@@ -24,6 +24,7 @@ using Chummer.Backend.Attributes;
 
 namespace Chummer.Backend.Skills
 {
+    
     partial class Skill : IHasInternalId
     {
         private int _intBase;
@@ -824,6 +825,25 @@ namespace Chummer.Backend.Skills
 
                 return _intCachedForcedNotBuyWithKarma > 0;
             }
+        }
+
+        /// <summary>
+        /// Dicepool of the skill, formatted for use in tooltips by other objects. 
+        /// </summary>
+        /// <param name="pool">Dicepool to use. In most </param>
+        /// <param name="space">Space character to use. </param>
+        /// <param name="validSpec">A specialisation to check for. If not empty, will be checked for and added to the string.</param>
+        /// <returns></returns>
+        public string FormattedDicePool(int pool, string space, string validSpec = "")
+        {
+            string strReturn = $"{DisplayNameMethod(GlobalOptions.Language)}{space}({pool.ToString(GlobalOptions.CultureInfo)})";
+            // Add any Specialization bonus if applicable.
+            if (HasSpecialization(validSpec) && !string.IsNullOrWhiteSpace(validSpec))
+                strReturn +=
+                    $"{space}{'+'}{space}{LanguageManager.GetString("String_ExpenseSpecialization", GlobalOptions.Language)}" +
+                    $"{LanguageManager.GetString("String_Colon", GlobalOptions.Language)}{space}" +
+                    $"{DisplayCategory(GlobalOptions.Language)}{space}{'('}{2.ToString(GlobalOptions.CultureInfo)}{')'}";
+            return strReturn;
         }
     }
 }

@@ -94,7 +94,7 @@ namespace Chummer
                     strMount.Append(" or contains(mount, \"" + strAllowedMount + "\")");
             }
             strMount.Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
-            XPathNavigator xmlParentWeaponDataNode = _xmlBaseChummerNode.SelectSingleNode("weapons/weapon[id = \"" + _objParentWeapon.SourceID.ToString("D") + "\"]");
+            XPathNavigator xmlParentWeaponDataNode = _xmlBaseChummerNode.SelectSingleNode("weapons/weapon[id = \"" + _objParentWeapon.SourceIDString + "\"]");
             foreach (XPathNavigator objXmlAccessory in _xmlBaseChummerNode.Select("accessories/accessory[(" + strMount + ") and (" + _objCharacter.Options.BookXPath() + ")]"))
             {
                 string strId = objXmlAccessory.SelectSingleNode("id")?.Value;
@@ -116,6 +116,8 @@ namespace Chummer
                     }
                 }
 
+                if (!objXmlAccessory.RequirementsMet(_objCharacter, _objParentWeapon, string.Empty, string.Empty)) continue;
+
                 XPathNavigator xmlTestNode = objXmlAccessory.SelectSingleNode("forbidden/weapondetails");
                 if (xmlTestNode != null)
                 {
@@ -130,51 +132,6 @@ namespace Chummer
                 {
                     // Assumes topmost parent is an AND node
                     if (!xmlParentWeaponDataNode.ProcessFilterOperationNode(xmlTestNode, false))
-                    {
-                        continue;
-                    }
-                }
-
-                xmlTestNode = objXmlAccessory.SelectSingleNode("forbidden/oneof");
-                XPathNodeIterator objXmlForbiddenList = xmlTestNode?.Select("accessory");
-                if (objXmlForbiddenList?.Count > 0)
-                {
-                    //Add to set for O(N log M) runtime instead of O(N * M)
-
-                    HashSet<string> objForbiddenAccessory = new HashSet<string>();
-                    foreach (XPathNavigator node in objXmlForbiddenList)
-                    {
-                        objForbiddenAccessory.Add(node.Value);
-                    }
-
-                    if (_objParentWeapon.WeaponAccessories.Any(objAccessory =>
-                        objForbiddenAccessory.Contains(objAccessory.Name)))
-                    {
-                        continue;
-                    }
-                }
-
-                xmlTestNode = objXmlAccessory.SelectSingleNode("required/oneof");
-                if (xmlTestNode != null)
-                {
-                    XPathNodeIterator objXmlRequiredList = xmlTestNode.Select("accessory");
-                    if (objXmlRequiredList.Count > 0)
-                    {
-                        //Add to set for O(N log M) runtime instead of O(N * M)
-
-                        HashSet<string> objRequiredAccessory = new HashSet<string>();
-                        foreach (XPathNavigator node in objXmlRequiredList)
-                        {
-                            objRequiredAccessory.Add(node.Value);
-                        }
-
-                        if (!_objParentWeapon.WeaponAccessories.Any(objAccessory =>
-                            objRequiredAccessory.Contains(objAccessory.Name)))
-                        {
-                            continue;
-                        }
-                    }
-                    else
                     {
                         continue;
                     }
@@ -308,7 +265,7 @@ namespace Chummer
             {
                 _objParentWeapon = value;
                 _lstAllowedMounts.Clear();
-                foreach (XPathNavigator objXmlMount in _xmlBaseChummerNode.Select("weapons/weapon[id = \"" + value.SourceID.ToString("D") + "\"]/accessorymounts/mount"))
+                foreach (XPathNavigator objXmlMount in _xmlBaseChummerNode.Select("weapons/weapon[id = \"" + value.SourceIDString + "\"]/accessorymounts/mount"))
                 {
                     string strLoopMount = objXmlMount.Value;
                     // Run through the Weapon's currenct Accessories and filter out any used up Mount points.
@@ -517,29 +474,7 @@ namespace Chummer
             lblExtraMountLabel.Visible = cboExtraMount.Visible;
             // Avail.
             // If avail contains "F" or "R", remove it from the string so we can use the expression.
-            string strSuffix = string.Empty;
-            string strAvail = xmlAccessory.SelectSingleNode("avail")?.Value;
-            if (!string.IsNullOrWhiteSpace(strAvail))
-            {
-                char chrLastAvailChar = strAvail[strAvail.Length - 1];
-                if (chrLastAvailChar == 'F')
-                {
-                    strSuffix = LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language);
-                    strAvail = strAvail.Substring(0, strAvail.Length - 1);
-                }
-                else if (chrLastAvailChar == 'R')
-                {
-                    strSuffix = LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language);
-                    strAvail = strAvail.Substring(0, strAvail.Length - 1);
-                }
-
-                object objProcess = CommonFunctions.EvaluateInvariantXPath(strAvail.Replace("Rating", nudRating.Value.ToString(GlobalOptions.CultureInfo)), out bool blnIsSuccess);
-                lblAvail.Text = blnIsSuccess ? Convert.ToInt32(objProcess).ToString() : strAvail + strSuffix;
-            }
-            else
-            {
-                lblAvail.Text = "0";
-            }
+            lblAvail.Text = new AvailabilityValue(Convert.ToInt32(nudRating.Value), xmlAccessory.SelectSingleNode("avail")?.Value).ToString();
             lblAvailLabel.Visible = !string.IsNullOrEmpty(lblAvail.Text);
 
             if (!chkFreeItem.Checked)

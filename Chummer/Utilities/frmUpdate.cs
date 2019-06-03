@@ -29,11 +29,13 @@ using System.Reflection;
 using System.Collections.Generic;
  using System.Linq;
  using System.Threading;
+ using NLog;
 
 namespace Chummer
 {
     public partial class frmUpdate : Form
     {
+        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private bool _blnSilentMode;
         private string _strDownloadFile = string.Empty;
         private string _strLatestVersion = string.Empty;
@@ -79,7 +81,7 @@ namespace Chummer
                 Close();
                 return;
             }
-            Log.Info("frmUpdate_Load");
+            Log.Info("frmUpdate_Load enter");
             Log.Info("Check Global Mutex for duplicate");
             bool blnHasDuplicate = false;
             try
@@ -88,7 +90,7 @@ namespace Chummer
             }
             catch (AbandonedMutexException ex)
             {
-                Log.Exception(ex);
+                Log.Error(ex);
                 Utils.BreakIfDebug();
                 blnHasDuplicate = true;
             }
@@ -99,14 +101,14 @@ namespace Chummer
                 Log.Info("More than one instance, exiting");
                 if (!SilentMode)
                     MessageBox.Show(LanguageManager.GetString("Message_Update_MultipleInstances", GlobalOptions.Language), LanguageManager.GetString("Title_Update", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                Log.Info("frmUpdate_Load");
+                Log.Info("frmUpdate_Load exit");
                 Close();
             }
             if (!_blnChangelogDownloaded && !_workerConnectionLoader.IsBusy)
             {
                 _workerConnectionLoader.RunWorkerAsync();
             }
-            Log.Exit("frmUpdate_Load");
+            Log.Info("frmUpdate_Load exit");
         }
 
         private bool _blnIsClosing;
@@ -671,7 +673,7 @@ namespace Chummer
         {
             if (!Uri.TryCreate(_strDownloadFile, UriKind.Absolute, out Uri uriDownloadFileAddress))
                 return;
-            Log.Enter("DownloadUpdates");
+            Log.Debug("DownloadUpdates");
             cmdUpdate.Enabled = false;
             cmdRestart.Enabled = false;
             cmdCleanReinstall.Enabled = false;
@@ -745,13 +747,13 @@ namespace Chummer
         /// </summary>
         private void wc_DownloadCompleted(object sender, AsyncCompletedEventArgs e)
         {
-            Log.Info("wc_DownloadExeFileCompleted");
+            Log.Info("wc_DownloadExeFileCompleted enter");
             cmdUpdate.Text = LanguageManager.GetString("Button_Redownload", GlobalOptions.Language);
             cmdUpdate.Enabled = true;
             if (cmdRestart.Text != LanguageManager.GetString("Button_Up_To_Date", GlobalOptions.Language))
                 cmdRestart.Enabled = true;
             cmdCleanReinstall.Enabled = true;
-            Log.Exit("wc_DownloadExeFileCompleted");
+            Log.Info("wc_DownloadExeFileCompleted exit");
             if (SilentMode)
             {
                 string text = LanguageManager.GetString("Message_Update_CloseForms", GlobalOptions.Language);

@@ -10,6 +10,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
+using Microsoft.ApplicationInsights.Channel;
+using NLog;
 
 namespace Chummer.Plugins
 {
@@ -21,8 +23,9 @@ namespace Chummer.Plugins
         IEnumerable<TabPage> GetTabPages(frmCareer input);
         IEnumerable<TabPage> GetTabPages(frmCreate input);
         IEnumerable<ToolStripMenuItem> GetMenuItems(ToolStripMenuItem menu);
+        ITelemetry SetTelemetryInitialize(ITelemetry telemetry);
 
-        Task<IEnumerable<TreeNode>> GetCharacterRosterTreeNode(ConcurrentDictionary<string, frmCharacterRoster.CharacterCache> CharDic, bool forceUpdate);
+        Task<IEnumerable<TreeNode>> GetCharacterRosterTreeNode(frmCharacterRoster frmCharRoster, bool forceUpdate);
 
         UserControl GetOptionsControl();
 
@@ -37,26 +40,62 @@ namespace Chummer.Plugins
 
     public class PluginControl
     {
+        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private static CompositionContainer container = null;
         public static CompositionContainer Container { get { return container; } }
-
+        public string PathToPlugins { get; set; }
         private static AggregateCatalog catalog;
+        private static DirectoryCatalog myDirectoryCatalog = new DirectoryCatalog(path: "Plugins", searchPattern: "*.dll");
 
         public void Initialize()
         {
-            catalog = new AggregateCatalog();
-            catalog.Catalogs.Add(new DirectoryCatalog(path: "Plugins", searchPattern: "*.exe"));
-            catalog.Catalogs.Add(new DirectoryCatalog(path: "Plugins", searchPattern: "*.dll"));
-            container = new CompositionContainer(catalog);
-            //Fill the imports of this object
-          
-            StartWatch();
-            container.ComposeParts(this);
-            foreach (var plugin in MyPlugins)
+            try
             {
-                plugin.CustomInitialize(Program.MainForm);
-                plugin.SetIsUnitTest(Utils.IsUnitTest);
+                if (GlobalOptions.PluginsEnabled == false)
+                {
+                    Log.Info("Plugins are globally disabled - exiting PluginControl.Initialize()");
+                    return;
+                }
+                Log.Info("Plugins are globally enabled - entering PluginControl.Initialize()");
+                catalog = new AggregateCatalog();
+                var execat = new DirectoryCatalog(path: "Plugins", searchPattern: "*.exe");
+                Log.Info("Searching for exes in path " + execat.FullPath);
+                catalog.Catalogs.Add(execat);
+                catalog.Catalogs.Add(myDirectoryCatalog);
+                container = new CompositionContainer(catalog);
+                //Fill the imports of this object
+                StartWatch();
+                container.ComposeParts(this);
+
+                Log.Info("Plugins found: " + MyPlugins.Count());
+                Log.Info("Plugins active: " + MyActivePlugins.Count());
+                foreach (var plugin in MyActivePlugins)
+                {
+                    try
+                    {
+                        Log.Info("Initializing Plugin " + plugin.ToString());
+                        plugin.CustomInitialize(Program.MainForm);
+                        plugin.SetIsUnitTest(Utils.IsUnitTest);
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Error(e);
+                    }
+                }
+                Log.Info("Initializing Plugins finished.");
             }
+            catch(System.Security.SecurityException e)
+            {
+                string msg = "Well, the Plugin wanted to do something that requires Admin rights. Let's just ignore this: " + Environment.NewLine + Environment.NewLine;
+                msg += e.ToString();
+                Log.Warn(e, msg);
+            }
+            catch (Exception e)
+            {
+                Log.Fatal(e);
+                throw;
+            }
+            
         }
 
         [ImportMany(typeof(IPlugin))]
@@ -67,6 +106,8 @@ namespace Chummer.Plugins
           {
                 List<IPlugin> result = new List<IPlugin>();
                 if (GlobalOptions.PluginsEnabled == false)
+                    return result;
+                if (MyPlugins == null)
                     return result;
                 var list = MyPlugins.ToList();
                 foreach(var plugin in list)
@@ -101,12 +142,23 @@ namespace Chummer.Plugins
                 dCatalog.Refresh();
         }
 
-        internal void LoadPlugins()
+        internal void LoadPlugins(CustomActivity parentActivity)
         {
             try
             {
-                this.Initialize();
+                using (var op_plugin = Timekeeper.StartSyncron("LoadPlugins", parentActivity, CustomActivity.OperationType.DependencyOperation, myDirectoryCatalog.FullPath))
+                { 
+                    this.Initialize();
+                }
             }
+            catch(System.Security.SecurityException e)
+            {
+                string msg = "Well, something went wrong probably because we are not Admins. Let's just ignore it and move on." + Environment.NewLine + Environment.NewLine;
+                Console.WriteLine(msg + e.Message);
+                System.Diagnostics.Trace.TraceWarning(msg + e.Message);
+                return;
+            }
+
             catch (ReflectionTypeLoadException e)
             {
                 string msg = "Exception loading plugins: " + Environment.NewLine;
@@ -114,15 +166,12 @@ namespace Chummer.Plugins
                 {
                     msg += exp.Message + Environment.NewLine;
                 }
-
                 msg += Environment.NewLine;
                 msg += e.ToString();
-                Console.WriteLine(msg);
-                System.Diagnostics.Debug.Write(msg);
+                Log.Warn(e, msg);
             }
             catch (CompositionException e)
             {
-
                 string msg = "Exception loading plugins: " + Environment.NewLine;
 
                 foreach (var exp in e.Errors)
@@ -132,69 +181,77 @@ namespace Chummer.Plugins
 
                 msg += Environment.NewLine;
                 msg += e.ToString();
-                Console.WriteLine(msg);
-                System.Diagnostics.Debug.Write(msg);
+                Log.Error(e, msg);
             }
             catch (Exception e)
             {
                 string msg = "Exception loading plugins: " + Environment.NewLine;
-
                 msg += Environment.NewLine;
                 msg += e.ToString();
-                Console.WriteLine(msg);
-                System.Diagnostics.Debug.Write(msg);
+                Log.Error(e, msg);
             }
         }
 
-        internal void CallPlugins(frmCareer frmCareer)
+        internal void CallPlugins(frmCareer frmCareer, CustomActivity parentActivity)
         {
             foreach(var plugin in MyActivePlugins)
             {
-                var pages = plugin.GetTabPages(frmCareer);
-                if(pages == null)
-                    continue;
-                foreach (TabPage page in pages)
+                using (var op_plugin = Timekeeper.StartSyncron("load_plugin_GetTabPage_Career_" + plugin.ToString(),
+                    parentActivity, CustomActivity.OperationType.DependencyOperation, plugin.ToString()))
                 {
-                    if (page != null)
+                    var pages = plugin.GetTabPages(frmCareer);
+                    if (pages == null)
+                        continue;
+                    foreach (TabPage page in pages)
                     {
-                        if (!frmCareer.TabCharacterTabs.TabPages.Contains(page))
-                            frmCareer.TabCharacterTabs.TabPages.Add(page);
+                        if (page != null)
+                        {
+                            if (!frmCareer.TabCharacterTabs.TabPages.Contains(page))
+                                frmCareer.TabCharacterTabs.TabPages.Add(page);
+                        }
                     }
                 }
             }
         }
 
-        internal void CallPlugins(frmCreate frmCreate)
+        internal void CallPlugins(frmCreate frmCreate, CustomActivity parentActivity)
         {
             foreach (var plugin in MyActivePlugins)
             {
-                var pages = plugin.GetTabPages(frmCreate);
-                if(pages == null)
-                    continue;
-                foreach (TabPage page in pages)
+                using (var op_plugin = Timekeeper.StartSyncron("load_plugin_GetTabPage_Create_" + plugin.ToString(), parentActivity, CustomActivity.OperationType.DependencyOperation, plugin.ToString()))
                 {
-                    if (page != null)
+                    var pages = plugin.GetTabPages(frmCreate);
+                    if (pages == null)
+                        continue;
+                    foreach (TabPage page in pages)
                     {
-                        if (!frmCreate.TabCharacterTabs.TabPages.Contains(page))
-                            frmCreate.TabCharacterTabs.TabPages.Add(page);
+                        if (page != null)
+                        {
+                            if (!frmCreate.TabCharacterTabs.TabPages.Contains(page))
+                                frmCreate.TabCharacterTabs.TabPages.Add(page);
+                        }
                     }
                 }
             }
         }
 
-        internal void CallPlugins(ToolStripMenuItem menu)
+        internal void CallPlugins(ToolStripMenuItem menu, CustomActivity parentActivity)
         {
             foreach (var plugin in MyActivePlugins)
             {
-                var menuitems = plugin.GetMenuItems(menu);
-                if (menuitems == null)
-                    continue;
-                foreach (ToolStripMenuItem plugInMenu in menuitems)
+                using (var op_plugin = Timekeeper.StartSyncron("load_plugin_GetMenuItems_" + plugin.ToString(),
+                    parentActivity, CustomActivity.OperationType.DependencyOperation, plugin.ToString()))
                 {
-                    if (plugInMenu != null)
+                    var menuitems = plugin.GetMenuItems(menu);
+                    if (menuitems == null)
+                        continue;
+                    foreach (ToolStripMenuItem plugInMenu in menuitems)
                     {
-                        if (!menu.DropDownItems.Contains(plugInMenu))
-                            menu.DropDownItems.Add(plugInMenu);
+                        if (plugInMenu != null)
+                        {
+                            if (!menu.DropDownItems.Contains(plugInMenu))
+                                menu.DropDownItems.Add(plugInMenu);
+                        }
                     }
                 }
             }

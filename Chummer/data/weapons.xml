@@ -8168,7 +8168,7 @@
     </weapon>
     <weapon>
       <id>1c738c1d-7abc-4756-a683-f5bf92902671</id>
-      <name>Cavalier Arms Adder Silvergun</name>
+      <name>Cavalier Arms Adder Slivergun</name>
       <category>Light Pistols</category>
       <type>Ranged</type>
       <conceal>-2</conceal>
@@ -11129,7 +11129,7 @@
       <ap>-</ap>
       <mode>SA/BF/FA</mode>
       <rc>0</rc>
-      <ammo>28(c)</ammo>
+      <ammo>16(c)</ammo> <!-- Ammo is 24 but because of extended clip-factor '1,5' amount must be 16 -->
       <avail>9R</avail>
       <cost>2300</cost>
       <source>SAG</source>
@@ -11534,7 +11534,7 @@
       <damage>9P</damage>
       <ap>-2</ap>
       <mode>SA/BF/FA</mode>
-      <rc>3</rc>
+      <rc>0</rc>
       <ammo>32(c)</ammo>
       <avail>9F</avail>
       <cost>2850</cost>
@@ -12818,7 +12818,7 @@
       <avail>8R</avail>
       <cost>650</cost>
       <source>SL</source>
-      <page>29</page>
+      <page>30</page>
       <accessories>
         <accessory>
           <name>Long Barrel</name>
@@ -12832,7 +12832,6 @@
       </accessorymounts>
       <ammocategory>Sporting Rifles</ammocategory>
       <range>Submachine Guns</range>
-      <spec>Semi-Automatics</spec>
     </weapon>
     <weapon>
       <id>cbac989a-92f4-4eb8-a6ff-a9b5f7571d5d</id>
@@ -14424,6 +14423,220 @@
           <useskill>Throwing Weapons</useskill>
       </weapon>
     <!-- End Region -->
+    <!-- Region Datapuls Sota 2080 -->
+      <weapon>
+        <id>e1670cec-28ff-4281-94f4-2bda59556f27</id>
+        <name>Abräumer</name>
+        <category>Blades</category>
+        <type>Melee</type>
+        <conceal>0</conceal>
+        <accuracy>5</accuracy>
+        <reach>0</reach>
+        <damage>(STR+3)P</damage>
+        <ap>-2</ap>
+        <mode>0</mode>
+        <rc>0</rc>
+        <ammo>0</ammo>
+        <avail>7R</avail>
+        <cost>850</cost>
+        <source>SOTG</source>
+        <page>8</page>
+        <spec>Swords</spec>
+      </weapon>
+      <weapon>
+        <id>2f49233d-f747-476a-98cb-996def3714ed</id>
+        <name>Katzbalger</name>
+        <category>Blades</category>
+        <type>Melee</type>
+        <conceal>0</conceal>
+        <accuracy>7</accuracy>
+        <reach>0</reach>
+        <damage>(STR+3)P</damage>
+        <ap>-1</ap>
+        <mode>0</mode>
+        <rc>0</rc>
+        <ammo>0</ammo>
+        <avail>8R</avail>
+        <cost>2000</cost>
+        <source>SOTG</source>
+        <page>7</page>
+        <spec>Swords</spec>
+      </weapon>
+      <weapon>
+        <id>c97d8ffb-1c2d-484f-8c8b-a1428d630d9d</id>
+        <name>Folding Spade</name>
+        <category>Blades</category>
+        <type>Melee</type>
+        <conceal>0</conceal>
+        <accuracy>5</accuracy>
+        <reach>1</reach>
+        <damage>(STR+2)P</damage>
+        <ap>-2</ap>
+        <mode>0</mode>
+        <rc>0</rc>
+        <ammo>0</ammo>
+        <avail>4</avail>
+        <cost>100</cost>
+        <source>SOTG</source>
+        <page>8</page>
+        <spec>Swords</spec>
+      </weapon>
+      <weapon>
+        <id>71d149df-bec0-46d5-9d67-2568fd48bd67</id>
+        <name>Sabre</name>
+        <category>Blades</category>
+        <type>Melee</type>
+        <conceal>0</conceal>
+        <accuracy>5</accuracy>
+        <reach>1</reach>
+        <damage>(STR+3)P</damage>
+        <ap>-2</ap>
+        <mode>0</mode>
+        <rc>0</rc>
+        <ammo>0</ammo>
+        <avail>7E</avail>
+        <cost>2500</cost>
+        <source>SOTG</source>
+        <page>7</page>
+        <spec>Swords</spec>
+      </weapon>
+      <weapon>
+        <id>baf12a42-8dbc-4144-9e46-304c3b08295d</id>
+        <name>Walther Battle Sword</name>
+        <category>Blades</category>
+        <type>Melee</type>
+        <conceal>0</conceal>
+        <accuracy>8</accuracy>
+        <reach>1</reach>
+        <damage>(STR+4)P</damage>
+        <ap>-4</ap>
+        <mode>0</mode>
+        <rc>0</rc>
+        <ammo>0</ammo>
+        <avail>10E</avail>
+        <cost>8600</cost>
+        <source>SOTG</source>
+        <page>7</page>
+        <spec>Swords</spec>
+      </weapon>
+      <weapon>
+        <id>f41e735d-44f3-4eae-8538-71d8ae14b3e1</id>
+        <name>HK Urban Assassin</name>
+        <category>Heavy Pistols</category>
+        <type>Ranged</type>
+        <conceal>0</conceal>
+        <accuracy>6</accuracy>
+        <reach>0</reach>
+        <damage>7P</damage>
+        <ap>-1</ap>
+        <mode>SA</mode>
+        <rc>0</rc>
+        <ammo>10(c)</ammo>
+        <avail>16F</avail>
+        <cost>3400</cost>
+        <source>SOTG</source>
+        <page>12</page>
+		<accessories>
+		  <accessory>
+            <name>Maker Mag</name>
+          </accessory>
+		  <accessory>
+            <name>Personalized Grip</name>
+          </accessory>
+          <accessory>
+            <name>Silencer/Suppressor</name>
+          </accessory>        
+		  <accessory>
+            <name>Smartgun System, Internal</name>
+          </accessory>
+		  <accessory>
+            <name>Plastic Components 6</name>
+          </accessory>
+        </accessories>
+	  </weapon>
+      <weapon>
+        <id>08a0ab4f-e5db-4306-875b-df552d0811f7</id>
+        <name>Kanonenschlag</name>
+        <category>Holdouts</category>
+        <type>Ranged</type>
+        <conceal>-4</conceal>
+        <accuracy>Physical</accuracy>
+        <reach>0</reach>
+        <damage>9P</damage>
+        <ap>-3</ap>
+        <mode>SS</mode>
+        <rc>0</rc>
+        <ammo>1(b)</ammo>
+        <avail>6F</avail>
+        <cost>100</cost>
+        <source>SOTG</source>
+        <page>9</page>
+      </weapon>
+      <weapon>
+        <id>330c3fdf-f64f-482c-9dd9-85d8a8f05f61</id>
+        <name>Donnerbüchse</name>
+        <category>Shotguns</category>
+        <type>Ranged</type>
+        <conceal>6</conceal>
+        <accuracy>3</accuracy>
+        <reach>0</reach>
+        <damage>9P(f)</damage>
+        <ap>-1</ap>
+        <mode>SS</mode>
+        <rc>0</rc>
+        <ammo>2(b)</ammo>
+        <avail>4F</avail>
+        <cost>150</cost>
+        <source>SOTG</source>
+        <page>10</page>
+      </weapon>
+      <weapon>
+        <id>3d07b871-2d0f-49ad-8c4f-7cb98487ffe4</id>
+        <name>Blaser R11 Conqueror</name>
+        <category>Sniper Rifles</category>
+        <type>Ranged</type>
+        <conceal>6</conceal>
+        <accuracy>7</accuracy>
+        <reach>0</reach>
+        <damage>12P</damage>
+        <ap>-3</ap>
+        <mode>SA</mode>
+        <rc>1</rc>
+        <ammo>5(c)</ammo>
+        <avail>9R</avail>
+        <cost>8500</cost>
+        <source>SOTG</source>
+        <page>11</page>
+        <accessories>
+          <accessory>
+            <name>Silencer/Suppressor</name>
+          </accessory>
+          <accessory>
+            <name>Shock Pad</name>
+          </accessory>
+          <accessory>
+            <name>Imaging Scope</name>
+          </accessory>
+          <accessory>
+            <name>Smartgun System, Internal</name>
+          </accessory>
+		  <accessory>
+            <name>Easy Breakdown (Unpowered)</name>
+		  </accessory>
+        </accessories>
+        <accessorymounts>
+          <mount>Stock</mount>
+          <mount>Side</mount>
+          <mount>Internal</mount>
+          <mount>Barrel</mount>
+          <mount>Top</mount>
+          <mount>Under</mount>
+        </accessorymounts>
+        <range>Sniper Rifles</range>
+        <spec>Sniper Rifles</spec>
+        <useskill>Longarms</useskill>
+      </weapon>
+    <!-- End Region -->
   </weapons>
   <accessories>
     <!-- Region Shadowrun 5 -->
@@ -15635,7 +15848,11 @@
       <rating>2</rating>
       <required>
         <weapondetails>
-          <ammo operation="contains">(c)</ammo>
+          <OR>
+            <ammo operation="contains">(belt)</ammo>
+            <ammo operation="contains">(c)</ammo>
+            <ammo operation="contains">(d)</ammo>
+          </OR>
         </weapondetails>
       </required>
     </accessory>
@@ -16597,6 +16814,146 @@
       <page>47</page>
       <rating>0</rating>
     </accessory>
+    <!-- Region Special Modifications -->
+    <accessory>
+      <id>b741b729-106e-46f2-9143-0f745fd48789</id>
+      <name>Special Modification: Improved AP</name>
+      <mount />
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>BTB</source>
+      <page>161</page>
+      <rating>0</rating>
+      <ap>-1</ap>
+      <required>
+        <oneof>
+          <specialmodificationlimit>1</specialmodificationlimit>
+        </oneof>
+      </required>
+    </accessory>
+    <accessory>
+      <id>56b17280-27c6-414a-9957-f628ae5efefa</id>
+      <name>Special Modification: Improved Accuracy</name>
+      <mount />
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>BTB</source>
+      <page>161</page>
+      <rating>0</rating>
+      <accuracy>1</accuracy>
+      <specialmodification>True</specialmodification>
+      <required>
+        <oneof>
+          <specialmodificationlimit>1</specialmodificationlimit>
+        </oneof>
+      </required>
+    </accessory>
+    <accessory>
+      <id>9084d801-c654-4eec-960e-4186a6de81d6</id>
+      <name>Special Modification: Improved Ammunition Capacity</name>
+      <mount />
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>BTB</source>
+      <page>161</page>
+      <rating>0</rating>
+      <modifyammocapacity>* 1.5</modifyammocapacity>
+      <specialmodification>True</specialmodification>
+      <required>
+        <oneof>
+          <specialmodificationlimit>1</specialmodificationlimit>
+        </oneof>
+      </required>
+    </accessory>
+    <accessory>
+      <id>93be91c1-3f77-4e7b-9ac2-eb349b76d017</id>
+      <name>Special Modification: Improved Concealment</name>
+      <mount />
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>BTB</source>
+      <page>161</page>
+      <rating>0</rating>
+      <conceal>1</conceal>
+      <specialmodification>True</specialmodification>
+      <required>
+        <oneof>
+          <specialmodificationlimit>1</specialmodificationlimit>
+        </oneof>
+      </required>
+    </accessory>
+    <accessory>
+      <id>3c82e17b-76cd-47b9-9bda-c3131a64e0ee</id>
+      <name>Special Modification: Damage</name>
+      <mount />
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>BTB</source>
+      <page>161</page>
+      <rating>0</rating>
+      <damage>1</damage>
+      <specialmodification>True</specialmodification>
+      <required>
+        <oneof>
+          <specialmodificationlimit>2</specialmodificationlimit>
+        </oneof>
+      </required>
+    </accessory>
+    <accessory>
+      <id>15d159e8-d3db-4cf3-8964-0eb2235ed6c2</id>
+      <name>Special Modification: Improved Reach</name>
+      <mount />
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>BTB</source>
+      <page>161</page>
+      <rating>0</rating>
+      <reach>1</reach>
+      <required>
+        <oneof>
+          <specialmodificationlimit>1</specialmodificationlimit>
+        </oneof>
+      </required>
+    </accessory>
+    <accessory>
+      <id>09abdea8-df9a-4e74-86aa-0f79ce96f422</id>
+      <name>Special Modification: Improved Recoil Comp</name>
+      <mount />
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>BTB</source>
+      <page>161</page>
+      <rating>0</rating>
+      <rc>1</rc>
+      <required>
+        <oneof>
+          <specialmodificationlimit>1</specialmodificationlimit>
+        </oneof>
+      </required>
+    </accessory>
+    <!-- End Region -->
+    <!-- End Region -->
+    <!-- Region Datapuls Sota 2080 -->
+    <accessory>
+      <id>2d5cd697-4754-420c-ba11-27cf957a4d09</id>
+      <name>Maker Mag</name>
+      <mount />
+      <avail>18R</avail>
+      <cost>1000</cost>
+      <source>SOTG</source>
+      <page>12</page>
+      <rating>0</rating>
+    </accessory>
+    <accessory>
+      <id>63a4c7fe-847e-46e6-a99d-da0f39e63b8a</id>
+      <name>Plastic Components 6</name>
+      <mount />
+      <avail>18R</avail>
+      <cost>1000</cost>
+      <source>SOTG</source>
+      <page>12</page>
+      <rating>6</rating>
+    </accessory>	
     <!-- End Region -->
   </accessories>
 </chummer>

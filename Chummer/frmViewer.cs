@@ -29,11 +29,13 @@ using Codaxy.WkHtmlToPdf;
 using System.Diagnostics;
 using System.Globalization;
 using Microsoft.Win32;
+using NLog;
 
 namespace Chummer
 {
     public partial class frmViewer : Form
     {
+        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private List<Character> _lstCharacters = new List<Character>();
         private XmlDocument _objCharacterXml = new XmlDocument();
         private string _strSelectedSheet = GlobalOptions.DefaultCharacterSheet;
@@ -79,14 +81,14 @@ namespace Chummer
             RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey("Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION");
             if (objRegistry != null)
             {
-                objRegistry.SetValue(AppDomain.CurrentDomain.FriendlyName, 0x1F40, RegistryValueKind.DWord);
+                objRegistry.SetValue(AppDomain.CurrentDomain.FriendlyName, GlobalOptions.EmulatedBrowserVersion * 1000, RegistryValueKind.DWord);
                 objRegistry.Close();
             }
 
             objRegistry = Registry.CurrentUser.CreateSubKey("Software\\WOW6432Node\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION");
             if (objRegistry != null)
             {
-                objRegistry.SetValue(AppDomain.CurrentDomain.FriendlyName, 0x1F40, RegistryValueKind.DWord);
+                objRegistry.SetValue(AppDomain.CurrentDomain.FriendlyName, GlobalOptions.EmulatedBrowserVersion * 1000, RegistryValueKind.DWord);
                 objRegistry.Close();
             }
 
@@ -112,7 +114,7 @@ namespace Chummer
         {
             _blnLoading = true;
             // Populate the XSLT list with all of the XSL files found in the sheets directory.
-            PopulateLanguageList();
+            cboLanguage  = PopulateLanguageList(cboLanguage, _strSelectedSheet);
             PopulateXsltList();
 
             cboXSLT.SelectedValue = _strSelectedSheet;
@@ -377,7 +379,7 @@ namespace Chummer
             if (!File.Exists(strXslPath))
             {
                 string strReturn = $"File not found when attempting to load {_strSelectedSheet}{Environment.NewLine}";
-                Log.Enter(strReturn);
+                Log.Debug(strReturn);
                 MessageBox.Show(strReturn);
                 return;
             }
@@ -393,7 +395,7 @@ namespace Chummer
             catch (Exception ex)
             {
                 string strReturn = $"Error attempting to load {_strSelectedSheet}{Environment.NewLine}";
-                Log.Enter(strReturn);
+                Log.Debug(strReturn);
                 Log.Error("ERROR Message = " + ex.Message);
                 strReturn += ex.Message;
                 MessageBox.Show(strReturn);
@@ -593,64 +595,78 @@ namespace Chummer
             cboXSLT.EndUpdate();
         }
 
-        private void PopulateLanguageList()
+        public static ElasticComboBox PopulateLanguageList(ElasticComboBox myCboLanguage, string myStrSelectedSheet)
         {
-            List<ListItem> lstLanguages = new List<ListItem>();
-            string languageDirectoryPath = Path.Combine(Utils.GetStartupPath, "lang");
-            string[] languageFilePaths = Directory.GetFiles(languageDirectoryPath, "*.xml");
-
-            foreach (string filePath in languageFilePaths)
-            {
-                XmlDocument xmlDocument = new XmlDocument();
-
-                try
-                {
-                    using (StreamReader objStreamReader = new StreamReader(filePath, Encoding.UTF8, true))
-                    {
-                        xmlDocument.Load(objStreamReader);
-                    }
-                }
-                catch (IOException)
-                {
-                    continue;
-                }
-                catch (XmlException)
-                {
-                    continue;
-                }
-
-                XmlNode node = xmlDocument.SelectSingleNode("/chummer/name");
-
-                if (node == null)
-                    continue;
-
-                string strLanguageCode = Path.GetFileNameWithoutExtension(filePath);
-                if (GetXslFilesFromLocalDirectory(strLanguageCode).Count > 0)
-                {
-                    lstLanguages.Add(new ListItem(strLanguageCode, node.InnerText));
-                }
-            }
-
-            lstLanguages.Sort(CompareListItems.CompareNames);
-
             string strDefaultSheetLanguage = GlobalOptions.Language;
-            int intLastIndexDirectorySeparator = _strSelectedSheet.LastIndexOf(Path.DirectorySeparatorChar);
-            if (intLastIndexDirectorySeparator != -1)
+            int? intLastIndexDirectorySeparator = myStrSelectedSheet?.LastIndexOf(Path.DirectorySeparatorChar);
+            if (intLastIndexDirectorySeparator.HasValue && (intLastIndexDirectorySeparator != -1))
             {
-                string strSheetLanguage = _strSelectedSheet.Substring(0, intLastIndexDirectorySeparator);
+                string strSheetLanguage = myStrSelectedSheet.Substring(0, intLastIndexDirectorySeparator.Value);
                 if (strSheetLanguage.Length == 5)
                     strDefaultSheetLanguage = strSheetLanguage;
             }
 
-            cboLanguage.BeginUpdate();
-            cboLanguage.ValueMember = "Value";
-            cboLanguage.DisplayMember = "Name";
-            cboLanguage.DataSource = lstLanguages;
-            cboLanguage.SelectedValue = strDefaultSheetLanguage;
-            if (cboLanguage.SelectedIndex == -1)
-                cboLanguage.SelectedValue = GlobalOptions.DefaultLanguage;
-            cboLanguage.EndUpdate();
+            myCboLanguage.BeginUpdate();
+            myCboLanguage.ValueMember = "Value";
+            myCboLanguage.DisplayMember = "Name";
+            myCboLanguage.DataSource = LstLanguages;
+            myCboLanguage.SelectedValue = strDefaultSheetLanguage;
+            if (myCboLanguage.SelectedIndex == -1)
+                myCboLanguage.SelectedValue = GlobalOptions.DefaultLanguage;
+            myCboLanguage.EndUpdate();
+            return myCboLanguage;
         }
+
+        private static List<ListItem> _lstLanguages = null;
+
+        public static List<ListItem> LstLanguages
+        {
+            get
+            {
+                if (_lstLanguages == null)
+                {
+                    _lstLanguages = new List<ListItem>();
+                    string languageDirectoryPath = Path.Combine(Utils.GetStartupPath, "lang");
+                    string[] languageFilePaths = Directory.GetFiles(languageDirectoryPath, "*.xml");
+
+                    foreach (string filePath in languageFilePaths)
+                    {
+                        XmlDocument xmlDocument = new XmlDocument();
+
+                        try
+                        {
+                            using (StreamReader objStreamReader = new StreamReader(filePath, Encoding.UTF8, true))
+                            {
+                                xmlDocument.Load(objStreamReader);
+                            }
+                        }
+                        catch (IOException)
+                        {
+                            continue;
+                        }
+                        catch (XmlException)
+                        {
+                            continue;
+                        }
+
+                        XmlNode node = xmlDocument.SelectSingleNode("/chummer/name");
+
+                        if (node == null)
+                            continue;
+
+                        string strLanguageCode = Path.GetFileNameWithoutExtension(filePath);
+                        if (GetXslFilesFromLocalDirectory(strLanguageCode).Count > 0)
+                        {
+                            _lstLanguages.Add(new ListItem(strLanguageCode, node.InnerText));
+                        }
+                    }
+                    _lstLanguages.Sort(CompareListItems.CompareNames);
+                }
+
+                return _lstLanguages;
+            }
+        }
+
         #endregion
 
         #region Properties

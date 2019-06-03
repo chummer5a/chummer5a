@@ -21,9 +21,8 @@ namespace SINners.Models
         /// <summary>
         /// Initializes a new instance of the ApplicationUser class.
         /// </summary>
-        public ApplicationUser(string groupname = default(string), Guid? id = default(Guid?), string userName = default(string), string normalizedUserName = default(string), string email = default(string), string normalizedEmail = default(string), bool? emailConfirmed = default(bool?), string passwordHash = default(string), string securityStamp = default(string), string concurrencyStamp = default(string), string phoneNumber = default(string), bool? phoneNumberConfirmed = default(bool?), bool? twoFactorEnabled = default(bool?), DateTime? lockoutEnd = default(DateTime?), bool? lockoutEnabled = default(bool?), int? accessFailedCount = default(int?))
+        public ApplicationUser(Guid? id = default(Guid?), string userName = default(string), string normalizedUserName = default(string), string email = default(string), string normalizedEmail = default(string), bool? emailConfirmed = default(bool?), string passwordHash = default(string), string securityStamp = default(string), string concurrencyStamp = default(string), string phoneNumber = default(string), bool? phoneNumberConfirmed = default(bool?), bool? twoFactorEnabled = default(bool?), DateTime? lockoutEnd = default(DateTime?), bool? lockoutEnabled = default(bool?), int? accessFailedCount = default(int?))
         {
-            Groupname = groupname;
             Id = id;
             UserName = userName;
             NormalizedUserName = normalizedUserName;
@@ -40,12 +39,6 @@ namespace SINners.Models
             LockoutEnabled = lockoutEnabled;
             AccessFailedCount = accessFailedCount;
         }
-
-        /// <summary>
-        /// A way for a GM to search for all the characters of "his" group
-        /// </summary>
-        [JsonProperty(PropertyName = "groupname")]
-        public string Groupname { get; set; }
 
         /// <summary>
         /// </summary>

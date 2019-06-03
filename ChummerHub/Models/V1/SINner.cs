@@ -23,73 +23,63 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+using System.Transactions;
+using Microsoft.AspNetCore.Identity;
 
 namespace ChummerHub.Models.V1
 {
     [DebuggerDisplay("SINner {Id}")]
-    public class SINner
+    public class SINner : SINnerUploadAble
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-
-        public Guid? Id { get; set; }
-
+       
+        [MaxLength(2)]
+        public string EditionNumber { get; set; }
         
-        public string DownloadUrl { get; set; }
-
-        public DateTime? UploadDateTime { get; set; }
-
-        public DateTime LastChange { get; set; }
 
         [JsonIgnore]
         [XmlIgnore]
         public Guid UploadClientId { get; set; }
 
+        [MaxLength(6)]
+        public string Language { get; set; }
+
         public SINnerMetaData SINnerMetaData { get; set; }
+        
+        //public SINnerExtended MyExtendedAttributes { get; set; }
 
-        public String JsonSummary { get; set; }
+        public SINnerGroup MyGroup { get; set; }
 
-        [JsonIgnore]
-        [XmlIgnore]
-        public string GoogleDriveFileId { get; set; }
+        [MaxLength(64)]
+        public string Alias { get; set; }
 
-        public SINner()
+      public SINner()
         {
             Id = Guid.NewGuid();
             this.SINnerMetaData = new SINnerMetaData();
+            //this.MyExtendedAttributes = new SINnerExtended(this);
+            this.DownloadUrl = "";
+            this.MyGroup = null;
+            this.Language = "";
+            EditionNumber = "5e";
         }
 
-        [JsonIgnore]
-        [XmlIgnore]
-        [NotMapped]
-        private List<Tag> _AllTags { get; set; }
-
-        [JsonIgnore]
-        [XmlIgnore]
-        [NotMapped]
-        public List<Tag> AllTags
+        internal static async Task<List<SINner>> GetSINnersFromUser(ApplicationUser user, ApplicationDbContext context, bool canEdit)
         {
-            get
-            {
-                if (_AllTags == null)
+            using (var t = new TransactionScope(TransactionScopeOption.Required,
+                new TransactionOptions
                 {
-                    _AllTags = GetTagsForSinnerFlat(this.Id);
-                }
-                return _AllTags;
-            }
-            set
+                    IsolationLevel = System.Transactions.IsolationLevel.ReadUncommitted
+                }, TransactionScopeAsyncFlowOption.Enabled))
             {
-                _AllTags = value;
-            }
-        }
-
-        private List<Tag> GetTagsForSinnerFlat(Guid? id)
-        {
-            using(var scope = Program.MyHost.Services.CreateScope())
-            {
-                var services = scope.ServiceProvider;
-                Data.ApplicationDbContext context = services.GetRequiredService<Data.ApplicationDbContext>();
-                return (from a in context.Tags where a.SINnerId == id select a).ToList();
+                List<SINner> result = new List<SINner>();
+                var userseq = await (from a in context.UserRights
+                    where a.EMail == user.NormalizedEmail && a.CanEdit == canEdit
+                    select a.SINnerId).ToListAsync();
+                var sinseq = await context.SINners
+                    .Include(a => a.MyGroup)
+                    .Where(a => userseq.Contains(a.Id)).ToListAsync();
+                t.Complete();
+                return sinseq;
             }
         }
     }

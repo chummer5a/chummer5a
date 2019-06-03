@@ -21,13 +21,14 @@ namespace SINners.Models
         /// <summary>
         /// Initializes a new instance of the SearchTag class.
         /// </summary>
-        public SearchTag(IList<SearchTag> searchTags = default(IList<SearchTag>), string searchOpterator = default(string), Guid? id = default(Guid?), string tagName = default(string), string tagValue = default(string), string tagComment = default(string), Guid? parentTagId = default(Guid?), Guid? siNnerId = default(Guid?), IList<Tag> tags = default(IList<Tag>), bool? isUserGenerated = default(bool?), string tagType = default(string))
+        public SearchTag(IList<SearchTag> searchTags = default(IList<SearchTag>), string searchOpterator = default(string), Guid? id = default(Guid?), string tagName = default(string), string tagValue = default(string), double? tagValueDouble = default(double?), string tagComment = default(string), Guid? parentTagId = default(Guid?), Guid? siNnerId = default(Guid?), IList<Tag> tags = default(IList<Tag>), bool? isUserGenerated = default(bool?), string tagType = default(string))
         {
             SearchTags = searchTags;
             SearchOpterator = searchOpterator;
             Id = id;
             TagName = tagName;
             TagValue = tagValue;
+            TagValueDouble = tagValueDouble;
             TagComment = tagComment;
             ParentTagId = parentTagId;
             SiNnerId = siNnerId;
@@ -64,6 +65,11 @@ namespace SINners.Models
         public string TagValue { get; set; }
 
         /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "tagValueDouble")]
+        public double? TagValueDouble { get; set; }
+
+        /// <summary>
         /// This has NO FUNCTION and is only here for Debugging reasons.
         /// </summary>
         [JsonProperty(PropertyName = "tagComment")]
@@ -96,5 +102,52 @@ namespace SINners.Models
         [JsonProperty(PropertyName = "tagType")]
         public string TagType { get; set; }
 
+        /// <summary>
+        /// Validate the object. Throws ValidationException if validation fails.
+        /// </summary>
+        public virtual void Validate()
+        {
+            if (this.SearchTags != null)
+            {
+                foreach (var element in this.SearchTags)
+                {
+                    if (element != null)
+                    {
+                        element.Validate();
+                    }
+                }
+            }
+            if (this.TagName != null)
+            {
+                if (this.TagName.Length > 64)
+                {
+                    throw new ValidationException(ValidationRules.MaxLength, "TagName", 64);
+                }
+            }
+            if (this.TagValue != null)
+            {
+                if (this.TagValue.Length > 64)
+                {
+                    throw new ValidationException(ValidationRules.MaxLength, "TagValue", 64);
+                }
+            }
+            if (this.TagComment != null)
+            {
+                if (this.TagComment.Length > 64)
+                {
+                    throw new ValidationException(ValidationRules.MaxLength, "TagComment", 64);
+                }
+            }
+            if (this.Tags != null)
+            {
+                foreach (var element1 in this.Tags)
+                {
+                    if (element1 != null)
+                    {
+                        element1.Validate();
+                    }
+                }
+            }
+        }
     }
 }

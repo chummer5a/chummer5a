@@ -1,4 +1,89 @@
-Future Build 205
+Future Build 206
+
+New Features:
+
+- Added a 'helpful' digital assistant, Chummy! Chummy is designed to offer tips via tooltip based on your character's content. It's designed for expansion through tips.xml, using the same forbidden/required structure as qualities. Yes, it's an April Fool's gag. I'm sorry, I thought it was cute and/or amusing. It can be toggled off by deselecting the Allow Easter Eggs option in the Global Options menu. 
+- Created a new Improvement Type that improves the dicepool of a specific spell; the spelldicepool improvement is available in the Custom Improvement creator. 
+- Implemented the Special Modifications and Prototype Materials qualities from Better Than Bad. The assorted bonuses are added through the Select Weapon Accessories form, allowing for custom content to be created. Note for content creators, the specialmodificationlimit property is used to indicate how many 'points' of the quality are consumed; this isn't super close to rules as written, but it's viable for our purposes. 
+- Exposed ParentDetails requirement checks to Armor Mods. This allows for filtering mods based on the XML properties of their parent, such as filtering based on name or armour value.
+- Gameplay Options can now be used as a forbidden/required choice for items; currently this is used for the Free Insect Spirit qualities, which require the Prime Runner gameplay choice. 
+- Cyberware now supports the use of math operators in the ess and cost values. This allows for customdata files to easily make bulk changes to cyberware Essence and Cost entries.
+- Reimplemented the addsprite and addspirit improvement types to support adding Watchers, Homonculi and other spirit types that are added separately to a tradition.
+- Created new Improvement Types to support the Networker and Massive Network qualities from No Future.
+  - The ContactKarma improvement type changes the cost for all contacts by the listed amount.
+  - The ContactKarmaMinimum improvement type changes the minimum cost for contacts. The minimum is assumed to be 2.
+
+Application Fixes:
+
+- Slightly better implementation of the Upgrade mechanism for cyberware. Still needs work, but shouldn't improperly consume Essence anymore. 
+- Fixed an issue with cyberware that should not permit subsystems still doing so. 
+- Fixed incorrect consumption of capacity by modular limbs connecting to modular connectors. 
+- Fixed the behaviour of the Death Mentor Spirit's Magician benefit to allow dicepool benefits for specific skills. Uses the spelldicepool improvement.
+- Fixed an issue with traditions not probably updating.
+- Fixed issues with use of Essence Antiholes in create mode that prevented them from working reliably.
+- Fixed an issue with the selectatributes improvement that caused it to improperly allow Exceptional Attribute to select Edge.
+- Fixed issues with Dedicated Spellslinger not working properly in career mode.
+- Fixed a crash when opening the Print Multiple Characters dialog multiple times.
+- Fixed incorrect metatype minimums for metasapients when using priority generation.
+- Fixed missing matrix condition monitors for equipment.
+- Fixed a parsing issue with the check for if multiple attributes could be at metatype max that could occasionally cause a clash.
+- Fixed issues with the implementation of the dual attribute connection for shapeshifters that caused them to inconsistently use the correct attribute.
+- Fixed an issue with the adding of One Trick Pony's free technique.
+- Fixed behaviour of the selectweapon improvement that caused it to freeze if the ForcedItem quality were specified but the list of weapons did not contain the forced item.
+- Fixed an issue with adding gear to weapon accessories when the weapon accessory was installed with the weapon.
+- Fixed behaviour of Armor Mods improperly not showing their modification of parent items.
+- Added logic to prevent accepting a custom drug that does not have a Foundation or a Name without adding the drug successfully.
+- Fixed behaviour of deletion of custom drug recipes in create mode.
+- Unified behaviour of Essence improvements between cyberware and bioware.
+
+Application Changes:
+
+- Spells now properly store their Source ID. Used for some Improvements. 
+- Small refactor to the Spell class to use RelevantImprovements method. Doesn't actually reduce complexity, but makes me feel a bit better about having less boilerplate. 
+- Added a string to the Skill.Core class that allows for formatting the skill's dicepool, specialisations and such instead of reprocessing it in multiple other locations.
+- Refactored the creation, saving and loading of GUIDs for the Internal ID and Source ID of all objects to provide more consistency. There is a small risk that this will impact the stored improvements of some characters. I haven't been able to prove that it will happen, but logically it should based on this change. 
+- Removed the caching of Mugshot images in the character roster. Prevents high memory usage for large watch folder content.
+- Unified some uses of Availability processing into the AvailabilityValue object.
+
+UI Changes:
+
+- Fixed some behaviour with non-maximised windows to prevent new windows from being opened maximised, or windows being maximised on gaining focus. 
+- Added Minimise and Maximise buttons to the Character Roster. Closes #3495
+- Made some changes to the PoolToolTip property to properly account for custom attributes.
+
+Data Changes:
+
+- Fixed incorrect bonuses of the Death Mentor Spirit for Adepts. Properly allows taking one of the two powers provided. Fix provided by Gidoran. 
+- Fixed incorrect spelling of Limit Modifiers on the Retractable Climbing Claws cyberware.
+- Fixed incorrect Page and Specialisation category for the Cavalier Champion. Closes #3496
+- Added a new customdata entry for German Data Changes to add Machine Pistols and Submachine Guns to Standard and Heavy Weapon Mounts.
+- Added missing side prompts to the synthetic modular full arm and leg.
+- Fixed a typo in the Cavalier Arms Adder Slivergun's name.
+- Added a new customdata entry for the Ram Plate Vehicle Modification that sets it to use the stats as provided in Hero Lab. 
+- Fixed incorrect restrictions on the Special Modications and Prototype Materials qualities. 
+- Removed incorrrect mundane restriction on the Quadriplegic quality.
+- Fixed behaviour of partial cyberlimbs giving incorrect condition monitor boxes.
+- Removed <canwrite /> from the Made Man quality; this improperly allowed for the group to be removed from the character.
+- Added Free Insect quality choices from Dark Terrors. These are hidden behind a Prime Runner gameplay requirement. 
+- Fixed capacities of the Bug Promotional Pen and Concealable Surveillance Gear.
+- Removed unnecessary Rating properties from Sensor Functions.
+- Fixed missing Ratings for several instances of Metahuman Adjustment on vehicles.
+- Added customdata to allow the helmets for the SWAT Armor, Milspec Armor, Security Armor and Daedelus Jumpsuit. This also assigns the SWAT Armor, Milspec Armor and Security Armor as Full Body Armor, providing access to the FBA mods. 
+- Removed incorrect Medium lifestyle setting from the Workshop/Facility lifestyle qualities. Closes #3660
+- Extended Clip now allows Belt and Drum weapons instead of just Clips.
+
+String Changes:
+
+- Added a string tag for the Enable Plugins menu option. Closes #3486
+
+New Strings:
+
+- String_SpellPoints
+- Tip_SelectSpell_MasteryQuality
+- Message_CustomDrug_MissingFoundation
+- MessageTitle_CustomDrug_MissingFoundation
+
+Build 205
 
 Application Changes:
 - Added a new improvement type - actiondicepool - to support specific Actions receiving dicepool bonuses. Currently only Threading is supported by this.

@@ -33,7 +33,7 @@ namespace ChummerHub.Client.Tests
                 try
                 {
                     Debug.WriteLine("Loading: " + file.Name);
-                    Character c = MainForm.LoadCharacter(file.FullName);
+                    Character c = await MainForm.LoadCharacter(file.FullName);
                     if (c == null)
                         continue;
                     Debug.WriteLine("Character loaded: " + c.Name);
@@ -42,8 +42,8 @@ namespace ChummerHub.Client.Tests
                         using (frmCareer career = new frmCareer(c))
                         {
                             career.Show();
-                            SINnersUserControl sINnersUsercontrol = new SINnersUserControl();
-                            var ce = sINnersUsercontrol.SetCharacterFrom(career);
+                            ucSINnersUserControl sINnersUsercontrol = new ucSINnersUserControl();
+                            var ce = await sINnersUsercontrol.SetCharacterFrom(career);
                             await ChummerHub.Client.Backend.Utils.PostSINnerAsync(ce);
                             await ChummerHub.Client.Backend.Utils.UploadChummerFileAsync(ce);
                             career.Hide();
@@ -55,8 +55,8 @@ namespace ChummerHub.Client.Tests
                         using (frmCreate create = new frmCreate(c))
                         {
                             create.Show();
-                            SINnersUserControl sINnersUsercontrol = new SINnersUserControl();
-                            var ce = sINnersUsercontrol.SetCharacterFrom(create);
+                            ucSINnersUserControl sINnersUsercontrol = new ucSINnersUserControl();
+                            var ce = await sINnersUsercontrol.SetCharacterFrom(create);
                             await ChummerHub.Client.Backend.Utils.PostSINnerAsync(ce);
                             await ChummerHub.Client.Backend.Utils.UploadChummerFileAsync(ce);
                             create.Hide();

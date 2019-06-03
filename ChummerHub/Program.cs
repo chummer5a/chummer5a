@@ -1,9 +1,6 @@
-// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
-// Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
-
-
 using Microsoft.AspNetCore.Hosting;
 using System;
+using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Events;
@@ -14,6 +11,8 @@ using ChummerHub.Data;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.ApplicationInsights.DataContracts;
 
 namespace ChummerHub
 {
@@ -23,10 +22,8 @@ namespace ChummerHub
         public static void Main(string[] args)
         {
             System.AppDomain.CurrentDomain.FirstChanceException += CurrentDomain_FirstChanceException;
-            MyHost = CreateWebHostBuilder(args);
-            Seed();
-            MyHost.Run();
-            return;
+         
+#if DEBUG           
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
@@ -36,33 +33,55 @@ namespace ChummerHub
                 //.WriteTo.File(@"ChummerHub_log.txt")
                 .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{NewLine}", theme: AnsiConsoleTheme.Literate)
                 .CreateLogger();
-
-            //var seed = args.Contains("/seed");
-            //if (seed)
-            //{
-            //    args = args.Except(new[] { "/seed" }).ToArray();
-            //}
-
-            //var host = CreateWebHostBuilder(args).Build();
-            
-            //if (seed)
-            //{
-            //    //SeedData.EnsureSeedData(host.Services);
-            //}
-
-            //host.Run();
+#endif
+            MyHost = CreateWebHostBuilder(args);
+            Seed();
+            MyHost.Run();
+            return;
         }
 
+        private static bool _preventOverflow = false;
+       
         private static void CurrentDomain_FirstChanceException(object sender, System.Runtime.ExceptionServices.FirstChanceExceptionEventArgs e)
         {
-            System.Diagnostics.StackTrace st = new System.Diagnostics.StackTrace(true);
-            var tc = new Microsoft.ApplicationInsights.TelemetryClient();
-            tc.TrackTrace("Exception thrown: " + e.Exception.ToString() + " thrown at " + st.ToString());
+            try
+            {
+                if (_preventOverflow)
+                    return;
+                _preventOverflow = true;
+                string msg = e.Exception.ToString() + Environment.NewLine + Environment.NewLine;
+
+                if (!e.Exception.Message.Contains("Non-static method requires a target."))
+                {
+                    Console.WriteLine(msg);
+                    //System.Diagnostics.Trace.TraceError(msg, e.Exception);
+                    System.Diagnostics.Debug.WriteLine(msg);
+                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    ExceptionTelemetry et = new ExceptionTelemetry(e.Exception);
+                    tc.TrackException(et);
+                }
+                else
+                {
+                    Console.WriteLine(msg);
+                }
+            }
+            catch (Exception ex)
+            {
+                string msg = ex.ToString() + Environment.NewLine + Environment.NewLine;
+                Console.WriteLine(msg);
+                System.Diagnostics.Debug.WriteLine(msg);
+                //AggregateException ae = new AggregateException(new List<Exception>() { e.Exception, ex });
+                //throw ae;
+            }
+            finally
+            {
+                _preventOverflow = false;
+            }
         }
 
         public static void Seed()
         {
-            
+
             using(var scope = MyHost.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
@@ -74,6 +93,16 @@ namespace ChummerHub
                 }
                 catch(Exception e)
                 {
+                    try
+                    {
+                        var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                        var telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
+                        tc.TrackException(telemetry);
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.LogError(ex.ToString());
+                    }
                     logger.LogError(e.Message, "An error occurred migrating the DB: " + e.ToString());
                     context.Database.EnsureDeleted();
                     context.Database.EnsureCreated();
@@ -85,10 +114,21 @@ namespace ChummerHub
                 var testUserPw = config["SeedUserPW"];
                 try
                 {
-                    SeedData.Initialize(services, testUserPw).Wait();
+                    var env = services.GetService<IHostingEnvironment>();
+                    SeedData.Initialize(services, testUserPw, env).Wait();
                 }
                 catch(Exception ex)
                 {
+                    try
+                    {
+                        var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                        var telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(ex);
+                        tc.TrackException(telemetry);
+                    }
+                    catch (Exception e1)
+                    {
+                        logger.LogError(e1.ToString());
+                    }
                     logger.LogError(ex.Message, "An error occurred seeding the DB: " + ex.ToString());
                 }
             }
@@ -118,25 +158,5 @@ namespace ChummerHub
                 })
                 .CaptureStartupErrors(true)
                 .Build();
-
-//        public static IWebHost BuildWebHost(string[] args)
-//        {
-//            return WebHost.CreateDefaultBuilder(args)
-//                    .UseStartup<Startup>()
-//                    .UseSerilog((context, configuration) =>
-//                    {
-//                        configuration
-//                            .MinimumLevel.Debug()
-//                            .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
-//                            .MinimumLevel.Override("System", LogEventLevel.Warning)
-//                            .MinimumLevel.Override("Microsoft.AspNetCore.Authentication", LogEventLevel.Information)
-//                            .Enrich.FromLogContext()
-//#if DEBUG
-//                            .WriteTo.File(@"SINners_log.txt")
-//#endif
-//                            .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{NewLine}", theme: AnsiConsoleTheme.Literate);
-//                    })
-//                    .Build();
-//        }
     }
 }

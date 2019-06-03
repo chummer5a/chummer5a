@@ -23,11 +23,13 @@ using System.Diagnostics;
  using System.Globalization;
 using System.Xml;
 using System.Runtime.CompilerServices;
+using NLog;
 
 namespace Chummer
 {
     internal static class XmlExtensions
     {
+        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
         //QUESTION: TrySelectField<T> that uses SelectSingleNode instead of this[node]?
 
         public delegate bool TryParseFunction<T>(string input, out T result);
@@ -465,6 +467,27 @@ namespace Chummer
             if (objCulture == null)
                 objCulture = GlobalOptions.InvariantCultureInfo;
             if (!float.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out float fltTmp)) return false;
+            read = fltTmp;
+            return true;
+        }
+
+        /// <summary>
+        /// Like TryGetField for guids, but taking advantage of guid.TryParse. Allows for returning false if the guid is Empty. 
+        /// </summary>
+        /// <param name="node">XPathNavigator node of the object.</param>
+        /// <param name="field">Field name of the InnerXML element we're looking for.</param>
+        /// <param name="read">Guid that will be returned.</param>
+        /// <param name="falseIfEmpty">Defaults to true. If false, will return an empty Guid if the returned Guid field is empty.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryGetGuidFieldQuickly(this XmlNode node, string field, ref Guid read, bool falseIfEmpty = true)
+        {
+            XmlNode objField = node.SelectSingleNode(field);
+            if (objField == null) return false;
+            if (!Guid.TryParse(objField.InnerText, out Guid fltTmp)) return false;
+            if (fltTmp == Guid.Empty && falseIfEmpty)
+            {
+                return false;
+            }
             read = fltTmp;
             return true;
         }

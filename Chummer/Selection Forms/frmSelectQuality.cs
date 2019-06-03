@@ -119,7 +119,6 @@ namespace Chummer
 
             if (xmlQuality != null)
             {
-                int i = 0;
                 if (chkFree.Checked)
                     lblBP.Text = 0.ToString(GlobalOptions.CultureInfo);
                 else
@@ -170,6 +169,23 @@ namespace Chummer
                             }
                         }
                         lblBP.Text = (intBP * _objCharacter.Options.KarmaQuality).ToString();
+                        if (!_objCharacter.Created && _objCharacter.FreeSpells > 0 && Convert.ToBoolean(xmlQuality.SelectSingleNode("canbuywithspellpoints")?.Value))
+                        {
+                            int i = (intBP * _objCharacter.Options.KarmaQuality);
+                            int spellPoints = 0;
+                            while (i > 0)
+                            {
+                                i -= 5;
+                                spellPoints++;
+                            }
+
+                            lblBP.Text += $" / {spellPoints} {LanguageManager.GetString("String_SpellPoints")}";
+                            lblBP.ToolTipText = LanguageManager.GetString("Tip_SelectSpell_MasteryQuality");
+                        }
+                        else
+                        {
+                            lblBP.ToolTipText = string.Empty;
+                        }
                     }
                 }
                 lblBPLabel.Visible = lblBP.Visible = !string.IsNullOrEmpty(lblBP.Text);

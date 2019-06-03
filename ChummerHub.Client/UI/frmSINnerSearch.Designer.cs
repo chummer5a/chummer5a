@@ -31,7 +31,7 @@
             this.tabSearch = new System.Windows.Forms.TabControl();
             this.tabSearchPage = new System.Windows.Forms.TabPage();
             this.tabResultPage = new System.Windows.Forms.TabPage();
-            this.ucSearch1 = new ChummerHub.Client.UI.SINnersSearch();
+            this.ucSearch1 = new ChummerHub.Client.UI.ucSINnersSearch();
             this.tabSearch.SuspendLayout();
             this.tabSearchPage.SuspendLayout();
             this.SuspendLayout();
@@ -99,6 +99,6 @@
         private System.Windows.Forms.TabControl tabSearch;
         private System.Windows.Forms.TabPage tabSearchPage;
         private System.Windows.Forms.TabPage tabResultPage;
-        private SINnersSearch ucSearch1;
+        private ucSINnersSearch ucSearch1;
     }
 }

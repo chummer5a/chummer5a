@@ -18,12 +18,21 @@ namespace ChummerHub.Models.V1
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 
         public Guid Id { get; set; }
+
+        [MaxLength(64)]
         public string TagName { get; set; }
+
+        [MaxLength(64)]
         public string TagValue { get; set; }
+
+
+        public Double? TagValueDouble { get; set; }
 
         /// <summary>
         /// This has NO FUNCTION and is only here for Debugging reasons.
         /// </summary>
+        ///
+        [MaxLength(64)]
         public string TagComment { get; set; }
         
         public Guid? ParentTagId { get; set; }
@@ -33,12 +42,6 @@ namespace ChummerHub.Models.V1
         [XmlIgnore]
         [NotMapped]
         public Tag ParentTag { get; set; }
-
-        //[IgnoreDataMember]
-        //[JsonIgnore]
-        //[XmlIgnore]
-        //[NotMapped]
-        //public SINner SINner { get; set; }
 
         public Guid? SINnerId { get; set; }
 
@@ -79,6 +82,7 @@ namespace ChummerHub.Models.V1
             this.ParentTag = parent;
             this.TagName = "";
             this.TagValue = "";
+            this.TagValueDouble = null;
             this.ParentTagId = Guid.Empty;
             if (parent != null)
                 this.ParentTagId = parent.Id;

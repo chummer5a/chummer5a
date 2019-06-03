@@ -6801,6 +6801,10 @@
       <text>O custo de Carma para aumentar Atributos Especiais não é reduzido com Perda de Essência</text>
     </string>
     <string>
+      <key>Checkbox_Options_IgnoreComplexFormLimit</key>
+      <text>TL NEEDED: Ignore complex form limit in career mode</text>
+    </string>
+    <string>
       <key>Checkbox_Options_UseRestrictionsToRecoilCompensation</key>
       <text>Usar Restrições para Compensação de Recuo (RG53)</text>
     </string>

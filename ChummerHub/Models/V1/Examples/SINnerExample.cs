@@ -41,9 +41,9 @@ namespace ChummerHub.Models.V1.Examples
                 Visibility = new SINnerVisibility()
                 {
                     IsGroupVisible = true,
-                    UserRights = new List<SINerUserRight>()
+                    UserRights = new List<SINnerUserRight>()
                     {
-                         new SINerUserRight(sin.Id.Value)
+                         new SINnerUserRight(sin.Id.Value)
                          {
                               EMail = "archon.megalon@gmail.com",
                               CanEdit = true
@@ -74,7 +74,7 @@ namespace ChummerHub.Models.V1.Examples
                 }
             };
             sin.SINnerMetaData.Tags.Add(parenttag);
-            sin.JsonSummary = "{}";
+            //sin.MyExtendedAttributes.JsonSummary = "{}";
             sin.LastChange = DateTime.Now;
             return sin;
         }

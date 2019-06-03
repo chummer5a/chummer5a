@@ -80,6 +80,7 @@ namespace Chummer
         private bool _blnFree;
         private readonly List<Image> _lstMugshots = new List<Image>();
         private int _intMainMugshotIndex = -1;
+        private int _intKarmaMinimum = 2;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -378,6 +379,10 @@ namespace Chummer
                     intReturn += 1;
                 if (Blackmail)
                     intReturn += 2;
+                intReturn +=
+                    ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ContactKarmaDiscount);
+                intReturn = Math.Max(intReturn,
+                    _intKarmaMinimum + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ContactKarmaMinimum));
                 return intReturn;
             }
         }
@@ -966,7 +971,7 @@ namespace Chummer
 
         public bool NoLinkedCharacter => _objLinkedCharacter == null;
 
-        public void RefreshLinkedCharacter(bool blnShowError = false)
+        public async void RefreshLinkedCharacter(bool blnShowError = false)
         {
             Character objOldLinkedCharacter = _objLinkedCharacter;
             CharacterObject.LinkedCharacters.Remove(_objLinkedCharacter);
@@ -996,7 +1001,7 @@ namespace Chummer
                 if (strFile.EndsWith(".chum5"))
                 {
                     Character objOpenCharacter = Program.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
-                    _objLinkedCharacter = objOpenCharacter ?? Program.MainForm.LoadCharacter(strFile, string.Empty, false, false);
+                    _objLinkedCharacter = objOpenCharacter ?? (await Program.MainForm.LoadCharacter(strFile, string.Empty, false, false));
                     if (_objLinkedCharacter != null)
                         CharacterObject.LinkedCharacters.Add(_objLinkedCharacter);
                 }

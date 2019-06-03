@@ -6116,7 +6116,7 @@
       <avail>3</avail>
       <addoncategory>Sensors</addoncategory>
       <addoncategory>Custom</addoncategory>
-      <capacity>[2]</capacity>
+      <capacity>2</capacity>
       <cost>100</cost>
       <minrating>2</minrating>
     </gear>
@@ -6130,7 +6130,7 @@
       <avail>6</avail>
       <addoncategory>Sensors</addoncategory>
       <addoncategory>Custom</addoncategory>
-      <capacity>[2]</capacity>
+      <capacity>1</capacity>
       <cost>50</cost>
       <minrating>2</minrating>
     </gear>
@@ -7278,7 +7278,7 @@
       <id>fd1aac8c-3b55-4577-b2d6-20ec886eae0c</id>
       <name>Fab Sensor</name>
       <category>Sensor Functions</category>
-      <rating>{Parent Rating}</rating>
+      <rating>0</rating>
       <source>HT</source>
       <page>195</page>
       <avail>+8R</avail>
@@ -7298,7 +7298,7 @@
       <id>ce63e6c6-409a-49dd-bdcc-f8efb2f9dadf</id>
       <name>X-Ray</name>
       <category>Sensor Functions</category>
-      <rating>{Parent Rating}</rating>
+      <rating>0</rating>
       <source>R5</source>
       <page>138</page>
       <avail>0</avail>
@@ -7376,7 +7376,7 @@
       <id>5c3b9966-ad7e-42e3-b0e0-f656021784cf</id>
       <name>Atmosphere Sensor</name>
       <category>Sensor Functions</category>
-      <rating>{Parent Rating}</rating>
+      <rating>0</rating>
       <source>SR5</source>
       <page>446</page>
       <avail>0</avail>
@@ -7416,7 +7416,7 @@
       <id>c6f60201-524f-4e3f-adc7-727eace4c7bd</id>
       <name>Cyberware Scanner</name>
       <category>Sensor Functions</category>
-      <rating>{Parent Rating}</rating>
+      <rating>0</rating>
       <source>SR5</source>
       <page>446</page>
       <avail>0</avail>
@@ -7456,7 +7456,7 @@
       <id>d98f419f-7625-4228-9723-0217950d8155</id>
       <name>Geiger Counter</name>
       <category>Sensor Functions</category>
-      <rating>{Parent Rating}</rating>
+      <rating>0</rating>
       <source>SR5</source>
       <page>446</page>
       <avail>0</avail>
@@ -7496,7 +7496,7 @@
       <id>3a79e046-8106-4089-a1ab-895eee956b86</id>
       <name>Laser Range Finder</name>
       <category>Sensor Functions</category>
-      <rating>{Parent Rating}</rating>
+      <rating>0</rating>
       <source>SR5</source>
       <page>446</page>
       <avail>0</avail>
@@ -7516,7 +7516,7 @@
       <id>ff0f7ab6-ee55-47aa-bdec-0646acca4bff</id>
       <name>MAD Scanner</name>
       <category>Sensor Functions</category>
-      <rating>{Parent Rating}</rating>
+      <rating>0</rating>
       <source>SR5</source>
       <page>446</page>
       <avail>0</avail>
@@ -7536,7 +7536,7 @@
       <id>e853967a-a2b8-4d89-9a97-773034489a16</id>
       <name>Motion Sensor</name>
       <category>Sensor Functions</category>
-      <rating>{Parent Rating}</rating>
+      <rating>0</rating>
       <source>SR5</source>
       <page>446</page>
       <avail>0</avail>
@@ -7556,7 +7556,7 @@
       <id>c763fac2-8b08-4c61-8dc2-6291d905a2df</id>
       <name>Olfactory Scanner</name>
       <category>Sensor Functions</category>
-      <rating>{Parent Rating}</rating>
+      <rating>0</rating>
       <source>SR5</source>
       <page>446</page>
       <avail>0</avail>
@@ -7596,7 +7596,7 @@
       <id>4d12e4a1-edd3-4abf-830f-aa95874b7531</id>
       <name>Radio Signal Scanner</name>
       <category>Sensor Functions</category>
-      <rating>{Parent Rating}</rating>
+      <rating>0</rating>
       <source>SR5</source>
       <page>446</page>
       <avail>0</avail>
@@ -7616,7 +7616,7 @@
       <id>e140b671-dc22-429d-b12a-dfbf46951049</id>
       <name>Ultrasound</name>
       <category>Sensor Functions</category>
-      <rating>{Parent Rating}</rating>
+      <rating>0</rating>
       <source>SR5</source>
       <page>446</page>
       <avail>0</avail>
@@ -7656,7 +7656,7 @@
       <id>0b5e77ce-7fa8-4458-89de-ee9bb61eafd7</id>
       <name>Nanoscanner</name>
       <category>Sensor Functions</category>
-      <rating>{Parent Rating}</rating>
+      <rating>0</rating>
       <source>CF</source>
       <page>153</page>
       <avail>8</avail>

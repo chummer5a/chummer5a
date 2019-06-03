@@ -34,6 +34,9 @@ using System.Text;
 using System.ComponentModel;
 using Chummer.UI.Attributes;
 using System.Collections.ObjectModel;
+using Microsoft.ApplicationInsights;
+using Microsoft.ApplicationInsights.DataContracts;
+using NLog;
 
 namespace Chummer
 {
@@ -43,6 +46,8 @@ namespace Chummer
     [DesignerCategory("")]
     public class CharacterShared : Form
     {
+        private static Logger Log = LogManager.GetCurrentClassLogger();
+        private static readonly TelemetryClient TelemetryClient = new TelemetryClient();
         private readonly Character _objCharacter;
         private readonly CharacterOptions _objOptions;
         private bool _blnIsDirty;
@@ -54,6 +59,27 @@ namespace Chummer
         {
             _objCharacter = objCharacter;
             _objOptions = _objCharacter.Options;
+            string name = "Show_Form_" + this.GetType();
+            if (objCharacter != null)
+                name += "_" + objCharacter.CharacterName;
+            PageViewTelemetry pvt = new PageViewTelemetry(name);
+            pvt.Id = Guid.NewGuid().ToString();
+            pvt.Name = name;
+            pvt.Context.Operation.Name = "Operation CharacterShared.Constructor()";
+            pvt.Properties.Add("Name", objCharacter?.Name);
+            pvt.Properties.Add("Path", objCharacter?.FileName);
+            pvt.Timestamp = DateTimeOffset.UtcNow;
+            this.Shown += delegate(object sender, EventArgs args)
+            {
+                pvt.Duration = DateTimeOffset.UtcNow-pvt.Timestamp;
+                if (objCharacter != null)
+                {
+                    if (Uri.TryCreate(objCharacter.FileName, UriKind.Absolute, out Uri Uriresult))
+                        pvt.Url = Uriresult;
+                }
+                TelemetryClient.TrackPageView(pvt);
+            };
+            
         }
 
         [Obsolete("This constructor is for use by form designers only.", true)]
@@ -117,7 +143,17 @@ namespace Chummer
         {
             Cursor objOldCursor = Cursor;
             Cursor = Cursors.WaitCursor;
-            string strAutosavePath = Path.Combine(Utils.GetStartupPath, "saves", "autosave");
+            string strAutosavePath = "";
+            try
+            {
+                strAutosavePath = Path.Combine(Utils.GetStartupPath, "saves", "autosave");
+            }
+            catch (System.ArgumentException e)
+            {
+                Log.Error(e, "Path: " + Utils.GetStartupPath);
+                return;
+            }
+             
             if (!Directory.Exists(strAutosavePath))
             {
                 try
@@ -139,7 +175,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(strShowFileName))
                 strShowFileName = _objCharacter.CharacterName;
             string strFilePath = Path.Combine(strAutosavePath, strShowFileName);
-            _objCharacter.Save(strFilePath);
+            _objCharacter.Save(strFilePath, false, false);
             Cursor = objOldCursor;
             AutosaveStopWatch.Restart();
         }
@@ -1625,13 +1661,13 @@ namespace Chummer
                 HashSet<string> strQualitiesToPrint = new HashSet<string>();
                 foreach (Quality objQuality in _objCharacter.Qualities)
                 {
-                    strQualitiesToPrint.Add(objQuality.QualityId + '|' + objQuality.GetSourceName(GlobalOptions.Language) + '|' + objQuality.Extra);
+                    strQualitiesToPrint.Add(objQuality.SourceIDString + '|' + objQuality.GetSourceName(GlobalOptions.Language) + '|' + objQuality.Extra);
                 }
 
                 // Add Qualities
                 foreach (Quality objQuality in _objCharacter.Qualities)
                 {
-                    if (!strQualitiesToPrint.Remove(objQuality.QualityId + '|' + objQuality.GetSourceName(GlobalOptions.Language) + '|' + objQuality.Extra))
+                    if (!strQualitiesToPrint.Remove(objQuality.SourceIDString + '|' + objQuality.GetSourceName(GlobalOptions.Language) + '|' + objQuality.Extra))
                         continue;
 
                     AddToTree(objQuality, false);

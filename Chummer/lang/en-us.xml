@@ -2049,10 +2049,14 @@
       <key>Message_DeletePositiveQualityCareer</key>
       <text>Are you sure you want to delete this Positive Quality? You will not receive any Karma for removing it.</text>
     </string>
-	<string>
-	  <key>Message_LowerPositiveQualityLevelCareer</key>
-	  <text>Are you sure you want to remove a level from this Positive Quality? You will not receive any Karma for removing it.</text>
-	</string>
+    <string>
+      <key>Message_DeleteDrug</key>
+      <text>Are you sure you want to delete this drug recipe?</text>
+    </string>
+	  <string>
+	    <key>Message_LowerPositiveQualityLevelCareer</key>
+	    <text>Are you sure you want to remove a level from this Positive Quality? You will not receive any Karma for removing it.</text>
+	  </string>
     <string>
       <key>Message_DeleteImprovement</key>
       <text>Are you sure you want to delete this Improvement?</text>
@@ -4992,6 +4996,14 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Drug Name</text>
     </string>
     <string>
+      <key>Message_CustomDrug_MissingFoundation</key>
+      <text>Drugs must have have a Foundation block.</text>
+    </string>
+    <string>
+      <key>MessageTitle_CustomDrug_MissingFoundation</key>
+      <text>Missing Foundation</text>
+    </string>
+    <string>
       <key>Label_CrashEffect</key>
       <text>Crash Effect:</text>
     </string>
@@ -5522,8 +5534,16 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Karma spent on enemies counts towards negative Quality limit in create mode</text>
     </string>
     <string>
+      <key>Checkbox_Options_EnablePlugins</key>
+      <text>Enable Plugins (experimental)</text>
+    </string>
+    <string>
       <key>Checkbox_Options_HideCharacterRoster</key>
       <text>Hide the Character Roster</text>
+    </string>
+    <string>
+      <key>Checkbox_Options_AllowEasterEggs</key>
+      <text>Allow Easter Eggs</text>
     </string>
     <string>
       <key>String_SelectBP_LifeModuleSummary</key>
@@ -7625,6 +7645,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Karma cost for increasing Special Attributes is not reduced with Essence Loss</text>
     </string>
     <string>
+      <key>Checkbox_Options_IgnoreComplexFormLimit</key>
+      <text>Ignore 2*RES Complex Form limit in Career Mode</text>
+    </string>
+    <string>
       <key>Checkbox_Options_UseRestrictionsToRecoilCompensation</key>
       <text>Use Restrictions to Recoil Compensation (RG 53)</text>
     </string>        
@@ -7751,6 +7775,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
     <string>
       <key>Checkbox_Option_PrintToFileFirst</key>
       <text>Apply Linux printing fix</text>
+    </string>
+    <string>
+      <key>Label_Options_BrowserVersion</key>
+      <text>Preview uses Internet Explorer version</text>
     </string>
     <string>
       <key>Label_Options_EssenceDecimals</key>
@@ -8747,6 +8775,14 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <key>Tip_SelectSpell_ExtendedSpell</key>
       <text>Extended range Spells have a range of (Force × MAG × 10) meters but have their DV increased by +2.</text>
     </string>
+    <string>
+      <key>String_SpellPoints</key>
+      <text>Spell Points</text>
+    </string>
+    <string>
+      <key>Tip_SelectSpell_MasteryQuality</key>
+      <text>Mastery Qualities will spend Spell Points before they spend Karma. [FA 31]</text>
+    </string>
     <!-- End Region-->
     <!-- Region Select Text Window -->
     <string>
@@ -9378,7 +9414,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Cannot Load Character</text>
     </string>
     <!-- End Region-->
-	<!-- Region Karma Value Strings -->
+	  <!-- Region Karma Value Strings -->
 	<string>
       <key>MessageTitle_KarmaValue</key>
       <text>Character Karma Value</text>
@@ -9557,6 +9593,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
 	  <key>Message_ImprovementLoadError</key>
 	  <text>Chummer5a encountered an error when loading one or more improvements for this character. This is likely because a certain improvement present in an older version of Chummer has been significantly altered in a later version.\n\nThe issue can be fixed by re-applying only the improvements that caused issues.\n\nDo you wish to re-apply the problematic issues right now? If you do not, the issues can still be fixed by re-applying all improvements via Special > Re-apply Improvements.</text>
 	</string>
+    <string>
+      <key>String_SpecialModificationLimit</key>
+      <text>Special Modification Limit</text>
+    </string>
     <!-- End Region -->
     <!-- Region Loading Form -->
     <string>
@@ -9646,7 +9686,6 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Import Character</text>
     </string>
     <!-- End Region -->
-    <!-- End Region -->
     <string>
       <key>Message_DroneIllegalDowngrade</key>
       <text>The following {0} drones have downgrades which decrease their attributes too far:</text>
@@ -9659,5 +9698,20 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <key>Message_NonGuidIdWarning</key>
       <text>{0} items were found in the file {1} with IDs that are not parsable as GUIDs. If you are using custom content, please ensure that ID fields are always filled with a unique GUID and only a unique GUID.\n\nItems with non-GUID ID fields:\n{2}</text>
     </string>
+    <!-- End Region -->
+    <!-- Region SINners Plugin -->
+    <string>
+      <key>String_online</key>
+      <text>Online</text>
+    </string>
+    <string>
+      <key>Menu_Main_SINnerSearch</key>
+      <text>Search SIN Database</text>
+    </string>
+    <string>
+      <key>Menu_Main_SINners</key>
+      <text>SINners</text>
+    </string>
+    <!-- End Region SINners Plugin-->
   </strings>
 </chummer>

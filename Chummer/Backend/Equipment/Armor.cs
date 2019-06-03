@@ -28,6 +28,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Backend.Attributes;
+using NLog;
 
 namespace Chummer.Backend.Equipment
 {
@@ -38,7 +39,8 @@ namespace Chummer.Backend.Equipment
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     public class Armor : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, IHasChildrenAndCost<Gear>, IHasCustomName, IHasLocation, ICanEquip, IHasSource, IHasRating, ICanSort, IHasWirelessBonus, IHasStolenProperty
 	{
-        private Guid _sourceID = Guid.Empty;
+        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private Guid _guiSourceID = Guid.Empty;
         private Guid _guiID;
         private Guid _guiWeaponID = Guid.Empty;
         private string _strName = string.Empty;
@@ -150,9 +152,14 @@ namespace Chummer.Backend.Equipment
         /// <param name="blnSkipSelectForms">Whether or not to skip forms that are created for bonuses like Custom Fit (Stack).</param>
         public void Create(XmlNode objXmlArmorNode, int intRating, List<Weapon> lstWeapons, bool blnSkipCost = false, bool blnCreateChildren = true, bool blnSkipSelectForms = false)
         {
-            objXmlArmorNode.TryGetField("id", Guid.TryParse, out _sourceID);
-            if (objXmlArmorNode.TryGetStringFieldQuickly("name", ref _strName))
+            if (!objXmlArmorNode.TryGetField("id", Guid.TryParse, out _guiSourceID))
+            {
+                Log.Warn(new object[] { "Missing id field for armor xmlnode", objXmlArmorNode });
+                Utils.BreakIfDebug();
+            }
+            else
                 _objCachedMyXmlNode = null;
+            objXmlArmorNode.TryGetStringFieldQuickly("name", ref _strName);
             objXmlArmorNode.TryGetStringFieldQuickly("category", ref _strCategory);
             objXmlArmorNode.TryGetStringFieldQuickly("armor", ref _strArmorValue);
             if (objXmlArmorNode.TryGetStringFieldQuickly("armoroverride", ref _strArmorOverrideValue) && _strArmorOverrideValue == "0")
@@ -243,7 +250,7 @@ namespace Chummer.Backend.Equipment
                     // More than one Weapon can be added, so loop through all occurrences.
                     foreach (XmlNode objXmlCategoryNode in xmlSelectModesFromCategory)
                     {
-                        frmSelectArmorMod frmPickArmorMod = new frmSelectArmorMod(_objCharacter)
+                        frmSelectArmorMod frmPickArmorMod = new frmSelectArmorMod(_objCharacter, this)
                         {
                             AllowedCategories = objXmlCategoryNode.InnerText,
                             ExcludeGeneralCategory = true
@@ -387,7 +394,7 @@ namespace Chummer.Backend.Equipment
         public void Save(XmlTextWriter objWriter)
         {
             objWriter.WriteStartElement("armor");
-            objWriter.WriteElementString("sourceid", _sourceID.ToString("D"));
+            objWriter.WriteElementString("sourceid", SourceIDString);
             objWriter.WriteElementString("guid",InternalId);
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("category", _strCategory);
@@ -454,7 +461,14 @@ namespace Chummer.Backend.Equipment
             else
             {
                 if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
+                {
                     _guiID = Guid.NewGuid();
+                }
+                if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+                {
+                    XmlNode node = GetNode(GlobalOptions.Language);
+                    node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                }
                 if (objNode["location"] != null)
                 {
                     if (Guid.TryParse(objNode["location"].InnerText, out Guid temp))
@@ -477,11 +491,6 @@ namespace Chummer.Backend.Equipment
 
             if (objNode.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
-            if (objNode["sourceid"] == null || !objNode.TryGetField("sourceid", Guid.TryParse, out _sourceID))
-            {
-                XmlNode objArmorNode = GetNode();
-                objArmorNode?.TryGetField("id", Guid.TryParse, out _sourceID);
-            }
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
             objNode.TryGetStringFieldQuickly("armor", ref _strArmorValue);
             objNode.TryGetStringFieldQuickly("avail", ref _strAvail);
@@ -1173,7 +1182,15 @@ namespace Chummer.Backend.Equipment
             set => _intSortOrder = value;
         }
 
-        public Guid SourceID => _sourceID;
+	    /// <summary>
+	    /// Identifier of the object within data files.
+	    /// </summary>
+	    public Guid SourceID => _guiSourceID;
+
+	    /// <summary>
+	    /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
+	    /// </summary>
+	    public string SourceIDString => _guiSourceID.ToString("D");
 
         public TaggedObservableCollection<Gear> Children => Gear;
 
@@ -1461,11 +1478,14 @@ namespace Chummer.Backend.Equipment
 
         public XmlNode GetNode(string strLanguage)
         {
-            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
-            {
-                _objCachedMyXmlNode = XmlManager.Load("armor.xml", strLanguage).SelectSingleNode("/chummer/armors/armor[id = \"" + SourceID.ToString("D") + "\"]");
-                _strCachedXmlNodeLanguage = strLanguage;
-            }
+            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.LiveCustomData) return _objCachedMyXmlNode;
+            _objCachedMyXmlNode = SourceID == Guid.Empty
+                ? XmlManager.Load("armor.xml", strLanguage)
+                    .SelectSingleNode($"/chummer/armors/armor[name = \"{Name}\"]")
+                : XmlManager.Load("armor.xml", strLanguage)
+                    .SelectSingleNode($"/chummer/armors/armor[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
+
+            _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;
         }
         #endregion

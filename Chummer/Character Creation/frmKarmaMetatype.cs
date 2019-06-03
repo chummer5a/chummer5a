@@ -439,7 +439,7 @@ namespace Chummer
                             }
                             else
                             {
-                                KnowledgeSkill objSkill = new KnowledgeSkill(_objCharacter, xmlSkill.InnerText)
+                                KnowledgeSkill objSkill = new KnowledgeSkill(_objCharacter, xmlSkill.InnerText, true)
                                 {
                                     Type = xmlSkill.Attributes?["category"]?.InnerText
                                 };

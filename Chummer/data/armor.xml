@@ -3515,11 +3515,16 @@
     <mod>
       <id>71c20b15-de11-49eb-93fe-f4d7491283e3</id>
       <name>Full Body Armor: Helmet</name>
-      <category>Full Body Armor Mods</category>
+      <category>General</category>
       <armor>+3</armor>
       <maxrating>1</maxrating>
       <armorcapacity>[0]</armorcapacity>
       <gearcapacity>6</gearcapacity>
+      <required>
+        <parentdetails>
+          <name>Full Body Armor</name>
+        </parentdetails>
+      </required>
       <avail>0</avail>
       <cost>500</cost>
       <source>SR5</source>
@@ -3534,6 +3539,11 @@
       <armorcapacity>[0]</armorcapacity>
       <avail>+6</avail>
       <cost>6000</cost>
+      <required>
+        <parentdetails>
+          <name>Full Body Armor</name>
+        </parentdetails>
+      </required>
       <bonus>
         <toxincontactimmune />
         <toxininhalationimmune />
@@ -3550,6 +3560,11 @@
       <armor>0</armor>
       <maxrating>1</maxrating>
       <armorcapacity>[0]</armorcapacity>
+      <required>
+        <parentdetails>
+          <name>Full Body Armor</name>
+        </parentdetails>
+      </required>
       <avail>+3</avail>
       <cost>1000</cost>
       <source>SR5</source>

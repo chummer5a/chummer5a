@@ -8,11 +8,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Chummer;
+using Newtonsoft.Json;
+using NLog;
+using SINners.Models;
 
 namespace ChummerHub.Client.UI
 {
     public partial class frmWebBrowser : Form
     {
+        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
         public frmWebBrowser()
         {
             InitializeComponent();
@@ -29,10 +34,8 @@ namespace ChummerHub.Client.UI
                 if(String.IsNullOrEmpty(Properties.Settings.Default.SINnerUrl))
                 {
                     Properties.Settings.Default.SINnerUrl = "https://sinners.azurewebsites.net/";
-#if DEBUG
                     string msg = "if you are (want to be) a Beta-Tester, change this to http://sinners-beta.azurewebsites.net/!";
-                    System.Diagnostics.Trace.TraceWarning(msg);
-#endif
+                    Log.Warn(msg);
                     Properties.Settings.Default.Save();
                 }
                 string path = Properties.Settings.Default.SINnerUrl.TrimEnd('/');
@@ -59,6 +62,8 @@ namespace ChummerHub.Client.UI
                         
         }
 
+        private bool login = false;
+
         private async void webBrowser2_Navigated(object sender, WebBrowserNavigatedEventArgs e)
         {
             if(e.Url.AbsoluteUri == LoginUrl)
@@ -70,11 +75,48 @@ namespace ChummerHub.Client.UI
             }
             else if (e.Url.AbsoluteUri.Contains("/Identity/Account/Manage"))
             {
-                //we are logged in!
-                GetCookieContainer();
-                var user = await StaticUtils.Client.GetUserByAuthorizationWithHttpMessagesAsync();
-                SINnersOptions.AddVisibilityForEmail(user.Body.Email);
-                this.Close();
+                try
+                {
+                    //we are logged in!
+                    GetCookieContainer();
+                    var client = StaticUtils.GetClient();
+                    var user = await client.GetUserByAuthorizationWithHttpMessagesAsync();
+                    if (user.Body?.CallSuccess == true)
+                    {
+                        if (user.Body != null)
+                        {
+                            login = true;
+                            SINnerVisibility tempvis;
+                            if (!String.IsNullOrEmpty(Properties.Settings.Default.SINnerVisibility))
+                            {
+                                tempvis = JsonConvert.DeserializeObject<SINnerVisibility>(Properties.Settings.Default
+                                    .SINnerVisibility);
+                            }
+                            else
+                            {
+                                tempvis = new SINnerVisibility()
+                                {
+                                    IsGroupVisible = true,
+                                    IsPublic = true
+                                };
+                            }
+
+                            tempvis.AddVisibilityForEmail(user.Body.MyApplicationUser?.Email);
+                            this.Close();
+                        }
+                        else
+                        {
+                            login = false;
+                        }
+                    }
+
+                }
+                catch (Exception exception)
+                {
+                    Log.Error(exception);
+                    throw;
+                }
+                
             }
         }
 
@@ -82,21 +124,27 @@ namespace ChummerHub.Client.UI
         {
             try
             {
-                this.UseWaitCursor = true;
-                Properties.Settings.Default.CookieData = null;
-                Properties.Settings.Default.Save();
-                //recreate cookiecontainer
-                var cookies = StaticUtils.AuthorizationCookieContainer.GetCookies(new Uri(Properties.Settings.Default.SINnerUrl));
-                StaticUtils.Client = null;
+                using (new CursorWait(true, this))
+                {
+                    Properties.Settings.Default.CookieData = null;
+                    Properties.Settings.Default.Save();
+                    var cookies =
+                        StaticUtils.AuthorizationCookieContainer.GetCookies(new Uri(Properties.Settings.Default
+                            .SINnerUrl));
+                    var client = StaticUtils.GetClient(true);
+                }
             }
             catch(Exception ex)
             {
-                System.Diagnostics.Trace.TraceInformation(ex.ToString());
+                Log.Warn(ex);
             }
-            finally
-            {
-                this.UseWaitCursor = false;
-            }
+            
+        }
+
+        private void FrmWebBrowser_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (login == false)
+                GetCookieContainer();
         }
     }
 }

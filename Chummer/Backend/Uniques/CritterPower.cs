@@ -22,6 +22,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
+using NLog;
 
 namespace Chummer
 {
@@ -32,7 +33,9 @@ namespace Chummer
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     public class CritterPower : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove, IHasSource, ICanSort
     {
+        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private Guid _guiID;
+        private Guid _guiSourceID;
         private string _strName = string.Empty;
         private string _strCategory = string.Empty;
         private string _strType = string.Empty;
@@ -66,6 +69,11 @@ namespace Chummer
         /// <param name="strForcedValue">Value to forcefully select for any ImprovementManager prompts.</param>
         public void Create(XmlNode objXmlPowerNode, int intRating = 0, string strForcedValue = "")
         {
+            if (!objXmlPowerNode.TryGetField("id", Guid.TryParse, out _guiSourceID))
+            {
+                Log.Warn(new object[] { "Missing id field for power xmlnode", objXmlPowerNode });
+                Utils.BreakIfDebug();
+            }
             if (objXmlPowerNode.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
             _intRating = intRating;
@@ -123,7 +131,8 @@ namespace Chummer
         public void Save(XmlTextWriter objWriter)
         {
             objWriter.WriteStartElement("critterpower");
-            objWriter.WriteElementString("guid", _guiID.ToString("D"));
+            objWriter.WriteElementString("sourceid", SourceIDString);
+            objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("extra", _strExtra);
             objWriter.WriteElementString("rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
@@ -156,7 +165,15 @@ namespace Chummer
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
-            objNode.TryGetField("guid", Guid.TryParse, out _guiID);
+            if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
+            {
+                _guiID = Guid.NewGuid();
+            }
+            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+            {
+                XmlNode node = GetNode(GlobalOptions.Language);
+                node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+            }
             if (objNode.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
@@ -203,7 +220,16 @@ namespace Chummer
 
         #region Properties
 
-        public Guid SourceID { get { return _guiID; } }
+
+        /// <summary>
+        /// Identifier of the object within data files.
+        /// </summary>
+        public Guid SourceID => _guiSourceID;
+
+        /// <summary>
+        /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
+        /// </summary>
+        public string SourceIDString => _guiSourceID.ToString("D");
 
         /// <summary>
         /// Internal identifier which will be used to identify this Critter Power in the Improvement system.
@@ -539,7 +565,10 @@ namespace Chummer
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load("critterpowers.xml", strLanguage).SelectSingleNode("/chummer/powers/power[name = \"" + Name + "\"]");
+                _objCachedMyXmlNode = XmlManager.Load("critterpowers.xml", strLanguage)
+                    .SelectSingleNode(SourceID == Guid.Empty
+                        ? $"/chummer/powers/power[name = \"{Name}\"]"
+                        : $"/chummer/powers/power[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

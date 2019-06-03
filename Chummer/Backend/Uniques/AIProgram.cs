@@ -21,6 +21,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Xml;
+using NLog;
 
 namespace Chummer
 {
@@ -31,7 +32,9 @@ namespace Chummer
     [DebuggerDisplay("{DisplayNameShort(GlobalOptions.DefaultLanguage)}")]
     public class AIProgram : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove, IHasSource
     {
+        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private Guid _guiID;
+        private Guid _guiSourceID;
         private string _strName = string.Empty;
         private string _strRequiresProgram = string.Empty;
         private string _strSource = string.Empty;
@@ -56,6 +59,11 @@ namespace Chummer
         /// <param name="boolCanDelete">Can this AI program be deleted on its own (set to false for Improvement-granted programs).</param>
         public void Create(XmlNode objXmlProgramNode, string strExtra = "", bool boolCanDelete = true)
         {
+            if (!objXmlProgramNode.TryGetField("id", Guid.TryParse, out _guiSourceID))
+            {
+                Log.Warn(new object[] { "Missing id field for program xmlnode", objXmlProgramNode });
+                Utils.BreakIfDebug();
+            }
             if (objXmlProgramNode.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
             _strRequiresProgram = LanguageManager.GetString("String_None", GlobalOptions.Language);
@@ -82,7 +90,8 @@ namespace Chummer
         public void Save(XmlTextWriter objWriter)
         {
             objWriter.WriteStartElement("aiprogram");
-            objWriter.WriteElementString("guid", _guiID.ToString("D"));
+            objWriter.WriteElementString("sourceid", SourceIDString);
+            objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("requiresprogram", _strRequiresProgram);
             objWriter.WriteElementString("extra", _strExtra);
@@ -100,7 +109,16 @@ namespace Chummer
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
-            objNode.TryGetField("guid", Guid.TryParse, out _guiID);
+            if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
+            {
+                _guiID = Guid.NewGuid();
+            }
+            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+            {
+                XmlNode node = GetNode(GlobalOptions.Language);
+                node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+            }
+
             if (objNode.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
             objNode.TryGetStringFieldQuickly("requiresprogram", ref _strRequiresProgram);
@@ -136,7 +154,16 @@ namespace Chummer
 
         #region Properties
 
-        public Guid SourceID { get { return _guiID; } }
+
+        /// <summary>
+        /// Identifier of the object within data files.
+        /// </summary>
+        public Guid SourceID => _guiSourceID;
+
+        /// <summary>
+        /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
+        /// </summary>
+        public string SourceIDString => _guiSourceID.ToString("D");
 
         /// <summary>
         /// Internal identifier which will be used to identify this AI Program in the Improvement system.
@@ -269,7 +296,11 @@ namespace Chummer
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load("programs.xml", strLanguage).SelectSingleNode("/chummer/programs/program[name = \"" + Name + "\"]");
+                _objCachedMyXmlNode = SourceID == Guid.Empty
+                    ? XmlManager.Load("programs.xml", strLanguage)
+                        .SelectSingleNode($"/chummer/programs/program[name = \"{Name}\"]")
+                    : XmlManager.Load("programs.xml", strLanguage)
+                        .SelectSingleNode($"/chummer/programs/program[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

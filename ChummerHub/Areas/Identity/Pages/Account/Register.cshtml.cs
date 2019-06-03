@@ -74,7 +74,7 @@ namespace ChummerHub.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User created a new account with password.");
 
-                    var result1 = await _userManager.AddToRoleAsync(user, ChummerHub.API.Authorizarion.Constants.RegisteredUserRole);
+                    var result1 = await _userManager.AddToRoleAsync(user, ChummerHub.API.Authorizarion.Constants.UserRoleRegistered);
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     var callbackUrl = Url.Page(
@@ -86,7 +86,7 @@ namespace ChummerHub.Areas.Identity.Pages.Account
                     await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
                         $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
-                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    await _signInManager.SignInAsync(user, isPersistent: true);
                     return LocalRedirect(returnUrl);
                 }
                 foreach (var error in result.Errors)

@@ -542,36 +542,7 @@ namespace Chummer
                 int.TryParse(lblSlots.Text, out intExtraSlots);
 
                 // Avail.
-                string strAvailExpr = xmlVehicleMod.SelectSingleNode("avail")?.Value ?? string.Empty;
-                if (strAvailExpr.StartsWith("FixedValues("))
-                {
-                    int intRating = decimal.ToInt32(nudRating.Value - 1);
-                    strAvailExpr = strAvailExpr.TrimStartOnce("FixedValues(", true).TrimEndOnce(')');
-                    string[] strValues = strAvailExpr.Split(',');
-                    if (intRating > strValues.Length || intRating < 0)
-                    {
-                        intRating = strValues.Length - 1;
-                    }
-                    strAvailExpr = strValues[intRating];
-                }
-
-                // If avail contains "F" or "R", remove it from the string so we can use the expression.
-                string strSuffix = string.Empty;
-                char chrLastChar = strAvailExpr.Length > 0 ? strAvailExpr[strAvailExpr.Length - 1] : ' ';
-                if (chrLastChar == 'F')
-                {
-                    strSuffix = LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language);
-                    strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
-                }
-                else if (chrLastChar == 'R')
-                {
-                    strSuffix = LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language);
-                    strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
-                }
-
-                strAvailExpr = ReplaceStrings(strAvailExpr);
-                objProcess = CommonFunctions.EvaluateInvariantXPath(strAvailExpr, out blnIsSuccess);
-                lblAvail.Text = (blnIsSuccess ? Convert.ToInt32(objProcess).ToString() : strAvailExpr) + strSuffix;
+                lblAvail.Text = new AvailabilityValue(Convert.ToInt32(nudRating.Value), xmlVehicleMod.SelectSingleNode("avail")?.Value).ToString();
                 lblAvailLabel.Visible = !string.IsNullOrEmpty(lblAvail.Text);
 
                 // Cost.

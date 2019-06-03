@@ -1,16 +1,25 @@
-using System;
+ using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data.Common;
+using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
+using System.Security.Authentication;
 using System.Threading.Tasks;
+ using System.Transactions;
+ using ChummerHub.API;
 using ChummerHub.Data;
 using ChummerHub.Models.V1;
+ using Microsoft.ApplicationInsights;
+ using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace ChummerHub.Controllers
 {
@@ -25,16 +34,47 @@ namespace ChummerHub.Controllers
         private SignInManager<ApplicationUser> _signInManager = null;
         private ApplicationDbContext _context;
         private RoleManager<ApplicationRole> _roleManager;
+        private readonly ILogger _logger;
+        private TelemetryClient tc;
 
         public AccountController(ApplicationDbContext context,
+            ILogger<AccountController> logger,
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            RoleManager<ApplicationRole> roleManager)
+            RoleManager<ApplicationRole> roleManager,
+            TelemetryClient telemetry)
         {
             _context = context;
+            _logger = logger;
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
+            tc = telemetry;
+        }
+
+        [HttpGet]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Unauthorized)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Forbidden)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("AccountGetPossibleRoles")]
+        [Authorize]
+
+        public async Task<ActionResult<ResultAccountGetPossibleRoles>> GetPossibleRoles()
+        {
+            ResultAccountGetPossibleRoles res;
+            try
+            {
+                var roles = await _context.Roles.ToListAsync();
+                var list = (from a in roles select a.Name).ToList();
+                res = new ResultAccountGetPossibleRoles(list);
+                return Ok(res);
+            }
+            catch (Exception e)
+            {
+                res = new ResultAccountGetPossibleRoles(e);
+                return BadRequest(res);
+            }
         }
 
         [HttpGet]
@@ -45,22 +85,28 @@ namespace ChummerHub.Controllers
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("AccountGetRoles")]
         [Authorize]
 
-        public async Task<ActionResult<List<String>>> GetRoles()
+        public async Task<ActionResult<ResultAccountGetRoles>> GetRoles()
         {
+            ResultAccountGetRoles res;
             try
             {
                 //var user = _userManager.FindByEmailAsync(email).Result;
                 var user = await _signInManager.UserManager.GetUserAsync(User);
                 if (user.EmailConfirmed)
                 {
-                    await SeedData.EnsureRole(Program.MyHost.Services, user.Id, API.Authorizarion.Constants.ConfirmedUserRole, _roleManager, _userManager);
+                    await SeedData.EnsureRole(Program.MyHost.Services, user.Id, API.Authorizarion.Constants.UserRoleConfirmed, _roleManager, _userManager);
                 }
                 var roles = await _userManager.GetRolesAsync(user);
-                return Ok(roles.ToList());
+                var possibleRoles = await _context.Roles.ToListAsync();
+                var list = (from a in possibleRoles select a.Name).ToList();
+                res = new ResultAccountGetRoles(roles, list);
+                
+                return Ok(res);
             }
             catch(Exception e)
             {
-                return BadRequest(e);
+                res = new ResultAccountGetRoles(e);
+                return BadRequest(res);
             }
         }
 
@@ -68,22 +114,234 @@ namespace ChummerHub.Controllers
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Unauthorized)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("AccountByEmail")]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("AccountGetUserByEmail")]
         [Authorize]
-        public async Task<ActionResult<ApplicationUser>> GetUserByEmail(string email)
+        public async Task<ActionResult<ResultAccountGetUserByEmail>> GetUserByEmail(string email)
+        {
+            ResultAccountGetUserByEmail res;
+            try
+            {
+                var user = await _userManager.FindByEmailAsync(email);
+                res = new ResultAccountGetUserByEmail(user);
+                if (user == null)
+                    return NotFound(res);
+                user.PasswordHash = "";
+                user.SecurityStamp = "";
+                return Ok(res);
+            }
+            catch (Exception e)
+            {
+                res = new ResultAccountGetUserByEmail(e);
+                return BadRequest(res);
+            }
+        }
+
+        [HttpGet]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Conflict)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GetAddSqlDbUser")]
+        [Authorize(Roles = "Administrator")]
+
+        public async Task<ActionResult<string>> GetAddSqlDbUser(string username, string password, string start_ip_address, string end_ip_address)
+        {
+            string result = "";
+            try
+            {
+                if (String.IsNullOrEmpty(username))
+                    throw new ArgumentNullException(nameof(username));
+                if (String.IsNullOrEmpty(password))
+                    throw new ArgumentNullException(nameof(password));
+
+                IPAddress startaddress = null;
+                if (!String.IsNullOrEmpty(start_ip_address))
+                {
+                    startaddress = IPAddress.Parse(start_ip_address);
+                }
+                IPAddress endaddress = null;
+                if(!String.IsNullOrEmpty(end_ip_address))
+                {
+                    endaddress = IPAddress.Parse(end_ip_address);
+                }
+                if (String.IsNullOrEmpty(Startup.ConnectionStringToMasterSqlDb))
+                {
+                    throw new ArgumentNullException("Startup.ConnectionStringToMasterSqlDB");
+                }
+
+                
+                try
+                {
+                    string cmd = "CREATE LOGIN " + username + " WITH password = '" + password + "';";
+                    using (SqlConnection masterConnection = new SqlConnection(Startup.ConnectionStringToMasterSqlDb))
+                    {
+                        await masterConnection.OpenAsync();
+                        using (SqlCommand dbcmd = new SqlCommand(cmd, masterConnection))
+                        {
+                            dbcmd.ExecuteNonQuery();
+                        }
+                    }
+                }
+                catch (SqlException e)
+                {
+                    result += e.Message + Environment.NewLine + Environment.NewLine;
+                }
+                //create the user in the master DB
+                try
+                {
+                    string cmd = "CREATE USER " + username + " FROM LOGIN " + username +";";
+                    using(SqlConnection masterConnection = new SqlConnection(Startup.ConnectionStringToMasterSqlDb))
+                    {
+                        await masterConnection.OpenAsync();
+                        using(SqlCommand dbcmd = new SqlCommand(cmd, masterConnection))
+                        {
+                            dbcmd.ExecuteNonQuery();
+                        }
+                    }
+                }
+                catch(SqlException e)
+                {
+                    result += e.Message + Environment.NewLine + Environment.NewLine;
+                }
+                //create the user in the sinner_db as well!
+                try
+                {
+                    string cmd = "CREATE USER " + username + " FROM LOGIN " + username + ";";
+                    using(SqlConnection masterConnection = new SqlConnection(Startup.ConnectionStringSinnersDb))
+                    {
+                        await masterConnection.OpenAsync();
+                        using(SqlCommand dbcmd = new SqlCommand(cmd, masterConnection))
+                        {
+                            dbcmd.ExecuteNonQuery();
+                        }
+                    }
+                }
+                catch(Exception e)
+                {
+                    result += e.Message + Environment.NewLine + Environment.NewLine;
+                }
+                try
+                {
+                    string cmd = "ALTER ROLE dbmanager ADD MEMBER " + username + ";";
+                    using(SqlConnection masterConnection = new SqlConnection(Startup.ConnectionStringSinnersDb))
+                    {
+                        await masterConnection.OpenAsync();
+                        using(SqlCommand dbcmd = new SqlCommand(cmd, masterConnection))
+                        {
+                            dbcmd.ExecuteNonQuery();
+                        }
+                    }
+                }
+                catch(Exception e)
+                {
+                    bool worked = false;
+                    try
+                    {
+                        string cmd = "EXEC sp_addrolemember 'db_owner', '" + username + "';";
+                        using(SqlConnection masterConnection = new SqlConnection(Startup.ConnectionStringSinnersDb))
+                        {
+                            await masterConnection.OpenAsync();
+                            using(SqlCommand dbcmd = new SqlCommand(cmd, masterConnection))
+                            {
+                                dbcmd.ExecuteNonQuery();
+                            }
+                        }
+                        worked = true;
+                    }
+                    catch (Exception e1)
+                    {
+                        result += e1.ToString() + Environment.NewLine + Environment.NewLine;
+                    }
+                    if (worked)
+                    {
+                        result += "User added!" + Environment.NewLine + Environment.NewLine;
+                    }
+                    else
+                    {
+                        result += e.Message + Environment.NewLine + Environment.NewLine;
+                    }
+                }
+                try
+                {
+                    string cmd = "EXEC sp_set_database_firewall_rule N'Allow " +
+                                 username + "', '" + startaddress + "', '" + endaddress + "';";
+                    using(SqlConnection masterConnection = new SqlConnection(Startup.ConnectionStringSinnersDb))
+                    {
+                        await masterConnection.OpenAsync();
+                        using(SqlCommand dbcmd = new SqlCommand(cmd, masterConnection))
+                        {
+                            dbcmd.ExecuteNonQuery();
+                        }
+
+                        result += "Firewallrule added: " + startaddress + " - " + endaddress + Environment.NewLine +
+                                  Environment.NewLine;
+                    }
+                }
+                catch(Exception e)
+                {
+                    result += e.Message + Environment.NewLine + Environment.NewLine;
+                }
+                return Ok(result);
+            }
+            catch(Exception e)
+            {
+                try
+                {
+                    var user = await _signInManager.UserManager.GetUserAsync(User);
+                    //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    ExceptionTelemetry et = new ExceptionTelemetry(e);
+                    et.Properties.Add("user", User.Identity.Name);
+                    tc.TrackException(et);
+                }
+                catch(Exception ex)
+                {
+                    if (_logger != null)
+                        _logger.LogError(ex.ToString());
+                }
+                result += Environment.NewLine + e;
+                if (e is HubException)
+                    return BadRequest(e);
+                HubException hue = new HubException(result, e);
+                return BadRequest(hue);
+            }
+        }
+
+        [HttpPost]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Unauthorized)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("PostSetUserRole")]
+        [Authorize(Roles = "Administrator")]
+        public async Task<ActionResult<ApplicationUser>> PostSetUserRole(string email, string userrole)
         {
             try
             {
                 var user = await _userManager.FindByEmailAsync(email);
-                if (user == null)
+                if(user == null)
                     return NotFound();
+                await SeedData.EnsureRole(Program.MyHost.Services, user.Id, userrole, _roleManager, _userManager);
                 user.PasswordHash = "";
                 user.SecurityStamp = "";
                 return Ok(user);
             }
-            catch (Exception e)
+            catch(Exception e)
             {
-                return BadRequest(e);
+                try
+                {
+                    var user = await _signInManager.UserManager.GetUserAsync(User);
+                    //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    ExceptionTelemetry et = new ExceptionTelemetry(e);
+                    et.Properties.Add("user", User.Identity.Name);
+                    tc.TrackException(et);
+                }
+                catch (Exception ex)
+                {
+                    if (_logger != null)
+                        _logger.LogError(ex.ToString());
+                }
+                if (e is HubException)
+                    return BadRequest(e);
+                HubException hue = new HubException(e.Message, e);
+                return BadRequest(hue);
             }
         }
 
@@ -91,23 +349,39 @@ namespace ChummerHub.Controllers
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Unauthorized)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("AccountByAuthorization")]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("AccountGetUserByAuthorization")]
         [Authorize]
-        public async Task<ActionResult<ApplicationUser>> GetUserByAuthorization()
+        public async Task<ActionResult<ResultAccountGetUserByAuthorization>> GetUserByAuthorization()
         {
+            ResultAccountGetUserByAuthorization res;
             try
             {
                 var user = await _signInManager.UserManager.GetUserAsync(User);
-                
+                res = new ResultAccountGetUserByAuthorization(user);
                 if (user == null)
-                    return NotFound();
+                    return NotFound(res);
+                
                 user.PasswordHash = "";
                 user.SecurityStamp = "";
-                return Ok(user);
+                return Ok(res);
             }
             catch (Exception e)
             {
-                return BadRequest(e);
+                try
+                {
+                    var user = await _signInManager.UserManager.GetUserAsync(User);
+                    //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    ExceptionTelemetry et = new ExceptionTelemetry(e);
+                    et.Properties.Add("user", User.Identity.Name);
+                    tc.TrackException(et);
+                }
+                catch (Exception ex)
+                {
+                    if (_logger != null)
+                        _logger.LogError(ex.ToString());
+                }
+                res = new ResultAccountGetUserByAuthorization(e);
+                return BadRequest(res);
             }
         }
 
@@ -146,7 +420,23 @@ namespace ChummerHub.Controllers
             }
             catch (Exception e)
             {
-                return BadRequest(e);
+                try
+                {
+                    var user = await _signInManager.UserManager.GetUserAsync(User);
+                    //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    ExceptionTelemetry et = new ExceptionTelemetry(e);
+                    et.Properties.Add("user", User.Identity.Name);
+                    tc.TrackException(et);
+                }
+                catch (Exception ex)
+                {
+                    if (_logger != null)
+                        _logger.LogError(ex.ToString());
+                }
+                if (e is HubException)
+                    return BadRequest(e);
+                HubException hue = new HubException(e.Message, e);
+                return BadRequest(hue);
             }
         }
 
@@ -175,81 +465,269 @@ namespace ChummerHub.Controllers
             }
             catch(Exception e)
             {
-                return BadRequest(e);
+                try
+                {
+                    var user = await _signInManager.UserManager.GetUserAsync(User);
+                    //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    ExceptionTelemetry et = new ExceptionTelemetry(e);
+                    et.Properties.Add("user", User.Identity.Name);
+                    tc.TrackException(et);
+                }
+                catch (Exception ex)
+                {
+                    if (_logger != null)
+                        _logger.LogError(ex.ToString());
+                }
+                if (e is HubException)
+                    return BadRequest(e);
+                HubException hue = new HubException(e.Message, e);
+                return BadRequest(hue);
             }
         }
 
+        /// <summary>
+        /// Search for Sinners for one user
+        /// </summary>
+        /// <returns>SINSearchGroupResult</returns>
         [HttpGet]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Unauthorized)]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("SinnersByAuthorization")]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse(StatusCodes.Status200OK)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse(StatusCodes.Status400BadRequest)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("AccountGetSinnersByAuthorization")]
         [Authorize]
-        public async Task<ActionResult<SINSearchResult>> GetSINnersByAuthorization()
+        public async Task<ActionResult<ResultAccountGetSinnersByAuthorization>> GetSINnersByAuthorization()
         {
-            SINSearchResult ret = new SINSearchResult();
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+            //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+            ResultAccountGetSinnersByAuthorization res = null;
+
+            SINSearchGroupResult ret = new SINSearchGroupResult();
+            res = new ResultAccountGetSinnersByAuthorization(ret);
+            SINnerGroup sg = new SINnerGroup();
+            SINnerSearchGroup ssg = new SINnerSearchGroup(sg)
+            {
+                MyMembers = new List<SINnerSearchGroupMember>()
+            };
+            using (var t = new TransactionScope(TransactionScopeOption.Required,
+                new TransactionOptions
+                {
+                    IsolationLevel = System.Transactions.IsolationLevel.ReadUncommitted
+
+                }, TransactionScopeAsyncFlowOption.Enabled))
+            {
+                try
+                {
+
+                    var user = await _signInManager.UserManager.GetUserAsync(User);
+                    if (user == null)
+                    {
+                        var e = new AuthenticationException("User is not authenticated.");
+                        res = new ResultAccountGetSinnersByAuthorization(e)
+                        {
+                            ErrorText = "Unauthorized"
+                        };
+                        return BadRequest(res);
+                    }
+
+                    var roles = await _userManager.GetRolesAsync(user);
+                    ret.Roles = roles.ToList();
+                    ssg.Groupname = user.Email;
+                    ssg.Id = Guid.Empty;
+                    //get all from visibility
+                    List<SINner> mySinners = await SINner.GetSINnersFromUser(user, _context, true);
+                    MetricTelemetry mt = new MetricTelemetry("GetSINersByAuthorization", "SINners found",
+                        mySinners.Count, 0, 0, 0, 0);
+                    tc.TrackMetric(mt);
+                    foreach (var sin in mySinners)
+                    {
+                        //check if that char is already added:
+                        var foundseq = (from a in ssg.MyMembers where a.MySINner.Id == sin.Id select a);
+                        if (foundseq.Any())
+                            continue;
+                        SINnerSearchGroupMember ssgm = new SINnerSearchGroupMember
+                        {
+                            MySINner = sin,
+                            Username = user.UserName
+                        };
+                        if (sin.MyGroup != null)
+                        {
+                            SINnerSearchGroup ssgFromSIN;
+                            if (ssg.MySINSearchGroups.Any(a => a.Id == sin.MyGroup.Id))
+                            {
+                                ssgFromSIN = ssg.MySINSearchGroups.FirstOrDefault(a => a.Id == sin.MyGroup.Id);
+                            }
+                            else
+                            {
+                                ssgFromSIN = new SINnerSearchGroup(sin.MyGroup);
+                                ssg.MySINSearchGroups.Add(ssgFromSIN);
+                            }
+                            //add all members of his group
+                            var members = await sin.MyGroup.GetGroupMembers(_context, false);
+                            foreach (var member in members)
+                            {
+                                //if ((member.SINnerMetaData.Visibility.IsGroupVisible == true)
+                                //    || (member.SINnerMetaData.Visibility.IsPublic)
+                                //)
+                                //{
+                                    member.MyGroup = sin.MyGroup;
+                                    member.MyGroup.MyGroups = new List<SINnerGroup>();
+                                    SINnerSearchGroupMember sinssgGroupMember = new SINnerSearchGroupMember
+                                    {
+                                        MySINner = member
+                                    };
+                                    //check if it is already added:
+                                    var groupseq = from a in ssgFromSIN.MyMembers where a.MySINner == member select a;
+                                    if (groupseq.Any())
+                                        continue;
+                                    ssgFromSIN.MyMembers.Add(sinssgGroupMember);
+                                //}
+                            }
+                            sin.MyGroup.PasswordHash = "";
+                            sin.MyGroup.MyGroups = new List<SINnerGroup>();
+                        }
+                        else
+                        {
+                            ssg.MyMembers.Add(ssgm);
+                        }
+                    }
+
+                    ret.SINGroups.Add(ssg);
+                    res = new ResultAccountGetSinnersByAuthorization(ret);
+
+                    return Ok(res);
+                
+                }
+                catch (Exception e)
+                {
+                    try
+                    {
+                        var user = await _signInManager.UserManager.GetUserAsync(User);
+                        ExceptionTelemetry et = new ExceptionTelemetry(e);
+                        et.Properties.Add("user", User.Identity.Name);
+                        tc.TrackException(et);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger?.LogError(ex.ToString());
+                    }
+                    res = new ResultAccountGetSinnersByAuthorization(e);
+                    return BadRequest(res);
+                }
+                finally
+                {
+
+                    Microsoft.ApplicationInsights.DataContracts.AvailabilityTelemetry telemetry =
+                        new Microsoft.ApplicationInsights.DataContracts.AvailabilityTelemetry("GetSINnersByAuthorization",
+                            DateTimeOffset.Now, sw.Elapsed, "Azure", res?.CallSuccess ?? false, res?.ErrorText);
+                    tc.TrackAvailability(telemetry);
+                }
+                t.Complete();
+            }
+
+
+        }
+
+
+        // GET: api/ChummerFiles
+        [HttpGet]
+        [Authorize(Roles = "Administrator")]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NoContent)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("AccountGetSinnerAsAdmin")]
+        public async Task<ActionResult<ResultGroupGetSearchGroups>> GetSinnerAsAdmin()
+        {
+            ResultAccountGetSinnersByAuthorization res;
+
+            SINSearchGroupResult ret = new SINSearchGroupResult();
+            res = new ResultAccountGetSinnersByAuthorization(ret);
+            SINnerGroup sg = new SINnerGroup();
+            SINnerSearchGroup ssg = new SINnerSearchGroup(sg)
+            {
+                MyMembers = new List<SINnerSearchGroupMember>()
+            };
             try
             {
                 var user = await _signInManager.UserManager.GetUserAsync(User);
-                if(user == null)
+                if (user == null)
                 {
-                    ret.ErrorText = "Unauthorized";
-                    return Unauthorized(ret);
+                    var e = new AuthenticationException("User is not authenticated.");
+                    res = new ResultAccountGetSinnersByAuthorization(e)
+                    {
+                        ErrorText = "Unauthorized"
+                    };
+                    return BadRequest(res);
                 }
+                var roles = await _userManager.GetRolesAsync(user);
+                ret.Roles = roles.ToList();
+                ssg.Groupname = user.Email;
+                ssg.Id = Guid.Empty;
                 //get all from visibility
-                SINnersList list = new SINnersList();
-                var userseq = (from a in _context.UserRights where a.EMail == user.NormalizedEmail && a.CanEdit == true select a).ToList();
-                foreach(var ur in userseq)
+                List<SINner> mySinners = await _context.SINners.Include(a => a.MyGroup)
+                    .Include(a => a.SINnerMetaData.Visibility.UserRights)
+                    .OrderByDescending(a => a.UploadDateTime)
+                    .Take(200)
+                    .ToListAsync();
+                foreach (var sin in mySinners)
                 {
-                    if (ur?.SINnerId == null) continue;
-                    var sin = await _context.SINners.Include(a => a.SINnerMetaData.Visibility.UserRights).FirstOrDefaultAsync(a => a.Id == ur.SINnerId);
-                    if (sin != null)
+                    SINnerSearchGroupMember ssgm = new SINnerSearchGroupMember
                     {
-                        list.SINners.Add(sin);
+                        MySINner = sin,
+                        Username = user.UserName
+                    };
+                    ssg.MyMembers.Add(ssgm);
+                    if (sin.MyGroup != null)
+                    {
+                        SINnerSearchGroup ssgFromSIN;
+                        if (ssg.MySINSearchGroups.Any(a => a.Id == sin.MyGroup.Id))
+                        {
+                            ssgFromSIN = ssg.MySINSearchGroups.FirstOrDefault(a => a.Id == sin.MyGroup.Id);
+                        }
+                        else
+                        {
+                            ssgFromSIN = new SINnerSearchGroup(sin.MyGroup);
+                            ssg.MySINSearchGroups.Add(ssgFromSIN);
+                        }
+                        //add all members of his group
+                        var members = await sin.MyGroup.GetGroupMembers(_context, false);
+                        foreach (var member in members)
+                        {
+                            member.MyGroup = sin.MyGroup;
+                            member.MyGroup.MyGroups = new List<SINnerGroup>();
+                            SINnerSearchGroupMember sinssgGroupMember = new SINnerSearchGroupMember
+                            {
+                                MySINner = member
+                            };
+                            ssgFromSIN.MyMembers.Add(sinssgGroupMember);
+                        }
+                        sin.MyGroup.PasswordHash = "";
+                        sin.MyGroup.MyGroups = new List<SINnerGroup>();
+
                     }
                 }
-                list.Header = "Edit";
-                ret.SINLists.Add(list);
-                //get all from my group
-                SINnersList grouplist = new SINnersList();
-                var sinseq = (from a in _context.SINners.Include(a => a.SINnerMetaData).Include(b => b.SINnerMetaData.Visibility) where a.SINnerMetaData.Visibility.IsGroupVisible == true && a.SINnerMetaData.Visibility.Groupname == user.Groupname select a).ToList();
-                foreach(var sin in sinseq)
-                {
-                    if(sin.Id == null) continue;
-                    if(list.SINners.Contains(sin))
-                        continue;
-                    if(sin != null)
-                    {
-                        grouplist.SINners.Add(sin);
-                    }
-                }
-                grouplist.Header = "Group";
-                ret.SINLists.Add(grouplist);
-                //get all that are viewable but NOT editable
-                SINnersList viewlist = new SINnersList();
-                userseq = (from a in _context.UserRights where a.EMail == user.NormalizedEmail && a.CanEdit == false select a).ToList();
-                foreach(var ur in userseq)
-                {
-                    if(ur?.SINnerId == null) continue;
-                    var sin = await _context.SINners.Include(a => a.SINnerMetaData.Visibility.UserRights).FirstOrDefaultAsync(a => a.Id == ur.SINnerId);
-                    if(sin != null)
-                    {
-                        if(list.SINners.Contains(sin))
-                            continue;
-                        if(grouplist.SINners.Contains(sin))
-                            continue;
-                        viewlist.SINners.Add(sin);
-                    }
-                }
-                viewlist.Header = "View";
-                ret.SINLists.Add(viewlist);
-               
-                return Ok(ret);
+
+                ret.SINGroups.Add(ssg);
+                res = new ResultAccountGetSinnersByAuthorization(ret);
+                return Ok(res);
             }
             catch (Exception e)
             {
-                ret.ErrorText = e.ToString();
-                return BadRequest(ret);
+                try
+                {
+                    var user = await _signInManager.UserManager.GetUserAsync(User);
+                    //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    ExceptionTelemetry et = new ExceptionTelemetry(e);
+                    et.Properties.Add("user", User.Identity.Name);
+                    tc.TrackException(et);
+                }
+                catch (Exception ex)
+                {
+                    if (_logger != null)
+                        _logger.LogError(ex.ToString());
+                }
+                res = new ResultAccountGetSinnersByAuthorization(e);
+                return BadRequest(res);
             }
         }
 
@@ -271,7 +749,23 @@ namespace ChummerHub.Controllers
             }
             catch (Exception e)
             {
-                return BadRequest(e);
+                try
+                {
+                    var user = await _signInManager.UserManager.GetUserAsync(User);
+                    //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    ExceptionTelemetry et = new ExceptionTelemetry(e);
+                    et.Properties.Add("user", User.Identity.Name);
+                    tc.TrackException(et);
+                }
+                catch (Exception ex)
+                {
+                    if (_logger != null)
+                        _logger.LogError(ex.ToString());
+                }
+                if (e is HubException)
+                    return BadRequest(e);
+                HubException hue = new HubException(e.Message, e);
+                return BadRequest(hue);
             }
         }
 
