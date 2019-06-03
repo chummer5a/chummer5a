@@ -72,6 +72,13 @@ namespace Chummer.Backend.Uniques
             _objCharacter.PropertyChanged += RefreshDrainExpression;
         }
 
+        public override string ToString()
+        {
+            if (!String.IsNullOrEmpty(_strName))
+                return _strName;
+            return base.ToString();
+        }
+
         public void UnbindTradition()
         {
             _objCharacter.PropertyChanged -= RefreshDrainExpression;

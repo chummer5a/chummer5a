@@ -246,8 +246,20 @@ namespace ChummerHub.Client.Backend
             Type t = prop.Item3.GetType();
             if(!String.IsNullOrEmpty(attribute.TagNameFromProperty))
             {
-                var addObject = t.GetProperty(attribute.TagNameFromProperty).GetValue(prop.Item3, null);
-                tag.TagName += String.Format("{0}", addObject);
+                try
+                {
+                    var addObject = t.GetProperty(attribute.TagNameFromProperty).GetValue(prop.Item3, null);
+                    tag.TagName += String.Format("{0}", addObject);
+                }
+                catch (Exception e)
+                {
+#if DEBUG
+                    Debugger.Break();
+#else
+                    throw;
+#endif
+                }
+                
             }
             tag.TagValue = String.Format("{0}", tag.MyRuntimeObject);
             if (Double.TryParse(tag.TagValue, out double outdouble1))

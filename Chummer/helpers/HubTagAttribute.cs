@@ -17,8 +17,6 @@ namespace Chummer
         private bool _DeleteEmptyTags = false;
         private List<string> _CommentProperties = new List<string>();
         private List<string> _ExtraProperties = new List<string>();
-        
-
 
 
         /// <summary>
@@ -27,6 +25,7 @@ namespace Chummer
         /// <param name="listInstanceNameFromProperty"></param>
         /// <param name="deleteEmptyTags"></param>
         /// <param name="commentProperties">a list of Properties to tag - delimiter is ";"</param>
+        /// <param name="extraProperties"></param>
         public HubClassTagAttribute(string listInstanceNameFromProperty, bool deleteEmptyTags, string commentProperties, string extraProperties)
         {
             //_ListName = ListName;

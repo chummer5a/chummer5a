@@ -182,8 +182,10 @@ namespace ChummerHub.Client.UI
                     cbTag.CheckState = CheckState.Unchecked;
             }
 
-            foreach (var tag in myUC.MyCE.MySINnerFile.SiNnerMetaData.Tags.ToList())
+            foreach (Tag tag in myUC.MyCE.MySINnerFile.SiNnerMetaData.Tags.ToList())
             {
+                if (tag == null)
+                    continue;
                 //search for a CheckBox that is named like the tag
                 string checkBoxKey = "cbTag" + tag.TagName;
                 var tagsCB = (from a in gpControlSeq where a.Name == checkBoxKey select a).ToList();

@@ -19,6 +19,7 @@ using System.IO;
 using System.IO.Compression;
 using System.IO.Enumeration;
 using System.Xml;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json;
 using Veldrid;
@@ -39,16 +40,19 @@ namespace ChummerHub.Controllers.V1
         private readonly ILogger _logger;
         private SignInManager<ApplicationUser> _signInManager = null;
         private UserManager<ApplicationUser> _userManager = null;
+        private TelemetryClient tc;
 
         public SINnerController(ApplicationDbContext context,
             ILogger<SINnerController> logger,
             SignInManager<ApplicationUser> signInManager,
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager,
+            TelemetryClient telemetry)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _context = context;
             _logger = logger;
+            tc = telemetry;
         }
 
 
@@ -131,7 +135,7 @@ namespace ChummerHub.Controllers.V1
                 }
                 try
                 {
-                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     Microsoft.ApplicationInsights.DataContracts.EventTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.EventTelemetry("GetDownloadFile");
                     telemetry.Properties.Add("User", user?.Email);
                     telemetry.Properties.Add("SINnerId", sinnerid.ToString());
@@ -406,7 +410,7 @@ namespace ChummerHub.Controllers.V1
                 //_context.Entry(dbsinner).CurrentValues.SetValues(sin);
                 try
                 {
-                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     Microsoft.ApplicationInsights.DataContracts.EventTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.EventTelemetry("PutStoreXmlInCloud");
                     telemetry.Properties.Add("User", user.Email);
                     telemetry.Properties.Add("SINnerId", sin.Id.ToString());
@@ -440,7 +444,7 @@ namespace ChummerHub.Controllers.V1
             {
                 try
                 {
-                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
                     telemetry.Properties.Add("User", user?.Email);
                     telemetry.Properties.Add("SINnerId", dbsinner?.Id?.ToString());
@@ -540,7 +544,7 @@ namespace ChummerHub.Controllers.V1
                                 {
                                     try
                                     {
-                                        var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                                        //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                                         Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry =
                                             new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
                                         telemetry.Properties.Add("SINnerId", SINnerId?.ToString());
@@ -562,7 +566,7 @@ namespace ChummerHub.Controllers.V1
             {
                 try
                 {
-                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry =
                         new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
                     telemetry.Properties.Add("SINnerId", SINnerId?.ToString());
@@ -738,9 +742,12 @@ namespace ChummerHub.Controllers.V1
                             sinner.SINnerMetaData.Visibility.UserRights.Add(ownright);
                         }
                     }
-               
-                    foreach(var tag in sinner.SINnerMetaData.Tags)
+
+                    sinner.SINnerMetaData.Tags.RemoveAll(a => a == null);
+                    foreach(Tag tag in sinner.SINnerMetaData.Tags)
                     {
+                        if (tag == null)
+                            continue;
                         tag.SetSinnerIdRecursive(sinner.Id);
                     }
 
@@ -841,7 +848,7 @@ namespace ChummerHub.Controllers.V1
                         {
                             var roles = await _userManager.GetRolesAsync(user);
                             await SINnerGroupController.PutSiNerInGroupInternal(oldgroup.Id.Value, sinner.Id.Value, user, _context,
-                                _logger, oldgroup.PasswordHash, roles);
+                                _logger, oldgroup.PasswordHash, roles, tc);
                         }
                     }
                     catch (DbUpdateConcurrencyException ex)
@@ -879,7 +886,7 @@ namespace ChummerHub.Controllers.V1
                     {
                         try
                         {
-                            var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                            //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                             Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
                             telemetry.Properties.Add("User", user?.Email);
                             telemetry.Properties.Add("SINnerId", sinner?.Id?.ToString());
@@ -917,7 +924,7 @@ namespace ChummerHub.Controllers.V1
             {
                 try
                 {
-                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
                     telemetry.Properties.Add("User", user?.Email);
                     telemetry.Properties.Add("SINnerId", sinner?.Id?.ToString());

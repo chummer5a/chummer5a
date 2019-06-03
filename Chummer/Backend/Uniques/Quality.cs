@@ -72,7 +72,7 @@ namespace Chummer
     /// <summary>
     /// A Quality.
     /// </summary>
-    [HubClassTag("SourceID", true, "Name", "Extra")]
+    [HubClassTag("SourceID", true, "Name", "Extra;Type")]
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     public class Quality : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, IHasSource
     {
@@ -600,6 +600,7 @@ namespace Chummer
         /// <summary>
         /// Number of Build Points the Quality costs.
         /// </summary>
+        /// 
         public int BP
         {
             get

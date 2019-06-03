@@ -482,10 +482,21 @@ namespace ChummerHub.Client.Backend
             if ((!String.IsNullOrEmpty(rb.ErrorText)
                  || (rb.MyException != null)))
             {
-                Log.Error(e, "Response from SINners WebService: ");
                 var frmSIN = new frmSINnerResponse();
                 frmSIN.SINnerResponseUI.Result = rb;
                 frmSIN.TopMost = true;
+                if (rb.MyException != null)
+                {
+                    Log.Info(rb.MyException, "The SINners WebService had a problem. This was it's response: ");
+                    frmSIN.SINnerResponseUI.Result.ErrorText =
+                        "This is NOT an exception from Chummer itself, but from the SINners WebService. This error happend \"in the cloud\": " +
+                        rb.ErrorText;
+                }
+                else
+                {
+                    Log.Error(e, "Response from SINners WebService: ");
+                }
+                
                 frmSIN.ShowDialog(PluginHandler.MainForm);
             }
             return rb;

@@ -24,6 +24,7 @@ using Chummer.Backend.Attributes;
 
 namespace Chummer.Backend.Skills
 {
+    
     partial class Skill : IHasInternalId
     {
         private int _intBase;

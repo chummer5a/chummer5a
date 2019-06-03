@@ -9530,5 +9530,25 @@
 			<key>String_SpecialModificationLimit</key>
 			<text>Maximum für Spezialmodifikationen</text>
 		</string>
+		<string>
+			<key>Tip_SelectSpell_MasteryQuality</key>
+			<text>Maximum für Spezialmodifikationen</text>
+		</string>
+		<string>
+			<key>String_SpellPoints</key>
+			<text>Zauberpunkte</text>
+		</string>
+		<string>
+			<key>MessageTitle_CustomDrug_MissingFoundation</key>
+			<text>Fehlende Grundlage</text>
+		</string>
+		<string>
+			<key>Message_CustomDrug_MissingFoundation</key>
+			<text>Drogen müssen eine Grundlage haben.</text>
+		</string>
+		<string>
+			<key>Message_DeleteDrug</key>
+			<text>Sind Sie sicher, dass Sie dieses Drogenrezept entfernen möchten?</text>
+		</string>
 	</strings>
 </chummer>

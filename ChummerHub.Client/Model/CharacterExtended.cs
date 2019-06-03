@@ -28,22 +28,7 @@ namespace ChummerHub.Client.Model
             {
                 try
                 {
-                    
                     _MySINnerFile = JsonConvert.DeserializeObject<SINner>(fileElement);
-                    //if (_MySINnerFile.MyExtendedAttributes?.Id == null)
-                    //{
-                    //    _MySINnerFile = new SINner
-                    //    {
-                    //        MyExtendedAttributes = new SINnerExtended(),
-                    //        SiNnerMetaData = new SINnerMetaData(),
-                    //        Language = GlobalOptions.Language
-                    //    };
-                       
-                    //    _MySINnerFile.SiNnerMetaData = JsonConvert.DeserializeObject<SINnerMetaData>(fileElement);
-                    //    if (_MySINnerFile.SiNnerMetaData.Id == Guid.Empty)
-                    //        _MySINnerFile.SiNnerMetaData.Id = Guid.NewGuid();
-                    //    //_MySINnerFile.MyExtendedAttributes.Id = Guid.NewGuid();
-                    //}
                 }
                 catch (Exception e)
                 {
@@ -179,7 +164,7 @@ namespace ChummerHub.Client.Model
                 TagName = "Reflection"
             };
             var tags = TagExtractor.ExtractTagsFromAttributes(MyCharacter, tag);
-            var found = from a in MySINnerFile.SiNnerMetaData.Tags.ToList() where a.TagName == "Reflection" select a;
+            var found = (from a in MySINnerFile.SiNnerMetaData.Tags.ToList() where a != null && a.TagName == "Reflection" select a).ToList();
             foreach (var f in found)
             {
                 MySINnerFile.SiNnerMetaData.Tags.Remove(f);
@@ -187,7 +172,7 @@ namespace ChummerHub.Client.Model
             MySINnerFile.SiNnerMetaData.Tags.Add(tag);
             foreach(var childtag in MySINnerFile.SiNnerMetaData.Tags)
             {
-                childtag.SetSinnerIdRecursive(MySINnerFile.Id);
+                childtag?.SetSinnerIdRecursive(MySINnerFile.Id);
             }
             return MySINnerFile.SiNnerMetaData.Tags.ToList();
         }
@@ -250,7 +235,7 @@ namespace ChummerHub.Client.Model
                     Tag = null
                 };
                 // get all tags in the list with parent is null
-                var onebranch = tags.Where(t => t.MyParentTag == null);
+                var onebranch = tags.Where(t => t != null && t.MyParentTag == null);
                 foreach (var branch in onebranch)
                 {
                     var child = new TreeNode
@@ -368,6 +353,8 @@ namespace ChummerHub.Client.Model
                     }
                 }
 
+                if (MySINnerIds.ContainsKey(MyCharacter.FileName))
+                    MySINnerIds.Remove(MyCharacter.FileName);
                 MySINnerIds.Add(MyCharacter.FileName, MySINnerFile.Id.Value);
                 MySINnerIds = MySINnerIds; //Save it!
             }
