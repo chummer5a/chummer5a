@@ -3,11 +3,13 @@ using System.Net;
 using System.Net.Sockets;
 using Microsoft.ApplicationInsights.Channel;
 using Microsoft.ApplicationInsights.Extensibility;
+using NLog;
 
 namespace Chummer
 {
     public class CustomTelemetryInitializer : ITelemetryInitializer
     {
+        private static Logger Log = LogManager.GetCurrentClassLogger();
         // Set session data:
         private static string SessionId = Guid.NewGuid().ToString();
         private static string Hostname =  Dns.GetHostName();
@@ -17,14 +19,15 @@ namespace Chummer
 
         public void Initialize(ITelemetry telemetry)
         {
-            telemetry.Context.User.Id = Environment.UserName;
+            //personal data should not be submited
+            //telemetry.Context.User.Id = Environment.UserName;
             telemetry.Context.Session.Id = SessionId;
             telemetry.Context.Device.OperatingSystem = Environment.OSVersion.ToString();
             telemetry.Context.Device.Id = Hostname;
             telemetry.Context.Component.Version = Version;
-            //telemetry.Context.Location.Ip = Ip;
             if (System.Diagnostics.Debugger.IsAttached)
             {
+                //don't file the "productive" log with garbage from debug sessions
                 telemetry.Context.InstrumentationKey = "f4b2ea1b-afe4-4bd6-9175-f5bb167a4d8b";
             }
             if (Program.MainForm?.PluginLoader?.MyActivePlugins != null)
@@ -37,7 +40,7 @@ namespace Chummer
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine(e);
+                        Log.Error(e);
                     }
                     
                 }
