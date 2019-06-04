@@ -70,11 +70,11 @@ namespace Chummer.Plugins
 
         public ITelemetry SetTelemetryInitialize(ITelemetry telemetry)
         {
-            if (!String.IsNullOrEmpty(ChummerHub.Client.Properties.Settings.Default.UserEmail))
-            {
-                if (telemetry?.Context?.User != null)
-                    telemetry.Context.User.AccountId = ChummerHub.Client.Properties.Settings.Default.UserEmail;
-            }
+            //if (!String.IsNullOrEmpty(ChummerHub.Client.Properties.Settings.Default.UserEmail))
+            //{
+            //    if (telemetry?.Context?.User != null)
+            //        telemetry.Context.User.AccountId = ChummerHub.Client.Properties.Settings.Default.UserEmail;
+            //}
             return telemetry;
         }
 
