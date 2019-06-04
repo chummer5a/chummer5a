@@ -68,8 +68,8 @@ namespace Chummer.Backend.Equipment
                             ? "drugcomponents.xml"
                             : "cyberware.xml", GlobalOptions.Language)
                     .SelectSingleNode("/chummer/grades/grade[name = " + Name.CleanXPath() + "]");
-                if (xmlDataNode?.TryGetField("id", Guid.TryParse, out _guidSourceId) != true)
-                    _guidSourceId = Guid.NewGuid();
+                if (xmlDataNode?.TryGetField("id", Guid.TryParse, out _guiSourceID) != true)
+                    _guiSourceID = Guid.NewGuid();
             }
             objNode.TryGetDecFieldQuickly("ess", ref _decEss);
             objNode.TryGetDecFieldQuickly("cost", ref _decCost);
@@ -102,7 +102,7 @@ namespace Chummer.Backend.Equipment
         public XmlNode GetNode(string strLanguage)
         {
             if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.LiveCustomData) return _objCachedMyXmlNode;
-            _objCachedMyXmlNode = SourceID == Guid.Empty
+            _objCachedMyXmlNode = SourceId == Guid.Empty
                 ? XmlManager.Load(_eSource == Improvement.ImprovementSource.Bioware ? "bioware.xml" : _eSource == Improvement.ImprovementSource.Drug ? "drugcomponents.xml" : "cyberware.xml", strLanguage).SelectSingleNode($"/chummer/grades/grade[name = \"{Name}\"]")
                 : XmlManager.Load(_eSource == Improvement.ImprovementSource.Bioware ? "bioware.xml" : _eSource == Improvement.ImprovementSource.Drug ? "drugcomponents.xml" : "cyberware.xml", strLanguage).SelectSingleNode($"/chummer/grades/grade[id = \"{SourceId}\"]");
 
@@ -140,7 +140,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Identifier of the object within data files.
         /// </summary>
-        public Guid SourceID => _guiSourceID;
+        public Guid SourceId => _guiSourceID;
 
         /// <summary>
         /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.

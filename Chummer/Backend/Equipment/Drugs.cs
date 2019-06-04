@@ -91,10 +91,10 @@ namespace Chummer.Backend.Equipment
             objXmlData.TryGetField("guid", Guid.TryParse, out _guiID);
             objXmlData.TryGetStringFieldQuickly("name", ref _strName);
             objXmlData.TryGetStringFieldQuickly("category", ref _strCategory);
-            if (objXmlData["sourceid"] == null || !objXmlData.TryGetField("sourceid", Guid.TryParse, out _sourceID))
+            if (objXmlData["sourceid"] == null || !objXmlData.TryGetField("sourceid", Guid.TryParse, out _guiSourceID))
             {
                 XmlNode node = GetNode(GlobalOptions.Language);
-                node?.TryGetField("id", Guid.TryParse, out _sourceID);
+                node?.TryGetField("id", Guid.TryParse, out _guiSourceID);
             }
             objXmlData.TryGetStringFieldQuickly("availability", ref _strAvailability);
             objXmlData.TryGetDecFieldQuickly("cost", ref _decCost);
