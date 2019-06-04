@@ -22,6 +22,8 @@ using ChummerHub.Client.UI;
 using Newtonsoft.Json;
 using NLog;
 using static Chummer.frmCharacterRoster;
+using Microsoft.ApplicationInsights.DataContracts;
+using Microsoft.ApplicationInsights;
 
 namespace ChummerHub.Client.Backend
 {
@@ -323,6 +325,9 @@ namespace ChummerHub.Client.Backend
                 }
                 catch (Exception e)
                 {
+                    ExceptionTelemetry et = new ExceptionTelemetry(e);
+                    TelemetryClient ct = new TelemetryClient();
+                    ct.TrackException(et);
                     Log.Error(e);
                 }
                 
