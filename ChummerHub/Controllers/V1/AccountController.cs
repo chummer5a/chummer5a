@@ -561,10 +561,13 @@ namespace ChummerHub.Controllers
                             MySINner = sin,
                             Username = user.UserName
                         };
-                        if (sin.MyGroup != null)
+                        if (sin.MyGroup?.Id != null)
                         {
-                            if (!user.FavoriteGroups.Contains(sin.MyGroup))
-                                user.FavoriteGroups.Add(sin.MyGroup);
+                            if (user.FavoriteGroups.All(a => a.FavoriteGuid != sin.MyGroup.Id.Value))
+                                user.FavoriteGroups.Add(new ApplicationUserFavoriteGroup()
+                                {
+                                    FavoriteGuid = sin.MyGroup.Id.Value
+                                });
                             
                         }
                         else
@@ -573,12 +576,13 @@ namespace ChummerHub.Controllers
                         }
                     }
 
-                    foreach (var singroup in user.FavoriteGroups)
+                    foreach (var singroupId in user.FavoriteGroups)
                     {
                         SINnerSearchGroup ssgFromSIN;
-                        if (ssg.MySINSearchGroups.Any(a => a.Id == singroup.Id))
+                        var singroup = await _context.SINnerGroups.FirstOrDefaultAsync(a => a.Id == singroupId.FavoriteGuid);
+                        if (ssg.MySINSearchGroups.Any(a => a.Id == singroupId.FavoriteGuid))
                         {
-                            ssgFromSIN = ssg.MySINSearchGroups.FirstOrDefault(a => a.Id == singroup.Id);
+                            ssgFromSIN = ssg.MySINSearchGroups.FirstOrDefault(a => a.Id == singroupId.FavoriteGuid);
                         }
                         else
                         {

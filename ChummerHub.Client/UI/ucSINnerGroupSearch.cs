@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using ChummerHub.Client.Backend;
 using System.Net;
+using System.Threading;
 using System.Windows;
 using Chummer;
 using SINners.Models;
@@ -221,6 +222,8 @@ namespace ChummerHub.Client.UI
                 var client = StaticUtils.GetClient();
                 var res = await client.GetSearchGroupsWithHttpMessagesAsync(groupname, null, null);
                 var result = await Backend.Utils.HandleError(res, res.Body) as ResultGroupGetSearchGroups;
+                if (result == null)
+                    return null;
                 if (result.CallSuccess == true)
                 {
                     return result.MySearchGroupResult;
@@ -296,6 +299,19 @@ namespace ChummerHub.Client.UI
                                 if (!String.IsNullOrEmpty(a.Result?.ErrorText))
                                 {
                                     Log.Error(a.Result.ErrorText);
+                                }
+                                else if (a.Result == null)
+                                {
+                                    MyCE.MySINnerFile.MyGroup = null;
+                                    string msg = "Char " + MyCE.MyCharacter.CharacterName + " did not join group " +
+                                                 item.Groupname +
+                                                 ".";
+                                    Log.Info(msg);
+                                    this.DoThreadSafe(() =>
+                                    {
+                                        MessageBox.Show(msg, "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                        TlpGroupSearch_VisibleChanged(null, new EventArgs());
+                                    });
                                 }
                                 else
                                 {
@@ -430,7 +446,18 @@ namespace ChummerHub.Client.UI
                                     throw new ArgumentException(msg);
                                 }
                             }
+                            else
+                            {
+                                var found = await client.GetGroupByIdWithHttpMessagesAsync(searchgroup.Id, null,
+                                    CancellationToken.None);
+                                var res = Backend.Utils.HandleError(found);
+                                if (found?.Response?.IsSuccessStatusCode == true)
+                                {
+                                    ssgr = new SINSearchGroupResult(found.Body.MyGroup);
+                                }
+                            }
                         }
+                        
                     }
                     catch (Exception e)
                     {
@@ -443,8 +470,6 @@ namespace ChummerHub.Client.UI
                         MyParentForm?.MyParentForm?.CheckSINnerStatus();
                     }
                 }
-                
-                
             }
             catch (Exception e)
             {

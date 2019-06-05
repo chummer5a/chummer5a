@@ -386,8 +386,15 @@ namespace ChummerHub.Controllers.V1
 
                         _context.Entry(storegroup).CurrentValues.SetValues(mygroup);
                     }
-                    if (!user.FavoriteGroups.Contains(mygroup))
-                        user.FavoriteGroups.Add(mygroup);
+
+                    if (mygroup?.Id != null)
+                    {
+                        if (user.FavoriteGroups.All(a => a.FavoriteGuid != mygroup.Id.Value))
+                            user.FavoriteGroups.Add(new ApplicationUserFavoriteGroup()
+                            {
+                                FavoriteGuid =  mygroup.Id.Value
+                            }); 
+                    }
 
                     if (SinnerId != null)
                     {
@@ -622,8 +629,15 @@ namespace ChummerHub.Controllers.V1
                                                            MyTargetGroup.MyAdminIdentityRole + ".");
                         }
                     }
-                    if (!user.FavoriteGroups.Contains(MyTargetGroup))
-                        user.FavoriteGroups.Add(MyTargetGroup);
+
+                    if (MyTargetGroup?.Id != null)
+                    {
+                        if (user.FavoriteGroups.All( a => a.FavoriteGuid != MyTargetGroup.Id.Value))
+                            user.FavoriteGroups.Add(new ApplicationUserFavoriteGroup()
+                            {
+                                FavoriteGuid = MyTargetGroup.Id.Value
+                            });
+                    }
                 }
 
                 var sinnerseq = await (from a in context.SINners
@@ -1458,7 +1472,11 @@ namespace ChummerHub.Controllers.V1
                 return new List<SINnerSearchGroup>();
             foreach(var group in sINGroups)
             {
-                group.PasswordHash = "";
+                if (!String.IsNullOrEmpty(group.PasswordHash))
+                {
+                    group.HasPassword = true;
+                    group.PasswordHash = "";
+                }
                 group.MyGroups = RemovePWHashRecursive(group.MyGroups);
             }
             return sINGroups;

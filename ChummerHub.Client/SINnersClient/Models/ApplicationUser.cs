@@ -21,7 +21,7 @@ namespace SINners.Models
         /// <summary>
         /// Initializes a new instance of the ApplicationUser class.
         /// </summary>
-        public ApplicationUser(IList<SINnerGroup> favoriteGroups = default(IList<SINnerGroup>), Guid? id = default(Guid?), string userName = default(string), string normalizedUserName = default(string), string email = default(string), string normalizedEmail = default(string), bool? emailConfirmed = default(bool?), string passwordHash = default(string), string securityStamp = default(string), string concurrencyStamp = default(string), string phoneNumber = default(string), bool? phoneNumberConfirmed = default(bool?), bool? twoFactorEnabled = default(bool?), DateTime? lockoutEnd = default(DateTime?), bool? lockoutEnabled = default(bool?), int? accessFailedCount = default(int?))
+        public ApplicationUser(IList<ApplicationUserFavoriteGroup> favoriteGroups = default(IList<ApplicationUserFavoriteGroup>), Guid? id = default(Guid?), string userName = default(string), string normalizedUserName = default(string), string email = default(string), string normalizedEmail = default(string), bool? emailConfirmed = default(bool?), string passwordHash = default(string), string securityStamp = default(string), string concurrencyStamp = default(string), string phoneNumber = default(string), bool? phoneNumberConfirmed = default(bool?), bool? twoFactorEnabled = default(bool?), DateTime? lockoutEnd = default(DateTime?), bool? lockoutEnabled = default(bool?), int? accessFailedCount = default(int?))
         {
             FavoriteGroups = favoriteGroups;
             Id = id;
@@ -44,7 +44,7 @@ namespace SINners.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "favoriteGroups")]
-        public IList<SINnerGroup> FavoriteGroups { get; set; }
+        public IList<ApplicationUserFavoriteGroup> FavoriteGroups { get; set; }
 
         /// <summary>
         /// </summary>
