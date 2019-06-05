@@ -128,6 +128,7 @@
     <Compile Include="Model\SINner.cs" />
     <Compile Include="SINnersClient\ISINnersClient.cs" />
     <Compile Include="SINnersClient\Models\ApplicationUser.cs" />
+    <Compile Include="SINnersClient\Models\ApplicationUserFavoriteGroup.cs" />
     <Compile Include="SINnersClient\Models\ChummerHubVersion.cs" />
     <Compile Include="SINnersClient\Models\ResultAccountGetPossibleRoles.cs" />
     <Compile Include="SINnersClient\Models\ResultAccountGetRoles.cs" />

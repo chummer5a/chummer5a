@@ -132,7 +132,7 @@ namespace Chummer.Plugins
             if (ce?.MySINnerFile?.SiNnerMetaData?.Tags != null)
             {
                 var reflectionseq =
-                    (from a in ce.MySINnerFile.SiNnerMetaData.Tags where a.TagName == "Reflection" select a);
+                    (from a in ce.MySINnerFile.SiNnerMetaData.Tags where a != null && a.TagName == "Reflection" select a);
                 if (reflectionseq?.Any() == true)
                 {
                     refTag = reflectionseq.FirstOrDefault();

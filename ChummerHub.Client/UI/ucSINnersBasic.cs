@@ -261,6 +261,8 @@ namespace ChummerHub.Client.UI
                 where a.Name.Contains("TagValue")
                 select a).ToList();
 
+            myUC.MyCE.MySINnerFile.SiNnerMetaData.Tags = myUC.MyCE.MySINnerFile.SiNnerMetaData.Tags.Where(a => a != null).ToList();
+            
             foreach (var cb in gpControlSeq)
             {
                 if (!(cb is CheckBox cbTag))
@@ -268,7 +270,7 @@ namespace ChummerHub.Client.UI
                 
                 string tagName = cbTag.Name.Substring("cbTag".Length);
                 Tag tag = null;
-                if (myUC.MyCE.MySINnerFile.SiNnerMetaData.Tags.All(a => a.TagName != tagName))
+                if (myUC.MyCE.MySINnerFile.SiNnerMetaData.Tags.All(a => a != null && a.TagName != tagName))
                 {
                     tag = new Tag(true)
                     {
@@ -279,7 +281,7 @@ namespace ChummerHub.Client.UI
                 }
                 else
                 {
-                    tag = myUC.MyCE.MySINnerFile.SiNnerMetaData.Tags.FirstOrDefault(a => a.TagName == tagName);
+                    tag = myUC.MyCE.MySINnerFile.SiNnerMetaData.Tags.FirstOrDefault(a => a != null &&  a.TagName == tagName);
                 }
                 if (tag == null) continue;
                 if (myUC.MyCE.MySINnerFile.SiNnerMetaData.Tags.Contains(tag))

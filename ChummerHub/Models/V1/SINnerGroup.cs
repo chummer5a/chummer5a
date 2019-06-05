@@ -40,13 +40,7 @@ namespace ChummerHub.Models.V1
         public string PasswordHash { get; set; }
 
         [NotMapped]
-        public bool HasPassword { get
-        {
-            if (String.IsNullOrEmpty(PasswordHash))
-                return false;
-            else
-                return true;
-        }}
+        public bool HasPassword { get; set; }
 
         public string Description { get; set; }
 
@@ -57,6 +51,7 @@ namespace ChummerHub.Models.V1
         {
             MyGroups = new List<SINnerGroup>();
             MySettings = new SINnerGroupSetting();
+            HasPassword = false;
         }
 
         public async Task<List<SINner>> GetGroupMembers(ApplicationDbContext context, bool addTags)
