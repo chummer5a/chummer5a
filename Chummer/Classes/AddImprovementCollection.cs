@@ -5640,14 +5640,12 @@ namespace Chummer.Classes
                     foreach (XmlNode xmlSpirit in xmlSpirits)
                     {
                         string strSpiritName = xmlSpirit["name"]?.InnerText;
-                        if (setAllowed.Any(l => strSpiritName == l))
-                        {
-                            lstSpirits.Add(new ListItem(strSpiritName,
-                                xmlSpirit["translate"]?.InnerText ?? strSpiritName));
-                        }
+                        if (!setAllowed.Any(l => strSpiritName == l) && setAllowed.Count != 0) continue;
+                        lstSpirits.Add(new ListItem(strSpiritName,
+                            xmlSpirit["translate"]?.InnerText ?? strSpiritName));
                     }
 
-            frmSelectItem frmSelect = new frmSelectItem { GeneralItems = lstSpirits };
+			frmSelectItem frmSelect = new frmSelectItem { GeneralItems = lstSpirits };
             frmSelect.ShowDialog();
             if (frmSelect.DialogResult == DialogResult.Cancel)
             {
