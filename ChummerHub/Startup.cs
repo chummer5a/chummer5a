@@ -16,6 +16,8 @@ using Swashbuckle.AspNetCore.Swagger;
 using System.Reflection;
 using System.IO;
 using System.Net;
+using System.Net.Http;
+using System.Security.Authentication;
 using ChummerHub.Controllers;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
@@ -85,12 +87,12 @@ namespace ChummerHub
 
         public IServiceCollection MyServices { get; set; }
 
+        
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             MyServices = services;
-
-          
 
             ConnectionStringToMasterSqlDb = Configuration.GetConnectionString("MasterSqlConnection");
             ConnectionStringSinnersDb = Configuration.GetConnectionString("DefaultConnection");
@@ -131,7 +133,12 @@ namespace ChummerHub
             services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection"));
+                    Configuration.GetConnectionString("DefaultConnection"),
+                    builder =>
+                    {
+                        //builder.EnableRetryOnFailure(5);
+                    });
+                options.EnableDetailedErrors();
             });
 
             services.AddScoped<SignInManager<ApplicationUser>, SignInManager<ApplicationUser>>();

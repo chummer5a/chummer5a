@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using ChummerHub.Models.V1;
 using Newtonsoft.Json;
 
 namespace Microsoft.AspNetCore.Identity
@@ -20,6 +21,13 @@ namespace Microsoft.AspNetCore.Identity
         [JsonIgnore]
         [XmlIgnore]
         public string Groupname { get; set; }
-        
+
+        public List<SINnerGroup> FavoriteGroups { get; set; }
+
+        public ApplicationUser()
+        {
+            FavoriteGroups = new List<SINnerGroup>();
+        }
+
     }
 }

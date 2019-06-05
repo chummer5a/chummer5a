@@ -741,11 +741,13 @@ namespace ChummerHub.Controllers.V1
                         }
                         if (!ownuserfound)
                         {
-                            SINnerUserRight ownright = new SINnerUserRight();
-                            ownright.CanEdit = true;
-                            ownright.EMail = user.Email;
-                            ownright.SINnerId = sinner.Id;
-                            ownright.Id = Guid.NewGuid();
+                            SINnerUserRight ownright = new SINnerUserRight
+                            {
+                                CanEdit = true,
+                                EMail = user.Email,
+                                SINnerId = sinner.Id,
+                                Id = Guid.NewGuid()
+                            };
                             sinner.SINnerMetaData.Visibility.UserRights.Add(ownright);
                         }
                     }
@@ -764,7 +766,6 @@ namespace ChummerHub.Controllers.V1
                     if (dbsinner != null)
                     {
                         oldgroup = dbsinner.MyGroup;
-                        //_context.SINners.Attach(dbsinner);
                         if (String.IsNullOrEmpty(sinner.GoogleDriveFileId))
                             sinner.GoogleDriveFileId = dbsinner.GoogleDriveFileId;
                         if(String.IsNullOrEmpty(sinner.DownloadUrl))
@@ -781,7 +782,6 @@ namespace ChummerHub.Controllers.V1
                         }
                         _context.UserRights.RemoveRange(dbsinner.SINnerMetaData.Visibility.UserRights);
                         _context.SINnerVisibility.Remove(dbsinner.SINnerMetaData.Visibility);
-                        //_context.SINnerExtendedMetaData.Remove(dbsinner.MyExtendedAttributes);
                         _context.SINnerMetaData.Remove(dbsinner.SINnerMetaData);
                         _context.SINners.Remove(dbsinner);
                         
@@ -790,8 +790,7 @@ namespace ChummerHub.Controllers.V1
                         dbsinner.SINnerMetaData.Visibility = null;
                         dbsinner.SINnerMetaData.Tags = null;
                         dbsinner.SINnerMetaData = null;
-                        //dbsinner.MyExtendedAttributes = null;
-
+                        
                         try
                         {
                             await _context.SaveChangesAsync();
@@ -802,7 +801,6 @@ namespace ChummerHub.Controllers.V1
                             {
                                 if (entry.Entity is SINner
                                     || entry.Entity is Tag
-                                    //|| entry.Entity is SINnerExtended
                                     || entry.Entity is SINnerGroup
                                     || entry.Entity is SINnerUserRight
                                     || entry.Entity is SINnerMetaData)

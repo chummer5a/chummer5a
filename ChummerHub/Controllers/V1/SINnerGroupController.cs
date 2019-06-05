@@ -386,6 +386,8 @@ namespace ChummerHub.Controllers.V1
 
                         _context.Entry(storegroup).CurrentValues.SetValues(mygroup);
                     }
+                    if (!user.FavoriteGroups.Contains(mygroup))
+                        user.FavoriteGroups.Add(mygroup);
 
                     if (SinnerId != null)
                     {
@@ -480,34 +482,33 @@ namespace ChummerHub.Controllers.V1
                     re.ErrorText = "A group \"" + mygroup.Groupname + "\" for language \"" + mygroup.Language +"\" already exists!";
                     return BadRequest(re);
                 }
-            res = new ResultGroupPostGroup(mygroup);
-            switch (returncode)
-            {
-                case HttpStatusCode.Accepted:
-                    return Accepted("PostGroup", res);
-                case HttpStatusCode.Created:
-                    return CreatedAtAction("PostGroup", res);
-                default:
-                    return Ok(res);
-                    break;
+                res = new ResultGroupPostGroup(mygroup);
+                switch (returncode)
+                {
+                    case HttpStatusCode.Accepted:
+                        return Accepted("PostGroup", res);
+                    case HttpStatusCode.Created:
+                        return CreatedAtAction("PostGroup", res);
+                    default:
+                        return Ok(res);
+                }
             }
-        }
-        catch(Exception e)
-        {
-            try
+            catch(Exception e)
             {
-                //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
-                Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
-                telemetry.Properties.Add("User", user?.Email);
-                telemetry.Properties.Add("Groupname", mygroup?.Groupname?.ToString());
-                tc.TrackException(telemetry);
-            }
-            catch(Exception ex)
-            {
-                _logger.LogError(ex.ToString());
-            }
-            var re = new ResultGroupPostGroup(e);
-            return BadRequest(re);
+                try
+                {
+                    //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
+                    telemetry.Properties.Add("User", user?.Email);
+                    telemetry.Properties.Add("Groupname", mygroup?.Groupname?.ToString());
+                    tc.TrackException(telemetry);
+                }
+                catch(Exception ex)
+                {
+                    _logger.LogError(ex.ToString());
+                }
+                var re = new ResultGroupPostGroup(e);
+                return BadRequest(re);
             }
         }
 
@@ -613,7 +614,6 @@ namespace ChummerHub.Controllers.V1
                     {
                         throw new NoUserRightException("PW is wrong!");
                     }
-
                     if (!String.IsNullOrEmpty(MyTargetGroup.MyAdminIdentityRole))
                     {
                         if (!userroles.Contains(MyTargetGroup.MyAdminIdentityRole))
@@ -622,6 +622,8 @@ namespace ChummerHub.Controllers.V1
                                                            MyTargetGroup.MyAdminIdentityRole + ".");
                         }
                     }
+                    if (!user.FavoriteGroups.Contains(MyTargetGroup))
+                        user.FavoriteGroups.Add(MyTargetGroup);
                 }
 
                 var sinnerseq = await (from a in context.SINners
@@ -652,6 +654,7 @@ namespace ChummerHub.Controllers.V1
                         sin.MyGroup = MyTargetGroup;
                     }
                 }
+                
 
                 await context.SaveChangesAsync();
                 if (sin?.MyGroup != null)
