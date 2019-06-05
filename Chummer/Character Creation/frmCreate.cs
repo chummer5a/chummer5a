@@ -12720,15 +12720,15 @@ namespace Chummer
 
             if (treCustomDrugs.SelectedNode?.Level != 0 && treCustomDrugs.SelectedNode?.Tag is Drug objDrug)
             {
-
                 flpDrugs.Visible = true;
                 btnDeleteCustomDrug.Enabled = true;
-
                 lblDrugName.Text = objDrug.Name;
                 lblDrugAvail.Text = objDrug.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 lblDrugGrade.Text = objDrug.Grade.DisplayName(GlobalOptions.Language);
                 lblDrugCost.Text = objDrug.Cost.ToString(CharacterObject.Options.NuyenFormat) + '¥';
                 nudDrugQty.Value = objDrug.Quantity;
+                nudDrugQty.Visible = true;
+                nudDrugQty.Enabled = true;
                 lblDrugCategory.Text = objDrug.Category;
                 lblDrugAddictionRating.Text = objDrug.AddictionRating.ToString(GlobalOptions.CultureInfo);
                 lblDrugAddictionThreshold.Text = objDrug.AddictionThreshold.ToString(GlobalOptions.CultureInfo);
