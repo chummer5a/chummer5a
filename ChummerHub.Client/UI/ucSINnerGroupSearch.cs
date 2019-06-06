@@ -328,13 +328,14 @@ namespace ChummerHub.Client.UI
                                         MessageBox.Show(msg, "", MessageBoxButtons.OK, MessageBoxIcon.Information);
                                         TlpGroupSearch_VisibleChanged(null, new EventArgs());
                                     });
-
+                                    PluginHandler.MainForm.CharacterRoster.DoThreadSafe(() =>
+                                    {
+                                        PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false, true);
+                                    });
                                 }
                             }
                         });
                     }
-
-                    //});
                 }
             }
             catch (Exception ex)
@@ -708,9 +709,6 @@ namespace ChummerHub.Client.UI
                 }
             }
 
-            
-
-
             // Confirm that the node at the drop location is not 
             // the dragged node and that target node isn't null
             // (for example if you drag outside the control)
@@ -824,7 +822,7 @@ namespace ChummerHub.Client.UI
             if (targetNode != null)
             {
                 TreeNode targetGroup = targetNode;
-                while (!(targetGroup.Tag is SINnerSearchGroup && targetGroup.Parent != null))
+                while (targetGroup != null && !(targetGroup.Tag is SINnerSearchGroup && targetGroup.Parent != null))
                     targetGroup = targetGroup.Parent;
                 if (targetGroup == null)
                     return;

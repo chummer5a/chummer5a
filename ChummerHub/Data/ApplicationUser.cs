@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Xml.Serialization;
 using ChummerHub.Data;
 using ChummerHub.Models.V1;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Newtonsoft.Json;
 
 namespace Microsoft.AspNetCore.Identity
@@ -23,11 +24,24 @@ namespace Microsoft.AspNetCore.Identity
         [XmlIgnore]
         public string Groupname { get; set; }
 
-        public List<ApplicationUserFavoriteGroup> FavoriteGroups { get; set; }
+        private List<ApplicationUserFavoriteGroup> _FavoriteGroups;
+
+        public List<ApplicationUserFavoriteGroup> FavoriteGroups
+        {
+            get => LazyLoader?.Load(this, ref _FavoriteGroups);
+            set => _FavoriteGroups = value;
+        }
 
         public ApplicationUser()
         {
             FavoriteGroups = new List<ApplicationUserFavoriteGroup>();
+        }
+
+        private ILazyLoader LazyLoader { get; set; }
+
+        private ApplicationUser(ILazyLoader lazyLoader)
+        {
+            LazyLoader = lazyLoader;
         }
 
     }

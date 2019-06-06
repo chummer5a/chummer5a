@@ -211,6 +211,11 @@ namespace ChummerHub.Client.Backend
             else
             {
                 propValue = property.GetValue(prop.Item3);
+                if (propValue == null)
+                {
+                    //dont save "null" values
+                    return proptaglist;
+                }
                 if(propValue.GetType().IsAssignableFrom(typeof(bool)))
                 {
                     if(propValue as bool? == false)

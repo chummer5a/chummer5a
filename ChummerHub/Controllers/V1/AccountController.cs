@@ -531,6 +531,7 @@ namespace ChummerHub.Controllers
                 try
                 {
                     var user = await _signInManager.UserManager.GetUserAsync(User);
+                    
                     if (user == null)
                     {
                         var e = new AuthenticationException("User is not authenticated.");
@@ -563,7 +564,7 @@ namespace ChummerHub.Controllers
                         };
                         if (sin.MyGroup?.Id != null)
                         {
-                            if (user.FavoriteGroups.All(a => a.FavoriteGuid != sin.MyGroup.Id.Value))
+                            if (!user.FavoriteGroups.Any(a => a.FavoriteGuid == sin.MyGroup.Id.Value))
                                 user.FavoriteGroups.Add(new ApplicationUserFavoriteGroup()
                                 {
                                     FavoriteGuid = sin.MyGroup.Id.Value
@@ -575,6 +576,9 @@ namespace ChummerHub.Controllers
                             ssg.MyMembers.Add(ssgm);
                         }
                     }
+
+                    user.FavoriteGroups = user.FavoriteGroups.GroupBy(a => a.FavoriteGuid).Select(b => b.First()).ToList();
+
 
                     foreach (var singroupId in user.FavoriteGroups)
                     {
