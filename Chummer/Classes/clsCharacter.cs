@@ -7686,6 +7686,7 @@ if (!Utils.IsUnitTest){
         /// <summary>
         /// Is the MAG CharacterAttribute enabled?
         /// </summary>
+        [HubTag]
         public bool MAGEnabled
         {
             get => _blnMAGEnabled;
