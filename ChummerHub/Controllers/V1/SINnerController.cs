@@ -121,6 +121,13 @@ namespace ChummerHub.Controllers.V1
                 {
                     oktoDownload = true;
                 }
+
+                if (!oktoDownload)
+                {
+                    var roles = await _userManager.GetRolesAsync(user);
+                    if (roles.Contains("SeeAllSINners"))
+                        oktoDownload = true;
+                }
                 if (!oktoDownload)
                 {
                     throw new ArgumentException("User " + user?.UserName + " or public is not allowed to download " + sinnerid.ToString());
@@ -475,7 +482,7 @@ namespace ChummerHub.Controllers.V1
         public async Task<IActionResult> GetThumbnailById(Guid? SINnerId, int? index)
         {
             var temppath = Environment.GetFolderPath(Environment.SpecialFolder.InternetCache);
-            string filename = SINnerId.Value + ".zip";
+            string filename = SINnerId.Value + Guid.NewGuid().ToString() + ".zip";
             string filepath = Path.Combine(temppath, filename);
             try
             {
