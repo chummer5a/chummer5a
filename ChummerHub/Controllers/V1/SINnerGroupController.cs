@@ -104,33 +104,55 @@ namespace ChummerHub.Controllers.V1
                     return BadRequest(res);
                 }
 
-                SINnerGroup parentGroup = null;
-                if (parentGroupId != null)
-                {
-                    var getParentseq = (from a in _context.SINnerGroups.Include(a => a.MyGroups)
-                        where a.Id == parentGroupId
-                        select a).Take(1);
-                    if (!getParentseq.Any())
-                    {
-                        var e = new ArgumentException("Parentgroup with Id " + parentGroupId?.ToString() + " not found.");
-                        res = new ResultGroupPutGroupInGroup(e);
-                        return NotFound(res);
-                    }
-                    parentGroup = getParentseq.FirstOrDefault();
-                }
-
                 SINnerGroup myGroup = null;
                 var getGroupseq = (from a in _context.SINnerGroups
-                                where a.Id == GroupId
-                                   select a).Take(1);
+                    where a.Id == GroupId
+                    select a).Take(1);
                 if (!getGroupseq.Any())
                 {
-                    var e = new ArgumentException("Group with Id " + parentGroupId.ToString() + " not found.");
+                    var e = new ArgumentException("Group with Id " + GroupId.ToString() + " not found.");
                     res = new ResultGroupPutGroupInGroup(e);
                     return NotFound(res);
                 }
-
                 myGroup = getGroupseq.FirstOrDefault();
+
+                SINnerGroup parentGroup = null;
+                if (parentGroupId != null)
+                {
+                    if (parentGroupId == Guid.Empty)
+                    {
+                        //only make this group a favorite group of the user and return
+                        if (!user.FavoriteGroups.Any(a => a.FavoriteGuid == GroupId))
+                        {
+                            user.FavoriteGroups.Add(new ApplicationUserFavoriteGroup()
+                            {
+                                FavoriteGuid = GroupId
+                            });
+                            await _context.SaveChangesAsync();
+                        }
+                    }
+                    else
+                    {
+                        var getParentseq = (from a in _context.SINnerGroups.Include(a => a.MyGroups)
+                            where a.Id == parentGroupId
+                            select a).Take(1);
+                        if (!getParentseq.Any())
+                        {
+                            var e = new ArgumentException("Parentgroup with Id " + parentGroupId?.ToString() +
+                                                          " not found.");
+                            res = new ResultGroupPutGroupInGroup(e);
+                            return NotFound(res);
+                        }
+
+                        parentGroup = getParentseq.FirstOrDefault();
+                        res = new ResultGroupPutGroupInGroup(myGroup);
+                        return res;
+                    }
+                }
+
+               
+
+                
                 myGroup.Groupname = groupname;
                 myGroup.IsPublic = isPublicVisible;
                 myGroup.MyAdminIdentityRole = adminIdentityRole;
@@ -639,6 +661,8 @@ namespace ChummerHub.Controllers.V1
                             });
                     }
                 }
+                user.FavoriteGroups = user.FavoriteGroups.GroupBy(a => a.FavoriteGuid).Select(b => b.First()).ToList();
+
 
                 var sinnerseq = await (from a in context.SINners
                         .Include(a => a.MyGroup)
@@ -1237,6 +1261,19 @@ namespace ChummerHub.Controllers.V1
                     }
 
                     SINSearchGroupResult result = new SINSearchGroupResult();
+                    SINnerSearchGroup ssgFavs = new SINnerSearchGroup();
+                    ssgFavs.Id = Guid.Empty;
+                    ssgFavs.Groupname = "Favorites";
+                    var favlist = (from a in user.FavoriteGroups select a.FavoriteGuid).ToList();
+                    var favgrouplist = await _context.SINnerGroups.Where(a => a.Id != null && favlist.Contains(a.Id.Value))
+                        .ToListAsync();
+                    foreach (var favgroup in favgrouplist)
+                    {
+                        var ssgsinglefav = new SINnerSearchGroup(favgroup);
+                        ssgFavs.MySINSearchGroups.Add(ssgsinglefav);
+                    }
+
+                    result.SINGroups.Add(ssgFavs);
 
                     List<Guid?> groupfoundseq = new List<Guid?>();
                     if (!String.IsNullOrEmpty(Groupname))

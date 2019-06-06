@@ -9,12 +9,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Chummer;
 using Chummer.Plugins;
+using NLog;
 
 namespace ChummerHub.Client.UI
 {
     public partial class frmSINnerGroupSearch : Form
     {
+        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private CharacterExtended MyCE { get; }
         public ucSINnersBasic MyParentForm { get; }
 
@@ -46,6 +49,22 @@ namespace ChummerHub.Client.UI
                 X = Math.Max(workingArea.X, workingArea.X + (workingArea.Width - this.Width) / 2),
                 Y = Math.Max(workingArea.Y, workingArea.Y + (workingArea.Height - this.Height) / 2)
             };
+        }
+
+        private void FrmSINnerGroupSearch_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            try
+            {
+                PluginHandler.MainForm.CharacterRoster.DoThreadSafe(() =>
+                {
+                    PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false, true);
+                });
+            }
+            catch (Exception exception)
+            {
+                Log.Warn(exception);
+            }
+            
         }
     }
 }

@@ -114,6 +114,8 @@ namespace ChummerHub.Data
             //    .HasIndex(b => b.SINnerId);
             builder.Entity<ChummerHub.Models.V1.Tag>()
                 .HasIndex(b => b.TagValueDouble);
+            builder.Entity<ApplicationUserFavoriteGroup>()
+                .HasIndex(b => b.FavoriteGuid);
             try
             {
                 this.Database.ExecuteSqlCommand(

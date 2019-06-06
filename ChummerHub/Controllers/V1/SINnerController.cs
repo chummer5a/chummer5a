@@ -647,13 +647,6 @@ namespace ChummerHub.Controllers.V1
                     sinner = tempsinner;
                     if (sinner.Id.ToString() == "string")
                         sinner.Id = Guid.Empty;
-
-                    //if (String.IsNullOrEmpty(sinner.MyExtendedAttributes.JsonSummary))
-                    //{
-                    //    var e = new ArgumentException("sinner " + sinner.Id + ": JsonSummary == null");
-                    //    res = new ResultSinnerPostSIN(e);
-                    //    return BadRequest(res);
-                    //}
                     
                     if (sinner.LastChange == null)
                     {
@@ -666,11 +659,6 @@ namespace ChummerHub.Controllers.V1
                     {
                         sinner.SINnerMetaData.Visibility.Id = Guid.NewGuid();
                     }
-
-                    //if ((sinner.MyExtendedAttributes.Id == null) || (sinner.MyExtendedAttributes.Id == Guid.Empty))
-                    //{
-                    //    sinner.MyExtendedAttributes.Id = Guid.NewGuid();
-                    //}
 
                     var oldsinner = (from a in _context.SINners
                             //.Include(a => a.MyExtendedAttributes)
@@ -845,6 +833,16 @@ namespace ChummerHub.Controllers.V1
                         sinner.MyGroup = null;
                         _context.SINners.Add(sinner);
                     }
+
+                    if (sinner.MyGroup?.Id != null && sinner.MyGroup?.Id != Guid.Empty)
+                    {
+                        if(!user.FavoriteGroups.Any(a => a.FavoriteGuid == sinner.MyGroup.Id))
+                            user.FavoriteGroups.Add(new ApplicationUserFavoriteGroup()
+                            {
+                                FavoriteGuid = sinner.MyGroup.Id.Value
+                            });
+                    }
+                    user.FavoriteGroups = user.FavoriteGroups.GroupBy(a => a.FavoriteGuid).Select(b => b.First()).ToList();
 
                     try
                     {

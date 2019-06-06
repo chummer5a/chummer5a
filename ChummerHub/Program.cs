@@ -21,9 +21,9 @@ namespace ChummerHub
         public static IWebHost MyHost = null;
         public static void Main(string[] args)
         {
-            System.AppDomain.CurrentDomain.FirstChanceException += CurrentDomain_FirstChanceException;
-         
-#if DEBUG           
+            //System.AppDomain.CurrentDomain.FirstChanceException += CurrentDomain_FirstChanceException;
+
+#if DEBUG
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)

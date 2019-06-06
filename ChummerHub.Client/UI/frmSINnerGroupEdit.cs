@@ -8,11 +8,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using NLog;
 
 namespace ChummerHub.Client.UI
 {
     public partial class frmSINnerGroupEdit : Form
     {
+        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
         //public frmSINnerGroupEdit()
         //{
         //    InitializeComponent();
