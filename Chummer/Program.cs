@@ -163,7 +163,16 @@ namespace Chummer
                         }
                     }
                     Log.Info(strInfo);
-                    //TelemetryConfiguration.Active.DisableTelemetry = System.Diagnostics.Debugger.IsAttached;
+
+                    //make sure the Settings are upgraded/preserved after an upgrade
+                    //see for details: https://stackoverflow.com/questions/534261/how-do-you-keep-user-config-settings-across-different-assembly-versions-in-net/534335#534335
+                    if (Properties.Settings.Default.UpgradeRequired)
+                    {
+                        Properties.Settings.Default.Upgrade();
+                        Properties.Settings.Default.UpgradeRequired = false;
+                        Properties.Settings.Default.Save();
+                    }
+
                     if (GlobalOptions.UseLoggingApplicationInsights)
                     {
 #if DEBUG
@@ -219,15 +228,7 @@ namespace Chummer
                     Console.WriteLine(e);
                 }
 
-                //make sure the Settings are upgraded/preserved after an upgrade
-                //see for details: https://stackoverflow.com/questions/534261/how-do-you-keep-user-config-settings-across-different-assembly-versions-in-net/534335#534335
-                if (Properties.Settings.Default.UpgradeRequired)
-                {
-                    Properties.Settings.Default.Upgrade();
-                    Properties.Settings.Default.UpgradeRequired = false;
-                    Properties.Settings.Default.Save();
-                }
-
+               
                 // Make sure the default language has been loaded before attempting to open the Main Form.
                 LanguageManager.TranslateWinForm(GlobalOptions.Language, null);
 
