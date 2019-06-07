@@ -370,7 +370,7 @@ namespace ChummerHub.Client.UI
                         await client.GetSINnerVisibilityByIdWithHttpMessagesAsync(
                             this.myUC.MyCE.MySINnerFile.Id.Value);
                     var obj = await Backend.Utils.HandleError(res, res.Body);
-                    if (res.Body.CallSuccess == true)
+                    if (res?.Body?.CallSuccess == true)
                     {
                         this.myUC.MyCE.MySINnerFile.SiNnerMetaData.Visibility.UserRights = res.Body.UserRights;
                     }
