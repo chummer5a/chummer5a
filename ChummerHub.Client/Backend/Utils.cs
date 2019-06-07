@@ -30,7 +30,7 @@ namespace ChummerHub.Client.Backend
     public static class StaticUtils
     {
         private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
-
+        
         public static Type GetListType(object someList)
         {
             if (someList == null)
@@ -132,15 +132,23 @@ namespace ChummerHub.Client.Backend
         {
             get
             {
-                //Properties.Settings.Default.Reload();
-                if ((_AuthorizationCookieContainer == null)
-                    || (String.IsNullOrEmpty(Properties.Settings.Default.CookieData)))
+                try
                 {
-                    Uri uri = new Uri(Properties.Settings.Default.SINnerUrl);
-                    string cookieData = Properties.Settings.Default.CookieData;
-                    _AuthorizationCookieContainer = GetUriCookieContainer(uri, cookieData);
+                    if ((_AuthorizationCookieContainer == null)
+                    || (String.IsNullOrEmpty(Properties.Settings.Default.CookieData)))
+                    {
+                        Uri uri = new Uri(Properties.Settings.Default.SINnerUrl);
+                        string cookieData = Properties.Settings.Default.CookieData;
+                        _AuthorizationCookieContainer = GetUriCookieContainer(uri, cookieData);
+                    }
+                    return _AuthorizationCookieContainer;
+                }
+                catch(Exception e)
+                {
+                    Log.Error(e);
                 }
                 return _AuthorizationCookieContainer;
+
             }
             set
             {
@@ -163,22 +171,39 @@ namespace ChummerHub.Client.Backend
         public static CookieContainer GetUriCookieContainer(Uri uri, string cookieData)
         {
             CookieContainer cookies = null;
-            if (String.IsNullOrEmpty(cookieData))
-                cookieData = GetUriCookieData(uri);
-            if (cookieData == null)
-                return null;
-            if (cookieData.Length > 0)
+            try
             {
-                cookies = new CookieContainer();
-                cookies.SetCookies(uri, cookieData);
-                Properties.Settings.Default.CookieData = cookieData;
-                int i = uri.AbsoluteUri.IndexOf(uri.AbsolutePath);
-                
-                Properties.Settings.Default.SINnerUrl = uri.AbsoluteUri.Substring(0, i);
-                if (Properties.Settings.Default.SINnerUrl.Length < 7)
-                    Properties.Settings.Default.SINnerUrl = uri.AbsoluteUri;
-                Properties.Settings.Default.Save();
+                if (String.IsNullOrEmpty(cookieData))
+                    cookieData = GetUriCookieData(uri);
+                if (cookieData == null)
+                    return null;
+                if (cookieData.Length > 0)
+                {
+                    try
+                    {
+                        cookies = new CookieContainer();
+                        cookies.SetCookies(uri, cookieData);
+                        Properties.Settings.Default.CookieData = cookieData;
+                        int i = uri.AbsoluteUri.IndexOf(uri.AbsolutePath);
+
+                        Properties.Settings.Default.SINnerUrl = uri.AbsoluteUri.Substring(0, i);
+                        if (Properties.Settings.Default.SINnerUrl.Length < 7)
+                            Properties.Settings.Default.SINnerUrl = uri.AbsoluteUri;
+                        Properties.Settings.Default.Save();
+                    }
+                    catch(Exception e)
+                    {
+                        Log.Error(e);
+                        throw;
+                    }
+                }
             }
+            catch(Exception e)
+            {
+                Log.Error(e);
+                throw;
+            }
+            
             return cookies;
         }
 
@@ -204,19 +229,29 @@ namespace ChummerHub.Client.Backend
             // Determine the size of the cookie
             int datasize = 8192 * 16;
             StringBuilder cookieData = new StringBuilder(datasize);
-            if (!InternetGetCookieEx(uri.ToString(), null, cookieData, ref datasize, InternetCookieHttponly, IntPtr.Zero))
+            try
             {
-                if (datasize < 0)
-                    return null;
-                // Allocate stringbuilder large enough to hold the cookie
-                cookieData = new StringBuilder(datasize);
-                if (!InternetGetCookieEx(
-                    uri.ToString(),
-                    null, cookieData,
-                    ref datasize,
-                    InternetCookieHttponly,
-                    IntPtr.Zero))
-                    return null;
+                if (!InternetGetCookieEx(uri.ToString(), null, cookieData, ref datasize, InternetCookieHttponly, IntPtr.Zero))
+                {
+                    if (datasize < 0)
+                        return null;
+                    // Allocate stringbuilder large enough to hold the cookie
+                    cookieData = new StringBuilder(datasize);
+                    if (!InternetGetCookieEx(
+                        uri.ToString(),
+                        null, cookieData,
+                        ref datasize,
+                        InternetCookieHttponly,
+                        IntPtr.Zero))
+                        return null;
+                }
+                return cookieData.ToString().Replace(';', ',');
+            }
+            catch(Exception e)
+            {
+                Log.Error(e);
+                throw;
+                
             }
             return cookieData.ToString().Replace(';', ',');
         }
@@ -231,26 +266,35 @@ namespace ChummerHub.Client.Backend
             // Determine the size of the cookie
             int datasize = 8192 * 16;
             StringBuilder cookieData = new StringBuilder(datasize);
-            if(!InternetGetCookieEx(uri.ToString(), null, cookieData, ref datasize, InternetCookieHttponly, IntPtr.Zero))
+            try
             {
-                if(datasize < 0)
+                if (!InternetGetCookieEx(uri.ToString(), null, cookieData, ref datasize, InternetCookieHttponly, IntPtr.Zero))
+                {
+                    if (datasize < 0)
+                        return false;
+                    // Allocate stringbuilder large enough to hold the cookie
+                    cookieData = new StringBuilder(datasize);
+                    if (!InternetGetCookieEx(
+                        uri.ToString(),
+                        null, cookieData,
+                        ref datasize,
+                        InternetCookieHttponly,
+                        IntPtr.Zero))
+                        return false;
+                }
+                if (!InternetSetCookie(uri.ToString(), null, ""))
+                {
                     return false;
-                // Allocate stringbuilder large enough to hold the cookie
-                cookieData = new StringBuilder(datasize);
-                if(!InternetGetCookieEx(
-                    uri.ToString(),
-                    null, cookieData,
-                    ref datasize,
-                    InternetCookieHttponly,
-                    IntPtr.Zero))
-                    return false;
-            }
-            if (!InternetSetCookie(uri.ToString(), null, ""))
-            {
-                return false;
-            }
+                }
 
-            return true;
+                return true;
+            }
+            catch(Exception e)
+            {
+                Log.Error(e);
+            }
+            return false;
+            
         }
         
 

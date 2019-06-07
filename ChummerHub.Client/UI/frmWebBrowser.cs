@@ -129,7 +129,7 @@ namespace ChummerHub.Client.UI
                     Properties.Settings.Default.CookieData = null;
                     Properties.Settings.Default.Save();
                     var cookies =
-                        StaticUtils.AuthorizationCookieContainer.GetCookies(new Uri(Properties.Settings.Default
+                        StaticUtils.AuthorizationCookieContainer?.GetCookies(new Uri(Properties.Settings.Default
                             .SINnerUrl));
                     var client = StaticUtils.GetClient(true);
                 }
