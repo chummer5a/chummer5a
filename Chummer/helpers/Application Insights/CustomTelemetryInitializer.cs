@@ -12,7 +12,7 @@ namespace Chummer
         private static Logger Log = LogManager.GetCurrentClassLogger();
         // Set session data:
         private static string SessionId = Guid.NewGuid().ToString();
-        private static string Hostname =  Dns.GetHostName();
+        //private static string Hostname =  Dns.GetHostName();
         private static string Version = System.Reflection.Assembly
             .GetExecutingAssembly().GetName().Version.ToString();
         public static string Ip = null;
@@ -23,7 +23,7 @@ namespace Chummer
             //telemetry.Context.User.Id = Environment.UserName;
             telemetry.Context.Session.Id = SessionId;
             telemetry.Context.Device.OperatingSystem = Environment.OSVersion.ToString();
-            telemetry.Context.Device.Id = Hostname;
+            //telemetry.Context.Device.Id = Hostname;
             telemetry.Context.Component.Version = Version;
             if (System.Diagnostics.Debugger.IsAttached)
             {
