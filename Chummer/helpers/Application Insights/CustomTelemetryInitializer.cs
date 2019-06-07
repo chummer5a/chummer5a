@@ -23,11 +23,12 @@ namespace Chummer
             //telemetry.Context.User.Id = Environment.UserName;
             telemetry.Context.Session.Id = SessionId;
             telemetry.Context.Device.OperatingSystem = Environment.OSVersion.ToString();
-            //telemetry.Context.Device.Id = Hostname;
+            if (Properties.Settings.Default.UploadClientId != Guid.Empty)
+                telemetry.Context.Device.Id = Properties.Settings.Default.UploadClientId.ToString();
             telemetry.Context.Component.Version = Version;
             if (System.Diagnostics.Debugger.IsAttached)
             {
-                //don't file the "productive" log with garbage from debug sessions
+                //don't fill the "productive" log with garbage from debug sessions
                 telemetry.Context.InstrumentationKey = "f4b2ea1b-afe4-4bd6-9175-f5bb167a4d8b";
             }
             if (Program.MainForm?.PluginLoader?.MyActivePlugins != null)
