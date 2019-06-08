@@ -24,7 +24,10 @@ namespace Chummer
             telemetry.Context.Session.Id = SessionId;
             telemetry.Context.Device.OperatingSystem = Environment.OSVersion.ToString();
             if (Properties.Settings.Default.UploadClientId != Guid.Empty)
+            {
+                telemetry.Context.Cloud.RoleInstance = Properties.Settings.Default.UploadClientId.ToString();
                 telemetry.Context.Device.Id = Properties.Settings.Default.UploadClientId.ToString();
+            }
             telemetry.Context.Component.Version = Version;
             if (System.Diagnostics.Debugger.IsAttached)
             {
