@@ -376,10 +376,10 @@ namespace ChummerHub.Client.Backend
                 }
                 
                 DelegatingHandler delegatingHandler = new MyMessageHandler();
-                HttpClientHandler httpClientHandler = new HttpClientHandler
-                {
-                    CookieContainer = AuthorizationCookieContainer
-                };
+                HttpClientHandler httpClientHandler = new HttpClientHandler();
+                var temp = AuthorizationCookieContainer;
+                if (temp != null)
+                    httpClientHandler.CookieContainer = temp;
                 client = new SINnersClient(baseUri, credentials, httpClientHandler, delegatingHandler);
             }
             catch (Exception ex)

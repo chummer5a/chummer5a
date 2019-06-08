@@ -298,6 +298,8 @@ namespace ChummerHub.Client.UI
             {
                 this.UseWaitCursor = true;
                 var client = StaticUtils.GetClient();
+                if (client == null)
+                    return null;
                 var result = client.GetUserByAuthorizationWithHttpMessagesAsync();
                 await result;
                 var user = result.Result.Body;
@@ -420,6 +422,8 @@ namespace ChummerHub.Client.UI
                 using (new CursorWait(true, sender))
                 {
                     var client = StaticUtils.GetClient();
+                    if (client == null)
+                        return StaticUtils.UserRoles;
                     var myresult = await client.GetRolesWithHttpMessagesAsync();
 
                     PluginHandler.MainForm.DoThreadSafe(new Action(() =>
