@@ -73,6 +73,7 @@ Data Changes:
 - Removed incorrect Medium lifestyle setting from the Workshop/Facility lifestyle qualities. Closes #3660
 - Extended Clip now allows Belt and Drum weapons instead of just Clips.
 - Fixed missing Mastery Quality flag for the Close Combat Mage quality.
+- The Tactical Grpple Gun is now addable as a gear item, in the same manner as the standard grapple gun. 
 
 String Changes:
 

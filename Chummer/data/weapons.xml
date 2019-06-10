@@ -7938,6 +7938,7 @@
           <name>Smartgun System, Internal</name>
         </accessory>
       </accessories>
+      <hide />
       <range>Heavy Crossbows</range>
       <sizecategory>Heavy Crossbows</sizecategory>
       <spec>Grapple Gun</spec>

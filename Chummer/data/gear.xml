@@ -8783,6 +8783,17 @@
       <avail>12F</avail>
       <cost>170</cost>
     </gear>
+    <gear>
+      <id>6976ac65-f8aa-482a-bc32-2986beae4c76</id>
+      <name>Tactical Grapple Gun</name>
+      <category>Grapple Gun</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>449</page>
+      <avail>8R</avail>
+      <addweapon>Tactical Grapple Gun</addweapon>
+      <cost>500</cost>
+    </gear>
     <!-- End Region -->
     <!-- Region Biotech -->
     <gear>
