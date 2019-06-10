@@ -667,7 +667,8 @@ namespace Chummer
             // This is done using XPathExpression.
 
             int intRating = decimal.ToInt32(nudRating.Value);
-            AvailabilityValue objTotalAvail = new AvailabilityValue(Convert.ToInt32(nudRating.Value), objXmlCyberware.SelectSingleNode("avail")?.Value);
+            AvailabilityValue objTotalAvail = new AvailabilityValue(Convert.ToInt32(nudRating.Value), objXmlCyberware.SelectSingleNode("avail")?.Value, _intAvailModifier);
+            lblAvailLabel.Visible = true;
             lblAvail.Text = objTotalAvail.ToString();
 
             // Cost.
