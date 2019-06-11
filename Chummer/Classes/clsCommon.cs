@@ -1178,9 +1178,9 @@ namespace Chummer
                 case Timescale.Days:
                     return LanguageManager.GetString("String_Days");
                 case Timescale.Instant:
-                    return LanguageManager.GetString("String_Instant");
+                    return LanguageManager.GetString("String_Immediate");
                 default:
-                    return LanguageManager.GetString("String_Instant");
+                    return LanguageManager.GetString("String_Immediate");
             }
         }
         #endregion

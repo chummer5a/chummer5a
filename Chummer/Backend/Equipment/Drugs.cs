@@ -577,6 +577,10 @@ namespace Chummer.Backend.Equipment
 
                     _intCachedDuration = intDuration;
                 }
+                else
+                {
+                    _intCachedDuration = 0;
+                }
 
                 _intCachedDuration += Components.Sum(d => d.ActiveDrugEffect.Duration) + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.DrugDuration);
                 if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.DrugDurationMultiplier) == 0)
@@ -599,13 +603,17 @@ namespace Chummer.Backend.Equipment
             {
                 if (!string.IsNullOrWhiteSpace(_strCachedDisplayDuration)) return _strCachedDisplayDuration;
                 StringBuilder sb = new StringBuilder();
-                sb.Append(Duration);
-                sb.Append(LanguageManager.GetString("String_Space"));
-                if (DurationDice > 0)
+                if (Duration > 0)
                 {
-                    sb.Append($"x {DurationDice}{LanguageManager.GetString("String_D6")}");
+                    sb.Append(Duration);
                     sb.Append(LanguageManager.GetString("String_Space"));
+                    if (DurationDice > 0)
+                    {
+                        sb.Append($"x {DurationDice}{LanguageManager.GetString("String_D6")}");
+                        sb.Append(LanguageManager.GetString("String_Space"));
+                    }
                 }
+
                 sb.Append(CommonFunctions.GetTimescaleString(DurationTimescale, Duration > 1));
                 _strCachedDisplayDuration = sb.ToString();
 
@@ -825,8 +833,7 @@ namespace Chummer.Backend.Equipment
 					strbldDescription.AppendLine(LanguageManager.TranslateExtra(strInfo, strLanguage));
 
 				if (Category == "Custom Drug" || Duration != 0)
-					strbldDescription.Append(LanguageManager.GetString("Label_Duration", strLanguage)).Append(strColonString).Append(strSpaceString)
-					        .Append("10 ⨯ ").Append((Duration + 1).ToString(objCulture)).Append(LanguageManager.GetString("String_D6", strLanguage)).Append(strSpaceString).AppendLine(LanguageManager.GetString("String_Minutes", strLanguage));
+					strbldDescription.Append(LanguageManager.GetString("Label_Duration", strLanguage)).AppendLine(DisplayDuration);
 
 				if (Category == "Custom Drug" || Speed != 0)
 				{
