@@ -1355,6 +1355,7 @@ namespace Chummer
             chkUseLogging.Checked = GlobalOptions.UseLogging;
             chkUseLoggingApplicationInsights.Checked = GlobalOptions.UseLoggingApplicationInsights;
             chkUseLoggingApplicationInsights.Enabled = chkUseLogging.Checked;
+            chkUseLoggingApplicationInsights.SetToolTip("Installation: " + Properties.Settings.Default.UploadClientId);
             chkLifeModule.Checked = GlobalOptions.LifeModuleEnabled;
             chkOmaeEnabled.Checked = GlobalOptions.OmaeEnabled;
             chkPreferNightlyBuilds.Checked = GlobalOptions.PreferNightlyBuilds;

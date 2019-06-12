@@ -56,9 +56,9 @@ namespace Chummer
             }
             catch (Exception ex)
             {
-                //string msg = ex.ToString();
-                //exceptionTelemetry.Properties.Add("Message", ex.Message);
-                //exceptionTelemetry.Properties.Add("Translated", msg);
+                string msg = ex.ToString();
+                exceptionTelemetry.Properties.Add("Message", ex.Message);
+                exceptionTelemetry.Properties.Add("Translated", msg);
             }
         }
 
