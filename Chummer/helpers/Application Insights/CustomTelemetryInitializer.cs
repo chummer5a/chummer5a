@@ -15,12 +15,20 @@ namespace Chummer
         //private static string Hostname =  Dns.GetHostName();
         private static string Version = System.Reflection.Assembly
             .GetExecutingAssembly().GetName().Version.ToString();
+
+        private static bool IsMilestone = System.Reflection.Assembly
+                                            .GetExecutingAssembly().GetName().Version.Revision == 0
+            ? true
+            : false;
         public static string Ip = null;
 
+      
         public void Initialize(ITelemetry telemetry)
         {
             //personal data should not be submited
             //telemetry.Context.User.Id = Environment.UserName;
+            if (!telemetry.Context.GlobalProperties.ContainsKey("Milestone"))
+                telemetry.Context.GlobalProperties.Add("Milestone", IsMilestone.ToString());
             telemetry.Context.Session.Id = SessionId;
             telemetry.Context.Device.OperatingSystem = Environment.OSVersion.ToString();
             if (Properties.Settings.Default.UploadClientId != Guid.Empty)
@@ -50,36 +58,5 @@ namespace Chummer
                 }
             }
         }
-
-        //public static string GetPublicIPAddress()
-        //{
-        //    try
-        //    {
-        //        var client = new System.Net.WebClient();
-        //        client.Proxy = WebRequest.DefaultWebProxy;
-        //        if (client.Proxy != null)
-        //        {
-        //            client.Proxy.Credentials = CredentialCache.DefaultCredentials;
-        //        }
-        //        string pubIp = client.DownloadString("https://api.ipify.org");
-        //        return pubIp;
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        Console.WriteLine(e);
-        //    }
-
-        //    var host = Dns.GetHostEntry(Dns.GetHostName());
-        //    foreach (var ip in host.AddressList)
-        //    {
-        //        if (ip.AddressFamily == AddressFamily.InterNetwork)
-        //        {
-        //            return ip.ToString();
-        //        }
-        //    }
-        //    //throw new Exception("No network adapters with an IPv4 address in the system!");
-        //    return "";
-        //}
     }
-
 }

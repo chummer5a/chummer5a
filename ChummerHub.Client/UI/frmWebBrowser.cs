@@ -80,6 +80,11 @@ namespace ChummerHub.Client.UI
                     //we are logged in!
                     GetCookieContainer();
                     var client = StaticUtils.GetClient();
+                    if (client == null)
+                    {
+                        Log.Error("Cloud not create an instance of SINnersclient!");
+                        return;
+                    }
                     var user = await client.GetUserByAuthorizationWithHttpMessagesAsync();
                     if (user.Body?.CallSuccess == true)
                     {
