@@ -374,10 +374,9 @@ namespace ChummerHub.Controllers.V1
                         var roles = await _userManager.GetRolesAsync(user);
                         if (!roles.Contains("GroupAdmin") || roles.Contains(storegroup?.MyAdminIdentityRole))
                         {
-                            string msg = "A group with the name " + mygroup.Groupname +
-                                         " already exists and user is not GroupAdmin or " +
-                                         storegroup?.MyAdminIdentityRole + "!";
 
+                            string msg = "A group with the name " + mygroup.Groupname +
+                                         " already exists! (Multiple groups with the same name can only be created by Admins, because they should know what the do)";
                             res = new ResultGroupPostGroup(new HubException(msg));
                             return BadRequest(res);
                         }

@@ -362,7 +362,7 @@ namespace Chummer
                             {
                                 foreach(var node in nodelist)
                                 {
-                                    var querycoll = treCharacterList.Nodes.Cast<TreeNode>();
+                                    var querycoll = treCharacterList.Nodes.Cast<TreeNode>().ToList();
                                     var found = (from a in querycoll
                                                 where a.Text == node.Text && a.Tag == node.Tag
                                                 select a).ToList();

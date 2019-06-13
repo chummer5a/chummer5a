@@ -666,6 +666,7 @@ namespace ChummerHub.Controllers.V1
                     {
                         sinner.SINnerMetaData.Visibility.Id = Guid.NewGuid();
                     }
+                    sinner.SINnerMetaData.Id = Guid.NewGuid();
 
                     var oldsinner = (from a in _context.SINners
                             //.Include(a => a.MyExtendedAttributes)
@@ -707,11 +708,13 @@ namespace ChummerHub.Controllers.V1
                             }
                             if (!userfound)
                             {
-                                SINnerUserRight ownUser = new SINnerUserRight();
-                                ownUser.Id = Guid.NewGuid();
-                                ownUser.SINnerId = sinner.Id;
-                                ownUser.CanEdit = true;
-                                ownUser.EMail = user.Email;
+                                SINnerUserRight ownUser = new SINnerUserRight
+                                {
+                                    Id = Guid.NewGuid(),
+                                    SINnerId = sinner.Id,
+                                    CanEdit = true,
+                                    EMail = user.Email
+                                };
                                 sinner.SINnerMetaData.Visibility.UserRights.Add(ownUser);
                                 _context.UserRights.Add(ownUser);
                             }

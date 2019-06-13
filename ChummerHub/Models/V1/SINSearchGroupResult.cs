@@ -49,10 +49,10 @@ namespace ChummerHub.Models.V1
             MyMembers = new List<SINnerSearchGroupMember>();
             this.MyGroups = new List<SINnerGroup>();
             MySINSearchGroups = new List<SINnerSearchGroup>();
-            this.MyAdminIdentityRole = groupbyname.MyAdminIdentityRole;
-            this.Language = groupbyname.Language;
-            this.PasswordHash = groupbyname.PasswordHash;
-            this.MySettings = groupbyname.MySettings;
+            this.MyAdminIdentityRole = groupbyname?.MyAdminIdentityRole;
+            this.Language = groupbyname?.Language;
+            this.PasswordHash = groupbyname?.PasswordHash;
+            this.MySettings = groupbyname?.MySettings;
         }
         
     }
