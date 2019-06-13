@@ -88,6 +88,7 @@ namespace Chummer
         {
             Utils.IsUnitTest = isUnitTest;
             InitializeComponent();
+            _pluginLoader = new PluginControl();
             using (var op_frmChummerMain = Timekeeper.StartSyncron("frmChummerMain Constructor", null, CustomActivity.OperationType.DependencyOperation, _strCurrentVersion))
             {
                 try
