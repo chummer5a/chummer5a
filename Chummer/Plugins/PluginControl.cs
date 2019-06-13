@@ -47,6 +47,18 @@ namespace Chummer.Plugins
         private static AggregateCatalog catalog;
         private static DirectoryCatalog myDirectoryCatalog = null;
 
+        public PluginControl()
+        {
+            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Plugins");
+            if (!Directory.Exists("Plugins"))
+            {
+                Log.Warn("Directory " + path + " not found. No Plugins will be available.");
+                MyPlugins = new List<IPlugin>();
+                return;
+            }
+            myDirectoryCatalog = new DirectoryCatalog(path: path, searchPattern: "*.dll");
+        }
+
         public void Initialize()
         {
             try
@@ -57,17 +69,6 @@ namespace Chummer.Plugins
                     return;
                 }
                 Log.Info("Plugins are globally enabled - entering PluginControl.Initialize()");
-                if (myDirectoryCatalog == null)
-                {
-                    string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Plugins");
-                    if (!Directory.Exists("Plugins"))
-                    {
-                        Log.Warn("Directory " + path + " not found. No Plugins will be available.");
-                        MyPlugins = new List<IPlugin>();
-                        return;
-                    }
-                    myDirectoryCatalog = new DirectoryCatalog(path: path, searchPattern: "*.dll");
-                }
                 
                 catalog = new AggregateCatalog();
                 Log.Info("Searching for dlls in path " + myDirectoryCatalog.FullPath);
@@ -156,7 +157,7 @@ namespace Chummer.Plugins
         {
             try
             {
-                using (var op_plugin = Timekeeper.StartSyncron("LoadPlugins", parentActivity, CustomActivity.OperationType.DependencyOperation, myDirectoryCatalog.FullPath))
+                using (var op_plugin = Timekeeper.StartSyncron("LoadPlugins", parentActivity, CustomActivity.OperationType.DependencyOperation, myDirectoryCatalog?.FullPath))
                 { 
                     this.Initialize();
                 }
