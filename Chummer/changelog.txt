@@ -45,6 +45,7 @@ Application Changes:
 - Refactored the creation, saving and loading of GUIDs for the Internal ID and Source ID of all objects to provide more consistency. There is a small risk that this will impact the stored improvements of some characters. I haven't been able to prove that it will happen, but logically it should based on this change. 
 - Removed the caching of Mugshot images in the character roster. Prevents high memory usage for large watch folder content.
 - Unified some uses of Availability processing into the AvailabilityValue object.
+- Crash reporter now prevents uploading issues unless the user story in the Error Description tab has been changed.
 
 UI Changes:
 

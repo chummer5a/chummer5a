@@ -55,7 +55,7 @@ namespace CrashHandler
 			timerRefreshTextFile.Stop();
 			timerRefreshTextFile.Start();
 			lblDescriptionWarning.Visible = txtUserStory.Text.Length == 0;
-            btnSend.Enabled = txtUserStory.Text.Length != 0;
+            btnSend.Enabled = Md5Hash(txtUserStory.Text) != _strDefaultUserStory;
         }
 
 		private void btnNo_Click(object sender, EventArgs e)
