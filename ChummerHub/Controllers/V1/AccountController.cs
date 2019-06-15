@@ -544,7 +544,7 @@ namespace ChummerHub.Controllers
 
                     var roles = await _userManager.GetRolesAsync(user);
                     ret.Roles = roles.ToList();
-                    ssg.Groupname = user.Email;
+                    ssg.Groupname = user.UserName;
                     ssg.Id = Guid.Empty;
                     //get all from visibility
                     List<SINner> mySinners = await SINner.GetSINnersFromUser(user, _context, true);

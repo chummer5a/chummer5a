@@ -18880,6 +18880,12 @@
 				<translate>Farbtinte (für 500 Blatt)</translate>
 				<altpage>183</altpage>
 			</gear>
+			<gear translated="True">
+				<id>6976ac65-f8aa-482a-bc32-2986beae4c76</id>
+				<name>Tactical Grapple Gun</name>
+				<translate>Enterhakenkanone</translate>
+				<altpage>454</altpage>
+			</gear>
 		</gears>
 	</chummer>
 	<chummer file="lifestyles.xml">
