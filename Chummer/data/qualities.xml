@@ -18761,7 +18761,7 @@
       <karma>5</karma>
       <category>Positive</category>
       <bonus>
-        <specialmodificationlimit>1</specialmodificationlimit>
+        <specialmodificationlimit>2</specialmodificationlimit>
       </bonus>
       <forbidden>
         <oneof>
@@ -18792,7 +18792,7 @@
       <category>Positive</category>
       <limit>2</limit>
       <bonus>
-        <specialmodificationlimit>1</specialmodificationlimit>
+        <specialmodificationlimit>2</specialmodificationlimit>
       </bonus>
       <forbidden>
         <oneof>

@@ -1,4 +1,10 @@
-Future Build 206
+Future Build 207
+
+Data Changes:
+
+- Fixed incorrect specialmodificationlimit property for the Special Modifications and Prototype Materials qualities. 
+
+Build 206
 
 New Features:
 
