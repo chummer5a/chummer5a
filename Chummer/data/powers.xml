@@ -1337,9 +1337,10 @@
       <name>Mimic</name>
       <points>0.25</points>
       <levels>True</levels>
-      <limit>6</limit>
+      <limit>1</limit>
       <source>SS</source>
       <page>191</page>
+      <maxlevels>6</maxlevels>
     </power>
     <power>
       <id>9fd628cc-dd06-435c-80d3-5261e7e5b1e5</id>
@@ -1704,9 +1705,10 @@
       <name>Osmosis</name>
       <points>0.25</points>
       <levels>True</levels>
-      <limit>6</limit>
+      <limit>1</limit>
       <source>CA</source>
       <page>153</page>
+      <maxlevels>6</maxlevels>
       <required>
         <oneof>
           <power>Mimic</power>
