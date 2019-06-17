@@ -51,7 +51,7 @@ namespace Chummer
         private string _strPointsPerLevel = "0";
         private string _strAction = string.Empty;
         private decimal _decExtraPointCost;
-        private int _intMaxLevels;
+        private int _intMaxLevel;
         private bool _blnDiscountedAdeptWay;
         private bool _blnDiscountedGeas;
         private XmlNode _nodAdeptWayRequirements;
@@ -112,7 +112,7 @@ namespace Chummer
             objWriter.WriteElementString("rating", _intRating.ToString());
             objWriter.WriteElementString("extrapointcost", _decExtraPointCost.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("levels", _blnLevelsEnabled.ToString());
-            objWriter.WriteElementString("maxlevels", _intMaxLevels.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("maxlevel", _intMaxLevel.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("discounted", _blnDiscountedAdeptWay.ToString());
             objWriter.WriteElementString("discountedgeas", _blnDiscountedGeas.ToString());
             objWriter.WriteElementString("bonussource", _strBonusSource);
@@ -150,7 +150,7 @@ namespace Chummer
             _intRating = intRating;
             if (!objNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
                 objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
-            objNode.TryGetInt32FieldQuickly("maxlevels", ref _intMaxLevels);
+            objNode.TryGetInt32FieldQuickly("maxlevels", ref _intMaxLevel);
             objNode.TryGetBoolFieldQuickly("discounted", ref _blnDiscountedAdeptWay);
             objNode.TryGetBoolFieldQuickly("discountedgeas", ref _blnDiscountedGeas);
             objNode.TryGetStringFieldQuickly("bonussource", ref _strBonusSource);
@@ -249,7 +249,7 @@ namespace Chummer
             }
             objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
             objNode.TryGetBoolFieldQuickly("levels", ref _blnLevelsEnabled);
-            objNode.TryGetInt32FieldQuickly("maxlevels", ref _intMaxLevels);
+            objNode.TryGetInt32FieldQuickly("maxlevel", ref _intMaxLevel);
             objNode.TryGetBoolFieldQuickly("discounted", ref _blnDiscountedAdeptWay);
             objNode.TryGetBoolFieldQuickly("discountedgeas", ref _blnDiscountedGeas);
             objNode.TryGetStringFieldQuickly("bonussource", ref _strBonusSource);
@@ -717,9 +717,11 @@ namespace Chummer
             get => _blnLevelsEnabled;
             set
             {
-                if (_blnLevelsEnabled == value) return;
-                _blnLevelsEnabled = value;
-                OnPropertyChanged();
+                if (_blnLevelsEnabled != value)
+                {
+                    _blnLevelsEnabled = value;
+                    OnPropertyChanged();
+                }
             }
         }
 
@@ -728,12 +730,14 @@ namespace Chummer
         /// </summary>
         public int MaxLevels
         {
-            get => _intMaxLevels;
+            get => _intMaxLevel;
             set
             {
-                if (_intMaxLevels == value) return;
-                _intMaxLevels = value;
-                OnPropertyChanged();
+                if (_intMaxLevel != value)
+                {
+                    _intMaxLevel = value;
+                    OnPropertyChanged();
+                }
             }
         }
 
@@ -745,9 +749,11 @@ namespace Chummer
             get => _blnDiscountedAdeptWay;
             set
             {
-                if (value == _blnDiscountedAdeptWay) return;
-                _blnDiscountedAdeptWay = value;
-                OnPropertyChanged();
+                if (value != _blnDiscountedAdeptWay)
+                {
+                    _blnDiscountedAdeptWay = value;
+                    OnPropertyChanged();
+                }
             }
         }
 
@@ -759,9 +765,11 @@ namespace Chummer
             get => _blnDiscountedGeas;
             set
             {
-                if (value == _blnDiscountedGeas) return;
-                _blnDiscountedGeas = value;
-                OnPropertyChanged();
+                if (value != _blnDiscountedGeas)
+                {
+                    _blnDiscountedGeas = value;
+                    OnPropertyChanged();
+                }
             }
         }
 
