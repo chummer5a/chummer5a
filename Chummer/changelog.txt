@@ -36,6 +36,7 @@ Application Fixes:
 - Fixed behaviour of deletion of custom drug recipes in create mode.
 - Unified behaviour of Essence improvements between cyberware and bioware.
 - If no spirit limit is specified for the limitspiritcategory improvement, the improvement will now prompt for all known spirit types.
+- Fixed issues with adept powers not properly being limited via maxlevels.
 
 Application Changes:
 
