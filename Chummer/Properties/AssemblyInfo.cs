@@ -48,5 +48,5 @@
 //      Minor Version
 //      Build Number
 //      Revision
-[assembly: AssemblyVersion("5.205.1")]
-[assembly: AssemblyFileVersion("5.205.1")]
+[assembly: AssemblyVersion("5.206.0")]
+[assembly: AssemblyFileVersion("5.206.0")]
