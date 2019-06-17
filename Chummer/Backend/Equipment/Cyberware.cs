@@ -1824,6 +1824,17 @@ namespace Chummer.Backend.Equipment
                         _guiID.ToString("D") + "WirelessPair", WirelessPairBonus, false, Rating,
                         DisplayNameShort(GlobalOptions.Language));
                 }
+                foreach (Cyberware objLoopCyberware in lstPairableCyberwares)
+                {
+                    ImprovementManager.RemoveImprovements(_objCharacter, objLoopCyberware.SourceType, objLoopCyberware.InternalId + "WirelessPair");
+                    // Go down the list and create pair bonuses for every second item
+                    if (intCount > 0 && intCount % 2 == 1)
+                    {
+                        ImprovementManager.CreateImprovements(_objCharacter, objLoopCyberware.SourceType, objLoopCyberware.InternalId + "WirelessPair",
+                            objLoopCyberware.WirelessPairBonus, false, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort(GlobalOptions.Language));
+                    }
+                    intCount -= 1;
+                }
             }
             else
             {
