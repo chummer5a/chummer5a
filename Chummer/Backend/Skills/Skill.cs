@@ -67,6 +67,7 @@ namespace Chummer.Backend.Skills
             objWriter.WriteElementString("karma", _intKarma.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("base", _intBase.ToString(GlobalOptions.InvariantCultureInfo)); //this could acctually be saved in karma too during career
             objWriter.WriteElementString("notes", _strNotes);
+            objWriter.WriteElementString("name", _strName);
             if (!CharacterObject.Created)
             {
                 objWriter.WriteElementString("buywithkarma", BuyWithKarma.ToString());
