@@ -136,8 +136,18 @@ namespace Chummer
                     foreach (string strLoopOldFilePath in Directory.GetFiles(Utils.GetStartupPath, "*.old",
                         SearchOption.AllDirectories))
                     {
-                        if (File.Exists(strLoopOldFilePath))
-                            File.Delete(strLoopOldFilePath);
+                        try
+                        {
+                            if (File.Exists(strLoopOldFilePath))
+                                File.Delete(strLoopOldFilePath);
+                        }
+                        catch (UnauthorizedAccessException e)
+                        {
+                            //we will just delete it the next time
+                            //its probably the "used by another process"
+                            Log.Trace(e, "UnauthorizedAccessException can be ignored - probably used by another process.");
+                        }
+                        
                     }
 
                     // Populate the MRU list.
