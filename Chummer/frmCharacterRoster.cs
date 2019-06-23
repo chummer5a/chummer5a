@@ -438,12 +438,20 @@ namespace Chummer
                 }
                 else
                 {
-                    objRecentNode.Nodes.Clear();
-                    for(int i = 0; i < lstRecentsNodes.Length; i++)
+                    try
                     {
-                        TreeNode objNode = lstRecentsNodes[i];
-                        if(objNode != null)
-                            objRecentNode.Nodes.Add(objNode);
+                        objRecentNode.Nodes.Clear();
+                        for (int i = 0; i < lstRecentsNodes.Length; i++)
+                        {
+                            TreeNode objNode = lstRecentsNodes[i];
+                            if (objNode != null)
+                                objRecentNode.Nodes.Add(objNode);
+                        }
+                    }
+                    catch (ObjectDisposedException e)
+                    {
+                        //just swallow this
+                        Log.Trace(e, "ObjectDisposedException can be ignored here.");
                     }
                 }
             }

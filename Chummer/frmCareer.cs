@@ -5870,7 +5870,9 @@ namespace Chummer
 
             if (frmPickImprovement.DialogResult == DialogResult.Cancel) return;
 
-            TreeNode newNode = treImprovements.FindNode(frmPickImprovement.NewImprovement.InternalId);
+            TreeNode newNode = null;
+            if (!String.IsNullOrEmpty(frmPickImprovement?.NewImprovement?.InternalId))
+                newNode = treImprovements.FindNode(frmPickImprovement.NewImprovement.InternalId);
 
             if (newNode != null)
             {
