@@ -12698,6 +12698,7 @@
       </accessorymounts>
       <ammocategory>Heavy Pistols</ammocategory>
       <range>Heavy Pistols</range>
+      <spec>Revolvers</spec>
     </weapon>
     <weapon>
       <id>bad08133-2783-463a-b187-fd6210c163ff</id>
@@ -12754,6 +12755,7 @@
         <mount>Side</mount>
       </accessorymounts>
       <addweapon>Barrens Special: Bayonet</addweapon>
+      <spec>Revolvers</spec>
     </weapon>
     <weapon>
       <id>4378e735-859d-4606-9396-f9af248487e2</id>
@@ -13046,6 +13048,7 @@
         <mount>Side</mount>
       </accessorymounts>
       <spec>Semi-Automatics</spec>
+      <spec2>Revolvers</spec2>
     </weapon>
     <weapon>
       <id>3a4f4008-8d0c-430f-abe1-b4142d337da1</id>
