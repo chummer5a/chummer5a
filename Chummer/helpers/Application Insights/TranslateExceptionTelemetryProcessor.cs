@@ -52,13 +52,16 @@ namespace Chummer
             {
                 string msg =
                     TranslateExceptionMessage(exceptionTelemetry.Exception, translateCultureInfo);
-                exceptionTelemetry.Properties.Add("Translated", msg); 
+                if (!exceptionTelemetry.Properties.ContainsKey("Translated"))
+                    exceptionTelemetry.Properties.Add("Translated", msg); 
             }
             catch (Exception ex)
             {
                 string msg = ex.ToString();
-                exceptionTelemetry.Properties.Add("Message", ex.Message);
-                exceptionTelemetry.Properties.Add("Translated", msg);
+                if (!exceptionTelemetry.Properties.ContainsKey("Message"))
+                    exceptionTelemetry.Properties.Add("Message", ex.Message);
+                if (!exceptionTelemetry.Properties.ContainsKey("Translated"))
+                    exceptionTelemetry.Properties.Add("Translated", msg);
             }
         }
 

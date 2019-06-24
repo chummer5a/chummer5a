@@ -390,9 +390,17 @@ namespace Chummer.Plugins
                 {
                     Func<Task<HttpOperationResponse<ResultAccountGetSinnersByAuthorization>>> myMethodName = async () =>
                     {
-                        var client = StaticUtils.GetClient();
-                        var ret = await client.GetSINnersByAuthorizationWithHttpMessagesAsync();
-                        return ret;
+                        try
+                        {
+                            var client = StaticUtils.GetClient();
+                            var ret = await client.GetSINnersByAuthorizationWithHttpMessagesAsync();
+                            return ret;
+                        }
+                        catch (Exception e)
+                        {
+                            Log.Error(e);
+                            throw;
+                        }
                     }; 
                     var res = await ChummerHub.Client.Backend.Utils.GetCharacterRosterTreeNode(forceUpdate, myMethodName);
                     if (res == null)
