@@ -49,6 +49,7 @@ namespace Chummer.Backend.Equipment
         private string _strCategory = string.Empty;
         private string _strMaxRating = string.Empty;
         private string _strMinRating = string.Empty;
+        private string _strRatingLabel = "String_Rating";
         private int _intRating;
         private decimal _decQty = 1.0m;
         private string _strCapacity = string.Empty;
@@ -167,6 +168,7 @@ namespace Chummer.Backend.Equipment
             _nodBonus = objXmlGear["bonus"];
             _nodWirelessBonus = objXmlGear["wirelessbonus"];
             _blnWirelessOn = false;
+            objXmlGear.TryGetStringFieldQuickly("ratinglabel", ref _strRatingLabel);
 			objXmlGear.TryGetStringFieldQuickly("rating", ref _strMaxRating);
             if (_strMaxRating == "0")
                 _strMaxRating = string.Empty;
@@ -1460,6 +1462,12 @@ namespace Chummer.Backend.Equipment
                     }
                 }
             }
+        }
+
+        public string RatingLabel
+        {
+            get => _strRatingLabel;
+            set => _strRatingLabel = value;
         }
 
         /// <summary>

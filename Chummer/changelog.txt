@@ -1,6 +1,4 @@
-Future Build 208
-
-Build 207 (Quickie)
+Future Build 207/208
 
 Application Changes:
 
@@ -9,6 +7,7 @@ Quick version increment because I'm an idiot and forgot to update Appveyor for n
 Data Changes:
 
 - Fixed incorrect specialmodificationlimit property for the Special Modifications and Prototype Materials qualities. 
+- Fixed missing specs for the Colt Coral Snake, Barrens Special and Onotari Arms Vagabond.
 
 Build 206
 

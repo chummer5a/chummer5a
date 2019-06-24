@@ -62,6 +62,7 @@ namespace Chummer.Backend.Equipment
         private string _strPage = string.Empty;
         private string _strNotes = string.Empty;
         private string _strDicePool = string.Empty;
+	    private string _strRatingLabel = "String_Rating";
         private int _intAccuracy;
         private int _intMaxRating;
         private int _intRating;
@@ -129,6 +130,7 @@ namespace Chummer.Backend.Equipment
             _strExtraMount = strMount.Item2;
             _intRating = intRating;
             objXmlAccessory.TryGetInt32FieldQuickly("rating", ref _intMaxRating);
+            objXmlAccessory.TryGetStringFieldQuickly("ratinglabel", ref _strRatingLabel);
             objXmlAccessory.TryGetStringFieldQuickly("avail", ref _strAvail);
             // Check for a Variable Cost.
             if (blnSkipCost)
@@ -261,6 +263,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("rc", _strRC);
             objWriter.WriteElementString("maxrating", _intMaxRating.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("ratinglabel", _strRatingLabel);
             objWriter.WriteElementString("rcgroup", _intRCGroup.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("rcdeployable", _blnDeployable.ToString());
             objWriter.WriteElementString("specialmodification", _blnSpecialModification.ToString());
@@ -338,6 +341,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("extramount", ref _strExtraMount);
             objNode.TryGetStringFieldQuickly("rc", ref _strRC);
             objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
+            objNode.TryGetStringFieldQuickly("ratinglabel", ref _strRatingLabel);
             objNode.TryGetInt32FieldQuickly("rcgroup", ref _intRCGroup);
             objNode.TryGetInt32FieldQuickly("accuracy", ref _intAccuracy);
             if (!objNode.TryGetInt32FieldQuickly("maxrating", ref _intMaxRating))
@@ -421,6 +425,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("rc", RC);
             objWriter.WriteElementString("conceal", TotalConcealability.ToString("+#,0;-#,0;0", objCulture));
             objWriter.WriteElementString("avail", TotalAvail(objCulture, strLanguageToPrint));
+            objWriter.WriteElementString("ratinglabel", RatingLabel);
             objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             objWriter.WriteElementString("included", IncludedInWeapon.ToString());
@@ -714,6 +719,12 @@ namespace Chummer.Backend.Equipment
                 }
             }
         }
+
+	    public string RatingLabel
+	    {
+	        get => _strRatingLabel;
+	        set => _strRatingLabel = value;
+	    }
 
         /// <summary>
         /// Avail.

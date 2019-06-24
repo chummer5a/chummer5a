@@ -59,6 +59,7 @@ namespace Chummer.Backend.Equipment
         private int _intRating;
         private string _strMinRating = string.Empty;
         private string _strMaxRating = string.Empty;
+        private string _strRatingLabel = "String_Rating";
         private string _strAllowSubsystems = string.Empty;
         private bool _blnSuite;
         private bool _blnStolen;
@@ -389,6 +390,7 @@ namespace Chummer.Backend.Equipment
             _objCachedMyXmlNode = null;
             objXmlCyberware.TryGetStringFieldQuickly("rating", ref _strMaxRating);
             objXmlCyberware.TryGetStringFieldQuickly("minrating", ref _strMinRating);
+            objXmlCyberware.TryGetStringFieldQuickly("ratinglabel", ref _strRatingLabel);
 
             _intRating = Math.Min(Math.Max(intRating, MinRating), MaxRating);
 
@@ -799,6 +801,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("minrating", _strMinRating);
             objWriter.WriteElementString("maxrating", _strMaxRating);
+            objWriter.WriteElementString("ratinglabel", _strRatingLabel);
             objWriter.WriteElementString("subsystems", _strAllowSubsystems);
             objWriter.WriteElementString("wirelesson", WirelessOn.ToString());
             objWriter.WriteElementString("grade", _objGrade.Name);
@@ -951,6 +954,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
             objNode.TryGetStringFieldQuickly("minrating", ref _strMinRating);
             objNode.TryGetStringFieldQuickly("maxrating", ref _strMaxRating);
+            objNode.TryGetStringFieldQuickly("ratinglabel", ref _strRatingLabel);
             objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
             // Legacy shim for old-form customized attribute
             if ((Name == "Customized Agility" || Name == "Customized Strength" || Name == "Cyberlimb Customization, Agility (2050)" || Name == "Cyberlimb Customization, Strength (2050)") &&
@@ -1246,6 +1250,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("rating", Rating.ToString(objCulture));
             objWriter.WriteElementString("minrating", MinRating.ToString(objCulture));
             objWriter.WriteElementString("maxrating", MaxRating.ToString(objCulture));
+            objWriter.WriteElementString("ratinglabel", RatingLabel);
             objWriter.WriteElementString("allowsubsystems", AllowedSubsystems);
             objWriter.WriteElementString("wirelesson", WirelessOn.ToString());
             objWriter.WriteElementString("grade", Grade.DisplayName(strLanguageToPrint));
@@ -2162,6 +2167,12 @@ namespace Chummer.Backend.Equipment
         {
             get => _strMaxRating;
             set => _strMaxRating = value;
+        }
+
+        public string RatingLabel
+        {
+            get => _strRatingLabel;
+            set => _strRatingLabel = value;
         }
 
         /// <summary>
