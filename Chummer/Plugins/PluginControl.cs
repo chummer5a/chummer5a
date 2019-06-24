@@ -49,14 +49,7 @@ namespace Chummer.Plugins
 
         public PluginControl()
         {
-            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Plugins");
-            if (!Directory.Exists("Plugins"))
-            {
-                Log.Warn("Directory " + path + " not found. No Plugins will be available.");
-                MyPlugins = new List<IPlugin>();
-                return;
-            }
-            myDirectoryCatalog = new DirectoryCatalog(path: path, searchPattern: "*.dll");
+            
         }
 
         public void Initialize()
@@ -69,9 +62,18 @@ namespace Chummer.Plugins
                     return;
                 }
                 Log.Info("Plugins are globally enabled - entering PluginControl.Initialize()");
-                
+
+                string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Plugins");
+                if (!Directory.Exists("Plugins"))
+                {
+                    Log.Warn("Directory " + path + " not found. No Plugins will be available.");
+                    MyPlugins = new List<IPlugin>();
+                    return;
+                }
+                myDirectoryCatalog = new DirectoryCatalog(path: path, searchPattern: "*.dll");
+
                 catalog = new AggregateCatalog();
-                Log.Info("Searching for dlls in path " + myDirectoryCatalog.FullPath);
+                Log.Info("Searching for dlls in path " + myDirectoryCatalog?.FullPath);
                 catalog.Catalogs.Add(myDirectoryCatalog);
                 container = new CompositionContainer(catalog);
                 //Fill the imports of this object

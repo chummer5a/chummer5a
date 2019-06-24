@@ -351,7 +351,8 @@ echo Statement 7: copy $(TargetDir)System.Composition.* $(TargetDir)Plugins\ /Y
 copy $(TargetDir)System.Composition.* $(TargetDir)Plugins\ /Y
 echo Statement 8: copy $(TargetDir)System.Diagnostics.DiagnosticSource.* $(TargetDir)Plugins\ /Y
 copy $(TargetDir)System.Diagnostics.DiagnosticSource.* $(TargetDir)Plugins\ /Y
-</PostBuildEvent>
+echo Statement 8: copy $(TargetDir)Microsoft.ApplicationInsights.* $(TargetDir)Plugins\ /Y
+copy $(TargetDir)Microsoft.ApplicationInsights.* $(TargetDir)Plugins\ /Y</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>

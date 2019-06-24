@@ -592,7 +592,10 @@ namespace Chummer.UI.Skills
             }
             objSkill.Upgrade();
             _objCharacter.SkillsSection.Skills.Add(objSkill);
-            _objCharacter.SkillsSection.SkillsDictionary.Add(objSkill.Name + " (" + objSkill.DisplaySpecializationMethod(GlobalOptions.DefaultLanguage) + ')', objSkill);
+            string key = objSkill.Name + " (" + objSkill.DisplaySpecializationMethod(GlobalOptions.DefaultLanguage) +
+                         ')';
+            if (!_objCharacter.SkillsSection.SkillsDictionary.ContainsKey(key))
+                _objCharacter.SkillsSection.SkillsDictionary.Add(key, objSkill);
         }
         
         private void btnKnowledge_Click(object sender, EventArgs e)
