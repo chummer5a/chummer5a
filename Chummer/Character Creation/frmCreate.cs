@@ -160,14 +160,14 @@ namespace Chummer
             //}
             if (ModifierKeys == Keys.Control)
             {
-                if (!objTree.SelectedNode.IsExpanded)
+                if (objTree?.SelectedNode?.IsExpanded == false)
                 {
                     foreach (TreeNode objNode in objTree.SelectedNode.Nodes)
                     {
                         objNode.ExpandAll();
                     }
                 }
-                else
+                else if (objTree?.SelectedNode?.Nodes != null)
                 {
                     foreach (TreeNode objNode in objTree.SelectedNode.Nodes)
                     {
@@ -1407,7 +1407,9 @@ namespace Chummer
                         if (CharacterObject.ExCon)
                         {
                             bool blnDoRefresh = false;
-                            foreach (Cyberware objCyberware in CharacterObject.Cyberware.ToList().DeepWhere(x => x.Children, x => x.CanRemoveThroughImprovements))
+                            var list = CharacterObject.Cyberware.ToList()
+                                .DeepWhere(x => x.Children, x => x.CanRemoveThroughImprovements);
+                            foreach (Cyberware objCyberware in list)
                             {
                                 char chrAvail = objCyberware.TotalAvailTuple(false).Suffix;
                                 if (chrAvail == 'R' || chrAvail == 'F')
