@@ -1,14 +1,13 @@
-Future Build 208
+Future Build 207-208
 
-Build 207 (Quickie)
+Application Fixes:
 
-Application Changes:
-
-Quick version increment because I'm an idiot and forgot to update Appveyor for nightlies.
+- Fixed issues with the SelectSpell improvement not being properly available in the improvements window.
 
 Data Changes:
 
 - Fixed incorrect specialmodificationlimit property for the Special Modifications and Prototype Materials qualities. 
+- Quick Healer now grants a +2 dicepool to casting the Heal spell. I strongly disagree with the wording on this personally, but it's RAW.
 
 Build 206
 

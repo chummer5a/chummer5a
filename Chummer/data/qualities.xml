@@ -479,6 +479,10 @@
       <category>Positive</category>
       <bonus>
         <physicalcmrecovery>2</physicalcmrecovery>
+        <spelldicepool>
+          <name>Heal</name>
+          <val>2</val>
+        </spelldicepool>
         <stuncmrecovery>2</stuncmrecovery>
       </bonus>
       <forbidden>
