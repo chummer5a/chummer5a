@@ -28,6 +28,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Web.Script.Serialization;
 using System.Windows.Forms;
+using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.Win32;
 
 namespace Chummer.Backend
@@ -195,6 +196,11 @@ namespace Chummer.Backend
                 {
                     if (Program.TelemetryClient != null)
                     {
+                        ExceptionTelemetry et = new ExceptionTelemetry(ex)
+                        {
+                            SeverityLevel = SeverityLevel.Critical
+                        };
+                        Program.TelemetryClient.TrackException(et);
                         Program.TelemetryClient.Flush();
                     }
                 }
