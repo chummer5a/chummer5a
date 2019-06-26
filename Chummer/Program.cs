@@ -51,7 +51,7 @@ namespace Chummer
         //{
         //    InstrumentationKey = "012fd080-80dc-4c10-97df-4f2cf8c805d5"
         //};
-        private static readonly TelemetryClient TelemetryClient = new TelemetryClient();
+        public static readonly TelemetryClient TelemetryClient = new TelemetryClient();
         
 
         /// <summary>
