@@ -174,6 +174,11 @@ namespace Chummer
 
             if (string.IsNullOrEmpty(strShowFileName))
                 strShowFileName = _objCharacter.CharacterName;
+            var replaceChars = System.IO.Path.GetInvalidFileNameChars();
+            foreach (var invalidChar in replaceChars)
+            {
+                strShowFileName = strShowFileName.Replace(invalidChar, '_');
+            }
             string strFilePath = Path.Combine(strAutosavePath, strShowFileName);
             _objCharacter.Save(strFilePath, false, false);
             Cursor = objOldCursor;

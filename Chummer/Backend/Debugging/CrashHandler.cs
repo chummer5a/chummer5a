@@ -28,6 +28,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Web.Script.Serialization;
 using System.Windows.Forms;
+using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.Win32;
 
 namespace Chummer.Backend
@@ -60,7 +61,9 @@ namespace Chummer.Backend
                     {"current-dir", Utils.GetStartupPath},
                     {"application-dir", Application.ExecutablePath},
                     {"os-type", Environment.OSVersion.VersionString},
-                    {"visible-error-friendly", ex?.Message ?? "No description available"}
+                    {"visible-error-friendly", ex?.Message ?? "No description available"},
+                    { "installation-id", Chummer.Properties.Settings.Default.UploadClientId.ToString() },
+                    { "option-upload-logs-set", GlobalOptions.UseLoggingApplicationInsights.ToString() }
                 };
 
                 try
@@ -188,6 +191,19 @@ namespace Chummer.Backend
 
                 byte[] info = new UTF8Encoding(true).GetBytes(dump.SerializeBase64());
                 File.WriteAllBytes(Path.Combine(Utils.GetStartupPath, "json.txt"), info);
+
+                if (GlobalOptions.UseLoggingApplicationInsights)
+                {
+                    if (Program.TelemetryClient != null)
+                    {
+                        ExceptionTelemetry et = new ExceptionTelemetry(ex)
+                        {
+                            SeverityLevel = SeverityLevel.Critical
+                        };
+                        Program.TelemetryClient.TrackException(et);
+                        Program.TelemetryClient.Flush();
+                    }
+                }
 
                 //Process crashHandler = Process.Start("crashhandler", "crash " + Path.Combine(Utils.GetStartupPath, "json.txt") + " --debug");
                 Process crashHandler = Process.Start("crashhandler", "crash " + Path.Combine(Utils.GetStartupPath, "json.txt"));
