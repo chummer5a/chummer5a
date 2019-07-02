@@ -349,7 +349,9 @@ namespace Chummer
         {
             get
             {
-                if (cboAmmo.DropDownStyle == ComboBoxStyle.DropDownList || cboAmmo.SelectedValue != null)
+                if (cboAmmo == null)
+                    return null;
+                if (cboAmmo.DropDownStyle == ComboBoxStyle.DropDownList && cboAmmo.SelectedValue != null)
                     return cboAmmo.SelectedValue.ToString();
                 return cboAmmo.Text;
             }

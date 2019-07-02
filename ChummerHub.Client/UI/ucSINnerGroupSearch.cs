@@ -577,6 +577,7 @@ namespace ChummerHub.Client.UI
                     {
                         this.bCreateGroup.Enabled = true;
                         this.bJoinGroup.Enabled = true;
+                        this.bJoinGroup.Text = "join group";
                     }
                     else
                     {

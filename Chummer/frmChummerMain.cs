@@ -132,22 +132,31 @@ namespace Chummer
                         this.DoThreadSafe(() => { PopulateMRUToolstripMenu(sender, e); });
                     };
 
-                    // Delete the old executable if it exists (created by the update process).
-                    foreach (string strLoopOldFilePath in Directory.GetFiles(Utils.GetStartupPath, "*.old",
-                        SearchOption.AllDirectories))
+                    try
                     {
-                        try
+                        // Delete the old executable if it exists (created by the update process).
+                        string[] oldfiles =
+                            Directory.GetFiles(Utils.GetStartupPath, "*.old", SearchOption.AllDirectories);
+                        foreach (string strLoopOldFilePath in oldfiles)
                         {
-                            if (File.Exists(strLoopOldFilePath))
-                                File.Delete(strLoopOldFilePath);
+                            try
+                            {
+                                if (File.Exists(strLoopOldFilePath))
+                                    File.Delete(strLoopOldFilePath);
+                            }
+                            catch (UnauthorizedAccessException e)
+                            {
+                                //we will just delete it the next time
+                                //its probably the "used by another process"
+                                Log.Trace(e,
+                                    "UnauthorizedAccessException can be ignored - probably used by another process.");
+                            }
                         }
-                        catch (UnauthorizedAccessException e)
-                        {
-                            //we will just delete it the next time
-                            //its probably the "used by another process"
-                            Log.Trace(e, "UnauthorizedAccessException can be ignored - probably used by another process.");
-                        }
-                        
+                    }
+                    catch (UnauthorizedAccessException e)
+                    {
+                        Log.Trace(e,
+                            "UnauthorizedAccessException in " + Utils.GetStartupPath + "can be ignored - probably a weird path like Recycle.Bin or something...");
                     }
 
                     // Populate the MRU list.
@@ -293,7 +302,6 @@ namespace Chummer
 
                     PluginLoader.CallPlugins(toolsMenu, op_frmChummerMain);
                     frmLoadingForm.Close();
-
                 }
                 catch (Exception e)
                 {
