@@ -130,7 +130,7 @@
       <source>SR5</source>
       <category>Combat</category>
       <damage>P</damage>
-      <descriptor>Direct</descriptor>
+      <descriptor>Direct, Area</descriptor>
       <duration>I</duration>
       <dv>F</dv>
       <range>LOS (A)</range>
