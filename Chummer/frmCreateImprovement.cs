@@ -183,7 +183,8 @@ namespace Chummer
 
                     frmSelectItem select = new frmSelectItem
                     {
-                        Description = LanguageManager.GetString("Title_SelectAction", GlobalOptions.Language)
+                        Description = LanguageManager.GetString("Title_SelectAction", GlobalOptions.Language),
+                        DropdownItems = lstActions
                     };
                     select.ShowDialog(this);
 
@@ -384,6 +385,29 @@ namespace Chummer
                         txtTranslateSelection.Text = TranslateField(_strSelect, frmPickSkillGroup.SelectedSkillGroup);
                     }
                         
+                    break;
+                case "SelectSpell":
+                    List<ListItem> lstSpells = new List<ListItem>();
+                    using (XmlNodeList xmlSpellList = XmlManager.Load("spells.xml").SelectNodes("/chummer/spells/spell"))
+                        if (xmlSpellList != null)
+                            foreach (XmlNode xmlSpell in xmlSpellList)
+                            {
+                                lstSpells.Add(new ListItem(xmlSpell["name"].InnerText, xmlSpell["translate"]?.InnerText ?? xmlSpell["name"]?.InnerText));
+                            }
+
+                    frmSelectItem selectSpell = new frmSelectItem
+                    {
+                        Description = LanguageManager.GetString("Title_SelectSpell", GlobalOptions.Language),
+                        DropdownItems = lstSpells
+                        
+                    };
+                    selectSpell.ShowDialog(this);
+
+                    if (selectSpell.DialogResult == DialogResult.OK)
+                    {
+                        txtSelect.Text = selectSpell.SelectedName;
+                        txtTranslateSelection.Text = TranslateField(_strSelect, selectSpell.SelectedName);
+                    }
                     break;
                 case "SelectWeaponCategory":
                     frmSelectWeaponCategory frmPickWeaponCategory = new frmSelectWeaponCategory

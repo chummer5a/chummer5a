@@ -586,7 +586,7 @@
     </improvement>
     <improvement>
       <name>Specific Spell Dicepool</name>
-      <id>spellcategory</id>
+      <id>spelldicepool</id>
       <internal>spelldicepool</internal>
       <fields>
         <field>SelectSpell</field>
