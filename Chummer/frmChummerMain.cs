@@ -985,6 +985,18 @@ namespace Chummer
 
         private void frmChummerMain_Load(object sender, EventArgs e)
         {
+            //sometimes the Configuration gets messed up - make sure it is valid!
+            try
+            {
+                Size si = Properties.Settings.Default.Size;
+            }
+            catch (System.Configuration.ConfigurationErrorsException ex)
+            {
+                //the config is invalid - reset it!
+                Properties.Settings.Default.Reset();
+                Properties.Settings.Default.Save();
+                Log.Warn("Configuartion Settings were invalid and had to be reset. Exception: " + ex.Message);
+            }
             if(Properties.Settings.Default.Size.Width == 0 || Properties.Settings.Default.Size.Height == 0 || !IsVisibleOnAnyScreen())
             {
                 Size = new Size(1280, 720);
