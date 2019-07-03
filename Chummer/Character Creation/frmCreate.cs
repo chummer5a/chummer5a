@@ -7838,6 +7838,9 @@ namespace Chummer
             if (IsRefreshing)
                 return;
 
+            if (treGear?.SelectedNode == null)
+                return;
+
             if (treGear.SelectedNode.Level > 0)
             {
                 if (!(treGear.SelectedNode?.Tag is Gear objGear))
@@ -9766,7 +9769,9 @@ namespace Chummer
                 if (spellCost <= CharacterObjectOptions.KarmaSpell)
                 {
                     // Assume that every [spell cost] karma spent on a Mastery quality is paid for with a priority-given spell point instead, as that is the most karma-efficient.
-                    int intQualityKarmaToSpellPoints = Math.Min(limit, (CharacterObject.Qualities.Where(objQuality => objQuality.CanBuyWithSpellPoints).Sum(objQuality => objQuality.BP) * CharacterObjectOptions.KarmaQuality) / CharacterObjectOptions.KarmaSpell);
+                    int intQualityKarmaToSpellPoints = CharacterObjectOptions.KarmaSpell;
+                    if (CharacterObjectOptions.KarmaSpell != 0)
+                            intQualityKarmaToSpellPoints = Math.Min(limit, (CharacterObject.Qualities.Where(objQuality => objQuality.CanBuyWithSpellPoints).Sum(objQuality => objQuality.BP) * CharacterObjectOptions.KarmaQuality) / CharacterObjectOptions.KarmaSpell);
                     spells += intQualityKarmaToSpellPoints;
                     // Add the karma paid for by spell points back into the available karma pool.
                     intKarmaPointsRemain += intQualityKarmaToSpellPoints * CharacterObjectOptions.KarmaSpell;
