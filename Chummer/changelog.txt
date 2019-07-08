@@ -8,6 +8,7 @@ Application Fixes:
 - Changing priorities or metatypes in Create mode will no longer reset all points and karma put into attributes.
 - Fixed a bug where special attributes would not update properly with changes to the Special priority category.
 - Fixed a UI issue where tooltips to improve attributes or skills that are at their maximum rating would show the regular improvement tooltip with a karma cost of -1 instead of a message saying that the item is at its maximum. Closes #3664.
+- Fixed an issue where the GenetechCostMultiplier improvement would not work properly. Part of #3741.
 
 Data Changes:
 

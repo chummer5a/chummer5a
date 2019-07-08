@@ -3080,6 +3080,20 @@ namespace Chummer.Backend.Equipment
                 if (DiscountCost)
                     decReturn *= 0.9m;
 
+                // Genetech Cost multiplier.
+                if (SourceType == Improvement.ImprovementSource.Bioware &&
+                    (Category.StartsWith("Genetech") || Category.StartsWith("Genetic Infusions") || Category.StartsWith("Genemods")) &&
+                    ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.GenetechCostMultiplier) != 0)
+                {
+                    decimal decMultiplier = 1.0m;
+                    foreach (Improvement objImprovement in _objCharacter.Improvements)
+                    {
+                        if (objImprovement.ImproveType == Improvement.ImprovementType.GenetechCostMultiplier && objImprovement.Enabled)
+                            decMultiplier -= (1.0m - (Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100.0m));
+                    }
+                    decReturn *= decMultiplier;
+                }
+
                 // Add in the cost of all child components.
                 foreach (Cyberware objChild in Children)
                 {
