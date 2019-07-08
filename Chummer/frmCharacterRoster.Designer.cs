@@ -398,7 +398,7 @@ namespace Chummer
             // 
             this.cmsRoster.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsToggleFav,
-            this.tsSort,
+            //this.tsSort,
             this.tsDelete,
             this.tsCloseOpenCharacter});
             this.cmsRoster.Name = "cmsRoster";
