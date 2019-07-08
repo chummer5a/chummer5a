@@ -1088,6 +1088,8 @@ namespace ChummerHub.Controllers.V1
             
             if (dbsinner == null)
                 return null;
+            if (user == null)
+                return null;
             string normEmail = user.NormalizedEmail;
             string userName = user.UserName;
             var dbsinnerseq = (from a in _context.UserRights
