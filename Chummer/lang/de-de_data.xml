@@ -24484,9 +24484,9 @@
 			<mentor translated="True">
 				<id>df42911f-0542-4fae-80d1-39573547ff68</id>
 				<name>Intrusion Countermeasure (The Guardian)</name>
-				<translate>Daedalus (Der Erfinder)</translate>
-				<altadvantage>+1 Würfel bei Hardwareproben, +1 Limit bei Proben mit Fahrzeugfertigkeiten, wenn der Technomancer hineingesprungen ist</altadvantage>
-				<altdisadvantage>-1 auf Limit und Würfel bei allen Handlungen in der Tiefenresonanz</altdisadvantage>
+				<translate>Intrusion Countermeasure (Der Wächter)</translate>
+				<altadvantage>Limit +1 und +1 Würfel im Matrixkampf; Firewall +1</altadvantage>
+				<altdisadvantage>-1 Würfel bei Angreifen in IC im Matrixkampf</altdisadvantage>
 				<altpage>104</altpage>
 			</mentor>
 			<mentor translated="True">
