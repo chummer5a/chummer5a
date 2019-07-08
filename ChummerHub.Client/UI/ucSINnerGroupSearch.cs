@@ -823,8 +823,12 @@ namespace ChummerHub.Client.UI
             if (targetNode != null)
             {
                 TreeNode targetGroup = targetNode;
-                while (targetGroup != null && !(targetGroup.Tag is SINnerSearchGroup && targetGroup.Parent != null))
-                    targetGroup = targetGroup.Parent;
+                if (targetGroup != null)
+                {
+                    if (!(targetGroup.Tag is SINnerSearchGroup) && targetGroup.Parent != null)
+                        targetGroup = targetGroup.Parent;
+                }
+
                 if (targetGroup == null)
                     return;
                 targetGroup.Nodes.Add(draggedNode);

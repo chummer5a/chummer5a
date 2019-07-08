@@ -81,6 +81,8 @@ namespace Chummer.Plugins
 
         IEnumerable<TabPage> IPlugin.GetTabPages(frmCareer input)
         {
+            if (ChummerHub.Client.Properties.Settings.Default.UserModeRegistered == false)
+                return null;
             ucSINnersUserControl uc = new ucSINnersUserControl();
             var ce = uc.SetCharacterFrom(input);
             if (ce.Status == TaskStatus.Faulted)
@@ -96,6 +98,8 @@ namespace Chummer.Plugins
 
         IEnumerable<TabPage> IPlugin.GetTabPages(frmCreate input)
         {
+            if (ChummerHub.Client.Properties.Settings.Default.UserModeRegistered == false)
+                return null;
             ucSINnersUserControl uc = new ucSINnersUserControl();
             var ce = uc.SetCharacterFrom(input);
             if (ce.Status == TaskStatus.Faulted)
@@ -285,31 +289,50 @@ namespace Chummer.Plugins
         IEnumerable<ToolStripMenuItem> IPlugin.GetMenuItems(ToolStripMenuItem input)
         {
             var list = new List<ToolStripMenuItem>();
-#if DEBUG
-            ToolStripMenuItem mnuSINnerSearchs = new ToolStripMenuItem
-            {
-                Name = "mnuSINSearch",
-                Text = "&SINner Search"
-            };
-            mnuSINnerSearchs.Click += new System.EventHandler(mnuSINnerSearchs_Click);
-            mnuSINnerSearchs.Image = ChummerHub.Client.Properties.Resources.group;
-            mnuSINnerSearchs.ImageTransparentColor = System.Drawing.Color.Black;
-            mnuSINnerSearchs.Size = new System.Drawing.Size(148, 22);
-            mnuSINnerSearchs.Tag = "Menu_Main_SINnerSearch";
-            list.Add(mnuSINnerSearchs);
 
-#endif
-            ToolStripMenuItem mnuSINners = new ToolStripMenuItem
+#if DEBUG
+            if (ChummerHub.Client.Properties.Settings.Default.UserModeRegistered == true)
             {
-                Name = "mnuSINners",
-                Text = "&SINners"
+                ToolStripMenuItem mnuSINnerSearchs = new ToolStripMenuItem
+                {
+                    Name = "mnuSINSearch",
+                    Text = "&SINner Search"
+                };
+                mnuSINnerSearchs.Click += new System.EventHandler(mnuSINnerSearchs_Click);
+                mnuSINnerSearchs.Image = ChummerHub.Client.Properties.Resources.group;
+                mnuSINnerSearchs.ImageTransparentColor = System.Drawing.Color.Black;
+                mnuSINnerSearchs.Size = new System.Drawing.Size(148, 22);
+                mnuSINnerSearchs.Tag = "Menu_Main_SINnerSearch";
+                list.Add(mnuSINnerSearchs);
+            }
+#endif
+            ToolStripMenuItem mnuSINnersArchetypes = new ToolStripMenuItem
+            {
+                Name = "mnuSINnersArchetypes",
+                Text = "&Archetypes"
             };
-            mnuSINners.Click += new System.EventHandler(mnuSINners_Click);
-            mnuSINners.Image = ChummerHub.Client.Properties.Resources.group;
-            mnuSINners.ImageTransparentColor = System.Drawing.Color.Black;
-            mnuSINners.Size = new System.Drawing.Size(148, 22);
-            mnuSINners.Tag = "Menu_Main_SINners";
-            list.Add(mnuSINners);
+            mnuSINnersArchetypes.Click += new System.EventHandler(mnuSINnersArchetypes_Click);
+            mnuSINnersArchetypes.Image = ChummerHub.Client.Properties.Resources.group;
+            mnuSINnersArchetypes.ImageTransparentColor = System.Drawing.Color.Black;
+            mnuSINnersArchetypes.Size = new System.Drawing.Size(148, 22);
+            mnuSINnersArchetypes.Tag = "Menu_Main_SINnersArchetypes";
+            list.Add(mnuSINnersArchetypes);
+
+            if (ChummerHub.Client.Properties.Settings.Default.UserModeRegistered == true)
+            {
+                ToolStripMenuItem mnuSINners = new ToolStripMenuItem
+                {
+                    Name = "mnuSINners",
+                    Text = "&SINners"
+                };
+                mnuSINners.Click += new System.EventHandler(mnuSINners_Click);
+                mnuSINners.Image = ChummerHub.Client.Properties.Resources.group;
+                mnuSINners.ImageTransparentColor = System.Drawing.Color.Black;
+                mnuSINners.Size = new System.Drawing.Size(148, 22);
+                mnuSINners.Tag = "Menu_Main_SINners";
+                list.Add(mnuSINners);
+            }
+
             return list;
         }
 
@@ -317,6 +340,64 @@ namespace Chummer.Plugins
         {
             frmSINnerSearch search = new frmSINnerSearch();
             search.Show();
+        }
+
+        private async void mnuSINnersArchetypes_Click(object sender, EventArgs e)
+        {
+            SINSearchGroupResult ssgr = null;
+            try
+            {
+                using (new CursorWait(true, MainForm))
+                {
+                    var client = StaticUtils.GetClient();
+                    var res = await client.GetSearchGroupsWithHttpMessagesAsync("Archetypes", null, null);
+                    var result =
+                        await ChummerHub.Client.Backend.Utils.HandleError(res, res.Body) as ResultGroupGetSearchGroups;
+                    if (result == null)
+                        return;
+                    if (result.CallSuccess == true)
+                    {
+                        ssgr = result.MySearchGroupResult;
+                        var ssgr1 = ssgr;
+                        PluginHandler.MainForm.DoThreadSafe(() =>
+                        {
+                            using (new CursorWait(true, MainForm))
+                            {
+                                if (ssgr1 != null && ssgr1.SinGroups?.Any() == true)
+                                {
+                                    var list = ssgr1.SinGroups.Where(a => a.Groupname == "Archetypes").ToList();
+                                    var nodelist =
+                                        ChummerHub.Client.Backend.Utils.CharacterRosterTreeNodifyGroupList(list);
+                                    foreach (var node in nodelist)
+                                    {
+                                        PluginHandler.MyTreeNodes2Add.AddOrUpdate(node.Name, node,
+                                            (key, oldValue) => node);
+                                    }
+
+                                    PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false, true);
+                                    PluginHandler.MainForm.CharacterRoster.BringToFront();
+                                    MessageBox.Show("Archetypes loaded to character roster!");
+                                }
+                                else
+                                {
+                                    MessageBox.Show("No archetypes found!");
+                                }
+                            }
+                        });
+                    }
+
+                    ssgr = null;
+                }
+            }
+            catch (ArgumentNullException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                throw;
+            }
         }
 
         public static ConcurrentDictionary<string, TreeNode> MyTreeNodes2Add = new ConcurrentDictionary<string, TreeNode>();
@@ -385,6 +466,12 @@ namespace Chummer.Plugins
         {
             try
             {
+                if (ChummerHub.Client.Properties.Settings.Default.UserModeRegistered == false)
+                {
+                    Log.Info("Not loading SINners from WebService since the UserMode is set to only public functions.");
+                    return null;
+                }
+
                 Log.Info("Loading CharacterRoster from SINners...");
                 using (new CursorWait(true, frmCharRoster))
                 {
