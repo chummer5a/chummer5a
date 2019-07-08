@@ -5,6 +5,7 @@ Application Fixes:
 - Fixed issues with the SelectSpell improvement not being properly available in the improvements window.
 - Fixed a regression in the behaviour of the cyberadeptdaemon improvement that prevented Resonance being awarded for fractional losses of Essence. In effect, this improvement was only being counted if you had an integer value of CyberwareEssence. Your Resonance will be adjusted on next Submersion, or if you activate the Reapply Improvements menu option.
 - Fixed an issue where attempting to edit a basic lifestyle would cause the lifestyle level to not get properly saved.
+- Changing priorities or metatypes in Create mode will no longer reset all points and karma put into attributes.
 
 Data Changes:
 
