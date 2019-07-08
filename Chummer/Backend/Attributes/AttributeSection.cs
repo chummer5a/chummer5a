@@ -285,18 +285,35 @@ namespace Chummer.Backend.Attributes
                 _objCharacter.EDG.Base = Math.Min(intOldEDGBase, _objCharacter.EDG.PriorityMaximum);
                 _objCharacter.EDG.Karma = Math.Min(intOldEDGKarma, _objCharacter.EDG.KarmaMaximum);
 
-                Attributes = new ObservableCollection<CharacterAttrib>
+                if (Attributes == null)
                 {
-                    _objCharacter.BOD,
-                    _objCharacter.AGI,
-                    _objCharacter.REA,
-                    _objCharacter.STR,
-                    _objCharacter.CHA,
-                    _objCharacter.INT,
-                    _objCharacter.LOG,
-                    _objCharacter.WIL,
-                    _objCharacter.EDG
-                };
+                    Attributes = new ObservableCollection<CharacterAttrib>
+                    {
+                        _objCharacter.BOD,
+                        _objCharacter.AGI,
+                        _objCharacter.REA,
+                        _objCharacter.STR,
+                        _objCharacter.CHA,
+                        _objCharacter.INT,
+                        _objCharacter.LOG,
+                        _objCharacter.WIL,
+                        _objCharacter.EDG
+                    };
+                }
+                else
+                {
+                    // Not creating a new collection here so that CollectionChanged events from previous list are kept
+                    Attributes.Clear();
+                    Attributes.Add(_objCharacter.BOD);
+                    Attributes.Add(_objCharacter.AGI);
+                    Attributes.Add(_objCharacter.REA);
+                    Attributes.Add(_objCharacter.STR);
+                    Attributes.Add(_objCharacter.CHA);
+                    Attributes.Add(_objCharacter.INT);
+                    Attributes.Add(_objCharacter.LOG);
+                    Attributes.Add(_objCharacter.WIL);
+                    Attributes.Add(_objCharacter.EDG);
+                }
                 if (_objCharacter.MAGEnabled)
                 {
                     _objCharacter.MAG.Base = Math.Min(intOldMAGBase, _objCharacter.MAG.PriorityMaximum);
