@@ -14,6 +14,7 @@ Data Changes:
 
 - Fixed incorrect specialmodificationlimit property for the Special Modifications and Prototype Materials qualities. 
 - Quick Healer now grants a +2 dicepool to casting the Heal spell. I strongly disagree with the wording on this personally, but it's RAW.
+- Fixed missing accessories on the Lone Star Remington 995. Closes #3727.
 
 New Strings:
 
