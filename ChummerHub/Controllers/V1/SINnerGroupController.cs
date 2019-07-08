@@ -145,8 +145,6 @@ namespace ChummerHub.Controllers.V1
                         }
 
                         parentGroup = getParentseq.FirstOrDefault();
-                        res = new ResultGroupPutGroupInGroup(myGroup);
-                        return res;
                     }
                 }
 
