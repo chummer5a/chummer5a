@@ -7,11 +7,16 @@ Application Fixes:
 - Fixed an issue where attempting to edit a basic lifestyle would cause the lifestyle level to not get properly saved.
 - Changing priorities or metatypes in Create mode will no longer reset all points and karma put into attributes.
 - Fixed a bug where special attributes would not update properly with changes to the Special priority category.
+- Fixed a UI issue where tooltips to improve attributes or skills that are at their maximum rating would show the regular improvement tooltip with a karma cost of -1 instead of a message saying that the item is at its maximum. Closes #3664.
 
 Data Changes:
 
 - Fixed incorrect specialmodificationlimit property for the Special Modifications and Prototype Materials qualities. 
 - Quick Healer now grants a +2 dicepool to casting the Heal spell. I strongly disagree with the wording on this personally, but it's RAW.
+
+New Strings:
+
+- Tip_ImproveItemAtMaximum
 
 Build 206
 

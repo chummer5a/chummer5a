@@ -5905,6 +5905,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <key>Tip_ImproveItem</key>
       <text>Improve to {0} for {1} Karma</text>
     </string>
+	<string>
+      <key>Tip_ImproveItemAtMaximum</key>
+      <text>Cannot Improve, at Maximum</text>
+    </string>
     <string>
       <key>Tip_Modifiers</key>
       <text>Modifiers</text>
