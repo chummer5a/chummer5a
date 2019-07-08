@@ -1092,6 +1092,7 @@ namespace ChummerHub.Controllers.V1
             string userName = user.UserName;
             var dbsinnerseq = (from a in _context.UserRights
                 where a.SINnerId == id
+                      && !String.IsNullOrEmpty(a.EMail)
                       && a.EMail.ToUpperInvariant() == normEmail
                       && a.CanEdit == true
                 select a).ToList();
