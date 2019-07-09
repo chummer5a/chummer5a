@@ -14996,12 +14996,40 @@ namespace Chummer
             // Build a list of the current Metatype's Qualities to remove if the Metatype changes.
             lstRemoveQualities.AddRange(CharacterObject.Qualities.Where(objQuality => objQuality.OriginSource == QualitySource.Metatype || objQuality.OriginSource == QualitySource.MetatypeRemovable));
 
+            // Hacky to remove qualities first, but necessary due to the way frmSelectMetatype will add qualities before closing
+            // Remove any Qualities the character received from their Metatype, then remove the Quality.
+            foreach (Quality objQuality in lstRemoveQualities)
+            {
+                ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId);
+                CharacterObject.Qualities.Remove(objQuality);
+            }
+
             if (CharacterObject.BuildMethod == CharacterBuildMethod.Priority || CharacterObject.BuildMethod == CharacterBuildMethod.SumtoTen)
             {
                 frmPriorityMetatype frmSelectMetatype = new frmPriorityMetatype(CharacterObject);
                 frmSelectMetatype.ShowDialog(this);
                 if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
+                {
+                    // Hacky to add removed qualities back in after cancel, but necessary due to the way frmSelectMetatype will add qualities before closing
+                    foreach (Quality objQuality in lstRemoveQualities)
+                    {
+                        ImprovementManager.ForcedValue = objQuality.Extra;
+                        if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId, objQuality.Bonus, false, 1, objQuality.DisplayNameShort(GlobalOptions.Language)))
+                        {
+                            continue;
+                        }
+                        if (objQuality.FirstLevelBonus?.ChildNodes.Count > 0 && objQuality.Levels == 0)
+                        {
+                            ImprovementManager.ForcedValue = objQuality.Extra;
+                            if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId, objQuality.FirstLevelBonus, false, 1, objQuality.DisplayNameShort(GlobalOptions.Language)))
+                            {
+                                continue;
+                            }
+                        }
+                        CharacterObject.Qualities.Add(objQuality);
+                    }
                     return;
+                }
             }
             else
             {
@@ -15009,18 +15037,31 @@ namespace Chummer
                 frmSelectMetatype.ShowDialog(this);
 
                 if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
+                {
+                    // Hacky to add removed qualities back in after cancel, but necessary due to the way frmSelectMetatype will add qualities before closing
+                    foreach (Quality objQuality in lstRemoveQualities)
+                    {
+                        ImprovementManager.ForcedValue = objQuality.Extra;
+                        if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId, objQuality.Bonus, false, 1, objQuality.DisplayNameShort(GlobalOptions.Language)))
+                        {
+                            continue;
+                        }
+                        if (objQuality.FirstLevelBonus?.ChildNodes.Count > 0 && objQuality.Levels == 0)
+                        {
+                            ImprovementManager.ForcedValue = objQuality.Extra;
+                            if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId, objQuality.FirstLevelBonus, false, 1, objQuality.DisplayNameShort(GlobalOptions.Language)))
+                            {
+                                continue;
+                            }
+                        }
+                        CharacterObject.Qualities.Add(objQuality);
+                    }
                     return;
+                }
             }
 
             // Remove any Improvements the character received from their Metatype.
             ImprovementManager.RemoveImprovements(CharacterObject, lstImprovement, false, true);
-
-            // Remove any Qualities the character received from their Metatype, then remove the Quality.
-            foreach (Quality objQuality in lstRemoveQualities)
-            {
-                ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId);
-                CharacterObject.Qualities.Remove(objQuality);
-            }
 
             RefreshMetatypeFields();
 

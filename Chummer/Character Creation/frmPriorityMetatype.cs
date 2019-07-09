@@ -224,6 +224,7 @@ namespace Chummer
                 SumtoTen();
             }
             PopulateMetavariants();
+            RefreshSelectedMetatype();
         }
 
         private void lstMetatypes_DoubleClick(object sender, EventArgs e)
