@@ -417,9 +417,20 @@ namespace ChummerHub.Client.Backend
 
         public bool IsUnitTest { get; set; }
 
-        //private static TreeNode MyOnlineTreeNode { get; set; }
-
-        private static List<TreeNode> MyTreeNodeList { get; set; }
+        private static List<TreeNode> _myTreeNodeList = null;
+        private static List<TreeNode> MyTreeNodeList
+        {
+            get
+            {
+                if (_myTreeNodeList == null)
+                    _myTreeNodeList = new List<TreeNode>();
+                return _myTreeNodeList;
+            }
+            set
+            {
+                _myTreeNodeList = value;
+            }
+        }
 
         /// <summary>
         /// Generates a character cache, which prevents us from repeatedly loading XmlNodes or caching a full character.

@@ -1258,19 +1258,22 @@ namespace ChummerHub.Controllers.V1
                     }
 
                     SINSearchGroupResult result = new SINSearchGroupResult();
-                    SINnerSearchGroup ssgFavs = new SINnerSearchGroup();
-                    ssgFavs.Id = Guid.Empty;
-                    ssgFavs.Groupname = "Favorites";
-                    var favlist = (from a in user.FavoriteGroups select a.FavoriteGuid).ToList();
-                    var favgrouplist = await _context.SINnerGroups.Where(a => a.Id != null && favlist.Contains(a.Id.Value))
-                        .ToListAsync();
-                    foreach (var favgroup in favgrouplist)
+                    if (user != null)
                     {
-                        var ssgsinglefav = new SINnerSearchGroup(favgroup);
-                        ssgFavs.MySINSearchGroups.Add(ssgsinglefav);
-                    }
+                        SINnerSearchGroup ssgFavs = new SINnerSearchGroup();
+                        ssgFavs.Id = Guid.Empty;
+                        ssgFavs.Groupname = "Favorites";
+                        var favlist = (from a in user.FavoriteGroups select a.FavoriteGuid).ToList();
+                        var favgrouplist = await _context.SINnerGroups.Where(a => a.Id != null && favlist.Contains(a.Id.Value))
+                            .ToListAsync();
+                        foreach (var favgroup in favgrouplist)
+                        {
+                            var ssgsinglefav = new SINnerSearchGroup(favgroup);
+                            ssgFavs.MySINSearchGroups.Add(ssgsinglefav);
+                        }
 
-                    result.SINGroups.Add(ssgFavs);
+                        result.SINGroups.Add(ssgFavs);
+                    }
 
                     List<Guid?> groupfoundseq = new List<Guid?>();
                     if (!String.IsNullOrEmpty(Groupname))
@@ -1350,60 +1353,61 @@ namespace ChummerHub.Controllers.V1
                     }
 
                     result.SINGroups = RemovePWHashRecursive(result.SINGroups);
-
-                    //now add owned SINners
-                    SINnerSearchGroup ownedGroup = new SINnerSearchGroup()
+                    if (user != null)
                     {
-                        Groupname = "My Data (virtual Group)",
-                        Description = "This isn't a group, but only a list of all the Chummers you \"own\"."
-                                      + Environment.NewLine +
-                                      "You can't delete this fictional group or remove your Chummers from here."
-                                      + Environment.NewLine +
-                                      "But you can drag'n'drop from here to have a Chummer of yours join another group."
-                    };
-                    result.SINGroups.Add(ownedGroup);
-                    List<SINner> mySinners;
-                    var roles = await _userManager.GetRolesAsync(user);
-                    if (!roles.Contains("SeeAllSInners"))
-                        mySinners = await SINner.GetSINnersFromUser(user, _context, true);
-                    else
-                    {
-                        mySinners = await _context.SINners.Include(a => a.MyGroup)
-                            .Include(a => a.SINnerMetaData.Visibility.UserRights)
-                            //.Include(a => a.MyExtendedAttributes)
-                            .Include(a => a.SINnerMetaData)
-                            .Include(a => a.SINnerMetaData.Visibility)
-                            .ToListAsync();
-                    }
-
-                    foreach (var ownedSin in mySinners)
-                    {
-                        SINnerSearchGroupMember ssgm = new SINnerSearchGroupMember
+                        //now add owned SINners
+                        SINnerSearchGroup ownedGroup = new SINnerSearchGroup()
                         {
-                            MySINner = ownedSin,
-                            Username = user.UserName
+                            Groupname = "My Data (virtual Group)",
+                            Description = "This isn't a group, but only a list of all the Chummers you \"own\"."
+                                          + Environment.NewLine +
+                                          "You can't delete this fictional group or remove your Chummers from here."
+                                          + Environment.NewLine +
+                                          "But you can drag'n'drop from here to have a Chummer of yours join another group."
                         };
-                        ownedGroup.MyMembers.Add(ssgm);
-                    }
-
-                    //add the users own groups - always!
-                    var userownedgroupsseq = await SINner.GetSINnersFromUser(user, _context, true);
-                    List<Guid?> usergroups = new List<Guid?>();
-                    foreach (var sin in userownedgroupsseq)
-                    {
-                        if (sin.MyGroup != null)
+                        result.SINGroups.Add(ownedGroup);
+                        List<SINner> mySinners;
+                        var roles = await _userManager.GetRolesAsync(user);
+                        if (!roles.Contains("SeeAllSInners"))
+                            mySinners = await SINner.GetSINnersFromUser(user, _context, true);
+                        else
                         {
-                            if (!usergroups.Contains(sin.MyGroup.Id))
-                                usergroups.Add(sin.MyGroup.Id);
+                            mySinners = await _context.SINners.Include(a => a.MyGroup)
+                                .Include(a => a.SINnerMetaData.Visibility.UserRights)
+                                //.Include(a => a.MyExtendedAttributes)
+                                .Include(a => a.SINnerMetaData)
+                                .Include(a => a.SINnerMetaData.Visibility)
+                                .ToListAsync();
+                        }
+
+                        foreach (var ownedSin in mySinners)
+                        {
+                            SINnerSearchGroupMember ssgm = new SINnerSearchGroupMember
+                            {
+                                MySINner = ownedSin,
+                                Username = user.UserName
+                            };
+                            ownedGroup.MyMembers.Add(ssgm);
+                        }
+
+                        //add the users own groups - always!
+                        var userownedgroupsseq = await SINner.GetSINnersFromUser(user, _context, true);
+                        List<Guid?> usergroups = new List<Guid?>();
+                        foreach (var sin in userownedgroupsseq)
+                        {
+                            if (sin.MyGroup != null)
+                            {
+                                if (!usergroups.Contains(sin.MyGroup.Id))
+                                    usergroups.Add(sin.MyGroup.Id);
+                            }
+                        }
+
+                        foreach (var groupid in usergroups)
+                        {
+                            var ssg = await GetSinSearchGroupResultById(groupid, user);
+                            ownedGroup.MySINSearchGroups.Add(ssg);
                         }
                     }
-
-                    foreach (var groupid in usergroups)
-                    {
-                        var ssg = await GetSinSearchGroupResultById(groupid, user);
-                        ownedGroup.MySINSearchGroups.Add(ssg);
-                    }
-
                     result.SINGroups = RemovePWHashRecursive(result.SINGroups);
                     t.Complete();
                     return result;
