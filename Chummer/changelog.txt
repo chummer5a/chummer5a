@@ -10,6 +10,7 @@ Application Fixes:
 - Fixed a UI issue where tooltips to improve attributes or skills that are at their maximum rating would show the regular improvement tooltip with a karma cost of -1 instead of a message saying that the item is at its maximum. Closes #3664.
 - Fixed an issue where the GenetechCostMultiplier improvement would not work properly. Part of #3741.
 - Fixed issues where certain options in the Options screen would have their text cut off. Closes #3716.
+- Fixed an issue where the screen to select a Complex Form did not pay attention to Complex Form requirements, e.g. technomancer streams. Closes #3718.
 
 Data Changes:
 

@@ -254,6 +254,9 @@ namespace Chummer
                 if (string.IsNullOrEmpty(strId))
                     continue;
 
+                if (!xmlComplexForm.RequirementsMet(_objCharacter))
+                    continue;
+
                 string strName = xmlComplexForm.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
                 // If this is a Sprite with Optional Complex Forms, see if this Complex Form is allowed.
                 if (_xmlOptionalComplexFormNode?.SelectSingleNode("complexform") != null)
