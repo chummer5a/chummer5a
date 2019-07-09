@@ -3,6 +3,17 @@ Future Build 207-208
 Application Fixes:
 
 - Fixed issues with the SelectSpell improvement not being properly available in the improvements window.
+- Fixed a regression in the behaviour of the cyberadeptdaemon improvement that prevented Resonance being awarded for fractional losses of Essence. In effect, this improvement was only being counted if you had an integer value of CyberwareEssence. Your Resonance will be adjusted on next Submersion, or if you activate the Reapply Improvements menu option.
+- Fixed an issue where attempting to edit a basic lifestyle would cause the lifestyle level to not get properly saved.
+- Changing priorities or metatypes in Create mode will no longer reset all points and karma put into attributes.
+- Fixed a bug where special attributes would not update properly with changes to the Special priority category.
+- Fixed a UI issue where tooltips to improve attributes or skills that are at their maximum rating would show the regular improvement tooltip with a karma cost of -1 instead of a message saying that the item is at its maximum. Closes #3664.
+- Fixed an issue where the GenetechCostMultiplier improvement would not work properly. Part of #3741.
+- Fixed issues where certain options in the Options screen would have their text cut off. Closes #3716.
+- Fixed an issue where the screen to select a Complex Form did not pay attention to Complex Form requirements, e.g. technomancer streams. Closes #3718.
+- Fixed an issue where changing Metatype priorities would not update the Special Attributes amount properly.
+- Increased gear quantity limit per stack from 100000 to 1000000000 in both Create mode and in the gear selection screen. Closes #3520.
+- Fixed an issue where changing priorities could end up causing issues with metatype- and metavariant-given qualities. Closes #3549.
 - Fixed a regression in the behaviour of the cyberadeptdaemon improvement that prevented Resonance being awarded for fractional losses of Essence. In effect, this improvement was only being counted if you had an integer value of CyberwareEssence. Your Resonance will be adjusted on next Submersion, or if you activate the Reapply Improvements menu option. 
 - Fixed an issue with Armor Mods that use FixedValues in Cost not correctly displaying, such as Grey Mana Integration.
 
@@ -10,6 +21,12 @@ Data Changes:
 
 - Fixed incorrect specialmodificationlimit property for the Special Modifications and Prototype Materials qualities. 
 - Quick Healer now grants a +2 dicepool to casting the Heal spell. I strongly disagree with the wording on this personally, but it's RAW.
+- Fixed missing accessories on the Lone Star Remington 995. Closes #3727.
+- Fixed an issue where the Special Modification for Concealment increased concealment instead of decreasing it (i.e. it made the weapon easier to spot instead of harder to spot). Closes #3747.
+
+New Strings:
+
+- Tip_ImproveItemAtMaximum
 
 Build 206
 

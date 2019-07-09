@@ -224,6 +224,7 @@ namespace Chummer
                 SumtoTen();
             }
             PopulateMetavariants();
+            RefreshSelectedMetatype();
         }
 
         private void lstMetatypes_DoubleClick(object sender, EventArgs e)
@@ -476,6 +477,7 @@ namespace Chummer
             LoadMetatypes();
             PopulateMetatypes();
             PopulateMetavariants();
+            RefreshSelectedMetatype();
         }
 
         private void cboTalent_SelectedIndexChanged(object sender, EventArgs e)
@@ -1389,7 +1391,7 @@ namespace Chummer
                         lstMetavariants.Add(new ListItem(strName, objXmlMetavariant.SelectSingleNode("translate")?.Value ?? strName));
                     }
 
-                    string strOldSelectedValue = lstMetatypes.SelectedValue?.ToString();
+                    string strOldSelectedValue = cboMetavariant.SelectedValue?.ToString() ?? _objCharacter.Metavariant;
                     bool blnOldLoading = _blnLoading;
                     _blnLoading = true;
                     cboMetavariant.BeginUpdate();

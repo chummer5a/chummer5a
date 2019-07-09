@@ -14022,6 +14022,17 @@
           <cost>1000</cost>
           <source>SL</source>
           <page>131</page>
+		  <accessories>
+			<accessory>
+			  <name>Breeching Teeth</name>
+			</accessory>
+			<accessory>
+			  <name>Foregrip</name>
+			</accessory>
+			<accessory>
+			  <name>Modified Pump Handle</name>
+			</accessory>
+		  </accessories>
           <accessorymounts>
               <mount>Stock</mount>
               <mount>Side</mount>
@@ -16818,6 +16829,28 @@
       <page>47</page>
       <rating>0</rating>
     </accessory>
+	<accessory>
+      <id>91d1b0c0-3146-4435-b2ef-322e80dbbb59</id>
+      <name>Breeching Teeth</name>
+      <mount />
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>SL</source>
+      <page>131</page>
+      <rating>0</rating>
+	  <hide />
+    </accessory>
+	<accessory>
+      <id>2eea1d98-8c6f-4f59-a8e8-e39b17c60869</id>
+      <name>Modified Pump Handle</name>
+      <mount />
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>SL</source>
+      <page>131</page>
+      <rating>0</rating>
+	  <hide />
+    </accessory>
     <!-- Region Special Modifications -->
     <accessory>
       <id>b741b729-106e-46f2-9143-0f745fd48789</id>
@@ -16878,7 +16911,7 @@
       <source>BTB</source>
       <page>161</page>
       <rating>0</rating>
-      <conceal>1</conceal>
+      <conceal>-1</conceal>
       <specialmodification>True</specialmodification>
       <required>
         <oneof>

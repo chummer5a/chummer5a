@@ -8326,10 +8326,10 @@ namespace Chummer
                         }
 #endif
                     // Locate the Martial Art Maneuver that was affected.
-                    foreach (MartialArt objArt in CharacterObject.MartialArts)
+                    foreach (MartialArt objArt in CharacterObject.MartialArts.ToList())
                     {
                         foreach (MartialArtTechnique objTechnique in objArt.Techniques.Where(x =>
-                            x.InternalId == objEntry.Undo.ObjectId))
+                            x.InternalId == objEntry.Undo.ObjectId).ToList())
                         {
                             // Remove any Improvements created by the Maneuver.
                             ImprovementManager.RemoveImprovements(CharacterObject,

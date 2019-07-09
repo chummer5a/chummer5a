@@ -11,11 +11,13 @@ using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Xml;
 using System.Xml.XPath;
+using NLog;
 
 namespace Chummer
 {
     public partial class Chummy : Form
     {
+        private static NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private const int EyeBallWidth = 20;
         private const int EyeBallHeight = 32;
         private const int DistanceBetweenEyes = 10;
@@ -145,8 +147,21 @@ namespace Chummer
 
             // Draw an ellipse 1/2 the size of the eye
             // centered at (px, py).
-            gr.FillEllipse(Brushes.Blue, (int)(px - wid / 4),
-                (int)(py - hgt / 4), wid / 2, hgt / 2);
+            int x = (int)(px - wid / 4);
+            int y = (int)(py - hgt / 4);
+            int width = wid / 2;
+            int height = hgt / 2;
+            try
+            {
+                gr.FillEllipse(Brushes.Blue, x, y, width, height);
+            }
+            catch (Exception e)
+            {
+                string msg = String.Format("Got an " + e.GetType().ToString() + " with these variables in Chummy.cs-DrawEye(): x={0},y={1},width={2},height={3}", x,
+                    y, width, height);
+                Log.Warn(e, msg);
+            }
+            
         }
         #endregion
         #region Chat Bubble

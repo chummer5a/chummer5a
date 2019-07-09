@@ -160,6 +160,32 @@ namespace Chummer.Backend.Attributes
         {
             using (var op_create_char_attrib = Timekeeper.StartSyncron("create_char_attrib", null, CustomActivity.OperationType.RequestOperation, charNode?.InnerText))
             {
+                int intOldBODBase = _objCharacter.BOD.Base;
+                int intOldBODKarma = _objCharacter.BOD.Karma;
+                int intOldAGIBase= _objCharacter.AGI.Base;
+                int intOldAGIKarma = _objCharacter.AGI.Karma;
+                int intOldREABase = _objCharacter.REA.Base;
+                int intOldREAKarma = _objCharacter.REA.Karma;
+                int intOldSTRBase = _objCharacter.STR.Base;
+                int intOldSTRKarma = _objCharacter.STR.Karma;
+                int intOldCHABase = _objCharacter.CHA.Base;
+                int intOldCHAKarma = _objCharacter.CHA.Karma;
+                int intOldINTBase = _objCharacter.INT.Base;
+                int intOldINTKarma = _objCharacter.INT.Karma;
+                int intOldLOGBase = _objCharacter.LOG.Base;
+                int intOldLOGKarma = _objCharacter.LOG.Karma;
+                int intOldWILBase = _objCharacter.WIL.Base;
+                int intOldWILKarma = _objCharacter.WIL.Karma;
+                int intOldEDGBase = _objCharacter.EDG.Base;
+                int intOldEDGKarma = _objCharacter.EDG.Karma;
+                int intOldMAGBase = _objCharacter.MAG.Base;
+                int intOldMAGKarma = _objCharacter.MAG.Karma;
+                int intOldMAGAdeptBase = _objCharacter.MAGAdept.Base;
+                int intOldMAGAdeptKarma = _objCharacter.MAGAdept.Karma;
+                int intOldRESBase = _objCharacter.RES.Base;
+                int intOldRESKarma = _objCharacter.RES.Karma;
+                int intOldDEPBase = _objCharacter.DEP.Base;
+                int intOldDEPKarma = _objCharacter.DEP.Karma;
                 foreach (CharacterAttrib objAttribute in AttributeList.Concat(SpecialAttributeList))
                     objAttribute.UnbindAttribute();
                 AttributeList.Clear();
@@ -240,32 +266,78 @@ namespace Chummer.Backend.Attributes
                     CommonFunctions.ExpressionToString(charNode["essmax"]?.InnerText, intValue, 0),
                     CommonFunctions.ExpressionToString(charNode["essaug"]?.InnerText, intValue, 0));
 
-                Attributes = new ObservableCollection<CharacterAttrib>
+                _objCharacter.BOD.Base = Math.Min(intOldBODBase, _objCharacter.BOD.PriorityMaximum);
+                _objCharacter.BOD.Karma = Math.Min(intOldBODKarma, _objCharacter.BOD.KarmaMaximum);
+                _objCharacter.AGI.Base = Math.Min(intOldAGIBase, _objCharacter.AGI.PriorityMaximum);
+                _objCharacter.AGI.Karma = Math.Min(intOldAGIKarma, _objCharacter.AGI.KarmaMaximum);
+                _objCharacter.REA.Base = Math.Min(intOldREABase, _objCharacter.REA.PriorityMaximum);
+                _objCharacter.REA.Karma = Math.Min(intOldREAKarma, _objCharacter.REA.KarmaMaximum);
+                _objCharacter.STR.Base = Math.Min(intOldSTRBase, _objCharacter.STR.PriorityMaximum);
+                _objCharacter.STR.Karma = Math.Min(intOldSTRKarma, _objCharacter.STR.KarmaMaximum);
+                _objCharacter.CHA.Base = Math.Min(intOldCHABase, _objCharacter.CHA.PriorityMaximum);
+                _objCharacter.CHA.Karma = Math.Min(intOldCHAKarma, _objCharacter.CHA.KarmaMaximum);
+                _objCharacter.INT.Base = Math.Min(intOldINTBase, _objCharacter.INT.PriorityMaximum);
+                _objCharacter.INT.Karma = Math.Min(intOldINTKarma, _objCharacter.INT.KarmaMaximum);
+                _objCharacter.LOG.Base = Math.Min(intOldLOGBase, _objCharacter.LOG.PriorityMaximum);
+                _objCharacter.LOG.Karma = Math.Min(intOldLOGKarma, _objCharacter.LOG.KarmaMaximum);
+                _objCharacter.WIL.Base = Math.Min(intOldWILBase, _objCharacter.WIL.PriorityMaximum);
+                _objCharacter.WIL.Karma = Math.Min(intOldWILKarma, _objCharacter.WIL.KarmaMaximum);
+                _objCharacter.EDG.Base = Math.Min(intOldEDGBase, _objCharacter.EDG.PriorityMaximum);
+                _objCharacter.EDG.Karma = Math.Min(intOldEDGKarma, _objCharacter.EDG.KarmaMaximum);
+
+                if (Attributes == null)
                 {
-                    _objCharacter.BOD,
-                    _objCharacter.AGI,
-                    _objCharacter.REA,
-                    _objCharacter.STR,
-                    _objCharacter.CHA,
-                    _objCharacter.INT,
-                    _objCharacter.LOG,
-                    _objCharacter.WIL,
-                    _objCharacter.EDG
-                };
+                    Attributes = new ObservableCollection<CharacterAttrib>
+                    {
+                        _objCharacter.BOD,
+                        _objCharacter.AGI,
+                        _objCharacter.REA,
+                        _objCharacter.STR,
+                        _objCharacter.CHA,
+                        _objCharacter.INT,
+                        _objCharacter.LOG,
+                        _objCharacter.WIL,
+                        _objCharacter.EDG
+                    };
+                }
+                else
+                {
+                    // Not creating a new collection here so that CollectionChanged events from previous list are kept
+                    Attributes.Clear();
+                    Attributes.Add(_objCharacter.BOD);
+                    Attributes.Add(_objCharacter.AGI);
+                    Attributes.Add(_objCharacter.REA);
+                    Attributes.Add(_objCharacter.STR);
+                    Attributes.Add(_objCharacter.CHA);
+                    Attributes.Add(_objCharacter.INT);
+                    Attributes.Add(_objCharacter.LOG);
+                    Attributes.Add(_objCharacter.WIL);
+                    Attributes.Add(_objCharacter.EDG);
+                }
                 if (_objCharacter.MAGEnabled)
                 {
+                    _objCharacter.MAG.Base = Math.Min(intOldMAGBase, _objCharacter.MAG.PriorityMaximum);
+                    _objCharacter.MAG.Karma = Math.Min(intOldMAGKarma, _objCharacter.MAG.KarmaMaximum);
                     Attributes.Add(_objCharacter.MAG);
                     if (_objCharacter.Options.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
+                    {
+                        _objCharacter.MAGAdept.Base = Math.Min(intOldMAGAdeptBase, _objCharacter.MAGAdept.PriorityMaximum);
+                        _objCharacter.MAGAdept.Karma = Math.Min(intOldMAGAdeptKarma, _objCharacter.MAGAdept.KarmaMaximum);
                         Attributes.Add(_objCharacter.MAGAdept);
+                    }
                 }
 
                 if (_objCharacter.RESEnabled)
                 {
+                    _objCharacter.RES.Base = Math.Min(intOldRESBase, _objCharacter.RES.PriorityMaximum);
+                    _objCharacter.RES.Karma = Math.Min(intOldRESKarma, _objCharacter.RES.KarmaMaximum);
                     Attributes.Add(_objCharacter.RES);
                 }
 
                 if (_objCharacter.DEPEnabled)
                 {
+                    _objCharacter.DEP.Base = Math.Min(intOldDEPBase, _objCharacter.DEP.PriorityMaximum);
+                    _objCharacter.DEP.Karma = Math.Min(intOldDEPKarma, _objCharacter.DEP.KarmaMaximum);
                     Attributes.Add(_objCharacter.DEP);
                 }
 

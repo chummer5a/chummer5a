@@ -49,7 +49,7 @@
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.6.4\lib\net45\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.4.6.5\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -352,7 +352,9 @@ copy $(TargetDir)System.Composition.* $(TargetDir)Plugins\ /Y
 echo Statement 8: copy $(TargetDir)System.Diagnostics.DiagnosticSource.* $(TargetDir)Plugins\ /Y
 copy $(TargetDir)System.Diagnostics.DiagnosticSource.* $(TargetDir)Plugins\ /Y
 echo Statement 8: copy $(TargetDir)Microsoft.ApplicationInsights.* $(TargetDir)Plugins\ /Y
-copy $(TargetDir)Microsoft.ApplicationInsights.* $(TargetDir)Plugins\ /Y</PostBuildEvent>
+copy $(TargetDir)Microsoft.ApplicationInsights.* $(TargetDir)Plugins\ /Y
+echo Statement 8: copy $(TargetDir)GroupControls.* $(TargetDir)Plugins\ /Y
+copy $(TargetDir)GroupControls.* $(TargetDir)Plugins\ /Y</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>

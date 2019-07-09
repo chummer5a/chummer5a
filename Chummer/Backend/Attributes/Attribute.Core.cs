@@ -685,7 +685,9 @@ namespace Chummer.Backend.Attributes
             MetatypeAugmentedMaximum = Convert.ToInt32(strAug);
         }
 
-        public string UpgradeToolTip => string.Format(LanguageManager.GetString("Tip_ImproveItem", GlobalOptions.Language), (Value + 1), UpgradeKarmaCost);
+        public string UpgradeToolTip => UpgradeKarmaCost < 0
+            ? LanguageManager.GetString("Tip_ImproveItemAtMaximum", GlobalOptions.Language)
+            : string.Format(LanguageManager.GetString("Tip_ImproveItem", GlobalOptions.Language), (Value + 1), UpgradeKarmaCost);
 
         private string _strCachedToolTip = string.Empty;
         /// <summary>
@@ -898,22 +900,22 @@ namespace Chummer.Backend.Attributes
                     return _intCachedUpgradeKarmaCost;
 
                 int intValue = Value;
-                int upgrade;
-                int intOptionsCost = _objCharacter.Options.KarmaAttribute;
                 if (intValue >= TotalMaximum)
                 {
                     return -1;
                 }
+                int intUpgradeCost;
+                int intOptionsCost = _objCharacter.Options.KarmaAttribute;
                 if (intValue == 0)
                 {
-                    upgrade = intOptionsCost;
+                    intUpgradeCost = intOptionsCost;
                 }
                 else
                 {
-                    upgrade = (intValue + 1) * intOptionsCost;
+                    intUpgradeCost = (intValue + 1) * intOptionsCost;
                 }
                 if (_objCharacter.Options.AlternateMetatypeAttributeKarma)
-                    upgrade -= (MetatypeMinimum - 1) * intOptionsCost;
+                    intUpgradeCost -= (MetatypeMinimum - 1) * intOptionsCost;
 
                 int intExtra = 0;
                 decimal decMultiplier = 1.0m;
@@ -930,10 +932,10 @@ namespace Chummer.Backend.Attributes
                     }
                 }
                 if (decMultiplier != 1.0m)
-                    upgrade = decimal.ToInt32(decimal.Ceiling(upgrade * decMultiplier));
-                upgrade += intExtra;
+                    intUpgradeCost = decimal.ToInt32(decimal.Ceiling(intUpgradeCost * decMultiplier));
+                intUpgradeCost += intExtra;
 
-                return _intCachedUpgradeKarmaCost = Math.Max(upgrade, Math.Min(1, intOptionsCost));
+                return _intCachedUpgradeKarmaCost = Math.Max(intUpgradeCost, Math.Min(1, intOptionsCost));
             }
         }
 

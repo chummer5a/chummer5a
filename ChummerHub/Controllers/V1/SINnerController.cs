@@ -1088,11 +1088,16 @@ namespace ChummerHub.Controllers.V1
             
             if (dbsinner == null)
                 return null;
-            var dbsinnerseq = await (from a in _context.UserRights
+            if (user == null)
+                return null;
+            string normEmail = user.NormalizedEmail;
+            string userName = user.UserName;
+            var dbsinnerseq = (from a in _context.UserRights
                 where a.SINnerId == id
-                      && a.EMail.ToUpperInvariant() == user.NormalizedEmail
+                      && !String.IsNullOrEmpty(a.EMail)
+                      && a.EMail.ToUpperInvariant() == normEmail
                       && a.CanEdit == true
-                select a).ToListAsync();
+                select a).ToList();
             if (dbsinnerseq.Any())
             {
                 return dbsinner;
@@ -1107,11 +1112,11 @@ namespace ChummerHub.Controllers.V1
                 }
                 if (!String.IsNullOrEmpty(dbsinner.MyGroup.GroupCreatorUserName))
                 {
-                    if (dbsinner.MyGroup.GroupCreatorUserName == user.UserName)
+                    if (dbsinner.MyGroup.GroupCreatorUserName == userName)
                         return dbsinner;
                 }
             }
-            throw new ChummerHub.NoUserRightException(user.UserName, dbsinner.Id);
+            throw new ChummerHub.NoUserRightException(userName, dbsinner.Id);
          
         }
 

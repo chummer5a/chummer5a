@@ -7423,7 +7423,7 @@ namespace Chummer
             this.nudGearQty.Enabled = false;
             this.nudGearQty.Location = new System.Drawing.Point(61, 79);
             this.nudGearQty.Maximum = new decimal(new int[] {
-            100000,
+            1000000000,
             0,
             0,
             0});

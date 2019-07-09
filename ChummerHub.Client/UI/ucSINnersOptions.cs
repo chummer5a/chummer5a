@@ -204,6 +204,14 @@ namespace ChummerHub.Client.UI
             this.cbVisibilityIsPublic.Checked = Properties.Settings.Default.VisibilityIsPublic;
             //this.cbVisibilityIsGroupVisible.Checked = Properties.Settings.Default.VisibilityIsGroupVisible;
             cbSINnerUrl.Enabled = false;
+            if (Properties.Settings.Default.UserModeRegistered)
+            {
+                this.rbListUserMode.SelectedIndex = 1;
+            }
+            else
+            {
+                this.rbListUserMode.SelectedIndex = 0;
+            }
             this.cbVisibilityIsPublic.BindingContext = new BindingContext();
             if ((StaticUtils.UserRoles == null)
                 || (!StaticUtils.UserRoles.Any()))
@@ -249,6 +257,7 @@ namespace ChummerHub.Client.UI
 
         public async void UpdateDisplay()
         {
+            this.tlpOptions.Enabled = Properties.Settings.Default.UserModeRegistered;
             var mail = await GetUserEmail();
             PluginHandler.MainForm.DoThreadSafe(new Action(() =>
             {
@@ -476,7 +485,8 @@ namespace ChummerHub.Client.UI
         private void OptionsUpdate()
         {
             Properties.Settings.Default.TempDownloadPath = this.tbTempDownloadPath.Text;
-            Properties.Settings.Default.VisibilityIsPublic = this.cbVisibilityIsPublic.Checked      ;
+            Properties.Settings.Default.VisibilityIsPublic = this.cbVisibilityIsPublic.Checked;
+            Properties.Settings.Default.UserModeRegistered = this.tlpOptions.Enabled;
             Properties.Settings.Default.Save();
         }
 
@@ -752,6 +762,22 @@ namespace ChummerHub.Client.UI
             {
                 SINnerVisibility = visfrm.MyVisibility;
             }
+        }
+
+        private void RbListUserMode_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (this.rbListUserMode.SelectedItem == null)
+                return;
+            if (this.rbListUserMode.SelectedItem.Tag?.ToString() == "public")
+            {
+                this.tlpOptions.Enabled = false;
+            }
+            else
+            {
+                this.tlpOptions.Enabled = true;
+            }
+
+           OptionsUpdate();
         }
     }
 }

@@ -7336,7 +7336,17 @@ namespace Chummer
                     if (blnAddItem)
                     {
                         blnRequireUpdate = true;
-                        CharacterObject.Qualities.Add(objQuality);
+                        //to avoid an System.InvalidOperationException: Cannot change ObservableCollection during a CollectionChanged event.
+                        var tempthread = new System.Threading.Thread(() =>
+                        {
+                            System.Threading.Thread.CurrentThread.IsBackground = false;
+                            System.Threading.Thread.CurrentThread.Priority = System.Threading.ThreadPriority.BelowNormal;
+                            this.DoThreadSafe(() =>
+                            {
+                                CharacterObject.Qualities.Add(objQuality);
+                            });
+                        });
+                        tempthread.Start();
 
                         // Add any created Weapons to the character.
                         foreach (Weapon objWeapon in lstWeapons)
@@ -7826,6 +7836,9 @@ namespace Chummer
         private void nudGearRating_ValueChanged(object sender, EventArgs e)
         {
             if (IsRefreshing)
+                return;
+
+            if (treGear?.SelectedNode == null)
                 return;
 
             if (treGear.SelectedNode.Level > 0)
@@ -9756,7 +9769,9 @@ namespace Chummer
                 if (spellCost <= CharacterObjectOptions.KarmaSpell)
                 {
                     // Assume that every [spell cost] karma spent on a Mastery quality is paid for with a priority-given spell point instead, as that is the most karma-efficient.
-                    int intQualityKarmaToSpellPoints = Math.Min(limit, (CharacterObject.Qualities.Where(objQuality => objQuality.CanBuyWithSpellPoints).Sum(objQuality => objQuality.BP) * CharacterObjectOptions.KarmaQuality) / CharacterObjectOptions.KarmaSpell);
+                    int intQualityKarmaToSpellPoints = CharacterObjectOptions.KarmaSpell;
+                    if (CharacterObjectOptions.KarmaSpell != 0)
+                            intQualityKarmaToSpellPoints = Math.Min(limit, (CharacterObject.Qualities.Where(objQuality => objQuality.CanBuyWithSpellPoints).Sum(objQuality => objQuality.BP) * CharacterObjectOptions.KarmaQuality) / CharacterObjectOptions.KarmaSpell);
                     spells += intQualityKarmaToSpellPoints;
                     // Add the karma paid for by spell points back into the available karma pool.
                     intKarmaPointsRemain += intQualityKarmaToSpellPoints * CharacterObjectOptions.KarmaSpell;
@@ -14981,12 +14996,40 @@ namespace Chummer
             // Build a list of the current Metatype's Qualities to remove if the Metatype changes.
             lstRemoveQualities.AddRange(CharacterObject.Qualities.Where(objQuality => objQuality.OriginSource == QualitySource.Metatype || objQuality.OriginSource == QualitySource.MetatypeRemovable));
 
+            // Hacky to remove qualities first, but necessary due to the way frmSelectMetatype will add qualities before closing
+            // Remove any Qualities the character received from their Metatype, then remove the Quality.
+            foreach (Quality objQuality in lstRemoveQualities)
+            {
+                ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId);
+                CharacterObject.Qualities.Remove(objQuality);
+            }
+
             if (CharacterObject.BuildMethod == CharacterBuildMethod.Priority || CharacterObject.BuildMethod == CharacterBuildMethod.SumtoTen)
             {
                 frmPriorityMetatype frmSelectMetatype = new frmPriorityMetatype(CharacterObject);
                 frmSelectMetatype.ShowDialog(this);
                 if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
+                {
+                    // Hacky to add removed qualities back in after cancel, but necessary due to the way frmSelectMetatype will add qualities before closing
+                    foreach (Quality objQuality in lstRemoveQualities)
+                    {
+                        ImprovementManager.ForcedValue = objQuality.Extra;
+                        if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId, objQuality.Bonus, false, 1, objQuality.DisplayNameShort(GlobalOptions.Language)))
+                        {
+                            continue;
+                        }
+                        if (objQuality.FirstLevelBonus?.ChildNodes.Count > 0 && objQuality.Levels == 0)
+                        {
+                            ImprovementManager.ForcedValue = objQuality.Extra;
+                            if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId, objQuality.FirstLevelBonus, false, 1, objQuality.DisplayNameShort(GlobalOptions.Language)))
+                            {
+                                continue;
+                            }
+                        }
+                        CharacterObject.Qualities.Add(objQuality);
+                    }
                     return;
+                }
             }
             else
             {
@@ -14994,18 +15037,31 @@ namespace Chummer
                 frmSelectMetatype.ShowDialog(this);
 
                 if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
+                {
+                    // Hacky to add removed qualities back in after cancel, but necessary due to the way frmSelectMetatype will add qualities before closing
+                    foreach (Quality objQuality in lstRemoveQualities)
+                    {
+                        ImprovementManager.ForcedValue = objQuality.Extra;
+                        if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId, objQuality.Bonus, false, 1, objQuality.DisplayNameShort(GlobalOptions.Language)))
+                        {
+                            continue;
+                        }
+                        if (objQuality.FirstLevelBonus?.ChildNodes.Count > 0 && objQuality.Levels == 0)
+                        {
+                            ImprovementManager.ForcedValue = objQuality.Extra;
+                            if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId, objQuality.FirstLevelBonus, false, 1, objQuality.DisplayNameShort(GlobalOptions.Language)))
+                            {
+                                continue;
+                            }
+                        }
+                        CharacterObject.Qualities.Add(objQuality);
+                    }
                     return;
+                }
             }
 
             // Remove any Improvements the character received from their Metatype.
             ImprovementManager.RemoveImprovements(CharacterObject, lstImprovement, false, true);
-
-            // Remove any Qualities the character received from their Metatype, then remove the Quality.
-            foreach (Quality objQuality in lstRemoveQualities)
-            {
-                ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId);
-                CharacterObject.Qualities.Remove(objQuality);
-            }
 
             RefreshMetatypeFields();
 
