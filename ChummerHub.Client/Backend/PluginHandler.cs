@@ -345,12 +345,13 @@ namespace Chummer.Plugins
         private async void mnuSINnersArchetypes_Click(object sender, EventArgs e)
         {
             SINSearchGroupResult ssgr = null;
+            HttpOperationResponse<ResultGroupGetSearchGroups> res = null;
             try
             {
                 using (new CursorWait(true, MainForm))
                 {
                     var client = StaticUtils.GetClient();
-                    var res = await client.GetSearchGroupsWithHttpMessagesAsync("Archetypes", null, null);
+                    res = await client.GetPublicGroupWithHttpMessagesAsync("Archetypes", null, null);
                     var result =
                         await ChummerHub.Client.Backend.Utils.HandleError(res, res.Body) as ResultGroupGetSearchGroups;
                     if (result == null)
@@ -395,8 +396,10 @@ namespace Chummer.Plugins
             }
             catch (Exception ex)
             {
-                Log.Error(ex);
-                throw;
+                var result =
+                       await ChummerHub.Client.Backend.Utils.HandleError(res, res.Body) as ResultGroupGetSearchGroups;
+                if (result == null)
+                    return;
             }
         }
 
@@ -466,35 +469,33 @@ namespace Chummer.Plugins
         {
             try
             {
-                if (ChummerHub.Client.Properties.Settings.Default.UserModeRegistered == false)
-                {
-                    Log.Info("Not loading SINners from WebService since the UserMode is set to only public functions.");
-                    return null;
-                }
-
-                Log.Info("Loading CharacterRoster from SINners...");
+                List<TreeNode> list = new List<TreeNode>();
                 using (new CursorWait(true, frmCharRoster))
                 {
-                    Func<Task<HttpOperationResponse<ResultAccountGetSinnersByAuthorization>>> myMethodName = async () =>
+                    if (ChummerHub.Client.Properties.Settings.Default.UserModeRegistered == true)
                     {
-                        try
+                        Log.Info("Loading CharacterRoster from SINners...");
+                        Func<Task<HttpOperationResponse<ResultAccountGetSinnersByAuthorization>>> myMethodName = async () =>
                         {
-                            var client = StaticUtils.GetClient();
-                            var ret = await client.GetSINnersByAuthorizationWithHttpMessagesAsync();
-                            return ret;
-                        }
-                        catch (Exception e)
+                            try
+                            {
+                                var client = StaticUtils.GetClient();
+                                var ret = await client.GetSINnersByAuthorizationWithHttpMessagesAsync();
+                                return ret;
+                            }
+                            catch (Exception e)
+                            {
+                                Log.Error(e);
+                                throw;
+                            }
+                        };
+                        var res = await ChummerHub.Client.Backend.Utils.GetCharacterRosterTreeNode(forceUpdate, myMethodName);
+                        if (res == null)
                         {
-                            Log.Error(e);
-                            throw;
+                            throw new ArgumentException("Could not load owned SINners from WebService.");
                         }
-                    }; 
-                    var res = await ChummerHub.Client.Backend.Utils.GetCharacterRosterTreeNode(forceUpdate, myMethodName);
-                    if (res == null)
-                    {
-                        throw new ArgumentException("Could not load owned SINners from WebService.");
+                        list = res.ToList();
                     }
-                    var list = res.ToList();
                     var myadd = MyTreeNodes2Add.ToList();
                     var mysortadd = (from a in myadd orderby a.Value.Text select a).ToList();
                     foreach (var addme in mysortadd)
@@ -502,6 +503,7 @@ namespace Chummer.Plugins
                         list.Add(addme.Value);
                     }
                     return list;
+                    
                 }
                     
             }
