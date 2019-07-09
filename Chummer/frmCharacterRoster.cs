@@ -474,9 +474,8 @@ namespace Chummer
                 }
             }
             treCharacterList.ExpandAll();
+            UpdateCharacter(treCharacterList.SelectedNode?.Tag as CharacterCache);
         }
-
-
 
         /// <summary>
         /// Generates a character cache, which prevents us from repeatedly loading XmlNodes or caching a full character.
@@ -602,7 +601,6 @@ namespace Chummer
             lblFilePathLabel.Visible = !string.IsNullOrEmpty(lblFilePath.Text);
             lblSettingsLabel.Visible = !string.IsNullOrEmpty(lblSettings.Text);
             ProcessMugshotSizeMode();
-
         }
 
         #region Form Methods
@@ -648,7 +646,6 @@ namespace Chummer
 
             var objCache = t?.Tag as CharacterCache;
             objCache?.OnMyKeyDown(sender, new Tuple<KeyEventArgs, TreeNode>(e, t));
-
         }
 
         private void treCharacterList_OnDefaultDragEnter(object sender, DragEventArgs e)
@@ -738,7 +735,6 @@ namespace Chummer
         /// </summary>
         public class CharacterCache
         {
-
             public string FilePath { get; set; }
             public string FileName { get; set; }
             public string ErrorText { get; set; }
@@ -782,7 +778,6 @@ namespace Chummer
             {
                 SetDefaultEventHandlers();
                 HandlePlugins();
-
             }
 
             private void SetDefaultEventHandlers()
@@ -967,12 +962,6 @@ namespace Chummer
                     }
                 }
             }
-
-
-
-
-
-
         }
         #endregion
 
@@ -1140,8 +1129,5 @@ namespace Chummer
             }
             Cursor = Cursors.Default;
         }
-
-
-
     }
 }
