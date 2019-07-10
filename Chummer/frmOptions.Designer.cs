@@ -258,7 +258,6 @@ namespace Chummer
             this.cmdRemoveCustomDirectory = new System.Windows.Forms.Button();
             this.tabHouseRules = new System.Windows.Forms.TabPage();
             this.tlpHouseRules = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.chkNoArmorEncumbrance = new System.Windows.Forms.CheckBox();
             this.chkIgnoreArt = new System.Windows.Forms.CheckBox();
             this.chkExceedNegativeQualitiesLimit = new System.Windows.Forms.CheckBox();
             this.chkUseTotalValueForFreeKnowledge = new System.Windows.Forms.CheckBox();
@@ -293,11 +292,12 @@ namespace Chummer
             this.label3 = new System.Windows.Forms.Label();
             this.nudKnowledgeMultiplier = new System.Windows.Forms.NumericUpDown();
             this.chkUseTotalValueForFreeContacts = new System.Windows.Forms.CheckBox();
-            this.chkAllowSkillRegrouping = new System.Windows.Forms.CheckBox();
-            this.chkExtendAnyDetectionSpell = new System.Windows.Forms.CheckBox();
-            this.chkMoreLethalGameplay = new System.Windows.Forms.CheckBox();
-            this.chkSpecialKarmaCost = new System.Windows.Forms.CheckBox();
             this.chkIgnoreComplexFormLimit = new System.Windows.Forms.CheckBox();
+            this.chkSpecialKarmaCost = new System.Windows.Forms.CheckBox();
+            this.chkMoreLethalGameplay = new System.Windows.Forms.CheckBox();
+            this.chkExtendAnyDetectionSpell = new System.Windows.Forms.CheckBox();
+            this.chkAllowSkillRegrouping = new System.Windows.Forms.CheckBox();
+            this.chkNoArmorEncumbrance = new System.Windows.Forms.CheckBox();
             this.tabGitHubIssues = new System.Windows.Forms.TabPage();
             this.cmdUploadPastebin = new System.Windows.Forms.Button();
             this.tabPlugins = new System.Windows.Forms.TabPage();
@@ -3711,23 +3711,6 @@ namespace Chummer
             this.tlpHouseRules.Size = new System.Drawing.Size(898, 618);
             this.tlpHouseRules.TabIndex = 39;
             // 
-            // chkNoArmorEncumbrance
-            // 
-            this.chkNoArmorEncumbrance.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.chkNoArmorEncumbrance.AutoSize = true;
-            this.tlpHouseRules.SetColumnSpan(this.chkNoArmorEncumbrance, 5);
-            this.chkNoArmorEncumbrance.Location = new System.Drawing.Point(449, 231);
-            this.chkNoArmorEncumbrance.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chkNoArmorEncumbrance.Name = "chkNoArmorEncumbrance";
-            this.chkNoArmorEncumbrance.Size = new System.Drawing.Size(446, 17);
-            this.chkNoArmorEncumbrance.TabIndex = 38;
-            this.chkNoArmorEncumbrance.Tag = "Checkbox_Options_NoArmorEncumbrance";
-            this.chkNoArmorEncumbrance.Text = "No Armor Encumbrance";
-            this.chkNoArmorEncumbrance.UseVisualStyleBackColor = true;
-            this.chkNoArmorEncumbrance.CheckedChanged += new System.EventHandler(this.OptionsChanged);
-            // 
             // chkIgnoreArt
             // 
             this.chkIgnoreArt.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -4324,56 +4307,21 @@ namespace Chummer
             this.chkUseTotalValueForFreeContacts.UseVisualStyleBackColor = true;
             this.chkUseTotalValueForFreeContacts.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
-            // chkAllowSkillRegrouping
+            // chkIgnoreComplexFormLimit
             // 
-            this.chkAllowSkillRegrouping.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.chkIgnoreComplexFormLimit.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.chkAllowSkillRegrouping.AutoSize = true;
-            this.tlpHouseRules.SetColumnSpan(this.chkAllowSkillRegrouping, 5);
-            this.chkAllowSkillRegrouping.Location = new System.Drawing.Point(449, 256);
-            this.chkAllowSkillRegrouping.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chkAllowSkillRegrouping.Name = "chkAllowSkillRegrouping";
-            this.chkAllowSkillRegrouping.Size = new System.Drawing.Size(446, 18);
-            this.chkAllowSkillRegrouping.TabIndex = 39;
-            this.chkAllowSkillRegrouping.Tag = "Checkbox_Options_SkillRegroup";
-            this.chkAllowSkillRegrouping.Text = "Allow Skills to be re-Grouped if all Ratings are the same";
-            this.chkAllowSkillRegrouping.UseVisualStyleBackColor = true;
-            this.chkAllowSkillRegrouping.CheckedChanged += new System.EventHandler(this.OptionsChanged);
-            // 
-            // chkExtendAnyDetectionSpell
-            // 
-            this.chkExtendAnyDetectionSpell.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.chkExtendAnyDetectionSpell.AutoSize = true;
-            this.tlpHouseRules.SetColumnSpan(this.chkExtendAnyDetectionSpell, 5);
-            this.chkExtendAnyDetectionSpell.Location = new System.Drawing.Point(449, 282);
-            this.chkExtendAnyDetectionSpell.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chkExtendAnyDetectionSpell.Name = "chkExtendAnyDetectionSpell";
-            this.chkExtendAnyDetectionSpell.Size = new System.Drawing.Size(446, 17);
-            this.chkExtendAnyDetectionSpell.TabIndex = 40;
-            this.chkExtendAnyDetectionSpell.Tag = "Checkbox_Options_ExtendAnyDetectionSpell";
-            this.chkExtendAnyDetectionSpell.Text = "Allow any Detection Spell to be taken as Extended range version";
-            this.chkExtendAnyDetectionSpell.UseVisualStyleBackColor = true;
-            this.chkExtendAnyDetectionSpell.CheckedChanged += new System.EventHandler(this.OptionsChanged);
-            // 
-            // chkMoreLethalGameplay
-            // 
-            this.chkMoreLethalGameplay.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.chkMoreLethalGameplay.AutoSize = true;
-            this.tlpHouseRules.SetColumnSpan(this.chkMoreLethalGameplay, 5);
-            this.chkMoreLethalGameplay.Location = new System.Drawing.Point(449, 307);
-            this.chkMoreLethalGameplay.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chkMoreLethalGameplay.Name = "chkMoreLethalGameplay";
-            this.chkMoreLethalGameplay.Size = new System.Drawing.Size(446, 17);
-            this.chkMoreLethalGameplay.TabIndex = 41;
-            this.chkMoreLethalGameplay.Tag = "Checkbox_Options_MoreLethalGameplace";
-            this.chkMoreLethalGameplay.Text = "Use 4th Edition Rules for More Lethal Gameplay (SR4 75)";
-            this.chkMoreLethalGameplay.UseVisualStyleBackColor = true;
-            this.chkMoreLethalGameplay.CheckedChanged += new System.EventHandler(this.OptionsChanged);
+            this.chkIgnoreComplexFormLimit.AutoSize = true;
+            this.tlpHouseRules.SetColumnSpan(this.chkIgnoreComplexFormLimit, 5);
+            this.chkIgnoreComplexFormLimit.Location = new System.Drawing.Point(449, 357);
+            this.chkIgnoreComplexFormLimit.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkIgnoreComplexFormLimit.Name = "chkIgnoreComplexFormLimit";
+            this.chkIgnoreComplexFormLimit.Size = new System.Drawing.Size(446, 17);
+            this.chkIgnoreComplexFormLimit.TabIndex = 43;
+            this.chkIgnoreComplexFormLimit.Tag = "Checkbox_Options_IgnoreComplexFormLimit";
+            this.chkIgnoreComplexFormLimit.Text = "Ignore complex form limit in Career mode";
+            this.chkIgnoreComplexFormLimit.UseVisualStyleBackColor = true;
             // 
             // chkSpecialKarmaCost
             // 
@@ -4392,21 +4340,73 @@ namespace Chummer
             this.chkSpecialKarmaCost.UseVisualStyleBackColor = true;
             this.chkSpecialKarmaCost.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
-            // chkIgnoreComplexFormLimit
+            // chkMoreLethalGameplay
             // 
-            this.chkIgnoreComplexFormLimit.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.chkMoreLethalGameplay.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.chkIgnoreComplexFormLimit.AutoSize = true;
-            this.tlpHouseRules.SetColumnSpan(this.chkIgnoreComplexFormLimit, 5);
-            this.chkIgnoreComplexFormLimit.Location = new System.Drawing.Point(449, 357);
-            this.chkIgnoreComplexFormLimit.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chkIgnoreComplexFormLimit.Name = "chkIgnoreComplexFormLimit";
-            this.chkIgnoreComplexFormLimit.Size = new System.Drawing.Size(446, 17);
-            this.chkIgnoreComplexFormLimit.TabIndex = 43;
-            this.chkIgnoreComplexFormLimit.Tag = "Checkbox_Options_IgnoreComplexFormLimit";
-            this.chkIgnoreComplexFormLimit.Text = "Ignore complex form limit in Career mode";
-            this.chkIgnoreComplexFormLimit.UseVisualStyleBackColor = true;
+            this.chkMoreLethalGameplay.AutoSize = true;
+            this.tlpHouseRules.SetColumnSpan(this.chkMoreLethalGameplay, 5);
+            this.chkMoreLethalGameplay.Location = new System.Drawing.Point(449, 307);
+            this.chkMoreLethalGameplay.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkMoreLethalGameplay.Name = "chkMoreLethalGameplay";
+            this.chkMoreLethalGameplay.Size = new System.Drawing.Size(446, 17);
+            this.chkMoreLethalGameplay.TabIndex = 41;
+            this.chkMoreLethalGameplay.Tag = "Checkbox_Options_MoreLethalGameplace";
+            this.chkMoreLethalGameplay.Text = "Use 4th Edition Rules for More Lethal Gameplay (SR4 75)";
+            this.chkMoreLethalGameplay.UseVisualStyleBackColor = true;
+            this.chkMoreLethalGameplay.CheckedChanged += new System.EventHandler(this.OptionsChanged);
+            // 
+            // chkExtendAnyDetectionSpell
+            // 
+            this.chkExtendAnyDetectionSpell.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkExtendAnyDetectionSpell.AutoSize = true;
+            this.tlpHouseRules.SetColumnSpan(this.chkExtendAnyDetectionSpell, 5);
+            this.chkExtendAnyDetectionSpell.Location = new System.Drawing.Point(449, 282);
+            this.chkExtendAnyDetectionSpell.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkExtendAnyDetectionSpell.Name = "chkExtendAnyDetectionSpell";
+            this.chkExtendAnyDetectionSpell.Size = new System.Drawing.Size(446, 17);
+            this.chkExtendAnyDetectionSpell.TabIndex = 40;
+            this.chkExtendAnyDetectionSpell.Tag = "Checkbox_Options_ExtendAnyDetectionSpell";
+            this.chkExtendAnyDetectionSpell.Text = "Allow any Detection Spell to be taken as Extended range version";
+            this.chkExtendAnyDetectionSpell.UseVisualStyleBackColor = true;
+            this.chkExtendAnyDetectionSpell.CheckedChanged += new System.EventHandler(this.OptionsChanged);
+            // 
+            // chkAllowSkillRegrouping
+            // 
+            this.chkAllowSkillRegrouping.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkAllowSkillRegrouping.AutoSize = true;
+            this.tlpHouseRules.SetColumnSpan(this.chkAllowSkillRegrouping, 5);
+            this.chkAllowSkillRegrouping.Location = new System.Drawing.Point(449, 256);
+            this.chkAllowSkillRegrouping.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkAllowSkillRegrouping.Name = "chkAllowSkillRegrouping";
+            this.chkAllowSkillRegrouping.Size = new System.Drawing.Size(446, 18);
+            this.chkAllowSkillRegrouping.TabIndex = 39;
+            this.chkAllowSkillRegrouping.Tag = "Checkbox_Options_SkillRegroup";
+            this.chkAllowSkillRegrouping.Text = "Allow Skills to be re-Grouped if all Ratings are the same";
+            this.chkAllowSkillRegrouping.UseVisualStyleBackColor = true;
+            this.chkAllowSkillRegrouping.CheckedChanged += new System.EventHandler(this.OptionsChanged);
+            // 
+            // chkNoArmorEncumbrance
+            // 
+            this.chkNoArmorEncumbrance.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkNoArmorEncumbrance.AutoSize = true;
+            this.tlpHouseRules.SetColumnSpan(this.chkNoArmorEncumbrance, 5);
+            this.chkNoArmorEncumbrance.Location = new System.Drawing.Point(449, 231);
+            this.chkNoArmorEncumbrance.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkNoArmorEncumbrance.Name = "chkNoArmorEncumbrance";
+            this.chkNoArmorEncumbrance.Size = new System.Drawing.Size(446, 17);
+            this.chkNoArmorEncumbrance.TabIndex = 38;
+            this.chkNoArmorEncumbrance.Tag = "Checkbox_Options_NoArmorEncumbrance";
+            this.chkNoArmorEncumbrance.Text = "No Armor Encumbrance";
+            this.chkNoArmorEncumbrance.UseVisualStyleBackColor = true;
+            this.chkNoArmorEncumbrance.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // tabGitHubIssues
             // 

@@ -471,75 +471,62 @@ namespace ChummerHub.Client.Model
         {
             try
             {
-                Cursor.Current = Cursors.AppStarting;
-                this.PopulateTags();
-                await this.PrepareModel();
-                var res = await ChummerHub.Client.Backend.Utils.PostSINnerAsync(this);
-                
-                var response = await Backend.Utils.HandleError(res) as ResultBase;
-                
-                if (response.CallSuccess == true)
+                using (new CursorWait(true))
                 {
-                    var jsonResultString = res.Response.Content.ReadAsStringAsync().Result;
-                    try
-                    {
-                        ResultSinnerPostSIN objIds = Newtonsoft.Json.JsonConvert.DeserializeObject<ResultSinnerPostSIN>(jsonResultString);
-                        throw new NotImplementedException("Just keep coding!");
-                        System.Collections.ICollection ids = objIds as System.Collections.ICollection;
-                        if (ids == null || ids.Count == 0)
-                        {
-                            string msg = "ChummerHub did not return a valid Id for sinner " +
-                                         this.MyCharacter.Name + ".";
-                            Log.Error(msg);
-                            throw new ArgumentException(msg);
-                        }
+                    this.PopulateTags();
+                    await this.PrepareModel();
+                    var res = await ChummerHub.Client.Backend.Utils.PostSINnerAsync(this);
 
-                        var cur = ids.GetEnumerator();
-                        cur.MoveNext();
-                        if (!Guid.TryParse(cur.Current.ToString(), out var sinGuid))
-                        {
-                            string msg = "ChummerHub did not return a valid IdArray for sinner " +
-                                         this.MyCharacter.Alias + ".";
-                            Log.Error(msg);
-                            throw new ArgumentException(msg);
-                        }
+                    var response = await Backend.Utils.HandleError(res) as ResultBase;
 
-                        this.MySINnerFile.Id = sinGuid;
-                    }
-                    catch (Exception ex)
+                    if (response?.CallSuccess == true)
                     {
-                        Log.Error(ex);
-                        throw;
+                        try
+                        {
+                            foreach (var sinner in res.Body.MySINners)
+                            {
+                                if (sinner?.Id == null || sinner?.Id == Guid.Empty)
+                                {
+                                    string msg = "ChummerHub did not return a valid Id for sinner " +
+                                                 this.MyCharacter.Name + ".";
+                                    Log.Error(msg);
+                                    throw new ArgumentException(msg);
+                                }
+                                this.MySINnerFile.Id = sinner?.Id;
+                            }
+                            Log.Debug("Character " + this.MyCharacter.Alias + " posted with ID " + this.MySINnerFile.Id);
+                            await ChummerHub.Client.Backend.Utils.UploadChummerFileAsync(this).ContinueWith((uploadtask) =>
+                            {
+                                if (uploadtask.Status != TaskStatus.RanToCompletion)
+                                {
+                                    if (uploadtask.Exception != null)
+                                        throw uploadtask.Exception;
+                                    return;
+                                }
+                                if (uploadtask.Result?.Response?.StatusCode != HttpStatusCode.OK)
+                                {
+                                    Log.Warn("Upload failed for Character " + this.MyCharacter.Alias + ": " + uploadtask.Result?.Response?.StatusCode);
+                                }
+                                else
+                                    Log.Trace("Character " + this.MyCharacter.Alias + " uploaded with Id " + this.MySINnerFile.Id);
+                            });
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.Error(ex);
+                            throw;
+                        }
                     }
                 }
 
-                //System.Diagnostics.Trace.TraceInformation("Character " + this.MyCharacter.Alias + " posted with ID " + this.MySINnerFile.Id);
-                //ChummerHub.Client.Backend.Utils.UploadChummerFileAsync(this).ContinueWith((uploadtask) =>
-                //{
-                //    if (uploadtask.Status != TaskStatus.RanToCompletion)
-                //    {
-                //        if (uploadtask.Exception != null)
-                //            throw uploadtask.Exception;
-                //        return;
-                //    }
-                //    if (uploadtask.Result?.Response?.StatusCode != HttpStatusCode.OK)
-                //    {
-                //        System.Diagnostics.Trace.TraceWarning("Upload failed for Character " + this.MyCharacter.Alias + ": " + uploadtask.Result?.Response?.StatusCode);
-                //    }
-                //    else
-                //        System.Diagnostics.Trace.TraceInformation("Character " + this.MyCharacter.Alias + " uploaded.");
-                //});
+                
             }
             catch(Exception e)
             {
                 Log.Error(e);
                 MessageBox.Show(e.ToString());
             }
-            finally
-            {
-                Cursor.Current = Cursors.Default;
-            }
-            throw new NotImplementedException("Just keep coding!");
+            return true;
         }
 
     }

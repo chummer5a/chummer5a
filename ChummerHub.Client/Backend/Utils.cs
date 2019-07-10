@@ -985,9 +985,9 @@ namespace ChummerHub.Client.Backend
 
         }
 
-        public static async Task<HttpOperationResponse> PostSINnerAsync(CharacterExtended ce)
+        public static async Task<HttpOperationResponse<ResultSinnerPostSIN>> PostSINnerAsync(CharacterExtended ce)
         {
-            HttpOperationResponse res = null;
+            HttpOperationResponse<ResultSinnerPostSIN> res = null;
             try
             {
                 UploadInfoObject uploadInfoObject = new UploadInfoObject
