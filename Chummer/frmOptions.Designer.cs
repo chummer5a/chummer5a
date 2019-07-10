@@ -29,6 +29,7 @@ namespace Chummer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            this.mainPanel = new System.Windows.Forms.Panel();
             this.cmdOK = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.tlpOptions = new Chummer.BufferedTableLayoutPanel(this.components);
@@ -306,6 +307,7 @@ namespace Chummer
             this.clbPlugins = new System.Windows.Forms.CheckedListBox();
             this.panelPluginOption = new System.Windows.Forms.Panel();
             this.flpOKCancel = new System.Windows.Forms.FlowLayoutPanel();
+            this.mainPanel.SuspendLayout();
             this.tlpOptions.SuspendLayout();
             this.tabOptions.SuspendLayout();
             this.tabGlobal.SuspendLayout();
@@ -388,6 +390,18 @@ namespace Chummer
             this.flpOKCancel.SuspendLayout();
             this.SuspendLayout();
             // 
+            // mainPanel
+            // 
+            this.mainPanel.AutoScroll = true;
+            this.mainPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.mainPanel.Controls.Add(this.tlpOptions);
+            this.mainPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.mainPanel.Location = new System.Drawing.Point(9, 9);
+            this.mainPanel.MinimumSize = new System.Drawing.Size(300, 300);
+            this.mainPanel.Name = "mainPanel";
+            this.mainPanel.Size = new System.Drawing.Size(942, 744);
+            this.mainPanel.TabIndex = 0;
+            // 
             // cmdOK
             // 
             this.cmdOK.DialogResult = System.Windows.Forms.DialogResult.Cancel;
@@ -419,7 +433,6 @@ namespace Chummer
             // 
             // tlpOptions
             // 
-            this.tlpOptions.AutoSize = true;
             this.tlpOptions.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpOptions.ColumnCount = 4;
             this.tlpOptions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
@@ -432,7 +445,6 @@ namespace Chummer
             this.tlpOptions.Controls.Add(this.cboSetting, 1, 0);
             this.tlpOptions.Controls.Add(this.tabOptions, 0, 1);
             this.tlpOptions.Controls.Add(this.flpOKCancel, 0, 2);
-            this.tlpOptions.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpOptions.Location = new System.Drawing.Point(9, 9);
             this.tlpOptions.Name = "tlpOptions";
             this.tlpOptions.RowCount = 3;
@@ -4516,23 +4528,20 @@ namespace Chummer
             this.AcceptButton = this.cmdOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.AutoSize = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.CancelButton = this.cmdCancel;
-            this.ClientSize = new System.Drawing.Size(948, 749);
-            this.Controls.Add(this.tlpOptions);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.MaximizeBox = false;
+            this.ClientSize = new System.Drawing.Size(960, 762);
+            this.Controls.Add(this.mainPanel);
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(20, 661);
+            this.MinimumSize = new System.Drawing.Size(50, 50);
             this.Name = "frmOptions";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.ShowInTaskbar = false;
-            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_Options";
             this.Text = "Options";
             this.Load += new System.EventHandler(this.frmOptions_Load);
+            this.mainPanel.ResumeLayout(false);
             this.tlpOptions.ResumeLayout(false);
             this.tlpOptions.PerformLayout();
             this.tabOptions.ResumeLayout(false);
@@ -4633,12 +4642,12 @@ namespace Chummer
             this.flpOKCancel.ResumeLayout(false);
             this.flpOKCancel.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
 
+        private System.Windows.Forms.Panel mainPanel;
         private System.Windows.Forms.Button cmdOK;
         private System.Windows.Forms.Label lblKarmaCarryoverExtra;
         private System.Windows.Forms.NumericUpDown nudKarmaCarryover;
