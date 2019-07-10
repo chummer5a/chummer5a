@@ -1995,7 +1995,7 @@ if (!Utils.IsUnitTest){
                             }
                         }
 
-                        if (!string.IsNullOrEmpty(strMissingBooks) && !Utils.IsUnitTest)
+                        if (!string.IsNullOrEmpty(strMissingBooks) && !Utils.IsUnitTest && showWarnings)
                         {
                             if (MessageBox.Show(new Form {TopMost = true},
                                     string.Format(
@@ -2286,7 +2286,7 @@ if (!Utils.IsUnitTest){
                                 if (strCharacterInnerXml.IndexOf(strLoopSourceName, StringComparison.Ordinal) ==
                                     strCharacterInnerXml.LastIndexOf(strLoopSourceName, StringComparison.Ordinal))
                                 {
-                                    if (!Utils.IsUnitTest)
+                                    if (!Utils.IsUnitTest && showWarnings)
                                     {
                                         //Utils.BreakIfDebug();
                                         if (removeImprovements || (MessageBox.Show(

@@ -6,10 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using ChummerHub.Client.UI;
 using System.Diagnostics;
 
-namespace ChummerHub.Client.Backend
+namespace Chummer
 {
     public class CursorWait : IDisposable
     {
@@ -20,7 +19,7 @@ namespace ChummerHub.Client.Backend
             // Wait
             _control = control;
             Cursor.Current = appStarting ? Cursors.AppStarting : Cursors.WaitCursor;
-            PluginHandler.MainForm.DoThreadSafe(() =>
+            Program.MainForm.DoThreadSafe(() =>
             {
                 if (_control == null) Application.UseWaitCursor = true;
                 else _control.Cursor = Cursor.Current;
@@ -32,7 +31,7 @@ namespace ChummerHub.Client.Backend
         public CursorWait(bool appStarting = false)
         {
             Cursor.Current = appStarting ? Cursors.AppStarting : Cursors.WaitCursor;
-            PluginHandler.MainForm.DoThreadSafe(() =>
+            Program.MainForm.DoThreadSafe(() =>
             {
                 Application.UseWaitCursor = true;
             });
@@ -45,7 +44,7 @@ namespace ChummerHub.Client.Backend
             // Wait
             _form = form;
             Cursor.Current = appStarting ? Cursors.AppStarting : Cursors.WaitCursor;
-            PluginHandler.MainForm.DoThreadSafe(() =>
+            Program.MainForm.DoThreadSafe(() =>
             {
                 if (_form == null) Application.UseWaitCursor = true;
                 else _form.Cursor = Cursor.Current;
@@ -55,7 +54,7 @@ namespace ChummerHub.Client.Backend
 
         public void Dispose()
         {
-            PluginHandler.MainForm.DoThreadSafe(() =>
+            Program.MainForm.DoThreadSafe(() =>
             {
                 // Reset
                 Cursor.Current = Cursors.Default;

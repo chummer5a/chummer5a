@@ -1829,20 +1829,24 @@ namespace Chummer
         {
             clbPlugins.Items.Clear();
             if (Program.MainForm?.PluginLoader?.MyPlugins?.Any() != true) return;
-            foreach(var plugin in Program.MainForm.PluginLoader.MyPlugins)
+            using (new CursorWait(false, this))
             {
-                if(GlobalOptions.PluginsEnabledDic.TryGetValue(plugin.ToString(), out var check))
+                foreach (var plugin in Program.MainForm.PluginLoader.MyPlugins)
                 {
-                    clbPlugins.Items.Add(plugin, check);
+                    if (GlobalOptions.PluginsEnabledDic.TryGetValue(plugin.ToString(), out var check))
+                    {
+                        clbPlugins.Items.Add(plugin, check);
+                    }
+                    else
+                    {
+                        clbPlugins.Items.Add(plugin);
+                    }
                 }
-                else
+
+                if (clbPlugins.Items.Count > 0)
                 {
-                    clbPlugins.Items.Add(plugin);
+                    clbPlugins.SelectedIndex = 0;
                 }
-            }
-            if(clbPlugins.Items.Count > 0)
-            {
-                clbPlugins.SelectedIndex = 0;
             }
         }
 

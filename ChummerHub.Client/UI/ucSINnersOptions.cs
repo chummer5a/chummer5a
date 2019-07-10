@@ -516,11 +516,11 @@ namespace ChummerHub.Client.UI
             {
                 try
                 {
-                    Debug.WriteLine("Loading: " + file);
+                    Log.Trace("Loading: " + file);
                     var c = new Character { FileName = file };
-                    if(!(await c.Load()))
+                    if(!(await c.Load(null, false)))
                         continue;
-                    Debug.WriteLine("Character loaded: " + c.Name);
+                    Log.Trace("Character loaded: " + c.Name);
                     CharacterExtended ce = new CharacterExtended(c, null);
                     await ce.UploadInBackground();
                 }
@@ -529,9 +529,13 @@ namespace ChummerHub.Client.UI
                     string msg = "Exception while loading " + file + ":";
                     msg += Environment.NewLine + ex.ToString();
                     Log.Warn(msg);
-                    throw;
+                    /* run your code here */
+                    MessageBox.Show(msg);
+                 
                 }
             }
+
+            MessageBox.Show("Upload of " + thisDialog.FileNames.Length + " files finished (successful or not - its over).");
         }
 
     

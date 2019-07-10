@@ -70,12 +70,18 @@ namespace Chummer.Plugins
                     MyPlugins = new List<IPlugin>();
                     return;
                 }
-                myDirectoryCatalog = new DirectoryCatalog(path: path, searchPattern: "*.dll");
-
                 catalog = new AggregateCatalog();
-                Log.Info("Searching for dlls in path " + myDirectoryCatalog?.FullPath);
-                catalog.Catalogs.Add(myDirectoryCatalog);
+
+                var plugindirectories = Directory.GetDirectories(path);
+                foreach (var plugindir in plugindirectories)
+                {
+                    myDirectoryCatalog = new DirectoryCatalog(path: plugindir, searchPattern: "*.dll");
+                    Log.Info("Searching for dlls in path " + myDirectoryCatalog?.FullPath);
+                    catalog.Catalogs.Add(myDirectoryCatalog);
+                }
+
                 container = new CompositionContainer(catalog);
+
                 //Fill the imports of this object
                 StartWatch();
                 container.ComposeParts(this);

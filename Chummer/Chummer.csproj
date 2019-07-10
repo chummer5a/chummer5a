@@ -90,9 +90,6 @@
   <PropertyGroup />
   <PropertyGroup />
   <ItemGroup>
-    <Reference Include="GroupControls, Version=1.8.0.0, Culture=neutral, PublicKeyToken=3726d9da21b6ac8f, processorArchitecture=MSIL">
-      <HintPath>..\packages\GroupControls.1.8.0\lib\net45\GroupControls.dll</HintPath>
-    </Reference>
     <Reference Include="HtmlRenderer, Version=1.5.0.6, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\HtmlRenderer.Core.1.5.0.6\lib\net45\HtmlRenderer.dll</HintPath>
     </Reference>
@@ -338,6 +335,7 @@
     <Compile Include="helpers\BufferedTableLayoutPanel.Designer.cs">
       <DependentUpon>BufferedTableLayoutPanel.cs</DependentUpon>
     </Compile>
+    <Compile Include="helpers\CursorWait.cs" />
     <Compile Include="helpers\DataGridViewTextBoxColumnTranslated.cs" />
     <Compile Include="helpers\ElasticComboBox.cs">
       <SubType>Component</SubType>
