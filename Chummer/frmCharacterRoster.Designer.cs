@@ -398,7 +398,7 @@ namespace Chummer
             // 
             this.cmsRoster.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsToggleFav,
-            //this.tsSort,
+            this.tsSort,
             this.tsDelete,
             this.tsCloseOpenCharacter});
             this.cmsRoster.Name = "cmsRoster";
@@ -412,15 +412,15 @@ namespace Chummer
             this.tsToggleFav.Tag = "Menu_ToggleFavorite";
             this.tsToggleFav.Text = "&Toggle Favorite";
             this.tsToggleFav.Click += new System.EventHandler(this.tsToggleFav_Click);
-            //// 
-            //// tsSort
-            //// 
-            //this.tsSort.Image = global::Chummer.Properties.Resources.page_refresh;
-            //this.tsSort.Name = "tsSort";
-            //this.tsSort.Size = new System.Drawing.Size(177, 22);
-            //this.tsSort.Tag = "Menu_Sort";
-            //this.tsSort.Text = "&Sort Alphabetically";
-            //this.tsSort.Click += new System.EventHandler(this.tsSort_Click);
+            // 
+            // tsSort
+            // 
+            this.tsSort.Image = global::Chummer.Properties.Resources.page_refresh;
+            this.tsSort.Name = "tsSort";
+            this.tsSort.Size = new System.Drawing.Size(177, 22);
+            this.tsSort.Tag = "Menu_Sort";
+            this.tsSort.Text = "&Sort Alphabetically";
+            this.tsSort.Click += new System.EventHandler(this.tsSort_Click);
             // 
             // tsDelete
             // 
