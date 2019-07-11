@@ -350,13 +350,18 @@ echo Statement 7: copy $(TargetDir)System.Composition.* $(TargetDir)Plugins\SINn
 copy $(TargetDir)System.Composition.* $(TargetDir)Plugins\SINners\ /Y
 echo Statement 8: copy $(TargetDir)System.Diagnostics.DiagnosticSource.* $(TargetDir)Plugins\SINners\ /Y
 copy $(TargetDir)System.Diagnostics.DiagnosticSource.* $(TargetDir)Plugins\SINners\ /Y
-echo Statement 8: copy $(TargetDir)Microsoft.ApplicationInsights.* $(TargetDir)Plugins\SINners\ /Y
+echo Statement 9: copy $(TargetDir)Microsoft.ApplicationInsights.* $(TargetDir)Plugins\SINners\ /Y
 copy $(TargetDir)Microsoft.ApplicationInsights.* $(TargetDir)Plugins\SINners\ /Y
-echo Statement 8: copy $(TargetDir)GroupControls.* $(TargetDir)Plugins\SINners\ /Y
-copy $(TargetDir)GroupControls.* $(TargetDir)Plugins\SINners\ /Y</PostBuildEvent>
+echo Statement 10: copy $(TargetDir)GroupControls.* $(TargetDir)Plugins\SINners\ /Y
+copy $(TargetDir)GroupControls.* $(TargetDir)Plugins\SINners\ /Y
+echo Statement 11: copy $(TargetDir)Plugins\SINners\* $(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SINners\ /Y
+copy $(TargetDir)Plugins\SINners\* $(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SINners\ /Y</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>mkdir $(TargetDir)Plugins\SINners\
+    <PreBuildEvent>echo Statement 1: mkdir $(TargetDir)Plugins\SINners\
+mkdir $(TargetDir)Plugins\SINners\
+echo Statement 2: mkdir $(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SINners\
+mkdir $(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SINners\
 Exit 0</PreBuildEvent>
   </PropertyGroup>
 </Project>
