@@ -17,8 +17,7 @@ Application Fixes:
 - Fixed an issue where the screen to select a Complex Form did not pay attention to Complex Form requirements, e.g. technomancer streams. Closes #3718.
 - Fixed an issue where changing Metatype priorities would not update the Special Attributes amount properly.
 - Increased gear quantity limit per stack from 100000 to 1000000000 in both Create mode and in the gear selection screen. Closes #3520.
-- Fixed an issue where changing priorities could end up causing issues with metatype- and metavariant-given qualities. Closes #3549.
-- Fixed a regression in the behaviour of the cyberadeptdaemon improvement that prevented Resonance being awarded for fractional losses of Essence. In effect, this improvement was only being counted if you had an integer value of CyberwareEssence. Your Resonance will be adjusted on next Submersion, or if you activate the Reapply Improvements menu option. 
+- Fixed an issue where changing priorities could end up causing issues with metatype- and metavariant-given qualities. Closes #3549. 
 - Fixed an issue with Armor Mods that use FixedValues in Cost not correctly displaying, such as Grey Mana Integration.
 
 Data Changes:
