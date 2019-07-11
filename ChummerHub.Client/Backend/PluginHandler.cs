@@ -27,6 +27,7 @@ using Chummer.Properties;
 using NLog;
 using Microsoft.ApplicationInsights.Channel;
 using Microsoft.ApplicationInsights.DataContracts;
+using SINners;
 using Formatting = Newtonsoft.Json.Formatting;
 using MessageBox = System.Windows.MessageBox;
 using TabControl = System.Windows.Forms.TabControl;
@@ -465,13 +466,43 @@ namespace Chummer.Plugins
             return new ucSINnersOptions();
         }
 
+        
         public async Task<IEnumerable<TreeNode>> GetCharacterRosterTreeNode(frmCharacterRoster frmCharRoster, bool forceUpdate)
         {
             try
             {
+                ContextMenuStrip myContextMenuStrip = null;
                 List<TreeNode> list = new List<TreeNode>();
                 using (new CursorWait(true, frmCharRoster))
                 {
+                    if (frmCharRoster.MyCmsRoster.Container != null)
+                    {
+                        frmCharRoster.DoThreadSafe(() =>
+                        {
+                            myContextMenuStrip = new ContextMenuStrip(frmCharRoster.MyCmsRoster.Container);
+                            var menulist = frmCharRoster.MyCmsRoster.Items.Cast<ToolStripMenuItem>().ToList();
+                            foreach (var item in menulist)
+                            {
+                                switch (item.Name)
+                                {
+                                    case "tsToggleFav":
+                                        break;
+                                    case "tsCloseOpenCharacter":
+                                        break;
+                                    case "tsSort":
+                                        break;
+                                    case "tsDelete":
+                                        ToolStripMenuItem newDelete = new ToolStripMenuItem(item.Text, item.Image);
+                                        newDelete.Click += frmCharRoster.tsDelete_Click;
+                                        myContextMenuStrip.Items.Add(newDelete);
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+                        });
+
+                    }
                     if (ChummerHub.Client.Properties.Settings.Default.UserModeRegistered == true)
                     {
                         Log.Info("Loading CharacterRoster from SINners...");
@@ -502,8 +533,8 @@ namespace Chummer.Plugins
                     {
                         list.Add(addme.Value);
                     }
+                    AddContextMenuStripRecursive(list, myContextMenuStrip);
                     return list;
-                    
                 }
                     
             }
@@ -537,8 +568,24 @@ namespace Chummer.Plugins
                 node.Tag = objCache;
                 return new List<TreeNode>() { node };
             }
-            
-            
+        }
+
+        private void AddContextMenuStripRecursive(List<TreeNode> list, ContextMenuStrip myCmsRoster)
+        {
+            foreach (var node in list)
+            {
+                
+                PluginHandler.MainForm.DoThreadSafe(() =>
+                {
+                    node.ContextMenuStrip = myCmsRoster;
+                });
+                
+                if (node.Nodes.Count > 0)
+                {
+                    var myList = node.Nodes.Cast<TreeNode>().ToList();
+                    AddContextMenuStripRecursive(myList, myCmsRoster);
+                }
+            }
         }
 
         public void CustomInitialize(frmChummerMain mainControl)

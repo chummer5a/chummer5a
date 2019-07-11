@@ -15,6 +15,7 @@ using System.Net;
 using System.Net.Http;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Runtime.Remoting.Channels;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -758,7 +759,6 @@ namespace ChummerHub.Client.Backend
                     Name = CalculateCharName(objCache),
                     Tag = objCache,
                     ToolTipText = "Last Change: " + sinner.LastChange,
-                    ContextMenuStrip = PluginHandler.MainForm.CharacterRoster.ContextMenuStrip
                 };
                 if (String.IsNullOrEmpty(sinner.DownloadUrl))
                 {
@@ -888,6 +888,40 @@ namespace ChummerHub.Client.Backend
                 {
                     objCache.ErrorText = e.Message;
                     Log.Error(e);
+                }
+            };
+            objCache.OnMyContextMenuDeleteClick -= objCache.OnDefaultContextMenuDeleteClick;
+            objCache.OnMyContextMenuDeleteClick += async (sender, args) =>
+            {
+                ResultSinnerDelete result = null;
+                try
+                {
+                    if (sinner.Id == null)
+                        return;
+                    using (new CursorWait(true, PluginHandler.MainForm))
+                    {
+                        var client = StaticUtils.GetClient();
+                        
+                        result = client.Delete(sinner.Id.Value);
+                        objCache.ErrorText = "deleted!";
+                        PluginHandler.MainForm.DoThreadSafe(() =>
+                        {
+                            PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false,
+                                true);
+                        });
+                    }
+                }
+                catch (HttpOperationException ex)
+                {
+                    objCache.ErrorText = ex.Message;
+                    objCache.ErrorText += Environment.NewLine + ex.Response.Content;
+                    Log.Error(ex, objCache.ErrorText);
+
+                }
+                catch (Exception ex)
+                {
+                    objCache.ErrorText = ex.Message;
+                    Log.Error(ex);
                 }
             };
         }

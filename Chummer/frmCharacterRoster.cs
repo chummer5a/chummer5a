@@ -74,6 +74,12 @@ namespace Chummer
             }
         }
 
+        public ContextMenuStrip MyCmsRoster
+        {
+            
+            get { return cmsRoster; }
+        }
+
         public void SetMyEventHandlers(bool deleteThem = false)
         {
             if(!deleteThem)
@@ -84,8 +90,8 @@ namespace Chummer
                 treCharacterList.DragDrop += treCharacterList_OnDefaultDragDrop;
                 treCharacterList.DragOver += treCharacterList_OnDefaultDragOver;
                 OnMyMouseDown += OnDefaultMouseDown;
-
-                if(watcherCharacterRosterFolder != null)
+                
+                if (watcherCharacterRosterFolder != null)
                 {
                     watcherCharacterRosterFolder.Changed += RefreshWatchListOnly;
                     watcherCharacterRosterFolder.Created += RefreshWatchListOnly;
@@ -347,7 +353,7 @@ namespace Chummer
                     {
                         var t = Task.Factory.StartNew<IEnumerable<List<TreeNode>>>(() =>
                         {
-                            Log.Info("Starting new Task to get CharacterRosterTreeNodes for plugin:" + plugin.ToString());
+                             Log.Info("Starting new Task to get CharacterRosterTreeNodes for plugin:" + plugin.ToString());
                             var result = new List<List<TreeNode>>();
                             var task = plugin.GetCharacterRosterTreeNode(this, blnRefreshPlugins);
                             if(task.Result != null)
@@ -497,7 +503,6 @@ namespace Chummer
                 objNode.ToolTipText += Environment.NewLine + Environment.NewLine + LanguageManager.GetString("String_Error", GlobalOptions.Language)
                                        + LanguageManager.GetString("String_Colon", GlobalOptions.Language) + Environment.NewLine + objCache.ErrorText;
             }
-
             return objNode;
         }
 
@@ -785,12 +790,18 @@ namespace Chummer
                 OnMyDoubleClick += OnDefaultDoubleClick;
                 OnMyAfterSelect += OnDefaultAfterSelect;
                 OnMyKeyDown += OnDefaultKeyDown;
+                OnMyContextMenuDeleteClick += OnDefaultContextMenuDeleteClick;
             }
 
             [JsonIgnore]
             [XmlIgnore]
             [IgnoreDataMember]
             public EventHandler OnMyDoubleClick;
+
+            [JsonIgnore]
+            [XmlIgnore]
+            [IgnoreDataMember]
+            public EventHandler OnMyContextMenuDeleteClick;
 
             [JsonIgnore]
             [XmlIgnore]
@@ -817,6 +828,24 @@ namespace Chummer
                 {
                     objOpenCharacter = await Program.MainForm.LoadCharacter(this.FilePath);
                     Program.MainForm.OpenCharacter(objOpenCharacter);
+                }
+            }
+
+            
+            public async void OnDefaultContextMenuDeleteClick(object sender, EventArgs e)
+            {
+                var t = sender as TreeNode;
+                if (t != null)
+                {
+                    switch (t.Parent.Tag?.ToString())
+                    {
+                        case "Recent":
+                            GlobalOptions.MostRecentlyUsedCharacters.Remove(this.FilePath);
+                            break;
+                        case "Favourite":
+                            GlobalOptions.FavoritedCharacters.Remove(this.FilePath);
+                            break;
+                    }
                 }
             }
 
@@ -965,89 +994,82 @@ namespace Chummer
         }
         #endregion
 
-        private void tsDelete_Click(object sender, EventArgs e)
+        public void tsDelete_Click(object sender, EventArgs e)
         {
             TreeNode t = treCharacterList.SelectedNode;
 
             if (t?.Tag is CharacterCache objCache)
             {
-                switch(t.Parent.Tag.ToString())
-                {
-                    case "Recent":
-                        GlobalOptions.MostRecentlyUsedCharacters.Remove(objCache.FilePath);
-                        break;
-                    case "Favourite":
-                        GlobalOptions.FavoritedCharacters.Remove(objCache.FilePath);
-                        break;
-                }
+                objCache.OnMyContextMenuDeleteClick(t, e);
             }
         }
 
-        //private void tsSort_Click(object sender, EventArgs e)
-        //{
-        //    TreeNode t = treCharacterList.SelectedNode;
+        private void tsSort_Click(object sender, EventArgs e)
+        {
+            TreeNode t = treCharacterList.SelectedNode;
 
-        //    if(t != null)
-        //    {
-        //        if (t?.Tag is CharacterCache objCache)
-        //        {
-        //            switch(t.Parent.Tag.ToString())
-        //            {
-        //                case "Recent":
-        //                    {
-        //                        _blnSkipUpdate = true;
-        //                        SuspendLayout();
+            if (t != null)
+            {
+                treCharacterList.Sort();
+                //if (t?.Tag is CharacterCache objCache)
+                //{
+                //    switch (t.Parent.Tag.ToString())
+                //    {
+                //        case "Recent":
+                //            {
+                //                _blnSkipUpdate = true;
+                //                SuspendLayout();
 
-        //                        List<Tuple<string, string>> lstSorted = new List<Tuple<string, string>>();
-        //                        for(int i = 0; i < GlobalOptions.MostRecentlyUsedCharacters.Count; ++i)
-        //                        {
-        //                            string strLoopFile = GlobalOptions.MostRecentlyUsedCharacters[i];
+                //                List<Tuple<string, string>> lstSorted = new List<Tuple<string, string>>();
+                //                for (int i = 0; i < GlobalOptions.MostRecentlyUsedCharacters.Count; ++i)
+                //                {
+                //                    string strLoopFile = GlobalOptions.MostRecentlyUsedCharacters[i];
 
-        //                            if(_lstCharacterCache.TryGetValue(strLoopFile, out CharacterCache objLoopCache) && objLoopCache != null)
-        //                                lstSorted.Add(new Tuple<string, string>(objLoopCache.CalculatedName(false), strLoopFile));
-        //                            else
-        //                                lstSorted.Add(new Tuple<string, string>(Path.GetFileNameWithoutExtension(strLoopFile), strLoopFile));
-        //                        }
+                //                    if (_lstCharacterCache.TryGetValue(strLoopFile, out CharacterCache objLoopCache) && objLoopCache != null)
+                //                        lstSorted.Add(new Tuple<string, string>(objLoopCache.CalculatedName(false), strLoopFile));
+                //                    else
+                //                        lstSorted.Add(new Tuple<string, string>(Path.GetFileNameWithoutExtension(strLoopFile), strLoopFile));
+                //                }
 
-        //                        lstSorted.Sort();
-        //                        for(int i = 0; i < lstSorted.Count; ++i)
-        //                            GlobalOptions.MostRecentlyUsedCharacters.Move(GlobalOptions.MostRecentlyUsedCharacters.IndexOf(lstSorted[i].Item2), i);
+                //                lstSorted.Sort();
+                //                for (int i = 0; i < lstSorted.Count; ++i)
+                //                    GlobalOptions.MostRecentlyUsedCharacters.Move(GlobalOptions.MostRecentlyUsedCharacters.IndexOf(lstSorted[i].Item2), i);
 
-        //                        LoadCharacters(false, true, false);
-        //                        ResumeLayout();
-        //                        treCharacterList.SelectedNode = treCharacterList.FindNode(strSelectedTag);
-        //                        break;
-        //                    }
-        //                case "Favourite":
-        //                    {
-        //                        _blnSkipUpdate = true;
-        //                        SuspendLayout();
+                //                LoadCharacters(false, true, false);
+                //                ResumeLayout();
+                //                treCharacterList.SelectedNode = treCharacterList.FindNode(strSelectedTag);
+                //                break;
+                //            }
+                //        case "Favourite":
+                //            {
+                //                _blnSkipUpdate = true;
+                //                SuspendLayout();
 
-        //                        List<Tuple<string, string>> lstSorted = new List<Tuple<string, string>>();
-        //                        for(int i = 0; i < GlobalOptions.FavoritedCharacters.Count; ++i)
-        //                        {
-        //                            string strLoopFile = GlobalOptions.FavoritedCharacters[i];
-        //                            if(_lstCharacterCache.TryGetValue(strLoopFile, out CharacterCache objLoopCache) && objLoopCache != null)
-        //                                lstSorted.Add(new Tuple<string, string>(objLoopCache.CalculatedName(false), strLoopFile));
-        //                            else
-        //                                lstSorted.Add(new Tuple<string, string>(Path.GetFileNameWithoutExtension(strLoopFile), strLoopFile));
-        //                        }
+                //                List<Tuple<string, string>> lstSorted = new List<Tuple<string, string>>();
+                //                for (int i = 0; i < GlobalOptions.FavoritedCharacters.Count; ++i)
+                //                {
+                //                    string strLoopFile = GlobalOptions.FavoritedCharacters[i];
+                //                    if (_lstCharacterCache.TryGetValue(strLoopFile, out CharacterCache objLoopCache) && objLoopCache != null)
+                //                        lstSorted.Add(new Tuple<string, string>(objLoopCache.CalculatedName(false), strLoopFile));
+                //                    else
+                //                        lstSorted.Add(new Tuple<string, string>(Path.GetFileNameWithoutExtension(strLoopFile), strLoopFile));
+                //                }
 
-        //                        lstSorted.Sort();
-        //                        for(int i = 0; i < lstSorted.Count; ++i)
-        //                            GlobalOptions.FavoritedCharacters.Move(GlobalOptions.FavoritedCharacters.IndexOf(lstSorted[i].Item2), i);
+                //                lstSorted.Sort();
+                //                for (int i = 0; i < lstSorted.Count; ++i)
+                //                    GlobalOptions.FavoritedCharacters.Move(GlobalOptions.FavoritedCharacters.IndexOf(lstSorted[i].Item2), i);
 
-        //                        _blnSkipUpdate = false;
+                //                _blnSkipUpdate = false;
 
-        //                        LoadCharacters(true, false, false);
-        //                        ResumeLayout();
-        //                        treCharacterList.SelectedNode = treCharacterList.FindNode(strSelectedTag);
-        //                        break;
-        //                    }
-        //            }
-        //        }
-        //    }
-        //}
+                //                LoadCharacters(true, false, false);
+                //                ResumeLayout();
+                //                treCharacterList.SelectedNode = treCharacterList.FindNode(strSelectedTag);
+                //                break;
+                //            }
+                //    }
+                //}
+            }
+        }
 
         private void tsToggleFav_Click(object sender, EventArgs e)
         {
