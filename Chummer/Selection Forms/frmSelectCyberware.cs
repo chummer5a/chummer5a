@@ -518,6 +518,11 @@ namespace Chummer
         public decimal GenetechCostMultiplier { get; set; } = 1.0m;
 
         /// <summary>
+        /// Essence cost multiplier for Genetech.
+        /// </summary>
+        public decimal GenetechEssMultiplier { get; set; } = 1.0m;
+
+        /// <summary>
         /// Essence cost multiplier for Basic Bioware.
         /// </summary>
         public decimal BasicBiowareESSMultiplier { get; set; } = 1.0m;
@@ -773,6 +778,10 @@ namespace Chummer
                         // If Basic Bioware is selected, apply the Basic Bioware ESS Multiplier.
                         if (strSelectCategory == "Basic")
                             decCharacterESSModifier -= (1 - BasicBiowareESSMultiplier);
+                        else if (strSelectCategory.StartsWith("Genetech") || strSelectCategory.StartsWith("Genetic Infusions") || strSelectCategory.StartsWith("Genemods"))
+                        {
+                            decCharacterESSModifier -= (1 - GenetechEssMultiplier);
+                        }
 
                         if (nudESSDiscount.Visible)
                         {

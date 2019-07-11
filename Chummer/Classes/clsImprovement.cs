@@ -314,7 +314,8 @@ namespace Chummer
             AddSpirit,
             ContactKarmaDiscount,
             ContactKarmaMinimum,
-            NumImprovementTypes // 🡐 This one should always be the last defined enum
+            GenetechEssMultiplier,
+            NumImprovementTypes // 🡐 This one should always be the last defined enum           
         }
 
         public enum ImprovementSource

@@ -14618,6 +14618,18 @@ namespace Chummer
                 frmPickCyberware.GenetechCostMultiplier = decMultiplier;
             }
 
+            // Apply the character's Genetech Essence cost multiplier if applicable.
+            if (ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.GenetechEssMultiplier) != 0 && objSource == Improvement.ImprovementSource.Bioware)
+            {
+                decMultiplier = 1.0m;
+                foreach (Improvement objImprovement in CharacterObject.Improvements
+                    .Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.GenetechEssMultiplier && objImprovement.Enabled))
+                {
+                    decMultiplier -= (1.0m - (Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100.0m));
+                }
+                frmPickCyberware.GenetechEssMultiplier = decMultiplier;
+            }
+
             if (objSelectedCyberware != null)
             {
                 frmPickCyberware.SetGrade = objSelectedCyberware.Grade;

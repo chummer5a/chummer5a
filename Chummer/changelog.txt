@@ -1,5 +1,9 @@
 Future Build 207-208
 
+Application Changes:
+
+- Added a genetechessmultiplier improvement type that allows for the modification of genetech essence costs in a similar manner to the biowareessmultiplier improvement.
+
 Application Fixes:
 
 - Fixed issues with the SelectSpell improvement not being properly available in the improvements window.

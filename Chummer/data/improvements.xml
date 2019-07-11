@@ -443,6 +443,16 @@
       <page>Adjusts the Essence cost of Bioware by the percent value entered. All Bioware Essence costs will now be X% of their original value. Numbers lower than 100 reduce the Essence cost. Numbers higher than 100 increase the Essence cost.</page>
     </improvement>
     <improvement>
+      <name>Genetech Essence Cost</name>
+      <id>genetechessmultiplier</id>
+      <internal>genetechessmultiplier</internal>
+      <fields>
+        <field>val</field>
+      </fields>
+      <xml><![CDATA[{val}]]></xml>
+      <page>Adjusts the Essence cost of Genetech by the percent value entered. All Genetech Essence costs will now be X% of their original value. Numbers lower than 100 reduce the Essence cost. Numbers higher than 100 increase the Essence cost.</page>
+    </improvement>
+    <improvement>
       <name>Cyberware Essence Cost</name>
       <id>cyberwareessmultiplier</id>
       <internal>cyberwareessmultiplier</internal>
