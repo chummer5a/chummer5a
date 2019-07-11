@@ -258,8 +258,7 @@ namespace ChummerHub.Client.UI
         public async void UpdateDisplay()
         {
             this.tlpOptions.Enabled = Properties.Settings.Default.UserModeRegistered;
-            var mail = await GetUserEmail();
-            PluginHandler.MainForm.DoThreadSafe(new Action(() =>
+            var mail = await GetUserEmail(); PluginHandler.MainForm.DoThreadSafe(new Action(() =>
             {
                 try
                 {
