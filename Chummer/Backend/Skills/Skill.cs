@@ -471,6 +471,7 @@ namespace Chummer.Backend.Skills
                     )
                 ),
                 new DependancyGraphNode<string>(nameof(CanHaveSpecs),
+                    new DependancyGraphNode<string>(nameof(KnowledgeSkill.AllowUpgrade), () => IsKnowledgeSkill),
                     new DependancyGraphNode<string>(nameof(IsExoticSkill)),
                     new DependancyGraphNode<string>(nameof(KarmaUnlocked)),
                     new DependancyGraphNode<string>(nameof(TotalBaseRating),
@@ -578,6 +579,11 @@ namespace Chummer.Backend.Skills
                         new DependancyGraphNode<string>(nameof(TotalBaseRating)),
                         new DependancyGraphNode<string>(nameof(Specializations))
                     )
+                ),
+                new DependancyGraphNode<string>(nameof(AllowDelete), () => IsKnowledgeSkill,
+                    new DependancyGraphNode<string>(nameof(FreeBase)),
+                    new DependancyGraphNode<string>(nameof(FreeKarma)),
+                    new DependancyGraphNode<string>(nameof(RatingModifiers))
                 )
             );
         }
@@ -731,6 +737,8 @@ namespace Chummer.Backend.Skills
         {
             get
             {
+                if ((this as KnowledgeSkill)?.AllowUpgrade == false)
+                    return false;
                 if (_intCachedCanHaveSpecs >= 0) return _intCachedCanHaveSpecs > 0;
                 _intCachedCanHaveSpecs = !IsExoticSkill && TotalBaseRating > 0 && KarmaUnlocked &&
                                          !CharacterObject.Improvements.Any(x => ((x.ImproveType == Improvement.ImprovementType.BlockSkillSpecializations && (string.IsNullOrEmpty(x.ImprovedName) || x.ImprovedName == Name)) ||

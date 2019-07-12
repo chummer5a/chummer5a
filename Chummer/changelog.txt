@@ -19,6 +19,10 @@ Application Fixes:
 - Increased gear quantity limit per stack from 100000 to 1000000000 in both Create mode and in the gear selection screen. Closes #3520.
 - Fixed an issue where changing priorities could end up causing issues with metatype- and metavariant-given qualities. Closes #3549. 
 - Fixed an issue with Armor Mods that use FixedValues in Cost not correctly displaying, such as Grey Mana Integration.
+- Fixed issues with improvements that add to skill ratings not properly being counted in Create mode.
+- Fixed an issue where improvements that add knowledge skills that can be upgraded later still did not allow for the adding of specializations.
+- Fixed an issue where deleting improvements that add knowledge skills would not flag the appropriate knowledge skill for deletion. They can now be manually deleted after the associated improvement is removed.
+- Fixed an issue where upgradable knowledge skills added by improvements could get their category changed.
 
 Data Changes:
 

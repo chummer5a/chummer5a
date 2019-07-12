@@ -68,7 +68,7 @@ namespace Chummer.Backend.Skills
                     }
         }
 
-        public override bool AllowDelete => !ForcedName;
+        public override bool AllowDelete => !ForcedName || FreeBase + FreeKarma + RatingModifiers(Attribute) == 0;
 
         private string _strType = string.Empty;
         public bool ForcedName { get; }
@@ -246,7 +246,7 @@ namespace Chummer.Backend.Skills
             {
                 int intTotalBaseRating = TotalBaseRating;
                 int intCost = intTotalBaseRating * (intTotalBaseRating + 1);
-                int intLower = Base + FreeKarma;
+                int intLower = Base + FreeKarma + RatingModifiers(Attribute);
                 intCost -= intLower * (intLower + 1);
 
                 intCost /= 2;
