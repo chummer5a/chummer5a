@@ -431,6 +431,7 @@ namespace Chummer.Backend.Skills
             CharacterObject = character;
             CharacterObject.PropertyChanged += OnCharacterChanged;
             CharacterObject.AttributeSection.PropertyChanged += OnAttributeSectionChanged;
+            CharacterObject.AttributeSection.Attributes.CollectionChanged += OnAttributesCollectionChanged;
             Specializations.ListChanged += SpecializationsOnListChanged;
 
             _skillDependencyGraph = new DependancyGraph<string>(
@@ -581,6 +582,46 @@ namespace Chummer.Backend.Skills
             );
         }
 
+        private void OnAttributesCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
+                    {
+                        if (e.NewItems.Cast<CharacterAttrib>().Any(x => x.Abbrev == Attribute))
+                        {
+                            AttributeObject.PropertyChanged -= AttributeActiveOnPropertyChanged;
+                            AttributeObject = CharacterObject.GetAttribute(Attribute);
+
+                            AttributeObject.PropertyChanged += AttributeActiveOnPropertyChanged;
+                            AttributeActiveOnPropertyChanged(sender, null);
+                        }
+                        break;
+                    }
+                case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
+                    {
+                        if (e.OldItems.Cast<CharacterAttrib>().Any(x => x.Abbrev == Attribute))
+                        {
+                            AttributeObject.PropertyChanged -= AttributeActiveOnPropertyChanged;
+                            AttributeObject = CharacterObject.GetAttribute(Attribute);
+
+                            AttributeObject.PropertyChanged += AttributeActiveOnPropertyChanged;
+                            AttributeActiveOnPropertyChanged(sender, null);
+                        }
+                        break;
+                    }
+                case System.Collections.Specialized.NotifyCollectionChangedAction.Reset:
+                    {
+                        AttributeObject.PropertyChanged -= AttributeActiveOnPropertyChanged;
+                        AttributeObject = CharacterObject.GetAttribute(Attribute);
+
+                        AttributeObject.PropertyChanged += AttributeActiveOnPropertyChanged;
+                        AttributeActiveOnPropertyChanged(sender, null);
+                        break;
+                    }
+            }
+        }
+
         private void OnAttributeSectionChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName != nameof(AttributeSection.AttributeCategory)) return;
@@ -600,6 +641,7 @@ namespace Chummer.Backend.Skills
         {
             CharacterObject.PropertyChanged -= OnCharacterChanged;
             CharacterObject.AttributeSection.PropertyChanged -= OnAttributeSectionChanged;
+            CharacterObject.AttributeSection.Attributes.CollectionChanged -= OnAttributesCollectionChanged;
 
             if (SkillGroupObject != null)
                 SkillGroupObject.PropertyChanged -= OnSkillGroupChanged;
