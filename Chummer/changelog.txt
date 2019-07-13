@@ -23,6 +23,7 @@ Application Fixes:
 - Fixed an issue where improvements that add knowledge skills that can be upgraded later still did not allow for the adding of specializations.
 - Fixed an issue where deleting improvements that add knowledge skills would not flag the appropriate knowledge skill for deletion. They can now be manually deleted after the associated improvement is removed.
 - Fixed an issue where upgradable knowledge skills added by improvements could get their category changed.
+- Updated wkhtmltopdf (the HTML to PDF converter) to v0.12.5. Closes #3282.
 
 Data Changes:
 
