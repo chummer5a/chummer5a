@@ -148,6 +148,21 @@ namespace Chummer
             if (cboGrade.SelectedIndex == -1 && cboGrade.Items.Count > 0)
                 cboGrade.SelectedIndex = 0;
 
+            // Retrieve the information for the selected Grade.
+            string strSelectedGrade = cboGrade.SelectedValue?.ToString();
+            if (!string.IsNullOrEmpty(strSelectedGrade))
+            {
+                XPathNavigator xmlGrade = _xmlBaseCyberwareDataNode.SelectSingleNode("grades/grade[id = \"" + strSelectedGrade + "\"]");
+
+                // Update the Essence and Cost multipliers based on the Grade that has been selected.
+                if (xmlGrade != null)
+                {
+                    _decCostMultiplier = Convert.ToDecimal(xmlGrade.SelectSingleNode("cost")?.Value, GlobalOptions.InvariantCultureInfo);
+                    _decESSMultiplier = Convert.ToDecimal(xmlGrade.SelectSingleNode("ess")?.Value, GlobalOptions.InvariantCultureInfo);
+                    _intAvailModifier = Convert.ToInt32(xmlGrade.SelectSingleNode("avail")?.Value);
+                }
+            }
+
             lblESSDiscountLabel.Visible = _objCharacter.Options.AllowCyberwareESSDiscounts;
             lblESSDiscountPercentLabel.Visible = _objCharacter.Options.AllowCyberwareESSDiscounts;
             nudESSDiscount.Visible = _objCharacter.Options.AllowCyberwareESSDiscounts;
