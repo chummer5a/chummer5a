@@ -67,6 +67,8 @@ namespace Chummer
             object objProcess = CommonFunctions.EvaluateInvariantXPath(strAvailExpr.Replace("Rating", intRating.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
             _intValue = blnIsSuccess ? Convert.ToInt32(objProcess) : 0;
             _intValue += intBonus;
+            if (_intValue < 0)
+                _intValue = 0;
         }
 
         public override string ToString()

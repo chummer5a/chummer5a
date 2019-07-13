@@ -25,6 +25,7 @@ Application Fixes:
 - Fixed an issue where upgradable knowledge skills added by improvements could get their category changed.
 - Updated wkhtmltopdf (the HTML to PDF converter) to v0.12.5. Closes #3282.
 - Fixed an issue where 'ware grade modifiers were not applied in the 'ware selection screen unless the 'ware grade was changed. Closes #3505.
+- Fixed an issue where availabilities could be negative numbers.
 
 Data Changes:
 
