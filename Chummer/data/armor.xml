@@ -4269,23 +4269,12 @@
       <armor>0</armor>
       <maxrating>1</maxrating>
       <armorcapacity>[0]</armorcapacity>
+	  <gearcapacity>1</gearcapacity>
       <avail>0</avail>
       <cost>0</cost>
       <source>KC</source>
       <page>73</page>
       <hide />
-    </mod>
-    <mod>
-      <id>a1c9f8ee-d58d-4583-8ff3-12517dbf76f5</id>
-      <name>Personal Drone Rack</name>
-      <category>General</category>
-      <armor>0</armor>
-      <maxrating>1</maxrating>
-      <armorcapacity>[1]</armorcapacity>
-      <avail>12R</avail>
-      <cost>500</cost>
-      <source>KC</source>
-      <page>73</page>
     </mod>
     <!-- End Region -->
     <!-- Region Hamburg -->

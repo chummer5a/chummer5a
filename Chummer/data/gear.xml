@@ -11859,6 +11859,22 @@
         </geardetails>
       </required>
     </gear>
+	<gear>
+      <id>a1c9f8ee-d58d-4583-8ff3-12517dbf76f5</id>
+      <name>Personal Drone Rack</name>
+      <category>Armor Enhancements</category>
+      <rating>0</rating>
+      <armorcapacity>[1]</armorcapacity>
+      <avail>12R</avail>
+      <cost>500</cost>
+      <source>KC</source>
+      <page>73</page>
+	  <required>
+		<parentdetails>
+		  <name>Micro-Hardpoint</name>
+		</parentdetails>
+	  </required>
+    </gear>
     <!-- End Region -->
     <!-- Region Commlink Accessories -->
     <gear>

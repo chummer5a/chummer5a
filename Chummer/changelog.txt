@@ -33,6 +33,7 @@ Data Changes:
 - Quick Healer now grants a +2 dicepool to casting the Heal spell. I strongly disagree with the wording on this personally, but it's RAW.
 - Fixed missing accessories on the Lone Star Remington 995. Closes #3727.
 - Fixed an issue where the Special Modification for Concealment increased concealment instead of decreasing it (i.e. it made the weapon easier to spot instead of harder to spot). Closes #3747.
+- Personal Drone Rack is now a gear that can be added as a plugin to Micro-Hardpoints instead of being armor mods that take up capacity. Closes #3448.
 
 New Strings:
 
