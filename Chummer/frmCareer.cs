@@ -7026,9 +7026,8 @@ namespace Chummer
             frmSelectWeapon frmPickWeapon = new frmSelectWeapon(CharacterObject)
             {
                 LimitToCategories = "Underbarrel Weapons",
-                Mounts = objSelectedWeapon.AccessoryMounts,
-
-                Underbarrel = true
+                Mounts = new HashSet<string>(objSelectedWeapon.AccessoryMounts.Split('/')),
+                ParentWeapon = objSelectedWeapon
             };
 
             frmPickWeapon.ShowDialog(this);
@@ -7458,13 +7457,13 @@ namespace Chummer
         {
             // Locate the selected Weapon.
             if (!(treWeapons.SelectedNode?.Tag is Weapon objWeapon)) return;
-            if (objWeapon.AmmoRemaining == 0)
+            if (objWeapon.AmmoRemaining < objWeapon.SingleShot)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_OutOfAmmo", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_OutOfAmmo", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
 
-            objWeapon.AmmoRemaining -= 1;
+            objWeapon.AmmoRemaining -= objWeapon.SingleShot;
             lblWeaponAmmoRemaining.Text = objWeapon.AmmoRemaining.ToString();
 
             IsDirty = true;
@@ -7481,13 +7480,13 @@ namespace Chummer
                 return;
             }
 
-            if (objWeapon.AmmoRemaining >= 3)
+            if (objWeapon.AmmoRemaining >= objWeapon.ShortBurst)
             {
-                objWeapon.AmmoRemaining -= 3;
+                objWeapon.AmmoRemaining -= objWeapon.ShortBurst;
             }
             else
             {
-                if (objWeapon.AmmoRemaining == 1)
+                if (objWeapon.AmmoRemaining == objWeapon.SingleShot)
                 {
                     if (MessageBox.Show(LanguageManager.GetString("Message_NotEnoughAmmoSingleShot", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughAmmo", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                         objWeapon.AmmoRemaining = 0;
@@ -7513,29 +7512,24 @@ namespace Chummer
                 MessageBox.Show(LanguageManager.GetString("Message_OutOfAmmo", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_OutOfAmmo", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
-            if (objWeapon.AmmoRemaining == 0)
-            {
-                MessageBox.Show(LanguageManager.GetString("Message_OutOfAmmo", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_OutOfAmmo", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                return;
-            }
 
-            if (objWeapon.AmmoRemaining >= 6)
+            if (objWeapon.AmmoRemaining >= objWeapon.LongBurst)
             {
-                objWeapon.AmmoRemaining -= 6;
+                objWeapon.AmmoRemaining -= objWeapon.LongBurst;
             }
             else
             {
-                if (objWeapon.AmmoRemaining == 1)
+                if (objWeapon.AmmoRemaining == objWeapon.SingleShot)
                 {
                     if (MessageBox.Show(LanguageManager.GetString("Message_NotEnoughAmmoSingleShot", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughAmmo", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                         objWeapon.AmmoRemaining = 0;
                 }
-                else if (objWeapon.AmmoRemaining > 3)
+                else if (objWeapon.AmmoRemaining > objWeapon.ShortBurst)
                 {
                     if (MessageBox.Show(LanguageManager.GetString("Message_NotEnoughAmmoLongBurstShort", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughAmmo", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                         objWeapon.AmmoRemaining = 0;
                 }
-                else if (objWeapon.AmmoRemaining == 3)
+                else if (objWeapon.AmmoRemaining == objWeapon.ShortBurst)
                 {
                     if (MessageBox.Show(LanguageManager.GetString("Message_NotEnoughAmmoShortBurst", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughAmmo", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                         objWeapon.AmmoRemaining = 0;
@@ -7604,13 +7598,13 @@ namespace Chummer
             // Locate the selected Vehicle Weapon.
             if (!(treVehicles.SelectedNode?.Tag is Weapon objWeapon)) return;
 
-            if (objWeapon.AmmoRemaining == 0)
+            if (objWeapon.AmmoRemaining < objWeapon.SingleShot)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_OutOfAmmo", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_OutOfAmmo", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
 
-            objWeapon.AmmoRemaining -= 1;
+            objWeapon.AmmoRemaining -= objWeapon.SingleShot;
             lblVehicleWeaponAmmoRemaining.Text = objWeapon.AmmoRemaining.ToString();
 
             IsDirty = true;
@@ -7627,13 +7621,13 @@ namespace Chummer
                 return;
             }
 
-            if (objWeapon.AmmoRemaining >= 3)
+            if (objWeapon.AmmoRemaining >= objWeapon.ShortBurst)
             {
-                objWeapon.AmmoRemaining -= 3;
+                objWeapon.AmmoRemaining -= objWeapon.ShortBurst;
             }
             else
             {
-                if (objWeapon.AmmoRemaining == 1)
+                if (objWeapon.AmmoRemaining == objWeapon.SingleShot)
                 {
                     if (MessageBox.Show(LanguageManager.GetString("Message_NotEnoughAmmoSingleShot", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughAmmo", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                         objWeapon.AmmoRemaining = 0;
@@ -7660,23 +7654,23 @@ namespace Chummer
                 return;
             }
 
-            if (objWeapon.AmmoRemaining >= 6)
+            if (objWeapon.AmmoRemaining >= objWeapon.LongBurst)
             {
-                objWeapon.AmmoRemaining -= 6;
+                objWeapon.AmmoRemaining -= objWeapon.LongBurst;
             }
             else
             {
-                if (objWeapon.AmmoRemaining == 1)
+                if (objWeapon.AmmoRemaining == objWeapon.SingleShot)
                 {
                     if (MessageBox.Show(LanguageManager.GetString("Message_NotEnoughAmmoSingleShot", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughAmmo", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                         objWeapon.AmmoRemaining = 0;
                 }
-                else if (objWeapon.AmmoRemaining > 3)
+                else if (objWeapon.AmmoRemaining > objWeapon.ShortBurst)
                 {
                     if (MessageBox.Show(LanguageManager.GetString("Message_NotEnoughAmmoLongBurstShort", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughAmmo", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                         objWeapon.AmmoRemaining = 0;
                 }
-                else if (objWeapon.AmmoRemaining == 3)
+                else if (objWeapon.AmmoRemaining == objWeapon.ShortBurst)
                 {
                     if (MessageBox.Show(LanguageManager.GetString("Message_NotEnoughAmmoShortBurst", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughAmmo", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                         objWeapon.AmmoRemaining = 0;
@@ -13831,11 +13825,37 @@ namespace Chummer
                     if (objWeapon.WeaponType == "Melee" && objWeapon.Ammo != "0")
                         cmsAmmoSingleShot.Enabled = true;
 
+                    if (cmsAmmoSingleShot.Enabled)
+                        cmsAmmoSingleShot.Text = string.Format(LanguageManager.GetString("String_SingleShot", GlobalOptions.Language)
+                            , (objWeapon.SingleShot).ToString(GlobalOptions.CultureInfo),
+                            objWeapon.SingleShot == 1
+                                ? LanguageManager.GetString("String_Bullet", GlobalOptions.Language)
+                                : LanguageManager.GetString("String_Bullets", GlobalOptions.Language));
+                    if (cmsAmmoShortBurst.Enabled)
+                        cmsAmmoShortBurst.Text = string.Format(LanguageManager.GetString("String_ShortBurst", GlobalOptions.Language)
+                            , (objWeapon.ShortBurst).ToString(GlobalOptions.CultureInfo),
+                            objWeapon.ShortBurst == 1
+                                ? LanguageManager.GetString("String_Bullet", GlobalOptions.Language)
+                                : LanguageManager.GetString("String_Bullets", GlobalOptions.Language));
+                    if (cmsAmmoLongBurst.Enabled)
+                        cmsAmmoLongBurst.Text = string.Format(LanguageManager.GetString("String_LongBurst", GlobalOptions.Language)
+                            , (objWeapon.LongBurst).ToString(GlobalOptions.CultureInfo),
+                            objWeapon.LongBurst == 1
+                                ? LanguageManager.GetString("String_Bullet", GlobalOptions.Language)
+                                : LanguageManager.GetString("String_Bullets", GlobalOptions.Language));
                     if (cmsAmmoFullBurst.Enabled)
-                        cmsAmmoFullBurst.Text = string.Format(LanguageManager.GetString("String_FullBurst", GlobalOptions.Language), objWeapon.FullBurst.ToString(GlobalOptions.CultureInfo));
+                        cmsAmmoFullBurst.Text = string.Format(LanguageManager.GetString("String_FullBurst", GlobalOptions.Language)
+                            , (objWeapon.FullBurst).ToString(GlobalOptions.CultureInfo),
+                            objWeapon.FullBurst == 1
+                                ? LanguageManager.GetString("String_Bullet", GlobalOptions.Language)
+                                : LanguageManager.GetString("String_Bullets", GlobalOptions.Language));
                     if (cmsAmmoSuppressiveFire.Enabled)
-                        cmsAmmoSuppressiveFire.Text = string.Format(LanguageManager.GetString("String_SuppressiveFire", GlobalOptions.Language), objWeapon.Suppressive.ToString(GlobalOptions.CultureInfo));
-
+                        cmsAmmoSuppressiveFire.Text = string.Format(LanguageManager.GetString("String_SuppressiveFire", GlobalOptions.Language)
+                            , (objWeapon.Suppressive).ToString(GlobalOptions.CultureInfo),
+                            objWeapon.Suppressive == 1
+                                ? LanguageManager.GetString("String_Bullet", GlobalOptions.Language)
+                                : LanguageManager.GetString("String_Bullets", GlobalOptions.Language));
+                    
                     List<ListItem> lstAmmo = new List<ListItem>();
                     int intCurrentSlot = objWeapon.ActiveAmmoSlot;
                     for (int i = 1; i <= objWeapon.AmmoSlots; i++)
@@ -15621,12 +15641,36 @@ namespace Chummer
                     if (objWeapon.WeaponType == "Melee" && objWeapon.Ammo != "0")
                         cmsVehicleAmmoSingleShot.Enabled = true;
 
+                    if (cmsVehicleAmmoSingleShot.Enabled)
+                        cmsVehicleAmmoSingleShot.Text = string.Format(LanguageManager.GetString("String_SingleShot", GlobalOptions.Language)
+                            , (objWeapon.SingleShot).ToString(GlobalOptions.CultureInfo),
+                            objWeapon.SingleShot == 1
+                                ? LanguageManager.GetString("String_Bullet", GlobalOptions.Language)
+                                : LanguageManager.GetString("String_Bullets", GlobalOptions.Language));
+                    if (cmsVehicleAmmoShortBurst.Enabled)
+                        cmsVehicleAmmoShortBurst.Text = string.Format(LanguageManager.GetString("String_ShortBurst", GlobalOptions.Language)
+                            , (objWeapon.ShortBurst).ToString(GlobalOptions.CultureInfo),
+                            objWeapon.ShortBurst == 1
+                                ? LanguageManager.GetString("String_Bullet", GlobalOptions.Language)
+                                : LanguageManager.GetString("String_Bullets", GlobalOptions.Language));
+                    if (cmsVehicleAmmoLongBurst.Enabled)
+                        cmsVehicleAmmoLongBurst.Text = string.Format(LanguageManager.GetString("String_LongBurst", GlobalOptions.Language)
+                            , (objWeapon.LongBurst).ToString(GlobalOptions.CultureInfo),
+                            objWeapon.LongBurst == 1
+                                ? LanguageManager.GetString("String_Bullet", GlobalOptions.Language)
+                                : LanguageManager.GetString("String_Bullets", GlobalOptions.Language));
                     if (cmsVehicleAmmoFullBurst.Enabled)
                         cmsVehicleAmmoFullBurst.Text = string.Format(LanguageManager.GetString("String_FullBurst", GlobalOptions.Language)
-                            , objWeapon.FullBurst.ToString(GlobalOptions.CultureInfo));
+                            , (objWeapon.FullBurst).ToString(GlobalOptions.CultureInfo),
+                            objWeapon.FullBurst == 1
+                                ? LanguageManager.GetString("String_Bullet", GlobalOptions.Language)
+                                : LanguageManager.GetString("String_Bullets", GlobalOptions.Language));
                     if (cmsVehicleAmmoSuppressiveFire.Enabled)
                         cmsVehicleAmmoSuppressiveFire.Text = string.Format(LanguageManager.GetString("String_SuppressiveFire", GlobalOptions.Language)
-                            , objWeapon.Suppressive.ToString(GlobalOptions.CultureInfo));
+                            , (objWeapon.Suppressive).ToString(GlobalOptions.CultureInfo),
+                            objWeapon.Suppressive == 1
+                                ? LanguageManager.GetString("String_Bullet", GlobalOptions.Language)
+                                : LanguageManager.GetString("String_Bullets", GlobalOptions.Language));
 
                     List<ListItem> lstAmmo = new List<ListItem>();
                     int intCurrentSlot = objWeapon.ActiveAmmoSlot;

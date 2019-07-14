@@ -12879,9 +12879,9 @@
       <reach>0</reach>
       <damage>7P</damage>
       <ap>-3</ap>
-      <mode>BF</mode>
+      <mode>SA</mode>
       <rc>0</rc>
-      <ammo>8(c)</ammo>
+      <ammo>16(c)</ammo>
       <avail>10R</avail>
       <cost>700</cost>
       <source>SL</source>
@@ -12897,7 +12897,11 @@
         <mount>Stock</mount>
         <mount>Side</mount>
       </accessorymounts>
-      <ammoslots>2</ammoslots>
+	  <doubledcostaccessorymounts>
+		<mount>Barrel</mount>
+	  </doubledcostaccessorymounts>
+	  <singleshot>2</singleshot>
+	  <shortburst>6</shortburst>
     </weapon>
     <weapon>
       <id>65b7803a-0efe-44d9-8b85-6410644f079d</id>

@@ -2915,7 +2915,7 @@
     </string>
     <string>
       <key>Message_NotEnoughAmmoSingleShot</key>
-      <text>Only one bullet remaining. Treat as Single Shot?</text>
+      <text>Not enough Ammunition. Treat as Single Shot?</text>
     </string>
     <string>
       <key>Message_NotEnoughAmmoShortBurstShort</key>
@@ -3554,25 +3554,33 @@
       <key>String_MoveGear</key>
       <text>Enter the number of items to move.</text>
     </string>
+	<string>
+	  <key>String_Bullet</key>
+	  <text>Bullet</text>
+	</string>
+	<string>
+	  <key>String_Bullets</key>
+	  <text>Bullets</text>
+	</string>
     <string>
       <key>String_SingleShot</key>
-      <text>Single Shot (1 bullet)</text>
+      <text>Single Shot ({0} {1})</text>
     </string>
     <string>
       <key>String_ShortBurst</key>
-      <text>Short Burst (3 bullets)</text>
+      <text>Short Burst ({0} {1})</text>
     </string>
     <string>
       <key>String_LongBurst</key>
-      <text>Long Burst (6 bullets)</text>
+      <text>Long Burst ({0} {1})</text>
     </string>
     <string>
       <key>String_FullBurst</key>
-      <text>Full Burst ({0} bullets)</text>
+      <text>Full Burst ({0} {1})</text>
     </string>
     <string>
       <key>String_SuppressiveFire</key>
-      <text>Suppressive Fire ({0} bullets)</text>
+      <text>Suppressive Fire ({0} {1})</text>
     </string>
     <string>
       <key>String_SelectVariableCost</key>

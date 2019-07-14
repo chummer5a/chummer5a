@@ -73,6 +73,9 @@ namespace Chummer.Backend.Equipment
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
         private string _strWeaponName = string.Empty;
+	    private int _intSingleShot = 1;
+	    private int _intShortBurst = 3;
+	    private int _intLongBurst = 6;
         private int _intFullBurst = 10;
         private int _intSuppressive = 20;
         private readonly TaggedObservableCollection<WeaponAccessory> _lstAccessories = new TaggedObservableCollection<WeaponAccessory>();
@@ -91,6 +94,7 @@ namespace Chummer.Backend.Equipment
         private string _strAccuracy = string.Empty;
         private string _strRCTip = string.Empty;
         private string _strWeaponSlots = string.Empty;
+	    private string _strDoubledCostWeaponSlots = string.Empty;
         private bool _blnCyberware;
         private string _strParentID = string.Empty;
         private bool _blnAllowAccessory = true;
@@ -203,6 +207,22 @@ namespace Chummer.Backend.Equipment
                     _strWeaponSlots = strMounts.ToString();
                 }
             }
+            if (objXmlWeapon["doubledcostaccessorymounts"] != null)
+            {
+                XmlNodeList objXmlMountList = objXmlWeapon.SelectNodes("doubledcostaccessorymounts/mount");
+                if (objXmlMountList?.Count > 0)
+                {
+                    StringBuilder strMounts = new StringBuilder();
+                    foreach (XmlNode objXmlMount in objXmlMountList)
+                    {
+                        strMounts.Append(objXmlMount.InnerText);
+                        strMounts.Append('/');
+                    }
+                    if (strMounts.Length > 0)
+                        strMounts.Length -= 1;
+                    _strDoubledCostWeaponSlots = strMounts.ToString();
+                }
+            }
             if (!objXmlWeapon.TryGetStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlWeapon.TryGetStringFieldQuickly("notes", ref _strNotes);
             _nodWirelessBonus = objXmlWeapon["wirelessbonus"];
@@ -278,6 +298,9 @@ namespace Chummer.Backend.Equipment
             }
             objXmlWeapon.TryGetStringFieldQuickly("alternaterange", ref _strAlternateRange);
 
+            objXmlWeapon.TryGetInt32FieldQuickly("singleshot", ref _intSingleShot);
+            objXmlWeapon.TryGetInt32FieldQuickly("shortburst", ref _intShortBurst);
+            objXmlWeapon.TryGetInt32FieldQuickly("longburst", ref _intLongBurst);
             objXmlWeapon.TryGetInt32FieldQuickly("fullburst", ref _intFullBurst);
             objXmlWeapon.TryGetInt32FieldQuickly("suppressive", ref _intSuppressive);
 
@@ -492,6 +515,9 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("range", _strRange);
             objWriter.WriteElementString("alternaterange", _strAlternateRange);
             objWriter.WriteElementString("rangemultiply", _decRangeMultiplier.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("singleshot", _intSingleShot.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("shortburst", _intShortBurst.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("longburst", _intLongBurst.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("fullburst", _intFullBurst.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("suppressive", _intSuppressive.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("source", _strSource);
@@ -525,6 +551,8 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("location", Location?.InternalId ?? string.Empty);
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteElementString("discountedcost", _blnDiscountCost.ToString());
+            objWriter.WriteElementString("weaponslots", _strWeaponSlots);
+            objWriter.WriteElementString("doubledcostweaponslots", _strDoubledCostWeaponSlots);
 
             objWriter.WriteElementString("active", this.IsActiveCommlink(_objCharacter).ToString());
             objWriter.WriteElementString("homenode", this.IsHomeNode(_objCharacter).ToString());
@@ -650,13 +678,15 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("avail", ref _strAvail);
             objNode.TryGetStringFieldQuickly("cost", ref _strCost);
             objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
+            objNode.TryGetInt32FieldQuickly("singleshot", ref _intSingleShot);
+            objNode.TryGetInt32FieldQuickly("shortburst", ref _intShortBurst);
+            objNode.TryGetInt32FieldQuickly("longburst", ref _intLongBurst);
             objNode.TryGetInt32FieldQuickly("fullburst", ref _intFullBurst);
             objNode.TryGetInt32FieldQuickly("suppressive", ref _intSuppressive);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             objNode.TryGetStringFieldQuickly("parentid", ref _strParentID);
             if (!objNode.TryGetBoolFieldQuickly("allowaccessory", ref _blnAllowAccessory))
                 _blnAllowAccessory = GetNode()?["allowaccessory"]?.InnerText != bool.FalseString;
-            objNode.TryGetInt32FieldQuickly("fullburst", ref _intFullBurst);
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("weaponname", ref _strWeaponName);
             objNode.TryGetBoolFieldQuickly("stolen", ref _blnStolen);
@@ -749,6 +779,46 @@ namespace Chummer.Backend.Equipment
             }
             _objLocation?.Children.Add(this);
             objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
+            if (!objNode.TryGetStringFieldQuickly("weaponslots", ref _strWeaponSlots))
+            {
+                XmlNode objXmlWeapon = GetNode();
+                if (objXmlWeapon?["accessorymounts"] != null)
+                {
+                    XmlNodeList objXmlMountList = objXmlWeapon.SelectNodes("accessorymounts/mount");
+                    if (objXmlMountList?.Count > 0)
+                    {
+                        StringBuilder strMounts = new StringBuilder();
+                        foreach (XmlNode objXmlMount in objXmlMountList)
+                        {
+                            strMounts.Append(objXmlMount.InnerText);
+                            strMounts.Append('/');
+                        }
+                        if (strMounts.Length > 0)
+                            strMounts.Length -= 1;
+                        _strWeaponSlots = strMounts.ToString();
+                    }
+                }
+            }
+            if (!objNode.TryGetStringFieldQuickly("doubledcostweaponslots", ref _strDoubledCostWeaponSlots))
+            {
+                XmlNode objXmlWeapon = GetNode();
+                if (objXmlWeapon?["doubledcostaccessorymounts"] != null)
+                {
+                    XmlNodeList objXmlMountList = objXmlWeapon.SelectNodes("doubledcostaccessorymounts/mount");
+                    if (objXmlMountList?.Count > 0)
+                    {
+                        StringBuilder strMounts = new StringBuilder();
+                        foreach (XmlNode objXmlMount in objXmlMountList)
+                        {
+                            strMounts.Append(objXmlMount.InnerText);
+                            strMounts.Append('/');
+                        }
+                        if (strMounts.Length > 0)
+                            strMounts.Length -= 1;
+                        _strDoubledCostWeaponSlots = strMounts.ToString();
+                    }
+                }
+            }
 
             bool blnIsActive = false;
             if (objNode.TryGetBoolFieldQuickly("active", ref blnIsActive) && blnIsActive)
@@ -2429,17 +2499,17 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                XmlNodeList objXmlMountList = GetNode()?.SelectNodes("accessorymounts/mount");
+                string[] astrPossibleMounts = ModificationSlots.Split('/');
 
-                if (objXmlMountList == null)
+                if (astrPossibleMounts.Length <= 0)
                     return string.Empty;
 
                 StringBuilder strMounts = new StringBuilder();
-                foreach (XmlNode xmlMount in objXmlMountList)
+                foreach (string strMount in astrPossibleMounts)
                 {
-                    if (WeaponAccessories.All(objAccessory => objAccessory.Mount != xmlMount.InnerText && objAccessory.ExtraMount != xmlMount.InnerText) && UnderbarrelWeapons.All(weapon => weapon.Mount != xmlMount.InnerText && weapon.ExtraMount != xmlMount.InnerText))
+                    if (WeaponAccessories.All(objAccessory => !objAccessory.Equipped || (objAccessory.Mount != strMount && objAccessory.ExtraMount != strMount)) && UnderbarrelWeapons.All(weapon => !weapon.Equipped || (weapon.Mount != strMount && weapon.ExtraMount != strMount)))
                     {
-                        strMounts.Append(xmlMount.InnerText);
+                        strMounts.Append(strMount);
                         strMounts.Append('/');
                     }
                 }
@@ -2503,6 +2573,16 @@ namespace Chummer.Backend.Equipment
 
                     if (DiscountCost)
                         decReturn *= 0.9m;
+
+                    if (!string.IsNullOrEmpty(Parent?.DoubledCostModificationSlots))
+                    {
+                        string[] astrParentDoubledCostModificationSlots = Parent.DoubledCostModificationSlots.Split('/');
+                        if (astrParentDoubledCostModificationSlots.Contains(Mount) || astrParentDoubledCostModificationSlots.Contains(ExtraMount))
+                        {
+                            decReturn *= 2;
+                        }
+                    }
+
                     return decReturn;
                 }
             }
@@ -3275,6 +3355,11 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string ModificationSlots => _strWeaponSlots;
 
+        /// <summary>
+        /// What modification slots have their costs doubled.
+        /// </summary>
+	    public string DoubledCostModificationSlots => _strDoubledCostWeaponSlots;
+
         public string Range
         {
             get => _strRange;
@@ -3560,6 +3645,66 @@ namespace Chummer.Backend.Equipment
 
             return retDictionary;
         }
+
+	    /// <summary>
+	    /// Number of rounds consumed by Single Shot.
+	    /// </summary>
+	    public int SingleShot
+	    {
+	        get
+	        {
+	            int intReturn = _intSingleShot;
+
+	            // Check to see if any of the Mods replace this value.
+	            foreach (WeaponAccessory objAccessory in WeaponAccessories)
+	            {
+	                if (objAccessory.Equipped && objAccessory.SingleShot > intReturn)
+	                    intReturn = objAccessory.SingleShot;
+	            }
+
+	            return intReturn;
+	        }
+	    }
+
+	    /// <summary>
+	    /// Number of rounds consumed by Short Burst.
+	    /// </summary>
+	    public int ShortBurst
+	    {
+	        get
+	        {
+	            int intReturn = _intShortBurst;
+
+	            // Check to see if any of the Mods replace this value.
+	            foreach (WeaponAccessory objAccessory in WeaponAccessories)
+	            {
+	                if (objAccessory.Equipped && objAccessory.ShortBurst > intReturn)
+	                    intReturn = objAccessory.ShortBurst;
+	            }
+
+	            return intReturn;
+	        }
+	    }
+
+	    /// <summary>
+	    /// Number of rounds consumed by Long Burst.
+	    /// </summary>
+	    public int LongBurst
+	    {
+	        get
+	        {
+	            int intReturn = _intLongBurst;
+
+	            // Check to see if any of the Mods replace this value.
+	            foreach (WeaponAccessory objAccessory in WeaponAccessories)
+	            {
+	                if (objAccessory.Equipped && objAccessory.LongBurst > intReturn)
+	                    intReturn = objAccessory.LongBurst;
+	            }
+
+	            return intReturn;
+	        }
+	    }
 
         /// <summary>
         /// Number of rounds consumed by Full Burst.

@@ -76,8 +76,11 @@ namespace Chummer.Backend.Equipment
         private int _intAccessoryCostMultiplier = 1;
         private string _strExtra = string.Empty;
         private int _intRangeBonus;
-        private int _intSuppressive;
+	    private int _intSingleShot;
+	    private int _intShortBurst;
+	    private int _intLongBurst;
         private int _intFullBurst;
+        private int _intSuppressive;
         private string _strAddMode = string.Empty;
         private string _strAmmoReplace = string.Empty;
         private int _intAmmoBonus;
@@ -187,6 +190,9 @@ namespace Chummer.Backend.Equipment
             objXmlAccessory.TryGetStringFieldQuickly("ap", ref _strAP);
             objXmlAccessory.TryGetStringFieldQuickly("apreplace", ref _strAPReplace);
             objXmlAccessory.TryGetStringFieldQuickly("addmode", ref _strAddMode);
+            objXmlAccessory.TryGetInt32FieldQuickly("singleshot", ref _intSingleShot);
+            objXmlAccessory.TryGetInt32FieldQuickly("shortburst", ref _intShortBurst);
+            objXmlAccessory.TryGetInt32FieldQuickly("longburst", ref _intLongBurst);
             objXmlAccessory.TryGetInt32FieldQuickly("fullburst", ref _intFullBurst);
             objXmlAccessory.TryGetInt32FieldQuickly("suppressive", ref _intSuppressive);
             objXmlAccessory.TryGetInt32FieldQuickly("rangebonus", ref _intRangeBonus);
@@ -297,6 +303,9 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteElementString("discountedcost", _blnDiscountCost.ToString());
             objWriter.WriteElementString("addmode", _strAddMode);
+            objWriter.WriteElementString("singleshot", _intSingleShot.ToString());
+            objWriter.WriteElementString("shortburst", _intShortBurst.ToString());
+            objWriter.WriteElementString("longburst", _intLongBurst.ToString());
             objWriter.WriteElementString("fullburst", _intFullBurst.ToString());
             objWriter.WriteElementString("suppressive", _intSuppressive.ToString());
             objWriter.WriteElementString("rangebonus", _intRangeBonus.ToString());
@@ -391,6 +400,9 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("apreplace", ref _strAPReplace);
             objNode.TryGetInt32FieldQuickly("accessorycostmultiplier", ref _intAccessoryCostMultiplier);
             objNode.TryGetStringFieldQuickly("addmode", ref _strAddMode);
+            objNode.TryGetInt32FieldQuickly("singleshot", ref _intSingleShot);
+            objNode.TryGetInt32FieldQuickly("shortburst", ref _intShortBurst);
+            objNode.TryGetInt32FieldQuickly("longburst", ref _intLongBurst);
             objNode.TryGetInt32FieldQuickly("fullburst", ref _intFullBurst);
             objNode.TryGetInt32FieldQuickly("suppressive", ref _intSuppressive);
             objNode.TryGetInt32FieldQuickly("rangebonus", ref _intRangeBonus);
@@ -1001,7 +1013,17 @@ namespace Chummer.Backend.Equipment
                 if (DiscountCost)
                     decReturn *= 0.9m;
                 if (Parent != null)
+                {
                     decReturn *= Parent.AccessoryMultiplier;
+                    if (!string.IsNullOrEmpty(Parent.DoubledCostModificationSlots))
+                    {
+                        string[] astrParentDoubledCostModificationSlots = Parent.DoubledCostModificationSlots.Split('/');
+                        if (astrParentDoubledCostModificationSlots.Contains(Mount) || astrParentDoubledCostModificationSlots.Contains(ExtraMount))
+                        {
+                            decReturn *= 2;
+                        }
+                    }
+                }
 
                 return decReturn;
             }
@@ -1058,6 +1080,21 @@ namespace Chummer.Backend.Equipment
             get => _strAddMode;
             set => _strAddMode = value;
         }
+
+	    /// <summary>
+	    /// Number of rounds consumed by Single Shot.
+	    /// </summary>
+	    public int SingleShot => _intFullBurst;
+
+	    /// <summary>
+	    /// Number of rounds consumed by Short Burst.
+	    /// </summary>
+	    public int ShortBurst => _intShortBurst;
+
+	    /// <summary>
+	    /// Number of rounds consumed by Long Burst.
+	    /// </summary>
+	    public int LongBurst => _intLongBurst;
 
         /// <summary>
         /// Number of rounds consumed by Full Burst.

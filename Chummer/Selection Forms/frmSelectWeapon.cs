@@ -23,6 +23,7 @@ using System.Windows.Forms;
 using System.Xml;
 using Chummer.Backend.Equipment;
 using System.Text;
+using System.Linq;
 
 // ReSharper disable LocalizableElement
 
@@ -141,6 +142,7 @@ namespace Chummer
             {
                 Weapon objWeapon = new Weapon(_objCharacter);
                 objWeapon.Create(xmlWeapon, null, true, false, true);
+                objWeapon.Parent = ParentWeapon;
                 _objSelectedWeapon = objWeapon;
             }
             else
@@ -286,6 +288,7 @@ namespace Chummer
 
                     Weapon objWeapon = new Weapon(_objCharacter);
                     objWeapon.Create(objXmlWeapon, null, true, false, true);
+                    objWeapon.Parent = ParentWeapon;
 
                     string strID = objWeapon.SourceIDString;
                     string strWeaponName = objWeapon.DisplayName(GlobalOptions.Language);
@@ -355,14 +358,14 @@ namespace Chummer
                     if (objXmlWeapon["cyberware"]?.InnerText == bool.TrueString)
                         continue;
 
-                    string strTest = objXmlWeapon["mount"]?.InnerText;
-                    if (!string.IsNullOrEmpty(strTest) && !Mounts.Contains(strTest))
+                    string strMount = objXmlWeapon["mount"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strMount) && !Mounts.Contains(strMount))
                     {
                         continue;
                     }
 
-                    strTest = objXmlWeapon["extramount"]?.InnerText;
-                    if (!string.IsNullOrEmpty(strTest) && !Mounts.Contains(strTest))
+                    string strExtraMount = objXmlWeapon["extramount"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strExtraMount) && !Mounts.Contains(strExtraMount))
                     {
                         continue;
                     }
@@ -376,6 +379,15 @@ namespace Chummer
                         decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
                         if (_setBlackMarketMaps.Contains(objXmlWeapon["category"]?.InnerText))
                             decCostMultiplier *= 0.9m;
+                        if (!string.IsNullOrEmpty(ParentWeapon?.DoubledCostModificationSlots) &&
+                            (!string.IsNullOrEmpty(strMount) || !string.IsNullOrEmpty(strExtraMount)))
+                        {
+                            string[] astrParentDoubledCostModificationSlots = ParentWeapon.DoubledCostModificationSlots.Split('/');
+                            if (astrParentDoubledCostModificationSlots.Contains(strMount) || astrParentDoubledCostModificationSlots.Contains(strExtraMount))
+                            {
+                                decCostMultiplier *= 2;
+                            }
+                        }
                         if (!SelectionShared.CheckNuyenRestriction(objXmlWeapon, _objCharacter.Nuyen, decCostMultiplier))
                             continue;
                     }
@@ -527,8 +539,8 @@ namespace Chummer
             set => _hashLimitToCategories = string.IsNullOrWhiteSpace(value) ? new HashSet<string>() : new HashSet<string>(value.Split(','));
         }
 
-        public bool Underbarrel { get; set; }
-        public string Mounts { get; set; } = string.Empty;
+        public Weapon ParentWeapon { get; set; }
+        public HashSet<string> Mounts { get; set; } = new HashSet<string>();
         #endregion
 
         #region Methods

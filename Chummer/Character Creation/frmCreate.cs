@@ -5339,8 +5339,8 @@ namespace Chummer
             frmSelectWeapon frmPickWeapon = new frmSelectWeapon(CharacterObject)
             {
                 LimitToCategories = "Underbarrel Weapons",
-                Mounts = objSelectedWeapon.AccessoryMounts,
-                Underbarrel = true
+                Mounts = new HashSet<string>(objSelectedWeapon.AccessoryMounts.Split('/')),
+                ParentWeapon = objSelectedWeapon
             };
 
             frmPickWeapon.ShowDialog(this);
@@ -5793,8 +5793,8 @@ namespace Chummer
             frmSelectWeapon frmPickWeapon = new frmSelectWeapon(CharacterObject)
             {
                 LimitToCategories = "Underbarrel Weapons",
-                Mounts = objSelectedWeapon.AccessoryMounts,
-                Underbarrel = true
+                Mounts = new HashSet<string>(objSelectedWeapon.AccessoryMounts.Split('/')),
+                ParentWeapon = objSelectedWeapon
             };
             frmPickWeapon.ShowDialog(this);
 
