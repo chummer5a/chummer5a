@@ -569,36 +569,52 @@ namespace Chummer
                 case "SelectMentalAttribute":
                 case "SelectSpecialAttribute":
                     return strToTranslate == "MAGAdept"
-                    ? LanguageManager.GetString("String_AttributeMAGShort", GlobalOptions.Language) + " (" + LanguageManager.GetString("String_DescAdept", GlobalOptions.Language) + ')'
+                    ? LanguageManager.GetString("String_AttributeMAGShort", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + LanguageManager.GetString("String_DescAdept", GlobalOptions.Language) + ')'
                     : LanguageManager.GetString("String_Attribute" + strToTranslate + "Short", GlobalOptions.Language);
 
                 case "SelectSkill":
-                    objXmlNode = XmlManager.Load("skills.xml").SelectSingleNode("/chummer/skills/skill[name = \"" + strToTranslate + "\"]");
-                    return objXmlNode.SelectSingleNode("translate")?.InnerText ?? objXmlNode.SelectSingleNode("name").InnerText;
+                    if (strToTranslate.Contains("Exotic Melee Weapon") ||
+                        strToTranslate.Contains("Exotic Ranged Weapon") ||
+                        strToTranslate.Contains("Pilot Exotic Vehicle"))
+                    {
+                        string[] astrToTranslateParts = strToTranslate.Split('(');
+                        astrToTranslateParts[0] = astrToTranslateParts[0].Trim();
+                        astrToTranslateParts[1] = astrToTranslateParts[1].Substring(0, astrToTranslateParts[1].Length - 1);
+
+                        objXmlNode = XmlManager.Load("skills.xml").SelectSingleNode("/chummer/skills/skill[name = \"" + astrToTranslateParts[0] + "\"]");
+                        string strFirstPartTranslated = objXmlNode?.SelectSingleNode("translate")?.InnerText ?? objXmlNode?.SelectSingleNode("name")?.InnerText ?? astrToTranslateParts[0];
+
+                        return $"{strFirstPartTranslated}{LanguageManager.GetString("String_Space", GlobalOptions.Language)}({LanguageManager.TranslateExtra(astrToTranslateParts[1], GlobalOptions.Language)})";
+                    }
+                    else
+                    {
+                        objXmlNode = XmlManager.Load("skills.xml").SelectSingleNode("/chummer/skills/skill[name = \"" + strToTranslate + "\"]");
+                        return objXmlNode?.SelectSingleNode("translate")?.InnerText ?? objXmlNode?.SelectSingleNode("name")?.InnerText ?? strToTranslate;
+                    }
 
                 case "SelectKnowSkill":
                     objXmlNode = XmlManager.Load("skills.xml").SelectSingleNode("/chummer/knowledgeskills/skill[name = \"" + strToTranslate + "\"]");
-                    return objXmlNode.SelectSingleNode("translate")?.InnerText ?? objXmlNode.SelectSingleNode("name").InnerText;
+                    return objXmlNode?.SelectSingleNode("translate")?.InnerText ?? objXmlNode?.SelectSingleNode("name")?.InnerText ?? strToTranslate;
 
                 case "SelectSkillCategory":
                     objXmlNode = XmlManager.Load("skills.xml").SelectSingleNode("/chummer/categories/category[. = \"" + strToTranslate + "\"]");
-                    return objXmlNode.Attributes?["translate"]?.InnerText ?? objXmlNode.SelectSingleNode(".").InnerText;
+                    return objXmlNode?.Attributes?["translate"]?.InnerText ?? objXmlNode?.SelectSingleNode(".")?.InnerText ?? strToTranslate;
 
                 case "SelectSkillGroup":
                     objXmlNode = XmlManager.Load("skills.xml").SelectSingleNode("/chummer/skillgroups/name[. = \"" + strToTranslate + "\"]");
-                    return objXmlNode.Attributes?["translate"]?.InnerText ?? objXmlNode.SelectSingleNode(".").InnerText;
+                    return objXmlNode?.Attributes?["translate"]?.InnerText ?? objXmlNode?.SelectSingleNode(".")?.InnerText ?? strToTranslate;
 
                 case "SelectWeaponCategory":
                     objXmlNode = XmlManager.Load("weapons.xml").SelectSingleNode("/chummer/categories/category[. = \"" + strToTranslate + "\"]");
-                    return objXmlNode.Attributes?["translate"]?.InnerText ?? objXmlNode.SelectSingleNode(".").InnerText;
+                    return objXmlNode?.Attributes?["translate"]?.InnerText ?? objXmlNode?.SelectSingleNode(".")?.InnerText ?? strToTranslate;
 
                 case "SelectSpellCategory":
                     objXmlNode = XmlManager.Load("spells.xml").SelectSingleNode("/chummer/categories/category[. = \"" + strToTranslate + "\"]");
-                    return objXmlNode.Attributes?["translate"]?.InnerText ?? objXmlNode.SelectSingleNode(".").InnerText;
+                    return objXmlNode?.Attributes?["translate"]?.InnerText ?? objXmlNode?.SelectSingleNode(".")?.InnerText ?? strToTranslate;
 
                 case "SelectAdeptPower":
                     objXmlNode = XmlManager.Load("powers.xml").SelectSingleNode("/chummer/powers/power[id = \"" + strToTranslate + "\" or name = \"" + strToTranslate + "\"]");
-                    return objXmlNode.SelectSingleNode("translate")?.InnerText ?? objXmlNode.SelectSingleNode("name").InnerText;
+                    return objXmlNode?.SelectSingleNode("translate")?.InnerText ?? objXmlNode?.SelectSingleNode("name")?.InnerText ?? strToTranslate;
 
                 default:
                     return strToTranslate;

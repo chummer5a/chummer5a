@@ -29,6 +29,7 @@ Application Fixes:
 - Added the ability for weapons and weapon accessories to define the number of bullets fired in Single Shots, Short Bursts, and Long Bursts.
 - Added the ability for weapons to define weapon slots to which modification costs are doubled.
 - Fixed an issue where weapons with an accessory cost multiplier would not have that multiplier be represented in the weapon accessory selection screen.
+- Fixed a crash that occured when adding improvements for exotic skills and knowledge skills that did not have pre-made entries in skills.xml. Closes #3510.
 
 Data Changes:
 
