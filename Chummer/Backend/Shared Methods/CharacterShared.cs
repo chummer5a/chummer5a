@@ -5813,7 +5813,7 @@ namespace Chummer
                 // In create, all sprites are added as Bound/Registered. The number of registered Sprites cannot exceed the character's LOG.
                 if (!CharacterObject.IgnoreRules &&
                     CharacterObject.Spirits.Count(x => x.EntityType == SpiritType.Sprite && x.Bound) >=
-                    CharacterObject.LOG.Value)
+                    CharacterObject.LOG.TotalValue)
                 {
                     MessageBox.Show(LanguageManager.GetString("Message_RegisteredSpriteLimit", GlobalOptions.Language),
                         LanguageManager.GetString("MessageTitle_RegisteredSpriteLimit", GlobalOptions.Language),
