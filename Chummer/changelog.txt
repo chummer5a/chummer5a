@@ -31,6 +31,7 @@ Application Fixes:
 - Fixed an issue where weapons with an accessory cost multiplier would not have that multiplier be represented in the weapon accessory selection screen.
 - Fixed a crash that occured when adding improvements for exotic skills and knowledge skills that did not have pre-made entries in skills.xml. Closes #3510.
 - Added the ability for qualities to be flagged as able to be purchased in a way that would make the character go into a karma debt.
+- Dates in the Karma and Nuyen tab will now always follow the format of the language in which the program is localized, rather than following the format of the language of the system in which the program is running.
 
 Data Changes:
 

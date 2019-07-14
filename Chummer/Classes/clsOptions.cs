@@ -153,7 +153,7 @@ namespace Chummer
     public static class GlobalOptions
     {
         private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
-        private static CultureInfo s_ObjLanguageCultureInfo = CultureInfo.CurrentCulture;
+        private static CultureInfo s_ObjLanguageCultureInfo = CultureInfo.GetCultureInfo(DefaultLanguage);
 
         public static string ErrorMessage { get; } = string.Empty;
         public static event TextEventHandler MRUChanged;
