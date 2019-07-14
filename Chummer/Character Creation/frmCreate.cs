@@ -13091,11 +13091,12 @@ namespace Chummer
             // Check if the character has gone over the Build Point total.
             if (!blnUseArgBuildPoints)
                 intBuildPoints = CalculateBP(false);
-            if (intBuildPoints < 0 && !_blnFreestyle)
+            int intStagedPurchaseQualityPoints = CharacterObject.Qualities.Where(objQuality => objQuality.StagedPurchase && objQuality.Type == QualityType.Positive && objQuality.ContributeToBP).Sum(x => x.BP);
+            if (intBuildPoints + intStagedPurchaseQualityPoints < 0 && !_blnFreestyle)
             {
                 blnValid = false;
                 strMessage += Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_InvalidPointExcess", GlobalOptions.Language)
-                                  , (intBuildPoints * -1).ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + LanguageManager.GetString("String_Karma", GlobalOptions.Language));
+                                  , ((intBuildPoints + intStagedPurchaseQualityPoints) * -1).ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + LanguageManager.GetString("String_Karma", GlobalOptions.Language));
             }
 
             // if character has more than permitted Metagenetic qualities

@@ -5035,7 +5035,7 @@ namespace Chummer
                 {
                     if (!blnFreeCost)
                     {
-                        if (intKarmaCost > CharacterObject.Karma)
+                        if (intKarmaCost > CharacterObject.Karma && objXmlQuality["stagedpurchase"]?.InnerText != bool.TrueString)
                         {
                             MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughKarma", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                             continue;
@@ -5459,7 +5459,7 @@ namespace Chummer
                     {
                         if (!blnFreeCost)
                         {
-                            if (intKarmaCost > CharacterObject.Karma)
+                            if (intKarmaCost > CharacterObject.Karma && !objSelectedQuality.StagedPurchase)
                             {
                                 MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughKarma", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                                 {

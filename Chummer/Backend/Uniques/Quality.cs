@@ -101,6 +101,7 @@ namespace Chummer
         private readonly Character _objCharacter;
         private Guid _guiWeaponID;
         private string _strStage;
+        private bool _blnStagedPurchase;
 
         public string Stage => _strStage;
 
@@ -190,6 +191,7 @@ namespace Chummer
             objXmlQuality.TryGetBoolFieldQuickly("print", ref _blnPrint);
             objXmlQuality.TryGetBoolFieldQuickly("implemented", ref _blnImplemented);
             objXmlQuality.TryGetBoolFieldQuickly("contributetolimit", ref _blnContributeToLimit);
+            objXmlQuality.TryGetBoolFieldQuickly("stagedpurchase", ref _blnStagedPurchase);
             objXmlQuality.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlQuality.TryGetStringFieldQuickly("page", ref _strPage);
             _blnMutant = objXmlQuality["mutant"] != null;
@@ -333,6 +335,7 @@ namespace Chummer
             objWriter.WriteElementString("bp", _intBP.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("implemented", _blnImplemented.ToString());
             objWriter.WriteElementString("contributetolimit", _blnContributeToLimit.ToString());
+            objWriter.WriteElementString("stagedpurchase", _blnStagedPurchase.ToString());
             objWriter.WriteElementString("doublecareer", _blnDoubleCostCareer.ToString());
             objWriter.WriteElementString("canbuywithspellpoints", _blnCanBuyWithSpellPoints.ToString());
             objWriter.WriteElementString("metagenetic", _blnMetagenetic.ToString());
@@ -391,6 +394,7 @@ namespace Chummer
             objNode.TryGetInt32FieldQuickly("bp", ref _intBP);
             objNode.TryGetBoolFieldQuickly("implemented", ref _blnImplemented);
             objNode.TryGetBoolFieldQuickly("contributetolimit", ref _blnContributeToLimit);
+            objNode.TryGetBoolFieldQuickly("stagedpurchase", ref _blnStagedPurchase);
             objNode.TryGetBoolFieldQuickly("print", ref _blnPrint);
             objNode.TryGetBoolFieldQuickly("doublecareer", ref _blnDoubleCostCareer);
             objNode.TryGetBoolFieldQuickly("canbuywithspellpoints", ref _blnCanBuyWithSpellPoints);
@@ -726,6 +730,15 @@ namespace Chummer
                 return _blnContributeToLimit;
             }
             set => _blnContributeToLimit = value;
+        }
+
+        /// <summary>
+        /// Whether this quality can be purchased in stages, i.e. allowing the character to go into karmic debt
+        /// </summary>
+        public bool StagedPurchase
+        {
+            get => _blnStagedPurchase;
+            set => _blnStagedPurchase = value;
         }
 
         /// <summary>

@@ -30,6 +30,7 @@ Application Fixes:
 - Added the ability for weapons to define weapon slots to which modification costs are doubled.
 - Fixed an issue where weapons with an accessory cost multiplier would not have that multiplier be represented in the weapon accessory selection screen.
 - Fixed a crash that occured when adding improvements for exotic skills and knowledge skills that did not have pre-made entries in skills.xml. Closes #3510.
+- Added the ability for qualities to be flagged as able to be purchased in a way that would make the character go into a karma debt.
 
 Data Changes:
 
@@ -39,6 +40,7 @@ Data Changes:
 - Fixed an issue where the Special Modification for Concealment increased concealment instead of decreasing it (i.e. it made the weapon easier to spot instead of harder to spot). Closes #3747.
 - Personal Drone Rack is now a gear that can be added as a plugin to Micro-Hardpoints instead of being armor mods that take up capacity. Closes #3448.
 - The Hammerli Gemini now properly doubles all Barrel accessories and modifications and uses its special firing mode of effective SA with 2 bullets fired in Single Shot and 6 bullets fired in Short Burst. It also has an ammo capacity of 16(c) instead of 8(c), though this is because it is difficult to implement the 2x clip RAW says it uses. Ammo modification costs still need to be tracked manually, as do doubled costs of Spare Clips. Existing characters with a Hammerli Gemini need to re-add the firearm to their character to see its changes.
+- The Dracoform qualities can now be taken in a way that would make the character go into karma debt, and characters moving to Career mode with a Dracoform quality will have the quality's karma cost ignored for the purposes of checking whether they have enough karma left over from Create mode. Closes #3366.
 
 New Strings:
 
