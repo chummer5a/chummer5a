@@ -68,7 +68,50 @@ namespace Chummer.Backend.Attributes
             new DependancyGraph<string>(
             );
 
-        public ObservableCollection<CharacterAttrib> Attributes { get; set; }
+	    private ObservableCollection<CharacterAttrib> _colAttributes;
+        public ObservableCollection<CharacterAttrib> Attributes {
+            get
+            {
+                if (_colAttributes == null)
+                {
+                    Utils.BreakIfDebug();
+                }
+                else
+                {
+                    return _colAttributes;
+                }
+
+                _colAttributes = new ObservableCollection<CharacterAttrib>
+                {
+                    _objCharacter.BOD,
+                    _objCharacter.AGI,
+                    _objCharacter.REA,
+                    _objCharacter.STR,
+                    _objCharacter.CHA,
+                    _objCharacter.INT,
+                    _objCharacter.LOG,
+                    _objCharacter.WIL,
+                    _objCharacter.EDG
+                };
+                if (_objCharacter.MAGEnabled)
+                {
+                    _colAttributes.Add(_objCharacter.MAG);
+                    if (_objCharacter.Options.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
+                        _colAttributes.Add(_objCharacter.MAGAdept);
+                }
+                if (_objCharacter.RESEnabled)
+                {
+                    _colAttributes.Add(_objCharacter.RES);
+                }
+                if (_objCharacter.DEPEnabled)
+                {
+                    _colAttributes.Add(_objCharacter.DEP);
+                }
+
+                return _colAttributes;
+            }
+            internal set => _colAttributes = value;
+        }
 
 	    private static readonly string[] s_LstAttributeStrings = { "BOD", "AGI", "REA", "STR", "CHA", "INT", "LOG", "WIL", "EDG", "MAG", "MAGAdept", "RES", "ESS", "DEP" };
         public static ReadOnlyCollection<string> AttributeStrings => Array.AsReadOnly(s_LstAttributeStrings);
@@ -414,33 +457,6 @@ namespace Chummer.Backend.Attributes
                     }
                 }
             }
-
-		    Attributes = new ObservableCollection<CharacterAttrib>
-		    {
-		        _objCharacter.BOD,
-		        _objCharacter.AGI,
-		        _objCharacter.REA,
-		        _objCharacter.STR,
-		        _objCharacter.CHA,
-		        _objCharacter.INT,
-		        _objCharacter.LOG,
-		        _objCharacter.WIL,
-		        _objCharacter.EDG
-		    };
-		    if (_objCharacter.MAGEnabled)
-		    {
-		        Attributes.Add(_objCharacter.MAG);
-		        if (_objCharacter.Options.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
-		            Attributes.Add(_objCharacter.MAGAdept);
-		    }
-		    if (_objCharacter.RESEnabled)
-		    {
-		        Attributes.Add(_objCharacter.RES);
-		    }
-		    if (_objCharacter.DEPEnabled)
-		    {
-		        Attributes.Add(_objCharacter.DEP);
-		    }
             ResetBindings();
 		    _objCharacter.RefreshAttributeBindings();
             //Timekeeper.Finish("load_char_attrib");
