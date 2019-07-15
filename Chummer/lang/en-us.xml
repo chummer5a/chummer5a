@@ -9726,23 +9726,23 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <!-- End Region SINners Plugin-->
     <string>
-      <key>String_ApplicationInsights_onlylocal</key>
+      <key>String_ApplicationInsights_OnlyLocal</key>
       <text>only local logging</text>
     </string>
     <string>
-      <key>String_ApplicationInsights_onlymetric</key>
+      <key>String_ApplicationInsights_OnlyMetric</key>
       <text>upload statistical data</text>
     </string>
     <string>
-      <key>String_ApplicationInsights_crashes</key>
+      <key>String_ApplicationInsights_Crashes</key>
       <text>upload crashes</text>
     </string>
     <string>
-      <key>String_ApplicationInsights_yes</key>
+      <key>String_ApplicationInsights_Yes</key>
       <text>upload all errors</text>
     </string>
     <string>
-      <key>String_ApplicationInsights_notset</key>
+      <key>String_ApplicationInsights_NotSet</key>
       <text>let chummer decide</text>
     </string>
   </strings>
