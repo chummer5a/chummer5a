@@ -793,8 +793,8 @@ namespace Chummer
             GlobalOptions.LiveCustomData = chkLiveCustomData.Checked;
             GlobalOptions.LiveUpdateCleanCharacterFiles = chkLiveUpdateCleanCharacterFiles.Checked;
             GlobalOptions.UseLogging = chkUseLogging.Checked;
-            EnumUseLoggingApplicationInsights useAI;
-            Enum.TryParse<EnumUseLoggingApplicationInsights>(cbUseLoggingApplicationInsights.SelectedValue.ToString(), out useAI);
+            UseAILogging useAI;
+            Enum.TryParse<UseAILogging>(cbUseLoggingApplicationInsights.SelectedValue.ToString(), out useAI);
             GlobalOptions.UseLoggingApplicationInsights = useAI;
             
             if (string.IsNullOrEmpty(_strSelectedLanguage))
@@ -1357,7 +1357,7 @@ namespace Chummer
             chkLiveUpdateCleanCharacterFiles.Checked = GlobalOptions.LiveUpdateCleanCharacterFiles;
             chkUseLogging.Checked = GlobalOptions.UseLogging;
 
-            var enumvalues = Enum.GetValues(typeof(EnumUseLoggingApplicationInsights));
+            var enumvalues = Enum.GetValues(typeof(UseAILogging));
             List<ListItem> lstUseAIOptions = new List<ListItem>();
             foreach (var myoption in enumvalues)
             {
@@ -1378,7 +1378,7 @@ namespace Chummer
 
             if (!string.IsNullOrEmpty(strOldSelected))
             {
-                cbUseLoggingApplicationInsights.SelectedValue = Enum.Parse(typeof(EnumUseLoggingApplicationInsights), strOldSelected);
+                cbUseLoggingApplicationInsights.SelectedValue = Enum.Parse(typeof(UseAILogging), strOldSelected);
                 if (cbUseLoggingApplicationInsights.SelectedIndex == -1 && lstUseAIOptions.Count > 0)
                     cbUseLoggingApplicationInsights.SelectedIndex = 0;
             }
@@ -1904,16 +1904,9 @@ namespace Chummer
         {
             if (this._blnLoading)
                 return;
-            EnumUseLoggingApplicationInsights useAI =
-                (EnumUseLoggingApplicationInsights)Enum.Parse(typeof(EnumUseLoggingApplicationInsights), ((ListItem)cbUseLoggingApplicationInsights.SelectedItem).Value.ToString());
-            if (useAI == EnumUseLoggingApplicationInsights.yes)
+            UseAILogging useAI = (UseAILogging) ((ListItem) cbUseLoggingApplicationInsights.SelectedItem).Value;
+            if (useAI == UseAILogging.yes)
             {
-                //string msg = "Please use this option only, if you have previously spoken ";
-                //msg += Environment.NewLine + "to a Dev on Discord and he agreed to ";
-                //msg += Environment.NewLine + "take a look at your logs, because ";
-                //msg += Environment.NewLine + "uploading logs costs real money for Chummer and ";
-                //msg += Environment.NewLine + "should not be used as a default. ";
-                //msg += Environment.NewLine + Environment.NewLine;
                 string msg = "Thank you for sharing logs and metrics";
                 msg += Environment.NewLine + "with the Chummer Dev-Team. You can";
                 msg += Environment.NewLine + "help us gain insight of what needs to";
@@ -1927,7 +1920,7 @@ namespace Chummer
                 }
                 else
                 {
-                    GlobalOptions.UseLoggingApplicationInsights = EnumUseLoggingApplicationInsights.crashes;
+                    GlobalOptions.UseLoggingApplicationInsights = UseAILogging.crashes;
                     this._blnLoading = true;
                     this.cbUseLoggingApplicationInsights.SelectedItem = GlobalOptions.UseLoggingApplicationInsights;
                     this._blnLoading = false;
@@ -1941,16 +1934,9 @@ namespace Chummer
 
         private void ChkUseLogging_CheckedChanged(object sender, EventArgs e)
         {
-            if (this.chkUseLogging.Checked)
-                this.cbUseLoggingApplicationInsights.Enabled = true;
-            else
-                this.cbUseLoggingApplicationInsights.Enabled = false;
+            this.cbUseLoggingApplicationInsights.Enabled = this.chkUseLogging.Checked;
             OptionsChanged(sender, e);
         }
-
-        private void chkUseLoggingApplicationInsights_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
+      
     }
 }

@@ -31,12 +31,12 @@ namespace Chummer
         public void Process(ITelemetry item)
         {
             ModifyItem(item);
-            if (GlobalOptions.UseLoggingApplicationInsights == EnumUseLoggingApplicationInsights.yes)
+            if (GlobalOptions.UseLoggingApplicationInsights == UseAILogging.yes)
             {
                 this.Next.Process(item);
                 return;
             }
-            if (GlobalOptions.UseLoggingApplicationInsights == EnumUseLoggingApplicationInsights.onlymetric)
+            if (GlobalOptions.UseLoggingApplicationInsights == UseAILogging.onlymetric)
             {
                 if (item is MetricTelemetry)
                 {
