@@ -409,9 +409,18 @@ namespace Chummer
 
             //Should the App "Phone home"
             {
-                string useAI = "notset";
-                LoadStringFromRegistry(ref useAI, "useloggingApplicationInsights");
-                _enumUseLoggingApplicationInsights = (UseAILogging) Enum.Parse(typeof(UseAILogging), useAI);
+                try
+                {
+                    string useAI = "NotSet";
+                    LoadStringFromRegistry(ref useAI, "useloggingApplicationInsights");
+                    _enumUseLoggingApplicationInsights = (UseAILogging)Enum.Parse(typeof(UseAILogging), useAI);
+                }
+                catch (Exception e)
+                {
+                    Log.Warn(e);
+                    _enumUseLoggingApplicationInsights = UseAILogging.NotSet;
+                }
+                
             }
 
             // Whether or not dates should include the time.
