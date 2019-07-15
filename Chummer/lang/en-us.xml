@@ -9093,6 +9093,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <key>Checkbox_CreateImprovementApplyToRating</key>
       <text>Apply to Rating</text>
     </string>
+	<string>
+      <key>Checkbox_CreateImprovementIgnoreLimits</key>
+      <text>Ignore Limits</text>
+    </string>
     <string>
       <key>Button_ChangeSelection</key>
       <text>Select Value</text>
