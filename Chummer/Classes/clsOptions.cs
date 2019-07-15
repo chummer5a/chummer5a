@@ -232,7 +232,7 @@ namespace Chummer
         private static string _strPDFParameters = string.Empty;
         private static HashSet<SourcebookInfo> _lstSourcebookInfo;
         private static bool _blnUseLogging;
-        private static int _blnUseLoggingApplicationInsights;
+        private static EnumUseLoggingApplicationInsights _enumUseLoggingApplicationInsights;
         private static string _strCharacterRosterPath;
 
         // Custom Data Directory information.
@@ -408,7 +408,9 @@ namespace Chummer
             LoadBoolFromRegistry(ref _blnUseLogging, "uselogging");
 
             //Should the App "Phone home"
-            LoadInt32FromRegistry(ref _blnUseLoggingApplicationInsights, "useloggingApplicationInsights");
+            string myuseAI = "notset";
+            LoadStringFromRegistry(ref myuseAI, "useloggingApplicationInsights");
+            _enumUseLoggingApplicationInsights = (EnumUseLoggingApplicationInsights)Enum.Parse(typeof(EnumUseLoggingApplicationInsights), myuseAI);
 
             // Whether or not dates should include the time.
             LoadBoolFromRegistry(ref _blnDatesIncludeTime, "datesincludetime");
@@ -633,14 +635,14 @@ namespace Chummer
         /// </summary>
         public static EnumUseLoggingApplicationInsights UseLoggingApplicationInsights
         {
-            get => (EnumUseLoggingApplicationInsights)Enum.Parse(typeof(EnumUseLoggingApplicationInsights), _blnUseLoggingApplicationInsights.ToString());
+            get => (EnumUseLoggingApplicationInsights)Enum.Parse(typeof(EnumUseLoggingApplicationInsights), _enumUseLoggingApplicationInsights.ToString());
             set
             {
-                if (_blnUseLoggingApplicationInsights != (int)value)
+                if (_enumUseLoggingApplicationInsights != value)
                 {
-                    _blnUseLoggingApplicationInsights = (int)value;
+                    _enumUseLoggingApplicationInsights = value;
                     // Sets up logging if the option is changed during runtime
-                    if (_blnUseLoggingApplicationInsights < 2)
+                    if ((int)_enumUseLoggingApplicationInsights < 1)
                     {
                         TelemetryConfiguration.Active.DisableTelemetry = false;
                     }
