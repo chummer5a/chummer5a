@@ -192,16 +192,20 @@ namespace Chummer.Backend
                 byte[] info = new UTF8Encoding(true).GetBytes(dump.SerializeBase64());
                 File.WriteAllBytes(Path.Combine(Utils.GetStartupPath, "json.txt"), info);
 
-                if (GlobalOptions.UseLoggingApplicationInsights)
+                if (GlobalOptions.UseLoggingApplicationInsights == EnumUseLoggingApplicationInsights.yes
+                    || GlobalOptions.UseLoggingApplicationInsights == EnumUseLoggingApplicationInsights.crashes)
                 {
                     if (Program.TelemetryClient != null)
                     {
+                        var oldvalue = GlobalOptions.UseLoggingApplicationInsights;
+                        GlobalOptions.UseLoggingApplicationInsights = EnumUseLoggingApplicationInsights.yes;
                         ExceptionTelemetry et = new ExceptionTelemetry(ex)
                         {
                             SeverityLevel = SeverityLevel.Critical
                         };
                         Program.TelemetryClient.TrackException(et);
                         Program.TelemetryClient.Flush();
+                        GlobalOptions.UseLoggingApplicationInsights = oldvalue;
                     }
                 }
 

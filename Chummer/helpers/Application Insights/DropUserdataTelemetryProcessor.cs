@@ -4,6 +4,7 @@ using System.Data;
 using System.Globalization;
 using System.Reflection;
 using System.Resources;
+using System.Runtime.Remoting.Messaging;
 using System.Text.RegularExpressions;
 using System.Threading;
 using Microsoft.ApplicationInsights.Extensibility;
@@ -30,8 +31,20 @@ namespace Chummer
         public void Process(ITelemetry item)
         {
             ModifyItem(item);
-
-            this.Next.Process(item);
+            if (GlobalOptions.UseLoggingApplicationInsights == EnumUseLoggingApplicationInsights.yes)
+            {
+                this.Next.Process(item);
+                return;
+            }
+            if (GlobalOptions.UseLoggingApplicationInsights == EnumUseLoggingApplicationInsights.onlymetric)
+            {
+                if (item is MetricTelemetry)
+                {
+                    this.Next.Process(item);
+                    return;
+                }
+            }
+            return;
         }
 
         
