@@ -9729,5 +9729,9 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>SINners</text>
     </string>
     <!-- End Region SINners Plugin-->
+	<string>
+	  <key>Chummy_Intro</key>
+	  <text>Hi! I'm Chummy, the Chummer AI Assistant! I've got plenty of helpful tips and advice about your characters!</text>
+	</string>
   </strings>
 </chummer>
