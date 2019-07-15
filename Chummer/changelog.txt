@@ -33,6 +33,7 @@ Application Fixes:
 - Added the ability for qualities to be flagged as able to be purchased in a way that would make the character go into a karma debt.
 - Dates in the Karma and Nuyen tab will now always follow the format of the language in which the program is localized, rather than following the format of the language of the system in which the program is running.
 - Fixed an issue where the registered sprite limit would not take augmentations into account.
+- Added the ability for created Adept Power improvements to ignore power limits when selecting the affected power. Closes #3721.
 
 Data Changes:
 
@@ -49,6 +50,7 @@ New Strings:
 - Tip_ImproveItemAtMaximum
 - String_Bullet
 - String_Bullets
+- Checkbox_CreateImprovementIgnoreLimits
 
 Changed Strings:
 

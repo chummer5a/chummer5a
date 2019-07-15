@@ -165,7 +165,8 @@ namespace Chummer
                 }
 
             // Display the help information.
-            lblHelp.Text = objFetchNode["altpage"]?.InnerText ?? objFetchNode["page"]?.InnerText;
+            txtHelp.Text = objFetchNode["altpage"]?.InnerText ?? objFetchNode["page"]?.InnerText;
+            chkIgnoreLimits.Visible = _strSelect == "SelectAdeptPower";
         }
 
         private void cmdChangeSelection_Click(object sender, EventArgs e)
@@ -437,6 +438,7 @@ namespace Chummer
                     break;
                 case "SelectAdeptPower":
                     frmSelectPower frmPickPower = new frmSelectPower(_objCharacter);
+                    frmPickPower.IgnoreLimits = chkIgnoreLimits.Checked;
                     frmPickPower.ShowDialog(this);
 
                     if (frmPickPower.DialogResult == DialogResult.OK)
