@@ -150,7 +150,7 @@ namespace Chummer
                 try
                 {
                     LogManager.ThrowExceptions = true;
-                    if (GlobalOptions.UseLoggingApplicationInsights > UseAILogging.onlymetric)
+                    if (GlobalOptions.UseLoggingApplicationInsights > UseAILogging.OnlyMetric)
                     {
                         ConfigurationItemFactory.Default.Targets.RegisterDefinition(
                             "ApplicationInsightsTarget",
@@ -172,7 +172,7 @@ namespace Chummer
                     Log.Info(strInfo);
 
 
-                    if (GlobalOptions.UseLoggingApplicationInsights >= UseAILogging.onlymetric)
+                    if (GlobalOptions.UseLoggingApplicationInsights >= UseAILogging.OnlyMetric)
                     {
 
 #if DEBUG
@@ -254,7 +254,7 @@ namespace Chummer
                 MainForm = new frmChummerMain(false, pvt);
                 Application.Run(MainForm);
                 Log.Info(ExceptionHeatmap.GenerateInfo());
-                if (GlobalOptions.UseLoggingApplicationInsights > UseAILogging.onlylocal)
+                if (GlobalOptions.UseLoggingApplicationInsights > UseAILogging.OnlyLocal)
                 {
                     if (TelemetryClient != null)
                     {

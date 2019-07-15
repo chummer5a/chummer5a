@@ -47,11 +47,11 @@ namespace Chummer
 
     public enum UseAILogging
     {
-        notset = -1,
-        onlylocal,
-        onlymetric,
-        crashes,
-        yes
+        NotSet = -1,
+        OnlyLocal,
+        OnlyMetric,
+        Crashes,
+        Yes
     }
 
     public sealed class SourcebookInfo : IDisposable
@@ -642,7 +642,7 @@ namespace Chummer
             {
                 _enumUseLoggingApplicationInsights = value;
                 // Sets up logging if the option is changed during runtime
-                if (_enumUseLoggingApplicationInsights <=  UseAILogging.onlylocal)
+                if (_enumUseLoggingApplicationInsights <=  UseAILogging.OnlyLocal)
                 {
                     TelemetryConfiguration.Active.DisableTelemetry = false;
                 }

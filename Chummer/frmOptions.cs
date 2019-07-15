@@ -1905,7 +1905,7 @@ namespace Chummer
             if (this._blnLoading)
                 return;
             UseAILogging useAI = (UseAILogging) ((ListItem) cbUseLoggingApplicationInsights.SelectedItem).Value;
-            if (useAI == UseAILogging.yes)
+            if (useAI == UseAILogging.Yes)
             {
                 string msg = "Thank you for sharing logs and metrics";
                 msg += Environment.NewLine + "with the Chummer Dev-Team. You can";
@@ -1920,7 +1920,7 @@ namespace Chummer
                 }
                 else
                 {
-                    GlobalOptions.UseLoggingApplicationInsights = UseAILogging.crashes;
+                    GlobalOptions.UseLoggingApplicationInsights = UseAILogging.Crashes;
                     this._blnLoading = true;
                     this.cbUseLoggingApplicationInsights.SelectedItem = GlobalOptions.UseLoggingApplicationInsights;
                     this._blnLoading = false;
