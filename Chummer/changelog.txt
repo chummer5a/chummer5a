@@ -47,6 +47,7 @@ Data Changes:
 - Fixed a crash that would occur when selecting a skill as an optional power. Closes #3677.
 - Fixed missing Copy settings for some custom data entries that prevented them being copied into release folders. 
 - Added a customdata rule for the German variant prices for Rigger 5's drone turrets. Closes #3760
+- Added the Convince spell to German-exclusive Street Grimoire content, as the German edition of Street Grimoire contains it. Closes #3707.
 
 New Strings:
 
