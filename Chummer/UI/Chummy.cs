@@ -48,7 +48,7 @@ namespace Chummer
             tmrTip.Tick += tmr_TipTick;
             tmrTip.Start();
 
-            _myToolTip.Show("Hi! I'm Chummy, the Chummer AI Assistant! I've got plenty of helpful tips and advice about your characters!".WordWrap(100), this, _mouthCenter);
+            _myToolTip.Show(LanguageManager.GetString("Chummy_Intro", GlobalOptions.Language).WordWrap(100), this, _mouthCenter);
         }
         #region Event Handlers
         private void tmr_DrawTick(object sender, EventArgs e)
@@ -178,7 +178,7 @@ namespace Chummer
                 if (string.IsNullOrEmpty(strId) || _usedTips.Contains(strId)) continue;
                 if (!objXmlTip.RequirementsMet(CharacterObject)) continue;
                 _usedTips.Add(strId);
-                return objXmlTip.SelectSingleNode("text")?.Value;
+                return objXmlTip.SelectSingleNode("translate")?.Value ?? objXmlTip.SelectSingleNode("text")?.Value ?? string.Empty;
             }
             return string.Empty;
         }

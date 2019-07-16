@@ -112,7 +112,7 @@ namespace Chummer
                     //main.Hide();
                     //main.ShowInTaskbar = false;
                 };
-#endif
+#else
                 AppDomain.CurrentDomain.UnhandledException += (o, e) =>
                 {
                     try
@@ -128,8 +128,8 @@ namespace Chummer
                         Console.WriteLine(exception);
                     }
                 };
+#endif
 
-           
                 sw.TaskEnd("Startup");
 
                 
@@ -150,10 +150,14 @@ namespace Chummer
                 try
                 {
                     LogManager.ThrowExceptions = true;
-                    ConfigurationItemFactory.Default.Targets.RegisterDefinition(
-                        "ApplicationInsightsTarget",
-                        typeof(Microsoft.ApplicationInsights.NLogTarget.ApplicationInsightsTarget)
-                    );
+                    if (GlobalOptions.UseLoggingApplicationInsights > UseAILogging.OnlyMetric)
+                    {
+                        ConfigurationItemFactory.Default.Targets.RegisterDefinition(
+                            "ApplicationInsightsTarget",
+                            typeof(Microsoft.ApplicationInsights.NLogTarget.ApplicationInsightsTarget)
+                        );
+                    }
+
                     LogManager.ThrowExceptions = false;
                     Log = NLog.LogManager.GetCurrentClassLogger();
                     if (GlobalOptions.UseLogging)
@@ -167,10 +171,10 @@ namespace Chummer
                     }
                     Log.Info(strInfo);
 
-                   
 
-                    if (GlobalOptions.UseLoggingApplicationInsights)
+                    if (GlobalOptions.UseLoggingApplicationInsights >= UseAILogging.OnlyMetric)
                     {
+
 #if DEBUG
                         //If you set true as DeveloperMode (see above), you can see the sending telemetry in the debugging output window in IDE.
                         TelemetryConfiguration.Active.TelemetryChannel.DeveloperMode = true;
@@ -182,24 +186,26 @@ namespace Chummer
                         var replacePath = Environment.UserName;
                         TelemetryConfiguration.Active.TelemetryProcessorChainBuilder.Use((next) => new DropUserdataTelemetryProcessor(next, replacePath));
                         TelemetryConfiguration.Active.TelemetryProcessorChainBuilder.Build();
-                        //for now lets disable live view. We may make another GlobalOption to enable it at a later stage...
+                        //for now lets disable live view.We may make another GlobalOption to enable it at a later stage...
                         //var live = new LiveStreamProvider(ApplicationInsightsConfig);
                         //live.Enable();
 
                         //Log an Event with AssemblyVersion and CultureInfo
-                        
+
+
                         if (Properties.Settings.Default.UploadClientId == Guid.Empty)
                         {
                             Properties.Settings.Default.UploadClientId = Guid.NewGuid();
                             Properties.Settings.Default.Save();
                         }
-                        MetricIdentifier mi = new MetricIdentifier("Chummer", "Program Start","Version", "Culture");
+                        MetricIdentifier mi = new MetricIdentifier("Chummer", "Program Start", "Version", "Culture", dimension3Name:"AISetting");
                         var metric = TelemetryClient.GetMetric(mi);
                         metric.TrackValue(1,
                             Assembly.GetExecutingAssembly().GetName().Version.ToString(),
-                            CultureInfo.CurrentUICulture.TwoLetterISOLanguageName);
+                            CultureInfo.CurrentUICulture.TwoLetterISOLanguageName,
+                            GlobalOptions.UseLoggingApplicationInsights.ToString());
 
-                        // Log a page view:
+                        //Log a page view:
                         pvt = new PageViewTelemetry("frmChummerMain()")
                         {
                             Name = "Chummer Startup: " +
@@ -248,15 +254,10 @@ namespace Chummer
                 MainForm = new frmChummerMain(false, pvt);
                 Application.Run(MainForm);
                 Log.Info(ExceptionHeatmap.GenerateInfo());
-                if (GlobalOptions.UseLoggingApplicationInsights)
+                if (GlobalOptions.UseLoggingApplicationInsights > UseAILogging.OnlyLocal)
                 {
                     if (TelemetryClient != null)
                     {
-                        //if (pvt != null)
-                        //{
-                        //    pvt.Duration = DateTimeOffset.UtcNow - pvt.Timestamp;
-                        //    ApplicationInsightsTelemetryClient.TrackPageView(pvt);
-                        //}
                         TelemetryClient.Flush();
                         //we have to wait a bit to give it time to upload the data
                         Console.WriteLine("Waiting a bit to flush logging data...");

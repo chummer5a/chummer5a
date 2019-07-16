@@ -34,6 +34,11 @@ Application Fixes:
 - Dates in the Karma and Nuyen tab will now always follow the format of the language in which the program is localized, rather than following the format of the language of the system in which the program is running.
 - Fixed an issue where the registered sprite limit would not take augmentations into account.
 - Added the ability for created Adept Power improvements to ignore power limits when selecting the affected power. Closes #3721.
+- Chummy will now use translations from other languages. Closes #3540.
+- Reapplying improvements after having removed a metatype removable quality will no longer cause said quality's improvements to be re-applied. Closes #3522.
+- Removing the marker quality for having removed a metatype removable quality in Create mode will restore the previously removed metatype removable quality.
+- Changing metatypes in Create mode will now also remove any marker qualities for removed metatype removable qualities.
+- Fixed an issue that caused removing removable metatype qualities with first-level-only improvements to not remove those first-level-only improvements.
 - Fixed an issue with the Karma Metatype form that would soft-lock the application waiting for an input for critter powers and programs.
 
 Data Changes:
@@ -57,6 +62,7 @@ New Strings:
 - String_Bullet
 - String_Bullets
 - Checkbox_CreateImprovementIgnoreLimits
+- Chummy_Intro
 
 Changed Strings:
 

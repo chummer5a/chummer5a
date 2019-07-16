@@ -53,6 +53,7 @@ namespace Chummer
         BuiltIn = 3,
         LifeModule = 4,
         Improvement = 5,
+        MetatypeRemovedAtChargen = 6,
     }
 
     /// <summary>
@@ -145,6 +146,8 @@ namespace Chummer
                     return QualitySource.BuiltIn;
                 case "Improvement":
                     return QualitySource.Improvement;
+                case "MetatypeRemovedAtChargen":
+                    return QualitySource.MetatypeRemovedAtChargen;
                 default:
                     return QualitySource.Selected;
             }
@@ -370,7 +373,8 @@ namespace Chummer
                 OriginSource != QualitySource.Improvement &&
                 OriginSource != QualitySource.LifeModule &&
                 OriginSource != QualitySource.Metatype &&
-                OriginSource != QualitySource.MetatypeRemovable)
+                OriginSource != QualitySource.MetatypeRemovable &&
+                OriginSource != QualitySource.MetatypeRemovedAtChargen)
             _objCharacter.SourceProcess(_strSource);
         }
 
@@ -421,6 +425,12 @@ namespace Chummer
             if (_eQualityType == QualityType.LifeModule)
             {
                 objNode.TryGetStringFieldQuickly("stage", ref _strStage);
+            }
+            if (_eQualitySource == QualitySource.Selected && string.IsNullOrEmpty(_nodBonus?.InnerText) && string.IsNullOrEmpty(_nodFirstLevelBonus?.InnerText) &&
+                (_eQualityType == QualityType.Positive || _eQualityType == QualityType.Negative) &&
+                GetNode() != null && ConvertToQualityType(GetNode()["category"]?.InnerText) != _eQualityType)
+            {
+                _eQualitySource = QualitySource.MetatypeRemovedAtChargen;
             }
         }
 
@@ -716,7 +726,7 @@ namespace Chummer
         {
             get
             {
-                if (_eQualitySource == QualitySource.Metatype || _eQualitySource == QualitySource.MetatypeRemovable)
+                if (_eQualitySource == QualitySource.Metatype || _eQualitySource == QualitySource.MetatypeRemovable || _eQualitySource == QualitySource.MetatypeRemovedAtChargen)
                     return false;
 
                 // Positive Metagenetic Qualities are free if you're a Changeling.
@@ -802,7 +812,8 @@ namespace Chummer
                  OriginSource == QualitySource.Improvement ||
                  OriginSource == QualitySource.LifeModule ||
                  OriginSource == QualitySource.Metatype ||
-                 OriginSource == QualitySource.MetatypeRemovable) && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
+                 OriginSource == QualitySource.MetatypeRemovable ||
+                 OriginSource == QualitySource.MetatypeRemovedAtChargen) && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
                 return null;
 
             TreeNode objNode = new TreeNode

@@ -793,7 +793,9 @@ namespace Chummer
             GlobalOptions.LiveCustomData = chkLiveCustomData.Checked;
             GlobalOptions.LiveUpdateCleanCharacterFiles = chkLiveUpdateCleanCharacterFiles.Checked;
             GlobalOptions.UseLogging = chkUseLogging.Checked;
-            GlobalOptions.UseLoggingApplicationInsights = chkUseLoggingApplicationInsights.Checked;
+            UseAILogging useAI;
+            Enum.TryParse<UseAILogging>(cbUseLoggingApplicationInsights.SelectedValue.ToString(), out useAI);
+            GlobalOptions.UseLoggingApplicationInsights = useAI;
             
             if (string.IsNullOrEmpty(_strSelectedLanguage))
             {
@@ -838,7 +840,8 @@ namespace Chummer
                 objRegistry.SetValue("livecustomdata", chkLiveCustomData.Checked.ToString());
                 objRegistry.SetValue("liveupdatecleancharacterfiles", chkLiveUpdateCleanCharacterFiles.Checked.ToString());
                 objRegistry.SetValue("uselogging", chkUseLogging.Checked.ToString());
-                objRegistry.SetValue("useloggingApplicationInsights", chkUseLoggingApplicationInsights.Checked.ToString());
+                var useAI = cbUseLoggingApplicationInsights.SelectedItem.ToString();
+                objRegistry.SetValue("useloggingApplicationInsights", useAI);
                 objRegistry.SetValue("language", _strSelectedLanguage);
                 objRegistry.SetValue("startupfullscreen", chkStartupFullscreen.Checked.ToString());
                 objRegistry.SetValue("singlediceroller", chkSingleDiceRoller.Checked.ToString());
@@ -1353,9 +1356,39 @@ namespace Chummer
             chkLiveCustomData.Checked = GlobalOptions.LiveCustomData;
             chkLiveUpdateCleanCharacterFiles.Checked = GlobalOptions.LiveUpdateCleanCharacterFiles;
             chkUseLogging.Checked = GlobalOptions.UseLogging;
-            chkUseLoggingApplicationInsights.Checked = GlobalOptions.UseLoggingApplicationInsights;
-            chkUseLoggingApplicationInsights.Enabled = chkUseLogging.Checked;
-            chkUseLoggingApplicationInsights.SetToolTip("Installation: " + Properties.Settings.Default.UploadClientId);
+
+            var enumvalues = Enum.GetValues(typeof(UseAILogging));
+            List<ListItem> lstUseAIOptions = new List<ListItem>();
+            foreach (var myoption in enumvalues)
+            {
+                var listitem = new ListItem(myoption, LanguageManager.GetString("String_ApplicationInsights_" + myoption, _strSelectedLanguage));
+                lstUseAIOptions.Add(listitem);
+            }
+            cbUseLoggingApplicationInsights.DataSource = lstUseAIOptions;
+            cbUseLoggingApplicationInsights.SelectedItem = GlobalOptions.UseLoggingApplicationInsights;
+
+
+            string strOldSelected = cbUseLoggingApplicationInsights.SelectedValue?.ToString() ?? GlobalOptions.UseLoggingApplicationInsights.ToString();
+
+            cbUseLoggingApplicationInsights.BeginUpdate();
+            cbUseLoggingApplicationInsights.DataSource = null;
+            cbUseLoggingApplicationInsights.DataSource = lstUseAIOptions;
+            cbUseLoggingApplicationInsights.ValueMember = nameof(ListItem.Value);
+            cbUseLoggingApplicationInsights.DisplayMember = nameof(ListItem.Name);
+
+            if (!string.IsNullOrEmpty(strOldSelected))
+            {
+                cbUseLoggingApplicationInsights.SelectedValue = Enum.Parse(typeof(UseAILogging), strOldSelected);
+                if (cbUseLoggingApplicationInsights.SelectedIndex == -1 && lstUseAIOptions.Count > 0)
+                    cbUseLoggingApplicationInsights.SelectedIndex = 0;
+            }
+
+            cbUseLoggingApplicationInsights.EndUpdate();
+
+
+
+            cbUseLoggingApplicationInsights.Enabled = chkUseLogging.Checked;
+            cbUseLoggingApplicationInsights.SetToolTip("Installation: " + Properties.Settings.Default.UploadClientId);
             chkLifeModule.Checked = GlobalOptions.LifeModuleEnabled;
             chkOmaeEnabled.Checked = GlobalOptions.OmaeEnabled;
             chkPreferNightlyBuilds.Checked = GlobalOptions.PreferNightlyBuilds;
@@ -1867,18 +1900,13 @@ namespace Chummer
 
         }
 
-        private void chkUseLoggingApplicationInsights_CheckedChanged(object sender, EventArgs e)
+        private void cbUseLoggingApplicationInsights_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (this._blnLoading)
                 return;
-            if (chkUseLoggingApplicationInsights.Checked)
+            UseAILogging useAI = (UseAILogging) ((ListItem) cbUseLoggingApplicationInsights.SelectedItem).Value;
+            if (useAI == UseAILogging.Yes)
             {
-                //string msg = "Please use this option only, if you have previously spoken ";
-                //msg += Environment.NewLine + "to a Dev on Discord and he agreed to ";
-                //msg += Environment.NewLine + "take a look at your logs, because ";
-                //msg += Environment.NewLine + "uploading logs costs real money for Chummer and ";
-                //msg += Environment.NewLine + "should not be used as a default. ";
-                //msg += Environment.NewLine + Environment.NewLine;
                 string msg = "Thank you for sharing logs and metrics";
                 msg += Environment.NewLine + "with the Chummer Dev-Team. You can";
                 msg += Environment.NewLine + "help us gain insight of what needs to";
@@ -1888,27 +1916,27 @@ namespace Chummer
                 var result = MessageBox.Show(msg, "Really enable upload?", MessageBoxButtons.OKCancel);
                 if (result == DialogResult.OK)
                 {
-                    GlobalOptions.UseLoggingApplicationInsights = true;
+                    GlobalOptions.UseLoggingApplicationInsights = useAI;
                 }
                 else
                 {
-                    GlobalOptions.UseLoggingApplicationInsights = false;
-                    chkUseLoggingApplicationInsights.Checked = false;
+                    GlobalOptions.UseLoggingApplicationInsights = UseAILogging.Crashes;
+                    this._blnLoading = true;
+                    this.cbUseLoggingApplicationInsights.SelectedItem = GlobalOptions.UseLoggingApplicationInsights;
+                    this._blnLoading = false;
                 }
             }
             else
             {
-                GlobalOptions.UseLoggingApplicationInsights = false;
+                GlobalOptions.UseLoggingApplicationInsights = useAI;
             }
         }
 
         private void ChkUseLogging_CheckedChanged(object sender, EventArgs e)
         {
-            if (this.chkUseLogging.Checked)
-                this.chkUseLoggingApplicationInsights.Enabled = true;
-            else
-                this.chkUseLoggingApplicationInsights.Enabled = false;
+            this.cbUseLoggingApplicationInsights.Enabled = this.chkUseLogging.Checked;
             OptionsChanged(sender, e);
         }
+      
     }
 }

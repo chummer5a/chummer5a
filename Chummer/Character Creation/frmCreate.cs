@@ -1804,7 +1804,7 @@ namespace Chummer
             for (int j = 0; j < CharacterObject.Qualities.Count; j++)
             {
                 Quality objQuality = CharacterObject.Qualities[j];
-                if (objQuality.OriginSource == QualitySource.Improvement)
+                if (objQuality.OriginSource == QualitySource.Improvement || objQuality.OriginSource == QualitySource.MetatypeRemovedAtChargen)
                     continue;
                 // We're only re-apply improvements a list of items, not all of them
                 if (lstInternalIdFilter != null && !lstInternalIdFilter.Contains(objQuality.InternalId))
@@ -4413,11 +4413,13 @@ namespace Chummer
                 XmlNode xmlDeleteQualityNoBonus = objXmlDeleteQuality.Clone();
                 if (xmlDeleteQualityNoBonus["bonus"] != null)
                     xmlDeleteQualityNoBonus["bonus"].InnerText = string.Empty;
+                if (xmlDeleteQualityNoBonus["firstlevelbonus"] != null)
+                    xmlDeleteQualityNoBonus["firstlevelbonus"].InnerText = string.Empty;
 
                 List<Weapon> lstWeapons = new List<Weapon>();
                 Quality objReplaceQuality = new Quality(CharacterObject);
 
-                objReplaceQuality.Create(xmlDeleteQualityNoBonus, QualitySource.Selected, lstWeapons);
+                objReplaceQuality.Create(xmlDeleteQualityNoBonus, QualitySource.MetatypeRemovedAtChargen, lstWeapons);
                 objReplaceQuality.BP *= -1;
                 // If a Negative Quality is being bought off, the replacement one is Positive.
                 if (objSelectedQuality.Type == QualityType.Positive)
@@ -4444,6 +4446,28 @@ namespace Chummer
             {
                 if (blnConfirmDelete && !CharacterObject.ConfirmDelete(blnCompleteDelete ? LanguageManager.GetString("Message_DeleteQuality", GlobalOptions.Language) : LanguageManager.GetString("Message_LowerQualityLevel", GlobalOptions.Language)))
                     return false;
+
+                if (objSelectedQuality.OriginSource == QualitySource.MetatypeRemovedAtChargen)
+                {
+                    XmlNode xmlMetatypeNode = XmlManager.Load("metatypes.xml").SelectSingleNode("/chummer/metatypes/metatype[name = \"" + CharacterObject.Metatype + "\"]") ??
+                        XmlManager.Load("critters.xml").SelectSingleNode("/chummer/metatypes/metatype[name = \"" + CharacterObject.Metatype + "\"]");
+                    XmlNode xmlMetavariantNode = xmlMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = \"" + CharacterObject.Metavariant + "\"]");
+                    XmlNode xmlCharacterNode = xmlMetavariantNode ?? xmlMetatypeNode;
+                    if (xmlCharacterNode != null)
+                    {
+                        // Create the Qualities that come with the Metatype.
+                        foreach (XmlNode objXmlQualityItem in xmlCharacterNode.SelectNodes("qualities/*/quality[text() = \"" + objSelectedQuality.Name + "\"]"))
+                        {
+                            XmlNode objXmlQuality = XmlManager.Load("qualities.xml").SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQualityItem.InnerText + "\"]");
+                            Quality objQuality = new Quality(CharacterObject);
+                            string strForceValue = objXmlQualityItem.Attributes?["select"]?.InnerText ?? string.Empty;
+                            QualitySource objSource = objXmlQualityItem.Attributes["removable"]?.InnerText == bool.TrueString ? QualitySource.MetatypeRemovable : QualitySource.Metatype;
+                            objQuality.Create(objXmlQuality, objSource, CharacterObject.Weapons, strForceValue);
+                            objQuality.ContributeToLimit = false;
+                            CharacterObject.Qualities.Add(objQuality);
+                        }
+                    }
+                }
             }
             
             if (objSelectedQuality.Type == QualityType.LifeModule)
@@ -14918,7 +14942,7 @@ namespace Chummer
             string strQualities = string.Empty;
             foreach (Quality objQuality in CharacterObject.Qualities)
             {
-                if (objQuality.OriginSource != QualitySource.Metatype && objQuality.OriginSource != QualitySource.MetatypeRemovable)
+                if (objQuality.OriginSource != QualitySource.Metatype && objQuality.OriginSource != QualitySource.MetatypeRemovable && objQuality.OriginSource != QualitySource.MetatypeRemovedAtChargen)
                 {
                     XmlNode xmlQualityRequired = objQuality.GetNode()?["required"];
                     if (xmlQualityRequired != null)
@@ -15007,7 +15031,7 @@ namespace Chummer
             List<Improvement> lstImprovement = CharacterObject.Improvements.Where(objImprovement => objImprovement.ImproveSource == Improvement.ImprovementSource.Metatype || objImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant || objImprovement.ImproveSource == Improvement.ImprovementSource.Heritage).ToList();
 
             // Build a list of the current Metatype's Qualities to remove if the Metatype changes.
-            lstRemoveQualities.AddRange(CharacterObject.Qualities.Where(objQuality => objQuality.OriginSource == QualitySource.Metatype || objQuality.OriginSource == QualitySource.MetatypeRemovable));
+            lstRemoveQualities.AddRange(CharacterObject.Qualities.Where(objQuality => objQuality.OriginSource == QualitySource.Metatype || objQuality.OriginSource == QualitySource.MetatypeRemovable || objQuality.OriginSource == QualitySource.MetatypeRemovedAtChargen));
 
             // Hacky to remove qualities first, but necessary due to the way frmSelectMetatype will add qualities before closing
             // Remove any Qualities the character received from their Metatype, then remove the Quality.

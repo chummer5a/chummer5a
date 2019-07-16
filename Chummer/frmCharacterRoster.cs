@@ -386,6 +386,8 @@ namespace Chummer
                                             {
                                                 if (treCharacterList.IsDisposed)
                                                     return;
+                                                if (treCharacterList.Nodes.ContainsKey(node.Name))
+                                                    treCharacterList.Nodes.RemoveByKey(node.Name);
                                                 treCharacterList.Nodes.Insert(1, node);
                                             }
 

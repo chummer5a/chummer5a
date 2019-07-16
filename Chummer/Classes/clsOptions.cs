@@ -45,6 +45,15 @@ namespace Chummer
         Lifestyle,
     }
 
+    public enum UseAILogging
+    {
+        NotSet = -1,
+        OnlyLocal,
+        OnlyMetric,
+        Crashes,
+        Yes
+    }
+
     public sealed class SourcebookInfo : IDisposable
     {
         string _strPath = string.Empty;
@@ -223,7 +232,7 @@ namespace Chummer
         private static string _strPDFParameters = string.Empty;
         private static HashSet<SourcebookInfo> _lstSourcebookInfo;
         private static bool _blnUseLogging;
-        private static bool _blnUseLoggingApplicationInsights;
+        private static UseAILogging _enumUseLoggingApplicationInsights;
         private static string _strCharacterRosterPath;
 
         // Custom Data Directory information.
@@ -399,7 +408,20 @@ namespace Chummer
             LoadBoolFromRegistry(ref _blnUseLogging, "uselogging");
 
             //Should the App "Phone home"
-            LoadBoolFromRegistry(ref _blnUseLoggingApplicationInsights, "useloggingApplicationInsights");
+            {
+                try
+                {
+                    string useAI = "NotSet";
+                    LoadStringFromRegistry(ref useAI, "useloggingApplicationInsights");
+                    _enumUseLoggingApplicationInsights = (UseAILogging)Enum.Parse(typeof(UseAILogging), useAI);
+                }
+                catch (Exception e)
+                {
+                    Log.Warn(e);
+                    _enumUseLoggingApplicationInsights = UseAILogging.NotSet;
+                }
+                
+            }
 
             // Whether or not dates should include the time.
             LoadBoolFromRegistry(ref _blnDatesIncludeTime, "datesincludetime");
@@ -622,24 +644,20 @@ namespace Chummer
         /// <summary>
         /// Whether or not the app should use logging.
         /// </summary>
-        public static bool UseLoggingApplicationInsights
+        public static UseAILogging UseLoggingApplicationInsights
         {
-            get => _blnUseLoggingApplicationInsights;
+            get => _enumUseLoggingApplicationInsights;
             set
             {
-                if (_blnUseLoggingApplicationInsights != value)
+                _enumUseLoggingApplicationInsights = value;
+                // Sets up logging if the option is changed during runtime
+                if (_enumUseLoggingApplicationInsights <=  UseAILogging.OnlyLocal)
                 {
-                    _blnUseLoggingApplicationInsights = value;
-                    // Sets up logging if the option is changed during runtime
-                    if (value)
-                    {
-                        TelemetryConfiguration.Active.DisableTelemetry = false;
-                    }
-                    else
-                    {
-                        TelemetryConfiguration.Active.DisableTelemetry = true;
-                    }
-
+                    TelemetryConfiguration.Active.DisableTelemetry = false;
+                }
+                else
+                {
+                    TelemetryConfiguration.Active.DisableTelemetry = true;
                 }
             }
         }
