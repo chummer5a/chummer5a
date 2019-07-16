@@ -462,7 +462,7 @@ namespace Chummer
                     // Check for SelectText.
                     string strExtra = xmlComplexForm.Attributes?["select"]?.InnerText ?? string.Empty;
                     XmlNode xmlSelectText = xmlComplexFormData.SelectSingleNode("bonus/selecttext");
-                    if (xmlSelectText != null)
+                    if (xmlSelectText != null && !string.IsNullOrWhiteSpace(strExtra))
                     {
                         frmSelectText frmPickText = new frmSelectText
                         {
@@ -498,7 +498,7 @@ namespace Chummer
                     // Check for SelectText.
                     string strExtra = xmlAIProgram.Attributes?["select"]?.InnerText ?? string.Empty;
                     XmlNode xmlSelectText = xmlAIProgramData.SelectSingleNode("bonus/selecttext");
-                    if (xmlSelectText != null)
+                    if (xmlSelectText != null && !string.IsNullOrWhiteSpace(strExtra))
                     {
                         frmSelectText frmPickText = new frmSelectText
                         {

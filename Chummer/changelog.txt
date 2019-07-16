@@ -34,6 +34,7 @@ Application Fixes:
 - Dates in the Karma and Nuyen tab will now always follow the format of the language in which the program is localized, rather than following the format of the language of the system in which the program is running.
 - Fixed an issue where the registered sprite limit would not take augmentations into account.
 - Added the ability for created Adept Power improvements to ignore power limits when selecting the affected power. Closes #3721.
+- Fixed an issue with the Karma Metatype form that would soft-lock the application waiting for an input for critter powers and programs.
 
 Data Changes:
 
@@ -48,6 +49,7 @@ Data Changes:
 - Fixed missing Copy settings for some custom data entries that prevented them being copied into release folders. 
 - Added a customdata rule for the German variant prices for Rigger 5's drone turrets. Closes #3760
 - Added the Convince spell to German-exclusive Street Grimoire content, as the German edition of Street Grimoire contains it. Closes #3707.
+- Added various missing critters from sourcebooks and updated partially-incorrect mentor spirits from SOTA 2080, courtesy of Keeper M on Discord. 
 
 New Strings:
 

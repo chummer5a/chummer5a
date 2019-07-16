@@ -72,11 +72,7 @@ namespace Chummer.Backend.Attributes
         public ObservableCollection<CharacterAttrib> Attributes {
             get
             {
-                if (_colAttributes == null)
-                {
-                    Utils.BreakIfDebug();
-                }
-                else
+                if (_colAttributes != null)
                 {
                     return _colAttributes;
                 }

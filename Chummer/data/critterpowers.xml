@@ -4231,5 +4231,18 @@
       <page>163</page>
     </power>
     <!-- End Region -->
+    <!-- Region Kill Code -->
+    <power>
+      <id>1749d122-8d63-4790-ba8b-974b500d5bab</id>
+      <name>Resonance Hosting</name>
+      <category>Emergent</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <source>KC</source>
+      <page>168</page>
+    </power>
+    <!-- End Region -->
   </powers>
 </chummer>
