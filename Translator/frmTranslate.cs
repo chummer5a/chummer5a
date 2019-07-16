@@ -620,12 +620,8 @@ namespace Translator
                         {
                             XmlNode xmlChildNode = xmlChildNodes[i];
                             string strId = xmlChildNode["id"]?.InnerText ?? string.Empty;
-                            string strName;
-                            string strPage = string.Empty;
                             string strTranslated;
-                            string strSource = string.Empty;
                             bool blnTranslated;
-                            string strNameOnPage = string.Empty;
                             if (strFileName == "tips.xml")
                             {
                                 string strText = xmlChildNode["text"]?.InnerText ?? string.Empty;
@@ -641,6 +637,10 @@ namespace Translator
                             }
                             else
                             {
+                                string strName;
+                                string strPage = string.Empty;
+                                string strSource = string.Empty;
+                                string strNameOnPage = string.Empty;
                                 XmlNode xmlChildNameNode = xmlChildNode["name"];
                                 if (xmlChildNameNode == null)
                                 {
@@ -729,8 +729,11 @@ namespace Translator
                 dgvSection.Columns[1].FillWeight = 4.0f;
                 dgvSection.Columns[2].FillWeight = 4.0f;
                 dgvSection.Columns[3].FillWeight = 0.5f;
-                dgvSection.Columns[4].FillWeight = 0.5f;
-                dgvSection.Columns[5].FillWeight = 0.5f;
+                if (cboFile.Text != "tips.xml")
+                {
+                    dgvSection.Columns[4].FillWeight = 0.5f;
+                    dgvSection.Columns[5].FillWeight = 0.5f;
+                }
                 if (cboFile.Text == "qualities.xml")
                 {
                     dgvSection.Columns[1].FillWeight = 3.5f;
