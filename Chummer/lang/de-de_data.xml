@@ -9061,19 +9061,19 @@
 			<cyberware>
 				<id>7a6ed03f-d60f-465d-80e6-c2b37b55befd</id>
 				<name>Cyberlimb Augmentation, Armor (2050)</name>
-				<translate>Cyberglied-Verstärung, Panzerzng</translate>
+				<translate>Cyberglied-Verstärkung, Panzerung</translate>
 				<altpage>203</altpage>
 			</cyberware>
 			<cyberware>
 				<id>55738f72-0344-435d-8f92-b1e16a66c445</id>
 				<name>Cyberlimb Augmentation, Strength (2050)</name>
-				<translate>Cyberglied-Verstärung, Stärke</translate>
+				<translate>Cyberglied-Verstärkung, Stärke</translate>
 				<altpage>203</altpage>
 			</cyberware>
 			<cyberware>
 				<id>54b804b3-8a40-4a43-a1e7-41c27499e952</id>
 				<name>Cyberlimb Augmentation, Agility (2050)</name>
-				<translate>Cyberglied-Verstärung, Geschicklichkeit</translate>
+				<translate>Cyberglied-Verstärkung, Geschicklichkeit</translate>
 				<altpage>203</altpage>
 			</cyberware>
 			<cyberware>
@@ -14733,7 +14733,7 @@
 			<gear>
 				<id>d2d3bd03-88fa-408e-bed7-56367c957a84</id>
 				<name>Response Increase (2050)</name>
-				<translate>Reaktionsverstärung</translate>
+				<translate>Reaktionsverstärkung</translate>
 				<altpage>170</altpage>
 			</gear>
 			<gear>
