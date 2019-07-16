@@ -9551,4 +9551,24 @@
 			<text>Sind Sie sicher, dass Sie dieses Drogenrezept entfernen möchten?</text>
 		</string>
 	</strings>
+	<string>
+		<key>String_ApplicationInsights_OnlyLocal</key>
+		<text>nur lokal loggen</text>
+	</string>
+	<string>
+		<key>String_ApplicationInsights_OnlyMetric</key>
+		<text>nur Statistiken hochladen</text>
+	</string>
+	<string>
+		<key>String_ApplicationInsights_Crashes</key>
+		<text>Programm-Abstürze hochladen</text>
+	</string>
+	<string>
+		<key>String_ApplicationInsights_Yes</key>
+		<text>alle Fehler hochladen</text>
+	</string>
+	<string>
+		<key>String_ApplicationInsights_NotSet</key>
+		<text>Hä? (lass Chummer entscheiden)</text>
+	</string>
 </chummer>

@@ -192,7 +192,7 @@ namespace Chummer.Backend
                 byte[] info = new UTF8Encoding(true).GetBytes(dump.SerializeBase64());
                 File.WriteAllBytes(Path.Combine(Utils.GetStartupPath, "json.txt"), info);
 
-                if (GlobalOptions.UseLoggingApplicationInsights)
+                if (GlobalOptions.UseLoggingApplicationInsights >= UseAILogging.Crashes)
                 {
                     if (Program.TelemetryClient != null)
                     {
