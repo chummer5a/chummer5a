@@ -35825,6 +35825,12 @@
 				<translate>Sterilisieren</translate>
 				<altpage>132</altpage>
 			</spell>
+			<spell>
+				<id>4b214e1a-4800-4787-b5fe-55672b359dec</id>
+				<name>Convince</name>
+				<translate>Überzeugen</translate>
+				<altpage>132</altpage>
+			</spell>
 			<spell translated="True">
 				<id>96fdf1da-d4e7-460c-a172-3f7a7b56ac67</id>
 				<name>Detect Magic, Extended</name>

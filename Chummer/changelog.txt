@@ -33,6 +33,8 @@ Application Fixes:
 - Added the ability for qualities to be flagged as able to be purchased in a way that would make the character go into a karma debt.
 - Dates in the Karma and Nuyen tab will now always follow the format of the language in which the program is localized, rather than following the format of the language of the system in which the program is running.
 - Fixed an issue where the registered sprite limit would not take augmentations into account.
+- Added the ability for created Adept Power improvements to ignore power limits when selecting the affected power. Closes #3721.
+- Chummy will now use translations from other languages. Closes #3540.
 
 Data Changes:
 
@@ -43,12 +45,18 @@ Data Changes:
 - Personal Drone Rack is now a gear that can be added as a plugin to Micro-Hardpoints instead of being armor mods that take up capacity. Closes #3448.
 - The Hammerli Gemini now properly doubles all Barrel accessories and modifications and uses its special firing mode of effective SA with 2 bullets fired in Single Shot and 6 bullets fired in Short Burst. It also has an ammo capacity of 16(c) instead of 8(c), though this is because it is difficult to implement the 2x clip RAW says it uses. Ammo modification costs still need to be tracked manually, as do doubled costs of Spare Clips. Existing characters with a Hammerli Gemini need to re-add the firearm to their character to see its changes.
 - The Dracoform qualities can now be taken in a way that would make the character go into karma debt, and characters moving to Career mode with a Dracoform quality will have the quality's karma cost ignored for the purposes of checking whether they have enough karma left over from Create mode. Closes #3366.
+- Fixed a crash that would occur when selecting a skill as an optional power. Closes #3677.
+- Fixed missing Copy settings for some custom data entries that prevented them being copied into release folders. 
+- Added a customdata rule for the German variant prices for Rigger 5's drone turrets. Closes #3760
+- Added the Convince spell to German-exclusive Street Grimoire content, as the German edition of Street Grimoire contains it. Closes #3707.
 
 New Strings:
 
 - Tip_ImproveItemAtMaximum
 - String_Bullet
 - String_Bullets
+- Checkbox_CreateImprovementIgnoreLimits
+- Chummy_Intro
 
 Changed Strings:
 
