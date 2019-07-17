@@ -3025,5 +3025,67 @@
       <page>127</page>
     </action>
 	<!-- End Region -->
+	<!-- Region Rigger 5.0 -->
+	<action>
+      <id>820c536b-8461-44e2-9a12-c267d88b2b76</id>
+      <name>Break Target Lock</name>
+      <type>Simple</type>
+	  <test>
+		<dice>{INT} + {Electronic Warfare} v. {LOG} + {Target: Sensors}</dice>
+		<limit>{Icon: Data Processing}</limit>
+		<bonusstring>For every net hit, reduce the target's lock on you by one hit. Your RCC's Noise Reduction rating is added as a dice pool bonus for this action.</bonusstring>
+	  </test>
+      <source>R5</source>
+      <page>30</page>
+    </action>
+	<action>
+      <id>ecb1d3eb-4a3d-412f-b374-3bb7eb9c59df</id>
+      <name>Confuse Pilot</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{LOG} + {Electronic Warfare} v. {Target: Pilot} + {Target: {Icon: Firewall}}</dice>
+		<limit>{Icon: Data Processing}</limit>
+		<bonusstring>On success, target makes an immediate Simple Pilot * 2 test to figure out what it's going to do next with a threshold equal to half of your net hits. Your RCC's Noise Reduction rating is added as a dice pool bonus for this action.</bonusstring>
+	  </test>
+      <source>R5</source>
+      <page>30</page>
+    </action>
+	<action>
+      <id>8949e342-56af-49d6-a659-9e0fb39d43bd</id>
+      <name>Detect Target Lock</name>
+      <type>Free</type>
+	  <test>
+		<dice>{LOG} + {Computer} v. {Threshold: 2}</dice>
+		<limit>{Icon: Data Processing}</limit>
+		<bonusstring>Requires Owner marks on target. The device you are using must have wireless enabled. Your RCC's Noise Reduction rating is added as a dice pool bonus for this action.</bonusstring>
+	  </test>
+      <source>R5</source>
+      <page>30</page>
+    </action>
+	<action>
+      <id>0d5318e9-ed3d-4f11-99ba-6ff9c35bd79e</id>
+      <name>Suppress Noise</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{LOG} + {Electronic Warfare}</dice>
+		<limit>{Icon: Data Processing}</limit>
+		<bonusstring>Requires Owner marks on target. On success, reduce noise by hits on this test for one Combat Turn. Your RCC's Noise Reduction rating is added as a dice pool bonus for this action.</bonusstring>
+	  </test>
+      <source>R5</source>
+      <page>30</page>
+    </action>
+	<action>
+      <id>f8d43ba8-e5ca-4a13-97cd-68c1980cd7bf</id>
+      <name>Target Device</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{LOG} + {Electronic Warfare} v. {Action: WIL Firewall Defense}</dice>
+		<limit>{Icon: Data Processing}</limit>
+		<bonusstring>For the rest of the combat turn, any slaved devices targeting the target of this action receive a dice pool bonus equal to your net hits on this action. Your RCC's Noise Reduction rating is added as a dice pool bonus for this action.</bonusstring>
+	  </test>
+      <source>R5</source>
+      <page>30</page>
+    </action>
+	<!-- End Region -->
   </actions>
 </chummer>
