@@ -3087,5 +3087,31 @@
       <page>30</page>
     </action>
 	<!-- End Region -->
+	<!-- Region Data Trails -->
+	<action>
+      <id>2cc49ba8-e586-49f3-937d-b1359c623dd0</id>
+      <name>Garbage In/Garbage Out</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{LOG} + {Software} v. {Action: LOG Firewall Defense}</dice>
+		<limit>{Icon: Sleaze}</limit>
+		<bonusstring>Requires 3 marks on target icon. On success, reprogram a single input action to a single output action.</bonusstring>
+	  </test>
+      <source>DT</source>
+      <page>178</page>
+    </action>
+	<action>
+      <id>802381dd-7a15-49eb-bfbe-18fb20c26b64</id>
+      <name>Trackback</name>
+      <type>Extended</type>
+	  <test>
+		<dice>{INT} + {Computer} v. 10 + {Target: {Icon: Sleaze}}</dice>
+		<limit>{Icon: Data Processing}</limit>
+		<bonusstring>Requires Owner marks on target icon. 30 minute interval. On success if the target persona is running silent, the trail ends in the vicinity of the icon, letting you know that there are silent icons nearby.</bonusstring>
+	  </test>
+      <source>DT</source>
+      <page>179</page>
+    </action>
+	<!-- End Region -->
   </actions>
 </chummer>
