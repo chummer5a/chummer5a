@@ -56,6 +56,7 @@ Data Changes:
 - Added a customdata rule for the German variant prices for Rigger 5's drone turrets. Closes #3760
 - Added the Convince spell to German-exclusive Street Grimoire content, as the German edition of Street Grimoire contains it. Closes #3707.
 - Added various missing critters from sourcebooks and updated partially-incorrect mentor spirits from SOTA 2080, courtesy of Keeper M on Discord. 
+- Adjusted the Chaos mentor spirit to allow taking two levels of Improved Potential. This is done through adding a separate power that prompts for the limit to choose.
 
 New Strings:
 

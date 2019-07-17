@@ -304,6 +304,33 @@
         <physicallimit>1</physicallimit>
       </bonus>
     </power>
+    <!-- TODO: This is stupid and I hate it, but it's not like we're getting an errata any time soon.
+    Chaos allows choosing two levels of Improved Potential, but it can normally only have one. We ghetto this with a second power choice.-->
+    <power>
+      <id>81cc6ee1-7c10-4a4a-baa8-f02cad4542c6</id>
+      <name>Improved Potential (Chaos Mentor)</name>
+      <points>0.5</points>
+      <levels>False</levels>
+      <limit>1</limit>
+      <source>SR5</source>
+      <page>309</page>
+      <adeptway>0.25</adeptway>
+      <adeptwayrequires>
+        <required>
+          <oneof>
+            <quality>The Athlete's Way</quality>
+            <quality>The Spiritual Way</quality>
+            <quality>The Warrior's Way</quality>
+          </oneof>
+        </required>
+      </adeptwayrequires>
+      <bonus>
+        <selectlimit>
+          <val>1</val>
+        </selectlimit>
+      </bonus>
+      <hide />
+    </power>
     <power>
       <id>fea9e769-5f2c-4bae-9610-56c0825e145a</id>
       <name>Improved Reflexes</name>
@@ -538,11 +565,11 @@
         </required>
       </adeptwayrequires>
       <bonus>
+        <sociallimit>Rating</sociallimit>
         <specificskill>
           <name>Impersonation</name>
           <bonus>Rating</bonus>
         </specificskill>
-        <sociallimit>Rating</sociallimit>
       </bonus>
     </power>
     <power>
@@ -1674,17 +1701,17 @@
       <source>BLB</source>
       <page>160</page>
       <adeptway>0.5</adeptway>
-      <required>
-        <oneof>
-          <power>Facial Sculpt</power>
-        </oneof>
-      </required>
       <bonus>
         <specificskill>
           <name>Disguise</name>
           <bonus>2</bonus>
         </specificskill>
       </bonus>
+      <required>
+        <oneof>
+          <power>Facial Sculpt</power>
+        </oneof>
+      </required>
     </power>
     <!-- End Region -->
     <!-- Region Cutting Aces -->
