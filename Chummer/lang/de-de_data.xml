@@ -1615,12 +1615,6 @@
 				<altpage>70</altpage>
 			</mod>
 			<mod translated="True">
-				<id>a1c9f8ee-d58d-4583-8ff3-12517dbf76f5</id>
-				<name>Personal Drone Rack</name>
-				<translate>Tragbare Drohnenhalterung</translate>
-				<altpage>70</altpage>
-			</mod>
-			<mod translated="True">
 				<id>b7be75a4-72ff-49a2-8b7b-0bf36a9f40d8</id>
 				<name>Internal Air Tank (5 Minutes)</name>
 				<translate>Interner Lufttank (5 Minuten)</translate>
@@ -3283,6 +3277,36 @@
 			<category translate="Echos">Echoes</category>
 		</categories>
 		<powers>
+			<power translated="True">
+				<id>d57dd33b3-7fea-421e-bcf3-336d56ea08b5</id>
+				<name>Combat Skill</name>
+				<translate>Kampffertigkeit</translate>
+				<altpage>130</altpage>
+			</power>
+			<power translated="True">
+				<id>a3f11764-2569-48a1-8eb8-8cdae58b23e8</id>
+				<name>Physical Skill</name>
+				<translate>Körperliche Fertigkeit</translate>
+				<altpage>132</altpage>
+			</power>
+			<power translated="True">
+				<id>410c17d0-0490-4e67-b2ca-4ad5e2feb016</id>
+				<name>Social Skill</name>
+				<translate>Soziale Fertigkeit</translate>
+				<altpage>137</altpage>
+			</power>
+			<power translated="True">
+				<id>07229dc9-3b46-4843-a30a-7b7c4c144ea0</id>
+				<name>Technical Skill</name>
+				<translate>Technische Fertigkeit</translate>
+				<altpage>144</altpage>
+			</power>
+			<power translated="True">
+				<id>bb55305e-0c6f-47bd-a92f-ce85df478096</id>
+				<name>Vehicle Skill</name>
+				<translate>Fahrzeug-Fertigkeit</translate>
+				<altpage>147</altpage>
+			</power>
 			<power translated="True">
 				<id>d9e0cc36-3183-4fa6-b9a6-b7e62d7d72fc</id>
 				<name>Sense Link</name>
@@ -18886,6 +18910,12 @@
 				<translate>Enterhakenkanone</translate>
 				<altpage>454</altpage>
 			</gear>
+			<gear translated="True">
+				<id>a1c9f8ee-d58d-4583-8ff3-12517dbf76f5</id>
+				<name>Personal Drone Rack</name>
+				<translate>Tragbare Drohnenhalterung</translate>
+				<altpage>70</altpage>
+			</gear>
 		</gears>
 	</chummer>
 	<chummer file="lifestyles.xml">
@@ -22216,7 +22246,7 @@
 			</mentor>
 			<mentor>
 				<id>5593f724-7b72-4927-a8c8-2c73844cc1b1</id>
-				<name>Architekt (SOTA 2080)</name>
+				<name>Architect</name>
 				<translate>Architekt (SOTA 2080)</translate>
 				<altadvantage>Allgemein: +2 Würfel für Proben auf Führung</altadvantage>
 				<altdisadvantage>Ein Anhänger dieses Schutzgeistes behält gerne die Initiative. Immer dann, wenn die Umstände eines Runs ihn in die Defensive drängen, muss ihm eine Probe auf Willenskraft + Intuition (3) gelingen. Misslingt die Probe, erhält der Anhänger von Architekt einen Würfelpoolmalus von -2 auf seine Proben, bis er das Heft wieder in der Hand hält.</altdisadvantage>
@@ -22234,7 +22264,7 @@
 			</mentor>
 			<mentor>
 				<id>db42c229-3403-4947-8626-3f70f87c8a3c</id>
-				<name>Deutscher Schäferhund</name>
+				<name>German Shepherd</name>
 				<translate>Deutscher Schäferhund</translate>
 				<altadvantage>Allgemein: +2 Würfel für Proben auf Führung</altadvantage>
 				<altdisadvantage>Bisweilen bricht die Ungeduld bei Schäferhund durch. Wird die Geduld eines Anhängers von Schäferhund auf die Probe gestellt (nach Spielleiterentscheid), muss ihm eine Willenskraft + Charisma (3) gelingen, um nicht scharf zu reagieren.</altdisadvantage>
@@ -22252,7 +22282,7 @@
 			</mentor>
 			<mentor>
 				<id>bdb4fa0b-3c9d-4164-b2d6-76b7c04c43d8</id>
-				<name>Dobermann</name>
+				<name>Doberman</name>
 				<translate>Dobermann</translate>
 				<altadvantage>Allgemein: +1 Würfel für Proben auf Wahrnehmung und eine Waffenfertigkeit nach Wahl</altadvantage>
 				<altdisadvantage>Dobermann ist sehr selbstbewusst. Um sich anderen unterzuordnen bzw. fremden Plänen zu folgen, muss einem Anhänger von Dobermann eine Probe auf Willenskraft + Charisma (3) gelingen.</altdisadvantage>
@@ -22328,7 +22358,7 @@
 			</mentor>
 			<mentor>
 				<id>5c465bf3-665f-41f2-865e-41abb879ee1f</id>
-				<name>Dachs</name>
+				<name>Badger</name>
 				<translate>Dachs</translate>
 				<altadvantage>Allgemein: Vorteil Aufmerksamkeit Stufe 2</altadvantage>
 				<altdisadvantage>Dachs beschützt sein Revier unerbittlich. Dringen Feinde in das Gebiet ein, das ein Anhänger von Dachs beschützt (zum Beispiel ein Gebäude), oder entwenden einen Gegenstand, der unter dem Schutz eines Anhängers von Dachs steht, muss ihm eine Probe auf Willenskraft + Charisma (3) gelingen, um nicht sofort mit allen Mitteln gegen die Eindringlinge bzw. Diebe vorzugehen.</altdisadvantage>
@@ -22346,7 +22376,7 @@
 			</mentor>
 			<mentor>
 				<id>b01976a5-2343-4308-846e-da5fb12328a8</id>
-				<name>Mystischer Wächter</name>
+				<name>Mystic Guardian</name>
 				<translate>Mystischer Wächter</translate>
 				<altadvantage>Allgemein: +2 Würfel für Proben auf eine Nahkampffertigkeit</altadvantage>
 				<altdisadvantage>Was macht ein Mystischer Wächter, wenn es nichts zu bewachen gibt? Solange ein Anhänger des Mystischen Wächters keinen konkreten Auftrag, Auftraggeber oder Schutzbefohlenen hat (beziehungsweise seinen selbstauferlegten Pflichten nicht nachkommt), erleidet er einen Würfelpoolmalus von -2 auf alle Proben.</altdisadvantage>
@@ -22380,7 +22410,7 @@
 			</mentor>
 			<mentor>
 				<id>296dc353-df11-4c94-a101-04bc501edf5e</id>
-				<name>Rotkäppchen</name>
+				<name>Little Red Riding Hood</name>
 				<translate>Rotkäppchen</translate>
 				<altadvantage>Allgemein: + 2 Würfel für Proben auf Überreden</altadvantage>
 				<altdisadvantage>In ihrer ungezügelten Neugier übersehen Anhänger von Rotkäppchen manchmal das Offensichtliche und Wichtige. Sie erhalten einen Würfelpoolmalus von -1 bei Wahrnehmungsproben in unbekannten Gebieten.</altdisadvantage>
@@ -22398,7 +22428,7 @@
 			</mentor>
 			<mentor>
 				<id>bea9796a-c5d3-4388-97ec-14969db470fe</id>
-				<name>Schatzjäger</name>
+				<name>Treasure Hunter</name>
 				<translate>Schatzjäger</translate>
 				<altadvantage>Allgemein: +1 Würfel für Proben auf Navigation und Schlosser</altadvantage>
 				<altdisadvantage>Ein Anhänger dieses Schutzgeistes ist so sehr auf das Objekt seines Strebens fixiert, dass er Aufgaben, die nichts damit zu tun haben, lustlos und halbherzig angeht: Nach dem Briefing mit Schmidt muss ihm eine Probe auf Willenskraft + Willenskraft (3) gelingen, damit er bei der Erledigung eines Runs, der nichts mit dem Objekt seines Strebens zu tun hat, keinen Würfelpoolmalus von -1 auf alle Proben erleidet.</altdisadvantage>
@@ -22416,7 +22446,7 @@
 			</mentor>
 			<mentor>
 				<id>f2cc5e2b-6538-4271-9f7f-5434076f9a6b</id>
-				<name>Waffenbruder</name>
+				<name>Brother at Arms</name>
 				<translate>Waffenbruder</translate>
 				<altadvantage>Allgemein: +1 Würfel für Proben auf Gebräuche und Unterricht</altadvantage>
 				<altdisadvantage>Anhänger von Waffenbruder erwählen in jedem Run drei Personen mit direkter Plot-Relevanz – das können Spielercharaktere sein, aber auch wichtige NSC – als diejenigen Leute, denen während der Mission ihre Loyalität gilt. Ihnen muss eine Probe auf Willenskraft + Intuition (3) gelingen, bevor sie diesen Personenkreis übervorteilen, anlügen oder gar im Stich lassen können. Selbst wenn sie sich dazu überwinden können, erleiden sie einen Würfelpoolmalus von -2 auf alle Proben, bis sie ihre Verfehlung wieder ausgebügelt haben.</altdisadvantage>
@@ -45461,6 +45491,18 @@
 				<translate>Spezialmodifikation: Verbesserte Rückstoßkompensation</translate>
 				<altpage>167</altpage>
 			</accessory>
+			<accessory>
+				<id>91d1b0c0-3146-4435-b2ef-322e80dbbb59</id>
+				<name>Breeching Teeth</name>
+				<translate>Sturmzähne</translate>
+				<altpage>138</altpage>
+			</accessory>
+			<accessory>
+				<id>2eea1d98-8c6f-4f59-a8e8-e39b17c60869</id>
+				<name>Modified Pump Handle</name>
+				<translate>Modifizierter Repetiergriff</translate>
+				<altpage>138</altpage>
+			</accessory>
 		</accessories>
 	</chummer>
 	<chummer file="complexforms.xml">
@@ -45858,6 +45900,12 @@
 				<name>Cyberware Essence Cost</name>
 				<translate>Cyberware Essenzkosten</translate>
 				<altpage>Passt die Essenzkosten von Cyberware um den eingegebenen Prozentwert an. Alle Essenzkosten für Cyberware betragen nun x % des ursprünglichen Wertes. Werte unter 100 reduzieren die Essenzkosten. Werte über 100 erhöhen die Essenzkosten.</altpage>
+			</improvement>
+			<improvement>
+				<id>genetechessmultiplier</id>
+				<name>Genetech Essence Cost</name>
+				<translate>Gentech Essenzkosten</translate>
+				<altpage>Passt die Essenzkosten von Gentech um den eingegebenen Prozentwert an. Alle Essenzkosten für Gentech betragen nun x % des ursprünglichen Wertes. Werte unter 100 reduzieren die Essenzkosten. Werte über 100 erhöhen die Essenzkosten.</altpage>
 			</improvement>
 			<improvement>
 				<id>weaponcategorydv</id>

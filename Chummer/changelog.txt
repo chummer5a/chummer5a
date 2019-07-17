@@ -3,6 +3,7 @@ Future Build 207-208
 Application Changes:
 
 - Added a genetechessmultiplier improvement type that allows for the modification of genetech essence costs in a similar manner to the biowareessmultiplier improvement.
+- Added an exclusion to gameplayoptions.xml that allows for the customisation of the limbs that are permitted for Redliner and Cyber Singularity Seeker. Closes #1168
 
 Application Fixes:
 
