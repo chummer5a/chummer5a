@@ -36,12 +36,27 @@ namespace Chummer
                 this.Next.Process(item);
                 return;
             }
-            if (GlobalOptions.UseLoggingApplicationInsights == UseAILogging.OnlyMetric)
+            if (GlobalOptions.UseLoggingApplicationInsights >= UseAILogging.OnlyMetric)
             {
-                if (item is MetricTelemetry)
+                if ((item is MetricTelemetry)
+                    || (item is PageViewTelemetry)
+                    || (item is PageViewPerformanceTelemetry))
                 {
                     this.Next.Process(item);
                     return;
+                }
+            }
+            if (GlobalOptions.UseLoggingApplicationInsights == UseAILogging.Crashes)
+            {
+                if (item is ExceptionTelemetry exceptionTelemetry)
+                {
+                    
+                    if ((exceptionTelemetry.Exception.Data.Contains("IsCrash"))                
+                        || (exceptionTelemetry.Properties.ContainsKey("IsCrash") == true))
+                    {
+                        this.Next.Process(item);
+                        return;
+                    }
                 }
             }
             return;

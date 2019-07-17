@@ -483,16 +483,16 @@ namespace ChummerHub.Client.Model
                     {
                         try
                         {
-                            foreach (var sinner in res.Body.MySINners)
+                            var jsonResultString = res.Response.Content.ReadAsStringAsync().Result;
+                            try
                             {
-                                if (sinner?.Id == null || sinner?.Id == Guid.Empty)
-                                {
-                                    string msg = "ChummerHub did not return a valid Id for sinner " +
-                                                 this.MyCharacter.Name + ".";
-                                    Log.Error(msg);
-                                    throw new ArgumentException(msg);
-                                }
-                                this.MySINnerFile.Id = sinner?.Id;
+                                ResultSinnerPostSIN objIds = Newtonsoft.Json.JsonConvert.DeserializeObject<ResultSinnerPostSIN>(jsonResultString);
+                                this.MySINnerFile.Id = objIds.MySINners.FirstOrDefault().Id;
+                            }
+                            catch (Exception ex)
+                            {
+                                Log.Error(ex);
+                                throw;
                             }
                             Log.Debug("Character " + this.MyCharacter.Alias + " posted with ID " + this.MySINnerFile.Id);
                             await ChummerHub.Client.Backend.Utils.UploadChummerFileAsync(this).ContinueWith((uploadtask) =>

@@ -174,9 +174,13 @@ namespace ChummerHub.Client.UI
             return tcs.Task;
         }
 
+        private bool IsLoading = false;
+
         private async Task InitializeMe()
         {
-            
+            if (IsLoading)
+                return;
+            IsLoading = true;
             string tip = "Milestone builds always user sinners." + Environment.NewLine + "Nightly builds always user sinners-beta.";
             cbSINnerUrl.SetToolTip(tip);
             cbSINnerUrl.SelectedValueChanged -= CbSINnerUrl_SelectedValueChanged;
@@ -186,6 +190,7 @@ namespace ChummerHub.Client.UI
                 Properties.Settings.Default.TempDownloadPath = Path.GetTempPath();
                 Properties.Settings.Default.Save();
             }
+            tbTempDownloadPath.Text = Properties.Settings.Default.TempDownloadPath;
             tbTempDownloadPath.SetToolTip("Where should chummer download the temporary files from the WebService?");
             var client = StaticUtils.GetClient(); 
             if (client == null)
@@ -258,11 +263,13 @@ namespace ChummerHub.Client.UI
         public async void UpdateDisplay()
         {
             this.tlpOptions.Enabled = Properties.Settings.Default.UserModeRegistered;
-            var mail = await GetUserEmail(); PluginHandler.MainForm.DoThreadSafe(new Action(() =>
+            var mail = await GetUserEmail();
+            this.DoThreadSafe(new Action(() =>
             {
                 try
                 {
-                    this.tbTempDownloadPath.Text = Properties.Settings.Default.TempDownloadPath;
+                    ChummerHub.Client.Properties.Settings.Default.Reload();
+                    this.tbTempDownloadPath.Text = ChummerHub.Client.Properties.Settings.Default.TempDownloadPath;
 
                     if (!String.IsNullOrEmpty(mail))
                     {
