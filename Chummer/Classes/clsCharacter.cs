@@ -13699,12 +13699,20 @@ if (!Utils.IsUnitTest){
                 _intCachedRedlinerBonus = 0;
                 return;
             }
+            XmlNode objXmlGameplayOption = XmlManager.Load("gameplayoptions.xml")
+                .SelectSingleNode($"/chummer/gameplayoptions/gameplayoption[name = \"{GameplayOption}\"]");
+            
+            List<string> excludedLimbs = null;
+            foreach (XmlNode n in objXmlGameplayOption.SelectNodes("redlinerexclusion/limb"))
+            {
+                excludedLimbs.Add(n.Value);
+            }
 
             //Calculate bonus from cyberlimbs
             int intCount = 0;
             foreach(Cyberware objCyberware in Cyberware)
             {
-                intCount += objCyberware.GetCyberlimbCount("skull", "torso");
+                intCount += objCyberware.GetCyberlimbCount(excludedLimbs);
             }
 
             intCount = Math.Min(intCount / 2, 2);
