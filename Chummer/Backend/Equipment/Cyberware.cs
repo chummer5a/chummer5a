@@ -1607,11 +1607,10 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// How many cyberlimbs does this cyberware have?
         /// </summary>
-        public int GetCyberlimbCount(params string[] lstExcludeLimbs)
+        public int GetCyberlimbCount(List<string> lstExcludeLimbs)
         {
             int intCount = 0;
-
-            if (!string.IsNullOrEmpty(LimbSlot) && !lstExcludeLimbs.Contains(LimbSlot))
+            if (!string.IsNullOrEmpty(LimbSlot) && lstExcludeLimbs.All(l => l != LimbSlot))
             {
                 intCount += LimbSlotCount;
             }
