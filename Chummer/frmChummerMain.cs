@@ -170,11 +170,7 @@ namespace Chummer
                         _mascotChummy.Show(this);
                     }
 
-                    // Set the Tag for each ToolStrip item so it can be translated.
-                    foreach (ToolStripMenuItem objItem in menuStrip.Items.OfType<ToolStripMenuItem>())
-                    {
-                        LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Language);
-                    }
+                    
 
                     frmLoading frmLoadingForm = new frmLoading {CharacterFile = Text};
                     frmLoadingForm.Reset(3);
@@ -301,6 +297,12 @@ namespace Chummer
                     }
 
                     PluginLoader.CallPlugins(toolsMenu, op_frmChummerMain);
+
+                    // Set the Tag for each ToolStrip item so it can be translated.
+                    foreach (ToolStripMenuItem objItem in menuStrip.Items.OfType<ToolStripMenuItem>())
+                    {
+                        LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Language);
+                    }
                     frmLoadingForm.Close();
                 }
                 catch (Exception e)

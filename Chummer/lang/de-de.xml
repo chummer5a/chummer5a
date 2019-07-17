@@ -9569,6 +9569,18 @@
 	</string>
 	<string>
 		<key>String_ApplicationInsights_NotSet</key>
-		<text>Hä? (lass Chummer entscheiden)</text>
+		<text>lasse Chummer entscheiden</text>
+	</string>
+	<string>
+		<key>Menu_Tools_SINners</key>
+		<text>SINner Gruppen</text>
+	</string>
+	<string>
+		<key>Menu_Tools_SINnersArchetypes</key>
+		<text>Archetypen</text>
+	</string>
+	<string>
+		<key>Menu_Tools_SINnerSearch</key>
+		<text>SINner suchen</text>
 	</string>
 </chummer>
