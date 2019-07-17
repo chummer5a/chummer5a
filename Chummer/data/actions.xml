@@ -3183,7 +3183,7 @@
 	  <test>
 		<dice>{INT} + {Computer}</dice>
 		<limit>{Icon: Data Processing}</limit>
-		<bonusstring>On success, give a defense test bonus equal to hits to the target icon's Matrix defense test.</bonusstring>
+		<bonusstring>On success, increase the number of hits on the target icon's Matrix defense test by net hits from this action.</bonusstring>
 	  </test>
       <source>KC</source>
       <page>39</page>
