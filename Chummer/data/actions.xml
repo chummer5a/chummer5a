@@ -218,7 +218,7 @@
       <type>Free</type>
 	  <test>
 		<dice>None</dice>
-		<bonusstring>Activate, deactivate, or switch the mode of any device to which you have a direct neural interface connection.</bonusstring>
+		<bonusstring>Activate, deactivate, or switch the mode of any device to which the character has a direct neural interface connection.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>163</page>
@@ -240,7 +240,7 @@
       <type>Free</type>
 	  <test>
 		<dice>None</dice>
-		<bonusstring>Drop one object held in your hand(s).</bonusstring>
+		<bonusstring>Drop one object held in the character's hand(s).</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>163</page>
@@ -284,7 +284,7 @@
       <type>Free</type>
 	  <test>
 		<dice>None</dice>
-		<bonusstring>Attack multiple targets in a single action, splitting your dicepool. Must be combined with {Action: Fire Single-Shot}, {Action: Fire Semi-Auto}, {Action: Fire Burst Fire}, {Action: Fire Full-Auto Simple}, {Action: Fire Semi-Auto Burst}, {Action: Fire Long Burst}, {Action: Fire Full-Auto Complex}, {Action: Throw Weapon (Non-Grenade)}, {Action: Throw Weapon (Grenade)}, {Action: Melee Attack}, {Action: Reckless Spellcasting}, or {Action: Cast Spell}.</bonusstring>
+		<bonusstring>Attack multiple targets in a single action, splitting the character's dicepool. Must be combined with {Action: Fire Single-Shot}, {Action: Fire Semi-Auto}, {Action: Fire Burst Fire}, {Action: Fire Full-Auto Simple}, {Action: Fire Semi-Auto Burst}, {Action: Fire Long Burst}, {Action: Fire Full-Auto Complex}, {Action: Throw Weapon (Non-Grenade)}, {Action: Throw Weapon (Grenade)}, {Action: Melee Attack}, {Action: Reckless Spellcasting}, or {Action: Cast Spell}.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>164</page>
@@ -317,7 +317,7 @@
       <type>Simple</type>
 	  <test>
 		<dice>None</dice>
-		<bonusstring>Activate a focus you are carrying.</bonusstring>
+		<bonusstring>Activate a focus the character is carrying.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>164</page>
@@ -361,7 +361,7 @@
       <type>Simple</type>
 	  <test>
 		<dice>None</dice>
-		<bonusstring>Issue a command to a single spirit or group of spirits under your control.</bonusstring>
+		<bonusstring>Issue a command to a single spirit or group of spirits under the character's control.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>165</page>
@@ -372,7 +372,7 @@
       <type>Simple</type>
 	  <test>
 		<dice>None</dice>
-		<bonusstring>Free a spirit from under your control. The spirit is not immediately sent back, but instead is freed to do as it chooses.</bonusstring>
+		<bonusstring>Free a spirit from under the character's control. The spirit is not immediately sent back, but instead is freed to do as it chooses.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>165</page>
@@ -488,7 +488,7 @@
 	  <test>
 		<dice>{REA} + {Weapon: Skill} v. {Threshold: {Weapon: Quick Draw Threshold}}</dice>
 		<limit>{Physical}</limit>
-		<bonusstring>Weapon must be properly holstered. On success, the weapon is readied and immediately make a Simple Action attack. On fail, the weapon is readied. On glitch, the weapon is not readied and your action phase ends. On a critical glitch, bad things happen.</bonusstring>
+		<bonusstring>Weapon must be properly holstered. On success, the weapon is readied and immediately make a Simple Action attack. On fail, the weapon is readied. On glitch, the weapon is not readied and the character's action phase ends. On a critical glitch, bad things happen.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>165</page>
@@ -747,7 +747,7 @@
       <type>Simple</type>
 	  <test>
 		<dice>None</dice>
-		<bonusstring>Add +1 dice or +1 Accuracy to your next attack test. If using a smartgun, apply both bonuses. If using Vision Magnification, apply its effects instead. Bonuses are cumulative for up to {{{WIL} / 2} + {Improvement Value: TakeAimCount}} times. All bonuses are lost if any other action is taken, including a Free action.</bonusstring>
+		<bonusstring>Add +1 dice or +1 Accuracy to the character's next attack test. If using a smartgun, apply both bonuses. If using Vision Magnification, apply its effects instead. Bonuses are cumulative for up to {{{WIL} / 2} + {Improvement Value: TakeAimCount}} times. All bonuses are lost if any other action is taken, including a Free action.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>166</page>
@@ -1208,7 +1208,7 @@
 	  <initiativecost>5</initiativecost>
 	  <test>
 		<dice>None</dice>
-		<bonusstring>Drop prone where you are, usually to avoid {Action: Suppressive Fire}.</bonusstring>
+		<bonusstring>Drop prone where the character is, usually to avoid {Action: Suppressive Fire}.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>168</page>
@@ -1220,7 +1220,7 @@
 	  <initiativecost>5</initiativecost>
 	  <test>
 		<dice>None</dice>
-		<bonusstring>Intercept a target attempting to move past you within {1 + {Weapon: Reach}} meters and perform {Action: Melee Attack} against them.</bonusstring>
+		<bonusstring>Intercept a target attempting to move past the character within {1 + {Weapon: Reach}} meters and perform {Action: Melee Attack} against them.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>168</page>
@@ -1274,7 +1274,7 @@
 	  <test>
 		<dice>{AGI} + {Gymnastics} v. {Threshold: 1}</dice>
 		<limit>{Physical}</limit>
-		<bonusstring>On success, can move past one character per net hit; they cannot use {Action: Intercept} to stop you unless it is {Action: Shadow Block v. Evade}.</bonusstring>
+		<bonusstring>On success, can move past one character per net hit; they cannot use {Action: Intercept} to stop the character unless it is {Action: Shadow Block v. Evade}.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>194</page>
@@ -1521,7 +1521,7 @@
 	  <test>
 		<dice>{LOG} + {Electronic Warfare} v. 6</dice>
 		<limit>{Icon: Sleaze}</limit>
-		<bonusstring>On success, you know your OS. OS from opposed hits added after this.</bonusstring>
+		<bonusstring>On success, the character knows their OS. OS from opposed hits added after this.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>238</page>
@@ -1533,7 +1533,7 @@
 	  <test>
 		<dice>Variable</dice>
 		<limit>Variable</limit>
-		<bonusstring>Requires 1 mark on target device. If there is no eligible test, it is {{INT} + {Electronic Warfare}} [{Icon: Sleaze}] v. {Target: {Action: INT Firewall Defense}}. On success, you perform a Free Action with the device.</bonusstring>
+		<bonusstring>Requires 1 mark on target device. If there is no eligible test, it is {{INT} + {Electronic Warfare}} [{Icon: Sleaze}] v. {Target: {Action: INT Firewall Defense}}. On success, the character performs a Free Action with the device.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>238</page>
@@ -1545,7 +1545,7 @@
 	  <test>
 		<dice>Variable</dice>
 		<limit>Variable</limit>
-		<bonusstring>Requires 2 marks on target device. If there is no eligible test, it is {{INT} + {Electronic Warfare}} [{Icon: Sleaze}] v. {Target: {Action: INT Firewall Defense}}. On success, you perform a Simple Action with the device.</bonusstring>
+		<bonusstring>Requires 2 marks on target device. If there is no eligible test, it is {{INT} + {Electronic Warfare}} [{Icon: Sleaze}] v. {Target: {Action: INT Firewall Defense}}. On success, the character performs a Simple Action with the device.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>238</page>
@@ -1557,7 +1557,7 @@
 	  <test>
 		<dice>Variable</dice>
 		<limit>Variable</limit>
-		<bonusstring>Requires 3 marks on target device. If there is no eligible test, it is {{INT} + {Electronic Warfare}} [{Icon: Sleaze}] v. {Target: {Action: INT Firewall Defense}}. On success, you perform a Complex Action with the device.</bonusstring>
+		<bonusstring>Requires 3 marks on target device. If there is no eligible test, it is {{INT} + {Electronic Warfare}} [{Icon: Sleaze}] v. {Target: {Action: INT Firewall Defense}}. On success, the character performs a Complex Action with the device.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>238</page>
@@ -1618,7 +1618,7 @@
 	  <test>
 		<dice>{LOG} + {Computer} v. {Action: INT Firewall Defense}</dice>
 		<limit>{Icon: Data Processing}</limit>
-		<bonusstring>Requires 1 mark on target file. On success, you can edit the target file, though any data bombs on it will detonate. You cannot edit files that are protected. You may use this test to protect a file as well, in which case hits become the file's protection rating.</bonusstring>
+		<bonusstring>Requires 1 mark on target file. On success, the character can edit the target file, though any data bombs on it will detonate. The character cannot edit files that are protected. The character may use this test to protect a file as well, in which case hits become the file's protection rating.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>239</page>
@@ -1630,7 +1630,7 @@
 	  <test>
 		<dice>None</dice>
 		<limit>{Icon: Data Processing}</limit>
-		<bonusstring>You enter or exit the target host. When you leave a host, you return to the grid from which you entered.</bonusstring>
+		<bonusstring>The character enters or exits the target host. When the character leaves a host, they return to the grid from which they entered.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>239</page>
@@ -1642,7 +1642,7 @@
 	  <test>
 		<dice>{LOG} + {Computer} v. {Action: WIL Firewall Defense}</dice>
 		<limit>{Icon: Attack}</limit>
-		<bonusstring>Requires 3 marks on target icon. On success, you remove one mark of a chosen persona from the target. You do not need marks on the owner of the mark that you remove.</bonusstring>
+		<bonusstring>Requires 3 marks on target icon. On success, the character removes one mark of a chosen persona from the target. The character does not need marks on the owner of the mark that they remove.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>239</page>
@@ -1654,7 +1654,7 @@
 	  <test>
 		<dice>{LOG} + {Computer} - 4 v. {Action: WIL Firewall Defense}</dice>
 		<limit>{Icon: Attack}</limit>
-		<bonusstring>Requires 3 marks on target icon. On success, you remove two marks of a chosen persona from the target. You do not need marks on the owner of the mark that you remove.</bonusstring>
+		<bonusstring>Requires 3 marks on target icon. On success, the character removes two marks of a chosen persona from the target. The character does not need marks on the owner of the mark that they remove.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>239</page>
@@ -1666,7 +1666,7 @@
 	  <test>
 		<dice>{LOG} + {Computer} - 10 v. {Action: WIL Firewall Defense}</dice>
 		<limit>{Icon: Attack}</limit>
-		<bonusstring>Requires 3 marks on target icon. On success, you remove three marks of a chosen persona from the target. You do not need marks on the owner of the mark that you remove.</bonusstring>
+		<bonusstring>Requires 3 marks on target icon. On success, the character removes three marks of a chosen persona from the target. The character does not need marks on the owner of the mark that they remove.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>239</page>
@@ -1762,7 +1762,7 @@
 	  <test>
 		<dice>None</dice>
 		<limit>{Icon: Data Processing}</limit>
-		<bonusstring>You hop to the target grid. If you do not have access to the target grid through your lifestyle, you must gain 1 mark on it to perform this action.</bonusstring>
+		<bonusstring>The character hops to the target grid. If the character does not have access to the target grid through their lifestyle, they must gain 1 mark on it to perform this action.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>240</page>
@@ -1810,7 +1810,7 @@
 	  <test>
 		<dice>{INT} + {Electronic Warfare} v. {Action: INT Data Processing Defense}</dice>
 		<limit>{Icon: Sleaze}</limit>
-		<bonusstring>On success, if the target persona does not have a mark on you, it is no longer spotting you.</bonusstring>
+		<bonusstring>On success, if the target persona does not have a mark on the character, it is no longer spotting them.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>240</page>
@@ -1822,7 +1822,7 @@
 	  <test>
 		<dice>None</dice>
 		<limit>{Icon: Data Processing}</limit>
-		<bonusstring>Requires Owner marks on the target icon. Choose a number of marks between 1 and 3 and send an invitation to an invitee persona. The invitee persona may gain the chosen amount of marks on the target icon with a single Free Action. You may rescind the invitation before the invitee gains the marks, but not after.</bonusstring>
+		<bonusstring>Requires Owner marks on the target icon. Choose a number of marks between 1 and 3 and send an invitation to an invitee persona. The invitee persona may gain the chosen amount of marks on the target icon with a single Free Action. The character may rescind the invitation before the invitee gains the marks, but not after.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>240</page>
@@ -1834,7 +1834,7 @@
 	  <test>
 		<dice>{WIL} + {Hardware} v. {Action: LOG Attack Defense}</dice>
 		<limit>{Icon: Firewall}</limit>
-		<bonusstring>Can only target your own persona. Defense test only applies if you are link-locked, and if you are link-locked by multiple personas, each one rolls a defense test. On success, your persona and its device are instantly rebooted, and if you are in VR, you suffer Dumpshock.</bonusstring>
+		<bonusstring>Can only target the character's own persona. Defense test only applies if the character is link-locked, and if they are link-locked by multiple personas, each one rolls a defense test. On success, the character's persona and its device are instantly rebooted, and if the character is in VR, they suffer Dumpshock.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>240</page>
@@ -1858,7 +1858,7 @@
 	  <test>
 		<dice>{LOG} + {Electronic Warfare} v. {Action: WIL Firewall Defense}</dice>
 		<limit>{Icon: Data Processing}</limit>
-		<bonusstring>Requires 3 marks on the target device. Requires VR and a Control Rig or equivalent. Requires target device to have rigger adaptation and to not currently be jumped into by someone else. No test is needed if you have Owner marks on the target device or the target device's onwer has given you permission. On success, jump into target device.</bonusstring>
+		<bonusstring>Requires 3 marks on the target device. Requires VR and a Control Rig or equivalent. Requires target device to have rigger adaptation and to not currently be jumped into by someone else. No test is needed if the character has Owner marks on the target device or the target device's owner has given the character permission. On success, jump into target device.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>241</page>
@@ -1870,7 +1870,7 @@
 	  <test>
 		<dice>{INT} + {Computer} v. {Action: LOG Sleaze Defense}</dice>
 		<limit>{Icon: Data Processing}</limit>
-		<bonusstring>On success, spot target icon and gain one piece of information about target icon per net hit (see SR5 235). Target only defends if it is running silent. No test is needed to spot icons of devices within 100m that are not running silent. This test can be used to determine if there are running silent icons nearby. If you do not know a specific feature of a running silent icon, you must randomly select a running silent icon in range to spot (remember, there are literally quadrillions of running silent icons on grids that are always in range).</bonusstring>
+		<bonusstring>On success, spot target icon and gain one piece of information about target icon per net hit (see SR5 235). Target only defends if it is running silent. No test is needed to spot icons of devices within 100m that are not running silent. This test can be used to determine if there are running silent icons nearby. If ythe character does not know a specific feature of a running silent icon, they must randomly select a running silent icon in range to spot (remember, there are literally quadrillions of running silent icons on grids that are always in range).</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>241</page>
@@ -1906,7 +1906,7 @@
 	  <test>
 		<dice>None</dice>
 		<limit>{Icon: Data Processing}</limit>
-		<bonusstring>Send a text or audio message the length of a short sentence, an image, or a file to a target persona whose commcode you have. If you have a direct neural interface, you can send longer and more complicated messages (about a paragraph's worth), even in AR. You can also use this action to open a live ffed to one or more recipients using any digital devices you have.</bonusstring>
+		<bonusstring>Send a text or audio message the length of a short sentence, an image, or a file to a target persona whose commcode the character has. If the character has a direct neural interface, they can send longer and more complicated messages (about a paragraph's worth), even in AR. The character can also use this action to open a live feed to one or more recipients using any digital devices they have.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>242</page>
@@ -1930,7 +1930,7 @@
 	  <test>
 		<dice>{INT} + {Electronic Warfare} v. {Action: LOG Firewall Defense}</dice>
 		<limit>{Icon: Sleaze}</limit>
-		<bonusstring>Requires 1 mark on target icon. On success, intercept all Matrix traffic sent to and from the target as long as you have a mark on the target. You can listen to, view, and/or read this data live and/or save it for later playback/viewing on a device.</bonusstring>
+		<bonusstring>Requires 1 mark on target icon. On success, intercept all Matrix traffic sent to and from the target as long as the character has a mark on the target. The character can listen to, view, and/or read this data live and/or save it for later playback/viewing on a device.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>242</page>
@@ -1942,7 +1942,7 @@
 	  <test>
 		<dice>{INT} + {Hacking} v. {Action: LOG Firewall Defense}</dice>
 		<limit>{Icon: Sleaze}</limit>
-		<bonusstring>Requires 1 mark on the persona of the owner of the target device or agent. On success, the target device or agent believes that a Matrix action command you sent to it is legitimately from its owner.</bonusstring>
+		<bonusstring>Requires 1 mark on the persona of the owner of the target device or agent. On success, the target device or agent believes that a Matrix action command the character sent to it is legitimately from its owner.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>242</page>
@@ -1954,7 +1954,7 @@
 	  <test>
 		<dice>None</dice>
 		<limit>{Icon: Data Processing}</limit>
-		<bonusstring>Requires that your persona not be link-locked. If you are in VR, you switch your persona to AR. If you are in AR, you switch your persona to VR. If you switch from VR to AR, you immediately lose the effect of any bonus initiative dice.</bonusstring>
+		<bonusstring>Requires that the character's persona not be link-locked. If the character is in VR, they switch their persona to AR. If they are in AR, they switch their persona to VR. If the character switches from VR to AR, they immediately lose the effect of any bonus initiative dice.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>243</page>
@@ -1966,7 +1966,7 @@
 	  <test>
 		<dice>{INT} + {Computer} v. {Action: WIL Sleaze Defense}</dice>
 		<limit>{Icon: Data Processing}</limit>
-		<bonusstring>Requires 2 marks on the target device or persona. On success, obtain the precise physical location of the target device or the device that is running the target persona. The target's physical location is known for as long as you have at least 1 mark on the target.</bonusstring>
+		<bonusstring>Requires 2 marks on the target device or persona. On success, obtain the precise physical location of the target device or the device that is running the target persona. The target's physical location is known for as long as the character has at least 1 mark on the target.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>243</page>
@@ -2149,7 +2149,7 @@
       <type>Simple</type>
 	  <test>
 		<dice>None</dice>
-		<bonusstring>Call a registered sprite that is waiting in the Resonance, who will appear at the start of the next combat turn. The action can also be used to send a sprite of yours back to the Resonance, releasing it from any tasks it still owes.</bonusstring>
+		<bonusstring>Call a registered sprite that is waiting in the Resonance, who will appear at the start of the next combat turn. The action can also be used to send a sprite of the characters back to the Resonance, releasing it from any tasks it still owes.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>250</page>
@@ -2160,7 +2160,7 @@
       <type>Simple</type>
 	  <test>
 		<dice>None</dice>
-		<bonusstring>Command a sprite to do something for you, using up a task.</bonusstring>
+		<bonusstring>Command a sprite to do something for the character, using up a task.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>250</page>
@@ -2358,7 +2358,7 @@
 	  <test>
 		<dice>{MAG} + {CHA} v. 2 * {Spell: Force}</dice>
 		<limit>{Astral}</limit>
-		<bonusstring>On success, pass through the barrier, and you may bring one magically-active entity with you per net hit.</bonusstring>
+		<bonusstring>On success, pass through the barrier, and the character may bring one magically-active entity with them per net hit.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>312</page>
@@ -3033,7 +3033,7 @@
 	  <test>
 		<dice>{INT} + {Electronic Warfare} v. {LOG} + {Target: Sensors}</dice>
 		<limit>{Icon: Data Processing}</limit>
-		<bonusstring>For every net hit, reduce the target's lock on you by one hit. Your RCC's Noise Reduction rating is added as a dice pool bonus for this action.</bonusstring>
+		<bonusstring>For every net hit, reduce the target's lock on the character by one hit. The character's RCC's Noise Reduction rating is added as a dice pool bonus for this action.</bonusstring>
 	  </test>
       <source>R5</source>
       <page>30</page>
@@ -3045,7 +3045,7 @@
 	  <test>
 		<dice>{LOG} + {Electronic Warfare} v. {Target: Pilot} + {Target: {Icon: Firewall}}</dice>
 		<limit>{Icon: Data Processing}</limit>
-		<bonusstring>On success, target makes an immediate Simple Pilot * 2 test to figure out what it's going to do next with a threshold equal to half of your net hits. Your RCC's Noise Reduction rating is added as a dice pool bonus for this action.</bonusstring>
+		<bonusstring>On success, target makes an immediate Simple Pilot * 2 test to figure out what it's going to do next with a threshold equal to half of the net hits. The character's RCC's Noise Reduction rating is added as a dice pool bonus for this action.</bonusstring>
 	  </test>
       <source>R5</source>
       <page>30</page>
@@ -3057,7 +3057,7 @@
 	  <test>
 		<dice>{LOG} + {Computer} v. {Threshold: 2}</dice>
 		<limit>{Icon: Data Processing}</limit>
-		<bonusstring>Requires Owner marks on target. The device you are using must have wireless enabled. Your RCC's Noise Reduction rating is added as a dice pool bonus for this action.</bonusstring>
+		<bonusstring>Requires Owner marks on target. The device the character is using must have wireless enabled. The character's RCC's Noise Reduction rating is added as a dice pool bonus for this action.</bonusstring>
 	  </test>
       <source>R5</source>
       <page>30</page>
@@ -3069,7 +3069,7 @@
 	  <test>
 		<dice>{LOG} + {Electronic Warfare}</dice>
 		<limit>{Icon: Data Processing}</limit>
-		<bonusstring>Requires Owner marks on target. On success, reduce noise by hits on this test for one Combat Turn. Your RCC's Noise Reduction rating is added as a dice pool bonus for this action.</bonusstring>
+		<bonusstring>Requires Owner marks on target. On success, reduce noise by hits on this test for one Combat Turn. The character's RCC's Noise Reduction rating is added as a dice pool bonus for this action.</bonusstring>
 	  </test>
       <source>R5</source>
       <page>30</page>
@@ -3081,7 +3081,7 @@
 	  <test>
 		<dice>{LOG} + {Electronic Warfare} v. {Action: WIL Firewall Defense}</dice>
 		<limit>{Icon: Data Processing}</limit>
-		<bonusstring>For the rest of the combat turn, any slaved devices targeting the target of this action receive a dice pool bonus equal to your net hits on this action. Your RCC's Noise Reduction rating is added as a dice pool bonus for this action.</bonusstring>
+		<bonusstring>For the rest of the combat turn, any slaved devices targeting the target of this action receive a dice pool bonus equal to the net hits on this action. The character's RCC's Noise Reduction rating is added as a dice pool bonus for this action.</bonusstring>
 	  </test>
       <source>R5</source>
       <page>30</page>
@@ -3107,10 +3107,158 @@
 	  <test>
 		<dice>{INT} + {Computer} v. 10 + {Target: {Icon: Sleaze}}</dice>
 		<limit>{Icon: Data Processing}</limit>
-		<bonusstring>Requires Owner marks on target icon. 30 minute interval. On success if the target persona is running silent, the trail ends in the vicinity of the icon, letting you know that there are silent icons nearby.</bonusstring>
+		<bonusstring>Requires Owner marks on target icon. 30 minute interval. On success if the target persona is running silent, the trail ends in the vicinity of the icon, letting the character know that there are silent icons nearby.</bonusstring>
 	  </test>
       <source>DT</source>
       <page>179</page>
+    </action>
+	<!-- End Region -->
+	<!-- Region Kill Code -->
+	<action>
+      <id>0e1c5d65-051a-4b35-a077-11c6f9679829</id>
+      <name>Calibration</name>
+      <type>Simple</type>
+	  <test>
+		<dice>{LOG} + {Electronic Warfare}</dice>
+		<limit>{Icon: Data Processing}</limit>
+		<bonusstring>Requires 1 mark on target icons. On success, increase the initiative score of all marked personas by 1 for every 2 hits. The number of affected personas cannot exceed {Icon: Data Processing}.</bonusstring>
+	  </test>
+      <source>KC</source>
+      <page>37</page>
+    </action>
+	<action>
+      <id>e699453d-441f-4c3b-b05e-bb209fe4241c</id>
+      <name>Denial of Service</name>
+      <type>Simple</type>
+	  <test>
+		<dice>{LOG} + {Cybercombat} v. {Action: WIL Firewall Defense}</dice>
+		<limit>{Icon: Attack}</limit>
+		<bonusstring>On success, all tests made with the target device suffer a negative dice pool modifier equal to net hits * 2 until the beginning of the next Combat Turn. For every mark  the character has on the target PAN, they may apply this effect to two additional devices slaved to the PAN.</bonusstring>
+	  </test>
+      <source>KC</source>
+      <page>37</page>
+    </action>
+	<action>
+      <id>9dcccbd6-c4fe-4d81-b2b7-591f39247949</id>
+      <name>I Am the Firewall (Complex)</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{INT} + {Computer}</dice>
+		<limit>{Icon: Data Processing}</limit>
+		<bonusstring>On success, give a defense test bonus equal to hits to all characters with an AR feed from the user until the user's next initiative pass.</bonusstring>
+	  </test>
+      <source>KC</source>
+      <page>38</page>
+    </action>
+	<action>
+      <id>0c3a992f-98bd-4f3f-bd14-1898225cfd4e</id>
+      <name>I Am the Firewall (Interrupt)</name>
+      <type>Interrupt</type>
+	  <initiativecost>5</initiativecost>
+	  <test>
+		<dice>{INT} + {Computer}</dice>
+		<limit>{Icon: Data Processing}</limit>
+		<bonusstring>On success, give a defense test bonus equal to hits to all characters with an AR feed from the user until the user's next initiative pass.</bonusstring>
+	  </test>
+      <source>KC</source>
+      <page>38</page>
+    </action>
+	<action>
+      <id>a56dd463-6f2c-485c-97c0-cefb3b65e073</id>
+      <name>Haywire</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{LOG} + {Cybercombat} v. {Action: WIL Firewall Defense}</dice>
+		<limit>{Icon: Attack}</limit>
+		<bonusstring>Target must be a persona not running in VR. On success, all PAN and wireless functionality on the target is disabled until the target passes a {LOG} + {Computer} [Data Processing] v. {Threshold: Net Hits} Simple action.</bonusstring>
+	  </test>
+      <source>KC</source>
+      <page>38</page>
+    </action>
+	<action>
+      <id>95e8fe05-c341-4985-9f42-0ff02a8c3b20</id>
+      <name>Intervene</name>
+      <type>Interrupt</type>
+	  <initiativecost>5</initiativecost>
+	  <test>
+		<dice>{INT} + {Computer}</dice>
+		<limit>{Icon: Data Processing}</limit>
+		<bonusstring>On success, give a defense test bonus equal to hits to the target icon's Matrix defense test.</bonusstring>
+	  </test>
+      <source>KC</source>
+      <page>39</page>
+    </action>
+	<action>
+      <id>7822f0d5-8634-4536-a1a2-98ff2cb5aaa2</id>
+      <name>Masquerade</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{INT} + {Hacking} v. {Action: LOG Firewall Defense}</dice>
+		<limit>{Icon: Sleaze}</limit>
+		<bonusstring>Requires 2 marks on target icon and 2 marks on masquerading persona. On success, the target icon is convinced the character is the masquerading persona for 1 minute per net hit. If the masquerading persona logs off, the masquerade drops immedatiately. Masquerade cannot be used to act as if the character has Owner marks on the target icon.</bonusstring>
+	  </test>
+      <source>KC</source>
+      <page>39</page>
+    </action>
+	<action>
+      <id>643e1151-cb58-49f4-97cc-61919038f733</id>
+      <name>Popup</name>
+      <type>Simple</type>
+	  <test>
+		<dice>{LOG} + {Max: {Hacking} or {Cybercombat}} v. {Action: WIL Firewall Defense}</dice>
+		<limit>{Max: {Icon: Sleaze} or {Icon: Attack}}</limit>
+		<bonusstring>Requires 1 mark on target icon. Target must be a persona not running in VR. On success, if the target is in wirelessly-enabled AR, the target persona's character takes a dice pool penalty to all actions equal to net hits until the start of the attacker's next Combat Turn. If using {Hacking}, net hits are also treated as if they were net hits on {Action: Matrix Perception}. If using {Cybercombat}, also deal Matrix damage equal to net hits.</bonusstring>
+	  </test>
+      <source>KC</source>
+      <page>39</page>
+    </action>
+	<action>
+      <id>21aa0a33-9fd6-47fe-a5df-3e51427eef6d</id>
+      <name>Squelch</name>
+      <type>Simple</type>
+	  <test>
+		<dice>{LOG} + {Electronic Warfare} v. {Action: INT Sleaze Defense}</dice>
+		<limit>{Icon: Attack}</limit>
+		<bonusstring>On success, target icon cannot make calls or send messages for a number of minutes equal to net hits.</bonusstring>
+	  </test>
+      <source>KC</source>
+      <page>39</page>
+    </action>
+	<action>
+      <id>6b337872-6789-4e13-ad5c-1779d14adcf4</id>
+      <name>Subvert Infrastructure</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{INT} + {Electronic Warfare} v. {Action: INT Firewall Defense}</dice>
+		<limit>{Icon: Sleaze}</limit>
+		<bonusstring>Requires 1 mark on target icon. Must target hosts. On success, character gains control over one simple device slaved to the target per net hit. No attacks can be made with this action. The control can be maintained by spending one Complex Action per Combat Turn.</bonusstring>
+	  </test>
+      <source>KC</source>
+      <page>39</page>
+    </action>
+	<action>
+      <id>7ab03865-944f-45a9-adee-6e7aa8381f5e</id>
+      <name>Tag</name>
+      <type>Simple</type>
+	  <test>
+		<dice>{LOG} + {Computer} v. {Action: INT Sleaze Defense}</dice>
+		<limit>{Icon: Data Processing}</limit>
+		<bonusstring>On success, a number of targets on a single PAN equal to net hits are "tagged". "Tagged" targets must be within line of sight of the character, and "tags" can be relayed wirelessly to allies. "Tagging" negates up to 2 dice in penalties from Visibility and Light/Glare to ranged attack rolls, including Blind Fire. Characters can take an additional {Action: Take Aim} at "tagged" targets as a Free Action each initiative pass. "Tags" can be maintained by spending one Simple Action per Combat Turn. When using a PI-Tac, the character may add the PI-Tac's level to the number of targets that can be "tagged".</bonusstring>
+	  </test>
+      <source>KC</source>
+      <page>40</page>
+    </action>
+	<action>
+      <id>f73c5747-0494-497b-9109-8bca6217b2b1</id>
+      <name>Watchdog</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{LOG} + {Electronic Warfare} v. {Action: LOG Firewall Defense}</dice>
+		<limit>{Icon: Sleaze}</limit>
+		<bonusstring>Target must be a persona or device. On success, place a mark on the target. The character is now aware of the Matrix actions the target is going to use before they use them. The character can use {Action: Haywire} and {Action: Popup} as Interrupt Actions for -10 initiative and {Action: Squelch} as an Interrupt Action for -5 initiave against the target. This ability lasts as long as the target is marked by the character.</bonusstring>
+	  </test>
+      <source>KC</source>
+      <page>40</page>
     </action>
 	<!-- End Region -->
   </actions>
