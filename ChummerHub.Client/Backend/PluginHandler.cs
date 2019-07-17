@@ -149,7 +149,8 @@ namespace Chummer.Plugins
             }
             else
             {
-                returnme = JsonConvert.SerializeObject(ce.MySINnerFile, Formatting.Indented, settings);
+                if (ce != null)
+                    returnme = JsonConvert.SerializeObject(ce.MySINnerFile, Formatting.Indented, settings);
             }
 
             return returnme;
@@ -222,35 +223,37 @@ namespace Chummer.Plugins
                     found = a;
                     break;
                 }
-
-            if (found == null)
-            {
-                return null;
-            }
-
             TabPage sinnertab = null;
-            TabControl.TabPageCollection myCollection = null;
-            switch (found)
+            if (found != null)
             {
-                case frmCreate foundcreate:
-                    myCollection = foundcreate.TabCharacterTabs.TabPages;
-                    break;
-                case frmCareer foundcareer:
-                    myCollection = foundcareer.TabCharacterTabs.TabPages;
-                    break;
-            }
 
-            if (myCollection == null)
-                return null;
 
-            foreach (TabPage tab in myCollection)
-            {
-                if (tab.Name == "SINners")
+
+                
+                TabControl.TabPageCollection myCollection = null;
+                switch (found)
                 {
-                    sinnertab = tab;
-                    break;
+                    case frmCreate foundcreate:
+                        myCollection = foundcreate.TabCharacterTabs.TabPages;
+                        break;
+                    case frmCareer foundcareer:
+                        myCollection = foundcareer.TabCharacterTabs.TabPages;
+                        break;
+                }
+
+                if (myCollection == null)
+                    return null;
+
+                foreach (TabPage tab in myCollection)
+                {
+                    if (tab.Name == "SINners")
+                    {
+                        sinnertab = tab;
+                        break;
+                    }
                 }
             }
+
             CharacterExtended ce;
             if (sinnertab == null)
             {

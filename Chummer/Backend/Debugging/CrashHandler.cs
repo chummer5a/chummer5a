@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -28,6 +29,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Web.Script.Serialization;
 using System.Windows.Forms;
+using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.Win32;
 
@@ -196,10 +198,18 @@ namespace Chummer.Backend
                 {
                     if (Program.TelemetryClient != null)
                     {
+                        ex.Data.Add("IsCrash", true.ToString());
                         ExceptionTelemetry et = new ExceptionTelemetry(ex)
                         {
                             SeverityLevel = SeverityLevel.Critical
+
                         };
+                        //we have to enable the uploading of THIS message, so it isn't filtered out in the DropUserdataTelemetryProcessos
+                        foreach (DictionaryEntry d in ex.Data)
+                        {
+                            if ((d.Key != null) && (d.Value != null))
+                                et.Properties.Add(d.Key.ToString(), d.Value.ToString());
+                        }
                         Program.TelemetryClient.TrackException(et);
                         Program.TelemetryClient.Flush();
                     }

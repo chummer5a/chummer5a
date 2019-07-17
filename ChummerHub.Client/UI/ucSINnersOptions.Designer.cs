@@ -28,8 +28,9 @@ namespace ChummerHub.Client.UI
         /// </summary>
         private void InitializeComponent()
         {
-            GroupControls.RadioButtonListItem radioButtonListItem3 = new GroupControls.RadioButtonListItem();
-            GroupControls.RadioButtonListItem radioButtonListItem4 = new GroupControls.RadioButtonListItem();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ucSINnersOptions));
+            GroupControls.RadioButtonListItem radioButtonListItem1 = new GroupControls.RadioButtonListItem();
+            GroupControls.RadioButtonListItem radioButtonListItem2 = new GroupControls.RadioButtonListItem();
             this.tlpAllOptions = new System.Windows.Forms.TableLayoutPanel();
             this.tlpOptions = new System.Windows.Forms.TableLayoutPanel();
             this.gbVisibility = new System.Windows.Forms.GroupBox();
@@ -234,6 +235,7 @@ namespace ChummerHub.Client.UI
             this.tbHelptext.ScrollBars = System.Windows.Forms.ScrollBars.Horizontal;
             this.tbHelptext.Size = new System.Drawing.Size(711, 233);
             this.tbHelptext.TabIndex = 8;
+            this.tbHelptext.Text = resources.GetString("tbHelptext.Text");
             // 
             // cbUploadOnSave
             // 
@@ -272,9 +274,12 @@ namespace ChummerHub.Client.UI
             // 
             // tbTempDownloadPath
             // 
+            this.tbTempDownloadPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tbTempDownloadPath.Location = new System.Drawing.Point(3, 16);
             this.tbTempDownloadPath.Name = "tbTempDownloadPath";
-            this.tbTempDownloadPath.Size = new System.Drawing.Size(448, 20);
+            this.tbTempDownloadPath.ReadOnly = true;
+            this.tbTempDownloadPath.Size = new System.Drawing.Size(588, 20);
             this.tbTempDownloadPath.TabIndex = 14;
             // 
             // bMultiUpload
@@ -357,17 +362,17 @@ namespace ChummerHub.Client.UI
             // 
             this.rbListUserMode.AutoScrollMinSize = new System.Drawing.Size(711, 31);
             this.rbListUserMode.Dock = System.Windows.Forms.DockStyle.Fill;
-            radioButtonListItem3.Checked = true;
-            radioButtonListItem3.Subtext = "use only functions available for none registered users";
-            radioButtonListItem3.Tag = "public";
-            radioButtonListItem3.Text = "Public Mode";
-            radioButtonListItem3.ToolTipText = "";
-            radioButtonListItem4.Subtext = "use enchanced functionality (requires registration)";
-            radioButtonListItem4.Tag = "registered";
-            radioButtonListItem4.Text = "Registered Mode";
+            radioButtonListItem1.Checked = true;
+            radioButtonListItem1.Subtext = "use only functions available for none registered users";
+            radioButtonListItem1.Tag = "public";
+            radioButtonListItem1.Text = "Public Mode";
+            radioButtonListItem1.ToolTipText = "";
+            radioButtonListItem2.Subtext = "use enchanced functionality (requires registration)";
+            radioButtonListItem2.Tag = "registered";
+            radioButtonListItem2.Text = "Registered Mode";
             this.rbListUserMode.Items.AddRange(new GroupControls.RadioButtonListItem[] {
-            radioButtonListItem3,
-            radioButtonListItem4});
+            radioButtonListItem1,
+            radioButtonListItem2});
             this.rbListUserMode.Location = new System.Drawing.Point(3, 16);
             this.rbListUserMode.Name = "rbListUserMode";
             this.rbListUserMode.RepeatColumns = 2;

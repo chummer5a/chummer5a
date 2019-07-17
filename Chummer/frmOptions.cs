@@ -1937,6 +1937,11 @@ namespace Chummer
             this.cbUseLoggingApplicationInsights.Enabled = this.chkUseLogging.Checked;
             OptionsChanged(sender, e);
         }
-      
+
+        private void CbUseLoggingHelp_Click(object sender, EventArgs e)
+        {
+            //open the telemetry document
+            System.Diagnostics.Process.Start("https://docs.google.com/document/d/1LThAg6U5qXzHAfIRrH0Kb7griHrPN0hy7ab8FSJDoFY/edit?usp=sharing");
+        }
     }
 }
