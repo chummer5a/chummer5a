@@ -413,7 +413,10 @@ namespace Chummer
                 {
                     string useAI = "NotSet";
                     LoadStringFromRegistry(ref useAI, "useloggingApplicationInsights");
-                    _enumUseLoggingApplicationInsights = (UseAILogging)Enum.Parse(typeof(UseAILogging), useAI);
+                    if (useAI == "False")
+                        _enumUseLoggingApplicationInsights = UseAILogging.NotSet;
+                    else
+                        _enumUseLoggingApplicationInsights = (UseAILogging)Enum.Parse(typeof(UseAILogging), useAI);
                 }
                 catch (Exception e)
                 {

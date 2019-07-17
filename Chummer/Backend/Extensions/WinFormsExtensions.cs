@@ -51,7 +51,7 @@ namespace Chummer
             catch (ObjectDisposedException e)
             {
                 //we really don't need to care about that.
-                Log.Trace(e);
+                //Log.Trace(e);
             }
             catch (InvalidAsynchronousStateException e)
             {
