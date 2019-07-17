@@ -50,7 +50,6 @@ namespace Chummer
             {
                 if (item is ExceptionTelemetry exceptionTelemetry)
                 {
-                    
                     if ((exceptionTelemetry.Exception.Data.Contains("IsCrash"))                
                         || (exceptionTelemetry.Properties.ContainsKey("IsCrash") == true))
                     {
@@ -82,8 +81,14 @@ namespace Chummer
 
             if (item is ExceptionTelemetry exception)
             {
+                
                 if (exception.Exception != null)
                 {
+                    foreach (DictionaryEntry de in exception.Exception.Data)
+                    {
+                        if (!exception.Properties.ContainsKey(de.Key.ToString()))
+                            exception.Properties.Add(de.Key.ToString(), de.Value?.ToString());
+                    }
                     if (exception.Message == null)
                     {
                         exception.Message = exception.Exception.Message?.CheapReplace(UserProfilePath, () => @"{username}", true);

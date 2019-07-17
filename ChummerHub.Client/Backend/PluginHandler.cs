@@ -364,7 +364,7 @@ namespace Chummer.Plugins
                     {
                         ssgr = result.MySearchGroupResult;
                         var ssgr1 = ssgr;
-                        PluginHandler.MainForm.DoThreadSafe(() =>
+                        PluginHandler.MainForm.CharacterRoster.DoThreadSafe(() =>
                         {
                             using (new CursorWait(true, MainForm))
                             {
@@ -380,8 +380,9 @@ namespace Chummer.Plugins
                                     }
 
                                     PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false, true);
-                                    PluginHandler.MainForm.CharacterRoster.BringToFront();
-                                    MessageBox.Show("Archetypes loaded to character roster!");
+                                    PluginHandler.MainForm.CharacterRoster.treCharacterList.SelectedNode =
+                                        nodelist.FirstOrDefault(a => a.Name ==  "Archetypes");
+                                    PluginHandler.MainForm.BringToFront();
                                 }
                                 else
                                 {
