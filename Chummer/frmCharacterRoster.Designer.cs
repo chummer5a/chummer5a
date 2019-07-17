@@ -80,8 +80,8 @@ namespace Chummer
             // 
             // tabCharacterText
             // 
-            this.tabCharacterText.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+            this.tabCharacterText.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tlpCharacterRoster.SetColumnSpan(this.tabCharacterText, 3);
             this.tabCharacterText.Controls.Add(this.panCharacterBio);
@@ -381,7 +381,7 @@ namespace Chummer
             // treCharacterList
             // 
             this.treCharacterList.AllowDrop = true;
-            this.treCharacterList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            this.treCharacterList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
             this.treCharacterList.Location = new System.Drawing.Point(3, 3);
             this.treCharacterList.Name = "treCharacterList";
@@ -551,8 +551,6 @@ namespace Chummer
         }
 
         #endregion
-
-        private System.Windows.Forms.TreeView treCharacterList;
         private System.Windows.Forms.TabControl tabCharacterText;
         private System.Windows.Forms.TabPage panCharacterBio;
         private System.Windows.Forms.TabPage panCharacterConcept;
@@ -587,6 +585,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblSettings;
         private System.Windows.Forms.Label lblSettingsLabel;
         private System.Windows.Forms.PictureBox picMugshot;
+        public System.Windows.Forms.TreeView treCharacterList;
     }
 }
 

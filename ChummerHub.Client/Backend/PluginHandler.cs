@@ -306,7 +306,7 @@ namespace Chummer.Plugins
                 mnuSINnerSearchs.Image = ChummerHub.Client.Properties.Resources.group;
                 mnuSINnerSearchs.ImageTransparentColor = System.Drawing.Color.Black;
                 mnuSINnerSearchs.Size = new System.Drawing.Size(148, 22);
-                mnuSINnerSearchs.Tag = "Menu_Main_SINnerSearch";
+                mnuSINnerSearchs.Tag = "Menu_Tools_SINnerSearch";
                 list.Add(mnuSINnerSearchs);
             }
 #endif
@@ -319,7 +319,7 @@ namespace Chummer.Plugins
             mnuSINnersArchetypes.Image = ChummerHub.Client.Properties.Resources.group;
             mnuSINnersArchetypes.ImageTransparentColor = System.Drawing.Color.Black;
             mnuSINnersArchetypes.Size = new System.Drawing.Size(148, 22);
-            mnuSINnersArchetypes.Tag = "Menu_Main_SINnersArchetypes";
+            mnuSINnersArchetypes.Tag = "Menu_Tools_SINnersArchetypes";
             list.Add(mnuSINnersArchetypes);
 
             if (ChummerHub.Client.Properties.Settings.Default.UserModeRegistered == true)
@@ -333,7 +333,7 @@ namespace Chummer.Plugins
                 mnuSINners.Image = ChummerHub.Client.Properties.Resources.group;
                 mnuSINners.ImageTransparentColor = System.Drawing.Color.Black;
                 mnuSINners.Size = new System.Drawing.Size(148, 22);
-                mnuSINners.Tag = "Menu_Main_SINners";
+                mnuSINners.Tag = "Menu_Tools_SINners";
                 list.Add(mnuSINners);
             }
 
@@ -364,7 +364,7 @@ namespace Chummer.Plugins
                     {
                         ssgr = result.MySearchGroupResult;
                         var ssgr1 = ssgr;
-                        PluginHandler.MainForm.DoThreadSafe(() =>
+                        PluginHandler.MainForm.CharacterRoster.DoThreadSafe(() =>
                         {
                             using (new CursorWait(true, MainForm))
                             {
@@ -380,8 +380,9 @@ namespace Chummer.Plugins
                                     }
 
                                     PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false, true);
-                                    PluginHandler.MainForm.CharacterRoster.BringToFront();
-                                    MessageBox.Show("Archetypes loaded to character roster!");
+                                    PluginHandler.MainForm.CharacterRoster.treCharacterList.SelectedNode =
+                                        nodelist.FirstOrDefault(a => a.Name ==  "Archetypes");
+                                    PluginHandler.MainForm.BringToFront();
                                 }
                                 else
                                 {
