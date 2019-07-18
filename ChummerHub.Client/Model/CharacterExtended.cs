@@ -13,7 +13,9 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Chummer.Plugins;
+using Microsoft.Rest;
 using NLog;
+using Utils = Chummer.Utils;
 
 namespace ChummerHub.Client.Model
 {
@@ -305,7 +307,26 @@ namespace ChummerHub.Client.Model
                             MySINnerFile.Alias = MyCharacter.Name;
                     }
                     var client = StaticUtils.GetClient();
-                    var res = await client.SinnerGetOwnedSINByAliasWithHttpMessagesAsync(MySINnerFile.Alias);
+                    HttpOperationResponse<ResultSinnerGetOwnedSINByAlias> res = null;
+                    try
+                    {
+                        res = await client.SinnerGetOwnedSINByAliasWithHttpMessagesAsync(MySINnerFile.Alias);
+                    }
+                    catch (SerializationException e)
+                    {
+                        e.Data.Add("Alias", MySINnerFile.Alias);
+                        e.Data.Add("MySINnerFile.Id", MySINnerFile.Id);
+                        e.Data.Add("User", ChummerHub.Client.Properties.Settings.Default.UserEmail);
+                        e.Data.Add("ResponseContent", e.Content);
+                        throw;
+                    }
+                    catch (Exception e)
+                    {
+                        e.Data.Add("Alias", MySINnerFile.Alias);
+                        e.Data.Add("MySINnerFile.Id", MySINnerFile.Id);
+                        e.Data.Add("User", ChummerHub.Client.Properties.Settings.Default.UserEmail);
+                        throw;
+                    }
                     if (res.Response.StatusCode == HttpStatusCode.NotFound)
                     {
                         MySINnerFile.Id = Guid.NewGuid();
