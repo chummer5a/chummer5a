@@ -16,6 +16,7 @@ using System.Net.Http;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.Remoting.Channels;
+using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -25,6 +26,7 @@ using NLog;
 using static Chummer.frmCharacterRoster;
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.ApplicationInsights;
+using Microsoft.Win32;
 
 namespace ChummerHub.Client.Backend
 {
@@ -404,6 +406,25 @@ namespace ChummerHub.Client.Backend
                 }
             }
             return client;
+        }
+
+        [PrincipalPermission(SecurityAction.Demand, Role = @"BUILTIN\Administrators")]
+        public static void RegisterMyProtocol(string myAppPath)  //myAppPath = full path to your application
+        {
+            RegistryKey key = Registry.ClassesRoot.OpenSubKey("Chummer");  //open myApp protocol's subkey
+
+            if (key == null)  //if the protocol is not registered yet...we register it
+            {
+                key = Registry.ClassesRoot.CreateSubKey("Chummer");
+                key.SetValue(string.Empty, "URL: Chummer Protocol");
+                key.SetValue("URL Protocol", string.Empty);
+
+                key = key.CreateSubKey(@"shell\open\command");
+                key.SetValue(string.Empty, myAppPath + " " + "%1");
+                //%1 represents the argument - this tells windows to open this program with an argument / parameter
+            }
+
+            key.Close();
         }
     }
 

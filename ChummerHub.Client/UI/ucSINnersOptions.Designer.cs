@@ -29,8 +29,8 @@ namespace ChummerHub.Client.UI
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ucSINnersOptions));
-            GroupControls.RadioButtonListItem radioButtonListItem1 = new GroupControls.RadioButtonListItem();
-            GroupControls.RadioButtonListItem radioButtonListItem2 = new GroupControls.RadioButtonListItem();
+            GroupControls.RadioButtonListItem radioButtonListItem3 = new GroupControls.RadioButtonListItem();
+            GroupControls.RadioButtonListItem radioButtonListItem4 = new GroupControls.RadioButtonListItem();
             this.tlpAllOptions = new System.Windows.Forms.TableLayoutPanel();
             this.tlpOptions = new System.Windows.Forms.TableLayoutPanel();
             this.gbVisibility = new System.Windows.Forms.GroupBox();
@@ -54,6 +54,7 @@ namespace ChummerHub.Client.UI
             this.gpRadioOnlyPublic = new System.Windows.Forms.GroupBox();
             this.rbListUserMode = new GroupControls.RadioButtonList();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            this.bRegisterUriScheme = new System.Windows.Forms.Button();
             this.tlpAllOptions.SuspendLayout();
             this.tlpOptions.SuspendLayout();
             this.gbVisibility.SuspendLayout();
@@ -105,6 +106,7 @@ namespace ChummerHub.Client.UI
             this.tlpOptions.Controls.Add(this.bMultiUpload, 2, 2);
             this.tlpOptions.Controls.Add(this.bLogin, 2, 0);
             this.tlpOptions.Controls.Add(this.tlpAccount, 1, 0);
+            this.tlpOptions.Controls.Add(this.bRegisterUriScheme, 2, 1);
             this.tlpOptions.Location = new System.Drawing.Point(3, 69);
             this.tlpOptions.MinimumSize = new System.Drawing.Size(200, 400);
             this.tlpOptions.Name = "tlpOptions";
@@ -127,7 +129,7 @@ namespace ChummerHub.Client.UI
             this.tlpOptions.SetColumnSpan(this.gbVisibility, 2);
             this.gbVisibility.Controls.Add(this.tlpVisibility);
             this.gbVisibility.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.gbVisibility.Location = new System.Drawing.Point(3, 70);
+            this.gbVisibility.Location = new System.Drawing.Point(3, 72);
             this.gbVisibility.MinimumSize = new System.Drawing.Size(100, 0);
             this.gbVisibility.Name = "gbVisibility";
             this.gbVisibility.Size = new System.Drawing.Size(597, 59);
@@ -194,7 +196,7 @@ namespace ChummerHub.Client.UI
             this.bTempPathBrowse.AutoSize = true;
             this.bTempPathBrowse.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.bTempPathBrowse.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.bTempPathBrowse.Location = new System.Drawing.Point(606, 158);
+            this.bTempPathBrowse.Location = new System.Drawing.Point(606, 160);
             this.bTempPathBrowse.Name = "bTempPathBrowse";
             this.bTempPathBrowse.Size = new System.Drawing.Size(108, 39);
             this.bTempPathBrowse.TabIndex = 15;
@@ -208,7 +210,7 @@ namespace ChummerHub.Client.UI
             this.lSINnerUrl.Dock = System.Windows.Forms.DockStyle.Left;
             this.lSINnerUrl.Location = new System.Drawing.Point(3, 40);
             this.lSINnerUrl.Name = "lSINnerUrl";
-            this.lSINnerUrl.Size = new System.Drawing.Size(23, 27);
+            this.lSINnerUrl.Size = new System.Drawing.Size(23, 29);
             this.lSINnerUrl.TabIndex = 4;
             this.lSINnerUrl.Text = "Url:";
             this.lSINnerUrl.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -229,7 +231,7 @@ namespace ChummerHub.Client.UI
             this.tbHelptext.BackColor = System.Drawing.SystemColors.Control;
             this.tlpOptions.SetColumnSpan(this.tbHelptext, 3);
             this.tbHelptext.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tbHelptext.Location = new System.Drawing.Point(3, 203);
+            this.tbHelptext.Location = new System.Drawing.Point(3, 205);
             this.tbHelptext.Multiline = true;
             this.tbHelptext.Name = "tbHelptext";
             this.tbHelptext.ScrollBars = System.Windows.Forms.ScrollBars.Horizontal;
@@ -241,7 +243,7 @@ namespace ChummerHub.Client.UI
             // 
             this.cbUploadOnSave.AutoSize = true;
             this.tlpOptions.SetColumnSpan(this.cbUploadOnSave, 3);
-            this.cbUploadOnSave.Location = new System.Drawing.Point(3, 135);
+            this.cbUploadOnSave.Location = new System.Drawing.Point(3, 137);
             this.cbUploadOnSave.Name = "cbUploadOnSave";
             this.cbUploadOnSave.Size = new System.Drawing.Size(240, 17);
             this.cbUploadOnSave.TabIndex = 10;
@@ -257,7 +259,7 @@ namespace ChummerHub.Client.UI
             this.flpTempFolder.Controls.Add(this.label3);
             this.flpTempFolder.Controls.Add(this.tbTempDownloadPath);
             this.flpTempFolder.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flpTempFolder.Location = new System.Drawing.Point(3, 158);
+            this.flpTempFolder.Location = new System.Drawing.Point(3, 160);
             this.flpTempFolder.Name = "flpTempFolder";
             this.flpTempFolder.Size = new System.Drawing.Size(597, 39);
             this.flpTempFolder.TabIndex = 17;
@@ -287,7 +289,7 @@ namespace ChummerHub.Client.UI
             this.bMultiUpload.AutoSize = true;
             this.bMultiUpload.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.bMultiUpload.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.bMultiUpload.Location = new System.Drawing.Point(606, 70);
+            this.bMultiUpload.Location = new System.Drawing.Point(606, 72);
             this.bMultiUpload.MinimumSize = new System.Drawing.Size(100, 10);
             this.bMultiUpload.Name = "bMultiUpload";
             this.bMultiUpload.Size = new System.Drawing.Size(108, 59);
@@ -362,17 +364,17 @@ namespace ChummerHub.Client.UI
             // 
             this.rbListUserMode.AutoScrollMinSize = new System.Drawing.Size(711, 31);
             this.rbListUserMode.Dock = System.Windows.Forms.DockStyle.Fill;
-            radioButtonListItem1.Checked = true;
-            radioButtonListItem1.Subtext = "use only functions available for none registered users";
-            radioButtonListItem1.Tag = "public";
-            radioButtonListItem1.Text = "Public Mode";
-            radioButtonListItem1.ToolTipText = "";
-            radioButtonListItem2.Subtext = "use enchanced functionality (requires registration)";
-            radioButtonListItem2.Tag = "registered";
-            radioButtonListItem2.Text = "Registered Mode";
+            radioButtonListItem3.Checked = true;
+            radioButtonListItem3.Subtext = "use only functions available for none registered users";
+            radioButtonListItem3.Tag = "public";
+            radioButtonListItem3.Text = "Public Mode";
+            radioButtonListItem3.ToolTipText = "";
+            radioButtonListItem4.Subtext = "use enchanced functionality (requires registration)";
+            radioButtonListItem4.Tag = "registered";
+            radioButtonListItem4.Text = "Registered Mode";
             this.rbListUserMode.Items.AddRange(new GroupControls.RadioButtonListItem[] {
-            radioButtonListItem1,
-            radioButtonListItem2});
+            radioButtonListItem3,
+            radioButtonListItem4});
             this.rbListUserMode.Location = new System.Drawing.Point(3, 16);
             this.rbListUserMode.Name = "rbListUserMode";
             this.rbListUserMode.RepeatColumns = 2;
@@ -380,6 +382,18 @@ namespace ChummerHub.Client.UI
             this.rbListUserMode.Size = new System.Drawing.Size(711, 41);
             this.rbListUserMode.TabIndex = 0;
             this.rbListUserMode.SelectedIndexChanged += new System.EventHandler(this.RbListUserMode_SelectedIndexChanged);
+            // 
+            // bRegisterUriScheme
+            // 
+            this.bRegisterUriScheme.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.bRegisterUriScheme.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.bRegisterUriScheme.Location = new System.Drawing.Point(606, 43);
+            this.bRegisterUriScheme.Name = "bRegisterUriScheme";
+            this.bRegisterUriScheme.Size = new System.Drawing.Size(108, 23);
+            this.bRegisterUriScheme.TabIndex = 19;
+            this.bRegisterUriScheme.Text = "Register Url-Scheme";
+            this.bRegisterUriScheme.UseVisualStyleBackColor = true;
+            this.bRegisterUriScheme.Click += new System.EventHandler(this.BRegisterUriScheme_Click);
             // 
             // ucSINnersOptions
             // 
@@ -435,5 +449,6 @@ namespace ChummerHub.Client.UI
         private System.Windows.Forms.GroupBox gpRadioOnlyPublic;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private GroupControls.RadioButtonList rbListUserMode;
+        private System.Windows.Forms.Button bRegisterUriScheme;
     }
 }

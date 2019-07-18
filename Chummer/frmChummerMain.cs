@@ -251,6 +251,18 @@ namespace Chummer
                                     lock (blnShowTestLock)
                                         blnShowTest = true;
                                 }
+                                else if (strArgs[i].StartsWith("/plugin"))
+                                {
+                                    string whatplugin = strArgs[i].Substring(8);
+                                    int endplugin = whatplugin.IndexOf(':');
+                                    string parameter = whatplugin.Substring(endplugin+1);
+                                    whatplugin = whatplugin.Substring(0, endplugin);
+                                    var plugin = PluginLoader.MyActivePlugins.FirstOrDefault(a => a.ToString() == whatplugin);
+                                    if (plugin != null)
+                                    {
+                                        plugin.ProcessCommandLine(parameter);
+                                    }
+                                }
                                 else if (!strArgs[i].StartsWith('/'))
                                 {
                                     if (!File.Exists(strArgs[i]))
@@ -259,7 +271,6 @@ namespace Chummer
                                             "Chummer started with unknown command line arguments: " +
                                             strArgs.Aggregate((j, k) => j + " " + k));
                                     }
-
                                     if (lstCharactersToLoad.Any(x => x.FileName == strArgs[i])) return;
                                     Character objLoopCharacter = LoadCharacter(strArgs[i]).Result;
                                     lstCharactersToLoad.Add(objLoopCharacter);

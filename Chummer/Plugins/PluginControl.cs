@@ -24,6 +24,7 @@ namespace Chummer.Plugins
         IEnumerable<TabPage> GetTabPages(frmCreate input);
         IEnumerable<ToolStripMenuItem> GetMenuItems(ToolStripMenuItem menu);
         ITelemetry SetTelemetryInitialize(ITelemetry telemetry);
+        bool ProcessCommandLine(string parameter);
 
         Task<IEnumerable<TreeNode>> GetCharacterRosterTreeNode(frmCharacterRoster frmCharRoster, bool forceUpdate);
 

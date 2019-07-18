@@ -93,6 +93,7 @@ namespace Chummer
             this.nudBrowserVersion = new System.Windows.Forms.NumericUpDown();
             this.lblBrowserVersion = new System.Windows.Forms.Label();
             this.cbUseLoggingApplicationInsights = new System.Windows.Forms.ComboBox();
+            this.cbUseLoggingHelp = new Chummer.ButtonWithToolTip();
             this.tabCharacterOptions = new System.Windows.Forms.TabPage();
             this.tlpCharacterOptions = new Chummer.BufferedTableLayoutPanel(this.components);
             this.treSourcebook = new System.Windows.Forms.TreeView();
@@ -307,7 +308,6 @@ namespace Chummer
             this.flpOKCancel = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdOK = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
-            this.cbUseLoggingHelp = new Chummer.ButtonWithToolTip();
             this.mainPanel.SuspendLayout();
             this.tlpOptions.SuspendLayout();
             this.tabOptions.SuspendLayout();
@@ -1406,6 +1406,17 @@ namespace Chummer
             this.cbUseLoggingApplicationInsights.Size = new System.Drawing.Size(123, 21);
             this.cbUseLoggingApplicationInsights.TabIndex = 55;
             this.cbUseLoggingApplicationInsights.SelectedIndexChanged += new System.EventHandler(this.cbUseLoggingApplicationInsights_SelectedIndexChanged);
+            // 
+            // cbUseLoggingHelp
+            // 
+            this.cbUseLoggingHelp.Location = new System.Drawing.Point(467, 96);
+            this.cbUseLoggingHelp.Name = "cbUseLoggingHelp";
+            this.cbUseLoggingHelp.Size = new System.Drawing.Size(16, 23);
+            this.cbUseLoggingHelp.TabIndex = 56;
+            this.cbUseLoggingHelp.Text = "?";
+            this.cbUseLoggingHelp.ToolTipText = "";
+            this.cbUseLoggingHelp.UseVisualStyleBackColor = true;
+            this.cbUseLoggingHelp.Click += new System.EventHandler(this.CbUseLoggingHelp_Click);
             // 
             // tabCharacterOptions
             // 
@@ -4525,17 +4536,6 @@ namespace Chummer
             this.cmdCancel.Text = "Cancel";
             this.cmdCancel.UseVisualStyleBackColor = true;
             this.cmdCancel.Click += new System.EventHandler(this.cmdCancel_Click);
-            // 
-            // cbUseLoggingHelp
-            // 
-            this.cbUseLoggingHelp.Location = new System.Drawing.Point(467, 96);
-            this.cbUseLoggingHelp.Name = "cbUseLoggingHelp";
-            this.cbUseLoggingHelp.Size = new System.Drawing.Size(16, 23);
-            this.cbUseLoggingHelp.TabIndex = 56;
-            this.cbUseLoggingHelp.Text = "?";
-            this.cbUseLoggingHelp.ToolTipText = "";
-            this.cbUseLoggingHelp.UseVisualStyleBackColor = true;
-            this.cbUseLoggingHelp.Click += new System.EventHandler(this.CbUseLoggingHelp_Click);
             // 
             // frmOptions
             // 

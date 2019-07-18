@@ -1866,6 +1866,7 @@ namespace Chummer
             {
                 foreach (var plugin in Program.MainForm.PluginLoader.MyPlugins)
                 {
+                    plugin.CustomInitialize(Program.MainForm);
                     if (GlobalOptions.PluginsEnabledDic.TryGetValue(plugin.ToString(), out var check))
                     {
                         clbPlugins.Items.Add(plugin, check);
@@ -1892,11 +1893,14 @@ namespace Chummer
 
         private void clbPlugins_ItemCheck(object sender, ItemCheckEventArgs e)
         {
-            var plugin = clbPlugins.Items[e.Index];
-            if(GlobalOptions.PluginsEnabledDic.ContainsKey(plugin.ToString()))
-                GlobalOptions.PluginsEnabledDic.Remove(plugin.ToString());
-            GlobalOptions.PluginsEnabledDic.Add(plugin.ToString(), e.NewValue == CheckState.Checked);
-            OptionsChanged(sender, e);
+            using (new CursorWait(false, this))
+            {
+                var plugin = clbPlugins.Items[e.Index];
+                if (GlobalOptions.PluginsEnabledDic.ContainsKey(plugin.ToString()))
+                    GlobalOptions.PluginsEnabledDic.Remove(plugin.ToString());
+                GlobalOptions.PluginsEnabledDic.Add(plugin.ToString(), e.NewValue == CheckState.Checked);
+                OptionsChanged(sender, e);
+            }
 
         }
 

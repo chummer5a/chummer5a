@@ -66,7 +66,7 @@ namespace Chummer.Plugins
 
         public override string ToString()
         {
-            return "SINners (Cloud)";
+            return "SINners";
         }
 
         public ITelemetry SetTelemetryInitialize(ITelemetry telemetry)
@@ -78,6 +78,11 @@ namespace Chummer.Plugins
             //        telemetry.Context.User.AccountId = ChummerHub.Client.Properties.Settings.Default.UserEmail;
             //}
             return telemetry;
+        }
+
+        bool IPlugin.ProcessCommandLine(string parameter)
+        {
+            return true;
         }
 
         IEnumerable<TabPage> IPlugin.GetTabPages(frmCareer input)

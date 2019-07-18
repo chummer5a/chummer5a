@@ -19,9 +19,13 @@ using Chummer.Plugins;
 using System.Threading;
 using ChummerHub.Client.Model;
 using System.IO;
+using System.Reflection;
+using System.Security.Permissions;
 using System.Windows;
+using Microsoft.Win32;
 using NLog;
 using MessageBox = System.Windows.Forms.MessageBox;
+using OpenFileDialog = System.Windows.Forms.OpenFileDialog;
 
 //using Nemiro.OAuth;
 //using Nemiro.OAuth.LoginForms;
@@ -275,7 +279,7 @@ namespace ChummerHub.Client.UI
                     {
                         this.lUsername.Text = mail;
                         //also, since we are logged in in now, refresh the frmCharacterRoster!
-                        PluginHandler.MainForm.DoThreadSafe(() =>
+                        PluginHandler.MainForm?.DoThreadSafe(() =>
                         {
                             PluginHandler.MainForm.CharacterRoster.LoadCharacters(true, true, true, true);
                         });
@@ -789,5 +793,38 @@ namespace ChummerHub.Client.UI
 
            OptionsUpdate();
         }
+
+        private void BRegisterUriScheme_Click(object sender, EventArgs e)
+        {
+            var startupExe = System.Windows.Forms.Application.StartupPath;
+            startupExe = System.Reflection.Assembly.GetEntryAssembly()?.Location;
+            RegistryKey key = Registry.ClassesRoot.OpenSubKey("Chummer");  //open myApp protocol's subkey
+            if (key == null)
+            {
+                try
+                {
+                    StaticUtils.RegisterMyProtocol(startupExe);
+                }
+                catch (System.Security.SecurityException se)
+                {
+                    string arguments = "/plugin:SINners:RegisterUriScheme";
+                    ProcessStartInfo startInfo = new ProcessStartInfo
+                    {
+                        FileName = startupExe,
+                        Arguments = arguments,
+                        Verb = "runas"
+                    };
+                    System.Windows.Forms.Application.Exit();
+                    Process.Start(startInfo);
+                }
+                
+            }
+            else
+            {
+                key.Close();
+            }
+        }
+
+        
     }
 }
