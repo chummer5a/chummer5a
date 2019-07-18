@@ -498,7 +498,8 @@ namespace Chummer
             bool blnAlchemicalFound = false;
             foreach (string strDescriptor in strDescriptorsIn)
             {
-                switch (strDescriptor.Trim())
+                string strTrimmedDescriptor = strDescriptor.Trim();
+                switch (strTrimmedDescriptor)
                 {
                     case "Alchemical Preparation":
                         blnAlchemicalFound = true;
@@ -527,10 +528,12 @@ namespace Chummer
                         objDescriptors.Append(", ");
                         break;
                     default:
-                        objDescriptors.Append(LanguageManager.GetString($"String_Desc{strDescriptor.Trim()}", GlobalOptions.Language));
-                        objDescriptors.Append(", ");
+                        if (!string.IsNullOrEmpty(strTrimmedDescriptor))
+                        {
+                            objDescriptors.Append(LanguageManager.GetString($"String_Desc{strTrimmedDescriptor}", GlobalOptions.Language));
+                            objDescriptors.Append(", ");
+                        }
                         break;
-
                 }
             }
 
@@ -568,6 +571,8 @@ namespace Chummer
             if (objDescriptors.Length > 2)
                 objDescriptors.Length -= 2;
             lblDescriptors.Text = objDescriptors.ToString();
+            if (string.IsNullOrEmpty(lblDescriptors.Text))
+                lblDescriptors.Text = LanguageManager.GetString("String_None", GlobalOptions.Language);
             lblDescriptorsLabel.Visible = !string.IsNullOrEmpty(lblDescriptors.Text);
 
             switch (xmlSpell.SelectSingleNode("type")?.Value)
