@@ -2100,7 +2100,7 @@ namespace Chummer.Backend.Equipment
                     if (!string.IsNullOrEmpty(strSecondHalf))
                         strReturn += '/' + strSecondHalf;
                 }
-                else if (strReturn.Contains("Rating"))
+                else
                 {
                     // If the Capaicty is determined by the Rating, evaluate the expression.
                     // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
@@ -2108,22 +2108,25 @@ namespace Chummer.Backend.Equipment
                     if (blnSquareBrackets)
                         strReturn = strReturn.Substring(1, strReturn.Length - 2);
 
-                    // This has resulted in a non-whole number, so round it (minimum of 1).
-                    object objProcess = CommonFunctions.EvaluateInvariantXPath(strReturn
-                        .CheapReplace("Parent Rating", () => (Parent as IHasRating)?.Rating.ToString(GlobalOptions.InvariantCultureInfo))
-                        .Replace("Rating", Rating.ToString()), out bool blnIsSuccess);
-                    double dblNumber = blnIsSuccess ? (double)objProcess : 1;
-                    if (dblNumber < 1)
-                        dblNumber = 1;
-                    strReturn = dblNumber.ToString("#,0.##", GlobalOptions.CultureInfo);
+                    if (strReturn.Contains("Rating"))
+                    {
+                        // This has resulted in a non-whole number, so round it (minimum of 1).
+                        object objProcess = CommonFunctions.EvaluateInvariantXPath(strReturn
+                            .CheapReplace("Parent Rating", () => (Parent as IHasRating)?.Rating.ToString(GlobalOptions.InvariantCultureInfo))
+                            .Replace("Rating", Rating.ToString()), out bool blnIsSuccess);
+                        double dblNumber = blnIsSuccess ? (double) objProcess : 1;
+                        if (dblNumber < 1)
+                            dblNumber = 1;
+                        strReturn = dblNumber.ToString("#,0.##", GlobalOptions.CultureInfo);
+                    }
+                    else if (decimal.TryParse(strReturn, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decimal decReturn))
+                    {
+                        // Just a straight Capacity, so return the value.
+                        strReturn = decReturn.ToString("#,0.##", GlobalOptions.CultureInfo);
+                    }
 
                     if (blnSquareBrackets)
                         strReturn = '[' + strReturn + ']';
-                }
-                else if (decimal.TryParse(strReturn, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decimal decReturn))
-                {
-                    // Just a straight Capacity, so return the value.
-                    strReturn = decReturn.ToString("#,0.##", GlobalOptions.CultureInfo);
                 }
 
                 return strReturn;
@@ -2349,9 +2352,9 @@ namespace Chummer.Backend.Equipment
 
                 // Only items that contain square brackets should consume Capacity. Everything else is treated as [0].
                 strCapacity = strCapacity.StartsWith('[') ? strCapacity.Substring(1, strCapacity.Length - 2) : "0";
-                if (strCapacity == "*")
-                    return 0;
-                return Convert.ToDecimal(strCapacity, GlobalOptions.CultureInfo);
+                if (decimal.TryParse(strCapacity, NumberStyles.Any, GlobalOptions.CultureInfo, out decimal decReturn))
+                    return decReturn;
+                return 0;
             }
         }
 
@@ -2395,10 +2398,11 @@ namespace Chummer.Backend.Equipment
                     {
                         // If this is a multiple-capacity item, use only the first half.
                         strMyCapacity = strMyCapacity.Substring(0, intPos);
-                        decCapacity = Convert.ToDecimal(strMyCapacity, GlobalOptions.CultureInfo);
+                        if (!decimal.TryParse(strMyCapacity, NumberStyles.Any, GlobalOptions.CultureInfo, out decCapacity))
+                            decCapacity = 0;
                     }
-                    else
-                        decCapacity = Convert.ToDecimal(strMyCapacity, GlobalOptions.CultureInfo);
+                    else if (!decimal.TryParse(strMyCapacity, NumberStyles.Any, GlobalOptions.CultureInfo, out decCapacity))
+                        decCapacity = 0;
 
                     if (Children.Count > 0)
                     {

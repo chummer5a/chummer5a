@@ -413,7 +413,20 @@ namespace Chummer
                 {
                     string useAI = "NotSet";
                     LoadStringFromRegistry(ref useAI, "useloggingApplicationInsights");
-                    _enumUseLoggingApplicationInsights = (UseAILogging)Enum.Parse(typeof(UseAILogging), useAI);
+                    switch (useAI)
+                    {
+                        //legacy convert of checkbox bool
+                        case "False":
+                            _enumUseLoggingApplicationInsights = UseAILogging.NotSet;
+                            break;
+                        //legacy convert of checkbox bool
+                        case "True":
+                            _enumUseLoggingApplicationInsights = UseAILogging.Yes;
+                            break;
+                        default:
+                            _enumUseLoggingApplicationInsights = (UseAILogging) Enum.Parse(typeof(UseAILogging), useAI);
+                            break;
+                    }
                 }
                 catch (Exception e)
                 {

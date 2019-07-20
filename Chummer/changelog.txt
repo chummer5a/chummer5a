@@ -41,6 +41,8 @@ Application Fixes:
 - Changing metatypes in Create mode will now also remove any marker qualities for removed metatype removable qualities.
 - Fixed an issue that caused removing removable metatype qualities with first-level-only improvements to not remove those first-level-only improvements.
 - Fixed an issue with the Karma Metatype form that would soft-lock the application waiting for an input for critter powers and programs.
+- Fixed issues where crashes and unexpected behavior could occur when checking the capacity of parent gear items with children that have fractional capacity costs.
+- Spells with no descriptors will no longer display a label saying that the descriptor text is not found in the spell selection screen.
 
 Data Changes:
 

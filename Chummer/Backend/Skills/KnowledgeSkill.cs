@@ -88,7 +88,7 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// Is the skill allowed to be upgraded through karma or points?
         /// </summary>
-        public bool AllowUpgrade { get; set; }
+        public bool AllowUpgrade { get; set; } = true;
 
         public string WriteableName
         {

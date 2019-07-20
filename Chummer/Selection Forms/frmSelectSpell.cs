@@ -577,6 +577,8 @@ namespace Chummer
             if (objDescriptors.Length > 2)
                 objDescriptors.Length -= 2;
             lblDescriptors.Text = objDescriptors.ToString();
+            if (string.IsNullOrEmpty(lblDescriptors.Text))
+                lblDescriptors.Text = LanguageManager.GetString("String_None", GlobalOptions.Language);
             lblDescriptorsLabel.Visible = !string.IsNullOrEmpty(lblDescriptors.Text);
 
             switch (xmlSpell.SelectSingleNode("type")?.Value)

@@ -4301,7 +4301,7 @@
       <maxrating>6</maxrating>
       <armorcapacity>[Rating]</armorcapacity>
       <avail>FixedValues(6F,6F,6F,9F,9F,9F)</avail>
-      <cost>FixedValues(Ratingx1000,Ratingx1000,Ratingx1000,Ratingx2000,Ratingx2000,Ratingx2000)</cost>
+      <cost>FixedValues(Rating*1000,Rating*1000,Rating*1000,Rating*2000,Rating*2000,Rating*2000)</cost>
       <source>BTB</source>
       <page>156</page>
     </mod>
