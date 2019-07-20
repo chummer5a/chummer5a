@@ -480,7 +480,7 @@ namespace Chummer.Backend.Equipment
 	    public string SourceIDString => _guiSourceID.ToString("D");
 
         /// <summary>
-        /// XmlNode for the wireless bonuses (if any) this accessory provides. 
+        /// XmlNode for the wireless bonuses (if any) this accessory provides.
         /// </summary>
         public XmlNode WirelessBonus => _nodWirelessBonus;
 
@@ -1128,7 +1128,7 @@ namespace Chummer.Backend.Equipment
             get => _intSortOrder;
             set => _intSortOrder = value;
         }
-        
+
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
@@ -1179,7 +1179,7 @@ namespace Chummer.Backend.Equipment
         #region Methods
 
         /// <summary>
-        /// Toggle the Wireless Bonus for this armor mod. 
+        /// Toggle the Wireless Bonus for this armor mod.
         /// </summary>
         /// <param name="enable"></param>
         public void ToggleWirelessBonuses(bool enable)

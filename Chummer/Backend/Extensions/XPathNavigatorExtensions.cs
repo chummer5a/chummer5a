@@ -338,7 +338,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Like TryGetField for guids, but taking advantage of guid.TryParse. Allows for returning false if the guid is Empty. 
+        /// Like TryGetField for guids, but taking advantage of guid.TryParse. Allows for returning false if the guid is Empty.
         /// </summary>
         /// <param name="node">XPathNavigator node of the object.</param>
         /// <param name="field">Field name of the InnerXML element we're looking for.</param>

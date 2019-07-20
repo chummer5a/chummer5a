@@ -484,7 +484,7 @@ namespace Chummer.Backend.Attributes
             if (_objCharacter.MetatypeCategory == "Cyberzombie" && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
                 return 1;
 
-            //The most that any attribute can be increased by is 4, plus/minus any improvements that affect the augmented max. 
+            //The most that any attribute can be increased by is 4, plus/minus any improvements that affect the augmented max.
             //TODO: Should probably be in AttributeModifiers property directly?
             int intMeat = Value + Math.Min(AttributeModifiers, MetatypeAugmentedMaximum - MetatypeMaximum + AugmentedMaximumModifiers);
             int intReturn = intMeat;
@@ -507,7 +507,7 @@ namespace Chummer.Backend.Attributes
                             break;
                     }
                 }
-                //TODO: TEST THIS. There's probably some stupid combination of cybersuites that will cause a weird conflict with this and regular limbs. Something something extra limbs, idk. 
+                //TODO: TEST THIS. There's probably some stupid combination of cybersuites that will cause a weird conflict with this and regular limbs. Something something extra limbs, idk.
                 foreach (Cyberware objCyberSuite in _objCharacter.Cyberware.Where(objCyberware =>
                     objCyberware.Category == "Cybersuite"))
                 {
@@ -603,7 +603,7 @@ namespace Chummer.Backend.Attributes
                 // If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
                 if (_objCharacter.MetatypeCategory == "Cyberzombie" && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
                     return 1;
-                
+
                 return Math.Max(0, MetatypeMaximum + MaximumModifiers);
             }
         }
@@ -618,7 +618,7 @@ namespace Chummer.Backend.Attributes
                 // If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
                 if (_objCharacter.MetatypeCategory == "Cyberzombie" && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
                     return 1;
-                
+
                 return Math.Max(0, MetatypeAugmentedMaximum + MaximumModifiers + AugmentedMaximumModifiers);
             }
         }
@@ -849,7 +849,7 @@ namespace Chummer.Backend.Attributes
                     }
                 }
 
-                return _strCachedToolTip = DisplayAbbrev + strSpaceCharacter + '(' + Value.ToString() + ')' + strModifier.ToString();
+                return _strCachedToolTip = DisplayAbbrev + strSpaceCharacter + '(' + Value.ToString(GlobalOptions.CultureInfo) + ')' + strModifier.ToString();
             }
         }
 

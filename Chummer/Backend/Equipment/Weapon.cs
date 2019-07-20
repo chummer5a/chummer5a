@@ -463,7 +463,7 @@ namespace Chummer.Backend.Equipment
             }
             foreach (Weapon objLoopWeapon in lstWeapons)
                 objLoopWeapon.ParentVehicle = ParentVehicle;
-			
+
             ToggleWirelessBonuses(WirelessOn);
         }
 
@@ -771,7 +771,7 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    //Legacy. Location is a string. 
+                    //Legacy. Location is a string.
                     _objLocation =
                         _objCharacter.WeaponLocations.FirstOrDefault(location =>
                             location.Name == strLocation);
@@ -1166,7 +1166,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Effective size of the weapon for mounting purposes. 
+        /// Effective size of the weapon for mounting purposes.
         /// </summary>
         public string SizeCategory => string.IsNullOrWhiteSpace(_strSizeCategory) ? Category : _strSizeCategory;
 
@@ -1449,7 +1449,7 @@ namespace Chummer.Backend.Equipment
 
         /// <summary>
         /// Sourcebook Page Number using a given language file.
-        /// Returns Page if not found or the string is empty. 
+        /// Returns Page if not found or the string is empty.
         /// </summary>
         /// <param name="strLanguage">Language file keyword to use.</param>
         /// <returns></returns>
@@ -1818,7 +1818,7 @@ namespace Chummer.Backend.Equipment
                 if (Category == "Throwing Weapons" || UseSkill == "Throwing Weapons")
                     intUseSTR += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowSTR);
             }
-            
+
             foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList)
             {
                 if (objLoopAttribute.Abbrev == "STR")
@@ -1967,7 +1967,7 @@ namespace Chummer.Backend.Equipment
             }
             if (intImprove != 0)
                 strDamage += " + " + intImprove.ToString();
-            
+
             int intBonus = _objCharacter.Options.MoreLethalGameplay ? 2 : 0;
 
             // Check if the Weapon has Ammunition loaded and look for any Damage bonus/replacement.
@@ -2822,7 +2822,7 @@ namespace Chummer.Backend.Equipment
             else
                 return intAP.ToString();
         }
-        
+
         /// <summary>
         /// The Weapon's total RC including Accessories and Modifications.
         /// </summary>
@@ -3561,7 +3561,7 @@ namespace Chummer.Backend.Equipment
             objRange.Replace("/", " div ");
 
             object objProcess = CommonFunctions.EvaluateInvariantXPath(objRange.ToString(), out bool blnIsSuccess);
-            
+
             return blnIsSuccess ? decimal.ToInt32(decimal.Ceiling(Convert.ToDecimal(objProcess, GlobalOptions.InvariantCultureInfo) * _decRangeMultiplier)) : -1;
         }
 
@@ -4715,7 +4715,7 @@ namespace Chummer.Backend.Equipment
 
         #region Methods
         /// <summary>
-        /// Toggle the Wireless Bonus for this armor. 
+        /// Toggle the Wireless Bonus for this armor.
         /// </summary>
         /// <param name="enable"></param>
         public void ToggleWirelessBonuses(bool enable)
@@ -5536,7 +5536,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Check whether the weapon is not removeable due to various restrictions. 
+        /// Check whether the weapon is not removable due to various restrictions.
         /// </summary>
         /// <returns></returns>
         private bool CanBeRemoved()

@@ -364,7 +364,7 @@ namespace Chummer
         public bool ReadOnly => _blnReadOnly;
 
         public bool NotReadOnly => !ReadOnly;
-        
+
         /// <summary>
         /// Total points used for this contact.
         /// </summary>

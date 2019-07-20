@@ -30,7 +30,7 @@ using Chummer.Annotations;
 
 namespace Chummer.Backend.Attributes
 {
-    
+
 	public class AttributeSection : INotifyMultiplePropertyChanged
 	{
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -197,6 +197,8 @@ namespace Chummer.Backend.Attributes
 
 	    public async void Create(XmlNode charNode, int intValue, int intMinModifier = 0, int intMaxModifier = 0)
         {
+            if (charNode == null)
+                return;
             using (var op_create_char_attrib = Timekeeper.StartSyncron("create_char_attrib", null, CustomActivity.OperationType.RequestOperation, charNode?.InnerText))
             {
                 int intOldBODBase = _objCharacter.BOD.Base;

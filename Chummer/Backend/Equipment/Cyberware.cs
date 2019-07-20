@@ -355,7 +355,7 @@ namespace Chummer.Backend.Equipment
             _objParentVehicle = objParentVehicle;
             if (!objXmlCyberware.TryGetField("id", Guid.TryParse, out _guiSourceID))
             {
-                Log.Warn(new object[] { "Missing id field for armor xmlnode", objXmlCyberware });
+                Log.Warn(new object[] { "Missing id field for cyberware xmlnode", objXmlCyberware });
                 Utils.BreakIfDebug();
             }
             else
@@ -1118,7 +1118,7 @@ namespace Chummer.Backend.Equipment
                 GetNode()?.TryGetStringFieldQuickly("modfirewall", ref _strModFirewall);
             if (!objNode.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray))
                 GetNode()?.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray);
-            
+
             if (blnCopy)
             {
                 if (Bonus != null || WirelessBonus != null || PairBonus != null || WirelessPairBonus != null)
@@ -3208,7 +3208,7 @@ namespace Chummer.Backend.Equipment
                     // Run through its Children and deduct the Capacity costs.
                     foreach (Cyberware objChildCyberware in Children)
                     {
-                        // Children that are built into the parent 
+                        // Children that are built into the parent
                         if (objChildCyberware.PlugsIntoModularMount == HasModularMount && !string.IsNullOrWhiteSpace(HasModularMount) ||
                             objChildCyberware.ParentID == InternalId) continue;
                         string strCapacity = objChildCyberware.CalculatedCapacity;
@@ -4265,7 +4265,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Purchases a selected piece of Cyberware with a given Grade and Rating. 
+        /// Purchases a selected piece of Cyberware with a given Grade and Rating.
         /// </summary>
         /// <param name="objNode"></param>
         /// <param name="objGrade"></param>
@@ -4409,7 +4409,7 @@ namespace Chummer.Backend.Equipment
                 expenseBuilder.Append('(' + LanguageManager.GetString("String_Grade", GlobalOptions.Language) +
                                       LanguageManager.GetString("String_Space", GlobalOptions.Language) +
                                       Grade.DisplayName(GlobalOptions.Language) +
-                                      LanguageManager.GetString("String_Space", GlobalOptions.Language) + '>' + oldGrade.DisplayName(GlobalOptions.Language) + 
+                                      LanguageManager.GetString("String_Space", GlobalOptions.Language) + '>' + oldGrade.DisplayName(GlobalOptions.Language) +
                                       LanguageManager.GetString("String_Space", GlobalOptions.Language) + LanguageManager.GetString("String_Rating", GlobalOptions.Language) +
                                       oldRating +
                                       LanguageManager.GetString("String_Space", GlobalOptions.Language) + '>' +
@@ -4424,16 +4424,16 @@ namespace Chummer.Backend.Equipment
             ExpenseUndo objUndo = new ExpenseUndo();
             objUndo.CreateNuyen(NuyenExpenseType.AddGear, InternalId);
             objExpense.Undo = objUndo;
-            
+
             if (oldEssence - CalculatedESS() > 0)
             {
-                //The new Essence cost is greater than the old one. 
+                //The new Essence cost is greater than the old one.
                 characterObject.IncreaseEssenceHole((int)(CalculatedESS() * 100));
             }
         }
 
         /// <summary>
-        /// Alias map for SourceDetail control text and tooltip assignation. 
+        /// Alias map for SourceDetail control text and tooltip assignation.
         /// </summary>
         /// <param name="sourceControl"></param>
         public void SetSourceDetail(Control sourceControl)

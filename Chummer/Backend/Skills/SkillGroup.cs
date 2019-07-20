@@ -244,7 +244,7 @@ namespace Chummer.Backend.Skills
                 return _intCachedCareerIncrease > 0;
             }
         }
-        
+
         public bool CareerCanIncrease
         {
             get
@@ -479,7 +479,7 @@ namespace Chummer.Backend.Skills
                                           nameof(CurrentKarmaCost),
                                           nameof(UpgradeKarmaCost));
         }
-        
+
         private readonly List<Skill> _lstAffectedSkills = new List<Skill>();
         private string _strGroupName;
         private readonly Character _objCharacter;
@@ -513,7 +513,7 @@ namespace Chummer.Backend.Skills
                 }
             }
         }
-        
+
         public string DisplayName => DisplayNameMethod(GlobalOptions.Language);
 
         public string DisplayNameMethod(string strLanguage)
@@ -705,7 +705,7 @@ namespace Chummer.Backend.Skills
 
                 int intCost = intUpper * (intUpper + 1);
                 intCost -= intLower * (intLower + 1);
-                intCost /= 2; //We get sqre, need triangle
+                intCost /= 2; //We get square, need triangle
 
                 if (intCost == 1)
                     intCost *= _objCharacter.Options.KarmaNewSkillGroup;

@@ -480,7 +480,7 @@ namespace Chummer.Backend.Equipment
                     }
                     else
                     {
-                        //Legacy. Location is a string. 
+                        //Legacy. Location is a string.
                         Location =
                             _objCharacter.ArmorLocations.FirstOrDefault(location =>
                                 location.Name == objNode["location"].InnerText);
@@ -1559,7 +1559,7 @@ namespace Chummer.Backend.Equipment
 
 
         /// <summary>
-        /// Toggle the Wireless Bonus for this armor. 
+        /// Toggle the Wireless Bonus for this armor.
         /// </summary>
         /// <param name="enable"></param>
         public void ToggleWirelessBonuses(bool enable)
@@ -1678,7 +1678,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Alias map for SourceDetail control text and tooltip assignation. 
+        /// Alias map for SourceDetail control text and tooltip assignation.
         /// </summary>
         /// <param name="sourceControl"></param>
         public void SetSourceDetail(Control sourceControl)
