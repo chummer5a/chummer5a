@@ -9590,6 +9590,30 @@
 			<key>Checkbox_CreateImprovementIgnoreLimits</key>
 			<text>Limits nicht beachten</text>
 		</string>
+		<string>
+			<key>Menu_Tools_SINnersArchetypes</key>
+			<text>Archetypen</text>
+		</string>
+		<string>
+			<key>Menu_Tools_SINners</key>
+			<text>SINner-Gruppen</text>
+		</string>
+		<string>
+			<key>Menu_Tools_SINnerSearch</key>
+			<text>SINner-Suche</text>
+		</string>
+		<string>
+			<key>String_DescObject</key>
+			<text>Objekt</text>
+		</string>
+		<string>
+			<key>String_DescDamaging</key>
+			<text>Schaden</text>
+		</string>
+		<string>
+			<key>String_DescEssence</key>
+			<text>Essenz</text>
+		</string>
 	</strings>
 	<string>
 		<key>String_ApplicationInsights_OnlyLocal</key>
