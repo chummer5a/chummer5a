@@ -543,10 +543,10 @@ namespace Chummer
             get => _strPage;
             set => _strPage = value;
         }
-        
+
         /// <summary>
         /// Sourcebook Page Number using a given language file.
-        /// Returns Page if not found or the string is empty. 
+        /// Returns Page if not found or the string is empty.
         /// </summary>
         /// <param name="strLanguage">Language file keyword to use.</param>
         /// <returns></returns>
@@ -1027,7 +1027,7 @@ namespace Chummer
         #endregion
 
         /// <summary>
-        /// Swaps an old quality for a new one. 
+        /// Swaps an old quality for a new one.
         /// </summary>
         /// <param name="objOldQuality">Old quality that's being removed.</param>
         /// <param name="objCharacter">Character object that the quality will be removed from.</param>

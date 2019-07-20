@@ -315,7 +315,7 @@ namespace Chummer.Backend.Skills
             int intKarmaRating = 0;
             if (xmlSkillNode.Attributes?["text"]?.InnerText != "N")      // Native Languages will have a base + karma rating of 0
                 int.TryParse(xmlSkillNode.Attributes?["base"]?.InnerText, out intKarmaRating); // Only reading karma rating out for now, any base rating will need modification within SkillsSection
-            
+
             Skill objSkill;
             if (blnIsKnowledgeSkill)
             {
@@ -683,7 +683,7 @@ namespace Chummer.Backend.Skills
                     SkillGroupObject.PropertyChanged += OnSkillGroupChanged;
                 }
             }
-            
+
             XmlNodeList xmlSpecList = xmlNode.SelectNodes("specs/spec");
 
             if (xmlSpecList != null)
@@ -769,7 +769,7 @@ namespace Chummer.Backend.Skills
         }
 
         public string DisplayAttribute => DisplayAttributeMethod(GlobalOptions.Language);
-        
+
         private int _intCachedEnabled = -1;
 
         private bool _blnForceDisabled;
@@ -1247,10 +1247,10 @@ namespace Chummer.Backend.Skills
         public SkillGroup SkillGroupObject { get; }
 
         public string Page { get; }
-        
+
         /// <summary>
         /// Sourcebook Page Number using a given language file.
-        /// Returns Page if not found or the string is empty. 
+        /// Returns Page if not found or the string is empty.
         /// </summary>
         /// <param name="strLanguage">Language file keyword to use.</param>
         /// <returns></returns>
@@ -1399,7 +1399,7 @@ namespace Chummer.Backend.Skills
         //This tree keeps track of dependencies
         private readonly DependancyGraph<string> _skillDependencyGraph;
         #endregion
-        
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]

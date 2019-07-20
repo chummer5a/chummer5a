@@ -55,7 +55,6 @@ namespace Chummer.Backend.Equipment
 		private string _strLimit = string.Empty;
 		private int _intSlots;
 		private string _strCost = string.Empty;
-        private string _strSourceId = string.Empty;
         private string _strLocation = string.Empty;
         private string _strAllowedWeapons = string.Empty;
         private int _intSortOrder;

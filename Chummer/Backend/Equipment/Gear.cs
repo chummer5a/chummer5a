@@ -785,7 +785,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (!objNode.TryGetGuidFieldQuickly("id", ref _guiSourceID))
                 {
-                    XmlNode node = GetNode(GlobalOptions.Language,objNode["name"].InnerText,objNode["category"].InnerText);
+                    XmlNode node = GetNode(GlobalOptions.Language, objNode["name"]?.InnerText, objNode["category"]?.InnerText);
                     node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
                 }
             }
@@ -896,7 +896,7 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    //Legacy. Location is a string. 
+                    //Legacy. Location is a string.
                     _objLocation =
                         CharacterObject.GearLocations.FirstOrDefault(location =>
                             location.Name == strLocation);
@@ -1042,7 +1042,7 @@ namespace Chummer.Backend.Equipment
                 }
                 ChangeEquippedStatus(false);
             }
-            
+
             if (!objNode.TryGetStringFieldQuickly("programlimit", ref _strProgramLimit))
                 GetNode()?.TryGetStringFieldQuickly("programs", ref _strProgramLimit);
             objNode.TryGetStringFieldQuickly("overclocked", ref _strOverclocked);
@@ -1201,7 +1201,7 @@ namespace Chummer.Backend.Equipment
         #region Properties
 
         /// <summary>
-        /// Guid of the object from the data. You probably want to use SourceIDString instead. 
+        /// Guid of the object from the data. You probably want to use SourceIDString instead.
         /// </summary>
         public Guid SourceID
         {
@@ -1385,7 +1385,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Processes a string into an int based on logical processing. 
+        /// Processes a string into an int based on logical processing.
         /// </summary>
         /// <param name="strExpression"></param>
         /// <returns></returns>
@@ -1570,7 +1570,7 @@ namespace Chummer.Backend.Equipment
 
         /// <summary>
         /// Sourcebook Page Number using a given language file.
-        /// Returns Page if not found or the string is empty. 
+        /// Returns Page if not found or the string is empty.
         /// </summary>
         /// <param name="strLanguage">Language file keyword to use.</param>
         /// <returns></returns>
@@ -1598,7 +1598,7 @@ namespace Chummer.Backend.Equipment
                 return _strCanFormPersona.Contains("Self") || Children.Any(x => x.CanFormPersona.Contains("Parent"));
             }
         }
-        
+
         /// <summary>
         /// A List of child pieces of Gear.
         /// </summary>
@@ -1753,7 +1753,7 @@ namespace Chummer.Backend.Equipment
                                  Category == "Tactical AR Software" ||
                                  Category == "Telematics Infrastructure Software" ||
                                  Category == "Sensor Software";
-        
+
         /// <summary>
         /// Cost multiplier for Children attached to this Gear.
         /// </summary>
@@ -2164,7 +2164,7 @@ namespace Chummer.Backend.Equipment
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strFirstHalf.Replace("Rating", Rating.ToString()), out bool blnIsSuccess);
                         strReturn = blnIsSuccess ? ((double)objProcess).ToString("#,0.##", GlobalOptions.CultureInfo) : strFirstHalf;
                     }
-                    
+
                     if (blnSquareBrackets)
                         strReturn = '[' + strReturn + ']';
                     strReturn += '/' + strSecondHalf;
@@ -3252,8 +3252,6 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Recursive method to add a Gear's Improvements to a character when moving them from a Vehicle.
         /// </summary>
-        /// <param name="objGear">Gear to create Improvements for.
-        /// </param>
         public void AddGearImprovements()
         {
             string strForce = string.Empty;
@@ -3325,7 +3323,7 @@ namespace Chummer.Backend.Equipment
             CharacterObject.ExpenseEntries.AddWithSort(objExpense);
             CharacterObject.Nuyen += decAmount;
         }
-        
+
         public void SetSourceDetail(Control sourceControl)
         {
             if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
