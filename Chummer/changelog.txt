@@ -65,6 +65,9 @@ New Strings:
 - String_Bullets
 - Checkbox_CreateImprovementIgnoreLimits
 - Chummy_Intro
+- String_DescEssence
+- String_DescDamaging
+- String_DescObject
 
 Changed Strings:
 

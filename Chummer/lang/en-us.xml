@@ -3831,6 +3831,10 @@
       <text>Environmental</text>
     </string>
     <string>
+      <key>String_DescEssence</key>
+      <text>Essence</text>
+    </string>
+    <string>
       <key>String_DescExtendedArea</key>
       <text>Extended Area</text>
     </string>
@@ -3841,6 +3845,10 @@
     <string>
       <key>String_DescIndirect</key>
       <text>Indirect</text>
+    </string>
+    <string>
+      <key>String_DescDamaging</key>
+      <text>Damaging</text>
     </string>
     <string>
       <key>String_DescMana</key>
@@ -3897,6 +3905,10 @@
     <string>
       <key>String_DescNegative</key>
       <text>Negative</text>
+    </string>
+    <string>
+      <key>String_DescObject</key>
+      <text>Object</text>
     </string>
     <string>
       <key>String_DescObvious</key>
