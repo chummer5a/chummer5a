@@ -44566,6 +44566,7 @@
       <qualities>
         <positive>
           <quality>Ambidextrous</quality>
+          <quality>Glamour</quality>
           <quality>High Pain Tolerance</quality>
           <quality>High Pain Tolerance</quality>
           <quality>High Pain Tolerance</quality>
@@ -44585,8 +44586,8 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
+        <initiativedice>3</initiativedice>
         <reach>2</reach>
-        <initiativepass>3</initiativepass>
       </bonus>
       <powers>
         <power>Adaptive Coloration</power>
@@ -44605,7 +44606,6 @@
         <power rating="5">Hardened Armor</power>
         <power rating="5">Hardened Mystic Armor</power>
         <power>Fear</power>
-        <power>Glamour</power>
         <power select="Astral Disruption">Innate Spell</power>
         <power select="Camouflage">Innate Spell</power>
         <power select="Clean Water">Innate Spell</power>
