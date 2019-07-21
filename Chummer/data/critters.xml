@@ -27834,12 +27834,11 @@
       <skills>
         <skill>Assensing</skill>
         <skill>Astral Combat</skill>
-        <skill>Dodge</skill>
         <skill>Perception</skill>
         <skill>Unarmed Combat</skill>
       </skills>
-      <source>SM</source>
-      <page>103</page>
+      <source>SG</source>
+      <page>200</page>
     </metatype>
     <metatype>
       <id>7f0f9028-4351-4729-a363-ff8533895d1c</id>

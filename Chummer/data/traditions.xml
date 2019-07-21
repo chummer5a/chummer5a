@@ -485,6 +485,7 @@
         <spiritmanipulation>Spirit of Air</spiritmanipulation>
       </spirits>
     </tradition>
+    <!-- End Region -->
     <!-- Region Forbidden Arcana -->
     <tradition>
       <id>54944188-d58b-4a45-859c-d62be9f966c2</id>
@@ -1450,7 +1451,8 @@
       <source>SR5</source>
       <page>298</page>
     </spirit>
-    <!--SG normal spirits-->
+    <!-- End Region -->
+    <!--Region SG normal spirits-->
     <spirit>
       <id>ea797271-de7e-4e55-ac03-93a8be90b47a</id>
       <name>Guardian Spirit</name>
@@ -1618,7 +1620,54 @@
         <skill attr="agi">Unarmed Combat</skill>
       </skills>
     </spirit>
-    <!--Toxic Spirits-->
+    <spirit>
+      <id>8011bd8a-847f-4527-89d1-58c559ef9480</id>
+      <name>Ally Spirit</name>
+      <bod>F</bod>
+      <agi>F</agi>
+      <rea>F</rea>
+      <str>F</str>
+      <cha>F</cha>
+      <int>F</int>
+      <log>F</log>
+      <wil>F</wil>
+      <ini>(F*2)+4</ini>
+      <bonus>
+        <enableattribute>
+          <name>MAG</name>
+          <min>F</min>
+          <max>F</max>
+          <aug>F</aug>
+          <val>F</val>
+        </enableattribute>
+        <enabletab>
+          <name>critter</name>
+          <name>magician</name>
+        </enabletab>
+        <optionalpowers>
+          <optionalpower>Inhabitation</optionalpower>
+          <optionalpower>Possession</optionalpower>
+          <optionalpower>Materialization</optionalpower>
+        </optionalpowers>
+      </bonus>
+      <powers>
+        <power>Astral Form</power>
+        <power>Banishing Resistance</power>
+        <power>Realistic Form</power>
+        <power>Sapience</power>
+        <power>Sense Link</power>
+      </powers>
+      <skills>
+        <skill>Assensing</skill>
+        <skill>Astral Combat</skill>
+        <skill>Perception</skill>
+        <skill>Unarmed Combat</skill>
+      </skills>
+      <source>SG</source>
+      <page>200</page>
+    </spirit>
+    <!-- End Region -->
+    <!-- Region Toxic Spirits -->
     <spirit>
       <id>05f52567-0406-41ce-ab5b-bea370963207</id>
       <name>Noxious</name>
@@ -1871,7 +1920,8 @@
         <weakness>Allergy (Clean Water, Severe)</weakness>
       </weaknesses>
     </spirit>
-    <!--Blood Spirits-->
+    <!-- End Region -->
+    <!--Region Blood Spirits-->
     <spirit>
       <id>6630bbe6-60e5-44fc-8c5c-15a97b41ee5f</id>
       <name>Blood Spirit</name>
@@ -1912,7 +1962,8 @@
         <weakness>Essence Loss (1 point per day)</weakness>
       </weaknesses>
     </spirit>
-    <!--Insect Spirits-->
+    <!-- End Region -->
+    <!--Region Insect Spirits-->
     <spirit>
       <id>8263b5dc-80d5-4fa2-86ab-e1608acf7342</id>
       <name>Caretaker Spirit</name>
@@ -2181,6 +2232,7 @@
         <weakness>Allergy (Insecticides, Severe)</weakness>
       </weaknesses>
     </spirit>
+    <!-- End Region -->
     <!-- Region Forbidden Arcana -->
     <spirit>
       <id>6237233f-1872-45da-b828-16df75a30127</id>
