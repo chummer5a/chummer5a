@@ -1848,23 +1848,23 @@ namespace Chummer
             {
                 if(!tabOptions.TabPages.Contains(tabPlugins))
                     tabOptions.TabPages.Add(tabPlugins);
-                Program.MainForm.PluginLoader.LoadPlugins(null);
+                Program.PluginLoader.LoadPlugins(null);
             }
             else
             {
                 if(tabOptions.TabPages.Contains(tabPlugins))
                     tabOptions.TabPages.Remove(tabPlugins);
-                Program.MainForm.PluginLoader = null;
+                Program.PluginLoader = null;
             }
         }
 
         private void clbPlugins_VisibleChanged(object sender, EventArgs e)
         {
             clbPlugins.Items.Clear();
-            if (Program.MainForm?.PluginLoader?.MyPlugins?.Any() != true) return;
+            if (Program.PluginLoader?.MyPlugins?.Any() != true) return;
             using (new CursorWait(false, this))
             {
-                foreach (var plugin in Program.MainForm.PluginLoader.MyPlugins)
+                foreach (var plugin in Program.PluginLoader.MyPlugins)
                 {
                     plugin.CustomInitialize(Program.MainForm);
                     if (GlobalOptions.PluginsEnabledDic.TryGetValue(plugin.ToString(), out var check))

@@ -30,8 +30,10 @@ using System.Linq;
  using System.Runtime.InteropServices;
  using System.Runtime.Remoting.Contexts;
  using System.Threading;
+ using System.Threading.Tasks;
  using System.Windows.Forms;
 ﻿using Chummer.Backend;
+ using Chummer.Plugins;
  using Microsoft.ApplicationInsights;
  using Microsoft.ApplicationInsights.DataContracts;
  using Microsoft.ApplicationInsights.Extensibility;
@@ -53,7 +55,13 @@ namespace Chummer
         //    InstrumentationKey = "012fd080-80dc-4c10-97df-4f2cf8c805d5"
         //};
         public static readonly TelemetryClient TelemetryClient = new TelemetryClient();
-        
+        private static PluginControl _pluginLoader = null;
+        public static PluginControl PluginLoader
+        {
+            get => _pluginLoader ?? (_pluginLoader = new PluginControl());
+            set => _pluginLoader = value;
+        }
+
 
         /// <summary>
         /// The main entry point for the application.
@@ -259,13 +267,57 @@ namespace Chummer
                     Console.WriteLine(e);
                     Log.Error(e);
                 }
-
-               
+                //load the plugins and maybe work of any command line arguments
+                //arguments come in the form of
+                //              /plugin:Name:Parameter:Argument
+                //              /plugin:SINners:RegisterUriScheme:0
+                _pluginLoader = new PluginControl();
+                bool showMainForm = true;
                 // Make sure the default language has been loaded before attempting to open the Main Form.
                 LanguageManager.TranslateWinForm(GlobalOptions.Language, null);
+                Program.PluginLoader.LoadPlugins(null);
+                MainForm = new frmChummerMain(false);
+                foreach(var plugin in Program.PluginLoader.MyActivePlugins)
+                    plugin.CustomInitialize(MainForm);
+                if (!Utils.IsUnitTest)
+                {
+                    string[] strArgs = Environment.GetCommandLineArgs();
+                    try
+                    {
+                        var loopResult = Parallel.For(1, strArgs.Length, i =>
+                        {
+                            if (strArgs[i].Contains("/plugin"))
+                            {
+                                string whatplugin = strArgs[i].Substring(strArgs[i].IndexOf("/plugin") + 8);
+                                int endplugin = whatplugin.IndexOf(':');
+                                string parameter = whatplugin.Substring(endplugin + 1);
+                                whatplugin = whatplugin.Substring(0, endplugin);
+                                var plugin = Program.PluginLoader.MyActivePlugins.FirstOrDefault(a => a.ToString() == whatplugin);
+                                if (plugin != null)
+                                {
+                                    showMainForm &= plugin.ProcessCommandLine(parameter);
+                                }
+                            }
+                        });
+                        if (!loopResult.IsCompleted)
+                            Debugger.Break();
+                    }
+                    catch (Exception e)
+                    {
+                        ExceptionTelemetry ex = new ExceptionTelemetry(e)
+                        {
+                            SeverityLevel = SeverityLevel.Warning
+                        };
+                        TelemetryClient?.TrackException(ex);
+                        Log.Warn(e);
+                    }
+                }
+                if (showMainForm)
+                {
+                    MainForm.FormMainInitialize(pvt);
+                    Application.Run(MainForm);
+                }
 
-                MainForm = new frmChummerMain(false, pvt);
-                Application.Run(MainForm);
                 Log.Info(ExceptionHeatmap.GenerateInfo());
                 if (GlobalOptions.UseLoggingApplicationInsights > UseAILogging.OnlyLocal)
                 {
@@ -274,9 +326,8 @@ namespace Chummer
                         TelemetryClient.Flush();
                         //we have to wait a bit to give it time to upload the data
                         Console.WriteLine("Waiting a bit to flush logging data...");
-                        Thread.Sleep(5000);
+                        Thread.Sleep(2000);
                     }
-
                 }
                 
             }

@@ -796,35 +796,14 @@ namespace ChummerHub.Client.UI
 
         private void BRegisterUriScheme_Click(object sender, EventArgs e)
         {
-            var startupExe = System.Windows.Forms.Application.StartupPath;
-            startupExe = System.Reflection.Assembly.GetEntryAssembly()?.Location;
-            RegistryKey key = Registry.ClassesRoot.OpenSubKey("Chummer");  //open myApp protocol's subkey
-            if (key == null)
-            {
-                try
-                {
-                    StaticUtils.RegisterMyProtocol(startupExe);
-                }
-                catch (System.Security.SecurityException se)
-                {
-                    string arguments = "/plugin:SINners:RegisterUriScheme";
-                    ProcessStartInfo startInfo = new ProcessStartInfo
-                    {
-                        FileName = startupExe,
-                        Arguments = arguments,
-                        Verb = "runas"
-                    };
-                    System.Windows.Forms.Application.Exit();
-                    Process.Start(startInfo);
-                }
-                
-            }
+            if (StaticUtils.RegisterChummerProtocol(null))
+                MessageBox.Show("Url registered!");
             else
             {
-                key.Close();
+                MessageBox.Show("Url NOT registered!");
             }
         }
 
-        
+       
     }
 }

@@ -82,6 +82,38 @@ namespace Chummer.Plugins
 
         bool IPlugin.ProcessCommandLine(string parameter)
         {
+            string argument = "";
+            string onlyparameter = parameter;
+            if (parameter.Contains(':'))
+            {
+                argument = parameter.Substring(parameter.IndexOf(':'));
+                argument = argument.TrimStart(':');
+                onlyparameter = parameter.Substring(0, parameter.IndexOf(':'));
+            }
+            switch (onlyparameter)
+            {
+                case "RegisterUriScheme":
+                    if (StaticUtils.RegisterChummerProtocol(argument))
+                    {
+                        Environment.ExitCode = -1;
+                        return false;
+                    }
+                    else
+                    {
+                        Environment.ExitCode = 0;
+                        return false;
+                    }
+                    break;
+                case "Load":
+                    MessageBox.Show("I should load " + argument + "!");
+                    Environment.ExitCode = -1;
+                    return false;
+                    break;
+                default:
+                    Log.Warn("Unknown command line parameter: " + parameter);
+                    return true;
+                    break;
+            }
             return true;
         }
 
@@ -509,6 +541,17 @@ namespace Chummer.Plugins
                                         break;
                                 }
                             }
+                            ToolStripMenuItem newShare = new ToolStripMenuItem("Share")
+                            {
+                                Name = "tsShareChummer",
+                                Tag = "Menu_ShareChummer",
+                                Text = "Share chummer",
+                                Size = new System.Drawing.Size(177, 22),
+                                Image = global::Chummer.Properties.Resources.link_add
+                            };
+                            newShare.Click += NewShareOnClick;
+                            myContextMenuStrip.Items.Add(newShare);
+                            LanguageManager.TranslateWinForm(GlobalOptions.Language, myContextMenuStrip);
                         });
 
                     }
@@ -576,6 +619,30 @@ namespace Chummer.Plugins
                 };
                 node.Tag = objCache;
                 return new List<TreeNode>() { node };
+            }
+        }
+
+        private void NewShareOnClick(object sender, EventArgs e)
+        {
+            TreeNode t = PluginHandler.MainForm.CharacterRoster.treCharacterList.SelectedNode;
+
+            if (t?.Tag is frmCharacterRoster.CharacterCache objCache)
+            {
+                Character c = new Character()
+                {
+                    FileName = objCache.FilePath
+                };
+                if (c.Load(null, false).Result)
+                {
+                    CharacterExtended ce = new CharacterExtended(c, null);
+                    var i = ce.MySINnerFile.Id;
+                    string url = "Chummer://plugin:SINners:Load:" + i;
+                    Clipboard.SetText(url);
+                    string msg = "Link:" + Environment.NewLine + Environment.NewLine;
+                    msg += url + Environment.NewLine + Environment.NewLine;
+                    msg += "...copied to clipboard!";
+                    MessageBox.Show(msg, "Share Chummer", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
             }
         }
 

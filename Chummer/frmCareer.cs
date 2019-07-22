@@ -885,7 +885,7 @@ namespace Chummer
                         // Stupid hack to get the MDI icon to show up properly.
                         Icon = Icon.Clone() as Icon;
 
-                        Program.MainForm.PluginLoader.CallPlugins(this, op_load_frm_career_finishingStuff);
+                        Program.PluginLoader.CallPlugins(this, op_load_frm_career_finishingStuff);
                     }
 
                     if (CharacterObject.InternalIdsNeedingReapplyImprovements.Count > 0)

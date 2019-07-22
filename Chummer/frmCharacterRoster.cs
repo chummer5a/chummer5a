@@ -349,7 +349,7 @@ namespace Chummer
                 },
                 () =>
                 {
-                    foreach(var plugin in Program.MainForm.PluginLoader.MyActivePlugins)
+                    foreach(var plugin in Program.PluginLoader.MyActivePlugins)
                     {
                         var t = Task.Factory.StartNew<IEnumerable<List<TreeNode>>>(() =>
                         {

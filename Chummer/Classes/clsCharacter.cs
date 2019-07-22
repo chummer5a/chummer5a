@@ -1791,11 +1791,11 @@ namespace Chummer
 
 
             //Plugins
-            if(Program.MainForm?.PluginLoader?.MyActivePlugins?.Any() == true)
+            if(Program.PluginLoader?.MyActivePlugins?.Any() == true)
             {
                 // <plugins>
                 objWriter.WriteStartElement("plugins");
-                foreach(var plugin in Program.MainForm.PluginLoader.MyActivePlugins)
+                foreach(var plugin in Program.PluginLoader.MyActivePlugins)
                 {
                     try
                     {
@@ -2024,7 +2024,7 @@ if (!Utils.IsUnitTest){
                             }
                         }
 
-                        if (!string.IsNullOrEmpty(strMissingSourceNames) && !Utils.IsUnitTest)
+                        if (!string.IsNullOrEmpty(strMissingSourceNames) && !Utils.IsUnitTest && showWarnings)
                         {
                             if (MessageBox.Show(
                                     string.Format(
@@ -2123,7 +2123,7 @@ if (!Utils.IsUnitTest){
                         XmlNode xmlGameplayOption =
                             objXmlDocumentGameplayOptions.SelectSingleNode(
                                 "/chummer/gameplayoptions/gameplayoption[name = \"" + GameplayOption + "\"]");
-                        if (xmlGameplayOption == null)
+                        if (xmlGameplayOption == null && showWarnings)
                         {
                             if (MessageBox.Show(
                                     string.Format(
@@ -3564,9 +3564,9 @@ if (!Utils.IsUnitTest){
                     //Plugins
                     using (var op_load_plugins = Timekeeper.StartSyncron("load_plugins", loadActivity))
                     {
-                        if (Program.MainForm?.PluginLoader?.MyActivePlugins?.Any() == true)
+                        if (Program.PluginLoader?.MyActivePlugins?.Any() == true)
                         {
-                            foreach (var plugin in Program.MainForm.PluginLoader.MyActivePlugins)
+                            foreach (var plugin in Program.PluginLoader.MyActivePlugins)
                             {
                                 objXmlNodeList =
                                     objXmlCharacter.SelectNodes("plugins/" + plugin.GetPluginAssembly().GetName().Name);

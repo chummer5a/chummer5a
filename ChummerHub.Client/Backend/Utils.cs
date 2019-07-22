@@ -27,6 +27,8 @@ using static Chummer.frmCharacterRoster;
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.ApplicationInsights;
 using Microsoft.Win32;
+using System.Diagnostics;
+using System.Security.Principal;
 
 namespace ChummerHub.Client.Backend
 {
@@ -408,8 +410,80 @@ namespace ChummerHub.Client.Backend
             return client;
         }
 
-        [PrincipalPermission(SecurityAction.Demand, Role = @"BUILTIN\Administrators")]
-        public static void RegisterMyProtocol(string myAppPath)  //myAppPath = full path to your application
+        //the level-argument is only to absolutely make sure to not spawn processes uncontrolled
+        public static bool RegisterChummerProtocol(string level)
+        {
+            var startupExe = System.Windows.Forms.Application.StartupPath;
+            startupExe = System.Reflection.Assembly.GetEntryAssembly()?.Location;
+            RegistryKey key = Registry.ClassesRoot.OpenSubKey("Chummer"); //open myApp protocol's subkey
+            bool reregisterKey = false;
+            if (key != null)
+            {
+                if (key.GetValue(string.Empty)?.ToString() != "URL: Chummer Protocol")
+                    reregisterKey = true;
+                if (key.GetValue("URL Protocol")?.ToString() != string.Empty)
+                    reregisterKey = true;
+                key = key.OpenSubKey(@"shell\open\command");
+                if (key == null)
+                    reregisterKey = true;
+                else
+                {
+                    if (key.GetValue(string.Empty)?.ToString() != startupExe + " " + "%1")
+                        reregisterKey = true;
+                }
+#if DEBUG
+                //for debug always overwrite the key!
+                reregisterKey = true;
+#endif
+                key.Close();
+            }
+            else
+            {
+                reregisterKey = true;
+            }
+
+            if (reregisterKey == false)
+            {
+                Log.Info("Url Protocol Handler for Chummer was already registered!");
+                return true;
+            }
+
+            try
+            {
+                System.AppDomain.CurrentDomain.SetPrincipalPolicy(PrincipalPolicy.WindowsPrincipal);
+                return StaticUtils.RegisterMyProtocol(startupExe);
+            }
+            catch (System.Security.SecurityException se)
+            {
+                Log.Warn(se);
+                int intLevel = -1;
+                if (Int32.TryParse(level, out int result))
+                {
+                    intLevel = result;
+                }
+
+                string arguments = "/plugin:SINners:RegisterUriScheme:" + ++intLevel;
+                if (intLevel > 1)
+                    return false;
+                ProcessStartInfo startInfo = new ProcessStartInfo
+                {
+                    FileName = startupExe,
+                    Arguments = arguments,
+                    Verb = "runas"
+                };
+                var myAdminProcess = Process.Start(startInfo);
+                myAdminProcess.WaitForExit(30*1000);
+                if (myAdminProcess.ExitCode == -1)
+                    return true;
+                return false;
+            }
+            
+
+            return true;
+        }
+
+        [PrincipalPermission(SecurityAction.Demand, Role = @"BUILTIN\Administrators") ] 
+        public static bool RegisterMyProtocol(string myAppPath)  //myAppPath = full path to your application
         {
             RegistryKey key = Registry.ClassesRoot.OpenSubKey("Chummer");  //open myApp protocol's subkey
 
@@ -425,6 +499,8 @@ namespace ChummerHub.Client.Backend
             }
 
             key.Close();
+            Log.Info("Url Protocol Handler for Chummer registered!");
+            return true;
         }
     }
 
@@ -757,21 +833,12 @@ namespace ChummerHub.Client.Backend
                 CharacterCache objCache = sinner.GetCharacterCache();
                 if (objCache == null)
                 {
-                    //if (!String.IsNullOrEmpty(sinner?.MyExtendedAttributes?.JsonSummary))
-                    //{
-                    //    objCache =
-                    //        Newtonsoft.Json.JsonConvert.DeserializeObject<CharacterCache>(sinner.MyExtendedAttributes
-                    //            .JsonSummary);
-                    //}
-                    //else
-                    //{
-                        objCache = new CharacterCache
-                        {
-                            CharacterName = "pending",
-                            CharacterAlias = sinner.Alias,
-                            BuildMethod = "online"
-                        };
-                    //}
+                    objCache = new CharacterCache
+                    {
+                        CharacterName = "pending",
+                        CharacterAlias = sinner.Alias,
+                        BuildMethod = "online"
+                    };
                 }
                 SetEventHandlers(sinner, objCache);
                 TreeNode memberNode = new TreeNode

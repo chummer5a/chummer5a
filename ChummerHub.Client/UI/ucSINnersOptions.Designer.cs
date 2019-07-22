@@ -29,8 +29,8 @@ namespace ChummerHub.Client.UI
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ucSINnersOptions));
-            GroupControls.RadioButtonListItem radioButtonListItem3 = new GroupControls.RadioButtonListItem();
-            GroupControls.RadioButtonListItem radioButtonListItem4 = new GroupControls.RadioButtonListItem();
+            GroupControls.RadioButtonListItem radioButtonListItem5 = new GroupControls.RadioButtonListItem();
+            GroupControls.RadioButtonListItem radioButtonListItem6 = new GroupControls.RadioButtonListItem();
             this.tlpAllOptions = new System.Windows.Forms.TableLayoutPanel();
             this.tlpOptions = new System.Windows.Forms.TableLayoutPanel();
             this.gbVisibility = new System.Windows.Forms.GroupBox();
@@ -51,10 +51,10 @@ namespace ChummerHub.Client.UI
             this.tlpAccount = new System.Windows.Forms.TableLayoutPanel();
             this.cbRoles = new System.Windows.Forms.ComboBox();
             this.lUsername = new System.Windows.Forms.Label();
+            this.bRegisterUriScheme = new System.Windows.Forms.Button();
             this.gpRadioOnlyPublic = new System.Windows.Forms.GroupBox();
             this.rbListUserMode = new GroupControls.RadioButtonList();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
-            this.bRegisterUriScheme = new System.Windows.Forms.Button();
             this.tlpAllOptions.SuspendLayout();
             this.tlpOptions.SuspendLayout();
             this.gbVisibility.SuspendLayout();
@@ -347,6 +347,18 @@ namespace ChummerHub.Client.UI
             this.lUsername.TabIndex = 17;
             this.lUsername.Text = "User";
             // 
+            // bRegisterUriScheme
+            // 
+            this.bRegisterUriScheme.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.bRegisterUriScheme.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.bRegisterUriScheme.Location = new System.Drawing.Point(606, 43);
+            this.bRegisterUriScheme.Name = "bRegisterUriScheme";
+            this.bRegisterUriScheme.Size = new System.Drawing.Size(108, 23);
+            this.bRegisterUriScheme.TabIndex = 19;
+            this.bRegisterUriScheme.Text = "Register Url-Scheme";
+            this.bRegisterUriScheme.UseVisualStyleBackColor = true;
+            this.bRegisterUriScheme.Click += new System.EventHandler(this.BRegisterUriScheme_Click);
+            // 
             // gpRadioOnlyPublic
             // 
             this.gpRadioOnlyPublic.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
@@ -364,17 +376,17 @@ namespace ChummerHub.Client.UI
             // 
             this.rbListUserMode.AutoScrollMinSize = new System.Drawing.Size(711, 31);
             this.rbListUserMode.Dock = System.Windows.Forms.DockStyle.Fill;
-            radioButtonListItem3.Checked = true;
-            radioButtonListItem3.Subtext = "use only functions available for none registered users";
-            radioButtonListItem3.Tag = "public";
-            radioButtonListItem3.Text = "Public Mode";
-            radioButtonListItem3.ToolTipText = "";
-            radioButtonListItem4.Subtext = "use enchanced functionality (requires registration)";
-            radioButtonListItem4.Tag = "registered";
-            radioButtonListItem4.Text = "Registered Mode";
+            radioButtonListItem5.Checked = true;
+            radioButtonListItem5.Subtext = "use only functions available for none registered users";
+            radioButtonListItem5.Tag = "public";
+            radioButtonListItem5.Text = "Public Mode";
+            radioButtonListItem5.ToolTipText = "";
+            radioButtonListItem6.Subtext = "use enchanced functionality (requires registration)";
+            radioButtonListItem6.Tag = "registered";
+            radioButtonListItem6.Text = "Registered Mode";
             this.rbListUserMode.Items.AddRange(new GroupControls.RadioButtonListItem[] {
-            radioButtonListItem3,
-            radioButtonListItem4});
+            radioButtonListItem5,
+            radioButtonListItem6});
             this.rbListUserMode.Location = new System.Drawing.Point(3, 16);
             this.rbListUserMode.Name = "rbListUserMode";
             this.rbListUserMode.RepeatColumns = 2;
@@ -382,18 +394,6 @@ namespace ChummerHub.Client.UI
             this.rbListUserMode.Size = new System.Drawing.Size(711, 41);
             this.rbListUserMode.TabIndex = 0;
             this.rbListUserMode.SelectedIndexChanged += new System.EventHandler(this.RbListUserMode_SelectedIndexChanged);
-            // 
-            // bRegisterUriScheme
-            // 
-            this.bRegisterUriScheme.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.bRegisterUriScheme.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.bRegisterUriScheme.Location = new System.Drawing.Point(606, 43);
-            this.bRegisterUriScheme.Name = "bRegisterUriScheme";
-            this.bRegisterUriScheme.Size = new System.Drawing.Size(108, 23);
-            this.bRegisterUriScheme.TabIndex = 19;
-            this.bRegisterUriScheme.Text = "Register Url-Scheme";
-            this.bRegisterUriScheme.UseVisualStyleBackColor = true;
-            this.bRegisterUriScheme.Click += new System.EventHandler(this.BRegisterUriScheme_Click);
             // 
             // ucSINnersOptions
             // 
