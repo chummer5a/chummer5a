@@ -266,6 +266,10 @@ namespace Chummer
                                     msg += "\t/plugin:pluginname (like \"SINners\") to trigger (with additional parameters following the symbol \":\")" + Environment.NewLine;
                                     Console.WriteLine(msg);
                                 }
+                                else if (strArgs[i].Contains("/plugin"))
+                                {
+                                    Log.Info("Encountered command line argument, that should already have been handled in one of the plugins: " + strArgs[i]);
+                                }
                                 else if (!strArgs[i].StartsWith('/'))
                                 {
                                     if (!File.Exists(strArgs[i]))

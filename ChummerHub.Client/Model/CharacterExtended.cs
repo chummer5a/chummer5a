@@ -461,7 +461,14 @@ namespace ChummerHub.Client.Model
 
             if (File.Exists(zipPath))
             {
-                File.Delete(zipPath);
+                try
+                {
+                    File.Delete(zipPath);
+                }
+                catch (IOException e)
+                {
+                    Log.Warn(e, "Could not delete File " + zipPath + ": " + e.Message);
+                }
             }
 
             if (!File.Exists(zipPath))

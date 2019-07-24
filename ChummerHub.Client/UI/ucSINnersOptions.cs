@@ -544,9 +544,15 @@ namespace ChummerHub.Client.UI
                 {
                     Log.Trace("Loading: " + file);
                     var c = new Character { FileName = file };
-                    if(!(await c.Load(null, false)))
-                        continue;
-                    Log.Trace("Character loaded: " + c.Name);
+                    using (frmLoading frmLoadingForm = new frmLoading {CharacterFile = file})
+                    {
+                        frmLoadingForm.Reset(36);
+                        frmLoadingForm.Show();
+                        if (!(await c.Load(frmLoadingForm, false)))
+                            continue;
+                        Log.Trace("Character loaded: " + c.Name);
+                    }
+
                     CharacterExtended ce = new CharacterExtended(c, null);
                     await ce.UploadInBackground();
                 }

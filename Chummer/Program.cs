@@ -50,10 +50,6 @@ namespace Chummer
     {
         private static Logger Log = null;
         private const string strChummerGuid = "eb0759c1-3599-495e-8bc5-57c8b3e1b31c";
-        //public static TelemetryConfiguration ApplicationInsightsConfig = new TelemetryConfiguration
-        //{
-        //    InstrumentationKey = "012fd080-80dc-4c10-97df-4f2cf8c805d5"
-        //};
         public static readonly TelemetryClient TelemetryClient = new TelemetryClient();
         private static PluginControl _pluginLoader = null;
         public static PluginControl PluginLoader
@@ -69,6 +65,7 @@ namespace Chummer
         [STAThread]
         static void Main()
         {
+            //for some fun try out this command line parameter: chummer://plugin:SINners:Load:5ff55b9d-7d1c-4067-a2f5-774127346f4e
             PageViewTelemetry pvt = null;
             var startTime = DateTimeOffset.UtcNow;
             using (GlobalChummerMutex = new Mutex(false, @"Global\" + strChummerGuid))
@@ -230,9 +227,9 @@ namespace Chummer
                         pvt = new PageViewTelemetry("frmChummerMain()")
                         {
                             Name = "Chummer Startup: " +
-                                   System.Reflection.Assembly.GetExecutingAssembly().GetName().Version
+                                   System.Reflection.Assembly.GetExecutingAssembly().GetName().Version,
+                            Id = Properties.Settings.Default.UploadClientId.ToString()
                         };
-                        pvt.Id = Properties.Settings.Default.UploadClientId.ToString();
                         pvt.Context.Operation.Name = "Operation Program.Main()";
                         pvt.Properties.Add("parameters", Environment.CommandLine);
                         pvt.Timestamp = startTime;
