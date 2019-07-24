@@ -88,7 +88,7 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// Is the skill allowed to be upgraded through karma or points?
         /// </summary>
-        public bool AllowUpgrade { get; set; }
+        public bool AllowUpgrade { get; set; } = true;
 
         public string WriteableName
         {
@@ -104,13 +104,13 @@ namespace Chummer.Backend.Skills
                 {
                     return;
                 }
-                
+
                 LoadSkillFromData(value);
                 Name = value;
                 OnPropertyChanged();
             }
         }
-        
+
         private void LoadSkillFromData(string strInputSkillName)
         {
             string strSkillName = GetSkillNameFromData(strInputSkillName);
@@ -147,7 +147,7 @@ namespace Chummer.Backend.Skills
             {
                 return strInputSkillName;
             }
-            
+
             XmlNode xmlSkillTranslationNode = XmlManager.Load("skills.xml", GlobalOptions.Language).SelectSingleNode($"/chummer/knowledgeskills/skill[translate = \"{ strInputSkillName }\"]");
 
             if (xmlSkillTranslationNode == null)
@@ -454,7 +454,7 @@ namespace Chummer.Backend.Skills
                 if (objDataNode.TryGetField("id", Guid.TryParse, out Guid guidTemp))
                     SkillId = guidTemp;
             }
-            
+
             string strCategoryString = string.Empty;
             if ((xmlNode.TryGetStringFieldQuickly("type", ref strCategoryString) && !string.IsNullOrEmpty(strCategoryString))
                 || (xmlNode.TryGetStringFieldQuickly("skillcategory", ref strCategoryString) && !string.IsNullOrEmpty(strCategoryString)))

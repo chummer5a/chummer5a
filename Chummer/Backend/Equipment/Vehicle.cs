@@ -705,7 +705,7 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    //Legacy. Location is a string. 
+                    //Legacy. Location is a string.
                     _objLocation =
                         _objCharacter.VehicleLocations.FirstOrDefault(location =>
                             location.Name == strLocation);
@@ -3100,7 +3100,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
         }
-        
+
         public int GetBaseMatrixAttribute(string strAttributeName)
         {
             string strExpression = this.GetMatrixAttributeString(strAttributeName);

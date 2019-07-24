@@ -13702,7 +13702,7 @@ if (!Utils.IsUnitTest){
             XmlNode objXmlGameplayOption = XmlManager.Load("gameplayoptions.xml")
                 .SelectSingleNode($"/chummer/gameplayoptions/gameplayoption[name = \"{GameplayOption}\"]");
             
-            List<string> excludedLimbs = null;
+            List<string> excludedLimbs = new List<string>();
             foreach (XmlNode n in objXmlGameplayOption.SelectNodes("redlinerexclusion/limb"))
             {
                 excludedLimbs.Add(n.Value);

@@ -24,7 +24,7 @@ using Chummer.Backend.Attributes;
 
 namespace Chummer.Backend.Skills
 {
-    
+
     partial class Skill : IHasInternalId
     {
         private int _intBase;
@@ -126,7 +126,7 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        
+
         /// <summary>
         /// Amount of skill points bought with karma and bonues to the skills rating
         /// </summary>
@@ -656,7 +656,7 @@ namespace Chummer.Backend.Skills
 
             Karma += 1;
         }
-        
+
         private int _intCachedCanAffordSpecialization = -1;
 
         public bool CanAffordSpecialization
@@ -824,7 +824,7 @@ namespace Chummer.Backend.Skills
         }
 
         /// <summary>
-        /// Dicepool of the skill, formatted for use in tooltips by other objects. 
+        /// Dicepool of the skill, formatted for use in tooltips by other objects.
         /// </summary>
         /// <param name="pool">Dicepool to use. In most </param>
         /// <param name="space">Space character to use. </param>

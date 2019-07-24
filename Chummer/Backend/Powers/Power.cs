@@ -135,7 +135,7 @@ namespace Chummer
             objWriter.WriteEndElement();
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteEndElement();
-            
+
             CharacterObject.SourceProcess(_strSource);
         }
 
@@ -559,7 +559,7 @@ namespace Chummer
         {
             get
             {
-                //TODO: This isn't super safe, but it's more reliable than checking it at load as improvement effects like Essence Loss take effect after powers are loaded. Might need another solution. 
+                //TODO: This isn't super safe, but it's more reliable than checking it at load as improvement effects like Essence Loss take effect after powers are loaded. Might need another solution.
                 if (_intRating <= TotalMaximumLevels) return _intRating;
                 _intRating = TotalMaximumLevels;
                 return _intRating;
@@ -1036,7 +1036,7 @@ namespace Chummer
                 }
             }
         }
-        
+
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 

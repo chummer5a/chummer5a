@@ -42,7 +42,7 @@ namespace Chummer
         private readonly XmlNode _xmlMetatypeDocumentMetatypesNode;
         private readonly XmlNode _xmlQualityDocumentQualitiesNode;
         private readonly XmlNode _xmlCritterPowerDocumentPowersNode;
-        
+
         #region Form Events
         public frmKarmaMetatype(Character objCharacter, string strXmlFile = "metatypes.xml")
         {
@@ -59,7 +59,7 @@ namespace Chummer
             _xmlBaseQualityDataNode = xmlQualityDoc.GetFastNavigator().SelectSingleNode("/chummer");
             _xmlCritterPowerDocumentPowersNode = XmlManager.Load("critterpowers.xml").SelectSingleNode("/chummer/powers");
         }
-        
+
         private void frmMetatype_Load(object sender, EventArgs e)
         {
             // Populate the Metatype Category list.
@@ -96,7 +96,7 @@ namespace Chummer
                 cboCategory.SelectedIndex = 0;
 
             cboCategory.EndUpdate();
-            
+
             // Add Possession and Inhabitation to the list of Critter Tradition variations.
             chkPossessionBased.SetToolTip(LanguageManager.GetString("Tip_Metatype_PossessionTradition", GlobalOptions.Language));
             chkBloodSpirit.SetToolTip(LanguageManager.GetString("Tip_Metatype_BloodSpirit", GlobalOptions.Language));
@@ -106,9 +106,9 @@ namespace Chummer
                 new ListItem("Possession", _xmlCritterPowerDocumentPowersNode?.SelectSingleNode("power[name = \"Possession\"]/translate")?.InnerText ?? "Possession"),
                 new ListItem("Inhabitation", _xmlCritterPowerDocumentPowersNode?.SelectSingleNode("power[name = \"Inhabitation\"]/translate")?.InnerText ?? "Inhabitation")
             };
-            
+
             lstMethods.Sort(CompareListItems.CompareNames);
-            
+
             foreach (CritterPower objPower in _objCharacter.CritterPowers)
             {
                 string strPowerName = objPower.Name;
@@ -118,13 +118,13 @@ namespace Chummer
                     break;
                 }
             }
-            
+
             cboPossessionMethod.BeginUpdate();
             cboPossessionMethod.ValueMember = "Value";
             cboPossessionMethod.DisplayMember = "Name";
             cboPossessionMethod.DataSource = lstMethods;
             cboPossessionMethod.EndUpdate();
-            
+
             PopulateMetatypes();
             PopulateMetavariants();
             RefreshSelectedMetavariant();
@@ -598,6 +598,7 @@ namespace Chummer
 
         private void RefreshSelectedMetavariant()
         {
+            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
             XPathNavigator objXmlMetatype = null;
             XPathNavigator objXmlMetavariant = null;
             string strSelectedMetatype = lstMetatypes.SelectedValue?.ToString();
@@ -616,27 +617,27 @@ namespace Chummer
                 cmdOK.Enabled = true;
                 if (objXmlMetatype.SelectSingleNode("forcecreature") == null)
                 {
-                    lblBOD.Text = $"{objXmlMetavariant.SelectSingleNode("bodmin")?.Value}/{objXmlMetavariant.SelectSingleNode("bodmax")?.Value} ({objXmlMetavariant.SelectSingleNode("bodaug")?.Value})";
-                    lblAGI.Text = $"{objXmlMetavariant.SelectSingleNode("agimin")?.Value}/{objXmlMetavariant.SelectSingleNode("agimax")?.Value} ({objXmlMetavariant.SelectSingleNode("agiaug")?.Value})";
-                    lblREA.Text = $"{objXmlMetavariant.SelectSingleNode("reamin")?.Value}/{objXmlMetavariant.SelectSingleNode("reamax")?.Value} ({objXmlMetavariant.SelectSingleNode("reaaug")?.Value})";
-                    lblSTR.Text = $"{objXmlMetavariant.SelectSingleNode("strmin")?.Value}/{objXmlMetavariant.SelectSingleNode("strmax")?.Value} ({objXmlMetavariant.SelectSingleNode("straug")?.Value})";
-                    lblCHA.Text = $"{objXmlMetavariant.SelectSingleNode("chamin")?.Value}/{objXmlMetavariant.SelectSingleNode("chamax")?.Value} ({objXmlMetavariant.SelectSingleNode("chaaug")?.Value})";
-                    lblINT.Text = $"{objXmlMetavariant.SelectSingleNode("intmin")?.Value}/{objXmlMetavariant.SelectSingleNode("intmax")?.Value} ({objXmlMetavariant.SelectSingleNode("intaug")?.Value})";
-                    lblLOG.Text = $"{objXmlMetavariant.SelectSingleNode("logmin")?.Value}/{objXmlMetavariant.SelectSingleNode("logmax")?.Value} ({objXmlMetavariant.SelectSingleNode("logaug")?.Value})";
-                    lblWIL.Text = $"{objXmlMetavariant.SelectSingleNode("wilmin")?.Value}/{objXmlMetavariant.SelectSingleNode("wilmax")?.Value} ({objXmlMetavariant.SelectSingleNode("wilaug")?.Value})";
-                    lblINI.Text = $"{objXmlMetavariant.SelectSingleNode("inimin")?.Value}/{objXmlMetavariant.SelectSingleNode("inimax")?.Value} ({objXmlMetavariant.SelectSingleNode("iniaug")?.Value})";
+                    lblBOD.Text = $"{objXmlMetavariant.SelectSingleNode("bodmin")?.Value ?? 0.ToString(GlobalOptions.CultureInfo)}/{objXmlMetavariant.SelectSingleNode("bodmax")?.Value ?? 0.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}({objXmlMetavariant.SelectSingleNode("bodaug")?.Value ?? 0.ToString(GlobalOptions.CultureInfo)})";
+                    lblAGI.Text = $"{objXmlMetavariant.SelectSingleNode("agimin")?.Value ?? 0.ToString(GlobalOptions.CultureInfo)}/{objXmlMetavariant.SelectSingleNode("agimax")?.Value ?? 0.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}({objXmlMetavariant.SelectSingleNode("agiaug")?.Value ?? 0.ToString(GlobalOptions.CultureInfo)})";
+                    lblREA.Text = $"{objXmlMetavariant.SelectSingleNode("reamin")?.Value ?? 0.ToString(GlobalOptions.CultureInfo)}/{objXmlMetavariant.SelectSingleNode("reamax")?.Value ?? 0.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}({objXmlMetavariant.SelectSingleNode("reaaug")?.Value ?? 0.ToString(GlobalOptions.CultureInfo)})";
+                    lblSTR.Text = $"{objXmlMetavariant.SelectSingleNode("strmin")?.Value ?? 0.ToString(GlobalOptions.CultureInfo)}/{objXmlMetavariant.SelectSingleNode("strmax")?.Value ?? 0.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}({objXmlMetavariant.SelectSingleNode("straug")?.Value ?? 0.ToString(GlobalOptions.CultureInfo)})";
+                    lblCHA.Text = $"{objXmlMetavariant.SelectSingleNode("chamin")?.Value ?? 0.ToString(GlobalOptions.CultureInfo)}/{objXmlMetavariant.SelectSingleNode("chamax")?.Value ?? 0.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}({objXmlMetavariant.SelectSingleNode("chaaug")?.Value ?? 0.ToString(GlobalOptions.CultureInfo)})";
+                    lblINT.Text = $"{objXmlMetavariant.SelectSingleNode("intmin")?.Value ?? 0.ToString(GlobalOptions.CultureInfo)}/{objXmlMetavariant.SelectSingleNode("intmax")?.Value ?? 0.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}({objXmlMetavariant.SelectSingleNode("intaug")?.Value ?? 0.ToString(GlobalOptions.CultureInfo)})";
+                    lblLOG.Text = $"{objXmlMetavariant.SelectSingleNode("logmin")?.Value ?? 0.ToString(GlobalOptions.CultureInfo)}/{objXmlMetavariant.SelectSingleNode("logmax")?.Value ?? 0.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}({objXmlMetavariant.SelectSingleNode("logaug")?.Value ?? 0.ToString(GlobalOptions.CultureInfo)})";
+                    lblWIL.Text = $"{objXmlMetavariant.SelectSingleNode("wilmin")?.Value ?? 0.ToString(GlobalOptions.CultureInfo)}/{objXmlMetavariant.SelectSingleNode("wilmax")?.Value ?? 0.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}({objXmlMetavariant.SelectSingleNode("wilaug")?.Value ?? 0.ToString(GlobalOptions.CultureInfo)})";
+                    lblINI.Text = $"{objXmlMetavariant.SelectSingleNode("inimin")?.Value ?? 0.ToString(GlobalOptions.CultureInfo)}/{objXmlMetavariant.SelectSingleNode("inimax")?.Value ?? 0.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}({objXmlMetavariant.SelectSingleNode("iniaug")?.Value ?? 0.ToString(GlobalOptions.CultureInfo)})";
                 }
                 else
                 {
-                    lblBOD.Text = objXmlMetavariant.SelectSingleNode("bodmin")?.Value ?? objXmlMetatype.SelectSingleNode("bodmin")?.Value ?? "0";
-                    lblAGI.Text = objXmlMetavariant.SelectSingleNode("agimin")?.Value ?? objXmlMetatype.SelectSingleNode("agimin")?.Value ?? "0";
-                    lblREA.Text = objXmlMetavariant.SelectSingleNode("reamin")?.Value ?? objXmlMetatype.SelectSingleNode("reamin")?.Value ?? "0";
-                    lblSTR.Text = objXmlMetavariant.SelectSingleNode("strmin")?.Value ?? objXmlMetatype.SelectSingleNode("strmin")?.Value ?? "0";
-                    lblCHA.Text = objXmlMetavariant.SelectSingleNode("chamin")?.Value ?? objXmlMetatype.SelectSingleNode("chamin")?.Value ?? "0";
-                    lblINT.Text = objXmlMetavariant.SelectSingleNode("intmin")?.Value ?? objXmlMetatype.SelectSingleNode("intmin")?.Value ?? "0";
-                    lblLOG.Text = objXmlMetavariant.SelectSingleNode("logmin")?.Value ?? objXmlMetatype.SelectSingleNode("logmin")?.Value ?? "0";
-                    lblWIL.Text = objXmlMetavariant.SelectSingleNode("wilmin")?.Value ?? objXmlMetatype.SelectSingleNode("wilmin")?.Value ?? "0";
-                    lblINI.Text = objXmlMetavariant.SelectSingleNode("inimin")?.Value ?? objXmlMetatype.SelectSingleNode("inimin")?.Value ?? "0";
+                    lblBOD.Text = objXmlMetavariant.SelectSingleNode("bodmin")?.Value ?? objXmlMetatype.SelectSingleNode("bodmin")?.Value ?? 0.ToString(GlobalOptions.CultureInfo);
+                    lblAGI.Text = objXmlMetavariant.SelectSingleNode("agimin")?.Value ?? objXmlMetatype.SelectSingleNode("agimin")?.Value ?? 0.ToString(GlobalOptions.CultureInfo);
+                    lblREA.Text = objXmlMetavariant.SelectSingleNode("reamin")?.Value ?? objXmlMetatype.SelectSingleNode("reamin")?.Value ?? 0.ToString(GlobalOptions.CultureInfo);
+                    lblSTR.Text = objXmlMetavariant.SelectSingleNode("strmin")?.Value ?? objXmlMetatype.SelectSingleNode("strmin")?.Value ?? 0.ToString(GlobalOptions.CultureInfo);
+                    lblCHA.Text = objXmlMetavariant.SelectSingleNode("chamin")?.Value ?? objXmlMetatype.SelectSingleNode("chamin")?.Value ?? 0.ToString(GlobalOptions.CultureInfo);
+                    lblINT.Text = objXmlMetavariant.SelectSingleNode("intmin")?.Value ?? objXmlMetatype.SelectSingleNode("intmin")?.Value ?? 0.ToString(GlobalOptions.CultureInfo);
+                    lblLOG.Text = objXmlMetavariant.SelectSingleNode("logmin")?.Value ?? objXmlMetatype.SelectSingleNode("logmin")?.Value ?? 0.ToString(GlobalOptions.CultureInfo);
+                    lblWIL.Text = objXmlMetavariant.SelectSingleNode("wilmin")?.Value ?? objXmlMetatype.SelectSingleNode("wilmin")?.Value ?? 0.ToString(GlobalOptions.CultureInfo);
+                    lblINI.Text = objXmlMetavariant.SelectSingleNode("inimin")?.Value ?? objXmlMetatype.SelectSingleNode("inimin")?.Value ?? 0.ToString(GlobalOptions.CultureInfo);
                 }
 
                 StringBuilder strbldQualities = new StringBuilder();
@@ -678,27 +679,27 @@ namespace Chummer
                 cmdOK.Enabled = true;
                 if (objXmlMetatype.SelectSingleNode("forcecreature") == null)
                 {
-                    lblBOD.Text = $"{objXmlMetatype.SelectSingleNode("bodmin")?.Value}/{objXmlMetatype.SelectSingleNode("bodmax")?.Value} ({objXmlMetatype.SelectSingleNode("bodaug")?.Value})";
-                    lblAGI.Text = $"{objXmlMetatype.SelectSingleNode("agimin")?.Value}/{objXmlMetatype.SelectSingleNode("agimax")?.Value} ({objXmlMetatype.SelectSingleNode("agiaug")?.Value})";
-                    lblREA.Text = $"{objXmlMetatype.SelectSingleNode("reamin")?.Value}/{objXmlMetatype.SelectSingleNode("reamax")?.Value} ({objXmlMetatype.SelectSingleNode("reaaug")?.Value})";
-                    lblSTR.Text = $"{objXmlMetatype.SelectSingleNode("strmin")?.Value}/{objXmlMetatype.SelectSingleNode("strmax")?.Value} ({objXmlMetatype.SelectSingleNode("straug")?.Value})";
-                    lblCHA.Text = $"{objXmlMetatype.SelectSingleNode("chamin")?.Value}/{objXmlMetatype.SelectSingleNode("chamax")?.Value} ({objXmlMetatype.SelectSingleNode("chaaug")?.Value})";
-                    lblINT.Text = $"{objXmlMetatype.SelectSingleNode("intmin")?.Value}/{objXmlMetatype.SelectSingleNode("intmax")?.Value} ({objXmlMetatype.SelectSingleNode("intaug")?.Value})";
-                    lblLOG.Text = $"{objXmlMetatype.SelectSingleNode("logmin")?.Value}/{objXmlMetatype.SelectSingleNode("logmax")?.Value} ({objXmlMetatype.SelectSingleNode("logaug")?.Value})";
-                    lblWIL.Text = $"{objXmlMetatype.SelectSingleNode("wilmin")?.Value}/{objXmlMetatype.SelectSingleNode("wilmax")?.Value} ({objXmlMetatype.SelectSingleNode("wilaug")?.Value})";
-                    lblINI.Text = $"{objXmlMetatype.SelectSingleNode("inimin")?.Value}/{objXmlMetatype.SelectSingleNode("inimax")?.Value} ({objXmlMetatype.SelectSingleNode("iniaug")?.Value})";
+                    lblBOD.Text = $"{objXmlMetatype.SelectSingleNode("bodmin")?.Value ?? 0.ToString(GlobalOptions.CultureInfo)}/{objXmlMetatype.SelectSingleNode("bodmax")?.Value ?? 0.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}({objXmlMetatype.SelectSingleNode("bodaug")?.Value ?? 0.ToString(GlobalOptions.CultureInfo)})";
+                    lblAGI.Text = $"{objXmlMetatype.SelectSingleNode("agimin")?.Value ?? 0.ToString(GlobalOptions.CultureInfo)}/{objXmlMetatype.SelectSingleNode("agimax")?.Value ?? 0.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}({objXmlMetatype.SelectSingleNode("agiaug")?.Value ?? 0.ToString(GlobalOptions.CultureInfo)})";
+                    lblREA.Text = $"{objXmlMetatype.SelectSingleNode("reamin")?.Value ?? 0.ToString(GlobalOptions.CultureInfo)}/{objXmlMetatype.SelectSingleNode("reamax")?.Value ?? 0.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}({objXmlMetatype.SelectSingleNode("reaaug")?.Value ?? 0.ToString(GlobalOptions.CultureInfo)})";
+                    lblSTR.Text = $"{objXmlMetatype.SelectSingleNode("strmin")?.Value ?? 0.ToString(GlobalOptions.CultureInfo)}/{objXmlMetatype.SelectSingleNode("strmax")?.Value ?? 0.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}({objXmlMetatype.SelectSingleNode("straug")?.Value ?? 0.ToString(GlobalOptions.CultureInfo)})";
+                    lblCHA.Text = $"{objXmlMetatype.SelectSingleNode("chamin")?.Value ?? 0.ToString(GlobalOptions.CultureInfo)}/{objXmlMetatype.SelectSingleNode("chamax")?.Value ?? 0.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}({objXmlMetatype.SelectSingleNode("chaaug")?.Value ?? 0.ToString(GlobalOptions.CultureInfo)})";
+                    lblINT.Text = $"{objXmlMetatype.SelectSingleNode("intmin")?.Value ?? 0.ToString(GlobalOptions.CultureInfo)}/{objXmlMetatype.SelectSingleNode("intmax")?.Value ?? 0.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}({objXmlMetatype.SelectSingleNode("intaug")?.Value ?? 0.ToString(GlobalOptions.CultureInfo)})";
+                    lblLOG.Text = $"{objXmlMetatype.SelectSingleNode("logmin")?.Value ?? 0.ToString(GlobalOptions.CultureInfo)}/{objXmlMetatype.SelectSingleNode("logmax")?.Value ?? 0.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}({objXmlMetatype.SelectSingleNode("logaug")?.Value ?? 0.ToString(GlobalOptions.CultureInfo)})";
+                    lblWIL.Text = $"{objXmlMetatype.SelectSingleNode("wilmin")?.Value ?? 0.ToString(GlobalOptions.CultureInfo)}/{objXmlMetatype.SelectSingleNode("wilmax")?.Value ?? 0.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}({objXmlMetatype.SelectSingleNode("wilaug")?.Value ?? 0.ToString(GlobalOptions.CultureInfo)})";
+                    lblINI.Text = $"{objXmlMetatype.SelectSingleNode("inimin")?.Value ?? 0.ToString(GlobalOptions.CultureInfo)}/{objXmlMetatype.SelectSingleNode("inimax")?.Value ?? 0.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}({objXmlMetatype.SelectSingleNode("iniaug")?.Value ?? 0.ToString(GlobalOptions.CultureInfo)})";
                 }
                 else
                 {
-                    lblBOD.Text = objXmlMetatype.SelectSingleNode("bodmin")?.Value ?? "0";
-                    lblAGI.Text = objXmlMetatype.SelectSingleNode("agimin")?.Value ?? "0";
-                    lblREA.Text = objXmlMetatype.SelectSingleNode("reamin")?.Value ?? "0";
-                    lblSTR.Text = objXmlMetatype.SelectSingleNode("strmin")?.Value ?? "0";
-                    lblCHA.Text = objXmlMetatype.SelectSingleNode("chamin")?.Value ?? "0";
-                    lblINT.Text = objXmlMetatype.SelectSingleNode("intmin")?.Value ?? "0";
-                    lblLOG.Text = objXmlMetatype.SelectSingleNode("logmin")?.Value ?? "0";
-                    lblWIL.Text = objXmlMetatype.SelectSingleNode("wilmin")?.Value ?? "0";
-                    lblINI.Text = objXmlMetatype.SelectSingleNode("inimin")?.Value ?? "0";
+                    lblBOD.Text = objXmlMetatype.SelectSingleNode("bodmin")?.Value ?? 0.ToString(GlobalOptions.CultureInfo);
+                    lblAGI.Text = objXmlMetatype.SelectSingleNode("agimin")?.Value ?? 0.ToString(GlobalOptions.CultureInfo);
+                    lblREA.Text = objXmlMetatype.SelectSingleNode("reamin")?.Value ?? 0.ToString(GlobalOptions.CultureInfo);
+                    lblSTR.Text = objXmlMetatype.SelectSingleNode("strmin")?.Value ?? 0.ToString(GlobalOptions.CultureInfo);
+                    lblCHA.Text = objXmlMetatype.SelectSingleNode("chamin")?.Value ?? 0.ToString(GlobalOptions.CultureInfo);
+                    lblINT.Text = objXmlMetatype.SelectSingleNode("intmin")?.Value ?? 0.ToString(GlobalOptions.CultureInfo);
+                    lblLOG.Text = objXmlMetatype.SelectSingleNode("logmin")?.Value ?? 0.ToString(GlobalOptions.CultureInfo);
+                    lblWIL.Text = objXmlMetatype.SelectSingleNode("wilmin")?.Value ?? 0.ToString(GlobalOptions.CultureInfo);
+                    lblINI.Text = objXmlMetatype.SelectSingleNode("inimin")?.Value ?? 0.ToString(GlobalOptions.CultureInfo);
                 }
 
                 StringBuilder strbldQualities = new StringBuilder();
@@ -821,12 +822,12 @@ namespace Chummer
                         if (intPos > 0)
                         {
                             intPos -= 1;
-                            lblForceLabel.Text = strEssMax.Substring(intPos, 3);
+                            lblForceLabel.Text = strEssMax.Substring(intPos, 3).Replace("D6", LanguageManager.GetString("String_D6", GlobalOptions.Language));
                             nudForce.Maximum = Convert.ToInt32(strEssMax.Substring(intPos, 1)) * 6;
                         }
                         else
                         {
-                            lblForceLabel.Text = "1D6";
+                            lblForceLabel.Text = 1.ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_D6", GlobalOptions.Language);
                             nudForce.Maximum = 6;
                         }
                     }

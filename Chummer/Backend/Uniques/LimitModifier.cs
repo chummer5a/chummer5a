@@ -62,6 +62,7 @@ namespace Chummer
         /// <param name="intBonus">The bonus amount.</param>
         /// <param name="strLimit">The limit this modifies.</param>
         /// <param name="strCondition">Condition when the limit modifier is to be activated.</param>
+        /// <param name="blnCanDelete">Can this limit modifier be deleted.</param>
         public void Create(string strName, int intBonus, string strLimit, string strCondition, bool blnCanDelete)
         {
             _strName = strName;

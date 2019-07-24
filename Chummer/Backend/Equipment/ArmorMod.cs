@@ -322,7 +322,7 @@ namespace Chummer.Backend.Equipment
                             _lstGear.Add(objGear);
                         }
             }
-            
+
             if (!blnCopy) return;
             if (!string.IsNullOrEmpty(Extra))
                 ImprovementManager.ForcedValue = Extra;
@@ -600,7 +600,7 @@ namespace Chummer.Backend.Equipment
 
         /// <summary>
         /// Sourcebook Page Number using a given language file.
-        /// Returns Page if not found or the string is empty. 
+        /// Returns Page if not found or the string is empty.
         /// </summary>
         /// <param name="strLanguage">Language file keyword to use.</param>
         /// <returns></returns>
@@ -1051,7 +1051,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Toggle the Wireless Bonus for this armor mod. 
+        /// Toggle the Wireless Bonus for this armor mod.
         /// </summary>
         /// <param name="enable"></param>
         public void ToggleWirelessBonuses(bool enable)
@@ -1152,7 +1152,7 @@ namespace Chummer.Backend.Equipment
         {
             // Record the cost of the Armor with the ArmorMod.
             decimal decOriginal = Parent.TotalCost;
-            
+
             // Create the Expense Log Entry for the sale.
             decimal decAmount = (decOriginal - Parent.TotalCost) * percentage;
             decAmount += DeleteArmorMod() * percentage;
@@ -1165,7 +1165,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Alias map for SourceDetail control text and tooltip assignation. 
+        /// Alias map for SourceDetail control text and tooltip assignation.
         /// </summary>
         /// <param name="sourceControl"></param>
         public void SetSourceDetail(Control sourceControl)

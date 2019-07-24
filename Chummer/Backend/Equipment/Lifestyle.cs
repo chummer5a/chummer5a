@@ -157,7 +157,7 @@ namespace Chummer.Backend.Equipment
             string strTemp = string.Empty;
             if (objXmlLifestyle.TryGetStringFieldQuickly("increment", ref strTemp))
                 _eIncrement = ConvertToLifestyleIncrement(strTemp);
-            
+
             using (XmlNodeList lstGridNodes = objXmlLifestyle.SelectNodes("freegrids/freegrid"))
             {
                 if (lstGridNodes?.Count > 0)
@@ -568,10 +568,10 @@ namespace Chummer.Backend.Equipment
             get => _strPage;
             set => _strPage = value;
         }
-        
+
         /// <summary>
         /// Sourcebook Page Number using a given language file.
-        /// Returns Page if not found or the string is empty. 
+        /// Returns Page if not found or the string is empty.
         /// </summary>
         /// <param name="strLanguage">Language file keyword to use.</param>
         /// <returns></returns>
@@ -978,7 +978,7 @@ namespace Chummer.Backend.Equipment
 
                 decReturn += decExtraAssetCost;
 
-                //Qualities may have reduced the cost below zero. No spooky mansion payouts here, so clamp it to zero or higher. 
+                //Qualities may have reduced the cost below zero. No spooky mansion payouts here, so clamp it to zero or higher.
                 decReturn = Math.Max(decReturn, 0);
 
                 if (!PrimaryTenant)
@@ -1030,7 +1030,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Purchases an additional month of the selected lifestyle. 
+        /// Purchases an additional month of the selected lifestyle.
         /// </summary>
         /// <param name="CharacterObject">Character to use.</param>
         public void IncrementMonths(Character CharacterObject)

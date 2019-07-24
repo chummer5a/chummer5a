@@ -733,14 +733,10 @@
         <choice>
           <name>Adept: 2 free levels of Improved Potential</name>
           <bonus>
-            <selectpowers>
-              <selectpower limittopowers="Improved Potential (Social),Improved Potential (Physical),Improved Potential (Mental)">
-                <val>1</val>
-              </selectpower>
-              <selectpower limittopowers="Improved Potential (Social),Improved Potential (Physical),Improved Potential (Mental)">
-                <val>1</val>
-              </selectpower>
-            </selectpowers>
+            <selectpower limittopowers="Improved Potential (Social),Improved Potential (Physical),Improved Potential (Mental)">
+              <val>1</val>
+            </selectpower>
+            <specificpower>Improved Potential (Chaos Mentor)</specificpower>
           </bonus>
         </choice>
       </choices>

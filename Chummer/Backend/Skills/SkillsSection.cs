@@ -1095,7 +1095,7 @@ namespace Chummer.Backend.Skills
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        
+
         private void UpdateKnowledgePointsFromAttributes(object sender, PropertyChangedEventArgs e)
         {
             if ((_objCharacter.Options.UseTotalValueForFreeKnowledge && e.PropertyName == nameof(CharacterAttrib.TotalValue)) ||

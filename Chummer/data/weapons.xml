@@ -3184,7 +3184,7 @@
       <ap>-4</ap>
       <mode>FA</mode>
       <rc>0</rc>
-      <ammo>50(c) or 100(belt)</ammo>
+      <ammo>50(c)</ammo>
       <avail>16F</avail>
       <cost>16300</cost>
       <source>SR5</source>
@@ -3217,7 +3217,7 @@
       <ap>-4</ap>
       <mode>FA</mode>
       <rc>0</rc>
-      <ammo>50(c) or 100(belt)</ammo>
+      <ammo>50(c)</ammo>
       <avail>18F</avail>
       <cost>19600</cost>
       <source>RG</source>
@@ -3256,7 +3256,7 @@
       <ap>-4</ap>
       <mode>FA</mode>
       <rc>0</rc>
-      <ammo>50(c) or 100(belt)</ammo>
+      <ammo>50(c)</ammo>
       <avail>16F</avail>
       <cost>16000</cost>
       <source>RG</source>
@@ -3966,7 +3966,7 @@
       <ap>-10</ap>
       <mode>SA</mode>
       <rc>0</rc>
-      <ammo>2x10(c) or External source</ammo>
+      <ammo>2x10(c)</ammo>
       <avail>18F</avail>
       <cost>16000</cost>
       <source>RG</source>
@@ -3990,7 +3990,7 @@
       <ap>-10</ap>
       <mode>SA</mode>
       <rc>0</rc>
-      <ammo>10(c) or External source</ammo>
+      <ammo>10(c)</ammo>
       <avail>14F</avail>
       <cost>7500</cost>
       <source>RG</source>
@@ -4052,7 +4052,7 @@
       <ap>-2</ap>
       <mode>BF/FA</mode>
       <rc>0</rc>
-      <ammo>50(c) or 100(belt)</ammo>
+      <ammo>50(c)</ammo>
       <avail>12F</avail>
       <cost>5800</cost>
       <source>SR5</source>
@@ -4090,7 +4090,7 @@
       <ap>-2</ap>
       <mode>FA</mode>
       <rc>0</rc>
-      <ammo>50(c) or 100(belt)</ammo>
+      <ammo>50(c)</ammo>
       <avail>11F</avail>
       <cost>2000</cost>
       <source>GH3</source>
@@ -4122,7 +4122,7 @@
       <ap>-2</ap>
       <mode>BF/FA</mode>
       <rc>0</rc>
-      <ammo>50(c) or 100(belt)</ammo>
+      <ammo>50(c)</ammo>
       <avail>16F</avail>
       <cost>6500</cost>
       <source>RG</source>
@@ -4801,7 +4801,7 @@
       <ap>-3</ap>
       <mode>FA</mode>
       <rc>0</rc>
-      <ammo>50(c) or 100(belt)</ammo>
+      <ammo>50(c)</ammo>
       <avail>18F</avail>
       <cost>8500</cost>
       <source>RG</source>
@@ -4840,7 +4840,7 @@
       <ap>-3</ap>
       <mode>FA</mode>
       <rc>0</rc>
-      <ammo>50(c) or 100(belt)</ammo>
+      <ammo>50(c)</ammo>
       <avail>12F</avail>
       <cost>7000</cost>
       <source>SR5</source>
@@ -4868,7 +4868,7 @@
       <ap>-2</ap>
       <mode>FA</mode>
       <rc>0</rc>
-      <ammo>50(c) or 100(belt)</ammo>
+      <ammo>50(c)</ammo>
       <avail>16F</avail>
       <cost>7600</cost>
       <source>RG</source>
@@ -4984,7 +4984,7 @@
       <ap>-1</ap>
       <mode>SA/BF/FA</mode>
       <rc>2</rc>
-      <ammo>10(c) or 32(d)</ammo>
+      <ammo>10(c)</ammo>
       <avail>18F</avail>
       <cost>1800</cost>
       <source>RG</source>
@@ -5133,7 +5133,7 @@
       <ap>-1</ap>
       <mode>SA/BF</mode>
       <rc>0</rc>
-      <ammo>10(c) or 24(d)</ammo>
+      <ammo>10(c)</ammo>
       <avail>12F</avail>
       <cost>1100</cost>
       <source>SR5</source>
@@ -8416,7 +8416,7 @@
       <ap>-10</ap>
       <mode>SA</mode>
       <rc>0</rc>
-      <ammo>5(c) or external source</ammo>
+      <ammo>5(c)</ammo>
       <avail>16F</avail>
       <cost>22000</cost>
       <source>HT</source>
@@ -8481,7 +8481,7 @@
       <ap>-8</ap>
       <mode>SA/BF/FA</mode>
       <rc>0</rc>
-      <ammo>10(c) or Internal source</ammo>
+      <ammo>10(c)</ammo>
       <avail>16F</avail>
       <cost>1000000</cost>
       <source>LCD</source>
@@ -10851,7 +10851,7 @@
       <ap>-1</ap>
       <mode>SA/BF</mode>
       <rc>0</rc>
-      <ammo>10(c) or 24(d)</ammo>
+      <ammo>10(c)</ammo>
       <avail>8R</avail>
       <cost>1000</cost>
       <source>2050</source>
@@ -15072,6 +15072,94 @@
       </required>
     </accessory>
     <accessory>
+      <id>6763996b-0458-46ee-a6a5-f50255ace664</id>
+      <name>Belt-Feed, 100-round</name>
+      <mount />
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>SR5</source>
+      <page>417</page>
+      <ammoreplace>100(belt)</ammoreplace>
+      <ammoslots>1</ammoslots>
+      <rating>0</rating>
+      <required>
+        <weapondetails>
+          <OR>
+            <name>RPK HMG</name>
+            <name>Ruhrmetall SF-20</name>
+            <name>Ultamax HMG-2</name>
+            <name>Ingram Valiant</name>
+            <name>Krime Wave</name>
+            <name>Shiawase Armaments Nemesis</name>
+            <name>FN MAG-5</name>
+            <name>Stoner-Ares M202</name>
+            <name>Ultamax MMG</name>
+          </OR>
+        </weapondetails>
+      </required>
+    </accessory>
+    <accessory>
+      <id>a2f6c6bb-58ca-4e77-8e53-16431168bbc2</id>
+      <name>Drum Magazine, 24-round</name>
+      <mount />
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>SR5</source>
+      <page>417</page>
+      <ammoreplace>24(d)</ammoreplace>
+      <ammoslots>1</ammoslots>
+      <rating>0</rating>
+      <required>
+        <weapondetails>
+          <OR>
+            <name>Enfield AS-7</name>
+            <name>Enfield AS-7 (2050)</name>
+          </OR>
+        </weapondetails>
+      </required>
+    </accessory>
+    <accessory>
+      <id>a2f6c6bb-58ca-4e77-8e53-16431168bbc2</id>
+      <name>Drum Magazine, 32-round</name>
+      <mount />
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>SR5</source>
+      <page>417</page>
+      <ammoreplace>32(d)</ammoreplace>
+      <ammoslots>1</ammoslots>
+      <rating>0</rating>
+      <required>
+        <weapondetails>
+          <OR>
+            <name>Auto-Assault 16</name>
+          </OR>
+        </weapondetails>
+      </required>
+    </accessory>
+    <accessory>
+      <id>a2f6c6bb-58ca-4e77-8e53-16431168bbc2</id>
+      <name>External Power Source</name>
+      <mount />
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>SR5</source>
+      <page>417</page>
+      <ammoreplace>External Source</ammoreplace>
+      <ammoslots>1</ammoslots>
+      <rating>0</rating>
+      <required>
+        <weapondetails>
+          <OR>
+            <name>Underbarrel Laser</name>
+            <name>Repeating Laser</name>
+            <name>Ares Lancer MP Laser</name>
+            <name>Ares Redline</name>
+          </OR>
+        </weapondetails>
+      </required>
+    </accessory>
+    <accessory>
       <id>4c47baf0-6b34-4e00-8627-a0f605f84ba0</id>
       <name>Speed Loader</name>
       <mount />
@@ -16766,7 +16854,7 @@
       <cost>500</cost>
       <source>SL</source>
       <page>45</page>
-      <ammoreplace>2500</ammoreplace>
+      <ammoreplace>2500(belt)</ammoreplace>
       <ammoslots>1</ammoslots>
       <rating>0</rating>
     </accessory>
@@ -16898,7 +16986,7 @@
       <source>BTB</source>
       <page>161</page>
       <rating>0</rating>
-      <modifyammocapacity>* 1.5</modifyammocapacity>
+      <modifyammocapacity>+(Weapon * 0.5)</modifyammocapacity>
       <specialmodification>True</specialmodification>
       <required>
         <oneof>
