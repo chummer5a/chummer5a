@@ -18,7 +18,7 @@
     <Optimize>false</Optimize>
     <!-- actual output path and start action definition -->
     <!--<OutputPath>bin\Debug\</OutputPath>-->
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>$(MSBuildProjectDirectory)\bin\$(Configuration)\</OutputPath>
     <StartAction>Program</StartAction>
     <StartProgram>$(OutputPath)..\..\..\Chummer\bin\Debug\Chummer5.exe</StartProgram>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
@@ -334,35 +334,35 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>echo Statement 1: copy $(TargetDir)$(TargetName).* $(TargetDir)Plugins\SINners\ /Y
-        copy $(TargetDir)$(TargetName).* $(TargetDir)Plugins\SINners\ /Y
-        echo Statement 2: copy $(TargetDir)$(TargetName).* $(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SINners\ /Y
-        copy $(TargetDir)$(TargetName).* $(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SINners\ /Y
-        echo Statement 3: copy $(TargetDir)Newtonsoft.Json.* $(TargetDir)Plugins\SINners\ /Y
-        copy $(TargetDir)Newtonsoft.Json.* $(TargetDir)Plugins\SINners\ /Y
-        echo Statement 4: copy $(TargetDir)Microsoft.Rest.ClientRuntime.* $(TargetDir)Plugins\SINners\ /Y
-        copy $(TargetDir)Microsoft.Rest.ClientRuntime.* $(TargetDir)Plugins\SINners\ /Y
-        echo Statement 5: copy $(TargetDir)NLog.* $(TargetDir)Plugins\SINners\ /Y
-        copy $(TargetDir)NLog.* $(TargetDir)Plugins\SINners\ /Y
-        echo Statement 6: copy $(TargetDir)System.Text.Encodings.Web.* $(TargetDir)Plugins\SINners\ /Y
-        copy $(TargetDir)System.Text.Encodings.Web.* $(TargetDir)Plugins\SINners\ /Y
-        echo Statement 7: copy $(TargetDir)System.Composition.* $(TargetDir)Plugins\SINners\ /Y
-        copy $(TargetDir)System.Composition.* $(TargetDir)Plugins\SINners\ /Y
-        echo Statement 8: copy $(TargetDir)System.Diagnostics.DiagnosticSource.* $(TargetDir)Plugins\SINners\ /Y
-        copy $(TargetDir)System.Diagnostics.DiagnosticSource.* $(TargetDir)Plugins\SINners\ /Y
-        echo Statement 9: copy $(TargetDir)Microsoft.ApplicationInsights.* $(TargetDir)Plugins\SINners\ /Y
-        copy $(TargetDir)Microsoft.ApplicationInsights.* $(TargetDir)Plugins\SINners\ /Y
-        echo Statement 10: copy $(TargetDir)GroupControls.* $(TargetDir)Plugins\SINners\ /Y
-        copy $(TargetDir)GroupControls.* $(TargetDir)Plugins\SINners\ /Y
-        echo Statement 11: copy $(TargetDir)Plugins\SINners\* $(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SINners\ /Y
-        copy $(TargetDir)Plugins\SINners\* $(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SINners\ /Y
+    <PostBuildEvent>echo Statement 1: copy "$(TargetDir)$(TargetName).*" "$(TargetDir)Plugins\SINners\" /Y
+        copy "$(TargetDir)$(TargetName).*" "$(TargetDir)Plugins\SINners\" /Y
+        echo Statement 2: copy "$(TargetDir)$(TargetName).*" "$(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SINners\" /Y
+        copy "$(TargetDir)$(TargetName).*" "$(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SINners\" /Y
+        echo Statement 3: copy "$(TargetDir)Newtonsoft.Json.*" "$(TargetDir)Plugins\SINners\" /Y
+        copy "$(TargetDir)Newtonsoft.Json.*" "$(TargetDir)Plugins\SINners\" /Y
+        echo Statement 4: copy "$(TargetDir)Microsoft.Rest.ClientRuntime.*" "$(TargetDir)Plugins\SINners\" /Y
+        copy "$(TargetDir)Microsoft.Rest.ClientRuntime.*" "$(TargetDir)Plugins\SINners\" /Y
+        echo Statement 5: copy "$(TargetDir)NLog.*" "$(TargetDir)Plugins\SINners\" /Y
+        copy "$(TargetDir)NLog.*" "$(TargetDir)Plugins\SINners\" /Y
+        echo Statement 6: copy "$(TargetDir)System.Text.Encodings.Web.*" "$(TargetDir)Plugins\SINners\" /Y
+        copy "$(TargetDir)System.Text.Encodings.Web.*" "$(TargetDir)Plugins\SINners\" /Y
+        echo Statement 7: copy "$(TargetDir)System.Composition.*" "$(TargetDir)Plugins\SINners\" /Y
+        copy "$(TargetDir)System.Composition.*" "$(TargetDir)Plugins\SINners\" /Y
+        echo Statement 8: copy "$(TargetDir)System.Diagnostics.DiagnosticSource.*" "$(TargetDir)Plugins\SINners\" /Y
+        copy "$(TargetDir)System.Diagnostics.DiagnosticSource.*" "$(TargetDir)Plugins\SINners\" /Y
+        echo Statement 9: copy "$(TargetDir)Microsoft.ApplicationInsights.*" "$(TargetDir)Plugins\SINners\" /Y
+        copy "$(TargetDir)Microsoft.ApplicationInsights.*" "$(TargetDir)Plugins\SINners\" /Y
+        echo Statement 10: copy "$(TargetDir)GroupControls.*" "$(TargetDir)Plugins\SINners\" /Y
+        copy "$(TargetDir)GroupControls.*" "$(TargetDir)Plugins\SINners\" /Y
+        echo Statement 11: copy "$(TargetDir)Plugins\SINners\*" "$(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SINners\" /Y
+        copy "$(TargetDir)Plugins\SINners\*" "$(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SINners\" /Y
     </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>echo Statement 1: mkdir $(TargetDir)Plugins\SINners\
-        mkdir $(TargetDir)Plugins\SINners\
-        echo Statement 2: mkdir $(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SINners\
-        mkdir $(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SINners\
+    <PreBuildEvent>echo Statement 1: mkdir "$(TargetDir)Plugins\SINners\"
+        mkdir "$(TargetDir)Plugins\SINners\"
+        echo Statement 2: mkdir "$(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SINners\"
+        mkdir "$(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SINners\"
         Exit 0</PreBuildEvent>
   </PropertyGroup>
 </Project>

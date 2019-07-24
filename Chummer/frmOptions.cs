@@ -29,11 +29,13 @@ using Application = System.Windows.Forms.Application;
 using System.Text;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.Win32;
+using NLog;
 
 namespace Chummer
 {
     public partial class frmOptions : Form
     {
+        private static NLog.Logger Log = LogManager.GetCurrentClassLogger();
         private readonly CharacterOptions _characterOptions = new CharacterOptions(null);
         private readonly IList<CustomDataDirectoryInfo> _lstCustomDataDirectoryInfos;
         private bool _blnSkipRefresh;
@@ -1042,8 +1044,19 @@ namespace Chummer
             if(!string.IsNullOrEmpty(strOldSelected))
             {
                 cboBuildMethod.SelectedValue = strOldSelected;
-                if(cboBuildMethod.SelectedIndex == -1 && lstBuildMethod.Count > 0)
-                    cboBuildMethod.SelectedIndex = 0;
+                if (cboBuildMethod.SelectedIndex == -1 && lstBuildMethod.Count > 0)
+                {
+                    try
+                    {
+                        cboBuildMethod.SelectedIndex = 0;
+                    }
+                    catch (ArgumentOutOfRangeException e)
+                    {
+                        //if someone stops here: WHY THE HELL IS THIS HAPPENING NOW?
+                        System.Diagnostics.Debugger.Break();
+                    }
+                }
+                    
             }
 
             cboBuildMethod.EndUpdate();
