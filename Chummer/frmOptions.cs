@@ -29,11 +29,13 @@ using Application = System.Windows.Forms.Application;
 using System.Text;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.Win32;
+using NLog;
 
 namespace Chummer
 {
     public partial class frmOptions : Form
     {
+        private static NLog.Logger Log = LogManager.GetCurrentClassLogger();
         private readonly CharacterOptions _characterOptions = new CharacterOptions(null);
         private readonly IList<CustomDataDirectoryInfo> _lstCustomDataDirectoryInfos;
         private bool _blnSkipRefresh;
@@ -1042,8 +1044,11 @@ namespace Chummer
             if(!string.IsNullOrEmpty(strOldSelected))
             {
                 cboBuildMethod.SelectedValue = strOldSelected;
-                if(cboBuildMethod.SelectedIndex == -1 && lstBuildMethod.Count > 0)
+                if (cboBuildMethod.SelectedIndex == -1 && lstBuildMethod.Count > 0)
+                {
                     cboBuildMethod.SelectedIndex = 0;
+                }
+                    
             }
 
             cboBuildMethod.EndUpdate();
@@ -1848,24 +1853,25 @@ namespace Chummer
             {
                 if(!tabOptions.TabPages.Contains(tabPlugins))
                     tabOptions.TabPages.Add(tabPlugins);
-                Program.MainForm.PluginLoader.LoadPlugins(null);
+                Program.PluginLoader.LoadPlugins(null);
             }
             else
             {
                 if(tabOptions.TabPages.Contains(tabPlugins))
                     tabOptions.TabPages.Remove(tabPlugins);
-                Program.MainForm.PluginLoader = null;
+                Program.PluginLoader = null;
             }
         }
 
         private void clbPlugins_VisibleChanged(object sender, EventArgs e)
         {
             clbPlugins.Items.Clear();
-            if (Program.MainForm?.PluginLoader?.MyPlugins?.Any() != true) return;
+            if (Program.PluginLoader?.MyPlugins?.Any() != true) return;
             using (new CursorWait(false, this))
             {
-                foreach (var plugin in Program.MainForm.PluginLoader.MyPlugins)
+                foreach (var plugin in Program.PluginLoader.MyPlugins)
                 {
+                    plugin.CustomInitialize(Program.MainForm);
                     if (GlobalOptions.PluginsEnabledDic.TryGetValue(plugin.ToString(), out var check))
                     {
                         clbPlugins.Items.Add(plugin, check);
@@ -1892,11 +1898,14 @@ namespace Chummer
 
         private void clbPlugins_ItemCheck(object sender, ItemCheckEventArgs e)
         {
-            var plugin = clbPlugins.Items[e.Index];
-            if(GlobalOptions.PluginsEnabledDic.ContainsKey(plugin.ToString()))
-                GlobalOptions.PluginsEnabledDic.Remove(plugin.ToString());
-            GlobalOptions.PluginsEnabledDic.Add(plugin.ToString(), e.NewValue == CheckState.Checked);
-            OptionsChanged(sender, e);
+            using (new CursorWait(false, this))
+            {
+                var plugin = clbPlugins.Items[e.Index];
+                if (GlobalOptions.PluginsEnabledDic.ContainsKey(plugin.ToString()))
+                    GlobalOptions.PluginsEnabledDic.Remove(plugin.ToString());
+                GlobalOptions.PluginsEnabledDic.Add(plugin.ToString(), e.NewValue == CheckState.Checked);
+                OptionsChanged(sender, e);
+            }
 
         }
 

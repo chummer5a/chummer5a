@@ -62,13 +62,8 @@ namespace Chummer
         private readonly BackgroundWorker _workerVersionUpdateChecker = new BackgroundWorker();
         private readonly Version _objCurrentVersion = Assembly.GetExecutingAssembly().GetName().Version;
         private readonly string _strCurrentVersion;
-        private PluginControl _pluginLoader = null;
-        public PluginControl PluginLoader
-        {
-            get => _pluginLoader ?? (_pluginLoader = new PluginControl());
-            set => _pluginLoader = value;
-        }
-        private readonly Chummy _mascotChummy;
+        
+        private Chummy _mascotChummy;
 
         public string MainTitle
         {
@@ -84,19 +79,38 @@ namespace Chummer
         }
 
         #region Control Events
-        public frmChummerMain(bool isUnitTest = false, PageViewTelemetry pvt = null)
+        public frmChummerMain(bool isUnitTest = false)
         {
             Utils.IsUnitTest = isUnitTest;
             InitializeComponent();
-            _pluginLoader = new PluginControl();
+
+            _strCurrentVersion =
+                $"{_objCurrentVersion.Major}.{_objCurrentVersion.Minor}.{_objCurrentVersion.Build}";
+
+            //lets write that in separate lines to see where the exception is thrown
+            if (GlobalOptions.HideCharacterRoster == true)
+                CharacterRoster = null;
+            else
+            {
+                CharacterRoster = new frmCharacterRoster
+                {
+                    MdiParent = this
+                };
+            }
+
+      
+            
+        }
+
+        //Moved most of the initialization out of the constructor to allow the Mainform to be generated fast
+        //in case of a commandline argument not asking for the mainform to be shown.
+        public void FormMainInitialize(PageViewTelemetry pvt = null)
+        {
+
             using (var op_frmChummerMain = Timekeeper.StartSyncron("frmChummerMain Constructor", null, CustomActivity.OperationType.DependencyOperation, _strCurrentVersion))
             {
                 try
                 {
-                    _strCurrentVersion =
-                        $"{_objCurrentVersion.Major}.{_objCurrentVersion.Minor}.{_objCurrentVersion.Build}";
-
-
                     op_frmChummerMain.MyDependencyTelemetry.Type = "loadfrmChummerMain";
                     op_frmChummerMain.MyDependencyTelemetry.Target = _strCurrentVersion;
 
@@ -163,16 +177,15 @@ namespace Chummer
                     PopulateMRUToolstripMenu(this, null);
 
                     Program.MainForm = this;
-                    PluginLoader.LoadPlugins(op_frmChummerMain);
                     if (GlobalOptions.AllowEasterEggs)
                     {
                         _mascotChummy = new Chummy();
                         _mascotChummy.Show(this);
                     }
 
-                    
 
-                    frmLoading frmLoadingForm = new frmLoading {CharacterFile = Text};
+
+                    frmLoading frmLoadingForm = new frmLoading { CharacterFile = Text };
                     frmLoadingForm.Reset(3);
                     frmLoadingForm.Show();
 
@@ -220,16 +233,7 @@ namespace Chummer
                     }
 
                     frmLoadingForm.PerformStep(LanguageManager.GetString("String_UI"));
-                    //lets write that in separate lines to see where the exception is thrown
-                    if (GlobalOptions.HideCharacterRoster == true)
-                        CharacterRoster = null;
-                    else
-                    {
-                        CharacterRoster = new frmCharacterRoster
-                        {
-                            MdiParent = this
-                        };
-                    }
+                    
 
                     _lstCharacters.CollectionChanged += LstCharactersOnCollectionChanged;
                     _lstOpenCharacterForms.CollectionChanged += LstOpenCharacterFormsOnCollectionChanged;
@@ -251,6 +255,17 @@ namespace Chummer
                                     lock (blnShowTestLock)
                                         blnShowTest = true;
                                 }
+                                else if ((strArgs[i] == "/help")
+                                    || (strArgs[i] == "?")
+                                    || (strArgs[i] == "/?"))
+                                {
+                                    string msg = "Commandline parameters are either " + Environment.NewLine;
+                                    msg += "\t/test" + Environment.NewLine;
+                                    msg += "\t/help" + Environment.NewLine;
+                                    msg += "\t(filename to open)" + Environment.NewLine;
+                                    msg += "\t/plugin:pluginname (like \"SINners\") to trigger (with additional parameters following the symbol \":\")" + Environment.NewLine;
+                                    Console.WriteLine(msg);
+                                }
                                 else if (!strArgs[i].StartsWith('/'))
                                 {
                                     if (!File.Exists(strArgs[i]))
@@ -259,7 +274,6 @@ namespace Chummer
                                             "Chummer started with unknown command line arguments: " +
                                             strArgs.Aggregate((j, k) => j + " " + k));
                                     }
-
                                     if (lstCharactersToLoad.Any(x => x.FileName == strArgs[i])) return;
                                     Character objLoopCharacter = LoadCharacter(strArgs[i]).Result;
                                     lstCharactersToLoad.Add(objLoopCharacter);
@@ -279,7 +293,7 @@ namespace Chummer
                             op_frmChummerMain.tc.TrackException(ex);
                             Log.Warn(e);
                         }
-                        
+
                     }
 
                     frmLoadingForm.PerformStep(LanguageManager.GetString("String_UI"));
@@ -296,7 +310,7 @@ namespace Chummer
                         CharacterRoster.Show();
                     }
 
-                    PluginLoader.CallPlugins(toolsMenu, op_frmChummerMain);
+                    Program.PluginLoader.CallPlugins(toolsMenu, op_frmChummerMain);
 
                     // Set the Tag for each ToolStrip item so it can be translated.
                     foreach (ToolStripMenuItem objItem in menuStrip.Items.OfType<ToolStripMenuItem>())
@@ -318,10 +332,9 @@ namespace Chummer
                     Log.Error(e);
                     throw;
                 }
-                
+
             }
 
-            
         }
 
         private void LstOpenCharacterFormsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

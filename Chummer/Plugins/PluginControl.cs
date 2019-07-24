@@ -42,6 +42,7 @@ namespace Chummer.Plugins
         IEnumerable<TabPage> GetTabPages(frmCreate input);
         IEnumerable<ToolStripMenuItem> GetMenuItems(ToolStripMenuItem menu);
         ITelemetry SetTelemetryInitialize(ITelemetry telemetry);
+        bool ProcessCommandLine(string parameter);
 
         Task<IEnumerable<TreeNode>> GetCharacterRosterTreeNode(frmCharacterRoster frmCharRoster, bool forceUpdate);
 
@@ -53,10 +54,11 @@ namespace Chummer.Plugins
         void SetIsUnitTest(bool isUnitTest);
 
         Assembly GetPluginAssembly();
+        void Dispose();
     }
 
 
-    public class PluginControl
+    public class PluginControl : IDisposable
     {
         private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private static CompositionContainer container = null;
@@ -82,7 +84,7 @@ namespace Chummer.Plugins
                 Log.Info("Plugins are globally enabled - entering PluginControl.Initialize()");
 
                 string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Plugins");
-                if (!Directory.Exists("Plugins"))
+                if (!Directory.Exists(path))
                 {
                     Log.Warn("Directory " + path + " not found. No Plugins will be available.");
                     MyPlugins = new List<IPlugin>();
@@ -294,6 +296,11 @@ namespace Chummer.Plugins
             }
         }
 
-      
+
+        public void Dispose()
+        {
+            foreach (var plugin in MyActivePlugins)
+                plugin.Dispose();
+        }
     }
 }

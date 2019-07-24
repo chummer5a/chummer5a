@@ -9777,5 +9777,9 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <key>Menu_Tools_SINnerSearch</key>
       <text>SINner search</text>
     </string>
+    <string>
+      <key>Menu_ShareChummer</key>
+      <text>Share Chummer</text>
+    </string>
   </strings>
 </chummer>

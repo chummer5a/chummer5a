@@ -16,6 +16,7 @@ using System.Net.Http;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.Remoting.Channels;
+using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -25,6 +26,9 @@ using NLog;
 using static Chummer.frmCharacterRoster;
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.ApplicationInsights;
+using Microsoft.Win32;
+using System.Diagnostics;
+using System.Security.Principal;
 
 namespace ChummerHub.Client.Backend
 {
@@ -405,6 +409,99 @@ namespace ChummerHub.Client.Backend
             }
             return client;
         }
+
+        //the level-argument is only to absolutely make sure to not spawn processes uncontrolled
+        public static bool RegisterChummerProtocol(string level)
+        {
+            var startupExe = System.Windows.Forms.Application.StartupPath;
+            startupExe = System.Reflection.Assembly.GetEntryAssembly()?.Location;
+            RegistryKey key = Registry.ClassesRoot.OpenSubKey("Chummer"); //open myApp protocol's subkey
+            bool reregisterKey = false;
+            if (key != null)
+            {
+                if (key.GetValue(string.Empty)?.ToString() != "URL: Chummer Protocol")
+                    reregisterKey = true;
+                if (key.GetValue("URL Protocol")?.ToString() != string.Empty)
+                    reregisterKey = true;
+                key = key.OpenSubKey(@"shell\open\command");
+                if (key == null)
+                    reregisterKey = true;
+                else
+                {
+                    if (key.GetValue(string.Empty)?.ToString() != startupExe + " " + "%1")
+                        reregisterKey = true;
+                }
+#if DEBUG
+                //for debug always overwrite the key!
+                reregisterKey = true;
+#endif
+                key.Close();
+            }
+            else
+            {
+                reregisterKey = true;
+            }
+
+            if (reregisterKey == false)
+            {
+                Log.Info("Url Protocol Handler for Chummer was already registered!");
+                return true;
+            }
+
+            try
+            {
+                System.AppDomain.CurrentDomain.SetPrincipalPolicy(PrincipalPolicy.WindowsPrincipal);
+                return StaticUtils.RegisterMyProtocol(startupExe);
+            }
+            catch (System.Security.SecurityException se)
+            {
+                Log.Warn(se);
+                int intLevel = -1;
+                if (Int32.TryParse(level, out int result))
+                {
+                    intLevel = result;
+                }
+
+                string arguments = "/plugin:SINners:RegisterUriScheme:" + ++intLevel;
+                if (intLevel > 1)
+                    return false;
+                ProcessStartInfo startInfo = new ProcessStartInfo
+                {
+                    FileName = startupExe,
+                    Arguments = arguments,
+                    Verb = "runas"
+                };
+                var myAdminProcess = Process.Start(startInfo);
+                myAdminProcess.WaitForExit(30*1000);
+                if (myAdminProcess.ExitCode == -1)
+                    return true;
+                return false;
+            }
+            
+
+            return true;
+        }
+
+        [PrincipalPermission(SecurityAction.Demand, Role = @"BUILTIN\Administrators") ] 
+        public static bool RegisterMyProtocol(string myAppPath)  //myAppPath = full path to your application
+        {
+            RegistryKey key = Registry.ClassesRoot.OpenSubKey("Chummer");  //open myApp protocol's subkey
+
+            if (key == null)  //if the protocol is not registered yet...we register it
+            {
+                key = Registry.ClassesRoot.CreateSubKey("Chummer");
+                key.SetValue(string.Empty, "URL: Chummer Protocol");
+                key.SetValue("URL Protocol", string.Empty);
+
+                key = key.CreateSubKey(@"shell\open\command");
+                key.SetValue(string.Empty, myAppPath + " " + "%1");
+                //%1 represents the argument - this tells windows to open this program with an argument / parameter
+            }
+
+            key.Close();
+            Log.Info("Url Protocol Handler for Chummer registered!");
+            return true;
+        }
     }
 
     public class Utils
@@ -736,21 +833,12 @@ namespace ChummerHub.Client.Backend
                 CharacterCache objCache = sinner.GetCharacterCache();
                 if (objCache == null)
                 {
-                    //if (!String.IsNullOrEmpty(sinner?.MyExtendedAttributes?.JsonSummary))
-                    //{
-                    //    objCache =
-                    //        Newtonsoft.Json.JsonConvert.DeserializeObject<CharacterCache>(sinner.MyExtendedAttributes
-                    //            .JsonSummary);
-                    //}
-                    //else
-                    //{
-                        objCache = new CharacterCache
-                        {
-                            CharacterName = "pending",
-                            CharacterAlias = sinner.Alias,
-                            BuildMethod = "online"
-                        };
-                    //}
+                    objCache = new CharacterCache
+                    {
+                        CharacterName = "pending",
+                        CharacterAlias = sinner.Alias,
+                        BuildMethod = "online"
+                    };
                 }
                 SetEventHandlers(sinner, objCache);
                 TreeNode memberNode = new TreeNode
@@ -854,6 +942,7 @@ namespace ChummerHub.Client.Backend
 
         private static void SetEventHandlers(SINners.Models.SINner sinner, CharacterCache objCache)
         {
+            objCache.MyPluginDataDic.Add("SINnerId", sinner?.Id);
             objCache.OnMyDoubleClick -= objCache.OnDefaultDoubleClick;
             objCache.OnMyDoubleClick += (sender, e) => OnMyDoubleClick(sinner, objCache); 
             objCache.OnMyAfterSelect -= objCache.OnDefaultAfterSelect;
@@ -890,6 +979,7 @@ namespace ChummerHub.Client.Backend
                     Log.Error(e);
                 }
             };
+            
             objCache.OnMyContextMenuDeleteClick -= objCache.OnDefaultContextMenuDeleteClick;
             objCache.OnMyContextMenuDeleteClick += async (sender, args) =>
             {
@@ -1138,54 +1228,6 @@ namespace ChummerHub.Client.Backend
             return res;
         }
 
-        
-        //public static async Task<CharacterCache> DownloadSINnerExtended(SINners.Models.SINner sinner, CharacterCache objCache)
-        //{
-        //    try
-        //    {
-
-        //        try
-        //        {
-        //            var client = StaticUtils.GetClient();
-        //            var onlinesinner = await client.GetSINByIdWithHttpMessagesAsync(sinner.Id.Value);
-        //            //var json = onlinesinner.Body.MySINner.MyExtendedAttributes.JsonSummary;
-        //            //var onlineCache = Newtonsoft.Json.JsonConvert.DeserializeObject<CharacterCache>(json);
-        //            objCache.CharacterAlias = onlineCache.CharacterAlias;
-        //            objCache.CharacterName = onlineCache.CharacterName;
-        //            objCache.MugshotBase64 = onlineCache.MugshotBase64;
-        //            objCache.Background = onlineCache.Background;
-        //            objCache.CharacterNotes = onlineCache.CharacterNotes;
-        //            objCache.BuildMethod = onlineCache.BuildMethod;
-        //            objCache.Concept = onlineCache.Concept;
-        //            objCache.Created = onlineCache.Created;
-        //            objCache.Description = onlineCache.Description;
-        //            objCache.ErrorText = onlineCache.ErrorText;
-        //            objCache.Essence = onlineCache.Essence;
-        //            objCache.FileName = onlineCache.FileName;
-        //            objCache.FilePath = onlineCache.FilePath;
-        //            objCache.GameNotes = onlineCache.GameNotes;
-        //            objCache.Karma = onlineCache.Karma;
-        //            objCache.Metatype = onlineCache.Metatype;
-        //            objCache.Metavariant = onlineCache.Metavariant;
-        //            objCache.Mugshot = onlineCache.Mugshot;
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            Log.Exception(ex);
-        //            if (objCache != null)
-        //                objCache.ErrorText = ex.Message;
-        //        }
-
-        //        return objCache;
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        Log.Exception(e);
-        //        objCache.ErrorText = e.Message;
-        //        throw;
-        //    }
-        //}
-
 
         public static async Task<string> DownloadFile(SINners.Models.SINner sinner, CharacterCache objCache)
         {
@@ -1205,7 +1247,8 @@ namespace ChummerHub.Client.Backend
                             || sinner.LastChange == null)
                         {
                             loadFilePath = file;
-                            objCache.FilePath = loadFilePath;
+                            if (objCache != null)
+                                objCache.FilePath = loadFilePath;
                             break;
                         }
                         File.Delete(file);
@@ -1229,7 +1272,6 @@ namespace ChummerHub.Client.Backend
                         if (File.Exists(zippedFile))
                             File.Delete(zippedFile);
                         Exception rethrow = null;
-                        bool downloadedFromGoogle = false;
                         try
                         {
                             using (WebClient wc = new WebClient())
@@ -1270,7 +1312,8 @@ namespace ChummerHub.Client.Backend
                             if (sinner.LastChange != null)
                                 File.SetLastWriteTime(file, sinner.LastChange.Value);
                             loadFilePath = file;
-                            objCache.FilePath = loadFilePath;
+                            if (objCache != null)
+                                objCache.FilePath = loadFilePath;
                         }
                     }
                     catch (Exception ex)
@@ -1280,12 +1323,13 @@ namespace ChummerHub.Client.Backend
                             objCache.ErrorText = ex.Message;
                     }
                 }
-                return objCache.FilePath;
+                return loadFilePath;
             }
             catch (Exception e)
             {
                 Log.Error(e);
-                objCache.ErrorText = e.Message;
+                if (objCache != null)
+                    objCache.ErrorText = e.Message;
                 throw;
             }
         }
@@ -1303,49 +1347,30 @@ namespace ChummerHub.Client.Backend
             
         }
 
-        //public static Task<string> DownloadSINnerExtendedTask(SINners.Models.SINner sinner, CharacterCache objCache)
-        //{
-        //    try
-        //    {
-        //        if ((objCache.DownLoadRunning != null) && (objCache.DownLoadRunning.Status == TaskStatus.Running))
-        //            return objCache.DownLoadRunning;
-
-        //        objCache.DownLoadRunning = Task.Factory.StartNew<string>(() =>
-        //        {
-        //            objCache = DownloadSINnerExtended(sinner, objCache).Result;
-        //            return objCache.ErrorText;
-        //        });
-        //        return objCache.DownLoadRunning;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Log.Exception(ex);
-        //        objCache.ErrorText = ex.ToString();
-        //        throw;
-        //    }
-
-
-        //}
-
+    
         public static Task<string> DownloadFileTask(SINners.Models.SINner sinner, CharacterCache objCache)
         {
             try
             {
-                if ((objCache.DownLoadRunning != null)&& (objCache.DownLoadRunning.Status == TaskStatus.Running))
+                if ((objCache?.DownLoadRunning != null) && (objCache?.DownLoadRunning.Status == TaskStatus.Running))
                     return objCache.DownLoadRunning;
                 Log.Info("Downloading SINner: " + sinner?.Id);
-                objCache.DownLoadRunning = Task.Factory.StartNew<string>(() =>
+                var returntask = Task.Factory.StartNew<string>(() =>
                 {
                     string filepath = DownloadFile(sinner, objCache).Result;
-                    objCache.FilePath = filepath;
-                    return objCache.FilePath;
+                    if (objCache != null)
+                        objCache.FilePath = filepath;
+                    return filepath;
                 });
-                return objCache.DownLoadRunning;
+                if (objCache != null)
+                    objCache.DownLoadRunning = returntask;
+                return returntask;
             }
              catch(Exception ex)
             {
                 Log.Error(ex, "Error downloading sinner " + sinner?.Id + ": ");
-                objCache.ErrorText = ex.ToString();
+                if (objCache != null)
+                    objCache.ErrorText = ex.ToString();
                 throw;
             }
 
