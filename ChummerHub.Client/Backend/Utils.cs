@@ -942,6 +942,7 @@ namespace ChummerHub.Client.Backend
 
         private static void SetEventHandlers(SINners.Models.SINner sinner, CharacterCache objCache)
         {
+            objCache.MyPluginDataDic.Add("SINnerId", sinner?.Id);
             objCache.OnMyDoubleClick -= objCache.OnDefaultDoubleClick;
             objCache.OnMyDoubleClick += (sender, e) => OnMyDoubleClick(sinner, objCache); 
             objCache.OnMyAfterSelect -= objCache.OnDefaultAfterSelect;
@@ -978,6 +979,7 @@ namespace ChummerHub.Client.Backend
                     Log.Error(e);
                 }
             };
+            
             objCache.OnMyContextMenuDeleteClick -= objCache.OnDefaultContextMenuDeleteClick;
             objCache.OnMyContextMenuDeleteClick += async (sender, args) =>
             {
@@ -1226,54 +1228,6 @@ namespace ChummerHub.Client.Backend
             return res;
         }
 
-        
-        //public static async Task<CharacterCache> DownloadSINnerExtended(SINners.Models.SINner sinner, CharacterCache objCache)
-        //{
-        //    try
-        //    {
-
-        //        try
-        //        {
-        //            var client = StaticUtils.GetClient();
-        //            var onlinesinner = await client.GetSINByIdWithHttpMessagesAsync(sinner.Id.Value);
-        //            //var json = onlinesinner.Body.MySINner.MyExtendedAttributes.JsonSummary;
-        //            //var onlineCache = Newtonsoft.Json.JsonConvert.DeserializeObject<CharacterCache>(json);
-        //            objCache.CharacterAlias = onlineCache.CharacterAlias;
-        //            objCache.CharacterName = onlineCache.CharacterName;
-        //            objCache.MugshotBase64 = onlineCache.MugshotBase64;
-        //            objCache.Background = onlineCache.Background;
-        //            objCache.CharacterNotes = onlineCache.CharacterNotes;
-        //            objCache.BuildMethod = onlineCache.BuildMethod;
-        //            objCache.Concept = onlineCache.Concept;
-        //            objCache.Created = onlineCache.Created;
-        //            objCache.Description = onlineCache.Description;
-        //            objCache.ErrorText = onlineCache.ErrorText;
-        //            objCache.Essence = onlineCache.Essence;
-        //            objCache.FileName = onlineCache.FileName;
-        //            objCache.FilePath = onlineCache.FilePath;
-        //            objCache.GameNotes = onlineCache.GameNotes;
-        //            objCache.Karma = onlineCache.Karma;
-        //            objCache.Metatype = onlineCache.Metatype;
-        //            objCache.Metavariant = onlineCache.Metavariant;
-        //            objCache.Mugshot = onlineCache.Mugshot;
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            Log.Exception(ex);
-        //            if (objCache != null)
-        //                objCache.ErrorText = ex.Message;
-        //        }
-
-        //        return objCache;
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        Log.Exception(e);
-        //        objCache.ErrorText = e.Message;
-        //        throw;
-        //    }
-        //}
-
 
         public static async Task<string> DownloadFile(SINners.Models.SINner sinner, CharacterCache objCache)
         {
@@ -1293,7 +1247,8 @@ namespace ChummerHub.Client.Backend
                             || sinner.LastChange == null)
                         {
                             loadFilePath = file;
-                            objCache.FilePath = loadFilePath;
+                            if (objCache != null)
+                                objCache.FilePath = loadFilePath;
                             break;
                         }
                         File.Delete(file);
@@ -1317,7 +1272,6 @@ namespace ChummerHub.Client.Backend
                         if (File.Exists(zippedFile))
                             File.Delete(zippedFile);
                         Exception rethrow = null;
-                        bool downloadedFromGoogle = false;
                         try
                         {
                             using (WebClient wc = new WebClient())
@@ -1358,7 +1312,8 @@ namespace ChummerHub.Client.Backend
                             if (sinner.LastChange != null)
                                 File.SetLastWriteTime(file, sinner.LastChange.Value);
                             loadFilePath = file;
-                            objCache.FilePath = loadFilePath;
+                            if (objCache != null)
+                                objCache.FilePath = loadFilePath;
                         }
                     }
                     catch (Exception ex)
@@ -1368,12 +1323,13 @@ namespace ChummerHub.Client.Backend
                             objCache.ErrorText = ex.Message;
                     }
                 }
-                return objCache.FilePath;
+                return loadFilePath;
             }
             catch (Exception e)
             {
                 Log.Error(e);
-                objCache.ErrorText = e.Message;
+                if (objCache != null)
+                    objCache.ErrorText = e.Message;
                 throw;
             }
         }
@@ -1391,49 +1347,30 @@ namespace ChummerHub.Client.Backend
             
         }
 
-        //public static Task<string> DownloadSINnerExtendedTask(SINners.Models.SINner sinner, CharacterCache objCache)
-        //{
-        //    try
-        //    {
-        //        if ((objCache.DownLoadRunning != null) && (objCache.DownLoadRunning.Status == TaskStatus.Running))
-        //            return objCache.DownLoadRunning;
-
-        //        objCache.DownLoadRunning = Task.Factory.StartNew<string>(() =>
-        //        {
-        //            objCache = DownloadSINnerExtended(sinner, objCache).Result;
-        //            return objCache.ErrorText;
-        //        });
-        //        return objCache.DownLoadRunning;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Log.Exception(ex);
-        //        objCache.ErrorText = ex.ToString();
-        //        throw;
-        //    }
-
-
-        //}
-
+    
         public static Task<string> DownloadFileTask(SINners.Models.SINner sinner, CharacterCache objCache)
         {
             try
             {
-                if ((objCache.DownLoadRunning != null)&& (objCache.DownLoadRunning.Status == TaskStatus.Running))
+                if ((objCache?.DownLoadRunning != null) && (objCache?.DownLoadRunning.Status == TaskStatus.Running))
                     return objCache.DownLoadRunning;
                 Log.Info("Downloading SINner: " + sinner?.Id);
-                objCache.DownLoadRunning = Task.Factory.StartNew<string>(() =>
+                var returntask = Task.Factory.StartNew<string>(() =>
                 {
                     string filepath = DownloadFile(sinner, objCache).Result;
-                    objCache.FilePath = filepath;
-                    return objCache.FilePath;
+                    if (objCache != null)
+                        objCache.FilePath = filepath;
+                    return filepath;
                 });
-                return objCache.DownLoadRunning;
+                if (objCache != null)
+                    objCache.DownLoadRunning = returntask;
+                return returntask;
             }
              catch(Exception ex)
             {
                 Log.Error(ex, "Error downloading sinner " + sinner?.Id + ": ");
-                objCache.ErrorText = ex.ToString();
+                if (objCache != null)
+                    objCache.ErrorText = ex.ToString();
                 throw;
             }
 

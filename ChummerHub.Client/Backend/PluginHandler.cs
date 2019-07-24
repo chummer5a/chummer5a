@@ -23,6 +23,7 @@ using System.Xml;
 using System.Xml.Serialization;
 using Microsoft.Rest;
 using System.Threading;
+using System.Windows.Forms.VisualStyles;
 using System.Windows.Threading;
 using Chummer.Properties;
 using NLog;
@@ -65,10 +66,14 @@ namespace Chummer.Plugins
             MyUploadClient.Id = Properties.Settings.Default.UploadClientId;
         }
 
+
+
         public override string ToString()
         {
             return "SINners";
         }
+
+        
 
         public ITelemetry SetTelemetryInitialize(ITelemetry telemetry)
         {
@@ -111,9 +116,15 @@ namespace Chummer.Plugins
             return true;
         }
 
+        void IPlugin.Dispose()
+        {
+            if (PipeManager != null)
+                PipeManager.StopServer();
+        }
+
         private bool HandleLoadCommand(string argument)
         {
-            PipeManager.Write(argument);
+            PipeManager.Write("Load:" + argument);
             //check global mutex
             bool blnHasDuplicate = false;
             try
@@ -645,21 +656,33 @@ namespace Chummer.Plugins
 
             if (t?.Tag is frmCharacterRoster.CharacterCache objCache)
             {
-                Character c = new Character()
+                string sinnerid = "";
+                if (objCache.MyPluginDataDic.TryGetValue("SINnerId", out Object sinneridobj))
                 {
-                    FileName = objCache.FilePath
-                };
-                if (c.Load(null, false).Result)
-                {
-                    CharacterExtended ce = new CharacterExtended(c, null);
-                    var i = ce.MySINnerFile.Id;
-                    string url = "Chummer://plugin:SINners:Load:" + i;
-                    Clipboard.SetText(url);
-                    string msg = "Link:" + Environment.NewLine + Environment.NewLine;
-                    msg += url + Environment.NewLine + Environment.NewLine;
-                    msg += "...copied to clipboard!";
-                    MessageBox.Show(msg, "Share Chummer", MessageBoxButton.OK, MessageBoxImage.Information);
+                    sinnerid = sinneridobj?.ToString();
                 }
+                else
+                {
+                    Character c = new Character()
+                    {
+                        FileName = objCache.FilePath
+                    };
+                    frmLoading frmLoadingForm = new frmLoading { CharacterFile = objCache.FilePath };
+                    frmLoadingForm.Reset(36);
+                    frmLoadingForm.Show();
+                    if (c.Load(frmLoadingForm, false).Result)
+                    {
+                        CharacterExtended ce = new CharacterExtended(c, null);
+                        sinnerid = ce.MySINnerFile.Id.ToString();
+                    }
+                }
+
+                string url = "chummer://plugin:SINners:Load:" + sinnerid;
+                Clipboard.SetText(url);
+                string msg = "Link:" + Environment.NewLine + Environment.NewLine;
+                msg += url + Environment.NewLine + Environment.NewLine;
+                msg += "...copied to clipboard!";
+                MessageBox.Show(msg, "Share Chummer", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
 
@@ -718,33 +741,78 @@ namespace Chummer.Plugins
 
         }
 
+        private static string fileNameToLoad = "";
 
-
-        public static void HandleNamedPipe_OpenRequest(string filesToOpen)
+        public static async void HandleNamedPipe_OpenRequest(string argument)
         {
-            PluginHandler.MainForm.DoThreadSafe(() =>
-            {
-                if (!string.IsNullOrEmpty(filesToOpen))
+           
+                if (!string.IsNullOrEmpty(argument))
                 {
-                    MessageBox.Show("I should open " + filesToOpen + "!");
-                    //TabItem lastTab = null;
-                    //foreach (var file in StringUtils.GetLines(filesToOpen))
-                    //{
-                    //    if (!string.IsNullOrEmpty(file))
-                    //        lastTab = this.OpenTab(file.Trim());
-                    //}
-                    //if (lastTab != null)
-                    //    Dispatcher.InvokeAsync(() => TabControl.SelectedItem = lastTab);
+                    if (argument.StartsWith("Load:"))
+                    {
+                        string SINnerIdvalue = argument.Substring(5);
+                        SINnerIdvalue = SINnerIdvalue.Trim('/');
+                        if (Guid.TryParse(SINnerIdvalue, out Guid SINnerId))
+                        {
+                            var client = StaticUtils.GetClient();
+                            var found = await client.GetSINByIdWithHttpMessagesAsync(SINnerId);
+                            await ChummerHub.Client.Backend.Utils.HandleError(found, found?.Body);
+                            if (found?.Response.StatusCode == System.Net.HttpStatusCode.OK)
+                            {
+                                fileNameToLoad = await ChummerHub.Client.Backend.Utils.DownloadFileTask(found.Body.MySINner, null);
+                                if (PluginHandler.MainForm.Visible == false)
+                                {
+                                    PluginHandler.MainForm.VisibleChanged += MainFormOnVisibleChanged;
+                                }
+                                else
+                                {
+                                    MainFormOnVisibleChanged(null, null);
+                                }
+                            }
+                            else if (found?.Response.StatusCode == HttpStatusCode.NotFound)
+                            {
+                                MessageBox.Show("Could not find a SINner with Id " + SINnerId + " online!");
+                            }
+                            
+                        }
+                    }
+                    else
+                    {
+                        throw new ArgumentException("Unkown command received: " + argument, nameof(argument));
+                    }
+                   
+
+                    PluginHandler.MainForm.DoThreadSafe(() =>
+                    {
+                        if (PluginHandler.MainForm.WindowState == FormWindowState.Minimized)
+                            PluginHandler.MainForm.WindowState = FormWindowState.Normal;
+                        PluginHandler.MainForm.Activate();
+                    });
                 }
 
 
-                if (PluginHandler.MainForm.WindowState == FormWindowState.Minimized)
-                    PluginHandler.MainForm.WindowState = FormWindowState.Normal;
-
-                PluginHandler.MainForm.Activate();
-                //Dispatcher.BeginInvoke(new Action(() => { this.Topmost = false; }));
-            });
+           
         }
 
+        private static void MainFormOnVisibleChanged(object sender, EventArgs e)
+        {
+            PluginHandler.MainForm.DoThreadSafe(() =>
+            {
+                frmLoading frmLoadingForm = new frmLoading { CharacterFile = fileNameToLoad };
+                frmLoadingForm.Reset(36);
+                frmLoadingForm.Show();
+                Character objCharacter = new Character()
+                {
+                    FileName = fileNameToLoad
+                };
+                if (objCharacter.Load(frmLoadingForm, true).Result == true)
+                {
+                    //Character objCharacter = PluginHandler.MainForm.LoadCharacter(fileNameToLoad).Result;
+                    PluginHandler.MainForm.OpenCharacter(objCharacter, false);
+                }
+                PluginHandler.MainForm.VisibleChanged -= MainFormOnVisibleChanged;
+                
+            });
+        }
     }
 }
