@@ -334,13 +334,16 @@ namespace Chummer
                         strDuplicatesNames += Environment.NewLine;
                     strDuplicatesNames += string.Join(Environment.NewLine, lstDuplicateNames);
                 }
-                MessageBox.Show(string.Format(LanguageManager.GetString("Message_DuplicateGuidWarning", GlobalOptions.Language)
-                        , setDuplicateIDs.Count.ToString(GlobalOptions.CultureInfo)
-                        , strFileName
-                        , strDuplicatesNames));
+                if (!Utils.IsUnitTest)
+                {
+                    MessageBox.Show(string.Format(LanguageManager.GetString("Message_DuplicateGuidWarning", GlobalOptions.Language)
+                            , setDuplicateIDs.Count.ToString(GlobalOptions.CultureInfo)
+                            , strFileName
+                            , strDuplicatesNames));
+                }
             }
 
-            if (lstItemsWithMalformedIDs.Count > 0)
+            if (lstItemsWithMalformedIDs.Count > 0 && !Utils.IsUnitTest)
             {
                 string strMalformedIdNames = string.Join(Environment.NewLine, lstItemsWithMalformedIDs);
                 MessageBox.Show(string.Format(LanguageManager.GetString("Message_NonGuidIdWarning", GlobalOptions.Language)
