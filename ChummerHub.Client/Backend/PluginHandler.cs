@@ -667,13 +667,15 @@ namespace Chummer.Plugins
                     {
                         FileName = objCache.FilePath
                     };
-                    frmLoading frmLoadingForm = new frmLoading { CharacterFile = objCache.FilePath };
-                    frmLoadingForm.Reset(36);
-                    frmLoadingForm.Show();
-                    if (c.Load(frmLoadingForm, false).Result)
+                    using (frmLoading frmLoadingForm = new frmLoading {CharacterFile = objCache.FilePath})
                     {
-                        CharacterExtended ce = new CharacterExtended(c, null);
-                        sinnerid = ce.MySINnerFile.Id.ToString();
+                        frmLoadingForm.Reset(36);
+                        frmLoadingForm.Show();
+                        if (c.Load(frmLoadingForm, false).Result)
+                        {
+                            CharacterExtended ce = new CharacterExtended(c, null);
+                            sinnerid = ce.MySINnerFile.Id.ToString();
+                        }
                     }
                 }
 
@@ -798,18 +800,20 @@ namespace Chummer.Plugins
         {
             PluginHandler.MainForm.DoThreadSafe(() =>
             {
-                frmLoading frmLoadingForm = new frmLoading { CharacterFile = fileNameToLoad };
-                frmLoadingForm.Reset(36);
-                frmLoadingForm.Show();
-                Character objCharacter = new Character()
+                using (frmLoading frmLoadingForm = new frmLoading {CharacterFile = fileNameToLoad})
                 {
-                    FileName = fileNameToLoad
-                };
-                if (objCharacter.Load(frmLoadingForm, true).Result == true)
-                {
-                    //Character objCharacter = PluginHandler.MainForm.LoadCharacter(fileNameToLoad).Result;
-                    PluginHandler.MainForm.OpenCharacter(objCharacter, false);
+                    frmLoadingForm.Reset(36);
+                    frmLoadingForm.Show();
+                    Character objCharacter = new Character()
+                    {
+                        FileName = fileNameToLoad
+                    };
+                    if (objCharacter.Load(frmLoadingForm, true).Result == true)
+                    {
+                         PluginHandler.MainForm.OpenCharacter(objCharacter, false);
+                    }
                 }
+
                 PluginHandler.MainForm.VisibleChanged -= MainFormOnVisibleChanged;
                 
             });
