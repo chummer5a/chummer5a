@@ -46,7 +46,7 @@ using System.Linq;
 [assembly: CLSCompliant(true)]
 namespace Chummer
 {
-    internal static class Program
+    public static class Program
     {
         private static Logger Log = null;
         private const string strChummerGuid = "eb0759c1-3599-495e-8bc5-57c8b3e1b31c";
@@ -275,10 +275,10 @@ namespace Chummer
                 bool showMainForm = true;
                 // Make sure the default language has been loaded before attempting to open the Main Form.
                 LanguageManager.TranslateWinForm(GlobalOptions.Language, null);
-                Program.PluginLoader.LoadPlugins(null);
                 MainForm = new frmChummerMain(false);
-                foreach(var plugin in Program.PluginLoader.MyActivePlugins)
-                    plugin.CustomInitialize(MainForm);
+                Program.PluginLoader.LoadPlugins(null);
+                //foreach(var plugin in Program.PluginLoader.MyActivePlugins)
+                //    plugin.CustomInitialize(MainForm);
                 if (!Utils.IsUnitTest)
                 {
                     string[] strArgs = Environment.GetCommandLineArgs();

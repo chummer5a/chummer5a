@@ -23,6 +23,7 @@ using System.Xml;
 using System.Xml.Serialization;
 using Microsoft.Rest;
 using System.Threading;
+using System.Windows.Threading;
 using Chummer.Properties;
 using NLog;
 using Microsoft.ApplicationInsights.Channel;
@@ -94,20 +95,13 @@ namespace Chummer.Plugins
             {
                 case "RegisterUriScheme":
                     if (StaticUtils.RegisterChummerProtocol(argument))
-                    {
                         Environment.ExitCode = -1;
-                        return false;
-                    }
                     else
-                    {
                         Environment.ExitCode = 0;
-                        return false;
-                    }
+                    return false;
                     break;
                 case "Load":
-                    MessageBox.Show("I should load " + argument + "!");
-                    Environment.ExitCode = -1;
-                    return false;
+                    return HandleLoadCommand(argument);
                     break;
                 default:
                     Log.Warn("Unknown command line parameter: " + parameter);
@@ -115,6 +109,31 @@ namespace Chummer.Plugins
                     break;
             }
             return true;
+        }
+
+        private bool HandleLoadCommand(string argument)
+        {
+            PipeManager.Write(argument);
+            //check global mutex
+            bool blnHasDuplicate = false;
+            try
+            {
+                blnHasDuplicate = !Program.GlobalChummerMutex.WaitOne(0, false);
+            }
+            catch (AbandonedMutexException ex)
+            {
+                Log.Error(ex);
+                Utils.BreakIfDebug();
+                blnHasDuplicate = true;
+            }
+
+            if (blnHasDuplicate)
+            {
+                Environment.ExitCode = -1;
+                return false;
+            }
+            else
+                return true;
         }
 
         IEnumerable<TabPage> IPlugin.GetTabPages(frmCareer input)
@@ -154,15 +173,13 @@ namespace Chummer.Plugins
         private static bool IsSaving = false;
 
         public static SINner MySINnerLoading { get; internal set; }
+        public NamedPipeManager PipeManager { get; private set; }
 
         string IPlugin.GetSaveToFileElement(Character input)
         {
             CharacterExtended ce = GetMyCe(input);
             
             var jsonResolver = new PropertyRenameAndIgnoreSerializerContractResolver();
-            //jsonResolver.IgnoreProperty(typeof(String), "MugshotBase64");
-            //jsonResolver.IgnoreProperty(typeof(SINnerExtended), "jsonSummary");
-            //jsonResolver.RenameProperty(typeof(Person), "FirstName", "firstName");
             JsonSerializerSettings settings = new JsonSerializerSettings
             {
                 ContractResolver = jsonResolver,
@@ -672,6 +689,62 @@ namespace Chummer.Plugins
             {
                 ChummerHub.Client.Properties.Settings.Default.TempDownloadPath = Path.GetTempPath();
             }
+
+            //check global mutex
+            bool blnHasDuplicate = false;
+            try
+            {
+                blnHasDuplicate = !Program.GlobalChummerMutex.WaitOne(0, false);
+            }
+            catch (AbandonedMutexException ex)
+            {
+                Log.Error(ex);
+                Utils.BreakIfDebug();
+                blnHasDuplicate = true;
+            }
+            PipeManager = new NamedPipeManager("Chummer");
+            Log.Info("blnHasDuplicate = " + blnHasDuplicate.ToString());
+            // If there is more than 1 instance running, do not let the application start a receiving server.
+            if (blnHasDuplicate)
+            {
+                Log.Info("More than one instance, not starting server...");
+            }
+            else
+            {
+                PipeManager.StartServer();
+                PipeManager.ReceiveString += HandleNamedPipe_OpenRequest;
+            }
+
+
         }
+
+
+
+        public static void HandleNamedPipe_OpenRequest(string filesToOpen)
+        {
+            PluginHandler.MainForm.DoThreadSafe(() =>
+            {
+                if (!string.IsNullOrEmpty(filesToOpen))
+                {
+                    MessageBox.Show("I should open " + filesToOpen + "!");
+                    //TabItem lastTab = null;
+                    //foreach (var file in StringUtils.GetLines(filesToOpen))
+                    //{
+                    //    if (!string.IsNullOrEmpty(file))
+                    //        lastTab = this.OpenTab(file.Trim());
+                    //}
+                    //if (lastTab != null)
+                    //    Dispatcher.InvokeAsync(() => TabControl.SelectedItem = lastTab);
+                }
+
+
+                if (PluginHandler.MainForm.WindowState == FormWindowState.Minimized)
+                    PluginHandler.MainForm.WindowState = FormWindowState.Normal;
+
+                PluginHandler.MainForm.Activate();
+                //Dispatcher.BeginInvoke(new Action(() => { this.Topmost = false; }));
+            });
+        }
+
     }
 }

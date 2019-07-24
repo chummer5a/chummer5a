@@ -1046,15 +1046,7 @@ namespace Chummer
                 cboBuildMethod.SelectedValue = strOldSelected;
                 if (cboBuildMethod.SelectedIndex == -1 && lstBuildMethod.Count > 0)
                 {
-                    try
-                    {
-                        cboBuildMethod.SelectedIndex = 0;
-                    }
-                    catch (ArgumentOutOfRangeException e)
-                    {
-                        //if someone stops here: WHY THE HELL IS THIS HAPPENING NOW?
-                        System.Diagnostics.Debugger.Break();
-                    }
+                    cboBuildMethod.SelectedIndex = 0;
                 }
                     
             }

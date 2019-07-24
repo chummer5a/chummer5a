@@ -309,6 +309,7 @@ namespace Chummer
             this.panelPluginOption = new System.Windows.Forms.Panel();
             this.flpOKCancel = new System.Windows.Forms.FlowLayoutPanel();
             this.mainPanel.SuspendLayout();
+            this.tlpOptions.SuspendLayout();
             this.tabOptions.SuspendLayout();
             this.tabGlobal.SuspendLayout();
             this.tlpGlobal.SuspendLayout();
@@ -410,6 +411,12 @@ namespace Chummer
             this.tlpOptions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpOptions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpOptions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpOptions.Controls.Add(this.txtSettingName, 3, 0);
+            this.tlpOptions.Controls.Add(this.lblSetting, 0, 0);
+            this.tlpOptions.Controls.Add(this.lblSettingName, 2, 0);
+            this.tlpOptions.Controls.Add(this.cboSetting, 1, 0);
+            this.tlpOptions.Controls.Add(this.tabOptions, 0, 1);
+            this.tlpOptions.Controls.Add(this.flpOKCancel, 0, 2);
             this.tlpOptions.Location = new System.Drawing.Point(9, 9);
             this.tlpOptions.Name = "tlpOptions";
             this.tlpOptions.RowCount = 3;

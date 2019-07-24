@@ -241,6 +241,22 @@ namespace ChummerHub.Client.UI
             }
             cbUploadOnSave.Checked = ucSINnersOptions.UploadOnSave;
             cbSINnerUrl.SelectedValueChanged += CbSINnerUrl_SelectedValueChanged;
+            AddShieldToButton(bRegisterUriScheme);
+        }
+
+        [DllImport("user32.dll")]
+        public static extern int SendMessage(IntPtr hWnd,
+            uint Msg, int wParam, int lParam);
+
+        // Make the button display the UAC shield.
+        public static void AddShieldToButton(Button btn)
+        {
+            const Int32 BCM_SETSHIELD = 0x160C;
+
+            // Give the button the flat style and make it
+            // display the UAC shield.
+            btn.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            SendMessage(btn.Handle, BCM_SETSHIELD, 0, 1);
         }
 
         ~ucSINnersOptions()
@@ -797,10 +813,10 @@ namespace ChummerHub.Client.UI
         private void BRegisterUriScheme_Click(object sender, EventArgs e)
         {
             if (StaticUtils.RegisterChummerProtocol(null))
-                MessageBox.Show("Url registered!");
+                MessageBox.Show("Url is registered!");
             else
             {
-                MessageBox.Show("Url NOT registered!");
+                MessageBox.Show("Url is NOT registered!");
             }
         }
 
