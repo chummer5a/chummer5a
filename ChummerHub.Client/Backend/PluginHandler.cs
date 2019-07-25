@@ -184,7 +184,7 @@ namespace Chummer.Plugins
         private static bool IsSaving = false;
 
         public static SINner MySINnerLoading { get; internal set; }
-        public NamedPipeManager PipeManager { get; private set; }
+        public static NamedPipeManager PipeManager { get; private set; }
 
         string IPlugin.GetSaveToFileElement(Character input)
         {
@@ -727,17 +727,20 @@ namespace Chummer.Plugins
                 Utils.BreakIfDebug();
                 blnHasDuplicate = true;
             }
-            PipeManager = new NamedPipeManager("Chummer");
-            Log.Info("blnHasDuplicate = " + blnHasDuplicate.ToString());
-            // If there is more than 1 instance running, do not let the application start a receiving server.
-            if (blnHasDuplicate)
+            if (PipeManager != null)
             {
-                Log.Info("More than one instance, not starting server...");
-            }
-            else
-            {
-                PipeManager.StartServer();
-                PipeManager.ReceiveString += HandleNamedPipe_OpenRequest;
+                PipeManager = new NamedPipeManager("Chummer");
+                Log.Info("blnHasDuplicate = " + blnHasDuplicate.ToString());
+                // If there is more than 1 instance running, do not let the application start a receiving server.
+                if (blnHasDuplicate)
+                {
+                    Log.Info("More than one instance, not starting server...");
+                }
+                else
+                {
+                    PipeManager.StartServer();
+                    PipeManager.ReceiveString += HandleNamedPipe_OpenRequest;
+                }
             }
 
 
