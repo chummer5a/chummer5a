@@ -338,7 +338,7 @@ namespace ChummerHub.Client.Backend
             SINnersClient client = null;
             try
             {
-                var assembly = System.Reflection.Assembly.GetAssembly(typeof(frmChummerMain));
+                var assembly = System.Reflection.Assembly.GetAssembly(typeof(Chummer.frmChummerMain));
                 if (assembly.GetName().Version.Build == 0)
                 {
                     Properties.Settings.Default.SINnerUrl = "https://sinners.azurewebsites.net";
