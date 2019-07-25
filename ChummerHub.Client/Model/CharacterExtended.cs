@@ -453,8 +453,10 @@ namespace ChummerHub.Client.Model
                 MyCharacter.Save(MyCharacter.FileName, false, false);
             }
 
-            string path = MyCharacter.FileName.Substring(0, MyCharacter.FileName.LastIndexOf('\\'));
-            CreateDirectoryRecursively(path);
+            //string path = //Path.Combine(ChummerHub.Client.Properties.Settings.Default.TempDownloadPath, 
+            //    MyCharacter.FileName.Substring(0, MyCharacter.FileName.LastIndexOf('\\'));
+
+            //CreateDirectoryRecursively(path);
             MyCharacter.Save(tempfile, false, false);
             if (readdCallback)
                 MyCharacter.OnSaveCompleted += PluginHandler.MyOnSaveUpload;
@@ -482,16 +484,33 @@ namespace ChummerHub.Client.Model
 
         void CreateDirectoryRecursively(string path)
         {
-            string[] pathParts = path.Split('\\');
+            
+                string[] pathParts = path.Split('\\');
 
-            for (int i = 0; i < pathParts.Length; i++)
-            {
-                if (i > 0)
-                    pathParts[i] = Path.Combine(pathParts[i - 1], pathParts[i]);
+                for (int i = 0; i < pathParts.Length; i++)
+                {
+                    if (i > 0)
+                        pathParts[i] = Path.Combine(pathParts[i - 1], pathParts[i]);
 
-                if (!Directory.Exists(pathParts[i]))
-                    Directory.CreateDirectory(pathParts[i]);
-            }
+                    if (!Directory.Exists(pathParts[i]))
+                    {
+                        try
+                        {
+                            Directory.CreateDirectory(pathParts[i]);
+                        }
+                        catch (UnauthorizedAccessException e)
+                        {
+                            if (i < 4)
+                            {
+                                //probably c:\Users or something...
+                            }
+                            else
+                                throw new UnauthorizedAccessException("Path: " + pathParts[i], e);
+                        }
+                    }
+                }
+            
+         
         }
 
 

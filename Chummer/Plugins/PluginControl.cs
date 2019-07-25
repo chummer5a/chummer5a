@@ -72,6 +72,14 @@ namespace Chummer.Plugins
             
         }
 
+        ~PluginControl()
+        {
+            foreach (var plugin in this.MyActivePlugins)
+            {
+                plugin.Dispose();
+            }
+        }
+
         public void Initialize()
         {
             try

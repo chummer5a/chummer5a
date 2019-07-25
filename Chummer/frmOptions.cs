@@ -1859,6 +1859,8 @@ namespace Chummer
             {
                 if(tabOptions.TabPages.Contains(tabPlugins))
                     tabOptions.TabPages.Remove(tabPlugins);
+                foreach(var plugin in Program.PluginLoader.MyActivePlugins)
+                    plugin.Dispose();
                 Program.PluginLoader = null;
             }
         }

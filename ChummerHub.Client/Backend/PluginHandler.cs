@@ -41,7 +41,7 @@ namespace Chummer.Plugins
     //[ExportMetadata("frmCareer", "true")]
     public class PluginHandler : IPlugin
     {
-        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
         public static UploadClient MyUploadClient = null;
 
         public static frmChummerMain MainForm = null;
@@ -124,7 +124,13 @@ namespace Chummer.Plugins
 
         private bool HandleLoadCommand(string argument)
         {
-            PipeManager.Write("Load:" + argument);
+            if (PipeManager != null)
+            {
+                string msg = "Load:" + argument;
+                Log.Trace("Sending argument to Pipeserver: " + msg);
+                PipeManager.Write(msg);
+            }
+
             //check global mutex
             bool blnHasDuplicate = false;
             try
@@ -656,35 +662,10 @@ namespace Chummer.Plugins
 
             if (t?.Tag is frmCharacterRoster.CharacterCache objCache)
             {
-                string sinnerid = "";
-                if (objCache.MyPluginDataDic.TryGetValue("SINnerId", out Object sinneridobj))
-                {
-                    sinnerid = sinneridobj?.ToString();
-                }
-                else
-                {
-                    Character c = new Character()
-                    {
-                        FileName = objCache.FilePath
-                    };
-                    using (frmLoading frmLoadingForm = new frmLoading {CharacterFile = objCache.FilePath})
-                    {
-                        frmLoadingForm.Reset(36);
-                        frmLoadingForm.Show();
-                        if (c.Load(frmLoadingForm, false).Result)
-                        {
-                            CharacterExtended ce = new CharacterExtended(c, null);
-                            sinnerid = ce.MySINnerFile.Id.ToString();
-                        }
-                    }
-                }
-
-                string url = "chummer://plugin:SINners:Load:" + sinnerid;
-                Clipboard.SetText(url);
-                string msg = "Link:" + Environment.NewLine + Environment.NewLine;
-                msg += url + Environment.NewLine + Environment.NewLine;
-                msg += "...copied to clipboard!";
-                MessageBox.Show(msg, "Share Chummer", MessageBoxButton.OK, MessageBoxImage.Information);
+                frmSINnerShare share = new frmSINnerShare();
+                share.MyUcSINnerShare.MyCharacterCache = objCache;
+                share.MyUcSINnerShare.backgroundWorker1.RunWorkerAsync();
+                share.ShowDialog(PluginHandler.MainForm);
             }
         }
 
@@ -727,17 +708,21 @@ namespace Chummer.Plugins
                 Utils.BreakIfDebug();
                 blnHasDuplicate = true;
             }
-            PipeManager = new NamedPipeManager("Chummer");
-            Log.Info("blnHasDuplicate = " + blnHasDuplicate.ToString());
-            // If there is more than 1 instance running, do not let the application start a receiving server.
-            if (blnHasDuplicate)
+            if (PipeManager == null)
             {
-                Log.Info("More than one instance, not starting server...");
-            }
-            else
-            {
-                PipeManager.StartServer();
-                PipeManager.ReceiveString += HandleNamedPipe_OpenRequest;
+                PipeManager = new NamedPipeManager("Chummer");
+                Log.Info("blnHasDuplicate = " + blnHasDuplicate.ToString());
+                // If there is more than 1 instance running, do not let the application start a receiving server.
+                if (blnHasDuplicate)
+                {
+                    Log.Info("More than one instance, not starting NamedPipe-Server...");
+                }
+                else
+                {
+                    Log.Info("Only one instance, starting NamedPipe-Server...");
+                    PipeManager.StartServer();
+                    PipeManager.ReceiveString += HandleNamedPipe_OpenRequest;
+                }
             }
 
 
@@ -747,7 +732,7 @@ namespace Chummer.Plugins
 
         public static async void HandleNamedPipe_OpenRequest(string argument)
         {
-           
+                Log.Trace("Pipeserver receiced a request: " + argument);
                 if (!string.IsNullOrEmpty(argument))
                 {
                     if (argument.StartsWith("Load:"))

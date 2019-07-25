@@ -13,8 +13,9 @@ namespace ChummerHub.Client.Backend
     /// A very simple Named Pipe Server implementation that makes it 
     /// easy to pass string messages between two applications.
     /// </summary>
-    public class NamedPipeManager
+    public class NamedPipeManager 
     {
+        private static NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
         public string NamedPipeName = "Chummer";
         public event Action<string> ReceiveString;
 
@@ -32,27 +33,37 @@ namespace ChummerHub.Client.Backend
         /// </summary>
         public void StartServer()
         {
+            StopServer();
             Thread = new Thread((pipeName) =>
             {
+                
                 _isRunning = true;
-
                 while (true)
                 {
                     string text;
-                    using (var server = new NamedPipeServerStream(pipeName as string))
+                    try
                     {
-                        server.WaitForConnection();
-
-                        using (StreamReader reader = new StreamReader(server))
+                        using (var server = new NamedPipeServerStream(pipeName as string))
                         {
-                            text = reader.ReadToEnd();
+                            server.WaitForConnection();
+
+                            using (StreamReader reader = new StreamReader(server))
+                            {
+                                text = reader.ReadToEnd();
+                            }
                         }
+
+                        if (text == EXIT_STRING)
+                            break;
+
+                        OnReceiveString(text);
                     }
-
-                    if (text == EXIT_STRING)
-                        break;
-
-                    OnReceiveString(text);
+                    catch(IOException e)
+                    {
+                        
+                        Log.Warn(e);
+                    }
+                    
 
                     if (_isRunning == false)
                         break;
@@ -85,25 +96,34 @@ namespace ChummerHub.Client.Backend
         /// <param name="connectTimeout"></param>
         public bool Write(string text, int connectTimeout = 300)
         {
-            using (var client = new NamedPipeClientStream(NamedPipeName))
+            try
             {
-                try
+                using (var client = new NamedPipeClientStream(NamedPipeName))
                 {
-                    client.Connect(connectTimeout);
-                }
-                catch
-                {
-                    return false;
-                }
+                    try
+                    {
+                        client.Connect(connectTimeout);
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Trace(e);
+                        return false;
+                    }
 
-                if (!client.IsConnected)
-                    return false;
+                    if (!client.IsConnected)
+                        return false;
 
-                using (StreamWriter writer = new StreamWriter(client))
-                {
-                    writer.Write(text);
-                    writer.Flush();
+                    using (StreamWriter writer = new StreamWriter(client))
+                    {
+                        writer.Write(text);
+                        writer.Flush();
+                    }
                 }
+            }
+            catch(Exception e)
+            {
+                Log.Warn(e);
+                return false;
             }
             return true;
         }
