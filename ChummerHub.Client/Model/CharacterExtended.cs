@@ -658,7 +658,8 @@ namespace ChummerHub.Client.Model
                         if (myState != null)
                         {
                             myState.CurrentProgress += 4 * myState.ProgressSteps;
-                            myState.StatusText = "Could not uploading Metadata: " + response?.ErrorText;
+                            myState.StatusText = "Could not upload Metadata: " + response?.ErrorText;
+                            myState.StatusText += Environment.NewLine + response?.MyException;
                             myState.myWorker?.ReportProgress(myState.CurrentProgress, myState);
                         }
                     }

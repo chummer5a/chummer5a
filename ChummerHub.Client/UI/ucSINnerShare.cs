@@ -108,7 +108,7 @@ namespace ChummerHub.Client.UI
                     backgroundWorker1.ReportProgress(myState.CurrentProgress, myState);
                 }
 
-                myState.StatusText = "Checking SINner availability or Uploading SINer";
+                myState.StatusText = "Checking SINner availability (and if necessary upload it).";
                 myState.CurrentProgress = 35;
                 backgroundWorker1.ReportProgress(myState.CurrentProgress, myState);
                 myState.ProgressSteps = 10;
