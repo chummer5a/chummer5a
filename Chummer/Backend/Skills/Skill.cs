@@ -1218,7 +1218,7 @@ namespace Chummer.Backend.Skills
                 string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                 if (!string.IsNullOrWhiteSpace(SkillGroup))
                 {
-                    strMiddle = $"{SkillGroup}{strSpaceCharacter}{LanguageManager.GetString("String_ExpenseSkillGroup", GlobalOptions.Language)}" + Environment.NewLine;
+                    strMiddle = $"{SkillGroupObject.DisplayName}{strSpaceCharacter}{LanguageManager.GetString("String_ExpenseSkillGroup", GlobalOptions.Language)}" + Environment.NewLine;
                 }
                 if (!string.IsNullOrEmpty(Notes))
                 {

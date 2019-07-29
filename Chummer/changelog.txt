@@ -44,6 +44,7 @@ Application Fixes:
 - Fixed issues where crashes and unexpected behavior could occur when checking the capacity of parent gear items with children that have fractional capacity costs.
 - Spells with no descriptors will no longer display a label saying that the descriptor text is not found in the spell selection screen.
 - Fixed an issue with detecting special modifications on weapons loaded onto vehicle weapon mounts when checking whether or not the limit on special modifications has been reached.
+- Fixed incorrect usage of SkillGroup name instead of the DisplayName. Closes #3785
 
 Data Changes:
 
