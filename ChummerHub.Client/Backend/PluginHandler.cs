@@ -73,7 +73,23 @@ namespace Chummer.Plugins
             return "SINners";
         }
 
-        
+        bool IPlugin.SetCharacterRosterNode(TreeNode objNode)
+        {
+            if (objNode?.ContextMenuStrip == null)
+                return false;
+            ToolStripMenuItem newShare = new ToolStripMenuItem("Share")
+            {
+                Name = "tsShareChummer",
+                Tag = "Menu_ShareChummer",
+                Text = "Share chummer",
+                Size = new System.Drawing.Size(177, 22),
+                Image = global::Chummer.Properties.Resources.link_add
+            };
+            newShare.Click += NewShareOnClick;
+            objNode.ContextMenuStrip.Items.Add(newShare);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, objNode.ContextMenuStrip);
+            return true;
+        }
 
         public ITelemetry SetTelemetryInitialize(ITelemetry telemetry)
         {
@@ -550,21 +566,22 @@ namespace Chummer.Plugins
                 List<TreeNode> list = new List<TreeNode>();
                 using (new CursorWait(true, frmCharRoster))
                 {
-                    if (frmCharRoster.MyCmsRoster.Container != null)
-                    {
                         frmCharRoster.DoThreadSafe(() =>
                         {
-                            myContextMenuStrip = new ContextMenuStrip(frmCharRoster.MyCmsRoster.Container);
-                            var menulist = frmCharRoster.MyCmsRoster.Items.Cast<ToolStripMenuItem>().ToList();
+                            myContextMenuStrip = frmCharRoster.CreateContextMenuStrip();
+                            var menulist = myContextMenuStrip.Items.Cast<ToolStripMenuItem>().ToList();
                             foreach (var item in menulist)
                             {
                                 switch (item.Name)
                                 {
                                     case "tsToggleFav":
+                                        myContextMenuStrip.Items.Remove(item);
                                         break;
                                     case "tsCloseOpenCharacter":
+                                        myContextMenuStrip.Items.Remove(item);
                                         break;
                                     case "tsSort":
+                                        myContextMenuStrip.Items.Remove(item);
                                         break;
                                     case "tsDelete":
                                         ToolStripMenuItem newDelete = new ToolStripMenuItem(item.Text, item.Image);
@@ -587,8 +604,6 @@ namespace Chummer.Plugins
                             myContextMenuStrip.Items.Add(newShare);
                             LanguageManager.TranslateWinForm(GlobalOptions.Language, myContextMenuStrip);
                         });
-
-                    }
                     if (ChummerHub.Client.Properties.Settings.Default.UserModeRegistered == true)
                     {
                         Log.Info("Loading CharacterRoster from SINners...");
@@ -795,7 +810,8 @@ namespace Chummer.Plugins
                     };
                     if (objCharacter.Load(frmLoadingForm, true).Result == true)
                     {
-                         PluginHandler.MainForm.OpenCharacter(objCharacter, false);
+                        PluginHandler.MainForm.OpenCharacters.Add(objCharacter);
+                        PluginHandler.MainForm.OpenCharacter(objCharacter, false);
                     }
                 }
 

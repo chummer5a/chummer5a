@@ -554,7 +554,7 @@ namespace ChummerHub.Client.UI
                     }
 
                     CharacterExtended ce = new CharacterExtended(c, null);
-                    await ce.UploadInBackground();
+                    await ce.UploadInBackground(null);
                 }
                 catch (Exception ex)
                 {
