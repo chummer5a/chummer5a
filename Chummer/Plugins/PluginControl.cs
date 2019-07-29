@@ -36,6 +36,7 @@ namespace Chummer.Plugins
     [InheritedExport(typeof(IPlugin))]
     public interface IPlugin
     {
+        //only very rudimentary initialization should take place here. Make it QUICK.
         void CustomInitialize(frmChummerMain mainControl);
 
         IEnumerable<TabPage> GetTabPages(frmCareer input);
@@ -44,8 +45,9 @@ namespace Chummer.Plugins
         ITelemetry SetTelemetryInitialize(ITelemetry telemetry);
         bool ProcessCommandLine(string parameter);
 
-        Task<IEnumerable<TreeNode>> GetCharacterRosterTreeNode(frmCharacterRoster frmCharRoster, bool forceUpdate);
 
+
+        Task<IEnumerable<TreeNode>> GetCharacterRosterTreeNode(frmCharacterRoster frmCharRoster, bool forceUpdate);
         UserControl GetOptionsControl();
 
         string GetSaveToFileElement(Character input);
@@ -55,6 +57,7 @@ namespace Chummer.Plugins
 
         Assembly GetPluginAssembly();
         void Dispose();
+        bool SetCharacterRosterNode(TreeNode objNode);
     }
 
 

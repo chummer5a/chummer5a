@@ -671,6 +671,8 @@ namespace ChummerHub.Client.Backend
             return rb;
         }
 
+      
+
         public static async Task<object> HandleError(HttpOperationResponse response,
             object ResponseBody)
         {
@@ -1165,7 +1167,35 @@ namespace ChummerHub.Client.Backend
             return res;
         }
 
-     
+        public static ResultSinnerPostSIN PostSINner(CharacterExtended ce)
+        {
+            ResultSinnerPostSIN res = null;
+            try
+            {
+                UploadInfoObject uploadInfoObject = new UploadInfoObject
+                {
+                    Client = PluginHandler.MyUploadClient,
+                    UploadDateTime = DateTime.Now
+                };
+                ce.MySINnerFile.UploadDateTime = DateTime.Now;
+                uploadInfoObject.SiNners = new List<SINner>() { ce.MySINnerFile };
+                Log.Info("Posting " + ce.MySINnerFile.Id + "...");
+                var client = StaticUtils.GetClient();
+                res = client.PostSIN(uploadInfoObject);
+                Log.Info("Post of " + ce.MySINnerFile.Id + " finished.");
+                return res;
+    
+
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                throw;
+            }
+            return res;
+        }
+
+
 
         public static async Task<HttpOperationResponse> UploadChummerFileAsync(CharacterExtended ce)
         {
@@ -1227,6 +1257,71 @@ namespace ChummerHub.Client.Backend
             }
             return res;
         }
+
+        public static ResultSINnerPut UploadChummer(CharacterExtended ce)
+        {
+            ResultSINnerPut res = null;
+            try
+            {
+                if (String.IsNullOrEmpty(ce.ZipFilePath))
+                {
+                    ce.ZipFilePath = ce.PrepareModel().Result;
+                }
+
+                using (FileStream fs = new FileStream(ce.ZipFilePath, FileMode.Open, FileAccess.Read))
+                {
+                    try
+                    {
+                        var client = StaticUtils.GetClient();
+                        if (!StaticUtils.IsUnitTest)
+                        {
+                            HttpStatusCode myStatus = HttpStatusCode.Unused;
+                            res = client.PutSIN(ce.MySINnerFile.Id.Value, fs);
+                            string msg = "Upload ended with statuscode: ";
+                            if (res != null)
+                            {
+                                msg += res.CallSuccess + Environment.NewLine;
+                                msg += res.ErrorText;
+
+
+                                if (!StaticUtils.IsUnitTest)
+                                {
+                                    PluginHandler.MainForm.DoThreadSafe(() =>
+                                    {
+                                        using (new CursorWait(true, PluginHandler.MainForm))
+                                        {
+                                            Chummer.Plugins.PluginHandler.MainForm.CharacterRoster.LoadCharacters(false,
+                                                false, false, true);
+                                        }
+                                    });
+                                }
+                            }
+
+                            Log.Info(msg);
+                        }
+                        else
+                        {
+                            client.PutSIN(ce.MySINnerFile.Id.Value, fs);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Error(e);
+                        PluginHandler.MainForm.DoThreadSafe(() =>
+                        {
+                            MessageBox.Show(e.Message);
+                        });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                throw;
+            }
+            return res;
+        }
+
 
 
         public static async Task<string> DownloadFile(SINners.Models.SINner sinner, CharacterCache objCache)

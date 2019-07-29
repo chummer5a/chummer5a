@@ -33,6 +33,7 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
 using System.Xml.XPath;
+using Chummer.Plugins;
 using NLog;
 
 namespace Chummer
@@ -52,21 +53,7 @@ namespace Chummer
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 
-            ContextMenuStrip[] lstCMSToTranslate =
-            {
-                cmsRoster
-            };
-
-            foreach(ContextMenuStrip objCMS in lstCMSToTranslate)
-            {
-                if(objCMS != null)
-                {
-                    foreach(ToolStripMenuItem objItem in objCMS.Items.OfType<ToolStripMenuItem>())
-                    {
-                        LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Language);
-                    }
-                }
-            }
+            
 
             if(!string.IsNullOrEmpty(GlobalOptions.CharacterRosterPath) && Directory.Exists(GlobalOptions.CharacterRosterPath))
             {
@@ -74,11 +61,7 @@ namespace Chummer
             }
         }
 
-        public ContextMenuStrip MyCmsRoster
-        {
-            
-            get { return cmsRoster; }
-        }
+        
 
         public void SetMyEventHandlers(bool deleteThem = false)
         {
@@ -494,12 +477,11 @@ namespace Chummer
             CharacterCache objCache = new CharacterCache(strFile);
             TreeNode objNode = new TreeNode
             {
-                ContextMenuStrip = cmsRoster,
                 Text = objCache.CalculatedName(),
                 ToolTipText = objCache.FilePath.CheapReplace(Utils.GetStartupPath, () => '<' + Application.ProductName + '>'),
                 Tag = objCache
             };
-            if(!string.IsNullOrEmpty(objCache.ErrorText))
+            if (!string.IsNullOrEmpty(objCache.ErrorText))
             {
                 objNode.ForeColor = Color.Red;
                 objNode.ToolTipText += Environment.NewLine + Environment.NewLine + LanguageManager.GetString("String_Error", GlobalOptions.Language)
@@ -758,7 +740,12 @@ namespace Chummer
             public string CharacterAlias { get; set; }
             public string BuildMethod { get; set; }
             public string Essence { get; set; }
-            
+            public override string ToString()
+            {
+                return this.FilePath;
+            }
+
+
             [JsonIgnore]
             [XmlIgnore]
             [IgnoreDataMember]
@@ -1013,63 +1000,6 @@ namespace Chummer
             if (t != null)
             {
                 treCharacterList.Sort();
-                //if (t?.Tag is CharacterCache objCache)
-                //{
-                //    switch (t.Parent.Tag.ToString())
-                //    {
-                //        case "Recent":
-                //            {
-                //                _blnSkipUpdate = true;
-                //                SuspendLayout();
-
-                //                List<Tuple<string, string>> lstSorted = new List<Tuple<string, string>>();
-                //                for (int i = 0; i < GlobalOptions.MostRecentlyUsedCharacters.Count; ++i)
-                //                {
-                //                    string strLoopFile = GlobalOptions.MostRecentlyUsedCharacters[i];
-
-                //                    if (_lstCharacterCache.TryGetValue(strLoopFile, out CharacterCache objLoopCache) && objLoopCache != null)
-                //                        lstSorted.Add(new Tuple<string, string>(objLoopCache.CalculatedName(false), strLoopFile));
-                //                    else
-                //                        lstSorted.Add(new Tuple<string, string>(Path.GetFileNameWithoutExtension(strLoopFile), strLoopFile));
-                //                }
-
-                //                lstSorted.Sort();
-                //                for (int i = 0; i < lstSorted.Count; ++i)
-                //                    GlobalOptions.MostRecentlyUsedCharacters.Move(GlobalOptions.MostRecentlyUsedCharacters.IndexOf(lstSorted[i].Item2), i);
-
-                //                LoadCharacters(false, true, false);
-                //                ResumeLayout();
-                //                treCharacterList.SelectedNode = treCharacterList.FindNode(strSelectedTag);
-                //                break;
-                //            }
-                //        case "Favourite":
-                //            {
-                //                _blnSkipUpdate = true;
-                //                SuspendLayout();
-
-                //                List<Tuple<string, string>> lstSorted = new List<Tuple<string, string>>();
-                //                for (int i = 0; i < GlobalOptions.FavoritedCharacters.Count; ++i)
-                //                {
-                //                    string strLoopFile = GlobalOptions.FavoritedCharacters[i];
-                //                    if (_lstCharacterCache.TryGetValue(strLoopFile, out CharacterCache objLoopCache) && objLoopCache != null)
-                //                        lstSorted.Add(new Tuple<string, string>(objLoopCache.CalculatedName(false), strLoopFile));
-                //                    else
-                //                        lstSorted.Add(new Tuple<string, string>(Path.GetFileNameWithoutExtension(strLoopFile), strLoopFile));
-                //                }
-
-                //                lstSorted.Sort();
-                //                for (int i = 0; i < lstSorted.Count; ++i)
-                //                    GlobalOptions.FavoritedCharacters.Move(GlobalOptions.FavoritedCharacters.IndexOf(lstSorted[i].Item2), i);
-
-                //                _blnSkipUpdate = false;
-
-                //                LoadCharacters(true, false, false);
-                //                ResumeLayout();
-                //                treCharacterList.SelectedNode = treCharacterList.FindNode(strSelectedTag);
-                //                break;
-                //            }
-                //    }
-                //}
             }
         }
 
@@ -1152,6 +1082,114 @@ namespace Chummer
                 Program.MainForm.OpenCharacterForms.FirstOrDefault(x => x.CharacterObject == objOpenCharacter)?.Close();
             }
             Cursor = Cursors.Default;
+        }
+
+        private void TreCharacterList_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                treCharacterList.SelectedNode = e.Node;
+            }
+            e.Node.ContextMenuStrip = CreateContextMenuStrip();
+
+            foreach (var plugin in Program.PluginLoader.MyActivePlugins)
+            {
+                plugin.SetCharacterRosterNode(e.Node);
+            }
+
+            ContextMenuStrip[] lstCMSToTranslate =
+            {
+                e.Node.ContextMenuStrip
+            };
+
+            foreach (ContextMenuStrip objCMS in lstCMSToTranslate)
+            {
+                if (objCMS != null)
+                {
+                    var worklist = objCMS.Items.OfType<ToolStripMenuItem>().ToList();
+                    foreach (ToolStripMenuItem objItem in worklist)
+                    {
+                        LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Language);
+                        //remove the "Close Character Node, if the Char is not open
+                        if (objItem.Name == "tsCloseOpenCharacter")
+                        {
+                            string strFile = e.Node.Tag.ToString();
+                            if (!string.IsNullOrEmpty(strFile))
+                            {
+                                var objOpenCharacter =
+                                    Program.MainForm.OpenCharacterForms.FirstOrDefault(x => x.CharacterObject?.FileName == strFile);
+                                if (objOpenCharacter == null)
+                                {
+                                    e.Node.ContextMenuStrip.Items.Remove(objItem);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        public ContextMenuStrip CreateContextMenuStrip()
+        {
+            ContextMenuStrip cmsRoster = new ContextMenuStrip();
+            ToolStripMenuItem tsToggleFav = new ToolStripMenuItem();
+            ToolStripMenuItem tsSort = new ToolStripMenuItem();
+            ToolStripMenuItem tsDelete = new ToolStripMenuItem();
+            ToolStripMenuItem tsCloseOpenCharacter = new ToolStripMenuItem();
+
+
+            // 
+            // cmsRoster
+            // 
+            cmsRoster.Items.AddRange(new System.Windows.Forms.ToolStripItem[]
+            {
+                tsToggleFav,
+                tsSort,
+                tsDelete,
+                tsCloseOpenCharacter
+            });
+            cmsRoster.Name = "cmsRoster";
+            cmsRoster.Size = new System.Drawing.Size(181, 114);
+            // 
+            // tsToggleFav
+            // 
+            tsToggleFav.Image = global::Chummer.Properties.Resources.asterisk_orange;
+            tsToggleFav.Name = "tsToggleFav";
+            tsToggleFav.Size = new System.Drawing.Size(180, 22);
+            tsToggleFav.Tag = "Menu_ToggleFavorite";
+            tsToggleFav.Text = "&Toggle Favorite";
+            tsToggleFav.Click += new System.EventHandler(this.tsToggleFav_Click);
+            // 
+            // tsSort
+            // 
+            tsSort.Image = global::Chummer.Properties.Resources.page_refresh;
+            tsSort.Name = "tsSort";
+            tsSort.Size = new System.Drawing.Size(180, 22);
+            tsSort.Tag = "Menu_Sort";
+            tsSort.Text = "&Sort Alphabetically";
+            tsSort.Click += new System.EventHandler(this.tsSort_Click);
+            // 
+            // tsDelete
+            // 
+            tsDelete.Image = global::Chummer.Properties.Resources.delete;
+            tsDelete.Name = "tsDelete";
+            tsDelete.Size = new System.Drawing.Size(180, 22);
+            tsDelete.Tag = "Menu_Delete";
+            tsDelete.Text = "&Delete from this list";
+            tsDelete.Click += new System.EventHandler(this.tsDelete_Click);
+            // 
+            // tsCloseOpenCharacter
+            // 
+            tsCloseOpenCharacter.Image = global::Chummer.Properties.Resources.door_out;
+            tsCloseOpenCharacter.Name = "tsCloseOpenCharacter";
+            tsCloseOpenCharacter.Size = new System.Drawing.Size(180, 22);
+            tsCloseOpenCharacter.Tag = "Menu_Close";
+            tsCloseOpenCharacter.Text = "&Close this character";
+            tsCloseOpenCharacter.Click += new System.EventHandler(this.tsCloseOpenCharacter_Click);
+
+          
+
+            return cmsRoster;
         }
     }
 }
