@@ -23,6 +23,8 @@ using System.Xml;
 using System.Xml.Serialization;
 using Microsoft.Rest;
 using System.Threading;
+using System.Windows.Forms.VisualStyles;
+using System.Windows.Threading;
 using Chummer.Properties;
 using NLog;
 using Microsoft.ApplicationInsights.Channel;
@@ -39,7 +41,7 @@ namespace Chummer.Plugins
     //[ExportMetadata("frmCareer", "true")]
     public class PluginHandler : IPlugin
     {
-        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
         public static UploadClient MyUploadClient = null;
 
         public static frmChummerMain MainForm = null;
@@ -64,10 +66,14 @@ namespace Chummer.Plugins
             MyUploadClient.Id = Properties.Settings.Default.UploadClientId;
         }
 
+
+
         public override string ToString()
         {
-            return "SINners (Cloud)";
+            return "SINners";
         }
+
+        
 
         public ITelemetry SetTelemetryInitialize(ITelemetry telemetry)
         {
@@ -78,6 +84,73 @@ namespace Chummer.Plugins
             //        telemetry.Context.User.AccountId = ChummerHub.Client.Properties.Settings.Default.UserEmail;
             //}
             return telemetry;
+        }
+
+        bool IPlugin.ProcessCommandLine(string parameter)
+        {
+            string argument = "";
+            string onlyparameter = parameter;
+            if (parameter.Contains(':'))
+            {
+                argument = parameter.Substring(parameter.IndexOf(':'));
+                argument = argument.TrimStart(':');
+                onlyparameter = parameter.Substring(0, parameter.IndexOf(':'));
+            }
+            switch (onlyparameter)
+            {
+                case "RegisterUriScheme":
+                    if (StaticUtils.RegisterChummerProtocol(argument))
+                        Environment.ExitCode = -1;
+                    else
+                        Environment.ExitCode = 0;
+                    return false;
+                    break;
+                case "Load":
+                    return HandleLoadCommand(argument);
+                    break;
+                default:
+                    Log.Warn("Unknown command line parameter: " + parameter);
+                    return true;
+                    break;
+            }
+            return true;
+        }
+
+        void IPlugin.Dispose()
+        {
+            if (PipeManager != null)
+                PipeManager.StopServer();
+        }
+
+        private bool HandleLoadCommand(string argument)
+        {
+            if (PipeManager != null)
+            {
+                string msg = "Load:" + argument;
+                Log.Trace("Sending argument to Pipeserver: " + msg);
+                PipeManager.Write(msg);
+            }
+
+            //check global mutex
+            bool blnHasDuplicate = false;
+            try
+            {
+                blnHasDuplicate = !Program.GlobalChummerMutex.WaitOne(0, false);
+            }
+            catch (AbandonedMutexException ex)
+            {
+                Log.Error(ex);
+                Utils.BreakIfDebug();
+                blnHasDuplicate = true;
+            }
+
+            if (blnHasDuplicate)
+            {
+                Environment.ExitCode = -1;
+                return false;
+            }
+            else
+                return true;
         }
 
         IEnumerable<TabPage> IPlugin.GetTabPages(frmCareer input)
@@ -117,15 +190,13 @@ namespace Chummer.Plugins
         private static bool IsSaving = false;
 
         public static SINner MySINnerLoading { get; internal set; }
+        public NamedPipeManager PipeManager { get; private set; }
 
         string IPlugin.GetSaveToFileElement(Character input)
         {
             CharacterExtended ce = GetMyCe(input);
             
             var jsonResolver = new PropertyRenameAndIgnoreSerializerContractResolver();
-            //jsonResolver.IgnoreProperty(typeof(String), "MugshotBase64");
-            //jsonResolver.IgnoreProperty(typeof(SINnerExtended), "jsonSummary");
-            //jsonResolver.RenameProperty(typeof(Person), "FirstName", "firstName");
             JsonSerializerSettings settings = new JsonSerializerSettings
             {
                 ContractResolver = jsonResolver,
@@ -504,6 +575,17 @@ namespace Chummer.Plugins
                                         break;
                                 }
                             }
+                            ToolStripMenuItem newShare = new ToolStripMenuItem("Share")
+                            {
+                                Name = "tsShareChummer",
+                                Tag = "Menu_ShareChummer",
+                                Text = "Share chummer",
+                                Size = new System.Drawing.Size(177, 22),
+                                Image = global::Chummer.Properties.Resources.link_add
+                            };
+                            newShare.Click += NewShareOnClick;
+                            myContextMenuStrip.Items.Add(newShare);
+                            LanguageManager.TranslateWinForm(GlobalOptions.Language, myContextMenuStrip);
                         });
 
                     }
@@ -574,6 +656,19 @@ namespace Chummer.Plugins
             }
         }
 
+        private void NewShareOnClick(object sender, EventArgs e)
+        {
+            TreeNode t = PluginHandler.MainForm.CharacterRoster.treCharacterList.SelectedNode;
+
+            if (t?.Tag is frmCharacterRoster.CharacterCache objCache)
+            {
+                frmSINnerShare share = new frmSINnerShare();
+                share.MyUcSINnerShare.MyCharacterCache = objCache;
+                share.MyUcSINnerShare.backgroundWorker1.RunWorkerAsync();
+                share.ShowDialog(PluginHandler.MainForm);
+            }
+        }
+
         private void AddContextMenuStripRecursive(List<TreeNode> list, ContextMenuStrip myCmsRoster)
         {
             foreach (var node in list)
@@ -600,6 +695,113 @@ namespace Chummer.Plugins
             {
                 ChummerHub.Client.Properties.Settings.Default.TempDownloadPath = Path.GetTempPath();
             }
+
+            //check global mutex
+            bool blnHasDuplicate = false;
+            try
+            {
+                blnHasDuplicate = !Program.GlobalChummerMutex.WaitOne(0, false);
+            }
+            catch (AbandonedMutexException ex)
+            {
+                Log.Error(ex);
+                Utils.BreakIfDebug();
+                blnHasDuplicate = true;
+            }
+            if (PipeManager == null)
+            {
+                PipeManager = new NamedPipeManager("Chummer");
+                Log.Info("blnHasDuplicate = " + blnHasDuplicate.ToString());
+                // If there is more than 1 instance running, do not let the application start a receiving server.
+                if (blnHasDuplicate)
+                {
+                    Log.Info("More than one instance, not starting NamedPipe-Server...");
+                }
+                else
+                {
+                    Log.Info("Only one instance, starting NamedPipe-Server...");
+                    PipeManager.StartServer();
+                    PipeManager.ReceiveString += HandleNamedPipe_OpenRequest;
+                }
+            }
+
+
+        }
+
+        private static string fileNameToLoad = "";
+
+        public static async void HandleNamedPipe_OpenRequest(string argument)
+        {
+                Log.Trace("Pipeserver receiced a request: " + argument);
+                if (!string.IsNullOrEmpty(argument))
+                {
+                    if (argument.StartsWith("Load:"))
+                    {
+                        string SINnerIdvalue = argument.Substring(5);
+                        SINnerIdvalue = SINnerIdvalue.Trim('/');
+                        if (Guid.TryParse(SINnerIdvalue, out Guid SINnerId))
+                        {
+                            var client = StaticUtils.GetClient();
+                            var found = await client.GetSINByIdWithHttpMessagesAsync(SINnerId);
+                            await ChummerHub.Client.Backend.Utils.HandleError(found, found?.Body);
+                            if (found?.Response.StatusCode == System.Net.HttpStatusCode.OK)
+                            {
+                                fileNameToLoad = await ChummerHub.Client.Backend.Utils.DownloadFileTask(found.Body.MySINner, null);
+                                if (PluginHandler.MainForm.Visible == false)
+                                {
+                                    PluginHandler.MainForm.VisibleChanged += MainFormOnVisibleChanged;
+                                }
+                                else
+                                {
+                                    MainFormOnVisibleChanged(null, null);
+                                }
+                            }
+                            else if (found?.Response.StatusCode == HttpStatusCode.NotFound)
+                            {
+                                MessageBox.Show("Could not find a SINner with Id " + SINnerId + " online!");
+                            }
+                            
+                        }
+                    }
+                    else
+                    {
+                        throw new ArgumentException("Unkown command received: " + argument, nameof(argument));
+                    }
+                   
+
+                    PluginHandler.MainForm.DoThreadSafe(() =>
+                    {
+                        if (PluginHandler.MainForm.WindowState == FormWindowState.Minimized)
+                            PluginHandler.MainForm.WindowState = FormWindowState.Normal;
+                        PluginHandler.MainForm.Activate();
+                    });
+                }
+
+
+           
+        }
+
+        private static void MainFormOnVisibleChanged(object sender, EventArgs e)
+        {
+            PluginHandler.MainForm.DoThreadSafe(() =>
+            {
+                using (frmLoading frmLoadingForm = new frmLoading {CharacterFile = fileNameToLoad})
+                {
+                    frmLoadingForm.Reset(36);
+                    frmLoadingForm.Show();
+                    Character objCharacter = new Character()
+                    {
+                        FileName = fileNameToLoad
+                    };
+                    if (objCharacter.Load(frmLoadingForm, true).Result == true)
+                    {
+                         PluginHandler.MainForm.OpenCharacter(objCharacter, false);
+                    }
+                }
+
+                PluginHandler.MainForm.VisibleChanged -= MainFormOnVisibleChanged;
+                
+            });
         }
     }
 }

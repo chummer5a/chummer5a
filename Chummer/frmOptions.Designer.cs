@@ -31,6 +31,8 @@ namespace Chummer
             this.components = new System.ComponentModel.Container();
             this.mainPanel = new System.Windows.Forms.Panel();
             this.tlpOptions = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.cmdOK = new System.Windows.Forms.Button();
+            this.cmdCancel = new System.Windows.Forms.Button();
             this.txtSettingName = new System.Windows.Forms.TextBox();
             this.lblSetting = new System.Windows.Forms.Label();
             this.lblSettingName = new System.Windows.Forms.Label();
@@ -93,6 +95,7 @@ namespace Chummer
             this.nudBrowserVersion = new System.Windows.Forms.NumericUpDown();
             this.lblBrowserVersion = new System.Windows.Forms.Label();
             this.cbUseLoggingApplicationInsights = new System.Windows.Forms.ComboBox();
+            this.cbUseLoggingHelp = new Chummer.ButtonWithToolTip();
             this.tabCharacterOptions = new System.Windows.Forms.TabPage();
             this.tlpCharacterOptions = new Chummer.BufferedTableLayoutPanel(this.components);
             this.treSourcebook = new System.Windows.Forms.TreeView();
@@ -305,9 +308,6 @@ namespace Chummer
             this.clbPlugins = new System.Windows.Forms.CheckedListBox();
             this.panelPluginOption = new System.Windows.Forms.Panel();
             this.flpOKCancel = new System.Windows.Forms.FlowLayoutPanel();
-            this.cmdOK = new System.Windows.Forms.Button();
-            this.cmdCancel = new System.Windows.Forms.Button();
-            this.cbUseLoggingHelp = new Chummer.ButtonWithToolTip();
             this.mainPanel.SuspendLayout();
             this.tlpOptions.SuspendLayout();
             this.tabOptions.SuspendLayout();
@@ -426,6 +426,35 @@ namespace Chummer
             this.tlpOptions.Size = new System.Drawing.Size(975, 731);
             this.tlpOptions.TabIndex = 6;
             // 
+            // cmdOK
+            // 
+            this.cmdOK.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.cmdOK.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdOK.Location = new System.Drawing.Point(86, 0);
+            this.cmdOK.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
+            this.cmdOK.Name = "cmdOK";
+            this.cmdOK.Size = new System.Drawing.Size(80, 30);
+            this.cmdOK.TabIndex = 5;
+            this.cmdOK.Tag = "String_OK";
+            this.cmdOK.Text = "OK";
+            this.cmdOK.UseVisualStyleBackColor = true;
+            this.cmdOK.Click += new System.EventHandler(this.cmdOK_Click);
+            // 
+            // cmdCancel
+            // 
+            this.cmdCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmdCancel.AutoSize = true;
+            this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.cmdCancel.Location = new System.Drawing.Point(0, 0);
+            this.cmdCancel.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
+            this.cmdCancel.Name = "cmdCancel";
+            this.cmdCancel.Size = new System.Drawing.Size(80, 30);
+            this.cmdCancel.TabIndex = 6;
+            this.cmdCancel.Tag = "String_Cancel";
+            this.cmdCancel.Text = "Cancel";
+            this.cmdCancel.UseVisualStyleBackColor = true;
+            this.cmdCancel.Click += new System.EventHandler(this.cmdCancel_Click);
+            // 
             // txtSettingName
             // 
             this.txtSettingName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -474,7 +503,6 @@ namespace Chummer
             // 
             // tabOptions
             // 
-            this.tlpOptions.SetColumnSpan(this.tabOptions, 4);
             this.tabOptions.Controls.Add(this.tabGlobal);
             this.tabOptions.Controls.Add(this.tabCharacterOptions);
             this.tabOptions.Controls.Add(this.tabKarmaCosts);
@@ -1406,6 +1434,17 @@ namespace Chummer
             this.cbUseLoggingApplicationInsights.Size = new System.Drawing.Size(123, 21);
             this.cbUseLoggingApplicationInsights.TabIndex = 55;
             this.cbUseLoggingApplicationInsights.SelectedIndexChanged += new System.EventHandler(this.cbUseLoggingApplicationInsights_SelectedIndexChanged);
+            // 
+            // cbUseLoggingHelp
+            // 
+            this.cbUseLoggingHelp.Location = new System.Drawing.Point(467, 96);
+            this.cbUseLoggingHelp.Name = "cbUseLoggingHelp";
+            this.cbUseLoggingHelp.Size = new System.Drawing.Size(16, 23);
+            this.cbUseLoggingHelp.TabIndex = 56;
+            this.cbUseLoggingHelp.Text = "?";
+            this.cbUseLoggingHelp.ToolTipText = "";
+            this.cbUseLoggingHelp.UseVisualStyleBackColor = true;
+            this.cbUseLoggingHelp.Click += new System.EventHandler(this.CbUseLoggingHelp_Click);
             // 
             // tabCharacterOptions
             // 
@@ -4488,7 +4527,6 @@ namespace Chummer
             // 
             this.flpOKCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.flpOKCancel.AutoSize = true;
-            this.tlpOptions.SetColumnSpan(this.flpOKCancel, 4);
             this.flpOKCancel.Controls.Add(this.cmdOK);
             this.flpOKCancel.Controls.Add(this.cmdCancel);
             this.flpOKCancel.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
@@ -4496,46 +4534,6 @@ namespace Chummer
             this.flpOKCancel.Name = "flpOKCancel";
             this.flpOKCancel.Size = new System.Drawing.Size(166, 30);
             this.flpOKCancel.TabIndex = 5;
-            // 
-            // cmdOK
-            // 
-            this.cmdOK.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cmdOK.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdOK.Location = new System.Drawing.Point(86, 0);
-            this.cmdOK.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
-            this.cmdOK.Name = "cmdOK";
-            this.cmdOK.Size = new System.Drawing.Size(80, 30);
-            this.cmdOK.TabIndex = 5;
-            this.cmdOK.Tag = "String_OK";
-            this.cmdOK.Text = "OK";
-            this.cmdOK.UseVisualStyleBackColor = true;
-            this.cmdOK.Click += new System.EventHandler(this.cmdOK_Click);
-            // 
-            // cmdCancel
-            // 
-            this.cmdCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmdCancel.AutoSize = true;
-            this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cmdCancel.Location = new System.Drawing.Point(0, 0);
-            this.cmdCancel.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
-            this.cmdCancel.Name = "cmdCancel";
-            this.cmdCancel.Size = new System.Drawing.Size(80, 30);
-            this.cmdCancel.TabIndex = 6;
-            this.cmdCancel.Tag = "String_Cancel";
-            this.cmdCancel.Text = "Cancel";
-            this.cmdCancel.UseVisualStyleBackColor = true;
-            this.cmdCancel.Click += new System.EventHandler(this.cmdCancel_Click);
-            // 
-            // cbUseLoggingHelp
-            // 
-            this.cbUseLoggingHelp.Location = new System.Drawing.Point(467, 96);
-            this.cbUseLoggingHelp.Name = "cbUseLoggingHelp";
-            this.cbUseLoggingHelp.Size = new System.Drawing.Size(16, 23);
-            this.cbUseLoggingHelp.TabIndex = 56;
-            this.cbUseLoggingHelp.Text = "?";
-            this.cbUseLoggingHelp.ToolTipText = "";
-            this.cbUseLoggingHelp.UseVisualStyleBackColor = true;
-            this.cbUseLoggingHelp.Click += new System.EventHandler(this.CbUseLoggingHelp_Click);
             // 
             // frmOptions
             // 
@@ -4556,8 +4554,6 @@ namespace Chummer
             this.Text = "Options";
             this.Load += new System.EventHandler(this.frmOptions_Load);
             this.mainPanel.ResumeLayout(false);
-            this.tlpOptions.ResumeLayout(false);
-            this.tlpOptions.PerformLayout();
             this.tabOptions.ResumeLayout(false);
             this.tabGlobal.ResumeLayout(false);
             this.tabGlobal.PerformLayout();

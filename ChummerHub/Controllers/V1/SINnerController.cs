@@ -231,7 +231,6 @@ namespace ChummerHub.Controllers.V1
                 if (!String.IsNullOrEmpty(User?.Identity?.Name))
                     user = await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
                 var sin = await _context.SINners
-                    //.Include(a => a.MyExtendedAttributes)
                     .Include(a => a.SINnerMetaData.Visibility.UserRights)
                     .Include(a => a.MyGroup)
                     .Include(b => b.MyGroup.MySettings)
@@ -240,7 +239,6 @@ namespace ChummerHub.Controllers.V1
                 res = new ResultSinnerGetSINById(sin);
                 if (sin == null)
                 {
-                   
                     return NotFound(res);
                 }
                 bool oktoDownload = false;

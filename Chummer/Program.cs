@@ -30,8 +30,10 @@ using System.Linq;
  using System.Runtime.InteropServices;
  using System.Runtime.Remoting.Contexts;
  using System.Threading;
+ using System.Threading.Tasks;
  using System.Windows.Forms;
 ﻿using Chummer.Backend;
+ using Chummer.Plugins;
  using Microsoft.ApplicationInsights;
  using Microsoft.ApplicationInsights.DataContracts;
  using Microsoft.ApplicationInsights.Extensibility;
@@ -44,16 +46,18 @@ using System.Linq;
 [assembly: CLSCompliant(true)]
 namespace Chummer
 {
-    internal static class Program
+    public static class Program
     {
         private static Logger Log = null;
         private const string strChummerGuid = "eb0759c1-3599-495e-8bc5-57c8b3e1b31c";
-        //public static TelemetryConfiguration ApplicationInsightsConfig = new TelemetryConfiguration
-        //{
-        //    InstrumentationKey = "012fd080-80dc-4c10-97df-4f2cf8c805d5"
-        //};
         public static readonly TelemetryClient TelemetryClient = new TelemetryClient();
-        
+        private static PluginControl _pluginLoader = null;
+        public static PluginControl PluginLoader
+        {
+            get => _pluginLoader ?? (_pluginLoader = new PluginControl());
+            set => _pluginLoader = value;
+        }
+
 
         /// <summary>
         /// The main entry point for the application.
@@ -61,6 +65,7 @@ namespace Chummer
         [STAThread]
         static void Main()
         {
+            //for some fun try out this command line parameter: chummer://plugin:SINners:Load:5ff55b9d-7d1c-4067-a2f5-774127346f4e
             PageViewTelemetry pvt = null;
             var startTime = DateTimeOffset.UtcNow;
             using (GlobalChummerMutex = new Mutex(false, @"Global\" + strChummerGuid))
@@ -222,9 +227,9 @@ namespace Chummer
                         pvt = new PageViewTelemetry("frmChummerMain()")
                         {
                             Name = "Chummer Startup: " +
-                                   System.Reflection.Assembly.GetExecutingAssembly().GetName().Version
+                                   System.Reflection.Assembly.GetExecutingAssembly().GetName().Version,
+                            Id = Properties.Settings.Default.UploadClientId.ToString()
                         };
-                        pvt.Id = Properties.Settings.Default.UploadClientId.ToString();
                         pvt.Context.Operation.Name = "Operation Program.Main()";
                         pvt.Properties.Add("parameters", Environment.CommandLine);
                         pvt.Timestamp = startTime;
@@ -259,13 +264,57 @@ namespace Chummer
                     Console.WriteLine(e);
                     Log.Error(e);
                 }
-
-               
+                //load the plugins and maybe work of any command line arguments
+                //arguments come in the form of
+                //              /plugin:Name:Parameter:Argument
+                //              /plugin:SINners:RegisterUriScheme:0
+                _pluginLoader = new PluginControl();
+                bool showMainForm = true;
                 // Make sure the default language has been loaded before attempting to open the Main Form.
                 LanguageManager.TranslateWinForm(GlobalOptions.Language, null);
-
-                MainForm = new frmChummerMain(false, pvt);
-                Application.Run(MainForm);
+                MainForm = new frmChummerMain(false);
+                Program.PluginLoader.LoadPlugins(null);
+                //foreach(var plugin in Program.PluginLoader.MyActivePlugins)
+                //    plugin.CustomInitialize(MainForm);
+                if (!Utils.IsUnitTest)
+                {
+                    string[] strArgs = Environment.GetCommandLineArgs();
+                    try
+                    {
+                        var loopResult = Parallel.For(1, strArgs.Length, i =>
+                        {
+                            if (strArgs[i].Contains("/plugin"))
+                            {
+                                string whatplugin = strArgs[i].Substring(strArgs[i].IndexOf("/plugin") + 8);
+                                int endplugin = whatplugin.IndexOf(':');
+                                string parameter = whatplugin.Substring(endplugin + 1);
+                                whatplugin = whatplugin.Substring(0, endplugin);
+                                var plugin = Program.PluginLoader.MyActivePlugins.FirstOrDefault(a => a.ToString() == whatplugin);
+                                if (plugin != null)
+                                {
+                                    showMainForm &= plugin.ProcessCommandLine(parameter);
+                                }
+                            }
+                        });
+                        if (!loopResult.IsCompleted)
+                            Debugger.Break();
+                    }
+                    catch (Exception e)
+                    {
+                        ExceptionTelemetry ex = new ExceptionTelemetry(e)
+                        {
+                            SeverityLevel = SeverityLevel.Warning
+                        };
+                        TelemetryClient?.TrackException(ex);
+                        Log.Warn(e);
+                    }
+                }
+                if (showMainForm)
+                {
+                    MainForm.FormMainInitialize(pvt);
+                    Application.Run(MainForm);
+                }
+                Program.PluginLoader.Dispose();
                 Log.Info(ExceptionHeatmap.GenerateInfo());
                 if (GlobalOptions.UseLoggingApplicationInsights > UseAILogging.OnlyLocal)
                 {
@@ -274,11 +323,9 @@ namespace Chummer
                         TelemetryClient.Flush();
                         //we have to wait a bit to give it time to upload the data
                         Console.WriteLine("Waiting a bit to flush logging data...");
-                        Thread.Sleep(5000);
+                        Thread.Sleep(2000);
                     }
-
                 }
-                
             }
         }
 

@@ -19,9 +19,13 @@ using Chummer.Plugins;
 using System.Threading;
 using ChummerHub.Client.Model;
 using System.IO;
+using System.Reflection;
+using System.Security.Permissions;
 using System.Windows;
+using Microsoft.Win32;
 using NLog;
 using MessageBox = System.Windows.Forms.MessageBox;
+using OpenFileDialog = System.Windows.Forms.OpenFileDialog;
 
 //using Nemiro.OAuth;
 //using Nemiro.OAuth.LoginForms;
@@ -237,6 +241,22 @@ namespace ChummerHub.Client.UI
             }
             cbUploadOnSave.Checked = ucSINnersOptions.UploadOnSave;
             cbSINnerUrl.SelectedValueChanged += CbSINnerUrl_SelectedValueChanged;
+            AddShieldToButton(bRegisterUriScheme);
+        }
+
+        [DllImport("user32.dll")]
+        public static extern int SendMessage(IntPtr hWnd,
+            uint Msg, int wParam, int lParam);
+
+        // Make the button display the UAC shield.
+        public static void AddShieldToButton(Button btn)
+        {
+            const Int32 BCM_SETSHIELD = 0x160C;
+
+            // Give the button the flat style and make it
+            // display the UAC shield.
+            btn.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            SendMessage(btn.Handle, BCM_SETSHIELD, 0, 1);
         }
 
         ~ucSINnersOptions()
@@ -275,7 +295,7 @@ namespace ChummerHub.Client.UI
                     {
                         this.lUsername.Text = mail;
                         //also, since we are logged in in now, refresh the frmCharacterRoster!
-                        PluginHandler.MainForm.DoThreadSafe(() =>
+                        PluginHandler.MainForm?.DoThreadSafe(() =>
                         {
                             PluginHandler.MainForm.CharacterRoster.LoadCharacters(true, true, true, true);
                         });
@@ -524,9 +544,15 @@ namespace ChummerHub.Client.UI
                 {
                     Log.Trace("Loading: " + file);
                     var c = new Character { FileName = file };
-                    if(!(await c.Load(null, false)))
-                        continue;
-                    Log.Trace("Character loaded: " + c.Name);
+                    using (frmLoading frmLoadingForm = new frmLoading {CharacterFile = file})
+                    {
+                        frmLoadingForm.Reset(36);
+                        frmLoadingForm.Show();
+                        if (!(await c.Load(frmLoadingForm, false)))
+                            continue;
+                        Log.Trace("Character loaded: " + c.Name);
+                    }
+
                     CharacterExtended ce = new CharacterExtended(c, null);
                     await ce.UploadInBackground();
                 }
@@ -789,5 +815,17 @@ namespace ChummerHub.Client.UI
 
            OptionsUpdate();
         }
+
+        private void BRegisterUriScheme_Click(object sender, EventArgs e)
+        {
+            if (StaticUtils.RegisterChummerProtocol(null))
+                MessageBox.Show("Url is registered!");
+            else
+            {
+                MessageBox.Show("Url is NOT registered!");
+            }
+        }
+
+       
     }
 }
