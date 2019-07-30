@@ -1027,6 +1027,18 @@ namespace Chummer
                         }
                         return objCharacter.MagicTradition.Name == strNodeInnerText;
                     }
+                case "traditionspiritform":
+                    {
+                        // Character needs a tradition with a specific kind of spirit form. Expected values are Materialization, Possession or Inhabitation. 
+                        if (blnShowMessage)
+                        {
+                            string strTranslate = LanguageManager.TranslateExtra(strNodeInnerText, GlobalOptions.Language);
+                            strName = !string.IsNullOrEmpty(strTranslate)
+                                ? $"{Environment.NewLine}\t{strTranslate} ({LanguageManager.GetString("String_Tradition", GlobalOptions.Language)})"
+                                : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_Tradition", GlobalOptions.Language)})";
+                        }
+                        return objCharacter.MagicTradition.SpiritForm == strNodeInnerText;
+                    }
                 case "weapon":
                 {
                     // Character needs a specific Weapon.

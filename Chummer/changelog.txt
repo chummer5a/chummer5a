@@ -148,6 +148,7 @@ Application Changes:
 - Removed the caching of Mugshot images in the character roster. Prevents high memory usage for large watch folder content.
 - Unified some uses of Availability processing into the AvailabilityValue object.
 - Crash reporter now prevents uploading issues unless the user story in the Error Description tab has been changed.
+- Added a conditional check in the requirements validator that checks for the spirit form of a given tradition. Expected values are Materialization, Possession or Inhabitation. 
 
 UI Changes:
 
@@ -176,7 +177,8 @@ Data Changes:
 - Removed incorrect Medium lifestyle setting from the Workshop/Facility lifestyle qualities. Closes #3660
 - Extended Clip now allows Belt and Drum weapons instead of just Clips.
 - Fixed missing Mastery Quality flag for the Close Combat Mage quality.
-- The Tactical Grpple Gun is now addable as a gear item, in the same manner as the standard grapple gun. 
+- The Tactical Grapple Gun is now addable as a gear item, in the same manner as the standard grapple gun. 
+- Added missing Great Form Possession metamagic from Hard Targets.
 
 String Changes:
 
