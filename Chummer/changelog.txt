@@ -81,6 +81,7 @@ This affects:
     Stoner-Ares M202
     Ultamax MMG
 - Fixed Dareadrenaline adding 1 to WIL instead of 1 to dicepools based on WIL (important due to augmented attribute limits). Closes #3791.
+- Corrected the Handling and page reference of the Lone Star SecureSector Mk2. Closes #3788.
 
 New Strings:
 
