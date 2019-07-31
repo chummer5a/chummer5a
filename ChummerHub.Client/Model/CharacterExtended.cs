@@ -22,10 +22,10 @@ namespace ChummerHub.Client.Model
     public class CharacterExtended
     {
         private Logger Log = NLog.LogManager.GetCurrentClassLogger();
-        public CharacterExtended(Character character, string fileElement = null)
+        public CharacterExtended(Character character, string fileElement = null, frmCharacterRoster.CharacterCache myCharacterCache = null)
         {
             MyCharacter = character;
-            
+            MyCharacterCache = myCharacterCache;
             if (!string.IsNullOrEmpty(fileElement))
             {
                 try
@@ -88,7 +88,7 @@ namespace ChummerHub.Client.Model
             }
         }
 
-        public CharacterExtended(Character character, string fileElement = null, SINner mySINnerLoading = null) : this(character, fileElement)
+        public CharacterExtended(Character character, string fileElement = null, SINner mySINnerLoading = null, frmCharacterRoster.CharacterCache myCharacterCache = null) : this(character, fileElement, myCharacterCache)
         {
             if (mySINnerLoading != null)
             {
@@ -107,6 +107,8 @@ namespace ChummerHub.Client.Model
             }
                 
         }
+
+        public frmCharacterRoster.CharacterCache  MyCharacterCache { get; set; }
 
         public Character MyCharacter { get; set; }
 
@@ -354,7 +356,12 @@ namespace ChummerHub.Client.Model
                 if (MySINnerIds.ContainsKey(MyCharacter.FileName))
                     MySINnerIds.Remove(MyCharacter.FileName);
             }
-            if (MySINnerIds.TryGetValue(MyCharacter.FileName, out var singuid))
+            object sinidob = null;
+            if (MyCharacterCache?.MyPluginDataDic?.TryGetValue("SINnerId", out sinidob) == true)
+            {
+                MySINnerFile.Id = (Guid)sinidob;
+            }
+            else if (MySINnerIds.TryGetValue(MyCharacter.FileName, out var singuid))
                 MySINnerFile.Id = singuid;
             else
             {
@@ -596,14 +603,14 @@ namespace ChummerHub.Client.Model
                         myState.myWorker?.ReportProgress(myState.CurrentProgress, myState);
                     }
 
-                    ResultSinnerPostSIN response = ChummerHub.Client.Backend.Utils.PostSINner(this);
-                    if (response?.CallSuccess == true)
+                    HttpOperationResponse<ResultSinnerPostSIN> response = await ChummerHub.Client.Backend.Utils.PostSINner(this);
+                    if (response?.Body?.CallSuccess == true)
                     {
                         try
                         {
                             try
                             {
-                                this.MySINnerFile.Id = response.MySINners.FirstOrDefault().Id;
+                                this.MySINnerFile.Id = response.Body.MySINners.FirstOrDefault().Id;
                             }
                             catch (Exception ex)
                             {
@@ -658,8 +665,8 @@ namespace ChummerHub.Client.Model
                         if (myState != null)
                         {
                             myState.CurrentProgress += 4 * myState.ProgressSteps;
-                            myState.StatusText = "Could not upload Metadata: " + response?.ErrorText;
-                            myState.StatusText += Environment.NewLine + response?.MyException;
+                            myState.StatusText = "Could not upload Metadata: " + response?.Body?.ErrorText;
+                            myState.StatusText += Environment.NewLine + response?.Body?.MyException;
                             myState.myWorker?.ReportProgress(myState.CurrentProgress, myState);
                         }
                     }

@@ -552,8 +552,8 @@ namespace ChummerHub.Client.UI
                             continue;
                         Log.Trace("Character loaded: " + c.Name);
                     }
-
-                    CharacterExtended ce = new CharacterExtended(c, null);
+                    frmCharacterRoster.CharacterCache myCharacterCache = new frmCharacterRoster.CharacterCache(file);
+                    CharacterExtended ce = new CharacterExtended(c, null, null, myCharacterCache);
                     await ce.UploadInBackground(null);
                 }
                 catch (Exception ex)

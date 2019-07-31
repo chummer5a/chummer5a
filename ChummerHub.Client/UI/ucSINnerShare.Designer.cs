@@ -128,6 +128,7 @@
             this.Controls.Add(this.tlpShareMain);
             this.Name = "ucSINnerShare";
             this.Size = new System.Drawing.Size(641, 270);
+            this.Load += new System.EventHandler(this.UcSINnerShare_Load);
             this.tlpShareMain.ResumeLayout(false);
             this.tlpShareMain.PerformLayout();
             this.ResumeLayout(false);

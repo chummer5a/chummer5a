@@ -203,7 +203,7 @@ namespace Chummer.Plugins
             return new List<TabPage>() { page };
         }
 
-        private static bool IsSaving = false;
+        private static bool _isSaving = false;
 
         public static SINner MySINnerLoading { get; internal set; }
         public NamedPipeManager PipeManager { get; private set; }
@@ -296,7 +296,7 @@ namespace Chummer.Plugins
             finally
             {
                 input.OnSaveCompleted += MyOnSaveUpload;
-                IsSaving = false;
+                _isSaving = false;
             }
         }
 
@@ -342,9 +342,10 @@ namespace Chummer.Plugins
             }
 
             CharacterExtended ce;
+            frmCharacterRoster.CharacterCache myCharacterCache = new frmCharacterRoster.CharacterCache(input?.FileName);
             if (sinnertab == null)
             {
-                ce = new CharacterExtended(input, null);
+                ce = new CharacterExtended(input, null, null, myCharacterCache);
             }
             else
             {
@@ -355,7 +356,7 @@ namespace Chummer.Plugins
                     break;
                 }
 
-                ce = myUcSIN == null ? new CharacterExtended(input, null) : myUcSIN.MyCE;
+                ce = myUcSIN == null ? new CharacterExtended(input, null, null, myCharacterCache) : myUcSIN.MyCE;
             }
             return ce;
         }
@@ -679,7 +680,7 @@ namespace Chummer.Plugins
             {
                 frmSINnerShare share = new frmSINnerShare();
                 share.MyUcSINnerShare.MyCharacterCache = objCache;
-                share.MyUcSINnerShare.backgroundWorker1.RunWorkerAsync();
+                //share.MyUcSINnerShare.RunWorkerAsync();
                 share.ShowDialog(PluginHandler.MainForm);
             }
         }
@@ -731,6 +732,7 @@ namespace Chummer.Plugins
                 if (blnHasDuplicate)
                 {
                     Log.Info("More than one instance, not starting NamedPipe-Server...");
+                    throw new ApplicationException("More than one instance is running.");
                 }
                 else
                 {
