@@ -833,22 +833,43 @@ namespace Chummer.Plugins
             
                 using (frmLoading frmLoadingForm = new frmLoading {CharacterFile = fileToLoad })
                 {
-                    frmLoadingForm.Reset(36);
-                    frmLoadingForm.TopMost = true;
-                    frmLoadingForm.Show();
                     Character objCharacter = new Character()
                     {
                         FileName = fileToLoad
                     };
-                    if (await objCharacter.Load(frmLoadingForm, true) == true)
+                    //already open
+                    var foundseq = (from a in PluginHandler.MainForm.OpenCharacters
+                        where a.FileName == fileToLoad
+                        select a);
+                    if (foundseq.Any())
                     {
-                        PluginHandler.MainForm.DoThreadSafe(() =>
-                        {
-                            PluginHandler.MainForm.OpenCharacters.Add(objCharacter);
-                            PluginHandler.MainForm.OpenCharacter(objCharacter, false);
-                        });
+                        objCharacter = foundseq.FirstOrDefault();
                     }
-
+                    else
+                    {
+                        frmLoadingForm.Reset(36);
+                        frmLoadingForm.TopMost = true;
+                        frmLoadingForm.Show();
+                        if (await objCharacter.Load(frmLoadingForm, true))
+                            PluginHandler.MainForm.OpenCharacters.Add(objCharacter);
+                        else
+                            return objCharacter;
+                    }
+                    PluginHandler.MainForm.DoThreadSafe(() =>
+                    {
+                        var foundform = from a in PluginHandler.MainForm.OpenCharacterForms
+                            where a.CharacterObject == objCharacter
+                            select a;
+                        if (foundform.Any())
+                        {
+                            PluginHandler.MainForm.SwitchToOpenCharacter(objCharacter, false);
+                        }
+                        else
+                        {
+                            PluginHandler.MainForm.OpenCharacter(objCharacter, false);
+                        }
+                        PluginHandler.MainForm.BringToFront();
+                    });
                     return objCharacter;
                 }
       
