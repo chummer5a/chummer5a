@@ -61,8 +61,8 @@ namespace ChummerHub.Client.Backend
                     }
                     catch(IOException e)
                     {
-                        
                         Log.Warn(e);
+                        Thread.Sleep(50);
                     }
                     
 
@@ -87,7 +87,7 @@ namespace ChummerHub.Client.Backend
         {
             _isRunning = false;
             Write(EXIT_STRING);
-            Thread.Sleep(50); // give time for thread shutdown
+            Thread.Sleep(60); // give time for thread shutdown
         }
 
         /// <summary>

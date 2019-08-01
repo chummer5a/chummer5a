@@ -27,11 +27,12 @@ namespace ChummerHub.Client.UI
     public partial class ucSINnerShare : UserControl
     {
         private NLog.Logger Log = LogManager.GetCurrentClassLogger();
+        public frmSINnerShare MyFrmSINnerShare;
 
         public frmCharacterRoster.CharacterCache MyCharacterCache { get; set; }
-        public Func<MyUserState> DoWork { get; }
+        public Func<Task<MyUserState>> DoWork { get; }
         //public Func<int, Task<MyUserState>> ReportProgress { get; }
-        public Action<object, RunWorkerCompletedEventArgs> RunWorkerCompleted { get; }
+        public Action<MyUserState> RunWorkerCompleted { get; }
         public Action<int, MyUserState> ReportProgress { get; }
 
         //public event DoWorkEventHandler DoWork;
@@ -65,7 +66,7 @@ namespace ChummerHub.Client.UI
             public int ProgressSteps { get; internal set; }
         }
 
-        private MyUserState ShareChummer_DoWork()
+        private async Task<MyUserState> ShareChummer_DoWork()
         {
             try
             {
@@ -74,7 +75,7 @@ namespace ChummerHub.Client.UI
                 var client = StaticUtils.GetClient();
                 string sinnerid = "";
 
-                CharacterExtended GetCharacterExtended()
+                async Task<CharacterExtended> GetCharacterExtended()
                 {
                     Character c = new Character()
                     {
@@ -90,11 +91,12 @@ namespace ChummerHub.Client.UI
                         using (frmLoading frmLoadingForm = new frmLoading {CharacterFile = MyCharacterCache.FilePath})
                         {
                             frmLoadingForm.Reset(36);
+                            frmLoadingForm.TopMost = true;
                             frmLoadingForm.Show();
                             myState.StatusText = "Loading chummer file...";
                             myState.CurrentProgress += 10;
                             ReportProgress(myState.CurrentProgress, myState);
-                            c.Load(frmLoadingForm, false).ConfigureAwait(false);
+                            await c.Load(frmLoadingForm, false);
                         }
                     }
 
@@ -113,7 +115,7 @@ namespace ChummerHub.Client.UI
                 }
                 else
                 {
-                    ce = GetCharacterExtended();
+                    ce = await GetCharacterExtended();
                     sinnerid = ce.MySINnerFile.Id.ToString();
                 }
                 
@@ -134,23 +136,21 @@ namespace ChummerHub.Client.UI
 
                 HttpOperationResponse<ResultSinnerGetSINById> checkresult = null;
                 //check if char is already online and updated
-                Program.MainForm.DoThreadSafe(() =>
+                
+                checkresult = await client.GetSINByIdWithHttpMessagesAsync(SINid);
+                if (checkresult == null)
+                    throw new ArgumentException("Could not parse result from SINners Webservice!");
+                if (checkresult.Response.StatusCode != HttpStatusCode.NotFound)
                 {
-                    checkresult = client.GetSINByIdWithHttpMessagesAsync(SINid).ConfigureAwait(false).GetAwaiter().GetResult();
-                    if (checkresult == null)
-                        throw new ArgumentException("Could not parse result from SINners Webservice!");
-                    if (checkresult.Response.StatusCode != HttpStatusCode.NotFound)
+                    if (checkresult.Body.CallSuccess != true)
                     {
-                        if (checkresult.Body.CallSuccess != true)
-                        {
-                            if (checkresult.Body.MyException is Exception myException)
-                                throw new ArgumentException("Error from SINners Webservice: " + checkresult.Body.ErrorText,
-                                    myException);
-                            else
-                                throw new ArgumentException("Error from SINners Webservice: " + checkresult.Body.ErrorText);
-                        }
+                        if (checkresult.Body.MyException is Exception myException)
+                            throw new ArgumentException("Error from SINners Webservice: " + checkresult.Body.ErrorText,
+                                myException);
+                        else
+                            throw new ArgumentException("Error from SINners Webservice: " + checkresult.Body.ErrorText);
                     }
-                });
+                }
                 
 
                 var lastWriteTimeUtc = System.IO.File.GetLastWriteTimeUtc(MyCharacterCache.FilePath);
@@ -162,27 +162,27 @@ namespace ChummerHub.Client.UI
                         myState.StatusText = "The Chummer is newer and has to be uploaded again.";
                         myState.CurrentProgress = 30;
                         ReportProgress(myState.CurrentProgress, myState);
-                        ce = GetCharacterExtended();
+                        ce = await GetCharacterExtended();
                     }
                     myState.StatusText = "Checking SINner availability (and if necessary upload it).";
                     myState.CurrentProgress = 35;
                     ReportProgress(myState.CurrentProgress, myState);
                     myState.ProgressSteps = 10;
-                    var uploadtask = ce.Upload(myState).Result;
+                    var uploadtask = await ce.Upload(myState);
                     //uploadtask.Wait(TimeSpan.FromMinutes(2));
                     //if ((uploadtask.Result == false || (ce.MySINnerFile.Id == null)))
                     //    throw new ArgumentException("Could not access SINnerId after upload!");
                     SINid = ce.MySINnerFile.Id.Value;
-                    ResultSinnerGetSINById result = client.GetSINById(SINid);
+                    var result = await client.GetSINByIdWithHttpMessagesAsync(SINid);
                     if (result == null)
                         throw new ArgumentException("Could not parse result from SINners Webservice!");
-                    if (result.CallSuccess != true)
+                    if (result.Body?.CallSuccess != true)
                     {
-                        if (result.MyException is Exception myException)
-                            throw new ArgumentException("Error from SINners Webservice: " + result.ErrorText,
+                        if (result.Body?.MyException is Exception myException)
+                            throw new ArgumentException("Error from SINners Webservice: " + result.Body?.ErrorText,
                                 myException);
                         else
-                            throw new ArgumentException("Error from SINners Webservice: " + result.ErrorText);
+                            throw new ArgumentException("Error from SINners Webservice: " + result.Body?.ErrorText);
                     }
                 }
 
@@ -193,6 +193,7 @@ namespace ChummerHub.Client.UI
                 string url = "chummer://plugin:SINners:Load:" + sinnerid;
                 myState.LinkText = url;
                 ReportProgress(100, myState);
+                RunWorkerCompleted(myState);
                 return myState;
             }
             catch (Exception exception)
@@ -225,32 +226,18 @@ namespace ChummerHub.Client.UI
                 });
             }
         }
-        private void ShareChummer_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
+        private void ShareChummer_RunWorkerCompleted(MyUserState us)
         {
-            if (e.Cancelled)
-            {
-                tbStatus.Text += "Process was cancelled" + Environment.NewLine;
-            }
-            else if (e.Error != null)
-            {
-                tbStatus.Text += "There was an error while trying to share this chummer: " + Environment.NewLine + e.Error;
-            }
-            else
-            {
-                
-                if (e.Result is MyUserState us)
-                {
-                    tbLink.Text = us.LinkText;
-                    tbStatus.Text += "Link copied to clipboard." + Environment.NewLine;
-                    Clipboard.SetText(us.LinkText);
-                }
-                tbStatus.Text += "Process was completed" + Environment.NewLine;
-            }
+            pgbStatus.Value = 100;
+            tbLink.Text = us.LinkText;
+            tbStatus.Text += "Link copied to clipboard." + Environment.NewLine;
+            Clipboard.SetText(us.LinkText);
+            tbStatus.Text += "Process was completed" + Environment.NewLine;
         }
 
-        private void UcSINnerShare_Load(object sender, EventArgs e)
+        private void BOk_Click(object sender, EventArgs e)
         {
-            var res = DoWork();
+            MyFrmSINnerShare.Close();
         }
     }
 }

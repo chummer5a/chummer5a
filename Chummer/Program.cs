@@ -188,7 +188,7 @@ namespace Chummer
                         }
                     }
                     Log.Info(strInfo);
-
+                    Log.Info("Logging options are set to " + GlobalOptions.UseLogging + " and Upload-Options are set to " + GlobalOptions.UseLoggingApplicationInsights + " (Installation-Id: " + Chummer.Properties.Settings.Default.UploadClientId + ").");
 
                     if (GlobalOptions.UseLoggingApplicationInsights >= UseAILogging.OnlyMetric)
                     {

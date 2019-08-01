@@ -9,6 +9,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Composition;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -140,13 +141,6 @@ namespace Chummer.Plugins
 
         private bool HandleLoadCommand(string argument)
         {
-            if (PipeManager != null)
-            {
-                string msg = "Load:" + argument;
-                Log.Trace("Sending argument to Pipeserver: " + msg);
-                PipeManager.Write(msg);
-            }
-
             //check global mutex
             bool blnHasDuplicate = false;
             try
@@ -159,7 +153,26 @@ namespace Chummer.Plugins
                 Utils.BreakIfDebug();
                 blnHasDuplicate = true;
             }
-
+            
+            var thread = new Thread((myargument) =>
+            {
+                if (!blnHasDuplicate)
+                {
+                    var uptime = DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime();
+                    if (uptime < TimeSpan.FromSeconds(2))
+                    {
+                        Thread.Sleep(TimeSpan.FromSeconds(1));
+                    }
+                }
+                if (PipeManager != null)
+                {
+                    string msg = "Load:" + myargument;
+                    Log.Trace("Sending argument to Pipeserver: " + msg);
+                    PipeManager.Write(msg);
+                }
+            });
+            thread.Start(argument);
+            thread.Join();
             if (blnHasDuplicate)
             {
                 Environment.ExitCode = -1;
@@ -672,7 +685,7 @@ namespace Chummer.Plugins
             }
         }
 
-        private void NewShareOnClick(object sender, EventArgs e)
+        private async void NewShareOnClick(object sender, EventArgs e)
         {
             TreeNode t = PluginHandler.MainForm.CharacterRoster.treCharacterList.SelectedNode;
 
@@ -680,8 +693,9 @@ namespace Chummer.Plugins
             {
                 frmSINnerShare share = new frmSINnerShare();
                 share.MyUcSINnerShare.MyCharacterCache = objCache;
-                //share.MyUcSINnerShare.RunWorkerAsync();
-                share.ShowDialog(PluginHandler.MainForm);
+                share.TopMost = true;
+                share.Show(PluginHandler.MainForm);
+                await share.MyUcSINnerShare.DoWork();
             }
         }
 
@@ -752,59 +766,67 @@ namespace Chummer.Plugins
                 Log.Trace("Pipeserver receiced a request: " + argument);
                 if (!string.IsNullOrEmpty(argument))
                 {
+                    //make sure the mainform is visible ...
+                    var uptime = DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime();
+                    if (uptime < TimeSpan.FromSeconds(5))
+                        Thread.Sleep(TimeSpan.FromSeconds(4));
+                    if (PluginHandler.MainForm.Visible == false)
+                    {
+                        PluginHandler.MainForm.DoThreadSafe(() =>
+                        {
+                            if (PluginHandler.MainForm.WindowState == FormWindowState.Minimized)
+                                PluginHandler.MainForm.WindowState = FormWindowState.Normal;
+                            PluginHandler.MainForm.Activate();
+                        });
+                    }
+                    while (PluginHandler.MainForm.Visible == false)
+                    {
+                        Thread.Sleep(TimeSpan.FromSeconds(1));
+                    }
                     if (argument.StartsWith("Load:"))
                     {
-                        string SINnerIdvalue = argument.Substring(5);
-                        SINnerIdvalue = SINnerIdvalue.Trim('/');
-                        if (Guid.TryParse(SINnerIdvalue, out Guid SINnerId))
+                        try
                         {
-                            var client = StaticUtils.GetClient();
-                            var found = await client.GetSINByIdWithHttpMessagesAsync(SINnerId);
-                            await ChummerHub.Client.Backend.Utils.HandleError(found, found?.Body);
-                            if (found?.Response.StatusCode == System.Net.HttpStatusCode.OK)
+                            string SINnerIdvalue = argument.Substring(5);
+                            SINnerIdvalue = SINnerIdvalue.Trim('/');
+                            if (Guid.TryParse(SINnerIdvalue, out Guid SINnerId))
                             {
-                                fileNameToLoad = await ChummerHub.Client.Backend.Utils.DownloadFileTask(found.Body.MySINner, null);
-                                if (PluginHandler.MainForm.Visible == false)
+                                var client = StaticUtils.GetClient();
+                                var found = await client.GetSINByIdWithHttpMessagesAsync(SINnerId);
+                                await ChummerHub.Client.Backend.Utils.HandleError(found, found?.Body);
+                                if (found?.Response.StatusCode == System.Net.HttpStatusCode.OK)
                                 {
-                                    PluginHandler.MainForm.VisibleChanged += MainFormOnVisibleChanged;
+                                    fileNameToLoad = await ChummerHub.Client.Backend.Utils.DownloadFileTask(found.Body.MySINner, null);
+                                    MainFormLoadChar(null, null);
                                 }
-                                else
+                                else if (found?.Response.StatusCode == HttpStatusCode.NotFound)
                                 {
-                                    MainFormOnVisibleChanged(null, null);
+                                    MessageBox.Show("Could not find a SINner with Id " + SINnerId + " online!");
                                 }
+
                             }
-                            else if (found?.Response.StatusCode == HttpStatusCode.NotFound)
-                            {
-                                MessageBox.Show("Could not find a SINner with Id " + SINnerId + " online!");
-                            }
-                            
                         }
+                        catch (Exception e)
+                        {
+                            Log.Error(e);
+                            MessageBox.Show("Error loading SINner: " + e.Message);
+                        }
+                        
                     }
                     else
                     {
                         throw new ArgumentException("Unkown command received: " + argument, nameof(argument));
                     }
-                   
-
-                    PluginHandler.MainForm.DoThreadSafe(() =>
-                    {
-                        if (PluginHandler.MainForm.WindowState == FormWindowState.Minimized)
-                            PluginHandler.MainForm.WindowState = FormWindowState.Normal;
-                        PluginHandler.MainForm.Activate();
-                    });
                 }
-
-
-           
         }
 
-        private static void MainFormOnVisibleChanged(object sender, EventArgs e)
+        private static void MainFormLoadChar(object sender, EventArgs e)
         {
-            PluginHandler.MainForm.DoThreadSafe(() =>
-            {
+            
                 using (frmLoading frmLoadingForm = new frmLoading {CharacterFile = fileNameToLoad})
                 {
                     frmLoadingForm.Reset(36);
+                    frmLoadingForm.TopMost = true;
                     frmLoadingForm.Show();
                     Character objCharacter = new Character()
                     {
@@ -812,14 +834,14 @@ namespace Chummer.Plugins
                     };
                     if (objCharacter.Load(frmLoadingForm, true).Result == true)
                     {
-                        PluginHandler.MainForm.OpenCharacters.Add(objCharacter);
-                        PluginHandler.MainForm.OpenCharacter(objCharacter, false);
+                        PluginHandler.MainForm.DoThreadSafe(() =>
+                        {
+                            PluginHandler.MainForm.OpenCharacters.Add(objCharacter);
+                            PluginHandler.MainForm.OpenCharacter(objCharacter, false);
+                        });
                     }
                 }
-
-                PluginHandler.MainForm.VisibleChanged -= MainFormOnVisibleChanged;
-                
-            });
+      
         }
     }
 }

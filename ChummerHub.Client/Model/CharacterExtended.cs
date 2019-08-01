@@ -459,7 +459,6 @@ namespace ChummerHub.Client.Model
 
 
             MySINnerFile.Alias = MyCharacter.CharacterName;
-            MySINnerFile.LastChange = MyCharacter.FileLastWriteTime;
             if (MySINnerFile.SiNnerMetaData.Visibility?.UserRights == null)
             {
                 MySINnerFile.SiNnerMetaData.Visibility =
@@ -505,8 +504,7 @@ namespace ChummerHub.Client.Model
                     File.Delete(file);
             }
             var summary = new frmCharacterRoster.CharacterCache(MyCharacter.FileName);
-            //MySINnerFile.MyExtendedAttributes.JsonSummary = JsonConvert.SerializeObject(summary);
-            MySINnerFile.LastChange = MyCharacter.FileLastWriteTime;
+            
             if (String.IsNullOrEmpty(summary.FileName))
                 return null;
             var tempfile = Path.Combine(tempDir, summary.FileName);
@@ -527,11 +525,8 @@ namespace ChummerHub.Client.Model
                 MyCharacter.Save(MyCharacter.FileName, false, false);
             }
 
-            //string path = //Path.Combine(ChummerHub.Client.Properties.Settings.Default.TempDownloadPath, 
-            //    MyCharacter.FileName.Substring(0, MyCharacter.FileName.LastIndexOf('\\'));
-
-            //CreateDirectoryRecursively(path);
             MyCharacter.Save(tempfile, false, false);
+            MySINnerFile.LastChange = MyCharacter.FileLastWriteTime;
             if (readCallback)
                 MyCharacter.OnSaveCompleted += PluginHandler.MyOnSaveUpload;
 
