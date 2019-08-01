@@ -1075,6 +1075,40 @@ namespace Chummer
         #endregion
 
         #region Methods
+
+        private static bool showDevWarningAboutDebuggingOnlyOnce = true;
+        /// <summary>
+        /// This makes sure, that the MessageBox is shown in the UI Thread.
+        /// https://stackoverflow.com/questions/559252/does-messagebox-show-automatically-marshall-to-the-ui-thread
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="caption"></param>
+        /// <returns></returns>
+        public DialogResult ShowMessageBox(String message, String caption, MessageBoxButtons buttons = MessageBoxButtons.OK, MessageBoxIcon icon = MessageBoxIcon.None)
+        {
+            if (this.InvokeRequired)
+            {
+                if ((showDevWarningAboutDebuggingOnlyOnce) && (Debugger.IsAttached))
+                {
+                    showDevWarningAboutDebuggingOnlyOnce = false;
+                    //it works on my installation even in the debugger, so maybe we can ignore that...
+                    //WARNING from the link above (you can edit that out if it's not causing problem):
+                    //
+                    //BUT ALSO KEEP IN MIND: when debugging a multi-threaded GUI app, and you're debugging in a thread
+                    //other than the main/application thread, YOU NEED TO TURN OFF
+                    //the "Enable property evaluation and other implicit function calls" option, or else VS will
+                    //automatically fetch the values of local/global GUI objects FROM THE CURRENT THREAD, which will
+                    //cause your application to crash/fail in strange ways. Go to Tools->Options->Debugging to turn
+                    //that setting off.
+                    Debugger.Break();
+                }
+                return (DialogResult)this.Invoke(new PassStringStringReturnDialogResultDelegate(ShowMessageBox), message, caption, buttons, icon);
+            }
+            return MessageBox.Show(new Form() { TopMost = true }, message, caption, buttons, icon);
+        }
+
+        public delegate DialogResult PassStringStringReturnDialogResultDelegate(String s1, String s2, MessageBoxButtons buttons, MessageBoxIcon icon);
+
         /// <summary>
         /// Create a new character and show the Create Form.
         /// </summary>

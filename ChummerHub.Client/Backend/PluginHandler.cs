@@ -105,6 +105,7 @@ namespace Chummer.Plugins
 
         bool IPlugin.ProcessCommandLine(string parameter)
         {
+            Log.Debug("ChummerHub.Client.PluginHandler ProcessCommandLine: " + parameter);
             string argument = "";
             string onlyparameter = parameter;
             if (parameter.Contains(':'))
@@ -136,7 +137,12 @@ namespace Chummer.Plugins
         void IPlugin.Dispose()
         {
             if (PipeManager != null)
-                PipeManager.StopServer();
+            {
+                //only stop the server if this is the last instance!
+                if (!BlnHasDuplicate)
+                    PipeManager.StopServer();
+            }
+                
         }
 
         private bool HandleLoadCommand(string argument)
@@ -717,6 +723,8 @@ namespace Chummer.Plugins
             }
         }
 
+        public bool BlnHasDuplicate { get; set; }
+
         public void CustomInitialize(frmChummerMain mainControl)
         {
             Log.Info("CustomInitialize for Plugin ChummerHub.Client entered.");
@@ -727,23 +735,23 @@ namespace Chummer.Plugins
             }
 
             //check global mutex
-            bool blnHasDuplicate = false;
+            BlnHasDuplicate = false;
             try
             {
-                blnHasDuplicate = !Program.GlobalChummerMutex.WaitOne(0, false);
+                BlnHasDuplicate = !Program.GlobalChummerMutex.WaitOne(0, false);
             }
             catch (AbandonedMutexException ex)
             {
                 Log.Error(ex);
                 Utils.BreakIfDebug();
-                blnHasDuplicate = true;
+                BlnHasDuplicate = true;
             }
             if (PipeManager == null)
             {
                 PipeManager = new NamedPipeManager("Chummer");
-                Log.Info("blnHasDuplicate = " + blnHasDuplicate.ToString());
+                Log.Info("blnHasDuplicate = " + BlnHasDuplicate.ToString());
                 // If there is more than 1 instance running, do not let the application start a receiving server.
-                if (blnHasDuplicate)
+                if (BlnHasDuplicate)
                 {
                     Log.Info("More than one instance, not starting NamedPipe-Server...");
                     throw new ApplicationException("More than one instance is running.");
@@ -797,7 +805,7 @@ namespace Chummer.Plugins
                                 if (found?.Response.StatusCode == System.Net.HttpStatusCode.OK)
                                 {
                                     fileNameToLoad = await ChummerHub.Client.Backend.Utils.DownloadFileTask(found.Body.MySINner, null);
-                                    MainFormLoadChar(null, null);
+                                    await MainFormLoadChar(fileNameToLoad);
                                 }
                                 else if (found?.Response.StatusCode == HttpStatusCode.NotFound)
                                 {
@@ -820,26 +828,49 @@ namespace Chummer.Plugins
                 }
         }
 
-        private static void MainFormLoadChar(object sender, EventArgs e)
+        private static async Task<Character> MainFormLoadChar(string fileToLoad)
         {
             
-                using (frmLoading frmLoadingForm = new frmLoading {CharacterFile = fileNameToLoad})
+                using (frmLoading frmLoadingForm = new frmLoading {CharacterFile = fileToLoad })
                 {
-                    frmLoadingForm.Reset(36);
-                    frmLoadingForm.TopMost = true;
-                    frmLoadingForm.Show();
                     Character objCharacter = new Character()
                     {
-                        FileName = fileNameToLoad
+                        FileName = fileToLoad
                     };
-                    if (objCharacter.Load(frmLoadingForm, true).Result == true)
+                    //already open
+                    var foundseq = (from a in PluginHandler.MainForm.OpenCharacters
+                        where a.FileName == fileToLoad
+                        select a);
+                    if (foundseq.Any())
                     {
-                        PluginHandler.MainForm.DoThreadSafe(() =>
-                        {
-                            PluginHandler.MainForm.OpenCharacters.Add(objCharacter);
-                            PluginHandler.MainForm.OpenCharacter(objCharacter, false);
-                        });
+                        objCharacter = foundseq.FirstOrDefault();
                     }
+                    else
+                    {
+                        frmLoadingForm.Reset(36);
+                        frmLoadingForm.TopMost = true;
+                        frmLoadingForm.Show();
+                        if (await objCharacter.Load(frmLoadingForm, true))
+                            PluginHandler.MainForm.OpenCharacters.Add(objCharacter);
+                        else
+                            return objCharacter;
+                    }
+                    PluginHandler.MainForm.DoThreadSafe(() =>
+                    {
+                        var foundform = from a in PluginHandler.MainForm.OpenCharacterForms
+                            where a.CharacterObject == objCharacter
+                            select a;
+                        if (foundform.Any())
+                        {
+                            PluginHandler.MainForm.SwitchToOpenCharacter(objCharacter, false);
+                        }
+                        else
+                        {
+                            PluginHandler.MainForm.OpenCharacter(objCharacter, false);
+                        }
+                        PluginHandler.MainForm.BringToFront();
+                    });
+                    return objCharacter;
                 }
       
         }

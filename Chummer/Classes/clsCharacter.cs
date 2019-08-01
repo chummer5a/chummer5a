@@ -1895,12 +1895,16 @@ namespace Chummer
                             {
                                 if (showWarnings)
                                 {
-                                    MessageBox.Show(
-                                        string.Format(
-                                            LanguageManager.GetString("Message_FailedLoad", GlobalOptions.Language),
-                                            ex.Message),
-                                        LanguageManager.GetString("MessageTitle_FailedLoad", GlobalOptions.Language),
+                                    Program.MainForm.ShowMessageBox(
+                                        string.Format(LanguageManager.GetString("Message_FailedLoad", GlobalOptions.Language),ex.Message),
+                                        string.Format(LanguageManager.GetString("Message_FailedLoad", GlobalOptions.Language),ex.Message),
                                         MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    //MessageBox.Show(
+                                    //    string.Format(
+                                    //        LanguageManager.GetString("Message_FailedLoad", GlobalOptions.Language),
+                                    //        ex.Message),
+                                    //    LanguageManager.GetString("MessageTitle_FailedLoad", GlobalOptions.Language),
+                                    //    MessageBoxButtons.OK, MessageBoxIcon.Error);
                                 }
 
                                 return false;
@@ -1935,11 +1939,16 @@ namespace Chummer
                             !string.IsNullOrEmpty(strGameEdition) && strGameEdition != "SR5" && showWarnings &&
                             !Utils.IsUnitTest)
                         {
-                            MessageBox.Show(
+                            Program.MainForm.ShowMessageBox(
                                 LanguageManager.GetString("Message_IncorrectGameVersion_SR4", GlobalOptions.Language),
                                 LanguageManager.GetString("MessageTitle_IncorrectGameVersion", GlobalOptions.Language),
                                 MessageBoxButtons.YesNo,
                                 MessageBoxIcon.Error);
+                            //MessageBox.Show(
+                            //    LanguageManager.GetString("Message_IncorrectGameVersion_SR4", GlobalOptions.Language),
+                            //    LanguageManager.GetString("MessageTitle_IncorrectGameVersion", GlobalOptions.Language),
+                            //    MessageBoxButtons.YesNo,
+                            //    MessageBoxIcon.Error);
                             IsLoading = false;
                             return false;
                         }
@@ -1997,13 +2006,22 @@ if (!Utils.IsUnitTest){
 
                         if (!string.IsNullOrEmpty(strMissingBooks) && !Utils.IsUnitTest && showWarnings)
                         {
-                            if (MessageBox.Show(new Form {TopMost = true},
-                                    string.Format(
+                            if (
+                                Program.MainForm.ShowMessageBox(string.Format(
                                         LanguageManager.GetString("Message_MissingSourceBooks", GlobalOptions.Language),
                                         TranslatedBookList(strMissingBooks, GlobalOptions.Language)),
                                     LanguageManager.GetString("Message_MissingSourceBooks_Title",
                                         GlobalOptions.Language),
-                                    MessageBoxButtons.YesNo) == DialogResult.No)
+                                    MessageBoxButtons.YesNo)
+                                
+                            //MessageBox.Show(new Form {TopMost = true},
+                            //        string.Format(
+                            //            LanguageManager.GetString("Message_MissingSourceBooks", GlobalOptions.Language),
+                            //            TranslatedBookList(strMissingBooks, GlobalOptions.Language)),
+                            //        LanguageManager.GetString("Message_MissingSourceBooks_Title",
+                            //            GlobalOptions.Language),
+                            //        MessageBoxButtons.YesNo)
+                                == DialogResult.No)
                             {
                                 IsLoading = false;
                                 return false;
@@ -2026,13 +2044,23 @@ if (!Utils.IsUnitTest){
 
                         if (!string.IsNullOrEmpty(strMissingSourceNames) && !Utils.IsUnitTest && showWarnings)
                         {
-                            if (MessageBox.Show(
-                                    string.Format(
-                                        LanguageManager.GetString("Message_MissingCustomDataDirectories",
-                                            GlobalOptions.Language), strMissingSourceNames),
-                                    LanguageManager.GetString("Message_MissingCustomDataDirectories_Title",
-                                        GlobalOptions.Language),
-                                    MessageBoxButtons.YesNo) == DialogResult.No)
+                            if (Program.MainForm.ShowMessageBox(
+                                string.Format(
+                                    LanguageManager.GetString("Message_MissingCustomDataDirectories",
+                                        GlobalOptions.Language), strMissingSourceNames),
+                                LanguageManager.GetString("Message_MissingCustomDataDirectories_Title",
+                                    GlobalOptions.Language),
+                                MessageBoxButtons.YesNo)
+
+                            //MessageBox.Show(
+                            //        string.Format(
+                            //            LanguageManager.GetString("Message_MissingCustomDataDirectories",
+                            //                GlobalOptions.Language), strMissingSourceNames),
+                            //        LanguageManager.GetString("Message_MissingCustomDataDirectories_Title",
+                            //            GlobalOptions.Language),
+                            //        MessageBoxButtons.YesNo)
+
+                                == DialogResult.No)
                             {
                                 IsLoading = false;
                                 return false;
@@ -2125,14 +2153,26 @@ if (!Utils.IsUnitTest){
                                 "/chummer/gameplayoptions/gameplayoption[name = \"" + GameplayOption + "\"]");
                         if (xmlGameplayOption == null && showWarnings)
                         {
-                            if (MessageBox.Show(
-                                    string.Format(
-                                        LanguageManager.GetString("Message_MissingGameplayOption",
-                                            GlobalOptions.Language),
-                                        GameplayOption),
-                                    LanguageManager.GetString("Message_MissingGameplayOption_Title",
+                            if (Program.MainForm.ShowMessageBox(
+                                string.Format(
+                                    LanguageManager.GetString("Message_MissingGameplayOption",
                                         GlobalOptions.Language),
-                                    MessageBoxButtons.OKCancel, MessageBoxIcon.Error) == DialogResult.OK)
+                                    GameplayOption),
+                                LanguageManager.GetString("Message_MissingGameplayOption_Title",
+                                    GlobalOptions.Language),
+                                MessageBoxButtons.OKCancel, MessageBoxIcon.Error)
+
+
+                                //MessageBox.Show(
+                                //    string.Format(
+                                //        LanguageManager.GetString("Message_MissingGameplayOption",
+                                //            GlobalOptions.Language),
+                                //        GameplayOption),
+                                //    LanguageManager.GetString("Message_MissingGameplayOption_Title",
+                                //        GlobalOptions.Language),
+                                //    MessageBoxButtons.OKCancel, MessageBoxIcon.Error)
+
+                                    == DialogResult.OK)
                             {
                                 frmSelectBuildMethod frmPickBP = new frmSelectBuildMethod(this, true);
                                 frmPickBP.ShowDialog();
