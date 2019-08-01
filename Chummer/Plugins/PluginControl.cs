@@ -1,3 +1,21 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -18,15 +36,18 @@ namespace Chummer.Plugins
     [InheritedExport(typeof(IPlugin))]
     public interface IPlugin
     {
+        //only very rudimentary initialization should take place here. Make it QUICK.
         void CustomInitialize(frmChummerMain mainControl);
 
         IEnumerable<TabPage> GetTabPages(frmCareer input);
         IEnumerable<TabPage> GetTabPages(frmCreate input);
         IEnumerable<ToolStripMenuItem> GetMenuItems(ToolStripMenuItem menu);
         ITelemetry SetTelemetryInitialize(ITelemetry telemetry);
+        bool ProcessCommandLine(string parameter);
+
+
 
         Task<IEnumerable<TreeNode>> GetCharacterRosterTreeNode(frmCharacterRoster frmCharRoster, bool forceUpdate);
-
         UserControl GetOptionsControl();
 
         string GetSaveToFileElement(Character input);
@@ -35,17 +56,32 @@ namespace Chummer.Plugins
         void SetIsUnitTest(bool isUnitTest);
 
         Assembly GetPluginAssembly();
+        void Dispose();
+        bool SetCharacterRosterNode(TreeNode objNode);
     }
 
 
-    public class PluginControl
+    public class PluginControl : IDisposable
     {
         private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private static CompositionContainer container = null;
         public static CompositionContainer Container { get { return container; } }
         public string PathToPlugins { get; set; }
         private static AggregateCatalog catalog;
-        private static DirectoryCatalog myDirectoryCatalog = new DirectoryCatalog(path: "Plugins", searchPattern: "*.dll");
+        private static DirectoryCatalog myDirectoryCatalog = null;
+
+        public PluginControl()
+        {
+            
+        }
+
+        ~PluginControl()
+        {
+            foreach (var plugin in this.MyActivePlugins)
+            {
+                plugin.Dispose();
+            }
+        }
 
         public void Initialize()
         {
@@ -57,12 +93,26 @@ namespace Chummer.Plugins
                     return;
                 }
                 Log.Info("Plugins are globally enabled - entering PluginControl.Initialize()");
+
+                string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Plugins");
+                if (!Directory.Exists(path))
+                {
+                    Log.Warn("Directory " + path + " not found. No Plugins will be available.");
+                    MyPlugins = new List<IPlugin>();
+                    return;
+                }
                 catalog = new AggregateCatalog();
-                var execat = new DirectoryCatalog(path: "Plugins", searchPattern: "*.exe");
-                Log.Info("Searching for exes in path " + execat.FullPath);
-                catalog.Catalogs.Add(execat);
-                catalog.Catalogs.Add(myDirectoryCatalog);
+
+                var plugindirectories = Directory.GetDirectories(path);
+                foreach (var plugindir in plugindirectories)
+                {
+                    myDirectoryCatalog = new DirectoryCatalog(path: plugindir, searchPattern: "*.dll");
+                    Log.Info("Searching for dlls in path " + myDirectoryCatalog?.FullPath);
+                    catalog.Catalogs.Add(myDirectoryCatalog);
+                }
+
                 container = new CompositionContainer(catalog);
+
                 //Fill the imports of this object
                 StartWatch();
                 container.ComposeParts(this);
@@ -146,7 +196,7 @@ namespace Chummer.Plugins
         {
             try
             {
-                using (var op_plugin = Timekeeper.StartSyncron("LoadPlugins", parentActivity, CustomActivity.OperationType.DependencyOperation, myDirectoryCatalog.FullPath))
+                using (var op_plugin = Timekeeper.StartSyncron("LoadPlugins", parentActivity, CustomActivity.OperationType.DependencyOperation, myDirectoryCatalog?.FullPath))
                 { 
                     this.Initialize();
                 }
@@ -257,6 +307,11 @@ namespace Chummer.Plugins
             }
         }
 
-      
+
+        public void Dispose()
+        {
+            foreach (var plugin in MyActivePlugins)
+                plugin.Dispose();
+        }
     }
 }

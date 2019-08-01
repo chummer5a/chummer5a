@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using ChummerHub.Client.Backend;
 using System.Net;
+using System.Threading;
 using System.Windows;
 using Chummer;
 using SINners.Models;
@@ -221,6 +222,8 @@ namespace ChummerHub.Client.UI
                 var client = StaticUtils.GetClient();
                 var res = await client.GetSearchGroupsWithHttpMessagesAsync(groupname, null, null);
                 var result = await Backend.Utils.HandleError(res, res.Body) as ResultGroupGetSearchGroups;
+                if (result == null)
+                    return null;
                 if (result.CallSuccess == true)
                 {
                     return result.MySearchGroupResult;
@@ -297,6 +300,19 @@ namespace ChummerHub.Client.UI
                                 {
                                     Log.Error(a.Result.ErrorText);
                                 }
+                                else if (a.Result == null)
+                                {
+                                    MyCE.MySINnerFile.MyGroup = null;
+                                    string msg = "Char " + MyCE.MyCharacter.CharacterName + " did not join group " +
+                                                 item.Groupname +
+                                                 ".";
+                                    Log.Info(msg);
+                                    this.DoThreadSafe(() =>
+                                    {
+                                        MessageBox.Show(msg, "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                        TlpGroupSearch_VisibleChanged(null, new EventArgs());
+                                    });
+                                }
                                 else
                                 {
 
@@ -312,13 +328,14 @@ namespace ChummerHub.Client.UI
                                         MessageBox.Show(msg, "", MessageBoxButtons.OK, MessageBoxIcon.Information);
                                         TlpGroupSearch_VisibleChanged(null, new EventArgs());
                                     });
-
+                                    PluginHandler.MainForm.CharacterRoster.DoThreadSafe(() =>
+                                    {
+                                        PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false, true);
+                                    });
                                 }
                             }
                         });
                     }
-
-                    //});
                 }
             }
             catch (Exception ex)
@@ -430,7 +447,18 @@ namespace ChummerHub.Client.UI
                                     throw new ArgumentException(msg);
                                 }
                             }
+                            else
+                            {
+                                var found = await client.GetGroupByIdWithHttpMessagesAsync(searchgroup.Id, null,
+                                    CancellationToken.None);
+                                var res = Backend.Utils.HandleError(found);
+                                if (found?.Response?.IsSuccessStatusCode == true)
+                                {
+                                    ssgr = new SINSearchGroupResult(found.Body.MyGroup);
+                                }
+                            }
                         }
+                        
                     }
                     catch (Exception e)
                     {
@@ -443,8 +471,6 @@ namespace ChummerHub.Client.UI
                         MyParentForm?.MyParentForm?.CheckSINnerStatus();
                     }
                 }
-                
-                
             }
             catch (Exception e)
             {
@@ -551,6 +577,7 @@ namespace ChummerHub.Client.UI
                     {
                         this.bCreateGroup.Enabled = true;
                         this.bJoinGroup.Enabled = true;
+                        this.bJoinGroup.Text = "join group";
                     }
                     else
                     {
@@ -683,9 +710,6 @@ namespace ChummerHub.Client.UI
                 }
             }
 
-            
-
-
             // Confirm that the node at the drop location is not 
             // the dragged node and that target node isn't null
             // (for example if you drag outside the control)
@@ -799,8 +823,12 @@ namespace ChummerHub.Client.UI
             if (targetNode != null)
             {
                 TreeNode targetGroup = targetNode;
-                while (!(targetGroup.Tag is SINnerSearchGroup && targetGroup.Parent != null))
-                    targetGroup = targetGroup.Parent;
+                if (targetGroup != null)
+                {
+                    if (!(targetGroup.Tag is SINnerSearchGroup) && targetGroup.Parent != null)
+                        targetGroup = targetGroup.Parent;
+                }
+
                 if (targetGroup == null)
                     return;
                 targetGroup.Nodes.Add(draggedNode);

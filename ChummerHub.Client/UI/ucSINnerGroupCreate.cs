@@ -94,7 +94,13 @@ namespace ChummerHub.Client.UI
                 cboLanguage1.Enabled = false;
                 tbParentGroupId.ReadOnly = true;
                 tbPassword.ReadOnly = false;
+                tbGroupCreatorUsername.Enabled = false;
+                cbIsPublic.Enabled = false;
+                tbDescription.Enabled = false;
+                this.ActiveControl = tbPassword;
             }
+            if (this.ParentForm != null)
+                this.ParentForm.AcceptButton = bOk;
 
         }
 

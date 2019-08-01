@@ -62,13 +62,8 @@ namespace Chummer
         private readonly BackgroundWorker _workerVersionUpdateChecker = new BackgroundWorker();
         private readonly Version _objCurrentVersion = Assembly.GetExecutingAssembly().GetName().Version;
         private readonly string _strCurrentVersion;
-        private PluginControl _pluginLoader = null;
-        public PluginControl PluginLoader
-        {
-            get => _pluginLoader ?? (_pluginLoader = new PluginControl());
-            set => _pluginLoader = value;
-        }
-        private readonly Chummy _mascotChummy;
+        
+        private Chummy _mascotChummy;
 
         public string MainTitle
         {
@@ -84,18 +79,38 @@ namespace Chummer
         }
 
         #region Control Events
-        public frmChummerMain(bool isUnitTest = false, PageViewTelemetry pvt = null)
+        public frmChummerMain(bool isUnitTest = false)
         {
             Utils.IsUnitTest = isUnitTest;
             InitializeComponent();
+
+            _strCurrentVersion =
+                $"{_objCurrentVersion.Major}.{_objCurrentVersion.Minor}.{_objCurrentVersion.Build}";
+
+            //lets write that in separate lines to see where the exception is thrown
+            if (GlobalOptions.HideCharacterRoster == true)
+                CharacterRoster = null;
+            else
+            {
+                CharacterRoster = new frmCharacterRoster
+                {
+                    MdiParent = this
+                };
+            }
+
+      
+            
+        }
+
+        //Moved most of the initialization out of the constructor to allow the Mainform to be generated fast
+        //in case of a commandline argument not asking for the mainform to be shown.
+        public void FormMainInitialize(PageViewTelemetry pvt = null)
+        {
+
             using (var op_frmChummerMain = Timekeeper.StartSyncron("frmChummerMain Constructor", null, CustomActivity.OperationType.DependencyOperation, _strCurrentVersion))
             {
                 try
                 {
-                    _strCurrentVersion =
-                        $"{_objCurrentVersion.Major}.{_objCurrentVersion.Minor}.{_objCurrentVersion.Build}";
-
-
                     op_frmChummerMain.MyDependencyTelemetry.Type = "loadfrmChummerMain";
                     op_frmChummerMain.MyDependencyTelemetry.Target = _strCurrentVersion;
 
@@ -131,32 +146,46 @@ namespace Chummer
                         this.DoThreadSafe(() => { PopulateMRUToolstripMenu(sender, e); });
                     };
 
-                    // Delete the old executable if it exists (created by the update process).
-                    foreach (string strLoopOldFilePath in Directory.GetFiles(Utils.GetStartupPath, "*.old",
-                        SearchOption.AllDirectories))
+                    try
                     {
-                        if (File.Exists(strLoopOldFilePath))
-                            File.Delete(strLoopOldFilePath);
+                        // Delete the old executable if it exists (created by the update process).
+                        string[] oldfiles =
+                            Directory.GetFiles(Utils.GetStartupPath, "*.old", SearchOption.AllDirectories);
+                        foreach (string strLoopOldFilePath in oldfiles)
+                        {
+                            try
+                            {
+                                if (File.Exists(strLoopOldFilePath))
+                                    File.Delete(strLoopOldFilePath);
+                            }
+                            catch (UnauthorizedAccessException e)
+                            {
+                                //we will just delete it the next time
+                                //its probably the "used by another process"
+                                Log.Trace(e,
+                                    "UnauthorizedAccessException can be ignored - probably used by another process.");
+                            }
+                        }
+                    }
+                    catch (UnauthorizedAccessException e)
+                    {
+                        Log.Trace(e,
+                            "UnauthorizedAccessException in " + Utils.GetStartupPath + "can be ignored - probably a weird path like Recycle.Bin or something...");
                     }
 
                     // Populate the MRU list.
                     PopulateMRUToolstripMenu(this, null);
 
                     Program.MainForm = this;
-                    PluginLoader.LoadPlugins(op_frmChummerMain);
                     if (GlobalOptions.AllowEasterEggs)
                     {
                         _mascotChummy = new Chummy();
                         _mascotChummy.Show(this);
                     }
 
-                    // Set the Tag for each ToolStrip item so it can be translated.
-                    foreach (ToolStripMenuItem objItem in menuStrip.Items.OfType<ToolStripMenuItem>())
-                    {
-                        LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Language);
-                    }
 
-                    frmLoading frmLoadingForm = new frmLoading {CharacterFile = Text};
+
+                    frmLoading frmLoadingForm = new frmLoading { CharacterFile = Text };
                     frmLoadingForm.Reset(3);
                     frmLoadingForm.Show();
 
@@ -204,16 +233,7 @@ namespace Chummer
                     }
 
                     frmLoadingForm.PerformStep(LanguageManager.GetString("String_UI"));
-                    //lets write that in separate lines to see where the exception is thrown
-                    if (GlobalOptions.HideCharacterRoster == true)
-                        CharacterRoster = null;
-                    else
-                    {
-                        CharacterRoster = new frmCharacterRoster
-                        {
-                            MdiParent = this
-                        };
-                    }
+                    
 
                     _lstCharacters.CollectionChanged += LstCharactersOnCollectionChanged;
                     _lstOpenCharacterForms.CollectionChanged += LstOpenCharacterFormsOnCollectionChanged;
@@ -226,27 +246,58 @@ namespace Chummer
                     object blnShowTestLock = new object();
                     if (!Utils.IsUnitTest)
                     {
-                        Parallel.For(1, strArgs.Length, i =>
+                        try
                         {
-                            if (strArgs[i] == "/test")
+                            Parallel.For(1, strArgs.Length, i =>
                             {
-                                lock (blnShowTestLock)
-                                    blnShowTest = true;
-                            }
-                            else if (!strArgs[i].StartsWith('/'))
-                            {
-                                if (!File.Exists(strArgs[i]))
+                                if (strArgs[i] == "/test")
                                 {
-                                    throw new ArgumentException(
-                                        "Chummer started with unknown command line arguments: " +
-                                        strArgs.Aggregate((j, k) => j + " " + k));
+                                    lock (blnShowTestLock)
+                                        blnShowTest = true;
                                 }
+                                else if ((strArgs[i] == "/help")
+                                    || (strArgs[i] == "?")
+                                    || (strArgs[i] == "/?"))
+                                {
+                                    string msg = "Commandline parameters are either " + Environment.NewLine;
+                                    msg += "\t/test" + Environment.NewLine;
+                                    msg += "\t/help" + Environment.NewLine;
+                                    msg += "\t(filename to open)" + Environment.NewLine;
+                                    msg += "\t/plugin:pluginname (like \"SINners\") to trigger (with additional parameters following the symbol \":\")" + Environment.NewLine;
+                                    Console.WriteLine(msg);
+                                }
+                                else if (strArgs[i].Contains("/plugin"))
+                                {
+                                    Log.Info("Encountered command line argument, that should already have been handled in one of the plugins: " + strArgs[i]);
+                                }
+                                else if (!strArgs[i].StartsWith('/'))
+                                {
+                                    if (!File.Exists(strArgs[i]))
+                                    {
+                                        throw new ArgumentException(
+                                            "Chummer started with unknown command line arguments: " +
+                                            strArgs.Aggregate((j, k) => j + " " + k));
+                                    }
+                                    if (lstCharactersToLoad.Any(x => x.FileName == strArgs[i])) return;
+                                    Character objLoopCharacter = LoadCharacter(strArgs[i]).Result;
+                                    lstCharactersToLoad.Add(objLoopCharacter);
+                                }
+                            });
+                        }
+                        catch (Exception e)
+                        {
+                            if (op_frmChummerMain.MyDependencyTelemetry != null)
+                                op_frmChummerMain.MyDependencyTelemetry.Success = false;
+                            if (op_frmChummerMain.MyRequestTelemetry != null)
+                                op_frmChummerMain.MyRequestTelemetry.Success = false;
+                            ExceptionTelemetry ex = new ExceptionTelemetry(e)
+                            {
+                                SeverityLevel = SeverityLevel.Warning
+                            };
+                            op_frmChummerMain.tc.TrackException(ex);
+                            Log.Warn(e);
+                        }
 
-                                if (lstCharactersToLoad.Any(x => x.FileName == strArgs[i])) return;
-                                Character objLoopCharacter = LoadCharacter(strArgs[i]).Result;
-                                lstCharactersToLoad.Add(objLoopCharacter);
-                            }
-                        });
                     }
 
                     frmLoadingForm.PerformStep(LanguageManager.GetString("String_UI"));
@@ -263,9 +314,14 @@ namespace Chummer
                         CharacterRoster.Show();
                     }
 
-                    PluginLoader.CallPlugins(toolsMenu, op_frmChummerMain);
-                    frmLoadingForm.Close();
+                    Program.PluginLoader.CallPlugins(toolsMenu, op_frmChummerMain);
 
+                    // Set the Tag for each ToolStrip item so it can be translated.
+                    foreach (ToolStripMenuItem objItem in menuStrip.Items.OfType<ToolStripMenuItem>())
+                    {
+                        LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Language);
+                    }
+                    frmLoadingForm.Close();
                 }
                 catch (Exception e)
                 {
@@ -280,10 +336,9 @@ namespace Chummer
                     Log.Error(e);
                     throw;
                 }
-                
+
             }
 
-            
         }
 
         private void LstOpenCharacterFormsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -949,6 +1004,18 @@ namespace Chummer
 
         private void frmChummerMain_Load(object sender, EventArgs e)
         {
+            //sometimes the Configuration gets messed up - make sure it is valid!
+            try
+            {
+                Size si = Properties.Settings.Default.Size;
+            }
+            catch (System.Configuration.ConfigurationErrorsException ex)
+            {
+                //the config is invalid - reset it!
+                Properties.Settings.Default.Reset();
+                Properties.Settings.Default.Save();
+                Log.Warn("Configuartion Settings were invalid and had to be reset. Exception: " + ex.Message);
+            }
             if(Properties.Settings.Default.Size.Width == 0 || Properties.Settings.Default.Size.Height == 0 || !IsVisibleOnAnyScreen())
             {
                 Size = new Size(1280, 720);

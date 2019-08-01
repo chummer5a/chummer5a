@@ -45,6 +45,24 @@ namespace ChummerHub.Migrations
                     b.ToTable("AspNetRoles");
                 });
 
+            modelBuilder.Entity("ChummerHub.Data.ApplicationUserFavoriteGroup", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<Guid?>("ApplicationUserId");
+
+                    b.Property<Guid>("FavoriteGuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("FavoriteGuid");
+
+                    b.ToTable("ApplicationUserFavoriteGroup");
+                });
+
             modelBuilder.Entity("ChummerHub.Models.V1.SINner", b =>
                 {
                     b.Property<Guid?>("Id")
@@ -409,6 +427,13 @@ namespace ChummerHub.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("ChummerHub.Data.ApplicationUserFavoriteGroup", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.ApplicationUser")
+                        .WithMany("FavoriteGroups")
+                        .HasForeignKey("ApplicationUserId");
                 });
 
             modelBuilder.Entity("ChummerHub.Models.V1.SINner", b =>

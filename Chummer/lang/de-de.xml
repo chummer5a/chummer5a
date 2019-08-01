@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -6573,9 +6573,9 @@
 			<text>Linux Druckfehler-Fix nutzen</text>
 		</string>
 		<string>
-      <key>Label_Options_BrowserVersion</key>
-      <text>Internet-Explorer-Version für Vorschau</text>
-    </string>
+			<key>Label_Options_BrowserVersion</key>
+			<text>Internet-Explorer-Version für Vorschau</text>
+		</string>
 		<string>
 			<key>Checkbox_Aerodynamic</key>
 			<text>Aerodynamisch</text>
@@ -9550,5 +9550,101 @@
 			<key>Message_DeleteDrug</key>
 			<text>Sind Sie sicher, dass Sie dieses Drogenrezept entfernen möchten?</text>
 		</string>
+		<string>
+			<key>Tip_ImproveItemAtMaximum</key>
+			<text>Nicht steigerbar, Maximum erreicht</text>
+		</string>
+		<string>
+			<key>Chummy_Intro</key>
+			<text>Hallo! Hier ist Chummy, der Chummer KI-Assistent! Es gibt viele hilfreiche Tipps und Empfehlungen zu Ihren Charakteren!</text>
+		</string>
+		<string>
+			<key>String_ApplicationInsights_NotSet</key>
+			<text>Chummer entscheiden lassen</text>
+		</string>
+		<string>
+			<key>String_ApplicationInsights_Yes</key>
+			<text>Alle Fehlermeldungen übertragen</text>
+		</string>
+		<string>
+			<key>String_ApplicationInsights_Crashes</key>
+			<text>Abstürze übertragen</text>
+		</string>
+		<string>
+			<key>String_ApplicationInsights_OnlyMetric</key>
+			<text>Statistische Daten übertragen</text>
+		</string>
+		<string>
+			<key>String_ApplicationInsights_OnlyLocal</key>
+			<text>Nur lokale Protokollierung</text>
+		</string>
+		<string>
+			<key>String_Bullet</key>
+			<text>Patrone</text>
+		</string>
+		<string>
+			<key>String_Bullets</key>
+			<text>Patronen</text>
+		</string>
+		<string>
+			<key>Checkbox_CreateImprovementIgnoreLimits</key>
+			<text>Limits nicht beachten</text>
+		</string>
+		<string>
+			<key>Menu_Tools_SINnersArchetypes</key>
+			<text>Archetypen</text>
+		</string>
+		<string>
+			<key>Menu_Tools_SINners</key>
+			<text>SINner-Gruppen</text>
+		</string>
+		<string>
+			<key>Menu_Tools_SINnerSearch</key>
+			<text>SINner-Suche</text>
+		</string>
+		<string>
+			<key>String_DescObject</key>
+			<text>Objekt</text>
+		</string>
+		<string>
+			<key>String_DescDamaging</key>
+			<text>Schaden</text>
+		</string>
+		<string>
+			<key>String_DescEssence</key>
+			<text>Essenz</text>
+		</string>
 	</strings>
+	<string>
+		<key>String_ApplicationInsights_OnlyLocal</key>
+		<text>nur lokal loggen</text>
+	</string>
+	<string>
+		<key>String_ApplicationInsights_OnlyMetric</key>
+		<text>nur Statistiken hochladen</text>
+	</string>
+	<string>
+		<key>String_ApplicationInsights_Crashes</key>
+		<text>Programm-Abstürze hochladen</text>
+	</string>
+	<string>
+		<key>String_ApplicationInsights_Yes</key>
+		<text>alle Fehler hochladen</text>
+	</string>
+	<string>
+		<key>String_ApplicationInsights_NotSet</key>
+		<text>lasse Chummer entscheiden</text>
+	</string>
+	<string>
+		<key>Menu_Tools_SINners</key>
+		<text>SINner Gruppen</text>
+	</string>
+	<string>
+		<key>Menu_Tools_SINnersArchetypes</key>
+		<text>Archetypen</text>
+	</string>
+	<string>
+		<key>Menu_Tools_SINnerSearch</key>
+		<text>SINner suchen</text>
+	</string>
 </chummer>

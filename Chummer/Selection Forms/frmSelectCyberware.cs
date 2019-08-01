@@ -24,11 +24,13 @@ using System.Xml;
 using System.Xml.XPath;
 using Chummer.Backend.Equipment;
 using System.Text;
+using NLog;
 
 namespace Chummer
 {
     public partial class frmSelectCyberware : Form
     {
+        private static NLog.Logger Log = LogManager.GetCurrentClassLogger();
         private readonly Character _objCharacter;
         private IList<Grade> _lstGrades;
         private readonly string _strNoneGradeId;
@@ -145,6 +147,21 @@ namespace Chummer
                 cboGrade.SelectedValue = _sStrSelectGrade;
             if (cboGrade.SelectedIndex == -1 && cboGrade.Items.Count > 0)
                 cboGrade.SelectedIndex = 0;
+
+            // Retrieve the information for the selected Grade.
+            string strSelectedGrade = cboGrade.SelectedValue?.ToString();
+            if (!string.IsNullOrEmpty(strSelectedGrade))
+            {
+                XPathNavigator xmlGrade = _xmlBaseCyberwareDataNode.SelectSingleNode("grades/grade[id = \"" + strSelectedGrade + "\"]");
+
+                // Update the Essence and Cost multipliers based on the Grade that has been selected.
+                if (xmlGrade != null)
+                {
+                    _decCostMultiplier = Convert.ToDecimal(xmlGrade.SelectSingleNode("cost")?.Value, GlobalOptions.InvariantCultureInfo);
+                    _decESSMultiplier = Convert.ToDecimal(xmlGrade.SelectSingleNode("ess")?.Value, GlobalOptions.InvariantCultureInfo);
+                    _intAvailModifier = Convert.ToInt32(xmlGrade.SelectSingleNode("avail")?.Value);
+                }
+            }
 
             lblESSDiscountLabel.Visible = _objCharacter.Options.AllowCyberwareESSDiscounts;
             lblESSDiscountPercentLabel.Visible = _objCharacter.Options.AllowCyberwareESSDiscounts;
@@ -516,6 +533,11 @@ namespace Chummer
         public decimal GenetechCostMultiplier { get; set; } = 1.0m;
 
         /// <summary>
+        /// Essence cost multiplier for Genetech.
+        /// </summary>
+        public decimal GenetechEssMultiplier { get; set; } = 1.0m;
+
+        /// <summary>
         /// Essence cost multiplier for Basic Bioware.
         /// </summary>
         public decimal BasicBiowareESSMultiplier { get; set; } = 1.0m;
@@ -667,7 +689,8 @@ namespace Chummer
             // This is done using XPathExpression.
 
             int intRating = decimal.ToInt32(nudRating.Value);
-            AvailabilityValue objTotalAvail = new AvailabilityValue(Convert.ToInt32(nudRating.Value), objXmlCyberware.SelectSingleNode("avail")?.Value);
+            AvailabilityValue objTotalAvail = new AvailabilityValue(Convert.ToInt32(nudRating.Value), objXmlCyberware.SelectSingleNode("avail")?.Value, _intAvailModifier);
+            lblAvailLabel.Visible = true;
             lblAvail.Text = objTotalAvail.ToString();
 
             // Cost.
@@ -770,6 +793,10 @@ namespace Chummer
                         // If Basic Bioware is selected, apply the Basic Bioware ESS Multiplier.
                         if (strSelectCategory == "Basic")
                             decCharacterESSModifier -= (1 - BasicBiowareESSMultiplier);
+                        else if (strSelectCategory.StartsWith("Genetech") || strSelectCategory.StartsWith("Genetic Infusions") || strSelectCategory.StartsWith("Genemods"))
+                        {
+                            decCharacterESSModifier -= (1 - GenetechEssMultiplier);
+                        }
 
                         if (nudESSDiscount.Visible)
                         {
@@ -923,8 +950,16 @@ namespace Chummer
             }
 
             strFilter += CommonFunctions.GenerateSearchXPath(txtSearch.Text);
-
-            return BuildCyberwareList(_xmlBaseCyberwareDataNode.Select(_strNodeXPath + '[' + strFilter + ']'), blnDoUIUpdate, blnTerminateAfterFirst);
+            XPathNodeIterator node = null;
+            try
+            {
+                node = _xmlBaseCyberwareDataNode.Select(_strNodeXPath + '[' + strFilter + ']');
+            }
+            catch (XPathException e)
+            {
+                Log.Warn(e);
+            }
+            return BuildCyberwareList(node, blnDoUIUpdate, blnTerminateAfterFirst);
         }
 
         private IList<ListItem> BuildCyberwareList(XPathNodeIterator objXmlCyberwareList, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
@@ -938,6 +973,8 @@ namespace Chummer
             bool blnBiowareDisabled = _objCharacter.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.DisableBioware && x.Enabled);
             string strCurrentGradeId = cboGrade.SelectedValue?.ToString();
             Grade objCurrentGrade = string.IsNullOrEmpty(strCurrentGradeId) ? null : _lstGrades.FirstOrDefault(x => x.SourceIDString == strCurrentGradeId);
+            if (objXmlCyberwareList == null)
+                return lstCyberwares;
             foreach (XPathNavigator xmlCyberware in objXmlCyberwareList)
             {
                 bool blnIsForceGrade = xmlCyberware.SelectSingleNode("forcegrade") == null;

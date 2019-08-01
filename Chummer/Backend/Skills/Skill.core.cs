@@ -24,7 +24,7 @@ using Chummer.Backend.Attributes;
 
 namespace Chummer.Backend.Skills
 {
-    
+
     partial class Skill : IHasInternalId
     {
         private int _intBase;
@@ -109,7 +109,7 @@ namespace Chummer.Backend.Skills
                     return;
 
                 //Calculate how far above maximum we are.
-                int intOverMax = value + Karma - RatingMaximum;
+                int intOverMax = value + Karma - RatingMaximum + RatingModifiers(Attribute);
 
                 if (intOverMax > 0) //Too much
                 {
@@ -126,7 +126,7 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        
+
         /// <summary>
         /// Amount of skill points bought with karma and bonues to the skills rating
         /// </summary>
@@ -145,7 +145,7 @@ namespace Chummer.Backend.Skills
             set
             {
                 //Calculate how far above maximum we are.
-                int intOverMax = value + Base - RatingMaximum;
+                int intOverMax = value + Base - RatingMaximum + RatingModifiers(Attribute);
 
                 if (intOverMax > 0) //Too much
                 {
@@ -176,11 +176,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                if (CharacterObject.Created)
-                {
-                  return LearnedRating + RatingModifiers(Attribute);
-                }
-                return LearnedRating;
+                return LearnedRating + RatingModifiers(Attribute);
             }
         }
 
@@ -392,16 +388,16 @@ namespace Chummer.Backend.Skills
                 int intLower;
                 if (SkillGroupObject?.Karma > 0)
                 {
-                    int intGroupUpper = SkillGroupObject.SkillList.Min(x => x.Base + x.Karma);
+                    int intGroupUpper = SkillGroupObject.SkillList.Min(x => x.Base + x.Karma + x.RatingModifiers(x.Attribute));
                     int intGroupLower = intGroupUpper - SkillGroupObject.Karma;
 
-                    intLower = Base + FreeKarma; //Might be an error here
+                    intLower = Base + FreeKarma + RatingModifiers(Attribute); //Might be an error here
 
                     intCost = RangeCost(intLower, intGroupLower) + RangeCost(intGroupUpper, intTotalBaseRating);
                 }
                 else
                 {
-                    intLower = Base + FreeKarma;
+                    intLower = Base + FreeKarma + RatingModifiers(Attribute);
 
                     intCost = RangeCost(intLower, intTotalBaseRating);
                 }
@@ -660,7 +656,7 @@ namespace Chummer.Backend.Skills
 
             Karma += 1;
         }
-        
+
         private int _intCachedCanAffordSpecialization = -1;
 
         public bool CanAffordSpecialization
@@ -828,7 +824,7 @@ namespace Chummer.Backend.Skills
         }
 
         /// <summary>
-        /// Dicepool of the skill, formatted for use in tooltips by other objects. 
+        /// Dicepool of the skill, formatted for use in tooltips by other objects.
         /// </summary>
         /// <param name="pool">Dicepool to use. In most </param>
         /// <param name="space">Space character to use. </param>

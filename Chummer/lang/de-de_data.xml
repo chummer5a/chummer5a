@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
 	Chummer5a is free software: you can redistribute it and/or modify
@@ -1612,12 +1612,6 @@
 				<id>c2fdc729-bc1d-4d3a-a0da-1d5dfa3b897d</id>
 				<name>Micro-Hardpoint</name>
 				<translate>Mikro-Halterungen</translate>
-				<altpage>70</altpage>
-			</mod>
-			<mod translated="True">
-				<id>a1c9f8ee-d58d-4583-8ff3-12517dbf76f5</id>
-				<name>Personal Drone Rack</name>
-				<translate>Tragbare Drohnenhalterung</translate>
 				<altpage>70</altpage>
 			</mod>
 			<mod translated="True">
@@ -3266,7 +3260,7 @@
 				<name>Datapuls SOTA 2080 (German-exclusive)</name>
 				<translate>Datapuls SOTA 2080 (Deutsch-exklusiv)</translate>
 				<altcode>SOTG</altcode>
-			</book>			
+			</book>
 		</books>
 	</chummer>
 	<chummer file="critterpowers.xml">
@@ -3283,6 +3277,36 @@
 			<category translate="Echos">Echoes</category>
 		</categories>
 		<powers>
+			<power translated="True">
+				<id>d57dd33b3-7fea-421e-bcf3-336d56ea08b5</id>
+				<name>Combat Skill</name>
+				<translate>Kampffertigkeit</translate>
+				<altpage>130</altpage>
+			</power>
+			<power translated="True">
+				<id>a3f11764-2569-48a1-8eb8-8cdae58b23e8</id>
+				<name>Physical Skill</name>
+				<translate>Körperliche Fertigkeit</translate>
+				<altpage>132</altpage>
+			</power>
+			<power translated="True">
+				<id>410c17d0-0490-4e67-b2ca-4ad5e2feb016</id>
+				<name>Social Skill</name>
+				<translate>Soziale Fertigkeit</translate>
+				<altpage>137</altpage>
+			</power>
+			<power translated="True">
+				<id>07229dc9-3b46-4843-a30a-7b7c4c144ea0</id>
+				<name>Technical Skill</name>
+				<translate>Technische Fertigkeit</translate>
+				<altpage>144</altpage>
+			</power>
+			<power translated="True">
+				<id>bb55305e-0c6f-47bd-a92f-ce85df478096</id>
+				<name>Vehicle Skill</name>
+				<translate>Fahrzeug-Fertigkeit</translate>
+				<altpage>147</altpage>
+			</power>
 			<power translated="True">
 				<id>d9e0cc36-3183-4fa6-b9a6-b7e62d7d72fc</id>
 				<name>Sense Link</name>
@@ -8254,6 +8278,12 @@
 				<translate>Tsuchigumo-Krieger</translate>
 				<altpage>37</altpage>
 			</metatype>
+			<metatype translated="True">
+				<id>61d8e6cd-e623-41ea-95af-54b00ba41582</id>
+				<name>Testudine</name>
+				<translate>Testudine</translate>
+				<altpage>173</altpage>
+			</metatype>
 		</metatypes>
 	</chummer>
 	<chummer file="cyberware.xml">
@@ -9061,19 +9091,19 @@
 			<cyberware>
 				<id>7a6ed03f-d60f-465d-80e6-c2b37b55befd</id>
 				<name>Cyberlimb Augmentation, Armor (2050)</name>
-				<translate>Cyberglied-Verstärung, Panzerzng</translate>
+				<translate>Cyberglied-Verstärkung, Panzerung</translate>
 				<altpage>203</altpage>
 			</cyberware>
 			<cyberware>
 				<id>55738f72-0344-435d-8f92-b1e16a66c445</id>
 				<name>Cyberlimb Augmentation, Strength (2050)</name>
-				<translate>Cyberglied-Verstärung, Stärke</translate>
+				<translate>Cyberglied-Verstärkung, Stärke</translate>
 				<altpage>203</altpage>
 			</cyberware>
 			<cyberware>
 				<id>54b804b3-8a40-4a43-a1e7-41c27499e952</id>
 				<name>Cyberlimb Augmentation, Agility (2050)</name>
-				<translate>Cyberglied-Verstärung, Geschicklichkeit</translate>
+				<translate>Cyberglied-Verstärkung, Geschicklichkeit</translate>
 				<altpage>203</altpage>
 			</cyberware>
 			<cyberware>
@@ -14733,7 +14763,7 @@
 			<gear>
 				<id>d2d3bd03-88fa-408e-bed7-56367c957a84</id>
 				<name>Response Increase (2050)</name>
-				<translate>Reaktionsverstärung</translate>
+				<translate>Reaktionsverstärkung</translate>
 				<altpage>170</altpage>
 			</gear>
 			<gear>
@@ -18880,6 +18910,18 @@
 				<translate>Farbtinte (für 500 Blatt)</translate>
 				<altpage>183</altpage>
 			</gear>
+			<gear translated="True">
+				<id>6976ac65-f8aa-482a-bc32-2986beae4c76</id>
+				<name>Tactical Grapple Gun</name>
+				<translate>Enterhakenkanone</translate>
+				<altpage>454</altpage>
+			</gear>
+			<gear translated="True">
+				<id>a1c9f8ee-d58d-4583-8ff3-12517dbf76f5</id>
+				<name>Personal Drone Rack</name>
+				<translate>Tragbare Drohnenhalterung</translate>
+				<altpage>70</altpage>
+			</gear>
 		</gears>
 	</chummer>
 	<chummer file="lifestyles.xml">
@@ -20669,7 +20711,7 @@
 				<altadvantage>Allgemein: +2 Würfel für Proben auf Erste Hilfe</altadvantage>
 				<altdisadvantage>Anhänger der Großen Mutter sind Liebhaber und Heiler, keine Kämpfer. Dadurch leiden sie unter einem –1 Würfel-Pool Modifikator für alle Aktionen, die mit Kämpfen in Verbindung stehen (Kampffertigkeit, oder einen Zauberspruch aus der Kategorie Kampf).</altdisadvantage>
 				<altpage>33</altpage>
-			</mentor>    
+			</mentor>
 			<mentor>
 				<id>a1faab23-0214-4c83-96ac-d5bb71d4aebb</id>
 				<name>Mountain</name>
@@ -22210,7 +22252,7 @@
 			</mentor>
 			<mentor>
 				<id>5593f724-7b72-4927-a8c8-2c73844cc1b1</id>
-				<name>Architekt (SOTA 2080)</name>
+				<name>Architect</name>
 				<translate>Architekt (SOTA 2080)</translate>
 				<altadvantage>Allgemein: +2 Würfel für Proben auf Führung</altadvantage>
 				<altdisadvantage>Ein Anhänger dieses Schutzgeistes behält gerne die Initiative. Immer dann, wenn die Umstände eines Runs ihn in die Defensive drängen, muss ihm eine Probe auf Willenskraft + Intuition (3) gelingen. Misslingt die Probe, erhält der Anhänger von Architekt einen Würfelpoolmalus von -2 auf seine Proben, bis er das Heft wieder in der Hand hält.</altdisadvantage>
@@ -22228,7 +22270,7 @@
 			</mentor>
 			<mentor>
 				<id>db42c229-3403-4947-8626-3f70f87c8a3c</id>
-				<name>Deutscher Schäferhund</name>
+				<name>German Shepherd</name>
 				<translate>Deutscher Schäferhund</translate>
 				<altadvantage>Allgemein: +2 Würfel für Proben auf Führung</altadvantage>
 				<altdisadvantage>Bisweilen bricht die Ungeduld bei Schäferhund durch. Wird die Geduld eines Anhängers von Schäferhund auf die Probe gestellt (nach Spielleiterentscheid), muss ihm eine Willenskraft + Charisma (3) gelingen, um nicht scharf zu reagieren.</altdisadvantage>
@@ -22246,7 +22288,7 @@
 			</mentor>
 			<mentor>
 				<id>bdb4fa0b-3c9d-4164-b2d6-76b7c04c43d8</id>
-				<name>Dobermann</name>
+				<name>Doberman</name>
 				<translate>Dobermann</translate>
 				<altadvantage>Allgemein: +1 Würfel für Proben auf Wahrnehmung und eine Waffenfertigkeit nach Wahl</altadvantage>
 				<altdisadvantage>Dobermann ist sehr selbstbewusst. Um sich anderen unterzuordnen bzw. fremden Plänen zu folgen, muss einem Anhänger von Dobermann eine Probe auf Willenskraft + Charisma (3) gelingen.</altdisadvantage>
@@ -22322,7 +22364,7 @@
 			</mentor>
 			<mentor>
 				<id>5c465bf3-665f-41f2-865e-41abb879ee1f</id>
-				<name>Dachs</name>
+				<name>Badger</name>
 				<translate>Dachs</translate>
 				<altadvantage>Allgemein: Vorteil Aufmerksamkeit Stufe 2</altadvantage>
 				<altdisadvantage>Dachs beschützt sein Revier unerbittlich. Dringen Feinde in das Gebiet ein, das ein Anhänger von Dachs beschützt (zum Beispiel ein Gebäude), oder entwenden einen Gegenstand, der unter dem Schutz eines Anhängers von Dachs steht, muss ihm eine Probe auf Willenskraft + Charisma (3) gelingen, um nicht sofort mit allen Mitteln gegen die Eindringlinge bzw. Diebe vorzugehen.</altdisadvantage>
@@ -22340,7 +22382,7 @@
 			</mentor>
 			<mentor>
 				<id>b01976a5-2343-4308-846e-da5fb12328a8</id>
-				<name>Mystischer Wächter</name>
+				<name>Mystic Guardian</name>
 				<translate>Mystischer Wächter</translate>
 				<altadvantage>Allgemein: +2 Würfel für Proben auf eine Nahkampffertigkeit</altadvantage>
 				<altdisadvantage>Was macht ein Mystischer Wächter, wenn es nichts zu bewachen gibt? Solange ein Anhänger des Mystischen Wächters keinen konkreten Auftrag, Auftraggeber oder Schutzbefohlenen hat (beziehungsweise seinen selbstauferlegten Pflichten nicht nachkommt), erleidet er einen Würfelpoolmalus von -2 auf alle Proben.</altdisadvantage>
@@ -22374,7 +22416,7 @@
 			</mentor>
 			<mentor>
 				<id>296dc353-df11-4c94-a101-04bc501edf5e</id>
-				<name>Rotkäppchen</name>
+				<name>Little Red Riding Hood</name>
 				<translate>Rotkäppchen</translate>
 				<altadvantage>Allgemein: + 2 Würfel für Proben auf Überreden</altadvantage>
 				<altdisadvantage>In ihrer ungezügelten Neugier übersehen Anhänger von Rotkäppchen manchmal das Offensichtliche und Wichtige. Sie erhalten einen Würfelpoolmalus von -1 bei Wahrnehmungsproben in unbekannten Gebieten.</altdisadvantage>
@@ -22392,7 +22434,7 @@
 			</mentor>
 			<mentor>
 				<id>bea9796a-c5d3-4388-97ec-14969db470fe</id>
-				<name>Schatzjäger</name>
+				<name>Treasure Hunter</name>
 				<translate>Schatzjäger</translate>
 				<altadvantage>Allgemein: +1 Würfel für Proben auf Navigation und Schlosser</altadvantage>
 				<altdisadvantage>Ein Anhänger dieses Schutzgeistes ist so sehr auf das Objekt seines Strebens fixiert, dass er Aufgaben, die nichts damit zu tun haben, lustlos und halbherzig angeht: Nach dem Briefing mit Schmidt muss ihm eine Probe auf Willenskraft + Willenskraft (3) gelingen, damit er bei der Erledigung eines Runs, der nichts mit dem Objekt seines Strebens zu tun hat, keinen Würfelpoolmalus von -1 auf alle Proben erleidet.</altdisadvantage>
@@ -22410,7 +22452,7 @@
 			</mentor>
 			<mentor>
 				<id>f2cc5e2b-6538-4271-9f7f-5434076f9a6b</id>
-				<name>Waffenbruder</name>
+				<name>Brother at Arms</name>
 				<translate>Waffenbruder</translate>
 				<altadvantage>Allgemein: +1 Würfel für Proben auf Gebräuche und Unterricht</altadvantage>
 				<altdisadvantage>Anhänger von Waffenbruder erwählen in jedem Run drei Personen mit direkter Plot-Relevanz – das können Spielercharaktere sein, aber auch wichtige NSC – als diejenigen Leute, denen während der Mission ihre Loyalität gilt. Ihnen muss eine Probe auf Willenskraft + Intuition (3) gelingen, bevor sie diesen Personenkreis übervorteilen, anlügen oder gar im Stich lassen können. Selbst wenn sie sich dazu überwinden können, erleiden sie einen Würfelpoolmalus von -2 auf alle Proben, bis sie ihre Verfehlung wieder ausgebügelt haben.</altdisadvantage>
@@ -24478,9 +24520,9 @@
 			<mentor translated="True">
 				<id>df42911f-0542-4fae-80d1-39573547ff68</id>
 				<name>Intrusion Countermeasure (The Guardian)</name>
-				<translate>Daedalus (Der Erfinder)</translate>
-				<altadvantage>+1 Würfel bei Hardwareproben, +1 Limit bei Proben mit Fahrzeugfertigkeiten, wenn der Technomancer hineingesprungen ist</altadvantage>
-				<altdisadvantage>-1 auf Limit und Würfel bei allen Handlungen in der Tiefenresonanz</altdisadvantage>
+				<translate>Intrusion Countermeasure (Der Wächter)</translate>
+				<altadvantage>Limit +1 und +1 Würfel im Matrixkampf; Firewall +1</altadvantage>
+				<altdisadvantage>-1 Würfel bei Angreifen in IC im Matrixkampf</altdisadvantage>
 				<altpage>104</altpage>
 			</mentor>
 			<mentor translated="True">
@@ -25138,6 +25180,12 @@
 				<name>State of Purity</name>
 				<translate>Innere Reinheit</translate>
 				<altpage>165</altpage>
+			</power>
+			<power>
+				<id>81cc6ee1-7c10-4a4a-baa8-f02cad4542c6</id>
+				<name>Improved Potential (Chaos Mentor)</name>
+				<translate>Erhöhtes Potential (Chaos Schutzgeist)</translate>
+				<altpage>309</altpage>
 			</power>
 		</powers>
 		<enhancements>
@@ -30964,7 +31012,7 @@
 					<spec translate="Feuerwaffen">Firearms</spec>
 					<spec translate="Schwere Waffen">Heavy Weapons</spec>
 					<spec translate="Waffenzubehör">Weapon Accessories</spec>
-					<spec translate="Nachkampfwaffen">Melee Weapons</spec>
+					<spec translate="Nahkampfwaffen">Melee Weapons</spec>
 				</specs>
 				<altpage>146</altpage>
 			</skill>
@@ -35819,6 +35867,12 @@
 				<translate>Sterilisieren</translate>
 				<altpage>132</altpage>
 			</spell>
+			<spell>
+				<id>4b214e1a-4800-4787-b5fe-55672b359dec</id>
+				<name>Convince</name>
+				<translate>Überzeugen</translate>
+				<altpage>132</altpage>
+			</spell>
 			<spell translated="True">
 				<id>96fdf1da-d4e7-460c-a172-3f7a7b56ac67</id>
 				<name>Detect Magic, Extended</name>
@@ -37024,52 +37078,52 @@
 	</chummer>
 	<chummer file="tips.xml">
 		<tips>
-			<tip>
+			<tip translated="True">
 				<id>528f605f-9994-46b5-8583-cafe006507e4</id>
 				<text>Looks like you're building a street samurai. Don't you need a code of honor?</text>
 				<translate>Es scheint, als würden Sie einen Straßensamurai erschaffen. Brauchen Sie keinen Ehrenkodex?</translate>
 			</tip>
-			<tip>
+			<tip translated="True">
 				<id>ccaae7df-40ba-4da9-837e-c0df92f07038</id>
 				<text>You have enough money to retire with a Low Lifestyle. Keep at it! A nuyen saved is a nuyen earned!</text>
 				<translate>Sie haben genug Geld, um sich mit einem Lebenstil der Unterschicht zurückzuziehen. Nicht aufgeben! Ein gesparter Nuyen ist ein verdienter Nuyen!</translate>
 			</tip>
-			<tip>
+			<tip translated="True">
 				<id>ff26b01d-1aa4-45ac-8685-0d199e115d1f</id>
 				<text>You have enough money to retire with a Low Lifestyle. Keep at it! A nuyen saved is a nuyen earned!</text>
 				<translate>Sie haben genug Geld, um sich mit einem Lebenstil der Mittelschicht zurückzuziehen. Zweieinhalb Kinder, vier Wände, Virtuelle Realität, liebevoller Partner. Lohnt es sich wirklich, für mehr zu sparen?</translate>
 			</tip>
-			<tip>
+			<tip translated="True">
 				<id>b6da9d78-024d-4516-821c-93ad8207075d</id>
 				<text>You have enough money to retire with a Luxury Lifestyle. Molly Millions has nothing on you!</text>
 				<translate>Sie haben genug Geld, um sich mit einem luxuriösen Lebensstil zurückzuziehen. Molly Millions kann Ihnen nichts anhaben!</translate>
 			</tip>
-			<tip>
+			<tip translated="True">
 				<id>b669df07-528b-4df3-829b-54d095af1791</id>
 				<text>Why bother with any other weapon when you can have the Ares Alpha, the last word in automatics! This message brought to you by Ares Macrotech.</text>
 				<translate>Warum sich mit jeder anderen Waffe beschäftigen, wenn man die Ares Alpha haben kann, das Highend-Produkt der Automatik! Diese Nachricht wurde Ihnen von Ares Macrotech übermittelt.</translate>
 			</tip>
-			<tip>
+			<tip translated="True">
 				<id>1e98f6d1-dfca-4dc3-9248-dd3da3589989</id>
 				<text>You appear to be making an Alchemist. Are you sure you want to do that?</text>
 				<translate>Sie scheinen ein Alchemist zu werden. Sind Sie sicher, dass Sie das tun wollen?</translate>
 			</tip>
-			<tip>
+			<tip translated="True">
 				<id>42262ca7-b414-4dde-b1b3-b7f72bc160c1</id>
 				<text>Looks like you've chosen to make an A.I. Are you sure you wouldn't rather be playing Eclipse Phase?</text>
 				<translate>Sieht so aus, als hätten Sie sich für eine KI entschieden. Sind Sie sicher, dass Sie nicht lieber Eclipse Phase spielen möchten?</translate>
 			</tip>
-			<tip>
+			<tip translated="True">
 				<id>8bdb4ade-46e2-4ff6-b440-d8a8955766ed</id>
 				<text>Oni? More like horny elves!</text>
 				<translate>Oni? Eher wie heiße Elfen!</translate>
 			</tip>
-			<tip>
+			<tip translated="True">
 				<id>ab52155b-d99e-4e2e-816b-16535afc206f</id>
 				<text>Looks like you don't have any hobbies. Might I suggest competitive basket-weaving?</text>
 				<translate>Sieht so aus, als hätten Sie keine Hobbys. Darf ich ein Korbflechtwettkampf vorschlagen?</translate>
 			</tip>
-			<tip>
+			<tip translated="True">
 				<id>4bf9379e-101a-4664-8049-7db867073943</id>
 				<text>Looks like you're into some pretty fine shootin' there, Tex.</text>
 				<translate>Sieht so aus, als wären Sie in einer ziemlich guten Lage, Tex.</translate>
@@ -45449,6 +45503,18 @@
 				<translate>Spezialmodifikation: Verbesserte Rückstoßkompensation</translate>
 				<altpage>167</altpage>
 			</accessory>
+			<accessory>
+				<id>91d1b0c0-3146-4435-b2ef-322e80dbbb59</id>
+				<name>Breeching Teeth</name>
+				<translate>Sturmzähne</translate>
+				<altpage>138</altpage>
+			</accessory>
+			<accessory>
+				<id>2eea1d98-8c6f-4f59-a8e8-e39b17c60869</id>
+				<name>Modified Pump Handle</name>
+				<translate>Modifizierter Repetiergriff</translate>
+				<altpage>138</altpage>
+			</accessory>
 		</accessories>
 	</chummer>
 	<chummer file="complexforms.xml">
@@ -45848,6 +45914,12 @@
 				<altpage>Passt die Essenzkosten von Cyberware um den eingegebenen Prozentwert an. Alle Essenzkosten für Cyberware betragen nun x % des ursprünglichen Wertes. Werte unter 100 reduzieren die Essenzkosten. Werte über 100 erhöhen die Essenzkosten.</altpage>
 			</improvement>
 			<improvement>
+				<id>genetechessmultiplier</id>
+				<name>Genetech Essence Cost</name>
+				<translate>Gentech Essenzkosten</translate>
+				<altpage>Passt die Essenzkosten von Gentech um den eingegebenen Prozentwert an. Alle Essenzkosten für Gentech betragen nun x % des ursprünglichen Wertes. Werte unter 100 reduzieren die Essenzkosten. Werte über 100 erhöhen die Essenzkosten.</altpage>
+			</improvement>
+			<improvement>
 				<id>weaponcategorydv</id>
 				<name>Weapon Category DV</name>
 				<translate>Waffenkategorie Schaden</translate>
@@ -46149,7 +46221,7 @@
 			<license translate="Zulassung als Taliskrämer">Talismonger License</license>
 			<license translate="Waffenschein">Weapon License</license>
 			<license translate="Zulassung für ungewöhnliche Waffen">Exotic Weapons License</license>
-			<license translate="Zulassung für nicht frei erhältliche Waffen">Restricted Armor License</license>
+			<license translate="Zulassung für nicht frei erhältliche Rüstungen">Restricted Armor License</license>
 			<license translate="Schrottflintenlizenz">Shotgun License</license>
 		</licenses>
 	</chummer>

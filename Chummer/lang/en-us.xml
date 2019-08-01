@@ -2915,7 +2915,7 @@
     </string>
     <string>
       <key>Message_NotEnoughAmmoSingleShot</key>
-      <text>Only one bullet remaining. Treat as Single Shot?</text>
+      <text>Not enough Ammunition. Treat as Single Shot?</text>
     </string>
     <string>
       <key>Message_NotEnoughAmmoShortBurstShort</key>
@@ -3554,25 +3554,33 @@
       <key>String_MoveGear</key>
       <text>Enter the number of items to move.</text>
     </string>
+	<string>
+	  <key>String_Bullet</key>
+	  <text>Bullet</text>
+	</string>
+	<string>
+	  <key>String_Bullets</key>
+	  <text>Bullets</text>
+	</string>
     <string>
       <key>String_SingleShot</key>
-      <text>Single Shot (1 bullet)</text>
+      <text>Single Shot ({0} {1})</text>
     </string>
     <string>
       <key>String_ShortBurst</key>
-      <text>Short Burst (3 bullets)</text>
+      <text>Short Burst ({0} {1})</text>
     </string>
     <string>
       <key>String_LongBurst</key>
-      <text>Long Burst (6 bullets)</text>
+      <text>Long Burst ({0} {1})</text>
     </string>
     <string>
       <key>String_FullBurst</key>
-      <text>Full Burst ({0} bullets)</text>
+      <text>Full Burst ({0} {1})</text>
     </string>
     <string>
       <key>String_SuppressiveFire</key>
-      <text>Suppressive Fire ({0} bullets)</text>
+      <text>Suppressive Fire ({0} {1})</text>
     </string>
     <string>
       <key>String_SelectVariableCost</key>
@@ -3823,6 +3831,10 @@
       <text>Environmental</text>
     </string>
     <string>
+      <key>String_DescEssence</key>
+      <text>Essence</text>
+    </string>
+    <string>
       <key>String_DescExtendedArea</key>
       <text>Extended Area</text>
     </string>
@@ -3833,6 +3845,10 @@
     <string>
       <key>String_DescIndirect</key>
       <text>Indirect</text>
+    </string>
+    <string>
+      <key>String_DescDamaging</key>
+      <text>Damaging</text>
     </string>
     <string>
       <key>String_DescMana</key>
@@ -3889,6 +3905,10 @@
     <string>
       <key>String_DescNegative</key>
       <text>Negative</text>
+    </string>
+    <string>
+      <key>String_DescObject</key>
+      <text>Object</text>
     </string>
     <string>
       <key>String_DescObvious</key>
@@ -5904,6 +5924,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
     <string>
       <key>Tip_ImproveItem</key>
       <text>Improve to {0} for {1} Karma</text>
+    </string>
+	<string>
+      <key>Tip_ImproveItemAtMaximum</key>
+      <text>Cannot Improve, at Maximum</text>
     </string>
     <string>
       <key>Tip_Modifiers</key>
@@ -9081,6 +9105,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <key>Checkbox_CreateImprovementApplyToRating</key>
       <text>Apply to Rating</text>
     </string>
+	<string>
+      <key>Checkbox_CreateImprovementIgnoreLimits</key>
+      <text>Ignore Limits</text>
+    </string>
     <string>
       <key>Button_ChangeSelection</key>
       <text>Select Value</text>
@@ -9713,5 +9741,45 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>SINners</text>
     </string>
     <!-- End Region SINners Plugin-->
+    <string>
+      <key>String_ApplicationInsights_OnlyLocal</key>
+      <text>only local logging</text>
+    </string>
+    <string>
+      <key>String_ApplicationInsights_OnlyMetric</key>
+      <text>upload statistical data</text>
+    </string>
+    <string>
+      <key>String_ApplicationInsights_Crashes</key>
+      <text>upload crashes</text>
+    </string>
+    <string>
+      <key>String_ApplicationInsights_Yes</key>
+      <text>upload all errors</text>
+    </string>
+    <string>
+      <key>String_ApplicationInsights_NotSet</key>
+      <text>let chummer decide</text>
+    </string>
+	<string>
+	  <key>Chummy_Intro</key>
+	  <text>Hi! I'm Chummy, the Chummer AI Assistant! I've got plenty of helpful tips and advice about your characters!</text>
+	</string>
+    <string>
+      <key>Menu_Tools_SINners</key>
+      <text>SINner Groups</text>
+    </string>
+    <string>
+      <key>Menu_Tools_SINnersArchetypes</key>
+      <text>Archetypes</text>
+    </string>
+    <string>
+      <key>Menu_Tools_SINnerSearch</key>
+      <text>SINner search</text>
+    </string>
+    <string>
+      <key>Menu_ShareChummer</key>
+      <text>Share Chummer</text>
+    </string>
   </strings>
 </chummer>

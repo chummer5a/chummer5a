@@ -63,7 +63,7 @@ namespace Chummer
             cboBuildMethod.DataSource = lstBuildMethod;
             cboBuildMethod.SelectedValue = GlobalOptions.DefaultBuildMethod;
             cboBuildMethod.EndUpdate();
-            
+
             // Populate the Gameplay Options list.
             List<ListItem> lstGameplayOptions = new List<ListItem>();
             if (_xmlGameplayOptionsDataGameplayOptionsNode != null)
@@ -113,7 +113,7 @@ namespace Chummer
             }
             else if (_xmlGameplayOptionsDataGameplayOptionsNode != null)
             {
-                XPathNavigator objXmlSelectedGameplayOption = _xmlGameplayOptionsDataGameplayOptionsNode.SelectSingleNode("gameplayoption[name = \"" + cboGamePlay.SelectedValue.ToString() + "\"]");
+                XPathNavigator objXmlSelectedGameplayOption = _xmlGameplayOptionsDataGameplayOptionsNode.SelectSingleNode("gameplayoption[name = \"" + (cboGamePlay.SelectedValue?.ToString() ?? string.Empty) + "\"]");
                 objXmlSelectedGameplayOption.TryGetInt32FieldQuickly("karma", ref _intQualityLimits);
                 objXmlSelectedGameplayOption.TryGetDecFieldQuickly("maxnuyen", ref _decNuyenBP);
                 nudMaxNuyen.Value = _decNuyenBP;
@@ -130,6 +130,11 @@ namespace Chummer
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
+            string strSelectedGameplayOption = cboGamePlay.SelectedValue?.ToString() ?? string.Empty;
+            if (string.IsNullOrEmpty(strSelectedGameplayOption))
+            {
+                return;
+            }
             switch (cboBuildMethod.SelectedValue.ToString())
             {
                 case "Karma":
@@ -148,7 +153,7 @@ namespace Chummer
             _objCharacter.NuyenMaximumBP = decimal.ToInt32(nudMaxNuyen.Value);
             _objCharacter.SumtoTen = decimal.ToInt32(nudSumtoTen.Value);
 
-            XPathNavigator xmlGameplayOption = _xmlGameplayOptionsDataGameplayOptionsNode.SelectSingleNode("gameplayoption[name = \"" + cboGamePlay.SelectedValue.ToString() + "\"]");
+            XPathNavigator xmlGameplayOption = _xmlGameplayOptionsDataGameplayOptionsNode.SelectSingleNode("gameplayoption[name = \"" + strSelectedGameplayOption + "\"]");
             if (xmlGameplayOption != null)
             {
                 _objCharacter.BannedWareGrades.Clear();
@@ -165,7 +170,7 @@ namespace Chummer
                     _objCharacter.MaxNuyen = decTemp;
             }
             _objCharacter.BuildKarma = decimal.ToInt32(nudKarma.Value);
-            _objCharacter.GameplayOption = cboGamePlay.SelectedValue.ToString();
+            _objCharacter.GameplayOption = strSelectedGameplayOption;
             _objCharacter.GameplayOptionQualityLimit = _intQualityLimits;
             _objCharacter.IgnoreRules = chkIgnoreRules.Checked;
             _objCharacter.MaximumAvailability = decimal.ToInt32(nudMaxAvail.Value);
@@ -182,7 +187,7 @@ namespace Chummer
         {
             nudSumtoTen.Visible = false;
             lblSumToX.Visible = false;
-            XPathNavigator xmlSelectedGameplayOption = _xmlGameplayOptionsDataGameplayOptionsNode.SelectSingleNode("gameplayoption[name = \"" + cboGamePlay.SelectedValue?.ToString() + "\"]");
+            XPathNavigator xmlSelectedGameplayOption = _xmlGameplayOptionsDataGameplayOptionsNode.SelectSingleNode("gameplayoption[name = \"" + (cboGamePlay.SelectedValue?.ToString() ?? string.Empty) + "\"]");
             string strSelectedBuildMethod = cboBuildMethod.SelectedValue?.ToString();
             switch (strSelectedBuildMethod)
             {
@@ -237,7 +242,7 @@ namespace Chummer
         private void cboGamePlay_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Load the Priority information.
-            XPathNavigator objXmlGameplayOption = _xmlGameplayOptionsDataGameplayOptionsNode.SelectSingleNode("gameplayoption[name = \"" + cboGamePlay.SelectedValue?.ToString() + "\"]");
+            XPathNavigator objXmlGameplayOption = _xmlGameplayOptionsDataGameplayOptionsNode.SelectSingleNode("gameplayoption[name = \"" + (cboGamePlay.SelectedValue?.ToString() ?? string.Empty) + "\"]");
             if (objXmlGameplayOption != null)
             {
                 int intTemp = _intDefaultMaxAvail;

@@ -6,8 +6,12 @@ using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Reflection;
 using Microsoft.AspNetCore;
 using ChummerHub.Data;
+using Microsoft.ApplicationInsights.Channel;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
@@ -21,9 +25,10 @@ namespace ChummerHub
         public static IWebHost MyHost = null;
         public static void Main(string[] args)
         {
-            System.AppDomain.CurrentDomain.FirstChanceException += CurrentDomain_FirstChanceException;
-         
-#if DEBUG           
+
+            
+          
+#if DEBUG
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
@@ -33,7 +38,10 @@ namespace ChummerHub
                 //.WriteTo.File(@"ChummerHub_log.txt")
                 .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{NewLine}", theme: AnsiConsoleTheme.Literate)
                 .CreateLogger();
+#else
+            System.AppDomain.CurrentDomain.FirstChanceException += CurrentDomain_FirstChanceException;
 #endif
+
             MyHost = CreateWebHostBuilder(args);
             Seed();
             MyHost.Run();

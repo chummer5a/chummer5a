@@ -43,7 +43,7 @@ namespace Chummer
             try
             {
                 Control myControlCopy = objControl; //to have the Object for sure, regardless of other threads
-                if ((myControlCopy != null) && (myControlCopy?.InvokeRequired == true))
+                if (myControlCopy?.InvokeRequired == true)
                     myControlCopy.Invoke(funcToRun);
                 else
                     funcToRun.Invoke();
@@ -51,7 +51,7 @@ namespace Chummer
             catch (ObjectDisposedException e)
             {
                 //we really don't need to care about that.
-                Log.Trace(e);
+                //Log.Trace(e);
             }
             catch (InvalidAsynchronousStateException e)
             {
@@ -299,8 +299,12 @@ namespace Chummer
         {
             List<TreeNode> lstEnumerable = lstNodes.Cast<TreeNode>().ToList();
             // Do this as two steps because non-sortables can own sortables
-            lstEnumerable?.Where(n => n?.Tag is ICanSort).ToList().ForEach(n => (n.Tag as ICanSort).SortOrder = n.Index);
-            lstEnumerable?.ForEach(n => CacheSortOrderRecursive(n.Nodes));
+            lstEnumerable.Where(n => n?.Tag is ICanSort).ToList().ForEach(n =>
+                {
+                    if (n.Tag is ICanSort objSortable)
+                        objSortable.SortOrder = n.Index;
+                });
+            lstEnumerable.ForEach(n => CacheSortOrderRecursive(n.Nodes));
         }
 
         /// <summary>

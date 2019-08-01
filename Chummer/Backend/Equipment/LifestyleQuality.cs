@@ -260,7 +260,7 @@ namespace Chummer.Backend.Equipment
             _lstAllowedFreeLifestyles = strAllowedFreeLifestyles.Split(',').ToList();
             _nodBonus = objNode["bonus"];
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
-            
+
             LegacyShim();
         }
 

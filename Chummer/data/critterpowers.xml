@@ -34,6 +34,102 @@
     <category>Weakness</category>
   </categories>
   <powers>
+	<!-- Skills as optional powers (hidden from normal view, only accessible through bonuses) -->
+	<power>
+      <id>57dd33b3-7fea-421e-bcf3-336d56ea08b5</id>
+      <name>Combat Skill</name>
+      <category>Paranormal</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <karma />
+	  <bonus>
+		<selectskill skillcategory="Combat Active">
+		  <val>MAG</val>
+		  <applytorating>True</applytorating>
+		</selectskill>
+	  </bonus>
+      <source>SR5</source>
+      <page>130</page>
+	  <hide />
+    </power>
+	<power>
+      <id>a3f11764-2569-48a1-8eb8-8cdae58b23e8</id>
+      <name>Physical Skill</name>
+      <category>Paranormal</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <karma />
+	  <bonus>
+		<selectskill skillcategory="Physical Active">
+		  <val>MAG</val>
+		  <applytorating>True</applytorating>
+		</selectskill>
+	  </bonus>
+      <source>SR5</source>
+      <page>133</page>
+	  <hide />
+    </power>
+	<power>
+      <id>410c17d0-0490-4e67-b2ca-4ad5e2feb016</id>
+      <name>Social Skill</name>
+      <category>Paranormal</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <karma />
+	  <bonus>
+		<selectskill skillcategory="Social Active">
+		  <val>MAG</val>
+		  <applytorating>True</applytorating>
+		</selectskill>
+	  </bonus>
+      <source>SR5</source>
+      <page>137</page>
+	  <hide />
+    </power>
+	<power>
+      <id>07229dc9-3b46-4843-a30a-7b7c4c144ea0</id>
+      <name>Technical Skill</name>
+      <category>Paranormal</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <karma />
+	  <bonus>
+		<selectskill skillcategory="Technical Active">
+		  <val>MAG</val>
+		  <applytorating>True</applytorating>
+		</selectskill>
+	  </bonus>
+      <source>SR5</source>
+      <page>143</page>
+	  <hide />
+    </power>
+	<power>
+      <id>bb55305e-0c6f-47bd-a92f-ce85df478096</id>
+      <name>Vehicle Skill</name>
+      <category>Paranormal</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <karma />
+	  <bonus>
+		<selectskill skillcategory="Vehicle Active">
+		  <val>MAG</val>
+		  <applytorating>True</applytorating>
+		</selectskill>
+	  </bonus>
+      <source>SR5</source>
+      <page>146</page>
+	  <hide />
+    </power>
     <power>
       <id>d9e0cc36-3183-4fa6-b9a6-b7e62d7d72fc</id>
       <name>Sense Link</name>
@@ -4133,6 +4229,19 @@
       <karma>9</karma>
       <source>DTR</source>
       <page>163</page>
+    </power>
+    <!-- End Region -->
+    <!-- Region Kill Code -->
+    <power>
+      <id>1749d122-8d63-4790-ba8b-974b500d5bab</id>
+      <name>Resonance Hosting</name>
+      <category>Emergent</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <source>KC</source>
+      <page>168</page>
     </power>
     <!-- End Region -->
   </powers>

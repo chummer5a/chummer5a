@@ -52,7 +52,7 @@ namespace Chummer
             }
         }
 
-        public AvailabilityValue(int intRating, string strInput)
+        public AvailabilityValue(int intRating, string strInput, int intBonus = 0)
         {
             string strAvailExpr = strInput;
             if (strAvailExpr.StartsWith("FixedValues("))
@@ -66,6 +66,9 @@ namespace Chummer
             if (_chrSuffix == 'F' || _chrSuffix == 'R') strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
             object objProcess = CommonFunctions.EvaluateInvariantXPath(strAvailExpr.Replace("Rating", intRating.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
             _intValue = blnIsSuccess ? Convert.ToInt32(objProcess) : 0;
+            _intValue += intBonus;
+            if (_intValue < 0)
+                _intValue = 0;
         }
 
         public override string ToString()

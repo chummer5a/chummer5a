@@ -79,7 +79,6 @@ namespace Chummer
                 }
                 TelemetryClient.TrackPageView(pvt);
             };
-            
         }
 
         [Obsolete("This constructor is for use by form designers only.", true)]
@@ -143,7 +142,7 @@ namespace Chummer
         {
             Cursor objOldCursor = Cursor;
             Cursor = Cursors.WaitCursor;
-            string strAutosavePath = "";
+            string strAutosavePath = string.Empty;
             try
             {
                 strAutosavePath = Path.Combine(Utils.GetStartupPath, "saves", "autosave");
@@ -153,7 +152,7 @@ namespace Chummer
                 Log.Error(e, "Path: " + Utils.GetStartupPath);
                 return;
             }
-             
+
             if (!Directory.Exists(strAutosavePath))
             {
                 try
@@ -174,6 +173,11 @@ namespace Chummer
 
             if (string.IsNullOrEmpty(strShowFileName))
                 strShowFileName = _objCharacter.CharacterName;
+            var replaceChars = System.IO.Path.GetInvalidFileNameChars();
+            foreach (var invalidChar in replaceChars)
+            {
+                strShowFileName = strShowFileName.Replace(invalidChar, '_');
+            }
             string strFilePath = Path.Combine(strAutosavePath, strShowFileName);
             _objCharacter.Save(strFilePath, false, false);
             Cursor = objOldCursor;
@@ -225,6 +229,7 @@ namespace Chummer
         /// 
         /// </summary>
         /// <param name="objNotes"></param>
+        /// <param name="treNode"></param>
         protected void WriteNotes(IHasNotes objNotes, TreeNode treNode)
         {
             string strOldValue = objNotes.Notes;
@@ -1875,7 +1880,7 @@ namespace Chummer
                 return;
 
             string strSelectedId = (treArmor.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
-            
+
             TreeNode nodRoot = treArmor.FindNode("Node_SelectedImprovements", false);
             RefreshLocation(treArmor, nodRoot, cmsArmorLocation, notifyCollectionChangedEventArgs, _objCharacter.ArmorLocations, strSelectedId, "Node_SelectedArmor");
         }
@@ -2340,7 +2345,7 @@ namespace Chummer
                     treWeapons.SelectedNode = objNode;
             }
         }
-        
+
         protected void RefreshArmor(TreeView treArmor, ContextMenuStrip cmsArmorLocation, ContextMenuStrip cmsArmor, ContextMenuStrip cmsArmorMod, ContextMenuStrip cmsArmorGear, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
             string strSelectedId = (treArmor.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
@@ -2622,7 +2627,7 @@ namespace Chummer
             string strSelectedId = (treGear.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
 
             TreeNode nodRoot = null;
-            
+
             if (notifyCollectionChangedEventArgs == null)
             {
                 treGear.Nodes.Clear();
@@ -2745,7 +2750,7 @@ namespace Chummer
                     treGear.SelectedNode = objNode;
             }
         }
-        
+
         protected void RefreshDrugs(TreeView treGear, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
             string strSelectedId = (treGear.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
@@ -3962,7 +3967,7 @@ namespace Chummer
                     lstParentNodeChildren.Add(objNode);
             }
         }
-        
+
         protected void RefreshMartialArts(TreeView treMartialArts, ContextMenuStrip cmsMartialArts, ContextMenuStrip cmsTechnique, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
             string strSelectedId = (treMartialArts.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
@@ -5007,10 +5012,9 @@ namespace Chummer
         /// <param name="intNewIndex">The new index in the parent array</param>
         public void MoveTreeNode(TreeNode objNode, int intNewIndex)
         {
-            if (objNode == null || !(objNode.Tag is ICanSort))
+            if (objNode == null || !(objNode.Tag is ICanSort objSortable))
                 return;
 
-            ICanSort objSortable = objNode.Tag as ICanSort;
             TreeView treOwningTree = objNode.TreeView;
             TreeNode objParent = objNode.Parent;
             TreeNodeCollection lstNodes = objParent?.Nodes ?? treOwningTree.Nodes;
@@ -5040,7 +5044,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Adds the selected Object and child items to the clipboard as appropriate. 
+        /// Adds the selected Object and child items to the clipboard as appropriate.
         /// </summary>
         /// <param name="selectedObject"></param>
         public void CopyObject(object selectedObject)
@@ -5427,7 +5431,7 @@ namespace Chummer
         protected void EnemyChanged(object sender, TextEventArgs e)
         {
             ContactControl objSenderControl = sender as ContactControl;
-            
+
             // Handle the ConnectionRatingChanged Event for the ContactControl object.
             int intNegativeQualityBP = 0;
             // Calculate the BP used for Negative Qualities.
@@ -5797,7 +5801,7 @@ namespace Chummer
         {
             if (CharacterObject.Created && CharacterObject.Spirits.Count(x => x.EntityType == SpiritType.Sprite && !x.Bound && !x.Fettered) > 0)
             {
-                // Once created, new sprites are added as Unbound first. We're not permitted to have more than 1 at a time. 
+                // Once created, new sprites are added as Unbound first. We're not permitted to have more than 1 at a time.
                 MessageBox.Show(LanguageManager.GetString("Message_UnregisteredSpriteLimit", GlobalOptions.Language),
                     LanguageManager.GetString("MessageTitle_UnregisteredSpriteLimit", GlobalOptions.Language),
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -5808,7 +5812,7 @@ namespace Chummer
                 // In create, all sprites are added as Bound/Registered. The number of registered Sprites cannot exceed the character's LOG.
                 if (!CharacterObject.IgnoreRules &&
                     CharacterObject.Spirits.Count(x => x.EntityType == SpiritType.Sprite && x.Bound) >=
-                    CharacterObject.LOG.Value)
+                    CharacterObject.LOG.TotalValue)
                 {
                     MessageBox.Show(LanguageManager.GetString("Message_RegisteredSpriteLimit", GlobalOptions.Language),
                         LanguageManager.GetString("MessageTitle_RegisteredSpriteLimit", GlobalOptions.Language),
@@ -5980,7 +5984,7 @@ namespace Chummer
                 }
             }
         }
-        
+
         public void MakeDirtyWithCharacterUpdate(object sender, EventArgs e)
         {
             IsCharacterUpdateRequested = true;
@@ -6156,7 +6160,7 @@ namespace Chummer
             if (Program.MainForm.PrintMultipleCharactersForm?.CharacterList?.Contains(CharacterObject) == true)
                 Program.MainForm.PrintMultipleCharactersForm.PrintViewForm?.RefreshCharacters();
         }
-        
+
         /// <summary>
         /// Clean up any resources being used.
         /// </summary>

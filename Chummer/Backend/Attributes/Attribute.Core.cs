@@ -34,7 +34,7 @@ namespace Chummer.Backend.Attributes
     /// Character CharacterAttribute.
     /// If using databinding, you should generally be using AttributeSection.{ATT}Binding
     /// </summary>
-    [HubClassTag("Abbrev", true, "TotalValue", null)]
+    [HubClassTag("Abbrev", true, "TotalValue", "TotalValue")]
     [DebuggerDisplay("{" + nameof(_strAbbrev) + "}")]
     public class CharacterAttrib : INotifyMultiplePropertyChanged
     {
@@ -484,7 +484,7 @@ namespace Chummer.Backend.Attributes
             if (_objCharacter.MetatypeCategory == "Cyberzombie" && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
                 return 1;
 
-            //The most that any attribute can be increased by is 4, plus/minus any improvements that affect the augmented max. 
+            //The most that any attribute can be increased by is 4, plus/minus any improvements that affect the augmented max.
             //TODO: Should probably be in AttributeModifiers property directly?
             int intMeat = Value + Math.Min(AttributeModifiers, MetatypeAugmentedMaximum - MetatypeMaximum + AugmentedMaximumModifiers);
             int intReturn = intMeat;
@@ -507,7 +507,7 @@ namespace Chummer.Backend.Attributes
                             break;
                     }
                 }
-                //TODO: TEST THIS. There's probably some stupid combination of cybersuites that will cause a weird conflict with this and regular limbs. Something something extra limbs, idk. 
+                //TODO: TEST THIS. There's probably some stupid combination of cybersuites that will cause a weird conflict with this and regular limbs. Something something extra limbs, idk.
                 foreach (Cyberware objCyberSuite in _objCharacter.Cyberware.Where(objCyberware =>
                     objCyberware.Category == "Cybersuite"))
                 {
@@ -554,6 +554,7 @@ namespace Chummer.Backend.Attributes
         /// <summary>
         /// The CharacterAttribute's total value (Value + Modifiers).
         /// </summary>
+        [HubTag("TotalValue")]
         public int TotalValue
         {
             get
@@ -602,7 +603,7 @@ namespace Chummer.Backend.Attributes
                 // If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
                 if (_objCharacter.MetatypeCategory == "Cyberzombie" && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
                     return 1;
-                
+
                 return Math.Max(0, MetatypeMaximum + MaximumModifiers);
             }
         }
@@ -617,7 +618,7 @@ namespace Chummer.Backend.Attributes
                 // If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
                 if (_objCharacter.MetatypeCategory == "Cyberzombie" && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
                     return 1;
-                
+
                 return Math.Max(0, MetatypeAugmentedMaximum + MaximumModifiers + AugmentedMaximumModifiers);
             }
         }
@@ -684,7 +685,9 @@ namespace Chummer.Backend.Attributes
             MetatypeAugmentedMaximum = Convert.ToInt32(strAug);
         }
 
-        public string UpgradeToolTip => string.Format(LanguageManager.GetString("Tip_ImproveItem", GlobalOptions.Language), (Value + 1), UpgradeKarmaCost);
+        public string UpgradeToolTip => UpgradeKarmaCost < 0
+            ? LanguageManager.GetString("Tip_ImproveItemAtMaximum", GlobalOptions.Language)
+            : string.Format(LanguageManager.GetString("Tip_ImproveItem", GlobalOptions.Language), (Value + 1), UpgradeKarmaCost);
 
         private string _strCachedToolTip = string.Empty;
         /// <summary>
@@ -762,18 +765,13 @@ namespace Chummer.Backend.Attributes
                 else if (lstUniqueName.Contains("precedence1"))
                 {
                     // Retrieve all of the items that are precedence1 and nothing else.
-                    int intHighest = int.MinValue;
                     StringBuilder strNewModifier = new StringBuilder();
-                    foreach (Tuple<string, int, string> strValues in lstUniquePair)
+                    foreach (Tuple<string, int, string> strValues in lstUniquePair.Where(s => s.Item1 == "precedence1" || s.Item1 == "precedence-1"))
                     {
-                        if (strValues.Item1 == "precedence1" || strValues.Item1 == "precedence-1")
-                        {
-                            strNewModifier.Append(strSpaceCharacter + '+' + strSpaceCharacter + strValues.Item3 + strSpaceCharacter + '(' + strValues.Item2.ToString(GlobalOptions.CultureInfo) + ')');
-                            intHighest += strValues.Item2;
-                        }
+                        strNewModifier.Append(
+                            $"{strSpaceCharacter}+{strSpaceCharacter}{strValues.Item3}{strSpaceCharacter}({strValues.Item2.ToString(GlobalOptions.CultureInfo)})");
                     }
-                    if (intHighest >= intBaseValue)
-                        strModifier = strNewModifier;
+                    strModifier = strNewModifier;
                 }
                 else
                 {
@@ -851,7 +849,7 @@ namespace Chummer.Backend.Attributes
                     }
                 }
 
-                return _strCachedToolTip = DisplayAbbrev + strSpaceCharacter + '(' + Value.ToString() + ')' + strModifier.ToString();
+                return _strCachedToolTip = DisplayAbbrev + strSpaceCharacter + '(' + Value.ToString(GlobalOptions.CultureInfo) + ')' + strModifier.ToString();
             }
         }
 
@@ -902,22 +900,22 @@ namespace Chummer.Backend.Attributes
                     return _intCachedUpgradeKarmaCost;
 
                 int intValue = Value;
-                int upgrade;
-                int intOptionsCost = _objCharacter.Options.KarmaAttribute;
                 if (intValue >= TotalMaximum)
                 {
                     return -1;
                 }
+                int intUpgradeCost;
+                int intOptionsCost = _objCharacter.Options.KarmaAttribute;
                 if (intValue == 0)
                 {
-                    upgrade = intOptionsCost;
+                    intUpgradeCost = intOptionsCost;
                 }
                 else
                 {
-                    upgrade = (intValue + 1) * intOptionsCost;
+                    intUpgradeCost = (intValue + 1) * intOptionsCost;
                 }
                 if (_objCharacter.Options.AlternateMetatypeAttributeKarma)
-                    upgrade -= (MetatypeMinimum - 1) * intOptionsCost;
+                    intUpgradeCost -= (MetatypeMinimum - 1) * intOptionsCost;
 
                 int intExtra = 0;
                 decimal decMultiplier = 1.0m;
@@ -934,10 +932,10 @@ namespace Chummer.Backend.Attributes
                     }
                 }
                 if (decMultiplier != 1.0m)
-                    upgrade = decimal.ToInt32(decimal.Ceiling(upgrade * decMultiplier));
-                upgrade += intExtra;
+                    intUpgradeCost = decimal.ToInt32(decimal.Ceiling(intUpgradeCost * decMultiplier));
+                intUpgradeCost += intExtra;
 
-                return _intCachedUpgradeKarmaCost = Math.Max(upgrade, Math.Min(1, intOptionsCost));
+                return _intCachedUpgradeKarmaCost = Math.Max(intUpgradeCost, Math.Min(1, intOptionsCost));
             }
         }
 

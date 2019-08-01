@@ -62,7 +62,7 @@ namespace Chummer
                     xmlTechniqueDataNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             xmlTechniqueDataNode.TryGetStringFieldQuickly("source", ref _strSource);
             xmlTechniqueDataNode.TryGetStringFieldQuickly("page", ref _strPage);
-            
+
             if (xmlTechniqueDataNode["bonus"] == null) return;
             if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.MartialArtTechnique, _guiID.ToString("D"), xmlTechniqueDataNode["bonus"], false, 1, DisplayName(GlobalOptions.Language)))
             {
@@ -240,7 +240,7 @@ namespace Chummer
                     return false;
             }
             // Find the selected Advantage object.
-            //TODO: Advantages should know what their parent is. 
+            //TODO: Advantages should know what their parent is.
             objCharacter.MartialArts.FindMartialArtTechnique(InternalId, out MartialArt objMartialArt);
 
             ImprovementManager.RemoveImprovements(objCharacter,

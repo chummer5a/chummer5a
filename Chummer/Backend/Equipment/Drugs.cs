@@ -257,10 +257,10 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteEndElement();
             }
             objWriter.WriteEndElement();
-            
+
             if (_objCharacter.Options.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
-            
+
             objWriter.WriteEndElement();
         }
         #endregion
@@ -329,7 +329,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Category of the Drug. 
+        /// Category of the Drug.
         /// </summary>
         public string Category
         {
@@ -370,7 +370,7 @@ namespace Chummer.Backend.Equipment
 			get => _decQty;
 	        set => _decQty = value;
 	    }
-        
+
         /// <summary>
         /// Availability of the Drug.
         /// </summary>
@@ -1316,7 +1316,7 @@ namespace Chummer.Backend.Equipment
                     string[] strValues = strCostExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
                     strCostExpression = strValues[Math.Max(Math.Min(Level, strValues.Length) - 1, 0)].Trim('[', ']');
                 }
-                
+
                 if (string.IsNullOrEmpty(strCostExpression))
                     return 0;
 
@@ -1362,7 +1362,7 @@ namespace Chummer.Backend.Equipment
                 {
                     strAvail = strAvail.Substring(0, strAvail.Length - 1);
                 }
-                
+
                 blnModifyParentAvail = strAvail.StartsWith('+', '-');
                 StringBuilder objAvail = new StringBuilder(strAvail.TrimStart('+'));
                 /*

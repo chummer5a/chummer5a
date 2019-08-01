@@ -795,6 +795,25 @@
     </metamagic>
     <!-- End Region -->
     <!-- End Region -->
+    <!-- Region Hard Targets -->
+    <metamagic>
+      <id>7b297dad-1111-4819-8c7a-ecdb95479011</id>
+      <name>Great Form Possession</name>
+      <adept>False</adept>
+      <magician>True</magician>
+      <required>
+        <allof>
+          <spell>Summon Great Form Spirit</spell>
+        </allof>
+        <oneof>
+          <metamagic>Channeling</metamagic>
+          <traditionspiritform>Possession</traditionspiritform>
+        </oneof>
+      </required>
+      <source>HT</source>
+      <page>134</page>
+    </metamagic>
+    <!-- End Region -->
   </metamagics>
   <arts>
     <art>

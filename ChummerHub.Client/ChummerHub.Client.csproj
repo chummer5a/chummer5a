@@ -20,7 +20,7 @@
     <!--<OutputPath>bin\Debug\</OutputPath>-->
     <OutputPath>$(MSBuildProjectDirectory)\bin\$(Configuration)\</OutputPath>
     <StartAction>Program</StartAction>
-    <StartProgram>$(OutputPath)Chummer5.exe</StartProgram>
+    <StartProgram>$(OutputPath)..\..\..\Chummer\bin\Debug\Chummer5.exe</StartProgram>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -38,17 +38,18 @@
     <Reference Include="GroupControls, Version=1.8.0.0, Culture=neutral, PublicKeyToken=3726d9da21b6ac8f, processorArchitecture=MSIL">
       <HintPath>..\packages\GroupControls.1.8.0\lib\net45\GroupControls.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.ApplicationInsights, Version=2.9.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.ApplicationInsights.2.9.1\lib\net45\Microsoft.ApplicationInsights.dll</HintPath>
+    <Reference Include="Microsoft.ApplicationInsights, Version=2.10.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.2.10.0\lib\net45\Microsoft.ApplicationInsights.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Rest.ClientRuntime, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Rest.ClientRuntime.2.3.20\lib\net452\Microsoft.Rest.ClientRuntime.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>C:\Program Files\dotnet\sdk\NuGetFallbackFolder\newtonsoft.json\11.0.2\lib\netstandard2.0\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.6.3\lib\net45\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.4.6.5\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -98,7 +99,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Backend\ApiKeyCredentials.cs" />
-    <Compile Include="Backend\CursorWait.cs" />
+    <Compile Include="Backend\NamedPipeManager.cs" />
     <Compile Include="Backend\PluginHandler.cs" />
     <Compile Include="Backend\PropertyRenameAndIgnoreSerializerContractResolver.cs" />
     <Compile Include="Backend\Search\SearchTagExtractor.cs" />
@@ -128,6 +129,7 @@
     <Compile Include="Model\SINner.cs" />
     <Compile Include="SINnersClient\ISINnersClient.cs" />
     <Compile Include="SINnersClient\Models\ApplicationUser.cs" />
+    <Compile Include="SINnersClient\Models\ApplicationUserFavoriteGroup.cs" />
     <Compile Include="SINnersClient\Models\ChummerHubVersion.cs" />
     <Compile Include="SINnersClient\Models\ResultAccountGetPossibleRoles.cs" />
     <Compile Include="SINnersClient\Models\ResultAccountGetRoles.cs" />
@@ -185,6 +187,12 @@
     <Compile Include="UI\frmSINnerSearch.Designer.cs">
       <DependentUpon>frmSINnerSearch.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\frmSINnerShare.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\frmSINnerShare.Designer.cs">
+      <DependentUpon>frmSINnerShare.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\frmSINnerVisibility.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -227,6 +235,12 @@
     </Compile>
     <Compile Include="UI\ucSINnersBasic.Designer.cs">
       <DependentUpon>ucSINnersBasic.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\ucSINnerShare.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\ucSINnerShare.Designer.cs">
+      <DependentUpon>ucSINnerShare.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\ucSINnersOptions.cs">
       <SubType>UserControl</SubType>
@@ -271,6 +285,9 @@
     <EmbeddedResource Include="UI\frmSINnerSearch.resx">
       <DependentUpon>frmSINnerSearch.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\frmSINnerShare.resx">
+      <DependentUpon>frmSINnerShare.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\frmSINnerVisibility.resx">
       <DependentUpon>frmSINnerVisibility.cs</DependentUpon>
     </EmbeddedResource>
@@ -291,6 +308,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\ucSINnersBasic.resx">
       <DependentUpon>ucSINnersBasic.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\ucSINnerShare.resx">
+      <DependentUpon>ucSINnerShare.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\ucSINnersOptions.resx">
       <DependentUpon>ucSINnersOptions.cs</DependentUpon>
@@ -333,13 +353,35 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>echo Statement 1: copy $(TargetDir)$(TargetName).* $(TargetDir)Plugins\ /Y
-copy $(TargetDir)$(TargetName).* $(TargetDir)Plugins\ /Y
-echo Statement 2: copy $(TargetDir)$(TargetName).* $(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\ /Y
-copy $(TargetDir)$(TargetName).* $(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\ /Y</PostBuildEvent>
+    <PostBuildEvent>echo Statement 1: copy "$(TargetDir)$(TargetName).*" "$(TargetDir)Plugins\SINners\" /Y
+        copy "$(TargetDir)$(TargetName).*" "$(TargetDir)Plugins\SINners\" /Y
+        echo Statement 2: copy "$(TargetDir)$(TargetName).*" "$(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SINners\" /Y
+        copy "$(TargetDir)$(TargetName).*" "$(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SINners\" /Y
+        echo Statement 3: copy "$(TargetDir)Newtonsoft.Json.*" "$(TargetDir)Plugins\SINners\" /Y
+        copy "$(TargetDir)Newtonsoft.Json.*" "$(TargetDir)Plugins\SINners\" /Y
+        echo Statement 4: copy "$(TargetDir)Microsoft.Rest.ClientRuntime.*" "$(TargetDir)Plugins\SINners\" /Y
+        copy "$(TargetDir)Microsoft.Rest.ClientRuntime.*" "$(TargetDir)Plugins\SINners\" /Y
+        echo Statement 5: copy "$(TargetDir)NLog.*" "$(TargetDir)Plugins\SINners\" /Y
+        copy "$(TargetDir)NLog.*" "$(TargetDir)Plugins\SINners\" /Y
+        echo Statement 6: copy "$(TargetDir)System.Text.Encodings.Web.*" "$(TargetDir)Plugins\SINners\" /Y
+        copy "$(TargetDir)System.Text.Encodings.Web.*" "$(TargetDir)Plugins\SINners\" /Y
+        echo Statement 7: copy "$(TargetDir)System.Composition.*" "$(TargetDir)Plugins\SINners\" /Y
+        copy "$(TargetDir)System.Composition.*" "$(TargetDir)Plugins\SINners\" /Y
+        echo Statement 8: copy "$(TargetDir)System.Diagnostics.DiagnosticSource.*" "$(TargetDir)Plugins\SINners\" /Y
+        copy "$(TargetDir)System.Diagnostics.DiagnosticSource.*" "$(TargetDir)Plugins\SINners\" /Y
+        echo Statement 9: copy "$(TargetDir)Microsoft.ApplicationInsights.*" "$(TargetDir)Plugins\SINners\" /Y
+        copy "$(TargetDir)Microsoft.ApplicationInsights.*" "$(TargetDir)Plugins\SINners\" /Y
+        echo Statement 10: copy "$(TargetDir)GroupControls.*" "$(TargetDir)Plugins\SINners\" /Y
+        copy "$(TargetDir)GroupControls.*" "$(TargetDir)Plugins\SINners\" /Y
+        echo Statement 11: copy "$(TargetDir)Plugins\SINners\*" "$(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SINners\" /Y
+        copy "$(TargetDir)Plugins\SINners\*" "$(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SINners\" /Y
+    </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
+    <PreBuildEvent>echo Statement 1: mkdir "$(TargetDir)Plugins\SINners\"
+        mkdir "$(TargetDir)Plugins\SINners\"
+        echo Statement 2: mkdir "$(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SINners\"
+        mkdir "$(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SINners\"
+        Exit 0</PreBuildEvent>
   </PropertyGroup>
 </Project>

@@ -1,3 +1,21 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,11 +29,13 @@ using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Xml;
 using System.Xml.XPath;
+using NLog;
 
 namespace Chummer
 {
     public partial class Chummy : Form
     {
+        private static NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private const int EyeBallWidth = 20;
         private const int EyeBallHeight = 32;
         private const int DistanceBetweenEyes = 10;
@@ -46,7 +66,7 @@ namespace Chummer
             tmrTip.Tick += tmr_TipTick;
             tmrTip.Start();
 
-            _myToolTip.Show("Hi! I'm Chummy, the Chummer AI Assistant! I've got plenty of helpful tips and advice about your characters!".WordWrap(100), this, _mouthCenter);
+            _myToolTip.Show(LanguageManager.GetString("Chummy_Intro", GlobalOptions.Language).WordWrap(100), this, _mouthCenter);
         }
         #region Event Handlers
         private void tmr_DrawTick(object sender, EventArgs e)
@@ -145,8 +165,21 @@ namespace Chummer
 
             // Draw an ellipse 1/2 the size of the eye
             // centered at (px, py).
-            gr.FillEllipse(Brushes.Blue, (int)(px - wid / 4),
-                (int)(py - hgt / 4), wid / 2, hgt / 2);
+            int x = (int)(px - wid / 4);
+            int y = (int)(py - hgt / 4);
+            int width = wid / 2;
+            int height = hgt / 2;
+            try
+            {
+                gr.FillEllipse(Brushes.Blue, x, y, width, height);
+            }
+            catch (Exception e)
+            {
+                string msg = String.Format("Got an " + e.GetType().ToString() + " with these variables in Chummy.cs-DrawEye(): x={0},y={1},width={2},height={3}", x,
+                    y, width, height);
+                Log.Warn(e, msg);
+            }
+            
         }
         #endregion
         #region Chat Bubble
@@ -163,7 +196,7 @@ namespace Chummer
                 if (string.IsNullOrEmpty(strId) || _usedTips.Contains(strId)) continue;
                 if (!objXmlTip.RequirementsMet(CharacterObject)) continue;
                 _usedTips.Add(strId);
-                return objXmlTip.SelectSingleNode("text")?.Value;
+                return objXmlTip.SelectSingleNode("translate")?.Value ?? objXmlTip.SelectSingleNode("text")?.Value ?? string.Empty;
             }
             return string.Empty;
         }

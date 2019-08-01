@@ -37,12 +37,12 @@
     </xs:attribute>
     <xs:attribute name="globalThreshold" type="NLogLevel">
       <xs:annotation>
-        <xs:documentation>Global log level threshold for application log messages. Messages below this level won't be logged..</xs:documentation>
+        <xs:documentation>Global log level threshold for application log messages. Messages below this level won't be logged.</xs:documentation>
       </xs:annotation>
     </xs:attribute>
     <xs:attribute name="throwExceptions" type="xs:boolean">
       <xs:annotation>
-        <xs:documentation>Throw an exception when there is an internal error. Default value is: false.</xs:documentation>
+        <xs:documentation>Throw an exception when there is an internal error. Default value is: false. Not recommend to set to true in production!</xs:documentation>
       </xs:annotation>
     </xs:attribute>
     <xs:attribute name="throwConfigExceptions" type="xs:boolean">
@@ -72,7 +72,7 @@
     </xs:attribute>
     <xs:attribute name="parseMessageTemplates" type="xs:boolean">
       <xs:annotation>
-        <xs:documentation>Perform mesage template parsing and formatting of LogEvent messages (true = Always, false = Never, empty = Auto Detect). Default value is: empty.</xs:documentation>
+        <xs:documentation>Perform message template parsing and formatting of LogEvent messages (true = Always, false = Never, empty = Auto Detect). Default value is: empty.</xs:documentation>
       </xs:annotation>
     </xs:attribute>
   </xs:complexType>
@@ -123,7 +123,7 @@
     </xs:choice>
     <xs:attribute name="name" use="optional">
       <xs:annotation>
-        <xs:documentation>Name of the logger. May include '*' character which acts like a wildcard. Allowed forms are: *, Name, *Name, Name* and *Name*</xs:documentation>
+        <xs:documentation>Name of the logger. May include  wildcard characters ('*' or '?').</xs:documentation>
       </xs:annotation>
     </xs:attribute>
     <xs:attribute name="levels" type="NLogLevelList">
@@ -156,9 +156,9 @@
         <xs:documentation>Ignore further rules if this one matches.</xs:documentation>
       </xs:annotation>
     </xs:attribute>
-    <xs:attribute name="enabled" type="xs:boolean" default="true">
+    <xs:attribute name="ruleName" type="xs:string" use="optional">
       <xs:annotation>
-        <xs:documentation>Enable or disable logging rule. Disabled rules are ignored.</xs:documentation>
+        <xs:documentation>Rule identifier to allow rule lookup with Configuration.FindRuleByName and Configuration.RemoveRuleByName.</xs:documentation>
       </xs:annotation>
     </xs:attribute>
   </xs:complexType>
@@ -171,6 +171,11 @@
       <xs:element name="whenNotEqual" type="whenNotEqual" />
       <xs:element name="whenRepeated" type="whenRepeated" />
     </xs:choice>
+    <xs:attribute name="defaultAction" type="FilterResult">
+      <xs:annotation>
+        <xs:documentation>Default action if none of the filters match.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
   </xs:complexType>
   <xs:simpleType name="NLogLevel">
     <xs:restriction base="xs:string">
@@ -210,12 +215,19 @@
     </xs:attribute>
   </xs:complexType>
   <xs:complexType name="NLogVariable">
+    <xs:choice minOccurs="0" maxOccurs="1">
+      <xs:element name="value" minOccurs="0" maxOccurs="1" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Variable value. Note, the 'value' attribute has precedence over this one.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:choice>
     <xs:attribute name="name" type="xs:string" use="required">
       <xs:annotation>
         <xs:documentation>Variable name.</xs:documentation>
       </xs:annotation>
     </xs:attribute>
-    <xs:attribute name="value" type="SimpleLayoutAttribute" use="required">
+    <xs:attribute name="value" type="SimpleLayoutAttribute">
       <xs:annotation>
         <xs:documentation>Variable value.</xs:documentation>
       </xs:annotation>
@@ -621,15 +633,21 @@
     <xs:choice minOccurs="0" maxOccurs="unbounded">
       <xs:element name="layout" minOccurs="0" maxOccurs="1" type="Layout" />
       <xs:element name="name" minOccurs="0" maxOccurs="1" type="xs:string" />
+      <xs:element name="includeEmptyValue" minOccurs="0" maxOccurs="1" type="xs:boolean" />
     </xs:choice>
     <xs:attribute name="layout" type="SimpleLayoutAttribute">
       <xs:annotation>
-        <xs:documentation>Layout that should be use to calcuate the value for the parameter.</xs:documentation>
+        <xs:documentation>Layout that should be use to calculate the value for the parameter.</xs:documentation>
       </xs:annotation>
     </xs:attribute>
     <xs:attribute name="name" type="xs:string">
       <xs:annotation>
         <xs:documentation>Viewer parameter name.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="includeEmptyValue" type="xs:boolean">
+      <xs:annotation>
+        <xs:documentation>Whether an attribute with empty value should be included in the output</xs:documentation>
       </xs:annotation>
     </xs:attribute>
   </xs:complexType>
@@ -1010,7 +1028,7 @@
     </xs:attribute>
     <xs:attribute name="layout" type="SimpleLayoutAttribute">
       <xs:annotation>
-        <xs:documentation>Layout that should be use to calcuate the value for the parameter.</xs:documentation>
+        <xs:documentation>Layout that should be use to calculate the value for the parameter.</xs:documentation>
       </xs:annotation>
     </xs:attribute>
     <xs:attribute name="dbType" type="xs:string">
@@ -1358,7 +1376,7 @@
         </xs:attribute>
         <xs:attribute name="forceMutexConcurrentWrites" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Value indicationg whether file creation calls should be synchronized by a system global mutex.</xs:documentation>
+            <xs:documentation>Indicates whether file creation calls should be synchronized by a system global mutex.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="replaceFileContentsOnEachWrite" type="xs:boolean">
@@ -1532,6 +1550,7 @@
         <xs:choice minOccurs="0" maxOccurs="unbounded">
           <xs:element name="name" minOccurs="0" maxOccurs="1" type="xs:string" />
           <xs:element name="condition" minOccurs="0" maxOccurs="1" type="Condition" />
+          <xs:element name="filter" minOccurs="0" maxOccurs="1" type="Filter" />
           <xs:element name="optimizeBufferReuse" minOccurs="0" maxOccurs="1" type="xs:boolean" />
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
@@ -2927,7 +2946,7 @@
     </xs:attribute>
     <xs:attribute name="encode" type="xs:boolean">
       <xs:annotation>
-        <xs:documentation>Determines wether or not this attribute will be Json encoded.</xs:documentation>
+        <xs:documentation>Determines whether or not this attribute will be Json encoded.</xs:documentation>
       </xs:annotation>
     </xs:attribute>
     <xs:attribute name="escapeUnicode" type="xs:boolean">
@@ -2972,14 +2991,22 @@
       <xs:extension base="Layout">
         <xs:choice minOccurs="0" maxOccurs="unbounded">
           <xs:element name="includeAllProperties" minOccurs="0" maxOccurs="1" type="xs:boolean" />
+          <xs:element name="includeCallSite" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="includeMdc" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="includeMdlc" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="includeNdc" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="includeNdlc" minOccurs="0" maxOccurs="1" type="xs:boolean" />
+          <xs:element name="includeSourceInfo" minOccurs="0" maxOccurs="1" type="xs:boolean" />
+          <xs:element name="parameter" minOccurs="0" maxOccurs="unbounded" type="NLog.Targets.NLogViewerParameterInfo" />
         </xs:choice>
         <xs:attribute name="includeAllProperties" type="xs:boolean">
           <xs:annotation>
             <xs:documentation>Option to include all properties from the log events</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="includeCallSite" type="xs:boolean">
+          <xs:annotation>
+            <xs:documentation>Indicates whether to include call site (class and method name) in the information sent over the network.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="includeMdc" type="xs:boolean">
@@ -3000,6 +3027,11 @@
         <xs:attribute name="includeNdlc" type="xs:boolean">
           <xs:annotation>
             <xs:documentation>Indicates whether to include contents of the  stack.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="includeSourceInfo" type="xs:boolean">
+          <xs:annotation>
+            <xs:documentation>Indicates whether to include source info (file name and line number) in the information sent over the network.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
       </xs:extension>
@@ -3107,7 +3139,7 @@
         </xs:attribute>
         <xs:attribute name="elementEncode" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Determines wether or not this attribute will be Xml encoded.</xs:documentation>
+            <xs:documentation>Determines whether or not this attribute will be Xml encoded.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
       </xs:extension>
@@ -3132,7 +3164,7 @@
     </xs:attribute>
     <xs:attribute name="encode" type="xs:boolean">
       <xs:annotation>
-        <xs:documentation>Determines wether or not this attribute will be Xml encoded.</xs:documentation>
+        <xs:documentation>Determines whether or not this attribute will be Xml encoded.</xs:documentation>
       </xs:annotation>
     </xs:attribute>
     <xs:attribute name="includeEmptyValue" type="xs:boolean">
@@ -3162,7 +3194,7 @@
     </xs:choice>
     <xs:attribute name="encode" type="xs:boolean">
       <xs:annotation>
-        <xs:documentation>Determines wether or not this attribute will be Xml encoded.</xs:documentation>
+        <xs:documentation>Determines whether or not this attribute will be Xml encoded.</xs:documentation>
       </xs:annotation>
     </xs:attribute>
     <xs:attribute name="name" type="xs:string">

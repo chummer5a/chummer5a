@@ -133,9 +133,8 @@ namespace Chummer.UI.Attributes
             if (d == _oldBase) return;
             if (!CanBeMetatypeMax(
                 Math.Max(
-                    decimal.ToInt32(d + nudKarma.Value) + attrib.FreeBase + attrib.RawMinimum +
-                    attrib.AttributeValueModifiers, attrib.TotalMinimum) +
-                decimal.ToInt32(nudKarma.Value)))
+                    decimal.ToInt32(nudKarma.Value) + attrib.FreeBase + attrib.RawMinimum +
+                    attrib.AttributeValueModifiers, attrib.TotalMinimum) + decimal.ToInt32(d)))
             {
                 decimal newValue = Math.Max(nudBase.Value - 1, 0);
                 if (newValue > nudBase.Maximum)

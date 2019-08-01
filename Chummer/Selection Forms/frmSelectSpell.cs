@@ -496,41 +496,50 @@ namespace Chummer
             StringBuilder objDescriptors = new StringBuilder();
             bool blnExtendedFound = false;
             bool blnAlchemicalFound = false;
-            foreach (string strDescriptor in strDescriptorsIn)
+            if (xmlSpell.SelectSingleNode("descriptor")?.Value != string.Empty)
             {
-                switch (strDescriptor.Trim())
+                foreach (string strDescriptor in strDescriptorsIn)
                 {
-                    case "Alchemical Preparation":
-                        blnAlchemicalFound = true;
-                        objDescriptors.Append(LanguageManager.GetString("String_DescAlchemicalPreparation", GlobalOptions.Language));
-                        objDescriptors.Append(", ");
-                        break;
-                    case "Extended Area":
-                        blnExtendedFound = true;
-                        objDescriptors.Append(LanguageManager.GetString("String_DescExtendedArea", GlobalOptions.Language));
-                        objDescriptors.Append(", ");
-                        break;
-                    case "Material Link":
-                        objDescriptors.Append(LanguageManager.GetString("String_DescMaterialLink", GlobalOptions.Language));
-                        objDescriptors.Append(", ");
-                        break;
-                    case "Multi-Sense":
-                        objDescriptors.Append(LanguageManager.GetString("String_DescMultiSense", GlobalOptions.Language));
-                        objDescriptors.Append(", ");
-                        break;
-                    case "Organic Link":
-                        objDescriptors.Append(LanguageManager.GetString("String_DescOrganicLink", GlobalOptions.Language));
-                        objDescriptors.Append(", ");
-                        break;
-                    case "Single-Sense":
-                        objDescriptors.Append(LanguageManager.GetString("String_DescSingleSense", GlobalOptions.Language));
-                        objDescriptors.Append(", ");
-                        break;
-                    default:
-                        objDescriptors.Append(LanguageManager.GetString($"String_Desc{strDescriptor.Trim()}", GlobalOptions.Language));
-                        objDescriptors.Append(", ");
-                        break;
-
+                    switch (strDescriptor.Trim())
+                    {
+                        case "Alchemical Preparation":
+                            blnAlchemicalFound = true;
+                            objDescriptors.Append(LanguageManager.GetString("String_DescAlchemicalPreparation",
+                                GlobalOptions.Language));
+                            objDescriptors.Append(", ");
+                            break;
+                        case "Extended Area":
+                            blnExtendedFound = true;
+                            objDescriptors.Append(LanguageManager.GetString("String_DescExtendedArea",
+                                GlobalOptions.Language));
+                            objDescriptors.Append(", ");
+                            break;
+                        case "Material Link":
+                            objDescriptors.Append(LanguageManager.GetString("String_DescMaterialLink",
+                                GlobalOptions.Language));
+                            objDescriptors.Append(", ");
+                            break;
+                        case "Multi-Sense":
+                            objDescriptors.Append(LanguageManager.GetString("String_DescMultiSense",
+                                GlobalOptions.Language));
+                            objDescriptors.Append(", ");
+                            break;
+                        case "Organic Link":
+                            objDescriptors.Append(LanguageManager.GetString("String_DescOrganicLink",
+                                GlobalOptions.Language));
+                            objDescriptors.Append(", ");
+                            break;
+                        case "Single-Sense":
+                            objDescriptors.Append(LanguageManager.GetString("String_DescSingleSense",
+                                GlobalOptions.Language));
+                            objDescriptors.Append(", ");
+                            break;
+                        default:
+                            objDescriptors.Append(LanguageManager.GetString($"String_Desc{strDescriptor.Trim()}",
+                                GlobalOptions.Language));
+                            objDescriptors.Append(", ");
+                            break;
+                    }
                 }
             }
 
@@ -568,6 +577,8 @@ namespace Chummer
             if (objDescriptors.Length > 2)
                 objDescriptors.Length -= 2;
             lblDescriptors.Text = objDescriptors.ToString();
+            if (string.IsNullOrEmpty(lblDescriptors.Text))
+                lblDescriptors.Text = LanguageManager.GetString("String_None", GlobalOptions.Language);
             lblDescriptorsLabel.Visible = !string.IsNullOrEmpty(lblDescriptors.Text);
 
             switch (xmlSpell.SelectSingleNode("type")?.Value)

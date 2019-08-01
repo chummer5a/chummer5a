@@ -1791,11 +1791,11 @@ namespace Chummer
 
 
             //Plugins
-            if(Program.MainForm?.PluginLoader?.MyActivePlugins?.Any() == true)
+            if(Program.PluginLoader?.MyActivePlugins?.Any() == true)
             {
                 // <plugins>
                 objWriter.WriteStartElement("plugins");
-                foreach(var plugin in Program.MainForm.PluginLoader.MyActivePlugins)
+                foreach(var plugin in Program.PluginLoader.MyActivePlugins)
                 {
                     try
                     {
@@ -1995,7 +1995,7 @@ if (!Utils.IsUnitTest){
                             }
                         }
 
-                        if (!string.IsNullOrEmpty(strMissingBooks) && !Utils.IsUnitTest)
+                        if (!string.IsNullOrEmpty(strMissingBooks) && !Utils.IsUnitTest && showWarnings)
                         {
                             if (MessageBox.Show(new Form {TopMost = true},
                                     string.Format(
@@ -2024,7 +2024,7 @@ if (!Utils.IsUnitTest){
                             }
                         }
 
-                        if (!string.IsNullOrEmpty(strMissingSourceNames) && !Utils.IsUnitTest)
+                        if (!string.IsNullOrEmpty(strMissingSourceNames) && !Utils.IsUnitTest && showWarnings)
                         {
                             if (MessageBox.Show(
                                     string.Format(
@@ -2123,7 +2123,7 @@ if (!Utils.IsUnitTest){
                         XmlNode xmlGameplayOption =
                             objXmlDocumentGameplayOptions.SelectSingleNode(
                                 "/chummer/gameplayoptions/gameplayoption[name = \"" + GameplayOption + "\"]");
-                        if (xmlGameplayOption == null)
+                        if (xmlGameplayOption == null && showWarnings)
                         {
                             if (MessageBox.Show(
                                     string.Format(
@@ -2286,7 +2286,7 @@ if (!Utils.IsUnitTest){
                                 if (strCharacterInnerXml.IndexOf(strLoopSourceName, StringComparison.Ordinal) ==
                                     strCharacterInnerXml.LastIndexOf(strLoopSourceName, StringComparison.Ordinal))
                                 {
-                                    if (!Utils.IsUnitTest)
+                                    if (!Utils.IsUnitTest && showWarnings)
                                     {
                                         //Utils.BreakIfDebug();
                                         if (removeImprovements || (MessageBox.Show(
@@ -3564,9 +3564,9 @@ if (!Utils.IsUnitTest){
                     //Plugins
                     using (var op_load_plugins = Timekeeper.StartSyncron("load_plugins", loadActivity))
                     {
-                        if (Program.MainForm?.PluginLoader?.MyActivePlugins?.Any() == true)
+                        if (Program.PluginLoader?.MyActivePlugins?.Any() == true)
                         {
-                            foreach (var plugin in Program.MainForm.PluginLoader.MyActivePlugins)
+                            foreach (var plugin in Program.PluginLoader.MyActivePlugins)
                             {
                                 objXmlNodeList =
                                     objXmlCharacter.SelectNodes("plugins/" + plugin.GetPluginAssembly().GetName().Name);
@@ -7631,6 +7631,12 @@ if (!Utils.IsUnitTest){
         public CharacterAttrib MAG => AttributeSection.GetAttributeByName("MAG");
 
         /// <summary>
+        /// Reflection of MAG (hide it, if it is not enabled!)
+        /// </summary>
+        [HubTag("Magic")]
+        public CharacterAttrib ReflectionMAG => MAGEnabled ? MAG : null;
+
+        /// <summary>
         /// Magic (MAG) CharacterAttribute for Adept powers of Mystic Adepts when the appropriate house rule is enabled.
         /// </summary>
         public CharacterAttrib MAGAdept
@@ -7645,14 +7651,32 @@ if (!Utils.IsUnitTest){
         }
 
         /// <summary>
+        /// Reflection of MAGAdept (hide it, if it is not enabled!)
+        /// </summary>
+        [HubTag("MagicAdept")]
+        public CharacterAttrib ReflectionMAGAdept => MAGEnabled ? MAGAdept : null;
+
+        /// <summary>
         /// Resonance (RES) CharacterAttribute.
         /// </summary>
         public CharacterAttrib RES => AttributeSection.GetAttributeByName("RES");
 
         /// <summary>
+        /// Reflection of RES (hide it, if it is not enabled!)
+        /// </summary>
+        [HubTag("Resonance")]
+        public CharacterAttrib ReflectionRES => RESEnabled ? RES : null;
+
+        /// <summary>
         /// Depth (DEP) Attribute.
         /// </summary>
         public CharacterAttrib DEP => AttributeSection.GetAttributeByName("DEP");
+
+        /// <summary>
+        /// Reflection of DEP (hide it, if it is not enabled!)
+        /// </summary>
+        [HubTag("Depth")]
+        public CharacterAttrib ReflectionDEP => DEPEnabled ? DEP : null;
 
         /// <summary>
         /// Essence (ESS) Attribute.
@@ -8387,6 +8411,12 @@ if (!Utils.IsUnitTest){
         }
 
         public string DisplayEssence => Essence().ToString(_objOptions.EssenceFormat, GlobalOptions.CultureInfo);
+
+        /// <summary>
+        /// This is only here for Reflection
+        /// </summary>
+        [HubTag("Essence")]
+        public decimal EssenceDecimal => Essence();
 
         public string DisplayCyberwareEssence =>
             CyberwareEssence.ToString(_objOptions.EssenceFormat, GlobalOptions.CultureInfo);
@@ -10872,6 +10902,7 @@ if (!Utils.IsUnitTest){
         /// <summary>
         /// The Character's total Armor Rating.
         /// </summary>
+        [HubTag]
         public int TotalArmorRating =>
             ArmorRating + ImprovementManager.ValueOf(this, Improvement.ImprovementType.Armor);
 
@@ -13668,12 +13699,20 @@ if (!Utils.IsUnitTest){
                 _intCachedRedlinerBonus = 0;
                 return;
             }
+            XmlNode objXmlGameplayOption = XmlManager.Load("gameplayoptions.xml")
+                .SelectSingleNode($"/chummer/gameplayoptions/gameplayoption[name = \"{GameplayOption}\"]");
+            
+            List<string> excludedLimbs = new List<string>();
+            foreach (XmlNode n in objXmlGameplayOption.SelectNodes("redlinerexclusion/limb"))
+            {
+                excludedLimbs.Add(n.Value);
+            }
 
             //Calculate bonus from cyberlimbs
             int intCount = 0;
             foreach(Cyberware objCyberware in Cyberware)
             {
-                intCount += objCyberware.GetCyberlimbCount("skull", "torso");
+                intCount += objCyberware.GetCyberlimbCount(excludedLimbs);
             }
 
             intCount = Math.Min(intCount / 2, 2);

@@ -2133,13 +2133,13 @@ namespace Chummer
             this.tsMartialArtsAddAdvantage,
             this.tsMartialArtsNotes});
             this.cmsMartialArts.Name = "cmsWeapon";
-            this.cmsMartialArts.Size = new System.Drawing.Size(155, 48);
+            this.cmsMartialArts.Size = new System.Drawing.Size(154, 48);
             // 
             // tsMartialArtsAddAdvantage
             // 
             this.tsMartialArtsAddAdvantage.Image = global::Chummer.Properties.Resources.medal_gold_add;
             this.tsMartialArtsAddAdvantage.Name = "tsMartialArtsAddAdvantage";
-            this.tsMartialArtsAddAdvantage.Size = new System.Drawing.Size(154, 22);
+            this.tsMartialArtsAddAdvantage.Size = new System.Drawing.Size(153, 22);
             this.tsMartialArtsAddAdvantage.Tag = "Menu_AddAdvantage";
             this.tsMartialArtsAddAdvantage.Text = "&Add Technique";
             this.tsMartialArtsAddAdvantage.Click += new System.EventHandler(this.tsMartialArtsAddAdvantage_Click);
@@ -2148,7 +2148,7 @@ namespace Chummer
             // 
             this.tsMartialArtsNotes.Image = global::Chummer.Properties.Resources.note_edit;
             this.tsMartialArtsNotes.Name = "tsMartialArtsNotes";
-            this.tsMartialArtsNotes.Size = new System.Drawing.Size(154, 22);
+            this.tsMartialArtsNotes.Size = new System.Drawing.Size(153, 22);
             this.tsMartialArtsNotes.Tag = "Menu_Notes";
             this.tsMartialArtsNotes.Text = "&Notes";
             this.tsMartialArtsNotes.Click += new System.EventHandler(this.tsMartialArtsNotes_Click);
@@ -3025,7 +3025,7 @@ namespace Chummer
             // 
             this.tsGearAllowRenameAddAsPlugin.Image = global::Chummer.Properties.Resources.brick_add;
             this.tsGearAllowRenameAddAsPlugin.Name = "tsGearAllowRenameAddAsPlugin";
-            this.tsGearAllowRenameAddAsPlugin.Size = new System.Drawing.Size(169, 22);
+            this.tsGearAllowRenameAddAsPlugin.Size = new System.Drawing.Size(170, 22);
             this.tsGearAllowRenameAddAsPlugin.Tag = "Menu_AddAsPlugin";
             this.tsGearAllowRenameAddAsPlugin.Text = "&Add as Plugin";
             this.tsGearAllowRenameAddAsPlugin.Click += new System.EventHandler(this.tsGearAddAsPlugin_Click);
@@ -3034,7 +3034,7 @@ namespace Chummer
             // 
             this.tsGearAllowRenameName.Image = global::Chummer.Properties.Resources.tag_red;
             this.tsGearAllowRenameName.Name = "tsGearAllowRenameName";
-            this.tsGearAllowRenameName.Size = new System.Drawing.Size(169, 22);
+            this.tsGearAllowRenameName.Size = new System.Drawing.Size(170, 22);
             this.tsGearAllowRenameName.Tag = "Menu_NameGear";
             this.tsGearAllowRenameName.Text = "Name Gear";
             this.tsGearAllowRenameName.Click += new System.EventHandler(this.tsGearName_Click);
@@ -3043,7 +3043,7 @@ namespace Chummer
             // 
             this.tsGearAllowRenameNotes.Image = global::Chummer.Properties.Resources.note_edit;
             this.tsGearAllowRenameNotes.Name = "tsGearAllowRenameNotes";
-            this.tsGearAllowRenameNotes.Size = new System.Drawing.Size(169, 22);
+            this.tsGearAllowRenameNotes.Size = new System.Drawing.Size(170, 22);
             this.tsGearAllowRenameNotes.Tag = "Menu_Notes";
             this.tsGearAllowRenameNotes.Text = "&Notes";
             this.tsGearAllowRenameNotes.Click += new System.EventHandler(this.tsGearNotes_Click);
@@ -3636,6 +3636,7 @@ namespace Chummer
             // tlpCommonLeftSide
             // 
             this.tlpCommonLeftSide.AutoSize = true;
+            this.tlpCommonLeftSide.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpCommonLeftSide.ColumnCount = 4;
             this.tlpCommonLeftSide.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpCommonLeftSide.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
@@ -6261,6 +6262,8 @@ namespace Chummer
             // 
             // tlpCyberware
             // 
+            this.tlpCyberware.AutoSize = true;
+            this.tlpCyberware.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpCyberware.ColumnCount = 2;
             this.tlpCyberware.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 301F));
             this.tlpCyberware.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -7117,6 +7120,8 @@ namespace Chummer
             // 
             // tlpGear
             // 
+            this.tlpGear.AutoSize = true;
+            this.tlpGear.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpGear.ColumnCount = 2;
             this.tlpGear.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 301F));
             this.tlpGear.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -7418,7 +7423,7 @@ namespace Chummer
             this.nudGearQty.Enabled = false;
             this.nudGearQty.Location = new System.Drawing.Point(61, 79);
             this.nudGearQty.Maximum = new decimal(new int[] {
-            100000,
+            1000000000,
             0,
             0,
             0});
@@ -13663,13 +13668,13 @@ namespace Chummer
             this.tsGearAllowRenameNotes,
             this.tsGearAllowRenameExtra});
             this.cmsGearAllowRename.Name = "cmsGearAllowRename";
-            this.cmsGearAllowRename.Size = new System.Drawing.Size(170, 92);
+            this.cmsGearAllowRename.Size = new System.Drawing.Size(171, 92);
             // 
             // tsGearAllowRenameExtra
             // 
             this.tsGearAllowRenameExtra.Image = global::Chummer.Properties.Resources.note_edit;
             this.tsGearAllowRenameExtra.Name = "tsGearAllowRenameExtra";
-            this.tsGearAllowRenameExtra.Size = new System.Drawing.Size(169, 22);
+            this.tsGearAllowRenameExtra.Size = new System.Drawing.Size(170, 22);
             this.tsGearAllowRenameExtra.Tag = "Menu_RenameExtraText";
             this.tsGearAllowRenameExtra.Text = "&Rename Extra Text";
             this.tsGearAllowRenameExtra.Click += new System.EventHandler(this.tsGearRename_Click);
@@ -13828,6 +13833,7 @@ namespace Chummer
             this.tlpInitiationGroup.ResumeLayout(false);
             this.tlpInitiationGroup.PerformLayout();
             this.tabCyberware.ResumeLayout(false);
+            this.tabCyberware.PerformLayout();
             this.tlpCyberware.ResumeLayout(false);
             this.tlpCyberware.PerformLayout();
             this.flowLayoutPanel7.ResumeLayout(false);
@@ -13850,6 +13856,7 @@ namespace Chummer
             this.tabStreetGear.ResumeLayout(false);
             this.tabStreetGearTabs.ResumeLayout(false);
             this.tabGear.ResumeLayout(false);
+            this.tabGear.PerformLayout();
             this.tlpGear.ResumeLayout(false);
             this.tlpGear.PerformLayout();
             this.flowLayoutPanel13.ResumeLayout(false);

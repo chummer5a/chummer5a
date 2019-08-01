@@ -79,7 +79,7 @@ namespace Chummer
             if (!objXmlComplexFormNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlComplexFormNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             _strExtra = strExtra;
-            
+
             /*
             if (string.IsNullOrEmpty(_strNotes))
             {

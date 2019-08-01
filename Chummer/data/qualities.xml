@@ -479,6 +479,10 @@
       <category>Positive</category>
       <bonus>
         <physicalcmrecovery>2</physicalcmrecovery>
+        <spelldicepool>
+          <name>Heal</name>
+          <val>2</val>
+        </spelldicepool>
         <stuncmrecovery>2</stuncmrecovery>
       </bonus>
       <forbidden>
@@ -14414,6 +14418,7 @@
       <name>Close Combat Mage</name>
       <karma>5</karma>
       <category>Positive</category>
+      <canbuywithspellpoints>True</canbuywithspellpoints>
       <doublecareer>False</doublecareer>
       <limit>3</limit>
       <nolevels />
@@ -18760,7 +18765,7 @@
       <karma>5</karma>
       <category>Positive</category>
       <bonus>
-        <specialmodificationlimit>1</specialmodificationlimit>
+        <specialmodificationlimit>2</specialmodificationlimit>
       </bonus>
       <forbidden>
         <oneof>
@@ -18791,7 +18796,7 @@
       <category>Positive</category>
       <limit>2</limit>
       <bonus>
-        <specialmodificationlimit>1</specialmodificationlimit>
+        <specialmodificationlimit>2</specialmodificationlimit>
       </bonus>
       <forbidden>
         <oneof>

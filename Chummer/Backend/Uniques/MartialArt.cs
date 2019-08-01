@@ -384,7 +384,7 @@ namespace Chummer
 
                 MartialArt objMartialArt = new MartialArt(objCharacter);
                 objMartialArt.Create(objXmlArt);
-                
+
                 if (objCharacter.Created)
                 {
                     int intKarmaCost = objMartialArt.Rating * objMartialArt.Cost * objCharacter.Options.KarmaQuality;

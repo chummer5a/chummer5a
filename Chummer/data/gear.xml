@@ -8783,6 +8783,17 @@
       <avail>12F</avail>
       <cost>170</cost>
     </gear>
+    <gear>
+      <id>6976ac65-f8aa-482a-bc32-2986beae4c76</id>
+      <name>Tactical Grapple Gun</name>
+      <category>Grapple Gun</category>
+      <rating>0</rating>
+      <source>HT</source>
+      <page>187</page>
+      <avail>15F</avail>
+      <addweapon>Tactical Grapple Gun</addweapon>
+      <cost>10000</cost>
+    </gear>
     <!-- End Region -->
     <!-- Region Biotech -->
     <gear>
@@ -11135,6 +11146,22 @@
           </OR>
         </geardetails>
       </required>
+    </gear>
+	<gear>
+      <id>a1c9f8ee-d58d-4583-8ff3-12517dbf76f5</id>
+      <name>Personal Drone Rack</name>
+      <category>Armor Enhancements</category>
+      <rating>0</rating>
+      <armorcapacity>[1]</armorcapacity>
+      <avail>12R</avail>
+      <cost>500</cost>
+      <source>KC</source>
+      <page>73</page>
+	  <required>
+		<parentdetails>
+		  <name>Micro-Hardpoint</name>
+		</parentdetails>
+	  </required>
     </gear>
     <!-- End Region -->
     <!-- Region Commlink Accessories -->

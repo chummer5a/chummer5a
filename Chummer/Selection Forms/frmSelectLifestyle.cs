@@ -61,7 +61,7 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(strLifeStyleId) && !strLifeStyleId.IsEmptyGuid())
                         {
                             string strName = objXmlLifestyle["name"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
-                            if (strName == _objLifestyle?.BaseLifestyle)
+                            if (strName == _objSourceLifestyle?.BaseLifestyle)
                                 strSelectedId = strLifeStyleId;
                             lstLifestyle.Add(new ListItem(strLifeStyleId, objXmlLifestyle["translate"]?.InnerText ?? strName));
                         }

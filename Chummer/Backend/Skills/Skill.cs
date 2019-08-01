@@ -33,7 +33,7 @@ using System.Drawing;
 namespace Chummer.Backend.Skills
 {
     [DebuggerDisplay("{_strName} {_intBase} {_intKarma} {Rating}")]
-    [HubClassTag("SkillId", true, "Name", "Rating;Pool;Specialization")]
+    [HubClassTag("SkillId", true, "Name", "Rating;Specialization")]
     public partial class Skill : INotifyMultiplePropertyChanged, IHasName, IHasXmlNode, IHasNotes
     {
         private CharacterAttrib _objAttribute;
@@ -67,6 +67,7 @@ namespace Chummer.Backend.Skills
             objWriter.WriteElementString("karma", _intKarma.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("base", _intBase.ToString(GlobalOptions.InvariantCultureInfo)); //this could acctually be saved in karma too during career
             objWriter.WriteElementString("notes", _strNotes);
+            objWriter.WriteElementString("name", _strName);
             if (!CharacterObject.Created)
             {
                 objWriter.WriteElementString("buywithkarma", BuyWithKarma.ToString());
@@ -314,7 +315,7 @@ namespace Chummer.Backend.Skills
             int intKarmaRating = 0;
             if (xmlSkillNode.Attributes?["text"]?.InnerText != "N")      // Native Languages will have a base + karma rating of 0
                 int.TryParse(xmlSkillNode.Attributes?["base"]?.InnerText, out intKarmaRating); // Only reading karma rating out for now, any base rating will need modification within SkillsSection
-            
+
             Skill objSkill;
             if (blnIsKnowledgeSkill)
             {
@@ -430,6 +431,7 @@ namespace Chummer.Backend.Skills
             CharacterObject = character;
             CharacterObject.PropertyChanged += OnCharacterChanged;
             CharacterObject.AttributeSection.PropertyChanged += OnAttributeSectionChanged;
+            CharacterObject.AttributeSection.Attributes.CollectionChanged += OnAttributesCollectionChanged;
             Specializations.ListChanged += SpecializationsOnListChanged;
 
             _skillDependencyGraph = new DependancyGraph<string>(
@@ -469,6 +471,7 @@ namespace Chummer.Backend.Skills
                     )
                 ),
                 new DependancyGraphNode<string>(nameof(CanHaveSpecs),
+                    new DependancyGraphNode<string>(nameof(KnowledgeSkill.AllowUpgrade), () => IsKnowledgeSkill),
                     new DependancyGraphNode<string>(nameof(IsExoticSkill)),
                     new DependancyGraphNode<string>(nameof(KarmaUnlocked)),
                     new DependancyGraphNode<string>(nameof(TotalBaseRating),
@@ -576,8 +579,53 @@ namespace Chummer.Backend.Skills
                         new DependancyGraphNode<string>(nameof(TotalBaseRating)),
                         new DependancyGraphNode<string>(nameof(Specializations))
                     )
+                ),
+                new DependancyGraphNode<string>(nameof(AllowDelete), () => IsKnowledgeSkill,
+                    new DependancyGraphNode<string>(nameof(FreeBase)),
+                    new DependancyGraphNode<string>(nameof(FreeKarma)),
+                    new DependancyGraphNode<string>(nameof(RatingModifiers))
                 )
             );
+        }
+
+        private void OnAttributesCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
+                    {
+                        if (e.NewItems.Cast<CharacterAttrib>().Any(x => x.Abbrev == Attribute))
+                        {
+                            AttributeObject.PropertyChanged -= AttributeActiveOnPropertyChanged;
+                            AttributeObject = CharacterObject.GetAttribute(Attribute);
+
+                            AttributeObject.PropertyChanged += AttributeActiveOnPropertyChanged;
+                            AttributeActiveOnPropertyChanged(sender, null);
+                        }
+                        break;
+                    }
+                case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
+                    {
+                        if (e.OldItems.Cast<CharacterAttrib>().Any(x => x.Abbrev == Attribute))
+                        {
+                            AttributeObject.PropertyChanged -= AttributeActiveOnPropertyChanged;
+                            AttributeObject = CharacterObject.GetAttribute(Attribute);
+
+                            AttributeObject.PropertyChanged += AttributeActiveOnPropertyChanged;
+                            AttributeActiveOnPropertyChanged(sender, null);
+                        }
+                        break;
+                    }
+                case System.Collections.Specialized.NotifyCollectionChangedAction.Reset:
+                    {
+                        AttributeObject.PropertyChanged -= AttributeActiveOnPropertyChanged;
+                        AttributeObject = CharacterObject.GetAttribute(Attribute);
+
+                        AttributeObject.PropertyChanged += AttributeActiveOnPropertyChanged;
+                        AttributeActiveOnPropertyChanged(sender, null);
+                        break;
+                    }
+            }
         }
 
         private void OnAttributeSectionChanged(object sender, PropertyChangedEventArgs e)
@@ -599,6 +647,7 @@ namespace Chummer.Backend.Skills
         {
             CharacterObject.PropertyChanged -= OnCharacterChanged;
             CharacterObject.AttributeSection.PropertyChanged -= OnAttributeSectionChanged;
+            CharacterObject.AttributeSection.Attributes.CollectionChanged -= OnAttributesCollectionChanged;
 
             if (SkillGroupObject != null)
                 SkillGroupObject.PropertyChanged -= OnSkillGroupChanged;
@@ -634,7 +683,7 @@ namespace Chummer.Backend.Skills
                     SkillGroupObject.PropertyChanged += OnSkillGroupChanged;
                 }
             }
-            
+
             XmlNodeList xmlSpecList = xmlNode.SelectNodes("specs/spec");
 
             if (xmlSpecList != null)
@@ -688,6 +737,8 @@ namespace Chummer.Backend.Skills
         {
             get
             {
+                if ((this as KnowledgeSkill)?.AllowUpgrade == false)
+                    return false;
                 if (_intCachedCanHaveSpecs >= 0) return _intCachedCanHaveSpecs > 0;
                 _intCachedCanHaveSpecs = !IsExoticSkill && TotalBaseRating > 0 && KarmaUnlocked &&
                                          !CharacterObject.Improvements.Any(x => ((x.ImproveType == Improvement.ImprovementType.BlockSkillSpecializations && (string.IsNullOrEmpty(x.ImprovedName) || x.ImprovedName == Name)) ||
@@ -718,7 +769,7 @@ namespace Chummer.Backend.Skills
         }
 
         public string DisplayAttribute => DisplayAttributeMethod(GlobalOptions.Language);
-        
+
         private int _intCachedEnabled = -1;
 
         private bool _blnForceDisabled;
@@ -1119,7 +1170,9 @@ namespace Chummer.Backend.Skills
             return s.ToString();
         }
 
-        public string UpgradeToolTip => string.Format(LanguageManager.GetString("Tip_ImproveItem", GlobalOptions.Language), (Rating + 1), UpgradeKarmaCost);
+        public string UpgradeToolTip => UpgradeKarmaCost < 0
+            ? LanguageManager.GetString("Tip_ImproveItemAtMaximum", GlobalOptions.Language)
+            : string.Format(LanguageManager.GetString("Tip_ImproveItem", GlobalOptions.Language), (Rating + 1), UpgradeKarmaCost);
 
         public string AddSpecToolTip
         {
@@ -1161,18 +1214,18 @@ namespace Chummer.Backend.Skills
             {
                 //v-- hack i guess
                 string strReturn = string.Empty;
-                string middle = string.Empty;
+                string strMiddle = string.Empty;
                 string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                 if (!string.IsNullOrWhiteSpace(SkillGroup))
                 {
-                    middle = $"{SkillGroup}{strSpaceCharacter}{LanguageManager.GetString("String_ExpenseSkillGroup", GlobalOptions.Language)}" + Environment.NewLine;
+                    strMiddle = $"{SkillGroupObject.DisplayName}{strSpaceCharacter}{LanguageManager.GetString("String_ExpenseSkillGroup", GlobalOptions.Language)}" + Environment.NewLine;
                 }
                 if (!string.IsNullOrEmpty(Notes))
                 {
                     strReturn = LanguageManager.GetString("Label_Notes", GlobalOptions.Language) + strSpaceCharacter + Notes.WordWrap(100) + Environment.NewLine + Environment.NewLine;
                 }
 
-                strReturn += $"{DisplayCategory(GlobalOptions.Language)}{Environment.NewLine}{middle}{CommonFunctions.LanguageBookLong(Source, GlobalOptions.Language)}{strSpaceCharacter}{LanguageManager.GetString("String_Page", GlobalOptions.Language)}{strSpaceCharacter}{DisplayPage(GlobalOptions.Language)}";
+                strReturn += $"{DisplayCategory(GlobalOptions.Language)}{Environment.NewLine}{strMiddle}{CommonFunctions.LanguageBookLong(Source, GlobalOptions.Language)}{strSpaceCharacter}{LanguageManager.GetString("String_Page", GlobalOptions.Language)}{strSpaceCharacter}{DisplayPage(GlobalOptions.Language)}";
 
                 return strReturn;
             }
@@ -1194,10 +1247,10 @@ namespace Chummer.Backend.Skills
         public SkillGroup SkillGroupObject { get; }
 
         public string Page { get; }
-        
+
         /// <summary>
         /// Sourcebook Page Number using a given language file.
-        /// Returns Page if not found or the string is empty. 
+        /// Returns Page if not found or the string is empty.
         /// </summary>
         /// <param name="strLanguage">Language file keyword to use.</param>
         /// <returns></returns>
@@ -1346,7 +1399,7 @@ namespace Chummer.Backend.Skills
         //This tree keeps track of dependencies
         private readonly DependancyGraph<string> _skillDependencyGraph;
         #endregion
-        
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]

@@ -77,7 +77,7 @@ namespace Chummer
             if (objXmlPowerNode.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
             _intRating = intRating;
-            _nodBonus = objXmlPowerNode["bonus"];
+            _nodBonus = objXmlPowerNode.SelectSingleNode("bonus");
             if (!objXmlPowerNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlPowerNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             // If the piece grants a bonus, pass the information to the Improvement Manager.

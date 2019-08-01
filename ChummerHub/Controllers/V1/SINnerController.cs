@@ -121,6 +121,13 @@ namespace ChummerHub.Controllers.V1
                 {
                     oktoDownload = true;
                 }
+
+                if (!oktoDownload)
+                {
+                    var roles = await _userManager.GetRolesAsync(user);
+                    if (roles.Contains("SeeAllSINners"))
+                        oktoDownload = true;
+                }
                 if (!oktoDownload)
                 {
                     throw new ArgumentException("User " + user?.UserName + " or public is not allowed to download " + sinnerid.ToString());
@@ -224,7 +231,6 @@ namespace ChummerHub.Controllers.V1
                 if (!String.IsNullOrEmpty(User?.Identity?.Name))
                     user = await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
                 var sin = await _context.SINners
-                    //.Include(a => a.MyExtendedAttributes)
                     .Include(a => a.SINnerMetaData.Visibility.UserRights)
                     .Include(a => a.MyGroup)
                     .Include(b => b.MyGroup.MySettings)
@@ -233,7 +239,6 @@ namespace ChummerHub.Controllers.V1
                 res = new ResultSinnerGetSINById(sin);
                 if (sin == null)
                 {
-                   
                     return NotFound(res);
                 }
                 bool oktoDownload = false;
@@ -474,7 +479,9 @@ namespace ChummerHub.Controllers.V1
         [AllowAnonymous]
         public async Task<IActionResult> GetThumbnailById(Guid? SINnerId, int? index)
         {
-            string filename = SINnerId.Value + ".zip";
+            var temppath = Environment.GetFolderPath(Environment.SpecialFolder.InternetCache);
+            string filename = SINnerId.Value + Guid.NewGuid().ToString() + ".zip";
+            string filepath = Path.Combine(temppath, filename);
             try
             {
                 if (index == null)
@@ -486,13 +493,18 @@ namespace ChummerHub.Controllers.V1
                     return NotFound("SINner " + SINnerId + " not found!");
                 var net = new System.Net.WebClient();
 
-                if (System.IO.File.Exists(filename))
+                if (System.IO.File.Exists(filepath))
                 {
-                    System.IO.File.Delete(filename);
+                    FileInfo fi = new FileInfo(filepath);
+                    if (fi.CreationTimeUtc < DateTime.UtcNow - TimeSpan.FromHours(1))
+                        System.IO.File.Delete(filepath);
                 }
 
-                Uri downloadUri = new Uri(sinnerseq.FirstOrDefault()?.DownloadUrl);
-                net.DownloadFile(downloadUri, filename);
+                if (!System.IO.File.Exists(filename))
+                {
+                    Uri downloadUri = new Uri(sinnerseq.FirstOrDefault()?.DownloadUrl);
+                    net.DownloadFile(downloadUri, filename);
+                }
 
                 if (!System.IO.File.Exists(filename))
                 {
@@ -640,13 +652,6 @@ namespace ChummerHub.Controllers.V1
                     sinner = tempsinner;
                     if (sinner.Id.ToString() == "string")
                         sinner.Id = Guid.Empty;
-
-                    //if (String.IsNullOrEmpty(sinner.MyExtendedAttributes.JsonSummary))
-                    //{
-                    //    var e = new ArgumentException("sinner " + sinner.Id + ": JsonSummary == null");
-                    //    res = new ResultSinnerPostSIN(e);
-                    //    return BadRequest(res);
-                    //}
                     
                     if (sinner.LastChange == null)
                     {
@@ -659,11 +664,7 @@ namespace ChummerHub.Controllers.V1
                     {
                         sinner.SINnerMetaData.Visibility.Id = Guid.NewGuid();
                     }
-
-                    //if ((sinner.MyExtendedAttributes.Id == null) || (sinner.MyExtendedAttributes.Id == Guid.Empty))
-                    //{
-                    //    sinner.MyExtendedAttributes.Id = Guid.NewGuid();
-                    //}
+                    sinner.SINnerMetaData.Id = Guid.NewGuid();
 
                     var oldsinner = (from a in _context.SINners
                             //.Include(a => a.MyExtendedAttributes)
@@ -705,11 +706,13 @@ namespace ChummerHub.Controllers.V1
                             }
                             if (!userfound)
                             {
-                                SINnerUserRight ownUser = new SINnerUserRight();
-                                ownUser.Id = Guid.NewGuid();
-                                ownUser.SINnerId = sinner.Id;
-                                ownUser.CanEdit = true;
-                                ownUser.EMail = user.Email;
+                                SINnerUserRight ownUser = new SINnerUserRight
+                                {
+                                    Id = Guid.NewGuid(),
+                                    SINnerId = sinner.Id,
+                                    CanEdit = true,
+                                    EMail = user.Email
+                                };
                                 sinner.SINnerMetaData.Visibility.UserRights.Add(ownUser);
                                 _context.UserRights.Add(ownUser);
                             }
@@ -734,11 +737,13 @@ namespace ChummerHub.Controllers.V1
                         }
                         if (!ownuserfound)
                         {
-                            SINnerUserRight ownright = new SINnerUserRight();
-                            ownright.CanEdit = true;
-                            ownright.EMail = user.Email;
-                            ownright.SINnerId = sinner.Id;
-                            ownright.Id = Guid.NewGuid();
+                            SINnerUserRight ownright = new SINnerUserRight
+                            {
+                                CanEdit = true,
+                                EMail = user.Email,
+                                SINnerId = sinner.Id,
+                                Id = Guid.NewGuid()
+                            };
                             sinner.SINnerMetaData.Visibility.UserRights.Add(ownright);
                         }
                     }
@@ -757,7 +762,6 @@ namespace ChummerHub.Controllers.V1
                     if (dbsinner != null)
                     {
                         oldgroup = dbsinner.MyGroup;
-                        //_context.SINners.Attach(dbsinner);
                         if (String.IsNullOrEmpty(sinner.GoogleDriveFileId))
                             sinner.GoogleDriveFileId = dbsinner.GoogleDriveFileId;
                         if(String.IsNullOrEmpty(sinner.DownloadUrl))
@@ -774,7 +778,6 @@ namespace ChummerHub.Controllers.V1
                         }
                         _context.UserRights.RemoveRange(dbsinner.SINnerMetaData.Visibility.UserRights);
                         _context.SINnerVisibility.Remove(dbsinner.SINnerMetaData.Visibility);
-                        //_context.SINnerExtendedMetaData.Remove(dbsinner.MyExtendedAttributes);
                         _context.SINnerMetaData.Remove(dbsinner.SINnerMetaData);
                         _context.SINners.Remove(dbsinner);
                         
@@ -783,8 +786,7 @@ namespace ChummerHub.Controllers.V1
                         dbsinner.SINnerMetaData.Visibility = null;
                         dbsinner.SINnerMetaData.Tags = null;
                         dbsinner.SINnerMetaData = null;
-                        //dbsinner.MyExtendedAttributes = null;
-
+                        
                         try
                         {
                             await _context.SaveChangesAsync();
@@ -795,7 +797,6 @@ namespace ChummerHub.Controllers.V1
                             {
                                 if (entry.Entity is SINner
                                     || entry.Entity is Tag
-                                    //|| entry.Entity is SINnerExtended
                                     || entry.Entity is SINnerGroup
                                     || entry.Entity is SINnerUserRight
                                     || entry.Entity is SINnerMetaData)
@@ -840,6 +841,16 @@ namespace ChummerHub.Controllers.V1
                         sinner.MyGroup = null;
                         _context.SINners.Add(sinner);
                     }
+
+                    if (sinner.MyGroup?.Id != null && sinner.MyGroup?.Id != Guid.Empty)
+                    {
+                        if(!user.FavoriteGroups.Any(a => a.FavoriteGuid == sinner.MyGroup.Id))
+                            user.FavoriteGroups.Add(new ApplicationUserFavoriteGroup()
+                            {
+                                FavoriteGuid = sinner.MyGroup.Id.Value
+                            });
+                    }
+                    user.FavoriteGroups = user.FavoriteGroups.GroupBy(a => a.FavoriteGuid).Select(b => b.First()).ToList();
 
                     try
                     {
@@ -1075,11 +1086,16 @@ namespace ChummerHub.Controllers.V1
             
             if (dbsinner == null)
                 return null;
-            var dbsinnerseq = await (from a in _context.UserRights
+            if (user == null)
+                return null;
+            string normEmail = user.NormalizedEmail;
+            string userName = user.UserName;
+            var dbsinnerseq = (from a in _context.UserRights
                 where a.SINnerId == id
-                      && a.EMail.ToUpperInvariant() == user.NormalizedEmail
+                      && !String.IsNullOrEmpty(a.EMail)
+                      && a.EMail.ToUpperInvariant() == normEmail
                       && a.CanEdit == true
-                select a).ToListAsync();
+                select a).ToList();
             if (dbsinnerseq.Any())
             {
                 return dbsinner;
@@ -1094,11 +1110,11 @@ namespace ChummerHub.Controllers.V1
                 }
                 if (!String.IsNullOrEmpty(dbsinner.MyGroup.GroupCreatorUserName))
                 {
-                    if (dbsinner.MyGroup.GroupCreatorUserName == user.UserName)
+                    if (dbsinner.MyGroup.GroupCreatorUserName == userName)
                         return dbsinner;
                 }
             }
-            throw new ChummerHub.NoUserRightException(user.UserName, dbsinner.Id);
+            throw new ChummerHub.NoUserRightException(userName, dbsinner.Id);
          
         }
 

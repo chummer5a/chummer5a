@@ -51,7 +51,7 @@ namespace Chummer
         private string _strPointsPerLevel = "0";
         private string _strAction = string.Empty;
         private decimal _decExtraPointCost;
-        private int _intMaxLevel;
+        private int _intMaxLevels;
         private bool _blnDiscountedAdeptWay;
         private bool _blnDiscountedGeas;
         private XmlNode _nodAdeptWayRequirements;
@@ -112,7 +112,7 @@ namespace Chummer
             objWriter.WriteElementString("rating", _intRating.ToString());
             objWriter.WriteElementString("extrapointcost", _decExtraPointCost.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("levels", _blnLevelsEnabled.ToString());
-            objWriter.WriteElementString("maxlevel", _intMaxLevel.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("maxlevels", _intMaxLevels.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("discounted", _blnDiscountedAdeptWay.ToString());
             objWriter.WriteElementString("discountedgeas", _blnDiscountedGeas.ToString());
             objWriter.WriteElementString("bonussource", _strBonusSource);
@@ -135,7 +135,7 @@ namespace Chummer
             objWriter.WriteEndElement();
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteEndElement();
-            
+
             CharacterObject.SourceProcess(_strSource);
         }
 
@@ -150,7 +150,10 @@ namespace Chummer
             _intRating = intRating;
             if (!objNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
                 objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
-            objNode.TryGetInt32FieldQuickly("maxlevels", ref _intMaxLevel);
+            if (!objNode.TryGetInt32FieldQuickly("maxlevel", ref _intMaxLevels))
+            {
+                objNode.TryGetInt32FieldQuickly("maxlevels", ref _intMaxLevels);
+            }
             objNode.TryGetBoolFieldQuickly("discounted", ref _blnDiscountedAdeptWay);
             objNode.TryGetBoolFieldQuickly("discountedgeas", ref _blnDiscountedGeas);
             objNode.TryGetStringFieldQuickly("bonussource", ref _strBonusSource);
@@ -249,7 +252,10 @@ namespace Chummer
             }
             objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
             objNode.TryGetBoolFieldQuickly("levels", ref _blnLevelsEnabled);
-            objNode.TryGetInt32FieldQuickly("maxlevel", ref _intMaxLevel);
+            if (!objNode.TryGetInt32FieldQuickly("maxlevel", ref _intMaxLevels))
+            {
+                objNode.TryGetInt32FieldQuickly("maxlevels", ref _intMaxLevels);
+            }
             objNode.TryGetBoolFieldQuickly("discounted", ref _blnDiscountedAdeptWay);
             objNode.TryGetBoolFieldQuickly("discountedgeas", ref _blnDiscountedGeas);
             objNode.TryGetStringFieldQuickly("bonussource", ref _strBonusSource);
@@ -553,7 +559,7 @@ namespace Chummer
         {
             get
             {
-                //TODO: This isn't super safe, but it's more reliable than checking it at load as improvement effects like Essence Loss take effect after powers are loaded. Might need another solution. 
+                //TODO: This isn't super safe, but it's more reliable than checking it at load as improvement effects like Essence Loss take effect after powers are loaded. Might need another solution.
                 if (_intRating <= TotalMaximumLevels) return _intRating;
                 _intRating = TotalMaximumLevels;
                 return _intRating;
@@ -730,14 +736,12 @@ namespace Chummer
         /// </summary>
         public int MaxLevels
         {
-            get => _intMaxLevel;
+            get => _intMaxLevels;
             set
             {
-                if (_intMaxLevel != value)
-                {
-                    _intMaxLevel = value;
-                    OnPropertyChanged();
-                }
+                if (_intMaxLevels == value) return;
+                _intMaxLevels = value;
+                OnPropertyChanged();
             }
         }
 
@@ -1032,7 +1036,7 @@ namespace Chummer
                 }
             }
         }
-        
+
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
