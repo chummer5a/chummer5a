@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace ChummerHub.Client.Backend
 {
@@ -60,8 +61,8 @@ namespace ChummerHub.Client.Backend
                     }
                     catch(IOException e)
                     {
-                        
                         Log.Warn(e);
+                        Thread.Sleep(50);
                     }
                     
 
@@ -86,7 +87,7 @@ namespace ChummerHub.Client.Backend
         {
             _isRunning = false;
             Write(EXIT_STRING);
-            //this.Thread.Sleep(30); // give time for thread shutdown
+            Thread.Sleep(60); // give time for thread shutdown
         }
 
         /// <summary>
@@ -104,9 +105,14 @@ namespace ChummerHub.Client.Backend
                     {
                         client.Connect(connectTimeout);
                     }
+                    catch (TimeoutException e)
+                    {
+                        Log.Warn(e);
+                        return false;
+                    }
                     catch (Exception e)
                     {
-                        Log.Trace(e);
+                        Log.Error(e);
                         return false;
                     }
 

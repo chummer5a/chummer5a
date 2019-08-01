@@ -547,14 +547,15 @@ namespace ChummerHub.Client.UI
                     using (frmLoading frmLoadingForm = new frmLoading {CharacterFile = file})
                     {
                         frmLoadingForm.Reset(36);
+                        frmLoadingForm.TopMost = true;
                         frmLoadingForm.Show();
                         if (!(await c.Load(frmLoadingForm, false)))
                             continue;
                         Log.Trace("Character loaded: " + c.Name);
                     }
-
-                    CharacterExtended ce = new CharacterExtended(c, null);
-                    await ce.UploadInBackground(null);
+                    frmCharacterRoster.CharacterCache myCharacterCache = new frmCharacterRoster.CharacterCache(file);
+                    CharacterExtended ce = new CharacterExtended(c, null, null, myCharacterCache);
+                    await ce.Upload(null);
                 }
                 catch (Exception ex)
                 {

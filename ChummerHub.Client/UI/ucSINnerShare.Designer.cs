@@ -1,4 +1,6 @@
-﻿namespace ChummerHub.Client.UI
+using System;
+
+namespace ChummerHub.Client.UI
 {
     partial class ucSINnerShare
     {
@@ -120,6 +122,7 @@
             this.bOk.TabIndex = 5;
             this.bOk.Text = "Ok";
             this.bOk.UseVisualStyleBackColor = true;
+            this.bOk.Click += new System.EventHandler(this.BOk_Click);
             // 
             // ucSINnerShare
             // 
@@ -134,6 +137,8 @@
             this.PerformLayout();
 
         }
+
+    
 
         #endregion
 

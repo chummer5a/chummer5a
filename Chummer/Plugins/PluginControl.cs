@@ -124,8 +124,12 @@ namespace Chummer.Plugins
                     try
                     {
                         Log.Info("Initializing Plugin " + plugin.ToString());
-                        plugin.CustomInitialize(Program.MainForm);
                         plugin.SetIsUnitTest(Utils.IsUnitTest);
+                        plugin.CustomInitialize(Program.MainForm);
+                    }
+                    catch (ApplicationException e)
+                    {
+                        throw;
                     }
                     catch (Exception e)
                     {
@@ -142,6 +146,8 @@ namespace Chummer.Plugins
             }
             catch (Exception e)
             {
+                if (e is ApplicationException)
+                    throw;
                 Log.Fatal(e);
                 throw;
             }
@@ -196,19 +202,21 @@ namespace Chummer.Plugins
         {
             try
             {
-                using (var op_plugin = Timekeeper.StartSyncron("LoadPlugins", parentActivity, CustomActivity.OperationType.DependencyOperation, myDirectoryCatalog?.FullPath))
-                { 
+                using (var op_plugin = Timekeeper.StartSyncron("LoadPlugins", parentActivity,
+                    CustomActivity.OperationType.DependencyOperation, myDirectoryCatalog?.FullPath))
+                {
                     this.Initialize();
                 }
             }
-            catch(System.Security.SecurityException e)
+            catch (System.Security.SecurityException e)
             {
-                string msg = "Well, something went wrong probably because we are not Admins. Let's just ignore it and move on." + Environment.NewLine + Environment.NewLine;
+                string msg =
+                    "Well, something went wrong probably because we are not Admins. Let's just ignore it and move on." +
+                    Environment.NewLine + Environment.NewLine;
                 Console.WriteLine(msg + e.Message);
                 System.Diagnostics.Trace.TraceWarning(msg + e.Message);
                 return;
             }
-
             catch (ReflectionTypeLoadException e)
             {
                 string msg = "Exception loading plugins: " + Environment.NewLine;
@@ -216,6 +224,7 @@ namespace Chummer.Plugins
                 {
                     msg += exp.Message + Environment.NewLine;
                 }
+
                 msg += Environment.NewLine;
                 msg += e.ToString();
                 Log.Warn(e, msg);
@@ -232,6 +241,10 @@ namespace Chummer.Plugins
                 msg += Environment.NewLine;
                 msg += e.ToString();
                 Log.Error(e, msg);
+            }
+            catch (ApplicationException e)
+            {
+                throw;
             }
             catch (Exception e)
             {

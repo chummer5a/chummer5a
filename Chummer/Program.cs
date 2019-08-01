@@ -188,7 +188,7 @@ namespace Chummer
                         }
                     }
                     Log.Info(strInfo);
-
+                    Log.Info("Logging options are set to " + GlobalOptions.UseLogging + " and Upload-Options are set to " + GlobalOptions.UseLoggingApplicationInsights + " (Installation-Id: " + Chummer.Properties.Settings.Default.UploadClientId + ").");
 
                     if (GlobalOptions.UseLoggingApplicationInsights >= UseAILogging.OnlyMetric)
                     {
@@ -273,9 +273,14 @@ namespace Chummer
                 // Make sure the default language has been loaded before attempting to open the Main Form.
                 LanguageManager.TranslateWinForm(GlobalOptions.Language, null);
                 MainForm = new frmChummerMain(false);
-                Program.PluginLoader.LoadPlugins(null);
-                //foreach(var plugin in Program.PluginLoader.MyActivePlugins)
-                //    plugin.CustomInitialize(MainForm);
+                try
+                {
+                    Program.PluginLoader.LoadPlugins(null);
+                }
+                catch (ApplicationException e)
+                {
+                    showMainForm = false;
+                }
                 if (!Utils.IsUnitTest)
                 {
                     string[] strArgs = Environment.GetCommandLineArgs();

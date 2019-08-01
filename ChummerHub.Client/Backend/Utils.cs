@@ -29,6 +29,7 @@ using Microsoft.ApplicationInsights;
 using Microsoft.Win32;
 using System.Diagnostics;
 using System.Security.Principal;
+using System.Threading;
 
 namespace ChummerHub.Client.Backend
 {
@@ -1167,21 +1168,45 @@ namespace ChummerHub.Client.Backend
             return res;
         }
 
-        public static ResultSinnerPostSIN PostSINner(CharacterExtended ce)
+        public static async Task<HttpOperationResponse<ResultSinnerPostSIN>> PostSINner(CharacterExtended ce)
         {
-            ResultSinnerPostSIN res = null;
+            HttpOperationResponse<ResultSinnerPostSIN> res = null;
             try
             {
-                UploadInfoObject uploadInfoObject = new UploadInfoObject
+                UploadInfoObject uploadInfo = new UploadInfoObject
                 {
                     Client = PluginHandler.MyUploadClient,
                     UploadDateTime = DateTime.Now
                 };
                 ce.MySINnerFile.UploadDateTime = DateTime.Now;
-                uploadInfoObject.SiNners = new List<SINner>() { ce.MySINnerFile };
+                uploadInfo.SiNners = new List<SINner>() { ce.MySINnerFile };
                 Log.Info("Posting " + ce.MySINnerFile.Id + "...");
-                var client = StaticUtils.GetClient();
-                res = client.PostSIN(uploadInfoObject);
+                // This line must be called in UI thread to get correct scheduler
+                TaskScheduler scheduler = null;
+                Program.MainForm.DoThreadSafe(() =>
+                {
+                    scheduler = System.Threading.Tasks.TaskScheduler.FromCurrentSynchronizationContext();
+                });
+                
+
+                // this can be called anywhere
+                var task = new System.Threading.Tasks.Task(() =>
+                {
+                    var client = StaticUtils.GetClient();
+                    res = client.PostSINWithHttpMessagesAsync(uploadInfo).Result;
+                });
+
+                // also can be called anywhere. Task  will be scheduled for execution.
+                // And *IF I'm not mistaken* can be (or even will be executed synchronously)
+                // if this call is made from GUI thread. (to be checked) 
+                task.Start(scheduler);
+                //Program.MainForm.DoThreadSafe(async () =>
+                //{
+                //    var client = StaticUtils.GetClient();
+                //    res = await client.PostSINWithHttpMessagesAsync(uploadInfo);
+                //});
+                task.Wait();
+                //res = client.PostSIN(uploadInfo);
                 Log.Info("Post of " + ce.MySINnerFile.Id + " finished.");
                 return res;
     
