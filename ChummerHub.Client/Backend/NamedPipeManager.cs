@@ -37,14 +37,23 @@ namespace ChummerHub.Client.Backend
             StopServer();
             Thread = new Thread((pipeName) =>
             {
-                
+                if (!(pipeName is String pipeNameString))
+                    throw new ArgumentNullException(nameof(pipeName));
                 _isRunning = true;
                 while (true)
                 {
                     string text;
                     try
                     {
-                        using (var server = new NamedPipeServerStream(pipeName as string))
+                        PipeSecurity ps = new PipeSecurity();
+                        System.Security.Principal.SecurityIdentifier sid = new System.Security.Principal.SecurityIdentifier(System.Security.Principal.WellKnownSidType.WorldSid, null);
+                        PipeAccessRule par = new PipeAccessRule(sid, PipeAccessRights.ReadWrite, System.Security.AccessControl.AccessControlType.Allow);
+                        //PipeAccessRule psRule = new PipeAccessRule(@"Everyone", PipeAccessRights.ReadWrite, System.Security.AccessControl.AccessControlType.Allow);
+                        ps.AddAccessRule(par);
+                        using (var server = new NamedPipeServerStream(pipeNameString,
+                            PipeDirection.InOut, 1,
+                            PipeTransmissionMode.Message, PipeOptions.None,
+                            4028, 4028, ps))
                         {
                             server.WaitForConnection();
 
@@ -59,9 +68,14 @@ namespace ChummerHub.Client.Backend
 
                         OnReceiveString(text);
                     }
-                    catch(IOException e)
+                    catch (IOException e)
                     {
                         Log.Warn(e);
+                        Thread.Sleep(50);
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Error(e);
                         Thread.Sleep(50);
                     }
                     
@@ -86,6 +100,7 @@ namespace ChummerHub.Client.Backend
         public void StopServer()
         {
             _isRunning = false;
+            Log.Trace("Sending Exit to PipeServer...");
             Write(EXIT_STRING);
             Thread.Sleep(60); // give time for thread shutdown
         }
@@ -95,15 +110,17 @@ namespace ChummerHub.Client.Backend
         /// </summary>
         /// <param name="text"></param>
         /// <param name="connectTimeout"></param>
-        public bool Write(string text, int connectTimeout = 300)
+        public bool Write(string text, int connectTimeout = 3000)
         {
             try
             {
-                using (var client = new NamedPipeClientStream(NamedPipeName))
+                using (var client = new NamedPipeClientStream(".", NamedPipeName, PipeDirection.InOut))
                 {
                     try
                     {
+                        Log.Debug("Connection with pipe " + NamedPipeName + "...");
                         client.Connect(connectTimeout);
+                        Log.Debug("Pipe connection established.");
                     }
                     catch (TimeoutException e)
                     {
@@ -123,6 +140,7 @@ namespace ChummerHub.Client.Backend
                     {
                         writer.Write(text);
                         writer.Flush();
+                        Log.Debug("Written to pipe " + NamedPipeName + ": " + text);
                     }
                 }
             }
