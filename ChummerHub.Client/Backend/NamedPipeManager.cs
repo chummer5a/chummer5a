@@ -124,8 +124,12 @@ namespace ChummerHub.Client.Backend
                     }
                     catch (TimeoutException e)
                     {
-                        Log.Warn(e);
-                        return false;
+                        if (text != "__EXIT__")
+                        {
+                            Log.Warn(e);
+                            return false;
+                        }
+                        return true;
                     }
                     catch (Exception e)
                     {
