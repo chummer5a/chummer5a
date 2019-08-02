@@ -291,6 +291,8 @@ namespace Chummer
                             if (strArgs[i].Contains("/plugin"))
                             {
                                 string whatplugin = strArgs[i].Substring(strArgs[i].IndexOf("/plugin") + 8);
+                                //some external apps choose to add a '/' before a ':' even in the middle of an url...
+                                whatplugin = whatplugin.TrimStart(':');
                                 int endplugin = whatplugin.IndexOf(':');
                                 string parameter = whatplugin.Substring(endplugin + 1);
                                 whatplugin = whatplugin.Substring(0, endplugin);
