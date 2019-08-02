@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-<xs:include schemaLocation="bonuses.xsd" /> 
+  <xs:include schemaLocation="bonuses.xsd" />
   <xs:element name="gear">
     <xs:complexType>
       <xs:sequence>
@@ -68,7 +68,7 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  
+
   <xs:element name="weapon">
     <xs:complexType>
       <xs:sequence>
@@ -127,11 +127,11 @@
                     <xs:element name="included" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="installed" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="allowgear" minOccurs="0" maxOccurs="1">
-                        <xs:complexType>
-                            <xs:sequence>
-                                <xs:element name="gearcategory" type="xs:string" minOccurs="1" maxOccurs="unbounded" />
-                            </xs:sequence>
-                        </xs:complexType>
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="gearcategory" type="xs:string" minOccurs="1" maxOccurs="unbounded" />
+                        </xs:sequence>
+                      </xs:complexType>
                     </xs:element>
                     <xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="page" type="xs:string" minOccurs="1" maxOccurs="1" />
@@ -201,7 +201,7 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  
+
   <xs:element name="cyberware">
     <xs:complexType>
       <xs:sequence>
@@ -226,11 +226,11 @@
         <xs:element name="forcegrade" minOccurs="1" maxOccurs="1" />
         <xs:element ref="bonus" minOccurs="1" maxOccurs="1" />
         <xs:element name="allowgear" minOccurs="0" maxOccurs="1">
-            <xs:complexType>
-                <xs:sequence>
-                    <xs:element name="gearcategory" type="xs:string" minOccurs="1" maxOccurs="unbounded" />
-                </xs:sequence>
-            </xs:complexType>
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="gearcategory" type="xs:string" minOccurs="1" maxOccurs="unbounded" />
+            </xs:sequence>
+          </xs:complexType>
         </xs:element>
         <xs:element name="improvementsource" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="weaponguid" type="xs:string" minOccurs="0" maxOccurs="1" />
@@ -253,18 +253,48 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  
+
   <xs:element name="character">
     <xs:complexType>
       <xs:sequence>
+        <xs:element name="createdversion" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="appversion" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="gameedition" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="settings" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="metatype" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="metatypebp" type="xs:integer" minOccurs="1" maxOccurs="1" />
         <xs:element name="metavariant" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="metatypecategory" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="movement" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="walk" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="run" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="sprint" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="walkalt" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="runalt" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="sprintalt" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="prioritymetatype" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="priorityattributes" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="priorityspecial" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="priorityskills" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="priorityresources" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="prioritytalent" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="priorityskills" minOccurs="0" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="priorityskill" minOccurs="0" maxOccurs="unbounded" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="essenceatspecialstart" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
-        <xs:element name="mugshot" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="mainmugshotindex" type="xs:integer" minOccurs="1" maxOccurs="1" />
+        <xs:element name="mugshots" minOccurs="0" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="mugshot" minOccurs="0" maxOccurs="unbounded" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
         <xs:element name="sex" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="age" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="eyes" type="xs:string" minOccurs="1" maxOccurs="1" />
@@ -279,35 +309,60 @@
         <xs:element name="alias" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="playername" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="gamenotes" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="primaryarm" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="ignorerules" type="xs:string" minOccurs="0" maxOccurs="1" />
         <xs:element name="iscritter" type="xs:string" minOccurs="0" maxOccurs="1" />
         <xs:element name="possessed" type="xs:string" minOccurs="0" maxOccurs="1" />
         <xs:element name="karma" type="xs:integer" minOccurs="1" maxOccurs="1" />
-        <xs:element name="totalkarma" type="xs:integer" minOccurs="1" maxOccurs="1" />
+        <xs:element name="special" type="xs:integer" minOccurs="1" maxOccurs="1" />
+        <xs:element name="totalspecial" type="xs:integer" minOccurs="1" maxOccurs="1" />
+        <xs:element name="totalattributes" type="xs:integer" minOccurs="1" maxOccurs="1" />
+        <xs:element name="contactpoints" type="xs:integer" minOccurs="1" maxOccurs="1" />
+        <xs:element name="contactpointsused" type="xs:integer" minOccurs="1" maxOccurs="1" />
+        <xs:element name="spelllimit" type="xs:integer" minOccurs="1" maxOccurs="1" />
+        <xs:element name="cfplimit" type="xs:integer" minOccurs="1" maxOccurs="1" />
+        <xs:element name="ainormalprogramlimit" type="xs:integer" minOccurs="1" maxOccurs="1" />
+        <xs:element name="aiadvancedprogramlimit" type="xs:integer" minOccurs="1" maxOccurs="1" />
+        <xs:element name="currentcounterspellingdice" type="xs:integer" minOccurs="1" maxOccurs="1" />
         <xs:element name="streetcred" type="xs:integer" minOccurs="1" maxOccurs="1" />
         <xs:element name="notoriety" type="xs:integer" minOccurs="1" maxOccurs="1" />
         <xs:element name="publicawareness" type="xs:integer" minOccurs="1" maxOccurs="1" />
         <xs:element name="burntstreetcred" type="xs:integer" minOccurs="1" maxOccurs="1" />
         <xs:element name="created" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="maxavail" type="xs:integer" minOccurs="1" maxOccurs="1" />
-        <xs:element name="nuyen" type="xs:integer" minOccurs="1" maxOccurs="1" />
-        <xs:element name="bp" type="xs:integer" minOccurs="1" maxOccurs="1" />
+        <xs:element name="nuyen" type="xs:decimal" minOccurs="1" maxOccurs="1" />
+        <xs:element name="startingnuyen" type="xs:decimal" minOccurs="1" maxOccurs="1" />
+        <xs:element name="sumtoten" type="xs:integer" minOccurs="1" maxOccurs="1" />
         <xs:element name="buildkarma" type="xs:integer" minOccurs="1" maxOccurs="1" />
         <xs:element name="buildmethod" type="xs:string" minOccurs="1" maxOccurs="1" />
-        <xs:element name="knowpts" type="xs:integer" minOccurs="1" maxOccurs="1" />
+        <xs:element name="gameplayoption" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="gameplayoptionqualitylimit" type="xs:integer" minOccurs="1" maxOccurs="1" />
+        <xs:element name="maxnuyen" type="xs:integer" minOccurs="1" maxOccurs="1" />
+        <xs:element name="maxkarma" type="xs:integer" minOccurs="1" maxOccurs="1" />
+        <xs:element name="contactmultiplier" type="xs:integer" minOccurs="1" maxOccurs="1" />
+        <xs:element name="bannedwaregrades" minOccurs="0" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="grade" minOccurs="0" maxOccurs="unbounded" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
         <xs:element name="nuyenbp" type="xs:integer" minOccurs="1" maxOccurs="1" />
         <xs:element name="nuyenmaxbp" type="xs:integer" minOccurs="1" maxOccurs="1" />
         <!-- Character is a Magician and/or Adept, Technomancer -->
         <xs:element name="adept" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="magician" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="technomancer" type="xs:string" minOccurs="1" maxOccurs="1" />
-        <xs:element name="initiationoverride" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="ai" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="cyberwaredisabled" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="initiationdisabled" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="critter" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="prototypetranshuman" type="xs:integer" minOccurs="1" maxOccurs="1" />
         <!-- Special flags for Uneducated, Uncouth, and Infirm Qualities -->
         <xs:element name="uneducated" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="uncouth" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="infirm" type="xs:string" minOccurs="1" maxOccurs="1" />
-        
+
         <!-- Attributes -->
         <xs:element name="attributes" minOccurs="1" maxOccurs="1">
           <xs:complexType>
@@ -329,7 +384,7 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        
+
         <xs:element name="magenabled" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="initiategrade" type="xs:integer" minOccurs="1" maxOccurs="1" />
         <xs:element name="resenabled" type="xs:string" minOccurs="1" maxOccurs="1" />
@@ -337,21 +392,21 @@
         <xs:element name="groupmember" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="groupname" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="groupnotes" type="xs:string" minOccurs="1" maxOccurs="1" />
-        
+
         <!-- Total Essence remaining so external applications do not need to figure this by crunching Improvements -->
         <xs:element name="totaless" type="xs:string" minOccurs="1" maxOccurs="1" />
-        
+
         <!-- For Mystic Adepts, this shows how MAG is split between their two aspects -->
         <xs:element name="magsplitadept" type="xs:integer" minOccurs="0" maxOccurs="1" />
         <xs:element name="magsplitmagician" type="xs:integer" minOccurs="0" maxOccurs="1" />
-        
+
         <xs:element name="tradition" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="stream" type="xs:string" minOccurs="1" maxOccurs="1" />
-        
+
         <!-- Condition Monitor progress -->
         <xs:element name="physicalcmfilled" type="xs:integer" minOccurs="1" maxOccurs="1" />
         <xs:element name="stuncmfilled" type="xs:integer" minOccurs="1" maxOccurs="1" />
-        
+
         <!-- Skill Groups -->
         <xs:element name="skillgroups" minOccurs="1" maxOccurs="1">
           <xs:complexType>
@@ -369,7 +424,7 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        
+
         <!-- Skills -->
         <xs:element name="skills" minOccurs="1" maxOccurs="1">
           <xs:complexType>
@@ -399,7 +454,7 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        
+
         <!-- Contacts -->
         <xs:element name="contacts" minOccurs="1" maxOccurs="1">
           <xs:complexType>
@@ -426,7 +481,7 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        
+
         <!-- Spells -->
         <xs:element name="spells" minOccurs="1" maxOccurs="1">
           <xs:complexType>
@@ -454,7 +509,7 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        
+
         <!-- Foci -->
         <xs:element name="foci" minOccurs="1" maxOccurs="1">
           <xs:complexType>
@@ -472,7 +527,7 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        
+
         <!-- Stacked Foci -->
         <xs:element name="stackedfoci" minOccurs="1" maxOccurs="1">
           <xs:complexType>
@@ -496,7 +551,7 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        
+
         <!-- Adept Powers -->
         <xs:element name="powers" minOccurs="1" maxOccurs="1">
           <xs:complexType>
@@ -524,7 +579,7 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        
+
         <!-- Spirits/Sprites -->
         <xs:element name="spirits" minOccurs="1" maxOccurs="1">
           <xs:complexType>
@@ -546,7 +601,7 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        
+
         <!-- Complex Forms -->
         <xs:element name="techprograms" minOccurs="1" maxOccurs="1">
           <xs:complexType>
@@ -605,7 +660,7 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        
+
         <!-- Martial Arts -->
         <xs:element name="martialarts" minOccurs="1" maxOccurs="1">
           <xs:complexType>
@@ -639,7 +694,7 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        
+
         <!-- Martial Arts Maneuvers -->
         <xs:element name="martialartmaneuvers" minOccurs="1" maxOccurs="1">
           <xs:complexType>
@@ -658,7 +713,7 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        
+
         <!-- Armor -->
         <xs:element name="armors" minOccurs="1" maxOccurs="1">
           <xs:complexType>
@@ -727,7 +782,7 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        
+
         <!-- Weapons -->
         <xs:element name="weapons" minOccurs="1" maxOccurs="1">
           <xs:complexType>
@@ -736,7 +791,7 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        
+
         <!-- Cyberware/Bioware -->
         <xs:element name="cyberwares" minOccurs="1" maxOccurs="1">
           <xs:complexType>
@@ -745,7 +800,7 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        
+
         <!-- Qualities -->
         <xs:element name="qualities" minOccurs="1" maxOccurs="1">
           <xs:complexType>
@@ -774,7 +829,7 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        
+
         <!-- Lifestyles -->
         <xs:element name="lifestyles" minOccurs="1" maxOccurs="1">
           <xs:complexType>
@@ -814,7 +869,7 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        
+
         <!-- Gear -->
         <xs:element name="gears" minOccurs="1" maxOccurs="1">
           <xs:complexType>
@@ -823,7 +878,7 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        
+
         <!-- Vehicles -->
         <xs:element name="vehicles" minOccurs="1" maxOccurs="1">
           <xs:complexType>
@@ -881,14 +936,14 @@
                                 <xs:element name="bonus" minOccurs="0" maxOccurs="1">
                                   <xs:complexType>
                                     <xs:sequence>
-                                        <xs:element name="accel" type="xs:string" minOccurs="0" maxOccurs="1" />
-                                        <xs:element name="armor" type="xs:string" minOccurs="0" maxOccurs="1" />
-                                        <xs:element name="body" type="xs:string" minOccurs="0" maxOccurs="1" />
-                                        <xs:element name="handling" type="xs:string" minOccurs="0" maxOccurs="1" />
-                                        <xs:element name="speed" type="xs:string" minOccurs="0" maxOccurs="1" />
-                                        <xs:element name="improvesensor" type="xs:string" minOccurs="0" maxOccurs="1" />
-                                        <xs:element name="selecttext" type="xs:string" minOccurs="0" maxOccurs="1" />
-                                        <xs:element name="devicerating" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                      <xs:element name="accel" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                      <xs:element name="armor" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                      <xs:element name="body" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                      <xs:element name="handling" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                      <xs:element name="speed" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                      <xs:element name="improvesensor" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                      <xs:element name="selecttext" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                      <xs:element name="devicerating" type="xs:string" minOccurs="0" maxOccurs="1" />
                                     </xs:sequence>
                                   </xs:complexType>
                                 </xs:element>
@@ -930,7 +985,7 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        
+
         <!-- Metamagics/Echoes -->
         <xs:element name="metamagics" minOccurs="1" maxOccurs="1">
           <xs:complexType>
@@ -952,7 +1007,7 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        
+
         <!-- Critter Powers -->
         <xs:element name="critterpowers" minOccurs="1" maxOccurs="1">
           <xs:complexType>
@@ -980,7 +1035,7 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        
+
         <!-- Initiation Grades (Initiation and Submersion) -->
         <xs:element name="initiationgrades" minOccurs="1" maxOccurs="1">
           <xs:complexType>
@@ -1000,7 +1055,7 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        
+
         <!-- Improvements -->
         <!-- External applications shouldn't need to worry about these since their impact on Attributes and Skills are rolled into the appropriate item's totalvalue element. -->
         <xs:element name="improvements" minOccurs="1" maxOccurs="1">
@@ -1035,7 +1090,7 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        
+
         <!-- Expenses -->
         <xs:element name="expenses" minOccurs="1" maxOccurs="1">
           <xs:complexType>
@@ -1066,7 +1121,7 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        
+
         <!-- Locations -->
         <xs:element name="locations" minOccurs="1" maxOccurs="1">
           <xs:complexType>
@@ -1075,7 +1130,7 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        
+
         <!-- Armor Bundles -->
         <xs:element name="armorbundles" minOccurs="1" maxOccurs="1">
           <xs:complexType>
@@ -1084,7 +1139,7 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        
+
         <!-- Weapon Locations -->
         <xs:element name="weaponlocations" minOccurs="1" maxOccurs="1">
           <xs:complexType>
@@ -1093,7 +1148,7 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        
+
         <!-- Improvement Groups -->
         <xs:element name="improvementgroups" minOccurs="1" maxOccurs="1">
           <xs:complexType>
@@ -1102,7 +1157,7 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        
+
         <!-- Calendar -->
         <xs:element name="calendar" minOccurs="1" maxOccurs="1">
           <xs:complexType>
@@ -1123,7 +1178,7 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  
+
   <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
     <xs:complexType>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
