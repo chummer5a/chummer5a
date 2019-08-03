@@ -1895,12 +1895,16 @@ namespace Chummer
                             {
                                 if (showWarnings)
                                 {
-                                    MessageBox.Show(
-                                        string.Format(
-                                            LanguageManager.GetString("Message_FailedLoad", GlobalOptions.Language),
-                                            ex.Message),
-                                        LanguageManager.GetString("MessageTitle_FailedLoad", GlobalOptions.Language),
+                                    Program.MainForm.ShowMessageBox(
+                                        string.Format(LanguageManager.GetString("Message_FailedLoad", GlobalOptions.Language),ex.Message),
+                                        string.Format(LanguageManager.GetString("Message_FailedLoad", GlobalOptions.Language),ex.Message),
                                         MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    //MessageBox.Show(
+                                    //    string.Format(
+                                    //        LanguageManager.GetString("Message_FailedLoad", GlobalOptions.Language),
+                                    //        ex.Message),
+                                    //    LanguageManager.GetString("MessageTitle_FailedLoad", GlobalOptions.Language),
+                                    //    MessageBoxButtons.OK, MessageBoxIcon.Error);
                                 }
 
                                 return false;
@@ -1935,11 +1939,16 @@ namespace Chummer
                             !string.IsNullOrEmpty(strGameEdition) && strGameEdition != "SR5" && showWarnings &&
                             !Utils.IsUnitTest)
                         {
-                            MessageBox.Show(
+                            Program.MainForm.ShowMessageBox(
                                 LanguageManager.GetString("Message_IncorrectGameVersion_SR4", GlobalOptions.Language),
                                 LanguageManager.GetString("MessageTitle_IncorrectGameVersion", GlobalOptions.Language),
                                 MessageBoxButtons.YesNo,
                                 MessageBoxIcon.Error);
+                            //MessageBox.Show(
+                            //    LanguageManager.GetString("Message_IncorrectGameVersion_SR4", GlobalOptions.Language),
+                            //    LanguageManager.GetString("MessageTitle_IncorrectGameVersion", GlobalOptions.Language),
+                            //    MessageBoxButtons.YesNo,
+                            //    MessageBoxIcon.Error);
                             IsLoading = false;
                             return false;
                         }
@@ -1997,13 +2006,22 @@ if (!Utils.IsUnitTest){
 
                         if (!string.IsNullOrEmpty(strMissingBooks) && !Utils.IsUnitTest && showWarnings)
                         {
-                            if (MessageBox.Show(new Form {TopMost = true},
-                                    string.Format(
+                            if (
+                                Program.MainForm.ShowMessageBox(string.Format(
                                         LanguageManager.GetString("Message_MissingSourceBooks", GlobalOptions.Language),
                                         TranslatedBookList(strMissingBooks, GlobalOptions.Language)),
                                     LanguageManager.GetString("Message_MissingSourceBooks_Title",
                                         GlobalOptions.Language),
-                                    MessageBoxButtons.YesNo) == DialogResult.No)
+                                    MessageBoxButtons.YesNo)
+                                
+                            //MessageBox.Show(new Form {TopMost = true},
+                            //        string.Format(
+                            //            LanguageManager.GetString("Message_MissingSourceBooks", GlobalOptions.Language),
+                            //            TranslatedBookList(strMissingBooks, GlobalOptions.Language)),
+                            //        LanguageManager.GetString("Message_MissingSourceBooks_Title",
+                            //            GlobalOptions.Language),
+                            //        MessageBoxButtons.YesNo)
+                                == DialogResult.No)
                             {
                                 IsLoading = false;
                                 return false;
@@ -2026,13 +2044,23 @@ if (!Utils.IsUnitTest){
 
                         if (!string.IsNullOrEmpty(strMissingSourceNames) && !Utils.IsUnitTest && showWarnings)
                         {
-                            if (MessageBox.Show(
-                                    string.Format(
-                                        LanguageManager.GetString("Message_MissingCustomDataDirectories",
-                                            GlobalOptions.Language), strMissingSourceNames),
-                                    LanguageManager.GetString("Message_MissingCustomDataDirectories_Title",
-                                        GlobalOptions.Language),
-                                    MessageBoxButtons.YesNo) == DialogResult.No)
+                            if (Program.MainForm.ShowMessageBox(
+                                string.Format(
+                                    LanguageManager.GetString("Message_MissingCustomDataDirectories",
+                                        GlobalOptions.Language), strMissingSourceNames),
+                                LanguageManager.GetString("Message_MissingCustomDataDirectories_Title",
+                                    GlobalOptions.Language),
+                                MessageBoxButtons.YesNo)
+
+                            //MessageBox.Show(
+                            //        string.Format(
+                            //            LanguageManager.GetString("Message_MissingCustomDataDirectories",
+                            //                GlobalOptions.Language), strMissingSourceNames),
+                            //        LanguageManager.GetString("Message_MissingCustomDataDirectories_Title",
+                            //            GlobalOptions.Language),
+                            //        MessageBoxButtons.YesNo)
+
+                                == DialogResult.No)
                             {
                                 IsLoading = false;
                                 return false;
@@ -2125,14 +2153,26 @@ if (!Utils.IsUnitTest){
                                 "/chummer/gameplayoptions/gameplayoption[name = \"" + GameplayOption + "\"]");
                         if (xmlGameplayOption == null && showWarnings)
                         {
-                            if (MessageBox.Show(
-                                    string.Format(
-                                        LanguageManager.GetString("Message_MissingGameplayOption",
-                                            GlobalOptions.Language),
-                                        GameplayOption),
-                                    LanguageManager.GetString("Message_MissingGameplayOption_Title",
+                            if (Program.MainForm.ShowMessageBox(
+                                string.Format(
+                                    LanguageManager.GetString("Message_MissingGameplayOption",
                                         GlobalOptions.Language),
-                                    MessageBoxButtons.OKCancel, MessageBoxIcon.Error) == DialogResult.OK)
+                                    GameplayOption),
+                                LanguageManager.GetString("Message_MissingGameplayOption_Title",
+                                    GlobalOptions.Language),
+                                MessageBoxButtons.OKCancel, MessageBoxIcon.Error)
+
+
+                                //MessageBox.Show(
+                                //    string.Format(
+                                //        LanguageManager.GetString("Message_MissingGameplayOption",
+                                //            GlobalOptions.Language),
+                                //        GameplayOption),
+                                //    LanguageManager.GetString("Message_MissingGameplayOption_Title",
+                                //        GlobalOptions.Language),
+                                //    MessageBoxButtons.OKCancel, MessageBoxIcon.Error)
+
+                                    == DialogResult.OK)
                             {
                                 frmSelectBuildMethod frmPickBP = new frmSelectBuildMethod(this, true);
                                 frmPickBP.ShowDialog();
@@ -9991,7 +10031,7 @@ if (!Utils.IsUnitTest){
             }
         }
 
-        public int SpellDefenseDirectSoakMana => WIL.TotalValue + SpellResistance;
+        public int SpellDefenseDirectSoakMana => WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DirectManaSpellResist) + SpellResistance;
 
         public string DisplaySpellDefenseDirectSoakMana => CurrentCounterspellingDice == 0
             ? SpellDefenseDirectSoakMana.ToString(GlobalOptions.CultureInfo)
@@ -10013,7 +10053,7 @@ if (!Utils.IsUnitTest){
                                       strSpaceCharacter + '(' +
                                       CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
 
-                int intModifiers = SpellResistance;
+                int intModifiers = SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DirectManaSpellResist);
 
                 if(intModifiers != 0)
                 {
@@ -10046,7 +10086,7 @@ if (!Utils.IsUnitTest){
         }
 
         public int SpellDefenseDirectSoakPhysical =>
-            (IsAI ? (HomeNode is Vehicle objVehicle ? objVehicle.TotalBody : 0) : BOD.TotalValue) + SpellResistance;
+            (IsAI ? (HomeNode is Vehicle objVehicle ? objVehicle.TotalBody : 0) : BOD.TotalValue) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DirectPhysicalSpellResist) + SpellResistance;
 
         public string DisplaySpellDefenseDirectSoakPhysical => CurrentCounterspellingDice == 0
             ? SpellDefenseDirectSoakPhysical.ToString(GlobalOptions.CultureInfo)
@@ -10079,7 +10119,7 @@ if (!Utils.IsUnitTest){
                                       strSpaceCharacter + '(' +
                                       CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
 
-                int intModifiers = SpellResistance;
+                int intModifiers = SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DirectPhysicalSpellResist);
 
                 if(intModifiers != 0)
                 {
@@ -10172,7 +10212,7 @@ if (!Utils.IsUnitTest){
             }
         }
 
-        public int SpellDefenseDecreaseBOD => BOD.TotalValue + WIL.TotalValue + SpellResistance;
+        public int SpellDefenseDecreaseBOD => BOD.TotalValue + WIL.TotalValue + SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseBODResist);
 
         public string DisplaySpellDefenseDecreaseBOD => CurrentCounterspellingDice == 0
             ? SpellDefenseDecreaseBOD.ToString(GlobalOptions.CultureInfo)
@@ -10197,7 +10237,7 @@ if (!Utils.IsUnitTest){
                                       strSpaceCharacter + '(' +
                                       CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
 
-                int intModifiers = SpellResistance;
+                int intModifiers = SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseBODResist);
 
                 if(intModifiers != 0)
                 {
@@ -10229,7 +10269,7 @@ if (!Utils.IsUnitTest){
             }
         }
 
-        public int SpellDefenseDecreaseAGI => AGI.TotalValue + WIL.TotalValue + SpellResistance;
+        public int SpellDefenseDecreaseAGI => AGI.TotalValue + WIL.TotalValue + SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseAGIResist);
 
         public string DisplaySpellDefenseDecreaseAGI => CurrentCounterspellingDice == 0
             ? SpellDefenseDecreaseAGI.ToString(GlobalOptions.CultureInfo)
@@ -10254,7 +10294,7 @@ if (!Utils.IsUnitTest){
                                       strSpaceCharacter + '(' +
                                       CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
 
-                int intModifiers = SpellResistance;
+                int intModifiers = SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseAGIResist);
 
                 if(intModifiers != 0)
                 {
@@ -10286,7 +10326,7 @@ if (!Utils.IsUnitTest){
             }
         }
 
-        public int SpellDefenseDecreaseREA => REA.TotalValue + WIL.TotalValue + SpellResistance;
+        public int SpellDefenseDecreaseREA => REA.TotalValue + WIL.TotalValue + SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseREAResist);
 
         public string DisplaySpellDefenseDecreaseREA => CurrentCounterspellingDice == 0
             ? SpellDefenseDecreaseREA.ToString(GlobalOptions.CultureInfo)
@@ -10311,7 +10351,7 @@ if (!Utils.IsUnitTest){
                                       strSpaceCharacter + '(' +
                                       CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
 
-                int intModifiers = SpellResistance;
+                int intModifiers = SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseREAResist);
 
                 if(intModifiers != 0)
                 {
@@ -10343,7 +10383,7 @@ if (!Utils.IsUnitTest){
             }
         }
 
-        public int SpellDefenseDecreaseSTR => STR.TotalValue + WIL.TotalValue + SpellResistance;
+        public int SpellDefenseDecreaseSTR => STR.TotalValue + WIL.TotalValue + SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseSTRResist);
 
         public string DisplaySpellDefenseDecreaseSTR => CurrentCounterspellingDice == 0
             ? SpellDefenseDecreaseSTR.ToString(GlobalOptions.CultureInfo)
@@ -10368,7 +10408,7 @@ if (!Utils.IsUnitTest){
                                       strSpaceCharacter + '(' +
                                       CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
 
-                int intModifiers = SpellResistance;
+                int intModifiers = SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseSTRResist);
 
                 if(intModifiers != 0)
                 {
@@ -10400,7 +10440,7 @@ if (!Utils.IsUnitTest){
             }
         }
 
-        public int SpellDefenseDecreaseCHA => CHA.TotalValue + WIL.TotalValue + SpellResistance;
+        public int SpellDefenseDecreaseCHA => CHA.TotalValue + WIL.TotalValue + SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseCHAResist);
 
         public string DisplaySpellDefenseDecreaseCHA => CurrentCounterspellingDice == 0
             ? SpellDefenseDecreaseCHA.ToString(GlobalOptions.CultureInfo)
@@ -10425,7 +10465,7 @@ if (!Utils.IsUnitTest){
                                       strSpaceCharacter + '(' +
                                       CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
 
-                int intModifiers = SpellResistance;
+                int intModifiers = SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseCHAResist);
 
                 if(intModifiers != 0)
                 {
@@ -10457,7 +10497,7 @@ if (!Utils.IsUnitTest){
             }
         }
 
-        public int SpellDefenseDecreaseINT => INT.TotalValue + WIL.TotalValue + SpellResistance;
+        public int SpellDefenseDecreaseINT => INT.TotalValue + WIL.TotalValue + SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseINTResist);
 
         public string DisplaySpellDefenseDecreaseINT => CurrentCounterspellingDice == 0
             ? SpellDefenseDecreaseINT.ToString(GlobalOptions.CultureInfo)
@@ -10482,7 +10522,7 @@ if (!Utils.IsUnitTest){
                                       strSpaceCharacter + '(' +
                                       CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
 
-                int intModifiers = SpellResistance;
+                int intModifiers = SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseINTResist);
 
                 if(intModifiers != 0)
                 {
@@ -10514,7 +10554,7 @@ if (!Utils.IsUnitTest){
             }
         }
 
-        public int SpellDefenseDecreaseLOG => LOG.TotalValue + WIL.TotalValue + SpellResistance;
+        public int SpellDefenseDecreaseLOG => LOG.TotalValue + WIL.TotalValue + SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseLOGResist);
 
         public string DisplaySpellDefenseDecreaseLOG => CurrentCounterspellingDice == 0
             ? SpellDefenseDecreaseLOG.ToString(GlobalOptions.CultureInfo)
@@ -10539,7 +10579,7 @@ if (!Utils.IsUnitTest){
                                       strSpaceCharacter + '(' +
                                       CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
 
-                int intModifiers = SpellResistance;
+                int intModifiers = SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseLOGResist);
 
                 if(intModifiers != 0)
                 {
@@ -10571,7 +10611,7 @@ if (!Utils.IsUnitTest){
             }
         }
 
-        public int SpellDefenseDecreaseWIL => WIL.TotalValue + WIL.TotalValue + SpellResistance;
+        public int SpellDefenseDecreaseWIL => WIL.TotalValue + WIL.TotalValue + SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseWILResist);
 
         public string DisplaySpellDefenseDecreaseWIL => CurrentCounterspellingDice == 0
             ? SpellDefenseDecreaseWIL.ToString(GlobalOptions.CultureInfo)
@@ -10596,7 +10636,7 @@ if (!Utils.IsUnitTest){
                                       strSpaceCharacter + '(' +
                                       CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
 
-                int intModifiers = SpellResistance;
+                int intModifiers = SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseWILResist);
 
                 if(intModifiers != 0)
                 {

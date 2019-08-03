@@ -1109,11 +1109,15 @@ namespace Chummer
                     var worklist = objCMS.Items.OfType<ToolStripMenuItem>().ToList();
                     foreach (ToolStripMenuItem objItem in worklist)
                     {
-                        LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Language);
-                        //remove the "Close Character Node, if the Char is not open
-                        if (objItem.Name == "tsCloseOpenCharacter")
+                        if (e.Node.Tag == null)
                         {
-                            string strFile = e.Node.Tag.ToString();
+                            e.Node.ContextMenuStrip.Items.Remove(objItem);
+                            continue;
+                        }
+                        //remove the "Close Character Node, if the Char is not open
+                        if (objItem?.Name == "tsCloseOpenCharacter")
+                        {
+                            string strFile = e.Node.Tag?.ToString();
                             if (!string.IsNullOrEmpty(strFile))
                             {
                                 var objOpenCharacter =
@@ -1124,6 +1128,8 @@ namespace Chummer
                                 }
                             }
                         }
+                        LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Language);
+
                     }
                 }
             }

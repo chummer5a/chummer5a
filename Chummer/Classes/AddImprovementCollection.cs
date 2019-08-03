@@ -147,6 +147,76 @@ namespace Chummer.Classes
                 ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
+        public void directmanaspellresist(XmlNode bonusNode)
+        {
+            Log.Info("directmanaspellresist");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DirectManaSpellResist, _strUnique,
+                ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
+        public void directphysicalspellresist(XmlNode bonusNode)
+        {
+            Log.Info("directphysicalspellresist");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DirectPhysicalSpellResist, _strUnique,
+                ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
+        public void decreasebodresist(XmlNode bonusNode)
+        {
+            Log.Info("decreasebodresist");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DecreaseBODResist, _strUnique,
+                ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
+        public void decreaseagiresist(XmlNode bonusNode)
+        {
+            Log.Info("decreaseagiresist");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DecreaseAGIResist, _strUnique,
+                ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
+        public void decreaserearesist(XmlNode bonusNode)
+        {
+            Log.Info("decreaserearesist");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DecreaseREAResist, _strUnique,
+                ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
+        public void decreasestrresist(XmlNode bonusNode)
+        {
+            Log.Info("decreasestrresist");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DecreaseSTRResist, _strUnique,
+                ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
+        public void decreasecharesist(XmlNode bonusNode)
+        {
+            Log.Info("decreasecharesist");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DecreaseCHAResist, _strUnique,
+                ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
+        public void decreaseintresist(XmlNode bonusNode)
+        {
+            Log.Info("decreaseintresist");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DecreaseINTResist, _strUnique,
+                ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
+        public void decreaselogresist(XmlNode bonusNode)
+        {
+            Log.Info("decreaselogresist");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DecreaseLOGResist, _strUnique,
+                ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
+        public void decreasewilresist(XmlNode bonusNode)
+        {
+            Log.Info("decreasewilresist");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DecreaseWILResist, _strUnique,
+                ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
         public void enableattribute(XmlNode bonusNode)
         {
             Log.Info("enableattribute");
