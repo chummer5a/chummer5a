@@ -79,6 +79,7 @@ This affects:
     FN MAG-5
     Stoner-Ares M202
     Ultamax MMG
+- Fixed issues with the Merc Teen, Merc Kid and Corp Teen life modules that prevented them from being added.
 
 New Strings:
 

@@ -5329,6 +5329,7 @@ namespace Chummer.Classes
                 if (xmlQualityList?.Count > 0)
                     foreach (XmlNode objXmlAddQuality in xmlQualityList)
                     {
+                        if (objXmlAddQuality.NodeType == XmlNodeType.Comment) continue;
                         XmlNode objXmlSelectedQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlAddQuality.InnerText + "\"]");
                         string strForceValue = objXmlAddQuality.Attributes?["select"]?.InnerText ?? string.Empty;
 
