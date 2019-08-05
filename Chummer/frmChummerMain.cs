@@ -170,7 +170,14 @@ namespace Chummer
                     catch (UnauthorizedAccessException e)
                     {
                         Log.Trace(e,
-                            "UnauthorizedAccessException in " + Utils.GetStartupPath + "can be ignored - probably a weird path like Recycle.Bin or something...");
+                            "UnauthorizedAccessException in " + Utils.GetStartupPath +
+                            "can be ignored - probably a weird path like Recycle.Bin or something...");
+                    }
+                    catch (System.IO.IOException e)
+                    {
+                        Log.Trace(e,
+                            "IOException in " + Utils.GetStartupPath +
+                            "can be ignored - probably another instance blocking it...");
                     }
 
                     // Populate the MRU list.
@@ -1102,7 +1109,16 @@ namespace Chummer
                     //that setting off.
                     Debugger.Break();
                 }
-                return (DialogResult)this.Invoke(new PassStringStringReturnDialogResultDelegate(ShowMessageBox), message, caption, buttons, icon);
+
+                try
+                {
+                    return (DialogResult)this.Invoke(new PassStringStringReturnDialogResultDelegate(ShowMessageBox), message, caption, buttons, icon);
+                }
+                catch (ObjectDisposedException)
+                {
+                    //if the main form is disposed, we really don't need to bother anymore...                            
+                }
+                
             }
             return MessageBox.Show(new Form() { TopMost = true }, message, caption, buttons, icon);
         }
