@@ -720,11 +720,14 @@ namespace ChummerHub.Client.Backend
             if ((!String.IsNullOrEmpty(rb.ErrorText)
                      || (rb.MyException != null)))
             {
-                Log.Warn("SINners WebService returned: " + rb.ErrorText);
-                var frmSIN = new frmSINnerResponse();
-                frmSIN.SINnerResponseUI.Result = rb;
-                frmSIN.TopMost = true;
-                frmSIN.ShowDialog(PluginHandler.MainForm);
+                PluginHandler.MainForm.DoThreadSafe(() =>
+                {
+                    Log.Warn("SINners WebService returned: " + rb.ErrorText);
+                    var frmSIN = new frmSINnerResponse();
+                    frmSIN.SINnerResponseUI.Result = rb;
+                    frmSIN.TopMost = true;
+                    frmSIN.Show(PluginHandler.MainForm);
+                });
             }
             return ResponseBody;
         }
