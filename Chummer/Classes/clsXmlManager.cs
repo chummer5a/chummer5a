@@ -336,7 +336,7 @@ namespace Chummer
                 }
                 if (!Utils.IsUnitTest)
                 {
-                    MessageBox.Show(string.Format(LanguageManager.GetString("Message_DuplicateGuidWarning", GlobalOptions.Language)
+                    Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_DuplicateGuidWarning", GlobalOptions.Language)
                             , setDuplicateIDs.Count.ToString(GlobalOptions.CultureInfo)
                             , strFileName
                             , strDuplicatesNames));
@@ -346,7 +346,7 @@ namespace Chummer
             if (lstItemsWithMalformedIDs.Count > 0 && !Utils.IsUnitTest)
             {
                 string strMalformedIdNames = string.Join(Environment.NewLine, lstItemsWithMalformedIDs);
-                MessageBox.Show(string.Format(LanguageManager.GetString("Message_NonGuidIdWarning", GlobalOptions.Language)
+                Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_NonGuidIdWarning", GlobalOptions.Language)
                     , lstItemsWithMalformedIDs.Count.ToString(GlobalOptions.CultureInfo)
                     , strFileName
                     , strMalformedIdNames));
@@ -936,12 +936,12 @@ namespace Chummer
             }
             catch (IOException ex)
             {
-                MessageBox.Show(ex.ToString());
+                Program.MainForm.ShowMessageBox(ex.ToString());
                 return;
             }
             catch (XmlException ex)
             {
-                MessageBox.Show(ex.ToString());
+                Program.MainForm.ShowMessageBox(ex.ToString());
                 return;
             }
 

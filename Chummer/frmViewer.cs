@@ -216,11 +216,11 @@ namespace Chummer
             }
             catch (XmlException)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_Save_Error_Warning", GlobalOptions.Language));
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning", GlobalOptions.Language));
             }
             catch (UnauthorizedAccessException)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_Save_Error_Warning", GlobalOptions.Language));
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning", GlobalOptions.Language));
             }
         }
 
@@ -380,7 +380,7 @@ namespace Chummer
             {
                 string strReturn = $"File not found when attempting to load {_strSelectedSheet}{Environment.NewLine}";
                 Log.Debug(strReturn);
-                MessageBox.Show(strReturn);
+                Program.MainForm.ShowMessageBox(strReturn);
                 return;
             }
 #if DEBUG
@@ -398,7 +398,7 @@ namespace Chummer
                 Log.Debug(strReturn);
                 Log.Error("ERROR Message = " + ex.Message);
                 strReturn += ex.Message;
-                MessageBox.Show(strReturn);
+                Program.MainForm.ShowMessageBox(strReturn);
                 return;
             }
 
@@ -469,7 +469,7 @@ namespace Chummer
 
             if (!Directory.Exists(Path.GetDirectoryName(strSaveFile)))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Language));
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Language));
                 return;
             }
             if (File.Exists(strSaveFile))
@@ -480,12 +480,12 @@ namespace Chummer
                 }
                 catch (IOException)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Language));
+                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Language));
                     return;
                 }
                 catch (UnauthorizedAccessException)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Language));
+                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Language));
                     return;
                 }
             }
@@ -533,7 +533,7 @@ namespace Chummer
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString());
+                Program.MainForm.ShowMessageBox(ex.ToString());
             }
         }
 

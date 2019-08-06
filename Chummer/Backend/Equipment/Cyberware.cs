@@ -4208,7 +4208,7 @@ namespace Chummer.Backend.Equipment
         {
             if (Capacity == "[*]" && Parent != null && (!characterObject.IgnoreRules || characterObject.Created))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_CannotRemoveCyberware", GlobalOptions.Language),
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CannotRemoveCyberware", GlobalOptions.Language),
                     LanguageManager.GetString("MessageTitle_CannotRemoveCyberware", GlobalOptions.Language),
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return false;
@@ -4319,7 +4319,7 @@ namespace Chummer.Backend.Equipment
 
                     if (decCost > _objCharacter.Nuyen)
                     {
-                        MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughNuyen", GlobalOptions.Language), MessageBoxButtons.OK,
+                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NotEnoughNuyen", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughNuyen", GlobalOptions.Language), MessageBoxButtons.OK,
                             MessageBoxIcon.Information);
                         return false;
                     }
@@ -4392,7 +4392,7 @@ namespace Chummer.Backend.Equipment
 
             if (newCost > characterObject.Nuyen)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen", GlobalOptions.Language),
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NotEnoughNuyen", GlobalOptions.Language),
                     LanguageManager.GetString("MessageTitle_NotEnoughNuyen", GlobalOptions.Language),
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
 

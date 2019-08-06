@@ -1084,16 +1084,31 @@ namespace Chummer
         #region Methods
 
         private static bool showDevWarningAboutDebuggingOnlyOnce = true;
+
         /// <summary>
         /// This makes sure, that the MessageBox is shown in the UI Thread.
         /// https://stackoverflow.com/questions/559252/does-messagebox-show-automatically-marshall-to-the-ui-thread
         /// </summary>
         /// <param name="message"></param>
         /// <param name="caption"></param>
+        /// <param name="defaultButton"></param>
         /// <returns></returns>
-        public DialogResult ShowMessageBox(String message, String caption, MessageBoxButtons buttons = MessageBoxButtons.OK, MessageBoxIcon icon = MessageBoxIcon.None)
+        public DialogResult ShowMessageBox(String message, String caption = null, MessageBoxButtons buttons = MessageBoxButtons.OK, MessageBoxIcon icon = MessageBoxIcon.None, MessageBoxDefaultButton defaultButton = MessageBoxDefaultButton.Button1)
         {
-            if (this.InvokeRequired)
+            return ShowMessageBox(new Form() { TopMost = true }, message, caption, buttons, icon);
+        }
+
+        public DialogResult ShowMessageBox(Control owner, String message, String caption = null, MessageBoxButtons buttons = MessageBoxButtons.OK, MessageBoxIcon icon = MessageBoxIcon.None, MessageBoxDefaultButton defaultButton = MessageBoxDefaultButton.Button1)
+        {
+            if (Utils.IsUnitTest)
+            {
+                string msg = "We don't want to see MessageBoxes in Unit Tests!" + Environment.NewLine;
+                msg += "Caption: " + caption + Environment.NewLine;
+                msg += "Message: " + message;
+                throw new ArgumentException(msg);
+            }
+
+            if (owner.InvokeRequired)
             {
                 if ((showDevWarningAboutDebuggingOnlyOnce) && (Debugger.IsAttached))
                 {
@@ -1112,18 +1127,28 @@ namespace Chummer
 
                 try
                 {
-                    return (DialogResult)this.Invoke(new PassStringStringReturnDialogResultDelegate(ShowMessageBox), message, caption, buttons, icon);
+                    return (DialogResult)owner.Invoke(new PassStringStringReturnDialogResultDelegate(ShowMessageBox),
+                        message, caption, buttons, icon, defaultButton);
                 }
                 catch (ObjectDisposedException)
                 {
                     //if the main form is disposed, we really don't need to bother anymore...                            
                 }
-                
+                catch (Exception e)
+                {
+                    string msg = "Could not show a MessageBox " + caption + ":" + Environment.NewLine;
+                    msg += message + Environment.NewLine + Environment.NewLine;
+                    msg += "Exception: " + e.ToString();
+                    Log.Fatal(e, msg);
+                }
+
             }
-            return MessageBox.Show(new Form() { TopMost = true }, message, caption, buttons, icon);
+            return MessageBox.Show(new Form() { TopMost = true }, message, caption, buttons, icon, defaultButton);
         }
 
-        public delegate DialogResult PassStringStringReturnDialogResultDelegate(String s1, String s2, MessageBoxButtons buttons, MessageBoxIcon icon);
+        public delegate DialogResult PassStringStringReturnDialogResultDelegate(
+            String s1, String s2, MessageBoxButtons buttons,
+            MessageBoxIcon icon, MessageBoxDefaultButton defaultButton);
 
         /// <summary>
         /// Create a new character and show the Create Form.
@@ -1367,7 +1392,7 @@ namespace Chummer
                         catch (XmlException ex)
                         {
                             if (blnShowErrors)
-                                MessageBox.Show(
+                                 Program.MainForm.ShowMessageBox(
                                     string.Format(
                                         LanguageManager.GetString("Message_FailedLoad", GlobalOptions.Language),
                                         ex.Message),
@@ -1423,7 +1448,7 @@ namespace Chummer
             }
             else if(blnShowErrors)
             {
-                MessageBox.Show(string.Format(LanguageManager.GetString("Message_FileNotFound", GlobalOptions.Language), strFileName),
+                Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_FileNotFound", GlobalOptions.Language), strFileName),
                     LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             return objCharacter;
@@ -1565,7 +1590,7 @@ namespace Chummer
 
         private void objCareer_DiceRollerOpened(object sender)
         {
-            MessageBox.Show("This feature is currently disabled. Please open a ticket if this makes the world burn, otherwise it will get re-enabled when somebody gets around to it");
+            Program.MainForm.ShowMessageBox("This feature is currently disabled. Please open a ticket if this makes the world burn, otherwise it will get re-enabled when somebody gets around to it");
             //TODO: IMPLEMENT THIS SHIT
         }
 

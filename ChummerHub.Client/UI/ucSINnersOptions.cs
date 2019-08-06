@@ -563,12 +563,12 @@ namespace ChummerHub.Client.UI
                     msg += Environment.NewLine + ex.ToString();
                     Log.Warn(msg);
                     /* run your code here */
-                    MessageBox.Show(msg);
+                    Program.MainForm.ShowMessageBox(msg);
                  
                 }
             }
 
-            MessageBox.Show("Upload of " + thisDialog.FileNames.Length + " files finished (successful or not - its over).");
+            Program.MainForm.ShowMessageBox("Upload of " + thisDialog.FileNames.Length + " files finished (successful or not - its over).");
         }
 
     
@@ -588,7 +588,7 @@ namespace ChummerHub.Client.UI
             {
                 BackupTask(folderBrowserDialog1).ContinueWith((a) =>
                 {
-                    MessageBox.Show(a.Status.ToString());
+                    Program.MainForm.ShowMessageBox(a.Status.ToString());
                 });
             }
 
@@ -625,7 +625,7 @@ namespace ChummerHub.Client.UI
                             catch (Exception e2)
                             {
                                 Log.Error(e2);
-                                Invoke(new Action(() => MessageBox.Show(e2.Message)));
+                                Invoke(new Action(() => Program.MainForm.ShowMessageBox(e2.Message)));
                             }
                         }
                     }
@@ -634,7 +634,7 @@ namespace ChummerHub.Client.UI
             catch (Exception ex)
             {
                 Log.Error(ex); 
-                Invoke(new Action(() => MessageBox.Show(ex.Message)));
+                Invoke(new Action(() => Program.MainForm.ShowMessageBox(ex.Message)));
 
             }
         }
@@ -649,7 +649,7 @@ namespace ChummerHub.Client.UI
             {
                 RestoreTask(folderBrowserDialog1).ContinueWith((a) =>
                 {
-                    MessageBox.Show(a.Status.ToString());
+                    Program.MainForm.ShowMessageBox(a.Status.ToString());
                 });
             }
         }
@@ -706,7 +706,7 @@ namespace ChummerHub.Client.UI
             catch (Exception ex)
             {
                 Log.Error(ex);
-                Invoke(new Action(() => MessageBox.Show(ex.Message)));
+                Invoke(new Action(() => Program.MainForm.ShowMessageBox(ex.Message)));
 
             }
         }
@@ -820,10 +820,10 @@ namespace ChummerHub.Client.UI
         private void BRegisterUriScheme_Click(object sender, EventArgs e)
         {
             if (StaticUtils.RegisterChummerProtocol(null))
-                MessageBox.Show("Url is registered!");
+                Program.MainForm.ShowMessageBox("Url is registered!");
             else
             {
-                MessageBox.Show("Url is NOT registered!");
+                Program.MainForm.ShowMessageBox("Url is NOT registered!");
             }
         }
 
