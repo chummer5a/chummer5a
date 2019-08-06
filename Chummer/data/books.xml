@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -17,115 +18,249 @@
     You can obtain the full source code for Chummer5a at
     https://github.com/chummer5a/chummer5a
 -->
-<chummer>
-	<version>0</version>
-	<books>
-		<book>
-			<id>289bc41d-6dd5-4216-9bc7-e6f0cabae9ac</id>
-			<name>Assassin's Primer</name>
-			<code>AP</code>
-		</book>
-		<book>
-			<id>b68175bc-e10f-4e11-9361-ed62bb371c8d</id>
-			<name>Gun Heaven 3</name>
-			<code>GH3</code>
-		</book>
-		<book>
-			<id>5d6626a2-2400-44b5-b777-d7dac6cb512f</id>
-			<name>Run and Gun</name>
-			<code>RG</code>
-		</book>
-		<book>
-			<id>f5ec713c-98cd-41f6-a0a4-4a8eaed55b66</id>
-			<name>Shadowrun 5th Edition</name>
-			<code>SR5</code>
-		</book>
-		<book>
-			<id>b3c5ea18-56dc-42f4-b567-50ead12fab1f</id>
-			<name>Shadowrun 5th Edition (German)</name>
-			<code>SR5G</code>
-		</book>
-		<book>
-			<id>3976dc50-f7db-481d-9372-fc2a5c1178ce</id>
-			<name>Street Grimoire</name>
-			<code>SG</code>
-		</book>
-		<book>
-			<id>f4cf7430-4c2d-4f3c-b1d2-fd1e08ad777d</id>
-			<name>Street Grimoire (German)</name>
-			<code>SGG</code>
-		</book>
-		<book>
-			<id>d7b60868-41ee-4970-b9f2-f1a2a81b6d1a</id>
-			<name>Bullets &amp; Bandages</name>
-			<code>BB</code>
-		</book>
-		<book>
-			<id>7c37e671-9d0c-48f6-aa61-891a38be18d8</id>
-			<name>Sail Away, Sweet Sister</name>
-			<code>SASS</code>
-		</book>
-		<book>
-			<id>ab9fd70c-6b79-4780-ae3d-dfa5f1624c9d</id>
-			<name>Stolen Souls</name>
-			<code>SS</code>
-		</book>
-		<book>
-			<name>Run Faster</name>
-			<code>RF</code>
-		</book>
-		<book>
-			<id>be0638b9-f005-42e3-83e1-97d806f5b070</id>
-			<name>Run Faster (German)</name>
-			<code>RFG</code>
-		</book>
-		<book>
-			<name>Shadow Spells</name>
-			<code>SSP</code>
-		</book>
-		<book>
-			<name>Nothing Personal</name>
-			<code>NP</code>
-		</book>
-		<book>
-			<id>c8358d1c-2eb0-461b-9e2f-b3490ad0011d</id>
-			<name>Data Trails</name>
-			<code>DT</code>
-		</book>
-		<book>
-			<id>cea24b81-209b-49b2-afe4-62f1286e508e</id>
-			<name>Chrome Flesh</name>
-			<code>CF</code>
-		</book>
-		<book>
-			<id>B6642AC0-7E72-44C4-B954-3E224EBB2E64</id>
-			<name>Hard Targets</name>
-			<code>HT</code>
-		</book>
-		<book>
-			<id>73cbd0f7-9a44-480b-8143-5c93d0b1cdf3</id>
-			<name>Bloody Business</name>
-			<code>BLB</code>
-		</book>
-		<book>
-			<id>bb5c7e4e-431b-404f-89da-e69cf3b75d50</id>
-			<name>Schattenhandbuch (German Handbook)</name>
-			<code>SHB</code>
-		</book>
-		<book>
-			<id>8798c923-8118-448e-b201-53d299d7e58c</id>
-			<name>Schattenhandbuch 2 (German Handbook)</name>
-			<code>SHB2</code>
-		</book>
-		<book>
-			<id>a1055d3f-7bc1-4ca3-a005-681c54a046a1</id>
-			<name>Rigger 5.0</name>
-			<code>R5</code>
-		</book>
-		<book>
-			<id>38de6863-2911-4fa6-9a43-70db72ab8a22</id>
-			<name>Howling Shadows</name>
-			<code>HS</code>
-		</book>
-	</books>
+<chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.w3.org/2001/XMLSchema books.xsd">
+  <version>0</version>
+  <books>
+    <book>
+      <id>289bc41d-6dd5-4216-9bc7-e6f0cabae9ac</id>
+      <name>Assassin's Primer</name>
+      <code>AP</code>
+    </book>
+    <book>
+      <id>b68175bc-e10f-4e11-9361-ed62bb371c8d</id>
+      <name>Gun Heaven 3</name>
+      <code>GH3</code>
+    </book>
+    <book>
+      <id>5d6626a2-2400-44b5-b777-d7dac6cb512f</id>
+      <name>Run and Gun</name>
+      <code>RG</code>
+    </book>
+    <book>
+      <id>f5ec713c-98cd-41f6-a0a4-4a8eaed55b66</id>
+      <name>Shadowrun 5th Edition</name>
+      <code>SR5</code>
+    </book>
+    <book>
+      <id>b3c5ea18-56dc-42f4-b567-50ead12fab1f</id>
+      <name>Shadowrun 5th Edition (German-exclusive Content)</name>
+      <code>SR5G</code>
+    </book>
+    <book>
+      <id>3976dc50-f7db-481d-9372-fc2a5c1178ce</id>
+      <name>Street Grimoire</name>
+      <code>SG</code>
+    </book>
+    <book>
+      <id>f4cf7430-4c2d-4f3c-b1d2-fd1e08ad777d</id>
+      <name>Street Grimoire (German-exclusive Content)</name>
+      <code>SGG</code>
+    </book>
+    <book>
+      <id>d7b60868-41ee-4970-b9f2-f1a2a81b6d1a</id>
+      <name>Bullets &amp; Bandages</name>
+      <code>BB</code>
+    </book>
+    <book>
+      <id>7c37e671-9d0c-48f6-aa61-891a38be18d8</id>
+      <name>Sail Away, Sweet Sister</name>
+      <code>SASS</code>
+    </book>
+    <book>
+      <id>ab9fd70c-6b79-4780-ae3d-dfa5f1624c9d</id>
+      <name>Stolen Souls</name>
+      <code>SS</code>
+    </book>
+    <book>
+      <id>0b2e86c9-98b7-4265-800f-9f1b98ce7f96</id>
+      <name>Run Faster</name>
+      <code>RF</code>
+    </book>
+    <book>
+      <id>be0638b9-f005-42e3-83e1-97d806f5b070</id>
+      <name>Run Faster (German-exclusive Content)</name>
+      <code>RFG</code>
+    </book>
+    <book>
+      <id>01994ce6-832f-4e29-aded-e16c1bf139bd</id>
+      <name>Shadow Spells</name>
+      <code>SSP</code>
+    </book>
+    <book>
+      <id>07bfdff7-1331-4791-9334-6b299548f8f4</id>
+      <name>Nothing Personal</name>
+      <code>NP</code>
+    </book>
+    <book>
+      <id>c8358d1c-2eb0-461b-9e2f-b3490ad0011d</id>
+      <name>Data Trails</name>
+      <code>DT</code>
+    </book>
+    <book>
+      <id>0b082117-8eb2-42d1-82e3-11454536c480</id>
+      <name>Data Trails (Dissonant Echoes)</name>
+      <code>DTD</code>
+    </book>
+    <book>
+      <id>cea24b81-209b-49b2-afe4-62f1286e508e</id>
+      <name>Chrome Flesh</name>
+      <code>CF</code>
+    </book>
+    <book>
+      <id>B6642AC0-7E72-44C4-B954-3E224EBB2E64</id>
+      <name>Hard Targets</name>
+      <code>HT</code>
+    </book>
+    <book>
+      <id>73cbd0f7-9a44-480b-8143-5c93d0b1cdf3</id>
+      <name>Bloody Business</name>
+      <code>BLB</code>
+    </book>
+    <book>
+      <id>bb5c7e4e-431b-404f-89da-e69cf3b75d50</id>
+      <name>Schattenhandbuch (German Handbook)</name>
+      <code>SHB</code>
+    </book>
+    <book>
+      <id>8798c923-8118-448e-b201-53d299d7e58c</id>
+      <name>Schattenhandbuch 2 (German Handbook)</name>
+      <code>SHB2</code>
+    </book>
+    <book>
+      <id>08dea2f1-3add-4516-bdbe-b47ab9a5e31f</id>
+      <name>Schattenhandbuch 3 (German Handbook)</name>
+      <code>SHB3</code>
+    </book>
+    <book>
+      <id>a1055d3f-7bc1-4ca3-a005-681c54a046a1</id>
+      <name>Rigger 5.0</name>
+      <code>R5</code>
+    </book>
+    <book>
+      <id>e3e23ca4-b7b8-11e6-80f5-76304dec7eb7</id>
+      <name>Rigger 5.0 (German-exclusive Content)</name>
+      <code>R5G</code>
+    </book>
+    <book>
+      <id>38de6863-2911-4fa6-9a43-70db72ab8a22</id>
+      <name>Howling Shadows</name>
+      <code>HS</code>
+    </book>
+    <book>
+      <id>2fba52dd-bc97-450f-9d07-e1d86885911d</id>
+      <name>The Vladivostok Gauntlet</name>
+      <code>TVG</code>
+    </book>
+    <book>
+      <id>6b37230a-dd55-4c3f-882d-0a1c6324a457</id>
+      <name>Splintered State</name>
+      <code>SPS</code>
+    </book>
+    <book>
+      <id>58b3ffae-7320-4b11-8c50-db92b7f0452b</id>
+      <name>Shadows In Focus: Butte</name>
+      <code>SFB</code>
+    </book>
+    <book>
+      <id>7186ed14-e0b8-456e-b923-f77933f1762e</id>
+      <name>Hong Kong Sourcebook</name>
+      <code>HKS</code>
+    </book>
+    <book>
+      <id>540cfaa8-823f-46c7-b93b-79191a894bd1</id>
+      <name>Lockdown</name>
+      <code>LCD</code>
+    </book>
+    <book>
+      <id>81c02566-af38-45e3-9e46-3b1d083f84f2</id>
+      <name>Shadows In Focus: San Francisco Metroplex</name>
+      <code>SFM</code>
+    </book>
+    <book>
+      <id>ad384a90-33c2-40bd-b128-37117d02f36c</id>
+      <name>Shadows In Focus: Metropole</name>
+      <code>SFME</code>
+    </book>
+    <book>
+      <id>40515dbc-fec6-4530-ba79-959cc8c54c61</id>
+      <name>Cutting Aces</name>
+      <code>CA</code>
+    </book>
+    <book>
+      <id>71a6304e-03dc-41db-be01-a86acab1517b</id>
+      <name>Shadowrun 2050 (5th Edition)</name>
+      <code>2050</code>
+    </book>
+    <book>
+      <id>485cc0ae-8221-4d5e-a527-33df76fd1f21</id>
+      <name>Book of the Lost</name>
+      <code>BOTL</code>
+    </book>
+    <book>
+      <id>6e447106-e250-41b1-855a-2dd1d2075f6d</id>
+      <name>Forbidden Arcana</name>
+      <code>FA</code>
+    </book>
+    <book>
+      <id>c6b7136f-e461-457b-b6f7-09e95c2f6313</id>
+      <name>State of the Art ADL (German Handbook)</name>
+      <code>SAG</code>
+    </book>
+    <book>
+      <id>c4392cc2-8edd-4ae3-8198-b8c00e693c8b</id>
+      <name>The Complete Trog</name>
+      <code>TCT</code>
+    </book>
+    <book>
+      <id>e894804c-2e11-489e-acc8-f9691a79b261</id>
+      <name>Shadows In Focus: Sioux Nation: Counting Coup</name>
+      <code>SFCC</code>
+    </book>
+    <book>
+      <id>c74e950e-3554-4a44-9060-5a2840302538</id>
+      <name>Dark Terrors</name>
+      <code>DTR</code>
+    </book>
+    <book>
+      <id>42d5ed10-66e8-47de-8685-851fdfdcae35</id>
+      <name>The Seattle Gambit</name>
+      <code>TSG</code>
+    </book>
+	  <book>
+		  <id>bfe6c53b-1c68-4d7a-b11d-9d47461df1cd</id>
+		  <name>Street Lethal</name>
+		  <code>SL</code>
+	  </book>
+    <book>
+      <id>35f513da-865a-45ce-a8f9-eb0336e47427</id>
+      <name>Kill Code</name>
+      <code>KC</code>
+    </book>
+    <book>
+      <id>6c97c3e8-8f13-43aa-b692-6218983c9396</id>
+      <name>Hamburg (German-exclusive)</name>
+      <code>HAMG</code>
+    </book>
+    <book>
+	  <id>612af603-65e6-442c-91b8-8b8cc0c77e4a</id>
+      <name>Better Than Bad</name>
+      <code>BTB</code>
+    </book>
+    <book>
+	  <id>be47e4b5-cc4f-427a-b4cd-cb5c1c8821ce</id>
+      <name>Aetherology</name>
+      <code>AET</code>
+    </book>
+    <book>
+      <id>e65d69fd-8717-4e2b-88b0-73bf7a22bca0</id>
+      <name>No Future</name>
+      <code>NF</code>
+    </book>
+    <book>
+      <id>b20a20e5-e9d4-4f54-9caa-57a001cb904e</id>
+      <name>Datapuls SOTA 2080 (German-exclusive)</name>
+      <code>SOTG</code>
+    </book>
+  </books>
 </chummer>

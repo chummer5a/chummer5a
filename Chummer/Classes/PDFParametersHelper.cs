@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,9 +17,9 @@ namespace Chummer.Classes
         {
             List<ListItem<string>> lstPdfParameters = new List<ListItem<string>>();
 
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("options.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("options.xml");
 
-            XmlNodeList objXmlNodeList = objXmlDocument.SelectNodes("/chummer/options/pdfarguments/pdfargument");
+            XmlNodeList objXmlNodeList = objXmlDocument.SelectNodes("/chummer/pdfarguments/pdfargument");
             
             foreach (XmlNode objXmlNode in objXmlNodeList)
             {

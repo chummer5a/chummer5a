@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
@@ -83,14 +83,14 @@ namespace Chummer
                 return c;
 	        });
 
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, this);
 
-            textBox1.WatermarkText = LanguageManager.Instance.GetString("String_Search");
+            textBox1.WatermarkText = LanguageManager.GetString("String_Search");
         }
 
 	    private void SearchBoxChanged(object sender, EventArgs args)
 	    {
-	        if (_currentVisibleControl != null) _currentVisibleControl.Visible = false;
+            if (_currentVisibleControl != null) _currentVisibleControl.Visible = false;
 
 	        string searchfor = textBox1.Text;
 	        /*if (keyPressEventArgs.KeyChar != '\b')

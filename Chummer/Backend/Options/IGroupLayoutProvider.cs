@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Drawing;
 
 namespace Chummer.Backend.Options
 {
-    public interface IGroupLayoutProvider
+    public interface IGroupLayoutProvider<LayoutEntry> where LayoutEntry : ILayoutEntry
     {
         /// <summary>
         /// Preliminary computation for layouts. Split from final layouts to allow multiple layouts to match
@@ -14,7 +14,7 @@ namespace Chummer.Backend.Options
         /// <returns></returns>
         LayoutGroupComputation ComputeLayoutGroup(
             Graphics willBeRenderedOn, 
-            List<LayoutLineInfo> contents,
+            List<LayoutEntry> contents,
             ref object crossGroupSharedData);
 
 
@@ -33,16 +33,45 @@ namespace Chummer.Backend.Options
 
     public abstract class LayoutGroupComputation { }
 
-    public class LayoutLineInfo
+    public class ControlLayoutEntry : ILayoutEntry
     {
-        public Rectangle ControlRectangle { get; set; }
+        public System.Windows.Forms.Control Control { get; set; }
         public string LayoutString { get; set; }
         public string ToolTip { get; set; }
+
+        public string OriginName { get; set; }
+
+        public Rectangle GetRectangle() => new Rectangle(Control.Location, Control.Size);
+    }
+
+    public interface ILayoutEntry
+    {
+        /// <summary>
+        /// The rectangle specifying the size of the embedded gui element
+        /// </summary>
+        /// <returns></returns>
+        Rectangle GetRectangle();
+
+        /// <summary>
+        /// A layout string containing a {} to be replaced with a gui element
+        /// </summary>
+        string LayoutString { get; }
+
+        /// <summary>
+        /// A string describing the origin of this ILayoutEntry
+        /// </summary>
+        string OriginName { get; }
+
+        /// <summary>
+        /// An optional tooltip for the entry
+        /// </summary>
+        string ToolTip { get;}
+
     }
 
     public class RenderedLayoutGroup
     {
-        public List<Point> ControlLocations { get; set; }
+        public List<GraphicRenderInfo> ControlLocations { get; set; }
         public List<TextRenderInfo> TextLocations { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
@@ -68,9 +97,13 @@ namespace Chummer.Backend.Options
             public string Text { get; set; }
             public FontStyle Style { get; set; }
         }
-    }
 
-    
+        public class GraphicRenderInfo
+        {
+            public ILayoutEntry Source { get; set; }
+            public Point Location { get; set; }
+        }
+    }
 
     public class LayoutOptionsContainer
     {

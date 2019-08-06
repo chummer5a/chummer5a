@@ -1,90 +1,102 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
+using System;
 using System.Xml;
-using Chummer;
-using Chummer.Datastructures;
 
-namespace Chummer.Skills
-{ 
-	class ExoticSkill : Skill
-	{
-		private static TranslatedField<string> _specificTranslator = new TranslatedField<string>();
-		private string _specific;
-		private string _translated;
+namespace Chummer.Backend.Skills
+{
+    public sealed class ExoticSkill : Skill
+    {
+        private string _strSpecific;
 
-		static ExoticSkill()
-		{
-			XmlNodeList exotic = 
-				 XmlManager.Instance.Load("weapons.xml").SelectNodes("/chummer/weapons/weapon");
+        public ExoticSkill(Character character, XmlNode node) : base(character, node)
+        {
+        }
 
-			var elem = exotic.OfType<XmlNode>()
-				.Select(
-					x => new Tuple<string, string>(x["name"].InnerText, x.Attributes["translate"]?.InnerText ?? x["name"].InnerText));
+        public void Load(XmlNode node)
+        {
+            node.TryGetStringFieldQuickly("specific", ref _strSpecific);
+        }
 
-			_specificTranslator.AddRange(elem);
-		}
+        public override bool AllowDelete => !CharacterObject.Created;
 
+        public override int CurrentSpCost => Math.Max(BasePoints, 0);
 
-		public ExoticSkill(Character character, XmlNode node) : base(character, node)
-		{
-			
-		}
+        /// <summary>
+        /// How much karma this costs. Return value during career mode is undefined
+        /// </summary>
+        /// <returns></returns>
+        public override int CurrentKarmaCost => Math.Max(RangeCost(Base + FreeKarma, TotalBaseRating), 0);
 
-		public void Load(XmlNode node)
-		{
-			_specific = node["specific"].InnerText;
-			_translated = node["translated"]?.InnerText;
-		}
+        public override void WriteTo(XmlTextWriter objWriter)
+        {
+            objWriter.WriteStartElement("skill");
+            objWriter.WriteElementString("guid", Id.ToString("D"));
+            objWriter.WriteElementString("suid", SkillId.ToString("D"));
+            objWriter.WriteElementString("isknowledge", bool.FalseString);
+            objWriter.WriteElementString("skillcategory", SkillCategory);
+            objWriter.WriteElementString("karma", KarmaPoints.ToString(GlobalOptions.Instance.InvariantCultureInfo));
+            objWriter.WriteElementString("base", BasePoints.ToString(GlobalOptions.Instance.InvariantCultureInfo)); //this could acctually be saved in karma too during career
+            objWriter.WriteElementString("notes", Notes);
+            if (!CharacterObject.Created)
+            {
+                objWriter.WriteElementString("buywithkarma", BuyWithKarma.ToString());
+            }
 
-		public override bool AllowDelete
-		{
-			get { return !CharacterObject.Created; }
-		}
+            if (Specializations.Count != 0)
+            {
+                objWriter.WriteStartElement("specs");
+                foreach (SkillSpecialization objSpecialization in Specializations)
+                {
+                    objSpecialization.Save(objWriter);
+                }
+                objWriter.WriteEndElement();
+            }
 
-		public override int CurrentSpCost()
-		{
-			return BasePoints;
-		}
+            objWriter.WriteElementString("specific", _strSpecific);
 
-		/// <summary>
-		/// How much karma this costs. Return value during career mode is undefined
-		/// </summary>
-		/// <returns></returns>
-		public override int CurrentKarmaCost()
-		{
-			return RangeCost(Base + FreeKarma(), LearnedRating);
-		}
+            objWriter.WriteEndElement();
 
-		public override bool IsExoticSkill
-		{
-			get { return true; }
-		}
+        }
 
-		/// <summary>
-		/// Called during save to allow derived classes to save additional infomation required to rebuild state
-		/// </summary>
-		/// <param name="writer"></param>
-		protected override void SaveExtendedData(XmlTextWriter writer)
-		{
-			writer.WriteElementString("specific", _specific);
+        public string Specific
+        {
+            get => _strSpecific;
+            set
+            {
+                _strSpecific = value;
 
-			if(_translated != null) writer.WriteElementString("translated", _translated);
-		}
+                OnPropertyChanged();
+            }
+        }
 
-		public string Specific {
-			get { return _specificTranslator.Read(_specific, ref _translated); }
-			set
-			{
-				_specificTranslator.Write(value, ref _specific, ref _translated);
-				OnPropertyChanged();
-			}
-		}
+        public string DisplaySpecific(string strLanguage)
+        {
+            if (strLanguage == GlobalOptions.DefaultLanguage)
+                return Specific;
 
-		public override string DisplaySpecialization
-		{
-			get { return Specific; }
-		}
-	}
+            return LanguageManager.TranslateExtra(Specific, strLanguage);
+        }
+
+        public override string DisplaySpecializationMethod(string strLanguage)
+        {
+            return DisplaySpecific(strLanguage);
+        }
+    }
 }

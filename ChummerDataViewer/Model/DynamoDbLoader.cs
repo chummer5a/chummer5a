@@ -1,40 +1,42 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data.SQLite;
+using System.Diagnostics;
 using System.Linq;
-using System.Threading;
 using Amazon;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
 
 namespace ChummerDataViewer.Model
 {
-	class DynamoDbLoader : INotifyThreadStatus
+	public class DynamoDbLoader : INotifyThreadStatus, IDisposable
 	{
-		const string DataTable = "ChummerDumpsList";
-		private AmazonDynamoDBClient _client;
-		private readonly Thread _workerThread;
-		private readonly WaitDurationProvider _backoff = new WaitDurationProvider();
+		private const string DataTable = "ChummerDumpsList";
+		private readonly AmazonDynamoDBClient _client;
+		private readonly BackgroundWorker _worker = new BackgroundWorker();
+        private readonly WaitDurationProvider _backoff = new WaitDurationProvider();
 
 		public DynamoDbLoader()
 		{
 			_client = new AmazonDynamoDBClient(PersistentState.AWSCredentials, RegionEndpoint.EUCentral1);
-			_workerThread = new Thread(WorkerEntryPrt)
-			{
-				IsBackground = true,
-				Name = "DynamoDB Worker"
-			};
-			_workerThread.Start();
-		}
+            _worker.WorkerReportsProgress = false;
+            _worker.WorkerSupportsCancellation = false;
+            _worker.DoWork += WorkerEntryPrt;
+            _worker.RunWorkerAsync();
+        }
 
-		private void WorkerEntryPrt()
+        private readonly Stopwatch _objTimeoutStopwatch = Stopwatch.StartNew();
+        private int _intCurrentTimeout;
+		private void WorkerEntryPrt(object sender, DoWorkEventArgs e)
 		{
 			try
 			{
-
 				OnStatusChanged(new StatusChangedEventArgs("Connecting"));
 				while (true)
 				{
+                    if (_objTimeoutStopwatch.ElapsedMilliseconds < _intCurrentTimeout)
+                        continue;
 					try
 					{
 						//Scan 10 items. If middle of scan, pick up there
@@ -42,10 +44,10 @@ namespace ChummerDataViewer.Model
 							PersistentState.Database.GetKey("crashdumps_last_timestamp"),
 							PersistentState.Database.GetKey("crashdumps_last_key")); //Start scanning based on last key in db
 
-						//Into anon type with a little extra info. DB lookup to see if known, parse guid 
+						//Into anon type with a little extra info. DB lookup to see if known, parse guid
 						var newItems = response.Items
 							.Select(x => new { item = x, guid = Guid.Parse(x["crash_id"].S)})
-							.Select(old => new {item = old.item, guid = old.guid, known = PersistentState.Database.GetCrash(old.guid) != null })
+							.Select(old => new { old.item,  old.guid, known = PersistentState.Database.GetCrash(old.guid) != null })
 							.ToList();
 
 						//If all items are known
@@ -57,18 +59,16 @@ namespace ChummerDataViewer.Model
 
 							//And sleep for exponential backoff
 							int timeout = _backoff.GetSeconds();
-							OnStatusChanged(new StatusChangedEventArgs($"No data. Retrying in {TimeSpan.FromSeconds(timeout)}"));
-							for (int i = timeout - 1; i >= 0; i--)
-							{
-								Thread.Sleep(1000);
-							}
+							OnStatusChanged(new StatusChangedEventArgs($"No data. Retrying in {TimeSpan.FromSeconds(timeout)}."));
+                            _intCurrentTimeout = timeout * 1000;
+                            _objTimeoutStopwatch.Restart();
 							continue;
 						}
 
 						//Otherwise, add _NEW_ items to db
 						using (SQLiteTransaction transaction = PersistentState.Database.GetTransaction())
 						{
-							
+
 							if (response.LastEvaluatedKey.Count == 0)
 							{
 								//If we reached the last (oldest), reset progress meter
@@ -92,13 +92,13 @@ namespace ChummerDataViewer.Model
 								//Don't take so long waiting for the next if we found anything.
 								//Theoretically this should keep it checking roughly same frequency as new items gets added
 								//in reality it is probably bull
-								_backoff.Sucess(); 
+								_backoff.Sucess();
 							}
 							transaction.Commit();
 						}
 
 						//Tell the good news that we have new items. Also tell guids so it can be found
-						OnStatusChanged(new StatusChangedEventArgs("Working", 
+						OnStatusChanged(new StatusChangedEventArgs("Working",
 							newItems
 							.Where(x => !x.known)
 							.Select(x => x.guid)
@@ -108,23 +108,18 @@ namespace ChummerDataViewer.Model
 					catch (InternalServerErrorException)
 					{
 						int timeout = _backoff.GetSeconds();
-						for (int i = timeout - 1; i >= 0; i--)
-						{
-							OnStatusChanged(new StatusChangedEventArgs($"Internal server error, retrying in {i} seconds"));
-							Thread.Sleep(1000);
-						}
+                        OnStatusChanged(new StatusChangedEventArgs($"Internal server error, retrying in {TimeSpan.FromSeconds(timeout)}."));
+                        _intCurrentTimeout = timeout * 1000;
+                        _objTimeoutStopwatch.Restart();
 					}
 					catch (ProvisionedThroughputExceededException)
 					{
 						int timeout = _backoff.GetSeconds();
-						for (int i = timeout - 1; i >= 0; i--)
-						{
-							OnStatusChanged(new StatusChangedEventArgs($"Too fast, retrying in {i} seconds"));
-							Thread.Sleep(1000);
-						}
+                        OnStatusChanged(new StatusChangedEventArgs($"Too fast,  retrying in {TimeSpan.FromSeconds(timeout)}."));
+                        _intCurrentTimeout = timeout * 1000;
+                        _objTimeoutStopwatch.Restart();
 					}
 				}
-
 			}
 #if DEBUG
 			catch(StackOverflowException ex)
@@ -140,16 +135,15 @@ namespace ChummerDataViewer.Model
 		private static void WriteCrashToDb(Dictionary<string, AttributeValue> attributeValues)
 		{
 			Guid guid = Guid.Parse(attributeValues["crash_id"].S);
-			Version version;
-			if (Version.TryParse(attributeValues["version"].S, out version))
-			{
-			}
-			else
-			{
-				version = new Version(attributeValues["version"].S + ".0");
-			}
+            if (Version.TryParse(attributeValues["version"].S, out Version version))
+            {
+            }
+            else
+            {
+                version = new Version(attributeValues["version"].S + ".0");
+            }
 
-			PersistentState.Database.CreateCrashReport(
+            PersistentState.Database.CreateCrashReport(
 				guid,
 				long.Parse(attributeValues["upload_timestamp"].N),
 				attributeValues["build_type"].S,
@@ -177,7 +171,7 @@ namespace ChummerDataViewer.Model
 					{"crash_id", new AttributeValue {S = lastKey}},
 					{"upload_timestamp", new AttributeValue {N = lastTimeStamp}}
 				};
-			} 
+			}
 
 			return _client.Scan(request);
 		}
@@ -189,9 +183,31 @@ namespace ChummerDataViewer.Model
 		{
 			StatusChanged?.Invoke(this, args);
 		}
-	}
 
-	internal class WaitDurationProvider
+        #region IDisposable Support
+        private bool disposedValue; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    _client?.Dispose();
+                }
+
+                disposedValue = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+        #endregion
+    }
+
+    public sealed class WaitDurationProvider
 	{
 		private int _time = 1;
 
@@ -215,21 +231,19 @@ namespace ChummerDataViewer.Model
 		}
 	}
 
-	internal interface INotifyThreadStatus
+    public interface INotifyThreadStatus
 	{
 		event StatusChangedEvent StatusChanged;
 		string Name { get; }
 	}
 
-	internal delegate void StatusChangedEvent(INotifyThreadStatus sender, StatusChangedEventArgs args);
+    public delegate void StatusChangedEvent(INotifyThreadStatus sender, StatusChangedEventArgs args);
 
-	internal class StatusChangedEventArgs : EventArgs
+    public sealed class StatusChangedEventArgs : EventArgs
 	{
 		public StatusChangedEventArgs(string status, dynamic attachedData = null)
 		{
-			if(status == null) throw new ArgumentNullException(nameof(status));
-
-			Status = status;
+            Status = status ?? throw new ArgumentNullException(nameof(status));
 			AttachedData = attachedData;
 		}
 

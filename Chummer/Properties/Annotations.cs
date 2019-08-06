@@ -1,3 +1,21 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 ﻿using System;
 
 #pragma warning disable 1591
@@ -197,7 +215,7 @@ namespace Chummer.Annotations
   /// // A method that returns null if the parameter is null,
   /// // and not null if the parameter is not null
   /// [ContractAnnotation("null => null; notnull => notnull")]
-  /// public object Transform(object data) 
+  /// public object Transform(object data)
   /// </code></item>
   /// <item><code>
   /// [ContractAnnotation("s:null=>false; =>true,result:notnull; =>false, result:null")]
@@ -374,6 +392,7 @@ namespace Chummer.Annotations
   /// which should not be removed and so is treated as used.
   /// </summary>
   [MeansImplicitUse(ImplicitUseTargetFlags.WithMembers)]
+  [AttributeUsage(AttributeTargets.All)]
   public sealed class PublicAPIAttribute : Attribute
   {
     public PublicAPIAttribute() { }
@@ -653,7 +672,7 @@ namespace Chummer.Annotations
 
   /// <summary>
   /// ASP.NET MVC Attribute. Indicates that a parameter is an MVC display template.
-  /// Use this Attribute for custom wrappers similar to 
+  /// Use this Attribute for custom wrappers similar to
   /// <c>System.Web.Mvc.Html.DisplayExtensions.DisplayForModel(HtmlHelper, String)</c>.
   /// </summary>
   [AttributeUsage(AttributeTargets.Parameter)]
@@ -723,7 +742,7 @@ namespace Chummer.Annotations
 
   /// <summary>
   /// Razor Attribute. Indicates that a parameter or a method is a Razor section.
-  /// Use this Attribute for custom wrappers similar to 
+  /// Use this Attribute for custom wrappers similar to
   /// <c>System.Web.WebPages.WebPageBase.RenderSection(String)</c>.
   /// </summary>
   [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Method)]
@@ -758,7 +777,7 @@ namespace Chummer.Annotations
 
   /// <summary>
   /// Indicates that the marked method is assertion method, i.e. it halts control flow if
-  /// one of the conditions is satisfied. To set the condition, mark one of the parameters with 
+  /// one of the conditions is satisfied. To set the condition, mark one of the parameters with
   /// <see cref="AssertionConditionAttribute"/> Attribute.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
@@ -933,5 +952,5 @@ namespace Chummer.Annotations
   /// The Attribute must be mentioned in your member reordering patterns
   /// </remarks>
   [AttributeUsage(AttributeTargets.All)]
-  public sealed class NoReorder : Attribute { }
+  public sealed class NoReorderAttribute : Attribute { }
 }

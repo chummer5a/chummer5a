@@ -16,28 +16,27 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System.Reflection;
+ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-// General Information about an assembly is controlled through the following 
+// General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Chummer")]
 [assembly: AssemblyDescription("Character generator for Shadowrun 5th Edition")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Chummer for 4th edition by Keith Rudolph.\n\r" +
+[assembly: AssemblyCompany("Original Chummer for 4th edition by Keith Rudolph.\n\r" +
                            "Chummer5 update by Adam Schmidt: srchummer5@gmail.com\n\r" +
                            "Chummer5a update by Anonymous fa/tg/uy: chummer5isalive@gmail.com\n\r" +
-                           "Additional 5a updates by Johannes Elgaard: joha4270@gmail.com\n\r" +
-                           "Data files for Run Faster & Data Tails by reddit/u/Iridios")]
-[assembly: AssemblyProduct("Chummer")]
+                           "Additional 5a updates by Johannes Elgaard: joha4270@gmail.com")]
+[assembly: AssemblyProduct("Chummer5a")]
 [assembly: AssemblyCopyright("Copyright © Keith Rudolph 2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
-// Setting ComVisible to false makes the types in this assembly not visible 
-// to COM components.  If you need to access a type in this assembly from 
+// Setting ComVisible to false makes the types in this assembly not visible
+// to COM components.  If you need to access a type in this assembly from
 // COM, set the ComVisible attribute to true on that type.
 [assembly: ComVisible(false)]
 
@@ -47,10 +46,10 @@ using System.Runtime.InteropServices;
 // Version information for an assembly consists of the following four values:
 //
 //      Major Version
-//      Minor Version 
+//      Minor Version
 //      Build Number
 //      Revision
-[assembly: AssemblyVersion("5.183.0")]
-[assembly: AssemblyFileVersion("5.183.0")]
+[assembly: AssemblyVersion("5.205.1")]
+[assembly: AssemblyFileVersion("5.205.1")]
 
 [assembly: InternalsVisibleTo("Chummer.Test")]

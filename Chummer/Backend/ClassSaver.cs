@@ -1,11 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
 using System.Xml;
 using Chummer.Backend.Attributes.SaveAttributes;
 using Microsoft.Win32;
-using Octokit;
 
 namespace Chummer.Backend
 {

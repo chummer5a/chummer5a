@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,71 +16,79 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
-using System.Collections.Generic;
+using Chummer.Backend;
+using Chummer.Backend.UI;
+using Microsoft.ApplicationInsights;
+using Microsoft.ApplicationInsights.DataContracts;
+using Microsoft.ApplicationInsights.Extensibility;
+using NLog;
+using NLog.Config;
+using System;
 using System.Diagnostics;
- using System.Globalization;
- using System.IO;
+using System.IO;
 using System.Linq;
-﻿using System.Runtime.InteropServices;
-﻿using System.Threading;
-﻿using System.Windows.Forms;
-﻿using Chummer.Backend;
-﻿using Chummer.Backend.Debugging;
- using Chummer.Backend.UI;
- using Chummer.Debugging;
+using System.Net;
+using System.Net.Sockets;
+using System.Runtime;
+using System.Threading;
+using System.Windows.Forms;
 
+[assembly: CLSCompliant(true)]
 namespace Chummer
 {
-	static class Program
-	{
-		/// <summary>
-		/// The main entry point for the application.
-		/// </summary>
-		[STAThread]
-		static void Main()
-		{
-		    Stopwatch sw = Stopwatch.StartNew();
-			//If debuging and launched from other place (Bootstrap), launch debugger
-		    string[] cmd = Environment.GetCommandLineArgs();
+    internal static class Program
+    {
+        private static Logger Log = null;
+        private const string strChummerGuid = "eb0759c1-3599-495e-8bc5-57c8b3e1b31c";
+        private static TelemetryConfiguration ApplicationInsightsConfig = new TelemetryConfiguration { InstrumentationKey = "012fd080-80dc-4c10-97df-4f2cf8c805d5" };
+        public static readonly TelemetryClient ApplicationInsightsTelemetryClient = new TelemetryClient(ApplicationInsightsConfig);
 
-            if (cmd.Contains("/debug"))
-			{
-			    Debugging = true;
-                if (!Debugger.IsAttached)
+        /// <summary>
+        /// The main entry point for the application.
+        /// </summary>
+        [STAThread]
+        static void Main()
+        {
+            using (GlobalChummerMutex = new Mutex(false, @"Global\" + strChummerGuid))
+            {
+                IsMono = Type.GetType("Mono.Runtime") != null;
+                // Mono doesn't always play nice with ProfileOptimization, so it's better to just not bother with it when running under Mono
+                if (!IsMono)
                 {
-
-                    try { Debugger.Launch(); } catch { }
+                    ProfileOptimization.SetProfileRoot(Utils.GetStartupPath);
+                    ProfileOptimization.StartProfile("chummerprofile");
                 }
-            }
 
-		    
+                Stopwatch sw = Stopwatch.StartNew();
+                //If debuging and launched from other place (Bootstrap), launch debugger
+                if (Environment.GetCommandLineArgs().Contains("/debug") && !Debugger.IsAttached)
+                {
+                    Debugger.Launch();
+                }
+                sw.TaskEnd("dbgchk");
+                //Various init stuff (that mostly "can" be removed as they serve
+                //debugging more than function
 
-            sw.TaskEnd("dbgchk");
-            //Various init stuff (that mostly "can" be removed as they serve 
-            //debugging more than function
+
+                //Needs to be called before Log is setup, as it moves where log might be.
+                FixCwd();
 
 
-            //Needs to be called before Log is setup, as it moves where log might be.
-            FixCwd();
+                sw.TaskEnd("fixcwd");
+                //Log exceptions that is caught. Wanting to know about this cause of performance
+                AppDomain.CurrentDomain.FirstChanceException += (sender, e) =>
+                {
+                    //Console.WriteLine(e.Exception.ToString());
+                };
+                AppDomain.CurrentDomain.FirstChanceException += heatmap.OnException;
 
+                sw.TaskEnd("appdomain 2");
 
-	        sw.TaskEnd("fixcwd");
-			//Log exceptions that is caught. Wanting to know about this cause of performance
-	        AppDomain.CurrentDomain.FirstChanceException += Log.FirstChanceException;
-			AppDomain.CurrentDomain.FirstChanceException += heatmap.OnException;
-			
-
-			sw.TaskEnd("appdomain 2");
-
-	        string info =
-		        $"Application Chummer5a build {System.Reflection.Assembly.GetExecutingAssembly().GetName().Version} started at {DateTime.UtcNow} with command line arguments {Environment.CommandLine}";
-			
-	        sw.TaskEnd("infogen");
-
-			Log.Info( info);
-			
-	        sw.TaskEnd("infoprnt");
+                string strInfo =
+                    $"Application Chummer5a build {System.Reflection.Assembly.GetExecutingAssembly().GetName().Version} started at {DateTime.UtcNow} with command line arguments {Environment.CommandLine}";
+                sw.TaskEnd("infogen");
+             
+                sw.TaskEnd("infoprnt");
 
             GlobalOptions.Load();
 		    ThreadPool.QueueUserWorkItem(PreLoadOptionImages);
@@ -89,37 +97,153 @@ namespace Chummer
 			Application.SetCompatibleTextRenderingDefault(false);
 
 		    sw.TaskEnd("languagefreestartup");
-			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, null);
 			// Make sure the default language has been loaded before attempting to open the Main Form.
 
 #if !DEBUG
-			AppDomain.CurrentDomain.UnhandledException += (o, e) =>
-			{
-				Exception ex = e.ExceptionObject as Exception;
-				if(ex != null)
-					CrashHandler.WebMiniDumpHandler(ex);
+                AppDomain.CurrentDomain.UnhandledException += (o, e) =>
+                {
+                    if (e.ExceptionObject is Exception ex)
+                        CrashHandler.WebMiniDumpHandler(ex);
 
-				//main.Hide();
-				//main.ShowInTaskbar = false;
-			};
+                    //main.Hide();
+                    //main.ShowInTaskbar = false;
+                };
 #endif
 
-	        sw.TaskEnd("Startup");
-			if (LanguageManager.Instance.Loaded)
-			{
-				Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
+                sw.TaskEnd("Startup");
 
-				frmMain main = new frmMain();
-				Application.Run(main);
-			}
-			else
-			{
-				Application.Exit();
-			}
+                Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
 
-			string ExceptionMap = heatmap.GenerateInfo();
-			Log.Info(ExceptionMap);
-		}
+                if (!string.IsNullOrEmpty(LanguageManager.ManagerErrorMessage))
+                {
+                    MessageBox.Show(LanguageManager.ManagerErrorMessage, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                if (!string.IsNullOrEmpty(GlobalOptions.Instance.ErrorMessage))
+                {
+                    MessageBox.Show(GlobalOptions.Instance.ErrorMessage, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                try
+                {
+                    LogManager.ThrowExceptions = true;
+                    ConfigurationItemFactory.Default.Targets.RegisterDefinition(
+                        "ApplicationInsightsTarget",
+                        typeof(Microsoft.ApplicationInsights.NLogTarget.ApplicationInsightsTarget)
+                    );
+                    Log = NLog.LogManager.GetCurrentClassLogger();
+                    if (GlobalOptions.Instance.UseLogging)
+                    {
+                        foreach (var rule in NLog.LogManager.Configuration.LoggingRules.ToList())
+                        {
+                            //only change the loglevel, if it's off - otherwise it has been changed manually
+                            if (rule.Levels.Count == 0)
+                                rule.EnableLoggingForLevels(LogLevel.Debug, LogLevel.Fatal);
+                        }
+                    }
+                    Log.Info(strInfo);
+                    Log.Info("NLog initialized");
+                    if (GlobalOptions.Instance.UseLoggingApplicationInsights)
+                    {
+#if DEBUG
+                        //If you set true as DeveloperMode (see above), you can see the sending telemetry in the debugging output window in IDE.
+                        TelemetryConfiguration.Active.TelemetryChannel.DeveloperMode = true;
+#else
+                        TelemetryConfiguration.Active.TelemetryChannel.DeveloperMode = false;
+#endif
+                        // Set session data:
+                        ApplicationInsightsTelemetryClient.Context.User.Id = Environment.UserName;
+                        ApplicationInsightsTelemetryClient.Context.Session.Id = Guid.NewGuid().ToString();
+                        ApplicationInsightsTelemetryClient.Context.Device.OperatingSystem = Environment.OSVersion.ToString();
+                        ApplicationInsightsTelemetryClient.Context.Device.Id = Dns.GetHostName();
+                        ApplicationInsightsTelemetryClient.Context.Component.Version = System.Reflection.Assembly
+                            .GetExecutingAssembly().GetName().Version.ToString();
+                        ApplicationInsightsTelemetryClient.Context.Location.Ip = GetLocalIPAddress();
+                        TelemetryConfiguration.Active.TelemetryInitializers.Add(new CustomTelemetryInitializer());
+                        //for now lets disable live view. We may make another GlobalOption to enable it at a later stage...
+                        //var live = new LiveStreamProvider(ApplicationInsightsConfig);
+                        //live.Enable();
+
+                        // Log a page view:
+                        PageViewTelemetry pvt = new PageViewTelemetry("Program.Main()");
+                        pvt.Properties.Add("version", System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString());
+                        pvt.Properties.Add("parameters", Environment.CommandLine);
+                        ApplicationInsightsTelemetryClient.TrackPageView(pvt);
+                    }
+                    else
+                    {
+                        TelemetryConfiguration.Active.DisableTelemetry = true;
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
+
+                
+
+                //make sure the Settings are upgraded/preserved after an upgrade
+                //see for details: https://stackoverflow.com/questions/534261/how-do-you-keep-user-config-settings-across-different-assembly-versions-in-net/534335#534335
+                if (Properties.Settings.Default.UpgradeRequired)
+                {
+                    Properties.Settings.Default.Upgrade();
+                    Properties.Settings.Default.UpgradeRequired = false;
+                    Properties.Settings.Default.Save();
+                }
+
+                // Make sure the default language has been loaded before attempting to open the Main Form.
+                LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, null);
+
+                MainForm = new frmChummerMain();
+                Application.Run(MainForm);
+                if (GlobalOptions.Instance.UseLoggingApplicationInsights)
+                {
+                    if (ApplicationInsightsTelemetryClient != null)
+                    {
+                        ApplicationInsightsTelemetryClient.Flush();
+                        //we have to wait a bit to give it time to upload the data
+                        Console.WriteLine("Waiting a bit to flush logging data...");
+                        Thread.Sleep(5000);
+                    }
+
+                }
+                Log.Info(heatmap.GenerateInfo());
+            }
+        }
+
+        public static string GetLocalIPAddress()
+        {
+            var host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (var ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    return ip.ToString();
+                }
+            }
+            //throw new Exception("No network adapters with an IPv4 address in the system!");
+            return null;
+        }
+
+        /// <summary>
+        /// Main application form.
+        /// </summary>
+        public static frmChummerMain MainForm
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Whether the application is running under Mono (true) or .NET (false)
+        /// </summary>
+        public static bool IsMono
+        {
+            get;
+            private set;
+        }
 
         //This function is here because there is no other place for it
 	    private static void PreLoadOptionImages(object state)
@@ -145,16 +269,22 @@ namespace Chummer
 			//If launched by file assiocation, the cwd is file location. 
 			//Chummer looks for data in cwd, to be able to move exe (legacy+bootstraper uses this)
 
-			if (Directory.Exists(Path.Combine(Application.StartupPath, "data"))
-			    && Directory.Exists(Path.Combine(Application.StartupPath, "lang")))
-			{
-				//both normally used data dirs present (add file loading abstraction to the list)
-				//so do nothing
+            if (Directory.Exists(Path.Combine(Utils.GetStartupPath, "data"))
+                && Directory.Exists(Path.Combine(Utils.GetStartupPath, "lang")))
+            {
+                //both normally used data dirs present (add file loading abstraction to the list)
+                //so do nothing
 
-				return;
-			}
+                return;
+            }
 
-			Environment.CurrentDirectory = Application.StartupPath;
-		}
-	}
+            Environment.CurrentDirectory = Utils.GetStartupPath;
+        }
+
+        public static Mutex GlobalChummerMutex
+        {
+            get;
+            private set;
+        }
+    }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -39,7 +39,7 @@ namespace Chummer.Backend.Attributes.OptionAttributes
             {
                 for (int i = 0; i < RealValues.Length; i++)
                 {
-                    returns.Add(new ListItem(RealValues[i], LanguageManager.Instance.GetString(TranslatedDisplay[i])));
+                    returns.Add(new ListItem(RealValues[i], LanguageManager.GetString(TranslatedDisplay[i])));
                 }
             }
             else

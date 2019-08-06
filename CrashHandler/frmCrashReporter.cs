@@ -1,31 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
+using System;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
-using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace CrashHandler
 {
-	public partial class frmCrashReporter : Form
+	public sealed partial class frmCrashReporter : Form
 	{
-
 		delegate void ChangeDesc(CrashDumperProgress progress, string desc);
 		private readonly CrashDumper _dumper;
+		private readonly string _strDefaultUserStory;
+	    private static readonly MD5CryptoServiceProvider _md5provider = new MD5CryptoServiceProvider();
 
-		public frmCrashReporter(CrashDumper dumper)
+        public frmCrashReporter(CrashDumper dumper)
 		{
 			_dumper = dumper;
 			InitializeComponent();
 			lblDesc.Text = _dumper.Attributes["visible-error-friendly"];
 			txtIdSelectable.Text = "Crash followup id = " + _dumper.Attributes["visible-crash-id"];
-			
 			_dumper.CrashDumperProgressChanged += DumperOnCrashDumperProgressChanged;
+			_strDefaultUserStory = Md5Hash(txtUserStory.Text);
 		}
 
 		private void frmCrashReporter_Load(object sender, EventArgs e)
@@ -44,8 +40,8 @@ namespace CrashHandler
 			{
 				Close();
 			}
-
-			statusCollectionProgess.Text = desc;
+            
+            statusCollectionProgess.Text = desc;
 		}
 
 		private void llblContents_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -58,13 +54,17 @@ namespace CrashHandler
 		{
 			timerRefreshTextFile.Stop();
 			timerRefreshTextFile.Start();
-		}
+			lblDescriptionWarning.Visible = txtUserStory.Text.Length == 0;
+            btnSend.Enabled = txtUserStory.Text.Length != 0;
+        }
 
 		private void btnNo_Click(object sender, EventArgs e)
 		{
+			//TODO: Convert to restart, collect previously loaded character files from application and relaunch?
 			DialogResult = DialogResult.Cancel;
 			_dumper.CrashDumperProgressChanged -= DumperOnCrashDumperProgressChanged;
-			Close();
+		    Environment.Exit(-1);
+			// Close();
 		}
 
 		private void btnSend_Click(object sender, EventArgs e)
@@ -75,13 +75,15 @@ namespace CrashHandler
 				timerRefreshTextFile_Tick(null, null);
 				fs.Close();
 			}
-			DialogResult = DialogResult.OK;
+			
 			_dumper.CrashDumperProgressChanged -= DumperOnCrashDumperProgressChanged;
 			_dumper.AllowSending();
-			Close();
+
+		    DialogResult = DialogResult.OK;
+            Close();
 		}
 
-		private FileStream fs = null;
+		private FileStream fs;
 		private void timerRefreshTextFile_Tick(object sender, EventArgs e)
 		{
 			timerRefreshTextFile.Stop();
@@ -91,7 +93,11 @@ namespace CrashHandler
 				fs = File.OpenWrite(Path.Combine(_dumper.WorkingDirectory, "userstory.txt"));
 			}
 			fs.Seek(0, SeekOrigin.Begin);
-			byte[] bytes = Encoding.UTF8.GetBytes(txtDesc.Text);
+			byte[] bytes = Encoding.UTF8.GetBytes(string.Empty);
+			if (Md5Hash(txtUserStory.Text) != _strDefaultUserStory)
+			{
+				bytes = Encoding.UTF8.GetBytes(txtUserStory.Text);
+			}
 			fs.Write(bytes, 0, bytes.Length);
 			fs.Flush(true);
 		}
@@ -99,6 +105,46 @@ namespace CrashHandler
 		private void frmCrashReporter_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			_dumper.CrashDumperProgressChanged -= DumperOnCrashDumperProgressChanged;
+		}
+
+		private void cmdSubmitIssue_Click(object sender, EventArgs e)
+		{
+		    string strTitle = System.Net.WebUtility.HtmlEncode("Issue: - PLEASE ENTER DESCRIPTION HERE");
+		    strTitle = strTitle
+                .Replace(" ", "%20")
+		        .Replace("#", "%23")
+		        .Replace("\r\n", "%0D%0A")
+		        .Replace("\r", "%0D%0A")
+		        .Replace("\n", "%0D%0A");
+
+            string strBody = "### Environment\n";
+			strBody += $"Crash ID: {_dumper.Attributes["visible-crash-id"]}\n";
+			strBody += $"Chummer Version: {_dumper.Attributes["visible-version"]}\n";
+			strBody += $"Environment: {_dumper.Attributes["os-name"]}\n";
+			strBody += $"Runtime: {Environment.Version}\n";
+            strBody += txtUserStory.Text;
+			strBody = System.Net.WebUtility.HtmlEncode(strBody);
+			strBody = strBody
+			    .Replace(" ", "%20")
+			    .Replace("#", "%23")
+			    .Replace("\r\n", "%0D%0A")
+			    .Replace("\r", "%0D%0A")
+			    .Replace("\n", "%0D%0A");
+
+			string strSend = $"https://github.com/chummer5a/chummer5a/issues/new?labels=new&title={strTitle}&body={strBody}";
+
+			Process.Start(strSend);
+			btnSend_Click(sender, e);
+		}
+		private static string Md5Hash(string strInput)
+		{
+			StringBuilder strbldHash = new StringBuilder();
+			byte[] achrBytes = _md5provider.ComputeHash(new UTF8Encoding().GetBytes(strInput));
+			for (int i = 0; i < achrBytes.Length; i++)
+			{
+			    strbldHash.Append(achrBytes[i].ToString("x2"));
+			}
+			return strbldHash.ToString();
 		}
 	}
 }

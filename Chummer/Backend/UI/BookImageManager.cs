@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Drawing;
@@ -62,9 +62,10 @@ namespace Chummer.Backend.UI
             return image;
         }
 
-        private readonly Lazy<Bitmap> CheckboxChecked = new Lazy<Bitmap>(() => (Bitmap)Properties.Resources.ResourceManager.GetObject("checkbox_checked"), true);
-        private readonly Lazy<Bitmap> CheckboxUnchecked = new Lazy<Bitmap>(() => (Bitmap)Properties.Resources.ResourceManager.GetObject("checkbox_unchecked"), true);
-        private static readonly Lazy<Bitmap> MissingImage = new Lazy<Bitmap>(() => (Bitmap)Properties.Resources.ResourceManager.GetObject("book/missing"), true);
+
+        private readonly Bitmap CheckboxChecked = Properties.Resources.checkbox_checked;
+        private readonly Bitmap CheckboxUnchecked = Properties.Resources.checkbox_unchecked;
+        private static readonly Bitmap MissingImage = Properties.Resources.missing_book;
 
         private Image GenerateImage(string bookCode, bool enabled, bool aura, int scale)
         {
@@ -101,12 +102,12 @@ namespace Chummer.Backend.UI
             if (enabled)
             {
                 convert = Pass;
-                overlay = CheckboxChecked.Value;
+                overlay = CheckboxChecked;
             }
             else
             {
                 convert = ColorIntToGreyscale;
-                overlay = CheckboxUnchecked.Value;
+                overlay = CheckboxUnchecked;
             }
 
             int intRealGlowSize = GlowBorder / scale;
@@ -309,7 +310,7 @@ namespace Chummer.Backend.UI
         private static Bitmap LoadBookImage(string bookCode)
         {
             string filePath = Path.Combine(Application.StartupPath, "images", $"{bookCode}.png");
-            return File.Exists(filePath) ? new Bitmap(filePath) : MissingImage.Value;
+            return File.Exists(filePath) ? new Bitmap(filePath) : MissingImage;
         }
 
         private static int ColorToInt(Color color)

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -17,13 +18,14 @@
     You can obtain the full source code for Chummer5a at
     https://github.com/chummer5a/chummer5a
 -->
-<chummer>
-	<version>0</version>
-	<categories>
+<chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.w3.org/2001/XMLSchema packs.xsd">
+  <version>0</version>
+  <categories>
     <category>Core Packs</category>
     <category>Weapon and Ammo Packs</category>
     <category>Armor Packs</category>
-    <catagory>Cyber Packs</catagory>
+    <category>Cyber Packs</category>
     <category>Lifestyle Packs</category>
     <category>Color Packs</category>
     <category>Vehicle Packs</category>
@@ -32,8 +34,8 @@
     <category>Magic Packs</category>
     <category>Community Packs</category>
     <category>Custom</category>
-	</categories>
-	<packs>
+  </categories>
+  <packs>
     <pack>
       <name>Intro Runner Pack</name>
       <category>Core Packs</category>
@@ -43,24 +45,6 @@
           <name>Armor Vest</name>
         </armor>
       </armors>
-      <weapons>
-        <weapon>
-          <name>Colt America L36</name>
-          <accessories>
-            <accessory>
-              <name>Spare Clip</name>
-              <mount />
-            </accessory>
-            <accessory>
-              <name>Spare Clip</name>
-              <mount />
-            </accessory>
-          </accessories>
-        </weapon>
-        <weapon>
-          <name>Knife</name>
-        </weapon>
-      </weapons>
       <gears>
         <gear>
           <name>Fake SIN</name>
@@ -111,6 +95,24 @@
           <rating>1</rating>
         </gear>
       </gears>
+      <weapons>
+        <weapon>
+          <name>Colt America L36</name>
+          <accessories>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+          </accessories>
+        </weapon>
+        <weapon>
+          <name>Knife</name>
+        </weapon>
+      </weapons>
     </pack>
     <pack>
       <name>Basic Runner Pack</name>
@@ -121,11 +123,6 @@
           <name>Armor Vest</name>
         </armor>
       </armors>
-      <weapons>
-        <weapon>
-          <name>Knife</name>
-        </weapon>
-      </weapons>
       <gears>
         <gear>
           <name>Fake SIN</name>
@@ -192,6 +189,11 @@
           <rating>1</rating>
         </gear>
       </gears>
+      <weapons>
+        <weapon>
+          <name>Knife</name>
+        </weapon>
+      </weapons>
     </pack>
     <pack>
       <name>Advanced Runner Pack</name>
@@ -202,11 +204,6 @@
           <name>Armor Vest</name>
         </armor>
       </armors>
-      <weapons>
-        <weapon>
-          <name>Knife</name>
-        </weapon>
-      </weapons>
       <gears>
         <gear>
           <name>Fake SIN</name>
@@ -328,6 +325,11 @@
           <rating>1</rating>
         </gear>
       </gears>
+      <weapons>
+        <weapon>
+          <name>Knife</name>
+        </weapon>
+      </weapons>
     </pack>
     <pack>
       <name>Clasic Samurai Pack</name>
@@ -338,6 +340,15 @@
           <name>Clothing</name>
         </armor>
       </armors>
+      <gears>
+        <gear>
+          <name
+            select="The Art of War, The Book of Five Rings, The Tale of the Heike, and other assorted samurai writings and poetry">
+            Datasoft
+          </name>
+          <category>Software</category>
+        </gear>
+      </gears>
       <weapons>
         <weapon>
           <name>Katana</name>
@@ -352,17 +363,18 @@
           <name>Club</name>
         </weapon>
       </weapons>
-      <gears>
-        <gear>
-          <name select="The Art of War, The Book of Five Rings, The Tale of the Heike, and other assorted samurai writings and poetry">Datasoft</name>
-          <category>Software</category>
-        </gear>
-      </gears>
     </pack>
     <pack>
       <name>Up Close &amp; Personal Pack</name>
       <category>Weapon and Ammo Packs</category>
       <nuyenbp>3</nuyenbp>
+      <gears>
+        <gear>
+          <name>Throwing Knife</name>
+          <category>Ammunition</category>
+          <qty>4</qty>
+        </gear>
+      </gears>
       <weapons>
         <weapon>
           <name>Combat Axe</name>
@@ -392,13 +404,6 @@
           <name>Knucks</name>
         </weapon>
       </weapons>
-      <gears>
-        <gear>
-          <name>Throwing Knife</name>
-          <category>Ammunition</category>
-          <qty>4</qty>
-        </gear>
-      </gears>
     </pack>
     <pack>
       <name>Blademaster Pack</name>
@@ -435,30 +440,22 @@
       <name>Monowhip Pack</name>
       <category>Weapon and Ammo Packs</category>
       <nuyenbp>10</nuyenbp>
-      <weapons>
-        <weapon>
-          <name>Monofilament Whip</name>
-        </weapon>
-      </weapons>
       <gears>
         <gear>
           <name>DocWagon Contract, Basic</name>
           <category>DocWagon Contract</category>
         </gear>
       </gears>
+      <weapons>
+        <weapon>
+          <name>Monofilament Whip</name>
+        </weapon>
+      </weapons>
     </pack>
     <pack>
       <name>Basic Bowman Pack</name>
       <category>Weapon and Ammo Packs</category>
       <nuyenbp>1</nuyenbp>
-      <weapons>
-        <weapon>
-          <name>Bow (Rating 4)</name>
-        </weapon>
-        <weapon>
-          <name>Survival Knife</name>
-        </weapon>
-      </weapons>
       <gears>
         <gear>
           <name>Survival Kit</name>
@@ -467,8 +464,8 @@
         <gear>
           <name select="Bows">Arrow: Injection</name>
           <category>Ammunition</category>
-          <rating>4</rating>
           <qty>10</qty>
+          <rating>4</rating>
           <gears>
             <gear>
               <name>Narcoject</name>
@@ -479,15 +476,47 @@
         <gear>
           <name select="Bows">Arrow: Standard</name>
           <category>Ammunition</category>
-          <rating>4</rating>
           <qty>50</qty>
+          <rating>4</rating>
         </gear>
       </gears>
+      <weapons>
+        <weapon>
+          <name>Bow (Rating 4)</name>
+        </weapon>
+        <weapon>
+          <name>Survival Knife</name>
+        </weapon>
+      </weapons>
     </pack>
     <pack>
       <name>Advanced Bowman Pack</name>
       <category>Weapon and Ammo Packs</category>
       <nuyenbp>1</nuyenbp>
+      <gears>
+        <gear>
+          <name>Survival Kit</name>
+          <category>Survival Gear</category>
+        </gear>
+        <gear>
+          <name select="Bows">Arrow: Injection</name>
+          <category>Ammunition</category>
+          <qty>5</qty>
+          <rating>6</rating>
+          <gears>
+            <gear>
+              <name>Narcoject</name>
+              <category>Toxins</category>
+            </gear>
+          </gears>
+        </gear>
+        <gear>
+          <name select="Bows">Arrow: Standard</name>
+          <category>Ammunition</category>
+          <qty>50</qty>
+          <rating>6</rating>
+        </gear>
+      </gears>
       <weapons>
         <weapon>
           <name>Bow (Rating 6)</name>
@@ -499,35 +528,23 @@
           <name>Knife</name>
         </weapon>
       </weapons>
-      <gears>
-        <gear>
-          <name>Survival Kit</name>
-          <category>Survival Gear</category>
-        </gear>
-        <gear>
-          <name select="Bows">Arrow: Injection</name>
-          <category>Ammunition</category>
-          <rating>6</rating>
-          <qty>5</qty>
-          <gears>
-            <gear>
-              <name>Narcoject</name>
-              <category>Toxins</category>
-            </gear>
-          </gears>
-        </gear>
-        <gear>
-          <name select="Bows">Arrow: Standard</name>
-          <category>Ammunition</category>
-          <rating>6</rating>
-          <qty>50</qty>
-        </gear>
-      </gears>
     </pack>
     <pack>
       <name>Ares Pistol Pack</name>
       <category>Weapon and Ammo Packs</category>
       <nuyenbp>1</nuyenbp>
+      <gears>
+        <gear>
+          <name select="Heavy Pistols">Ammo: Regular Ammo</name>
+          <category>Ammunition</category>
+          <qty>300</qty>
+        </gear>
+        <gear>
+          <name select="Light Pistols">Ammo: Regular Ammo</name>
+          <category>Ammunition</category>
+          <qty>60</qty>
+        </gear>
+      </gears>
       <weapons>
         <weapon>
           <name>Ares Predator V</name>
@@ -572,23 +589,23 @@
           </accessories>
         </weapon>
       </weapons>
-      <gears>
-        <gear>
-          <name select="Heavy Pistols">Ammo: Regular Ammo</name>
-          <category>Ammunition</category>
-          <qty>300</qty>
-        </gear>
-        <gear>
-          <name select="Light Pistols">Ammo: Regular Ammo</name>
-          <category>Ammunition</category>
-          <qty>60</qty>
-        </gear>
-      </gears>
     </pack>
     <pack>
       <name>Big Boom Pistol Pack</name>
       <category>Weapon and Ammo Packs</category>
       <nuyenbp>1</nuyenbp>
+      <gears>
+        <gear>
+          <name select="Heavy Pistols">Ammo: Regular Ammo</name>
+          <category>Ammunition</category>
+          <qty>190</qty>
+        </gear>
+        <gear>
+          <name select="Heavy Pistols">Ammo: Flechette Rounds</name>
+          <category>Ammunition</category>
+          <qty>80</qty>
+        </gear>
+      </gears>
       <weapons>
         <weapon>
           <name>Remington Roomsweeper</name>
@@ -625,23 +642,23 @@
           </accessories>
         </weapon>
       </weapons>
-      <gears>
-        <gear>
-          <name select="Heavy Pistols">Ammo: Regular Ammo</name>
-          <category>Ammunition</category>
-          <qty>190</qty>
-        </gear>
-        <gear>
-          <name select="Heavy Pistols">Ammo: Flechette Rounds</name>
-          <category>Ammunition</category>
-          <qty>80</qty>
-        </gear>
-      </gears>
     </pack>
     <pack>
       <name>Browning And Beretta Pistol Pack</name>
       <category>Weapon and Ammo Packs</category>
       <nuyenbp>1</nuyenbp>
+      <gears>
+        <gear>
+          <name select="Heavy Pistols">Ammo: Regular Ammo</name>
+          <category>Ammunition</category>
+          <qty>140</qty>
+        </gear>
+        <gear>
+          <name select="Light Pistols">Ammo: Regular Ammo</name>
+          <category>Ammunition</category>
+          <qty>210</qty>
+        </gear>
+      </gears>
       <weapons>
         <weapon>
           <name>Browning Ultra-Power</name>
@@ -682,23 +699,23 @@
           </accessories>
         </weapon>
       </weapons>
-      <gears>
-        <gear>
-          <name select="Heavy Pistols">Ammo: Regular Ammo</name>
-          <category>Ammunition</category>
-          <qty>140</qty>
-        </gear>
-        <gear>
-          <name select="Light Pistols">Ammo: Regular Ammo</name>
-          <category>Ammunition</category>
-          <qty>210</qty>
-        </gear>
-      </gears>
     </pack>
     <pack>
       <name>Colt Pistol Pack</name>
       <category>Weapon and Ammo Packs</category>
       <nuyenbp>1</nuyenbp>
+      <gears>
+        <gear>
+          <name select="Heavy Pistols">Ammo: Regular Ammo</name>
+          <category>Ammunition</category>
+          <qty>280</qty>
+        </gear>
+        <gear>
+          <name select="Light Pistols">Ammo: Regular Ammo</name>
+          <category>Ammunition</category>
+          <qty>110</qty>
+        </gear>
+      </gears>
       <weapons>
         <weapon>
           <name>Colt Government 2066</name>
@@ -743,23 +760,23 @@
           </accessories>
         </weapon>
       </weapons>
-      <gears>
-        <gear>
-          <name select="Heavy Pistols">Ammo: Regular Ammo</name>
-          <category>Ammunition</category>
-          <qty>280</qty>
-        </gear>
-        <gear>
-          <name select="Light Pistols">Ammo: Regular Ammo</name>
-          <category>Ammunition</category>
-          <qty>110</qty>
-        </gear>
-      </gears>
     </pack>
     <pack>
       <name>Subtle Pistol Pack</name>
       <category>Weapon and Ammo Packs</category>
       <nuyenbp>1</nuyenbp>
+      <gears>
+        <gear>
+          <name select="Heavy Pistols">Ammo: Flechette Rounds</name>
+          <category>Ammunition</category>
+          <qty>170</qty>
+        </gear>
+        <gear>
+          <name select="Holdouts">Ammo: Regular Ammo</name>
+          <category>Ammunition</category>
+          <qty>10</qty>
+        </gear>
+      </gears>
       <weapons>
         <weapon>
           <name>Ares Viper Slivergun</name>
@@ -784,23 +801,23 @@
           </accessories>
         </weapon>
       </weapons>
-      <gears>
-        <gear>
-          <name select="Heavy Pistols">Ammo: Flechette Rounds</name>
-          <category>Ammunition</category>
-          <qty>170</qty>
-        </gear>
-        <gear>
-          <name select="Holdouts">Ammo: Regular Ammo</name>
-          <category>Ammunition</category>
-          <qty>10</qty>
-        </gear>
-      </gears>
     </pack>
     <pack>
       <name>Light Security Pack</name>
       <category>Weapon and Ammo Packs</category>
       <nuyenbp>1</nuyenbp>
+      <gears>
+        <gear>
+          <name select="Submachine Guns">Ammo: Regular Ammo</name>
+          <category>Ammunition</category>
+          <qty>280</qty>
+        </gear>
+        <gear>
+          <name select="Light Pistols">Ammo: Regular Ammo</name>
+          <category>Ammunition</category>
+          <qty>90</qty>
+        </gear>
+      </gears>
       <weapons>
         <weapon>
           <name>HK 227</name>
@@ -841,6 +858,11 @@
           </accessories>
         </weapon>
       </weapons>
+    </pack>
+    <pack>
+      <name>Japanacorp Light Security Pack</name>
+      <category>Weapon and Ammo Packs</category>
+      <nuyenbp>1</nuyenbp>
       <gears>
         <gear>
           <name select="Submachine Guns">Ammo: Regular Ammo</name>
@@ -850,14 +872,19 @@
         <gear>
           <name select="Light Pistols">Ammo: Regular Ammo</name>
           <category>Ammunition</category>
-          <qty>90</qty>
+          <qty>70</qty>
+        </gear>
+        <gear>
+          <name>Restraint, Plastic</name>
+          <category>Security Devices</category>
+          <qty>10</qty>
+        </gear>
+        <gear>
+          <name select="Submachine Guns">Ammo: Gel Rounds</name>
+          <category>Ammunition</category>
+          <qty>60</qty>
         </gear>
       </gears>
-    </pack>
-    <pack>
-      <name>Japanacorp Light Security Pack</name>
-      <category>Weapon and Ammo Packs</category>
-      <nuyenbp>1</nuyenbp>
       <weapons>
         <weapon>
           <name>SCK Model 100</name>
@@ -886,33 +913,23 @@
           </accessories>
         </weapon>
       </weapons>
-      <gears>
-        <gear>
-          <name select="Submachine Guns">Ammo: Regular Ammo</name>
-          <category>Ammunition</category>
-          <qty>280</qty>
-        </gear>
-        <gear>
-          <name select="Light Pistols">Ammo: Regular Ammo</name>
-          <category>Ammunition</category>
-          <qty>70</qty>
-        </gear>
-        <gear>
-          <name>Restraint, Plastic</name>
-          <category>Security Devices</category>
-          <qty>10</qty>
-        </gear>
-        <gear>
-          <name select="Submachine Guns">Ammo: Gel Rounds</name>
-          <category>Ammunition</category>
-          <qty>60</qty>
-        </gear>
-      </gears>
     </pack>
     <pack>
       <name>Smartgun Pack</name>
       <category>Weapon and Ammo Packs</category>
       <nuyenbp>1</nuyenbp>
+      <gears>
+        <gear>
+          <name select="Submachine Guns">Ammo: Regular Ammo</name>
+          <category>Ammunition</category>
+          <qty>200</qty>
+        </gear>
+        <gear>
+          <name select="Heavy Pistols">Ammo: Regular Ammo</name>
+          <category>Ammunition</category>
+          <qty>30</qty>
+        </gear>
+      </gears>
       <weapons>
         <weapon>
           <name>Ingram Smartgun X</name>
@@ -937,40 +954,11 @@
           </accessories>
         </weapon>
       </weapons>
-      <gears>
-        <gear>
-          <name select="Submachine Guns">Ammo: Regular Ammo</name>
-          <category>Ammunition</category>
-          <qty>200</qty>
-        </gear>
-        <gear>
-          <name select="Heavy Pistols">Ammo: Regular Ammo</name>
-          <category>Ammunition</category>
-          <qty>30</qty>
-        </gear>
-      </gears>
     </pack>
     <pack>
       <name>Street Slugger Pack</name>
       <category>Weapon and Ammo Packs</category>
       <nuyenbp>1</nuyenbp>
-      <weapons>
-        <weapon>
-          <name>Defiance T-250</name>
-        </weapon>
-        <weapon>
-          <name>Colt America L36</name>
-        </weapon>
-        <weapon>
-          <name>Streetline Special</name>
-        </weapon>
-        <weapon>
-          <name>Knife</name>
-        </weapon>
-        <weapon>
-          <name>Knucks</name>
-        </weapon>
-      </weapons>
       <gears>
         <gear>
           <name select="Shotguns">Ammo: Flechette Rounds</name>
@@ -993,11 +981,35 @@
           <qty>30</qty>
         </gear>
       </gears>
+      <weapons>
+        <weapon>
+          <name>Defiance T-250</name>
+        </weapon>
+        <weapon>
+          <name>Colt America L36</name>
+        </weapon>
+        <weapon>
+          <name>Streetline Special</name>
+        </weapon>
+        <weapon>
+          <name>Knife</name>
+        </weapon>
+        <weapon>
+          <name>Knucks</name>
+        </weapon>
+      </weapons>
     </pack>
     <pack>
       <name>Heavy Security Pack</name>
       <category>Weapon and Ammo Packs</category>
       <nuyenbp>1</nuyenbp>
+      <gears>
+        <gear>
+          <name select="Assault Rifles">Ammo: Regular Ammo</name>
+          <category>Ammunition</category>
+          <qty>210</qty>
+        </gear>
+      </gears>
       <weapons>
         <weapon>
           <name>FN HAR</name>
@@ -1033,18 +1045,23 @@
           </accessories>
         </weapon>
       </weapons>
-      <gears>
-        <gear>
-          <name select="Assault Rifles">Ammo: Regular Ammo</name>
-          <category>Ammunition</category>
-          <qty>210</qty>
-        </gear>
-      </gears>
     </pack>
     <pack>
       <name>Cheap Soldier Pack</name>
       <category>Weapon and Ammo Packs</category>
       <nuyenbp>1</nuyenbp>
+      <gears>
+        <gear>
+          <name select="Assault Rifles">Ammo: Regular Ammo</name>
+          <category>Ammunition</category>
+          <qty>300</qty>
+        </gear>
+        <gear>
+          <name>Kamikaze</name>
+          <category>Drugs</category>
+          <qty>3</qty>
+        </gear>
+      </gears>
       <weapons>
         <weapon>
           <name>Colt M23</name>
@@ -1071,23 +1088,38 @@
           <name>Sword</name>
         </weapon>
       </weapons>
-      <gears>
-        <gear>
-          <name select="Assault Rifles">Ammo: Regular Ammo</name>
-          <category>Ammunition</category>
-          <qty>300</qty>
-        </gear>
-        <gear>
-          <name>Kamikaze</name>
-          <category>Drugs</category>
-          <qty>3</qty>
-        </gear>
-      </gears>
     </pack>
     <pack>
       <name>Ares Alpha Gunner Pack</name>
       <category>Weapon and Ammo Packs</category>
       <nuyenbp>4</nuyenbp>
+      <gears>
+        <gear>
+          <name select="Assault Rifles">Ammo: Regular Ammo</name>
+          <category>Ammunition</category>
+          <qty>500</qty>
+        </gear>
+        <gear>
+          <name select="Assault Rifles">Ammo: APDS</name>
+          <category>Ammunition</category>
+          <qty>40</qty>
+        </gear>
+        <gear>
+          <name select="Assault Rifles">Ammo: Explosive Rounds</name>
+          <category>Ammunition</category>
+          <qty>120</qty>
+        </gear>
+        <gear>
+          <name>Minigrenade: High Explosive</name>
+          <category>Ammunition</category>
+          <qty>12</qty>
+        </gear>
+        <gear>
+          <name>Minigrenade: Fragmentation</name>
+          <category>Ammunition</category>
+          <qty>12</qty>
+        </gear>
+      </gears>
       <weapons>
         <weapon>
           <name>Ares Alpha</name>
@@ -1131,53 +1163,11 @@
           </accessories>
         </weapon>
       </weapons>
-      <gears>
-        <gear>
-          <name select="Assault Rifles">Ammo: Regular Ammo</name>
-          <category>Ammunition</category>
-          <qty>500</qty>
-        </gear>
-        <gear>
-          <name select="Assault Rifles">Ammo: APDS</name>
-          <category>Ammunition</category>
-          <qty>40</qty>
-        </gear>
-        <gear>
-          <name select="Assault Rifles">Ammo: Explosive Rounds</name>
-          <category>Ammunition</category>
-          <qty>120</qty>
-        </gear>
-        <gear>
-          <name>Minigrenade: High Explosive</name>
-          <category>Ammunition</category>
-          <qty>12</qty>
-        </gear>
-        <gear>
-          <name>Minigrenade: Fragmentation</name>
-          <category>Ammunition</category>
-          <qty>12</qty>
-        </gear>
-      </gears>
     </pack>
     <pack>
       <name>Sportsman Pack</name>
       <category>Weapon and Ammo Packs</category>
       <nuyenbp>2</nuyenbp>
-      <weapons>
-        <weapon>
-          <name>Remington 950</name>
-          <accessories />
-        </weapon>
-        <weapon>
-          <name>Bow (Rating 4)</name>
-        </weapon>
-        <weapon>
-          <name>Survival Knife</name>
-        </weapon>
-        <weapon>
-          <name>Knife</name>
-        </weapon>
-      </weapons>
       <gears>
         <gear>
           <name>Survival Kit</name>
@@ -1190,8 +1180,8 @@
         <gear>
           <name select="Bows">Arrow: Standard</name>
           <category>Ammunition</category>
-          <rating>4</rating>
           <qty>20</qty>
+          <rating>4</rating>
         </gear>
         <gear>
           <name select="Sniper Rifles">Ammo: Regular Ammo</name>
@@ -1199,16 +1189,47 @@
           <qty>250</qty>
         </gear>
       </gears>
+      <weapons>
+        <weapon>
+          <name>Remington 950</name>
+        </weapon>
+        <weapon>
+          <name>Bow (Rating 4)</name>
+        </weapon>
+        <weapon>
+          <name>Survival Knife</name>
+        </weapon>
+        <weapon>
+          <name>Knife</name>
+        </weapon>
+      </weapons>
     </pack>
     <pack>
       <name>Tranq Darter Pack</name>
       <category>Weapon and Ammo Packs</category>
       <nuyenbp>1</nuyenbp>
+      <gears>
+        <gear>
+          <name select="Exotic Ranged Weapons">Ammo: Injection Darts</name>
+          <category>Ammunition</category>
+          <qty>10</qty>
+        </gear>
+        <gear>
+          <name>Narcoject</name>
+          <category>Toxins</category>
+          <qty>14</qty>
+        </gear>
+      </gears>
       <weapons>
         <weapon>
           <name>Parashield Dart Rifle</name>
         </weapon>
       </weapons>
+    </pack>
+    <pack>
+      <name>Tranq Pistol Darter Kit</name>
+      <category>Weapon and Ammo Packs</category>
+      <nuyenbp>1</nuyenbp>
       <gears>
         <gear>
           <name select="Exotic Ranged Weapons">Ammo: Injection Darts</name>
@@ -1221,11 +1242,6 @@
           <qty>14</qty>
         </gear>
       </gears>
-    </pack>
-    <pack>
-      <name>Tranq Pistol Darter Kit</name>
-      <category>Weapon and Ammo Packs</category>
-      <nuyenbp>1</nuyenbp>
       <weapons>
         <weapon>
           <name>Parashield Dart Pistol</name>
@@ -1234,18 +1250,6 @@
           <name>Parashield Dart Pistol</name>
         </weapon>
       </weapons>
-      <gears>
-        <gear>
-          <name select="Exotic Ranged Weapons">Ammo: Injection Darts</name>
-          <category>Ammunition</category>
-          <qty>10</qty>
-        </gear>
-        <gear>
-          <name>Narcoject</name>
-          <category>Toxins</category>
-          <qty>14</qty>
-        </gear>
-      </gears>
     </pack>
     <pack>
       <name>Squad Weapon Assault Pack</name>
@@ -1267,6 +1271,13 @@
       <name>Medium Machine Gunner Pack</name>
       <category>Weapon and Ammo Packs</category>
       <nuyenbp>4</nuyenbp>
+      <gears>
+        <gear>
+          <name select="Medium Machine Guns">Ammo: Regular Ammo</name>
+          <category>Ammunition</category>
+          <qty>250</qty>
+        </gear>
+      </gears>
       <weapons>
         <weapon>
           <name>Stoner-Ares M202</name>
@@ -1278,18 +1289,18 @@
           </accessories>
         </weapon>
       </weapons>
-      <gears>
-        <gear>
-          <name select="Medium Machine Guns">Ammo: Regular Ammo</name>
-          <category>Ammunition</category>
-          <qty>250</qty>
-        </gear>
-      </gears>
     </pack>
     <pack>
       <name>Rocketeer Pack</name>
       <category>Weapon and Ammo Packs</category>
       <nuyenbp>8</nuyenbp>
+      <gears>
+        <gear>
+          <name>Rocket: Fragmentation</name>
+          <category>Ammunition</category>
+          <qty>5</qty>
+        </gear>
+      </gears>
       <weapons>
         <weapon>
           <name>Aztechnology Striker</name>
@@ -1307,13 +1318,6 @@
           <name>Aztechnology Striker</name>
         </weapon>
       </weapons>
-      <gears>
-        <gear>
-          <name>Rocket: Fragmentation</name>
-          <category>Ammunition</category>
-          <qty>5</qty>
-        </gear>
-      </gears>
     </pack>
     <pack>
       <name>Box of Grenades #1</name>
@@ -1438,6 +1442,12 @@
       <armors>
         <armor>
           <name>Urban Explorer Jumpsuit</name>
+          <gears>
+            <gear>
+              <name>Biomonitor</name>
+              <category>Biotech</category>
+            </gear>
+          </gears>
           <mods>
             <mod>
               <name>Electrochromic Clothing</name>
@@ -1450,12 +1460,6 @@
               <name>Shock Frills</name>
             </mod>
           </mods>
-          <gears>
-            <gear>
-              <name>Biomonitor</name>
-              <category>Biotech</category>
-            </gear>
-          </gears>
         </armor>
         <armor>
           <name>Urban Explorer Jumpsuit: Helmet</name>
@@ -1727,6 +1731,12 @@
           <grade>Standard</grade>
         </cyberware>
       </cyberwares>
+      <gears>
+        <gear>
+          <name select="Cybertechnology">Tool Kit</name>
+          <category>Tools</category>
+        </gear>
+      </gears>
       <weapons>
         <weapon>
           <name>Hand Razors</name>
@@ -1738,12 +1748,6 @@
           <name>Katana</name>
         </weapon>
       </weapons>
-      <gears>
-        <gear>
-          <name select="Cybernetics">Tool Kit</name>
-          <category>Tools</category>
-        </gear>
-      </gears>
     </pack>
     <pack>
       <name>Advanced Razorboi Pack</name>
@@ -1759,6 +1763,17 @@
           <grade>Standard</grade>
         </cyberware>
       </cyberwares>
+      <gears>
+        <gear>
+          <name select="Cybertechnology">Tool Kit</name>
+          <category>Tools</category>
+        </gear>
+        <gear>
+          <name>Medkit</name>
+          <category>Biotech</category>
+          <rating>2</rating>
+        </gear>
+      </gears>
       <weapons>
         <weapon>
           <name>Katana</name>
@@ -1770,17 +1785,6 @@
           <name>Spurs</name>
         </weapon>
       </weapons>
-      <gears>
-        <gear>
-          <name select="Cybernetics">Tool Kit</name>
-          <category>Tools</category>
-        </gear>
-        <gear>
-          <name>Medkit</name>
-          <category>Biotech</category>
-          <rating>2</rating>
-        </gear>
-      </gears>
     </pack>
     <pack>
       <name>Basic Speedboost Pack</name>
@@ -1941,6 +1945,17 @@
           <grade>Standard</grade>
         </cyberware>
       </cyberwares>
+      <gears>
+        <gear>
+          <name select="Cybertechnology">Tool Kit</name>
+          <category>Tools</category>
+        </gear>
+        <gear>
+          <name>Medkit</name>
+          <category>Biotech</category>
+          <rating>2</rating>
+        </gear>
+      </gears>
       <weapons>
         <weapon>
           <name>Katana</name>
@@ -1958,17 +1973,6 @@
           <name>Spurs</name>
         </weapon>
       </weapons>
-      <gears>
-        <gear>
-          <name select="Cybernetics">Tool Kit</name>
-          <category>Tools</category>
-        </gear>
-        <gear>
-          <name>Medkit</name>
-          <category>Biotech</category>
-          <rating>2</rating>
-        </gear>
-      </gears>
     </pack>
     <pack>
       <name>Bioware Cat Pack(Catgirl pack)</name>
@@ -1989,12 +1993,6 @@
       <name>Bio-Computer Pack</name>
       <category>Cyber Packs</category>
       <nuyenbp>41</nuyenbp>
-      <cyberwares>
-        <cyberware>
-          <name>Datajack</name>
-          <grade>Standard</grade>
-        </cyberware>
-      </cyberwares>
       <biowares>
         <bioware>
           <name>Cerebral Booster</name>
@@ -2007,6 +2005,12 @@
           <grade>Standard</grade>
         </bioware>
       </biowares>
+      <cyberwares>
+        <cyberware>
+          <name>Datajack</name>
+          <grade>Standard</grade>
+        </cyberware>
+      </cyberwares>
     </pack>
     <pack>
       <name>Bioware Company Man Pack</name>
@@ -2039,8 +2043,8 @@
           <category>Tools</category>
         </gear>
         <gear>
-          <name select="Broken Sony CIY-720 cyberdeck">Custom Item</name>
-          <category>Custom</category>
+          <name>Broken Sony CIY-720</name>
+          <category>Cyberdecks</category>
         </gear>
       </gears>
     </pack>
@@ -2053,20 +2057,6 @@
           <name>Armor Clothing</name>
         </armor>
       </armors>
-      <weapons>
-        <weapon>
-          <name>Streetline Special</name>
-        </weapon>
-        <weapon>
-          <name>Knife</name>
-          <accessories>
-            <accessory>
-              <name>Spare Clip</name>
-              <mount />
-            </accessory>
-          </accessories>
-        </weapon>
-      </weapons>
       <gears>
         <gear>
           <name>Fake SIN</name>
@@ -2106,6 +2096,20 @@
           <category>ID/Credsticks</category>
         </gear>
       </gears>
+      <weapons>
+        <weapon>
+          <name>Streetline Special</name>
+        </weapon>
+        <weapon>
+          <name>Knife</name>
+          <accessories>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+          </accessories>
+        </weapon>
+      </weapons>
     </pack>
     <pack>
       <name>Cocktail Kid Pack</name>
@@ -2181,11 +2185,11 @@
           <category>Tools</category>
         </gear>
         <gear>
-          <name select="car parts">Shopsoft</name>
+          <name select="Car Parts">Shopsoft</name>
           <category>Software</category>
         </gear>
         <gear>
-          <name select="car makes and models">Knowsoft</name>
+          <name select="Car Makes and Models">Knowsoft</name>
           <category>Skillsofts</category>
           <rating>1</rating>
         </gear>
@@ -2218,8 +2222,8 @@
         <gear>
           <name>Camera, Micro</name>
           <category>Vision Devices</category>
-          <rating>1</rating>
           <qty>5</qty>
+          <rating>1</rating>
         </gear>
       </gears>
     </pack>
@@ -2372,8 +2376,8 @@
         <gear>
           <name>Slap Patch, Antidote Patch</name>
           <category>Biotech</category>
-          <rating>4</rating>
           <qty>5</qty>
+          <rating>4</rating>
         </gear>
         <gear>
           <name>Slap Patch, Stim Patch</name>
@@ -2383,8 +2387,8 @@
         <gear>
           <name>Slap Patch, Tranq Patch</name>
           <category>Biotech</category>
-          <rating>5</rating>
           <qty>4</qty>
+          <rating>5</rating>
         </gear>
         <gear>
           <name>Slap Patch, Trauma Patch</name>
@@ -2523,8 +2527,8 @@
         <gear>
           <name>Commercial Explosive</name>
           <category>Explosives</category>
-          <rating>5</rating>
           <qty>12</qty>
+          <rating>5</rating>
         </gear>
         <gear>
           <name>Detonator, Blasting Cap</name>
@@ -2550,15 +2554,15 @@
       </armors>
       <gears>
         <gear>
-          <name select="City streets">Mapsoft</name>
+          <name select="City Streets">Mapsoft</name>
           <category>Software</category>
         </gear>
         <gear>
-          <name select="motorcycles and motorcycle parts">Shopsoft</name>
+          <name select="Motorcycles and Motorcycle Parts">Shopsoft</name>
           <category>Software</category>
         </gear>
         <gear>
-          <name select="Automotive mechanics">Tool Kit</name>
+          <name select="Automotive Mechanic">Tool Kit</name>
           <category>Tools</category>
         </gear>
       </gears>
@@ -2762,13 +2766,6 @@
       <vehicles>
         <vehicle>
           <name>GM-Nissan Doberman (Medium)</name>
-          <mods />
-          <weapons>
-            <weapon>
-              <name>Colt Cobra TZ-120</name>
-              <accessories />
-            </weapon>
-          </weapons>
           <gears>
             <gear>
               <name>Sensor Array</name>
@@ -2776,6 +2773,11 @@
               <rating>3</rating>
             </gear>
           </gears>
+          <weapons>
+            <weapon>
+              <name>Colt Cobra TZ-120</name>
+            </weapon>
+          </weapons>
         </vehicle>
       </vehicles>
     </pack>
@@ -2786,7 +2788,6 @@
       <vehicles>
         <vehicle>
           <name>Steel Lynx Combat Drone (Large)</name>
-          <mods />
           <gears>
             <gear>
               <name>Sensor Array</name>
@@ -2812,34 +2813,29 @@
       </vehicles>
     </pack>
     <!--Example PACK
- 		<pack>
-			<name>Data Thief Programs</name>
-			<category>Gear Kits</category>
-			<nuyenbp>4</nuyenbp>
-			<gears>
-				<gear>
-					<name>Decrypt</name>
-					<rating>5</rating>
-				</gear>
-				<gear>
-					<name>Defuse</name>
-					<rating>5</rating>
-				</gear>
-				<gear>
-					<name>Track</name>
-					<rating>5</rating>
-				</gear>
-			</gears>
-		</pack> -->
+    <pack>
+      <name>Data Thief Programs</name>
+      <category>Gear Kits</category>
+      <nuyenbp>4</nuyenbp>
+      <gears>
+        <gear>
+          <name>Decrypt</name>
+          <rating>5</rating>
+        </gear>
+        <gear>
+          <name>Defuse</name>
+          <rating>5</rating>
+        </gear>
+        <gear>
+          <name>Track</name>
+          <rating>5</rating>
+        </gear>
+      </gears>
+    </pack> -->
     <pack>
       <name>Runnerhub Basic Gear Pack</name>
       <category>Community Packs</category>
-      <lifestyles>
-        <lifestyle>
-          <name>Low</name>
-          <months>1</months>
-        </lifestyle>
-      </lifestyles>
+      <nuyenbp>21</nuyenbp>
       <armors>
         <armor>
           <name>Armor Jacket</name>
@@ -2848,29 +2844,6 @@
           <name>Helmet</name>
         </armor>
       </armors>
-      <weapons>
-        <weapon>
-          <name>Steyr TMP</name>
-          <accessories>
-            <accessory>
-              <name>Silencer</name>
-              <mount>Barrel</mount>
-            </accessory>
-            <accessory>
-              <name>Spare Clip</name>
-              <mount />
-            </accessory>
-            <accessory>
-              <name>Spare Clip</name>
-              <mount />
-            </accessory>
-            <accessory>
-              <name>Spare Clip</name>
-              <mount />
-            </accessory>
-          </accessories>
-        </weapon>
-      </weapons>
       <gears>
         <gear>
           <name>Hermes Ikon</name>
@@ -3017,8 +2990,8 @@
         <gear>
           <name>Slap Patch, Stim Patch</name>
           <category>Biotech</category>
-          <rating>6</rating>
           <qty>2</qty>
+          <rating>6</rating>
         </gear>
         <gear>
           <name>Medkit</name>
@@ -3064,6 +3037,12 @@
           <category>Breaking and Entering Gear</category>
         </gear>
       </gears>
+      <lifestyles>
+        <lifestyle>
+          <baselifestyle>Low</baselifestyle>
+          <months>1</months>
+        </lifestyle>
+      </lifestyles>
       <vehicles>
         <vehicle>
           <name>Chrysler-Nissan Jackrabbit (Subcompact)</name>
@@ -3076,25 +3055,6 @@
           </gears>
         </vehicle>
       </vehicles>
-    </pack>
-    <pack>
-      <name>Runnerhub Pennypincher Pack</name>
-      <category>Community Packs</category>
-      <nuyenbp>5</nuyenbp>
-      <lifestyles>
-        <lifestyle>
-          <name>Low</name>
-          <months>1</months>
-        </lifestyle>
-      </lifestyles>
-      <armors>
-        <armor>
-          <name>Armor Jacket</name>
-        </armor>
-        <armor>
-          <name>Helmet</name>
-        </armor>
-      </armors>
       <weapons>
         <weapon>
           <name>Steyr TMP</name>
@@ -3118,6 +3078,19 @@
           </accessories>
         </weapon>
       </weapons>
+    </pack>
+    <pack>
+      <name>Runnerhub Pennypincher Pack</name>
+      <category>Community Packs</category>
+      <nuyenbp>5</nuyenbp>
+      <armors>
+        <armor>
+          <name>Armor Jacket</name>
+        </armor>
+        <armor>
+          <name>Helmet</name>
+        </armor>
+      </armors>
       <gears>
         <gear>
           <name>Renraku Sensei</name>
@@ -3224,10 +3197,40 @@
           <rating>6</rating>
         </gear>
       </gears>
+      <lifestyles>
+        <lifestyle>
+          <baselifestyle>Low</baselifestyle>
+          <months>1</months>
+        </lifestyle>
+      </lifestyles>
+      <weapons>
+        <weapon>
+          <name>Steyr TMP</name>
+          <accessories>
+            <accessory>
+              <name>Silencer</name>
+              <mount>Barrel</mount>
+            </accessory>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+          </accessories>
+        </weapon>
+      </weapons>
     </pack>
     <pack>
       <name>ShadowNET starter pack</name>
       <category>Community Packs</category>
+      <nuyenbp>10</nuyenbp>
       <armors>
         <armor>
           <name>Armor Jacket</name>
@@ -3236,18 +3239,6 @@
           <name>Ballistic Mask</name>
         </armor>
       </armors>
-      <weapons>
-        <weapon>
-          <name>Survival Knife</name>
-        </weapon>
-        <weapon>
-          <name>Savalette Guardian</name>
-          <accessories />
-        </weapon>
-        <weapon>
-          <name>Hold-Fast Sprayer</name>
-        </weapon>
-      </weapons>
       <gears>
         <gear>
           <name>Renraku Sensei</name>
@@ -3319,8 +3310,8 @@
         <gear>
           <name>Certified Credstick, Standard</name>
           <category>ID/Credsticks</category>
-          <rating>1</rating>
           <qty>10</qty>
+          <rating>1</rating>
         </gear>
         <gear>
           <name>Crowbar</name>
@@ -3357,14 +3348,25 @@
         <gear>
           <name>Slap Patch, Stim Patch</name>
           <category>Biotech</category>
-          <rating>6</rating>
           <qty>2</qty>
+          <rating>6</rating>
         </gear>
         <gear>
           <name>Slap Patch, Trauma Patch</name>
           <category>Biotech</category>
         </gear>
       </gears>
+      <weapons>
+        <weapon>
+          <name>Survival Knife</name>
+        </weapon>
+        <weapon>
+          <name>Savalette Guardian</name>
+        </weapon>
+        <weapon>
+          <name>Hold-Fast Sprayer</name>
+        </weapon>
+      </weapons>
     </pack>
-	</packs>
+  </packs>
 </chummer>

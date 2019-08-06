@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -18,10 +18,10 @@ namespace Chummer.UI.Options
 			LinkedOption = thisOption;
 			if (LinkedOption != null)
 			{
-				lblRuleDescriptionLabel.Text = LanguageManager.Instance.GetString(LinkedOption.DescriptionTag);
+				lblRuleDescriptionLabel.Text = LanguageManager.GetString(LinkedOption.DescriptionTag);
 				if (!string.IsNullOrWhiteSpace(LinkedOption.ModifierTag))
 				{
-					lblRuleMultiplierLabel.Text = LanguageManager.Instance.GetString(LinkedOption.ModifierTag);
+					lblRuleMultiplierLabel.Text = LanguageManager.GetString(LinkedOption.ModifierTag);
 				}
 				nudRule.Value = Convert.ToDecimal(LinkedOption.Value ?? LinkedOption.Default);
 				MoveControls();

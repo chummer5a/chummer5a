@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -26,7 +26,7 @@ namespace ChummerDataViewer
 
 
 		private readonly Dictionary<string, Action<StatusChangedEventArgs>> _specificHandlers;
-		
+
 
 		public Mainform()
 		{
@@ -65,12 +65,12 @@ namespace ChummerDataViewer
 			//lstCrashes.View = View.Details;
 
 
-			foreach (CrashReport crashReport in PersistentState.Database.GetAllCrashes().Take(100))
+			foreach (CrashReport crashReport in PersistentState.Database.GetAllCrashes())
 			{
 				_crashReports.Add(crashReport);
 			}
-			
-			_bldCrashReports = new BindingListDisplay<CrashReport>(_crashReports, c => new CrashReportView(c, _downloader), true)
+
+			_bldCrashReports = new BindingListDisplay<CrashReport>(_crashReports, c => new CrashReportView(c, _downloader))
 			{
 				Anchor  = AnchorStyles.Bottom | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Left,
 				Location = new Point(12, 69),
@@ -95,13 +95,15 @@ namespace ChummerDataViewer
 		{
 			object o = cboBuild.SelectedItem;
 			cboBuild.Items.Clear();
-			cboBuild.Items.AddRange(PersistentState.Database.GetAllBuildTypes().ToArray());
+            foreach (string strBuildType in PersistentState.Database.GetAllBuildTypes())
+			    cboBuild.Items.Add(strBuildType);
 
 			if (o != null) cboBuild.SelectedItem = o;
 
 			o = cboVersion.SelectedItem;
 			cboVersion.Items.Clear();
-			cboVersion.Items.AddRange(PersistentState.Database.GetAllVersions().OrderByDescending(v => v).ToArray());
+		    foreach (Version objVersionType in PersistentState.Database.GetAllVersions().OrderByDescending(v => v))
+                cboVersion.Items.Add(objVersionType);
 
 			if (o != null) cboVersion.SelectedItem = o;
 
@@ -124,23 +126,21 @@ namespace ChummerDataViewer
 
 		private void MainThreadAction(INotifyThreadStatus sender, StatusChangedEventArgs args)
 		{
-			ToolStripItem item;
-			if (_statusLabels.TryGetValue(sender, out item))
-			{
-				item.Text =  $"{sender.Name}: {args.Status}";
-			}
-			else
-			{
-				item = tsBackground.Items.Add($"{sender.Name}: {args.Status}");
-				_statusLabels.Add(sender, item);
-			}
+            if (_statusLabels.TryGetValue(sender, out ToolStripItem item))
+            {
+                item.Text = $"{sender.Name}: {args.Status}";
+            }
+            else
+            {
+                item = tsBackground.Items.Add($"{sender.Name}: {args.Status}");
+                _statusLabels.Add(sender, item);
+            }
 
-			Action<StatusChangedEventArgs> action;
-			if (_specificHandlers.TryGetValue(sender.Name, out action))
-			{
-				action(args);
-			}
-		}
+            if (_specificHandlers.TryGetValue(sender.Name, out Action<StatusChangedEventArgs> action))
+            {
+                action(args);
+            }
+        }
 
 		private void DynamoDbStatus(StatusChangedEventArgs statusChangedEventArgs)
 		{
@@ -195,25 +195,25 @@ namespace ChummerDataViewer
 
 		}
 
-		private bool TextFilter(CrashReport report, string search)
+		private static bool TextFilter(CrashReport report, string search)
 		{
-			if (report.Guid.ToString().Contains(search)) return true;
+			if (report.Guid.ToString("D").Contains(search)) return true;
 
 			if (report.ErrorFrindly.Contains(search)) return true;
 
 			if (report.StackTrace?.Contains(search) ?? false) return true;
 
 			if (report.Userstory?.Contains(search) ?? false) return false;
-			
+
 			return false;
 		}
 	}
 
-	internal class CrashReportTimeStampFilter : IComparer<CrashReport>
+	public sealed class CrashReportTimeStampFilter : IComparer<CrashReport>
 	{
 		public int Compare(CrashReport x, CrashReport y)
 		{
-			return y.Timestamp.CompareTo(x.Timestamp);
+			return y?.Timestamp.CompareTo(x?.Timestamp) ?? ((x?.Timestamp == null) ? 0 : -1);
 		}
 	}
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,13 +8,22 @@ using System.Windows.Forms;
 using System.Xml;
 using Chummer.Annotations;
 using Chummer.Backend;
-using Chummer.Backend.Equipment;
 using Microsoft.Win32;
 
 namespace Chummer
 {
     static class GlobalOptions
     {
+        //For the record I totally don't think Options is the right place to throw constants, by their nature of being "constants"
+        #region Constants
+        public const string DefaultLanguage = "en-us";
+        public const string DefaultCharacterSheetDefaultValue = "Shadowrun 5 (Skills grouped by Rating greater 0)";
+        public const string DefaultGameplayOption = "Standard";
+        public const string DefaultBuildMethod = "Priority";
+        public const int MaxMruSize = 10;
+
+        #endregion
+
         private static ProgramOptions _instance;
         public static ProgramOptions Instance => _instance;
         public static List<MRUEntry> MostRecentlyUsedList { get; } = new List<MRUEntry>();
@@ -23,12 +32,9 @@ namespace Chummer
         private static List<CharacterOptions> fileOptions;
         private static CharacterOptions _default;
 
-        public static GradeList CyberwareGrades = new GradeList();
-        public static GradeList BiowareGrades = new GradeList();
-
         #region MRU Methods
 
-        public static event MRUChangedHandler MRUChanged;
+        public static event EventHandler<TextEventArgs> MRUChanged;
 
 
         public static void MRUAdd(string entryPath)
@@ -50,9 +56,10 @@ namespace Chummer
             int topOfSticky = progress;
             int index = MostRecentlyUsedList.FindIndex(topOfSticky, mru => mru.Path == entryPath);
 
+            MRUEntry entry;
             if (index == -1) //Not found
             {
-                MRUEntry entry = new MRUEntry(entryPath);
+                entry = new MRUEntry(entryPath);
                 MostRecentlyUsedList.Insert(topOfSticky, entry);
 
                 //Remove every over index 9, backwards from performance (hah) reasons
@@ -67,12 +74,12 @@ namespace Chummer
             else
             {
                 //Move to top and rotate down
-                MRUEntry entry = MostRecentlyUsedList[index];
+                entry = MostRecentlyUsedList[index];
                 MostRecentlyUsedList.RemoveAt(index);
                 MostRecentlyUsedList.Insert(topOfSticky, entry);
             }
 
-            MRUChanged?.Invoke();
+            MRUChanged?.Invoke(entry, new TextEventArgs("mru"));
             //Needs to handle
             //Item already in list
             //New item
@@ -102,7 +109,8 @@ namespace Chummer
             }
 
 
-            MRUChanged?.Invoke();
+            //Intentionally swapped, I since sticky has changed
+            MRUChanged?.Invoke(entry, new TextEventArgs(entry.Sticky ? "mru" : "mrusticky"));
 
 
         }
@@ -150,7 +158,7 @@ namespace Chummer
         public static void Load()
         {
             
-            if (!Utils.IsRunningInVisualStudio())
+            if (!Utils.IsRunningInVisualStudio)
             {
                 string settingsDirectoryPath = Path.Combine(Application.StartupPath, "settings");
                 if (!Directory.Exists(settingsDirectoryPath))
@@ -178,8 +186,6 @@ namespace Chummer
 
             //TODO: find default characteroption
 
-            CyberwareGrades.LoadList(Improvement.ImprovementSource.Cyberware);
-            BiowareGrades.LoadList(Improvement.ImprovementSource.Bioware);
 
         }
 
@@ -235,7 +241,7 @@ namespace Chummer
             }
 
             // Retrieve the SourcebookInfo objects.
-            XmlNodeList objXmlBookList = XmlManager.Instance.Load("books.xml").SelectNodes("/chummer/books/book");
+            XmlNodeList objXmlBookList = XmlManager.Load("books.xml").SelectNodes("/chummer/books/book");
             foreach (XmlNode objXmlBook in objXmlBookList)
             {
                 SourcebookInfo objSource = new SourcebookInfo(objXmlBook["code"].InnerText, objXmlBook["name"].InnerText); //TODO: Localize

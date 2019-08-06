@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -83,7 +83,7 @@ namespace Chummer.Backend.Options
                 for (int i = 0; i < path.Length - 1; i++)
                 {
 
-                    if(!LanguageManager.Instance.TryGetString(path[i], out header))
+                    if(!LanguageManager.TryGetString(path[i], out header))
                         header = path[i];
 
                     //If you got an error and arrived here it is because you made an error with a class you are displaying
@@ -93,7 +93,7 @@ namespace Chummer.Backend.Options
                 }
 
 
-                if(!LanguageManager.Instance.TryGetString(path.Last(), out header))
+                if(!LanguageManager.TryGetString(path.Last(), out header))
                     header = path.Last();
 
                 SimpleTree<OptionRenderItem> newChild = new SimpleTree<OptionRenderItem> {Tag = header};
@@ -177,13 +177,13 @@ namespace Chummer.Backend.Options
             {
                 string displayString;
                 string toolTip;
-                if (!LanguageManager.Instance.TryGetString("Display_" + arg.Name, out displayString))
+                if (!LanguageManager.TryGetString("Display_" + arg.Name, out displayString))
                 {
-                    displayString = Utils.PascalCaseInsertSpaces(arg.Name);
                     Console.WriteLine($"No translation found for {arg.DeclaringType.Name}.{arg.Name}");
+                    Utils.BreakIfDebug();
                 }
 
-                LanguageManager.Instance.TryGetString("Tooltip_" + arg.Name, out toolTip);
+                LanguageManager.TryGetString("Tooltip_" + arg.Name, out toolTip);
 
 
                 OptionEntryProxy option = new OptionEntryProxy(target, arg, displayString, toolTip:toolTip);
@@ -192,7 +192,7 @@ namespace Chummer.Backend.Options
                 if (taga != null)
                 {
                     if(taga.Tags != null) option.Tags.AddRange(taga.Tags);
-                    if(taga.TranslatedTags != null) option.Tags.AddRange(taga.TranslatedTags.Select(LanguageManager.Instance.GetString));
+                    if(taga.TranslatedTags != null) option.Tags.AddRange(taga.TranslatedTags.Select(x => LanguageManager.GetString(x)));
                 }
                 return option;
             }

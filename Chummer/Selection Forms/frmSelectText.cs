@@ -16,67 +16,69 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
-using System.Windows.Forms;
+ using System;
+﻿using System.Windows.Forms;
 
 namespace Chummer
 {
     public partial class frmSelectText : Form
     {
-        private string _strReturnValue = "";
+        private string _strReturnValue = string.Empty;
 
-		#region Control Events
-		public frmSelectText()
+        #region Control Events
+        public frmSelectText()
         {
             InitializeComponent();
-			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, this);
         }
 
-		private void cmdOK_Click(object sender, EventArgs e)
+        private void cmdOK_Click(object sender, EventArgs e)
         {
-            _strReturnValue = txtValue.Text;
-            this.DialogResult = DialogResult.OK;
+            if (PreventXPathErrors && txtValue.Text.Contains('"'))
+            {
+                MessageBox.Show(LanguageManager.GetString("Message_InvalidCharacters", GlobalOptions.Instance.Language), string.Empty, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else
+            {
+                _strReturnValue = txtValue.Text;
+                DialogResult = DialogResult.OK;
+            }
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
         {
-            this.DialogResult = DialogResult.Cancel;
+            DialogResult = DialogResult.Cancel;
         }
 
-		private void frmSelectText_Shown(object sender, EventArgs e)
-		{
-			// If the field is pre-populated, immediately click OK.
-			if (txtValue.Text != "")
-				cmdOK_Click(sender, e);
-		}		
-		#endregion
-
-		#region Properties
-		/// <summary>
-		/// Value that was entered in the dialogue.
-		/// </summary>
-		public string SelectedValue
+        private void frmSelectText_Shown(object sender, EventArgs e)
         {
-            get
+            if (DefaultString != null)
             {
-                return _strReturnValue;
+                txtValue.Text = DefaultString;
             }
-			set
-			{
-				txtValue.Text = value;
-			}
+        }
+        #endregion
+
+        #region Properties
+        /// <summary>
+        /// Value that was entered in the dialogue.
+        /// </summary>
+        public string SelectedValue
+        {
+            get => _strReturnValue;
+            set => txtValue.Text = value;
         }
 
-		/// <summary>
-		/// Description to display in the dialogue.
-		/// </summary>
+        /// <summary>
+        /// Description to display in the dialogue.
+        /// </summary>
         public string Description
         {
-            set
-            {
-                lblDescription.Text = value;
-            }
+            set => lblDescription.Text = value;
         }
-		#endregion
+
+        public bool PreventXPathErrors { get; internal set; }
+        public string DefaultString { get; internal set; }
+        #endregion
     }
 }

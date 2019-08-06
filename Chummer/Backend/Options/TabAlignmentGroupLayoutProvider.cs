@@ -1,12 +1,11 @@
-﻿using System;
+using NLog;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using System.Reflection;
 using System.Text;
-using System.Windows.Forms;
+using System.Text.RegularExpressions;
 using Point = System.Drawing.Point;
 
 namespace Chummer.Backend.Options
@@ -18,18 +17,29 @@ namespace Chummer.Backend.Options
      * I'm not very versed in WPF, but it _should_ work with anything with uniform text size.
      *
      * It is named as so, because it provides layout, it uses tab to align stuff and thats it. Anybody feel free to refactor to a better name.
-     * As it is still under development, it contains quite a few debug statements. Those _should_ be removed before release
+     *
+     * The layouting it performs is fairly simple conceptually. Every LayoutEntry is a string with exactly one special "character" "{}" which is a gui element
+     * Other than having an iteresting and varying size, its treated as any other character. 
+     * 
+     * Then the text is tabulated, so that every tab ends the same place.
+     * This is then made slightly more complex by supporting not having linefeeds but gluing multiple LayoutEntries together on a single line.
      */
-    public class TabAlignmentGroupLayoutProvider : IGroupLayoutProvider
+    public class TabAlignmentGroupLayoutProvider<LayoutEntry> : IGroupLayoutProvider<LayoutEntry> where LayoutEntry : ILayoutEntry
     {
+        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private class UserLine
         {
-            public List<DisplayBlock> DisplayBlocks { get; } = new List<DisplayBlock>() {new DisplayBlock()};
+            public List<DisplayBlock> DisplayBlocks { get; } = new List<DisplayBlock>();
         }
 
         private class DisplayBlock
         {
             public List<TextOrControl> AtomicParts { get; } = new List<TextOrControl>();
+
+            public DisplayBlock(List<TextOrControl> atomicParts)
+            {
+                AtomicParts = atomicParts;
+            }
         }
 
         private class TabLayoutGroupComputation : LayoutGroupComputation
@@ -58,6 +68,9 @@ namespace Chummer.Backend.Options
             private Rectangle _control;
             private string _text;
 
+            
+            public LayoutEntry OriginDisplayLine { get; }
+
             public Rectangle Control
             {
                 get
@@ -76,103 +89,79 @@ namespace Chummer.Backend.Options
                 }
             }
 
-            public TextOrControl(Rectangle sizeOfControl)
+            public TextOrControl(Rectangle sizeOfControl, LayoutEntry origin)
             {
                 IsControl = true;
                 _control = sizeOfControl;
+                OriginDisplayLine = origin;
             }
 
-            public TextOrControl(string text)
+            public TextOrControl(string text, LayoutEntry origin)
             {
                 IsControl = false;
                 _text = text;
+                OriginDisplayLine = origin;
             }
         }
 
-        private readonly string[] _split = { "\\t" };
-        public LayoutGroupComputation ComputeLayoutGroup(Graphics willBeRenderedOn, List<LayoutLineInfo> contents, ref object crossGroupSharedData)
+        private static Regex layoutStringTokenizer = new Regex("({})|(?://)|(?:\\\\\\\\)", RegexOptions.Compiled);
+
+        private readonly string[] _split = { "\\t", "\t" };
+        public LayoutGroupComputation ComputeLayoutGroup(Graphics willBeRenderedOn, List<LayoutEntry> contents, ref object crossGroupSharedData)
         {
             //Input (contents) is organized in lines. In most cases we are also working on lines, but not always, and even then, different lines. 
             //First step is to convert it to lines user sees, composed of displayblocks, itself composed of text and controls
 
-            //All strings we have seen (and will render)
-            HashSet<string> stringPieces = new HashSet<string>();
             //List of all lines
             List<UserLine> userLines = new List<UserLine>(contents.Count);
             //Current working line
             UserLine currentUserLine = new UserLine();
 
-            foreach (LayoutLineInfo layoutLine in contents)
+            foreach (LayoutEntry layoutLine in contents)
             {
 
                 string layoutString = layoutLine.LayoutString;
 
-                //below should never run, but prevents bad things happening if layoutLine has multiple {} in it
-                if (layoutString.IndexOf("{}", StringComparison.Ordinal) != layoutString.LastIndexOf("{}", StringComparison.Ordinal))
-                {
-                    Utils.BreakIfDebug();
-                    string[] parts = layoutString.Split(new[] {"{}"}, StringSplitOptions.None);
+                ////below should never run, but prevents bad things happening if layoutLine has multiple {} in it
+                //if (layoutString.IndexOf("{}", StringComparison.Ordinal) != layoutString.LastIndexOf("{}", StringComparison.Ordinal))
+                //{
+                //    Utils.BreakIfDebug();
+                //    string[] parts = layoutString.Split(new[] {"{}"}, StringSplitOptions.None);
 
-                    layoutString = parts[0] + "{}" + string.Join(null, parts.Skip(1));
+                //    layoutString = parts[0] + "{}" + string.Join(null, parts.Skip(1));
 
-                }
+                //}
+                //else if(!layoutString.Contains("{}"))
+                //{
+
+                //}
+
+                int controls = 0;
 
                 //HI THERE: IF YOUR STRING GETS INTERPRENTED WRONG THIS IS MOST LIKELY YOUR GOAT. IT IS PRIMITIVE!
-                string[] alignmentPieces = layoutString.TrimEnd('\\').Split(_split, StringSplitOptions.None);
-
-
-                //Go over every text piece. Those will all be converted to displayBlocks
-                for (int index = 0; index < alignmentPieces.Length; index++)
+                foreach (string alignmentPieces in layoutString.TrimEnd('\\', '/').Split(_split, StringSplitOptions.None))
                 {
-                    string alignmentPiece = alignmentPieces[index];
-                    int indexOfControl = alignmentPiece.IndexOf("{}", StringComparison.Ordinal);
+                    currentUserLine.DisplayBlocks.Add(
+                        new DisplayBlock(
+                            layoutStringTokenizer
+                            .Split(alignmentPieces)
+                            .Select(token => {
+                                if (token == "{}")
+                                {
+                                    controls++;
+                                    return new TextOrControl(layoutLine.GetRectangle(), layoutLine);
+                                }
+                                else
+                                    return new TextOrControl(token, layoutLine);
+                            })
+                            .ToList()));
+                }
 
-                    //If the displayblock contains one {} it has a control.
-                    //But it might also just be a piece of text
-                    //If it contains a {}, the displayBlock should have the text in front and back(if any) added
-                    //Otherwise just the text
+                if(controls != 1)
+                {
+                    //TODO: Better handling non-one amount of {} which would be an error (obvious error message, ignored in tabulation sizes?
+                    Log.Error($"Invalid or missing key for {layoutLine.OriginName}, it is required to contain exactly one {{}}, refer to chummer documentation on how to write DisplayStrings");
 
-                    //We are not creating the displayBlock here as it can come from a few things. One is implicit part of the UserLine, and we create a new one _ONLY_ if we move to the next
-                    //This allows us to do weird shit like glue lines together to create fancy single line options
-                    //TODO: EDGE CASE?: NO TEXT
-                     
-                    if (indexOfControl != -1)
-                    {
-                        //This would be a good candidate for code to extract and unit test
-
-                        //if {} is in front, don't add leading text
-                        if (indexOfControl != 0)
-                        {
-                            string str = alignmentPiece.Substring(0, indexOfControl);
-                            stringPieces.Add(str);
-                            currentUserLine.DisplayBlocks.Last()
-                                .AtomicParts.Add(new TextOrControl(str));
-                        }
-
-                        //Add control in place of {}
-                        currentUserLine.DisplayBlocks.Last().AtomicParts.Add(new TextOrControl(layoutLine.ControlRectangle));
-
-                        //if {} is in back, don't add trailing text
-                        if (indexOfControl != alignmentPiece.Length - 2)
-                        {
-                            string str = alignmentPiece.Substring(indexOfControl + 2);
-                            stringPieces.Add(str);
-                            currentUserLine.DisplayBlocks.Last()
-                                .AtomicParts.Add(new TextOrControl(str));
-                        }
-                        
-                    }
-                    else
-                    {
-                        stringPieces.Add(alignmentPiece);
-                        currentUserLine.DisplayBlocks.Last().AtomicParts.Add(new TextOrControl(alignmentPiece));
-                    }
-
-                    //If this was not the last DisplayBlock, add a new displayBlock
-                    if (index != alignmentPieces.Length - 1)
-                    {
-                        currentUserLine.DisplayBlocks.Add(new DisplayBlock());
-                    }
                 }
 
                 currentUserLine.DisplayBlocks.Last().AtomicParts.Last().EndOfToolTipHere = layoutLine.ToolTip;
@@ -186,8 +175,12 @@ namespace Chummer.Backend.Options
             }
 
             //We now have a load of lines. Goal is now to compute how large text on said lines is.
-
             //First step is to measure the size of all text
+
+
+            //All strings we have seen
+            HashSet<string> stringPieces = new HashSet<string>(userLines.SelectMany(x => x.DisplayBlocks).SelectMany(x => x.AtomicParts).Where(x => !x.IsControl).Select(x => x.Text));
+
             Dictionary<string, RectangleF> textSizes = ComputeTextSize(willBeRenderedOn, stringPieces.ToList());
 
 
@@ -234,9 +227,9 @@ namespace Chummer.Backend.Options
                 usedSize += blockSize;
             }
 
-            List<Point> controlLocations = new List<Point>();
-            List<RenderedLayoutGroup.TextRenderInfo> textLocations = new List<RenderedLayoutGroup.TextRenderInfo>();
-            List<RenderedLayoutGroup.ToolTipData> toolTips = new List<RenderedLayoutGroup.ToolTipData>();
+            var controlLocations = new List<RenderedLayoutGroup.GraphicRenderInfo>();
+            var textLocations = new List<RenderedLayoutGroup.TextRenderInfo>();
+            var toolTips = new List<RenderedLayoutGroup.ToolTipData>();
 
             int nextLineBeginsAt = 0;
             int toolTipBeginsAt = 0;
@@ -256,12 +249,17 @@ namespace Chummer.Backend.Options
                         if (textOrControl.IsControl)
                         {
                             Rectangle objPartRectangle = textOrControl.Control;
-                            controlLocations.Add(
-                                new Point(
-                                    objPartRectangle.X + elementStartingPoint + LayoutOptions.ControlMargin,
-                                    objPartRectangle.Y + nextLineBeginsAt));  //TODO: This line probably lacks something, controls could once move up or down a little
-                            elementStartingPoint += LayoutOptions.ControlMargin + objPartRectangle.Width;
+                            var location = new Point(
+                                objPartRectangle.X + elementStartingPoint + LayoutOptions.ControlMargin,
+                                objPartRectangle.Y + nextLineBeginsAt);  //TODO: This line probably lacks something, controls could once move up or down a little
 
+                            controlLocations.Add(new RenderedLayoutGroup.GraphicRenderInfo
+                            {
+                                Location = location,
+                                Source = textOrControl.OriginDisplayLine
+                            });
+
+                            elementStartingPoint += LayoutOptions.ControlMargin + objPartRectangle.Width;
                             lineBottom = Math.Max(lineBottom, nextLineBeginsAt + objPartRectangle.Height);
                         }
                         else
@@ -377,7 +375,8 @@ namespace Chummer.Backend.Options
             {
                 if (atomicPart.IsControl)
                 {
-                    sizeSoFar += atomicPart.Control.Width + (LayoutOptions.ControlMargin*2);
+                    int controlSize = atomicPart.Control.Width + (LayoutOptions.ControlMargin * 2);
+                    sizeSoFar += controlSize;
                 }
                 else
                 {

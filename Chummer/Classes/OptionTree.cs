@@ -79,7 +79,7 @@ namespace Chummer.Classes
         */
         private readonly OptionCollectionCache _enabledBooks;
         private readonly Lazy<BookControl> _bookControl;
-        public BookNode(OptionCollectionCache enabledBooks) : base(LanguageManager.Instance.GetString("String_Books"))
+        public BookNode(OptionCollectionCache enabledBooks) : base(LanguageManager.GetString("String_Books"))
         {
             _enabledBooks = enabledBooks;
             _bookControl = new Lazy<BookControl>(() => new BookControl(_enabledBooks));

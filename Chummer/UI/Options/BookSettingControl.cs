@@ -49,11 +49,11 @@ namespace Chummer.UI.Options
 
             _pathSelector.PathEntry = _childFields["Path"];
 
-            chkEnabled.Text = LanguageManager.Instance.GetString("Label_Enabled");
+            chkEnabled.Text = LanguageManager.GetString("Label_Enabled");
             lblName.Text = _childFields["Name"].Value as string;
-            lblOffset.Text = LanguageManager.Instance.GetString("Label_Options_PDFOffset");
-            lblPath.Text = LanguageManager.Instance.GetString("Label_Options_PDFLocation");
-            btnTest.Text = LanguageManager.Instance.GetString("Button_Options_PDFTest");
+            lblOffset.Text = LanguageManager.GetString("Label_Options_PDFOffset");
+            lblPath.Text = LanguageManager.GetString("Label_Options_PDFLocation");
+            btnTest.Text = LanguageManager.GetString("Button_Options_PDFTest");
 
         }
 

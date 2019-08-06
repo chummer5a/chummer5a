@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,7 +8,10 @@ using System.Xml;
 
 namespace Chummer.Classes
 {
-    class CharacterSheetsHelper
+    /// <summary>
+    /// This class is invoked by reflection to provide a various file system related lists that options requires
+    /// </summary>
+    class OptionsFileSystemHelper
     {
 
         public static List<ListItem<string>> GetListOfCharacterSheets()
@@ -27,8 +30,7 @@ namespace Chummer.Classes
                 string langSheets = Path.Combine(sheetsDirectoryPath, GlobalOptions.Instance.Language);
                 if (Directory.Exists(langSheets))
                 {
-                    XmlDocument objLanguageDocument = LanguageManager.Instance.XmlDoc;
-                    string langfolder = objLanguageDocument.SelectSingleNode("/chummer/name").InnerText;
+                    string langfolder = LanguageManager.DictionaryLanguages[GlobalOptions.Instance.Language].LanguageName;
 
                     names.AddRange(
                         Directory.GetFileSystemEntries(langSheets)
@@ -40,6 +42,42 @@ namespace Chummer.Classes
             }
 
             return names;
+        }
+
+        public static List<ListItem<string>> GetListOfLanguages()
+        {
+            List<ListItem<string>> lstLanguages = new List<ListItem<string>>();
+            string languageDirectoryPath = Path.Combine(Utils.GetStartupPath, "lang");
+            string[] languageFilePaths = Directory.GetFiles(languageDirectoryPath, "*.xml");
+
+            foreach (string filePath in languageFilePaths)
+            {
+                XmlDocument xmlDocument = new XmlDocument();
+
+                try
+                {
+                    using (StreamReader objStreamReader = new StreamReader(filePath, Encoding.UTF8, true))
+                    {
+                        xmlDocument.Load(objStreamReader);
+                    }
+                }
+                catch (IOException)
+                {
+                    continue;
+                }
+                catch (XmlException)
+                {
+                    continue;
+                }
+
+                XmlNode node = xmlDocument.SelectSingleNode("/chummer/name");
+                if (node == null)
+                    continue;
+
+                lstLanguages.Add(new ListItem(Path.GetFileNameWithoutExtension(filePath), node.InnerText));
+            }
+
+            return lstLanguages;
         }
     }
 }

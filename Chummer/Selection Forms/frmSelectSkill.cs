@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,287 +20,337 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Xml;
-using Chummer.Skills;
-using System.Linq;
+using Chummer.Backend.Skills;
+using System.Text;
 
 namespace Chummer
 {
     public partial class frmSelectSkill : Form
     {
-        private string _strReturnValue = "";
-        private string _strIncludeCategory = "";
-        private string _strExcludeCategory = "";
-		private string _strIncludeSkillGroup = "";
-		private string _strExcludeSkillGroup = "";
-		private string _strLimitToSkill = "";
-		private string _strForceSkill = "";
-		private bool _blnKnowledgeSkill = false;
+        private string _strReturnValue = string.Empty;
+        private string _strIncludeCategory = string.Empty;
+        private string _strExcludeCategory = string.Empty;
+        private string _strIncludeSkillGroup = string.Empty;
+        private string _strExcludeSkillGroup = string.Empty;
+        private string _strLimitToSkill = string.Empty;
+        private string _strExcludeSkill = string.Empty;
+        private string _strLimitToCategories = string.Empty;
+        private string _strForceSkill = string.Empty;
+        private readonly string _strSourceName;
+        private int _intMinimumRating;
+        private int _intMaximumRating = int.MaxValue;
 
-	    public string LinkedAttribute { get; set; } = "";
+        public string LinkedAttribute { get; set; } = string.Empty;
 
-		private XmlDocument _objXmlDocument = new XmlDocument();
+        private readonly XmlDocument _objXmlDocument;
         private readonly Character _objCharacter;
 
-		#region Control Events
-        public frmSelectSkill(Character objCharacter)
+        #region Control Events
+        public frmSelectSkill(Character objCharacter, string strSource = "")
         {
-            InitializeComponent();
-			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
             _objCharacter = objCharacter;
+            _strSourceName = strSource;
+            InitializeComponent();
+            LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, this);
+            _objXmlDocument = XmlManager.Load("skills.xml");
         }
 
         private void frmSelectSkill_Load(object sender, EventArgs e)
         {
-			List<ListItem> lstSkills = new List<ListItem>();
+            List<ListItem> lstSkills = new List<ListItem>();
+            // Build the list of non-Exotic Skills from the Skills file.
+            XmlNodeList objXmlSkillList;
+            if (!string.IsNullOrEmpty(_strForceSkill))
+            {
+                objXmlSkillList = _objXmlDocument.SelectNodes("/chummer/skills/skill[name = \"" + _strForceSkill + "\" and not(exotic) and (" + _objCharacter.Options.BookXPath() + ")]");
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(_strLimitToCategories))
+                    objXmlSkillList = _objXmlDocument.SelectNodes("/chummer/skills/skill[" + _strLimitToCategories + " and (" + _objCharacter.Options.BookXPath() + ")]");
+                else
+                {
+                    string strFilter = "not(exotic)";
+                    if (!string.IsNullOrEmpty(_strIncludeCategory))
+                    {
+                        strFilter += " and (";
+                        string[] strValue = _strIncludeCategory.Split(',');
+                        foreach (string strSkillCategory in strValue)
+                            strFilter += "category = \"" + strSkillCategory.Trim() + "\" or ";
+                        // Remove the trailing " or ".
+                        strFilter = strFilter.Substring(0, strFilter.Length - 4);
+                        strFilter += ')';
+                    }
+                    if (!string.IsNullOrEmpty(_strExcludeCategory))
+                    {
+                        strFilter += " and (";
+                        string[] strValue = _strExcludeCategory.Split(',');
+                        foreach (string strSkillCategory in strValue)
+                            strFilter += "category != \"" + strSkillCategory.Trim() + "\" and ";
+                        // Remove the trailing " and ".
+                        strFilter = strFilter.Substring(0, strFilter.Length - 5);
+                        strFilter += ')';
+                    }
+                    if (!string.IsNullOrEmpty(_strIncludeSkillGroup))
+                    {
+                        strFilter += " and (";
+                        string[] strValue = _strIncludeSkillGroup.Split(',');
+                        foreach (string strSkillGroup in strValue)
+                            strFilter += "skillgroup = \"" + strSkillGroup.Trim() + "\" or ";
+                        // Remove the trailing " or ".
+                        strFilter = strFilter.Substring(0, strFilter.Length - 4);
+                        strFilter += ')';
+                    }
+                    if (!string.IsNullOrEmpty(_strExcludeSkillGroup))
+                    {
+                        strFilter += " and (";
+                        string[] strValue = _strExcludeSkillGroup.Split(',');
+                        foreach (string strSkillGroup in strValue)
+                            strFilter += "skillgroup != \"" + strSkillGroup.Trim() + "\" and ";
+                        // Remove the trailing " and ".
+                        strFilter = strFilter.Substring(0, strFilter.Length - 5);
+                        strFilter += ')';
+                    }
+                    if (!string.IsNullOrEmpty(LinkedAttribute))
+                    {
+                        strFilter += " and (";
+                        string[] strValue = LinkedAttribute.Split(',');
+                        foreach (string strAttribute in strValue)
+                            strFilter += "attribute = \"" + strAttribute.Trim() + "\" or ";
+                        // Remove the trailing " or ".
+                        strFilter = strFilter.Substring(0, strFilter.Length - 4);
+                        strFilter += ')';
+                    }
+                    if (!string.IsNullOrEmpty(_strLimitToSkill))
+                    {
+                        strFilter += " and (";
+                        string[] strValue = _strLimitToSkill.Split(',');
+                        foreach (string strSkill in strValue)
+                            strFilter += "name = \"" + strSkill.Trim() + "\" or ";
+                        // Remove the trailing " or ".
+                        strFilter = strFilter.Substring(0, strFilter.Length - 4);
+                        strFilter += ')';
+                    }
+                    if (!string.IsNullOrEmpty(_strExcludeSkill))
+                    {
+                        strFilter += " and (";
+                        string[] strValue = _strExcludeSkill.Split(',');
+                        foreach (string strSkill in strValue)
+                            strFilter += "name != \"" + strSkill.Trim() + "\" and ";
+                        // Remove the trailing " or ".
+                        strFilter = strFilter.Substring(0, strFilter.Length - 4);
+                        strFilter += ')';
+                    }
+                    objXmlSkillList = _objXmlDocument.SelectNodes("/chummer/skills/skill[" + strFilter + " and (" + _objCharacter.Options.BookXPath() + ")]");
+                }
+            }
 
-			if (!_blnKnowledgeSkill)
-			{
-				_objXmlDocument = XmlManager.Instance.Load("skills.xml");
+            // Add the Skills to the list.
+            if (objXmlSkillList?.Count > 0)
+            {
+                foreach (XmlNode objXmlSkill in objXmlSkillList)
+                {
+                    string strXmlSkillName = objXmlSkill["name"]?.InnerText;
+                    Skill objExistingSkill = _objCharacter.SkillsSection.GetActiveSkill(strXmlSkillName);
+                    if (objExistingSkill == null)
+                    {
+                        if (_intMinimumRating > 0)
+                        {
+                            continue;
+                        }
+                    }
+                    else if (objExistingSkill.Rating < _intMinimumRating || objExistingSkill.Rating > _intMaximumRating)
+                    {
+                        continue;
+                    }
 
-				// Build the list of non-Exotic Skills from the Skills file.
-				XmlNodeList objXmlSkillList;
-				if (_strForceSkill != "")
-				{
-					objXmlSkillList = _objXmlDocument.SelectNodes("/chummer/skills/skill[name = \"" + _strForceSkill + "\" and not(exotic)]");
-				}
-				else
-				{
-					if (_strIncludeCategory != "")
-						objXmlSkillList = _objXmlDocument.SelectNodes("/chummer/skills/skill[category = \"" + _strIncludeCategory + "\" and not(exotic)]");
-					else if (_strExcludeCategory != "")
-					{
-						string[] strExcludes = _strExcludeCategory.Split(',');
-						string strExclude = "";
-						for (int i = 0; i <= strExcludes.Length - 1; i++)
-							strExclude += "category != \"" + strExcludes[i].Trim() + "\" and ";
-						// Remove the trailing " and ";
-						strExclude = strExclude.Substring(0, strExclude.Length - 5);
-						objXmlSkillList = _objXmlDocument.SelectNodes("/chummer/skills/skill[" + strExclude + " and not(exotic)]");
-					}
-					else if (_strIncludeSkillGroup != "")
-						objXmlSkillList = _objXmlDocument.SelectNodes("/chummer/skills/skill[skillgroup = \"" + _strIncludeSkillGroup + "\" and not(exotic)]");
-					else if (_strExcludeSkillGroup != "")
-						objXmlSkillList = _objXmlDocument.SelectNodes("/chummer/skills/skill[skillgroup != \"" + _strExcludeSkillGroup + "\" and not(exotic)]");
-					else if (LinkedAttribute != "")
-					{
-						string[] strExcludes = LinkedAttribute.Split(',');
-						string strExclude = "not(exotic) and (";
-						for (int i = 0; i <= strExcludes.Length - 1; i++)
-							strExclude += "attribute = \"" + strExcludes[i].Trim() + "\" or ";
-						// Remove the trailing " and ";
-						strExclude = strExclude.Substring(0, strExclude.Length - 4) + ")";
-						objXmlSkillList = _objXmlDocument.SelectNodes("/chummer/skills/skill[" + strExclude + "]");
-					}
-					else if (_strLimitToSkill != "")
-					{
-						string strFilter = "not(exotic) and (";
-						string[] strValue = _strLimitToSkill.Split(',');
-						foreach (string strSkill in strValue)
-							strFilter += "name = \"" + strSkill.Trim() + "\" or ";
-						// Remove the trailing " or ".
-						strFilter = strFilter.Substring(0, strFilter.Length - 4);
-						strFilter += ")";
-						objXmlSkillList = _objXmlDocument.SelectNodes("/chummer/skills/skill[" + strFilter + "]");
-					}
-					else
-						objXmlSkillList = _objXmlDocument.SelectNodes("/chummer/skills/skill[not(exotic)]");
-				}
+                    lstSkills.Add(new ListItem(strXmlSkillName, objXmlSkill["translate"]?.InnerText ?? strXmlSkillName));
+                }
+            }
 
-				// Add the Skills to the list.
-				foreach (XmlNode objXmlSkill in objXmlSkillList)
-				{
-					ListItem objItem = new ListItem();
-					objItem.Value = objXmlSkill["name"].InnerText;
-					if (objXmlSkill.Attributes != null)
-					{
-						if (objXmlSkill["translate"] != null)
-							objItem.Name = objXmlSkill["translate"].InnerText;
-						else
-							objItem.Name = objXmlSkill["name"].InnerText;
-					}
-					else
-						objItem.Name = objXmlSkill["name"].InnerXml;
-					lstSkills.Add(objItem);
-				}
+            // Add in any Exotic Skills the character has.
+            foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
+            {
+                if (objSkill.IsExoticSkill)
+                {
+                    ExoticSkill objExoticSkill = objSkill as ExoticSkill;
+                    bool blnAddSkill = true;
+                    if (objSkill.Rating < _intMinimumRating || objSkill.Rating > _intMaximumRating)
+                        blnAddSkill = false;
+                    else if (!string.IsNullOrEmpty(_strForceSkill))
+                        blnAddSkill = _strForceSkill == objExoticSkill.Name + " (" + objExoticSkill.Specific + ')';
+                    else
+                    {
+                        if (!string.IsNullOrEmpty(_strIncludeCategory))
+                            blnAddSkill = _strIncludeCategory.Contains(objExoticSkill.SkillCategory);
+                        else if (!string.IsNullOrEmpty(_strExcludeCategory))
+                            blnAddSkill = !_strExcludeCategory.Contains(objExoticSkill.SkillCategory);
+                        else if (!string.IsNullOrEmpty(_strIncludeSkillGroup))
+                            blnAddSkill = _strIncludeSkillGroup.Contains(objExoticSkill.SkillGroup);
+                        else if (!string.IsNullOrEmpty(_strExcludeSkillGroup))
+                            blnAddSkill = !_strExcludeSkillGroup.Contains(objExoticSkill.SkillGroup);
+                        else if (!string.IsNullOrEmpty(_strLimitToSkill))
+                            blnAddSkill = _strLimitToSkill.Contains(objExoticSkill.Name);
+                        else if (!string.IsNullOrEmpty(_strExcludeSkill))
+                            blnAddSkill = !_strExcludeSkill.Contains(objExoticSkill.Name);
+                    }
 
-				// Add in any Exotic Skills the character has.
-				foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
-				{
-					if (objSkill.IsExoticSkill)
-					{
-						ExoticSkill objExoticSkill = objSkill as ExoticSkill;
-                        bool blnAddSkill = true;
-						if (_strForceSkill != "")
-							blnAddSkill = _strForceSkill == objExoticSkill.Name + " (" + objExoticSkill.Specific + ")";
-						else
-						{
-							if (_strIncludeCategory != "")
-								blnAddSkill = _strIncludeCategory == objExoticSkill.SkillCategory;
-							else if (_strExcludeCategory != "")
-								blnAddSkill = !_strExcludeCategory.Contains(objExoticSkill.SkillCategory);
-							else if (_strIncludeSkillGroup != "")
-								blnAddSkill = _strIncludeSkillGroup == objExoticSkill.SkillGroup;
-							else if (_strExcludeSkillGroup != "")
-								blnAddSkill = _strExcludeSkillGroup != objExoticSkill.SkillGroup;
-							else if (_strLimitToSkill != "")
-								blnAddSkill = _strLimitToSkill.Contains(objExoticSkill.Name);
-						}
+                    if (blnAddSkill)
+                    {
+                        // Use the translated Exotic Skill name if available.
+                        XmlNode objXmlSkill = _objXmlDocument.SelectSingleNode("/chummer/skills/skill[exotic = \"True\" and name = \"" + objExoticSkill.Name + "\"]");
+                        lstSkills.Add(new ListItem(objExoticSkill.Name + " (" + objExoticSkill.Specific + ')',
+                            (objXmlSkill["translate"]?.InnerText ?? objExoticSkill.Name) + LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language) + '(' + objExoticSkill.DisplaySpecializationMethod(GlobalOptions.Instance.Language) + ')'));
+                    }
+                }
+            }
 
-						if (blnAddSkill)
-						{
-							ListItem objItem = new ListItem();
-							objItem.Value = objExoticSkill.Name + " (" + objExoticSkill.Specific + ")";
-							// Use the translated Exotic Skill name if available.
-							XmlNode objXmlSkill =
-								_objXmlDocument.SelectSingleNode("/chummer/skills/skill[exotic = \"Yes\" and name = \"" + objExoticSkill.Name + "\"]");
-							if (objXmlSkill["translate"] != null)
-								objItem.Name = objXmlSkill["translate"].InnerText + " (" + objExoticSkill.DisplaySpecialization + ")";
-							else
-								objItem.Name = objExoticSkill.Name + " (" + objExoticSkill.DisplaySpecialization + ")";
-							lstSkills.Add(objItem);
-						}
-					}
-				}
-			}
-			else
-			{
-				// Instead of showing all available Active Skills, show a list of Knowledge Skills that the character currently has.
-				foreach (Skill objKnow in _objCharacter.SkillsSection.Skills)
-				{
-					if (objKnow.IsKnowledgeSkill)
-					{
-						ListItem objSkill = new ListItem();
-						objSkill.Value = objKnow.Name;
-						objSkill.Name = objKnow.DisplayName;
-						lstSkills.Add(objSkill);
-					}
-				}
-			}
-			SortListItem objSort = new SortListItem();
-			lstSkills.Sort(objSort.Compare);
-			cboSkill.ValueMember = "Value";
-			cboSkill.DisplayMember = "Name";
-			cboSkill.DataSource = lstSkills;
+            if (lstSkills.Count <= 0)
+            {
+                MessageBox.Show(string.Format(LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed", GlobalOptions.Instance.Language), _strSourceName));
+                DialogResult = DialogResult.Cancel;
+                return;
+            }
+
+            lstSkills.Sort(CompareListItems.CompareNames);
+            cboSkill.BeginUpdate();
+            cboSkill.ValueMember = "Value";
+            cboSkill.DisplayMember = "Name";
+            cboSkill.DataSource = lstSkills;
 
             // Select the first Skill in the list.
             cboSkill.SelectedIndex = 0;
+            cboSkill.EndUpdate();
 
-			if (cboSkill.Items.Count == 1)
-				cmdOK_Click(sender, e);
+            if (cboSkill.Items.Count == 1)
+                cmdOK_Click(sender, e);
         }
 
-		private void cmdOK_Click(object sender, EventArgs e)
+        private void cmdOK_Click(object sender, EventArgs e)
         {
             _strReturnValue = cboSkill.SelectedValue.ToString();
-            this.DialogResult = DialogResult.OK;
+            DialogResult = DialogResult.OK;
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
         {
-            this.DialogResult = DialogResult.Cancel;
+            DialogResult = DialogResult.Cancel;
         }
-		#endregion
+        #endregion
 
-		#region Properties
-		/// <summary>
-		/// Only Skills of the selected Category should be in the list.
-		/// </summary>
+        #region Properties
+        /// <summary>
+        /// Only Skills of the selected Category should be in the list.
+        /// </summary>
         public string OnlyCategory
         {
+            set => _strIncludeCategory = value;
+        }
+
+        /// <summary>
+        /// Only Skills from the selected Categories should be in the list.
+        /// </summary>
+        public XmlNode LimitToCategories
+        {
             set
             {
-                _strIncludeCategory = value;
+                using (XmlNodeList xmlCategoryList = value?.SelectNodes("category"))
+                {
+                    if (xmlCategoryList != null)
+                    {
+                        StringBuilder objLimitToCategories = new StringBuilder();
+                        foreach (XmlNode objNode in xmlCategoryList)
+                        {
+                            objLimitToCategories.Append("category = ");
+                            objLimitToCategories.Append('\"' + objNode.InnerText + '\"');
+                            objLimitToCategories.Append(" or ");
+                        }
+
+                        // Remove the last " or "
+                        if (objLimitToCategories.Length > 0)
+                            objLimitToCategories.Length -= 4;
+                        _strLimitToCategories = objLimitToCategories.ToString();
+                    }
+                }
             }
         }
 
         /// <summary>
-		/// Only Skills not in the selected Category should be in the list.
-		/// </summary>
+        /// Only Skills not in the selected Category should be in the list.
+        /// </summary>
         public string ExcludeCategory
         {
-            set
-            {
-                _strExcludeCategory = value;
-            }
-        }
-
-		/// <summary>
-		/// Only Skills in the selected Skill Group should be in the list.
-		/// </summary>
-		public string OnlySkillGroup
-		{
-			set
-			{
-				_strIncludeSkillGroup = value;
-			}
-		}
-
-		/// <summary>
-		/// Restrict the list to only a single Skill.
-		/// </summary>
-		public string OnlySkill
-		{
-			set
-			{
-				_strForceSkill = value.Replace(", " + LanguageManager.Instance.GetString("Label_SelectGear_Hacked"), string.Empty);
-			}
-		}
-
-		/// <summary>
-		/// Only Skills not in the selected Skill Group should be in the list.
-		/// </summary>
-		public string ExcludeSkillGroup
-		{
-			set
-			{
-				_strExcludeSkillGroup = value;
-			}
-		}
-
-		/// <summary>
-		/// Only the provided Skills should be shown in the list.
-		/// </summary>
-		public string LimitToSkill
-		{
-			set
-			{
-				_strLimitToSkill = value;
-			}
-		}
-
-		/// <summary>
-		/// Skill that was selected in the dialogue.
-		/// </summary>
-        public string SelectedSkill
-        {
-            get
-            {
-                return _strReturnValue;
-            }
+            set => _strExcludeCategory = value;
         }
 
         /// <summary>
-		/// Description to show in the window.
+        /// Only Skills in the selected Skill Group should be in the list.
+        /// </summary>
+        public string OnlySkillGroup
+        {
+            set => _strIncludeSkillGroup = value;
+        }
+
+        /// <summary>
+        /// Restrict the list to only a single Skill.
+        /// </summary>
+        public string OnlySkill
+        {
+            set => _strForceSkill = value;
+        }
+
+        /// <summary>
+        /// Only Skills not in the selected Skill Group should be in the list.
+        /// </summary>
+        public string ExcludeSkillGroup
+        {
+            set => _strExcludeSkillGroup = value;
+        }
+
+        /// <summary>
+        /// Only the provided Skills should be shown in the list.
+        /// </summary>
+        public string LimitToSkill
+        {
+            set => _strLimitToSkill = value;
+        }
+
+        /// <summary>
+        /// Only Skills not among the selected should be in the list.
+        /// </summary>
+        public string ExcludeSkill
+        {
+            set => _strExcludeSkill = value;
+        }
+
+        /// <summary>
+        /// Skill that was selected in the dialogue.
+        /// </summary>
+        public string SelectedSkill => _strReturnValue;
+
+        /// <summary>
+        /// Description to show in the window.
         /// </summary>
         public string Description
         {
-            set
-            {
-                lblDescription.Text = value;
-            }
+            set => lblDescription.Text = value;
         }
 
-		/// <summary>
-		/// Whether or not Knowledge Skills should be shown instead.
-		/// </summary>
-		public bool ShowKnowledgeSkills
-		{
-			set
-			{
-				_blnKnowledgeSkill = value;
-			}
-		}
-		#endregion
-    
-public  Character objCharacter { get; set; }}
+        /// <summary>
+        /// Only show skills with a rating greater than or equal to this
+        /// </summary>
+        public int MinimumRating
+        {
+            set => _intMinimumRating = value;
+        }
+
+        /// <summary>
+        /// Only show skills with a rating less than or equal to this
+        /// </summary>
+        public int MaximumRating
+        {
+            set => _intMaximumRating = value;
+        }
+        #endregion
+    }
 }

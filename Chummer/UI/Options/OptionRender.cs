@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Forms;
@@ -14,7 +14,7 @@ namespace Chummer.UI.Options
 {
     public class OptionRender : UserControl
     {
-        private readonly IGroupLayoutProvider _defaultGroupLayoutProvider;
+        private readonly IGroupLayoutProvider<ControlLayoutEntry> _defaultGroupLayoutProvider;
         private readonly List<PreRenderGroup> _preRenderData = new List<PreRenderGroup>();
         private readonly List<RenderedLayoutGroup> _renderData = new List<RenderedLayoutGroup>();
         // ReSharper disable once PossibleLossOfFraction
@@ -26,12 +26,12 @@ namespace Chummer.UI.Options
 
         public List<IOptionWinFromControlFactory> Factories { get; set; }
 
-        public OptionRender() : this(new TabAlignmentGroupLayoutProvider())
+        public OptionRender() : this(new TabAlignmentGroupLayoutProvider<ControlLayoutEntry>())
         {
             _objGraphics = CreateGraphics();
         }
 
-        public OptionRender(IGroupLayoutProvider layoutProvider)
+        public OptionRender(IGroupLayoutProvider<ControlLayoutEntry> layoutProvider)
         {
             _defaultGroupLayoutProvider = layoutProvider;
             IntitializeComponent();
@@ -134,6 +134,8 @@ namespace Chummer.UI.Options
             List<OptionItem> displayEntries = new List<OptionItem>();
             HeaderRenderDirective objLoopRenderDirective = null;
 
+            //This is simply grouping items, where headers and following items are grouped.
+            //To employ a methaphor, it creates a chapter data structure, based only one the font size of each line, this way grouping title and its following lines
             foreach (OptionRenderItem item in contents)
             {
                 OptionItem r = item as OptionItem;
@@ -168,8 +170,8 @@ namespace Chummer.UI.Options
 
         private PreRenderGroup CreatePreRenderGroup(HeaderRenderDirective objRenderDirective, List<OptionItem> displayEntries)
         {
-            List<Control> lstControlsToRender = new List<Control>(displayEntries.Count);
-            List<LayoutLineInfo> lines = new List<LayoutLineInfo>();
+            var lstControlsToRender = new List<Control>(displayEntries.Count);
+            var lines = new List<ControlLayoutEntry>();
 
             for (int i = 0; i < displayEntries.Count; i++)
             {
@@ -181,23 +183,29 @@ namespace Chummer.UI.Options
                 Control control = factory.Construct(entry);
 
                 OptionEntryProxy entryAsProxy = entry as OptionEntryProxy;
-                LayoutLineInfo line = new LayoutLineInfo
+
+                //It felt less insane to recreate the "Key" that this would look up here than when the key was generated
+                //and doing it the right way and actually including it in the OptionEntryProxy didn't feel good either, but this is a strange, rather undocumented dependency
+                //shame on me
+                string originName = entryAsProxy?.TargetProperty?.Name;
+                if (originName != null) originName = "Display_" + originName;
+                
+                ControlLayoutEntry line = new ControlLayoutEntry
                 {
-                    ControlRectangle = new Rectangle(control.Location, control.Size),
+                    Control = control,
                     LayoutString = entry.DisplayString,
-                    ToolTip = entryAsProxy?.ToolTip
+                    ToolTip = entryAsProxy?.ToolTip,
+                    OriginName = originName
                 };
 
                 //NB Big and Small C. One is controls in this control, other is controls that the render can play with
                 Controls.Add(control);
-                lstControlsToRender.Add(control);
                 lines.Add(line);
             }
 
             PreRenderGroup @group =  new PreRenderGroup
             {
                 Header = objRenderDirective?.Title ?? string.Empty,
-                Controls = lstControlsToRender,
                 Lines = lines
             };
 
@@ -268,15 +276,15 @@ namespace Chummer.UI.Options
                 int intRenderGroupX = renderGroup.Offset.X + (int)offset.X;
                 int intRenderGroupY = renderGroup.Offset.Y + (int)offset.Y;
                 //If you get a crash at this point, make sure any new options you've added have a Display_{name} entry in en-us.xml. Check casing!
-                for (int i = 0; i < preRenderGroup.Controls.Count; i++)
+                for (int i = 0; i < renderGroup.ControlLocations.Count; i++)
                 {
-                    Point objLoopPoint = renderGroup.ControlLocations[i];
+                    var objLoopPoint = renderGroup.ControlLocations[i];
                     Point controlPoint = new Point(
-                        objLoopPoint.X + intRenderGroupX,
-                        objLoopPoint.Y + intRenderGroupY + FIXED_SPACING);
+                        objLoopPoint.Location.X + intRenderGroupX,
+                        objLoopPoint.Location.Y + intRenderGroupY + FIXED_SPACING);
 
 
-                    preRenderGroup.Controls[i].Location = controlPoint;
+                    ((ControlLayoutEntry)objLoopPoint.Source).Control.Location = controlPoint;
                 }
 
                 foreach (RenderedLayoutGroup.ToolTipData toolTip in renderGroup.ToolTips)
@@ -307,8 +315,7 @@ namespace Chummer.UI.Options
 
         class PreRenderGroup
         {
-            public List<Control> Controls { get; set; }
-            public List<LayoutLineInfo> Lines { get; set; }
+            public List<ControlLayoutEntry> Lines { get; set; }
             public object Cache { get; set; }
             public string Header { get; set; }
         }

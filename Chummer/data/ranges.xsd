@@ -10,12 +10,12 @@
               <xs:element name="range" minOccurs="1" maxOccurs="unbounded">
                 <xs:complexType>
                   <xs:sequence>
-                    <xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="min" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="short" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="medium" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="long" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="extreme" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="min" type="xs:string" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="short" type="xs:string" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="medium" type="xs:string" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="long" type="xs:string" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="extreme" type="xs:string" minOccurs="0" maxOccurs="1" />
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>

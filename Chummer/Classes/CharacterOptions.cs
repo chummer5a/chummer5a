@@ -183,14 +183,6 @@ namespace Chummer
 		}
 		#endregion
 
-		#region Program behavour
-
-	    #region Program options
-		
-        #endregion
-
-	    #endregion
-
 	    #region Character behavour
 	    [OptionAttributes("OptionHeader_CharacterOptions")]
 
@@ -461,6 +453,45 @@ namespace Chummer
 		[SavePropertyAs("technomancerallowautosoft")]
 		public bool TechnomancerAllowAutosoft { get; set; }
 
+        /// <summary>
+        /// Split MAG for Mystic Adepts so that they have a separate MAG rating for Adept Powers instead of using the special PP rules for mystic adepts
+        /// </summary>
+        [DisplayIgnore] //TODO: should actually display
+        public bool MysAdeptSecondMAGAttribute { get; set; }
+
+        [OptionAttributes("OptionHeader_CharacterOptions/Display_OptionalRules")]
+        public bool DroneMods { get; set; } = false;
+
+
+        /// <summary>
+        /// Allows characters to spend their Karma before Priority Points.
+        /// </summary>
+        [DisplayIgnore] //TODO: should actually display
+        public bool ReverseAttributePriorityOrder { get; set; }
+
+        //Its debateable if this should really be an option per character or globally. Its very much a global option, but you might want to change it
+        #region Printing
+        /// <summary>
+        /// Whether or not all Active Skills with a total score higher than 0 should be printed.
+        /// </summary>
+        [OptionAttributes("OptionHeader_CharacterOptions/Display_PrintingOptions")]
+        [SavePropertyAs("printzeroratingskills")]
+        public bool PrintSkillsWithZeroRating { get; set; } = true;
+
+        /// <summary>
+        /// Whether or not the Karma and Nueyn Expenses should be printed on the character sheet.
+        /// </summary>
+        [SavePropertyAs("printexpenses")]
+        public bool PrintExpenses { get; set; }
+
+        /// <summary>
+        /// Whether or not Notes should be printed.
+        /// </summary>
+        [SavePropertyAs("printnotes")]
+        public bool PrintNotes { get; set; }
+        #endregion
+
+
         #region Character Creation
         //TODO: HEADER[OptionAttributes("House Rules/Character Creation")]
 
@@ -547,12 +578,6 @@ namespace Chummer
 		public bool UseTotalValueForFreeKnowledge { get; set; }
         #endregion
 
-        #endregion
-
-        #region Optional Rules
-
-        [OptionAttributes("OptionHeader_CharacterOptions/Display_OptionalRules")]
-        public bool DroneMods { get; set; } = false;
         #endregion
 
         #region Unused Rules
@@ -876,7 +901,208 @@ namespace Chummer
 		/// </summary>
 		[DisplayIgnore] //TODO: Do something
 	    public string RecentImageFolder { get; set; } = "";
-	}
+
+
+
+        //TODO: things I didn't quite decide where to put
+        /// <summary>
+        /// Whether or not to allow a 2nd max attribute with Exceptional Attribute
+        /// </summary>
+        // ReSharper disable once InconsistentNaming
+        public bool Allow2ndMaxAttribute { get; set; }
+
+
+        /// <summary>
+        /// Whether or not Stacked Foci can have a combined Force higher than 6.
+        /// </summary>
+        public bool AllowHigherStackedFoci { get; set; }
+
+        /// <summary>
+        /// Whether or not the user is allowed to buy specializations with skill points for skills only bought with karma.
+        /// </summary>
+        public bool AllowPointBuySpecializationsOnKarmaSkills { get; set; }
+
+        /// <summary>
+        /// Whether Life Modules should automatically generate a character background.
+        /// </summary>
+        public bool AutomaticBackstory { get; set; } = true;
+
+        /// <summary>
+        /// House rule: Whether to compensate for the karma cost difference between raising skill ratings and skill groups when increasing the rating of the last skill in the group
+        /// </summary>
+        public bool CompensateSkillGroupKarmaDifference { get; set; }
+
+        /// <summary>
+        /// Karma cost for an Initiation = this value + (New Rating x KarmaInititation).
+        /// </summary>
+        public int KarmaInititationFlat { get; set; } = 10;
+
+        /// <summary>
+        /// Karma cost to purchase a Specialization for a knowledge skill = this value.
+        /// </summary>
+        public int KarmaKnowledgeSpecialization { get; set; } = 7;
+
+        /// <summary>
+        /// How much Karma a single Power Point costs for a Mystic Adept.
+        /// </summary>
+        public int KarmaMysticAdeptPowerPoint { get; set; } = 5;
+
+        /// <summary>
+        /// Amount of Nueyn objtained per Karma point.
+        /// </summary>
+        public int KarmaNuyenPer { get; set; } = 5;
+
+        /// <summary>
+        /// Allow Mystic Adepts to increase their power points during career mode
+        /// </summary>
+        public bool MysAdeptAllowPPCareer { get; set; }
+
+
+        //TODO: things that I havent sorted nicely yet
+
+
+        [DisplayIgnore]
+        public List<string> CustomDataDirectoryNames { get; } = new List<string>();
+
+
+        /// <summary>
+        /// Only round essence when its value is displayed
+        /// </summary>
+        public bool DontRoundEssenceInternally { get; set; }
+
+
+        
+       
+
+        /// <summary>
+        /// Do Enemies count towards Negative Quality Karma limit in create mode?
+        /// </summary>
+        public bool EnemyKarmaQualityLimit { get; set; } = true;
+
+        /// <summary>
+        /// If true, the karma cost of qualities is doubled after the initial 25.
+        /// </summary>
+        public bool ExceedPositiveQualitiesCostDoubled { get; set; }
+
+        /// <summary>
+        /// Whether Martial Arts grant a free specialisation in a skill.
+        /// </summary>
+        public bool FreeMartialArtSpecialization { get; set; }
+
+
+        //TODO: I think this sould be global option, as this isn't a rule but merely how things gets displayed
+        /// <summary>
+        /// Whether items that exceed the Availability Limit should be shown in Create Mode.
+        /// </summary>
+        public bool HideItemsOverAvailLimit { get; set; } = true;
+
+        /// <summary>
+        /// Whether or not to ignore the art requirements from street grimoire.
+        /// </summary>
+        public bool IgnoreArt { get; set; }
+
+
+        //TODO: I think this should be global, as this is program behavior, not character behaviour
+        /// <summary>
+        /// Whether or not numeric updowns can increment values of numericupdown controls by hovering over the control.
+        /// </summary>
+        public bool AllowHoverIncrement { get; set; }
+
+        [DisplayIgnore]
+        public NumericUpDownEx.InterceptMouseWheelMode InterceptMode => AllowHoverIncrement ? NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver : NumericUpDownEx.InterceptMouseWheelMode.WhenFocus;
+
+        /// <summary>
+        /// Whether or not to ignore the limit on Complex Forms in Career mode.
+        /// </summary>
+        public bool IgnoreComplexFormLimit { get; set; }
+
+        /// <summary>
+        /// Karma cost for a new AI Program
+        /// </summary>
+        public int KarmaNewAIProgram { get; set; } = 5;
+
+        /// <summary>
+        /// Karma cost for a new AI Advanced Program
+        /// </summary>
+        public int KarmaNewAIAdvancedProgram { get; set; } = 8;
+
+        /// <summary>
+        /// House Rule: Ignore Armor Encumbrance entirely.
+        /// </summary>
+        public bool NoArmorEncumbrance { get; set; }
+
+        /// <summary>
+        /// Whether or not the Karma and Nuyen Expenses that have a cost of 0 should be printed on the character sheet.
+        /// </summary>
+        public bool PrintFreeExpenses { get; set; } = true;
+
+        /// <summary>
+        /// Whether Spells from Magic Priority can also be spent on power points.
+        /// </summary>
+        public bool PrioritySpellsAsAdeptPowers { get; set; } = false;
+
+        //TODO: Global option methinks
+        /// <summary>
+        /// Whether searching in a selection form will limit itself to the current Category that's selected.
+        /// </summary>
+        public bool SearchInCategoryOnly { get; set; } = true;
+
+        /// <summary>
+        /// Whether or not UnarmedAP, UnarmedReach and UnarmedDV Improvements apply to weapons that use the Unarmed Combat skill.
+        /// </summary>
+        public bool UnarmedImprovementsApplyToWeapons { get; set; }
+
+
+
+        /// <summary>
+        /// Whether or not characters can spend skill points on broken groups.
+        /// </summary>
+        public bool UsePointsOnBrokenGroups { get; set; } = false;
+
+        private int _nuyenDecimals = 2;
+        /// <summary>
+        /// Number of decimal places to round to when diplaying nuyen values.
+        /// </summary>
+        public int NuyenDecimals
+        {
+            get
+            {
+                return _nuyenDecimals;
+            }
+            set
+            {
+                _nuyenDecimals = value;
+                EssenceFormat = "#,0" + (value > 0 ? ("." + new string('#', value)) : "");
+            }
+        }
+
+        /// <summary>
+        /// Format in which nuyen values should be displayed (does not include nuyen symbol).
+        /// </summary>
+        [DisplayIgnore]
+        public string NuyenFormat { get; private set; } = "";
+
+        private int _essenceDecimals = 2;
+        /// <summary>
+        /// Number of decimal places to round to when calculating Essence.
+        /// </summary>
+        [SavePropertyAs("essencedecimals")]
+        public int EssenceDecimals
+        {
+            get { return _essenceDecimals; }
+            set
+            {
+                _essenceDecimals = value;
+                EssenceFormat = "#,0" + (value > 0 ? ("." + new string('0', value)) : "");
+            }
+        }
+
+        [DisplayIgnore]
+        public string EssenceFormat { get; private set; } = "0.00";
+
+        public bool DronemodsMaximumPilot { get; set; }
+
+    }
 
     public enum LimbCount
     {

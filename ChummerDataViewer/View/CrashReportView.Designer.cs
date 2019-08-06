@@ -1,6 +1,6 @@
-﻿namespace ChummerDataViewer
+namespace ChummerDataViewer
 {
-	partial class CrashReportView
+	public sealed partial class CrashReportView
 	{
 		/// <summary> 
 		/// Required designer variable.

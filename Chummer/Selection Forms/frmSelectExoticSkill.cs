@@ -16,161 +16,123 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
+ using System.Linq;
+ using System.Windows.Forms;
 using System.Xml;
+ using Chummer.Backend.Skills;
 
 namespace Chummer
 {
-	public partial class frmSelectExoticSkill : Form
-	{
-		#region Control Events
-		public frmSelectExoticSkill()
-		{
-			InitializeComponent();
-			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
-		}
+    public partial class frmSelectExoticSkill : Form
+    {
+        private readonly Character _objCharacter;
 
-		private void cmdOK_Click(object sender, EventArgs e)
-		{
-			this.DialogResult = DialogResult.OK;
-		}
+        #region Control Events
+        public frmSelectExoticSkill(Character objCharacter)
+        {
+            InitializeComponent();
+            LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, this);
+            _objCharacter = objCharacter;
+        }
 
-		private void cmdCancel_Click(object sender, EventArgs e)
-		{
-			this.DialogResult = DialogResult.Cancel;
-		}
+        private void cmdOK_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.OK;
+        }
 
-		private void frmSelectExoticSkill_Load(object sender, EventArgs e)
-		{
-			XmlDocument objXmlDocument = new XmlDocument();
-			objXmlDocument = XmlManager.Instance.Load("skills.xml");
+        private void cmdCancel_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.Cancel;
+        }
 
-			List<ListItem> lstSkills = new List<ListItem>();
-			
+        private void frmSelectExoticSkill_Load(object sender, EventArgs e)
+        {
+            List<ListItem> lstSkills = new List<ListItem>();
 
-			// Build the list of Exotic Active Skills from the Skills file.
-			XmlNodeList objXmlSkillList = objXmlDocument.SelectNodes("/chummer/skills/skill[exotic = \"Yes\"]");
-			foreach (XmlNode objXmlSkill in objXmlSkillList)
-			{
-				ListItem objItem = new ListItem();
-				objItem.Value = objXmlSkill["name"].InnerText;
-				if (objXmlSkill.Attributes != null)
-				{
-					if (objXmlSkill["translate"] != null)
-						objItem.Name = objXmlSkill["translate"].InnerText;
-					else
-						objItem.Name = objXmlSkill["name"].InnerText;
-				}
-				else
-					objItem.Name = objXmlSkill["name"].InnerXml;
-				lstSkills.Add(objItem);
-			}
-			SortListItem objSort = new SortListItem();
-			lstSkills.Sort(objSort.Compare);
-			cboCategory.ValueMember = "Value";
-			cboCategory.DisplayMember = "Name";
-			cboCategory.DataSource = lstSkills;
+            // Build the list of Exotic Active Skills from the Skills file.
+            using (XmlNodeList objXmlSkillList = XmlManager.Load("skills.xml").SelectNodes("/chummer/skills/skill[exotic = \"True\"]"))
+                if (objXmlSkillList?.Count > 0)
+                    foreach (XmlNode objXmlSkill in objXmlSkillList)
+                    {
+                        string strName = objXmlSkill["name"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strName))
+                            lstSkills.Add(new ListItem(strName, objXmlSkill["translate"]?.InnerText ?? strName));
+                    }
+            lstSkills.Sort(CompareListItems.CompareNames);
+            cboCategory.BeginUpdate();
+            cboCategory.ValueMember = "Value";
+            cboCategory.DisplayMember = "Name";
+            cboCategory.DataSource = lstSkills;
 
-			// Select the first Skill in the list.
-			cboCategory.SelectedIndex = 0;
+            // Select the first Skill in the list.
+            if (lstSkills.Count > 0)
+                cboCategory.SelectedIndex = 0;
+            else
+                cmdOK.Enabled = false;
 
-			BuildList();
-		}
+            cboCategory.EndUpdate();
 
-		private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			BuildList();
-		}
-		#endregion
+            BuildList();
+        }
 
-		#region Properties
-		/// <summary>
-		/// Skill that was selected in the dialogue.
-		/// </summary>
-		public string SelectedExoticSkill
-		{
-			get
-			{
-				return cboCategory.SelectedValue.ToString();
-			}
-		}
-		/// <summary>
-		/// Skill specialisation that was selected in the dialogue.
-		/// </summary>
-		public string SelectedExoticSkillSpecialisation
-		{
-			get
-			{
-				if (cboSkillSpecialisations.SelectedValue == null)
-				{
-					return cboSkillSpecialisations.Text;
-				}
-				else
-				{
-					return cboSkillSpecialisations.SelectedValue.ToString();
-                }
-			}
-		}
+        private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            BuildList();
+        }
+        #endregion
 
+        #region Properties
+        /// <summary>
+        /// Skill that was selected in the dialogue.
+        /// </summary>
+        public string SelectedExoticSkill => cboCategory.SelectedValue?.ToString() ?? string.Empty;
 
-		#endregion
+        /// <summary>
+        /// Skill specialisation that was selected in the dialogue.
+        /// </summary>
+        public string SelectedExoticSkillSpecialisation => cboSkillSpecialisations.SelectedValue?.ToString() ?? LanguageManager.ReverseTranslateExtra(cboSkillSpecialisations.Text, GlobalOptions.Instance.Language);
 
-		private void BuildList()
-		{
-			List<ListItem> lstSkillSpecialisations = new List<ListItem>();
-			XmlDocument objXmlDocument = XmlManager.Instance.Load("skills.xml");
+        #endregion
 
-			XmlNodeList objXmlSelectedSkill =
-				objXmlDocument.SelectNodes("/chummer/skills/skill[name = \"" + cboCategory.SelectedValue.ToString() + "\"]/specs/spec");
-			XmlDocument objXmlWeaponDocument = XmlManager.Instance.Load("weapons.xml");
-			XmlNodeList objXmlWeaponList =
-				objXmlWeaponDocument.SelectNodes("/chummer/weapons/weapon[category = \"" + cboCategory.SelectedValue.ToString() +
-				                                 "s\" or useskill = \"" + cboCategory.SelectedValue.ToString() + "\"]");
-			foreach (XmlNode objXmlWeapon in objXmlWeaponList)
-			{
-				ListItem objItem = new ListItem();
-				objItem.Value = objXmlWeapon["name"].InnerText;
-				if (objXmlWeapon.Attributes != null)
-				{
-					if (objXmlWeapon["translate"] != null)
-					{
-						objItem.Name = objXmlWeapon["translate"].InnerText;
-					}
-					else
-					{
-						objItem.Name = objXmlWeapon["name"].InnerText;
-					}
-				}
-				else
-				{
-					objItem.Name = objXmlWeapon["name"].InnerXml;
-				}
+        private void BuildList()
+        {
+            string strSelectedCategory = cboCategory.SelectedValue?.ToString();
+            if (!string.IsNullOrEmpty(strSelectedCategory))
+            {
+                List<ListItem> lstSkillSpecialisations = new List<ListItem>();
 
-				lstSkillSpecialisations.Add(objItem);
-			}
-			foreach (XmlNode objXmlSpecialization in objXmlSelectedSkill)
-			{
-				ListItem objItem = new ListItem();
-				objItem.Value = objXmlSpecialization.InnerText;
-				if (objXmlSpecialization.Attributes != null)
-				{
-					if (objXmlSpecialization["translate"] != null)
-						objItem.Name = objXmlSpecialization["translate"].InnerText;
-					else
-						objItem.Name = objXmlSpecialization.InnerText;
-				}
-				else
-					objItem.Name = objXmlSpecialization["name"].InnerXml;
-				lstSkillSpecialisations.Add(objItem);
-			}
-			cboSkillSpecialisations.ValueMember = "Value";
-			cboSkillSpecialisations.DisplayMember = "Name";
-			cboSkillSpecialisations.DataSource = lstSkillSpecialisations;
+                using (XmlNodeList objXmlWeaponList = XmlManager.Load("weapons.xml").SelectNodes("/chummer/weapons/weapon[(category = \"" + strSelectedCategory + "s\" or useskill = \"" + strSelectedCategory + "\") and (" + _objCharacter.Options.BookXPath() + ")]"))
+                    if (objXmlWeaponList?.Count > 0)
+                        foreach (XmlNode objXmlWeapon in objXmlWeaponList)
+                        {
+                            string strName = objXmlWeapon["name"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strName))
+                                lstSkillSpecialisations.Add(new ListItem(strName, objXmlWeapon["translate"]?.InnerText ?? strName));
+                        }
 
-			// Select the first Skill in the list.
-			cboSkillSpecialisations.SelectedIndex = 0;
-		}
-	}
+                using (XmlNodeList objXmlSelectedSkill = XmlManager.Load("skills.xml").SelectNodes("/chummer/skills/skill[name = \"" + strSelectedCategory + "\" and (" + _objCharacter.Options.BookXPath() + ")]/specs/spec"))
+                    if (objXmlSelectedSkill?.Count > 0)
+                        foreach (XmlNode objXmlSpecialization in objXmlSelectedSkill)
+                        {
+                            string strInnerText = objXmlSpecialization.InnerText;
+                            lstSkillSpecialisations.Add(new ListItem(strInnerText, objXmlSpecialization.Attributes?["translate"]?.InnerText ?? strInnerText));
+                        }
+                List<string> lstExistingExoticSkills = _objCharacter.SkillsSection.Skills
+                    .Where(x => x.Name == strSelectedCategory).Select(x => ((ExoticSkill) x).Specific).ToList();
+                lstSkillSpecialisations.RemoveAll(x => lstExistingExoticSkills.Contains(x.Value));
+
+                cboSkillSpecialisations.BeginUpdate();
+                cboSkillSpecialisations.ValueMember = "Value";
+                cboSkillSpecialisations.DisplayMember = "Name";
+                cboSkillSpecialisations.DataSource = lstSkillSpecialisations;
+
+                // Select the first Skill in the list.
+                if (lstSkillSpecialisations.Count > 0)
+                    cboSkillSpecialisations.SelectedIndex = 0;
+                cboSkillSpecialisations.EndUpdate();
+            }
+        }
+    }
 }

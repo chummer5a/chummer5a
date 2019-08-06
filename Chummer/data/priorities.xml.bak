@@ -1,0 +1,1206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<chummer>
+	<version>0</version>
+	<categories>
+		<category>Heritage</category>
+		<category>Talent</category>
+		<category>Attributes</category>
+		<category>Skills</category>
+		<category>Resources</category>
+	</categories>
+	<priorities>
+		<!-- Region Metatypes-->
+		<priority>
+			<id>55bc32fb-e097-4234-bdd5-a70e4f043b3d</id>
+			<name>A - Any metatype</name>
+			<value>A,4</value>
+			<category>Heritage</category>
+			<metatypes>
+				<metatype>
+					<name>E-Ghost</name>
+					<value>9</value>
+					<karma>0</karma>
+				</metatype>
+				<metatype>
+					<name>Human</name>
+					<value>9</value>
+					<karma>0</karma>
+					<metavariants>
+						<metavariant>
+							<name>Nartaki</name>
+							<value>8</value>
+							<karma>0</karma>
+						</metavariant>
+					</metavariants>		  
+				</metatype>
+				<metatype>
+					<name>Elf</name>
+					<value>8</value>
+					<karma>0</karma>
+					<metavariants>
+						<metavariant>
+							<name>Dryad</name>
+							<value>8</value>
+							<karma>0</karma>
+						</metavariant>	
+						<metavariant>
+							<name>Nocturna</name>
+							<value>8</value>
+							<karma>0</karma>
+						</metavariant>
+						<metavariant>
+							<name>Wakyambi</name>
+							<value>8</value>
+							<karma>12</karma>
+						</metavariant>
+						<metavariant>
+							<name>Xapiri Thëpë</name>
+							<value>8</value>
+							<karma>0</karma>
+						</metavariant>
+					</metavariants>		  
+				</metatype>				
+				<metatype>
+					<name>Dwarf</name>
+					<value>7</value>
+					<karma>0</karma>
+					<metavariants>
+						<metavariant>
+							<name>Gnome</name>
+							<value>7</value>
+							<karma>7</karma>
+						</metavariant>
+						<metavariant>
+							<name>Hanuman</name>
+							<value>7</value>
+							<karma>5</karma>
+						</metavariant>
+						<metavariant>
+							<name>Koborokuru</name>
+							<value>7</value>
+							<karma>0</karma>
+						</metavariant>
+						<metavariant>
+							<name>Menehune</name>
+							<value>7</value>
+							<karma>2</karma>
+						</metavariant>
+					</metavariants>		  
+				</metatype>
+				<metatype>
+					<name>Ork</name>
+					<value>7</value>
+					<karma>0</karma>
+					<metavariants>
+						<metavariant>
+							<name>Hobgoblin</name>
+							<value>7</value>
+							<karma>5</karma>
+						</metavariant>	
+						<metavariant>
+							<name>Ogre</name>
+							<value>7</value>
+							<karma>8</karma>
+						</metavariant>
+						<metavariant>
+							<name>Oni</name>
+							<value>7</value>
+							<karma>4</karma>
+						</metavariant>
+						<metavariant>
+							<name>Satyr</name>
+							<value>7</value>
+							<karma>10</karma>
+						</metavariant>
+					</metavariants>		  
+				</metatype>
+				<metatype>
+					<name>Troll</name>
+					<value>5</value>
+					<karma>0</karma>
+					<metavariants>
+						<metavariant>
+							<name>Cyclopean</name>
+							<value>5</value>
+							<karma>2</karma>
+						</metavariant>
+						<metavariant>
+							<name>Fomorian</name>
+							<value>5</value>
+							<karma>12</karma>
+						</metavariant>
+						<metavariant>
+							<name>Giant</name>
+							<value>5</value>
+							<karma>2</karma>
+						</metavariant>
+						<metavariant>
+							<name>Minotaur</name>
+							<value>5</value>
+							<karma>2</karma>
+						</metavariant>
+					</metavariants>		  
+				</metatype>
+				<metatype>
+					<name>Centaur</name>
+					<value>6</value>
+					<karma>25</karma>					
+				</metatype>		
+				<metatype>
+					<name>Naga</name>
+					<value>4</value>
+					<karma>25</karma>					
+				</metatype>
+				<metatype>
+					<name>Pixie</name>
+					<value>6</value>	
+					<karma>15</karma>					
+				</metatype>
+				<metatype>
+					<name>Sasquatch</name>
+					<value>5</value>	
+					<karma>20</karma>
+					<metavariants />	
+				</metatype>	
+				<metatype>
+					<name>Shapeshifter: Bovine</name>
+					<value>8</value>	
+					<karma>5</karma>		  
+				</metatype>
+				<metatype>
+					<name>Shapeshifter: Vulpine</name>
+					<value>8</value>
+					<karma>5</karma>		  
+				</metatype>
+				<metatype>
+					<name>Shapeshifter: Canine</name>
+					<value>7</value>	
+					<karma>10</karma>		  
+				</metatype>
+				<metatype>
+					<name>Shapeshifter: Falconine</name>
+					<value>7</value>	
+					<karma>10</karma>		  
+				</metatype>
+				<metatype>
+					<name>Shapeshifter: Lupine</name>
+					<value>6</value>		
+					<karma>15</karma>		  
+				</metatype>
+				<metatype>
+					<name>Shapeshifter: Equine</name>
+					<value>6</value>		
+					<karma>15</karma>		  
+				</metatype>
+				<metatype>
+					<name>Shapeshifter: Leonine</name>
+					<value>4</value>	
+					<karma>20</karma>		  
+				</metatype>
+				<metatype>
+					<name>Shapeshifter: Ursine</name>
+					<value>4</value>	
+					<karma>20</karma>		  
+				</metatype>
+				<metatype>
+					<name>Shapeshifter: Pantherine</name>
+					<value>4</value>		  
+					<karma>25</karma>
+				</metatype>
+				<metatype>
+					<name>Shapeshifter: Tigrine</name>
+					<value>4</value>		  		
+					<karma>25</karma>
+				</metatype> 				
+			</metatypes>
+		</priority>
+		<priority>
+			<id>f9aa712d-7140-4ddd-9e88-4a06e8bae222</id>
+			<name>B - Any metatype</name>
+			<value>B,3</value>
+			<category>Heritage</category>
+			<metatypes>
+				<metatype>
+					<name>Human</name>
+					<value>7</value>
+					<karma>0</karma>
+					<metavariants>
+						<metavariant>
+							<name>Nartaki</name>
+							<value>6</value>
+							<karma>0</karma>
+						</metavariant>
+					</metavariants>		  
+				</metatype>
+				<metatype>
+					<name>Elf</name>
+					<value>6</value>
+					<karma>0</karma>
+					<metavariants>
+						<metavariant>
+							<name>Nocturna</name>
+							<value>6</value>
+							<karma>0</karma>
+						</metavariant>
+						<metavariant>
+							<name>Wakyambi</name>
+							<value>6</value>
+							<karma>12</karma>
+						</metavariant>
+						<metavariant>
+							<name>Xapiri Thëpë</name>
+							<value>6</value>
+							<karma>0</karma>
+						</metavariant>
+						<metavariant>
+							<name>Dryad</name>
+							<value>6</value>
+							<karma>0</karma>
+						</metavariant>
+					</metavariants>		  
+				</metatype>				
+				<metatype>
+					<name>Dwarf</name>
+					<value>4</value>
+					<karma>0</karma>
+					<metavariants>
+						<metavariant>
+							<name>Gnome</name>
+							<value>4</value>
+							<karma>7</karma>
+						</metavariant>
+						<metavariant>
+							<name>Hanuman</name>
+							<value>4</value>
+							<karma>5</karma>
+						</metavariant>
+						<metavariant>
+							<name>Koborokuru</name>
+							<value>4</value>
+							<karma>0</karma>
+						</metavariant>
+						<metavariant>
+							<name>Menehune</name>
+							<value>4</value>
+							<karma>2</karma>
+						</metavariant>
+					</metavariants>		  
+				</metatype>
+				<metatype>
+					<name>Ork</name>
+					<value>4</value>
+					<karma>0</karma>
+					<metavariants>
+						<metavariant>
+							<name>Ogre</name>
+							<value>4</value>
+							<karma>8</karma>
+						</metavariant>
+						<metavariant>
+							<name>Oni</name>
+							<value>4</value>
+							<karma>4</karma>
+						</metavariant>
+						<metavariant>
+							<name>Satyr</name>
+							<value>4</value>
+							<karma>10</karma>
+						</metavariant>
+						<metavariant>
+							<name>Hobgoblin</name>
+							<value>4</value>
+							<karma>5</karma>
+						</metavariant>	  
+					</metavariants>		  
+				</metatype>
+				<metatype>
+					<name>Troll</name>
+					<value>0</value>
+					<karma>0</karma>
+					<metavariants>
+						<metavariant>
+							<name>Cyclopean</name>
+							<value>0</value>
+							<karma>2</karma>
+						</metavariant>
+						<metavariant>
+							<name>Fomorian</name>
+							<value>0</value>
+							<karma>12</karma>
+						</metavariant>
+						<metavariant>
+							<name>Giant</name>
+							<value>0</value>
+							<karma>2</karma>
+						</metavariant>
+						<metavariant>
+							<name>Minotaur</name>
+							<value>0</value>
+							<karma>2</karma>
+						</metavariant>
+					</metavariants>		  
+				</metatype>
+				<metatype>
+					<name>Centaur</name>
+					<value>3</value>
+					<karma>25</karma>					
+				</metatype>		
+				<metatype>
+					<name>Naga</name>
+					<value>2</value>
+					<karma>25</karma>					
+				</metatype>
+				<metatype>
+					<name>Pixie</name>
+					<value>3</value>	
+					<karma>15</karma>					
+				</metatype>
+				<metatype>
+					<name>Sasquatch</name>
+					<value>2</value>	
+					<karma>20</karma>
+					<metavariants />					
+				</metatype>	
+				<metatype>
+					<name>Shapeshifter: Bovine</name>
+					<value>6</value>	
+					<karma>5</karma>		  
+				</metatype>
+				<metatype>
+					<name>Shapeshifter: Vulpine</name>
+					<value>6</value>
+					<karma>5</karma>		  
+				</metatype>
+				<metatype>
+					<name>Shapeshifter: Canine</name>
+					<value>5</value>	
+					<karma>10</karma>		  
+				</metatype>
+				<metatype>
+					<name>Shapeshifter: Falconine</name>
+					<value>5</value>	
+					<karma>10</karma>		  
+				</metatype>
+				<metatype>
+					<name>Shapeshifter: Lupine</name>
+					<value>4</value>		
+					<karma>15</karma>		  
+				</metatype>
+				<metatype>
+					<name>Shapeshifter: Equine</name>
+					<value>4</value>		
+					<karma>15</karma>		  
+				</metatype>
+				<metatype>
+					<name>Shapeshifter: Leonine</name>
+					<value>2</value>	
+					<karma>20</karma>		  
+				</metatype>
+				<metatype>
+					<name>Shapeshifter: Ursine</name>
+					<value>2</value>	
+					<karma>20</karma>		  
+				</metatype>
+				<metatype>
+					<name>Shapeshifter: Pantherine</name>
+					<value>2</value>		  
+					<karma>25</karma>
+				</metatype>
+				<metatype>
+					<name>Shapeshifter: Tigrine</name>
+					<value>2</value>		  		
+					<karma>25</karma>
+				</metatype> 				
+			</metatypes>
+		</priority>
+		<priority>
+			<id>988b7ce3-5739-4300-bc21-a6c92b869262</id>
+			<name>C - Human, Dwarf, Elf, or Ork</name>
+			<value>C,2</value>
+			<category>Heritage</category>
+			<metatypes>
+				<metatype>
+					<name>Human</name>
+					<value>5</value>
+					<karma>0</karma>
+					<metavariants>
+						<metavariant>
+							<name>Nartaki</name>
+							<value>4</value>
+							<karma>0</karma>
+						</metavariant>
+					</metavariants>		  
+				</metatype>
+				<metatype>
+					<name>Elf</name>
+					<value>3</value>
+					<karma>0</karma>
+					<metavariants>
+						<metavariant>
+							<name>Nocturna</name>
+							<value>3</value>
+							<karma>0</karma>
+						</metavariant>
+						<metavariant>
+							<name>Wakyambi</name>
+							<value>3</value>
+							<karma>12</karma>
+						</metavariant>
+						<metavariant>
+							<name>Xapiri Thëpë</name>
+							<value>3</value>
+							<karma>0</karma>
+						</metavariant>
+						<metavariant>
+							<name>Dryad</name>
+							<value>3</value>
+							<karma>0</karma>
+						</metavariant>
+					</metavariants>		  
+				</metatype>
+				<metatype>
+					<name>Dwarf</name>
+					<value>1</value>
+					<karma>0</karma>
+					<metavariants>
+						<metavariant>
+							<name>Gnome</name>
+							<value>1</value>
+							<karma>7</karma>
+						</metavariant>
+						<metavariant>
+							<name>Hanuman</name>
+							<value>1</value>
+							<karma>5</karma>
+						</metavariant>
+						<metavariant>
+							<name>Koborokuru</name>
+							<value>1</value>
+							<karma>0</karma>
+						</metavariant>
+						<metavariant>
+							<name>Menehune</name>
+							<value>1</value>
+							<karma>2</karma>
+						</metavariant>
+						<metavariant>
+							<name>Goblin</name>
+							<value>1</value>
+							<karma>27</karma>
+						</metavariant>
+					</metavariants>		  
+				</metatype>
+				<metatype>
+					<name>Ork</name>
+					<value>0</value>
+					<karma>0</karma>
+					<metavariants>
+						<metavariant>
+							<name>Ogre</name>
+							<value>0</value>
+							<karma>8</karma>
+						</metavariant>
+						<metavariant>
+							<name>Oni</name>
+							<value>0</value>
+							<karma>-4</karma>
+						</metavariant>
+						<metavariant>
+							<name>Satyr</name>
+							<value>0</value>
+							<karma>10</karma>
+						</metavariant>
+						<metavariant>
+							<name>Hobgoblin</name>
+							<value>0</value>
+							<karma>-5</karma>
+						</metavariant>		  
+					</metavariants>		  
+				</metatype>
+				<metatype>
+					<name>Centaur</name>
+					<value>0</value>
+					<karma>25</karma>					
+				</metatype>		
+				<metatype>
+					<name>Naga</name>
+					<value>0</value>
+					<karma>25</karma>					
+				</metatype>
+				<metatype>
+					<name>Pixie</name>
+					<value>0</value>	
+					<karma>15</karma>					
+				</metatype>
+				<metatype>
+					<name>Sasquatch</name>
+					<value>0</value>	
+					<karma>20</karma>
+					<metavariants />						
+				</metatype>	
+				<metatype>
+					<name>Shapeshifter: Bovine</name>
+					<value>4</value>	
+					<karma>5</karma>		  
+				</metatype>
+				<metatype>
+					<name>Shapeshifter: Vulpine</name>
+					<value>4</value>
+					<karma>5</karma>		  
+				</metatype>
+				<metatype>
+					<name>Shapeshifter: Canine</name>
+					<value>3</value>	
+					<karma>10</karma>		  
+				</metatype>
+				<metatype>
+					<name>Shapeshifter: Falconine</name>
+					<value>3</value>	
+					<karma>10</karma>		  
+				</metatype>
+				<metatype>
+					<name>Shapeshifter: Lupine</name>
+					<value>2</value>		
+					<karma>15</karma>		  
+				</metatype>
+				<metatype>
+					<name>Shapeshifter: Equine</name>
+					<value>2</value>		
+					<karma>15</karma>		  
+				</metatype>
+				<metatype>
+					<name>Shapeshifter: Leonine</name>
+					<value>0</value>	
+					<karma>20</karma>		  
+				</metatype>
+				<metatype>
+					<name>Shapeshifter: Ursine</name>
+					<value>0</value>	
+					<karma>20</karma>		  
+				</metatype>
+				<metatype>
+					<name>Shapeshifter: Pantherine</name>
+					<value>0</value>		  
+					<karma>25</karma>
+				</metatype>
+				<metatype>
+					<name>Shapeshifter: Tigrine</name>
+					<value>0</value>		  		
+					<karma>25</karma>
+				</metatype> 				
+			</metatypes>
+		</priority>
+		<priority>
+			<id>255da2ba-8d21-4a73-9f81-37156901db72</id>
+			<name>D - Human or Elf</name>
+			<value>D,1</value>
+			<category>Heritage</category>
+			<metatypes>
+				<metatype>
+					<name>Human</name>
+					<value>3</value>
+					<karma>0</karma>
+					<metavariants>
+						<metavariant>
+							<name>Nartaki</name>
+							<value>2</value>
+							<karma>0</karma>
+						</metavariant>				
+					</metavariants>		  
+				</metatype>
+				<metatype>
+					<name>Elf</name>
+					<value>0</value>
+					<karma>0</karma>
+					<metavariants>
+						<metavariant>
+							<name>Nocturna</name>
+							<value>0</value>
+							<karma>0</karma>
+						</metavariant>
+						<metavariant>
+							<name>Wakyambi</name>
+							<value>0</value>
+							<karma>12</karma>
+						</metavariant>
+						<metavariant>
+							<name>Xapiri Thëpë</name>
+							<value>0</value>
+							<karma>0</karma>
+						</metavariant>
+						<metavariant>
+							<name>Dryad</name>
+							<value>0</value>
+							<karma>0</karma>
+						</metavariant>		  
+					</metavariants>		  
+				</metatype>
+			</metatypes>
+		</priority>
+		<priority>
+			<id>91dccab9-c3fc-4868-abf8-1825b70e8a6c</id>
+			<name>E - Human</name>
+			<value>E,0</value>
+			<category>Heritage</category>
+			<metatypes>
+				<metatype>
+					<name>Human</name>
+					<value>1</value>
+					<karma>0</karma>
+					<metavariants>
+						<metavariant>
+							<name>Nartaki</name>
+							<value>1</value>
+							<karma>0</karma>
+						</metavariant>
+					</metavariants>		  
+				</metatype>
+			</metatypes>
+		</priority>
+		<!-- End Region -->
+		<!-- End Region -->
+		<!-- Region Talents -->
+		<!-- Region Default -->
+		<priority>
+			<id>9d58a295-7c59-4d3f-8001-a5565da6b836</id>
+			<name>A - Magician or Technomancer</name>
+			<value>A,4</value>
+			<category>Talent</category>
+			<talents>
+				<talent>
+					<name>Magician - 6 Magic/10 Spells</name>
+					<value>Magician</value>
+					<qualities>
+						<quality>Magician</quality>
+					</qualities>
+					<magic>6</magic>
+					<spells>10</spells>
+					<skillqty>2</skillqty>
+					<skillval>5</skillval>
+					<skilltype>magic</skilltype>
+				</talent>
+				<talent>
+					<name>Mystic Adept - 6 Magic/10 Spells</name>
+					<value>Mystic Adept</value>
+					<qualities>
+						<quality>Mystic Adept</quality>
+					</qualities>
+					<magic>6</magic>
+					<spells>10</spells>
+					<skillqty>2</skillqty>
+					<skillval>5</skillval>
+					<skilltype>magic</skilltype>
+				</talent>
+				<talent>
+					<name>Technomancer - 6 Resonance/5 Complex Forms</name>
+					<value>Technomancer</value>
+					<qualities>
+						<quality>Technomancer</quality>
+					</qualities>
+					<resonance>6</resonance>
+					<cfp>5</cfp>
+					<skillqty>2</skillqty>
+					<skillval>5</skillval>
+					<skilltype>resonance</skilltype>
+				</talent>
+			</talents>
+		</priority>
+		<priority>
+			<id>774fd89a-ecea-4f5f-ad2b-c4476ca46f70</id>
+			<name>B - Adept, Magician, or Technomancer</name>
+			<value>B,3</value>
+			<category>Talent</category>
+			<talents>
+				<talent>
+					<name>Adept - 6 Magic</name>
+					<value>Adept</value>
+					<qualities>
+						<quality>Adept</quality>
+					</qualities>
+					<magic>6</magic>
+					<skillqty>1</skillqty>
+					<skillval>4</skillval>
+					<skilltype>active</skilltype>
+				</talent>
+				<talent>
+					<name>Magician - 4 Magic/7 Spells</name>
+					<value>Magician</value>
+					<qualities>
+						<quality>Magician</quality>
+					</qualities>
+					<magic>4</magic>
+					<spells>7</spells>
+					<skillqty>2</skillqty>
+					<skillval>4</skillval>
+					<skilltype>magic</skilltype>
+				</talent>
+				<talent>
+					<name>Mystic Adept - 4 Magic/7 Spells</name>
+					<value>Mystic Adept</value>
+					<qualities>
+						<quality>Mystic Adept</quality>
+					</qualities>
+					<magic>4</magic>
+					<spells>7</spells>
+					<skillqty>2</skillqty>
+					<skillval>4</skillval>
+					<skilltype>magic</skilltype>
+				</talent>
+				<talent>
+					<name>Aspected Magician - 5 Magic</name>
+					<value>Aspected Magician</value>
+					<qualities>
+						<quality>Aspected Magician</quality>
+					</qualities>
+					<skillgroupchoices>
+						<skillgroup>Conjuring</skillgroup>
+						<skillgroup>Enchanting</skillgroup>
+						<skillgroup>Sorcery</skillgroup>
+					</skillgroupchoices>
+					<magic>5</magic>
+					<skillgroupqty>1</skillgroupqty>
+					<skillgroupval>4</skillgroupval>
+					<skillgrouptype>choices</skillgrouptype>
+				</talent>
+				<talent>
+					<name>Technomancer - 4 Resonance/2 Complex Forms</name>
+					<value>Technomancer</value>
+					<qualities>
+						<quality>Technomancer</quality>
+					</qualities>
+					<resonance>4</resonance>
+					<cfp>2</cfp>
+					<skillqty>2</skillqty>
+					<skillval>4</skillval>
+					<skilltype>resonance</skilltype>
+				</talent>
+			</talents>
+		</priority>
+		<priority>
+			<id>aae3a140-d306-4811-a9d2-874140600150</id>
+			<name>C - Adept, Magician, or Technomancer</name>
+			<value>C,2</value>
+			<category>Talent</category>
+			<talents>
+				<talent>
+					<name>Adept - 4 Magic</name>
+					<value>Adept</value>
+					<qualities>
+						<quality>Adept</quality>
+					</qualities>
+					<magic>4</magic>
+					<skillqty>1</skillqty>
+					<skillval>2</skillval>
+					<skilltype>active</skilltype>
+				</talent>
+				<talent>
+					<name>Magician - 3 Magic/5 Spells</name>
+					<value>Magician</value>
+					<qualities>
+						<quality>Magician</quality>
+					</qualities>
+					<magic>3</magic>
+					<spells>5</spells>
+				</talent>
+				<talent>
+					<name>Mystic Adept - 3 Magic/5 Spells</name>
+					<value>Mystic Adept</value>
+					<qualities>
+						<quality>Mystic Adept</quality>
+					</qualities>
+					<magic>3</magic>
+					<spells>5</spells>
+				</talent>
+				<talent>
+					<name>Aspected Magician - 3 Magic</name>
+					<value>Aspected Magician</value>
+					<qualities>
+						<quality>Aspected Magician</quality>
+					</qualities>
+					<skillgroupchoices>
+						<skillgroup>Conjuring</skillgroup>
+						<skillgroup>Enchanting</skillgroup>
+						<skillgroup>Sorcery</skillgroup>
+					</skillgroupchoices>
+					<magic>3</magic>
+					<skillgroupqty>1</skillgroupqty>
+					<skillgroupval>2</skillgroupval>
+					<skillgrouptype>choices</skillgrouptype>
+				</talent>
+				<talent>
+					<name>Technomancer - 3 Resonance/1 Complex Forms</name>
+					<value>Technomancer</value>
+					<qualities>
+						<quality>Technomancer</quality>
+					</qualities>
+					<resonance>3</resonance>
+					<cfp>1</cfp>
+				</talent>
+			</talents>
+		</priority>
+		<priority>
+			<id>b97be625-a732-4c3c-80e4-06c4d88bac91</id>
+			<name>D - Adept or Aspected Magician</name>
+			<value>D,1</value>
+			<category>Talent</category>
+			<talents>
+				<talent>
+					<name>Adept - 2 Magic</name>
+					<value>Adept</value>
+					<qualities>
+						<quality>Adept</quality>
+					</qualities>
+					<magic>2</magic>
+				</talent>
+				<talent>
+					<name>Aspected Magician - 2 Magic</name>
+					<value>Aspected Magician</value>
+					<qualities>
+						<quality>Aspected Magician</quality>
+					</qualities>
+					<skillgroupchoices>
+						<skillgroup>Conjuring</skillgroup>
+						<skillgroup>Enchanting</skillgroup>
+						<skillgroup>Sorcery</skillgroup>
+					</skillgroupchoices>
+					<magic>2</magic>
+					<skillgroupqty>1</skillgroupqty>
+					<skillgroupval>0</skillgroupval>
+					<skillgrouptype>choices</skillgrouptype>
+				</talent>
+			</talents>
+		</priority>
+		<priority>
+			<id>9753a254-94b0-46e8-83f4-e7627bdb8571</id>
+			<name>E - Mundane</name>
+			<value>E,0</value>
+			<category>Talent</category>
+			<talents>
+				<talent>
+					<name>Mundane</name>
+					<value>Mundane</value>
+				</talent>
+			</talents>
+		</priority>
+		<!-- End Region -->
+		<!-- End Region -->
+		<!-- Region Attributes -->
+		<!-- Region Default -->
+		<priority>
+			<id>1c4a7955-1ae1-4a5b-9ed4-5ab8525d13b0</id>
+			<name>A - 24 Attributes</name>
+			<value>A,4</value>
+			<category>Attributes</category>
+			<attributes>24</attributes>
+		</priority>
+		<priority>
+			<id>521c1f60-f382-479e-af3b-a3eda5201f22</id>
+			<name>B - 20 Attributes</name>
+			<value>B,3</value>
+			<category>Attributes</category>
+			<attributes>20</attributes>
+		</priority>
+		<priority>
+			<id>0a224d86-d355-4cd6-8e4e-b94e31f97c4b</id>
+			<name>C - 16 Attributes</name>
+			<value>C,2</value>
+			<category>Attributes</category>
+			<attributes>16</attributes>
+		</priority>
+		<priority>
+			<id>984600d8-5b2f-437c-86eb-693a5bbff030</id>
+			<name>D - 14 Attributes</name>
+			<value>D,1</value>
+			<category>Attributes</category>
+			<attributes>14</attributes>
+		</priority>
+		<priority>
+			<id>f6a36071-41ab-4f8e-884d-3cee92d8f181</id>
+			<name>E - 12 Attributes</name>
+			<value>E,0</value>
+			<category>Attributes</category>
+			<attributes>12</attributes>
+		</priority>
+		<!-- End Region -->
+		<!-- End Region -->
+		<!-- Region Skills -->
+		<!-- Region Street Scum -->
+		<priority>
+			<id>3d9194a1-ea79-46e0-b209-3acf5cb9a995</id>
+			<name>A - 36 Skills/5 Skill Groups</name>
+			<value>A,4</value>
+			<category>Skills</category>
+			<gameplayoption>Street Scum</gameplayoption>
+			<skills>36</skills>
+			<skillgroups>5</skillgroups>
+		</priority>
+		<priority>
+			<id>eb49bdef-4127-4634-bc9f-0922915522bf</id>
+			<name>B - 28 Skills/2 Skill Groups</name>
+			<value>B,3</value>
+			<category>Skills</category>
+			<gameplayoption>Street Scum</gameplayoption>
+			<skills>28</skills>
+			<skillgroups>2</skillgroups>
+		</priority>
+		<priority>
+			<id>830a6c2f-ec3b-4fc7-b928-de4921ccb5ea</id>
+			<name>C - 22 Skills/0 Skill Groups</name>
+			<value>C,2</value>
+			<category>Skills</category>
+			<gameplayoption>Street Scum</gameplayoption>
+			<skills>22</skills>
+			<skillgroups>0</skillgroups>
+		</priority>
+		<priority>
+			<id>c1b74a83-4874-400a-a4d5-2c810a312944</id>
+			<name>D - 18 Skills/0 Skill Groups</name>
+			<value>D,1</value>
+			<category>Skills</category>
+			<gameplayoption>Street Scum</gameplayoption>
+			<skills>18</skills>
+			<skillgroups>0</skillgroups>
+		</priority>
+		<priority>
+			<id>ac15704e-30bf-4840-86d8-1da4cb133809</id>
+			<name>E - 18 Skills/0 Skill Groups</name>
+			<value>E,0</value>
+			<category>Skills</category>
+			<gameplayoption>Street Scum</gameplayoption>
+			<skills>18</skills>
+			<skillgroups>0</skillgroups>
+		</priority>
+		<!-- End Region -->
+		<!-- Region Default -->
+		<priority>
+			<id>45a5f7b4-c152-4e05-839f-1b3d14e56058</id>
+			<name>A - 46 Skills/10 Skill Groups</name>
+			<value>A,4</value>
+			<category>Skills</category>
+			<skills>46</skills>
+			<skillgroups>10</skillgroups>
+		</priority>
+		<priority>
+			<id>bde37645-6789-4401-bcec-4c0e61c7fe17</id>
+			<name>B - 36 Skills/5 Skill Groups</name>
+			<value>B,3</value>
+			<category>Skills</category>
+			<skills>36</skills>
+			<skillgroups>5</skillgroups>
+		</priority>
+		<priority>
+			<id>57c52154-489e-4e8a-b885-13b341700deb</id>
+			<name>C - 28 Skills/2 Skill Groups</name>
+			<value>C,2</value>
+			<category>Skills</category>
+			<skills>28</skills>
+			<skillgroups>2</skillgroups>
+		</priority>
+		<priority>
+			<id>61e1758f-e4ca-4e53-ad45-bb88a0e5ac04</id>
+			<name>D - 22 Skills/0 Skill Groups</name>
+			<value>D,1</value>
+			<category>Skills</category>
+			<skills>22</skills>
+			<skillgroups>0</skillgroups>
+		</priority>
+		<priority>
+			<id>b1ca5551-46a4-4ef0-9d07-c33ae0abbcd1</id>
+			<name>E - 18 Skills/0 Skill Groups</name>
+			<value>E,0</value>
+			<category>Skills</category>
+			<skills>18</skills>
+			<skillgroups>0</skillgroups>
+		</priority>
+		<!-- End Region -->
+		<!-- End Region -->
+		<!-- Region Resources	-->
+		<!-- Region Standard -->
+		<priority>
+			<id>ee17af88-5564-4009-b0a1-4c8632bffaf4</id>
+			<name>A - 450,000¥</name>
+			<value>A,4</value>
+			<gameplayoption>Standard</gameplayoption>
+			<category>Resources</category>
+			<resources>450000</resources>
+		</priority>
+		<priority>
+			<id>ddb56487-f6ef-480d-9812-cf6077111c2b</id>
+			<name>B - 275,000¥</name>
+			<value>B,3</value>
+			<gameplayoption>Standard</gameplayoption>
+			<category>Resources</category>
+			<resources>275000</resources>
+		</priority>
+		<priority>
+			<id>be69802a-5379-457b-8084-87b22d2e9ea6</id>
+			<name>C - 140,000¥</name>
+			<value>C,2</value>
+			<gameplayoption>Standard</gameplayoption>
+			<category>Resources</category>
+			<resources>140000</resources>
+		</priority>
+		<priority>
+			<id>b977475b-9728-45a0-9873-a77bb036fb99</id>
+			<name>D - 50,000¥</name>
+			<value>D,1</value>
+			<gameplayoption>Standard</gameplayoption>
+			<category>Resources</category>
+			<resources>50000</resources>
+		</priority>
+		<priority>
+			<id>dd4eb137-e218-4d92-9ac2-db4d6bad4704</id>
+			<name>E - 6,000¥</name>
+			<value>E,0</value>
+			<gameplayoption>Standard</gameplayoption>
+			<category>Resources</category>
+			<resources>6000</resources>
+		</priority>
+		<!-- End Region -->
+		<!-- Region Prime Runner -->
+		<priority>
+			<id>7e4c5695-52c8-4b16-b233-058af14a41d1</id>
+			<name>A - 500,000¥</name>
+			<value>A,4</value>
+			<gameplayoption>Prime Runner</gameplayoption>
+			<category>Resources</category>
+			<resources>500000</resources>
+		</priority>
+		<priority>
+			<id>1da0e4d3-e75b-40ab-b366-e1eba499e8ca</id>
+			<name>B - 325,000¥</name>
+			<value>B,3</value>
+			<gameplayoption>Prime Runner</gameplayoption>
+			<category>Resources</category>
+			<resources>325000</resources>
+		</priority>
+		<priority>
+			<id>0fdfe7f7-119d-4971-a629-4a4dea938c6c</id>
+			<name>C - 210,000¥</name>
+			<value>C,2</value>
+			<gameplayoption>Prime Runner</gameplayoption>
+			<category>Resources</category>
+			<resources>210000</resources>
+		</priority>
+		<priority>
+			<id>2cbe209a-ae97-4985-b42f-4839613dfb28</id>
+			<name>D - 150,000¥</name>
+			<value>D,1</value>
+			<gameplayoption>Prime Runner</gameplayoption>
+			<category>Resources</category>
+			<resources>150000</resources>
+		</priority>
+		<priority>
+			<id>860a9601-e06f-424f-8f40-bee843a6b5dc</id>
+			<name>E - 100,000¥</name>
+			<value>E,0</value>
+			<gameplayoption>Prime Runner</gameplayoption>
+			<category>Resources</category>
+			<resources>100000</resources>
+		</priority>
+		<!-- End Region -->
+		<!-- Region Street Level -->
+		<priority>
+			<id>dc72a445-a956-4ea5-b383-0f775c638f05</id>
+			<name>A - 75,000¥</name>
+			<value>A,4</value>
+			<gameplayoption>Street Level</gameplayoption>
+			<category>Resources</category>
+			<resources>75000</resources>
+		</priority>
+		<priority>
+			<id>edc5db00-8d4c-4510-85d2-8d82d6c66ed6</id>
+			<name>B - 50,000¥</name>
+			<value>B,3</value>
+			<gameplayoption>Street Level</gameplayoption>
+			<category>Resources</category>
+			<resources>50000</resources>
+		</priority>
+		<priority>
+			<id>9aecfa32-4d5c-4ba9-a88e-9a04f83e516b</id>
+			<name>C - 25,000¥</name>
+			<value>C,2</value>
+			<gameplayoption>Street Level</gameplayoption>
+			<category>Resources</category>
+			<resources>25000</resources>
+		</priority>
+		<priority>
+			<id>c5b45f74-3396-45c7-afa9-b69c0c8db6ee</id>
+			<name>D - 15,000¥</name>
+			<value>D,1</value>
+			<gameplayoption>Street Level</gameplayoption>
+			<category>Resources</category>
+			<resources>15000</resources>
+		</priority>
+		<priority>
+			<id>cb4060e7-61b9-40d7-b97f-9ab9129bfc26</id>
+			<name>E - 6,000¥</name>
+			<value>E,0</value>
+			<gameplayoption>Street Level</gameplayoption>
+			<category>Resources</category>
+			<resources>6000</resources>
+		</priority>
+		<!-- End Region	-->
+		<!-- Region Street Scum -->
+		<priority>
+			<id>242f38cb-7625-4cd2-9496-ce8895a5b485</id>
+			<name>A - 50,000¥</name>
+			<value>A,4</value>
+			<gameplayoption>Street Scum</gameplayoption>
+			<category>Resources</category>
+			<resources>50000</resources>
+		</priority>
+		<priority>
+			<id>cae768c5-140d-43cf-8a80-f89abdd96a9a</id>
+			<name>B - 25,000¥</name>
+			<value>B,3</value>
+			<gameplayoption>Street Scum</gameplayoption>
+			<category>Resources</category>
+			<resources>25000</resources>
+		</priority>
+		<priority>
+			<id>b80c5890-1cce-4f80-8599-bf543da818ae</id>
+			<name>C - 15,000¥</name>
+			<value>C,2</value>
+			<gameplayoption>Street Scum</gameplayoption>
+			<category>Resources</category>
+			<resources>15000</resources>
+		</priority>
+		<priority>
+			<id>6d8d3a6f-80fd-4c5c-93fc-ee754f4a44f1</id>
+			<name>D - 15,000¥</name>
+			<value>D,1</value>
+			<gameplayoption>Street Scum</gameplayoption>
+			<category>Resources</category>
+			<resources>6000</resources>
+		</priority>
+		<priority>
+			<id>9e0f8c4d-5020-4efe-8f65-6d729ab7138c</id>
+			<name>E - 6,000¥</name>
+			<value>E,0</value>
+			<gameplayoption>Street Scum</gameplayoption>
+			<category>Resources</category>
+			<resources>6000</resources>
+		</priority>
+		<!-- End Region	-->
+		<!-- End Region	-->
+	</priorities>
+</chummer>

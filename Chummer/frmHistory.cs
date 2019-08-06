@@ -22,30 +22,31 @@ using System.Windows.Forms;
 
 namespace Chummer
 {
-	public partial class frmHistory : Form
-	{
-		#region Control Events
-		public frmHistory()
-		{
-			InitializeComponent();
-			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
-		}
+    public partial class frmHistory : Form
+    {
+        #region Control Events
+        public frmHistory()
+        {
+            InitializeComponent();
+            LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, this);
+        }
 
-		private void frmHistory_Load(object sender, EventArgs e)
-		{
-			// Display the contents of the changelog.txt file in the TextBox.
-			try
-			{
-				txtRevisionHistory.Text = File.ReadAllText(Path.Combine(Application.StartupPath, "changelog.txt"));
-				txtRevisionHistory.SelectionStart = 0;
-				txtRevisionHistory.SelectionLength = 0;
-			}
-			catch
-			{
-				MessageBox.Show(LanguageManager.Instance.GetString("Message_History_FileNotFound"), LanguageManager.Instance.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-				this.Close();
-			}
-		}
-		#endregion
-	}
+        private void frmHistory_Load(object sender, EventArgs e)
+        {
+            // Display the contents of the changelog.txt file in the TextBox.
+            try
+            {
+                txtRevisionHistory.Text = File.ReadAllText(Path.Combine(Utils.GetStartupPath, "changelog.txt"));
+            }
+            catch
+            {
+                MessageBox.Show(LanguageManager.GetString("Message_History_FileNotFound", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                Close();
+                return;
+            }
+            txtRevisionHistory.SelectionStart = 0;
+            txtRevisionHistory.SelectionLength = 0;
+        }
+        #endregion
+    }
 }

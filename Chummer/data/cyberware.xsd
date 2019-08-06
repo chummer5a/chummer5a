@@ -1,321 +1,191 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-<xs:include schemaLocation="../data../bonuses.xsd" />
-<xs:element name="chummer">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element name="version" type="xs:string" minOccurs="0" />
-        <xs:element name="grades" minOccurs="0" maxOccurs="unbounded">
-          <xs:complexType>
+    <xs:include schemaLocation="bonuses.xsd" />
+    <xs:include schemaLocation="conditions.xsd" />
+	<xs:include schemaLocation="gear.xsd" />
+    <xs:element name="chummer">
+        <xs:complexType>
             <xs:sequence>
-              <xs:element name="grade" minOccurs="0" maxOccurs="unbounded">
-                <xs:complexType>
-                  <xs:sequence>
-					<xs:element name="id" type="xs:string" minOccurs="1" />
-                    <xs:element name="name" type="xs:string" minOccurs="0" />
-                    <xs:element name="ess" type="xs:string" minOccurs="0" />
-                    <xs:element name="cost" type="xs:string" minOccurs="0" />
-                    <xs:element name="avail" type="xs:string" minOccurs="0" />
-					<xs:element ref="bonus" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="source" type="xs:string" minOccurs="0" />
-                    <xs:element name="page" type="xs:string" minOccurs="0" />
-                  </xs:sequence>
-                </xs:complexType>
-              </xs:element>
-            </xs:sequence>
-          </xs:complexType>
-        </xs:element>
-        <xs:element name="categories" minOccurs="0" maxOccurs="unbounded">
-          <xs:complexType>
-            <xs:sequence>
-              <xs:element name="category" nillable="true" minOccurs="0" maxOccurs="unbounded">
-                <xs:complexType>
-                  <xs:simpleContent msdata:ColumnName="category_Text" msdata:Ordinal="0">
-                    <xs:extension base="xs:string">
-					  <xs:attribute name="show" type="xs:string" use="optional" />
-                    </xs:extension>
-                  </xs:simpleContent>
-                </xs:complexType>
-              </xs:element>
-            </xs:sequence>
-          </xs:complexType>
-        </xs:element>
-        <xs:element name="cyberwares" minOccurs="0" maxOccurs="1">
-          <xs:complexType>
-            <xs:sequence>
-              <xs:element name="cyberware" minOccurs="0" maxOccurs="unbounded">
-                <xs:complexType>
-                  <xs:sequence>
-					<xs:element name="id" type="xs:string" minOccurs="1" />
-                    <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
-					<xs:element name="limbslot" type="xs:string" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="rating" type="xs:string" minOccurs="0" maxOccurs="1" />
-					<xs:element name="minrating" type="xs:string" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="ess" type="xs:string" minOccurs="1" maxOccurs="1" />
-					<xs:element name="notes" type="xs:string" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="capacity" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="avail" type="xs:string" minOccurs="1" maxOccurs="1" />
-					<xs:element name="addweapon" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-                    <xs:element name="cost" type="xs:string" minOccurs="1" maxOccurs="1" />
-					<xs:element name="allowgear" minOccurs="0" maxOccurs="1">
-						<xs:complexType>
-							<xs:sequence>
-								<xs:element name="gearcategory" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-							</xs:sequence>
-						</xs:complexType>
-					</xs:element>
-					<xs:element ref="bonus" minOccurs="0" maxOccurs="1" />
-					<xs:element name="required" minOccurs="0" maxOccurs="1">
-					  <xs:complexType>
-					    <xs:sequence>
-						  <xs:element name="allof" minOccurs="0" maxOccurs="1">
-						    <xs:complexType>
-							  <xs:sequence>
-								<xs:element name="inherited" type="xs:string" minOccurs="0" maxOccurs="1" />
-							    <xs:element name="quality" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-								<xs:element name="metatype" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-								<xs:element name="metatypecategory" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-								<xs:element name="metavariant" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-								<xs:element name="careerkarma" type="xs:integer" minOccurs="0" maxOccurs="1" />
-								<xs:element name="attribute" minOccurs="0" maxOccurs="unbounded">
-								  <xs:complexType>
-								    <xs:sequence>
-									  <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
-									  <xs:element name="total" type="xs:integer" minOccurs="1" maxOccurs="1" />
-									</xs:sequence>
-								  </xs:complexType>
-								</xs:element>
-								<xs:element name="attributetotal" minOccurs="0" maxOccurs="unbounded">
-								  <xs:complexType>
-								    <xs:sequence>
-									  <xs:element name="attributes" type="xs:string" minOccurs="1" maxOccurs="1" />
-									  <xs:element name="val" type="xs:integer" minOccurs="1" maxOccurs="1" />
-									</xs:sequence>
-								  </xs:complexType>
-								</xs:element>
-								<xs:element name="cyberwares" minOccurs="0" maxOccurs="unbounded">
-								  <xs:complexType>
-								    <xs:sequence>
-									  <xs:element name="cyberware" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-									  <xs:element name="cyberwarecategory" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-									  <xs:element name="cyberwarecontains" minOccurs="0" maxOccurs="unbounded">
-									    <xs:complexType>
-										  <xs:simpleContent>
-										    <xs:extension base="xs:string">
-											  <xs:attribute name="select" type="xs:string" use="optional" />
-											</xs:extension>
-										  </xs:simpleContent>
-										</xs:complexType>
-									  </xs:element>
-									  <xs:element name="cyberwareplugin" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-									  <xs:element name="bioware" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-									  <xs:element name="biowarecontains" minOccurs="0" maxOccurs="unbounded">
-									    <xs:complexType>
-										  <xs:simpleContent>
-										    <xs:extension base="xs:string">
-											  <xs:attribute name="select" type="xs:string" use="optional" />
-											</xs:extension>
-										  </xs:simpleContent>
-										</xs:complexType>
-									  </xs:element>
-									  <xs:element name="count" type="xs:integer" minOccurs="1" maxOccurs="1" />
-									</xs:sequence>
-								  </xs:complexType>
-								</xs:element>
-								<xs:element name="ess" type="xs:string" minOccurs="0" maxOccurs="1" />
-								<xs:element name="skill" minOccurs="0" maxOccurs="unbounded">
-								  <xs:complexType>
-								    <xs:sequence>
-									  <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
-									  <xs:element name="val" type="xs:integer" minOccurs="1" maxOccurs="1" />
-									</xs:sequence>
-								  </xs:complexType>
-								</xs:element>
-								<xs:element name="skillgrouptotal" minOccurs="0" maxOccurs="unbounded">
-								  <xs:complexType>
-								    <xs:sequence>
-									  <xs:element name="skillgroups" type="xs:string" minOccurs="1" maxOccurs="1" />
-									  <xs:element name="val" type="xs:integer" minOccurs="1" maxOccurs="1" />
-									</xs:sequence>
-								  </xs:complexType>
-								</xs:element>
-								<xs:element name="streetcredvsnotoriety" minOccurs="0" maxOccurs="1" />
-							  </xs:sequence>
-							</xs:complexType>
-						  </xs:element>
-						  <xs:element name="oneof" minOccurs="0" maxOccurs="unbounded">
-						    <xs:complexType>
-							  <xs:sequence>
-								<xs:element name="inherited" type="xs:string" minOccurs="0" maxOccurs="1" />
-							    <xs:element name="quality" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-								<xs:element name="metatype" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-								<xs:element name="metatypecategory" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-								<xs:element name="metavariant" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-								<xs:element name="careerkarma" type="xs:integer" minOccurs="0" maxOccurs="1" />
-								<xs:element name="attribute" minOccurs="0" maxOccurs="unbounded">
-								  <xs:complexType>
-								    <xs:sequence>
-									  <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
-									  <xs:element name="total" type="xs:integer" minOccurs="1" maxOccurs="1" />
-									</xs:sequence>
-								  </xs:complexType>
-								</xs:element>
-								<xs:element name="attributetotal" minOccurs="0" maxOccurs="unbounded">
-								  <xs:complexType>
-								    <xs:sequence>
-									  <xs:element name="attributes" type="xs:string" minOccurs="1" maxOccurs="1" />
-									  <xs:element name="val" type="xs:integer" minOccurs="1" maxOccurs="1" />
-									</xs:sequence>
-								  </xs:complexType>
-								</xs:element>
-								<xs:element name="cyberwares" minOccurs="0" maxOccurs="unbounded">
-								  <xs:complexType>
-								    <xs:sequence>
-									  <xs:element name="cyberware" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-									  <xs:element name="cyberwarecategory" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-									  <xs:element name="cyberwarecontains" minOccurs="0" maxOccurs="unbounded">
-									    <xs:complexType>
-										  <xs:simpleContent>
-										    <xs:extension base="xs:string">
-											  <xs:attribute name="select" type="xs:string" use="optional" />
-											</xs:extension>
-										  </xs:simpleContent>
-										</xs:complexType>
-									  </xs:element>
-									  <xs:element name="cyberwareplugin" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-									  <xs:element name="bioware" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-									  <xs:element name="biowarecontains" minOccurs="0" maxOccurs="unbounded">
-									    <xs:complexType>
-										  <xs:simpleContent>
-										    <xs:extension base="xs:string">
-											  <xs:attribute name="select" type="xs:string" use="optional" />
-											</xs:extension>
-										  </xs:simpleContent>
-										</xs:complexType>
-									  </xs:element>
-									  <xs:element name="count" type="xs:integer" minOccurs="1" maxOccurs="1" />
-									</xs:sequence>
-								  </xs:complexType>
-								</xs:element>
-								<xs:element name="ess" type="xs:string" minOccurs="0" maxOccurs="1" />
-								<xs:element name="skill" minOccurs="0" maxOccurs="unbounded">
-								  <xs:complexType>
-								    <xs:sequence>
-									  <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
-									  <xs:element name="val" type="xs:integer" minOccurs="1" maxOccurs="1" />
-									</xs:sequence>
-								  </xs:complexType>
-								</xs:element>
-								<xs:element name="skillgrouptotal" minOccurs="0" maxOccurs="unbounded">
-								  <xs:complexType>
-								    <xs:sequence>
-									  <xs:element name="skillgroups" type="xs:string" minOccurs="1" maxOccurs="1" />
-									  <xs:element name="val" type="xs:integer" minOccurs="1" maxOccurs="1" />
-									</xs:sequence>
-								  </xs:complexType>
-								</xs:element>
-								<xs:element name="streetcredvsnotoriety" minOccurs="0" maxOccurs="1" />
-							  </xs:sequence>
-							</xs:complexType>
-						  </xs:element>
-						</xs:sequence>
-					  </xs:complexType>
-					</xs:element>
-					<xs:element name="forbidden" minOccurs="0" maxOccurs="1">
-					  <xs:complexType>
-					    <xs:sequence>
-						  <xs:element name="oneof" minOccurs="0" maxOccurs="unbounded">
-						    <xs:complexType>
-							  <xs:sequence>
-							    <xs:element name="quality" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-								<xs:element name="metatype" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-								<xs:element name="metatypecategory" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-								<xs:element name="metavariant" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-							  </xs:sequence>
-							</xs:complexType>
-						  </xs:element>
-						</xs:sequence>
-					  </xs:complexType>
-					</xs:element>
-					<xs:element name="addqualities" minOccurs="0" maxOccurs="1">
-					  <xs:complexType>
-					    <xs:sequence>
-						  <xs:element name="addquality" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-						</xs:sequence>
-					  </xs:complexType>
-					</xs:element>
-					<xs:element name="forcegrade" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="subsystems" minOccurs="0" maxOccurs="unbounded">
-                      <xs:complexType>
+                <xs:element name="version" type="xs:string" minOccurs="0" />
+                <xs:element name="grades" minOccurs="0" maxOccurs="unbounded">
+                    <xs:complexType>
                         <xs:sequence>
-                          <xs:element name="subsystem" nillable="true" minOccurs="0" maxOccurs="unbounded">
-                            <xs:complexType>
-                              <xs:simpleContent msdata:ColumnName="subsystem_Text" msdata:Ordinal="0">
-                                <xs:extension base="xs:string">
-                                </xs:extension>
-                              </xs:simpleContent>
-                            </xs:complexType>
-                          </xs:element>
+                            <xs:element name="grade" minOccurs="0" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="id" type="xs:string" minOccurs="1" />
+                                        <xs:element name="name" type="xs:string" minOccurs="0" />
+                                        <xs:element name="ess" type="xs:string" minOccurs="0" />
+                                        <xs:element name="cost" type="xs:string" minOccurs="0" />
+                                        <xs:element name="devicerating" type="xs:integer" minOccurs="0" />
+                                        <xs:element name="avail" type="xs:string" minOccurs="0" />
+                                        <xs:element name="bonus" type="bonusTypes"  minOccurs="0" maxOccurs="1"/>
+                                        <xs:element name="source" type="xs:string" minOccurs="0" />
+                                        <xs:element name="page" type="xs:string" minOccurs="0" />
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
                         </xs:sequence>
-                      </xs:complexType>
-                    </xs:element>
-                    <xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="page" type="xs:string" minOccurs="1" maxOccurs="1" />
-                  </xs:sequence>
-                </xs:complexType>
-              </xs:element>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="categories" minOccurs="0" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="category" nillable="true" minOccurs="0" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:simpleContent msdata:ColumnName="category_Text" msdata:Ordinal="0">
+                                        <xs:extension base="xs:string">
+                                            <xs:attribute name="show" type="xs:string" use="optional" />
+                                        </xs:extension>
+                                    </xs:simpleContent>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="cyberwares" minOccurs="0" maxOccurs="1">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="cyberware" minOccurs="0" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="id" type="xs:string" minOccurs="1" />
+										<xs:element name="limit" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                        <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="ess" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="capacity" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="addtoparentcapacity" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                        <xs:element name="avail" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="cost" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="page" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="addvehicle" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+                                        <xs:element name="addweapon" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+                                        <xs:element name="allowgear" minOccurs="0" maxOccurs="1">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="gearcategory" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="allowsubsystems" minOccurs="0" maxOccurs="1">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="category" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="includepair" minOccurs="0" maxOccurs="1">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="bonus" type="bonusTypes"  minOccurs="0" maxOccurs="1"/>
+                                        <xs:element ref="forbidden" minOccurs="0" maxOccurs="1" />
+                                        <xs:element name="forcegrade" minOccurs="0" maxOccurs="1" />
+                                        <xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
+										<xs:element name="mountsto" type="xs:string" minOccurs="0" maxOccurs="1" />
+										<xs:element name="modularmount" type="xs:string" minOccurs="0" maxOccurs="1" />
+										<xs:element name="blocksmounts" type="xs:string" minOccurs="0" maxOccurs="1" />
+										<xs:element name="addtoparentess" type="xs:string" minOccurs="0" maxOccurs="1" />
+										<xs:element name="requireparent" type="xs:string" minOccurs="1" maxOccurs="1" />
+										<xs:element name="nosecondhand" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                        <xs:element name="inheritattributes" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                        <xs:element name="limbslot" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                        <xs:element name="limbslotcount" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                        <xs:element name="minrating" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                        <xs:element name="notes" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                        <xs:element name="rating" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                        <xs:element ref="required" minOccurs="0" maxOccurs="1" />
+                                        <xs:element ref="subsystems" minOccurs="0" maxOccurs="1" />
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="suites" minOccurs="0" maxOccurs="1">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="suite" minOccurs="1" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="grade" type="xs:string" minOccurs="1" maxOccurs="1" />
+										<xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                        <xs:element ref="cyberwares" minOccurs="1" maxOccurs="1" />
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
             </xs:sequence>
-          </xs:complexType>
-        </xs:element>
-		<xs:element name="suites" minOccurs="0" maxOccurs="1">
-		  <xs:complexType>
-		    <xs:sequence>
-			  <xs:element name="suite" minOccurs="1" maxOccurs="unbounded">
-			    <xs:complexType>
-				  <xs:sequence>
-                    <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="grade" type="xs:string" minOccurs="1" maxOccurs="1" />
-					<xs:element ref="cyberwares" minOccurs="1" maxOccurs="1" />
-				  </xs:sequence>
-				</xs:complexType>
-			  </xs:element>
-			</xs:sequence>
-		  </xs:complexType>
-		</xs:element>
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-  
-<xs:element name="cyberwares">
-  <xs:complexType>
-	<xs:sequence>
-	  <xs:element name="cyberware" minOccurs="1" maxOccurs="unbounded">
+        </xs:complexType>
+    </xs:element>
+
+	<xs:element name="subsystems">
 		<xs:complexType>
-		  <xs:sequence>
-			<xs:element name="name" minOccurs="1" maxOccurs="1">
-			  <xs:complexType>
-				<xs:simpleContent>
-				  <xs:extension base="xs:string">
-					<xs:attribute name="select" type="xs:string" use="optional" />
-				  </xs:extension>
-				</xs:simpleContent>
-			  </xs:complexType>
-			</xs:element>
-			<xs:element name="rating" type="xs:integer" minOccurs="0" maxOccurs="1" />
-			<xs:element ref="cyberwares" minOccurs="0" maxOccurs="1" />
-		  </xs:sequence>
+			<xs:sequence>
+				<xs:element name="cyberware" nillable="true" minOccurs="0" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+							<xs:element name="rating" type="xs:integer" minOccurs="0" maxOccurs="1" />
+							<xs:element name="forced" type="xs:string" minOccurs="0" maxOccurs="1" />
+							<xs:element ref="subsystems" minOccurs="0" maxOccurs="1" />
+							<xs:element ref="gears" minOccurs="0" maxOccurs="1" />
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="bioware" nillable="true" minOccurs="0" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+							<xs:element name="rating" type="xs:integer" minOccurs="0" maxOccurs="1" />
+							<xs:element name="forced" type="xs:string" minOccurs="0" maxOccurs="1" />
+							<xs:element ref="subsystems" minOccurs="0" maxOccurs="1" />
+							<xs:element ref="gears" minOccurs="0" maxOccurs="1" />
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
 		</xs:complexType>
-	  </xs:element>
-	</xs:sequence>
-  </xs:complexType>
-</xs:element>
-  
-  <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
-    <xs:complexType>
-      <xs:choice minOccurs="0" maxOccurs="unbounded">
-        <xs:element ref="chummer" />
-      </xs:choice>
-    </xs:complexType>
-  </xs:element>
+	</xs:element>
+	
+    <xs:element name="cyberwares">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="cyberware" minOccurs="1" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="name" minOccurs="1" maxOccurs="1">
+                                <xs:complexType>
+                                    <xs:simpleContent>
+                                        <xs:extension base="xs:string">
+                                            <xs:attribute name="select" type="xs:string" use="optional" />
+                                        </xs:extension>
+                                    </xs:simpleContent>
+                                </xs:complexType>
+                            </xs:element>
+							<xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
+                            <xs:element name="rating" type="xs:integer" minOccurs="0" maxOccurs="1" />
+                            <xs:element ref="cyberwares" minOccurs="0" maxOccurs="1" />
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+        <xs:complexType>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref="chummer" />
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
 </xs:schema>

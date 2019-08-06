@@ -1,10 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Chummer.Annotations;
-using Octokit;
 
 namespace Chummer.Backend.Options
 {
@@ -46,7 +45,7 @@ namespace Chummer.Backend.Options
             }
             set
             {
-                if (value.GetType() != TargetProperty.PropertyType)
+                if (value?.GetType() != TargetProperty.PropertyType)
                 {
                     value = Convert.ChangeType(value, TargetProperty.PropertyType);
                 }

@@ -206,5 +206,4 @@ FakesAssemblies/
 
 # Visual Studio 6 workspace options file
 *.opt
-Chummer/Properties/Contributors.cs
 .idea

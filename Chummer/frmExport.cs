@@ -16,114 +16,196 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
-using System.IO;
-using System.Windows.Forms;
+ using System;
+ using System.Collections.Generic;
+ using System.IO;
+ using System.Text;
+ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Xsl;
+ using Newtonsoft.Json;
+ using Formatting = Newtonsoft.Json.Formatting;
 
 namespace Chummer
 {
-	public partial class frmExport : Form
-	{
-		private XmlDocument _objCharacterXML = new XmlDocument();
+    public partial class frmExport : Form
+    {
+        private readonly XmlDocument _objCharacterXML;
+        private readonly Dictionary<string,string> _dictCache = new Dictionary<string, string>();
+        private bool _blnSelected;
 
-		#region Control Events
-		public frmExport()
-		{
-			InitializeComponent();
-			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
-			MoveControls();
-		}
+        #region Control Events
+        public frmExport(XmlDocument objCharacterXML)
+        {
+            _objCharacterXML = objCharacterXML;
+            InitializeComponent();
+            LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, this);
+            MoveControls();
+        }
 
-		private void frmExport_Load(object sender, EventArgs e)
-		{
-			// Populate the XSLT list with all of the XSL files found in the sheets directory.
-			string exportDirectoryPath = Path.Combine(Application.StartupPath, "export");
-			foreach (string strFile in Directory.GetFiles(exportDirectoryPath))
-			{
-				// Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets (hidden because they are partial templates that cannot be used on their own).
-				if (!strFile.EndsWith(".xslt") && strFile.EndsWith(".xsl"))
-				{
-					string strFileName = Path.GetFileNameWithoutExtension(strFile);
-					cboXSLT.Items.Add(strFileName);
-				}
-			}
+        private void frmExport_Load(object sender, EventArgs e)
+        {
+            cboXSLT.Items.Add("Export JSON");
+            // Populate the XSLT list with all of the XSL files found in the sheets directory.
+            string exportDirectoryPath = Path.Combine(Utils.GetStartupPath, "export");
+            foreach (string strFile in Directory.GetFiles(exportDirectoryPath))
+            {
+                // Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets (hidden because they are partial templates that cannot be used on their own).
+                if (!strFile.EndsWith(".xslt") && strFile.EndsWith(".xsl"))
+                {
+                    string strFileName = Path.GetFileNameWithoutExtension(strFile);
+                    cboXSLT.Items.Add(strFileName);
+                }
+            }
 
-			if (cboXSLT.Items.Count > 0)
-				cboXSLT.SelectedIndex = 0;
-		}
+            if (cboXSLT.Items.Count > 0)
+                cboXSLT.SelectedIndex = 0;
+        }
 
-		private void cmdCancel_Click(object sender, EventArgs e)
-		{
-			this.DialogResult = DialogResult.Cancel;
-		}
+        private void cmdCancel_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.Cancel;
+        }
 
-		private void cmdOK_Click(object sender, EventArgs e)
-		{
-			if (cboXSLT.Text == string.Empty)
-				return;
+        private void cmdOK_Click(object sender, EventArgs e)
+        {
+            string strXSLT = cboXSLT.Text;
+            if (string.IsNullOrEmpty(strXSLT))
+                return;
 
-			// Look for the file extension information.
-			string strLine = "";
-			string strExtension = "xml";
-			string exportSheetPath = Path.Combine(Application.StartupPath, "export", cboXSLT.Text + ".xsl");
-			StreamReader objFile = new StreamReader(exportSheetPath);
-			while ((strLine = objFile.ReadLine()) != null)
-			{
-				if (strLine.StartsWith("<!-- ext:"))
-					strExtension = strLine.Replace("<!-- ext:", string.Empty).Replace("-->", string.Empty).Trim();
-			}
-			objFile.Close();
+            if (strXSLT == "Export JSON")
+            {
+                ExportJson();
+            }
+            else
+            {
+                ExportNormal();
+            }
+        }
 
-			string strSaveFile = "";
-			SaveFileDialog1.Filter = strExtension.ToUpper() + "|*." + strExtension;
-			SaveFileDialog1.Title = LanguageManager.Instance.GetString("Button_Viewer_SaveAsHtml");
-			SaveFileDialog1.ShowDialog();
-			strSaveFile = SaveFileDialog1.FileName;
+        private void cboXSLT_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string strXSLT = cboXSLT.Text;
+            if (string.IsNullOrEmpty(strXSLT))
+                return;
 
-			if (strSaveFile == "")
-				return;
+            if (_dictCache.TryGetValue(strXSLT, out string strBoxText))
+            {
+                rtbText.Text = strBoxText;
+            }
 
-			XslCompiledTransform objXSLTransform = new XslCompiledTransform();
-			objXSLTransform.Load(exportSheetPath); // Use the path for the export sheet.
+            if (strXSLT == "Export JSON")
+            {
+                GenerateJson();
+            }
+            else
+            {
+                GenerateXml();
+            }
+        }
 
-			XmlWriterSettings objSettings = objXSLTransform.OutputSettings.Clone();
-			objSettings.CheckCharacters = false;
-			objSettings.ConformanceLevel = ConformanceLevel.Fragment;
+        private void rtbText_Leave(object sender, EventArgs e)
+        {
+            _blnSelected = false;
+        }
 
-			MemoryStream objStream = new MemoryStream();
-			XmlWriter objWriter = XmlWriter.Create(objStream, objSettings);
+        private void rtbText_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (_blnSelected || rtbText.SelectionLength != 0) return;
+            _blnSelected = true;
+            rtbText.SelectAll();
+        }
 
-			objXSLTransform.Transform(_objCharacterXML, null, objWriter);
-			objStream.Position = 0;
+        #endregion
 
-			// Read in the resulting code and pass it to the browser.
-			StreamReader objReader = new StreamReader(objStream);
-			File.WriteAllText(strSaveFile, objReader.ReadToEnd()); // Change this to a proper path.
+        #region Methods
+        private void MoveControls()
+        {
+            cboXSLT.Left = lblExport.Left + lblExport.Width + 6;
+        }
+        #region XML
+        private void ExportNormal()
+        {
+            // Look for the file extension information.
+            string strLine;
+            string strExtension = "xml";
+            string exportSheetPath = Path.Combine(Utils.GetStartupPath, "export", cboXSLT.Text + ".xsl");
+            StreamReader objFile = new StreamReader(exportSheetPath, Encoding.UTF8, true);
+            while ((strLine = objFile.ReadLine()) != null)
+            {
+                if (strLine.StartsWith("<!-- ext:"))
+                    strExtension = strLine.TrimStartOnce("<!-- ext:", true).FastEscapeOnceFromEnd("-->").Trim();
+            }
+            objFile.Close();
 
-			this.DialogResult = DialogResult.OK;
-		}
-		#endregion
+            SaveFileDialog1.Filter = strExtension.ToUpper() + "|*." + strExtension;
+            SaveFileDialog1.Title = LanguageManager.GetString("Button_Viewer_SaveAsHtml", GlobalOptions.Instance.Language);
+            SaveFileDialog1.ShowDialog();
+            string strSaveFile = SaveFileDialog1.FileName;
 
-		#region Methods
-		private void MoveControls()
-		{
-			cboXSLT.Left = lblExport.Left + lblExport.Width + 6;
-		}
-		#endregion
+            if (string.IsNullOrEmpty(strSaveFile))
+                return;
 
-		#region Properties
-		/// <summary>
-		/// Character's XmlDocument.
-		/// </summary>
-		public XmlDocument CharacterXML
-		{
-			set
-			{
-				_objCharacterXML = value;
-			}
-		}
-		#endregion
-	}
+            File.WriteAllText(strSaveFile, rtbText.Text); // Change this to a proper path.
+
+            DialogResult = DialogResult.OK;
+        }
+
+        private void GenerateXml()
+        {
+            string exportSheetPath = Path.Combine(Utils.GetStartupPath, "export", cboXSLT.Text + ".xsl");
+
+            XslCompiledTransform objXSLTransform = new XslCompiledTransform();
+            objXSLTransform.Load(exportSheetPath); // Use the path for the export sheet.
+
+            XmlWriterSettings objSettings = objXSLTransform.OutputSettings.Clone();
+            objSettings.CheckCharacters = false;
+            objSettings.ConformanceLevel = ConformanceLevel.Fragment;
+
+            MemoryStream objStream = new MemoryStream();
+            XmlWriter objWriter = XmlWriter.Create(objStream, objSettings);
+
+            objXSLTransform.Transform(_objCharacterXML, null, objWriter);
+            objStream.Position = 0;
+
+            // Read in the resulting code and pass it to the browser.
+            StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
+            rtbText.Text = objReader.ReadToEnd();
+
+            if (!_dictCache.ContainsKey(cboXSLT.Text))
+            {
+                _dictCache.Add(cboXSLT.Text, rtbText.Text);
+            }
+        }
+        #endregion
+        #region JSON
+        private void GenerateJson()
+        {
+            string json = JsonConvert.SerializeXmlNode(_objCharacterXML, Formatting.Indented);
+            rtbText.Text = json;
+
+            if (!_dictCache.ContainsKey(cboXSLT.Text))
+            {
+                _dictCache.Add(cboXSLT.Text, rtbText.Text);
+            }
+        }
+
+        private void ExportJson()
+        {
+            SaveFileDialog1.AddExtension = true;
+            SaveFileDialog1.DefaultExt = "json";
+            SaveFileDialog1.Filter = LanguageManager.GetString("DialogFilter_Json", GlobalOptions.Instance.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Instance.Language);
+            SaveFileDialog1.Title = LanguageManager.GetString("Button_Export_SaveJsonAs", GlobalOptions.Instance.Language);
+            SaveFileDialog1.ShowDialog();
+
+            if (string.IsNullOrWhiteSpace(SaveFileDialog1.FileName))
+                return;
+
+            File.WriteAllText(SaveFileDialog1.FileName, rtbText.Text, Encoding.UTF8);
+
+            DialogResult = DialogResult.OK;
+        }
+        #endregion
+        #endregion
+    }
 }

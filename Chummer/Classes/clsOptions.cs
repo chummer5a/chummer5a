@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,25 +19,22 @@
 
 
 using Chummer.Backend.Attributes.OptionAttributes;
+using iTextSharp.text.pdf;
+using System;
+using System.IO;
 
 namespace Chummer
 {
-
-    // MRUChanged Event Handler.
-    public delegate void MRUChangedHandler();
     public enum ClipboardContentType
-	{
-		None = 0,
-		Gear = 1,
-		Commlink = 2,
-		OperatingSystem = 3,
-		Cyberware = 4,
-		Bioware = 5,
-		Armor = 6,
-		Weapon = 7,
-		Vehicle = 8,
-		Lifestyle = 9,
-	}
+    {
+        None = 0,
+        Gear,
+        Cyberware,
+        Armor,
+        Weapon,
+        Vehicle,
+        Lifestyle,
+    }
 
 	public class SourcebookInfo
 	{
@@ -46,6 +43,8 @@ namespace Chummer
 	        Name = name;  //TODO: Localize
 	        Code = code;
 	    }
+
+        private PdfReader _objPdfReader;
 
 	    #region Properties
 	    public string Name { get; }
@@ -57,6 +56,23 @@ namespace Chummer
 
 	    public int Offset { get; set; } = 0;
 
-	    #endregion
-	}
+        internal PdfReader CachedPdfReader
+        {
+            get
+            {
+                if (_objPdfReader == null)
+                {
+                    Uri uriPath = new Uri(Path);
+                    if (File.Exists(uriPath.LocalPath))
+                    {
+                        // using the "partial" param it runs much faster and I couldnt find any downsides to it
+                        _objPdfReader = new PdfReader(uriPath.LocalPath, null, true);
+                    }
+                }
+                return _objPdfReader;
+            }
+        }
+
+        #endregion
+    }
 }

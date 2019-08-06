@@ -16,129 +16,108 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Xml;
 
 namespace Chummer
 {
-	public partial class frmSelectWeaponCategory : Form
-	{
-		private string _strSelectedCategory = "";
-		private string _strForceCategory = "";
+    public partial class frmSelectWeaponCategory : Form
+    {
+        private string _strSelectedCategory = string.Empty;
+        private string _strForceCategory = string.Empty;
 
-		public String WeaponType { get; set; }
+        public string WeaponType { get; set; }
 
-		private XmlDocument _objXmlDocument = new XmlDocument();
+        private readonly XmlDocument _objXmlDocument;
 
-		#region Control Events
-		public frmSelectWeaponCategory()
-		{
-			InitializeComponent();
-			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
-		}
+        #region Control Events
+        public frmSelectWeaponCategory()
+        {
+            InitializeComponent();
+            LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, this);
+            _objXmlDocument = XmlManager.Load("weapons.xml");
+        }
 
-		private void frmSelectWeaponCategory_Load(object sender, EventArgs e)
-		{
-			_objXmlDocument = XmlManager.Instance.Load("weapons.xml");
+        private void frmSelectWeaponCategory_Load(object sender, EventArgs e)
+        {
+            // Build a list of Weapon Categories found in the Weapons file.
+            List<ListItem> lstCategory = new List<ListItem>();
+            using (XmlNodeList objXmlCategoryList = !string.IsNullOrEmpty(_strForceCategory)
+                ? _objXmlDocument.SelectNodes("/chummer/categories/category[. = \"" + _strForceCategory + "\"]")
+                : _objXmlDocument.SelectNodes("/chummer/categories/category"))
+                if (objXmlCategoryList != null)
+                    foreach (XmlNode objXmlCategory in objXmlCategoryList)
+                    {
+                        if (WeaponType != null && _strForceCategory != "Exotic Ranged Weapons")
+                        {
+                            string strType = objXmlCategory.Attributes?["type"]?.Value;
+                            if (string.IsNullOrEmpty(strType) || strType != WeaponType)
+                                continue;
+                        }
 
-			// Build a list of Weapon Categories found in the Weapons file.
-			XmlNodeList objXmlCategoryList;
-			List<ListItem> lstCategory = new List<ListItem>();
-			if (_strForceCategory != "")
-			{
-				objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category[. = \"" + _strForceCategory + "\"]");
-			}
-			else
-			{
-				objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
-			}
+                        string strInnerText = objXmlCategory.InnerText;
+                        lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
+                    }
 
-			foreach (XmlNode objXmlCategory in objXmlCategoryList)
-			{
-				if (WeaponType != null)
-				{
-					if (objXmlCategory.Attributes["type"] == null)
-						continue;
+            // Add the Cyberware Category.
+            if (/*string.IsNullOrEmpty(_strForceCategory) ||*/ _strForceCategory == "Cyberware")
+            {
+                lstCategory.Add(new ListItem("Cyberware", LanguageManager.GetString("String_Cyberware", GlobalOptions.Instance.Language)));
+            }
+            cboCategory.BeginUpdate();
+            cboCategory.ValueMember = "Value";
+            cboCategory.DisplayMember = "Name";
+            cboCategory.DataSource = lstCategory;
 
-					if (objXmlCategory.Attributes["type"].Value != WeaponType)
-						continue;
-				}
+            // Select the first Skill in the list.
+            if (cboCategory.Items.Count > 0)
+                cboCategory.SelectedIndex = 0;
+            cboCategory.EndUpdate();
 
-				ListItem objItem = new ListItem();
-				objItem.Value = objXmlCategory.InnerText;
-				if (objXmlCategory.Attributes != null)
-				{
-					if (objXmlCategory.Attributes["translate"] != null)
-						objItem.Name = objXmlCategory.Attributes["translate"].InnerText;
-					else
-						objItem.Name = objXmlCategory.InnerText;
-				}
-				else
-					objItem.Name = objXmlCategory.InnerText;
-				lstCategory.Add(objItem);
-			}
+            if (cboCategory.Items.Count == 1)
+                cmdOK_Click(sender, e);
+        }
 
-			// Add the Cyberware Category.
-			if (/*_strForceCategory == "" ||*/ _strForceCategory == "Cyberware")
-			{
-				ListItem objItem = new ListItem();
-				objItem.Value = "Cyberware";
-				objItem.Name = "Cyberware";
-				lstCategory.Add(objItem);
-			}
-			cboCategory.ValueMember = "Value";
-			cboCategory.DisplayMember = "Name";
-			cboCategory.DataSource = lstCategory;
+        private void cmdOK_Click(object sender, EventArgs e)
+        {
+            _strSelectedCategory = cboCategory.SelectedValue.ToString();
+            DialogResult = DialogResult.OK;
+        }
+        #endregion
 
-			// Select the first Skill in the list.
-			cboCategory.SelectedIndex = 0;
+        #region Properties
+        /// <summary>
+        /// Weapon Category that was selected in the dialogue.
+        /// </summary>
+        public string SelectedCategory => _strSelectedCategory;
 
-			if (cboCategory.Items.Count == 1)
-				cmdOK_Click(sender, e);
-		}
+        /// <summary>
+        /// Description to show in the window.
+        /// </summary>
+        public string Description
+        {
+            set => lblDescription.Text = value;
+        }
 
-		private void cmdOK_Click(object sender, EventArgs e)
-		{
-			_strSelectedCategory = cboCategory.SelectedValue.ToString();
-			this.DialogResult = DialogResult.OK;
-		}
-		#endregion
+        /// <summary>
+        /// Restrict the list to only a single Category.
+        /// </summary>
+        public string OnlyCategory
+        {
+            set
+            {
+                _strForceCategory = value;
+                if (value == "Cyberware")
+                    _strForceCategory = "Cyberweapon";
+            }
+        }
+        #endregion
 
-		#region Properties
-		/// <summary>
-		/// Weapon Category that was selected in the dialogue.
-		/// </summary>
-		public string SelectedCategory
-		{
-			get
-			{
-				return _strSelectedCategory;
-			}
-		}
-
-		/// <summary>
-		/// Description to show in the window.
-		/// </summary>
-		public string Description
-		{
-			set
-			{
-				lblDescription.Text = value;
-			}
-		}
-
-		/// <summary>
-		/// Restrict the list to only a single Category.
-		/// </summary>
-		public string OnlyCategory
-		{
-			set
-			{
-				_strForceCategory = value;
-			}
-		}
-		#endregion
-	}
+        private void cmdCancel_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.Cancel;
+        }
+    }
 }

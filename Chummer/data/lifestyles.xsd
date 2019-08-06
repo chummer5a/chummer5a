@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xs:include schemaLocation="conditions.xsd" />
   <xs:element name="chummer">
     <xs:complexType>
       <xs:sequence>
@@ -11,8 +12,11 @@
                 <xs:complexType>
                   <xs:sequence>
                     <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="cost" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="dice" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="lp" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="allowbonuslp" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="multiplier" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="page" type="xs:string" minOccurs="1" maxOccurs="1" />
@@ -22,127 +26,130 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-		<xs:element name="comforts" minOccurs="0" maxOccurs="1">
-		  <xs:complexType>
-		    <xs:sequence>
-			  <xs:element name="comfort" minOccurs="1" maxOccurs="unbounded">
-			    <xs:complexType>
-				  <xs:sequence>
-				    <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
-					<xs:element name="lp" type="xs:integer" minOccurs="1" maxOccurs="1" />
-					<xs:element name="slp" type="xs:string" minOccurs="0" maxOccurs="1" />
-				  </xs:sequence>
-				</xs:complexType>
-			  </xs:element>
-			</xs:sequence>
-		  </xs:complexType>
-		</xs:element>
-		<xs:element name="entertainments" minOccurs="0" maxOccurs="1">
-		  <xs:complexType>
-		    <xs:sequence>
-			  <xs:element name="entertainment" minOccurs="1" maxOccurs="unbounded">
-			    <xs:complexType>
-				  <xs:sequence>
-				    <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
-					<xs:element name="lp" type="xs:integer" minOccurs="1" maxOccurs="1" />
-					<xs:element name="slp" type="xs:string" minOccurs="0" maxOccurs="1" />
-				  </xs:sequence>
-				</xs:complexType>
-			  </xs:element>
-			</xs:sequence>
-		  </xs:complexType>
-		</xs:element>
-		<xs:element name="necessities" minOccurs="0" maxOccurs="1">
-		  <xs:complexType>
-		    <xs:sequence>
-			  <xs:element name="necessity" minOccurs="1" maxOccurs="unbounded">
-			    <xs:complexType>
-				  <xs:sequence>
-				    <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
-					<xs:element name="lp" type="xs:integer" minOccurs="1" maxOccurs="1" />
-					<xs:element name="slp" type="xs:string" minOccurs="0" maxOccurs="1" />
-				  </xs:sequence>
-				</xs:complexType>
-			  </xs:element>
-			</xs:sequence>
-		  </xs:complexType>
-		</xs:element>
-		<xs:element name="neighborhoods" minOccurs="0" maxOccurs="1">
-		  <xs:complexType>
-		    <xs:sequence>
-			  <xs:element name="neighborhood" minOccurs="1" maxOccurs="unbounded">
-			    <xs:complexType>
-				  <xs:sequence>
-				    <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
-					<xs:element name="lp" type="xs:integer" minOccurs="1" maxOccurs="1" />
-					<xs:element name="slp" type="xs:string" minOccurs="0" maxOccurs="1" />
-				  </xs:sequence>
-				</xs:complexType>
-			  </xs:element>
-			</xs:sequence>
-		  </xs:complexType>
-		</xs:element>
-		<xs:element name="securities" minOccurs="0" maxOccurs="1">
-		  <xs:complexType>
-		    <xs:sequence>
-			  <xs:element name="security" minOccurs="1" maxOccurs="unbounded">
-			    <xs:complexType>
-				  <xs:sequence>
-				    <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
-					<xs:element name="lp" type="xs:integer" minOccurs="1" maxOccurs="1" />
-					<xs:element name="slp" type="xs:string" minOccurs="0" maxOccurs="1" />
-				  </xs:sequence>
-				</xs:complexType>
-			  </xs:element>
-			</xs:sequence>
-		  </xs:complexType>
-		</xs:element>
-		<xs:element name="qualities" minOccurs="0" maxOccurs="1">
-		  <xs:complexType>
-		    <xs:sequence>
-			  <xs:element name="quality" minOccurs="1" maxOccurs="unbounded">
-			    <xs:complexType>
-				  <xs:sequence>
-				    <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
-					<xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
-					<xs:element name="lp" type="xs:integer" minOccurs="1" maxOccurs="1" />
-					<xs:element name="allowed" type="xs:string" minOccurs="1" maxOccurs="1" />
-					<xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
-					<xs:element name="page" type="xs:string" minOccurs="1" maxOccurs="1" />
-				  </xs:sequence>
-				</xs:complexType>
-			  </xs:element>
-			</xs:sequence>
-		  </xs:complexType>
-		</xs:element>
-		<xs:element name="costs" minOccurs="0" maxOccurs="1">
-		  <xs:complexType>
-		    <xs:sequence>
-			  <xs:element name="cost" minOccurs="1" maxOccurs="unbounded">
-			    <xs:complexType>
-				  <xs:sequence>
-				    <xs:element name="lp" type="xs:string" minOccurs="1" maxOccurs="1" />
-					<xs:element name="cost" type="xs:string" minOccurs="1" maxOccurs="1" />
-				  </xs:sequence>
-				</xs:complexType>
-			  </xs:element>
-			</xs:sequence>
-		  </xs:complexType>
-		</xs:element>
-		<xs:element name="safehousecosts" minOccurs="0" maxOccurs="1">
-		  <xs:complexType>
-		    <xs:sequence>
-			  <xs:element name="cost" minOccurs="1" maxOccurs="unbounded">
-			    <xs:complexType>
-				  <xs:sequence>
-				    <xs:element name="lp" type="xs:string" minOccurs="1" maxOccurs="1" />
-					<xs:element name="cost" type="xs:string" minOccurs="1" maxOccurs="1" />
-				  </xs:sequence>
-				</xs:complexType>
-			  </xs:element>
-			</xs:sequence>
-		  </xs:complexType>
-		</xs:element>
+    <xs:element name="comforts" minOccurs="0" maxOccurs="1">
+      <xs:complexType>
+        <xs:sequence>
+        <xs:element name="comfort" minOccurs="1" maxOccurs="unbounded">
+          <xs:complexType>
+          <xs:sequence>
+            <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+          <xs:element name="lp" type="xs:integer" minOccurs="1" maxOccurs="1" />
+          <xs:element name="slp" type="xs:string" minOccurs="0" maxOccurs="1" />
+          </xs:sequence>
+        </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      </xs:complexType>
+    </xs:element>
+    <xs:element name="entertainments" minOccurs="0" maxOccurs="1">
+      <xs:complexType>
+        <xs:sequence>
+        <xs:element name="entertainment" minOccurs="1" maxOccurs="unbounded">
+          <xs:complexType>
+          <xs:sequence>
+            <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+          <xs:element name="lp" type="xs:integer" minOccurs="1" maxOccurs="1" />
+          <xs:element name="slp" type="xs:string" minOccurs="0" maxOccurs="1" />
+          </xs:sequence>
+        </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      </xs:complexType>
+    </xs:element>
+    <xs:element name="necessities" minOccurs="0" maxOccurs="1">
+      <xs:complexType>
+        <xs:sequence>
+        <xs:element name="necessity" minOccurs="1" maxOccurs="unbounded">
+          <xs:complexType>
+          <xs:sequence>
+            <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+          <xs:element name="lp" type="xs:integer" minOccurs="1" maxOccurs="1" />
+          <xs:element name="slp" type="xs:string" minOccurs="0" maxOccurs="1" />
+          </xs:sequence>
+        </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      </xs:complexType>
+    </xs:element>
+    <xs:element name="neighborhoods" minOccurs="0" maxOccurs="1">
+      <xs:complexType>
+        <xs:sequence>
+        <xs:element name="neighborhood" minOccurs="1" maxOccurs="unbounded">
+          <xs:complexType>
+          <xs:sequence>
+            <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+          <xs:element name="lp" type="xs:integer" minOccurs="1" maxOccurs="1" />
+          <xs:element name="slp" type="xs:string" minOccurs="0" maxOccurs="1" />
+          </xs:sequence>
+        </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      </xs:complexType>
+    </xs:element>
+    <xs:element name="securities" minOccurs="0" maxOccurs="1">
+      <xs:complexType>
+        <xs:sequence>
+        <xs:element name="security" minOccurs="1" maxOccurs="unbounded">
+          <xs:complexType>
+          <xs:sequence>
+            <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+          <xs:element name="lp" type="xs:integer" minOccurs="1" maxOccurs="1" />
+          <xs:element name="slp" type="xs:string" minOccurs="0" maxOccurs="1" />
+          </xs:sequence>
+        </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      </xs:complexType>
+    </xs:element>
+    <xs:element name="qualities" minOccurs="0" maxOccurs="1">
+      <xs:complexType>
+        <xs:sequence>
+        <xs:element name="quality" minOccurs="1" maxOccurs="unbounded">
+          <xs:complexType>
+          <xs:sequence>
+            <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+			<xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
+          <xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
+          <xs:element name="lp" type="xs:integer" minOccurs="1" maxOccurs="1" />
+          <xs:element name="allowed" type="xs:string" minOccurs="1" maxOccurs="1" />
+          <xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
+          <xs:element name="page" type="xs:string" minOccurs="1" maxOccurs="1" />
+            <xs:element ref="required" minOccurs="0" maxOccurs="1" />
+            <xs:element ref="forbidden" minOccurs="0" maxOccurs="1" />            
+          </xs:sequence>
+        </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      </xs:complexType>
+    </xs:element>
+    <xs:element name="costs" minOccurs="0" maxOccurs="1">
+      <xs:complexType>
+        <xs:sequence>
+        <xs:element name="cost" minOccurs="1" maxOccurs="unbounded">
+          <xs:complexType>
+          <xs:sequence>
+            <xs:element name="lp" type="xs:string" minOccurs="1" maxOccurs="1" />
+          <xs:element name="cost" type="xs:string" minOccurs="1" maxOccurs="1" />
+          </xs:sequence>
+        </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      </xs:complexType>
+    </xs:element>
+    <xs:element name="safehousecosts" minOccurs="0" maxOccurs="1">
+      <xs:complexType>
+        <xs:sequence>
+        <xs:element name="cost" minOccurs="1" maxOccurs="unbounded">
+          <xs:complexType>
+          <xs:sequence>
+            <xs:element name="lp" type="xs:string" minOccurs="1" maxOccurs="1" />
+          <xs:element name="cost" type="xs:string" minOccurs="1" maxOccurs="1" />
+          </xs:sequence>
+        </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      </xs:complexType>
+    </xs:element>
       </xs:sequence>
     </xs:complexType>
   </xs:element>

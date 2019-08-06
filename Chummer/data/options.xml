@@ -1,4 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
+
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -18,39 +19,28 @@
     https://github.com/chummer5a/chummer5a
 -->
 <chummer>
-	<options>
 		<limbcounts>
 			<limb>
-				<name>String_LimbCount4</name>
+      <name>4 (2 arms, 2 legs)</name>
 				<limbcount>4</limbcount>
 				<exclude>torso,skull</exclude>
 			</limb>
 			<limb>
-				<name>String_LimbCount5Skull</name>
+      <name>5 (2 arms, 2 legs, skull)</name>
 				<limbcount>5</limbcount>
 				<exclude>torso</exclude>
 			</limb>
 			<limb>
-				<name>String_LimbCount5Torso</name>
+      <name>5 (2 arms, 2 legs, torso)</name>
 				<limbcount>5</limbcount>
 				<exclude>skull</exclude>
 			</limb>
 			<limb>
-				<name>String_LimbCount6</name>
+      <name>6 (2 arms, 2 legs, torso, skull)</name>
 				<limbcount>6</limbcount>
 				<exclude />
 			</limb>
 		</limbcounts>
-		<chummeroptions>
-			<chummeroption>
-				<name>TestControl</name>
-				<default>1</default>
-				<category>Default</category>
-				<descriptiontag>Tip_SplitItems</descriptiontag>
-				<modifiertag>Tip_CombineItems</modifiertag>
-				<sourcebook>SR5</sourcebook>
-			</chummeroption>
-		</chummeroptions>
     <pdfarguments>
       <pdfargument>
         <name>Web Browser</name>
@@ -64,6 +54,22 @@
         <name>Unix-style</name>
         <value>-p {page} "{localpath}"</value>
       </pdfargument>
+    <pdfargument>
+      <name>Sumatra - Re-use instance</name>
+      <value>-reuse-instance -page {page} "{localpath}"</value>
+    </pdfargument>
+    <pdfargument>
+      <name>Sumatra</name>
+      <value>-page {page} "{localpath}"</value>
+    </pdfargument>
     </pdfarguments>
-	</options>
+  <blackmarketpipelinecategories>
+    <category>Armor</category>
+    <category>Bioware</category>
+    <category>Cyberware</category>
+    <category>Drugs</category>
+    <category>Electronics</category>
+    <category>Vehicles</category>
+    <category>Weapons</category>
+  </blackmarketpipelinecategories>
 </chummer>

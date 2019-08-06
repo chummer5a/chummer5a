@@ -1,68 +1,95 @@
-﻿using System;
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
+using System;
 using System.Collections.Generic;
-using System.Security.Cryptography;
-using Chummer.Properties;
 
-namespace Chummer.Datastructures
+namespace Chummer
 {
-	class TranslatedField<T> where T : class
-	{
-		private readonly Dictionary<T, T> _translate = new Dictionary<T, T>();
-		private readonly Dictionary<T, T> _back = new Dictionary<T, T>();
+    public sealed class TranslatedField<T> where T : class
+    {
+        private readonly Dictionary<T, T> _translate = new Dictionary<T, T>();
+        private readonly Dictionary<T, T> _back = new Dictionary<T, T>();
+        private readonly string _strLanguage;
 
-		public void Add(T orginal, T translated)
-		{
-			_translate[orginal] = translated;
-			_back[translated] = orginal;
-		}
+        public TranslatedField(string strLanguage)
+        {
+            _strLanguage = strLanguage;
+        }
 
-		public void AddRange(IEnumerable<Tuple<T, T>> range)
-		{
-			foreach (Tuple<T, T> tuple in range)
-			{
-				Add(tuple.Item1, tuple.Item2);
-			}
-		}
+        public string Language => _strLanguage;
 
-		public T Read(T orginal, ref T translated)
-		{
-			//TODO: should probably make sure Language don't change before restart
-			//I feel that stuff could break in other cases
-			if (GlobalOptions.Instance.Language == "en-us")
-			{
-				return orginal;
-			}
-			else
-			{
-				if(translated != null) return translated;
+        public void Add(T orginal, T translated)
+        {
+            _translate[orginal] = translated;
+            _back[translated] = orginal;
+        }
 
-				if (orginal != null && _translate.ContainsKey(orginal))
-				{
-					translated = _translate[orginal];
-					return translated;
-				}
+        public void AddRange(IEnumerable<Tuple<T, T>> range)
+        {
+            foreach (Tuple<T, T> tuple in range)
+            {
+                Add(tuple.Item1, tuple.Item2);
+            }
+        }
 
-				return orginal;
-			}
-		}
+        public T Read(T orginal, ref T translated)
+        {
+            //TODO: should probably make sure Language don't change before restart
+            //I feel that stuff could break in other cases
+            if (_strLanguage == GlobalOptions.DefaultLanguage)
+            {
+                return orginal;
+            }
+            else
+            {
+                if(translated != null) return translated;
 
-		public void Write(T value, ref T orginal, ref T translated)
-		{
-			if (GlobalOptions.Instance.Language == "en-us")
-			{
-				if (orginal != null && _translate.ContainsKey(orginal) && _translate[orginal] == translated)
-				{
-					translated = _translate[value];
-				}
-				orginal = value;
-			}
-			else
-			{
-				orginal = _back.ContainsKey(value) ? _back[value] : value;
+                if (orginal != null && _translate.TryGetValue(orginal, out translated))
+                {
+                    return translated;
+                }
 
-				translated = value;
-			}
-		}
+                return orginal;
+            }
+        }
 
-	}
+        public void Write(T value, ref T orginal, ref T translated)
+        {
+            if (_strLanguage == GlobalOptions.DefaultLanguage)
+            {
+                if (orginal != null && value != null)
+                {
+                    if (_translate.TryGetValue(orginal, out T objTmp) && objTmp == translated)
+                    {
+                        _translate.TryGetValue(value, out translated);
+                    }
+                }
+                orginal = value;
+            }
+            else
+            {
+                if (value != null && !_back.TryGetValue(value, out orginal))
+                    orginal = value;
+
+                translated = value;
+            }
+        }
+
+    }
 }

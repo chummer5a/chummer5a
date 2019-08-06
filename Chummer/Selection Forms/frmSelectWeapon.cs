@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,742 +16,333 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+using System;
 using System.Data;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
- using Chummer.Backend.Equipment;
+using Chummer.Backend.Equipment;
+using System.Text;
+
+// ReSharper disable LocalizableElement
 
 namespace Chummer
 {
     public partial class frmSelectWeapon : Form
     {
-		private string _strSelectedWeapon = "";
-		private int _intMarkup = 0;
+        private string _strSelectedWeapon = string.Empty;
+        private decimal _decMarkup;
 
-		private bool _blnAddAgain = false;
-	    private bool _blnBlackMarketDiscount = false;
-		private string _strLimitToCategories = "";
-        private static string _strSelectCategory = "";
-		private readonly Character _objCharacter;
-	    private XmlNodeList objXmlCategoryList;
-        private XmlDocument _objXmlDocument = new XmlDocument();
+        private bool _blnLoading = true;
+        private bool _blnSkipUpdate;
+        private bool _blnAddAgain;
+        private bool _blnBlackMarketDiscount;
+        private HashSet<string> _hashLimitToCategories = new HashSet<string>();
+        private static string s_StrSelectCategory = string.Empty;
+        private readonly Character _objCharacter;
+        private readonly XmlDocument _objXmlDocument;
+        private Weapon _objSelectedWeapon;
 
-		private List<ListItem> _lstCategory = new List<ListItem>();
+        private readonly List<ListItem> _lstCategory = new List<ListItem>();
+        private readonly HashSet<string> _setBlackMarketMaps;
 
-		#region Control Events
-		public frmSelectWeapon(Character objCharacter, bool blnCareer = false)
+        #region Control Events
+        public frmSelectWeapon(Character objCharacter)
         {
             InitializeComponent();
-			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
-			lblMarkupLabel.Visible = blnCareer;
-			nudMarkup.Visible = blnCareer;
-			lblMarkupPercentLabel.Visible = blnCareer;
-			_objCharacter = objCharacter;
-			MoveControls();
+            LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, this);
+            lblMarkupLabel.Visible = objCharacter.Created;
+            nudMarkup.Visible = objCharacter.Created;
+            lblMarkupPercentLabel.Visible = objCharacter.Created;
+            _objCharacter = objCharacter;
+            // Load the Weapon information.
+            _objXmlDocument = XmlManager.Load("weapons.xml");
+            _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_objXmlDocument);
         }
 
         private void frmSelectWeapon_Load(object sender, EventArgs e)
         {
-			foreach (Label objLabel in this.Controls.OfType<Label>())
-			{
-				if (objLabel.Text.StartsWith("["))
-					objLabel.Text = "";
-			}
+            DataGridViewCellStyle dataGridViewNuyenCellStyle = new DataGridViewCellStyle
+            {
+                Alignment = DataGridViewContentAlignment.TopRight,
+                Format = _objCharacter.Options.NuyenFormat + '¥',
+                NullValue = null
+            };
+            dgvc_Cost.DefaultCellStyle = dataGridViewNuyenCellStyle;
 
-        	// Load the Weapon information.
-			_objXmlDocument = XmlManager.Instance.Load("weapons.xml");
+            if (_objCharacter.Created)
+            {
+                chkHideOverAvailLimit.Visible = false;
+                chkHideOverAvailLimit.Checked = false;
+            }
+            else
+            {
+                chkHideOverAvailLimit.Text = string.Format(chkHideOverAvailLimit.Text, _objCharacter.MaximumAvailability.ToString(GlobalOptions.Instance.CultureInfo));
+                chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
+            }
 
-			// Populate the Weapon Category list.
-			if (!string.IsNullOrEmpty(_strLimitToCategories))
-			{
-				string[] strValues = _strLimitToCategories.Split(',');
-				// Populate the Category list.
-				XmlNodeList objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/categories/category");
-				foreach (XmlNode objXmlCategory in objXmlNodeList)
-				{
-					foreach (string strCategory in strValues)
-					{
-						if (strCategory == objXmlCategory.InnerText)
-						{
-							ListItem objItem = new ListItem();
-							objItem.Value = objXmlCategory.InnerText;
-							if (objXmlCategory.Attributes != null)
-							{
-								if (objXmlCategory.Attributes["translate"] != null)
-									objItem.Name = objXmlCategory.Attributes["translate"].InnerText;
-								else
-									objItem.Name = objXmlCategory.InnerText;
-							}
-							else
-							{
-								objItem.Name = objXmlCategory.InnerXml;
-							}
-							_lstCategory.Add(objItem);
-						}
-					}
-				}
-			}
-			else
-			{
-				objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
+            // Populate the Weapon Category list.
+            
+                // Populate the Category list.
+                using (XmlNodeList xmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category"))
+                    if (xmlCategoryList != null)
+                    {
+                        foreach (XmlNode objXmlCategory in xmlCategoryList)
+                        {
+                            string strInnerText = objXmlCategory.InnerText;
+                            if (_hashLimitToCategories.Count == 0 || _hashLimitToCategories.Contains(strInnerText))
+                                _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
+                        }
+                    }
+            _lstCategory.Sort(CompareListItems.CompareNames);
 
-				foreach (XmlNode objXmlCategory in objXmlCategoryList)
-				{
-					ListItem objItem = new ListItem();
-					objItem.Value = objXmlCategory.InnerText;
-					if (objXmlCategory.Attributes != null)
-					{
-						if (objXmlCategory.Attributes["translate"] != null)
-							objItem.Name = objXmlCategory.Attributes["translate"].InnerText;
-						else
-							objItem.Name = objXmlCategory.InnerText;
-					}
-					else
-						objItem.Name = objXmlCategory.InnerXml;
-					_lstCategory.Add(objItem);
-				}
-			}
-			cboCategory.ValueMember = "Value";
-			cboCategory.DisplayMember = "Name";
-			cboCategory.DataSource = _lstCategory;
+            if (_lstCategory.Count > 0)
+            {
+                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll", GlobalOptions.Instance.Language)));
+            }
 
-			chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
+            cboCategory.BeginUpdate();
+            cboCategory.ValueMember = "Value";
+            cboCategory.DisplayMember = "Name";
+            cboCategory.DataSource = _lstCategory;
 
-			// Select the first Category in the list.
-			if (_strSelectCategory == "")
-				cboCategory.SelectedIndex = 0;
-			else
-				cboCategory.SelectedValue = _strSelectCategory;
+            chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
 
-			if (cboCategory.SelectedIndex == -1)
-				cboCategory.SelectedIndex = 0;
+            // Select the first Category in the list.
+            if (string.IsNullOrEmpty(s_StrSelectCategory))
+                cboCategory.SelectedIndex = 0;
+            else
+                cboCategory.SelectedValue = s_StrSelectCategory;
 
-            if (chkBrowse.Checked)
-                LoadGrid();
+            if (cboCategory.SelectedIndex == -1)
+                cboCategory.SelectedIndex = 0;
+            cboCategory.EndUpdate();
+
+            _blnLoading = false;
+            RefreshList();
         }
 
         private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
-        	List<ListItem> lstWeapons = new List<ListItem>();
-
-			// Populate the Weapon list.
-			XmlNodeList objXmlWeaponList = _objXmlDocument.SelectNodes("/chummer/weapons/weapon[category = \"" + cboCategory.SelectedValue + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
-			foreach (XmlNode objXmlWeapon in objXmlWeaponList)
-			{
-                bool blnCyberware = false;
-                try 
-                {
-                    if (objXmlWeapon["cyberware"].InnerText == "yes")
-                        blnCyberware = true;
-                }
-                catch
-                { }
-
-                if (!blnCyberware)
-                {
-                    ListItem objItem = new ListItem();
-                    objItem.Value = objXmlWeapon["name"].InnerText;
-                    if (objXmlWeapon["translate"] != null)
-                        objItem.Name = objXmlWeapon["translate"].InnerText;
-                    else
-                        objItem.Name = objXmlWeapon["name"].InnerText;
-                    lstWeapons.Add(objItem);
-                }
-			}
-			SortListItem objSort = new SortListItem();
-			lstWeapons.Sort(objSort.Compare);
-			lstWeapon.DataSource = null;
-			lstWeapon.ValueMember = "Value";
-			lstWeapon.DisplayMember = "Name";
-			lstWeapon.DataSource = lstWeapons;
-
-            if (chkBrowse.Checked)
-                LoadGrid();
+            RefreshList();
         }
 
         private void lstWeapon_SelectedIndexChanged(object sender, EventArgs e)
         {
-			if (lstWeapon.Text == "")
-				return;
-
-            // Retireve the information for the selected Weapon.
-        	XmlNode objXmlWeapon = _objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + lstWeapon.SelectedValue + "\"]");
-
-			Weapon objWeapon = new Weapon(_objCharacter);
-			TreeNode objNode = new TreeNode();
-			objWeapon.Create(objXmlWeapon, _objCharacter, objNode, null, null);
-
-            lblWeaponReach.Text = objWeapon.TotalReach.ToString();
-			lblWeaponDamage.Text = objWeapon.CalculatedDamage();
-			lblWeaponAP.Text = objWeapon.TotalAP;
-			lblWeaponMode.Text = objWeapon.CalculatedMode;
-			lblWeaponRC.Text = objWeapon.TotalRC;
-			lblWeaponAmmo.Text = objWeapon.CalculatedAmmo();
-            lblWeaponAccuracy.Text = objWeapon.TotalAccuracy.ToString();
-            lblWeaponAvail.Text = objWeapon.TotalAvail;
-
-			int intItemCost = 0;
-            double dblCost = 0;
-            try
-            {
-                dblCost = Convert.ToDouble(objXmlWeapon["cost"].InnerText, GlobalOptions.Instance.CultureInfo);
-            }
-            catch { }
-			dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.Instance.CultureInfo) / 100.0);
-            if (chkBlackMarketDiscount.Checked)
-            {
-                dblCost = dblCost*0.90;
-            }
-			lblWeaponCost.Text = String.Format("{0:###,###,##0¥}", dblCost);
-			try
-			{
-				intItemCost = Convert.ToInt32(dblCost);
-			}
-			catch
-			{
-			}
-
-			if (chkFreeItem.Checked)
-			{
-				lblWeaponCost.Text = String.Format("{0:###,###,##0¥}", 0);
-				intItemCost = 0;
-			}
-
-			lblTest.Text = _objCharacter.AvailTest(intItemCost, lblWeaponAvail.Text);
-
-			string strBook = _objCharacter.Options.LanguageBookShort(objXmlWeapon["source"].InnerText);
-			string strPage = objXmlWeapon["page"].InnerText;
-			if (objXmlWeapon["altpage"] != null)
-				strPage = objXmlWeapon["altpage"].InnerText;
-			lblSource.Text = strBook + " " + strPage;
-
-			// Build a list of included Accessories and Modifications that come with the weapon.
-            string strAccessories = "";
-			XmlNodeList objXmlNodeList = objXmlWeapon.SelectNodes("accessories/accessory");
-			foreach (XmlNode objXmlAccessory in objXmlNodeList)
-			{
-				XmlNode objXmlItem = _objXmlDocument.SelectSingleNode("/chummer/accessories/accessory[name = \"" + objXmlAccessory["name"].InnerText + "\"]");
-				if (objXmlItem["translate"] != null)
-					strAccessories += objXmlItem["translate"].InnerText + "\n";
-				else
-					strAccessories += objXmlItem["name"].InnerText + "\n";
-			}
-            objXmlNodeList = objXmlWeapon.SelectNodes("mods/mod");
-			foreach (XmlNode objXmlMod in objXmlNodeList)
-			{
-				XmlNode objXmlItem = _objXmlDocument.SelectSingleNode("/chummer/mods/mod[name = \"" + objXmlMod.InnerText + "\"]");
-				if (objXmlItem["translate"] != null)
-					strAccessories += objXmlItem["translate"].InnerText + "\n";
-				else
-					strAccessories += objXmlItem["name"].InnerText + "\n";
-			}
-			if (strAccessories == "")
-				lblIncludedAccessories.Text = LanguageManager.Instance.GetString("String_None");
-			else
-				lblIncludedAccessories.Text = strAccessories;
-
-            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlWeapon["source"].InnerText) + " " + LanguageManager.Instance.GetString("String_Page") + " " + strPage);
-        }
-
-		private void cmdOK_Click(object sender, EventArgs e)
-		{
-			if (lstWeapon.Text != "" || dgvWeapons.Visible)
-				AcceptForm();
-		}
-
-		private void cmdCancel_Click(object sender, EventArgs e)
-		{
-			this.DialogResult = DialogResult.Cancel;
-		}
-
-		private void txtSearch_TextChanged(object sender, EventArgs e)
-		{
-            tmrSearch.Stop();
-            tmrSearch.Enabled = true;
-            tmrSearch.Start();
-        }
-
-		private void lstWeapon_DoubleClick(object sender, EventArgs e)
-		{
-			if (lstWeapon.Text != "")
-				AcceptForm();
-		}
-
-		private void cmdOKAdd_Click(object sender, EventArgs e)
-		{
-			_blnAddAgain = true;
-			cmdOK_Click(sender, e);
-		}
-
-		private void chkFreeItem_CheckedChanged(object sender, EventArgs e)
-		{
-			lstWeapon_SelectedIndexChanged(sender, e);
-		}
-
-		private void nudMarkup_ValueChanged(object sender, EventArgs e)
-		{
-			lstWeapon_SelectedIndexChanged(sender, e);
-		}
-
-		private void txtSearch_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.Down)
-			{
-				try
-				{
-					lstWeapon.SelectedIndex++;
-				} 
-				catch
-				{
-					try
-					{
-						lstWeapon.SelectedIndex = 0;
-					}
-					catch
-					{
-					}
-				}
-                try
-                {
-                    dgvWeapons.Rows[dgvWeapons.SelectedRows[0].Index + 1].Selected = true;
-                }
-                catch
-                {
-                    try 
-                    {
-                        dgvWeapons.Rows[0].Selected = true;
-                    }
-                    catch
-                    {
-                    }
-                }
-			}
-			if (e.KeyCode == Keys.Up)
-			{
-				try
-				{
-					lstWeapon.SelectedIndex--;
-					if (lstWeapon.SelectedIndex == -1)
-						lstWeapon.SelectedIndex = lstWeapon.Items.Count - 1;
-				}
-				catch
-				{
-					try
-					{
-						lstWeapon.SelectedIndex = lstWeapon.Items.Count - 1;
-					}
-					catch
-					{
-					}
-				}
-                try
-                {
-                    dgvWeapons.Rows[dgvWeapons.SelectedRows[0].Index - 1].Selected = true;
-                }
-                catch
-                {
-                    try
-                    {
-                        dgvWeapons.Rows[0].Selected = true;
-                    }
-                    catch
-                    {
-                    }
-                }
-            }
-		}
-
-		private void txtSearch_KeyUp(object sender, KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.Up)
-				txtSearch.Select(txtSearch.Text.Length, 0);
-		}
-
-		private void chkBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
-		{
-			lstWeapon_SelectedIndexChanged(sender, e);
-		}
-		#endregion
-
-		#region Properties
-		/// <summary>
-		/// Whether or not the user wants to add another item after this one.
-		/// </summary>
-		public bool AddAgain
-		{
-			get
-			{
-				return _blnAddAgain;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not the selected Vehicle is used.
-		/// </summary>
-		public bool BlackMarketDiscount
-		{
-			get
-			{
-				return _blnBlackMarketDiscount;
-			}
-		}
-
-		/// <summary>
-		/// Name of Weapon that was selected in the dialogue.
-		/// </summary>
-		public string SelectedWeapon
-		{
-			get
-			{
-				return _strSelectedWeapon;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not the item should be added for free.
-		/// </summary>
-		public bool FreeCost
-		{
-			get
-			{
-				return chkFreeItem.Checked;
-			}
-		}
-
-		/// <summary>
-		/// Markup percentage.
-		/// </summary>
-		public int Markup
-		{
-			get
-			{
-				return _intMarkup;
-			}
-		}
-
-		/// <summary>
-		/// Only the provided Weapon Categories should be shown in the list.
-		/// </summary>
-		public string LimitToCategories
-		{
-			set
-			{
-				_strLimitToCategories = value;
-			}
-		}
-		#endregion
-
-		#region Methods
-		/// <summary>
-		/// Accept the selected item and close the form.
-		/// </summary>
-		private void AcceptForm()
-		{
-            if (dgvWeapons.Visible)
-            {
-                if (dgvWeapons.SelectedRows.Count == 1)
-                {
-
-                    XmlNode objNode;
-                    if (txtSearch.Text.Length > 1)
-                    {
-                        string strWeapon = dgvWeapons.SelectedRows[0].Cells[0].Value.ToString();
-                        strWeapon = strWeapon.Substring(0, strWeapon.LastIndexOf("(") - 1);
-                        objNode = _objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strWeapon + "\"]");
-                    }
-                    else
-                    {
-                        objNode = _objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + dgvWeapons.SelectedRows[0].Cells[0].Value.ToString() + "\"]");
-                    }
-                    _strSelectCategory = objNode["category"].InnerText;
-                    _strSelectedWeapon = objNode["name"].InnerText;
-                    _intMarkup = Convert.ToInt32(nudMarkup.Value);
-
-                    this.DialogResult = DialogResult.OK;
-                }
-            }
-			else if (lstWeapon.Text != "")
-			{
-				XmlNode objNode = _objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + lstWeapon.SelectedValue + "\"]");
-				_strSelectCategory = objNode["category"].InnerText;
-				_strSelectedWeapon = objNode["name"].InnerText;
-				_intMarkup = Convert.ToInt32(nudMarkup.Value);
-				_blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
-
-				this.DialogResult = DialogResult.OK;
-			}
-		}
-
-		private void MoveControls()
-		{
-			int intWidth = Math.Max(lblWeaponDamageLabel.Width, lblWeaponAPLabel.Width);
-			intWidth = Math.Max(intWidth, lblWeaponReachLabel.Width);
-			intWidth = Math.Max(intWidth, lblWeaponAvailLabel.Width);
-			intWidth = Math.Max(intWidth, lblWeaponCostLabel.Width);
-
-			lblWeaponDamage.Left = lblWeaponDamageLabel.Left + intWidth + 6;
-			lblWeaponAP.Left = lblWeaponAPLabel.Left + intWidth + 6;
-			lblWeaponReach.Left = lblWeaponReachLabel.Left + intWidth + 6;
-			lblWeaponAvail.Left = lblWeaponAvailLabel.Left + intWidth + 6;
-			lblWeaponCost.Left = lblWeaponCostLabel.Left + intWidth + 6;
-
-			lblWeaponRCLabel.Left = lblWeaponAP.Left + 74;
-			lblWeaponRC.Left = lblWeaponRCLabel.Left + lblWeaponRCLabel.Width + 6;
-
-			intWidth = Math.Max(lblWeaponAmmoLabel.Width, lblWeaponModeLabel.Width);
-			intWidth = Math.Max(intWidth, lblTestLabel.Width);
-            intWidth = Math.Max(intWidth, lblWeaponAccuracy.Width);
-			lblWeaponAmmoLabel.Left = lblWeaponAP.Left + 74;
-			lblWeaponAmmo.Left = lblWeaponAmmoLabel.Left + intWidth + 6;
-			lblWeaponModeLabel.Left = lblWeaponAP.Left + 74;
-			lblWeaponMode.Left = lblWeaponModeLabel.Left + intWidth + 6;
-			lblTestLabel.Left = lblWeaponAP.Left + 74;
-			lblTest.Left = lblTestLabel.Left + intWidth + 6;
-            lblWeaponAccuracyLabel.Left = lblWeaponAP.Left + 74;
-            lblWeaponAccuracy.Left = lblWeaponAccuracyLabel.Left + intWidth + 6;
-
-			nudMarkup.Left = lblMarkupLabel.Left + lblMarkupLabel.Width + 6;
-			lblMarkupPercentLabel.Left = nudMarkup.Left + nudMarkup.Width;
-
-			lblSource.Left = lblSourceLabel.Left + lblSourceLabel.Width + 6;
-
-			lblSearchLabel.Left = txtSearch.Left - 6 - lblSearchLabel.Width;
-		}
-		
-
-        private void chkBrowse_CheckedChanged(object sender, EventArgs e)
-        {
-            dgvWeapons.Visible = chkBrowse.Checked;
-
-            lstWeapon.Visible = !chkBrowse.Checked;
-            lblWeaponDamage.Visible = !chkBrowse.Checked;
-            lblWeaponDamageLabel.Visible = !chkBrowse.Checked;
-            lblWeaponRC.Visible = !chkBrowse.Checked;
-            lblWeaponRCLabel.Visible = !chkBrowse.Checked;
-            lblWeaponAP.Visible = !chkBrowse.Checked;
-            lblWeaponAPLabel.Visible = !chkBrowse.Checked;
-            lblWeaponAmmo.Visible = !chkBrowse.Checked;
-            lblWeaponAmmoLabel.Visible = !chkBrowse.Checked;
-            lblWeaponReach.Visible = !chkBrowse.Checked;
-            lblWeaponReachLabel.Visible = !chkBrowse.Checked;
-            lblWeaponMode.Visible = !chkBrowse.Checked;
-            lblWeaponModeLabel.Visible = !chkBrowse.Checked;
-            lblWeaponAvail.Visible = !chkBrowse.Checked;
-            lblWeaponAvailLabel.Visible = !chkBrowse.Checked;
-            lblTest.Visible = !chkBrowse.Checked;
-            lblTestLabel.Visible = !chkBrowse.Checked;
-            lblWeaponCost.Visible = !chkBrowse.Checked;
-            lblWeaponCostLabel.Visible = !chkBrowse.Checked;
-            lblWeaponAccuracy.Visible = !chkBrowse.Checked;
-            lblWeaponAccuracyLabel.Visible = !chkBrowse.Checked;
-            chkFreeItem.Visible = !chkBrowse.Checked;
-            lblMarkupLabel.Visible = !chkBrowse.Checked;
-            lblMarkupPercentLabel.Visible = !chkBrowse.Checked;
-            nudMarkup.Visible = !chkBrowse.Checked;
-            label2.Visible = !chkBrowse.Checked;
-            lblIncludedAccessories.Visible = !chkBrowse.Checked;
-            lblSource.Visible = !chkBrowse.Checked;
-            lblSourceLabel.Visible = !chkBrowse.Checked;
-
-            if (txtSearch.Text.Length > 0)
-            {
-                tmrSearch_Tick(this, null);
-            }
-
-            if (chkBrowse.Checked)
-                LoadGrid();
-        }
-
-        private void LoadGrid()
-        {
-            DataTable tabWeapons = new DataTable("weapons");
-            tabWeapons.Columns.Add("WeaponName");
-            tabWeapons.Columns.Add("Dice");
-            tabWeapons.Columns.Add("Accuracy");
-            tabWeapons.Columns["Accuracy"].DataType = typeof(Int32);
-            tabWeapons.Columns.Add("Damage");
-            tabWeapons.Columns.Add("AP");
-            tabWeapons.Columns.Add("RC");
-            tabWeapons.Columns["RC"].DataType = typeof(Int32);
-            tabWeapons.Columns.Add("Ammo");
-            tabWeapons.Columns.Add("Mode");
-            tabWeapons.Columns.Add("Reach");
-            tabWeapons.Columns.Add("Accessories");
-            tabWeapons.Columns.Add("Avail");
-            tabWeapons.Columns.Add("Source");
-            tabWeapons.Columns.Add("Cost");
-            tabWeapons.Columns["Cost"].DataType = typeof(Int32);
-
-            // Populate the Weapon list.
-            XmlNodeList objXmlWeaponList;
-
-            if (txtSearch.Text.Length > 1)
-            {
-                string strSearch = "/chummer/weapons/weapon[(" + _objCharacter.Options.BookXPath() + ") and category != \"Cyberware\" and category != \"Gear\" and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\"))]";
-                objXmlWeaponList = _objXmlDocument.SelectNodes(strSearch);
-            }
-            else
-            {
-                objXmlWeaponList = _objXmlDocument.SelectNodes("/chummer/weapons/weapon[category = \"" + cboCategory.SelectedValue + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
-            }
-
-            foreach (XmlNode objXmlWeapon in objXmlWeaponList)
-            {
-                bool blnCyberware = false;
-                try 
-                {
-                    if (objXmlWeapon["cyberware"].InnerText == "yes")
-                        blnCyberware = true;
-                }
-                catch
-                { }
-
-                if (!blnCyberware)
-                {
-                    TreeNode objNode = new TreeNode();
-                    Weapon objWeapon = new Weapon(_objCharacter);
-                    objWeapon.Create(objXmlWeapon, _objCharacter, objNode, null, null);
-
-                    string strWeaponName = objWeapon.Name;
-                    string strDice = objWeapon.DicePool;
-                    int intAccuracy = Convert.ToInt32(objWeapon.TotalAccuracy);
-                    string strDamage = objWeapon.CalculatedDamage(_objCharacter.STR.Augmented);
-                    string strAP = objWeapon.TotalAP;
-                    if (strAP == "-")
-                        strAP = "0";
-                    int intRC = Convert.ToInt32(objWeapon.TotalRC);
-                    string strAmmo = objWeapon.Ammo;
-                    string strMode = objWeapon.Mode;
-                    string strReach = objWeapon.TotalReach.ToString();
-                    string strAccessories = "";
-                    foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
-                    {
-                        if (strAccessories.Length > 0)
-                            strAccessories += "\n";
-                        strAccessories += objAccessory.Name;
-                    }
-                    string strAvail = objWeapon.Avail.ToString();
-                    string strSource = objWeapon.Source + " " + objWeapon.Page;
-                    int intCost = objWeapon.Cost;
-
-                    tabWeapons.Rows.Add(strWeaponName, strDice, intAccuracy, strDamage, strAP, intRC, strAmmo, strMode, strReach, strAccessories, strAvail, strSource, intCost);
-                }
-            }
-
-            DataSet set = new DataSet("weapons");
-            set.Tables.Add(tabWeapons);
-
-            if (cboCategory.SelectedValue.ToString() == "Blades" || cboCategory.SelectedValue.ToString() == "Clubs" || cboCategory.SelectedValue.ToString() == "Improvised Weapons" || cboCategory.SelectedValue.ToString() == "Exotic Melee Weapons" || cboCategory.SelectedValue.ToString() == "Unarmed")
-            {
-                dgvWeapons.Columns[5].Visible = false;
-                dgvWeapons.Columns[6].Visible = false;
-                dgvWeapons.Columns[7].Visible = false;
-                dgvWeapons.Columns[8].Visible = true;
-            }
-            else
-            {
-                dgvWeapons.Columns[5].Visible = true;
-                dgvWeapons.Columns[6].Visible = true;
-                dgvWeapons.Columns[7].Visible = true;
-                dgvWeapons.Columns[8].Visible = false;
-            }
-
-            dgvWeapons.Columns[12].DefaultCellStyle.Alignment = DataGridViewContentAlignment.TopRight;
-            dgvWeapons.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
-            dgvWeapons.DataSource = set;
-            dgvWeapons.DataMember = "weapons";
-        }
-
-        private void tmrSearch_Tick(object sender, EventArgs e)
-        {
-            tmrSearch.Stop();
-            tmrSearch.Enabled = false;
-
-            if (txtSearch.Text == "")
-            {
-                cboCategory_SelectedIndexChanged(sender, e);
+            if (_blnLoading || _blnSkipUpdate)
                 return;
+            
+            // Retireve the information for the selected Weapon.
+            XmlNode xmlWeapon = null;
+            string strSelectedId = lstWeapon.SelectedValue?.ToString();
+            if (!string.IsNullOrEmpty(strSelectedId))
+                xmlWeapon = _objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + lstWeapon.SelectedValue + "\"]");
+            if (xmlWeapon != null)
+            {
+                Weapon objWeapon = new Weapon(_objCharacter);
+                objWeapon.Create(xmlWeapon, null, true, false, true);
+                _objSelectedWeapon = objWeapon;
             }
+            else
+                _objSelectedWeapon = null;
 
-            // Treat everything as being uppercase so the search is case-insensitive.
-            string strSearch = "/chummer/weapons/weapon[(" + _objCharacter.Options.BookXPath() + ") and category != \"Cyberware\" and category != \"Gear\" and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\"))]";
+            UpdateWeaponInfo();
+        }
 
-            XmlNodeList objXmlWeaponList = _objXmlDocument.SelectNodes(strSearch);
+        private void UpdateWeaponInfo()
+        {
+            if (_blnLoading || _blnSkipUpdate)
+                return;
+            _blnSkipUpdate = true;
+            if (_objSelectedWeapon != null)
+            {
+                chkBlackMarketDiscount.Checked = _setBlackMarketMaps.Contains(_objSelectedWeapon.Category);
 
-            if (dgvWeapons.Visible)
+                _objSelectedWeapon.DiscountCost = chkBlackMarketDiscount.Checked;
+                
+                lblWeaponReach.Text = _objSelectedWeapon.TotalReach.ToString(GlobalOptions.Instance.CultureInfo);
+                lblWeaponReachLabel.Visible = !string.IsNullOrEmpty(lblWeaponReach.Text);
+                lblWeaponDamage.Text = _objSelectedWeapon.CalculatedDamage(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
+                lblWeaponDamageLabel.Visible = !string.IsNullOrEmpty(lblWeaponDamage.Text);
+                lblWeaponAP.Text = _objSelectedWeapon.TotalAP(GlobalOptions.Instance.Language);
+                lblWeaponAPLabel.Visible = !string.IsNullOrEmpty(lblWeaponAP.Text);
+                lblWeaponMode.Text = _objSelectedWeapon.CalculatedMode(GlobalOptions.Instance.Language);
+                lblWeaponModeLabel.Visible = !string.IsNullOrEmpty(lblWeaponMode.Text);
+                lblWeaponRC.Text = _objSelectedWeapon.TotalRC(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language, true);
+                lblWeaponRC.SetToolTip(_objSelectedWeapon.RCToolTip);
+                lblWeaponRCLabel.Visible = !string.IsNullOrEmpty(lblWeaponRC.Text);
+                lblWeaponAmmo.Text = _objSelectedWeapon.CalculatedAmmo(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
+                lblWeaponAmmoLabel.Visible = !string.IsNullOrEmpty(lblWeaponAmmo.Text);
+                lblWeaponAccuracy.Text = _objSelectedWeapon.DisplayAccuracy(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
+                lblWeaponAccuracyLabel.Visible = !string.IsNullOrEmpty(lblWeaponAccuracy.Text);
+
+                decimal decItemCost = 0;
+                if (chkFreeItem.Checked)
+                {
+                    lblWeaponCost.Text = (0.0m).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.Instance.CultureInfo) + '¥';
+                }
+                else
+                {
+                    lblWeaponCost.Text = _objSelectedWeapon.DisplayCost(out decItemCost, nudMarkup.Value / 100.0m);
+                }
+                lblWeaponCostLabel.Visible = !string.IsNullOrEmpty(lblWeaponCost.Text);
+
+                AvailabilityValue objTotalAvail = _objSelectedWeapon.TotalAvailTuple();
+                lblWeaponAvail.Text = objTotalAvail.ToString(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
+                lblWeaponAvailLabel.Visible = !string.IsNullOrEmpty(lblWeaponAvail.Text);
+                lblTest.Text = _objCharacter.AvailTest(decItemCost, objTotalAvail);
+                lblTestLabel.Visible = !string.IsNullOrEmpty(lblTest.Text);
+                _objSelectedWeapon.SetSourceDetail(lblSource);
+                lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
+
+                // Build a list of included Accessories and Modifications that come with the weapon.
+                StringBuilder strAccessories = new StringBuilder();
+                foreach (WeaponAccessory objAccessory in _objSelectedWeapon.WeaponAccessories)
+                {
+                    strAccessories.AppendLine(objAccessory.DisplayName(GlobalOptions.Instance.Language));
+                }
+                if (strAccessories.Length > 0)
+                    strAccessories.Length -= Environment.NewLine.Length;
+
+                lblIncludedAccessories.Text = strAccessories.Length == 0 ? LanguageManager.GetString("String_None", GlobalOptions.Instance.Language) : strAccessories.ToString();
+                lblIncludedAccessoriesLabel.Visible = !string.IsNullOrEmpty(lblIncludedAccessories.Text);
+            }
+            else
+            {
+                chkBlackMarketDiscount.Checked = false;
+                lblWeaponReach.Text = string.Empty;
+                lblWeaponReachLabel.Visible = false;
+                lblWeaponDamage.Text = string.Empty;
+                lblWeaponDamageLabel.Visible = false;
+                lblWeaponAP.Text = string.Empty;
+                lblWeaponAPLabel.Visible = false;
+                lblWeaponMode.Text = string.Empty;
+                lblWeaponModeLabel.Visible = false;
+                lblWeaponRC.Text = string.Empty;
+                lblWeaponRC.SetToolTip(string.Empty);
+                lblWeaponRCLabel.Visible = false;
+                lblWeaponAmmo.Text = string.Empty;
+                lblWeaponAmmoLabel.Visible = false;
+                lblWeaponAccuracy.Text = string.Empty;
+                lblWeaponAccuracyLabel.Visible = false;
+                lblWeaponCost.Text = string.Empty;
+                lblWeaponCostLabel.Visible = false;
+                lblWeaponAvail.Text = string.Empty;
+                lblWeaponAvailLabel.Visible = false;
+                lblTest.Text = string.Empty;
+                lblTestLabel.Visible = false;
+                lblSource.Text = string.Empty;
+                lblSourceLabel.Visible = false;
+                lblIncludedAccessories.Text = string.Empty;
+                lblIncludedAccessoriesLabel.Visible = false;
+                lblSource.SetToolTip(string.Empty);
+            }
+            _blnSkipUpdate = false;
+        }
+
+        private void BuildWeaponList(XmlNodeList objNodeList)
+        {
+            if (tabControl.SelectedIndex == 1)
             {
                 DataTable tabWeapons = new DataTable("weapons");
+                tabWeapons.Columns.Add("WeaponGuid");
                 tabWeapons.Columns.Add("WeaponName");
                 tabWeapons.Columns.Add("Dice");
                 tabWeapons.Columns.Add("Accuracy");
-                tabWeapons.Columns["Accuracy"].DataType = typeof(Int32);
                 tabWeapons.Columns.Add("Damage");
                 tabWeapons.Columns.Add("AP");
                 tabWeapons.Columns.Add("RC");
-                tabWeapons.Columns["RC"].DataType = typeof(Int32);
                 tabWeapons.Columns.Add("Ammo");
                 tabWeapons.Columns.Add("Mode");
                 tabWeapons.Columns.Add("Reach");
                 tabWeapons.Columns.Add("Accessories");
                 tabWeapons.Columns.Add("Avail");
+                tabWeapons.Columns["Avail"].DataType = typeof(AvailabilityValue);
                 tabWeapons.Columns.Add("Source");
+                tabWeapons.Columns["Source"].DataType = typeof(SourceString);
                 tabWeapons.Columns.Add("Cost");
-                tabWeapons.Columns["Cost"].DataType = typeof(Int32);
+                tabWeapons.Columns["Cost"].DataType = typeof(NuyenString);
 
-                // Populate the Weapon list.
-                foreach (XmlNode objXmlWeapon in objXmlWeaponList)
+                foreach (XmlNode objXmlWeapon in objNodeList)
                 {
-                    TreeNode objNode = new TreeNode();
-                    Weapon objWeapon = new Weapon(_objCharacter);
-                    objWeapon.Create(objXmlWeapon, _objCharacter, objNode, null, null);
+                    if (objXmlWeapon["cyberware"]?.InnerText == bool.TrueString)
+                        continue;
+                    string strTest = objXmlWeapon["mount"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strTest) && !Mounts.Contains(strTest))
+                        continue;
+                    strTest = objXmlWeapon["extramount"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strTest) && !Mounts.Contains(strTest))
+                        continue;
+                    if (chkHideOverAvailLimit.Checked && !SelectionShared.CheckAvailRestriction(objXmlWeapon, _objCharacter))
+                        continue;
+                    if (!chkFreeItem.Checked && chkShowOnlyAffordItems.Checked)
+                    {
+                        decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
+                        if (_setBlackMarketMaps.Contains(objXmlWeapon["category"]?.InnerText))
+                            decCostMultiplier *= 0.9m;
+                        if (!SelectionShared.CheckNuyenRestriction(objXmlWeapon, _objCharacter.Nuyen, decCostMultiplier))
+                            continue;
+                    }
 
-                    string strWeaponName = objWeapon.Name;
-                    string strDice = objWeapon.DicePool;
-                    int intAccuracy = Convert.ToInt32(objWeapon.TotalAccuracy);
-                    string strDamage = objWeapon.CalculatedDamage();
-                    string strAP = objWeapon.TotalAP;
+                    Weapon objWeapon = new Weapon(_objCharacter);
+                    objWeapon.Create(objXmlWeapon, null, true, false, true);
+
+                    string strID = objWeapon.SourceIDString;
+                    string strWeaponName = objWeapon.DisplayName(GlobalOptions.Instance.Language);
+                    string strDice = objWeapon.GetDicePool(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
+                    string strAccuracy = objWeapon.DisplayAccuracy(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
+                    string strDamage = objWeapon.CalculatedDamage(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
+                    string strAP = objWeapon.TotalAP(GlobalOptions.Instance.Language);
                     if (strAP == "-")
                         strAP = "0";
-                    int intRC = Convert.ToInt32(objWeapon.TotalRC);
-                    string strAmmo = objWeapon.Ammo;
-                    string strMode = objWeapon.Mode;
+                    string strRC = objWeapon.TotalRC(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language, true);
+                    string strAmmo = objWeapon.CalculatedAmmo(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
+                    string strMode = objWeapon.CalculatedMode(GlobalOptions.Instance.Language);
                     string strReach = objWeapon.TotalReach.ToString();
-                    string strAccessories = "";
+                    StringBuilder strbldAccessories = new StringBuilder();
                     foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                     {
-                        if (strAccessories.Length > 0)
-                            strAccessories += "\n";
-                        strAccessories += objAccessory.Name;
+                        strbldAccessories.AppendLine(objAccessory.DisplayName(GlobalOptions.Instance.Language));
                     }
-                    string strAvail = objWeapon.Avail.ToString();
-                    string strSource = objWeapon.Source + " " + objWeapon.Page;
-                    int intCost = objWeapon.Cost;
+                    if (strbldAccessories.Length > 0)
+                        strbldAccessories.Length -= Environment.NewLine.Length;
+                    AvailabilityValue objAvail = objWeapon.TotalAvailTuple();
+                    SourceString strSource = new SourceString(objWeapon.Source, objWeapon.DisplayPage(GlobalOptions.Instance.Language), GlobalOptions.Instance.Language);
+                    NuyenString strCost = new NuyenString(objWeapon.DisplayCost(out decimal _));
 
-                    if (objWeapon.DisplayCategory == "Blades" || objWeapon.DisplayCategory == "Clubs" || objWeapon.DisplayCategory == "Improvised Weapons" || objWeapon.DisplayCategory == "Exotic Melee Weapons" || objWeapon.DisplayCategory == "Unarmed")
-                    {
-                        strAmmo = "";
-                        strMode = "";
-                    }
-                    else
-                    {
-                        strReach = "";
-                    }
-
-                    tabWeapons.Rows.Add(strWeaponName, strDice, intAccuracy, strDamage, strAP, intRC, strAmmo, strMode, strReach, strAccessories, strAvail, strSource, intCost);
+                    tabWeapons.Rows.Add(strID, strWeaponName, strDice, strAccuracy, strDamage, strAP, strRC, strAmmo, strMode, strReach, strbldAccessories.ToString(), objAvail, strSource, strCost);
                 }
 
                 DataSet set = new DataSet("weapons");
                 set.Tables.Add(tabWeapons);
-
-                dgvWeapons.Columns[5].Visible = true;
-                dgvWeapons.Columns[6].Visible = true;
-                dgvWeapons.Columns[7].Visible = true;
-                dgvWeapons.Columns[8].Visible = true;
+                string strSelectedCategory = cboCategory.SelectedValue?.ToString();
+                if (string.IsNullOrEmpty(strSelectedCategory) || strSelectedCategory == "Show All")
+                {
+                    //dgvWeapons.Columns[5].Visible = true;
+                    dgvWeapons.Columns[6].Visible = true;
+                    dgvWeapons.Columns[7].Visible = true;
+                    dgvWeapons.Columns[8].Visible = true;
+                }
+                else if (strSelectedCategory == "Blades" ||
+                         strSelectedCategory == "Clubs" ||
+                         strSelectedCategory == "Improvised Weapons" ||
+                         strSelectedCategory == "Exotic Melee Weapons" ||
+                         strSelectedCategory == "Unarmed")
+                {
+                    //dgvWeapons.Columns[5].Visible = false;
+                    dgvWeapons.Columns[6].Visible = false;
+                    dgvWeapons.Columns[7].Visible = false;
+                    dgvWeapons.Columns[8].Visible = false;
+                }
+                else
+                {
+                    //dgvWeapons.Columns[5].Visible = true;
+                    dgvWeapons.Columns[6].Visible = true;
+                    dgvWeapons.Columns[7].Visible = true;
+                    dgvWeapons.Columns[8].Visible = true;
+                }
+                dgvWeapons.Columns[0].Visible = false;
                 dgvWeapons.Columns[12].DefaultCellStyle.Alignment = DataGridViewContentAlignment.TopRight;
-
                 dgvWeapons.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
                 dgvWeapons.DataSource = set;
                 dgvWeapons.DataMember = "weapons";
@@ -759,43 +350,292 @@ namespace Chummer
             else
             {
                 List<ListItem> lstWeapons = new List<ListItem>();
-                foreach (XmlNode objXmlWeapon in objXmlWeaponList)
+                foreach (XmlNode objXmlWeapon in objNodeList)
                 {
-                    ListItem objItem = new ListItem();
-                    objItem.Value = objXmlWeapon["name"].InnerText;
-                    if (objXmlWeapon["translate"] != null)
-                        objItem.Name = objXmlWeapon["translate"].InnerText;
-                    else
-                        objItem.Name = objXmlWeapon["name"].InnerText;
+                    if (objXmlWeapon["cyberware"]?.InnerText == bool.TrueString)
+                        continue;
 
-                    try
+                    string strTest = objXmlWeapon["mount"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strTest) && !Mounts.Contains(strTest))
                     {
-                        objItem.Name += " [" + _lstCategory.Find(objFind => objFind.Value == objXmlWeapon["category"].InnerText).Name + "]";
-                        lstWeapons.Add(objItem);
+                        continue;
                     }
-                    catch
+
+                    strTest = objXmlWeapon["extramount"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strTest) && !Mounts.Contains(strTest))
                     {
+                        continue;
                     }
+
+                    if (chkHideOverAvailLimit.Checked && !SelectionShared.CheckAvailRestriction(objXmlWeapon, _objCharacter))
+                    {
+                        continue;
+                    }
+                    if (!chkFreeItem.Checked && chkShowOnlyAffordItems.Checked)
+                    {
+                        decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
+                        if (_setBlackMarketMaps.Contains(objXmlWeapon["category"]?.InnerText))
+                            decCostMultiplier *= 0.9m;
+                        if (!SelectionShared.CheckNuyenRestriction(objXmlWeapon, _objCharacter.Nuyen, decCostMultiplier))
+                            continue;
+                    }
+                    lstWeapons.Add(new ListItem(objXmlWeapon["id"]?.InnerText, objXmlWeapon["translate"]?.InnerText ?? objXmlWeapon["name"]?.InnerText));
                 }
-                SortListItem objSort = new SortListItem();
-                lstWeapons.Sort(objSort.Compare);
-                lstWeapon.DataSource = null;
+                
+                lstWeapons.Sort(CompareListItems.CompareNames);
+                string strOldSelected = lstWeapon.SelectedValue?.ToString();
+                _blnLoading = true;
+                lstWeapon.BeginUpdate();
                 lstWeapon.ValueMember = "Value";
                 lstWeapon.DisplayMember = "Name";
                 lstWeapon.DataSource = lstWeapons;
+                _blnLoading = false;
+                if (!string.IsNullOrEmpty(strOldSelected))
+                    lstWeapon.SelectedValue = strOldSelected;
+                else
+                    lstWeapon.SelectedIndex = -1;
+                lstWeapon.EndUpdate();
             }
+        }
+
+        private void cmdOK_Click(object sender, EventArgs e)
+        {
+            _blnAddAgain = false;
+            AcceptForm();
+        }
+
+        private void cmdCancel_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.Cancel;
+        }
+
+        private void txtSearch_TextChanged(object sender, EventArgs e)
+        {
+            RefreshList();
+        }
+
+        private void cmdOKAdd_Click(object sender, EventArgs e)
+        {
+            _blnAddAgain = true;
+            AcceptForm();
+        }
+
+        private void chkFreeItem_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkShowOnlyAffordItems.Checked)
+            {
+                RefreshList();
+            }
+            UpdateWeaponInfo();
+        }
+
+        private void nudMarkup_ValueChanged(object sender, EventArgs e)
+        {
+            if (chkShowOnlyAffordItems.Checked && !chkFreeItem.Checked)
+            {
+                RefreshList();
+            }
+            UpdateWeaponInfo();
+        }
+
+        private void txtSearch_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Down)
+            {
+                if (lstWeapon.SelectedIndex + 1 < lstWeapon.Items.Count)
+                {
+                    lstWeapon.SelectedIndex++;
+                }
+                else if (lstWeapon.Items.Count > 0)
+                {
+                    lstWeapon.SelectedIndex = 0;
+                }
+                if (dgvWeapons.SelectedRows.Count > 0 && dgvWeapons.Rows.Count > dgvWeapons.SelectedRows[0].Index + 1)
+                {
+                    dgvWeapons.Rows[dgvWeapons.SelectedRows[0].Index + 1].Selected = true;
+                }
+                else if (dgvWeapons.Rows.Count > 0)
+                {
+                    dgvWeapons.Rows[0].Selected = true;
+                }
+            }
+            if (e.KeyCode == Keys.Up)
+            {
+                if (lstWeapon.SelectedIndex - 1 >= 0)
+                {
+                    lstWeapon.SelectedIndex--;
+                }
+                else if (lstWeapon.Items.Count > 0)
+                {
+                    lstWeapon.SelectedIndex = lstWeapon.Items.Count - 1;
+                }
+                if (dgvWeapons.SelectedRows.Count > 0 && dgvWeapons.Rows.Count > dgvWeapons.SelectedRows[0].Index - 1)
+                {
+                    dgvWeapons.Rows[dgvWeapons.SelectedRows[0].Index - 1].Selected = true;
+                }
+                else if (dgvWeapons.Rows.Count > 0)
+                {
+                    dgvWeapons.Rows[0].Selected = true;
+                }
+            }
+        }
+
+        private void txtSearch_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Up)
+                txtSearch.Select(txtSearch.Text.Length, 0);
+        }
+
+        private void chkBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateWeaponInfo();
+        }
+        #endregion
+
+        #region Properties
+        /// <summary>
+        /// Whether or not the user wants to add another item after this one.
+        /// </summary>
+        public bool AddAgain => _blnAddAgain;
+
+        /// <summary>
+        /// Whether or not the selected Vehicle is used.
+        /// </summary>
+        public bool BlackMarketDiscount => _blnBlackMarketDiscount;
+
+        /// <summary>
+        /// Name of Weapon that was selected in the dialogue.
+        /// </summary>
+        public string SelectedWeapon => _strSelectedWeapon;
+
+        /// <summary>
+        /// Whether or not the item should be added for free.
+        /// </summary>
+        public bool FreeCost => chkFreeItem.Checked;
+
+        /// <summary>
+        /// Markup percentage.
+        /// </summary>
+        public decimal Markup => _decMarkup;
+
+        /// <summary>
+        /// Only the provided Weapon Categories should be shown in the list.
+        /// </summary>
+        public string LimitToCategories
+        {
+            // If passed an empty string, consume it and keep _strLimitToCategories as an empty hash.
+            set => _hashLimitToCategories = string.IsNullOrWhiteSpace(value) ? null : new HashSet<string>(value.Split(','));
+        }
+
+        public bool Underbarrel { get; set; }
+        public string Mounts { get; set; } = string.Empty;
+        #endregion
+
+        #region Methods
+        private void RefreshList()
+        {
+            string strCategory = cboCategory.SelectedValue?.ToString();
+            string strFilter = '(' + _objCharacter.Options.BookXPath() + ')';
+            if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0))
+                strFilter += " and category = \"" + strCategory + '\"';
+            else
+            {
+                StringBuilder objCategoryFilter = new StringBuilder();
+                if (_hashLimitToCategories.Count > 0)
+                {
+                    foreach (string strLoopCategory in _hashLimitToCategories)
+                    {
+                        objCategoryFilter.Append("category = \"" + strLoopCategory + "\" or ");
+                    }
+
+                    objCategoryFilter.Length -= 4;
+                }
+                else
+                {
+                    objCategoryFilter.Append("category != \"Cyberware\" and category != \"Gear\"");
+                }
+
+                if (objCategoryFilter.Length > 0)
+                {
+                    strFilter += " and (" + objCategoryFilter.ToString() + ')';
+                }
+            }
+            strFilter += CommonFunctions.GenerateSearchXPath(txtSearch.Text);
+
+            XmlNodeList objXmlWeaponList = _objXmlDocument.SelectNodes("/chummer/weapons/weapon[" + strFilter + ']');
+            BuildWeaponList(objXmlWeaponList);
+        }
+
+        /// <summary>
+        /// Accept the selected item and close the form.
+        /// </summary>
+        private void AcceptForm()
+        {
+            XmlNode objNode;
+            switch (tabControl.SelectedIndex)
+            {
+                case 0:
+                    objNode = _objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + lstWeapon.SelectedValue + "\"]");
+                    if (objNode != null)
+                    {
+                        s_StrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode["category"]?.InnerText;
+                        _strSelectedWeapon = objNode["id"]?.InnerText;
+                        _decMarkup = nudMarkup.Value;
+                        _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
+
+                        DialogResult = DialogResult.OK;
+                    }
+                    break;
+                case 1:
+                    if (dgvWeapons.SelectedRows.Count == 1)
+                    {
+                        if (txtSearch.Text.Length > 1)
+                        {
+                            string strWeapon = dgvWeapons.SelectedRows[0].Cells[0].Value.ToString();
+                            if (!string.IsNullOrEmpty(strWeapon))
+                                strWeapon = strWeapon.Substring(0, strWeapon.LastIndexOf('(') - 1);
+                            objNode = _objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + strWeapon + "\"]");
+                        }
+                        else
+                        {
+                            objNode = _objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + dgvWeapons.SelectedRows[0].Cells[0].Value + "\"]");
+                        }
+                        if (objNode != null)
+                        {
+                            s_StrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode["category"]?.InnerText;
+                            _strSelectedWeapon = objNode["id"]?.InnerText;
+                        }
+                        _decMarkup = nudMarkup.Value;
+
+                        DialogResult = DialogResult.OK;
+                    }
+                    break;
+            }
+        }
+
+        private void OpenSourceFromLabel(object sender, EventArgs e)
+        {
+            CommonFunctions.OpenPDFFromControl(sender, e);
+        }
+
+        private void tmrSearch_Tick(object sender, EventArgs e)
+        {
+            tmrSearch.Stop();
+            tmrSearch.Enabled = false;
+
+            RefreshList();
+        }
+
+        private void chkShowOnlyAffordItems_CheckedChanged(object sender, EventArgs e)
+        {
+            RefreshList();
         }
 
         private void dgvWeapons_DoubleClick(object sender, EventArgs e)
         {
-            if (lstWeapon.Text != "" || dgvWeapons.Visible)
-                AcceptForm();
+            _blnAddAgain = false;
+            AcceptForm();
         }
-		
-		private void lblSource_Click(object sender, EventArgs e)
-        {
-            CommonFunctions.OpenPDF(lblSource.Text, _objCharacter);
-        }
-		#endregion
-	}
+        #endregion
+    }
 }

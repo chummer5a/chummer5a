@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -82,9 +82,17 @@ namespace Chummer.UI.Options.ControlGenerators
             {
                 string valueName = $"{name}_{value}";
                 string display;
-                list.Add(new ListItem<Enum>(value, LanguageManager.Instance.TryGetString(valueName, out display)
-                    ? display
-                    : value.ToString()));
+                //list.Add(new ListItem<Enum>(value, LanguageManager.TryGetString(valueName, out display)
+                //    ? display
+                //    : value.ToString()));
+                if(LanguageManager.TryGetString(valueName, out display))
+                {
+                    list.Add(new ListItem<Enum>(value, display));
+                }
+                else
+                {
+                    list.Add(new ListItem<Enum>(value, value.ToString()));
+                }
             }
 
             return list;

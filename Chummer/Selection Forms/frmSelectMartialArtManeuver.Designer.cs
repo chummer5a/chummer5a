@@ -1,33 +1,33 @@
-﻿namespace Chummer
+namespace Chummer
 {
-	partial class frmSelectMartialArtManeuver
-	{
-		/// <summary>
-		/// Required designer variable.
-		/// </summary>
-		private System.ComponentModel.IContainer components = null;
+    partial class frmSelectMartialArtManeuver
+    {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-		protected override void Dispose(bool disposing)
-		{
-			if (disposing && (components != null))
-			{
-				components.Dispose();
-			}
-			base.Dispose(disposing);
-		}
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
 
-		#region Windows Form Designer generated code
+        #region Windows Form Designer generated code
 
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
             this.components = new System.ComponentModel.Container();
             this.cmdOKAdd = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
@@ -35,7 +35,6 @@
             this.cmdOK = new System.Windows.Forms.Button();
             this.lblSource = new System.Windows.Forms.Label();
             this.lblSourceLabel = new System.Windows.Forms.Label();
-            this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
             this.SuspendLayout();
             // 
             // cmdOKAdd
@@ -91,7 +90,7 @@
             this.lblSource.Size = new System.Drawing.Size(47, 13);
             this.lblSource.TabIndex = 2;
             this.lblSource.Text = "[Source]";
-            this.lblSource.Click += new System.EventHandler(this.lblSource_Click);
+            this.lblSource.Click += new System.EventHandler(this.OpenSourceFromLabel);
             // 
             // lblSourceLabel
             // 
@@ -102,15 +101,6 @@
             this.lblSourceLabel.TabIndex = 1;
             this.lblSourceLabel.Tag = "Label_Source";
             this.lblSourceLabel.Text = "Source:";
-            // 
-            // tipTooltip
-            // 
-            this.tipTooltip.AutoPopDelay = 10000;
-            this.tipTooltip.InitialDelay = 250;
-            this.tipTooltip.IsBalloon = true;
-            this.tipTooltip.ReshowDelay = 100;
-            this.tipTooltip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
-            this.tipTooltip.ToolTipTitle = "Chummer Help";
             // 
             // frmSelectMartialArtManeuver
             // 
@@ -137,16 +127,15 @@
             this.ResumeLayout(false);
             this.PerformLayout();
 
-		}
+        }
 
-		#endregion
+        #endregion
 
-		private System.Windows.Forms.Button cmdOKAdd;
-		private System.Windows.Forms.Button cmdCancel;
-		private System.Windows.Forms.ListBox lstManeuvers;
-		private System.Windows.Forms.Button cmdOK;
-		private System.Windows.Forms.Label lblSource;
-		private System.Windows.Forms.Label lblSourceLabel;
-		private System.Windows.Forms.ToolTip tipTooltip;
-	}
+        private System.Windows.Forms.Button cmdOKAdd;
+        private System.Windows.Forms.Button cmdCancel;
+        private System.Windows.Forms.ListBox lstManeuvers;
+        private System.Windows.Forms.Button cmdOK;
+        private System.Windows.Forms.Label lblSource;
+        private System.Windows.Forms.Label lblSourceLabel;
+    }
 }

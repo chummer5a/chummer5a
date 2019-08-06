@@ -1,0 +1,463 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using ChummerHub.Data;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Swashbuckle.AspNetCore.Swagger;
+using System.Reflection;
+using System.IO;
+using System.Net;
+using ChummerHub.Controllers;
+using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Swashbuckle.AspNetCore.SwaggerGen;
+using Swashbuckle.AspNetCore.Filters;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using ChummerHub.Services;
+using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Authentication.Facebook;
+using ChummerHub.Services.GoogleDrive;
+using Microsoft.Extensions.Logging;
+using ChummerHub.API;
+using ChummerHub.Controllers.V1;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.ApplicationInsights.SnapshotCollector;
+using Microsoft.Extensions.Options;
+using Microsoft.ApplicationInsights.AspNetCore;
+using Microsoft.ApplicationInsights.Channel;
+using Microsoft.ApplicationInsights.DataContracts;
+using Microsoft.ApplicationInsights.Extensibility;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.ResponseCompression;
+
+namespace ChummerHub
+{
+    public class Startup
+    {
+        
+        private class SnapshotCollectorTelemetryProcessorFactory : ITelemetryProcessorFactory
+        {
+            private readonly IServiceProvider _serviceProvider;
+
+            public SnapshotCollectorTelemetryProcessorFactory(IServiceProvider serviceProvider) =>
+                _serviceProvider = serviceProvider;
+
+            public ITelemetryProcessor Create(ITelemetryProcessor next)
+            {
+                try
+                {
+                    var snapshotConfigurationOptions = _serviceProvider.GetService<IOptions<SnapshotCollectorConfiguration>>();
+                    ITelemetryProcessor ret = new SnapshotCollectorTelemetryProcessor(next, configuration: snapshotConfigurationOptions.Value);
+                    return ret;
+                }
+                catch (Exception e)
+                {
+                    System.Diagnostics.Trace.TraceError(e.ToString(), e);
+                    Console.WriteLine(e.ToString());
+                    return null;
+                }
+
+            }
+        }
+
+        private readonly ILogger<Startup> _logger;
+
+        private static DriveHandler _gdrive = null;
+        public static DriveHandler GDrive
+        {
+            get
+            {
+                return _gdrive;
+            }
+        }
+
+        /// <summary>
+        /// This leads to the master-azure-db to create/edit/delete users
+        /// </summary>
+        public static string ConnectionStringToMasterSqlDb { get; set; }
+
+        /// <summary>
+        /// This leads to the master-azure-db to create/edit/delete users
+        /// </summary>
+        public static string ConnectionStringSinnersDb { get; set; }
+
+        
+
+        public Startup(ILogger<Startup> logger, IConfiguration configuration)
+        {
+            _logger = logger;
+            Configuration = configuration;
+            if (_gdrive == null)
+                _gdrive = new DriveHandler(logger, configuration);
+        }
+
+        public IConfiguration Configuration { get; }
+
+        public IServiceCollection MyServices { get; set; }
+
+        // This method gets called by the runtime. Use this method to add services to the container.
+        public void ConfigureServices(IServiceCollection services)
+        {
+            MyServices = services;
+
+         
+
+            ConnectionStringToMasterSqlDb = Configuration.GetConnectionString("MasterSqlConnection");
+            ConnectionStringSinnersDb = Configuration.GetConnectionString("DefaultConnection");
+
+            // Configure SnapshotCollector from application settings
+            services.Configure<SnapshotCollectorConfiguration>(Configuration.GetSection(nameof(SnapshotCollectorConfiguration)));
+
+            // Add SnapshotCollector telemetry processor.
+            services.AddSingleton<ITelemetryProcessorFactory>(sp => new SnapshotCollectorTelemetryProcessorFactory(sp));
+
+
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+                options.CheckConsentNeeded = context => false;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
+
+            services.AddResponseCompression(options =>
+            {
+                options.Providers.Add<BrotliCompressionProvider>();
+                options.Providers.Add<GzipCompressionProvider>();
+                //options.Providers.Add<CustomCompressionProvider>();
+                //options.MimeTypes =
+                //    ResponseCompressionDefaults.MimeTypes.Concat(
+                //        new[] { "image/svg+xml" });
+            });
+
+
+            services.Configure<FormOptions>(options =>
+            {
+                options.MultipartBodyLengthLimit = 100000000;
+            });
+
+            services.AddDbContext<ApplicationDbContext>(options =>
+            {
+                options.UseSqlServer(
+                    Configuration.GetConnectionString("DefaultConnection"));
+            });
+
+            services.AddScoped<SignInManager<ApplicationUser>, SignInManager<ApplicationUser>>();
+
+          
+            services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
+            {
+
+              })
+              .AddRoleManager<RoleManager<ApplicationRole>>()
+              .AddRoles<ApplicationRole>()
+              .AddEntityFrameworkStores<ApplicationDbContext>()
+              .AddDefaultTokenProviders()
+              .AddSignInManager();
+
+            // Add application services.
+            services.AddTransient<IEmailSender, EmailSender>();
+
+            services.AddSingleton<IEmailSender, EmailSender>();
+            services.Configure<AuthMessageSenderOptions>(Configuration);
+
+
+            services.AddMvc(options =>
+            {
+                var policy = new AuthorizationPolicyBuilder()
+                                 .RequireAuthenticatedUser()
+                                 .Build();
+                var filter = new AuthorizeFilter(policy);
+                options.Filters.Add(filter);
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+                .AddRazorPagesOptions(options =>
+                {
+                    options.AllowAreas = true;
+                    //options.Conventions.AuthorizePage("/Home/Contact");
+                    options.Conventions.AuthorizeAreaFolder("Identity", "/Account/Manage");
+                    options.Conventions.AuthorizeAreaPage("Identity", "/Account/Logout");
+                    options.Conventions.AuthorizeAreaPage("Identity", "/Account/ChummerLogin/Logout");                    
+                });
+
+
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            })
+                //.AddFacebook(facebookOptions =>
+                //{
+                //    facebookOptions.AppId = Configuration["Authentication:Facebook:AppId"];
+                //    facebookOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
+                //    facebookOptions.BackchannelHttpHandler = new FacebookBackChannelHandler();
+                //    facebookOptions.UserInformationEndpoint = "https://graph.facebook.com/v2.8/me?fields=id,name,email,first_name,last_name";
+                //})
+                //.AddGoogle(options =>
+                //{
+                //    options.ClientId = Configuration["Authentication:Google:ClientId"];
+                //    options.ClientSecret = Configuration["Authentication:Google:ClientSecret"];
+                //    options.CallbackPath = new PathString("/ExternalLogin");
+                //})
+                .AddCookie("Cookies", options =>
+                {
+                    options.LoginPath = new PathString("/Identity/Account/Login");
+                    options.AccessDeniedPath = new PathString("/Identity/Account/AccessDenied");
+                    options.LogoutPath = $"/Identity/Account/Logout";
+                    options.Cookie.Name = "Cookies";
+                    options.Cookie.HttpOnly = false;
+                    options.ExpireTimeSpan = TimeSpan.FromDays(5 * 365);
+                    options.LoginPath = "/Identity/Account/Login";
+                    // ReturnUrlParameter requires 
+                    //using Microsoft.AspNetCore.Authentication.Cookies;
+                    options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
+                    options.SlidingExpiration = false;
+                })
+                ;
+            ;
+
+            services.Configure<IdentityOptions>(options =>
+            {
+                // Password settings.
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequiredLength = 5;
+                options.Password.RequiredUniqueChars = 0;
+
+                // Lockout settings.
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.AllowedForNewUsers = true;
+
+                // User settings.
+                options.User.AllowedUserNameCharacters =
+                "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+                options.User.RequireUniqueEmail = true;
+#if DEBUG
+                options.SignIn.RequireConfirmedEmail = false;
+#else
+                options.SignIn.RequireConfirmedEmail = true;
+#endif
+                options.SignIn.RequireConfirmedPhoneNumber = false;
+
+            });
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                // Cookie settings
+                options.LogoutPath = $"/Identity/Account/Logout";
+                options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+                options.Cookie.Name = "Cookies";
+                options.Cookie.HttpOnly = false;
+                options.ExpireTimeSpan = TimeSpan.FromDays(5 * 365);
+                options.LoginPath = "/Identity/Account/Login";
+                // ReturnUrlParameter requires 
+                //using Microsoft.AspNetCore.Authentication.Cookies;
+                options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
+                options.SlidingExpiration = false;
+                //options.Events.OnRedirectToAccessDenied = context => {
+
+                //    // Your code here.
+                //    // e.g.
+                //    throw new Not();
+                //};
+            });
+
+            services.AddMvc(options => { }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+                .AddJsonOptions(x =>
+                {
+                    x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                    x.SerializerSettings.PreserveReferencesHandling =
+                        Newtonsoft.Json.PreserveReferencesHandling.Objects;
+                });
+
+
+            services.AddVersionedApiExplorer(options =>
+                {
+                    options.GroupNameFormat = "'v'VVV";
+                    // note: this option is only necessary when versioning by url segment. the SubstitutionFormat
+                    // can also be used to control the format of the API version in route templates
+                    options.SubstituteApiVersionInUrl = true;
+                })
+                .AddAuthorization();
+
+            services.AddApiVersioning(o =>
+            {
+                o.ReportApiVersions = true;
+                o.DefaultApiVersion = new ApiVersion(1, 0);
+                o.AssumeDefaultVersionWhenUnspecified = true;
+                //o.ApiVersionReader = new HeaderApiVersionReader("api-version");
+                //o.Conventions.Controller<Controllers.V1.SINnerController>().HasApiVersion(new ApiVersion(1, 0));
+                //o.Conventions.Controller<Controllers.V2.SINnerController>().HasApiVersion(new ApiVersion(2, 0));
+            });
+
+
+            services.AddSwaggerGen(options =>
+            {
+                //options.AddSecurityDefinition("Bearer",
+                //    new ApiKeyScheme {
+                //        In = "header",
+                //        Description = "Please enter JWT with Bearer into field",
+                //        Name = "Authorization",
+                //        Type = "apiKey" });
+                //options.AddSecurityRequirement(new Dictionary<string, IEnumerable<string>>
+                //{
+                //    { "Bearer", Enumerable.Empty<string>() },
+                //});
+                    // resolve the IApiVersionDescriptionProvider service
+                    // note: that we have to build a temporary service provider here because one has not been created yet
+                    var provider = services.BuildServiceProvider()
+                .GetRequiredService<IApiVersionDescriptionProvider>();
+
+                // add a swagger document for each discovered API version
+                // note: you might choose to skip or document deprecated API versions differently
+
+                foreach (var description in provider.ApiVersionDescriptions)
+                {
+                    options.SwaggerDoc(description.GroupName, new Info
+                    {
+                        Version = description.GroupName,
+                        Title = "ChummerHub",
+                        Description = "Description for API " + description.GroupName + " to store and search Chummer Xml files",
+                        TermsOfService = "None",
+                        Contact = new Contact
+                        {
+                            Name = "Archon Megalon",
+                            Email = "archon.megalon@gmail.com",
+                        },
+                        License = new License
+                        {
+                            Name = "License",
+                            Url = "https://github.com/chummer5a/chummer5a/blob/master/LICENSE.txt",
+
+                        }
+
+                    });
+                }
+
+                options.OperationFilter<FileUploadOperation>();
+
+                // add a custom operation filter which sets default values
+                //options.OperationFilter<SwaggerDefaultValues>();
+
+                options.DescribeAllEnumsAsStrings();
+
+                options.ExampleFilters();
+
+                options.OperationFilter<AddResponseHeadersFilter>();
+                
+
+                // Set the comments path for the Swagger JSON and UI.
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                options.IncludeXmlComments(xmlPath);
+
+                options.MapType<FileResult>(() => new Schema
+                {
+                    Type = "file",
+                });
+                options.MapType<FileStreamResult>(() => new Schema
+                {
+                    Type = "file",
+                });
+
+            });
+
+            services.AddSwaggerExamples();
+
+            //services.AddHttpsRedirection(options =>
+            //{
+            //    options.HttpsPort = 443;
+            //});
+
+            //services.Configure<ApiBehaviorOptions>(options =>
+            //{
+            //    options.SuppressModelStateInvalidFilter = true;
+            //});
+
+
+        }
+
+
+
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+                app.UseBrowserLink();
+                app.UseDatabaseErrorPage();
+
+            }
+            else
+            {
+                app.UseExceptionHandler("/Home/Error");
+                app.UseHsts();
+            }
+
+            //app.UseHttpsRedirection();
+            app.UseStaticFiles();
+            //app.UseCookiePolicy();
+
+            app.UseAuthentication();
+            
+            app.UseMvc(routes =>
+            {
+                
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller=Home}/{action=Index}/{id?}"
+                    );
+                //routes.MapRoute(
+                //    name: "Identity",
+                //    template: "Identity/{controller=IdentityHome}/{action=Index}/{id?}"
+                //    );
+            });
+
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
+            app.UseSwagger();
+
+            // resolve the IApiVersionDescriptionProvider service
+            // note: that we have to build a temporary service provider here because one has not been created yet
+            var provider = MyServices.BuildServiceProvider().GetRequiredService<IApiVersionDescriptionProvider>();
+
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), 
+            // specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(options =>
+            {
+                
+                //c.SwaggerEndpoint("/swagger/v1.0/swagger.json", "V1");
+                // build a swagger endpoint for each discovered API version
+                foreach (var description in provider.ApiVersionDescriptions)
+                {
+                    options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
+                }
+            });
+
+            var serviceScopeFactory = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>();
+            using (var serviceScope = serviceScopeFactory.CreateScope())
+            {
+                var dbContext = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
+                //dbContext.Database.EnsureDeleted();
+                dbContext.Database.EnsureCreated();
+            
+            }
+
+          
+
+        }
+    }
+}

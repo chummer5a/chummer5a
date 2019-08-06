@@ -16,59 +16,125 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
-using System.Collections.Generic;
+using System;
+using System.ComponentModel;
 using System.Diagnostics;
-﻿using System.IO;
-﻿using System.Linq;
-﻿using System.Net;
-﻿using System.Reflection;
- using System.Text;
- using System.Text.RegularExpressions;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Reflection;
+using System.Text;
 using System.Windows.Forms;
-using System.Xml;
-using System.Xml.XPath;
+using NLog;
 
 namespace Chummer
 {
-	static class Utils
-	{
-		//someday this should parse into an abstract syntax tree, but this hack
-		//have worked for a few years, and will work a few years more
-		public static bool TryFloat(string number, out float parsed, Dictionary<string, float> keywords )
-		{
-			//parse to base math string
-			try
-			{
-				Regex regex = new Regex(String.Join("|", keywords.Keys));
-				number = regex.Replace(number, m => keywords[m.Value].ToString(System.Globalization.CultureInfo.InvariantCulture));
+    public static class Utils
+    {
+        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        
+        public static void BreakIfDebug()
+        {
+#if DEBUG
+            if (Debugger.IsAttached && !IsUnitTest)
+                ;//               Debugger.Break();
+#endif
+        }
 
-				XmlDocument objXmlDocument = new XmlDocument();
-				XPathNavigator nav = objXmlDocument.CreateNavigator();
-				XPathExpression xprValue = nav.Compile(number);
+        public static bool IsRunningInVisualStudio => Process.GetCurrentProcess().ProcessName == "devenv";
 
-				// Treat this as a decimal value so any fractions can be rounded down. This is currently only used by the Boosted Reflexes Cyberware from SR2050.
-				if (float.TryParse(nav.Evaluate(xprValue).ToString(), out parsed))
-				{
-					return true;
-				}
-			}
-			catch (Exception ex)
-			{	
-				Log.Exception(ex);
-			}
+        public static bool IsDesignerMode => LicenseManager.UsageMode == LicenseUsageMode.Designtime;
 
-			parsed = 0;
-			return false;
-		}
+        public static Version CachedGitVersion { get; set; }
 
-		public static void BreakIfDebug()
-		{
-			if (Debugger.IsAttached)
-				Debugger.Break();
-			
-		}
+        /// <summary>
+        /// This property is set in the Constructor of frmChummerMain (and NO where else!)
+        /// </summary>
+        public static bool IsUnitTest { get; set; }
 
+        /// <summary>
+        /// Returns the actuall path of the Chummer-Directory regardless of running as Unit test or not.
+        /// </summary>
+
+        public static string GetStartupPath
+        {
+            get
+            {
+                return !IsUnitTest ? Application.StartupPath : AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
+            }
+        }
+
+        public static int GitUpdateAvailable()
+        {
+            Version verCurrentversion = Assembly.GetExecutingAssembly().GetName().Version;
+            int intResult = CachedGitVersion?.CompareTo(verCurrentversion) ?? 0;
+            return intResult;
+        }
+
+        /// <summary>
+        /// Restarts Chummer5a.
+        /// </summary>
+        /// <param name="strLanguage">Language in which to display any prompts or warnings.</param>
+        /// <param name="strText">Text to display in the prompt to restart. If empty, no prompt is displayed.</param>
+        public static void RestartApplication(string strLanguage, string strText)
+        {
+            if (!string.IsNullOrEmpty(strText))
+            {
+                string text = LanguageManager.GetString(strText, strLanguage);
+                string caption = LanguageManager.GetString("MessageTitle_Options_CloseForms", strLanguage);
+
+                if (MessageBox.Show(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                    return;
+            }
+            // Need to do this here in case filenames are changed while closing forms (because a character who previously did not have a filename was saved when prompted)
+            // Cannot use foreach because saving a character as created removes the current form and adds a new one
+            for (int i = 0; i < Program.MainForm.OpenCharacterForms.Count; ++i)
+            {
+                CharacterShared objOpenCharacterForm = Program.MainForm.OpenCharacterForms[i];
+                if (objOpenCharacterForm.IsDirty)
+                {
+                    string strCharacterName = objOpenCharacterForm.CharacterObject.CharacterName;
+                    DialogResult objResult = MessageBox.Show(string.Format(LanguageManager.GetString("Message_UnsavedChanges", strLanguage), strCharacterName), LanguageManager.GetString("MessageTitle_UnsavedChanges", strLanguage), MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                    if (objResult == DialogResult.Yes)
+                    {
+                        // Attempt to save the Character. If the user cancels the Save As dialogue that may open, cancel the closing event so that changes are not lost.
+                        bool blnResult = objOpenCharacterForm.SaveCharacter();
+                        if (!blnResult)
+                            return;
+                        // We saved a character as created, which closed the current form and added a new one
+                        // This works regardless of dispose, because dispose would just set the objOpenCharacterForm pointer to null, so OpenCharacterForms would never contain it
+                        else if (!Program.MainForm.OpenCharacterForms.Contains(objOpenCharacterForm))
+                            i -= 1;
+                    }
+                    else if (objResult == DialogResult.Cancel)
+                    {
+                        return;
+                    }
+                }
+            }
+            Log.Info("Restart Chummer");
+            Program.MainForm.Cursor = Cursors.WaitCursor;
+            // Get the parameters/arguments passed to program if any
+            string arguments = string.Empty;
+            foreach (CharacterShared objOpenCharacterForm in Program.MainForm.OpenCharacterForms)
+            {
+                arguments += '\"' + objOpenCharacterForm.CharacterObject.FileName + "\" ";
+            }
+            arguments = arguments.Trim();
+            // Restart current application, with same arguments/parameters
+            foreach (Form objForm in Program.MainForm.MdiChildren)
+            {
+                objForm.Close();
+            }
+            ProcessStartInfo startInfo = new ProcessStartInfo
+            {
+                FileName = GetStartupPath + Path.DirectorySeparatorChar + AppDomain.CurrentDomain.FriendlyName,
+                Arguments = arguments
+            };
+            Application.Exit();
+            Process.Start(startInfo);
+        }
+    
 
         private static readonly Lazy<bool> _linux = new Lazy<bool>(() =>
         {
@@ -79,11 +145,6 @@ namespace Chummer
 	    public static bool IsLinux => _linux.Value;
 	    public static bool IsProbablyWindows => !IsLinux;
 
-
-	    public static bool IsRunningInVisualStudio()
-		{
-			return System.Diagnostics.Process.GetCurrentProcess().ProcessName == "devenv";
-		}
 
 		public static Version GitVersion()
 		{
@@ -120,14 +181,7 @@ namespace Chummer
 
 			return verLatestVersion;
 		}
-
-		public static int GitUpdateAvailable()
-		{
-			Version verCurrentversion = Assembly.GetExecutingAssembly().GetName().Version;
-			int intResult = GitVersion().CompareTo(verCurrentversion);
-			return intResult;
-		}
-
+        
 	    public static string PascalCaseInsertSpaces(string pascalCaseName)
 	    {
 	         StringBuilder sb = new StringBuilder();
