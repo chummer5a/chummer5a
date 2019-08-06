@@ -47,7 +47,7 @@ namespace WpfApplication1
 	        _attValues = new List<string>(lines[1].Split(' '));
 	        if (_attAbbrevs.Count != _attValues.Count)
 	        {
-		        MessageBox.Show("Mismatched attribute lengths!");
+                MessageBox.Show("Mismatched attribute lengths!");
 		        return;
 	        }
 

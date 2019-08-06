@@ -114,7 +114,7 @@ namespace Chummer
                 string text = LanguageManager.GetString("Message_Options_SettingsName", _strSelectedLanguage);
                 string caption = LanguageManager.GetString("MessageTitle_Options_SettingsName", _strSelectedLanguage);
 
-                MessageBox.Show(text, caption, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(text, caption, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 txtSettingName.Focus();
                 return;
             }
@@ -350,7 +350,7 @@ namespace Chummer
             XmlManager.Verify(strSelectedLanguage, lstBooks);
 
             string strFilePath = Path.Combine(Utils.GetStartupPath, "lang", "results_" + strSelectedLanguage + ".xml");
-            MessageBox.Show(string.Format(LanguageManager.GetString("Message_Options_ValidationResults", _strSelectedLanguage), strFilePath),
+            Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_Options_ValidationResults", _strSelectedLanguage), strFilePath),
                 LanguageManager.GetString("MessageTitle_Options_ValidationResults", _strSelectedLanguage), MessageBoxButtons.OK, MessageBoxIcon.Information);
             Cursor = Cursors.Default;
         }
@@ -1703,7 +1703,7 @@ namespace Chummer
 
                 if(_lstCustomDataDirectoryInfos.Any(x => x.Name == objNewCustomDataDirectory.Name))
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_Duplicate_CustomDataDirectoryName", _strSelectedLanguage),
+                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Duplicate_CustomDataDirectoryName", _strSelectedLanguage),
                         LanguageManager.GetString("Message_Duplicate_CustomDataDirectoryName_Title", _strSelectedLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 else
@@ -1739,7 +1739,7 @@ namespace Chummer
             if (frmSelectCustomDirectoryName.ShowDialog(this) != DialogResult.OK) return;
             if (_lstCustomDataDirectoryInfos.Any(x => x.Name == frmSelectCustomDirectoryName.Name))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_Duplicate_CustomDataDirectoryName", _strSelectedLanguage),
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Duplicate_CustomDataDirectoryName", _strSelectedLanguage),
                     LanguageManager.GetString("Message_Duplicate_CustomDataDirectoryName_Title", _strSelectedLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             else
@@ -1924,7 +1924,7 @@ namespace Chummer
                 msg += Environment.NewLine + "be improved and adressed the most.";
                 msg += Environment.NewLine + Environment.NewLine;
                 msg += "Do you want to share your logs?";
-                var result = MessageBox.Show(msg, "Really enable upload?", MessageBoxButtons.OKCancel);
+                var result = Program.MainForm.ShowMessageBox(msg, "Really enable upload?", MessageBoxButtons.OKCancel);
                 if (result == DialogResult.OK)
                 {
                     GlobalOptions.UseLoggingApplicationInsights = useAI;

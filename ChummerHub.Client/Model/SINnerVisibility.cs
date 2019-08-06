@@ -63,7 +63,7 @@ namespace SINners.Models
         {
             if (!IsValidEmail(email))
             {
-                MessageBox.Show("Please enter a valid email address!");
+                Program.MainForm.ShowMessageBox("Please enter a valid email address!");
                 return;
             }
             SINnerUserRight ur = new SINnerUserRight()

@@ -478,7 +478,7 @@ namespace ChummerHub.Client.Model
                             "\tand use this new version from now on," + Environment.NewLine;
                         message += "but only on this client (NOT recommended)."
                                    + Environment.NewLine + Environment.NewLine;
-                        var result = MessageBox.Show(message, "SIN already found online", MessageBoxButtons.YesNoCancel,
+                        var result = PluginHandler.MainForm.ShowMessageBox(message, "SIN already found online", MessageBoxButtons.YesNoCancel,
                             MessageBoxIcon.Asterisk, MessageBoxDefaultButton.Button1);
                         if (result == DialogResult.Cancel)
                             throw new ArgumentException("User aborted perparation for upload!");
@@ -724,7 +724,7 @@ namespace ChummerHub.Client.Model
             catch(Exception e)
             {
                 Log.Error(e);
-                MessageBox.Show(e.ToString());
+                Program.MainForm.ShowMessageBox(e.ToString());
             }
             return true;
         }

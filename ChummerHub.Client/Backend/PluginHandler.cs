@@ -493,7 +493,7 @@ namespace Chummer.Plugins
                                 }
                                 else
                                 {
-                                    MessageBox.Show("No archetypes found!");
+                                    Program.MainForm.ShowMessageBox("No archetypes found!");
                                 }
                             }
                         });
@@ -809,7 +809,7 @@ namespace Chummer.Plugins
                                 }
                                 else if (found?.Response.StatusCode == HttpStatusCode.NotFound)
                                 {
-                                    MessageBox.Show("Could not find a SINner with Id " + SINnerId + " online!");
+                                    Program.MainForm.ShowMessageBox("Could not find a SINner with Id " + SINnerId + " online!");
                                 }
 
                             }
@@ -817,7 +817,7 @@ namespace Chummer.Plugins
                         catch (Exception e)
                         {
                             Log.Error(e);
-                            MessageBox.Show("Error loading SINner: " + e.Message);
+                            Program.MainForm.ShowMessageBox("Error loading SINner: " + e.Message);
                         }
                         
                     }

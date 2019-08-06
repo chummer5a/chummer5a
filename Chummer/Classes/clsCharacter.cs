@@ -1830,14 +1830,20 @@ namespace Chummer
                 objDoc.Load(objStream);
                 objDoc.Save(strFileName);
             }
+            catch (IOException e)
+            {
+                Log.Error(e);
+                 Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning", GlobalOptions.Language));
+                blnErrorFree = false;
+            }
             catch(XmlException)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_Save_Error_Warning", GlobalOptions.Language));
+                 Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning", GlobalOptions.Language));
                 blnErrorFree = false;
             }
             catch(UnauthorizedAccessException)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_Save_Error_Warning", GlobalOptions.Language));
+                 Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning", GlobalOptions.Language));
                 blnErrorFree = false;
             }
 
@@ -1895,7 +1901,7 @@ namespace Chummer
                             {
                                 if (showWarnings)
                                 {
-                                    Program.MainForm.ShowMessageBox(
+                                     Program.MainForm.ShowMessageBox(
                                         string.Format(LanguageManager.GetString("Message_FailedLoad", GlobalOptions.Language),ex.Message),
                                         string.Format(LanguageManager.GetString("Message_FailedLoad", GlobalOptions.Language),ex.Message),
                                         MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -1939,7 +1945,7 @@ namespace Chummer
                             !string.IsNullOrEmpty(strGameEdition) && strGameEdition != "SR5" && showWarnings &&
                             !Utils.IsUnitTest)
                         {
-                            Program.MainForm.ShowMessageBox(
+                             Program.MainForm.ShowMessageBox(
                                 LanguageManager.GetString("Message_IncorrectGameVersion_SR4", GlobalOptions.Language),
                                 LanguageManager.GetString("MessageTitle_IncorrectGameVersion", GlobalOptions.Language),
                                 MessageBoxButtons.YesNo,
@@ -1972,7 +1978,7 @@ if (!Utils.IsUnitTest){
                 if (intResult == -1)
                 {
                     DialogResult result =
- MessageBox.Show(string.Format(LanguageManager.GetString("Message_OutdatedChummerSave", GlobalOptions.Language), _verSavedVersion.ToString(), verCurrentversion.ToString()),
+ Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_OutdatedChummerSave", GlobalOptions.Language), _verSavedVersion.ToString(), verCurrentversion.ToString()),
                         LanguageManager.GetString("MessageTitle_IncorrectGameVersion", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Error);
 
                     if (result != DialogResult.Yes)
@@ -2007,7 +2013,7 @@ if (!Utils.IsUnitTest){
                         if (!string.IsNullOrEmpty(strMissingBooks) && !Utils.IsUnitTest && showWarnings)
                         {
                             if (
-                                Program.MainForm.ShowMessageBox(string.Format(
+                                 Program.MainForm.ShowMessageBox(string.Format(
                                         LanguageManager.GetString("Message_MissingSourceBooks", GlobalOptions.Language),
                                         TranslatedBookList(strMissingBooks, GlobalOptions.Language)),
                                     LanguageManager.GetString("Message_MissingSourceBooks_Title",
@@ -2044,7 +2050,7 @@ if (!Utils.IsUnitTest){
 
                         if (!string.IsNullOrEmpty(strMissingSourceNames) && !Utils.IsUnitTest && showWarnings)
                         {
-                            if (Program.MainForm.ShowMessageBox(
+                            if ( Program.MainForm.ShowMessageBox(
                                 string.Format(
                                     LanguageManager.GetString("Message_MissingCustomDataDirectories",
                                         GlobalOptions.Language), strMissingSourceNames),
@@ -2153,7 +2159,7 @@ if (!Utils.IsUnitTest){
                                 "/chummer/gameplayoptions/gameplayoption[name = \"" + GameplayOption + "\"]");
                         if (xmlGameplayOption == null && showWarnings)
                         {
-                            if (Program.MainForm.ShowMessageBox(
+                            if ( Program.MainForm.ShowMessageBox(
                                 string.Format(
                                     LanguageManager.GetString("Message_MissingGameplayOption",
                                         GlobalOptions.Language),
@@ -5710,7 +5716,7 @@ if (!Utils.IsUnitTest){
         public bool ConfirmDelete(string strMessage)
         {
             return !Options.ConfirmDelete ||
-                   MessageBox.Show(strMessage, LanguageManager.GetString("MessageTitle_Delete", GlobalOptions.Language),
+                   Program.MainForm.ShowMessageBox(strMessage, LanguageManager.GetString("MessageTitle_Delete", GlobalOptions.Language),
                        MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
         }
 
@@ -5720,7 +5726,7 @@ if (!Utils.IsUnitTest){
         public bool ConfirmKarmaExpense(string strMessage)
         {
             if(Options.ConfirmKarmaExpense &&
-                MessageBox.Show(strMessage,
+                Program.MainForm.ShowMessageBox(strMessage,
                     LanguageManager.GetString("MessageTitle_ConfirmKarmaExpense", GlobalOptions.Language),
                     MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 return false;
@@ -6508,7 +6514,7 @@ if (!Utils.IsUnitTest){
                     }
                     catch(UnauthorizedAccessException)
                     {
-                        MessageBox.Show(LanguageManager.GetString("Message_Insufficient_Permissions_Warning",
+                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Insufficient_Permissions_Warning",
                             GlobalOptions.Language));
                     }
                 }
@@ -14941,7 +14947,7 @@ if (!Utils.IsUnitTest){
                             Log.Error(ex);
                         }
 
-                        MessageBox.Show(
+                        Program.MainForm.ShowMessageBox(
                             LanguageManager.GetString("Message_FailedLoad", GlobalOptions.Language)
                                 .Replace("{0}", ex.Message),
                             LanguageManager.GetString("MessageTitle_FailedLoad", GlobalOptions.Language),
@@ -14956,7 +14962,7 @@ if (!Utils.IsUnitTest){
                             op_load.AddBaggage(ex.GetType().Name, ex.Message);
                             Log.Error(ex);
                         }
-                        MessageBox.Show(
+                        Program.MainForm.ShowMessageBox(
                             LanguageManager.GetString("Message_FailedLoad", GlobalOptions.Language)
                                 .Replace("{0}", ex.Message),
                             LanguageManager.GetString("MessageTitle_FailedLoad", GlobalOptions.Language),
@@ -14971,7 +14977,7 @@ if (!Utils.IsUnitTest){
                             op_load.AddBaggage(ex.GetType().Name, ex.Message);
                             Log.Error(ex);
                         }
-                        MessageBox.Show(
+                        Program.MainForm.ShowMessageBox(
                             LanguageManager.GetString("Message_FailedLoad", GlobalOptions.Language)
                                 .Replace("{0}", ex.Message),
                             LanguageManager.GetString("MessageTitle_FailedLoad", GlobalOptions.Language),
