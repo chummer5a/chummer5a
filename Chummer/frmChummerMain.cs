@@ -1108,6 +1108,9 @@ namespace Chummer
                 throw new ArgumentException(msg);
             }
 
+            if (owner == null)
+                owner = this;
+
             if (owner.InvokeRequired)
             {
                 if ((showDevWarningAboutDebuggingOnlyOnce) && (Debugger.IsAttached))
