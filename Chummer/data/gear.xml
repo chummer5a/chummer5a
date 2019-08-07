@@ -8788,11 +8788,11 @@
       <name>Tactical Grapple Gun</name>
       <category>Grapple Gun</category>
       <rating>0</rating>
-      <source>SR5</source>
-      <page>449</page>
-      <avail>8R</avail>
+      <source>HT</source>
+      <page>187</page>
+      <avail>15F</avail>
       <addweapon>Tactical Grapple Gun</addweapon>
-      <cost>500</cost>
+      <cost>10000</cost>
     </gear>
     <!-- End Region -->
     <!-- Region Biotech -->

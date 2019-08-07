@@ -44,6 +44,8 @@ Application Fixes:
 - Fixed issues where crashes and unexpected behavior could occur when checking the capacity of parent gear items with children that have fractional capacity costs.
 - Spells with no descriptors will no longer display a label saying that the descriptor text is not found in the spell selection screen.
 - Fixed an issue with detecting special modifications on weapons loaded onto vehicle weapon mounts when checking whether or not the limit on special modifications has been reached.
+- Fixed incorrect usage of SkillGroup name instead of the DisplayName. Closes #3785
+- Added support for improvements that add to the dicepools of resisting direct mana combat spells, direct physical combat spells, decrease BOD, decrease AGI, decrease REA, decrease STR, decrease CHA, decrease INT, decrease LOG, and decrease WIL.
 
 Data Changes:
 
@@ -78,6 +80,9 @@ This affects:
     FN MAG-5
     Stoner-Ares M202
     Ultamax MMG
+- Fixed issues with the Merc Teen, Merc Kid and Corp Teen life modules that prevented them from being added.
+- Fixed Dareadrenaline adding 1 to WIL instead of 1 to dicepools based on WIL (important due to augmented attribute limits). Closes #3791.
+- Corrected the Handling and page reference of the Lone Star SecureSector Mk2. Closes #3788.
 
 New Strings:
 
@@ -147,6 +152,7 @@ Application Changes:
 - Removed the caching of Mugshot images in the character roster. Prevents high memory usage for large watch folder content.
 - Unified some uses of Availability processing into the AvailabilityValue object.
 - Crash reporter now prevents uploading issues unless the user story in the Error Description tab has been changed.
+- Added a conditional check in the requirements validator that checks for the spirit form of a given tradition. Expected values are Materialization, Possession or Inhabitation. 
 
 UI Changes:
 
@@ -175,7 +181,8 @@ Data Changes:
 - Removed incorrect Medium lifestyle setting from the Workshop/Facility lifestyle qualities. Closes #3660
 - Extended Clip now allows Belt and Drum weapons instead of just Clips.
 - Fixed missing Mastery Quality flag for the Close Combat Mage quality.
-- The Tactical Grpple Gun is now addable as a gear item, in the same manner as the standard grapple gun. 
+- The Tactical Grapple Gun is now addable as a gear item, in the same manner as the standard grapple gun. 
+- Added missing Great Form Possession metamagic from Hard Targets.
 
 String Changes:
 

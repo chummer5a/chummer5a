@@ -1158,7 +1158,7 @@ namespace Chummer
                 return;
             if (cboGrade.Text.StartsWith("*"))
             {
-                MessageBox.Show(
+                Program.MainForm.ShowMessageBox(
                     LanguageManager.GetString("Message_BannedGrade", GlobalOptions.Language),
                     LanguageManager.GetString("MessageTitle_BannedGrade", GlobalOptions.Language),
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -1196,7 +1196,7 @@ namespace Chummer
 
                     if (decMaximumCapacityUsed - decCapacity < 0)
                     {
-                        MessageBox.Show(string.Format(LanguageManager.GetString("Message_OverCapacityLimit", GlobalOptions.Language)
+                        Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_OverCapacityLimit", GlobalOptions.Language)
                                 , decMaximumCapacityUsed.ToString("#,0.##", GlobalOptions.CultureInfo)
                                 , decCapacity.ToString("#,0.##", GlobalOptions.CultureInfo)),
                             LanguageManager.GetString("MessageTitle_OverCapacityLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);

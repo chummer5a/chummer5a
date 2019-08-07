@@ -9411,7 +9411,7 @@
     <vehicle>
       <id>bf1c4807-6f21-425c-aa1e-521ebf34ffe8</id>
       <name>Lone Star SecureSector Mk2</name>
-      <page>40</page>
+      <page>29</page>
       <source>TSG</source>
       <accel>2</accel>
       <armor>4</armor>
@@ -9419,7 +9419,7 @@
       <body>4</body>
       <category>Drones: Small</category>
       <cost>5000</cost>
-      <handling>4/3</handling>
+      <handling>5</handling>
       <pilot>3</pilot>
       <sensor>3</sensor>
       <speed>4</speed>

@@ -149,7 +149,7 @@ namespace ChummerHub.Client.UI
             {
                 if (String.IsNullOrEmpty(this.tbSearchGroupname.Text) && mygroup == null)
                 {
-                    MessageBox.Show("Please specify a groupename to create!");
+                    Program.MainForm.ShowMessageBox("Please specify a groupename to create!");
                     this.tbSearchGroupname.Focus();
                     return null;
                 }
@@ -169,7 +169,7 @@ namespace ChummerHub.Client.UI
             catch (Exception ex)
             {
                 Log.Error(ex);
-                MessageBox.Show(ex.Message);
+                Program.MainForm.ShowMessageBox(ex.Message);
                 throw;
             }
             return null;
@@ -189,7 +189,7 @@ namespace ChummerHub.Client.UI
             catch(Exception ex)
             {
                 Log.Error(ex);
-                MessageBox.Show(ex.Message);
+                Program.MainForm.ShowMessageBox(ex.Message);
             }
             finally
             {
@@ -292,7 +292,7 @@ namespace ChummerHub.Client.UI
                                             msg = a.Exception.Message;
                                     }
 
-                                    MessageBox.Show(msg);
+                                    Program.MainForm.ShowMessageBox(msg);
                                     return;
                                 }
 
@@ -309,7 +309,7 @@ namespace ChummerHub.Client.UI
                                     Log.Info(msg);
                                     this.DoThreadSafe(() =>
                                     {
-                                        MessageBox.Show(msg, "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                        Program.MainForm.ShowMessageBox(msg, "", MessageBoxButtons.OK, MessageBoxIcon.Information);
                                         TlpGroupSearch_VisibleChanged(null, new EventArgs());
                                     });
                                 }
@@ -325,7 +325,7 @@ namespace ChummerHub.Client.UI
                                     Log.Info(msg);
                                     this.DoThreadSafe(() =>
                                     {
-                                        MessageBox.Show(msg, "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                        Program.MainForm.ShowMessageBox(msg, "", MessageBoxButtons.OK, MessageBoxIcon.Information);
                                         TlpGroupSearch_VisibleChanged(null, new EventArgs());
                                     });
                                     PluginHandler.MainForm.CharacterRoster.DoThreadSafe(() =>
@@ -363,7 +363,7 @@ namespace ChummerHub.Client.UI
                     catch (Exception e)
                     {
                         Log.Warn("Group disbanded: "  + e.Message);
-                        MessageBox.Show("Group " + myGroup.Groupname + " disbanded because of no members left.");
+                        Program.MainForm.ShowMessageBox("Group " + myGroup.Groupname + " disbanded because of no members left.");
                     }
                     finally
                     {
@@ -379,13 +379,13 @@ namespace ChummerHub.Client.UI
                     string msg = "StatusCode: " + response.Response.StatusCode + Environment.NewLine;
                     msg += rescontent;
                     Log.Info(msg);
-                    MessageBox.Show(msg);
+                    Program.MainForm.ShowMessageBox(msg);
                 }
             }
             catch (Exception e)
             {
                 Log.Error(e);
-                MessageBox.Show(e.Message.ToString());
+                Program.MainForm.ShowMessageBox(e.Message.ToString());
             }
             if (!noupdate)
                 OnGroupJoinCallback?.Invoke(this, myGroup);
@@ -528,7 +528,7 @@ namespace ChummerHub.Client.UI
                     catch (Exception exception)
                     {
                         Log.Error(exception);
-                        MessageBox.Show(exception.Message);
+                        Program.MainForm.ShowMessageBox(exception.Message);
                     }
                     finally
                     {
@@ -632,7 +632,7 @@ namespace ChummerHub.Client.UI
                     if ((response.Response.StatusCode == HttpStatusCode.OK))
                     {
                         bSearch_Click(sender, e);
-                        MessageBox.Show("Group deleted.");
+                        Program.MainForm.ShowMessageBox("Group deleted.");
                     }
                     else if ((response.Response.StatusCode == HttpStatusCode.NotFound))
                     {
@@ -660,7 +660,7 @@ namespace ChummerHub.Client.UI
                 catch (Exception exception)
                 {
                     Log.Error(exception);
-                    MessageBox.Show(exception.ToString(), "Error deleting Group", MessageBoxButtons.OK,
+                    Program.MainForm.ShowMessageBox(exception.ToString(), "Error deleting Group", MessageBoxButtons.OK,
                         MessageBoxIcon.Error);
                 }
             
@@ -891,7 +891,7 @@ namespace ChummerHub.Client.UI
             catch (Exception ex)
             {
                 Log.Error(ex);
-                MessageBox.Show(ex.ToString());
+                Program.MainForm.ShowMessageBox(ex.ToString());
             }
         }
 
@@ -937,14 +937,14 @@ namespace ChummerHub.Client.UI
                     }
                     catch (Exception exception)
                     {
-                        MessageBox.Show(exception.Message);
+                        Program.MainForm.ShowMessageBox(exception.Message);
                     }
                 }
             }
             catch (Exception ex)
             {
                 Log.Error(ex);
-                MessageBox.Show(ex.ToString());
+                Program.MainForm.ShowMessageBox(ex.ToString());
             }
 
         }

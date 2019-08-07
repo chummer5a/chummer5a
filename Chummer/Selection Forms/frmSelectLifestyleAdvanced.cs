@@ -707,12 +707,12 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(txtLifestyleName.Text))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_SelectAdvancedLifestyle_LifestyleName", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectAdvancedLifestyle_LifestyleName", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_SelectAdvancedLifestyle_LifestyleName", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectAdvancedLifestyle_LifestyleName", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             if (Convert.ToInt32(lblTotalLP.Text) < 0)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_SelectAdvancedLifestyle_OverLPLimit", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectAdvancedLifestyle_OverLPLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_SelectAdvancedLifestyle_OverLPLimit", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectAdvancedLifestyle_OverLPLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 

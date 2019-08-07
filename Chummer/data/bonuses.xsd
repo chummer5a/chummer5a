@@ -292,6 +292,14 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
+	  <xs:element name="decreaseagiresist" type="xs:string" minOccurs="0" maxOccurs="1" />
+	  <xs:element name="decreasebodresist" type="xs:string" minOccurs="0" maxOccurs="1" />
+	  <xs:element name="decreasecharesist" type="xs:string" minOccurs="0" maxOccurs="1" />
+	  <xs:element name="decreaseintresist" type="xs:string" minOccurs="0" maxOccurs="1" />
+	  <xs:element name="decreaselogresist" type="xs:string" minOccurs="0" maxOccurs="1" />
+	  <xs:element name="decreaserearesist" type="xs:string" minOccurs="0" maxOccurs="1" />
+	  <xs:element name="decreasestrresist" type="xs:string" minOccurs="0" maxOccurs="1" />
+	  <xs:element name="decreasewilresist" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="detectionspellresist" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="drainresist" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="drainvalue" type="xs:string" minOccurs="0" maxOccurs="1" />
@@ -306,7 +314,9 @@
       <xs:element name="disablebiowaregrade" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
       <xs:element name="disablecyberware" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="dodge" type="xs:string" minOccurs="0" maxOccurs="1" />
-      <xs:element name="disablecyberwaregrade" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+	  <xs:element name="directmanaspellresist" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="directphysicalspellresist" type="xs:string" minOccurs="0" maxOccurs="1" />
+	  <xs:element name="disablecyberwaregrade" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
       <xs:element name="electricityarmor" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="enableattribute" minOccurs="0" maxOccurs="1">
         <xs:complexType>

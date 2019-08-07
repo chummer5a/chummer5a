@@ -113,7 +113,7 @@ namespace ChummerHub.Client.UI
                 }
             }
             else
-                MessageBox.Show("No email selected!");
+                Program.MainForm.ShowMessageBox("No email selected!");
         }
 
         private void bVisibilityRemove_Click(object sender, EventArgs e)
@@ -131,7 +131,7 @@ namespace ChummerHub.Client.UI
                 FillVisibilityListBox();
             }
             else
-                MessageBox.Show("No email selected!");
+                Program.MainForm.ShowMessageBox("No email selected!");
         }
 
      

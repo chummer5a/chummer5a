@@ -11473,7 +11473,7 @@
           <name>CHA</name>
         </attributelevel>
         <addqualities>
-          <addquality>Poor Self Control (Attention Seeking)</addquality>
+          <addquality>Poor Self Control (Attention-Seeking)</addquality>
           <addquality>Common Sense</addquality>
         </addqualities>
         <skilllevel>
@@ -11714,7 +11714,7 @@
           <name>INT</name>
         </attributelevel>
         <addqualities>
-          <addquality>Anitpathy</addquality>
+          <addquality>Antipathy</addquality>
         </addqualities>
         <skillgrouplevel>
           <name>Close Combat</name>

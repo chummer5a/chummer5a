@@ -73,7 +73,7 @@ namespace Chummer
         {
             if (!File.Exists(strFile))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Language) + "\n\n" + strFile);
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Language) + "\n\n" + strFile);
                 return null;
             }
 
@@ -121,17 +121,17 @@ namespace Chummer
             }
             catch (IOException)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Language) + "\n\n" + strFile);
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Language) + "\n\n" + strFile);
                 return null;
             }
             catch (NotSupportedException)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Language) + "\n\n" + strFile);
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Language) + "\n\n" + strFile);
                 return null;
             }
             catch (UnauthorizedAccessException)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_Insufficient_Permissions_Warning", GlobalOptions.Language));
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Insufficient_Permissions_Warning", GlobalOptions.Language));
                 return null;
             }
 

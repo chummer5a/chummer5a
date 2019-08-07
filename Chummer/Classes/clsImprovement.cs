@@ -256,6 +256,16 @@ namespace Chummer
             ManaIllusionResist,
             PhysicalIllusionResist,
             DetectionSpellResist,
+            DirectManaSpellResist,
+            DirectPhysicalSpellResist,
+            DecreaseBODResist,
+            DecreaseAGIResist,
+            DecreaseREAResist,
+            DecreaseSTRResist,
+            DecreaseCHAResist,
+            DecreaseINTResist,
+            DecreaseLOGResist,
+            DecreaseWILResist,
             AddLimb,
             StreetCredMultiplier,
             StreetCred,
@@ -1556,6 +1566,56 @@ namespace Chummer
                 {
                     yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.SpellDefenseDetection));
                 }
+                    break;
+                case ImprovementType.DirectManaSpellResist:
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.SpellDefenseDirectSoakMana));
+                    }
+                    break;
+                case ImprovementType.DirectPhysicalSpellResist:
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.SpellDefenseDirectSoakPhysical));
+                    }
+                    break;
+                case ImprovementType.DecreaseBODResist:
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.SpellDefenseDecreaseBOD));
+                    }
+                    break;
+                case ImprovementType.DecreaseAGIResist:
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.SpellDefenseDecreaseAGI));
+                    }
+                    break;
+                case ImprovementType.DecreaseREAResist:
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.SpellDefenseDecreaseREA));
+                    }
+                    break;
+                case ImprovementType.DecreaseSTRResist:
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.SpellDefenseDecreaseSTR));
+                    }
+                    break;
+                case ImprovementType.DecreaseCHAResist:
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.SpellDefenseDecreaseCHA));
+                    }
+                    break;
+                case ImprovementType.DecreaseINTResist:
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.SpellDefenseDecreaseINT));
+                    }
+                    break;
+                case ImprovementType.DecreaseLOGResist:
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.SpellDefenseDecreaseLOG));
+                    }
+                    break;
+                case ImprovementType.DecreaseWILResist:
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.SpellDefenseDecreaseWIL));
+                    }
                     break;
                 case ImprovementType.AddLimb:
                 {

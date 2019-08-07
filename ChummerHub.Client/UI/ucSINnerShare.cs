@@ -70,131 +70,156 @@ namespace ChummerHub.Client.UI
         {
             try
             {
-                MyUserState myState = new MyUserState(this);
-                CharacterExtended ce = null;
-                var client = StaticUtils.GetClient();
-                string sinnerid = "";
-
-                async Task<CharacterExtended> GetCharacterExtended()
+                using (var op_shareChummer = Timekeeper.StartSyncron("Share Chummer", null,
+                    CustomActivity.OperationType.DependencyOperation, MyCharacterCache?.FilePath))
                 {
-                    Character c = new Character()
+                    MyUserState myState = new MyUserState(this);
+                    CharacterExtended ce = null;
+                    var client = StaticUtils.GetClient();
+                    string sinnerid = "";
+                    Guid SINid = Guid.Empty;
+
+                    async Task<CharacterExtended> GetCharacterExtended(CustomActivity parentActivity)
                     {
-                        FileName = MyCharacterCache.FilePath
-                    };
-                    var foundchar = (from a in PluginHandler.MainForm.OpenCharacters
-                        where a.FileName == MyCharacterCache.FilePath
-                        select a).ToList();
-                    if (foundchar?.Any() == true)
-                        c = foundchar?.FirstOrDefault();
-                    else
-                    {
-                        using (frmLoading frmLoadingForm = new frmLoading {CharacterFile = MyCharacterCache.FilePath})
+                        using (var op_prepChummer = Timekeeper.StartSyncron("Loading Chummerfile", parentActivity,
+                            CustomActivity.OperationType.DependencyOperation, MyCharacterCache?.FilePath))
                         {
-                            frmLoadingForm.Reset(36);
-                            frmLoadingForm.TopMost = true;
-                            frmLoadingForm.Show();
-                            myState.StatusText = "Loading chummer file...";
-                            myState.CurrentProgress += 10;
-                            ReportProgress(myState.CurrentProgress, myState);
-                            await c.Load(frmLoadingForm, false);
+                            Character c = new Character()
+                            {
+                                FileName = MyCharacterCache.FilePath
+                            };
+                            var foundchar = (from a in PluginHandler.MainForm.OpenCharacters
+                                where a.FileName == MyCharacterCache.FilePath
+                                select a).ToList();
+                            if (foundchar?.Any() == true)
+                                c = foundchar?.FirstOrDefault();
+                            else
+                            {
+                                using (frmLoading frmLoadingForm = new frmLoading
+                                    {CharacterFile = MyCharacterCache.FilePath})
+                                {
+                                    frmLoadingForm.Reset(36);
+                                    frmLoadingForm.TopMost = true;
+                                    frmLoadingForm.Show();
+                                    myState.StatusText = "Loading chummer file...";
+                                    myState.CurrentProgress += 10;
+                                    ReportProgress(myState.CurrentProgress, myState);
+                                    await c.Load(frmLoadingForm, false);
+                                }
+                            }
+
+                            if (c == null)
+                                throw new ArgumentNullException("Could not load Character file " +
+                                                                MyCharacterCache.FilePath +
+                                                                ".");
+                            ce = new CharacterExtended(c, null, null, MyCharacterCache);
+                            if (ce?.MySINnerFile?.Id != null)
+                                sinnerid = ce.MySINnerFile.Id.ToString();
+                            return ce;
                         }
                     }
 
-                    if (c == null)
-                        throw new ArgumentNullException("Could not load Character file " + MyCharacterCache.FilePath +
-                                                        ".");
-                    ce = new CharacterExtended(c, null, null, MyCharacterCache);
-                    if (ce?.MySINnerFile?.Id != null)
-                        sinnerid = ce.MySINnerFile.Id.ToString();
-                    return ce;
-                }
+                    
 
-                if (MyCharacterCache.MyPluginDataDic.TryGetValue("SINnerId", out Object sinneridobj))
-                {
-                    sinnerid = sinneridobj?.ToString();
-                }
-                else
-                {
-                    ce = await GetCharacterExtended();
-                    sinnerid = ce.MySINnerFile.Id.ToString();
-                }
-                
-
-                Guid SINid = Guid.Empty;
-                if ((String.IsNullOrEmpty(sinnerid)
-                    || (!Guid.TryParse(sinnerid, out SINid))))
-                {
-                    myState.StatusText = "SINner Id is unknown or not issued!";
-                    ReportProgress(30, myState);
-                }
-                else
-                {
-                    myState.StatusText = "SINner Id is " + SINid + ".";
-                    myState.CurrentProgress = 30;
-                    ReportProgress(myState.CurrentProgress, myState);
-                }
-
-                HttpOperationResponse<ResultSinnerGetSINById> checkresult = null;
-                //check if char is already online and updated
-                
-                checkresult = await client.GetSINByIdWithHttpMessagesAsync(SINid);
-                if (checkresult == null)
-                    throw new ArgumentException("Could not parse result from SINners Webservice!");
-                if (checkresult.Response.StatusCode != HttpStatusCode.NotFound)
-                {
-                    if (checkresult.Body.CallSuccess != true)
+                    if (MyCharacterCache.MyPluginDataDic.TryGetValue("SINnerId", out Object sinneridobj))
                     {
-                        if (checkresult.Body.MyException is Exception myException)
-                            throw new ArgumentException("Error from SINners Webservice: " + checkresult.Body.ErrorText,
-                                myException);
-                        else
-                            throw new ArgumentException("Error from SINners Webservice: " + checkresult.Body.ErrorText);
+                        sinnerid = sinneridobj?.ToString();
                     }
-                }
-                
-
-                var lastWriteTimeUtc = System.IO.File.GetLastWriteTimeUtc(MyCharacterCache.FilePath);
-                if (checkresult.Response.StatusCode == HttpStatusCode.NotFound
-                    || (checkresult.Body.MySINner.LastChange < lastWriteTimeUtc))
-                {
-                    if (ce == null)
+                    else
                     {
-                        myState.StatusText = "The Chummer is newer and has to be uploaded again.";
+                        ce = await GetCharacterExtended(op_shareChummer);
+                        sinnerid = ce.MySINnerFile.Id.ToString();
+                    }
+
+
+                   
+                    if ((String.IsNullOrEmpty(sinnerid)
+                         || (!Guid.TryParse(sinnerid, out SINid))))
+                    {
+                        myState.StatusText = "SINner Id is unknown or not issued!";
+                        ReportProgress(30, myState);
+                    }
+                    else
+                    {
+                        myState.StatusText = "SINner Id is " + SINid + ".";
                         myState.CurrentProgress = 30;
                         ReportProgress(myState.CurrentProgress, myState);
-                        ce = await GetCharacterExtended();
                     }
-                    myState.StatusText = "Checking SINner availability (and if necessary upload it).";
-                    myState.CurrentProgress = 35;
-                    ReportProgress(myState.CurrentProgress, myState);
-                    myState.ProgressSteps = 10;
-                    var uploadtask = await ce.Upload(myState);
-                    //uploadtask.Wait(TimeSpan.FromMinutes(2));
-                    //if ((uploadtask.Result == false || (ce.MySINnerFile.Id == null)))
-                    //    throw new ArgumentException("Could not access SINnerId after upload!");
-                    SINid = ce.MySINnerFile.Id.Value;
-                    var result = await client.GetSINByIdWithHttpMessagesAsync(SINid);
-                    if (result == null)
-                        throw new ArgumentException("Could not parse result from SINners Webservice!");
-                    if (result.Body?.CallSuccess != true)
+                  
+
+                    HttpOperationResponse<ResultSinnerGetSINById> checkresult = null;
+                    //check if char is already online and updated
+                    using (var op_checkOnlineVersionChummer = Timekeeper.StartSyncron(
+                        "check if online", op_shareChummer,
+                        CustomActivity.OperationType.DependencyOperation, MyCharacterCache?.FilePath))
                     {
-                        if (result.Body?.MyException is Exception myException)
-                            throw new ArgumentException("Error from SINners Webservice: " + result.Body?.ErrorText,
-                                myException);
-                        else
-                            throw new ArgumentException("Error from SINners Webservice: " + result.Body?.ErrorText);
+                        checkresult = await client.GetSINByIdWithHttpMessagesAsync(SINid);
+                        if (checkresult == null)
+                            throw new ArgumentException("Could not parse result from SINners Webservice!");
+                        if (checkresult.Response.StatusCode != HttpStatusCode.NotFound)
+                        {
+                            if (checkresult.Body.CallSuccess != true)
+                            {
+                                if (checkresult.Body.MyException is Exception myException)
+                                    throw new ArgumentException(
+                                        "Error from SINners Webservice: " + checkresult.Body.ErrorText,
+                                        myException);
+                                else
+                                    throw new ArgumentException("Error from SINners Webservice: " +
+                                                                checkresult.Body.ErrorText);
+                            }
+                        }
                     }
+
+                    var lastWriteTimeUtc = System.IO.File.GetLastWriteTimeUtc(MyCharacterCache.FilePath);
+                    if (checkresult.Response.StatusCode == HttpStatusCode.NotFound
+                        || (checkresult.Body.MySINner.LastChange < lastWriteTimeUtc))
+                    {
+                        if (ce == null)
+                        {
+                            myState.StatusText = "The Chummer is newer and has to be uploaded again.";
+                            myState.CurrentProgress = 30;
+                            ReportProgress(myState.CurrentProgress, myState);
+                            ce = await GetCharacterExtended(op_shareChummer);
+                        }
+
+                        using (var op_uploadChummer = Timekeeper.StartSyncron(
+                            "Uploading Chummer", op_shareChummer,
+                            CustomActivity.OperationType.DependencyOperation, MyCharacterCache?.FilePath))
+                        {
+
+                            myState.StatusText = "Checking SINner availability (and if necessary upload it).";
+                            myState.CurrentProgress = 35;
+                            ReportProgress(myState.CurrentProgress, myState);
+                            myState.ProgressSteps = 10;
+                            var uploadtask = await ce.Upload(myState, op_uploadChummer);
+                            SINid = ce.MySINnerFile.Id.Value;
+                            var result = await client.GetSINByIdWithHttpMessagesAsync(SINid);
+                            if (result == null)
+                                throw new ArgumentException("Could not parse result from SINners Webservice!");
+                            if (result.Body?.CallSuccess != true)
+                            {
+                                if (result.Body?.MyException is Exception myException)
+                                    throw new ArgumentException(
+                                        "Error from SINners Webservice: " + result.Body?.ErrorText,
+                                        myException);
+                                else
+                                    throw new ArgumentException(
+                                        "Error from SINners Webservice: " + result.Body?.ErrorText);
+                            }
+                        }
+                    }
+
+                    myState.StatusText = "SINner is online available.";
+                    myState.CurrentProgress = 90;
+                    ReportProgress(myState.CurrentProgress, myState);
+
+                    string url = "chummer://plugin:SINners:Load:" + sinnerid;
+                    myState.LinkText = url;
+                    ReportProgress(100, myState);
+                    RunWorkerCompleted(myState);
+                    return myState;
                 }
-
-                myState.StatusText = "SINner is online available.";
-                myState.CurrentProgress = 90;
-                ReportProgress(myState.CurrentProgress, myState);
-
-                string url = "chummer://plugin:SINners:Load:" + sinnerid;
-                myState.LinkText = url;
-                ReportProgress(100, myState);
-                RunWorkerCompleted(myState);
-                return myState;
             }
             catch (Exception exception)
             {

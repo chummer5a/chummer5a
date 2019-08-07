@@ -404,7 +404,7 @@ namespace ChummerHub.Client.Backend
                         System.Windows.Forms.Clipboard.SetText(ex.ToString());
                     });
                     msg += Environment.NewLine + Environment.NewLine + "Please check the Plugin-Options dialog.";
-                    MessageBox.Show(msg, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    Program.MainForm.ShowMessageBox(msg, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     
                 }
             }
@@ -720,11 +720,14 @@ namespace ChummerHub.Client.Backend
             if ((!String.IsNullOrEmpty(rb.ErrorText)
                      || (rb.MyException != null)))
             {
-                Log.Warn("SINners WebService returned: " + rb.ErrorText);
-                var frmSIN = new frmSINnerResponse();
-                frmSIN.SINnerResponseUI.Result = rb;
-                frmSIN.TopMost = true;
-                frmSIN.ShowDialog(PluginHandler.MainForm);
+                PluginHandler.MainForm.DoThreadSafe(() =>
+                {
+                    Log.Warn("SINners WebService returned: " + rb.ErrorText);
+                    var frmSIN = new frmSINnerResponse();
+                    frmSIN.SINnerResponseUI.Result = rb;
+                    frmSIN.TopMost = true;
+                    frmSIN.Show(PluginHandler.MainForm);
+                });
             }
             return ResponseBody;
         }
@@ -1251,7 +1254,7 @@ namespace ChummerHub.Client.Backend
                                 {
                                     if(myStatus != HttpStatusCode.OK)
                                     {
-                                        MessageBox.Show(msg);
+                                        Program.MainForm.ShowMessageBox(msg);
                                     }
                                     using (new CursorWait(true, PluginHandler.MainForm))
                                     {
@@ -1270,7 +1273,7 @@ namespace ChummerHub.Client.Backend
                         Log.Error(e);
                         PluginHandler.MainForm.DoThreadSafe(() =>
                         {
-                            MessageBox.Show(e.Message);
+                            Program.MainForm.ShowMessageBox(e.Message);
                         });
                     }
                 }
@@ -1334,7 +1337,7 @@ namespace ChummerHub.Client.Backend
                         Log.Error(e);
                         PluginHandler.MainForm.DoThreadSafe(() =>
                         {
-                            MessageBox.Show(e.Message);
+                            Program.MainForm.ShowMessageBox(e.Message);
                         });
                     }
                 }

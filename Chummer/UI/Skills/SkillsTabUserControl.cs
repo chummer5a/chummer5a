@@ -587,7 +587,7 @@ namespace Chummer.UI.Skills
             // Karma check needs to come after the skill is created to make sure bonus-based modifiers (e.g. JoAT) get applied properly (since they can potentially trigger off of the specific exotic skill target)
             if (_objCharacter.Created && objSkill.UpgradeKarmaCost > _objCharacter.Karma)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma", GlobalOptions.Language));
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NotEnoughKarma", GlobalOptions.Language));
                 return;
             }
             objSkill.Upgrade();
