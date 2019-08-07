@@ -35,7 +35,14 @@ namespace ChummerHub.Models.V1
         private string _email = null;
 
         [MaxLength(64)]
-        public string EMail { get { return _email; } set { _email = value.ToUpperInvariant(); } }
+        public string EMail
+        { get { return _email; }
+            set
+            {
+                _email = null;
+                _email = value?.ToUpperInvariant();
+            }
+        }
 
         public bool CanEdit { get; set; }
     }

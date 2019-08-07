@@ -1084,7 +1084,7 @@ namespace Chummer
         /// <param name="message"></param>
         /// <param name="caption"></param>
         /// <returns></returns>
-        public DialogResult ShowMessageBox(String message, String caption, MessageBoxButtons buttons = MessageBoxButtons.OK, MessageBoxIcon icon = MessageBoxIcon.None)
+        public DialogResult ShowMessageBox(String message, String caption = null, MessageBoxButtons buttons = MessageBoxButtons.OK, MessageBoxIcon icon = MessageBoxIcon.None)
         {
             if (this.InvokeRequired)
             {

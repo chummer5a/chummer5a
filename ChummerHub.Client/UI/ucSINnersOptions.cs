@@ -213,7 +213,7 @@ namespace ChummerHub.Client.UI
             this.cbVisibilityIsPublic.Checked = Properties.Settings.Default.VisibilityIsPublic;
             //this.cbVisibilityIsGroupVisible.Checked = Properties.Settings.Default.VisibilityIsGroupVisible;
             cbSINnerUrl.Enabled = false;
-            if (Properties.Settings.Default.UserModeRegistered)
+            if (ChummerHub.Client.Properties.Settings.Default.UserModeRegistered == true)
             {
                 this.rbListUserMode.SelectedIndex = 1;
             }
@@ -242,6 +242,9 @@ namespace ChummerHub.Client.UI
             cbUploadOnSave.Checked = ucSINnersOptions.UploadOnSave;
             cbSINnerUrl.SelectedValueChanged += CbSINnerUrl_SelectedValueChanged;
             AddShieldToButton(bRegisterUriScheme);
+            this.cbVisibilityIsPublic.CheckedChanged += cbVisibilityIsPublic_CheckedChanged;
+            this.cbUploadOnSave.CheckedChanged += cbUploadOnSave_CheckedChanged;
+            this.rbListUserMode.SelectedIndexChanged += RbListUserMode_SelectedIndexChanged;
         }
 
         [DllImport("user32.dll")]
@@ -512,12 +515,16 @@ namespace ChummerHub.Client.UI
         {
             Properties.Settings.Default.TempDownloadPath = this.tbTempDownloadPath.Text;
             Properties.Settings.Default.VisibilityIsPublic = this.cbVisibilityIsPublic.Checked;
-            Properties.Settings.Default.UserModeRegistered = this.tlpOptions.Enabled;
+            if (this.rbListUserMode.SelectedIndex <= 0)
+                Properties.Settings.Default.UserModeRegistered = false;
+            else
+                Properties.Settings.Default.UserModeRegistered = true;
             Properties.Settings.Default.Save();
         }
 
         private void cbVisibilityIsPublic_CheckedChanged(object sender, EventArgs e)
         {
+           
             OptionsUpdate();
         }
 
@@ -803,18 +810,11 @@ namespace ChummerHub.Client.UI
 
         private void RbListUserMode_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (this.rbListUserMode.SelectedItem == null)
-                return;
-            if (this.rbListUserMode.SelectedItem.Tag?.ToString() == "public")
-            {
+            if (this.rbListUserMode.SelectedIndex <= 0)
                 this.tlpOptions.Enabled = false;
-            }
             else
-            {
                 this.tlpOptions.Enabled = true;
-            }
-
-           OptionsUpdate();
+            OptionsUpdate();
         }
 
         private void BRegisterUriScheme_Click(object sender, EventArgs e)
