@@ -267,6 +267,13 @@ namespace Chummer.Plugins
         {
             try
             {
+                if (ChummerHub.Client.Properties.Settings.Default.UserModeRegistered == false)
+                {
+                    string msg = "Public Mode currently does not save to the SINners Plugin by default, even if \"onlinemode\" is enabled!" + Environment.NewLine;
+                    msg += "If you want to use SINners as online store, please register!";
+                    Log.Warn(msg);
+                    return;
+                }
                 input.OnSaveCompleted = null;
                 using (new CursorWait(true, MainForm))
                 {
@@ -493,7 +500,7 @@ namespace Chummer.Plugins
                                 }
                                 else
                                 {
-                                    Program.MainForm.ShowMessageBox("No archetypes found!");
+                                    MessageBox.Show("No archetypes found!");
                                 }
                             }
                         });
@@ -787,45 +794,46 @@ namespace Chummer.Plugins
                             PluginHandler.MainForm.Activate();
                         });
                     }
-                    while (PluginHandler.MainForm.Visible == false)
-                    {
-                        Thread.Sleep(TimeSpan.FromSeconds(1));
-                    }
-                    if (argument.StartsWith("Load:"))
-                    {
-                        try
-                        {
-                            string SINnerIdvalue = argument.Substring(5);
-                            SINnerIdvalue = SINnerIdvalue.Trim('/');
-                            if (Guid.TryParse(SINnerIdvalue, out Guid SINnerId))
-                            {
-                                var client = StaticUtils.GetClient();
-                                var found = await client.GetSINByIdWithHttpMessagesAsync(SINnerId);
-                                await ChummerHub.Client.Backend.Utils.HandleError(found, found?.Body);
-                                if (found?.Response.StatusCode == System.Net.HttpStatusCode.OK)
-                                {
-                                    fileNameToLoad = await ChummerHub.Client.Backend.Utils.DownloadFileTask(found.Body.MySINner, null);
-                                    await MainFormLoadChar(fileNameToLoad);
-                                }
-                                else if (found?.Response.StatusCode == HttpStatusCode.NotFound)
-                                {
-                                    Program.MainForm.ShowMessageBox("Could not find a SINner with Id " + SINnerId + " online!");
-                                }
-
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                            Log.Error(e);
-                            Program.MainForm.ShowMessageBox("Error loading SINner: " + e.Message);
-                        }
-                        
-                    }
-                    else
-                    {
-                        throw new ArgumentException("Unkown command received: " + argument, nameof(argument));
-                    }
+                var client = StaticUtils.GetClient();
+                while (PluginHandler.MainForm.Visible == false)
+                {
+                    Thread.Sleep(TimeSpan.FromSeconds(1));
                 }
+                if (argument.StartsWith("Load:"))
+                {
+                    try
+                    {
+                        string SINnerIdvalue = argument.Substring(5);
+                        SINnerIdvalue = SINnerIdvalue.Trim('/');
+                        if (Guid.TryParse(SINnerIdvalue, out Guid SINnerId))
+                        {
+                                
+                            var found = await client.GetSINByIdWithHttpMessagesAsync(SINnerId);
+                            await ChummerHub.Client.Backend.Utils.HandleError(found, found?.Body);
+                            if (found?.Response.StatusCode == System.Net.HttpStatusCode.OK)
+                            {
+                                fileNameToLoad = await ChummerHub.Client.Backend.Utils.DownloadFileTask(found.Body.MySINner, null);
+                                await MainFormLoadChar(fileNameToLoad);
+                            }
+                            else if (found?.Response.StatusCode == HttpStatusCode.NotFound)
+                            {
+                                PluginHandler.MainForm.ShowMessageBox("Could not find a SINner with Id " + SINnerId + " online!");
+                            }
+
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Error(e);
+                        PluginHandler.MainForm.ShowMessageBox("Error loading SINner: " + e.Message);
+                    }
+                        
+                }
+                else
+                {
+                    throw new ArgumentException("Unkown command received: " + argument, nameof(argument));
+                }
+            }
         }
 
         private static async Task<Character> MainFormLoadChar(string fileToLoad)

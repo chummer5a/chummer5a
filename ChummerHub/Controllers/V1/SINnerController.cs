@@ -93,7 +93,7 @@ namespace ChummerHub.Controllers.V1
                                 where a.Id == sinnerid select a).ToListAsync();
                 if (!sinnerseq.Any())
                 {
-                    throw new ArgumentException("Could not find id " + sinnerid.ToString());
+                    throw new ArgumentException("Could not find id(1) " + sinnerid.ToString());
                 }
                 ApplicationUser user = null;
                 if (!String.IsNullOrEmpty(User?.Identity?.Name))
@@ -101,7 +101,7 @@ namespace ChummerHub.Controllers.V1
                 var chummerFile = sinnerseq.FirstOrDefault();
                 if (chummerFile == null)
                 {
-                    throw new ArgumentException("Could not find id " + sinnerid.ToString());
+                    throw new ArgumentException("Could not find id(2) " + sinnerid.ToString());
                 }
                 if (String.IsNullOrEmpty(chummerFile.DownloadUrl))
                 {
@@ -114,6 +114,10 @@ namespace ChummerHub.Controllers.V1
                     oktoDownload = true;
                 }
                 if ((!oktoDownload) && (chummerFile.MyGroup != null && chummerFile.MyGroup.IsPublic == true))
+                {
+                    oktoDownload = true;
+                }
+                if ((!oktoDownload) && (chummerFile.SINnerMetaData.Visibility.UserRights.Any(a => a.EMail == null)))
                 {
                     oktoDownload = true;
                 }
@@ -135,11 +139,6 @@ namespace ChummerHub.Controllers.V1
                 //string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.InternetCache), chummerFile.Id.ToString() + ".chum5z");
                 var stream = await MyHttpClient.GetStreamAsync(new Uri(chummerFile.DownloadUrl));
                 string downloadname = chummerFile.Id.ToString() + ".chum5z";
-                
-                if(user == null)
-                {
-                    throw new NoUserRightException("User not found!");
-                }
                 try
                 {
                     //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
@@ -323,7 +322,7 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("SinnerGetOwnedSINByAlias")]
-        [Authorize]
+        [AllowAnonymous]
         public async Task<ActionResult<ResultSinnerGetOwnedSINByAlias>> GetOwnedSINByAlias([FromRoute] string id)
         {
             ResultSinnerGetOwnedSINByAlias res;
@@ -348,7 +347,9 @@ namespace ChummerHub.Controllers.V1
                 List<SINner> download = new List<SINner>();
                 foreach (var sin in sinseq)
                 {
-                    if ((user != null &&
+                    if (sin.SINnerMetaData.Visibility.UserRights.Any(a => a.EMail == null && a.CanEdit == true))
+                        download.Add(sin);
+                    else if ((user != null &&
                                             sin.SINnerMetaData.Visibility.UserRights.Any(a =>
                                                 a.EMail.ToLowerInvariant() == user.Email.ToLowerInvariant())))
                     {
@@ -379,7 +380,7 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Conflict)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("SINnerPut")]
-        [Authorize]
+        [AllowAnonymous]
         public async Task<ActionResult<ResultSINnerPut>> PutSIN([FromRoute] Guid id, IFormFile uploadedFile)
         {
             ResultSINnerPut res;
@@ -394,7 +395,8 @@ namespace ChummerHub.Controllers.V1
                     res = new ResultSINnerPut(e);
                     return NotFound(res);
                 }
-                user = await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
+                if ((User?.Identity != null) && (User.Identity.IsAuthenticated))
+                    user = await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
                 dbsinner = await CheckIfUpdateSINnerFile(id, user);
                 if (dbsinner == null)
                 {
@@ -403,12 +405,13 @@ namespace ChummerHub.Controllers.V1
                     return Conflict(res);
                 }
                 sin.GoogleDriveFileId = dbsinner.GoogleDriveFileId;
-                if(user == null)
-                {
-                    var e =  new NoUserRightException("User not found!");
-                    res = new ResultSINnerPut(e);
-                    return NotFound(res);
-                }
+                
+                //if(user == null)
+                //{
+                //    var e =  new NoUserRightException("User not found!");
+                //    res = new ResultSINnerPut(e);
+                //    return NotFound(res);
+                //}
                 
                 sin.DownloadUrl = Startup.GDrive.StoreXmlInCloud(sin, uploadedFile);
                 dbsinner.DownloadUrl = sin.DownloadUrl;
@@ -417,7 +420,7 @@ namespace ChummerHub.Controllers.V1
                 {
                     //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     Microsoft.ApplicationInsights.DataContracts.EventTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.EventTelemetry("PutStoreXmlInCloud");
-                    telemetry.Properties.Add("User", user.Email);
+                    telemetry.Properties.Add("User", user?.Email);
                     telemetry.Properties.Add("SINnerId", sin.Id.ToString());
                     telemetry.Properties.Add("FileName", uploadedFile.FileName?.ToString());
                     telemetry.Metrics.Add("FileSize", uploadedFile.Length);
@@ -646,7 +649,8 @@ namespace ChummerHub.Controllers.V1
                     }
                 }
                 var returncode = HttpStatusCode.OK;
-                user = await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
+                if ((User != null) && (User.Identity.IsAuthenticated))
+                    user = await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
                 foreach (var tempsinner in uploadInfo.SINners)
                 {
                     sinner = tempsinner;
@@ -679,7 +683,9 @@ namespace ChummerHub.Controllers.V1
                         var canedit = await CheckIfUpdateSINnerFile(oldsinner.Id.Value, user);
                         if (canedit == null)
                         {
-                            string msg = "SINner " + sinner.Id + " is not editable for user " + user.Email + ".";
+                            string msg = "SINner " + sinner.Id + " is not editable for user " + user?.Email + ".";
+                            if (user == null)
+                                msg = "SINner " + sinner.Id + " is not editable for anonymous users.";
                             var e = new NoUserRightException(msg);
                             res = new ResultSinnerPostSIN(e);
                             return BadRequest(res);
@@ -694,7 +700,7 @@ namespace ChummerHub.Controllers.V1
                             bool userfound = false;
                             foreach (var ur in sinner.SINnerMetaData.Visibility.UserRights)
                             {
-                                if (ur.EMail.ToLowerInvariant() == user.Email.ToLowerInvariant())
+                                if (ur.EMail.ToLowerInvariant() == user?.Email.ToLowerInvariant())
                                 {
                                     ur.CanEdit = true;
                                     userfound = true;
@@ -711,7 +717,7 @@ namespace ChummerHub.Controllers.V1
                                     Id = Guid.NewGuid(),
                                     SINnerId = sinner.Id,
                                     CanEdit = true,
-                                    EMail = user.Email
+                                    EMail = user?.Email
                                 };
                                 sinner.SINnerMetaData.Visibility.UserRights.Add(ownUser);
                                 _context.UserRights.Add(ownUser);
@@ -732,7 +738,7 @@ namespace ChummerHub.Controllers.V1
                             ur.SINnerId = sinner.Id;
                             if (ur.EMail.ToLowerInvariant() == "delete.this.and.add@your.mail".ToLowerInvariant())
                                 sinner.SINnerMetaData.Visibility.UserRights.Remove(ur);
-                            if (ur.EMail.ToLowerInvariant() == user.Email.ToLowerInvariant())
+                            if (ur.EMail.ToLowerInvariant() == user?.Email.ToLowerInvariant())
                                 ownuserfound = true;
                         }
                         if (!ownuserfound)
@@ -740,7 +746,7 @@ namespace ChummerHub.Controllers.V1
                             SINnerUserRight ownright = new SINnerUserRight
                             {
                                 CanEdit = true,
-                                EMail = user.Email,
+                                EMail = user?.Email,
                                 SINnerId = sinner.Id,
                                 Id = Guid.NewGuid()
                             };
@@ -850,7 +856,8 @@ namespace ChummerHub.Controllers.V1
                                 FavoriteGuid = sinner.MyGroup.Id.Value
                             });
                     }
-                    user.FavoriteGroups = user.FavoriteGroups.GroupBy(a => a.FavoriteGuid).Select(b => b.First()).ToList();
+                    if (user != null)
+                        user.FavoriteGroups = user.FavoriteGroups.GroupBy(a => a.FavoriteGuid).Select(b => b.First()).ToList();
 
                     try
                     {
@@ -981,7 +988,7 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Conflict)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("SINnerPostSIN")]
-        [Authorize]
+        [AllowAnonymous]
         public async Task<ActionResult<ResultSinnerPostSIN>> PostSIN([FromBody] UploadInfoObject uploadInfo)
         {
             return await PostSINnerInternal(uploadInfo);
@@ -1086,14 +1093,13 @@ namespace ChummerHub.Controllers.V1
             
             if (dbsinner == null)
                 return null;
-            if (user == null)
-                return null;
-            string normEmail = user.NormalizedEmail;
-            string userName = user.UserName;
+            string normEmail = user?.NormalizedEmail;
+            string userName = user?.UserName;
             var dbsinnerseq = (from a in _context.UserRights
                 where a.SINnerId == id
-                      && !String.IsNullOrEmpty(a.EMail)
-                      && a.EMail.ToUpperInvariant() == normEmail
+                      &&
+                      ((!String.IsNullOrEmpty(a.EMail) && a.EMail.ToUpperInvariant() == normEmail)
+                        || (a.EMail == null))
                       && a.CanEdit == true
                 select a).ToList();
             if (dbsinnerseq.Any())
