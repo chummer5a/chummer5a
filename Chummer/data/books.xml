@@ -262,5 +262,10 @@
       <name>Datapuls SOTA 2080 (German-exclusive)</name>
       <code>SOTG</code>
     </book>
+    <book>
+      <id>3ece5592-c3c1-4cf8-97a2-ef773388289d</id>
+      <name>Datapuls Verschlussache (German-exclusive)</name>
+      <code>DPVG</code>
+    </book>
   </books>
 </chummer>
