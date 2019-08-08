@@ -46,5 +46,14 @@ namespace ChummerHub.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        [AllowAnonymous]
+        [HttpGet]
+        public RedirectResult RedirectToChummer(string args)
+        {
+            if (String.IsNullOrEmpty(args))
+                throw new ArgumentException("url unknown: " + args);
+            return Redirect(args);
+        }
     }
 }
