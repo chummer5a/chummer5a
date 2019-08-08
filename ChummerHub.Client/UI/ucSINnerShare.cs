@@ -21,6 +21,7 @@ using NLog;
 using SINners;
 using SINners.Models;
 using MessageBox = System.Windows.Forms.MessageBox;
+using Utils = Chummer.Utils;
 
 namespace ChummerHub.Client.UI
 {
@@ -89,14 +90,14 @@ namespace ChummerHub.Client.UI
                                 FileName = MyCharacterCache.FilePath
                             };
                             var foundchar = (from a in PluginHandler.MainForm.OpenCharacters
-                                where a.FileName == MyCharacterCache.FilePath
-                                select a).ToList();
+                                             where a.FileName == MyCharacterCache.FilePath
+                                             select a).ToList();
                             if (foundchar?.Any() == true)
                                 c = foundchar?.FirstOrDefault();
                             else
                             {
                                 using (frmLoading frmLoadingForm = new frmLoading
-                                    {CharacterFile = MyCharacterCache.FilePath})
+                                { CharacterFile = MyCharacterCache.FilePath })
                                 {
                                     frmLoadingForm.Reset(36);
                                     frmLoadingForm.TopMost = true;
@@ -119,7 +120,7 @@ namespace ChummerHub.Client.UI
                         }
                     }
 
-                    
+
 
                     if (MyCharacterCache.MyPluginDataDic.TryGetValue("SINnerId", out Object sinneridobj))
                     {
@@ -132,7 +133,7 @@ namespace ChummerHub.Client.UI
                     }
 
 
-                   
+
                     if ((String.IsNullOrEmpty(sinnerid)
                          || (!Guid.TryParse(sinnerid, out SINid))))
                     {
@@ -145,7 +146,7 @@ namespace ChummerHub.Client.UI
                         myState.CurrentProgress = 30;
                         ReportProgress(myState.CurrentProgress, myState);
                     }
-                  
+
 
                     HttpOperationResponse<ResultSinnerGetSINById> checkresult = null;
                     //check if char is already online and updated
@@ -234,7 +235,7 @@ namespace ChummerHub.Client.UI
             {
                 pgbStatus.Value = e.CurrentProgress;
             });
-            
+
             if (e is MyUserState us)
             {
                 tbStatus.DoThreadSafe(() =>
@@ -263,6 +264,19 @@ namespace ChummerHub.Client.UI
         private void BOk_Click(object sender, EventArgs e)
         {
             MyFrmSINnerShare.Close();
+        }
+
+        private void BMakeDiscordLink_Click(object sender, EventArgs e)
+        {
+            if ((!tbLink.Text?.StartsWith("chummer:") == true) || (tbLink.Text == null))
+                return;
+            var client = StaticUtils.GetClient();
+            string newuri = client.BaseUri + "/Home";
+            newuri += "/RedirectToChummer?args=";
+            newuri += Uri.EscapeDataString(tbLink.Text);
+            tbLink.Text = newuri;
+            Clipboard.SetText(tbLink.Text);
+            tbStatus.Text += "Link changed" + Environment.NewLine;
         }
     }
 }
