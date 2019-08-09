@@ -155,13 +155,13 @@ namespace Chummer
 
                 if (!string.IsNullOrEmpty(LanguageManager.ManagerErrorMessage))
                 {
-                    MessageBox.Show(LanguageManager.ManagerErrorMessage, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Program.MainForm.ShowMessageBox(LanguageManager.ManagerErrorMessage, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
                 if (!string.IsNullOrEmpty(GlobalOptions.ErrorMessage))
                 {
-                    MessageBox.Show(GlobalOptions.ErrorMessage, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Program.MainForm.ShowMessageBox(GlobalOptions.ErrorMessage, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
@@ -188,6 +188,13 @@ namespace Chummer
                         }
                     }
                     Log.Info(strInfo);
+
+                    if (Chummer.Properties.Settings.Default.UploadClientId == Guid.Empty)
+                    {
+                        Chummer.Properties.Settings.Default.UploadClientId = Guid.NewGuid();
+                        Chummer.Properties.Settings.Default.Save();
+                    }
+
                     Log.Info("Logging options are set to " + GlobalOptions.UseLogging + " and Upload-Options are set to " + GlobalOptions.UseLoggingApplicationInsights + " (Installation-Id: " + Chummer.Properties.Settings.Default.UploadClientId + ").");
 
                     if (GlobalOptions.UseLoggingApplicationInsights >= UseAILogging.OnlyMetric)
@@ -209,13 +216,6 @@ namespace Chummer
                         //live.Enable();
 
                         //Log an Event with AssemblyVersion and CultureInfo
-
-
-                        if (Properties.Settings.Default.UploadClientId == Guid.Empty)
-                        {
-                            Properties.Settings.Default.UploadClientId = Guid.NewGuid();
-                            Properties.Settings.Default.Save();
-                        }
                         MetricIdentifier mi = new MetricIdentifier("Chummer", "Program Start", "Version", "Culture", dimension3Name:"AISetting");
                         var metric = TelemetryClient.GetMetric(mi);
                         metric.TrackValue(1,

@@ -528,7 +528,7 @@ namespace Chummer
 //#else
                 string msg = "Error while loading PluginOptions from registry: " + Environment.NewLine;
                 msg += e.Message;
-                MessageBox.Show(msg);
+                Program.MainForm.ShowMessageBox(msg);
 #endif
             }
             
