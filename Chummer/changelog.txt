@@ -4,6 +4,7 @@ Application Changes:
 
 - Added a genetechessmultiplier improvement type that allows for the modification of genetech essence costs in a similar manner to the biowareessmultiplier improvement.
 - Added an exclusion to gameplayoptions.xml that allows for the customisation of the limbs that are permitted for Redliner and Cyber Singularity Seeker. Closes #1168
+- Weapons mounted on vehicles in create mode can now switch the dicepool calculation method they use between character skill, remote-operated gunnery and dogbrain, among others. Closes #3801
 
 Application Fixes:
 
@@ -83,6 +84,7 @@ This affects:
 - Fixed issues with the Merc Teen, Merc Kid and Corp Teen life modules that prevented them from being added.
 - Fixed Dareadrenaline adding 1 to WIL instead of 1 to dicepools based on WIL (important due to augmented attribute limits). Closes #3791.
 - Corrected the Handling and page reference of the Lone Star SecureSector Mk2. Closes #3788.
+- Added missing actions for Commanding Voice and Mystic Aptitude. Closes #3804
 
 New Strings:
 

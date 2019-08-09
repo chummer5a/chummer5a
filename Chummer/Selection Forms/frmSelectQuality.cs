@@ -18,6 +18,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 using System.Text;
@@ -35,7 +36,7 @@ namespace Chummer
 
         private readonly XPathNavigator _xmlBaseQualityDataNode;
         private readonly XPathNavigator _xmlMetatypeQualityRestrictionNode;
-
+        
         private readonly List<ListItem> _lstCategory = new List<ListItem>();
 
         private static string s_StrSelectCategory = string.Empty;
@@ -77,7 +78,9 @@ namespace Chummer
             cboCategory.BeginUpdate();
             cboCategory.ValueMember = "Value";
             cboCategory.DisplayMember = "Name";
-            cboCategory.DataSource = _lstCategory;
+            //this could help circumvent a exception like this?	"InvalidArgument=Value of '0' is not valid for 'SelectedIndex'. Parameter name: SelectedIndex" 
+            BindingList<ListItem> templist = new BindingList<ListItem>(_lstCategory);
+            cboCategory.DataSource = templist;
 
             // Select the first Category in the list.
             if (string.IsNullOrEmpty(s_StrSelectCategory))

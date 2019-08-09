@@ -9614,6 +9614,10 @@
 			<key>String_DescEssence</key>
 			<text>Essenz</text>
 		</string>
+		<string>
+			<key>Menu_ShareChummer</key>
+			<text>Chummer weiterempfehlen</text>
+		</string>
 	</strings>
 	<string>
 		<key>String_ApplicationInsights_OnlyLocal</key>

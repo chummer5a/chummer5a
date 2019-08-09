@@ -14656,6 +14656,30 @@
         <useskill>Longarms</useskill>
       </weapon>
     <!-- End Region -->
+    <!-- Region Datapuls Verschlusssache (German) -->
+      <weapon>
+        <id>51a64bcb-e321-4eab-a89b-0a58674923be</id>
+        <name>Walther P99</name>
+      <category>Light Pistols</category>
+      <type>Ranged</type>
+      <conceal>-2</conceal>
+      <accuracy>6</accuracy>
+      <reach>0</reach>
+      <damage>6P</damage>
+      <ap>-</ap>
+      <mode>SA</mode>
+      <rc>0</rc>
+      <ammo>12(c)</ammo>
+      <avail>4R</avail>
+      <cost>175</cost>
+      <source>DPVG</source>
+      <page>32</page>
+      <accessorymounts>
+        <mount>Barrel</mount>
+        <mount>Top</mount>
+      </accessorymounts>
+    </weapon>
+	<!-- End Region -->
   </weapons>
   <accessories>
     <!-- Region Shadowrun 5 -->

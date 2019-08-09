@@ -644,12 +644,12 @@ namespace ChummerHub.Controllers.V1
                     {
                         if (!userroles.Contains(MyTargetGroup.MyAdminIdentityRole))
                         {
-                            throw new NoUserRightException("User " + user.UserName + " has not the role " +
+                            throw new NoUserRightException("User " + user?.UserName + " has not the role " +
                                                            MyTargetGroup.MyAdminIdentityRole + ".");
                         }
                     }
 
-                    if (MyTargetGroup?.Id != null)
+                    if ((MyTargetGroup?.Id != null) && (user != null))
                     {
                         if (user.FavoriteGroups.All( a => a.FavoriteGuid != MyTargetGroup.Id.Value))
                             user.FavoriteGroups.Add(new ApplicationUserFavoriteGroup()
@@ -658,7 +658,8 @@ namespace ChummerHub.Controllers.V1
                             });
                     }
                 }
-                user.FavoriteGroups = user.FavoriteGroups.GroupBy(a => a.FavoriteGuid).Select(b => b.First()).ToList();
+                if (user != null)
+                    user.FavoriteGroups = user.FavoriteGroups.GroupBy(a => a.FavoriteGuid).Select(b => b.First()).ToList();
 
 
                 var sinnerseq = await (from a in context.SINners
