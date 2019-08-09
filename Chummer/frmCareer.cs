@@ -591,11 +591,10 @@ namespace Chummer
                         List<ListItem> lstFireModes = new List<ListItem>();
                         foreach (Weapon.FiringMode mode in Enum.GetValues(typeof(Weapon.FiringMode)))
                         {
+                            if (mode == Weapon.FiringMode.NumFiringModes) continue;
                             lstFireModes.Add(new ListItem(mode.ToString(),
                                 LanguageManager.GetString($"Enum_{mode}", GlobalOptions.Language)));
                         }
-
-
 
                         cboVehicleWeaponFiringMode.BeginUpdate();
                         cboVehicleWeaponFiringMode.ValueMember = "Value";
@@ -17435,8 +17434,6 @@ private void RefreshSelectedSpell()
             if (treVehicles.SelectedNode?.Tag is Weapon objWeapon)
             {
                 objWeapon.FireMode = Weapon.ConvertToFiringMode(cboVehicleWeaponFiringMode.SelectedValue.ToString());
-
-                IsCharacterUpdateRequested = true;
 
                 IsDirty = true;
             }

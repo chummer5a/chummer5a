@@ -824,6 +824,25 @@ namespace Chummer
                         cmdAddBioware.DoDatabinding("Enabled", CharacterObject, nameof(Character.AddBiowareEnabled));
                     }
 
+                    using (var op_load_frm_create_vehicle =
+                        Timekeeper.StartSyncron("load_frm_create_vehicle", op_load_frm_create))
+                    {
+                        // Populate vehicle weapon fire mode list.
+                        List<ListItem> lstFireModes = new List<ListItem>();
+                        foreach (Weapon.FiringMode mode in Enum.GetValues(typeof(Weapon.FiringMode)))
+                        {
+                            if (mode == Weapon.FiringMode.NumFiringModes) continue;
+                            lstFireModes.Add(new ListItem(mode.ToString(),
+                                LanguageManager.GetString($"Enum_{mode}", GlobalOptions.Language)));
+                        }
+
+                        cboVehicleWeaponFiringMode.BeginUpdate();
+                        cboVehicleWeaponFiringMode.ValueMember = "Value";
+                        cboVehicleWeaponFiringMode.DisplayMember = "Name";
+                        cboVehicleWeaponFiringMode.DataSource = lstFireModes;
+                        cboVehicleWeaponFiringMode.EndUpdate();
+                    }
+
                     using (var op_load_frm_create_finish =
                         Timekeeper.StartSyncron("load_frm_create_finish", op_load_frm_create))
                     {
@@ -12458,26 +12477,11 @@ namespace Chummer
                 chkVehicleIncludedInWeapon.Checked = objWeapon.IncludedInWeapon;
 
                 // gpbVehiclesWeapon
+                cboVehicleWeaponFiringMode.SelectedValue = objWeapon.FireMode;
                 lblVehicleWeaponDamage.Text = objWeapon.CalculatedDamage(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 lblVehicleWeaponAP.Text = objWeapon.TotalAP(GlobalOptions.Language);
                 lblVehicleWeaponAccuracy.Text = objWeapon.DisplayAccuracy(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                // Determine the Dice Pool size.
-                int intPilot = objWeapon.ParentVehicle.Pilot;
-                int intAutosoft = 0;
-                foreach (Gear objAutosoft in objWeapon.ParentVehicle.Gear)
-                {
-                    if (objAutosoft.Extra == objWeapon.DisplayCategory(GlobalOptions.DefaultLanguage) &&
-                        (objAutosoft.Name == "[Weapon] Targeting Autosoft" || objAutosoft.Name == "[Weapon] Melee Autosoft"))
-                    {
-                        if (objAutosoft.Rating > intAutosoft)
-                        {
-                            intAutosoft = objAutosoft.Rating;
-                        }
-                    }
-                }
-                if (intAutosoft == 0)
-                    intPilot -= 1;
-                lblVehicleWeaponDicePool.Text = (intPilot + intAutosoft).ToString();
+                lblVehicleWeaponDicePool.Text = objWeapon.GetDicePool(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 if (objWeapon.WeaponType == "Ranged")
                 {
                     lblVehicleWeaponAmmoLabel.Visible = true;
@@ -12486,6 +12490,7 @@ namespace Chummer
                     lblVehicleWeaponModeLabel.Visible = true;
                     lblVehicleWeaponMode.Visible = true;
                     lblVehicleWeaponMode.Text = objWeapon.CalculatedMode(GlobalOptions.Language);
+                    cboVehicleWeaponFiringMode.SelectedValue = objWeapon.FireMode;
 
                     tlpVehiclesWeaponRanges.Visible = true;
                     lblVehicleWeaponRangeMain.Text = objWeapon.DisplayRange(GlobalOptions.Language);
@@ -12507,6 +12512,7 @@ namespace Chummer
                         lblVehicleWeaponAmmoLabel.Visible = true;
                         lblVehicleWeaponAmmo.Visible = true;
                         lblVehicleWeaponAmmo.Text = objWeapon.CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                        cboVehicleWeaponFiringMode.SelectedValue = objWeapon.FireMode;
                     }
                     else
                     {
@@ -16290,6 +16296,27 @@ namespace Chummer
 
             IsCharacterUpdateRequested = true;
             IsDirty = true;
+        }
+
+        private void cboVehicleWeaponFiringMode_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (IsRefreshing)
+                return;
+
+            if (treVehicles.SelectedNode?.Tag is Weapon objWeapon)
+            {
+                if (cboVehicleWeaponFiringMode.SelectedValue == null)
+                {
+                    objWeapon.FireMode = Weapon.FiringMode.DogBrain;
+                }
+                else
+                {
+                    objWeapon.FireMode = Weapon.ConvertToFiringMode(cboVehicleWeaponFiringMode.SelectedValue?.ToString());
+                }
+                RefreshSelectedVehicle();
+
+                IsDirty = true;
+            }
         }
     }
 }
