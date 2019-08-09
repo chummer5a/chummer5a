@@ -613,7 +613,7 @@ namespace Chummer
 
                         // Select the Magician's Tradition.
                         if (CharacterObject.MagicTradition.Type == TraditionType.MAG)
-                            cboTradition.SelectedValue = CharacterObject.MagicTradition.SourceID;
+                            cboTradition.SelectedValue = CharacterObject.MagicTradition.SourceIDString;
                         else if (cboTradition.SelectedIndex == -1 && cboTradition.Items.Count > 0)
                             cboTradition.SelectedIndex = 0;
 
@@ -621,7 +621,7 @@ namespace Chummer
 
                         // Select the Technomancer's Stream.
                         if (CharacterObject.MagicTradition.Type == TraditionType.RES)
-                            cboStream.SelectedValue = CharacterObject.MagicTradition.SourceID;
+                            cboStream.SelectedValue = CharacterObject.MagicTradition.SourceIDString;
                         else if (cboStream.SelectedIndex == -1 && cboStream.Items.Count > 0)
                             cboStream.SelectedIndex = 0;
 
