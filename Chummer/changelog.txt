@@ -84,6 +84,7 @@ This affects:
 - Fixed issues with the Merc Teen, Merc Kid and Corp Teen life modules that prevented them from being added.
 - Fixed Dareadrenaline adding 1 to WIL instead of 1 to dicepools based on WIL (important due to augmented attribute limits). Closes #3791.
 - Corrected the Handling and page reference of the Lone Star SecureSector Mk2. Closes #3788.
+- Added missing actions for Commanding Voice and Mystic Aptitude. Closes #3804
 
 New Strings:
 
