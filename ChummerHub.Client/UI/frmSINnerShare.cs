@@ -15,6 +15,7 @@ namespace ChummerHub.Client.UI
         public frmSINnerShare()
         {
             InitializeComponent();
+            MyUcSINnerShare.MyFrmSINnerShare = this;
         }
 
         public ucSINnerShare MyUcSINnerShare

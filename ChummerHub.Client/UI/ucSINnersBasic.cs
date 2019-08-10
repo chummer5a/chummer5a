@@ -336,7 +336,7 @@ namespace ChummerHub.Client.UI
                 }
                 catch (Exception exception)
                 {
-                    MessageBox.Show(exception.Message);
+                    Program.MainForm.ShowMessageBox(exception.Message);
                 }
             }
             await CheckSINnerStatus();

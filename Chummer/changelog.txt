@@ -4,6 +4,7 @@ Application Changes:
 
 - Added a genetechessmultiplier improvement type that allows for the modification of genetech essence costs in a similar manner to the biowareessmultiplier improvement.
 - Added an exclusion to gameplayoptions.xml that allows for the customisation of the limbs that are permitted for Redliner and Cyber Singularity Seeker. Closes #1168
+- Weapons mounted on vehicles in create mode can now switch the dicepool calculation method they use between character skill, remote-operated gunnery and dogbrain, among others. Closes #3801
 
 Application Fixes:
 
@@ -45,6 +46,7 @@ Application Fixes:
 - Spells with no descriptors will no longer display a label saying that the descriptor text is not found in the spell selection screen.
 - Fixed an issue with detecting special modifications on weapons loaded onto vehicle weapon mounts when checking whether or not the limit on special modifications has been reached.
 - Fixed incorrect usage of SkillGroup name instead of the DisplayName. Closes #3785
+- Added support for improvements that add to the dicepools of resisting direct mana combat spells, direct physical combat spells, decrease BOD, decrease AGI, decrease REA, decrease STR, decrease CHA, decrease INT, decrease LOG, and decrease WIL.
 
 Data Changes:
 
@@ -79,6 +81,10 @@ This affects:
     FN MAG-5
     Stoner-Ares M202
     Ultamax MMG
+- Fixed issues with the Merc Teen, Merc Kid and Corp Teen life modules that prevented them from being added.
+- Fixed Dareadrenaline adding 1 to WIL instead of 1 to dicepools based on WIL (important due to augmented attribute limits). Closes #3791.
+- Corrected the Handling and page reference of the Lone Star SecureSector Mk2. Closes #3788.
+- Added missing actions for Commanding Voice and Mystic Aptitude. Closes #3804
 
 New Strings:
 

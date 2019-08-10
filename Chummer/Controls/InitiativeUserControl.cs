@@ -72,7 +72,7 @@ namespace Chummer
         {
             // check if we have selected a chummer in the list
             if (chkBoxChummer.SelectedItem == null)
-                MessageBox.Show("Please Select a Chummer to remove");
+                Program.MainForm.ShowMessageBox("Please Select a Chummer to remove");
             else
             {
                 int index = chkBoxChummer.SelectedIndex;
@@ -92,11 +92,11 @@ namespace Chummer
         {
             // check if we have selected a chummer in the list
             if (chkBoxChummer.SelectedItem == null)
-                MessageBox.Show("Please Select a Chummer to remove");
+                Program.MainForm.ShowMessageBox("Please Select a Chummer to remove");
             else if (characters[chkBoxChummer.SelectedIndex].InitRoll - 1 >= 0)
                 ApplyInitChange(-1);
             else
-                MessageBox.Show("unable to go beyond 0");
+                Program.MainForm.ShowMessageBox("unable to go beyond 0");
         }
 
         /*
@@ -106,11 +106,11 @@ namespace Chummer
         {
             // check if we have selected a chummer in the list
             if (chkBoxChummer.SelectedItem == null)
-                MessageBox.Show("Please Select a Chummer to remove");
+                Program.MainForm.ShowMessageBox("Please Select a Chummer to remove");
             else if (characters[chkBoxChummer.SelectedIndex].InitRoll - 5 >= 0)
                 ApplyInitChange(-5);
             else
-                MessageBox.Show("unable to go beyond 0");
+                Program.MainForm.ShowMessageBox("unable to go beyond 0");
         }
 
         /*
@@ -120,11 +120,11 @@ namespace Chummer
         {
             // check if we have selected a chummer in the list
             if (chkBoxChummer.SelectedItem == null)
-                MessageBox.Show("Please Select a Chummer to remove");
+                Program.MainForm.ShowMessageBox("Please Select a Chummer to remove");
             else if (characters[chkBoxChummer.SelectedIndex].InitRoll - 1 >= 0)
                 ApplyInitChange(-10);
             else
-                MessageBox.Show("unable to go beyond 0");
+                Program.MainForm.ShowMessageBox("unable to go beyond 0");
         }
 
         /*
@@ -134,11 +134,11 @@ namespace Chummer
         {
             // check if we have selected a chummer in the list
             if (chkBoxChummer.SelectedItem == null)
-                MessageBox.Show("Please Select a Chummer to remove");
+                Program.MainForm.ShowMessageBox("Please Select a Chummer to remove");
             else if (characters[chkBoxChummer.SelectedIndex].InitRoll - 1 >= 0)
                 ApplyInitChange(1);
             else
-                MessageBox.Show("unable to go beyond 0");
+                Program.MainForm.ShowMessageBox("unable to go beyond 0");
         }
         /*
          * Add's 5 init
@@ -147,11 +147,11 @@ namespace Chummer
         {
             // check if we have selected a chummer in the list
             if (chkBoxChummer.SelectedItem == null)
-                MessageBox.Show("Please Select a Chummer to remove");
+                Program.MainForm.ShowMessageBox("Please Select a Chummer to remove");
             else if (characters[chkBoxChummer.SelectedIndex].InitRoll - 1 >= 0)
                 ApplyInitChange(5);
             else
-                MessageBox.Show("unable to go beyond 0");
+                Program.MainForm.ShowMessageBox("unable to go beyond 0");
         }
 
         /*
@@ -161,11 +161,11 @@ namespace Chummer
         {
             // check if we have selected a chummer in the list
             if (chkBoxChummer.SelectedItem == null)
-                MessageBox.Show("Please Select a Chummer to remove");
+                Program.MainForm.ShowMessageBox("Please Select a Chummer to remove");
             else if (characters[chkBoxChummer.SelectedIndex].InitRoll - 1 >= 0)
                 ApplyInitChange(10);
             else
-                MessageBox.Show("unable to go beyond 0");
+                Program.MainForm.ShowMessageBox("unable to go beyond 0");
         }
 
         /*
@@ -243,9 +243,9 @@ namespace Chummer
         {
             // make sure a chummer is selected
             if (chkBoxChummer.SelectedItem == null)
-                MessageBox.Show("please select a chummer");
+                Program.MainForm.ShowMessageBox("please select a chummer");
             else if (characters[chkBoxChummer.SelectedIndex].InitRoll < 1)
-                MessageBox.Show("unable to delay chummer with no init");
+                Program.MainForm.ShowMessageBox("unable to delay chummer with no init");
             else
             {
                 int index = chkBoxChummer.SelectedIndex;
@@ -331,7 +331,7 @@ namespace Chummer
             int index = chkBoxChummer.SelectedIndex;
             if (characters[index].Delayed && index != _intIndex)
             {
-                DialogResult result = MessageBox.Show("Would you like the chummer to perform a delayed action?", "Delayed Action", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                DialogResult result = Program.MainForm.ShowMessageBox("Would you like the chummer to perform a delayed action?", "Delayed Action", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (result == DialogResult.Yes)
                 {
                     // un-delay character, and lock it in the current location
@@ -365,7 +365,7 @@ namespace Chummer
             {
                 // confirm we are selecting a chummer
                 if (chkBoxChummer.SelectedItem == null)
-                    MessageBox.Show("Please select a chummer before right-clicking");
+                    Program.MainForm.ShowMessageBox("Please select a chummer before right-clicking");
 
                 frmInitRoller frmHits = new frmInitRoller
                 {
@@ -405,7 +405,7 @@ namespace Chummer
 
                 if (frmHits.DialogResult != DialogResult.OK)
                 {
-                    MessageBox.Show("ERROR");   // TODO edward show error
+                    Program.MainForm.ShowMessageBox("ERROR");   // TODO edward show error
                     return;
                 }
 
@@ -424,7 +424,7 @@ namespace Chummer
         {
             // check if we have selected a chummer in the list
             if (chkBoxChummer.SelectedItem == null)
-                MessageBox.Show("Please Select a Chummer to remove");
+                Program.MainForm.ShowMessageBox("Please Select a Chummer to remove");
             else
             {
                 // pull the simple character out

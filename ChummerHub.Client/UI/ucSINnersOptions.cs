@@ -213,7 +213,7 @@ namespace ChummerHub.Client.UI
             this.cbVisibilityIsPublic.Checked = Properties.Settings.Default.VisibilityIsPublic;
             //this.cbVisibilityIsGroupVisible.Checked = Properties.Settings.Default.VisibilityIsGroupVisible;
             cbSINnerUrl.Enabled = false;
-            if (Properties.Settings.Default.UserModeRegistered)
+            if (ChummerHub.Client.Properties.Settings.Default.UserModeRegistered == true)
             {
                 this.rbListUserMode.SelectedIndex = 1;
             }
@@ -242,6 +242,9 @@ namespace ChummerHub.Client.UI
             cbUploadOnSave.Checked = ucSINnersOptions.UploadOnSave;
             cbSINnerUrl.SelectedValueChanged += CbSINnerUrl_SelectedValueChanged;
             AddShieldToButton(bRegisterUriScheme);
+            this.cbVisibilityIsPublic.CheckedChanged += cbVisibilityIsPublic_CheckedChanged;
+            this.cbUploadOnSave.CheckedChanged += cbUploadOnSave_CheckedChanged;
+            this.rbListUserMode.SelectedIndexChanged += RbListUserMode_SelectedIndexChanged;
         }
 
         [DllImport("user32.dll")]
@@ -512,12 +515,16 @@ namespace ChummerHub.Client.UI
         {
             Properties.Settings.Default.TempDownloadPath = this.tbTempDownloadPath.Text;
             Properties.Settings.Default.VisibilityIsPublic = this.cbVisibilityIsPublic.Checked;
-            Properties.Settings.Default.UserModeRegistered = this.tlpOptions.Enabled;
+            if (this.rbListUserMode.SelectedIndex <= 0)
+                Properties.Settings.Default.UserModeRegistered = false;
+            else
+                Properties.Settings.Default.UserModeRegistered = true;
             Properties.Settings.Default.Save();
         }
 
         private void cbVisibilityIsPublic_CheckedChanged(object sender, EventArgs e)
         {
+           
             OptionsUpdate();
         }
 
@@ -547,14 +554,15 @@ namespace ChummerHub.Client.UI
                     using (frmLoading frmLoadingForm = new frmLoading {CharacterFile = file})
                     {
                         frmLoadingForm.Reset(36);
+                        frmLoadingForm.TopMost = true;
                         frmLoadingForm.Show();
                         if (!(await c.Load(frmLoadingForm, false)))
                             continue;
                         Log.Trace("Character loaded: " + c.Name);
                     }
-
-                    CharacterExtended ce = new CharacterExtended(c, null);
-                    await ce.UploadInBackground(null);
+                    frmCharacterRoster.CharacterCache myCharacterCache = new frmCharacterRoster.CharacterCache(file);
+                    CharacterExtended ce = new CharacterExtended(c, null, null, myCharacterCache);
+                    await ce.Upload(null);
                 }
                 catch (Exception ex)
                 {
@@ -562,12 +570,12 @@ namespace ChummerHub.Client.UI
                     msg += Environment.NewLine + ex.ToString();
                     Log.Warn(msg);
                     /* run your code here */
-                    MessageBox.Show(msg);
+                    Program.MainForm.ShowMessageBox(msg);
                  
                 }
             }
 
-            MessageBox.Show("Upload of " + thisDialog.FileNames.Length + " files finished (successful or not - its over).");
+            Program.MainForm.ShowMessageBox("Upload of " + thisDialog.FileNames.Length + " files finished (successful or not - its over).");
         }
 
     
@@ -587,7 +595,7 @@ namespace ChummerHub.Client.UI
             {
                 BackupTask(folderBrowserDialog1).ContinueWith((a) =>
                 {
-                    MessageBox.Show(a.Status.ToString());
+                    Program.MainForm.ShowMessageBox(a.Status.ToString());
                 });
             }
 
@@ -624,7 +632,7 @@ namespace ChummerHub.Client.UI
                             catch (Exception e2)
                             {
                                 Log.Error(e2);
-                                Invoke(new Action(() => MessageBox.Show(e2.Message)));
+                                Invoke(new Action(() => Program.MainForm.ShowMessageBox(e2.Message)));
                             }
                         }
                     }
@@ -633,7 +641,7 @@ namespace ChummerHub.Client.UI
             catch (Exception ex)
             {
                 Log.Error(ex); 
-                Invoke(new Action(() => MessageBox.Show(ex.Message)));
+                Invoke(new Action(() => Program.MainForm.ShowMessageBox(ex.Message)));
 
             }
         }
@@ -648,7 +656,7 @@ namespace ChummerHub.Client.UI
             {
                 RestoreTask(folderBrowserDialog1).ContinueWith((a) =>
                 {
-                    MessageBox.Show(a.Status.ToString());
+                    Program.MainForm.ShowMessageBox(a.Status.ToString());
                 });
             }
         }
@@ -705,7 +713,7 @@ namespace ChummerHub.Client.UI
             catch (Exception ex)
             {
                 Log.Error(ex);
-                Invoke(new Action(() => MessageBox.Show(ex.Message)));
+                Invoke(new Action(() => Program.MainForm.ShowMessageBox(ex.Message)));
 
             }
         }
@@ -802,27 +810,20 @@ namespace ChummerHub.Client.UI
 
         private void RbListUserMode_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (this.rbListUserMode.SelectedItem == null)
-                return;
-            if (this.rbListUserMode.SelectedItem.Tag?.ToString() == "public")
-            {
+            if (this.rbListUserMode.SelectedIndex <= 0)
                 this.tlpOptions.Enabled = false;
-            }
             else
-            {
                 this.tlpOptions.Enabled = true;
-            }
-
-           OptionsUpdate();
+            OptionsUpdate();
         }
 
         private void BRegisterUriScheme_Click(object sender, EventArgs e)
         {
             if (StaticUtils.RegisterChummerProtocol(null))
-                MessageBox.Show("Url is registered!");
+                Program.MainForm.ShowMessageBox("Url is registered!");
             else
             {
-                MessageBox.Show("Url is NOT registered!");
+                Program.MainForm.ShowMessageBox("Url is NOT registered!");
             }
         }
 

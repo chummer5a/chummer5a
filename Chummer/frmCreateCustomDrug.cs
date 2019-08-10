@@ -139,7 +139,23 @@ namespace Chummer
 
 		private void AcceptForm()
 		{
-		}
+		    // Make sure the suite and file name fields are populated.
+		    if (string.IsNullOrEmpty(txtDrugName.Text))
+		    {
+		        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CustomDrug_Name", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CustomDrug_Name", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+		    }
+
+		    if (_objDrug.Components.Count(o => o.Category == "Foundation") != 1)
+		    {
+		        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CustomDrug_MissingFoundation", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CustomDrug_Foundation", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+		        return;
+            }
+
+            _objDrug.Quantity = 1;
+		    DialogResult = DialogResult.OK;
+		    Close();
+        }
 
 		private void AddSelectedComponent()
         {
@@ -161,7 +177,7 @@ namespace Chummer
             //prevent adding same component twice
             if (_lstSelectedDrugComponents.Any(c => c.DrugComponent.Name == objNodeData.DrugComponent.Name))
             {
-                MessageBox.Show(this, LanguageManager.GetString("Message_DuplicateDrugComponentWarning"));
+                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_DuplicateDrugComponentWarning"));
                 return;
             }
 
@@ -170,7 +186,7 @@ namespace Chummer
             {
                 if (_lstSelectedDrugComponents.Any(c => c.DrugComponent.Category == "Foundation"))
                 {
-                    MessageBox.Show(this, LanguageManager.GetString("Message_DuplicateDrugFoundationWarning"));
+                    Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_DuplicateDrugFoundationWarning"));
                     return;
                 }
             }
@@ -197,7 +213,7 @@ namespace Chummer
                                 Append(objFoundationNodeData.DrugComponent.CurrentDisplayName).Append(strColonString).Append(strSpaceString).Append(objItem.Key).Append(objItem.Value.ToString("+#;-#;")).AppendLine().
                                 Append(objNodeData.DrugComponent.CurrentDisplayName).Append(strColonString).Append(strSpaceString).Append(objItem.Key).Append(intBlockAttrValue.ToString("+#;-#;")).
                                 ToString();
-                            MessageBox.Show(this, message);
+                            Program.MainForm.ShowMessageBox(this, message);
                             return;
                         }
                     }
@@ -264,23 +280,7 @@ namespace Chummer
 
         private void btnOk_Click(object sender, EventArgs e)
         {
-            // Make sure the suite and file name fields are populated.
-            if (string.IsNullOrEmpty(txtDrugName.Text))
-            {
-                MessageBox.Show(LanguageManager.GetString("Message_CustomDrug_Name", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CustomDrug_Name", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            if (_objDrug.Components.Count(o => o.Category == "Foundation") != 1)
-            {
-                MessageBox.Show(LanguageManager.GetString("Message_CustomDrug_MissingFoundation", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CustomDrug_Foundation", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            _objDrug.Quantity = 1;
-
-            DialogResult = DialogResult.OK;
-            Close();
+	        AcceptForm();
         }
 
 		private void btnCancel_Click(object sender, EventArgs e)

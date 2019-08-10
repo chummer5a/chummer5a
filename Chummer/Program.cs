@@ -155,13 +155,13 @@ namespace Chummer
 
                 if (!string.IsNullOrEmpty(LanguageManager.ManagerErrorMessage))
                 {
-                    MessageBox.Show(LanguageManager.ManagerErrorMessage, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Program.MainForm.ShowMessageBox(LanguageManager.ManagerErrorMessage, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
                 if (!string.IsNullOrEmpty(GlobalOptions.ErrorMessage))
                 {
-                    MessageBox.Show(GlobalOptions.ErrorMessage, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Program.MainForm.ShowMessageBox(GlobalOptions.ErrorMessage, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
@@ -189,6 +189,13 @@ namespace Chummer
                     }
                     Log.Info(strInfo);
 
+                    if (Chummer.Properties.Settings.Default.UploadClientId == Guid.Empty)
+                    {
+                        Chummer.Properties.Settings.Default.UploadClientId = Guid.NewGuid();
+                        Chummer.Properties.Settings.Default.Save();
+                    }
+
+                    Log.Info("Logging options are set to " + GlobalOptions.UseLogging + " and Upload-Options are set to " + GlobalOptions.UseLoggingApplicationInsights + " (Installation-Id: " + Chummer.Properties.Settings.Default.UploadClientId + ").");
 
                     if (GlobalOptions.UseLoggingApplicationInsights >= UseAILogging.OnlyMetric)
                     {
@@ -209,13 +216,6 @@ namespace Chummer
                         //live.Enable();
 
                         //Log an Event with AssemblyVersion and CultureInfo
-
-
-                        if (Properties.Settings.Default.UploadClientId == Guid.Empty)
-                        {
-                            Properties.Settings.Default.UploadClientId = Guid.NewGuid();
-                            Properties.Settings.Default.Save();
-                        }
                         MetricIdentifier mi = new MetricIdentifier("Chummer", "Program Start", "Version", "Culture", dimension3Name:"AISetting");
                         var metric = TelemetryClient.GetMetric(mi);
                         metric.TrackValue(1,
@@ -273,9 +273,14 @@ namespace Chummer
                 // Make sure the default language has been loaded before attempting to open the Main Form.
                 LanguageManager.TranslateWinForm(GlobalOptions.Language, null);
                 MainForm = new frmChummerMain(false);
-                Program.PluginLoader.LoadPlugins(null);
-                //foreach(var plugin in Program.PluginLoader.MyActivePlugins)
-                //    plugin.CustomInitialize(MainForm);
+                try
+                {
+                    Program.PluginLoader.LoadPlugins(null);
+                }
+                catch (ApplicationException e)
+                {
+                    showMainForm = false;
+                }
                 if (!Utils.IsUnitTest)
                 {
                     string[] strArgs = Environment.GetCommandLineArgs();
@@ -286,6 +291,8 @@ namespace Chummer
                             if (strArgs[i].Contains("/plugin"))
                             {
                                 string whatplugin = strArgs[i].Substring(strArgs[i].IndexOf("/plugin") + 8);
+                                //some external apps choose to add a '/' before a ':' even in the middle of an url...
+                                whatplugin = whatplugin.TrimStart(':');
                                 int endplugin = whatplugin.IndexOf(':');
                                 string parameter = whatplugin.Substring(endplugin + 1);
                                 whatplugin = whatplugin.Substring(0, endplugin);
