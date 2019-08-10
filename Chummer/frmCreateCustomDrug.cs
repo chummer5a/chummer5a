@@ -172,12 +172,13 @@ namespace Chummer
                 return;
             }
 
-            if (!string.IsNullOrEmpty(txtDrugName.Text))
-
-            //prevent adding same component twice
-            if (_lstSelectedDrugComponents.Any(c => c.DrugComponent.Name == objNodeData.DrugComponent.Name))
+            //prevent adding same component multiple times. 
+            if (_lstSelectedDrugComponents.Count(c => c.DrugComponent.Name == objNodeData.DrugComponent.Name) >=
+                objNodeData.DrugComponent.Limit && objNodeData.DrugComponent.Limit != 0)
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_DuplicateDrugComponentWarning"));
+                Program.MainForm.ShowMessageBox(this,
+                    LanguageManager.GetString("Message_DuplicateDrugComponentWarning")
+                        .Replace("{0}", objNodeData.DrugComponent.Limit.ToString()));
                 return;
             }
 

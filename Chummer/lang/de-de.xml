@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -8769,10 +8769,6 @@
 		<string>
 			<key>Message_DeleteWeaponMount</key>
 			<text>Möchten Sie diese Waffenhalterung wirklich löschen?</text>
-		</string>
-		<string>
-			<key>Message_DuplicateDrugComponentWarning</key>
-			<text>Sie können denselben Baustein nicht zweimal hinzufügen.</text>
 		</string>
 		<string>
 			<key>Message_DuplicateDrugFoundationWarning</key>

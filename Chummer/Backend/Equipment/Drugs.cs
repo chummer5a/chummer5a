@@ -1031,13 +1031,14 @@ namespace Chummer.Backend.Equipment
 	/// </summary>
 	public class DrugComponent : IHasName, IHasInternalId, IHasXmlNode
 	{
-        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private Logger Log = LogManager.GetCurrentClassLogger();
 	    private Guid _guidId;
 	    private Guid _guiSourceID;
         private string _strName;
 		private string _strCategory;
 	    private string _strAvailability = "0";
         private int _intLevel;
+	    private int _intLimit = 1;
 		private string _strSource;
 		private string _strPage;
 		private string _strCost;
@@ -1145,6 +1146,7 @@ namespace Chummer.Backend.Equipment
 		    objXmlData.TryGetStringFieldQuickly("availability", ref _strAvailability);
 			objXmlData.TryGetStringFieldQuickly("cost", ref _strCost);
 		    objXmlData.TryGetInt32FieldQuickly("level", ref _intLevel);
+		    objXmlData.TryGetInt32FieldQuickly("limit", ref _intLimit);
             objXmlData.TryGetInt32FieldQuickly("rating", ref _intAddictionRating);
 			objXmlData.TryGetInt32FieldQuickly("threshold", ref _intAddictionThreshold);
 			objXmlData.TryGetStringFieldQuickly("source", ref _strSource);
@@ -1201,6 +1203,7 @@ namespace Chummer.Backend.Equipment
 		    objXmlWriter.WriteElementString("availability", _strAvailability);
             objXmlWriter.WriteElementString("cost", _strCost);
             objXmlWriter.WriteElementString("level", _intLevel.ToString());
+            objXmlWriter.WriteElementString("limit", _intLimit.ToString());
             if (_intAddictionRating != 0)
 				objXmlWriter.WriteElementString("rating", _intAddictionRating.ToString());
 			if (_intAddictionThreshold != 0)
@@ -1401,11 +1404,20 @@ namespace Chummer.Backend.Equipment
 		    set => _intLevel = value;
 	    }
 
+        /// <summary>
+        /// Amount of this drug component that is allowed to be in a complete drug recipe. If 0, assume unlimited. 
+        /// </summary>
+	    public int Limit
+	    {
+	        get => _intLimit;
+	        set => _intLimit = value;
+	    }
 
-	    /// <summary>
-	    /// Identifier of the object within data files.
-	    /// </summary>
-	    public Guid SourceID => _guiSourceID;
+
+        /// <summary>
+        /// Identifier of the object within data files.
+        /// </summary>
+        public Guid SourceID => _guiSourceID;
 
 	    /// <summary>
 	    /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.

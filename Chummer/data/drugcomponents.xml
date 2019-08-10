@@ -1796,6 +1796,7 @@
       </effects>
       <availability>+1</availability>
       <cost>50</cost>
+      <limit>3</limit>
       <rating>1</rating>
       <threshold>1</threshold>
       <source>CF</source>
@@ -1812,6 +1813,7 @@
       </effects>
       <availability>+1</availability>
       <cost>50</cost>
+      <limit>3</limit>
       <rating>1</rating>
       <threshold>1</threshold>
       <source>CF</source>

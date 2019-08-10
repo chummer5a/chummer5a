@@ -4997,7 +4997,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Message_DuplicateDrugComponentWarning</key>
-      <text>You cannot add the same component twice.</text>
+      <text>You cannot add the same component more than {0} time(s).</text>
     </string>
     <string>
       <key>Message_DuplicateDrugFoundationWarning</key>

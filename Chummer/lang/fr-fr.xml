@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -8435,10 +8435,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		<string>
 			<key>Checkbox_Options_UnarmedSkillImprovements</key>
 			<text>Les armes utilisées avec des techniques de combat non armées reçoivent le bonus pour cette technique</text>
-		</string>
-		<string>
-			<key>Message_DuplicateDrugComponentWarning</key>
-			<text>Il est impossible d'ajouter deux fois le même composant.</text>
 		</string>
 		<string>
 			<key>Button_RemoveEcho</key>
