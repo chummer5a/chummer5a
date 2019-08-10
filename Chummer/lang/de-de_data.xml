@@ -10846,6 +10846,8 @@
 			<category translate="Erscheinungsmodifikatoren">Appearance Modification</category>
 			<category translate="Druckerpressen">Printing</category>
 			<category translate="Reporterausrüstung">Reporter Gear</category>
+			<category translate="Musikinstrumente">Musical Intruments</category>
+			<category translate="Paydata">Paydata</category>
 		</categories>
 		<gears>
 			<gear translated="True">
