@@ -51,7 +51,7 @@ namespace Chummer.Backend.Equipment
         private decimal _decCost;
         private int _intAddictionThreshold;
         private int _intAddictionRating;
-        private int _intSpeed = 0;
+        private int _intSpeed = 9;
         private decimal _decQty;
         private int _intSortOrder;
         private readonly Character _objCharacter;
@@ -837,11 +837,13 @@ namespace Chummer.Backend.Equipment
 
 				if (Category == "Custom Drug" || Speed != 0)
 				{
-				    strbldDescription.Append(LanguageManager.GetString("Label_Speed", strLanguage)).Append(strColonString).Append(strSpaceString);
-                    if (Speed <= 3)
-						strbldDescription.AppendLine(LanguageManager.GetString("String_Immediate", strLanguage));
-					else
-						strbldDescription.AppendLine((3 - Speed).ToString(objCulture) + LanguageManager.GetString("String_CombatTurns", strLanguage));
+				    strbldDescription.Append(LanguageManager.GetString("Label_Speed")).Append(strColonString).Append(strSpaceString);
+				    if (Speed <= 0)
+				        strbldDescription.AppendLine(LanguageManager.GetString("String_Immediate"));
+				    else if (Speed <= 60)
+				        strbldDescription.AppendLine((Speed / 3).ToString(GlobalOptions.CultureInfo) + strSpaceString + LanguageManager.GetString("String_CombatTurns"));
+				    else
+				        strbldDescription.AppendLine((Speed).ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Seconds"));
                 }
 
 			    if (CrashDamage != 0)
@@ -1507,10 +1509,12 @@ namespace Chummer.Backend.Equipment
                 if (Category == "Custom Drug" || objDrugEffect.Speed != 0)
 				{
 				    strbldDescription.Append(LanguageManager.GetString("Label_Speed")).Append(strColonString).Append(strSpaceString);
-				    if (objDrugEffect.Speed <= 3)
+				    if (objDrugEffect.Speed <= 0)
 				        strbldDescription.AppendLine(LanguageManager.GetString("String_Immediate"));
-				    else
-				        strbldDescription.AppendLine((3 - objDrugEffect.Speed).ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_CombatTurns"));
+				    else if (objDrugEffect.Speed <= 60)
+				        strbldDescription.AppendLine((objDrugEffect.Speed / 3).ToString(GlobalOptions.CultureInfo) + strSpaceString + LanguageManager.GetString("String_CombatTurns"));
+                    else
+				        strbldDescription.AppendLine((objDrugEffect.Speed).ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Seconds"));
                 }
 
 			    if (objDrugEffect.CrashDamage != 0)

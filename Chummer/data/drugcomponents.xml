@@ -1791,7 +1791,7 @@
       <category>Enhancer</category>
       <effects>
         <effect>
-          <speed>1</speed>
+          <speed>-3</speed>
         </effect>
       </effects>
       <availability>+1</availability>
