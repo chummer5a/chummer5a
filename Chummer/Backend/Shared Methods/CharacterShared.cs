@@ -4226,7 +4226,7 @@ namespace Chummer
 
                 foreach (Improvement objImprovement in CharacterObject.Improvements)
                 {
-                    if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom)
+                    if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom || objImprovement.ImproveSource == Improvement.ImprovementSource.Drug)
                     {
                         AddToTree(objImprovement, false);
                     }

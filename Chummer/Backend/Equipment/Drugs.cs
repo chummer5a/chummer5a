@@ -987,11 +987,12 @@ namespace Chummer.Backend.Equipment
                 }
             }
             _objCharacter.Improvements.AddRange(lstImprovements);
-            foreach (Improvement i in _objCharacter.Improvements.Where(imp => imp.ImprovedName == InternalId))
+            foreach (Improvement i in _objCharacter.Improvements.Where(imp => imp.SourceName == InternalId))
             {
-                i.CustomName = "Test";
+                i.CustomName = "Figure out a cute way to name these";
                 i.CustomGroup = Name;
                 i.Custom = true;
+                i.Enabled = false;
             }
         }
         public XmlNode GetNode()
