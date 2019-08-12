@@ -183,12 +183,13 @@ namespace ChummerHub.Client.Model
 
         public async Task<bool> Upload(ucSINnerShare.MyUserState myState = null, CustomActivity parentActivity = null)
         {
-            try
+            using (var op_uploadChummer = Timekeeper.StartSyncron(
+                "Uploading Chummer", parentActivity,
+                CustomActivity.OperationType.DependencyOperation, MyCharacter?.FileName))
             {
-                using (var op_uploadChummer = Timekeeper.StartSyncron(
-                    "Uploading Chummer", parentActivity,
-                    CustomActivity.OperationType.DependencyOperation, MyCharacter?.FileName))
+                try
                 {
+
                     using (new CursorWait(true, PluginHandler.MainForm))
                     {
                         HttpOperationResponse<ResultSinnerGetSINById> found = null;
@@ -217,7 +218,7 @@ namespace ChummerHub.Client.Model
                             }
 
                             var client = StaticUtils.GetClient();
-                            found = await client.GetSINByIdWithHttpMessagesAsync(this.MySINnerFile.Id.Value);
+                            found = await client.GetSINByIdWithHttpMessagesAsync(this.MySINnerFile.Id.GetValueOrDefault());
                             await Backend.Utils.HandleError(found, found.Body);
                         }
 
@@ -337,13 +338,13 @@ namespace ChummerHub.Client.Model
 
                         return false;
                     }
-
                 }
-            }
-            catch (Exception e)
-            {
-                await Backend.Utils.HandleError(e);
-                throw;
+                catch (Exception e)
+                {
+                    op_uploadChummer?.tc?.TrackException(e);
+                    await Backend.Utils.HandleError(e);
+                    throw;
+                }
             }
         }
 

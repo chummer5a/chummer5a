@@ -136,12 +136,14 @@ namespace ChummerHub.Controllers.V1
                 {
                     throw new ArgumentException("User " + user?.UserName + " or public is not allowed to download " + sinnerid.ToString());
                 }
+                
                 //string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.InternetCache), chummerFile.Id.ToString() + ".chum5z");
                 var stream = await MyHttpClient.GetStreamAsync(new Uri(chummerFile.DownloadUrl));
                 string downloadname = chummerFile.Id.ToString() + ".chum5z";
                 try
                 {
-                    //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    chummerFile.LastDownload = DateTime.Now;
+                    await _context.SaveChangesAsync();
                     Microsoft.ApplicationInsights.DataContracts.EventTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.EventTelemetry("GetDownloadFile");
                     telemetry.Properties.Add("User", user?.Email);
                     telemetry.Properties.Add("SINnerId", sinnerid.ToString());
@@ -259,7 +261,8 @@ namespace ChummerHub.Controllers.V1
                     res = new ResultSinnerGetSINById(e);
                     return BadRequest(res);
                 }
-                
+                sin.LastDownload = DateTime.Now;
+                await _context.SaveChangesAsync();
                 res = new ResultSinnerGetSINById(sin);
                 if(sin.SINnerMetaData.Visibility.IsPublic == true)
                     return Ok(res);

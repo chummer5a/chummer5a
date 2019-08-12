@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Rest;
 using NLog;
 
 namespace ChummerHub.Client.Backend
@@ -54,6 +55,7 @@ namespace ChummerHub.Client.Backend
             }
             catch(Exception e)
             {
+                e.Data.Add("request", request.AsFormattedString());
                 Log.Error(e);
                 throw;
             }

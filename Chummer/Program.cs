@@ -290,16 +290,42 @@ namespace Chummer
                         {
                             if (strArgs[i].Contains("/plugin"))
                             {
-                                string whatplugin = strArgs[i].Substring(strArgs[i].IndexOf("/plugin") + 8);
-                                //some external apps choose to add a '/' before a ':' even in the middle of an url...
-                                whatplugin = whatplugin.TrimStart(':');
-                                int endplugin = whatplugin.IndexOf(':');
-                                string parameter = whatplugin.Substring(endplugin + 1);
-                                whatplugin = whatplugin.Substring(0, endplugin);
-                                var plugin = Program.PluginLoader.MyActivePlugins.FirstOrDefault(a => a.ToString() == whatplugin);
-                                if (plugin != null)
+                                if (GlobalOptions.PluginsEnabled == false)
                                 {
-                                    showMainForm &= plugin.ProcessCommandLine(parameter);
+                                    string msg =
+                                        "Please enable Plugins to use command-line arguments invoking specific plugin-functions!";
+                                    Log.Warn(msg);
+                                    MessageBox.Show(msg, "Plugins not enabled", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                }
+                                else
+                                {
+                                    string whatplugin = strArgs[i].Substring(strArgs[i].IndexOf("/plugin") + 8);
+                                    //some external apps choose to add a '/' before a ':' even in the middle of an url...
+                                    whatplugin = whatplugin.TrimStart(':');
+                                    int endplugin = whatplugin.IndexOf(':');
+                                    string parameter = whatplugin.Substring(endplugin + 1);
+                                    whatplugin = whatplugin.Substring(0, endplugin);
+                                    var plugin =
+                                        Program.PluginLoader.MyActivePlugins.FirstOrDefault(a =>
+                                            a.ToString() == whatplugin);
+                                    if (plugin == null)
+                                    {
+                                        var notactive =
+                                            Program.PluginLoader.MyPlugins.FirstOrDefault(a =>
+                                                a.ToString() == whatplugin);
+                                        if (notactive != null)
+                                        {
+                                            string msg = "Plugin " + whatplugin + " is not enabled in the options!" + Environment.NewLine;
+                                            msg +=
+                                                "If you want to use command-line arguments, please enable this plugin and restart the program.";
+                                            Log.Warn(msg);
+                                            MessageBox.Show(msg, whatplugin + " not enabled", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                        }
+                                    }
+                                    if (plugin != null)
+                                    {
+                                        showMainForm &= plugin.ProcessCommandLine(parameter);
+                                    }
                                 }
                             }
                         });

@@ -4,14 +4,16 @@ using ChummerHub.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ChummerHub.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190812075955_Hash64")]
+    partial class Hash64
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -79,14 +81,12 @@ namespace ChummerHub.Migrations
                     b.Property<string>("GoogleDriveFileId");
 
                     b.Property<string>("Hash")
-                        .HasMaxLength(8);
+                        .HasMaxLength(64);
 
                     b.Property<string>("Language")
                         .HasMaxLength(6);
 
                     b.Property<DateTime>("LastChange");
-
-                    b.Property<DateTime?>("LastDownload");
 
                     b.Property<Guid?>("MyGroupId");
 

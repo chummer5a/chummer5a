@@ -296,6 +296,33 @@ namespace SINners
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
+            /// <param name='hash'>
+            /// </param>
+            /// <param name='apiVersion'>
+            /// </param>
+            public static void Open(this ISINnersClient operations, string hash, string apiVersion = default(string))
+            {
+                Task.Factory.StartNew(s => ((ISINnersClient)s).OpenAsync(hash, apiVersion), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
+            }
+
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='hash'>
+            /// </param>
+            /// <param name='apiVersion'>
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task OpenAsync(this ISINnersClient operations, string hash, string apiVersion = default(string), CancellationToken cancellationToken = default(CancellationToken))
+            {
+                await operations.OpenWithHttpMessagesAsync(hash, apiVersion, null, cancellationToken).ConfigureAwait(false);
+            }
+
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
             public static ChummerHubVersion GetVersion(this ISINnersClient operations)
             {
                 return Task.Factory.StartNew(s => ((ISINnersClient)s).GetVersionAsync(), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
