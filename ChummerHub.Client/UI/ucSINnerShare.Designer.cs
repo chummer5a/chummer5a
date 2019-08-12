@@ -37,7 +37,6 @@ namespace ChummerHub.Client.UI
             this.lLink = new System.Windows.Forms.Label();
             this.tbLink = new System.Windows.Forms.TextBox();
             this.bOk = new System.Windows.Forms.Button();
-            this.bMakeDiscordLink = new System.Windows.Forms.Button();
             this.tlpShareMain.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -55,7 +54,6 @@ namespace ChummerHub.Client.UI
             this.tlpShareMain.Controls.Add(this.lLink, 0, 2);
             this.tlpShareMain.Controls.Add(this.tbLink, 1, 2);
             this.tlpShareMain.Controls.Add(this.bOk, 0, 3);
-            this.tlpShareMain.Controls.Add(this.bMakeDiscordLink, 2, 2);
             this.tlpShareMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpShareMain.Location = new System.Drawing.Point(0, 0);
             this.tlpShareMain.MinimumSize = new System.Drawing.Size(80, 10);
@@ -72,7 +70,7 @@ namespace ChummerHub.Client.UI
             // 
             this.lStatus.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lStatus.AutoSize = true;
-            this.lStatus.Location = new System.Drawing.Point(3, 85);
+            this.lStatus.Location = new System.Drawing.Point(3, 86);
             this.lStatus.Name = "lStatus";
             this.lStatus.Size = new System.Drawing.Size(40, 13);
             this.lStatus.TabIndex = 0;
@@ -85,14 +83,14 @@ namespace ChummerHub.Client.UI
             this.tbStatus.Location = new System.Drawing.Point(49, 3);
             this.tbStatus.Multiline = true;
             this.tbStatus.Name = "tbStatus";
-            this.tbStatus.Size = new System.Drawing.Size(589, 177);
+            this.tbStatus.Size = new System.Drawing.Size(589, 180);
             this.tbStatus.TabIndex = 1;
             // 
             // pgbStatus
             // 
             this.pgbStatus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.tlpShareMain.SetColumnSpan(this.pgbStatus, 3);
-            this.pgbStatus.Location = new System.Drawing.Point(3, 186);
+            this.pgbStatus.Location = new System.Drawing.Point(3, 189);
             this.pgbStatus.Name = "pgbStatus";
             this.pgbStatus.Size = new System.Drawing.Size(635, 23);
             this.pgbStatus.TabIndex = 2;
@@ -101,7 +99,7 @@ namespace ChummerHub.Client.UI
             // 
             this.lLink.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lLink.AutoSize = true;
-            this.lLink.Location = new System.Drawing.Point(3, 220);
+            this.lLink.Location = new System.Drawing.Point(3, 221);
             this.lLink.Name = "lLink";
             this.lLink.Size = new System.Drawing.Size(30, 13);
             this.lLink.TabIndex = 3;
@@ -110,10 +108,11 @@ namespace ChummerHub.Client.UI
             // tbLink
             // 
             this.tbLink.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbLink.Location = new System.Drawing.Point(49, 216);
+            this.tlpShareMain.SetColumnSpan(this.tbLink, 2);
+            this.tbLink.Location = new System.Drawing.Point(49, 218);
             this.tbLink.Name = "tbLink";
             this.tbLink.ReadOnly = true;
-            this.tbLink.Size = new System.Drawing.Size(449, 20);
+            this.tbLink.Size = new System.Drawing.Size(589, 20);
             this.tbLink.TabIndex = 4;
             // 
             // bOk
@@ -128,18 +127,6 @@ namespace ChummerHub.Client.UI
             this.bOk.Text = "Ok";
             this.bOk.UseVisualStyleBackColor = true;
             this.bOk.Click += new System.EventHandler(this.BOk_Click);
-            // 
-            // bMakeDiscordLink
-            // 
-            this.bMakeDiscordLink.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.bMakeDiscordLink.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.bMakeDiscordLink.Location = new System.Drawing.Point(504, 215);
-            this.bMakeDiscordLink.Name = "bMakeDiscordLink";
-            this.bMakeDiscordLink.Size = new System.Drawing.Size(134, 23);
-            this.bMakeDiscordLink.TabIndex = 6;
-            this.bMakeDiscordLink.Text = "Make Discordlink";
-            this.bMakeDiscordLink.UseVisualStyleBackColor = true;
-            this.bMakeDiscordLink.Click += new System.EventHandler(this.BMakeDiscordLink_Click);
             // 
             // ucSINnerShare
             // 
@@ -166,6 +153,5 @@ namespace ChummerHub.Client.UI
         private System.Windows.Forms.Label lLink;
         private System.Windows.Forms.TextBox tbLink;
         private System.Windows.Forms.Button bOk;
-        private System.Windows.Forms.Button bMakeDiscordLink;
     }
 }

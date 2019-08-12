@@ -557,6 +557,7 @@ namespace ChummerHub.Controllers
                         var foundseq = (from a in ssg.MyMembers where a.MySINner.Id == sin.Id select a);
                         if (foundseq.Any())
                             continue;
+                        sin.LastDownload = DateTime.Now;
                         SINnerSearchGroupMember ssgm = new SINnerSearchGroupMember
                         {
                             MySINner = sin,
@@ -598,6 +599,7 @@ namespace ChummerHub.Controllers
                         var members = await singroup.GetGroupMembers(_context, false);
                         foreach (var member in members)
                         {
+                            member.LastDownload = DateTime.Now;
                             member.MyGroup = singroup;
                             member.MyGroup.MyGroups = new List<SINnerGroup>();
                             SINnerSearchGroupMember sinssgGroupMember = new SINnerSearchGroupMember
@@ -615,7 +617,7 @@ namespace ChummerHub.Controllers
                         singroup.PasswordHash = "";
                         singroup.MyGroups = new List<SINnerGroup>();
                     }
-
+                    await _context.SaveChangesAsync();
                     ret.SINGroups.Add(ssg);
                     res = new ResultAccountGetSinnersByAuthorization(ret);
 

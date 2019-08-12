@@ -25,6 +25,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using System.Transactions;
 using Microsoft.AspNetCore.Identity;
+using System.Text;
 
 namespace ChummerHub.Models.V1
 {
@@ -40,19 +41,37 @@ namespace ChummerHub.Models.V1
         [XmlIgnore]
         public Guid UploadClientId { get; set; }
 
+        [JsonIgnore]
+        [XmlIgnore]
+        [MaxLength(8)]
+        internal string Hash { get; set;}
+
+        [NotMapped]
+        [MaxLength(8)]
+        public string MyHash
+        {
+            get
+            {
+                if (String.IsNullOrEmpty(Hash))
+                    Hash = String.Format("{0:X}", this.Id.ToString().GetHashCode());
+                return Hash;
+            }
+            set { Hash = value; }
+        }
+
         [MaxLength(6)]
         public string Language { get; set; }
 
         public SINnerMetaData SINnerMetaData { get; set; }
         
-        //public SINnerExtended MyExtendedAttributes { get; set; }
+        public DateTime? LastDownload { get; set; }
 
         public SINnerGroup MyGroup { get; set; }
 
         [MaxLength(64)]
         public string Alias { get; set; }
 
-      public SINner()
+        public SINner()
         {
             Id = Guid.NewGuid();
             this.SINnerMetaData = new SINnerMetaData();

@@ -102,6 +102,8 @@ namespace ChummerHub.Data
                 .HasIndex(b => b.SINnerId);
             builder.Entity<ChummerHub.Models.V1.SINner>()
                 .HasIndex(b => b.Alias);
+            builder.Entity<ChummerHub.Models.V1.SINner>()
+                .HasIndex(b => b.Hash);
             builder.Entity<ChummerHub.Models.V1.SINnerGroup>()
                 .HasIndex(b => b.Groupname);
             builder.Entity<ChummerHub.Models.V1.SINnerUserRight>()

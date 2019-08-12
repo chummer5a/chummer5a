@@ -69,6 +69,7 @@ namespace ChummerHub.Client.UI
 
         private async Task<MyUserState> ShareChummer_DoWork()
         {
+            string hash = "";
             try
             {
                 using (var op_shareChummer = Timekeeper.StartSyncron("Share Chummer", null,
@@ -116,6 +117,7 @@ namespace ChummerHub.Client.UI
                             ce = new CharacterExtended(c, null, null, MyCharacterCache);
                             if (ce?.MySINnerFile?.Id != null)
                                 sinnerid = ce.MySINnerFile.Id.ToString();
+                            hash = ce?.MySINnerFile?.MyHash;
                             return ce;
                         }
                     }
@@ -130,6 +132,7 @@ namespace ChummerHub.Client.UI
                     {
                         ce = await GetCharacterExtended(op_shareChummer);
                         sinnerid = ce.MySINnerFile.Id.ToString();
+                        hash = ce?.MySINnerFile?.MyHash;
                     }
 
 
@@ -169,9 +172,14 @@ namespace ChummerHub.Client.UI
                                     throw new ArgumentException("Error from SINners Webservice: " +
                                                                 checkresult.Body.ErrorText);
                             }
+                            else
+                            {
+                                hash = checkresult.Body.MySINner.MyHash;
+                            }
                         }
                     }
 
+                    
                     var lastWriteTimeUtc = System.IO.File.GetLastWriteTimeUtc(MyCharacterCache.FilePath);
                     if (checkresult.Response.StatusCode == HttpStatusCode.NotFound
                         || (checkresult.Body.MySINner.LastChange < lastWriteTimeUtc))
@@ -208,6 +216,10 @@ namespace ChummerHub.Client.UI
                                     throw new ArgumentException(
                                         "Error from SINners Webservice: " + result.Body?.ErrorText);
                             }
+                            else
+                            {
+                                hash = result.Body.MySINner.MyHash;
+                            }
                         }
                     }
 
@@ -215,7 +227,8 @@ namespace ChummerHub.Client.UI
                     myState.CurrentProgress = 90;
                     ReportProgress(myState.CurrentProgress, myState);
 
-                    string url = "chummer://plugin:SINners:Load:" + sinnerid;
+                    string url = client.BaseUri + "Open";
+                    url += "/" + hash;
                     myState.LinkText = url;
                     ReportProgress(100, myState);
                     RunWorkerCompleted(myState);
@@ -264,19 +277,6 @@ namespace ChummerHub.Client.UI
         private void BOk_Click(object sender, EventArgs e)
         {
             MyFrmSINnerShare.Close();
-        }
-
-        private void BMakeDiscordLink_Click(object sender, EventArgs e)
-        {
-            if ((!tbLink.Text?.StartsWith("chummer:") == true) || (tbLink.Text == null))
-                return;
-            var client = StaticUtils.GetClient();
-            string newuri = client.BaseUri + "/Home";
-            newuri += "/RedirectToChummer?args=";
-            newuri += Uri.EscapeDataString(tbLink.Text);
-            tbLink.Text = newuri;
-            Clipboard.SetText(tbLink.Text);
-            tbStatus.Text += "Link changed" + Environment.NewLine;
         }
     }
 }
