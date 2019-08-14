@@ -47,6 +47,7 @@ Application Fixes:
 - Fixed an issue with detecting special modifications on weapons loaded onto vehicle weapon mounts when checking whether or not the limit on special modifications has been reached.
 - Fixed incorrect usage of SkillGroup name instead of the DisplayName. Closes #3785
 - Added support for improvements that add to the dicepools of resisting direct mana combat spells, direct physical combat spells, decrease BOD, decrease AGI, decrease REA, decrease STR, decrease CHA, decrease INT, decrease LOG, and decrease WIL.
+- Moved magic strings used for calculating cyberlimb attributes into explicit hashsets. This allows the 2050 cyberlimb enhancement and customisations to work properly. 
 
 Data Changes:
 

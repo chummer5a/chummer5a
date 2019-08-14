@@ -110,7 +110,16 @@ namespace Chummer.Backend.Equipment
         private int _intSortOrder;
 
         private readonly Character _objCharacter;
-        private static char[] MathOperators = new char[] { '"', '*', '/', '+', '-' };
+        private static readonly char[] s_MathOperators = new char[] { '"', '*', '/', '+', '-' };
+
+        // I don't like this, but it's easier than making it a specific property of the cyberware.
+        private static readonly HashSet<string> s_AgilityCustomisationStrings = new HashSet<string> { "Customized Agility", "Cyberlimb Customization, Agility (2050)" };
+        private static readonly HashSet<string> s_AgilityEnhancementStrings = new HashSet<string> { "Enhanced Agility", "Cyberlimb Augmentation, Agility (2050)" };
+        private static readonly HashSet<string> s_AgilityCombinedStrings = new HashSet<string>(s_AgilityEnhancementStrings.Union(s_AgilityEnhancementStrings));
+        
+        private static readonly HashSet<string> s_StrengthCustomisationStrings = new HashSet<string> { "Customized Strength", "Cyberlimb Customization, Strength (2050)" };
+        private static readonly HashSet<string> s_StrengthEnhancementStrings = new HashSet<string> { "Enhanced Strength", "Cyberlimb Augmentation, Strength (2050)" };
+        private static readonly HashSet<string> s_StrengthCombinedStrings = new HashSet<string>(s_StrengthEnhancementStrings.Union(s_StrengthEnhancementStrings));
 
         #region Helper Methods
         /// <summary>
@@ -166,11 +175,11 @@ namespace Chummer.Backend.Equipment
                             }
                             else
                             {
-                                if (!blnDoCyberlimbAGIRefresh && (objNewItem.Name == "Enhanced Agility" || objNewItem.Name == "Customized Agility"))
+                                if (!blnDoCyberlimbAGIRefresh && s_AgilityCombinedStrings.Contains(objNewItem.Name))
                                 {
                                     blnDoCyberlimbAGIRefresh = true;
                                 }
-                                if (!blnDoCyberlimbSTRRefresh && (objNewItem.Name == "Enhanced Strength" || objNewItem.Name == "Customized Strength"))
+                                if (!blnDoCyberlimbSTRRefresh && s_StrengthCombinedStrings.Contains(objNewItem.Name))
                                 {
                                     blnDoCyberlimbSTRRefresh = true;
                                 }
@@ -199,11 +208,11 @@ namespace Chummer.Backend.Equipment
                             }
                             else
                             {
-                                if (!blnDoCyberlimbAGIRefresh && (objOldItem.Name == "Enhanced Agility" || objOldItem.Name == "Customized Agility"))
+                                if (!blnDoCyberlimbAGIRefresh && s_AgilityCombinedStrings.Contains(objOldItem.Name))
                                 {
                                     blnDoCyberlimbAGIRefresh = true;
                                 }
-                                if (!blnDoCyberlimbSTRRefresh && (objOldItem.Name == "Enhanced Strength" || objOldItem.Name == "Customized Strength"))
+                                if (!blnDoCyberlimbSTRRefresh && s_StrengthCombinedStrings.Contains(objOldItem.Name))
                                 {
                                     blnDoCyberlimbSTRRefresh = true;
                                 }
@@ -231,11 +240,11 @@ namespace Chummer.Backend.Equipment
                             }
                             else
                             {
-                                if (!blnDoCyberlimbAGIRefresh && (objOldItem.Name == "Enhanced Agility" || objOldItem.Name == "Customized Agility"))
+                                if (!blnDoCyberlimbAGIRefresh && s_AgilityCombinedStrings.Contains(objOldItem.Name))
                                 {
                                     blnDoCyberlimbAGIRefresh = true;
                                 }
-                                if (!blnDoCyberlimbSTRRefresh && (objOldItem.Name == "Enhanced Strength" || objOldItem.Name == "Customized Strength"))
+                                if (!blnDoCyberlimbSTRRefresh && s_StrengthCombinedStrings.Contains(objOldItem.Name))
                                 {
                                     blnDoCyberlimbSTRRefresh = true;
                                 }
@@ -260,11 +269,11 @@ namespace Chummer.Backend.Equipment
                             }
                             else
                             {
-                                if (!blnDoCyberlimbAGIRefresh && (objNewItem.Name == "Enhanced Agility" || objNewItem.Name == "Customized Agility"))
+                                if (!blnDoCyberlimbAGIRefresh && s_AgilityCombinedStrings.Contains(objNewItem.Name))
                                 {
                                     blnDoCyberlimbAGIRefresh = true;
                                 }
-                                if (!blnDoCyberlimbSTRRefresh && (objNewItem.Name == "Enhanced Strength" || objNewItem.Name == "Customized Strength"))
+                                if (!blnDoCyberlimbSTRRefresh && s_StrengthCombinedStrings.Contains(objNewItem.Name))
                                 {
                                     blnDoCyberlimbSTRRefresh = true;
                                 }
@@ -953,7 +962,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("maxrating", ref _strMaxRating);
             objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
             // Legacy shim for old-form customized attribute
-            if ((Name == "Customized Agility" || Name == "Customized Strength" || Name == "Cyberlimb Customization, Agility (2050)" || Name == "Cyberlimb Customization, Strength (2050)") &&
+            if ((s_StrengthCombinedStrings.Contains(Name) || s_AgilityCombinedStrings.Contains(Name)) &&
                 int.TryParse(MaxRatingString, out int _))
             {
                 XmlNode objMyXmlNode = GetNode();
@@ -1395,45 +1404,41 @@ namespace Chummer.Backend.Equipment
             get => _strName;
             set
             {
-                if (_strName != value)
+                if (_strName == value) return;
+                string strOldValue = _strName;
+                _lstIncludeInPairBonus.Remove(_strName);
+                _lstIncludeInPairBonus.Add(value);
+                _lstIncludeInWirelessPairBonus.Remove(_strName);
+                _lstIncludeInWirelessPairBonus.Add(value);
+                _strName = value;
+                if (_objParent?.Category != "Cyberlimb" || _objParent.Parent?.InheritAttributes == false ||
+                    _objParent.ParentVehicle != null || _objCharacter.Options.DontUseCyberlimbCalculation ||
+                    string.IsNullOrWhiteSpace(_objParent.LimbSlot) ||
+                    _objCharacter.Options.ExcludeLimbSlot.Contains(_objParent.LimbSlot)) return;
+                bool blnDoMovementUpdate = false;
+                if (s_AgilityCombinedStrings.Contains(value) || s_AgilityCombinedStrings.Contains(strOldValue))
                 {
-                    string strOldValue = _strName;
-                    _lstIncludeInPairBonus.Remove(_strName);
-                    _lstIncludeInPairBonus.Add(value);
-                    _lstIncludeInWirelessPairBonus.Remove(_strName);
-                    _lstIncludeInWirelessPairBonus.Add(value);
-                    _strName = value;
-                    if (_objParent?.Category == "Cyberlimb" && _objParent.Parent?.InheritAttributes != false && _objParent.ParentVehicle == null && !_objCharacter.Options.DontUseCyberlimbCalculation &&
-                        !string.IsNullOrWhiteSpace(_objParent.LimbSlot) && !_objCharacter.Options.ExcludeLimbSlot.Contains(_objParent.LimbSlot))
+                    blnDoMovementUpdate = true;
+                    foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList
+                        .Concat(_objCharacter.AttributeSection.SpecialAttributeList)
+                        .Where(abbrev => abbrev.Abbrev == "AGI"))
                     {
-                        bool blnDoMovementUpdate = false;
-                        if (value == "Enhanced Agility" || value == "Customized Agility" || strOldValue == "Enhanced Agility" || strOldValue == "Customized Agility")
-                        {
-                            blnDoMovementUpdate = true;
-                            foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
-                            {
-                                if (objCharacterAttrib.Abbrev == "AGI")
-                                {
-                                    objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
-                                }
-                            }
-                        }
-                        if (value == "Enhanced Strength" || value == "Customized Strength" || strOldValue == "Enhanced Strength" || strOldValue == "Customized Strength")
-                        {
-                            blnDoMovementUpdate = true;
-                            foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
-                            {
-                                if (objCharacterAttrib.Abbrev == "STR")
-                                {
-                                    objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
-                                }
-                            }
-                        }
-
-                        if (blnDoMovementUpdate && _objCharacter.Options.CyberlegMovement && LimbSlot == "leg")
-                            _objCharacter.OnPropertyChanged(nameof(Character.GetMovement));
+                        objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
                     }
                 }
+                if (s_StrengthCombinedStrings.Contains(value) || s_StrengthCombinedStrings.Contains(strOldValue))
+                {
+                    blnDoMovementUpdate = true;
+                    foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList
+                        .Concat(_objCharacter.AttributeSection.SpecialAttributeList)
+                        .Where(abbrev => abbrev.Abbrev == "STR"))
+                    {
+                        objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
+                    }
+                }
+
+                if (blnDoMovementUpdate && _objCharacter.Options.CyberlegMovement && LimbSlot == "leg")
+                    _objCharacter.OnPropertyChanged(nameof(Character.GetMovement));
             }
         }
 
@@ -2037,55 +2042,50 @@ namespace Chummer.Backend.Equipment
             set
             {
                 int intNewValue = Math.Max(Math.Min(value, MaxRating), MinRating);
-                if (_intRating != intNewValue)
+                if (_intRating == intNewValue) return;
+                _intRating = intNewValue;
+                bool blnDoMovementUpdate = false;
+                if (_objParent?.Category == "Cyberlimb" && _objParent.Parent?.InheritAttributes != false && _objParent.ParentVehicle == null && !_objCharacter.Options.DontUseCyberlimbCalculation &&
+                    !string.IsNullOrWhiteSpace(_objParent.LimbSlot) && !_objCharacter.Options.ExcludeLimbSlot.Contains(_objParent.LimbSlot))
                 {
-                    _intRating = intNewValue;
-                    bool blnDoMovementUpdate = false;
-                    if (_objParent?.Category == "Cyberlimb" && _objParent.Parent?.InheritAttributes != false && _objParent.ParentVehicle == null && !_objCharacter.Options.DontUseCyberlimbCalculation &&
-                        !string.IsNullOrWhiteSpace(_objParent.LimbSlot) && !_objCharacter.Options.ExcludeLimbSlot.Contains(_objParent.LimbSlot))
+                    if (s_AgilityCombinedStrings.Contains(Name))
                     {
-                        if (Name == "Enhanced Agility" || Name == "Customized Agility")
+                        foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList
+                            .Concat(_objCharacter.AttributeSection.SpecialAttributeList)
+                            .Where(abbrev => abbrev.Abbrev == "AGI"))
                         {
-                            foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
-                            {
-                                if (objCharacterAttrib.Abbrev == "AGI")
-                                {
-                                    objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
-                                }
-                            }
-
-                            blnDoMovementUpdate = true;
+                            objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
                         }
-                        else if (Name == "Enhanced Strength" || Name == "Customized Strength")
-                        {
-                            foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
-                            {
-                                if (objCharacterAttrib.Abbrev == "STR")
-                                {
-                                    objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
-                                }
-                            }
 
-                            blnDoMovementUpdate = true;
-                        }
+                        blnDoMovementUpdate = true;
                     }
-
-                    blnDoMovementUpdate = blnDoMovementUpdate && _objCharacter.Options.CyberlegMovement && LimbSlot == "leg";
-                    bool blnDoEssenceUpdate = ESS.Contains("Rating") && (Parent == null || AddToParentESS) && string.IsNullOrEmpty(PlugsIntoModularMount) && ParentVehicle == null;
-                    if (blnDoMovementUpdate && blnDoEssenceUpdate)
-                        _objCharacter.OnMultiplePropertyChanged(nameof(Character.GetMovement), EssencePropertyName);
-                    else if (blnDoMovementUpdate)
-                        _objCharacter.OnPropertyChanged(nameof(Character.GetMovement));
-                    else if (blnDoEssenceUpdate)
-                        _objCharacter.OnPropertyChanged(EssencePropertyName);
-
-                    if (Gear.Count > 0)
+                    else if (s_StrengthCombinedStrings.Contains(Name))
                     {
-                        foreach (Gear objChild in Gear.Where(x => x.MaxRating.Contains("Parent") || x.MinRating.Contains("Parent")))
+                        foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList
+                            .Concat(_objCharacter.AttributeSection.SpecialAttributeList)
+                            .Where(abbrev => abbrev.Abbrev == "STR"))
                         {
-                            // This will update a child's rating if it would become out of bounds due to its parent's rating changing
-                            objChild.Rating = objChild.Rating;
+                            objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
                         }
+                        blnDoMovementUpdate = true;
+                    }
+                }
+
+                blnDoMovementUpdate = blnDoMovementUpdate && _objCharacter.Options.CyberlegMovement && LimbSlot == "leg";
+                bool blnDoEssenceUpdate = ESS.Contains("Rating") && (Parent == null || AddToParentESS) && string.IsNullOrEmpty(PlugsIntoModularMount) && ParentVehicle == null;
+                if (blnDoMovementUpdate && blnDoEssenceUpdate)
+                    _objCharacter.OnMultiplePropertyChanged(nameof(Character.GetMovement), EssencePropertyName);
+                else if (blnDoMovementUpdate)
+                    _objCharacter.OnPropertyChanged(nameof(Character.GetMovement));
+                else if (blnDoEssenceUpdate)
+                    _objCharacter.OnPropertyChanged(EssencePropertyName);
+
+                if (Gear.Count > 0)
+                {
+                    foreach (Gear objChild in Gear.Where(x => x.MaxRating.Contains("Parent") || x.MinRating.Contains("Parent")))
+                    {
+                        // This will update a child's rating if it would become out of bounds due to its parent's rating changing
+                        objChild.Rating = objChild.Rating;
                     }
                 }
             }
@@ -2782,7 +2782,7 @@ namespace Chummer.Backend.Equipment
                 strESS = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
                 strESS += strSuffix;
             }
-            if (strESS.Contains("Rating") || strESS.IndexOfAny(MathOperators) >= 0)
+            if (strESS.Contains("Rating") || strESS.IndexOfAny(s_MathOperators) >= 0)
             {
                 // If the cost is determined by the Rating or there's a math operation in play, evaluate the expression.
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(strESS.Replace("Rating", Rating.ToString()), out bool blnIsSuccess);
@@ -3336,10 +3336,10 @@ namespace Chummer.Backend.Equipment
                 foreach (Cyberware objChild in Children)
                 {
                     // If the limb has Customized Strength, this is its new base value.
-                    if (objChild.Name == "Customized Strength")
+                    if (s_StrengthCustomisationStrings.Contains(objChild.Name))
                         intAttribute = objChild.Rating;
                     // If the limb has Enhanced Strength, this adds to the limb's value.
-                    if (objChild.Name == "Enhanced Strength")
+                    if (s_StrengthEnhancementStrings.Contains(Name))
                         intBonus = objChild.Rating;
                 }
                 if (ParentVehicle == null)
@@ -3350,52 +3350,6 @@ namespace Chummer.Backend.Equipment
                 {
                     return Math.Min(intAttribute + intBonus, Math.Max(ParentVehicle.TotalBody * 2, 1));
                 }
-            }
-        }
-
-        /// <summary>
-        /// Cyberlimb Body.
-        /// </summary>
-        public int TotalBody
-        {
-            get
-            {
-                if (InheritAttributes)
-                {
-                    int intAverageAttribute = 0;
-                    int intCyberlimbChildrenNumber = 0;
-                    foreach (Cyberware objChild in Children)
-                    {
-                        if (objChild.TotalBody <= 0) continue;
-                        intCyberlimbChildrenNumber += 1;
-                        intAverageAttribute += objChild.TotalBody;
-                    }
-                    if (intCyberlimbChildrenNumber == 0)
-                        intCyberlimbChildrenNumber = 1;
-
-                    return intAverageAttribute / intCyberlimbChildrenNumber;
-                }
-
-                if (_strCategory != "Cyberlimb")
-                {
-                    return 0;
-                }
-
-                // Base Strength for any limb is 3.
-                int intAttribute = 3;
-                int intBonus = 0;
-
-                foreach (Cyberware objChild in Children)
-                {
-                    // If the limb has Customized Body, this is its new base value.
-                    if (objChild.Name == "Customized Body")
-                        intAttribute = objChild.Rating;
-                    // If the limb has Enhanced Body, this adds to the limb's value.
-                    if (objChild.Name == "Enhanced Body")
-                        intBonus = objChild.Rating;
-                }
-
-                return intAttribute + intBonus;
             }
         }
 
@@ -3449,10 +3403,10 @@ namespace Chummer.Backend.Equipment
                 foreach (Cyberware objChild in Children)
                 {
                     // If the limb has Customized Agility, this is its new base value.
-                    if (objChild.Name == "Customized Agility")
+                    if (s_AgilityCustomisationStrings.Contains(objChild.Name))
                         intAttribute = objChild.Rating;
                     // If the limb has Enhanced Agility, this adds to the limb's value.
-                    if (objChild.Name == "Enhanced Agility")
+                    if (s_AgilityEnhancementStrings.Contains(Name))
                         intBonus = objChild.Rating;
                 }
 
