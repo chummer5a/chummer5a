@@ -1016,6 +1016,13 @@ namespace Chummer
             {
                 Size si = Properties.Settings.Default.Size;
             }
+            catch (System.ArgumentException ex)
+            {
+                //the config is invalid - reset it!
+                Properties.Settings.Default.Reset();
+                Properties.Settings.Default.Save();
+                Log.Warn("Configuartion Settings were invalid and had to be reset. Exception: " + ex.Message);
+            }
             catch (System.Configuration.ConfigurationErrorsException ex)
             {
                 //the config is invalid - reset it!

@@ -858,7 +858,7 @@ namespace Chummer.Plugins
                         frmLoadingForm.Reset(36);
                         frmLoadingForm.TopMost = true;
                         frmLoadingForm.Show();
-                        if (await objCharacter.Load(frmLoadingForm, true))
+                        if (await objCharacter.Load(frmLoadingForm, ChummerHub.Client.Properties.Settings.Default.IgnoreWarningsOnOpening))
                             PluginHandler.MainForm.OpenCharacters.Add(objCharacter);
                         else
                             return objCharacter;

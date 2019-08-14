@@ -28,8 +28,8 @@ namespace ChummerHub.Client.UI
         /// </summary>
         private void InitializeComponent()
         {
-            GroupControls.RadioButtonListItem radioButtonListItem3 = new GroupControls.RadioButtonListItem();
-            GroupControls.RadioButtonListItem radioButtonListItem4 = new GroupControls.RadioButtonListItem();
+            GroupControls.RadioButtonListItem radioButtonListItem1 = new GroupControls.RadioButtonListItem();
+            GroupControls.RadioButtonListItem radioButtonListItem2 = new GroupControls.RadioButtonListItem();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ucSINnersOptions));
             this.tlpAllOptions = new System.Windows.Forms.TableLayoutPanel();
             this.gpRadioOnlyPublic = new System.Windows.Forms.GroupBox();
@@ -58,6 +58,7 @@ namespace ChummerHub.Client.UI
             this.tlpPublicMode = new System.Windows.Forms.TableLayoutPanel();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.backgroundWorker2 = new System.ComponentModel.BackgroundWorker();
+            this.cbIgnoreWarnings = new System.Windows.Forms.CheckBox();
             this.tlpAllOptions.SuspendLayout();
             this.gpRadioOnlyPublic.SuspendLayout();
             this.rbListUserMode.SuspendLayout();
@@ -68,6 +69,7 @@ namespace ChummerHub.Client.UI
             this.flpTempFolder.SuspendLayout();
             this.tlpAccount.SuspendLayout();
             this.gpPublicMode.SuspendLayout();
+            this.tlpPublicMode.SuspendLayout();
             this.SuspendLayout();
             // 
             // tlpAllOptions
@@ -105,17 +107,17 @@ namespace ChummerHub.Client.UI
             // 
             this.rbListUserMode.AutoScrollMinSize = new System.Drawing.Size(338, 68);
             this.rbListUserMode.Dock = System.Windows.Forms.DockStyle.Fill;
-            radioButtonListItem3.Checked = true;
-            radioButtonListItem3.Subtext = "use only functions available for none registered users";
-            radioButtonListItem3.Tag = "public";
-            radioButtonListItem3.Text = "Public Mode";
-            radioButtonListItem3.ToolTipText = "";
-            radioButtonListItem4.Subtext = "use enchanced functionality (requires registration)";
-            radioButtonListItem4.Tag = "registered";
-            radioButtonListItem4.Text = "Registered Mode";
+            radioButtonListItem1.Checked = true;
+            radioButtonListItem1.Subtext = "use only functions available for none registered users";
+            radioButtonListItem1.Tag = "public";
+            radioButtonListItem1.Text = "Public Mode";
+            radioButtonListItem1.ToolTipText = "";
+            radioButtonListItem2.Subtext = "use enchanced functionality (requires registration)";
+            radioButtonListItem2.Tag = "registered";
+            radioButtonListItem2.Text = "Registered Mode";
             this.rbListUserMode.Items.AddRange(new GroupControls.RadioButtonListItem[] {
-            radioButtonListItem3,
-            radioButtonListItem4});
+            radioButtonListItem1,
+            radioButtonListItem2});
             this.rbListUserMode.Location = new System.Drawing.Point(3, 16);
             this.rbListUserMode.Name = "rbListUserMode";
             this.rbListUserMode.Size = new System.Drawing.Size(338, 75);
@@ -225,7 +227,7 @@ namespace ChummerHub.Client.UI
             this.bEditDefaultVisibility.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.bEditDefaultVisibility.Location = new System.Drawing.Point(185, 8);
             this.bEditDefaultVisibility.Name = "bEditDefaultVisibility";
-            this.bEditDefaultVisibility.Size = new System.Drawing.Size(249, 23);
+            this.bEditDefaultVisibility.Size = new System.Drawing.Size(206, 23);
             this.bEditDefaultVisibility.TabIndex = 2;
             this.bEditDefaultVisibility.Text = "set default Users";
             this.bEditDefaultVisibility.UseVisualStyleBackColor = true;
@@ -418,6 +420,7 @@ namespace ChummerHub.Client.UI
             this.tlpPublicMode.ColumnCount = 2;
             this.tlpPublicMode.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpPublicMode.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpPublicMode.Controls.Add(this.cbIgnoreWarnings, 0, 0);
             this.tlpPublicMode.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpPublicMode.Location = new System.Drawing.Point(3, 16);
             this.tlpPublicMode.Name = "tlpPublicMode";
@@ -426,6 +429,18 @@ namespace ChummerHub.Client.UI
             this.tlpPublicMode.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpPublicMode.Size = new System.Drawing.Size(271, 75);
             this.tlpPublicMode.TabIndex = 0;
+            // 
+            // cbIgnoreWarnings
+            // 
+            this.cbIgnoreWarnings.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.cbIgnoreWarnings.AutoSize = true;
+            this.tlpPublicMode.SetColumnSpan(this.cbIgnoreWarnings, 2);
+            this.cbIgnoreWarnings.Location = new System.Drawing.Point(20, 10);
+            this.cbIgnoreWarnings.Name = "cbIgnoreWarnings";
+            this.cbIgnoreWarnings.Size = new System.Drawing.Size(230, 17);
+            this.cbIgnoreWarnings.TabIndex = 0;
+            this.cbIgnoreWarnings.Text = "ignore Warnings when opening a character";
+            this.cbIgnoreWarnings.UseVisualStyleBackColor = true;
             // 
             // ucSINnersOptions
             // 
@@ -455,6 +470,8 @@ namespace ChummerHub.Client.UI
             this.tlpAccount.PerformLayout();
             this.gpPublicMode.ResumeLayout(false);
             this.gpPublicMode.PerformLayout();
+            this.tlpPublicMode.ResumeLayout(false);
+            this.tlpPublicMode.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -489,5 +506,6 @@ namespace ChummerHub.Client.UI
         private System.Windows.Forms.GroupBox gpPublicMode;
         private System.ComponentModel.BackgroundWorker backgroundWorker2;
         private System.Windows.Forms.TableLayoutPanel tlpPublicMode;
+        private System.Windows.Forms.CheckBox cbIgnoreWarnings;
     }
 }
