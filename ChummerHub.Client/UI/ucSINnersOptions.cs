@@ -246,6 +246,7 @@ namespace ChummerHub.Client.UI
             this.cbUploadOnSave.CheckedChanged += cbUploadOnSave_CheckedChanged;
             this.rbListUserMode.SelectedIndexChanged += RbListUserMode_SelectedIndexChanged;
             this.cbIgnoreWarnings.CheckedChanged += CbIgnoreWarningsOnCheckedChanged;
+            this.bRegisterChummerUrl.Click += BRegisterUriScheme_Click;
         }
 
         private void CbIgnoreWarningsOnCheckedChanged(object sender, EventArgs e)
@@ -824,16 +825,16 @@ namespace ChummerHub.Client.UI
             OptionsUpdate();
         }
 
-        //private void BRegisterUriScheme_Click(object sender, EventArgs e)
-        //{
-        //    if (StaticUtils.RegisterChummerProtocol(null))
-        //        Program.MainForm.ShowMessageBox("Url is registered!");
-        //    else
-        //    {
-        //        Program.MainForm.ShowMessageBox("Url is NOT registered!");
-        //    }
-        //}
+        private void BRegisterUriScheme_Click(object sender, EventArgs e)
+        {
+            if (StaticUtils.RegisterChummerProtocol(null))
+                Program.MainForm.ShowMessageBox("Url is registered!");
+            else
+            {
+                Program.MainForm.ShowMessageBox("Url is NOT registered!");
+            }
+        }
 
-       
+
     }
 }
