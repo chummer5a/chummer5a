@@ -140,6 +140,32 @@
     <!-- End Region -->
     <!-- Region Street Grimoire -->
     <metamagic>
+      <id>215dbdc3-b4f5-4ca6-98b1-5d6ea5eb5fda</id>
+      <name>Taint</name>
+      <adept>False</adept>
+      <magician>True</magician>
+      <required>
+        <allof>
+          <metamagic>Paradigm Shift: Toxic</metamagic>
+        </allof>
+      </required>
+      <source>SG</source>
+      <page>87</page>
+    </metamagic>
+    <metamagic>
+      <id>920770d1-a705-4fc9-8814-f3a4a455e8fb</id>
+      <name>Corruption</name>
+      <adept>False</adept>
+      <magician>True</magician>
+      <required>
+        <allof>
+          <metamagic>Paradigm Shift: Toxic</metamagic>
+        </allof>
+      </required>
+      <source>SG</source>
+      <page>87</page>
+    </metamagic>
+    <metamagic>
       <id>9540267c-d53c-4547-9bd2-e1f06723caee</id>
       <name>Sympathetic Linking</name>
       <adept>True</adept>
