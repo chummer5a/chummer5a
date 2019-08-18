@@ -14874,8 +14874,6 @@ namespace Chummer
                 foreach (Gear objPlugin in objStackWith.Children)
                     decCost += objPlugin.TotalCost * frmPickGear.SelectedQty;
             }
-            if (!blnNullParent && !blnAmmoOnly)
-                decCost *= objSelectedGear.Quantity;
 
             // Apply a markup if applicable.
             if (frmPickGear.Markup != 0)
