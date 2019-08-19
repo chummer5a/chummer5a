@@ -20,6 +20,8 @@ namespace ChummerHub.Models.V1
 
         public string ChummerVersion { get; set; }
 
+        public Guid? InstallationId { get; set; }
+
         public string ClientSecret { get; set; }
 
         public UploadClient()

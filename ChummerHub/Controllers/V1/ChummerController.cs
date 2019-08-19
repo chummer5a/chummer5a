@@ -63,7 +63,11 @@ namespace ChummerHub.Controllers.V1
                 string url = "chummer://plugin:SINners:Load:" + sinner.Id;
                 sinner.LastDownload = DateTime.Now;
                 await _context.SaveChangesAsync();
-                return Redirect(url);
+                //Redirect(string url);
+                //RedirectPermanent(string url);
+                //RedirectPermanentPreserveMethod(string url);
+                //RedirectPreserveMethod(string url);
+                return RedirectPreserveMethod(url);
             }
             return NotFound("Could not find SINner with Hash " + Hash);
         }
