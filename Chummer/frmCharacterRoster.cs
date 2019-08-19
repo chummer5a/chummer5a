@@ -665,7 +665,7 @@ namespace Chummer
         private void treCharacterList_OnDefaultDragDrop(object sender, DragEventArgs e)
         {
             // Do not allow the root element to be moved.
-            if(treCharacterList.SelectedNode == null || treCharacterList.SelectedNode.Level == 0 || treCharacterList.SelectedNode.Parent.Tag.ToString() == "Watch")
+            if(treCharacterList.SelectedNode == null || treCharacterList.SelectedNode.Level == 0 || treCharacterList.SelectedNode.Parent?.Tag?.ToString() == "Watch")
                 return;
 
             if(e.Data.GetDataPresent("System.Windows.Forms.TreeNode", false))

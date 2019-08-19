@@ -994,7 +994,26 @@ namespace ChummerHub.Controllers.V1
         [AllowAnonymous]
         public async Task<ActionResult<ResultSinnerPostSIN>> PostSIN([FromBody] UploadInfoObject uploadInfo)
         {
-            return await PostSINnerInternal(uploadInfo);
+            try
+            {
+                return await PostSINnerInternal(uploadInfo);
+            }
+            catch (Exception e)
+            {
+                int i = 0;
+                if (uploadInfo?.SINners != null)
+                {
+                    foreach (var sin in uploadInfo.SINners)
+                    {
+                        e.Data.Add("SINner_" + i++, sin.Id);
+                        e.Data.Add("InstallationId", uploadInfo.Client.InstallationId);
+                    }
+                }
+
+                tc.TrackException(e);
+                throw;
+            }
+            
         }
 
         // DELETE: api/ChummerFiles/5

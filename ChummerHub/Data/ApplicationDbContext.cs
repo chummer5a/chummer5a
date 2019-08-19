@@ -41,7 +41,7 @@ namespace ChummerHub.Data
             {
                 var validationContext = new ValidationContext(entity);
                 //Validator.ValidateObject(entity, validationContext);
-                if (Validator.TryValidateObject(entity, validationContext, validationResults, true))
+                if (!Validator.TryValidateObject(entity, validationContext, validationResults, true))
                 {
                     error = true;
                 }
@@ -58,6 +58,15 @@ namespace ChummerHub.Data
                     wholeMessage += msg + Environment.NewLine;
                 }
                 var ex = new HubException(wholeMessage);
+                counter = 0;
+                foreach (var valResult in validationResults)
+                {
+                    counter++;
+                    foreach (var member in valResult.MemberNames)
+                    {
+                        ex.Data.Add("member_" + member, valResult.ErrorMessage);
+                    }
+                }
                 throw ex;
             }
 

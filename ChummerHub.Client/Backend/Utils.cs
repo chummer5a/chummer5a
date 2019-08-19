@@ -488,20 +488,26 @@ namespace ChummerHub.Client.Backend
         {
             RegistryKey Software = Registry.CurrentUser.OpenSubKey("Software");  //open myApp protocol's subkey
             RegistryKey Classes = Software.OpenSubKey("Classes", true);
+            if (Classes == null)
+                Classes = Software.CreateSubKey("Classes", RegistryKeyPermissionCheck.ReadWriteSubTree);
             RegistryKey key = Classes.OpenSubKey("Chummer", true);  //open myApp protocol's subkey
 
-            if (key == null)  //if the protocol is not registered yet...we register it
+            if (key == null) //if the protocol is not registered yet...we register it
             {
                 key = Classes.CreateSubKey("Chummer", RegistryKeyPermissionCheck.ReadWriteSubTree);
-                key.SetValue(string.Empty, "URL: Chummer Protocol");
-                key.SetValue("URL Protocol", string.Empty);
-
-                key = key.CreateSubKey(@"shell\open\command", RegistryKeyPermissionCheck.ReadWriteSubTree);
-                key.SetValue(string.Empty, myAppPath + " " + "%1");
-                //%1 represents the argument - this tells windows to open this program with an argument / parameter
             }
+            key.SetValue(string.Empty, "URL: Chummer Protocol");
+            key.SetValue("URL Protocol", string.Empty);
 
+            RegistryKey shell = key.OpenSubKey(@"shell\open\command", RegistryKeyPermissionCheck.ReadWriteSubTree);
+            if (shell == null)
+                shell = key.CreateSubKey(@"shell\open\command", RegistryKeyPermissionCheck.ReadWriteSubTree);
+            shell.SetValue(string.Empty, myAppPath + " " + "%1");
+            //%1 represents the argument - this tells windows to open this program with an argument / parameter
+            shell.Close();
             key.Close();
+            Classes.Close();
+            Software.Close();
             Log.Info("Url Protocol Handler for Chummer registered!");
             return true;
         }
@@ -1125,7 +1131,7 @@ namespace ChummerHub.Client.Backend
                 UploadInfoObject uploadInfoObject = new UploadInfoObject
                 {
                     Client = PluginHandler.MyUploadClient,
-                    UploadDateTime = DateTime.Now
+                    UploadDateTime = DateTime.Now,
                 };
                 ce.MySINnerFile.UploadDateTime = DateTime.Now;
                 uploadInfoObject.SiNners = new List<SINner>() { ce.MySINnerFile };
