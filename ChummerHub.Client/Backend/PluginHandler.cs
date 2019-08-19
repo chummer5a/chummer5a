@@ -63,7 +63,6 @@ namespace Chummer.Plugins
                 Properties.Settings.Default.UploadClientId = Guid.NewGuid();
                 Properties.Settings.Default.Save();
             }
-
             MyUploadClient.Id = Properties.Settings.Default.UploadClientId;
         }
 

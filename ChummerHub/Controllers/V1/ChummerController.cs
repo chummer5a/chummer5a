@@ -19,7 +19,7 @@ namespace ChummerHub.Controllers.V1
     [ApiController]
     [ControllerName("Chummer")]
     [AllowAnonymous]
-    public class ChummerController : ControllerBase
+    public class ChummerController : Controller
     {
         private readonly ILogger _logger;
         private TelemetryClient tc;
@@ -36,6 +36,50 @@ namespace ChummerHub.Controllers.V1
             tc = telemetry;
         }
 
+        [HttpGet]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Redirect)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("ChummerO")]
+        public IActionResult O([FromRoute] string Hash)
+        {
+            try
+            {
+                if (String.IsNullOrEmpty(Hash))
+                    throw new ArgumentException("hash is empty: " + Hash);
+                var foundseq = (from a in _context.SINners where a.Hash == Hash select a).ToList();
+                if (!foundseq.Any())
+                {
+                    var nullseq = (from a in _context.SINners where String.IsNullOrEmpty(a.Hash) || a.Hash == "25943ECC" select a).ToList();
+                    foreach (var nullSinner in nullseq)
+                    {
+                        string message = "Saving Hash for SINner " + nullSinner.Id + ": " + nullSinner.MyHash;
+                        TraceTelemetry tt = new TraceTelemetry(message, SeverityLevel.Verbose);
+                        tc?.TrackTrace(tt);
+                    }
+                }
+                foundseq = (from a in _context.SINners where a.Hash == Hash select a).ToList();
+                _context.SaveChanges();
+                foreach (var sinner in foundseq)
+                {
+                    string url = "chummer://plugin:SINners:Load:" + sinner.Id;
+                    sinner.LastDownload = DateTime.Now;
+                    _context.SaveChanges();
+                    //Redirect(string url);
+                    //RedirectPermanent(string url);
+                    //RedirectPermanentPreserveMethod(string url);
+                    //RedirectPreserveMethod(string url);
+                    return RedirectPreserveMethod(url);
+                }
+                return NotFound("Could not find SINner with Hash " + Hash);
+            }
+            catch (Exception e)
+            {
+                tc.TrackException(e);
+                throw;
+            }
+            
+        }
+
 
         [HttpGet]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Redirect)]
@@ -43,33 +87,45 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("ChummerOpen")]
         public async Task<ActionResult> Open([FromRoute] string Hash)
         {
-            if (String.IsNullOrEmpty(Hash))
-                throw new ArgumentException("hash is empty: " + Hash);
-            var foundseq = await (from a in _context.SINners where a.Hash == Hash select a).ToListAsync();
-            if (!foundseq.Any())
+            try
             {
-                var nullseq = await (from a in _context.SINners where String.IsNullOrEmpty(a.Hash) || a.Hash == "25943ECC" select a).ToListAsync();
-                foreach (var nullSinner in nullseq)
+                if (String.IsNullOrEmpty(Hash))
+                    throw new ArgumentException("hash is empty: " + Hash);
+                var foundseq = await (from a in _context.SINners where a.Hash == Hash select a).ToListAsync();
+                if (!foundseq.Any())
                 {
-                    string message = "Saving Hash for SINner " + nullSinner.Id + ": " + nullSinner.MyHash;
-                    TraceTelemetry tt = new TraceTelemetry(message, SeverityLevel.Verbose);
-                    tc?.TrackTrace(tt);
+                    var nullseq = await (from a in _context.SINners
+                        where String.IsNullOrEmpty(a.Hash) || a.Hash == "25943ECC"
+                        select a).ToListAsync();
+                    foreach (var nullSinner in nullseq)
+                    {
+                        string message = "Saving Hash for SINner " + nullSinner.Id + ": " + nullSinner.MyHash;
+                        TraceTelemetry tt = new TraceTelemetry(message, SeverityLevel.Verbose);
+                        tc?.TrackTrace(tt);
+                    }
                 }
-            }
-            foundseq = await (from a in _context.SINners where a.Hash == Hash select a).ToListAsync();
-            await _context.SaveChangesAsync();
-            foreach (var sinner in foundseq)
-            {
-                string url = "chummer://plugin:SINners:Load:" + sinner.Id;
-                sinner.LastDownload = DateTime.Now;
+
+                foundseq = await (from a in _context.SINners where a.Hash == Hash select a).ToListAsync();
                 await _context.SaveChangesAsync();
-                //Redirect(string url);
-                //RedirectPermanent(string url);
-                //RedirectPermanentPreserveMethod(string url);
-                //RedirectPreserveMethod(string url);
-                return RedirectPreserveMethod(url);
+                foreach (var sinner in foundseq)
+                {
+                    string url = "chummer://plugin:SINners:Load:" + sinner.Id;
+                    sinner.LastDownload = DateTime.Now;
+                    await _context.SaveChangesAsync();
+                    //Redirect(string url);
+                    //RedirectPermanent(string url);
+                    //RedirectPermanentPreserveMethod(string url);
+                    //RedirectPreserveMethod(string url);
+                    return RedirectPreserveMethod(url);
+                }
+
+                return NotFound("Could not find SINner with Hash " + Hash);
             }
-            return NotFound("Could not find SINner with Hash " + Hash);
+            catch (Exception e)
+            {
+                tc.TrackException(e);
+                throw;
+            }
         }
        
     }

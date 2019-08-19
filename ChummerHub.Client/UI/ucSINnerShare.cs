@@ -227,7 +227,7 @@ namespace ChummerHub.Client.UI
                     myState.CurrentProgress = 90;
                     ReportProgress(myState.CurrentProgress, myState);
 
-                    string url = client.BaseUri + "Open";
+                    string url = client.BaseUri + "O";
                     url += "/" + hash;
                     myState.LinkText = url;
                     ReportProgress(100, myState);

@@ -106,6 +106,13 @@ namespace ChummerHub
             // Add SnapshotCollector telemetry processor.
             services.AddSingleton<ITelemetryProcessorFactory>(sp => new SnapshotCollectorTelemetryProcessorFactory(sp));
 
+            var tcbuilder = TelemetryConfiguration.Active.TelemetryProcessorChainBuilder;
+            tcbuilder.Use((next) => new GroupNotFoundFilter(next));
+
+            // If you have more processors:
+            tcbuilder.Use((next) => new ExceptionDataProcessor(next));
+
+
 
             services.Configure<CookiePolicyOptions>(options =>
             {
