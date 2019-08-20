@@ -672,6 +672,14 @@ namespace ChummerHub.Controllers.V1
                         sinner.SINnerMetaData.Visibility.Id = Guid.NewGuid();
                     }
                     sinner.SINnerMetaData.Id = Guid.NewGuid();
+                    foreach(var tag in sinner.SINnerMetaData.Tags)
+                    {
+                        tag.TagValueDouble = null;
+                        if (Double.TryParse(tag.TagValue, out double result))
+                        {
+                            tag.TagValueDouble = result;
+                        }
+                    }
 
                     var oldsinner = (from a in _context.SINners
                             //.Include(a => a.MyExtendedAttributes)

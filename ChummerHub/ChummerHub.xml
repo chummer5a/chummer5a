@@ -170,6 +170,23 @@
             <param name="userpwd"></param>
             <returns></returns>
         </member>
+        <member name="T:ChummerHub.Services.Application_Insights.ExceptionDataProcessor">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:ChummerHub.Services.Application_Insights.ExceptionDataProcessor.#ctor(Microsoft.ApplicationInsights.Extensibility.ITelemetryProcessor)">
+            <summary>
+            
+            </summary>
+            <param name="next"></param>
+        </member>
+        <member name="M:ChummerHub.Services.Application_Insights.ExceptionDataProcessor.Process(Microsoft.ApplicationInsights.Channel.ITelemetry)">
+            <summary>
+            
+            </summary>
+            <param name="item"></param>
+        </member>
         <member name="T:ChummerHub.Services.Application_Insights.GroupNotFoundFilter">
             <summary>
             

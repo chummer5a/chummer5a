@@ -28,8 +28,8 @@ namespace ChummerHub.Client.UI
         /// </summary>
         private void InitializeComponent()
         {
-            GroupControls.RadioButtonListItem radioButtonListItem3 = new GroupControls.RadioButtonListItem();
-            GroupControls.RadioButtonListItem radioButtonListItem4 = new GroupControls.RadioButtonListItem();
+            GroupControls.RadioButtonListItem radioButtonListItem1 = new GroupControls.RadioButtonListItem();
+            GroupControls.RadioButtonListItem radioButtonListItem2 = new GroupControls.RadioButtonListItem();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ucSINnersOptions));
             this.tlpAllOptions = new System.Windows.Forms.TableLayoutPanel();
             this.gpRadioOnlyPublic = new System.Windows.Forms.GroupBox();
@@ -57,9 +57,9 @@ namespace ChummerHub.Client.UI
             this.gpPublicMode = new System.Windows.Forms.GroupBox();
             this.tlpPublicMode = new System.Windows.Forms.TableLayoutPanel();
             this.cbIgnoreWarnings = new System.Windows.Forms.CheckBox();
+            this.bRegisterChummerUrl = new System.Windows.Forms.Button();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.backgroundWorker2 = new System.ComponentModel.BackgroundWorker();
-            this.bRegisterChummerUrl = new System.Windows.Forms.Button();
             this.tlpAllOptions.SuspendLayout();
             this.gpRadioOnlyPublic.SuspendLayout();
             this.rbListUserMode.SuspendLayout();
@@ -111,17 +111,17 @@ namespace ChummerHub.Client.UI
             // 
             this.rbListUserMode.AutoScrollMinSize = new System.Drawing.Size(509, 96);
             this.rbListUserMode.Dock = System.Windows.Forms.DockStyle.Fill;
-            radioButtonListItem3.Checked = true;
-            radioButtonListItem3.Subtext = "use only functions available for none registered users";
-            radioButtonListItem3.Tag = "public";
-            radioButtonListItem3.Text = "Public Mode";
-            radioButtonListItem3.ToolTipText = "";
-            radioButtonListItem4.Subtext = "use enchanced functionality (requires registration)";
-            radioButtonListItem4.Tag = "registered";
-            radioButtonListItem4.Text = "Registered Mode";
+            radioButtonListItem1.Checked = true;
+            radioButtonListItem1.Subtext = "use only functions available for none registered users";
+            radioButtonListItem1.Tag = "public";
+            radioButtonListItem1.Text = "Public Mode";
+            radioButtonListItem1.ToolTipText = "";
+            radioButtonListItem2.Subtext = "use enchanced functionality (requires registration)";
+            radioButtonListItem2.Tag = "registered";
+            radioButtonListItem2.Text = "Registered Mode";
             this.rbListUserMode.Items.AddRange(new GroupControls.RadioButtonListItem[] {
-            radioButtonListItem3,
-            radioButtonListItem4});
+            radioButtonListItem1,
+            radioButtonListItem2});
             this.rbListUserMode.Location = new System.Drawing.Point(4, 24);
             this.rbListUserMode.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.rbListUserMode.Name = "rbListUserMode";

@@ -483,13 +483,22 @@ namespace ChummerHub.Client.Backend
             return true;
         }
 
-        //[PrincipalPermission(SecurityAction.Demand, Role = @"BUILTIN\User") ] 
+        
         public static bool RegisterMyProtocol(string myAppPath)  //myAppPath = full path to your application
         {
             RegistryKey Software = Registry.CurrentUser.OpenSubKey("Software");  //open myApp protocol's subkey
             RegistryKey Classes = Software.OpenSubKey("Classes", true);
             if (Classes == null)
-                Classes = Software.CreateSubKey("Classes", RegistryKeyPermissionCheck.ReadWriteSubTree);
+            {
+                try
+                {
+                    Classes = Software.CreateSubKey("Classes", RegistryKeyPermissionCheck.ReadWriteSubTree);
+                }
+                catch(System.UnauthorizedAccessException e)
+                {
+                    return RegisterMyProtocolAdmin(myAppPath);
+                }
+            }
             RegistryKey key = Classes.OpenSubKey("Chummer", true);  //open myApp protocol's subkey
 
             if (key == null) //if the protocol is not registered yet...we register it
@@ -509,6 +518,29 @@ namespace ChummerHub.Client.Backend
             Classes.Close();
             Software.Close();
             Log.Info("Url Protocol Handler for Chummer registered!");
+            return true;
+        }
+
+        [PrincipalPermission(SecurityAction.Demand, Role = @"BUILTIN\Administrator") ] 
+        public static bool RegisterMyProtocolAdmin(string myAppPath)  //myAppPath = full path to your application
+        {
+            RegistryKey key = Registry.ClassesRoot.OpenSubKey("Chummer", true);  //open myApp protocol's subkey
+
+            if (key == null) //if the protocol is not registered yet...we register it
+            {
+                key = Registry.ClassesRoot.CreateSubKey("Chummer", RegistryKeyPermissionCheck.ReadWriteSubTree);
+            }
+            key.SetValue(string.Empty, "URL: Chummer Protocol");
+            key.SetValue("URL Protocol", string.Empty);
+
+            RegistryKey shell = key.OpenSubKey(@"shell\open\command", RegistryKeyPermissionCheck.ReadWriteSubTree);
+            if (shell == null)
+                shell = key.CreateSubKey(@"shell\open\command", RegistryKeyPermissionCheck.ReadWriteSubTree);
+            shell.SetValue(string.Empty, myAppPath + " " + "%1");
+            //%1 represents the argument - this tells windows to open this program with an argument / parameter
+            shell.Close();
+            key.Close();
+            Log.Info("Url Protocol Handler for Chummer as Admin registered!");
             return true;
         }
     }
@@ -703,7 +735,7 @@ namespace ChummerHub.Client.Backend
                 rb.MyException = e;
                 rb.CallSuccess = false;
                 ResponseBody = rb;
-                Log.Error(e, "Error parsing response from SINners WebService as response.Response.Content: " + content);
+                Log.Warn(e, "Error parsing response from SINners WebService as response.Response.Content: " + content);
             }
 
             try
@@ -721,7 +753,7 @@ namespace ChummerHub.Client.Backend
                 rb.MyException = e;
                 rb.CallSuccess = false;
                 ResponseBody = rb;
-                Log.Error(e, "Error parsing response from SINners WebService as ResponseBody: " + content);
+                Log.Warn(e, "Error parsing response from SINners WebService as ResponseBody: " + content);
             }
 
 
@@ -731,10 +763,25 @@ namespace ChummerHub.Client.Backend
                 PluginHandler.MainForm.DoThreadSafe(() =>
                 {
                     Log.Warn("SINners WebService returned: " + rb.ErrorText);
-                    var frmSIN = new frmSINnerResponse();
-                    frmSIN.SINnerResponseUI.Result = rb;
-                    frmSIN.TopMost = true;
-                    frmSIN.Show(PluginHandler.MainForm);
+                    Thread show = new Thread(() => {
+                        PluginHandler.MainForm.DoThreadSafe(() =>
+                        {
+                            var frmSIN = new frmSINnerResponse();
+                            if (rb.ErrorText.Length > 600)
+                                rb.ErrorText = rb.ErrorText.Substring(0, 598) + "...";
+                            frmSIN.SINnerResponseUI.Result = rb;
+                            frmSIN.TopMost = true;
+                            frmSIN.DoThreadSafe(() =>
+                            {
+                                Log.Trace("Showing Dialog for frmSINnerResponse()");
+                                frmSIN.Show();
+                            });
+                        });
+                    });
+                    show.Start();
+
+
+
                 });
             }
             return ResponseBody;
