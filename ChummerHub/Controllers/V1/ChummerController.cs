@@ -17,6 +17,7 @@ namespace ChummerHub.Controllers.V1
 {
     [Route("[action]/{Hash}")]
     [ApiController]
+    [ApiVersion("1.0")]
     [ControllerName("Chummer")]
     [AllowAnonymous]
     public class ChummerController : Controller
@@ -38,6 +39,8 @@ namespace ChummerHub.Controllers.V1
 
         [HttpGet]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Redirect)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.RedirectKeepVerb)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)(HttpStatusCode.PermanentRedirect))]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("ChummerO")]
         public IActionResult O([FromRoute] string Hash)
