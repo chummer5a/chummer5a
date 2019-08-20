@@ -674,10 +674,10 @@ namespace ChummerHub.Controllers.V1
                     sinner.SINnerMetaData.Id = Guid.NewGuid();
                     foreach(var tag in sinner.SINnerMetaData.Tags)
                     {
-                        tag.TagValueDouble = null;
-                        if (Double.TryParse(tag.TagValue, out double result))
+                        tag.TagValueFloat = null;
+                        if (float.TryParse(tag.TagValue, out float result))
                         {
-                            tag.TagValueDouble = result;
+                            tag.TagValueFloat = result;
                         }
                     }
 

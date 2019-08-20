@@ -26,7 +26,7 @@ namespace ChummerHub.Models.V1
         public string TagValue { get; set; }
 
 
-        public Double? TagValueDouble { get; set; }
+        public float? TagValueFloat { get; set; }
 
         /// <summary>
         /// This has NO FUNCTION and is only here for Debugging reasons.
@@ -82,7 +82,7 @@ namespace ChummerHub.Models.V1
             this.ParentTag = parent;
             this.TagName = "";
             this.TagValue = "";
-            this.TagValueDouble = null;
+            this.TagValueFloat = null;
             this.ParentTagId = Guid.Empty;
             if (parent != null)
                 this.ParentTagId = parent.Id;
