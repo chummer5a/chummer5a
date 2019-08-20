@@ -124,7 +124,7 @@ namespace ChummerHub.Data
             //builder.Entity<ChummerHub.Models.V1.SINnerExtended>()
             //    .HasIndex(b => b.SINnerId);
             builder.Entity<ChummerHub.Models.V1.Tag>()
-                .HasIndex(b => b.TagValueDouble);
+                .HasIndex(b => b.TagValueFloat);
             builder.Entity<ApplicationUserFavoriteGroup>()
                 .HasIndex(b => b.FavoriteGuid);
             try
