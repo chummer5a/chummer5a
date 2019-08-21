@@ -1,11 +1,15 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
+using System;
 
 namespace ChummerHub.Migrations
 {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'favgroupsAreGuids'
     public partial class favgroupsAreGuids : Migration
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'favgroupsAreGuids'
     {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'favgroupsAreGuids.Up(MigrationBuilder)'
         protected override void Up(MigrationBuilder migrationBuilder)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'favgroupsAreGuids.Up(MigrationBuilder)'
         {
             migrationBuilder.DropForeignKey(
                 name: "FK_SINnerGroups_AspNetUsers_ApplicationUserId",
@@ -44,7 +48,9 @@ namespace ChummerHub.Migrations
                 column: "ApplicationUserId");
         }
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'favgroupsAreGuids.Down(MigrationBuilder)'
         protected override void Down(MigrationBuilder migrationBuilder)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'favgroupsAreGuids.Down(MigrationBuilder)'
         {
             migrationBuilder.DropTable(
                 name: "ApplicationUserFavoriteGroup");

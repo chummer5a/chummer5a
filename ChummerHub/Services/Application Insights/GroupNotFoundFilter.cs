@@ -1,8 +1,7 @@
-using System;
-using System.Net;
 using Microsoft.ApplicationInsights.Channel;
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.ApplicationInsights.Extensibility;
+using System.Net;
 
 namespace ChummerHub.Services.Application_Insights
 {
@@ -48,7 +47,7 @@ namespace ChummerHub.Services.Application_Insights
         // Example: replace with your own criteria.
         private bool OKtoSend(ITelemetry item)
         {
-            if (item is RequestTelemetry requestTelemetry && int.Parse(requestTelemetry.ResponseCode) == (int) HttpStatusCode.NotFound)
+            if (item is RequestTelemetry requestTelemetry && int.Parse(requestTelemetry.ResponseCode) == (int)HttpStatusCode.NotFound)
             {
                 if (requestTelemetry.Context?.Operation?.Name.Contains("GetSINnerGroupFromSINerById") == true)
                     return false;

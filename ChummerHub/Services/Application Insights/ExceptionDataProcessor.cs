@@ -1,9 +1,7 @@
-using System;
-using System.Collections;
-using System.Net;
 using Microsoft.ApplicationInsights.Channel;
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.ApplicationInsights.Extensibility;
+using System.Collections;
 
 namespace ChummerHub.Services.Application_Insights
 {

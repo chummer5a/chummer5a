@@ -1,21 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
 
 namespace ChummerHub.Areas.Identity.Pages.Account.Manage
 {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ResetAuthenticatorModel'
     public class ResetAuthenticatorModel : PageModel
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ResetAuthenticatorModel'
     {
         UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         ILogger<ResetAuthenticatorModel> _logger;
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ResetAuthenticatorModel.ResetAuthenticatorModel(UserManager<ApplicationUser>, SignInManager<ApplicationUser>, ILogger<ResetAuthenticatorModel>)'
         public ResetAuthenticatorModel(
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ResetAuthenticatorModel.ResetAuthenticatorModel(UserManager<ApplicationUser>, SignInManager<ApplicationUser>, ILogger<ResetAuthenticatorModel>)'
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             ILogger<ResetAuthenticatorModel> logger)
@@ -26,9 +27,13 @@ namespace ChummerHub.Areas.Identity.Pages.Account.Manage
         }
 
         [TempData]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ResetAuthenticatorModel.StatusMessage'
         public string StatusMessage { get; set; }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ResetAuthenticatorModel.StatusMessage'
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ResetAuthenticatorModel.OnGet()'
         public async Task<IActionResult> OnGet()
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ResetAuthenticatorModel.OnGet()'
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -39,7 +44,9 @@ namespace ChummerHub.Areas.Identity.Pages.Account.Manage
             return Page();
         }
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ResetAuthenticatorModel.OnPostAsync()'
         public async Task<IActionResult> OnPostAsync()
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ResetAuthenticatorModel.OnPostAsync()'
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)

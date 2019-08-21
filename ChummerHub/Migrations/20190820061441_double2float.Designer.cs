@@ -13,7 +13,9 @@ namespace ChummerHub.Migrations
     [Migration("20190820061441_double2float")]
     partial class double2float
     {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'double2float.BuildTargetModel(ModelBuilder)'
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'double2float.BuildTargetModel(ModelBuilder)'
         {
 #pragma warning disable 612, 618
             modelBuilder

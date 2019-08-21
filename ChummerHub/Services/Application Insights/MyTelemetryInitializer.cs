@@ -1,4 +1,3 @@
-using System;
 using Microsoft.ApplicationInsights.Channel;
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.ApplicationInsights.Extensibility;
@@ -35,7 +34,7 @@ namespace ChummerHub.Services.Application_Insights
             //    // Allow us to filter these requests in the portal:
             //    requestTelemetry.Context.Properties["Overridden400s"] = "true";
             //}
-            
+
         }
     }
 }
