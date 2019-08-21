@@ -1,22 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace ChummerHub.Areas.Identity.Pages.Account.Manage
 {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'DownloadPersonalDataModel'
     public class DownloadPersonalDataModel : PageModel
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'DownloadPersonalDataModel'
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<DownloadPersonalDataModel> _logger;
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'DownloadPersonalDataModel.DownloadPersonalDataModel(UserManager<ApplicationUser>, ILogger<DownloadPersonalDataModel>)'
         public DownloadPersonalDataModel(
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'DownloadPersonalDataModel.DownloadPersonalDataModel(UserManager<ApplicationUser>, ILogger<DownloadPersonalDataModel>)'
             UserManager<ApplicationUser> userManager,
             ILogger<DownloadPersonalDataModel> logger)
         {
@@ -24,7 +28,9 @@ namespace ChummerHub.Areas.Identity.Pages.Account.Manage
             _logger = logger;
         }
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'DownloadPersonalDataModel.OnPostAsync()'
         public async Task<IActionResult> OnPostAsync()
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'DownloadPersonalDataModel.OnPostAsync()'
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)

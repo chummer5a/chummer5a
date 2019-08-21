@@ -1,20 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Threading.Tasks;
 
 namespace ChummerHub.Areas.Identity.Pages.Account.Manage
 {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Disable2faModel'
     public class Disable2faModel : PageModel
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Disable2faModel'
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<Disable2faModel> _logger;
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Disable2faModel.Disable2faModel(UserManager<ApplicationUser>, ILogger<Disable2faModel>)'
         public Disable2faModel(
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Disable2faModel.Disable2faModel(UserManager<ApplicationUser>, ILogger<Disable2faModel>)'
             UserManager<ApplicationUser> userManager,
             ILogger<Disable2faModel> logger)
         {
@@ -23,9 +25,13 @@ namespace ChummerHub.Areas.Identity.Pages.Account.Manage
         }
 
         [TempData]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Disable2faModel.StatusMessage'
         public string StatusMessage { get; set; }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Disable2faModel.StatusMessage'
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Disable2faModel.OnGet()'
         public async Task<IActionResult> OnGet()
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Disable2faModel.OnGet()'
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -41,7 +47,9 @@ namespace ChummerHub.Areas.Identity.Pages.Account.Manage
             return Page();
         }
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Disable2faModel.OnPostAsync()'
         public async Task<IActionResult> OnPostAsync()
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Disable2faModel.OnPostAsync()'
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)

@@ -2,9 +2,13 @@
 
 namespace ChummerHub.Migrations
 {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'alias2'
     public partial class alias2 : Migration
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'alias2'
     {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'alias2.Up(MigrationBuilder)'
         protected override void Up(MigrationBuilder migrationBuilder)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'alias2.Up(MigrationBuilder)'
         {
             migrationBuilder.AlterColumn<string>(
                 name: "EMail",
@@ -43,7 +47,9 @@ namespace ChummerHub.Migrations
                 column: "Groupname");
         }
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'alias2.Down(MigrationBuilder)'
         protected override void Down(MigrationBuilder migrationBuilder)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'alias2.Down(MigrationBuilder)'
         {
             migrationBuilder.DropIndex(
                 name: "IX_UserRights_EMail",

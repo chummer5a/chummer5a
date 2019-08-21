@@ -1,23 +1,27 @@
+using ChummerHub.Models.V1;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using ChummerHub.Models.V1;
 
 namespace ChummerHub.Controllers.V1
 {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Utils'
     public class Utils
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Utils'
     {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Utils.DbUpdateConcurrencyExceptionHandler(EntityEntry, ILogger)'
         public static ResultBase DbUpdateConcurrencyExceptionHandler(Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry entry, ILogger logger)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Utils.DbUpdateConcurrencyExceptionHandler(EntityEntry, ILogger)'
         {
             var proposedValues = entry.CurrentValues;
             var databaseValues = entry.GetDatabaseValues();
             string msg = "";
+#pragma warning disable CS0168 // The variable 'res' is declared but never used
             ResultBase res;
+#pragma warning restore CS0168 // The variable 'res' is declared but never used
             try
             {
-                
+
                 foreach (var property in proposedValues.Properties)
                 {
                     Object proposedValue = null;

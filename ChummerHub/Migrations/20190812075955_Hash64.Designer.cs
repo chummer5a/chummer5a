@@ -13,7 +13,9 @@ namespace ChummerHub.Migrations
     [Migration("20190812075955_Hash64")]
     partial class Hash64
     {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Hash64.BuildTargetModel(ModelBuilder)'
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Hash64.BuildTargetModel(ModelBuilder)'
         {
 #pragma warning disable 612, 618
             modelBuilder

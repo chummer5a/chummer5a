@@ -1,33 +1,32 @@
+using ChummerHub.Data;
+using Microsoft.ApplicationInsights.DataContracts;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using System;
-using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Reflection;
-using Microsoft.AspNetCore;
-using ChummerHub.Data;
-using Microsoft.ApplicationInsights.Channel;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Configuration;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.ApplicationInsights.DataContracts;
+using System;
 
 namespace ChummerHub
 {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Program'
     public class Program
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Program'
     {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Program.MyHost'
         public static IWebHost MyHost = null;
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Program.MyHost'
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Program.Main(string[])'
         public static void Main(string[] args)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Program.Main(string[])'
         {
 
-            
-          
+
+
 #if DEBUG
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
@@ -49,7 +48,7 @@ namespace ChummerHub
         }
 
         private static bool _preventOverflow = false;
-       
+
         private static void CurrentDomain_FirstChanceException(object sender, System.Runtime.ExceptionServices.FirstChanceExceptionEventArgs e)
         {
             try
@@ -87,10 +86,12 @@ namespace ChummerHub
             }
         }
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Program.Seed()'
         public static void Seed()
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Program.Seed()'
         {
 
-            using(var scope = MyHost.Services.CreateScope())
+            using (var scope = MyHost.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
                 var logger = services.GetRequiredService<ILogger<Program>>();
@@ -99,7 +100,7 @@ namespace ChummerHub
                 {
                     context.Database.Migrate();
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     try
                     {
@@ -125,7 +126,7 @@ namespace ChummerHub
                     var env = services.GetService<IHostingEnvironment>();
                     SeedData.Initialize(services, testUserPw, env).Wait();
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     try
                     {
@@ -143,7 +144,9 @@ namespace ChummerHub
 
         }
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Program.CreateWebHostBuilder(string[])'
         public static IWebHost CreateWebHostBuilder(string[] args) =>
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Program.CreateWebHostBuilder(string[])'
             WebHost.CreateDefaultBuilder(args)
                 .UseApplicationInsights()
                 .UseKestrel(options =>

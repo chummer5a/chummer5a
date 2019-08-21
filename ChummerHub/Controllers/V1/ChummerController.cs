@@ -1,31 +1,38 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
 using ChummerHub.Data;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace ChummerHub.Controllers.V1
 {
     [Route("[action]/{Hash}")]
     [ApiController]
+    [EnableCors("AllowAllOrigins")]
+    [ApiVersion("1.0")]
     [ControllerName("Chummer")]
     [AllowAnonymous]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ChummerController'
     public class ChummerController : Controller
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ChummerController'
     {
         private readonly ILogger _logger;
         private TelemetryClient tc;
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ChummerController._context'
         public ApplicationDbContext _context = null;
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ChummerController._context'
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ChummerController.ChummerController(ApplicationDbContext, ILogger<ChummerController>, SignInManager<ApplicationUser>, UserManager<ApplicationUser>, TelemetryClient)'
         public ChummerController(ApplicationDbContext context,
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ChummerController.ChummerController(ApplicationDbContext, ILogger<ChummerController>, SignInManager<ApplicationUser>, UserManager<ApplicationUser>, TelemetryClient)'
             ILogger<ChummerController> logger,
             SignInManager<ApplicationUser> signInManager,
             UserManager<ApplicationUser> userManager,
@@ -38,9 +45,14 @@ namespace ChummerHub.Controllers.V1
 
         [HttpGet]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Redirect)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.RedirectKeepVerb)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)(HttpStatusCode.PermanentRedirect))]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("ChummerO")]
+        [EnableCors("AllowAllOrigins")]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ChummerController.O(string)'
         public IActionResult O([FromRoute] string Hash)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ChummerController.O(string)'
         {
             try
             {
@@ -59,33 +71,95 @@ namespace ChummerHub.Controllers.V1
                 }
                 foundseq = (from a in _context.SINners where a.Hash == Hash select a).ToList();
                 _context.SaveChanges();
-                foreach (var sinner in foundseq)
+                if (foundseq.Any())
                 {
+                    var sinner = foundseq.FirstOrDefault();
+
                     string url = "chummer://plugin:SINners:Load:" + sinner.Id;
                     sinner.LastDownload = DateTime.Now;
                     _context.SaveChanges();
-                    //Redirect(string url);
-                    //RedirectPermanent(string url);
-                    //RedirectPermanentPreserveMethod(string url);
-                    //RedirectPreserveMethod(string url);
+                    string mypath = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}";
+                    //Response.HttpContext.Items.Add("Enviroment", mypath);
+                    Response.Headers.Add("Enviroment", mypath);
                     return RedirectPreserveMethod(url);
+
                 }
-                return NotFound("Could not find SINner with Hash " + Hash);
+                else
+                    return NotFound("Could not find SINner with Hash " + Hash);
             }
             catch (Exception e)
             {
                 tc.TrackException(e);
                 throw;
             }
-            
+        }
+
+        [HttpGet]
+        [EnableCors("AllowAllOrigins")]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Redirect)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.RedirectKeepVerb)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)(HttpStatusCode.PermanentRedirect))]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("ChummerRedirect")]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ChummerController.O(string)'
+        public IActionResult Redirect([FromRoute] string Hash)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ChummerController.O(string)'
+        {
+            try
+            {
+                if (String.IsNullOrEmpty(Hash))
+                    throw new ArgumentException("hash is empty: " + Hash);
+                var foundseq = (from a in _context.SINners where a.Hash == Hash select a).ToList();
+                if (!foundseq.Any())
+                {
+                    var nullseq = (from a in _context.SINners where String.IsNullOrEmpty(a.Hash) || a.Hash == "25943ECC" select a).ToList();
+                    foreach (var nullSinner in nullseq)
+                    {
+                        string message = "Saving Hash for SINner " + nullSinner.Id + ": " + nullSinner.MyHash;
+                        TraceTelemetry tt = new TraceTelemetry(message, SeverityLevel.Verbose);
+                        tc?.TrackTrace(tt);
+                    }
+                }
+                foundseq = (from a in _context.SINners where a.Hash == Hash select a).ToList();
+                _context.SaveChanges();
+                if (foundseq.Any())
+                {
+                    var sinner = foundseq.FirstOrDefault();
+                    
+                    string url = "chummer://plugin:SINners:Load:" + sinner.Id;
+                    url = "http://freehare.com/character/open/" + sinner.Id;
+                    sinner.LastDownload = DateTime.Now;
+                    _context.SaveChanges();
+                    //Redirect(string url);
+                    //RedirectPermanent(string url);
+                    //RedirectPermanentPreserveMethod(string url);
+                    //RedirectPreserveMethod(string url);
+                    string mypath = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}";
+                    //Response.HttpContext.Items.Add("Enviroment", mypath);
+                    Response.Headers.Add("Enviroment", mypath);
+                    return RedirectPreserveMethod(url);
+                    
+                }
+                else
+                    return NotFound("Could not find SINner with Hash " + Hash);
+            }
+            catch (Exception e)
+            {
+                tc.TrackException(e);
+                throw;
+            }
+            return BadRequest("Could not work with Hash " + Hash);
         }
 
 
         [HttpGet]
+        [EnableCors("AllowAllOrigins")]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Redirect)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("ChummerOpen")]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ChummerController.Open(string)'
         public async Task<ActionResult> Open([FromRoute] string Hash)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ChummerController.Open(string)'
         {
             try
             {
@@ -95,8 +169,8 @@ namespace ChummerHub.Controllers.V1
                 if (!foundseq.Any())
                 {
                     var nullseq = await (from a in _context.SINners
-                        where String.IsNullOrEmpty(a.Hash) || a.Hash == "25943ECC"
-                        select a).ToListAsync();
+                                         where String.IsNullOrEmpty(a.Hash) || a.Hash == "25943ECC"
+                                         select a).ToListAsync();
                     foreach (var nullSinner in nullseq)
                     {
                         string message = "Saving Hash for SINner " + nullSinner.Id + ": " + nullSinner.MyHash;
@@ -107,8 +181,9 @@ namespace ChummerHub.Controllers.V1
 
                 foundseq = await (from a in _context.SINners where a.Hash == Hash select a).ToListAsync();
                 await _context.SaveChangesAsync();
-                foreach (var sinner in foundseq)
+                if (foundseq.Any())
                 {
+                    var sinner = foundseq.FirstOrDefault();
                     string url = "chummer://plugin:SINners:Load:" + sinner.Id;
                     sinner.LastDownload = DateTime.Now;
                     await _context.SaveChangesAsync();
@@ -118,8 +193,10 @@ namespace ChummerHub.Controllers.V1
                     //RedirectPreserveMethod(string url);
                     return RedirectPreserveMethod(url);
                 }
-
-                return NotFound("Could not find SINner with Hash " + Hash);
+                else
+                {
+                    return NotFound("Could not find SINner with Hash " + Hash);
+                }
             }
             catch (Exception e)
             {
@@ -127,7 +204,7 @@ namespace ChummerHub.Controllers.V1
                 throw;
             }
         }
-       
+
     }
 
-}  
+}
