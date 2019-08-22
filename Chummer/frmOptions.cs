@@ -1916,7 +1916,7 @@ namespace Chummer
             if (this._blnLoading)
                 return;
             UseAILogging useAI = (UseAILogging) ((ListItem) cbUseLoggingApplicationInsights.SelectedItem).Value;
-            if (useAI == UseAILogging.Yes)
+            if (useAI > UseAILogging.Info)
             {
                 string msg = "Thank you for sharing logs and metrics";
                 msg += Environment.NewLine + "with the Chummer Dev-Team. You can";
@@ -1924,14 +1924,14 @@ namespace Chummer
                 msg += Environment.NewLine + "be improved and adressed the most.";
                 msg += Environment.NewLine + Environment.NewLine;
                 msg += "Do you want to share your logs?";
-                var result = Program.MainForm.ShowMessageBox(msg, "Really enable upload?", MessageBoxButtons.OKCancel);
+                var result = Program.MainForm.ShowMessageBox(msg, "Really enable detailed upload?", MessageBoxButtons.OKCancel);
                 if (result == DialogResult.OK)
                 {
                     GlobalOptions.UseLoggingApplicationInsights = useAI;
                 }
                 else
                 {
-                    GlobalOptions.UseLoggingApplicationInsights = UseAILogging.Crashes;
+                    GlobalOptions.UseLoggingApplicationInsights = UseAILogging.Info;
                     this._blnLoading = true;
                     this.cbUseLoggingApplicationInsights.SelectedItem = GlobalOptions.UseLoggingApplicationInsights;
                     this._blnLoading = false;

@@ -187,8 +187,7 @@ namespace Chummer
                                 rule.EnableLoggingForLevels(LogLevel.Debug, LogLevel.Fatal);
                         }
                     }
-                    Log.Info(strInfo);
-
+                    
                     if (Chummer.Properties.Settings.Default.UploadClientId == Guid.Empty)
                     {
                         Chummer.Properties.Settings.Default.UploadClientId = Guid.NewGuid();
@@ -241,6 +240,7 @@ namespace Chummer
                     if (Utils.IsUnitTest)
                         TelemetryConfiguration.Active.DisableTelemetry = true;
 
+                    Log.Info(strInfo);
                     Log.Info("Logging options are set to " + GlobalOptions.UseLogging + " and Upload-Options are set to " + GlobalOptions.UseLoggingApplicationInsights + " (Installation-Id: " + Chummer.Properties.Settings.Default.UploadClientId + ").");
 
                     //make sure the Settings are upgraded/preserved after an upgrade

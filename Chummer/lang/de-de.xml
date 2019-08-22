@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -7114,7 +7114,7 @@
 		</string>
 		<string>
 			<key>Checkbox_Options_UseLogging</key>
-			<text>Benutze Debug Logging</text>
+			<text>Benutze Logging</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_LicenseRestricted</key>
@@ -9631,10 +9631,14 @@
 		<key>String_ApplicationInsights_Crashes</key>
 		<text>Programm-Abstürze hochladen</text>
 	</string>
-	<string>
-		<key>String_ApplicationInsights_Yes</key>
-		<text>alle Fehler hochladen</text>
-	</string>
+    <string>
+        <key>String_ApplicationInsights_Info</key>
+        <text>normale Logs hochladen</text>
+    </string>
+    <string>
+        <key>String_ApplicationInsights_Trace</key>
+        <text>detailierte Logs hochladen</text>
+    </string>
 	<string>
 		<key>String_ApplicationInsights_NotSet</key>
 		<text>lasse Chummer entscheiden</text>
