@@ -10,7 +10,11 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using System.Text;
+using System.Net.Http.Headers;
 
 namespace ChummerHub.Controllers.V1
 {
@@ -97,6 +101,7 @@ namespace ChummerHub.Controllers.V1
         [HttpGet]
         [EnableCors("AllowAllOrigins")]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Redirect)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.RedirectKeepVerb)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)(HttpStatusCode.PermanentRedirect))]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
@@ -126,29 +131,38 @@ namespace ChummerHub.Controllers.V1
                 {
                     var sinner = foundseq.FirstOrDefault();
                     
-                    string url = "chummer://plugin:SINners:Load:" + sinner.Id;
-                    url = "http://freehare.com/character/open/" + sinner.Id;
+                    string postbackUrl = "chummer://plugin:SINners:Load:" + sinner.Id;
+                    postbackUrl = "http://shadowsprawl.com/character/open";
                     sinner.LastDownload = DateTime.Now;
                     _context.SaveChanges();
-                    //Redirect(string url);
-                    //RedirectPermanent(string url);
-                    //RedirectPermanentPreserveMethod(string url);
-                    //RedirectPreserveMethod(string url);
                     string mypath = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}";
-                    //Response.HttpContext.Items.Add("Enviroment", mypath);
-                    Response.Headers.Add("Enviroment", mypath);
-                    return RedirectPreserveMethod(url);
-                    
+                    StringBuilder sb = new StringBuilder();
+                    sb.Append("<html>");
+                    sb.AppendFormat(@"<body onload='document.forms[""form""].submit()'>");
+                    sb.AppendFormat("<form name='form' action='{0}' method='post'>", postbackUrl);
+                    sb.AppendFormat("<input type='hidden' name='guid' value='{0}'>", sinner?.Id);
+                    sb.AppendFormat("<input type='hidden' name='Environment' value='{0}'>", mypath);
+                    sb.AppendFormat("<input type='hidden' name='DownloadUrl' value='{0}'>", sinner?.DownloadUrl);
+                    // Other params go here
+                    sb.Append("</form>");
+                    sb.Append("</body>");
+                    sb.Append("</html>");
+                    var contentresult = new ContentResult()
+                    {
+                        ContentType = "text/html",
+                        StatusCode = (int) HttpStatusCode.OK,
+                        Content = sb.ToString()
+                    };
+                    return contentresult;
+
                 }
-                else
-                    return NotFound("Could not find SINner with Hash " + Hash);
+                return NotFound("Hash not found.");
             }
             catch (Exception e)
             {
                 tc.TrackException(e);
                 throw;
             }
-            return BadRequest("Could not work with Hash " + Hash);
         }
 
 

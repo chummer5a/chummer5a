@@ -377,6 +377,8 @@ namespace ChummerHub
             });
 
             services.AddSwaggerExamples();
+            //services.AddDistributedMemoryCache(); // Adds a default in-memory implementation of IDistributedCache
+            //services.AddSession();
 
             //services.AddHttpsRedirection(options =>
             //{
@@ -398,6 +400,7 @@ namespace ChummerHub
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Startup.Configure(IApplicationBuilder, IHostingEnvironment)'
         {
+            //app.UseSession();
             app.UseCors(MyAllowAllOrigins);
             if (env.IsDevelopment())
             {
