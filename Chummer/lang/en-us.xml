@@ -7202,7 +7202,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Checkbox_Options_UseLogging</key>
-      <text>Use Debug Logging</text>
+      <text>Use Logging</text>
     </string>
     <string>
       <key>Checkbox_Options_LocalisedUpdatesOnly</key>
@@ -9754,8 +9754,12 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>upload crashes</text>
     </string>
     <string>
-      <key>String_ApplicationInsights_Yes</key>
-      <text>upload all errors</text>
+      <key>String_ApplicationInsights_Info</key>
+      <text>upload some logs</text>
+    </string>
+    <string>
+      <key>String_ApplicationInsights_Trace</key>
+      <text>upload detailed logs</text>
     </string>
     <string>
       <key>String_ApplicationInsights_NotSet</key>

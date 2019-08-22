@@ -47,11 +47,12 @@ namespace Chummer
 
     public enum UseAILogging
     {
-        NotSet = -1,
-        OnlyLocal,
+        OnlyLocal = 0,
         OnlyMetric,
         Crashes,
-        Yes
+        NotSet,
+        Info,
+        Trace
     }
 
     public sealed class SourcebookInfo : IDisposable
@@ -421,7 +422,10 @@ namespace Chummer
                             break;
                         //legacy convert of checkbox bool
                         case "True":
-                            _enumUseLoggingApplicationInsights = UseAILogging.Yes;
+                            _enumUseLoggingApplicationInsights = UseAILogging.Info;
+                            break;
+                        case "Yes":
+                            _enumUseLoggingApplicationInsights = UseAILogging.Info;
                             break;
                         default:
                             _enumUseLoggingApplicationInsights = (UseAILogging) Enum.Parse(typeof(UseAILogging), useAI);
