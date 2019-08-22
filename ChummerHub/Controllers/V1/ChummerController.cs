@@ -142,7 +142,10 @@ namespace ChummerHub.Controllers.V1
                     sb.AppendFormat("<form name='form' action='{0}' method='post'>", postbackUrl);
                     sb.AppendFormat("<input type='hidden' name='guid' value='{0}'>", sinner?.Id);
                     sb.AppendFormat("<input type='hidden' name='Environment' value='{0}'>", mypath);
-                    sb.AppendFormat("<input type='hidden' name='DownloadUrl' value='{0}'>", sinner?.DownloadUrl);
+                    Uri escape = new Uri(sinner?.DownloadUrl);
+                    string escapestr = $"{escape.Scheme}://{escape.Host}{escape.AbsolutePath}";
+                    escapestr += Uri.EscapeDataString(escape.Query);
+                    sb.AppendFormat("<input type='hidden' name='DownloadUrl' value='{0}'>", escapestr);
                     // Other params go here
                     sb.Append("</form>");
                     sb.Append("</body>");
