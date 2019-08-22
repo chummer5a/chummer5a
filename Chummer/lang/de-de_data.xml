@@ -22541,6 +22541,18 @@
 				<altpage>180</altpage>
 			</metamagic>
 			<metamagic translated="True">
+				<id>215dbdc3-b4f5-4ca6-98b1-5d6ea5eb5fda</id>
+				<name>Taint</name>
+				<translate>Trübung</translate>
+				<altpage>91</altpage>
+			</metamagic>
+			<metamagic translated="True">
+				<id>920770d1-a705-4fc9-8814-f3a4a455e8fb</id>
+				<name>Corruption</name>
+				<translate>Korrumpierung</translate>
+				<altpage>91</altpage>
+			</metamagic>
+			<metamagic translated="True">
 				<id>9540267c-d53c-4547-9bd2-e1f06723caee</id>
 				<name>Sympathetic Linking</name>
 				<translate>Sympathetische Verbindung</translate>
