@@ -6078,7 +6078,7 @@
       <source>SR5</source>
       <accel>3</accel>
       <armor>8</armor>
-      <avail>16</avail>
+      <avail>10</avail>
       <body>16</body>
       <category>VTOL/VSTOL</category>
       <cost>350000</cost>

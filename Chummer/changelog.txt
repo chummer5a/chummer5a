@@ -87,6 +87,7 @@ This affects:
 - Fixed Dareadrenaline adding 1 to WIL instead of 1 to dicepools based on WIL (important due to augmented attribute limits). Closes #3791.
 - Corrected the Handling and page reference of the Lone Star SecureSector Mk2. Closes #3788.
 - Added missing actions for Commanding Voice and Mystic Aptitude. Closes #3804
+- Fixed incorrect Availability on the Federated Boeing Commuter. Closes #3833
 
 New Strings:
 
