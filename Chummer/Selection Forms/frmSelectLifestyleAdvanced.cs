@@ -415,11 +415,14 @@ namespace Chummer
             nudArea.DoDatabinding("Value", SelectedLifestyle, nameof(Lifestyle.BindableArea));
             nudComforts.DoDatabinding("Value", SelectedLifestyle, nameof(Lifestyle.BindableComforts));
             nudSecurity.DoDatabinding("Value", SelectedLifestyle, nameof(Lifestyle.BindableSecurity));
+            nudArea.DoDatabinding("Maximum", SelectedLifestyle, nameof(Lifestyle.AreaDelta));
+            nudComforts.DoDatabinding("Maximum", SelectedLifestyle, nameof(Lifestyle.ComfortsDelta));
+            nudSecurity.DoDatabinding("Maximum", SelectedLifestyle, nameof(Lifestyle.SecurityDelta));
             cboBaseLifestyle.DoDatabinding("SelectedValue",SelectedLifestyle,nameof(Lifestyle.BaseLifestyle));
             chkTrustFund.DoDatabinding("Checked", SelectedLifestyle, nameof(Lifestyle.TrustFund));
             chkTrustFund.DoDatabinding("Enabled",SelectedLifestyle,nameof(Lifestyle.IsTrustFundEligible));
             chkPrimaryTenant.DoDatabinding("Checked", SelectedLifestyle, nameof(Lifestyle.PrimaryTenant));
-            lblCost.DoDatabinding("Text", SelectedLifestyle, nameof(Lifestyle.TotalMonthlyCost));
+            lblCost.DoDatabinding("Text", SelectedLifestyle, nameof(Lifestyle.DisplayTotalMonthlyCost));
             lblArea.DoDatabinding("Text", SelectedLifestyle, nameof(Lifestyle.FormattedArea));
             lblComforts.DoDatabinding("Text", SelectedLifestyle, nameof(Lifestyle.FormattedComforts));
             lblSecurity.DoDatabinding("Text", SelectedLifestyle, nameof(Lifestyle.FormattedSecurity));
@@ -428,54 +431,6 @@ namespace Chummer
             lblSecurityTotal.DoDatabinding("Text", SelectedLifestyle, nameof(Lifestyle.TotalSecurity));
             if (cboBaseLifestyle.SelectedIndex == -1)
                 cboBaseLifestyle.SelectedIndex = 0;
-
-            if (SelectedLifestyle.BaseLifestyle != null)
-            {
-                int intMinComfort = 0;
-                int intMaxComfort = 0;
-                int intMinArea = 0;
-                int intMaxArea = 0;
-                int intMinSec = 0;
-                int intMaxSec = 0;
-                string strBaseLifestyle = SelectedLifestyle.BaseLifestyle;
-
-                // Calculate the limits of the 3 aspects.
-                // Comforts.
-                XmlNode xmlNode = _xmlDocument.SelectSingleNode("/chummer/comforts/comfort[name = \"" + strBaseLifestyle + "\"]");
-                xmlNode.TryGetInt32FieldQuickly("minimum", ref intMinComfort);
-                xmlNode.TryGetInt32FieldQuickly("limit", ref intMaxComfort);
-                if (intMaxComfort < intMinComfort)
-                    intMaxComfort = intMinComfort;
-                // Area.
-                xmlNode = _xmlDocument.SelectSingleNode("/chummer/neighborhoods/neighborhood[name = \"" + strBaseLifestyle + "\"]");
-                xmlNode.TryGetInt32FieldQuickly("minimum", ref intMinArea);
-                xmlNode.TryGetInt32FieldQuickly("limit", ref intMaxArea);
-                if (intMaxArea < intMinArea)
-                    intMaxArea = intMinArea;
-                // Security.
-                xmlNode = _xmlDocument.SelectSingleNode("/chummer/securities/security[name = \"" + strBaseLifestyle + "\"]");
-                xmlNode.TryGetInt32FieldQuickly("minimum", ref intMinSec);
-                xmlNode.TryGetInt32FieldQuickly("limit", ref intMaxSec);
-                if (intMaxSec < intMinSec)
-                    intMaxSec = intMinSec;
-
-                // Calculate the cost of Positive Qualities.
-                foreach (LifestyleQuality objQuality in SelectedLifestyle.LifestyleQualities)
-                {
-                    intMaxArea += objQuality.AreaMaximum;
-                    intMaxComfort += objQuality.ComfortMaximum;
-                    intMaxSec += objQuality.SecurityMaximum;
-                    intMinArea += objQuality.Area;
-                    intMinComfort += objQuality.Comfort;
-                    intMinSec += objQuality.Security;
-                }
-                _blnSkipRefresh = true;
-
-                nudComforts.Maximum = Math.Max(intMaxComfort - intMinComfort, 0);
-                nudArea.Maximum = Math.Max(intMaxArea - intMinArea, 0);
-                nudSecurity.Maximum = Math.Max(intMaxSec - intMinSec, 0);
-            }
-
             cboBaseLifestyle.EndUpdate();
 
             SelectedLifestyle.LifestyleQualities.CollectionChanged += LifestyleQualitiesOnCollectionChanged;
@@ -890,20 +845,5 @@ namespace Chummer
             CommonFunctions.OpenPDFFromControl(sender, e);
         }
         #endregion
-
-        private void nudComforts_ValueChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void nudArea_ValueChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void nudSecurity_ValueChanged(object sender, EventArgs e)
-        {
-
-        }
     }
 }

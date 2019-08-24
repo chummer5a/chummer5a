@@ -931,7 +931,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public bool PrimaryTenant
         {
-            get => _blnIsPrimaryTenant;
+            get => _blnIsPrimaryTenant || Roommates == 0 || TrustFund;
             set => _blnIsPrimaryTenant = value;
         }
 
@@ -1036,15 +1036,19 @@ namespace Chummer.Backend.Equipment
         /// Total Security of the Lifestyle, including all Lifestyle qualities.
         /// </summary>
         public int TotalSecurity => BaseSecurity + Security + LifestyleQualities.Sum(lq => lq.Security);
-        
+
+        public decimal AreaDelta => Math.Max(TotalAreaMaximum - TotalArea, 0);
+        public decimal ComfortsDelta => Math.Max(TotalComfortsMaximum - TotalComforts, 0);
+        public decimal SecurityDelta => Math.Max(TotalSecurityMaximum - TotalSecurity, 0);
+
         public string FormattedArea => string.Format(LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base", GlobalOptions.Language),
-            TotalArea.ToString(GlobalOptions.CultureInfo),
+            BaseArea.ToString(GlobalOptions.CultureInfo),
             TotalAreaMaximum.ToString(GlobalOptions.CultureInfo));
         public string FormattedComforts => string.Format(LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base", GlobalOptions.Language),
-            TotalComforts.ToString(GlobalOptions.CultureInfo),
+            BaseComforts.ToString(GlobalOptions.CultureInfo),
             TotalComfortsMaximum.ToString(GlobalOptions.CultureInfo));
         public string FormattedSecurity => string.Format(LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base", GlobalOptions.Language),
-            TotalSecurity.ToString(GlobalOptions.CultureInfo),
+            BaseSecurity.ToString(GlobalOptions.CultureInfo),
             TotalSecurityMaximum.ToString(GlobalOptions.CultureInfo));
 
         /// <summary>
@@ -1112,6 +1116,8 @@ namespace Chummer.Backend.Equipment
                 return decReturn;
             }
         }
+
+        public string DisplayTotalMonthlyCost => TotalMonthlyCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
         public static string GetEquivalentLifestyle(string strLifestyle)
         {
@@ -1199,32 +1205,35 @@ namespace Chummer.Backend.Equipment
 
         private static readonly DependancyGraph<string> LifestyleDependencyGraph =
             new DependancyGraph<string>(
-                new DependancyGraphNode<string>(nameof(TotalCost),
-                    new DependancyGraphNode<string>(nameof(TotalMonthlyCost),
-                        new DependancyGraphNode<string>(nameof(FormattedArea),
-                            new DependancyGraphNode<string>(nameof(TotalArea),
-                                new DependancyGraphNode<string>(nameof(TotalAreaMaximum),
-                                    new DependancyGraphNode<string>(nameof(Area)),
-                                    new DependancyGraphNode<string>(nameof(BaseArea)
-                                    ))),
+                new DependancyGraphNode<string>(nameof(DisplayTotalMonthlyCost),
+                    new DependancyGraphNode<string>(nameof(TotalCost),
+                        new DependancyGraphNode<string>(nameof(TotalMonthlyCost),
+                            new DependancyGraphNode<string>(nameof(FormattedArea),
+                                new DependancyGraphNode<string>(nameof(AreaDelta),
+                                    new DependancyGraphNode<string>(nameof(TotalArea),
+                                        new DependancyGraphNode<string>(nameof(TotalAreaMaximum),
+                                            new DependancyGraphNode<string>(nameof(Area),
+                                                new DependancyGraphNode<string>(nameof(BaseArea)
+                                                )))))),
                             new DependancyGraphNode<string>(nameof(FormattedComforts),
-                                new DependancyGraphNode<string>(nameof(TotalComforts),
-                                    new DependancyGraphNode<string>(nameof(TotalComfortsMaximum),
-                                        new DependancyGraphNode<string>(nameof(Comforts)),
-                                        new DependancyGraphNode<string>(nameof(BaseComforts)
-                                        ))),
-                                new DependancyGraphNode<string>(nameof(FormattedSecurity),
+                                new DependancyGraphNode<string>(nameof(ComfortsDelta),
+                                    new DependancyGraphNode<string>(nameof(TotalComforts),
+                                        new DependancyGraphNode<string>(nameof(TotalComfortsMaximum),
+                                            new DependancyGraphNode<string>(nameof(Comforts),
+                                                new DependancyGraphNode<string>(nameof(BaseComforts)
+                                                )))))),
+                            new DependancyGraphNode<string>(nameof(FormattedSecurity),
+                                new DependancyGraphNode<string>(nameof(SecurityDelta),
                                     new DependancyGraphNode<string>(nameof(TotalSecurity),
                                         new DependancyGraphNode<string>(nameof(TotalSecurityMaximum),
-                                            new DependancyGraphNode<string>(nameof(Security)),
-                                            new DependancyGraphNode<string>(nameof(BaseSecurity)
-                                            )))
-                                ))),
-                        new DependancyGraphNode<string>(nameof(Increments)),
-                        new DependancyGraphNode<string>(nameof(CostForArea)),
-                        new DependancyGraphNode<string>(nameof(CostForComforts)),
-                        new DependancyGraphNode<string>(nameof(CostForSecurity))
-                    )));
+                                            new DependancyGraphNode<string>(nameof(Security),
+                                                new DependancyGraphNode<string>(nameof(BaseSecurity)
+                                                )))))),
+                            new DependancyGraphNode<string>(nameof(Increments)),
+                            new DependancyGraphNode<string>(nameof(CostForArea)),
+                            new DependancyGraphNode<string>(nameof(CostForComforts)),
+                            new DependancyGraphNode<string>(nameof(CostForSecurity))
+                        ))));
 
         public event PropertyChangedEventHandler PropertyChanged;
 
