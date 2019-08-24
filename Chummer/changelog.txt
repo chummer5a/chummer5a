@@ -49,6 +49,7 @@ Application Fixes:
 - Added support for improvements that add to the dicepools of resisting direct mana combat spells, direct physical combat spells, decrease BOD, decrease AGI, decrease REA, decrease STR, decrease CHA, decrease INT, decrease LOG, and decrease WIL.
 - Moved magic strings used for calculating cyberlimb attributes into explicit hashsets. This allows the 2050 cyberlimb enhancement and customisations to work properly. 
 - Removed an additional cost from purchasing Gear that incorrectly caused quantity to be counted twice.
+- Fixed a regression in the SpellCategory improvement that prevented it being used, as it was renamed to spellcategorydicepool.
 
 Data Changes:
 

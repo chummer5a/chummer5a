@@ -7854,7 +7854,7 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                frmSelectLifestyleAdvanced frmPickLifestyle = new frmSelectLifestyleAdvanced(CharacterObject);
+                frmSelectLifestyleAdvanced frmPickLifestyle = new frmSelectLifestyleAdvanced(CharacterObject, new Lifestyle(CharacterObject));
                 frmPickLifestyle.ShowDialog(this);
 
                 // Make sure the dialogue window was not canceled.
@@ -7883,7 +7883,7 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                frmSelectLifestyleAdvanced frmPickLifestyle = new frmSelectLifestyleAdvanced(CharacterObject)
+                frmSelectLifestyleAdvanced frmPickLifestyle = new frmSelectLifestyleAdvanced(CharacterObject, new Lifestyle(CharacterObject))
                 {
                     StyleType = LifestyleType.BoltHole
                 };
@@ -7914,7 +7914,7 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                frmSelectLifestyleAdvanced frmPickLifestyle = new frmSelectLifestyleAdvanced(CharacterObject)
+                frmSelectLifestyleAdvanced frmPickLifestyle = new frmSelectLifestyleAdvanced(CharacterObject, new Lifestyle(CharacterObject))
                 {
                     StyleType = LifestyleType.Safehouse
                 };
@@ -10591,9 +10591,9 @@ namespace Chummer
 
             if (objLifestyle.StyleType != LifestyleType.Standard)
             {
+                Lifestyle newLifestyle = objLifestyle;
                 // Edit Advanced Lifestyle.
-                frmSelectLifestyleAdvanced frmPickLifestyle = new frmSelectLifestyleAdvanced(CharacterObject);
-                frmPickLifestyle.SetLifestyle(objLifestyle);
+                frmSelectLifestyleAdvanced frmPickLifestyle = new frmSelectLifestyleAdvanced(CharacterObject, newLifestyle);
                 frmPickLifestyle.ShowDialog(this);
 
                 if (frmPickLifestyle.DialogResult == DialogResult.Cancel)

@@ -7975,10 +7975,6 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Negative Qualities</text>
     </string>
     <string>
-      <key>Label_SelectAdvancedLifestyle_Base_Comforts</key>
-      <text>[{0}/{1}]</text>
-    </string>
-    <string>
       <key>Label_SelectAdvancedLifestyle_Comforts</key>
       <text>Comforts:</text>
     </string>
@@ -8003,16 +7999,12 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Necessities:</text>
     </string>
     <string>
-      <key>Label_SelectAdvancedLifestyle_Base_Neighborhood</key>
+      <key>Label_SelectAdvancedLifestyle_Base</key>
       <text>[{0}/{1}]</text>
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_Neighborhood</key>
       <text>Neighborhood:</text>
-    </string>
-    <string>
-      <key>Label_SelectAdvancedLifestyle_Base_Security</key>
-      <text>[{0}/{1}]</text>
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_Security</key>
