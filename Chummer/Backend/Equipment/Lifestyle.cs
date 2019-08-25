@@ -1037,9 +1037,9 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public int TotalSecurity => BaseSecurity + Security + LifestyleQualities.Sum(lq => lq.Security);
 
-        public decimal AreaDelta => Math.Max(TotalAreaMaximum - TotalArea, 0);
-        public decimal ComfortsDelta => Math.Max(TotalComfortsMaximum - TotalComforts, 0);
-        public decimal SecurityDelta => Math.Max(TotalSecurityMaximum - TotalSecurity, 0);
+        public decimal AreaDelta     => Math.Max(TotalAreaMaximum - (BaseArea + LifestyleQualities.Sum(lq => lq.Area)), 0);
+        public decimal ComfortsDelta => Math.Max(TotalComfortsMaximum - (BaseComforts + LifestyleQualities.Sum(lq => lq.Comfort)), 0);
+        public decimal SecurityDelta => Math.Max(TotalSecurityMaximum - (BaseSecurity + LifestyleQualities.Sum(lq => lq.Security)), 0);
 
         public string FormattedArea => string.Format(LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base", GlobalOptions.Language),
             BaseArea.ToString(GlobalOptions.CultureInfo),
