@@ -72,6 +72,7 @@ namespace Chummer.Backend.Equipment
         private int _intSecurityMaximum;
         private int _intAreaMaximum;
         private int _intBonusLP;
+        private int _intLP;
         private bool _blnAllowBonusLP;
         private bool _blnIsPrimaryTenant;
         private decimal _decCostForSecurity;
@@ -154,6 +155,7 @@ namespace Chummer.Backend.Equipment
             objXmlLifestyle.TryGetDecFieldQuickly("multiplier", ref _decMultiplier);
             objXmlLifestyle.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlLifestyle.TryGetStringFieldQuickly("page", ref _strPage);
+            objXmlLifestyle.TryGetInt32FieldQuickly("lp", ref _intLP);
             objXmlLifestyle.TryGetDecFieldQuickly("costforarea", ref _decCostForArea);
             objXmlLifestyle.TryGetDecFieldQuickly("costforcomforts", ref _decCostForComforts);
             objXmlLifestyle.TryGetDecFieldQuickly("costforsecurity", ref _decCostForSecurity);
@@ -218,6 +220,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("cost", _decCost.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("dice", _intDice.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("lp", _intLP.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("baselifestyle", _strBaseLifestyle);
             objWriter.WriteElementString("multiplier", _decMultiplier.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("months", _intIncrements.ToString(GlobalOptions.InvariantCultureInfo));
@@ -306,32 +309,6 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetInt32FieldQuickly("roommates", ref _intRoommates);
             objNode.TryGetDecFieldQuickly("percentage", ref _decPercentage);
             objNode.TryGetStringFieldQuickly("baselifestyle", ref _strBaseLifestyle);
-            if (!objNode.TryGetInt32FieldQuickly("maxarea", ref _intAreaMaximum))
-            {
-                XmlDocument xmlLifestyleDocument = XmlManager.Load("lifestyles.xml");
-                XmlNode xmlLifestyleNode =
-                    xmlLifestyleDocument.SelectSingleNode($"/chummer/comforts/comfort[name = \"{_strBaseLifestyle}\"]");
-                xmlLifestyleNode.TryGetInt32FieldQuickly("minimum", ref _intBaseComforts);
-                xmlLifestyleNode.TryGetInt32FieldQuickly("limit", ref _intComfortsMaximum);
-
-                // Area.
-                xmlLifestyleNode =
-                    xmlLifestyleDocument.SelectSingleNode($"/chummer/neighborhoods/neighborhood[name = \"{_strBaseLifestyle}\"]");
-                xmlLifestyleNode.TryGetInt32FieldQuickly("minimum", ref _intBaseArea);
-                xmlLifestyleNode.TryGetInt32FieldQuickly("limit", ref _intAreaMaximum);
-
-                // Security.
-                xmlLifestyleNode =
-                    xmlLifestyleDocument.SelectSingleNode($"/chummer/securities/security[name = \"{_strBaseLifestyle}\"]");
-                xmlLifestyleNode.TryGetInt32FieldQuickly("minimum", ref _intBaseSecurity);
-                xmlLifestyleNode.TryGetInt32FieldQuickly("limit", ref _intSecurityMaximum);
-            }
-            else
-            {
-                objNode.TryGetInt32FieldQuickly("maxarea", ref _intAreaMaximum);
-                objNode.TryGetInt32FieldQuickly("maxcomforts", ref _intComfortsMaximum);
-                objNode.TryGetInt32FieldQuickly("maxsecurity", ref _intSecurityMaximum);
-            }
             objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
             if (XmlManager.Load("lifestyles.xml").SelectSingleNode($"/chummer/lifestyles/lifestyle[name =\"{_strBaseLifestyle}\"]") == null && XmlManager.Load("lifestyles.xml").SelectSingleNode($"/chummer/lifestyles/lifestyle[name =\"{_strName}\"]") != null)
             {
@@ -369,6 +346,42 @@ namespace Chummer.Backend.Equipment
                 GetNode()?.TryGetBoolFieldQuickly("allowbonuslp", ref _blnAllowBonusLP);
             if (!objNode.TryGetInt32FieldQuickly("bonuslp", ref _intBonusLP) && _strBaseLifestyle == "Traveler")
                 _intBonusLP = 1 + GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
+
+            if (!objNode.TryGetInt32FieldQuickly("lp", ref _intLP))
+            {
+                XmlDocument xmlLifestyleDocument = XmlManager.Load("lifestyles.xml");
+                XmlNode xmlLifestyleNode =
+                    xmlLifestyleDocument.SelectSingleNode($"/chummer/lifestyles/lifestyle[name = \"{_strBaseLifestyle}\"]");
+                {
+                    xmlLifestyleNode.TryGetInt32FieldQuickly("lp", ref _intLP);
+                }
+            }
+            if (!objNode.TryGetInt32FieldQuickly("maxarea", ref _intAreaMaximum))
+            {
+                XmlDocument xmlLifestyleDocument = XmlManager.Load("lifestyles.xml");
+                XmlNode xmlLifestyleNode =
+                    xmlLifestyleDocument.SelectSingleNode($"/chummer/comforts/comfort[name = \"{_strBaseLifestyle}\"]");
+                xmlLifestyleNode.TryGetInt32FieldQuickly("minimum", ref _intBaseComforts);
+                xmlLifestyleNode.TryGetInt32FieldQuickly("limit", ref _intComfortsMaximum);
+
+                // Area.
+                xmlLifestyleNode =
+                    xmlLifestyleDocument.SelectSingleNode($"/chummer/neighborhoods/neighborhood[name = \"{_strBaseLifestyle}\"]");
+                xmlLifestyleNode.TryGetInt32FieldQuickly("minimum", ref _intBaseArea);
+                xmlLifestyleNode.TryGetInt32FieldQuickly("limit", ref _intAreaMaximum);
+
+                // Security.
+                xmlLifestyleNode =
+                    xmlLifestyleDocument.SelectSingleNode($"/chummer/securities/security[name = \"{_strBaseLifestyle}\"]");
+                xmlLifestyleNode.TryGetInt32FieldQuickly("minimum", ref _intBaseSecurity);
+                xmlLifestyleNode.TryGetInt32FieldQuickly("limit", ref _intSecurityMaximum);
+            }
+            else
+            {
+                objNode.TryGetInt32FieldQuickly("maxarea", ref _intAreaMaximum);
+                objNode.TryGetInt32FieldQuickly("maxcomforts", ref _intComfortsMaximum);
+                objNode.TryGetInt32FieldQuickly("maxsecurity", ref _intSecurityMaximum);
+            }
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetBoolFieldQuickly("trustfund", ref _blnTrustFund);
             if (objNode["primarytenant"] == null)
@@ -735,6 +748,13 @@ namespace Chummer.Backend.Equipment
                 }
             }
         }
+
+        public int LP => _intLP;
+
+        /// <summary>
+        /// Total LP cost of the Lifestyle, including all qualities, roommates, bonus LP, etc. 
+        /// </summary>
+        public int TotalLP => LP - Comforts - Area - Security + Roommates + BonusLP;
 
         /// <summary>
         /// Free Lifestyle points from Traveler lifestyle.

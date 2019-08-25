@@ -429,6 +429,7 @@ namespace Chummer
             lblAreaTotal.DoDatabinding("Text", SelectedLifestyle, nameof(Lifestyle.TotalArea));
             lblComfortTotal.DoDatabinding("Text", SelectedLifestyle, nameof(Lifestyle.TotalComforts));
             lblSecurityTotal.DoDatabinding("Text", SelectedLifestyle, nameof(Lifestyle.TotalSecurity));
+            lblTotalLP.DoDatabinding("Text", SelectedLifestyle, nameof(Lifestyle.TotalLP));
             if (cboBaseLifestyle.SelectedIndex == -1)
                 cboBaseLifestyle.SelectedIndex = 0;
             cboBaseLifestyle.EndUpdate();
@@ -462,16 +463,6 @@ namespace Chummer
             }
 
             nudRoommates.Enabled = !chkTrustFund.Checked;
-
-            CalculateValues();
-        }
-
-        private void chkPrimaryTenant_CheckedChanged(object sender, EventArgs e)
-        {
-            if (_blnSkipRefresh)
-                return;
-
-            CalculateValues();
         }
 
         private void cmdOKAdd_Click(object sender, EventArgs e)
@@ -487,20 +478,6 @@ namespace Chummer
             RefreshSelectedLifestyle();
         }
 
-        private void nudBonusLP_ValueChanged(object sender, EventArgs e)
-        {
-            if (_blnSkipRefresh)
-                return;
-            CalculateValues();
-        }
-
-        private void nudPercentage_ValueChanged(object sender, EventArgs e)
-        {
-            if (_blnSkipRefresh)
-                return;
-            CalculateValues();
-        }
-
         private void nudRoommates_ValueChanged(object sender, EventArgs e)
         {
             if (_blnSkipRefresh)
@@ -510,7 +487,6 @@ namespace Chummer
             {
                 chkPrimaryTenant.Checked = true;
             }
-            CalculateValues();
         }
 
         private void cmdAddQuality_Click(object sender, EventArgs e)
@@ -541,7 +517,6 @@ namespace Chummer
                     continue;
                 
                 SelectedLifestyle.LifestyleQualities.Add(objQuality);
-                CalculateValues();
             }
             while (blnAddAgain);
         }
@@ -558,7 +533,6 @@ namespace Chummer
                 return;
             }
             SelectedLifestyle.LifestyleQualities.Remove(objQuality);
-            CalculateValues();
         }
 
         private void treLifestyleQualities_AfterSelect(object sender, TreeViewEventArgs e)
@@ -602,7 +576,6 @@ namespace Chummer
             if (!(treLifestyleQualities.SelectedNode?.Tag is LifestyleQuality objQuality)) return;
             objQuality.ContributesLP = chkQualityContributesLP.Checked;
             lblQualityLp.Text = objQuality.LP.ToString();
-            CalculateValues();
         }
 
         private void chkTravelerBonusLPRandomize_CheckedChanged(object sender, EventArgs e)
@@ -648,7 +621,7 @@ namespace Chummer
                 Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_SelectAdvancedLifestyle_LifestyleName", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectAdvancedLifestyle_LifestyleName", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-            if (Convert.ToInt32(lblTotalLP.Text) < 0)
+            if (SelectedLifestyle.TotalLP < 0)
             {
                 Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_SelectAdvancedLifestyle_OverLPLimit", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectAdvancedLifestyle_OverLPLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -749,95 +722,6 @@ namespace Chummer
                 nudBonusLP.Value = 0;
                 chkBonusLPRandomize.Visible = false;
             }
-
-            CalculateValues();
-        }
-
-        /// <summary>
-        /// Calculate the LP value for the selected items.
-        /// </summary>
-        private void CalculateValues()
-        {
-            /*
-            int intLP = 0;
-            int intMinComfort = 0;
-            int intMaxComfort = 0;
-            int intMinArea = 0;
-            int intMaxArea = 0;
-            int intMinSec = 0;
-            int intMaxSec = 0;
-            string strBaseLifestyle = cboBaseLifestyle.SelectedValue?.ToString() ?? string.Empty;
-
-            // Calculate the limits of the 3 aspects.
-            // Comforts.
-            XmlNode xmlNode = _xmlDocument.SelectSingleNode("/chummer/comforts/comfort[name = \"" + strBaseLifestyle + "\"]");
-            xmlNode.TryGetInt32FieldQuickly("minimum", ref intMinComfort);
-            xmlNode.TryGetInt32FieldQuickly("limit", ref intMaxComfort);
-            if (intMaxComfort < intMinComfort)
-                intMaxComfort = intMinComfort;
-            // Area.
-            xmlNode = _xmlDocument.SelectSingleNode("/chummer/neighborhoods/neighborhood[name = \"" + strBaseLifestyle + "\"]");
-            xmlNode.TryGetInt32FieldQuickly("minimum", ref intMinArea);
-            xmlNode.TryGetInt32FieldQuickly("limit", ref intMaxArea);
-            if (intMaxArea < intMinArea)
-                intMaxArea = intMinArea;
-            // Security.
-            xmlNode = _xmlDocument.SelectSingleNode("/chummer/securities/security[name = \"" + strBaseLifestyle + "\"]");
-            xmlNode.TryGetInt32FieldQuickly("minimum", ref intMinSec);
-            xmlNode.TryGetInt32FieldQuickly("limit", ref intMaxSec);
-            if (intMaxSec < intMinSec)
-                intMaxSec = intMinSec;
-
-            // Calculate the cost of Positive Qualities.
-            foreach (LifestyleQuality objQuality in SelectedLifestyle.LifestyleQualities)
-            {
-                intLP -= objQuality.LP;
-                intMaxArea += objQuality.AreaMaximum;
-                intMaxComfort += objQuality.ComfortMaximum;
-                intMaxSec += objQuality.SecurityMaximum;
-                intMinArea += objQuality.Area;
-                intMinComfort += objQuality.Comfort;
-                intMinSec += objQuality.Security;
-            }
-            _blnSkipRefresh = true;
-
-            nudComforts.Maximum = Math.Max(intMaxComfort - intMinComfort, 0);
-            nudArea.Maximum = Math.Max(intMaxArea - intMinArea, 0);
-            nudSecurity.Maximum = Math.Max(intMaxSec - intMinSec, 0);
-            int intComfortsValue = decimal.ToInt32(nudComforts.Value);
-            int intAreaValue = decimal.ToInt32(nudArea.Value);
-            int intSecurityValue = decimal.ToInt32(nudSecurity.Value);
-            int intRoommatesValue = decimal.ToInt32(nudRoommates.Value);
-
-            _blnSkipRefresh = false;
-            //set the Labels for current/maximum
-            Label_SelectAdvancedLifestyle_Base_Comforts.Text = string.Format(LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base_Comforts", GlobalOptions.Language),
-                (nudComforts.Value + intMinComfort).ToString(GlobalOptions.CultureInfo),
-                (nudComforts.Maximum + intMinComfort).ToString(GlobalOptions.CultureInfo));
-            Label_SelectAdvancedLifestyle_Base_Security.Text = string.Format(LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base_Security", GlobalOptions.Language),
-                (nudSecurity.Value + intMinSec).ToString(GlobalOptions.CultureInfo),
-                (nudSecurity.Maximum + intMinSec).ToString(GlobalOptions.CultureInfo));
-            Label_SelectAdvancedLifestyle_Base_Neighborhood.Text = string.Format(LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base_Neighborhood", GlobalOptions.Language),
-                (nudArea.Value + intMinArea).ToString(GlobalOptions.CultureInfo),
-                (nudArea.Maximum + intMinArea).ToString(GlobalOptions.CultureInfo));
-
-            //calculate the total LP
-            xmlNode = SelectedLifestyle.GetNode();
-            int intBaseLP = Convert.ToInt32(xmlNode?["lp"]?.InnerText);
-            intLP += intBaseLP;
-            intLP -= intComfortsValue;
-            intLP -= intAreaValue;
-            intLP -= intSecurityValue;
-            intLP += intRoommatesValue;
-            intLP += decimal.ToInt32(nudBonusLP.Value);
-
-            intLP = Math.Min(intLP, intBaseLP * 2);
-
-            lblTotalLP.Text = intLP.ToString();
-            lblCost.Text = SelectedLifestyle.TotalMonthlyCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-            lblTotalLPLabel.Visible = !string.IsNullOrEmpty(lblTotalLP.Text);
-            lblCostLabel.Visible = !string.IsNullOrEmpty(lblCost.Text);*/
-
         }
 
         private void OpenSourceFromLabel(object sender, EventArgs e)

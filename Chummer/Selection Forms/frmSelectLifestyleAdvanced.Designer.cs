@@ -231,7 +231,6 @@ namespace Chummer
             0,
             0,
             0});
-            this.nudPercentage.ValueChanged += new System.EventHandler(this.nudPercentage_ValueChanged);
             // 
             // lblPercentage
             // 
@@ -554,7 +553,6 @@ namespace Chummer
             this.chkPrimaryTenant.Tag = "Label_SelectAdvancedLifestyle_Tenant";
             this.chkPrimaryTenant.Text = "Primary Tenant";
             this.chkPrimaryTenant.UseVisualStyleBackColor = true;
-            this.chkPrimaryTenant.CheckedChanged += new System.EventHandler(this.chkPrimaryTenant_CheckedChanged);
             // 
             // lblSecurityTotal
             // 
@@ -640,7 +638,6 @@ namespace Chummer
             this.nudBonusLP.Size = new System.Drawing.Size(60, 20);
             this.nudBonusLP.TabIndex = 82;
             this.nudBonusLP.Visible = false;
-            this.nudBonusLP.ValueChanged += new System.EventHandler(this.nudBonusLP_ValueChanged);
             // 
             // chkBonusLPRandomize
             // 
