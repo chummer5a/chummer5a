@@ -572,59 +572,71 @@ namespace Chummer
         }
 
         private bool _blnFettered;
+        private int _intCachedAllowFettering = int.MinValue;
+        /// <summary>
+        /// Whether the sprite/spirit has unlimited services due to Fettering.
+        /// See KC 91 and SG 192 for sprites and spirits, respectively. 
+        /// </summary>
         public bool Fettered
         {
-            get => _blnFettered;
+            get
+            {
+                if (_intCachedAllowFettering < 0)
+                    _intCachedAllowFettering = CharacterObject.AllowSpriteFettering
+                        ? 1
+                        : 0;
+                return _blnFettered && _intCachedAllowFettering > 0;
+            }
+
             set
             {
-                if (_blnFettered != value)
+                if (_blnFettered == value) return;
+                if (value)
                 {
-                    if (value)
+                    //Technomancers require the Sprite Pet Complex Form to Fetter sprites.
+                    if (!CharacterObject.AllowSpriteFettering && EntityType == SpiritType.Sprite) return;
+
+                    //Only one Fettered spirit is permitted.
+                    if (CharacterObject.Spirits.Any(objSpirit => objSpirit.Fettered)) return;
+
+                    if (CharacterObject.Created)
                     {
-                        //Only one Fettered spirit is permitted.
-                        if (CharacterObject.Spirits.Any(objSpirit => objSpirit.Fettered))
+                        // Sprites only cost Force in Karma to become Fettered. Spirits cost Force * 3.
+                        int fetteringCost = EntityType == SpiritType.Spirit ? Force * 3 : Force;
+                        if (!CharacterObject.ConfirmKarmaExpense(string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend", GlobalOptions.Language)
+                            , Name
+                            , fetteringCost.ToString(GlobalOptions.CultureInfo))))
                         {
                             return;
                         }
-                        if (CharacterObject.Created)
-                        {
-                            // Sprites only cost Force in Karma to become Fettered. Spirits cost Force * 3.
-                            int fetteringCost = EntityType == SpiritType.Spirit ? Force * 3 : Force;
-                            if (!CharacterObject.ConfirmKarmaExpense(string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend", GlobalOptions.Language)
-                                , Name
-                                , fetteringCost.ToString(GlobalOptions.CultureInfo))))
-                            {
-                                return;
-                            }
 
-                            // Create the Expense Log Entry.
-                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                            objExpense.Create(fetteringCost * -1,
-                                LanguageManager.GetString("String_ExpenseFetteredSpirit", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + Name,
-                                ExpenseType.Karma, DateTime.Now);
-                            CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-                            CharacterObject.Karma -= fetteringCost;
+                        // Create the Expense Log Entry.
+                        ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                        objExpense.Create(fetteringCost * -1,
+                            LanguageManager.GetString("String_ExpenseFetteredSpirit", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + Name,
+                            ExpenseType.Karma, DateTime.Now);
+                        CharacterObject.ExpenseEntries.AddWithSort(objExpense);
+                        CharacterObject.Karma -= fetteringCost;
 
-                            ExpenseUndo objUndo = new ExpenseUndo();
-                            objUndo.CreateKarma(KarmaExpenseType.SpiritFettering, InternalId);
-                            objExpense.Undo = objUndo;
-                        }
-
-                        if (EntityType == SpiritType.Spirit)
-                        {
-                            ImprovementManager.CreateImprovement(CharacterObject, "MAG",
-                                Improvement.ImprovementSource.SpiritFettering, string.Empty,
-                                Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -1);
-                            ImprovementManager.Commit(CharacterObject);
-                        }
+                        ExpenseUndo objUndo = new ExpenseUndo();
+                        objUndo.CreateKarma(KarmaExpenseType.SpiritFettering, InternalId);
+                        objExpense.Undo = objUndo;
                     }
-                    else
+
+                    if (EntityType == SpiritType.Spirit)
                     {
-                        ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.SpiritFettering);
+                        ImprovementManager.CreateImprovement(CharacterObject, "MAG",
+                            Improvement.ImprovementSource.SpiritFettering, string.Empty,
+                            Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -1);
+                        ImprovementManager.Commit(CharacterObject);
                     }
-                    _blnFettered = value;
-                    OnPropertyChanged();
                 }
+                else
+                {
+                    ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.SpiritFettering);
+                }
+                _blnFettered = value;
+                OnPropertyChanged();
             }
         }
 
@@ -785,6 +797,11 @@ namespace Chummer
                 OnPropertyChanged(nameof(MainMugshot));
             else if (e.PropertyName == nameof(Character.MainMugshotIndex))
                 OnPropertyChanged(nameof(MainMugshotIndex));
+            else if (e.PropertyName == nameof(Character.AllowSpriteFettering))
+            {
+                _intCachedAllowFettering = int.MinValue;
+                OnPropertyChanged(nameof(Fettered));
+            }
         }
         #endregion
 

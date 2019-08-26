@@ -12771,6 +12771,24 @@ if (!Utils.IsUnitTest){
             }
         }
 
+        private int _intCachedAllowSpriteFettering = -1;
+
+        /// <summary>
+        /// Whether or not the character is allowed to Fetter sprites. See Kill Code 91 (Sprite Pet)
+        /// </summary>
+        public bool AllowSpriteFettering
+        {
+            get
+            {
+                if (_intCachedAllowSpriteFettering < 0)
+                    _intCachedAllowSpriteFettering =
+                        Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.AllowSpriteFettering && x.Enabled)
+                            ? 1
+                            : 0;
+                return _intCachedAllowSpriteFettering > 0;
+            }
+        }
+
         /// <summary>
         /// Convert a string to a CharacterBuildMethod.
         /// </summary>
@@ -14674,7 +14692,12 @@ if (!Utils.IsUnitTest){
                 _intCachedErased = int.MinValue;
             }
 
-            if(lstNamesOfChangedProperties.Contains(nameof(Overclocker)))
+            if (lstNamesOfChangedProperties.Contains(nameof(AllowSpriteFettering)))
+            {
+                _intCachedAllowSpriteFettering = int.MinValue;
+            }
+
+            if (lstNamesOfChangedProperties.Contains(nameof(Overclocker)))
             {
                 _intCachedOverclocker = int.MinValue;
             }

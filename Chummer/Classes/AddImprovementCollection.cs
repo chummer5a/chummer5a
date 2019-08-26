@@ -6378,6 +6378,15 @@ namespace Chummer.Classes
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.ContactKarmaMinimum, _strUnique,
                 ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
+
+        // Enable Sprite Fettering.
+        public void allowspritefettering(XmlNode bonusNode)
+        {
+            Log.Info("AllowSpriteFettering");
+            Log.Info("AllowSpriteFettering = " + bonusNode.OuterXml);
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.AllowSpriteFettering, _strUnique);
+        }
         #endregion
     }
 

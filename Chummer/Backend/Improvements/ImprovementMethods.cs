@@ -19,6 +19,7 @@
 using System;
 using System.Xml;
 using Chummer.Classes;
+// ReSharper disable StringLiteralTypo
 
 namespace Chummer
 {
@@ -602,6 +603,8 @@ namespace Chummer
                     return objImprovementAdder.contactkarma;
                 case "CONTACTKARMAMINIMUM":
                     return objImprovementAdder.contactkarmaminimum;
+                case "ALLOWSPRITEFETTERING":
+                    return objImprovementAdder.allowspritefettering;
                 // No method matches, return a null pointer
                 default:
                     return null;
