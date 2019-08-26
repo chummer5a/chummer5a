@@ -115,13 +115,6 @@ namespace Chummer.Plugins
             }
             switch (onlyparameter)
             {
-                case "RegisterUriScheme":
-                    if (StaticUtils.RegisterChummerProtocol(argument))
-                        Environment.ExitCode = -1;
-                    else
-                        Environment.ExitCode = 0;
-                    return false;
-                    break;
                 case "Load":
                     return HandleLoadCommand(argument);
                     break;
@@ -171,6 +164,42 @@ namespace Chummer.Plugins
                 }
                 if (PipeManager != null)
                 {
+                    try
+                    {
+                        string SINnerIdvalue = argument.Substring(5);
+                        SINnerIdvalue = SINnerIdvalue.Trim('/');
+                        int transactionInt = SINnerIdvalue.IndexOf(':');
+                        string transaction = null;
+                        int callbackInt = -1;
+                        string callback = null;
+                        if (transactionInt != -1)
+                        {
+                            transaction = SINnerIdvalue.Substring(transactionInt);
+                            SINnerIdvalue = SINnerIdvalue.Substring(0, transactionInt);
+                            SINnerIdvalue = SINnerIdvalue.TrimEnd(':');
+                            transaction = transaction.TrimStart(':');
+                            callbackInt = transaction.IndexOf(':');
+                            if (callbackInt != -1)
+                            {
+                                callback = transaction.Substring(callbackInt);
+                                transaction = transaction.Substring(0, callbackInt);
+                                transaction = transaction.TrimEnd(':');
+                                callback = callback.TrimStart(':');
+                                callback = WebUtility.UrlDecode(callback);
+                            }
+                            var task = Task.Run(async () =>
+                            {
+                                await ChummerHub.Client.Backend.StaticUtils.WebCall(callback, 10,
+                                    "Sending Open Character Request");
+                            });
+                            task.Wait();
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Error(e);
+                        PluginHandler.MainForm.ShowMessageBox("Error loading SINner: " + e.Message);
+                    }
                     string msg = "Load:" + myargument;
                     Log.Trace("Sending argument to Pipeserver: " + msg);
                     PipeManager.Write(msg);
@@ -707,7 +736,16 @@ namespace Chummer.Plugins
                 share.MyUcSINnerShare.MyCharacterCache = objCache;
                 share.TopMost = true;
                 share.Show(PluginHandler.MainForm);
-                await share.MyUcSINnerShare.DoWork();
+                try
+                {
+                    await share.MyUcSINnerShare.DoWork();
+                }
+                catch (Exception exception)
+                {
+                    Log.Error(exception);
+                    PluginHandler.MainForm.ShowMessageBox("Error sharing SINner: " + exception.Message);
+                }
+                
             }
         }
 
@@ -804,6 +842,30 @@ namespace Chummer.Plugins
                     {
                         string SINnerIdvalue = argument.Substring(5);
                         SINnerIdvalue = SINnerIdvalue.Trim('/');
+                        int transactionInt = SINnerIdvalue.IndexOf(':');
+                        string transaction = null;
+                        int callbackInt = -1;
+                        string callback = null;
+                        if (transactionInt != -1)
+                        {
+                            transaction = SINnerIdvalue.Substring(transactionInt);
+                            SINnerIdvalue = SINnerIdvalue.Substring(0, transactionInt);
+                            SINnerIdvalue = SINnerIdvalue.TrimEnd(':');
+                            transaction = transaction.TrimStart(':');
+                            callbackInt = transaction.IndexOf(':');
+                            if (callbackInt != -1)
+                            {
+                                callback = transaction.Substring(callbackInt);
+                                transaction = transaction.Substring(0, callbackInt);
+                                transaction = transaction.TrimEnd(':');
+                                callback = callback.TrimStart(':');
+                                callback = WebUtility.UrlDecode(callback);
+                            }
+
+                            await ChummerHub.Client.Backend.StaticUtils.WebCall(callback, 30,
+                                "Open Character Request received!");
+                        }
+
                         if (Guid.TryParse(SINnerIdvalue, out Guid SINnerId))
                         {
                                 
@@ -811,11 +873,19 @@ namespace Chummer.Plugins
                             await ChummerHub.Client.Backend.Utils.HandleError(found, found?.Body);
                             if (found?.Response.StatusCode == System.Net.HttpStatusCode.OK)
                             {
+                                await ChummerHub.Client.Backend.StaticUtils.WebCall(callback, 40,
+                                    "Character found online");
                                 fileNameToLoad = await ChummerHub.Client.Backend.Utils.DownloadFileTask(found.Body.MySINner, null);
+                                await ChummerHub.Client.Backend.StaticUtils.WebCall(callback, 70,
+                                    "Character downloaded");
                                 await MainFormLoadChar(fileNameToLoad);
+                                await ChummerHub.Client.Backend.StaticUtils.WebCall(callback, 100,
+                                    "Character opened");
                             }
                             else if (found?.Response.StatusCode == HttpStatusCode.NotFound)
                             {
+                                await ChummerHub.Client.Backend.StaticUtils.WebCall(callback, 0,
+                                    "Character not found");
                                 PluginHandler.MainForm.ShowMessageBox("Could not find a SINner with Id " + SINnerId + " online!");
                             }
 

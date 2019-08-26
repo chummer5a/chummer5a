@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -15,6 +16,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using System.Text;
 using System.Net.Http.Headers;
+using System.Security.Cryptography;
 
 namespace ChummerHub.Controllers.V1
 {
@@ -127,12 +129,17 @@ namespace ChummerHub.Controllers.V1
                 }
                 foundseq = (from a in _context.SINners where a.Hash == Hash select a).ToList();
                 _context.SaveChanges();
+#if DEBUG
+                if (Debugger.IsAttached)
+                    foundseq = (from a in _context.SINners select a).Take(1).ToList();
+#endif 
                 if (foundseq.Any())
                 {
                     var sinner = foundseq.FirstOrDefault();
+                    string transactionId = String.Format("{0:X}", Guid.NewGuid().ToString().GetHashCode());
+                    string chummerUrl = "chummer://plugin:SINners:Load:" + sinner.Id + ":" + transactionId;
                     
-                    string postbackUrl = "chummer://plugin:SINners:Load:" + sinner.Id;
-                    postbackUrl = "https://shadowsprawl.com/character/open";
+                    string postbackUrl = "https://shadowsprawl.com/character/open";
                     sinner.LastDownload = DateTime.Now;
                     _context.SaveChanges();
                     string mypath = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}";
@@ -147,10 +154,17 @@ namespace ChummerHub.Controllers.V1
                     string escapestr = $"{escape.Scheme}://{escape.Host}{escape.AbsolutePath}";
                     escapestr += Uri.EscapeDataString(escape.Query);
                     sb.AppendFormat("<input type='hidden' name='DownloadUrl' value='{0}'>", escapestr);
+                    
+                    string urlcallback = "https://shadowsprawl.com/character/status/" + transactionId;
+                    string chummeruri = chummerUrl + ":" + Uri.EscapeDataString(urlcallback);
+                    sb.AppendFormat("<input type='hidden' name='ChummerUrl' value='{0}'>", chummeruri);
+                    sb.AppendFormat("<input type='hidden' name='TransactionId' value='{0}'>", transactionId);
+                    sb.AppendFormat("<input type='hidden' name='StatusCallback' value='{0}'>", urlcallback);
                     // Other params go here
                     sb.Append("</form>");
                     sb.Append("</body>");
                     sb.Append("</html>");
+                    tc.TrackTrace("Form generated: " + sb.ToString(), SeverityLevel.Information);
                     var contentresult = new ContentResult()
                     {
                         ContentType = "text/html",

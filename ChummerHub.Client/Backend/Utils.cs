@@ -411,137 +411,32 @@ namespace ChummerHub.Client.Backend
             return client;
         }
 
-        //the level-argument is only to absolutely make sure to not spawn processes uncontrolled
-        public static bool RegisterChummerProtocol(string level)
+        
+
+        internal static async Task WebCall(string callback, int progress, string text)
         {
-            var startupExe = System.Windows.Forms.Application.StartupPath;
-            startupExe = System.Reflection.Assembly.GetEntryAssembly()?.Location;
-            RegistryKey key = Registry.ClassesRoot.OpenSubKey("Chummer"); //open myApp protocol's subkey
-            bool reregisterKey = false;
-            if (key != null)
-            {
-                if (key.GetValue(string.Empty)?.ToString() != "URL: Chummer Protocol")
-                    reregisterKey = true;
-                if (key.GetValue("URL Protocol")?.ToString() != string.Empty)
-                    reregisterKey = true;
-                key = key.OpenSubKey(@"shell\open\command");
-                if (key == null)
-                    reregisterKey = true;
-                else
-                {
-                    if (key.GetValue(string.Empty)?.ToString() != startupExe + " " + "%1")
-                        reregisterKey = true;
-                }
-#if DEBUG
-                //for debug always overwrite the key!
-                reregisterKey = true;
-#endif
-                key.Close();
-            }
-            else
-            {
-                reregisterKey = true;
-            }
-
-            if (reregisterKey == false)
-            {
-                Log.Info("Url Protocol Handler for Chummer was already registered!");
-                return true;
-            }
-
             try
             {
-                System.AppDomain.CurrentDomain.SetPrincipalPolicy(PrincipalPolicy.WindowsPrincipal);
-                return StaticUtils.RegisterMyProtocol(startupExe);
-            }
-            catch (System.Security.SecurityException se)
-            {
-                Log.Warn(se);
-                int intLevel = -1;
-                if (Int32.TryParse(level, out int result))
+                Log.Trace("Posting WebCall " + callback + ": " + text + "(" + progress + ")");
+                using (var client = new HttpClient())
                 {
-                    intLevel = result;
-                }
-
-                string arguments = "/plugin:SINners:RegisterUriScheme:" + ++intLevel;
-                if (intLevel > 1)
-                    return false;
-                ProcessStartInfo startInfo = new ProcessStartInfo
-                {
-                    FileName = startupExe,
-                    Arguments = arguments,
-                    Verb = "runas"
-                };
-                var myAdminProcess = Process.Start(startInfo);
-                myAdminProcess.WaitForExit(30*1000);
-                if (myAdminProcess.ExitCode == -1)
-                    return true;
-                return false;
-            }
-            
-
-            return true;
-        }
-
-        
-        public static bool RegisterMyProtocol(string myAppPath)  //myAppPath = full path to your application
-        {
-            RegistryKey Software = Registry.CurrentUser.OpenSubKey("Software");  //open myApp protocol's subkey
-            RegistryKey Classes = Software.OpenSubKey("Classes", true);
-            if (Classes == null)
-            {
-                try
-                {
-                    Classes = Software.CreateSubKey("Classes", RegistryKeyPermissionCheck.ReadWriteSubTree);
-                }
-                catch(System.UnauthorizedAccessException e)
-                {
-                    return RegisterMyProtocolAdmin(myAppPath);
+                    var uri = new Uri(callback);
+                    string baseuri = uri.GetLeftPart(System.UriPartial.Authority);
+                    client.BaseAddress = new Uri(baseuri);
+                    var content = new FormUrlEncodedContent(new[]
+                    {
+                        new KeyValuePair<string, string>("Progress", progress.ToString()),
+                        new KeyValuePair<string, string>("Text", text),
+                    });
+                    var result = await client.PostAsync(callback, content);
+                    string resultContent = await result.Content.ReadAsStringAsync();
+                    Log.Trace("Result from WebCall " + callback + ": " + resultContent);
                 }
             }
-            RegistryKey key = Classes.OpenSubKey("Chummer", true);  //open myApp protocol's subkey
-
-            if (key == null) //if the protocol is not registered yet...we register it
+            catch (Exception e)
             {
-                key = Classes.CreateSubKey("Chummer", RegistryKeyPermissionCheck.ReadWriteSubTree);
+                Log.Warn(e);
             }
-            key.SetValue(string.Empty, "URL: Chummer Protocol");
-            key.SetValue("URL Protocol", string.Empty);
-
-            RegistryKey shell = key.OpenSubKey(@"shell\open\command", RegistryKeyPermissionCheck.ReadWriteSubTree);
-            if (shell == null)
-                shell = key.CreateSubKey(@"shell\open\command", RegistryKeyPermissionCheck.ReadWriteSubTree);
-            shell.SetValue(string.Empty, myAppPath + " " + "%1");
-            //%1 represents the argument - this tells windows to open this program with an argument / parameter
-            shell.Close();
-            key.Close();
-            Classes.Close();
-            Software.Close();
-            Log.Info("Url Protocol Handler for Chummer registered!");
-            return true;
-        }
-
-        [PrincipalPermission(SecurityAction.Demand, Role = @"BUILTIN\Administrator") ] 
-        public static bool RegisterMyProtocolAdmin(string myAppPath)  //myAppPath = full path to your application
-        {
-            RegistryKey key = Registry.ClassesRoot.OpenSubKey("Chummer", true);  //open myApp protocol's subkey
-
-            if (key == null) //if the protocol is not registered yet...we register it
-            {
-                key = Registry.ClassesRoot.CreateSubKey("Chummer", RegistryKeyPermissionCheck.ReadWriteSubTree);
-            }
-            key.SetValue(string.Empty, "URL: Chummer Protocol");
-            key.SetValue("URL Protocol", string.Empty);
-
-            RegistryKey shell = key.OpenSubKey(@"shell\open\command", RegistryKeyPermissionCheck.ReadWriteSubTree);
-            if (shell == null)
-                shell = key.CreateSubKey(@"shell\open\command", RegistryKeyPermissionCheck.ReadWriteSubTree);
-            shell.SetValue(string.Empty, myAppPath + " " + "%1");
-            //%1 represents the argument - this tells windows to open this program with an argument / parameter
-            shell.Close();
-            key.Close();
-            Log.Info("Url Protocol Handler for Chummer as Admin registered!");
-            return true;
         }
     }
 
