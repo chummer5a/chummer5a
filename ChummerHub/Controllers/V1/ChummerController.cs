@@ -160,6 +160,7 @@ namespace ChummerHub.Controllers.V1
                     sb.AppendFormat("<input type='hidden' name='ChummerUrl' value='{0}'>", chummeruri);
                     sb.AppendFormat("<input type='hidden' name='TransactionId' value='{0}'>", transactionId);
                     sb.AppendFormat("<input type='hidden' name='StatusCallback' value='{0}'>", urlcallback);
+                    sb.AppendFormat("<input type='hidden' name='UploadDateTime' value='{0}'>", sinner?.UploadDateTime);
                     // Other params go here
                     sb.Append("</form>");
                     sb.Append("</body>");

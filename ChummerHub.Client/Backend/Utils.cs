@@ -435,7 +435,8 @@ namespace ChummerHub.Client.Backend
             }
             catch (Exception e)
             {
-                Log.Warn(e);
+                string message = "This exception can be ignored! " + e.ToString();
+                Log.Debug(e, message);
             }
         }
     }
