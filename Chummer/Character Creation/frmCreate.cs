@@ -13290,41 +13290,13 @@ namespace Chummer
             // Gear Availability.
             foreach (Gear objGear in CharacterObject.Gear)
             {
-                CheckRestrictedGear(objGear, blnRestrictedGearUsed, intRestrictedCount, strAvailItems, strRestrictedItem, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems, out strRestrictedItem);
+                objGear.CheckRestrictedGear(blnRestrictedGearUsed, intRestrictedCount, strAvailItems, strRestrictedItem, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems, out strRestrictedItem);
             }
 
             // Cyberware Availability.
             foreach (Cyberware objCyberware in CharacterObject.Cyberware.GetAllDescendants(x => x.Children))
             {
-                if (string.IsNullOrEmpty(objCyberware.ParentID))
-                {
-                    if (CharacterObject.BannedWareGrades.Any(s => objCyberware.Grade.Name.Contains(s)))
-                        strCyberwareGrade += Environment.NewLine + "\t\t" + objCyberware.DisplayNameShort(GlobalOptions.Language);
-
-                    AvailabilityValue objTotalAvail = objCyberware.TotalAvailTuple();
-                    if (!objTotalAvail.AddToParent)
-                    {
-                        int intAvailInt = objTotalAvail.Value;
-                        if (intAvailInt > CharacterObject.MaximumAvailability)
-                        {
-                            if (intAvailInt <= CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
-                            {
-                                blnRestrictedGearUsed = true;
-                                strRestrictedItem = objCyberware.DisplayName(GlobalOptions.Language);
-                            }
-                            else
-                            {
-                                intRestrictedCount++;
-                                strAvailItems += Environment.NewLine + "\t\t" + objCyberware.DisplayNameShort(GlobalOptions.Language);
-                            }
-                        }
-                    }
-                }
-
-                foreach (Gear objGear in objCyberware.Gear)
-                {
-                    CheckRestrictedGear(objGear, blnRestrictedGearUsed, intRestrictedCount, strAvailItems, strRestrictedItem, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems, out strRestrictedItem);
-                }
+                objCyberware.CheckRestrictedGear(blnRestrictedGearUsed, intRestrictedCount, strAvailItems, strRestrictedItem, strCyberwareGrade, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems, out strRestrictedItem, out strCyberwareGrade);
             }
 
             // Cyberware: Prototype Transhuman
@@ -13342,421 +13314,19 @@ namespace Chummer
             // Armor Availability.
             foreach (Armor objArmor in CharacterObject.Armor)
             {
-                int intAvailInt = objArmor.TotalAvailTuple().Value;
-                if (intAvailInt > CharacterObject.MaximumAvailability)
-                {
-                    if (intAvailInt <= CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
-                    {
-                        blnRestrictedGearUsed = true;
-                        strRestrictedItem = objArmor.DisplayName(GlobalOptions.Language);
-                    }
-                    else
-                    {
-                        intRestrictedCount++;
-                        strAvailItems += Environment.NewLine + "\t\t" + objArmor.DisplayNameShort(GlobalOptions.Language);
-                    }
-                }
-
-                foreach (ArmorMod objMod in objArmor.ArmorMods)
-                {
-                    if (!objMod.IncludedInArmor)
-                    {
-                        AvailabilityValue objTotalAvail = objMod.TotalAvailTuple();
-                        if (!objTotalAvail.AddToParent)
-                        {
-                            int intModAvailInt = objTotalAvail.Value;
-                            if (intModAvailInt > CharacterObject.MaximumAvailability)
-                            {
-                                if (intModAvailInt <= CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
-                                {
-                                    blnRestrictedGearUsed = true;
-                                    strRestrictedItem = objMod.DisplayName(GlobalOptions.Language);
-                                }
-                                else
-                                {
-                                    intRestrictedCount++;
-                                    strAvailItems += Environment.NewLine + "\t\t" + objMod.DisplayNameShort(GlobalOptions.Language);
-                                }
-                            }
-                        }
-                    }
-
-                    foreach (Gear objGear in objMod.Gear)
-                    {
-                        CheckRestrictedGear(objGear, blnRestrictedGearUsed, intRestrictedCount, strAvailItems, strRestrictedItem, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems, out strRestrictedItem);
-                    }
-                }
-
-                foreach (Gear objGear in objArmor.Gear)
-                {
-                    CheckRestrictedGear(objGear, blnRestrictedGearUsed, intRestrictedCount, strAvailItems, strRestrictedItem, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems, out strRestrictedItem);
-                }
+                objArmor.CheckRestrictedGear(blnRestrictedGearUsed, intRestrictedCount, strAvailItems, strRestrictedItem, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems, out strRestrictedItem);
             }
 
             // Weapon Availability.
             foreach (Weapon objWeapon in CharacterObject.Weapons.GetAllDescendants(x => x.Children))
             {
-                if (!objWeapon.IncludedInWeapon)
-                {
-                    AvailabilityValue objWeaponAvail = objWeapon.TotalAvailTuple();
-                    if (!objWeaponAvail.AddToParent)
-                    {
-                        int intAvailInt = objWeaponAvail.Value;
-                        if (intAvailInt > CharacterObject.MaximumAvailability)
-                        {
-                            if (intAvailInt <= CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
-                            {
-                                blnRestrictedGearUsed = true;
-                                strRestrictedItem = objWeapon.DisplayName(GlobalOptions.Language);
-                            }
-                            else
-                            {
-                                intRestrictedCount++;
-                                strAvailItems += Environment.NewLine + "\t\t" + objWeapon.DisplayNameShort(GlobalOptions.Language);
-                            }
-                        }
-                    }
-                }
-
-                foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
-                {
-                    if (!objAccessory.IncludedInWeapon)
-                    {
-                        AvailabilityValue objAccessoryAvail = objAccessory.TotalAvailTuple();
-                        if (!objAccessoryAvail.AddToParent)
-                        {
-                            int intAccessoryAvailInt = objAccessoryAvail.Value;
-                            if (intAccessoryAvailInt > CharacterObject.MaximumAvailability)
-                            {
-                                if (intAccessoryAvailInt <= CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
-                                {
-                                    blnRestrictedGearUsed = true;
-                                    strRestrictedItem = objAccessory.DisplayName(GlobalOptions.Language);
-                                }
-                                else
-                                {
-                                    intRestrictedCount++;
-                                    strAvailItems += Environment.NewLine + "\t\t" + objAccessory.DisplayNameShort(GlobalOptions.Language);
-                                }
-                            }
-                        }
-                    }
-
-                    foreach (Gear objGear in objAccessory.Gear.Where(objGear => !objGear.IncludedInParent))
-                    {
-                        CheckRestrictedGear(objGear, blnRestrictedGearUsed, intRestrictedCount, strAvailItems, strRestrictedItem, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems, out strRestrictedItem);
-                    }
-                }
+                objWeapon.CheckRestrictedGear(blnRestrictedGearUsed, intRestrictedCount, strAvailItems, strRestrictedItem, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems, out strRestrictedItem);
             }
 
             // Vehicle Availability.
             foreach (Vehicle objVehicle in CharacterObject.Vehicles)
             {
-                if (string.IsNullOrEmpty(objVehicle.ParentID))
-                {
-                    int intAvailInt = objVehicle.TotalAvailTuple().Value;
-                    if (intAvailInt > CharacterObject.MaximumAvailability)
-                    {
-                        if (intAvailInt <= CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
-                        {
-                            blnRestrictedGearUsed = true;
-                            strRestrictedItem = objVehicle.DisplayName(GlobalOptions.Language);
-                        }
-                        else
-                        {
-                            intRestrictedCount++;
-                            strAvailItems += Environment.NewLine + "\t\t" + objVehicle.DisplayNameShort(GlobalOptions.Language);
-                        }
-                    }
-                }
-
-                foreach (VehicleMod objVehicleMod in objVehicle.Mods)
-                {
-                    if (!objVehicleMod.IncludedInVehicle)
-                    {
-                        AvailabilityValue objModAvail = objVehicleMod.TotalAvailTuple();
-                        if (!objModAvail.AddToParent)
-                        {
-                            int intModAvailInt = objModAvail.Value;
-                            if (intModAvailInt > CharacterObject.MaximumAvailability)
-                            {
-                                if (intModAvailInt <= CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
-                                {
-                                    blnRestrictedGearUsed = true;
-                                    strRestrictedItem = objVehicleMod.DisplayName(GlobalOptions.Language);
-                                }
-                                else
-                                {
-                                    intRestrictedCount++;
-                                    strAvailItems += Environment.NewLine + "\t\t" + objVehicleMod.DisplayNameShort(GlobalOptions.Language);
-                                }
-                            }
-                        }
-                    }
-
-                    foreach (Cyberware objCyberware in objVehicleMod.Cyberware.GetAllDescendants(x => x.Children))
-                    {
-                        if (string.IsNullOrEmpty(objCyberware.ParentID))
-                        {
-                            if (CharacterObject.BannedWareGrades.Any(s => objCyberware.Grade.Name.Contains(s)))
-                                strCyberwareGrade += Environment.NewLine + "\t\t" + objCyberware.DisplayNameShort(GlobalOptions.Language);
-
-                            AvailabilityValue objTotalAvail = objCyberware.TotalAvailTuple();
-                            if (!objTotalAvail.AddToParent)
-                            {
-                                int intAvailInt = objTotalAvail.Value;
-                                if (intAvailInt > CharacterObject.MaximumAvailability)
-                                {
-                                    if (intAvailInt <= CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
-                                    {
-                                        blnRestrictedGearUsed = true;
-                                        strRestrictedItem = objCyberware.DisplayName(GlobalOptions.Language);
-                                    }
-                                    else
-                                    {
-                                        intRestrictedCount++;
-                                        strAvailItems += Environment.NewLine + "\t\t" + objCyberware.DisplayNameShort(GlobalOptions.Language);
-                                    }
-                                }
-                            }
-                        }
-
-                        foreach (Gear objGear in objCyberware.Gear)
-                        {
-                            CheckRestrictedGear(objGear, blnRestrictedGearUsed, intRestrictedCount, strAvailItems, strRestrictedItem, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems, out strRestrictedItem);
-                        }
-                    }
-
-                    foreach (Weapon objWeapon in objVehicleMod.Weapons.GetAllDescendants(x => x.Children))
-                    {
-                        if (!objWeapon.IncludedInWeapon)
-                        {
-                            AvailabilityValue objWeaponAvail = objWeapon.TotalAvailTuple();
-                            if (!objWeaponAvail.AddToParent)
-                            {
-                                int intWeaponAvailInt = objWeaponAvail.Value;
-                                if (intWeaponAvailInt > CharacterObject.MaximumAvailability)
-                                {
-                                    if (intWeaponAvailInt <= CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
-                                    {
-                                        blnRestrictedGearUsed = true;
-                                        strRestrictedItem = objWeapon.DisplayName(GlobalOptions.Language);
-                                    }
-                                    else
-                                    {
-                                        intRestrictedCount++;
-                                        strAvailItems += Environment.NewLine + "\t\t" + objWeapon.DisplayNameShort(GlobalOptions.Language);
-                                    }
-                                }
-                            }
-                        }
-                        foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
-                        {
-                            if (!objAccessory.IncludedInWeapon)
-                            {
-                                AvailabilityValue objAccessoryAvail = objAccessory.TotalAvailTuple();
-                                if (!objAccessoryAvail.AddToParent)
-                                {
-                                    int intAccessoryAvailInt = objAccessoryAvail.Value;
-                                    if (intAccessoryAvailInt > CharacterObject.MaximumAvailability)
-                                    {
-                                        if (intAccessoryAvailInt <= CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
-                                        {
-                                            blnRestrictedGearUsed = true;
-                                            strRestrictedItem = objAccessory.DisplayName(GlobalOptions.Language);
-                                        }
-                                        else
-                                        {
-                                            intRestrictedCount++;
-                                            strAvailItems += Environment.NewLine + "\t\t" + objAccessory.DisplayName(GlobalOptions.Language);
-                                        }
-                                    }
-                                }
-                            }
-
-                            foreach (Gear objGear in objAccessory.Gear)
-                            {
-                                CheckRestrictedGear(objGear, blnRestrictedGearUsed, intRestrictedCount, strAvailItems, strRestrictedItem, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems, out strRestrictedItem);
-                            }
-                        }
-                    }
-
-                    foreach (WeaponMount objWeaponMount in objVehicle.WeaponMounts)
-                    {
-                        foreach (Weapon objWeapon in objWeaponMount.Weapons.GetAllDescendants(x => x.Children))
-                        {
-                            if (!objWeapon.IncludedInWeapon)
-                            {
-                                AvailabilityValue objWeaponAvail = objWeapon.TotalAvailTuple();
-                                if (!objWeaponAvail.AddToParent)
-                                {
-                                    int intWeaponAvailInt = objWeaponAvail.Value;
-                                    if (intWeaponAvailInt > CharacterObject.MaximumAvailability)
-                                    {
-                                        if (intWeaponAvailInt <= CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
-                                        {
-                                            blnRestrictedGearUsed = true;
-                                            strRestrictedItem = objWeapon.DisplayName(GlobalOptions.Language);
-                                        }
-                                        else
-                                        {
-                                            intRestrictedCount++;
-                                            strAvailItems += Environment.NewLine + "\t\t" + objWeapon.DisplayNameShort(GlobalOptions.Language);
-                                        }
-                                    }
-                                }
-                            }
-
-                            foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
-                            {
-                                if (!objAccessory.IncludedInWeapon)
-                                {
-                                    AvailabilityValue objAccessoryAvail = objAccessory.TotalAvailTuple();
-                                    if (!objAccessoryAvail.AddToParent)
-                                    {
-                                        int intAccessoryAvailInt = objAccessoryAvail.Value;
-                                        if (intAccessoryAvailInt > CharacterObject.MaximumAvailability)
-                                        {
-                                            if (intAccessoryAvailInt <= CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
-                                            {
-                                                blnRestrictedGearUsed = true;
-                                                strRestrictedItem = objAccessory.DisplayName(GlobalOptions.Language);
-                                            }
-                                            else
-                                            {
-                                                intRestrictedCount++;
-                                                strAvailItems += Environment.NewLine + "\t\t" + objAccessory.DisplayName(GlobalOptions.Language);
-                                            }
-                                        }
-                                    }
-                                }
-
-                                foreach (Gear objGear in objAccessory.Gear)
-                                {
-                                    CheckRestrictedGear(objGear, blnRestrictedGearUsed, intRestrictedCount, strAvailItems, strRestrictedItem, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems, out strRestrictedItem);
-                                }
-                            }
-                        }
-
-                        foreach (VehicleMod objWeaponMountMod in objWeaponMount.Mods)
-                        {
-                            if (!objWeaponMountMod.IncludedInVehicle)
-                            {
-                                AvailabilityValue objModAvail = objWeaponMountMod.TotalAvailTuple();
-                                if (!objModAvail.AddToParent)
-                                {
-                                    int intModAvailInt = objModAvail.Value;
-                                    if (intModAvailInt > CharacterObject.MaximumAvailability)
-                                    {
-                                        if (intModAvailInt <= CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
-                                        {
-                                            blnRestrictedGearUsed = true;
-                                            strRestrictedItem = objWeaponMountMod.DisplayName(GlobalOptions.Language);
-                                        }
-                                        else
-                                        {
-                                            intRestrictedCount++;
-                                            strAvailItems += Environment.NewLine + "\t\t" + objWeaponMountMod.DisplayNameShort(GlobalOptions.Language);
-                                        }
-                                    }
-                                }
-                            }
-
-                            foreach (Cyberware objCyberware in objWeaponMountMod.Cyberware.GetAllDescendants(x => x.Children))
-                            {
-                                if (string.IsNullOrEmpty(objCyberware.ParentID))
-                                {
-                                    if (CharacterObject.BannedWareGrades.Any(s => objCyberware.Grade.Name.Contains(s)))
-                                        strCyberwareGrade += Environment.NewLine + "\t\t" + objCyberware.DisplayNameShort(GlobalOptions.Language);
-
-                                    AvailabilityValue objTotalAvail = objCyberware.TotalAvailTuple();
-                                    if (!objTotalAvail.AddToParent)
-                                    {
-                                        int intAvailInt = objTotalAvail.Value;
-                                        if (intAvailInt > CharacterObject.MaximumAvailability)
-                                        {
-                                            if (intAvailInt <= CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
-                                            {
-                                                blnRestrictedGearUsed = true;
-                                                strRestrictedItem = objCyberware.DisplayName(GlobalOptions.Language);
-                                            }
-                                            else
-                                            {
-                                                intRestrictedCount++;
-                                                strAvailItems += Environment.NewLine + "\t\t" + objCyberware.DisplayNameShort(GlobalOptions.Language);
-                                            }
-                                        }
-                                    }
-                                }
-
-                                foreach (Gear objGear in objCyberware.Gear)
-                                {
-                                    CheckRestrictedGear(objGear, blnRestrictedGearUsed, intRestrictedCount, strAvailItems, strRestrictedItem, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems, out strRestrictedItem);
-                                }
-                            }
-
-                            foreach (Weapon objWeapon in objWeaponMountMod.Weapons.GetAllDescendants(x => x.Children))
-                            {
-                                if (!objWeapon.IncludedInWeapon)
-                                {
-                                    AvailabilityValue objWeaponAvail = objWeapon.TotalAvailTuple();
-                                    if (!objWeaponAvail.AddToParent)
-                                    {
-                                        int intWeaponAvailInt = objWeaponAvail.Value;
-                                        if (intWeaponAvailInt > CharacterObject.MaximumAvailability)
-                                        {
-                                            if (intWeaponAvailInt <= CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
-                                            {
-                                                blnRestrictedGearUsed = true;
-                                                strRestrictedItem = objWeapon.DisplayName(GlobalOptions.Language);
-                                            }
-                                            else
-                                            {
-                                                intRestrictedCount++;
-                                                strAvailItems += Environment.NewLine + "\t\t" + objWeapon.DisplayNameShort(GlobalOptions.Language);
-                                            }
-                                        }
-                                    }
-                                }
-
-                                foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
-                                {
-                                    if (!objAccessory.IncludedInWeapon)
-                                    {
-                                        AvailabilityValue objAccessoryAvail = objAccessory.TotalAvailTuple();
-                                        if (!objAccessoryAvail.AddToParent)
-                                        {
-                                            int intAccessoryAvailInt = objAccessoryAvail.Value;
-                                            if (intAccessoryAvailInt > CharacterObject.MaximumAvailability)
-                                            {
-                                                if (intAccessoryAvailInt <= CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
-                                                {
-                                                    blnRestrictedGearUsed = true;
-                                                    strRestrictedItem = objAccessory.DisplayName(GlobalOptions.Language);
-                                                }
-                                                else
-                                                {
-                                                    intRestrictedCount++;
-                                                    strAvailItems += Environment.NewLine + "\t\t" + objAccessory.DisplayName(GlobalOptions.Language);
-                                                }
-                                            }
-                                        }
-                                    }
-
-                                    foreach (Gear objGear in objAccessory.Gear)
-                                    {
-                                        CheckRestrictedGear(objGear, blnRestrictedGearUsed, intRestrictedCount, strAvailItems, strRestrictedItem, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems, out strRestrictedItem);
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    foreach (Gear objGear in objVehicle.Gear)
-                    {
-                        CheckRestrictedGear(objGear, blnRestrictedGearUsed, intRestrictedCount, strAvailItems, strRestrictedItem, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems, out strRestrictedItem);
-                    }
-                }
+                objVehicle.CheckRestrictedGear(blnRestrictedGearUsed, intRestrictedCount, strAvailItems, strRestrictedItem, strCyberwareGrade, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems, out strRestrictedItem, out strCyberwareGrade);
             }
 
             // Make sure the character is not carrying more items over the allowed Avail than they are allowed.
@@ -13767,7 +13337,12 @@ namespace Chummer
                                   , (intRestrictedCount - intRestrictedAllowed).ToString(GlobalOptions.CultureInfo)
                                   , CharacterObject.MaximumAvailability.ToString(GlobalOptions.CultureInfo));
                 strMessage += strAvailItems;
-                strMessage += Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_RestrictedGearUsed", GlobalOptions.Language), strRestrictedItem);
+                if (blnRestrictedGearUsed)
+                {
+                    strMessage += Environment.NewLine + '\t' + string.Format(
+                                      LanguageManager.GetString("Message_RestrictedGearUsed", GlobalOptions.Language),
+                                      strRestrictedItem);
+                }
             }
 
             if (!string.IsNullOrWhiteSpace(strExConItems))
@@ -14006,55 +13581,6 @@ namespace Chummer
             if (!blnValid && strMessage.Length > LanguageManager.GetString("Message_InvalidBeginning", GlobalOptions.Language).Length)
                 Program.MainForm.ShowMessageBox(strMessage, LanguageManager.GetString("MessageTitle_Invalid", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
             return blnValid;
-        }
-
-        /// <summary>
-        /// Checks a nominated piece of gear for Availability requirements.
-        /// </summary>
-        /// <param name="objGear">Gear to check.</param>
-        /// <param name="blnRestrictedGearUsed">Whether Restricted Gear is already being used.</param>
-        /// <param name="intRestrictedCount">Amount of gear that is currently over the availability limit.</param>
-        /// <param name="strAvailItems">String used to list names of gear that are currently over the availability limit.</param>
-        /// <param name="strRestrictedItem">Item that is being used for Restricted Gear.</param>
-        /// <param name="blnOutRestrictedGearUsed">Whether Restricted Gear is already being used (tracked across gear children).</param>
-        /// <param name="intOutRestrictedCount">Amount of gear that is currently over the availability limit (tracked across gear children).</param>
-        /// <param name="strOutAvailItems">String used to list names of gear that are currently over the availability limit (tracked across gear children).</param>
-        /// <param name="strOutRestrictedItem">Item that is being used for Restricted Gear (tracked across gear children).</param>
-        private void CheckRestrictedGear(Gear objGear, bool blnRestrictedGearUsed, int intRestrictedCount, string strAvailItems, string strRestrictedItem, out bool blnOutRestrictedGearUsed, out int intOutRestrictedCount, out string strOutAvailItems, out string strOutRestrictedItem)
-        {
-            if (!objGear.IncludedInParent)
-            {
-                AvailabilityValue objTotalAvail = objGear.TotalAvailTuple();
-                if (!objTotalAvail.AddToParent)
-                {
-                    int intAvailInt = objTotalAvail.Value;
-                    //TODO: Make this dynamically update without having to validate the character.
-                    if (intAvailInt > CharacterObject.MaximumAvailability)
-                    {
-                        if (intAvailInt <= CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
-                        {
-                            blnRestrictedGearUsed = true;
-                            strRestrictedItem = objGear.Parent == null
-                                ? objGear.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)
-                                : $"{objGear.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)} ({objGear.Parent})";
-                        }
-                        else
-                        {
-                            intRestrictedCount++;
-                            strAvailItems += Environment.NewLine + "\t\t" + objGear.DisplayNameShort(GlobalOptions.Language);
-                        }
-                    }
-                }
-            }
-
-            foreach (Gear objChild in objGear.Children.Where(objChild => !objChild.IncludedInParent))
-            {
-                CheckRestrictedGear(objChild, blnRestrictedGearUsed, intRestrictedCount, strAvailItems, strRestrictedItem, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems, out strRestrictedItem);
-            }
-            strOutAvailItems = strAvailItems;
-            intOutRestrictedCount = intRestrictedCount;
-            blnOutRestrictedGearUsed = blnRestrictedGearUsed;
-            strOutRestrictedItem = strRestrictedItem;
         }
 
         /// <summary>

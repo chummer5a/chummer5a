@@ -51,6 +51,7 @@ Application Fixes:
 - Removed an additional cost from purchasing Gear that incorrectly caused quantity to be counted twice.
 - Fixed a regression in the SpellCategory improvement that prevented it being used, as it was renamed to spellcategorydicepool.
 - The Technoshaman Stream properly allows Sprites to be Fettered, granting unlimited services. Existing characters with this Stream will need to Reapply Improvements for it to work.
+- Availability processing for street gear (Vehicles, Weapons, Armor, etc.) have been moved out of frmCreate and into the individual Equipment classes. Resolves issues with weapons being incorrectly flagged for availability multiple times.
 
 Data Changes:
 
