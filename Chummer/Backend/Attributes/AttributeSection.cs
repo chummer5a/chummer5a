@@ -429,7 +429,7 @@ namespace Chummer.Backend.Attributes
                         case CharacterAttrib.AttributeCategory.Special:
                             SpecialAttributeList.Add(objAttribute);
                             break;
-                        case CharacterAttrib.AttributeCategory.Shapeshifter:
+                        case CharacterAttrib.AttributeCategory.Standard:
                             AttributeList.Add(objAttribute);
                             break;
                     }
