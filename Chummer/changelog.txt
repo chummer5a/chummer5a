@@ -93,6 +93,7 @@ This affects:
 - Added missing actions for Commanding Voice and Mystic Aptitude. Closes #3804
 - Fixed incorrect Availability on the Federated Boeing Commuter. Closes #3833
 - Fixed Local Bar Batron lifestyle quality not being allowed to be taken multiple times. Closes #3812
+- Fixed incorrect stage for the Lost at Sea life module.
 
 New Strings:
 
