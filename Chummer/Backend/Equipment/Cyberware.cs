@@ -3335,21 +3335,16 @@ namespace Chummer.Backend.Equipment
 
                 foreach (Cyberware objChild in Children)
                 {
+                    // If the limb has Enhanced Strength, this adds to the limb's value.
+                    if (s_StrengthEnhancementStrings.Contains(objChild.Name))
+                        intBonus = objChild.Rating;
                     // If the limb has Customized Strength, this is its new base value.
                     if (s_StrengthCustomisationStrings.Contains(objChild.Name))
                         intAttribute = objChild.Rating;
-                    // If the limb has Enhanced Strength, this adds to the limb's value.
-                    if (s_StrengthEnhancementStrings.Contains(Name))
-                        intBonus = objChild.Rating;
                 }
-                if (ParentVehicle == null)
-                {
-                    return Math.Min(intAttribute + intBonus + _objCharacter.RedlinerBonus, _objCharacter.STR.TotalAugmentedMaximum);
-                }
-                else
-                {
-                    return Math.Min(intAttribute + intBonus, Math.Max(ParentVehicle.TotalBody * 2, 1));
-                }
+                return ParentVehicle == null
+                    ? Math.Min(intAttribute + intBonus + _objCharacter.RedlinerBonus, _objCharacter.STR.TotalAugmentedMaximum)
+                    : Math.Min(intAttribute + intBonus, Math.Max(ParentVehicle.TotalBody * 2, 1));
             }
         }
 
@@ -3406,16 +3401,13 @@ namespace Chummer.Backend.Equipment
                     if (s_AgilityCustomisationStrings.Contains(objChild.Name))
                         intAttribute = objChild.Rating;
                     // If the limb has Enhanced Agility, this adds to the limb's value.
-                    if (s_AgilityEnhancementStrings.Contains(Name))
+                    if (s_AgilityEnhancementStrings.Contains(objChild.Name))
                         intBonus = objChild.Rating;
                 }
 
-                if (ParentVehicle == null)
-                {
-                    return Math.Min(intAttribute + intBonus + _objCharacter.RedlinerBonus, _objCharacter.AGI.TotalAugmentedMaximum);
-                }
-
-                return Math.Min(intAttribute + intBonus, Math.Max(ParentVehicle.Pilot * 2, 1));
+                return ParentVehicle == null
+                    ? Math.Min(intAttribute + intBonus + _objCharacter.RedlinerBonus, _objCharacter.AGI.TotalAugmentedMaximum)
+                    : Math.Min(intAttribute + intBonus, Math.Max(ParentVehicle.Pilot * 2, 1));
             }
         }
 
