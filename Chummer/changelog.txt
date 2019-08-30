@@ -95,6 +95,7 @@ This affects:
 - Fixed Local Bar Batron lifestyle quality not being allowed to be taken multiple times. Closes #3812
 - Fixed incorrect stage for the Lost at Sea life module.
 - Changed Technomancer priority selection to require Metahuman instead of forbid AI to prevent metasapients from being able to take it incorrectly. Closes #3506
+- Fixed incorrect range for the Gravity Well spell. Closes #3844
 
 New Strings:
 
