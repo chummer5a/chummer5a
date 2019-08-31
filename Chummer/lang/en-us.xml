@@ -2594,6 +2594,10 @@
       <text>Cyber/Bioware Grade limit exceeded for the following items:</text>
     </string>
     <string>
+      <key>Message_InvalidPowerPoints</key>
+      <text>{0} over your Adept Power Point maximum ({1})</text>
+    </string>
+    <string>
       <key>Checkbox_PrototypeTranshuman</key>
       <text>Prototype Transhuman</text>
     </string>

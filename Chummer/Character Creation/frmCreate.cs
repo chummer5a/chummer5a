@@ -13265,6 +13265,17 @@ namespace Chummer
                 strMessage += Environment.NewLine + '\t' + LanguageManager.GetString("Message_InvalidNoTradition", GlobalOptions.Language);
             }
 
+            // If the character has the Spells & Spirits Tab enabled, make sure a Tradition has been selected.
+            if (CharacterObject.AdeptEnabled && CharacterObject.PowerPointsUsed > CharacterObject.PowerPointsTotal)
+            {
+                blnValid = false;
+                strMessage += Environment.NewLine + '\t' +
+                              string.Format(
+                                  LanguageManager.GetString("Message_InvalidPowerPoints", GlobalOptions.Language),
+                                  (CharacterObject.PowerPointsUsed - CharacterObject.PowerPointsTotal).ToString(),
+                                  CharacterObject.PowerPointsTotal.ToString());
+            }
+
             // If the character has the Technomencer Tab enabled, make sure a Stream has been selected.
             if (CharacterObject.TechnomancerEnabled && CharacterObject.MagicTradition.Type != TraditionType.RES)
             {
