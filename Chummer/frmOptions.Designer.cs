@@ -308,6 +308,7 @@ namespace Chummer
             this.flpOKCancel = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdOK = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
+            this.chkIncreasedImprovedAbilityModifier = new System.Windows.Forms.CheckBox();
             this.mainPanel.SuspendLayout();
             this.tlpOptions.SuspendLayout();
             this.tabOptions.SuspendLayout();
@@ -3681,6 +3682,7 @@ namespace Chummer
             this.tlpHouseRules.Controls.Add(this.chkExtendAnyDetectionSpell, 4, 11);
             this.tlpHouseRules.Controls.Add(this.chkAllowSkillRegrouping, 4, 10);
             this.tlpHouseRules.Controls.Add(this.chkNoArmorEncumbrance, 4, 9);
+            this.tlpHouseRules.Controls.Add(this.chkIncreasedImprovedAbilityModifier, 4, 15);
             this.tlpHouseRules.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpHouseRules.Location = new System.Drawing.Point(9, 9);
             this.tlpHouseRules.Name = "tlpHouseRules";
@@ -4319,6 +4321,7 @@ namespace Chummer
             this.chkIgnoreComplexFormLimit.Tag = "Checkbox_Options_IgnoreComplexFormLimit";
             this.chkIgnoreComplexFormLimit.Text = "Ignore complex form limit in Career mode";
             this.chkIgnoreComplexFormLimit.UseVisualStyleBackColor = true;
+            this.chkIgnoreComplexFormLimit.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // chkSpecialKarmaCost
             // 
@@ -4536,6 +4539,23 @@ namespace Chummer
             this.cmdCancel.Text = "Cancel";
             this.cmdCancel.UseVisualStyleBackColor = true;
             this.cmdCancel.Click += new System.EventHandler(this.cmdCancel_Click);
+            // 
+            // chkIncreasedImprovedAbilityModifier
+            // 
+            this.chkIncreasedImprovedAbilityModifier.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkIncreasedImprovedAbilityModifier.AutoSize = true;
+            this.tlpHouseRules.SetColumnSpan(this.chkIncreasedImprovedAbilityModifier, 5);
+            this.chkIncreasedImprovedAbilityModifier.Location = new System.Drawing.Point(473, 382);
+            this.chkIncreasedImprovedAbilityModifier.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkIncreasedImprovedAbilityModifier.Name = "chkIncreasedImprovedAbilityModifier";
+            this.chkIncreasedImprovedAbilityModifier.Size = new System.Drawing.Size(467, 17);
+            this.chkIncreasedImprovedAbilityModifier.TabIndex = 44;
+            this.chkIncreasedImprovedAbilityModifier.Tag = "Checkbox_Options_IncreasedImprovedAbilityModifier";
+            this.chkIncreasedImprovedAbilityModifier.Text = "Improved Ability is capped by Learned Rating x 1.5 instead of 0.5";
+            this.chkIncreasedImprovedAbilityModifier.UseVisualStyleBackColor = true;
+            this.chkIncreasedImprovedAbilityModifier.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // frmOptions
             // 
@@ -4940,5 +4960,6 @@ namespace Chummer
         private System.Windows.Forms.Label lblBrowserVersion;
         private System.Windows.Forms.ComboBox cbUseLoggingApplicationInsights;
         private ButtonWithToolTip cbUseLoggingHelp;
+        private System.Windows.Forms.CheckBox chkIncreasedImprovedAbilityModifier;
     }
 }

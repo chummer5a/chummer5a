@@ -5570,6 +5570,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Allow Easter Eggs</text>
     </string>
     <string>
+      <key>Checkbox_Options_IncreasedImprovedAbilityModifier</key>
+      <text>Improved Ability is capped by Learned Rating x 1.5 instead of 0.5</text>
+    </string>
+    <string>
       <key>String_SelectBP_LifeModuleSummary</key>
       <text>Enter the maximum availability and karma you are allowed to create your character with (Default {0})</text>
     </string>
