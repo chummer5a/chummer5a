@@ -1235,7 +1235,7 @@ namespace Chummer
             // <priorityspecial />
             objWriter.WriteElementString("priorityspecial", _strPrioritySpecial);
             // <priorityskills />
-            objWriter.WriteElementString("priorityskills", _strPrioritySkills);
+            objWriter.WriteElementString("priorityskillchoice", _strPrioritySkills);
             // <priorityresources />
             objWriter.WriteElementString("priorityresources", _strPriorityResources);
             // <priorityresources />
@@ -2200,7 +2200,10 @@ if (!Utils.IsUnitTest){
                         xmlCharacterNavigator.TryGetStringFieldQuickly("priorityattributes",
                             ref _strPriorityAttributes);
                         xmlCharacterNavigator.TryGetStringFieldQuickly("priorityspecial", ref _strPrioritySpecial);
-                        xmlCharacterNavigator.TryGetStringFieldQuickly("priorityskills", ref _strPrioritySkills);
+                        if (!xmlCharacterNavigator.TryGetStringFieldQuickly("priorityskillchoice", ref _strPrioritySkills))
+                        {
+                            xmlCharacterNavigator.TryGetStringFieldQuickly("priorityskills", ref _strPrioritySkills);
+                        }
                         xmlCharacterNavigator.TryGetStringFieldQuickly("priorityresources", ref _strPriorityResources);
                         xmlCharacterNavigator.TryGetStringFieldQuickly("prioritytalent", ref _strPriorityTalent);
                         _lstPrioritySkills.Clear();

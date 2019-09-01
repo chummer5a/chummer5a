@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- ReSharper disable MarkupAttributeTypo -->
 <xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
   <xs:include schemaLocation="bonuses.xsd" />
   <xs:element name="gear">
@@ -27,7 +28,7 @@
         <xs:element name="equipped" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="homenode" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="weaponguid" type="xs:string" minOccurs="0" maxOccurs="1" />
-        <xs:element ref="bonus" minOccurs="1" maxOccurs="1" />
+        <xs:element name="bonus" type="bonusTypes"  minOccurs="0" maxOccurs="1"/>
         <xs:element name="weaponbonus" minOccurs="0" maxOccurs="1">
           <xs:complexType>
             <xs:sequence>
@@ -224,7 +225,7 @@
         <xs:element name="suite" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="essdiscount" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="forcegrade" minOccurs="1" maxOccurs="1" />
-        <xs:element ref="bonus" minOccurs="1" maxOccurs="1" />
+        <xs:element name="bonus" type="bonusTypes"  minOccurs="0" maxOccurs="1"/>
         <xs:element name="allowgear" minOccurs="0" maxOccurs="1">
           <xs:complexType>
             <xs:sequence>
@@ -275,7 +276,7 @@
         <xs:element name="prioritymetatype" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="priorityattributes" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="priorityspecial" type="xs:string" minOccurs="1" maxOccurs="1" />
-        <xs:element name="priorityskills" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="priorityskillchoice" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="priorityresources" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="prioritytalent" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="priorityskills" minOccurs="0" maxOccurs="1">
@@ -406,55 +407,144 @@
         <!-- Condition Monitor progress -->
         <xs:element name="physicalcmfilled" type="xs:integer" minOccurs="1" maxOccurs="1" />
         <xs:element name="stuncmfilled" type="xs:integer" minOccurs="1" maxOccurs="1" />
-
-        <!-- Skill Groups -->
-        <xs:element name="skillgroups" minOccurs="1" maxOccurs="1">
+        <xs:element name="newskills" minOccurs="1" maxOccurs="1">
           <xs:complexType>
             <xs:sequence>
-              <xs:element name="skillgroup" minOccurs="0" maxOccurs="unbounded">
+              <xs:element name="skillptsmax" type="xs:integer" minOccurs="1" maxOccurs="1" />
+              <xs:element name="skillgrpsmax" type="xs:integer" minOccurs="1" maxOccurs="1" />
+              <!-- Region Skills -->
+              <xs:element name="skills" minOccurs="1" maxOccurs="1">
                 <xs:complexType>
                   <xs:sequence>
-                    <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="rating" type="xs:integer" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="ratingmax" type="xs:integer" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="broken" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="skill" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="guid" type="xs:string" minOccurs="1" maxOccurs="1" />
+                          <xs:element name="suid" type="xs:string" minOccurs="1" maxOccurs="1" />
+                          <xs:element name="isknowledge" type="xs:boolean" minOccurs="1" maxOccurs="1" />
+                          <xs:element name="skillcategory" type="xs:string" minOccurs="1" maxOccurs="1" />
+                          <xs:element name="karma" type="xs:integer" minOccurs="1" maxOccurs="1" />
+                          <xs:element name="base" type="xs:integer" minOccurs="1" maxOccurs="1" />
+                          <xs:element name="notes" type="xs:string" minOccurs="1" maxOccurs="1" />
+                          <xs:element name="specs" minOccurs="0" maxOccurs="1">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="spec" minOccurs="0" maxOccurs="unbounded">
+                                  <xs:complexType>
+                                    <xs:sequence>
+                                      <xs:element name="guid" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                      <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                      <xs:element name="free" type="xs:boolean" minOccurs="1" maxOccurs="1" />
+                                    </xs:sequence>
+                                  </xs:complexType>
+                                </xs:element>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                          <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <!-- End Region -->
+              <!-- Region Knowledge Skills -->
+              <xs:element name="knoskills" minOccurs="1" maxOccurs="1">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="skill" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="guid" type="xs:string" minOccurs="1" maxOccurs="1" />
+                          <xs:element name="suid" type="xs:string" minOccurs="1" maxOccurs="1" />
+                          <xs:element name="isknowledge" type="xs:boolean" minOccurs="1" maxOccurs="1" />
+                          <xs:element name="skillcategory" type="xs:string" minOccurs="1" maxOccurs="1" />
+                          <xs:element name="karma" type="xs:integer" minOccurs="1" maxOccurs="1" />
+                          <xs:element name="base" type="xs:integer" minOccurs="1" maxOccurs="1" />
+                          <xs:element name="notes" type="xs:string" minOccurs="1" maxOccurs="1" />
+                          <xs:element name="specs" minOccurs="0" maxOccurs="1">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="spec" minOccurs="0" maxOccurs="unbounded">
+                                  <xs:complexType>
+                                    <xs:sequence>
+                                      <xs:element name="guid" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                      <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                      <xs:element name="free" type="xs:boolean" minOccurs="1" maxOccurs="1" />
+                                    </xs:sequence>
+                                  </xs:complexType>
+                                </xs:element>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                          <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+                          <xs:element name="type" type="xs:string" minOccurs="0" maxOccurs="1" />
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <!-- End Region -->
+              <!-- Region Skilljack Knowledge Skills -->
+              <xs:element name="skilljackknowledgeskills" minOccurs="1" maxOccurs="1">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="skill" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="guid" type="xs:string" minOccurs="1" maxOccurs="1" />
+                          <xs:element name="suid" type="xs:string" minOccurs="1" maxOccurs="1" />
+                          <xs:element name="isknowledge" type="xs:boolean" minOccurs="1" maxOccurs="1" />
+                          <xs:element name="skillcategory" type="xs:string" minOccurs="1" maxOccurs="1" />
+                          <xs:element name="karma" type="xs:integer" minOccurs="1" maxOccurs="1" />
+                          <xs:element name="base" type="xs:integer" minOccurs="1" maxOccurs="1" />
+                          <xs:element name="notes" type="xs:string" minOccurs="1" maxOccurs="1" />
+                          <xs:element name="specs" minOccurs="0" maxOccurs="1">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="spec" minOccurs="0" maxOccurs="unbounded">
+                                  <xs:complexType>
+                                    <xs:sequence>
+                                      <xs:element name="guid" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                      <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                      <xs:element name="free" type="xs:boolean" minOccurs="1" maxOccurs="1" />
+                                    </xs:sequence>
+                                  </xs:complexType>
+                                </xs:element>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                          <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+                          <xs:element name="type" type="xs:string" minOccurs="0" maxOccurs="1" />
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <!-- End Region -->
+              <!-- Skill Groups -->
+              <xs:element name="groups" minOccurs="1" maxOccurs="1">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="group" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="karma" type="xs:integer" minOccurs="1" maxOccurs="1" />
+                          <xs:element name="base" type="xs:integer" minOccurs="1" maxOccurs="1" />
+                          <xs:element name="id" type="xs:string" minOccurs="1" maxOccurs="1" />
+                          <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-
-        <!-- Skills -->
-        <xs:element name="skills" minOccurs="1" maxOccurs="1">
-          <xs:complexType>
-            <xs:sequence>
-              <xs:element name="skill" minOccurs="0" maxOccurs="unbounded">
-                <xs:complexType>
-                  <xs:sequence>
-                    <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="skillgroup" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="skillcategory" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="grouped" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="default" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="rating" type="xs:integer" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="ratingmax" type="xs:integer" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="knowledge" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="exotic" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="spec" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="allowdelete" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="attribute" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="page" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <!-- Total value of the Skill so external applications do not need to crunch Improvements -->
-                    <xs:element name="totalvalue" type="xs:integer" minOccurs="1" maxOccurs="1" />
-                  </xs:sequence>
-                </xs:complexType>
-              </xs:element>
-            </xs:sequence>
-          </xs:complexType>
-        </xs:element>
-
         <!-- Contacts -->
         <xs:element name="contacts" minOccurs="1" maxOccurs="1">
           <xs:complexType>
@@ -463,25 +553,41 @@
                 <xs:complexType>
                   <xs:sequence>
                     <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="role" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="location" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="connection" type="xs:integer" minOccurs="1" maxOccurs="1" />
                     <xs:element name="loyalty" type="xs:integer" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="membership" type="xs:integer" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="areaofinfluence" type="xs:integer" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="magicalresources" type="xs:integer" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="matrixresources" type="xs:integer" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="type" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="metatype" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="sex" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="age" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="contacttype" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="preferredpayment" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="hobbiesvice" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="personallife" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="file" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="notes" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="groupname" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="colour" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="group" type="xs:boolean" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="family" type="xs:boolean" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="blackmail" type="xs:boolean" minOccurs="1" maxOccurs="1" />
                     <xs:element name="free" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="groupenabled" type="xs:boolean" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="guid" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="mainmugshotindex" type="xs:integer" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="mugshots" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="mugshot" type="xs:string" minOccurs="1" maxOccurs="unbounded" />
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-
         <!-- Spells -->
         <xs:element name="spells" minOccurs="1" maxOccurs="1">
           <xs:complexType>
@@ -752,7 +858,7 @@
                                 <xs:element name="rating" type="xs:integer" minOccurs="1" maxOccurs="1" />
                                 <xs:element name="avail" type="xs:string" minOccurs="1" maxOccurs="1" />
                                 <xs:element name="cost" type="xs:string" minOccurs="1" maxOccurs="1" />
-                                <xs:element ref="bonus" minOccurs="1" maxOccurs="1" />
+                                <xs:element name="bonus" type="bonusTypes"  minOccurs="0" maxOccurs="1"/>
                                 <xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
                                 <xs:element name="page" type="xs:string" minOccurs="1" maxOccurs="1" />
                                 <xs:element name="equipped" type="xs:string" minOccurs="1" maxOccurs="1" />
@@ -820,7 +926,7 @@
                     <xs:element name="free" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="page" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element ref="bonus" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="bonus" type="bonusTypes"  minOccurs="0" maxOccurs="1"/>
                     <xs:element name="weaponguid" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="notes" type="xs:string" minOccurs="1" maxOccurs="1" />
                   </xs:sequence>
@@ -998,7 +1104,7 @@
                     <xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="paidwithkarma" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="page" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element ref="bonus" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="bonus" type="bonusTypes"  minOccurs="0" maxOccurs="1"/>
                     <xs:element name="improvementsource" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="notes" type="xs:string" minOccurs="1" maxOccurs="1" />
                   </xs:sequence>
@@ -1027,7 +1133,7 @@
                     <xs:element name="page" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="points" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="counttowardslimit" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element ref="bonus" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="bonus" type="bonusTypes"  minOccurs="0" maxOccurs="1"/>
                     <xs:element name="notes" type="xs:string" minOccurs="1" maxOccurs="1" />
                   </xs:sequence>
                 </xs:complexType>
