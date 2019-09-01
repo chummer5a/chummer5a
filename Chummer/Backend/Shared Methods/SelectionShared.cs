@@ -57,7 +57,7 @@ namespace Chummer
                 {
                     if (blnShowMessage)
                     {
-                        MessageBox.Show(string.Format(LanguageManager.GetString("Message_SelectGeneric_ChargenRestriction", GlobalOptions.Language), strLocalName),
+                        Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_SelectGeneric_ChargenRestriction", GlobalOptions.Language), strLocalName),
                             string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", GlobalOptions.Language), strLocalName),
                             MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
@@ -71,7 +71,7 @@ namespace Chummer
                 {
                     if (blnShowMessage)
                     {
-                        MessageBox.Show(string.Format(LanguageManager.GetString("Message_SelectGeneric_CareerOnlyRestriction", GlobalOptions.Language), strLocalName),
+                        Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_SelectGeneric_CareerOnlyRestriction", GlobalOptions.Language), strLocalName),
                             string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", GlobalOptions.Language), strLocalName),
                             MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
@@ -83,7 +83,7 @@ namespace Chummer
                     {
                         if (blnShowMessage)
                         {
-                            MessageBox.Show(string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_PriorityRestriction", GlobalOptions.Language), strLocalName),
+                            Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_PriorityRestriction", GlobalOptions.Language), strLocalName),
                                 string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", GlobalOptions.Language), strLocalName),
                                 MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
@@ -243,7 +243,7 @@ namespace Chummer
                     {
                         if (blnShowMessage)
                         {
-                            MessageBox.Show(string.Format(LanguageManager.GetString("Message_SelectGeneric_Limit", GlobalOptions.Language), strLocalName, intLimit == 0 ? "1" : intLimit.ToString(GlobalOptions.CultureInfo)),
+                            Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_SelectGeneric_Limit", GlobalOptions.Language), strLocalName, intLimit == 0 ? "1" : intLimit.ToString(GlobalOptions.CultureInfo)),
                                 string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Limit", GlobalOptions.Language), strLocalName), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         return false;
@@ -264,7 +264,7 @@ namespace Chummer
                         {
                             if (blnShowMessage)
                             {
-                                MessageBox.Show(string.Format(LanguageManager.GetString("Message_SelectGeneric_Restriction", GlobalOptions.Language), strLocalName) + strName,
+                                Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_SelectGeneric_Restriction", GlobalOptions.Language), strLocalName) + strName,
                                     string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", GlobalOptions.Language), strLocalName), MessageBoxButtons.OK, MessageBoxIcon.Information);
                             }
                             return false;
@@ -341,7 +341,7 @@ namespace Chummer
                 {
                     if (blnShowMessage)
                     {
-                        MessageBox.Show(string.Format(LanguageManager.GetString("Message_SelectGeneric_Requirement", GlobalOptions.Language), strLocalName) + objRequirement.ToString(),
+                        Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_SelectGeneric_Requirement", GlobalOptions.Language), strLocalName) + objRequirement.ToString(),
                             string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Requirement", GlobalOptions.Language), strLocalName), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     return false;
@@ -1027,6 +1027,18 @@ namespace Chummer
                         }
                         return objCharacter.MagicTradition.Name == strNodeInnerText;
                     }
+                case "traditionspiritform":
+                    {
+                        // Character needs a tradition with a specific kind of spirit form. Expected values are Materialization, Possession or Inhabitation. 
+                        if (blnShowMessage)
+                        {
+                            string strTranslate = LanguageManager.TranslateExtra(strNodeInnerText, GlobalOptions.Language);
+                            strName = !string.IsNullOrEmpty(strTranslate)
+                                ? $"{Environment.NewLine}\t{strTranslate} ({LanguageManager.GetString("String_Tradition", GlobalOptions.Language)})"
+                                : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_Tradition", GlobalOptions.Language)})";
+                        }
+                        return objCharacter.MagicTradition.SpiritForm == strNodeInnerText;
+                    }
                 case "weapon":
                 {
                     // Character needs a specific Weapon.
@@ -1219,7 +1231,7 @@ namespace Chummer
                 {
                     if (blnShowMessage)
                     {
-                        MessageBox.Show(string.Format(LanguageManager.GetString("Message_SelectGeneric_ChargenRestriction", GlobalOptions.Language), strLocalName),
+                        Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_SelectGeneric_ChargenRestriction", GlobalOptions.Language), strLocalName),
                             string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", GlobalOptions.Language), strLocalName),
                             MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
@@ -1233,7 +1245,7 @@ namespace Chummer
                 {
                     if (blnShowMessage)
                     {
-                        MessageBox.Show(string.Format(LanguageManager.GetString("Message_SelectGeneric_CareerOnlyRestriction", GlobalOptions.Language), strLocalName),
+                        Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_SelectGeneric_CareerOnlyRestriction", GlobalOptions.Language), strLocalName),
                             string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", GlobalOptions.Language), strLocalName),
                             MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
@@ -1245,7 +1257,7 @@ namespace Chummer
                     {
                         if (blnShowMessage)
                         {
-                            MessageBox.Show(string.Format(LanguageManager.GetString("Message_SelectGeneric_PriorityRestriction", GlobalOptions.Language), strLocalName),
+                            Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_SelectGeneric_PriorityRestriction", GlobalOptions.Language), strLocalName),
                                 string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", GlobalOptions.Language), strLocalName),
                                 MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
@@ -1414,7 +1426,7 @@ namespace Chummer
                     {
                         if (blnShowMessage)
                         {
-                            MessageBox.Show(string.Format(LanguageManager.GetString("Message_SelectGeneric_Limit", GlobalOptions.Language), strLocalName, intLimit == 0 ? "1" : intLimit.ToString()),
+                            Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_SelectGeneric_Limit", GlobalOptions.Language), strLocalName, intLimit == 0 ? "1" : intLimit.ToString()),
                                 string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Limit", GlobalOptions.Language), strLocalName), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         return false;
@@ -1435,7 +1447,7 @@ namespace Chummer
                         {
                             if (blnShowMessage)
                             {
-                                MessageBox.Show(string.Format(LanguageManager.GetString("Message_SelectGeneric_Restriction", GlobalOptions.Language), strLocalName) + strName,
+                                Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_SelectGeneric_Restriction", GlobalOptions.Language), strLocalName) + strName,
                                     string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", GlobalOptions.Language), strLocalName), MessageBoxButtons.OK, MessageBoxIcon.Information);
                             }
                             return false;
@@ -1510,7 +1522,7 @@ namespace Chummer
                 {
                     if (blnShowMessage)
                     {
-                        MessageBox.Show(string.Format(LanguageManager.GetString("Message_SelectGeneric_Requirement", GlobalOptions.Language), strLocalName) + objRequirement.ToString(),
+                        Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_SelectGeneric_Requirement", GlobalOptions.Language), strLocalName) + objRequirement.ToString(),
                             string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Requirement", GlobalOptions.Language), strLocalName), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     return false;

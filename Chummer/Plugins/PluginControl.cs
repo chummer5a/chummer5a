@@ -21,14 +21,18 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.Permissions;
+using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using Microsoft.ApplicationInsights.Channel;
+using Microsoft.Win32;
 using NLog;
 
 namespace Chummer.Plugins
@@ -83,10 +87,96 @@ namespace Chummer.Plugins
             }
         }
 
+        //the level-argument is only to absolutely make sure to not spawn processes uncontrolled
+        public static bool RegisterChummerProtocol()
+        {
+            var startupExe = System.Windows.Forms.Application.StartupPath;
+            startupExe = System.Reflection.Assembly.GetEntryAssembly()?.Location;
+            RegistryKey key = Registry.ClassesRoot.OpenSubKey("Chummer"); //open myApp protocol's subkey
+            bool reregisterKey = false;
+            if (key != null)
+            {
+                if (key.GetValue(string.Empty)?.ToString() != "URL: Chummer Protocol")
+                    reregisterKey = true;
+                if (key.GetValue("URL Protocol")?.ToString() != string.Empty)
+                    reregisterKey = true;
+                key = key.OpenSubKey(@"shell\open\command");
+                if (key == null)
+                    reregisterKey = true;
+                else
+                {
+                    if (key.GetValue(string.Empty)?.ToString() != startupExe + " " + "%1")
+                        reregisterKey = true;
+                }
+                key.Close();
+            }
+            else
+            {
+                reregisterKey = true;
+            }
+
+            if (reregisterKey == false)
+            {
+                Log.Info("Url Protocol Handler for Chummer was already registered!");
+                return true;
+            }
+
+            try
+            {
+                System.AppDomain.CurrentDomain.SetPrincipalPolicy(PrincipalPolicy.WindowsPrincipal);
+                return RegisterMyProtocol(startupExe);
+            }
+            catch (System.Security.SecurityException se)
+            {
+                Log.Warn(se);
+            }
+            return true;
+        }
+
+
+        public static bool RegisterMyProtocol(string myAppPath)  //myAppPath = full path to your application
+        {
+            RegistryKey Software = Registry.CurrentUser.OpenSubKey("Software");  //open myApp protocol's subkey
+            RegistryKey Classes = Software.OpenSubKey("Classes", true);
+            if (Classes == null)
+            {
+                try
+                {
+                    Classes = Software.CreateSubKey("Classes", RegistryKeyPermissionCheck.ReadWriteSubTree);
+                }
+                catch (System.UnauthorizedAccessException e)
+                {
+                    Log.Error(e);
+                    return false;
+                }
+            }
+            RegistryKey key = Classes.OpenSubKey("Chummer", true);  //open myApp protocol's subkey
+
+            if (key == null) //if the protocol is not registered yet...we register it
+            {
+                key = Classes.CreateSubKey("Chummer", RegistryKeyPermissionCheck.ReadWriteSubTree);
+            }
+            key.SetValue(string.Empty, "URL: Chummer Protocol");
+            key.SetValue("URL Protocol", string.Empty);
+
+            RegistryKey shell = key.OpenSubKey(@"shell\open\command", RegistryKeyPermissionCheck.ReadWriteSubTree);
+            if (shell == null)
+                shell = key.CreateSubKey(@"shell\open\command", RegistryKeyPermissionCheck.ReadWriteSubTree);
+            shell.SetValue(string.Empty, myAppPath + " " + "%1");
+            //%1 represents the argument - this tells windows to open this program with an argument / parameter
+            shell.Close();
+            key.Close();
+            Classes.Close();
+            Software.Close();
+            Log.Info("Url Protocol Handler for Chummer registered!");
+            return true;
+        }
+
         public void Initialize()
         {
             try
             {
+                RegisterChummerProtocol();
                 if (GlobalOptions.PluginsEnabled == false)
                 {
                     Log.Info("Plugins are globally disabled - exiting PluginControl.Initialize()");
@@ -106,9 +196,40 @@ namespace Chummer.Plugins
                 var plugindirectories = Directory.GetDirectories(path);
                 foreach (var plugindir in plugindirectories)
                 {
-                    myDirectoryCatalog = new DirectoryCatalog(path: plugindir, searchPattern: "*.dll");
-                    Log.Info("Searching for dlls in path " + myDirectoryCatalog?.FullPath);
-                    catalog.Catalogs.Add(myDirectoryCatalog);
+                    //search for a textfile, that tells me what dll to parse
+                    string infofile = Path.Combine(plugindir, "plugin.txt");
+                    if (File.Exists(infofile))
+                    {
+                        System.IO.StreamReader file =
+                            new System.IO.StreamReader(infofile);
+                        string line;
+                        while ((line = file.ReadLine()) != null)
+                        {
+                            string plugindll = Path.Combine(plugindir, line);
+                            if (File.Exists(plugindll))
+                            {
+                                FileInfo fi = new FileInfo(plugindll);
+                                myDirectoryCatalog = new DirectoryCatalog(path: plugindir, searchPattern: fi.Name);
+                                Log.Info("Searching for plugin in " + plugindll + ".");
+                                catalog.Catalogs.Add(myDirectoryCatalog);
+                            }
+                            else
+                            {
+                                Log.Warn("Could not find dll from " + infofile + ": " + plugindll); myDirectoryCatalog = new DirectoryCatalog(path: plugindir, searchPattern: "*.dll");
+                                myDirectoryCatalog = new DirectoryCatalog(path: plugindir, searchPattern: "*.dll");
+                                Log.Info("Searching for dlls in path " + myDirectoryCatalog?.FullPath);
+                                catalog.Catalogs.Add(myDirectoryCatalog);
+                            }
+                        }
+                        file.Close();
+                    }
+                    else
+                    {
+                        myDirectoryCatalog = new DirectoryCatalog(path: plugindir, searchPattern: "*.dll");
+                        Log.Info("Searching for dlls in path " + myDirectoryCatalog?.FullPath);
+                        catalog.Catalogs.Add(myDirectoryCatalog);
+                    }
+                    
                 }
 
                 container = new CompositionContainer(catalog);
@@ -124,8 +245,12 @@ namespace Chummer.Plugins
                     try
                     {
                         Log.Info("Initializing Plugin " + plugin.ToString());
-                        plugin.CustomInitialize(Program.MainForm);
                         plugin.SetIsUnitTest(Utils.IsUnitTest);
+                        plugin.CustomInitialize(Program.MainForm);
+                    }
+                    catch (ApplicationException e)
+                    {
+                        throw;
                     }
                     catch (Exception e)
                     {
@@ -142,6 +267,8 @@ namespace Chummer.Plugins
             }
             catch (Exception e)
             {
+                if (e is ApplicationException)
+                    throw;
                 Log.Fatal(e);
                 throw;
             }
@@ -162,12 +289,10 @@ namespace Chummer.Plugins
                 var list = MyPlugins.ToList();
                 foreach(var plugin in list)
                 {
-                    bool enabled = false;
-                    if (GlobalOptions.PluginsEnabledDic.TryGetValue(plugin.ToString(), out enabled))
-                    {
-                        if (enabled)
-                            result.Add(plugin);
-                    }
+                    bool enabled = true;
+                    GlobalOptions.PluginsEnabledDic.TryGetValue(plugin.ToString(), out enabled);
+                    if (enabled)
+                        result.Add(plugin);
                 }
                 return result;
           }
@@ -196,19 +321,21 @@ namespace Chummer.Plugins
         {
             try
             {
-                using (var op_plugin = Timekeeper.StartSyncron("LoadPlugins", parentActivity, CustomActivity.OperationType.DependencyOperation, myDirectoryCatalog?.FullPath))
-                { 
+                using (var op_plugin = Timekeeper.StartSyncron("LoadPlugins", parentActivity,
+                    CustomActivity.OperationType.DependencyOperation, myDirectoryCatalog?.FullPath))
+                {
                     this.Initialize();
                 }
             }
-            catch(System.Security.SecurityException e)
+            catch (System.Security.SecurityException e)
             {
-                string msg = "Well, something went wrong probably because we are not Admins. Let's just ignore it and move on." + Environment.NewLine + Environment.NewLine;
+                string msg =
+                    "Well, something went wrong probably because we are not Admins. Let's just ignore it and move on." +
+                    Environment.NewLine + Environment.NewLine;
                 Console.WriteLine(msg + e.Message);
                 System.Diagnostics.Trace.TraceWarning(msg + e.Message);
                 return;
             }
-
             catch (ReflectionTypeLoadException e)
             {
                 string msg = "Exception loading plugins: " + Environment.NewLine;
@@ -216,6 +343,7 @@ namespace Chummer.Plugins
                 {
                     msg += exp.Message + Environment.NewLine;
                 }
+
                 msg += Environment.NewLine;
                 msg += e.ToString();
                 Log.Warn(e, msg);
@@ -232,6 +360,10 @@ namespace Chummer.Plugins
                 msg += Environment.NewLine;
                 msg += e.ToString();
                 Log.Error(e, msg);
+            }
+            catch (ApplicationException e)
+            {
+                throw;
             }
             catch (Exception e)
             {

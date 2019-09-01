@@ -864,7 +864,11 @@ namespace Chummer
                 if (BoostedSkill != null)
                 {
                     // +1 at the end so that division of 2 always rounds up, and integer division by 2 is significantly less expensive than decimal/double division
-                    intReturn = Math.Min(intReturn, (BoostedSkill.LearnedRating + 1) / 2);
+                    intReturn = Math.Min(intReturn, ( + (BoostedSkill.LearnedRating + 1)) / 2);
+                    if (CharacterObject.Options.IncreasedImprovedAbilityMultiplier)
+                    {
+                        intReturn += BoostedSkill.LearnedRating;
+                    }
                 }
                 if (!CharacterObject.IgnoreRules)
                 {

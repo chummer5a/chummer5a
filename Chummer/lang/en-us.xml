@@ -2594,6 +2594,10 @@
       <text>Cyber/Bioware Grade limit exceeded for the following items:</text>
     </string>
     <string>
+      <key>Message_InvalidPowerPoints</key>
+      <text>{0} over your Adept Power Point maximum ({1})</text>
+    </string>
+    <string>
       <key>Checkbox_PrototypeTranshuman</key>
       <text>Prototype Transhuman</text>
     </string>
@@ -5566,6 +5570,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Allow Easter Eggs</text>
     </string>
     <string>
+      <key>Checkbox_Options_IncreasedImprovedAbilityModifier</key>
+      <text>Improved Ability is capped by Learned Rating x 1.5 instead of 0.5</text>
+    </string>
+    <string>
       <key>String_SelectBP_LifeModuleSummary</key>
       <text>Enter the maximum availability and karma you are allowed to create your character with (Default {0})</text>
     </string>
@@ -7202,7 +7210,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Checkbox_Options_UseLogging</key>
-      <text>Use Debug Logging</text>
+      <text>Use Logging</text>
     </string>
     <string>
       <key>Checkbox_Options_LocalisedUpdatesOnly</key>
@@ -7975,10 +7983,6 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Negative Qualities</text>
     </string>
     <string>
-      <key>Label_SelectAdvancedLifestyle_Base_Comforts</key>
-      <text>[{0}/{1}]</text>
-    </string>
-    <string>
       <key>Label_SelectAdvancedLifestyle_Comforts</key>
       <text>Comforts:</text>
     </string>
@@ -8003,16 +8007,12 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Necessities:</text>
     </string>
     <string>
-      <key>Label_SelectAdvancedLifestyle_Base_Neighborhood</key>
+      <key>Label_SelectAdvancedLifestyle_Base</key>
       <text>[{0}/{1}]</text>
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_Neighborhood</key>
       <text>Neighborhood:</text>
-    </string>
-    <string>
-      <key>Label_SelectAdvancedLifestyle_Base_Security</key>
-      <text>[{0}/{1}]</text>
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_Security</key>
@@ -9754,8 +9754,12 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>upload crashes</text>
     </string>
     <string>
-      <key>String_ApplicationInsights_Yes</key>
-      <text>upload all errors</text>
+      <key>String_ApplicationInsights_Info</key>
+      <text>upload some logs</text>
+    </string>
+    <string>
+      <key>String_ApplicationInsights_Trace</key>
+      <text>upload detailed logs</text>
     </string>
     <string>
       <key>String_ApplicationInsights_NotSet</key>

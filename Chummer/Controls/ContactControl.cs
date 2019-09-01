@@ -244,7 +244,7 @@ namespace Chummer
 
                     if (blnError)
                     {
-                        MessageBox.Show(string.Format(LanguageManager.GetString("Message_FileNotFound", GlobalOptions.Language), _objContact.FileName), LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_FileNotFound", GlobalOptions.Language), _objContact.FileName), LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
                 }
@@ -492,7 +492,7 @@ namespace Chummer
                             foreach (XmlNode objXmlMetavariantNode in xmlMetavariantList)
                             {
                                 string strMetavariantName = objXmlMetavariantNode["name"]?.InnerText;
-                                if (lstMetatypes.All(x => x.Value.ToString() != strMetavariantName))
+                                if (lstMetatypes.All(x => x.Value != null && x.Value.ToString() != strMetavariantName))
                                     lstMetatypes.Add(new ListItem(strMetavariantName, strMetatypeDisplay + strSpaceCharacter + '(' + (objXmlMetavariantNode["translate"]?.InnerText ?? strMetavariantName) + ')'));
                             }
                         }

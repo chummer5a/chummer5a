@@ -1,24 +1,30 @@
 using Swashbuckle.AspNetCore.Filters;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace ChummerHub.Models.V1.Examples
 {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'UploadInfoObjectExample'
     public class UploadInfoObjectExample : IExamplesProvider
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'UploadInfoObjectExample'
     {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'UploadInfoObjectExample.UploadInfoObjectExample()'
         public UploadInfoObjectExample()
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'UploadInfoObjectExample.UploadInfoObjectExample()'
         {
 
         }
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'UploadInfoObjectExample.GetExamples()'
         public object GetExamples()
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'UploadInfoObjectExample.GetExamples()'
         {
             return GetUploadInfoObjectExample();
         }
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'UploadInfoObjectExample.GetUploadInfoObjectExample()'
         public UploadInfoObject GetUploadInfoObjectExample()
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'UploadInfoObjectExample.GetUploadInfoObjectExample()'
         {
             var sin = new SINnerExample().GetSINnerExample();
             var id = Guid.NewGuid();

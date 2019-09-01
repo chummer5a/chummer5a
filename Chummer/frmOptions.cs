@@ -114,7 +114,7 @@ namespace Chummer
                 string text = LanguageManager.GetString("Message_Options_SettingsName", _strSelectedLanguage);
                 string caption = LanguageManager.GetString("MessageTitle_Options_SettingsName", _strSelectedLanguage);
 
-                MessageBox.Show(text, caption, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(text, caption, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 txtSettingName.Focus();
                 return;
             }
@@ -192,6 +192,7 @@ namespace Chummer
             _characterOptions.FreeMartialArtSpecialization = chkFreeMartialArtSpecialization.Checked;
             _characterOptions.PrioritySpellsAsAdeptPowers = chkPrioritySpellsAsAdeptPowers.Checked;
             _characterOptions.EnemyKarmaQualityLimit = chkEnemyKarmaQualityLimit.Checked;
+            _characterOptions.IncreasedImprovedAbilityMultiplier = chkIncreasedImprovedAbilityModifier.Checked;
             string strLimbCount = cboLimbCount.SelectedValue?.ToString();
             if(string.IsNullOrEmpty(strLimbCount))
             {
@@ -350,7 +351,7 @@ namespace Chummer
             XmlManager.Verify(strSelectedLanguage, lstBooks);
 
             string strFilePath = Path.Combine(Utils.GetStartupPath, "lang", "results_" + strSelectedLanguage + ".xml");
-            MessageBox.Show(string.Format(LanguageManager.GetString("Message_Options_ValidationResults", _strSelectedLanguage), strFilePath),
+            Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_Options_ValidationResults", _strSelectedLanguage), strFilePath),
                 LanguageManager.GetString("MessageTitle_Options_ValidationResults", _strSelectedLanguage), MessageBoxButtons.OK, MessageBoxIcon.Information);
             Cursor = Cursors.Default;
         }
@@ -706,6 +707,7 @@ namespace Chummer
             chkReverseAttributePriorityOrder.Checked = _characterOptions.ReverseAttributePriorityOrder;
             chkAllowHoverIncrement.Checked = _characterOptions.AllowHoverIncrement;
             chkSearchInCategoryOnly.Checked = _characterOptions.SearchInCategoryOnly;
+            chkIncreasedImprovedAbilityModifier.Checked = _characterOptions.IncreasedImprovedAbilityMultiplier;
             nudContactMultiplier.Enabled = _characterOptions.FreeContactsMultiplierEnabled;
             nudContactMultiplier.Value = _characterOptions.FreeContactsMultiplier;
             nudKnowledgeMultiplier.Enabled = _characterOptions.FreeKnowledgeMultiplierEnabled;
@@ -1703,7 +1705,7 @@ namespace Chummer
 
                 if(_lstCustomDataDirectoryInfos.Any(x => x.Name == objNewCustomDataDirectory.Name))
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_Duplicate_CustomDataDirectoryName", _strSelectedLanguage),
+                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Duplicate_CustomDataDirectoryName", _strSelectedLanguage),
                         LanguageManager.GetString("Message_Duplicate_CustomDataDirectoryName_Title", _strSelectedLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 else
@@ -1739,7 +1741,7 @@ namespace Chummer
             if (frmSelectCustomDirectoryName.ShowDialog(this) != DialogResult.OK) return;
             if (_lstCustomDataDirectoryInfos.Any(x => x.Name == frmSelectCustomDirectoryName.Name))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_Duplicate_CustomDataDirectoryName", _strSelectedLanguage),
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Duplicate_CustomDataDirectoryName", _strSelectedLanguage),
                     LanguageManager.GetString("Message_Duplicate_CustomDataDirectoryName_Title", _strSelectedLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             else
@@ -1916,7 +1918,7 @@ namespace Chummer
             if (this._blnLoading)
                 return;
             UseAILogging useAI = (UseAILogging) ((ListItem) cbUseLoggingApplicationInsights.SelectedItem).Value;
-            if (useAI == UseAILogging.Yes)
+            if (useAI > UseAILogging.Info)
             {
                 string msg = "Thank you for sharing logs and metrics";
                 msg += Environment.NewLine + "with the Chummer Dev-Team. You can";
@@ -1924,14 +1926,14 @@ namespace Chummer
                 msg += Environment.NewLine + "be improved and adressed the most.";
                 msg += Environment.NewLine + Environment.NewLine;
                 msg += "Do you want to share your logs?";
-                var result = MessageBox.Show(msg, "Really enable upload?", MessageBoxButtons.OKCancel);
+                var result = Program.MainForm.ShowMessageBox(msg, "Really enable detailed upload?", MessageBoxButtons.OKCancel);
                 if (result == DialogResult.OK)
                 {
                     GlobalOptions.UseLoggingApplicationInsights = useAI;
                 }
                 else
                 {
-                    GlobalOptions.UseLoggingApplicationInsights = UseAILogging.Crashes;
+                    GlobalOptions.UseLoggingApplicationInsights = UseAILogging.Info;
                     this._blnLoading = true;
                     this.cbUseLoggingApplicationInsights.SelectedItem = GlobalOptions.UseLoggingApplicationInsights;
                     this._blnLoading = false;

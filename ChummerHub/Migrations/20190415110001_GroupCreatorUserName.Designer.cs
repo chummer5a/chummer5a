@@ -13,7 +13,9 @@ namespace ChummerHub.Migrations
     [Migration("20190415110001_GroupCreatorUserName")]
     partial class GroupCreatorUserName
     {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'GroupCreatorUserName.BuildTargetModel(ModelBuilder)'
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'GroupCreatorUserName.BuildTargetModel(ModelBuilder)'
         {
 #pragma warning disable 612, 618
             modelBuilder

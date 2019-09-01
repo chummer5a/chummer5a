@@ -3261,6 +3261,12 @@
 				<translate>Datapuls SOTA 2080 (Deutsch-exklusiv)</translate>
 				<altcode>SOTG</altcode>
 			</book>
+			<book>
+				<id>3ece5592-c3c1-4cf8-97a2-ef773388289d</id>
+				<name>Datapuls Verschlusssache (German-exclusive)</name>
+				<translate>Datapuls Verschlusssache (Deutsch-exklusiv)</translate>
+				<altcode>DPVG</altcode>
+			</book>
 		</books>
 	</chummer>
 	<chummer file="critterpowers.xml">
@@ -10840,6 +10846,8 @@
 			<category translate="Erscheinungsmodifikatoren">Appearance Modification</category>
 			<category translate="Druckerpressen">Printing</category>
 			<category translate="Reporterausrüstung">Reporter Gear</category>
+			<category translate="Musikinstrumente">Musical Intruments</category>
+			<category translate="Paydata">Paydata</category>
 		</categories>
 		<gears>
 			<gear translated="True">
@@ -22533,6 +22541,18 @@
 				<altpage>180</altpage>
 			</metamagic>
 			<metamagic translated="True">
+				<id>215dbdc3-b4f5-4ca6-98b1-5d6ea5eb5fda</id>
+				<name>Taint</name>
+				<translate>Trübung</translate>
+				<altpage>91</altpage>
+			</metamagic>
+			<metamagic translated="True">
+				<id>920770d1-a705-4fc9-8814-f3a4a455e8fb</id>
+				<name>Corruption</name>
+				<translate>Korrumpierung</translate>
+				<altpage>91</altpage>
+			</metamagic>
+			<metamagic translated="True">
 				<id>9540267c-d53c-4547-9bd2-e1f06723caee</id>
 				<name>Sympathetic Linking</name>
 				<translate>Sympathetische Verbindung</translate>
@@ -22819,6 +22839,12 @@
 				<name>Spiritual Sacrifice</name>
 				<translate>Echoverbindung</translate>
 				<altpage>166</altpage>
+			</metamagic>
+			<metamagic>
+				<id>7b297dad-1111-4819-8c7a-ecdb95479011</id>
+				<name>Great Form Possession</name>
+				<translate>Große Besessenheit</translate>
+				<altpage>129</altpage>
 			</metamagic>
 		</metamagics>
 		<arts>
@@ -37090,7 +37116,7 @@
 			</tip>
 			<tip translated="True">
 				<id>ff26b01d-1aa4-45ac-8685-0d199e115d1f</id>
-				<text>You have enough money to retire with a Low Lifestyle. Keep at it! A nuyen saved is a nuyen earned!</text>
+				<text>You have enough money to retire with a Medium Lifestyle. 2.5 kids, picket fence AR overlay, loving partner. Is it really worth saving up for that next upgrade?</text>
 				<translate>Sie haben genug Geld, um sich mit einem Lebenstil der Mittelschicht zurückzuziehen. Zweieinhalb Kinder, vier Wände, Virtuelle Realität, liebevoller Partner. Lohnt es sich wirklich, für mehr zu sparen?</translate>
 			</tip>
 			<tip translated="True">
@@ -37775,6 +37801,12 @@
 				<name>Watcher</name>
 				<translate>Watcher</translate>
 				<altpage>297</altpage>
+			</spirit>
+			<spirit>
+				<id>8011bd8a-847f-4527-89d1-58c559ef9480</id>
+				<name>Ally Spirit</name>
+				<translate>Verbündeter</translate>
+				<altpage>234</altpage>
 			</spirit>
 		</spirits>
 		<drainattributes>
@@ -44727,6 +44759,12 @@
 				<translate>Granate: Molotowcocktail (Aerodynamisch)</translate>
 				<altpage>11</altpage>
 			</weapon>
+			<weapon translated="True">
+				<id>51a64bcb-e321-4eab-a89b-0a58674923be</id>
+				<name>Walther P99</name>
+				<translate>Walther P99</translate>
+				<altpage>32</altpage>
+			</weapon>
 		</weapons>
 		<accessories>
 			<accessory>
@@ -45514,6 +45552,30 @@
 				<name>Modified Pump Handle</name>
 				<translate>Modifizierter Repetiergriff</translate>
 				<altpage>138</altpage>
+			</accessory>
+			<accessory>
+				<id>6763996b-0458-46ee-a6a5-f50255ace664</id>
+				<name>Belt-Feed, 100-round</name>
+				<translate>Gurtmunition, 100-Schuss</translate>
+				<altpage>419</altpage>
+			</accessory>
+			<accessory>
+				<id>61ddc4d3-25fd-405c-af5d-2455efff2509</id>
+				<name>Drum Magazine, 24-round</name>
+				<translate>Trommelmagazin, 24-Schuss</translate>
+				<altpage>419</altpage>
+			</accessory>
+			<accessory>
+				<id>d45c3b70-0e12-48b5-9c69-9f86f14d593b</id>
+				<name>Drum Magazine, 32-round</name>
+				<translate>Trommelmagazin, 32-Schuss</translate>
+				<altpage>419</altpage>
+			</accessory>
+			<accessory>
+				<id>6598e5fa-f2d0-4c5c-a773-570cd9d16300</id>
+				<name>External Power Source</name>
+				<translate>Stangenmagazin</translate>
+				<altpage>419</altpage>
 			</accessory>
 		</accessories>
 	</chummer>

@@ -46,6 +46,7 @@ namespace ChummerHub.Client.UI
             {
                 this.tbSINnerResponseErrorText.Text = Result.ErrorText;
                 this.tbSINnerResponseMyExpection.Text = Result.MyException?.ToString();
+                this.tbInstallationId.Text = Chummer.Properties.Settings.Default.UploadClientId.ToString();
             }
         }
     }

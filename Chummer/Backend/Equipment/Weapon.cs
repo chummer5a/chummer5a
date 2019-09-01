@@ -4812,6 +4812,59 @@ namespace Chummer.Backend.Equipment
             return decReturn;
         }
 
+
+        /// <summary>
+        /// Checks a nominated piece of gear for Availability requirements.
+        /// </summary>
+        /// <param name="blnRestrictedGearUsed">Whether Restricted Gear is already being used.</param>
+        /// <param name="intRestrictedCount">Amount of gear that is currently over the availability limit.</param>
+        /// <param name="strAvailItems">String used to list names of gear that are currently over the availability limit.</param>
+        /// <param name="strRestrictedItem">Item that is being used for Restricted Gear.</param>
+        /// <param name="blnOutRestrictedGearUsed">Whether Restricted Gear is already being used (tracked across gear children).</param>
+        /// <param name="intOutRestrictedCount">Amount of gear that is currently over the availability limit (tracked across gear children).</param>
+        /// <param name="strOutAvailItems">String used to list names of gear that are currently over the availability limit (tracked across gear children).</param>
+        /// <param name="strOutRestrictedItem">Item that is being used for Restricted Gear (tracked across gear children).</param>
+        public void CheckRestrictedGear(bool blnRestrictedGearUsed, int intRestrictedCount, string strAvailItems, string strRestrictedItem, out bool blnOutRestrictedGearUsed, out int intOutRestrictedCount, out string strOutAvailItems, out string strOutRestrictedItem)
+        {
+            if (!IncludedInWeapon)
+            {
+                AvailabilityValue objTotalAvail = TotalAvailTuple();
+                if (!objTotalAvail.AddToParent)
+                {
+                    int intAvailInt = objTotalAvail.Value;
+                    if (intAvailInt > _objCharacter.MaximumAvailability)
+                    {
+                        if (intAvailInt <= _objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+                        {
+                            blnRestrictedGearUsed = true;
+                            strRestrictedItem = Parent == null
+                                ? DisplayName(GlobalOptions.Language)
+                                : $"{DisplayName(GlobalOptions.Language)} ({Parent})";
+                        }
+                        else
+                        {
+                            intRestrictedCount++;
+                            strAvailItems += Environment.NewLine + "\t\t" + DisplayNameShort(GlobalOptions.Language);
+                        }
+                    }
+                }
+            }
+
+            foreach (WeaponAccessory objChild in WeaponAccessories)
+            {
+                objChild.CheckRestrictedGear(blnRestrictedGearUsed, intRestrictedCount, strAvailItems, strRestrictedItem, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems, out strRestrictedItem);
+            }
+
+            foreach (Weapon objChild in UnderbarrelWeapons)
+            {
+                objChild.CheckRestrictedGear(blnRestrictedGearUsed, intRestrictedCount, strAvailItems, strRestrictedItem, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems, out strRestrictedItem);
+            }
+            strOutAvailItems = strAvailItems;
+            intOutRestrictedCount = intRestrictedCount;
+            blnOutRestrictedGearUsed = blnRestrictedGearUsed;
+            strOutRestrictedItem = strRestrictedItem;
+        }
+
         public void Reload(IList<Gear> lstGears, TreeView treGearView)
         {
             List<Gear> lstAmmo = new List<Gear>();
@@ -4883,7 +4936,7 @@ namespace Chummer.Backend.Equipment
                 // Make sure the character has some form of Ammunition for this Weapon.
                 if (lstAmmo.Count == 0)
                 {
-                    MessageBox.Show(string.Format(LanguageManager.GetString("Message_OutOfAmmoType", GlobalOptions.Language), DisplayAmmoCategory(GlobalOptions.Language)),
+                    Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_OutOfAmmoType", GlobalOptions.Language), DisplayAmmoCategory(GlobalOptions.Language)),
                         LanguageManager.GetString("MessageTitle_OutOfAmmo", GlobalOptions.Language), MessageBoxButtons.OK,
                         MessageBoxIcon.Exclamation);
                     return;
@@ -5544,7 +5597,7 @@ namespace Chummer.Backend.Equipment
             // Cyberweapons cannot be removed through here and must be done by removing the piece of Cyberware.
             if (Cyberware)
             {
-                MessageBox.Show(
+                Program.MainForm.ShowMessageBox(
                     LanguageManager.GetString("Message_CannotRemoveCyberweapon", GlobalOptions.Language),
                     LanguageManager.GetString("MessageTitle_CannotRemoveCyberweapon", GlobalOptions.Language),
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -5554,7 +5607,7 @@ namespace Chummer.Backend.Equipment
             // Qualities cannot be removed through here and must be done by removing the piece of Cyberware.
             if (Category.StartsWith("Quality"))
             {
-                MessageBox.Show(
+                Program.MainForm.ShowMessageBox(
                     LanguageManager.GetString("Message_CannotRemoveQualityWeapon", GlobalOptions.Language),
                     LanguageManager.GetString("MessageTitle_CannotRemoveQualityWeapon", GlobalOptions.Language),
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -5566,7 +5619,7 @@ namespace Chummer.Backend.Equipment
                 string message = LanguageManager.GetString(
                     ParentVehicle != null ? "Message_CannotRemoveGearWeaponVehicle" : "Message_CannotRemoveGearWeapon",
                     GlobalOptions.Language);
-                MessageBox.Show(message,
+                Program.MainForm.ShowMessageBox(message,
                     LanguageManager.GetString("MessageTitle_CannotRemoveGearWeapon", GlobalOptions.Language),
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return false;

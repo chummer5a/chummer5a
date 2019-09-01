@@ -155,13 +155,13 @@ namespace Chummer
 
                 if (!string.IsNullOrEmpty(LanguageManager.ManagerErrorMessage))
                 {
-                    MessageBox.Show(LanguageManager.ManagerErrorMessage, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Program.MainForm.ShowMessageBox(LanguageManager.ManagerErrorMessage, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
                 if (!string.IsNullOrEmpty(GlobalOptions.ErrorMessage))
                 {
-                    MessageBox.Show(GlobalOptions.ErrorMessage, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Program.MainForm.ShowMessageBox(GlobalOptions.ErrorMessage, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
@@ -187,8 +187,12 @@ namespace Chummer
                                 rule.EnableLoggingForLevels(LogLevel.Debug, LogLevel.Fatal);
                         }
                     }
-                    Log.Info(strInfo);
-
+                    
+                    if (Chummer.Properties.Settings.Default.UploadClientId == Guid.Empty)
+                    {
+                        Chummer.Properties.Settings.Default.UploadClientId = Guid.NewGuid();
+                        Chummer.Properties.Settings.Default.Save();
+                    }
 
                     if (GlobalOptions.UseLoggingApplicationInsights >= UseAILogging.OnlyMetric)
                     {
@@ -209,13 +213,6 @@ namespace Chummer
                         //live.Enable();
 
                         //Log an Event with AssemblyVersion and CultureInfo
-
-
-                        if (Properties.Settings.Default.UploadClientId == Guid.Empty)
-                        {
-                            Properties.Settings.Default.UploadClientId = Guid.NewGuid();
-                            Properties.Settings.Default.Save();
-                        }
                         MetricIdentifier mi = new MetricIdentifier("Chummer", "Program Start", "Version", "Culture", dimension3Name:"AISetting");
                         var metric = TelemetryClient.GetMetric(mi);
                         metric.TrackValue(1,
@@ -242,6 +239,9 @@ namespace Chummer
                     }
                     if (Utils.IsUnitTest)
                         TelemetryConfiguration.Active.DisableTelemetry = true;
+
+                    Log.Info(strInfo);
+                    Log.Info("Logging options are set to " + GlobalOptions.UseLogging + " and Upload-Options are set to " + GlobalOptions.UseLoggingApplicationInsights + " (Installation-Id: " + Chummer.Properties.Settings.Default.UploadClientId + ").");
 
                     //make sure the Settings are upgraded/preserved after an upgrade
                     //see for details: https://stackoverflow.com/questions/534261/how-do-you-keep-user-config-settings-across-different-assembly-versions-in-net/534335#534335
@@ -273,9 +273,14 @@ namespace Chummer
                 // Make sure the default language has been loaded before attempting to open the Main Form.
                 LanguageManager.TranslateWinForm(GlobalOptions.Language, null);
                 MainForm = new frmChummerMain(false);
-                Program.PluginLoader.LoadPlugins(null);
-                //foreach(var plugin in Program.PluginLoader.MyActivePlugins)
-                //    plugin.CustomInitialize(MainForm);
+                try
+                {
+                    Program.PluginLoader.LoadPlugins(null);
+                }
+                catch (ApplicationException e)
+                {
+                    showMainForm = false;
+                }
                 if (!Utils.IsUnitTest)
                 {
                     string[] strArgs = Environment.GetCommandLineArgs();
@@ -285,14 +290,42 @@ namespace Chummer
                         {
                             if (strArgs[i].Contains("/plugin"))
                             {
-                                string whatplugin = strArgs[i].Substring(strArgs[i].IndexOf("/plugin") + 8);
-                                int endplugin = whatplugin.IndexOf(':');
-                                string parameter = whatplugin.Substring(endplugin + 1);
-                                whatplugin = whatplugin.Substring(0, endplugin);
-                                var plugin = Program.PluginLoader.MyActivePlugins.FirstOrDefault(a => a.ToString() == whatplugin);
-                                if (plugin != null)
+                                if (GlobalOptions.PluginsEnabled == false)
                                 {
-                                    showMainForm &= plugin.ProcessCommandLine(parameter);
+                                    string msg =
+                                        "Please enable Plugins to use command-line arguments invoking specific plugin-functions!";
+                                    Log.Warn(msg);
+                                    MessageBox.Show(msg, "Plugins not enabled", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                }
+                                else
+                                {
+                                    string whatplugin = strArgs[i].Substring(strArgs[i].IndexOf("/plugin") + 8);
+                                    //some external apps choose to add a '/' before a ':' even in the middle of an url...
+                                    whatplugin = whatplugin.TrimStart(':');
+                                    int endplugin = whatplugin.IndexOf(':');
+                                    string parameter = whatplugin.Substring(endplugin + 1);
+                                    whatplugin = whatplugin.Substring(0, endplugin);
+                                    var plugin =
+                                        Program.PluginLoader.MyActivePlugins.FirstOrDefault(a =>
+                                            a.ToString() == whatplugin);
+                                    if (plugin == null)
+                                    {
+                                        var notactive =
+                                            Program.PluginLoader.MyPlugins.FirstOrDefault(a =>
+                                                a.ToString() == whatplugin);
+                                        if (notactive != null)
+                                        {
+                                            string msg = "Plugin " + whatplugin + " is not enabled in the options!" + Environment.NewLine;
+                                            msg +=
+                                                "If you want to use command-line arguments, please enable this plugin and restart the program.";
+                                            Log.Warn(msg);
+                                            MessageBox.Show(msg, whatplugin + " not enabled", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                        }
+                                    }
+                                    if (plugin != null)
+                                    {
+                                        showMainForm &= plugin.ProcessCommandLine(parameter);
+                                    }
                                 }
                             }
                         });

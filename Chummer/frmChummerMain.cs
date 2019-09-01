@@ -170,7 +170,14 @@ namespace Chummer
                     catch (UnauthorizedAccessException e)
                     {
                         Log.Trace(e,
-                            "UnauthorizedAccessException in " + Utils.GetStartupPath + "can be ignored - probably a weird path like Recycle.Bin or something...");
+                            "UnauthorizedAccessException in " + Utils.GetStartupPath +
+                            "can be ignored - probably a weird path like Recycle.Bin or something...");
+                    }
+                    catch (System.IO.IOException e)
+                    {
+                        Log.Trace(e,
+                            "IOException in " + Utils.GetStartupPath +
+                            "can be ignored - probably another instance blocking it...");
                     }
 
                     // Populate the MRU list.
@@ -1009,6 +1016,13 @@ namespace Chummer
             {
                 Size si = Properties.Settings.Default.Size;
             }
+            catch (System.ArgumentException ex)
+            {
+                //the config is invalid - reset it!
+                Properties.Settings.Default.Reset();
+                Properties.Settings.Default.Save();
+                Log.Warn("Configuartion Settings were invalid and had to be reset. Exception: " + ex.Message);
+            }
             catch (System.Configuration.ConfigurationErrorsException ex)
             {
                 //the config is invalid - reset it!
@@ -1075,6 +1089,77 @@ namespace Chummer
         #endregion
 
         #region Methods
+
+        private static bool showDevWarningAboutDebuggingOnlyOnce = true;
+
+        /// <summary>
+        /// This makes sure, that the MessageBox is shown in the UI Thread.
+        /// https://stackoverflow.com/questions/559252/does-messagebox-show-automatically-marshall-to-the-ui-thread
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="caption"></param>
+        /// <param name="defaultButton"></param>
+        /// <returns></returns>
+        public DialogResult ShowMessageBox(String message, String caption = null, MessageBoxButtons buttons = MessageBoxButtons.OK, MessageBoxIcon icon = MessageBoxIcon.None, MessageBoxDefaultButton defaultButton = MessageBoxDefaultButton.Button1)
+        {
+            return ShowMessageBox(new Form() { TopMost = true }, message, caption, buttons, icon);
+        }
+
+        public DialogResult ShowMessageBox(Control owner, String message, String caption = null, MessageBoxButtons buttons = MessageBoxButtons.OK, MessageBoxIcon icon = MessageBoxIcon.None, MessageBoxDefaultButton defaultButton = MessageBoxDefaultButton.Button1)
+        {
+            if (Utils.IsUnitTest)
+            {
+                string msg = "We don't want to see MessageBoxes in Unit Tests!" + Environment.NewLine;
+                msg += "Caption: " + caption + Environment.NewLine;
+                msg += "Message: " + message;
+                throw new ArgumentException(msg);
+            }
+
+            if (owner == null)
+                owner = this;
+
+            if (owner.InvokeRequired)
+            {
+                if ((showDevWarningAboutDebuggingOnlyOnce) && (Debugger.IsAttached))
+                {
+                    showDevWarningAboutDebuggingOnlyOnce = false;
+                    //it works on my installation even in the debugger, so maybe we can ignore that...
+                    //WARNING from the link above (you can edit that out if it's not causing problem):
+                    //
+                    //BUT ALSO KEEP IN MIND: when debugging a multi-threaded GUI app, and you're debugging in a thread
+                    //other than the main/application thread, YOU NEED TO TURN OFF
+                    //the "Enable property evaluation and other implicit function calls" option, or else VS will
+                    //automatically fetch the values of local/global GUI objects FROM THE CURRENT THREAD, which will
+                    //cause your application to crash/fail in strange ways. Go to Tools->Options->Debugging to turn
+                    //that setting off.
+                    Debugger.Break();
+                }
+
+                try
+                {
+                    return (DialogResult)owner.Invoke(new PassStringStringReturnDialogResultDelegate(ShowMessageBox),
+                        message, caption, buttons, icon, defaultButton);
+                }
+                catch (ObjectDisposedException)
+                {
+                    //if the main form is disposed, we really don't need to bother anymore...                            
+                }
+                catch (Exception e)
+                {
+                    string msg = "Could not show a MessageBox " + caption + ":" + Environment.NewLine;
+                    msg += message + Environment.NewLine + Environment.NewLine;
+                    msg += "Exception: " + e.ToString();
+                    Log.Fatal(e, msg);
+                }
+
+            }
+            return MessageBox.Show(new Form() { TopMost = true }, message, caption, buttons, icon, defaultButton);
+        }
+
+        public delegate DialogResult PassStringStringReturnDialogResultDelegate(
+            String s1, String s2, MessageBoxButtons buttons,
+            MessageBoxIcon icon, MessageBoxDefaultButton defaultButton);
+
         /// <summary>
         /// Create a new character and show the Create Form.
         /// </summary>
@@ -1317,7 +1402,7 @@ namespace Chummer
                         catch (XmlException ex)
                         {
                             if (blnShowErrors)
-                                MessageBox.Show(
+                                 Program.MainForm.ShowMessageBox(
                                     string.Format(
                                         LanguageManager.GetString("Message_FailedLoad", GlobalOptions.Language),
                                         ex.Message),
@@ -1373,7 +1458,7 @@ namespace Chummer
             }
             else if(blnShowErrors)
             {
-                MessageBox.Show(string.Format(LanguageManager.GetString("Message_FileNotFound", GlobalOptions.Language), strFileName),
+                Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_FileNotFound", GlobalOptions.Language), strFileName),
                     LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             return objCharacter;
@@ -1515,7 +1600,7 @@ namespace Chummer
 
         private void objCareer_DiceRollerOpened(object sender)
         {
-            MessageBox.Show("This feature is currently disabled. Please open a ticket if this makes the world burn, otherwise it will get re-enabled when somebody gets around to it");
+            Program.MainForm.ShowMessageBox("This feature is currently disabled. Please open a ticket if this makes the world burn, otherwise it will get re-enabled when somebody gets around to it");
             //TODO: IMPLEMENT THIS SHIT
         }
 

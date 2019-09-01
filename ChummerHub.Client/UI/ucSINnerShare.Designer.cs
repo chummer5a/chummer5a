@@ -1,4 +1,6 @@
-﻿namespace ChummerHub.Client.UI
+using System;
+
+namespace ChummerHub.Client.UI
 {
     partial class ucSINnerShare
     {
@@ -42,9 +44,10 @@
             // 
             this.tlpShareMain.AutoSize = true;
             this.tlpShareMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpShareMain.ColumnCount = 2;
+            this.tlpShareMain.ColumnCount = 3;
             this.tlpShareMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpShareMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpShareMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 76.59574F));
+            this.tlpShareMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 23.40426F));
             this.tlpShareMain.Controls.Add(this.lStatus, 0, 0);
             this.tlpShareMain.Controls.Add(this.tbStatus, 1, 0);
             this.tlpShareMain.Controls.Add(this.pgbStatus, 0, 1);
@@ -53,6 +56,7 @@
             this.tlpShareMain.Controls.Add(this.bOk, 0, 3);
             this.tlpShareMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpShareMain.Location = new System.Drawing.Point(0, 0);
+            this.tlpShareMain.MinimumSize = new System.Drawing.Size(80, 10);
             this.tlpShareMain.Name = "tlpShareMain";
             this.tlpShareMain.RowCount = 4;
             this.tlpShareMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -74,6 +78,7 @@
             // 
             // tbStatus
             // 
+            this.tlpShareMain.SetColumnSpan(this.tbStatus, 2);
             this.tbStatus.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tbStatus.Location = new System.Drawing.Point(49, 3);
             this.tbStatus.Multiline = true;
@@ -84,7 +89,7 @@
             // pgbStatus
             // 
             this.pgbStatus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.tlpShareMain.SetColumnSpan(this.pgbStatus, 2);
+            this.tlpShareMain.SetColumnSpan(this.pgbStatus, 3);
             this.pgbStatus.Location = new System.Drawing.Point(3, 189);
             this.pgbStatus.Name = "pgbStatus";
             this.pgbStatus.Size = new System.Drawing.Size(635, 23);
@@ -103,6 +108,7 @@
             // tbLink
             // 
             this.tbLink.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.tlpShareMain.SetColumnSpan(this.tbLink, 2);
             this.tbLink.Location = new System.Drawing.Point(49, 218);
             this.tbLink.Name = "tbLink";
             this.tbLink.ReadOnly = true;
@@ -112,7 +118,7 @@
             // bOk
             // 
             this.bOk.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.tlpShareMain.SetColumnSpan(this.bOk, 2);
+            this.tlpShareMain.SetColumnSpan(this.bOk, 3);
             this.bOk.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.bOk.Location = new System.Drawing.Point(283, 244);
             this.bOk.Name = "bOk";
@@ -120,6 +126,7 @@
             this.bOk.TabIndex = 5;
             this.bOk.Text = "Ok";
             this.bOk.UseVisualStyleBackColor = true;
+            this.bOk.Click += new System.EventHandler(this.BOk_Click);
             // 
             // ucSINnerShare
             // 
@@ -134,6 +141,8 @@
             this.PerformLayout();
 
         }
+
+
 
         #endregion
 

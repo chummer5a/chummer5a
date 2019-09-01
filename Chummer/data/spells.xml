@@ -4669,7 +4669,7 @@
       <descriptor>Physical, Area</descriptor>
       <duration>S</duration>
       <dv>F+3</dv>
-      <range>LOS</range>
+      <range>LOS (A)</range>
       <type>P</type>
     </spell>
     <spell>

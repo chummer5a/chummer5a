@@ -1,33 +1,35 @@
- using System;
-using System.Collections;
+using ChummerHub.API;
+using ChummerHub.Data;
+using ChummerHub.Models.V1;
+using Microsoft.ApplicationInsights;
+using Microsoft.ApplicationInsights.DataContracts;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
-using System.Data.Common;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Security.Authentication;
 using System.Threading.Tasks;
- using System.Transactions;
- using ChummerHub.API;
-using ChummerHub.Data;
-using ChummerHub.Models.V1;
- using Microsoft.ApplicationInsights;
- using Microsoft.ApplicationInsights.DataContracts;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+using System.Transactions;
 
 namespace ChummerHub.Controllers
 {
     [Route("api/v{api-version:apiVersion}/[controller]/[action]")]
     [ApiController]
+    [EnableCors("AllowAllOrigins")]
     [ApiVersion("1.0")]
     [Authorize]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'AccountController'
     public class AccountController : Controller
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AccountController'
     {
 
         private UserManager<ApplicationUser> _userManager = null;
@@ -37,7 +39,9 @@ namespace ChummerHub.Controllers
         private readonly ILogger _logger;
         private TelemetryClient tc;
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'AccountController.AccountController(ApplicationDbContext, ILogger<AccountController>, UserManager<ApplicationUser>, SignInManager<ApplicationUser>, RoleManager<ApplicationRole>, TelemetryClient)'
         public AccountController(ApplicationDbContext context,
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AccountController.AccountController(ApplicationDbContext, ILogger<AccountController>, UserManager<ApplicationUser>, SignInManager<ApplicationUser>, RoleManager<ApplicationRole>, TelemetryClient)'
             ILogger<AccountController> logger,
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
@@ -60,7 +64,9 @@ namespace ChummerHub.Controllers
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("AccountGetPossibleRoles")]
         [Authorize]
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'AccountController.GetPossibleRoles()'
         public async Task<ActionResult<ResultAccountGetPossibleRoles>> GetPossibleRoles()
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AccountController.GetPossibleRoles()'
         {
             ResultAccountGetPossibleRoles res;
             try
@@ -85,7 +91,9 @@ namespace ChummerHub.Controllers
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("AccountGetRoles")]
         [Authorize]
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'AccountController.GetRoles()'
         public async Task<ActionResult<ResultAccountGetRoles>> GetRoles()
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AccountController.GetRoles()'
         {
             ResultAccountGetRoles res;
             try
@@ -100,10 +108,10 @@ namespace ChummerHub.Controllers
                 var possibleRoles = await _context.Roles.ToListAsync();
                 var list = (from a in possibleRoles select a.Name).ToList();
                 res = new ResultAccountGetRoles(roles, list);
-                
+
                 return Ok(res);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 res = new ResultAccountGetRoles(e);
                 return BadRequest(res);
@@ -116,7 +124,9 @@ namespace ChummerHub.Controllers
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("AccountGetUserByEmail")]
         [Authorize]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'AccountController.GetUserByEmail(string)'
         public async Task<ActionResult<ResultAccountGetUserByEmail>> GetUserByEmail(string email)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AccountController.GetUserByEmail(string)'
         {
             ResultAccountGetUserByEmail res;
             try
@@ -143,7 +153,9 @@ namespace ChummerHub.Controllers
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GetAddSqlDbUser")]
         [Authorize(Roles = "Administrator")]
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'AccountController.GetAddSqlDbUser(string, string, string, string)'
         public async Task<ActionResult<string>> GetAddSqlDbUser(string username, string password, string start_ip_address, string end_ip_address)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AccountController.GetAddSqlDbUser(string, string, string, string)'
         {
             string result = "";
             try
@@ -159,7 +171,7 @@ namespace ChummerHub.Controllers
                     startaddress = IPAddress.Parse(start_ip_address);
                 }
                 IPAddress endaddress = null;
-                if(!String.IsNullOrEmpty(end_ip_address))
+                if (!String.IsNullOrEmpty(end_ip_address))
                 {
                     endaddress = IPAddress.Parse(end_ip_address);
                 }
@@ -168,7 +180,7 @@ namespace ChummerHub.Controllers
                     throw new ArgumentNullException("Startup.ConnectionStringToMasterSqlDB");
                 }
 
-                
+
                 try
                 {
                     string cmd = "CREATE LOGIN " + username + " WITH password = '" + password + "';";
@@ -188,17 +200,17 @@ namespace ChummerHub.Controllers
                 //create the user in the master DB
                 try
                 {
-                    string cmd = "CREATE USER " + username + " FROM LOGIN " + username +";";
-                    using(SqlConnection masterConnection = new SqlConnection(Startup.ConnectionStringToMasterSqlDb))
+                    string cmd = "CREATE USER " + username + " FROM LOGIN " + username + ";";
+                    using (SqlConnection masterConnection = new SqlConnection(Startup.ConnectionStringToMasterSqlDb))
                     {
                         await masterConnection.OpenAsync();
-                        using(SqlCommand dbcmd = new SqlCommand(cmd, masterConnection))
+                        using (SqlCommand dbcmd = new SqlCommand(cmd, masterConnection))
                         {
                             dbcmd.ExecuteNonQuery();
                         }
                     }
                 }
-                catch(SqlException e)
+                catch (SqlException e)
                 {
                     result += e.Message + Environment.NewLine + Environment.NewLine;
                 }
@@ -206,41 +218,41 @@ namespace ChummerHub.Controllers
                 try
                 {
                     string cmd = "CREATE USER " + username + " FROM LOGIN " + username + ";";
-                    using(SqlConnection masterConnection = new SqlConnection(Startup.ConnectionStringSinnersDb))
+                    using (SqlConnection masterConnection = new SqlConnection(Startup.ConnectionStringSinnersDb))
                     {
                         await masterConnection.OpenAsync();
-                        using(SqlCommand dbcmd = new SqlCommand(cmd, masterConnection))
+                        using (SqlCommand dbcmd = new SqlCommand(cmd, masterConnection))
                         {
                             dbcmd.ExecuteNonQuery();
                         }
                     }
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     result += e.Message + Environment.NewLine + Environment.NewLine;
                 }
                 try
                 {
                     string cmd = "ALTER ROLE dbmanager ADD MEMBER " + username + ";";
-                    using(SqlConnection masterConnection = new SqlConnection(Startup.ConnectionStringSinnersDb))
+                    using (SqlConnection masterConnection = new SqlConnection(Startup.ConnectionStringSinnersDb))
                     {
                         await masterConnection.OpenAsync();
-                        using(SqlCommand dbcmd = new SqlCommand(cmd, masterConnection))
+                        using (SqlCommand dbcmd = new SqlCommand(cmd, masterConnection))
                         {
                             dbcmd.ExecuteNonQuery();
                         }
                     }
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     bool worked = false;
                     try
                     {
                         string cmd = "EXEC sp_addrolemember 'db_owner', '" + username + "';";
-                        using(SqlConnection masterConnection = new SqlConnection(Startup.ConnectionStringSinnersDb))
+                        using (SqlConnection masterConnection = new SqlConnection(Startup.ConnectionStringSinnersDb))
                         {
                             await masterConnection.OpenAsync();
-                            using(SqlCommand dbcmd = new SqlCommand(cmd, masterConnection))
+                            using (SqlCommand dbcmd = new SqlCommand(cmd, masterConnection))
                             {
                                 dbcmd.ExecuteNonQuery();
                             }
@@ -264,10 +276,10 @@ namespace ChummerHub.Controllers
                 {
                     string cmd = "EXEC sp_set_database_firewall_rule N'Allow " +
                                  username + "', '" + startaddress + "', '" + endaddress + "';";
-                    using(SqlConnection masterConnection = new SqlConnection(Startup.ConnectionStringSinnersDb))
+                    using (SqlConnection masterConnection = new SqlConnection(Startup.ConnectionStringSinnersDb))
                     {
                         await masterConnection.OpenAsync();
-                        using(SqlCommand dbcmd = new SqlCommand(cmd, masterConnection))
+                        using (SqlCommand dbcmd = new SqlCommand(cmd, masterConnection))
                         {
                             dbcmd.ExecuteNonQuery();
                         }
@@ -276,13 +288,13 @@ namespace ChummerHub.Controllers
                                   Environment.NewLine;
                     }
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     result += e.Message + Environment.NewLine + Environment.NewLine;
                 }
                 return Ok(result);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 try
                 {
@@ -292,7 +304,7 @@ namespace ChummerHub.Controllers
                     et.Properties.Add("user", User.Identity.Name);
                     tc.TrackException(et);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     if (_logger != null)
                         _logger.LogError(ex.ToString());
@@ -311,19 +323,21 @@ namespace ChummerHub.Controllers
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("PostSetUserRole")]
         [Authorize(Roles = "Administrator")]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'AccountController.PostSetUserRole(string, string)'
         public async Task<ActionResult<ApplicationUser>> PostSetUserRole(string email, string userrole)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AccountController.PostSetUserRole(string, string)'
         {
             try
             {
                 var user = await _userManager.FindByEmailAsync(email);
-                if(user == null)
+                if (user == null)
                     return NotFound();
                 await SeedData.EnsureRole(Program.MyHost.Services, user.Id, userrole, _roleManager, _userManager);
                 user.PasswordHash = "";
                 user.SecurityStamp = "";
                 return Ok(user);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 try
                 {
@@ -351,7 +365,9 @@ namespace ChummerHub.Controllers
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("AccountGetUserByAuthorization")]
         [Authorize]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'AccountController.GetUserByAuthorization()'
         public async Task<ActionResult<ResultAccountGetUserByAuthorization>> GetUserByAuthorization()
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AccountController.GetUserByAuthorization()'
         {
             ResultAccountGetUserByAuthorization res;
             try
@@ -360,7 +376,7 @@ namespace ChummerHub.Controllers
                 res = new ResultAccountGetUserByAuthorization(user);
                 if (user == null)
                     return NotFound(res);
-                
+
                 user.PasswordHash = "";
                 user.SecurityStamp = "";
                 return Ok(res);
@@ -390,7 +406,9 @@ namespace ChummerHub.Controllers
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Unauthorized)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("ResetDb")]
         [Authorize(Roles = "Administrator")]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'AccountController.GetDeleteAllSINnersDb()'
         public async Task<ActionResult<string>> GetDeleteAllSINnersDb()
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AccountController.GetDeleteAllSINnersDb()'
         {
             try
             {
@@ -410,7 +428,7 @@ namespace ChummerHub.Controllers
                     _context.SINnerMetaData.RemoveRange(_context.SINnerMetaData.ToList());
                     _context.SINners.RemoveRange(_context.SINners.ToList());
                     _context.UploadClients.RemoveRange(_context.UploadClients.ToList());
-             
+
                     await _context.SaveChangesAsync();
                     // Commit transaction if all commands succeed, transaction will auto-rollback
                     // when disposed if either commands fails
@@ -445,7 +463,9 @@ namespace ChummerHub.Controllers
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Unauthorized)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("DeleteAndRecreate")]
         [Authorize(Roles = "Administrator")]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'AccountController.GetDeleteAndRecreateDb()'
         public async Task<ActionResult<string>> GetDeleteAndRecreateDb()
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AccountController.GetDeleteAndRecreateDb()'
         {
             try
             {
@@ -463,7 +483,7 @@ namespace ChummerHub.Controllers
                 Program.Seed();
                 return Ok("Database recreated");
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 try
                 {
@@ -531,7 +551,7 @@ namespace ChummerHub.Controllers
                 try
                 {
                     var user = await _signInManager.UserManager.GetUserAsync(User);
-                    
+
                     if (user == null)
                     {
                         var e = new AuthenticationException("User is not authenticated.");
@@ -557,6 +577,7 @@ namespace ChummerHub.Controllers
                         var foundseq = (from a in ssg.MyMembers where a.MySINner.Id == sin.Id select a);
                         if (foundseq.Any())
                             continue;
+                        sin.LastDownload = DateTime.Now;
                         SINnerSearchGroupMember ssgm = new SINnerSearchGroupMember
                         {
                             MySINner = sin,
@@ -569,7 +590,7 @@ namespace ChummerHub.Controllers
                                 {
                                     FavoriteGuid = sin.MyGroup.Id.Value
                                 });
-                            
+
                         }
                         else
                         {
@@ -598,6 +619,7 @@ namespace ChummerHub.Controllers
                         var members = await singroup.GetGroupMembers(_context, false);
                         foreach (var member in members)
                         {
+                            member.LastDownload = DateTime.Now;
                             member.MyGroup = singroup;
                             member.MyGroup.MyGroups = new List<SINnerGroup>();
                             SINnerSearchGroupMember sinssgGroupMember = new SINnerSearchGroupMember
@@ -615,7 +637,7 @@ namespace ChummerHub.Controllers
                         singroup.PasswordHash = "";
                         singroup.MyGroups = new List<SINnerGroup>();
                     }
-
+                    await _context.SaveChangesAsync();
                     ret.SINGroups.Add(ssg);
                     res = new ResultAccountGetSinnersByAuthorization(ret);
 
@@ -646,7 +668,9 @@ namespace ChummerHub.Controllers
                     tc.TrackAvailability(telemetry);
                 }
 
+#pragma warning disable CS0162 // Unreachable code detected
                 t.Complete();
+#pragma warning restore CS0162 // Unreachable code detected
             }
         }
 
@@ -659,7 +683,9 @@ namespace ChummerHub.Controllers
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NoContent)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("AccountGetSinnerAsAdmin")]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'AccountController.GetSinnerAsAdmin()'
         public async Task<ActionResult<ResultGroupGetSearchGroups>> GetSinnerAsAdmin()
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AccountController.GetSinnerAsAdmin()'
         {
             ResultAccountGetSinnersByAuthorization res;
 
@@ -761,7 +787,9 @@ namespace ChummerHub.Controllers
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("AccountLogout")]
         [Authorize]
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'AccountController.Logout()'
         public async Task<ActionResult<bool>> Logout()
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AccountController.Logout()'
         {
             try
             {

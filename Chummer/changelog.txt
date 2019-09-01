@@ -4,6 +4,9 @@ Application Changes:
 
 - Added a genetechessmultiplier improvement type that allows for the modification of genetech essence costs in a similar manner to the biowareessmultiplier improvement.
 - Added an exclusion to gameplayoptions.xml that allows for the customisation of the limbs that are permitted for Redliner and Cyber Singularity Seeker. Closes #1168
+- Weapons mounted on vehicles in create mode can now switch the dicepool calculation method they use between character skill, remote-operated gunnery and dogbrain, among others. Closes #3801
+- Added a validity check for Adepts to ensure that they're not over their powerpoint maximum when moving into career mode.
+- Added a house rule to allow Improved Ability's maximum to be 1.5 of skill rating instead of 0.5.
 
 Application Fixes:
 
@@ -45,6 +48,13 @@ Application Fixes:
 - Spells with no descriptors will no longer display a label saying that the descriptor text is not found in the spell selection screen.
 - Fixed an issue with detecting special modifications on weapons loaded onto vehicle weapon mounts when checking whether or not the limit on special modifications has been reached.
 - Fixed incorrect usage of SkillGroup name instead of the DisplayName. Closes #3785
+- Added support for improvements that add to the dicepools of resisting direct mana combat spells, direct physical combat spells, decrease BOD, decrease AGI, decrease REA, decrease STR, decrease CHA, decrease INT, decrease LOG, and decrease WIL.
+- Moved magic strings used for calculating cyberlimb attributes into explicit hashsets. This allows the 2050 cyberlimb enhancement and customisations to work properly. 
+- Removed an additional cost from purchasing Gear that incorrectly caused quantity to be counted twice.
+- Fixed a regression in the SpellCategory improvement that prevented it being used, as it was renamed to spellcategorydicepool.
+- The Technoshaman Stream properly allows Sprites to be Fettered, granting unlimited services. Existing characters with this Stream will need to Reapply Improvements for it to work.
+- Availability processing for street gear (Vehicles, Weapons, Armor, etc.) have been moved out of frmCreate and into the individual Equipment classes. Resolves issues with weapons being incorrectly flagged for availability multiple times.
+- Fixed a regression in behaviour of the AttributeSection that caused Shapeshifters created prior to 5.200 to fail to load in career mode.
 
 Data Changes:
 
@@ -79,6 +89,15 @@ This affects:
     FN MAG-5
     Stoner-Ares M202
     Ultamax MMG
+- Fixed issues with the Merc Teen, Merc Kid and Corp Teen life modules that prevented them from being added.
+- Fixed Dareadrenaline adding 1 to WIL instead of 1 to dicepools based on WIL (important due to augmented attribute limits). Closes #3791.
+- Corrected the Handling and page reference of the Lone Star SecureSector Mk2. Closes #3788.
+- Added missing actions for Commanding Voice and Mystic Aptitude. Closes #3804
+- Fixed incorrect Availability on the Federated Boeing Commuter. Closes #3833
+- Fixed Local Bar Batron lifestyle quality not being allowed to be taken multiple times. Closes #3812
+- Fixed incorrect stage for the Lost at Sea life module.
+- Changed Technomancer priority selection to require Metahuman instead of forbid AI to prevent metasapients from being able to take it incorrectly. Closes #3506
+- Fixed incorrect range for the Gravity Well spell. Closes #3844
 
 New Strings:
 
@@ -90,6 +109,8 @@ New Strings:
 - String_DescEssence
 - String_DescDamaging
 - String_DescObject
+- Message_InvalidPowerPoints
+- Checkbox_Options_IncreasedImprovedAbilityModifier
 
 Changed Strings:
 
@@ -148,6 +169,7 @@ Application Changes:
 - Removed the caching of Mugshot images in the character roster. Prevents high memory usage for large watch folder content.
 - Unified some uses of Availability processing into the AvailabilityValue object.
 - Crash reporter now prevents uploading issues unless the user story in the Error Description tab has been changed.
+- Added a conditional check in the requirements validator that checks for the spirit form of a given tradition. Expected values are Materialization, Possession or Inhabitation. 
 
 UI Changes:
 
@@ -176,7 +198,8 @@ Data Changes:
 - Removed incorrect Medium lifestyle setting from the Workshop/Facility lifestyle qualities. Closes #3660
 - Extended Clip now allows Belt and Drum weapons instead of just Clips.
 - Fixed missing Mastery Quality flag for the Close Combat Mage quality.
-- The Tactical Grpple Gun is now addable as a gear item, in the same manner as the standard grapple gun. 
+- The Tactical Grapple Gun is now addable as a gear item, in the same manner as the standard grapple gun. 
+- Added missing Great Form Possession metamagic from Hard Targets.
 
 String Changes:
 

@@ -1377,7 +1377,8 @@
       <limit>1</limit>
       <source>SS</source>
       <page>191</page>
-      <adeptway>0.5</adeptway>
+      <action>Complex</action>
+      <adeptway>0.5</adeptway>      
     </power>
     <!-- End Region -->
     <!-- Region Shadow Spells -->
@@ -1761,6 +1762,7 @@
       <limit>1</limit>
       <source>BTB</source>
       <page>153</page>
+      <action>Simple</action>
       <maxlevels>3</maxlevels>
     </power>
     <power>

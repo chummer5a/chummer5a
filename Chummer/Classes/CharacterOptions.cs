@@ -23,6 +23,7 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
+// ReSharper disable StringLiteralTypo
 
 namespace Chummer
 {
@@ -112,6 +113,8 @@ namespace Chummer
         private bool _blnSearchInCategoryOnly = true;
         private string _strNuyenFormat = "#,0.##";
         private bool _blnCompensateSkillGroupKarmaDifference;
+        private bool _cyberwareRounding;
+        private bool _increasedImprovedAbilityMultiplier;
 
         private string _strBookXPath = string.Empty;
         private string _strExcludeLimbSlot = string.Empty;
@@ -204,7 +207,7 @@ namespace Chummer
                 }
                 catch (UnauthorizedAccessException)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_Insufficient_Permissions_Warning", GlobalOptions.Language));
+                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Insufficient_Permissions_Warning", GlobalOptions.Language));
                 }
             }
 
@@ -401,6 +404,8 @@ namespace Chummer
             objWriter.WriteElementString("priorityspellsasadeptpowers", _blnPrioritySpellsAsAdeptPowers.ToString());
             // <usecalculatedpublicawareness />
             objWriter.WriteElementString("usecalculatedpublicawareness", _blnUseCalculatedPublicAwareness.ToString());
+            // <increasedimprovedabilitymodifier />
+            objWriter.WriteElementString("increasedimprovedabilitymodifier", _increasedImprovedAbilityMultiplier.ToString());
 
             // <karmacost>
             objWriter.WriteStartElement("karmacost");
@@ -554,12 +559,12 @@ namespace Chummer
                 }
                 catch (IOException)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
                 }
                 catch (XmlException)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
                 }
             }
@@ -567,7 +572,7 @@ namespace Chummer
             {
                 if (MessageBox.Show(string.Format(LanguageManager.GetString("Message_CharacterOptions_CannotLoadSetting", GlobalOptions.Language), _strFileName), LanguageManager.GetString("MessageTitle_CharacterOptions_CannotLoadSetting", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
                 }
                 else
@@ -583,12 +588,12 @@ namespace Chummer
                     }
                     catch (IOException)
                     {
-                        MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return false;
                     }
                     catch (XmlException)
                     {
-                        MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return false;
                     }
                 }
@@ -762,6 +767,8 @@ namespace Chummer
             objXmlNode.TryGetBoolFieldQuickly("autobackstory", ref _blnAutomaticBackstory);
             // House Rule: Whether Public Awareness should be a calculated attribute based on Street Cred and Notoriety.
             objXmlNode.TryGetBoolFieldQuickly("usecalculatedpublicawareness", ref _blnUseCalculatedPublicAwareness);
+            // House Rule: Whether Improved Ability should be capped at 0.5 (false) or 1.5 (true) of the target skill's Learned Rating.
+            objXmlNode.TryGetBoolFieldQuickly("increasedimprovedabilitymodifier", ref _increasedImprovedAbilityMultiplier);
             
             objXmlNode = objXmlDocument.SelectSingleNode("//settings/karmacost");
             // Attempt to populate the Karma values.
@@ -1562,7 +1569,6 @@ namespace Chummer
         }
 
         private int _intCachedEssenceDecimals = -1;
-        private bool _cyberwareRounding;
 
         /// <summary>
         /// Number of decimal places to round to when calculating Essence.
@@ -2347,6 +2353,15 @@ namespace Chummer
         {
             get => _cyberwareRounding;
             set => _cyberwareRounding = value;
+        }
+
+        /// <summary>
+        /// Whether the Improved Ability power (SR5 309) should be capped at 0.5 of current Rating or 1.5 of current Rating. 
+        /// </summary>
+        public bool IncreasedImprovedAbilityMultiplier
+        {
+            get => _increasedImprovedAbilityMultiplier;
+            set => _increasedImprovedAbilityMultiplier = value;
         }
 
         #endregion

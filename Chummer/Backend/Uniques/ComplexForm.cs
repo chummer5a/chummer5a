@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+using Chummer.Backend.Skills;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -24,7 +25,6 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
-using Chummer.Backend.Skills;
 using NLog;
 
 namespace Chummer
@@ -464,21 +464,22 @@ namespace Chummer
             set => _strNotes = value;
         }
 
+        public Skill Skill => _objCharacter.SkillsSection.GetActiveSkill("Software");
+
         /// <summary>
-        /// The Dice Pool size for the Active Skill required to cast the Spell.
+        /// The Dice Pool size for the Active Skill required to thread the Complex Form.
         /// </summary>
         public int DicePool
         {
             get
             {
                 int intReturn = 0;
-                Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill("Software");
-                if (objSkill != null)
+                if (Skill != null)
                 {
-                    intReturn = objSkill.Pool;
-                    // Add any Specialization bonus if applicable.
-                    if (objSkill.HasSpecialization(DisplayName))
-                        intReturn += 2;
+                  intReturn = Skill.PoolOtherAttribute(_objCharacter.RES.TotalValue, "RES");
+                  // Add any Specialization bonus if applicable.
+                  if (Skill.HasSpecialization(DisplayName))
+                    intReturn += 2;
                 }
 
                 // Include any Improvements to Threading.
@@ -497,10 +498,9 @@ namespace Chummer
             {
                 string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                 string strReturn = string.Empty;
-                Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill("Software");
-                if (objSkill != null)
+                if (Skill != null)
                 {
-                    strReturn = objSkill.FormattedDicePool(objSkill.Pool, strSpaceCharacter, DisplayName);
+                    strReturn = Skill.FormattedDicePool(Skill.PoolOtherAttribute(_objCharacter.RES.TotalValue, "RES"), strSpaceCharacter, DisplayName);
                 }
 
                 // Include any Improvements to the Spell Category.

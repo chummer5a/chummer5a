@@ -123,6 +123,7 @@
     <category blackmarket="Bioware">Genemods</category>
     <category blackmarket="Bioware">Orthoskin Upgrades</category>
     <category blackmarket="Bioware">Symbionts</category>
+    <category blackmarket="Bioware">Genetic Restoration</category>
   </categories>
   <biowares>
     <!-- Region Shadowrun 5-->
@@ -2258,10 +2259,30 @@
       <cost>61000</cost>
       <forcegrade>None</forcegrade>
       <bonus>
-        <specificattribute>
+		<composure>1</composure>
+		<judgeintentionsdefense>1</judgeintentionsdefense>
+		<drainresist>1</drainresist>
+		<fadingresist>1</fadingresist>
+		<directmanaspellresist>1</directmanaspellresist>
+		<detectionspellresist>1</detectionspellresist>
+		<manaillusionresist>1</manaillusionresist>
+		<mentalmanipulationresist>1</mentalmanipulationresist>
+		<decreasebodresist>1</decreasebodresist>
+		<decreaseagiresist>1</decreaseagiresist>
+		<decreaserearesist>1</decreaserearesist>
+		<decreasestrresist>1</decreasestrresist>
+		<decreasecharesist>1</decreasecharesist>
+		<decreaseintresist>1</decreaseintresist>
+		<decreaselogresist>1</decreaselogresist>
+		<decreasewilresist>1</decreasewilresist>
+		<skillattribute>
           <name>WIL</name>
-          <val>1</val>
-        </specificattribute>
+          <bonus>1</bonus>
+        </skillattribute>
+		<physiologicaladdictionfirsttime>1</physiologicaladdictionfirsttime>
+        <psychologicaladdictionfirsttime>1</psychologicaladdictionfirsttime>
+        <physiologicaladdictionalreadyaddicted>1</physiologicaladdictionalreadyaddicted>
+        <psychologicaladdictionalreadyaddicted>1</psychologicaladdictionalreadyaddicted>
         <addqualities>
           <addquality>Poor Self Control (Thrill Seeker)</addquality>
         </addqualities>
@@ -3062,7 +3083,7 @@
       <name>Revitilization</name>
       <limit>False</limit>
       <category>Genetic Restoration</category>
-      <ess>0</ess>
+      <ess>-0.1</ess>
       <capacity>0</capacity>
       <avail>14</avail>
       <cost>110000</cost>

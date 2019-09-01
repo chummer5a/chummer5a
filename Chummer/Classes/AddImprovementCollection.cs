@@ -147,6 +147,76 @@ namespace Chummer.Classes
                 ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
+        public void directmanaspellresist(XmlNode bonusNode)
+        {
+            Log.Info("directmanaspellresist");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DirectManaSpellResist, _strUnique,
+                ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
+        public void directphysicalspellresist(XmlNode bonusNode)
+        {
+            Log.Info("directphysicalspellresist");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DirectPhysicalSpellResist, _strUnique,
+                ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
+        public void decreasebodresist(XmlNode bonusNode)
+        {
+            Log.Info("decreasebodresist");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DecreaseBODResist, _strUnique,
+                ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
+        public void decreaseagiresist(XmlNode bonusNode)
+        {
+            Log.Info("decreaseagiresist");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DecreaseAGIResist, _strUnique,
+                ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
+        public void decreaserearesist(XmlNode bonusNode)
+        {
+            Log.Info("decreaserearesist");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DecreaseREAResist, _strUnique,
+                ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
+        public void decreasestrresist(XmlNode bonusNode)
+        {
+            Log.Info("decreasestrresist");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DecreaseSTRResist, _strUnique,
+                ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
+        public void decreasecharesist(XmlNode bonusNode)
+        {
+            Log.Info("decreasecharesist");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DecreaseCHAResist, _strUnique,
+                ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
+        public void decreaseintresist(XmlNode bonusNode)
+        {
+            Log.Info("decreaseintresist");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DecreaseINTResist, _strUnique,
+                ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
+        public void decreaselogresist(XmlNode bonusNode)
+        {
+            Log.Info("decreaselogresist");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DecreaseLOGResist, _strUnique,
+                ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
+        public void decreasewilresist(XmlNode bonusNode)
+        {
+            Log.Info("decreasewilresist");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DecreaseWILResist, _strUnique,
+                ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
         public void enableattribute(XmlNode bonusNode)
         {
             Log.Info("enableattribute");
@@ -1896,7 +1966,7 @@ namespace Chummer.Classes
 
             if (lstSelectedContacts.Count == 0)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_NoContactFound", GlobalOptions.Language),
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NoContactFound", GlobalOptions.Language),
                     LanguageManager.GetString("MessageTitle_NoContactFound", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 throw new AbortedException();
             }
@@ -3902,7 +3972,7 @@ namespace Chummer.Classes
                 }
                 if (lstArts.Count == 0)
                 {
-                    MessageBox.Show(string.Format(LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed", GlobalOptions.Language), SourceName));
+                    Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed", GlobalOptions.Language), SourceName));
                     throw new AbortedException();
                 }
                 frmPickItem.GeneralItems = lstArts;
@@ -3986,7 +4056,7 @@ namespace Chummer.Classes
                 }
                 if (lstMetamagics.Count == 0)
                 {
-                    MessageBox.Show(string.Format(LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed", GlobalOptions.Language), SourceName));
+                    Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed", GlobalOptions.Language), SourceName));
                     throw new AbortedException();
                 }
                 frmPickItem.GeneralItems = lstMetamagics;
@@ -4079,7 +4149,7 @@ namespace Chummer.Classes
                 }
                 if (lstEchoes.Count == 0)
                 {
-                    MessageBox.Show(string.Format(LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed", GlobalOptions.Language), SourceName));
+                    Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed", GlobalOptions.Language), SourceName));
                     throw new AbortedException();
                 }
                 frmPickItem.GeneralItems = lstEchoes;
@@ -5245,7 +5315,7 @@ namespace Chummer.Classes
                     }
             if (lstItems.Count == 0)
             {
-                MessageBox.Show(string.Format(LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed", GlobalOptions.Language), SourceName));
+                Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed", GlobalOptions.Language), SourceName));
                 throw new AbortedException();
             }
             frmSelectItem frmPickItem = new frmSelectItem
@@ -5329,6 +5399,7 @@ namespace Chummer.Classes
                 if (xmlQualityList?.Count > 0)
                     foreach (XmlNode objXmlAddQuality in xmlQualityList)
                     {
+                        if (objXmlAddQuality.NodeType == XmlNodeType.Comment) continue;
                         XmlNode objXmlSelectedQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlAddQuality.InnerText + "\"]");
                         string strForceValue = objXmlAddQuality.Attributes?["select"]?.InnerText ?? string.Empty;
 
@@ -5386,7 +5457,7 @@ namespace Chummer.Classes
                     }
             if (lstQualities.Count == 0)
             {
-                MessageBox.Show(string.Format(LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed", GlobalOptions.Language), SourceName));
+                Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed", GlobalOptions.Language), SourceName));
                 throw new AbortedException();
             }
 
@@ -5430,7 +5501,7 @@ namespace Chummer.Classes
                         }
                 if (lstQualities.Count == 0)
                 {
-                    MessageBox.Show(string.Format(LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed", GlobalOptions.Language), SourceName));
+                    Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed", GlobalOptions.Language), SourceName));
                     throw new AbortedException();
                 }
 
@@ -6306,6 +6377,15 @@ namespace Chummer.Classes
             Log.Info("contactkarmaminimum");
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.ContactKarmaMinimum, _strUnique,
                 ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
+        // Enable Sprite Fettering.
+        public void allowspritefettering(XmlNode bonusNode)
+        {
+            Log.Info("AllowSpriteFettering");
+            Log.Info("AllowSpriteFettering = " + bonusNode.OuterXml);
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.AllowSpriteFettering, _strUnique);
         }
         #endregion
     }

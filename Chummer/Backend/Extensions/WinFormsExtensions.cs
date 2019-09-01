@@ -62,7 +62,7 @@ namespace Chummer
             {
                 Log.Error(e);
 #if DEBUG
-                MessageBox.Show(e.ToString());
+                Program.MainForm.ShowMessageBox(e.ToString());
 #endif
             }
         }
@@ -81,6 +81,22 @@ namespace Chummer
                 objControl.CreateControl();
             }
             objControl.DataBindings.Add(strPropertyName, objDataSource, strDataMember, false, DataSourceUpdateMode.OnPropertyChanged);
+        }
+
+        /// <summary>
+        /// Bind a control's property to the OPPOSITE of property via OnPropertyChanged. Expected to be used exclusively by boolean bindings, other attributes have not been tested. 
+        /// </summary>
+        /// <param name="objControl">Control to bind</param>
+        /// <param name="strPropertyName">Control's property to which <paramref name="strDataMember"/> is being bound</param>
+        /// <param name="objDataSource">Instance owner of <paramref name="strDataMember"/></param>
+        /// <param name="strDataMember">Name of the property of <paramref name="objDataSource"/> that is being bound to <paramref name="objControl"/>'s <paramref name="strPropertyName"/> property</param>
+        public static void DoNegatableDatabinding(this Control objControl, string strPropertyName, object objDataSource, string strDataMember)
+        {
+            if (!objControl.IsHandleCreated)
+            {
+                objControl.CreateControl();
+            }
+            objControl.DataBindings.Add(new NegatableBinding(strPropertyName, objDataSource, strDataMember, true));
         }
         #endregion
 

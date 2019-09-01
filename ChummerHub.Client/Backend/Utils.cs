@@ -29,6 +29,7 @@ using Microsoft.ApplicationInsights;
 using Microsoft.Win32;
 using System.Diagnostics;
 using System.Security.Principal;
+using System.Threading;
 
 namespace ChummerHub.Client.Backend
 {
@@ -403,104 +404,40 @@ namespace ChummerHub.Client.Backend
                         System.Windows.Forms.Clipboard.SetText(ex.ToString());
                     });
                     msg += Environment.NewLine + Environment.NewLine + "Please check the Plugin-Options dialog.";
-                    MessageBox.Show(msg, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    Program.MainForm.ShowMessageBox(msg, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     
                 }
             }
             return client;
         }
 
-        //the level-argument is only to absolutely make sure to not spawn processes uncontrolled
-        public static bool RegisterChummerProtocol(string level)
+        
+
+        internal static async Task WebCall(string callback, int progress, string text)
         {
-            var startupExe = System.Windows.Forms.Application.StartupPath;
-            startupExe = System.Reflection.Assembly.GetEntryAssembly()?.Location;
-            RegistryKey key = Registry.ClassesRoot.OpenSubKey("Chummer"); //open myApp protocol's subkey
-            bool reregisterKey = false;
-            if (key != null)
-            {
-                if (key.GetValue(string.Empty)?.ToString() != "URL: Chummer Protocol")
-                    reregisterKey = true;
-                if (key.GetValue("URL Protocol")?.ToString() != string.Empty)
-                    reregisterKey = true;
-                key = key.OpenSubKey(@"shell\open\command");
-                if (key == null)
-                    reregisterKey = true;
-                else
-                {
-                    if (key.GetValue(string.Empty)?.ToString() != startupExe + " " + "%1")
-                        reregisterKey = true;
-                }
-#if DEBUG
-                //for debug always overwrite the key!
-                reregisterKey = true;
-#endif
-                key.Close();
-            }
-            else
-            {
-                reregisterKey = true;
-            }
-
-            if (reregisterKey == false)
-            {
-                Log.Info("Url Protocol Handler for Chummer was already registered!");
-                return true;
-            }
-
             try
             {
-                System.AppDomain.CurrentDomain.SetPrincipalPolicy(PrincipalPolicy.WindowsPrincipal);
-                return StaticUtils.RegisterMyProtocol(startupExe);
-            }
-            catch (System.Security.SecurityException se)
-            {
-                Log.Warn(se);
-                int intLevel = -1;
-                if (Int32.TryParse(level, out int result))
+                Log.Trace("Posting WebCall " + callback + ": " + text + "(" + progress + ")");
+                using (var client = new HttpClient())
                 {
-                    intLevel = result;
+                    var uri = new Uri(callback);
+                    string baseuri = uri.GetLeftPart(System.UriPartial.Authority);
+                    client.BaseAddress = new Uri(baseuri);
+                    var content = new FormUrlEncodedContent(new[]
+                    {
+                        new KeyValuePair<string, string>("Progress", progress.ToString()),
+                        new KeyValuePair<string, string>("Text", text),
+                    });
+                    var result = await client.PostAsync(callback, content);
+                    string resultContent = await result.Content.ReadAsStringAsync();
+                    Log.Trace("Result from WebCall " + callback + ": " + resultContent);
                 }
-
-                string arguments = "/plugin:SINners:RegisterUriScheme:" + ++intLevel;
-                if (intLevel > 1)
-                    return false;
-                ProcessStartInfo startInfo = new ProcessStartInfo
-                {
-                    FileName = startupExe,
-                    Arguments = arguments,
-                    Verb = "runas"
-                };
-                var myAdminProcess = Process.Start(startInfo);
-                myAdminProcess.WaitForExit(30*1000);
-                if (myAdminProcess.ExitCode == -1)
-                    return true;
-                return false;
             }
-            
-
-            return true;
-        }
-
-        [PrincipalPermission(SecurityAction.Demand, Role = @"BUILTIN\Administrators") ] 
-        public static bool RegisterMyProtocol(string myAppPath)  //myAppPath = full path to your application
-        {
-            RegistryKey key = Registry.ClassesRoot.OpenSubKey("Chummer");  //open myApp protocol's subkey
-
-            if (key == null)  //if the protocol is not registered yet...we register it
+            catch (Exception e)
             {
-                key = Registry.ClassesRoot.CreateSubKey("Chummer");
-                key.SetValue(string.Empty, "URL: Chummer Protocol");
-                key.SetValue("URL Protocol", string.Empty);
-
-                key = key.CreateSubKey(@"shell\open\command");
-                key.SetValue(string.Empty, myAppPath + " " + "%1");
-                //%1 represents the argument - this tells windows to open this program with an argument / parameter
+                string message = "This exception can be ignored! " + e.ToString();
+                Log.Debug(e, message);
             }
-
-            key.Close();
-            Log.Info("Url Protocol Handler for Chummer registered!");
-            return true;
         }
     }
 
@@ -694,7 +631,7 @@ namespace ChummerHub.Client.Backend
                 rb.MyException = e;
                 rb.CallSuccess = false;
                 ResponseBody = rb;
-                Log.Error(e, "Error parsing response from SINners WebService as response.Response.Content: " + content);
+                Log.Warn(e, "Error parsing response from SINners WebService as response.Response.Content: " + content);
             }
 
             try
@@ -712,18 +649,36 @@ namespace ChummerHub.Client.Backend
                 rb.MyException = e;
                 rb.CallSuccess = false;
                 ResponseBody = rb;
-                Log.Error(e, "Error parsing response from SINners WebService as ResponseBody: " + content);
+                Log.Warn(e, "Error parsing response from SINners WebService as ResponseBody: " + content);
             }
 
 
             if ((!String.IsNullOrEmpty(rb.ErrorText)
                      || (rb.MyException != null)))
             {
-                Log.Warn("SINners WebService returned: " + rb.ErrorText);
-                var frmSIN = new frmSINnerResponse();
-                frmSIN.SINnerResponseUI.Result = rb;
-                frmSIN.TopMost = true;
-                frmSIN.ShowDialog(PluginHandler.MainForm);
+                PluginHandler.MainForm.DoThreadSafe(() =>
+                {
+                    Log.Warn("SINners WebService returned: " + rb.ErrorText);
+                    Thread show = new Thread(() => {
+                        PluginHandler.MainForm.DoThreadSafe(() =>
+                        {
+                            var frmSIN = new frmSINnerResponse();
+                            if (rb.ErrorText.Length > 600)
+                                rb.ErrorText = rb.ErrorText.Substring(0, 598) + "...";
+                            frmSIN.SINnerResponseUI.Result = rb;
+                            frmSIN.TopMost = true;
+                            frmSIN.DoThreadSafe(() =>
+                            {
+                                Log.Trace("Showing Dialog for frmSINnerResponse()");
+                                frmSIN.Show();
+                            });
+                        });
+                    });
+                    show.Start();
+
+
+
+                });
             }
             return ResponseBody;
         }
@@ -1119,7 +1074,7 @@ namespace ChummerHub.Client.Backend
                 UploadInfoObject uploadInfoObject = new UploadInfoObject
                 {
                     Client = PluginHandler.MyUploadClient,
-                    UploadDateTime = DateTime.Now
+                    UploadDateTime = DateTime.Now,
                 };
                 ce.MySINnerFile.UploadDateTime = DateTime.Now;
                 uploadInfoObject.SiNners = new List<SINner>() { ce.MySINnerFile };
@@ -1167,21 +1122,45 @@ namespace ChummerHub.Client.Backend
             return res;
         }
 
-        public static ResultSinnerPostSIN PostSINner(CharacterExtended ce)
+        public static async Task<HttpOperationResponse<ResultSinnerPostSIN>> PostSINner(CharacterExtended ce)
         {
-            ResultSinnerPostSIN res = null;
+            HttpOperationResponse<ResultSinnerPostSIN> res = null;
             try
             {
-                UploadInfoObject uploadInfoObject = new UploadInfoObject
+                UploadInfoObject uploadInfo = new UploadInfoObject
                 {
                     Client = PluginHandler.MyUploadClient,
                     UploadDateTime = DateTime.Now
                 };
                 ce.MySINnerFile.UploadDateTime = DateTime.Now;
-                uploadInfoObject.SiNners = new List<SINner>() { ce.MySINnerFile };
+                uploadInfo.SiNners = new List<SINner>() { ce.MySINnerFile };
                 Log.Info("Posting " + ce.MySINnerFile.Id + "...");
-                var client = StaticUtils.GetClient();
-                res = client.PostSIN(uploadInfoObject);
+                // This line must be called in UI thread to get correct scheduler
+                TaskScheduler scheduler = null;
+                Program.MainForm.DoThreadSafe(() =>
+                {
+                    scheduler = System.Threading.Tasks.TaskScheduler.FromCurrentSynchronizationContext();
+                });
+                
+
+                // this can be called anywhere
+                var task = new System.Threading.Tasks.Task(() =>
+                {
+                    var client = StaticUtils.GetClient();
+                    res = client.PostSINWithHttpMessagesAsync(uploadInfo).Result;
+                });
+
+                // also can be called anywhere. Task  will be scheduled for execution.
+                // And *IF I'm not mistaken* can be (or even will be executed synchronously)
+                // if this call is made from GUI thread. (to be checked) 
+                task.Start(scheduler);
+                //Program.MainForm.DoThreadSafe(async () =>
+                //{
+                //    var client = StaticUtils.GetClient();
+                //    res = await client.PostSINWithHttpMessagesAsync(uploadInfo);
+                //});
+                task.Wait();
+                //res = client.PostSIN(uploadInfo);
                 Log.Info("Post of " + ce.MySINnerFile.Id + " finished.");
                 return res;
     
@@ -1226,7 +1205,7 @@ namespace ChummerHub.Client.Backend
                                 {
                                     if(myStatus != HttpStatusCode.OK)
                                     {
-                                        MessageBox.Show(msg);
+                                        Program.MainForm.ShowMessageBox(msg);
                                     }
                                     using (new CursorWait(true, PluginHandler.MainForm))
                                     {
@@ -1245,7 +1224,7 @@ namespace ChummerHub.Client.Backend
                         Log.Error(e);
                         PluginHandler.MainForm.DoThreadSafe(() =>
                         {
-                            MessageBox.Show(e.Message);
+                            Program.MainForm.ShowMessageBox(e.Message);
                         });
                     }
                 }
@@ -1309,7 +1288,7 @@ namespace ChummerHub.Client.Backend
                         Log.Error(e);
                         PluginHandler.MainForm.DoThreadSafe(() =>
                         {
-                            MessageBox.Show(e.Message);
+                            Program.MainForm.ShowMessageBox(e.Message);
                         });
                     }
                 }

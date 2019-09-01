@@ -1,11 +1,13 @@
-using System;
-using System.Net;
 using Microsoft.ApplicationInsights.Channel;
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.ApplicationInsights.Extensibility;
+using System.Net;
 
 namespace ChummerHub.Services.Application_Insights
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class GroupNotFoundFilter : ITelemetryProcessor
     {
 
@@ -15,11 +17,19 @@ namespace ChummerHub.Services.Application_Insights
         //public string MyParamFromConfigFile { get; set; }
 
         // Link processors to each other in a chain.
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="next"></param>
         public GroupNotFoundFilter(ITelemetryProcessor next)
         {
             this.Next = next;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="item"></param>
         public void Process(ITelemetry item)
         {
             // To filter out an item, just return
@@ -37,8 +47,7 @@ namespace ChummerHub.Services.Application_Insights
         // Example: replace with your own criteria.
         private bool OKtoSend(ITelemetry item)
         {
-            var requestTelemetry = item as RequestTelemetry;
-            if (requestTelemetry != null && int.Parse(requestTelemetry.ResponseCode) == (int) HttpStatusCode.NotFound)
+            if (item is RequestTelemetry requestTelemetry && int.Parse(requestTelemetry.ResponseCode) == (int)HttpStatusCode.NotFound)
             {
                 if (requestTelemetry.Context?.Operation?.Name.Contains("GetSINnerGroupFromSINerById") == true)
                     return false;
@@ -50,22 +59,12 @@ namespace ChummerHub.Services.Application_Insights
         // Example: replace with your own modifiers.
         private void ModifyItem(ITelemetry item)
         {
-            //done in MyTelemetryInitializer
+            if (item is RequestTelemetry requestTelemetry && int.Parse(requestTelemetry.ResponseCode) == (int)HttpStatusCode.NotFound)
+            {
+                requestTelemetry.Success = true;
+            }
 
-            //var requestTelemetry = item as RequestTelemetry;
-            //// Is this a TrackRequest() ?
-            //if (requestTelemetry == null) return;
-            //int code;
-            //bool parsed = Int32.TryParse(requestTelemetry.ResponseCode, out code);
-            //if (!parsed) return;
-            //if (code >= 400 && code < 500)
-            //{
-            //    // If we set the Success property, the SDK won't change it:
-            //    requestTelemetry.Success = true;
-            //    // Allow us to filter these requests in the portal:
-            //    requestTelemetry.Context.Properties["Overridden400s"] = "true";
-            //}
-            //// else leave the SDK to set the Success property    
+            this.Next.Process(item);
         }
     }
 }

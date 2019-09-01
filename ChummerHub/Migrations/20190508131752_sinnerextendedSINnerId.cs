@@ -1,11 +1,15 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
+using System;
 
 namespace ChummerHub.Migrations
 {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'sinnerextendedSINnerId'
     public partial class sinnerextendedSINnerId : Migration
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'sinnerextendedSINnerId'
     {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'sinnerextendedSINnerId.Up(MigrationBuilder)'
         protected override void Up(MigrationBuilder migrationBuilder)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'sinnerextendedSINnerId.Up(MigrationBuilder)'
         {
             migrationBuilder.DropForeignKey(
                 name: "FK_SINners_SINnerExtendedMetaData_MyExtendedAttributesId",
@@ -45,7 +49,9 @@ namespace ChummerHub.Migrations
                 onDelete: ReferentialAction.Restrict);
         }
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'sinnerextendedSINnerId.Down(MigrationBuilder)'
         protected override void Down(MigrationBuilder migrationBuilder)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'sinnerextendedSINnerId.Down(MigrationBuilder)'
         {
             migrationBuilder.DropForeignKey(
                 name: "FK_SINnerExtendedMetaData_SINners_SINnerId",

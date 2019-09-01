@@ -19,6 +19,7 @@
 using System;
 using System.Xml;
 using Chummer.Classes;
+// ReSharper disable StringLiteralTypo
 
 namespace Chummer
 {
@@ -51,6 +52,26 @@ namespace Chummer
                     return objImprovementAdder.physicalillusionresist;
                 case "DETECTIONSPELLRESIST":
                     return objImprovementAdder.detectionspellresist;
+                case "DIRECTMANASPELLRESIST":
+                    return objImprovementAdder.directmanaspellresist;
+                case "DIRECTPHYSICALSPELLRESIST":
+                    return objImprovementAdder.directphysicalspellresist;
+                case "DECREASEBODRESIST":
+                    return objImprovementAdder.decreasebodresist;
+                case "DECREASEAGIRESIST":
+                    return objImprovementAdder.decreaseagiresist;
+                case "DECREASEREARESIST":
+                    return objImprovementAdder.decreaserearesist;
+                case "DECREASESTRRESIST":
+                    return objImprovementAdder.decreasestrresist;
+                case "DECREASECHARESIST":
+                    return objImprovementAdder.decreasecharesist;
+                case "DECREASEINTRESIST":
+                    return objImprovementAdder.decreaseintresist;
+                case "DECREASELOGRESIST":
+                    return objImprovementAdder.decreaselogresist;
+                case "DECREASEWILRESIST":
+                    return objImprovementAdder.decreasewilresist;
                 case "ENABLEATTRIBUTE":
                     return objImprovementAdder.enableattribute;
                 case "REPLACEATTRIBUTES":
@@ -401,11 +422,11 @@ namespace Chummer
                     return objImprovementAdder.spelllimit;
                 case "FREESPELLS":
                     return objImprovementAdder.freespells;
-                case "SPELLDICEPOOL":
-                    return objImprovementAdder.spelldicepool;
                 case "SPELLCATEGORY":
                 case "SPELLCATEGORYDICEPOOL":
                     return objImprovementAdder.spellcategorydicepool;
+                case "SPELLDICEPOOL":
+                    return objImprovementAdder.spelldicepool;
                 case "SPELLCATEGORYDRAIN":
                     return objImprovementAdder.spellcategorydrain;
                 case "SPELLCATEGORYDAMAGE":
@@ -468,12 +489,12 @@ namespace Chummer
                     return objImprovementAdder.limitspellcategory;
                 case "LIMITSPELLDESCRIPTOR":
                     return objImprovementAdder.limitspelldescriptor;
-                case "LIMITSPIRITCATEGORY":
-                    return objImprovementAdder.limitspiritcategory;
                 case "ADDSPRITE":
                     return objImprovementAdder.addsprite;
                 case "ADDSPIRIT":
                     return objImprovementAdder.addspirit;
+                case "LIMITSPIRITCATEGORY":
+                    return objImprovementAdder.limitspiritcategory;
                 case "MOVEMENTREPLACE":
                     return objImprovementAdder.movementreplace;
                 case "ADDLIMB":
@@ -572,16 +593,18 @@ namespace Chummer
                     return objImprovementAdder.weaponskillaccuracy;
                 case "METAGENETICLIMIT":
                     return objImprovementAdder.metageneticlimit;
+                case "SPECIALMODIFICATIONLIMIT":
+                    return objImprovementAdder.specialmodificationlimit;
                 case "CYBERADEPTDAEMON":
                     return objImprovementAdder.cyberadeptdaemon;
                 case "ACTIONDICEPOOL":
                     return objImprovementAdder.actiondicepool;
-                case "SPECIALMODIFICATIONLIMIT":
-                    return objImprovementAdder.specialmodificationlimit;
                 case "CONTACTKARMA":
                     return objImprovementAdder.contactkarma;
                 case "CONTACTKARMAMINIMUM":
                     return objImprovementAdder.contactkarmaminimum;
+                case "ALLOWSPRITEFETTERING":
+                    return objImprovementAdder.allowspritefettering;
                 // No method matches, return a null pointer
                 default:
                     return null;

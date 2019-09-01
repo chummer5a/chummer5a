@@ -217,9 +217,12 @@ namespace ChummerHub.Client.UI
                 }
                 else if (tagValueControlSeq.FirstOrDefault() is ComboBox comboTagValue)
                 {
-                    if (!comboTagValue.Items.Contains(tag.TagValue))
-                        comboTagValue.Items.Add(tag.TagValue);
-                    comboTagValue.SelectedItem = tag.TagValue;
+                    if (tag.TagValue != null)
+                    {
+                        if (!comboTagValue.Items.Contains(tag.TagValue))
+                            comboTagValue.Items.Add(tag.TagValue);
+                        comboTagValue.SelectedItem = tag.TagValue;
+                    }
                 }
                 else if (tagValueControlSeq.FirstOrDefault() is NumericUpDown upDownTagValue)
                 {
@@ -336,7 +339,7 @@ namespace ChummerHub.Client.UI
                 }
                 catch (Exception exception)
                 {
-                    MessageBox.Show(exception.Message);
+                    Program.MainForm.ShowMessageBox(exception.Message);
                 }
             }
             await CheckSINnerStatus();
