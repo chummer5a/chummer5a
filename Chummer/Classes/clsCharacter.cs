@@ -278,6 +278,7 @@ namespace Chummer
 
             _lstCyberware.CollectionChanged += CyberwareOnCollectionChanged;
             _lstArmor.CollectionChanged += ArmorOnCollectionChanged;
+            _lstContacts.CollectionChanged += ContactsOnCollectionChanged;
             _lstExpenseLog.CollectionChanged += ExpenseLogOnCollectionChanged;
             _lstMentorSpirits.CollectionChanged += MentorSpiritsOnCollectionChanged;
             _lstPowers.ListChanged += PowersOnListChanged;
@@ -876,7 +877,16 @@ namespace Chummer
                     nameof(CurrentSprintingRateString));
             }
         }
-
+        private void ContactsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action != NotifyCollectionChangedAction.Move)
+            {
+                _intCachedNegativeQualities = int.MinValue;
+                _intCachedPositiveQualities = int.MinValue;
+                OnPropertyChanged(nameof(NegativeQualityKarma));
+                OnPropertyChanged(nameof(PositiveQualityKarma));
+            }
+        }
         private void PowersOnBeforeRemove(object sender, RemovingOldEventArgs e)
         {
             if(Powers[e.OldIndex].AdeptWayDiscountEnabled)
@@ -929,8 +939,6 @@ namespace Chummer
             OnPropertyChanged(nameof(MentorSpirits));
         }
 
-        // TODO: Make AdeptWayDiscountEnabled check less hacky
-        // Right now, this is OK-ish because adept way discount requirement nodes only check for qualities, but users might mix things up with custom content
         private void QualitiesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if(e.Action != NotifyCollectionChangedAction.Move)
@@ -939,6 +947,16 @@ namespace Chummer
                 {
                     objPower.OnPropertyChanged(nameof(Power.AdeptWayDiscountEnabled));
                 }
+                //TODO: Lazy, do this through dependency graph instead. 
+                _intCachedNegativeQualities = int.MinValue;
+                _intCachedPositiveQualities = int.MinValue;
+                _intCachedMetageneticNegativeQualities = int.MinValue;
+                _intCachedMetageneticPositiveQualities = int.MinValue;
+                OnPropertyChanged(nameof(NegativeQualityKarma));
+                OnPropertyChanged(nameof(PositiveQualityKarma));
+                OnPropertyChanged(nameof(MetageneticNegativeQualityKarma));
+                OnPropertyChanged(nameof(MetageneticPositiveQualityKarma));
+
             }
         }
 
@@ -10681,6 +10699,7 @@ if (!Utils.IsUnitTest){
 
         #endregion
 
+        #region Spell Defense
         public int SpellDefenseIllusionMana => LOG.TotalValue + WIL.TotalValue + SpellResistance +
                                                ImprovementManager.ValueOf(this,
                                                    Improvement.ImprovementType.ManaIllusionResist);
@@ -10944,6 +10963,7 @@ if (!Utils.IsUnitTest){
                 return objToolTip.ToString();
             }
         }
+        #endregion
 
         /// <summary>
         /// The Character's total Armor Rating.
@@ -16827,6 +16847,98 @@ if (!Utils.IsUnitTest){
         }
         #endregion
 
+        #region Karma Values
+        private int _intCachedPositiveQualities = int.MinValue;
+
+        public int PositiveQualityKarma
+        {
+            get
+            {
+                if (_intCachedPositiveQualities == int.MinValue)
+                {
+                    _intCachedPositiveQualities = Qualities
+                        .Where(objQuality =>
+                            objQuality.Type == QualityType.Positive && objQuality.ContributeToBP &&
+                            objQuality.ContributeToLimit).Sum(objQuality => objQuality.BP);
+                    // Group contacts are counted as positive qualities
+                    _intCachedPositiveQualities += Contacts
+                        .Where(x => x.EntityType == ContactType.Contact && x.IsGroup && !x.Free)
+                        .Sum(x => x.ContactPoints);
+
+                    // Deduct the amount for free Qualities.
+                    _intCachedPositiveQualities -=
+                        ImprovementManager.ValueOf(this, Improvement.ImprovementType.FreePositiveQualities);
+                }
+                return _intCachedPositiveQualities;
+            }
+        }
+
+        private int _intCachedNegativeQualities = int.MinValue;
+        public int NegativeQualityKarma
+        {
+            get
+            {
+                if (_intCachedNegativeQualities == int.MinValue)
+                {
+                    _intCachedNegativeQualities = Qualities
+                        .Where(objQuality =>
+                            objQuality.Type == QualityType.Negative && objQuality.ContributeToBP &&
+                            objQuality.ContributeToLimit).Sum(objQuality => objQuality.BP);
+                    // Group contacts are counted as positive qualities
+                    _intCachedNegativeQualities += Contacts
+                        .Where(x => x.EntityType == ContactType.Enemy && x.IsGroup && !x.Free)
+                        .Sum(x => (x.Connection + x.Loyalty) * Options.KarmaEnemy);
+
+                    // Deduct the amount for free Qualities.
+                    _intCachedNegativeQualities -=
+                        ImprovementManager.ValueOf(this, Improvement.ImprovementType.FreeNegativeQualities);
+                }
+
+                return _intCachedNegativeQualities;
+            }
+        }
+        private int _intCachedMetageneticPositiveQualities = int.MinValue;
+
+        public int MetageneticPositiveQualityKarma
+        {
+            get
+            {
+                if (_intCachedMetageneticPositiveQualities == int.MinValue)
+                {
+                    _intCachedMetageneticPositiveQualities = Qualities
+                        .Where(objQuality =>
+                            objQuality.Type == QualityType.Positive && objQuality.Metagenetic &&
+                            objQuality.OriginSource != QualitySource.Metatype &&
+                            objQuality.OriginSource != QualitySource.MetatypeRemovable &&
+                            objQuality.ContributeToLimit).Sum(objQuality => objQuality.BP);
+                }
+                return _intCachedMetageneticPositiveQualities;
+            }
+        }
+
+        private int _intCachedMetageneticNegativeQualities = int.MinValue;
+        public int MetageneticNegativeQualityKarma
+        {
+            get
+            {
+                if (_intCachedMetageneticNegativeQualities == int.MinValue)
+                {
+                    _intCachedMetageneticNegativeQualities = Qualities
+                        .Where(objQuality =>
+                            objQuality.Type == QualityType.Negative && objQuality.Metagenetic &&
+                            objQuality.OriginSource != QualitySource.Metatype &&
+                            objQuality.OriginSource != QualitySource.MetatypeRemovable &&
+                            objQuality.ContributeToLimit).Sum(objQuality => objQuality.BP);
+
+                    // Deduct the amount for free Qualities.
+                    _intCachedMetageneticNegativeQualities -=
+                        ImprovementManager.ValueOf(this, Improvement.ImprovementType.FreeNegativeQualities);
+                }
+
+                return _intCachedNegativeQualities;
+            }
+        }
+        #endregion
     }
 }
 

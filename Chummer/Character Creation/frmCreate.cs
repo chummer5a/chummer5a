@@ -13019,90 +13019,22 @@ namespace Chummer
                 }
             }
 
-            /*
-            // Check if the character has gone over limits from optional rules
-            int intContactPointsUsed = 0;
-            int intGroupContacts = 0;
-            int intHighPlaces = 0;
-            foreach (Contact objLoopContact in CharacterObject.Contacts)
-            {
-                if (objLoopContact.EntityType == ContactType.Contact && !objLoopContact.Free)
-                {
-                    if (objLoopContact.IsGroup)
-                    {
-                        intGroupContacts += objLoopContact.ContactPoints;
-                    }
-                    else if (objLoopContact.Connection >= 8 && CharacterObject.FriendsInHighPlaces)
-                    {
-                        intHighPlaces += objLoopContact.Connection + objLoopContact.Loyalty;
-                    }
-                    else
-                    {
-                        intContactPointsUsed += objLoopContact.Connection + objLoopContact.Loyalty;
-                    }
-                }
-            }
-
-            // If the option for CHA * X free points of Contacts is enabled, deduct that amount of points (or as many points have been spent if not the full amount).
-            int intFreePoints = (CharacterObject.CHA.TotalValue * CharacterObjectOptions.FreeContactsMultiplier);
-
-            if (intContactPointsUsed >= intFreePoints)
-            {
-                intContactPointsUsed -= intFreePoints;
-            }
-            else
-            {
-                intContactPointsUsed = 0;
-            }
-
-            intContactPointsUsed += Math.Max(0, intHighPlaces - (CharacterObject.CHA.TotalValue * 4));
-
-            if (intContactPointsUsed > _objCharacter.ContactPoints)
-                strMessage += Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_InvalidPointExcess"), ((_objCharacter.ContactPoints - intContactPointsUsed) * -1).ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + LanguageManager.GetString("String_Contacts"));
-            */
-
-            // Calculate the BP used by Enemies. These are added to the BP since they are technically
-            // a Negative Quality.
-            int intEnemyPoints = 0;
-            foreach (Contact objLoopEnemy in CharacterObject.Contacts)
-            {
-                if (objLoopEnemy.EntityType == ContactType.Enemy && !objLoopEnemy.Free)
-                {
-                    intEnemyPoints -= (objLoopEnemy.Connection + objLoopEnemy.Loyalty) * CharacterObjectOptions.KarmaEnemy;
-                }
-            }
-            int intNegativePoints = intEnemyPoints;
-            // Calculate the BP used by Positive Qualities.
-            int intPointsUsed = CharacterObject.Qualities.Where(objQuality => objQuality.Type == QualityType.Positive && objQuality.ContributeToBP && objQuality.ContributeToLimit).Sum(objQuality => objQuality.BP);
-            // Group contacts are counted as positive qualities
-            intPointsUsed += CharacterObject.Contacts.Where(x => x.EntityType == ContactType.Contact && x.IsGroup && !x.Free).Sum(x => x.ContactPoints);
-
-            // Deduct the amount for free Qualities.
-            intPointsUsed -= ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.FreePositiveQualities);
-            int intPositivePointsUsed = intPointsUsed;
-
-            // Calculate the BP used for Negative Qualities.
-            intPointsUsed = 0;
-            foreach (Quality objQuality in CharacterObject.Qualities.Where(objQuality => objQuality.Type == QualityType.Negative && objQuality.ContributeToBP && objQuality.ContributeToLimit))
-            {
-                intPointsUsed += objQuality.BP;
-                intNegativePoints += objQuality.BP;
-            }
-
-            // Deduct the amount for free Qualities.
-            intNegativePoints -= ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.FreeNegativeQualities);
-
             // if positive points > 25
-            if (intPositivePointsUsed > CharacterObject.GameplayOptionQualityLimit && !CharacterObjectOptions.ExceedPositiveQualities)
+            if (CharacterObject.PositiveQualityKarma > CharacterObject.GameplayOptionQualityLimit && !CharacterObjectOptions.ExceedPositiveQualities)
             {
                 strMessage += Environment.NewLine + '\t' +
                               string.Format(LanguageManager.GetString("Message_PositiveQualityLimit", GlobalOptions.Language)
                                   , (CharacterObject.GameplayOptionQualityLimit).ToString(GlobalOptions.CultureInfo));
                 blnValid = false;
             }
+
+
             int totalNeg = CharacterObjectOptions.EnemyKarmaQualityLimit
-                ? intNegativePoints
-                : (intNegativePoints - intEnemyPoints);
+                ? CharacterObject.NegativeQualityKarma
+                : (CharacterObject.NegativeQualityKarma - (CharacterObject.Contacts
+                       .Where(x => x.EntityType == ContactType.Enemy && x.IsGroup && !x.Free)
+                       .Sum(x => (x.Connection + x.Loyalty) * CharacterObjectOptions.KarmaEnemy)));
+
             // if negative points > 25
             if (totalNeg < (CharacterObject.GameplayOptionQualityLimit * -1) && !CharacterObjectOptions.ExceedNegativeQualities)
             {
@@ -13132,47 +13064,34 @@ namespace Chummer
             // if character has more than permitted Metagenetic qualities
             if (CharacterObject.MetageneticLimit > 0)
             {
-                int metageneticPositiveQualities = 0;
-                int metageneticNegativeQualities = 0;
-                foreach (Quality objQuality in CharacterObject.Qualities.Where(objQuality => objQuality.Metagenetic && objQuality.OriginSource != QualitySource.Metatype && objQuality.OriginSource != QualitySource.MetatypeRemovable))
-                {
-                    if (objQuality.Type == QualityType.Positive)
-                    {
-                        metageneticPositiveQualities = metageneticPositiveQualities + objQuality.BP;
-                    }
-                    else if (objQuality.Type == QualityType.Negative)
-                    {
-                        metageneticNegativeQualities = metageneticNegativeQualities - objQuality.BP;
-                    }
-                }
-                if (metageneticNegativeQualities > CharacterObject.MetageneticLimit)
+                if (CharacterObject.MetageneticNegativeQualityKarma > CharacterObject.MetageneticLimit)
                 {
                     strMessage += Environment.NewLine + '\t' +
                                   string.Format(LanguageManager.GetString("Message_OverNegativeMetagenicQualities", GlobalOptions.Language)
-                                      , metageneticNegativeQualities.ToString(GlobalOptions.CultureInfo)
+                                      , CharacterObject.MetageneticNegativeQualityKarma.ToString(GlobalOptions.CultureInfo)
                                       , CharacterObject.MetageneticLimit.ToString(GlobalOptions.CultureInfo));
                     blnValid = false;
                 }
-                if (metageneticPositiveQualities > CharacterObject.MetageneticLimit)
+                if (CharacterObject.MetageneticPositiveQualityKarma > CharacterObject.MetageneticLimit)
                 {
                     strMessage += Environment.NewLine + '\t' +
                                   string.Format(LanguageManager.GetString("Message_OverPositiveMetagenicQualities", GlobalOptions.Language)
-                                      , metageneticPositiveQualities.ToString(GlobalOptions.CultureInfo)
+                                      , CharacterObject.MetageneticPositiveQualityKarma.ToString(GlobalOptions.CultureInfo)
                                       , CharacterObject.MetageneticLimit.ToString(GlobalOptions.CultureInfo));
                     blnValid = false;
                 }
 
-                if (metageneticNegativeQualities != metageneticPositiveQualities && metageneticNegativeQualities != (metageneticPositiveQualities - 1))
+                if (CharacterObject.MetageneticNegativeQualityKarma != CharacterObject.MetageneticPositiveQualityKarma && CharacterObject.MetageneticNegativeQualityKarma != (CharacterObject.MetageneticPositiveQualityKarma - 1))
                 {
                     strMessage += Environment.NewLine + '\t' +
                                   string.Format(LanguageManager.GetString("Message_MetagenicQualitiesUnbalanced", GlobalOptions.Language)
-                                      , metageneticNegativeQualities.ToString(GlobalOptions.CultureInfo)
-                                      , (metageneticPositiveQualities - 1).ToString(GlobalOptions.CultureInfo)
-                                      , metageneticPositiveQualities.ToString(GlobalOptions.CultureInfo));
+                                      , CharacterObject.MetageneticNegativeQualityKarma.ToString(GlobalOptions.CultureInfo)
+                                      , (CharacterObject.MetageneticPositiveQualityKarma - 1).ToString(GlobalOptions.CultureInfo)
+                                      , CharacterObject.MetageneticPositiveQualityKarma.ToString(GlobalOptions.CultureInfo));
                     blnValid = false;
                 }
                 //Subtract 1 karma to balance Metagenic Qualities
-                if (metageneticNegativeQualities == (metageneticPositiveQualities - 1))
+                if (CharacterObject.MetageneticNegativeQualityKarma == (CharacterObject.MetageneticPositiveQualityKarma - 1))
                 {
                     if (CharacterObject.Karma > 0)
                     {
