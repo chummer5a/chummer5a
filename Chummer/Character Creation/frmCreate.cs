@@ -9584,11 +9584,6 @@ namespace Chummer
                         intContactPointsLeft = over;
                     }
                 }
-                else
-                {
-                    //save this for later, as a group contract is counted as a positive quality
-                    intGroupContacts += objContact.ContactPoints;
-                }
             }
 
             CharacterObject.ContactPointsUsed = intContactPointsLeft;
@@ -9599,112 +9594,41 @@ namespace Chummer
             }
 
             intKarmaPointsRemain -= intPointsInContacts;
-
-            // ------------------------------------------------------------------------------
-            // Calculate the BP used by Enemies. These are added to the BP since they are technically
-            // a Negative Quality.
-            int intEnemyPoints = 0;
-            foreach (Contact objLoopEnemy in CharacterObject.Contacts)
-            {
-                if (objLoopEnemy.EntityType == ContactType.Enemy && !objLoopEnemy.Free)
-                {
-                    // The Enemy's Karma cost = their (Connection + Loyalty Rating) x Karma multiplier.
-                    intEnemyPoints -= (objLoopEnemy.Connection + objLoopEnemy.Loyalty) * CharacterObjectOptions.KarmaEnemy;
-                }
-            }
-
-            // dont add in enemy costs here, carry it over later under qualities
-
             // ------------------------------------------------------------------------------
             // Calculate the BP used by Qualities.
-            int intPositiveQualities = intGroupContacts; // group contacts are positive qualities
-            int intNegativeQualities = intEnemyPoints;   // enemies are negative qualities
             int intLifeModuleQualities = 0;
-            int intUnlimitedPositive = 0;
-            int intUnlimitedNegative = 0;
-            // Used to make sure Positive Qualities that aren't doubled in Career mode don't get added into the total until after that step has been checked.
-            int intPositiveQualitiesNoDoubleExcess = 0;
 
-            foreach (Quality objLoopQuality in CharacterObject.Qualities)
+            foreach (Quality objLoopQuality in CharacterObject.Qualities.Where(q => q.ContributeToBP))
             {
-                if (objLoopQuality.ContributeToBP)
+                if (objLoopQuality.ContributeToLimit)
                 {
-                    if (objLoopQuality.ContributeToLimit)
+                    if (objLoopQuality.Type == QualityType.Positive)
                     {
-                        if (objLoopQuality.Type == QualityType.Positive)
-                        {
-                            if (!objLoopQuality.DoubleCost)
-                                intPositiveQualitiesNoDoubleExcess += objLoopQuality.BP * CharacterObjectOptions.KarmaQuality;
-                            else
-                                intPositiveQualities += objLoopQuality.BP * CharacterObjectOptions.KarmaQuality;
-                            strPositiveQualityTooltip +=
-                                $"{objLoopQuality.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)} ({objLoopQuality.BP * CharacterObjectOptions.KarmaQuality})\n";
-                        }
-                        else if (objLoopQuality.Type == QualityType.Negative)
-                        {
-                            intNegativeQualities += objLoopQuality.BP * CharacterObjectOptions.KarmaQuality;
-                            strNegativeQualityTooltip += $"{objLoopQuality.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)} ({objLoopQuality.BP})\n";
-                        }
-                        else if (objLoopQuality.Type == QualityType.LifeModule)
-                        {
-                            intLifeModuleQualities += objLoopQuality.BP * CharacterObjectOptions.KarmaQuality;
-                            strPositiveQualityTooltip +=
-                                $"{objLoopQuality.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)} ({objLoopQuality.BP * CharacterObjectOptions.KarmaQuality})\n";
-                        }
-                    }
-                    else if (objLoopQuality.Type == QualityType.Positive)
-                    {
-                        intUnlimitedPositive += objLoopQuality.BP * CharacterObjectOptions.KarmaQuality;
-                        strPositiveQualityTooltip += $"{objLoopQuality.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)} ({objLoopQuality.BP})\n";
+                        strPositiveQualityTooltip +=
+                            $"{objLoopQuality.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)} ({objLoopQuality.BP * CharacterObjectOptions.KarmaQuality})\n";
                     }
                     else if (objLoopQuality.Type == QualityType.Negative)
                     {
-                        intUnlimitedNegative += objLoopQuality.BP * CharacterObjectOptions.KarmaQuality;
                         strNegativeQualityTooltip += $"{objLoopQuality.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)} ({objLoopQuality.BP})\n";
                     }
+                    else if (objLoopQuality.Type == QualityType.LifeModule)
+                    {
+                        intLifeModuleQualities += objLoopQuality.BP * CharacterObjectOptions.KarmaQuality;
+                        strPositiveQualityTooltip +=
+                            $"{objLoopQuality.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)} ({objLoopQuality.BP * CharacterObjectOptions.KarmaQuality})\n";
+                    }
                 }
-            }
-
-            // Deduct the amounts for free Qualities.
-            int intPositiveFree = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.FreePositiveQualities) * CharacterObjectOptions.KarmaQuality;
-            int intNegativeFree = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.FreeNegativeQualities) * CharacterObjectOptions.KarmaQuality;
-
-            intNegativeQualities -= intNegativeFree;
-            if (intNegativeFree != 0)
-            {
-                strNegativeQualityTooltip += $"-{intNegativeFree}\n";
-            }
-
-            intPositiveQualities -= intPositiveFree;
-            if (intPositiveFree != 0)
-            {
-                strPositiveQualityTooltip += $"-{intPositiveFree}\n";
-            }
-
-            // If the character is only allowed to gain 25 BP from Negative Qualities but allowed to take as many as they'd like, limit their refunded points.
-            if (CharacterObjectOptions.ExceedNegativeQualitiesLimit)
-            {
-                int intNegativeQualityLimit = -CharacterObject.GameplayOptionQualityLimit;
-                if (intNegativeQualities < intNegativeQualityLimit)
+                else if (objLoopQuality.Type == QualityType.Positive)
                 {
-                    intNegativeQualities = intNegativeQualityLimit;
+                    strPositiveQualityTooltip += $"{objLoopQuality.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)} ({objLoopQuality.BP})\n";
                 }
-            }
-
-            // If the character is allowed to take as many Positive Qualities as they'd like but all costs in excess are doubled, add the excess to their point cost.
-            if (CharacterObjectOptions.ExceedPositiveQualitiesCostDoubled)
-            {
-                int intPositiveQualityExcess = intPositiveQualities - CharacterObject.GameplayOptionQualityLimit;
-                if (intPositiveQualityExcess > 0)
+                else if (objLoopQuality.Type == QualityType.Negative)
                 {
-                    intPositiveQualities += intPositiveQualityExcess;
-                    strPositiveQualityTooltip += $"+{intPositiveQualityExcess}\n";
+                    strNegativeQualityTooltip += $"{objLoopQuality.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)} ({objLoopQuality.BP})\n";
                 }
             }
-            // Now we add in the karma from qualities that are not doubled in career mode
-            intPositiveQualities += intPositiveQualitiesNoDoubleExcess;
 
-            int intQualityPointsUsed = intLifeModuleQualities + intNegativeQualities + intPositiveQualities + intUnlimitedPositive + intUnlimitedNegative;
+            int intQualityPointsUsed = intLifeModuleQualities + CharacterObject.NegativeQualityKarma + CharacterObject.PositiveQualityKarma;
 
             intKarmaPointsRemain -= intQualityPointsUsed;
             intFreestyleBP += intQualityPointsUsed;
@@ -10196,15 +10120,11 @@ namespace Chummer
 
                 lblContactsBP.Text = strContactPoints;
                 lblContactPoints.Text = strContactPoints;
-                lblEnemiesBP.Text = intEnemyPoints.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + strPoints;
+                lblEnemiesBP.Text = CharacterObject.EnemyKarma.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + strPoints;
 
-                lblPositiveQualitiesBP.Text = intUnlimitedPositive > 0
-                   ? $"{intPositiveQualities.ToString(GlobalOptions.CultureInfo)}/{CharacterObject.GameplayOptionQualityLimit.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}{strPoints}{strSpaceCharacter}({(intPositiveQualities + intUnlimitedPositive).ToString(GlobalOptions.CultureInfo)})"
-                   : $"{intPositiveQualities.ToString(GlobalOptions.CultureInfo)}/{CharacterObject.GameplayOptionQualityLimit.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}{strPoints}";
+                lblPositiveQualitiesBP.Text = $"{CharacterObject.PositiveQualityKarma.ToString(GlobalOptions.CultureInfo)}/{CharacterObject.GameplayOptionQualityLimit.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}{strPoints}";
 
-                lblNegativeQualitiesBP.Text = intUnlimitedNegative > 0
-                    ? $"{(-intNegativeQualities).ToString(GlobalOptions.CultureInfo)}/{CharacterObject.GameplayOptionQualityLimit.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}{strPoints}{strSpaceCharacter}({(intNegativeQualities + intUnlimitedNegative).ToString(GlobalOptions.CultureInfo)})"
-                    : $"{(-intNegativeQualities).ToString(GlobalOptions.CultureInfo)}/{CharacterObject.GameplayOptionQualityLimit.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}{strPoints}";
+                lblNegativeQualitiesBP.Text = $"{(-CharacterObject.NegativeQualityKarma).ToString(GlobalOptions.CultureInfo)}/{CharacterObject.GameplayOptionQualityLimit.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}{strPoints}";
 
                 lblPositiveQualitiesBP.SetToolTip(strPositiveQualityTooltip);
                 lblNegativeQualitiesBP.SetToolTip(strNegativeQualityTooltip);
@@ -13081,7 +13001,8 @@ namespace Chummer
                     blnValid = false;
                 }
 
-                if (CharacterObject.MetageneticNegativeQualityKarma != CharacterObject.MetageneticPositiveQualityKarma && CharacterObject.MetageneticNegativeQualityKarma != (CharacterObject.MetageneticPositiveQualityKarma - 1))
+                if (CharacterObject.MetageneticNegativeQualityKarma != CharacterObject.MetageneticPositiveQualityKarma &&
+                    CharacterObject.MetageneticNegativeQualityKarma != (CharacterObject.MetageneticPositiveQualityKarma - 1))
                 {
                     strMessage += Environment.NewLine + '\t' +
                                   string.Format(LanguageManager.GetString("Message_MetagenicQualitiesUnbalanced", GlobalOptions.Language)

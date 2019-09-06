@@ -844,6 +844,19 @@ namespace Chummer
                             new DependancyGraphNode<string>(nameof(Movement)),
                             new DependancyGraphNode<string>(nameof(CalculatedMovement))
                         )
+                    ),
+                    new DependancyGraphNode<string>(nameof(DisplayNegativeQualityKarma),
+                        new DependancyGraphNode<string>(nameof(NegativeQualityKarma),
+                            new DependancyGraphNode<string>(nameof(EnemyKarma)),
+                            new DependancyGraphNode<string>(nameof(Contacts)),
+                            new DependancyGraphNode<string>(nameof(Qualities))
+                        )
+                    ),
+                    new DependancyGraphNode<string>(nameof(DisplayPositiveQualityKarma),
+                        new DependancyGraphNode<string>(nameof(PositiveQualityKarma),
+                            new DependancyGraphNode<string>(nameof(Contacts)),
+                            new DependancyGraphNode<string>(nameof(Qualities))
+                        )
                     )
                 );
             #endregion
@@ -952,10 +965,6 @@ namespace Chummer
                 _intCachedPositiveQualities = int.MinValue;
                 _intCachedMetageneticNegativeQualities = int.MinValue;
                 _intCachedMetageneticPositiveQualities = int.MinValue;
-                OnPropertyChanged(nameof(NegativeQualityKarma));
-                OnPropertyChanged(nameof(PositiveQualityKarma));
-                OnPropertyChanged(nameof(MetageneticNegativeQualityKarma));
-                OnPropertyChanged(nameof(MetageneticPositiveQualityKarma));
 
             }
         }
@@ -16849,7 +16858,6 @@ if (!Utils.IsUnitTest){
 
         #region Karma Values
         private int _intCachedPositiveQualities = int.MinValue;
-
         public int PositiveQualityKarma
         {
             get
@@ -16857,9 +16865,8 @@ if (!Utils.IsUnitTest){
                 if (_intCachedPositiveQualities == int.MinValue)
                 {
                     _intCachedPositiveQualities = Qualities
-                        .Where(objQuality =>
-                            objQuality.Type == QualityType.Positive && objQuality.ContributeToBP &&
-                            objQuality.ContributeToLimit).Sum(objQuality => objQuality.BP);
+                        .Where(objQuality => objQuality.Type == QualityType.Positive && objQuality.ContributeToBP)
+                        .Sum(objQuality   => objQuality.BP) * Options.KarmaQuality;
                     // Group contacts are counted as positive qualities
                     _intCachedPositiveQualities += Contacts
                         .Where(x => x.EntityType == ContactType.Contact && x.IsGroup && !x.Free)
@@ -16867,11 +16874,24 @@ if (!Utils.IsUnitTest){
 
                     // Deduct the amount for free Qualities.
                     _intCachedPositiveQualities -=
-                        ImprovementManager.ValueOf(this, Improvement.ImprovementType.FreePositiveQualities);
+                        ImprovementManager.ValueOf(this, Improvement.ImprovementType.FreePositiveQualities) * Options.KarmaQuality;
+
+                    // If the character is allowed to take as many Positive Qualities as they'd like but all costs in excess are doubled, add the excess to their point cost.
+                    if (Options.ExceedPositiveQualitiesCostDoubled)
+                    {
+                        int intPositiveQualityExcess = _intCachedPositiveQualities - GameplayOptionQualityLimit;
+                        if (intPositiveQualityExcess > 0)
+                        {
+                            _intCachedPositiveQualities += intPositiveQualityExcess;
+                        }
+                    }
                 }
                 return _intCachedPositiveQualities;
             }
         }
+
+        public string DisplayPositiveQualityKarma =>
+            $"{PositiveQualityKarma.ToString(GlobalOptions.CultureInfo)}/{GameplayOptionQualityLimit.ToString(GlobalOptions.CultureInfo)}{LanguageManager.GetString("String_Space")}{LanguageManager.GetString("String_Karma")}";
 
         private int _intCachedNegativeQualities = int.MinValue;
         public int NegativeQualityKarma
@@ -16881,22 +16901,33 @@ if (!Utils.IsUnitTest){
                 if (_intCachedNegativeQualities == int.MinValue)
                 {
                     _intCachedNegativeQualities = Qualities
-                        .Where(objQuality =>
-                            objQuality.Type == QualityType.Negative && objQuality.ContributeToBP &&
-                            objQuality.ContributeToLimit).Sum(objQuality => objQuality.BP);
+                        .Where(objQuality => objQuality.Type == QualityType.Negative && objQuality.ContributeToBP)
+                        .Sum(objQuality   => objQuality.BP) * Options.KarmaQuality;
                     // Group contacts are counted as positive qualities
-                    _intCachedNegativeQualities += Contacts
-                        .Where(x => x.EntityType == ContactType.Enemy && x.IsGroup && !x.Free)
-                        .Sum(x => (x.Connection + x.Loyalty) * Options.KarmaEnemy);
+                    _intCachedNegativeQualities += EnemyKarma;
 
                     // Deduct the amount for free Qualities.
                     _intCachedNegativeQualities -=
                         ImprovementManager.ValueOf(this, Improvement.ImprovementType.FreeNegativeQualities);
+
+                    // If the character is only allowed to gain 25 BP from Negative Qualities but allowed to take as many as they'd like, limit their refunded points.
+                    if (Options.ExceedNegativeQualitiesLimit)
+                    {
+                        int intNegativeQualityLimit = -GameplayOptionQualityLimit;
+                        if (_intCachedNegativeQualities < intNegativeQualityLimit)
+                        {
+                            _intCachedNegativeQualities = intNegativeQualityLimit;
+                        }
+                    }
                 }
 
                 return _intCachedNegativeQualities;
             }
         }
+
+        public string DisplayNegativeQualityKarma =>
+            $"{NegativeQualityKarma.ToString(GlobalOptions.CultureInfo)}/{GameplayOptionQualityLimit.ToString(GlobalOptions.CultureInfo)}{LanguageManager.GetString("String_Space")}{LanguageManager.GetString("String_Karma")}";
+
         private int _intCachedMetageneticPositiveQualities = int.MinValue;
 
         public int MetageneticPositiveQualityKarma
@@ -16936,6 +16967,22 @@ if (!Utils.IsUnitTest){
                 }
 
                 return _intCachedNegativeQualities;
+            }
+        }
+
+        private int _intCachedEnemyKarma = int.MinValue;
+        public int EnemyKarma
+        {
+            get
+            {
+                if (_intCachedEnemyKarma == int.MinValue)
+                {
+                    _intCachedEnemyKarma = Contacts
+                        .Where(x => x.EntityType == ContactType.Enemy && x.IsGroup && !x.Free)
+                        .Sum(x => (x.Connection + x.Loyalty) * Options.KarmaEnemy);
+                }
+
+                return _intCachedEnemyKarma;
             }
         }
         #endregion
