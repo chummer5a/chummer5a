@@ -857,6 +857,13 @@ namespace Chummer
                             new DependancyGraphNode<string>(nameof(Contacts)),
                             new DependancyGraphNode<string>(nameof(Qualities))
                         )
+                    ),
+                    new DependancyGraphNode<string>(nameof(DisplayMetagenicQualityKarma),
+                        new DependancyGraphNode<string>(nameof(MetagenicPositiveQualityKarma),
+                        new DependancyGraphNode<string>(nameof(MetagenicNegativeQualityKarma),
+                            new DependancyGraphNode<string>(nameof(IsChangeling)),
+                            new DependancyGraphNode<string>(nameof(Qualities))
+                        ))
                     )
                 );
             #endregion
@@ -896,8 +903,6 @@ namespace Chummer
             {
                 _intCachedNegativeQualities = int.MinValue;
                 _intCachedPositiveQualities = int.MinValue;
-                OnPropertyChanged(nameof(NegativeQualityKarma));
-                OnPropertyChanged(nameof(PositiveQualityKarma));
             }
         }
         private void PowersOnBeforeRemove(object sender, RemovingOldEventArgs e)
@@ -960,13 +965,8 @@ namespace Chummer
                 {
                     objPower.OnPropertyChanged(nameof(Power.AdeptWayDiscountEnabled));
                 }
-                //TODO: Lazy, do this through dependency graph instead. 
-                _intCachedNegativeQualities = int.MinValue;
-                _intCachedPositiveQualities = int.MinValue;
-                _intCachedMetageneticNegativeQualities = int.MinValue;
-                _intCachedMetageneticPositiveQualities = int.MinValue;
-
             }
+            OnPropertyChanged(nameof(Character.Qualities));
         }
 
         private void ExpenseLogOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -7466,12 +7466,18 @@ if (!Utils.IsUnitTest){
         }
 
         /// <summary>
-        /// The highest number of free metagenetic qualities the character can have.
+        /// Whether or not the character is a changeling.
         /// </summary>
-        public int MetageneticLimit => ImprovementManager.ValueOf(this, Improvement.ImprovementType.MetageneticLimit);
+        [HubTag]
+        public bool IsChangeling => MetagenicLimit > 0;
 
         /// <summary>
-        /// The highest number of free metagenetic qualities the character can have.
+        /// The highest number of free Metagenic qualities the character can have.
+        /// </summary>
+        public int MetagenicLimit => ImprovementManager.ValueOf(this, Improvement.ImprovementType.MetageneticLimit);
+
+        /// <summary>
+        /// The highest number of free Metagenic qualities the character can have.
         /// </summary>
         public int SpecialModificationLimit => ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpecialModificationLimit);
 
@@ -14805,7 +14811,26 @@ if (!Utils.IsUnitTest){
                 RefreshWoundPenalties();
             }
 
-            if(!Created)
+            if (lstNamesOfChangedProperties.Contains(nameof(Contacts)))
+            {
+                _intCachedEnemyKarma = int.MinValue;
+            }
+
+            if (lstNamesOfChangedProperties.Contains(nameof(Qualities)))
+            {
+                _intCachedNegativeQualities = int.MinValue;
+                _intCachedPositiveQualities = int.MinValue;
+                _intCachedMetagenicNegativeQualities = int.MinValue;
+                _intCachedMetagenicPositiveQualities = int.MinValue;
+            }
+
+            if (lstNamesOfChangedProperties.Contains(nameof(MetagenicLimit)))
+            {
+                _intCachedMetagenicNegativeQualities = int.MinValue;
+                _intCachedMetagenicPositiveQualities = int.MinValue;
+            }
+
+            if (!Created)
             {
                 // If in create mode, update the Force for Spirits and Sprites (equal to Magician MAG Rating or RES Rating).
                 if(lstNamesOfChangedProperties.Contains(nameof(MaxSpriteLevel)))
@@ -16928,45 +16953,58 @@ if (!Utils.IsUnitTest){
         public string DisplayNegativeQualityKarma =>
             $"{NegativeQualityKarma.ToString(GlobalOptions.CultureInfo)}/{GameplayOptionQualityLimit.ToString(GlobalOptions.CultureInfo)}{LanguageManager.GetString("String_Space")}{LanguageManager.GetString("String_Karma")}";
 
-        private int _intCachedMetageneticPositiveQualities = int.MinValue;
+        private int _intCachedMetagenicPositiveQualities = int.MinValue;
 
-        public int MetageneticPositiveQualityKarma
+        public int MetagenicPositiveQualityKarma
         {
             get
             {
-                if (_intCachedMetageneticPositiveQualities == int.MinValue)
+                if (_intCachedMetagenicPositiveQualities == int.MinValue)
                 {
-                    _intCachedMetageneticPositiveQualities = Qualities
+                    _intCachedMetagenicPositiveQualities = Qualities
                         .Where(objQuality =>
-                            objQuality.Type == QualityType.Positive && objQuality.Metagenetic &&
-                            objQuality.OriginSource != QualitySource.Metatype &&
-                            objQuality.OriginSource != QualitySource.MetatypeRemovable &&
-                            objQuality.ContributeToLimit).Sum(objQuality => objQuality.BP);
+                            objQuality.Type == QualityType.Positive && objQuality.ContributeToMetagenicLimit)
+                        .Sum(objQuality => objQuality.BP);
                 }
-                return _intCachedMetageneticPositiveQualities;
+                return _intCachedMetagenicPositiveQualities;
             }
         }
 
-        private int _intCachedMetageneticNegativeQualities = int.MinValue;
-        public int MetageneticNegativeQualityKarma
+        private int _intCachedMetagenicNegativeQualities = int.MinValue;
+        public int MetagenicNegativeQualityKarma
         {
             get
             {
-                if (_intCachedMetageneticNegativeQualities == int.MinValue)
+                if (_intCachedMetagenicNegativeQualities == int.MinValue)
                 {
-                    _intCachedMetageneticNegativeQualities = Qualities
+                    _intCachedMetagenicNegativeQualities = Qualities
                         .Where(objQuality =>
-                            objQuality.Type == QualityType.Negative && objQuality.Metagenetic &&
-                            objQuality.OriginSource != QualitySource.Metatype &&
-                            objQuality.OriginSource != QualitySource.MetatypeRemovable &&
-                            objQuality.ContributeToLimit).Sum(objQuality => objQuality.BP);
+                            objQuality.Type == QualityType.Negative && objQuality.ContributeToMetagenicLimit)
+                        .Sum(objQuality => objQuality.BP);
 
                     // Deduct the amount for free Qualities.
-                    _intCachedMetageneticNegativeQualities -=
+                    _intCachedMetagenicNegativeQualities -=
                         ImprovementManager.ValueOf(this, Improvement.ImprovementType.FreeNegativeQualities);
                 }
 
                 return _intCachedNegativeQualities;
+            }
+        }
+
+        public string DisplayMetagenicQualityKarma
+        {
+            get
+            {
+                string s = LanguageManager.GetString("Label_MetagenicKarmaValue");
+                s = s.Replace("{0}", MetagenicPositiveQualityKarma.ToString(GlobalOptions.CultureInfo));
+                s = s.Replace("{1}", MetagenicNegativeQualityKarma.ToString(GlobalOptions.CultureInfo));
+                s = s.Replace("{2}", MetagenicLimit.ToString(GlobalOptions.CultureInfo));
+                if (MetagenicPositiveQualityKarma - MetagenicNegativeQualityKarma == 1)
+                {
+                    s += LanguageManager.GetString("String_Karma");
+                }
+
+                return s;
             }
         }
 
@@ -16985,6 +17023,9 @@ if (!Utils.IsUnitTest){
                 return _intCachedEnemyKarma;
             }
         }
+
+        public string DisplayEnemyKarma => $"{EnemyKarma.ToString(GlobalOptions.CultureInfo)}{LanguageManager.GetString("String_Space")}{LanguageManager.GetString("String_Karma")}";
+
         #endregion
     }
 }

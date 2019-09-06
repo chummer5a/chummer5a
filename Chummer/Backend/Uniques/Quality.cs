@@ -81,7 +81,7 @@ namespace Chummer
         private Guid _guiSourceID = Guid.Empty;
         private Guid _guiID;
         private string _strName = string.Empty;
-        private bool _blnMetagenetic;
+        private bool _blnMetagenic;
         private string _strExtra = string.Empty;
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
@@ -183,7 +183,10 @@ namespace Chummer
             }
             _strSourceName = strSourceName;
             objXmlQuality.TryGetStringFieldQuickly("name", ref _strName);
-            objXmlQuality.TryGetBoolFieldQuickly("metagenetic", ref _blnMetagenetic);
+            if (!objXmlQuality.TryGetBoolFieldQuickly("metagenic", ref _blnMetagenic))
+            {
+                objXmlQuality.TryGetBoolFieldQuickly("metagenic", ref _blnMetagenic);
+            }
             if (!objXmlQuality.TryGetStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlQuality.TryGetStringFieldQuickly("notes", ref _strNotes);
             objXmlQuality.TryGetInt32FieldQuickly("karma", ref _intBP);
@@ -341,7 +344,7 @@ namespace Chummer
             objWriter.WriteElementString("stagedpurchase", _blnStagedPurchase.ToString());
             objWriter.WriteElementString("doublecareer", _blnDoubleCostCareer.ToString());
             objWriter.WriteElementString("canbuywithspellpoints", _blnCanBuyWithSpellPoints.ToString());
-            objWriter.WriteElementString("metagenetic", _blnMetagenetic.ToString());
+            objWriter.WriteElementString("metagenic", _blnMetagenic.ToString());
             objWriter.WriteElementString("print", _blnPrint.ToString());
             objWriter.WriteElementString("qualitytype", _eQualityType.ToString());
             objWriter.WriteElementString("qualitysource", _eQualitySource.ToString());
@@ -405,9 +408,9 @@ namespace Chummer
             _eQualityType = ConvertToQualityType(objNode["qualitytype"]?.InnerText);
             _eQualitySource = ConvertToQualitySource(objNode["qualitysource"]?.InnerText);
             string strTemp = string.Empty;
-            if (objNode.TryGetStringFieldQuickly("metagenetic", ref strTemp))
+            if (objNode.TryGetStringFieldQuickly("metagenic", ref strTemp))
             {
-                _blnMetagenetic = strTemp == bool.TrueString || strTemp == "yes";
+                _blnMetagenic = strTemp == bool.TrueString || strTemp == "yes";
             }
             if (objNode.TryGetStringFieldQuickly("mutant", ref strTemp))
             {
@@ -515,7 +518,7 @@ namespace Chummer
         /// <summary>
         /// Does the quality come from being a Changeling?
         /// </summary>
-        public bool Metagenetic => _blnMetagenetic;
+        public bool Metagenic => _blnMetagenic;
 
         /// <summary>
         /// Extra information that should be applied to the name, like a linked CharacterAttribute.
@@ -729,8 +732,8 @@ namespace Chummer
                 if (_eQualitySource == QualitySource.Metatype || _eQualitySource == QualitySource.MetatypeRemovable || _eQualitySource == QualitySource.MetatypeRemovedAtChargen)
                     return false;
 
-                // Positive Metagenetic Qualities are free if you're a Changeling.
-                if (Metagenetic && _objCharacter.MetageneticLimit > 0)
+                // Positive Metagenic Qualities are free if you're a Changeling.
+                if (Metagenic && _objCharacter.MetagenicLimit > 0)
                     return false;
 
                 // The Beast's Way and the Spiritual Way get the Mentor Spirit for free.
@@ -740,6 +743,19 @@ namespace Chummer
                 return _blnContributeToLimit;
             }
             set => _blnContributeToLimit = value;
+        }
+        /// <summary>
+        /// Whether or not the Quality contributes towards the character's Quality BP limits.
+        /// </summary>
+        public bool ContributeToMetagenicLimit
+        {
+            get
+            {
+                if (_eQualitySource == QualitySource.Metatype || _eQualitySource == QualitySource.MetatypeRemovable || _eQualitySource == QualitySource.MetatypeRemovedAtChargen)
+                    return false;
+
+                return Metagenic && _objCharacter.MetagenicLimit > 0;
+            }
         }
 
         /// <summary>
@@ -761,8 +777,8 @@ namespace Chummer
                 if (_eQualitySource == QualitySource.Metatype || _eQualitySource == QualitySource.MetatypeRemovable)
                     return false;
 
-                // Positive Metagenetic Qualities are free if you're a Changeling.
-                if (Metagenetic && _objCharacter.MetageneticLimit > 0)
+                // Positive Metagenic Qualities are free if you're a Changeling.
+                if (Metagenic && _objCharacter.MetagenicLimit > 0)
                     return false;
 
                 // The Beast's Way and the Spiritual Way get the Mentor Spirit for free.

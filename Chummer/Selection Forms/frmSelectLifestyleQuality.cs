@@ -516,12 +516,12 @@ namespace Chummer
                                     strForbidden += Environment.NewLine + '\t' + (objNode["translate"]?.InnerText ?? objXmlForbidden.InnerText);
                                 }
                                 break;
-                            case "metagenetic":
-                                // Check to see if the character has a Metagenetic Quality.
+                            case "metagenic":
+                                // Check to see if the character has a Metagenic Quality.
                                 foreach (Quality objQuality in _objCharacter.Qualities)
                                 {
                                     XmlNode objXmlCheck = objQuality.GetNode();
-                                    if (objXmlCheck["metagenetic"]?.InnerText == bool.TrueString)
+                                    if (objXmlCheck["metagenic"]?.InnerText == bool.TrueString)
                                     {
                                         blnRequirementForbidden = true;
                                         strForbidden += Environment.NewLine + '\t' + objQuality.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);

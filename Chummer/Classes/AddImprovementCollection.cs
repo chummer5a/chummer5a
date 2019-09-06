@@ -6328,7 +6328,7 @@ namespace Chummer.Classes
                 ImprovementManager.ValueToInt(_objCharacter, strVal, _intRating));
         }
 
-        public void metageneticlimit(XmlNode bonusNode)
+        public void metageniclimit(XmlNode bonusNode)
         {
             Log.Info("spellresistance");
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.MetageneticLimit, _strUnique,

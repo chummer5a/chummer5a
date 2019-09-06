@@ -4998,7 +4998,7 @@ namespace Chummer
                     eQualityType = Quality.ConvertToQualityType(strTemp);
 
                 // Positive Metagenetic Qualities are free if you're a Changeling.
-                if (CharacterObject.MetageneticLimit > 0 && objXmlQuality["metagenic"]?.InnerText == bool.TrueString)
+                if (CharacterObject.MetagenicLimit > 0 && objXmlQuality["metagenic"]?.InnerText == bool.TrueString)
                     blnFreeCost = true;
                 // The Beast's Way and the Spiritual Way get the Mentor Spirit for free.
                 else if (objXmlQuality["name"]?.InnerText == "Mentor Spirit" && CharacterObject.Qualities.Any(x => x.Name == "The Beast's Way" || x.Name == "The Spiritual Way"))

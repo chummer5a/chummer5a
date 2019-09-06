@@ -95,8 +95,8 @@ namespace Chummer
             cboCategory.Enabled = _lstCategory.Count > 1;
             cboCategory.EndUpdate();
 
-            if (_objCharacter.MetageneticLimit == 0)
-                chkNotMetagenetic.Checked = true;
+            if (_objCharacter.MetagenicLimit == 0)
+                chkNotMetagenic.Checked = true;
 
             lblBPLabel.Text = LanguageManager.GetString("Label_Karma", GlobalOptions.Language);
             _blnLoading = false;
@@ -243,17 +243,17 @@ namespace Chummer
             lstQualities_SelectedIndexChanged(sender, e);
         }
 
-        private void chkMetagenetic_CheckedChanged(object sender, EventArgs e)
+        private void chkMetagenic_CheckedChanged(object sender, EventArgs e)
         {
-            if (chkMetagenetic.Checked)
-                chkNotMetagenetic.Checked = false;
+            if (chkMetagenic.Checked)
+                chkNotMetagenic.Checked = false;
             BuildQualityList();
         }
 
-        private void chkNotMetagenetic_CheckedChanged(object sender, EventArgs e)
+        private void chkNotMetagenic_CheckedChanged(object sender, EventArgs e)
         {
-            if (chkNotMetagenetic.Checked)
-                chkMetagenetic.Checked = false;
+            if (chkNotMetagenic.Checked)
+                chkMetagenic.Checked = false;
             BuildQualityList();
         }
 
@@ -389,13 +389,13 @@ namespace Chummer
                     strFilter.Append(')');
                 }
             }
-            if (chkMetagenetic.Checked)
+            if (chkMetagenic.Checked)
             {
-                strFilter.Append(" and (metagenetic = 'True' or required/oneof[contains(., 'Changeling')])");
+                strFilter.Append(" and (Metagenic = 'True' or required/oneof[contains(., 'Changeling')])");
             }
-            else if (chkNotMetagenetic.Checked)
+            else if (chkNotMetagenic.Checked)
             {
-                strFilter.Append(" and not(metagenetic = 'True') and not(required/oneof[contains(., 'Changeling')])");
+                strFilter.Append(" and not(Metagenic = 'True') and not(required/oneof[contains(., 'Changeling')])");
             }
             if (nudValueBP.Value != 0)
             {

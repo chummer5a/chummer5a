@@ -5485,11 +5485,11 @@
 			<text>只显示我可以选择的特质</text>
 		</string>
 		<string>
-			<key>Checkbox_SelectQuality_Metagenetic</key>
+			<key>Checkbox_SelectQuality_Metagenic</key>
 			<text>只显示泛遗传学特质</text>
 		</string>
 		<string>
-			<key>Checkbox_SelectQuality_Not_Metagenetic</key>
+			<key>Checkbox_SelectQuality_Not_Metagenic</key>
 			<text>不显示泛遗传学特质</text>
 		</string>
 		<string>

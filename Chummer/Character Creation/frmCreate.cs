@@ -266,6 +266,11 @@ namespace Chummer
                         txtAlias.DoDatabinding("Text", CharacterObject, nameof(Character.Alias));
                         txtPlayerName.DoDatabinding("Text", CharacterObject, nameof(Character.PlayerName));
 
+                        lblPositiveQualitiesBP.DoDatabinding("Text", CharacterObject, nameof(Character.DisplayPositiveQualityKarma));
+                        lblNegativeQualitiesBP.DoDatabinding("Text", CharacterObject, nameof(Character.DisplayNegativeQualityKarma));
+                        lblMetagenicQualities.DoDatabinding("Text", CharacterObject, nameof(Character.DisplayMetagenicQualityKarma));
+
+                        lblEnemiesBP.DoDatabinding("Text", CharacterObject, nameof(Character.DisplayEnemyKarma));
                         tssBPLabel.Text = LanguageManager.GetString("Label_Karma", GlobalOptions.Language);
                         tssBPRemainLabel.Text =
                             LanguageManager.GetString("Label_KarmaRemaining", GlobalOptions.Language);
@@ -10120,11 +10125,6 @@ namespace Chummer
 
                 lblContactsBP.Text = strContactPoints;
                 lblContactPoints.Text = strContactPoints;
-                lblEnemiesBP.Text = CharacterObject.EnemyKarma.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + strPoints;
-
-                lblPositiveQualitiesBP.Text = $"{CharacterObject.PositiveQualityKarma.ToString(GlobalOptions.CultureInfo)}/{CharacterObject.GameplayOptionQualityLimit.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}{strPoints}";
-
-                lblNegativeQualitiesBP.Text = $"{(-CharacterObject.NegativeQualityKarma).ToString(GlobalOptions.CultureInfo)}/{CharacterObject.GameplayOptionQualityLimit.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}{strPoints}";
 
                 lblPositiveQualitiesBP.SetToolTip(strPositiveQualityTooltip);
                 lblNegativeQualitiesBP.SetToolTip(strNegativeQualityTooltip);
@@ -12981,38 +12981,38 @@ namespace Chummer
                                   , ((intBuildPoints + intStagedPurchaseQualityPoints) * -1).ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + LanguageManager.GetString("String_Karma", GlobalOptions.Language));
             }
 
-            // if character has more than permitted Metagenetic qualities
-            if (CharacterObject.MetageneticLimit > 0)
+            // if character has more than permitted Metagenic qualities
+            if (CharacterObject.MetagenicLimit > 0)
             {
-                if (CharacterObject.MetageneticNegativeQualityKarma > CharacterObject.MetageneticLimit)
+                if (CharacterObject.MetagenicNegativeQualityKarma > CharacterObject.MetagenicLimit)
                 {
                     strMessage += Environment.NewLine + '\t' +
                                   string.Format(LanguageManager.GetString("Message_OverNegativeMetagenicQualities", GlobalOptions.Language)
-                                      , CharacterObject.MetageneticNegativeQualityKarma.ToString(GlobalOptions.CultureInfo)
-                                      , CharacterObject.MetageneticLimit.ToString(GlobalOptions.CultureInfo));
+                                      , CharacterObject.MetagenicNegativeQualityKarma.ToString(GlobalOptions.CultureInfo)
+                                      , CharacterObject.MetagenicLimit.ToString(GlobalOptions.CultureInfo));
                     blnValid = false;
                 }
-                if (CharacterObject.MetageneticPositiveQualityKarma > CharacterObject.MetageneticLimit)
+                if (CharacterObject.MetagenicPositiveQualityKarma > CharacterObject.MetagenicLimit)
                 {
                     strMessage += Environment.NewLine + '\t' +
                                   string.Format(LanguageManager.GetString("Message_OverPositiveMetagenicQualities", GlobalOptions.Language)
-                                      , CharacterObject.MetageneticPositiveQualityKarma.ToString(GlobalOptions.CultureInfo)
-                                      , CharacterObject.MetageneticLimit.ToString(GlobalOptions.CultureInfo));
+                                      , CharacterObject.MetagenicPositiveQualityKarma.ToString(GlobalOptions.CultureInfo)
+                                      , CharacterObject.MetagenicLimit.ToString(GlobalOptions.CultureInfo));
                     blnValid = false;
                 }
 
-                if (CharacterObject.MetageneticNegativeQualityKarma != CharacterObject.MetageneticPositiveQualityKarma &&
-                    CharacterObject.MetageneticNegativeQualityKarma != (CharacterObject.MetageneticPositiveQualityKarma - 1))
+                if (CharacterObject.MetagenicNegativeQualityKarma != CharacterObject.MetagenicPositiveQualityKarma &&
+                    CharacterObject.MetagenicNegativeQualityKarma != (CharacterObject.MetagenicPositiveQualityKarma - 1))
                 {
                     strMessage += Environment.NewLine + '\t' +
                                   string.Format(LanguageManager.GetString("Message_MetagenicQualitiesUnbalanced", GlobalOptions.Language)
-                                      , CharacterObject.MetageneticNegativeQualityKarma.ToString(GlobalOptions.CultureInfo)
-                                      , (CharacterObject.MetageneticPositiveQualityKarma - 1).ToString(GlobalOptions.CultureInfo)
-                                      , CharacterObject.MetageneticPositiveQualityKarma.ToString(GlobalOptions.CultureInfo));
+                                      , CharacterObject.MetagenicNegativeQualityKarma.ToString(GlobalOptions.CultureInfo)
+                                      , (CharacterObject.MetagenicPositiveQualityKarma - 1).ToString(GlobalOptions.CultureInfo)
+                                      , CharacterObject.MetagenicPositiveQualityKarma.ToString(GlobalOptions.CultureInfo));
                     blnValid = false;
                 }
                 //Subtract 1 karma to balance Metagenic Qualities
-                if (CharacterObject.MetageneticNegativeQualityKarma == (CharacterObject.MetageneticPositiveQualityKarma - 1))
+                if (CharacterObject.MetagenicNegativeQualityKarma == (CharacterObject.MetagenicPositiveQualityKarma - 1))
                 {
                     if (CharacterObject.Karma > 0)
                     {

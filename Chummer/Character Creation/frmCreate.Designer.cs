@@ -948,6 +948,8 @@ namespace Chummer
             this.tabInfo = new System.Windows.Forms.TabControl();
             this.tabBPSummary = new System.Windows.Forms.TabPage();
             this.tlpKarmaSummary = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.lblMetagenicQualities = new System.Windows.Forms.Label();
+            this.lblMetagenicQualitiesLabel = new System.Windows.Forms.Label();
             this.lblAINormalProgramsBP = new System.Windows.Forms.Label();
             this.lblAIAdvancedProgramsBP = new System.Windows.Forms.Label();
             this.lblBuildRitualsBP = new System.Windows.Forms.Label();
@@ -1034,8 +1036,6 @@ namespace Chummer
             this.tsAIProgramNotes = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsGearAllowRename = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsGearAllowRenameExtra = new System.Windows.Forms.ToolStripMenuItem();
-            this.lblMetageneticQualitiesLabel = new System.Windows.Forms.Label();
-            this.lblMetageneticQualities = new System.Windows.Forms.Label();
             this.StatusStrip.SuspendLayout();
             this.cmsMartialArts.SuspendLayout();
             this.cmsSpellButton.SuspendLayout();
@@ -12645,8 +12645,8 @@ namespace Chummer
             this.tlpKarmaSummary.ColumnCount = 2;
             this.tlpKarmaSummary.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 55F));
             this.tlpKarmaSummary.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 45F));
-            this.tlpKarmaSummary.Controls.Add(this.lblMetageneticQualities, 1, 5);
-            this.tlpKarmaSummary.Controls.Add(this.lblMetageneticQualitiesLabel, 0, 5);
+            this.tlpKarmaSummary.Controls.Add(this.lblMetagenicQualities, 1, 5);
+            this.tlpKarmaSummary.Controls.Add(this.lblMetagenicQualitiesLabel, 0, 5);
             this.tlpKarmaSummary.Controls.Add(this.lblAINormalProgramsBP, 1, 21);
             this.tlpKarmaSummary.Controls.Add(this.lblAIAdvancedProgramsBP, 1, 22);
             this.tlpKarmaSummary.Controls.Add(this.lblBuildAIAdvancedPrograms, 0, 22);
@@ -12721,6 +12721,28 @@ namespace Chummer
             this.tlpKarmaSummary.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpKarmaSummary.Size = new System.Drawing.Size(218, 625);
             this.tlpKarmaSummary.TabIndex = 99;
+            // 
+            // lblMetagenicQualities
+            // 
+            this.lblMetagenicQualities.AutoSize = true;
+            this.lblMetagenicQualities.Location = new System.Drawing.Point(122, 131);
+            this.lblMetagenicQualities.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblMetagenicQualities.Name = "lblMetagenicQualities";
+            this.lblMetagenicQualities.Size = new System.Drawing.Size(88, 13);
+            this.lblMetagenicQualities.TabIndex = 137;
+            this.lblMetagenicQualities.Text = "[P]/[N] (L) (0-1 K)";
+            // 
+            // lblMetagenicQualitiesLabel
+            // 
+            this.lblMetagenicQualitiesLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblMetagenicQualitiesLabel.AutoSize = true;
+            this.lblMetagenicQualitiesLabel.Location = new System.Drawing.Point(16, 131);
+            this.lblMetagenicQualitiesLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblMetagenicQualitiesLabel.Name = "lblMetagenicQualitiesLabel";
+            this.lblMetagenicQualitiesLabel.Size = new System.Drawing.Size(100, 13);
+            this.lblMetagenicQualitiesLabel.TabIndex = 136;
+            this.lblMetagenicQualitiesLabel.Tag = "Label_SummaryMetagenicQualities";
+            this.lblMetagenicQualitiesLabel.Text = "Metagenic Qualities";
             // 
             // lblAINormalProgramsBP
             // 
@@ -13717,28 +13739,6 @@ namespace Chummer
             this.tsGearAllowRenameExtra.Tag = "Menu_RenameExtraText";
             this.tsGearAllowRenameExtra.Text = "&Rename Extra Text";
             this.tsGearAllowRenameExtra.Click += new System.EventHandler(this.tsGearRename_Click);
-            // 
-            // lblMetageneticQualitiesLabel
-            // 
-            this.lblMetageneticQualitiesLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblMetageneticQualitiesLabel.AutoSize = true;
-            this.lblMetageneticQualitiesLabel.Location = new System.Drawing.Point(7, 131);
-            this.lblMetageneticQualitiesLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblMetageneticQualitiesLabel.Name = "lblMetageneticQualitiesLabel";
-            this.lblMetageneticQualitiesLabel.Size = new System.Drawing.Size(109, 13);
-            this.lblMetageneticQualitiesLabel.TabIndex = 136;
-            this.lblMetageneticQualitiesLabel.Tag = "Label_SummaryMetageneticQualities";
-            this.lblMetageneticQualitiesLabel.Text = "Metagenetic Qualities";
-            // 
-            // lblMetageneticQualities
-            // 
-            this.lblMetageneticQualities.AutoSize = true;
-            this.lblMetageneticQualities.Location = new System.Drawing.Point(122, 131);
-            this.lblMetageneticQualities.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblMetageneticQualities.Name = "lblMetageneticQualities";
-            this.lblMetageneticQualities.Size = new System.Drawing.Size(30, 13);
-            this.lblMetageneticQualities.TabIndex = 137;
-            this.lblMetageneticQualities.Text = "0 BP";
             // 
             // frmCreate
             // 
@@ -15066,7 +15066,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblFiringModeLabel;
         private ElasticComboBox cboVehicleWeaponFiringMode;
         private System.Windows.Forms.Label lblVehicleWeaponMode;
-        private System.Windows.Forms.Label lblMetageneticQualities;
-        private System.Windows.Forms.Label lblMetageneticQualitiesLabel;
+        private System.Windows.Forms.Label lblMetagenicQualities;
+        private System.Windows.Forms.Label lblMetagenicQualitiesLabel;
     }
 }

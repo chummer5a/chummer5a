@@ -592,7 +592,8 @@ namespace Chummer
                 case "WEAPONSKILLACCURACY":
                     return objImprovementAdder.weaponskillaccuracy;
                 case "METAGENETICLIMIT":
-                    return objImprovementAdder.metageneticlimit;
+                case "METAGENICLIMIT":
+                    return objImprovementAdder.metageniclimit;
                 case "SPECIALMODIFICATIONLIMIT":
                     return objImprovementAdder.specialmodificationlimit;
                 case "CYBERADEPTDAEMON":

@@ -4909,11 +4909,11 @@
 			<text>Nur Gaben, die ich auswählen kann</text>
 		</string>
 		<string>
-			<key>Checkbox_SelectQuality_Metagenetic</key>
+			<key>Checkbox_SelectQuality_Metagenic</key>
 			<text>Nur metagenetische Gaben anzeigen</text>
 		</string>
 		<string>
-			<key>Checkbox_SelectQuality_Not_Metagenetic</key>
+			<key>Checkbox_SelectQuality_Not_Metagenic</key>
 			<text>Keine metagenetischen Gaben anzeigen</text>
 		</string>
 		<string>
