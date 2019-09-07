@@ -2663,7 +2663,7 @@
     </string>        
     <string>
       <key>Label_MetagenicKarmaValue</key>
-      <text>{0}/{1} Max {2}</text>
+      <text>{0}P/{1}N - Max {2}</text>
     </string>
     <string>
       <key>Label_MetagenicKarmaValueAppend</key>

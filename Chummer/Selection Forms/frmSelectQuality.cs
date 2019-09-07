@@ -391,11 +391,11 @@ namespace Chummer
             }
             if (chkMetagenic.Checked)
             {
-                strFilter.Append(" and (Metagenic = 'True' or required/oneof[contains(., 'Changeling')])");
+                strFilter.Append(" and (metagenic = 'True' or required/oneof[contains(., 'Changeling')])");
             }
             else if (chkNotMetagenic.Checked)
             {
-                strFilter.Append(" and not(Metagenic = 'True') and not(required/oneof[contains(., 'Changeling')])");
+                strFilter.Append(" and not(metagenic = 'True') and not(required/oneof[contains(., 'Changeling')])");
             }
             if (nudValueBP.Value != 0)
             {

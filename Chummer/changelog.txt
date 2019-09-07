@@ -1,4 +1,24 @@
-Future Build 207-208
+Future Build 209
+
+Application Changes:
+- Metagenic quality balances are now shown in the Karma summary tab while in create mode. This allows for more easily seeing how many qualities you need to take to even up, and properly accounts for the karma lost to balance up positive and negative metagenic qualities.
+- Internally changed all 'Metagenetic' references (except for the improvement type) to 'Metagenic'. 
+
+New Strings:
+- Label_MetagenicKarmaValue
+- Label_MetagenicKarmaValueAppend
+- Label_SummaryMetagenicQualities
+
+- Changed Strings:
+- Message_OverPositiveMetagenicQualities
+- Message_OverNegativeMetagenicQualities
+- Message_MetagenicQualitiesUnbalanced
+- Message_MetagenicQualitiesInsufficientKarma
+- Message_MetagenicQualitiesSubtractingKarma
+- Checkbox_SelectQuality_Metagenic
+- Checkbox_SelectQuality_Not_Metagenic
+
+Build 208
 
 Application Changes:
 

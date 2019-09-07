@@ -269,7 +269,8 @@ namespace Chummer
                         lblPositiveQualitiesBP.DoDatabinding("Text", CharacterObject, nameof(Character.DisplayPositiveQualityKarma));
                         lblNegativeQualitiesBP.DoDatabinding("Text", CharacterObject, nameof(Character.DisplayNegativeQualityKarma));
                         lblMetagenicQualities.DoDatabinding("Text", CharacterObject, nameof(Character.DisplayMetagenicQualityKarma));
-
+                        lblMetagenicQualities.DoDatabinding("Visible", CharacterObject, nameof(Character.IsChangeling));
+                        lblMetagenicQualitiesLabel.DoDatabinding("Visible", CharacterObject, nameof(Character.IsChangeling));
                         lblEnemiesBP.DoDatabinding("Text", CharacterObject, nameof(Character.DisplayEnemyKarma));
                         tssBPLabel.Text = LanguageManager.GetString("Label_Karma", GlobalOptions.Language);
                         tssBPRemainLabel.Text =
@@ -9637,6 +9638,10 @@ namespace Chummer
 
             intKarmaPointsRemain -= intQualityPointsUsed;
             intFreestyleBP += intQualityPointsUsed;
+            // Changelings must either have a balanced negative and positive number of metagenic qualities, or have 1 more point of positive than negative.
+            // If the latter, karma is used to balance them out. 
+            if (CharacterObject.MetagenicPositiveQualityKarma + CharacterObject.MetagenicNegativeQualityKarma == 1)
+                intKarmaPointsRemain--;
 
             // ------------------------------------------------------------------------------
             // Update Primary Attributes and Special Attributes values.
@@ -13011,28 +13016,6 @@ namespace Chummer
                                       , CharacterObject.MetagenicPositiveQualityKarma.ToString(GlobalOptions.CultureInfo));
                     blnValid = false;
                 }
-                //Subtract 1 karma to balance Metagenic Qualities
-                if (CharacterObject.MetagenicNegativeQualityKarma == (CharacterObject.MetagenicPositiveQualityKarma - 1))
-                {
-                    if (CharacterObject.Karma > 0)
-                    {
-                        if (MessageBox.Show(string.Format(LanguageManager.GetString("Message_MetagenicQualitiesSubtractingKarma", GlobalOptions.Language), intBuildPoints.ToString(GlobalOptions.CultureInfo)),
-                                LanguageManager.GetString("MessageTitle_ExtraKarma", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
-                        {
-                            CharacterObject.Karma -= 1;
-                        }
-                        else
-                        {
-                            blnValid = false;
-                        }
-                    }
-                    else
-                    {
-                        strMessage += Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_MetagenicQualitiesInsufficientKarma", GlobalOptions.Language), intBuildPoints.ToString(GlobalOptions.CultureInfo));
-                        blnValid = false;
-                    }
-                }
-
             }
             int i = CharacterObject.TotalAttributes - CalculateAttributePriorityPoints(CharacterObject.AttributeSection.AttributeList);
             // Check if the character has gone over on Primary Attributes

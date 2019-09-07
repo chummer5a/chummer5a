@@ -16987,7 +16987,7 @@ if (!Utils.IsUnitTest){
                         ImprovementManager.ValueOf(this, Improvement.ImprovementType.FreeNegativeQualities);
                 }
 
-                return _intCachedNegativeQualities;
+                return _intCachedMetagenicNegativeQualities;
             }
         }
 
@@ -16999,9 +16999,9 @@ if (!Utils.IsUnitTest){
                 s = s.Replace("{0}", MetagenicPositiveQualityKarma.ToString(GlobalOptions.CultureInfo));
                 s = s.Replace("{1}", MetagenicNegativeQualityKarma.ToString(GlobalOptions.CultureInfo));
                 s = s.Replace("{2}", MetagenicLimit.ToString(GlobalOptions.CultureInfo));
-                if (MetagenicPositiveQualityKarma - MetagenicNegativeQualityKarma == 1)
+                if (MetagenicPositiveQualityKarma + MetagenicNegativeQualityKarma == 1)
                 {
-                    s += LanguageManager.GetString("String_Karma");
+                    s += LanguageManager.GetString("Label_MetagenicKarmaValueAppend");
                 }
 
                 return s;
