@@ -134,7 +134,9 @@ namespace Chummer
 
         // Metatype Information.
         private string _strMetatype = "Human";
+        private Guid   _guiMetatype = new Guid();
         private string _strMetavariant = string.Empty;
+        private Guid   _guiMetavariant = new Guid();
         private string _strMetatypeCategory = "Metahuman";
         private string _strMovement = string.Empty;
         private string _strWalk = string.Empty;
@@ -143,7 +145,7 @@ namespace Chummer
         private string _strWalkAlt = string.Empty;
         private string _strRunAlt = string.Empty;
         private string _strSprintAlt = string.Empty;
-        private int _intMetatypeBP;
+        private int    _intMetatypeBP;
 
         // Special Flags.
 
@@ -870,6 +872,25 @@ namespace Chummer
             _objTradition = new Tradition(this);
         }
 
+        private XPathNavigator _xmlMetatypeNode;
+        public XPathNavigator GetNode(bool blnReturnMetatypeOnly = false)
+        {
+            XmlDocument xmlDoc = XmlManager.Load(IsCritter ? "critters.xml" : "metatypes.xml");
+            if (blnReturnMetatypeOnly)
+            {
+                return xmlDoc.CreateNavigator().SelectSingleNode($"/chummer/metatypes/metatype[id = \"{MetatypeGuid}\"]");
+            }
+            _xmlMetatypeNode = xmlDoc.CreateNavigator().SelectSingleNode($"/chummer/metatypes/metatype[id = \"{MetatypeGuid}\"]");
+            if (MetavariantGuid != Guid.NewGuid())
+            {
+                XPathNavigator xmlMetavariantNode = _xmlMetatypeNode.SelectSingleNode($"metavariants/metavariant[id = \"{MetavariantGuid}\"]");
+                if (xmlMetavariantNode != null)
+                    _xmlMetatypeNode = xmlMetavariantNode;
+            }
+
+            return _xmlMetatypeNode;
+        }
+
         public void RefreshAttributeBindings()
         {
             BOD.PropertyChanged += RefreshBODDependentProperties;
@@ -1234,10 +1255,14 @@ namespace Chummer
 
             // <metatype />
             objWriter.WriteElementString("metatype", _strMetatype);
+            // <metatypeid />
+            objWriter.WriteElementString("metatypeid", _guiMetatype.ToString());
             // <metatypebp />
             objWriter.WriteElementString("metatypebp", _intMetatypeBP.ToString());
             // <metavariant />
             objWriter.WriteElementString("metavariant", _strMetavariant);
+            // <metavariantid />
+            objWriter.WriteElementString("metavariantid", _guiMetavariant.ToString());
             // <metatypecategory />
             objWriter.WriteElementString("metatypecategory", _strMetatypeCategory);
             // <movement />
@@ -2112,6 +2137,7 @@ if (!Utils.IsUnitTest){
 
                         // Metatype information.
                         xmlCharacterNavigator.TryGetStringFieldQuickly("metatype", ref _strMetatype);
+                        xmlCharacterNavigator.TryGetGuidFieldQuickly("metatypeid", ref _guiMetatype);
                         xmlCharacterNavigator.TryGetStringFieldQuickly("movement", ref _strMovement);
 
                         xmlCharacterNavigator.TryGetStringFieldQuickly("walk", ref _strWalk);
@@ -2124,7 +2150,7 @@ if (!Utils.IsUnitTest){
 
                         xmlCharacterNavigator.TryGetInt32FieldQuickly("metatypebp", ref _intMetatypeBP);
                         xmlCharacterNavigator.TryGetStringFieldQuickly("metavariant", ref _strMetavariant);
-
+                        xmlCharacterNavigator.TryGetGuidFieldQuickly("metavariantid", ref _guiMetavariant);
                         //Shim for characters created prior to Run Faster Errata
                         if (_strMetavariant == "Cyclopean")
                         {
@@ -3718,33 +3744,6 @@ if (!Utils.IsUnitTest){
         public void PrintToStream(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
 #endif
         {
-            string strMetatype = string.Empty;
-            string strMetavariant = string.Empty;
-            // Get the name of the Metatype and Metavariant.
-            XmlDocument objMetatypeDoc = XmlManager.Load("metatypes.xml", strLanguageToPrint);
-            XmlNode objMetatypeNode =
-                objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + Metatype + "\"]");
-            if(objMetatypeNode == null)
-            {
-                objMetatypeDoc = XmlManager.Load("critters.xml", strLanguageToPrint);
-                objMetatypeNode =
-                    objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + Metatype + "\"]");
-            }
-
-            if(objMetatypeNode != null)
-            {
-                strMetatype = objMetatypeNode["translate"]?.InnerText ?? Metatype;
-
-                if(!string.IsNullOrEmpty(Metavariant))
-                {
-                    objMetatypeNode =
-                        objMetatypeNode.SelectSingleNode("metavariants/metavariant[name = \"" + Metavariant + "\"]");
-
-                    if(objMetatypeNode != null)
-                        strMetavariant = objMetatypeNode["translate"]?.InnerText ?? Metavariant;
-                }
-            }
-
             // This line left in for debugging. Write the output to a fixed file name.
             //FileStream objStream = new FileStream("D:\\temp\\print.xml", FileMode.Create, FileAccess.Write, FileShare.ReadWrite);//(_strFileName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
 
@@ -3752,11 +3751,11 @@ if (!Utils.IsUnitTest){
             objWriter.WriteStartElement("character");
 
             // <metatype />
-            objWriter.WriteElementString("metatype", strMetatype);
+            objWriter.WriteElementString("metatype", DisplayMetatype(strLanguageToPrint));
             // <metatype_english />
             objWriter.WriteElementString("metatype_english", Metatype);
             // <metavariant />
-            objWriter.WriteElementString("metavariant", strMetavariant);
+            objWriter.WriteElementString("metavariant", DisplayMetavariant(strLanguageToPrint));
             // <metavariant_english />
             objWriter.WriteElementString("metavariant_english", Metavariant);
             // <movement />
@@ -11869,6 +11868,23 @@ if (!Utils.IsUnitTest){
             }
         }
 
+        public Guid MetatypeGuid
+        {
+            get => _guiMetatype;
+            set => _guiMetatype = value;
+        }
+
+        /// <summary>
+        /// The name of the metatype as it should appear on printouts (translated name only).
+        /// </summary>
+        public string DisplayMetatype(string strLanguage)
+        {
+            if (strLanguage == GlobalOptions.DefaultLanguage)
+                return Metatype;
+
+            return GetNode(true)?.SelectSingleNode("translate")?.Value ?? Metatype;
+        }
+
         /// <summary>
         /// Character's Metavariant.
         /// </summary>
@@ -11883,6 +11899,23 @@ if (!Utils.IsUnitTest){
                     OnPropertyChanged();
                 }
             }
+        }
+
+        public Guid MetavariantGuid
+        {
+            get => _guiMetavariant;
+            set => _guiMetavariant = value;
+        }
+
+        /// <summary>
+        /// The name of the metatype as it should appear on printouts (translated name only).
+        /// </summary>
+        public string DisplayMetavariant(string strLanguage)
+        {
+            if (strLanguage == GlobalOptions.DefaultLanguage)
+                return Metavariant;
+
+            return GetNode()?.SelectSingleNode("translate")?.Value ?? Metavariant;
         }
 
         /// <summary>
@@ -11943,13 +11976,7 @@ if (!Utils.IsUnitTest){
             {
                 if(string.IsNullOrWhiteSpace(_strMovement))
                 {
-                    XmlNode xmlMetatypeNode = XmlManager
-                        .Load(IsCritter ? "critters.xml" : "metatypes.xml", GlobalOptions.Language)
-                        .SelectSingleNode("/chummer/metatypes/metatype[name = \"" + Metatype + "\"]");
-                    XmlNode xmlMetavariantNode =
-                        xmlMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = \"" + Metavariant + "\"]");
-                    _strMovement = xmlMetavariantNode?["movement"]?.InnerText ??
-                                   xmlMetatypeNode?["movement"]?.InnerText ?? string.Empty;
+                    _strMovement = GetNode().SelectSingleNode("movement")?.Value ?? string.Empty;
                 }
 
                 return _strMovement;
@@ -11973,13 +12000,7 @@ if (!Utils.IsUnitTest){
             {
                 if(string.IsNullOrWhiteSpace(_strRun))
                 {
-                    XmlNode xmlMetatypeNode = XmlManager
-                        .Load(IsCritter ? "critters.xml" : "metatypes.xml", GlobalOptions.Language)
-                        .SelectSingleNode("/chummer/metatypes/metatype[name = \"" + Metatype + "\"]");
-                    XmlNode xmlMetavariantNode =
-                        xmlMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = \"" + Metavariant + "\"]");
-                    _strRun = xmlMetavariantNode?["run"]?.InnerText ??
-                              xmlMetatypeNode?["run"]?.InnerText ?? string.Empty;
+                    _strRun = GetNode().SelectSingleNode("run")?.Value ?? string.Empty;
                 }
 
                 return _strRun;
@@ -12003,13 +12024,7 @@ if (!Utils.IsUnitTest){
             {
                 if(string.IsNullOrWhiteSpace(_strRunAlt))
                 {
-                    XmlNode xmlMetatypeNode = XmlManager
-                        .Load(IsCritter ? "critters.xml" : "metatypes.xml", GlobalOptions.Language)
-                        .SelectSingleNode("/chummer/metatypes/metatype[name = \"" + Metatype + "\"]");
-                    XmlNode xmlMetavariantNode =
-                        xmlMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = \"" + Metavariant + "\"]");
-                    XmlNode xmlRunNode = xmlMetavariantNode?["run"] ?? xmlMetatypeNode?["run"];
-                    _strRunAlt = xmlRunNode?.Attributes?["alt"]?.InnerText ?? string.Empty;
+                    _strRunAlt = GetNode().SelectSingleNode("run").GetAttribute("alt","");
                 }
 
                 return _strRunAlt;
@@ -12033,13 +12048,7 @@ if (!Utils.IsUnitTest){
             {
                 if(string.IsNullOrWhiteSpace(_strWalk))
                 {
-                    XmlNode xmlMetatypeNode = XmlManager
-                        .Load(IsCritter ? "critters.xml" : "metatypes.xml", GlobalOptions.Language)
-                        .SelectSingleNode("/chummer/metatypes/metatype[name = \"" + Metatype + "\"]");
-                    XmlNode xmlMetavariantNode =
-                        xmlMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = \"" + Metavariant + "\"]");
-                    _strWalk = xmlMetavariantNode?["walk"]?.InnerText ??
-                               xmlMetatypeNode?["walk"]?.InnerText ?? string.Empty;
+                    _strWalk = GetNode().SelectSingleNode("walk")?.Value ?? string.Empty;
                 }
 
                 return _strWalk;
@@ -12063,13 +12072,7 @@ if (!Utils.IsUnitTest){
             {
                 if(string.IsNullOrWhiteSpace(_strWalkAlt))
                 {
-                    XmlNode xmlMetatypeNode = XmlManager
-                        .Load(IsCritter ? "critters.xml" : "metatypes.xml", GlobalOptions.Language)
-                        .SelectSingleNode("/chummer/metatypes/metatype[name = \"" + Metatype + "\"]");
-                    XmlNode xmlMetavariantNode =
-                        xmlMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = \"" + Metavariant + "\"]");
-                    XmlNode xmlWalkNode = xmlMetavariantNode?["walk"] ?? xmlMetatypeNode?["walk"];
-                    _strWalkAlt = xmlWalkNode?.Attributes?["alt"]?.InnerText ?? string.Empty;
+                    _strWalkAlt = GetNode().SelectSingleNode("walk").GetAttribute("alt", "");
                 }
 
                 return _strWalkAlt;
@@ -12093,13 +12096,7 @@ if (!Utils.IsUnitTest){
             {
                 if(string.IsNullOrWhiteSpace(_strSprint))
                 {
-                    XmlNode xmlMetatypeNode = XmlManager
-                        .Load(IsCritter ? "critters.xml" : "metatypes.xml", GlobalOptions.Language)
-                        .SelectSingleNode("/chummer/metatypes/metatype[name = \"" + Metatype + "\"]");
-                    XmlNode xmlMetavariantNode =
-                        xmlMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = \"" + Metavariant + "\"]");
-                    _strSprint = xmlMetavariantNode?["sprint"]?.InnerText ??
-                                 xmlMetatypeNode?["sprint"]?.InnerText ?? string.Empty;
+                    _strSprint = GetNode().SelectSingleNode("sprint").Value;
                 }
 
                 return _strSprint;
@@ -12123,13 +12120,7 @@ if (!Utils.IsUnitTest){
             {
                 if(string.IsNullOrWhiteSpace(_strSprintAlt))
                 {
-                    XmlNode xmlMetatypeNode = XmlManager
-                        .Load(IsCritter ? "critters.xml" : "metatypes.xml", GlobalOptions.Language)
-                        .SelectSingleNode("/chummer/metatypes/metatype[name = \"" + Metatype + "\"]");
-                    XmlNode xmlMetavariantNode =
-                        xmlMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = \"" + Metavariant + "\"]");
-                    XmlNode xmlSprintNode = xmlMetavariantNode?["sprint"] ?? xmlMetatypeNode?["sprint"];
-                    _strSprintAlt = xmlSprintNode?.Attributes?["alt"]?.InnerText ?? string.Empty;
+                    _strSprintAlt = GetNode().SelectSingleNode("sprint").GetAttribute("alt", "");
                 }
 
                 return _strSprintAlt;

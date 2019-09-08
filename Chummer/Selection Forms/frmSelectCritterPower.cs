@@ -46,26 +46,12 @@ namespace Chummer
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             _xmlBaseCritterPowerDataNode = XmlManager.Load("critterpowers.xml").GetFastNavigator().SelectSingleNode("/chummer");
-            if (_objCharacter.IsCritter)
-            {
-                _xmlMetatypeDataNode = XmlManager.Load("critters.xml").GetFastNavigator().SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
-                if (_xmlMetatypeDataNode != null && !string.IsNullOrEmpty(_objCharacter.Metavariant) && _objCharacter.Metavariant != "None")
-                {
-                    XPathNavigator xmlMetavariantNode = _xmlMetatypeDataNode.SelectSingleNode("/metavariants/metavariant[name = \"" + _objCharacter.Metavariant + "\"]");
-                    if (xmlMetavariantNode != null)
-                        _xmlMetatypeDataNode = xmlMetavariantNode;
-                }
-            }
-            if (_xmlMetatypeDataNode == null)
-            {
-                _xmlMetatypeDataNode = XmlManager.Load("metatypes.xml").GetFastNavigator().SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
-                if (_xmlMetatypeDataNode != null && !string.IsNullOrEmpty(_objCharacter.Metavariant) && _objCharacter.Metavariant != "None")
-                {
-                    XPathNavigator xmlMetavariantNode = _xmlMetatypeDataNode.SelectSingleNode("/metavariants/metavariant[name = \"" + _objCharacter.Metavariant + "\"]");
-                    if (xmlMetavariantNode != null)
-                        _xmlMetatypeDataNode = xmlMetavariantNode;
-                }
-            }
+            _xmlMetatypeDataNode = _objCharacter.GetNode();
+
+            if (_xmlMetatypeDataNode == null || _objCharacter.MetavariantGuid == Guid.NewGuid()) return;
+            XPathNavigator xmlMetavariantNode = _xmlMetatypeDataNode.SelectSingleNode($"/metavariants/metavariant[name = \"{_objCharacter.MetavariantGuid}\"]");
+            if (xmlMetavariantNode != null)
+                _xmlMetatypeDataNode = xmlMetavariantNode;
         }
 
         private void frmSelectCritterPower_Load(object sender, EventArgs e)
@@ -80,78 +66,63 @@ namespace Chummer
             // Remove Optional Powers if the Critter does not have access to them.
             if (_xmlMetatypeDataNode.SelectSingleNode("optionalpowers") == null)
             {
-                foreach (ListItem objItem in _lstCategory)
+                foreach (var objItem in _lstCategory.Where(objItem => objItem.Value.ToString() == "Allowed Optional Powers"))
                 {
-                    if (objItem.Value.ToString() == "Allowed Optional Powers")
-                    {
-                        _lstCategory.Remove(objItem);
-                        break;
-                    }
+                    _lstCategory.Remove(objItem);
+                    break;
                 }
             }
 
             // Remove Free Spirit Powers if the critter is not a Free Spirit.
             if (_objCharacter.Metatype != "Free Spirit")
             {
-                foreach (ListItem objItem in _lstCategory)
+                foreach (var objItem in _lstCategory.Where(objItem => objItem.Value.ToString() == "Free Spirit"))
                 {
-                    if (objItem.Value.ToString() == "Free Spirit")
-                    {
-                        _lstCategory.Remove(objItem);
-                        break;
-                    }
+                    _lstCategory.Remove(objItem);
+                    break;
                 }
             }
 
             // Remove Toxic Critter Powers if the critter is not a Toxic Critter.
             if (_objCharacter.MetatypeCategory != "Toxic Critters")
             {
-                foreach (ListItem objItem in _lstCategory)
+                foreach (var objItem in _lstCategory.Where(objItem => objItem.Value.ToString() == "Toxic Critter Powers"))
                 {
-                    if (objItem.Value.ToString() == "Toxic Critter Powers")
-                    {
-                        _lstCategory.Remove(objItem);
-                        break;
-                    }
+                    _lstCategory.Remove(objItem);
+                    break;
                 }
             }
 
             // Remove Emergent Powers if the critter is not a Sprite or A.I.
-            if (!_objCharacter.MetatypeCategory.EndsWith("Sprites") && !_objCharacter.MetatypeCategory.EndsWith("Sprite") && !_objCharacter.MetatypeCategory.EndsWith("A.I.s") && _objCharacter.MetatypeCategory != "Technocritters" && _objCharacter.MetatypeCategory != "Protosapients")
+            if (!_objCharacter.MetatypeCategory.EndsWith("Sprites") &&
+                !_objCharacter.MetatypeCategory.EndsWith("Sprite") &&
+                !_objCharacter.MetatypeCategory.EndsWith("A.I.s") &&
+                _objCharacter.MetatypeCategory != "Technocritters" && _objCharacter.MetatypeCategory != "Protosapients")
             {
-                foreach (ListItem objItem in _lstCategory)
+                foreach (var objItem in _lstCategory.Where(objItem => objItem.Value.ToString() == "Emergent"))
                 {
-                    if (objItem.Value.ToString() == "Emergent")
-                    {
-                        _lstCategory.Remove(objItem);
-                        break;
-                    }
+                    _lstCategory.Remove(objItem);
+                    break;
                 }
             }
 
             // Remove Echoes Powers if the critter is not a Free Sprite.
             if (!_objCharacter.IsFreeSprite)
             {
-                foreach (ListItem objItem in _lstCategory)
+                foreach (var objItem in _lstCategory.Where(objItem => objItem.Value.ToString() == "Echoes"))
                 {
-                    if (objItem.Value.ToString() == "Echoes")
-                    {
-                        _lstCategory.Remove(objItem);
-                        break;
-                    }
+                    _lstCategory.Remove(objItem);
+                    break;
                 }
             }
 
             // Remove Shapeshifter Powers if the critter is not a Shapeshifter.
             if (_objCharacter.MetatypeCategory != "Shapeshifter")
             {
-                foreach (ListItem objItem in _lstCategory)
+                foreach (var objItem in _lstCategory.Where(objItem => objItem.Value.ToString() == "Shapeshifter"))
                 {
-                    if (objItem.Value.ToString() == "Shapeshifter")
-                    {
-                        _lstCategory.Remove(objItem);
-                        break;
-                    }
+                    _lstCategory.Remove(objItem);
+                    break;
                 }
             }
 
@@ -161,9 +132,8 @@ namespace Chummer
 
             if (!blnIsDrake)
             {
-                foreach (ListItem objItem in _lstCategory)
+                foreach (var objItem in _lstCategory.Where(objItem => objItem.Value.ToString() != "Drake"))
                 {
-                    if (objItem.Value.ToString() == "Drake") continue;
                     _lstCategory.Remove(objItem);
                     break;
                 }

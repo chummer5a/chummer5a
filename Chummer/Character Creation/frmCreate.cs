@@ -4474,10 +4474,7 @@ namespace Chummer
 
                 if (objSelectedQuality.OriginSource == QualitySource.MetatypeRemovedAtChargen)
                 {
-                    XmlNode xmlMetatypeNode = XmlManager.Load("metatypes.xml").SelectSingleNode("/chummer/metatypes/metatype[name = \"" + CharacterObject.Metatype + "\"]") ??
-                        XmlManager.Load("critters.xml").SelectSingleNode("/chummer/metatypes/metatype[name = \"" + CharacterObject.Metatype + "\"]");
-                    XmlNode xmlMetavariantNode = xmlMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = \"" + CharacterObject.Metavariant + "\"]");
-                    XmlNode xmlCharacterNode = xmlMetavariantNode ?? xmlMetatypeNode;
+                    XmlNode xmlCharacterNode = CharacterObject.GetNode();
                     if (xmlCharacterNode != null)
                     {
                         // Create the Qualities that come with the Metatype.
@@ -9418,17 +9415,16 @@ namespace Chummer
         /// </summary>
         public void RefreshMetatypeFields()
         {
-            XmlNode objMetatypeNode = XmlManager.Load("metatypes.xml").SelectSingleNode("/chummer/metatypes/metatype[name = \"" + CharacterObject.Metatype + "\"]") ??
-               XmlManager.Load("critters.xml").SelectSingleNode("/chummer/metatypes/metatype[name = \"" + CharacterObject.Metatype + "\"]");
+            XmlNode objMetatypeNode = CharacterObject.GetNode(true);
 
             string strMetatype = objMetatypeNode?["translate"]?.InnerText ?? CharacterObject.Metatype;
             string strSource = objMetatypeNode?["source"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
             string strPage = objMetatypeNode?["altpage"]?.InnerText ?? objMetatypeNode?["page"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
             string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
 
-            if (!string.IsNullOrEmpty(CharacterObject.Metavariant) && CharacterObject.Metavariant != "None")
+            if (CharacterObject.MetavariantGuid != Guid.Empty)
             {
-                objMetatypeNode = objMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = \"" + CharacterObject.Metavariant + "\"]");
+                objMetatypeNode = objMetatypeNode?.SelectSingleNode($"metavariants/metavariant[id = \"{CharacterObject.MetavariantGuid}\"]");
 
                 strMetatype += strSpaceCharacter + '(' + (objMetatypeNode?["translate"]?.InnerText ?? CharacterObject.Metavariant) + ')';
 
@@ -11502,7 +11498,7 @@ namespace Chummer
             {
                 List<CharacterAttrib> lstAttributesToAdd = new List<CharacterAttrib>();
                 XmlDocument xmlDoc = XmlManager.Load("metatypes.xml");
-                string strMetavariantXPath = $"/chummer/metatypes/metatype[name = \"{CharacterObject.Metatype}\"]/metavariants/metavariant[name = \"{CharacterObject.Metavariant}\"]";
+                string strMetavariantXPath = $"/chummer/metatypes/metatype[id = \"{CharacterObject.MetatypeGuid}\"]/metavariants/metavariant[id = \"{CharacterObject.MetavariantGuid}\"]";
                 foreach (CharacterAttrib objOldAttribute in CharacterObject.AttributeSection.AttributeList)
                 {
                     CharacterAttrib objNewAttribute = new CharacterAttrib(CharacterObject, objOldAttribute.Abbrev,

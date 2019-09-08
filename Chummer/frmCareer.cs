@@ -13272,25 +13272,16 @@ namespace Chummer
         /// </summary>
         public void RefreshMetatypeFields()
         {
-            XmlNode objMetatypeNode = XmlManager.Load("metatypes.xml").SelectSingleNode("/chummer/metatypes/metatype[name = \"" + CharacterObject.Metatype + "\"]") ??
-               XmlManager.Load("critters.xml").SelectSingleNode("/chummer/metatypes/metatype[name = \"" + CharacterObject.Metatype + "\"]");
+            XPathNavigator objMetatypeNode = CharacterObject.GetNode();
 
-            string strMetatype = objMetatypeNode?["translate"]?.InnerText ?? CharacterObject.Metatype;
-            string strSource = objMetatypeNode?["source"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
-            string strPage = objMetatypeNode?["altpage"]?.InnerText ?? objMetatypeNode?["page"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+            string strMetatype = CharacterObject.DisplayMetatype(GlobalOptions.Language);
+            string strSource = objMetatypeNode.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+            string strPage = objMetatypeNode.SelectSingleNode("altpage")?.Value ?? objMetatypeNode.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
             string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
 
-            if (!string.IsNullOrEmpty(CharacterObject.Metavariant) && CharacterObject.Metavariant != "None")
+            if (CharacterObject.MetavariantGuid != Guid.Empty)
             {
-                objMetatypeNode = objMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = \"" + CharacterObject.Metavariant + "\"]");
-
-                strMetatype += strSpaceCharacter + '(' + (objMetatypeNode?["translate"]?.InnerText ?? CharacterObject.Metavariant) + ')';
-
-                if (objMetatypeNode != null)
-                {
-                    strSource = objMetatypeNode["source"]?.InnerText ?? strSource;
-                    strPage = objMetatypeNode["altpage"]?.InnerText ?? objMetatypeNode["page"]?.InnerText ?? strPage;
-                }
+                strMetatype += strSpaceCharacter + '(' + (CharacterObject.DisplayMetavariant(GlobalOptions.Language)) + ')';
             }
             lblMetatype.Text = strMetatype;
             lblMetatypeSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
