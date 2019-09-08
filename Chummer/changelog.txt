@@ -3,6 +3,10 @@ Future Build 209
 Application Changes:
 - Metagenic quality balances are now shown in the Karma summary tab while in create mode. This allows for more easily seeing how many qualities you need to take to even up, and properly accounts for the karma lost to balance up positive and negative metagenic qualities.
 - Internally changed all 'Metagenetic' references (except for the improvement type) to 'Metagenic'. 
+- Skills can now benefit from Conditional improvements that are not applied to the base pool of a skill. 
+
+Data Changes:
+- Tetrachromacy now adds adds +3 to Perception. 
 
 New Strings:
 - Label_MetagenicKarmaValue
