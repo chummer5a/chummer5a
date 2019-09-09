@@ -48,7 +48,7 @@ namespace Chummer
 
             _xmlOptionalComplexFormNode = _objCharacter.GetNode();
             if (_xmlOptionalComplexFormNode == null) return;
-            if (_objCharacter.MetavariantGuid != Guid.NewGuid())
+            if (_objCharacter.MetavariantGuid != Guid.Empty)
             {
                 XPathNavigator xmlMetavariantNode = _xmlOptionalComplexFormNode.SelectSingleNode($"metavariants/metavariant[id = \"{_objCharacter.MetavariantGuid}\"]");
                 if (xmlMetavariantNode != null)

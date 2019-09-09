@@ -210,13 +210,14 @@ namespace Chummer
                 // Set Metatype information.
                 int intMinModifier = 0;
                 int intMaxModifier = 0;
-                XmlNode charNode = strSelectedMetatypeCategory == "Shapeshifter" ? objXmlMetatype : objXmlMetavariant ?? objXmlMetatype;
+                XmlNode charNode = strSelectedMetatypeCategory == "Shapeshifter" || strSelectedMetavariant == Guid.Empty.ToString() ? objXmlMetatype : objXmlMetavariant ?? objXmlMetatype;
                 _objCharacter.AttributeSection.Create(charNode, intForce, intMinModifier, intMaxModifier);
                 _objCharacter.MetatypeGuid = new Guid(strSelectedMetatype);
-                _objCharacter.Metatype = charNode["name"].Value;
+                _objCharacter.Metatype = charNode["name"].InnerText;
                 _objCharacter.MetatypeCategory = strSelectedMetatypeCategory;
                 _objCharacter.MetatypeBP = Convert.ToInt32(lblKarma.Text);
-                _objCharacter.Metavariant = strSelectedMetavariant == "None" ? string.Empty : strSelectedMetavariant;
+                _objCharacter.MetavariantGuid = new Guid(strSelectedMetavariant);
+                _objCharacter.Metavariant = _objCharacter.MetavariantGuid != Guid.Empty ? objXmlMetavariant["name"].InnerText : "None";
 
                 // We only reverted to the base metatype to get the attributes.
                 if (strSelectedMetatypeCategory == "Shapeshifter")
@@ -780,7 +781,7 @@ namespace Chummer
             {
                 List<ListItem> lstMetavariants = new List<ListItem>
                 {
-                    new ListItem(Guid.NewGuid(), LanguageManager.GetString("String_None", GlobalOptions.Language))
+                    new ListItem(Guid.Empty, LanguageManager.GetString("String_None", GlobalOptions.Language))
                 };
                 lstMetavariants.AddRange(
                     from XPathNavigator objXmlMetavariant in

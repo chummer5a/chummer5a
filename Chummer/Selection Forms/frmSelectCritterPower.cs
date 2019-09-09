@@ -48,7 +48,7 @@ namespace Chummer
             _xmlBaseCritterPowerDataNode = XmlManager.Load("critterpowers.xml").GetFastNavigator().SelectSingleNode("/chummer");
             _xmlMetatypeDataNode = _objCharacter.GetNode();
 
-            if (_xmlMetatypeDataNode == null || _objCharacter.MetavariantGuid == Guid.NewGuid()) return;
+            if (_xmlMetatypeDataNode == null || _objCharacter.MetavariantGuid == Guid.Empty) return;
             XPathNavigator xmlMetavariantNode = _xmlMetatypeDataNode.SelectSingleNode($"/metavariants/metavariant[name = \"{_objCharacter.MetavariantGuid}\"]");
             if (xmlMetavariantNode != null)
                 _xmlMetatypeDataNode = xmlMetavariantNode;

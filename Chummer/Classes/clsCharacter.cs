@@ -881,7 +881,7 @@ namespace Chummer
                 return xmlDoc.CreateNavigator().SelectSingleNode($"/chummer/metatypes/metatype[id = \"{MetatypeGuid}\"]");
             }
             _xmlMetatypeNode = xmlDoc.CreateNavigator().SelectSingleNode($"/chummer/metatypes/metatype[id = \"{MetatypeGuid}\"]");
-            if (MetavariantGuid != Guid.NewGuid())
+            if (MetavariantGuid != Guid.Empty)
             {
                 XPathNavigator xmlMetavariantNode = _xmlMetatypeNode.SelectSingleNode($"metavariants/metavariant[id = \"{MetavariantGuid}\"]");
                 if (xmlMetavariantNode != null)

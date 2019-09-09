@@ -500,14 +500,14 @@ namespace Chummer
             if (LinkedCharacter != null)
             {
                 // Update character information fields.
-                XmlNode objMetatypeNode = _objCharacter.GetNode(true);
+                XPathNavigator objMetatypeNode = _objCharacter.GetNode(true);
 
-                strReturn = objMetatypeNode?["translate"]?.InnerText ?? LanguageManager.TranslateExtra(LinkedCharacter.Metatype, strLanguage);
+                strReturn = objMetatypeNode.SelectSingleNode("translate")?.Value ?? LanguageManager.TranslateExtra(LinkedCharacter.Metatype, strLanguage);
 
                 if (LinkedCharacter.MetavariantGuid == Guid.Empty) return strReturn;
                 objMetatypeNode = objMetatypeNode?.SelectSingleNode($"metavariants/metavariant[id = \"{LinkedCharacter.MetavariantGuid}\"]");
 
-                string strMetatypeTranslate = objMetatypeNode?["translate"]?.InnerText;
+                string strMetatypeTranslate = objMetatypeNode.SelectSingleNode("translate")?.Value;
                 strReturn += !string.IsNullOrEmpty(strMetatypeTranslate)
                     ? LanguageManager.GetString("String_Space", strLanguage) + '(' + strMetatypeTranslate + ')'
                     : LanguageManager.GetString("String_Space", strLanguage) + '(' + LanguageManager.TranslateExtra(LinkedCharacter.Metavariant, strLanguage) + ')';
