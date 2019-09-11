@@ -58,7 +58,7 @@ namespace Chummer
     /// Class that holds all of the information that makes up a complete Character.
     /// </summary>
     [DebuggerDisplay("{CharacterName} ({FileName})")]
-    public sealed class Character : INotifyMultiplePropertyChanged, IHasMugshots, IHasName
+    public sealed class Character : INotifyMultiplePropertyChanged, IHasMugshots, IHasName, IHasSource
     {
         private static readonly TelemetryClient TelemetryClient = new TelemetryClient();
         private Logger Log = NLog.LogManager.GetCurrentClassLogger();
@@ -146,6 +146,8 @@ namespace Chummer
         private string _strRunAlt = string.Empty;
         private string _strSprintAlt = string.Empty;
         private int    _intMetatypeBP;
+        private string _strSource;
+        private string _strPage;
 
         // Special Flags.
 
@@ -2151,6 +2153,9 @@ if (!Utils.IsUnitTest){
                         xmlCharacterNavigator.TryGetInt32FieldQuickly("metatypebp", ref _intMetatypeBP);
                         xmlCharacterNavigator.TryGetStringFieldQuickly("metavariant", ref _strMetavariant);
                         xmlCharacterNavigator.TryGetGuidFieldQuickly("metavariantid", ref _guiMetavariant);
+
+                        xmlCharacterNavigator.TryGetStringFieldQuickly("source", ref _strSource);
+                        xmlCharacterNavigator.TryGetStringFieldQuickly("page", ref _strPage);
                         //Shim for characters created prior to Run Faster Errata
                         if (_strMetavariant == "Cyclopean")
                         {
@@ -11917,6 +11922,22 @@ if (!Utils.IsUnitTest){
 
             return GetNode()?.SelectSingleNode("translate")?.Value ?? Metavariant;
         }
+        /// <summary>
+        /// The metatype, including metavariant if any, in an appropriate language. 
+        /// </summary>
+        /// <param name="strLanguage"></param>
+        /// <returns></returns>
+        public string FormattedMetatype(string strLanguage)
+        {
+            string strMetatype = DisplayMetatype(strLanguage);
+
+            if (MetavariantGuid != Guid.Empty)
+            {
+                strMetatype += $"{LanguageManager.GetString("String_Space")}({DisplayMetavariant(strLanguage)})";
+            }
+
+            return strMetatype;
+        }
 
         /// <summary>
         /// Metatype Category.
@@ -17017,6 +17038,46 @@ if (!Utils.IsUnitTest){
 
         public string DisplayEnemyKarma => $"{EnemyKarma.ToString(GlobalOptions.CultureInfo)}{LanguageManager.GetString("String_Space")}{LanguageManager.GetString("String_Karma")}";
 
+        #endregion
+
+        #region Source
+
+
+
+        private SourceString _objCachedSourceDetail;
+        public SourceString SourceDetail => _objCachedSourceDetail ?? (_objCachedSourceDetail =
+                                                new SourceString(Source, Page(GlobalOptions.Language), GlobalOptions.Language));
+
+        /// <summary>
+        /// Character's Sourcebook.
+        /// </summary>
+        public string Source
+        {
+            get => _strSource;
+            set => _strSource = value;
+        }
+
+        /// <summary>
+        /// Sourcebook Page Number.
+        /// </summary>
+        public string Page(string strLanguage)
+        {
+            if (strLanguage == GlobalOptions.DefaultLanguage)
+                return _strPage;
+
+            return GetNode().SelectSingleNode("altpage")?.Value ?? _strPage;
+        }
+
+        /// <summary>
+        /// Alias map for SourceDetail control text and tooltip assignation.
+        /// </summary>
+        /// <param name="sourceControl"></param>
+        public void SetSourceDetail(Control sourceControl)
+        {
+            if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
+                _objCachedSourceDetail = null;
+            SourceDetail.SetControl(sourceControl);
+        }
         #endregion
     }
 }

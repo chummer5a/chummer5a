@@ -9415,23 +9415,10 @@ namespace Chummer
         /// </summary>
         public void RefreshMetatypeFields()
         {
-            XPathNavigator objMetatypeNode = CharacterObject.GetNode();
-
-            string strSource = objMetatypeNode?.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
-            string strPage = objMetatypeNode?.SelectSingleNode("altpage")?.Value ?? objMetatypeNode?.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
             string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
-
-            string strMetatype = CharacterObject.DisplayMetatype(GlobalOptions.Language);
-
-            if (CharacterObject.MetavariantGuid != Guid.Empty)
-            {
-                strMetatype += strSpaceCharacter + '(' + CharacterObject.DisplayMetavariant(GlobalOptions.Language) + ')';
-            }
             
-            lblMetatype.Text = strMetatype;
-
-            lblMetatypeSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
-            lblMetatypeSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
+            lblMetatype.Text = CharacterObject.FormattedMetatype(GlobalOptions.Language);
+            CharacterObject.SetSourceDetail(lblMetatypeSource);
 
             if (CharacterObject.BuildMethod == CharacterBuildMethod.Karma || CharacterObject.BuildMethod == CharacterBuildMethod.LifeModule)
             {
@@ -9444,7 +9431,7 @@ namespace Chummer
                                           LanguageManager.GetString("String_Karma", GlobalOptions.Language);
             }
 
-            string strToolTip = strMetatype + strSpaceCharacter + '(' + CharacterObject.MetatypeBP + ')';
+            string strToolTip = lblMetatype.Text + strSpaceCharacter + '(' + CharacterObject.MetatypeBP + ')';
             lblKarmaMetatypeBP.SetToolTip(strToolTip);
 
             mnuSpecialConvertToFreeSprite.Visible = CharacterObject.IsSprite;
