@@ -981,14 +981,27 @@ namespace Chummer
         }
 
         /// <summary>
-        /// XPath query used to filter items based on the user's selected source books.
+        /// XPath query used to filter items based on the user's selected source books and optional rules.
         /// </summary>
-        public string BookXPath()
+        public string BookXPath(bool excludeHidden = true)
         {
-            string strPath = "not(hide)";
-            if (!string.IsNullOrEmpty(_strBookXPath))
+            string strPath = string.Empty;
+
+            if (excludeHidden)
             {
-                strPath += " and " + _strBookXPath;
+                strPath = "not(hide)";
+            }
+            if (string.IsNullOrWhiteSpace(_strBookXPath))
+            {
+                RecalculateBookXPath();
+            }
+            if (string.IsNullOrWhiteSpace(strPath))
+            {
+                strPath = _strBookXPath;
+            }
+            else
+            {
+                strPath += $" and {_strBookXPath}";
             }
             if (!GlobalOptions.Dronemods)
             {

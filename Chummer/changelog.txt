@@ -5,8 +5,11 @@ Application Changes:
 - Internally changed all 'Metagenetic' references (except for the improvement type) to 'Metagenic'. 
 - Skills can now benefit from Conditional improvements that are not applied to the base pool of a skill. 
 
+Application Fixes:
+- Fixed issues with the Balistic Shield Exotic Melee Weapon choice not being present in the Exotic Weapon skill selector window. Closes #3856
+
 Data Changes:
-- Tetrachromacy now adds adds +3 to Perception. 
+- Tetrachromacy now adds adds +3 to Perception, with a (Visual) condition. This will be exposed to the Print method for character sheets at a later date. 
 
 New Strings:
 - Label_MetagenicKarmaValue
