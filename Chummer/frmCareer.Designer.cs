@@ -5508,6 +5508,7 @@ namespace Chummer
             this.lblPossessed.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblPossessed.Name = "lblPossessed";
             this.lblPossessed.Size = new System.Drawing.Size(39, 13);
+            this.lblPossessed.Tag = "String_Possessed";
             this.lblPossessed.TabIndex = 90;
             this.lblPossessed.Text = "[None]";
             // 

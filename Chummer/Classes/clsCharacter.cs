@@ -394,6 +394,9 @@ namespace Chummer
                             new DependancyGraphNode<string>(nameof(MetatypeCategory))
                         )
                     ),
+                    new DependancyGraphNode<string>(nameof(DisplayMetatypeBP),
+                        new DependancyGraphNode<string>(nameof(MetatypeBP))
+                    ),
                     new DependancyGraphNode<string>(nameof(PhysicalCMLabelText),
                         new DependancyGraphNode<string>(nameof(IsAI)),
                         new DependancyGraphNode<string>(nameof(HomeNode))
@@ -11925,10 +11928,12 @@ if (!Utils.IsUnitTest){
         /// <summary>
         /// The metatype, including metavariant if any, in an appropriate language. 
         /// </summary>
-        /// <param name="strLanguage"></param>
+        /// <param name="strLanguage">Language to be used. Defaults to GlobalOptions.Language</param>
         /// <returns></returns>
-        public string FormattedMetatype(string strLanguage)
+        public string FormattedMetatype(string strLanguage = "")
         {
+            if (string.IsNullOrEmpty(strLanguage))
+                strLanguage = GlobalOptions.Language;
             string strMetatype = DisplayMetatype(strLanguage);
 
             if (MetavariantGuid != Guid.Empty)
@@ -12415,6 +12420,31 @@ if (!Utils.IsUnitTest){
                     _intMetatypeBP = value;
                     OnPropertyChanged();
                 }
+            }
+        }
+        /// <summary>
+        /// MetatypeBP as a string, including Karma string and multiplied by options as relevant.
+        /// TODO: Belongs in a viewmodel for frmCreate rather than the main character class?
+        /// </summary>
+        public string DisplayMetatypeBP
+        {
+            get
+            {
+                string s = string.Empty;
+                switch (BuildMethod)
+                {
+                    case CharacterBuildMethod.Karma:
+                    case CharacterBuildMethod.LifeModule:
+                        s = (MetatypeBP * Options.MetatypeCostsKarmaMultiplier).ToString(GlobalOptions.CultureInfo);
+                        break;
+                    case CharacterBuildMethod.Priority:
+                    case CharacterBuildMethod.SumtoTen:
+                        s = (MetatypeBP).ToString(GlobalOptions.CultureInfo);
+                        break;
+                }
+
+                s += LanguageManager.GetString("String_Space") + LanguageManager.GetString("String_Karma");
+                return s;
             }
         }
 
@@ -17062,9 +17092,7 @@ if (!Utils.IsUnitTest){
         /// </summary>
         public string Page(string strLanguage)
         {
-            if (strLanguage == GlobalOptions.DefaultLanguage)
-                return _strPage;
-
+            if (strLanguage == GlobalOptions.DefaultLanguage) return _strPage;
             return GetNode().SelectSingleNode("altpage")?.Value ?? _strPage;
         }
 

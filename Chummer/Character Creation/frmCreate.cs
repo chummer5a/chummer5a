@@ -278,6 +278,7 @@ namespace Chummer
                         tabBPSummary.Text = LanguageManager.GetString("Tab_BPSummary_Karma", GlobalOptions.Language);
                         lblQualityBPLabel.Text = LanguageManager.GetString("Label_Karma", GlobalOptions.Language);
 
+                        lblMetatype.DoDatabinding("Text", CharacterObject, nameof(Character.FormattedMetatype));
 
                         // Set the visibility of the Bioware Suites menu options.
                         mnuSpecialAddBiowareSuite.Visible = CharacterObjectOptions.AllowBiowareSuites;
@@ -308,9 +309,6 @@ namespace Chummer
                     using (var op_load_frm_create_refresh =
                         Timekeeper.StartSyncron("load_frm_create_refresh", op_load_frm_create))
                     {
-                        // Refresh character information fields.
-                        RefreshMetatypeFields();
-
                         OnCharacterPropertyChanged(CharacterObject,
                             new PropertyChangedEventArgs(nameof(Character.Ambidextrous)));
 
@@ -1081,6 +1079,10 @@ namespace Chummer
                 case nameof(Character.GroupMember):
                     IsCharacterUpdateRequested = true;
                     break;
+                case nameof(Character.Source):
+                case nameof(Character.Page):
+                    CharacterObject.SetSourceDetail(lblMetatypeSource);
+                    break;
                 case nameof(Character.MAGEnabled):
                     {
                         if (CharacterObject.MAGEnabled)
@@ -1501,6 +1503,16 @@ namespace Chummer
                         lblPrototypeTranshumanESSLabel.Visible = CharacterObject.IsPrototypeTranshuman;
                         break;
                     }
+                case nameof(Character.MetatypeCategory):
+                {
+                    mnuSpecialCyberzombie.Visible = CharacterObject.MetatypeCategory != "Cyberzombie";
+                    break;
+                }
+                case nameof(Character.IsSprite):
+                {
+                    mnuSpecialConvertToFreeSprite.Visible = CharacterObject.IsSprite;
+                    break;
+                }
             }
         }
 
@@ -1735,8 +1747,6 @@ namespace Chummer
                     CharacterObject.CritterPowers.Add(objCritterPower);
                 }
             }
-
-            RefreshMetatypeFields();
 
             IsCharacterUpdateRequested = true;
 
@@ -3373,8 +3383,6 @@ namespace Chummer
             CharacterObject.CritterPowers.Add(objPower);
 
             CharacterObject.MetatypeCategory = "Free Sprite";
-
-            RefreshMetatypeFields();
 
             IsCharacterUpdateRequested = true;
 
@@ -9411,35 +9419,6 @@ namespace Chummer
 
 #region Custom Methods
         /// <summary>
-        /// Refresh the fields related to the character's metatype.
-        /// </summary>
-        public void RefreshMetatypeFields()
-        {
-            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
-            
-            lblMetatype.Text = CharacterObject.FormattedMetatype(GlobalOptions.Language);
-            CharacterObject.SetSourceDetail(lblMetatypeSource);
-
-            if (CharacterObject.BuildMethod == CharacterBuildMethod.Karma || CharacterObject.BuildMethod == CharacterBuildMethod.LifeModule)
-            {
-                lblKarmaMetatypeBP.Text = (CharacterObject.MetatypeBP * CharacterObjectOptions.MetatypeCostsKarmaMultiplier).ToString(GlobalOptions.CultureInfo) + strSpaceCharacter +
-                                          LanguageManager.GetString("String_Karma", GlobalOptions.Language);
-            }
-            else if (CharacterObject.BuildMethod == CharacterBuildMethod.Priority || CharacterObject.BuildMethod == CharacterBuildMethod.SumtoTen)
-            {
-                lblKarmaMetatypeBP.Text = (CharacterObject.MetatypeBP).ToString(GlobalOptions.CultureInfo) + strSpaceCharacter +
-                                          LanguageManager.GetString("String_Karma", GlobalOptions.Language);
-            }
-
-            string strToolTip = lblMetatype.Text + strSpaceCharacter + '(' + CharacterObject.MetatypeBP + ')';
-            lblKarmaMetatypeBP.SetToolTip(strToolTip);
-
-            mnuSpecialConvertToFreeSprite.Visible = CharacterObject.IsSprite;
-
-            mnuSpecialCyberzombie.Visible = CharacterObject.MetatypeCategory != "Cyberzombie";
-        }
-
-        /// <summary>
         /// Calculate the BP used by Primary Attributes.
         /// </summary>
         private static int CalculateAttributeBP(IEnumerable<CharacterAttrib> attribs, IEnumerable<CharacterAttrib> extraAttribs = null)
@@ -10259,9 +10238,6 @@ namespace Chummer
             frmLoadingForm.Show();
             await CharacterObject.Load(frmLoadingForm);
             frmLoadingForm.PerformStep(LanguageManager.GetString("String_UI"));
-
-            // Update character information fields.
-            RefreshMetatypeFields();
 
             // Select the Magician's Tradition.
             if (CharacterObject.MagicTradition.Type == TraditionType.MAG)
@@ -14442,8 +14418,6 @@ namespace Chummer
 
             // Remove any Improvements the character received from their Metatype.
             ImprovementManager.RemoveImprovements(CharacterObject, lstImprovement, false, true);
-
-            RefreshMetatypeFields();
 
             IsCharacterUpdateRequested = true;
             IsDirty = true;
