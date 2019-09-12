@@ -988,7 +988,7 @@ namespace Chummer.Backend.Equipment
 
             // Currently loaded Ammo.
             Guid guiAmmo = GetClip(_intActiveAmmoSlot).Guid;
-
+            objWriter.WriteElementString("availableammo", GetAvailableAmmo.ToString());
             objWriter.WriteElementString("currentammo", GetAmmoName(guiAmmo, strLanguageToPrint));
             objWriter.WriteStartElement("clips");
             foreach (Clip objClip in _lstAmmo)
@@ -1029,12 +1029,32 @@ namespace Chummer.Backend.Equipment
             else
             {
                 string strAmmoGuid = guiAmmo.ToString("D");
-                Gear objAmmo = _objCharacter.Gear.DeepFindById(strAmmoGuid) ?? _objCharacter.Vehicles.FindVehicleGear(strAmmoGuid);
+                Gear objAmmo = ParentVehicle != null
+                    ? _objCharacter.Vehicles.FindVehicleGear(strAmmoGuid)
+                    : _objCharacter.Gear.DeepFindById(strAmmoGuid);
 
-                if (objAmmo != null)
-                    return objAmmo.DisplayNameShort(strLanguage);
-                else
-                    return string.Empty;
+                return objAmmo?.DisplayNameShort(strLanguage) ?? string.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Get the amount of available Ammo from the character or Vehicle.
+        /// </summary>
+        private decimal GetAvailableAmmo
+        {
+            get
+            {
+                if (!RequireAmmo)
+                {
+                    return 0;
+                }
+                HashSet<string> setAmmoPrefixStringSet = new HashSet<string>(AmmoPrefixStrings);
+                IList<Gear> lstGear = ParentVehicle == null ? _objCharacter.Gear : ParentVehicle.Gear;
+                return lstGear.DeepWhere(x => x.Children, x =>
+                    x.Quantity > 0 && (x.Category == "Ammunition" && x.Extra == AmmoCategory ||
+                                       !string.IsNullOrWhiteSpace(AmmoName) && x.Name == AmmoName ||
+                                      string.IsNullOrEmpty(x.Extra) && setAmmoPrefixStringSet.Any(y => x.Name.StartsWith(y)) ||
+                                       UseSkill == "Throwing Weapons" && Name == x.Name)).Sum(x => x.Quantity);
             }
         }
         #endregion

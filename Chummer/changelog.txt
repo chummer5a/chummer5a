@@ -4,6 +4,7 @@ Application Changes:
 - Metagenic quality balances are now shown in the Karma summary tab while in create mode. This allows for more easily seeing how many qualities you need to take to even up, and properly accounts for the karma lost to balance up positive and negative metagenic qualities.
 - Internally changed all 'Metagenetic' references (except for the improvement type) to 'Metagenic'. 
 - Skills can now benefit from Conditional improvements that are not applied to the base pool of a skill. 
+- Added a 'GetAvailableAmmo' int to the Print method for weapons, exposed as 'availableammo'. This provides a count of the total amount of ammunition that can fit into the current weapon.It does NOT filter by types of ammunition, just the total available amount. 
 
 Application Fixes:
 - Fixed issues with the Balistic Shield Exotic Melee Weapon choice not being present in the Exotic Weapon skill selector window. Closes #3856
