@@ -3139,13 +3139,16 @@ namespace Chummer
             {
                 int intSpellKarmaCost = CharacterObject.SpellKarmaCost("Spells");
                 // Make sure the character has enough Karma before letting them select a Spell.
-                if (CharacterObject.Karma < intSpellKarmaCost)
+                if (CharacterObject.Karma < intSpellKarmaCost && !(CharacterObject.AllowFreeSpells.Item1 || CharacterObject.AllowFreeSpells.Item2))
                 {
                     Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NotEnoughKarma", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughKarma", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     break;
                 }
 
                 frmSelectSpell frmPickSpell = new frmSelectSpell(CharacterObject);
+                frmPickSpell.FreeOnly = CharacterObject.Karma < intSpellKarmaCost &&
+                                        (CharacterObject.AllowFreeSpells.Item1 ||
+                                         CharacterObject.AllowFreeSpells.Item2);
                 frmPickSpell.ShowDialog(this);
                 // Make sure the dialogue window was not canceled.
                 if (frmPickSpell.DialogResult == DialogResult.Cancel)

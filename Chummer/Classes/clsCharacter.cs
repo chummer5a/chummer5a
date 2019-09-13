@@ -14643,6 +14643,51 @@ if (!Utils.IsUnitTest){
         /// </summary>
         public bool CanAffordCareerPP => MysAdeptAllowPPCareer && Karma >= _objOptions.KarmaMysticAdeptPowerPoint &&
                                          MAG.TotalValue > MysticAdeptPowerPoints;
+        /// <summary>
+        /// Whether the character is allowed to gain free spells that are limited to the Touch range. 
+        /// </summary>
+        public Tuple<bool,bool> AllowFreeSpells
+        {
+            get
+            {
+                //Free Spells (typically from Dedicated Spellslinger or custom Improvements) are only handled manually
+                //in Career Mode. Create mode manages itself.
+                int intFreeGenericSpells = ImprovementManager.ValueOf(this, Improvement.ImprovementType.FreeSpells);
+                int intFreeTouchOnlySpells = 0;
+                foreach (Improvement imp in Improvements.Where(i =>
+                    (i.ImproveType == Improvement.ImprovementType.FreeSpellsATT ||
+                     i.ImproveType == Improvement.ImprovementType.FreeSpellsSkill) && i.Enabled))
+                {
+                    switch (imp.ImproveType)
+                    {
+                        case Improvement.ImprovementType.FreeSpellsATT:
+                            int intAttValue = GetAttribute(imp.ImprovedName).TotalValue;
+                            if (imp.UniqueName.Contains("half")) intAttValue = (intAttValue + 1) / 2;
+                            if (imp.UniqueName.Contains("touchonly")) intFreeTouchOnlySpells += intAttValue;
+                            else intFreeGenericSpells += intAttValue;
+                            break;
+                        case Improvement.ImprovementType.FreeSpellsSkill:
+                            Skill skill = SkillsSection.GetActiveSkill(imp.ImprovedName);
+                            int intSkillValue = SkillsSection.GetActiveSkill(imp.ImprovedName).TotalBaseRating;
+                            if (imp.UniqueName.Contains("half")) intSkillValue = (intSkillValue + 1) / 2;
+                            if (imp.UniqueName.Contains("touchonly")) intFreeTouchOnlySpells += intSkillValue;
+                            else intFreeGenericSpells += intSkillValue;
+                            //TODO: I don't like this being hardcoded, even though I know full well CGL are never going to reuse this.
+                            intFreeGenericSpells += skill.Specializations.Where(spec =>
+                                Spells.Any(spell => spell.Category == spec.Name && !spell.FreeBonus)).Count();
+                            break;
+                    }
+                }
+
+                int intTotalFreeNonTouchSpellsCount = Spells.Count(spell =>
+                    spell.FreeBonus && (spell.Range != "T" && spell.Range != "T (A)"));
+                int intTotalFreeTouchOnlySpellsCount = Spells.Count(spell =>
+                    spell.FreeBonus && (spell.Range == "T" || spell.Range == "T (A)"));
+                return new Tuple<bool, bool>(intFreeTouchOnlySpells > intTotalFreeTouchOnlySpellsCount,
+                    intFreeGenericSpells > intTotalFreeNonTouchSpellsCount +
+                    Math.Max(intTotalFreeTouchOnlySpellsCount - intFreeTouchOnlySpells, 0));
+            }
+        }
 
         /// <summary>
         /// Blocked grades of cyber/bioware in Create mode.
@@ -16890,7 +16935,7 @@ if (!Utils.IsUnitTest){
                 if (_intCachedPositiveQualities == int.MinValue)
                 {
                     _intCachedPositiveQualities = Qualities
-                        .Where(objQuality => objQuality.Type == QualityType.Positive && objQuality.ContributeToBP)
+                        .Where(objQuality => objQuality.Type == QualityType.Positive && objQuality.ContributeToBP && objQuality.ContributeToLimit)
                         .Sum(objQuality   => objQuality.BP) * Options.KarmaQuality;
                     // Group contacts are counted as positive qualities
                     _intCachedPositiveQualities += Contacts
