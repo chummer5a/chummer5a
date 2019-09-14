@@ -11925,12 +11925,14 @@ if (!Utils.IsUnitTest){
 
             return GetNode()?.SelectSingleNode("translate")?.Value ?? Metavariant;
         }
+
+        public string FormattedMetatype => FormattedMetatypeMethod(GlobalOptions.Language);
         /// <summary>
         /// The metatype, including metavariant if any, in an appropriate language. 
         /// </summary>
         /// <param name="strLanguage">Language to be used. Defaults to GlobalOptions.Language</param>
         /// <returns></returns>
-        public string FormattedMetatype(string strLanguage = "")
+        public string FormattedMetatypeMethod(string strLanguage = "")
         {
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalOptions.Language;
