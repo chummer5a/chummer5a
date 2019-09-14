@@ -12942,11 +12942,11 @@ namespace Chummer
             // if character has more than permitted Metagenic qualities
             if (CharacterObject.MetagenicLimit > 0)
             {
-                if (CharacterObject.MetagenicNegativeQualityKarma > CharacterObject.MetagenicLimit)
+                if (-CharacterObject.MetagenicNegativeQualityKarma > CharacterObject.MetagenicLimit)
                 {
                     strMessage += Environment.NewLine + '\t' +
                                   string.Format(LanguageManager.GetString("Message_OverNegativeMetagenicQualities", GlobalOptions.Language)
-                                      , CharacterObject.MetagenicNegativeQualityKarma.ToString(GlobalOptions.CultureInfo)
+                                      , (-CharacterObject.MetagenicNegativeQualityKarma).ToString(GlobalOptions.CultureInfo)
                                       , CharacterObject.MetagenicLimit.ToString(GlobalOptions.CultureInfo));
                     blnValid = false;
                 }
@@ -12959,12 +12959,12 @@ namespace Chummer
                     blnValid = false;
                 }
 
-                if (CharacterObject.MetagenicNegativeQualityKarma != CharacterObject.MetagenicPositiveQualityKarma &&
-                    CharacterObject.MetagenicNegativeQualityKarma != (CharacterObject.MetagenicPositiveQualityKarma - 1))
+                if (-CharacterObject.MetagenicNegativeQualityKarma != CharacterObject.MetagenicPositiveQualityKarma &&
+                    -CharacterObject.MetagenicNegativeQualityKarma != (CharacterObject.MetagenicPositiveQualityKarma - 1))
                 {
                     strMessage += Environment.NewLine + '\t' +
                                   string.Format(LanguageManager.GetString("Message_MetagenicQualitiesUnbalanced", GlobalOptions.Language)
-                                      , CharacterObject.MetagenicNegativeQualityKarma.ToString(GlobalOptions.CultureInfo)
+                                      , (-CharacterObject.MetagenicNegativeQualityKarma).ToString(GlobalOptions.CultureInfo)
                                       , (CharacterObject.MetagenicPositiveQualityKarma - 1).ToString(GlobalOptions.CultureInfo)
                                       , CharacterObject.MetagenicPositiveQualityKarma.ToString(GlobalOptions.CultureInfo));
                     blnValid = false;

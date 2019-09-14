@@ -7912,6 +7912,7 @@
       <range>Light Crossbows</range>
       <spec>Grapple Gun</spec>
       <useskill>Exotic Ranged Weapon</useskill>
+      <useskillspec>Grapple Gun</useskillspec>
     </weapon>
     <!-- End Region -->
     <!-- End Region-->

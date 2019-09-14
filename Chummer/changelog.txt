@@ -4,9 +4,16 @@ Application Changes:
 - Metagenic quality balances are now shown in the Karma summary tab while in create mode. This allows for more easily seeing how many qualities you need to take to even up, and properly accounts for the karma lost to balance up positive and negative metagenic qualities.
 - Internally changed all 'Metagenetic' references (except for the improvement type) to 'Metagenic'. 
 - Skills can now benefit from Conditional improvements that are not applied to the base pool of a skill. 
+- Added a 'GetAvailableAmmo' int to the Print method for weapons, exposed as 'availableammo'. This provides a count of the total amount of ammunition that can fit into the current weapon.It does NOT filter by types of ammunition, just the total available amount. 
+- Weapons can now use a 'useskillspec' node to force the specialisation they use in place of their name. Mostly intended to be used for Exotic Melee/Ranged weapons.
+
+Application Fixes:
+- Fixed issues with the Balistic Shield Exotic Melee Weapon choice not being present in the Exotic Weapon skill selector window. Closes #3856
+- Dedicated Spellslinger properly allows for purchasing spells while the character does not have enough karma to afford it. Closes #3859
 
 Data Changes:
-- Tetrachromacy now adds adds +3 to Perception. 
+- Tetrachromacy now adds adds +3 to Perception, with a (Visual) condition. This will be exposed to the Print method for character sheets at a later date. 
+- Grapple Fist cyberware now properly uses the skill of the Grapple Gun Exotic skill.
 
 New Strings:
 - Label_MetagenicKarmaValue

@@ -1695,6 +1695,7 @@
 			<category translate="Gentech">Genemods</category>
 			<category translate="Symbionten">Symbionts</category>
 			<category translate="Orthoskin-Upgrades">Orthoskin Upgrades</category>
+			<category translate="Genetische Wiederherstellung">Genetic Restoration</category>
 		</categories>
 		<biowares>
 			<bioware>
@@ -4836,6 +4837,12 @@
 				<name>Enhanced Senses (Ultrasound)</name>
 				<translate>Gesteigere Sinne (Ultraschall)</translate>
 				<altpage>397</altpage>
+			</power>
+			<power translated="True">
+				<id>79317297-becf-4c68-9778-6f00fd955a13</id>
+				<name>Hemmorhage</name>
+				<translate>Blutsturz</translate>
+				<altpage>96</altpage>
 			</power>
 		</powers>
 	</chummer>
