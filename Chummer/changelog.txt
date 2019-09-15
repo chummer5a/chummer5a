@@ -14,6 +14,7 @@ Application Fixes:
 Data Changes:
 - Tetrachromacy now adds adds +3 to Perception, with a (Visual) condition. This will be exposed to the Print method for character sheets at a later date. 
 - Grapple Fist cyberware now properly uses the skill of the Grapple Gun Exotic skill.
+- Fixed an issue with the Private Investigator life module that prevented it from being added.
 
 New Strings:
 - Label_MetagenicKarmaValue

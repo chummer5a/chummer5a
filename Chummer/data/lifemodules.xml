@@ -4652,7 +4652,7 @@
           <val>2</val>
         </knowledgeskilllevel>
         <addqualities>
-          <addquality>In Debt V</addquality>
+          <addquality rating="5">In Debt</addquality>
         </addqualities>
       </bonus>
       <!--<required>
