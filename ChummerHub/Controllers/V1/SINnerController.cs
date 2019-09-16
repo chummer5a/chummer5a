@@ -691,6 +691,8 @@ namespace ChummerHub.Controllers.V1
                     sinner.SINnerMetaData.Id = Guid.NewGuid();
                     foreach (var tag in sinner.SINnerMetaData.Tags)
                     {
+                        if (tag == null)
+                            continue;
                         tag.TagValueFloat = null;
                         if (float.TryParse(tag.TagValue, out float result))
                         {
