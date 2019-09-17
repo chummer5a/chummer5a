@@ -10,6 +10,7 @@ Application Changes:
 Application Fixes:
 - Fixed issues with the Balistic Shield Exotic Melee Weapon choice not being present in the Exotic Weapon skill selector window. Closes #3856
 - Dedicated Spellslinger properly allows for purchasing spells while the character does not have enough karma to afford it. Closes #3859
+- Fixed a regression with lifestyle qualities not properly storing their Area, Security and Comfort values. Closes #3869
 
 Data Changes:
 - Tetrachromacy now adds adds +3 to Perception, with a (Visual) condition. This will be exposed to the Print method for character sheets at a later date. 
