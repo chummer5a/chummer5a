@@ -139,7 +139,7 @@ namespace ChummerHub.Controllers.V1
                     string transactionId = String.Format("{0:X}", Guid.NewGuid().ToString().GetHashCode());
                     string chummerUrl = "chummer://plugin:SINners:Load:" + sinner.Id + ":" + transactionId;
                     
-                    string postbackUrl = "https://shadowsprawl.com/character/open";
+                    string postbackUrl = "https://shadowsprawl.com/api/chummer/upload";
                     sinner.LastDownload = DateTime.Now;
                     _context.SaveChanges();
                     string mypath = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}";
