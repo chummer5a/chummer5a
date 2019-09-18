@@ -187,13 +187,18 @@ namespace Chummer.Plugins
                 string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Plugins");
                 if (!Directory.Exists(path))
                 {
-                    Log.Warn("Directory " + path + " not found. No Plugins will be available.");
+                    string msg = "Directory " + path + " not found. No Plugins will be available.";
                     MyPlugins = new List<IPlugin>();
-                    return;
+                    throw new ArgumentException(msg);
                 }
                 catalog = new AggregateCatalog();
 
                 var plugindirectories = Directory.GetDirectories(path);
+                if (!plugindirectories.Any())
+                {
+                    throw new ArgumentException("No Plugin-Subdirectories in " + path + " !");
+                }
+
                 foreach (var plugindir in plugindirectories)
                 {
                     //search for a textfile, that tells me what dll to parse
@@ -210,7 +215,7 @@ namespace Chummer.Plugins
                             {
                                 FileInfo fi = new FileInfo(plugindll);
                                 myDirectoryCatalog = new DirectoryCatalog(path: plugindir, searchPattern: fi.Name);
-                                Log.Info("Searching for plugin in " + plugindll + ".");
+                                Log.Info("Searching for plugin-interface in dll: " + plugindll);
                                 catalog.Catalogs.Add(myDirectoryCatalog);
                             }
                             else
@@ -239,6 +244,10 @@ namespace Chummer.Plugins
                 container.ComposeParts(this);
 
                 Log.Info("Plugins found: " + MyPlugins.Count());
+                if (!MyPlugins.Any())
+                {
+                    throw new ArgumentException("No plugins found in " + path + ".");
+                }
                 Log.Info("Plugins active: " + MyActivePlugins.Count());
                 foreach (var plugin in MyActivePlugins)
                 {
@@ -332,9 +341,7 @@ namespace Chummer.Plugins
                 string msg =
                     "Well, something went wrong probably because we are not Admins. Let's just ignore it and move on." +
                     Environment.NewLine + Environment.NewLine;
-                Console.WriteLine(msg + e.Message);
-                System.Diagnostics.Trace.TraceWarning(msg + e.Message);
-                return;
+                Log.Warn(e, msg);
             }
             catch (ReflectionTypeLoadException e)
             {
