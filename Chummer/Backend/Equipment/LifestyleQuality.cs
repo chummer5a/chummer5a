@@ -276,7 +276,7 @@ namespace Chummer.Backend.Equipment
             if (objNode["lifestylequalitysource"] != null)
                 OriginSource = ConvertToLifestyleQualitySource(objNode["lifestylequalitysource"].InnerText);
 #else
-            _objLifestyleQualitySource = QualitySource.Selected;
+            OriginSource = QualitySource.Selected;
 #endif
             if (!objNode.TryGetStringFieldQuickly("category", ref _strCategory))
                 _strCategory = GetNode()?["category"]?.InnerText ?? string.Empty;
