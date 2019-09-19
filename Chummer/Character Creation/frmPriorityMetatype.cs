@@ -628,6 +628,8 @@ namespace Chummer
                 _objCharacter.Metatype = strSelectedMetatype;
                 _objCharacter.MetatypeCategory = strSelectedMetatypeCategory;
                 _objCharacter.Metavariant = strSelectedMetavariant == "None" ? string.Empty : strSelectedMetavariant;
+                _objCharacter.Source = charNode["source"].InnerText;
+                _objCharacter.Page = charNode["page"]?.InnerText ?? "0";
 
                 // We only reverted to the base metatype to get the attributes.
                 if (strSelectedMetatypeCategory == "Shapeshifter")

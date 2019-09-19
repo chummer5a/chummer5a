@@ -585,6 +585,20 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Sourcebook Page Number using a given language file.
+        /// Returns Page if not found or the string is empty.
+        /// </summary>
+        /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <returns></returns>
+        public string DisplayPage(string strLanguage)
+        {
+            if (strLanguage == GlobalOptions.DefaultLanguage)
+                return Page;
+            string s = GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
+            return !string.IsNullOrWhiteSpace(s) ? s : Page;
+        }
+
+        /// <summary>
         /// Was the object stolen  via the Stolen Gear quality?
         /// </summary>
 	    public bool Stolen
@@ -598,19 +612,6 @@ namespace Chummer.Backend.Equipment
 	                                            new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language));
 
 
-        /// <summary>
-        /// Sourcebook Page Number using a given language file.
-        /// Returns Page if not found or the string is empty.
-        /// </summary>
-        /// <param name="strLanguage">Language file keyword to use.</param>
-        /// <returns></returns>
-        public string DisplayPage(string strLanguage)
-        {
-            if (strLanguage == GlobalOptions.DefaultLanguage)
-                return Page;
-            string s = GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
-            return !string.IsNullOrWhiteSpace(s) ? s : Page;
-        }
 
         /// <summary>
         /// Whether or not an Armor Mod is equipped and should be included in the Armor's totals.

@@ -189,11 +189,11 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strSelectedMetatype))
             {
                 string strSelectedMetatypeCategory = cboCategory.SelectedValue?.ToString();
-                string strSelectedMetavariant = cboMetavariant.SelectedValue.ToString();
+                string strSelectedMetavariant = cboMetavariant.SelectedValue?.ToString() ?? Guid.Empty.ToString();
 
                 // If this is a Shapeshifter, a Metavariant must be selected. Default to Human if None is selected.
-                if (strSelectedMetatypeCategory == "Shapeshifter" && strSelectedMetavariant == "None")
-                    strSelectedMetavariant = "Human";
+                if (strSelectedMetatypeCategory == "Shapeshifter" && strSelectedMetavariant == Guid.Empty.ToString())
+                    strSelectedMetavariant = _xmlMetatypeDocumentMetatypesNode.SelectSingleNode("metatype[name = \"Human\"]/id").InnerText;
 
                 XmlNode objXmlMetatype = _xmlMetatypeDocumentMetatypesNode.SelectSingleNode("metatype[id = \"" + strSelectedMetatype + "\"]");
                 if (objXmlMetatype == null)
@@ -218,6 +218,8 @@ namespace Chummer
                 _objCharacter.MetatypeBP = Convert.ToInt32(lblKarma.Text);
                 _objCharacter.MetavariantGuid = new Guid(strSelectedMetavariant);
                 _objCharacter.Metavariant = _objCharacter.MetavariantGuid != Guid.Empty ? objXmlMetavariant["name"].InnerText : "None";
+                _objCharacter.Source = charNode["source"].InnerText;
+                _objCharacter.Page = charNode["page"]?.InnerText ?? "0";
 
                 // We only reverted to the base metatype to get the attributes.
                 if (strSelectedMetatypeCategory == "Shapeshifter")
