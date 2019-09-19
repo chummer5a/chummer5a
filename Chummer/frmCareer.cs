@@ -8457,11 +8457,10 @@ namespace Chummer
                     break;
                 case KarmaExpenseType.AddCritterPower:
                     {
-                        foreach (CritterPower objPower in CharacterObject.CritterPowers.Where(objPower => objPower.InternalId == objEntry.Undo.ObjectId))
+                        foreach (CritterPower objPower in CharacterObject.CritterPowers.Where(objPower => objPower.InternalId == objEntry.Undo.ObjectId).ToList())
                         {
                             // Remove any Improvements created by the Critter Power.
                             ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.CritterPower, objPower.InternalId);
-
                             CharacterObject.CritterPowers.Remove(objPower);
                         }
                     }

@@ -1871,9 +1871,22 @@ namespace Chummer
                 //</plugins>
                 objWriter.WriteEndElement();
             }
+
+            //calculatedValues
+            objWriter.WriteStartElement("calculatedvalues");
+            objWriter.WriteComment("these values are not loaded and only stored here for third parties, who parse this files (to not have to calculate them themselves)");
+            objWriter.WriteElementString("physicalcm", this.PhysicalCM.ToString());
+            objWriter.WriteElementString("physicalcmthresholdoffset", this.PhysicalCMThresholdOffset.ToString());
+            objWriter.WriteElementString("physicalcmoverflow", this.CMOverflow.ToString());
+            objWriter.WriteElementString("stuncm", this.StunCM.ToString());
+            objWriter.WriteElementString("stuncmthresholdoffset", this.StunCMThresholdOffset.ToString());
+            objWriter.WriteEndElement();
+            // </calculatedValues>
+
             // </character>
             objWriter.WriteEndElement();
 
+            
 
             objWriter.WriteEndDocument();
             objWriter.Flush();
