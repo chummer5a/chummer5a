@@ -762,14 +762,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 int i = LP - Comforts - Area - Security + Roommates + BonusLP;
-                if (LifestyleQualities.Sum(lq => lq.LP) > 0 && i > 0)
-                {
-                    i -= LifestyleQualities.Sum(lq => lq.LP);
-                }
-                else
-                {
-                    i += LifestyleQualities.Sum(lq => lq.LP);
-                }
+                i = LifestyleQualities.Aggregate(i, (current, lq) => current - lq.LP);
 
                 return i;
             }
