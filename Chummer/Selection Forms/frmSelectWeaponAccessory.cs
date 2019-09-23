@@ -549,6 +549,12 @@ namespace Chummer
                 lblCost.Text = (0.0m).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 lblTest.Text = _objCharacter.AvailTest(0, lblAvail.Text);
             }
+
+            lblRatingLabel.Text = xmlAccessory.SelectSingleNode("ratinglabel") != null
+                ? LanguageManager.GetString("Label_RatingFormat").Replace("{0}",
+                    LanguageManager.GetString(xmlAccessory.SelectSingleNode("ratinglabel").Value,
+                        GlobalOptions.Language))
+                : LanguageManager.GetString("Label_Rating");
             lblCostLabel.Visible = !string.IsNullOrEmpty(lblCost.Text);
             lblTestLabel.Visible = !string.IsNullOrEmpty(lblTest.Text);
             chkBlackMarketDiscount.Checked = _blnIsParentWeaponBlackMarketAllowed;

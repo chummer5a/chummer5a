@@ -2662,6 +2662,18 @@
       <text>Too many positive Metagenic qualities. Current: {0} Maximum: {1}</text>
     </string>        
     <string>
+      <key>Label_MetagenicKarmaValue</key>
+      <text>{0}P/{1}N - Max {2}</text>
+    </string>
+    <string>
+      <key>Label_MetagenicKarmaValueAppend</key>
+      <text> (1 Karma)</text>
+    </string>
+    <string>
+      <key>Label_SummaryMetagenicQualities</key>
+      <text>Metagenic Qualities</text>
+    </string>
+    <string>
       <key>Message_OverNegativeMetagenicQualities</key>
       <text>Too many negative Metagenic qualities. Current: {0} Maximum: {1}</text>
     </string>        
@@ -8678,12 +8690,12 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Show only Qualities I can take</text>
     </string>
     <string>
-      <key>Checkbox_SelectQuality_Metagenetic</key>
-      <text>Show only Metagenetic Qualities</text>
+      <key>Checkbox_SelectQuality_Metagenic</key>
+      <text>Show only Metagenic Qualities</text>
     </string>
     <string>
-      <key>Checkbox_SelectQuality_Not_Metagenetic</key>
-      <text>Don't show Metagenetic Qualities</text>
+      <key>Checkbox_SelectQuality_Not_Metagenic</key>
+      <text>Don't show Metagenic Qualities</text>
     </string>
     <string>
       <key>Message_SelectQuality_QualityLimit</key>
@@ -9785,5 +9797,19 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <key>Menu_ShareChummer</key>
       <text>Share Chummer</text>
     </string>
+    <!-- Region Rating Strings -->
+      <string>
+          <key>Label_RatingFormat</key>
+          <text>{0}:</text>
+      </string>
+      <string>
+          <key>Rating_LengthInCmBy10</key>
+          <text>Length (cm)x10</text>
+      </string>
+      <string>
+          <key>Rating_Meters</key>
+          <text>Meters</text>
+      </string>
+    <!-- End Region -->
   </strings>
 </chummer>

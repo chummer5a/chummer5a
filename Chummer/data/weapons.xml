@@ -7245,7 +7245,7 @@
     </weapon>
     <!-- End Region -->
     <!-- Region Run Faster -->
-    <!-- Region Metagenetic Weapons -->
+    <!-- Region Metagenic Weapons -->
     <weapon>
       <id>4b987699-ed39-479d-a02c-046ff7d05a9b</id>
       <name>Digging Claws</name>
@@ -7912,6 +7912,7 @@
       <range>Light Crossbows</range>
       <spec>Grapple Gun</spec>
       <useskill>Exotic Ranged Weapon</useskill>
+      <useskillspec>Grapple Gun</useskillspec>
     </weapon>
     <!-- End Region -->
     <!-- End Region-->

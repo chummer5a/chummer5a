@@ -4731,17 +4731,9 @@
       <bonus>
         <addspirit>
             <spirit>Carcass Spirit</spirit>
-        </addspirit>
-        <addspirit>
             <spirit>Corpse Spirit</spirit>
-        </addspirit>
-        <addspirit>
             <spirit>Rot Spirit</spirit>
-        </addspirit>
-        <addspirit>
             <spirit>Palefire Spirit</spirit>
-        </addspirit>
-        <addspirit>
             <spirit>Detritus Spirit</spirit>
         </addspirit>
       </bonus>

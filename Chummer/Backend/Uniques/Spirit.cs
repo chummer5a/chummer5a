@@ -170,6 +170,7 @@ namespace Chummer
             objWriter.WriteElementString("bound", Bound.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("services", ServicesOwed.ToString(objCulture));
             objWriter.WriteElementString("force", Force.ToString(objCulture));
+            objWriter.WriteElementString("ratinglabel", LanguageManager.GetString(RatingLabel, strLanguageToPrint));
 
             if (objXmlCritterNode != null)
             {
@@ -432,6 +433,22 @@ namespace Chummer
                 {
                     _strCritterName = value;
                     OnPropertyChanged();
+                }
+            }
+        }
+
+        public string RatingLabel
+        {
+            get
+            {
+                switch (EntityType)
+                {
+                    case SpiritType.Spirit:
+                        return "String_Force";
+                    case SpiritType.Sprite:
+                        return "String_Level";
+                    default:
+                        return "String_Rating";
                 }
             }
         }

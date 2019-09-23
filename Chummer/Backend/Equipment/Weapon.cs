@@ -84,6 +84,7 @@ namespace Chummer.Backend.Equipment
         private WeaponMount _objWeaponMount;
         private string _strNotes = string.Empty;
         private string _strUseSkill = string.Empty;
+        private string _strUseSkillSpec = string.Empty;
         private Location _objLocation;
         private string _strSpec = string.Empty;
         private string _strSpec2 = string.Empty;
@@ -305,6 +306,7 @@ namespace Chummer.Backend.Equipment
             objXmlWeapon.TryGetInt32FieldQuickly("suppressive", ref _intSuppressive);
 
             objXmlWeapon.TryGetStringFieldQuickly("useskill", ref _strUseSkill);
+            objXmlWeapon.TryGetStringFieldQuickly("useskillspec", ref _strUseSkillSpec);
             objXmlWeapon.TryGetBoolFieldQuickly("requireammo", ref _blnRequireAmmo);
             objXmlWeapon.TryGetStringFieldQuickly("spec", ref _strSpec);
             objXmlWeapon.TryGetStringFieldQuickly("spec2", ref _strSpec2);
@@ -512,6 +514,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("avail", _strAvail);
             objWriter.WriteElementString("cost", _strCost);
             objWriter.WriteElementString("useskill", _strUseSkill);
+            objWriter.WriteElementString("useskillspec", _strUseSkillSpec);
             objWriter.WriteElementString("range", _strRange);
             objWriter.WriteElementString("alternaterange", _strAlternateRange);
             objWriter.WriteElementString("rangemultiply", _decRangeMultiplier.ToString(GlobalOptions.InvariantCultureInfo));
@@ -706,6 +709,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
             objNode.TryGetStringFieldQuickly("useskill", ref _strUseSkill);
+            objNode.TryGetStringFieldQuickly("useskillspec", ref _strUseSkillSpec);
             objNode.TryGetDecFieldQuickly("rangemultiply", ref _decRangeMultiplier);
             objNode.TryGetBoolFieldQuickly("included", ref _blnIncludedInWeapon);
             if (Name == "Unarmed Attack")
@@ -988,7 +992,7 @@ namespace Chummer.Backend.Equipment
 
             // Currently loaded Ammo.
             Guid guiAmmo = GetClip(_intActiveAmmoSlot).Guid;
-
+            objWriter.WriteElementString("availableammo", GetAvailableAmmo.ToString());
             objWriter.WriteElementString("currentammo", GetAmmoName(guiAmmo, strLanguageToPrint));
             objWriter.WriteStartElement("clips");
             foreach (Clip objClip in _lstAmmo)
@@ -1029,12 +1033,32 @@ namespace Chummer.Backend.Equipment
             else
             {
                 string strAmmoGuid = guiAmmo.ToString("D");
-                Gear objAmmo = _objCharacter.Gear.DeepFindById(strAmmoGuid) ?? _objCharacter.Vehicles.FindVehicleGear(strAmmoGuid);
+                Gear objAmmo = ParentVehicle != null
+                    ? _objCharacter.Vehicles.FindVehicleGear(strAmmoGuid)
+                    : _objCharacter.Gear.DeepFindById(strAmmoGuid);
 
-                if (objAmmo != null)
-                    return objAmmo.DisplayNameShort(strLanguage);
-                else
-                    return string.Empty;
+                return objAmmo?.DisplayNameShort(strLanguage) ?? string.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Get the amount of available Ammo from the character or Vehicle.
+        /// </summary>
+        private decimal GetAvailableAmmo
+        {
+            get
+            {
+                if (!RequireAmmo)
+                {
+                    return 0;
+                }
+                HashSet<string> setAmmoPrefixStringSet = new HashSet<string>(AmmoPrefixStrings);
+                IList<Gear> lstGear = ParentVehicle == null ? _objCharacter.Gear : ParentVehicle.Gear;
+                return lstGear.DeepWhere(x => x.Children, x =>
+                    x.Quantity > 0 && (x.Category == "Ammunition" && x.Extra == AmmoCategory ||
+                                       !string.IsNullOrWhiteSpace(AmmoName) && x.Name == AmmoName ||
+                                      string.IsNullOrEmpty(x.Extra) && setAmmoPrefixStringSet.Any(y => x.Name.StartsWith(y)) ||
+                                       UseSkill == "Throwing Weapons" && Name == x.Name)).Sum(x => x.Quantity);
             }
         }
         #endregion
@@ -1594,6 +1618,15 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Active Skill Specialization that should be used with this Weapon instead of the default one.
+        /// </summary>
+        public string UseSkillSpec
+        {
+            get => string.IsNullOrWhiteSpace(_strUseSkillSpec) ? _strName : _strUseSkillSpec;
+            set => _strUseSkillSpec = value;
+        }
+
+        /// <summary>
         /// Whether or not the Armor's cost should be discounted by 10% through the Black Market Pipeline Quality.
         /// </summary>
         public bool DiscountCost
@@ -1909,18 +1942,16 @@ namespace Chummer.Backend.Equipment
 
                 string strUseSkill = Skill?.Name;
 
-                foreach (Improvement objImprovement in _objCharacter.Improvements)
-                {
-                    if (objImprovement.ImproveType == Improvement.ImprovementType.WeaponCategoryDV && objImprovement.Enabled &&
-                        (objImprovement.ImprovedName == strCategory ||
-                         objImprovement.ImprovedName == strUseSkill ||
-                         Skill?.IsExoticSkill == true && objImprovement.ImprovedName == $"Exotic Melee Weapon ({Name})" ||
-                         Skill?.IsExoticSkill == true && objImprovement.ImprovedName == $"Exotic Ranged Weapon ({Name})" ||
-                         "Cyberware " + objImprovement.ImprovedName == strCategory))
-                    {
-                        intImprove += objImprovement.Value;
-                    }
-                }
+                intImprove += _objCharacter.Improvements.Where(objImprovement =>
+                        objImprovement.ImproveType == Improvement.ImprovementType.WeaponCategoryDV &&
+                        objImprovement.Enabled && (objImprovement.ImprovedName == strCategory ||
+                                                   objImprovement.ImprovedName == strUseSkill ||
+                                                   Skill?.IsExoticSkill == true && objImprovement.ImprovedName ==
+                                                   $"Exotic Melee Weapon ({UseSkillSpec})" ||
+                                                   Skill?.IsExoticSkill == true && objImprovement.ImprovedName ==
+                                                   $"Exotic Ranged Weapon ({UseSkillSpec})" ||
+                                                   "Cyberware " + objImprovement.ImprovedName == strCategory))
+                    .Sum(objImprovement => objImprovement.Value);
             }
 
             // If this is the Unarmed Attack Weapon and the character has the UnarmedDVPhysical Improvement, change the type to Physical.
@@ -3285,13 +3316,13 @@ namespace Chummer.Backend.Equipment
                         case "Exotic Melee Weapons":
                             strSkill = "Exotic Melee Weapon";
                             if (string.IsNullOrEmpty(strSpec))
-                                strSpec = Name;
+                                strSpec = UseSkillSpec;
                             break;
                         case "Exotic Ranged Weapons":
                         case "Special Weapons":
                             strSkill = "Exotic Ranged Weapon";
                             if (string.IsNullOrEmpty(strSpec))
-                                strSpec = Name;
+                                strSpec = UseSkillSpec;
                             break;
                         case "Flamethrowers":
                             strSkill = "Exotic Ranged Weapon";
@@ -3331,7 +3362,7 @@ namespace Chummer.Backend.Equipment
                     if (!string.IsNullOrEmpty(strSpec))
                         strSkill += $" ({strSpec})";
                     else
-                        strSkill += $" ({Name})";
+                        strSkill += $" ({UseSkillSpec})";
                 }
                 intAccuracy += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponSkillAccuracy, false, strSkill);
 
@@ -3906,7 +3937,7 @@ namespace Chummer.Backend.Equipment
                     strSpec = string.Empty;
 
                     if (UseSkill.Contains("Exotic"))
-                        strSpec = Name;
+                        strSpec = UseSkillSpec;
                 }
 
                 // Locate the Active Skill to be used.
@@ -3952,12 +3983,12 @@ namespace Chummer.Backend.Equipment
                     break;
                 case "Exotic Melee Weapons":
                     strSkill = "Exotic Melee Weapon";
-                    strSpec = Name;
+                    strSpec = UseSkillSpec;
                     break;
                 case "Exotic Ranged Weapons":
                 case "Special Weapons":
                     strSkill = "Exotic Ranged Weapon";
-                    strSpec = Name;
+                    strSpec = UseSkillSpec;
                     break;
                 case "Flamethrowers":
                     strSkill = "Exotic Ranged Weapon";
@@ -4002,7 +4033,7 @@ namespace Chummer.Backend.Equipment
             {
                 string strCategory = Category;
                 string strSkill = UseSkill;
-                string strSpec = string.Empty;
+                string strSpec  = UseSkillSpec;
 
                 // If this is a Special Weapon, use the Range to determine the required Active Skill (if present).
                 if (strCategory == "Special Weapons" && !string.IsNullOrEmpty(Range))
@@ -4032,12 +4063,12 @@ namespace Chummer.Backend.Equipment
                             break;
                         case "Exotic Melee Weapons":
                             strSkill = "Exotic Melee Weapon";
-                            strSpec = Name;
+                            strSpec = UseSkillSpec;
                             break;
                         case "Exotic Ranged Weapons":
                         case "Special Weapons":
                             strSkill = "Exotic Ranged Weapon";
-                            strSpec = Name;
+                            strSpec = UseSkillSpec;
                             break;
                         case "Flamethrowers":
                             strSkill = "Exotic Ranged Weapon";

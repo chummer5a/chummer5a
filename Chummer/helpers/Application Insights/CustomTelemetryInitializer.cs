@@ -51,6 +51,14 @@ namespace Chummer
             telemetry.Context.Device.OperatingSystem = Environment.OSVersion.ToString();
             if (Properties.Settings.Default.UploadClientId != Guid.Empty)
             {
+                //sometimes, there are odd values stored in the UploadClientId.
+                bool isValid = Guid.TryParse(Properties.Settings.Default.UploadClientId.ToString(),
+                    out Guid guidOutput);
+                if (!isValid)
+                {
+                    Properties.Settings.Default.UploadClientId = Guid.NewGuid();
+                    Properties.Settings.Default.Save();
+                }
                 telemetry.Context.Cloud.RoleInstance = Properties.Settings.Default.UploadClientId.ToString();
                 telemetry.Context.Device.Id = Properties.Settings.Default.UploadClientId.ToString();
             }

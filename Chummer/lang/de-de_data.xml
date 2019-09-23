@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
 	Chummer5a is free software: you can redistribute it and/or modify
@@ -1695,6 +1695,7 @@
 			<category translate="Gentech">Genemods</category>
 			<category translate="Symbionten">Symbionts</category>
 			<category translate="Orthoskin-Upgrades">Orthoskin Upgrades</category>
+			<category translate="Genetische Wiederherstellung">Genetic Restoration</category>
 		</categories>
 		<biowares>
 			<bioware>
@@ -4836,6 +4837,12 @@
 				<name>Enhanced Senses (Ultrasound)</name>
 				<translate>Gesteigere Sinne (Ultraschall)</translate>
 				<altpage>397</altpage>
+			</power>
+			<power translated="True">
+				<id>79317297-becf-4c68-9778-6f00fd955a13</id>
+				<name>Hemmorhage</name>
+				<translate>Blutsturz</translate>
+				<altpage>96</altpage>
 			</power>
 		</powers>
 	</chummer>
@@ -27922,56 +27929,56 @@
 			</quality>
 			<quality>
 				<id>2ffd990c-ced6-4484-955c-108473df5335</id>
-				<name>Metagenetic Improvement (Body)</name>
+				<name>Metagenic Improvement (Body)</name>
 				<source>RF</source>
 				<translate>Metagenetische Verbesserung (Konstitution)</translate>
 				<altpage>93</altpage>
 			</quality>
 			<quality>
 				<id>96c4c8e1-2f5d-431c-96c8-db83820f747b</id>
-				<name>Metagenetic Improvement (Agility)</name>
+				<name>Metagenic Improvement (Agility)</name>
 				<source>RF</source>
 				<translate>Metagenetische Verbesserung (Geschicklichkeit)</translate>
 				<altpage>93</altpage>
 			</quality>
 			<quality>
 				<id>c734c06d-c9e4-431d-93ba-033e82444efc</id>
-				<name>Metagenetic Improvement (Reaction)</name>
+				<name>Metagenic Improvement (Reaction)</name>
 				<source>RF</source>
 				<translate>Metagenetische Verbesserung (Reaktion)</translate>
 				<altpage>93</altpage>
 			</quality>
 			<quality>
 				<id>76ac03f1-b379-48a8-a6e8-d8611fce0adf</id>
-				<name>Metagenetic Improvement (Strength)</name>
+				<name>Metagenic Improvement (Strength)</name>
 				<source>RF</source>
 				<translate>Metagenetische Verbesserung (Stärke)</translate>
 				<altpage>93</altpage>
 			</quality>
 			<quality>
 				<id>f1609199-e601-4b69-837f-2029b2ea94f0</id>
-				<name>Metagenetic Improvement (Charisma)</name>
+				<name>Metagenic Improvement (Charisma)</name>
 				<source>RF</source>
 				<translate>Metagenetische Verbesserung (Charisma)</translate>
 				<altpage>93</altpage>
 			</quality>
 			<quality>
 				<id>7ee0765f-34f4-43ef-82c0-55c1b8bef8d8</id>
-				<name>Metagenetic Improvement (Intuition)</name>
+				<name>Metagenic Improvement (Intuition)</name>
 				<source>RF</source>
 				<translate>Metagenetische Verbesserung (Intuition)</translate>
 				<altpage>93</altpage>
 			</quality>
 			<quality>
 				<id>bfdffed5-b687-4cb4-ad6a-ac59788fdc8a</id>
-				<name>Metagenetic Improvement (Logic)</name>
+				<name>Metagenic Improvement (Logic)</name>
 				<source>RF</source>
 				<translate>Metagenetische Verbesserung (Logik)</translate>
 				<altpage>93</altpage>
 			</quality>
 			<quality>
 				<id>a6536e32-5f2f-4865-8f6a-d2ba268d4647</id>
-				<name>Metagenetic Improvement (Willpower)</name>
+				<name>Metagenic Improvement (Willpower)</name>
 				<source>RF</source>
 				<translate>Metagenetische Verbesserung (Willenskraft)</translate>
 				<altpage>93</altpage>

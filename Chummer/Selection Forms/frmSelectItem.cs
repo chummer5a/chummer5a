@@ -68,7 +68,7 @@ namespace Chummer
                         strAmmoName += strSpace + '[' + strPlugins + ']';
                     }
                     if (objGear.Rating > 0)
-                        strAmmoName += strSpace + '(' + LanguageManager.GetString("String_Rating", GlobalOptions.Language) + strSpace + objGear.Rating.ToString(GlobalOptions.CultureInfo) + ')';
+                        strAmmoName += strSpace + '(' + LanguageManager.GetString(objGear.RatingLabel, GlobalOptions.Language) + strSpace + objGear.Rating.ToString(GlobalOptions.CultureInfo) + ')';
                     strAmmoName += strSpace + 'x' + objGear.Quantity.ToString(GlobalOptions.InvariantCultureInfo);
                     lstItems.Add(new ListItem(objGear.InternalId, strAmmoName));
                 }

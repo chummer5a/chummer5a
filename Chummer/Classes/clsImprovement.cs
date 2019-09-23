@@ -1886,7 +1886,7 @@ namespace Chummer
                     break;
                 case ImprovementType.MetageneticLimit:
                     {
-                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.MetageneticLimit));
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.MetagenicLimit));
                     }
                     break;
             }
@@ -2015,7 +2015,7 @@ namespace Chummer
         #region Properties
         /// <summary>
         /// Limit what can be selected in Pick forms to a single value. This is typically used when selecting the Qualities for a Metavariant that has a specifiec
-        /// CharacterAttribute selection for Qualities like Metagenetic Improvement.
+        /// CharacterAttribute selection for Qualities like Metagenic Improvement.
         /// </summary>
         public static string LimitSelection
         {

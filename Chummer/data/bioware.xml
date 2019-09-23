@@ -2487,6 +2487,13 @@
       <avail>10</avail>
       <cost>8000</cost>
       <forcegrade>None</forcegrade>
+      <bonus>
+        <specificskill>
+          <name>Perception</name>
+          <bonus>3</bonus>
+          <condition>Visual</condition>
+        </specificskill>
+      </bonus>
       <source>CF</source>
       <page>161</page>
     </bioware>

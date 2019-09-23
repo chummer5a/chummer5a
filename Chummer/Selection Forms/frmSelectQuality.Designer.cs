@@ -40,10 +40,10 @@ namespace Chummer
             this.lblBP = new Chummer.LabelWithToolTip();
             this.lblBPLabel = new System.Windows.Forms.Label();
             this.chkFree = new System.Windows.Forms.CheckBox();
-            this.chkMetagenetic = new System.Windows.Forms.CheckBox();
+            this.chkMetagenic = new System.Windows.Forms.CheckBox();
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.lblSearchLabel = new System.Windows.Forms.Label();
-            this.chkNotMetagenetic = new System.Windows.Forms.CheckBox();
+            this.chkNotMetagenic = new System.Windows.Forms.CheckBox();
             this.nudMinimumBP = new System.Windows.Forms.NumericUpDown();
             this.nudValueBP = new System.Windows.Forms.NumericUpDown();
             this.nudMaximumBP = new System.Windows.Forms.NumericUpDown();
@@ -205,18 +205,18 @@ namespace Chummer
             this.chkFree.UseVisualStyleBackColor = true;
             this.chkFree.CheckedChanged += new System.EventHandler(this.chkFree_CheckedChanged);
             // 
-            // chkMetagenetic
+            // chkMetagenic
             // 
-            this.chkMetagenetic.AutoSize = true;
-            this.chkMetagenetic.Location = new System.Drawing.Point(3, 157);
-            this.chkMetagenetic.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chkMetagenetic.Name = "chkMetagenetic";
-            this.chkMetagenetic.Size = new System.Drawing.Size(180, 17);
-            this.chkMetagenetic.TabIndex = 7;
-            this.chkMetagenetic.Tag = "Checkbox_SelectQuality_Metagenetic";
-            this.chkMetagenetic.Text = "Show only Metagenetic Qualities";
-            this.chkMetagenetic.UseVisualStyleBackColor = true;
-            this.chkMetagenetic.CheckedChanged += new System.EventHandler(this.chkMetagenetic_CheckedChanged);
+            this.chkMetagenic.AutoSize = true;
+            this.chkMetagenic.Location = new System.Drawing.Point(3, 157);
+            this.chkMetagenic.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkMetagenic.Name = "chkMetagenic";
+            this.chkMetagenic.Size = new System.Drawing.Size(180, 17);
+            this.chkMetagenic.TabIndex = 7;
+            this.chkMetagenic.Tag = "Checkbox_SelectQuality_Metagenic";
+            this.chkMetagenic.Text = "Show only Metagenic Qualities";
+            this.chkMetagenic.UseVisualStyleBackColor = true;
+            this.chkMetagenic.CheckedChanged += new System.EventHandler(this.chkMetagenic_CheckedChanged);
             // 
             // txtSearch
             // 
@@ -242,18 +242,18 @@ namespace Chummer
             this.lblSearchLabel.Tag = "Label_Search";
             this.lblSearchLabel.Text = "&Search:";
             // 
-            // chkNotMetagenetic
+            // chkNotMetagenic
             // 
-            this.chkNotMetagenetic.AutoSize = true;
-            this.chkNotMetagenetic.Location = new System.Drawing.Point(3, 182);
-            this.chkNotMetagenetic.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chkNotMetagenetic.Name = "chkNotMetagenetic";
-            this.chkNotMetagenetic.Size = new System.Drawing.Size(184, 17);
-            this.chkNotMetagenetic.TabIndex = 15;
-            this.chkNotMetagenetic.Tag = "Checkbox_SelectQuality_Not_Metagenetic";
-            this.chkNotMetagenetic.Text = "Don\'t show Metagenetic Qualities";
-            this.chkNotMetagenetic.UseVisualStyleBackColor = true;
-            this.chkNotMetagenetic.CheckedChanged += new System.EventHandler(this.chkNotMetagenetic_CheckedChanged);
+            this.chkNotMetagenic.AutoSize = true;
+            this.chkNotMetagenic.Location = new System.Drawing.Point(3, 182);
+            this.chkNotMetagenic.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkNotMetagenic.Name = "chkNotMetagenic";
+            this.chkNotMetagenic.Size = new System.Drawing.Size(184, 17);
+            this.chkNotMetagenic.TabIndex = 15;
+            this.chkNotMetagenic.Tag = "Checkbox_SelectQuality_Not_Metagenic";
+            this.chkNotMetagenic.Text = "Don\'t show Metagenic Qualities";
+            this.chkNotMetagenic.UseVisualStyleBackColor = true;
+            this.chkNotMetagenic.CheckedChanged += new System.EventHandler(this.chkNotMetagenic_CheckedChanged);
             // 
             // nudMinimumBP
             // 
@@ -405,8 +405,8 @@ namespace Chummer
             this.flowLayoutPanel2.Controls.Add(this.gpbKarmaFilter);
             this.flowLayoutPanel2.Controls.Add(this.chkLimitList);
             this.flowLayoutPanel2.Controls.Add(this.chkFree);
-            this.flowLayoutPanel2.Controls.Add(this.chkMetagenetic);
-            this.flowLayoutPanel2.Controls.Add(this.chkNotMetagenetic);
+            this.flowLayoutPanel2.Controls.Add(this.chkMetagenic);
+            this.flowLayoutPanel2.Controls.Add(this.chkNotMetagenic);
             this.flowLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanel2.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flowLayoutPanel2.Location = new System.Drawing.Point(301, 76);
@@ -518,10 +518,10 @@ namespace Chummer
         private Chummer.LabelWithToolTip lblBP;
         private System.Windows.Forms.Label lblBPLabel;
         private System.Windows.Forms.CheckBox chkFree;
-        private System.Windows.Forms.CheckBox chkMetagenetic;
+        private System.Windows.Forms.CheckBox chkMetagenic;
         private System.Windows.Forms.TextBox txtSearch;
         private System.Windows.Forms.Label lblSearchLabel;
-        private System.Windows.Forms.CheckBox chkNotMetagenetic;
+        private System.Windows.Forms.CheckBox chkNotMetagenic;
         private System.Windows.Forms.NumericUpDown nudMinimumBP;
         private System.Windows.Forms.NumericUpDown nudValueBP;
         private System.Windows.Forms.NumericUpDown nudMaximumBP;

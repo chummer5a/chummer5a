@@ -49,6 +49,7 @@ namespace Chummer.Backend.Equipment
         private string _strCategory = string.Empty;
         private string _strMaxRating = string.Empty;
         private string _strMinRating = string.Empty;
+        private string _strRatingLabel = "String_Rating";
         private int _intRating;
         private decimal _decQty = 1.0m;
         private string _strCapacity = string.Empty;
@@ -167,6 +168,7 @@ namespace Chummer.Backend.Equipment
             _nodBonus = objXmlGear["bonus"];
             _nodWirelessBonus = objXmlGear["wirelessbonus"];
             _blnWirelessOn = false;
+            objXmlGear.TryGetStringFieldQuickly("ratinglabel", ref _strRatingLabel);
 			objXmlGear.TryGetStringFieldQuickly("rating", ref _strMaxRating);
             if (_strMaxRating == "0")
                 _strMaxRating = string.Empty;
@@ -1462,6 +1464,12 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        public string RatingLabel
+        {
+            get => _strRatingLabel;
+            set => _strRatingLabel = value;
+        }
+
         /// <summary>
         /// Quantity.
         /// </summary>
@@ -2448,7 +2456,7 @@ namespace Chummer.Backend.Equipment
             if (Quantity != 1.0m || Category == "Currency")
                 strReturn = Quantity.ToString(Name.StartsWith("Nuyen") ? _objCharacter.Options.NuyenFormat : Category == "Currency" ? "#,0.00" : "#,0.##", objCulture) + strSpaceCharacter + strReturn;
             if (Rating > 0)
-                strReturn += strSpaceCharacter + '(' + LanguageManager.GetString("String_Rating", strLanguage) + strSpaceCharacter + Rating.ToString(objCulture) + ')';
+                strReturn += strSpaceCharacter + '(' + LanguageManager.GetString(RatingLabel, strLanguage) + strSpaceCharacter + Rating.ToString(objCulture) + ')';
             if (!string.IsNullOrEmpty(Extra))
                 strReturn += strSpaceCharacter + '(' + LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
 
@@ -2977,7 +2985,7 @@ namespace Chummer.Backend.Equipment
                         TreeNode nodFocus = treFoci.FindNodeByTag(this);
                         if (nodFocus != null)
                         {
-                            nodFocus.Text = DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language).Replace(LanguageManager.GetString("String_Rating", GlobalOptions.Language), LanguageManager.GetString("String_Force", GlobalOptions.Language));
+                            nodFocus.Text = DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language).Replace(LanguageManager.GetString(RatingLabel, GlobalOptions.Language), LanguageManager.GetString("String_Force", GlobalOptions.Language));
                         }
                     }
                     break;
@@ -2985,19 +2993,17 @@ namespace Chummer.Backend.Equipment
                     {
                         for (int i = _objCharacter.StackedFoci.Count - 1; i >= 0; --i)
                         {
-                            if (i < _objCharacter.StackedFoci.Count)
+                            if (i >= _objCharacter.StackedFoci.Count) continue;
+                            StackedFocus objStack = _objCharacter.StackedFoci[i];
+                            if (objStack.GearId != InternalId) continue;
+                            TreeNode nodFocus = treFoci.FindNode(objStack.InternalId);
+                            if (nodFocus != null)
                             {
-                                StackedFocus objStack = _objCharacter.StackedFoci[i];
-                                if (objStack.GearId == InternalId)
-                                {
-                                    TreeNode nodFocus = treFoci.FindNode(objStack.InternalId);
-                                    if (nodFocus != null)
-                                    {
-                                        nodFocus.Text = DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language).Replace(LanguageManager.GetString("String_Rating", GlobalOptions.Language), LanguageManager.GetString("String_Force", GlobalOptions.Language));
-                                    }
-                                    break;
-                                }
+                                nodFocus.Text = DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)
+                                    .Replace(LanguageManager.GetString(RatingLabel, GlobalOptions.Language),
+                                        LanguageManager.GetString("String_Force", GlobalOptions.Language));
                             }
+                            break;
                         }
                     }
                     break;

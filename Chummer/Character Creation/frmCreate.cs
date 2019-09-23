@@ -266,6 +266,12 @@ namespace Chummer
                         txtAlias.DoDatabinding("Text", CharacterObject, nameof(Character.Alias));
                         txtPlayerName.DoDatabinding("Text", CharacterObject, nameof(Character.PlayerName));
 
+                        lblPositiveQualitiesBP.DoDatabinding("Text", CharacterObject, nameof(Character.DisplayPositiveQualityKarma));
+                        lblNegativeQualitiesBP.DoDatabinding("Text", CharacterObject, nameof(Character.DisplayNegativeQualityKarma));
+                        lblMetagenicQualities.DoDatabinding("Text", CharacterObject, nameof(Character.DisplayMetagenicQualityKarma));
+                        lblMetagenicQualities.DoDatabinding("Visible", CharacterObject, nameof(Character.IsChangeling));
+                        lblMetagenicQualitiesLabel.DoDatabinding("Visible", CharacterObject, nameof(Character.IsChangeling));
+                        lblEnemiesBP.DoDatabinding("Text", CharacterObject, nameof(Character.DisplayEnemyKarma));
                         tssBPLabel.Text = LanguageManager.GetString("Label_Karma", GlobalOptions.Language);
                         tssBPRemainLabel.Text =
                             LanguageManager.GetString("Label_KarmaRemaining", GlobalOptions.Language);
@@ -9584,11 +9590,6 @@ namespace Chummer
                         intContactPointsLeft = over;
                     }
                 }
-                else
-                {
-                    //save this for later, as a group contract is counted as a positive quality
-                    intGroupContacts += objContact.ContactPoints;
-                }
             }
 
             CharacterObject.ContactPointsUsed = intContactPointsLeft;
@@ -9599,115 +9600,48 @@ namespace Chummer
             }
 
             intKarmaPointsRemain -= intPointsInContacts;
-
-            // ------------------------------------------------------------------------------
-            // Calculate the BP used by Enemies. These are added to the BP since they are technically
-            // a Negative Quality.
-            int intEnemyPoints = 0;
-            foreach (Contact objLoopEnemy in CharacterObject.Contacts)
-            {
-                if (objLoopEnemy.EntityType == ContactType.Enemy && !objLoopEnemy.Free)
-                {
-                    // The Enemy's Karma cost = their (Connection + Loyalty Rating) x Karma multiplier.
-                    intEnemyPoints -= (objLoopEnemy.Connection + objLoopEnemy.Loyalty) * CharacterObjectOptions.KarmaEnemy;
-                }
-            }
-
-            // dont add in enemy costs here, carry it over later under qualities
-
             // ------------------------------------------------------------------------------
             // Calculate the BP used by Qualities.
-            int intPositiveQualities = intGroupContacts; // group contacts are positive qualities
-            int intNegativeQualities = intEnemyPoints;   // enemies are negative qualities
             int intLifeModuleQualities = 0;
-            int intUnlimitedPositive = 0;
-            int intUnlimitedNegative = 0;
-            // Used to make sure Positive Qualities that aren't doubled in Career mode don't get added into the total until after that step has been checked.
-            int intPositiveQualitiesNoDoubleExcess = 0;
 
-            foreach (Quality objLoopQuality in CharacterObject.Qualities)
+            foreach (Quality objLoopQuality in CharacterObject.Qualities.Where(q => q.ContributeToBP))
             {
-                if (objLoopQuality.ContributeToBP)
+                if (objLoopQuality.ContributeToLimit)
                 {
-                    if (objLoopQuality.ContributeToLimit)
+                    if (objLoopQuality.Type == QualityType.Positive)
                     {
-                        if (objLoopQuality.Type == QualityType.Positive)
-                        {
-                            if (!objLoopQuality.DoubleCost)
-                                intPositiveQualitiesNoDoubleExcess += objLoopQuality.BP * CharacterObjectOptions.KarmaQuality;
-                            else
-                                intPositiveQualities += objLoopQuality.BP * CharacterObjectOptions.KarmaQuality;
-                            strPositiveQualityTooltip +=
-                                $"{objLoopQuality.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)} ({objLoopQuality.BP * CharacterObjectOptions.KarmaQuality})\n";
-                        }
-                        else if (objLoopQuality.Type == QualityType.Negative)
-                        {
-                            intNegativeQualities += objLoopQuality.BP * CharacterObjectOptions.KarmaQuality;
-                            strNegativeQualityTooltip += $"{objLoopQuality.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)} ({objLoopQuality.BP})\n";
-                        }
-                        else if (objLoopQuality.Type == QualityType.LifeModule)
-                        {
-                            intLifeModuleQualities += objLoopQuality.BP * CharacterObjectOptions.KarmaQuality;
-                            strPositiveQualityTooltip +=
-                                $"{objLoopQuality.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)} ({objLoopQuality.BP * CharacterObjectOptions.KarmaQuality})\n";
-                        }
-                    }
-                    else if (objLoopQuality.Type == QualityType.Positive)
-                    {
-                        intUnlimitedPositive += objLoopQuality.BP * CharacterObjectOptions.KarmaQuality;
-                        strPositiveQualityTooltip += $"{objLoopQuality.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)} ({objLoopQuality.BP})\n";
+                        strPositiveQualityTooltip +=
+                            $"{objLoopQuality.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)} ({objLoopQuality.BP * CharacterObjectOptions.KarmaQuality})\n";
                     }
                     else if (objLoopQuality.Type == QualityType.Negative)
                     {
-                        intUnlimitedNegative += objLoopQuality.BP * CharacterObjectOptions.KarmaQuality;
                         strNegativeQualityTooltip += $"{objLoopQuality.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)} ({objLoopQuality.BP})\n";
                     }
+                    else if (objLoopQuality.Type == QualityType.LifeModule)
+                    {
+                        intLifeModuleQualities += objLoopQuality.BP * CharacterObjectOptions.KarmaQuality;
+                        strPositiveQualityTooltip +=
+                            $"{objLoopQuality.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)} ({objLoopQuality.BP * CharacterObjectOptions.KarmaQuality})\n";
+                    }
                 }
-            }
-
-            // Deduct the amounts for free Qualities.
-            int intPositiveFree = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.FreePositiveQualities) * CharacterObjectOptions.KarmaQuality;
-            int intNegativeFree = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.FreeNegativeQualities) * CharacterObjectOptions.KarmaQuality;
-
-            intNegativeQualities -= intNegativeFree;
-            if (intNegativeFree != 0)
-            {
-                strNegativeQualityTooltip += $"-{intNegativeFree}\n";
-            }
-
-            intPositiveQualities -= intPositiveFree;
-            if (intPositiveFree != 0)
-            {
-                strPositiveQualityTooltip += $"-{intPositiveFree}\n";
-            }
-
-            // If the character is only allowed to gain 25 BP from Negative Qualities but allowed to take as many as they'd like, limit their refunded points.
-            if (CharacterObjectOptions.ExceedNegativeQualitiesLimit)
-            {
-                int intNegativeQualityLimit = -CharacterObject.GameplayOptionQualityLimit;
-                if (intNegativeQualities < intNegativeQualityLimit)
+                else if (objLoopQuality.Type == QualityType.Positive)
                 {
-                    intNegativeQualities = intNegativeQualityLimit;
+                    strPositiveQualityTooltip += $"{objLoopQuality.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)} ({objLoopQuality.BP})\n";
                 }
-            }
-
-            // If the character is allowed to take as many Positive Qualities as they'd like but all costs in excess are doubled, add the excess to their point cost.
-            if (CharacterObjectOptions.ExceedPositiveQualitiesCostDoubled)
-            {
-                int intPositiveQualityExcess = intPositiveQualities - CharacterObject.GameplayOptionQualityLimit;
-                if (intPositiveQualityExcess > 0)
+                else if (objLoopQuality.Type == QualityType.Negative)
                 {
-                    intPositiveQualities += intPositiveQualityExcess;
-                    strPositiveQualityTooltip += $"+{intPositiveQualityExcess}\n";
+                    strNegativeQualityTooltip += $"{objLoopQuality.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)} ({objLoopQuality.BP})\n";
                 }
             }
-            // Now we add in the karma from qualities that are not doubled in career mode
-            intPositiveQualities += intPositiveQualitiesNoDoubleExcess;
 
-            int intQualityPointsUsed = intLifeModuleQualities + intNegativeQualities + intPositiveQualities + intUnlimitedPositive + intUnlimitedNegative;
+            int intQualityPointsUsed = intLifeModuleQualities + CharacterObject.NegativeQualityKarma + CharacterObject.PositiveQualityKarma;
 
             intKarmaPointsRemain -= intQualityPointsUsed;
             intFreestyleBP += intQualityPointsUsed;
+            // Changelings must either have a balanced negative and positive number of metagenic qualities, or have 1 more point of positive than negative.
+            // If the latter, karma is used to balance them out. 
+            if (CharacterObject.MetagenicPositiveQualityKarma + CharacterObject.MetagenicNegativeQualityKarma == 1)
+                intKarmaPointsRemain--;
 
             // ------------------------------------------------------------------------------
             // Update Primary Attributes and Special Attributes values.
@@ -9896,11 +9830,14 @@ namespace Chummer
                 intSpellPointsUsed += Math.Max(Math.Max(0, spells) * (spellCost), 0);
                 intRitualPointsUsed += Math.Max(Math.Max(0, rituals) * (ritualCost), 0);
                 intPrepPointsUsed += Math.Max(Math.Max(0, preps) * prepCost, 0);
-                if (blnDoUIUpdate)
+                if ((blnDoUIUpdate)
+                    && (lblBuildPrepsBP != null)
+                    && (lblSpellsBP != null)
+                    && (lblBuildRitualsBP != null))
                 {
-                    lblSpellsBP.SetToolTip($"{spells.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}×{strSpaceCharacter}{spellCost.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}+{strSpaceCharacter}{LanguageManager.GetString("String_Karma", GlobalOptions.Language)}{strSpaceCharacter}={strSpaceCharacter}{intSpellPointsUsed.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}{LanguageManager.GetString("String_Karma", GlobalOptions.Language)}");
-                    lblBuildRitualsBP.SetToolTip($"{rituals.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}×{strSpaceCharacter}{spellCost.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}+{strSpaceCharacter}{LanguageManager.GetString("String_Karma", GlobalOptions.Language)}{strSpaceCharacter}={strSpaceCharacter}{intRitualPointsUsed.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}{LanguageManager.GetString("String_Karma", GlobalOptions.Language)}");
-                    lblBuildPrepsBP.SetToolTip($"{preps.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}×{strSpaceCharacter}{spellCost.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}+{strSpaceCharacter}{LanguageManager.GetString("String_Karma", GlobalOptions.Language)}{strSpaceCharacter}={strSpaceCharacter}{intPrepPointsUsed.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}{LanguageManager.GetString("String_Karma", GlobalOptions.Language)}");
+                    lblSpellsBP?.SetToolTip($"{spells.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}×{strSpaceCharacter}{spellCost.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}+{strSpaceCharacter}{LanguageManager.GetString("String_Karma", GlobalOptions.Language)}{strSpaceCharacter}={strSpaceCharacter}{intSpellPointsUsed.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}{LanguageManager.GetString("String_Karma", GlobalOptions.Language)}");
+                    lblBuildRitualsBP?.SetToolTip($"{rituals.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}×{strSpaceCharacter}{spellCost.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}+{strSpaceCharacter}{LanguageManager.GetString("String_Karma", GlobalOptions.Language)}{strSpaceCharacter}={strSpaceCharacter}{intRitualPointsUsed.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}{LanguageManager.GetString("String_Karma", GlobalOptions.Language)}");
+                    lblBuildPrepsBP?.SetToolTip($"{preps.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}×{strSpaceCharacter}{spellCost.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}+{strSpaceCharacter}{LanguageManager.GetString("String_Karma", GlobalOptions.Language)}{strSpaceCharacter}={strSpaceCharacter}{intPrepPointsUsed.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}{LanguageManager.GetString("String_Karma", GlobalOptions.Language)}");
                     if (limit + limitMod > 0)
                     {
                         lblBuildPrepsBP.Text =
@@ -10196,15 +10133,6 @@ namespace Chummer
 
                 lblContactsBP.Text = strContactPoints;
                 lblContactPoints.Text = strContactPoints;
-                lblEnemiesBP.Text = intEnemyPoints.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + strPoints;
-
-                lblPositiveQualitiesBP.Text = intUnlimitedPositive > 0
-                   ? $"{intPositiveQualities.ToString(GlobalOptions.CultureInfo)}/{CharacterObject.GameplayOptionQualityLimit.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}{strPoints}{strSpaceCharacter}({(intPositiveQualities + intUnlimitedPositive).ToString(GlobalOptions.CultureInfo)})"
-                   : $"{intPositiveQualities.ToString(GlobalOptions.CultureInfo)}/{CharacterObject.GameplayOptionQualityLimit.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}{strPoints}";
-
-                lblNegativeQualitiesBP.Text = intUnlimitedNegative > 0
-                    ? $"{(-intNegativeQualities).ToString(GlobalOptions.CultureInfo)}/{CharacterObject.GameplayOptionQualityLimit.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}{strPoints}{strSpaceCharacter}({(intNegativeQualities + intUnlimitedNegative).ToString(GlobalOptions.CultureInfo)})"
-                    : $"{(-intNegativeQualities).ToString(GlobalOptions.CultureInfo)}/{CharacterObject.GameplayOptionQualityLimit.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}{strPoints}";
 
                 lblPositiveQualitiesBP.SetToolTip(strPositiveQualityTooltip);
                 lblNegativeQualitiesBP.SetToolTip(strNegativeQualityTooltip);
@@ -10553,6 +10481,11 @@ namespace Chummer
                 return;
             }
 
+            if (treCyberware.SelectedNode?.Tag is IHasRating objHasRating)
+            {
+                lblCyberwareRatingLabel.Text = LanguageManager.GetString("Label_RatingFormat").Replace("{0}", LanguageManager.GetString(objHasRating.RatingLabel, GlobalOptions.Language));
+            }
+
             string strSpace = LanguageManager.GetString("String_Space", GlobalOptions.Language);
             string strESSFormat = CharacterObjectOptions.EssenceFormat;
             if (treCyberware.SelectedNode?.Tag is IHasSource objSelected)
@@ -10779,6 +10712,11 @@ namespace Chummer
             {
                 lblWeaponSourceLabel.Visible = false;
                 lblWeaponSource.Visible = false;
+            }
+
+            if (treWeapons.SelectedNode?.Tag is IHasRating objHasRating)
+            {
+                lblWeaponRatingLabel.Text = LanguageManager.GetString("Label_RatingFormat").Replace("{0}", LanguageManager.GetString(objHasRating.RatingLabel, GlobalOptions.Language));
             }
 
             if (treWeapons.SelectedNode?.Tag is IHasStolenProperty loot)
@@ -11173,6 +11111,11 @@ namespace Chummer
                 chkArmorStolen.Visible = false;
             }
 
+            if (treArmor.SelectedNode?.Tag is IHasRating objHasRating)
+            {
+                lblArmorRatingLabel.Text = LanguageManager.GetString("Label_RatingFormat").Replace("{0}", LanguageManager.GetString(objHasRating.RatingLabel, GlobalOptions.Language));
+            }
+
             string strSpace = LanguageManager.GetString("String_Space", GlobalOptions.Language);
 
             if (treArmor.SelectedNode?.Tag is Armor objArmor)
@@ -11405,6 +11348,11 @@ namespace Chummer
             {
                 lblGearSourceLabel.Visible = false;
                 lblGearSource.Visible = false;
+            }
+
+            if (treGear.SelectedNode?.Tag is IHasRating objHasRating)
+            {
+                lblGearRatingLabel.Text = LanguageManager.GetString("Label_RatingFormat").Replace("{0}", LanguageManager.GetString(objHasRating.RatingLabel, GlobalOptions.Language));
             }
 
             string strSpace = LanguageManager.GetString("String_Space", GlobalOptions.Language);
@@ -12215,6 +12163,12 @@ namespace Chummer
                 lblVehicleSourceLabel.Visible = false;
                 lblVehicleSource.Visible = false;
             }
+
+            if (treVehicles.SelectedNode?.Tag is IHasRating objHasRating)
+            {
+                lblVehicleRatingLabel.Text = LanguageManager.GetString("Label_RatingFormat").Replace("{0}",
+                    LanguageManager.GetString(objHasRating.RatingLabel, GlobalOptions.Language));
+            }
             // Locate the selected Vehicle.
             if (treVehicles.SelectedNode?.Tag is Vehicle objVehicle)
             {
@@ -12374,6 +12328,7 @@ namespace Chummer
                 // gpbVehiclesCommon
                 lblVehicleName.Text = objMod.DisplayNameShort(GlobalOptions.Language);
                 lblVehicleCategory.Text = LanguageManager.GetString("String_VehicleModification", GlobalOptions.Language);
+                lblVehicleRatingLabel.Text = LanguageManager.GetString(objMod.RatingLabel, GlobalOptions.Language);
                 if (objMod.MaxRating != "qty")
                 {
                     if (objMod.MaxRating == "Seats")
@@ -12386,7 +12341,6 @@ namespace Chummer
                     }
                     if (Convert.ToInt32(objMod.MaxRating) > 0)
                     {
-                        lblVehicleRatingLabel.Text = LanguageManager.GetString("Label_Rating", GlobalOptions.Language);
                         lblVehicleRatingLabel.Visible = true;
                         // If the Mod is Armor, use the lower of the Mod's maximum Rating and MaxArmor value for the Vehicle instead.
                         nudVehicleRating.Maximum = objMod.Name.StartsWith("Armor,") ? Math.Min(Convert.ToInt32(objMod.MaxRating), objMod.Parent.MaxArmor) : Convert.ToInt32(objMod.MaxRating);
@@ -12408,7 +12362,6 @@ namespace Chummer
                 }
                 else
                 {
-                    lblVehicleRatingLabel.Text = LanguageManager.GetString("Label_Qty", GlobalOptions.Language);
                     lblVehicleRatingLabel.Visible = true;
                     nudVehicleRating.Visible = true;
                     nudVehicleRating.Minimum = 1;
@@ -12626,6 +12579,7 @@ namespace Chummer
                 // gpbVehiclesCommon
                 lblVehicleName.Text = objCyberware.DisplayNameShort(GlobalOptions.Language);
                 lblVehicleCategory.Text = objCyberware.DisplayCategory(GlobalOptions.Language);
+                lblVehicleRatingLabel.Text = LanguageManager.GetString(objCyberware.RatingLabel, GlobalOptions.Language);
                 if (objCyberware.MaxRating == 0)
                 {
                     nudVehicleRating.Maximum = 0;
@@ -12641,7 +12595,6 @@ namespace Chummer
                     nudVehicleRating.Value = Convert.ToDecimal(objCyberware.Rating, GlobalOptions.CultureInfo);
                     nudVehicleRating.Visible = true;
                     lblVehicleRatingLabel.Visible = true;
-                    lblVehicleRatingLabel.Text = LanguageManager.GetString("Label_Rating", GlobalOptions.Language);
                 }
                 lblVehicleGearQtyLabel.Visible = false;
                 nudVehicleGearQty.Visible = false;
@@ -12680,10 +12633,10 @@ namespace Chummer
                 // gpbVehiclesCommon
                 lblVehicleName.Text = objGear.DisplayNameShort(GlobalOptions.Language);
                 lblVehicleCategory.Text = objGear.DisplayCategory(GlobalOptions.Language);
+                lblVehicleRatingLabel.Text = LanguageManager.GetString(objGear.RatingLabel, GlobalOptions.Language);
                 int intGearMaxRatingValue = objGear.MaxRatingValue;
                 if (intGearMaxRatingValue > 0 && intGearMaxRatingValue != int.MaxValue)
                 {
-                    lblVehicleRatingLabel.Text = LanguageManager.GetString("Label_Rating", GlobalOptions.Language);
                     lblVehicleRatingLabel.Visible = true;
                     nudVehicleRating.Visible = true;
                     nudVehicleRating.Enabled = true;
@@ -13019,90 +12972,22 @@ namespace Chummer
                 }
             }
 
-            /*
-            // Check if the character has gone over limits from optional rules
-            int intContactPointsUsed = 0;
-            int intGroupContacts = 0;
-            int intHighPlaces = 0;
-            foreach (Contact objLoopContact in CharacterObject.Contacts)
-            {
-                if (objLoopContact.EntityType == ContactType.Contact && !objLoopContact.Free)
-                {
-                    if (objLoopContact.IsGroup)
-                    {
-                        intGroupContacts += objLoopContact.ContactPoints;
-                    }
-                    else if (objLoopContact.Connection >= 8 && CharacterObject.FriendsInHighPlaces)
-                    {
-                        intHighPlaces += objLoopContact.Connection + objLoopContact.Loyalty;
-                    }
-                    else
-                    {
-                        intContactPointsUsed += objLoopContact.Connection + objLoopContact.Loyalty;
-                    }
-                }
-            }
-
-            // If the option for CHA * X free points of Contacts is enabled, deduct that amount of points (or as many points have been spent if not the full amount).
-            int intFreePoints = (CharacterObject.CHA.TotalValue * CharacterObjectOptions.FreeContactsMultiplier);
-
-            if (intContactPointsUsed >= intFreePoints)
-            {
-                intContactPointsUsed -= intFreePoints;
-            }
-            else
-            {
-                intContactPointsUsed = 0;
-            }
-
-            intContactPointsUsed += Math.Max(0, intHighPlaces - (CharacterObject.CHA.TotalValue * 4));
-
-            if (intContactPointsUsed > _objCharacter.ContactPoints)
-                strMessage += Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_InvalidPointExcess"), ((_objCharacter.ContactPoints - intContactPointsUsed) * -1).ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + LanguageManager.GetString("String_Contacts"));
-            */
-
-            // Calculate the BP used by Enemies. These are added to the BP since they are technically
-            // a Negative Quality.
-            int intEnemyPoints = 0;
-            foreach (Contact objLoopEnemy in CharacterObject.Contacts)
-            {
-                if (objLoopEnemy.EntityType == ContactType.Enemy && !objLoopEnemy.Free)
-                {
-                    intEnemyPoints -= (objLoopEnemy.Connection + objLoopEnemy.Loyalty) * CharacterObjectOptions.KarmaEnemy;
-                }
-            }
-            int intNegativePoints = intEnemyPoints;
-            // Calculate the BP used by Positive Qualities.
-            int intPointsUsed = CharacterObject.Qualities.Where(objQuality => objQuality.Type == QualityType.Positive && objQuality.ContributeToBP && objQuality.ContributeToLimit).Sum(objQuality => objQuality.BP);
-            // Group contacts are counted as positive qualities
-            intPointsUsed += CharacterObject.Contacts.Where(x => x.EntityType == ContactType.Contact && x.IsGroup && !x.Free).Sum(x => x.ContactPoints);
-
-            // Deduct the amount for free Qualities.
-            intPointsUsed -= ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.FreePositiveQualities);
-            int intPositivePointsUsed = intPointsUsed;
-
-            // Calculate the BP used for Negative Qualities.
-            intPointsUsed = 0;
-            foreach (Quality objQuality in CharacterObject.Qualities.Where(objQuality => objQuality.Type == QualityType.Negative && objQuality.ContributeToBP && objQuality.ContributeToLimit))
-            {
-                intPointsUsed += objQuality.BP;
-                intNegativePoints += objQuality.BP;
-            }
-
-            // Deduct the amount for free Qualities.
-            intNegativePoints -= ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.FreeNegativeQualities);
-
             // if positive points > 25
-            if (intPositivePointsUsed > CharacterObject.GameplayOptionQualityLimit && !CharacterObjectOptions.ExceedPositiveQualities)
+            if (CharacterObject.PositiveQualityKarma > CharacterObject.GameplayOptionQualityLimit && !CharacterObjectOptions.ExceedPositiveQualities)
             {
                 strMessage += Environment.NewLine + '\t' +
                               string.Format(LanguageManager.GetString("Message_PositiveQualityLimit", GlobalOptions.Language)
                                   , (CharacterObject.GameplayOptionQualityLimit).ToString(GlobalOptions.CultureInfo));
                 blnValid = false;
             }
+
+
             int totalNeg = CharacterObjectOptions.EnemyKarmaQualityLimit
-                ? intNegativePoints
-                : (intNegativePoints - intEnemyPoints);
+                ? CharacterObject.NegativeQualityKarma
+                : (CharacterObject.NegativeQualityKarma - (CharacterObject.Contacts
+                       .Where(x => x.EntityType == ContactType.Enemy && x.IsGroup && !x.Free)
+                       .Sum(x => (x.Connection + x.Loyalty) * CharacterObjectOptions.KarmaEnemy)));
+
             // if negative points > 25
             if (totalNeg < (CharacterObject.GameplayOptionQualityLimit * -1) && !CharacterObjectOptions.ExceedNegativeQualities)
             {
@@ -13129,70 +13014,36 @@ namespace Chummer
                                   , ((intBuildPoints + intStagedPurchaseQualityPoints) * -1).ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + LanguageManager.GetString("String_Karma", GlobalOptions.Language));
             }
 
-            // if character has more than permitted Metagenetic qualities
-            if (CharacterObject.MetageneticLimit > 0)
+            // if character has more than permitted Metagenic qualities
+            if (CharacterObject.MetagenicLimit > 0)
             {
-                int metageneticPositiveQualities = 0;
-                int metageneticNegativeQualities = 0;
-                foreach (Quality objQuality in CharacterObject.Qualities.Where(objQuality => objQuality.Metagenetic && objQuality.OriginSource != QualitySource.Metatype && objQuality.OriginSource != QualitySource.MetatypeRemovable))
-                {
-                    if (objQuality.Type == QualityType.Positive)
-                    {
-                        metageneticPositiveQualities = metageneticPositiveQualities + objQuality.BP;
-                    }
-                    else if (objQuality.Type == QualityType.Negative)
-                    {
-                        metageneticNegativeQualities = metageneticNegativeQualities - objQuality.BP;
-                    }
-                }
-                if (metageneticNegativeQualities > CharacterObject.MetageneticLimit)
+                if (-CharacterObject.MetagenicNegativeQualityKarma > CharacterObject.MetagenicLimit)
                 {
                     strMessage += Environment.NewLine + '\t' +
                                   string.Format(LanguageManager.GetString("Message_OverNegativeMetagenicQualities", GlobalOptions.Language)
-                                      , metageneticNegativeQualities.ToString(GlobalOptions.CultureInfo)
-                                      , CharacterObject.MetageneticLimit.ToString(GlobalOptions.CultureInfo));
+                                      , (-CharacterObject.MetagenicNegativeQualityKarma).ToString(GlobalOptions.CultureInfo)
+                                      , CharacterObject.MetagenicLimit.ToString(GlobalOptions.CultureInfo));
                     blnValid = false;
                 }
-                if (metageneticPositiveQualities > CharacterObject.MetageneticLimit)
+                if (CharacterObject.MetagenicPositiveQualityKarma > CharacterObject.MetagenicLimit)
                 {
                     strMessage += Environment.NewLine + '\t' +
                                   string.Format(LanguageManager.GetString("Message_OverPositiveMetagenicQualities", GlobalOptions.Language)
-                                      , metageneticPositiveQualities.ToString(GlobalOptions.CultureInfo)
-                                      , CharacterObject.MetageneticLimit.ToString(GlobalOptions.CultureInfo));
+                                      , CharacterObject.MetagenicPositiveQualityKarma.ToString(GlobalOptions.CultureInfo)
+                                      , CharacterObject.MetagenicLimit.ToString(GlobalOptions.CultureInfo));
                     blnValid = false;
                 }
 
-                if (metageneticNegativeQualities != metageneticPositiveQualities && metageneticNegativeQualities != (metageneticPositiveQualities - 1))
+                if (-CharacterObject.MetagenicNegativeQualityKarma != CharacterObject.MetagenicPositiveQualityKarma &&
+                    -CharacterObject.MetagenicNegativeQualityKarma != (CharacterObject.MetagenicPositiveQualityKarma - 1))
                 {
                     strMessage += Environment.NewLine + '\t' +
                                   string.Format(LanguageManager.GetString("Message_MetagenicQualitiesUnbalanced", GlobalOptions.Language)
-                                      , metageneticNegativeQualities.ToString(GlobalOptions.CultureInfo)
-                                      , (metageneticPositiveQualities - 1).ToString(GlobalOptions.CultureInfo)
-                                      , metageneticPositiveQualities.ToString(GlobalOptions.CultureInfo));
+                                      , (-CharacterObject.MetagenicNegativeQualityKarma).ToString(GlobalOptions.CultureInfo)
+                                      , (CharacterObject.MetagenicPositiveQualityKarma - 1).ToString(GlobalOptions.CultureInfo)
+                                      , CharacterObject.MetagenicPositiveQualityKarma.ToString(GlobalOptions.CultureInfo));
                     blnValid = false;
                 }
-                //Subtract 1 karma to balance Metagenic Qualities
-                if (metageneticNegativeQualities == (metageneticPositiveQualities - 1))
-                {
-                    if (CharacterObject.Karma > 0)
-                    {
-                        if (MessageBox.Show(string.Format(LanguageManager.GetString("Message_MetagenicQualitiesSubtractingKarma", GlobalOptions.Language), intBuildPoints.ToString(GlobalOptions.CultureInfo)),
-                                LanguageManager.GetString("MessageTitle_ExtraKarma", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
-                        {
-                            CharacterObject.Karma -= 1;
-                        }
-                        else
-                        {
-                            blnValid = false;
-                        }
-                    }
-                    else
-                    {
-                        strMessage += Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_MetagenicQualitiesInsufficientKarma", GlobalOptions.Language), intBuildPoints.ToString(GlobalOptions.CultureInfo));
-                        blnValid = false;
-                    }
-                }
-
             }
             int i = CharacterObject.TotalAttributes - CalculateAttributePriorityPoints(CharacterObject.AttributeSection.AttributeList);
             // Check if the character has gone over on Primary Attributes

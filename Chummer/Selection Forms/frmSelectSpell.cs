@@ -66,54 +66,8 @@ namespace Chummer
                 DialogResult = DialogResult.OK;
             }
 
-            //Free Spells (typically from Dedicated Spellslinger or custom Improvements) are only handled manually
-            //in Career Mode. Create mode manages itself.
-            int intFreeGenericSpells = ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.FreeSpells);
-            int intFreeTouchOnlySpells = 0;
-            foreach (Improvement imp in _objCharacter.Improvements.Where(i => (i.ImproveType == Improvement.ImprovementType.FreeSpellsATT || i.ImproveType == Improvement.ImprovementType.FreeSpellsSkill) && i.Enabled))
-            {
-                switch (imp.ImproveType)
-                {
-                    case Improvement.ImprovementType.FreeSpellsATT:
-                        int intAttValue = _objCharacter.GetAttribute(imp.ImprovedName).TotalValue;
-                        if (imp.UniqueName.Contains("half"))
-                            intAttValue = (intAttValue + 1) / 2;
-                        if (imp.UniqueName.Contains("touchonly"))
-                            intFreeTouchOnlySpells += intAttValue;
-                        else
-                            intFreeGenericSpells += intAttValue;
-                        break;
-                    case Improvement.ImprovementType.FreeSpellsSkill:
-                        Skill skill = _objCharacter.SkillsSection.GetActiveSkill(imp.ImprovedName);
-                        int intSkillValue = _objCharacter.SkillsSection.GetActiveSkill(imp.ImprovedName).TotalBaseRating;
-                        if (imp.UniqueName.Contains("half"))
-                            intSkillValue = (intSkillValue + 1) / 2;
-                        if (imp.UniqueName.Contains("touchonly"))
-                            intFreeTouchOnlySpells += intSkillValue;
-                        else
-                            intFreeGenericSpells += intSkillValue;
-                        //TODO: I don't like this being hardcoded, even though I know full well CGL are never going to reuse this.
-                        foreach (SkillSpecialization spec in skill.Specializations)
-                        {
-                            if (_objCharacter.Spells.Any(spell => spell.Category == spec.Name && !spell.FreeBonus))
-                            {
-                                intFreeGenericSpells++;
-                            }
-                        }
-
-                        break;
-                }
-            }
-            int intTotalFreeNonTouchSpellsCount = _objCharacter.Spells.Count(spell => spell.FreeBonus && (spell.Range != "T" && spell.Range != "T (A)"));
-            int intTotalFreeTouchOnlySpellsCount = _objCharacter.Spells.Count(spell => spell.FreeBonus && (spell.Range == "T" || spell.Range == "T (A)"));
-            if (intFreeTouchOnlySpells > intTotalFreeTouchOnlySpellsCount)
-            {
-                _blnCanTouchOnlySpellBeFree = true;
-            }
-            if (intFreeGenericSpells > intTotalFreeNonTouchSpellsCount + Math.Max(intTotalFreeTouchOnlySpellsCount - intFreeTouchOnlySpells, 0))
-            {
-                _blnCanGenericSpellBeFree = true;
-            }
+            _blnCanGenericSpellBeFree   = _objCharacter.AllowFreeSpells.Item2;
+            _blnCanTouchOnlySpellBeFree = _objCharacter.AllowFreeSpells.Item1;
 
             txtSearch.Text = string.Empty;
 
@@ -261,6 +215,8 @@ namespace Chummer
         /// Whether or not a Alchemical version of the Spell was selected.
         /// </summary>
         public bool Alchemical => chkAlchemical.Checked;
+
+        public bool FreeOnly;
 
         /// <summary>
         /// Limit the Spell list to a particular Category.
@@ -737,9 +693,9 @@ namespace Chummer
             }
             else
             {
-                chkFreeBonus.Checked = false;
+                chkFreeBonus.Checked = FreeOnly;
                 chkFreeBonus.Visible = _blnCanGenericSpellBeFree || (_blnCanTouchOnlySpellBeFree && xmlSpell.SelectSingleNode("range")?.Value == "T");
-                chkFreeBonus.Enabled = true;
+                chkFreeBonus.Enabled = FreeOnly;
             }
 
             string strSource = xmlSpell.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);

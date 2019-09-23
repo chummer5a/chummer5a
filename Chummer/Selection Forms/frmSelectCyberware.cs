@@ -316,6 +316,12 @@ namespace Chummer
                     nudRating.Visible = false;
                 }
 
+                lblRatingLabel.Text = xmlCyberware.SelectSingleNode("ratinglabel") != null
+                    ? LanguageManager.GetString("Label_RatingFormat").Replace("{0}",
+                        LanguageManager.GetString(xmlCyberware.SelectSingleNode("ratinglabel").Value,
+                            GlobalOptions.Language))
+                    : LanguageManager.GetString("Label_Rating");
+                
                 string strSource = xmlCyberware.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
                 string strPage = xmlCyberware.SelectSingleNode("altpage")?.Value ?? xmlCyberware.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
                 string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
