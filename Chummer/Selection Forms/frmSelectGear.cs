@@ -248,6 +248,12 @@ namespace Chummer
                     nudGearQty.Visible = true;
                     lblGearQtyLabel.Visible = true;
                     chkStack.Visible = _objCharacter.Created;
+
+                    lblRatingLabel.Text = objXmlGear.SelectSingleNode("ratinglabel") != null
+                        ? LanguageManager.GetString("Label_RatingFormat").Replace("{0}",
+                            LanguageManager.GetString(objXmlGear.SelectSingleNode("ratinglabel").Value,
+                                GlobalOptions.Language))
+                        : LanguageManager.GetString("Label_Rating");
                 }
                 else
                 {

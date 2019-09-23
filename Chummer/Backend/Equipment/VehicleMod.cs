@@ -1169,7 +1169,7 @@ namespace Chummer.Backend.Equipment
             if (!string.IsNullOrEmpty(Extra))
                 strReturn += strSpaceCharacter + '(' + LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
             if (Rating > 0)
-                strReturn += strSpaceCharacter + '(' + LanguageManager.GetString("String_Rating", strLanguage) + strSpaceCharacter + Rating.ToString() + ')';
+                strReturn += strSpaceCharacter + '(' + LanguageManager.GetString(RatingLabel, strLanguage) + strSpaceCharacter + Rating.ToString() + ')';
             return strReturn;
         }
 

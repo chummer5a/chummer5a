@@ -900,7 +900,7 @@ namespace Chummer.Backend.Equipment
                 return decTotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
             }
 
-            return strReturn.CheapReplace("Rating", () => LanguageManager.GetString("String_Rating", GlobalOptions.Language)) + '¥';
+            return strReturn.CheapReplace("Rating", () => LanguageManager.GetString(RatingLabel, GlobalOptions.Language)) + '¥';
         }
 
 
@@ -1467,7 +1467,7 @@ namespace Chummer.Backend.Equipment
             if (!string.IsNullOrEmpty(CustomName))
                 strReturn += strSpaceCharacter + "(\"" + CustomName + "\")";
             if (Rating > 0)
-                strReturn += strSpaceCharacter + '(' + LanguageManager.GetString("String_Rating", strLanguage) + strSpaceCharacter + Rating.ToString() + ')';
+                strReturn += strSpaceCharacter + '(' + LanguageManager.GetString(RatingLabel, strLanguage) + strSpaceCharacter + Rating.ToString() + ')';
             if (!string.IsNullOrEmpty(Extra))
                 strReturn += strSpaceCharacter + '(' + LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
             return strReturn;

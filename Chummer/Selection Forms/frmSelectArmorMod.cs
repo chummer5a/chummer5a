@@ -232,6 +232,12 @@ namespace Chummer
             lblA.Text = objXmlMod.SelectSingleNode("armor")?.Value;
             lblALabel.Visible = !string.IsNullOrEmpty(lblA.Text);
 
+
+            lblRatingLabel.Text = objXmlMod.SelectSingleNode("ratinglabel") != null
+                ? LanguageManager.GetString("Label_RatingFormat").Replace("{0}",
+                    LanguageManager.GetString(objXmlMod.SelectSingleNode("ratinglabel").Value,
+                        GlobalOptions.Language))
+                : LanguageManager.GetString("Label_Rating");
             nudRating.Maximum = Convert.ToDecimal(objXmlMod.SelectSingleNode("maxrating")?.Value, GlobalOptions.InvariantCultureInfo);
             if (chkHideOverAvailLimit.Checked)
             {

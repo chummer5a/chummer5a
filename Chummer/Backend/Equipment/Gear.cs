@@ -2452,7 +2452,7 @@ namespace Chummer.Backend.Equipment
             if (Quantity != 1.0m || Category == "Currency")
                 strReturn = Quantity.ToString(Name.StartsWith("Nuyen") ? _objCharacter.Options.NuyenFormat : Category == "Currency" ? "#,0.00" : "#,0.##", objCulture) + strSpaceCharacter + strReturn;
             if (Rating > 0)
-                strReturn += strSpaceCharacter + '(' + LanguageManager.GetString("String_Rating", strLanguage) + strSpaceCharacter + Rating.ToString(objCulture) + ')';
+                strReturn += strSpaceCharacter + '(' + LanguageManager.GetString(RatingLabel, strLanguage) + strSpaceCharacter + Rating.ToString(objCulture) + ')';
             if (!string.IsNullOrEmpty(Extra))
                 strReturn += strSpaceCharacter + '(' + LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
 
@@ -2934,7 +2934,7 @@ namespace Chummer.Backend.Equipment
                         TreeNode nodFocus = treFoci.FindNodeByTag(this);
                         if (nodFocus != null)
                         {
-                            nodFocus.Text = DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language).Replace(LanguageManager.GetString("String_Rating", GlobalOptions.Language), LanguageManager.GetString("String_Force", GlobalOptions.Language));
+                            nodFocus.Text = DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language).Replace(LanguageManager.GetString(RatingLabel, GlobalOptions.Language), LanguageManager.GetString("String_Force", GlobalOptions.Language));
                         }
                     }
                     break;
@@ -2942,19 +2942,17 @@ namespace Chummer.Backend.Equipment
                     {
                         for (int i = _objCharacter.StackedFoci.Count - 1; i >= 0; --i)
                         {
-                            if (i < _objCharacter.StackedFoci.Count)
+                            if (i >= _objCharacter.StackedFoci.Count) continue;
+                            StackedFocus objStack = _objCharacter.StackedFoci[i];
+                            if (objStack.GearId != InternalId) continue;
+                            TreeNode nodFocus = treFoci.FindNode(objStack.InternalId);
+                            if (nodFocus != null)
                             {
-                                StackedFocus objStack = _objCharacter.StackedFoci[i];
-                                if (objStack.GearId == InternalId)
-                                {
-                                    TreeNode nodFocus = treFoci.FindNode(objStack.InternalId);
-                                    if (nodFocus != null)
-                                    {
-                                        nodFocus.Text = DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language).Replace(LanguageManager.GetString("String_Rating", GlobalOptions.Language), LanguageManager.GetString("String_Force", GlobalOptions.Language));
-                                    }
-                                    break;
-                                }
+                                nodFocus.Text = DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)
+                                    .Replace(LanguageManager.GetString(RatingLabel, GlobalOptions.Language),
+                                        LanguageManager.GetString("String_Force", GlobalOptions.Language));
                             }
+                            break;
                         }
                     }
                     break;

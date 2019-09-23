@@ -1478,7 +1478,7 @@ namespace Chummer.Backend.Equipment
             string strSpaceCharacter = LanguageManager.GetString("String_Space", strLanguage);
             if (Rating > 0 && SourceID != EssenceHoleGUID && SourceID != EssenceAntiHoleGUID)
             {
-                strReturn += strSpaceCharacter + '(' + LanguageManager.GetString("String_Rating", strLanguage) + strSpaceCharacter + Rating.ToString(GlobalOptions.CultureInfo) + ')';
+                strReturn += strSpaceCharacter + '(' + LanguageManager.GetString(RatingLabel, strLanguage) + strSpaceCharacter + Rating.ToString(GlobalOptions.CultureInfo) + ')';
             }
 
             if (!string.IsNullOrEmpty(Extra))
@@ -4408,7 +4408,7 @@ namespace Chummer.Backend.Equipment
                                       LanguageManager.GetString("String_Space", GlobalOptions.Language) +
                                       Grade.DisplayName(GlobalOptions.Language) +
                                       LanguageManager.GetString("String_Space", GlobalOptions.Language) + '>' + oldGrade.DisplayName(GlobalOptions.Language) + 
-                                      LanguageManager.GetString("String_Space", GlobalOptions.Language) + LanguageManager.GetString("String_Rating", GlobalOptions.Language) +
+                                      LanguageManager.GetString("String_Space", GlobalOptions.Language) + LanguageManager.GetString(RatingLabel, GlobalOptions.Language) +
                                       oldRating +
                                       LanguageManager.GetString("String_Space", GlobalOptions.Language) + '>' +
                                       LanguageManager.GetString("String_Space", GlobalOptions.Language) + Rating + ')');
