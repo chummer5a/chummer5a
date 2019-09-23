@@ -472,17 +472,12 @@ namespace Chummer
 
             if (!string.IsNullOrEmpty(txtCritterName.Text))
                 objCharacter.Name = txtCritterName.Text;
-
-            // Ask the user to select a filename for the new character.
-            string strForce = LanguageManager.GetString("String_Force", GlobalOptions.Language);
-            if (_objSpirit.EntityType == SpiritType.Sprite)
-                strForce = LanguageManager.GetString("String_Rating", GlobalOptions.Language);
-
+            
             string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
             SaveFileDialog saveFileDialog = new SaveFileDialog
             {
                 Filter = LanguageManager.GetString("DialogFilter_Chum5", GlobalOptions.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language),
-                FileName = strCritterName + strSpaceCharacter + '(' + strForce + strSpaceCharacter + _objSpirit.Force.ToString() + ").chum5"
+                FileName = strCritterName + strSpaceCharacter + '(' + LanguageManager.GetString(_objSpirit.RatingLabel) + strSpaceCharacter + _objSpirit.Force.ToString() + ").chum5"
             };
             if (saveFileDialog.ShowDialog(this) == DialogResult.OK)
             {

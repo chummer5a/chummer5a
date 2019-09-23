@@ -10481,6 +10481,11 @@ namespace Chummer
                 return;
             }
 
+            if (treCyberware.SelectedNode?.Tag is IHasRating objHasRating)
+            {
+                lblCyberwareRatingLabel.Text = LanguageManager.GetString("Label_RatingFormat").Replace("{0}", LanguageManager.GetString(objHasRating.RatingLabel, GlobalOptions.Language));
+            }
+
             string strSpace = LanguageManager.GetString("String_Space", GlobalOptions.Language);
             string strESSFormat = CharacterObjectOptions.EssenceFormat;
             if (treCyberware.SelectedNode?.Tag is IHasSource objSelected)
@@ -10707,6 +10712,11 @@ namespace Chummer
             {
                 lblWeaponSourceLabel.Visible = false;
                 lblWeaponSource.Visible = false;
+            }
+
+            if (treWeapons.SelectedNode?.Tag is IHasRating objHasRating)
+            {
+                lblWeaponRatingLabel.Text = LanguageManager.GetString("Label_RatingFormat").Replace("{0}", LanguageManager.GetString(objHasRating.RatingLabel, GlobalOptions.Language));
             }
 
             if (treWeapons.SelectedNode?.Tag is IHasStolenProperty loot)
@@ -11101,6 +11111,11 @@ namespace Chummer
                 chkArmorStolen.Visible = false;
             }
 
+            if (treArmor.SelectedNode?.Tag is IHasRating objHasRating)
+            {
+                lblArmorRatingLabel.Text = LanguageManager.GetString("Label_RatingFormat").Replace("{0}", LanguageManager.GetString(objHasRating.RatingLabel, GlobalOptions.Language));
+            }
+
             string strSpace = LanguageManager.GetString("String_Space", GlobalOptions.Language);
 
             if (treArmor.SelectedNode?.Tag is Armor objArmor)
@@ -11333,6 +11348,11 @@ namespace Chummer
             {
                 lblGearSourceLabel.Visible = false;
                 lblGearSource.Visible = false;
+            }
+
+            if (treGear.SelectedNode?.Tag is IHasRating objHasRating)
+            {
+                lblGearRatingLabel.Text = LanguageManager.GetString("Label_RatingFormat").Replace("{0}", LanguageManager.GetString(objHasRating.RatingLabel, GlobalOptions.Language));
             }
 
             string strSpace = LanguageManager.GetString("String_Space", GlobalOptions.Language);
@@ -12143,6 +12163,12 @@ namespace Chummer
                 lblVehicleSourceLabel.Visible = false;
                 lblVehicleSource.Visible = false;
             }
+
+            if (treVehicles.SelectedNode?.Tag is IHasRating objHasRating)
+            {
+                lblVehicleRatingLabel.Text = LanguageManager.GetString("Label_RatingFormat").Replace("{0}",
+                    LanguageManager.GetString(objHasRating.RatingLabel, GlobalOptions.Language));
+            }
             // Locate the selected Vehicle.
             if (treVehicles.SelectedNode?.Tag is Vehicle objVehicle)
             {
@@ -12302,6 +12328,7 @@ namespace Chummer
                 // gpbVehiclesCommon
                 lblVehicleName.Text = objMod.DisplayNameShort(GlobalOptions.Language);
                 lblVehicleCategory.Text = LanguageManager.GetString("String_VehicleModification", GlobalOptions.Language);
+                lblVehicleRatingLabel.Text = LanguageManager.GetString(objMod.RatingLabel, GlobalOptions.Language);
                 if (objMod.MaxRating != "qty")
                 {
                     if (objMod.MaxRating == "Seats")
@@ -12314,7 +12341,6 @@ namespace Chummer
                     }
                     if (Convert.ToInt32(objMod.MaxRating) > 0)
                     {
-                        lblVehicleRatingLabel.Text = LanguageManager.GetString("Label_Rating", GlobalOptions.Language);
                         lblVehicleRatingLabel.Visible = true;
                         // If the Mod is Armor, use the lower of the Mod's maximum Rating and MaxArmor value for the Vehicle instead.
                         nudVehicleRating.Maximum = objMod.Name.StartsWith("Armor,") ? Math.Min(Convert.ToInt32(objMod.MaxRating), objMod.Parent.MaxArmor) : Convert.ToInt32(objMod.MaxRating);
@@ -12336,7 +12362,6 @@ namespace Chummer
                 }
                 else
                 {
-                    lblVehicleRatingLabel.Text = LanguageManager.GetString("Label_Qty", GlobalOptions.Language);
                     lblVehicleRatingLabel.Visible = true;
                     nudVehicleRating.Visible = true;
                     nudVehicleRating.Minimum = 1;
@@ -12554,6 +12579,7 @@ namespace Chummer
                 // gpbVehiclesCommon
                 lblVehicleName.Text = objCyberware.DisplayNameShort(GlobalOptions.Language);
                 lblVehicleCategory.Text = objCyberware.DisplayCategory(GlobalOptions.Language);
+                lblVehicleRatingLabel.Text = LanguageManager.GetString(objCyberware.RatingLabel, GlobalOptions.Language);
                 if (objCyberware.MaxRating == 0)
                 {
                     nudVehicleRating.Maximum = 0;
@@ -12569,7 +12595,6 @@ namespace Chummer
                     nudVehicleRating.Value = Convert.ToDecimal(objCyberware.Rating, GlobalOptions.CultureInfo);
                     nudVehicleRating.Visible = true;
                     lblVehicleRatingLabel.Visible = true;
-                    lblVehicleRatingLabel.Text = LanguageManager.GetString("Label_Rating", GlobalOptions.Language);
                 }
                 lblVehicleGearQtyLabel.Visible = false;
                 nudVehicleGearQty.Visible = false;
@@ -12608,10 +12633,10 @@ namespace Chummer
                 // gpbVehiclesCommon
                 lblVehicleName.Text = objGear.DisplayNameShort(GlobalOptions.Language);
                 lblVehicleCategory.Text = objGear.DisplayCategory(GlobalOptions.Language);
+                lblVehicleRatingLabel.Text = LanguageManager.GetString(objGear.RatingLabel, GlobalOptions.Language);
                 int intGearMaxRatingValue = objGear.MaxRatingValue;
                 if (intGearMaxRatingValue > 0 && intGearMaxRatingValue != int.MaxValue)
                 {
-                    lblVehicleRatingLabel.Text = LanguageManager.GetString("Label_Rating", GlobalOptions.Language);
                     lblVehicleRatingLabel.Visible = true;
                     nudVehicleRating.Visible = true;
                     nudVehicleRating.Enabled = true;

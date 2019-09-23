@@ -56,6 +56,7 @@ namespace Chummer.Backend.Equipment
         private string _strPage = string.Empty;
         private string _strArmorName = string.Empty;
         private string _strExtra = string.Empty;
+	    private string _strRatingLabel = "String_Rating";
         private int _intDamage;
         private bool _blnEquipped = true;
         private readonly Character _objCharacter;
@@ -166,6 +167,7 @@ namespace Chummer.Backend.Equipment
                 _strArmorOverrideValue = string.Empty;
             _intRating = intRating;
             objXmlArmorNode.TryGetInt32FieldQuickly("rating", ref _intMaxRating);
+            objXmlArmorNode.TryGetStringFieldQuickly("ratinglabel", ref _strRatingLabel);
             objXmlArmorNode.TryGetStringFieldQuickly("armorcapacity", ref _strArmorCapacity);
             objXmlArmorNode.TryGetStringFieldQuickly("avail", ref _strAvail);
             objXmlArmorNode.TryGetStringFieldQuickly("source", ref _strSource);
@@ -412,6 +414,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("damage", _intDamage.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("maxrating", _intMaxRating.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("ratinglabel", _strRatingLabel);
             objWriter.WriteElementString("stolen", _blnStolen.ToString());
             objWriter.WriteStartElement("armormods");
             foreach (ArmorMod objMod in _lstArmorMods)
@@ -501,6 +504,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("armorcapacity", ref _strArmorCapacity);
             objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
             objNode.TryGetInt32FieldQuickly("maxrating", ref _intMaxRating);
+            objNode.TryGetStringFieldQuickly("ratinglabel", ref _strRatingLabel);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             objNode.TryGetStringFieldQuickly("armorname", ref _strArmorName);
             objNode.TryGetBoolFieldQuickly("equipped", ref _blnEquipped);
@@ -593,6 +597,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("page", Page(strLanguageToPrint));
             objWriter.WriteElementString("armorname", CustomName);
             objWriter.WriteElementString("equipped", Equipped.ToString());
+            objWriter.WriteElementString("ratinglabel", RatingLabel);
             objWriter.WriteElementString("wirelesson", WirelessOn.ToString());
             objWriter.WriteStartElement("armormods");
             foreach (ArmorMod objMod in ArmorMods)
@@ -777,6 +782,15 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// How the rating should be referred to in UI. 
+        /// </summary>
+	    public string RatingLabel
+	    {
+	        get => _strRatingLabel;
+	        set => _strRatingLabel = value;
+	    }
+
+        /// <summary>
         /// Armor's Capacity string.
         /// </summary>
         public string ArmorCapacity
@@ -886,7 +900,7 @@ namespace Chummer.Backend.Equipment
                 return decTotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
             }
 
-            return strReturn.CheapReplace("Rating", () => LanguageManager.GetString("String_Rating", GlobalOptions.Language)) + '¥';
+            return strReturn.CheapReplace("Rating", () => LanguageManager.GetString(RatingLabel, GlobalOptions.Language)) + '¥';
         }
 
 
@@ -1453,7 +1467,7 @@ namespace Chummer.Backend.Equipment
             if (!string.IsNullOrEmpty(CustomName))
                 strReturn += strSpaceCharacter + "(\"" + CustomName + "\")";
             if (Rating > 0)
-                strReturn += strSpaceCharacter + '(' + LanguageManager.GetString("String_Rating", strLanguage) + strSpaceCharacter + Rating.ToString() + ')';
+                strReturn += strSpaceCharacter + '(' + LanguageManager.GetString(RatingLabel, strLanguage) + strSpaceCharacter + Rating.ToString() + ')';
             if (!string.IsNullOrEmpty(Extra))
                 strReturn += strSpaceCharacter + '(' + LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
             return strReturn;

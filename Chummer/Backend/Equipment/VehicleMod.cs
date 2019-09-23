@@ -44,6 +44,7 @@ namespace Chummer.Backend.Equipment
         private string _strLimit = string.Empty;
         private string _strSlots = "0";
         private int _intRating;
+        private string _strRatingLabel = "String_Rating";
         private string _strMaxRating = "0";
         private string _strCost = string.Empty;
         private decimal _decMarkup;
@@ -155,6 +156,7 @@ namespace Chummer.Backend.Equipment
                 objXmlMod.TryGetStringFieldQuickly("notes", ref _strNotes);
             objXmlMod.TryGetStringFieldQuickly("capacity", ref _strCapacity);
             objXmlMod.TryGetStringFieldQuickly("rating", ref _strMaxRating);
+            objXmlMod.TryGetStringFieldQuickly("ratinglabel", ref _strRatingLabel);
             objXmlMod.TryGetInt32FieldQuickly("conditionmonitor", ref _intConditionMonitor);
             objXmlMod.TryGetStringFieldQuickly("weaponmountcategories", ref _strWeaponMountCategories);
             objXmlMod.TryGetStringFieldQuickly("ammoreplace", ref _strAmmoReplace);
@@ -249,6 +251,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("capacity", _strCapacity);
             objWriter.WriteElementString("rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("maxrating", _strMaxRating);
+            objWriter.WriteElementString("ratinglabel", _strRatingLabel);
             objWriter.WriteElementString("conditionmonitor", _intConditionMonitor.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("avail", _strAvail);
             objWriter.WriteElementString("cost", _strCost);
@@ -312,6 +315,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("slots", ref _strSlots);
             objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
             objNode.TryGetStringFieldQuickly("maxrating", ref _strMaxRating);
+            objNode.TryGetStringFieldQuickly("ratinglabel", ref _strRatingLabel);
             objNode.TryGetStringFieldQuickly("capacity", ref _strCapacity);
             objNode.TryGetStringFieldQuickly("weaponmountcategories", ref _strWeaponMountCategories);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
@@ -404,6 +408,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("limit", Limit);
             objWriter.WriteElementString("slots", Slots);
             objWriter.WriteElementString("rating", Rating.ToString(objCulture));
+            objWriter.WriteElementString("ratinglabel", RatingLabel);
             objWriter.WriteElementString("avail", TotalAvail(objCulture, strLanguageToPrint));
             objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
@@ -549,6 +554,11 @@ namespace Chummer.Backend.Equipment
             set => _strMaxRating = value;
         }
 
+        public string RatingLabel
+        {
+            get => _strRatingLabel;
+            set => _strRatingLabel = value;
+        }
         /// <summary>
         /// Cost.
         /// </summary>
@@ -1159,7 +1169,7 @@ namespace Chummer.Backend.Equipment
             if (!string.IsNullOrEmpty(Extra))
                 strReturn += strSpaceCharacter + '(' + LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
             if (Rating > 0)
-                strReturn += strSpaceCharacter + '(' + LanguageManager.GetString("String_Rating", strLanguage) + strSpaceCharacter + Rating.ToString() + ')';
+                strReturn += strSpaceCharacter + '(' + LanguageManager.GetString(RatingLabel, strLanguage) + strSpaceCharacter + Rating.ToString() + ')';
             return strReturn;
         }
 

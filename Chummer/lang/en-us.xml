@@ -9797,5 +9797,19 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <key>Menu_ShareChummer</key>
       <text>Share Chummer</text>
     </string>
+    <!-- Region Rating Strings -->
+      <string>
+          <key>Label_RatingFormat</key>
+          <text>{0}:</text>
+      </string>
+      <string>
+          <key>Rating_LengthInCmBy10</key>
+          <text>Length (cm)x10</text>
+      </string>
+      <string>
+          <key>Rating_Meters</key>
+          <text>Meters</text>
+      </string>
+    <!-- End Region -->
   </strings>
 </chummer>
