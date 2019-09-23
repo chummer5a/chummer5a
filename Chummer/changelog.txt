@@ -6,6 +6,7 @@ Application Changes:
 - Skills can now benefit from Conditional improvements that are not applied to the base pool of a skill. 
 - Added a 'GetAvailableAmmo' int to the Print method for weapons, exposed as 'availableammo'. This provides a count of the total amount of ammunition that can fit into the current weapon.It does NOT filter by types of ammunition, just the total available amount. 
 - Weapons can now use a 'useskillspec' node to force the specialisation they use in place of their name. Mostly intended to be used for Exotic Melee/Ranged weapons.
+- All equipment items that specify a Rating (Cyberware, Gear, Vehicle Mods, Weapon Accessories) can now specify a RatingLabel that is applied in place of the standard Rating. For example, Fiberoptic Hair can specify that the Rating is ten-centimetre increments of length. 
 
 Application Fixes:
 - Fixed issues with the Balistic Shield Exotic Melee Weapon choice not being present in the Exotic Weapon skill selector window. Closes #3856
@@ -16,11 +17,16 @@ Data Changes:
 - Tetrachromacy now adds adds +3 to Perception, with a (Visual) condition. This will be exposed to the Print method for character sheets at a later date. 
 - Grapple Fist cyberware now properly uses the skill of the Grapple Gun Exotic skill.
 - Fixed an issue with the Private Investigator life module that prevented it from being added.
+- Removed Ratings from Cosmetic Surgery, replaced with variable cost.
+- Added RatingLabel to Fiberoptic Hair and Telescoping Limbs. 
 
 New Strings:
 - Label_MetagenicKarmaValue
 - Label_MetagenicKarmaValueAppend
 - Label_SummaryMetagenicQualities
+- Rating_Meters
+- Rating_LengthInCmBy10
+- Label_RatingFormat
 
 - Changed Strings:
 - Message_OverPositiveMetagenicQualities
