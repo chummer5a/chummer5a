@@ -73,6 +73,7 @@
   <xs:element name="weapon">
     <xs:complexType>
       <xs:sequence>
+        <xs:element name="sourceid" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="guid" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
@@ -85,29 +86,58 @@
         <xs:element name="mode" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="rc" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="ammo" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="cyberware" type="boolean" minOccurs="1" maxOccurs="1" />
         <xs:element name="ammocategory" type="xs:string" minOccurs="1" maxOccurs="1" />
-        <xs:element name="requireammo" type="xs:string" minOccurs="1" maxOccurs="1" />
-        <xs:element name="ammoremaining" type="xs:integer" minOccurs="1" maxOccurs="1" />
-        <xs:element name="ammoremaining2" type="xs:integer" minOccurs="1" maxOccurs="1" />
-        <xs:element name="ammoremaining3" type="xs:integer" minOccurs="1" maxOccurs="1" />
-        <xs:element name="ammoremaining4" type="xs:integer" minOccurs="1" maxOccurs="1" />
-        <xs:element name="ammoloaded" type="xs:string" minOccurs="1" maxOccurs="1" />
-        <xs:element name="ammoloaded2" type="xs:string" minOccurs="1" maxOccurs="1" />
-        <xs:element name="ammoloaded3" type="xs:string" minOccurs="1" maxOccurs="1" />
-        <xs:element name="ammoloaded4" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="ammoname" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="ammoslots" type="xs:integer" minOccurs="1" maxOccurs="1" />
+        <xs:element name="sizecategory" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="firingmode" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="clips" minOccurs="1" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="clip" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
         <xs:element name="conceal" type="xs:integer" minOccurs="1" maxOccurs="1" />
         <xs:element name="avail" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="cost" type="xs:integer" minOccurs="1" maxOccurs="1" />
         <xs:element name="useskill" minOccurs="0" maxOccurs="1" />
+        <xs:element name="useskillspec" minOccurs="0" maxOccurs="1" />
         <xs:element name="range" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="alternaterange" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="rangemultiply" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="singleshot" type="xs:integer" minOccurs="1" maxOccurs="1" />
+        <xs:element name="shortburst" type="xs:integer" minOccurs="1" maxOccurs="1" />
+        <xs:element name="longburst" type="xs:integer" minOccurs="1" maxOccurs="1" />
         <xs:element name="fullburst" type="xs:integer" minOccurs="1" maxOccurs="1" />
         <xs:element name="suppressive" type="xs:integer" minOccurs="1" maxOccurs="1" />
         <xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="page" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="parentid" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="allowaccessory" type="boolean" minOccurs="1" maxOccurs="1" />
         <xs:element name="weaponname" type="xs:string" minOccurs="1" maxOccurs="1" />
-        <xs:element name="included" type="xs:string" minOccurs="1" maxOccurs="1" />
-        <xs:element name="installed" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="included" type="boolean" minOccurs="1" maxOccurs="1" />
+        <xs:element name="equipped" type="boolean" minOccurs="1" maxOccurs="1" />
+        <xs:element name="requireammo" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="accuracy" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="mount" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="stolen" type="boolean" minOccurs="1" maxOccurs="1" />
+        <xs:element name="extramount" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="location" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="notes" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="discountedcost" type="boolean" minOccurs="1" maxOccurs="1" />
+        <xs:element name="weaponslots" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="doubledcostweaponslots" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:group ref="ihasmatrixattribute" />
+        <xs:element name="ammoremaining" type="xs:integer" minOccurs="0" maxOccurs="1" />
+        <xs:element name="ammoremaining2" type="xs:integer" minOccurs="0" maxOccurs="1" />
+        <xs:element name="ammoremaining3" type="xs:integer" minOccurs="0" maxOccurs="1" />
+        <xs:element name="ammoremaining4" type="xs:integer" minOccurs="0" maxOccurs="1" />
+        <xs:element name="ammoloaded" type="xs:string" minOccurs="0" maxOccurs="1" />
+        <xs:element name="ammoloaded2" type="xs:string" minOccurs="0" maxOccurs="1" />
+        <xs:element name="ammoloaded3" type="xs:string" minOccurs="0" maxOccurs="1" />
+        <xs:element name="ammoloaded4" type="xs:string" minOccurs="0" maxOccurs="1" />
         <xs:element name="accessories" minOccurs="0" maxOccurs="1">
           <xs:complexType>
             <xs:sequence>
@@ -152,44 +182,6 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="weaponmods" minOccurs="0" maxOccurs="1">
-          <xs:complexType>
-            <xs:sequence>
-              <xs:element name="weaponmod" minOccurs="1" maxOccurs="unbounded">
-                <xs:complexType>
-                  <xs:sequence>
-                    <xs:element name="guid" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="slots" type="xs:integer" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="avail" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="rc" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="rcgroup" type="xs:integer" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="dvbonus" type="xs:integer" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="apbonus" type="xs:integer" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="conceal" type="xs:integer" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="cost" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="included" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="installed" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="rating" type="xs:integer" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="ammobonus" type="xs:integer" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="ammoreplace" type="xs:string" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="accessorycostmultiplier" type="xs:integer" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="modcostmultiplier" type="xs:integer" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="addmode" type="xs:string" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="fullburst" type="xs:integer" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="suppressive" type="xs:integer" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="rangebonus" type="xs:integer" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="cost" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="page" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="notes" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="discountedcost" type="xs:string" minOccurs="1" maxOccurs="1" />
-                  </xs:sequence>
-                </xs:complexType>
-              </xs:element>
-            </xs:sequence>
-          </xs:complexType>
-        </xs:element>
         <xs:element name="underbarrel" minOccurs="0" maxOccurs="unbounded">
           <xs:complexType>
             <xs:sequence>
@@ -197,8 +189,7 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="notes" type="xs:string" minOccurs="1" maxOccurs="1" />
-        <xs:element name="discountedcost" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="sortorder" type="xs:integer" minOccurs="1" maxOccurs="1" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -206,6 +197,7 @@
   <xs:element name="cyberware">
     <xs:complexType>
       <xs:sequence>
+        <xs:element name="sourceid" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="guid" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
@@ -360,23 +352,24 @@
         <xs:element name="critter" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="prototypetranshuman" type="xs:integer" minOccurs="1" maxOccurs="1" />
         <!-- Special flags for Uneducated, Uncouth, and Infirm Qualities -->
-        <xs:element name="uneducated" type="xs:string" minOccurs="1" maxOccurs="1" />
-        <xs:element name="uncouth" type="xs:string" minOccurs="1" maxOccurs="1" />
-        <xs:element name="infirm" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="uneducated" type="xs:string" minOccurs="0" maxOccurs="1" />
+        <xs:element name="uncouth" type="xs:string" minOccurs="0" maxOccurs="1" />
+        <xs:element name="infirm" type="xs:string" minOccurs="0" maxOccurs="1" />
 
         <!-- Attributes -->
         <xs:element name="attributes" minOccurs="1" maxOccurs="1">
           <xs:complexType>
             <xs:sequence>
-              <xs:element name="attribute" minOccurs="13" maxOccurs="13">
+              <xs:element name="attribute" minOccurs="14" maxOccurs="14">
                 <xs:complexType>
                   <xs:sequence>
                     <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="metatypemin" type="xs:integer" minOccurs="1" maxOccurs="1" />
                     <xs:element name="metatypemax" type="xs:integer" minOccurs="1" maxOccurs="1" />
                     <xs:element name="metatypeaugmax" type="xs:integer" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="value" type="xs:integer" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="augmodifier" type="xs:integer" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="base" type="xs:integer" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="karma" type="xs:integer" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="metatypecategory" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <!-- Total value of the attribute so external applications do not need to crunch Improvements -->
                     <xs:element name="totalvalue" type="xs:integer" minOccurs="1" maxOccurs="1" />
                   </xs:sequence>
@@ -390,6 +383,7 @@
         <xs:element name="initiategrade" type="xs:integer" minOccurs="1" maxOccurs="1" />
         <xs:element name="resenabled" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="submersiongrade" type="xs:integer" minOccurs="1" maxOccurs="1" />
+        <xs:element name="depenabled" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="groupmember" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="groupname" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="groupnotes" type="xs:string" minOccurs="1" maxOccurs="1" />
@@ -401,8 +395,34 @@
         <xs:element name="magsplitadept" type="xs:integer" minOccurs="0" maxOccurs="1" />
         <xs:element name="magsplitmagician" type="xs:integer" minOccurs="0" maxOccurs="1" />
 
-        <xs:element name="tradition" type="xs:string" minOccurs="1" maxOccurs="1" />
-        <xs:element name="stream" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="tradition" minOccurs="0" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="sourceid" type="xs:string" minOccurs="1" maxOccurs="1" />
+              <xs:element name="guid" type="xs:string" minOccurs="1" maxOccurs="1" />
+              <xs:element name="traditiontype" type="xs:string" minOccurs="1" maxOccurs="1" />
+              <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+              <xs:element name="extra" type="xs:string" minOccurs="1" maxOccurs="1" />
+              <xs:element name="spiritform" type="xs:string" minOccurs="1" maxOccurs="1" />
+              <xs:element name="drain" type="xs:string" minOccurs="1" maxOccurs="1" />
+              <xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
+              <xs:element name="page" type="xs:string" minOccurs="1" maxOccurs="1" />
+              <xs:element name="spiritcombat" type="xs:string" minOccurs="1" maxOccurs="1" />
+              <xs:element name="spiritdetection" type="xs:string" minOccurs="1" maxOccurs="1" />
+              <xs:element name="spirithealth" type="xs:string" minOccurs="1" maxOccurs="1" />
+              <xs:element name="spiritillusion" type="xs:string" minOccurs="1" maxOccurs="1" />
+              <xs:element name="spiritmanipulation" type="xs:string" minOccurs="1" maxOccurs="1" />
+              <xs:element name="spirits" minOccurs="0" maxOccurs="1">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="spirit" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="bonus" type="bonusTypes"  minOccurs="0" maxOccurs="1"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
 
         <!-- Condition Monitor progress -->
         <xs:element name="physicalcmfilled" type="xs:integer" minOccurs="1" maxOccurs="1" />
@@ -421,7 +441,7 @@
                         <xs:sequence>
                           <xs:element name="guid" type="xs:string" minOccurs="1" maxOccurs="1" />
                           <xs:element name="suid" type="xs:string" minOccurs="1" maxOccurs="1" />
-                          <xs:element name="isknowledge" type="xs:boolean" minOccurs="1" maxOccurs="1" />
+                          <xs:element name="isknowledge" type="boolean" minOccurs="1" maxOccurs="1" />
                           <xs:element name="skillcategory" type="xs:string" minOccurs="1" maxOccurs="1" />
                           <xs:element name="karma" type="xs:integer" minOccurs="1" maxOccurs="1" />
                           <xs:element name="base" type="xs:integer" minOccurs="1" maxOccurs="1" />
@@ -442,6 +462,7 @@
                             </xs:complexType>
                           </xs:element>
                           <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+                          <xs:element name="buywithkarma" type="boolean" minOccurs="1" maxOccurs="1" />
                         </xs:sequence>
                       </xs:complexType>
                     </xs:element>
@@ -709,57 +730,47 @@
         </xs:element>
 
         <!-- Complex Forms -->
-        <xs:element name="techprograms" minOccurs="1" maxOccurs="1">
+        <xs:element name="complexforms" minOccurs="1" maxOccurs="1">
           <xs:complexType>
             <xs:sequence>
-              <xs:element name="techprogram" minOccurs="0" maxOccurs="unbounded">
+              <xs:element name="complexform" minOccurs="0" maxOccurs="unbounded">
                 <xs:complexType>
                   <xs:sequence>
+                    <xs:element name="sourceid" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="guid" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="rating" type="xs:integer" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="maxrating" type="xs:integer" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="capacity" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="target" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="duration" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="fv" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="extra" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="skill" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="tags" minOccurs="0" maxOccurs="1">
-                      <xs:complexType>
-                        <xs:sequence>
-                          <xs:element name="tag" type="xs:string" minOccurs="1" maxOccurs="unbounded" />
-                        </xs:sequence>
-                      </xs:complexType>
-                    </xs:element>
-                    <xs:element name="programoptions" minOccurs="0" maxOccurs="1">
-                      <xs:complexType>
-                        <xs:sequence>
-                          <xs:element name="programoption" minOccurs="1" maxOccurs="unbounded">
-                            <xs:complexType>
-                              <xs:sequence>
-                                <xs:element name="guid" type="xs:string" minOccurs="1" maxOccurs="1" />
-                                <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
-                                <xs:element name="rating" type="xs:integer" minOccurs="1" maxOccurs="1" />
-                                <xs:element name="maxrating" type="xs:integer" minOccurs="1" maxOccurs="1" />
-                                <xs:element name="extra" type="xs:string" minOccurs="1" maxOccurs="1" />
-                                <xs:element name="tags" minOccurs="0" maxOccurs="1">
-                                  <xs:complexType>
-                                    <xs:sequence>
-                                      <xs:element name="tag" type="xs:string" minOccurs="1" maxOccurs="unbounded" />
-                                    </xs:sequence>
-                                  </xs:complexType>
-                                </xs:element>
-                                <xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
-                                <xs:element name="page" type="xs:string" minOccurs="1" maxOccurs="1" />
-                                <xs:element name="notes" type="xs:string" minOccurs="1" maxOccurs="1" />
-                              </xs:sequence>
-                            </xs:complexType>
-                          </xs:element>
-                        </xs:sequence>
-                      </xs:complexType>
-                    </xs:element>
                     <xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="page" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="notes" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="grade" type="xs:integer" minOccurs="1" maxOccurs="1" />
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+
+        <!-- AI Programs -->
+        <!-- TODO: Actually rewrite this for proper programs. -->
+        <xs:element name="aiprograms" minOccurs="1" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="aiprogram" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="sourceid" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="guid" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="requiresprogram" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="extra" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="page" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="notes" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="isadvancedprogram" type="boolean" minOccurs="1" maxOccurs="1" />
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>
@@ -801,17 +812,20 @@
           </xs:complexType>
         </xs:element>
 
-        <!-- Martial Arts Maneuvers -->
-        <xs:element name="martialartmaneuvers" minOccurs="1" maxOccurs="1">
+
+        <!-- Limit Modifiers -->
+        <xs:element name="limitmodifiers" minOccurs="1" maxOccurs="1">
           <xs:complexType>
             <xs:sequence>
-              <xs:element name="martialartmaneuver" minOccurs="0" maxOccurs="unbounded">
+              <xs:element name="limitmodifier" minOccurs="0" maxOccurs="unbounded">
                 <xs:complexType>
                   <xs:sequence>
                     <xs:element name="guid" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="page" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="limit" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="bonus" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="condition" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="candelete" type="boolean" minOccurs="1" maxOccurs="1" />
                     <xs:element name="notes" type="xs:string" minOccurs="1" maxOccurs="1" />
                   </xs:sequence>
                 </xs:complexType>
@@ -827,6 +841,7 @@
               <xs:element name="armor" minOccurs="0" maxOccurs="unbounded">
                 <xs:complexType>
                   <xs:sequence>
+                    <xs:element name="sourceid" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="guid" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
@@ -914,20 +929,27 @@
               <xs:element name="quality" minOccurs="0" maxOccurs="unbounded">
                 <xs:complexType>
                   <xs:sequence>
+                    <xs:element name="sourceid" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="guid" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="extra" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="bp" type="xs:integer" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="contributetolimit" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="implemented" type="boolean" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="contributetolimit" type="boolean" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="stagedpurchase" type="boolean" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="doublecareer" type="boolean" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="canbuywithspellpoints" type="boolean" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="metagenic" type="boolean" minOccurs="1" maxOccurs="1" />
                     <xs:element name="print" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="qualitytype" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="qualitysource" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="mutant" type="xs:string" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="free" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="free" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="page" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="sourcename" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="bonus" type="bonusTypes"  minOccurs="0" maxOccurs="1"/>
-                    <xs:element name="weaponguid" type="xs:string" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="firstlevelbonus" type="bonusTypes"  minOccurs="0" maxOccurs="1"/>
                     <xs:element name="notes" type="xs:string" minOccurs="1" maxOccurs="1" />
                   </xs:sequence>
                 </xs:complexType>
@@ -992,6 +1014,7 @@
               <xs:element name="vehicle" minOccurs="0" maxOccurs="unbounded">
                 <xs:complexType>
                   <xs:sequence>
+                    <xs:element name="sourceid" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="guid" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
@@ -1017,6 +1040,7 @@
                           <xs:element name="mod" minOccurs="0" maxOccurs="unbounded">
                             <xs:complexType>
                               <xs:sequence>
+                                <xs:element name="sourceid" type="xs:string" minOccurs="1" maxOccurs="1" />
                                 <xs:element name="guid" type="xs:string" minOccurs="1" maxOccurs="1" />
                                 <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
                                 <xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
@@ -1099,6 +1123,53 @@
               <xs:element name="metamagic" minOccurs="0" maxOccurs="unbounded">
                 <xs:complexType>
                   <xs:sequence>
+                    <xs:element name="sourceid" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="guid" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="paidwithkarma" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="page" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="bonus" type="bonusTypes"  minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="improvementsource" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="notes" type="xs:string" minOccurs="1" maxOccurs="1" />
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+
+        <!-- Arts -->
+        <xs:element name="arts" minOccurs="1" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="art" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="sourceid" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="guid" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="paidwithkarma" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="page" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="bonus" type="bonusTypes"  minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="improvementsource" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="notes" type="xs:string" minOccurs="1" maxOccurs="1" />
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+
+        <!-- Arts -->
+        <xs:element name="enhancements" minOccurs="1" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="enhancement" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="sourceid" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="guid" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
@@ -1121,6 +1192,7 @@
               <xs:element name="critterpower" minOccurs="0" maxOccurs="unbounded">
                 <xs:complexType>
                   <xs:sequence>
+                    <xs:element name="sourceid" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="guid" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="extra" type="xs:string" minOccurs="1" maxOccurs="1" />
@@ -1171,6 +1243,7 @@
                 <xs:complexType>
                   <xs:sequence>
                     <xs:element name="unique" type="xs:string" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="target" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="improvedname" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="sourcename" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="min" type="xs:integer" minOccurs="1" maxOccurs="1" />
@@ -1180,6 +1253,7 @@
                     <xs:element name="val" type="xs:integer" minOccurs="1" maxOccurs="1" />
                     <xs:element name="rating" type="xs:integer" minOccurs="1" maxOccurs="1" />
                     <xs:element name="exclude" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="condition" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="improvementttype" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="improvementsource" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="custom" type="xs:string" minOccurs="1" maxOccurs="1" />
@@ -1292,4 +1366,36 @@
       </xs:choice>
     </xs:complexType>
   </xs:element>
+
+  <xs:simpleType name="boolean">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="False"/>
+      <xs:enumeration value="True"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:group name="ihasmatrixattribute">
+  <xs:sequence>
+    <xs:element name="active"            type="boolean"    minOccurs="1" maxOccurs="1" />
+    <xs:element name="homenode"          type="boolean"    minOccurs="1" maxOccurs="1" />
+    <xs:element name="devicerating"      type="xs:string"  minOccurs="1" maxOccurs="1" />
+    <xs:element name="programlimit"      type="xs:string"  minOccurs="1" maxOccurs="1" />
+    <xs:element name="overclocked"       type="xs:string"  minOccurs="1" maxOccurs="1" />
+    <xs:element name="attack"            type="xs:string"  minOccurs="1" maxOccurs="1" />
+    <xs:element name="sleaze"            type="xs:string"  minOccurs="1" maxOccurs="1" />
+    <xs:element name="dataprocessing"    type="xs:string"  minOccurs="1" maxOccurs="1" />
+    <xs:element name="firewall"          type="xs:string"  minOccurs="1" maxOccurs="1" />
+    <xs:element name="attributearray"    type="xs:string"  minOccurs="1" maxOccurs="1" />
+    <xs:element name="modattack"         type="xs:string"  minOccurs="1" maxOccurs="1" />
+    <xs:element name="modsleaze"         type="xs:string"  minOccurs="1" maxOccurs="1" />
+    <xs:element name="moddataprocessing" type="xs:string"  minOccurs="1" maxOccurs="1" />
+    <xs:element name="modfirewall"       type="xs:string"  minOccurs="1" maxOccurs="1" />
+    <xs:element name="modattributearray" type="xs:string"  minOccurs="1" maxOccurs="1" />
+    <xs:element name="canswapattributes" type="boolean"    minOccurs="1" maxOccurs="1" />
+    <xs:element name="matrixcmfilled"    type="xs:string"  minOccurs="1" maxOccurs="1" />
+    <xs:element name="wirelessbonus"     type="bonusTypes" minOccurs="0" maxOccurs="1" />
+    <xs:element name="wirelesson"        type="boolean"    minOccurs="0" maxOccurs="1"/>
+
+  </xs:sequence>
+  </xs:group>
 </xs:schema>
