@@ -1,13 +1,158 @@
-Future Build 207/208
+Future Build 209
+
+Application Changes:
+- Metagenic quality balances are now shown in the Karma summary tab while in create mode. This allows for more easily seeing how many qualities you need to take to even up, and properly accounts for the karma lost to balance up positive and negative metagenic qualities.
+- Internally changed all 'Metagenetic' references (except for the improvement type) to 'Metagenic'. 
+- Skills can now benefit from Conditional improvements that are not applied to the base pool of a skill. 
+- Added a 'GetAvailableAmmo' int to the Print method for weapons, exposed as 'availableammo'. This provides a count of the total amount of ammunition that can fit into the current weapon.It does NOT filter by types of ammunition, just the total available amount. 
+- Weapons can now use a 'useskillspec' node to force the specialisation they use in place of their name. Mostly intended to be used for Exotic Melee/Ranged weapons.
+
+Application Fixes:
+- Fixed issues with the Balistic Shield Exotic Melee Weapon choice not being present in the Exotic Weapon skill selector window. Closes #3856
+- Dedicated Spellslinger properly allows for purchasing spells while the character does not have enough karma to afford it. Closes #3859
+- Fixed a regression with lifestyle qualities not properly storing their Area, Security and Comfort values. Closes #3869
+
+Data Changes:
+- Tetrachromacy now adds adds +3 to Perception, with a (Visual) condition. This will be exposed to the Print method for character sheets at a later date. 
+- Grapple Fist cyberware now properly uses the skill of the Grapple Gun Exotic skill.
+- Fixed an issue with the Private Investigator life module that prevented it from being added.
+
+New Strings:
+- Label_MetagenicKarmaValue
+- Label_MetagenicKarmaValueAppend
+- Label_SummaryMetagenicQualities
+
+- Changed Strings:
+- Message_OverPositiveMetagenicQualities
+- Message_OverNegativeMetagenicQualities
+- Message_MetagenicQualitiesUnbalanced
+- Message_MetagenicQualitiesInsufficientKarma
+- Message_MetagenicQualitiesSubtractingKarma
+- Checkbox_SelectQuality_Metagenic
+- Checkbox_SelectQuality_Not_Metagenic
+
+Build 208
 
 Application Changes:
 
-Quick version increment because I'm an idiot and forgot to update Appveyor for nightlies.
+- Added a genetechessmultiplier improvement type that allows for the modification of genetech essence costs in a similar manner to the biowareessmultiplier improvement.
+- Added an exclusion to gameplayoptions.xml that allows for the customisation of the limbs that are permitted for Redliner and Cyber Singularity Seeker. Closes #1168
+- Weapons mounted on vehicles in create mode can now switch the dicepool calculation method they use between character skill, remote-operated gunnery and dogbrain, among others. Closes #3801
+- Added a validity check for Adepts to ensure that they're not over their powerpoint maximum when moving into career mode.
+- Added a house rule to allow Improved Ability's maximum to be 1.5 of skill rating instead of 0.5.
+
+Application Fixes:
+
+- Fixed issues with the SelectSpell improvement not being properly available in the improvements window.
+- Fixed a regression in the behaviour of the cyberadeptdaemon improvement that prevented Resonance being awarded for fractional losses of Essence. In effect, this improvement was only being counted if you had an integer value of CyberwareEssence. Your Resonance will be adjusted on next Submersion, or if you activate the Reapply Improvements menu option.
+- Fixed an issue where attempting to edit a basic lifestyle would cause the lifestyle level to not get properly saved.
+- Changing priorities or metatypes in Create mode will no longer reset all points and karma put into attributes.
+- Fixed a bug where special attributes would not update properly with changes to the Special priority category.
+- Fixed a UI issue where tooltips to improve attributes or skills that are at their maximum rating would show the regular improvement tooltip with a karma cost of -1 instead of a message saying that the item is at its maximum. Closes #3664.
+- Fixed an issue where the GenetechCostMultiplier improvement would not work properly. Part of #3741.
+- Fixed issues where certain options in the Options screen would have their text cut off. Closes #3716.
+- Fixed an issue where the screen to select a Complex Form did not pay attention to Complex Form requirements, e.g. technomancer streams. Closes #3718.
+- Fixed an issue where changing Metatype priorities would not update the Special Attributes amount properly.
+- Increased gear quantity limit per stack from 100000 to 1000000000 in both Create mode and in the gear selection screen. Closes #3520.
+- Fixed an issue where changing priorities could end up causing issues with metatype- and metavariant-given qualities. Closes #3549. 
+- Fixed an issue with Armor Mods that use FixedValues in Cost not correctly displaying, such as Grey Mana Integration.
+- Fixed issues with improvements that add to skill ratings not properly being counted in Create mode.
+- Fixed an issue where improvements that add knowledge skills that can be upgraded later still did not allow for the adding of specializations.
+- Fixed an issue where deleting improvements that add knowledge skills would not flag the appropriate knowledge skill for deletion. They can now be manually deleted after the associated improvement is removed.
+- Fixed an issue where upgradable knowledge skills added by improvements could get their category changed.
+- Updated wkhtmltopdf (the HTML to PDF converter) to v0.12.5. Closes #3282.
+- Fixed an issue where 'ware grade modifiers were not applied in the 'ware selection screen unless the 'ware grade was changed. Closes #3505.
+- Fixed an issue where availabilities could be negative numbers.
+- Added the ability for weapons and weapon accessories to define the number of bullets fired in Single Shots, Short Bursts, and Long Bursts.
+- Added the ability for weapons to define weapon slots to which modification costs are doubled.
+- Fixed an issue where weapons with an accessory cost multiplier would not have that multiplier be represented in the weapon accessory selection screen.
+- Fixed a crash that occured when adding improvements for exotic skills and knowledge skills that did not have pre-made entries in skills.xml. Closes #3510.
+- Added the ability for qualities to be flagged as able to be purchased in a way that would make the character go into a karma debt.
+- Dates in the Karma and Nuyen tab will now always follow the format of the language in which the program is localized, rather than following the format of the language of the system in which the program is running.
+- Fixed an issue where the registered sprite limit would not take augmentations into account.
+- Added the ability for created Adept Power improvements to ignore power limits when selecting the affected power. Closes #3721.
+- Chummy will now use translations from other languages. Closes #3540.
+- Reapplying improvements after having removed a metatype removable quality will no longer cause said quality's improvements to be re-applied. Closes #3522.
+- Removing the marker quality for having removed a metatype removable quality in Create mode will restore the previously removed metatype removable quality.
+- Changing metatypes in Create mode will now also remove any marker qualities for removed metatype removable qualities.
+- Fixed an issue that caused removing removable metatype qualities with first-level-only improvements to not remove those first-level-only improvements.
+- Fixed an issue with the Karma Metatype form that would soft-lock the application waiting for an input for critter powers and programs.
+- Fixed issues where crashes and unexpected behavior could occur when checking the capacity of parent gear items with children that have fractional capacity costs.
+- Spells with no descriptors will no longer display a label saying that the descriptor text is not found in the spell selection screen.
+- Fixed an issue with detecting special modifications on weapons loaded onto vehicle weapon mounts when checking whether or not the limit on special modifications has been reached.
+- Fixed incorrect usage of SkillGroup name instead of the DisplayName. Closes #3785
+- Added support for improvements that add to the dicepools of resisting direct mana combat spells, direct physical combat spells, decrease BOD, decrease AGI, decrease REA, decrease STR, decrease CHA, decrease INT, decrease LOG, and decrease WIL.
+- Moved magic strings used for calculating cyberlimb attributes into explicit hashsets. This allows the 2050 cyberlimb enhancement and customisations to work properly. 
+- Removed an additional cost from purchasing Gear that incorrectly caused quantity to be counted twice.
+- Fixed a regression in the SpellCategory improvement that prevented it being used, as it was renamed to spellcategorydicepool.
+- The Technoshaman Stream properly allows Sprites to be Fettered, granting unlimited services. Existing characters with this Stream will need to Reapply Improvements for it to work.
+- Availability processing for street gear (Vehicles, Weapons, Armor, etc.) have been moved out of frmCreate and into the individual Equipment classes. Resolves issues with weapons being incorrectly flagged for availability multiple times.
+- Fixed a regression in behaviour of the AttributeSection that caused Shapeshifters created prior to 5.200 to fail to load in career mode.
 
 Data Changes:
 
 - Fixed incorrect specialmodificationlimit property for the Special Modifications and Prototype Materials qualities. 
-- Fixed missing specs for the Colt Coral Snake, Barrens Special and Onotari Arms Vagabond.
+- Quick Healer now grants a +2 dicepool to casting the Heal spell. I strongly disagree with the wording on this personally, but it's RAW.
+- Fixed missing accessories on the Lone Star Remington 995. Closes #3727.
+- Fixed an issue where the Special Modification for Concealment increased concealment instead of decreasing it (i.e. it made the weapon easier to spot instead of harder to spot). Closes #3747.
+- Personal Drone Rack is now a gear that can be added as a plugin to Micro-Hardpoints instead of being armor mods that take up capacity. Closes #3448.
+- The Hammerli Gemini now properly doubles all Barrel accessories and modifications and uses its special firing mode of effective SA with 2 bullets fired in Single Shot and 6 bullets fired in Short Burst. It also has an ammo capacity of 16(c) instead of 8(c), though this is because it is difficult to implement the 2x clip RAW says it uses. Ammo modification costs still need to be tracked manually, as do doubled costs of Spare Clips. Existing characters with a Hammerli Gemini need to re-add the firearm to their character to see its changes.
+- The Dracoform qualities can now be taken in a way that would make the character go into karma debt, and characters moving to Career mode with a Dracoform quality will have the quality's karma cost ignored for the purposes of checking whether they have enough karma left over from Create mode. Closes #3366.
+- Fixed a crash that would occur when selecting a skill as an optional power. Closes #3677.
+- Fixed missing Copy settings for some custom data entries that prevented them being copied into release folders. 
+- Added a customdata rule for the German variant prices for Rigger 5's drone turrets. Closes #3760
+- Added the Convince spell to German-exclusive Street Grimoire content, as the German edition of Street Grimoire contains it. Closes #3707.
+- Added various missing critters from sourcebooks and updated partially-incorrect mentor spirits from SOTA 2080, courtesy of Keeper M on Discord. 
+- Adjusted the Chaos mentor spirit to allow taking two levels of Improved Potential. This is done through adding a separate power that prompts for the limit to choose.
+- Replaced all instances of weapons that could choose between a box magazine (c)and belt-fed (b), External/Internal Source or drum (d) with the (c) ammo by default. There are now zero-cost accessories that enable the alternates for these weapons.
+This affects:
+    Underbarrel Laser
+    Repeating Laser
+    Ares Lancer MP Laser
+    Ares Redline
+    Auto-Assault 16
+    Enfield AS-7
+    Enfield AS-7 (2050)
+    RPK HMG
+    Ruhrmetall SF-20
+    Ultamax HMG-2
+    Ingram Valiant
+    Krime Wave
+    Shiawase Armaments Nemesis
+    FN MAG-5
+    Stoner-Ares M202
+    Ultamax MMG
+- Fixed issues with the Merc Teen, Merc Kid and Corp Teen life modules that prevented them from being added.
+- Fixed Dareadrenaline adding 1 to WIL instead of 1 to dicepools based on WIL (important due to augmented attribute limits). Closes #3791.
+- Corrected the Handling and page reference of the Lone Star SecureSector Mk2. Closes #3788.
+- Added missing actions for Commanding Voice and Mystic Aptitude. Closes #3804
+- Fixed incorrect Availability on the Federated Boeing Commuter. Closes #3833
+- Fixed Local Bar Batron lifestyle quality not being allowed to be taken multiple times. Closes #3812
+- Fixed incorrect stage for the Lost at Sea life module.
+- Changed Technomancer priority selection to require Metahuman instead of forbid AI to prevent metasapients from being able to take it incorrectly. Closes #3506
+- Fixed incorrect range for the Gravity Well spell. Closes #3844
+
+New Strings:
+
+- Tip_ImproveItemAtMaximum
+- String_Bullet
+- String_Bullets
+- Checkbox_CreateImprovementIgnoreLimits
+- Chummy_Intro
+- String_DescEssence
+- String_DescDamaging
+- String_DescObject
+- Message_InvalidPowerPoints
+- Checkbox_Options_IncreasedImprovedAbilityModifier
+
+Changed Strings:
+
+- Message_NotEnoughAmmoSingleShot
+- String_SingleShot
+- String_ShortBurst
+- String_LongBurst
+- String_FullBurst
+- String_SuppressiveFire
 
 Build 206
 
@@ -57,6 +202,7 @@ Application Changes:
 - Removed the caching of Mugshot images in the character roster. Prevents high memory usage for large watch folder content.
 - Unified some uses of Availability processing into the AvailabilityValue object.
 - Crash reporter now prevents uploading issues unless the user story in the Error Description tab has been changed.
+- Added a conditional check in the requirements validator that checks for the spirit form of a given tradition. Expected values are Materialization, Possession or Inhabitation. 
 
 UI Changes:
 
@@ -85,7 +231,8 @@ Data Changes:
 - Removed incorrect Medium lifestyle setting from the Workshop/Facility lifestyle qualities. Closes #3660
 - Extended Clip now allows Belt and Drum weapons instead of just Clips.
 - Fixed missing Mastery Quality flag for the Close Combat Mage quality.
-- The Tactical Grpple Gun is now addable as a gear item, in the same manner as the standard grapple gun. 
+- The Tactical Grapple Gun is now addable as a gear item, in the same manner as the standard grapple gun. 
+- Added missing Great Form Possession metamagic from Hard Targets.
 
 String Changes:
 

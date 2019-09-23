@@ -45,6 +45,16 @@ namespace Chummer
         Lifestyle,
     }
 
+    public enum UseAILogging
+    {
+        OnlyLocal = 0,
+        OnlyMetric,
+        Crashes,
+        NotSet,
+        Info,
+        Trace
+    }
+
     public sealed class SourcebookInfo : IDisposable
     {
         string _strPath = string.Empty;
@@ -153,7 +163,7 @@ namespace Chummer
     public static class GlobalOptions
     {
         private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
-        private static CultureInfo s_ObjLanguageCultureInfo = CultureInfo.CurrentCulture;
+        private static CultureInfo s_ObjLanguageCultureInfo = CultureInfo.GetCultureInfo(DefaultLanguage);
 
         public static string ErrorMessage { get; } = string.Empty;
         public static event TextEventHandler MRUChanged;
@@ -223,7 +233,7 @@ namespace Chummer
         private static string _strPDFParameters = string.Empty;
         private static HashSet<SourcebookInfo> _lstSourcebookInfo;
         private static bool _blnUseLogging;
-        private static bool _blnUseLoggingApplicationInsights;
+        private static UseAILogging _enumUseLoggingApplicationInsights;
         private static string _strCharacterRosterPath;
 
         // Custom Data Directory information.
@@ -399,7 +409,36 @@ namespace Chummer
             LoadBoolFromRegistry(ref _blnUseLogging, "uselogging");
 
             //Should the App "Phone home"
-            LoadBoolFromRegistry(ref _blnUseLoggingApplicationInsights, "useloggingApplicationInsights");
+            {
+                try
+                {
+                    string useAI = "NotSet";
+                    LoadStringFromRegistry(ref useAI, "useloggingApplicationInsights");
+                    switch (useAI)
+                    {
+                        //legacy convert of checkbox bool
+                        case "False":
+                            _enumUseLoggingApplicationInsights = UseAILogging.NotSet;
+                            break;
+                        //legacy convert of checkbox bool
+                        case "True":
+                            _enumUseLoggingApplicationInsights = UseAILogging.Info;
+                            break;
+                        case "Yes":
+                            _enumUseLoggingApplicationInsights = UseAILogging.Info;
+                            break;
+                        default:
+                            _enumUseLoggingApplicationInsights = (UseAILogging) Enum.Parse(typeof(UseAILogging), useAI);
+                            break;
+                    }
+                }
+                catch (Exception e)
+                {
+                    Log.Warn(e);
+                    _enumUseLoggingApplicationInsights = UseAILogging.NotSet;
+                }
+                
+            }
 
             // Whether or not dates should include the time.
             LoadBoolFromRegistry(ref _blnDatesIncludeTime, "datesincludetime");
@@ -493,7 +532,7 @@ namespace Chummer
 //#else
                 string msg = "Error while loading PluginOptions from registry: " + Environment.NewLine;
                 msg += e.Message;
-                MessageBox.Show(msg);
+                Program.MainForm.ShowMessageBox(msg);
 #endif
             }
             
@@ -622,24 +661,20 @@ namespace Chummer
         /// <summary>
         /// Whether or not the app should use logging.
         /// </summary>
-        public static bool UseLoggingApplicationInsights
+        public static UseAILogging UseLoggingApplicationInsights
         {
-            get => _blnUseLoggingApplicationInsights;
+            get => _enumUseLoggingApplicationInsights;
             set
             {
-                if (_blnUseLoggingApplicationInsights != value)
+                _enumUseLoggingApplicationInsights = value;
+                // Sets up logging if the option is changed during runtime
+                if (_enumUseLoggingApplicationInsights <=  UseAILogging.OnlyLocal)
                 {
-                    _blnUseLoggingApplicationInsights = value;
-                    // Sets up logging if the option is changed during runtime
-                    if (value)
-                    {
-                        TelemetryConfiguration.Active.DisableTelemetry = false;
-                    }
-                    else
-                    {
-                        TelemetryConfiguration.Active.DisableTelemetry = true;
-                    }
-
+                    TelemetryConfiguration.Active.DisableTelemetry = false;
+                }
+                else
+                {
+                    TelemetryConfiguration.Active.DisableTelemetry = true;
                 }
             }
         }

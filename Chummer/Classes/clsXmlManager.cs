@@ -334,16 +334,19 @@ namespace Chummer
                         strDuplicatesNames += Environment.NewLine;
                     strDuplicatesNames += string.Join(Environment.NewLine, lstDuplicateNames);
                 }
-                MessageBox.Show(string.Format(LanguageManager.GetString("Message_DuplicateGuidWarning", GlobalOptions.Language)
-                        , setDuplicateIDs.Count.ToString(GlobalOptions.CultureInfo)
-                        , strFileName
-                        , strDuplicatesNames));
+                if (!Utils.IsUnitTest)
+                {
+                    Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_DuplicateGuidWarning", GlobalOptions.Language)
+                            , setDuplicateIDs.Count.ToString(GlobalOptions.CultureInfo)
+                            , strFileName
+                            , strDuplicatesNames));
+                }
             }
 
-            if (lstItemsWithMalformedIDs.Count > 0)
+            if (lstItemsWithMalformedIDs.Count > 0 && !Utils.IsUnitTest)
             {
                 string strMalformedIdNames = string.Join(Environment.NewLine, lstItemsWithMalformedIDs);
-                MessageBox.Show(string.Format(LanguageManager.GetString("Message_NonGuidIdWarning", GlobalOptions.Language)
+                Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_NonGuidIdWarning", GlobalOptions.Language)
                     , lstItemsWithMalformedIDs.Count.ToString(GlobalOptions.CultureInfo)
                     , strFileName
                     , strMalformedIdNames));
@@ -933,12 +936,12 @@ namespace Chummer
             }
             catch (IOException ex)
             {
-                MessageBox.Show(ex.ToString());
+                Program.MainForm.ShowMessageBox(ex.ToString());
                 return;
             }
             catch (XmlException ex)
             {
-                MessageBox.Show(ex.ToString());
+                Program.MainForm.ShowMessageBox(ex.ToString());
                 return;
             }
 
@@ -1162,6 +1165,55 @@ namespace Chummer
                                         else if (strChildName == "#comment")
                                         {
                                             //Ignore this node, as it's a comment node.
+                                        }
+                                        else if (strFile.EndsWith("tips.xml"))
+                                        {
+                                            XPathNavigator xmlText = objChild.SelectSingleNode("text");
+                                            // Look for a matching entry in the Language file.
+                                            if (xmlText != null)
+                                            {
+                                                string strChildTextElement = xmlText.Value;
+                                                XPathNavigator xmlNode = xmlTranslatedType?.SelectSingleNode(strChildName + "[text = " + strChildTextElement.CleanXPath() + "]");
+                                                if (xmlNode != null)
+                                                {
+                                                    // A match was found, so see what elements, if any, are missing.
+                                                    bool blnTranslate = xmlNode.SelectSingleNode("translate") != null || xmlNode.SelectSingleNode("@translated")?.Value == bool.TrueString;
+
+                                                    // At least one pice of data was missing so write out the result node.
+                                                    if (!blnTranslate)
+                                                    {
+                                                        if (!blnTypeWritten)
+                                                        {
+                                                            blnTypeWritten = true;
+                                                            objWriter.WriteStartElement(strTypeName);
+                                                        }
+
+                                                        // <results>
+                                                        objWriter.WriteStartElement(strChildName);
+                                                        objWriter.WriteElementString("text", strChildTextElement);
+                                                        if (!blnTranslate)
+                                                            objWriter.WriteElementString("missing", "translate");
+                                                        // </results>
+                                                        objWriter.WriteEndElement();
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    if (!blnTypeWritten)
+                                                    {
+                                                        blnTypeWritten = true;
+                                                        objWriter.WriteStartElement(strTypeName);
+                                                    }
+
+                                                    // No match was found, so write out that the data item is missing.
+                                                    // <result>
+                                                    objWriter.WriteStartElement(strChildName);
+                                                    objWriter.WriteAttributeString("needstobeadded", bool.TrueString);
+                                                    objWriter.WriteElementString("text", strChildTextElement);
+                                                    // </result>
+                                                    objWriter.WriteEndElement();
+                                                }
+                                            }
                                         }
                                         else
                                         {

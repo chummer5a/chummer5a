@@ -111,7 +111,16 @@ namespace Chummer.Backend.Equipment
         private int _intSortOrder;
 
         private readonly Character _objCharacter;
-        private static char[] MathOperators = new char[] { '"', '*', '/', '+', '-' };
+        private static readonly char[] s_MathOperators = new char[] { '"', '*', '/', '+', '-' };
+
+        // I don't like this, but it's easier than making it a specific property of the cyberware.
+        private static readonly HashSet<string> s_AgilityCustomisationStrings = new HashSet<string> { "Customized Agility", "Cyberlimb Customization, Agility (2050)" };
+        private static readonly HashSet<string> s_AgilityEnhancementStrings = new HashSet<string> { "Enhanced Agility", "Cyberlimb Augmentation, Agility (2050)" };
+        private static readonly HashSet<string> s_AgilityCombinedStrings = new HashSet<string>(s_AgilityEnhancementStrings.Union(s_AgilityEnhancementStrings));
+        
+        private static readonly HashSet<string> s_StrengthCustomisationStrings = new HashSet<string> { "Customized Strength", "Cyberlimb Customization, Strength (2050)" };
+        private static readonly HashSet<string> s_StrengthEnhancementStrings = new HashSet<string> { "Enhanced Strength", "Cyberlimb Augmentation, Strength (2050)" };
+        private static readonly HashSet<string> s_StrengthCombinedStrings = new HashSet<string>(s_StrengthEnhancementStrings.Union(s_StrengthEnhancementStrings));
 
         #region Helper Methods
         /// <summary>
@@ -167,11 +176,11 @@ namespace Chummer.Backend.Equipment
                             }
                             else
                             {
-                                if (!blnDoCyberlimbAGIRefresh && (objNewItem.Name == "Enhanced Agility" || objNewItem.Name == "Customized Agility"))
+                                if (!blnDoCyberlimbAGIRefresh && s_AgilityCombinedStrings.Contains(objNewItem.Name))
                                 {
                                     blnDoCyberlimbAGIRefresh = true;
                                 }
-                                if (!blnDoCyberlimbSTRRefresh && (objNewItem.Name == "Enhanced Strength" || objNewItem.Name == "Customized Strength"))
+                                if (!blnDoCyberlimbSTRRefresh && s_StrengthCombinedStrings.Contains(objNewItem.Name))
                                 {
                                     blnDoCyberlimbSTRRefresh = true;
                                 }
@@ -200,11 +209,11 @@ namespace Chummer.Backend.Equipment
                             }
                             else
                             {
-                                if (!blnDoCyberlimbAGIRefresh && (objOldItem.Name == "Enhanced Agility" || objOldItem.Name == "Customized Agility"))
+                                if (!blnDoCyberlimbAGIRefresh && s_AgilityCombinedStrings.Contains(objOldItem.Name))
                                 {
                                     blnDoCyberlimbAGIRefresh = true;
                                 }
-                                if (!blnDoCyberlimbSTRRefresh && (objOldItem.Name == "Enhanced Strength" || objOldItem.Name == "Customized Strength"))
+                                if (!blnDoCyberlimbSTRRefresh && s_StrengthCombinedStrings.Contains(objOldItem.Name))
                                 {
                                     blnDoCyberlimbSTRRefresh = true;
                                 }
@@ -232,11 +241,11 @@ namespace Chummer.Backend.Equipment
                             }
                             else
                             {
-                                if (!blnDoCyberlimbAGIRefresh && (objOldItem.Name == "Enhanced Agility" || objOldItem.Name == "Customized Agility"))
+                                if (!blnDoCyberlimbAGIRefresh && s_AgilityCombinedStrings.Contains(objOldItem.Name))
                                 {
                                     blnDoCyberlimbAGIRefresh = true;
                                 }
-                                if (!blnDoCyberlimbSTRRefresh && (objOldItem.Name == "Enhanced Strength" || objOldItem.Name == "Customized Strength"))
+                                if (!blnDoCyberlimbSTRRefresh && s_StrengthCombinedStrings.Contains(objOldItem.Name))
                                 {
                                     blnDoCyberlimbSTRRefresh = true;
                                 }
@@ -261,11 +270,11 @@ namespace Chummer.Backend.Equipment
                             }
                             else
                             {
-                                if (!blnDoCyberlimbAGIRefresh && (objNewItem.Name == "Enhanced Agility" || objNewItem.Name == "Customized Agility"))
+                                if (!blnDoCyberlimbAGIRefresh && s_AgilityCombinedStrings.Contains(objNewItem.Name))
                                 {
                                     blnDoCyberlimbAGIRefresh = true;
                                 }
-                                if (!blnDoCyberlimbSTRRefresh && (objNewItem.Name == "Enhanced Strength" || objNewItem.Name == "Customized Strength"))
+                                if (!blnDoCyberlimbSTRRefresh && s_StrengthCombinedStrings.Contains(objNewItem.Name))
                                 {
                                     blnDoCyberlimbSTRRefresh = true;
                                 }
@@ -356,7 +365,7 @@ namespace Chummer.Backend.Equipment
             _objParentVehicle = objParentVehicle;
             if (!objXmlCyberware.TryGetField("id", Guid.TryParse, out _guiSourceID))
             {
-                Log.Warn(new object[] { "Missing id field for armor xmlnode", objXmlCyberware });
+                Log.Warn(new object[] { "Missing id field for cyberware xmlnode", objXmlCyberware });
                 Utils.BreakIfDebug();
             }
             else
@@ -957,7 +966,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("ratinglabel", ref _strRatingLabel);
             objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
             // Legacy shim for old-form customized attribute
-            if ((Name == "Customized Agility" || Name == "Customized Strength" || Name == "Cyberlimb Customization, Agility (2050)" || Name == "Cyberlimb Customization, Strength (2050)") &&
+            if ((s_StrengthCombinedStrings.Contains(Name) || s_AgilityCombinedStrings.Contains(Name)) &&
                 int.TryParse(MaxRatingString, out int _))
             {
                 XmlNode objMyXmlNode = GetNode();
@@ -1122,7 +1131,7 @@ namespace Chummer.Backend.Equipment
                 GetNode()?.TryGetStringFieldQuickly("modfirewall", ref _strModFirewall);
             if (!objNode.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray))
                 GetNode()?.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray);
-            
+
             if (blnCopy)
             {
                 if (Bonus != null || WirelessBonus != null || PairBonus != null || WirelessPairBonus != null)
@@ -1400,45 +1409,41 @@ namespace Chummer.Backend.Equipment
             get => _strName;
             set
             {
-                if (_strName != value)
+                if (_strName == value) return;
+                string strOldValue = _strName;
+                _lstIncludeInPairBonus.Remove(_strName);
+                _lstIncludeInPairBonus.Add(value);
+                _lstIncludeInWirelessPairBonus.Remove(_strName);
+                _lstIncludeInWirelessPairBonus.Add(value);
+                _strName = value;
+                if (_objParent?.Category != "Cyberlimb" || _objParent.Parent?.InheritAttributes == false ||
+                    _objParent.ParentVehicle != null || _objCharacter.Options.DontUseCyberlimbCalculation ||
+                    string.IsNullOrWhiteSpace(_objParent.LimbSlot) ||
+                    _objCharacter.Options.ExcludeLimbSlot.Contains(_objParent.LimbSlot)) return;
+                bool blnDoMovementUpdate = false;
+                if (s_AgilityCombinedStrings.Contains(value) || s_AgilityCombinedStrings.Contains(strOldValue))
                 {
-                    string strOldValue = _strName;
-                    _lstIncludeInPairBonus.Remove(_strName);
-                    _lstIncludeInPairBonus.Add(value);
-                    _lstIncludeInWirelessPairBonus.Remove(_strName);
-                    _lstIncludeInWirelessPairBonus.Add(value);
-                    _strName = value;
-                    if (_objParent?.Category == "Cyberlimb" && _objParent.Parent?.InheritAttributes != false && _objParent.ParentVehicle == null && !_objCharacter.Options.DontUseCyberlimbCalculation &&
-                        !string.IsNullOrWhiteSpace(_objParent.LimbSlot) && !_objCharacter.Options.ExcludeLimbSlot.Contains(_objParent.LimbSlot))
+                    blnDoMovementUpdate = true;
+                    foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList
+                        .Concat(_objCharacter.AttributeSection.SpecialAttributeList)
+                        .Where(abbrev => abbrev.Abbrev == "AGI"))
                     {
-                        bool blnDoMovementUpdate = false;
-                        if (value == "Enhanced Agility" || value == "Customized Agility" || strOldValue == "Enhanced Agility" || strOldValue == "Customized Agility")
-                        {
-                            blnDoMovementUpdate = true;
-                            foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
-                            {
-                                if (objCharacterAttrib.Abbrev == "AGI")
-                                {
-                                    objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
-                                }
-                            }
-                        }
-                        if (value == "Enhanced Strength" || value == "Customized Strength" || strOldValue == "Enhanced Strength" || strOldValue == "Customized Strength")
-                        {
-                            blnDoMovementUpdate = true;
-                            foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
-                            {
-                                if (objCharacterAttrib.Abbrev == "STR")
-                                {
-                                    objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
-                                }
-                            }
-                        }
-
-                        if (blnDoMovementUpdate && _objCharacter.Options.CyberlegMovement && LimbSlot == "leg")
-                            _objCharacter.OnPropertyChanged(nameof(Character.GetMovement));
+                        objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
                     }
                 }
+                if (s_StrengthCombinedStrings.Contains(value) || s_StrengthCombinedStrings.Contains(strOldValue))
+                {
+                    blnDoMovementUpdate = true;
+                    foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList
+                        .Concat(_objCharacter.AttributeSection.SpecialAttributeList)
+                        .Where(abbrev => abbrev.Abbrev == "STR"))
+                    {
+                        objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
+                    }
+                }
+
+                if (blnDoMovementUpdate && _objCharacter.Options.CyberlegMovement && LimbSlot == "leg")
+                    _objCharacter.OnPropertyChanged(nameof(Character.GetMovement));
             }
         }
 
@@ -1612,11 +1617,10 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// How many cyberlimbs does this cyberware have?
         /// </summary>
-        public int GetCyberlimbCount(params string[] lstExcludeLimbs)
+        public int GetCyberlimbCount(List<string> lstExcludeLimbs)
         {
             int intCount = 0;
-
-            if (!string.IsNullOrEmpty(LimbSlot) && !lstExcludeLimbs.Contains(LimbSlot))
+            if (!string.IsNullOrEmpty(LimbSlot) && lstExcludeLimbs.All(l => l != LimbSlot))
             {
                 intCount += LimbSlotCount;
             }
@@ -2043,55 +2047,50 @@ namespace Chummer.Backend.Equipment
             set
             {
                 int intNewValue = Math.Max(Math.Min(value, MaxRating), MinRating);
-                if (_intRating != intNewValue)
+                if (_intRating == intNewValue) return;
+                _intRating = intNewValue;
+                bool blnDoMovementUpdate = false;
+                if (_objParent?.Category == "Cyberlimb" && _objParent.Parent?.InheritAttributes != false && _objParent.ParentVehicle == null && !_objCharacter.Options.DontUseCyberlimbCalculation &&
+                    !string.IsNullOrWhiteSpace(_objParent.LimbSlot) && !_objCharacter.Options.ExcludeLimbSlot.Contains(_objParent.LimbSlot))
                 {
-                    _intRating = intNewValue;
-                    bool blnDoMovementUpdate = false;
-                    if (_objParent?.Category == "Cyberlimb" && _objParent.Parent?.InheritAttributes != false && _objParent.ParentVehicle == null && !_objCharacter.Options.DontUseCyberlimbCalculation &&
-                        !string.IsNullOrWhiteSpace(_objParent.LimbSlot) && !_objCharacter.Options.ExcludeLimbSlot.Contains(_objParent.LimbSlot))
+                    if (s_AgilityCombinedStrings.Contains(Name))
                     {
-                        if (Name == "Enhanced Agility" || Name == "Customized Agility")
+                        foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList
+                            .Concat(_objCharacter.AttributeSection.SpecialAttributeList)
+                            .Where(abbrev => abbrev.Abbrev == "AGI"))
                         {
-                            foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
-                            {
-                                if (objCharacterAttrib.Abbrev == "AGI")
-                                {
-                                    objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
-                                }
-                            }
-
-                            blnDoMovementUpdate = true;
+                            objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
                         }
-                        else if (Name == "Enhanced Strength" || Name == "Customized Strength")
-                        {
-                            foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
-                            {
-                                if (objCharacterAttrib.Abbrev == "STR")
-                                {
-                                    objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
-                                }
-                            }
 
-                            blnDoMovementUpdate = true;
-                        }
+                        blnDoMovementUpdate = true;
                     }
-
-                    blnDoMovementUpdate = blnDoMovementUpdate && _objCharacter.Options.CyberlegMovement && LimbSlot == "leg";
-                    bool blnDoEssenceUpdate = ESS.Contains("Rating") && (Parent == null || AddToParentESS) && string.IsNullOrEmpty(PlugsIntoModularMount) && ParentVehicle == null;
-                    if (blnDoMovementUpdate && blnDoEssenceUpdate)
-                        _objCharacter.OnMultiplePropertyChanged(nameof(Character.GetMovement), EssencePropertyName);
-                    else if (blnDoMovementUpdate)
-                        _objCharacter.OnPropertyChanged(nameof(Character.GetMovement));
-                    else if (blnDoEssenceUpdate)
-                        _objCharacter.OnPropertyChanged(EssencePropertyName);
-
-                    if (Gear.Count > 0)
+                    else if (s_StrengthCombinedStrings.Contains(Name))
                     {
-                        foreach (Gear objChild in Gear.Where(x => x.MaxRating.Contains("Parent") || x.MinRating.Contains("Parent")))
+                        foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList
+                            .Concat(_objCharacter.AttributeSection.SpecialAttributeList)
+                            .Where(abbrev => abbrev.Abbrev == "STR"))
                         {
-                            // This will update a child's rating if it would become out of bounds due to its parent's rating changing
-                            objChild.Rating = objChild.Rating;
+                            objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
                         }
+                        blnDoMovementUpdate = true;
+                    }
+                }
+
+                blnDoMovementUpdate = blnDoMovementUpdate && _objCharacter.Options.CyberlegMovement && LimbSlot == "leg";
+                bool blnDoEssenceUpdate = ESS.Contains("Rating") && (Parent == null || AddToParentESS) && string.IsNullOrEmpty(PlugsIntoModularMount) && ParentVehicle == null;
+                if (blnDoMovementUpdate && blnDoEssenceUpdate)
+                    _objCharacter.OnMultiplePropertyChanged(nameof(Character.GetMovement), EssencePropertyName);
+                else if (blnDoMovementUpdate)
+                    _objCharacter.OnPropertyChanged(nameof(Character.GetMovement));
+                else if (blnDoEssenceUpdate)
+                    _objCharacter.OnPropertyChanged(EssencePropertyName);
+
+                if (Gear.Count > 0)
+                {
+                    foreach (Gear objChild in Gear.Where(x => x.MaxRating.Contains("Parent") || x.MinRating.Contains("Parent")))
+                    {
+                        // This will update a child's rating if it would become out of bounds due to its parent's rating changing
+                        objChild.Rating = objChild.Rating;
                     }
                 }
             }
@@ -2794,7 +2793,7 @@ namespace Chummer.Backend.Equipment
                 strESS = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
                 strESS += strSuffix;
             }
-            if (strESS.Contains("Rating") || strESS.IndexOfAny(MathOperators) >= 0)
+            if (strESS.Contains("Rating") || strESS.IndexOfAny(s_MathOperators) >= 0)
             {
                 // If the cost is determined by the Rating or there's a math operation in play, evaluate the expression.
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(strESS.Replace("Rating", Rating.ToString()), out bool blnIsSuccess);
@@ -3091,6 +3090,20 @@ namespace Chummer.Backend.Equipment
                 if (DiscountCost)
                     decReturn *= 0.9m;
 
+                // Genetech Cost multiplier.
+                if (SourceType == Improvement.ImprovementSource.Bioware &&
+                    (Category.StartsWith("Genetech") || Category.StartsWith("Genetic Infusions") || Category.StartsWith("Genemods")) &&
+                    ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.GenetechCostMultiplier) != 0)
+                {
+                    decimal decMultiplier = 1.0m;
+                    foreach (Improvement objImprovement in _objCharacter.Improvements)
+                    {
+                        if (objImprovement.ImproveType == Improvement.ImprovementType.GenetechCostMultiplier && objImprovement.Enabled)
+                            decMultiplier -= (1.0m - (Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100.0m));
+                    }
+                    decReturn *= decMultiplier;
+                }
+
                 // Add in the cost of all child components.
                 foreach (Cyberware objChild in Children)
                 {
@@ -3206,7 +3219,7 @@ namespace Chummer.Backend.Equipment
                     // Run through its Children and deduct the Capacity costs.
                     foreach (Cyberware objChildCyberware in Children)
                     {
-                        // Children that are built into the parent 
+                        // Children that are built into the parent
                         if (objChildCyberware.PlugsIntoModularMount == HasModularMount && !string.IsNullOrWhiteSpace(HasModularMount) ||
                             objChildCyberware.ParentID == InternalId) continue;
                         string strCapacity = objChildCyberware.CalculatedCapacity;
@@ -3333,67 +3346,16 @@ namespace Chummer.Backend.Equipment
 
                 foreach (Cyberware objChild in Children)
                 {
-                    // If the limb has Customized Strength, this is its new base value.
-                    if (objChild.Name == "Customized Strength")
-                        intAttribute = objChild.Rating;
                     // If the limb has Enhanced Strength, this adds to the limb's value.
-                    if (objChild.Name == "Enhanced Strength")
+                    if (s_StrengthEnhancementStrings.Contains(objChild.Name))
                         intBonus = objChild.Rating;
-                }
-                if (ParentVehicle == null)
-                {
-                    return Math.Min(intAttribute + intBonus + _objCharacter.RedlinerBonus, _objCharacter.STR.TotalAugmentedMaximum);
-                }
-                else
-                {
-                    return Math.Min(intAttribute + intBonus, Math.Max(ParentVehicle.TotalBody * 2, 1));
-                }
-            }
-        }
-
-        /// <summary>
-        /// Cyberlimb Body.
-        /// </summary>
-        public int TotalBody
-        {
-            get
-            {
-                if (InheritAttributes)
-                {
-                    int intAverageAttribute = 0;
-                    int intCyberlimbChildrenNumber = 0;
-                    foreach (Cyberware objChild in Children)
-                    {
-                        if (objChild.TotalBody <= 0) continue;
-                        intCyberlimbChildrenNumber += 1;
-                        intAverageAttribute += objChild.TotalBody;
-                    }
-                    if (intCyberlimbChildrenNumber == 0)
-                        intCyberlimbChildrenNumber = 1;
-
-                    return intAverageAttribute / intCyberlimbChildrenNumber;
-                }
-
-                if (_strCategory != "Cyberlimb")
-                {
-                    return 0;
-                }
-
-                // Base Strength for any limb is 3.
-                int intAttribute = 3;
-                int intBonus = 0;
-
-                foreach (Cyberware objChild in Children)
-                {
-                    // If the limb has Customized Body, this is its new base value.
-                    if (objChild.Name == "Customized Body")
+                    // If the limb has Customized Strength, this is its new base value.
+                    if (s_StrengthCustomisationStrings.Contains(objChild.Name))
                         intAttribute = objChild.Rating;
-                    // If the limb has Enhanced Body, this adds to the limb's value.
-                    if (objChild.Name == "Enhanced Body")
-                        intBonus = objChild.Rating;
                 }
-
-                return intAttribute + intBonus;
+                return ParentVehicle == null
+                    ? Math.Min(intAttribute + intBonus + _objCharacter.RedlinerBonus, _objCharacter.STR.TotalAugmentedMaximum)
+                    : Math.Min(intAttribute + intBonus, Math.Max(ParentVehicle.TotalBody * 2, 1));
             }
         }
 
@@ -3447,19 +3409,16 @@ namespace Chummer.Backend.Equipment
                 foreach (Cyberware objChild in Children)
                 {
                     // If the limb has Customized Agility, this is its new base value.
-                    if (objChild.Name == "Customized Agility")
+                    if (s_AgilityCustomisationStrings.Contains(objChild.Name))
                         intAttribute = objChild.Rating;
                     // If the limb has Enhanced Agility, this adds to the limb's value.
-                    if (objChild.Name == "Enhanced Agility")
+                    if (s_AgilityEnhancementStrings.Contains(objChild.Name))
                         intBonus = objChild.Rating;
                 }
 
-                if (ParentVehicle == null)
-                {
-                    return Math.Min(intAttribute + intBonus + _objCharacter.RedlinerBonus, _objCharacter.AGI.TotalAugmentedMaximum);
-                }
-
-                return Math.Min(intAttribute + intBonus, Math.Max(ParentVehicle.Pilot * 2, 1));
+                return ParentVehicle == null
+                    ? Math.Min(intAttribute + intBonus + _objCharacter.RedlinerBonus, _objCharacter.AGI.TotalAugmentedMaximum)
+                    : Math.Min(intAttribute + intBonus, Math.Max(ParentVehicle.Pilot * 2, 1));
             }
         }
 
@@ -3819,6 +3778,61 @@ namespace Chummer.Backend.Equipment
             }
 
             return decReturn;
+        }
+
+        /// <summary>
+        /// Checks a nominated piece of gear for Availability requirements.
+        /// </summary>
+        /// <param name="blnRestrictedGearUsed">Whether Restricted Gear is already being used.</param>
+        /// <param name="intRestrictedCount">Amount of gear that is currently over the availability limit.</param>
+        /// <param name="strAvailItems">String used to list names of gear that are currently over the availability limit.</param>
+        /// <param name="strRestrictedItem">Item that is being used for Restricted Gear.</param>
+        /// <param name="strCyberwareGrade">String used to list names of cyberware that have a banned cyberware grade.</param>
+        /// <param name="blnOutRestrictedGearUsed">Whether Restricted Gear is already being used (tracked across gear children).</param>
+        /// <param name="intOutRestrictedCount">Amount of gear that is currently over the availability limit (tracked across gear children).</param>
+        /// <param name="strOutAvailItems">String used to list names of gear that are currently over the availability limit (tracked across gear children).</param>
+        /// <param name="strOutRestrictedItem">Item that is being used for Restricted Gear (tracked across gear children).</param>
+        public void CheckRestrictedGear(bool blnRestrictedGearUsed, int intRestrictedCount, string strAvailItems, string strRestrictedItem, string strCyberwareGrade, out bool blnOutRestrictedGearUsed, out int intOutRestrictedCount, out string strOutAvailItems, out string strOutRestrictedItem, out string strOutCyberwareGrade)
+        {
+            if (string.IsNullOrEmpty(ParentID))
+            {
+                if (_objCharacter.BannedWareGrades.Any(s => Grade.Name.Contains(s)))
+                    strCyberwareGrade += Environment.NewLine + "\t\t" + DisplayNameShort(GlobalOptions.Language);
+
+                AvailabilityValue objTotalAvail = TotalAvailTuple();
+                if (!objTotalAvail.AddToParent)
+                {
+                    int intAvailInt = objTotalAvail.Value;
+                    if (intAvailInt > _objCharacter.MaximumAvailability)
+                    {
+                        if (intAvailInt <= _objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+                        {
+                            blnRestrictedGearUsed = true;
+                            strRestrictedItem = DisplayName(GlobalOptions.Language);
+                        }
+                        else
+                        {
+                            intRestrictedCount++;
+                            strAvailItems += Environment.NewLine + "\t\t" + DisplayNameShort(GlobalOptions.Language);
+                        }
+                    }
+                }
+            }
+
+            foreach (Cyberware objChild in Children)
+            {
+                objChild.CheckRestrictedGear(blnRestrictedGearUsed, intRestrictedCount, strAvailItems, strRestrictedItem, strCyberwareGrade, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems, out strRestrictedItem, out strCyberwareGrade);
+            }
+
+            foreach (Gear objChild in Gear)
+            {
+                objChild.CheckRestrictedGear(blnRestrictedGearUsed, intRestrictedCount, strAvailItems, strRestrictedItem, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems, out strRestrictedItem);
+            }
+            strOutAvailItems = strAvailItems;
+            intOutRestrictedCount = intRestrictedCount;
+            blnOutRestrictedGearUsed = blnRestrictedGearUsed;
+            strOutRestrictedItem = strRestrictedItem;
+            strOutCyberwareGrade = strCyberwareGrade;
         }
 
         #region UI Methods
@@ -4206,7 +4220,7 @@ namespace Chummer.Backend.Equipment
         {
             if (Capacity == "[*]" && Parent != null && (!characterObject.IgnoreRules || characterObject.Created))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_CannotRemoveCyberware", GlobalOptions.Language),
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CannotRemoveCyberware", GlobalOptions.Language),
                     LanguageManager.GetString("MessageTitle_CannotRemoveCyberware", GlobalOptions.Language),
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return false;
@@ -4263,7 +4277,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Purchases a selected piece of Cyberware with a given Grade and Rating. 
+        /// Purchases a selected piece of Cyberware with a given Grade and Rating.
         /// </summary>
         /// <param name="objNode"></param>
         /// <param name="objGrade"></param>
@@ -4317,7 +4331,7 @@ namespace Chummer.Backend.Equipment
 
                     if (decCost > _objCharacter.Nuyen)
                     {
-                        MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughNuyen", GlobalOptions.Language), MessageBoxButtons.OK,
+                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NotEnoughNuyen", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughNuyen", GlobalOptions.Language), MessageBoxButtons.OK,
                             MessageBoxIcon.Information);
                         return false;
                     }
@@ -4390,7 +4404,7 @@ namespace Chummer.Backend.Equipment
 
             if (newCost > characterObject.Nuyen)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen", GlobalOptions.Language),
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NotEnoughNuyen", GlobalOptions.Language),
                     LanguageManager.GetString("MessageTitle_NotEnoughNuyen", GlobalOptions.Language),
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
 
@@ -4422,16 +4436,16 @@ namespace Chummer.Backend.Equipment
             ExpenseUndo objUndo = new ExpenseUndo();
             objUndo.CreateNuyen(NuyenExpenseType.AddGear, InternalId);
             objExpense.Undo = objUndo;
-            
+
             if (oldEssence - CalculatedESS() > 0)
             {
-                //The new Essence cost is greater than the old one. 
+                //The new Essence cost is greater than the old one.
                 characterObject.IncreaseEssenceHole((int)(CalculatedESS() * 100));
             }
         }
 
         /// <summary>
-        /// Alias map for SourceDetail control text and tooltip assignation. 
+        /// Alias map for SourceDetail control text and tooltip assignation.
         /// </summary>
         /// <param name="sourceControl"></param>
         public void SetSourceDetail(Control sourceControl)

@@ -62,13 +62,8 @@ namespace Chummer
         private readonly BackgroundWorker _workerVersionUpdateChecker = new BackgroundWorker();
         private readonly Version _objCurrentVersion = Assembly.GetExecutingAssembly().GetName().Version;
         private readonly string _strCurrentVersion;
-        private PluginControl _pluginLoader = null;
-        public PluginControl PluginLoader
-        {
-            get => _pluginLoader ?? (_pluginLoader = new PluginControl());
-            set => _pluginLoader = value;
-        }
-        private readonly Chummy _mascotChummy;
+        
+        private Chummy _mascotChummy;
 
         public string MainTitle
         {
@@ -84,19 +79,38 @@ namespace Chummer
         }
 
         #region Control Events
-        public frmChummerMain(bool isUnitTest = false, PageViewTelemetry pvt = null)
+        public frmChummerMain(bool isUnitTest = false)
         {
             Utils.IsUnitTest = isUnitTest;
             InitializeComponent();
-            _pluginLoader = new PluginControl();
+
+            _strCurrentVersion =
+                $"{_objCurrentVersion.Major}.{_objCurrentVersion.Minor}.{_objCurrentVersion.Build}";
+
+            //lets write that in separate lines to see where the exception is thrown
+            if (GlobalOptions.HideCharacterRoster == true)
+                CharacterRoster = null;
+            else
+            {
+                CharacterRoster = new frmCharacterRoster
+                {
+                    MdiParent = this
+                };
+            }
+
+      
+            
+        }
+
+        //Moved most of the initialization out of the constructor to allow the Mainform to be generated fast
+        //in case of a commandline argument not asking for the mainform to be shown.
+        public void FormMainInitialize(PageViewTelemetry pvt = null)
+        {
+
             using (var op_frmChummerMain = Timekeeper.StartSyncron("frmChummerMain Constructor", null, CustomActivity.OperationType.DependencyOperation, _strCurrentVersion))
             {
                 try
                 {
-                    _strCurrentVersion =
-                        $"{_objCurrentVersion.Major}.{_objCurrentVersion.Minor}.{_objCurrentVersion.Build}";
-
-
                     op_frmChummerMain.MyDependencyTelemetry.Type = "loadfrmChummerMain";
                     op_frmChummerMain.MyDependencyTelemetry.Target = _strCurrentVersion;
 
@@ -132,42 +146,53 @@ namespace Chummer
                         this.DoThreadSafe(() => { PopulateMRUToolstripMenu(sender, e); });
                     };
 
-                    // Delete the old executable if it exists (created by the update process).
-                    foreach (string strLoopOldFilePath in Directory.GetFiles(Utils.GetStartupPath, "*.old",
-                        SearchOption.AllDirectories))
+                    try
                     {
-                        try
+                        // Delete the old executable if it exists (created by the update process).
+                        string[] oldfiles =
+                            Directory.GetFiles(Utils.GetStartupPath, "*.old", SearchOption.AllDirectories);
+                        foreach (string strLoopOldFilePath in oldfiles)
                         {
-                            if (File.Exists(strLoopOldFilePath))
-                                File.Delete(strLoopOldFilePath);
+                            try
+                            {
+                                if (File.Exists(strLoopOldFilePath))
+                                    File.Delete(strLoopOldFilePath);
+                            }
+                            catch (UnauthorizedAccessException e)
+                            {
+                                //we will just delete it the next time
+                                //its probably the "used by another process"
+                                Log.Trace(e,
+                                    "UnauthorizedAccessException can be ignored - probably used by another process.");
+                            }
                         }
-                        catch (UnauthorizedAccessException e)
-                        {
-                            //we will just delete it the next time
-                            //its probably the "used by another process"
-                            Log.Trace(e, "UnauthorizedAccessException can be ignored - probably used by another process.");
-                        }
-                        
+                    }
+                    catch (UnauthorizedAccessException e)
+                    {
+                        Log.Trace(e,
+                            "UnauthorizedAccessException in " + Utils.GetStartupPath +
+                            "can be ignored - probably a weird path like Recycle.Bin or something...");
+                    }
+                    catch (System.IO.IOException e)
+                    {
+                        Log.Trace(e,
+                            "IOException in " + Utils.GetStartupPath +
+                            "can be ignored - probably another instance blocking it...");
                     }
 
                     // Populate the MRU list.
                     PopulateMRUToolstripMenu(this, null);
 
                     Program.MainForm = this;
-                    PluginLoader.LoadPlugins(op_frmChummerMain);
                     if (GlobalOptions.AllowEasterEggs)
                     {
                         _mascotChummy = new Chummy();
                         _mascotChummy.Show(this);
                     }
 
-                    // Set the Tag for each ToolStrip item so it can be translated.
-                    foreach (ToolStripMenuItem objItem in menuStrip.Items.OfType<ToolStripMenuItem>())
-                    {
-                        LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Language);
-                    }
 
-                    frmLoading frmLoadingForm = new frmLoading {CharacterFile = Text};
+
+                    frmLoading frmLoadingForm = new frmLoading { CharacterFile = Text };
                     frmLoadingForm.Reset(3);
                     frmLoadingForm.Show();
 
@@ -215,16 +240,7 @@ namespace Chummer
                     }
 
                     frmLoadingForm.PerformStep(LanguageManager.GetString("String_UI"));
-                    //lets write that in separate lines to see where the exception is thrown
-                    if (GlobalOptions.HideCharacterRoster == true)
-                        CharacterRoster = null;
-                    else
-                    {
-                        CharacterRoster = new frmCharacterRoster
-                        {
-                            MdiParent = this
-                        };
-                    }
+                    
 
                     _lstCharacters.CollectionChanged += LstCharactersOnCollectionChanged;
                     _lstOpenCharacterForms.CollectionChanged += LstOpenCharacterFormsOnCollectionChanged;
@@ -246,6 +262,21 @@ namespace Chummer
                                     lock (blnShowTestLock)
                                         blnShowTest = true;
                                 }
+                                else if ((strArgs[i] == "/help")
+                                    || (strArgs[i] == "?")
+                                    || (strArgs[i] == "/?"))
+                                {
+                                    string msg = "Commandline parameters are either " + Environment.NewLine;
+                                    msg += "\t/test" + Environment.NewLine;
+                                    msg += "\t/help" + Environment.NewLine;
+                                    msg += "\t(filename to open)" + Environment.NewLine;
+                                    msg += "\t/plugin:pluginname (like \"SINners\") to trigger (with additional parameters following the symbol \":\")" + Environment.NewLine;
+                                    Console.WriteLine(msg);
+                                }
+                                else if (strArgs[i].Contains("/plugin"))
+                                {
+                                    Log.Info("Encountered command line argument, that should already have been handled in one of the plugins: " + strArgs[i]);
+                                }
                                 else if (!strArgs[i].StartsWith('/'))
                                 {
                                     if (!File.Exists(strArgs[i]))
@@ -254,7 +285,6 @@ namespace Chummer
                                             "Chummer started with unknown command line arguments: " +
                                             strArgs.Aggregate((j, k) => j + " " + k));
                                     }
-
                                     if (lstCharactersToLoad.Any(x => x.FileName == strArgs[i])) return;
                                     Character objLoopCharacter = LoadCharacter(strArgs[i]).Result;
                                     lstCharactersToLoad.Add(objLoopCharacter);
@@ -274,7 +304,7 @@ namespace Chummer
                             op_frmChummerMain.tc.TrackException(ex);
                             Log.Warn(e);
                         }
-                        
+
                     }
 
                     frmLoadingForm.PerformStep(LanguageManager.GetString("String_UI"));
@@ -291,9 +321,14 @@ namespace Chummer
                         CharacterRoster.Show();
                     }
 
-                    PluginLoader.CallPlugins(toolsMenu, op_frmChummerMain);
-                    frmLoadingForm.Close();
+                    Program.PluginLoader.CallPlugins(toolsMenu, op_frmChummerMain);
 
+                    // Set the Tag for each ToolStrip item so it can be translated.
+                    foreach (ToolStripMenuItem objItem in menuStrip.Items.OfType<ToolStripMenuItem>())
+                    {
+                        LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Language);
+                    }
+                    frmLoadingForm.Close();
                 }
                 catch (Exception e)
                 {
@@ -308,10 +343,9 @@ namespace Chummer
                     Log.Error(e);
                     throw;
                 }
-                
+
             }
 
-            
         }
 
         private void LstOpenCharacterFormsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -977,6 +1011,25 @@ namespace Chummer
 
         private void frmChummerMain_Load(object sender, EventArgs e)
         {
+            //sometimes the Configuration gets messed up - make sure it is valid!
+            try
+            {
+                Size si = Properties.Settings.Default.Size;
+            }
+            catch (System.ArgumentException ex)
+            {
+                //the config is invalid - reset it!
+                Properties.Settings.Default.Reset();
+                Properties.Settings.Default.Save();
+                Log.Warn("Configuartion Settings were invalid and had to be reset. Exception: " + ex.Message);
+            }
+            catch (System.Configuration.ConfigurationErrorsException ex)
+            {
+                //the config is invalid - reset it!
+                Properties.Settings.Default.Reset();
+                Properties.Settings.Default.Save();
+                Log.Warn("Configuartion Settings were invalid and had to be reset. Exception: " + ex.Message);
+            }
             if(Properties.Settings.Default.Size.Width == 0 || Properties.Settings.Default.Size.Height == 0 || !IsVisibleOnAnyScreen())
             {
                 Size = new Size(1280, 720);
@@ -1036,6 +1089,77 @@ namespace Chummer
         #endregion
 
         #region Methods
+
+        private static bool showDevWarningAboutDebuggingOnlyOnce = true;
+
+        /// <summary>
+        /// This makes sure, that the MessageBox is shown in the UI Thread.
+        /// https://stackoverflow.com/questions/559252/does-messagebox-show-automatically-marshall-to-the-ui-thread
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="caption"></param>
+        /// <param name="defaultButton"></param>
+        /// <returns></returns>
+        public DialogResult ShowMessageBox(String message, String caption = null, MessageBoxButtons buttons = MessageBoxButtons.OK, MessageBoxIcon icon = MessageBoxIcon.None, MessageBoxDefaultButton defaultButton = MessageBoxDefaultButton.Button1)
+        {
+            return ShowMessageBox(new Form() { TopMost = true }, message, caption, buttons, icon);
+        }
+
+        public DialogResult ShowMessageBox(Control owner, String message, String caption = null, MessageBoxButtons buttons = MessageBoxButtons.OK, MessageBoxIcon icon = MessageBoxIcon.None, MessageBoxDefaultButton defaultButton = MessageBoxDefaultButton.Button1)
+        {
+            if (Utils.IsUnitTest)
+            {
+                string msg = "We don't want to see MessageBoxes in Unit Tests!" + Environment.NewLine;
+                msg += "Caption: " + caption + Environment.NewLine;
+                msg += "Message: " + message;
+                throw new ArgumentException(msg);
+            }
+
+            if (owner == null)
+                owner = this;
+
+            if (owner.InvokeRequired)
+            {
+                if ((showDevWarningAboutDebuggingOnlyOnce) && (Debugger.IsAttached))
+                {
+                    showDevWarningAboutDebuggingOnlyOnce = false;
+                    //it works on my installation even in the debugger, so maybe we can ignore that...
+                    //WARNING from the link above (you can edit that out if it's not causing problem):
+                    //
+                    //BUT ALSO KEEP IN MIND: when debugging a multi-threaded GUI app, and you're debugging in a thread
+                    //other than the main/application thread, YOU NEED TO TURN OFF
+                    //the "Enable property evaluation and other implicit function calls" option, or else VS will
+                    //automatically fetch the values of local/global GUI objects FROM THE CURRENT THREAD, which will
+                    //cause your application to crash/fail in strange ways. Go to Tools->Options->Debugging to turn
+                    //that setting off.
+                    Debugger.Break();
+                }
+
+                try
+                {
+                    return (DialogResult)owner.Invoke(new PassStringStringReturnDialogResultDelegate(ShowMessageBox),
+                        message, caption, buttons, icon, defaultButton);
+                }
+                catch (ObjectDisposedException)
+                {
+                    //if the main form is disposed, we really don't need to bother anymore...                            
+                }
+                catch (Exception e)
+                {
+                    string msg = "Could not show a MessageBox " + caption + ":" + Environment.NewLine;
+                    msg += message + Environment.NewLine + Environment.NewLine;
+                    msg += "Exception: " + e.ToString();
+                    Log.Fatal(e, msg);
+                }
+
+            }
+            return MessageBox.Show(new Form() { TopMost = true }, message, caption, buttons, icon, defaultButton);
+        }
+
+        public delegate DialogResult PassStringStringReturnDialogResultDelegate(
+            String s1, String s2, MessageBoxButtons buttons,
+            MessageBoxIcon icon, MessageBoxDefaultButton defaultButton);
+
         /// <summary>
         /// Create a new character and show the Create Form.
         /// </summary>
@@ -1278,7 +1402,7 @@ namespace Chummer
                         catch (XmlException ex)
                         {
                             if (blnShowErrors)
-                                MessageBox.Show(
+                                 Program.MainForm.ShowMessageBox(
                                     string.Format(
                                         LanguageManager.GetString("Message_FailedLoad", GlobalOptions.Language),
                                         ex.Message),
@@ -1334,7 +1458,7 @@ namespace Chummer
             }
             else if(blnShowErrors)
             {
-                MessageBox.Show(string.Format(LanguageManager.GetString("Message_FileNotFound", GlobalOptions.Language), strFileName),
+                Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_FileNotFound", GlobalOptions.Language), strFileName),
                     LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             return objCharacter;
@@ -1476,7 +1600,7 @@ namespace Chummer
 
         private void objCareer_DiceRollerOpened(object sender)
         {
-            MessageBox.Show("This feature is currently disabled. Please open a ticket if this makes the world burn, otherwise it will get re-enabled when somebody gets around to it");
+            Program.MainForm.ShowMessageBox("This feature is currently disabled. Please open a ticket if this makes the world burn, otherwise it will get re-enabled when somebody gets around to it");
             //TODO: IMPLEMENT THIS SHIT
         }
 

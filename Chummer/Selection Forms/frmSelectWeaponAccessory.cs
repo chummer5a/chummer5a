@@ -219,11 +219,15 @@ namespace Chummer
         private void cboMount_SelectedIndexChanged(object sender, EventArgs e)
         {
             UpdateMountFields(true);
+            if (!string.IsNullOrEmpty(_objParentWeapon.DoubledCostModificationSlots))
+                UpdateGearInfo(false);
         }
 
         private void cboExtraMount_SelectedIndexChanged(object sender, EventArgs e)
         {
             UpdateMountFields(false);
+            if (!string.IsNullOrEmpty(_objParentWeapon.DoubledCostModificationSlots))
+                UpdateGearInfo(false);
         }
         private void chkHideOverAvailLimit_CheckedChanged(object sender, EventArgs e)
         {
@@ -331,7 +335,7 @@ namespace Chummer
             }
         }
 
-        private void UpdateGearInfo()
+        private void UpdateGearInfo(bool blnUpdateMountCBOs = true)
         {
             if (_blnLoading)
                 return;
@@ -412,66 +416,74 @@ namespace Chummer
                 lblRatingLabel.Visible = true;
             }
 
-            string[] astrDataMounts = xmlAccessory.SelectSingleNode("mount")?.Value.Split('/');
-            List<string> strMounts = new List<string>();
-            if (astrDataMounts != null)
+            if (blnUpdateMountCBOs)
             {
-                strMounts.AddRange(astrDataMounts);
-            }
-            strMounts.Add("None");
-
-            List<string> strAllowed = new List<string>(_lstAllowedMounts) {"None"};
-            cboMount.Visible = true;
-            cboMount.Items.Clear();
-            foreach (string strCurrentMount in strMounts)
-            {
-                if (!string.IsNullOrEmpty(strCurrentMount))
+                string[] astrDataMounts = xmlAccessory.SelectSingleNode("mount")?.Value.Split('/');
+                List<string> strMounts = new List<string>();
+                if (astrDataMounts != null)
                 {
-                    foreach (string strAllowedMount in strAllowed)
+                    strMounts.AddRange(astrDataMounts);
+                }
+
+                strMounts.Add("None");
+
+                List<string> strAllowed = new List<string>(_lstAllowedMounts) {"None"};
+                cboMount.Visible = true;
+                cboMount.Items.Clear();
+                foreach (string strCurrentMount in strMounts)
+                {
+                    if (!string.IsNullOrEmpty(strCurrentMount))
                     {
-                        if (strCurrentMount == strAllowedMount)
+                        foreach (string strAllowedMount in strAllowed)
                         {
-                            cboMount.Items.Add(strCurrentMount);
+                            if (strCurrentMount == strAllowedMount)
+                            {
+                                cboMount.Items.Add(strCurrentMount);
+                            }
                         }
                     }
                 }
-            }
-            cboMount.Enabled = cboMount.Items.Count > 1;
-            cboMount.SelectedIndex = 0;
-            lblMountLabel.Visible = true;
 
-            List<string> strExtraMounts = new List<string>();
-            string strExtraMount = xmlAccessory.SelectSingleNode("extramount")?.Value;
-            if (!string.IsNullOrEmpty(strExtraMount))
-            {
-                foreach (string strItem in strExtraMount.Split('/'))
+                cboMount.Enabled = cboMount.Items.Count > 1;
+                cboMount.SelectedIndex = 0;
+                lblMountLabel.Visible = true;
+
+                List<string> strExtraMounts = new List<string>();
+                string strExtraMount = xmlAccessory.SelectSingleNode("extramount")?.Value;
+                if (!string.IsNullOrEmpty(strExtraMount))
                 {
-                    strExtraMounts.Add(strItem);
-                }
-            }
-            strExtraMounts.Add("None");
-            
-            cboExtraMount.Items.Clear();
-            foreach (string strCurrentMount in strExtraMounts)
-            {
-                if (!string.IsNullOrEmpty(strCurrentMount))
-                {
-                    foreach (string strAllowedMount in strAllowed)
+                    foreach (string strItem in strExtraMount.Split('/'))
                     {
-                        if (strCurrentMount == strAllowedMount)
+                        strExtraMounts.Add(strItem);
+                    }
+                }
+
+                strExtraMounts.Add("None");
+
+                cboExtraMount.Items.Clear();
+                foreach (string strCurrentMount in strExtraMounts)
+                {
+                    if (!string.IsNullOrEmpty(strCurrentMount))
+                    {
+                        foreach (string strAllowedMount in strAllowed)
                         {
-                            cboExtraMount.Items.Add(strCurrentMount);
+                            if (strCurrentMount == strAllowedMount)
+                            {
+                                cboExtraMount.Items.Add(strCurrentMount);
+                            }
                         }
                     }
                 }
+
+                cboExtraMount.Enabled = cboExtraMount.Items.Count > 1;
+                cboExtraMount.SelectedIndex = 0;
+                if (cboMount.SelectedItem.ToString() != "None" && cboExtraMount.SelectedItem.ToString() != "None"
+                                                               && cboMount.SelectedItem.ToString() == cboExtraMount.SelectedItem.ToString())
+                    cboExtraMount.SelectedIndex += 1;
+                cboExtraMount.Visible = cboExtraMount.Enabled && cboExtraMount.SelectedItem.ToString() != "None";
+                lblExtraMountLabel.Visible = cboExtraMount.Visible;
             }
-            cboExtraMount.Enabled = cboExtraMount.Items.Count > 1;
-            cboExtraMount.SelectedIndex = 0;
-            if (cboMount.SelectedItem.ToString() != "None" && cboExtraMount.SelectedItem.ToString() != "None"
-                && cboMount.SelectedItem.ToString() == cboExtraMount.SelectedItem.ToString())
-                cboExtraMount.SelectedIndex += 1;
-            cboExtraMount.Visible = cboExtraMount.Enabled && cboExtraMount.SelectedItem.ToString() != "None";
-            lblExtraMountLabel.Visible = cboExtraMount.Visible;
+
             // Avail.
             // If avail contains "F" or "R", remove it from the string so we can use the expression.
             lblAvail.Text = new AvailabilityValue(Convert.ToInt32(nudRating.Value), xmlAccessory.SelectSingleNode("avail")?.Value).ToString();
@@ -482,6 +494,7 @@ namespace Chummer
                 string strCost = "0";
                 if (xmlAccessory.TryGetStringFieldQuickly("cost", ref strCost))
                     strCost = strCost.CheapReplace("Weapon Cost", () => _objParentWeapon.OwnCost.ToString(GlobalOptions.InvariantCultureInfo))
+                        .CheapReplace("Weapon Total Cost", () => _objParentWeapon.MultipliableCost(null).ToString(GlobalOptions.InvariantCultureInfo))
                         .Replace("Rating", nudRating.Value.ToString(GlobalOptions.CultureInfo));
                 if (strCost.StartsWith("Variable("))
                 {
@@ -516,6 +529,16 @@ namespace Chummer
 
                     if (chkBlackMarketDiscount.Checked)
                         decCost *= 0.9m;
+                    decCost *= _objParentWeapon.AccessoryMultiplier;
+                    if (!string.IsNullOrEmpty(_objParentWeapon.DoubledCostModificationSlots))
+                    {
+                        string[] astrParentDoubledCostModificationSlots = _objParentWeapon.DoubledCostModificationSlots.Split('/');
+                        if (astrParentDoubledCostModificationSlots.Contains(cboMount.SelectedItem?.ToString()) ||
+                            astrParentDoubledCostModificationSlots.Contains(cboExtraMount.SelectedItem?.ToString()))
+                        {
+                            decCost *= 2;
+                        }
+                    }
 
                     lblCost.Text = decCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                     lblTest.Text = _objCharacter.AvailTest(decCost, lblAvail.Text);
@@ -563,7 +586,5 @@ namespace Chummer
             CommonFunctions.OpenPDFFromControl(sender, e);
         }
         #endregion
-
-        
     }
 }

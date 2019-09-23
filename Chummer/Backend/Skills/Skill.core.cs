@@ -24,7 +24,7 @@ using Chummer.Backend.Attributes;
 
 namespace Chummer.Backend.Skills
 {
-    
+
     partial class Skill : IHasInternalId
     {
         private int _intBase;
@@ -109,7 +109,7 @@ namespace Chummer.Backend.Skills
                     return;
 
                 //Calculate how far above maximum we are.
-                int intOverMax = value + Karma - RatingMaximum;
+                int intOverMax = value + Karma - RatingMaximum + RatingModifiers(Attribute);
 
                 if (intOverMax > 0) //Too much
                 {
@@ -126,7 +126,7 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        
+
         /// <summary>
         /// Amount of skill points bought with karma and bonues to the skills rating
         /// </summary>
@@ -145,7 +145,7 @@ namespace Chummer.Backend.Skills
             set
             {
                 //Calculate how far above maximum we are.
-                int intOverMax = value + Base - RatingMaximum;
+                int intOverMax = value + Base - RatingMaximum + RatingModifiers(Attribute);
 
                 if (intOverMax > 0) //Too much
                 {
@@ -176,11 +176,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                if (CharacterObject.Created)
-                {
-                  return LearnedRating + RatingModifiers(Attribute);
-                }
-                return LearnedRating;
+                return LearnedRating + RatingModifiers(Attribute);
             }
         }
 
@@ -229,19 +225,20 @@ namespace Chummer.Backend.Skills
         /// </summary>
         /// <param name="intAttributeTotalValue">The value of the used attribute</param>
         /// <param name="strAttribute">The English abbreviation of the used attribute.</param>
+        /// <param name="blnIncludeConditionals">Whether to include improvements that don't apply under all circumstances.</param>
         /// <returns></returns>
-        public int PoolOtherAttribute(int intAttributeTotalValue, string strAttribute)
+        public int PoolOtherAttribute(int intAttributeTotalValue, string strAttribute, bool blnIncludeConditionals = false)
         {
             if (!Enabled)
                 return 0;
             int intRating = Rating;
             if (intRating > 0)
             {
-                return Math.Max(0, intRating + intAttributeTotalValue + PoolModifiers(strAttribute) + CharacterObject.WoundModifier);
+                return Math.Max(0, intRating + intAttributeTotalValue + PoolModifiers(strAttribute, blnIncludeConditionals) + CharacterObject.WoundModifier);
             }
             if (Default)
             {
-                return Math.Max(0, intAttributeTotalValue + PoolModifiers(strAttribute) + DefaultModifier + CharacterObject.WoundModifier);
+                return Math.Max(0, intAttributeTotalValue + PoolModifiers(strAttribute, blnIncludeConditionals) + DefaultModifier + CharacterObject.WoundModifier);
             }
             return 0;
         }
@@ -266,20 +263,20 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// Things that modify the dicepool of the skill
         /// </summary>
-        public int PoolModifiers(string strUseAttribute) => Bonus(false, strUseAttribute);
+        public int PoolModifiers(string strUseAttribute, bool blnIncludeConditionals = false) => Bonus(false, strUseAttribute, blnIncludeConditionals);
 
         /// <summary>
         /// Things that modify the dicepool of the skill
         /// </summary>
-        public int RatingModifiers(string strUseAttribute) => Bonus(true, strUseAttribute);
+        public int RatingModifiers(string strUseAttribute, bool blnIncludeConditionals = false) => Bonus(true, strUseAttribute, blnIncludeConditionals);
 
-        protected int Bonus(bool blnAddToRating, string strUseAttribute)
+        protected int Bonus(bool blnAddToRating, string strUseAttribute, bool blnIncludeConditionals = false)
         {
             //Some of this is not future proof. Rating that don't stack is not supported but i'm not aware of any cases where that will happen (for skills)
-            return RelevantImprovements(x => x.AddToRating == blnAddToRating, strUseAttribute).Sum(x => x.Value);
+            return RelevantImprovements(x => x.AddToRating == blnAddToRating, strUseAttribute, blnIncludeConditionals).Sum(x => x.Value);
         }
 
-        private IEnumerable<Improvement> RelevantImprovements(Func<Improvement, bool> funcWherePredicate = null, string strUseAttribute = "")
+        private IEnumerable<Improvement> RelevantImprovements(Func<Improvement, bool> funcWherePredicate = null, string strUseAttribute = "", bool blnIncludeConditionals = false)
         {
             string strNameToUse = Name;
             if (!string.IsNullOrWhiteSpace(strNameToUse))
@@ -290,43 +287,42 @@ namespace Chummer.Backend.Skills
                     strUseAttribute = Attribute;
                 foreach (Improvement objImprovement in CharacterObject.Improvements)
                 {
-                    if (objImprovement.Enabled && funcWherePredicate?.Invoke(objImprovement) != false)
+                    if (!objImprovement.Enabled || funcWherePredicate?.Invoke(objImprovement) == false) continue;
+                    if (!blnIncludeConditionals && !string.IsNullOrWhiteSpace(objImprovement.Condition)) continue;
+                    switch (objImprovement.ImproveType)
                     {
-                        switch (objImprovement.ImproveType)
-                        {
-                            case Improvement.ImprovementType.Skill:
-                            case Improvement.ImprovementType.SwapSkillAttribute:
-                            case Improvement.ImprovementType.SwapSkillSpecAttribute:
-                            case Improvement.ImprovementType.SkillDisable:
-                                if (objImprovement.ImprovedName == Name || objImprovement.ImprovedName == strNameToUse)
-                                    yield return objImprovement;
-                                break;
-                            case Improvement.ImprovementType.SkillGroup:
-                            case Improvement.ImprovementType.SkillGroupDisable:
-                                if (objImprovement.ImprovedName == SkillGroup && !objImprovement.Exclude.Contains(Name) && !objImprovement.Exclude.Contains(strNameToUse) && !objImprovement.Exclude.Contains(SkillCategory))
-                                    yield return objImprovement;
-                                break;
-                            case Improvement.ImprovementType.SkillCategory:
-                                if (objImprovement.ImprovedName == SkillCategory && !objImprovement.Exclude.Contains(Name) && !objImprovement.Exclude.Contains(strNameToUse))
-                                    yield return objImprovement;
-                                break;
-                            case Improvement.ImprovementType.SkillAttribute:
-                                if (objImprovement.ImprovedName == strUseAttribute && !objImprovement.Exclude.Contains(Name) && !objImprovement.Exclude.Contains(strNameToUse))
-                                    yield return objImprovement;
-                                break;
-                            case Improvement.ImprovementType.SkillLinkedAttribute:
-                                if (objImprovement.ImprovedName == Attribute && !objImprovement.Exclude.Contains(Name) && !objImprovement.Exclude.Contains(strNameToUse))
-                                    yield return objImprovement;
-                                break;
-                            case Improvement.ImprovementType.BlockSkillDefault:
-                                if (objImprovement.ImprovedName == SkillGroup)
-                                    yield return objImprovement;
-                                break;
-                            case Improvement.ImprovementType.EnhancedArticulation:
-                                if (SkillCategory == "Physical Active" && AttributeSection.PhysicalAttributes.Contains(Attribute))
-                                    yield return objImprovement;
-                                break;
-                        }
+                        case Improvement.ImprovementType.Skill:
+                        case Improvement.ImprovementType.SwapSkillAttribute:
+                        case Improvement.ImprovementType.SwapSkillSpecAttribute:
+                        case Improvement.ImprovementType.SkillDisable:
+                            if ((objImprovement.ImprovedName == Name || objImprovement.ImprovedName == strNameToUse))
+                                yield return objImprovement;
+                            break;
+                        case Improvement.ImprovementType.SkillGroup:
+                        case Improvement.ImprovementType.SkillGroupDisable:
+                            if (objImprovement.ImprovedName == SkillGroup && !objImprovement.Exclude.Contains(Name) && !objImprovement.Exclude.Contains(strNameToUse) && !objImprovement.Exclude.Contains(SkillCategory))
+                                yield return objImprovement;
+                            break;
+                        case Improvement.ImprovementType.SkillCategory:
+                            if (objImprovement.ImprovedName == SkillCategory && !objImprovement.Exclude.Contains(Name) && !objImprovement.Exclude.Contains(strNameToUse))
+                                yield return objImprovement;
+                            break;
+                        case Improvement.ImprovementType.SkillAttribute:
+                            if (objImprovement.ImprovedName == strUseAttribute && !objImprovement.Exclude.Contains(Name) && !objImprovement.Exclude.Contains(strNameToUse))
+                                yield return objImprovement;
+                            break;
+                        case Improvement.ImprovementType.SkillLinkedAttribute:
+                            if (objImprovement.ImprovedName == Attribute && !objImprovement.Exclude.Contains(Name) && !objImprovement.Exclude.Contains(strNameToUse))
+                                yield return objImprovement;
+                            break;
+                        case Improvement.ImprovementType.BlockSkillDefault:
+                            if (objImprovement.ImprovedName == SkillGroup)
+                                yield return objImprovement;
+                            break;
+                        case Improvement.ImprovementType.EnhancedArticulation:
+                            if (SkillCategory == "Physical Active" && AttributeSection.PhysicalAttributes.Contains(Attribute))
+                                yield return objImprovement;
+                            break;
                     }
                 }
             }
@@ -392,16 +388,16 @@ namespace Chummer.Backend.Skills
                 int intLower;
                 if (SkillGroupObject?.Karma > 0)
                 {
-                    int intGroupUpper = SkillGroupObject.SkillList.Min(x => x.Base + x.Karma);
+                    int intGroupUpper = SkillGroupObject.SkillList.Min(x => x.Base + x.Karma + x.RatingModifiers(x.Attribute));
                     int intGroupLower = intGroupUpper - SkillGroupObject.Karma;
 
-                    intLower = Base + FreeKarma; //Might be an error here
+                    intLower = Base + FreeKarma + RatingModifiers(Attribute); //Might be an error here
 
                     intCost = RangeCost(intLower, intGroupLower) + RangeCost(intGroupUpper, intTotalBaseRating);
                 }
                 else
                 {
-                    intLower = Base + FreeKarma;
+                    intLower = Base + FreeKarma + RatingModifiers(Attribute);
 
                     intCost = RangeCost(intLower, intTotalBaseRating);
                 }
@@ -660,7 +656,7 @@ namespace Chummer.Backend.Skills
 
             Karma += 1;
         }
-        
+
         private int _intCachedCanAffordSpecialization = -1;
 
         public bool CanAffordSpecialization
@@ -828,7 +824,7 @@ namespace Chummer.Backend.Skills
         }
 
         /// <summary>
-        /// Dicepool of the skill, formatted for use in tooltips by other objects. 
+        /// Dicepool of the skill, formatted for use in tooltips by other objects.
         /// </summary>
         /// <param name="pool">Dicepool to use. In most </param>
         /// <param name="space">Space character to use. </param>

@@ -57,7 +57,7 @@ namespace Chummer
                 {
                     if (blnShowMessage)
                     {
-                        MessageBox.Show(string.Format(LanguageManager.GetString("Message_SelectGeneric_ChargenRestriction", GlobalOptions.Language), strLocalName),
+                        Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_SelectGeneric_ChargenRestriction", GlobalOptions.Language), strLocalName),
                             string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", GlobalOptions.Language), strLocalName),
                             MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
@@ -71,7 +71,7 @@ namespace Chummer
                 {
                     if (blnShowMessage)
                     {
-                        MessageBox.Show(string.Format(LanguageManager.GetString("Message_SelectGeneric_CareerOnlyRestriction", GlobalOptions.Language), strLocalName),
+                        Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_SelectGeneric_CareerOnlyRestriction", GlobalOptions.Language), strLocalName),
                             string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", GlobalOptions.Language), strLocalName),
                             MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
@@ -83,7 +83,7 @@ namespace Chummer
                     {
                         if (blnShowMessage)
                         {
-                            MessageBox.Show(string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_PriorityRestriction", GlobalOptions.Language), strLocalName),
+                            Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_PriorityRestriction", GlobalOptions.Language), strLocalName),
                                 string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", GlobalOptions.Language), strLocalName),
                                 MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
@@ -243,7 +243,7 @@ namespace Chummer
                     {
                         if (blnShowMessage)
                         {
-                            MessageBox.Show(string.Format(LanguageManager.GetString("Message_SelectGeneric_Limit", GlobalOptions.Language), strLocalName, intLimit == 0 ? "1" : intLimit.ToString(GlobalOptions.CultureInfo)),
+                            Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_SelectGeneric_Limit", GlobalOptions.Language), strLocalName, intLimit == 0 ? "1" : intLimit.ToString(GlobalOptions.CultureInfo)),
                                 string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Limit", GlobalOptions.Language), strLocalName), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         return false;
@@ -264,7 +264,7 @@ namespace Chummer
                         {
                             if (blnShowMessage)
                             {
-                                MessageBox.Show(string.Format(LanguageManager.GetString("Message_SelectGeneric_Restriction", GlobalOptions.Language), strLocalName) + strName,
+                                Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_SelectGeneric_Restriction", GlobalOptions.Language), strLocalName) + strName,
                                     string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", GlobalOptions.Language), strLocalName), MessageBoxButtons.OK, MessageBoxIcon.Information);
                             }
                             return false;
@@ -341,7 +341,7 @@ namespace Chummer
                 {
                     if (blnShowMessage)
                     {
-                        MessageBox.Show(string.Format(LanguageManager.GetString("Message_SelectGeneric_Requirement", GlobalOptions.Language), strLocalName) + objRequirement.ToString(),
+                        Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_SelectGeneric_Requirement", GlobalOptions.Language), strLocalName) + objRequirement.ToString(),
                             string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Requirement", GlobalOptions.Language), strLocalName), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     return false;
@@ -884,7 +884,7 @@ namespace Chummer
                             if (string.IsNullOrWhiteSpace(strNodeName))
                             {
                                 //We're only interested in the total number of skills of a given category.
-                                return objCharacter.SkillsSection.KnowledgeSkills.Count(s => s.SkillCategory == xmlNode["type"].InnerText) >= intValue;
+                                return objCharacter.SkillsSection.KnowledgeSkills.Count(s => s.SkillCategory == (xmlNode["type"]?.InnerText ?? string.Empty)) >= intValue;
                             }
                         }
                         else
@@ -1027,6 +1027,18 @@ namespace Chummer
                         }
                         return objCharacter.MagicTradition.Name == strNodeInnerText;
                     }
+                case "traditionspiritform":
+                    {
+                        // Character needs a tradition with a specific kind of spirit form. Expected values are Materialization, Possession or Inhabitation. 
+                        if (blnShowMessage)
+                        {
+                            string strTranslate = LanguageManager.TranslateExtra(strNodeInnerText, GlobalOptions.Language);
+                            strName = !string.IsNullOrEmpty(strTranslate)
+                                ? $"{Environment.NewLine}\t{strTranslate} ({LanguageManager.GetString("String_Tradition", GlobalOptions.Language)})"
+                                : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_Tradition", GlobalOptions.Language)})";
+                        }
+                        return objCharacter.MagicTradition.SpiritForm == strNodeInnerText;
+                    }
                 case "weapon":
                 {
                     // Character needs a specific Weapon.
@@ -1060,7 +1072,7 @@ namespace Chummer
                             {
                                 int j = objMount.Weapons.SelectMany(x => x.WeaponAccessories).Count(y => y.SpecialModification);
                                 lock (intLock)
-                                    intMods += i;
+                                    intMods += j;
                             });
                         });
                         if (blnShowMessage)
@@ -1219,7 +1231,7 @@ namespace Chummer
                 {
                     if (blnShowMessage)
                     {
-                        MessageBox.Show(string.Format(LanguageManager.GetString("Message_SelectGeneric_ChargenRestriction", GlobalOptions.Language), strLocalName),
+                        Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_SelectGeneric_ChargenRestriction", GlobalOptions.Language), strLocalName),
                             string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", GlobalOptions.Language), strLocalName),
                             MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
@@ -1233,7 +1245,7 @@ namespace Chummer
                 {
                     if (blnShowMessage)
                     {
-                        MessageBox.Show(string.Format(LanguageManager.GetString("Message_SelectGeneric_CareerOnlyRestriction", GlobalOptions.Language), strLocalName),
+                        Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_SelectGeneric_CareerOnlyRestriction", GlobalOptions.Language), strLocalName),
                             string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", GlobalOptions.Language), strLocalName),
                             MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
@@ -1245,7 +1257,7 @@ namespace Chummer
                     {
                         if (blnShowMessage)
                         {
-                            MessageBox.Show(string.Format(LanguageManager.GetString("Message_SelectGeneric_PriorityRestriction", GlobalOptions.Language), strLocalName),
+                            Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_SelectGeneric_PriorityRestriction", GlobalOptions.Language), strLocalName),
                                 string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", GlobalOptions.Language), strLocalName),
                                 MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
@@ -1414,7 +1426,7 @@ namespace Chummer
                     {
                         if (blnShowMessage)
                         {
-                            MessageBox.Show(string.Format(LanguageManager.GetString("Message_SelectGeneric_Limit", GlobalOptions.Language), strLocalName, intLimit == 0 ? "1" : intLimit.ToString()),
+                            Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_SelectGeneric_Limit", GlobalOptions.Language), strLocalName, intLimit == 0 ? "1" : intLimit.ToString()),
                                 string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Limit", GlobalOptions.Language), strLocalName), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         return false;
@@ -1435,7 +1447,7 @@ namespace Chummer
                         {
                             if (blnShowMessage)
                             {
-                                MessageBox.Show(string.Format(LanguageManager.GetString("Message_SelectGeneric_Restriction", GlobalOptions.Language), strLocalName) + strName,
+                                Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_SelectGeneric_Restriction", GlobalOptions.Language), strLocalName) + strName,
                                     string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", GlobalOptions.Language), strLocalName), MessageBoxButtons.OK, MessageBoxIcon.Information);
                             }
                             return false;
@@ -1510,7 +1522,7 @@ namespace Chummer
                 {
                     if (blnShowMessage)
                     {
-                        MessageBox.Show(string.Format(LanguageManager.GetString("Message_SelectGeneric_Requirement", GlobalOptions.Language), strLocalName) + objRequirement.ToString(),
+                        Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_SelectGeneric_Requirement", GlobalOptions.Language), strLocalName) + objRequirement.ToString(),
                             string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Requirement", GlobalOptions.Language), strLocalName), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     return false;
@@ -1747,7 +1759,7 @@ namespace Chummer
                     {
                         Gear objGear = objCharacter.Gear.FirstOrDefault(x => x.Name == strNodeInnerText);
                         //TODO: Probably a better way to handle minrating/rating/maxrating but eh, YAGNI.
-                        
+
                         if (xmlNode.SelectSingleNode("@minrating")?.Value != null)
                         {
                             int rating = Convert.ToInt32(xmlNode.SelectSingleNode("@minrating")?.Value);
@@ -1884,10 +1896,10 @@ namespace Chummer
                 case "metamagicart":
                 case "art":
                     {
-                    // Street Grimoire adds High Arts, which group metamagics and such together. If we're ignoring this requirement 
+                    // Street Grimoire adds High Arts, which group metamagics and such together. If we're ignoring this requirement
                     if (objCharacter.Options.IgnoreArt)
                     {
-                        // If we're looking for an art, return true. 
+                        // If we're looking for an art, return true.
                         if (xmlNode.Name == "art")
                         {
                             return true;
@@ -1906,7 +1918,7 @@ namespace Chummer
 
                         if (xmlMetamagicDoc != null)
                         {
-                            // Loop through the data file for each metamagic to find the Required and Forbidden nodes. 
+                            // Loop through the data file for each metamagic to find the Required and Forbidden nodes.
                             foreach (Metamagic metamagic in objCharacter.Metamagics)
                             {
                                 XPathNavigator xmlMetamagicNode =
@@ -1929,7 +1941,7 @@ namespace Chummer
                                 else
                                 {
                                     // We couldn't find a metamagic with this name, so it's probably an art. Try and find the node.
-                                    // If we can't, it's probably a data entry error. 
+                                    // If we can't, it's probably a data entry error.
                                     xmlMetamagicNode =
                                         xmlMetamagicDoc.SelectSingleNode($"arts/art[name = {metamagic.Name.CleanXPath()}]");
                                     if (xmlMetamagicNode == null)
@@ -1952,7 +1964,7 @@ namespace Chummer
                             return true;
                         }
 
-                        // In some cases, we want to proxy metamagics for arts. If we haven't found a match yet, check it here. 
+                        // In some cases, we want to proxy metamagics for arts. If we haven't found a match yet, check it here.
                         if (xmlNode.Name == "metamagicart")
                         {
                             Metamagic objMetamagic =
@@ -2213,7 +2225,7 @@ namespace Chummer
                         {
                             int j = objMount.Weapons.SelectMany(x => x.WeaponAccessories).Count(y => y.SpecialModification);
                             lock (intLock)
-                                intMods += i;
+                                intMods += j;
                         });
                     });
                     if (blnShowMessage)
@@ -2391,7 +2403,7 @@ namespace Chummer
                         }
                     }
                 }
-                
+
                 objCostNode = objXmlGear.SelectSingleNode("cost" + intCostRating.ToString(GlobalOptions.InvariantCultureInfo));
             }
             string strCost = objCostNode?.Value;

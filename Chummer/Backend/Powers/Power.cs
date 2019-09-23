@@ -135,7 +135,7 @@ namespace Chummer
             objWriter.WriteEndElement();
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteEndElement();
-            
+
             CharacterObject.SourceProcess(_strSource);
         }
 
@@ -559,7 +559,7 @@ namespace Chummer
         {
             get
             {
-                //TODO: This isn't super safe, but it's more reliable than checking it at load as improvement effects like Essence Loss take effect after powers are loaded. Might need another solution. 
+                //TODO: This isn't super safe, but it's more reliable than checking it at load as improvement effects like Essence Loss take effect after powers are loaded. Might need another solution.
                 if (_intRating <= TotalMaximumLevels) return _intRating;
                 _intRating = TotalMaximumLevels;
                 return _intRating;
@@ -864,7 +864,11 @@ namespace Chummer
                 if (BoostedSkill != null)
                 {
                     // +1 at the end so that division of 2 always rounds up, and integer division by 2 is significantly less expensive than decimal/double division
-                    intReturn = Math.Min(intReturn, (BoostedSkill.LearnedRating + 1) / 2);
+                    intReturn = Math.Min(intReturn, ( + (BoostedSkill.LearnedRating + 1)) / 2);
+                    if (CharacterObject.Options.IncreasedImprovedAbilityMultiplier)
+                    {
+                        intReturn += BoostedSkill.LearnedRating;
+                    }
                 }
                 if (!CharacterObject.IgnoreRules)
                 {
@@ -1036,7 +1040,7 @@ namespace Chummer
                 }
             }
         }
-        
+
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 

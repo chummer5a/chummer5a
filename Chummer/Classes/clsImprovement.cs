@@ -256,6 +256,16 @@ namespace Chummer
             ManaIllusionResist,
             PhysicalIllusionResist,
             DetectionSpellResist,
+            DirectManaSpellResist,
+            DirectPhysicalSpellResist,
+            DecreaseBODResist,
+            DecreaseAGIResist,
+            DecreaseREAResist,
+            DecreaseSTRResist,
+            DecreaseCHAResist,
+            DecreaseINTResist,
+            DecreaseLOGResist,
+            DecreaseWILResist,
             AddLimb,
             StreetCredMultiplier,
             StreetCred,
@@ -314,7 +324,9 @@ namespace Chummer
             AddSpirit,
             ContactKarmaDiscount,
             ContactKarmaMinimum,
-            NumImprovementTypes // 🡐 This one should always be the last defined enum
+            GenetechEssMultiplier,
+            AllowSpriteFettering,
+            NumImprovementTypes // 🡐 This one should always be the last defined enum           
         }
 
         public enum ImprovementSource
@@ -1257,7 +1269,8 @@ namespace Chummer
                 case ImprovementType.Skill:
                 {
                     Skill objTargetSkill = _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.Name == ImprovedName) ??
-                                           _objCharacter.SkillsSection.Skills.OfType<ExoticSkill>().FirstOrDefault(x => x.Name + " (" + x.Specific + ')' == ImprovedName);
+                                           _objCharacter.SkillsSection.Skills.OfType<ExoticSkill>().FirstOrDefault(x => x.Name + " (" + x.Specific + ')' == ImprovedName) ??
+                                           _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(x => x.Name == ImprovedName) as Skill;
                     if (objTargetSkill != null)
                     {
                         yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill, nameof(Skill.Base));
@@ -1555,6 +1568,56 @@ namespace Chummer
                     yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.SpellDefenseDetection));
                 }
                     break;
+                case ImprovementType.DirectManaSpellResist:
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.SpellDefenseDirectSoakMana));
+                    }
+                    break;
+                case ImprovementType.DirectPhysicalSpellResist:
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.SpellDefenseDirectSoakPhysical));
+                    }
+                    break;
+                case ImprovementType.DecreaseBODResist:
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.SpellDefenseDecreaseBOD));
+                    }
+                    break;
+                case ImprovementType.DecreaseAGIResist:
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.SpellDefenseDecreaseAGI));
+                    }
+                    break;
+                case ImprovementType.DecreaseREAResist:
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.SpellDefenseDecreaseREA));
+                    }
+                    break;
+                case ImprovementType.DecreaseSTRResist:
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.SpellDefenseDecreaseSTR));
+                    }
+                    break;
+                case ImprovementType.DecreaseCHAResist:
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.SpellDefenseDecreaseCHA));
+                    }
+                    break;
+                case ImprovementType.DecreaseINTResist:
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.SpellDefenseDecreaseINT));
+                    }
+                    break;
+                case ImprovementType.DecreaseLOGResist:
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.SpellDefenseDecreaseLOG));
+                    }
+                    break;
+                case ImprovementType.DecreaseWILResist:
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.SpellDefenseDecreaseWIL));
+                    }
+                    break;
                 case ImprovementType.AddLimb:
                 {
                     yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.LimbCount));
@@ -1823,7 +1886,7 @@ namespace Chummer
                     break;
                 case ImprovementType.MetageneticLimit:
                     {
-                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.MetageneticLimit));
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.MetagenicLimit));
                     }
                     break;
             }
@@ -1952,7 +2015,7 @@ namespace Chummer
         #region Properties
         /// <summary>
         /// Limit what can be selected in Pick forms to a single value. This is typically used when selecting the Qualities for a Metavariant that has a specifiec
-        /// CharacterAttribute selection for Qualities like Metagenetic Improvement.
+        /// CharacterAttribute selection for Qualities like Metagenic Improvement.
         /// </summary>
         public static string LimitSelection
         {
@@ -4125,7 +4188,7 @@ namespace Chummer
             if (s_DictionaryTransactions.TryGetValue(objCharacter, out List<TransactingImprovement> lstTransaction))
             {
                 // Remove all of the Improvements that were added.
-                foreach (TransactingImprovement objTransactingImprovement in lstTransaction)
+                foreach (TransactingImprovement objTransactingImprovement in lstTransaction.ToList())
                 {
                     RemoveImprovements(objCharacter, objTransactingImprovement.ImprovementObject.ImproveSource, objTransactingImprovement.ImprovementObject.SourceName);
                     ClearCachedValue(objCharacter, objTransactingImprovement.ImprovementObject.ImproveType, objTransactingImprovement.ImprovementObject.ImprovedName);

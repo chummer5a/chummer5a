@@ -21,11 +21,13 @@ namespace SINners.Models
         /// <summary>
         /// Initializes a new instance of the SINner class.
         /// </summary>
-        public SINner(string editionNumber = default(string), string language = default(string), SINnerMetaData siNnerMetaData = default(SINnerMetaData), SINnerGroup myGroup = default(SINnerGroup), string alias = default(string), Guid? id = default(Guid?), string downloadUrl = default(string), DateTime? uploadDateTime = default(DateTime?), DateTime? lastChange = default(DateTime?), string fileName = default(string))
+        public SINner(string editionNumber = default(string), string myHash = default(string), string language = default(string), SINnerMetaData siNnerMetaData = default(SINnerMetaData), DateTime? lastDownload = default(DateTime?), SINnerGroup myGroup = default(SINnerGroup), string alias = default(string), Guid? id = default(Guid?), string downloadUrl = default(string), DateTime? uploadDateTime = default(DateTime?), DateTime? lastChange = default(DateTime?), string fileName = default(string))
         {
             EditionNumber = editionNumber;
+            MyHash = myHash;
             Language = language;
             SiNnerMetaData = siNnerMetaData;
+            LastDownload = lastDownload;
             MyGroup = myGroup;
             Alias = alias;
             Id = id;
@@ -42,6 +44,11 @@ namespace SINners.Models
 
         /// <summary>
         /// </summary>
+        [JsonProperty(PropertyName = "myHash")]
+        public string MyHash { get; set; }
+
+        /// <summary>
+        /// </summary>
         [JsonProperty(PropertyName = "language")]
         public string Language { get; set; }
 
@@ -49,6 +56,11 @@ namespace SINners.Models
         /// </summary>
         [JsonProperty(PropertyName = "siNnerMetaData")]
         public SINnerMetaData SiNnerMetaData { get; set; }
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "lastDownload")]
+        public DateTime? LastDownload { get; set; }
 
         /// <summary>
         /// </summary>
@@ -95,6 +107,13 @@ namespace SINners.Models
                 if (this.EditionNumber.Length > 2)
                 {
                     throw new ValidationException(ValidationRules.MaxLength, "EditionNumber", 2);
+                }
+            }
+            if (this.MyHash != null)
+            {
+                if (this.MyHash.Length > 8)
+                {
+                    throw new ValidationException(ValidationRules.MaxLength, "MyHash", 8);
                 }
             }
             if (this.Language != null)

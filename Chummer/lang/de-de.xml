@@ -4909,11 +4909,11 @@
 			<text>Nur Gaben, die ich auswählen kann</text>
 		</string>
 		<string>
-			<key>Checkbox_SelectQuality_Metagenetic</key>
+			<key>Checkbox_SelectQuality_Metagenic</key>
 			<text>Nur metagenetische Gaben anzeigen</text>
 		</string>
 		<string>
-			<key>Checkbox_SelectQuality_Not_Metagenetic</key>
+			<key>Checkbox_SelectQuality_Not_Metagenic</key>
 			<text>Keine metagenetischen Gaben anzeigen</text>
 		</string>
 		<string>
@@ -6573,9 +6573,9 @@
 			<text>Linux Druckfehler-Fix nutzen</text>
 		</string>
 		<string>
-      <key>Label_Options_BrowserVersion</key>
-      <text>Internet-Explorer-Version für Vorschau</text>
-    </string>
+			<key>Label_Options_BrowserVersion</key>
+			<text>Internet-Explorer-Version für Vorschau</text>
+		</string>
 		<string>
 			<key>Checkbox_Aerodynamic</key>
 			<text>Aerodynamisch</text>
@@ -7114,7 +7114,7 @@
 		</string>
 		<string>
 			<key>Checkbox_Options_UseLogging</key>
-			<text>Benutze Debug Logging</text>
+			<text>Benutze Logging</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_LicenseRestricted</key>
@@ -9549,6 +9549,130 @@
 		<string>
 			<key>Message_DeleteDrug</key>
 			<text>Sind Sie sicher, dass Sie dieses Drogenrezept entfernen möchten?</text>
+		</string>
+		<string>
+			<key>Tip_ImproveItemAtMaximum</key>
+			<text>Nicht steigerbar, Maximum erreicht</text>
+		</string>
+		<string>
+			<key>Chummy_Intro</key>
+			<text>Hallo! Hier ist Chummy, der Chummer KI-Assistent! Es gibt viele hilfreiche Tipps und Empfehlungen zu Ihren Charakteren!</text>
+		</string>
+		<string>
+			<key>String_ApplicationInsights_NotSet</key>
+			<text>Chummer entscheiden lassen</text>
+		</string>
+		<string>
+			<key>String_ApplicationInsights_Yes</key>
+			<text>Alle Fehlermeldungen übertragen</text>
+		</string>
+		<string>
+			<key>String_ApplicationInsights_Crashes</key>
+			<text>Abstürze übertragen</text>
+		</string>
+		<string>
+			<key>String_ApplicationInsights_OnlyMetric</key>
+			<text>Statistische Daten übertragen</text>
+		</string>
+		<string>
+			<key>String_ApplicationInsights_OnlyLocal</key>
+			<text>Nur lokale Protokollierung</text>
+		</string>
+		<string>
+			<key>String_Bullet</key>
+			<text>Patrone</text>
+		</string>
+		<string>
+			<key>String_Bullets</key>
+			<text>Patronen</text>
+		</string>
+		<string>
+			<key>Checkbox_CreateImprovementIgnoreLimits</key>
+			<text>Limits nicht beachten</text>
+		</string>
+		<string>
+			<key>Menu_Tools_SINnersArchetypes</key>
+			<text>Archetypen</text>
+		</string>
+		<string>
+			<key>Menu_Tools_SINners</key>
+			<text>SINner-Gruppen</text>
+		</string>
+		<string>
+			<key>Menu_Tools_SINnerSearch</key>
+			<text>SINner-Suche</text>
+		</string>
+		<string>
+			<key>String_DescObject</key>
+			<text>Objekt</text>
+		</string>
+		<string>
+			<key>String_DescDamaging</key>
+			<text>Schaden</text>
+		</string>
+		<string>
+			<key>String_DescEssence</key>
+			<text>Essenz</text>
+		</string>
+		<string>
+			<key>Menu_ShareChummer</key>
+			<text>Chummer weiterempfehlen</text>
+		</string>
+		<string>
+			<key>String_ApplicationInsights_OnlyLocal</key>
+			<text>nur lokal loggen</text>
+		</string>
+		<string>
+			<key>String_ApplicationInsights_OnlyMetric</key>
+			<text>nur Statistiken hochladen</text>
+		</string>
+		<string>
+			<key>String_ApplicationInsights_Crashes</key>
+			<text>Programm-Abstürze hochladen</text>
+		</string>
+		<string>
+			<key>String_ApplicationInsights_Info</key>
+			<text>normale Logs hochladen</text>
+		</string>
+		<string>
+			<key>String_ApplicationInsights_Trace</key>
+			<text>detailierte Logs hochladen</text>
+		</string>
+		<string>
+			<key>String_ApplicationInsights_NotSet</key>
+			<text>lasse Chummer entscheiden</text>
+		</string>
+		<string>
+			<key>Menu_Tools_SINners</key>
+			<text>SINner Gruppen</text>
+		</string>
+		<string>
+			<key>Menu_Tools_SINnersArchetypes</key>
+			<text>Archetypen</text>
+		</string>
+		<string>
+			<key>Label_SelectAdvancedLifestyle_Base</key>
+			<text>[{0}/{1}]</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_IncreasedImprovedAbilityModifier</key>
+			<text>Verbesserte Fertigkeit wird durch die erlernte Kraft mit 1,5 statt 0,5 begrenzt</text>
+		</string>
+		<string>
+			<key>Label_SummaryMetagenicQualities</key>
+			<text>Metagenetische Gaben</text>
+		</string>
+		<string>
+			<key>Label_MetagenicKarmaValue</key>
+			<text>{0}P/{1}N - Max. {2}</text>
+		</string>
+		<string>
+			<key>Label_MetagenicKarmaValueAppend</key>
+			<text> (1 Karma)</text>
+		</string>
+		<string>
+			<key>Message_InvalidPowerPoints</key>
+			<text>{0} über den maximalen Adeptenkraftpunkte ({1})</text>
 		</string>
 	</strings>
 </chummer>

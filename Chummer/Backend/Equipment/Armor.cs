@@ -483,7 +483,7 @@ namespace Chummer.Backend.Equipment
                     }
                     else
                     {
-                        //Legacy. Location is a string. 
+                        //Legacy. Location is a string.
                         Location =
                             _objCharacter.ArmorLocations.FirstOrDefault(location =>
                                 location.Name == objNode["location"].InnerText);
@@ -1573,7 +1573,7 @@ namespace Chummer.Backend.Equipment
 
 
         /// <summary>
-        /// Toggle the Wireless Bonus for this armor. 
+        /// Toggle the Wireless Bonus for this armor.
         /// </summary>
         /// <param name="enable"></param>
         public void ToggleWirelessBonuses(bool enable)
@@ -1692,7 +1692,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Alias map for SourceDetail control text and tooltip assignation. 
+        /// Alias map for SourceDetail control text and tooltip assignation.
         /// </summary>
         /// <param name="sourceControl"></param>
         public void SetSourceDetail(Control sourceControl)
@@ -1701,5 +1701,51 @@ namespace Chummer.Backend.Equipment
                 _objCachedSourceDetail = null;
             SourceDetail.SetControl(sourceControl);
         }
-	}
+
+
+        /// <summary>
+        /// Checks a nominated piece of gear for Availability requirements.
+        /// </summary>
+        /// <param name="blnRestrictedGearUsed">Whether Restricted Gear is already being used.</param>
+        /// <param name="intRestrictedCount">Amount of gear that is currently over the availability limit.</param>
+        /// <param name="strAvailItems">String used to list names of gear that are currently over the availability limit.</param>
+        /// <param name="strRestrictedItem">Item that is being used for Restricted Gear.</param>
+        /// <param name="blnOutRestrictedGearUsed">Whether Restricted Gear is already being used (tracked across gear children).</param>
+        /// <param name="intOutRestrictedCount">Amount of gear that is currently over the availability limit (tracked across gear children).</param>
+        /// <param name="strOutAvailItems">String used to list names of gear that are currently over the availability limit (tracked across gear children).</param>
+        /// <param name="strOutRestrictedItem">Item that is being used for Restricted Gear (tracked across gear children).</param>
+        public void CheckRestrictedGear(bool blnRestrictedGearUsed, int intRestrictedCount, string strAvailItems, string strRestrictedItem, out bool blnOutRestrictedGearUsed, out int intOutRestrictedCount, out string strOutAvailItems, out string strOutRestrictedItem)
+        {
+            AvailabilityValue objTotalAvail = TotalAvailTuple();
+            int intAvailInt = objTotalAvail.Value;
+            if (intAvailInt > _objCharacter.MaximumAvailability)
+            {
+                if (intAvailInt <= _objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+                {
+                    blnRestrictedGearUsed = true;
+                    strRestrictedItem = DisplayName(GlobalOptions.Language);
+                }
+                else
+                {
+                    intRestrictedCount++;
+                    strAvailItems += Environment.NewLine + "\t\t" + DisplayNameShort(GlobalOptions.Language);
+                }
+            }
+
+            foreach (Gear objChild in Children)
+            {
+                objChild.CheckRestrictedGear(blnRestrictedGearUsed, intRestrictedCount, strAvailItems, strRestrictedItem, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems, out strRestrictedItem);
+            }
+
+            foreach (ArmorMod objChild in ArmorMods)
+            {
+                objChild.CheckRestrictedGear(blnRestrictedGearUsed, intRestrictedCount, strAvailItems, strRestrictedItem, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems, out strRestrictedItem);
+            }
+
+            strOutAvailItems = strAvailItems;
+            intOutRestrictedCount = intRestrictedCount;
+            blnOutRestrictedGearUsed = blnRestrictedGearUsed;
+            strOutRestrictedItem = strRestrictedItem;
+        }
+    }
 }

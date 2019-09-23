@@ -29,6 +29,8 @@ namespace SINners.Models
             {
                 if (_UserRightsObservable == null)
                 {
+                    if (UserRights == null)
+                        UserRights = new List<SINnerUserRight>();
                     if (UserRights != null)
                         _UserRightsObservable = new BindingList<SINnerUserRight>(UserRights);
                 }
@@ -61,7 +63,7 @@ namespace SINners.Models
         {
             if (!IsValidEmail(email))
             {
-                MessageBox.Show("Please enter a valid email address!");
+                Program.MainForm.ShowMessageBox("Please enter a valid email address!");
                 return;
             }
             SINnerUserRight ur = new SINnerUserRight()
@@ -70,7 +72,7 @@ namespace SINners.Models
                 CanEdit = true,
                 Id = Guid.NewGuid()
             };
-            var found = from a in this.UserRightsObservable where a.EMail.ToLowerInvariant() == email.ToLowerInvariant() select a;
+            var found = from a in this.UserRightsObservable where email != null && a!= null && a.EMail != null &&  a.EMail.ToLowerInvariant() == email.ToLowerInvariant() select a;
             if (found.Any())
                 ur = found.FirstOrDefault();
             if (!this.UserRightsObservable.Contains(ur))

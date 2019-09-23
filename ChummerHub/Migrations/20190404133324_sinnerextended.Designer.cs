@@ -13,7 +13,9 @@ namespace ChummerHub.Migrations
     [Migration("20190404133324_sinnerextended")]
     partial class sinnerextended
     {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'sinnerextended.BuildTargetModel(ModelBuilder)'
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'sinnerextended.BuildTargetModel(ModelBuilder)'
         {
 #pragma warning disable 612, 618
             modelBuilder

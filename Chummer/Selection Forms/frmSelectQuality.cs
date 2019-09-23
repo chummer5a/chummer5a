@@ -18,6 +18,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 using System.Text;
@@ -35,7 +36,7 @@ namespace Chummer
 
         private readonly XPathNavigator _xmlBaseQualityDataNode;
         private readonly XPathNavigator _xmlMetatypeQualityRestrictionNode;
-
+        
         private readonly List<ListItem> _lstCategory = new List<ListItem>();
 
         private static string s_StrSelectCategory = string.Empty;
@@ -77,7 +78,9 @@ namespace Chummer
             cboCategory.BeginUpdate();
             cboCategory.ValueMember = "Value";
             cboCategory.DisplayMember = "Name";
-            cboCategory.DataSource = _lstCategory;
+            //this could help circumvent a exception like this?	"InvalidArgument=Value of '0' is not valid for 'SelectedIndex'. Parameter name: SelectedIndex" 
+            BindingList<ListItem> templist = new BindingList<ListItem>(_lstCategory);
+            cboCategory.DataSource = templist;
 
             // Select the first Category in the list.
             if (string.IsNullOrEmpty(s_StrSelectCategory))
@@ -92,8 +95,8 @@ namespace Chummer
             cboCategory.Enabled = _lstCategory.Count > 1;
             cboCategory.EndUpdate();
 
-            if (_objCharacter.MetageneticLimit == 0)
-                chkNotMetagenetic.Checked = true;
+            if (_objCharacter.MetagenicLimit == 0)
+                chkNotMetagenic.Checked = true;
 
             lblBPLabel.Text = LanguageManager.GetString("Label_Karma", GlobalOptions.Language);
             _blnLoading = false;
@@ -240,17 +243,17 @@ namespace Chummer
             lstQualities_SelectedIndexChanged(sender, e);
         }
 
-        private void chkMetagenetic_CheckedChanged(object sender, EventArgs e)
+        private void chkMetagenic_CheckedChanged(object sender, EventArgs e)
         {
-            if (chkMetagenetic.Checked)
-                chkNotMetagenetic.Checked = false;
+            if (chkMetagenic.Checked)
+                chkNotMetagenic.Checked = false;
             BuildQualityList();
         }
 
-        private void chkNotMetagenetic_CheckedChanged(object sender, EventArgs e)
+        private void chkNotMetagenic_CheckedChanged(object sender, EventArgs e)
         {
-            if (chkNotMetagenetic.Checked)
-                chkMetagenetic.Checked = false;
+            if (chkNotMetagenic.Checked)
+                chkMetagenic.Checked = false;
             BuildQualityList();
         }
 
@@ -386,13 +389,13 @@ namespace Chummer
                     strFilter.Append(')');
                 }
             }
-            if (chkMetagenetic.Checked)
+            if (chkMetagenic.Checked)
             {
-                strFilter.Append(" and (metagenetic = 'True' or required/oneof[contains(., 'Changeling')])");
+                strFilter.Append(" and (metagenic = 'True' or required/oneof[contains(., 'Changeling')])");
             }
-            else if (chkNotMetagenetic.Checked)
+            else if (chkNotMetagenic.Checked)
             {
-                strFilter.Append(" and not(metagenetic = 'True') and not(required/oneof[contains(., 'Changeling')])");
+                strFilter.Append(" and not(metagenic = 'True') and not(required/oneof[contains(., 'Changeling')])");
             }
             if (nudValueBP.Value != 0)
             {

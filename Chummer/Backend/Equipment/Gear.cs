@@ -787,7 +787,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (!objNode.TryGetGuidFieldQuickly("id", ref _guiSourceID))
                 {
-                    XmlNode node = GetNode(GlobalOptions.Language,objNode["name"].InnerText,objNode["category"].InnerText);
+                    XmlNode node = GetNode(GlobalOptions.Language, objNode["name"]?.InnerText, objNode["category"]?.InnerText);
                     node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
                 }
             }
@@ -898,7 +898,7 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    //Legacy. Location is a string. 
+                    //Legacy. Location is a string.
                     _objLocation =
                         CharacterObject.GearLocations.FirstOrDefault(location =>
                             location.Name == strLocation);
@@ -1044,7 +1044,7 @@ namespace Chummer.Backend.Equipment
                 }
                 ChangeEquippedStatus(false);
             }
-            
+
             if (!objNode.TryGetStringFieldQuickly("programlimit", ref _strProgramLimit))
                 GetNode()?.TryGetStringFieldQuickly("programs", ref _strProgramLimit);
             objNode.TryGetStringFieldQuickly("overclocked", ref _strOverclocked);
@@ -1203,7 +1203,7 @@ namespace Chummer.Backend.Equipment
         #region Properties
 
         /// <summary>
-        /// Guid of the object from the data. You probably want to use SourceIDString instead. 
+        /// Guid of the object from the data. You probably want to use SourceIDString instead.
         /// </summary>
         public Guid SourceID
         {
@@ -1387,7 +1387,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Processes a string into an int based on logical processing. 
+        /// Processes a string into an int based on logical processing.
         /// </summary>
         /// <param name="strExpression"></param>
         /// <returns></returns>
@@ -1578,7 +1578,7 @@ namespace Chummer.Backend.Equipment
 
         /// <summary>
         /// Sourcebook Page Number using a given language file.
-        /// Returns Page if not found or the string is empty. 
+        /// Returns Page if not found or the string is empty.
         /// </summary>
         /// <param name="strLanguage">Language file keyword to use.</param>
         /// <returns></returns>
@@ -1606,7 +1606,7 @@ namespace Chummer.Backend.Equipment
                 return _strCanFormPersona.Contains("Self") || Children.Any(x => x.CanFormPersona.Contains("Parent"));
             }
         }
-        
+
         /// <summary>
         /// A List of child pieces of Gear.
         /// </summary>
@@ -1761,7 +1761,7 @@ namespace Chummer.Backend.Equipment
                                  Category == "Tactical AR Software" ||
                                  Category == "Telematics Infrastructure Software" ||
                                  Category == "Sensor Software";
-        
+
         /// <summary>
         /// Cost multiplier for Children attached to this Gear.
         /// </summary>
@@ -2108,7 +2108,7 @@ namespace Chummer.Backend.Equipment
                     if (!string.IsNullOrEmpty(strSecondHalf))
                         strReturn += '/' + strSecondHalf;
                 }
-                else if (strReturn.Contains("Rating"))
+                else
                 {
                     // If the Capaicty is determined by the Rating, evaluate the expression.
                     // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
@@ -2116,22 +2116,25 @@ namespace Chummer.Backend.Equipment
                     if (blnSquareBrackets)
                         strReturn = strReturn.Substring(1, strReturn.Length - 2);
 
-                    // This has resulted in a non-whole number, so round it (minimum of 1).
-                    object objProcess = CommonFunctions.EvaluateInvariantXPath(strReturn
-                        .CheapReplace("Parent Rating", () => (Parent as IHasRating)?.Rating.ToString(GlobalOptions.InvariantCultureInfo))
-                        .Replace("Rating", Rating.ToString()), out bool blnIsSuccess);
-                    double dblNumber = blnIsSuccess ? (double)objProcess : 1;
-                    if (dblNumber < 1)
-                        dblNumber = 1;
-                    strReturn = dblNumber.ToString("#,0.##", GlobalOptions.CultureInfo);
+                    if (strReturn.Contains("Rating"))
+                    {
+                        // This has resulted in a non-whole number, so round it (minimum of 1).
+                        object objProcess = CommonFunctions.EvaluateInvariantXPath(strReturn
+                            .CheapReplace("Parent Rating", () => (Parent as IHasRating)?.Rating.ToString(GlobalOptions.InvariantCultureInfo))
+                            .Replace("Rating", Rating.ToString()), out bool blnIsSuccess);
+                        double dblNumber = blnIsSuccess ? (double) objProcess : 1;
+                        if (dblNumber < 1)
+                            dblNumber = 1;
+                        strReturn = dblNumber.ToString("#,0.##", GlobalOptions.CultureInfo);
+                    }
+                    else if (decimal.TryParse(strReturn, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decimal decReturn))
+                    {
+                        // Just a straight Capacity, so return the value.
+                        strReturn = decReturn.ToString("#,0.##", GlobalOptions.CultureInfo);
+                    }
 
                     if (blnSquareBrackets)
                         strReturn = '[' + strReturn + ']';
-                }
-                else if (decimal.TryParse(strReturn, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decimal decReturn))
-                {
-                    // Just a straight Capacity, so return the value.
-                    strReturn = decReturn.ToString("#,0.##", GlobalOptions.CultureInfo);
                 }
 
                 return strReturn;
@@ -2169,7 +2172,7 @@ namespace Chummer.Backend.Equipment
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strFirstHalf.Replace("Rating", Rating.ToString()), out bool blnIsSuccess);
                         strReturn = blnIsSuccess ? ((double)objProcess).ToString("#,0.##", GlobalOptions.CultureInfo) : strFirstHalf;
                     }
-                    
+
                     if (blnSquareBrackets)
                         strReturn = '[' + strReturn + ']';
                     strReturn += '/' + strSecondHalf;
@@ -2357,9 +2360,9 @@ namespace Chummer.Backend.Equipment
 
                 // Only items that contain square brackets should consume Capacity. Everything else is treated as [0].
                 strCapacity = strCapacity.StartsWith('[') ? strCapacity.Substring(1, strCapacity.Length - 2) : "0";
-                if (strCapacity == "*")
-                    return 0;
-                return Convert.ToDecimal(strCapacity, GlobalOptions.CultureInfo);
+                if (decimal.TryParse(strCapacity, NumberStyles.Any, GlobalOptions.CultureInfo, out decimal decReturn))
+                    return decReturn;
+                return 0;
             }
         }
 
@@ -2403,10 +2406,11 @@ namespace Chummer.Backend.Equipment
                     {
                         // If this is a multiple-capacity item, use only the first half.
                         strMyCapacity = strMyCapacity.Substring(0, intPos);
-                        decCapacity = Convert.ToDecimal(strMyCapacity, GlobalOptions.CultureInfo);
+                        if (!decimal.TryParse(strMyCapacity, NumberStyles.Any, GlobalOptions.CultureInfo, out decCapacity))
+                            decCapacity = 0;
                     }
-                    else
-                        decCapacity = Convert.ToDecimal(strMyCapacity, GlobalOptions.CultureInfo);
+                    else if (!decimal.TryParse(strMyCapacity, NumberStyles.Any, GlobalOptions.CultureInfo, out decCapacity))
+                        decCapacity = 0;
 
                     if (Children.Count > 0)
                     {
@@ -2806,6 +2810,53 @@ namespace Chummer.Backend.Equipment
                 objChild.ReaddImprovements(treGears, strOutdatedItems, lstInternalIdFilter, eSource, blnStackEquipped);
         }
 
+        /// <summary>
+        /// Checks a nominated piece of gear for Availability requirements.
+        /// </summary>
+        /// <param name="blnRestrictedGearUsed">Whether Restricted Gear is already being used.</param>
+        /// <param name="intRestrictedCount">Amount of gear that is currently over the availability limit.</param>
+        /// <param name="strAvailItems">String used to list names of gear that are currently over the availability limit.</param>
+        /// <param name="strRestrictedItem">Item that is being used for Restricted Gear.</param>
+        /// <param name="blnOutRestrictedGearUsed">Whether Restricted Gear is already being used (tracked across gear children).</param>
+        /// <param name="intOutRestrictedCount">Amount of gear that is currently over the availability limit (tracked across gear children).</param>
+        /// <param name="strOutAvailItems">String used to list names of gear that are currently over the availability limit (tracked across gear children).</param>
+        /// <param name="strOutRestrictedItem">Item that is being used for Restricted Gear (tracked across gear children).</param>
+        public void CheckRestrictedGear(bool blnRestrictedGearUsed, int intRestrictedCount, string strAvailItems, string strRestrictedItem, out bool blnOutRestrictedGearUsed, out int intOutRestrictedCount, out string strOutAvailItems, out string strOutRestrictedItem)
+        {
+            if (!IncludedInParent)
+            {
+                AvailabilityValue objTotalAvail = TotalAvailTuple();
+                if (!objTotalAvail.AddToParent)
+                {
+                    int intAvailInt = objTotalAvail.Value;
+                    //TODO: Make this dynamically update without having to validate the character.
+                    if (intAvailInt > CharacterObject.MaximumAvailability)
+                    {
+                        if (intAvailInt <= CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
+                        {
+                            blnRestrictedGearUsed = true;
+                            strRestrictedItem = Parent == null
+                                ? DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)
+                                : $"{DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)} ({Parent})";
+                        }
+                        else
+                        {
+                            intRestrictedCount++;
+                            strAvailItems += Environment.NewLine + "\t\t" + DisplayNameShort(GlobalOptions.Language);
+                        }
+                    }
+                }
+            }
+
+            foreach (Gear objChild in Children)
+            {
+                objChild.CheckRestrictedGear(blnRestrictedGearUsed, intRestrictedCount, strAvailItems, strRestrictedItem, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems, out strRestrictedItem);
+            }
+            strOutAvailItems = strAvailItems;
+            intOutRestrictedCount = intRestrictedCount;
+            blnOutRestrictedGearUsed = blnRestrictedGearUsed;
+            strOutRestrictedItem = strRestrictedItem;
+        }
         #region UI Methods
         /// <summary>
         /// Collection of TreeNodes to update when a relevant property is changed
@@ -2919,7 +2970,7 @@ namespace Chummer.Backend.Equipment
 
                 if (intFociTotal + intNewRating > intMaxFocusTotal && !_objCharacter.IgnoreRules)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_FocusMaximumForce", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_FocusMaximum", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_FocusMaximumForce", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_FocusMaximum", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return false;
                 }
             }
@@ -3254,8 +3305,6 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Recursive method to add a Gear's Improvements to a character when moving them from a Vehicle.
         /// </summary>
-        /// <param name="objGear">Gear to create Improvements for.
-        /// </param>
         public void AddGearImprovements()
         {
             string strForce = string.Empty;
@@ -3327,7 +3376,7 @@ namespace Chummer.Backend.Equipment
             CharacterObject.ExpenseEntries.AddWithSort(objExpense);
             CharacterObject.Nuyen += decAmount;
         }
-        
+
         public void SetSourceDetail(Control sourceControl)
         {
             if (_objCachedSourceDetail?.Language != GlobalOptions.Language)

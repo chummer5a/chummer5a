@@ -293,6 +293,18 @@ namespace Chummer
             else
             {
                 string strCostElement = objXmlMod.SelectSingleNode("cost")?.Value ?? string.Empty;
+                if (strCostElement.StartsWith("FixedValues("))
+                {
+                    string strSuffix = string.Empty;
+                    if (!strCostElement.EndsWith(")"))
+                    {
+                        strSuffix = strCostElement.Substring(strCostElement.LastIndexOf(')') + 1);
+                        strCostElement = strCostElement.TrimEndOnce(strSuffix);
+                    }
+                    string[] strValues = strCostElement.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                    strCostElement = strValues[Math.Max(Math.Min(Convert.ToInt32(nudRating.Value), strValues.Length) - 1, 0)];
+                    strCostElement += strSuffix;
+                }
                 if (strCostElement.StartsWith("Variable("))
                 {
                     decimal decMin;

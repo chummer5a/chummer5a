@@ -120,20 +120,26 @@ namespace Chummer.UI.Skills
                 cboSpec.ValueMember = nameof(ListItem.Value);
                 cboSpec.SelectedIndex = -1;
 
-                if (skill.ForcedName)
-                    cboSpec.Enabled = false;
-                else
-                    cboSpec.DataBindings.Add("Enabled", skill, nameof(Skill.CanHaveSpecs), false, DataSourceUpdateMode.OnPropertyChanged);
+                cboSpec.DataBindings.Add("Enabled", skill, nameof(Skill.CanHaveSpecs), false, DataSourceUpdateMode.OnPropertyChanged);
                 cboSpec.DataBindings.Add("Text", skill, nameof(Skill.Specialization), false, DataSourceUpdateMode.OnPropertyChanged);
 
                 skill.PropertyChanged += Skill_PropertyChanged;
             }
 
-
-            if (skill.ForcedName && !skill.AllowUpgrade)
+            cmdDelete.DataBindings.Add("Visible", skill, nameof(Skill.AllowDelete), false, DataSourceUpdateMode.OnPropertyChanged);
+            cmdDelete.Click += (sender, args) =>
+            {
+                skill.UnbindSkill();
+                skill.CharacterObject.SkillsSection.KnowledgeSkills.Remove(skill);
+            };
+            if (skill.ForcedName)
             {
                 DataBindings.Add("Enabled", skill, nameof(KnowledgeSkill.Enabled), false, DataSourceUpdateMode.OnPropertyChanged);
-
+                if (!skill.CharacterObject.Created)
+                    cboType.Enabled = string.IsNullOrEmpty(_skill.Type);
+            }
+            if (!skill.AllowUpgrade)
+            {
                 nudKarma.Visible = false;
                 nudSkill.Visible = false;
                 cboSkill.Enabled = false;
@@ -143,20 +149,9 @@ namespace Chummer.UI.Skills
 
                 if (!skill.CharacterObject.Created)
                 {
-                    cboType.Enabled = string.IsNullOrEmpty(_skill.Type);
                     lblRating.Visible = true;
                     lblRating.DataBindings.Add("Text", skill, nameof(Skill.Rating), false, DataSourceUpdateMode.OnPropertyChanged);
                 }
-
-                cmdDelete.Visible = false;
-            }
-            else
-            {
-                cmdDelete.Click += (sender, args) =>
-                {
-                    skill.UnbindSkill();
-                    skill.CharacterObject.SkillsSection.KnowledgeSkills.Remove(skill);
-                };
             }
             cboType.EndUpdate();
             cboSkill.EndUpdate();

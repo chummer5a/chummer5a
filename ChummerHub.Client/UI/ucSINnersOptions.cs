@@ -19,9 +19,13 @@ using Chummer.Plugins;
 using System.Threading;
 using ChummerHub.Client.Model;
 using System.IO;
+using System.Reflection;
+using System.Security.Permissions;
 using System.Windows;
+using Microsoft.Win32;
 using NLog;
 using MessageBox = System.Windows.Forms.MessageBox;
+using OpenFileDialog = System.Windows.Forms.OpenFileDialog;
 
 //using Nemiro.OAuth;
 //using Nemiro.OAuth.LoginForms;
@@ -174,9 +178,13 @@ namespace ChummerHub.Client.UI
             return tcs.Task;
         }
 
+        private bool IsLoading = false;
+
         private async Task InitializeMe()
         {
-            
+            if (IsLoading)
+                return;
+            IsLoading = true;
             string tip = "Milestone builds always user sinners." + Environment.NewLine + "Nightly builds always user sinners-beta.";
             cbSINnerUrl.SetToolTip(tip);
             cbSINnerUrl.SelectedValueChanged -= CbSINnerUrl_SelectedValueChanged;
@@ -186,6 +194,7 @@ namespace ChummerHub.Client.UI
                 Properties.Settings.Default.TempDownloadPath = Path.GetTempPath();
                 Properties.Settings.Default.Save();
             }
+            tbTempDownloadPath.Text = Properties.Settings.Default.TempDownloadPath;
             tbTempDownloadPath.SetToolTip("Where should chummer download the temporary files from the WebService?");
             var client = StaticUtils.GetClient(); 
             if (client == null)
@@ -202,8 +211,16 @@ namespace ChummerHub.Client.UI
             this.cbSINnerUrl.DataSource = Properties.Settings.Default.SINnerUrls;
             this.cbSINnerUrl.SelectedItem = sinnerurl;
             this.cbVisibilityIsPublic.Checked = Properties.Settings.Default.VisibilityIsPublic;
-            //this.cbVisibilityIsGroupVisible.Checked = Properties.Settings.Default.VisibilityIsGroupVisible;
+            this.cbIgnoreWarnings.Checked = Properties.Settings.Default.IgnoreWarningsOnOpening;
             cbSINnerUrl.Enabled = false;
+            if (ChummerHub.Client.Properties.Settings.Default.UserModeRegistered == true)
+            {
+                this.rbListUserMode.SelectedIndex = 1;
+            }
+            else
+            {
+                this.rbListUserMode.SelectedIndex = 0;
+            }
             this.cbVisibilityIsPublic.BindingContext = new BindingContext();
             if ((StaticUtils.UserRoles == null)
                 || (!StaticUtils.UserRoles.Any()))
@@ -224,7 +241,32 @@ namespace ChummerHub.Client.UI
             }
             cbUploadOnSave.Checked = ucSINnersOptions.UploadOnSave;
             cbSINnerUrl.SelectedValueChanged += CbSINnerUrl_SelectedValueChanged;
+            //AddShieldToButton(bRegisterUriScheme);
+            this.cbVisibilityIsPublic.CheckedChanged += cbVisibilityIsPublic_CheckedChanged;
+            this.cbUploadOnSave.CheckedChanged += cbUploadOnSave_CheckedChanged;
+            this.rbListUserMode.SelectedIndexChanged += RbListUserMode_SelectedIndexChanged;
+            this.cbIgnoreWarnings.CheckedChanged += CbIgnoreWarningsOnCheckedChanged;
         }
+
+        private void CbIgnoreWarningsOnCheckedChanged(object sender, EventArgs e)
+        {
+            OptionsUpdate();
+        }
+
+        //[DllImport("user32.dll")]
+        //public static extern int SendMessage(IntPtr hWnd,
+        //    uint Msg, int wParam, int lParam);
+
+        //// Make the button display the UAC shield.
+        //public static void AddShieldToButton(Button btn)
+        //{
+        //    const Int32 BCM_SETSHIELD = 0x160C;
+
+        //    // Give the button the flat style and make it
+        //    // display the UAC shield.
+        //    btn.FlatStyle = System.Windows.Forms.FlatStyle.System;
+        //    SendMessage(btn.Handle, BCM_SETSHIELD, 0, 1);
+        //}
 
         ~ucSINnersOptions()
         {
@@ -249,18 +291,20 @@ namespace ChummerHub.Client.UI
 
         public async void UpdateDisplay()
         {
+            this.tlpOptions.Enabled = Properties.Settings.Default.UserModeRegistered;
             var mail = await GetUserEmail();
-            PluginHandler.MainForm.DoThreadSafe(new Action(() =>
+            this.DoThreadSafe(new Action(() =>
             {
                 try
                 {
-                    this.tbTempDownloadPath.Text = Properties.Settings.Default.TempDownloadPath;
+                    ChummerHub.Client.Properties.Settings.Default.Reload();
+                    this.tbTempDownloadPath.Text = ChummerHub.Client.Properties.Settings.Default.TempDownloadPath;
 
                     if (!String.IsNullOrEmpty(mail))
                     {
                         this.lUsername.Text = mail;
                         //also, since we are logged in in now, refresh the frmCharacterRoster!
-                        PluginHandler.MainForm.DoThreadSafe(() =>
+                        PluginHandler.MainForm?.DoThreadSafe(() =>
                         {
                             PluginHandler.MainForm.CharacterRoster.LoadCharacters(true, true, true, true);
                         });
@@ -476,12 +520,18 @@ namespace ChummerHub.Client.UI
         private void OptionsUpdate()
         {
             Properties.Settings.Default.TempDownloadPath = this.tbTempDownloadPath.Text;
-            Properties.Settings.Default.VisibilityIsPublic = this.cbVisibilityIsPublic.Checked      ;
+            Properties.Settings.Default.VisibilityIsPublic = this.cbVisibilityIsPublic.Checked;
+            Properties.Settings.Default.IgnoreWarningsOnOpening = this.cbIgnoreWarnings.Checked;
+            if (this.rbListUserMode.SelectedIndex <= 0)
+                Properties.Settings.Default.UserModeRegistered = false;
+            else
+                Properties.Settings.Default.UserModeRegistered = true;
             Properties.Settings.Default.Save();
         }
 
         private void cbVisibilityIsPublic_CheckedChanged(object sender, EventArgs e)
         {
+           
             OptionsUpdate();
         }
 
@@ -506,22 +556,33 @@ namespace ChummerHub.Client.UI
             {
                 try
                 {
-                    Debug.WriteLine("Loading: " + file);
+                    Log.Trace("Loading: " + file);
                     var c = new Character { FileName = file };
-                    if(!(await c.Load()))
-                        continue;
-                    Debug.WriteLine("Character loaded: " + c.Name);
-                    CharacterExtended ce = new CharacterExtended(c, null);
-                    await ce.UploadInBackground();
+                    using (frmLoading frmLoadingForm = new frmLoading {CharacterFile = file})
+                    {
+                        frmLoadingForm.Reset(36);
+                        frmLoadingForm.TopMost = true;
+                        frmLoadingForm.Show();
+                        if (!(await c.Load(frmLoadingForm, false)))
+                            continue;
+                        Log.Trace("Character loaded: " + c.Name);
+                    }
+                    frmCharacterRoster.CharacterCache myCharacterCache = new frmCharacterRoster.CharacterCache(file);
+                    CharacterExtended ce = new CharacterExtended(c, null, null, myCharacterCache);
+                    await ce.Upload(null);
                 }
                 catch (Exception ex)
                 {
                     string msg = "Exception while loading " + file + ":";
                     msg += Environment.NewLine + ex.ToString();
                     Log.Warn(msg);
-                    throw;
+                    /* run your code here */
+                    Program.MainForm.ShowMessageBox(msg);
+                 
                 }
             }
+
+            Program.MainForm.ShowMessageBox("Upload of " + thisDialog.FileNames.Length + " files finished (successful or not - its over).");
         }
 
     
@@ -541,7 +602,7 @@ namespace ChummerHub.Client.UI
             {
                 BackupTask(folderBrowserDialog1).ContinueWith((a) =>
                 {
-                    MessageBox.Show(a.Status.ToString());
+                    Program.MainForm.ShowMessageBox(a.Status.ToString());
                 });
             }
 
@@ -578,7 +639,7 @@ namespace ChummerHub.Client.UI
                             catch (Exception e2)
                             {
                                 Log.Error(e2);
-                                Invoke(new Action(() => MessageBox.Show(e2.Message)));
+                                Invoke(new Action(() => Program.MainForm.ShowMessageBox(e2.Message)));
                             }
                         }
                     }
@@ -587,7 +648,7 @@ namespace ChummerHub.Client.UI
             catch (Exception ex)
             {
                 Log.Error(ex); 
-                Invoke(new Action(() => MessageBox.Show(ex.Message)));
+                Invoke(new Action(() => Program.MainForm.ShowMessageBox(ex.Message)));
 
             }
         }
@@ -602,7 +663,7 @@ namespace ChummerHub.Client.UI
             {
                 RestoreTask(folderBrowserDialog1).ContinueWith((a) =>
                 {
-                    MessageBox.Show(a.Status.ToString());
+                    Program.MainForm.ShowMessageBox(a.Status.ToString());
                 });
             }
         }
@@ -659,7 +720,7 @@ namespace ChummerHub.Client.UI
             catch (Exception ex)
             {
                 Log.Error(ex);
-                Invoke(new Action(() => MessageBox.Show(ex.Message)));
+                Invoke(new Action(() => Program.MainForm.ShowMessageBox(ex.Message)));
 
             }
         }
@@ -752,6 +813,15 @@ namespace ChummerHub.Client.UI
             {
                 SINnerVisibility = visfrm.MyVisibility;
             }
+        }
+
+        private void RbListUserMode_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (this.rbListUserMode.SelectedIndex <= 0)
+                this.tlpOptions.Enabled = false;
+            else
+                this.tlpOptions.Enabled = true;
+            OptionsUpdate();
         }
     }
 }

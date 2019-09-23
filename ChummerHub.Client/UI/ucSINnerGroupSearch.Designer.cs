@@ -147,9 +147,9 @@ namespace ChummerHub.Client.UI
             // tbSearchGroupname
             // 
             this.tbSearchGroupname.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbSearchGroupname.Location = new System.Drawing.Point(110, 33);
+            this.tbSearchGroupname.Location = new System.Drawing.Point(98, 33);
             this.tbSearchGroupname.Name = "tbSearchGroupname";
-            this.tbSearchGroupname.Size = new System.Drawing.Size(171, 20);
+            this.tbSearchGroupname.Size = new System.Drawing.Size(183, 20);
             this.tbSearchGroupname.TabIndex = 7;
             this.tbSearchGroupname.TextChanged += new System.EventHandler(this.TbSearchGroupname_TextChanged);
             this.tbSearchGroupname.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TbSearchGroupname_KeyDown);
@@ -172,20 +172,20 @@ namespace ChummerHub.Client.UI
             this.bCreateGroup.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.bCreateGroup.Location = new System.Drawing.Point(3, 61);
             this.bCreateGroup.Name = "bCreateGroup";
-            this.bCreateGroup.Size = new System.Drawing.Size(101, 23);
+            this.bCreateGroup.Size = new System.Drawing.Size(89, 23);
             this.bCreateGroup.TabIndex = 5;
-            this.bCreateGroup.Text = "Create new group";
+            this.bCreateGroup.Text = "Create a Group";
             this.bCreateGroup.UseVisualStyleBackColor = true;
             this.bCreateGroup.Click += new System.EventHandler(this.bCreateGroup_Click);
             // 
             // bViewGroup
             // 
             this.bViewGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.bViewGroup.Location = new System.Drawing.Point(110, 61);
+            this.bViewGroup.Location = new System.Drawing.Point(98, 61);
             this.bViewGroup.Name = "bViewGroup";
-            this.bViewGroup.Size = new System.Drawing.Size(171, 23);
+            this.bViewGroup.Size = new System.Drawing.Size(183, 23);
             this.bViewGroup.TabIndex = 9;
-            this.bViewGroup.Text = "View Group";
+            this.bViewGroup.Text = "View Group Description";
             this.bViewGroup.UseVisualStyleBackColor = true;
             this.bViewGroup.Click += new System.EventHandler(this.BViewGroup_Click);
             // 
@@ -195,7 +195,7 @@ namespace ChummerHub.Client.UI
             this.lSINner.AutoSize = true;
             this.lSINner.Location = new System.Drawing.Point(3, 8);
             this.lSINner.Name = "lSINner";
-            this.lSINner.Size = new System.Drawing.Size(101, 13);
+            this.lSINner.Size = new System.Drawing.Size(89, 13);
             this.lSINner.TabIndex = 0;
             this.lSINner.Text = "SINner: ";
             // 
@@ -203,9 +203,9 @@ namespace ChummerHub.Client.UI
             // 
             this.lSINnerName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.lSINnerName.AutoSize = true;
-            this.lSINnerName.Location = new System.Drawing.Point(110, 8);
+            this.lSINnerName.Location = new System.Drawing.Point(98, 8);
             this.lSINnerName.Name = "lSINnerName";
-            this.lSINnerName.Size = new System.Drawing.Size(171, 13);
+            this.lSINnerName.Size = new System.Drawing.Size(183, 13);
             this.lSINnerName.TabIndex = 10;
             this.lSINnerName.Text = "not set";
             // 

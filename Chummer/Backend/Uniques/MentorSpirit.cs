@@ -52,15 +52,14 @@ namespace Chummer
             // Create the GUID for the new Mentor Spirit.
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
-            var namenode = xmlNodeMentor?.SelectSingleNode($"name");
+            XmlNode namenode = xmlNodeMentor?.SelectSingleNode("name");
             if(namenode != null)
-                this.Name = namenode.InnerText;
-            var typenode = xmlNodeMentor?.SelectSingleNode($"mentortype");
+                Name = namenode.InnerText;
+            XmlNode typenode = xmlNodeMentor?.SelectSingleNode("mentortype");
             if (typenode != null)
             {
-                Improvement.ImprovementType outEnum;
-                if(Enum.TryParse(typenode.InnerText, true, out outEnum))
-                    this._eMentorType = outEnum;
+                if(Enum.TryParse(typenode.InnerText, true, out Improvement.ImprovementType outEnum))
+                    _eMentorType = outEnum;
             }
         }
 
@@ -304,7 +303,7 @@ namespace Chummer
                         _strName = _objCharacter.MentorSpirits[0].Name;
                 }
                 return _strName;
-            } 
+            }
             set
             {
                 if (_strName != value)

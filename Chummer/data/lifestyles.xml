@@ -568,6 +568,7 @@
       <category>Entertainment - Outing</category>
       <lp>1</lp>
       <allowed>Low,Medium,High,Luxury</allowed>
+      <allowmultiple />
       <bonus>
         <selecttext />
       </bonus>

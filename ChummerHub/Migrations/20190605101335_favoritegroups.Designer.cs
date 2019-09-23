@@ -13,7 +13,9 @@ namespace ChummerHub.Migrations
     [Migration("20190605101335_favoritegroups")]
     partial class favoritegroups
     {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'favoritegroups.BuildTargetModel(ModelBuilder)'
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'favoritegroups.BuildTargetModel(ModelBuilder)'
         {
 #pragma warning disable 612, 618
             modelBuilder

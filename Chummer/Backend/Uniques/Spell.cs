@@ -299,103 +299,42 @@ namespace Chummer
 
             string[] strDescriptorsIn = Descriptors.Split(',');
             bool blnExtendedFound = false;
-            foreach (string strDescriptor in strDescriptorsIn)
+            if (strDescriptorsIn.Length > 0)
             {
-                switch (strDescriptor.Trim())
+                foreach (string strDescriptor in strDescriptorsIn)
                 {
-                    case "Active":
-                        objReturn.Append(LanguageManager.GetString("String_DescActive", strLanguage));
-                        break;
-                    case "Adept":
-                        objReturn.Append(LanguageManager.GetString("String_DescAdept", strLanguage));
-                        break;
-                    case "Alchemical Preparation":
-                        objReturn.Append(LanguageManager.GetString("String_DescAlchemicalPreparation", strLanguage));
-                        break;
-                    case "Anchored":
-                        objReturn.Append(LanguageManager.GetString("String_DescAnchored", strLanguage));
-                        break;
-                    case "Area":
-                        objReturn.Append(LanguageManager.GetString("String_DescArea", strLanguage));
-                        break;
-                    case "Blood":
-                        objReturn.Append(LanguageManager.GetString("String_DescBlood", strLanguage));
-                        break;
-                    case "Contractual":
-                        objReturn.Append(LanguageManager.GetString("String_DescContractual", strLanguage));
-                        break;
-                    case "Direct":
-                        objReturn.Append(LanguageManager.GetString("String_DescDirect", strLanguage));
-                        break;
-                    case "Directional":
-                        objReturn.Append(LanguageManager.GetString("String_DescDirectional", strLanguage));
-                        break;
-                    case "Elemental":
-                        objReturn.Append(LanguageManager.GetString("String_DescElemental", strLanguage));
-                        break;
-                    case "Environmental":
-                        objReturn.Append(LanguageManager.GetString("String_DescEnvironmental", strLanguage));
-                        break;
-                    case "Extended Area":
-                        blnExtendedFound = true;
-                        objReturn.Append(LanguageManager.GetString("String_DescExtendedArea", GlobalOptions.Language));
-                        break;
-                    case "Geomancy":
-                        objReturn.Append(LanguageManager.GetString("String_DescGeomancy", strLanguage));
-                        break;
-                    case "Indirect":
-                        objReturn.Append(LanguageManager.GetString("String_DescIndirect", strLanguage));
-                        break;
-                    case "Mana":
-                        objReturn.Append(LanguageManager.GetString("String_DescMana", strLanguage));
-                        break;
-                    case "Material Link":
-                        objReturn.Append(LanguageManager.GetString("String_DescMaterialLink", strLanguage));
-                        break;
-                    case "Mental":
-                        objReturn.Append(LanguageManager.GetString("String_DescMental", strLanguage));
-                        break;
-                    case "Minion":
-                        objReturn.Append(LanguageManager.GetString("String_DescMinion", strLanguage));
-                        break;
-                    case "Multi-Sense":
-                        objReturn.Append(LanguageManager.GetString("String_DescMultiSense", strLanguage));
-                        break;
-                    case "Negative":
-                        objReturn.Append(LanguageManager.GetString("String_DescNegative", strLanguage));
-                        break;
-                    case "Obvious":
-                        objReturn.Append(LanguageManager.GetString("String_DescObvious", strLanguage));
-                        break;
-                    case "Organic Link":
-                        objReturn.Append(LanguageManager.GetString("String_DescOrganicLink", strLanguage));
-                        break;
-                    case "Passive":
-                        objReturn.Append(LanguageManager.GetString("String_DescPassive", strLanguage));
-                        break;
-                    case "Physical":
-                        objReturn.Append(LanguageManager.GetString("String_DescPhysical", strLanguage));
-                        break;
-                    case "Psychic":
-                        objReturn.Append(LanguageManager.GetString("String_DescPsychic", strLanguage));
-                        break;
-                    case "Realistic":
-                        objReturn.Append(LanguageManager.GetString("String_DescRealistic", strLanguage));
-                        break;
-                    case "Single-Sense":
-                        objReturn.Append(LanguageManager.GetString("String_DescSingleSense", strLanguage));
-                        break;
-                    case "Touch":
-                        objReturn.Append(LanguageManager.GetString("String_DescTouch", strLanguage));
-                        break;
-                    case "Spell":
-                        objReturn.Append(LanguageManager.GetString("String_DescSpell", strLanguage));
-                        break;
-                    case "Spotter":
-                        objReturn.Append(LanguageManager.GetString("String_DescSpotter", strLanguage));
-                        break;
+                    switch (strDescriptor.Trim())
+                    {
+                        case "Alchemical Preparation":
+                            objReturn.Append(LanguageManager.GetString("String_DescAlchemicalPreparation",
+                                strLanguage));
+                            break;
+                        case "Extended Area":
+                            blnExtendedFound = true;
+                            objReturn.Append(LanguageManager.GetString("String_DescExtendedArea",
+                                GlobalOptions.Language));
+                            break;
+                        case "Material Link":
+                            objReturn.Append(LanguageManager.GetString("String_DescMaterialLink", strLanguage));
+                            break;
+                        case "Multi-Sense":
+                            objReturn.Append(LanguageManager.GetString("String_DescMultiSense", strLanguage));
+                            break;
+                        case "Organic Link":
+                            objReturn.Append(LanguageManager.GetString("String_DescOrganicLink", strLanguage));
+                            break;
+                        case "Single-Sense":
+                            objReturn.Append(LanguageManager.GetString("String_DescSingleSense", strLanguage));
+                            break;
+                        default:
+                            objReturn.Append(LanguageManager.GetString($"String_Desc{strDescriptor.Trim()}",
+                                strLanguage));
+                            break;
+
+                    }
+
+                    objReturn.Append(", ");
                 }
-                objReturn.Append(", ");
             }
 
             // If Extended Area was not found and the Extended flag is enabled, add Extended Area to the list of Descriptors.
@@ -688,7 +627,7 @@ namespace Chummer
 
         /// <summary>
         /// Sourcebook Page Number using a given language file.
-        /// Returns Page if not found or the string is empty. 
+        /// Returns Page if not found or the string is empty.
         /// </summary>
         /// <param name="strLanguage">Language file keyword to use.</param>
         /// <returns></returns>

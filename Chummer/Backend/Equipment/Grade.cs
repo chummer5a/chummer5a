@@ -112,7 +112,7 @@ namespace Chummer.Backend.Equipment
         /// Internal identifier which will be used to identify this grade.
         /// </summary>
         public string InternalId => _guiID == Guid.Empty ? string.Empty : _guiID.ToString("D");
-        
+
         /// <summary>
         /// Identifier of the object within data files.
         /// </summary>

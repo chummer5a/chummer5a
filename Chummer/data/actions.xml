@@ -23,17 +23,17 @@
   <!-- Region Core Rulebook -->
   <!-- Region Basic Actions  -->
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>c649963a-b88f-473f-96d0-2f38cd054d86</id>
       <name>Melee Defense</name>
       <type>No</type>
 	  <test>
-		<dice>{REA} + {INT} + {Improvement Value: Dodge} v. {Action: Melee Attack}</dice>
+		<dice>{REA} + {INT} + {Improvement Value: Dodge}</dice>
 	  </test>
       <source>SR5</source>
       <page>168</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>3e5bc4f5-f36e-4152-9e2b-a07c316ed017</id>
       <name>Ranged Defense</name>
       <type>No</type>
 	  <test>
@@ -43,7 +43,7 @@
       <page>186</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>85f6b9af-45a9-45b5-90e0-5421ae2278e8</id>
       <name>Suppressive Fire Defense</name>
       <type>No</type>
 	  <test>
@@ -53,7 +53,7 @@
       <page>179</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>d5bd6550-e4ef-40f7-b95c-47ea79c682d0</id>
       <name>Resist Surprise</name>
       <type>No</type>
 	  <test>
@@ -63,7 +63,7 @@
       <page>192</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>0ca7d61c-88e6-4e5c-841a-9cfbbb4ab491</id>
       <name>Direct, Physical Combat Spell Defense</name>
       <type>No</type>
 	  <test>
@@ -73,7 +73,7 @@
       <page>283</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>7d1f1509-8c4e-43c2-b902-02c6bb82b297</id>
       <name>Direct, Mana Combat Spell Defense</name>
       <type>No</type>
 	  <test>
@@ -83,7 +83,7 @@
       <page>283</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>a27f4680-62ab-446d-b614-fd2f315a56cb</id>
       <name>Detection Spell Defense</name>
       <type>No</type>
 	  <test>
@@ -93,7 +93,7 @@
       <page>285</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>1dbbb54b-2cc3-40f4-a94a-4da5e7c70be7</id>
       <name>Physical Illusion Spell Defense</name>
       <type>No</type>
 	  <test>
@@ -103,7 +103,7 @@
       <page>290</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>80ae61c5-c3b7-48a0-8ef2-9aaa1aa2cc05</id>
       <name>Mana Illusion Spell Defense</name>
       <type>No</type>
 	  <test>
@@ -113,7 +113,7 @@
       <page>290</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>bf7d3491-c4f1-4ee4-9ab0-ce3dd6ec2e31</id>
       <name>Physical Manipulation Spell Defense</name>
       <type>No</type>
 	  <test>
@@ -123,7 +123,7 @@
       <page>292</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>804e5aed-af93-4aeb-b87a-1de291bbe261</id>
       <name>Mental Manipulation Spell Defense</name>
       <type>No</type>
 	  <test>
@@ -133,7 +133,7 @@
       <page>292</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>251e9a4a-2995-4139-868d-960002e381bd</id>
       <name>Decrease {BOD} Spell Defense</name>
       <type>No</type>
 	  <test>
@@ -143,7 +143,7 @@
       <page>288</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>a9c4beec-3f7e-4538-b341-d54c20b7db43</id>
       <name>Decrease {AGI} Spell Defense</name>
       <type>No</type>
 	  <test>
@@ -153,7 +153,7 @@
       <page>288</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>251a7f01-96c5-4237-b624-3956c7139733</id>
       <name>Decrease {REA} Spell Defense</name>
       <type>No</type>
 	  <test>
@@ -163,7 +163,7 @@
       <page>288</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>fa90b483-4045-4f79-990b-906b8dead55f</id>
       <name>Decrease {STR} Spell Defense</name>
       <type>No</type>
 	  <test>
@@ -173,7 +173,7 @@
       <page>288</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>98f35570-a884-44fd-92f0-4fa8ad7558f5</id>
       <name>Decrease {CHA} Spell Defense</name>
       <type>No</type>
 	  <test>
@@ -183,7 +183,7 @@
       <page>288</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>5714adc1-cebc-498d-97c9-7fcc2ee3eb42</id>
       <name>Decrease {INT} Spell Defense</name>
       <type>No</type>
 	  <test>
@@ -193,7 +193,7 @@
       <page>288</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>394b2920-9ac6-4630-95dc-c31e4c077c33</id>
       <name>Decrease {LOG} Spell Defense</name>
       <type>No</type>
 	  <test>
@@ -203,7 +203,7 @@
       <page>288</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>4011301d-d051-43f5-bbac-38b446c16df3</id>
       <name>Decrease {WIL} Spell Defense</name>
       <type>No</type>
 	  <test>
@@ -213,18 +213,18 @@
       <page>288</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>cc314714-81b0-447f-b7b6-f1ac272421ee</id>
       <name>Change Linked Device Mode</name>
       <type>Free</type>
 	  <test>
 		<dice>None</dice>
-		<bonusstring>Activate, deactivate, or switch the mode of any device to which you have a direct neural interface connection.</bonusstring>
+		<bonusstring>Activate, deactivate, or switch the mode of any device to which the character has a direct neural interface connection.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>163</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>cf22cdfd-05d7-44b8-8b50-3b7d951dddfd</id>
       <name>Change Gun Mode (Linked Smartgun)</name>
       <type>Simple</type>
 	  <test>
@@ -235,18 +235,18 @@
       <page>165</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>afab4f41-fe12-4d5e-a736-de9a47113fb6</id>
       <name>Drop Object</name>
       <type>Free</type>
 	  <test>
 		<dice>None</dice>
-		<bonusstring>Drop one object held in your hand(s).</bonusstring>
+		<bonusstring>Drop one object held in the character's hand(s).</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>163</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>69029e9c-c146-4a48-b8fe-d3991645c832</id>
       <name>Drop Prone</name>
       <type>Free</type>
 	  <test>
@@ -257,7 +257,7 @@
       <page>164</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>4b7a9284-2ac4-4a37-b4ca-b0313e29b9ef</id>
       <name>Eject Clip (Smartgun)</name>
       <type>Free</type>
 	  <test>
@@ -268,7 +268,7 @@
       <page>164</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>ac554ad7-5ed8-422b-a1da-995c484c42af</id>
       <name>Gesture</name>
       <type>Free</type>
 	  <test>
@@ -279,18 +279,18 @@
       <page>164</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>aa57b540-43cb-48bd-ba5c-76d8c1e8cba0</id>
       <name>Multiple Attacks</name>
       <type>Free</type>
 	  <test>
 		<dice>None</dice>
-		<bonusstring>Attack multiple targets in a single action, splitting your dicepool. Must be combined with {Action: Fire Single-Shot}, {Action: Fire Semi-Auto}, {Action: Fire Burst Fire}, {Action: Fire Full-Auto Simple}, {Action: Fire Semi-Auto Burst}, {Action: Fire Long Burst}, {Action: Fire Full-Auto Complex}, {Action: Throw Weapon (Non-Grenade)}, {Action: Throw Weapon (Grenade)}, {Action: Melee Attack}, {Action: Reckless Spellcasting}, or {Action: Cast Spell}.</bonusstring>
+		<bonusstring>Attack multiple targets in a single action, splitting the character's dicepool. Must be combined with {Action: Fire Single-Shot}, {Action: Fire Semi-Auto}, {Action: Fire Burst Fire}, {Action: Fire Full-Auto Simple}, {Action: Fire Semi-Auto Burst}, {Action: Fire Long Burst}, {Action: Fire Full-Auto Complex}, {Action: Throw Weapon (Non-Grenade)}, {Action: Throw Weapon (Grenade)}, {Action: Melee Attack}, {Action: Reckless Spellcasting}, or {Action: Cast Spell}.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>164</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>b8e322c3-c79b-4c97-8cbe-de3f6ce71907</id>
       <name>Run</name>
       <type>Free</type>
 	  <test>
@@ -301,7 +301,7 @@
       <page>164</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>1f569333-34c6-4f28-ba50-7c6bcd88be9a</id>
       <name>Speak/Text/Transmit Phrase</name>
       <type>Free</type>
 	  <test>
@@ -312,18 +312,18 @@
       <page>164</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>d0efe44f-45f7-405d-8415-69eb159e93b3</id>
       <name>Activate Focus</name>
       <type>Simple</type>
 	  <test>
 		<dice>None</dice>
-		<bonusstring>Activate a focus you are carrying.</bonusstring>
+		<bonusstring>Activate a focus the character is carrying.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>164</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>9991c31b-52b3-47a8-8ea8-48bae349fcdf</id>
       <name>Call Spirit</name>
       <type>Simple</type>
 	  <test>
@@ -334,7 +334,7 @@
       <page>164</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>fcd4abdf-dfb4-46d8-9ff4-d5de466b949e</id>
       <name>Change Device Mode</name>
       <type>Simple</type>
 	  <test>
@@ -345,7 +345,7 @@
       <page>164</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>9a864f35-1469-4bc2-bda4-78879edd1311</id>
       <name>Change Gun Mode (Not Linked Smartgun)</name>
       <type>Simple</type>
 	  <test>
@@ -356,29 +356,29 @@
       <page>165</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>dc0fe0d6-e841-4916-9001-dc9e66e9c177</id>
       <name>Command Spirit</name>
       <type>Simple</type>
 	  <test>
 		<dice>None</dice>
-		<bonusstring>Issue a command to a single spirit or group of spirits under your control.</bonusstring>
+		<bonusstring>Issue a command to a single spirit or group of spirits under the character's control.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>165</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>22e80495-2c0d-4230-9818-e99bf4eabd12</id>
       <name>Dismiss Spirit</name>
       <type>Simple</type>
 	  <test>
 		<dice>None</dice>
-		<bonusstring>Free a spirit from under your control. The spirit is not immediately sent back, but instead is freed to do as it chooses.</bonusstring>
+		<bonusstring>Free a spirit from under the character's control. The spirit is not immediately sent back, but instead is freed to do as it chooses.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>165</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>5790e39b-2600-4b98-9a04-dcdf1643188e</id>
       <name>Fire Bow</name>
       <type>Simple</type>
 	  <test>
@@ -390,7 +390,7 @@
       <page>165</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>fcc4f4c5-9113-480e-9dda-8cb3af133dd8</id>
       <name>Fire Single-Shot</name>
       <type>Simple</type>
 	  <test>
@@ -402,7 +402,7 @@
       <page>165</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>a84ed567-e106-40b6-b7db-355f82b34c89</id>
       <name>Fire Semi-Auto</name>
       <type>Simple</type>
 	  <test>
@@ -414,7 +414,7 @@
       <page>165</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>23ed8daf-5af3-4b2f-a681-55053cd4e6ad</id>
       <name>Fire Burst Fire</name>
       <type>Simple</type>
 	  <test>
@@ -426,7 +426,7 @@
       <page>165</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>0cad7455-41a3-4211-8f33-5e73d0cd7909</id>
       <name>Fire Full-Auto Simple</name>
       <type>Simple</type>
 	  <test>
@@ -438,7 +438,7 @@
       <page>165</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>11540296-1d7b-4a0b-b610-87e8ca6d49f8</id>
       <name>Insert Clip</name>
       <type>Simple</type>
 	  <test>
@@ -449,7 +449,7 @@
       <page>165</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>2ad8b3f7-1ad9-4fed-b642-4eef6042c9b2</id>
       <name>Nock Arrow</name>
       <type>Simple</type>
 	  <test>
@@ -460,7 +460,7 @@
       <page>163</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>1489fd0e-0095-42b4-9ab0-1e46878d26f0</id>
       <name>Observe in Detail</name>
       <type>Simple</type>
 	  <test>
@@ -471,7 +471,7 @@
       <page>165</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>42bc2749-850b-4706-8de7-bf257a7ec351</id>
       <name>Pick Up / Put Down</name>
       <type>Simple</type>
 	  <test>
@@ -482,19 +482,19 @@
       <page>165</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>eeadf4b2-91c5-4677-8072-aa276c22de5b</id>
       <name>Quick Draw</name>
       <type>Simple</type>
 	  <test>
 		<dice>{REA} + {Weapon: Skill} v. {Threshold: {Weapon: Quick Draw Threshold}}</dice>
 		<limit>{Physical}</limit>
-		<bonusstring>Weapon must be properly holstered. On success, the weapon is readied and immediately make a Simple Action attack. On fail, the weapon is readied. On glitch, the weapon is not readied and your action phase ends. On a critical glitch, bad things happen.</bonusstring>
+		<bonusstring>Weapon must be properly holstered. On success, the weapon is readied and immediately make a Simple Action attack. On fail, the weapon is readied. On glitch, the weapon is not readied and the character's action phase ends. On a critical glitch, bad things happen.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>165</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>c9ce97c5-8396-4b9c-b630-4e95d4df7337</id>
       <name>Ready Weapon</name>
       <type>Simple</type>
 	  <test>
@@ -505,7 +505,7 @@
       <page>165</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>ec637fd9-5220-42f5-852f-fab684589292</id>
       <name>Reckless Spellcasting (Direct, Physical Combat)</name>
       <type>Simple</type>
 	  <test>
@@ -517,7 +517,7 @@
       <page>165</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>a34e989f-3f2c-4799-a411-06acd0302da9</id>
       <name>Reckless Spellcasting (Direct, Mana Combat)</name>
       <type>Simple</type>
 	  <test>
@@ -529,7 +529,7 @@
       <page>165</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>36e2b033-6cbb-41ea-b08a-94b3c9cf2874</id>
       <name>Reckless Spellcasting (Indirect, Single-target Combat)</name>
       <type>Simple</type>
 	  <test>
@@ -541,7 +541,7 @@
       <page>165</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>4d88eea9-ef93-4927-ad15-9644bd149bc1</id>
       <name>Reckless Spellcasting (Indirect, AoE Combat)</name>
       <type>Simple</type>
 	  <test>
@@ -553,7 +553,7 @@
       <page>165</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>38ffd621-5dc8-4b85-86db-6da5b9930176</id>
       <name>Reckless Spellcasting (Detection)</name>
       <type>Simple</type>
 	  <test>
@@ -565,7 +565,7 @@
       <page>165</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>18d1538a-c256-4d9d-8bf0-cfe359edea5a</id>
       <name>Reckless Spellcasting (Physical Illusion)</name>
       <type>Simple</type>
 	  <test>
@@ -577,7 +577,7 @@
       <page>165</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>3d137e4d-883c-4cd2-8058-693dd521fb11</id>
       <name>Reckless Spellcasting (Mana Illusion)</name>
       <type>Simple</type>
 	  <test>
@@ -589,7 +589,7 @@
       <page>165</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>27b2df59-ff24-42ba-a4fa-659d4654d34a</id>
       <name>Reckless Spellcasting (Physical Manipulation)</name>
       <type>Simple</type>
 	  <test>
@@ -601,7 +601,7 @@
       <page>165</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>2a896b9d-26e6-4cab-b588-3a9de9658c8b</id>
       <name>Reckless Spellcasting (Mental Manipulation)</name>
       <type>Simple</type>
 	  <test>
@@ -613,7 +613,7 @@
       <page>165</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>bccd8bcb-95e5-489b-9821-ce0aebfdbfb2</id>
       <name>Reckless Spellcasting (Decrease {BOD})</name>
       <type>Simple</type>
 	  <test>
@@ -625,7 +625,7 @@
       <page>165</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>68a9596e-ae77-4f54-86a8-423c70e96fa8</id>
       <name>Reckless Spellcasting (Decrease {AGI})</name>
       <type>Simple</type>
 	  <test>
@@ -637,7 +637,7 @@
       <page>165</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>b901faf1-7abb-49a3-8ed7-bd06153c0359</id>
       <name>Reckless Spellcasting (Decrease {REA})</name>
       <type>Simple</type>
 	  <test>
@@ -649,7 +649,7 @@
       <page>165</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>1af27cd2-c141-4707-a3ba-47e995380185</id>
       <name>Reckless Spellcasting (Decrease {STR})</name>
       <type>Simple</type>
 	  <test>
@@ -661,7 +661,7 @@
       <page>165</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>ffc9e219-91c6-4b5a-82ae-5951c4225dc6</id>
       <name>Reckless Spellcasting (Decrease {CHA})</name>
       <type>Simple</type>
 	  <test>
@@ -673,7 +673,7 @@
       <page>165</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>2504b41b-c0de-4bdf-979c-8b9a3127ff77</id>
       <name>Reckless Spellcasting (Decrease {INT})</name>
       <type>Simple</type>
 	  <test>
@@ -685,7 +685,7 @@
       <page>165</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>aeeafb3e-757e-47bb-9d43-3763baa9d361</id>
       <name>Reckless Spellcasting (Decrease {LOG})</name>
       <type>Simple</type>
 	  <test>
@@ -697,7 +697,7 @@
       <page>165</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>67cad023-7d98-4449-9c08-4839c02c25ff</id>
       <name>Reckless Spellcasting (Decrease {WIL})</name>
       <type>Simple</type>
 	  <test>
@@ -709,7 +709,7 @@
       <page>165</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>962f5105-31e4-4f72-a51c-f3b87bed834e</id>
       <name>Remove Clip</name>
       <type>Simple</type>
 	  <test>
@@ -720,7 +720,7 @@
       <page>166</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>ed1abe03-c2ca-49c8-b420-94d315a06403</id>
       <name>Shift Perception</name>
       <type>Simple</type>
 	  <test>
@@ -731,7 +731,7 @@
       <page>166</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>e43b1215-c760-446a-9f7a-3132d5bb50c0</id>
       <name>Stand Up</name>
       <type>Simple</type>
 	  <test>
@@ -742,18 +742,18 @@
       <page>166</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>79bebc25-3190-4731-8282-b90786f14c16</id>
       <name>Take Aim</name>
       <type>Simple</type>
 	  <test>
 		<dice>None</dice>
-		<bonusstring>Add +1 dice or +1 Accuracy to your next attack test. If using a smartgun, apply both bonuses. If using Vision Magnification, apply its effects instead. Bonuses are cumulative for up to {{{WIL} / 2} + {Improvement Value: TakeAimCount}} times. All bonuses are lost if any other action is taken, including a Free action.</bonusstring>
+		<bonusstring>Add +1 dice or +1 Accuracy to the character's next attack test. If using a smartgun, apply both bonuses. If using Vision Magnification, apply its effects instead. Bonuses are cumulative for up to {{{WIL} / 2} + {Improvement Value: TakeAimCount}} times. All bonuses are lost if any other action is taken, including a Free action.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>166</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>31c81043-6ace-4c64-ac85-b5afd87d7a97</id>
       <name>Take Cover</name>
       <type>Simple</type>
 	  <test>
@@ -764,7 +764,7 @@
       <page>166</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>92b563eb-e452-431f-bb09-d423a5fb8bef</id>
       <name>Throw Weapon (Grenade)</name>
       <type>Simple</type>
 	  <test>
@@ -776,7 +776,7 @@
       <page>166</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>8dd836d6-c57b-492c-b2df-a0bb6798cf1b</id>
       <name>Throw Weapon (Non-Grenade)</name>
       <type>Simple</type>
 	  <test>
@@ -788,7 +788,7 @@
       <page>166</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>e494762f-0065-4970-9aac-b0daa1a5ab78</id>
       <name>Use Simple Device</name>
       <type>Simple</type>
 	  <test>
@@ -799,7 +799,7 @@
       <page>166</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>c95f3fc2-b212-4944-871e-1badaf1aaa0b</id>
       <name>Astral Projection</name>
       <type>Complex</type>
 	  <test>
@@ -810,7 +810,7 @@
       <page>167</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>4c6a71ab-b58a-41c3-b5a2-c6972d1cb8a8</id>
       <name>Banish Spirit</name>
       <type>Complex</type>
 	  <test>
@@ -822,7 +822,7 @@
       <page>167</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>1c9b5a36-fb1e-4e25-97ce-adb701bb48ef</id>
       <name>Cast Spell (Direct, Physical Combat)</name>
       <type>Complex</type>
 	  <test>
@@ -834,7 +834,7 @@
       <page>167</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>3a377563-fe2c-4b7e-a2ea-0e0f09edae69</id>
       <name>Cast Spell (Direct, Mana Combat)</name>
       <type>Complex</type>
 	  <test>
@@ -846,7 +846,7 @@
       <page>167</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>248972ed-9e85-4090-8311-b7fa3255380d</id>
       <name>Cast Spell (Indirect, Single-target Combat)</name>
       <type>Complex</type>
 	  <test>
@@ -858,7 +858,7 @@
       <page>167</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>7c6435c9-dc13-46ab-894d-ff618779568d</id>
       <name>Cast Spell (Indirect, AoE Combat)</name>
       <type>Complex</type>
 	  <test>
@@ -870,7 +870,7 @@
       <page>167</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>d3955718-54aa-4617-a3d5-1dbd6b9168a8</id>
       <name>Cast Spell (Detection)</name>
       <type>Complex</type>
 	  <test>
@@ -882,7 +882,7 @@
       <page>167</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>8c89c60c-bfe3-4302-b3a4-c68b10846fc5</id>
       <name>Cast Spell (Physical Illusion)</name>
       <type>Complex</type>
 	  <test>
@@ -894,7 +894,7 @@
       <page>167</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>0c3cda81-a983-45a8-b6f6-d7d439a36c53</id>
       <name>Cast Spell (Mana Illusion)</name>
       <type>Complex</type>
 	  <test>
@@ -906,7 +906,7 @@
       <page>167</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>e6e08c81-7076-41c3-bb3a-2aa33fbe68c7</id>
       <name>Cast Spell (Physical Manipulation)</name>
       <type>Complex</type>
 	  <test>
@@ -918,7 +918,7 @@
       <page>167</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>d13cabf3-a963-413e-b2a0-f65434423f9f</id>
       <name>Cast Spell (Mental Manipulation)</name>
       <type>Complex</type>
 	  <test>
@@ -930,7 +930,7 @@
       <page>167</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>ed6241fd-d214-4e73-90a3-99a4fc88a5b5</id>
       <name>Cast Spell (Decrease {BOD})</name>
       <type>Complex</type>
 	  <test>
@@ -942,7 +942,7 @@
       <page>167</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>648652dc-be24-4133-947f-3dd14544ffd8</id>
       <name>Cast Spell (Decrease {AGI})</name>
       <type>Complex</type>
 	  <test>
@@ -954,7 +954,7 @@
       <page>167</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>95ce6fae-8fe9-4cc0-9741-bbfc34aa55be</id>
       <name>Cast Spell (Decrease {REA})</name>
       <type>Complex</type>
 	  <test>
@@ -966,7 +966,7 @@
       <page>167</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>69f52882-8833-4a64-82e9-2c5a5fe7af2d</id>
       <name>Cast Spell (Decrease {STR})</name>
       <type>Complex</type>
 	  <test>
@@ -978,7 +978,7 @@
       <page>167</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>809545ed-f341-4f63-9ebe-e53a38d92526</id>
       <name>Cast Spell (Decrease {CHA})</name>
       <type>Complex</type>
 	  <test>
@@ -990,7 +990,7 @@
       <page>167</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>6cd27ee7-2d2b-42f0-9581-d3d02195c91b</id>
       <name>Cast Spell (Decrease {INT})</name>
       <type>Complex</type>
 	  <test>
@@ -1002,7 +1002,7 @@
       <page>167</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>5a7b4036-b17c-42b9-8fa3-026b3d89bcc8</id>
       <name>Cast Spell (Decrease {LOG})</name>
       <type>Complex</type>
 	  <test>
@@ -1014,7 +1014,7 @@
       <page>167</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>c49f3f9a-9363-4270-ad47-246af74247ec</id>
       <name>Cast Spell (Decrease {WIL})</name>
       <type>Complex</type>
 	  <test>
@@ -1026,7 +1026,7 @@
       <page>167</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>15a4c0c9-cbc3-4687-afe7-f033858f33c7</id>
       <name>Fire Semi-Auto Burst</name>
       <type>Complex</type>
 	  <test>
@@ -1038,7 +1038,7 @@
       <page>167</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>45387cbe-fa43-4f87-ba1d-07a867335c46</id>
       <name>Fire Long Burst</name>
       <type>Complex</type>
 	  <test>
@@ -1050,7 +1050,7 @@
       <page>167</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>0bf73dca-0851-4bdf-a524-ec91c1c0aec2</id>
       <name>Fire Full-Auto Complex</name>
       <type>Complex</type>
 	  <test>
@@ -1062,7 +1062,7 @@
       <page>167</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>259c030b-ba8e-4f18-a02e-6f89f6cc932a</id>
       <name>Suppressive Fire</name>
       <type>Complex</type>
 	  <test>
@@ -1074,7 +1074,7 @@
       <page>179</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>f4a61086-d8b6-467e-807f-a1995aa9cca5</id>
       <name>Fire Mounted or Vehicle Weapon</name>
       <type>Complex</type>
 	  <test>
@@ -1086,7 +1086,7 @@
       <page>167</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>ab83c36f-1583-42f3-86e0-b32c16e3e3bd</id>
       <name>Load and Fire Bow</name>
       <type>Complex</type>
 	  <test>
@@ -1098,7 +1098,7 @@
       <page>167</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>d1d2a10b-36f0-456c-88d0-840221a41c9e</id>
       <name>Melee Attack</name>
       <type>Complex</type>
 	  <test>
@@ -1109,7 +1109,7 @@
       <page>167</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>71d561df-5997-45e8-8b33-f6dbb6f00872</id>
       <name>Reload Firearm</name>
       <type>Complex</type>
 	  <test>
@@ -1120,7 +1120,7 @@
       <page>167</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>de8159d2-c178-4e65-93a8-94509c275876</id>
       <name>Rigger Jump In</name>
       <type>Complex</type>
 	  <test>
@@ -1131,7 +1131,7 @@
       <page>167</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>da1276d9-995e-4408-b58c-0e5b1762a2fe</id>
       <name>Sprint</name>
       <type>Complex</type>
 	  <specname>Sprinting</specname>
@@ -1144,7 +1144,7 @@
       <page>167</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>c7f5ec4d-5cba-4392-a65f-819b1e3df4f6</id>
       <name>Summoning</name>
       <type>Complex</type>
 	  <test>
@@ -1156,7 +1156,7 @@
       <page>167</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>c6f2f038-8cca-4437-835a-7e24fe83cf77</id>
       <name>Use Skill</name>
       <type>Complex</type>
 	  <test>
@@ -1168,7 +1168,7 @@
       <page>167</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>072fb7bd-0e7b-4f81-a2d6-5356f398dd5a</id>
       <name>Block</name>
       <type>Interrupt</type>
 	  <initiativecost>5</initiativecost>
@@ -1185,7 +1185,7 @@
       <page>168</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>ae815225-2e93-45ba-8423-3110e32696c1</id>
       <name>Dodge</name>
       <type>Interrupt</type>
 	  <initiativecost>5</initiativecost>
@@ -1202,31 +1202,31 @@
       <page>168</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>7bb2cf75-bdd3-4773-a890-d542bd5a4512</id>
       <name>Hit the Dirt</name>
       <type>Interrupt</type>
 	  <initiativecost>5</initiativecost>
 	  <test>
 		<dice>None</dice>
-		<bonusstring>Drop prone where you are, usually to avoid {Action: Suppressive Fire}.</bonusstring>
+		<bonusstring>Drop prone where the character is, usually to avoid {Action: Suppressive Fire}.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>168</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>af671982-9e48-4c79-a1c3-f4e4e930b59f</id>
       <name>Intercept</name>
       <type>Interrupt</type>
 	  <initiativecost>5</initiativecost>
 	  <test>
 		<dice>None</dice>
-		<bonusstring>Intercept a target attempting to move past you within {1 + {Weapon: Reach}} meters and perform {Action: Melee Attack} against them.</bonusstring>
+		<bonusstring>Intercept a target attempting to move past the character within {1 + {Weapon: Reach}} meters and perform {Action: Melee Attack} against them.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>168</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>04b1143e-eb33-4333-9539-c38f953cca9e</id>
       <name>Parry</name>
       <type>Interrupt</type>
 	  <initiativecost>5</initiativecost>
@@ -1243,7 +1243,7 @@
       <page>168</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>3f40af85-650f-4398-8224-a0cb29415c1d</id>
       <name>Full Defense</name>
       <type>Interrupt</type>
 	  <initiativecost>10</initiativecost>
@@ -1268,19 +1268,19 @@
       <page>168</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>7d28d558-249a-4323-9ad2-8712d45353f5</id>
       <name>Evade</name>
       <type>Complex</type>
 	  <test>
 		<dice>{AGI} + {Gymnastics} v. {Threshold: 1}</dice>
 		<limit>{Physical}</limit>
-		<bonusstring>On success, can move past one character per net hit; they cannot use {Action: Intercept} to stop you unless it is {Action: Shadow Block v. Evade}.</bonusstring>
+		<bonusstring>On success, can move past one character per net hit; they cannot use {Action: Intercept} to stop the character unless it is {Action: Shadow Block v. Evade}.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>194</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>476dab78-f8b6-4258-8c9f-08d355d33725</id>
       <name>Escape (Subduing)</name>
       <type>Complex</type>
 	  <test>
@@ -1292,7 +1292,7 @@
       <page>195</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>ff8478ef-cac4-4f7c-aa39-9c11dd08e1ea</id>
       <name>Subduing</name>
       <type>Complex</type>
 	  <test>
@@ -1306,7 +1306,7 @@
 	<!-- End Region -->
 	<!-- Region Vehicle Actions -->
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>b56ee60e-5454-47ba-9e8b-c6f623c26988</id>
       <name>Use Sensors (Detect or Active Targeting) v. Living Beings</name>
       <type>Simple</type>
 	  <test>
@@ -1318,7 +1318,7 @@
       <page>184</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>f1bb09ac-dc7b-4731-842c-fb466013c402</id>
       <name>Use Sensors (Detect or Active Targeting) v. Vehicles</name>
       <type>Simple</type>
 	  <test>
@@ -1330,7 +1330,7 @@
       <page>184</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>9058d2a6-c7b7-4376-b298-9d7377bb6cb0</id>
       <name>Control Vehicle</name>
       <type>Complex</type>
 	  <test>
@@ -1341,7 +1341,7 @@
       <page>203</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>ea2311da-ebe1-4ffc-8eb3-09282852f577</id>
       <name>Make Vehicle Test</name>
       <type>Complex</type>
 	  <test>
@@ -1353,7 +1353,7 @@
       <page>203</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>fd333958-c114-4831-a5fe-20f4ca1915d3</id>
       <name>Ramming</name>
       <type>Complex</type>
 	  <test>
@@ -1367,7 +1367,7 @@
 	<!-- End Region -->
 	<!-- Region Matrix Actions -->
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>850f7d77-2d0f-4cd4-9aa5-2e53d0e33688</id>
       <name>WIL Attack Defense</name>
       <type>No</type>
 	  <test>
@@ -1377,7 +1377,7 @@
       <page>238</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>e6c4c7ab-4b2c-42d5-ab15-01ac36cc8924</id>
       <name>WIL Sleaze Defense</name>
       <type>No</type>
 	  <test>
@@ -1387,7 +1387,7 @@
       <page>238</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>5589bd26-3208-444e-89ca-8e43fd3c7e8b</id>
       <name>WIL Data Processing Defense</name>
       <type>No</type>
 	  <test>
@@ -1397,7 +1397,7 @@
       <page>238</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>6c0a4170-5b32-4fa3-9062-dc7be4766222</id>
       <name>WIL Firewall Defense</name>
       <type>No</type>
 	  <test>
@@ -1407,7 +1407,7 @@
       <page>238</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>78da4b96-821a-41fe-ab55-cd2366c0be18</id>
       <name>INT Firewall Defense</name>
       <type>No</type>
 	  <test>
@@ -1417,7 +1417,7 @@
       <page>238</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>dbc4bb5a-9060-4f59-8d20-7fc72df953cb</id>
       <name>INT Data Processing Defense</name>
       <type>No</type>
 	  <test>
@@ -1427,7 +1427,7 @@
       <page>238</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>32d32458-7363-406e-810d-5bf9fb9c3d5a</id>
       <name>LOG Firewall Defense</name>
       <type>No</type>
 	  <test>
@@ -1437,7 +1437,7 @@
       <page>238</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>80b3feea-389a-4562-8a52-9bbb1fade997</id>
       <name>LOG Sleaze Defense</name>
       <type>No</type>
 	  <test>
@@ -1447,7 +1447,7 @@
       <page>238</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>b35a4b5c-23e5-4abe-80ee-afeb2743c20a</id>
       <name>LOG Attack Defense</name>
       <type>No</type>
 	  <test>
@@ -1457,7 +1457,7 @@
       <page>238</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>64e2aed3-d36f-4ff6-85a5-5d5208e6f7e5</id>
       <name>LOG Data Processing Defense</name>
       <type>No</type>
 	  <test>
@@ -1467,7 +1467,7 @@
       <page>238</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>73cd3043-94ac-4406-85ce-59b951d0d945</id>
       <name>Brute Force (1 Mark)</name>
       <type>Complex</type>
 	  <test>
@@ -1479,7 +1479,7 @@
       <page>238</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>8d023ffc-1683-4885-81ef-ca22253a3d87</id>
       <name>Brute Force (2 Marks)</name>
       <type>Complex</type>
 	  <test>
@@ -1491,7 +1491,7 @@
       <page>238</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>61e231da-0ae3-42b1-ba2f-18c3fba41fab</id>
       <name>Brute Force (3 Marks)</name>
       <type>Complex</type>
 	  <test>
@@ -1503,7 +1503,7 @@
       <page>238</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>c33b205b-1249-45b8-8ee5-da74e4311362</id>
       <name>Change Icon</name>
       <type>Simple</type>
 	  <test>
@@ -1515,55 +1515,55 @@
       <page>238</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>d6defa46-1c97-4bfd-b9f1-b1c1b2753a90</id>
       <name>Check Overwatch Score</name>
       <type>Simple</type>
 	  <test>
 		<dice>{LOG} + {Electronic Warfare} v. 6</dice>
 		<limit>{Icon: Sleaze}</limit>
-		<bonusstring>On success, you know your OS. OS from opposed hits added after this.</bonusstring>
+		<bonusstring>On success, the character knows their OS. OS from opposed hits added after this.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>238</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>21eda7c5-3ca5-4aba-b5e5-b05be4afe6c9</id>
       <name>Control Device (Free)</name>
       <type>Free</type>
 	  <test>
 		<dice>Variable</dice>
 		<limit>Variable</limit>
-		<bonusstring>Requires 1 mark on target device. If there is no eligible test, it is {{INT} + {Electronic Warfare}} [{Icon: Sleaze}] v. {Target: {Action: INT Firewall Defense}}. On success, you perform a Free Action with the device.</bonusstring>
+		<bonusstring>Requires 1 mark on target device. If there is no eligible test, it is {{INT} + {Electronic Warfare}} [{Icon: Sleaze}] v. {Target: {Action: INT Firewall Defense}}. On success, the character performs a Free Action with the device.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>238</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>f3ddb8ab-01ca-4048-9570-42e00670eef8</id>
       <name>Control Device (Simple)</name>
       <type>Simple</type>
 	  <test>
 		<dice>Variable</dice>
 		<limit>Variable</limit>
-		<bonusstring>Requires 2 marks on target device. If there is no eligible test, it is {{INT} + {Electronic Warfare}} [{Icon: Sleaze}] v. {Target: {Action: INT Firewall Defense}}. On success, you perform a Simple Action with the device.</bonusstring>
+		<bonusstring>Requires 2 marks on target device. If there is no eligible test, it is {{INT} + {Electronic Warfare}} [{Icon: Sleaze}] v. {Target: {Action: INT Firewall Defense}}. On success, the character performs a Simple Action with the device.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>238</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>fa59f7ea-347c-4a25-8932-f801fa79d601</id>
       <name>Control Device (Complex)</name>
       <type>Complex</type>
 	  <test>
 		<dice>Variable</dice>
 		<limit>Variable</limit>
-		<bonusstring>Requires 3 marks on target device. If there is no eligible test, it is {{INT} + {Electronic Warfare}} [{Icon: Sleaze}] v. {Target: {Action: INT Firewall Defense}}. On success, you perform a Complex Action with the device.</bonusstring>
+		<bonusstring>Requires 3 marks on target device. If there is no eligible test, it is {{INT} + {Electronic Warfare}} [{Icon: Sleaze}] v. {Target: {Action: INT Firewall Defense}}. On success, the character performs a Complex Action with the device.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>238</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>87600eea-0c78-4474-9e6c-c36e625133ba</id>
       <name>Crack File</name>
       <type>Complex</type>
 	  <test>
@@ -1575,7 +1575,7 @@
       <page>238</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>7d865af9-1073-49e6-98b2-f67f6a9cb9d3</id>
       <name>Crash Program</name>
       <type>Complex</type>
 	  <test>
@@ -1587,7 +1587,7 @@
       <page>238</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>dc5156e3-b289-438e-b4d1-c24047357637</id>
       <name>Data Spike</name>
       <type>Complex</type>
 	  <test>
@@ -1599,7 +1599,7 @@
       <page>239</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>570a3ce1-a8ea-4623-985e-b4bdcc79d2eb</id>
       <name>Disarm Data Bomb</name>
       <type>Complex</type>
 	  <specname>Data Bombs</specname>
@@ -1612,67 +1612,67 @@
       <page>239</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>8b879c36-e355-4cf4-99cb-6afcd132d573</id>
       <name>Edit File</name>
       <type>Complex</type>
 	  <test>
 		<dice>{LOG} + {Computer} v. {Action: INT Firewall Defense}</dice>
 		<limit>{Icon: Data Processing}</limit>
-		<bonusstring>Requires 1 mark on target file. On success, you can edit the target file, though any data bombs on it will detonate. You cannot edit files that are protected. You may use this test to protect a file as well, in which case hits become the file's protection rating.</bonusstring>
+		<bonusstring>Requires 1 mark on target file. On success, the character can edit the target file, though any data bombs on it will detonate. The character cannot edit files that are protected. The character may use this test to protect a file as well, in which case hits become the file's protection rating.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>239</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>ed359afd-db47-47d1-9e4b-8d13e0396005</id>
       <name>Enter/Exit Host</name>
       <type>Complex</type>
 	  <test>
 		<dice>None</dice>
 		<limit>{Icon: Data Processing}</limit>
-		<bonusstring>You enter or exit the target host. When you leave a host, you return to the grid from which you entered.</bonusstring>
+		<bonusstring>The character enters or exits the target host. When the character leaves a host, they return to the grid from which they entered.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>239</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>1dae5310-0d39-4464-b3a4-1b3483d0c4eb</id>
       <name>Erase Mark (1 Mark)</name>
       <type>Complex</type>
 	  <test>
 		<dice>{LOG} + {Computer} v. {Action: WIL Firewall Defense}</dice>
 		<limit>{Icon: Attack}</limit>
-		<bonusstring>Requires 3 marks on target icon. On success, you remove one mark of a chosen persona from the target. You do not need marks on the owner of the mark that you remove.</bonusstring>
+		<bonusstring>Requires 3 marks on target icon. On success, the character removes one mark of a chosen persona from the target. The character does not need marks on the owner of the mark that they remove.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>239</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>ea4bcda5-b8ea-4659-92f0-b369beab4bf1</id>
       <name>Erase Mark (2 Marks)</name>
       <type>Complex</type>
 	  <test>
 		<dice>{LOG} + {Computer} - 4 v. {Action: WIL Firewall Defense}</dice>
 		<limit>{Icon: Attack}</limit>
-		<bonusstring>Requires 3 marks on target icon. On success, you remove two marks of a chosen persona from the target. You do not need marks on the owner of the mark that you remove.</bonusstring>
+		<bonusstring>Requires 3 marks on target icon. On success, the character removes two marks of a chosen persona from the target. The character does not need marks on the owner of the mark that they remove.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>239</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>c544e946-3dd9-44bb-9546-cc44e24b9616</id>
       <name>Erase Mark (3 Marks)</name>
       <type>Complex</type>
 	  <test>
 		<dice>{LOG} + {Computer} - 10 v. {Action: WIL Firewall Defense}</dice>
 		<limit>{Icon: Attack}</limit>
-		<bonusstring>Requires 3 marks on target icon. On success, you remove three marks of a chosen persona from the target. You do not need marks on the owner of the mark that you remove.</bonusstring>
+		<bonusstring>Requires 3 marks on target icon. On success, the character removes three marks of a chosen persona from the target. The character does not need marks on the owner of the mark that they remove.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>239</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>27c29e97-7708-42c7-a98c-be52e41fa5ed</id>
       <name>Erase Matrix Signature</name>
       <type>Complex</type>
 	  <test>
@@ -1684,7 +1684,7 @@
       <page>239</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>d8bfadcb-ea9b-4ae2-a1ae-2c84f33f9e3a</id>
       <name>Format Device</name>
       <type>Complex</type>
 	  <test>
@@ -1696,7 +1696,7 @@
       <page>239</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>6657bd85-e651-448f-8936-2d9dc17883a3</id>
       <name>Full Matrix Defense</name>
       <type>Interrupt</type>
 	  <initiativecost>10</initiativecost>
@@ -1756,19 +1756,19 @@
       <page>240</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>24c3dfb5-ce2b-4a48-8563-be0b26005795</id>
       <name>Grid Hop</name>
       <type>Complex</type>
 	  <test>
 		<dice>None</dice>
 		<limit>{Icon: Data Processing}</limit>
-		<bonusstring>You hop to the target grid. If you do not have access to the target grid through your lifestyle, you must gain 1 mark on it to perform this action.</bonusstring>
+		<bonusstring>The character hops to the target grid. If the character does not have access to the target grid through their lifestyle, they must gain 1 mark on it to perform this action.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>240</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>119aa0ed-314c-45cb-917e-17cf0644c7df</id>
       <name>Hack on the Fly (1 Mark)</name>
       <type>Complex</type>
 	  <test>
@@ -1780,7 +1780,7 @@
       <page>240</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>4c3a4635-c1a6-43e0-99f1-0caa6f3a11fa</id>
       <name>Hack on the Fly (2 Marks)</name>
       <type>Complex</type>
 	  <test>
@@ -1792,7 +1792,7 @@
       <page>240</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>0c174aa0-7413-4984-b829-a28b06c6fab4</id>
       <name>Hack on the Fly (3 Mark)</name>
       <type>Complex</type>
 	  <test>
@@ -1804,43 +1804,43 @@
       <page>240</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>90a409d1-00d9-4285-8827-c8bea66d6f87</id>
       <name>Hide</name>
       <type>Complex</type>
 	  <test>
 		<dice>{INT} + {Electronic Warfare} v. {Action: INT Data Processing Defense}</dice>
 		<limit>{Icon: Sleaze}</limit>
-		<bonusstring>On success, if the target persona does not have a mark on you, it is no longer spotting you.</bonusstring>
+		<bonusstring>On success, if the target persona does not have a mark on the character, it is no longer spotting them.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>240</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>4cd14397-ae0f-48db-8339-f2abb90e9ded</id>
       <name>Invite Mark</name>
       <type>Simple</type>
 	  <test>
 		<dice>None</dice>
 		<limit>{Icon: Data Processing}</limit>
-		<bonusstring>Requires Owner marks on the target icon. Choose a number of marks between 1 and 3 and send an invitation to an invitee persona. The invitee persona may gain the chosen amount of marks on the target icon with a single Free Action. You may rescind the invitation before the invitee gains the marks, but not after.</bonusstring>
+		<bonusstring>Requires Owner marks on the target icon. Choose a number of marks between 1 and 3 and send an invitation to an invitee persona. The invitee persona may gain the chosen amount of marks on the target icon with a single Free Action. The character may rescind the invitation before the invitee gains the marks, but not after.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>240</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>1aa9df40-ade8-4e07-8877-e4147ea33fea</id>
       <name>Jack Out</name>
       <type>Simple</type>
 	  <test>
 		<dice>{WIL} + {Hardware} v. {Action: LOG Attack Defense}</dice>
 		<limit>{Icon: Firewall}</limit>
-		<bonusstring>Can only target your own persona. Defense test only applies if you are link-locked, and if you are link-locked by multiple personas, each one rolls a defense test. On success, your persona and its device are instantly rebooted, and if you are in VR, you suffer Dumpshock.</bonusstring>
+		<bonusstring>Can only target the character's own persona. Defense test only applies if the character is link-locked, and if they are link-locked by multiple personas, each one rolls a defense test. On success, the character's persona and its device are instantly rebooted, and if the character is in VR, they suffer Dumpshock.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>240</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>0af091d7-006d-4532-9980-a8a4b4fd9087</id>
       <name>Jam Signals</name>
       <type>Complex</type>
 	  <test>
@@ -1852,31 +1852,31 @@
       <page>240</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>a9a4a59a-babf-4dc3-b570-d52582091a8f</id>
       <name>Jump into Rigged Device</name>
       <type>Complex</type>
 	  <test>
 		<dice>{LOG} + {Electronic Warfare} v. {Action: WIL Firewall Defense}</dice>
 		<limit>{Icon: Data Processing}</limit>
-		<bonusstring>Requires 3 marks on the target device. Requires VR and a Control Rig or equivalent. Requires target device to have rigger adaptation and to not currently be jumped into by someone else. No test is needed if you have Owner marks on the target device or the target device's onwer has given you permission. On success, jump into target device.</bonusstring>
+		<bonusstring>Requires 3 marks on the target device. Requires VR and a Control Rig or equivalent. Requires target device to have rigger adaptation and to not currently be jumped into by someone else. No test is needed if the character has Owner marks on the target device or the target device's owner has given the character permission. On success, jump into target device.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>241</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>ff5a636f-041d-4b9c-ba1c-4d9902cb21e5</id>
       <name>Matrix Perception</name>
       <type>Complex</type>
 	  <test>
 		<dice>{INT} + {Computer} v. {Action: LOG Sleaze Defense}</dice>
 		<limit>{Icon: Data Processing}</limit>
-		<bonusstring>On success, spot target icon and gain one piece of information about target icon per net hit (see SR5 235). Target only defends if it is running silent. No test is needed to spot icons of devices within 100m that are not running silent. This test can be used to determine if there are running silent icons nearby. If you do not know a specific feature of a running silent icon, you must randomly select a running silent icon in range to spot (remember, there are literally quadrillions of running silent icons on grids that are always in range).</bonusstring>
+		<bonusstring>On success, spot target icon and gain one piece of information about target icon per net hit (see SR5 235). Target only defends if it is running silent. No test is needed to spot icons of devices within 100m that are not running silent. This test can be used to determine if there are running silent icons nearby. If ythe character does not know a specific feature of a running silent icon, they must randomly select a running silent icon in range to spot (remember, there are literally quadrillions of running silent icons on grids that are always in range).</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>241</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>3015d73c-e98c-480b-a561-0bed57a3da7e</id>
       <name>Matrix Search</name>
       <type>Complex</type>
 	  <test>
@@ -1888,7 +1888,7 @@
       <page>241</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>1989269b-df4c-446f-9087-9145a06e9ef6</id>
       <name>Reboot Device</name>
       <type>Complex</type>
 	  <test>
@@ -1900,19 +1900,19 @@
       <page>242</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>db185ca6-7e1b-49f5-bb76-1c57c3c91572</id>
       <name>Send Message</name>
       <type>Simple</type>
 	  <test>
 		<dice>None</dice>
 		<limit>{Icon: Data Processing}</limit>
-		<bonusstring>Send a text or audio message the length of a short sentence, an image, or a file to a target persona whose commcode you have. If you have a direct neural interface, you can send longer and more complicated messages (about a paragraph's worth), even in AR. You can also use this action to open a live ffed to one or more recipients using any digital devices you have.</bonusstring>
+		<bonusstring>Send a text or audio message the length of a short sentence, an image, or a file to a target persona whose commcode the character has. If the character has a direct neural interface, they can send longer and more complicated messages (about a paragraph's worth), even in AR. The character can also use this action to open a live feed to one or more recipients using any digital devices they have.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>242</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>c930626c-cb53-43d4-af60-0992c5744caa</id>
       <name>Set Data Bomb</name>
       <type>Complex</type>
 	  <test>
@@ -1924,49 +1924,49 @@
       <page>242</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>d50f95c8-c6b3-4312-991c-5f9b52818f77</id>
       <name>Snoop</name>
       <type>Complex</type>
 	  <test>
 		<dice>{INT} + {Electronic Warfare} v. {Action: LOG Firewall Defense}</dice>
 		<limit>{Icon: Sleaze}</limit>
-		<bonusstring>Requires 1 mark on target icon. On success, intercept all Matrix traffic sent to and from the target as long as you have a mark on the target. You can listen to, view, and/or read this data live and/or save it for later playback/viewing on a device.</bonusstring>
+		<bonusstring>Requires 1 mark on target icon. On success, intercept all Matrix traffic sent to and from the target as long as the character has a mark on the target. The character can listen to, view, and/or read this data live and/or save it for later playback/viewing on a device.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>242</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>e11c1e7b-a6a4-4d8d-a11c-4ca9720a701d</id>
       <name>Spoof Command</name>
       <type>Complex</type>
 	  <test>
 		<dice>{INT} + {Hacking} v. {Action: LOG Firewall Defense}</dice>
 		<limit>{Icon: Sleaze}</limit>
-		<bonusstring>Requires 1 mark on the persona of the owner of the target device or agent. On success, the target device or agent believes that a Matrix action command you sent to it is legitimately from its owner.</bonusstring>
+		<bonusstring>Requires 1 mark on the persona of the owner of the target device or agent. On success, the target device or agent believes that a Matrix action command the character sent to it is legitimately from its owner.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>242</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>f3915443-a98d-4ca0-8e94-1063fc2ba4ca</id>
       <name>Switch Interface Mode</name>
       <type>Simple</type>
 	  <test>
 		<dice>None</dice>
 		<limit>{Icon: Data Processing}</limit>
-		<bonusstring>Requires that your persona not be link-locked. If you are in VR, you switch your persona to AR. If you are in AR, you switch your persona to VR. If you switch from VR to AR, you immediately lose the effect of any bonus initiative dice.</bonusstring>
+		<bonusstring>Requires that the character's persona not be link-locked. If the character is in VR, they switch their persona to AR. If they are in AR, they switch their persona to VR. If the character switches from VR to AR, they immediately lose the effect of any bonus initiative dice.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>243</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>6b4fb263-b355-46dc-a106-088f0c7e5f3c</id>
       <name>Trace Icon</name>
       <type>Complex</type>
 	  <test>
 		<dice>{INT} + {Computer} v. {Action: WIL Sleaze Defense}</dice>
 		<limit>{Icon: Data Processing}</limit>
-		<bonusstring>Requires 2 marks on the target device or persona. On success, obtain the precise physical location of the target device or the device that is running the target persona. The target's physical location is known for as long as you have at least 1 mark on the target.</bonusstring>
+		<bonusstring>Requires 2 marks on the target device or persona. On success, obtain the precise physical location of the target device or the device that is running the target persona. The target's physical location is known for as long as the character has at least 1 mark on the target.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>243</page>
@@ -1974,7 +1974,7 @@
 	<!-- End Region -->
 	<!-- Region IC Actions -->
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>78d5dd63-0cfe-42d8-a20c-f021dde99b62</id>
       <name>Acid IC</name>
       <type>Complex</type>
 	  <test>
@@ -1986,7 +1986,7 @@
       <page>248</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>b89451d1-3d47-4df5-b64a-cbe18f8d76f3</id>
       <name>Binder IC</name>
       <type>Complex</type>
 	  <test>
@@ -1998,7 +1998,7 @@
       <page>248</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>57564e6f-be28-41eb-ae9c-e4b6e0eee590</id>
       <name>Black IC</name>
       <type>Complex</type>
 	  <test>
@@ -2010,7 +2010,7 @@
       <page>248</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>f32a0bc0-f573-4ec6-be09-802f85a6fcca</id>
       <name>Blaster IC</name>
       <type>Complex</type>
 	  <test>
@@ -2022,7 +2022,7 @@
       <page>248</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>6cd17750-b97f-493f-b322-a3fdbbb9e78e</id>
       <name>Crash IC</name>
       <type>Complex</type>
 	  <test>
@@ -2034,7 +2034,7 @@
       <page>248</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>56293915-1238-42e8-8b91-21c557a976ff</id>
       <name>Jammer IC</name>
       <type>Complex</type>
 	  <test>
@@ -2046,7 +2046,7 @@
       <page>248</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>8af0f71d-a1b1-47d1-95e2-8a1872aea3f4</id>
       <name>Killer IC</name>
       <type>Complex</type>
 	  <test>
@@ -2058,7 +2058,7 @@
       <page>248</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>236cad06-d6f1-4107-bf6f-c1abc85e139a</id>
       <name>Marker IC</name>
       <type>Complex</type>
 	  <test>
@@ -2070,7 +2070,7 @@
       <page>248</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>47b191ca-7e7f-4a62-81e3-787c7a70367a</id>
       <name>Patrol IC</name>
       <type>Complex</type>
 	  <test>
@@ -2082,7 +2082,7 @@
       <page>248</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>a633ea22-93ac-42fa-b81b-51bce550f78e</id>
       <name>Probe IC</name>
       <type>Complex</type>
 	  <test>
@@ -2094,7 +2094,7 @@
       <page>248</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>932f77eb-bcea-4215-a26c-a3c348a47701</id>
       <name>Scramble IC</name>
       <type>Complex</type>
 	  <test>
@@ -2106,7 +2106,7 @@
       <page>248</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>50725e27-a14e-4732-ad92-96df30bed382</id>
       <name>Sparky IC</name>
       <type>Complex</type>
 	  <test>
@@ -2118,7 +2118,7 @@
       <page>248</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>651efc72-80dc-48c4-882b-5a2a1f78fb3d</id>
       <name>Tar Baby IC</name>
       <type>Complex</type>
 	  <test>
@@ -2130,7 +2130,7 @@
       <page>249</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>b0262d4b-5c55-4fb9-8819-842ccfe20648</id>
       <name>Track IC</name>
       <type>Complex</type>
 	  <test>
@@ -2144,29 +2144,29 @@
 	<!-- End Region -->
 	<!-- Region Resonance Actions -->
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>e8fc7f26-6a65-43b2-9f60-0a453a0424c2</id>
       <name>Call/Dismiss Sprite</name>
       <type>Simple</type>
 	  <test>
 		<dice>None</dice>
-		<bonusstring>Call a registered sprite that is waiting in the Resonance, who will appear at the start of the next combat turn. The action can also be used to send a sprite of yours back to the Resonance, releasing it from any tasks it still owes.</bonusstring>
+		<bonusstring>Call a registered sprite that is waiting in the Resonance, who will appear at the start of the next combat turn. The action can also be used to send a sprite of the characters back to the Resonance, releasing it from any tasks it still owes.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>250</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>505d98b2-b42c-4019-a421-af02543f348d</id>
       <name>Command Sprite</name>
       <type>Simple</type>
 	  <test>
 		<dice>None</dice>
-		<bonusstring>Command a sprite to do something for you, using up a task.</bonusstring>
+		<bonusstring>Command a sprite to do something for the character, using up a task.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>250</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>25c7dd2e-5e32-4adf-913e-9468763e0afb</id>
       <name>Compile Sprite</name>
       <type>Complex</type>
 	  <test>
@@ -2178,7 +2178,7 @@
       <page>250</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>9152220d-84cc-4911-b6df-db5a870090be</id>
       <name>Decompile Sprite</name>
       <type>Complex</type>
 	  <test>
@@ -2190,7 +2190,7 @@
       <page>250</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>bed2a61d-26d9-474e-93e2-c8e0086dec3f</id>
       <name>Kill Complex Form</name>
       <type>Complex</type>
 	  <test>
@@ -2202,7 +2202,7 @@
       <page>250</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>0eb78e4b-a3b1-4894-b84d-d2c1dbb3040f</id>
       <name>Register Sprite</name>
       <type>Complex</type>
 	  <test>
@@ -2214,7 +2214,7 @@
       <page>250</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>44e9fbdf-b298-40de-804f-6ac4bc28319a</id>
       <name>Thread Complex Form (No Opposed Test)</name>
       <type>Complex</type>
 	  <test>
@@ -2226,7 +2226,7 @@
       <page>250</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>b2fb8599-d12b-4250-b9c4-184de78ccb6e</id>
       <name>Thread Complex Form (v. INT Data Processing)</name>
       <type>Complex</type>
 	  <test>
@@ -2238,7 +2238,7 @@
       <page>250</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>0e88dc79-4fa5-4c4f-9b3f-f2c630f96852</id>
       <name>Thread Complex Form (v. WIL Firewall)</name>
       <type>Complex</type>
 	  <test>
@@ -2250,7 +2250,7 @@
       <page>250</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>08c9a6f5-b3f5-4890-8545-532c10ffa65c</id>
       <name>Thread Complex Form (v. LOG Data Processing)</name>
       <type>Complex</type>
 	  <test>
@@ -2264,7 +2264,7 @@
 	<!-- End Region -->
 	<!-- Region Sprite Powers -->
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>fe3e19fa-59c3-441e-b5a4-ad9a638902ad</id>
       <name>Sprite Power: Cookie</name>
       <type>Complex</type>
 	  <test>
@@ -2276,7 +2276,7 @@
       <page>256</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>2eb8da0c-65f7-4b31-ba31-b3fe6034cae8</id>
       <name>Sprite Power: Diagnostics</name>
       <type>Complex</type>
 	  <test>
@@ -2288,7 +2288,7 @@
       <page>257</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>0006274a-c3d3-418f-950e-5181f24ab071</id>
       <name>Sprite Power: Electron Storm</name>
       <type>Complex</type>
 	  <test>
@@ -2300,7 +2300,7 @@
       <page>257</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>14853b2e-9249-418d-882f-3d88ff2aa05e</id>
       <name>Sprite Power: Gremlins</name>
       <type>Complex</type>
 	  <test>
@@ -2314,7 +2314,7 @@
 	<!-- End Region -->
 	<!-- Region Rigger Actions -->
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>200d0191-018e-4b18-86de-4a776361fd2f</id>
       <name>Compensate for Noise</name>
       <type>Complex</type>
 	  <test>
@@ -2328,7 +2328,7 @@
 	<!-- End Region -->
 	<!-- Region Magic-Specific Actions -->
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>42dcd464-2919-4cd4-b5a1-d91192ab2a41</id>
       <name>Dispelling</name>
       <type>Complex</type>
 	  <test>
@@ -2340,7 +2340,7 @@
       <page>295</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>40d06d20-e124-4a80-aee3-16352d02d3ba</id>
       <name>Assense</name>
       <type>Complex</type>
 	  <test>
@@ -2352,13 +2352,13 @@
       <page>312</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>f98b6892-84a4-4afe-9c29-0ae0142f3ba4</id>
       <name>Press through Mana Barrier</name>
       <type>Complex</type>
 	  <test>
 		<dice>{MAG} + {CHA} v. 2 * {Spell: Force}</dice>
 		<limit>{Astral}</limit>
-		<bonusstring>On success, pass through the barrier, and you may bring one magically-active entity with you per net hit.</bonusstring>
+		<bonusstring>On success, pass through the barrier, and the character may bring one magically-active entity with them per net hit.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>312</page>
@@ -2366,7 +2366,7 @@
 	<!-- End Region -->
 	<!-- Region Misc. Actions -->
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>175c83f2-7c87-41b4-98e7-6207c273573c</id>
       <name>Hide Gear (No Pat-Down)</name>
       <type>Complex</type>
 	  <test>
@@ -2378,7 +2378,7 @@
       <page>419</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>5eaf0544-fb3b-469c-be22-b1cfdb0058c2</id>
       <name>Hide Gear (Pat-Down)</name>
       <type>Complex</type>
 	  <test>
@@ -2393,7 +2393,7 @@
 	<!-- End Region -->
 	<!-- Region R&G -->
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>7b920367-e488-444d-a7bf-758797170b6f</id>
       <name>Aimed Burst</name>
       <type>Complex</type>
 	  <test>
@@ -2405,7 +2405,7 @@
       <page>119</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>24c0a1f7-97db-4c8f-9262-457df8a8df17</id>
       <name>Ballestra</name>
       <type>Complex</type>
 	  <requireunlock />
@@ -2418,7 +2418,7 @@
       <page>119</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>55c705d9-968c-481a-8e2c-31700d73e23f</id>
       <name>Brain Blaster</name>
       <type>Complex</type>
 	  <test>
@@ -2430,7 +2430,7 @@
       <page>119</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>de9cdc04-1d90-41e0-a21d-911500761e3d</id>
       <name>Clinch</name>
       <type>Simple</type>
 	  <requireunlock />
@@ -2443,7 +2443,7 @@
       <page>119</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>6da9ee3d-4068-45af-81e3-64d5d70ca4b3</id>
       <name>Double Tap</name>
       <type>Complex</type>
 	  <test>
@@ -2455,7 +2455,7 @@
       <page>120</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>cc244439-4e28-41f3-96c0-8c84442c3bd0</id>
       <name>Escape (Clinch)</name>
       <type>Complex</type>
 	  <test>
@@ -2467,7 +2467,7 @@
       <page>120</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>2b725942-799c-4855-bcfb-a943df21314e</id>
       <name>Enhanced Suppresion</name>
       <type>Complex</type>
 	  <test>
@@ -2479,7 +2479,7 @@
       <page>120</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>aab82478-8e9d-4b4f-9081-b22e8a2afd09</id>
       <name>Finishing Move</name>
       <type>Complex</type>
 	  <requireunlock />
@@ -2494,7 +2494,7 @@
       <page>120</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>51e20ac4-d580-4a11-9531-8e19f3a2ff31</id>
       <name>Flechette Suppressive Fire</name>
       <type>Complex</type>
 	  <test>
@@ -2506,7 +2506,7 @@
       <page>120</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>cb9235d4-d9a0-4c15-bae8-dbfd9ef83ba8</id>
       <name>Flying Kick</name>
       <type>Complex</type>
 	  <requireunlock />
@@ -2519,7 +2519,7 @@
       <page>121</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>33896e90-0615-412f-9969-d54e36dbb647</id>
       <name>Full Offense</name>
       <type>Complex</type>
 	  <requireunlock />
@@ -2533,7 +2533,7 @@
       <page>121</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>14456cce-14ff-4319-81c5-5b90a8d54533</id>
       <name>Half Sword</name>
       <type>Complex</type>
 	  <requireunlock />
@@ -2546,7 +2546,7 @@
       <page>121</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>f94b7a79-db0c-4581-941e-cf6610ba6741</id>
       <name>Haymaker</name>
       <type>Complex</type>
 	  <requireunlock />
@@ -2559,7 +2559,7 @@
       <page>121</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>f877d70a-1a46-4b30-8572-48a7385cf26f</id>
       <name>Herding</name>
       <type>Complex</type>
 	  <requireunlock />
@@ -2572,7 +2572,7 @@
       <page>121</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>42c3084c-e8b8-4a8f-b2f4-090036454d45</id>
       <name>Iaijutsu</name>
       <type>Simple</type>
 	  <requireunlock />
@@ -2585,7 +2585,7 @@
       <page>122</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>04296569-39b0-481d-a468-fc22f13be152</id>
       <name>Kip-Up</name>
       <type>Simple</type>
 	  <requireunlock />
@@ -2598,7 +2598,7 @@
       <page>122</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>96a73d16-c9c9-4e19-8458-726f322089b8</id>
       <name>Playing Possum (Con)</name>
       <type>Simple</type>
 	  <test>
@@ -2610,7 +2610,7 @@
       <page>122</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>b43fbef5-e157-4f1a-a247-738a4c4f6425</id>
       <name>Playing Possum (Performance)</name>
       <type>Simple</type>
 	  <test>
@@ -2622,7 +2622,7 @@
       <page>122</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>d16efc4e-a54e-48a4-b705-5c7a47cc9c86</id>
       <name>Pouncing Dragon</name>
       <type>Complex</type>
 	  <requireunlock />
@@ -2635,7 +2635,7 @@
       <page>122</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>6d3a655e-c680-4f49-ad9a-be1f4f9b5e1c</id>
       <name>Pre-Emptive Block</name>
       <type>Free</type>
 	  <initiativecost>5</initiativecost>
@@ -2652,7 +2652,7 @@
       <page>122</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>9bfa4e44-08c6-49e0-b4b6-c48925814e7d</id>
       <name>Pre-Emptive Dodge</name>
       <type>Free</type>
 	  <initiativecost>5</initiativecost>
@@ -2669,7 +2669,7 @@
       <page>122</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>7f04c323-1f8b-4ed0-9b62-c87f125c6c28</id>
       <name>Pre-Emptive Parry</name>
       <type>Free</type>
 	  <initiativecost>5</initiativecost>
@@ -2686,7 +2686,7 @@
       <page>122</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>83f73100-0928-4b29-8973-81e1ed899d56</id>
       <name>Push (Simple)</name>
       <type>Simple</type>
 	  <test>
@@ -2698,7 +2698,7 @@
       <page>123</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>e9b8b4b4-72b4-4d01-88b0-121ea6c5670b</id>
       <name>Push (Intercept)</name>
       <type>Interrupt</type>
 	  <initiativecost>5</initiativecost>
@@ -2711,7 +2711,7 @@
       <page>123</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>2e6dd5f7-bb15-48fa-9098-145222579bac</id>
       <name>Shove</name>
       <type>Simple</type>
 	  <test>
@@ -2723,7 +2723,7 @@
       <page>123</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>dc3d5d08-e0a9-4456-ab9f-be2a582e37ca</id>
       <name>Sacrifice Move</name>
       <type>Complex</type>
 	  <test>
@@ -2735,7 +2735,7 @@
       <page>123</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>37a75f68-6c68-4229-812f-a7f013edc811</id>
       <name>Reading the Defense</name>
       <type>Complex</type>
 	  <test>
@@ -2747,7 +2747,7 @@
       <page>123</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>8a11fcb1-6f5c-4792-9111-875d2631b25a</id>
       <name>Throw Person (Simple)</name>
       <type>Simple</type>
 	  <requireunlock />
@@ -2760,7 +2760,7 @@
       <page>123</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>73ca02ed-6c84-4351-85dc-c6edfeb3646b</id>
       <name>Throw Person (Interrupt)</name>
       <type>Interrupt</type>
 	  <requireunlock />
@@ -2774,7 +2774,7 @@
       <page>123</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>d1941c39-fbca-46c5-82fe-ef9161dfc223</id>
       <name>Counterstrike</name>
       <type>Interrupt</type>
 	  <requireunlock />
@@ -2788,7 +2788,7 @@
       <page>124</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>3030d83b-6773-4659-b286-fac186aa1d3d</id>
       <name>Dive For Cover</name>
       <type>Interrupt</type>
 	  <initiativecost>5</initiativecost>
@@ -2800,7 +2800,7 @@
       <page>124</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>dc6b2c18-2565-420a-9e6e-9481d9092662</id>
       <name>Reversal (Clinch)</name>
       <type>Interrupt</type>
 	  <requireunlock />
@@ -2814,7 +2814,7 @@
       <page>124</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>1d6933e9-90f9-40ab-b0e5-06f49e2f4d1e</id>
       <name>Reversal (Subduing)</name>
       <type>Interrupt</type>
 	  <requireunlock />
@@ -2828,7 +2828,7 @@
       <page>124</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>933c74a5-54b2-4e9d-8636-1e777f0c2ef2</id>
       <name>Right Back at Ya!</name>
       <type>Interrupt</type>
 	  <initiativecost>10</initiativecost>
@@ -2840,7 +2840,7 @@
       <page>124</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>0a3da24d-5e20-442b-ab54-2c6fd389d272</id>
       <name>Run for Your Life / Dive on the Grenade</name>
       <type>Interrupt</type>
 	  <initiativecost>5</initiativecost>
@@ -2852,7 +2852,7 @@
       <page>125</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>d8c906a3-d274-4efa-abd0-2e7f44700b87</id>
       <name>Sacrifice Throw</name>
       <type>Interrupt</type>
 	  <requireunlock />
@@ -2866,7 +2866,7 @@
       <page>125</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>c583e3e4-2252-4ead-8a2a-8b51981afc26</id>
       <name>Riposte</name>
       <type>Interrupt</type>
 	  <requireunlock />
@@ -2880,7 +2880,7 @@
       <page>125</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>91cf6b11-95cf-4cdc-8f94-ef797d316cba</id>
       <name>Protecting the Principle</name>
       <type>Interrupt</type>
 	  <initiativecost>5</initiativecost>
@@ -2893,7 +2893,7 @@
       <page>125</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>b7b8c408-0700-4a35-b2d8-e5c9b359d63d</id>
       <name>Shadow Block v. Dodge</name>
       <type>Interrupt</type>
 	  <requireunlock />
@@ -2907,7 +2907,7 @@
       <page>125</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>9c96dde8-157f-445a-a618-377306906814</id>
       <name>Shadow Block v. Evade</name>
       <type>Interrupt</type>
 	  <requireunlock />
@@ -2921,7 +2921,7 @@
       <page>125</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>5342ece8-8719-499f-bbef-b7aea95b0a28</id>
       <name>Acrobatic Defender</name>
       <type>Interrupt</type>
 	  <requireunlock />
@@ -2947,7 +2947,7 @@
       <page>127</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>812d4414-6fd3-40c5-b992-2c9f889f68af</id>
       <name>Agile Defender</name>
       <type>Interrupt</type>
 	  <requireunlock />
@@ -2973,7 +2973,7 @@
       <page>127</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>16067c34-3e74-4d2a-a0cf-82cfcf468606</id>
       <name>Perceptive Defender</name>
       <type>Interrupt</type>
 	  <requireunlock />
@@ -2999,7 +2999,7 @@
       <page>127</page>
     </action>
 	<action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <id>4d5cd769-86ff-41d2-b750-b1f615ba1b73</id>
       <name>Too Pretty to Hit</name>
       <type>Interrupt</type>
 	  <requireunlock />
@@ -3025,28 +3025,241 @@
       <page>127</page>
     </action>
 	<!-- End Region -->
-    <action>
-      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
-      <name>Full Defense</name>
-      <type>Interrupt</type>
-	  <initiativecost>10</initiativecost>
-	  <edgecost>0</edgecost>
-	  <boosts>
-		<boost>
-		  <name></name>
-		  <duration>Rest of Turn</duration>
-		  <dicebonus>WIL</dicebonus>
-		  <bonusstring></bonusstring>
-		</boost>
-	  </boosts>
+	<!-- Region Rigger 5.0 -->
+	<action>
+      <id>820c536b-8461-44e2-9a12-c267d88b2b76</id>
+      <name>Break Target Lock</name>
+      <type>Simple</type>
 	  <test>
-		<dice></dice>
-		<limit></limit>
-		<bonusstring></bonusstring>
-		<penaltyonfail></penaltyonfail>
+		<dice>{INT} + {Electronic Warfare} v. {LOG} + {Target: Sensors}</dice>
+		<limit>{Icon: Data Processing}</limit>
+		<bonusstring>For every net hit, reduce the target's lock on the character by one hit. The character's RCC's Noise Reduction rating is added as a dice pool bonus for this action.</bonusstring>
 	  </test>
-      <source>SR5</source>
-      <page>168</page>
+      <source>R5</source>
+      <page>30</page>
     </action>
+	<action>
+      <id>ecb1d3eb-4a3d-412f-b374-3bb7eb9c59df</id>
+      <name>Confuse Pilot</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{LOG} + {Electronic Warfare} v. {Target: Pilot} + {Target: {Icon: Firewall}}</dice>
+		<limit>{Icon: Data Processing}</limit>
+		<bonusstring>On success, target makes an immediate Simple Pilot * 2 test to figure out what it's going to do next with a threshold equal to half of the net hits. The character's RCC's Noise Reduction rating is added as a dice pool bonus for this action.</bonusstring>
+	  </test>
+      <source>R5</source>
+      <page>30</page>
+    </action>
+	<action>
+      <id>8949e342-56af-49d6-a659-9e0fb39d43bd</id>
+      <name>Detect Target Lock</name>
+      <type>Free</type>
+	  <test>
+		<dice>{LOG} + {Computer} v. {Threshold: 2}</dice>
+		<limit>{Icon: Data Processing}</limit>
+		<bonusstring>Requires Owner marks on target. The device the character is using must have wireless enabled. The character's RCC's Noise Reduction rating is added as a dice pool bonus for this action.</bonusstring>
+	  </test>
+      <source>R5</source>
+      <page>30</page>
+    </action>
+	<action>
+      <id>0d5318e9-ed3d-4f11-99ba-6ff9c35bd79e</id>
+      <name>Suppress Noise</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{LOG} + {Electronic Warfare}</dice>
+		<limit>{Icon: Data Processing}</limit>
+		<bonusstring>Requires Owner marks on target. On success, reduce noise by hits on this test for one Combat Turn. The character's RCC's Noise Reduction rating is added as a dice pool bonus for this action.</bonusstring>
+	  </test>
+      <source>R5</source>
+      <page>30</page>
+    </action>
+	<action>
+      <id>f8d43ba8-e5ca-4a13-97cd-68c1980cd7bf</id>
+      <name>Target Device</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{LOG} + {Electronic Warfare} v. {Action: WIL Firewall Defense}</dice>
+		<limit>{Icon: Data Processing}</limit>
+		<bonusstring>For the rest of the combat turn, any slaved devices targeting the target of this action receive a dice pool bonus equal to the net hits on this action. The character's RCC's Noise Reduction rating is added as a dice pool bonus for this action.</bonusstring>
+	  </test>
+      <source>R5</source>
+      <page>30</page>
+    </action>
+	<!-- End Region -->
+	<!-- Region Data Trails -->
+	<action>
+      <id>2cc49ba8-e586-49f3-937d-b1359c623dd0</id>
+      <name>Garbage In/Garbage Out</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{LOG} + {Software} v. {Action: LOG Firewall Defense}</dice>
+		<limit>{Icon: Sleaze}</limit>
+		<bonusstring>Requires 3 marks on target icon. On success, reprogram a single input action to a single output action.</bonusstring>
+	  </test>
+      <source>DT</source>
+      <page>178</page>
+    </action>
+	<action>
+      <id>802381dd-7a15-49eb-bfbe-18fb20c26b64</id>
+      <name>Trackback</name>
+      <type>Extended</type>
+	  <test>
+		<dice>{INT} + {Computer} v. 10 + {Target: {Icon: Sleaze}}</dice>
+		<limit>{Icon: Data Processing}</limit>
+		<bonusstring>Requires Owner marks on target icon. 30 minute interval. On success if the target persona is running silent, the trail ends in the vicinity of the icon, letting the character know that there are silent icons nearby.</bonusstring>
+	  </test>
+      <source>DT</source>
+      <page>179</page>
+    </action>
+	<!-- End Region -->
+	<!-- Region Kill Code -->
+	<action>
+      <id>0e1c5d65-051a-4b35-a077-11c6f9679829</id>
+      <name>Calibration</name>
+      <type>Simple</type>
+	  <test>
+		<dice>{LOG} + {Electronic Warfare}</dice>
+		<limit>{Icon: Data Processing}</limit>
+		<bonusstring>Requires 1 mark on target icons. On success, increase the initiative score of all marked personas by 1 for every 2 hits. The number of affected personas cannot exceed {Icon: Data Processing}.</bonusstring>
+	  </test>
+      <source>KC</source>
+      <page>37</page>
+    </action>
+	<action>
+      <id>e699453d-441f-4c3b-b05e-bb209fe4241c</id>
+      <name>Denial of Service</name>
+      <type>Simple</type>
+	  <test>
+		<dice>{LOG} + {Cybercombat} v. {Action: WIL Firewall Defense}</dice>
+		<limit>{Icon: Attack}</limit>
+		<bonusstring>On success, all tests made with the target device suffer a negative dice pool modifier equal to net hits * 2 until the beginning of the next Combat Turn. For every mark  the character has on the target PAN, they may apply this effect to two additional devices slaved to the PAN.</bonusstring>
+	  </test>
+      <source>KC</source>
+      <page>37</page>
+    </action>
+	<action>
+      <id>9dcccbd6-c4fe-4d81-b2b7-591f39247949</id>
+      <name>I Am the Firewall (Complex)</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{INT} + {Computer}</dice>
+		<limit>{Icon: Data Processing}</limit>
+		<bonusstring>On success, give a defense test bonus equal to hits to all characters with an AR feed from the user until the user's next initiative pass.</bonusstring>
+	  </test>
+      <source>KC</source>
+      <page>38</page>
+    </action>
+	<action>
+      <id>0c3a992f-98bd-4f3f-bd14-1898225cfd4e</id>
+      <name>I Am the Firewall (Interrupt)</name>
+      <type>Interrupt</type>
+	  <initiativecost>5</initiativecost>
+	  <test>
+		<dice>{INT} + {Computer}</dice>
+		<limit>{Icon: Data Processing}</limit>
+		<bonusstring>On success, give a defense test bonus equal to hits to all characters with an AR feed from the user until the user's next initiative pass.</bonusstring>
+	  </test>
+      <source>KC</source>
+      <page>38</page>
+    </action>
+	<action>
+      <id>a56dd463-6f2c-485c-97c0-cefb3b65e073</id>
+      <name>Haywire</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{LOG} + {Cybercombat} v. {Action: WIL Firewall Defense}</dice>
+		<limit>{Icon: Attack}</limit>
+		<bonusstring>Target must be a persona not running in VR. On success, all PAN and wireless functionality on the target is disabled until the target passes a {LOG} + {Computer} [Data Processing] v. {Threshold: Net Hits} Simple action.</bonusstring>
+	  </test>
+      <source>KC</source>
+      <page>38</page>
+    </action>
+	<action>
+      <id>95e8fe05-c341-4985-9f42-0ff02a8c3b20</id>
+      <name>Intervene</name>
+      <type>Interrupt</type>
+	  <initiativecost>5</initiativecost>
+	  <test>
+		<dice>{INT} + {Computer}</dice>
+		<limit>{Icon: Data Processing}</limit>
+		<bonusstring>On success, increase the number of hits on the target icon's Matrix defense test by net hits from this action.</bonusstring>
+	  </test>
+      <source>KC</source>
+      <page>39</page>
+    </action>
+	<action>
+      <id>7822f0d5-8634-4536-a1a2-98ff2cb5aaa2</id>
+      <name>Masquerade</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{INT} + {Hacking} v. {Action: LOG Firewall Defense}</dice>
+		<limit>{Icon: Sleaze}</limit>
+		<bonusstring>Requires 2 marks on target icon and 2 marks on masquerading persona. On success, the target icon is convinced the character is the masquerading persona for 1 minute per net hit. If the masquerading persona logs off, the masquerade drops immedatiately. Masquerade cannot be used to act as if the character has Owner marks on the target icon.</bonusstring>
+	  </test>
+      <source>KC</source>
+      <page>39</page>
+    </action>
+	<action>
+      <id>643e1151-cb58-49f4-97cc-61919038f733</id>
+      <name>Popup</name>
+      <type>Simple</type>
+	  <test>
+		<dice>{LOG} + {Max: {Hacking} or {Cybercombat}} v. {Action: WIL Firewall Defense}</dice>
+		<limit>{Max: {Icon: Sleaze} or {Icon: Attack}}</limit>
+		<bonusstring>Requires 1 mark on target icon. Target must be a persona not running in VR. On success, if the target is in wirelessly-enabled AR, the target persona's character takes a dice pool penalty to all actions equal to net hits until the start of the attacker's next Combat Turn. If using {Hacking}, net hits are also treated as if they were net hits on {Action: Matrix Perception}. If using {Cybercombat}, also deal Matrix damage equal to net hits.</bonusstring>
+	  </test>
+      <source>KC</source>
+      <page>39</page>
+    </action>
+	<action>
+      <id>21aa0a33-9fd6-47fe-a5df-3e51427eef6d</id>
+      <name>Squelch</name>
+      <type>Simple</type>
+	  <test>
+		<dice>{LOG} + {Electronic Warfare} v. {Action: INT Sleaze Defense}</dice>
+		<limit>{Icon: Attack}</limit>
+		<bonusstring>On success, target icon cannot make calls or send messages for a number of minutes equal to net hits.</bonusstring>
+	  </test>
+      <source>KC</source>
+      <page>39</page>
+    </action>
+	<action>
+      <id>6b337872-6789-4e13-ad5c-1779d14adcf4</id>
+      <name>Subvert Infrastructure</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{INT} + {Electronic Warfare} v. {Action: INT Firewall Defense}</dice>
+		<limit>{Icon: Sleaze}</limit>
+		<bonusstring>Requires 1 mark on target icon. Must target hosts. On success, character gains control over one simple device slaved to the target per net hit. No attacks can be made with this action. The control can be maintained by spending one Complex Action per Combat Turn.</bonusstring>
+	  </test>
+      <source>KC</source>
+      <page>39</page>
+    </action>
+	<action>
+      <id>7ab03865-944f-45a9-adee-6e7aa8381f5e</id>
+      <name>Tag</name>
+      <type>Simple</type>
+	  <test>
+		<dice>{LOG} + {Computer} v. {Action: INT Sleaze Defense}</dice>
+		<limit>{Icon: Data Processing}</limit>
+		<bonusstring>On success, a number of targets on a single PAN equal to net hits are "tagged". "Tagged" targets must be within line of sight of the character, and "tags" can be relayed wirelessly to allies. "Tagging" negates up to 2 dice in penalties from Visibility and Light/Glare to ranged attack rolls, including Blind Fire. Characters can take an additional {Action: Take Aim} at "tagged" targets as a Free Action each initiative pass. "Tags" can be maintained by spending one Simple Action per Combat Turn. When using a PI-Tac, the character may add the PI-Tac's level to the number of targets that can be "tagged".</bonusstring>
+	  </test>
+      <source>KC</source>
+      <page>40</page>
+    </action>
+	<action>
+      <id>f73c5747-0494-497b-9109-8bca6217b2b1</id>
+      <name>Watchdog</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{LOG} + {Electronic Warfare} v. {Action: LOG Firewall Defense}</dice>
+		<limit>{Icon: Sleaze}</limit>
+		<bonusstring>Target must be a persona or device. On success, place a mark on the target. The character is now aware of the Matrix actions the target is going to use before they use them. The character can use {Action: Haywire} and {Action: Popup} as Interrupt Actions for -10 initiative and {Action: Squelch} as an Interrupt Action for -5 initiave against the target. This ability lasts as long as the target is marked by the character.</bonusstring>
+	  </test>
+      <source>KC</source>
+      <page>40</page>
+    </action>
+	<!-- End Region -->
   </actions>
 </chummer>

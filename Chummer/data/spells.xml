@@ -130,7 +130,7 @@
       <source>SR5</source>
       <category>Combat</category>
       <damage>P</damage>
-      <descriptor>Direct</descriptor>
+      <descriptor>Direct, Area</descriptor>
       <duration>I</duration>
       <dv>F</dv>
       <range>LOS (A)</range>
@@ -2848,6 +2848,19 @@
       <range>LOS</range>
       <type>P</type>
     </spell>
+	<spell>
+      <id>4b214e1a-4800-4787-b5fe-55672b359dec</id>
+      <name>Convince</name>
+      <page>132</page>
+      <source>SGG</source>
+      <category>Manipulation</category>
+      <damage>0</damage>
+      <descriptor />
+      <duration>S</duration>
+      <dv>F-2</dv>
+      <range>LOS</range>
+      <type>P</type>
+    </spell>
     <spell>
       <id>ae2bddcc-9899-4549-b0ff-1dc7c1bb291a</id>
       <name>Aspect Mana Line</name>
@@ -4656,7 +4669,7 @@
       <descriptor>Physical, Area</descriptor>
       <duration>S</duration>
       <dv>F+3</dv>
-      <range>LOS</range>
+      <range>LOS (A)</range>
       <type>P</type>
     </spell>
     <spell>
@@ -4718,17 +4731,9 @@
       <bonus>
         <addspirit>
             <spirit>Carcass Spirit</spirit>
-        </addspirit>
-        <addspirit>
             <spirit>Corpse Spirit</spirit>
-        </addspirit>
-        <addspirit>
             <spirit>Rot Spirit</spirit>
-        </addspirit>
-        <addspirit>
             <spirit>Palefire Spirit</spirit>
-        </addspirit>
-        <addspirit>
             <spirit>Detritus Spirit</spirit>
         </addspirit>
       </bonus>

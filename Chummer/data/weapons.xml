@@ -3184,7 +3184,7 @@
       <ap>-4</ap>
       <mode>FA</mode>
       <rc>0</rc>
-      <ammo>50(c) or 100(belt)</ammo>
+      <ammo>50(c)</ammo>
       <avail>16F</avail>
       <cost>16300</cost>
       <source>SR5</source>
@@ -3217,7 +3217,7 @@
       <ap>-4</ap>
       <mode>FA</mode>
       <rc>0</rc>
-      <ammo>50(c) or 100(belt)</ammo>
+      <ammo>50(c)</ammo>
       <avail>18F</avail>
       <cost>19600</cost>
       <source>RG</source>
@@ -3256,7 +3256,7 @@
       <ap>-4</ap>
       <mode>FA</mode>
       <rc>0</rc>
-      <ammo>50(c) or 100(belt)</ammo>
+      <ammo>50(c)</ammo>
       <avail>16F</avail>
       <cost>16000</cost>
       <source>RG</source>
@@ -3966,7 +3966,7 @@
       <ap>-10</ap>
       <mode>SA</mode>
       <rc>0</rc>
-      <ammo>2x10(c) or External source</ammo>
+      <ammo>2x10(c)</ammo>
       <avail>18F</avail>
       <cost>16000</cost>
       <source>RG</source>
@@ -3990,7 +3990,7 @@
       <ap>-10</ap>
       <mode>SA</mode>
       <rc>0</rc>
-      <ammo>10(c) or External source</ammo>
+      <ammo>10(c)</ammo>
       <avail>14F</avail>
       <cost>7500</cost>
       <source>RG</source>
@@ -4052,7 +4052,7 @@
       <ap>-2</ap>
       <mode>BF/FA</mode>
       <rc>0</rc>
-      <ammo>50(c) or 100(belt)</ammo>
+      <ammo>50(c)</ammo>
       <avail>12F</avail>
       <cost>5800</cost>
       <source>SR5</source>
@@ -4090,7 +4090,7 @@
       <ap>-2</ap>
       <mode>FA</mode>
       <rc>0</rc>
-      <ammo>50(c) or 100(belt)</ammo>
+      <ammo>50(c)</ammo>
       <avail>11F</avail>
       <cost>2000</cost>
       <source>GH3</source>
@@ -4122,7 +4122,7 @@
       <ap>-2</ap>
       <mode>BF/FA</mode>
       <rc>0</rc>
-      <ammo>50(c) or 100(belt)</ammo>
+      <ammo>50(c)</ammo>
       <avail>16F</avail>
       <cost>6500</cost>
       <source>RG</source>
@@ -4801,7 +4801,7 @@
       <ap>-3</ap>
       <mode>FA</mode>
       <rc>0</rc>
-      <ammo>50(c) or 100(belt)</ammo>
+      <ammo>50(c)</ammo>
       <avail>18F</avail>
       <cost>8500</cost>
       <source>RG</source>
@@ -4840,7 +4840,7 @@
       <ap>-3</ap>
       <mode>FA</mode>
       <rc>0</rc>
-      <ammo>50(c) or 100(belt)</ammo>
+      <ammo>50(c)</ammo>
       <avail>12F</avail>
       <cost>7000</cost>
       <source>SR5</source>
@@ -4868,7 +4868,7 @@
       <ap>-2</ap>
       <mode>FA</mode>
       <rc>0</rc>
-      <ammo>50(c) or 100(belt)</ammo>
+      <ammo>50(c)</ammo>
       <avail>16F</avail>
       <cost>7600</cost>
       <source>RG</source>
@@ -4984,7 +4984,7 @@
       <ap>-1</ap>
       <mode>SA/BF/FA</mode>
       <rc>2</rc>
-      <ammo>10(c) or 32(d)</ammo>
+      <ammo>10(c)</ammo>
       <avail>18F</avail>
       <cost>1800</cost>
       <source>RG</source>
@@ -5133,7 +5133,7 @@
       <ap>-1</ap>
       <mode>SA/BF</mode>
       <rc>0</rc>
-      <ammo>10(c) or 24(d)</ammo>
+      <ammo>10(c)</ammo>
       <avail>12F</avail>
       <cost>1100</cost>
       <source>SR5</source>
@@ -7245,7 +7245,7 @@
     </weapon>
     <!-- End Region -->
     <!-- Region Run Faster -->
-    <!-- Region Metagenetic Weapons -->
+    <!-- Region Metagenic Weapons -->
     <weapon>
       <id>4b987699-ed39-479d-a02c-046ff7d05a9b</id>
       <name>Digging Claws</name>
@@ -7912,6 +7912,7 @@
       <range>Light Crossbows</range>
       <spec>Grapple Gun</spec>
       <useskill>Exotic Ranged Weapon</useskill>
+      <useskillspec>Grapple Gun</useskillspec>
     </weapon>
     <!-- End Region -->
     <!-- End Region-->
@@ -8416,7 +8417,7 @@
       <ap>-10</ap>
       <mode>SA</mode>
       <rc>0</rc>
-      <ammo>5(c) or external source</ammo>
+      <ammo>5(c)</ammo>
       <avail>16F</avail>
       <cost>22000</cost>
       <source>HT</source>
@@ -8481,7 +8482,7 @@
       <ap>-8</ap>
       <mode>SA/BF/FA</mode>
       <rc>0</rc>
-      <ammo>10(c) or Internal source</ammo>
+      <ammo>10(c)</ammo>
       <avail>16F</avail>
       <cost>1000000</cost>
       <source>LCD</source>
@@ -10851,7 +10852,7 @@
       <ap>-1</ap>
       <mode>SA/BF</mode>
       <rc>0</rc>
-      <ammo>10(c) or 24(d)</ammo>
+      <ammo>10(c)</ammo>
       <avail>8R</avail>
       <cost>1000</cost>
       <source>2050</source>
@@ -12879,9 +12880,9 @@
       <reach>0</reach>
       <damage>7P</damage>
       <ap>-3</ap>
-      <mode>BF</mode>
+      <mode>SA</mode>
       <rc>0</rc>
-      <ammo>8(c)</ammo>
+      <ammo>16(c)</ammo>
       <avail>10R</avail>
       <cost>700</cost>
       <source>SL</source>
@@ -12897,7 +12898,11 @@
         <mount>Stock</mount>
         <mount>Side</mount>
       </accessorymounts>
-      <ammoslots>2</ammoslots>
+	  <doubledcostaccessorymounts>
+		<mount>Barrel</mount>
+	  </doubledcostaccessorymounts>
+	  <singleshot>2</singleshot>
+	  <shortburst>6</shortburst>
     </weapon>
     <weapon>
       <id>65b7803a-0efe-44d9-8b85-6410644f079d</id>
@@ -14022,6 +14027,17 @@
           <cost>1000</cost>
           <source>SL</source>
           <page>131</page>
+		  <accessories>
+			<accessory>
+			  <name>Breeching Teeth</name>
+			</accessory>
+			<accessory>
+			  <name>Foregrip</name>
+			</accessory>
+			<accessory>
+			  <name>Modified Pump Handle</name>
+			</accessory>
+		  </accessories>
           <accessorymounts>
               <mount>Stock</mount>
               <mount>Side</mount>
@@ -14641,6 +14657,30 @@
         <useskill>Longarms</useskill>
       </weapon>
     <!-- End Region -->
+    <!-- Region Datapuls Verschlusssache (German) -->
+      <weapon>
+        <id>51a64bcb-e321-4eab-a89b-0a58674923be</id>
+        <name>Walther P99</name>
+      <category>Light Pistols</category>
+      <type>Ranged</type>
+      <conceal>-2</conceal>
+      <accuracy>6</accuracy>
+      <reach>0</reach>
+      <damage>6P</damage>
+      <ap>-</ap>
+      <mode>SA</mode>
+      <rc>0</rc>
+      <ammo>12(c)</ammo>
+      <avail>4R</avail>
+      <cost>175</cost>
+      <source>DPVG</source>
+      <page>32</page>
+      <accessorymounts>
+        <mount>Barrel</mount>
+        <mount>Top</mount>
+      </accessorymounts>
+    </weapon>
+	<!-- End Region -->
   </weapons>
   <accessories>
     <!-- Region Shadowrun 5 -->
@@ -15052,6 +15092,94 @@
           <OR>
             <ammo operation="contains">(c)</ammo>
             <ammo operation="contains">(d)</ammo>
+          </OR>
+        </weapondetails>
+      </required>
+    </accessory>
+    <accessory>
+      <id>6763996b-0458-46ee-a6a5-f50255ace664</id>
+      <name>Belt-Feed, 100-round</name>
+      <mount />
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>SR5</source>
+      <page>417</page>
+      <ammoreplace>100(belt)</ammoreplace>
+      <ammoslots>1</ammoslots>
+      <rating>0</rating>
+      <required>
+        <weapondetails>
+          <OR>
+            <name>RPK HMG</name>
+            <name>Ruhrmetall SF-20</name>
+            <name>Ultamax HMG-2</name>
+            <name>Ingram Valiant</name>
+            <name>Krime Wave</name>
+            <name>Shiawase Armaments Nemesis</name>
+            <name>FN MAG-5</name>
+            <name>Stoner-Ares M202</name>
+            <name>Ultamax MMG</name>
+          </OR>
+        </weapondetails>
+      </required>
+    </accessory>
+    <accessory>
+      <id>61ddc4d3-25fd-405c-af5d-2455efff2509</id>
+      <name>Drum Magazine, 24-round</name>
+      <mount />
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>SR5</source>
+      <page>417</page>
+      <ammoreplace>24(d)</ammoreplace>
+      <ammoslots>1</ammoslots>
+      <rating>0</rating>
+      <required>
+        <weapondetails>
+          <OR>
+            <name>Enfield AS-7</name>
+            <name>Enfield AS-7 (2050)</name>
+          </OR>
+        </weapondetails>
+      </required>
+    </accessory>
+    <accessory>
+      <id>d45c3b70-0e12-48b5-9c69-9f86f14d593b</id>
+      <name>Drum Magazine, 32-round</name>
+      <mount />
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>SR5</source>
+      <page>417</page>
+      <ammoreplace>32(d)</ammoreplace>
+      <ammoslots>1</ammoslots>
+      <rating>0</rating>
+      <required>
+        <weapondetails>
+          <OR>
+            <name>Auto-Assault 16</name>
+          </OR>
+        </weapondetails>
+      </required>
+    </accessory>
+    <accessory>
+      <id>6598e5fa-f2d0-4c5c-a773-570cd9d16300</id>
+      <name>External Power Source</name>
+      <mount />
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>SR5</source>
+      <page>417</page>
+      <ammoreplace>External Source</ammoreplace>
+      <ammoslots>1</ammoslots>
+      <rating>0</rating>
+      <required>
+        <weapondetails>
+          <OR>
+            <name>Underbarrel Laser</name>
+            <name>Repeating Laser</name>
+            <name>Ares Lancer MP Laser</name>
+            <name>Ares Redline</name>
           </OR>
         </weapondetails>
       </required>
@@ -16751,7 +16879,7 @@
       <cost>500</cost>
       <source>SL</source>
       <page>45</page>
-      <ammoreplace>2500</ammoreplace>
+      <ammoreplace>2500(belt)</ammoreplace>
       <ammoslots>1</ammoslots>
       <rating>0</rating>
     </accessory>
@@ -16818,6 +16946,28 @@
       <page>47</page>
       <rating>0</rating>
     </accessory>
+	<accessory>
+      <id>91d1b0c0-3146-4435-b2ef-322e80dbbb59</id>
+      <name>Breeching Teeth</name>
+      <mount />
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>SL</source>
+      <page>131</page>
+      <rating>0</rating>
+	  <hide />
+    </accessory>
+	<accessory>
+      <id>2eea1d98-8c6f-4f59-a8e8-e39b17c60869</id>
+      <name>Modified Pump Handle</name>
+      <mount />
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>SL</source>
+      <page>131</page>
+      <rating>0</rating>
+	  <hide />
+    </accessory>
     <!-- Region Special Modifications -->
     <accessory>
       <id>b741b729-106e-46f2-9143-0f745fd48789</id>
@@ -16861,7 +17011,7 @@
       <source>BTB</source>
       <page>161</page>
       <rating>0</rating>
-      <modifyammocapacity>* 1.5</modifyammocapacity>
+      <modifyammocapacity>+(Weapon * 0.5)</modifyammocapacity>
       <specialmodification>True</specialmodification>
       <required>
         <oneof>
@@ -16878,7 +17028,7 @@
       <source>BTB</source>
       <page>161</page>
       <rating>0</rating>
-      <conceal>1</conceal>
+      <conceal>-1</conceal>
       <specialmodification>True</specialmodification>
       <required>
         <oneof>

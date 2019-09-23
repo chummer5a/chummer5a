@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
  using System;
+ using System.Collections;
  using System.ComponentModel;
  using System.Diagnostics;
  using System.Globalization;
@@ -29,8 +30,10 @@ using System.Linq;
  using System.Runtime.InteropServices;
  using System.Runtime.Remoting.Contexts;
  using System.Threading;
+ using System.Threading.Tasks;
  using System.Windows.Forms;
 ﻿using Chummer.Backend;
+ using Chummer.Plugins;
  using Microsoft.ApplicationInsights;
  using Microsoft.ApplicationInsights.DataContracts;
  using Microsoft.ApplicationInsights.Extensibility;
@@ -43,16 +46,18 @@ using System.Linq;
 [assembly: CLSCompliant(true)]
 namespace Chummer
 {
-    internal static class Program
+    public static class Program
     {
         private static Logger Log = null;
         private const string strChummerGuid = "eb0759c1-3599-495e-8bc5-57c8b3e1b31c";
-        //public static TelemetryConfiguration ApplicationInsightsConfig = new TelemetryConfiguration
-        //{
-        //    InstrumentationKey = "012fd080-80dc-4c10-97df-4f2cf8c805d5"
-        //};
-        private static readonly TelemetryClient TelemetryClient = new TelemetryClient();
-        
+        public static readonly TelemetryClient TelemetryClient = new TelemetryClient();
+        private static PluginControl _pluginLoader = null;
+        public static PluginControl PluginLoader
+        {
+            get => _pluginLoader ?? (_pluginLoader = new PluginControl());
+            set => _pluginLoader = value;
+        }
+
 
         /// <summary>
         /// The main entry point for the application.
@@ -60,6 +65,7 @@ namespace Chummer
         [STAThread]
         static void Main()
         {
+            //for some fun try out this command line parameter: chummer://plugin:SINners:Load:5ff55b9d-7d1c-4067-a2f5-774127346f4e
             PageViewTelemetry pvt = null;
             var startTime = DateTimeOffset.UtcNow;
             using (GlobalChummerMutex = new Mutex(false, @"Global\" + strChummerGuid))
@@ -112,15 +118,27 @@ namespace Chummer
                     //main.Hide();
                     //main.ShowInTaskbar = false;
                 };
-#endif
+#else
                 AppDomain.CurrentDomain.UnhandledException += (o, e) =>
                 {
                     try
                     {
                         if (e.ExceptionObject is Exception myException)
                         {
-                            TelemetryClient tc = new TelemetryClient();
-                            tc.TrackException(myException);
+                            myException.Data.Add("IsCrash", true.ToString());
+                            ExceptionTelemetry et = new ExceptionTelemetry(myException)
+                            {
+                                SeverityLevel = SeverityLevel.Critical
+
+                            };
+                            //we have to enable the uploading of THIS message, so it isn't filtered out in the DropUserdataTelemetryProcessos
+                            foreach (DictionaryEntry d in myException.Data)
+                            {
+                                if ((d.Key != null) && (d.Value != null))
+                                    et.Properties.Add(d.Key.ToString(), d.Value.ToString());
+                            }
+                            Program.TelemetryClient.TrackException(myException);
+                            Program.TelemetryClient.Flush();
                         }
                     }
                     catch (Exception exception)
@@ -128,8 +146,8 @@ namespace Chummer
                         Console.WriteLine(exception);
                     }
                 };
+#endif
 
-           
                 sw.TaskEnd("Startup");
 
                 
@@ -137,23 +155,27 @@ namespace Chummer
 
                 if (!string.IsNullOrEmpty(LanguageManager.ManagerErrorMessage))
                 {
-                    MessageBox.Show(LanguageManager.ManagerErrorMessage, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Program.MainForm.ShowMessageBox(LanguageManager.ManagerErrorMessage, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
                 if (!string.IsNullOrEmpty(GlobalOptions.ErrorMessage))
                 {
-                    MessageBox.Show(GlobalOptions.ErrorMessage, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Program.MainForm.ShowMessageBox(GlobalOptions.ErrorMessage, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
                 try
                 {
                     LogManager.ThrowExceptions = true;
-                    ConfigurationItemFactory.Default.Targets.RegisterDefinition(
-                        "ApplicationInsightsTarget",
-                        typeof(Microsoft.ApplicationInsights.NLogTarget.ApplicationInsightsTarget)
-                    );
+                    if (GlobalOptions.UseLoggingApplicationInsights > UseAILogging.OnlyMetric)
+                    {
+                        ConfigurationItemFactory.Default.Targets.RegisterDefinition(
+                            "ApplicationInsightsTarget",
+                            typeof(Microsoft.ApplicationInsights.NLogTarget.ApplicationInsightsTarget)
+                        );
+                    }
+
                     LogManager.ThrowExceptions = false;
                     Log = NLog.LogManager.GetCurrentClassLogger();
                     if (GlobalOptions.UseLogging)
@@ -165,12 +187,16 @@ namespace Chummer
                                 rule.EnableLoggingForLevels(LogLevel.Debug, LogLevel.Fatal);
                         }
                     }
-                    Log.Info(strInfo);
-
-                   
-
-                    if (GlobalOptions.UseLoggingApplicationInsights)
+                    
+                    if (Chummer.Properties.Settings.Default.UploadClientId == Guid.Empty)
                     {
+                        Chummer.Properties.Settings.Default.UploadClientId = Guid.NewGuid();
+                        Chummer.Properties.Settings.Default.Save();
+                    }
+
+                    if (GlobalOptions.UseLoggingApplicationInsights >= UseAILogging.OnlyMetric)
+                    {
+
 #if DEBUG
                         //If you set true as DeveloperMode (see above), you can see the sending telemetry in the debugging output window in IDE.
                         TelemetryConfiguration.Active.TelemetryChannel.DeveloperMode = true;
@@ -182,30 +208,25 @@ namespace Chummer
                         var replacePath = Environment.UserName;
                         TelemetryConfiguration.Active.TelemetryProcessorChainBuilder.Use((next) => new DropUserdataTelemetryProcessor(next, replacePath));
                         TelemetryConfiguration.Active.TelemetryProcessorChainBuilder.Build();
-                        //for now lets disable live view. We may make another GlobalOption to enable it at a later stage...
+                        //for now lets disable live view.We may make another GlobalOption to enable it at a later stage...
                         //var live = new LiveStreamProvider(ApplicationInsightsConfig);
                         //live.Enable();
 
                         //Log an Event with AssemblyVersion and CultureInfo
-                        
-                        if (Properties.Settings.Default.UploadClientId == Guid.Empty)
-                        {
-                            Properties.Settings.Default.UploadClientId = Guid.NewGuid();
-                            Properties.Settings.Default.Save();
-                        }
-                        MetricIdentifier mi = new MetricIdentifier("Chummer", "Program Start","Version", "Culture");
+                        MetricIdentifier mi = new MetricIdentifier("Chummer", "Program Start", "Version", "Culture", dimension3Name:"AISetting");
                         var metric = TelemetryClient.GetMetric(mi);
                         metric.TrackValue(1,
                             Assembly.GetExecutingAssembly().GetName().Version.ToString(),
-                            CultureInfo.CurrentUICulture.TwoLetterISOLanguageName);
+                            CultureInfo.CurrentUICulture.TwoLetterISOLanguageName,
+                            GlobalOptions.UseLoggingApplicationInsights.ToString());
 
-                        // Log a page view:
+                        //Log a page view:
                         pvt = new PageViewTelemetry("frmChummerMain()")
                         {
                             Name = "Chummer Startup: " +
-                                   System.Reflection.Assembly.GetExecutingAssembly().GetName().Version
+                                   System.Reflection.Assembly.GetExecutingAssembly().GetName().Version,
+                            Id = Properties.Settings.Default.UploadClientId.ToString()
                         };
-                        pvt.Id = Properties.Settings.Default.UploadClientId.ToString();
                         pvt.Context.Operation.Name = "Operation Program.Main()";
                         pvt.Properties.Add("parameters", Environment.CommandLine);
                         pvt.Timestamp = startTime;
@@ -218,6 +239,9 @@ namespace Chummer
                     }
                     if (Utils.IsUnitTest)
                         TelemetryConfiguration.Active.DisableTelemetry = true;
+
+                    Log.Info(strInfo);
+                    Log.Info("Logging options are set to " + GlobalOptions.UseLogging + " and Upload-Options are set to " + GlobalOptions.UseLoggingApplicationInsights + " (Installation-Id: " + Chummer.Properties.Settings.Default.UploadClientId + ").");
 
                     //make sure the Settings are upgraded/preserved after an upgrade
                     //see for details: https://stackoverflow.com/questions/534261/how-do-you-keep-user-config-settings-across-different-assembly-versions-in-net/534335#534335
@@ -240,31 +264,101 @@ namespace Chummer
                     Console.WriteLine(e);
                     Log.Error(e);
                 }
-
-               
+                //load the plugins and maybe work of any command line arguments
+                //arguments come in the form of
+                //              /plugin:Name:Parameter:Argument
+                //              /plugin:SINners:RegisterUriScheme:0
+                _pluginLoader = new PluginControl();
+                bool showMainForm = true;
                 // Make sure the default language has been loaded before attempting to open the Main Form.
                 LanguageManager.TranslateWinForm(GlobalOptions.Language, null);
-
-                MainForm = new frmChummerMain(false, pvt);
-                Application.Run(MainForm);
+                MainForm = new frmChummerMain(false);
+                try
+                {
+                    Program.PluginLoader.LoadPlugins(null);
+                }
+                catch (ApplicationException e)
+                {
+                    showMainForm = false;
+                }
+                if (!Utils.IsUnitTest)
+                {
+                    string[] strArgs = Environment.GetCommandLineArgs();
+                    try
+                    {
+                        var loopResult = Parallel.For(1, strArgs.Length, i =>
+                        {
+                            if (strArgs[i].Contains("/plugin"))
+                            {
+                                if (GlobalOptions.PluginsEnabled == false)
+                                {
+                                    string msg =
+                                        "Please enable Plugins to use command-line arguments invoking specific plugin-functions!";
+                                    Log.Warn(msg);
+                                    MessageBox.Show(msg, "Plugins not enabled", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                }
+                                else
+                                {
+                                    string whatplugin = strArgs[i].Substring(strArgs[i].IndexOf("/plugin") + 8);
+                                    //some external apps choose to add a '/' before a ':' even in the middle of an url...
+                                    whatplugin = whatplugin.TrimStart(':');
+                                    int endplugin = whatplugin.IndexOf(':');
+                                    string parameter = whatplugin.Substring(endplugin + 1);
+                                    whatplugin = whatplugin.Substring(0, endplugin);
+                                    var plugin =
+                                        Program.PluginLoader.MyActivePlugins.FirstOrDefault(a =>
+                                            a.ToString() == whatplugin);
+                                    if (plugin == null)
+                                    {
+                                        var notactive =
+                                            Program.PluginLoader.MyPlugins.FirstOrDefault(a =>
+                                                a.ToString() == whatplugin);
+                                        if (notactive != null)
+                                        {
+                                            string msg = "Plugin " + whatplugin + " is not enabled in the options!" + Environment.NewLine;
+                                            msg +=
+                                                "If you want to use command-line arguments, please enable this plugin and restart the program.";
+                                            Log.Warn(msg);
+                                            MessageBox.Show(msg, whatplugin + " not enabled", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                        }
+                                    }
+                                    if (plugin != null)
+                                    {
+                                        showMainForm &= plugin.ProcessCommandLine(parameter);
+                                    }
+                                }
+                            }
+                        });
+                        if (!loopResult.IsCompleted)
+                            Debugger.Break();
+                    }
+                    catch (Exception e)
+                    {
+                        ExceptionTelemetry ex = new ExceptionTelemetry(e)
+                        {
+                            SeverityLevel = SeverityLevel.Warning
+                        };
+                        TelemetryClient?.TrackException(ex);
+                        Log.Warn(e);
+                    }
+                }
+                if (showMainForm)
+                {
+                    MainForm.FormMainInitialize(pvt);
+                    Application.Run(MainForm);
+                }
+                Program.PluginLoader.Dispose();
                 Log.Info(ExceptionHeatmap.GenerateInfo());
-                if (GlobalOptions.UseLoggingApplicationInsights)
+                if (GlobalOptions.UseLoggingApplicationInsights > UseAILogging.OnlyLocal)
                 {
                     if (TelemetryClient != null)
                     {
-                        //if (pvt != null)
-                        //{
-                        //    pvt.Duration = DateTimeOffset.UtcNow - pvt.Timestamp;
-                        //    ApplicationInsightsTelemetryClient.TrackPageView(pvt);
-                        //}
                         TelemetryClient.Flush();
                         //we have to wait a bit to give it time to upload the data
                         Console.WriteLine("Waiting a bit to flush logging data...");
-                        Thread.Sleep(5000);
+                        Thread.Sleep(2000);
                     }
-
                 }
-                
             }
         }
 

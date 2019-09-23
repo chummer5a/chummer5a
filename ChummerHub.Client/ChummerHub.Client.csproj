@@ -187,7 +187,9 @@
     <Compile Include="UI\frmSINnerSearch.Designer.cs">
       <DependentUpon>frmSINnerSearch.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\frmSINnerShare.cs" />
+    <Compile Include="UI\frmSINnerShare.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="UI\frmSINnerShare.Designer.cs">
       <DependentUpon>frmSINnerShare.cs</DependentUpon>
     </Compile>
@@ -234,7 +236,9 @@
     <Compile Include="UI\ucSINnersBasic.Designer.cs">
       <DependentUpon>ucSINnersBasic.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\ucSINnerShare.cs" />
+    <Compile Include="UI\ucSINnerShare.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="UI\ucSINnerShare.Designer.cs">
       <DependentUpon>ucSINnerShare.cs</DependentUpon>
     </Compile>

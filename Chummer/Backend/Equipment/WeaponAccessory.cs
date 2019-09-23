@@ -77,8 +77,11 @@ namespace Chummer.Backend.Equipment
         private int _intAccessoryCostMultiplier = 1;
         private string _strExtra = string.Empty;
         private int _intRangeBonus;
-        private int _intSuppressive;
+	    private int _intSingleShot;
+	    private int _intShortBurst;
+	    private int _intLongBurst;
         private int _intFullBurst;
+        private int _intSuppressive;
         private string _strAddMode = string.Empty;
         private string _strAmmoReplace = string.Empty;
         private int _intAmmoBonus;
@@ -189,6 +192,9 @@ namespace Chummer.Backend.Equipment
             objXmlAccessory.TryGetStringFieldQuickly("ap", ref _strAP);
             objXmlAccessory.TryGetStringFieldQuickly("apreplace", ref _strAPReplace);
             objXmlAccessory.TryGetStringFieldQuickly("addmode", ref _strAddMode);
+            objXmlAccessory.TryGetInt32FieldQuickly("singleshot", ref _intSingleShot);
+            objXmlAccessory.TryGetInt32FieldQuickly("shortburst", ref _intShortBurst);
+            objXmlAccessory.TryGetInt32FieldQuickly("longburst", ref _intLongBurst);
             objXmlAccessory.TryGetInt32FieldQuickly("fullburst", ref _intFullBurst);
             objXmlAccessory.TryGetInt32FieldQuickly("suppressive", ref _intSuppressive);
             objXmlAccessory.TryGetInt32FieldQuickly("rangebonus", ref _intRangeBonus);
@@ -300,6 +306,9 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteElementString("discountedcost", _blnDiscountCost.ToString());
             objWriter.WriteElementString("addmode", _strAddMode);
+            objWriter.WriteElementString("singleshot", _intSingleShot.ToString());
+            objWriter.WriteElementString("shortburst", _intShortBurst.ToString());
+            objWriter.WriteElementString("longburst", _intLongBurst.ToString());
             objWriter.WriteElementString("fullburst", _intFullBurst.ToString());
             objWriter.WriteElementString("suppressive", _intSuppressive.ToString());
             objWriter.WriteElementString("rangebonus", _intRangeBonus.ToString());
@@ -395,6 +404,9 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("apreplace", ref _strAPReplace);
             objNode.TryGetInt32FieldQuickly("accessorycostmultiplier", ref _intAccessoryCostMultiplier);
             objNode.TryGetStringFieldQuickly("addmode", ref _strAddMode);
+            objNode.TryGetInt32FieldQuickly("singleshot", ref _intSingleShot);
+            objNode.TryGetInt32FieldQuickly("shortburst", ref _intShortBurst);
+            objNode.TryGetInt32FieldQuickly("longburst", ref _intLongBurst);
             objNode.TryGetInt32FieldQuickly("fullburst", ref _intFullBurst);
             objNode.TryGetInt32FieldQuickly("suppressive", ref _intSuppressive);
             objNode.TryGetInt32FieldQuickly("rangebonus", ref _intRangeBonus);
@@ -473,7 +485,7 @@ namespace Chummer.Backend.Equipment
 	    public string SourceIDString => _guiSourceID.ToString("D");
 
         /// <summary>
-        /// XmlNode for the wireless bonuses (if any) this accessory provides. 
+        /// XmlNode for the wireless bonuses (if any) this accessory provides.
         /// </summary>
         public XmlNode WirelessBonus => _nodWirelessBonus;
 
@@ -1012,7 +1024,17 @@ namespace Chummer.Backend.Equipment
                 if (DiscountCost)
                     decReturn *= 0.9m;
                 if (Parent != null)
+                {
                     decReturn *= Parent.AccessoryMultiplier;
+                    if (!string.IsNullOrEmpty(Parent.DoubledCostModificationSlots))
+                    {
+                        string[] astrParentDoubledCostModificationSlots = Parent.DoubledCostModificationSlots.Split('/');
+                        if (astrParentDoubledCostModificationSlots.Contains(Mount) || astrParentDoubledCostModificationSlots.Contains(ExtraMount))
+                        {
+                            decReturn *= 2;
+                        }
+                    }
+                }
 
                 return decReturn;
             }
@@ -1070,6 +1092,21 @@ namespace Chummer.Backend.Equipment
             set => _strAddMode = value;
         }
 
+	    /// <summary>
+	    /// Number of rounds consumed by Single Shot.
+	    /// </summary>
+	    public int SingleShot => _intFullBurst;
+
+	    /// <summary>
+	    /// Number of rounds consumed by Short Burst.
+	    /// </summary>
+	    public int ShortBurst => _intShortBurst;
+
+	    /// <summary>
+	    /// Number of rounds consumed by Long Burst.
+	    /// </summary>
+	    public int LongBurst => _intLongBurst;
+
         /// <summary>
         /// Number of rounds consumed by Full Burst.
         /// </summary>
@@ -1102,7 +1139,7 @@ namespace Chummer.Backend.Equipment
             get => _intSortOrder;
             set => _intSortOrder = value;
         }
-        
+
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
@@ -1153,7 +1190,7 @@ namespace Chummer.Backend.Equipment
         #region Methods
 
         /// <summary>
-        /// Toggle the Wireless Bonus for this armor mod. 
+        /// Toggle the Wireless Bonus for this armor mod.
         /// </summary>
         /// <param name="enable"></param>
         public void ToggleWirelessBonuses(bool enable)
@@ -1190,7 +1227,52 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        /// <summary>
+        /// Checks a nominated piece of gear for Availability requirements.
+        /// </summary>
+        /// <param name="blnRestrictedGearUsed">Whether Restricted Gear is already being used.</param>
+        /// <param name="intRestrictedCount">Amount of gear that is currently over the availability limit.</param>
+        /// <param name="strAvailItems">String used to list names of gear that are currently over the availability limit.</param>
+        /// <param name="strRestrictedItem">Item that is being used for Restricted Gear.</param>
+        /// <param name="blnOutRestrictedGearUsed">Whether Restricted Gear is already being used (tracked across gear children).</param>
+        /// <param name="intOutRestrictedCount">Amount of gear that is currently over the availability limit (tracked across gear children).</param>
+        /// <param name="strOutAvailItems">String used to list names of gear that are currently over the availability limit (tracked across gear children).</param>
+        /// <param name="strOutRestrictedItem">Item that is being used for Restricted Gear (tracked across gear children).</param>
+        public void CheckRestrictedGear(bool blnRestrictedGearUsed, int intRestrictedCount, string strAvailItems, string strRestrictedItem, out bool blnOutRestrictedGearUsed, out int intOutRestrictedCount, out string strOutAvailItems, out string strOutRestrictedItem)
+        {
+            if (!IncludedInWeapon)
+            {
+                AvailabilityValue objTotalAvail = TotalAvailTuple();
+                if (!objTotalAvail.AddToParent)
+                {
+                    int intAvailInt = objTotalAvail.Value;
+                    if (intAvailInt > _objCharacter.MaximumAvailability)
+                    {
+                        if (intAvailInt <= _objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+                        {
+                            blnRestrictedGearUsed = true;
+                            strRestrictedItem = Parent == null
+                                ? DisplayName(GlobalOptions.Language)
+                                : $"{DisplayName(GlobalOptions.Language)} ({Parent})";
+                        }
+                        else
+                        {
+                            intRestrictedCount++;
+                            strAvailItems += Environment.NewLine + "\t\t" + DisplayNameShort(GlobalOptions.Language);
+                        }
+                    }
+                }
+            }
 
+            foreach (Gear objChild in Gear)
+            {
+                objChild.CheckRestrictedGear(blnRestrictedGearUsed, intRestrictedCount, strAvailItems, strRestrictedItem, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems, out strRestrictedItem);
+            }
+            strOutAvailItems = strAvailItems;
+            intOutRestrictedCount = intRestrictedCount;
+            blnOutRestrictedGearUsed = blnRestrictedGearUsed;
+            strOutRestrictedItem = strRestrictedItem;
+        }
         public decimal DeleteWeaponAccessory()
         {
             decimal decReturn = 0;

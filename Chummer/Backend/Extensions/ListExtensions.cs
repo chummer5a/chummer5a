@@ -62,5 +62,13 @@ namespace Chummer
             foreach (T objItem in lstToAdd)
                 lstCollection.Add(objItem);
         }
+
+        public static void AddRangeWithSort<T>(this IList<T> lstCollection, IEnumerable<T> lstToAdd, IComparer<T> comparer, bool blnReverse = false)
+        {
+            foreach (T objItem in lstToAdd)
+            {
+                AddWithSort(lstCollection, objItem, comparer, blnReverse);
+            }
+        }
     }
 }

@@ -1,12 +1,16 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
+using System;
 
 namespace ChummerHub.Migrations
 {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'InitialCreate'
     public partial class InitialCreate : Migration
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'InitialCreate'
     {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'InitialCreate.Up(MigrationBuilder)'
         protected override void Up(MigrationBuilder migrationBuilder)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'InitialCreate.Up(MigrationBuilder)'
         {
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",
@@ -394,7 +398,9 @@ namespace ChummerHub.Migrations
                 column: "SINnerVisibilityId");
         }
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'InitialCreate.Down(MigrationBuilder)'
         protected override void Down(MigrationBuilder migrationBuilder)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'InitialCreate.Down(MigrationBuilder)'
         {
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
