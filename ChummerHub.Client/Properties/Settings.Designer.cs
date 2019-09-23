@@ -171,5 +171,17 @@ namespace ChummerHub.Client.Properties {
                 this["IgnoreWarningsOnOpening"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool OpenChummerFromSharedLinks {
+            get {
+                return ((bool)(this["OpenChummerFromSharedLinks"]));
+            }
+            set {
+                this["OpenChummerFromSharedLinks"] = value;
+            }
+        }
     }
 }

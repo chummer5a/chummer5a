@@ -59,6 +59,7 @@ namespace ChummerHub.Client.UI
             this.cbIgnoreWarnings = new System.Windows.Forms.CheckBox();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.backgroundWorker2 = new System.ComponentModel.BackgroundWorker();
+            this.cbOpenChummerFromSharedLinks = new System.Windows.Forms.CheckBox();
             this.tlpAllOptions.SuspendLayout();
             this.gpRadioOnlyPublic.SuspendLayout();
             this.rbListUserMode.SuspendLayout();
@@ -177,11 +178,13 @@ namespace ChummerHub.Client.UI
             // 
             // gbVisibility
             // 
+            this.gbVisibility.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.gbVisibility.AutoSize = true;
             this.gbVisibility.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpOptions.SetColumnSpan(this.gbVisibility, 2);
             this.gbVisibility.Controls.Add(this.tlpVisibility);
-            this.gbVisibility.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gbVisibility.Location = new System.Drawing.Point(3, 70);
             this.gbVisibility.MaximumSize = new System.Drawing.Size(400, 100);
             this.gbVisibility.MinimumSize = new System.Drawing.Size(100, 0);
@@ -200,7 +203,7 @@ namespace ChummerHub.Client.UI
             this.tlpVisibility.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpVisibility.Controls.Add(this.cbVisibilityIsPublic, 0, 0);
             this.tlpVisibility.Controls.Add(this.bEditDefaultVisibility, 1, 0);
-            this.tlpVisibility.Dock = System.Windows.Forms.DockStyle.Top;
+            this.tlpVisibility.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpVisibility.Location = new System.Drawing.Point(3, 16);
             this.tlpVisibility.MinimumSize = new System.Drawing.Size(40, 40);
             this.tlpVisibility.Name = "tlpVisibility";
@@ -227,7 +230,7 @@ namespace ChummerHub.Client.UI
             this.bEditDefaultVisibility.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.bEditDefaultVisibility.Location = new System.Drawing.Point(185, 8);
             this.bEditDefaultVisibility.Name = "bEditDefaultVisibility";
-            this.bEditDefaultVisibility.Size = new System.Drawing.Size(249, 23);
+            this.bEditDefaultVisibility.Size = new System.Drawing.Size(206, 23);
             this.bEditDefaultVisibility.TabIndex = 2;
             this.bEditDefaultVisibility.Text = "set default Users";
             this.bEditDefaultVisibility.UseVisualStyleBackColor = true;
@@ -421,6 +424,7 @@ namespace ChummerHub.Client.UI
             this.tlpPublicMode.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpPublicMode.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpPublicMode.Controls.Add(this.cbIgnoreWarnings, 0, 0);
+            this.tlpPublicMode.Controls.Add(this.cbOpenChummerFromSharedLinks, 0, 1);
             this.tlpPublicMode.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpPublicMode.Location = new System.Drawing.Point(3, 16);
             this.tlpPublicMode.Name = "tlpPublicMode";
@@ -432,15 +436,27 @@ namespace ChummerHub.Client.UI
             // 
             // cbIgnoreWarnings
             // 
-            this.cbIgnoreWarnings.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.cbIgnoreWarnings.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cbIgnoreWarnings.AutoSize = true;
             this.tlpPublicMode.SetColumnSpan(this.cbIgnoreWarnings, 2);
-            this.cbIgnoreWarnings.Location = new System.Drawing.Point(32, 10);
+            this.cbIgnoreWarnings.Location = new System.Drawing.Point(3, 10);
             this.cbIgnoreWarnings.Name = "cbIgnoreWarnings";
             this.cbIgnoreWarnings.Size = new System.Drawing.Size(230, 17);
             this.cbIgnoreWarnings.TabIndex = 0;
             this.cbIgnoreWarnings.Text = "ignore Warnings when opening a character";
             this.cbIgnoreWarnings.UseVisualStyleBackColor = true;
+            // 
+            // cbOpenChummerFromSharedLinks
+            // 
+            this.cbOpenChummerFromSharedLinks.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.cbOpenChummerFromSharedLinks.AutoSize = true;
+            this.tlpPublicMode.SetColumnSpan(this.cbOpenChummerFromSharedLinks, 2);
+            this.cbOpenChummerFromSharedLinks.Location = new System.Drawing.Point(3, 47);
+            this.cbOpenChummerFromSharedLinks.Name = "cbOpenChummerFromSharedLinks";
+            this.cbOpenChummerFromSharedLinks.Size = new System.Drawing.Size(179, 17);
+            this.cbOpenChummerFromSharedLinks.TabIndex = 1;
+            this.cbOpenChummerFromSharedLinks.Text = "open Chummer from shared links";
+            this.cbOpenChummerFromSharedLinks.UseVisualStyleBackColor = true;
             // 
             // ucSINnersOptions
             // 
@@ -507,5 +523,6 @@ namespace ChummerHub.Client.UI
         private System.ComponentModel.BackgroundWorker backgroundWorker2;
         private System.Windows.Forms.TableLayoutPanel tlpPublicMode;
         private System.Windows.Forms.CheckBox cbIgnoreWarnings;
+        private System.Windows.Forms.CheckBox cbOpenChummerFromSharedLinks;
     }
 }

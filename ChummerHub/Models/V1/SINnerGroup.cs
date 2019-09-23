@@ -110,6 +110,8 @@ namespace ChummerHub.Models.V1
                             groupmembers = await (from a in context.SINners
                                     .Include(a => a.MyGroup)
                                     .Include(a => a.SINnerMetaData)
+                                    .Include(a => a.SINnerMetaData.Visibility)
+                                    .Include(a => a.SINnerMetaData.Visibility.UserRights)
                                     .Include(a => a.SINnerMetaData.Tags)
                                     .ThenInclude(b => b.Tags)
                                     .ThenInclude(b => b.Tags)
@@ -124,9 +126,10 @@ namespace ChummerHub.Models.V1
                         {
                             groupmembers = await (from a in context.SINners
                                                       //.Include(a => a.MyGroup)
-                                                      //.Include(a => a.SINnerMetaData)
+                                                      .Include(a => a.SINnerMetaData)
                                                       //.Include(a => a.MyExtendedAttributes)
-                                                      //.Include(a => a.SINnerMetaData.Visibility)
+                                                      .Include(a => a.SINnerMetaData.Visibility)
+                                                      .Include(a => a.SINnerMetaData.Visibility.UserRights)
                                                   where a.MyGroup.Id == this.Id
                                                   && this.Id != null
                                                   select a).ToListAsync();

@@ -33,6 +33,7 @@ using System.Linq;
  using System.Threading.Tasks;
  using System.Windows.Forms;
 ﻿using Chummer.Backend;
+ using Chummer.Classes;
  using Chummer.Plugins;
  using Microsoft.ApplicationInsights;
  using Microsoft.ApplicationInsights.DataContracts;
@@ -258,12 +259,14 @@ namespace Chummer
                             Log.Warn("Files could not be unblocked in " + AppDomain.CurrentDomain.BaseDirectory);
                         }
                     }
+                    
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine(e);
                     Log.Error(e);
                 }
+
                 //load the plugins and maybe work of any command line arguments
                 //arguments come in the form of
                 //              /plugin:Name:Parameter:Argument

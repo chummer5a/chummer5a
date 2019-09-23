@@ -94,8 +94,7 @@ namespace ChummerHub.Client.UI
                             SINnerVisibility tempvis;
                             if (!String.IsNullOrEmpty(Properties.Settings.Default.SINnerVisibility))
                             {
-                                tempvis = JsonConvert.DeserializeObject<SINnerVisibility>(Properties.Settings.Default
-                                    .SINnerVisibility);
+                                tempvis = JsonConvert.DeserializeObject<SINnerVisibility>(Properties.Settings.Default.SINnerVisibility);
                             }
                             else
                             {
