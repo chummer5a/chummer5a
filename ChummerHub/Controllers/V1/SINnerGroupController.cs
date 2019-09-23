@@ -26,7 +26,7 @@ namespace ChummerHub.Controllers.V1
     //[Route("api/v{version:apiVersion}/[controller]")]
     [Route("api/v{api-version:apiVersion}/[controller]/[action]")]
     [ApiController]
-    [EnableCors("AllowAllOrigins")]
+    [EnableCors("AllowOrigin")]
     [ApiVersion("1.0")]
     [ControllerName("SINGroup")]
     [Authorize]
@@ -1591,6 +1591,15 @@ namespace ChummerHub.Controllers.V1
                     var members = await ssg.GetGroupMembers(_context, addTags);
                     foreach (var member in members)
                     {
+                        if (member.SINnerMetaData?.Visibility?.IsGroupVisible == false)
+                        {
+                            if (user == null || member.SINnerMetaData?.Visibility.UserRights.Any(a =>
+                                    a.EMail.ToUpperInvariant() == user.NormalizedEmail) == false)
+                            {
+                                //dont show this guy!
+                                continue;
+                            }
+                        }
                         member.MyGroup = null;
                         SINnerSearchGroupMember ssgm = new SINnerSearchGroupMember
                         {

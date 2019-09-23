@@ -13,7 +13,7 @@ namespace ChummerHub.Controllers.V1
 {
     [Route("api/v{api-version:apiVersion}/[controller]/[action]")]
     [ApiController]
-    [EnableCors]
+    [EnableCors("AllowOrigin")]
     [ApiVersion("1.0")]
     [ControllerName("UploadClient")]
     [Authorize]

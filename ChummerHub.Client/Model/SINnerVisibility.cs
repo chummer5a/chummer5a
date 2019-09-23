@@ -42,23 +42,6 @@ namespace SINners.Models
             }
         }
 
-        public void Save(CheckedListBox clbVisibilityToUsers)
-        {
-            
-            if (clbVisibilityToUsers != null)
-            {
-                clbVisibilityToUsers.DoThreadSafe(() =>
-                {
-                    for (int i = 0; i < clbVisibilityToUsers.Items.Count; i++)
-                    {
-                        SINnerUserRight obj = (SINnerUserRight)clbVisibilityToUsers.Items[i];
-                        clbVisibilityToUsers.SetItemChecked(i, obj.CanEdit.Value);
-                    }
-                });
-                
-            }
-        }
-
         public void AddVisibilityForEmail(string email)
         {
             if (!IsValidEmail(email))

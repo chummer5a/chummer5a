@@ -19,7 +19,7 @@ namespace ChummerHub.Controllers.V1
     [Route("api/v{api-version:apiVersion}/[controller]/[action]")]
     [ApiController]
     [ApiVersion("1.0")]
-    [EnableCors("AllowAllOrigins")]
+    [EnableCors("AllowOrigin")]
     [ControllerName("SINSearch")]
     [Authorize]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINSearchController'
