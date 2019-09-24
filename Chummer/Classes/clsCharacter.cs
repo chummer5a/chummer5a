@@ -40,6 +40,7 @@ using System.Xml.XPath;
 using Chummer.Backend.Uniques;
 using System.Xml.Serialization;
 using System.Runtime.Serialization;
+using System.Xml.Schema;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.DataContracts;
 using NLog;
@@ -1867,7 +1868,18 @@ namespace Chummer
             try
             {
                 XmlDocument objDoc = new XmlDocument();
-                objDoc.Load(objStream);
+
+                // Add XSD to validator
+                var schemaSet = new XmlSchemaSet();
+                schemaSet.Add("", Path.Combine(Utils.GetStartupPath, "data", "character.xsd"));
+                var settings = new XmlReaderSettings {Schemas = schemaSet};
+
+                using (var reader = XmlReader.Create(objStream, settings))
+                {
+                    objStream.Position = 0;
+                    while (reader.Read());
+                }
+
                 objDoc.Save(strFileName);
             }
             catch (IOException e)
@@ -1876,8 +1888,9 @@ namespace Chummer
                  Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning", GlobalOptions.Language));
                 blnErrorFree = false;
             }
-            catch(XmlException)
+            catch(XmlException xml)
             {
+                Log.Error(xml);
                  Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning", GlobalOptions.Language));
                 blnErrorFree = false;
             }

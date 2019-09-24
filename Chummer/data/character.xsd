@@ -202,22 +202,39 @@
         <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="limbslot" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="limbslotcount" type="xs:integer" minOccurs="1" maxOccurs="1" />
+        <xs:element name="inheritattributes" type="boolean" minOccurs="1" maxOccurs="1" />
         <xs:element name="ess" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="capacity" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="avail" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="cost" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="page" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="parentid" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="hasmodularmount" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="plugsintomodularmount" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="blocksmounts" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="forced" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="rating" type="xs:integer" minOccurs="1" maxOccurs="1" />
-        <xs:element name="minrating" type="xs:integer" minOccurs="1" maxOccurs="1" />
-        <xs:element name="maxrating" type="xs:integer" minOccurs="1" maxOccurs="1" />
+        <xs:element name="minrating" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="maxrating" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="ratinglabel" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="subsystems" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="wirelesson" type="boolean" minOccurs="1" maxOccurs="1" />
         <xs:element name="grade" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="location" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="extra" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="suite" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="stolen" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="essdiscount" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="extraessadditivemultiplier" type="xs:integer" minOccurs="1" maxOccurs="1" />
+        <xs:element name="extraessmultiplicativemultiplier" type="xs:decimal" minOccurs="1" maxOccurs="1" />
         <xs:element name="forcegrade" minOccurs="1" maxOccurs="1" />
+        <xs:element name="prototypetranshuman" type="boolean" minOccurs="1" maxOccurs="1" />
         <xs:element name="bonus" type="bonusTypes"  minOccurs="0" maxOccurs="1"/>
+        <xs:element name="pairbonus" type="bonusTypes"  minOccurs="0" maxOccurs="1"/>
+        <xs:element name="wirelessbonus" type="bonusTypes"  minOccurs="0" maxOccurs="1"/>
+        <xs:element name="wirelesspairbonus" type="bonusTypes"  minOccurs="0" maxOccurs="1"/>
         <xs:element name="allowgear" minOccurs="0" maxOccurs="1">
           <xs:complexType>
             <xs:sequence>
@@ -226,6 +243,20 @@
           </xs:complexType>
         </xs:element>
         <xs:element name="improvementsource" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="pairinclude" minOccurs="0" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="unbounded" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="wirelesspairinclude" minOccurs="0" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="unbounded" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
         <xs:element name="weaponguid" type="xs:string" minOccurs="0" maxOccurs="1" />
         <xs:element name="children" minOccurs="1" maxOccurs="1">
           <xs:complexType>
@@ -243,6 +274,10 @@
         </xs:element>
         <xs:element name="notes" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="discountedcost" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="addtoparentess" type="boolean" minOccurs="1" maxOccurs="1" />
+        <xs:element name="addtoparentcapacity" type="boolean" minOccurs="1" maxOccurs="1" />
+        <xs:group ref="ihasmatrixattribute" />
+        <xs:element name="sortorder" type="xs:integer" minOccurs="1" maxOccurs="1" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -462,7 +497,7 @@
                             </xs:complexType>
                           </xs:element>
                           <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
-                          <xs:element name="buywithkarma" type="boolean" minOccurs="1" maxOccurs="1" />
+                          <xs:element name="buywithkarma" type="boolean" minOccurs="0" maxOccurs="1" />
                         </xs:sequence>
                       </xs:complexType>
                     </xs:element>
@@ -755,7 +790,6 @@
         </xs:element>
 
         <!-- AI Programs -->
-        <!-- TODO: Actually rewrite this for proper programs. -->
         <xs:element name="aiprograms" minOccurs="1" maxOccurs="1">
           <xs:complexType>
             <xs:sequence>
@@ -845,8 +879,7 @@
                     <xs:element name="guid" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="b" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="i" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="armor" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="armorcapacity" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="avail" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="cost" type="xs:integer" minOccurs="1" maxOccurs="1" />
@@ -965,32 +998,70 @@
               <xs:element name="lifestyle" minOccurs="0" maxOccurs="1">
                 <xs:complexType>
                   <xs:sequence>
+                    <xs:element name="sourceid" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="guid" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="cost" type="xs:integer" minOccurs="1" maxOccurs="1" />
                     <xs:element name="dice" type="xs:integer" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="lp" type="xs:integer" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="baselifestyle" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="multiplier" type="xs:integer" minOccurs="1" maxOccurs="1" />
                     <xs:element name="months" type="xs:integer" minOccurs="1" maxOccurs="1" />
                     <xs:element name="roommates" type="xs:integer" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="percentage" type="xs:integer" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="lifestylename" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="purchased" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="percentage" type="xs:decimal" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="area" type="xs:integer" minOccurs="1" maxOccurs="1" />
                     <xs:element name="comforts" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="entertainment" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="necessities" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="neighborhood" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="security" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="basearea" type="xs:integer" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="basecomforts" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="basesecurity" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="maxarea" type="xs:integer" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="maxcomforts" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="maxsecurity" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="costforarea" type="xs:integer" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="costforcomforts" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="costforsecurity" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="allowbonuslp" type="boolean" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="bonuslp" type="xs:integer" minOccurs="1" maxOccurs="1" />
                     <xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="page" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="type" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="qualities" minOccurs="1" maxOccurs="1">
+                    <xs:element name="trustfund" type="boolean" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="primarytenant" type="boolean" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="type" minOccurs="1" maxOccurs="1">
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:enumeration value="Advanced"/>
+                          <xs:enumeration value="BoltHole"/>
+                          <xs:enumeration value="Safehouse"/>
+                          <xs:enumeration value="Standard"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="increment" minOccurs="1" maxOccurs="1">
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:enumeration value="Month"/>
+                          <xs:enumeration value="Week"/>
+                          <xs:enumeration value="Day"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="lifestylequalities" minOccurs="1" maxOccurs="1">
                       <xs:complexType>
                         <xs:sequence>
-                          <xs:element name="quality" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+                          <xs:element ref="lifestylequality" minOccurs="0" maxOccurs="unbounded" />
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="freegrids" minOccurs="1" maxOccurs="1">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element ref="lifestylequality" minOccurs="0" maxOccurs="unbounded" />
                         </xs:sequence>
                       </xs:complexType>
                     </xs:element>
                     <xs:element name="notes" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="sortorder" type="xs:integer" minOccurs="1" maxOccurs="1" />
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>
@@ -1398,4 +1469,51 @@
 
   </xs:sequence>
   </xs:group>
+
+  <xs:element name="lifestylequality">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="sourceid" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="guid" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="extra" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="cost" type="xs:integer" minOccurs="1" maxOccurs="1" />
+        <xs:element name="multiplier" type="xs:integer" minOccurs="1" maxOccurs="1" />
+        <xs:element name="basemultiplier" type="xs:integer" minOccurs="1" maxOccurs="1" />
+        <xs:element name="lp" type="xs:integer" minOccurs="1" maxOccurs="1" />
+        <xs:element name="areamaximum" type="xs:integer" minOccurs="1" maxOccurs="1" />
+        <xs:element name="comfortsmaximum" type="xs:integer" minOccurs="1" maxOccurs="1" />
+        <xs:element name="securitymaximum" type="xs:integer" minOccurs="1" maxOccurs="1" />
+        <xs:element name="area" type="xs:integer" minOccurs="1" maxOccurs="1" />
+        <xs:element name="comforts" type="xs:integer" minOccurs="1" maxOccurs="1" />
+        <xs:element name="security" type="xs:integer" minOccurs="1" maxOccurs="1" />
+        <xs:element name="contributetolimit" type="boolean" minOccurs="1" maxOccurs="1" />
+        <xs:element name="print" type="boolean" minOccurs="1" maxOccurs="1" />
+        <xs:element name="lifestylequalitytype" minOccurs="1" maxOccurs="1">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:enumeration value="Contracts"/>
+              <xs:enumeration value="Entertainment"/>
+              <xs:enumeration value="Negative"/>
+              <xs:enumeration value="Positive"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:element>
+        <xs:element name="lifestylequalitysource" minOccurs="1" maxOccurs="1">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:enumeration value="BuiltIn"/>
+              <xs:enumeration value="Selected"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:element>
+        <xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="page" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="allowed" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="bonus" type="bonusTypes"  minOccurs="0" maxOccurs="1"/>
+        <xs:element name="notes" type="xs:string" minOccurs="1" maxOccurs="1" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
 </xs:schema>

@@ -168,6 +168,7 @@
     <None Include="TestFiles\Tenshi.chum5">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="TestFiles\Unnamed Character.chum5" />
     <None Include="TestFiles\Ushi Resub.chum5">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

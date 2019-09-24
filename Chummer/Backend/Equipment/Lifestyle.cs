@@ -236,7 +236,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("maxarea", _intAreaMaximum.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("maxcomforts", _intComfortsMaximum.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("maxsecurity", _intSecurityMaximum.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("costforearea", _decCostForArea.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("costforarea", _decCostForArea.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("costforcomforts", _decCostForComforts.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("costforsecurity", _decCostForSecurity.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("allowbonuslp", _blnAllowBonusLP.ToString());
@@ -247,7 +247,6 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("primarytenant", _blnIsPrimaryTenant.ToString());
             objWriter.WriteElementString("type", _eType.ToString());
             objWriter.WriteElementString("increment", _eIncrement.ToString());
-            objWriter.WriteElementString("sourceid", SourceIDString);
             objWriter.WriteStartElement("lifestylequalities");
             foreach (LifestyleQuality objQuality in LifestyleQualities)
             {
