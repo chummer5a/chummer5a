@@ -206,11 +206,6 @@ namespace Chummer
                 objWriter.WriteElementString("choice2", string.Empty);
             objWriter.WriteElementString("notes", _strNotes);
 
-            if (!string.IsNullOrEmpty(strSourceID))
-            {
-                objWriter.WriteElementString("id", strSourceID);
-            }
-
             objWriter.WriteEndElement();
 
             _objCharacter.SourceProcess(_strSource);

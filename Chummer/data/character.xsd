@@ -395,7 +395,7 @@
         <xs:element name="attributes" minOccurs="1" maxOccurs="1">
           <xs:complexType>
             <xs:sequence>
-              <xs:element name="attribute" minOccurs="14" maxOccurs="14">
+              <xs:element name="attribute" minOccurs="14" maxOccurs="unbounded">
                 <xs:complexType>
                   <xs:sequence>
                     <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
@@ -1342,6 +1342,135 @@
           </xs:complexType>
         </xs:element>
 
+        <!-- Improvements -->
+        <!-- External applications shouldn't need to worry about these since their impact on Attributes and Skills are rolled into the appropriate item's totalvalue element. -->
+        <xs:element name="drugs" minOccurs="1" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="drug" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="sourceid" type="xs:string" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="guid" type="xs:string" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="quantity" type="xs:integer" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="drugcomponents" minOccurs="0" maxOccurs="1">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="drugcomponent" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="sourceid" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                <xs:element name="guid" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                <xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                <xs:element name="effects" minOccurs="0" maxOccurs="1">
+                                  <xs:complexType>
+                                    <xs:sequence>
+                                      <xs:element name="effect" minOccurs="0" maxOccurs="unbounded">
+                                        <xs:complexType>
+                                          <xs:sequence>
+                                            <xs:element name="attribute" minOccurs="0" maxOccurs="unbounded">
+                                              <xs:complexType>
+                                                <xs:sequence>
+                                                  <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                                  <xs:element name="value" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                                </xs:sequence>
+                                              </xs:complexType>
+                                            </xs:element>
+                                            <xs:element name="limit" minOccurs="0" maxOccurs="unbounded">
+                                              <xs:complexType>
+                                                <xs:sequence>
+                                                  <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                                  <xs:element name="value" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                                </xs:sequence>
+                                              </xs:complexType>
+                                            </xs:element>
+                                            <xs:element name="quality" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                            <xs:element name="info" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                            <xs:element name="initiative" type="xs:integer" minOccurs="0" maxOccurs="1" />
+                                            <xs:element name="initiativedice" type="xs:integer" minOccurs="0" maxOccurs="1" />
+                                            <xs:element name="duration" type="xs:integer" minOccurs="0" maxOccurs="1" />
+                                            <xs:element name="speed" type="xs:integer" minOccurs="0" maxOccurs="1" />
+                                            <xs:element name="crashdamage" type="xs:integer" minOccurs="0" maxOccurs="1" />
+                                          </xs:sequence>
+                                        </xs:complexType>
+                                      </xs:element>
+                                    </xs:sequence>
+                                  </xs:complexType>
+                                </xs:element>
+                                <xs:element name="availability" type="xs:integer" minOccurs="1" maxOccurs="1" />
+                                <xs:element name="cost" type="xs:integer" minOccurs="1" maxOccurs="1" />
+                                <xs:element name="level" type="xs:integer" minOccurs="1" maxOccurs="1" />
+                                <xs:element name="rating" type="xs:integer" minOccurs="0" maxOccurs="1" />
+                                <xs:element name="threshold" type="xs:integer" minOccurs="0" maxOccurs="1" />
+                                <xs:element name="grade" type="xs:integer" minOccurs="1" maxOccurs="1" />
+                                <xs:element name="sortorder" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                <xs:element name="stolen" type="xs:string" minOccurs="1" maxOccurs="1" />
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="availability" type="xs:integer" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="cost" type="xs:integer" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="rating" type="xs:integer" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="threshold" type="xs:integer" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="grade" type="xs:integer" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="sortorder" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="stolen" type="xs:string" minOccurs="1" maxOccurs="1" />
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+
+        <!-- Mentor Spirit -->
+        <xs:element name="mentorspirits" minOccurs="1" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="mentorspirit" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="sourceid" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="guid" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="mentortype" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="extra" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="page" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="advantage" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="disadvantage" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="mentormask" type="boolean" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="bonus" type="bonusTypes" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="choice1" minOccurs="0" maxOccurs="1">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="name" minOccurs="1" maxOccurs="1" />
+                          <xs:element name="bonus" type="bonusTypes" minOccurs="1" maxOccurs="1" />
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="choice2" minOccurs="0" maxOccurs="1">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="name" minOccurs="1" maxOccurs="1" />
+                          <xs:element name="bonus" type="bonusTypes" minOccurs="1" maxOccurs="1" />
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="notes" type="xs:string" minOccurs="1" maxOccurs="1" />
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+
+
         <!-- Expenses -->
         <xs:element name="expenses" minOccurs="1" maxOccurs="1">
           <xs:complexType>
@@ -1351,7 +1480,7 @@
                   <xs:sequence>
                     <xs:element name="guid" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="date" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="amount" type="xs:integer" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="amount" type="xs:decimal" minOccurs="1" maxOccurs="1" />
                     <xs:element name="reason" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="type" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="refund" type="xs:string" minOccurs="1" maxOccurs="1" />
@@ -1374,7 +1503,7 @@
         </xs:element>
 
         <!-- Locations -->
-        <xs:element name="locations" minOccurs="1" maxOccurs="1">
+        <xs:element name="gearlocations" minOccurs="1" maxOccurs="1">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="location" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
@@ -1382,20 +1511,29 @@
           </xs:complexType>
         </xs:element>
 
-        <!-- Armor Bundles -->
-        <xs:element name="armorbundles" minOccurs="1" maxOccurs="1">
+        <!-- Locations -->
+        <xs:element name="armorlocations" minOccurs="1" maxOccurs="1">
           <xs:complexType>
             <xs:sequence>
-              <xs:element name="armorbundle" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+              <xs:element name="location" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
 
-        <!-- Weapon Locations -->
+        <!-- Locations -->
+        <xs:element name="vehiclelocations" minOccurs="1" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="location" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+
+        <!-- Locations -->
         <xs:element name="weaponlocations" minOccurs="1" maxOccurs="1">
           <xs:complexType>
             <xs:sequence>
-              <xs:element name="weaponlocation" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+              <xs:element name="location" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
@@ -1426,6 +1564,38 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
+
+        <!-- Sources -->
+        <xs:element name="sources" minOccurs="1" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="source" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+
+        <!-- Custom Directory Names -->
+        <xs:element name="customdatadirectorynames" minOccurs="1" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="customdatadirectoryname" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+
+        <!-- Calculated Values -->
+        <xs:element name="calculatedvalues" minOccurs="1" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="physicalcm" type="xs:integer" minOccurs="1" maxOccurs="1" />
+              <xs:element name="physicalcmthresholdoffset" type="xs:integer" minOccurs="1" maxOccurs="1" />
+              <xs:element name="physicalcmoverflow" type="xs:integer" minOccurs="1" maxOccurs="1" />
+              <xs:element name="stuncm" type="xs:integer" minOccurs="1" maxOccurs="1" />
+              <xs:element name="stuncmthresholdoffset" type="xs:integer" minOccurs="1" maxOccurs="1" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+
       </xs:sequence>
     </xs:complexType>
   </xs:element>
