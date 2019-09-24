@@ -86,7 +86,7 @@ namespace Chummer
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteElementString("source", _strSource);
-            objWriter.WriteElementString("page", _strSource);
+            objWriter.WriteElementString("page", _strPage);
             objWriter.WriteEndElement();
 
             _objCharacter.SourceProcess(_strSource);
