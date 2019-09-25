@@ -902,12 +902,12 @@ namespace ChummerHub.Client.UI
                 var group = new SINnerGroup();
                 group.Groupname = this.tbSearchGroupname.Text;
                 group.IsPublic = false;
-                if ((MyCE?.MySINnerFile.MyGroup != null)
-                    && ((String.IsNullOrEmpty(tbSearchGroupname.Text))
-                        || (tbSearchGroupname.Text == MyCE?.MySINnerFile.MyGroup?.Groupname)))
-                {
-                    group = MyCE?.MySINnerFile.MyGroup;
-                }
+                //if ((MyCE?.MySINnerFile.MyGroup != null)
+                //    && ((String.IsNullOrEmpty(tbSearchGroupname.Text))
+                //        || (tbSearchGroupname.Text == MyCE?.MySINnerFile.MyGroup?.Groupname)))
+                //{
+                //    group = MyCE?.MySINnerFile.MyGroup;
+                //}
 
                 if (this.tvGroupSearchResult.SelectedNode != null)
                 {
