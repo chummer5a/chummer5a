@@ -849,6 +849,10 @@ namespace Chummer
                             nameof(Character.DamageResistancePoolToolTip));
                         lblCMDamageResistancePool.DoDatabinding("Text", CharacterObject,
                             nameof(Character.DamageResistancePool));
+                        lblCMPhysicalRecoveryPool.DoDatabinding("Text", CharacterObject,
+                            nameof(Character.PhysicalCMNaturalRecovery));
+                        lblCMStunRecoveryPool.DoDatabinding("Text", CharacterObject,
+                            nameof(Character.StunCMNaturalRecovery));
                     }
 
                     using (var op_load_frm_career_finishingStuff =
