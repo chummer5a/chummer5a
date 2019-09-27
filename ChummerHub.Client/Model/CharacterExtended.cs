@@ -531,7 +531,7 @@ namespace ChummerHub.Client.Model
             }
             foreach(var visnow in ucSINnersOptions.SINnerVisibility.UserRights)
             {
-                if (!MySINnerFile.SiNnerMetaData.Visibility.UserRights.Any(a => a.EMail.ToLowerInvariant() == visnow.EMail.ToLowerInvariant()))
+                if (!MySINnerFile.SiNnerMetaData.Visibility.UserRights.Any(a => a.EMail?.ToLowerInvariant() == visnow.EMail?.ToLowerInvariant()))
                 {
                     MySINnerFile.SiNnerMetaData.Visibility.UserRights.Add(visnow);
                 }
