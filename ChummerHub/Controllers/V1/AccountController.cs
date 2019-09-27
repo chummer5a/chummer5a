@@ -622,7 +622,7 @@ namespace ChummerHub.Controllers
                             if (member.SINnerMetaData?.Visibility?.IsGroupVisible == false)
                             {
                                 if (user == null || member.SINnerMetaData?.Visibility.UserRights.Any(a =>
-                                        a.EMail.ToUpperInvariant() == user.NormalizedEmail) == false)
+                                        a.EMail?.ToUpperInvariant() == user?.NormalizedEmail) == false)
                                 {
                                     //dont show this guy!
                                     continue;
