@@ -41137,6 +41137,12 @@
 				<translate>Daihatsu-Caterpillar Horseman Frachtmodul</translate>
 				<altpage>43</altpage>
 			</mod>
+			<mod>
+				<id>3433b962-0ed6-49e9-9807-0a160642ae91</id>
+				<name>Ejection seat</name>
+				<translate>Schleudersitz</translate>
+				<altpage>171</altpage>
+			</mod>
 		</mods>
 		<weaponmounts>
 			<weaponmount translated="True">

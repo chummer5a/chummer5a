@@ -9674,5 +9674,17 @@
 			<key>Message_InvalidPowerPoints</key>
 			<text>{0} über den maximalen Adeptenkraftpunkte ({1})</text>
 		</string>
+		<string>
+			<key>Label_RatingFormat</key>
+			<text>{0}:</text>
+		</string>
+		<string>
+			<key>Rating_LengthInCmBy10</key>
+			<text>Länge (cm)x10</text>
+		</string>
+		<string>
+			<key>Rating_Meters</key>
+			<text>Meter</text>
+		</string>
 	</strings>
 </chummer>
