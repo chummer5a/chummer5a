@@ -80,7 +80,7 @@ namespace ChummerHub
         public IServiceCollection MyServices { get; set; }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Startup.MyServices'
 
-        readonly string MyAllowAllOrigins = "AllowAllOrigins";
+        //readonly string MyAllowAllOrigins = "AllowAllOrigins";
 
         // This method gets called by the runtime. Use this method to add services to the container.
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Startup.ConfigureServices(IServiceCollection)'
@@ -97,13 +97,18 @@ namespace ChummerHub
 
             services.AddCors(options =>
             {
-                options.AddPolicy(MyAllowAllOrigins,
+                options.AddPolicy("AllowOrigin",
                     builder =>
                     {
                         builder.AllowAnyOrigin()
                             .AllowAnyHeader()
                             .AllowAnyMethod()
                             .SetIsOriginAllowedToAllowWildcardSubdomains();
+                    });
+                options.AddDefaultPolicy(
+                    builder =>
+                    {
+                        builder.WithOrigins("https://www.shadowsprawl.com");
                     });
             });
 
@@ -401,7 +406,7 @@ namespace ChummerHub
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Startup.Configure(IApplicationBuilder, IHostingEnvironment)'
         {
             //app.UseSession();
-            app.UseCors(MyAllowAllOrigins);
+            app.UseCors(options => options.AllowAnyOrigin());
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

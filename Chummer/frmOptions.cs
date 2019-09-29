@@ -1923,7 +1923,7 @@ namespace Chummer
                 string msg = "Thank you for sharing logs and metrics";
                 msg += Environment.NewLine + "with the Chummer Dev-Team. You can";
                 msg += Environment.NewLine + "help us gain insight of what needs to";
-                msg += Environment.NewLine + "be improved and adressed the most.";
+                msg += Environment.NewLine + "be improved the most.";
                 msg += Environment.NewLine + Environment.NewLine;
                 msg += "Do you want to share your logs?";
                 var result = Program.MainForm.ShowMessageBox(msg, "Really enable detailed upload?", MessageBoxButtons.OKCancel);
@@ -1955,6 +1955,11 @@ namespace Chummer
         {
             //open the telemetry document
             System.Diagnostics.Process.Start("https://docs.google.com/document/d/1LThAg6U5qXzHAfIRrH0Kb7griHrPN0hy7ab8FSJDoFY/edit?usp=sharing");
+        }
+
+        private void cbPluginsHelp_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://docs.google.com/document/d/1WOPB7XJGgcmxg7REWxF6HdP3kQdtHpv6LJOXZtLggxM/edit?usp=sharing");
         }
     }
 }

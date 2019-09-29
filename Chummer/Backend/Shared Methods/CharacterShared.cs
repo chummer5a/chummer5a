@@ -60,8 +60,6 @@ namespace Chummer
             _objCharacter = objCharacter;
             _objOptions = _objCharacter.Options;
             string name = "Show_Form_" + this.GetType();
-            if (objCharacter != null)
-                name += "_" + objCharacter.CharacterName;
             PageViewTelemetry pvt = new PageViewTelemetry(name);
             pvt.Id = Guid.NewGuid().ToString();
             pvt.Name = name;

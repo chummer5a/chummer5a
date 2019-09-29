@@ -24,7 +24,7 @@ namespace ChummerHub.Controllers
 {
     [Route("api/v{api-version:apiVersion}/[controller]/[action]")]
     [ApiController]
-    [EnableCors("AllowAllOrigins")]
+    [EnableCors("AllowOrigin")]
     [ApiVersion("1.0")]
     [Authorize]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'AccountController'
@@ -619,6 +619,15 @@ namespace ChummerHub.Controllers
                         var members = await singroup.GetGroupMembers(_context, false);
                         foreach (var member in members)
                         {
+                            if (member.SINnerMetaData?.Visibility?.IsGroupVisible == false)
+                            {
+                                if (user == null || member.SINnerMetaData?.Visibility.UserRights.Any(a =>
+                                        a.EMail?.ToUpperInvariant() == user?.NormalizedEmail) == false)
+                                {
+                                    //dont show this guy!
+                                    continue;
+                                }
+                            }
                             member.LastDownload = DateTime.Now;
                             member.MyGroup = singroup;
                             member.MyGroup.MyGroups = new List<SINnerGroup>();

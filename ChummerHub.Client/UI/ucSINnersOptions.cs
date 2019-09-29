@@ -212,6 +212,7 @@ namespace ChummerHub.Client.UI
             this.cbSINnerUrl.SelectedItem = sinnerurl;
             this.cbVisibilityIsPublic.Checked = Properties.Settings.Default.VisibilityIsPublic;
             this.cbIgnoreWarnings.Checked = Properties.Settings.Default.IgnoreWarningsOnOpening;
+            this.cbOpenChummerFromSharedLinks.Checked = Properties.Settings.Default.OpenChummerFromSharedLinks;
             cbSINnerUrl.Enabled = false;
             if (ChummerHub.Client.Properties.Settings.Default.UserModeRegistered == true)
             {
@@ -246,12 +247,21 @@ namespace ChummerHub.Client.UI
             this.cbUploadOnSave.CheckedChanged += cbUploadOnSave_CheckedChanged;
             this.rbListUserMode.SelectedIndexChanged += RbListUserMode_SelectedIndexChanged;
             this.cbIgnoreWarnings.CheckedChanged += CbIgnoreWarningsOnCheckedChanged;
+            this.cbOpenChummerFromSharedLinks.CheckedChanged += CbOpenChummerFromSharedLinksOnCheckedChanged;
+
         }
 
         private void CbIgnoreWarningsOnCheckedChanged(object sender, EventArgs e)
         {
             OptionsUpdate();
         }
+
+        
+        private void CbOpenChummerFromSharedLinksOnCheckedChanged(object sender, EventArgs e)
+        {
+            OptionsUpdate();
+        }
+
 
         //[DllImport("user32.dll")]
         //public static extern int SendMessage(IntPtr hWnd,
@@ -522,6 +532,7 @@ namespace ChummerHub.Client.UI
             Properties.Settings.Default.TempDownloadPath = this.tbTempDownloadPath.Text;
             Properties.Settings.Default.VisibilityIsPublic = this.cbVisibilityIsPublic.Checked;
             Properties.Settings.Default.IgnoreWarningsOnOpening = this.cbIgnoreWarnings.Checked;
+            Properties.Settings.Default.OpenChummerFromSharedLinks = this.cbOpenChummerFromSharedLinks.Checked;
             if (this.rbListUserMode.SelectedIndex <= 0)
                 Properties.Settings.Default.UserModeRegistered = false;
             else
@@ -812,6 +823,8 @@ namespace ChummerHub.Client.UI
             if (result == DialogResult.OK)
             {
                 SINnerVisibility = visfrm.MyVisibility;
+                Properties.Settings.Default.SINnerVisibility = Newtonsoft.Json.JsonConvert.SerializeObject(SINnerVisibility);
+                Properties.Settings.Default.Save();
             }
         }
 

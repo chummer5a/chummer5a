@@ -2,10 +2,12 @@ using ChummerHub.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using Microsoft.AspNetCore.Cors;
 
 namespace ChummerHub.Controllers
 {
     [Authorize]
+    //[EnableCors("AllowOrigin")]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'HomeController'
     public class HomeController : Controller
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'HomeController'
