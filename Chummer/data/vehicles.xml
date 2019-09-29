@@ -12807,6 +12807,36 @@
       </required>
     </mod>
     <!-- End Region -->
+	<!-- Region Rigger 5.0 German -->
+    <mod>
+      <id>3433b962-0ed6-49e9-9807-0a160642ae91</id>
+      <name>Ejection seat</name>
+      <page>171</page>
+      <source>R5G</source>
+      <avail>8R</avail>
+      <category>Cosmetic</category>
+      <cost>750</cost>
+      <rating>0</rating>
+      <slots>1</slots>
+      <required>
+        <vehicledetails>
+          <OR>
+            <category>Bikes</category>
+            <category>Cars</category>
+            <category>Trucks</category>
+            <category>Municipal/Construction</category>
+            <category>Corpsec/Police/Military</category>
+            <category>Boats</category>
+            <category>Submarines</category>
+            <category>Fixed-Wing Aircraft</category>
+            <category>LTAV</category>
+            <category>Rotorcraft</category>
+            <category>VTOL/VSTOL</category>
+          </OR>
+        </vehicledetails>
+      </required>
+    </mod>
+    <!-- End Region -->
   </mods>
   <!-- Region Vehicle Mounts -->
   <weaponmounts>
