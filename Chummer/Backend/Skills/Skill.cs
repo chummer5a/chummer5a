@@ -37,7 +37,7 @@ namespace Chummer.Backend.Skills
     public partial class Skill : INotifyMultiplePropertyChanged, IHasName, IHasXmlNode, IHasNotes
     {
         private CharacterAttrib _objAttribute;
-        private readonly string _strDefaultAttribute;
+        private string _strDefaultAttribute;
         private bool _blnCheckSwapSkillImprovements = true;
 
         public CharacterAttrib AttributeObject
@@ -67,6 +67,7 @@ namespace Chummer.Backend.Skills
                 if (value != null)
                     value.PropertyChanged += OnLinkedAttributeChanged;
                 _objAttribute = value;
+                _strDefaultAttribute = _objAttribute?.Abbrev;
                 OnPropertyChanged();
             }
         } //Attribute this skill primarily depends on
