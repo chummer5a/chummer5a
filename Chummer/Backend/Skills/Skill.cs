@@ -52,7 +52,7 @@ namespace Chummer.Backend.Skills
                             imp.ImproveType == Improvement.ImprovementType.SwapSkillAttribute &&
                             imp.Target == Name).ImprovedName);
                 }
-                else if (_strDefaultAttribute != _objAttribute?.Abbrev)
+                else if (_strDefaultAttribute != _objAttribute?.Abbrev || _objAttribute == null)
                 {
                     AttributeObject = CharacterObject.GetAttribute(_strDefaultAttribute);
                 }
