@@ -37,9 +37,28 @@ namespace Chummer.Backend.Skills
     public partial class Skill : INotifyMultiplePropertyChanged, IHasName, IHasXmlNode, IHasNotes
     {
         private CharacterAttrib _objAttribute;
+        private readonly string _strDefaultAttribute;
+        private bool _blnCheckSwapSkillImprovements = true;
+
         public CharacterAttrib AttributeObject
         {
-            get => _objAttribute;
+            get
+            {
+                if (!_blnCheckSwapSkillImprovements && _objAttribute != null) return _objAttribute;
+                if (CharacterObject.Improvements.Any(imp =>
+                        imp.ImproveType == Improvement.ImprovementType.SwapSkillAttribute && imp.Target == Name))
+                {
+                    AttributeObject = CharacterObject.GetAttribute(CharacterObject.Improvements.First(imp =>
+                            imp.ImproveType == Improvement.ImprovementType.SwapSkillAttribute &&
+                            imp.Target == Name).ImprovedName);
+                }
+                else if (_strDefaultAttribute != _objAttribute?.Abbrev)
+                {
+                    AttributeObject = CharacterObject.GetAttribute(_strDefaultAttribute);
+                }
+
+                return _objAttribute;
+            }
             protected set
             {
                 if (_objAttribute == value) return;
@@ -437,8 +456,8 @@ namespace Chummer.Backend.Skills
             _skillDependencyGraph = new DependancyGraph<string>(
                 new DependancyGraphNode<string>(nameof(PoolToolTip),
                     new DependancyGraphNode<string>(nameof(AttributeModifiers),
-                        new DependancyGraphNode<string>(nameof(AttributeObject))
-                    ),
+                        new DependancyGraphNode<string>(nameof(AttributeObject),
+                            new DependancyGraphNode<string>(nameof(RelevantImprovements)))),
                     new DependancyGraphNode<string>(nameof(DisplayPool),
                         new DependancyGraphNode<string>(nameof(KnowledgeSkill.Type), () => IsKnowledgeSkill),
                         new DependancyGraphNode<string>(nameof(DisplayOtherAttribute),
@@ -660,7 +679,7 @@ namespace Chummer.Backend.Skills
             if (xmlNode == null)
                 return;
             _strName = xmlNode["name"]?.InnerText; //No need to catch errors (for now), if missing we are fsked anyway
-            AttributeObject = CharacterObject.GetAttribute(xmlNode["attribute"]?.InnerText);
+            _strDefaultAttribute = xmlNode["attribute"]?.InnerText;
             SkillCategory = xmlNode["category"]?.InnerText ?? string.Empty;
             Default = xmlNode["default"]?.InnerText == bool.TrueString;
             Source = xmlNode["source"]?.InnerText;
@@ -1528,6 +1547,14 @@ namespace Chummer.Backend.Skills
             else if (e.PropertyName == nameof(Character.PrimaryArm))
             {
                 OnPropertyChanged(nameof(PoolToolTip));
+            }
+            else if (e.PropertyName == nameof(Character.Improvements))
+            {
+                //TODO: Dear god outbound improvements please this is is minimal an impact we can have and it's going to be a nightmare.
+                if (CharacterObject.Improvements.Any(i =>
+                        i.ImproveType == Improvement.ImprovementType.SwapSkillAttribute && i.Target == "Name") ||
+                    _strDefaultAttribute != _objAttribute.Abbrev)
+                    _blnCheckSwapSkillImprovements = true;
             }
         }
 

@@ -14,6 +14,7 @@ Application Fixes:
 - Fixed a regression with lifestyle qualities not properly storing their Area, Security and Comfort values. Closes #3869
 - Fixed an issue with martial arts techniques improperly storing their Source as the Page.
 - Fixed a regression in the behaviour of availability values improperly causing Built-In items to count towards availabiltiy at character creation. 
+- The SwapSkillAtribute Improvement now properly makes the attribute get swapped for the selected attribute.
 
 Data Changes:
 - Tetrachromacy now adds adds +3 to Perception, with a (Visual) condition. This will be exposed to the Print method for character sheets at a later date. 
