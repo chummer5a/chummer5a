@@ -25,6 +25,7 @@ Data Changes:
 - Fixed an issue with the Point Priority Chargen customdata file causing metahumans to be unavailable.
 - Added missing Device Ratings to the RG Pi-Tacs.
 - Added missing minimum rating on Reaction Enhancers, courtesy of JoshuarTree.
+- Added correct Rank qualities to the Military Academy and Military School life modules. 
 
 New Strings:
 - Label_MetagenicKarmaValue
