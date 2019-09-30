@@ -197,6 +197,9 @@ namespace Chummer
             this.tabConditionMonitor = new System.Windows.Forms.TabPage();
             this.tblCMTab = new Chummer.BufferedTableLayoutPanel(this.components);
             this.grpCMStun = new System.Windows.Forms.GroupBox();
+            this.btlpStunCMBoxes = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.lblCMStunRecoveryPool = new System.Windows.Forms.Label();
+            this.lblStunRecoveryText = new System.Windows.Forms.Label();
             this.panStunCM = new System.Windows.Forms.FlowLayoutPanel();
             this.chkStunCM1 = new System.Windows.Forms.CheckBox();
             this.chkStunCM2 = new System.Windows.Forms.CheckBox();
@@ -226,6 +229,7 @@ namespace Chummer
             this.lblCMDamageResistancePool = new Chummer.LabelWithToolTip();
             this.lblCMArmor = new Chummer.LabelWithToolTip();
             this.grpPhysicalCM = new System.Windows.Forms.GroupBox();
+            this.btlpPhysicalCMBoxes = new Chummer.BufferedTableLayoutPanel(this.components);
             this.panPhysicalCM = new System.Windows.Forms.FlowLayoutPanel();
             this.chkPhysicalCM1 = new System.Windows.Forms.CheckBox();
             this.chkPhysicalCM2 = new System.Windows.Forms.CheckBox();
@@ -251,6 +255,8 @@ namespace Chummer
             this.chkPhysicalCM22 = new System.Windows.Forms.CheckBox();
             this.chkPhysicalCM23 = new System.Windows.Forms.CheckBox();
             this.chkPhysicalCM24 = new System.Windows.Forms.CheckBox();
+            this.lblPhysicalRecoveryText = new System.Windows.Forms.Label();
+            this.lblCMPhysicalRecoveryPool = new System.Windows.Forms.Label();
             this.grpCMEdge = new System.Windows.Forms.GroupBox();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.lblEDGInfo = new System.Windows.Forms.Label();
@@ -1349,12 +1355,6 @@ namespace Chummer
             this.tsVehicleWeaponMountAddUnderbarrel = new System.Windows.Forms.ToolStripMenuItem();
             this.tsVehicleWeaponMountNotes = new System.Windows.Forms.ToolStripMenuItem();
             this.tsWeaponMountLocation = new System.Windows.Forms.ToolStripMenuItem();
-            this.btlpPhysicalCMBoxes = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.lblPhysicalRecoveryText = new System.Windows.Forms.Label();
-            this.lblCMPhysicalRecoveryPool = new System.Windows.Forms.Label();
-            this.btlpStunCMBoxes = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.lblStunRecoveryText = new System.Windows.Forms.Label();
-            this.lblCMStunRecoveryPool = new System.Windows.Forms.Label();
             this.StatusStrip.SuspendLayout();
             this.cmsMartialArts.SuspendLayout();
             this.cmsSpellButton.SuspendLayout();
@@ -1377,8 +1377,10 @@ namespace Chummer
             this.tabConditionMonitor.SuspendLayout();
             this.tblCMTab.SuspendLayout();
             this.grpCMStun.SuspendLayout();
+            this.btlpStunCMBoxes.SuspendLayout();
             this.panStunCM.SuspendLayout();
             this.grpPhysicalCM.SuspendLayout();
+            this.btlpPhysicalCMBoxes.SuspendLayout();
             this.panPhysicalCM.SuspendLayout();
             this.grpCMEdge.SuspendLayout();
             this.flowLayoutPanel2.SuspendLayout();
@@ -1612,8 +1614,6 @@ namespace Chummer
             this.cmsTechnique.SuspendLayout();
             this.cmsAdvancedProgram.SuspendLayout();
             this.cmsWeaponMount.SuspendLayout();
-            this.btlpPhysicalCMBoxes.SuspendLayout();
-            this.btlpStunCMBoxes.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblTraditionSource
@@ -3037,6 +3037,44 @@ namespace Chummer
             this.grpCMStun.Tag = "Label_CMStun";
             this.grpCMStun.Text = "Stun";
             // 
+            // btlpStunCMBoxes
+            // 
+            this.btlpStunCMBoxes.AutoSize = true;
+            this.btlpStunCMBoxes.ColumnCount = 2;
+            this.btlpStunCMBoxes.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.btlpStunCMBoxes.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.btlpStunCMBoxes.Controls.Add(this.lblCMStunRecoveryPool, 1, 0);
+            this.btlpStunCMBoxes.Controls.Add(this.lblStunRecoveryText, 0, 0);
+            this.btlpStunCMBoxes.Controls.Add(this.panStunCM, 0, 1);
+            this.btlpStunCMBoxes.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btlpStunCMBoxes.Location = new System.Drawing.Point(3, 16);
+            this.btlpStunCMBoxes.Name = "btlpStunCMBoxes";
+            this.btlpStunCMBoxes.RowCount = 2;
+            this.btlpStunCMBoxes.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.btlpStunCMBoxes.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.btlpStunCMBoxes.Size = new System.Drawing.Size(97, 239);
+            this.btlpStunCMBoxes.TabIndex = 76;
+            // 
+            // lblCMStunRecoveryPool
+            // 
+            this.lblCMStunRecoveryPool.AutoSize = true;
+            this.lblCMStunRecoveryPool.Location = new System.Drawing.Point(65, 6);
+            this.lblCMStunRecoveryPool.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblCMStunRecoveryPool.Name = "lblCMStunRecoveryPool";
+            this.lblCMStunRecoveryPool.Size = new System.Drawing.Size(19, 13);
+            this.lblCMStunRecoveryPool.TabIndex = 3;
+            this.lblCMStunRecoveryPool.Text = "[0]";
+            // 
+            // lblStunRecoveryText
+            // 
+            this.lblStunRecoveryText.AutoSize = true;
+            this.lblStunRecoveryText.Location = new System.Drawing.Point(3, 6);
+            this.lblStunRecoveryText.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblStunRecoveryText.Name = "lblStunRecoveryText";
+            this.lblStunRecoveryText.Size = new System.Drawing.Size(56, 13);
+            this.lblStunRecoveryText.TabIndex = 2;
+            this.lblStunRecoveryText.Text = "Recovery:";
+            // 
             // panStunCM
             // 
             this.panStunCM.AutoSize = true;
@@ -3479,6 +3517,25 @@ namespace Chummer
             this.grpPhysicalCM.Tag = "Label_CMPhysical";
             this.grpPhysicalCM.Text = "Physical";
             // 
+            // btlpPhysicalCMBoxes
+            // 
+            this.btlpPhysicalCMBoxes.AutoSize = true;
+            this.btlpPhysicalCMBoxes.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btlpPhysicalCMBoxes.ColumnCount = 2;
+            this.btlpPhysicalCMBoxes.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.btlpPhysicalCMBoxes.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.btlpPhysicalCMBoxes.Controls.Add(this.panPhysicalCM, 0, 1);
+            this.btlpPhysicalCMBoxes.Controls.Add(this.lblPhysicalRecoveryText, 0, 0);
+            this.btlpPhysicalCMBoxes.Controls.Add(this.lblCMPhysicalRecoveryPool, 1, 0);
+            this.btlpPhysicalCMBoxes.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btlpPhysicalCMBoxes.Location = new System.Drawing.Point(3, 16);
+            this.btlpPhysicalCMBoxes.Name = "btlpPhysicalCMBoxes";
+            this.btlpPhysicalCMBoxes.RowCount = 2;
+            this.btlpPhysicalCMBoxes.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.btlpPhysicalCMBoxes.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.btlpPhysicalCMBoxes.Size = new System.Drawing.Size(97, 241);
+            this.btlpPhysicalCMBoxes.TabIndex = 76;
+            // 
             // panPhysicalCM
             // 
             this.panPhysicalCM.AutoSize = true;
@@ -3828,6 +3885,26 @@ namespace Chummer
             this.chkPhysicalCM24.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.chkPhysicalCM24.UseVisualStyleBackColor = true;
             this.chkPhysicalCM24.Click += new System.EventHandler(this.chkPhysicalCM_CheckedChanged);
+            // 
+            // lblPhysicalRecoveryText
+            // 
+            this.lblPhysicalRecoveryText.AutoSize = true;
+            this.lblPhysicalRecoveryText.Location = new System.Drawing.Point(3, 6);
+            this.lblPhysicalRecoveryText.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblPhysicalRecoveryText.Name = "lblPhysicalRecoveryText";
+            this.lblPhysicalRecoveryText.Size = new System.Drawing.Size(56, 13);
+            this.lblPhysicalRecoveryText.TabIndex = 1;
+            this.lblPhysicalRecoveryText.Text = "Recovery:";
+            // 
+            // lblCMPhysicalRecoveryPool
+            // 
+            this.lblCMPhysicalRecoveryPool.AutoSize = true;
+            this.lblCMPhysicalRecoveryPool.Location = new System.Drawing.Point(65, 6);
+            this.lblCMPhysicalRecoveryPool.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblCMPhysicalRecoveryPool.Name = "lblCMPhysicalRecoveryPool";
+            this.lblCMPhysicalRecoveryPool.Size = new System.Drawing.Size(19, 13);
+            this.lblCMPhysicalRecoveryPool.TabIndex = 2;
+            this.lblCMPhysicalRecoveryPool.Text = "[0]";
             // 
             // grpCMEdge
             // 
@@ -18102,83 +18179,6 @@ namespace Chummer
             this.tsWeaponMountLocation.Tag = "Menu_RenameLocation";
             this.tsWeaponMountLocation.Text = "Rename &Location";
             // 
-            // btlpPhysicalCMBoxes
-            // 
-            this.btlpPhysicalCMBoxes.AutoSize = true;
-            this.btlpPhysicalCMBoxes.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.btlpPhysicalCMBoxes.ColumnCount = 2;
-            this.btlpPhysicalCMBoxes.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.btlpPhysicalCMBoxes.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.btlpPhysicalCMBoxes.Controls.Add(this.panPhysicalCM, 0, 1);
-            this.btlpPhysicalCMBoxes.Controls.Add(this.lblPhysicalRecoveryText, 0, 0);
-            this.btlpPhysicalCMBoxes.Controls.Add(this.lblCMPhysicalRecoveryPool, 1, 0);
-            this.btlpPhysicalCMBoxes.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btlpPhysicalCMBoxes.Location = new System.Drawing.Point(3, 16);
-            this.btlpPhysicalCMBoxes.Name = "btlpPhysicalCMBoxes";
-            this.btlpPhysicalCMBoxes.RowCount = 2;
-            this.btlpPhysicalCMBoxes.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.btlpPhysicalCMBoxes.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.btlpPhysicalCMBoxes.Size = new System.Drawing.Size(97, 241);
-            this.btlpPhysicalCMBoxes.TabIndex = 76;
-            // 
-            // lblPhysicalRecoveryText
-            // 
-            this.lblPhysicalRecoveryText.AutoSize = true;
-            this.lblPhysicalRecoveryText.Location = new System.Drawing.Point(3, 6);
-            this.lblPhysicalRecoveryText.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblPhysicalRecoveryText.Name = "lblPhysicalRecoveryText";
-            this.lblPhysicalRecoveryText.Size = new System.Drawing.Size(56, 13);
-            this.lblPhysicalRecoveryText.TabIndex = 1;
-            this.lblPhysicalRecoveryText.Text = "Recovery:";
-            // 
-            // lblCMPhysicalRecoveryPool
-            // 
-            this.lblCMPhysicalRecoveryPool.AutoSize = true;
-            this.lblCMPhysicalRecoveryPool.Location = new System.Drawing.Point(65, 6);
-            this.lblCMPhysicalRecoveryPool.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblCMPhysicalRecoveryPool.Name = "lblCMPhysicalRecoveryPool";
-            this.lblCMPhysicalRecoveryPool.Size = new System.Drawing.Size(19, 13);
-            this.lblCMPhysicalRecoveryPool.TabIndex = 2;
-            this.lblCMPhysicalRecoveryPool.Text = "[0]";
-            // 
-            // btlpStunCMBoxes
-            // 
-            this.btlpStunCMBoxes.AutoSize = true;
-            this.btlpStunCMBoxes.ColumnCount = 2;
-            this.btlpStunCMBoxes.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.btlpStunCMBoxes.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.btlpStunCMBoxes.Controls.Add(this.lblCMStunRecoveryPool, 1, 0);
-            this.btlpStunCMBoxes.Controls.Add(this.lblStunRecoveryText, 0, 0);
-            this.btlpStunCMBoxes.Controls.Add(this.panStunCM, 0, 1);
-            this.btlpStunCMBoxes.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btlpStunCMBoxes.Location = new System.Drawing.Point(3, 16);
-            this.btlpStunCMBoxes.Name = "btlpStunCMBoxes";
-            this.btlpStunCMBoxes.RowCount = 2;
-            this.btlpStunCMBoxes.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.btlpStunCMBoxes.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.btlpStunCMBoxes.Size = new System.Drawing.Size(97, 239);
-            this.btlpStunCMBoxes.TabIndex = 76;
-            // 
-            // lblStunRecoveryText
-            // 
-            this.lblStunRecoveryText.AutoSize = true;
-            this.lblStunRecoveryText.Location = new System.Drawing.Point(3, 6);
-            this.lblStunRecoveryText.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblStunRecoveryText.Name = "lblStunRecoveryText";
-            this.lblStunRecoveryText.Size = new System.Drawing.Size(56, 13);
-            this.lblStunRecoveryText.TabIndex = 2;
-            this.lblStunRecoveryText.Text = "Recovery:";
-            // 
-            // lblCMStunRecoveryPool
-            // 
-            this.lblCMStunRecoveryPool.AutoSize = true;
-            this.lblCMStunRecoveryPool.Location = new System.Drawing.Point(65, 6);
-            this.lblCMStunRecoveryPool.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblCMStunRecoveryPool.Name = "lblCMStunRecoveryPool";
-            this.lblCMStunRecoveryPool.Size = new System.Drawing.Size(19, 13);
-            this.lblCMStunRecoveryPool.TabIndex = 3;
-            this.lblCMStunRecoveryPool.Text = "[0]";
-            // 
             // frmCareer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -18224,9 +18224,13 @@ namespace Chummer
             this.tblCMTab.PerformLayout();
             this.grpCMStun.ResumeLayout(false);
             this.grpCMStun.PerformLayout();
+            this.btlpStunCMBoxes.ResumeLayout(false);
+            this.btlpStunCMBoxes.PerformLayout();
             this.panStunCM.ResumeLayout(false);
             this.grpPhysicalCM.ResumeLayout(false);
             this.grpPhysicalCM.PerformLayout();
+            this.btlpPhysicalCMBoxes.ResumeLayout(false);
+            this.btlpPhysicalCMBoxes.PerformLayout();
             this.panPhysicalCM.ResumeLayout(false);
             this.grpCMEdge.ResumeLayout(false);
             this.grpCMEdge.PerformLayout();
@@ -18616,10 +18620,6 @@ namespace Chummer
             this.cmsTechnique.ResumeLayout(false);
             this.cmsAdvancedProgram.ResumeLayout(false);
             this.cmsWeaponMount.ResumeLayout(false);
-            this.btlpPhysicalCMBoxes.ResumeLayout(false);
-            this.btlpPhysicalCMBoxes.PerformLayout();
-            this.btlpStunCMBoxes.ResumeLayout(false);
-            this.btlpStunCMBoxes.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
