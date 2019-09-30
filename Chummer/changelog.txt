@@ -7,7 +7,7 @@ Application Changes:
 - Added a 'GetAvailableAmmo' int to the Print method for weapons, exposed as 'availableammo'. This provides a count of the total amount of ammunition that can fit into the current weapon.It does NOT filter by types of ammunition, just the total available amount. 
 - Weapons can now use a 'useskillspec' node to force the specialisation they use in place of their name. Mostly intended to be used for Exotic Melee/Ranged weapons.
 - All equipment items that specify a Rating (Cyberware, Gear, Vehicle Mods, Weapon Accessories) can now specify a RatingLabel that is applied in place of the standard Rating. For example, Fiberoptic Hair can specify that the Rating is ten-centimetre increments of length. 
-
+- Added a hidden Built-In weapon mount that allows all weapon categories. This can be used by vehicles that come with weapon mounts that are always installed. 
 Application Fixes:
 - Fixed issues with the Balistic Shield Exotic Melee Weapon choice not being present in the Exotic Weapon skill selector window. Closes #3856
 - Dedicated Spellslinger properly allows for purchasing spells while the character does not have enough karma to afford it. Closes #3859
@@ -26,6 +26,7 @@ Data Changes:
 - Added missing Device Ratings to the RG Pi-Tacs.
 - Added missing minimum rating on Reaction Enhancers, courtesy of JoshuarTree.
 - Added correct Rank qualities to the Military Academy and Military School life modules. 
+- Ares Cheetah and Cyberspace Designs Dragonfly now have their integrated weapons. 
 
 New Strings:
 - Label_MetagenicKarmaValue
