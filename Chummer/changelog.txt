@@ -23,6 +23,7 @@ Data Changes:
 - Removed Ratings from Cosmetic Surgery, replaced with variable cost.
 - Added RatingLabel to Fiberoptic Hair and Telescoping Limbs. 
 - Fixed an issue with the Point Priority Chargen customdata file causing metahumans to be unavailable.
+- Added missing Device Ratings to the RG Pi-Tacs.
 
 New Strings:
 - Label_MetagenicKarmaValue
