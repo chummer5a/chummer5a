@@ -119,7 +119,7 @@ namespace ChummerHub.Controllers.V1
                     return NotFound(res);
                 }
                 myGroup = getGroupseq.FirstOrDefault();
-
+                bool onlyFavremoval = false;
                 SINnerGroup parentGroup = null;
                 if (parentGroupId != null)
                 {
@@ -151,6 +151,19 @@ namespace ChummerHub.Controllers.V1
                         parentGroup = getParentseq.FirstOrDefault();
                     }
                 }
+                else
+                {
+                    if (user.FavoriteGroups.Any(a => a.FavoriteGuid == GroupId))
+                    {
+                        var removefav = user.FavoriteGroups.FirstOrDefault(a => a.FavoriteGuid == GroupId);
+                        if (removefav != null)
+                        {
+                            user.FavoriteGroups.Remove(removefav);
+                            onlyFavremoval = true;
+                        }
+
+                    }
+                }
 
 
 
@@ -158,17 +171,20 @@ namespace ChummerHub.Controllers.V1
                 myGroup.Groupname = groupname;
                 myGroup.IsPublic = isPublicVisible;
                 myGroup.MyAdminIdentityRole = adminIdentityRole;
-                myGroup.MyParentGroup = parentGroup;
-                if (parentGroup != null)
+                if (!onlyFavremoval)
                 {
-                    if (parentGroup.MyGroups == null)
-                        parentGroup.MyGroups = new List<SINnerGroup>();
-                    if (!parentGroup.MyGroups.Contains(myGroup))
-                        parentGroup.MyGroups.Add(myGroup);
-                }
-                else
-                {
-                    myGroup.MyParentGroupId = null;
+                    myGroup.MyParentGroup = parentGroup;
+                    if (parentGroup != null)
+                    {
+                        if (parentGroup.MyGroups == null)
+                            parentGroup.MyGroups = new List<SINnerGroup>();
+                        if (!parentGroup.MyGroups.Contains(myGroup))
+                            parentGroup.MyGroups.Add(myGroup);
+                    }
+                    else
+                    {
+                        myGroup.MyParentGroupId = null;
+                    }
                 }
 
                 await _context.SaveChangesAsync();
@@ -354,7 +370,7 @@ namespace ChummerHub.Controllers.V1
 
                     user = await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
                     List<SINnerGroup> groupfoundseq;
-                    if (mygroup.Id == null || mygroup.Id == Guid.Empty)
+                    if (mygroup.Id != null && mygroup.Id != Guid.Empty)
                     {
                         groupfoundseq = await (from a in _context.SINnerGroups
                                                where a.Id == mygroup.Id

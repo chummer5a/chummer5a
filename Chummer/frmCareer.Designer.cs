@@ -198,6 +198,8 @@ namespace Chummer
             this.tblCMTab = new Chummer.BufferedTableLayoutPanel(this.components);
             this.grpCMStun = new System.Windows.Forms.GroupBox();
             this.btlpStunCMBoxes = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.lblCMStunRecoveryPool = new System.Windows.Forms.Label();
+            this.lblStunRecoveryText = new System.Windows.Forms.Label();
             this.panStunCM = new System.Windows.Forms.FlowLayoutPanel();
             this.chkStunCM1 = new System.Windows.Forms.CheckBox();
             this.chkStunCM2 = new System.Windows.Forms.CheckBox();
@@ -223,8 +225,6 @@ namespace Chummer
             this.chkStunCM22 = new System.Windows.Forms.CheckBox();
             this.chkStunCM23 = new System.Windows.Forms.CheckBox();
             this.chkStunCM24 = new System.Windows.Forms.CheckBox();
-            this.lblCMStunRecoveryPool = new System.Windows.Forms.Label();
-            this.lblStunRecoveryText = new System.Windows.Forms.Label();
             this.lblCMPenalty = new System.Windows.Forms.Label();
             this.lblCMDamageResistancePool = new Chummer.LabelWithToolTip();
             this.lblCMArmor = new Chummer.LabelWithToolTip();
@@ -3055,6 +3055,26 @@ namespace Chummer
             this.btlpStunCMBoxes.Size = new System.Drawing.Size(97, 239);
             this.btlpStunCMBoxes.TabIndex = 76;
             // 
+            // lblCMStunRecoveryPool
+            // 
+            this.lblCMStunRecoveryPool.AutoSize = true;
+            this.lblCMStunRecoveryPool.Location = new System.Drawing.Point(65, 6);
+            this.lblCMStunRecoveryPool.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblCMStunRecoveryPool.Name = "lblCMStunRecoveryPool";
+            this.lblCMStunRecoveryPool.Size = new System.Drawing.Size(19, 13);
+            this.lblCMStunRecoveryPool.TabIndex = 3;
+            this.lblCMStunRecoveryPool.Text = "[0]";
+            // 
+            // lblStunRecoveryText
+            // 
+            this.lblStunRecoveryText.AutoSize = true;
+            this.lblStunRecoveryText.Location = new System.Drawing.Point(3, 6);
+            this.lblStunRecoveryText.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblStunRecoveryText.Name = "lblStunRecoveryText";
+            this.lblStunRecoveryText.Size = new System.Drawing.Size(56, 13);
+            this.lblStunRecoveryText.TabIndex = 2;
+            this.lblStunRecoveryText.Text = "Recovery:";
+            // 
             // panStunCM
             // 
             this.panStunCM.AutoSize = true;
@@ -3450,26 +3470,6 @@ namespace Chummer
             this.chkStunCM24.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.chkStunCM24.UseVisualStyleBackColor = false;
             this.chkStunCM24.Click += new System.EventHandler(this.chkStunCM_CheckedChanged);
-            // 
-            // lblCMStunRecoveryPool
-            // 
-            this.lblCMStunRecoveryPool.AutoSize = true;
-            this.lblCMStunRecoveryPool.Location = new System.Drawing.Point(65, 6);
-            this.lblCMStunRecoveryPool.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblCMStunRecoveryPool.Name = "lblCMStunRecoveryPool";
-            this.lblCMStunRecoveryPool.Size = new System.Drawing.Size(19, 13);
-            this.lblCMStunRecoveryPool.TabIndex = 3;
-            this.lblCMStunRecoveryPool.Text = "[0]";
-            // 
-            // lblStunRecoveryText
-            // 
-            this.lblStunRecoveryText.AutoSize = true;
-            this.lblStunRecoveryText.Location = new System.Drawing.Point(3, 6);
-            this.lblStunRecoveryText.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblStunRecoveryText.Name = "lblStunRecoveryText";
-            this.lblStunRecoveryText.Size = new System.Drawing.Size(56, 13);
-            this.lblStunRecoveryText.TabIndex = 2;
-            this.lblStunRecoveryText.Text = "Recovery:";
             // 
             // lblCMPenalty
             // 
