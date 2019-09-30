@@ -990,6 +990,7 @@
       <wirelesspairinclude>
         <name>Wired Reflexes</name>
       </wirelesspairinclude>
+      <minrating>1</minrating>
     </cyberware>
     <cyberware>
       <id>60485c4e-042f-44f6-ad89-324003223f73</id>
