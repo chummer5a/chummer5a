@@ -41,7 +41,6 @@ namespace ChummerHub.Client.UI
             this.label6 = new System.Windows.Forms.Label();
             this.tbGroupId = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.cboLanguage1 = new Chummer.ElasticComboBox();
             this.imgLanguageFlag = new System.Windows.Forms.PictureBox();
             this.lGroupCreatorUser = new System.Windows.Forms.Label();
             this.tbGroupCreatorUsername = new System.Windows.Forms.TextBox();
@@ -49,6 +48,7 @@ namespace ChummerHub.Client.UI
             this.tbDescription = new System.Windows.Forms.TextBox();
             this.bOk = new System.Windows.Forms.Button();
             this.cbIsPublic = new System.Windows.Forms.CheckBox();
+            this.cboLanguage1 = new Chummer.ElasticComboBox();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imgLanguageFlag)).BeginInit();
             this.SuspendLayout();
@@ -205,17 +205,6 @@ namespace ChummerHub.Client.UI
             this.label1.TabIndex = 0;
             this.label1.Text = "Groupname:";
             // 
-            // cboLanguage1
-            // 
-            this.cboLanguage1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cboLanguage1.FormattingEnabled = true;
-            this.cboLanguage1.Location = new System.Drawing.Point(199, 29);
-            this.cboLanguage1.Name = "cboLanguage1";
-            this.cboLanguage1.Size = new System.Drawing.Size(236, 21);
-            this.cboLanguage1.TabIndex = 13;
-            this.cboLanguage1.TooltipText = "";
-            this.cboLanguage1.SelectedIndexChanged += new System.EventHandler(this.CboLanguage1_SelectedIndexChanged_1);
-            // 
             // imgLanguageFlag
             // 
             this.imgLanguageFlag.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -297,6 +286,17 @@ namespace ChummerHub.Client.UI
             this.cbIsPublic.TabIndex = 51;
             this.cbIsPublic.Text = "Is Public";
             this.cbIsPublic.UseVisualStyleBackColor = true;
+            // 
+            // cboLanguage1
+            // 
+            this.cboLanguage1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cboLanguage1.FormattingEnabled = true;
+            this.cboLanguage1.Location = new System.Drawing.Point(199, 29);
+            this.cboLanguage1.Name = "cboLanguage1";
+            this.cboLanguage1.Size = new System.Drawing.Size(236, 21);
+            this.cboLanguage1.TabIndex = 13;
+            this.cboLanguage1.TooltipText = "";
+            this.cboLanguage1.SelectedIndexChanged += new System.EventHandler(this.CboLanguage1_SelectedIndexChanged_1);
             // 
             // ucSINnerGroupCreate
             // 

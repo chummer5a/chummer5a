@@ -55,7 +55,7 @@ namespace SINners.Models
                 CanEdit = true,
                 Id = Guid.NewGuid()
             };
-            var found = from a in this.UserRightsObservable where email != null && a!= null && a.EMail != null &&  a.EMail.ToLowerInvariant() == email.ToLowerInvariant() select a;
+            var found = from a in this.UserRightsObservable where email != null && a!= null && a.EMail != null &&  a.EMail?.ToLowerInvariant() == email.ToLowerInvariant() select a;
             if (found.Any())
                 ur = found.FirstOrDefault();
             if (!this.UserRightsObservable.Contains(ur))

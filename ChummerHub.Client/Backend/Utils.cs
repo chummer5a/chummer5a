@@ -626,10 +626,12 @@ namespace ChummerHub.Client.Backend
             }
             catch (Exception e)
             {
-                rb = new ResultBase();
-                rb.ErrorText = content;
-                rb.MyException = e;
-                rb.CallSuccess = false;
+                rb = new ResultBase
+                {
+                    ErrorText = content,
+                    MyException = e,
+                    CallSuccess = false
+                };
                 ResponseBody = rb;
                 Log.Warn(e, "Error parsing response from SINners WebService as response.Response.Content: " + content);
             }
@@ -644,10 +646,12 @@ namespace ChummerHub.Client.Backend
             }
             catch (Exception e)
             {
-                rb = new ResultBase();
-                rb.ErrorText = content;
-                rb.MyException = e;
-                rb.CallSuccess = false;
+                rb = new ResultBase
+                {
+                    ErrorText = content,
+                    MyException = e,
+                    CallSuccess = false
+                };
                 ResponseBody = rb;
                 Log.Warn(e, "Error parsing response from SINners WebService as ResponseBody: " + content);
             }
@@ -675,9 +679,6 @@ namespace ChummerHub.Client.Backend
                         });
                     });
                     show.Start();
-
-
-
                 });
             }
             return ResponseBody;
