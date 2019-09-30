@@ -621,11 +621,15 @@ namespace ChummerHub.Controllers
                         {
                             if (member.SINnerMetaData?.Visibility?.IsGroupVisible == false)
                             {
-                                if (user == null || member.SINnerMetaData?.Visibility.UserRights.Any(a =>
-                                        a.EMail.ToUpperInvariant() == user.NormalizedEmail) == false)
+                                if (member.SINnerMetaData?.Visibility.UserRights.Any(a =>
+                                    String.IsNullOrEmpty(a.EMail) == false) == true)
                                 {
-                                    //dont show this guy!
-                                    continue;
+                                    if (member.SINnerMetaData?.Visibility.UserRights.Any(a =>
+                                            a.EMail?.ToUpperInvariant() == user.NormalizedEmail) == false)
+                                    {
+                                        //dont show this guy!
+                                        continue;
+                                    }
                                 }
                             }
                             member.LastDownload = DateTime.Now;
