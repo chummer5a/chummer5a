@@ -2631,6 +2631,7 @@
       </forbidden>
       <required>
         <oneof>
+          <quality>Dracoform (Feathered Drake)</quality>
           <quality>Dracoform (Western Drake)</quality>
         </oneof>
       </required>

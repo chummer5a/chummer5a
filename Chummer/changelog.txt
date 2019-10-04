@@ -27,6 +27,7 @@ Data Changes:
 - Added missing minimum rating on Reaction Enhancers, courtesy of JoshuarTree.
 - Added correct Rank qualities to the Military Academy and Military School life modules. 
 - Ares Cheetah and Cyberspace Designs Dragonfly now have their integrated weapons. 
+- Fixed missing Flight power for the Feathered Drake.
 
 New Strings:
 - Label_MetagenicKarmaValue
