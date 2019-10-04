@@ -1018,7 +1018,7 @@
       <descriptor>Mental</descriptor>
       <duration>S</duration>
       <dv>F+1</dv>
-      <range>LOS</range>
+      <range>LOS (A)</range>
       <type>M</type>
     </spell>
     <spell>
@@ -4731,17 +4731,9 @@
       <bonus>
         <addspirit>
             <spirit>Carcass Spirit</spirit>
-        </addspirit>
-        <addspirit>
             <spirit>Corpse Spirit</spirit>
-        </addspirit>
-        <addspirit>
             <spirit>Rot Spirit</spirit>
-        </addspirit>
-        <addspirit>
             <spirit>Palefire Spirit</spirit>
-        </addspirit>
-        <addspirit>
             <spirit>Detritus Spirit</spirit>
         </addspirit>
       </bonus>

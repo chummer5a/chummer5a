@@ -197,6 +197,9 @@ namespace Chummer
             this.tabConditionMonitor = new System.Windows.Forms.TabPage();
             this.tblCMTab = new Chummer.BufferedTableLayoutPanel(this.components);
             this.grpCMStun = new System.Windows.Forms.GroupBox();
+            this.btlpStunCMBoxes = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.lblCMStunRecoveryPool = new System.Windows.Forms.Label();
+            this.lblStunRecoveryText = new System.Windows.Forms.Label();
             this.panStunCM = new System.Windows.Forms.FlowLayoutPanel();
             this.chkStunCM1 = new System.Windows.Forms.CheckBox();
             this.chkStunCM2 = new System.Windows.Forms.CheckBox();
@@ -226,6 +229,7 @@ namespace Chummer
             this.lblCMDamageResistancePool = new Chummer.LabelWithToolTip();
             this.lblCMArmor = new Chummer.LabelWithToolTip();
             this.grpPhysicalCM = new System.Windows.Forms.GroupBox();
+            this.btlpPhysicalCMBoxes = new Chummer.BufferedTableLayoutPanel(this.components);
             this.panPhysicalCM = new System.Windows.Forms.FlowLayoutPanel();
             this.chkPhysicalCM1 = new System.Windows.Forms.CheckBox();
             this.chkPhysicalCM2 = new System.Windows.Forms.CheckBox();
@@ -251,6 +255,8 @@ namespace Chummer
             this.chkPhysicalCM22 = new System.Windows.Forms.CheckBox();
             this.chkPhysicalCM23 = new System.Windows.Forms.CheckBox();
             this.chkPhysicalCM24 = new System.Windows.Forms.CheckBox();
+            this.lblPhysicalRecoveryText = new System.Windows.Forms.Label();
+            this.lblCMPhysicalRecoveryPool = new System.Windows.Forms.Label();
             this.grpCMEdge = new System.Windows.Forms.GroupBox();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.lblEDGInfo = new System.Windows.Forms.Label();
@@ -1371,8 +1377,10 @@ namespace Chummer
             this.tabConditionMonitor.SuspendLayout();
             this.tblCMTab.SuspendLayout();
             this.grpCMStun.SuspendLayout();
+            this.btlpStunCMBoxes.SuspendLayout();
             this.panStunCM.SuspendLayout();
             this.grpPhysicalCM.SuspendLayout();
+            this.btlpPhysicalCMBoxes.SuspendLayout();
             this.panPhysicalCM.SuspendLayout();
             this.grpCMEdge.SuspendLayout();
             this.flowLayoutPanel2.SuspendLayout();
@@ -2351,13 +2359,13 @@ namespace Chummer
             this.tsMartialArtsAddAdvantage,
             this.tsMartialArtsNotes});
             this.cmsMartialArts.Name = "cmsWeapon";
-            this.cmsMartialArts.Size = new System.Drawing.Size(155, 48);
+            this.cmsMartialArts.Size = new System.Drawing.Size(154, 48);
             // 
             // tsMartialArtsAddAdvantage
             // 
             this.tsMartialArtsAddAdvantage.Image = global::Chummer.Properties.Resources.medal_gold_add;
             this.tsMartialArtsAddAdvantage.Name = "tsMartialArtsAddAdvantage";
-            this.tsMartialArtsAddAdvantage.Size = new System.Drawing.Size(154, 22);
+            this.tsMartialArtsAddAdvantage.Size = new System.Drawing.Size(153, 22);
             this.tsMartialArtsAddAdvantage.Tag = "Menu_AddAdvantage";
             this.tsMartialArtsAddAdvantage.Text = "&Add Technique";
             this.tsMartialArtsAddAdvantage.Click += new System.EventHandler(this.tsMartialArtsAddAdvantage_Click);
@@ -2366,7 +2374,7 @@ namespace Chummer
             // 
             this.tsMartialArtsNotes.Image = global::Chummer.Properties.Resources.note_edit;
             this.tsMartialArtsNotes.Name = "tsMartialArtsNotes";
-            this.tsMartialArtsNotes.Size = new System.Drawing.Size(154, 22);
+            this.tsMartialArtsNotes.Size = new System.Drawing.Size(153, 22);
             this.tsMartialArtsNotes.Tag = "Menu_Notes";
             this.tsMartialArtsNotes.Text = "&Notes";
             this.tsMartialArtsNotes.Click += new System.EventHandler(this.tsMartialArtsNotes_Click);
@@ -3018,21 +3026,60 @@ namespace Chummer
             // 
             this.grpCMStun.AutoSize = true;
             this.grpCMStun.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.grpCMStun.Controls.Add(this.panStunCM);
+            this.grpCMStun.Controls.Add(this.btlpStunCMBoxes);
             this.grpCMStun.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpCMStun.Location = new System.Drawing.Point(112, 91);
             this.grpCMStun.MinimumSize = new System.Drawing.Size(0, 50);
             this.grpCMStun.Name = "grpCMStun";
-            this.grpCMStun.Size = new System.Drawing.Size(103, 229);
+            this.grpCMStun.Size = new System.Drawing.Size(103, 260);
             this.grpCMStun.TabIndex = 74;
             this.grpCMStun.TabStop = false;
             this.grpCMStun.Tag = "Label_CMStun";
             this.grpCMStun.Text = "Stun";
             // 
+            // btlpStunCMBoxes
+            // 
+            this.btlpStunCMBoxes.AutoSize = true;
+            this.btlpStunCMBoxes.ColumnCount = 2;
+            this.btlpStunCMBoxes.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.btlpStunCMBoxes.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.btlpStunCMBoxes.Controls.Add(this.lblCMStunRecoveryPool, 1, 0);
+            this.btlpStunCMBoxes.Controls.Add(this.lblStunRecoveryText, 0, 0);
+            this.btlpStunCMBoxes.Controls.Add(this.panStunCM, 0, 1);
+            this.btlpStunCMBoxes.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btlpStunCMBoxes.Location = new System.Drawing.Point(3, 16);
+            this.btlpStunCMBoxes.Name = "btlpStunCMBoxes";
+            this.btlpStunCMBoxes.RowCount = 2;
+            this.btlpStunCMBoxes.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.btlpStunCMBoxes.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.btlpStunCMBoxes.Size = new System.Drawing.Size(97, 239);
+            this.btlpStunCMBoxes.TabIndex = 76;
+            // 
+            // lblCMStunRecoveryPool
+            // 
+            this.lblCMStunRecoveryPool.AutoSize = true;
+            this.lblCMStunRecoveryPool.Location = new System.Drawing.Point(65, 6);
+            this.lblCMStunRecoveryPool.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblCMStunRecoveryPool.Name = "lblCMStunRecoveryPool";
+            this.lblCMStunRecoveryPool.Size = new System.Drawing.Size(19, 13);
+            this.lblCMStunRecoveryPool.TabIndex = 3;
+            this.lblCMStunRecoveryPool.Text = "[0]";
+            // 
+            // lblStunRecoveryText
+            // 
+            this.lblStunRecoveryText.AutoSize = true;
+            this.lblStunRecoveryText.Location = new System.Drawing.Point(3, 6);
+            this.lblStunRecoveryText.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblStunRecoveryText.Name = "lblStunRecoveryText";
+            this.lblStunRecoveryText.Size = new System.Drawing.Size(56, 13);
+            this.lblStunRecoveryText.TabIndex = 2;
+            this.lblStunRecoveryText.Text = "Recovery:";
+            // 
             // panStunCM
             // 
             this.panStunCM.AutoSize = true;
             this.panStunCM.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btlpStunCMBoxes.SetColumnSpan(this.panStunCM, 2);
             this.panStunCM.Controls.Add(this.chkStunCM1);
             this.panStunCM.Controls.Add(this.chkStunCM2);
             this.panStunCM.Controls.Add(this.chkStunCM3);
@@ -3058,10 +3105,10 @@ namespace Chummer
             this.panStunCM.Controls.Add(this.chkStunCM23);
             this.panStunCM.Controls.Add(this.chkStunCM24);
             this.panStunCM.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panStunCM.Location = new System.Drawing.Point(3, 16);
+            this.panStunCM.Location = new System.Drawing.Point(3, 28);
             this.panStunCM.MaximumSize = new System.Drawing.Size(80, 210);
             this.panStunCM.Name = "panStunCM";
-            this.panStunCM.Size = new System.Drawing.Size(80, 210);
+            this.panStunCM.Size = new System.Drawing.Size(80, 208);
             this.panStunCM.TabIndex = 1;
             // 
             // chkStunCM1
@@ -3459,21 +3506,41 @@ namespace Chummer
             // grpPhysicalCM
             // 
             this.grpPhysicalCM.AutoSize = true;
-            this.grpPhysicalCM.Controls.Add(this.panPhysicalCM);
+            this.grpPhysicalCM.Controls.Add(this.btlpPhysicalCMBoxes);
             this.grpPhysicalCM.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpPhysicalCM.Location = new System.Drawing.Point(3, 91);
             this.grpPhysicalCM.MinimumSize = new System.Drawing.Size(0, 50);
             this.grpPhysicalCM.Name = "grpPhysicalCM";
-            this.grpPhysicalCM.Size = new System.Drawing.Size(103, 229);
+            this.grpPhysicalCM.Size = new System.Drawing.Size(103, 260);
             this.grpPhysicalCM.TabIndex = 72;
             this.grpPhysicalCM.TabStop = false;
             this.grpPhysicalCM.Tag = "Label_CMPhysical";
             this.grpPhysicalCM.Text = "Physical";
             // 
+            // btlpPhysicalCMBoxes
+            // 
+            this.btlpPhysicalCMBoxes.AutoSize = true;
+            this.btlpPhysicalCMBoxes.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btlpPhysicalCMBoxes.ColumnCount = 2;
+            this.btlpPhysicalCMBoxes.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.btlpPhysicalCMBoxes.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.btlpPhysicalCMBoxes.Controls.Add(this.panPhysicalCM, 0, 1);
+            this.btlpPhysicalCMBoxes.Controls.Add(this.lblPhysicalRecoveryText, 0, 0);
+            this.btlpPhysicalCMBoxes.Controls.Add(this.lblCMPhysicalRecoveryPool, 1, 0);
+            this.btlpPhysicalCMBoxes.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btlpPhysicalCMBoxes.Location = new System.Drawing.Point(3, 16);
+            this.btlpPhysicalCMBoxes.Name = "btlpPhysicalCMBoxes";
+            this.btlpPhysicalCMBoxes.RowCount = 2;
+            this.btlpPhysicalCMBoxes.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.btlpPhysicalCMBoxes.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.btlpPhysicalCMBoxes.Size = new System.Drawing.Size(97, 241);
+            this.btlpPhysicalCMBoxes.TabIndex = 76;
+            // 
             // panPhysicalCM
             // 
             this.panPhysicalCM.AutoSize = true;
             this.panPhysicalCM.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btlpPhysicalCMBoxes.SetColumnSpan(this.panPhysicalCM, 2);
             this.panPhysicalCM.Controls.Add(this.chkPhysicalCM1);
             this.panPhysicalCM.Controls.Add(this.chkPhysicalCM2);
             this.panPhysicalCM.Controls.Add(this.chkPhysicalCM3);
@@ -3498,8 +3565,7 @@ namespace Chummer
             this.panPhysicalCM.Controls.Add(this.chkPhysicalCM22);
             this.panPhysicalCM.Controls.Add(this.chkPhysicalCM23);
             this.panPhysicalCM.Controls.Add(this.chkPhysicalCM24);
-            this.panPhysicalCM.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panPhysicalCM.Location = new System.Drawing.Point(3, 16);
+            this.panPhysicalCM.Location = new System.Drawing.Point(3, 28);
             this.panPhysicalCM.MaximumSize = new System.Drawing.Size(80, 210);
             this.panPhysicalCM.Name = "panPhysicalCM";
             this.panPhysicalCM.Padding = new System.Windows.Forms.Padding(1);
@@ -3820,6 +3886,26 @@ namespace Chummer
             this.chkPhysicalCM24.UseVisualStyleBackColor = true;
             this.chkPhysicalCM24.Click += new System.EventHandler(this.chkPhysicalCM_CheckedChanged);
             // 
+            // lblPhysicalRecoveryText
+            // 
+            this.lblPhysicalRecoveryText.AutoSize = true;
+            this.lblPhysicalRecoveryText.Location = new System.Drawing.Point(3, 6);
+            this.lblPhysicalRecoveryText.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblPhysicalRecoveryText.Name = "lblPhysicalRecoveryText";
+            this.lblPhysicalRecoveryText.Size = new System.Drawing.Size(56, 13);
+            this.lblPhysicalRecoveryText.TabIndex = 1;
+            this.lblPhysicalRecoveryText.Text = "Recovery:";
+            // 
+            // lblCMPhysicalRecoveryPool
+            // 
+            this.lblCMPhysicalRecoveryPool.AutoSize = true;
+            this.lblCMPhysicalRecoveryPool.Location = new System.Drawing.Point(65, 6);
+            this.lblCMPhysicalRecoveryPool.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblCMPhysicalRecoveryPool.Name = "lblCMPhysicalRecoveryPool";
+            this.lblCMPhysicalRecoveryPool.Size = new System.Drawing.Size(19, 13);
+            this.lblCMPhysicalRecoveryPool.TabIndex = 2;
+            this.lblCMPhysicalRecoveryPool.Text = "[0]";
+            // 
             // grpCMEdge
             // 
             this.grpCMEdge.AutoSize = true;
@@ -3827,7 +3913,7 @@ namespace Chummer
             this.tblCMTab.SetColumnSpan(this.grpCMEdge, 2);
             this.grpCMEdge.Controls.Add(this.flowLayoutPanel2);
             this.grpCMEdge.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.grpCMEdge.Location = new System.Drawing.Point(3, 326);
+            this.grpCMEdge.Location = new System.Drawing.Point(3, 357);
             this.grpCMEdge.Name = "grpCMEdge";
             this.grpCMEdge.Size = new System.Drawing.Size(212, 49);
             this.grpCMEdge.TabIndex = 75;
@@ -4830,13 +4916,13 @@ namespace Chummer
             this.tsUndoKarmaExpense,
             this.tsEditKarmaExpense});
             this.cmsUndoKarmaExpense.Name = "contextMenuStrip1";
-            this.cmsUndoKarmaExpense.Size = new System.Drawing.Size(149, 48);
+            this.cmsUndoKarmaExpense.Size = new System.Drawing.Size(150, 48);
             // 
             // tsUndoKarmaExpense
             // 
             this.tsUndoKarmaExpense.Image = global::Chummer.Properties.Resources.arrow_undo;
             this.tsUndoKarmaExpense.Name = "tsUndoKarmaExpense";
-            this.tsUndoKarmaExpense.Size = new System.Drawing.Size(148, 22);
+            this.tsUndoKarmaExpense.Size = new System.Drawing.Size(149, 22);
             this.tsUndoKarmaExpense.Tag = "Menu_UndoExpense";
             this.tsUndoKarmaExpense.Text = "Undo Expense";
             this.tsUndoKarmaExpense.Click += new System.EventHandler(this.tsUndoKarmaExpense_Click);
@@ -4845,7 +4931,7 @@ namespace Chummer
             // 
             this.tsEditKarmaExpense.Image = global::Chummer.Properties.Resources.pencil;
             this.tsEditKarmaExpense.Name = "tsEditKarmaExpense";
-            this.tsEditKarmaExpense.Size = new System.Drawing.Size(148, 22);
+            this.tsEditKarmaExpense.Size = new System.Drawing.Size(149, 22);
             this.tsEditKarmaExpense.Tag = "Button_EditExpense";
             this.tsEditKarmaExpense.Text = "Edit Expense";
             this.tsEditKarmaExpense.Click += new System.EventHandler(this.tsEditKarmaExpense_Click);
@@ -4856,13 +4942,13 @@ namespace Chummer
             this.tsUndoNuyenExpense,
             this.tsEditNuyenExpense});
             this.cmsUndoNuyenExpense.Name = "cmsUndoNuyenExpense";
-            this.cmsUndoNuyenExpense.Size = new System.Drawing.Size(149, 48);
+            this.cmsUndoNuyenExpense.Size = new System.Drawing.Size(150, 48);
             // 
             // tsUndoNuyenExpense
             // 
             this.tsUndoNuyenExpense.Image = global::Chummer.Properties.Resources.arrow_undo;
             this.tsUndoNuyenExpense.Name = "tsUndoNuyenExpense";
-            this.tsUndoNuyenExpense.Size = new System.Drawing.Size(148, 22);
+            this.tsUndoNuyenExpense.Size = new System.Drawing.Size(149, 22);
             this.tsUndoNuyenExpense.Tag = "Menu_UndoExpense";
             this.tsUndoNuyenExpense.Text = "Undo Expense";
             this.tsUndoNuyenExpense.Click += new System.EventHandler(this.tsUndoNuyenExpense_Click);
@@ -4871,7 +4957,7 @@ namespace Chummer
             // 
             this.tsEditNuyenExpense.Image = global::Chummer.Properties.Resources.pencil;
             this.tsEditNuyenExpense.Name = "tsEditNuyenExpense";
-            this.tsEditNuyenExpense.Size = new System.Drawing.Size(148, 22);
+            this.tsEditNuyenExpense.Size = new System.Drawing.Size(149, 22);
             this.tsEditNuyenExpense.Tag = "Button_EditExpense";
             this.tsEditNuyenExpense.Text = "Edit Expense";
             this.tsEditNuyenExpense.Click += new System.EventHandler(this.tsEditNuyenExpense_Click);
@@ -14715,7 +14801,6 @@ namespace Chummer
             this.cboVehicleWeaponFiringMode.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboVehicleWeaponFiringMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboVehicleWeaponFiringMode.Enabled = true;
             this.cboVehicleWeaponFiringMode.FormattingEnabled = true;
             this.cboVehicleWeaponFiringMode.Location = new System.Drawing.Point(85, 30);
             this.cboVehicleWeaponFiringMode.Name = "cboVehicleWeaponFiringMode";
@@ -18140,9 +18225,13 @@ namespace Chummer
             this.tblCMTab.PerformLayout();
             this.grpCMStun.ResumeLayout(false);
             this.grpCMStun.PerformLayout();
+            this.btlpStunCMBoxes.ResumeLayout(false);
+            this.btlpStunCMBoxes.PerformLayout();
             this.panStunCM.ResumeLayout(false);
             this.grpPhysicalCM.ResumeLayout(false);
             this.grpPhysicalCM.PerformLayout();
+            this.btlpPhysicalCMBoxes.ResumeLayout(false);
+            this.btlpPhysicalCMBoxes.PerformLayout();
             this.panPhysicalCM.ResumeLayout(false);
             this.grpCMEdge.ResumeLayout(false);
             this.grpCMEdge.PerformLayout();
@@ -19828,5 +19917,11 @@ namespace Chummer
         private CheckBox chkWeaponWireless;
         private ToolStripMenuItem tsCyberwareUpgrade;
         private CheckBox chkCyberwareWireless;
+        private BufferedTableLayoutPanel btlpPhysicalCMBoxes;
+        private Label lblPhysicalRecoveryText;
+        private Label lblCMPhysicalRecoveryPool;
+        private BufferedTableLayoutPanel btlpStunCMBoxes;
+        private Label lblStunRecoveryText;
+        private Label lblCMStunRecoveryPool;
     }
 }

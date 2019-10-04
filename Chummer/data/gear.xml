@@ -6043,6 +6043,7 @@
       <page>105</page>
       <avail>12R</avail>
       <cost>115000</cost>
+      <devicerating>4</devicerating>
     </gear>
     <gear>
       <id>488ad606-137f-430d-b571-7cfdae2b0612</id>
@@ -6053,6 +6054,7 @@
       <page>105</page>
       <avail>18R</avail>
       <cost>325000</cost>
+      <devicerating>5</devicerating>
     </gear>
     <gear>
       <id>f08d3d53-220f-4dc1-bb8b-ec36ecffedf3</id>
@@ -6063,6 +6065,7 @@
       <page>105</page>
       <avail>18F</avail>
       <cost>855000</cost>
+      <devicerating>6</devicerating>
     </gear>
     <!-- End Region -->
     <!-- Region Electronics Accessories -->

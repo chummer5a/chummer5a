@@ -212,6 +212,7 @@ namespace ChummerHub.Client.UI
             this.cbSINnerUrl.SelectedItem = sinnerurl;
             this.cbVisibilityIsPublic.Checked = Properties.Settings.Default.VisibilityIsPublic;
             this.cbIgnoreWarnings.Checked = Properties.Settings.Default.IgnoreWarningsOnOpening;
+            this.cbOpenChummerFromSharedLinks.Checked = Properties.Settings.Default.OpenChummerFromSharedLinks;
             cbSINnerUrl.Enabled = false;
             if (ChummerHub.Client.Properties.Settings.Default.UserModeRegistered == true)
             {
@@ -246,12 +247,21 @@ namespace ChummerHub.Client.UI
             this.cbUploadOnSave.CheckedChanged += cbUploadOnSave_CheckedChanged;
             this.rbListUserMode.SelectedIndexChanged += RbListUserMode_SelectedIndexChanged;
             this.cbIgnoreWarnings.CheckedChanged += CbIgnoreWarningsOnCheckedChanged;
+            this.cbOpenChummerFromSharedLinks.CheckedChanged += CbOpenChummerFromSharedLinksOnCheckedChanged;
+
         }
 
         private void CbIgnoreWarningsOnCheckedChanged(object sender, EventArgs e)
         {
             OptionsUpdate();
         }
+
+        
+        private void CbOpenChummerFromSharedLinksOnCheckedChanged(object sender, EventArgs e)
+        {
+            OptionsUpdate();
+        }
+
 
         //[DllImport("user32.dll")]
         //public static extern int SendMessage(IntPtr hWnd,
@@ -522,6 +532,7 @@ namespace ChummerHub.Client.UI
             Properties.Settings.Default.TempDownloadPath = this.tbTempDownloadPath.Text;
             Properties.Settings.Default.VisibilityIsPublic = this.cbVisibilityIsPublic.Checked;
             Properties.Settings.Default.IgnoreWarningsOnOpening = this.cbIgnoreWarnings.Checked;
+            Properties.Settings.Default.OpenChummerFromSharedLinks = this.cbOpenChummerFromSharedLinks.Checked;
             if (this.rbListUserMode.SelectedIndex <= 0)
                 Properties.Settings.Default.UserModeRegistered = false;
             else
@@ -742,76 +753,14 @@ namespace ChummerHub.Client.UI
 
         private void BEditDefaultVisibility_Click(object sender, EventArgs e)
         {
-            //Properties.Settings.Default.UserEmail = mail;
-            //bool createVis = false;
-            //if (String.IsNullOrEmpty(Properties.Settings.Default.SINnerVisibility))
-            //{
-            //    createVis = true;
-            //}
-            //else
-            //{
-            //    SINnerVisibility vis =
-            //        Newtonsoft.Json.JsonConvert.DeserializeObject<SINnerVisibility>(Properties.Settings
-            //            .Default.SINnerVisibility);
-            //    bool found = false;
-            //    foreach (var ur in vis.UserRights)
-            //    {
-            //        if (ur.EMail.ToLowerInvariant() == mail.ToLowerInvariant())
-            //        {
-            //            ur.CanEdit = true;
-            //            found = true;
-            //            break;
-            //        }
-            //    }
-
-            //    if (!found)
-            //    {
-            //        createVis = true;
-            //    }
-            //}
-
-            //if (createVis)
-            //{
-
-            //    SINnerVisibility vis = SINnersOptions.SINnerVisibility;
-            //    if (vis == null)
-            //    {
-            //        vis = new SINnerVisibility();
-            //        vis.Id = Guid.NewGuid();
-            //        vis.IsGroupVisible = true;
-            //        vis.IsPublic = true;
-            //        vis.UserRights = new List<SINerUserRight>();
-
-            //        SINnersOptions.SINnerVisibility = null;
-            //        SINnersOptions.SINnerVisibility = vis;
-            //    }
-
-            //    var foundseq = from a in vis.UserRights.ToList()
-            //        where a.EMail.ToLowerInvariant() == mail.ToLowerInvariant()
-            //        select a;
-            //    if (!foundseq.Any())
-            //    {
-            //        SINerUserRight ur = new SINerUserRight();
-            //        ur.Id = Guid.NewGuid();
-            //        ur.EMail = mail;
-            //        ur.CanEdit = true;
-            //        vis.UserRights.Add(ur);
-            //    }
-
-            //    SINnersOptions.SINnerVisibility = vis;
-            //    Properties.Settings.Default.SINnerVisibility =
-            //        Newtonsoft.Json.JsonConvert.SerializeObject(vis);
-            //    Properties.Settings.Default.Save();
-            //    FillVisibilityListBox();
-            //}
-
-
             var visfrm = new frmSINnerVisibility();
             visfrm.MyVisibility = SINnerVisibility;
             var result = visfrm.ShowDialog(this);
             if (result == DialogResult.OK)
             {
                 SINnerVisibility = visfrm.MyVisibility;
+                Properties.Settings.Default.SINnerVisibility = Newtonsoft.Json.JsonConvert.SerializeObject(SINnerVisibility);
+                Properties.Settings.Default.Save();
             }
         }
 

@@ -359,7 +359,8 @@ namespace Chummer.Backend.Equipment
                         {
                             if (objWeaponMount.Weapons.Count != 0) continue;
                             if (!objWeaponMount.AllowedWeaponCategories.Contains(objWeapon.SizeCategory) &&
-                                !objWeaponMount.AllowedWeapons.Contains(objWeapon.Name)) continue;
+                                !objWeaponMount.AllowedWeapons.Contains(objWeapon.Name) &&
+                                objWeaponMount.AllowedWeaponCategories != string.Empty) continue;
                             objWeaponMount.Weapons.Add(objWeapon);
                             blnAttached = true;
                             foreach (Weapon objSubWeapon in objSubWeapons)

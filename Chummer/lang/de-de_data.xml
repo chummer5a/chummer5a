@@ -4840,7 +4840,7 @@
 			</power>
 			<power translated="True">
 				<id>79317297-becf-4c68-9778-6f00fd955a13</id>
-				<name>Hemmorhage</name>
+				<name>Hemorrhage</name>
 				<translate>Blutsturz</translate>
 				<altpage>96</altpage>
 			</power>
@@ -41136,6 +41136,12 @@
 				<name>Daihatsu-Caterpillar Horseman Cargo Pod</name>
 				<translate>Daihatsu-Caterpillar Horseman Frachtmodul</translate>
 				<altpage>43</altpage>
+			</mod>
+			<mod>
+				<id>3433b962-0ed6-49e9-9807-0a160642ae91</id>
+				<name>Ejection seat</name>
+				<translate>Schleudersitz</translate>
+				<altpage>171</altpage>
 			</mod>
 		</mods>
 		<weaponmounts>

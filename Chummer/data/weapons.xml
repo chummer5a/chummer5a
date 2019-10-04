@@ -14681,6 +14681,47 @@
       </accessorymounts>
     </weapon>
 	<!-- End Region -->
+    <!-- Region Rigger 5-->
+    <!-- TODO: Really should make a method for data-defined weapons so that we're not hardcoding them like this, but w/e, drones suck. -->
+    <weapon>
+      <id>e1b2576c-9f61-4257-913b-667ea53a4864</id>
+      <name>Melee Bite</name>
+      <category>Blades</category>
+      <type>Melee</type>
+      <conceal>0</conceal>
+      <accuracy>3</accuracy>
+      <reach>0</reach>
+      <damage>3P</damage>
+      <ap>-2</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>R5</source>
+      <page>129</page>
+      <hide />
+    </weapon>
+    <weapon>
+      <id>4260c424-10ab-4530-b6e1-6e1e5bb267ad</id>
+      <name>Jaws</name>
+      <category>Blades</category>
+      <type>Melee</type>
+      <conceal>0</conceal>
+      <accuracy>3</accuracy>
+      <reach>0</reach>
+      <damage>5P</damage>
+      <ap>-3</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>R5</source>
+      <page>139</page>
+      <hide />
+    </weapon>
+    <!-- End Region -->
   </weapons>
   <accessories>
     <!-- Region Shadowrun 5 -->
@@ -17107,7 +17148,7 @@
       <source>SOTG</source>
       <page>12</page>
       <rating>6</rating>
-    </accessory>	
+    </accessory>
     <!-- End Region -->
   </accessories>
 </chummer>

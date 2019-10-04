@@ -32,15 +32,8 @@ namespace ChummerHub.Client.UI
 
         public frmCharacterRoster.CharacterCache MyCharacterCache { get; set; }
         public Func<Task<MyUserState>> DoWork { get; }
-        //public Func<int, Task<MyUserState>> ReportProgress { get; }
         public Action<MyUserState> RunWorkerCompleted { get; }
         public Action<int, MyUserState> ReportProgress { get; }
-
-        //public event DoWorkEventHandler DoWork;
-        //public event ProgressChangedEventHandler ProgressChanged;
-        //public event RunWorkerCompletedEventHandler RunWorkerCompleted;
-
-        //public BackgroundWorker backgroundWorker1 = new BackgroundWorker();
 
         public ucSINnerShare()
         {
@@ -229,6 +222,10 @@ namespace ChummerHub.Client.UI
 
                     string url = client.BaseUri + "O";
                     url += "/" + hash;
+                    if (Properties.Settings.Default.OpenChummerFromSharedLinks == true)
+                    {
+                        url += "?open=true";
+                    }
                     myState.LinkText = url;
                     ReportProgress(100, myState);
                     RunWorkerCompleted(myState);

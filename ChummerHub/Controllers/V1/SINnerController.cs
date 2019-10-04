@@ -27,7 +27,7 @@ namespace ChummerHub.Controllers.V1
     //[Route("api/v{version:apiVersion}/[controller]")]
     [Route("api/v{api-version:apiVersion}/[controller]/[action]")]
     [ApiController]
-    [EnableCors("AllowAllOrigins")]
+    [EnableCors("AllowOrigin")]
     [ApiVersion("1.0")]
     [ControllerName("SIN")]
     [Authorize]
@@ -130,7 +130,7 @@ namespace ChummerHub.Controllers.V1
                 {
                     oktoDownload = true;
                 }
-                if ((!oktoDownload) && (user != null && chummerFile.SINnerMetaData.Visibility.UserRights.Any(a => a.EMail.ToLowerInvariant() == user.Email.ToLowerInvariant())))
+                if ((!oktoDownload) && (user != null && chummerFile.SINnerMetaData.Visibility.UserRights.Any(a => a.EMail?.ToLowerInvariant() == user.Email.ToLowerInvariant())))
                 {
                     oktoDownload = true;
                 }
@@ -264,7 +264,7 @@ namespace ChummerHub.Controllers.V1
                 {
                     oktoDownload = true;
                 }
-                if ((!oktoDownload) && (user != null && sin.SINnerMetaData.Visibility.UserRights.Any(a => a.EMail.ToLowerInvariant() == user.Email.ToLowerInvariant())))
+                if ((!oktoDownload) && (user != null && sin.SINnerMetaData.Visibility.UserRights.Any(a => a.EMail?.ToLowerInvariant() == user.Email.ToLowerInvariant())))
                 {
                     oktoDownload = true;
                 }
@@ -281,7 +281,7 @@ namespace ChummerHub.Controllers.V1
                     return Ok(res);
 
 
-                var list = (from a in sin.SINnerMetaData.Visibility.UserRights where a.EMail.ToUpperInvariant() == user.NormalizedEmail select a);
+                var list = (from a in sin.SINnerMetaData.Visibility.UserRights where a.EMail?.ToUpperInvariant() == user.NormalizedEmail select a);
                 if (list.Any())
                     return Ok(res);
 
@@ -371,7 +371,7 @@ namespace ChummerHub.Controllers.V1
                         download.Add(sin);
                     else if ((user != null &&
                                             sin.SINnerMetaData.Visibility.UserRights.Any(a =>
-                                                a.EMail.ToLowerInvariant() == user.Email.ToLowerInvariant())))
+                                                a.EMail?.ToLowerInvariant() == user.Email.ToLowerInvariant())))
                     {
                         download.Add(sin);
                     }

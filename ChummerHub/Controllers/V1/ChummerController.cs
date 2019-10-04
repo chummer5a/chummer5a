@@ -22,7 +22,7 @@ namespace ChummerHub.Controllers.V1
 {
     [Route("[action]/{Hash}")]
     [ApiController]
-    [EnableCors("AllowAllOrigins")]
+    [EnableCors("AllowOrigin")]
     [ApiVersion("1.0")]
     [ControllerName("Chummer")]
     [AllowAnonymous]
@@ -49,57 +49,6 @@ namespace ChummerHub.Controllers.V1
             tc = telemetry;
         }
 
-//        [HttpGet]
-//        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Redirect)]
-//        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.RedirectKeepVerb)]
-//        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)(HttpStatusCode.PermanentRedirect))]
-//        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
-//        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("ChummerO")]
-//        [EnableCors("AllowAllOrigins")]
-//#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ChummerController.O(string)'
-//        public IActionResult O([FromRoute] string Hash)
-//#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ChummerController.O(string)'
-//        {
-//            try
-//            {
-//                if (String.IsNullOrEmpty(Hash))
-//                    throw new ArgumentException("hash is empty: " + Hash);
-//                var foundseq = (from a in _context.SINners where a.Hash == Hash select a).ToList();
-//                if (!foundseq.Any())
-//                {
-//                    var nullseq = (from a in _context.SINners where String.IsNullOrEmpty(a.Hash) || a.Hash == "25943ECC" select a).ToList();
-//                    foreach (var nullSinner in nullseq)
-//                    {
-//                        string message = "Saving Hash for SINner " + nullSinner.Id + ": " + nullSinner.MyHash;
-//                        TraceTelemetry tt = new TraceTelemetry(message, SeverityLevel.Verbose);
-//                        tc?.TrackTrace(tt);
-//                    }
-//                }
-//                foundseq = (from a in _context.SINners where a.Hash == Hash select a).ToList();
-//                _context.SaveChanges();
-//                if (foundseq.Any())
-//                {
-//                    var sinner = foundseq.FirstOrDefault();
-
-//                    string url = "chummer://plugin:SINners:Load:" + sinner.Id;
-//                    sinner.LastDownload = DateTime.Now;
-//                    _context.SaveChanges();
-//                    string mypath = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}";
-//                    //Response.HttpContext.Items.Add("Enviroment", mypath);
-//                    Response.Headers.Add("Enviroment", mypath);
-//                    return RedirectPreserveMethod(url);
-
-//                }
-//                else
-//                    return NotFound("Could not find SINner with Hash " + Hash);
-//            }
-//            catch (Exception e)
-//            {
-//                tc.TrackException(e);
-//                throw;
-//            }
-//        }
-
         [HttpGet]
         [EnableCors("AllowAllOrigins")]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Redirect)]
@@ -109,7 +58,7 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("ChummerO")]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ChummerController.O(string)'
-        public IActionResult O([FromRoute] string Hash)
+        public IActionResult O([FromRoute] string Hash, string open)
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ChummerController.O(string)'
         {
             try
@@ -161,6 +110,7 @@ namespace ChummerHub.Controllers.V1
                     sb.AppendFormat("<input type='hidden' name='TransactionId' value='{0}'>", transactionId);
                     sb.AppendFormat("<input type='hidden' name='StatusCallback' value='{0}'>", urlcallback);
                     sb.AppendFormat("<input type='hidden' name='UploadDateTime' value='{0}'>", sinner?.UploadDateTime);
+                    sb.AppendFormat("<input type='hidden' name='OpenChummer' value='{0}'>", open);
                     // Other params go here
                     sb.Append("</form>");
                     sb.Append("</body>");
@@ -172,6 +122,11 @@ namespace ChummerHub.Controllers.V1
                         StatusCode = (int) HttpStatusCode.OK,
                         Content = sb.ToString()
                     };
+                    string msg = "Redirecting Hash " + Hash + " to Shadowsprawl with there parameters: " +
+                                 Environment.NewLine + Environment.NewLine;
+                    msg += contentresult;
+                    TraceTelemetry tt = new TraceTelemetry(msg, SeverityLevel.Verbose);
+                    tc?.TrackTrace(tt);
                     return contentresult;
 
                 }

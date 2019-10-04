@@ -194,6 +194,12 @@ namespace Chummer
                     nudRating.Enabled = false;
                     nudRating.Visible = false;
                 }
+
+                lblRatingLabel.Text = xmlArmor.SelectSingleNode("ratinglabel") != null
+                    ? LanguageManager.GetString("Label_RatingFormat").Replace("{0}",
+                        LanguageManager.GetString(xmlArmor.SelectSingleNode("ratinglabel").Value,
+                            GlobalOptions.Language))
+                    : LanguageManager.GetString("Label_Rating");
             }
             else
             {

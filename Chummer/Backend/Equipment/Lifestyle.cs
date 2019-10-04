@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -48,7 +49,7 @@ namespace Chummer.Backend.Equipment
     /// Lifestyle.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Lifestyle : IHasInternalId, IHasXmlNode, IHasNotes, ICanRemove, IHasCustomName, IHasSource, ICanSort
+    public class Lifestyle : IHasInternalId, IHasXmlNode, IHasNotes, ICanRemove, IHasCustomName, IHasSource, ICanSort, INotifyPropertyChanged
     {
         private Logger Log = NLog.LogManager.GetCurrentClassLogger();
         // ReSharper disable once InconsistentNaming
@@ -84,7 +85,6 @@ namespace Chummer.Backend.Equipment
         private bool _blnTrustFund;
         private LifestyleType _eType = LifestyleType.Standard;
         private LifestyleIncrement _eIncrement = LifestyleIncrement.Month;
-        private readonly ObservableCollection<LifestyleQuality> _lstLifestyleQualities = new ObservableCollection<LifestyleQuality>();
         private readonly ObservableCollection<LifestyleQuality> _lstFreeGrids = new ObservableCollection<LifestyleQuality>();
         private string _strNotes = string.Empty;
         private int _intSortOrder;
@@ -136,6 +136,7 @@ namespace Chummer.Backend.Equipment
             // Create the GUID for the new Lifestyle.
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
+            LifestyleQualities.CollectionChanged += QualitiesCollectionChanged;
         }
 
         /// Create a Lifestyle from an XmlNode and return the TreeNodes for it.
@@ -248,7 +249,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("increment", _eIncrement.ToString());
             objWriter.WriteElementString("sourceid", SourceIDString);
             objWriter.WriteStartElement("lifestylequalities");
-            foreach (LifestyleQuality objQuality in _lstLifestyleQualities)
+            foreach (LifestyleQuality objQuality in LifestyleQualities)
             {
                 objQuality.Save(objWriter);
             }
@@ -401,7 +402,7 @@ namespace Chummer.Backend.Equipment
                     {
                         LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
                         objQuality.Load(xmlQuality, this);
-                        _lstLifestyleQualities.Add(objQuality);
+                        LifestyleQualities.Add(objQuality);
                     }
 
             // Free Grids provided by the Lifestyle
@@ -748,13 +749,24 @@ namespace Chummer.Backend.Equipment
                 }
             }
         }
-
+        /// <summary>
+        /// Base Lifestyle Points awarded by the lifestyle. 
+        /// </summary>
         public int LP => _intLP;
 
         /// <summary>
         /// Total LP cost of the Lifestyle, including all qualities, roommates, bonus LP, etc. 
         /// </summary>
-        public int TotalLP => LP - Comforts - Area - Security + Roommates + BonusLP;
+        public int TotalLP
+        {
+            get
+            {
+                int i = LP - Comforts - Area - Security + Roommates + BonusLP;
+                i = LifestyleQualities.Aggregate(i, (current, lq) => current - lq.LP);
+
+                return i;
+            }
+        }
 
         /// <summary>
         /// Free Lifestyle points from Traveler lifestyle.
@@ -871,7 +883,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Advanced Lifestyle Qualities.
         /// </summary>
-        public ObservableCollection<LifestyleQuality> LifestyleQualities => _lstLifestyleQualities;
+        public ObservableCollection<LifestyleQuality> LifestyleQualities { get; } = new ObservableCollection<LifestyleQuality>();
 
         /// <summary>
         /// Notes.
@@ -1190,6 +1202,12 @@ namespace Chummer.Backend.Equipment
 
             Increments += 1;
         }
+        private void QualitiesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Move) return;
+            OnPropertyChanged(nameof(LifestyleQualities));
+        }
+
         #region UI Methods
         public TreeNode CreateTreeNode(ContextMenuStrip cmsBasicLifestyle, ContextMenuStrip cmsAdvancedLifestyle)
         {
@@ -1253,7 +1271,15 @@ namespace Chummer.Backend.Equipment
                             new DependancyGraphNode<string>(nameof(CostForArea)),
                             new DependancyGraphNode<string>(nameof(CostForComforts)),
                             new DependancyGraphNode<string>(nameof(CostForSecurity))
-                        ))));
+                        ))),
+                new DependancyGraphNode<string>(nameof(TotalLP),
+                    new DependancyGraphNode<string>(nameof(Comforts)),
+                    new DependancyGraphNode<string>(nameof(Area)),
+                    new DependancyGraphNode<string>(nameof(Security)),
+                    new DependancyGraphNode<string>(nameof(Roommates)),
+                    new DependancyGraphNode<string>(nameof(BonusLP)),
+                    new DependancyGraphNode<string>(nameof(LifestyleQualities))
+                        ));
 
         public event PropertyChangedEventHandler PropertyChanged;
 

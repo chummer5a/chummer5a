@@ -849,6 +849,10 @@ namespace Chummer
                             nameof(Character.DamageResistancePoolToolTip));
                         lblCMDamageResistancePool.DoDatabinding("Text", CharacterObject,
                             nameof(Character.DamageResistancePool));
+                        lblCMPhysicalRecoveryPool.DoDatabinding("Text", CharacterObject,
+                            nameof(Character.PhysicalCMNaturalRecovery));
+                        lblCMStunRecoveryPool.DoDatabinding("Text", CharacterObject,
+                            nameof(Character.StunCMNaturalRecovery));
                     }
 
                     using (var op_load_frm_career_finishingStuff =
@@ -13482,6 +13486,11 @@ namespace Chummer
                 lblCyberwareSourceLabel.Visible = false;
                 lblCyberwareSource.Visible = false;
             }
+
+            if (treCyberware.SelectedNode?.Tag is IHasRating objHasRating)
+            {
+                lblCyberwareRatingLabel.Text = LanguageManager.GetString("Label_RatingFormat").Replace("{0}", LanguageManager.GetString(objHasRating.RatingLabel, GlobalOptions.Language));
+            }
             if (treCyberware.SelectedNode?.Tag is Cyberware objCyberware)
             {
                 gpbCyberwareCommon.Visible = true;
@@ -13672,6 +13681,11 @@ namespace Chummer
             {
                 lblWeaponSourceLabel.Visible = false;
                 lblWeaponSource.Visible = false;
+            }
+
+            if (treWeapons.SelectedNode?.Tag is IHasRating objHasRating)
+            {
+                lblWeaponRatingLabel.Text = LanguageManager.GetString("Label_RatingFormat").Replace("{0}", LanguageManager.GetString(objHasRating.RatingLabel, GlobalOptions.Language));
             }
 
             if (treWeapons.SelectedNode?.Tag is Weapon objWeapon)
@@ -14152,6 +14166,11 @@ namespace Chummer
                 lblArmorSource.Visible = false;
             }
 
+            if (treArmor.SelectedNode?.Tag is IHasRating objHasRating)
+            {
+                lblArmorRatingLabel.Text = LanguageManager.GetString("Label_RatingFormat").Replace("{0}", LanguageManager.GetString(objHasRating.RatingLabel, GlobalOptions.Language));
+            }
+
             string strSpace = LanguageManager.GetString("String_Space");
 
             if (treArmor.SelectedNode?.Tag is Armor objArmor)
@@ -14378,6 +14397,11 @@ namespace Chummer
             {
                 lblGearSourceLabel.Visible = false;
                 lblGearSource.Visible = false;
+            }
+
+            if (treGear.SelectedNode?.Tag is IHasRating objHasRating)
+            {
+                lblGearRatingLabel.Text = LanguageManager.GetString("Label_RatingFormat").Replace("{0}", LanguageManager.GetString(objHasRating.RatingLabel, GlobalOptions.Language));
             }
 
             string strSpace = LanguageManager.GetString("String_Space");
@@ -15278,6 +15302,11 @@ namespace Chummer
 
             string strSpace = LanguageManager.GetString("String_Space");
 
+            if (treVehicles.SelectedNode?.Tag is IHasRating objHasRating)
+            {
+                lblVehicleRatingLabel.Text = LanguageManager.GetString("Label_RatingFormat").Replace("{0}", LanguageManager.GetString(objHasRating.RatingLabel, GlobalOptions.Language));
+            }
+
             if (treVehicles.SelectedNode?.Tag is IHasSource objSelected)
             {
                 lblVehicleSourceLabel.Visible = true;
@@ -15465,7 +15494,6 @@ namespace Chummer
 
                     if (Convert.ToInt32(objMod.MaxRating) > 0)
                     {
-                        lblVehicleRatingLabel.Text = LanguageManager.GetString("Label_Rating");
                         lblVehicleRatingLabel.Visible = true;
                         lblVehicleRating.Text = objMod.Rating.ToString();
                         lblVehicleRating.Visible = true;
@@ -15478,7 +15506,6 @@ namespace Chummer
                 }
                 else
                 {
-                    lblVehicleRatingLabel.Text = LanguageManager.GetString("Label_Qty");
                     lblVehicleRatingLabel.Visible = true;
                     lblVehicleRating.Text = objMod.Rating.ToString();
                     lblVehicleRating.Visible = true;
@@ -15821,7 +15848,6 @@ namespace Chummer
                     lblVehicleRating.Visible = true;
                     lblVehicleRating.Text = objCyberware.Rating.ToString(GlobalOptions.CultureInfo);
                     lblVehicleRatingLabel.Visible = true;
-                    lblVehicleRatingLabel.Text = LanguageManager.GetString("Label_Rating");
                 }
                 lblVehicleGearQtyLabel.Visible = false;
                 lblVehicleGearQty.Visible = false;
@@ -15863,7 +15889,6 @@ namespace Chummer
                 lblVehicleName.Text = objGear.DisplayNameShort(GlobalOptions.Language);
                 lblVehicleCategory.Text = objGear.DisplayCategory(GlobalOptions.Language);
                 lblVehicleRatingLabel.Visible = true;
-                lblVehicleRatingLabel.Text = LanguageManager.GetString("Label_Rating");
                 lblVehicleRating.Visible = true;
                 lblVehicleRating.Text = objGear.Rating.ToString(GlobalOptions.CultureInfo);
                 lblVehicleGearQtyLabel.Visible = true;

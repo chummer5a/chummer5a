@@ -42,23 +42,6 @@ namespace SINners.Models
             }
         }
 
-        public void Save(CheckedListBox clbVisibilityToUsers)
-        {
-            
-            if (clbVisibilityToUsers != null)
-            {
-                clbVisibilityToUsers.DoThreadSafe(() =>
-                {
-                    for (int i = 0; i < clbVisibilityToUsers.Items.Count; i++)
-                    {
-                        SINnerUserRight obj = (SINnerUserRight)clbVisibilityToUsers.Items[i];
-                        clbVisibilityToUsers.SetItemChecked(i, obj.CanEdit.Value);
-                    }
-                });
-                
-            }
-        }
-
         public void AddVisibilityForEmail(string email)
         {
             if (!IsValidEmail(email))
@@ -72,7 +55,7 @@ namespace SINners.Models
                 CanEdit = true,
                 Id = Guid.NewGuid()
             };
-            var found = from a in this.UserRightsObservable where email != null && a!= null && a.EMail != null &&  a.EMail.ToLowerInvariant() == email.ToLowerInvariant() select a;
+            var found = from a in this.UserRightsObservable where email != null && a!= null && a.EMail != null &&  a.EMail?.ToLowerInvariant() == email.ToLowerInvariant() select a;
             if (found.Any())
                 ur = found.FirstOrDefault();
             if (!this.UserRightsObservable.Contains(ur))

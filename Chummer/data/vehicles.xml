@@ -3537,6 +3537,19 @@
           <maxrating>3</maxrating>
         </gear>
       </gears>
+      <weaponmounts>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
+          <size>Built-In</size>
+          <visibility>Concealed</visibility>
+        </weaponmount>
+      </weaponmounts>
+      <weapons>
+        <weapon>
+          <name>Melee Bite</name>
+        </weapon>
+      </weapons>
     </vehicle>
     <vehicle>
       <id>b5ef225a-9a22-4dfd-bf4e-2832cbe8e064</id>
@@ -4381,6 +4394,19 @@
         </gear>
       </gears>
       <modslots>0</modslots>
+      <weaponmounts>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
+          <size>Built-In</size>
+          <visibility>Concealed</visibility>
+        </weaponmount>
+      </weaponmounts>
+      <weapons>
+        <weapon>
+          <name>Jaws</name>
+        </weapon>
+      </weapons>
     </vehicle>
     <vehicle>
       <id>671e4bc0-bd06-4158-9515-2e353f2f6123</id>
@@ -12807,10 +12833,51 @@
       </required>
     </mod>
     <!-- End Region -->
+	<!-- Region Rigger 5.0 German -->
+    <mod>
+      <id>3433b962-0ed6-49e9-9807-0a160642ae91</id>
+      <name>Ejection seat</name>
+      <page>171</page>
+      <source>R5G</source>
+      <avail>8R</avail>
+      <category>Protection</category>
+      <cost>750</cost>
+      <rating>0</rating>
+      <slots>1</slots>
+      <required>
+        <vehicledetails>
+          <OR>
+            <category>Bikes</category>
+            <category>Cars</category>
+            <category>Trucks</category>
+            <category>Municipal/Construction</category>
+            <category>Corpsec/Police/Military</category>
+            <category>Boats</category>
+            <category>Submarines</category>
+            <category>Fixed-Wing Aircraft</category>
+            <category>LTAV</category>
+            <category>Rotorcraft</category>
+            <category>VTOL/VSTOL</category>
+          </OR>
+        </vehicledetails>
+      </required>
+    </mod>
+    <!-- End Region -->
   </mods>
   <!-- Region Vehicle Mounts -->
   <weaponmounts>
     <!-- Region Size -->
+    <weaponmount>
+      <id>ccc4f175-0a93-4a27-a069-29d5ba8375e2</id>
+      <name>Built-In</name>
+      <hide />
+      <page>0</page>
+      <source>SR5</source>
+      <avail>0</avail>
+      <category>Size</category>
+      <cost>0</cost>
+      <slots>0</slots>
+    </weaponmount>
     <weaponmount>
       <id>079a5c61-aee6-4383-81b7-32540f7a0a0b</id>
       <name>Standard [SR5]</name>

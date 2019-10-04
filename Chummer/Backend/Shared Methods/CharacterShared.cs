@@ -60,8 +60,6 @@ namespace Chummer
             _objCharacter = objCharacter;
             _objOptions = _objCharacter.Options;
             string name = "Show_Form_" + this.GetType();
-            if (objCharacter != null)
-                name += "_" + objCharacter.CharacterName;
             PageViewTelemetry pvt = new PageViewTelemetry(name);
             pvt.Id = Guid.NewGuid().ToString();
             pvt.Name = name;
@@ -3632,7 +3630,8 @@ namespace Chummer
                                 TreeNode objNode = objGear.CreateTreeNode(cmsFocus);
                                 if (objNode == null)
                                     continue;
-                                objNode.Text = objNode.Text.Replace(LanguageManager.GetString("String_Rating", GlobalOptions.Language), LanguageManager.GetString("String_Force", GlobalOptions.Language));
+                                objNode.Text = objNode.Text.CheapReplace(LanguageManager.GetString("String_Rating", GlobalOptions.Language),
+                                            () => LanguageManager.GetString(objGear.RatingLabel, GlobalOptions.Language));
                                 for (int i = _objCharacter.Foci.Count - 1; i >= 0; --i)
                                 {
                                     if (i < _objCharacter.Foci.Count)
@@ -3712,7 +3711,8 @@ namespace Chummer
                                             TreeNode objNode = objGear.CreateTreeNode(cmsFocus);
                                             if (objNode == null)
                                                 continue;
-                                            objNode.Text = objNode.Text.Replace(LanguageManager.GetString("String_Rating", GlobalOptions.Language), LanguageManager.GetString("String_Force", GlobalOptions.Language));
+                                            objNode.Text = objNode.Text.CheapReplace(LanguageManager.GetString("String_Rating", GlobalOptions.Language),
+                                                () => LanguageManager.GetString("String_Force", GlobalOptions.Language));
                                             for (int i = _objCharacter.Foci.Count - 1; i >= 0; --i)
                                             {
                                                 if (i < _objCharacter.Foci.Count)
@@ -3878,7 +3878,8 @@ namespace Chummer
                                             TreeNode objNode = objGear.CreateTreeNode(cmsFocus);
                                             if (objNode == null)
                                                 continue;
-                                            objNode.Text = objNode.Text.Replace(LanguageManager.GetString("String_Rating", GlobalOptions.Language), LanguageManager.GetString("String_Force", GlobalOptions.Language));
+                                            objNode.Text = objNode.Text.CheapReplace(LanguageManager.GetString("String_Rating", GlobalOptions.Language),
+                                                () => LanguageManager.GetString("String_Force", GlobalOptions.Language));
                                             for (int i = _objCharacter.Foci.Count - 1; i >= 0; --i)
                                             {
                                                 if (i < _objCharacter.Foci.Count)

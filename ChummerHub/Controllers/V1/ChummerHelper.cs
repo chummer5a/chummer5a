@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace ChummerHub.Controllers.V1
 {
     [ApiController]
-    [EnableCors("AllowAllOrigins")]
+    [EnableCors("AllowOrigin")]
     [Route("api/v{api-version:apiVersion}/[controller]/[action]")]
     [ApiVersion("1.0")]
     [ControllerName("ChummerHelper")]
