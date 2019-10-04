@@ -500,25 +500,17 @@ namespace Chummer
             if (LinkedCharacter != null)
             {
                 // Update character information fields.
-                XmlDocument objMetatypeDoc = XmlManager.Load("metatypes.xml", strLanguage);
-                XmlNode objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + LinkedCharacter.Metatype + "\"]");
-                if (objMetatypeNode == null)
-                {
-                    objMetatypeDoc = XmlManager.Load("critters.xml", strLanguage);
-                    objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + LinkedCharacter.Metatype + "\"]");
-                }
+                XPathNavigator objMetatypeNode = _objCharacter.GetNode(true);
 
-                strReturn = objMetatypeNode?["translate"]?.InnerText ?? LanguageManager.TranslateExtra(LinkedCharacter.Metatype, strLanguage);
+                strReturn = objMetatypeNode.SelectSingleNode("translate")?.Value ?? LanguageManager.TranslateExtra(LinkedCharacter.Metatype, strLanguage);
 
-                if (!string.IsNullOrEmpty(LinkedCharacter.Metavariant))
-                {
-                    objMetatypeNode = objMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = \"" + LinkedCharacter.Metavariant + "\"]");
+                if (LinkedCharacter.MetavariantGuid == Guid.Empty) return strReturn;
+                objMetatypeNode = objMetatypeNode?.SelectSingleNode($"metavariants/metavariant[id = \"{LinkedCharacter.MetavariantGuid}\"]");
 
-                    string strMetatypeTranslate = objMetatypeNode?["translate"]?.InnerText;
-                    strReturn += !string.IsNullOrEmpty(strMetatypeTranslate)
-                        ? LanguageManager.GetString("String_Space", strLanguage) + '(' + strMetatypeTranslate + ')'
-                        : LanguageManager.GetString("String_Space", strLanguage) + '(' + LanguageManager.TranslateExtra(LinkedCharacter.Metavariant, strLanguage) + ')';
-                }
+                string strMetatypeTranslate = objMetatypeNode.SelectSingleNode("translate")?.Value;
+                strReturn += !string.IsNullOrEmpty(strMetatypeTranslate)
+                    ? LanguageManager.GetString("String_Space", strLanguage) + '(' + strMetatypeTranslate + ')'
+                    : LanguageManager.GetString("String_Space", strLanguage) + '(' + LanguageManager.TranslateExtra(LinkedCharacter.Metavariant, strLanguage) + ')';
             }
             else
                 strReturn = LanguageManager.TranslateExtra(strReturn, strLanguage);

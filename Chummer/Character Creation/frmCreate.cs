@@ -278,6 +278,7 @@ namespace Chummer
                         tabBPSummary.Text = LanguageManager.GetString("Tab_BPSummary_Karma", GlobalOptions.Language);
                         lblQualityBPLabel.Text = LanguageManager.GetString("Label_Karma", GlobalOptions.Language);
 
+                        lblMetatype.DoDatabinding("Text", CharacterObject, nameof(Character.FormattedMetatype));
 
                         // Set the visibility of the Bioware Suites menu options.
                         mnuSpecialAddBiowareSuite.Visible = CharacterObjectOptions.AllowBiowareSuites;
@@ -308,9 +309,6 @@ namespace Chummer
                     using (var op_load_frm_create_refresh =
                         Timekeeper.StartSyncron("load_frm_create_refresh", op_load_frm_create))
                     {
-                        // Refresh character information fields.
-                        RefreshMetatypeFields();
-
                         OnCharacterPropertyChanged(CharacterObject,
                             new PropertyChangedEventArgs(nameof(Character.Ambidextrous)));
 
@@ -1081,6 +1079,10 @@ namespace Chummer
                 case nameof(Character.GroupMember):
                     IsCharacterUpdateRequested = true;
                     break;
+                case nameof(Character.Source):
+                case nameof(Character.Page):
+                    CharacterObject.SetSourceDetail(lblMetatypeSource);
+                    break;
                 case nameof(Character.MAGEnabled):
                     {
                         if (CharacterObject.MAGEnabled)
@@ -1501,6 +1503,16 @@ namespace Chummer
                         lblPrototypeTranshumanESSLabel.Visible = CharacterObject.IsPrototypeTranshuman;
                         break;
                     }
+                case nameof(Character.MetatypeCategory):
+                {
+                    mnuSpecialCyberzombie.Visible = CharacterObject.MetatypeCategory != "Cyberzombie";
+                    break;
+                }
+                case nameof(Character.IsSprite):
+                {
+                    mnuSpecialConvertToFreeSprite.Visible = CharacterObject.IsSprite;
+                    break;
+                }
             }
         }
 
@@ -1735,8 +1747,6 @@ namespace Chummer
                     CharacterObject.CritterPowers.Add(objCritterPower);
                 }
             }
-
-            RefreshMetatypeFields();
 
             IsCharacterUpdateRequested = true;
 
@@ -3374,8 +3384,6 @@ namespace Chummer
 
             CharacterObject.MetatypeCategory = "Free Sprite";
 
-            RefreshMetatypeFields();
-
             IsCharacterUpdateRequested = true;
 
             IsDirty = true;
@@ -4474,14 +4482,11 @@ namespace Chummer
 
                 if (objSelectedQuality.OriginSource == QualitySource.MetatypeRemovedAtChargen)
                 {
-                    XmlNode xmlMetatypeNode = XmlManager.Load("metatypes.xml").SelectSingleNode("/chummer/metatypes/metatype[name = \"" + CharacterObject.Metatype + "\"]") ??
-                        XmlManager.Load("critters.xml").SelectSingleNode("/chummer/metatypes/metatype[name = \"" + CharacterObject.Metatype + "\"]");
-                    XmlNode xmlMetavariantNode = xmlMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = \"" + CharacterObject.Metavariant + "\"]");
-                    XmlNode xmlCharacterNode = xmlMetavariantNode ?? xmlMetatypeNode;
+                    XPathNavigator xmlCharacterNode = CharacterObject.GetNode();
                     if (xmlCharacterNode != null)
                     {
                         // Create the Qualities that come with the Metatype.
-                        foreach (XmlNode objXmlQualityItem in xmlCharacterNode.SelectNodes("qualities/*/quality[text() = \"" + objSelectedQuality.Name + "\"]"))
+                        foreach (XmlNode objXmlQualityItem in xmlCharacterNode.Select("qualities/*/quality[text() = \"" + objSelectedQuality.Name + "\"]"))
                         {
                             XmlNode objXmlQuality = XmlManager.Load("qualities.xml").SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQualityItem.InnerText + "\"]");
                             Quality objQuality = new Quality(CharacterObject);
@@ -9414,55 +9419,6 @@ namespace Chummer
 
 #region Custom Methods
         /// <summary>
-        /// Refresh the fields related to the character's metatype.
-        /// </summary>
-        public void RefreshMetatypeFields()
-        {
-            XmlNode objMetatypeNode = XmlManager.Load("metatypes.xml").SelectSingleNode("/chummer/metatypes/metatype[name = \"" + CharacterObject.Metatype + "\"]") ??
-               XmlManager.Load("critters.xml").SelectSingleNode("/chummer/metatypes/metatype[name = \"" + CharacterObject.Metatype + "\"]");
-
-            string strMetatype = objMetatypeNode?["translate"]?.InnerText ?? CharacterObject.Metatype;
-            string strSource = objMetatypeNode?["source"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
-            string strPage = objMetatypeNode?["altpage"]?.InnerText ?? objMetatypeNode?["page"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
-            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
-
-            if (!string.IsNullOrEmpty(CharacterObject.Metavariant) && CharacterObject.Metavariant != "None")
-            {
-                objMetatypeNode = objMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = \"" + CharacterObject.Metavariant + "\"]");
-
-                strMetatype += strSpaceCharacter + '(' + (objMetatypeNode?["translate"]?.InnerText ?? CharacterObject.Metavariant) + ')';
-
-                if (objMetatypeNode != null)
-                {
-                    strSource = objMetatypeNode["source"]?.InnerText ?? strSource;
-                    strPage = objMetatypeNode["altpage"]?.InnerText ?? objMetatypeNode["page"]?.InnerText ?? strPage;
-                }
-            }
-            lblMetatype.Text = strMetatype;
-
-            lblMetatypeSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
-            lblMetatypeSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
-
-            if (CharacterObject.BuildMethod == CharacterBuildMethod.Karma || CharacterObject.BuildMethod == CharacterBuildMethod.LifeModule)
-            {
-                lblKarmaMetatypeBP.Text = (CharacterObject.MetatypeBP * CharacterObjectOptions.MetatypeCostsKarmaMultiplier).ToString(GlobalOptions.CultureInfo) + strSpaceCharacter +
-                                          LanguageManager.GetString("String_Karma", GlobalOptions.Language);
-            }
-            else if (CharacterObject.BuildMethod == CharacterBuildMethod.Priority || CharacterObject.BuildMethod == CharacterBuildMethod.SumtoTen)
-            {
-                lblKarmaMetatypeBP.Text = (CharacterObject.MetatypeBP).ToString(GlobalOptions.CultureInfo) + strSpaceCharacter +
-                                          LanguageManager.GetString("String_Karma", GlobalOptions.Language);
-            }
-
-            string strToolTip = strMetatype + strSpaceCharacter + '(' + CharacterObject.MetatypeBP + ')';
-            lblKarmaMetatypeBP.SetToolTip(strToolTip);
-
-            mnuSpecialConvertToFreeSprite.Visible = CharacterObject.IsSprite;
-
-            mnuSpecialCyberzombie.Visible = CharacterObject.MetatypeCategory != "Cyberzombie";
-        }
-
-        /// <summary>
         /// Calculate the BP used by Primary Attributes.
         /// </summary>
         private static int CalculateAttributeBP(IEnumerable<CharacterAttrib> attribs, IEnumerable<CharacterAttrib> extraAttribs = null)
@@ -10285,9 +10241,6 @@ namespace Chummer
             frmLoadingForm.Show();
             await CharacterObject.Load(frmLoadingForm);
             frmLoadingForm.PerformStep(LanguageManager.GetString("String_UI"));
-
-            // Update character information fields.
-            RefreshMetatypeFields();
 
             // Select the Magician's Tradition.
             if (CharacterObject.MagicTradition.Type == TraditionType.MAG)
@@ -11525,7 +11478,7 @@ namespace Chummer
             {
                 List<CharacterAttrib> lstAttributesToAdd = new List<CharacterAttrib>();
                 XmlDocument xmlDoc = XmlManager.Load("metatypes.xml");
-                string strMetavariantXPath = $"/chummer/metatypes/metatype[name = \"{CharacterObject.Metatype}\"]/metavariants/metavariant[name = \"{CharacterObject.Metavariant}\"]";
+                string strMetavariantXPath = $"/chummer/metatypes/metatype[id = \"{CharacterObject.MetatypeGuid}\"]/metavariants/metavariant[id = \"{CharacterObject.MetavariantGuid}\"]";
                 foreach (CharacterAttrib objOldAttribute in CharacterObject.AttributeSection.AttributeList)
                 {
                     CharacterAttrib objNewAttribute = new CharacterAttrib(CharacterObject, objOldAttribute.Abbrev,
@@ -14493,8 +14446,6 @@ namespace Chummer
 
             // Remove any Improvements the character received from their Metatype.
             ImprovementManager.RemoveImprovements(CharacterObject, lstImprovement, false, true);
-
-            RefreshMetatypeFields();
 
             IsCharacterUpdateRequested = true;
             IsDirty = true;

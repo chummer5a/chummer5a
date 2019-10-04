@@ -19,6 +19,7 @@
  using System;
 using System.Collections.Generic;
  using System.Windows.Forms;
+ using System.Xml;
  using System.Xml.XPath;
 
 namespace Chummer
@@ -45,22 +46,16 @@ namespace Chummer
             // Load the Complex Form information.
             _xmlBaseComplexFormsNode = XmlManager.Load("complexforms.xml").GetFastNavigator().SelectSingleNode("/chummer/complexforms");
 
-            if (_objCharacter.IsCritter)
+            _xmlOptionalComplexFormNode = _objCharacter.GetNode();
+            if (_xmlOptionalComplexFormNode == null) return;
+            if (_objCharacter.MetavariantGuid != Guid.Empty)
             {
-                _xmlOptionalComplexFormNode = XmlManager.Load("critters.xml").GetFastNavigator().SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]") ??
-                                             XmlManager.Load("metatypes.xml").GetFastNavigator().SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
-                if (_xmlOptionalComplexFormNode != null)
-                {
-                    if (!string.IsNullOrEmpty(_objCharacter.Metavariant) && _objCharacter.Metavariant != "None")
-                    {
-                        XPathNavigator xmlMetavariantNode = _xmlOptionalComplexFormNode.SelectSingleNode("metavariants/metavariant[name = \"" + _objCharacter.Metavariant + "\"]");
-                        if (xmlMetavariantNode != null)
-                            _xmlOptionalComplexFormNode = xmlMetavariantNode;
-                    }
-
-                    _xmlOptionalComplexFormNode = _xmlOptionalComplexFormNode.SelectSingleNode("optionalcomplexforms");
-                }
+                XPathNavigator xmlMetavariantNode = _xmlOptionalComplexFormNode.SelectSingleNode($"metavariants/metavariant[id = \"{_objCharacter.MetavariantGuid}\"]");
+                if (xmlMetavariantNode != null)
+                    _xmlOptionalComplexFormNode = xmlMetavariantNode;
             }
+
+            _xmlOptionalComplexFormNode = _xmlOptionalComplexFormNode.SelectSingleNode("optionalcomplexforms");
         }
 
         private void frmSelectComplexForm_Load(object sender, EventArgs e)
