@@ -883,14 +883,20 @@ namespace Chummer
             XmlDocument xmlDoc = XmlManager.Load(IsCritter ? "critters.xml" : "metatypes.xml");
             if (blnReturnMetatypeOnly)
             {
-                return xmlDoc.CreateNavigator().SelectSingleNode($"/chummer/metatypes/metatype[id = \"{MetatypeGuid}\"]");
+                return xmlDoc.CreateNavigator().SelectSingleNode(MetatypeGuid == Guid.Empty
+                    ? $"/chummer/metatypes/metatype[name = \"{Metatype}\"]"
+                    : $"/chummer/metatypes/metatype[id = \"{MetatypeGuid}\"]");
             }
-            _xmlMetatypeNode = xmlDoc.CreateNavigator().SelectSingleNode($"/chummer/metatypes/metatype[id = \"{MetatypeGuid}\"]");
-            if (MetavariantGuid != Guid.Empty)
+
+            _xmlMetatypeNode = xmlDoc.CreateNavigator().SelectSingleNode(MetatypeGuid == Guid.Empty
+                ? $"/chummer/metatypes/metatype[name = \"{Metatype}\"]"
+                : $"/chummer/metatypes/metatype[id = \"{MetatypeGuid}\"]");
+            if (MetavariantGuid != Guid.Empty && Metavariant != string.Empty)
             {
-                XPathNavigator xmlMetavariantNode = _xmlMetatypeNode.SelectSingleNode($"metavariants/metavariant[id = \"{MetavariantGuid}\"]");
-                if (xmlMetavariantNode != null)
-                    _xmlMetatypeNode = xmlMetavariantNode;
+                XPathNavigator xmlMetavariantNode = _xmlMetatypeNode.SelectSingleNode(MetatypeGuid == Guid.Empty
+                    ? $"/chummer/metavariants/metavariant[name = \"{Metavariant}\"]"
+                    : $"/chummer/metavariants/metavariant[id = \"{MetavariantGuid}\"]");
+                if (xmlMetavariantNode != null) _xmlMetatypeNode = xmlMetavariantNode;
             }
 
             return _xmlMetatypeNode;
@@ -2155,7 +2161,10 @@ if (!Utils.IsUnitTest){
 
                         // Metatype information.
                         xmlCharacterNavigator.TryGetStringFieldQuickly("metatype", ref _strMetatype);
-                        xmlCharacterNavigator.TryGetGuidFieldQuickly("metatypeid", ref _guiMetatype);
+                        if (!xmlCharacterNavigator.TryGetGuidFieldQuickly("metatypeid", ref _guiMetatype))
+                        {
+                            _guiMetatype = Guid.Parse(GetNode(true)?.SelectSingleNode("id")?.Value);
+                        }
                         xmlCharacterNavigator.TryGetStringFieldQuickly("movement", ref _strMovement);
 
                         xmlCharacterNavigator.TryGetStringFieldQuickly("walk", ref _strWalk);
@@ -2168,15 +2177,19 @@ if (!Utils.IsUnitTest){
 
                         xmlCharacterNavigator.TryGetInt32FieldQuickly("metatypebp", ref _intMetatypeBP);
                         xmlCharacterNavigator.TryGetStringFieldQuickly("metavariant", ref _strMetavariant);
-                        xmlCharacterNavigator.TryGetGuidFieldQuickly("metavariantid", ref _guiMetavariant);
-
-                        xmlCharacterNavigator.TryGetStringFieldQuickly("source", ref _strSource);
-                        xmlCharacterNavigator.TryGetStringFieldQuickly("page", ref _strPage);
                         //Shim for characters created prior to Run Faster Errata
                         if (_strMetavariant == "Cyclopean")
                         {
                             _strMetavariant = "Cyclops";
                         }
+
+                        if (!xmlCharacterNavigator.TryGetGuidFieldQuickly("metavariantid", ref _guiMetavariant) && _strMetavariant != string.Empty)
+                        {
+                            _guiMetavariant = Guid.Parse(GetNode()?.SelectSingleNode("id")?.Value);
+                        }
+
+                        xmlCharacterNavigator.TryGetStringFieldQuickly("source", ref _strSource);
+                        xmlCharacterNavigator.TryGetStringFieldQuickly("page", ref _strPage);
 
                         xmlCharacterNavigator.TryGetStringFieldQuickly("metatypecategory", ref _strMetatypeCategory);
 
