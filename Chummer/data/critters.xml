@@ -43,6 +43,7 @@
     <category>Technocritters</category>
     <category>Toxic Critters</category>
     <category>Toxic Spirits</category>
+    <category>Warforms</category>
   </categories>
   <metatypes>
     <!-- Region Mundane Critters -->
@@ -44958,5 +44959,244 @@
       <source>KC</source>
       <page>167</page>
     </metatype>
+    <!-- Region Warforms -->
+    <metatype>
+      <id>beba6b35-2b2b-40f8-b943-ce690b6a96bb</id>
+      <name>War Hound</name>
+      <category>Warforms</category>
+      <karma>0</karma>
+      <bodmin>5</bodmin>
+      <bodmax>8</bodmax>
+      <bodaug>12</bodaug>
+      <agimin>4</agimin>
+      <agimax>7</agimax>
+      <agiaug>11</agiaug>
+      <reamin>4</reamin>
+      <reamax>7</reamax>
+      <reaaug>11</reaaug>
+      <strmin>4</strmin>
+      <strmax>7</strmax>
+      <straug>11</straug>
+      <chamin>3</chamin>
+      <chamax>6</chamax>
+      <chaaug>10</chaaug>
+      <intmin>4</intmin>
+      <intmax>7</intmax>
+      <intaug>11</intaug>
+      <logmin>2</logmin>
+      <logmax>5</logmax>
+      <logaug>9</logaug>
+      <wilmin>3</wilmin>
+      <wilmax>6</wilmax>
+      <wilaug>10</wilaug>
+      <inimin>8</inimin>
+      <inimax>14</inimax>
+      <iniaug>22</iniaug>
+      <edgmin>3</edgmin>
+      <edgmax>6</edgmax>
+      <edgaug>6</edgaug>
+      <magmin>0</magmin>
+      <magmax>3</magmax>
+      <magaug>3</magaug>
+      <resmin>0</resmin>
+      <resmax>3</resmax>
+      <resaug>3</resaug>
+      <depmin>0</depmin>
+      <depmax>0</depmax>
+      <depaug>0</depaug>
+      <essmin>0</essmin>
+      <essmax>6</essmax>
+      <essaug>6</essaug>
+      <walk>2/1/0</walk>
+      <run>8/0/0</run>
+      <sprint>4/1/0</sprint>
+      <biowares>
+        <bioware rating="2">Bone Density Augmentation</bioware>
+        <bioware>Synaptic Acceleration</bioware>
+      </biowares>
+      <bonus>
+        <biowareessmultiplier>90</biowareessmultiplier>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+        <genetechcostmultiplier>80</genetechcostmultiplier>
+        <genetechessmultiplier>90</genetechessmultiplier>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <powers>
+        <power>Domesticated</power>
+        <power select="Smell">Enhanced Senses</power>
+        <power select="Hearing">Enhanced Senses</power>
+        <power select="Claws/Bite: DV (STR+3)P, AP 0">Natural Weapon</power>
+      </powers>
+      <skills>
+        <skill rating="4">Intimidation</skill>
+        <skill rating="5" spec="Smell">Perception</skill>
+        <skill rating="5">Running</skill>
+        <skill rating="6">Tracking</skill>
+        <skill rating="5">Unarmed Combat</skill>
+      </skills>
+      <source>HS</source>
+      <page>176</page>
+    </metatype>
+    <metatype>
+      <id>fc2d14ee-4afb-4a38-9c73-4c35a68b2f42</id>
+      <name>War Dolphin</name>
+      <category>Warforms</category>
+      <karma>0</karma>
+      <bodmin>8</bodmin>
+      <bodmax>11</bodmax>
+      <bodaug>15</bodaug>
+      <agimin>6</agimin>
+      <agimax>9</agimax>
+      <agiaug>13</agiaug>
+      <reamin>5</reamin>
+      <reamax>8</reamax>
+      <reaaug>12</reaaug>
+      <strmin>8</strmin>
+      <strmax>11</strmax>
+      <straug>15</straug>
+      <chamin>4</chamin>
+      <chamax>7</chamax>
+      <chaaug>11</chaaug>
+      <intmin>4</intmin>
+      <intmax>7</intmax>
+      <intaug>11</intaug>
+      <logmin>5</logmin>
+      <logmax>8</logmax>
+      <logaug>12</logaug>
+      <wilmin>4</wilmin>
+      <wilmax>7</wilmax>
+      <wilaug>11</wilaug>
+      <inimin>9</inimin>
+      <inimax>15</inimax>
+      <iniaug>23</iniaug>
+      <edgmin>3</edgmin>
+      <edgmax>6</edgmax>
+      <edgaug>6</edgaug>
+      <magmin>0</magmin>
+      <magmax>3</magmax>
+      <magaug>3</magaug>
+      <resmin>0</resmin>
+      <resmax>3</resmax>
+      <resaug>3</resaug>
+      <depmin>0</depmin>
+      <depmax>0</depmax>
+      <depaug>0</depaug>
+      <essmin>0</essmin>
+      <essmax>6</essmax>
+      <essaug>6</essaug>
+      <walk>0/2/0</walk>
+      <run>0/8/0</run>
+      <sprint>0/4/0</sprint>
+      <bonus>
+        <biowareessmultiplier>90</biowareessmultiplier>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+        <genetechcostmultiplier>80</genetechcostmultiplier>
+        <genetechessmultiplier>90</genetechessmultiplier>
+      </bonus>
+      <cyberwares>
+        <cyberware rating="1">Cerebral Booster</cyberware>
+        <cyberware>Chameleon Skin (Dynamic)</cyberware>
+        <cyberware>Neuro Retention Amplification</cyberware>
+        <cyberware rating="3">Tailored Pheromones</cyberware>
+        <cyberware>Vocal Range Expander</cyberware>
+      </cyberwares>
+      <powers>
+        <power>Domesticated</power>
+        <power select="Sonar">Enhanced Senses</power>
+        <power rating="2">Armor</power>
+      </powers>
+      <skills>
+        <skill rating="3">Diving</skill>
+        <skill rating="7">Gymnastics</skill>
+        <skill rating="4">Perception</skill>
+        <skill rating="5">Swimming</skill>
+        <skill rating="3">Unarmed Combat</skill>
+      </skills>
+      <source>HS</source>
+      <page>177</page>
+    </metatype>
+    <metatype>
+      <id>52d4e880-653f-4506-ae03-bcdf2583f325</id>
+      <name>War Horse</name>
+      <category>Warforms</category>
+      <karma>0</karma>
+      <bodmin>8</bodmin>
+      <bodmax>11</bodmax>
+      <bodaug>15</bodaug>
+      <agimin>5</agimin>
+      <agimax>8</agimax>
+      <agiaug>12</agiaug>
+      <reamin>5</reamin>
+      <reamax>8</reamax>
+      <reaaug>12</reaaug>
+      <strmin>8</strmin>
+      <strmax>11</strmax>
+      <straug>15</straug>
+      <chamin>4</chamin>
+      <chamax>7</chamax>
+      <chaaug>11</chaaug>
+      <intmin>3</intmin>
+      <intmax>6</intmax>
+      <intaug>10</intaug>
+      <logmin>2</logmin>
+      <logmax>5</logmax>
+      <logaug>9</logaug>
+      <wilmin>4</wilmin>
+      <wilmax>7</wilmax>
+      <wilaug>11</wilaug>
+      <inimin>8</inimin>
+      <inimax>14</inimax>
+      <iniaug>22</iniaug>
+      <edgmin>2</edgmin>
+      <edgmax>5</edgmax>
+      <edgaug>5</edgaug>
+      <magmin>0</magmin>
+      <magmax>3</magmax>
+      <magaug>3</magaug>
+      <resmin>0</resmin>
+      <resmax>3</resmax>
+      <resaug>3</resaug>
+      <depmin>0</depmin>
+      <depmax>0</depmax>
+      <depaug>0</depaug>
+      <essmin>0</essmin>
+      <essmax>6</essmax>
+      <essaug>6</essaug>
+      <walk>3/1/0</walk>
+      <run>10/0/0</run>
+      <sprint>6/1/0</sprint>
+      <biowares>
+        <bioware>Neo-EPO</bioware>
+      </biowares>
+      <bonus>
+        <biowareessmultiplier>90</biowareessmultiplier>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+        <genetechcostmultiplier>80</genetechcostmultiplier>
+        <genetechessmultiplier>90</genetechessmultiplier>
+      </bonus>
+      <cyberwares>
+        <cyberware rating="1">Bone Density</cyberware>
+        <cyberware rating="1">Muscle Augmentation</cyberware>
+      </cyberwares>
+      <powers>
+        <power select="Kick: DV (STR+1)P, AP 0, Reach 1">Natural Weapon</power>
+        <power>Domesticated</power>
+      </powers>
+      <skills>
+        <skill rating="6">Running</skill>
+        <skill rating="1">Unarmed Combat</skill>
+      </skills>
+      <source>HS</source>
+      <page>177</page>
+    </metatype>
+    <!-- End Region -->
   </metatypes>
 </chummer>

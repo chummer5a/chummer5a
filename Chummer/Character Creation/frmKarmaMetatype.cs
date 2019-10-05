@@ -490,6 +490,42 @@ namespace Chummer
                     ImprovementManager.Commit(_objCharacter);
                 }
 
+                //Load any cyberware the character has.
+                XmlDocument xmlCyberwareDocument = XmlManager.Load("cyberware.xml");
+                foreach (XmlNode node in charNode.SelectNodes("cyberwares/cyberware"))
+                {
+                    XmlNode objXmlCyberwareNode = xmlCyberwareDocument.SelectSingleNode($"chummer/cyberwares/cyberware[name = \"{node.InnerText}\"]");
+                    var objWare = new Cyberware(_objCharacter);
+                    string strForcedValue = node.Attributes["select"]?.InnerText ?? string.Empty;
+                    int intRating = Convert.ToInt32(node.Attributes["rating"]?.InnerText);
+
+                    objWare.Create(objXmlCyberwareNode,
+                        _objCharacter.GetGradeList(Improvement.ImprovementSource.Cyberware, true)
+                            .FirstOrDefault(x => x.Name == "None"), Improvement.ImprovementSource.Metatype, intRating,
+                        _objCharacter.Weapons, _objCharacter.Vehicles, true, true, strForcedValue);
+                    _objCharacter.Cyberware.Add(objWare);
+                    ImprovementManager.CreateImprovement(_objCharacter, objWare.InternalId, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.FreeWare, string.Empty);
+                    ImprovementManager.Commit(_objCharacter);
+                }
+
+                //Load any bioware the character has.
+                XmlDocument xmlBiowareDocument = XmlManager.Load("bioware.xml");
+                foreach (XmlNode node in charNode.SelectNodes("biowares/bioware"))
+                {
+                    XmlNode objXmlCyberwareNode = xmlBiowareDocument.SelectSingleNode($"chummer/biowares/bioware[name = \"{node.InnerText}\"]");
+                    var objWare = new Cyberware(_objCharacter);
+                    string strForcedValue = node.Attributes["select"]?.InnerText ?? string.Empty;
+                    int intRating = Convert.ToInt32(node.Attributes["rating"]?.InnerText);
+
+                    objWare.Create(objXmlCyberwareNode,
+                        _objCharacter.GetGradeList(Improvement.ImprovementSource.Cyberware, true)
+                            .FirstOrDefault(x => x.Name == "None"), Improvement.ImprovementSource.Metatype, intRating,
+                        _objCharacter.Weapons, _objCharacter.Vehicles, true, true, strForcedValue);
+                    _objCharacter.Cyberware.Add(objWare);
+                    ImprovementManager.CreateImprovement(_objCharacter, objWare.InternalId, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.FreeWare, string.Empty);
+                    ImprovementManager.Commit(_objCharacter);
+                }
+
                 // Add any Advanced Programs the Critter comes with (typically A.I.s)
                 XmlDocument xmlAIProgramDocument = XmlManager.Load("programs.xml");
                 foreach (XmlNode xmlAIProgram in charNode.SelectNodes("programs/program"))
