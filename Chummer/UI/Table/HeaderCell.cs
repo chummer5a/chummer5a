@@ -25,12 +25,12 @@ namespace Chummer.UI.Table
 {
     public partial class HeaderCell : UserControl, ITranslatable
     {
-        private int _arrowSize = 8;
-        private int _arrowPadding = 3;
-        private SortOrder _sortType = SortOrder.None;
+        private int _intArrowSize = 8;
+        private int _intArrowPadding = 3;
+        private SortOrder _eSortType = SortOrder.None;
 
-        private static readonly SolidBrush _arrowBrush = new SolidBrush(Color.Black);
-        private static readonly int _labelPadding = 3;
+        private static readonly SolidBrush _objArrowBrush = new SolidBrush(Color.Black);
+        private const int _intLabelPadding = 3;
 
         public HeaderCell()
         {
@@ -41,10 +41,10 @@ namespace Chummer.UI.Table
 
         public override string Text
         {
-            get => _label.Text;
+            get => _lblCellText.Text;
             set
             {
-                _label.Text = value;
+                _lblCellText.Text = value;
                 ResizeControl();
             }
         }
@@ -54,17 +54,17 @@ namespace Chummer.UI.Table
             SuspendLayout();
             if (Sortable)
             {
-                int arrowSize = 2 * ArrowPadding + ArrowSize;
-                int minWidth = arrowSize + _label.Width + _labelPadding;
-                int minHeight = Math.Max(_label.Height + 2 * _labelPadding, arrowSize);
-                MinimumSize = new Size(minWidth, minHeight);
+                int intArrowSize = 2 * ArrowPadding + ArrowSize;
+                int intMinWidth = intArrowSize + _lblCellText.Width + _intLabelPadding;
+                int intMinHeight = Math.Max(_lblCellText.Height + 2 * _intLabelPadding, intArrowSize);
+                MinimumSize = new Size(intMinWidth, intMinHeight);
             }
             else
             {
-                MinimumSize = new Size(_label.Width + _labelPadding, _label.Height + 2 * _labelPadding);
+                MinimumSize = new Size(_lblCellText.Width + _intLabelPadding, _lblCellText.Height + 2 * _intLabelPadding);
             }
 
-            _label.Location = new Point(_labelPadding, (MinimumSize.Height - _label.Height) / 2);
+            _lblCellText.Location = new Point(_intLabelPadding, (MinimumSize.Height - _lblCellText.Height) / 2);
 
             ResumeLayout(false);
             Invalidate();
@@ -72,44 +72,44 @@ namespace Chummer.UI.Table
 
         private int ArrowSize
         {
-            get => _arrowSize;
+            get => _intArrowSize;
             set
             {
                 if (value <= 0)
                 {
                     throw new ArgumentOutOfRangeException();
                 }
-                _arrowSize = value;
+                _intArrowSize = value;
                 ResizeControl();
             }
         }
 
         private int ArrowPadding
         {
-            get => _arrowPadding;
+            get => _intArrowPadding;
             set
             {
                 if (value < 0)
                 {
                     throw new ArgumentOutOfRangeException();
                 }
-                _arrowPadding = value;
+                _intArrowPadding = value;
                 ResizeControl();
             }
         }
 
         public SortOrder SortType
         {
-            get => _sortType;
+            get => _eSortType;
             set {
-                _sortType = value;
+                _eSortType = value;
                 Invalidate();
             }
         }
 
         public object TextTag {
-            get => _label.Tag;
-            set => _label.Tag = value;
+            get => _lblCellText.Tag;
+            set => _lblCellText.Tag = value;
         }
 
         internal bool Sortable { get; set; }
@@ -118,12 +118,12 @@ namespace Chummer.UI.Table
             add
             {
                 Click += value;
-                _label.Click += value;
+                _lblCellText.Click += value;
             }
             remove
             {
                 Click -= value;
-                _label.Click -= value;
+                _lblCellText.Click -= value;
             }
         }
 
@@ -135,20 +135,20 @@ namespace Chummer.UI.Table
 
             if (Sortable && SortType != SortOrder.None) {
                 // draw arrow
-                int tipY = ArrowPadding + ArrowSize / 6;
-                int bottomY = (ArrowPadding + ArrowSize) - ArrowSize / 6;
-                int right = Width - ArrowPadding;
-                int left = right - ArrowSize;
-                int tipX = left + ArrowSize / 2;
+                int intTipY = ArrowPadding + ArrowSize / 6;
+                int intBottomY = (ArrowPadding + ArrowSize) - ArrowSize / 6;
+                int intRight = Width - ArrowPadding;
+                int intLeft = intRight - ArrowSize;
+                int intTipX = intLeft + ArrowSize / 2;
 
                 if (SortType == SortOrder.Descending)
                 {
                     // swap top & bottom
-                    int temp = tipY;
-                    tipY = bottomY;
-                    bottomY = temp;
+                    int intTemp = intTipY;
+                    intTipY = intBottomY;
+                    intBottomY = intTemp;
                 }
-                e.Graphics.FillPolygon(_arrowBrush, new Point[] { new Point(left, bottomY), new Point(tipX, tipY), new Point(right, bottomY) });
+                e.Graphics.FillPolygon(_objArrowBrush, new [] { new Point(intLeft, intBottomY), new Point(intTipX, intTipY), new Point(intRight, intBottomY) });
             }
             base.OnPaint(e);
         }

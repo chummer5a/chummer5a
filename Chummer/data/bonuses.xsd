@@ -3,6 +3,14 @@
   <xs:complexType name="bonusTypes">
     <xs:sequence>
       <xs:element name="acidarmor" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="actiondicepool" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+            <xs:element name="val" type="xs:integer" minOccurs="1" maxOccurs="1" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
       <xs:element name="activeskillkarmacost" minOccurs="0" maxOccurs="unbounded">
         <xs:complexType>
           <xs:sequence>
@@ -121,6 +129,22 @@
         </xs:complexType>
       </xs:element>
       <xs:element name="addspell" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="addspirit" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="addtoselected" type="xs:string" minOccurs="0" maxOccurs="1" />
+            <xs:element name="spirit" type="xs:string" minOccurs="1" maxOccurs="unbounded" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="addsprite" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="addtoselected" type="xs:string" minOccurs="0" maxOccurs="1" />
+            <xs:element name="spirit" type="xs:string" minOccurs="1" maxOccurs="unbounded" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
       <xs:element name="addware" minOccurs="0" maxOccurs="unbounded">
         <xs:complexType>
           <xs:sequence>
@@ -268,6 +292,14 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
+	  <xs:element name="decreaseagiresist" type="xs:string" minOccurs="0" maxOccurs="1" />
+	  <xs:element name="decreasebodresist" type="xs:string" minOccurs="0" maxOccurs="1" />
+	  <xs:element name="decreasecharesist" type="xs:string" minOccurs="0" maxOccurs="1" />
+	  <xs:element name="decreaseintresist" type="xs:string" minOccurs="0" maxOccurs="1" />
+	  <xs:element name="decreaselogresist" type="xs:string" minOccurs="0" maxOccurs="1" />
+	  <xs:element name="decreaserearesist" type="xs:string" minOccurs="0" maxOccurs="1" />
+	  <xs:element name="decreasestrresist" type="xs:string" minOccurs="0" maxOccurs="1" />
+	  <xs:element name="decreasewilresist" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="detectionspellresist" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="drainresist" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="drainvalue" type="xs:string" minOccurs="0" maxOccurs="1" />
@@ -282,7 +314,9 @@
       <xs:element name="disablebiowaregrade" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
       <xs:element name="disablecyberware" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="dodge" type="xs:string" minOccurs="0" maxOccurs="1" />
-      <xs:element name="disablecyberwaregrade" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+	  <xs:element name="directmanaspellresist" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="directphysicalspellresist" type="xs:string" minOccurs="0" maxOccurs="1" />
+	  <xs:element name="disablecyberwaregrade" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
       <xs:element name="electricityarmor" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="enableattribute" minOccurs="0" maxOccurs="1">
         <xs:complexType>
@@ -466,7 +500,9 @@
           <xs:sequence>
             <xs:element name="attack" type="xs:string" minOccurs="0" maxOccurs="1" />
             <xs:element name="dataprocessing" type="xs:string" minOccurs="0" maxOccurs="1" />
+            <xs:element name="devicerating" type="xs:string" minOccurs="0" maxOccurs="1" />
             <xs:element name="firewall" type="xs:string" minOccurs="0" maxOccurs="1" />
+            <xs:element name="matrixcm" type="xs:string" minOccurs="0" maxOccurs="1" />
             <xs:element name="programlimit" type="xs:string" minOccurs="0" maxOccurs="1" />
             <xs:element name="sleaze" type="xs:string" minOccurs="0" maxOccurs="1" />
           </xs:sequence>
@@ -990,6 +1026,7 @@
       <xs:element name="sociallimit" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="softweave" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="sonicresist" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="specialmodificationlimit" type="xs:integer" minOccurs="0" maxOccurs="1" />
       <xs:element name="specificattribute" minOccurs="0" maxOccurs="unbounded">
         <xs:complexType>
           <xs:sequence>
@@ -1136,6 +1173,7 @@
         </xs:complexType>
       </xs:element>
       <xs:element name="throwrange" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="throwrangestr" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="throwstr" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="toxincontactimmune" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="toxincontactresist" type="xs:string" minOccurs="0" maxOccurs="1" />

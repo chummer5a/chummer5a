@@ -28,7 +28,7 @@ namespace Chummer
         public static void Sort<T>(this ObservableCollection<T> lstCollection, int index, int count, IComparer<T> comparer)
         {
             if (lstCollection == null)
-                throw new ArgumentNullException(nameof(ObservableCollection<T>));
+                throw new ArgumentNullException(nameof(lstCollection));
             if (index > lstCollection.Count)
                 return;
             if (lstCollection.Count < index + count)
@@ -46,7 +46,7 @@ namespace Chummer
         public static void Sort<T>(this ObservableCollection<T> lstCollection, Comparison<T> comparison)
         {
             if (lstCollection == null)
-                throw new ArgumentNullException(nameof(ObservableCollection<T>));
+                throw new ArgumentNullException(nameof(lstCollection));
             List<T> lstSorted = lstCollection.ToList();
             lstSorted.Sort(comparison);
             for (int i = 0; i < lstSorted.Count; ++i)
@@ -56,7 +56,7 @@ namespace Chummer
         public static void Sort<T>(this ObservableCollection<T> lstCollection)
         {
             if (lstCollection == null)
-                throw new ArgumentNullException(nameof(ObservableCollection<T>));
+                throw new ArgumentNullException(nameof(lstCollection));
             List<T> lstSorted = lstCollection.ToList();
             lstSorted.Sort();
             for (int i = 0; i < lstSorted.Count; ++i)
@@ -66,7 +66,7 @@ namespace Chummer
         public static void Sort<T>(this ObservableCollection<T> lstCollection, IComparer<T> comparer)
         {
             if (lstCollection == null)
-                throw new ArgumentNullException(nameof(ObservableCollection<T>));
+                throw new ArgumentNullException(nameof(lstCollection));
             List<T> lstSorted = lstCollection.ToList();
             lstSorted.Sort(comparer);
             for (int i = 0; i < lstSorted.Count; ++i)

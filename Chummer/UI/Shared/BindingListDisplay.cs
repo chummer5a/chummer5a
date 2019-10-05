@@ -24,11 +24,13 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using NLog;
 
 namespace Chummer.UI.Shared
 {
     public partial class BindingListDisplay<TType> : UserControl
     {
+        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
         public PropertyChangedEventHandler ChildPropertyChanged { get; set; }
 
         public IComparer<TType> DefaultComparer => _indexComparer;
@@ -83,7 +85,7 @@ namespace Chummer.UI.Shared
             min = Math.Max(0, min);
             max = Math.Min(_displayIndex.Count, max);
             if (_rendered.FirstMatching(false, min) > max) return;
-
+            SuspendLayout();
             for (int i = min; i < max; i++)
             {
                 if (_rendered[i]) continue;
@@ -94,6 +96,7 @@ namespace Chummer.UI.Shared
                 item.Control.Visible = true;
                 _rendered[i] = true;
             }
+            ResumeLayout();
         }
 
         private void ComptuteDisplayIndex()
@@ -194,7 +197,7 @@ namespace Chummer.UI.Shared
             else if (maxDelay > sw.Elapsed)
             {
                 _offScreenChunkSize++;
-                Log.Info("Offscreen chunck render size increased to " + _offScreenChunkSize);
+                Log.Info("Offscreen chunk render size increased to " + _offScreenChunkSize);
             }
         }
 

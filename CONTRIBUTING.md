@@ -86,6 +86,16 @@ Some things that will increase the chance that your pull request is accepted:
 * Update the documentation, the surrounding one, examples elsewhere, guides,
   whatever is affected by your contribution
 
+### Source of Truth and Submitting Rules Changes
+
+For rules queries and data entry, we treat our sources of truth in a specific order of precedence:
+1. Errata marked as Official on the [Shadowrun Official Forums](https://forums.shadowruntabletop.com/index.php?topic=24594.0)
+2. Errata published on the Shadowrun Official website.
+3. The most recent digital edition of English content (ie, books published by CGL).
+4. The most recent edition of non-English content (ie, books published by Pegasus Spiele). 
+
+In most cases, this order of precedence means that non-English content is not treated as rules-as-written, but in the case of conflicting rulings or additional content we will endeavour to provide optional settings and content to support users of those books. 
+
 # Additional Resources
 
 * [General GitHub documentation](http://help.github.com/)

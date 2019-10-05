@@ -36,6 +36,7 @@ namespace Chummer.UI.Table
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Name = "ButtonTableCell";
             this.Size = new System.Drawing.Size(78, 26);
+            this.Load += OnLoad;
             this.ResumeLayout(false);
         }
 

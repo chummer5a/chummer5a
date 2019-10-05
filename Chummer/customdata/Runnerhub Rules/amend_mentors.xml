@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<chummer>
+	<mentors>
+		<mentor>
+			<name>Adversary</name>
+			<hide />
+		</mentor>
+		<mentor>
+			<name>Planar Entity</name>
+			<hide />
+		</mentor>
+		<mentor>
+			<name>Arcana</name>
+			<hide />
+		</mentor>
+		<mentor>
+			<name>Holy Text</name>
+			<hide />
+		</mentor>
+		<mentor>
+			<name>Tohu Wa-Bohu</name>
+			<hide />
+		</mentor>
+		<mentor>
+			<name>Doom</name>
+			<hide />
+		</mentor>
+		<mentor>
+			<name>Disease</name>
+			<hide />
+		</mentor>
+		<mentor>
+			<name>Mutation</name>
+			<hide />
+		</mentor>
+		<mentor>
+			<name>Pollution</name>
+			<hide />
+		</mentor>
+		<mentor>
+			<name>The Adversary</name>
+			<hide />
+		</mentor>
+
+		<mentor>
+			<name>Death</name>
+			<choices>
+				<choice xpathfilter="starts-with(name,'Adept:') and contains(name,'Plague Cloud')" amendoperation="replace">
+					<name>Adept: Free Killing Hands</name>
+					<bonus>
+						<specificpower>
+							<name>Killing Hands</name>
+						</specificpower>
+					</bonus>
+				</choice>
+			</choices>
+		</mentor>
+
+		<mentor>
+			<name>Dolphin</name>
+			<disadvantage>Followers are altruistic when it comes to helping people and cannot turn a blind eye to those who they believe deserve their help. It is diffcult for them not to get involved when they see someone being bullied or obviously polluting the environment. If they see such a situation, it takes a Charisma + Willpower (3) Test for a follower of Dolphin not to intervene. If the job that the follower of Dolphin is on involves polluting the environment or becoming the bully/enforcer on those less deserving, then the follower loses 2 dice after each such deed until she atones. The -2 penalty applies to tests involving Magic (much like a background count). Atonement for Dolphin requires a donation of time (karma) or money (nuyen) of around 5 GMP (GMs may increase or decrease this according to the severity of the transgression)
+			</disadvantage>
+		</mentor>
+		<mentor>
+			<name>Whale</name>
+			<disadvantage>Because of their personal sense of ethics, followers of the whale must honor any agreement they enter into. This can be an oath to an organization or a verbal contract with a corporation. Failing to honor the contract or oath results in a loss of a point of Magic. The Whale mentor spirit understands if circumstances to complete the contract are out of the Awakened’s hands. For everything else, the follower can attempt to atone, but at the gamemaster’s discretion. Atonement for Whale requires a donation of time (karma) or money (nuyen) of around 5 GMP (GMs may increase or decrease this according to the severity of the transgression). Characters which need to make atonement to Whale cannot raise their Magic until they atone. 
+			</disadvantage>
+		</mentor>
+
+		<mentor>
+			<name>Bat</name>
+			<disadvantage>
+				A follower of Bat is easily distracted and becomes irritable during enforced inaction. She prefers spontaneity to routine. To represent this on the hub, increase the time it takes to learn a new skill or improve an existing one by 50%. This is cumulative with the training time increase imposed by the dependents quality.
+			</disadvantage>
+		</mentor>
+
+		<mentor>
+		  <id>26eed20e-86c6-4245-be55-231370fff939</id>
+		  <name>Spider (Alt)</name>
+		  <choices amendoperation="replace">
+		    <choice>
+		      <name>Magician: +2 dice pool modifier when casting Manipulation spells, preparations, and rituals</name>
+		      <bonus>
+		        <spellcategory>
+		          <name>Manipulation</name>
+		          <val>2</val>
+		        </spellcategory>
+		      </bonus>
+		    </choice>
+		    <choice>
+		      <name>Adept: Gain a free level of Spirit Claw (although in this case, it manifests as a fang).</name>
+		      <bonus>
+		        <specificpower>
+		          <name>Spirit Claw</name>
+		          <val>1</val>
+		        </specificpower>
+		      </bonus>
+		    </choice>
+		  </choices>
+		</mentor>
+	</mentors>
+</chummer>

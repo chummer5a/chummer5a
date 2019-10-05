@@ -287,6 +287,276 @@
       <name>Ares Victory: Rapid Transit</name>
      <translate>阿瑞斯·胜利：高速交通</translate>
     </armor>
+      <armor>
+      <id>790918b5-93fe-461e-8973-23d445bfaf93</id>
+      <name>Form-Fitting Body Armor</name>
+      <translate>贴身型身体装甲（FFBA）</translate>
+    </armor>
+    <armor>
+      <id>e11b7746-40e2-493a-b35d-87b0dec5f3ca</id>
+      <name>Hardened Mil-Spec Battle Armor: Light</name>
+      <translate>强化军规战斗甲（轻型）</translate>
+    </armor>
+    <armor>
+      <id>1c5ad9bc-35af-4079-b27c-f29a75ffe02f</id>
+      <name>Hardened Mil-Spec Battle Armor: Medium</name>
+      <translate>强化军规战斗甲（中型）</translate>
+    </armor>
+    <armor>
+      <id>5542ff34-3eb7-4482-806f-d5a1cd56064f</id>
+      <name>Hardened Mil-Spec Battle Armor: Heavy</name>
+      <translate>强化军规战斗甲（重型）</translate>
+    </armor>
+    <armor>
+      <id>eba04b96-c253-4fe0-8431-988d5a45d456</id>
+      <name>Hardened Mil-Spec Battle Armor: Helmet</name>
+      <translate>强化军规战斗甲：头盔</translate>
+    </armor>
+    <armor>
+      <id>2c5b1217-c36a-4386-8f98-6657518ba91d</id>
+      <name>Security Armor: Light</name>
+      <translate>安保装甲（轻型）</translate>
+    </armor>
+    <armor>
+      <id>20606e03-592a-4bb8-938b-3985054505fa</id>
+      <name>Security Armor: Medium</name>
+      <translate>安保装甲（中型）</translate>
+    </armor>
+    <armor>
+      <id>d553f4be-85cb-48b9-b7bd-4eea8a67418d</id>
+      <name>Security Armor: Heavy</name>
+      <translate>安保装甲（重型）</translate>
+    </armor>
+    <armor>
+      <id>7270c272-fef6-4b93-ae78-aa4906d9dbd5</id>
+      <name>Security Armor: Helmet</name>
+      <translate>安保装甲：头盔</translate>
+    </armor>
+    <armor>
+      <id>8f0c06ee-9915-415f-bf5b-26a4e3e517ea</id>
+      <name>Bike Racing Armor</name>
+      <translate>摩托赛车手装甲</translate>
+    </armor>
+    <armor>
+      <id>43119c33-3c4a-4c71-acf4-71a277aa8118</id>
+      <name>Bike Racing Helmet</name>
+      <translate>摩托赛车手头盔</translate>
+    </armor>
+    <armor>
+      <id>acc71656-e891-4bb2-a8ef-fb077bb5eefd</id>
+      <name>Bunker Gear</name>
+      <translate>消防服</translate>
+    </armor>
+    <armor>
+      <id>5116893c-8102-4397-b7b8-f568f50560ab</id>
+      <name>Bunker Gear Helmet</name>
+      <translate>消防服头盔</translate>
+    </armor>
+    <armor>
+      <id>4cf22984-065a-4959-ab6c-2bf1b826f493</id>
+      <name>Riot Control Armor</name>
+      <translate>防暴装甲</translate>
+    </armor>
+    <armor>
+      <id>9c03e0c2-251a-496b-902b-d0c6743568fd</id>
+      <name>Riot Control Helmet</name>
+      <translate>防暴装甲头盔</translate>
+    </armor>
+    <armor>
+      <id>c6b7ed25-c5ff-464c-a6e1-776d9cdb7ac7</id>
+      <name>SWAT Armor</name>
+      <translate>特警装甲</translate>
+    </armor>
+    <armor>
+      <id>8408b3e7-87ff-4b6e-bfdc-19433ba356da</id>
+      <name>SWAT Helmet</name>
+      <translate>特警头盔</translate>
+    </armor>
+    <armor>
+      <id>0997c43e-d59b-433f-b213-4de1cc5ab83a</id>
+      <name>Securetech PPP: Arms Kit</name>
+      <translate>安保科技PPP：手臂套件</translate>
+    </armor>
+    <armor>
+      <id>9bf19d62-ff32-49df-8e70-f1b1f8e8d769</id>
+      <name>Securetech PPP: Legs Kit</name>
+      <translate>安保科技PPP：腿部套件</translate>
+    </armor>
+    <armor>
+      <id>f3e262d5-c6ec-4e2e-9081-21d160d8c21b</id>
+      <name>Securetech PPP: Vitals Kit</name>
+      <translate>安保科技PPP：重要器官</translate>
+    </armor>
+    <armor>
+      <id>b4a000b6-b256-48c1-a008-541eb13acf4b</id>
+      <name>Body Armor Bag</name>
+      <translate>装甲护身袋</translate>
+    </armor>
+    <armor>
+      <id>3134bbd7-350b-4d10-8902-25cb156e094f</id>
+      <name>Chain Mail</name>
+      <translate>锁子甲</translate>
+    </armor>
+    <armor>
+      <id>deef9bf9-b4a5-4084-baea-98045cdb4389</id>
+      <name>Padded Leather</name>
+      <translate>衬垫皮甲</translate>
+    </armor>
+    <armor>
+      <id>d90a8823-7387-4c50-bc47-3d63f0ffd543</id>
+      <name>Ares FlaShield</name>
+      <translate>阿瑞斯闪盾</translate>
+    </armor>
+      <armor>
+      <id>31675672-3476-4a2f-8acf-605702ae4c66</id>
+      <name>Murder Armor</name>
+      <translate>谋杀护甲</translate>
+    </armor>
+    <armor>
+      <id>1c5f484a-996c-4518-bf23-677a506b2ea5</id>
+      <name>Forearm Guards</name>
+      <translate>前臂护甲</translate>
+    </armor>
+    <armor>
+      <id>9f88a210-9ec6-4fc5-ad91-ffb7e7051447</id>
+      <name>Ballistic Mask</name>
+      <translate>防弹面具</translate>
+    </armor>
+    <armor>
+      <id>608d5c68-aba1-40e5-8100-d2615a39a2f3</id>
+      <name>Custom Ballistic Mask</name>
+      <translate>定制防弹面具</translate>
+    </armor>
+    <armor>
+      <id>3b4717da-bdbf-4ca6-8399-85399afeafa6</id>
+      <name>Ghillie Suit</name>
+      <translate>吉利服</translate>
+    </armor>
+    <armor>
+      <id>54ce4431-5cbe-461b-bd52-16e9236f0694</id>
+      <name>Ares Armored Survivalist</name>
+      <translate>阿瑞斯装甲生存大师</translate>
+    </armor>
+    <armor>
+      <id>984a0c2e-d3e1-4137-bbc7-8a7f9009eac4</id>
+      <name>Desert Suit</name>
+      <translate>沙漠套装</translate>
+    </armor>
+    <armor>
+      <id>541acec2-bd2f-4684-b0f8-c85bb45d1e8d</id>
+      <name>Snake Mesh Socks</name>
+      <translate>防蛇网袜</translate>
+    </armor>
+    <armor>
+      <id>a13859be-0889-4554-84b4-7f62a513233e</id>
+      <name>Coldsuit</name>
+      <translate>防寒服</translate>
+    </armor>
+    <armor>
+      <id>fa5c069b-416c-4938-adf5-62e155455161</id>
+      <name>Polar Survival Suit</name>
+      <translate>极地生存服</translate>
+    </armor>
+    <armor>
+      <id>28c1d806-5db7-4d22-8ce2-66bc8778a29b</id>
+      <name>Ares Arctic Forces Suit</name>
+      <translate>阿瑞斯极地部队套装</translate>
+    </armor>
+    <armor>
+      <id>e76e2b43-e81e-49df-90a6-6f1a466a4009</id>
+      <name>Ares Armored Coldsuit</name>
+      <translate>阿瑞斯装甲防寒服</translate>
+    </armor>
+    <armor>
+      <id>1b1c717f-740a-41e0-b0fc-605e38575c91</id>
+      <name>Ares Polar Sneak Suit</name>
+      <translate>阿瑞斯极地潜行服</translate>
+    </armor>
+    <armor>
+      <id>025f360f-f143-46a5-bfc7-e4e7ec5af37c</id>
+      <name>Enclosed Breathing Helmet</name>
+      <translate>封闭式呼吸头盔</translate>
+    </armor>
+    <armor>
+      <id>feb98de4-5e5b-473f-a31a-a73ca36d0e1d</id>
+      <name>Full Face Mask</name>
+      <translate>全覆式面罩</translate>
+    </armor>
+    <armor>
+      <id>b53bd60a-2687-4554-ae10-8309ee3c2991</id>
+      <name>Drysuit</name>
+      <translate>干式潜水服</translate>
+    </armor>
+    <armor>
+      <id>f2aab6fa-645a-4d39-a612-91d3ee9e6bce</id>
+      <name>Diving Armor</name>
+      <translate>潜水装甲</translate>
+    </armor>
+    <armor>
+      <id>321a8d8f-5bbd-46cf-b6f9-3c79e662c311</id>
+      <name>Arctic Diving Suit</name>
+      <translate>北极潜水套装</translate>
+    </armor>
+    <armor>
+      <id>81fdc8a3-7106-4b08-a1f4-c72140bc90fc</id>
+      <name>Evo HEL Suit</name>
+      <translate>天演HEL服</translate>
+    </armor>
+    <armor>
+      <id>ff733b15-c489-467d-b8cf-ac5e24639ed3</id>
+      <name>Spacesuit</name>
+      <translate>宇航服</translate>
+    </armor>
+    <armor>
+      <id>ed958de6-17e6-47e6-8374-815ae2cba02a</id>
+      <name>Security Spacesuit</name>
+      <translate>安保宇航服</translate>
+    </armor>
+    <armor>
+      <id>8c47595f-b22c-44b7-8191-a5fd04f6a07a</id>
+      <name>Evo Armadillo Armored Spacesuit</name>
+      <translate>天演犰狳装甲宇航服</translate>
+    </armor>
+    <armor>
+      <id>5f6058e9-d026-492e-8f3f-0da6a54d90d6</id>
+      <name>Magnetic Boots</name>
+      <translate>磁性靴</translate>
+    </armor>
+    <armor>
+      <id>6189e85c-e944-40bf-bad7-4e2c2eb881cd</id>
+      <name>Survival Bubble, Rating 1</name>
+      <translate>求生泡（等级1）</translate>
+    </armor>
+    <armor>
+      <id>05c38a2d-237d-49ba-94b8-e549bdfb5f84</id>
+      <name>Survival Bubble, Rating 2</name>
+      <translate>求生泡（等级2）</translate>
+    </armor>
+    <armor>
+      <id>6f23a99f-40a1-41e0-ac15-f768c04beb82</id>
+      <name>Survival Bubble, Rating 3</name>
+      <translate>求生泡（等级3）</translate>
+    </armor>
+    <armor>
+      <id>cbce4c66-d75e-4fea-8b6a-0564f5ef01c0</id>
+      <name>Survival Bubble, Rating 4</name>
+      <translate>求生泡（等级4）</translate>
+    </armor>
+    <armor>
+      <id>6c773f91-8be3-4610-94f9-bfef1bc1c91d</id>
+      <name>Survival Bubble, Rating 5</name>
+      <translate>求生泡（等级5）</translate>
+    </armor>
+    <armor>
+      <id>5b95ee2b-2e3c-405a-8f56-ee1d78ad4d51</id>
+      <name>Survival Bubble, Rating 6</name>
+      <translate>求生泡（等级6）</translate>
+    </armor>
+    <armor>
+      <id>c9861472-4784-44bf-ab25-8d71c03954e6</id>
+      <name>MCT EE Suit</name>
+      <translate>三津滨EE防护服</translate>
+    </armor>
      <!-- Region Hard Targets -->
     <armor>
       <id>6a50c63e-f6a9-4023-9ee9-d4b13ded6a9e</id>
@@ -551,6 +821,17 @@
         <name>Scout's Tux</name>
         <translate>侦察兵的晚礼服</translate>
       </armor>
+    <!-- Region Street Lethal-->
+    <armor>
+      <id>40cf0da9-29d7-4a7b-8ef0-822ba05917b7</id>
+      <name>Ares Arms Bug Stomper Custom Armor</name>
+      <!--待补-->
+    </armor>
+    <armor>
+      <id>8136ccfb-d5ce-4e18-bc4a-21d33bb6b089</id>
+      <name>EVO/Yamatetsu Naval Technologies Rampart</name>
+      <!--待补-->
+    </armor>
 		</armors>
 		<mods>
 			<mod>
@@ -1425,7 +1706,7 @@
 			<book>
 				<id>289bc41d-6dd5-4216-9bc7-e6f0cabae9ac</id>
 				<name>Assassin's Primer</name>
-				<translate>Assassin's Primer</translate>
+				<translate>刺客入门（AP）</translate>
 			</book>
 			<book>
 				<id>b68175bc-e10f-4e11-9361-ed62bb371c8d</id>
@@ -1474,8 +1755,8 @@
 			</book>
 			<book>
 				<id>b3c5ea18-56dc-42f4-b567-50ead12fab1f</id>
-				<name>Shadowrun 5th Edition (German)</name>
-				<translate>Shadowrun 5th Edition (German)</translate>
+				<name>Shadowrun 5th Edition (German-exclusive Content)</name>
+				<translate>Shadowrun 5th Edition (German-exclusive Content)</translate>
 			</book>
       <book>
         <id>0b2e86c9-98b7-4265-800f-9f1b98ce7f96</id>
@@ -1507,6 +1788,21 @@
         <name>Rigger 5.0</name>
         <translate>机师5.0（R5）</translate>
       </book>
+    <book>
+      <id>6e447106-e250-41b1-855a-2dd1d2075f6d</id>
+      <name>Forbidden Arcana</name>
+      <translate>禁忌奥秘（FA）</translate>
+    </book>
+    <book>
+		  <id>bfe6c53b-1c68-4d7a-b11d-9d47461df1cd</id>
+		  <name>Street Lethal</name>
+		  <translate>街头杀器（SL）</translate>
+	  </book>
+    <book>
+      <id>38de6863-2911-4fa6-9a43-70db72ab8a22</id>
+      <name>Howling Shadows</name>
+      <translate>咆哮之影（HS）</translate>
+    </book>
 		</books>
 	</chummer>
   <chummer file="complexforms.xml">
@@ -3432,7 +3728,7 @@
 			</cyberware>
 			<cyberware>
 				<id>8b9541a9-e10a-488d-a076-4e5b1c469839</id>
-				<name>Silencer</name>
+				<name>Silencer/Suppressor</name>
 				<translate>消音器</translate>
 			</cyberware>
 			<cyberware>
@@ -3450,7 +3746,6 @@
 				<name>Spurs</name>
 				<translate>钢刺爪(可伸缩)</translate>
 			</cyberware>
-		</cyberwares>
   <!-- Region Chrome Flesh -->
     <cyberware>
       <id>8f5a6813-b87a-4915-ab91-1c416ef25b23</id>
@@ -3912,6 +4207,37 @@
       <name>Voice Mask</name>
       <translate>蒙声器</translate>
     </cyberware>
+  <cyberware>
+      <id>40830ce9-b279-4951-adf2-05a69dd41d77</id>
+      <name>Antennae</name>
+      <translate>天线</translate>
+    </cyberware>
+    <cyberware>
+      <id>843c9594-ea28-45dd-8b22-fa27479fb141</id>
+      <name>Ear protector</name>
+      <translate>护耳罩</translate>
+    </cyberware>
+    <cyberware>
+      <id>ecd0ab64-ffc8-426f-96cb-bda47e7afc11</id>
+      <name>Increased Hearing Spectrum</name>
+      <translate>提高听觉范围</translate>
+    </cyberware>
+    <cyberware>
+      <id>cf0adced-d9e8-49bb-952f-3b7b339761fa</id>
+      <name>Modular Mount</name>
+      <translate>模块载槽</translate>
+    </cyberware>
+    <cyberware>
+      <id>c84aac08-a1bc-4953-aaba-3a395dd0359a</id>
+      <name>Translat-ear</name>
+      <translate>翻译耳</translate>
+    </cyberware>
+    <cyberware>
+      <id>be8956ed-ebf6-4a66-9953-89417eb2005c</id>
+      <name>Audio Analyzer</name>
+      <translate>声频分析</translate>
+    </cyberware>
+   </cyberwares>
 	</chummer>
 	<chummer file="echoes.xml">
 		<echoes>
@@ -4037,7 +4363,7 @@
 			<category translate="BTLs">BTLs</category>
 			<category translate="化工产品">Chemicals</category>
 			<category translate="通讯链配件">Commlink Accessories</category>
-			<category translate="通讯链/碟板构成因子">Commlink/Cyberdeck Form Factors</category>
+			<category translate="通讯链/碟板规格">Commlink/Cyberdeck Form Factors</category>
 			<category translate="通讯链App">Commlink Apps</category>
 			<category translate="通讯链">Commlinks</category>
 			<category translate="普通程序">Common Programs</category>
@@ -4276,7 +4602,7 @@
       </gear>
       <gear>
         <id>03d25169-214b-4e85-8a11-e33b022a6e32</id>
-        <name>Microtronica Azteca Raptor</name>
+        <name>Microtrónica Azteca Raptor</name>
       <translate>微电·阿兹特卡·猛禽</translate>
       </gear>
       <gear>
@@ -4692,7 +5018,7 @@
 			<gear>
 				<id>eced7e9a-0959-4c4a-a67f-66abc0dd5228</id>
 				<name>Audio Enhancement</name>
-				<translate>听力锐化</translate>
+				<translate>听力增强</translate>
 			</gear>
 			<gear>
 				<id>5d69d002-c33d-4d0f-9c4d-d78db4d78e5d</id>
@@ -4809,6 +5135,11 @@
 				<name>Camera</name>
 				<translate>摄像机</translate>
 			</gear>
+      <gear>
+      <id>0b5e77ce-7fa8-4458-89de-ee9bb61eafd7</id>
+      <name>Nanoscanner</name>
+      <translate>纳米扫描器</translate>
+    </gear>
 			<gear>
 				<id>2bcc17b8-33bb-4567-887d-8be9593f7899</id>
 				<name>Key Lock</name>
@@ -5129,6 +5460,16 @@
       <name>Zombie Dust</name>
       <translate>丧尸尘</translate>
     </gear>
+       <gear>
+      <id>8cb8086b-3171-4a60-bee4-2996e29d5156</id>
+      <name>Liquid Nutrients</name>
+      <translate>液体营养剂</translate>
+    </gear>
+    <gear>
+      <id>8461fd87-ea93-4edb-92a1-4a20ad444471</id>
+      <name>Normal Saline</name>
+      <translate>生理盐水</translate>
+    </gear>
 			<gear>
 				<id>8b2b55ed-89d2-4133-b478-41cd9d996c96</id>
 				<name>Glue Sprayer</name>
@@ -5185,8 +5526,8 @@
 				<translate>γ-东莨菪碱</translate>
 			</gear>
 			<gear>
-				<id>02514259-a41d-49e4-b1e4-b528feae2917</id>
-				<name>Narcoject</name>
+				<id>875bf273-1a0d-4a42-80ab-6547d7a1235a</id>
+				<name>Narcojet</name>
 				<translate>麻醉针剂</translate>
 			</gear>
 			<gear>
@@ -5199,6 +5540,46 @@
 				<name>Seven-7</name>
 				<translate>七-7毒剂</translate>
 			</gear>
+      <gear>
+      <id>d7fc6610-8ec3-45eb-8a8d-c664c84db56f</id>
+      <name>Caldwell Lily Extract</name>
+      <translate>考德威尔百合提取物</translate>
+    </gear>
+    <gear>
+      <id>8ea29de5-c231-46c8-ab47-a73041b40c69</id>
+      <name>Caldwell Lily Extract, Concentrated</name>
+      <translate>考德威尔百合提取物（浓缩版）</translate>
+    </gear>
+    <gear>
+      <id>eb9d3cd6-be58-4efe-824c-92f87e91b784</id>
+      <name>Chloral Hydrate</name>
+      <translate>水合氯醛</translate>
+    </gear>
+    <gear>
+      <id>1b088196-df34-4b51-a712-197167610f0f</id>
+      <name>Chloroform</name>
+      <translate>氯仿</translate>
+    </gear>
+    <gear>
+      <id>691af444-8ffc-406b-9999-4ff2058eff1f</id>
+      <name>DMSO</name>
+      <translate>DMSO</translate>
+    </gear>
+    <gear>
+      <id>e485ecf1-d8b2-4183-9bae-00c8629156b6</id>
+      <name>Laés</name>
+      <translate>莱斯（StS）</translate>
+    </gear>
+    <gear>
+      <id>81bba329-35d0-44f6-ad81-7df558810e84</id>
+      <name>Leäl</name>
+      <translate>冷埃（StS）</translate>
+    </gear>
+      <gear>
+      <id>93245f7f-2391-440c-b9ae-d0a5c8549fb2</id>
+      <name>Slab</name>
+      <translate>斯拉步（StS）</translate>
+    </gear>
       <gear>
       <id>af0ca7ad-a17e-418f-b7ef-baa9c54a9b8d</id>
       <name>Quickdraw Quiver</name>
@@ -5541,7 +5922,7 @@
 			</gear>
       <gear>
       <id>77a7504c-0eb8-4268-9744-66c4bbaae509</id>
-      <name>Smokebomb</name>
+      <name>Grenade: Smokebomb</name>
       <translate>烟雾炸弹</translate>
     </gear>
 			<gear>
@@ -5673,6 +6054,11 @@
       <id>39042c0a-4b22-4762-8d56-623033860178</id>
       <name>Arrow: Monotip Head</name>
       <translate>箭：单分子镞箭</translate>
+    </gear>
+      <gear>
+      <id>60ab05a7-2850-410c-9261-c5df6b5cddf1</id>
+      <name>Arrow: Seeker Shaft</name>
+      <translate>箭：索敌箭杆</translate>
     </gear>
 			<gear>
 				<id>c3c2fa27-36a7-4296-aadd-627078e6e052</id>
@@ -5901,7 +6287,7 @@
       </gear>
       <gear>
         <id>dfc9bfdc-ef5e-45f7-8df5-fd80e011f547</id>
-        <name>Microtronica Azteca 300</name>
+        <name>Microtrónica Azteca 300</name>
         <translate>微电·阿兹特卡300</translate>
       </gear>
       <gear>
@@ -6650,6 +7036,11 @@
 				<name>Reagents, per dram</name>
 				<translate>试剂，每打兰</translate>
 			</gear>
+      <gear>
+      <id>24e87c73-22be-480d-bb79-978277672a1d</id>
+      <name>Neuro-Stun VIII</name>
+      <translate>神经眩晕剂VIII</translate>
+    </gear>
 			<gear>
 				<id>f81d9a2e-5c2d-49ad-93b4-1a7a71439bf3</id>
 				<name>Neuro-Stun IX</name>
@@ -7829,7 +8220,7 @@
       </gear>
       <gear>
         <id>02100ba4-7b39-4cdc-9e7a-6c6454d34dae</id>
-        <name>Modify Matrix Attribute</name>
+        <name>Modify Matrix Attribute (Increase Attack, Decrease Sleaze)</name>
         <translate>调整矩阵属性</translate>
       </gear>
       <gear>
@@ -8053,6 +8444,107 @@
       <translate>合成皮肤面膜</translate>
     </gear>
 		</gears>
+  <!-- Region Nanogear-->
+    <gear>
+      <id>1b97b4c7-5279-4778-92c5-44f7f9c94a0b</id>
+      <name>Altskin</name>
+      <translate>替换皮肤</translate>
+    </gear>
+    <gear>
+      <id>747c90eb-c09a-458f-ad8f-23b494d79b48</id>
+      <name>Altskin Armor</name>
+      <translate>替换皮肤-护甲</translate>
+    </gear>
+    <gear>
+      <id>dae881b1-882a-4298-ab03-9c9b8549ebfb</id>
+      <name>Altskin Chameleon</name>
+      <translate>替换皮肤-变色</translate>
+    </gear>
+    <gear>
+      <id>ce1d06f0-d174-4cca-9a64-dc122a55734a</id>
+      <name>Altskin Newprint</name>
+      <translate>替换皮肤-新指纹</translate>
+    </gear>
+    <gear>
+      <id>23ba0ca3-55c3-4ad3-baaf-9ae825d040d2</id>
+      <name>Altskin Sealer</name>
+      <translate>替换皮肤-密封</translate>
+    </gear>
+    <gear>
+      <id>74ba41f1-ca67-4b5a-bc30-4647ff4cd3fc</id>
+      <name>Altskin Shifter</name>
+      <translate>替换皮肤-变化</translate>
+    </gear>
+    <gear>
+      <id>304ac4ee-96aa-400d-a376-1ba699c94438</id>
+      <name>Carcerand-Plus</name>
+      <!--待补-->
+    </gear>
+    <gear>
+      <id>cb64363f-c918-4cb1-9640-2c037a63bfe2</id>
+      <name>Cutters</name>
+      <translate>切割</translate>
+    </gear>
+    <gear>
+      <id>ab07341f-b49b-4002-bd9a-be809e7fc181</id>
+      <name>Etchers</name>
+      <translate>蚀刻</translate>
+    </gear>
+    <gear>
+      <id>bb0be5c4-90c4-4dbe-ae4b-76e3680f1952</id>
+      <name>Nantidotes</name>
+      <!--待补-->
+    </gear>
+    <gear>
+      <id>40b7ac95-e4ba-4651-a348-fe277fac52bc</id>
+      <name>Monowire (Per Metre)</name>
+      <translate>单线（每米）</translate>
+    </gear>
+    <gear>
+      <id>07d7b16b-9ae5-4cb2-b364-9da3f211516b</id>
+      <name>Hard Nanohive Supplies</name>
+      <!--待补-->
+    </gear>
+    <gear>
+      <id>4a9061f4-fc66-48e1-bbd0-80241896d356</id>
+      <name>Intruders</name>
+      <translate>闯入</translate>
+    </gear>
+    <gear>
+      <id>6bc81c68-d84b-435d-b441-660e4b18f2e8</id>
+      <name>Nanopaste Disguise Container, Small</name>
+     <translate>纳米糊伪装（小罐）</translate>
+    </gear>
+    <gear>
+      <id>c4adac2f-9349-4fe4-8894-f38d4445080b</id>
+      <name>Nanopaste Disguise Container, Large</name>
+      <translate>纳米糊伪装（大罐）</translate>
+    </gear>
+    <gear>
+      <id>c1ed1ff0-8ff7-4c38-a198-e27a7c2c91a9</id>
+      <name>NanoSpy</name>
+      <translate>纳米间谍</translate>
+    </gear>
+    <gear>
+      <id>4752d8ab-4393-4fd6-a3c6-c85f65d01281</id>
+      <name>Savior Medkit</name>
+      <translate>救助医疗箱</translate>
+    </gear>
+    <gear>
+      <id>4f4f8801-dfe6-4847-add3-4afa66ec547f</id>
+      <name>Savior Medkit Supplies</name>
+      <translate>救助医疗箱补给</translate>
+    </gear>
+    <gear>
+      <id>f634ee1f-0c3f-47bd-bea7-10236b24de39</id>
+      <name>Smart Corrosives</name>
+      <translate>智能腐蚀物</translate>
+    </gear>
+    <gear>
+      <id>b8f9ecea-219e-4765-bfd3-c7d4b9477e28</id>
+      <name>Universal Sealant</name>
+      <translate>通用密封剂</translate>
+    </gear>
 	</chummer>
 	<chummer file="improvements.xml">
 		<improvements>
@@ -9815,8 +10307,8 @@
       <id>97c804c5-4107-495b-a821-29d1fc3aa4f5</id>
       <name>Doom</name>
       <translate>末日</translate>
-      <advantage>通用：〈爆破〉或任意战斗技能检定受到+2骰池调整（二选一）</advantage>
-      <disadvantage>追随末日者必须进行一成功的｛意志+魅力（3）｝检定，才能避免不必要的战斗或者不施行暴力。如果他们失败了，他们必须进行战斗，直到所有对手被击败或逃跑。</disadvantage>
+      <altadvantage>通用：〈爆破〉或任意战斗技能检定受到+2骰池调整（二选一）</altadvantage>
+      <altdisadvantage>追随末日者必须进行一成功的｛意志+魅力（3）｝检定，才能避免不必要的战斗或者不施行暴力。如果他们失败了，他们必须进行战斗，直到所有对手被击败或逃跑。</altdisadvantage>
       <choices>
         <choice>
           <name>+2 to Demolitions</name>
@@ -9840,8 +10332,8 @@
       <id>dc5c1f63-743f-475d-9a94-02fcbfbb437f</id>
       <name>Disease</name>
       <translate>疾病</translate>
-      <advantage>通用：抵抗所有病毒和毒素时检定获得＋2骰池调整。</advantage>
-      <disadvantage>疾病追随者必须通过一个｛感知+意志（3）｝检定，否则在战斗状态下必须逃跑或寻求掩护（除非他们的数量超过对手）。如果他们一开始战斗的时候人数众多，但是后面逐渐减少，最终数量不再超越对手时，他们必须进行检定以避免逃离。</disadvantage>
+      <altadvantage>通用：抵抗所有病毒和毒素时检定获得＋2骰池调整。</altadvantage>
+      <altdisadvantage>疾病追随者必须通过一个｛感知+意志（3）｝检定，否则在战斗状态下必须逃跑或寻求掩护（除非他们的数量超过对手）。如果他们一开始战斗的时候人数众多，但是后面逐渐减少，最终数量不再超越对手时，他们必须进行检定以避免逃离。</altdisadvantage>
       <choices>
         <choice>
           <name>Magician: +2 dice for summoning or binding plague spirits</name>
@@ -9857,8 +10349,8 @@
       <id>f58d7493-864f-430d-b75c-a4f78575ed44</id>
       <name>Mutation</name>
       <translate>突变</translate>
-      <advantage>通用：一个肉体技能检定获得＋2骰池调整</advantage>
-      <disadvantage>如果突变的追随者发现自己不如对手，他们的所有行动都会遭受－1骰池罚值，直到他们在该领域击败对手，或以另一种方式克服或弥补弱点（例如获得一种新的异能、法术或殖装）为止。</disadvantage>
+      <altadvantage>通用：一个肉体技能检定获得＋2骰池调整</altadvantage>
+      <altdisadvantage>如果突变的追随者发现自己不如对手，他们的所有行动都会遭受－1骰池罚值，直到他们在该领域击败对手，或以另一种方式克服或弥补弱点（例如获得一种新的异能、法术或殖装）为止。</altdisadvantage>
       <choices>
         <choice>
           <name>Magician: +2 dice for Health Spells</name>
@@ -9874,8 +10366,8 @@
       <id>424398e1-8909-4237-8315-48b6e06d62b5</id>
       <name>Pollution</name>
       <translate>污染</translate>
-      <advantage>通用：以任何方式处理污染物时的化学检定获得＋2骰池调整；即使他们没有化学技能，也可以未受训使用该技能</advantage>
-      <disadvantage>如果他们来到一个比他们正常居住区干净的地区，那么污染的追随者每天必须进行一｛意志+魅力（3）｝的检定。如果他们失败了，他们必须至少花八个小时来积极的污染土地，不管他们当时有没有其他计划。</disadvantage>
+      <altadvantage>通用：以任何方式处理污染物时的化学检定获得＋2骰池调整；即使他们没有化学技能，也可以未受训使用该技能</altadvantage>
+      <altdisadvantage>如果他们来到一个比他们正常居住区干净的地区，那么污染的追随者每天必须进行一｛意志+魅力（3）｝的检定。如果他们失败了，他们必须至少花八个小时来积极的污染土地，不管他们当时有没有其他计划。</altdisadvantage>
       <choices>
         <choice>
           <name>Magician: +2 dice for summoning or binding toxic spirits</name>
@@ -10141,7 +10633,7 @@
         <altdisadvantage>鸽子在尽可能的情况下反对战斗。因此，那些遵从鸽子的人在施放战斗法术或使用致命手段时受到-2骰池调整。</altdisadvantage>
         <choices>
           <choice>
-            <name>Magician: +1 dice pool modifer for casting Health spells, +1 dice pool modifer to summon air spirits</name>
+            <name>Magician: +1 dice pool modifier for casting Health spells, +1 dice pool modifier to summon air spirits</name>
             <translate>法师：施放生命系法术获得+1骰池调整，召唤气精魂获得+1骰池调整</translate>
           </choice>
           <choice>
@@ -10175,7 +10667,7 @@
         <altdisadvantage>奥秘的追随者必须使用塔罗牌卡组或单张卡牌作为法器或崇拜物，否则在尝试使用它们时受到-2骰池调整。\n塔罗奥秘在它的拥护者的生活中扮演着如此重要的角色，以至于当奥秘的追随者进阶1级启蒙时，他们必须选择专注（Centering）或修士专注（Adept Centering）作为他们的首要益处，同时选择塔罗牌作为他们使用专注的器具。</altdisadvantage>
         <choices>
           <choice>
-            <name>Magician: +1 dice pool modifer for casting Detection spells, an additional +2 dice pool modifer to cast Clairvoyance spells.</name>
+            <name>Magician: +1 dice pool modifier for casting Detection spells, an additional +2 dice pool modifier to cast Clairvoyance spells.</name>
             <translate>法师：施放侦测系法术受+1骰池调整，施放『千里眼』时额外受到+2骰池调整</translate>
           </choice>
           <choice>
@@ -10192,11 +10684,11 @@
         <altdisadvantage>拥有一本神圣经文意味着某些行为将被视作不正当的或违反经文教义的。当神圣经文的追随者想要进行一个与经文教义相违背的行为时（无论是哪种经文），他们必须通过一个魅力+意志（4）检定来进行该行为。</altdisadvantage>
         <choices>
           <choice>
-            <name>Magician: +2 dice pool modifer when using the Banishing skill.</name>
+            <name>Magician: +2 dice pool modifier when using the Banishing skill.</name>
             <translate>法师：〈驱逐〉检定获得+2骰池调整</translate>
           </choice>
           <choice>
-            <name>Magician: +2 dice pool modifer when casting Health spells.</name>
+            <name>Magician: +2 dice pool modifier when casting Health spells.</name>
             <translate>法师：施放生命系法术时获得+2骰池调整</translate>
           </choice>
           <choice>
@@ -10210,10 +10702,10 @@
         <name>Death</name>
         <translate>死亡</translate>
         <altadvantage>通用：〈解剖/疾病/感染者/亡灵〉（选择其一）知识技能+4等级</altadvantage>
-        <altdisadvantage></altdisadvantage>
+        <altdisadvantage>由于死亡的追随者相当了解身体如何工作，他们厌恶治疗它，因为他们将死亡与濒死过程视作最神圣的事情。当一个死亡的追随者尝试帮助濒死或受伤的某人时，他们必须先通过一个魅力+意志（3）检定。</altdisadvantage>
         <choices>
           <choice>
-            <name>Magician: +2 dice pool modifer when casting the spells Death Touch, Manaball, Manabolt, One Less, Slaughter, Slay.</name>
+            <name>Magician: +2 dice pool modifier when casting the spells Death Touch, Manaball, Manabolt, One Less, Slaughter, Slay.</name>
             <translate>法师：在施放『死亡之触』、『法力球』、『法力箭』、『触杀术』、『屠戮术』、『诛灭术』时骰池获得+2调整</translate>
           </choice>
           <choice>
@@ -10230,7 +10722,7 @@
         <altdisadvantage>贵族之战斗、不得不为之的战斗与不计后果的战斗，彼此间是截然不同的。结果是，那些遵从战争的人比任何人或任何事都更害怕的是失败。在看起来要输掉战斗时，那些遵从战争导师的人必须通过一个魅力+意志（4）检定，否则会使用任何有必要的手段——包括生命，新元，以及他们的同伴的荣誉——来击败他们的敌手。</altdisadvantage>
         <choices>
           <choice>
-            <name>Magician: +2 dice pool modifer when casting Combat spells, preparations, and rituals.</name>
+            <name>Magician: +2 dice pool modifier when casting Combat spells, preparations, and rituals.</name>
             <translate>法师：涉及战斗系的法术、制剂以及法术仪式的检定受到+2骰池调整</translate>
           </choice>
           <choice>
@@ -10264,7 +10756,7 @@
         <altdisadvantage>绿之人的追随者认为植物的价值高于几乎其它一切。于是，他们在植物被大肆毁灭时不会袖手旁观。这并不是说每个追随者都必须为每根折断的枝条复仇，但当植物正在受到明显的伤害，他们必须通过一个魅力+意志（3）检定，否则会使用一切可能的手段来阻止破坏。</altdisadvantage>
         <choices>
           <choice>
-            <name>Magician: +2 dice pool modifer to summon Plant Spirits.</name>
+            <name>Magician: +2 dice pool modifier to summon Plant Spirits.</name>
             <translate> 法师：〈召唤〉植物精魂获得+2骰池调整</translate>
           </choice>
           <choice>
@@ -10281,7 +10773,7 @@
         <altdisadvantage>太阳的追随者必须通过一个魅力+意志（4）检定才能有目的地误导他人。</altdisadvantage>
         <choices>
           <choice>
-            <name>Magician: +2 dice pool modifer when casting Sun- or Fire-based spells.</name>
+            <name>Magician: +2 dice pool modifier when casting Sun- or Fire-based spells.</name>
             <translate>法师：施放太阳或火焰相关的法术时获得+2骰池调整</translate>
           </choice>
           <choice>
@@ -10383,7 +10875,7 @@
         <altdisadvantage>蜘蛛的追随者，如同他们的导师，在事情的发展超出其控制时变得焦虑。因此，他们不遗余力地控制他们的遭遇的随机性。当没有在遵从一个计划或事情并没有照计划发展时，蜘蛛的追随者必须通过一个魅力+意志（4）检定，否则在一个新计划被建立起来前一切检定受到-2骰池调整。</altdisadvantage>
         <choices>
           <choice>
-            <name>Magician: +2 dice pool modifer when casting Manipulation spells, preparations, and rituals</name>
+            <name>Magician: +2 dice pool modifier when casting Manipulation spells, preparations, and rituals</name>
             <translate>法师：涉及操纵系的法术、制剂以及法术仪式的检定受到+2骰池调整</translate>
           </choice>
           <choice>
@@ -10400,7 +10892,7 @@
         <altdisadvantage>狼不是光荣的。狼是捕食弱者的存活者。每当狼的追随者看到通过攻击或牺牲弱者来存活的机会，他们必须通过一个魅力+意志（4）检定，否则就会尝试抓住机会。这对于狼视为朋友与家人的那些人不生效。</altdisadvantage>
         <choices>
           <choice>
-            <name>Magician: +1 dice pool modifer when casting Combat spells, preparations, and rituals.</name>
+            <name>Magician: +1 dice pool modifier when casting Combat spells, preparations, and rituals.</name>
             <translate>法师：涉及战斗系的法术、制剂以及法术仪式的检定受到+2骰池调整</translate>
           </choice>
           <choice>
@@ -10417,7 +10909,7 @@
         <altdisadvantage>鼠天生就是独行者。因此，有时它很难相信别人。与鼠对于不称职的无法忍受相结合，这可能在团队环境中引发问题。鼠之追随者无法通过团队合作检定受到帮助或帮助他人，除非他们相信他们正在组队的对象。此外，如果他们确实相信一个人，但这份信任因不相称或背叛而破裂，将来每次他们都必须通过一个魅力+意志（4）检定，才能够与此人进行团队合作检定。</altdisadvantage>
         <choices>
           <choice>
-            <name>Magician: +1 dice pool modifer when casting Health spells, preparations, and rituals</name>
+            <name>Magician: +1 dice pool modifier when casting Health spells, preparations, and rituals</name>
             <translate>法师：涉及战斗系的法术、制剂以及法术仪式的检定受到+1骰池调整</translate>
           </choice>
           <choice>
@@ -10426,6 +10918,86 @@
           </choice>
         </choices>
       </mentor>
+    <mentor>
+      <id>7a837193-2b58-49be-9dbb-c1c0c108ca6e</id>
+      <name>Great Mother (SASS)</name>
+      <translate>伟大母亲（SASS）</translate>
+      <altadvantage>通用：急救或医学检定+2骰池调整（二者选一）</altadvantage>
+      <altdisadvantage>伟大母亲的追随者是爱人和治愈者，而非战士。结果来说，他们会在任何与战斗相关的行动中（比如使用战斗技能、或是施放战斗法术）获得－1骰池调整。</altdisadvantage>
+      <choices>
+        <choice>
+          <name>+2 to First Aid</name>
+          <translate>〈急救〉检定骰池+2</translate>
+        </choice>
+        <choice>
+          <name>+2 to Medicine</name>
+          <translate>〈医学〉检定骰池+2</translate>
+        </choice>
+        <choice set="2">
+          <name>Magician: +2 dice for Health spells</name>
+          <translate>法师：+2骰池到涉及生命系的法术、制剂以及法术仪式的检定</translate>
+        </choice>
+        <choice set="2">
+          <name>Adept: 1 free level of Rapid Healing</name>
+          <translate>修士：免费1级『快速愈合』</translate>
+        </choice>
+      </choices>
+    </mentor>
+    <mentor>
+      <id>a83f0580-9783-401b-8249-bb39843fe0c7</id>
+      <name>Goddess</name>
+      <translate>女神</translate>
+      <altadvantage>通用：+2骰池到指导检定上。</altadvantage>
+      <altdisadvantage>女神绝不会在男性对手面前甘居弱势。除非通过一个魅力+意志（3）检定，否则你绝不会接受任何男性的命令，当某位男性不尊重你，你必会以眼还眼。</altdisadvantage>
+      <choices>
+        <choice>
+          <name>Magician: +2 dice for Ritual Spellcasting Tests</name>
+          <translate>法师：+2骰池到〈仪式施法〉检定。</translate>
+        </choice>
+        <choice>
+          <name>Adept: 1 free level of Authoritative Tone</name>
+          <translate>修士：免费获得1级『威严之声』。</translate>
+        </choice>
+      </choices>
+    </mentor>
+    <mentor>
+      <id>c9b8f607-43f7-4707-aaac-60da183f22ac</id>
+      <name>Lion</name>
+      <translate>狮子</translate>
+      <altadvantage>通用：+2骰池到求生、奔跑或追踪技能检定上（三选一）</altadvantage>
+      <altdisadvantage>在战斗中，狮子永远不会丢下战友，会为了保护同伴殊死战斗。除非通过一个魅力+意志（3）的检定，你不会在你的队友已经安全之前逃离战斗，此外，当你采取对队伍不利的行为时，你的物理和精神界限都-2。</altdisadvantage>
+      <choices>
+        <choice>
+          <name>Magician: +2 dice to Combat spells, preparations, and rituals</name>
+          <translate>法师：+2骰池到涉及战斗系的法术、制剂以及法术仪式的检定。</translate>
+        </choice>
+        <choice>
+          <name>Adept: 2 free levels of Attribute Boost (Strength)</name>
+          <translate>修士：免费获得2级『属性增幅（力量）』。</translate>
+        </choice>
+      </choices>
+    </mentor>
+    <mentor>
+      <id>d1089dd2-68b8-4e2a-977e-718e720f44d3</id>
+      <name>Raven (Alt)</name>
+      <translate>渡鸦（变体）</translate>
+      <altadvantage>通用：+2骰池到知识技能检定上。</altadvantage>
+      <altdisadvantage>渡鸦的跟随者们同他们的导师一样热爱收集。当面前有可能有价值的（GM决定）数据、知识，或其它装备，你必须通过一个魅力+意志（3）检定，否则你将无法抵挡想要得到它的冲动。</altdisadvantage>
+      <choices>
+        <choice>
+          <name>Magician: +2 dice to Detection spells, preparations, and rituals.</name>
+          <translate>法师：+2骰池到涉及侦测系的法术、制剂以及仪式上</translate>
+        </choice>
+        <choice>
+          <name>Magician: +2 dice to summoning spirits if summoner also has Code of Honor: Harmony with Nature, The Shaman’s Code and bargains with the summoned spirit.</name>
+          <translate>法师：若召唤者具有荣誉守则：自然和谐特质，以及萨满守则且与所召唤精魂达成协定，+2骰池到〈召唤精魂〉的检定上。</translate>
+        </choice>
+        <choice>
+          <name>Adept: 2 free levels of Enhanced Perception.</name>
+          <translate>修士：免费获得2级『强化侦察』。</translate>
+        </choice>
+      </choices>
+    </mentor>
 		</mentors>
 	</chummer>
 	<chummer file="metamagic.xml">
@@ -10630,6 +11202,344 @@
 			</limb>
     </limbcounts>
 	</chummer>
+  <chummer file="packs.xml">
+    <categories>
+    <category translate="核心套件">Core Packs</category>
+    <category translate="武器与弹药套件">Weapon and Ammo Packs</category>
+    <category translate="装甲套件">Armor Packs</category>
+    <category translate="赛博套件">Cyber Packs</category>
+    <category translate="生活方式套件">Lifestyle Packs</category>
+    <category translate="特色套件">Color Packs</category>
+    <category translate="载具套件">Vehicle Packs</category>
+    <category translate="碟客套件">Decker Packs</category>
+    <category translate="无人机套件">Drone Packs</category>
+    <category translate="魔法套件">Magic Packs</category>
+    <category translate="社群套件">Community Packs</category>
+    <category translate="自定义">Custom</category>
+    </categories>
+  <packs>
+    <pack>
+      <name>Intro Runner Pack</name>
+      <translate>新手狂奔者套件</translate>
+    </pack>
+    <pack>
+      <name>Basic Runner Pack</name>
+      <translate>基础狂奔者套件</translate>
+    </pack>
+    <pack>
+      <name>Advanced Runner Pack</name>
+      <translate>高级狂奔者套件</translate>
+    </pack>
+    <pack>
+      <name>Clasic Samurai Pack</name>
+      <translate>经典武士套件</translate>
+    </pack>
+    <pack>
+      <name>Up Close &amp; Personal Pack</name>
+      <translate>近身作战套件</translate>
+    </pack>
+    <pack>
+      <name>Blademaster Pack</name>
+      <translate>利刃大师套件</translate>
+    </pack>
+    <pack>
+      <name>Monowhip Pack</name>
+      <translate>单纤维鞭套件</translate>
+    </pack>
+    <pack>
+      <name>Basic Bowman Pack</name>
+      <translate>基础弓手套件</translate>
+    </pack>
+    <pack>
+      <name>Advanced Bowman Pack</name>
+      <translate>高级弓手套件</translate>
+    </pack>
+    <pack>
+      <name>Ares Pistol Pack</name>
+      <translate>阿瑞斯手枪套件</translate>
+    </pack>
+    <pack>
+      <name>Big Boom Pistol Pack</name>
+      <translate>震天响手枪套件</translate>
+    </pack>
+    <pack>
+      <name>Browning And Beretta Pistol Pack</name>
+      <translate>勃朗宁/伯莱塔手枪套件</translate>
+    </pack>
+    <pack>
+      <name>Colt Pistol Pack</name>
+      <translate>柯尔特手枪套件</translate>
+    </pack>
+    <pack>
+      <name>Subtle Pistol Pack</name>
+      <translate>隐匿手枪套件</translate>
+    </pack>
+    <pack>
+      <name>Light Security Pack</name>
+      <translate>轻型安保套件</translate>
+    </pack>
+    <pack>
+      <name>Japanacorp Light Security Pack</name>
+      <translate>日裔公司型轻型安保套件</translate>
+    </pack>
+    <pack>
+      <name>Smartgun Pack</name>
+      <translate>智能枪械套件</translate>
+    </pack>
+    <pack>
+      <name>Street Slugger Pack</name>
+      <translate>街头重炮套件</translate>
+    </pack>
+    <pack>
+      <name>Heavy Security Pack</name>
+      <translate>重型安保套件</translate>
+    </pack>
+    <pack>
+      <name>Cheap Soldier Pack</name>
+      <translate>廉价士兵套件</translate>
+    </pack>
+    <pack>
+      <name>Ares Alpha Gunner Pack</name>
+      <translate>阿瑞斯阿尔法枪手套件</translate>
+    </pack>
+    <pack>
+      <name>Sportsman Pack</name>
+      <translate>运动员套件</translate>
+    </pack>
+    <pack>
+      <name>Tranq Darter Pack</name>
+      <translate>麻醉镖套件</translate>
+    </pack>
+    <pack>
+      <name>Tranq Pistol Darter Kit</name>
+      <translate>麻醉镖手枪套件</translate>
+    </pack>
+    <pack>
+      <name>Squad Weapon Assault Pack</name>
+      <translate>班用突击武器套件</translate>
+    </pack>
+    <pack>
+      <name>Medium Machine Gunner Pack</name>
+      <translate>中型机枪手套件</translate>
+    </pack>
+    <pack>
+      <name>Rocketeer Pack</name>
+      <translate>火箭兵套件</translate>
+    </pack>
+    <pack>
+      <name>Box of Grenades #1</name>
+      <translate>一号榴弹盒套件</translate>
+    </pack>
+    <pack>
+      <name>Box of Grenades #2</name>
+      <translate>二号榴弹盒套件</translate>
+    </pack>
+    <pack>
+      <name>City Slicker Pack</name>
+      <translate>城市雨衣套件</translate>
+    </pack>
+    <pack>
+      <name>Go Anywhere Jacket Pack</name>
+      <translate>路路通夹克套件</translate>
+    </pack>
+    <pack>
+      <name>Neon Nights Pack</name>
+      <translate>霓虹夜晚套件</translate>
+    </pack>
+    <pack>
+      <name>Nightbird Pack</name>
+      <translate>夜莺套件</translate>
+    </pack>
+    <pack>
+      <name>Stylish Suit Pack</name>
+      <translate>时尚服装套件</translate>
+    </pack>
+    <pack>
+      <name>Tacticool Helmet Pack</name>
+      <translate>战术头盔套件</translate>
+    </pack>
+    <pack>
+      <name>Tusker Toughskin Pack</name>
+      <translate>长牙硬皮套件</translate>
+    </pack>
+    <pack>
+      <name>Sim-Setional Pack</name>
+      <translate>拟感套件</translate>
+    </pack>
+    <pack>
+      <name>Basic Combat Eyes Pack</name>
+      <translate>基础战斗眼套件</translate>
+    </pack>
+    <pack>
+      <name>Advanced Combat Eyes Pack</name>
+      <translate>高级战斗眼套件</translate>
+    </pack>
+    <pack>
+      <name>Eagle Eyes Pack</name>
+      <translate>鹰眼套件</translate>
+    </pack>
+    <pack>
+      <name>Rabbit Ears Pack</name>
+      <translate>兔耳套件</translate>
+    </pack>
+    <pack>
+      <name>Bulletproof Jeff Pack</name>
+      <translate>防弹硬汉套件</translate>
+    </pack>
+    <pack>
+      <name>Basic Razorboi Pack</name>
+      <translate>基础剃刀男套件</translate>
+    </pack>
+    <pack>
+      <name>Advanced Razorboi Pack</name>
+      <translate>高级剃刀男套件</translate>
+    </pack>
+    <pack>
+      <name>Basic Speedboost Pack</name>
+      <translate>基础增速套件</translate>
+    </pack>
+    <pack>
+      <name>Advanced Speedboost Pack</name>
+      <translate>高级增速套件</translate>
+    </pack>
+    <pack>
+      <name>Basic Vatjob Pack</name>
+      <translate>基础桶装货套件</translate>
+    </pack>
+    <pack>
+      <name>Advanced Vatjob Pack</name>
+      <translate>高级桶装货套件</translate>
+    </pack>
+    <pack>
+      <name>Basic Rigger Pack</name>
+      <translate>基础机师套件</translate>
+    </pack>
+    <pack>
+      <name>Advanced Rigger Pack</name>
+      <translate>高级机师套件</translate>
+    </pack>
+    <pack>
+      <name>Street Samurai Classic Pack</name>
+      <translate>经典街头武士套件</translate>
+    </pack>
+    <pack>
+      <name>Bioware Cat Pack(Catgirl pack)</name>
+      <translate>生体猫化套件（猫娘套件）</translate>
+    </pack>
+    <pack>
+      <name>Bio-Computer Pack</name>
+      <translate>生物计算机套件</translate>
+    </pack>
+    <pack>
+      <name>Bioware Company Man Pack</name>
+      <translate>生体公司人套件</translate>
+    </pack>
+    <!--<pack>
+      <name>Basic Cyberdeck Programs Pack</name>
+      <translate></translate>
+    </pack>
+    <pack>
+      <name>Bug-out Bag</name>
+      <translate></translate>
+    </pack>
+    <pack>
+      <name>Cocktail Kid Pack</name>
+      <translate></translate>
+    </pack>
+    <pack>
+      <name>Drone Mechanic Pack</name>
+      <translate></translate>
+    </pack>
+    <pack>
+      <name>Mechanic Shop Pack</name>
+      <translate></translate>
+    </pack>
+    <pack>
+      <name>Eavesdropper Pack</name>
+      <translate></translate>
+    </pack>
+    <pack>
+      <name>Surveillance Pack</name>
+      <translate></translate>
+    </pack>
+    <pack>
+      <name>Breaking and Entering Pack</name>
+      <translate></translate>
+    </pack>
+    <pack>
+      <name>Jammer Pack</name>
+      <translate></translate>
+    </pack>
+    <pack>
+      <name>Medic Pack</name>
+      <translate></translate>
+    </pack>
+    <pack>
+      <name>Medical Patches Pack</name>
+      <translate></translate>
+    </pack>
+    <pack>
+      <name>Mountaineering Pack</name>
+      <translate></translate>
+    </pack>
+    <pack>
+      <name>Infiltration Pack</name>
+      <translate></translate>
+    </pack>
+    <pack>
+      <name>Demolitionist Pack</name>
+      <translate></translate>
+    </pack>
+    <pack>
+      <name>Racing Bike Pack</name>
+      <translate></translate>
+    </pack>
+    <pack>
+      <name>Off Road Pack</name>
+      <translate></translate>
+    </pack>
+    <pack>
+      <name>Basic Decker Pack</name>
+      <translate></translate>
+    </pack>
+    <pack>
+      <name>Advanced Decker Pack</name>
+      <translate></translate>
+    </pack>
+    <pack>
+      <name>Advanced Cyberdeck Programs Pack</name>
+      <translate></translate>
+    </pack>
+    <pack>
+      <name>Basic Spy Drone Pack</name>
+      <translate></translate>
+    </pack>
+    <pack>
+      <name>Advanced Spy Drone Pack</name>
+      <translate></translate>
+    </pack>
+    <pack>
+      <name>Basic Combat Drone Pack</name>
+      <translate></translate>
+    </pack>
+    <pack>
+      <name>Advanced Combat Drone Pack</name>
+      <translate></translate>
+    </pack>
+    <pack>
+      <name>Runnerhub Basic Gear Pack</name>
+      <translate></translate>
+    </pack>
+    <pack>
+      <name>Runnerhub Pennypincher Pack</name>
+      <translate></translate>
+    </pack>
+    <pack>
+      <name>ShadowNET starter pack</name>
+      <translate></translate>
+    </pack>-->
+  </packs>
+  </chummer>
   <chummer file="powers.xml">
 		<powers>
 			<power>
@@ -13167,7 +14077,7 @@
         <name>Wanted</name>
         <translate>通缉名单</translate>
       </quality>
-      <!-- Region Run Faster Metagenetic Qualities -->
+      <!-- Region Run Faster Metagenic Qualities -->
       <quality>
         <id>0355c69a-85b4-48ae-84d6-f6dbf031eae7</id>
         <name>Arcane Arrester</name>
@@ -13492,32 +14402,32 @@
       </quality>
       <quality>
         <id>2ffd990c-ced6-4484-955c-108473df5335</id>
-        <name>Metagenetic Improvement (Body)</name>
+        <name>Metagenic Improvement (Body)</name>
         <translate></translate>
       </quality>
       <quality>
         <id>96c4c8e1-2f5d-431c-96c8-db83820f747b</id>
-        <name>Metagenetic Improvement (Agility)</name>
+        <name>Metagenic Improvement (Agility)</name>
         <translate></translate>
       </quality>
       <quality>
         <id>c734c06d-c9e4-431d-93ba-033e82444efc</id>
-        <name>Metagenetic Improvement (Reaction)</name>
+        <name>Metagenic Improvement (Reaction)</name>
         <translate></translate>
       </quality>
       <quality>
         <id>76ac03f1-b379-48a8-a6e8-d8611fce0adf</id>
-        <name>Metagenetic Improvement (Strength)</name>
+        <name>Metagenic Improvement (Strength)</name>
         <translate></translate>
       </quality>
       <quality>
         <id>f1609199-e601-4b69-837f-2029b2ea94f0</id>
-        <name>Metagenetic Improvement (Charisma)</name>
+        <name>Metagenic Improvement (Charisma)</name>
         <translate></translate>
       </quality>
       <quality>
         <id>7ee0765f-34f4-43ef-82c0-55c1b8bef8d8</id>
-        <name>Metagenetic Improvement (Intuition)</name>
+        <name>Metagenic Improvement (Intuition)</name>
         <translate></translate>
       </quality>
       <quality>
@@ -13526,7 +14436,7 @@
       </quality>
       <quality>
         <id>a6536e32-5f2f-4865-8f6a-d2ba268d4647</id>
-        <name>Metagenetic Improvement (Willpower)</name>
+        <name>Metagenic Improvement (Willpower)</name>
         <translate></translate>
       </quality>
       <quality>
@@ -14119,6 +15029,17 @@
         <translate>艺术之道</translate>
       </quality>
       <quality>
+      <id>3f536570-2f0c-40b1-a056-d310e29e983d</id>
+      <name>The Athlete's Way</name>
+      <karma>20</karma>
+      <translate>运动之道</translate>
+    </quality>
+    <quality>
+      <id>2e7424d3-5d11-4c9d-ba92-f0431bb86786</id>
+      <name>The Beast's Way</name>
+      <translate>野兽之道</translate>
+    </quality>
+      <quality>
         <id>7da60a93-aa53-478c-8d08-18b5638d9b87</id>
         <name>The Burnout's Way</name>
         <translate>燃尽之道</translate>
@@ -14133,6 +15054,11 @@
         <name>The Magician's Way</name>
         <translate>魔法之道</translate>
       </quality>
+      <quality>
+      <id>88dd98ab-2f09-4ba9-b5c1-ff788c31fbac</id>
+      <name>The Speaker's Way</name>
+      <translate>雄辩之道</translate>
+    </quality>
       <quality>
         <id>1a530492-7036-49fe-9ff1-ff84c9ed5d0a</id>
         <name>The Spiritual Way</name>
@@ -14157,7 +15083,7 @@
     <quality>
       <id>97e9b186-8924-4885-a948-3c781244a5cb</id>
       <name>Aged</name>
-      <translate>长者</translate>
+      <translate>上年纪</translate>
     </quality>
     <quality>
       <id>d537536d-893d-4bd6-89c6-03b7dd5bd24c</id>
@@ -14168,6 +15094,42 @@
       <id>08cceb0d-4fbe-44c8-97ca-e9ec24b692df</id>
       <name>Pregnant</name>
       <translate>怀孕</translate>
+    </quality>
+    <!--Region Sail Away, Sweet Sister Positive Qualities -->
+    <quality>
+      <id>4e2ddf3d-802f-4206-85ce-81f1defa528f</id>
+      <name>College Education</name>
+      <translate>学院教育（SASS）</translate>
+    </quality>
+    <quality>
+      <id>fd9b9b6d-c969-40f1-8dc7-61f8e5d9cd4d</id>
+      <name>Inspired</name>
+      <translate>启迪（SASS）</translate>
+    </quality>
+        <quality>
+      <id>fb9eab85-ae9a-4d03-8c3f-70b6a32d5e17</id>
+      <name>Deus Vult!</name>
+      <translate>主的旨意</translate>
+    </quality>
+    <quality>
+      <id>204d2317-77cd-448c-9506-091269d1e58a</id>
+      <name>My Country, Right or Wrong</name>
+      <translate>为我的国，无论对错</translate>
+    </quality>
+    <quality>
+      <id>3e175d5e-3935-4273-ac08-7e99fecd7fae</id>
+      <name>Out For Myself</name>
+      <translate>只为自己</translate>
+    </quality>
+    <quality>
+      <id>03d5c621-7883-492e-988b-5aafdebc855d</id>
+      <name>Strive For Perfection</name>
+      <translate>精益求精</translate>
+    </quality>
+    <quality>
+      <id>c6a2aa0f-76fd-432b-85bb-3ef2c2857525</id>
+      <name>Consummate Professional</name>
+      <translate>完美专家</translate>
     </quality>
 		</qualities>
 	</chummer>
@@ -16774,12 +17736,43 @@
     <spell>
       <id>ef1febff-d790-4706-80b1-6ddfbf9d61e5</id>
       <name>Evil Eye</name>
-      <translate>恶魔之眼</translate>
+      <translate>邪眼</translate>
     </spell>
     <spell>
       <id>243313e6-a9af-456a-9631-6581d869aa02</id>
       <name>Alter Ballistics</name>
       <translate>魔改弹道</translate>
+    </spell>
+      <!-- Region Hard Targets -->
+    <spell>
+      <id>38c206bb-9ab5-48ad-b736-0a8a464f1f1e</id>
+      <name>Catch</name>
+      <translate>飞来术</translate>
+    </spell>
+    <spell>
+      <id>bc591aab-8409-4359-9124-c93f4bc968f0</id>
+      <name>Snakeblood</name>
+      <translate>蛇血术</translate>
+    </spell>
+    <spell>
+      <id>3ca36ddc-1e69-48b4-884b-b37ad86b6412</id>
+      <name>Conceal Scent</name>
+      <translate>隐藏气味</translate>
+    </spell>
+    <spell>
+      <id>69d35098-2786-4b84-9825-3706430cc82b</id>
+      <name>Recharge Potency</name>
+      <translate>效力充能</translate>
+    </spell>
+    <spell>
+      <id>70f31768-c19b-4bef-8b71-d992d956d06a</id>
+      <name>Manablade</name>
+      <translate>法力刃</translate>
+    </spell>
+    <spell>
+      <id>bc8e70a9-2af6-4728-836d-daf19d5c61d4</id>
+      <name>Powerblade</name>
+      <translate>热能刃</translate>
     </spell>
 			<spell>
 				<id>0d15391d-b247-439c-aac6-c671c4f60204</id>
@@ -17266,6 +18259,16 @@
 				<name>Insect Shaman</name>
 				<translate>虫萨满</translate>
 			</tradition>
+    <tradition>
+      <id>a0c2d67d-158a-4fdf-9c45-7f420fbdce8e</id>
+      <name>Druid [Alt]</name>
+      <translate>德鲁伊（FA）</translate>
+    </tradition>
+    <tradition>
+      <id>9c211dbe-6a37-4872-80fa-37d845d76668</id>
+      <name>Norse [Alt]</name>
+      <translate>北欧（FA）</translate>
+    </tradition>
 		</traditions>
 		<spirits>
 			<spirit>
@@ -17773,7 +18776,7 @@
     </vehicle>
     <vehicle>
       <id>a88f58ad-f4e0-448a-ba5c-00cbdd0076f6</id>
-      <name>NeoNet Avenging Angel (Huge)</name>
+      <name>NeoNET Avenging Angel (Huge)</name>
      <translate>新网·复仇天使(巨型)</translate>
     </vehicle>
       <vehicle>
@@ -17813,7 +18816,7 @@
     </vehicle>
     <vehicle>
       <id>b448855b-57e7-435a-b523-174adb276674</id>
-      <name>NeoNet Juggernaut</name>
+      <name>NeoNET Juggernaut</name>
       <translate>新网·重装机甲</translate>
     </vehicle>
     <vehicle>
@@ -17963,7 +18966,7 @@
       </vehicle>
       <vehicle>
         <id>0ff86ef9-e35d-4f8f-bc64-0303f81f11c7</id>
-        <name>Neonet Prarie Dog (Small)</name>
+        <name>NeoNET Prarie Dog (Small)</name>
         <translate>新网•草原犬鼠（小型）</translate>
       </vehicle>
       <vehicle>
@@ -19734,7 +20737,7 @@
 			</weapon>
 			<weapon>
 				<id>28072a3f-5153-444e-83e3-46129b9ff572</id>
-				<name>Ranger Silver Pistol Crossbow</name>
+				<name>Ranger Sliver Pistol Crossbow</name>
 				<translate>游侠•“白银”手枪弩</translate>
 			</weapon>
 			<weapon>
@@ -20234,7 +21237,7 @@
 			</weapon>
 			<weapon>
 				<id>232dfc49-21ad-4b90-b05f-e5523b3ee142</id>
-				<name>Nissan Optiumum II Shotgun</name>
+				<name>Nissan Optimum II Shotgun</name>
 				<translate>尼桑·优化II 霰弹枪</translate>
 			</weapon>
 			<weapon>
@@ -20548,7 +21551,7 @@
 			</accessory>
 			<accessory>
 				<id>0da6149e-982f-4051-825b-52c1b79c7e52</id>
-				<name>Silencer</name>
+				<name>Silencer/Suppressor</name>
 				<translate>消音器</translate>
 			</accessory>
 			<accessory>
@@ -20940,6 +21943,41 @@
 				<name>Collapsible Traditional Bow</name>
 				<translate>可折叠传统弓</translate>
 			</accessory>
+      <accessory>
+      <id>5fac79b3-5eff-44f8-a13c-e1eba38df873</id>
+      <name>Terracotta Arms Pup Silencer</name>
+      <!--待补-->
+    </accessory>
+    <accessory>
+      <id>6f84482e-5a9d-4fb3-bad3-4fbbfa569919</id>
+      <name>HK Urban Fighter Spare Clip</name>
+      <!--待补-->
+    </accessory>
+    <accessory>
+      <id>abe43262-a891-455b-849b-df2bb05a7ef8</id>
+      <name>Additional Clip/Magazine (Non-Pistol)</name>
+      <translate>附加弹夹/弹匣</translate>
+    </accessory>
+    <accessory>
+      <id>37d3ffa9-b33e-4280-845c-bee0d063f193</id>
+      <name>Krime Pack</name>
+      <translate>克莱姆背包</translate>
+    </accessory>
+    <accessory>
+      <id>f52db08a-a2f5-482b-8cd0-4cf3045e0d60</id>
+      <name>Krime Stun-O-Net</name>
+      <translate>克莱姆·刺-电棍</translate>
+    </accessory>
+    <accessory>
+      <id>7629baa4-2240-45f3-b3d5-066dfc536877</id>
+      <name>Narcoject Dazzler</name>
+      <translate>麻醉针剂·炫目者</translate>
+    </accessory>
+    <accessory>
+      <id>a16a52a9-3b57-4e3c-96f6-564616bcd576</id>
+      <name>Red Dot Sight</name>
+      <translate>红点瞄准镜</translate>
+    </accessory>
 			<!-- SAG和2050暂不翻译 -->
 		</accessories>
 	</chummer>

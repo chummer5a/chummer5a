@@ -26,6 +26,7 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
+using NLog;
 
 namespace Chummer
 {
@@ -52,6 +53,7 @@ namespace Chummer
         BuiltIn = 3,
         LifeModule = 4,
         Improvement = 5,
+        MetatypeRemovedAtChargen = 6,
     }
 
     /// <summary>
@@ -71,12 +73,15 @@ namespace Chummer
     /// <summary>
     /// A Quality.
     /// </summary>
+    [HubClassTag("SourceID", true, "Name", "Extra;Type")]
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Quality : IHasInternalId, IHasName, IHasXmlNode, IHasNotes
+    public class Quality : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, IHasSource
     {
+        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private Guid _guiSourceID = Guid.Empty;
         private Guid _guiID;
         private string _strName = string.Empty;
-        private bool _blnMetagenetic;
+        private bool _blnMetagenic;
         private string _strExtra = string.Empty;
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
@@ -96,8 +101,8 @@ namespace Chummer
         private XmlNode _nodDiscounts;
         private readonly Character _objCharacter;
         private Guid _guiWeaponID;
-        private Guid _guiQualityId;
         private string _strStage;
+        private bool _blnStagedPurchase;
 
         public string Stage => _strStage;
 
@@ -141,6 +146,8 @@ namespace Chummer
                     return QualitySource.BuiltIn;
                 case "Improvement":
                     return QualitySource.Improvement;
+                case "MetatypeRemovedAtChargen":
+                    return QualitySource.MetatypeRemovedAtChargen;
                 default:
                     return QualitySource.Selected;
             }
@@ -169,9 +176,17 @@ namespace Chummer
         /// <param name="strSourceName">Friendly name for the improvement that added this quality.</param>
         public void Create(XmlNode objXmlQuality, QualitySource objQualitySource, IList<Weapon> lstWeapons, string strForceValue = "", string strSourceName = "")
         {
+            if (!objXmlQuality.TryGetField("id", Guid.TryParse, out _guiSourceID))
+            {
+                Log.Warn(new object[] { "Missing id field for xmlnode", objXmlQuality });
+                Utils.BreakIfDebug();
+            }
             _strSourceName = strSourceName;
             objXmlQuality.TryGetStringFieldQuickly("name", ref _strName);
-            objXmlQuality.TryGetBoolFieldQuickly("metagenetic", ref _blnMetagenetic);
+            if (!objXmlQuality.TryGetBoolFieldQuickly("metagenic", ref _blnMetagenic))
+            {
+                objXmlQuality.TryGetBoolFieldQuickly("metagenic", ref _blnMetagenic);
+            }
             if (!objXmlQuality.TryGetStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlQuality.TryGetStringFieldQuickly("notes", ref _strNotes);
             objXmlQuality.TryGetInt32FieldQuickly("karma", ref _intBP);
@@ -182,6 +197,7 @@ namespace Chummer
             objXmlQuality.TryGetBoolFieldQuickly("print", ref _blnPrint);
             objXmlQuality.TryGetBoolFieldQuickly("implemented", ref _blnImplemented);
             objXmlQuality.TryGetBoolFieldQuickly("contributetolimit", ref _blnContributeToLimit);
+            objXmlQuality.TryGetBoolFieldQuickly("stagedpurchase", ref _blnStagedPurchase);
             objXmlQuality.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlQuality.TryGetStringFieldQuickly("page", ref _strPage);
             _blnMutant = objXmlQuality["mutant"] != null;
@@ -189,12 +205,6 @@ namespace Chummer
             if (_eQualityType == QualityType.LifeModule)
             {
                 objXmlQuality.TryGetStringFieldQuickly("stage", ref _strStage);
-            }
-
-            if (objXmlQuality.TryGetField("id", Guid.TryParse, out Guid guiTemp))
-            {
-                _guiQualityId = guiTemp;
-                _objCachedMyXmlNode = null;
             }
 
             // Add Weapons if applicable.
@@ -313,6 +323,10 @@ namespace Chummer
             }
         }
 
+        private SourceString _objCachedSourceDetail;
+        public SourceString SourceDetail => _objCachedSourceDetail ?? (_objCachedSourceDetail =
+                                                new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language));
+
         /// <summary>
         /// Save the object's XML to the XmlWriter.
         /// </summary>
@@ -320,15 +334,17 @@ namespace Chummer
         public void Save(XmlTextWriter objWriter)
         {
             objWriter.WriteStartElement("quality");
-            objWriter.WriteElementString("guid", _guiID.ToString("D"));
+            objWriter.WriteElementString("sourceid", SourceIDString);
+            objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("extra", _strExtra);
             objWriter.WriteElementString("bp", _intBP.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("implemented", _blnImplemented.ToString());
             objWriter.WriteElementString("contributetolimit", _blnContributeToLimit.ToString());
+            objWriter.WriteElementString("stagedpurchase", _blnStagedPurchase.ToString());
             objWriter.WriteElementString("doublecareer", _blnDoubleCostCareer.ToString());
             objWriter.WriteElementString("canbuywithspellpoints", _blnCanBuyWithSpellPoints.ToString());
-            objWriter.WriteElementString("metagenetic", _blnMetagenetic.ToString());
+            objWriter.WriteElementString("metagenic", _blnMetagenic.ToString());
             objWriter.WriteElementString("print", _blnPrint.ToString());
             objWriter.WriteElementString("qualitytype", _eQualityType.ToString());
             objWriter.WriteElementString("qualitysource", _eQualitySource.ToString());
@@ -354,12 +370,14 @@ namespace Chummer
                 objWriter.WriteElementString("stage", _strStage);
             }
 
-            if (!_guiQualityId.Equals(Guid.Empty))
-            {
-                objWriter.WriteElementString("id", _guiQualityId.ToString("D"));
-            }
-
             objWriter.WriteEndElement();
+
+            if (OriginSource != QualitySource.BuiltIn &&
+                OriginSource != QualitySource.Improvement &&
+                OriginSource != QualitySource.LifeModule &&
+                OriginSource != QualitySource.Metatype &&
+                OriginSource != QualitySource.MetatypeRemovable &&
+                OriginSource != QualitySource.MetatypeRemovedAtChargen)
             _objCharacter.SourceProcess(_strSource);
         }
 
@@ -369,29 +387,30 @@ namespace Chummer
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
-            objNode.TryGetField("guid", Guid.TryParse, out _guiID);
-            objNode.TryGetStringFieldQuickly("name", ref _strName);
-            if (!objNode.TryGetField("id", Guid.TryParse, out _guiQualityId))
+            if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
             {
-                XmlNode objNewNode = XmlManager.Load("qualities.xml").SelectSingleNode("/chummer/qualities/quality[name = \"" + Name + "\"]");
-                if (objNewNode?.TryGetField("id", Guid.TryParse, out _guiQualityId) == true)
-                    _objCachedMyXmlNode = null;
+                _guiID = Guid.NewGuid();
             }
-            else
-                _objCachedMyXmlNode = null;
+            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+            {
+                XmlNode node = GetNode(GlobalOptions.Language);
+                node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+            }
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetInt32FieldQuickly("bp", ref _intBP);
             objNode.TryGetBoolFieldQuickly("implemented", ref _blnImplemented);
             objNode.TryGetBoolFieldQuickly("contributetolimit", ref _blnContributeToLimit);
+            objNode.TryGetBoolFieldQuickly("stagedpurchase", ref _blnStagedPurchase);
             objNode.TryGetBoolFieldQuickly("print", ref _blnPrint);
             objNode.TryGetBoolFieldQuickly("doublecareer", ref _blnDoubleCostCareer);
             objNode.TryGetBoolFieldQuickly("canbuywithspellpoints", ref _blnCanBuyWithSpellPoints);
             _eQualityType = ConvertToQualityType(objNode["qualitytype"]?.InnerText);
             _eQualitySource = ConvertToQualitySource(objNode["qualitysource"]?.InnerText);
             string strTemp = string.Empty;
-            if (objNode.TryGetStringFieldQuickly("metagenetic", ref strTemp))
+            if (objNode.TryGetStringFieldQuickly("metagenic", ref strTemp))
             {
-                _blnMetagenetic = strTemp == bool.TrueString || strTemp == "yes";
+                _blnMetagenic = strTemp == bool.TrueString || strTemp == "yes";
             }
             if (objNode.TryGetStringFieldQuickly("mutant", ref strTemp))
             {
@@ -409,6 +428,12 @@ namespace Chummer
             if (_eQualityType == QualityType.LifeModule)
             {
                 objNode.TryGetStringFieldQuickly("stage", ref _strStage);
+            }
+            if (_eQualitySource == QualitySource.Selected && string.IsNullOrEmpty(_nodBonus?.InnerText) && string.IsNullOrEmpty(_nodFirstLevelBonus?.InnerText) &&
+                (_eQualityType == QualityType.Positive || _eQualityType == QualityType.Negative) &&
+                GetNode() != null && ConvertToQualityType(GetNode()["category"]?.InnerText) != _eQualityType)
+            {
+                _eQualitySource = QualitySource.MetatypeRemovedAtChargen;
             }
         }
 
@@ -454,14 +479,19 @@ namespace Chummer
 
         #region Properties
         /// <summary>
+        /// Identifier of the object within data files.
+        /// </summary>
+        public Guid SourceID => _guiSourceID;
+
+        /// <summary>
+        /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
+        /// </summary>
+        public string SourceIDString => _guiSourceID.ToString("D");
+
+        /// <summary>
         /// Internal identifier which will be used to identify this Quality in the Improvement system.
         /// </summary>
         public string InternalId => _guiID.ToString("D");
-
-        /// <summary>
-        /// Internal identifier for the quality type
-        /// </summary>
-        public string QualityId => _guiQualityId.Equals(Guid.Empty) ? string.Empty : _guiQualityId.ToString("D");
 
         /// <summary>
         /// Guid of a Weapon.
@@ -488,7 +518,7 @@ namespace Chummer
         /// <summary>
         /// Does the quality come from being a Changeling?
         /// </summary>
-        public bool Metagenetic => _blnMetagenetic;
+        public bool Metagenic => _blnMetagenic;
 
         /// <summary>
         /// Extra information that should be applied to the name, like a linked CharacterAttribute.
@@ -518,14 +548,17 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Page Number.
+        /// Sourcebook Page Number using a given language file.
+        /// Returns Page if not found or the string is empty.
         /// </summary>
+        /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <returns></returns>
         public string DisplayPage(string strLanguage)
         {
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Page;
-
-            return GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
+            string s = GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
+            return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 
         /// <summary>
@@ -584,6 +617,7 @@ namespace Chummer
         /// <summary>
         /// Number of Build Points the Quality costs.
         /// </summary>
+        /// 
         public int BP
         {
             get
@@ -649,7 +683,7 @@ namespace Chummer
         {
             get
             {
-                return _objCharacter.Qualities.Count(objExistingQuality => objExistingQuality.QualityId == QualityId && objExistingQuality.Extra == Extra && objExistingQuality.SourceName == SourceName);
+                return _objCharacter.Qualities.Count(objExistingQuality => objExistingQuality.SourceIDString == SourceIDString && objExistingQuality.Extra == Extra && objExistingQuality.SourceName == SourceName && objExistingQuality.Type == Type);
             }
         }
 
@@ -695,11 +729,11 @@ namespace Chummer
         {
             get
             {
-                if (_eQualitySource == QualitySource.Metatype || _eQualitySource == QualitySource.MetatypeRemovable)
+                if (_eQualitySource == QualitySource.Metatype || _eQualitySource == QualitySource.MetatypeRemovable || _eQualitySource == QualitySource.MetatypeRemovedAtChargen)
                     return false;
 
-                // Positive Metagenetic Qualities are free if you're a Changeling.
-                if (Metagenetic && _objCharacter.MetageneticLimit > 0)
+                // Positive Metagenic Qualities are free if you're a Changeling.
+                if (Metagenic && _objCharacter.MetagenicLimit > 0)
                     return false;
 
                 // The Beast's Way and the Spiritual Way get the Mentor Spirit for free.
@@ -709,6 +743,28 @@ namespace Chummer
                 return _blnContributeToLimit;
             }
             set => _blnContributeToLimit = value;
+        }
+        /// <summary>
+        /// Whether or not the Quality contributes towards the character's Quality BP limits.
+        /// </summary>
+        public bool ContributeToMetagenicLimit
+        {
+            get
+            {
+                if (_eQualitySource == QualitySource.Metatype || _eQualitySource == QualitySource.MetatypeRemovable || _eQualitySource == QualitySource.MetatypeRemovedAtChargen)
+                    return false;
+
+                return Metagenic && _objCharacter.MetagenicLimit > 0;
+            }
+        }
+
+        /// <summary>
+        /// Whether this quality can be purchased in stages, i.e. allowing the character to go into karmic debt
+        /// </summary>
+        public bool StagedPurchase
+        {
+            get => _blnStagedPurchase;
+            set => _blnStagedPurchase = value;
         }
 
         /// <summary>
@@ -721,8 +777,8 @@ namespace Chummer
                 if (_eQualitySource == QualitySource.Metatype || _eQualitySource == QualitySource.MetatypeRemovable)
                     return false;
 
-                // Positive Metagenetic Qualities are free if you're a Changeling.
-                if (Metagenetic && _objCharacter.MetageneticLimit > 0)
+                // Positive Metagenic Qualities are free if you're a Changeling.
+                if (Metagenic && _objCharacter.MetagenicLimit > 0)
                     return false;
 
                 // The Beast's Way and the Spiritual Way get the Mentor Spirit for free.
@@ -754,7 +810,11 @@ namespace Chummer
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load("qualities.xml", strLanguage).SelectSingleNode("/chummer/qualities/quality[id = \"" + QualityId + "\"]");
+                _objCachedMyXmlNode = SourceID == Guid.Empty
+                    ? XmlManager.Load("qualities.xml", strLanguage)
+                        .SelectSingleNode($"/chummer/qualities/quality[name = \"{Name}\"]")
+                    : XmlManager.Load("qualities.xml", strLanguage)
+                        .SelectSingleNode($"/chummer/qualities/quality[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;
@@ -768,7 +828,8 @@ namespace Chummer
                  OriginSource == QualitySource.Improvement ||
                  OriginSource == QualitySource.LifeModule ||
                  OriginSource == QualitySource.Metatype ||
-                 OriginSource == QualitySource.MetatypeRemovable) && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
+                 OriginSource == QualitySource.MetatypeRemovable ||
+                 OriginSource == QualitySource.MetatypeRemovedAtChargen) && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
                 return null;
 
             TreeNode objNode = new TreeNode
@@ -843,7 +904,7 @@ namespace Chummer
             {
                 foreach (Quality objQuality in objCharacter.Qualities)
                 {
-                    if (objQuality.QualityId == objXmlQuality["id"]?.InnerText)
+                    if (objQuality.SourceIDString == objXmlQuality["id"]?.InnerText)
                     {
                         reason |= QualityFailureReason.LimitExceeded; //QualityFailureReason is a flag enum, meaning each bit represents a different thing
                         //So instead of changing it, |= adds rhs to list of reasons on lhs, if it is not present
@@ -932,7 +993,7 @@ namespace Chummer
                 }
             }
 
-            return conflictingQualities.Count <= 0 & reason == QualityFailureReason.Allowed;
+            return conflictingQualities.Count <= 0 && reason == QualityFailureReason.Allowed;
         }
 
         /// <summary>
@@ -943,7 +1004,10 @@ namespace Chummer
         /// <returns>A XmlNode containing the id and all nodes of its parrents</returns>
         public static XmlNode GetNodeOverrideable(string id, XmlDocument xmlDoc)
         {
-            return GetNodeOverrideable(xmlDoc.SelectSingleNode("//*[id = \"" + id + "\"]"));
+            var node = xmlDoc.SelectSingleNode("//*[id = \"" + id + "\"]");
+            if (node == null)
+                throw new ArgumentException("Could not find node " + id + " in xmlDoc " + xmlDoc.Name + ".");
+            return GetNodeOverrideable(node);
         }
 
         private static XmlNode GetNodeOverrideable(XmlNode n)
@@ -982,7 +1046,7 @@ namespace Chummer
         #endregion
 
         /// <summary>
-        /// Swaps an old quality for a new one. 
+        /// Swaps an old quality for a new one.
         /// </summary>
         /// <param name="objOldQuality">Old quality that's being removed.</param>
         /// <param name="objCharacter">Character object that the quality will be removed from.</param>
@@ -999,19 +1063,21 @@ namespace Chummer
             // Make sure the character has enough Karma to pay for the Quality.
             if (Type == QualityType.Positive)
             {
-                if (!objCharacter.Options.DontDoubleQualityPurchases)
+                if (objCharacter.Created && !objCharacter.Options.DontDoubleQualityPurchases)
                 {
                     intKarmaCost *= 2;
                 }
                 if (intKarmaCost > objCharacter.Karma)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughKarma", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NotEnoughKarma", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughKarma", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     blnAddItem = false;
                 }
 
                 if (blnAddItem)
                 {
-                    if (!objCharacter.ConfirmKarmaExpense(LanguageManager.GetString("Message_QualitySwap", GlobalOptions.Language).Replace("{0}", objOldQuality.DisplayNameShort(GlobalOptions.Language)).Replace("{1}", DisplayNameShort(GlobalOptions.Language))))
+                    if (!objCharacter.ConfirmKarmaExpense(string.Format(LanguageManager.GetString("Message_QualitySwap", GlobalOptions.Language)
+                        , objOldQuality.DisplayNameShort(GlobalOptions.Language)
+                        , DisplayNameShort(GlobalOptions.Language))))
                         blnAddItem = false;
                 }
 
@@ -1021,9 +1087,9 @@ namespace Chummer
                     // Create the Karma expense.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(objCharacter);
                     objExpense.Create(intKarmaCost * -1,
-                        LanguageManager.GetString("String_ExpenseSwapPositiveQuality", GlobalOptions.Language)
-                            .Replace("{0}", DisplayNameShort(GlobalOptions.Language))
-                            .Replace("{1}", DisplayNameShort(GlobalOptions.Language)), ExpenseType.Karma, DateTime.Now);
+                        string.Format(LanguageManager.GetString("String_ExpenseSwapPositiveQuality", GlobalOptions.Language)
+                            , DisplayNameShort(GlobalOptions.Language)
+                            , DisplayNameShort(GlobalOptions.Language)), ExpenseType.Karma, DateTime.Now);
                     objCharacter.ExpenseEntries.AddWithSort(objExpense);
                     objCharacter.Karma -= intKarmaCost;
                 }
@@ -1039,15 +1105,20 @@ namespace Chummer
                 {
                     if (intKarmaCost > objCharacter.Karma)
                     {
-                        MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughKarma", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NotEnoughKarma", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughKarma", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         blnAddItem = false;
                     }
 
                     if (blnAddItem)
                     {
-                        if (!objCharacter.ConfirmKarmaExpense(LanguageManager.GetString("Message_QualitySwap", GlobalOptions.Language).Replace("{0}", objOldQuality.DisplayNameShort(GlobalOptions.Language)).Replace("{1}", DisplayNameShort(GlobalOptions.Language))))
+                        if (!objCharacter.ConfirmKarmaExpense(string.Format(LanguageManager.GetString("Message_QualitySwap", GlobalOptions.Language), objOldQuality.DisplayNameShort(GlobalOptions.Language), DisplayNameShort(GlobalOptions.Language))))
                             blnAddItem = false;
                     }
+                }
+                else
+                {
+                    // Trading a more expensive quality for a less expensive quality shouldn't give you karma. TODO: Optional rule to govern this behaviour.
+                    intKarmaCost = 0;
                 }
 
                 if (!blnAddItem) return false;
@@ -1056,9 +1127,9 @@ namespace Chummer
                     // Create the Karma expense.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(objCharacter);
                     objExpense.Create(intKarmaCost * -1,
-                        LanguageManager.GetString("String_ExpenseSwapNegativeQuality", GlobalOptions.Language)
-                            .Replace("{0}", DisplayNameShort(GlobalOptions.Language))
-                            .Replace("{1}", DisplayNameShort(GlobalOptions.Language)), ExpenseType.Karma, DateTime.Now);
+                        string.Format(LanguageManager.GetString("String_ExpenseSwapNegativeQuality", GlobalOptions.Language)
+                            , DisplayNameShort(GlobalOptions.Language)
+                            , DisplayNameShort(GlobalOptions.Language)), ExpenseType.Karma, DateTime.Now);
                     objCharacter.ExpenseEntries.AddWithSort(objExpense);
                     objCharacter.Karma -= intKarmaCost;
                 }
@@ -1094,6 +1165,13 @@ namespace Chummer
 
 
             return true;
+        }
+
+        public void SetSourceDetail(Control sourceControl)
+        {
+            if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
+                _objCachedSourceDetail = null;
+            SourceDetail.SetControl(sourceControl);
         }
     }
 }

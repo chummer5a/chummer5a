@@ -478,13 +478,14 @@
       <source>SGG</source>
       <page>52</page>
       <spirits>
-        <spiritcombat>Guidance Spirit</spiritcombat>
-        <spiritdetection>Spirit of Water</spiritdetection>
-        <spirithealth>Spirit of Fire</spirithealth>
-        <spiritillusion>Spirit of Air</spiritillusion>
-        <spiritmanipulation>Spirit of Man</spiritmanipulation>
+        <spiritcombat>Spirit of Fire</spiritcombat>
+        <spiritdetection>Spirit of Man</spiritdetection>
+        <spirithealth>Guidance Spirit</spirithealth>
+        <spiritillusion>Spirit of Water</spiritillusion>
+        <spiritmanipulation>Spirit of Air</spiritmanipulation>
       </spirits>
     </tradition>
+    <!-- End Region -->
     <!-- Region Forbidden Arcana -->
     <tradition>
       <id>54944188-d58b-4a45-859c-d62be9f966c2</id>
@@ -494,7 +495,7 @@
       <page>75</page>
       <spirits>
         <spiritcombat>Spirit of Earth</spiritcombat>
-        <spiritdetection>Spirit of Guidance</spiritdetection>
+        <spiritdetection>Guidance Spirit</spiritdetection>
         <spirithealth>Spirit of Water</spirithealth>
         <spiritillusion>Spirit of Air</spiritillusion>
         <spiritmanipulation>Spirit of Fire</spiritmanipulation>
@@ -515,9 +516,30 @@
       </spirits>
     </tradition>
     <tradition>
+      <id>a0c2d67d-158a-4fdf-9c45-7f420fbdce8e</id>
+      <name>Druid [Alt]</name>
+      <drain>WIL + CHA</drain>
+      <source>FA</source>
+      <page>65</page>
+      <spirits>
+        <spiritcombat>Spirit of Beasts</spiritcombat>
+        <spiritdetection>Spirit of Water</spiritdetection>
+        <spirithealth>Plant Spirit</spirithealth>
+        <spiritillusion>Spirit of Air</spiritillusion>
+        <spiritmanipulation>Spirit of Earth</spiritmanipulation>
+      </spirits>
+    </tradition>
+    <tradition>
       <id>4bbe470b-51a7-494b-8ccf-5c638e141049</id>
       <name>Elder God</name>
       <drain>WIL + INT</drain>
+      <bonus>
+        <drainresist>-2</drainresist>
+        <spellcategory>
+          <name>Illusion</name>
+          <val>3</val>
+        </spellcategory>
+      </bonus>
       <source>FA</source>
       <page>78</page>
       <spirits>
@@ -529,7 +551,6 @@
       </spirits>
       <bonus>
         <drainresist>2</drainresist>
-
       </bonus>
     </tradition>
     <tradition>
@@ -564,6 +585,16 @@
       <id>b8b93cfb-5bdf-47c6-b773-45c59ef7bd34</id>
       <name>Missionist</name>
       <drain>WIL + CHA</drain>
+      <bonus>
+        <spellcategory>
+          <name>Health</name>
+          <val>2</val>
+        </spellcategory>
+        <spellcategory>
+          <name>Combat</name>
+          <val>-2</val>
+        </spellcategory>
+      </bonus>
       <source>FA</source>
       <page>81</page>
       <spirits>
@@ -606,6 +637,26 @@
       <id>52348ffc-2d9b-427b-a546-863a9670127e</id>
       <name>Pariah</name>
       <drain>WIL + LOG</drain>
+      <bonus>
+        <skilldisable>Summoning</skilldisable>
+        <skilldisable>Binding</skilldisable>
+        <skilldisable>Spellcasting</skilldisable>
+        <skilldisable>Ritual Spellcasting</skilldisable>
+        <skilldisable>Alchemy</skilldisable>
+        <skilldisable>Artificing</skilldisable>
+        <specificskill>
+          <name>Banishing</name>
+          <bonus>2</bonus>
+        </specificskill>
+        <specificskill>
+          <name>Counterspelling</name>
+          <bonus>2</bonus>
+        </specificskill>
+        <specificskill>
+          <name>Disenchanting</name>
+          <bonus>2</bonus>
+        </specificskill>
+      </bonus>
       <source>FA</source>
       <page>85</page>
       <spirits />
@@ -617,11 +668,11 @@
       <source>FA</source>
       <page>87</page>
       <spirits>
-        <spiritcombat>Spirit of </spiritcombat>
-        <spiritdetection>Spirit of </spiritdetection>
-        <spirithealth>Spirit of </spirithealth>
-        <spiritillusion>Spirit of </spiritillusion>
-        <spiritmanipulation>Spirit of </spiritmanipulation>
+        <spiritcombat>Guardian Spirit</spiritcombat>
+        <spiritdetection>Guidance Spirit</spiritdetection>
+        <spirithealth>Spirit of Water</spirithealth>
+        <spiritillusion>Spirit of Air</spiritillusion>
+        <spiritmanipulation>Task Spirit</spiritmanipulation>
       </spirits>
     </tradition>
     <tradition>
@@ -647,7 +698,7 @@
       <spirits>
         <spiritcombat>Spirit of Fire</spiritcombat>
         <spiritdetection>Spirit of Air</spiritdetection>
-        <spirithealth>Spirit of Plants</spirithealth>
+        <spirithealth>Plant Spirit</spirithealth>
         <spiritillusion>Spirit of Water</spiritillusion>
         <spiritmanipulation>Spirit of Earth</spiritmanipulation>
       </spirits>
@@ -676,7 +727,7 @@
       <page>111</page>
       <spirits>
         <spiritcombat>Guardian Spirit</spiritcombat>
-        <spiritdetection>Spirit of Guidance</spiritdetection>
+        <spiritdetection>Guidance Spirit</spiritdetection>
         <spirithealth>Spirit of Earth</spirithealth>
         <spiritillusion>Spirit of Water</spiritillusion>
         <spiritmanipulation>Task Spirit</spiritmanipulation>
@@ -705,9 +756,9 @@
       <spirits>
         <spiritcombat>Spirit of Water</spiritcombat>
         <spiritdetection>Spirit of Earth</spiritdetection>
-        <spirithealth>Spirit of Guidance</spirithealth>
+        <spirithealth>Guidance Spirit</spirithealth>
         <spiritillusion>Spirit of Air</spiritillusion>
-        <spiritmanipulation>Spirit of Plants</spiritmanipulation>
+        <spiritmanipulation>Plant Spirit</spiritmanipulation>
       </spirits>
     </tradition>
     <tradition>
@@ -719,7 +770,7 @@
       <spirits>
         <spiritcombat>Guardian Spirit</spiritcombat>
         <spiritdetection>Spirit of Beasts</spiritdetection>
-        <spirithealth>Spirit of Plants</spirithealth>
+        <spirithealth>Plant Spirit</spirithealth>
         <spiritillusion>Spirit of Air</spiritillusion>
         <spiritmanipulation>Spirit of Man</spiritmanipulation>
       </spirits>
@@ -732,8 +783,8 @@
       <page>115</page>
       <spirits>
         <spiritcombat>Spirit of Earth</spiritcombat>
-        <spiritdetection>Spirit of Guidance</spiritdetection>
-        <spirithealth>Spirit of Plants</spirithealth>
+        <spiritdetection>Guidance Spirit</spiritdetection>
+        <spirithealth>Plant Spirit</spirithealth>
         <spiritillusion>Spirit of Man</spiritillusion>
         <spiritmanipulation>Spirit of Water</spiritmanipulation>
       </spirits>
@@ -749,7 +800,7 @@
         <spiritdetection>Spirit of Earth</spiritdetection>
         <spirithealth>Guardian Spirit</spirithealth>
         <spiritillusion>Spirit of Water</spiritillusion>
-        <spiritmanipulation>Spirit of Plants</spiritmanipulation>
+        <spiritmanipulation>Plant Spirit</spiritmanipulation>
       </spirits>
     </tradition>
     <!-- End Region -->
@@ -769,9 +820,39 @@
       </spirits>
     </tradition>
     <!-- End Region -->
+    <!-- Region Schattenhandbuch 3 -->
+    <tradition>
+      <id>c0405095-5304-4fbd-b955-203a11f88b73</id>
+      <name>Dr.-Singer-School</name>
+      <drain>WIL + CHA</drain>
+      <source>SHB3</source>
+      <page>169</page>
+      <spirits>
+        <spiritcombat>Spirit of Beasts</spiritcombat>
+        <spiritdetection>Task Spirit</spiritdetection>
+        <spirithealth>Spirit of Earth</spirithealth>
+        <spiritillusion>Guidance Spirit</spiritillusion>
+        <spiritmanipulation>Spirit of Man</spiritmanipulation>
+      </spirits>
+    </tradition>
+    <tradition>
+      <id>53a919e6-739d-4418-aaff-79e9df17e3b6</id>
+      <name>Storm Children</name>
+      <drain>WIL + INT</drain>
+      <source>SHB3</source>
+      <page>169</page>
+      <spirits>
+        <spiritcombat>Spirit of Fire</spiritcombat>
+        <spiritdetection>Spirit of Beasts</spiritdetection>
+        <spirithealth>Spirit of Earth</spirithealth>
+        <spiritillusion>Plant Spirit</spiritillusion>
+        <spiritmanipulation>Spirit of Air</spiritmanipulation>
+      </spirits>
+    </tradition>
+    <!-- End Region -->
   </traditions>
   <spirits>
-    <!--Corebook spirits-->
+    <!-- Region Corebook spirits-->
     <spirit>
       <id>380a4860-e5b7-4d07-9b8f-24951c1d656a</id>
       <name>Spirit of Air</name>
@@ -1019,7 +1100,359 @@
         <weakness>Allergy (Fire, Severe)</weakness>
       </weaknesses>
     </spirit>
-    <!--SG normal spirits-->
+    <!-- Region Homonculi -->
+    <spirit>
+      <id>de5f01da-a334-4b64-b491-549e420ac6d3</id>
+      <name>Homonculus (Fragile)</name>
+      <bod>1</bod>
+      <agi>F-2</agi>
+      <rea>F-2</rea>
+      <str>F</str>
+      <cha>0</cha>
+      <int>1</int>
+      <log>1</log>
+      <wil>1</wil>
+      <ini>0</ini>
+      <edg>F</edg>
+      <mag>F</mag>
+      <res>0</res>
+      <dep>0</dep>
+      <ess>F</ess>
+      <walk>2/1/0</walk>
+      <run>4/0/0</run>
+      <sprint>1/1/0</sprint>
+      <skills>
+        <skill>Assensing</skill>
+        <skill>Astral Combat</skill>
+      </skills>
+      <powers>
+        <power>Sapience</power>
+      </powers>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <source>SR5</source>
+      <page>298</page>
+    </spirit>
+    <spirit>
+          <id>28d8859b-21da-43f7-b401-181cf1284f97</id>
+          <name>Homonculus (Cheap Material)</name>
+          <bod>2</bod>
+          <agi>F-2</agi>
+          <rea>F-2</rea>
+          <str>F</str>
+          <cha>0</cha>
+          <int>1</int>
+          <log>1</log>
+          <wil>1</wil>
+          <ini>0</ini>
+          <edg>F</edg>
+          <mag>F</mag>
+          <res>0</res>
+          <dep>0</dep>
+          <ess>F</ess>
+          <walk>2/1/0</walk>
+          <run>4/0/0</run>
+          <sprint>1/1/0</sprint>
+          <skills>
+              <skill>Assensing</skill>
+              <skill>Astral Combat</skill>
+          </skills>
+          <powers>
+              <power>Sapience</power>
+          </powers>
+          <bonus>
+              <enabletab>
+                  <name>critter</name>
+              </enabletab>
+          </bonus>
+          <source>SR5</source>
+          <page>298</page>
+      </spirit>
+    <spirit>
+          <id>2ed43bda-6773-462d-b850-db4b82d9bac0</id>
+          <name>Homonculus (Average Material)</name>
+          <bod>1</bod>
+          <agi>F-2</agi>
+          <rea>F-2</rea>
+          <str>F</str>
+          <cha>0</cha>
+          <int>1</int>
+          <log>1</log>
+          <wil>1</wil>
+          <ini>0</ini>
+          <edg>F</edg>
+          <mag>F</mag>
+          <res>0</res>
+          <dep>0</dep>
+          <ess>F</ess>
+          <walk>2/1/0</walk>
+          <run>4/0/0</run>
+          <sprint>1/1/0</sprint>
+          <skills>
+              <skill>Assensing</skill>
+              <skill>Astral Combat</skill>
+          </skills>
+          <powers>
+              <power>Sapience</power>
+          </powers>
+          <bonus>
+              <enabletab>
+                  <name>critter</name>
+              </enabletab>
+          </bonus>
+          <source>SR5</source>
+          <page>298</page>
+      </spirit>
+    <spirit>
+          <id>f1262445-f4fd-43ab-b874-b9111f02ac96</id>
+          <name>Homonculus (Heavy Material)</name>
+          <bod>6</bod>
+          <agi>F-2</agi>
+          <rea>F-2</rea>
+          <str>F</str>
+          <cha>0</cha>
+          <int>1</int>
+          <log>1</log>
+          <wil>1</wil>
+          <ini>0</ini>
+          <edg>F</edg>
+          <mag>F</mag>
+          <res>0</res>
+          <dep>0</dep>
+          <ess>F</ess>
+          <walk>2/1/0</walk>
+          <run>4/0/0</run>
+          <sprint>1/1/0</sprint>
+          <skills>
+              <skill>Assensing</skill>
+              <skill>Astral Combat</skill>
+          </skills>
+          <powers>
+              <power>Sapience</power>
+          </powers>
+          <bonus>
+              <enabletab>
+                  <name>critter</name>
+              </enabletab>
+          </bonus>
+          <source>SR5</source>
+          <page>298</page>
+      </spirit>
+    <spirit>
+          <id>eb454ca4-2260-4f1c-91c4-901abf010f2b</id>
+          <name>Homonculus (Reinforced Material)</name>
+          <bod>8</bod>
+          <agi>F-2</agi>
+          <rea>F-2</rea>
+          <str>F</str>
+          <cha>0</cha>
+          <int>1</int>
+          <log>1</log>
+          <wil>1</wil>
+          <ini>0</ini>
+          <edg>F</edg>
+          <mag>F</mag>
+          <res>0</res>
+          <dep>0</dep>
+          <ess>F</ess>
+          <walk>2/1/0</walk>
+          <run>4/0/0</run>
+          <sprint>1/1/0</sprint>
+          <skills>
+              <skill>Assensing</skill>
+              <skill>Astral Combat</skill>
+          </skills>
+          <powers>
+              <power>Sapience</power>
+          </powers>
+          <bonus>
+              <enabletab>
+                  <name>critter</name>
+              </enabletab>
+          </bonus>
+          <source>SR5</source>
+          <page>298</page>
+      </spirit>
+    <spirit>
+          <id>ce4e5b8b-3d15-4cbe-b0ed-3ed150300779</id>
+          <name>Homonculus (Structural Material)</name>
+          <bod>1</bod>
+          <agi>F-2</agi>
+          <rea>F-2</rea>
+          <str>F</str>
+          <cha>0</cha>
+          <int>1</int>
+          <log>1</log>
+          <wil>1</wil>
+          <ini>0</ini>
+          <edg>F</edg>
+          <mag>F</mag>
+          <res>0</res>
+          <dep>0</dep>
+          <ess>F</ess>
+          <walk>2/1/0</walk>
+          <run>4/0/0</run>
+          <sprint>1/1/0</sprint>
+          <skills>
+              <skill>Assensing</skill>
+              <skill>Astral Combat</skill>
+          </skills>
+          <powers>
+              <power>Sapience</power>
+          </powers>
+          <bonus>
+              <enabletab>
+                  <name>critter</name>
+              </enabletab>
+          </bonus>
+          <source>SR5</source>
+          <page>298</page>
+      </spirit>
+    <spirit>
+          <id>d19a52fe-1c68-4032-9459-662b0b80a633</id>
+          <name>Homonculus (Heavy Structural Material)</name>
+          <bod>1</bod>
+          <agi>F-2</agi>
+          <rea>F-2</rea>
+          <str>F</str>
+          <cha>0</cha>
+          <int>1</int>
+          <log>1</log>
+          <wil>1</wil>
+          <ini>0</ini>
+          <edg>F</edg>
+          <mag>F</mag>
+          <res>0</res>
+          <dep>0</dep>
+          <ess>F</ess>
+          <walk>2/1/0</walk>
+          <run>4/0/0</run>
+          <sprint>1/1/0</sprint>
+          <skills>
+              <skill>Assensing</skill>
+              <skill>Astral Combat</skill>
+          </skills>
+          <powers>
+              <power>Sapience</power>
+          </powers>
+          <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <source>SR5</source>
+      <page>298</page>
+    </spirit>
+    <spirit>
+      <id>d8a0781e-c5bf-451a-939c-97f68a3ceacb</id>
+      <name>Homonculus (Armored Material)</name>
+      <bod>1</bod>
+      <agi>F-2</agi>
+      <rea>F-2</rea>
+      <str>F</str>
+      <cha>0</cha>
+      <int>1</int>
+      <log>1</log>
+      <wil>1</wil>
+      <ini>0</ini>
+      <edg>F</edg>
+      <mag>F</mag>
+      <res>0</res>
+      <dep>0</dep>
+      <ess>F</ess>
+      <walk>2/1/0</walk>
+      <run>4/0/0</run>
+      <sprint>1/1/0</sprint>
+      <skills>
+        <skill>Assensing</skill>
+        <skill>Astral Combat</skill>
+      </skills>
+      <powers>
+        <power>Sapience</power>
+      </powers>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <source>SR5</source>
+      <page>298</page>
+    </spirit>
+    <spirit>
+      <id>01cea6c7-1b92-4e71-a56c-4059ab105382</id>
+      <name>Homonculus (Hardened Material)</name>
+      <bod>1</bod>
+      <agi>F-2</agi>
+      <rea>F-2</rea>
+      <str>F</str>
+      <cha>0</cha>
+      <int>1</int>
+      <log>1</log>
+      <wil>1</wil>
+      <ini>0</ini>
+      <edg>F</edg>
+      <mag>F</mag>
+      <res>0</res>
+      <dep>0</dep>
+      <ess>F</ess>
+      <walk>2/1/0</walk>
+      <run>4/0/0</run>
+      <sprint>1/1/0</sprint>
+      <skills>
+        <skill>Assensing</skill>
+        <skill>Astral Combat</skill>
+      </skills>
+      <powers>
+        <power>Sapience</power>
+      </powers>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <source>SR5</source>
+      <page>298</page>
+    </spirit>
+    <!-- End Region -->
+    <spirit>
+      <id>04d2cdc8-7876-4865-93d6-76a46f628014</id>
+      <name>Watcher</name>
+      <bod>0</bod>
+      <agi>0</agi>
+      <rea>0</rea>
+      <str>0</str>
+      <cha>F-2</cha>
+      <int>F-2</int>
+      <log>F-2</log>
+      <wil>F-2</wil>
+      <ini>0</ini>
+      <edg>F</edg>
+      <mag>F</mag>
+      <res>0</res>
+      <dep>0</dep>
+      <ess>F</ess>
+      <skills>
+        <skill>Assensing</skill>
+        <skill>Astral Combat</skill>
+      </skills>
+      <powers>
+        <power>Astral Form</power>
+        <power>Manifest</power>
+        <power>Search</power>
+      </powers>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <source>SR5</source>
+      <page>298</page>
+    </spirit>
+    <!-- End Region -->
+    <!--Region SG normal spirits-->
     <spirit>
       <id>ea797271-de7e-4e55-ac03-93a8be90b47a</id>
       <name>Guardian Spirit</name>
@@ -1157,7 +1590,7 @@
       <int>F+0</int>
       <log>F+0</log>
       <wil>F+0</wil>
-      <ini>(F*2)+3</ini>
+      <ini>(F*2)+2</ini>
       <source>SG</source>
       <page>193</page>
       <optionalpowers>
@@ -1187,7 +1620,54 @@
         <skill attr="agi">Unarmed Combat</skill>
       </skills>
     </spirit>
-    <!--Toxic Spirits-->
+    <spirit>
+      <id>8011bd8a-847f-4527-89d1-58c559ef9480</id>
+      <name>Ally Spirit</name>
+      <bod>F</bod>
+      <agi>F</agi>
+      <rea>F</rea>
+      <str>F</str>
+      <cha>F</cha>
+      <int>F</int>
+      <log>F</log>
+      <wil>F</wil>
+      <ini>(F*2)+4</ini>
+      <bonus>
+        <enableattribute>
+          <name>MAG</name>
+          <min>F</min>
+          <max>F</max>
+          <aug>F</aug>
+          <val>F</val>
+        </enableattribute>
+        <enabletab>
+          <name>critter</name>
+          <name>magician</name>
+        </enabletab>
+        <optionalpowers>
+          <optionalpower>Inhabitation</optionalpower>
+          <optionalpower>Possession</optionalpower>
+          <optionalpower>Materialization</optionalpower>
+        </optionalpowers>
+      </bonus>
+      <powers>
+        <power>Astral Form</power>
+        <power>Banishing Resistance</power>
+        <power>Realistic Form</power>
+        <power>Sapience</power>
+        <power>Sense Link</power>
+      </powers>
+      <skills>
+        <skill>Assensing</skill>
+        <skill>Astral Combat</skill>
+        <skill>Perception</skill>
+        <skill>Unarmed Combat</skill>
+      </skills>
+      <source>SG</source>
+      <page>200</page>
+    </spirit>
+    <!-- End Region -->
+    <!-- Region Toxic Spirits -->
     <spirit>
       <id>05f52567-0406-41ce-ab5b-bea370963207</id>
       <name>Noxious</name>
@@ -1440,7 +1920,8 @@
         <weakness>Allergy (Clean Water, Severe)</weakness>
       </weaknesses>
     </spirit>
-    <!--Blood Spirits-->
+    <!-- End Region -->
+    <!--Region Blood Spirits-->
     <spirit>
       <id>6630bbe6-60e5-44fc-8c5c-15a97b41ee5f</id>
       <name>Blood Spirit</name>
@@ -1481,7 +1962,8 @@
         <weakness>Essence Loss (1 point per day)</weakness>
       </weaknesses>
     </spirit>
-    <!--Insect Spirits-->
+    <!-- End Region -->
+    <!--Region Insect Spirits-->
     <spirit>
       <id>8263b5dc-80d5-4fa2-86ab-e1608acf7342</id>
       <name>Caretaker Spirit</name>
@@ -1750,6 +2232,7 @@
         <weakness>Allergy (Insecticides, Severe)</weakness>
       </weaknesses>
     </spirit>
+    <!-- End Region -->
     <!-- Region Forbidden Arcana -->
     <spirit>
       <id>6237233f-1872-45da-b828-16df75a30127</id>

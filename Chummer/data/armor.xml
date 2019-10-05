@@ -220,7 +220,7 @@
       <category>High-Fashion Armor Clothing</category>
       <armor>8</armor>
       <armorcapacity>4</armorcapacity>
-      <avail>8</avail>
+      <avail>10</avail>
       <cost>2500</cost>
       <bonus>
         <limitmodifier>
@@ -229,6 +229,12 @@
           <condition>Must be visible</condition>
         </limitmodifier>
       </bonus>
+      <wirelessbonus>
+        <skillcategory>
+          <name>Social Active</name>
+          <bonus>1</bonus>
+        </skillcategory>
+      </wirelessbonus>
       <source>RG</source>
       <page>57</page>
     </armor>
@@ -238,7 +244,7 @@
       <category>High-Fashion Armor Clothing</category>
       <armor>8</armor>
       <armorcapacity>4</armorcapacity>
-      <avail>8</avail>
+      <avail>10</avail>
       <cost>2500</cost>
       <bonus>
         <limitmodifier>
@@ -247,6 +253,12 @@
           <condition>Must be visible</condition>
         </limitmodifier>
       </bonus>
+      <wirelessbonus>
+        <skillcategory>
+          <name>Social Active</name>
+          <bonus>1</bonus>
+        </skillcategory>
+      </wirelessbonus>
       <source>RG</source>
       <page>57</page>
     </armor>
@@ -265,6 +277,12 @@
           <condition>Must be visible</condition>
         </limitmodifier>
       </bonus>
+      <wirelessbonus>
+        <skillcategory>
+          <name>Social Active</name>
+          <bonus>1</bonus>
+        </skillcategory>
+      </wirelessbonus>
       <mods>
         <name>Custom Fit</name>
         <name>Concealability</name>
@@ -287,6 +305,12 @@
           <condition>Must be visible</condition>
         </limitmodifier>
       </bonus>
+      <wirelessbonus>
+        <skillcategory>
+          <name>Social Active</name>
+          <bonus>1</bonus>
+        </skillcategory>
+      </wirelessbonus>
       <mods>
         <name>Custom Fit</name>
         <name>Concealability</name>
@@ -309,6 +333,12 @@
           <condition>Must be visible</condition>
         </limitmodifier>
       </bonus>
+      <wirelessbonus>
+        <skillcategory>
+          <name>Social Active</name>
+          <bonus>1</bonus>
+        </skillcategory>
+      </wirelessbonus>
       <mods>
         <name>Custom Fit</name>
         <name>Concealability</name>
@@ -331,6 +361,12 @@
           <condition>Must be visible</condition>
         </limitmodifier>
       </bonus>
+      <wirelessbonus>
+        <skillcategory>
+          <name>Social Active</name>
+          <bonus>1</bonus>
+        </skillcategory>
+      </wirelessbonus>
       <mods>
         <name>Custom Fit</name>
         <name>Concealability</name>
@@ -353,6 +389,12 @@
           <condition>Must be visible</condition>
         </limitmodifier>
       </bonus>
+      <wirelessbonus>
+        <skillcategory>
+          <name>Social Active</name>
+          <bonus>1</bonus>
+        </skillcategory>
+      </wirelessbonus>
       <mods>
         <name>Custom Fit</name>
         <name>Concealability</name>
@@ -376,6 +418,12 @@
           <condition>Must be visible</condition>
         </limitmodifier>
       </bonus>
+      <wirelessbonus>
+        <skillcategory>
+          <name>Social Active</name>
+          <bonus>1</bonus>
+        </skillcategory>
+      </wirelessbonus>
       <mods>
         <name>Custom Fit (Stack)</name>
         <name>Concealability</name>
@@ -399,6 +447,12 @@
           <condition>Must be visible</condition>
         </limitmodifier>
       </bonus>
+      <wirelessbonus>
+        <skillcategory>
+          <name>Social Active</name>
+          <bonus>1</bonus>
+        </skillcategory>
+      </wirelessbonus>
       <mods>
         <name>Custom Fit (Stack)</name>
         <name>Concealability</name>
@@ -422,6 +476,12 @@
           <condition>Must be visible</condition>
         </limitmodifier>
       </bonus>
+      <wirelessbonus>
+        <skillcategory>
+          <name>Social Active</name>
+          <bonus>1</bonus>
+        </skillcategory>
+      </wirelessbonus>
       <mods>
         <name>Custom Fit (Stack)</name>
         <name>Concealability</name>
@@ -444,6 +504,12 @@
           <condition>Must be visible</condition>
         </limitmodifier>
       </bonus>
+      <wirelessbonus>
+        <skillcategory>
+          <name>Social Active</name>
+          <bonus>1</bonus>
+        </skillcategory>
+      </wirelessbonus>
       <source>RG</source>
       <page>60</page>
     </armor>
@@ -458,6 +524,12 @@
       <gears>
         <usegear>Holster</usegear>
       </gears>
+      <wirelessbonus>
+        <skillcategory>
+          <name>Social Active</name>
+          <bonus>1</bonus>
+        </skillcategory>
+      </wirelessbonus>
       <source>RG</source>
       <page>60</page>
     </armor>
@@ -472,6 +544,12 @@
       <mods>
         <name>Gear Access</name>
       </mods>
+      <wirelessbonus>
+        <skillcategory>
+          <name>Social Active</name>
+          <bonus>1</bonus>
+        </skillcategory>
+      </wirelessbonus>
       <source>RG</source>
       <page>60</page>
     </armor>
@@ -490,6 +568,12 @@
           <condition>Must be visible</condition>
         </limitmodifier>
       </bonus>
+      <wirelessbonus>
+        <skillcategory>
+          <name>Social Active</name>
+          <bonus>1</bonus>
+        </skillcategory>
+      </wirelessbonus>
       <source>RG</source>
       <page>60</page>
     </armor>
@@ -504,6 +588,12 @@
       <gears>
         <usegear>Holster</usegear>
       </gears>
+      <wirelessbonus>
+        <skillcategory>
+          <name>Social Active</name>
+          <bonus>1</bonus>
+        </skillcategory>
+      </wirelessbonus>
       <source>RG</source>
       <page>60</page>
     </armor>
@@ -518,6 +608,12 @@
       <gears>
         <usegear>Holster</usegear>
       </gears>
+      <wirelessbonus>
+        <skillcategory>
+          <name>Social Active</name>
+          <bonus>1</bonus>
+        </skillcategory>
+      </wirelessbonus>
       <source>RG</source>
       <page>60</page>
     </armor>
@@ -532,6 +628,12 @@
       <gears>
         <usegear>Holster</usegear>
       </gears>
+      <wirelessbonus>
+        <skillcategory>
+          <name>Social Active</name>
+          <bonus>1</bonus>
+        </skillcategory>
+      </wirelessbonus>
       <source>RG</source>
       <page>60</page>
     </armor>
@@ -546,6 +648,12 @@
       <mods>
         <name>Concealability</name>
       </mods>
+      <wirelessbonus>
+        <skillcategory>
+          <name>Social Active</name>
+          <bonus>1</bonus>
+        </skillcategory>
+      </wirelessbonus>
       <source>RG</source>
       <page>60</page>
     </armor>
@@ -557,13 +665,13 @@
       <armorcapacity>14</armorcapacity>
       <avail>7</avail>
       <cost>2250</cost>
-      <bonus>
+      <wirelessbonus>
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
           <condition>Must be visible</condition>
         </limitmodifier>
-      </bonus>
+      </wirelessbonus>
       <mods>
         <name>Custom Fit</name>
       </mods>
@@ -578,13 +686,13 @@
       <armorcapacity>5</armorcapacity>
       <avail>8</avail>
       <cost>1500</cost>
-      <bonus>
+      <wirelessbonus>
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
           <condition>Must be visible</condition>
         </limitmodifier>
-      </bonus>
+      </wirelessbonus>
       <mods>
         <name>Custom Fit</name>
       </mods>
@@ -603,13 +711,13 @@
       <armorcapacity>6</armorcapacity>
       <avail>8</avail>
       <cost>2300</cost>
-      <bonus>
+      <wirelessbonus>
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
           <condition>Must be visible</condition>
         </limitmodifier>
-      </bonus>
+      </wirelessbonus>
       <mods>
         <name>Custom Fit (Stack)</name>
       </mods>
@@ -627,13 +735,13 @@
       <armorcapacity>10</armorcapacity>
       <avail>10</avail>
       <cost>13500</cost>
-      <bonus>
+      <wirelessbonus>
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
           <condition>Must be visible</condition>
         </limitmodifier>
-      </bonus>
+      </wirelessbonus>
       <mods>
         <name>Custom Fit</name>
         <name>Newest Model</name>
@@ -660,6 +768,13 @@
           <condition>Must be visible</condition>
         </limitmodifier>
       </bonus>
+      <wirelessbonus>
+        <limitmodifier>
+          <limit>Social</limit>
+          <value>2</value>
+          <condition>Must be visible</condition>
+        </limitmodifier>
+      </wirelessbonus>
       <mods>
         <name>Custom Fit</name>
         <name>Newest Model</name>
@@ -830,6 +945,12 @@
       <gears>
         <usegear>Holster</usegear>
       </gears>
+      <wirelessbonus>
+        <specificskill>
+          <name>Survival</name>
+          <bonus>1</bonus>
+        </specificskill>
+      </wirelessbonus>
       <source>RG</source>
       <page>63</page>
     </armor>
@@ -844,6 +965,12 @@
       <selectmodsfromcategory>
         <category>Globetrotter Jacket Liners</category>
       </selectmodsfromcategory>
+      <wirelessbonus>
+        <specificskill>
+          <name>Survival</name>
+          <bonus>1</bonus>
+        </specificskill>
+      </wirelessbonus>
       <source>RG</source>
       <page>63</page>
     </armor>
@@ -861,6 +988,12 @@
       <mods>
         <name>Gear Access</name>
       </mods>
+      <wirelessbonus>
+        <specificskill>
+          <name>Survival</name>
+          <bonus>1</bonus>
+        </specificskill>
+      </wirelessbonus>
       <source>RG</source>
       <page>63</page>
     </armor>
@@ -881,6 +1014,12 @@
       <gears>
         <usegear>Holster</usegear>
       </gears>
+      <wirelessbonus>
+        <specificskill>
+          <name>Survival</name>
+          <bonus>1</bonus>
+        </specificskill>
+      </wirelessbonus>
       <source>RG</source>
       <page>63</page>
     </armor>
@@ -902,6 +1041,12 @@
       <mods>
         <name>Gear Access</name>
       </mods>
+      <wirelessbonus>
+        <skillcategory>
+          <name>Social Active</name>
+          <bonus>1</bonus>
+        </skillcategory>
+      </wirelessbonus>
       <source>RG</source>
       <page>64</page>
     </armor>
@@ -923,6 +1068,12 @@
       <gears>
         <usegear>Holster</usegear>
       </gears>
+      <wirelessbonus>
+        <specificskill>
+          <name>Survival</name>
+          <bonus>1</bonus>
+        </specificskill>
+      </wirelessbonus>
       <source>RG</source>
       <page>64</page>
     </armor>
@@ -1163,6 +1314,12 @@
         <name rating="8">Fire Resistance</name>
         <name>Restrictive</name>
       </mods>
+      <wirelessbonus>
+        <skillcategory>
+          <name>Social</name>
+          <bonus>1</bonus>
+        </skillcategory>
+      </wirelessbonus>
       <source>RG</source>
       <page>69</page>
     </armor>
@@ -1196,6 +1353,13 @@
         <name>Padded</name>
         <name>Restrictive</name>
       </mods>
+      <wirelessbonus>
+        <limitmodifier>
+          <limit>Social</limit>
+          <value>2</value>
+          <condition>Only for Intimidation, Must be visible</condition>
+        </limitmodifier>
+      </wirelessbonus>
       <source>RG</source>
       <page>69</page>
     </armor>
@@ -1233,6 +1397,13 @@
       <mods>
         <name>Gear Access</name>
       </mods>
+      <wirelessbonus>
+        <limitmodifier>
+          <limit>Social</limit>
+          <value>3</value>
+          <condition>Only for Intimidation, Must be visible</condition>
+        </limitmodifier>
+      </wirelessbonus>
       <source>RG</source>
       <page>70</page>
     </armor>
@@ -1375,7 +1546,7 @@
     </armor>
     <armor>
       <id>d90a8823-7387-4c50-bc47-3d63f0ffd543</id>
-      <name>Ares Flashield</name>
+      <name>Ares FlaShield</name>
       <category>Specialty Armor</category>
       <armor>+6</armor>
       <armorcapacity>4</armorcapacity>
@@ -1486,6 +1657,12 @@
           <condition>Must be visible</condition>
         </limitmodifier>
       </bonus>
+      <wirelessbonus>
+        <specificskill>
+          <name>Survival</name>
+          <bonus>1</bonus>
+        </specificskill>
+      </wirelessbonus>
       <source>RG</source>
       <page>75</page>
     </armor>
@@ -1503,6 +1680,12 @@
       <gears>
         <usegear>Flare Compensation</usegear>
       </gears>
+      <wirelessbonus>
+        <specificskill>
+          <name>Survival</name>
+          <bonus>1</bonus>
+        </specificskill>
+      </wirelessbonus>
       <source>RG</source>
       <page>75</page>
     </armor>
@@ -1510,7 +1693,7 @@
       <id>541acec2-bd2f-4684-b0f8-c85bb45d1e8d</id>
       <name>Snake Mesh Socks</name>
       <category>Specialty Armor</category>
-      <armor>+0</armor>
+      <armor>+2</armor>
       <armorcapacity>0</armorcapacity>
       <avail>6</avail>
       <cost>50</cost>
@@ -1531,6 +1714,12 @@
       <gears>
         <usegear>Flare Compensation</usegear>
       </gears>
+      <wirelessbonus>
+        <specificskill>
+          <name>Survival</name>
+          <bonus>1</bonus>
+        </specificskill>
+      </wirelessbonus>
       <source>RG</source>
       <page>76</page>
     </armor>
@@ -1549,6 +1738,13 @@
       <gears>
         <usegear>Flare Compensation</usegear>
       </gears>
+      <wirelessbonus>
+        <limitmodifier>
+          <limit>Physical</limit>
+          <value>1</value>
+          <condition>For climbing only</condition>
+        </limitmodifier>
+      </wirelessbonus>
       <source>RG</source>
       <page>76</page>
     </armor>
@@ -1577,6 +1773,13 @@
         <usegear>Gas Mask</usegear>
         <usegear>Flare Compensation</usegear>
       </gears>
+      <wirelessbonus>
+        <limitmodifier>
+          <limit>Physical</limit>
+          <value>1</value>
+          <condition>For climbing only</condition>
+        </limitmodifier>
+      </wirelessbonus>
       <source>RG</source>
       <page>77</page>
     </armor>
@@ -1693,7 +1896,7 @@
     </armor>
     <armor>
       <id>81fdc8a3-7106-4b08-a1f4-c72140bc90fc</id>
-      <name>Evo Hel Suit</name>
+      <name>Evo HEL Suit</name>
       <category>Specialty Armor</category>
       <armor>8</armor>
       <armorcapacity>5</armorcapacity>
@@ -2966,6 +3169,212 @@
       <page>186</page>
     </armor>
     <!-- End Region -->
+    <!-- Region Street Lethal-->
+    <armor>
+      <id>403adcb1-0739-4b20-816f-7854005eb227</id>
+      <name>Urban Explorer Daedalus</name>
+      <category>Specialty Armor</category>
+      <armor>9</armor>
+      <armorcapacity>4</armorcapacity>
+      <avail>8</avail>
+      <cost>3200</cost>
+      <mods>
+        <name>Parachute (Urban Explorer Daedalus)</name>
+      </mods>
+      <source>SL</source>
+      <page>48</page>
+    </armor>
+    <armor>
+      <id>7f7cfaaf-d28c-4cd2-b1c2-55ece741732f</id>
+      <name>Urban Explorer Daedalus: Helmet</name>
+      <category>Specialty Armor</category>
+      <armor>+2</armor>
+      <armorcapacity>6</armorcapacity>
+      <avail>0</avail>
+      <cost>100</cost>
+      <source>SL</source>
+      <page>48</page>
+    </armor>
+    <armor>
+      <id>40cf0da9-29d7-4a7b-8ef0-822ba05917b7</id>
+      <name>Ares Arms Bug Stomper Custom Armor</name>
+      <category>Armor</category>
+      <armor>20</armor>
+      <armorcapacity>20</armorcapacity>
+      <avail>30F</avail>
+      <cost>35000</cost>
+      <bonus>
+        <limitmodifier>
+          <limit>Social</limit>
+          <value>1</value>
+          <condition>Must be visible, only for Intimidation</condition>
+        </limitmodifier>
+      </bonus>
+      <mods>
+        <name>Custom Fit</name>
+        <name>Gear Access</name>
+        <name>Holster</name>
+      </mods>
+      <source>SL</source>
+      <page>130</page>
+    </armor>
+    <armor>
+      <id>8136ccfb-d5ce-4e18-bc4a-21d33bb6b089</id>
+      <name>EVO/Yamatetsu Naval Technologies Rampart</name>
+      <category>Armor</category>
+      <armor>+10</armor>
+      <armorcapacity>0</armorcapacity>
+      <avail>12F</avail>
+      <cost>3000</cost>
+      <source>SL</source>
+      <page>130</page>
+    </armor>
+    <!-- End Region -->
+    <!-- Region Kill Code-->
+    <armor>
+      <id>5ad79730-ee4b-4191-822d-205af7320281</id>
+      <name>Pantheon Industries Hard Case CCOB</name>
+      <category>Armor</category>
+      <armor>12</armor>
+      <armorcapacity>8</armorcapacity>
+      <avail>12R</avail>
+      <cost>1700</cost>
+      <mods>
+        <name>Drag Handle</name>
+        <name>Pantheon Armored Shell</name>
+        <name>Micro-Hardpoint</name>
+        <name>Micro-Hardpoint</name>
+        <name>Micro-Hardpoint</name>
+        <name>Pantheon Quick-Charge Battery Pack</name>
+      </mods>
+      <gears>
+        <usegear>Holster</usegear>
+      </gears>
+      <source>KC</source>
+      <page>70</page>
+    </armor>
+    <armor>
+      <id>62ad0f12-c603-4c88-b778-e456ca2355f6</id>
+      <name>Generic CCOB</name>
+      <category>Armor</category>
+      <armor>8</armor>
+      <armorcapacity>8</armorcapacity>
+      <avail>10</avail>
+      <cost>1000</cost>
+      <mods>
+        <name>Drag Handle</name>
+        <name>Micro-Hardpoint</name>
+      </mods>
+      <gears>
+        <usegear>Holster</usegear>
+        <usegear rating="4">Medkit</usegear>
+      </gears>
+      <source>KC</source>
+      <page>70</page>
+    </armor>
+    <!-- End Region -->
+    <!-- Region Hamburg -->
+    <armor>
+      <id>4b16a172-b328-4717-b632-39a3d07eeb41</id>
+      <name>FleetHead Kappe</name>
+      <category>Armor</category>
+      <armor>0</armor>
+      <armorcapacity>3</armorcapacity>
+      <avail>4</avail>
+      <cost>200</cost>
+      <gears>
+        <usegear>Image Link</usegear>
+      </gears>
+      <source>HAMG</source>
+      <page>173</page>
+    </armor>
+    <armor>
+      <id>fc1c9de6-4600-4c14-8e8a-9fed51389e4a</id>
+      <name>Rheingold Friesennerz</name>
+      <category>Armor</category>
+      <armor>8</armor>
+      <armorcapacity>6</armorcapacity>
+      <avail>6</avail>
+      <cost>850</cost>
+      <mods>
+        <name rating="3">Chemical Protection</name>
+      </mods>
+      <source>HAMG</source>
+      <page>173</page>
+    </armor>
+    <armor>
+      <id>e8065f02-68f3-46f6-8cca-298a1806b97b</id>
+      <name>Ares Victory Friesennerz</name>
+      <category>Armor</category>
+      <armor>6</armor>
+      <armorcapacity>5</armorcapacity>
+      <avail>7</avail>
+      <cost>920</cost>
+      <mods>
+        <name rating="3">Chemical Protection</name>
+        <name>Internal Air Tank (5 Minutes)</name>
+	  </mods>
+      <source>HAMG</source>
+      <page>173</page>
+    </armor>
+    <!-- End Region -->
+    <!-- Region No Future -->
+    <armor>
+      <id>c05c3865-7a13-4c49-989e-a258b71f0d0c</id>
+      <name>Trenchcoat</name>
+      <category>Clothing</category>
+      <armor>0</armor>
+      <armorcapacity>0</armorcapacity>
+      <avail>0</avail>
+      <cost>100</cost>
+      <source>NF</source>
+      <page>173</page>
+    </armor>
+    <armor>
+      <id>257d642f-c90b-4dac-90c8-7a4f9a1ccdd0</id>
+      <name>Fedora</name>
+      <category>Clothing</category>
+      <armor>0</armor>
+      <armorcapacity>0</armorcapacity>
+      <avail>0</avail>
+      <cost>30</cost>
+      <source>NF</source>
+      <page>173</page>
+    </armor>
+    <armor>
+      <id>a9135760-65dd-4c77-84a1-ed6460cf350e</id>
+      <name>Trilby</name>
+      <category>Clothing</category>
+      <armor>0</armor>
+      <armorcapacity>0</armorcapacity>
+      <avail>0</avail>
+      <cost>20</cost>
+      <source>NF</source>
+      <page>173</page>
+    </armor>
+    <armor>
+      <id>b91be09d-b428-495c-a334-31b316a4ef79</id>
+      <name>Hornburg</name>
+      <category>Clothing</category>
+      <armor>0</armor>
+      <armorcapacity>0</armorcapacity>
+      <avail>0</avail>
+      <cost>40</cost>
+      <source>NF</source>
+      <page>173</page>
+    </armor>
+    <armor>
+      <id>90d87a38-fe51-4bbf-bbb3-5b26cacd9834</id>
+      <name>Bowler</name>
+      <category>Clothing</category>
+      <armor>0</armor>
+      <armorcapacity>0</armorcapacity>
+      <avail>0</avail>
+      <cost>10</cost>
+      <source>NF</source>
+      <page>173</page>
+    </armor>
+    <!-- End Region -->
   </armors>
   <mods>
     <!-- Region Shadowrun 5 -->
@@ -3106,11 +3515,16 @@
     <mod>
       <id>71c20b15-de11-49eb-93fe-f4d7491283e3</id>
       <name>Full Body Armor: Helmet</name>
-      <category>Full Body Armor Mods</category>
+      <category>General</category>
       <armor>+3</armor>
       <maxrating>1</maxrating>
       <armorcapacity>[0]</armorcapacity>
       <gearcapacity>6</gearcapacity>
+      <required>
+        <parentdetails>
+          <name>Full Body Armor</name>
+        </parentdetails>
+      </required>
       <avail>0</avail>
       <cost>500</cost>
       <source>SR5</source>
@@ -3125,6 +3539,11 @@
       <armorcapacity>[0]</armorcapacity>
       <avail>+6</avail>
       <cost>6000</cost>
+      <required>
+        <parentdetails>
+          <name>Full Body Armor</name>
+        </parentdetails>
+      </required>
       <bonus>
         <toxincontactimmune />
         <toxininhalationimmune />
@@ -3141,6 +3560,11 @@
       <armor>0</armor>
       <maxrating>1</maxrating>
       <armorcapacity>[0]</armorcapacity>
+      <required>
+        <parentdetails>
+          <name>Full Body Armor</name>
+        </parentdetails>
+      </required>
       <avail>+3</avail>
       <cost>1000</cost>
       <source>SR5</source>
@@ -3562,6 +3986,12 @@
       <armorcapacity>[2]</armorcapacity>
       <avail>14R</avail>
       <cost>Rating * 1000</cost>
+      <!--<bonus>
+        <noiserereduction>Rating</noiserereduction>
+      </bonus>
+      <wirelessbonus>
+        <noiserereduction>1</noiserereduction>
+      </wirelessbonus> -->
       <source>RG</source>
       <page>84</page>
     </mod>
@@ -3664,6 +4094,13 @@
       <armorcapacity>[4]</armorcapacity>
       <avail>8</avail>
       <cost>2500</cost>
+      <wirelessbonus>
+        <limitmodifier>
+          <limit>Mental</limit>
+          <value>1</value>
+          <condition>Only for Perception</condition>
+        </limitmodifier>
+      </wirelessbonus>
       <source>RG</source>
       <page>85</page>
     </mod>
@@ -3780,6 +4217,93 @@
       <cost>50</cost>
       <source>CA</source>
       <page>138</page>
+    </mod>
+    <!-- End Region -->
+    <!-- Region Street Lethal -->
+    <mod>
+      <id>0a7930f5-5466-439a-956d-2bba57f25ed9</id>
+      <name>Parachute (Urban Explorer Daedalus)</name>
+      <category>Parachute</category>
+      <hide />
+      <maxrating>0</maxrating>
+      <armorcapacity>[0]</armorcapacity>
+      <avail>8</avail>
+      <cost>0</cost>
+      <source>SL</source>
+      <page>48</page>
+    </mod>
+    <!-- End Region -->
+    <!-- Region Kill Code -->
+    <mod>
+      <id>f4c1163d-bf9e-42c5-8504-37b21c01531e</id>
+      <name>Pantheon Armored Shell</name>
+      <category>General</category>
+      <armor>0</armor>
+      <maxrating>1</maxrating>
+      <armorcapacity>[0]</armorcapacity>
+      <addoncategory>Cyberdecks</addoncategory>
+      <addoncategory>Commlinks</addoncategory>
+      <addoncategory>Rigger Command Consoles</addoncategory>
+      <avail>4</avail>
+      <cost>0</cost>
+      <source>KC</source>
+      <page>73</page>
+      <hide />
+    </mod>
+    <mod>
+      <id>52b315a3-cf10-4534-a0d9-86b4ac346136</id>
+      <name>Pantheon Quick-Charge Battery Pack</name>
+      <category>General</category>
+      <armor>0</armor>
+      <maxrating>1</maxrating>
+      <avail>4</avail>
+      <cost>0</cost>
+      <source>KC</source>
+      <page>73</page>
+      <hide />
+    </mod>
+    <mod>
+      <id>c2fdc729-bc1d-4d3a-a0da-1d5dfa3b897d</id>
+      <name>Micro-Hardpoint</name>
+      <category>General</category>
+      <armor>0</armor>
+      <maxrating>1</maxrating>
+      <armorcapacity>[0]</armorcapacity>
+	  <gearcapacity>1</gearcapacity>
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>KC</source>
+      <page>73</page>
+      <hide />
+    </mod>
+    <!-- End Region -->
+    <!-- Region Hamburg -->
+    <mod>
+      <id>b7be75a4-72ff-49a2-8b7b-0bf36a9f40d8</id>
+      <name>Internal Air Tank (5 Minutes)</name>
+      <category>General</category>
+      <armor>0</armor>
+      <hide />
+      <maxrating>1</maxrating>
+      <armorcapacity>[0]</armorcapacity>
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>HAMG</source>
+      <page>173</page>
+    </mod>
+    <!-- End Region -->
+    <!-- Region Better Than Bad -->
+    <mod>
+      <id>80effbdd-047d-4b1f-8159-f13f86bba4e6</id>
+      <name>Grey Mana Integration</name>
+      <category>General</category>
+      <armor>0</armor>
+      <maxrating>6</maxrating>
+      <armorcapacity>[Rating]</armorcapacity>
+      <avail>FixedValues(6F,6F,6F,9F,9F,9F)</avail>
+      <cost>FixedValues(Rating*1000,Rating*1000,Rating*1000,Rating*2000,Rating*2000,Rating*2000)</cost>
+      <source>BTB</source>
+      <page>156</page>
     </mod>
     <!-- End Region -->
   </mods>

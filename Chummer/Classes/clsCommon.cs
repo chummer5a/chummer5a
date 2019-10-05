@@ -51,6 +51,11 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static object EvaluateInvariantXPath(string strXPath, out bool blnIsSuccess)
         {
+            if (string.IsNullOrWhiteSpace(strXPath))
+            {
+                blnIsSuccess = false;
+                return null;
+            }
             if (!strXPath.IsLegalCharsOnly(true, s_LstInvariantXPathLegalChars))
             {
                 blnIsSuccess = false;
@@ -60,10 +65,16 @@ namespace Chummer
             object objReturn;
             try
             {
-                objReturn = s_ObjXPathNavigator.Evaluate(strXPath);
+                objReturn = s_ObjXPathNavigator.Evaluate(strXPath.TrimStart('+'));
                 blnIsSuccess = true;
             }
-            catch (Exception)
+            catch (ArgumentException)
+            {
+                Utils.BreakIfDebug();
+                objReturn = strXPath;
+                blnIsSuccess = false;
+            }
+            catch (XPathException)
             {
                 Utils.BreakIfDebug();
                 objReturn = strXPath;
@@ -87,7 +98,13 @@ namespace Chummer
                 objReturn = s_ObjXPathNavigator.Evaluate(objXPath);
                 blnIsSuccess = true;
             }
-            catch (Exception)
+            catch (ArgumentException)
+            {
+                Utils.BreakIfDebug();
+                objReturn = objXPath;
+                blnIsSuccess = false;
+            }
+            catch (XPathException)
             {
                 Utils.BreakIfDebug();
                 objReturn = objXPath;
@@ -109,14 +126,29 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Locate a piece of Gear within the character's Vehicles.
+        /// Locate a piece of Gear by matching on its Weapon ID.
         /// </summary>
-        /// <param name="strGuid">InternalId of the Gear to find.</param>
-        /// <param name="lstVehicles">List of Vehicles to search.</param>
-        /// <param name="objFoundVehicle">Vehicle that the Gear was found in.</param>
-        /// <param name="objFoundWeaponAccessory">Weapon Accessory that the Gear was found in.</param>
-        /// <param name="objFoundCyberware">Cyberware that the Gear was found in.</param>
-        public static Gear FindVehicleGear(this IEnumerable<Vehicle> lstVehicles, string strGuid, out Vehicle objFoundVehicle, out WeaponAccessory objFoundWeaponAccessory, out Cyberware objFoundCyberware)
+        /// <param name="strGuid">InternalId of the Weapon to find.</param>
+        /// <param name="lstGear">List of Gear to search.</param>
+        public static Drug FindDrug(string strGuid, List<Drug> lstGear)
+        {
+            foreach (Drug objDrug in lstGear)
+            {
+                if (objDrug.InternalId == strGuid)
+                    return objDrug;
+            }
+
+            return null;
+        }
+		/// <summary>
+		/// Locate a piece of Gear within the character's Vehicles.
+		/// </summary>
+		/// <param name="strGuid">InternalId of the Gear to find.</param>
+		/// <param name="lstVehicles">List of Vehicles to search.</param>
+		/// <param name="objFoundVehicle">Vehicle that the Gear was found in.</param>
+		/// <param name="objFoundWeaponAccessory">Weapon Accessory that the Gear was found in.</param>
+		/// <param name="objFoundCyberware">Cyberware that the Gear was found in.</param>
+		public static Gear FindVehicleGear(this IEnumerable<Vehicle> lstVehicles, string strGuid, out Vehicle objFoundVehicle, out WeaponAccessory objFoundWeaponAccessory, out Cyberware objFoundCyberware)
         {
             if (!string.IsNullOrEmpty(strGuid) && !strGuid.IsEmptyGuid())
             {
@@ -799,20 +831,20 @@ namespace Chummer
             if (string.IsNullOrEmpty(strPDFAppPath))
                 strPDFAppPath = GlobalOptions.PDFAppPath;
             // The user must have specified the arguments of their PDF application in order to use this functionality.
-            if (string.IsNullOrWhiteSpace(strPDFAppPath))
+            if (string.IsNullOrWhiteSpace(strPDFAppPath) || !File.Exists(strPDFAppPath))
                 return;
 
             string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
-            string[] strTemp;
+            string[] astrSourceParts;
             if (!string.IsNullOrEmpty(strSpaceCharacter))
-                strTemp = strSource.Split(strSpaceCharacter[0]);
+                astrSourceParts = strSource.Split(strSpaceCharacter[0]);
             else if (strSource.StartsWith("SR5"))
             {
-                strTemp = new string[] { "SR5", strSource.Substring(3) };
+                astrSourceParts = new [] { "SR5", strSource.Substring(3) };
             }
             else if (strSource.StartsWith("R5"))
             {
-                strTemp = new string[] { "R5", strSource.Substring(3) };
+                astrSourceParts = new [] { "R5", strSource.Substring(3) };
             }
             else
             {
@@ -824,11 +856,11 @@ namespace Chummer
                         break;
                     }
                 }
-                strTemp = new string[] { strSource.Substring(0, i), strSource.Substring(i) };
+                astrSourceParts = new [] { strSource.Substring(0, i), strSource.Substring(i) };
             }
-            if (strTemp.Length < 2)
+            if (astrSourceParts.Length < 2)
                 return;
-            if (!int.TryParse(strTemp[1], out int intPage))
+            if (!int.TryParse(astrSourceParts[1], out int intPage))
                 return;
 
             // Make sure the page is actually a number that we can use as well as being 1 or higher.
@@ -836,7 +868,7 @@ namespace Chummer
                 return;
 
             // Revert the sourcebook code to the one from the XML file if necessary.
-            string strBook = LanguageBookCodeFromAltCode(strTemp[0], GlobalOptions.Language);
+            string strBook = LanguageBookCodeFromAltCode(astrSourceParts[0], GlobalOptions.Language);
 
             // Retrieve the sourcebook information including page offset and PDF application name.
             SourcebookInfo objBookInfo = GlobalOptions.SourcebookInfo.FirstOrDefault(objInfo => objInfo.Code == strBook && !string.IsNullOrEmpty(objInfo.Path));

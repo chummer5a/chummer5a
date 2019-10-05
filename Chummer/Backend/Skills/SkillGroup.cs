@@ -244,7 +244,7 @@ namespace Chummer.Backend.Skills
                 return _intCachedCareerIncrease > 0;
             }
         }
-        
+
         public bool CareerCanIncrease
         {
             get
@@ -380,6 +380,16 @@ namespace Chummer.Backend.Skills
             xmlNode.TryGetInt32FieldQuickly("base", ref _intSkillFromSp);
         }
 
+        public void LoadFromHeroLab(XmlNode xmlNode)
+        {
+            string strTemp = xmlNode.SelectSingleNode("@name")?.InnerText;
+            if (!string.IsNullOrEmpty(strTemp))
+                _strGroupName = strTemp.TrimEndOnce("Group").Trim();
+            strTemp = xmlNode.SelectSingleNode("@base")?.InnerText;
+            if (!string.IsNullOrEmpty(strTemp) && int.TryParse(strTemp, out int intTemp))
+                _intSkillFromKarma = intTemp;
+        }
+
         private static readonly DependancyGraph<string> SkillGroupDependencyGraph =
             new DependancyGraph<string>(
                 new DependancyGraphNode<string>(nameof(DisplayRating),
@@ -469,7 +479,7 @@ namespace Chummer.Backend.Skills
                                           nameof(CurrentKarmaCost),
                                           nameof(UpgradeKarmaCost));
         }
-        
+
         private readonly List<Skill> _lstAffectedSkills = new List<Skill>();
         private string _strGroupName;
         private readonly Character _objCharacter;
@@ -503,7 +513,7 @@ namespace Chummer.Backend.Skills
                 }
             }
         }
-        
+
         public string DisplayName => DisplayNameMethod(GlobalOptions.Language);
 
         public string DisplayNameMethod(string strLanguage)
@@ -631,12 +641,9 @@ namespace Chummer.Backend.Skills
             if (lstNamesOfChangedProperties.Contains(nameof(ToolTip)))
                 _strToolTip = string.Empty;
 
-            if (PropertyChanged != null)
+            foreach (string strPropertyToChange in lstNamesOfChangedProperties)
             {
-                foreach (string strPropertyToChange in lstNamesOfChangedProperties)
-                {
-                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
-                }
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
             }
         }
 
@@ -698,7 +705,7 @@ namespace Chummer.Backend.Skills
 
                 int intCost = intUpper * (intUpper + 1);
                 intCost -= intLower * (intLower + 1);
-                intCost /= 2; //We get sqre, need triangle
+                intCost /= 2; //We get square, need triangle
 
                 if (intCost == 1)
                     intCost *= _objCharacter.Options.KarmaNewSkillGroup;

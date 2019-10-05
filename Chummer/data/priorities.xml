@@ -4502,11 +4502,11 @@
           <skillqty>3</skillqty>
           <skillval>5</skillval>
           <skilltype>resonance</skilltype>
-          <forbidden>
+          <required>
             <oneof>
-              <metatype>A.I.</metatype>
+              <metatypecategory>Metahuman</metatypecategory>
             </oneof>
-          </forbidden>
+          </required>
         </talent>
         <talent>
           <name>A.I. - 6 Depth</name>
@@ -4624,11 +4624,11 @@
           <skillqty>3</skillqty>
           <skillval>4</skillval>
           <skilltype>resonance</skilltype>
-          <forbidden>
+          <required>
             <oneof>
-              <metatype>A.I.</metatype>
+              <metatypecategory>Metahuman</metatypecategory>
             </oneof>
-          </forbidden>
+          </required>
         </talent>
         <talent>
           <name>A.I. - 4 Depth</name>
@@ -4780,11 +4780,11 @@
           <skillqty>3</skillqty>
           <skillval>2</skillval>
           <skilltype>resonance</skilltype>
-          <forbidden>
+          <required>
             <oneof>
-              <metatype>A.I.</metatype>
+              <metatypecategory>Metahuman</metatypecategory>
             </oneof>
-          </forbidden>
+          </required>
         </talent>
         <talent>
           <name>A.I. - 3 Depth</name>
@@ -5201,7 +5201,7 @@
       <value>D,1</value>
       <gameplayoption>Street Scum</gameplayoption>
       <category>Resources</category>
-      <resources>6000</resources>
+      <resources>15000</resources>
     </priority>
     <priority>
       <id>9e0f8c4d-5020-4efe-8f65-6d729ab7138c</id>

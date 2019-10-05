@@ -32,6 +32,7 @@ namespace Chummer
         private int _intWeaponMountSlots;
         private int _intModMultiplier = 1;
         private int _intMarkup;
+        private bool _blnLoading = true;
         private bool _blnSkipUpdate;
         private static string s_StrSelectCategory = string.Empty;
 
@@ -52,7 +53,6 @@ namespace Chummer
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
-            MoveControls();
             // Load the Vehicle information.
             _xmlBaseVehicleDataNode = XmlManager.Load("vehicles.xml").GetFastNavigator().SelectSingleNode("/chummer");
             _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_xmlBaseVehicleDataNode);
@@ -75,9 +75,10 @@ namespace Chummer
                 lblMarkupLabel.Visible = false;
                 nudMarkup.Visible = false;
                 lblMarkupPercentLabel.Visible = false;
-                chkHideOverAvailLimit.Text = chkHideOverAvailLimit.Text.Replace("{0}", _objCharacter.MaximumAvailability.ToString());
+                chkHideOverAvailLimit.Text = string.Format(chkHideOverAvailLimit.Text, _objCharacter.MaximumAvailability.ToString(GlobalOptions.CultureInfo));
                 chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
             }
+            chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
 
             string[] strValues = _strLimitToCategories.Split(',');
 
@@ -109,9 +110,7 @@ namespace Chummer
 
             cboCategory.EndUpdate();
 
-            chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
-
-            _blnSkipUpdate = false;
+            _blnLoading = false;
             UpdateGearInfo();
         }
 
@@ -161,6 +160,8 @@ namespace Chummer
 
         private void chkFreeItem_CheckedChanged(object sender, EventArgs e)
         {
+            if (chkShowOnlyAffordItems.Checked)
+                BuildModList();
             UpdateGearInfo();
         }
 
@@ -171,6 +172,8 @@ namespace Chummer
 
         private void nudMarkup_ValueChanged(object sender, EventArgs e)
         {
+            if (chkShowOnlyAffordItems.Checked && !chkFreeItem.Checked)
+                BuildModList();
             UpdateGearInfo();
         }
 
@@ -204,6 +207,16 @@ namespace Chummer
         {
             if (e.KeyCode == Keys.Up)
                 txtSearch.Select(txtSearch.Text.Length, 0);
+        }
+
+        private void chkHideOverAvailLimit_CheckedChanged(object sender, EventArgs e)
+        {
+            BuildModList();
+        }
+
+        private void chkShowOnlyAffordItems_CheckedChanged(object sender, EventArgs e)
+        {
+            BuildModList();
         }
         #endregion
 
@@ -360,17 +373,27 @@ namespace Chummer
                     }
                 }
 
-                if (!chkHideOverAvailLimit.Checked || SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter))
+                decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
+                if (_setBlackMarketMaps.Contains(objXmlMod.SelectSingleNode("category")?.Value))
+                    decCostMultiplier *= 0.9m;
+                if ((!chkHideOverAvailLimit.Checked || SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter)) &&
+                    (!chkShowOnlyAffordItems.Checked || chkFreeItem.Checked || SelectionShared.CheckNuyenRestriction(objXmlMod, _objCharacter.Nuyen, decCostMultiplier)))
                 {
                     lstMods.Add(new ListItem(objXmlMod.SelectSingleNode("id")?.Value, objXmlMod.SelectSingleNode("translate")?.Value ?? objXmlMod.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language)));
                 }
             }
             lstMods.Sort(CompareListItems.CompareNames);
+            string strOldSelected = lstMod.SelectedValue?.ToString();
+            _blnLoading = true;
             lstMod.BeginUpdate();
-            lstMod.DataSource = null;
             lstMod.ValueMember = "Value";
             lstMod.DisplayMember = "Name";
             lstMod.DataSource = lstMods;
+            _blnLoading = false;
+            if (string.IsNullOrEmpty(strOldSelected))
+                lstMod.SelectedIndex = -1;
+            else
+                lstMod.SelectedValue = strOldSelected;
             lstMod.EndUpdate();
         }
 
@@ -400,7 +423,7 @@ namespace Chummer
         /// </summary>
         private void UpdateGearInfo()
         {
-            if (_blnSkipUpdate)
+            if (_blnLoading || _blnSkipUpdate)
                 return;
 
             _blnSkipUpdate = true;
@@ -417,6 +440,8 @@ namespace Chummer
 
             if (xmlVehicleMod != null)
             {
+                chkBlackMarketDiscount.Checked = _setBlackMarketMaps.Contains(xmlVehicleMod.SelectSingleNode("category")?.Value);
+
                 // Extract the Avil and Cost values from the Gear info since these may contain formulas and/or be based off of the Rating.
                 // This is done using XPathExpression.
 
@@ -429,43 +454,54 @@ namespace Chummer
                     if (blnTempIsSuccess)
                         intMinRating = Convert.ToInt32(objTempProcess);
                 }
-                bool blnDisableRating = false;
                 string strRating = xmlVehicleMod.SelectSingleNode("rating")?.Value.ToLower();
                 // If the rating is "qty", we're looking at Tires instead of actual Rating, so update the fields appropriately.
                 if (strRating == "qty")
                 {
                     nudRating.Maximum = 20;
                     lblRatingLabel.Text = LanguageManager.GetString("Label_Qty", GlobalOptions.Language);
+                    lblRatingLabel.Visible = true;
+                    nudRating.Visible = true;
+                    lblRatingNALabel.Visible = false;
                 }
                 //Used for the Armor modifications.
                 else if (strRating == "body")
                 {
                     nudRating.Maximum = _objVehicle.Body;
                     lblRatingLabel.Text = LanguageManager.GetString("Label_Body", GlobalOptions.Language);
+                    lblRatingLabel.Visible = true;
+                    nudRating.Visible = true;
+                    lblRatingNALabel.Visible = false;
                 }
                 //Used for Metahuman Adjustments.
                 else if (strRating == "seats")
                 {
                     nudRating.Maximum = _objVehicle.TotalSeats;
                     lblRatingLabel.Text = LanguageManager.GetString("Label_Seats", GlobalOptions.Language);
+                    lblRatingLabel.Visible = true;
+                    nudRating.Visible = true;
+                    lblRatingNALabel.Visible = false;
                 }
                 else
                 {
                     lblRatingLabel.Text = LanguageManager.GetString("Label_Rating", GlobalOptions.Language);
+                    lblRatingLabel.Visible = true;
                     int intRating = Convert.ToInt32(strRating);
                     if (intRating > 0)
                     {
                         nudRating.Maximum = intRating;
+                        nudRating.Visible = true;
+                        lblRatingNALabel.Visible = false;
                     }
                     else
                     {
-                        blnDisableRating = true;
                         nudRating.Minimum = 0;
                         nudRating.Maximum = 0;
-                        nudRating.Enabled = false;
+                        lblRatingNALabel.Visible = true;
+                        nudRating.Visible = false;
                     }
                 }
-                if (!blnDisableRating)
+                if (nudRating.Visible)
                 {
                     if (chkHideOverAvailLimit.Checked)
                     {
@@ -474,8 +510,19 @@ namespace Chummer
                             nudRating.Maximum -= 1;
                         }
                     }
+
+                    if (chkShowOnlyAffordItems.Checked && !chkFreeItem.Checked)
+                    {
+                        decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
+                        if (_setBlackMarketMaps.Contains(xmlVehicleMod.SelectSingleNode("category")?.Value))
+                            decCostMultiplier *= 0.9m;
+                        while (nudRating.Maximum > intMinRating && !SelectionShared.CheckNuyenRestriction(xmlVehicleMod, _objCharacter.Nuyen, decCostMultiplier, decimal.ToInt32(nudRating.Maximum)))
+                        {
+                            nudRating.Maximum -= 1;
+                        }
+                    }
                     nudRating.Minimum = intMinRating;
-                    nudRating.Enabled = true;
+                    nudRating.Enabled = nudRating.Maximum != nudRating.Minimum;
                 }
 
                 // Slots.
@@ -490,45 +537,15 @@ namespace Chummer
                 strSlots = ReplaceStrings(strSlots, intExtraSlots);
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(strSlots, out bool blnIsSuccess);
                 lblSlots.Text = blnIsSuccess ? Convert.ToInt32(objProcess).ToString() : strSlots;
+                lblSlotsLabel.Visible = !string.IsNullOrEmpty(lblSlots.Text);
 
                 int.TryParse(lblSlots.Text, out intExtraSlots);
 
                 // Avail.
-                string strAvailExpr = xmlVehicleMod.SelectSingleNode("avail")?.Value ?? string.Empty;
-                if (strAvailExpr.StartsWith("FixedValues("))
-                {
-                    int intRating = decimal.ToInt32(nudRating.Value - 1);
-                    strAvailExpr = strAvailExpr.TrimStartOnce("FixedValues(", true).TrimEndOnce(')');
-                    string[] strValues = strAvailExpr.Split(',');
-                    if (intRating > strValues.Length || intRating < 0)
-                    {
-                        intRating = strValues.Length - 1;
-                    }
-                    strAvailExpr = strValues[intRating];
-                }
-
-                // If avail contains "F" or "R", remove it from the string so we can use the expression.
-                string strSuffix = string.Empty;
-                char chrLastChar = strAvailExpr.Length > 0 ? strAvailExpr[strAvailExpr.Length - 1] : ' ';
-                if (chrLastChar == 'F')
-                {
-                    strSuffix = LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language);
-                    strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
-                }
-                else if (chrLastChar == 'R')
-                {
-                    strSuffix = LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language);
-                    strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
-                }
-
-                strAvailExpr = ReplaceStrings(strAvailExpr);
-                objProcess = CommonFunctions.EvaluateInvariantXPath(strAvailExpr, out blnIsSuccess);
-                lblAvail.Text = (blnIsSuccess ? Convert.ToInt32(objProcess).ToString() : strAvailExpr) + strSuffix;
+                lblAvail.Text = new AvailabilityValue(Convert.ToInt32(nudRating.Value), xmlVehicleMod.SelectSingleNode("avail")?.Value).ToString();
+                lblAvailLabel.Visible = !string.IsNullOrEmpty(lblAvail.Text);
 
                 // Cost.
-                chkBlackMarketDiscount.Enabled = true;
-                chkBlackMarketDiscount.Checked = _setBlackMarketMaps.Contains(xmlVehicleMod.SelectSingleNode("category")?.Value);
-
                 decimal decItemCost = 0;
                 if (chkFreeItem.Checked)
                     lblCost.Text = (0.0m).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
@@ -584,9 +601,11 @@ namespace Chummer
 
                     lblCost.Text = decItemCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 }
+                lblCostLabel.Visible = !string.IsNullOrEmpty(lblCost.Text);
 
                 // Update the Avail Test Label.
                 lblTest.Text = _objCharacter.AvailTest(decItemCost, lblAvail.Text);
+                lblTestLabel.Visible = !string.IsNullOrEmpty(lblTest.Text);
 
                 string strCategory = xmlVehicleMod.SelectSingleNode("category")?.Value ?? string.Empty;
                 if (!string.IsNullOrEmpty(strCategory))
@@ -596,7 +615,7 @@ namespace Chummer
                         lblVehicleCapacityLabel.Visible = true;
                         lblVehicleCapacity.Visible = true;
                         lblVehicleCapacity.Text = GetRemainingModCapacity(strCategory, Convert.ToInt32(lblSlots.Text));
-                        GlobalOptions.ToolTipProcessor.SetToolTip(lblVehicleCapacityLabel, LanguageManager.GetString("Tip_RemainingVehicleModCapacity", GlobalOptions.Language));
+                        lblVehicleCapacityLabel.SetToolTip(LanguageManager.GetString("Tip_RemainingVehicleModCapacity", GlobalOptions.Language));
                     }
                     else
                     {
@@ -621,6 +640,7 @@ namespace Chummer
                     lblVehicleCapacityLabel.Visible = false;
                     lblVehicleCapacity.Visible = false;
                 }
+                lblCategoryLabel.Visible = !string.IsNullOrEmpty(lblCategory.Text);
 
                 string strLimit = xmlVehicleMod.SelectSingleNode("limit")?.Value;
                 if (!string.IsNullOrEmpty(strLimit))
@@ -629,38 +649,50 @@ namespace Chummer
                     if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                     {
                         XPathNavigator objXmlLimit = _xmlBaseVehicleDataNode.SelectSingleNode("limits/limit[. = \"" + strLimit + "\"/@translate]");
-                        lblLimit.Text = " (" + objXmlLimit?.Value ?? strLimit + ')';
+                        lblLimit.Text = LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + objXmlLimit?.Value ?? strLimit + ')';
                     }
                     else
-                        lblLimit.Text = " (" + strLimit + ')';
+                        lblLimit.Text = LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + strLimit + ')';
                 }
                 else
                     lblLimit.Text = string.Empty;
+
+
+                lblRatingLabel.Text = xmlVehicleMod.SelectSingleNode("ratinglabel") != null
+                    ? LanguageManager.GetString("Label_RatingFormat").Replace("{0}",
+                        LanguageManager.GetString(xmlVehicleMod.SelectSingleNode("ratinglabel").Value,
+                            GlobalOptions.Language))
+                    : LanguageManager.GetString("Label_Rating");
 
                 string strSource = xmlVehicleMod.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
                 string strPage = xmlVehicleMod.SelectSingleNode("altpage")?.Value ?? xmlVehicleMod.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
                 string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                 lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
-                GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
+                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
+                lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
             }
             else
             {
+                lblRatingNALabel.Visible = false;
                 lblRatingLabel.Text = string.Empty;
-                nudRating.Minimum = 0;
-                nudRating.Maximum = 0;
-                nudRating.Enabled = false;
+                nudRating.Visible = false;
+                lblSlotsLabel.Visible = false;
                 lblSlots.Text = string.Empty;
-                chkBlackMarketDiscount.Enabled = false;
                 chkBlackMarketDiscount.Checked = false;
+                lblAvailLabel.Visible = false;
                 lblAvail.Text = string.Empty;
+                lblCostLabel.Visible = false;
                 lblCost.Text = string.Empty;
+                lblTestLabel.Visible = false;
                 lblTest.Text = string.Empty;
+                lblCategoryLabel.Visible = false;
                 lblCategory.Text = string.Empty;
                 lblVehicleCapacityLabel.Visible = false;
                 lblVehicleCapacity.Visible = false;
                 lblLimit.Text = string.Empty;
+                lblSourceLabel.Visible = false;
                 lblSource.Text = string.Empty;
-                GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, string.Empty);
+                lblSource.SetToolTip(string.Empty);
             }
             _blnSkipUpdate = false;
         }
@@ -686,29 +718,6 @@ namespace Chummer
             }
         }
 
-        private void MoveControls()
-        {
-            int intWidth = Math.Max(lblCategoryLabel.Width, lblAvailLabel.Width);
-            intWidth = Math.Max(intWidth, lblCostLabel.Width);
-            intWidth = Math.Max(intWidth, lblSlotsLabel.Width);
-            intWidth = Math.Max(intWidth, lblRatingLabel.Width);
-
-            lblCategory.Left = lblCategoryLabel.Left + intWidth + 6;
-            lblLimit.Left = lblCategoryLabel.Left + intWidth + 6;
-            lblAvail.Left = lblAvailLabel.Left + intWidth + 6;
-            lblTestLabel.Left = lblAvail.Left + lblAvail.Width + 16;
-            lblTest.Left = lblTestLabel.Left + lblTestLabel.Width + 6;
-            lblCost.Left = lblCostLabel.Left + intWidth + 6;
-            lblSlots.Left = lblSlotsLabel.Left + intWidth + 6;
-            nudRating.Left = lblRatingLabel.Left + intWidth + 6;
-
-            nudMarkup.Left = lblMarkupLabel.Left + lblMarkupLabel.Width + 6;
-            lblMarkupPercentLabel.Left = nudMarkup.Left + nudMarkup.Width;
-
-            lblSource.Left = lblSourceLabel.Left + lblSourceLabel.Width + 6;
-
-            lblSearchLabel.Left = txtSearch.Left - 6 - lblSearchLabel.Width;
-        }
         private string ReplaceStrings(string strInput, int intExtraSlots = 0)
         {
             StringBuilder objInputBuilder = new StringBuilder(strInput);
@@ -728,6 +737,11 @@ namespace Chummer
             objInputBuilder.Replace("Slots", (_intWeaponMountSlots + intExtraSlots).ToString());
 
             return objInputBuilder.ToString();
+        }
+
+        private void OpenSourceFromLabel(object sender, EventArgs e)
+        {
+            CommonFunctions.OpenPDFFromControl(sender, e);
         }
         #endregion
     }

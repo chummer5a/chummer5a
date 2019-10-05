@@ -23,11 +23,13 @@ using System.Diagnostics;
  using System.Globalization;
 using System.Xml;
 using System.Runtime.CompilerServices;
+using NLog;
 
 namespace Chummer
 {
     internal static class XmlExtensions
     {
+        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
         //QUESTION: TrySelectField<T> that uses SelectSingleNode instead of this[node]?
 
         public delegate bool TryParseFunction<T>(string input, out T result);
@@ -103,9 +105,8 @@ namespace Chummer
 
                 //Otherwise just log it
 #if DEBUG
-                System.Reflection.MethodBase mth
-                    = new StackTrace().GetFrame(1).GetMethod();
-                string errorMsg = string.Format("Tried to read missing field \"{0}\" in {1}.{2}", field, mth.ReflectedType?.Name, mth);
+                System.Reflection.MethodBase mth = new StackTrace().GetFrame(1).GetMethod();
+                string errorMsg = $"Tried to read missing field \"{field}\" in {mth.ReflectedType?.Name}.{mth}";
 #else
                 string errorMsg = $"Tried to read missing field \"{field}\"";
 #endif
@@ -385,19 +386,16 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryGetStringFieldQuickly(this XmlNode node, string field, ref string read)
         {
-            XmlElement objField = node[field];
+            XmlElement objField = node?[field];
             if (objField != null)
             {
                 read = objField.InnerText;
                 return true;
             }
-            XmlAttribute objAttribute = node.Attributes?[field];
-            if (objAttribute != null)
-            {
-                read = objAttribute.InnerText;
-                return true;
-            }
-            return false;
+            XmlAttribute objAttribute = node?.Attributes?[field];
+            if (objAttribute == null) return false;
+            read = objAttribute.InnerText;
+            return true;
         }
 
         /// <summary>
@@ -406,18 +404,13 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryGetInt32FieldQuickly(this XmlNode node, string field, ref int read, IFormatProvider objCulture = null)
         {
-            XmlElement objField = node[field];
-            if (objField != null)
-            {
-                if (objCulture == null)
-                    objCulture = GlobalOptions.InvariantCultureInfo;
-                if (int.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out int intTmp))
-                {
-                    read = intTmp;
-                    return true;
-                }
-            }
-            return false;
+            XmlElement objField = node?[field];
+            if (objField == null) return false;
+            if (objCulture == null)
+                objCulture = GlobalOptions.InvariantCultureInfo;
+            if (!int.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out int intTmp)) return false;
+            read = intTmp;
+            return true;
         }
 
         /// <summary>
@@ -426,16 +419,11 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryGetBoolFieldQuickly(this XmlNode node, string field, ref bool read)
         {
-            XmlElement objField = node[field];
-            if (objField != null)
-            {
-                if (bool.TryParse(objField.InnerText, out bool blnTmp))
-                {
-                    read = blnTmp;
-                    return true;
-                }
-            }
-            return false;
+            XmlElement objField = node?[field];
+            if (objField == null) return false;
+            if (!bool.TryParse(objField.InnerText, out bool blnTmp)) return false;
+            read = blnTmp;
+            return true;
         }
 
         /// <summary>
@@ -444,18 +432,13 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryGetDecFieldQuickly(this XmlNode node, string field, ref decimal read, IFormatProvider objCulture = null)
         {
-            XmlElement objField = node[field];
-            if (objField != null)
-            {
-                if (objCulture == null)
-                    objCulture = GlobalOptions.InvariantCultureInfo;
-                if (decimal.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out decimal decTmp))
-                {
-                    read = decTmp;
-                    return true;
-                }
-            }
-            return false;
+            XmlElement objField = node?[field];
+            if (objField == null) return false;
+            if (objCulture == null)
+                objCulture = GlobalOptions.InvariantCultureInfo;
+            if (!decimal.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out decimal decTmp)) return false;
+            read = decTmp;
+            return true;
         }
 
         /// <summary>
@@ -464,18 +447,13 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryGetDoubleFieldQuickly(this XmlNode node, string field, ref double read, IFormatProvider objCulture = null)
         {
-            XmlElement objField = node[field];
-            if (objField != null)
-            {
-                if (objCulture == null)
-                    objCulture = GlobalOptions.InvariantCultureInfo;
-                if (double.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out double dblTmp))
-                {
-                    read = dblTmp;
-                    return true;
-                }
-            }
-            return false;
+            XmlElement objField = node?[field];
+            if (objField == null) return false;
+            if (objCulture == null)
+                objCulture = GlobalOptions.InvariantCultureInfo;
+            if (!double.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out double dblTmp)) return false;
+            read = dblTmp;
+            return true;
         }
 
         /// <summary>
@@ -484,18 +462,34 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryGetFloatFieldQuickly(this XmlNode node, string field, ref float read, IFormatProvider objCulture = null)
         {
-            XmlElement objField = node[field];
-            if (objField != null)
+            XmlElement objField = node?[field];
+            if (objField == null) return false;
+            if (objCulture == null)
+                objCulture = GlobalOptions.InvariantCultureInfo;
+            if (!float.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out float fltTmp)) return false;
+            read = fltTmp;
+            return true;
+        }
+
+        /// <summary>
+        /// Like TryGetField for guids, but taking advantage of guid.TryParse. Allows for returning false if the guid is Empty. 
+        /// </summary>
+        /// <param name="node">XPathNavigator node of the object.</param>
+        /// <param name="field">Field name of the InnerXML element we're looking for.</param>
+        /// <param name="read">Guid that will be returned.</param>
+        /// <param name="falseIfEmpty">Defaults to true. If false, will return an empty Guid if the returned Guid field is empty.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryGetGuidFieldQuickly(this XmlNode node, string field, ref Guid read, bool falseIfEmpty = true)
+        {
+            XmlNode objField = node.SelectSingleNode(field);
+            if (objField == null) return false;
+            if (!Guid.TryParse(objField.InnerText, out Guid fltTmp)) return false;
+            if (fltTmp == Guid.Empty && falseIfEmpty)
             {
-                if (objCulture == null)
-                    objCulture = GlobalOptions.InvariantCultureInfo;
-                if (float.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out float fltTmp))
-                {
-                    read = fltTmp;
-                    return true;
-                }
+                return false;
             }
-            return false;
+            read = fltTmp;
+            return true;
         }
 
         /// <summary>

@@ -321,7 +321,7 @@
     </mentor>
     <mentor>
       <name>Lion</name>
-      <advantage>All: +2 dice pool modifer for Survival Tests, Athletics Tests, or Query Tests (Choose One)</advantage>
+      <advantage>All: +2 dice pool modifier for Survival Tests, Athletics Tests, or Query Tests (Choose One)</advantage>
       <bonus>
         <selectskill xpathfilter="@limittoskill='Survival,Running,Tracking'" amendoperation="replace" limittoskill="Survival,Athletics,Query">
           <val>2</val>
@@ -423,7 +423,7 @@
     </mentor>
     <mentor>
       <name>Squirrel</name>
-      <advantage>All: +2 dice pool modifer for tests using the Acrobatics skill.</advantage>
+      <advantage>All: +2 dice pool modifier for tests using the Acrobatics skill.</advantage>
       <bonus>
         <specificskill xpathfilter="name = 'Gymnastics'" >
           <name>Acrobatics</name>
@@ -440,7 +440,7 @@
     </mentor>
     <mentor>
       <name>Heinzelmännchen</name>
-      <advantage>All: +2 dice pool modifer for tests using skills from the Engineering skill group.</advantage>
+      <advantage>All: +2 dice pool modifier for tests using skills from the Engineering skill group.</advantage>
       <bonus>
         <specificskill xpathfilter="name = 'Artisan'" amendoperation="remove" />
       </bonus>
@@ -499,7 +499,7 @@
     </mentor>
     <mentor>
       <name>Capricorn</name>
-      <advantage>All: +2 dice pool modifer for tests using the Acrobatics skill.</advantage>
+      <advantage>All: +2 dice pool modifier for tests using the Acrobatics skill.</advantage>
       <bonus>
         <specificskill xpathfilter="name = 'Gymnastics'" >
           <name>Acrobatics</name>
@@ -508,7 +508,7 @@
     </mentor>
     <mentor>
       <name>Wild Hunt</name>
-      <advantage>All: +2 dice pool modifer for tests using the Pilot Groundcraft or Command skill.</advantage>
+      <advantage>All: +2 dice pool modifier for tests using the Pilot Groundcraft or Command skill.</advantage>
       <choices>
         <choice xpathfilter="name = '+2 dice on Pilot Ground Craft Tests'" amendoperation="replace" >
           <name>+2 dice on Pilot Groundcraft Tests</name>

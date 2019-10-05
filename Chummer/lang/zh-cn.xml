@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -23,6 +23,7 @@
 <chummer>
 	<version>-350</version>
 	<name>汉语 (zh-CN)</name>
+  <righttoleft>False</righttoleft>
 	<strings>
 		<!-- Meta Strings -->
 		<string>
@@ -53,6 +54,14 @@
 		<string>
 			<key>String_Of</key>
 			<text>/</text>
+		</string>
+		<string>
+			<key>String_Space</key>
+			<text xml:space="preserve"></text>
+		</string>
+		<string>
+			<key>String_Colon</key>
+			<text>：</text>
 		</string>
 		<string>
 			<key>String_Remaining</key>
@@ -145,6 +154,10 @@
 		<string>
 			<key>Label_LP</key>
 			<text>生活方式点数：</text>
+		</string>
+    <string>
+			<key>String_KarmaRemaining</key>
+			<text>剩余业力</text>
 		</string>
 		<string>
 			<key>Label_KarmaRemaining</key>
@@ -337,6 +350,10 @@
 		<string>
 			<key>String_Qualities</key>
 			<text>特质</text>
+		</string>
+		<string>
+			<key>Label_Qualities</key>
+			<text>特质：</text>
 		</string>
 		<string>
 			<key>Label_Metavariant</key>
@@ -2846,14 +2863,14 @@
 			<key>Button_AddPower</key>
 			<text>添加异能(&amp;A)</text>
 		</string>
-    <string>
-      <key>ColumnHeader_Action</key>
-      <text>动作</text>
-    </string>
-    <string>
-      <key>ColumnHeader_Power_Points</key>
-      <text>能力点</text>
-    </string>
+		<string>
+			<key>ColumnHeader_Action</key>
+			<text>动作</text>
+		</string>
+		<string>
+			<key>ColumnHeader_Power_Points</key>
+			<text>能力点</text>
+		</string>
 		<!-- Technomancer Tab -->
 		<string>
 			<key>Label_ComplexForms</key>
@@ -3582,6 +3599,10 @@
 			<key>Label_OtherEssence</key>
 			<text>精华：</text>
 		</string>
+    <string>
+      <key>String_NuyenRemaining</key>
+      <text>剩余新円</text>
+    </string>
 		<string>
 			<key>Label_OtherNuyenRemain</key>
 			<text>剩余新円：</text>
@@ -3874,7 +3895,7 @@
 		</string>
 		<string>
 			<key>Label_Power_DiscountedBy</key>
-			<text>道途折扣自</text>
+			<text>折扣自道途</text>
 		</string>
 		<string>
 			<key>Checkbox_Power_AdeptWay</key>
@@ -4362,7 +4383,7 @@
 		</string>
 		<string>
 			<key>Tab_Options_Character</key>
-			<text>角色与打印</text>
+			<text>角色</text>
 		</string>
 		<string>
 			<key>Tab_Options_Miscellaneous</key>
@@ -4734,19 +4755,19 @@
 		</string>
 		<string>
 			<key>Checkbox_Options_ArmorDegradation</key>
-			<text>Allow Armor Degradation</text>
+			<text>允许护甲降级</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_UseCalculatedVehicleSensorRatings</key>
-			<text>Use calculated Vehicle Sensor Ratings</text>
+			<text>使用合适的载具传感器等级</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_AlternateMatrixAttribute</key>
-			<text>Use alternate Matrix Attribute</text>
+			<text>改变矩阵属性</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_AlternateComplexFormCost</key>
-			<text>Use alternate Complex Forms costs</text>
+			<text>改变复合程式的花费</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_AllowCustomTransgenics</key>
@@ -4769,8 +4790,12 @@
 			<text>提升特殊属性的业力消耗不会因为损失精华而减少</text>
 		</string>
 		<string>
+			<key>Checkbox_Options_IgnoreComplexFormLimit</key>
+			<text>TL NEEDED: Ignore complex form limit in career mode</text>
+		</string>
+		<string>
 			<key>Checkbox_Options_UseRestrictionsToRecoilCompensation</key>
-			<text>Use Restrictions to Recoil Compensation (RG 53)</text>
+			<text>使用后坐力补偿兼容性的限制（R&amp;G 53）</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_AutomaticCopyProtection</key>
@@ -5005,7 +5030,7 @@
 		</string>
 		<string>
 			<key>Label_SelectBP_MaxAvail</key>
-			<text>最大\n可获得性</text>
+			<text>最大可获得性</text>
 		</string>
 		<string>
 			<key>Checkbox_SelectBP_IgnoreRules</key>
@@ -5460,11 +5485,11 @@
 			<text>只显示我可以选择的特质</text>
 		</string>
 		<string>
-			<key>Checkbox_SelectQuality_Metagenetic</key>
+			<key>Checkbox_SelectQuality_Metagenic</key>
 			<text>只显示泛遗传学特质</text>
 		</string>
 		<string>
-			<key>Checkbox_SelectQuality_Not_Metagenetic</key>
+			<key>Checkbox_SelectQuality_Not_Metagenic</key>
 			<text>不显示泛遗传学特质</text>
 		</string>
 		<string>
@@ -5542,7 +5567,7 @@
 		</string>
 		<string>
 			<key>Checkbox_SelectSpell_LimitedSpell</key>
-			<text>Limited Spell</text>
+			<text>Limited Spell (SG 212)</text>
 		</string>
 		<string>
 			<key>Tip_SelectSpell_LimitedSpell</key>
@@ -5550,7 +5575,7 @@
 		</string>
 		<string>
 			<key>Checkbox_SelectSpell_ExtendedSpell</key>
-			<text>大范围法术</text>
+			<text>大范围法术 (SR5 285)</text>
 		</string>
 		<string>
 			<key>Tip_SelectSpell_ExtendedSpell</key>
@@ -5942,31 +5967,31 @@
 		</string>
 		<string>
 			<key>Message_CombatSpellRequirement1</key>
-			<text>You must select either Direct or Indirect from the Spell Options.</text>
+			<text>你必须在法术选项中选择是直接还是间接。</text>
 		</string>
 		<string>
 			<key>Message_CombatSpellRequirement2</key>
-			<text>You must select either Physical damage or Stun damage from the Spell Options.</text>
+			<text>你必须在法术选项中选择是造成物理伤害还是晕眩伤害。</text>
 		</string>
 		<string>
 			<key>Message_DetectionSpellRequirement1</key>
-			<text>You must select at least 1 of Directional, Area, or Psychic from the Spell Options.</text>
+			<text>你必须在法术选项中选择是方向、范围还是心灵。</text>
 		</string>
 		<string>
 			<key>Message_DetectionSpellRequirement2</key>
-			<text>You must select either Active or Passive from the Spell Options.</text>
+			<text>你必须在法术选项中选择是主动还是被动。</text>
 		</string>
 		<string>
 			<key>Message_IllusionSpellRequirement1</key>
-			<text>You must select either Obvious or Realistic from the Spell Options.</text>
+			<text>你必须在法术选项中选择是显而易见还是真实。</text>
 		</string>
 		<string>
 			<key>Message_IllusionSpellRequirement2</key>
-			<text>You must select either Single-Sense or Multi-Sense from the Spell Options.</text>
+			<text>你必须在法术选项中选择是单感官还是多感官。</text>
 		</string>
 		<string>
 			<key>Message_ManipulationSpellRequirement1</key>
-			<text>You must select either Environmental, Mental, or Physical from the Spell Options.</text>
+			<text>你必须在法术选项中选择是环境、精神还是物理。</text>
 		</string>
 		<string>
 			<key>Message_ManipulationSpellRequirement2</key>
@@ -6062,7 +6087,15 @@
 		</string>
 		<string>
 			<key>String_Special</key>
+			<text>特</text>
+		</string>
+		<string>
+			<key>String_SpecialAttributes</key>
 			<text>特殊属性</text>
+		</string>
+		<string>
+			<key>Label_SpecialAttributes</key>
+			<text>特殊属性：</text>
 		</string>
 		<string>
 			<key>String_SpecialAttributePoints</key>
@@ -6622,7 +6655,7 @@
 		</string>
 		<string>
 			<key>Checkbox_Options_DroneArmorMultiplier</key>
-			<text>Limit Drone Armor Enhance ment to Drone Armor</text>
+			<text>限制无人机护甲的装甲增强</text>
 		</string>
 		<string>
 			<key>Label_SelectAdvancedLifestyle_Qualities</key>
@@ -6718,7 +6751,7 @@
 		</string>
 		<string>
 			<key>String_CustomItem_SelectText</key>
-			<text>输入该定制道具的名称。</text>
+			<text>输入该定制物品的名称。</text>
 		</string>
 		<string>
 			<key>String_MetamagicSkillBase</key>
@@ -7296,7 +7329,7 @@
 		</string>
 		<string>
 			<key>Label_SelectAdvancedLifestyle_Base_Lifestyle</key>
-			<text>生活方式：</text>
+			<text>[{0}/{1}]</text>
 		</string>
 		<string>
 			<key>Label_SkillGroup_Broken</key>
@@ -7548,7 +7581,7 @@
 		</string>
 		<string>
 			<key>Label_SelectBP_StartingKarma</key>
-			<text>起始\n业力</text>
+			<text>起始业力</text>
 		</string>
 		<string>
 			<key>Label_SelectBP_SumToX</key>
@@ -7676,7 +7709,7 @@
 		</string>
 		<string>
 			<key>Label_SelectAdvancedLifestyle_Base_Comforts</key>
-			<text>舒适度：[{0}/{1}]</text>
+			<text>[{0}/{1}]</text>
 		</string>
 		<string>
 			<key>Label_SelectAdvancedLifestyle_Rating</key>
@@ -7684,7 +7717,7 @@
 		</string>
 		<string>
 			<key>Label_SelectAdvancedLifestyle_Base_Security</key>
-			<text>安全：[{0}/{1}]</text>
+			<text>[{0}/{1}]</text>
 		</string>
 		<string>
 			<key>Label_SelectAdvancedLifestyle_UnusedLP</key>
@@ -8209,8 +8242,12 @@
 			<text>总计：</text>
 		</string>
 		<string>
-			<key>Label_SelectAdvancedLifestyle_Base_Area</key>
-			<text>街区：[{0}/{1}]</text>
+			<key>Label_SelectAdvancedLifestyle_Base_Neighborhood</key>
+			<text>[{0}/{1}]</text>
+		</string>
+		<string>
+			<key>Label_SelectAdvancedLifestyle_Neighborhood</key>
+			<text>邻里：</text>
 		</string>
 		<string>
 			<key>Button_Download</key>
@@ -9027,6 +9064,134 @@
 		<string>
 			<key>Label_Options_NuyenDecimalsMinimum</key>
 			<text>新円显示的最低小数位：</text>
+		</string>
+		<string>
+			<key>Checkbox_Randomize1D6</key>
+			<text>随机1D6</text>
+		</string>
+		<string>
+			<key>String_VehicleBody</key>
+			<text>机体</text>
+		</string>
+		<string>
+			<key>String_Sensor</key>
+			<text>传感器</text>
+		</string>
+		<string>
+			<key>String_Handling</key>
+			<text>操纵性</text>
+		</string>
+		<string>
+			<key>String_MutantCritter</key>
+			<text>凡俗怪物</text>
+		</string>
+		<string>
+			<key>MessageTitle_NoValidWeaponMount</key>
+			<text>没有找到有效武器挂载位</text>
+		</string>
+		<string>
+			<key>Message_NoValidWeaponMount</key>
+			<text>选择的载具没有有效的可以添加该武器的挂载位。</text>
+		</string>
+		<string>
+			<key>Message_InvalidExConWare</key>
+			<text>以下限制赛博/生体改造不允许装在出狱犯人身上：</text>
+		</string>
+		<string>
+			<key>String_ExpenseModifiedLifestyle</key>
+			<text>Modified Lifestyle</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_HideCharacterRoster</key>
+			<text>隐藏角色花名册</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_MysAdeptSecondMAGAttribute</key>
+			<text>神秘修士使用次一级的修士魔法属性而非特殊的能力点规则</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_EnemyKarmaQualityLimit</key>
+			<text>敌人属性的业力会计入创建模式的负面特质上限</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_CompensateSkillGroupKarmaDifference</key>
+			<text>在技能组中最后一个技能被提升，技能组重建时，补偿业力花费</text>
+		</string>
+		<string>
+			<key>Tip_Omae_Warning</key>
+			<text>Omae不在当前开发者的控制之中，包含旧有的角色，可能不会生效或导致当前版本崩溃。风险自担。\n你要继续吗？</text>
+		</string>
+		<string>
+			<key>Tip_LifeModule_Warning</key>
+			<text>生命历程当前是功能有限的实验性系统；它专门是为了测试目的而设的。风险自担。\n你要继续吗？</text>
+		</string>
+		<string>
+			<key>Tip_Metatype_PossessionTradition</key>
+			<text>附身流派的研习者召唤的精魂没有「具现化」能力，而拥有「附身」怪物能力。</text>
+		</string>
+		<string>
+			<key>Tip_Metatype_BloodSpirit</key>
+			<text>血精魂变体由「乞灵血精魂」超魔召唤而来，获得额外怪物能力。</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_Live_CustomData</key>
+			<text>允许定制数据目录的实时数据更新</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_LiveUpdateCleanCharacterFiles</key>
+			<text>如果没有待保存的改动，自动将改动载入到打开的角色存档文件中</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_ExceedPositiveQualitiesCostDoubled</key>
+			<text>超过限制的正面特质业力花费翻倍</text>
+		</string>
+		<string>
+			<key>Checkbox_Option_DontRoundEssenceInternally</key>
+			<text>只为了显示目的将精华取整到小数点后2位，内部实际运算不受影响</text>
+		</string>
+		<string>
+			<key>MessageTitle_SelectAdvancedLifestyle_OverLPLimit</key>
+			<text>超过LP限制</text>
+		</string>
+		<string>
+			<key>Warning_Update_CouldNotConnectException</key>
+			<text>Chummer无法连接到更新服务器。请检查你的防火墙和代理服务器设置。\n\n错误信息：\n{0}。</text>
+		</string>
+		<string>
+			<key>Message_Improvement_EmptySelectionList</key>
+			<text>该效果没有可选的合格物品！</text>
+		</string>
+		<string>
+			<key>Message_Improvement_EmptySelectionListNamed</key>
+			<text>{0}没有可影响的合格物品！</text>
+		</string>
+		<string>
+			<key>Message_KarmaValue</key>
+			<text>除去生命历程模块带来的知识技能点，忽略使得业力花费无法客观衡量的泛形态影响，该角色的业力值为：</text>
+		</string>
+		<string>
+			<key>Message_DuplicateGuidWarning</key>
+			<text>{1}文件中的{0}项目有着重复的GUID。如果你正在使用定制内容，请保证每个添加的项目都使用新的GUID。\n\n有着重复ID的项目为：\n{2}</text>
+		</string>
+		<string>
+			<key>Message_NonGuidIdWarning</key>
+			<text>{1}文件中的{0}项目有着无法被解析为GUID的ID。如果你正在使用定制内容，请保证ID字段有且仅有一个独特的GUID。\n\n有着非GUID的ID字段的项目：\n{2}</text>
+		</string>
+		<string>
+			<key>Message_InvalidCharacters</key>
+			<text>包括一名或多名无效角色。无效角色为：“\n 请移除无效角色再次尝试。</text>
+		</string>
+		<string>
+			<key>MessageTitle_Options_ValidationResults</key>
+			<text>验证结果</text>
+		</string>
+		<string>
+			<key>Message_Options_ValidationResults</key>
+			<text>结果输出于{0}。</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_OpenPDFsAsUnix</key>
+			<text>打开PDF文件时使用UNIX样式参数。</text>
 		</string>
 	</strings>
 </chummer>

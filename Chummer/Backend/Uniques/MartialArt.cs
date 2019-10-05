@@ -22,6 +22,7 @@ using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
 using System.Xml;
+using NLog;
 
 namespace Chummer
 {
@@ -29,14 +30,16 @@ namespace Chummer
     /// A Martial Art.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class MartialArt : IHasChildren<MartialArtTechnique>, IHasName, IHasInternalId, IHasXmlNode, IHasNotes, ICanRemove
+    public class MartialArt : IHasChildren<MartialArtTechnique>, IHasName, IHasInternalId, IHasXmlNode, IHasNotes, ICanRemove, IHasSource
     {
+        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private Guid _guiID;
+        private Guid _guiSourceID;
         private string _strName = string.Empty;
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
         private int _intKarmaCost = 7;
         private int _intRating = 1;
-        private Guid _guiID;
         private readonly TaggedObservableCollection<MartialArtTechnique> _lstTechniques = new TaggedObservableCollection<MartialArtTechnique>();
         private string _strNotes = string.Empty;
         private readonly Character _objCharacter;
@@ -53,6 +56,11 @@ namespace Chummer
         /// <param name="objXmlArtNode">XmlNode to create the object from.</param>
         public void Create(XmlNode objXmlArtNode)
         {
+            if (!objXmlArtNode.TryGetField("id", Guid.TryParse, out _guiSourceID))
+            {
+                Log.Warn(new object[] { "Missing id field for xmlnode", objXmlArtNode });
+                Utils.BreakIfDebug();
+            }
             if (objXmlArtNode.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
             objXmlArtNode.TryGetStringFieldQuickly("source", ref _strSource);
@@ -79,6 +87,10 @@ namespace Chummer
             }*/
         }
 
+        private SourceString _objCachedSourceDetail;
+        public SourceString SourceDetail => _objCachedSourceDetail ?? (_objCachedSourceDetail =
+                                                new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language));
+
         /// <summary>
         /// Save the object's XML to the XmlWriter.
         /// </summary>
@@ -87,6 +99,7 @@ namespace Chummer
         {
             objWriter.WriteStartElement("martialart");
             objWriter.WriteElementString("name", _strName);
+            objWriter.WriteElementString("sourceid", SourceIDString);
             objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
@@ -101,7 +114,9 @@ namespace Chummer
             objWriter.WriteEndElement();
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteEndElement();
-            _objCharacter.SourceProcess(_strSource);
+
+            if (!IsQuality)
+                _objCharacter.SourceProcess(_strSource);
         }
 
         /// <summary>
@@ -111,7 +126,14 @@ namespace Chummer
         public void Load(XmlNode objNode)
         {
             if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
+            {
                 _guiID = Guid.NewGuid();
+            }
+            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+            {
+                XmlNode node = GetNode(GlobalOptions.Language);
+                node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+            }
             if (objNode.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
@@ -151,9 +173,10 @@ namespace Chummer
         {
             objWriter.WriteStartElement("martialart");
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
+            objWriter.WriteElementString("fullname", DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
-            objWriter.WriteElementString("page", Page(strLanguageToPrint));
+            objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteElementString("rating", Rating.ToString(objCulture));
             objWriter.WriteElementString("cost", Cost.ToString(objCulture));
             objWriter.WriteStartElement("martialarttechniques");
@@ -182,6 +205,25 @@ namespace Chummer
                 _strName = value;
             }
         }
+
+        /// <summary>
+        /// Identifier of the object within data files.
+        /// </summary>
+        public Guid SourceID
+        {
+            get => _guiSourceID;
+            set
+            {
+                if (_guiSourceID == value) return;
+                _guiSourceID = value;
+                _objCachedMyXmlNode = null;
+            }
+        }
+
+        /// <summary>
+        /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
+        /// </summary>
+        public string SourceIDString => _guiSourceID.ToString("D");
 
         public string InternalId => _guiID.ToString("D");
 
@@ -216,16 +258,28 @@ namespace Chummer
             set => _strSource = value;
         }
 
-        /// <summary>
-        /// Page Number.
-        /// </summary>
-        public string Page(string strLanguage)
-        {
-            // Get the translated name if applicable.
-            if (strLanguage == GlobalOptions.DefaultLanguage)
-                return _strPage;
 
-            return GetNode(strLanguage)?["altpage"]?.InnerText ?? _strPage;
+        /// <summary>
+        /// Sourcebook Page Number.
+        /// </summary>
+        public string Page
+        {
+            get => _strPage;
+            set => _strPage = value;
+        }
+
+        /// <summary>
+        /// Sourcebook Page Number using a given language file.
+        /// Returns Page if not found or the string is empty.
+        /// </summary>
+        /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <returns></returns>
+        public string DisplayPage(string strLanguage)
+        {
+            if (strLanguage == GlobalOptions.DefaultLanguage)
+                return Page;
+            string s = GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
+            return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 
         /// <summary>
@@ -282,7 +336,11 @@ namespace Chummer
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load("martialarts.xml", strLanguage).SelectSingleNode("/chummer/martialarts/martialart[name = \"" + Name + "\"]");
+                _objCachedMyXmlNode = SourceID == Guid.Empty
+                    ? XmlManager.Load("martialarts.xml", strLanguage)
+                        .SelectSingleNode($"/chummer/martialarts/martialart[name = \"{Name}\"]")
+                    : XmlManager.Load("martialarts.xml", strLanguage)
+                        .SelectSingleNode($"/chummer/martialarts/martialart[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;
@@ -321,49 +379,61 @@ namespace Chummer
 
         public static bool Purchase(Character objCharacter)
         {
-            frmSelectMartialArt frmPickMartialArt = new frmSelectMartialArt(objCharacter);
-            frmPickMartialArt.ShowDialog();
-
-            if (frmPickMartialArt.DialogResult == DialogResult.Cancel)
-                return false;
-
-            // Open the Martial Arts XML file and locate the selected piece.
-            XmlDocument objXmlDocument = XmlManager.Load("martialarts.xml");
-
-            XmlNode objXmlArt = objXmlDocument.SelectSingleNode("/chummer/martialarts/martialart[id = \"" + frmPickMartialArt.SelectedMartialArt + "\"]");
-
-            MartialArt objMartialArt = new MartialArt(objCharacter);
-            objMartialArt.Create(objXmlArt);
-
-            objCharacter.MartialArts.Add(objMartialArt);
-            if (!objCharacter.Created) return true;
-            int intKarmaCost = objMartialArt.Rating * objMartialArt.Cost * objCharacter.Options.KarmaQuality;
-            if (intKarmaCost > objCharacter.Karma)
+            bool blnAddAgain;
+            do
             {
-                MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughKarma", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.MartialArt, objMartialArt.InternalId);
-                return false;
-            }
+                frmSelectMartialArt frmPickMartialArt = new frmSelectMartialArt(objCharacter);
+                frmPickMartialArt.ShowDialog();
 
-            // Create the Expense Log Entry.
-            ExpenseLogEntry objExpense = new ExpenseLogEntry(objCharacter);
-            objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseLearnMartialArt", GlobalOptions.Language) + ' ' + objMartialArt.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
-            objCharacter.ExpenseEntries.AddWithSort(objExpense);
-            objCharacter.Karma -= intKarmaCost;
+                if (frmPickMartialArt.DialogResult == DialogResult.Cancel)
+                    return false;
 
-            ExpenseUndo objUndo = new ExpenseUndo();
-            objUndo.CreateKarma(KarmaExpenseType.AddMartialArt, objMartialArt.Name);
-            objExpense.Undo = objUndo;
+                blnAddAgain = frmPickMartialArt.AddAgain;
+                // Open the Martial Arts XML file and locate the selected piece.
+                XmlDocument objXmlDocument = XmlManager.Load("martialarts.xml");
+
+                XmlNode objXmlArt = objXmlDocument.SelectSingleNode("/chummer/martialarts/martialart[id = \"" + frmPickMartialArt.SelectedMartialArt + "\"]");
+
+                MartialArt objMartialArt = new MartialArt(objCharacter);
+                objMartialArt.Create(objXmlArt);
+
+                if (objCharacter.Created)
+                {
+                    int intKarmaCost = objMartialArt.Rating * objMartialArt.Cost * objCharacter.Options.KarmaQuality;
+                    if (intKarmaCost > objCharacter.Karma)
+                    {
+                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NotEnoughKarma", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughKarma", GlobalOptions.Language), MessageBoxButtons.OK,
+                            MessageBoxIcon.Information);
+                        ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.MartialArt, objMartialArt.InternalId);
+                        return false;
+                    }
+
+                    // Create the Expense Log Entry.
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(objCharacter);
+                    objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseLearnMartialArt", GlobalOptions.Language) + ' ' + objMartialArt.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
+                    objCharacter.ExpenseEntries.AddWithSort(objExpense);
+                    objCharacter.Karma -= intKarmaCost;
+
+                    ExpenseUndo objUndo = new ExpenseUndo();
+                    objUndo.CreateKarma(KarmaExpenseType.AddMartialArt, objMartialArt.InternalId);
+                    objExpense.Undo = objUndo;
+                }
+                objCharacter.MartialArts.Add(objMartialArt);
+            } while (blnAddAgain);
+
             return true;
         }
 
-        public bool Remove(Character objCharacter)
+        public bool Remove(Character objCharacter, bool blnConfirmDelete = true)
         {
             // Delete the selected Martial Art.
             if (IsQuality) return false;
-            if (!_objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteMartialArt",
-                GlobalOptions.Language)))
-                return false;
+            if (blnConfirmDelete)
+            {
+                if (!_objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteMartialArt",
+                    GlobalOptions.Language)))
+                    return false;
+            }
 
             ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.MartialArt,
                 InternalId);
@@ -394,5 +464,11 @@ namespace Chummer
         }
         #endregion
 
+        public void SetSourceDetail(Control sourceControl)
+        {
+            if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
+                _objCachedSourceDetail = null;
+            SourceDetail.SetControl(sourceControl);
+        }
     }
 }

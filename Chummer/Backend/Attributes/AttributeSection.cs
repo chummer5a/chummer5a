@@ -30,6 +30,7 @@ using Chummer.Annotations;
 
 namespace Chummer.Backend.Attributes
 {
+
 	public class AttributeSection : INotifyMultiplePropertyChanged
 	{
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -57,12 +58,9 @@ namespace Chummer.Backend.Attributes
             if ((lstNamesOfChangedProperties?.Count > 0) != true)
                 return;
 
-            if (PropertyChanged != null)
+            foreach (string strPropertyToChange in lstNamesOfChangedProperties)
             {
-                foreach (string strPropertyToChange in lstNamesOfChangedProperties)
-                {
-                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
-                }
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
             }
         }
 
@@ -70,7 +68,48 @@ namespace Chummer.Backend.Attributes
             new DependancyGraph<string>(
             );
 
-        private static readonly string[] s_LstAttributeStrings = { "BOD", "AGI", "REA", "STR", "CHA", "INT", "LOG", "WIL", "EDG", "MAG", "MAGAdept", "RES", "ESS", "DEP" };
+	    private ObservableCollection<CharacterAttrib> _colAttributes;
+        public ObservableCollection<CharacterAttrib> Attributes {
+            get
+            {
+                if (_colAttributes != null)
+                {
+                    return _colAttributes;
+                }
+
+                _colAttributes = new ObservableCollection<CharacterAttrib>
+                {
+                    _objCharacter.BOD,
+                    _objCharacter.AGI,
+                    _objCharacter.REA,
+                    _objCharacter.STR,
+                    _objCharacter.CHA,
+                    _objCharacter.INT,
+                    _objCharacter.LOG,
+                    _objCharacter.WIL,
+                    _objCharacter.EDG
+                };
+                if (_objCharacter.MAGEnabled)
+                {
+                    _colAttributes.Add(_objCharacter.MAG);
+                    if (_objCharacter.Options.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
+                        _colAttributes.Add(_objCharacter.MAGAdept);
+                }
+                if (_objCharacter.RESEnabled)
+                {
+                    _colAttributes.Add(_objCharacter.RES);
+                }
+                if (_objCharacter.DEPEnabled)
+                {
+                    _colAttributes.Add(_objCharacter.DEP);
+                }
+
+                return _colAttributes;
+            }
+            internal set => _colAttributes = value;
+        }
+
+	    private static readonly string[] s_LstAttributeStrings = { "BOD", "AGI", "REA", "STR", "CHA", "INT", "LOG", "WIL", "EDG", "MAG", "MAGAdept", "RES", "ESS", "DEP" };
         public static ReadOnlyCollection<string> AttributeStrings => Array.AsReadOnly(s_LstAttributeStrings);
 
 	    private static readonly string[] s_LstPhysicalAttributes = { "BOD", "AGI", "REA", "STR" };
@@ -79,15 +118,52 @@ namespace Chummer.Backend.Attributes
 	    private static readonly string[] s_LstMentalAttributes = { "CHA", "INT", "LOG", "WIL" };
         public static ReadOnlyCollection<string> MentalAttributes => Array.AsReadOnly(s_LstMentalAttributes);
 
-	    private readonly Dictionary<string, BindingSource> _dicBindings = new Dictionary<string, BindingSource>(AttributeStrings.Count);
+	    public static string GetAttributeEnglishName(string strAbbrev)
+	    {
+	        switch (strAbbrev)
+	        {
+                case "BOD":
+                    return "Body";
+                case "AGI":
+                    return "Agility";
+	            case "REA":
+	                return "Reaction";
+	            case "STR":
+	                return "Strength";
+	            case "CHA":
+	                return "Charisma";
+	            case "INT":
+	                return "Intuition";
+	            case "LOG":
+	                return "Logic";
+	            case "WIL":
+	                return "Willpower";
+	            case "EDG":
+	                return "Edge";
+	            case "MAG":
+	                return "Magic";
+	            case "MAGAdept":
+	                return "Magic (Adept)";
+	            case "RES":
+	                return "Resonance";
+	            case "ESS":
+	                return "Essence";
+	            case "DEP":
+	                return "Depth";
+                default:
+                    return string.Empty;
+            }
+	    }
+
+        private readonly Dictionary<string, BindingSource> _dicBindings = new Dictionary<string, BindingSource>(AttributeStrings.Count);
 		private readonly Character _objCharacter;
 		private CharacterAttrib.AttributeCategory _eAttributeCategory = CharacterAttrib.AttributeCategory.Standard;
 
-        #region Constructor, Save, Load, Print Methods
+	    #region Constructor, Save, Load, Print Methods
         public AttributeSection(Character character)
 		{
 			_objCharacter = character;
-		}
+        }
 
 		private void BuildBindingList()
 		{
@@ -119,26 +195,233 @@ namespace Chummer.Backend.Attributes
 			}
 		}
 
+	    public async void Create(XmlNode charNode, int intValue, int intMinModifier = 0, int intMaxModifier = 0)
+        {
+            if (charNode == null)
+                return;
+            using (var op_create_char_attrib = Timekeeper.StartSyncron("create_char_attrib", null, CustomActivity.OperationType.RequestOperation, charNode?.InnerText))
+            {
+                int intOldBODBase = _objCharacter.BOD.Base;
+                int intOldBODKarma = _objCharacter.BOD.Karma;
+                int intOldAGIBase= _objCharacter.AGI.Base;
+                int intOldAGIKarma = _objCharacter.AGI.Karma;
+                int intOldREABase = _objCharacter.REA.Base;
+                int intOldREAKarma = _objCharacter.REA.Karma;
+                int intOldSTRBase = _objCharacter.STR.Base;
+                int intOldSTRKarma = _objCharacter.STR.Karma;
+                int intOldCHABase = _objCharacter.CHA.Base;
+                int intOldCHAKarma = _objCharacter.CHA.Karma;
+                int intOldINTBase = _objCharacter.INT.Base;
+                int intOldINTKarma = _objCharacter.INT.Karma;
+                int intOldLOGBase = _objCharacter.LOG.Base;
+                int intOldLOGKarma = _objCharacter.LOG.Karma;
+                int intOldWILBase = _objCharacter.WIL.Base;
+                int intOldWILKarma = _objCharacter.WIL.Karma;
+                int intOldEDGBase = _objCharacter.EDG.Base;
+                int intOldEDGKarma = _objCharacter.EDG.Karma;
+                int intOldMAGBase = _objCharacter.MAG.Base;
+                int intOldMAGKarma = _objCharacter.MAG.Karma;
+                int intOldMAGAdeptBase = _objCharacter.MAGAdept.Base;
+                int intOldMAGAdeptKarma = _objCharacter.MAGAdept.Karma;
+                int intOldRESBase = _objCharacter.RES.Base;
+                int intOldRESKarma = _objCharacter.RES.Karma;
+                int intOldDEPBase = _objCharacter.DEP.Base;
+                int intOldDEPKarma = _objCharacter.DEP.Karma;
+                foreach (CharacterAttrib objAttribute in AttributeList.Concat(SpecialAttributeList))
+                    objAttribute.UnbindAttribute();
+                AttributeList.Clear();
+                SpecialAttributeList.Clear();
+
+                foreach (string strAttribute in AttributeStrings)
+                {
+                    CharacterAttrib objAttribute;
+                    switch (CharacterAttrib.ConvertToAttributeCategory(strAttribute))
+                    {
+                        case CharacterAttrib.AttributeCategory.Special:
+                            objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
+                                CharacterAttrib.AttributeCategory.Special);
+                            SpecialAttributeList.Add(objAttribute);
+                            break;
+                        case CharacterAttrib.AttributeCategory.Standard:
+                            objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
+                                CharacterAttrib.AttributeCategory.Standard);
+                            AttributeList.Add(objAttribute);
+                            break;
+                    }
+                }
+
+                _objCharacter.BOD.AssignLimits(
+                    CommonFunctions.ExpressionToString(charNode["bodmin"]?.InnerText, intValue, intMinModifier),
+                    CommonFunctions.ExpressionToString(charNode["bodmax"]?.InnerText, intValue, intMaxModifier),
+                    CommonFunctions.ExpressionToString(charNode["bodaug"]?.InnerText, intValue, intMaxModifier));
+                _objCharacter.AGI.AssignLimits(
+                    CommonFunctions.ExpressionToString(charNode["agimin"]?.InnerText, intValue, intMinModifier),
+                    CommonFunctions.ExpressionToString(charNode["agimax"]?.InnerText, intValue, intMaxModifier),
+                    CommonFunctions.ExpressionToString(charNode["agiaug"]?.InnerText, intValue, intMaxModifier));
+                _objCharacter.REA.AssignLimits(
+                    CommonFunctions.ExpressionToString(charNode["reamin"]?.InnerText, intValue, intMinModifier),
+                    CommonFunctions.ExpressionToString(charNode["reamax"]?.InnerText, intValue, intMaxModifier),
+                    CommonFunctions.ExpressionToString(charNode["reaaug"]?.InnerText, intValue, intMaxModifier));
+                _objCharacter.STR.AssignLimits(
+                    CommonFunctions.ExpressionToString(charNode["strmin"]?.InnerText, intValue, intMinModifier),
+                    CommonFunctions.ExpressionToString(charNode["strmax"]?.InnerText, intValue, intMaxModifier),
+                    CommonFunctions.ExpressionToString(charNode["straug"]?.InnerText, intValue, intMaxModifier));
+                _objCharacter.CHA.AssignLimits(
+                    CommonFunctions.ExpressionToString(charNode["chamin"]?.InnerText, intValue, intMinModifier),
+                    CommonFunctions.ExpressionToString(charNode["chamax"]?.InnerText, intValue, intMaxModifier),
+                    CommonFunctions.ExpressionToString(charNode["chaaug"]?.InnerText, intValue, intMaxModifier));
+                _objCharacter.INT.AssignLimits(
+                    CommonFunctions.ExpressionToString(charNode["intmin"]?.InnerText, intValue, intMinModifier),
+                    CommonFunctions.ExpressionToString(charNode["intmax"]?.InnerText, intValue, intMaxModifier),
+                    CommonFunctions.ExpressionToString(charNode["intaug"]?.InnerText, intValue, intMaxModifier));
+                _objCharacter.LOG.AssignLimits(
+                    CommonFunctions.ExpressionToString(charNode["logmin"]?.InnerText, intValue, intMinModifier),
+                    CommonFunctions.ExpressionToString(charNode["logmax"]?.InnerText, intValue, intMaxModifier),
+                    CommonFunctions.ExpressionToString(charNode["logaug"]?.InnerText, intValue, intMaxModifier));
+                _objCharacter.WIL.AssignLimits(
+                    CommonFunctions.ExpressionToString(charNode["wilmin"]?.InnerText, intValue, intMinModifier),
+                    CommonFunctions.ExpressionToString(charNode["wilmax"]?.InnerText, intValue, intMaxModifier),
+                    CommonFunctions.ExpressionToString(charNode["wilaug"]?.InnerText, intValue, intMaxModifier));
+                _objCharacter.MAG.AssignLimits(
+                    CommonFunctions.ExpressionToString(charNode["magmin"]?.InnerText, intValue, intMinModifier),
+                    CommonFunctions.ExpressionToString(charNode["magmax"]?.InnerText, intValue, intMaxModifier),
+                    CommonFunctions.ExpressionToString(charNode["magaug"]?.InnerText, intValue, intMaxModifier));
+                _objCharacter.RES.AssignLimits(
+                    CommonFunctions.ExpressionToString(charNode["resmin"]?.InnerText, intValue, intMinModifier),
+                    CommonFunctions.ExpressionToString(charNode["resmax"]?.InnerText, intValue, intMaxModifier),
+                    CommonFunctions.ExpressionToString(charNode["resaug"]?.InnerText, intValue, intMaxModifier));
+                _objCharacter.EDG.AssignLimits(
+                    CommonFunctions.ExpressionToString(charNode["edgmin"]?.InnerText, intValue, intMinModifier),
+                    CommonFunctions.ExpressionToString(charNode["edgmax"]?.InnerText, intValue, intMaxModifier),
+                    CommonFunctions.ExpressionToString(charNode["edgaug"]?.InnerText, intValue, intMaxModifier));
+                _objCharacter.DEP.AssignLimits(
+                    CommonFunctions.ExpressionToString(charNode["depmin"]?.InnerText, intValue, intMinModifier),
+                    CommonFunctions.ExpressionToString(charNode["depmax"]?.InnerText, intValue, intMaxModifier),
+                    CommonFunctions.ExpressionToString(charNode["depaug"]?.InnerText, intValue, intMaxModifier));
+                _objCharacter.MAGAdept.AssignLimits(
+                    CommonFunctions.ExpressionToString(charNode["magmin"]?.InnerText, intValue, intMinModifier),
+                    CommonFunctions.ExpressionToString(charNode["magmax"]?.InnerText, intValue, intMaxModifier),
+                    CommonFunctions.ExpressionToString(charNode["magaug"]?.InnerText, intValue, intMaxModifier));
+                _objCharacter.ESS.AssignLimits(
+                    CommonFunctions.ExpressionToString(charNode["essmin"]?.InnerText, intValue, 0),
+                    CommonFunctions.ExpressionToString(charNode["essmax"]?.InnerText, intValue, 0),
+                    CommonFunctions.ExpressionToString(charNode["essaug"]?.InnerText, intValue, 0));
+
+                _objCharacter.BOD.Base = Math.Min(intOldBODBase, _objCharacter.BOD.PriorityMaximum);
+                _objCharacter.BOD.Karma = Math.Min(intOldBODKarma, _objCharacter.BOD.KarmaMaximum);
+                _objCharacter.AGI.Base = Math.Min(intOldAGIBase, _objCharacter.AGI.PriorityMaximum);
+                _objCharacter.AGI.Karma = Math.Min(intOldAGIKarma, _objCharacter.AGI.KarmaMaximum);
+                _objCharacter.REA.Base = Math.Min(intOldREABase, _objCharacter.REA.PriorityMaximum);
+                _objCharacter.REA.Karma = Math.Min(intOldREAKarma, _objCharacter.REA.KarmaMaximum);
+                _objCharacter.STR.Base = Math.Min(intOldSTRBase, _objCharacter.STR.PriorityMaximum);
+                _objCharacter.STR.Karma = Math.Min(intOldSTRKarma, _objCharacter.STR.KarmaMaximum);
+                _objCharacter.CHA.Base = Math.Min(intOldCHABase, _objCharacter.CHA.PriorityMaximum);
+                _objCharacter.CHA.Karma = Math.Min(intOldCHAKarma, _objCharacter.CHA.KarmaMaximum);
+                _objCharacter.INT.Base = Math.Min(intOldINTBase, _objCharacter.INT.PriorityMaximum);
+                _objCharacter.INT.Karma = Math.Min(intOldINTKarma, _objCharacter.INT.KarmaMaximum);
+                _objCharacter.LOG.Base = Math.Min(intOldLOGBase, _objCharacter.LOG.PriorityMaximum);
+                _objCharacter.LOG.Karma = Math.Min(intOldLOGKarma, _objCharacter.LOG.KarmaMaximum);
+                _objCharacter.WIL.Base = Math.Min(intOldWILBase, _objCharacter.WIL.PriorityMaximum);
+                _objCharacter.WIL.Karma = Math.Min(intOldWILKarma, _objCharacter.WIL.KarmaMaximum);
+                _objCharacter.EDG.Base = Math.Min(intOldEDGBase, _objCharacter.EDG.PriorityMaximum);
+                _objCharacter.EDG.Karma = Math.Min(intOldEDGKarma, _objCharacter.EDG.KarmaMaximum);
+
+                if (Attributes == null)
+                {
+                    Attributes = new ObservableCollection<CharacterAttrib>
+                    {
+                        _objCharacter.BOD,
+                        _objCharacter.AGI,
+                        _objCharacter.REA,
+                        _objCharacter.STR,
+                        _objCharacter.CHA,
+                        _objCharacter.INT,
+                        _objCharacter.LOG,
+                        _objCharacter.WIL,
+                        _objCharacter.EDG
+                    };
+                }
+                else
+                {
+                    // Not creating a new collection here so that CollectionChanged events from previous list are kept
+                    Attributes.Clear();
+                    Attributes.Add(_objCharacter.BOD);
+                    Attributes.Add(_objCharacter.AGI);
+                    Attributes.Add(_objCharacter.REA);
+                    Attributes.Add(_objCharacter.STR);
+                    Attributes.Add(_objCharacter.CHA);
+                    Attributes.Add(_objCharacter.INT);
+                    Attributes.Add(_objCharacter.LOG);
+                    Attributes.Add(_objCharacter.WIL);
+                    Attributes.Add(_objCharacter.EDG);
+                }
+                if (_objCharacter.MAGEnabled)
+                {
+                    _objCharacter.MAG.Base = Math.Min(intOldMAGBase, _objCharacter.MAG.PriorityMaximum);
+                    _objCharacter.MAG.Karma = Math.Min(intOldMAGKarma, _objCharacter.MAG.KarmaMaximum);
+                    Attributes.Add(_objCharacter.MAG);
+                    if (_objCharacter.Options.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
+                    {
+                        _objCharacter.MAGAdept.Base = Math.Min(intOldMAGAdeptBase, _objCharacter.MAGAdept.PriorityMaximum);
+                        _objCharacter.MAGAdept.Karma = Math.Min(intOldMAGAdeptKarma, _objCharacter.MAGAdept.KarmaMaximum);
+                        Attributes.Add(_objCharacter.MAGAdept);
+                    }
+                }
+
+                if (_objCharacter.RESEnabled)
+                {
+                    _objCharacter.RES.Base = Math.Min(intOldRESBase, _objCharacter.RES.PriorityMaximum);
+                    _objCharacter.RES.Karma = Math.Min(intOldRESKarma, _objCharacter.RES.KarmaMaximum);
+                    Attributes.Add(_objCharacter.RES);
+                }
+
+                if (_objCharacter.DEPEnabled)
+                {
+                    _objCharacter.DEP.Base = Math.Min(intOldDEPBase, _objCharacter.DEP.PriorityMaximum);
+                    _objCharacter.DEP.Karma = Math.Min(intOldDEPKarma, _objCharacter.DEP.KarmaMaximum);
+                    Attributes.Add(_objCharacter.DEP);
+                }
+
+                ResetBindings();
+                _objCharacter.RefreshAttributeBindings();
+                //Timekeeper.Finish("create_char_attrib");
+            }
+        }
+
 		public void Load(XmlNode xmlSavedCharacterNode)
 		{
-			Timekeeper.Start("load_char_attrib");
+			//Timekeeper.Start("load_char_attrib");
             foreach (CharacterAttrib objAttribute in AttributeList.Concat(SpecialAttributeList))
                 objAttribute.UnbindAttribute();
             AttributeList.Clear();
 			SpecialAttributeList.Clear();
-            XmlDocument objXmlDocument = XmlManager.Load(_objCharacter.IsCritter ? "critters.xml" : "metatypes.xml");
-            XmlNode xmlMetatypeNode = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
-            XmlNode xmlCharNode = xmlMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = \"" + _objCharacter.Metavariant + "\"]") ?? xmlMetatypeNode;
+            XPathNavigator xmlCharNode = _objCharacter.GetNode();
             // We only want to remake attributes for shifters in career mode, because they only get their second set of attributes when exporting from create mode into career mode
-            XmlNode xmlCharNodeAnimalForm = _objCharacter.MetatypeCategory == "Shapeshifter" && _objCharacter.Created ? xmlMetatypeNode : null;
+            XPathNavigator xmlCharNodeAnimalForm = _objCharacter.MetatypeCategory == "Shapeshifter" && _objCharacter.Created ? _objCharacter.GetNode(true) : null;
             foreach (string strAttribute in AttributeStrings)
             {
                 XmlNodeList lstAttributeNodes = xmlSavedCharacterNode.SelectNodes("attributes/attribute[name = \"" + strAttribute + "\"]");
                 // Couldn't find the appopriate attribute in the loaded file, so regenerate it from scratch.
                 if (lstAttributeNodes == null || lstAttributeNodes.Count == 0 || xmlCharNodeAnimalForm != null && _objCharacter.LastSavedVersion < new Version("5.200.25"))
                 {
-                    CharacterAttrib objAttribute = new CharacterAttrib(_objCharacter, strAttribute);
-                    objAttribute = RemakeAttribute(objAttribute, xmlCharNode);
+                    CharacterAttrib objAttribute;
+                    switch (CharacterAttrib.ConvertToAttributeCategory(strAttribute))
+                    {
+                        case CharacterAttrib.AttributeCategory.Special:
+                            objAttribute = new CharacterAttrib(_objCharacter, strAttribute, CharacterAttrib.AttributeCategory.Special);
+                            objAttribute = RemakeAttribute(objAttribute, xmlCharNode);
+                            SpecialAttributeList.Add(objAttribute);
+                            break;
+                        case CharacterAttrib.AttributeCategory.Standard:
+                            objAttribute = new CharacterAttrib(_objCharacter, strAttribute, CharacterAttrib.AttributeCategory.Standard);
+                            objAttribute = RemakeAttribute(objAttribute, xmlCharNode);
+                            AttributeList.Add(objAttribute);
+                            break;
+                    }
+
+                    if (xmlCharNodeAnimalForm == null) continue;
+                    objAttribute = new CharacterAttrib(_objCharacter, strAttribute, CharacterAttrib.AttributeCategory.Shapeshifter);
+                    objAttribute = RemakeAttribute(objAttribute, xmlCharNodeAnimalForm);
                     switch (CharacterAttrib.ConvertToAttributeCategory(objAttribute.Abbrev))
                     {
                         case CharacterAttrib.AttributeCategory.Special:
@@ -148,44 +431,238 @@ namespace Chummer.Backend.Attributes
                             AttributeList.Add(objAttribute);
                             break;
                     }
-                    if (xmlCharNodeAnimalForm != null)
-                    {
-                        objAttribute = new CharacterAttrib(_objCharacter, strAttribute, CharacterAttrib.AttributeCategory.Shapeshifter);
-                        objAttribute = RemakeAttribute(objAttribute, xmlCharNodeAnimalForm);
-                        switch (CharacterAttrib.ConvertToAttributeCategory(objAttribute.Abbrev))
-                        {
-                            case CharacterAttrib.AttributeCategory.Special:
-                                SpecialAttributeList.Add(objAttribute);
-                                break;
-                            case CharacterAttrib.AttributeCategory.Standard:
-                                AttributeList.Add(objAttribute);
-                                break;
-                        }
-                    }
                 }
                 else
                 {
                     foreach (XmlNode xmlAttributeNode in lstAttributeNodes)
                     {
-                        CharacterAttrib att = new CharacterAttrib(_objCharacter, strAttribute);
-                        att.Load(xmlAttributeNode);
-                        switch (CharacterAttrib.ConvertToAttributeCategory(att.Abbrev))
+                        CharacterAttrib objAttribute;
+                        switch (CharacterAttrib.ConvertToAttributeCategory(strAttribute))
                         {
                             case CharacterAttrib.AttributeCategory.Special:
-                                SpecialAttributeList.Add(att);
+                                objAttribute = new CharacterAttrib(_objCharacter, strAttribute, CharacterAttrib.AttributeCategory.Special);
+                                objAttribute.Load(xmlAttributeNode);
+                                SpecialAttributeList.Add(objAttribute);
                                 break;
                             case CharacterAttrib.AttributeCategory.Standard:
-                                AttributeList.Add(att);
+                                objAttribute = new CharacterAttrib(_objCharacter, strAttribute, CharacterAttrib.AttributeCategory.Standard);
+                                objAttribute.Load(xmlAttributeNode);
+                                AttributeList.Add(objAttribute);
                                 break;
                         }
                     }
                 }
             }
             ResetBindings();
-			Timekeeper.Finish("load_char_attrib");
+		    _objCharacter.RefreshAttributeBindings();
+            //Timekeeper.Finish("load_char_attrib");
 		}
 
-        private static CharacterAttrib RemakeAttribute(CharacterAttrib objNewAttribute, XmlNode objCharacterNode)
+	    public async void LoadFromHeroLab(XmlNode xmlStatBlockBaseNode, CustomActivity parentActivity)
+	    {
+            using (var op_load_char_attrib = Timekeeper.StartSyncron("load_char_attrib", parentActivity))
+            {
+                foreach (CharacterAttrib objAttribute in AttributeList.Concat(SpecialAttributeList))
+                    objAttribute.UnbindAttribute();
+                AttributeList.Clear();
+                SpecialAttributeList.Clear();
+                XmlDocument objXmlDocument =
+                    XmlManager.Load(_objCharacter.IsCritter ? "critters.xml" : "metatypes.xml");
+                XPathNavigator xmlCharNode = _objCharacter.GetNode();
+                // We only want to remake attributes for shifters in career mode, because they only get their second set of attributes when exporting from create mode into career mode
+                XPathNavigator xmlCharNodeAnimalForm =
+                    _objCharacter.MetatypeCategory == "Shapeshifter" && _objCharacter.Created ? _objCharacter.GetNode(true) : null;
+                foreach (string strAttribute in AttributeStrings)
+                {
+                    // First, remake the attribute
+
+                    CharacterAttrib objAttribute = null;
+                    switch (CharacterAttrib.ConvertToAttributeCategory(strAttribute))
+                    {
+                        case CharacterAttrib.AttributeCategory.Special:
+                            objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
+                                CharacterAttrib.AttributeCategory.Special);
+                            objAttribute = RemakeAttribute(objAttribute, xmlCharNode);
+                            SpecialAttributeList.Add(objAttribute);
+                            break;
+                        case CharacterAttrib.AttributeCategory.Standard:
+                            objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
+                                CharacterAttrib.AttributeCategory.Standard);
+                            objAttribute = RemakeAttribute(objAttribute, xmlCharNode);
+                            AttributeList.Add(objAttribute);
+                            break;
+                    }
+
+                    if (xmlCharNodeAnimalForm != null)
+                    {
+                        switch (CharacterAttrib.ConvertToAttributeCategory(strAttribute))
+                        {
+                            case CharacterAttrib.AttributeCategory.Special:
+                                objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
+                                    CharacterAttrib.AttributeCategory.Special);
+                                objAttribute = RemakeAttribute(objAttribute, xmlCharNodeAnimalForm);
+                                SpecialAttributeList.Add(objAttribute);
+                                break;
+                            case CharacterAttrib.AttributeCategory.Shapeshifter:
+                                objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
+                                    CharacterAttrib.AttributeCategory.Shapeshifter);
+                                objAttribute = RemakeAttribute(objAttribute, xmlCharNodeAnimalForm);
+                                AttributeList.Add(objAttribute);
+                                break;
+                        }
+                    }
+
+                    // Then load in attribute karma levels (we'll adjust these later if the character is in Create mode)
+                    if (strAttribute == "ESS"
+                    ) // Not Essence though, this will get modified automatically instead of having its value set to the one HeroLab displays
+                        continue;
+                    XmlNode xmlHeroLabAttributeNode =
+                        xmlStatBlockBaseNode.SelectSingleNode(
+                            "attributes/attribute[@name = \"" + GetAttributeEnglishName(strAttribute) + "\"]");
+                    XmlNode xmlAttributeBaseNode = xmlHeroLabAttributeNode?.SelectSingleNode("@base");
+                    if (xmlAttributeBaseNode != null &&
+                        int.TryParse(xmlAttributeBaseNode.InnerText, out int intHeroLabAttributeBaseValue))
+                    {
+                        int intAttributeMinimumValue = GetAttributeByName(strAttribute).MetatypeMinimum;
+                        if (intHeroLabAttributeBaseValue == intAttributeMinimumValue) continue;
+                        if (objAttribute != null)
+                            objAttribute.Karma = intHeroLabAttributeBaseValue - intAttributeMinimumValue;
+                    }
+                }
+
+                if (!_objCharacter.Created && _objCharacter.BuildMethodHasSkillPoints)
+                {
+                    // Allocate Attribute Points
+                    int intAttributePointCount = _objCharacter.TotalAttributes;
+                    CharacterAttrib objAttributeToPutPointsInto;
+                    // First loop through attributes where costs can be 100% covered with points
+                    do
+                    {
+                        objAttributeToPutPointsInto = null;
+                        int intAttributeToPutPointsIntoTotalKarmaCost = 0;
+                        foreach (CharacterAttrib objLoopAttribute in AttributeList)
+                        {
+                            if (objLoopAttribute.Karma == 0)
+                                continue;
+                            // Put points into the attribute with the highest total karma cost.
+                            // In case of ties, pick the one that would need more points to cover it (the other one will hopefully get picked up at a later cycle)
+                            int intLoopTotalKarmaCost = objLoopAttribute.TotalKarmaCost;
+                            if (objAttributeToPutPointsInto == null ||
+                                (objLoopAttribute.Karma <= intAttributePointCount &&
+                                 (intLoopTotalKarmaCost > intAttributeToPutPointsIntoTotalKarmaCost ||
+                                  (intLoopTotalKarmaCost == intAttributeToPutPointsIntoTotalKarmaCost &&
+                                   objLoopAttribute.Karma > objAttributeToPutPointsInto.Karma))))
+                            {
+                                objAttributeToPutPointsInto = objLoopAttribute;
+                                intAttributeToPutPointsIntoTotalKarmaCost = intLoopTotalKarmaCost;
+                            }
+                        }
+
+                        if (objAttributeToPutPointsInto != null)
+                        {
+                            objAttributeToPutPointsInto.Base = objAttributeToPutPointsInto.Karma;
+                            intAttributePointCount -= objAttributeToPutPointsInto.Karma;
+                            objAttributeToPutPointsInto.Karma = 0;
+                        }
+                    } while (objAttributeToPutPointsInto != null && intAttributePointCount > 0);
+
+                    // If any points left over, then put them all into the attribute with the highest karma cost
+                    if (intAttributePointCount > 0 && AttributeList.Any(x => x.Karma != 0))
+                    {
+                        int intHighestTotalKarmaCost = 0;
+                        foreach (CharacterAttrib objLoopAttribute in AttributeList)
+                        {
+                            if (objLoopAttribute.Karma == 0)
+                                continue;
+                            // Put points into the attribute with the highest total karma cost.
+                            // In case of ties, pick the one that would need more points to cover it (the other one will hopefully get picked up at a later cycle)
+                            int intLoopTotalKarmaCost = objLoopAttribute.TotalKarmaCost;
+                            if (objAttributeToPutPointsInto == null ||
+                                intLoopTotalKarmaCost > intHighestTotalKarmaCost ||
+                                (intLoopTotalKarmaCost == intHighestTotalKarmaCost &&
+                                 objLoopAttribute.Karma > objAttributeToPutPointsInto.Karma))
+                            {
+                                objAttributeToPutPointsInto = objLoopAttribute;
+                                intHighestTotalKarmaCost = intLoopTotalKarmaCost;
+                            }
+                        }
+
+                        if (objAttributeToPutPointsInto != null)
+                        {
+                            objAttributeToPutPointsInto.Base = intAttributePointCount;
+                            objAttributeToPutPointsInto.Karma -= intAttributePointCount;
+                        }
+                    }
+
+                    // Allocate Special Attribute Points
+                    intAttributePointCount = _objCharacter.TotalSpecial;
+                    // First loop through attributes where costs can be 100% covered with points
+                    do
+                    {
+                        objAttributeToPutPointsInto = null;
+                        int intAttributeToPutPointsIntoTotalKarmaCost = 0;
+                        foreach (CharacterAttrib objLoopAttribute in SpecialAttributeList)
+                        {
+                            if (objLoopAttribute.Karma == 0)
+                                continue;
+                            // Put points into the attribute with the highest total karma cost.
+                            // In case of ties, pick the one that would need more points to cover it (the other one will hopefully get picked up at a later cycle)
+                            int intLoopTotalKarmaCost = objLoopAttribute.TotalKarmaCost;
+                            if (objAttributeToPutPointsInto == null ||
+                                (objLoopAttribute.Karma <= intAttributePointCount &&
+                                 (intLoopTotalKarmaCost > intAttributeToPutPointsIntoTotalKarmaCost ||
+                                  (intLoopTotalKarmaCost == intAttributeToPutPointsIntoTotalKarmaCost &&
+                                   objLoopAttribute.Karma > objAttributeToPutPointsInto.Karma))))
+                            {
+                                objAttributeToPutPointsInto = objLoopAttribute;
+                                intAttributeToPutPointsIntoTotalKarmaCost = intLoopTotalKarmaCost;
+                            }
+                        }
+
+                        if (objAttributeToPutPointsInto != null)
+                        {
+                            objAttributeToPutPointsInto.Base = objAttributeToPutPointsInto.Karma;
+                            intAttributePointCount -= objAttributeToPutPointsInto.Karma;
+                            objAttributeToPutPointsInto.Karma = 0;
+                        }
+                    } while (objAttributeToPutPointsInto != null);
+
+                    // If any points left over, then put them all into the attribute with the highest karma cost
+                    if (intAttributePointCount > 0 && SpecialAttributeList.Any(x => x.Karma != 0))
+                    {
+                        int intHighestTotalKarmaCost = 0;
+                        foreach (CharacterAttrib objLoopAttribute in SpecialAttributeList)
+                        {
+                            if (objLoopAttribute.Karma == 0)
+                                continue;
+                            // Put points into the attribute with the highest total karma cost.
+                            // In case of ties, pick the one that would need more points to cover it (the other one will hopefully get picked up at a later cycle)
+                            int intLoopTotalKarmaCost = objLoopAttribute.TotalKarmaCost;
+                            if (objAttributeToPutPointsInto == null ||
+                                intLoopTotalKarmaCost > intHighestTotalKarmaCost ||
+                                (intLoopTotalKarmaCost == intHighestTotalKarmaCost &&
+                                 objLoopAttribute.Karma > objAttributeToPutPointsInto.Karma))
+                            {
+                                objAttributeToPutPointsInto = objLoopAttribute;
+                                intHighestTotalKarmaCost = intLoopTotalKarmaCost;
+                            }
+                        }
+
+                        if (objAttributeToPutPointsInto != null)
+                        {
+                            objAttributeToPutPointsInto.Base = intAttributePointCount;
+                            objAttributeToPutPointsInto.Karma -= intAttributePointCount;
+                        }
+                    }
+                }
+
+                ResetBindings();
+                _objCharacter.RefreshAttributeBindings();
+                //Timekeeper.Finish("load_char_attrib");
+            }
+        }
+
+        private static CharacterAttrib RemakeAttribute(CharacterAttrib objNewAttribute, XPathNavigator objCharacterNode)
         {
             string strAttributeLower = objNewAttribute.Abbrev.ToLowerInvariant();
             if (strAttributeLower == "magadept")
@@ -197,7 +674,7 @@ namespace Chummer.Backend.Attributes
             // This statement is wrapped in a try/catch since trying 1 div 2 results in an error with XSLT.
             try
             {
-                object objProcess = CommonFunctions.EvaluateInvariantXPath(objCharacterNode[strAttributeLower + "min"]?.InnerText.Replace("/", " div ").Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1",
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(objCharacterNode.SelectSingleNode(strAttributeLower + "min")?.Value.Replace("/", " div ").Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1",
                     out bool blnIsSuccess);
                 if (blnIsSuccess)
                     intMinValue = Convert.ToInt32(Math.Ceiling((double)objProcess));
@@ -207,7 +684,7 @@ namespace Chummer.Backend.Attributes
             catch (InvalidCastException) { intMinValue = 1; }
             try
             {
-                object objProcess = CommonFunctions.EvaluateInvariantXPath(objCharacterNode[strAttributeLower + "max"]?.InnerText.Replace("/", " div ").Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1",
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(objCharacterNode.SelectSingleNode(strAttributeLower + "max")?.Value.Replace("/", " div ").Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1",
                     out bool blnIsSuccess);
                 if (blnIsSuccess)
                     intMaxValue = Convert.ToInt32(Math.Ceiling((double)objProcess));
@@ -217,7 +694,7 @@ namespace Chummer.Backend.Attributes
             catch (InvalidCastException) { intMaxValue = 1; }
             try
             {
-                object objProcess = CommonFunctions.EvaluateInvariantXPath(objCharacterNode[strAttributeLower + "aug"]?.InnerText.Replace("/", " div ").Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1",
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(objCharacterNode.SelectSingleNode(strAttributeLower + "aug")?.Value.Replace("/", " div ").Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1",
                     out bool blnIsSuccess);
                 if (blnIsSuccess)
                     intAugValue = Convert.ToInt32(Math.Ceiling((double)objProcess));
@@ -226,15 +703,30 @@ namespace Chummer.Backend.Attributes
             catch (OverflowException) { intAugValue = 1; }
             catch (InvalidCastException) { intAugValue = 1; }
 
-            objNewAttribute.Base = Convert.ToInt32(objCharacterNode["base"]?.InnerText);
-            objNewAttribute.Karma = Convert.ToInt32(objCharacterNode["base"]?.InnerText);
+            objNewAttribute.Base = Convert.ToInt32(objCharacterNode.SelectSingleNode("base")?.Value);
+            objNewAttribute.Karma = Convert.ToInt32(objCharacterNode.SelectSingleNode("base")?.Value);
             objNewAttribute.AssignLimits(intMinValue.ToString(), intMaxValue.ToString(), intAugValue.ToString());
             return objNewAttribute;
         }
 
 		internal void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
 		{
-			foreach (CharacterAttrib att in AttributeList)
+		    if (_objCharacter.MetatypeCategory == "Shapeshifter")
+            {
+                XPathNavigator xmlNode = _objCharacter.GetNode(true);
+
+		        if (AttributeCategory == CharacterAttrib.AttributeCategory.Standard)
+		        {
+		            objWriter.WriteElementString("attributecategory", xmlNode?.SelectSingleNode("name/@translate")?.Value ?? _objCharacter.Metatype);
+                }
+		        else
+		        {
+		            xmlNode = xmlNode?.SelectSingleNode($"metavariants/metavariant[id = \"{_objCharacter.MetavariantGuid}\"]");
+                    objWriter.WriteElementString("attributecategory", xmlNode?.Value ?? _objCharacter.Metavariant);
+                }
+		    }
+		    objWriter.WriteElementString("attributecategory_english", AttributeCategory.ToString());
+            foreach (CharacterAttrib att in AttributeList)
 			{
 				att.Print(objWriter, objCulture, strLanguageToPrint);
 			}
@@ -260,29 +752,29 @@ namespace Chummer.Backend.Attributes
             return null;
 		}
 
-		internal void ForceAttributePropertyChangedNotificationAll(string name)
+		internal void ForceAttributePropertyChangedNotificationAll(params string[] lstNames)
 		{
 			foreach (CharacterAttrib att in AttributeList)
 			{
-				att.OnPropertyChanged(name);
+				att.OnMultiplePropertyChanged(lstNames);
 			}
 		}
 
-		public static void CopyAttribute(CharacterAttrib source, CharacterAttrib target, string mv, XmlDocument xmlDoc)
+		public static void CopyAttribute(CharacterAttrib objSource, CharacterAttrib objTarget, string strMetavariantXPath, XmlDocument xmlDoc)
 		{
-            string strSourceAbbrev = source.Abbrev.ToLower();
+            string strSourceAbbrev = objSource.Abbrev.ToLower();
             if (strSourceAbbrev == "magadept")
                 strSourceAbbrev = "mag";
-            XmlNode node = xmlDoc.SelectSingleNode($"{mv}");
+            XmlNode node = !string.IsNullOrEmpty(strMetavariantXPath) ? xmlDoc.SelectSingleNode(strMetavariantXPath) : null;
 		    if (node != null)
 		    {
-		        target.MetatypeMinimum = Convert.ToInt32(node[$"{strSourceAbbrev}min"]?.InnerText);
-		        target.MetatypeMaximum = Convert.ToInt32(node[$"{strSourceAbbrev}max"]?.InnerText);
-		        target.MetatypeAugmentedMaximum = Convert.ToInt32(node[$"{strSourceAbbrev}aug"]?.InnerText);
+		        objTarget.MetatypeMinimum = Convert.ToInt32(node[$"{strSourceAbbrev}min"]?.InnerText);
+		        objTarget.MetatypeMaximum = Convert.ToInt32(node[$"{strSourceAbbrev}max"]?.InnerText);
+		        objTarget.MetatypeAugmentedMaximum = Convert.ToInt32(node[$"{strSourceAbbrev}aug"]?.InnerText);
 		    }
 
-		    target.Base = source.Base;
-			target.Karma = source.Karma;
+		    objTarget.Base = objSource.Base;
+		    objTarget.Karma = objSource.Karma;
         }
 
 		internal void Reset()
@@ -293,16 +785,18 @@ namespace Chummer.Backend.Attributes
 			SpecialAttributeList.Clear();
 			foreach (string strAttribute in AttributeStrings)
 			{
-				CharacterAttrib objAttribute = new CharacterAttrib(_objCharacter, strAttribute);
-				switch (CharacterAttrib.ConvertToAttributeCategory(objAttribute.Abbrev))
+			    CharacterAttrib objAttribute;
+				switch (CharacterAttrib.ConvertToAttributeCategory(strAttribute))
 				{
-					case CharacterAttrib.AttributeCategory.Special:
-						SpecialAttributeList.Add(objAttribute);
-						break;
-					case CharacterAttrib.AttributeCategory.Standard:
-						AttributeList.Add(objAttribute);
-						break;
-				}
+				    case CharacterAttrib.AttributeCategory.Special:
+				        objAttribute = new CharacterAttrib(_objCharacter, strAttribute, CharacterAttrib.AttributeCategory.Special);
+				        SpecialAttributeList.Add(objAttribute);
+				        break;
+				    case CharacterAttrib.AttributeCategory.Standard:
+				        objAttribute = new CharacterAttrib(_objCharacter, strAttribute, CharacterAttrib.AttributeCategory.Standard);
+				        AttributeList.Add(objAttribute);
+				        break;
+                }
 			}
 			BuildBindingList();
 		}
@@ -333,29 +827,28 @@ namespace Chummer.Backend.Attributes
                 objBindingEntry.Value.DataSource = GetAttributeByName(objBindingEntry.Key);
             }
 		}
-		#endregion
+        #endregion
 
-		#region Properties
-		/// <summary>
-		/// Character's Attributes.
-		/// </summary>
-		public IList<CharacterAttrib> AttributeList { get; } = new List<CharacterAttrib>();
+        #region Properties
+        /// <summary>
+        /// Character's Attributes.
+        /// </summary>
+        [HubTag(true)]
+        public List<CharacterAttrib> AttributeList { get; } = new List<CharacterAttrib>();
 
-	    /// <summary>
-		/// Character's Attributes.
-		/// </summary>
-		public IList<CharacterAttrib> SpecialAttributeList { get; } = new List<CharacterAttrib>();
+        /// <summary>
+        /// Character's Attributes.
+        /// </summary>
+        public List<CharacterAttrib> SpecialAttributeList { get; } = new List<CharacterAttrib>();
 
 	    public CharacterAttrib.AttributeCategory AttributeCategory
 	    {
 	        get => _eAttributeCategory;
 	        set
 	        {
-	            if (_eAttributeCategory != value)
-	            {
-	                _eAttributeCategory = value;
-	                OnPropertyChanged();
-	            }
+	            if (_eAttributeCategory == value) return;
+	            _eAttributeCategory = value;
+	            OnPropertyChanged();
 	        }
 	    }
         #endregion

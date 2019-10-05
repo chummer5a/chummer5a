@@ -38,7 +38,7 @@ namespace Chummer.UI.Table
                 _table = table;
             }
 
-            public override bool Layout(object container, LayoutEventArgs layoutEventArgs)
+            public override bool Layout(object objContainer, LayoutEventArgs layoutEventArgs)
             {
                 _table.SuspendLayout();
                 int[] widths = new int[_table._columns.Count];
@@ -48,7 +48,7 @@ namespace Chummer.UI.Table
                 // determine minimal widths
                 for (int i = 0; i < widths.Length; i++)
                 {
-                    Size headerMinSize = _table._cells[i].header.MinimumSize;
+                    Size headerMinSize = _table._lstCells[i].header.MinimumSize;
                     int width = Math.Max(_table._columns[i].MinWidth, headerMinSize.Width);
                     if (y < headerMinSize.Height)
                     {
@@ -57,14 +57,14 @@ namespace Chummer.UI.Table
                     widths[i] = width;
                 }
 
-                for (int i = 0; i < _table._rowCells.Count; i++)
+                for (int i = 0; i < _table._lstRowCells.Count; i++)
                 {
-                    TableRow row = _table._rowCells[i];
+                    TableRow row = _table._lstRowCells[i];
                     if (row.Parent != null)
                     {
                         for (int j = 0; j < widths.Length; j++)
                         {
-                            int w = _table._cells[j].cells[i].MinimumSize.Width;
+                            int w = _table._lstCells[j].cells[i].MinimumSize.Width;
                             if (widths[j] < w)
                             {
                                 widths[j] = w;
@@ -114,8 +114,8 @@ namespace Chummer.UI.Table
                 // layout headers
                 for (int i = 0; i < widths.Length; i++)
                 {
-                    Control header = _table._cells[i].header;
-                    header.Location = new System.Drawing.Point(x, 0);
+                    Control header = _table._lstCells[i].header;
+                    header.Location = new Point(x, 0);
                     header.Size = new Size(widths[i], y);
                     x += widths[i];
                 }
@@ -123,22 +123,22 @@ namespace Chummer.UI.Table
                 int rowIndex = 0;
 
                 // layout cells
-                foreach (int index in _table._permutation)
+                foreach (int index in _table._lstPermutation)
                 {
                     int dy = 0;
                     x = 0;
-                    TableRow row = _table._rowCells[index];
+                    TableRow row = _table._lstRowCells[index];
                     if (row.Parent != null)
                     {
                         row.SuspendLayout();
                         row.Index = rowIndex;
-                        row.Selected = (_table._selectedIndex == index);
+                        row.Selected = (_table._intSelectedIndex == index);
                         row.Location = new Point(0, y);
                         row.Width = widthSum;
                         for (int i = 0; i < _table._columns.Count; i++)
                         {
-                            TableCell cell = _table._cells[i].cells[index];
-                            cell.Location = new System.Drawing.Point(x, row.Margin.Top);
+                            TableCell cell = _table._lstCells[i].cells[index];
+                            cell.Location = new Point(x, row.Margin.Top);
                             if (dy < cell.Height)
                             {
                                 dy = cell.Height;
@@ -147,7 +147,7 @@ namespace Chummer.UI.Table
                         }
                         for (int i = 0; i < _table._columns.Count; i++)
                         {
-                            TableCell cell = _table._cells[i].cells[index];
+                            TableCell cell = _table._lstCells[i].cells[index];
                             cell.UpdateAvailableSize(widths[i], dy);
                         }
                         row.Height = dy + row.Margin.Top + row.Margin.Bottom;
@@ -179,88 +179,86 @@ namespace Chummer.UI.Table
 
         private readonly Predicate<T> _defaultFilter;
         private TableColumn<T> _sortColumn;
-        private BindingList<T> _items;
+        private BindingList<T> _lstItems;
         private Predicate<T> _filter;
         private readonly TableColumnCollection<T> _columns;
         private TableLayoutEngine _layoutEngine;
-        private readonly List<ColumnHolder> _cells = new List<ColumnHolder>();
-        private readonly Dictionary<string, List<int>> _observedProperties = new Dictionary<string, List<int>>();
-        private List<int> _permutation = new List<int>();
-        private List<TableRow> _rowCells = new List<TableRow>();
-        private SortOrder _sortType = SortOrder.None;
-        private object _sortPausedSender = null;
-        private int _selectedIndex = -1;
+        private readonly List<ColumnHolder> _lstCells = new List<ColumnHolder>();
+        private readonly Dictionary<string, List<int>> _dicObservedProperties = new Dictionary<string, List<int>>();
+        private readonly List<int> _lstPermutation = new List<int>();
+        private readonly List<TableRow> _lstRowCells = new List<TableRow>();
+        private SortOrder _eSortType = SortOrder.None;
+        private object _objSortPausedSender;
+        private int _intSelectedIndex = -1;
 
         public TableView()
         {
             _columns = new TableColumnCollection<T>(this);
-            _defaultFilter = (item) => true;
+            _defaultFilter = item => true;
             _filter = _defaultFilter;
             InitializeComponent();
         }
 
-        private void ItemPropertyChanged(int index, T item, string property)
+        private void ItemPropertyChanged(int intIndex, T objItem, string strProperty)
         {
             SuspendLayout();
-            if (property == null || property == String.Empty)
+            if (string.IsNullOrEmpty(strProperty))
             {
                 // update all cells
-                UpdateRow(index, item);
+                UpdateRow(intIndex, objItem);
             }
             else
             {
                 // update cells in columns that have the column as dependency
-                List<int> columns;
-
-                if (_observedProperties.TryGetValue(property, out columns))
+                if (_dicObservedProperties.TryGetValue(strProperty, out List<int> lstColumns))
                 {
-                    foreach (int columnIndex in columns)
+                    foreach (int intColumnIndex in lstColumns)
                     {
-                        UpdateCell(_columns[columnIndex], _cells[columnIndex].cells[index], item);
+                        UpdateCell(_columns[intColumnIndex], _lstCells[intColumnIndex].cells[intIndex], objItem);
                     }
                 }
             }
             ResumeLayout(true);
         }
 
-        public void PauseSort(object sender)
+        public void PauseSort(object objSender)
         {
-            _sortPausedSender = sender;
+            _objSortPausedSender = objSender;
         }
 
-        public void ResumeSort(object sender)
+        public void ResumeSort(object objSender)
         {
-            if (_sortPausedSender == sender)
+            if (_objSortPausedSender == objSender)
             {
-                _sortPausedSender = null;
+                _objSortPausedSender = null;
 
                 // prevent sort for focus loss when disposing
-                if (_items != null && _permutation.Count == _items.Count) 
+                if (_lstItems != null && _lstPermutation.Count == _lstItems.Count) 
                 {
-                    Sort(true);
+                    Sort();
                 }
             }
         }
 
-        private void Sort(bool performLayout = true)
+        private void Sort(bool blnPerformLayout = true)
         {
-            if (_sortPausedSender != null) return;
-            if (_sortType == SortOrder.None || _sortColumn == null)
+            if (_objSortPausedSender != null) return;
+            if (_eSortType == SortOrder.None || _sortColumn == null)
             {
                 // sort by index
-                _permutation.Sort();
+                _lstPermutation.Sort();
             }
             else
             {
                 Comparison<T> comparison = _sortColumn.CreateSorter();
                 
-                _permutation.Sort((i1, i2) => comparison(_items[i1], _items[i2]));
-                if (_sortType == SortOrder.Descending)
+                _lstPermutation.Sort((i1, i2) => comparison(_lstItems[i1], _lstItems[i2]));
+                if (_eSortType == SortOrder.Descending)
                 {
-                    _permutation.Reverse();
+                    _lstPermutation.Reverse();
                 }
             }
-            if (performLayout)
+            if (blnPerformLayout)
             {
                 PerformLayout();
             }
@@ -268,15 +266,15 @@ namespace Chummer.UI.Table
 
         private void UpdateCell(TableColumn<T> column, TableCell cell, T item)
         {
-            Func<T, object> extractor = column.Extractor;
-            cell.UpdateValue(extractor == null ? item : extractor(item));
-            Func<T, string> tooltipExtractor = column.ToolTipExtractor;
+            Func<T, object> funcExtractor = column.Extractor;
+            cell.UpdateValue(funcExtractor == null ? item : funcExtractor(item));
+            Func<T, string> funcTooltipExtractor = column.ToolTipExtractor;
             ToolTip tooltip = ToolTip;
-            if (tooltip != null && tooltipExtractor != null)
+            if (tooltip != null && funcTooltipExtractor != null)
             {
                 Control content = cell.Content;
-                string text = tooltipExtractor(item);
-                tooltip.SetToolTip(content == null ? cell : content, text);
+                string strText = funcTooltipExtractor(item);
+                tooltip.SetToolTip(content ?? cell, strText);
             }
         }
 
@@ -284,7 +282,7 @@ namespace Chummer.UI.Table
         {
             for (int i = 0; i < _columns.Count; i++)
             {
-                List<TableCell> cells = _cells[i].cells;
+                List<TableCell> cells = _lstCells[i].cells;
                 TableColumn<T> column = _columns[i];
                 TableCell cell = cells[index];
                 UpdateCell(column, cell, item);
@@ -301,17 +299,17 @@ namespace Chummer.UI.Table
         private void CreateCellsForColumn(int insertIndex, TableColumn<T> column) {
             SuspendLayout();
             List<TableCell> cells;
-            if (_items != null)
+            if (_lstItems != null)
             {
-                cells = new List<TableCell>(_items.Count);
-                for (int i = 0; i < _items.Count; i++)
+                cells = new List<TableCell>(_lstItems.Count);
+                for (int i = 0; i < _lstItems.Count; i++)
                 {
-                    T item = _items[i];
+                    T item = _lstItems[i];
                     TableCell cell = CreateCell(item, column);
                     cells.Add(cell);
                     if (_filter(item))
                     {
-                        TableRow row = _rowCells[i];
+                        TableRow row = _lstRowCells[i];
                         row.SuspendLayout();
                         row.Controls.Add(cell);
                         row.ResumeLayout(false);
@@ -333,16 +331,16 @@ namespace Chummer.UI.Table
                     if (_sortColumn == column)
                     {
                         // cycle through states if column remains the same
-                        switch(_sortType)
+                        switch(_eSortType)
                         {
                             case SortOrder.None:
-                                _sortType = SortOrder.Ascending;
+                                _eSortType = SortOrder.Ascending;
                                 break;
                             case SortOrder.Ascending:
-                                _sortType = SortOrder.Descending;
+                                _eSortType = SortOrder.Descending;
                                 break;
                             case SortOrder.Descending:
-                                _sortType = SortOrder.None;
+                                _eSortType = SortOrder.None;
                                 break;
                         }
                     }
@@ -355,21 +353,21 @@ namespace Chummer.UI.Table
                             {
                                 if (_columns[i] == _sortColumn)
                                 {
-                                    _cells[i].header.SortType = SortOrder.None;
+                                    _lstCells[i].header.SortType = SortOrder.None;
                                     break;
                                 }
                             }
                         }
                         _sortColumn = column;
-                        _sortType = SortOrder.Ascending;
+                        _eSortType = SortOrder.Ascending;
                     }
-                    header.SortType = _sortType;
+                    header.SortType = _eSortType;
                     Sort();
                 };
                 header.Sortable = true;
             }
             Controls.Add(header);
-            _cells.Insert(insertIndex, new ColumnHolder(header, cells));
+            _lstCells.Insert(insertIndex, new ColumnHolder(header, cells));
             ResumeLayout(false);
         }
 
@@ -379,19 +377,19 @@ namespace Chummer.UI.Table
             CreateCellsForColumn(index, column);
             foreach (string dependency in column.Dependencies)
             {
-                if (!_observedProperties.TryGetValue(dependency, out List<int> list))
+                if (!_dicObservedProperties.TryGetValue(dependency, out List<int> lstDependancies))
                 {
-                    list = new List<int>();
-                    _observedProperties[dependency] = list;
+                    lstDependancies = new List<int>();
+                    _dicObservedProperties[dependency] = lstDependancies;
                 }
-                list.Add(index);
+                lstDependancies.Add(index);
             }
         }
 
         private void DisposeAll()
         {
-            _permutation.Clear();
-            foreach (ColumnHolder col in _cells)
+            _lstPermutation.Clear();
+            foreach (ColumnHolder col in _lstCells)
             {
                 foreach (TableCell cell in col.cells)
                 {
@@ -403,14 +401,14 @@ namespace Chummer.UI.Table
 
         private void DoFilter(bool performLayout = true)
         {
-            if (_items == null) return;
+            if (_lstItems == null) return;
             SuspendLayout();
 
-            for (int i = 0; i < _items.Count; i++)
+            for (int i = 0; i < _lstItems.Count; i++)
             {
-                TableRow row = _rowCells[i];
+                TableRow row = _lstRowCells[i];
                 row.SuspendLayout();
-                if (_filter(_items[i]))
+                if (_filter(_lstItems[i]))
                 {
                     if (row.Parent == null)
                     {
@@ -462,11 +460,11 @@ namespace Chummer.UI.Table
             {
                 case ListChangedType.ItemChanged:
                     TableRow row;
-                    T item = _items[e.NewIndex];
+                    T item = _lstItems[e.NewIndex];
                     if (e.PropertyDescriptor == null)
                     {
                         SuspendLayout();
-                        row = _rowCells[e.NewIndex];
+                        row = _lstRowCells[e.NewIndex];
                         if (_filter(item))
                         {
                             if (row.Parent == null)
@@ -488,9 +486,9 @@ namespace Chummer.UI.Table
                     }
                     break;
                 case ListChangedType.ItemAdded:
-                    item = _items[e.NewIndex];
+                    item = _lstItems[e.NewIndex];
                     row = CreateRow();
-                    _rowCells.Insert(e.NewIndex, row);
+                    _lstRowCells.Insert(e.NewIndex, row);
                     SuspendLayout();
                     if (_filter(item))
                     {
@@ -500,13 +498,13 @@ namespace Chummer.UI.Table
                     for (int i = 0; i < _columns.Count; i++)
                     {
                         TableColumn<T> column = _columns[i];
-                        List<TableCell> cells = _cells[i].cells;
+                        List<TableCell> cells = _lstCells[i].cells;
                         TableCell newCell = CreateCell(item, column);
                         cells.Insert(e.NewIndex, newCell);
                         row.Controls.Add(newCell);
                     }
                     row.ResumeLayout(false);
-                    _permutation.Add(_permutation.Count);
+                    _lstPermutation.Add(_lstPermutation.Count);
                     Sort(false);
                     RestartLayout(true);
                     break;
@@ -514,61 +512,59 @@ namespace Chummer.UI.Table
                     SuspendLayout();
                     for (int i = 0; i < _columns.Count; i++)
                     {
-                        TableColumn<T> column = _columns[i];
-                        List<TableCell> cells = _cells[i].cells;
-                        TableCell oldCell = cells[e.NewIndex];
+                        List<TableCell> cells = _lstCells[i].cells;
                         cells.RemoveAt(e.NewIndex);
                     }
-                    row = _rowCells[e.NewIndex];
+                    row = _lstRowCells[e.NewIndex];
                     if (row.Parent != null)
                     {
                         Controls.Remove(row);
                     }
                     row.Dispose();
-                    _rowCells.RemoveAt(e.NewIndex);
-                    _permutation.Remove(_permutation.Count - 1);
+                    _lstRowCells.RemoveAt(e.NewIndex);
+                    _lstPermutation.Remove(_lstPermutation.Count - 1);
                     Sort(false);
                     RestartLayout(true);
                     break;
                 case ListChangedType.ItemMoved:
-                    foreach (ColumnHolder col in _cells)
+                    foreach (ColumnHolder col in _lstCells)
                     {
                         List<TableCell> cells = col.cells;
                         TableCell cell = cells[e.OldIndex];
                         cells.RemoveAt(e.OldIndex);
                         cells.Insert(e.NewIndex, cell);
                     }
-                    row = _rowCells[e.OldIndex];
-                    _rowCells.RemoveAt(e.OldIndex);
-                    _rowCells.Insert(e.NewIndex, row);
+                    row = _lstRowCells[e.OldIndex];
+                    _lstRowCells.RemoveAt(e.OldIndex);
+                    _lstRowCells.Insert(e.NewIndex, row);
 
                     // fix permutation
-                    int minIndex, maxIndex, delta;
+                    int intMinIndex, intMaxIndex, intDelta;
                     if (e.OldIndex < e.NewIndex)
                     {
-                        delta = -1;
-                        minIndex = e.OldIndex + 1;
-                        maxIndex = e.NewIndex;
+                        intDelta = -1;
+                        intMinIndex = e.OldIndex + 1;
+                        intMaxIndex = e.NewIndex;
                     }
                     else
                     {
-                        delta = +1;
-                        minIndex = e.NewIndex;
-                        maxIndex = e.OldIndex - 1;
+                        intDelta = +1;
+                        intMinIndex = e.NewIndex;
+                        intMaxIndex = e.OldIndex - 1;
                     }
-                    for (int i = 0; i < _permutation.Count; i++)
+                    for (int i = 0; i < _lstPermutation.Count; i++)
                     {
-                        int value = _permutation[i];
+                        int value = _lstPermutation[i];
                         if (value == e.OldIndex)
                         {
-                            _permutation[i] = e.NewIndex;
+                            _lstPermutation[i] = e.NewIndex;
                         }
-                        else if (value >= minIndex && value <= maxIndex)
+                        else if (value >= intMinIndex && value <= intMaxIndex)
                         {
-                            _permutation[i] = value + delta;
+                            _lstPermutation[i] = value + intDelta;
                         }
                     }
-                    Sort(true);
+                    Sort();
                     break;
             }
         }
@@ -578,77 +574,77 @@ namespace Chummer.UI.Table
         /// </summary>
         public BindingList<T> Items
         {
-            get => _items;
+            get => _lstItems;
             set
             {
-                int oldCount = 0;
-                if (_items != null)
+                int intOldCount = 0;
+                if (_lstItems != null)
                 {
                     // remove listener from old items
-                    _items.ListChanged -= ItemsChanged;
-                    oldCount = _items.Count;
-                    _permutation.Clear();
+                    _lstItems.ListChanged -= ItemsChanged;
+                    intOldCount = _lstItems.Count;
+                    _lstPermutation.Clear();
                 }
 
-                _items = value;
-                int newCount = _items == null ? 0 : _items.Count;
+                _lstItems = value;
+                int intNewCount = _lstItems?.Count ?? 0;
                 SuspendLayout();
-                int limit;
-                if (newCount > oldCount)
+                int intLimit;
+                if (intNewCount > intOldCount)
                 {
-                    limit = oldCount;
-                    for (int j = oldCount; j < newCount; j++)
+                    intLimit = intOldCount;
+                    for (int j = intOldCount; j < intNewCount; j++)
                     {
                         TableRow row = CreateRow();
-                        _rowCells.Add(row);
+                        _lstRowCells.Add(row);
                     }
                     for (int i = 0; i < _columns.Count; i++)
                     {
                         TableColumn<T> column = _columns[i];
-                        List<TableCell> cells = _cells[i].cells;
-                        for (int j = oldCount; j < newCount; j++)
+                        List<TableCell> cells = _lstCells[i].cells;
+                        for (int j = intOldCount; j < intNewCount; j++)
                         {
-                            TableCell cell = CreateCell(_items[j], column);
+                            TableCell cell = CreateCell(_lstItems[j], column);
                             cells.Add(cell);
-                            _rowCells[j].Controls.Add(cell);
+                            _lstRowCells[j].Controls.Add(cell);
                         }
                     }
                 }
                 else
                 {
-                    limit = newCount;
-                    foreach (ColumnHolder col in _cells)
+                    intLimit = intNewCount;
+                    foreach (ColumnHolder col in _lstCells)
                     {
                         List<TableCell> cells = col.cells;
-                        cells.RemoveRange(newCount, oldCount - newCount);
+                        cells.RemoveRange(intNewCount, intOldCount - intNewCount);
                     }
-                    for (int i = newCount; i < oldCount; i++)
+                    for (int i = intNewCount; i < intOldCount; i++)
                     {
-                        TableRow row = _rowCells[i];
+                        TableRow row = _lstRowCells[i];
                         if (row.Parent != null)
                         {
                             Controls.Remove(row);
                         }
                         row.Dispose();
                     }
-                    _rowCells.RemoveRange(newCount, oldCount - newCount);
+                    _lstRowCells.RemoveRange(intNewCount, intOldCount - intNewCount);
                 }
 
-                for (int i = 0; i < newCount; i++)
+                for (int i = 0; i < intNewCount; i++)
                 {
-                    _permutation.Add(i);
+                    _lstPermutation.Add(i);
                 }
-                for (int i = 0; i < limit; i++)
+                for (int i = 0; i < intLimit; i++)
                 {
-                    UpdateRow(i, _items[i]);
+                    UpdateRow(i, _lstItems[i]);
                 }
                 Sort(false);
                 DoFilter();
                 RestartLayout(true);
 
-                if (_items != null)
+                if (_lstItems != null)
                 {
-                    _items.ListChanged += ItemsChanged;
+                    _lstItems.ListChanged += ItemsChanged;
                 }
             }
         }
@@ -662,23 +658,13 @@ namespace Chummer.UI.Table
 
         public TableColumnCollection<T> Columns => _columns;
 
-        public override LayoutEngine LayoutEngine
-        {
-            get
-            {
-                if (_layoutEngine == null)
-                {
-                    _layoutEngine = new TableLayoutEngine(this);
-                }
-                return _layoutEngine;
-            }
-        }
-        
+        public override LayoutEngine LayoutEngine => _layoutEngine ?? (_layoutEngine = new TableLayoutEngine(this));
+
         public SortOrder SortOrder
         {
-            get => _sortType;
+            get => _eSortType;
             set {
-                _sortType = value;
+                _eSortType = value;
                 Sort();
             }
         }

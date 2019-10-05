@@ -87,7 +87,7 @@ namespace Chummer
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
-            if (objNode.TryGetField("guid", Guid.TryParse, out _guiID))
+            if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
                 _guiID = Guid.NewGuid();
             objNode.TryGetBoolFieldQuickly("res", ref _blnTechnomancer);
             objNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
@@ -278,31 +278,42 @@ namespace Chummer
         }
         #endregion
 
-        public bool Remove(Character characterObject)
+        public bool Remove(Character characterObject, bool blnConfirmDelete = true)
         {
             // Stop if this isn't the highest grade
             if (characterObject.MAGEnabled)
             {
                 if (Grade != characterObject.InitiateGrade)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_DeleteGrade", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_DeleteGrade", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_DeleteGrade", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_DeleteGrade", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
                 }
 
-                if (!characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteInitiateGrade", GlobalOptions.Language)))
-                    return false;
-                characterObject.InitiateGrade = Math.Max(characterObject.InitiateGrade-= 1, 0);
+                if (blnConfirmDelete)
+                {
+                    if (!characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteInitiateGrade",
+                        GlobalOptions.Language)))
+                        return false;
+                }
+
+                characterObject.InitiationGrades.Remove(this);
             }
             else if (characterObject.RESEnabled)
             {
                 if (Grade != characterObject.SubmersionGrade)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_DeleteGrade", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_DeleteGrade", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_DeleteGrade", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_DeleteGrade", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
                 }
-                if (!characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteSubmersionGrade", GlobalOptions.Language)))
-                    return false;
-                characterObject.SubmersionGrade = Math.Max(characterObject.SubmersionGrade -= 1, 0);
+
+                if (blnConfirmDelete)
+                {
+                    if (!characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteSubmersionGrade",
+                        GlobalOptions.Language)))
+                        return false;
+                }
+
+                characterObject.InitiationGrades.Remove(this);
             }
             else
                 return false;
