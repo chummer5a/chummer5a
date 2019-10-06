@@ -41295,6 +41295,12 @@
 				<translate>Keine</translate>
 				<altpage>168</altpage>
 			</weaponmount>
+			<weaponmount>
+				<id>ccc4f175-0a93-4a27-a069-29d5ba8375e2</id>
+				<name>Built-In</name>
+				<translate>eingebaut</translate>
+				<altpage>0</altpage>
+			</weaponmount>
 		</weaponmounts>
 		<weaponmountmods>
 			<mod>
@@ -44777,6 +44783,18 @@
 				<name>Walther P99</name>
 				<translate>Walther P99</translate>
 				<altpage>32</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>4260c424-10ab-4530-b6e1-6e1e5bb267ad</id>
+				<name>Jaws</name>
+				<translate>Gebiss</translate>
+				<altpage>146</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>e1b2576c-9f61-4257-913b-667ea53a4864</id>
+				<name>Melee Bite</name>
+				<translate>Nahkampf: Biss</translate>
+				<altpage>136</altpage>
 			</weapon>
 		</weapons>
 		<accessories>
