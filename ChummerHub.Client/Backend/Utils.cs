@@ -28,6 +28,7 @@ using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.ApplicationInsights;
 using Microsoft.Win32;
 using System.Diagnostics;
+using System.IO.Compression;
 using System.Security.Principal;
 using System.Threading;
 
@@ -443,7 +444,7 @@ namespace ChummerHub.Client.Backend
 
     public class Utils
     {
-        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private static Logger Log = LogManager.GetCurrentClassLogger();
 
         public Utils()
         {
@@ -488,7 +489,7 @@ namespace ChummerHub.Client.Backend
                 {
                     response = await myGetSINnersFunction();
                 }
-                catch(Microsoft.Rest.SerializationException e)
+                catch(SerializationException e)
                 {
                     if (e.Content.Contains("Log in - ChummerHub"))
                     {
@@ -545,7 +546,7 @@ namespace ChummerHub.Client.Backend
                     {
                         PluginHandler.MainForm.DoThreadSafe(() =>
                         {
-                            System.Windows.Forms.Clipboard.SetText(msg);
+                            Clipboard.SetText(msg);
                         });
                     };
                     errornode.Tag = errorCache;
@@ -620,7 +621,7 @@ namespace ChummerHub.Client.Backend
                 if (ResponseBody == null)
                 {
                     content = await response.Response.Content.ReadAsStringAsync();
-                    rb = Newtonsoft.Json.JsonConvert.DeserializeObject<ResultBase>(content);
+                    rb = JsonConvert.DeserializeObject<ResultBase>(content);
                     ResponseBody = rb;
                 }
             }
@@ -640,8 +641,8 @@ namespace ChummerHub.Client.Backend
             {
                 if (ResponseBody != null)
                 {
-                    content = Newtonsoft.Json.JsonConvert.SerializeObject(ResponseBody);
-                    rb = Newtonsoft.Json.JsonConvert.DeserializeObject<ResultBase>(content);
+                    content = JsonConvert.SerializeObject(ResponseBody);
+                    rb = JsonConvert.DeserializeObject<ResultBase>(content);
                 }
             }
             catch (Exception e)
@@ -698,7 +699,7 @@ namespace ChummerHub.Client.Backend
                 {
                     //list.SiNner.DownloadedFromSINnersTime = DateTime.Now;
                     var objListNode = GetCharacterRosterTreeNodeRecursive(parentlist);
-
+                    objListNode.Tag = PluginHandler.MyPluginHandlerInstance;
                     PluginHandler.MainForm.DoThreadSafe(() =>
                     {
                         if (objListNode != null)
@@ -737,7 +738,7 @@ namespace ChummerHub.Client.Backend
                 PluginHandler.MainForm.DoThreadSafe(() =>
                 {
                     TreeNode node = new TreeNode("Online, but no chummers uploaded");
-                    node.Tag = node.Text;
+                    node.Tag = PluginHandler.MyPluginHandlerInstance;
                     node.ToolTipText =
                         "To upload a chummer, open it go to the sinners-tabpage and click upload (and wait a bit).";
                     Log.Info("Online, but no chummers uploaded");
@@ -758,17 +759,17 @@ namespace ChummerHub.Client.Backend
             if (objCache.BuildMethod != "online")
                 return objCache.CalculatedName(false);
             string strReturn;
-            if (!string.IsNullOrEmpty(objCache.ErrorText))
+            if (!String.IsNullOrEmpty(objCache.ErrorText))
             {
                 strReturn = Path.GetFileNameWithoutExtension(objCache.FileName) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + LanguageManager.GetString("String_Error", GlobalOptions.Language) + ')';
             }
             else
             {
                 strReturn = objCache.CharacterAlias;
-                if (string.IsNullOrEmpty(strReturn))
+                if (String.IsNullOrEmpty(strReturn))
                 {
                     strReturn = objCache.CharacterName;
-                    if (string.IsNullOrEmpty(strReturn))
+                    if (String.IsNullOrEmpty(strReturn))
                         strReturn = LanguageManager.GetString("String_UnnamedCharacter", GlobalOptions.Language);
                 }
                 strReturn += " (online)";
@@ -781,7 +782,8 @@ namespace ChummerHub.Client.Backend
             TreeNode objListNode = new TreeNode
             {
                 Text = ssg.Groupname,
-                Name = ssg.Groupname
+                Name = ssg.Groupname,
+                Tag = ssg
             };
             var mlist = (from a in ssg.MyMembers orderby a.Display select a).ToList();
             foreach (var member in mlist)
@@ -828,7 +830,7 @@ namespace ChummerHub.Client.Backend
                 }
                 objListNode.Nodes.Add(memberNode);
                 
-                if (!string.IsNullOrEmpty(objCache.ErrorText))
+                if (!String.IsNullOrEmpty(objCache.ErrorText))
                 {
                     memberNode.ForeColor = Color.Red;
                     memberNode.ToolTipText += Environment.NewLine + Environment.NewLine +
@@ -898,7 +900,40 @@ namespace ChummerHub.Client.Backend
             }
         }
 
-        private static void SetEventHandlers(SINners.Models.SINner sinner, CharacterCache objCache)
+        public static async Task<CharacterExtended> UploadCharacterFromFile(string fileName)
+        {
+            CharacterExtended ce = null;
+            try
+            {
+                Log.Trace("Loading: " + fileName);
+                var c = new Character { FileName = fileName };
+                using (frmLoading frmLoadingForm = new frmLoading { CharacterFile = fileName })
+                {
+                    frmLoadingForm.Reset(36);
+                    frmLoadingForm.TopMost = true;
+                    frmLoadingForm.Show();
+                    if (!(await c.Load(frmLoadingForm, false)))
+                        return null;
+                    Log.Trace("Character loaded: " + c.Name);
+                }
+
+                frmCharacterRoster.CharacterCache myCharacterCache = new frmCharacterRoster.CharacterCache(fileName);
+                ce = new CharacterExtended(c, null, null, myCharacterCache);
+                await ce.Upload(null);
+            }
+            catch (Exception ex)
+            {
+                string msg = "Exception while loading " + fileName + ":";
+                msg += Environment.NewLine + ex.ToString();
+                Log.Warn(msg);
+                /* run your code here */
+                Program.MainForm.ShowMessageBox(msg);
+            }
+
+            return ce;
+        }
+
+        private static void SetEventHandlers(SINner sinner, CharacterCache objCache)
         {
             objCache.MyPluginDataDic.Add("SINnerId", sinner?.Id);
             objCache.OnMyDoubleClick -= objCache.OnDefaultDoubleClick;
@@ -1140,12 +1175,12 @@ namespace ChummerHub.Client.Backend
                 TaskScheduler scheduler = null;
                 Program.MainForm.DoThreadSafe(() =>
                 {
-                    scheduler = System.Threading.Tasks.TaskScheduler.FromCurrentSynchronizationContext();
+                    scheduler = TaskScheduler.FromCurrentSynchronizationContext();
                 });
                 
 
                 // this can be called anywhere
-                var task = new System.Threading.Tasks.Task(() =>
+                var task = new Task(() =>
                 {
                     var client = StaticUtils.GetClient();
                     res = client.PostSINWithHttpMessagesAsync(uploadInfo).Result;
@@ -1210,7 +1245,7 @@ namespace ChummerHub.Client.Backend
                                     }
                                     using (new CursorWait(true, PluginHandler.MainForm))
                                     {
-                                        Chummer.Plugins.PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false, true);
+                                        PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false, true);
                                     }   
                                 });
                             }
@@ -1270,7 +1305,7 @@ namespace ChummerHub.Client.Backend
                                     {
                                         using (new CursorWait(true, PluginHandler.MainForm))
                                         {
-                                            Chummer.Plugins.PluginHandler.MainForm.CharacterRoster.LoadCharacters(false,
+                                            PluginHandler.MainForm.CharacterRoster.LoadCharacters(false,
                                                 false, false, true);
                                         }
                                     });
@@ -1304,14 +1339,14 @@ namespace ChummerHub.Client.Backend
 
 
 
-        public static async Task<string> DownloadFile(SINners.Models.SINner sinner, CharacterCache objCache)
+        public static async Task<string> DownloadFile(SINner sinner, CharacterCache objCache)
         {
             try
             {
 
                 //currently only one chum5-File per chum5z ZipFile is implemented!
                 string loadFilePath = null;
-                string zipPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "SINner", sinner.Id.Value.ToString());
+                string zipPath = Path.Combine(Path.GetTempPath(), "SINner", sinner.Id.Value.ToString());
                 if (Directory.Exists(zipPath))
                 {
                     var files = Directory.EnumerateFiles(zipPath, "*.chum5", SearchOption.TopDirectoryOnly);
@@ -1343,7 +1378,7 @@ namespace ChummerHub.Client.Backend
                 {
                     try
                     {
-                        string zippedFile = Path.Combine(System.IO.Path.GetTempPath(), "SINner", sinner.Id.Value + ".chum5z");
+                        string zippedFile = Path.Combine(Path.GetTempPath(), "SINner", sinner.Id.Value + ".chum5z");
                         if (File.Exists(zippedFile))
                             File.Delete(zippedFile);
                         Exception rethrow = null;
@@ -1353,7 +1388,7 @@ namespace ChummerHub.Client.Backend
                             {
                                 wc.DownloadFile(
                                     // Param1 = Link of file
-                                    new System.Uri(sinner.DownloadUrl),
+                                    new Uri(sinner.DownloadUrl),
                                     // Param2 = Path to save
                                     zippedFile
                                 );
@@ -1378,7 +1413,7 @@ namespace ChummerHub.Client.Backend
                         }
 
 
-                        System.IO.Compression.ZipFile.ExtractToDirectory(zippedFile, zipPath);
+                        ZipFile.ExtractToDirectory(zippedFile, zipPath);
                         var files = Directory.EnumerateFiles(zipPath, "*.chum5", SearchOption.TopDirectoryOnly);
                         foreach (var file in files)
                         {
@@ -1423,7 +1458,7 @@ namespace ChummerHub.Client.Backend
         }
 
     
-        public static Task<string> DownloadFileTask(SINners.Models.SINner sinner, CharacterCache objCache)
+        public static Task<string> DownloadFileTask(SINner sinner, CharacterCache objCache)
         {
             try
             {
@@ -1451,9 +1486,5 @@ namespace ChummerHub.Client.Backend
 
           
         }
-
-
-            
-        
     }
 }

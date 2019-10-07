@@ -10,6 +10,7 @@ using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
 using System;
+using Microsoft.Extensions.Logging.ApplicationInsights;
 
 namespace ChummerHub
 {
@@ -109,6 +110,11 @@ namespace ChummerHub
                     logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
                     logging.AddConsole();
                     logging.AddDebug();
+                    logging.AddApplicationInsights("95c486ab-aeb7-4361-8667-409b7bf62713");
+                    logging.AddFilter<ApplicationInsightsLoggerProvider>("", LogLevel.Trace);
+                    // Additional filtering For category starting in "Microsoft",
+                    // only Warning or above will be sent to Application Insights.
+                    logging.AddFilter<ApplicationInsightsLoggerProvider>("Microsoft", LogLevel.Warning);
                 })
                 .CaptureStartupErrors(true)
                 .Build();

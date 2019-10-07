@@ -221,6 +221,7 @@
     <Compile Include="UI\frmWebBrowser.Designer.cs">
       <DependentUpon>frmWebBrowser.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\Prompt.cs" />
     <Compile Include="UI\ucSINnerGroupCreate.cs">
       <SubType>UserControl</SubType>
     </Compile>

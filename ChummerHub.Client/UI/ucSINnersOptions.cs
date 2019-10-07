@@ -26,6 +26,7 @@ using Microsoft.Win32;
 using NLog;
 using MessageBox = System.Windows.Forms.MessageBox;
 using OpenFileDialog = System.Windows.Forms.OpenFileDialog;
+using Utils = ChummerHub.Client.Backend.Utils;
 
 //using Nemiro.OAuth;
 //using Nemiro.OAuth.LoginForms;
@@ -565,38 +566,15 @@ namespace ChummerHub.Client.UI
             if (thisDialog.ShowDialog() != DialogResult.OK) return;
             foreach (var file in thisDialog.FileNames)
             {
-                try
-                {
-                    Log.Trace("Loading: " + file);
-                    var c = new Character { FileName = file };
-                    using (frmLoading frmLoadingForm = new frmLoading {CharacterFile = file})
-                    {
-                        frmLoadingForm.Reset(36);
-                        frmLoadingForm.TopMost = true;
-                        frmLoadingForm.Show();
-                        if (!(await c.Load(frmLoadingForm, false)))
-                            continue;
-                        Log.Trace("Character loaded: " + c.Name);
-                    }
-                    frmCharacterRoster.CharacterCache myCharacterCache = new frmCharacterRoster.CharacterCache(file);
-                    CharacterExtended ce = new CharacterExtended(c, null, null, myCharacterCache);
-                    await ce.Upload(null);
-                }
-                catch (Exception ex)
-                {
-                    string msg = "Exception while loading " + file + ":";
-                    msg += Environment.NewLine + ex.ToString();
-                    Log.Warn(msg);
-                    /* run your code here */
-                    Program.MainForm.ShowMessageBox(msg);
-                 
-                }
+                await Utils.UploadCharacterFromFile(file);
             }
 
             Program.MainForm.ShowMessageBox("Upload of " + thisDialog.FileNames.Length + " files finished (successful or not - its over).");
         }
 
-    
+        
+
+
         private void cbUploadOnSave_CheckedChanged(object sender, EventArgs e)
         {
             ucSINnersOptions.UploadOnSave = cbUploadOnSave.Checked;
