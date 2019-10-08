@@ -563,11 +563,11 @@ namespace Chummer.Backend.Equipment
                     if (string.IsNullOrEmpty(strForcedSide) && ParentVehicle == null)
                     {
                         ObservableCollection<Cyberware> lstCyberwareToCheck = Parent == null ? _objCharacter.Cyberware : Parent.Children;
-                        if (!objXmlCyberware.RequirementsMet(_objCharacter, string.Empty, string.Empty, string.Empty, "Left") ||
+                        if (!objXmlCyberware.RequirementsMet(_objCharacter, Parent, string.Empty, string.Empty, string.Empty, "Left") ||
                             (!string.IsNullOrEmpty(BlocksMounts) && lstCyberwareToCheck.Any(x => !string.IsNullOrEmpty(x.HasModularMount) && x.Location == "Left" && BlocksMounts.Split(',').Contains(x.HasModularMount))) ||
                             (!string.IsNullOrEmpty(HasModularMount) && lstCyberwareToCheck.Any(x => !string.IsNullOrEmpty(x.BlocksMounts) && x.Location == "Left" && x.BlocksMounts.Split(',').Contains(HasModularMount))))
                             strForcedSide = "Right";
-                        else if (!objXmlCyberware.RequirementsMet(_objCharacter, string.Empty, string.Empty, string.Empty, "Right") ||
+                        else if (!objXmlCyberware.RequirementsMet(_objCharacter, Parent, string.Empty, string.Empty, string.Empty, "Right") ||
                             (!string.IsNullOrEmpty(BlocksMounts) && lstCyberwareToCheck.Any(x => !string.IsNullOrEmpty(x.HasModularMount) && x.Location == "Right" && BlocksMounts.Split(',').Contains(x.HasModularMount))) ||
                             (!string.IsNullOrEmpty(HasModularMount) && lstCyberwareToCheck.Any(x => !string.IsNullOrEmpty(x.BlocksMounts) && x.Location == "Right" && x.BlocksMounts.Split(',').Contains(HasModularMount))))
                             strForcedSide = "Left";

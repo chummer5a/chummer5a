@@ -24,6 +24,7 @@ using System.Xml;
 using Chummer.Backend.Equipment;
 using System.Text;
 using System.Linq;
+using System.Xml.XPath;
 
 // ReSharper disable LocalizableElement
 
@@ -265,8 +266,29 @@ namespace Chummer
                 tabWeapons.Columns.Add("Cost");
                 tabWeapons.Columns["Cost"].DataType = typeof(NuyenString);
 
+                XmlNode xmlParentWeaponDataNode = _objXmlDocument.SelectSingleNode($"/chummer/weapons/weapon[id = \"{ParentWeapon?.SourceIDString}\"]");
                 foreach (XmlNode objXmlWeapon in objNodeList)
                 {
+                    if (!objXmlWeapon.RequirementsMet(_objCharacter, ParentWeapon, string.Empty, string.Empty)) continue;
+
+                    XmlNode xmlTestNode = objXmlWeapon.SelectSingleNode("forbidden/weapondetails");
+                    if (xmlTestNode != null)
+                    {
+                        // Assumes topmost parent is an AND node
+                        if (xmlParentWeaponDataNode.ProcessFilterOperationNode(xmlTestNode, false))
+                        {
+                            continue;
+                        }
+                    }
+                    xmlTestNode = objXmlWeapon.SelectSingleNode("required/weapondetails");
+                    if (xmlTestNode != null)
+                    {
+                        // Assumes topmost parent is an AND node
+                        if (!xmlParentWeaponDataNode.ProcessFilterOperationNode(xmlTestNode, false))
+                        {
+                            continue;
+                        }
+                    }
                     if (objXmlWeapon["cyberware"]?.InnerText == bool.TrueString)
                         continue;
                     string strTest = objXmlWeapon["mount"]?.InnerText;
@@ -353,8 +375,30 @@ namespace Chummer
             else
             {
                 List<ListItem> lstWeapons = new List<ListItem>();
+
+                XmlNode xmlParentWeaponDataNode = _objXmlDocument.SelectSingleNode($"/chummer/weapons/weapon[id = \"{ParentWeapon?.SourceIDString}\"]");
                 foreach (XmlNode objXmlWeapon in objNodeList)
                 {
+                    if (!objXmlWeapon.RequirementsMet(_objCharacter, ParentWeapon, string.Empty, string.Empty)) continue;
+
+                    XmlNode xmlTestNode = objXmlWeapon.SelectSingleNode("forbidden/weapondetails");
+                    if (xmlTestNode != null)
+                    {
+                        // Assumes topmost parent is an AND node
+                        if (xmlParentWeaponDataNode.ProcessFilterOperationNode(xmlTestNode, false))
+                        {
+                            continue;
+                        }
+                    }
+                    xmlTestNode = objXmlWeapon.SelectSingleNode("required/weapondetails");
+                    if (xmlTestNode != null)
+                    {
+                        // Assumes topmost parent is an AND node
+                        if (!xmlParentWeaponDataNode.ProcessFilterOperationNode(xmlTestNode, false))
+                        {
+                            continue;
+                        }
+                    }
                     if (objXmlWeapon["cyberware"]?.InnerText == bool.TrueString)
                         continue;
 
