@@ -9811,5 +9811,9 @@ Only one attribute may be at its Maximum value during character creation.</text>
           <text>Meters</text>
       </string>
     <!-- End Region -->
+      <string>
+        <key>String_SINners_HowToGroupParentDescription</key>
+        <text>A group can be appointed as sub-group per drag'n'drop after its creation.</text>
+      </string>
   </strings>
 </chummer>

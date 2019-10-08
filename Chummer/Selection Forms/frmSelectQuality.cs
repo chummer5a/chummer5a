@@ -50,15 +50,7 @@ namespace Chummer
             
             // Load the Quality information.
             _xmlBaseQualityDataNode = XmlManager.Load("qualities.xml").GetFastNavigator().SelectSingleNode("/chummer");
-
-            string strMetatypeXPath = "/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype;
-            if (!string.IsNullOrEmpty(_objCharacter.Metavariant) && _objCharacter.Metavariant != "None")
-            {
-                strMetatypeXPath += "\"]/metavariants/metavariant[name = \"" + _objCharacter.Metavariant;
-            }
-            strMetatypeXPath += "\"]/qualityrestriction";
-            _xmlMetatypeQualityRestrictionNode = XmlManager.Load("metatypes.xml").GetFastNavigator().SelectSingleNode(strMetatypeXPath) ??
-                                                 XmlManager.Load("critters.xml").GetFastNavigator().SelectSingleNode(strMetatypeXPath);
+            _xmlMetatypeQualityRestrictionNode = _objCharacter.GetNode().SelectSingleNode("qualityrestriction");
         }
 
         private void frmSelectQuality_Load(object sender, EventArgs e)

@@ -44,6 +44,7 @@ namespace Chummer.Plugins
     {
         private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
         public static UploadClient MyUploadClient = null;
+        public static IPlugin MyPluginHandlerInstance = null;
 
         public static frmChummerMain MainForm = null;
 
@@ -64,6 +65,7 @@ namespace Chummer.Plugins
                 Properties.Settings.Default.Save();
             }
             MyUploadClient.Id = Properties.Settings.Default.UploadClientId;
+            MyPluginHandlerInstance = this;
         }
 
 
@@ -950,6 +952,98 @@ namespace Chummer.Plugins
                     return objCharacter;
                 }
       
+        }
+
+        public async Task<bool> DoCharacterList_DragDrop(object sender, DragEventArgs e, System.Windows.Forms.TreeView treCharacterList )
+        {
+            try
+            {
+                // Do not allow the root element to be moved.
+                if (treCharacterList.SelectedNode == null || treCharacterList.SelectedNode.Level == 0 ||
+                    treCharacterList.SelectedNode.Parent?.Tag?.ToString() == "Watch")
+                    return false;
+
+                if (e.Data.GetDataPresent("System.Windows.Forms.TreeNode", false))
+                {
+                    if (!(sender is System.Windows.Forms.TreeView treSenderView))
+                        return false;
+                    System.Drawing.Point pt = treSenderView.PointToClient(new System.Drawing.Point(e.X, e.Y));
+                    TreeNode nodDestinationNode = treSenderView.GetNodeAt(pt);
+                    if (nodDestinationNode.Level > 0)
+                        nodDestinationNode = nodDestinationNode.Parent;
+                    string strDestinationNode = nodDestinationNode.Tag?.ToString();
+                    if (strDestinationNode != "Watch")
+                    {
+                        if (!(e.Data.GetData("System.Windows.Forms.TreeNode") is TreeNode nodNewNode))
+                            return false;
+                        var client = StaticUtils.GetClient();
+                        Guid? mySiNnerId = null;
+                        if (nodNewNode.Tag is SINnerSearchGroup sinGroup)
+                        {
+                            if (nodDestinationNode.Tag == PluginHandler.MyPluginHandlerInstance)
+                            {
+                                var res = await client.PutGroupInGroupWithHttpMessagesAsync(sinGroup.Id, sinGroup.Groupname, null);
+                                var handle = await ChummerHub.Client.Backend.Utils.HandleError(res);
+                                return true;
+                            }
+                            else if (nodDestinationNode.Tag is SINnerSearchGroup destGroup)
+                            {
+                                var res = await client.PutGroupInGroupWithHttpMessagesAsync(sinGroup.Id, sinGroup.Groupname, destGroup.Id, sinGroup.MyAdminIdentityRole, sinGroup.IsPublic);
+                                var handle = await ChummerHub.Client.Backend.Utils.HandleError(res);
+                                return true;
+                            }
+                        }
+                        else if (nodNewNode.Tag is frmCharacterRoster.CharacterCache objCache)
+                        {
+                            Object sinidob = null;
+                            if (objCache.MyPluginDataDic?.TryGetValue("SINnerId", out sinidob) == true)
+                            {
+                                mySiNnerId = (Guid?) sinidob;
+                            }
+                            else
+                            {
+                                var ce = await ChummerHub.Client.Backend.Utils.UploadCharacterFromFile(objCache.FilePath);
+                                mySiNnerId = ce?.MySINnerFile?.Id;
+                            }
+                        }
+                        else if (nodNewNode.Tag is SINner sinner)
+                        {
+                            mySiNnerId = sinner.Id;
+                        }
+
+                        if (mySiNnerId != null)
+                        {
+                            if (nodDestinationNode.Tag == PluginHandler.MyPluginHandlerInstance)
+                            {
+                                var res = await client.PutSINerInGroupWithHttpMessagesAsync(null, mySiNnerId);
+                                var handle = await ChummerHub.Client.Backend.Utils.HandleError(res);
+                                return true;
+                            }
+                            else if (nodDestinationNode.Tag is SINnerSearchGroup destGroup)
+                            {
+                                string passwd = null;
+                                if (destGroup.HasPassword == true)
+                                {
+                                    passwd = ChummerHub.Client.UI.Prompt.ShowDialog("Password", "Password required!");
+                                    passwd = SINnerGroup.GetHashString(passwd);
+                                }
+                                var res = await client.PutSINerInGroupWithHttpMessagesAsync(destGroup.Id, mySiNnerId, passwd);
+                                var handle = await ChummerHub.Client.Backend.Utils.HandleError(res);
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception exception)
+            {
+                Log.Error(exception);
+            }
+            finally
+            {
+                PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false, true);
+            }
+            return true;
         }
     }
 }

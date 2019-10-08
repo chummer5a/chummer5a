@@ -9686,5 +9686,9 @@
 			<key>Rating_Meters</key>
 			<text>Meter</text>
 		</string>
+        <string>
+          <key>String_SINners_HowToGroupParentDescription</key>
+          <text>Eine (fertig) erstellte Gruppe kann per Drag'n'Drop einer andere Gruppe (als Sub-Gruppe) zugeordnet werden.</text>
+        </string>
 	</strings>
 </chummer>

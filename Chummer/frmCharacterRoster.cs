@@ -676,7 +676,7 @@ namespace Chummer
                 TreeNode nodDestinationNode = treSenderView.GetNodeAt(pt);
                 if (nodDestinationNode.Level > 0)
                     nodDestinationNode = nodDestinationNode.Parent;
-                string strDestinationNode = nodDestinationNode.Tag.ToString();
+                string strDestinationNode = nodDestinationNode.Tag?.ToString();
                 if(strDestinationNode != "Watch")
                 {
                     if(!(e.Data.GetData("System.Windows.Forms.TreeNode") is TreeNode nodNewNode))
@@ -695,9 +695,20 @@ namespace Chummer
                             case "Favourite":
                                 GlobalOptions.FavoritedCharacters.Add(objCache.FilePath);
                                 break;
+                            default:
+                                break;
                         }
                     }
                 }
+
+                IPlugin plugintag = null;
+                while (nodDestinationNode?.Tag != null && plugintag == null)
+                {
+                    if (nodDestinationNode.Tag is IPlugin temp)
+                        plugintag = temp;
+                    nodDestinationNode = nodDestinationNode.Parent;
+                }
+                plugintag?.DoCharacterList_DragDrop(sender, e, treCharacterList);
             }
         }
 
