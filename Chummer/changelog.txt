@@ -28,6 +28,7 @@ Data Changes:
 - Added correct Rank qualities to the Military Academy and Military School life modules. 
 - Ares Cheetah and Cyberspace Designs Dragonfly now have their integrated weapons. 
 - Fixed missing Flight power for the Feathered Drake.
+- Fixed the Glock MP Custodes (MPV) incorrectly being allowed to take a Concealed Quick-Draw Holster.
 
 New Strings:
 - Label_MetagenicKarmaValue

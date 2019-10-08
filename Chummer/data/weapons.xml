@@ -15463,6 +15463,11 @@
       <page>51</page>
       <conceal>-1</conceal>
       <rating>0</rating>
+      <forbidden>
+        <weapondetails>
+          <name>Glock MP Custodes (MPV)</name>
+        </weapondetails>
+      </forbidden>
       <required>
         <weapondetails>
           <conceal operation="lessthanequals">0</conceal>
