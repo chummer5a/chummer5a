@@ -11925,7 +11925,7 @@ namespace Chummer
                     objSelectedFocus.ChangeEquippedStatus(false);
                 }
 
-                treFoci.SelectedNode.Text = objSelectedFocus.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                e.Node.Text = objSelectedFocus.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
             }
             else
             {
