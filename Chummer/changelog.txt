@@ -10,6 +10,7 @@ Application Changes:
 - Added a hidden Built-In weapon mount that allows all weapon categories. This can be used by vehicles that come with weapon mounts that are always installed. 
 - Critters can now start with cyberware and bioware.
 - Added support for weapons using required and forbidden nodes. This is mostly intended to support underbarrel weapons, but can be used in the same way as other objects. 
+
 Application Fixes:
 - Fixed issues with the Balistic Shield Exotic Melee Weapon choice not being present in the Exotic Weapon skill selector window. Closes #3856
 - Dedicated Spellslinger properly allows for purchasing spells while the character does not have enough karma to afford it. Closes #3859
@@ -18,6 +19,7 @@ Application Fixes:
 - Fixed a regression in the behaviour of availability values improperly causing Built-In items to count towards availabiltiy at character creation. 
 - The SwapSkillAtribute Improvement now properly makes the attribute get swapped for the selected attribute.
 - Fixed a crash when binding Foci, if the treenode for the focus had not been selected. Closes #3905
+- Anthro drones now receive 8 base physical condition monitor boxes instead of 6, per Rigger 5 rules. I don't personally agree with this rule since it effectively means they have 10 base due to limbs, but whatever. 
 
 Data Changes:
 - Tetrachromacy now adds adds +3 to Perception, with a (Visual) condition. This will be exposed to the Print method for character sheets at a later date. 
