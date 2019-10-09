@@ -9690,5 +9690,13 @@
           <key>String_SINners_HowToGroupParentDescription</key>
           <text>Eine (fertig) erstellte Gruppe kann per Drag'n'Drop einer andere Gruppe (als Sub-Gruppe) zugeordnet werden.</text>
         </string>
+        <string>
+          <key>String_SINners_EnterGroupPassword</key>
+          <text>Diese Gruppe ist passwortgeschützt. Bitte gib das Passwort ein:</text>
+        </string>
+        <string>
+          <key>String_SINners_EnterGroupPasswordTitle</key>
+          <text>Passwortabfrage</text>
+        </string>
 	</strings>
 </chummer>

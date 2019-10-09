@@ -1024,8 +1024,10 @@ namespace Chummer.Plugins
                                 string passwd = null;
                                 if (destGroup.HasPassword == true)
                                 {
-                                    passwd = ChummerHub.Client.UI.Prompt.ShowDialog("Password", "Password required!");
-                                    passwd = SINnerGroup.GetHashString(passwd);
+                                    ChummerHub.Client.UI.frmSINnerPassword getPWD = new frmSINnerPassword();
+                                    var pwdquestion = LanguageManager.GetString("String_SINners_EnterGroupPassword", true);
+                                    var pwdcaption = LanguageManager.GetString("String_SINners_EnterGroupPasswordTitle", true);
+                                    passwd = getPWD.ShowDialog(pwdquestion, pwdcaption);
                                 }
                                 var res = await client.PutSINerInGroupWithHttpMessagesAsync(destGroup.Id, mySiNnerId, passwd);
                                 var handle = await ChummerHub.Client.Backend.Utils.HandleError(res);

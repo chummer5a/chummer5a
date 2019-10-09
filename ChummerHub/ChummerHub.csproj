@@ -42,13 +42,13 @@
   </PropertyGroup>-->
   
   <ItemGroup>
-    <PackageReference Include="Google.Apis.Drive.v3" Version="1.41.1.1715" />
-    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.8.0" />
-    <PackageReference Include="Microsoft.ApplicationInsights.DependencyCollector" Version="2.11.0" />
-    <PackageReference Include="Microsoft.ApplicationInsights.PerfCounterCollector" Version="2.11.0" />
+    <PackageReference Include="Google.Apis.Drive.v3" Version="1.41.1.1729" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.8.1" />
+    <PackageReference Include="Microsoft.ApplicationInsights.DependencyCollector" Version="2.11.1" />
+    <PackageReference Include="Microsoft.ApplicationInsights.PerfCounterCollector" Version="2.11.1" />
     <PackageReference Include="Microsoft.ApplicationInsights.SnapshotCollector" Version="1.3.5" />
-    <PackageReference Include="Microsoft.ApplicationInsights.Web" Version="2.11.0" />
-    <PackageReference Include="Microsoft.ApplicationInsights.WindowsServer" Version="2.11.0" />
+    <PackageReference Include="Microsoft.ApplicationInsights.Web" Version="2.11.1" />
+    <PackageReference Include="Microsoft.ApplicationInsights.WindowsServer" Version="2.11.1" />
     <PackageReference Include="Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel" Version="2.11.0" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.AzureKeyVault.HostingStartup" Version="2.0.4" />
