@@ -1078,10 +1078,6 @@ namespace Chummer.Backend.Equipment
         /// Children as Underbarrel Weapon.
         /// </summary>
         public TaggedObservableCollection<Weapon> Children => UnderbarrelWeapons;
-        /// <summary>
-        /// Whether or not this Weapon is an Underbarrel Weapon.
-        /// </summary>
-        public bool IsUnderbarrelWeapon => Parent != null;
 
         /// <summary>
         /// Internal identifier which will be used to identify this Weapon.
@@ -2292,7 +2288,7 @@ namespace Chummer.Backend.Equipment
                     object objProcess = CommonFunctions.EvaluateInvariantXPath(strThisAmmo, out bool blnIsSuccess);
                     if (blnIsSuccess)
                     {
-                        int intAmmo = IsUnderbarrelWeapon && !IncludedInWeapon ? Convert.ToInt32(Math.Ceiling((double)objProcess)) / 2 : Convert.ToInt32(Math.Ceiling((double)objProcess));
+                        int intAmmo = Convert.ToInt32(Math.Ceiling((double)objProcess));
 
                         intAmmo += (intAmmo * intAmmoBonus + 99) / 100;
 

@@ -36,6 +36,7 @@ Data Changes:
 - Fixed the Glock MP Custodes (MPV) incorrectly being allowed to take a Concealed Quick-Draw Holster.
 - Added warforms from Howling Shadows. 
 - Underbarrel weapons are now properly restricted to weapons that can take them. 
+- All underbarrel weapons from Run and Gun have been properly created as weapons, where data exists for them. I'm not going to add the chainsaw, because there's no firm raw on what a chainsaw is. Closes #3553
 
 New Strings:
 - Label_MetagenicKarmaValue
