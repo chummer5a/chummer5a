@@ -191,6 +191,12 @@
     <Compile Include="UI\frmSINnerGroupSearch.Designer.cs">
       <DependentUpon>frmSINnerGroupSearch.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\frmSINnerPassword.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\frmSINnerPassword.Designer.cs">
+      <DependentUpon>frmSINnerPassword.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\frmSINnerResponse.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -221,7 +227,6 @@
     <Compile Include="UI\frmWebBrowser.Designer.cs">
       <DependentUpon>frmWebBrowser.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Prompt.cs" />
     <Compile Include="UI\ucSINnerGroupCreate.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -295,6 +300,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\frmSINnerGroupSearch.resx">
       <DependentUpon>frmSINnerGroupSearch.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\frmSINnerPassword.resx">
+      <DependentUpon>frmSINnerPassword.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\frmSINnerResponse.resx">
       <DependentUpon>frmSINnerResponse.cs</DependentUpon>

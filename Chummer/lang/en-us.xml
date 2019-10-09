@@ -9815,5 +9815,14 @@ Only one attribute may be at its Maximum value during character creation.</text>
         <key>String_SINners_HowToGroupParentDescription</key>
         <text>A group can be appointed as sub-group per drag'n'drop after its creation.</text>
       </string>
+      <string>
+        <key>String_SINners_EnterGroupPassword</key>
+        <text>This group is password protected. Please enter it's password:</text>
+      </string>
+      <string>
+        <key>String_SINners_EnterGroupPasswordTitle</key>
+        <text>Enter Password</text>
+      </string>
+      
   </strings>
 </chummer>
