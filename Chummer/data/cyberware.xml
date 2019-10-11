@@ -3493,6 +3493,10 @@
           <val>1</val>
           <category>Ground</category>
         </runmultiplier>
+        <weaponaccuracy>
+          <name>Raptor Foot</name>
+          <value>1</value>
+        </weaponaccuracy>
       </pairbonus>
       <required>
         <parentdetails>
