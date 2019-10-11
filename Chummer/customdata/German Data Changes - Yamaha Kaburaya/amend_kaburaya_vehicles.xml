@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Changes the Yamaha Kaburaya's Acceleration from 3 to 4. -->
+<chummer>
+  <vehicles>
+    <vehicle>
+      <id>006ea45a-cc35-496c-8d01-94eb64d8febb</id>
+      <accel>4</accel>
+    </vehicle>
+  </vehicles>
+</chummer>
