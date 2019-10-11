@@ -39,6 +39,7 @@ Data Changes:
 - All underbarrel weapons from Run and Gun have been properly created as weapons, where data exists for them. I'm not going to add the chainsaw, because there's no firm raw on what a chainsaw is. Closes #3553
 - Added a new customdata item to override the Acceleration of the Yamaha Kaburaya from 3 to 4, per German data changes. Closes #3908
 - Fixed a missing accuracy bonus for Raptor Foot cyberware when also equipped with digigrade legs. Closes #3863
+- Added missing additional reagents from Forbidden Arcana. Closes #2766
 
 New Strings:
 - Label_MetagenicKarmaValue
