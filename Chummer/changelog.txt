@@ -40,6 +40,7 @@ Data Changes:
 - Added a new customdata item to override the Acceleration of the Yamaha Kaburaya from 3 to 4, per German data changes. Closes #3908
 - Fixed a missing accuracy bonus for Raptor Foot cyberware when also equipped with digigrade legs. Closes #3863
 - Added missing additional reagents from Forbidden Arcana. Closes #2766
+- Added separately-priced SnS-Static Shaft crossbow bolts per German errata. Closes #2368
 
 New Strings:
 - Label_MetagenicKarmaValue
