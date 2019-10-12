@@ -11,6 +11,7 @@ Application Changes:
 - Critters can now start with cyberware and bioware.
 - Added support for weapons using required and forbidden nodes. This is mostly intended to support underbarrel weapons, but can be used in the same way as other objects. 
 - Critters can now be created with specialisations in skills they start with.
+- Added support for armormod requirements into selectionshared. If the sameparent attribute is set to True, then the armour mod must be on the same armour parent as the new mod. Otherwise, it will just check for any mod on any full piece of armour.
 
 Application Fixes:
 - Fixed issues with the Balistic Shield Exotic Melee Weapon choice not being present in the Exotic Weapon skill selector window. Closes #3856
@@ -42,6 +43,7 @@ Data Changes:
 - Fixed a missing accuracy bonus for Raptor Foot cyberware when also equipped with digigrade legs. Closes #3863
 - Added missing additional reagents from Forbidden Arcana. Closes #2766
 - Added separately-priced SnS-Static Shaft crossbow bolts per German errata. Closes #2368
+- RIG Helmet has been set to a zerro-cost armor mod that requires that the base mod be installed first. Closes #1561
 
 New Strings:
 - Label_MetagenicKarmaValue

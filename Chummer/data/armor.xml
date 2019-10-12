@@ -4111,10 +4111,15 @@
       <armor>0</armor>
       <maxrating>1</maxrating>
       <armorcapacity>[2]</armorcapacity>
-      <avail>8</avail>
-      <cost>2500</cost>
+      <avail>0</avail>
+      <cost>0</cost>
       <source>RG</source>
       <page>85</page>
+      <required>
+        <oneof>
+          <armormod sameparent="True">Responsive Interface Gear: Armor</armormod>
+        </oneof>
+      </required>
     </mod>
     <!-- End Region -->
     <!-- Region Bullets & Bandages -->
