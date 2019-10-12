@@ -414,6 +414,13 @@ namespace Chummer
                         ImprovementManager.CreateImprovement(_objCharacter, xmlSkill.InnerText, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.SkillLevel, string.Empty, strRating == "F" ? intForce : Convert.ToInt32(strRating));
                         ImprovementManager.Commit(_objCharacter);
                     }
+                    string strSkill = xmlSkill.InnerText;
+                    Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill(strSkill);
+                    if (objSkill == null) continue;
+                    string strSpec = xmlSkill.Attributes?["spec"]?.InnerText ?? string.Empty;
+                    ImprovementManager.CreateImprovement(_objCharacter, strSkill, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.SkillSpecialization, strSpec);
+                    SkillSpecialization spec= new SkillSpecialization(strSpec, true, objSkill);
+                    objSkill.Specializations.Add(spec);
                 }
                 //Set the Skill Group Ratings for the Critter.
                 foreach (XmlNode xmlSkillGroup in charNode.SelectNodes("skills/group"))

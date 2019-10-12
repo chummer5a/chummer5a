@@ -10,6 +10,7 @@ Application Changes:
 - Added a hidden Built-In weapon mount that allows all weapon categories. This can be used by vehicles that come with weapon mounts that are always installed. 
 - Critters can now start with cyberware and bioware.
 - Added support for weapons using required and forbidden nodes. This is mostly intended to support underbarrel weapons, but can be used in the same way as other objects. 
+- Critters can now be created with specialisations in skills they start with.
 
 Application Fixes:
 - Fixed issues with the Balistic Shield Exotic Melee Weapon choice not being present in the Exotic Weapon skill selector window. Closes #3856
