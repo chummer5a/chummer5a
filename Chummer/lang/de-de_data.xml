@@ -4869,6 +4869,7 @@
 			<category translate="Protosapiens">Protosapients</category>
 			<category translate="Technocritter">Technocritters</category>
 			<category translate="Schattengeister">Shadow Spirits</category>
+			<category translate="Kriegsformen">Warforms</category>
 		</categories>
 		<metatypes>
 			<metatype>
@@ -18936,6 +18937,114 @@
 				<name>Personal Drone Rack</name>
 				<translate>Tragbare Drohnenhalterung</translate>
 				<altpage>70</altpage>
+			</gear>
+			<gear translated="True">
+				<id>2086797b-7297-4612-bf42-f85494992127</id>
+				<name>Tainted Reagents</name>
+				<translate>Verdorbene Reagenzien</translate>
+				<altpage>180</altpage>
+			</gear>
+			<gear translated="True">
+				<id>e61b191f-1cc8-4d6f-a4ab-8baed2591e88</id>
+				<name>Tainted Reagents, Refined</name>
+				<translate>Verdorbene Reagenzien, geläutert</translate>
+				<altpage>180</altpage>
+			</gear>
+			<gear translated="True">
+				<id>a591c5c6-7916-4e3c-8d44-a2180be268dc</id>
+				<name>Tainted Reagents, Radical</name>
+				<translate>Verdorbene Reagenzien, radikal</translate>
+				<altpage>180</altpage>
+			</gear>
+			<gear translated="True">
+				<id>912ede4d-32c4-48ce-bcf2-88d0da386997</id>
+				<name>Inferior Reagents</name>
+				<translate>Minderwertige Reagenzien</translate>
+				<altpage>180</altpage>
+			</gear>
+			<gear translated="True">
+				<id>b0e7e907-c9c1-4648-9ff5-9962371eee05</id>
+				<name>Inferior Reagents, Refined</name>
+				<translate>Minderwertige Reagenzien, geläutert</translate>
+				<altpage>180</altpage>
+			</gear>
+			<gear translated="True">
+				<id>6ea20805-fd4c-49ad-a4f7-43422289ca73</id>
+				<name>Inferior Reagents, Radical</name>
+				<translate>Minderwertige Reagenzien, radikal</translate>
+				<altpage>180</altpage>
+			</gear>
+			<gear translated="True">
+				<id>132d7f2a-ad01-4bfe-ae10-1c27ea707982</id>
+				<name>Subpar Reagents</name>
+				<translate>Unterdurchschnittliche Reagenzien</translate>
+				<altpage>180</altpage>
+			</gear>
+			<gear translated="True">
+				<id>9d7c9076-bd88-4756-af44-26d2cbafb429</id>
+				<name>Subpar Reagents, Refined</name>
+				<translate>Unterdurchschnittliche Reagenzien, geläutert</translate>
+				<altpage>180</altpage>
+			</gear>
+			<gear translated="True">
+				<id>9276a770-b1b8-4f47-8341-6849c8bb305b</id>
+				<name>Subpar Reagents, Radical</name>
+				<translate>Unterdurchschnittliche Reagenzien, radikal</translate>
+				<altpage>180</altpage>
+			</gear>
+			<gear translated="True">
+				<id>4f2699a7-5980-41cb-aafb-c4285060179e</id>
+				<name>Baseline Reagents</name>
+				<translate>Normale Reagenzien</translate>
+				<altpage>180</altpage>
+			</gear>
+			<gear translated="True">
+				<id>f45f76ea-6c13-44c0-a828-2047f242e5eb</id>
+				<name>Baseline Reagents, Refined</name>
+				<translate>Normale Reagenzien, geläutert</translate>
+				<altpage>180</altpage>
+			</gear>
+			<gear translated="True">
+				<id>1aadeffa-f917-430e-8436-48708c0e6504</id>
+				<name>Baseline Reagents, Radical</name>
+				<translate>Normale Reagenzien, radikal</translate>
+				<altpage>180</altpage>
+			</gear>
+			<gear translated="True">
+				<id>e4d6fcbd-a319-4636-bd84-9caf06643dc6</id>
+				<name>Superior Reagents</name>
+				<translate>Hervorragende Reagenzien</translate>
+				<altpage>180</altpage>
+			</gear>
+			<gear translated="True">
+				<id>fbab4af1-6b81-4a57-9d8c-d74b5a05ee10</id>
+				<name>Superior Reagents, Refined</name>
+				<translate>Hervorragende Reagenzien, geläutert</translate>
+				<altpage>180</altpage>
+			</gear>
+			<gear translated="True">
+				<id>a6bc216b-a210-4201-a970-d4477867595c</id>
+				<name>Superior Reagents, Radical</name>
+				<translate>Hervorragende Reagenzien, radikal</translate>
+				<altpage>180</altpage>
+			</gear>
+			<gear translated="True">
+				<id>e6bc2ba8-c895-495e-88c7-d673ea2d4751</id>
+				<name>Prime Reagents</name>
+				<translate>Exzellente Reagenzien</translate>
+				<altpage>180</altpage>
+			</gear>
+			<gear translated="True">
+				<id>f90b26bb-1817-4672-b42e-49c2e0d0a0a2</id>
+				<name>Prime Reagents, Refined</name>
+				<translate>Exzellente Reagenzien, geläutert</translate>
+				<altpage>180</altpage>
+			</gear>
+			<gear translated="True">
+				<id>c0ea9634-4cd0-4f8f-aba8-cf2ed1b73129</id>
+				<name>Prime Reagents, Radical</name>
+				<translate>Exzellente Reagenzien, radikal</translate>
+				<altpage>180</altpage>
 			</gear>
 		</gears>
 	</chummer>
@@ -44795,6 +44904,18 @@
 				<name>Melee Bite</name>
 				<translate>Nahkampf: Biss</translate>
 				<altpage>136</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>c166caeb-aaa8-4e13-b76d-ae9e567f7dcd</id>
+				<name>Underbarrel Bola Launcher</name>
+				<translate>Unterlauf-Bolawerfer</translate>
+				<altpage>52</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>7d711605-e6a9-42f9-846b-95ef80e8c575</id>
+				<name>Underbarrel Grapple Gun</name>
+				<translate>Unterlauf-Enterhakenkanone</translate>
+				<altpage>52</altpage>
 			</weapon>
 		</weapons>
 		<accessories>
