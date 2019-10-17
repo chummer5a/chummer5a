@@ -51,6 +51,7 @@ Data Changes:
 - RIG Helmet has been set to a zero-cost armor mod that requires that the base mod be installed first. Closes #1561
 - Removed legacy softweave improvement from the YNT Softweave armor mod. 
 - Moved the Centaur Body improvement into the metatype improvements for Centaur and flagged the quality as hidden.
+- Added correct AP value (-5) to the Riot Shield.
 
 New Strings:
 - Label_MetagenicKarmaValue

@@ -1997,7 +1997,7 @@
       <accuracy>4</accuracy>
       <reach>0</reach>
       <damage>9S(e)</damage>
-      <ap>0</ap>
+      <ap>-5</ap>
       <mode>0</mode>
       <rc>0</rc>
       <ammo>0</ammo>
