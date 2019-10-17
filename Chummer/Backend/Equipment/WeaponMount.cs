@@ -34,7 +34,7 @@ namespace Chummer.Backend.Equipment
     /// Vehicle Modification.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class WeaponMount : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, ICanEquip, IHasSource, ICanSort, IHasStolenProperty
+    public class WeaponMount : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, ICanEquip, IHasSource, ICanSort, IHasStolenProperty, ICanPaste
     {
         private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private Guid _guiID;
@@ -1004,6 +1004,38 @@ namespace Chummer.Backend.Equipment
             if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
                 _objCachedSourceDetail = null;
             SourceDetail.SetControl(sourceControl);
+        }
+
+        public bool AllowPasteXml
+        {
+            get
+            {
+                switch (GlobalOptions.ClipboardContentType)
+                {
+                    case ClipboardContentType.Weapon:
+                    {
+                        if (AllowedWeapons != string.Empty)
+                        {
+                            if (!AllowedWeapons.Contains(GlobalOptions.Clipboard.SelectSingleNode("name").InnerText))
+                                return false;
+                        }
+                        if (AllowedWeaponCategories != string.Empty)
+                        {
+                            if (!AllowedWeaponCategories.Contains(GlobalOptions.Clipboard.SelectSingleNode("category").InnerText))
+                                return false;
+                        }
+
+                        return Weapons.Count == 0; //todo: something something sizes
+                    }
+                    default:
+                        return false;
+                }
+            }
+        }
+
+        public bool AllowPasteObject(object input)
+        {
+            throw new NotImplementedException();
         }
     }
 

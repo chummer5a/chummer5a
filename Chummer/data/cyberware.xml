@@ -3321,6 +3321,9 @@
       <name>Built-in Medkit</name>
       <limit>False</limit>
       <category>Cyberlimb Enhancement</category>
+      <allowgear>
+        <gearname>Medkit</gearname>
+      </allowgear>
       <ess>0.45</ess>
       <capacity>[10]</capacity>
       <avail>8</avail>

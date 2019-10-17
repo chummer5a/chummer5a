@@ -4040,9 +4040,6 @@
       <armorcapacity>[-(Capacity * 0.5 + 0.5*number((Capacity mod 2) = 1))]</armorcapacity>
       <avail>+4</avail>
       <cost>Armor Cost</cost>
-      <bonus>
-        <softweave />
-      </bonus>
       <source>RG</source>
       <page>84</page>
     </mod>

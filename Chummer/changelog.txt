@@ -12,6 +12,10 @@ Application Changes:
 - Added support for weapons using required and forbidden nodes. This is mostly intended to support underbarrel weapons, but can be used in the same way as other objects. 
 - Critters can now be created with specialisations in skills they start with.
 - Added support for armormod requirements into selectionshared. If the sameparent attribute is set to True, then the armour mod must be on the same armour parent as the new mod. Otherwise, it will just check for any mod on any full piece of armour.
+- Added ICanPaste interface type that allows for checking whether the content of the Global Clipboard can be added to the currently selected item. Intent is to pull the logic out of frmCreate and into the base equipment class. 
+- Moved logic for checking whether a weapon accessory is allowed into a weapon into the Weapon class. 
+- All instances of the AllowGear node can now use gearname to allow limiting choices to individually named items (ie built-in medkit allows the Medkit item)
+- Weapon accessories can now be copied and pasted into other weapons in create mode.
 
 Application Fixes:
 - Fixed issues with the Balistic Shield Exotic Melee Weapon choice not being present in the Exotic Weapon skill selector window. Closes #3856
@@ -43,7 +47,8 @@ Data Changes:
 - Fixed a missing accuracy bonus for Raptor Foot cyberware when also equipped with digigrade legs. Closes #3863
 - Added missing additional reagents from Forbidden Arcana. Closes #2766
 - Added separately-priced SnS-Static Shaft crossbow bolts per German errata. Closes #2368
-- RIG Helmet has been set to a zerro-cost armor mod that requires that the base mod be installed first. Closes #1561
+- RIG Helmet has been set to a zero-cost armor mod that requires that the base mod be installed first. Closes #1561
+- Removed legacy softweave improvement from the YNT Softweave armor mod. 
 
 New Strings:
 - Label_MetagenicKarmaValue

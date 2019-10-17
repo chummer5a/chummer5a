@@ -28,6 +28,7 @@ using Chummer.Backend.Attributes;
 using System.Text;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.Xml.XPath;
 using NLog;
 
 namespace Chummer.Backend.Equipment
@@ -37,7 +38,7 @@ namespace Chummer.Backend.Equipment
     /// </summary>
     [HubClassTag("SourceID", true, "Name", null)]
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Weapon : IHasChildren<Weapon>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName, IHasLocation, ICanEquip, IHasSource, ICanSort, IHasWirelessBonus, IHasStolenProperty
+    public class Weapon : IHasChildren<Weapon>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName, IHasLocation, ICanEquip, IHasSource, ICanSort, IHasWirelessBonus, IHasStolenProperty, ICanPaste
 	{
         private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private Guid _guiSourceID = Guid.Empty;
@@ -5673,6 +5674,94 @@ namespace Chummer.Backend.Equipment
             if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
                 _objCachedSourceDetail = null;
             SourceDetail.SetControl(sourceControl);
+        }
+
+        public bool AllowPasteXml
+        {
+            get
+            {
+                switch (GlobalOptions.ClipboardContentType)
+                {
+                    case ClipboardContentType.WeaponAccessory:
+                        XPathNavigator checkNode = GlobalOptions.Clipboard.SelectSingleNode("/character/weaponaccessories/accessory")?.CreateNavigator();
+                        if (CheckAccessoryRequirements(checkNode)) return true;
+                        break;
+                    default:
+                        return false;
+                }
+
+                return false;
+            }
+        }
+
+        public bool AllowPasteObject(object input)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Checks whether a given WeaponAccessory is allowed to be added to this weapon.
+        /// </summary>
+        public bool CheckAccessoryRequirements(XPathNavigator objXmlAccessory)
+        {
+            if (objXmlAccessory == null) return false;
+            List<string> lstMounts = AccessoryMounts.Split('/').ToList();
+            XPathNavigator xmlMountNode = objXmlAccessory.SelectSingleNode("mount");
+            if (xmlMountNode != null)
+            {
+                if (lstMounts.Count > 1)
+                {
+                    if (xmlMountNode.Value.Split('/').Any(strItem =>
+                        !string.IsNullOrEmpty(strItem) && lstMounts.All(strAllowedMount => strAllowedMount != strItem)))
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            XPathNavigator xmlExtraMountNode = objXmlAccessory.SelectSingleNode("extramount");
+            if (xmlExtraMountNode != null)
+            {
+                if (lstMounts.Count > 1)
+                {
+                    if (xmlExtraMountNode.Value.Split('/').Any(strItem =>
+                        !string.IsNullOrEmpty(strItem) && lstMounts.All(strAllowedMount => strAllowedMount != strItem)))
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+            if (!objXmlAccessory.RequirementsMet(_objCharacter, this, string.Empty, string.Empty)) return false;
+
+            XPathNavigator xmlTestNode = objXmlAccessory.SelectSingleNode("forbidden/weapondetails");
+            if (xmlTestNode != null)
+            {
+                // Assumes topmost parent is an AND node
+                if (GetNode().CreateNavigator().ProcessFilterOperationNode(xmlTestNode, false))
+                {
+                    return false;
+                }
+            }
+
+            xmlTestNode = objXmlAccessory.SelectSingleNode("required/weapondetails");
+            if (xmlTestNode != null)
+            {
+                // Assumes topmost parent is an AND node
+                if (!GetNode().CreateNavigator().ProcessFilterOperationNode(xmlTestNode, false))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }

@@ -35,7 +35,7 @@ namespace Chummer.Backend.Equipment
     /// A piece of Armor Modification.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class ArmorMod : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, ICanEquip, IHasSource, IHasRating, ICanSort, IHasWirelessBonus, IHasStolenProperty
+    public class ArmorMod : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, ICanEquip, IHasSource, IHasRating, ICanSort, IHasWirelessBonus, IHasStolenProperty, ICanPaste
 	{
         private Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private Guid _guiID;
@@ -910,6 +910,26 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        public decimal TotalCapacity
+        {
+            get
+            {
+                string strCapacity = CalculatedCapacity;
+                int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
+                if (intPos != -1)
+                {
+                    // If this is a multiple-capacity item, use only the second half.
+                    strCapacity = strCapacity.Substring(intPos + 1);
+                }
+
+                if (strCapacity.StartsWith('['))
+                    strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
+                if (strCapacity == "*")
+                    strCapacity = "0";
+                return Convert.ToDecimal(strCapacity, GlobalOptions.CultureInfo);
+            }
+        }
+
         /// <summary>
         /// Total cost of the Armor Mod.
         /// </summary>
@@ -1229,6 +1249,13 @@ namespace Chummer.Backend.Equipment
             if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
                 _objCachedSourceDetail = null;
             SourceDetail.SetControl(sourceControl);
+        }
+
+        public bool AllowPasteXml { get; }
+
+        bool ICanPaste.AllowPasteObject(object input)
+        {
+            throw new NotImplementedException();
         }
     }
 }

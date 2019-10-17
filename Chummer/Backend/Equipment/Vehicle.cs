@@ -37,7 +37,7 @@ namespace Chummer.Backend.Equipment
     /// </summary>
     [Chummer.HubClassTag("SourceID", true, "Name", null)]
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Vehicle : IHasInternalId, IHasName, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName, IHasMatrixConditionMonitor, IHasPhysicalConditionMonitor, IHasLocation, IHasSource, ICanSort, IHasGear, IHasStolenProperty
+    public class Vehicle : IHasInternalId, IHasName, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName, IHasMatrixConditionMonitor, IHasPhysicalConditionMonitor, IHasLocation, IHasSource, ICanSort, IHasGear, IHasStolenProperty, ICanPaste
     {
         private Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private Guid _guiID;
@@ -3306,6 +3306,32 @@ namespace Chummer.Backend.Equipment
             if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
                 _objCachedSourceDetail = null;
             SourceDetail.SetControl(sourceControl);
+        }
+
+        public bool AllowPasteXml
+        {
+            get
+            {
+                switch (GlobalOptions.ClipboardContentType)
+                {
+                    case ClipboardContentType.Gear:
+                    {
+                        var xmlAddonCategoryList = GetNode()?.SelectNodes("addoncategory");
+                        if (xmlAddonCategoryList?.Count > 0)
+                            return xmlAddonCategoryList.Cast<XmlNode>().Any(xmlCategory =>
+                                xmlCategory.InnerText == GlobalOptions.Clipboard.SelectSingleNode("category").Value);
+
+                        return false;
+                    }
+                    default:
+                        return false;
+                }
+            }
+        }
+
+        public bool AllowPasteObject(object input)
+        {
+            throw new NotImplementedException();
         }
     }
 }

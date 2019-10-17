@@ -364,6 +364,7 @@
     <Compile Include="helpers\NumericUpDownEx.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Interfaces\ICanPaste.cs" />
     <Compile Include="Interfaces\ICanEquip.cs" />
     <Compile Include="Interfaces\ICanRemove.cs" />
     <Compile Include="Interfaces\ICanSort.cs" />
