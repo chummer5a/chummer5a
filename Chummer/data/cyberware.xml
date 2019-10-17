@@ -4559,6 +4559,10 @@
       <page>87</page>
       <blocksmounts>ankle,knee,hip</blocksmounts>
       <bonus>
+        <addlimb precedence="0">
+          <limbslot>leg</limbslot>
+          <val>2</val>
+        </addlimb>
         <runmultiplier>
           <category>Ground</category>
           <percent>100</percent>

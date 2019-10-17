@@ -5789,7 +5789,13 @@ namespace Chummer.Classes
             Log.Info("addlimb");
             Log.Info("addlimb = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
-            CreateImprovement(bonusNode["limbslot"]?.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.AddLimb, _strUnique,
+
+            string strUseUnique = _strUnique;
+            XmlNode xmlPrecedenceNode = bonusNode.SelectSingleNode("@precedence");
+            if (xmlPrecedenceNode != null)
+                strUseUnique = "precedence" + xmlPrecedenceNode.InnerText;
+
+            CreateImprovement(bonusNode["limbslot"]?.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.AddLimb, strUseUnique,
                 ImprovementManager.ValueToInt(_objCharacter, bonusNode["val"]?.InnerText, _intRating));
         }
 

@@ -26,6 +26,7 @@ Application Fixes:
 - The SwapSkillAtribute Improvement now properly makes the attribute get swapped for the selected attribute.
 - Fixed a crash when binding Foci, if the treenode for the focus had not been selected. Closes #3905
 - Anthro drones now receive 8 base physical condition monitor boxes instead of 6, per Rigger 5 rules. I don't personally agree with this rule since it effectively means they have 10 base due to limbs, but whatever. 
+- addlimb improvement now supports the use of precedence nodes to allow preventing multiple sources of limbs from stacking, ie centaurs and Liminal Bodies. Closes #3550
 
 Data Changes:
 - Tetrachromacy now adds adds +3 to Perception, with a (Visual) condition. This will be exposed to the Print method for character sheets at a later date. 
@@ -49,6 +50,7 @@ Data Changes:
 - Added separately-priced SnS-Static Shaft crossbow bolts per German errata. Closes #2368
 - RIG Helmet has been set to a zero-cost armor mod that requires that the base mod be installed first. Closes #1561
 - Removed legacy softweave improvement from the YNT Softweave armor mod. 
+- Moved the Centaur Body improvement into the metatype improvements for Centaur and flagged the quality as hidden.
 
 New Strings:
 - Label_MetagenicKarmaValue

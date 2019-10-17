@@ -4447,12 +4447,7 @@
       <name>Centaur Body</name>
       <karma>0</karma>
       <category>Positive</category>
-      <bonus>
-        <addlimb>
-          <limbslot>leg</limbslot>
-          <val>2</val>
-        </addlimb>
-      </bonus>
+      <hide />
       <required>
         <allof>
           <metatype>Centaur</metatype>

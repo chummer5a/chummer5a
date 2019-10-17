@@ -2085,7 +2085,7 @@ namespace Chummer
         /// <param name="blnAddToRating">Whether or not we should only retrieve values that have AddToRating enabled.</param>
         /// <param name="strImprovedName">Name to assign to the Improvement.</param>
         /// <param name="blnUnconditionalOnly">Whether to only fetch values for improvements that do not have a condition.</param>
-        /// <param name="blnIncludeUnimproved">Whether to only fetch values for improvements that do not have an improvedname when specifying ImprovedNames.</param> 
+        /// <param name="blnIncludeNonImproved">Whether to only fetch values for improvements that do not have an improvedname when specifying ImprovedNames.</param> 
         public static int ValueOf(Character objCharacter, Improvement.ImprovementType objImprovementType, bool blnAddToRating = false, string strImprovedName = "", bool blnUnconditionalOnly = true, bool blnIncludeNonImproved = false)
         {
             //Log.Enter("ValueOf");

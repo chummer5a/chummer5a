@@ -1403,6 +1403,10 @@
       <run>4/0/0</run>
       <sprint>4/1/0</sprint>
       <bonus>
+        <addlimb precedence="0">
+          <limbslot>leg</limbslot>
+          <val>2</val>
+        </addlimb>
         <enableattribute>
           <name>MAG</name>
         </enableattribute>
@@ -1417,7 +1421,6 @@
           <quality>Thermographic Vision</quality>
           <quality>Natural Weapon: Kick (Centaur)</quality>
           <quality>Magic Sense</quality>
-          <quality>Centaur Body</quality>
         </positive>
       </qualities>
       <powers>
