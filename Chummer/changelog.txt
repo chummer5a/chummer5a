@@ -16,6 +16,7 @@ Application Changes:
 - Moved logic for checking whether a weapon accessory is allowed into a weapon into the Weapon class. 
 - All instances of the AllowGear node can now use gearname to allow limiting choices to individually named items (ie built-in medkit allows the Medkit item)
 - Weapon accessories can now be copied and pasted into other weapons in create mode.
+- Added support for vehicle mods coming with built-in cyberware. Supports the Caduceus drone's default snake fingers. 
 
 Application Fixes:
 - Fixed issues with the Balistic Shield Exotic Melee Weapon choice not being present in the Exotic Weapon skill selector window. Closes #3856
@@ -52,6 +53,7 @@ Data Changes:
 - Removed legacy softweave improvement from the YNT Softweave armor mod. 
 - Moved the Centaur Body improvement into the metatype improvements for Centaur and flagged the quality as hidden.
 - Added correct AP value (-5) to the Riot Shield.
+- Added missing Medkit and Snake Fingers cyberwares to the Shiawase Caduceus 'CAD' 7 drone.
 
 New Strings:
 - Label_MetagenicKarmaValue
