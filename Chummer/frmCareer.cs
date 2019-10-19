@@ -233,6 +233,12 @@ namespace Chummer
                         txtAlias.DoDatabinding("Text", CharacterObject, nameof(Character.Alias));
                         txtPlayerName.DoDatabinding("Text", CharacterObject, nameof(Character.PlayerName));
 
+                        chtKarma.Visible = !GlobalOptions.HideCharts;
+                        chtNuyen.Visible = !GlobalOptions.HideCharts;
+                        //TODO: I'm lazy and can't be bothered fabbing up an instance wrapper for this. 
+                        //chtKarma.DoDatabinding("Visible", GlobalOptions, nameof(GlobalOptions.HideCharts));
+                        //chtNuyen.DoDatabinding("Visible", GlobalOptions, nameof(GlobalOptions.HideCharts));
+
                         chkInitiationGroup.DoDatabinding("Checked", CharacterObject, nameof(Character.GroupMember));
 
                         // If the character has a mugshot, decode it and put it in the PictureBox.

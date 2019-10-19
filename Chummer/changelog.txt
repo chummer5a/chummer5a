@@ -17,6 +17,7 @@ Application Changes:
 - All instances of the AllowGear node can now use gearname to allow limiting choices to individually named items (ie built-in medkit allows the Medkit item)
 - Weapon accessories can now be copied and pasted into other weapons in create mode.
 - Added support for vehicle mods coming with built-in cyberware. Supports the Caduceus drone's default snake fingers. 
+- Added a global option to disable the rendering of karma/nuyen charts that cause Chummer to run out of memory in in Linux. This is intended as a temporary shim until a replacement charting tool is developed or the UI is changed.
 
 Application Fixes:
 - Fixed issues with the Balistic Shield Exotic Melee Weapon choice not being present in the Exotic Weapon skill selector window. Closes #3856
