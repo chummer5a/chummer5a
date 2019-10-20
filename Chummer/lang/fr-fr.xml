@@ -9634,7 +9634,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<key>Rating_Meters</key>
 			<text>Mètres</text>
 		</string>
-        <string>
+		<string>
 			<key>String_SINners_HowToGroupParentDescription</key>
 			<text>Un groupe peut être assigné comme sous-groupe par glisser-déposer après sa création.</text>
 		</string>
