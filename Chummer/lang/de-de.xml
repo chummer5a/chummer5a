@@ -9643,14 +9643,6 @@
 			<text>lasse Chummer entscheiden</text>
 		</string>
 		<string>
-			<key>Menu_Tools_SINners</key>
-			<text>SINner Gruppen</text>
-		</string>
-		<string>
-			<key>Menu_Tools_SINnersArchetypes</key>
-			<text>Archetypen</text>
-		</string>
-		<string>
 			<key>Label_SelectAdvancedLifestyle_Base</key>
 			<text>[{0}/{1}]</text>
 		</string>
@@ -9697,6 +9689,10 @@
         <string>
           <key>String_SINners_EnterGroupPasswordTitle</key>
           <text>Passwortabfrage</text>
+        </string>
+        <string>
+          <key>Checkbox_Options_HideCharts</key>
+          <text>Tabellen verbergen, die Probleme mit Wine verursachen</text>
         </string>
 	</strings>
 </chummer>
