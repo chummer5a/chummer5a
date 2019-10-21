@@ -772,7 +772,7 @@ namespace Chummer.Backend.Equipment
                     strAvail = strAvail.Substring(0, strAvail.Length - 1);
                 }
 
-                blnModifyParentAvail = strAvail.StartsWith('+', '-') || IncludedInArmor;
+                blnModifyParentAvail = strAvail.StartsWith('+', '-') && !IncludedInArmor;
 
                 StringBuilder objAvail = new StringBuilder(strAvail.TrimStart('+'));
                 objAvail.Replace("Rating", Rating.ToString());
