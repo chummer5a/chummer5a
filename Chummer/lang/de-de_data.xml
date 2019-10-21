@@ -8298,6 +8298,24 @@
 				<translate>Testudine</translate>
 				<altpage>173</altpage>
 			</metatype>
+			<metatype translated="True">
+				<id>beba6b35-2b2b-40f8-b943-ce690b6a96bb</id>
+				<name>War Hound</name>
+				<translate>Kriegshund</translate>
+				<altpage>173</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>fc2d14ee-4afb-4a38-9c73-4c35a68b2f42</id>
+				<name>War Dolphin</name>
+				<translate>Kriegsdelfin</translate>
+				<altpage>173</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>52d4e880-653f-4506-ae03-bcdf2583f325</id>
+				<name>War Horse</name>
+				<translate>Schlachtross</translate>
+				<altpage>173</altpage>
+			</metatype>
 		</metatypes>
 	</chummer>
 	<chummer file="cyberware.xml">
