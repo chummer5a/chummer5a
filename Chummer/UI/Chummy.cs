@@ -42,7 +42,7 @@ namespace Chummer
         private readonly Point _eyeballCenter = new Point(95, 15);
         private readonly Point _mouthCenter = new Point(100, 50);
         private readonly Pen _thickPen = new Pen(Color.Black, 3);
-        readonly XPathNavigator _objXmlDocument = XmlManager.Load("tips.xml").GetFastNavigator().SelectSingleNode("/chummer/tips");
+        readonly XPathNavigator _objXmlDocument = XmlManager.Load("tips.xml", new Dictionary<string, bool>()).GetFastNavigator().SelectSingleNode("/chummer/tips");
         private readonly List<string> _usedTips = new List<string>();
         private Point _oldMousePos = new Point(-1, -1);
         private Character _characterObject;

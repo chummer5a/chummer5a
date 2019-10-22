@@ -373,7 +373,7 @@ namespace Chummer
             _characterOptions.RecalculateBookXPath();
 
             string strSelectedLanguage = _strSelectedLanguage;
-            XmlManager.Verify(strSelectedLanguage, lstBooks);
+            XmlManager.Verify(strSelectedLanguage, lstBooks, new Dictionary<string, bool>());
 
             string strFilePath = Path.Combine(Utils.GetStartupPath, "lang", "results_" + strSelectedLanguage + ".xml");
             Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_Options_ValidationResults", _strSelectedLanguage), strFilePath),
@@ -535,7 +535,7 @@ namespace Chummer
             PopulateBuildMethodList();
             PopulateDefaultGameplayOptionList();
 
-            XmlNode xmlBooksNode = XmlManager.Load("books.xml", _strSelectedLanguage).SelectSingleNode("/chummer/books");
+            XmlNode xmlBooksNode = XmlManager.Load("books.xml", new Dictionary<string, bool>(), _strSelectedLanguage).SelectSingleNode("/chummer/books");
             if(xmlBooksNode != null)
             {
                 RefreshGlobalSourcebookInfosListView();
@@ -571,7 +571,7 @@ namespace Chummer
         private void RefreshGlobalSourcebookInfosListView()
         {
             // Load the Sourcebook information.
-            XmlDocument objXmlDocument = XmlManager.Load("books.xml", _strSelectedLanguage);
+            XmlDocument objXmlDocument = XmlManager.Load("books.xml", new Dictionary<string, bool>(), _strSelectedLanguage);
 
             // Put the Sourcebooks into a List so they can first be sorted.
             List<ListItem> lstSourcebookInfos = new List<ListItem>();
@@ -608,7 +608,7 @@ namespace Chummer
         private void PopulateSourcebookTreeView()
         {
             // Load the Sourcebook information.
-            XmlDocument objXmlDocument = XmlManager.Load("books.xml", _strSelectedLanguage);
+            XmlDocument objXmlDocument = XmlManager.Load("books.xml", new Dictionary<string, bool>(), _strSelectedLanguage);
 
             // Put the Sourcebooks into a List so they can first be sorted.
 
@@ -664,7 +664,7 @@ namespace Chummer
                     CustomDataDirectoryInfo objLoopInfo = _lstCustomDataDirectoryInfos[i];
                     objLoopNode.Text = objLoopInfo.Name + LanguageManager.GetString("String_Space", _strSelectedLanguage) + '(' + objLoopInfo.Path.Replace(Utils.GetStartupPath, '<' + Application.ProductName + '>') + ')';
                     objLoopNode.Tag = objLoopInfo.Name;
-                    objLoopNode.Checked  = _characterOptions.CustomDataDirectories.FirstOrDefault(objInfo => objInfo.Name == objLoopInfo.Name)?.Enabled ?? false;
+                    objLoopNode.Checked  = _characterOptions.CustomDataDictionary.Any(objInfo => objInfo.Key == objLoopInfo.Name && objInfo.Value);
                 }
             }
 
@@ -857,7 +857,7 @@ namespace Chummer
             GlobalOptions.HideCharacterRoster = chkHideCharacterRoster.Checked;
             GlobalOptions.CreateBackupOnCareer = chkCreateBackupOnCareer.Checked;
             GlobalOptions.DefaultBuildMethod = cboBuildMethod.SelectedValue?.ToString() ?? GlobalOptions.DefaultBuildMethodDefaultValue;
-            GlobalOptions.DefaultGameplayOption = XmlManager.Load("gameplayoptions.xml", _strSelectedLanguage).SelectSingleNode("/chummer/gameplayoptions/gameplayoption[id = \"" + cboDefaultGameplayOption.SelectedValue?.ToString() + "\"]/name")?.InnerText ?? GlobalOptions.DefaultGameplayOptionDefaultValue;
+            GlobalOptions.DefaultGameplayOption = XmlManager.Load("gameplayoptions.xml", new Dictionary<string, bool>(), _strSelectedLanguage).SelectSingleNode("/chummer/gameplayoptions/gameplayoption[id = \"" + cboDefaultGameplayOption.SelectedValue?.ToString() + "\"]/name")?.InnerText ?? GlobalOptions.DefaultGameplayOptionDefaultValue;
             GlobalOptions.PluginsEnabled = chkEnablePlugins.Enabled;
            
 
@@ -1084,7 +1084,7 @@ namespace Chummer
 
             int intIndex = 0;
 
-            using(XmlNodeList objXmlNodeList = XmlManager.Load("gameplayoptions.xml", _strSelectedLanguage).SelectNodes("/chummer/gameplayoptions/gameplayoption"))
+            using(XmlNodeList objXmlNodeList = XmlManager.Load("gameplayoptions.xml", new Dictionary<string, bool>(), _strSelectedLanguage).SelectNodes("/chummer/gameplayoptions/gameplayoption"))
                 if(objXmlNodeList != null)
                     foreach(XmlNode objXmlNode in objXmlNodeList)
                     {
@@ -1124,7 +1124,7 @@ namespace Chummer
         {
             List<ListItem> lstLimbCount = new List<ListItem>();
 
-            using(XmlNodeList objXmlNodeList = XmlManager.Load("options.xml", _strSelectedLanguage).SelectNodes("/chummer/limbcounts/limb"))
+            using(XmlNodeList objXmlNodeList = XmlManager.Load("options.xml", new Dictionary<string, bool>(), _strSelectedLanguage).SelectNodes("/chummer/limbcounts/limb"))
                 if(objXmlNodeList != null)
                     foreach(XmlNode objXmlNode in objXmlNodeList)
                     {
@@ -1157,7 +1157,7 @@ namespace Chummer
 
             int intIndex = 0;
 
-            using(XmlNodeList objXmlNodeList = XmlManager.Load("options.xml", _strSelectedLanguage).SelectNodes("/chummer/pdfarguments/pdfargument"))
+            using(XmlNodeList objXmlNodeList = XmlManager.Load("options.xml", new Dictionary<string, bool>(), _strSelectedLanguage).SelectNodes("/chummer/pdfarguments/pdfargument"))
                 if(objXmlNodeList != null)
                     foreach(XmlNode objXmlNode in objXmlNodeList)
                     {
@@ -1331,7 +1331,7 @@ namespace Chummer
             HashSet<string> setLanguagesWithSheets = new HashSet<string>();
 
             // Populate the XSL list with all of the manifested XSL files found in the sheets\[language] directory.
-            using(XmlNodeList xmlSheetLanguageList = XmlManager.Load("sheets.xml").SelectNodes("/chummer/sheets/@lang"))
+            using(XmlNodeList xmlSheetLanguageList = XmlManager.Load("sheets.xml", new Dictionary<string, bool>()).SelectNodes("/chummer/sheets/@lang"))
                 if(xmlSheetLanguageList != null)
                     foreach(XmlNode xmlSheetLanguage in xmlSheetLanguageList)
                     {
@@ -1460,7 +1460,7 @@ namespace Chummer
             List<ListItem> lstSheets = new List<ListItem>();
 
             // Populate the XSL list with all of the manifested XSL files found in the sheets\[language] directory.
-            using(XmlNodeList xmlSheetList = XmlManager.Load("sheets.xml", strLanguage).SelectNodes($"/chummer/sheets[@lang='{strLanguage}']/sheet[not(hide)]"))
+            using(XmlNodeList xmlSheetList = XmlManager.Load("sheets.xml", new Dictionary<string, bool>(), strLanguage).SelectNodes($"/chummer/sheets[@lang='{strLanguage}']/sheet[not(hide)]"))
                 if(xmlSheetList != null)
                     foreach(XmlNode xmlSheet in xmlSheetList)
                     {

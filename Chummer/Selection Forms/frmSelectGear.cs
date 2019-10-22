@@ -77,7 +77,7 @@ namespace Chummer
             }
             
             // Load the Gear information.
-            _xmlBaseGearDataNode = XmlManager.Load("gear.xml").GetFastNavigator().SelectSingleNode("/chummer");
+            _xmlBaseGearDataNode = XmlManager.Load("gear.xml", objCharacter.Options.CustomDataDictionary).GetFastNavigator().SelectSingleNode("/chummer");
             _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_xmlBaseGearDataNode);
             foreach (string strCategory in strAllowedCategories.TrimEndOnce(',').Split(','))
             {

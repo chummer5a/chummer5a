@@ -45,7 +45,7 @@ namespace Chummer
             _objCharacter = objCharacter;
             _objMartialArt = objMartialArt;
             // Load the Martial Art information.
-            _xmlBaseChummerNode = XmlManager.Load("martialarts.xml").GetFastNavigator().SelectSingleNode("/chummer");
+            _xmlBaseChummerNode = XmlManager.Load("martialarts.xml", objCharacter.Options.CustomDataDictionary).GetFastNavigator().SelectSingleNode("/chummer");
             // Populate the Martial Art Tecnnique list.
             XPathNavigator xmlMartialArtNode = _xmlBaseChummerNode?.SelectSingleNode("martialarts/martialart[name = \"" + _objMartialArt.Name + "\"]");
             if (xmlMartialArtNode != null)

@@ -3112,7 +3112,9 @@ namespace Chummer
                     }
 
                     string strFilter = objFilter.Length > 0 ? ") and (" + objFilter.ToString() : string.Empty;
-                    using (XmlNodeList xmlSkillList = XmlManager.Load("skills.xml", GlobalOptions.Language).SelectNodes("/chummer/knowledgeskills/skill[(not(hide)" + strFilter + ")]"))
+                    using (XmlNodeList xmlSkillList = XmlManager
+                        .Load("skills.xml", new Dictionary<string, bool>(), GlobalOptions.Language)
+                        .SelectNodes("/chummer/knowledgeskills/skill[(not(hide)" + strFilter + ")]"))
                     {
                         if (xmlSkillList?.Count > 0)
                         {

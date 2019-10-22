@@ -54,7 +54,7 @@ namespace Chummer
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             // Load the Vehicle information.
-            _xmlBaseVehicleDataNode = XmlManager.Load("vehicles.xml").GetFastNavigator().SelectSingleNode("/chummer");
+            _xmlBaseVehicleDataNode = XmlManager.Load("vehicles.xml", _objCharacter.Options.CustomDataDictionary).GetFastNavigator().SelectSingleNode("/chummer");
             _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_xmlBaseVehicleDataNode.SelectSingleNode("modcategories"));
             if (lstExistingMods != null)
                 _lstMods.AddRange(lstExistingMods);

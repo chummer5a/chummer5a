@@ -358,7 +358,7 @@ namespace Chummer
             {
                 if (_lstContactArchetypes != null) return _lstContactArchetypes;
                 _lstContactArchetypes = new List<ListItem>{ListItem.Blank};
-                XmlNode xmlContactsBaseNode = XmlManager.Load("contacts.xml").SelectSingleNode("/chummer");
+                XmlNode xmlContactsBaseNode = XmlManager.Load("contacts.xml", new Dictionary<string,bool>()).SelectSingleNode("/chummer");
                 if (xmlContactsBaseNode == null) return _lstContactArchetypes;
                 using (XmlNodeList xmlNodeList = xmlContactsBaseNode.SelectNodes("contacts/contact"))
                     if (xmlNodeList != null)
@@ -416,7 +416,7 @@ namespace Chummer
                 ListItem.Blank
             };
             
-            XmlNode xmlContactsBaseNode = XmlManager.Load("contacts.xml").SelectSingleNode("/chummer");
+            XmlNode xmlContactsBaseNode = XmlManager.Load("contacts.xml", new Dictionary<string, bool>()).SelectSingleNode("/chummer");
             if (xmlContactsBaseNode != null)
             {
                 //the values are now loaded direct in the (new) property lstContactArchetypes (see above).
@@ -479,7 +479,7 @@ namespace Chummer
             }
 
             string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
-            using (XmlNodeList xmlMetatypeList = XmlManager.Load("metatypes.xml").SelectNodes("/chummer/metatypes/metatype"))
+            using (XmlNodeList xmlMetatypeList = XmlManager.Load("metatypes.xml", new Dictionary<string,bool>()).SelectNodes("/chummer/metatypes/metatype"))
                 if (xmlMetatypeList != null)
                     foreach (XmlNode xmlMetatypeNode in xmlMetatypeList)
                     {

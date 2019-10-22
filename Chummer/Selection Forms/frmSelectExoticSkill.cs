@@ -53,7 +53,7 @@ namespace Chummer
             List<ListItem> lstSkills = new List<ListItem>();
 
             // Build the list of Exotic Active Skills from the Skills file.
-            using (XmlNodeList objXmlSkillList = XmlManager.Load("skills.xml").SelectNodes("/chummer/skills/skill[exotic = \"True\"]"))
+            using (XmlNodeList objXmlSkillList = XmlManager.Load("skills.xml", _objCharacter.Options.CustomDataDictionary).SelectNodes("/chummer/skills/skill[exotic = \"True\"]"))
                 if (objXmlSkillList?.Count > 0)
                     foreach (XmlNode objXmlSkill in objXmlSkillList)
                     {
@@ -103,7 +103,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(strSelectedCategory)) return;
             List<ListItem> lstSkillSpecializations = new List<ListItem>();
 
-            using (XmlNodeList objXmlWeaponList = XmlManager.Load("weapons.xml")
+            using (XmlNodeList objXmlWeaponList = XmlManager.Load("weapons.xml", _objCharacter.Options.CustomDataDictionary)
                 .SelectNodes($"/chummer/weapons/weapon[(category = \"{strSelectedCategory}s\" or " +
                              $"useskill = \"{strSelectedCategory}\") and ({_objCharacter.Options.BookXPath(false)})]"))
                 if (objXmlWeaponList?.Count > 0)

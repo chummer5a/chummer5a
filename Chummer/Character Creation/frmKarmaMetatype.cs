@@ -49,14 +49,14 @@ namespace Chummer
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 
-            XmlDocument xmlMetatypeDoc = XmlManager.Load(strXmlFile);
+            XmlDocument xmlMetatypeDoc = XmlManager.Load(strXmlFile, _objCharacter.Options.CustomDataDictionary);
             _xmlMetatypeDocumentMetatypesNode = xmlMetatypeDoc.SelectSingleNode("/chummer/metatypes");
             _xmlBaseMetatypeDataNode = xmlMetatypeDoc.GetFastNavigator().SelectSingleNode("/chummer");
-            _xmlSkillsDocumentKnowledgeSkillsNode = XmlManager.Load("skills.xml").SelectSingleNode("/chummer/knowledgeskills");
-            XmlDocument xmlQualityDoc = XmlManager.Load("qualities.xml");
+            _xmlSkillsDocumentKnowledgeSkillsNode = XmlManager.Load("skills.xml", _objCharacter.Options.CustomDataDictionary).SelectSingleNode("/chummer/knowledgeskills");
+            XmlDocument xmlQualityDoc = XmlManager.Load("qualities.xml", _objCharacter.Options.CustomDataDictionary);
             _xmlQualityDocumentQualitiesNode = xmlQualityDoc.SelectSingleNode("/chummer/qualities");
             _xmlBaseQualityDataNode = xmlQualityDoc.GetFastNavigator().SelectSingleNode("/chummer");
-            _xmlCritterPowerDocumentPowersNode = XmlManager.Load("critterpowers.xml").SelectSingleNode("/chummer/powers");
+            _xmlCritterPowerDocumentPowersNode = XmlManager.Load("critterpowers.xml", _objCharacter.Options.CustomDataDictionary).SelectSingleNode("/chummer/powers");
         }
 
         private void frmMetatype_Load(object sender, EventArgs e)

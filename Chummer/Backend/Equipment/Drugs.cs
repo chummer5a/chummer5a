@@ -325,7 +325,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Category;
 
-            return XmlManager.Load("gear.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@translate")?.InnerText ?? Category;
+            return XmlManager.Load("gear.xml", _objCharacter.Options.CustomDataDictionary, strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@translate")?.InnerText ?? Category;
         }
 
         /// <summary>
@@ -1012,9 +1012,9 @@ namespace Chummer.Backend.Equipment
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
                 _objCachedMyXmlNode = SourceID == Guid.Empty
-                    ? XmlManager.Load("drugcomponents.xml", strLanguage)
+                    ? XmlManager.Load("drugcomponents.xml", _objCharacter.Options.CustomDataDictionary, strLanguage)
                         .SelectSingleNode($"/chummer/drugcomponents/drugcomponent[name = \"{Name}\"]")
-                    : XmlManager.Load("drugcomponents.xml", strLanguage)
+                    : XmlManager.Load("drugcomponents.xml", _objCharacter.Options.CustomDataDictionary, strLanguage)
                         .SelectSingleNode($"/chummer/drugcomponents/drugcomponent[id = \"{SourceIDString}\" or id = \"{SourceIDString}\"]");
 
                 _strCachedXmlNodeLanguage = strLanguage;
@@ -1274,7 +1274,7 @@ namespace Chummer.Backend.Equipment
 	        if (strLanguage == GlobalOptions.DefaultLanguage)
 	            return Category;
 
-	        return XmlManager.Load("drugcomponents.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@translate")?.InnerText ?? Category;
+	        return XmlManager.Load("drugcomponents.xml", _objCharacter.Options.CustomDataDictionary, strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@translate")?.InnerText ?? Category;
 	    }
 
         /// <summary>
@@ -1574,9 +1574,9 @@ namespace Chummer.Backend.Equipment
 	        if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
 	        {
 	            _objCachedMyXmlNode = SourceID == Guid.Empty
-	                ? XmlManager.Load("drugcomponents.xml", strLanguage)
+	                ? XmlManager.Load("drugcomponents.xml", _objCharacter.Options.CustomDataDictionary, strLanguage)
 	                    .SelectSingleNode($"/chummer/drugcomponents/drugcomponent[name = \"{Name}\"]")
-	                : XmlManager.Load("drugcomponents.xml", strLanguage)
+	                : XmlManager.Load("drugcomponents.xml", _objCharacter.Options.CustomDataDictionary, strLanguage)
 	                    .SelectSingleNode($"/chummer/drugcomponents/drugcomponent[id = \"{SourceIDString}\" or id = \"{SourceIDString}\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
 	        }

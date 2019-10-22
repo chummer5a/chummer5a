@@ -44,7 +44,7 @@ namespace Chummer
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             // Load the Complex Form information.
-            _xmlBaseComplexFormsNode = XmlManager.Load("complexforms.xml").GetFastNavigator().SelectSingleNode("/chummer/complexforms");
+            _xmlBaseComplexFormsNode = XmlManager.Load("complexforms.xml", objCharacter.Options.CustomDataDictionary).GetFastNavigator().SelectSingleNode("/chummer/complexforms");
 
             _xmlOptionalComplexFormNode = _objCharacter.GetNode();
             if (_xmlOptionalComplexFormNode == null) return;

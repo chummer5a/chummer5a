@@ -98,7 +98,7 @@ namespace Chummer
 
                 if (!_objCharacter.Options.LicenseRestricted)
                 {
-                    using (XmlNodeList objXmlList = XmlManager.Load("licenses.xml").SelectNodes("/chummer/licenses/license"))
+                    using (XmlNodeList objXmlList = XmlManager.Load("licenses.xml", _objCharacter.Options.CustomDataDictionary).SelectNodes("/chummer/licenses/license"))
                         if (objXmlList != null)
                             foreach (XmlNode objNode in objXmlList)
                             {

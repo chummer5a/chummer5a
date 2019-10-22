@@ -55,7 +55,7 @@ namespace Chummer
         {
             // Populate the CheckedListBox with the list of custom and override files in the user's data directory.
             string strFilePath = Path.Combine(Utils.GetStartupPath, "data");
-            foreach (string strFile in Directory.GetFiles(strFilePath, "custom*_*.xml"))
+            foreach (string strFile in Directory.GetFiles(strFilePath, "custom*_*.xml", objCharacter.Options.CustomDataDictionary))
             {
                 TreeNode objNode = new TreeNode
                 {
@@ -65,7 +65,7 @@ namespace Chummer
                 treFiles.Nodes.Add(objNode);
             }
 
-            foreach (string strFile in Directory.GetFiles(strFilePath, "override*_*.xml"))
+            foreach (string strFile in Directory.GetFiles(strFilePath, "override*_*.xml", objCharacter.Options.CustomDataDictionary))
             {
                 TreeNode objNode = new TreeNode
                 {
@@ -108,7 +108,7 @@ namespace Chummer
             
             bool blnSuccess = false;
 
-            string strFilePath = Path.Combine(Utils.GetStartupPath, "data", "books.xml");
+            string strFilePath = Path.Combine(Utils.GetStartupPath, "data", "books.xml", objCharacter.Options.CustomDataDictionary);
             XmlDocument objXmlBooks = new XmlDocument();
             objXmlBooks.Load(strFilePath);
 
@@ -162,7 +162,7 @@ namespace Chummer
             // Check any custom book files the user selected.
             foreach (TreeNode objNode in treFiles.Nodes)
             {
-                if (objNode.Checked && objNode.Tag.ToString().EndsWith("books.xml"))
+                if (objNode.Checked && objNode.Tag.ToString().EndsWith("books.xml", objCharacter.Options.CustomDataDictionary))
                 {
                     XmlDocument objXmlCustom = new XmlDocument();
                     objXmlCustom.Load(objNode.Tag.ToString());

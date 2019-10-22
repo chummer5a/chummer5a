@@ -48,7 +48,7 @@ namespace Chummer
 
         private void frmSelectLifeModule_Load(object sender, EventArgs e)
         {
-            _xmlDocument = XmlManager.Load("lifemodules.xml");
+            _xmlDocument = XmlManager.Load("lifemodules.xml", _objCharacter.Options.CustomDataDictionary);
             string strSelectString = "chummer/stages/stage[@order = \"" + _intStage + "\"]";
 
             XmlNode xmlStageNode = _xmlDocument.SelectSingleNode(strSelectString);
@@ -151,7 +151,7 @@ namespace Chummer
             }
 
             _strSelectedId = (string)e.Node.Tag;
-            XmlNode xmlSelectedNodeInfo = Quality.GetNodeOverrideable(_strSelectedId, XmlManager.Load("lifemodules.xml", GlobalOptions.Language));
+            XmlNode xmlSelectedNodeInfo = Quality.GetNodeOverrideable(_strSelectedId, XmlManager.Load("lifemodules.xml", _objCharacter.Options.CustomDataDictionary, GlobalOptions.Language));
 
             if (xmlSelectedNodeInfo != null)
             {
@@ -174,7 +174,7 @@ namespace Chummer
 
         }
 
-        public XmlNode SelectedNode => Quality.GetNodeOverrideable(_strSelectedId, XmlManager.Load("lifemodules.xml", GlobalOptions.Language));
+        public XmlNode SelectedNode => Quality.GetNodeOverrideable(_strSelectedId, XmlManager.Load("lifemodules.xml", _objCharacter.Options.CustomDataDictionary, GlobalOptions.Language));
 
         private void treModules_DoubleClick(object sender, EventArgs e)
         {

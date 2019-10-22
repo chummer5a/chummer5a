@@ -184,6 +184,7 @@ namespace Chummer
         private int _intAvailability = 12;
 
         // List of names of custom data directories
+        private List<CustomDataDirectoryInfo> _customDataDirectories = new List<CustomDataDirectoryInfo>();
         private readonly Dictionary<string,bool> _dicCustomDataDirectoryNames = new Dictionary<string, bool>();
 
         // Sourcebook list.
@@ -989,7 +990,7 @@ namespace Chummer
             }
             string[] strBooks = strBookList.Split(',');
 
-            XmlDocument objXmlDocument = XmlManager.Load("books.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("books.xml", CustomDataDictionary);
 
             foreach (string strBookName in strBooks)
             {
@@ -1070,6 +1071,8 @@ namespace Chummer
             else
                 _strBookXPath = string.Empty;
         }
+
+        public Dictionary<string, bool> CustomDataDictionary => _dicCustomDataDirectoryNames;
 
         /// <summary>
         /// Whether or not all Active Skills with a total score higher than 0 should be printed.
@@ -1379,7 +1382,11 @@ namespace Chummer
         /// <summary>
         /// Names of custom data directories
         /// </summary>
-        public List<CustomDataDirectoryInfo> CustomDataDirectories { get; set; }
+        public List<CustomDataDirectoryInfo> CustomDataDirectories
+        {
+            get => _customDataDirectories;
+            set => _customDataDirectories = value;
+        }
 
         /// <summary>
         /// Setting name.

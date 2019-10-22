@@ -557,13 +557,13 @@ namespace Chummer
                 picMugshot.Image = objCache.Mugshot;
 
                 // Populate character information fields.
-                XmlDocument objMetatypeDoc = XmlManager.Load("metatypes.xml");
+                XmlDocument objMetatypeDoc = XmlManager.Load("metatypes.xml", new Dictionary<string, bool>());
                 if (objCache.Metatype != null)
                 {
                     XmlNode objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = " + objCache.Metatype?.CleanXPath() + "]");
                     if (objMetatypeNode == null)
                     {
-                        objMetatypeDoc = XmlManager.Load("critters.xml");
+                        objMetatypeDoc = XmlManager.Load("critters.xml", new Dictionary<string, bool>());
                         objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = " + objCache.Metatype?.CleanXPath() + "]");
                     }
 

@@ -43,7 +43,7 @@ namespace Chummer
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             // Load the Powers information.
-            _xmlBasePowerDataNode = XmlManager.Load("powers.xml").GetFastNavigator().SelectSingleNode("/chummer");
+            _xmlBasePowerDataNode = XmlManager.Load("powers.xml", objCharacter.Options.CustomDataDictionary).GetFastNavigator().SelectSingleNode("/chummer");
         }
 
         private void frmSelectPower_Load(object sender, EventArgs e)

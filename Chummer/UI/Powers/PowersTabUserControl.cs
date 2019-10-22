@@ -141,7 +141,7 @@ namespace Chummer.UI.Powers
             };
 
             /*
-            using (XmlNodeList xmlPowerCategoryList = XmlManager.Load("powers.xml").SelectNodes("/chummer/categories/category"))
+            using (XmlNodeList xmlPowerCategoryList = XmlManager.Load("powers.xml", objCharacter.Options.CustomDataDictionary).SelectNodes("/chummer/categories/category"))
                 if (xmlPowerCategoryList != null)
                     foreach (XmlNode xmlCategoryNode in xmlPowerCategoryList)
                     {
@@ -185,7 +185,7 @@ namespace Chummer.UI.Powers
         private void cmdAddPower_Click(object sender, EventArgs e)
         {
             // Open the Cyberware XML file and locate the selected piece.
-            XmlDocument objXmlDocument = XmlManager.Load("powers.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("powers.xml", _objCharacter.Options.CustomDataDictionary);
             bool blnAddAgain;
 
             do

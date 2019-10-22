@@ -35,7 +35,7 @@ namespace Chummer
         {
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
-            _objXmlDocument = XmlManager.Load("spells.xml");
+            _objXmlDocument = XmlManager.Load("spells.xml", new Dictionary<string,bool>());
         }
 
         private void frmSelectSpellCategory_Load(object sender, EventArgs e)

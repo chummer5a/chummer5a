@@ -43,7 +43,7 @@ namespace Chummer
             _objCharacter = objCharacter;
             MoveControls();
             // Load the Programs information.
-            _objXmlDocument = XmlManager.Load("complexforms.xml");
+            _objXmlDocument = XmlManager.Load("complexforms.xml", objCharacter.Options.CustomDataDictionary);
         }
 
         private void frmSelectProgramOption_Load(object sender, EventArgs e)

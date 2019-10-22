@@ -45,7 +45,7 @@ namespace Chummer
             _objCharacter = objCharacter;
 
             // Load the Martial Arts information.
-            XPathNavigator xmlBaseMartialArtsDocumentNode = XmlManager.Load("martialarts.xml").GetFastNavigator();
+            XPathNavigator xmlBaseMartialArtsDocumentNode = XmlManager.Load("martialarts.xml", objCharacter.Options.CustomDataDictionary).GetFastNavigator();
             _xmlBaseMartialArtsNode = xmlBaseMartialArtsDocumentNode.SelectSingleNode("/chummer/martialarts");
             _xmlBaseMartialArtsTechniquesNode = xmlBaseMartialArtsDocumentNode.SelectSingleNode("/chummer/techniques");
         }

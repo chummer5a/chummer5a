@@ -214,7 +214,7 @@ namespace ChummerHub.Client.UI
                             var frmPickSpell = new frmSelectSpell(MySearchCharacter.MyCharacter);
                             frmPickSpell.ShowDialog();
                         // Open the Spells XML file and locate the selected piece.
-                        XmlDocument objXmlDocument = XmlManager.Load("spells.xml");
+                        XmlDocument objXmlDocument = XmlManager.Load("spells.xml", new Dictionary<string,bool>());
                             XmlNode objXmlSpell = objXmlDocument.SelectSingleNode("/chummer/spells/spell[id = \"" + frmPickSpell.SelectedSpell + "\"]");
                             Spell objSpell = new Spell(MySearchCharacter.MyCharacter);
                             if(String.IsNullOrEmpty(objSpell?.Name))
@@ -242,7 +242,7 @@ namespace ChummerHub.Client.UI
                             var frmPick = new frmSelectQuality(MySearchCharacter.MyCharacter);
                             frmPick.ShowDialog();
                             // Open the Spells XML file and locate the selected piece.
-                            XmlDocument objXmlDocument = XmlManager.Load("qualities.xml");
+                            XmlDocument objXmlDocument = XmlManager.Load("qualities.xml", new Dictionary<string, bool>());
                             XmlNode objXmlNode = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + frmPick.SelectedQuality + "\"]");
                             Quality objQuality = new Quality(MySearchCharacter.MyCharacter);
                             List<Weapon> lstWeapons = new List<Weapon>();

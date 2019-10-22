@@ -992,7 +992,7 @@ namespace Chummer.Backend.Skills
             //TODO less retarded way please
             // Load the Skills information.
             // Populate the Skills list.
-            using (XmlNodeList xmlSkillList = XmlManager.Load("skills.xml").SelectNodes("/chummer/skills/skill[not(exotic) and (" + _objCharacter.Options.BookXPath() + ')' + SkillFilter(filter, strName) + "]"))
+            using (XmlNodeList xmlSkillList = XmlManager.Load("skills.xml", _objCharacter.Options.CustomDataDictionary).SelectNodes("/chummer/skills/skill[not(exotic) and (" + _objCharacter.Options.BookXPath() + ')' + SkillFilter(filter, strName) + "]"))
             {
                 // First pass, build up a list of all of the Skills so we can sort them in alphabetical order for the current language.
                 Dictionary<string, Skill> dicSkills = new Dictionary<string, Skill>(xmlSkillList?.Count ?? 0);

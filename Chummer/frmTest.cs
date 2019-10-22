@@ -82,7 +82,7 @@ namespace Chummer
         private void TestVehicles()
         {
             Character objCharacter = new Character();
-            XmlDocument objXmlDocument = XmlManager.Load("vehicles.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("vehicles.xml", objCharacter.Options.CustomDataDictionary);
             pgbProgress.Minimum = 0;
             pgbProgress.Value = 0;
             XmlNodeList xmlVehicleList = objXmlDocument.SelectNodes("/chummer/vehicles/vehicle");
@@ -202,7 +202,7 @@ namespace Chummer
         private void TestWeapons()
         {
             Character objCharacter = new Character();
-            XmlDocument objXmlDocument = XmlManager.Load("weapons.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("weapons.xml", objCharacter.Options.CustomDataDictionary);
             pgbProgress.Minimum = 0;
             pgbProgress.Value = 0;
             XmlNodeList xmlWeaponList = objXmlDocument.SelectNodes("/chummer/weapons/weapon");
@@ -371,7 +371,7 @@ namespace Chummer
         private void TestArmor()
         {
             Character objCharacter = new Character();
-            XmlDocument objXmlDocument = XmlManager.Load("armor.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("armor.xml", objCharacter.Options.CustomDataDictionary);
             pgbProgress.Minimum = 0;
             pgbProgress.Value = 0;
             XmlNodeList xmlArmorList = objXmlDocument.SelectNodes("/chummer/armors/armor");
@@ -491,7 +491,7 @@ namespace Chummer
         private void TestGear()
         {
             Character objCharacter = new Character();
-            XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("gear.xml", objCharacter.Options.CustomDataDictionary);
             pgbProgress.Minimum = 0;
             pgbProgress.Value = 0;
             using (XmlNodeList xmlGearList = objXmlDocument.SelectNodes("/chummer/gears/gear"))
@@ -567,7 +567,7 @@ namespace Chummer
             }
 
             Character objCharacter = new Character();
-            XmlDocument objXmlDocument = XmlManager.Load(strFile);
+            XmlDocument objXmlDocument = XmlManager.Load(strFile, objCharacter.Options.CustomDataDictionary);
             pgbProgress.Minimum = 0;
             pgbProgress.Value = 0;
 
@@ -649,7 +649,7 @@ namespace Chummer
         private void TestQuality()
         {
             Character objCharacter = new Character();
-            XmlDocument objXmlDocument = XmlManager.Load("qualities.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("qualities.xml", objCharacter.Options.CustomDataDictionary);
             pgbProgress.Minimum = 0;
             pgbProgress.Value = 0;
 
@@ -704,7 +704,7 @@ namespace Chummer
 
         void TestMetatype(string strFile)
         {
-            XmlDocument objXmlDocument = XmlManager.Load(strFile);
+            XmlDocument objXmlDocument = XmlManager.Load(strFile, new Dictionary<string, bool>());
 
             pgbProgress.Minimum = 0;
             pgbProgress.Value = 0;
@@ -722,7 +722,7 @@ namespace Chummer
                             continue;
                         Application.DoEvents();
 
-                        objXmlDocument = XmlManager.Load(strFile);
+                        objXmlDocument = XmlManager.Load(strFile, new Dictionary<string, bool>());
                         Character objCharacter = new Character();
 
                         try
@@ -797,7 +797,7 @@ namespace Chummer
                             }
 
                             /* If we're working with a Critter, set the Attributes to their default values.
-                            if (strFile == "critters.xml")
+                            if (strFile == "critters.xml", objCharacter.Options.CustomDataDictionary)
                             {
                                 _objCharacter.BOD.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["bodmin"].InnerText, intForce, 0));
                                 _objCharacter.AGI.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["agimin"].InnerText, intForce, 0));
@@ -831,7 +831,7 @@ namespace Chummer
                             if (objXmlMetatype["movement"] != null)
                                 _objCharacter.Movement = objXmlMetatype["movement"].InnerText;
                             // Load the Qualities file.
-                            XmlDocument objXmlQualityDocument = XmlManager.Load("qualities.xml");
+                            XmlDocument objXmlQualityDocument = XmlManager.Load("qualities.xml", _objCharacter.Options.CustomDataDictionary);
         
                             // Determine if the Metatype has any bonuses.
                             if (objXmlMetatype.InnerXml.Contains("bonus"))
@@ -870,7 +870,7 @@ namespace Chummer
                             }
         
                             /* Run through the character's Attributes one more time and make sure their value matches their minimum value.
-                            if (strFile == "metatypes.xml")
+                            if (strFile == "metatypes.xml", objCharacter.Options.CustomDataDictionary)
                             {
                                 _objCharacter.BOD.Value = _objCharacter.BOD.TotalMinimum;
                                 _objCharacter.AGI.Value = _objCharacter.AGI.TotalMinimum;
@@ -885,7 +885,7 @@ namespace Chummer
                             // Add any Critter Powers the Metatype/Critter should have.
                             XmlNode objXmlCritter = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = " + objCharacter.Metatype.CleanXPath() + "]");
 
-                            objXmlDocument = XmlManager.Load("critterpowers.xml");
+                            objXmlDocument = XmlManager.Load("critterpowers.xml", objCharacter.Options.CustomDataDictionary);
                             foreach (XmlNode objXmlPower in objXmlCritter.SelectNodes("powers/power"))
                             {
                                 XmlNode objXmlCritterPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = " + objXmlPower.InnerText.CleanXPath() + "]");
@@ -995,7 +995,7 @@ namespace Chummer
                             }
 
                             // Add any Complex Forms the Critter comes with (typically Sprites)
-                            XmlDocument objXmlProgramDocument = XmlManager.Load("complexforms.xml");
+                            XmlDocument objXmlProgramDocument = XmlManager.Load("complexforms.xml", objCharacter.Options.CustomDataDictionary);
                             foreach (XmlNode objXmlComplexForm in objXmlCritter.SelectNodes("complexforms/complexform"))
                             {
                                 string strForceValue = objXmlComplexForm.Attributes?["select"]?.InnerText ?? string.Empty;
@@ -1006,7 +1006,7 @@ namespace Chummer
                             }
 
                             // Add any Gear the Critter comes with (typically Programs for A.I.s)
-                            XmlDocument objXmlGearDocument = XmlManager.Load("gear.xml");
+                            XmlDocument objXmlGearDocument = XmlManager.Load("gear.xml", objCharacter.Options.CustomDataDictionary);
                             foreach (XmlNode objXmlGear in objXmlCritter.SelectNodes("gears/gear"))
                             {
                                 int intRating = 0;

@@ -55,7 +55,7 @@ namespace Chummer
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             // Load the Armor information.
-            _objXmlDocument = XmlManager.Load("armor.xml");
+            _objXmlDocument = XmlManager.Load("armor.xml", objCharacter.Options.CustomDataDictionary);
             _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_objXmlDocument);
         }
 

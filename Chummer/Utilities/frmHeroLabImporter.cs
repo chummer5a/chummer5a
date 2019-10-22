@@ -142,7 +142,7 @@ namespace Chummer
                 ToolTipText = strFileText
             };
 
-            XmlDocument xmlMetatypesDocument = XmlManager.Load("metatypes.xml");
+            XmlDocument xmlMetatypesDocument = XmlManager.Load("metatypes.xml", new Dictionary<string, bool>());
             foreach (XmlDocument xmlCharacterDocument in lstCharacterXmlStatblocks)
             {
                 XmlNode xmlBaseCharacterNode = xmlCharacterDocument.SelectSingleNode("/document/public/character");
@@ -343,11 +343,11 @@ namespace Chummer
                 picMugshot.Image = objCache.Mugshot;
 
                 // Populate character information fields.
-                XmlDocument objMetatypeDoc = XmlManager.Load("metatypes.xml");
+                XmlDocument objMetatypeDoc = XmlManager.Load("metatypes.xml", new Dictionary<string, bool>());
                 XmlNode objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + objCache.Metatype + "\"]");
                 if (objMetatypeNode == null)
                 {
-                    objMetatypeDoc = XmlManager.Load("critters.xml");
+                    objMetatypeDoc = XmlManager.Load("critters.xml", new Dictionary<string, bool>());
                     objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + objCache.Metatype + "\"]");
                 }
 

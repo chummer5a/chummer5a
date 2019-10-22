@@ -71,12 +71,12 @@ namespace Chummer
             {
                 case Mode.Metamagic:
                     _strRootXPath = "/chummer/metamagics/metamagic";
-                    _objXmlDocument = XmlManager.Load("metamagic.xml");
+                    _objXmlDocument = XmlManager.Load("metamagic.xml", objCharacter.Options.CustomDataDictionary);
                     _strType = LanguageManager.GetString("String_Metamagic", GlobalOptions.Language);
                     break;
                 case Mode.Echo:
                     _strRootXPath = "/chummer/echoes/echo";
-                    _objXmlDocument = XmlManager.Load("echoes.xml");
+                    _objXmlDocument = XmlManager.Load("echoes.xml", objCharacter.Options.CustomDataDictionary);
                     _strType = LanguageManager.GetString("String_Echo", GlobalOptions.Language);
                     break;
             }

@@ -237,7 +237,7 @@ namespace Chummer
             if (strLanguage == GlobalOptions.Language)
                 return RequiresProgram;
 
-            return XmlManager.Load("programs.xml", strLanguage).SelectSingleNode("/chummer/programs/program[name = \"" + RequiresProgram + "\"]/translate")?.InnerText ?? RequiresProgram;
+            return XmlManager.Load("programs.xml", _objCharacter.Options.CustomDataDictionary, strLanguage).SelectSingleNode("/chummer/programs/program[name = \"" + RequiresProgram + "\"]/translate")?.InnerText ?? RequiresProgram;
         }
 
         /// <summary>
@@ -309,9 +309,9 @@ namespace Chummer
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
                 _objCachedMyXmlNode = SourceID == Guid.Empty
-                    ? XmlManager.Load("programs.xml", strLanguage)
+                    ? XmlManager.Load("programs.xml", _objCharacter.Options.CustomDataDictionary, strLanguage)
                         .SelectSingleNode($"/chummer/programs/program[name = \"{Name}\"]")
-                    : XmlManager.Load("programs.xml", strLanguage)
+                    : XmlManager.Load("programs.xml", _objCharacter.Options.CustomDataDictionary, strLanguage)
                         .SelectSingleNode($"/chummer/programs/program[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }

@@ -73,7 +73,7 @@ namespace Chummer
             txtFilePath.Text = string.Empty;
 
             // Make sure a .chum5 file was selected.
-            if (!openFileDialog.FileName.EndsWith(".xml"))
+            if (!openFileDialog.FileName.EndsWith(".xml", objCharacter.Options.CustomDataDictionary))
             {
                 Program.MainForm.ShowMessageBox("You must select a valid XML file to upload.", "Cannot Upload File", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;

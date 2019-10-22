@@ -29,7 +29,7 @@ namespace Chummer.Backend.Skills
 
         public static IEnumerable<ListItem> DefaultKnowledgeSkills(string strLanguage)
         {
-            using (XmlNodeList xmlSkillList = XmlManager.Load("skills.xml", strLanguage).SelectNodes("/chummer/knowledgeskills/skill"))
+            using (XmlNodeList xmlSkillList = XmlManager.Load("skills.xml", new Dictionary<string, bool>(), strLanguage).SelectNodes("/chummer/knowledgeskills/skill"))
                 if (xmlSkillList != null)
                     foreach (XmlNode xmlSkill in xmlSkillList)
                     {
@@ -45,7 +45,7 @@ namespace Chummer.Backend.Skills
         /// <returns></returns>
         public static IEnumerable<ListItem> KnowledgeTypes(string strLanguage)
         {
-            using (XmlNodeList xmlCategoryList = XmlManager.Load("skills.xml", strLanguage).SelectNodes("/chummer/categories/category[@type = \"knowledge\"]"))
+            using (XmlNodeList xmlCategoryList = XmlManager.Load("skills.xml", new Dictionary<string, bool>(), strLanguage).SelectNodes("/chummer/categories/category[@type = \"knowledge\"]"))
                 if (xmlCategoryList != null)
                     foreach (XmlNode objXmlCategory in xmlCategoryList)
                     {
@@ -56,7 +56,7 @@ namespace Chummer.Backend.Skills
 
         static KnowledgeSkill()
         {
-            using (XmlNodeList xmlSkillList = XmlManager.Load("skills.xml").SelectNodes("/chummer/knowledgeskills/skill"))
+            using (XmlNodeList xmlSkillList = XmlManager.Load("skills.xml", new Dictionary<string, bool>()).SelectNodes("/chummer/knowledgeskills/skill"))
                 if (xmlSkillList != null)
                     foreach (XmlNode objXmlSkill in xmlSkillList)
                     {
@@ -114,7 +114,7 @@ namespace Chummer.Backend.Skills
         private void LoadSkillFromData(string strInputSkillName)
         {
             string strSkillName = GetSkillNameFromData(strInputSkillName);
-            XmlNode xmlSkillNode = XmlManager.Load("skills.xml", GlobalOptions.Language).SelectSingleNode($"/chummer/knowledgeskills/skill[name = \"{ strSkillName }\"]");
+            XmlNode xmlSkillNode = XmlManager.Load("skills.xml", new Dictionary<string, bool>(), GlobalOptions.Language).SelectSingleNode($"/chummer/knowledgeskills/skill[name = \"{ strSkillName }\"]");
 
             if (xmlSkillNode == null)
             {
@@ -147,8 +147,8 @@ namespace Chummer.Backend.Skills
             {
                 return strInputSkillName;
             }
-
-            XmlNode xmlSkillTranslationNode = XmlManager.Load("skills.xml", GlobalOptions.Language).SelectSingleNode($"/chummer/knowledgeskills/skill[translate = \"{ strInputSkillName }\"]");
+            
+            XmlNode xmlSkillTranslationNode = XmlManager.Load("skills.xml", new Dictionary<string, bool>(), GlobalOptions.Language).SelectSingleNode($"/chummer/knowledgeskills/skill[translate = \"{ strInputSkillName }\"]");
 
             if (xmlSkillTranslationNode == null)
             {
@@ -462,7 +462,7 @@ namespace Chummer.Backend.Skills
             // Legacy shim
             if (SkillId.Equals(Guid.Empty))
             {
-                XmlNode objDataNode = XmlManager.Load("skills.xml", GlobalOptions.Language).SelectSingleNode("/chummer/knowledgeskills/skill[name = \"" + Name + "\"]");
+                XmlNode objDataNode = XmlManager.Load("skills.xml", new Dictionary<string, bool>(), GlobalOptions.Language).SelectSingleNode("/chummer/knowledgeskills/skill[name = \"" + Name + "\"]");
                 if (objDataNode.TryGetField("id", Guid.TryParse, out Guid guidTemp))
                     SkillId = guidTemp;
             }

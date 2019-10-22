@@ -38,7 +38,7 @@ namespace Chummer
             _objCharacter = skill.CharacterObject;
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
-            _objXmlDocument = XmlManager.Load("skills.xml");
+            _objXmlDocument = XmlManager.Load("skills.xml", _objCharacter.Options.CustomDataDictionary);
         }
 
         private void frmSelectSpec_Load(object sender, EventArgs e)
@@ -72,7 +72,7 @@ namespace Chummer
                             if (_objSkill.SkillCategory == "Combat Active")
                             {
                                 // Look through the Weapons file and grab the names of items that are part of the appropriate Category or use the matching Skill.
-                                XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml");
+                                XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml", _objCharacter.Options.CustomDataDictionary);
                                 //Might need to include skill name or might miss some values?
                                 XmlNodeList objXmlWeaponList = objXmlWeaponDocument.SelectNodes("/chummer/weapons/weapon[(spec = \"" + strInnerText + "\" or spec2 = \"" + strInnerText + "\") and (" + _objCharacter.Options.BookXPath() + ")]");
                                 if (objXmlWeaponList != null)

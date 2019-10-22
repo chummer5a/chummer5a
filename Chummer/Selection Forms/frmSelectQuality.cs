@@ -49,7 +49,7 @@ namespace Chummer
             _objCharacter = objCharacter;
             
             // Load the Quality information.
-            _xmlBaseQualityDataNode = XmlManager.Load("qualities.xml").GetFastNavigator().SelectSingleNode("/chummer");
+            _xmlBaseQualityDataNode = XmlManager.Load("qualities.xml", _objCharacter.Options.CustomDataDictionary).GetFastNavigator().SelectSingleNode("/chummer");
             _xmlMetatypeQualityRestrictionNode = _objCharacter.GetNode().SelectSingleNode("qualityrestriction");
         }
 

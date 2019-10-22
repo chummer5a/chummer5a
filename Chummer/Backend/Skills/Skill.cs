@@ -174,7 +174,7 @@ namespace Chummer.Backend.Skills
             {
                 return null;
             }
-            XmlDocument xmlSkills = XmlManager.Load("skills.xml");
+            XmlDocument xmlSkills = XmlManager.Load("skills.xml", objCharacter.Options.CustomDataDictionary);
             Skill objLoadingSkill = null;
             bool blnIsKnowledgeSkill = false;
             if (xmlSkillNode.TryGetBoolFieldQuickly("isknowledge", ref blnIsKnowledgeSkill) && blnIsKnowledgeSkill)
@@ -288,7 +288,7 @@ namespace Chummer.Backend.Skills
             }
             else
             {
-                XmlDocument xmlSkillsDocument = XmlManager.Load("skills.xml");
+                XmlDocument xmlSkillsDocument = XmlManager.Load("skills.xml", new Dictionary<string, bool>());
                 XmlNode xmlSkillDataNode = xmlSkillsDocument.SelectSingleNode($"/chummer/skills/skill[id = '{suid}']") ??
                     //Some stuff apparently have a guid of 0000-000... (only exotic?)
                     xmlSkillsDocument.SelectSingleNode($"/chummer/skills/skill[name = \"{strName}\"]");
@@ -327,7 +327,7 @@ namespace Chummer.Backend.Skills
         {
             string strName = xmlSkillNode.Attributes?["name"]?.InnerText ?? string.Empty;
 
-            XmlNode xmlSkillDataNode = XmlManager.Load("skills.xml").SelectSingleNode("/chummer/" + (blnIsKnowledgeSkill ? "knowledgeskills" : "skills") + "/skill[name = \"" + strName + "\"]");
+            XmlNode xmlSkillDataNode = XmlManager.Load("skills.xml", objCharacter.Options.CustomDataDictionary).SelectSingleNode("/chummer/" + (blnIsKnowledgeSkill ? "knowledgeskills" : "skills") + "/skill[name = \"" + strName + "\"]");
             Guid suid = Guid.NewGuid();
             if (xmlSkillDataNode?.TryGetField("id", Guid.TryParse, out suid) != true)
                 suid = Guid.NewGuid();
@@ -421,7 +421,7 @@ namespace Chummer.Backend.Skills
                     return null;
                 if (SkillTypeCache == null || !SkillTypeCache.TryGetValue(category, out bool blnIsKnowledgeSkill))
                 {
-                    blnIsKnowledgeSkill = XmlManager.Load("skills.xml").SelectSingleNode($"/chummer/categories/category[. = '{category}']/@type")?.InnerText != "active";
+                    blnIsKnowledgeSkill = XmlManager.Load("skills.xml", new Dictionary<string, bool>()).SelectSingleNode($"/chummer/categories/category[. = '{category}']/@type")?.InnerText != "active";
                     if (SkillTypeCache != null)
                         SkillTypeCache[category] = blnIsKnowledgeSkill;
                 }
@@ -1358,7 +1358,7 @@ namespace Chummer.Backend.Skills
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return SkillCategory;
 
-            string strReturn = XmlManager.Load("skills.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + SkillCategory + "\"]/@translate")?.InnerText;
+            string strReturn = XmlManager.Load("skills.xml", new Dictionary<string, bool>(), strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + SkillCategory + "\"]/@translate")?.InnerText;
 
             return strReturn ?? SkillCategory;
         }
@@ -1408,7 +1408,7 @@ namespace Chummer.Backend.Skills
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load("skills.xml", strLanguage).SelectSingleNode("/chummer/" + (IsKnowledgeSkill ? "knowledgeskills" : "skills") + "/skill[id = \"" + SkillId.ToString("D") + "\" or id = \"" + SkillId.ToString("D").ToUpperInvariant() + "\"]");
+                _objCachedMyXmlNode = XmlManager.Load("skills.xml", new Dictionary<string, bool>(), strLanguage).SelectSingleNode("/chummer/" + (IsKnowledgeSkill ? "knowledgeskills" : "skills") + "/skill[id = \"" + SkillId.ToString("D") + "\" or id = \"" + SkillId.ToString("D").ToUpperInvariant() + "\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

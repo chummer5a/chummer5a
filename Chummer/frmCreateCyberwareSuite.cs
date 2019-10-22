@@ -76,7 +76,7 @@ namespace Chummer
             // See if a Suite with this name already exists for the Custom category.
             // This was originally done without the XmlManager, but because amends and overrides and toggling custom data directories can change names, we need to use it.
             string strName = txtName.Text;
-            if (XmlManager.Load(_strType + ".xml", GlobalOptions.Language).SelectSingleNode("/chummer/suites/suite[name = \"" + strName + "\"]") != null)
+            if (XmlManager.Load(_strType + ".xml", _objCharacter.Options.CustomDataDictionary, GlobalOptions.Language).SelectSingleNode("/chummer/suites/suite[name = \"" + strName + "\"]") != null)
             {
                 Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_CyberwareSuite_DuplicateName", GlobalOptions.Language), strName),
                     LanguageManager.GetString("MessageTitle_CyberwareSuite_DuplicateName", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);

@@ -49,7 +49,7 @@ namespace Chummer
             _blnAdvancedProgramAllowed = blnAdvancedProgramAllowed;
             _blnInherentProgram = blnInherentProgram;
             // Load the Programs information.
-            _xmlBaseChummerNode = XmlManager.Load("programs.xml").GetFastNavigator().SelectSingleNode("/chummer");
+            _xmlBaseChummerNode = XmlManager.Load("programs.xml", _objCharacter.Options.CustomDataDictionary).GetFastNavigator().SelectSingleNode("/chummer");
             if (!_objCharacter.IsCritter) return;
             _xmlOptionalAIProgramsNode = _objCharacter.GetNode().SelectSingleNode("optionalaiprograms");
         }

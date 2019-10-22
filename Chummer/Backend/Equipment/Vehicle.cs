@@ -267,7 +267,7 @@ namespace Chummer.Backend.Equipment
                 XmlNode xmlMods = objXmlVehicle["mods"];
                 if (xmlMods != null)
                 {
-                    XmlDocument objXmlDocument = XmlManager.Load("vehicles.xml");
+                    XmlDocument objXmlDocument = XmlManager.Load("vehicles.xml", _objCharacter.Options.CustomDataDictionary);
 
                     using (XmlNodeList objXmlModList = xmlMods.SelectNodes("name"))
                         if (objXmlModList != null)
@@ -356,7 +356,7 @@ namespace Chummer.Backend.Equipment
                 XmlNode xmlGears = objXmlVehicle["gears"];
                 if (xmlGears != null)
                 {
-                    XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
+                    XmlDocument objXmlDocument = XmlManager.Load("gear.xml", _objCharacter.Options.CustomDataDictionary);
 
                     using (XmlNodeList objXmlGearList = xmlGears.SelectNodes("gear"))
                     {
@@ -385,7 +385,7 @@ namespace Chummer.Backend.Equipment
                 XmlNode xmlWeapons = objXmlVehicle["weapons"];
                 if (xmlWeapons != null)
                 {
-                    XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml");
+                    XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml", _objCharacter.Options.CustomDataDictionary);
 
                     foreach (XmlNode objXmlWeapon in xmlWeapons.SelectNodes("weapon"))
                     {
@@ -892,7 +892,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Category;
 
-            return XmlManager.Load("vehicles.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@translate")?.InnerText ?? Category;
+            return XmlManager.Load("vehicles.xml", _objCharacter.Options.CustomDataDictionary, strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@translate")?.InnerText ?? Category;
         }
 
         /// <summary>
@@ -2597,9 +2597,9 @@ namespace Chummer.Backend.Equipment
         {
             if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.LiveCustomData) return _objCachedMyXmlNode;
             _objCachedMyXmlNode = SourceID == Guid.Empty
-                ? XmlManager.Load("vehicles.xml", strLanguage)
+                ? XmlManager.Load("vehicles.xml", _objCharacter.Options.CustomDataDictionary,  strLanguage)
                     .SelectSingleNode($"/chummer/vehicles/vehicle[name = \"{Name}\"]")
-                : XmlManager.Load("vehicles.xml", strLanguage)
+                : XmlManager.Load("vehicles.xml", _objCharacter.Options.CustomDataDictionary, strLanguage)
                     .SelectSingleNode($"/chummer/vehicles/vehicle[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
             _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;
@@ -3140,7 +3140,7 @@ namespace Chummer.Backend.Equipment
                 {
                     if (blnIncrease)
                     {
-                        XmlNode xmlNewGear = XmlManager.Load("gear.xml").SelectSingleNode("/chummer/gears/gear[name = \"Minidrone Sensor\" and category = \"Sensors\"]");
+                        XmlNode xmlNewGear = XmlManager.Load("gear.xml", _objCharacter.Options.CustomDataDictionary).SelectSingleNode("/chummer/gears/gear[name = \"Minidrone Sensor\" and category = \"Sensors\"]");
                         objNewSensor.Create(xmlNewGear, 0, lstWeapons);
                         objCurrentSensor = objCurrentGear;
                     }
@@ -3148,35 +3148,35 @@ namespace Chummer.Backend.Equipment
                 }
                 if (objCurrentGear.Name == "Minidrone Sensor")
                 {
-                    XmlNode xmlNewGear = XmlManager.Load("gear.xml").SelectSingleNode(blnIncrease ? "/chummer/gears/gear[name = \"Small Drone Sensor\" and category = \"Sensors\"]" : "/chummer/gears/gear[name = \"Microdrone Sensor\" and category = \"Sensors\"]");
+                    XmlNode xmlNewGear = XmlManager.Load("gear.xml", _objCharacter.Options.CustomDataDictionary).SelectSingleNode(blnIncrease ? "/chummer/gears/gear[name = \"Small Drone Sensor\" and category = \"Sensors\"]" : "/chummer/gears/gear[name = \"Microdrone Sensor\" and category = \"Sensors\"]");
                     objNewSensor.Create(xmlNewGear, 0, lstWeapons);
                     objCurrentSensor = objCurrentGear;
                     break;
                 }
                 if (objCurrentGear.Name == "Small Drone Sensor")
                 {
-                    XmlNode xmlNewGear = XmlManager.Load("gear.xml").SelectSingleNode(blnIncrease ? "/chummer/gears/gear[name = \"Medium Drone Sensor\" and category = \"Sensors\"]" : "/chummer/gears/gear[name = \"Minidrone Sensor\" and category = \"Sensors\"]");
+                    XmlNode xmlNewGear = XmlManager.Load("gear.xml", _objCharacter.Options.CustomDataDictionary).SelectSingleNode(blnIncrease ? "/chummer/gears/gear[name = \"Medium Drone Sensor\" and category = \"Sensors\"]" : "/chummer/gears/gear[name = \"Minidrone Sensor\" and category = \"Sensors\"]");
                     objNewSensor.Create(xmlNewGear, 0, lstWeapons);
                     objCurrentSensor = objCurrentGear;
                     break;
                 }
                 if (objCurrentGear.Name == "Medium Drone Sensor")
                 {
-                    XmlNode xmlNewGear = XmlManager.Load("gear.xml").SelectSingleNode(blnIncrease ? "/chummer/gears/gear[name = \"Large Drone Sensor\" and category = \"Sensors\"]" : "/chummer/gears/gear[name = \"Small Drone Sensor\" and category = \"Sensors\"]");
+                    XmlNode xmlNewGear = XmlManager.Load("gear.xml", _objCharacter.Options.CustomDataDictionary).SelectSingleNode(blnIncrease ? "/chummer/gears/gear[name = \"Large Drone Sensor\" and category = \"Sensors\"]" : "/chummer/gears/gear[name = \"Small Drone Sensor\" and category = \"Sensors\"]");
                     objNewSensor.Create(xmlNewGear, 0, lstWeapons);
                     objCurrentSensor = objCurrentGear;
                     break;
                 }
                 if (objCurrentGear.Name == "Large Drone Sensor")
                 {
-                    XmlNode xmlNewGear = XmlManager.Load("gear.xml").SelectSingleNode(blnIncrease ? "/chummer/gears/gear[name = \"Vehicle Sensor\" and category = \"Sensors\"]" : "/chummer/gears/gear[name = \"Medium Drone Sensor\" and category = \"Sensors\"]");
+                    XmlNode xmlNewGear = XmlManager.Load("gear.xml", _objCharacter.Options.CustomDataDictionary).SelectSingleNode(blnIncrease ? "/chummer/gears/gear[name = \"Vehicle Sensor\" and category = \"Sensors\"]" : "/chummer/gears/gear[name = \"Medium Drone Sensor\" and category = \"Sensors\"]");
                     objNewSensor.Create(xmlNewGear, 0, lstWeapons);
                     objCurrentSensor = objCurrentGear;
                     break;
                 }
                 if (objCurrentGear.Name == "Vehicle Sensor")
                 {
-                    XmlNode xmlNewGear = XmlManager.Load("gear.xml").SelectSingleNode(blnIncrease ? "/chummer/gears/gear[name = \"Extra-Large Vehicle Sensor\" and category = \"Sensors\"]" : "/chummer/gears/gear[name = \"Large Drone Sensor\" and category = \"Sensors\"]");
+                    XmlNode xmlNewGear = XmlManager.Load("gear.xml", _objCharacter.Options.CustomDataDictionary).SelectSingleNode(blnIncrease ? "/chummer/gears/gear[name = \"Extra-Large Vehicle Sensor\" and category = \"Sensors\"]" : "/chummer/gears/gear[name = \"Large Drone Sensor\" and category = \"Sensors\"]");
                     objNewSensor.Create(xmlNewGear, 0, lstWeapons);
                     objCurrentSensor = objCurrentGear;
                     break;
@@ -3185,7 +3185,7 @@ namespace Chummer.Backend.Equipment
                 {
                     if (!blnIncrease)
                     {
-                        XmlNode xmlNewGear = XmlManager.Load("gear.xml").SelectSingleNode("/chummer/gears/gear[name = \"Vehicle Sensor\" and category = \"Sensors\"]");
+                        XmlNode xmlNewGear = XmlManager.Load("gear.xml", _objCharacter.Options.CustomDataDictionary).SelectSingleNode("/chummer/gears/gear[name = \"Vehicle Sensor\" and category = \"Sensors\"]");
                         objNewSensor.Create(xmlNewGear, 0, lstWeapons);
                         objCurrentSensor = objCurrentGear;
                     }

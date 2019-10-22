@@ -38,7 +38,7 @@ namespace Chummer
 
 	    public frmCreateWeaponMount(Vehicle objVehicle, Character objCharacter, WeaponMount objWeaponMount = null)
 		{
-            _xmlDoc = XmlManager.Load("vehicles.xml");
+            _xmlDoc = XmlManager.Load("vehicles.xml", objCharacter.Options.CustomDataDictionary);
 		    _objVehicle = objVehicle;
 		    _objMount = objWeaponMount;
 		    _objCharacter = objCharacter;
@@ -554,7 +554,7 @@ namespace Chummer
                     break;
                 }
                 blnAddAgain = frmPickVehicleMod.AddAgain;
-                XmlDocument objXmlDocument = XmlManager.Load("vehicles.xml");
+                XmlDocument objXmlDocument = XmlManager.Load("vehicles.xml", _objCharacter.Options.CustomDataDictionary);
                 XmlNode objXmlMod = objXmlDocument.SelectSingleNode("/chummer/weaponmountmods/mod[id = \"" + frmPickVehicleMod.SelectedMod + "\"]");
 
                 VehicleMod objMod = new VehicleMod(_objCharacter)

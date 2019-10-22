@@ -210,7 +210,7 @@ namespace Chummer.Backend.Equipment
             XmlNode xmlGearsNode = objXmlAccessory["gears"];
             if (xmlGearsNode != null && blnCreateChildren)
             {
-                XmlDocument objXmlGearDocument = XmlManager.Load("gear.xml");
+                XmlDocument objXmlGearDocument = XmlManager.Load("gear.xml", _objCharacter.Options.CustomDataDictionary);
                 using (XmlNodeList xmlGearsList = xmlGearsNode.SelectNodes("usegear"))
                     if (xmlGearsList != null)
                         foreach (XmlNode objXmlAccessoryGear in xmlGearsList)
@@ -1178,9 +1178,9 @@ namespace Chummer.Backend.Equipment
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
                 _objCachedMyXmlNode = SourceID == Guid.Empty
-                    ? XmlManager.Load("weapons.xml", strLanguage)
+                    ? XmlManager.Load("weapons.xml", _objCharacter.Options.CustomDataDictionary, strLanguage)
                         .SelectSingleNode($"/chummer/accessories/accessory[name = \"{Name}\"]")
-                    : XmlManager.Load("weapons.xml", strLanguage)
+                    : XmlManager.Load("weapons.xml", _objCharacter.Options.CustomDataDictionary, strLanguage)
                         .SelectSingleNode($"/chummer/accessories/accessory[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }

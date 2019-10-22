@@ -52,7 +52,7 @@ namespace Chummer
             _strSourceName = strSource;
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
-            _objXmlDocument = XmlManager.Load("skills.xml");
+            _objXmlDocument = XmlManager.Load("skills.xml", _objCharacter.Options.CustomDataDictionary);
         }
 
         private void frmSelectSkill_Load(object sender, EventArgs e)

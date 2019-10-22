@@ -56,7 +56,7 @@ namespace Chummer
             lblMarkupPercentLabel.Visible = objCharacter.Created;
             _objCharacter = objCharacter;
             // Load the Vehicle information.
-            _xmlBaseVehicleDataNode = XmlManager.Load("vehicles.xml").GetFastNavigator().SelectSingleNode("/chummer");
+            _xmlBaseVehicleDataNode = XmlManager.Load("vehicles.xml", objCharacter.Options.CustomDataDictionary).GetFastNavigator().SelectSingleNode("/chummer");
             _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_xmlBaseVehicleDataNode);
 
             foreach (Improvement objImprovement in _objCharacter.Improvements.Where(imp =>

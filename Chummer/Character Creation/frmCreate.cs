@@ -68,7 +68,7 @@ namespace Chummer
             InitializeComponent();
         }
 
-        public frmCreate(Character objCharacter) : base(objCharacter)
+        public frmCreate(Character CharacterObject) : base(CharacterObject)
         {
             InitializeComponent();
 
@@ -208,7 +208,7 @@ namespace Chummer
                                 CharacterObject.GameplayOption = GlobalOptions.DefaultGameplayOption;
                             }
 
-                            XmlNode objXmlGameplayOption = XmlManager.Load("gameplayoptions.xml")
+                            XmlNode objXmlGameplayOption = XmlManager.Load("gameplayoptions.xml", _objCharacter.Options.CustomDataDictionary)
                                 .SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" +
                                                   CharacterObject.GameplayOption + "\"]");
                             if (objXmlGameplayOption != null)
@@ -396,7 +396,7 @@ namespace Chummer
                     {
                         // Populate the Magician Traditions list.
                         XPathNavigator xmlTraditionsBaseChummerNode =
-                            XmlManager.Load("traditions.xml").GetFastNavigator().SelectSingleNode("/chummer");
+                            XmlManager.Load("traditions.xml", _objCharacter.Options.CustomDataDictionary).GetFastNavigator().SelectSingleNode("/chummer");
                         List<ListItem> lstTraditions = new List<ListItem>();
                         if (xmlTraditionsBaseChummerNode != null)
                         {
@@ -566,7 +566,7 @@ namespace Chummer
 
                         // Populate the Technomancer Streams list.
                         xmlTraditionsBaseChummerNode =
-                            XmlManager.Load("streams.xml").GetFastNavigator().SelectSingleNode("/chummer");
+                            XmlManager.Load("streams.xml", _objCharacter.Options.CustomDataDictionary).GetFastNavigator().SelectSingleNode("/chummer");
                         List<ListItem> lstStreams = new List<ListItem>();
                         if (xmlTraditionsBaseChummerNode != null)
                         {
@@ -1098,7 +1098,7 @@ namespace Chummer
                             /*
                             int intEssenceLoss = 0;
                             if (!CharacterObjectOptions.ESSLossReducesMaximumOnly)
-                                intEssenceLoss = _objCharacter.EssencePenalty;
+                                intEssenceLoss = CharacterObject.EssencePenalty;
                             */
                             // If the character options permit initiation in create mode, show the Initiation page.
                             UpdateInitiationCost();
@@ -1162,7 +1162,7 @@ namespace Chummer
                             /*
                             int intEssenceLoss = 0;
                             if (!CharacterObjectOptions.ESSLossReducesMaximumOnly)
-                                intEssenceLoss = _objCharacter.EssencePenalty;
+                                intEssenceLoss = CharacterObject.EssencePenalty;
                             // If the character options permit submersion in create mode, show the Initiation page.
                             */
                             UpdateInitiationCost();
@@ -2537,7 +2537,7 @@ namespace Chummer
 
         private void mnuSpecialConvertToFreeSprite_Click(object sender, EventArgs e)
         {
-            XmlDocument objXmlDocument = XmlManager.Load("critterpowers.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("critterpowers.xml", CharacterObject.Options.CustomDataDictionary);
             XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"Denial\"]");
             CritterPower objPower = new CritterPower(CharacterObject);
             objPower.Create(objXmlPower);
@@ -2593,7 +2593,7 @@ namespace Chummer
         private void cmdAddSpell_Click(object sender, EventArgs e)
         {
             // Open the Spells XML file and locate the selected piece.
-            XmlDocument objXmlDocument = XmlManager.Load("spells.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("spells.xml", CharacterObject.Options.CustomDataDictionary);
 
             bool blnAddAgain;
 
@@ -2697,7 +2697,7 @@ namespace Chummer
 
         private void cmdAddComplexForm_Click(object sender, EventArgs e)
         {
-            XmlDocument objXmlDocument = XmlManager.Load("complexforms.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("complexforms.xml", CharacterObject.Options.CustomDataDictionary);
             bool blnAddAgain;
 
             do
@@ -2755,7 +2755,7 @@ namespace Chummer
 
         private void cmdAddAIProgram_Click(object sender, EventArgs e)
         {
-            XmlDocument objXmlDocument = XmlManager.Load("programs.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("programs.xml", CharacterObject.Options.CustomDataDictionary);
             bool blnAddAgain;
             do
             {
@@ -2847,7 +2847,7 @@ namespace Chummer
                 return false;
 
             // Open the Weapons XML file and locate the selected piece.
-            XmlDocument objXmlDocument = XmlManager.Load("weapons.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("weapons.xml", CharacterObject.Options.CustomDataDictionary);
 
             XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + frmPickWeapon.SelectedWeapon + "\"]");
 
@@ -2960,7 +2960,7 @@ namespace Chummer
                 return false;
 
             // Open the Vehicles XML file and locate the selected piece.
-            XmlDocument objXmlDocument = XmlManager.Load("vehicles.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("vehicles.xml", CharacterObject.Options.CustomDataDictionary);
 
             XmlNode objXmlVehicle = objXmlDocument.SelectSingleNode("/chummer/vehicles/vehicle[id = \"" + frmPickVehicle.SelectedVehicle + "\"]");
 
@@ -3043,7 +3043,7 @@ namespace Chummer
                     // Create a Vehicle Mod for the Retrofit.
                     VehicleMod objRetrofit = new VehicleMod(CharacterObject);
 
-                    XmlDocument objVehiclesDoc = XmlManager.Load("vehicles.xml");
+                    XmlDocument objVehiclesDoc = XmlManager.Load("vehicles.xml", CharacterObject.Options.CustomDataDictionary);
                     XmlNode objXmlNode = objVehiclesDoc.SelectSingleNode("/chummer/mods/mod[name = \"Retrofit\"]");
                     objRetrofit.Create(objXmlNode, 0, objMod.Parent);
                     objRetrofit.Cost = decCost.ToString(GlobalOptions.InvariantCultureInfo);
@@ -3111,7 +3111,7 @@ namespace Chummer
                 return;
 
             // Open the Martial Arts XML file and locate the selected piece.
-            XmlDocument objXmlDocument = XmlManager.Load("martialarts.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("martialarts.xml", CharacterObject.Options.CustomDataDictionary);
 
             XmlNode objXmlManeuver = objXmlDocument.SelectSingleNode("/chummer/maneuvers/maneuver[name = \"" + frmPickMartialArtManeuver.SelectedManeuver + "\"]");
 
@@ -3263,7 +3263,7 @@ namespace Chummer
         private void cmdAddCritterPower_Click(object sender, EventArgs e)
         {
             // Make sure the Critter is allowed to have Optional Powers.
-            XmlDocument objXmlDocument = XmlManager.Load("critterpowers.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("critterpowers.xml", CharacterObject.Options.CustomDataDictionary);
 
             bool blnAddAgain;
 
@@ -3329,7 +3329,7 @@ namespace Chummer
 
         private void cmdLifeModule_Click(object sender, EventArgs e)
         {
-            XmlNode xmlStagesParentNode = XmlManager.Load("lifemodules.xml").SelectSingleNode("chummer/stages");
+            XmlNode xmlStagesParentNode = XmlManager.Load("lifemodules.xml", CharacterObject.Options.CustomDataDictionary).SelectSingleNode("chummer/stages");
 
             bool blnAddAgain;
             do
@@ -3394,7 +3394,7 @@ namespace Chummer
 
         private void cmdAddQuality_Click(object sender, EventArgs e)
         {
-            XmlDocument objXmlDocument = XmlManager.Load("qualities.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("qualities.xml", CharacterObject.Options.CustomDataDictionary);
             bool blnAddAgain;
 
             do
@@ -3545,7 +3545,7 @@ namespace Chummer
             bool blnAddQuality = true;
 
             // Make sure the character does not yet have this Quality.
-            foreach (Quality objCharacterQuality in _objCharacter.Qualities)
+            foreach (Quality objCharacterQuality in CharacterObject.Qualities)
             {
                 if (objCharacterQuality.Name == objXmlAddQuality.InnerText && objCharacterQuality.Extra == strForceValue)
                 {
@@ -3557,13 +3557,13 @@ namespace Chummer
             if (blnAddQuality)
             {
                 List<Weapon> objAddWeapons = new List<Weapon>();
-                Quality objAddQuality = new Quality(_objCharacter);
-                objAddQuality.Create(objXmlSelectedQuality, _objCharacter, QualitySource.Selected, lstWeapons, strForceValue);
+                Quality objAddQuality = new Quality(CharacterObject);
+                objAddQuality.Create(objXmlSelectedQuality, CharacterObject, QualitySource.Selected, lstWeapons, strForceValue);
 
                 // Add any created Weapons to the character.
                 foreach (Weapon objWeapon in objAddWeapons)
                 {
-                    _objCharacter.Weapons.Add(objWeapon);
+                    CharacterObject.Weapons.Add(objWeapon);
                 }
 
                 return objAddQuality;
@@ -3667,7 +3667,7 @@ namespace Chummer
 
             if (objSelectedQuality.Type == QualityType.LifeModule)
             {
-                objXmlDeleteQuality = Quality.GetNodeOverrideable(objSelectedQuality.SourceIDString, XmlManager.Load("lifemodules.xml", GlobalOptions.Language));
+                objXmlDeleteQuality = Quality.GetNodeOverrideable(objSelectedQuality.SourceIDString, XmlManager.Load("lifemodules.xml", CharacterObject.Options.CustomDataDictionary, GlobalOptions.Language));
             }
 
             // Fix for legacy characters with old addqualities improvements.
@@ -3932,7 +3932,7 @@ namespace Chummer
                 return false;
 
             // Open the Armor XML file and locate the selected piece.
-            XmlDocument objXmlDocument = XmlManager.Load("armor.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("armor.xml", CharacterObject.Options.CustomDataDictionary);
 
             XmlNode objXmlArmor = objXmlDocument.SelectSingleNode("/chummer/armors/armor[id = \"" + frmPickArmor.SelectedArmor + "\"]");
 
@@ -4116,7 +4116,7 @@ namespace Chummer
                 blnAddAgain = frmPickWeaponAccessory.AddAgain;
 
                 // Locate the selected piece.
-                objXmlWeapon = XmlManager.Load("weapons.xml").SelectSingleNode("/chummer/accessories/accessory[id = \"" + frmPickWeaponAccessory.SelectedAccessory + "\"]");
+                objXmlWeapon = XmlManager.Load("weapons.xml", CharacterObject.Options.CustomDataDictionary).SelectSingleNode("/chummer/accessories/accessory[id = \"" + frmPickWeaponAccessory.SelectedAccessory + "\"]");
 
                 WeaponAccessory objAccessory = new WeaponAccessory(CharacterObject);
                 objAccessory.Create(objXmlWeapon, frmPickWeaponAccessory.SelectedMount, frmPickWeaponAccessory.SelectedRating);
@@ -4174,7 +4174,7 @@ namespace Chummer
             }
 
             // Open the Armor XML file and locate the selected Armor.
-            XmlDocument objXmlDocument = XmlManager.Load("armor.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("armor.xml", CharacterObject.Options.CustomDataDictionary);
 
             bool blnAddAgain;
             do
@@ -4298,7 +4298,7 @@ namespace Chummer
             }
 
             // Open the Vehicles XML file and locate the selected piece.
-            XmlDocument objXmlDocument = XmlManager.Load("vehicles.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("vehicles.xml", CharacterObject.Options.CustomDataDictionary);
 
             bool blnAddAgain;
 
@@ -4443,7 +4443,7 @@ namespace Chummer
                     return;
 
                 // Open the Weapons XML file and locate the selected piece.
-                XmlDocument objXmlDocument = XmlManager.Load("weapons.xml");
+                XmlDocument objXmlDocument = XmlManager.Load("weapons.xml", CharacterObject.Options.CustomDataDictionary);
 
                 XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + frmPickWeapon.SelectedWeapon + "\"]");
 
@@ -4492,7 +4492,7 @@ namespace Chummer
             }
 
             // Open the Weapons XML file and locate the selected Weapon.
-            XmlDocument objXmlDocument = XmlManager.Load("weapons.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("weapons.xml", CharacterObject.Options.CustomDataDictionary);
 
             XmlNode objXmlWeapon = objWeapon.GetNode();
             if (objXmlWeapon == null)
@@ -4569,7 +4569,7 @@ namespace Chummer
                 return;
 
             // Open the Weapons XML file and locate the selected piece.
-            XmlDocument objXmlDocument = XmlManager.Load("weapons.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("weapons.xml", CharacterObject.Options.CustomDataDictionary);
 
             XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + frmPickWeapon.SelectedWeapon + "\"]");
 
@@ -4642,7 +4642,7 @@ namespace Chummer
                 blnAddAgain = frmPickMartialArtTechnique.AddAgain;
 
                 // Open the Martial Arts XML file and locate the selected piece.
-                XmlNode xmlTechnique = XmlManager.Load("martialarts.xml").SelectSingleNode("/chummer/techniques/technique[id = \"" + frmPickMartialArtTechnique.SelectedTechnique + "\"]");
+                XmlNode xmlTechnique = XmlManager.Load("martialarts.xml", CharacterObject.Options.CustomDataDictionary).SelectSingleNode("/chummer/techniques/technique[id = \"" + frmPickMartialArtTechnique.SelectedTechnique + "\"]");
 
                 // Create the Improvements for the Advantage if there are any.
                 MartialArtTechnique objAdvantage = new MartialArtTechnique(CharacterObject);
@@ -4696,7 +4696,7 @@ namespace Chummer
                 return;
             }
 
-            XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("gear.xml", CharacterObject.Options.CustomDataDictionary);
             XmlNode objXmlSensorGear = objSensor.GetNode();
             string strCategories = string.Empty;
             XmlNodeList xmlAddonCategoryList = objXmlSensorGear?.SelectNodes("addoncategory");
@@ -4933,7 +4933,7 @@ namespace Chummer
                 return;
 
             // Open the Weapons XML file and locate the selected piece.
-            XmlDocument objXmlDocument = XmlManager.Load("weapons.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("weapons.xml", CharacterObject.Options.CustomDataDictionary);
 
             XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + frmPickWeapon.SelectedWeapon + "\"]");
 
@@ -5311,7 +5311,7 @@ namespace Chummer
             }
 
             // Open the Cyberware XML file and locate the selected piece.
-            XmlDocument objXmlDocument = XmlManager.Load("cyberware.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("cyberware.xml", CharacterObject.Options.CustomDataDictionary);
 
             bool blnAddAgain;
 
@@ -5613,7 +5613,7 @@ namespace Chummer
             }
 
             // Open the Gear XML file and locate the selected piece.
-            XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("gear.xml", CharacterObject.Options.CustomDataDictionary);
             bool blnAddAgain;
 
             do
@@ -5700,7 +5700,7 @@ namespace Chummer
             }
 
             // Open the Gear XML file and locate the selected piece.
-            XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("gear.xml", CharacterObject.Options.CustomDataDictionary);
             bool blnAddAgain;
 
             do
@@ -5784,7 +5784,7 @@ namespace Chummer
             }
 
             // Open the Gear XML file and locate the selected piece.
-            XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("gear.xml", CharacterObject.Options.CustomDataDictionary);
             bool blnAddAgain;
             XmlNode objXmlSensorGear = objSensor.GetNode();
             string strCategories = string.Empty;
@@ -5873,7 +5873,7 @@ namespace Chummer
             }
 
             // Open the Gear XML file and locate the selected piece.
-            XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("gear.xml", CharacterObject.Options.CustomDataDictionary);
             bool blnAddAgain;
             XmlNode objXmlSensorGear = objSensor.GetNode();
             string strCategories = string.Empty;
@@ -5956,7 +5956,7 @@ namespace Chummer
             }
 
             // Open the Gear XML file and locate the selected piece.
-            XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("gear.xml", CharacterObject.Options.CustomDataDictionary);
             bool blnAddAgain;
             string strCategories = string.Empty;
             foreach (XmlNode objXmlCategory in objAccessory.AllowGear)
@@ -6041,7 +6041,7 @@ namespace Chummer
                 strCategories = strCategories.Substring(0, strCategories.Length - 1);
             }
             // Open the Gear XML file and locate the selected piece.
-            XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("gear.xml", CharacterObject.Options.CustomDataDictionary);
             bool blnAddAgain;
 
             do
@@ -6146,7 +6146,7 @@ namespace Chummer
                 return;
             }
 
-            XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("gear.xml", CharacterObject.Options.CustomDataDictionary);
             XmlNode objXmlSensorGear = objSensor.GetNode();
             string strCategories = string.Empty;
             XmlNodeList xmlAddonCategoryList = objXmlSensorGear?.SelectNodes("addoncategory");
@@ -6234,7 +6234,7 @@ namespace Chummer
                 return;
             }
 
-            XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("gear.xml", CharacterObject.Options.CustomDataDictionary);
             string strCategories = string.Empty;
             foreach (XmlNode objXmlCategory in objAccessory.AllowGear)
                 strCategories += objXmlCategory.InnerText + ",";
@@ -7986,7 +7986,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(strSelectedId))
                 return;
 
-            XmlNode xmlTradition = XmlManager.Load("traditions.xml").SelectSingleNode("/chummer/traditions/tradition[id = \"" + strSelectedId + "\"]");
+            XmlNode xmlTradition = XmlManager.Load("traditions.xml", CharacterObject.Options.CustomDataDictionary).SelectSingleNode("/chummer/traditions/tradition[id = \"" + strSelectedId + "\"]");
 
             if (xmlTradition == null)
             {
@@ -8101,7 +8101,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(strSelectedId) || strSelectedId == CharacterObject.MagicTradition.SourceIDString)
                 return;
 
-            XmlNode xmlNewStreamNode = XmlManager.Load("streams.xml").SelectSingleNode("/chummer/traditions/tradition[id = \"" + strSelectedId + "\"]");
+            XmlNode xmlNewStreamNode = XmlManager.Load("streams.xml", CharacterObject.Options.CustomDataDictionary).SelectSingleNode("/chummer/traditions/tradition[id = \"" + strSelectedId + "\"]");
             if (xmlNewStreamNode != null && CharacterObject.MagicTradition.Create(xmlNewStreamNode, true))
             {
                 IsCharacterUpdateRequested = true;
@@ -10587,7 +10587,7 @@ namespace Chummer
             if (CharacterObject.MetatypeCategory == "Shapeshifter")
             {
                 List<CharacterAttrib> lstAttributesToAdd = new List<CharacterAttrib>();
-                XmlDocument xmlDoc = XmlManager.Load("metatypes.xml");
+                XmlDocument xmlDoc = XmlManager.Load("metatypes.xml", _objCharacter.Options.CustomDataDictionary);
                 string strMetavariantXPath = $"/chummer/metatypes/metatype[id = \"{CharacterObject.MetatypeGuid}\"]/metavariants/metavariant[id = \"{CharacterObject.MetavariantGuid}\"]";
                 foreach (CharacterAttrib objOldAttribute in CharacterObject.AttributeSection.AttributeList)
                 {
@@ -10812,8 +10812,8 @@ namespace Chummer
 
             // Open the Cyberware XML file and locate the selected piece.
             XmlNode objXmlCyberware = objSource == Improvement.ImprovementSource.Bioware
-                ? XmlManager.Load("bioware.xml").SelectSingleNode("/chummer/biowares/bioware[id = \"" + frmPickCyberware.SelectedCyberware + "\"]")
-                : XmlManager.Load("cyberware.xml").SelectSingleNode("/chummer/cyberwares/cyberware[id = \"" + frmPickCyberware.SelectedCyberware + "\"]");
+                ? XmlManager.Load("bioware.xml", CharacterObject.Options.CustomDataDictionary).SelectSingleNode("/chummer/biowares/bioware[id = \"" + frmPickCyberware.SelectedCyberware + "\"]")
+                : XmlManager.Load("cyberware.xml", CharacterObject.Options.CustomDataDictionary).SelectSingleNode("/chummer/cyberwares/cyberware[id = \"" + frmPickCyberware.SelectedCyberware + "\"]");
 
             // Create the Cyberware object.
             Cyberware objCyberware = new Cyberware(CharacterObject);
@@ -10914,7 +10914,7 @@ namespace Chummer
                 return false;
 
             // Open the Cyberware XML file and locate the selected piece.
-            XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("gear.xml", CharacterObject.Options.CustomDataDictionary);
             objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = \"" + frmPickGear.SelectedGear + "\"]");
 
             // Create the new piece of Gear.
@@ -11044,7 +11044,7 @@ namespace Chummer
                 return false;
 
             // Open the Cyberware XML file and locate the selected piece.
-            XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("gear.xml", CharacterObject.Options.CustomDataDictionary);
             XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = \"" + frmPickGear.SelectedGear + "\"]");
 
             // Create the new piece of Gear.
@@ -12649,7 +12649,7 @@ namespace Chummer
                 if (CharacterObject.Lifestyles.Count == 0)
                 {
                     objLifestyle = new Lifestyle(CharacterObject);
-                    XmlDocument objXmlDocument = XmlManager.Load("lifestyles.xml");
+                    XmlDocument objXmlDocument = XmlManager.Load("lifestyles.xml", CharacterObject.Options.CustomDataDictionary);
                     XmlNode objXmlLifestyle = objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"Street\"]");
 
                     objLifestyle.Create(objXmlLifestyle);
@@ -12733,7 +12733,7 @@ namespace Chummer
             using (XmlNodeList xmlChildrenList = xmlSuiteNode.SelectNodes(strType + "s/" + strType))
                 if (xmlChildrenList?.Count > 0)
                 {
-                    XmlDocument objXmlDocument = XmlManager.Load(strType + ".xml");
+                    XmlDocument objXmlDocument = XmlManager.Load(strType + ".xml", CharacterObject.Options.CustomDataDictionary);
                     foreach (XmlNode objXmlChild in xmlChildrenList)
                     {
                         XmlNode objXmlChildCyberware = objXmlDocument.SelectSingleNode("/chummer/" + strType + "s/" + strType + "[name = \"" + objXmlChild["name"]?.InnerText + "\"]");
@@ -12764,14 +12764,14 @@ namespace Chummer
             //if (frmPickPACKSKit.SelectedCategory == "Custom")
             //blnCreateChildren = false;
 
-            XmlNode objXmlKit = XmlManager.Load("packs.xml").SelectSingleNode("/chummer/packs/pack[name = \"" + frmPickPACKSKit.SelectedKit + "\" and category = \"" + frmSelectPACKSKit.SelectedCategory + "\"]");
+            XmlNode objXmlKit = XmlManager.Load("packs.xml", CharacterObject.Options.CustomDataDictionary).SelectSingleNode("/chummer/packs/pack[name = \"" + frmPickPACKSKit.SelectedKit + "\" and category = \"" + frmSelectPACKSKit.SelectedCategory + "\"]");
             if (objXmlKit == null)
                 return false;
             // Update Qualities.
             XmlNode xmlQualities = objXmlKit["qualities"];
             if (xmlQualities != null)
             {
-                XmlDocument xmlQualityDocument = XmlManager.Load("qualities.xml");
+                XmlDocument xmlQualityDocument = XmlManager.Load("qualities.xml", CharacterObject.Options.CustomDataDictionary);
 
                 // Positive and Negative Qualities.
                 using (XmlNodeList xmlQualityList = xmlQualities.SelectNodes("*/quality"))
@@ -12817,7 +12817,7 @@ namespace Chummer
                 if (frmPickMartialArt.DialogResult != DialogResult.Cancel)
                 {
                     // Open the Martial Arts XML file and locate the selected piece.
-                    XmlDocument objXmlMartialArtDocument = XmlManager.Load("martialarts.xml");
+                    XmlDocument objXmlMartialArtDocument = XmlManager.Load("martialarts.xml", CharacterObject.Options.CustomDataDictionary);
 
                     XmlNode objXmlArt = objXmlMartialArtDocument.SelectSingleNode("/chummer/martialarts/martialart[id = \"" + frmPickMartialArt.SelectedMartialArt + "\"]");
 
@@ -12833,7 +12833,7 @@ namespace Chummer
             if (xmlMartialArts != null)
             {
                 // Open the Martial Arts XML file and locate the selected art.
-                XmlDocument objXmlMartialArtDocument = XmlManager.Load("martialarts.xml");
+                XmlDocument objXmlMartialArtDocument = XmlManager.Load("martialarts.xml", CharacterObject.Options.CustomDataDictionary);
 
                 foreach (XmlNode objXmlArt in xmlMartialArts.SelectNodes("martialart"))
                 {
@@ -12862,7 +12862,7 @@ namespace Chummer
             if (objXmlKit["powers"] != null)
             {
                 // Open the Powers XML file and locate the selected power.
-                XmlDocument objXmlPowerDocument = XmlManager.Load("powers.xml");
+                XmlDocument objXmlPowerDocument = XmlManager.Load("powers.xml", CharacterObject.Options.CustomDataDictionary);
 
                 foreach (XmlNode objXmlPower in objXmlKit.SelectNodes("powers/power"))
                 {
@@ -12877,7 +12877,7 @@ namespace Chummer
             if (xmlComplexForms != null)
             {
                 // Open the Programs XML file and locate the selected program.
-                XmlDocument objXmlComplexFormDocument = XmlManager.Load("complexforms.xml");
+                XmlDocument objXmlComplexFormDocument = XmlManager.Load("complexforms.xml", CharacterObject.Options.CustomDataDictionary);
 
                 foreach (XmlNode objXmlComplexForm in xmlComplexForms.SelectNodes("complexform"))
                 {
@@ -12899,7 +12899,7 @@ namespace Chummer
             if (xmlPrograms != null)
             {
                 // Open the Programs XML file and locate the selected program.
-                XmlDocument objXmlProgramDocument = XmlManager.Load("programs.xml");
+                XmlDocument objXmlProgramDocument = XmlManager.Load("programs.xml", CharacterObject.Options.CustomDataDictionary);
 
                 foreach (XmlNode objXmlProgram in xmlPrograms.SelectNodes("program"))
                 {
@@ -12918,7 +12918,7 @@ namespace Chummer
             XmlNode xmlSpells = objXmlKit["spells"];
             if (xmlSpells != null)
             {
-                XmlDocument objXmlSpellDocument = XmlManager.Load("spells.xml");
+                XmlDocument objXmlSpellDocument = XmlManager.Load("spells.xml", CharacterObject.Options.CustomDataDictionary);
 
                 foreach (XmlNode objXmlSpell in xmlSpells.SelectNodes("spell"))
                 {
@@ -12961,7 +12961,7 @@ namespace Chummer
             XmlNode xmlLifestyles = objXmlKit["lifestyles"];
             if (xmlLifestyles != null)
             {
-                XmlDocument objXmlLifestyleDocument = XmlManager.Load("lifestyles.xml");
+                XmlDocument objXmlLifestyleDocument = XmlManager.Load("lifestyles.xml", CharacterObject.Options.CustomDataDictionary);
 
                 foreach (XmlNode objXmlLifestyle in xmlLifestyles.SelectNodes("lifestyle"))
                 {
@@ -12995,19 +12995,19 @@ namespace Chummer
             string strNuyenBP = objXmlKit["nuyenbp"]?.InnerText;
             if (!string.IsNullOrEmpty(strNuyenBP) && decimal.TryParse(strNuyenBP, System.Globalization.NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decimal decAmount))
             {
-                //if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
+                //if (CharacterObject.BuildMethod == CharacterBuildMethod.Karma)
                 //decAmount *= 2;
 
                 CharacterObject.NuyenBP += decAmount;
             }
 
-            XmlDocument objXmlGearDocument = XmlManager.Load("gear.xml");
+            XmlDocument objXmlGearDocument = XmlManager.Load("gear.xml", CharacterObject.Options.CustomDataDictionary);
 
             // Update Armor.
             XmlNode xmlArmors = objXmlKit["armors"];
             if (xmlArmors != null)
             {
-                XmlDocument objXmlArmorDocument = XmlManager.Load("armor.xml");
+                XmlDocument objXmlArmorDocument = XmlManager.Load("armor.xml", CharacterObject.Options.CustomDataDictionary);
                 foreach (XmlNode objXmlArmor in xmlArmors.SelectNodes("armor"))
                 {
                     XmlNode objXmlArmorNode = objXmlArmorDocument.SelectSingleNode("/chummer/armors/armor[(" + CharacterObjectOptions.BookXPath() + ") and name = \"" + objXmlArmor["name"].InnerText + "\"]");
@@ -13053,7 +13053,7 @@ namespace Chummer
             XmlNode xmlWeapons = objXmlKit["weapons"];
             if (xmlWeapons != null)
             {
-                XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml");
+                XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml", CharacterObject.Options.CustomDataDictionary);
 
                 XmlNodeList xmlWeaponsList = xmlWeapons.SelectNodes("weapon");
                 pgbProgress.Visible = true;
@@ -13144,8 +13144,8 @@ namespace Chummer
                 }
             }
 
-            XmlDocument objXmlCyberwareDocument = XmlManager.Load("cyberware.xml");
-            XmlDocument objXmlBiowareDocument = XmlManager.Load("bioware.xml");
+            XmlDocument objXmlCyberwareDocument = XmlManager.Load("cyberware.xml", CharacterObject.Options.CustomDataDictionary);
+            XmlDocument objXmlBiowareDocument = XmlManager.Load("bioware.xml", CharacterObject.Options.CustomDataDictionary);
 
             // Update Cyberware.
             XmlNode xmlCyberwares = objXmlKit["cyberwares"];
@@ -13217,7 +13217,7 @@ namespace Chummer
             XmlNode xmlVehicles = objXmlKit["vehicles"];
             if (xmlVehicles != null)
             {
-                XmlDocument objXmlVehicleDocument = XmlManager.Load("vehicles.xml");
+                XmlDocument objXmlVehicleDocument = XmlManager.Load("vehicles.xml", CharacterObject.Options.CustomDataDictionary);
                 XmlNodeList xmlVehiclesList = xmlVehicles.SelectNodes("vehicle");
                 pgbProgress.Visible = true;
                 pgbProgress.Value = 0;
@@ -13282,7 +13282,7 @@ namespace Chummer
                         // Add any Vehicle Weapons.
                         if (objXmlVehicle["weapons"] != null)
                         {
-                            XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml");
+                            XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml", CharacterObject.Options.CustomDataDictionary);
 
                             foreach (XmlNode objXmlWeapon in objXmlVehicle.SelectNodes("weapons/weapon"))
                             {
@@ -13462,34 +13462,34 @@ namespace Chummer
             List<Quality> lstRemoveQualities = new List<Quality>();
             //TODO: This shouldn't be required as of 17/10/16. Revert in case something weird shows up.
             /*Revert all Special Qualities
-            foreach (Quality objQuality in _objCharacter.Qualities)
+            foreach (Quality objQuality in CharacterObject.Qualities)
             {
                 switch (objQuality.Name)
                 {
                     case "Magician":
-                        _objCharacter.MAGEnabled = false;
-                        _objCharacter.MagicianEnabled = false;
+                        CharacterObject.MAGEnabled = false;
+                        CharacterObject.MagicianEnabled = false;
                         lstRemoveQualities.Add(objQuality);
                         break;
                     case "Aspected Magician":
-                        _objCharacter.MAGEnabled = false;
-                        _objCharacter.MagicianEnabled = false;
+                        CharacterObject.MAGEnabled = false;
+                        CharacterObject.MagicianEnabled = false;
                         lstRemoveQualities.Add(objQuality);
                         break;
                     case "Adept":
-                        _objCharacter.MAGEnabled = false;
-                        _objCharacter.AdeptEnabled = false;
+                        CharacterObject.MAGEnabled = false;
+                        CharacterObject.AdeptEnabled = false;
                         lstRemoveQualities.Add(objQuality);
                         break;
                     case "Mystic Adept":
-                        _objCharacter.MAGEnabled = false;
-                        _objCharacter.MagicianEnabled = false;
-                        _objCharacter.AdeptEnabled = false;
+                        CharacterObject.MAGEnabled = false;
+                        CharacterObject.MagicianEnabled = false;
+                        CharacterObject.AdeptEnabled = false;
                         lstRemoveQualities.Add(objQuality);
                         break;
                     case "Technomancer":
-                        _objCharacter.RESEnabled = false;
-                        _objCharacter.TechnomancerEnabled = false;
+                        CharacterObject.RESEnabled = false;
+                        CharacterObject.TechnomancerEnabled = false;
                         lstRemoveQualities.Add(objQuality);
                         break;
                     default:
@@ -13500,28 +13500,28 @@ namespace Chummer
             // Remove any Qualities the character received from their Metatype, then remove the Quality.
             foreach (Quality objQuality in lstRemoveQualities)
             {
-                ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Quality, objQuality.InternalId);
-                _objCharacter.Qualities.Remove(objQuality);
+                ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId);
+                CharacterObject.Qualities.Remove(objQuality);
             }
             lstRemoveQualities.Clear();
 
             int intEssenceLoss = 0;
             if (!CharacterObjectOptions.ESSLossReducesMaximumOnly)
-                intEssenceLoss = _objCharacter.EssencePenalty;
+                intEssenceLoss = CharacterObject.EssencePenalty;
 
             // Determine the number of points that have been put into Attributes.
-            int intBOD = _objCharacter.BOD.Base - _objCharacter.BOD.MetatypeMinimum;
-            int intAGI = _objCharacter.AGI.Base - _objCharacter.AGI.MetatypeMinimum;
-            int intREA = _objCharacter.REA.Base - _objCharacter.REA.MetatypeMinimum;
-            int intSTR = _objCharacter.STR.Base - _objCharacter.STR.MetatypeMinimum;
-            int intCHA = _objCharacter.CHA.Base - _objCharacter.CHA.MetatypeMinimum;
-            int intINT = _objCharacter.INT.Base - _objCharacter.INT.MetatypeMinimum;
-            int intLOG = _objCharacter.LOG.Base - _objCharacter.LOG.MetatypeMinimum;
-            int intWIL = _objCharacter.WIL.Base - _objCharacter.WIL.MetatypeMinimum;
-            int intEDG = _objCharacter.EDG.Base - _objCharacter.EDG.MetatypeMinimum;
-            int intDEP = _objCharacter.DEP.Base - _objCharacter.DEP.MetatypeMinimum;
-            int intMAG = Math.Max(_objCharacter.MAG.Base - _objCharacter.MAG.MetatypeMinimum, 0);
-            int intRES = Math.Max(_objCharacter.RES.Base - _objCharacter.RES.MetatypeMinimum, 0);
+            int intBOD = CharacterObject.BOD.Base - CharacterObject.BOD.MetatypeMinimum;
+            int intAGI = CharacterObject.AGI.Base - CharacterObject.AGI.MetatypeMinimum;
+            int intREA = CharacterObject.REA.Base - CharacterObject.REA.MetatypeMinimum;
+            int intSTR = CharacterObject.STR.Base - CharacterObject.STR.MetatypeMinimum;
+            int intCHA = CharacterObject.CHA.Base - CharacterObject.CHA.MetatypeMinimum;
+            int intINT = CharacterObject.INT.Base - CharacterObject.INT.MetatypeMinimum;
+            int intLOG = CharacterObject.LOG.Base - CharacterObject.LOG.MetatypeMinimum;
+            int intWIL = CharacterObject.WIL.Base - CharacterObject.WIL.MetatypeMinimum;
+            int intEDG = CharacterObject.EDG.Base - CharacterObject.EDG.MetatypeMinimum;
+            int intDEP = CharacterObject.DEP.Base - CharacterObject.DEP.MetatypeMinimum;
+            int intMAG = Math.Max(CharacterObject.MAG.Base - CharacterObject.MAG.MetatypeMinimum, 0);
+            int intRES = Math.Max(CharacterObject.RES.Base - CharacterObject.RES.MetatypeMinimum, 0);
             */
 
             // Build a list of the current Metatype's Improvements to remove if the Metatype changes.
@@ -13819,7 +13819,7 @@ namespace Chummer
                 return;
 
             string strType = objSource == Improvement.ImprovementSource.Cyberware ? "cyberware" : "bioware";
-            XmlDocument objXmlDocument = XmlManager.Load(strType + ".xml", string.Empty, true);
+            XmlDocument objXmlDocument = XmlManager.Load(strType + ".xml", CharacterObject.Options.CustomDataDictionary, string.Empty, true);
             XmlNode xmlSuite = frmPickCyberwareSuite.SelectedSuite.IsGuid()
                 ? objXmlDocument.SelectSingleNode("/chummer/suites/suite[id = \"" + frmPickCyberwareSuite.SelectedSuite + "\"]")
                 : objXmlDocument.SelectSingleNode("/chummer/suites/suite[name = \"" + frmPickCyberwareSuite.SelectedSuite + "\"]");
@@ -14005,12 +14005,12 @@ namespace Chummer
             Improvement.ImprovementSource objSource;
             if (CharacterObject.RESEnabled)
             {
-                objXmlMetamagic = XmlManager.Load("echoes.xml").SelectSingleNode("/chummer/echoes/echo[id = \"" + frmPickMetamagic.SelectedMetamagic + "\"]");
+                objXmlMetamagic = XmlManager.Load("echoes.xml", CharacterObject.Options.CustomDataDictionary).SelectSingleNode("/chummer/echoes/echo[id = \"" + frmPickMetamagic.SelectedMetamagic + "\"]");
                 objSource = Improvement.ImprovementSource.Echo;
             }
             else
             {
-                objXmlMetamagic = XmlManager.Load("metamagic.xml").SelectSingleNode("/chummer/metamagics/metamagic[id = \"" + frmPickMetamagic.SelectedMetamagic + "\"]");
+                objXmlMetamagic = XmlManager.Load("metamagic.xml", CharacterObject.Options.CustomDataDictionary).SelectSingleNode("/chummer/metamagics/metamagic[id = \"" + frmPickMetamagic.SelectedMetamagic + "\"]");
                 objSource = Improvement.ImprovementSource.Metamagic;
             }
             frmPickMetamagic.Dispose();
@@ -14039,7 +14039,7 @@ namespace Chummer
             if (frmPickArt.DialogResult == DialogResult.Cancel)
                 return;
 
-            XmlNode objXmlArt = XmlManager.Load("metamagic.xml").SelectSingleNode("/chummer/arts/art[id = \"" + frmPickArt.SelectedItem + "\"]");
+            XmlNode objXmlArt = XmlManager.Load("metamagic.xml", CharacterObject.Options.CustomDataDictionary).SelectSingleNode("/chummer/arts/art[id = \"" + frmPickArt.SelectedItem + "\"]");
             Improvement.ImprovementSource objSource = Improvement.ImprovementSource.Metamagic;
 
             Art objArt = new Art(CharacterObject);
@@ -14068,7 +14068,7 @@ namespace Chummer
             if (frmPickArt.DialogResult == DialogResult.Cancel)
                 return;
 
-            XmlNode objXmlArt = XmlManager.Load("spells.xml").SelectSingleNode("/chummer/spells/spell[id = \"" + frmPickArt.SelectedItem + "\"]");
+            XmlNode objXmlArt = XmlManager.Load("spells.xml", CharacterObject.Options.CustomDataDictionary).SelectSingleNode("/chummer/spells/spell[id = \"" + frmPickArt.SelectedItem + "\"]");
             Improvement.ImprovementSource objSource = Improvement.ImprovementSource.Initiation;
 
             Spell objNewSpell = new Spell(CharacterObject);
@@ -14097,7 +14097,7 @@ namespace Chummer
             if (frmPickArt.DialogResult == DialogResult.Cancel)
                 return;
 
-            XmlNode objXmlArt = XmlManager.Load("spells.xml").SelectSingleNode("/chummer/spells/spell[id = \"" + frmPickArt.SelectedItem + "\"]");
+            XmlNode objXmlArt = XmlManager.Load("spells.xml", CharacterObject.Options.CustomDataDictionary).SelectSingleNode("/chummer/spells/spell[id = \"" + frmPickArt.SelectedItem + "\"]");
             Improvement.ImprovementSource objSource = Improvement.ImprovementSource.Initiation;
 
             Spell objNewSpell = new Spell(CharacterObject);
@@ -14133,7 +14133,7 @@ namespace Chummer
             if (frmPickArt.DialogResult == DialogResult.Cancel)
                 return;
 
-            XmlNode objXmlArt = XmlManager.Load("powers.xml").SelectSingleNode("/chummer/enhancements/enhancement[id = \"" + frmPickArt.SelectedItem + "\"]");
+            XmlNode objXmlArt = XmlManager.Load("powers.xml", CharacterObject.Options.CustomDataDictionary).SelectSingleNode("/chummer/enhancements/enhancement[id = \"" + frmPickArt.SelectedItem + "\"]");
             if (objXmlArt == null)
                 return;
             Improvement.ImprovementSource objSource = Improvement.ImprovementSource.Initiation;

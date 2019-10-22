@@ -54,26 +54,26 @@ namespace Chummer
             switch (objWindowMode)
             {
                 case Mode.Art:
-                    _objXmlDocument = XmlManager.Load("metamagic.xml").GetFastNavigator().SelectSingleNode("/chummer/arts");
+                    _objXmlDocument = XmlManager.Load("metamagic.xml", objCharacter.Options.CustomDataDictionary).GetFastNavigator().SelectSingleNode("/chummer/arts");
                     _strLocalName = LanguageManager.GetString("String_Art", GlobalOptions.Language);
                     _strBaseXPath = "art";
                     _strXPathFilter = _objCharacter.Options.BookXPath();
                     break;
                 case Mode.Enhancement:
-                    _objXmlDocument = XmlManager.Load("powers.xml").GetFastNavigator().SelectSingleNode("/chummer/enhancements");
+                    _objXmlDocument = XmlManager.Load("powers.xml", objCharacter.Options.CustomDataDictionary).GetFastNavigator().SelectSingleNode("/chummer/enhancements");
                     _strLocalName = LanguageManager.GetString("String_Enhancement", GlobalOptions.Language);
                     _strBaseXPath = "enhancement";
                     _strXPathFilter = _objCharacter.Options.BookXPath();
                     break;
                 case Mode.Enchantment:
                     _strLocalName = LanguageManager.GetString("String_Enchantment", GlobalOptions.Language);
-                    _objXmlDocument = XmlManager.Load("spells.xml").GetFastNavigator().SelectSingleNode("/chummer/spells");
+                    _objXmlDocument = XmlManager.Load("spells.xml", objCharacter.Options.CustomDataDictionary).GetFastNavigator().SelectSingleNode("/chummer/spells");
                     _strBaseXPath = "spell";
                     _strXPathFilter = "category = 'Enchantments' and (" + _objCharacter.Options.BookXPath() + ")";
                     break;
                 case Mode.Ritual:
                     _strLocalName = LanguageManager.GetString("String_Ritual", GlobalOptions.Language);
-                    _objXmlDocument = XmlManager.Load("spells.xml").GetFastNavigator().SelectSingleNode("/chummer/spells");
+                    _objXmlDocument = XmlManager.Load("spells.xml", objCharacter.Options.CustomDataDictionary).GetFastNavigator().SelectSingleNode("/chummer/spells");
                     _strBaseXPath = "spell";
                     _strXPathFilter = "category = 'Rituals' and (" + _objCharacter.Options.BookXPath() + ")";
                     break;

@@ -171,7 +171,7 @@ namespace Chummer.Backend.Equipment
             XmlNode xmlChildrenNode = objXmlArmorNode["gears"];
             if (xmlChildrenNode != null)
             {
-                XmlDocument objXmlGearDocument = XmlManager.Load("gear.xml");
+                XmlDocument objXmlGearDocument = XmlManager.Load("gear.xml", _objCharacter.Options.CustomDataDictionary);
                 using (XmlNodeList xmlUseGearList = xmlChildrenNode.SelectNodes("usegear"))
                     if (xmlUseGearList != null)
                         foreach (XmlNode objXmlArmorGear in xmlUseGearList)
@@ -197,7 +197,7 @@ namespace Chummer.Backend.Equipment
             // Add Weapons if applicable.
             if (objXmlArmorNode.InnerXml.Contains("<addweapon>"))
             {
-                XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml");
+                XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml", _objCharacter.Options.CustomDataDictionary);
 
                 // More than one Weapon can be added, so loop through all occurrences.
                 using (XmlNodeList xmlAddWeaponList = objXmlArmorNode.SelectNodes("addweapon"))
@@ -484,7 +484,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Category;
 
-            return XmlManager.Load("armor.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@translate")?.InnerText ?? Category;
+            return XmlManager.Load("armor.xml", _objCharacter.Options.CustomDataDictionary, strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@translate")?.InnerText ?? Category;
         }
 
         /// <summary>
@@ -1025,9 +1025,9 @@ namespace Chummer.Backend.Equipment
         {
             if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.LiveCustomData) return _objCachedMyXmlNode;
             _objCachedMyXmlNode = SourceID == Guid.Empty
-                ? XmlManager.Load("armor.xml", strLanguage)
+                ? XmlManager.Load("armor.xml", _objCharacter.Options.CustomDataDictionary, strLanguage)
                     .SelectSingleNode($"/chummer/mods/mod[name = \"{Name}\"]")
-                : XmlManager.Load("armor.xml", strLanguage)
+                : XmlManager.Load("armor.xml", _objCharacter.Options.CustomDataDictionary, strLanguage)
                     .SelectSingleNode($"/chummer/mods/mod[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
             return _objCachedMyXmlNode;
         }

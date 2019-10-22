@@ -200,41 +200,41 @@ namespace Chummer
                     using (var op_cache = Timekeeper.StartSyncron("cache_load", op_frmChummerMain))
                     {
                         Parallel.Invoke(
-                            () => XmlManager.Load("armor.xml"),
-                            () => XmlManager.Load("bioware.xml"),
-                            () => XmlManager.Load("books.xml"),
-                            () => XmlManager.Load("complexforms.xml"),
-                            () => XmlManager.Load("contacts.xml"),
-                            () => XmlManager.Load("critters.xml"),
-                            () => XmlManager.Load("critterpowers.xml"),
-                            () => XmlManager.Load("cyberware.xml"),
-                            () => XmlManager.Load("drugcomponents.xml"),
-                            () => XmlManager.Load("echoes.xml"),
-                            () => XmlManager.Load("gameplayoptions.xml"),
-                            () => XmlManager.Load("gear.xml"),
-                            () => XmlManager.Load("improvements.xml"),
-                            () => XmlManager.Load("licenses.xml"),
-                            () => XmlManager.Load("lifemodules.xml"),
-                            () => XmlManager.Load("lifestyles.xml"),
-                            () => XmlManager.Load("martialarts.xml"),
-                            () => XmlManager.Load("mentors.xml"),
-                            () => XmlManager.Load("metamagic.xml"),
-                            () => XmlManager.Load("metatypes.xml"),
-                            () => XmlManager.Load("options.xml"),
-                            () => XmlManager.Load("packs.xml"),
-                            () => XmlManager.Load("powers.xml"),
-                            () => XmlManager.Load("priorities.xml"),
-                            () => XmlManager.Load("programs.xml"),
-                            () => XmlManager.Load("qualities.xml"),
-                            () => XmlManager.Load("ranges.xml"),
-                            () => XmlManager.Load("sheets.xml"),
-                            () => XmlManager.Load("skills.xml"),
-                            () => XmlManager.Load("spells.xml"),
-                            () => XmlManager.Load("spiritpowers.xml"),
-                            () => XmlManager.Load("streams.xml"),
-                            () => XmlManager.Load("traditions.xml"),
-                            () => XmlManager.Load("vehicles.xml"),
-                            () => XmlManager.Load("weapons.xml")
+                            () => XmlManager.Load("armor.xml", dicBooks),
+                            () => XmlManager.Load("bioware.xml", dicBooks),
+                            () => XmlManager.Load("books.xml", dicBooks),
+                            () => XmlManager.Load("complexforms.xml", dicBooks),
+                            () => XmlManager.Load("contacts.xml", dicBooks),
+                            () => XmlManager.Load("critters.xml", dicBooks),
+                            () => XmlManager.Load("critterpowers.xml", dicBooks),
+                            () => XmlManager.Load("cyberware.xml", dicBooks),
+                            () => XmlManager.Load("drugcomponents.xml", dicBooks),
+                            () => XmlManager.Load("echoes.xml", dicBooks),
+                            () => XmlManager.Load("gameplayoptions.xml", dicBooks),
+                            () => XmlManager.Load("gear.xml", dicBooks),
+                            () => XmlManager.Load("improvements.xml", dicBooks),
+                            () => XmlManager.Load("licenses.xml", dicBooks),
+                            () => XmlManager.Load("lifemodules.xml", dicBooks),
+                            () => XmlManager.Load("lifestyles.xml", dicBooks),
+                            () => XmlManager.Load("martialarts.xml", dicBooks),
+                            () => XmlManager.Load("mentors.xml", dicBooks),
+                            () => XmlManager.Load("metamagic.xml", dicBooks),
+                            () => XmlManager.Load("metatypes.xml", dicBooks),
+                            () => XmlManager.Load("options.xml", dicBooks),
+                            () => XmlManager.Load("packs.xml", dicBooks),
+                            () => XmlManager.Load("powers.xml", dicBooks),
+                            () => XmlManager.Load("priorities.xml", dicBooks),
+                            () => XmlManager.Load("programs.xml", dicBooks),
+                            () => XmlManager.Load("qualities.xml", dicBooks),
+                            () => XmlManager.Load("ranges.xml", dicBooks),
+                            () => XmlManager.Load("sheets.xml", dicBooks),
+                            () => XmlManager.Load("skills.xml", dicBooks),
+                            () => XmlManager.Load("spells.xml", dicBooks),
+                            () => XmlManager.Load("spiritpowers.xml", dicBooks),
+                            () => XmlManager.Load("streams.xml", dicBooks),
+                            () => XmlManager.Load("traditions.xml", dicBooks),
+                            () => XmlManager.Load("vehicles.xml", dicBooks),
+                            () => XmlManager.Load("weapons.xml", dicBooks)
                         );
                         //Timekeeper.Finish("cache_load");
                     }
@@ -765,7 +765,7 @@ namespace Chummer
             Cursor = Cursors.WaitCursor;
 
             // Add the Unarmed Attack Weapon to the character.
-            XmlNode objXmlWeapon = XmlManager.Load("weapons.xml").SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
+            XmlNode objXmlWeapon = XmlManager.Load("weapons.xml", new Dictionary<string, bool>()).SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
             if(objXmlWeapon != null)
             {
                 List<Weapon> lstWeapons = new List<Weapon>();
@@ -1232,7 +1232,7 @@ namespace Chummer
             Cursor = Cursors.WaitCursor;
 
             // Add the Unarmed Attack Weapon to the character.
-            XmlNode objXmlWeapon = XmlManager.Load("weapons.xml").SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
+            XmlNode objXmlWeapon = XmlManager.Load("weapons.xml", new Dictionary<string, bool>()).SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
             if(objXmlWeapon != null)
             {
                 List<Weapon> lstWeapons = new List<Weapon>();

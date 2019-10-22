@@ -36,8 +36,8 @@ namespace Chummer
         public frmNaturalWeapon(Character objCharacter)
         {
             _objCharacter = objCharacter;
-            _objXmlPowersDocument = XmlManager.Load("critterpowers.xml").GetFastNavigator().SelectSingleNode("/chummer");
-            _objXmlSkillsDocument = XmlManager.Load("skills.xml").GetFastNavigator().SelectSingleNode("/chummer");
+            _objXmlPowersDocument = XmlManager.Load("critterpowers.xml", _objCharacter.Options.CustomDataDictionary).GetFastNavigator().SelectSingleNode("/chummer");
+            _objXmlSkillsDocument = XmlManager.Load("skills.xml", _objCharacter.Options.CustomDataDictionary).GetFastNavigator().SelectSingleNode("/chummer");
 
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);

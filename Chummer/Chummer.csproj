@@ -213,6 +213,7 @@
     <Compile Include="Backend\Datastructures\TextEventArgs.cs" />
     <Compile Include="Backend\Datastructures\ThreadSafeRandom.cs" />
     <Compile Include="Backend\Equipment\WeaponMount.cs" />
+    <Compile Include="Backend\Extensions\DictionaryExtensions.cs" />
     <Compile Include="Backend\Extensions\ListExtensions.cs" />
     <Compile Include="Backend\Extensions\ImageExtensions.cs" />
     <Compile Include="Backend\Extensions\LinqExtensions.cs" />

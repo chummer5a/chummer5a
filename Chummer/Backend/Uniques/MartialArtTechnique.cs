@@ -263,9 +263,9 @@ namespace Chummer
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
                 _objCachedMyXmlNode = SourceID == Guid.Empty
-                    ? XmlManager.Load("martialarts.xml", strLanguage)
+                    ? XmlManager.Load("martialarts.xml", _objCharacter.Options.CustomDataDictionary, strLanguage)
                         .SelectSingleNode($"/chummer/techniques/technique[name = \"{Name}\"]")
-                    : XmlManager.Load("martialarts.xml", strLanguage)
+                    : XmlManager.Load("martialarts.xml", _objCharacter.Options.CustomDataDictionary, strLanguage)
                         .SelectSingleNode($"/chummer/techniques/technique[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }

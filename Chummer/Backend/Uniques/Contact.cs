@@ -413,7 +413,7 @@ namespace Chummer
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Role;
 
-            return XmlManager.Load("contacts.xml", strLanguage).SelectSingleNode("/chummer/contacts/contact[text() = \"" + Role + "\"]/@translate")?.InnerText ?? Role;
+            return XmlManager.Load("contacts.xml", _objCharacter.Options.CustomDataDictionary, strLanguage).SelectSingleNode("/chummer/contacts/contact[text() = \"" + Role + "\"]/@translate")?.InnerText ?? Role;
         }
 
         public string DisplayRole
@@ -557,7 +557,7 @@ namespace Chummer
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Sex;
 
-            return XmlManager.Load("contacts.xml", strLanguage).SelectSingleNode("/chummer/sexes/sex[text() = \"" + Sex + "\"]/@translate")?.InnerText ?? Sex;
+            return XmlManager.Load("contacts.xml", _objCharacter.Options.CustomDataDictionary, strLanguage).SelectSingleNode("/chummer/sexes/sex[text() = \"" + Sex + "\"]/@translate")?.InnerText ?? Sex;
         }
 
         public string DisplaySex
@@ -592,7 +592,7 @@ namespace Chummer
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Age;
 
-            return XmlManager.Load("contacts.xml", strLanguage).SelectSingleNode("/chummer/ages/age[text() = \"" + Age + "\"]/@translate")?.InnerText ?? Age;
+            return XmlManager.Load("contacts.xml", _objCharacter.Options.CustomDataDictionary, strLanguage).SelectSingleNode("/chummer/ages/age[text() = \"" + Age + "\"]/@translate")?.InnerText ?? Age;
         }
 
         public string DisplayAge
@@ -627,7 +627,7 @@ namespace Chummer
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Type;
 
-            return XmlManager.Load("contacts.xml", strLanguage).SelectSingleNode("/chummer/types/type[text() = \"" + Type + "\"]/@translate")?.InnerText ?? Type;
+            return XmlManager.Load("contacts.xml", _objCharacter.Options.CustomDataDictionary, strLanguage).SelectSingleNode("/chummer/types/type[text() = \"" + Type + "\"]/@translate")?.InnerText ?? Type;
         }
 
         public string DisplayType
@@ -657,7 +657,7 @@ namespace Chummer
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return PreferredPayment;
 
-            return XmlManager.Load("contacts.xml", strLanguage).SelectSingleNode("/chummer/preferredpayments/preferredpayment[text() = \"" + PreferredPayment + "\"]/@translate")?.InnerText ?? PreferredPayment;
+            return XmlManager.Load("contacts.xml", _objCharacter.Options.CustomDataDictionary, strLanguage).SelectSingleNode("/chummer/preferredpayments/preferredpayment[text() = \"" + PreferredPayment + "\"]/@translate")?.InnerText ?? PreferredPayment;
         }
 
         public string DisplayPreferredPayment
@@ -687,7 +687,7 @@ namespace Chummer
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return HobbiesVice;
 
-            return XmlManager.Load("contacts.xml", strLanguage).SelectSingleNode("/chummer/hobbiesvices/hobbyvice[text() = \"" + HobbiesVice + "\"]/@translate")?.InnerText ?? HobbiesVice;
+            return XmlManager.Load("contacts.xml", _objCharacter.Options.CustomDataDictionary, strLanguage).SelectSingleNode("/chummer/hobbiesvices/hobbyvice[text() = \"" + HobbiesVice + "\"]/@translate")?.InnerText ?? HobbiesVice;
         }
 
         public string DisplayHobbiesVice
@@ -717,7 +717,7 @@ namespace Chummer
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return PersonalLife;
 
-            return XmlManager.Load("contacts.xml", strLanguage).SelectSingleNode("/chummer/personallives/personallife[text() = \"" + PersonalLife + "\"]/@translate")?.InnerText ?? PersonalLife;
+            return XmlManager.Load("contacts.xml", _objCharacter.Options.CustomDataDictionary, strLanguage).SelectSingleNode("/chummer/personallives/personallife[text() = \"" + PersonalLife + "\"]/@translate")?.InnerText ?? PersonalLife;
         }
 
         public string DisplayPersonalLife

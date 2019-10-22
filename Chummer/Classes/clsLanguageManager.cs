@@ -834,7 +834,7 @@ namespace Chummer
                         Parallel.For((long) 0, s_LstXPathsToSearch.Length, (i, state) =>
                         {
                             Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>> objXPathPair = s_LstXPathsToSearch[i];
-                            using (XmlNodeList xmlNodeList = XmlManager.Load(objXPathPair.Item1, strIntoLanguage).SelectNodes(objXPathPair.Item2))
+                            using (XmlNodeList xmlNodeList = XmlManager.Load(objXPathPair.Item1, new Dictionary<string, bool>(), strIntoLanguage).SelectNodes(objXPathPair.Item2))
                                 if (xmlNodeList != null)
                                     foreach (XmlNode objNode in xmlNodeList)
                                     {
@@ -982,7 +982,7 @@ namespace Chummer
                 Parallel.For((long) 0, s_LstXPathsToSearch.Length, (i, state) =>
                 {
                     Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>> objXPathPair = s_LstXPathsToSearch[i];
-                    using (XmlNodeList xmlNodeList = XmlManager.Load(objXPathPair.Item1, strFromLanguage).SelectNodes(objXPathPair.Item2))
+                    using (XmlNodeList xmlNodeList = XmlManager.Load(objXPathPair.Item1, new Dictionary<string, bool>(), strFromLanguage).SelectNodes(objXPathPair.Item2))
                         if (xmlNodeList != null)
                             foreach (XmlNode xmlNode in xmlNodeList)
                             {

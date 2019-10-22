@@ -54,7 +54,7 @@ namespace Chummer
             chkExtended.SetToolTip(LanguageManager.GetString("Tip_SelectSpell_ExtendedSpell", GlobalOptions.Language));
             
             // Load the Spells information.
-            _xmlBaseSpellDataNode = XmlManager.Load("spells.xml").GetFastNavigator().SelectSingleNode("/chummer");
+            _xmlBaseSpellDataNode = XmlManager.Load("spells.xml", objCharacter.Options.CustomDataDictionary).GetFastNavigator().SelectSingleNode("/chummer");
         }
 
         private void frmSelectSpell_Load(object sender, EventArgs e)

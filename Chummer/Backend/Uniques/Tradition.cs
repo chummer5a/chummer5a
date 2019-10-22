@@ -315,7 +315,10 @@ namespace Chummer.Backend.Uniques
         {
             _eTraditionType = TraditionType.MAG;
             _strName = xmlHeroLabNode.SelectSingleNode("@name")?.InnerText;
-            XmlNode xmlTraditionDataNode = !string.IsNullOrEmpty(_strName) ? XmlManager.Load("traditions.xml").SelectSingleNode("/chummer/traditions/tradition[name = \"" + _strName + "\"]") : null;
+            XmlNode xmlTraditionDataNode = !string.IsNullOrEmpty(_strName)
+                ? XmlManager.Load("traditions.xml", _objCharacter.Options.CustomDataDictionary)
+                    .SelectSingleNode("/chummer/traditions/tradition[name = \"" + _strName + "\"]")
+                : null;
             if(xmlTraditionDataNode?.TryGetField("id", Guid.TryParse, out _guiSourceID) != true)
             {
                 _guiSourceID = new Guid(CustomMagicalTraditionGuid);
@@ -923,9 +926,9 @@ namespace Chummer.Backend.Uniques
             switch(Type)
             {
                 case TraditionType.MAG:
-                    return XmlManager.Load("traditions.xml", strLanguage);
+                    return XmlManager.Load("traditions.xml", _objCharacter.Options.CustomDataDictionary, strLanguage);
                 case TraditionType.RES:
-                    return XmlManager.Load("streams.xml", strLanguage);
+                    return XmlManager.Load("streams.xml", _objCharacter.Options.CustomDataDictionary, strLanguage);
                 default:
                     return null;
             }
@@ -979,7 +982,7 @@ namespace Chummer.Backend.Uniques
         public static List<Tradition> GetTraditions(Character character)
         {
             List<Tradition> result = new List<Tradition>();
-            XmlNodeList xmlTraditions = XmlManager.Load("traditions.xml").SelectNodes("/chummer/traditions/tradition");
+            XmlNodeList xmlTraditions = XmlManager.Load("traditions.xml", new Dictionary<string,bool>()).SelectNodes("/chummer/traditions/tradition");
             foreach(XmlNode node in xmlTraditions)
             {
                 Tradition tradition = new Tradition(character);

@@ -59,9 +59,9 @@ namespace Chummer
             _lstExistingQualities = lstExistingQualities;
             
             // Load the Quality information.
-            _objXmlDocument = XmlManager.Load("lifestyles.xml");
-            _objMetatypeDocument = XmlManager.Load("metatypes.xml");
-            _objCritterDocument = XmlManager.Load("critters.xml");
+            _objXmlDocument = XmlManager.Load("lifestyles.xml", objCharacter.Options.CustomDataDictionary);
+            _objMetatypeDocument = XmlManager.Load("metatypes.xml", objCharacter.Options.CustomDataDictionary);
+            _objCritterDocument = XmlManager.Load("critters.xml", objCharacter.Options.CustomDataDictionary);
         }
 
         private void frmSelectLifestyleQuality_Load(object sender, EventArgs e)
@@ -549,7 +549,7 @@ namespace Chummer
 
                 // Loop through the oneof requirements.
                 XmlNodeList objXmlRequiredList = objXmlQuality.SelectNodes("required/oneof");
-                XmlDocument _objXmlQualityDocument = XmlManager.Load("qualities.xml");
+                XmlDocument _objXmlQualityDocument = XmlManager.Load("qualities.xml", _objCharacter.Options.CustomDataDictionary);
                 foreach (XmlNode objXmlOneOf in objXmlRequiredList)
                 {
                     bool blnOneOfMet = false;

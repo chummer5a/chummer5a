@@ -53,7 +53,7 @@ namespace Chummer
             }
 
             _objCharacter = objCharacter;
-            _objXmlDocument = XmlManager.Load(_strType + ".xml", string.Empty, true);
+            _objXmlDocument = XmlManager.Load(_strType + ".xml", objCharacter.Options.CustomDataDictionary, string.Empty, true);
         }
 
         private void cmdOK_Click(object sender, EventArgs e)

@@ -195,8 +195,8 @@ namespace Chummer
 
                 //Dump skills, (optional)powers if present to output
 
-                XPathNavigator xmlSpiritPowersBaseChummerNode = XmlManager.Load("spiritpowers.xml", strLanguageToPrint).GetFastNavigator().SelectSingleNode("/chummer");
-                XPathNavigator xmlCritterPowersBaseChummerNode = XmlManager.Load("critterpowers.xml", strLanguageToPrint).GetFastNavigator().SelectSingleNode("/chummer");
+                XPathNavigator xmlSpiritPowersBaseChummerNode  = XmlManager.Load("spiritpowers.xml",  _objLinkedCharacter.Options.CustomDataDictionary, strLanguageToPrint).GetFastNavigator().SelectSingleNode("/chummer");
+                XPathNavigator xmlCritterPowersBaseChummerNode = XmlManager.Load("critterpowers.xml", _objLinkedCharacter.Options.CustomDataDictionary, strLanguageToPrint).GetFastNavigator().SelectSingleNode("/chummer");
                 XmlNode xmlPowersNode = objXmlCritterNode["powers"];
                 if (xmlPowersNode != null)
                 {
@@ -221,7 +221,7 @@ namespace Chummer
                 xmlPowersNode = objXmlCritterNode["skills"];
                 if (xmlPowersNode != null)
                 {
-                    XmlDocument xmlSkillsDocument = XmlManager.Load("skills.xml", strLanguageToPrint);
+                    XmlDocument xmlSkillsDocument = XmlManager.Load("skills.xml", _objLinkedCharacter.Options.CustomDataDictionary, strLanguageToPrint);
                     objWriter.WriteStartElement("skills");
                     foreach (XmlNode xmlSkillNode in xmlPowersNode.ChildNodes)
                     {
@@ -737,7 +737,10 @@ namespace Chummer
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load(_eEntityType == SpiritType.Spirit ? "traditions.xml" : "streams.xml", strLanguage).SelectSingleNode($"/chummer/spirits/spirit[name = \"{Name}\"]");
+                _objCachedMyXmlNode = XmlManager
+                    .Load(_eEntityType == SpiritType.Spirit ? "traditions.xml" : "streams.xml",
+                        _objLinkedCharacter.Options.CustomDataDictionary, strLanguage)
+                    .SelectSingleNode($"/chummer/spirits/spirit[name = \"{Name}\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

@@ -55,7 +55,7 @@ namespace Chummer
             lblMarkupPercentLabel.Visible = objCharacter.Created;
             _objCharacter = objCharacter;
             // Load the Weapon information.
-            XmlDocument objXmlDocument = XmlManager.Load("weapons.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("weapons.xml", _objCharacter.Options.CustomDataDictionary);
             _xmlBaseChummerNode = objXmlDocument.GetFastNavigator().SelectSingleNode("/chummer");
             _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(objXmlDocument);
         }

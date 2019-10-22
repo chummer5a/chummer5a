@@ -80,13 +80,13 @@ namespace Chummer
             {
                 case Improvement.ImprovementSource.Cyberware:
                     _objMode = Mode.Cyberware;
-                    _xmlBaseCyberwareDataNode = XmlManager.Load("cyberware.xml").GetFastNavigator().SelectSingleNode("/chummer");
+                    _xmlBaseCyberwareDataNode = XmlManager.Load("cyberware.xml", objCharacter.Options.CustomDataDictionary).GetFastNavigator().SelectSingleNode("/chummer");
                     _strNodeXPath = "cyberwares/cyberware";
                     Tag = "Title_SelectCyberware";
                     break;
                 case Improvement.ImprovementSource.Bioware:
                     _objMode = Mode.Bioware;
-                    _xmlBaseCyberwareDataNode = XmlManager.Load("bioware.xml").GetFastNavigator().SelectSingleNode("/chummer");
+                    _xmlBaseCyberwareDataNode = XmlManager.Load("bioware.xml", objCharacter.Options.CustomDataDictionary).GetFastNavigator().SelectSingleNode("/chummer");
                     _strNodeXPath = "biowares/bioware";
                     Tag = "Title_SelectCyberware_Bioware";
                     break;

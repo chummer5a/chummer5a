@@ -38,7 +38,7 @@ namespace Chummer
             InitializeComponent();
 
             // Load the Mentor information.
-            _xmlBaseMentorSpiritDataNode = XmlManager.Load(strXmlFile).GetFastNavigator().SelectSingleNode("/chummer");
+            _xmlBaseMentorSpiritDataNode = XmlManager.Load(strXmlFile, objCharacter.Options.CustomDataDictionary).GetFastNavigator().SelectSingleNode("/chummer");
             if (strXmlFile == "paragons.xml")
                 Tag = "Title_SelectMentorSpirit_Paragon";
 

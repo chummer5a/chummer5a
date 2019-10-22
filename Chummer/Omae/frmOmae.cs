@@ -90,12 +90,12 @@ namespace Chummer
         /// </summary>
         public void PopulateMetatypes()
         {
-            XmlDocument objXmlDocument = XmlManager.Load("metatypes.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("metatypes.xml", objCharacter.Options.CustomDataDictionary);
 
             foreach (XmlNode objNode in objXmlDocument.SelectNodes("/chummer/metatypes/metatype"))
                 cboFilterMetatype.Items.Add(objNode["name"].InnerText);
 
-            objXmlDocument = XmlManager.Load("critters.xml");
+            objXmlDocument = XmlManager.Load("critters.xml", objCharacter.Options.CustomDataDictionary);
 
             foreach (XmlNode objNode in objXmlDocument.SelectNodes("/chummer/metatypes/metatype"))
                 cboFilterMetatype.Items.Add(objNode["name"].InnerText);
@@ -106,7 +106,7 @@ namespace Chummer
         /// </summary>
         public void PopulateQualities()
         {
-            XmlDocument objXmlDocument = XmlManager.Load("qualities.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("qualities.xml", _objCharacter.Options.CustomDataDictionary);
 
             foreach (XmlNode objNode in objXmlDocument.SelectNodes("/chummer/qualities/quality"))
             {
@@ -897,7 +897,7 @@ namespace Chummer
 
         private void cmdCompressData_Click(object sender, EventArgs e)
         {
-            foreach (string strFile in Directory.GetFiles(Path.Combine(Utils.GetStartupPath, "data"), "*.xml"))
+            foreach (string strFile in Directory.GetFiles(Path.Combine(Utils.GetStartupPath, "data"), "*.xml", objCharacter.Options.CustomDataDictionary))
             {
                 byte[] bytFile = File.ReadAllBytes(strFile);
                 bytFile = OmaeHelper.Compress(bytFile);

@@ -249,7 +249,7 @@ namespace Chummer.Backend.Equipment
                 XmlNode xmlSelectModesFromCategory = objXmlArmorNode["selectmodsfromcategory"];
                 if (xmlSelectModesFromCategory != null)
                 {
-                    XmlDocument objXmlDocument = XmlManager.Load("armor.xml");
+                    XmlDocument objXmlDocument = XmlManager.Load("armor.xml", _objCharacter.Options.CustomDataDictionary);
 
                     // More than one Weapon can be added, so loop through all occurrences.
                     foreach (XmlNode objXmlCategoryNode in xmlSelectModesFromCategory)
@@ -302,7 +302,7 @@ namespace Chummer.Backend.Equipment
             // Add any Armor Mods that come with the Armor.
             if (objXmlArmorNode["mods"] != null && blnCreateChildren)
             {
-                XmlDocument objXmlArmorDocument = XmlManager.Load("armor.xml");
+                XmlDocument objXmlArmorDocument = XmlManager.Load("armor.xml", _objCharacter.Options.CustomDataDictionary);
 
                 foreach (XmlNode objXmlArmorMod in objXmlArmorNode.SelectNodes("mods/name"))
                 {
@@ -350,7 +350,7 @@ namespace Chummer.Backend.Equipment
             // Add any Gear that comes with the Armor.
             if (objXmlArmorNode["gears"] != null && blnCreateChildren)
             {
-                XmlDocument objXmlGearDocument = XmlManager.Load("gear.xml");
+                XmlDocument objXmlGearDocument = XmlManager.Load("gear.xml", _objCharacter.Options.CustomDataDictionary);
 
                 XmlNodeList objXmlGearList = objXmlArmorNode["gears"].SelectNodes("usegear");
                 IList<Weapon> lstChildWeapons = new List<Weapon>();
@@ -371,7 +371,7 @@ namespace Chummer.Backend.Equipment
                 lstWeapons.AddRange(lstChildWeapons);
             }
 
-            XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml");
+            XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml", _objCharacter.Options.CustomDataDictionary);
 
             // More than one Weapon can be added, so loop through all occurrences.
             foreach (XmlNode objXmlAddWeapon in objXmlArmorNode.SelectNodes("addweapon"))
@@ -686,7 +686,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Category;
 
-            return XmlManager.Load("armor.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@translate")?.InnerText ?? Category;
+            return XmlManager.Load("armor.xml", _objCharacter.Options.CustomDataDictionary, strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@translate")?.InnerText ?? Category;
         }
 
         /// <summary>
@@ -1497,9 +1497,9 @@ namespace Chummer.Backend.Equipment
         {
             if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.LiveCustomData) return _objCachedMyXmlNode;
             _objCachedMyXmlNode = SourceID == Guid.Empty
-                ? XmlManager.Load("armor.xml", strLanguage)
+                ? XmlManager.Load("armor.xml", _objCharacter.Options.CustomDataDictionary, strLanguage)
                     .SelectSingleNode($"/chummer/armors/armor[name = \"{Name}\"]")
-                : XmlManager.Load("armor.xml", strLanguage)
+                : XmlManager.Load("armor.xml", _objCharacter.Options.CustomDataDictionary, strLanguage)
                     .SelectSingleNode($"/chummer/armors/armor[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
 
             _strCachedXmlNodeLanguage = strLanguage;

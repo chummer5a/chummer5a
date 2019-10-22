@@ -688,7 +688,7 @@ namespace Chummer
         {
             if (!string.IsNullOrWhiteSpace(strAltCode))
             {
-                XmlNode xmlOriginalCode = XmlManager.Load("books.xml", strLanguage).SelectSingleNode("/chummer/books/book[altcode = \"" + strAltCode + "\"]/code");
+                XmlNode xmlOriginalCode = XmlManager.Load("books.xml", new Dictionary<string,bool>(), strLanguage).SelectSingleNode("/chummer/books/book[altcode = \"" + strAltCode + "\"]/code");
                 return xmlOriginalCode?.InnerText ?? strAltCode;
             }
             return string.Empty;
@@ -703,7 +703,7 @@ namespace Chummer
         {
             if (!string.IsNullOrWhiteSpace(strCode))
             {
-                XmlNode xmlAltCode = XmlManager.Load("books.xml", strLanguage).SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]/altcode");
+                XmlNode xmlAltCode = XmlManager.Load("books.xml", new Dictionary<string, bool>(), strLanguage).SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]/altcode");
                 return xmlAltCode?.InnerText ?? strCode;
             }
             return string.Empty;
@@ -718,7 +718,7 @@ namespace Chummer
         {
             if (!string.IsNullOrWhiteSpace(strCode))
             {
-                XmlNode xmlBook = XmlManager.Load("books.xml", strLanguage).SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]");
+                XmlNode xmlBook = XmlManager.Load("books.xml", new Dictionary<string, bool>(), strLanguage).SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]");
                 if (xmlBook != null)
                 {
                     string strReturn = xmlBook["translate"]?.InnerText ?? xmlBook["name"]?.InnerText;

@@ -45,7 +45,7 @@ namespace Chummer
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 
-            _xmlGameplayOptionsDataGameplayOptionsNode = XmlManager.Load("gameplayoptions.xml").GetFastNavigator().SelectSingleNode("/chummer/gameplayoptions");
+            _xmlGameplayOptionsDataGameplayOptionsNode = XmlManager.Load("gameplayoptions.xml", _objCharacter.Options.CustomDataDictionary).GetFastNavigator().SelectSingleNode("/chummer/gameplayoptions");
 
             // Populate the Build Method list.
             List<ListItem> lstBuildMethod = new List<ListItem>

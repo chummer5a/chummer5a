@@ -41,7 +41,7 @@ namespace Chummer
             _objCharacter = objCharacter;
             _objLifestyle = objLifestyle;
             // Load the Lifestyles information.
-            _xmlDocument = XmlManager.Load("lifestyles.xml");
+            _xmlDocument = XmlManager.Load("lifestyles.xml", objCharacter.Options.CustomDataDictionary);
         }
 
         private void frmSelectLifestyleAdvanced_FormClosing(object sender, FormClosingEventArgs e)

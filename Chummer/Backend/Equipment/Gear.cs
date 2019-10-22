@@ -147,7 +147,7 @@ namespace Chummer.Backend.Equipment
             if (objXmlGear == null)
                 return;
             _strForcedValue = strForceValue;
-            XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("gear.xml", _objCharacter.Options.CustomDataDictionary);
             if (!objXmlGear.TryGetField("id", Guid.TryParse, out _guiSourceID))
             {
                 Log.Warn(new object[] { "Missing id field for armor xmlnode", objXmlGear });
@@ -311,7 +311,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (xmlWeaponList != null)
                 {
-                    XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml");
+                    XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml", _objCharacter.Options.CustomDataDictionary);
 
                     // More than one Weapon can be added, so loop through all occurrences.
                     foreach (XmlNode objXmlAddWeapon in xmlWeaponList)
@@ -877,7 +877,7 @@ namespace Chummer.Backend.Equipment
             // Legacy Shim
             if (!string.IsNullOrEmpty(_strMaxRating) && _strName.Contains("Certified Credstick"))
             {
-                XmlNode objNuyenNode = XmlManager.Load("gear.xml").SelectSingleNode("/chummer/gears/gear[contains(name, \"Nuyen\") and category = \"Currency\"]");
+                XmlNode objNuyenNode = XmlManager.Load("gear.xml", _objCharacter.Options.CustomDataDictionary).SelectSingleNode("/chummer/gears/gear[contains(name, \"Nuyen\") and category = \"Currency\"]");
                 if (objNuyenNode != null)
                 {
                     if (Rating > 0)
@@ -930,7 +930,7 @@ namespace Chummer.Backend.Equipment
                     int intResult = _objCharacter.LastSavedVersion.CompareTo(test);
                     if (intResult == -1)
                     {
-                        XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
+                        XmlDocument objXmlDocument = XmlManager.Load("gear.xml", _objCharacter.Options.CustomDataDictionary);
                         XmlNode gear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = " + _strName.CleanXPath() + "]");
                         if (gear != null)
                         {
@@ -1317,7 +1317,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Category;
 
-            return XmlManager.Load("gear.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@translate")?.InnerText ?? Category;
+            return XmlManager.Load("gear.xml", CharacterObject.Options.CustomDataDictionary, strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@translate")?.InnerText ?? Category;
         }
 
         /// <summary>
@@ -1985,7 +1985,7 @@ namespace Chummer.Backend.Equipment
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                XmlDocument objDoc = XmlManager.Load("gear.xml", strLanguage);
+                XmlDocument objDoc = XmlManager.Load("gear.xml", CharacterObject.Options.CustomDataDictionary, strLanguage);
                 string strNameWithQuotes = Name.CleanXPath();
                 _objCachedMyXmlNode = !string.IsNullOrWhiteSpace(strName)
                     ? objDoc.SelectSingleNode($"/chummer/gears/gear[(name = \"{strName}\" and category = \"{strCategory}\")]")
@@ -3031,7 +3031,7 @@ namespace Chummer.Backend.Equipment
             string strOriginalName = xmlGearImportNode.Attributes?["name"]?.InnerText ?? string.Empty;
             if (!string.IsNullOrEmpty(strOriginalName))
             {
-                XmlDocument xmlGearDocument = XmlManager.Load("gear.xml");
+                XmlDocument xmlGearDocument = XmlManager.Load("gear.xml", _objCharacter.Options.CustomDataDictionary);
                 string strForceValue = string.Empty;
                 XmlNode xmlGearDataNode = null;
                 using (XmlNodeList xmlGearDataList = xmlGearDocument.SelectNodes("/chummer/gears/gear[contains(name, \"" + strOriginalName + "\")]"))

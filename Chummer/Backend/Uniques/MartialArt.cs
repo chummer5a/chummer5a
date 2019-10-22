@@ -357,9 +357,9 @@ namespace Chummer
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
                 _objCachedMyXmlNode = SourceID == Guid.Empty
-                    ? XmlManager.Load("martialarts.xml", strLanguage)
+                    ? XmlManager.Load("martialarts.xml", _objCharacter.Options.CustomDataDictionary, strLanguage)
                         .SelectSingleNode($"/chummer/martialarts/martialart[name = \"{Name}\"]")
-                    : XmlManager.Load("martialarts.xml", strLanguage)
+                    : XmlManager.Load("martialarts.xml", _objCharacter.Options.CustomDataDictionary, strLanguage)
                         .SelectSingleNode($"/chummer/martialarts/martialart[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
@@ -410,7 +410,7 @@ namespace Chummer
 
                 blnAddAgain = frmPickMartialArt.AddAgain;
                 // Open the Martial Arts XML file and locate the selected piece.
-                XmlDocument objXmlDocument = XmlManager.Load("martialarts.xml");
+                XmlDocument objXmlDocument = XmlManager.Load("martialarts.xml", objCharacter.Options.CustomDataDictionary);
 
                 XmlNode objXmlArt = objXmlDocument.SelectSingleNode("/chummer/martialarts/martialart[id = \"" + frmPickMartialArt.SelectedMartialArt + "\"]");
 

@@ -299,7 +299,7 @@ namespace Chummer.Backend.Equipment
         {
             //Unstored Cost and LP values prior to 5.190.2 nightlies.
             if (_objCharacter.LastSavedVersion > new Version("5.190.0")) return;
-            var objXmlDocument = XmlManager.Load("lifestyles.xml");
+            var objXmlDocument = XmlManager.Load("lifestyles.xml", _objCharacter.Options.CustomDataDictionary);
             var objLifestyleQualityNode = GetNode() ??
                                           objXmlDocument.SelectSingleNode(
                                               "/chummer/qualities/quality[name = \"" + _strName + "\"]");
@@ -375,7 +375,7 @@ namespace Chummer.Backend.Equipment
             var strLifestyleQualityType = Type.ToString();
             if (strLanguageToPrint != GlobalOptions.DefaultLanguage)
             {
-                var objNode = XmlManager.Load("lifestyles.xml", strLanguageToPrint)
+                XmlNode objNode = XmlManager.Load("lifestyles.xml", _objCharacter.Options.CustomDataDictionary, strLanguageToPrint)
                     .SelectSingleNode("/chummer/categories/category[. = \"" + strLifestyleQualityType + "\"]");
                 strLifestyleQualityType = objNode?.Attributes?["translate"]?.InnerText ?? strLifestyleQualityType;
             }
@@ -710,11 +710,10 @@ namespace Chummer.Backend.Equipment
                 if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage &&
                     !GlobalOptions.LiveCustomData) return _objCachedMyXmlNode;
                 _objCachedMyXmlNode = SourceID == Guid.Empty
-                    ? XmlManager.Load("lifestyles.xml", strLanguage)
+                    ? XmlManager.Load("lifestyles.xml", _objCharacter.Options.CustomDataDictionary, strLanguage)
                         .SelectSingleNode($"/chummer/qualities/quality[name = \"{Name}\"]")
-                    : XmlManager.Load("lifestyles.xml", strLanguage)
-                        .SelectSingleNode(
-                            $"/chummer/qualities/quality[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
+                    : XmlManager.Load("lifestyles.xml", _objCharacter.Options.CustomDataDictionary, strLanguage)
+                        .SelectSingleNode($"/chummer/qualities/quality[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
                 return _objCachedMyXmlNode;
             }

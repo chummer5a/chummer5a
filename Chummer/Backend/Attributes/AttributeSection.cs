@@ -458,59 +458,46 @@ namespace Chummer.Backend.Attributes
             //Timekeeper.Finish("load_char_attrib");
 		}
 
-	    public async void LoadFromHeroLab(XmlNode xmlStatBlockBaseNode, CustomActivity parentActivity)
+	    public void LoadFromHeroLab(XmlNode xmlStatBlockBaseNode)
 	    {
-            using (var op_load_char_attrib = Timekeeper.StartSyncron("load_char_attrib", parentActivity))
+            Timekeeper.Start("load_char_attrib");
+            foreach (CharacterAttrib objAttribute in AttributeList.Concat(SpecialAttributeList))
+                objAttribute.UnbindAttribute();
+            AttributeList.Clear();
+            SpecialAttributeList.Clear();
+            XmlDocument objXmlDocument = XmlManager.Load(_objCharacter.IsCritter ? "critters.xml" : "metatypes.xml", _objCharacter.Options.CustomDataDictionary);
+            XmlNode xmlMetatypeNode = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
+            XmlNode xmlCharNode = xmlMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = \"" + _objCharacter.Metavariant + "\"]") ?? xmlMetatypeNode;
+            // We only want to remake attributes for shifters in career mode, because they only get their second set of attributes when exporting from create mode into career mode
+            XmlNode xmlCharNodeAnimalForm = _objCharacter.MetatypeCategory == "Shapeshifter" && _objCharacter.Created ? xmlMetatypeNode : null;
+            foreach (string strAttribute in AttributeStrings)
             {
-                foreach (CharacterAttrib objAttribute in AttributeList.Concat(SpecialAttributeList))
-                    objAttribute.UnbindAttribute();
-                AttributeList.Clear();
-                SpecialAttributeList.Clear();
-                XmlDocument objXmlDocument =
-                    XmlManager.Load(_objCharacter.IsCritter ? "critters.xml" : "metatypes.xml");
-                XPathNavigator xmlCharNode = _objCharacter.GetNode();
-                // We only want to remake attributes for shifters in career mode, because they only get their second set of attributes when exporting from create mode into career mode
-                XPathNavigator xmlCharNodeAnimalForm =
-                    _objCharacter.MetatypeCategory == "Shapeshifter" && _objCharacter.Created ? _objCharacter.GetNode(true) : null;
-                foreach (string strAttribute in AttributeStrings)
+                // First, remake the attribute
+                CharacterAttrib objAttribute = new CharacterAttrib(_objCharacter, strAttribute);
+                objAttribute = RemakeAttribute(objAttribute, xmlCharNode);
+                switch (CharacterAttrib.ConvertToAttributeCategory(objAttribute.Abbrev))
                 {
-                    // First, remake the attribute
-
-                    CharacterAttrib objAttribute = null;
-                    switch (CharacterAttrib.ConvertToAttributeCategory(strAttribute))
+                    case CharacterAttrib.AttributeCategory.Special:
+                        SpecialAttributeList.Add(objAttribute);
+                        break;
+                    case CharacterAttrib.AttributeCategory.Standard:
+                        AttributeList.Add(objAttribute);
+                        break;
+                }
+                if (xmlCharNodeAnimalForm != null)
+                {
+                    objAttribute = new CharacterAttrib(_objCharacter, strAttribute, CharacterAttrib.AttributeCategory.Shapeshifter);
+                    objAttribute = RemakeAttribute(objAttribute, xmlCharNodeAnimalForm);
+                    switch (CharacterAttrib.ConvertToAttributeCategory(objAttribute.Abbrev))
                     {
                         case CharacterAttrib.AttributeCategory.Special:
-                            objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
-                                CharacterAttrib.AttributeCategory.Special);
-                            objAttribute = RemakeAttribute(objAttribute, xmlCharNode);
                             SpecialAttributeList.Add(objAttribute);
                             break;
                         case CharacterAttrib.AttributeCategory.Standard:
-                            objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
-                                CharacterAttrib.AttributeCategory.Standard);
-                            objAttribute = RemakeAttribute(objAttribute, xmlCharNode);
                             AttributeList.Add(objAttribute);
                             break;
                     }
-
-                    if (xmlCharNodeAnimalForm != null)
-                    {
-                        switch (CharacterAttrib.ConvertToAttributeCategory(strAttribute))
-                        {
-                            case CharacterAttrib.AttributeCategory.Special:
-                                objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
-                                    CharacterAttrib.AttributeCategory.Special);
-                                objAttribute = RemakeAttribute(objAttribute, xmlCharNodeAnimalForm);
-                                SpecialAttributeList.Add(objAttribute);
-                                break;
-                            case CharacterAttrib.AttributeCategory.Shapeshifter:
-                                objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
-                                    CharacterAttrib.AttributeCategory.Shapeshifter);
-                                objAttribute = RemakeAttribute(objAttribute, xmlCharNodeAnimalForm);
-                                AttributeList.Add(objAttribute);
-                                break;
-                        }
-                    }
+                }
 
                     // Then load in attribute karma levels (we'll adjust these later if the character is in Create mode)
                     if (strAttribute == "ESS"

@@ -103,8 +103,8 @@ namespace Chummer.Backend.Equipment
         {
             if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.LiveCustomData) return _objCachedMyXmlNode;
             _objCachedMyXmlNode = SourceId == Guid.Empty
-                ? XmlManager.Load(_eSource == Improvement.ImprovementSource.Bioware ? "bioware.xml" : _eSource == Improvement.ImprovementSource.Drug ? "drugcomponents.xml" : "cyberware.xml", strLanguage).SelectSingleNode($"/chummer/grades/grade[name = \"{Name}\"]")
-                : XmlManager.Load(_eSource == Improvement.ImprovementSource.Bioware ? "bioware.xml" : _eSource == Improvement.ImprovementSource.Drug ? "drugcomponents.xml" : "cyberware.xml", strLanguage).SelectSingleNode($"/chummer/grades/grade[id = \"{SourceId}\"]");
+                ? XmlManager.Load(_eSource == Improvement.ImprovementSource.Bioware ? "bioware.xml" : _eSource == Improvement.ImprovementSource.Drug ? "drugcomponents.xml" : "cyberware.xml", new Dictionary<string, bool>(), strLanguage).SelectSingleNode($"/chummer/grades/grade[name = \"{Name}\"]")
+                : XmlManager.Load(_eSource == Improvement.ImprovementSource.Bioware ? "bioware.xml" : _eSource == Improvement.ImprovementSource.Drug ? "drugcomponents.xml" : "cyberware.xml", new Dictionary<string, bool>(), strLanguage).SelectSingleNode($"/chummer/grades/grade[id = \"{SourceId}\"]");
 
             _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;

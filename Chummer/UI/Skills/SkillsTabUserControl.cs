@@ -363,7 +363,7 @@ namespace Chummer.UI.Skills
             };
             //TODO: TRANSLATIONS
 
-            using (XmlNodeList xmlSkillCategoryList = XmlManager.Load("skills.xml").SelectNodes("/chummer/categories/category[@type = \"active\"]"))
+            using (XmlNodeList xmlSkillCategoryList = XmlManager.Load("skills.xml", new Dictionary<string, bool>()).SelectNodes("/chummer/categories/category[@type = \"active\"]"))
                 if (xmlSkillCategoryList != null)
                     foreach (XmlNode xmlCategoryNode in xmlSkillCategoryList)
                     {
@@ -383,7 +383,7 @@ namespace Chummer.UI.Skills
                 }
             }
 
-            using (XmlNodeList xmlSkillGroupList = XmlManager.Load("skills.xml").SelectNodes("/chummer/skillgroups/name"))
+            using (XmlNodeList xmlSkillGroupList = XmlManager.Load("skills.xml", new Dictionary<string, bool>()).SelectNodes("/chummer/skillgroups/name"))
                 if (xmlSkillGroupList != null)
                     foreach (XmlNode xmlSkillGroupNode in xmlSkillGroupList)
                     {
@@ -434,7 +434,7 @@ namespace Chummer.UI.Skills
                     skill => skill.Rating == 0)
             };
             //TODO: TRANSLATIONS
-            using (XmlNodeList xmlSkillCategoryList = XmlManager.Load("skills.xml").SelectNodes("/chummer/categories/category[@type = \"knowledge\"]"))
+            using (XmlNodeList xmlSkillCategoryList = XmlManager.Load("skills.xml", new Dictionary<string, bool>()).SelectNodes("/chummer/categories/category[@type = \"knowledge\"]"))
                 if (xmlSkillCategoryList != null)
                     foreach (XmlNode xmlCategoryNode in xmlSkillCategoryList)
                     {
@@ -572,7 +572,7 @@ namespace Chummer.UI.Skills
 
         private void btnExotic_Click(object sender, EventArgs e)
         {
-            XmlDocument xmlSkillsDocument = XmlManager.Load("skills.xml");
+            XmlDocument xmlSkillsDocument = XmlManager.Load("skills.xml", _objCharacter.Options.CustomDataDictionary);
             frmSelectExoticSkill frmPickExoticSkill = new frmSelectExoticSkill(_objCharacter);
             frmPickExoticSkill.ShowDialog(this);
 

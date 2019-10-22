@@ -40,7 +40,7 @@ namespace Chummer
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             // Load the Martial Art information.
-            _objXmlDocument = XmlManager.Load("martialarts.xml");
+            _objXmlDocument = XmlManager.Load("martialarts.xml", objCharacter.Options.CustomDataDictionary);
         }
 
         private void frmSelectMartialArtManeuver_Load(object sender, EventArgs e)

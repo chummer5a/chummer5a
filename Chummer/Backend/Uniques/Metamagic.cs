@@ -349,9 +349,9 @@ namespace Chummer
                     path = "echoes/echo";
                 }
                 _objCachedMyXmlNode = SourceID == Guid.Empty
-                    ? XmlManager.Load(doc, strLanguage)
+                    ? XmlManager.Load(doc, _objCharacter.Options.CustomDataDictionary, strLanguage)
                         .SelectSingleNode($"/chummer/{path}[name = \"{Name}\"]")
-                    : XmlManager.Load(doc, strLanguage).SelectSingleNode(
+                    : XmlManager.Load(doc, _objCharacter.Options.CustomDataDictionary, strLanguage).SelectSingleNode(
                         $"/chummer/{path}[id = \"{SourceIDString}\" or id = \"{SourceIDString}\"]");
 
                 _strCachedXmlNodeLanguage = strLanguage;

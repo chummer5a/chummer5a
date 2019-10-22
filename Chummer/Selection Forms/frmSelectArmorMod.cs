@@ -44,7 +44,7 @@ namespace Chummer
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             // Load the Armor information.
-            _xmlBaseDataNode = XmlManager.Load("armor.xml").GetFastNavigator().SelectSingleNode("/chummer");
+            _xmlBaseDataNode = XmlManager.Load("armor.xml", _objCharacter.Options.CustomDataDictionary).GetFastNavigator().SelectSingleNode("/chummer");
             _objArmor = objParentNode;
             _objParentNode = (_objArmor as IHasXmlNode)?.GetNode()?.CreateNavigator();
             _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_xmlBaseDataNode.SelectSingleNode("modcategories"));

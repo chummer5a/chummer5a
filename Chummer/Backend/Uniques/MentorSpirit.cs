@@ -231,7 +231,7 @@ namespace Chummer
                 XmlNode node = GetNode(GlobalOptions.Language);
                 if (node?.TryGetGuidFieldQuickly("id", ref _guiSourceID) == false)
                 {
-                    XmlNode objNewNode = XmlManager.Load("qualities.xml").SelectSingleNode("/chummer/mentors/mentor[name = \"" + Name + "\"]");
+                    XmlNode objNewNode = XmlManager.Load("qualities.xml", _objCharacter.Options.CustomDataDictionary).SelectSingleNode("/chummer/mentors/mentor[name = \"" + Name + "\"]");
                     objNewNode?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
                 }
             }
@@ -452,10 +452,10 @@ namespace Chummer
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                var xdoc = XmlManager.Load(
-                    _eMentorType == Improvement.ImprovementType.MentorSpirit ? "mentors.xml" : "paragons.xml",
-                    strLanguage);
-                _objCachedMyXmlNode = xdoc.SelectSingleNode(SourceID == Guid.Empty
+                _objCachedMyXmlNode = XmlManager.Load(
+                        _eMentorType == Improvement.ImprovementType.MentorSpirit ? "mentors.xml" : "paragons.xml", 
+                        _objCharacter.Options.CustomDataDictionary, strLanguage)
+                    .SelectSingleNode(SourceID == Guid.Empty
                         ? $"/chummer/mentors/mentor[name = \"{Name}\"]"
                         : $"/chummer/mentors/mentor[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
