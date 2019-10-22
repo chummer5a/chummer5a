@@ -424,7 +424,6 @@ namespace Chummer
                 strValue = "MartialArtTechnique";
             return (ImprovementSource) Enum.Parse(typeof (ImprovementSource), strValue);
         }
-
         #endregion
 
         #region Save and Load Methods
