@@ -2542,6 +2542,8 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
+                strMounts.Append("Internal/None");
+
                 // Remove the trailing /
                 if (strMounts.Length > 0)
                     strMounts.Length -= 1;
