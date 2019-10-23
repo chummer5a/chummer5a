@@ -1375,8 +1375,8 @@ namespace Chummer.Backend.Equipment
                 string strArmorCapacity = TotalArmorCapacity;
                 if (strArmorCapacity != "0" && !string.IsNullOrEmpty(strArmorCapacity)) // && _objCharacter.Options.ArmorSuitCapacity)
                 {
-                    // Run through its Armor Mods and deduct the Capacity costs.
-                    decCapacity = ArmorMods.Where(mod => !mod.IncludedInArmor).Aggregate(decCapacity, (current, objMod) => current - objMod.TotalCapacity);
+                    // Run through its Armor Mods and deduct the Capacity costs. Mods that confer capacity (ie negative values) are excluded, as they're processed in TotalArmorCapacity.
+                    decCapacity = ArmorMods.Where(mod => !mod.IncludedInArmor && mod.TotalCapacity > 0).Aggregate(decCapacity, (current, objMod) => current - objMod.TotalCapacity);
 
                     // Run through its Gear and deduct the Armor Capacity costs.
                     if (Gear.Count <= 0) return decCapacity;
