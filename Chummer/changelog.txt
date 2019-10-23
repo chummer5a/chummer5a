@@ -31,6 +31,7 @@ Application Fixes:
 - addlimb improvement now supports the use of precedence nodes to allow preventing multiple sources of limbs from stacking, ie centaurs and Liminal Bodies. Closes #3550
 - Fixed an issue with enemies improperly showing warnings about quality limits if they're not set to add to negative quality karma.
 - Added missing DamageResistance improvement bonuses to the tooltip for Indirect Soak.
+- Added support for the optionalpowers improvement being taken multiple times. This is done by adding a count attribute to the base node, which can include attributes and basic math. A spirit could have "{MAG} div 3" for example, which allows for 1 optional power for every 3 full MAG the spirit has. 
 
 Data Changes:
 - Tetrachromacy now adds adds +3 to Perception, with a (Visual) condition. This will be exposed to the Print method for character sheets at a later date. 
@@ -57,6 +58,7 @@ Data Changes:
 - Moved the Centaur Body improvement into the metatype improvements for Centaur and flagged the quality as hidden.
 - Added correct AP value (-5) to the Riot Shield.
 - Added missing Medkit and Snake Fingers cyberwares to the Shiawase Caduceus 'CAD' 7 drone.
+- Added an optional rule to add the optional powers rule for sprites from Kill Code to the core book sprites. 
 
 New Strings:
 - Label_MetagenicKarmaValue
