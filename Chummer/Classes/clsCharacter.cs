@@ -14673,6 +14673,7 @@ if (!Utils.IsUnitTest){
             {
                 _intCachedNegativeQualities = int.MinValue;
                 _intCachedPositiveQualities = int.MinValue;
+                _intCachedPositiveQualitiesTotal = int.MinValue;
                 _intCachedMetagenicNegativeQualities = int.MinValue;
                 _intCachedMetagenicPositiveQualities = int.MinValue;
             }
@@ -16736,6 +16737,9 @@ if (!Utils.IsUnitTest){
 
         #region Karma Values
         private int _intCachedPositiveQualities = int.MinValue;
+        /// <summary>
+        /// Total value of positive qualities that count towards the maximum quality limit in create mode. 
+        /// </summary>
         public int PositiveQualityKarma
         {
             get
@@ -16743,7 +16747,7 @@ if (!Utils.IsUnitTest){
                 if (_intCachedPositiveQualities == int.MinValue)
                 {
                     _intCachedPositiveQualities = Qualities
-                        .Where(objQuality => objQuality.Type == QualityType.Positive && objQuality.ContributeToBP)
+                        .Where(objQuality => objQuality.Type == QualityType.Positive && objQuality.ContributeToBP && objQuality.ContributeToLimit)
                         .Sum(objQuality   => objQuality.BP) * Options.KarmaQuality;
                     // Group contacts are counted as positive qualities
                     _intCachedPositiveQualities += Contacts
@@ -16767,9 +16771,57 @@ if (!Utils.IsUnitTest){
                 return _intCachedPositiveQualities;
             }
         }
+        private int _intCachedPositiveQualitiesTotal = int.MinValue;
+        /// <summary>
+        /// Total value of ALL positive qualities, including those that don't contribute to the quality limit during character creation . 
+        /// </summary>
+        public int PositiveQualityKarmaTotal
+        {
+            get
+            {
+                if (_intCachedPositiveQualitiesTotal == int.MinValue)
+                {
+                    _intCachedPositiveQualitiesTotal = Qualities
+                                                      .Where(objQuality => objQuality.Type == QualityType.Positive && objQuality.ContributeToBP)
+                                                      .Sum(objQuality => objQuality.BP) * Options.KarmaQuality;
+                    // Group contacts are counted as positive qualities
+                    _intCachedPositiveQualitiesTotal += Contacts
+                        .Where(x => x.EntityType == ContactType.Contact && x.IsGroup && !x.Free)
+                        .Sum(x => x.ContactPoints);
 
-        public string DisplayPositiveQualityKarma =>
-            $"{PositiveQualityKarma.ToString(GlobalOptions.CultureInfo)}/{GameplayOptionQualityLimit.ToString(GlobalOptions.CultureInfo)}{LanguageManager.GetString("String_Space")}{LanguageManager.GetString("String_Karma")}";
+                    // Deduct the amount for free Qualities.
+                    _intCachedPositiveQualitiesTotal -=
+                        ImprovementManager.ValueOf(this, Improvement.ImprovementType.FreePositiveQualities) * Options.KarmaQuality;
+
+                    // If the character is allowed to take as many Positive Qualities as they'd like but all costs in excess are doubled, add the excess to their point cost.
+                    if (Options.ExceedPositiveQualitiesCostDoubled)
+                    {
+                        int intPositiveQualityExcess = _intCachedPositiveQualitiesTotal - GameplayOptionQualityLimit;
+                        if (intPositiveQualityExcess > 0)
+                        {
+                            _intCachedPositiveQualitiesTotal += intPositiveQualityExcess;
+                        }
+                    }
+                }
+                return _intCachedPositiveQualitiesTotal;
+            }
+        }
+
+        public string DisplayPositiveQualityKarma
+        {
+            get
+            {
+                if (PositiveQualityKarma != PositiveQualityKarmaTotal)
+                {
+                    return $"{PositiveQualityKarma.ToString(GlobalOptions.CultureInfo)}/{GameplayOptionQualityLimit.ToString(GlobalOptions.CultureInfo)}" +
+                           $"{LanguageManager.GetString("String_Space")}({PositiveQualityKarmaTotal.ToString(GlobalOptions.CultureInfo)})" +
+                           $"{LanguageManager.GetString("String_Space")}{LanguageManager.GetString("String_Karma")}";
+                }
+                return
+                    $"{PositiveQualityKarma.ToString(GlobalOptions.CultureInfo)}/{GameplayOptionQualityLimit.ToString(GlobalOptions.CultureInfo)}" +
+                    $"{LanguageManager.GetString("String_Space")}{LanguageManager.GetString("String_Karma")}";
+            }
+        }
 
         private int _intCachedNegativeQualities = int.MinValue;
         public int NegativeQualityKarma
