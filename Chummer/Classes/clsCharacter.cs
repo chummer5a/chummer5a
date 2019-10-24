@@ -16743,7 +16743,7 @@ if (!Utils.IsUnitTest){
                 if (_intCachedPositiveQualities == int.MinValue)
                 {
                     _intCachedPositiveQualities = Qualities
-                        .Where(objQuality => objQuality.Type == QualityType.Positive && objQuality.ContributeToBP && objQuality.ContributeToLimit)
+                        .Where(objQuality => objQuality.Type == QualityType.Positive && objQuality.ContributeToBP)
                         .Sum(objQuality   => objQuality.BP) * Options.KarmaQuality;
                     // Group contacts are counted as positive qualities
                     _intCachedPositiveQualities += Contacts
