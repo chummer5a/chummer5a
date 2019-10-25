@@ -2335,11 +2335,9 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string CalculatedMode(string strLanguage)
         {
-            List<string> lstModes = new List<string>();
             string[] strModes = _strMode.Split('/');
             // Move the contents of the array to a list so it's easier to work with.
-            foreach (string strMode in strModes)
-                lstModes.Add(strMode);
+            List<string> lstModes = strModes.ToList();
 
             // Check if the Weapon has Ammunition loaded and look for any Damage bonus/replacement.
             if (!string.IsNullOrEmpty(AmmoLoaded))
@@ -2387,93 +2385,85 @@ namespace Chummer.Backend.Equipment
                     // Do the same for any plugins.
                     foreach (Gear objChild in objGear.Children.GetAllDescendants(x => x.Children))
                     {
-                        if (objChild.WeaponBonus != null)
+                        if (objChild.WeaponBonus == null) continue;
+                        string strFireMode = objChild.WeaponBonus["firemode"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strFireMode))
                         {
-                            string strFireMode = objChild.WeaponBonus["firemode"]?.InnerText;
-                            if (!string.IsNullOrEmpty(strFireMode))
+                            if (strFireMode.Contains('/'))
                             {
-                                if (strFireMode.Contains('/'))
-                                {
-                                    strModes = strFireMode.Split('/');
+                                strModes = strFireMode.Split('/');
 
-                                    // Move the contents of the array to a list so it's easier to work with.
-                                    foreach (string strMode in strModes)
-                                        lstModes.Add(strMode);
-                                }
-                                else
-                                {
-                                    lstModes.Add(strFireMode);
-                                }
+                                // Move the contents of the array to a list so it's easier to work with.
+                                foreach (string strMode in strModes)
+                                    lstModes.Add(strMode);
                             }
-                            strFireMode = objChild.WeaponBonus["modereplace"]?.InnerText;
-                            if (!string.IsNullOrEmpty(strFireMode))
+                            else
                             {
-                                lstModes.Clear();
-                                if (strFireMode.Contains('/'))
-                                {
-                                    strModes = strFireMode.Split('/');
-                                    // Move the contents of the array to a list so it's easier to work with.
-                                    foreach (string strMode in strModes)
-                                        lstModes.Add(strMode);
-                                }
-                                else
-                                {
-                                    lstModes.Add(strFireMode);
-                                }
-                                break;
+                                lstModes.Add(strFireMode);
                             }
+                        }
+                        strFireMode = objChild.WeaponBonus["modereplace"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strFireMode))
+                        {
+                            lstModes.Clear();
+                            if (strFireMode.Contains('/'))
+                            {
+                                strModes = strFireMode.Split('/');
+                                // Move the contents of the array to a list so it's easier to work with.
+                                foreach (string strMode in strModes)
+                                    lstModes.Add(strMode);
+                            }
+                            else
+                            {
+                                lstModes.Add(strFireMode);
+                            }
+                            break;
                         }
                     }
 
                     // Do the same for any accessories/modifications.
                     foreach (WeaponAccessory objAccessory in WeaponAccessories)
                     {
-                        if (objAccessory.Equipped)
+                        if (!objAccessory.Equipped) continue;
+                        if (!string.IsNullOrEmpty(objAccessory.FireMode))
                         {
-                            if (!string.IsNullOrEmpty(objAccessory.FireMode))
+                            if (objAccessory.FireMode.Contains('/'))
                             {
-                                if (objAccessory.FireMode.Contains('/'))
-                                {
-                                    strModes = objAccessory.FireMode.Split('/');
+                                strModes = objAccessory.FireMode.Split('/');
 
-                                    // Move the contents of the array to a list so it's easier to work with.
-                                    foreach (string strMode in strModes)
-                                        lstModes.Add(strMode);
-                                }
-                                else
-                                {
-                                    lstModes.Add(objAccessory.FireMode);
-                                }
+                                // Move the contents of the array to a list so it's easier to work with.
+                                foreach (string strMode in strModes)
+                                    lstModes.Add(strMode);
+                            }
+                            else
+                            {
+                                lstModes.Add(objAccessory.FireMode);
+                            }
+                        }
+
+                        if (!string.IsNullOrEmpty(objAccessory.FireModeReplacement))
+                        {
+                            lstModes.Clear();
+                            if (objAccessory.FireModeReplacement.Contains('/'))
+                            {
+                                strModes = objAccessory.FireModeReplacement.Split('/');
+
+                                // Move the contents of the array to a list so it's easier to work with.
+                                foreach (string strMode in strModes)
+                                    lstModes.Add(strMode);
+                            }
+                            else
+                            {
+                                lstModes.Add(objAccessory.FireModeReplacement);
                             }
 
-                            if (!string.IsNullOrEmpty(objAccessory.FireModeReplacement))
-                            {
-                                lstModes.Clear();
-                                if (objAccessory.FireModeReplacement.Contains('/'))
-                                {
-                                    strModes = objAccessory.FireModeReplacement.Split('/');
-
-                                    // Move the contents of the array to a list so it's easier to work with.
-                                    foreach (string strMode in strModes)
-                                        lstModes.Add(strMode);
-                                }
-                                else
-                                {
-                                    lstModes.Add(objAccessory.FireModeReplacement);
-                                }
-
-                                break;
-                            }
+                            break;
                         }
                     }
                 }
             }
 
-            foreach (WeaponAccessory objAccessory in WeaponAccessories)
-            {
-                if (objAccessory.Equipped && string.IsNullOrEmpty(objAccessory.AddMode))
-                    lstModes.Add(objAccessory.AddMode);
-            }
+            lstModes.AddRange(from objAccessory in WeaponAccessories where objAccessory.Equipped && !string.IsNullOrEmpty(objAccessory.AddMode) select objAccessory.AddMode);
 
             string strReturn = string.Empty;
             if (lstModes.Contains("SS"))

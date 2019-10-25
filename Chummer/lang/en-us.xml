@@ -3598,6 +3598,26 @@
       <key>String_SuppressiveFire</key>
       <text>Suppressive Fire ({0} {1})</text>
     </string>
+      <string>
+        <key>String_SingleShotNA</key>
+        <text>Single Shot (N/A)</text>
+      </string>
+      <string>
+        <key>String_ShortBurstNA</key>
+        <text>Short Burst (N/A)</text>
+      </string>
+      <string>
+        <key>String_LongBurstNA</key>
+        <text>Long Burst (N/A)</text>
+      </string>
+      <string>
+        <key>String_FullBurstNA</key>
+        <text>Full Burst (N/A)</text>
+      </string>
+      <string>
+        <key>String_SuppressiveFireNA</key>
+        <text>Suppressive Fire (N/A)</text>
+      </string>
     <string>
       <key>String_SelectVariableCost</key>
       <text>Select a Cost for {0}.</text>
