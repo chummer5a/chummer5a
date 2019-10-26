@@ -61,6 +61,7 @@ Data Changes:
 - Added correct AP value (-5) to the Riot Shield.
 - Added missing Medkit and Snake Fingers cyberwares to the Shiawase Caduceus 'CAD' 7 drone.
 - Added an optional rule to add the optional powers rule for sprites from Kill Code to the core book sprites. 
+- Moved HTML file used by the "Print to File First" option for fixing issues with rendering sheets into appdata instead, in order to prevent issues with tools that synchronise special folders like desktop from causing the cleanup to fail.
 
 New Strings:
 - Label_MetagenicKarmaValue
