@@ -9694,5 +9694,25 @@
           <key>Checkbox_Options_HideCharts</key>
           <text>Tabellen verbergen, die Probleme mit Wine verursachen</text>
         </string>
+        <string>
+          <key>String_SuppressiveFireNA</key>
+          <text>Sperrfeuer (N/A)</text>
+        </string>
+        <string>
+          <key>String_FullBurstNA</key>
+          <text>Salvenmodus (N/A)</text>
+        </string>
+        <string>
+          <key>String_LongBurstNA</key>
+          <text>Lange Salve (N/A)</text>
+        </string>
+        <string>
+          <key>String_ShortBurstNA</key>
+          <text>Kurze Salve (N/A)</text>
+        </string>
+        <string>
+          <key>String_SingleShotNA</key>
+          <text>Einzelschussmodus (N/A)</text>
+        </string>
 	</strings>
 </chummer>
