@@ -34,6 +34,7 @@ Application Fixes:
 - Added support for the optionalpowers improvement being taken multiple times. This is done by adding a count attribute to the base node, which can include attributes and basic math. A spirit could have "{MAG} div 3" for example, which allows for 1 optional power for every 3 full MAG the spirit has. 
 - Fixed a regression in SA-capable weapons not being able to fire Short Bursts in career mode. 
 - Weapon accessories that add fire modes properly show as such.
+- Fixed an issue with Armor Mods that are included in Armor improperly checking availability.
 
 Data Changes:
 - Tetrachromacy now adds adds +3 to Perception, with a (Visual) condition. This will be exposed to the Print method for character sheets at a later date. 
