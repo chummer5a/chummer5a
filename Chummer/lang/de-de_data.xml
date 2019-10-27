@@ -4844,6 +4844,60 @@
 				<translate>Blutsturz</translate>
 				<altpage>96</altpage>
 			</power>
+			<power translated="True">
+				<id>765bf1cb-2e4b-46e8-aee4-f19004f031f3</id>
+				<name>Bodyguard</name>
+				<translate>Bodyguard</translate>
+				<altpage>101</altpage>
+			</power>
+			<power translated="True">
+				<id>d8e72e33-d70e-4fd5-8ca2-b6cb7da87a96</id>
+				<name>Shield</name>
+				<translate>Schild</translate>
+				<altpage>101</altpage>
+			</power>
+			<power translated="True">
+				<id>3873ed1d-9f98-4a68-bccd-012d237a2522</id>
+				<name>Active Analytics</name>
+				<translate>Aktive Analyse</translate>
+				<altpage>101</altpage>
+			</power>
+			<power translated="True">
+				<id>5455b362-4c9d-4841-8069-230f44a4a3f0</id>
+				<name>Borrowed IP</name>
+				<translate>Geborgtes Icon</translate>
+				<altpage>101</altpage>
+			</power>
+			<power translated="True">
+				<id>ad1c42e7-315b-4c6b-ae49-856b274a129b</id>
+				<name>Decompiling Resistance</name>
+				<translate>Dekompilierungsresistenz</translate>
+				<altpage>101</altpage>
+			</power>
+			<power translated="True">
+				<id>68bcb1c1-581c-4756-9856-690a5c3a5397</id>
+				<name>Enhance</name>
+				<translate>Verstärkung</translate>
+				<altpage>101</altpage>
+			</power>
+			<power translated="True">
+				<id>8e7e1bb4-ad16-4195-aef8-dd5b4c701603</id>
+				<name>Navi</name>
+				<translate>Navi</translate>
+				<altpage>101</altpage>
+			</power>
+			<power translated="True">
+				<id>67ec3e9a-3e21-4906-9d90-1255f6086ce7</id>
+				<name>Resilient Code</name>
+				<translate>Widerstandsfähiger Code</translate>
+				<altpage>101</altpage>
+			</power>
+			<power translated="True">
+				<id>91a4d3a9-bf11-4080-94aa-37e462436b12</id>
+				<name>Resonance Spooling</name>
+				<translate>Resonanzwicklungen</translate>
+				<altpage>101</altpage>
+			</power>
 		</powers>
 	</chummer>
 	<chummer file="critters.xml">
