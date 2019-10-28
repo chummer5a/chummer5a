@@ -27,7 +27,7 @@ namespace ChummerHub.Client.UI
 {
     public partial class ucSINnerGroupSearch : UserControl
     {
-        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
         public CharacterExtended MyCE { get; set; }
         public EventHandler<SINnerGroup> OnGroupJoinCallback = null;
 
@@ -199,7 +199,7 @@ namespace ChummerHub.Client.UI
             
         }
 
-        private async Task<SINSearchGroupResult> SearchForGroups(string groupname)
+        public static async Task<SINSearchGroupResult> SearchForGroups(string groupname)
         {
             try
             {
@@ -214,7 +214,7 @@ namespace ChummerHub.Client.UI
             
         }
 
-        private async Task<SINSearchGroupResult> SearchForGroupsTask(string groupname)
+        private static async Task<SINSearchGroupResult> SearchForGroupsTask(string groupname)
         {
             try
             {

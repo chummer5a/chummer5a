@@ -866,6 +866,7 @@ namespace Chummer
                 objRegistry.SetValue("createbackuponcareer", chkCreateBackupOnCareer.Checked);
                 objRegistry.SetValue("pluginsenabled", chkEnablePlugins.Checked);
                 objRegistry.SetValue("alloweastereggs", chkAllowEasterEggs.Checked);
+                objRegistry.SetValue("hidecharts", chkHideCharts.Checked);
 
                 //Save the Plugins-Dictionary
                 string jsonstring = Newtonsoft.Json.JsonConvert.SerializeObject(GlobalOptions.PluginsEnabledDic);

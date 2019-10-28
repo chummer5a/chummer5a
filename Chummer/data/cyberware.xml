@@ -3321,6 +3321,9 @@
       <name>Built-in Medkit</name>
       <limit>False</limit>
       <category>Cyberlimb Enhancement</category>
+      <allowgear>
+        <gearname>Medkit</gearname>
+      </allowgear>
       <ess>0.45</ess>
       <capacity>[10]</capacity>
       <avail>8</avail>
@@ -3493,6 +3496,10 @@
           <val>1</val>
           <category>Ground</category>
         </runmultiplier>
+        <weaponaccuracy>
+          <name>Raptor Foot</name>
+          <value>1</value>
+        </weaponaccuracy>
       </pairbonus>
       <required>
         <parentdetails>
@@ -4552,6 +4559,10 @@
       <page>87</page>
       <blocksmounts>ankle,knee,hip</blocksmounts>
       <bonus>
+        <addlimb precedence="0">
+          <limbslot>leg</limbslot>
+          <val>2</val>
+        </addlimb>
         <runmultiplier>
           <category>Ground</category>
           <percent>100</percent>

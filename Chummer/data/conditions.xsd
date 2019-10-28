@@ -39,6 +39,11 @@
   <xs:group name="checks">
     <xs:sequence>
       <xs:element name="accessory" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="armormod" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:attribute name="sameparent" type="xs:boolean" use="optional" />
+        </xs:complexType>
+      </xs:element>
       <xs:element name="art" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
       <xs:element name="attribute" minOccurs="0" maxOccurs="unbounded">
         <xs:complexType>

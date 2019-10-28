@@ -1997,7 +1997,7 @@
       <accuracy>4</accuracy>
       <reach>0</reach>
       <damage>9S(e)</damage>
-      <ap>0</ap>
+      <ap>-5</ap>
       <mode>0</mode>
       <rc>0</rc>
       <ammo>0</ammo>
@@ -7157,6 +7157,61 @@
           </AND>
         </OR>
       </required>
+    </weapon>
+    <weapon>
+      <id>c166caeb-aaa8-4e13-b76d-ae9e567f7dcd</id>
+      <name>Underbarrel Bola Launcher</name>
+      <category>Underbarrel Weapons</category>
+      <type>Ranged</type>
+      <conceal>6</conceal>
+      <accuracy>Physical</accuracy>
+      <reach>0</reach>
+      <damage>8S</damage>
+      <ap>+4</ap>
+      <mode>SS</mode>
+      <rc>0</rc>
+      <ammo>1(m)</ammo>
+      <avail>8R</avail>
+      <cost>350</cost>
+      <source>RG</source>
+      <page>54</page>
+      <ammoname>Bola: Standard</ammoname>
+      <range>Heavy Pistols</range>
+      <required>
+        <weapondetails>
+          <conceal operation="greaterthan">0</conceal>
+        </weapondetails>
+      </required>
+      <useskill>Exotic Ranged Weapon</useskill>
+      <useskillspec>Bola</useskillspec>
+    </weapon>
+    <weapon>
+      <id>7d711605-e6a9-42f9-846b-95ef80e8c575</id>
+      <name>Underbarrel Grapple Gun</name>
+      <category>Underbarrel Weapons</category>
+      <type>Ranged</type>
+      <conceal>6</conceal>
+      <accuracy>3</accuracy>
+      <reach>0</reach>
+      <damage>7S</damage>
+      <ap>-2</ap>
+      <mode>SS</mode>
+      <rc>0</rc>
+      <ammo>1(ml)</ammo>
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>SR5</source>
+      <page>449</page>
+      <range>Light Crossbows</range>
+      <required>
+        <weapondetails>
+          <conceal operation="greaterthan">0</conceal>
+        </weapondetails>
+      </required>
+      <sizecategory>Light Crossbows</sizecategory>
+      <spec>Grapple Gun</spec>
+      <useskill>Exotic Ranged Weapon</useskill>
+      <useskillspec>Grapple Gun</useskillspec>
     </weapon>
     <!-- End Region -->
     <!-- Region Run and Gun -->
@@ -13355,9 +13410,6 @@
         <accessory>
           <name>Laser Sight</name>
         </accessory>
-        <accessory>
-          <name>Underbarrel Grenade Launcher</name>
-        </accessory>
       </accessories>
       <accessorymounts>
         <mount>Stock</mount>
@@ -13367,6 +13419,9 @@
         <mount>Under</mount>
         <mount>Top</mount>
       </accessorymounts>
+      <underbarrels>
+        <underbarrel>Underbarrel Grenade Launcher</underbarrel>
+      </underbarrels>
     </weapon>
     <weapon>
       <id>f1f2016a-8e4d-43d4-847d-a2eb007c52f0</id>
@@ -15900,6 +15955,7 @@
           <conceal operation="greaterthan">0</conceal>
         </weapondetails>
       </required>
+      <hide />
     </accessory>
     <accessory>
       <id>2ce42c74-5129-4b33-b829-aa392c8eb392</id>
@@ -15940,6 +15996,7 @@
       <source>RG</source>
       <page>53</page>
       <rating>0</rating>
+      <hide />
       <required>
         <weapondetails>
           <conceal operation="greaterthan">0</conceal>
@@ -15955,6 +16012,7 @@
       <source>RG</source>
       <page>53</page>
       <rating>0</rating>
+      <hide />
       <required>
         <weapondetails>
           <conceal operation="greaterthan">0</conceal>

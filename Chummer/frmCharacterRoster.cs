@@ -674,9 +674,9 @@ namespace Chummer
                     return;
                 Point pt = treSenderView.PointToClient(new Point(e.X, e.Y));
                 TreeNode nodDestinationNode = treSenderView.GetNodeAt(pt);
-                if (nodDestinationNode.Level > 0)
+                if (nodDestinationNode?.Level > 0)
                     nodDestinationNode = nodDestinationNode.Parent;
-                string strDestinationNode = nodDestinationNode.Tag?.ToString();
+                string strDestinationNode = nodDestinationNode?.Tag?.ToString();
                 if(strDestinationNode != "Watch")
                 {
                     if(!(e.Data.GetData("System.Windows.Forms.TreeNode") is TreeNode nodNewNode))

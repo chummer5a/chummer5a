@@ -44,6 +44,7 @@ namespace Chummer
         /// <param name="strLocation">Limb side to use if we need a specific limb side (Left or Right)</param>
         /// <param name="blnIgnoreLimit">Whether to ignore checking for limits on the total amount of this item the character can have.</param>
         /// <returns></returns>
+        [Obsolete("This method is a wrapper that calls XPathNavigator instead. Where possible, refactor the calling object to an XPathNavigator instead.", false)] 
         public static bool RequirementsMet(this XmlNode xmlNode, Character objCharacter, object objParent = null, string strLocalName = "", string strIgnoreQuality = "", string strSourceName = "", string strLocation = "", bool blnIgnoreLimit = false)
         {
             if (xmlNode == null || objCharacter == null)
@@ -1168,18 +1169,44 @@ namespace Chummer
                 case "weapon":
                 {
                     // Character needs a specific Weapon.
-                    if (blnShowMessage)
-                    {
-                        string strTranslate = XmlManager.Load("weapons.xml").SelectSingleNode($"/chummer/traditions/tradition[name = {strNodeInnerText.CleanXPath()}]/translate")?.InnerText;
-                        strName = !string.IsNullOrEmpty(strTranslate)
-                            ? $"{Environment.NewLine}\t{strTranslate} ({LanguageManager.GetString("String_Weapon", GlobalOptions.Language)})"
-                            : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_Weapon", GlobalOptions.Language)})";
-                    }
+                    if (!blnShowMessage) return objCharacter.Weapons.Any(w => w.Name == strNodeInnerText);
+                    string strTranslate = XmlManager.Load("weapons.xml").SelectSingleNode($"/chummer/weapons/weapon[name = {strNodeInnerText.CleanXPath()}]/translate")?.InnerText;
+                    strName = !string.IsNullOrEmpty(strTranslate)
+                        ? $"{Environment.NewLine}\t{strTranslate} ({LanguageManager.GetString("String_Weapon", GlobalOptions.Language)})"
+                        : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_Weapon", GlobalOptions.Language)})";
                     return objCharacter.Weapons.Any(w => w.Name == strNodeInnerText);
                 }
                 case "accessory" when objParent is Weapon objWeapon:
                 {
+                    if (!blnShowMessage)
+                        return objWeapon.WeaponAccessories.Any(objAccessory => objAccessory.Name == strNodeInnerText);
+                    string strTranslate = XmlManager.Load("weapons.xml")
+                        .SelectSingleNode(
+                            $"/chummer/accessories/accessory[name = {strNodeInnerText.CleanXPath()}]/translate")
+                        ?.InnerText;
+                    strName = !string.IsNullOrEmpty(strTranslate)
+                        ? $"{Environment.NewLine}\t{strTranslate} ({LanguageManager.GetString("String_WeaponAccessory", GlobalOptions.Language)})"
+                        : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_WeaponAccessory", GlobalOptions.Language)})";
                     return objWeapon.WeaponAccessories.Any(objAccessory => objAccessory.Name == strNodeInnerText);
+                }
+                case "armormod":
+                {
+                    if (blnShowMessage)
+                    {
+                        string strTranslate = XmlManager.Load("armor.xml")
+                            .SelectSingleNode(
+                                $"/chummer/armormods/armormod[name = {strNodeInnerText.CleanXPath()}]/translate")
+                            ?.InnerText;
+                        strName = !string.IsNullOrEmpty(strTranslate)
+                            ? $"{Environment.NewLine}\t{strTranslate} ({LanguageManager.GetString("String_ArmorMod", GlobalOptions.Language)})"
+                            : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_ArmorMod", GlobalOptions.Language)})";
+                    }
+
+                    string parent = xmlNode.GetAttribute("sameparent", "");
+                    return parent == bool.TrueString
+                        ? ((Armor) objParent).ArmorMods.Any(mod => mod.Name == strNodeInnerText)
+                        : objCharacter.Armor.Any(armor =>
+                            armor.ArmorMods.Any(mod => mod.Name == strNodeInnerText));
                 }
                 default:
                     Utils.BreakIfDebug();

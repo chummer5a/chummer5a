@@ -5237,6 +5237,29 @@ if (!Utils.IsUnitTest){
             return string.Empty;
         }
 
+
+        public void FormatImprovementModifiers(StringBuilder objToolTip, HashSet<Improvement.ImprovementType> improvements, string strSpaceCharacter, int intModifiers)
+        {
+            objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
+                              LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language));
+            bool blnFirstModifier = true;
+            foreach (Improvement objLoopImprovement in Improvements.Where(imp =>
+                improvements.Contains(imp.ImproveType) && imp.Enabled))
+            {
+                if (blnFirstModifier)
+                {
+                    blnFirstModifier = false;
+                    objToolTip.Append(LanguageManager.GetString("String_Colon"));
+                }
+                else objToolTip.Append(',');
+
+                objToolTip.Append(strSpaceCharacter +
+                                  GetObjectName(objLoopImprovement, GlobalOptions.Language));
+            }
+
+            objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.CultureInfo) + ')');
+        }
+
         /// <summary>
         /// Return a list of CyberwareGrades from XML files.
         /// </summary>
@@ -10004,28 +10027,11 @@ if (!Utils.IsUnitTest){
 
                 if(intModifiers != 0)
                 {
-                    objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                      LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language));
-                    bool blnFirstModifier = true;
-                    foreach(Improvement objLoopImprovement in Improvements)
-                    {
-                        if(objLoopImprovement.ImproveType == Improvement.ImprovementType.Dodge &&
-                            objLoopImprovement.Enabled)
+                    FormatImprovementModifiers(objToolTip,
+                        new HashSet<Improvement.ImprovementType>(new[]
                         {
-                            if(blnFirstModifier)
-                            {
-                                blnFirstModifier = false;
-                                objToolTip.Append(LanguageManager.GetString("String_Colon"));
-                            }
-                            else
-                                objToolTip.Append(',');
-
-                            objToolTip.Append(strSpaceCharacter +
-                                              GetObjectName(objLoopImprovement, GlobalOptions.Language));
-                        }
-                    }
-
-                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.CultureInfo) + ')');
+                            Improvement.ImprovementType.Dodge
+                        }), strSpaceCharacter, intModifiers);
                 }
 
                 return objToolTip.ToString();
@@ -10034,7 +10040,7 @@ if (!Utils.IsUnitTest){
 
         public int SpellDefenseIndirectSoak =>
             (IsAI ? (HomeNode is Vehicle objVehicle ? objVehicle.TotalBody : 0) : BOD.TotalValue) + TotalArmorRating +
-            SpellResistance;
+            SpellResistance + ImprovementManager.ValueOf(this,Improvement.ImprovementType.DamageResistance);
 
         public string DisplaySpellDefenseIndirectSoak => CurrentCounterspellingDice == 0
             ? SpellDefenseIndirectSoak.ToString(GlobalOptions.CultureInfo)
@@ -10071,32 +10077,16 @@ if (!Utils.IsUnitTest){
                                       strSpaceCharacter + '(' +
                                       CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
 
-                int intModifiers = SpellResistance;
+                int intModifiers = SpellResistance +
+                                   ImprovementManager.ValueOf(this, Improvement.ImprovementType.DamageResistance);
 
                 if(intModifiers != 0)
                 {
-                    objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                      LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language));
-                    bool blnFirstModifier = true;
-                    foreach(Improvement objLoopImprovement in Improvements)
-                    {
-                        if(objLoopImprovement.ImproveType == Improvement.ImprovementType.SpellResistance &&
-                            objLoopImprovement.Enabled)
+                    FormatImprovementModifiers(objToolTip,
+                        new HashSet<Improvement.ImprovementType>(new[]
                         {
-                            if(blnFirstModifier)
-                            {
-                                blnFirstModifier = false;
-                                objToolTip.Append(LanguageManager.GetString("String_Colon"));
-                            }
-                            else
-                                objToolTip.Append(',');
-
-                            objToolTip.Append(strSpaceCharacter +
-                                              GetObjectName(objLoopImprovement, GlobalOptions.Language));
-                        }
-                    }
-
-                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.CultureInfo) + ')');
+                            Improvement.ImprovementType.DamageResistance, Improvement.ImprovementType.SpellResistance
+                        }), strSpaceCharacter, intModifiers);
                 }
 
                 return objToolTip.ToString();
@@ -10129,28 +10119,9 @@ if (!Utils.IsUnitTest){
 
                 if(intModifiers != 0)
                 {
-                    objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                      LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language));
-                    bool blnFirstModifier = true;
-                    foreach(Improvement objLoopImprovement in Improvements)
-                    {
-                        if(objLoopImprovement.ImproveType == Improvement.ImprovementType.SpellResistance &&
-                            objLoopImprovement.Enabled)
-                        {
-                            if(blnFirstModifier)
-                            {
-                                blnFirstModifier = false;
-                                objToolTip.Append(LanguageManager.GetString("String_Colon"));
-                            }
-                            else
-                                objToolTip.Append(',');
-
-                            objToolTip.Append(strSpaceCharacter +
-                                              GetObjectName(objLoopImprovement, GlobalOptions.Language));
-                        }
-                    }
-
-                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.CultureInfo) + ')');
+                    FormatImprovementModifiers(objToolTip,
+                        new HashSet<Improvement.ImprovementType>(new[] {Improvement.ImprovementType.SpellResistance}),
+                        strSpaceCharacter, intModifiers);
                 }
 
                 return objToolTip.ToString();
@@ -10195,28 +10166,9 @@ if (!Utils.IsUnitTest){
 
                 if(intModifiers != 0)
                 {
-                    objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                      LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language));
-                    bool blnFirstModifier = true;
-                    foreach(Improvement objLoopImprovement in Improvements)
-                    {
-                        if(objLoopImprovement.ImproveType == Improvement.ImprovementType.SpellResistance &&
-                            objLoopImprovement.Enabled)
-                        {
-                            if(blnFirstModifier)
-                            {
-                                blnFirstModifier = false;
-                                objToolTip.Append(LanguageManager.GetString("String_Colon"));
-                            }
-                            else
-                                objToolTip.Append(',');
-
-                            objToolTip.Append(strSpaceCharacter +
-                                              GetObjectName(objLoopImprovement, GlobalOptions.Language));
-                        }
-                    }
-
-                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.CultureInfo) + ')');
+                    FormatImprovementModifiers(objToolTip,
+                        new HashSet<Improvement.ImprovementType>(new[] { Improvement.ImprovementType.SpellResistance, Improvement.ImprovementType.DirectPhysicalSpellResist }),
+                        strSpaceCharacter, intModifiers);
                 }
 
                 return objToolTip.ToString();
@@ -10255,29 +10207,12 @@ if (!Utils.IsUnitTest){
 
                 if(intModifiers != 0)
                 {
-                    objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                      LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language));
-                    bool blnFirstModifier = true;
-                    foreach(Improvement objLoopImprovement in Improvements)
-                    {
-                        if((objLoopImprovement.ImproveType == Improvement.ImprovementType.DetectionSpellResist ||
-                             objLoopImprovement.ImproveType == Improvement.ImprovementType.SpellResistance) &&
-                            objLoopImprovement.Enabled)
+                    FormatImprovementModifiers(objToolTip,
+                        new HashSet<Improvement.ImprovementType>(new[]
                         {
-                            if(blnFirstModifier)
-                            {
-                                blnFirstModifier = false;
-                                objToolTip.Append(LanguageManager.GetString("String_Colon"));
-                            }
-                            else
-                                objToolTip.Append(',');
-
-                            objToolTip.Append(strSpaceCharacter +
-                                              GetObjectName(objLoopImprovement, GlobalOptions.Language));
-                        }
-                    }
-
-                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.CultureInfo) + ')');
+                            Improvement.ImprovementType.SpellResistance,
+                            Improvement.ImprovementType.DetectionSpellResist
+                        }), strSpaceCharacter, intModifiers);
                 }
 
                 return objToolTip.ToString();
@@ -10313,28 +10248,12 @@ if (!Utils.IsUnitTest){
 
                 if(intModifiers != 0)
                 {
-                    objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                      LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language));
-                    bool blnFirstModifier = true;
-                    foreach(Improvement objLoopImprovement in Improvements)
-                    {
-                        if(objLoopImprovement.ImproveType == Improvement.ImprovementType.SpellResistance &&
-                            objLoopImprovement.Enabled)
+                    FormatImprovementModifiers(objToolTip,
+                        new HashSet<Improvement.ImprovementType>(new[]
                         {
-                            if(blnFirstModifier)
-                            {
-                                blnFirstModifier = false;
-                                objToolTip.Append(LanguageManager.GetString("String_Colon"));
-                            }
-                            else
-                                objToolTip.Append(',');
-
-                            objToolTip.Append(strSpaceCharacter +
-                                              GetObjectName(objLoopImprovement, GlobalOptions.Language));
-                        }
-                    }
-
-                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.CultureInfo) + ')');
+                            Improvement.ImprovementType.SpellResistance,
+                            Improvement.ImprovementType.DecreaseBODResist
+                        }), strSpaceCharacter, intModifiers);
                 }
 
                 return objToolTip.ToString();
@@ -10370,28 +10289,12 @@ if (!Utils.IsUnitTest){
 
                 if(intModifiers != 0)
                 {
-                    objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                      LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language));
-                    bool blnFirstModifier = true;
-                    foreach(Improvement objLoopImprovement in Improvements)
-                    {
-                        if(objLoopImprovement.ImproveType == Improvement.ImprovementType.SpellResistance &&
-                            objLoopImprovement.Enabled)
+                    FormatImprovementModifiers(objToolTip,
+                        new HashSet<Improvement.ImprovementType>(new[]
                         {
-                            if(blnFirstModifier)
-                            {
-                                blnFirstModifier = false;
-                                objToolTip.Append(LanguageManager.GetString("String_Colon"));
-                            }
-                            else
-                                objToolTip.Append(',');
-
-                            objToolTip.Append(strSpaceCharacter +
-                                              GetObjectName(objLoopImprovement, GlobalOptions.Language));
-                        }
-                    }
-
-                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.CultureInfo) + ')');
+                            Improvement.ImprovementType.SpellResistance,
+                            Improvement.ImprovementType.DecreaseAGIResist
+                        }), strSpaceCharacter, intModifiers);
                 }
 
                 return objToolTip.ToString();
@@ -10427,28 +10330,12 @@ if (!Utils.IsUnitTest){
 
                 if(intModifiers != 0)
                 {
-                    objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                      LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language));
-                    bool blnFirstModifier = true;
-                    foreach(Improvement objLoopImprovement in Improvements)
-                    {
-                        if(objLoopImprovement.ImproveType == Improvement.ImprovementType.SpellResistance &&
-                            objLoopImprovement.Enabled)
+                    FormatImprovementModifiers(objToolTip,
+                        new HashSet<Improvement.ImprovementType>(new[]
                         {
-                            if(blnFirstModifier)
-                            {
-                                blnFirstModifier = false;
-                                objToolTip.Append(LanguageManager.GetString("String_Colon"));
-                            }
-                            else
-                                objToolTip.Append(',');
-
-                            objToolTip.Append(strSpaceCharacter +
-                                              GetObjectName(objLoopImprovement, GlobalOptions.Language));
-                        }
-                    }
-
-                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.CultureInfo) + ')');
+                            Improvement.ImprovementType.SpellResistance,
+                            Improvement.ImprovementType.DecreaseREAResist
+                        }), strSpaceCharacter, intModifiers);
                 }
 
                 return objToolTip.ToString();
@@ -10484,28 +10371,11 @@ if (!Utils.IsUnitTest){
 
                 if(intModifiers != 0)
                 {
-                    objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                      LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language));
-                    bool blnFirstModifier = true;
-                    foreach(Improvement objLoopImprovement in Improvements)
-                    {
-                        if(objLoopImprovement.ImproveType == Improvement.ImprovementType.SpellResistance &&
-                            objLoopImprovement.Enabled)
+                    FormatImprovementModifiers(objToolTip,
+                        new HashSet<Improvement.ImprovementType>(new[]
                         {
-                            if(blnFirstModifier)
-                            {
-                                blnFirstModifier = false;
-                                objToolTip.Append(LanguageManager.GetString("String_Colon"));
-                            }
-                            else
-                                objToolTip.Append(',');
-
-                            objToolTip.Append(strSpaceCharacter +
-                                              GetObjectName(objLoopImprovement, GlobalOptions.Language));
-                        }
-                    }
-
-                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.CultureInfo) + ')');
+                            Improvement.ImprovementType.SpellResistance
+                        }), strSpaceCharacter, intModifiers);
                 }
 
                 return objToolTip.ToString();
@@ -10541,28 +10411,12 @@ if (!Utils.IsUnitTest){
 
                 if(intModifiers != 0)
                 {
-                    objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                      LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language));
-                    bool blnFirstModifier = true;
-                    foreach(Improvement objLoopImprovement in Improvements)
-                    {
-                        if(objLoopImprovement.ImproveType == Improvement.ImprovementType.SpellResistance &&
-                            objLoopImprovement.Enabled)
+                    FormatImprovementModifiers(objToolTip,
+                        new HashSet<Improvement.ImprovementType>(new[]
                         {
-                            if(blnFirstModifier)
-                            {
-                                blnFirstModifier = false;
-                                objToolTip.Append(LanguageManager.GetString("String_Colon"));
-                            }
-                            else
-                                objToolTip.Append(',');
-
-                            objToolTip.Append(strSpaceCharacter +
-                                              GetObjectName(objLoopImprovement, GlobalOptions.Language));
-                        }
-                    }
-
-                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.CultureInfo) + ')');
+                            Improvement.ImprovementType.SpellResistance,
+                            Improvement.ImprovementType.DecreaseCHAResist
+                        }), strSpaceCharacter, intModifiers);
                 }
 
                 return objToolTip.ToString();
@@ -10598,28 +10452,12 @@ if (!Utils.IsUnitTest){
 
                 if(intModifiers != 0)
                 {
-                    objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                      LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language));
-                    bool blnFirstModifier = true;
-                    foreach(Improvement objLoopImprovement in Improvements)
-                    {
-                        if(objLoopImprovement.ImproveType == Improvement.ImprovementType.SpellResistance &&
-                            objLoopImprovement.Enabled)
+                    FormatImprovementModifiers(objToolTip,
+                        new HashSet<Improvement.ImprovementType>(new[]
                         {
-                            if(blnFirstModifier)
-                            {
-                                blnFirstModifier = false;
-                                objToolTip.Append(LanguageManager.GetString("String_Colon"));
-                            }
-                            else
-                                objToolTip.Append(',');
-
-                            objToolTip.Append(strSpaceCharacter +
-                                              GetObjectName(objLoopImprovement, GlobalOptions.Language));
-                        }
-                    }
-
-                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.CultureInfo) + ')');
+                            Improvement.ImprovementType.SpellResistance,
+                            Improvement.ImprovementType.DecreaseINTResist
+                        }), strSpaceCharacter, intModifiers);
                 }
 
                 return objToolTip.ToString();
@@ -10655,28 +10493,12 @@ if (!Utils.IsUnitTest){
 
                 if(intModifiers != 0)
                 {
-                    objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                      LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language));
-                    bool blnFirstModifier = true;
-                    foreach(Improvement objLoopImprovement in Improvements)
-                    {
-                        if(objLoopImprovement.ImproveType == Improvement.ImprovementType.SpellResistance &&
-                            objLoopImprovement.Enabled)
+                    FormatImprovementModifiers(objToolTip,
+                        new HashSet<Improvement.ImprovementType>(new[]
                         {
-                            if(blnFirstModifier)
-                            {
-                                blnFirstModifier = false;
-                                objToolTip.Append(LanguageManager.GetString("String_Colon"));
-                            }
-                            else
-                                objToolTip.Append(',');
-
-                            objToolTip.Append(strSpaceCharacter +
-                                              GetObjectName(objLoopImprovement, GlobalOptions.Language));
-                        }
-                    }
-
-                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.CultureInfo) + ')');
+                            Improvement.ImprovementType.SpellResistance,
+                            Improvement.ImprovementType.DecreaseLOGResist
+                        }), strSpaceCharacter, intModifiers);
                 }
 
                 return objToolTip.ToString();
@@ -10712,28 +10534,12 @@ if (!Utils.IsUnitTest){
 
                 if(intModifiers != 0)
                 {
-                    objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                      LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language));
-                    bool blnFirstModifier = true;
-                    foreach(Improvement objLoopImprovement in Improvements)
-                    {
-                        if(objLoopImprovement.ImproveType == Improvement.ImprovementType.SpellResistance &&
-                            objLoopImprovement.Enabled)
+                    FormatImprovementModifiers(objToolTip,
+                        new HashSet<Improvement.ImprovementType>(new[]
                         {
-                            if(blnFirstModifier)
-                            {
-                                blnFirstModifier = false;
-                                objToolTip.Append(LanguageManager.GetString("String_Colon"));
-                            }
-                            else
-                                objToolTip.Append(',');
-
-                            objToolTip.Append(strSpaceCharacter +
-                                              GetObjectName(objLoopImprovement, GlobalOptions.Language));
-                        }
-                    }
-
-                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.CultureInfo) + ')');
+                            Improvement.ImprovementType.SpellResistance,
+                            Improvement.ImprovementType.DecreaseWILResist
+                        }), strSpaceCharacter, intModifiers);
                 }
 
                 return objToolTip.ToString();
@@ -10780,29 +10586,12 @@ if (!Utils.IsUnitTest){
 
                 if(intModifiers != 0)
                 {
-                    objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                      LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language));
-                    bool blnFirstModifier = true;
-                    foreach(Improvement objLoopImprovement in Improvements)
-                    {
-                        if((objLoopImprovement.ImproveType == Improvement.ImprovementType.ManaIllusionResist ||
-                             objLoopImprovement.ImproveType == Improvement.ImprovementType.SpellResistance) &&
-                            objLoopImprovement.Enabled)
+                    FormatImprovementModifiers(objToolTip,
+                        new HashSet<Improvement.ImprovementType>(new[]
                         {
-                            if(blnFirstModifier)
-                            {
-                                blnFirstModifier = false;
-                                objToolTip.Append(LanguageManager.GetString("String_Colon"));
-                            }
-                            else
-                                objToolTip.Append(',');
-
-                            objToolTip.Append(strSpaceCharacter +
-                                              GetObjectName(objLoopImprovement, GlobalOptions.Language));
-                        }
-                    }
-
-                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.CultureInfo) + ')');
+                            Improvement.ImprovementType.SpellResistance,
+                            Improvement.ImprovementType.ManaIllusionResist
+                        }), strSpaceCharacter, intModifiers);
                 }
 
                 return objToolTip.ToString();
@@ -10841,29 +10630,12 @@ if (!Utils.IsUnitTest){
 
                 if(intModifiers != 0)
                 {
-                    objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                      LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language));
-                    bool blnFirstModifier = true;
-                    foreach(Improvement objLoopImprovement in Improvements)
-                    {
-                        if((objLoopImprovement.ImproveType == Improvement.ImprovementType.PhysicalIllusionResist ||
-                             objLoopImprovement.ImproveType == Improvement.ImprovementType.SpellResistance) &&
-                            objLoopImprovement.Enabled)
+                    FormatImprovementModifiers(objToolTip,
+                        new HashSet<Improvement.ImprovementType>(new[]
                         {
-                            if(blnFirstModifier)
-                            {
-                                blnFirstModifier = false;
-                                objToolTip.Append(LanguageManager.GetString("String_Colon"));
-                            }
-                            else
-                                objToolTip.Append(',');
-
-                            objToolTip.Append(strSpaceCharacter +
-                                              GetObjectName(objLoopImprovement, GlobalOptions.Language));
-                        }
-                    }
-
-                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.CultureInfo) + ')');
+                            Improvement.ImprovementType.SpellResistance,
+                            Improvement.ImprovementType.PhysicalIllusionResist
+                        }), strSpaceCharacter, intModifiers);
                 }
 
                 return objToolTip.ToString();
@@ -10903,29 +10675,12 @@ if (!Utils.IsUnitTest){
 
                 if(intModifiers != 0)
                 {
-                    objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                      LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language));
-                    bool blnFirstModifier = true;
-                    foreach(Improvement objLoopImprovement in Improvements)
-                    {
-                        if((objLoopImprovement.ImproveType == Improvement.ImprovementType.MentalManipulationResist ||
-                             objLoopImprovement.ImproveType == Improvement.ImprovementType.SpellResistance) &&
-                            objLoopImprovement.Enabled)
+                    FormatImprovementModifiers(objToolTip,
+                        new HashSet<Improvement.ImprovementType>(new[]
                         {
-                            if(blnFirstModifier)
-                            {
-                                blnFirstModifier = false;
-                                objToolTip.Append(LanguageManager.GetString("String_Colon"));
-                            }
-                            else
-                                objToolTip.Append(',');
-
-                            objToolTip.Append(strSpaceCharacter +
-                                              GetObjectName(objLoopImprovement, GlobalOptions.Language));
-                        }
-                    }
-
-                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.CultureInfo) + ')');
+                            Improvement.ImprovementType.SpellResistance,
+                            Improvement.ImprovementType.MentalManipulationResist
+                        }), strSpaceCharacter, intModifiers);
                 }
 
                 return objToolTip.ToString();
@@ -10983,29 +10738,12 @@ if (!Utils.IsUnitTest){
 
                 if(intModifiers != 0)
                 {
-                    objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                      LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language));
-                    bool blnFirstModifier = true;
-                    foreach(Improvement objLoopImprovement in Improvements)
-                    {
-                        if((objLoopImprovement.ImproveType == Improvement.ImprovementType.PhysicalManipulationResist ||
-                             objLoopImprovement.ImproveType == Improvement.ImprovementType.SpellResistance) &&
-                            objLoopImprovement.Enabled)
+                    FormatImprovementModifiers(objToolTip,
+                        new HashSet<Improvement.ImprovementType>(new[]
                         {
-                            if(blnFirstModifier)
-                            {
-                                blnFirstModifier = false;
-                                objToolTip.Append(LanguageManager.GetString("String_Colon"));
-                            }
-                            else
-                                objToolTip.Append(',');
-
-                            objToolTip.Append(strSpaceCharacter +
-                                              GetObjectName(objLoopImprovement, GlobalOptions.Language));
-                        }
-                    }
-
-                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.CultureInfo) + ')');
+                            Improvement.ImprovementType.SpellResistance,
+                            Improvement.ImprovementType.PhysicalManipulationResist
+                        }), strSpaceCharacter, intModifiers);
                 }
 
                 return objToolTip.ToString();
@@ -14935,6 +14673,7 @@ if (!Utils.IsUnitTest){
             {
                 _intCachedNegativeQualities = int.MinValue;
                 _intCachedPositiveQualities = int.MinValue;
+                _intCachedPositiveQualitiesTotal = int.MinValue;
                 _intCachedMetagenicNegativeQualities = int.MinValue;
                 _intCachedMetagenicPositiveQualities = int.MinValue;
             }
@@ -16998,6 +16737,9 @@ if (!Utils.IsUnitTest){
 
         #region Karma Values
         private int _intCachedPositiveQualities = int.MinValue;
+        /// <summary>
+        /// Total value of positive qualities that count towards the maximum quality limit in create mode. 
+        /// </summary>
         public int PositiveQualityKarma
         {
             get
@@ -17029,9 +16771,57 @@ if (!Utils.IsUnitTest){
                 return _intCachedPositiveQualities;
             }
         }
+        private int _intCachedPositiveQualitiesTotal = int.MinValue;
+        /// <summary>
+        /// Total value of ALL positive qualities, including those that don't contribute to the quality limit during character creation . 
+        /// </summary>
+        public int PositiveQualityKarmaTotal
+        {
+            get
+            {
+                if (_intCachedPositiveQualitiesTotal == int.MinValue)
+                {
+                    _intCachedPositiveQualitiesTotal = Qualities
+                                                      .Where(objQuality => objQuality.Type == QualityType.Positive && objQuality.ContributeToBP)
+                                                      .Sum(objQuality => objQuality.BP) * Options.KarmaQuality;
+                    // Group contacts are counted as positive qualities
+                    _intCachedPositiveQualitiesTotal += Contacts
+                        .Where(x => x.EntityType == ContactType.Contact && x.IsGroup && !x.Free)
+                        .Sum(x => x.ContactPoints);
 
-        public string DisplayPositiveQualityKarma =>
-            $"{PositiveQualityKarma.ToString(GlobalOptions.CultureInfo)}/{GameplayOptionQualityLimit.ToString(GlobalOptions.CultureInfo)}{LanguageManager.GetString("String_Space")}{LanguageManager.GetString("String_Karma")}";
+                    // Deduct the amount for free Qualities.
+                    _intCachedPositiveQualitiesTotal -=
+                        ImprovementManager.ValueOf(this, Improvement.ImprovementType.FreePositiveQualities) * Options.KarmaQuality;
+
+                    // If the character is allowed to take as many Positive Qualities as they'd like but all costs in excess are doubled, add the excess to their point cost.
+                    if (Options.ExceedPositiveQualitiesCostDoubled)
+                    {
+                        int intPositiveQualityExcess = _intCachedPositiveQualitiesTotal - GameplayOptionQualityLimit;
+                        if (intPositiveQualityExcess > 0)
+                        {
+                            _intCachedPositiveQualitiesTotal += intPositiveQualityExcess;
+                        }
+                    }
+                }
+                return _intCachedPositiveQualitiesTotal;
+            }
+        }
+
+        public string DisplayPositiveQualityKarma
+        {
+            get
+            {
+                if (PositiveQualityKarma != PositiveQualityKarmaTotal)
+                {
+                    return $"{PositiveQualityKarma.ToString(GlobalOptions.CultureInfo)}/{GameplayOptionQualityLimit.ToString(GlobalOptions.CultureInfo)}" +
+                           $"{LanguageManager.GetString("String_Space")}({PositiveQualityKarmaTotal.ToString(GlobalOptions.CultureInfo)})" +
+                           $"{LanguageManager.GetString("String_Space")}{LanguageManager.GetString("String_Karma")}";
+                }
+                return
+                    $"{PositiveQualityKarma.ToString(GlobalOptions.CultureInfo)}/{GameplayOptionQualityLimit.ToString(GlobalOptions.CultureInfo)}" +
+                    $"{LanguageManager.GetString("String_Space")}{LanguageManager.GetString("String_Karma")}";
+            }
+        }
 
         private int _intCachedNegativeQualities = int.MinValue;
         public int NegativeQualityKarma

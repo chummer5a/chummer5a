@@ -233,6 +233,12 @@ namespace Chummer
                         txtAlias.DoDatabinding("Text", CharacterObject, nameof(Character.Alias));
                         txtPlayerName.DoDatabinding("Text", CharacterObject, nameof(Character.PlayerName));
 
+                        chtKarma.Visible = !GlobalOptions.HideCharts;
+                        chtNuyen.Visible = !GlobalOptions.HideCharts;
+                        //TODO: I'm lazy and can't be bothered fabbing up an instance wrapper for this. 
+                        //chtKarma.DoDatabinding("Visible", GlobalOptions, nameof(GlobalOptions.HideCharts));
+                        //chtNuyen.DoDatabinding("Visible", GlobalOptions, nameof(GlobalOptions.HideCharts));
+
                         chkInitiationGroup.DoDatabinding("Checked", CharacterObject, nameof(Character.GroupMember));
 
                         // If the character has a mugshot, decode it and put it in the PictureBox.
@@ -13819,6 +13825,7 @@ namespace Chummer
                         objWeapon.AllowMode(LanguageManager.GetString("String_ModeSemiAutomatic"));
                     cmsAmmoShortBurst.Enabled =
                         objWeapon.AllowMode(LanguageManager.GetString("String_ModeBurstFire")) ||
+                        objWeapon.AllowMode(LanguageManager.GetString("String_ModeSemiAutomatic")) ||
                         objWeapon.AllowMode(LanguageManager.GetString("String_ModeFullAutomatic"));
                     cmsAmmoLongBurst.Enabled =
                         objWeapon.AllowMode(LanguageManager.GetString("String_ModeBurstFire")) ||
@@ -13832,36 +13839,46 @@ namespace Chummer
                     if (objWeapon.WeaponType == "Melee" && objWeapon.Ammo != "0")
                         cmsAmmoSingleShot.Enabled = true;
 
-                    if (cmsAmmoSingleShot.Enabled)
-                        cmsAmmoSingleShot.Text = string.Format(LanguageManager.GetString("String_SingleShot")
-                            , (objWeapon.SingleShot).ToString(GlobalOptions.CultureInfo),
+                    cmsAmmoSingleShot.Text = cmsAmmoSingleShot.Enabled
+                        ? string.Format(LanguageManager.GetString("String_SingleShot")
+                            , objWeapon.SingleShot.ToString(GlobalOptions.CultureInfo),
                             objWeapon.SingleShot == 1
                                 ? LanguageManager.GetString("String_Bullet")
-                                : LanguageManager.GetString("String_Bullets"));
-                    if (cmsAmmoShortBurst.Enabled)
-                        cmsAmmoShortBurst.Text = string.Format(LanguageManager.GetString("String_ShortBurst")
-                            , (objWeapon.ShortBurst).ToString(GlobalOptions.CultureInfo),
+                                : LanguageManager.GetString("String_Bullets"))
+                        : LanguageManager.GetString("String_SingleShotNA");
+
+                    cmsAmmoShortBurst.Text = cmsAmmoShortBurst.Enabled
+                        ? string.Format(LanguageManager.GetString("String_ShortBurst")
+                            , objWeapon.ShortBurst.ToString(GlobalOptions.CultureInfo),
                             objWeapon.ShortBurst == 1
                                 ? LanguageManager.GetString("String_Bullet")
-                                : LanguageManager.GetString("String_Bullets"));
-                    if (cmsAmmoLongBurst.Enabled)
-                        cmsAmmoLongBurst.Text = string.Format(LanguageManager.GetString("String_LongBurst")
-                            , (objWeapon.LongBurst).ToString(GlobalOptions.CultureInfo),
+                                : LanguageManager.GetString("String_Bullets"))
+                        : LanguageManager.GetString("String_ShortBurstNA");
+
+                    cmsAmmoLongBurst.Text = cmsAmmoLongBurst.Enabled
+                        ? string.Format(LanguageManager.GetString("String_LongBurst")
+                            , objWeapon.LongBurst.ToString(GlobalOptions.CultureInfo),
                             objWeapon.LongBurst == 1
                                 ? LanguageManager.GetString("String_Bullet")
-                                : LanguageManager.GetString("String_Bullets"));
-                    if (cmsAmmoFullBurst.Enabled)
-                        cmsAmmoFullBurst.Text = string.Format(LanguageManager.GetString("String_FullBurst")
-                            , (objWeapon.FullBurst).ToString(GlobalOptions.CultureInfo),
+                                : LanguageManager.GetString("String_Bullets"))
+                        : LanguageManager.GetString("String_LongBurstNA");
+
+                    cmsAmmoFullBurst.Text = cmsAmmoFullBurst.Enabled
+                        ? string.Format(LanguageManager.GetString("String_FullBurst")
+                            , objWeapon.FullBurst.ToString(GlobalOptions.CultureInfo),
                             objWeapon.FullBurst == 1
                                 ? LanguageManager.GetString("String_Bullet")
-                                : LanguageManager.GetString("String_Bullets"));
-                    if (cmsAmmoSuppressiveFire.Enabled)
-                        cmsAmmoSuppressiveFire.Text = string.Format(LanguageManager.GetString("String_SuppressiveFire")
-                            , (objWeapon.Suppressive).ToString(GlobalOptions.CultureInfo),
+                                : LanguageManager.GetString("String_Bullets"))
+                        : LanguageManager.GetString("String_FullBurstNA");
+
+                    cmsAmmoSuppressiveFire.Text = cmsAmmoSuppressiveFire.Enabled
+                        ? string.Format(LanguageManager.GetString("String_SuppressiveFire")
+                            , objWeapon.Suppressive.ToString(GlobalOptions.CultureInfo),
                             objWeapon.Suppressive == 1
                                 ? LanguageManager.GetString("String_Bullet")
-                                : LanguageManager.GetString("String_Bullets"));
+                                : LanguageManager.GetString("String_Bullets"))
+                        : LanguageManager.GetString("String_SuppressiveFireNA");
+
 
                     List<ListItem> lstAmmo = new List<ListItem>();
                     int intCurrentSlot = objWeapon.ActiveAmmoSlot;

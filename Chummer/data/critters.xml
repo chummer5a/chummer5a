@@ -27895,15 +27895,19 @@
       <bonus>
         <enableattribute>
           <name>MAG</name>
-          <min>F</min>
-          <max>F</max>
-          <aug>F</aug>
-          <val>F</val>
         </enableattribute>
         <enabletab>
           <name>critter</name>
         </enabletab>
         <initiativepass>1</initiativepass>
+        <optionalpowers count="{MAG} div 3">
+          <optionalpower select="Air">Elemental Attack</optionalpower>
+          <optionalpower>Energy Aura</optionalpower>
+          <optionalpower>Fear</optionalpower>
+          <optionalpower>Guard</optionalpower>
+          <optionalpower>Noxious Breath</optionalpower>
+          <optionalpower>Psychokinesis</optionalpower>
+        </optionalpowers>
         <unlockskills>Magician</unlockskills>
       </bonus>
       <powers>
@@ -27917,14 +27921,6 @@
         <power>Sapience</power>
         <power>Search</power>
       </powers>
-      <optionalpowers>
-        <optionalpower select="Air">Elemental Attack</optionalpower>
-        <optionalpower>Energy Aura</optionalpower>
-        <optionalpower>Fear</optionalpower>
-        <optionalpower>Guard</optionalpower>
-        <optionalpower>Noxious Breath</optionalpower>
-        <optionalpower>Psychokinesis</optionalpower>
-      </optionalpowers>
       <skills>
         <skill rating="F">Assensing</skill>
         <skill rating="F">Astral Combat</skill>
@@ -27998,6 +27994,15 @@
           <name>critter</name>
         </enabletab>
         <initiativepass>1</initiativepass>
+        <optionalpowers count="{MAG} div 3">
+          <optionalpower>Concealment</optionalpower>
+          <optionalpower>Confusion</optionalpower>
+          <optionalpower>Guard</optionalpower>
+          <optionalpower select="DV ForceP, AP 0">Natural Weapon</optionalpower>
+          <optionalpower>Noxious Breath</optionalpower>
+          <optionalpower>Search</optionalpower>
+          <optionalpower>Venom</optionalpower>
+        </optionalpowers>
       </bonus>
       <powers>
         <power>Animal Control</power>
@@ -28008,15 +28013,6 @@
         <power>Movement</power>
         <power>Sapience</power>
       </powers>
-      <optionalpowers>
-        <optionalpower>Concealment</optionalpower>
-        <optionalpower>Confusion</optionalpower>
-        <optionalpower>Guard</optionalpower>
-        <optionalpower select="DV ForceP, AP 0">Natural Weapon</optionalpower>
-        <optionalpower>Noxious Breath</optionalpower>
-        <optionalpower>Search</optionalpower>
-        <optionalpower>Venom</optionalpower>
-      </optionalpowers>
       <skills>
         <skill rating="F">Assensing</skill>
         <skill rating="F">Astral Combat</skill>
@@ -28089,6 +28085,13 @@
           <name>critter</name>
         </enabletab>
         <initiativepass>1</initiativepass>
+        <optionalpowers count="{MAG} div 3">
+          <optionalpower>Concealment</optionalpower>
+          <optionalpower>Confusion</optionalpower>
+          <optionalpower>Engulf</optionalpower>
+          <optionalpower select="Earth">Elemental Attack</optionalpower>
+          <optionalpower>Fear</optionalpower>
+        </optionalpowers>
       </bonus>
       <powers>
         <power>Astral Form</power>
@@ -28099,13 +28102,6 @@
         <power>Sapience</power>
         <power>Search</power>
       </powers>
-      <optionalpowers>
-        <optionalpower>Concealment</optionalpower>
-        <optionalpower>Confusion</optionalpower>
-        <optionalpower>Engulf</optionalpower>
-        <optionalpower select="Earth">Elemental Attack</optionalpower>
-        <optionalpower>Fear</optionalpower>
-      </optionalpowers>
       <skills>
         <skill rating="F">Assensing</skill>
         <skill rating="F">Astral Combat</skill>
@@ -28179,6 +28175,12 @@
           <name>critter</name>
         </enabletab>
         <initiativepass>1</initiativepass>
+        <optionalpowers count="{MAG} div 3">
+          <optionalpower>Fear</optionalpower>
+          <optionalpower>Guard</optionalpower>
+          <optionalpower>Noxious Breath</optionalpower>
+          <optionalpower>Search</optionalpower>
+        </optionalpowers>
       </bonus>
       <powers>
         <power>Accident</power>
@@ -28191,12 +28193,6 @@
         <power>Sapience</power>
         <power select="Water, Severe">Allergy</power>
       </powers>
-      <optionalpowers>
-        <optionalpower>Fear</optionalpower>
-        <optionalpower>Guard</optionalpower>
-        <optionalpower>Noxious Breath</optionalpower>
-        <optionalpower>Search</optionalpower>
-      </optionalpowers>
       <skills>
         <skill rating="F">Assensing</skill>
         <skill rating="F">Astral Combat</skill>
@@ -28271,6 +28267,12 @@
           <name>critter</name>
         </enabletab>
         <initiativepass>1</initiativepass>
+        <optionalpowers count="{MAG} div 3">
+          <optionalpower>Fear</optionalpower>
+          <optionalpower>Innate Spell</optionalpower>
+          <optionalpower>Movement</optionalpower>
+          <optionalpower>Psychokinesis</optionalpower>
+        </optionalpowers>
       </bonus>
       <powers>
         <power>Accident</power>
@@ -28284,12 +28286,6 @@
         <power>Sapience</power>
         <power>Search</power>
       </powers>
-      <optionalpowers>
-        <optionalpower>Fear</optionalpower>
-        <optionalpower>Innate Spell</optionalpower>
-        <optionalpower>Movement</optionalpower>
-        <optionalpower>Psychokinesis</optionalpower>
-      </optionalpowers>
       <skills>
         <skill rating="F">Assensing</skill>
         <skill rating="F">Astral Combat</skill>
@@ -28363,6 +28359,14 @@
           <name>critter</name>
         </enabletab>
         <initiativepass>1</initiativepass>
+        <optionalpowers count="{MAG} div 3">
+          <optionalpower>Accident</optionalpower>
+          <optionalpower>Binding</optionalpower>
+          <optionalpower select="Water">Elemental Attack</optionalpower>
+          <optionalpower>Energy Aura</optionalpower>
+          <optionalpower>Guard</optionalpower>
+          <optionalpower select="Any">Weather Control</optionalpower>
+        </optionalpowers>
       </bonus>
       <powers>
         <power>Astral Form</power>
@@ -28375,14 +28379,6 @@
         <power>Search</power>
         <power select="Fire, Severe">Allergy</power>
       </powers>
-      <optionalpowers>
-        <optionalpower>Accident</optionalpower>
-        <optionalpower>Binding</optionalpower>
-        <optionalpower select="Water">Elemental Attack</optionalpower>
-        <optionalpower>Energy Aura</optionalpower>
-        <optionalpower>Guard</optionalpower>
-        <optionalpower select="Any">Weather Control</optionalpower>
-      </optionalpowers>
       <skills>
         <skill rating="F">Assensing</skill>
         <skill rating="F">Astral Combat</skill>
@@ -28528,6 +28524,14 @@
           <name>critter</name>
         </enabletab>
         <initiativepass>1</initiativepass>
+        <optionalpowers count="{MAG} div 3">
+          <optionalpower>Animal Control</optionalpower>
+          <optionalpower>Concealment</optionalpower>
+          <optionalpower>Elemental Attack</optionalpower>
+          <optionalpower select="DV ForceP, AP 0">Natural Weapon</optionalpower>
+          <optionalpower>Psychokinesis</optionalpower>
+          <optionalpower>Combat Skill</optionalpower>
+        </optionalpowers>
       </bonus>
       <powers>
         <power>Astral Form</power>
@@ -28538,14 +28542,6 @@
         <power>Movement</power>
         <power>Sapience</power>
       </powers>
-      <optionalpowers>
-        <optionalpower>Animal Control</optionalpower>
-        <optionalpower>Concealment</optionalpower>
-        <optionalpower>Elemental Attack</optionalpower>
-        <optionalpower select="DV ForceP, AP 0">Natural Weapon</optionalpower>
-        <optionalpower>Psychokinesis</optionalpower>
-        <optionalpower>Combat Skill</optionalpower>
-      </optionalpowers>
       <skills>
         <skill rating="F">Assensing</skill>
         <skill rating="F">Astral Combat</skill>
@@ -28620,6 +28616,15 @@
           <name>critter</name>
         </enabletab>
         <initiativepass>1</initiativepass>
+        <optionalpowers count="{MAG} div 3">
+          <optionalpower>Engulf</optionalpower>
+          <optionalpower select="Hearing">Enhanced Senses</optionalpower>
+          <optionalpower select="Low-Light Vision">Enhanced Senses</optionalpower>
+          <optionalpower select="Thermographic Vision">Enhanced Senses</optionalpower>
+          <optionalpower select="Smell">Enhanced Senses</optionalpower>
+          <optionalpower>Fear</optionalpower>
+          <optionalpower>Influence</optionalpower>
+        </optionalpowers>
       </bonus>
       <powers>
         <power>Astral Form</power>
@@ -28632,15 +28637,6 @@
         <power>Search</power>
         <power>Shadow Cloak</power>
       </powers>
-      <optionalpowers>
-        <optionalpower>Engulf</optionalpower>
-        <optionalpower select="Hearing">Enhanced Senses</optionalpower>
-        <optionalpower select="Low-Light Vision">Enhanced Senses</optionalpower>
-        <optionalpower select="Thermographic Vision">Enhanced Senses</optionalpower>
-        <optionalpower select="Smell">Enhanced Senses</optionalpower>
-        <optionalpower>Fear</optionalpower>
-        <optionalpower>Influence</optionalpower>
-      </optionalpowers>
       <skills>
         <skill rating="F">Arcana</skill>
         <skill rating="F">Assensing</skill>
@@ -28713,6 +28709,13 @@
           <name>critter</name>
         </enabletab>
         <initiativepass>1</initiativepass>
+        <optionalpowers count="{MAG} div 3">
+          <optionalpower>Accident</optionalpower>
+          <optionalpower>Confusion</optionalpower>
+          <optionalpower>Movement</optionalpower>
+          <optionalpower>Noxious Breath</optionalpower>
+          <optionalpower>Search</optionalpower>
+        </optionalpowers>
       </bonus>
       <powers>
         <power>Astral Form</power>
@@ -28725,13 +28728,6 @@
         <power>Sapience</power>
         <power>Silence</power>
       </powers>
-      <optionalpowers>
-        <optionalpower>Accident</optionalpower>
-        <optionalpower>Confusion</optionalpower>
-        <optionalpower>Movement</optionalpower>
-        <optionalpower>Noxious Breath</optionalpower>
-        <optionalpower>Search</optionalpower>
-      </optionalpowers>
       <skills>
         <skill rating="F">Assensing</skill>
         <skill rating="F">Astral Combat</skill>
@@ -28804,6 +28800,17 @@
           <name>critter</name>
         </enabletab>
         <initiativepass>1</initiativepass>
+        <optionalpowers count="{MAG} div 3">
+          <optionalpower>Concealment</optionalpower>
+          <optionalpower select="Hearing">Enhanced Senses</optionalpower>
+          <optionalpower select="Low-Light Vision">Enhanced Senses</optionalpower>
+          <optionalpower select="Thermographic Vision">Enhanced Senses</optionalpower>
+          <optionalpower select="Smell">Enhanced Senses</optionalpower>
+          <optionalpower>Influence</optionalpower>
+          <optionalpower>Psychokinesis</optionalpower>
+          <optionalpower>Technical Skill</optionalpower>
+          <optionalpower>Physical Skill</optionalpower>
+        </optionalpowers>
       </bonus>
       <powers>
         <power>Accident</power>
@@ -28814,17 +28821,6 @@
         <power>Sapience</power>
         <power>Search</power>
       </powers>
-      <optionalpowers>
-        <optionalpower>Concealment</optionalpower>
-        <optionalpower select="Hearing">Enhanced Senses</optionalpower>
-        <optionalpower select="Low-Light Vision">Enhanced Senses</optionalpower>
-        <optionalpower select="Thermographic Vision">Enhanced Senses</optionalpower>
-        <optionalpower select="Smell">Enhanced Senses</optionalpower>
-        <optionalpower>Influence</optionalpower>
-        <optionalpower>Psychokinesis</optionalpower>
-        <optionalpower>Technical Skill</optionalpower>
-        <optionalpower>Physical Skill</optionalpower>
-      </optionalpowers>
       <skills>
         <skill>Artisan</skill>
         <skill>Assensing</skill>
@@ -28898,6 +28894,14 @@
           <name>critter</name>
         </enabletab>
         <initiativepass>1</initiativepass>
+        <optionalpowers count="{MAG} div 3">
+          <optionalpower>Concealment</optionalpower>
+          <optionalpower>Confusion</optionalpower>
+          <optionalpower>Guard</optionalpower>
+          <optionalpower>Movement</optionalpower>
+          <optionalpower select="DV (Force)P, AP 0">Natural Weapon</optionalpower>
+          <optionalpower>Noxious Breath</optionalpower>
+        </optionalpowers>
       </bonus>
       <powers>
         <power>Astral Form</power>
@@ -28907,14 +28911,6 @@
         <power>Materialization</power>
         <power>Essence Loss</power>
       </powers>
-      <optionalpowers>
-        <optionalpower>Concealment</optionalpower>
-        <optionalpower>Confusion</optionalpower>
-        <optionalpower>Guard</optionalpower>
-        <optionalpower>Movement</optionalpower>
-        <optionalpower select="DV (Force)P, AP 0">Natural Weapon</optionalpower>
-        <optionalpower>Noxious Breath</optionalpower>
-      </optionalpowers>
       <skills>
         <skill rating="F">Assensing</skill>
         <skill rating="F">Astral Combat</skill>
@@ -28988,6 +28984,15 @@
           <name>critter</name>
         </enabletab>
         <initiativepass>1</initiativepass>
+        <optionalpowers count="{MAG} div 3">
+          <optionalpower>Concealment</optionalpower>
+          <optionalpower>Corrosive Spit</optionalpower>
+          <optionalpower>Guard</optionalpower>
+          <optionalpower>Fear</optionalpower>
+          <optionalpower>Mimicry</optionalpower>
+          <optionalpower>Search</optionalpower>
+          <optionalpower>Venom</optionalpower>
+        </optionalpowers>
       </bonus>
       <powers>
         <power select="Toxic Critters">Animal Control</power>
@@ -29002,15 +29007,6 @@
         <power>Pestilence</power>
         <power>Sapience</power>
       </powers>
-      <optionalpowers>
-        <optionalpower>Concealment</optionalpower>
-        <optionalpower>Corrosive Spit</optionalpower>
-        <optionalpower>Guard</optionalpower>
-        <optionalpower>Fear</optionalpower>
-        <optionalpower>Mimicry</optionalpower>
-        <optionalpower>Search</optionalpower>
-        <optionalpower>Venom</optionalpower>
-      </optionalpowers>
       <skills>
         <skill rating="F">Assensing</skill>
         <skill rating="F">Astral Combat</skill>
@@ -29086,6 +29082,13 @@
           <name>critter</name>
         </enabletab>
         <initiativepass>1</initiativepass>
+        <optionalpowers count="{MAG} div 3">
+          <optionalpower>Accident</optionalpower>
+          <optionalpower>Concealment</optionalpower>
+          <optionalpower>Confusion</optionalpower>
+          <optionalpower>Fear</optionalpower>
+          <optionalpower>Guard</optionalpower>
+        </optionalpowers>
       </bonus>
       <powers>
         <power>Astral Form</power>
@@ -29098,13 +29101,6 @@
         <power>Search</power>
         <power select="Clean Earth, Severe">Allergy</power>
       </powers>
-      <optionalpowers>
-        <optionalpower>Accident</optionalpower>
-        <optionalpower>Concealment</optionalpower>
-        <optionalpower>Confusion</optionalpower>
-        <optionalpower>Fear</optionalpower>
-        <optionalpower>Guard</optionalpower>
-      </optionalpowers>
       <skills>
         <skill rating="F">Assensing</skill>
         <skill rating="F">Astral Combat</skill>
@@ -45196,6 +45192,145 @@
       </skills>
       <source>HS</source>
       <page>177</page>
+    </metatype>
+    <!-- End Region -->
+    <!-- Region Kill Code Sprites -->
+    <metatype>
+      <id>0b1c6eeb-682f-4f71-bc61-81b5c9c47241</id>
+      <name>Companion Sprite</name>
+      <category>Sprites</category>
+      <forcecreature />
+      <karma>0</karma>
+      <bodmin>0</bodmin>
+      <bodmax>0</bodmax>
+      <bodaug>0</bodaug>
+      <agimin>0</agimin>
+      <agimax>0</agimax>
+      <agiaug>0</agiaug>
+      <reamin>0</reamin>
+      <reamax>0</reamax>
+      <reaaug>0</reaaug>
+      <strmin>0</strmin>
+      <strmax>0</strmax>
+      <straug>0</straug>
+      <chamin>F-1</chamin>
+      <chamax>F-1</chamax>
+      <chaaug>F-1</chaaug>
+      <intmin>F+1</intmin>
+      <intmax>F+1</intmax>
+      <intaug>F+1</intaug>
+      <logmin>F</logmin>
+      <logmax>F</logmax>
+      <logaug>F</logaug>
+      <wilmin>F+4</wilmin>
+      <wilmax>F+4</wilmax>
+      <wilaug>F+4</wilaug>
+      <inimin>(F*2)</inimin>
+      <inimax>(F*2)</inimax>
+      <iniaug>(F*2)</iniaug>
+      <edgmin>0</edgmin>
+      <edgmax>0</edgmax>
+      <edgaug>0</edgaug>
+      <magmin>0</magmin>
+      <magmax>0</magmax>
+      <magaug>0</magaug>
+      <resmin>F</resmin>
+      <resmax>F</resmax>
+      <resaug>F</resaug>
+      <depmin>0</depmin>
+      <depmax>0</depmax>
+      <depaug>0</depaug>
+      <essmin>0</essmin>
+      <essmax>0</essmax>
+      <essaug>0</essaug>
+      <movement>Special</movement>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+          <name>technomancer</name>
+        </enabletab>
+      </bonus>
+      <powers>
+        <power>Bodyguard</power>
+        <power>Shield</power>
+      </powers>
+      <skills>
+        <skill rating="F">Computer</skill>
+        <skill rating="F">Electronic Warfare</skill>
+      </skills>
+      <source>KC</source>
+      <page>100</page>
+    </metatype>
+    <metatype>
+      <id>8e85cfeb-8058-404f-928c-7f8dc09a8840</id>
+      <name>Generalist Sprite</name>
+      <category>Sprites</category>
+      <forcecreature />
+      <karma>0</karma>
+      <bodmin>0</bodmin>
+      <bodmax>0</bodmax>
+      <bodaug>0</bodaug>
+      <agimin>0</agimin>
+      <agimax>0</agimax>
+      <agiaug>0</agiaug>
+      <reamin>0</reamin>
+      <reamax>0</reamax>
+      <reaaug>0</reaaug>
+      <strmin>0</strmin>
+      <strmax>0</strmax>
+      <straug>0</straug>
+      <chamin>F+1</chamin>
+      <chamax>F+1</chamax>
+      <chaaug>F+1</chaaug>
+      <intmin>F+1</intmin>
+      <intmax>F+1</intmax>
+      <intaug>F+1</intaug>
+      <logmin>F+1</logmin>
+      <logmax>F+1</logmax>
+      <logaug>F+1</logaug>
+      <wilmin>F+1</wilmin>
+      <wilmax>F+1</wilmax>
+      <wilaug>F+1</wilaug>
+      <inimin>(F*2)</inimin>
+      <inimax>(F*2)</inimax>
+      <iniaug>(F*2)</iniaug>
+      <edgmin>0</edgmin>
+      <edgmax>0</edgmax>
+      <edgaug>0</edgaug>
+      <magmin>0</magmin>
+      <magmax>0</magmax>
+      <magaug>0</magaug>
+      <resmin>F</resmin>
+      <resmax>F</resmax>
+      <resaug>F</resaug>
+      <depmin>0</depmin>
+      <depmax>0</depmax>
+      <depaug>0</depaug>
+      <essmin>0</essmin>
+      <essmax>0</essmax>
+      <essaug>0</essaug>
+      <movement>Special</movement>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+          <name>technomancer</name>
+        </enabletab>
+        <optionalpowers count="2">
+          <optionalpower>Active Analytics</optionalpower>
+          <optionalpower>Borrowed IP</optionalpower>
+          <optionalpower>Decompiling Resistance</optionalpower>
+          <optionalpower>Enhance</optionalpower>
+          <optionalpower>Navi</optionalpower>
+          <optionalpower>Resilient Code</optionalpower>
+          <optionalpower>Resonance Spooling</optionalpower>
+        </optionalpowers>
+      </bonus>
+      <skills>
+        <skill rating="F">Computer</skill>
+        <skill rating="F">Electronic Warfare</skill>
+      </skills>
+      <source>KC</source>
+      <page>100</page>
     </metatype>
     <!-- End Region -->
   </metatypes>

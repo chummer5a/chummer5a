@@ -9618,6 +9618,10 @@
 			<key>Menu_ShareChummer</key>
 			<text>Chummer weiterempfehlen</text>
 		</string>
+        <string>
+          <key>Menu_ShowMySINners</key>
+          <text>Alle Daten anzeigen</text>
+        </string>
 		<string>
 			<key>String_ApplicationInsights_OnlyLocal</key>
 			<text>nur lokal loggen</text>
@@ -9641,14 +9645,6 @@
 		<string>
 			<key>String_ApplicationInsights_NotSet</key>
 			<text>lasse Chummer entscheiden</text>
-		</string>
-		<string>
-			<key>Menu_Tools_SINners</key>
-			<text>SINner Gruppen</text>
-		</string>
-		<string>
-			<key>Menu_Tools_SINnersArchetypes</key>
-			<text>Archetypen</text>
 		</string>
 		<string>
 			<key>Label_SelectAdvancedLifestyle_Base</key>
@@ -9689,6 +9685,38 @@
         <string>
           <key>String_SINners_HowToGroupParentDescription</key>
           <text>Eine (fertig) erstellte Gruppe kann per Drag'n'Drop einer andere Gruppe (als Sub-Gruppe) zugeordnet werden.</text>
+        </string>
+        <string>
+          <key>String_SINners_EnterGroupPassword</key>
+          <text>Diese Gruppe ist passwortgeschützt. Bitte gib das Passwort ein:</text>
+        </string>
+        <string>
+          <key>String_SINners_EnterGroupPasswordTitle</key>
+          <text>Passwortabfrage</text>
+        </string>
+        <string>
+          <key>Checkbox_Options_HideCharts</key>
+          <text>Tabellen verbergen, die Probleme mit Wine verursachen</text>
+        </string>
+        <string>
+          <key>String_SuppressiveFireNA</key>
+          <text>Sperrfeuer (N/A)</text>
+        </string>
+        <string>
+          <key>String_FullBurstNA</key>
+          <text>Salvenmodus (N/A)</text>
+        </string>
+        <string>
+          <key>String_LongBurstNA</key>
+          <text>Lange Salve (N/A)</text>
+        </string>
+        <string>
+          <key>String_ShortBurstNA</key>
+          <text>Kurze Salve (N/A)</text>
+        </string>
+        <string>
+          <key>String_SingleShotNA</key>
+          <text>Einzelschussmodus (N/A)</text>
         </string>
 	</strings>
 </chummer>

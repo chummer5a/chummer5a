@@ -37,7 +37,7 @@ namespace Chummer.Backend.Equipment
     /// </summary>
     [Chummer.HubClassTag("SourceID", true, "Name", null)]
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Vehicle : IHasInternalId, IHasName, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName, IHasMatrixConditionMonitor, IHasPhysicalConditionMonitor, IHasLocation, IHasSource, ICanSort, IHasGear, IHasStolenProperty
+    public class Vehicle : IHasInternalId, IHasName, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName, IHasMatrixConditionMonitor, IHasPhysicalConditionMonitor, IHasLocation, IHasSource, ICanSort, IHasGear, IHasStolenProperty, ICanPaste
     {
         private Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private Guid _guiID;
@@ -284,6 +284,51 @@ namespace Chummer.Backend.Equipment
                                     objMod.Create(objXmlMod, intRating, this, 0, strForcedValue);
                                     objMod.IncludedInVehicle = true;
 
+                                    _lstVehicleMods.Add(objMod);
+                                }
+                            }
+
+                    using (XmlNodeList objXmlModList = xmlMods.SelectNodes("mod"))
+                        if (objXmlModList != null)
+                            foreach (XmlNode objXmlVehicleMod in objXmlModList)
+                            {
+                                XmlNode objXmlMod = objXmlDocument.SelectSingleNode("/chummer/mods/mod[name = \"" + objXmlVehicleMod["name"].InnerText + "\"]");
+                                if (objXmlMod != null)
+                                {
+                                    VehicleMod objMod = new VehicleMod(_objCharacter);
+                                    string strForcedValue = objXmlVehicleMod["name"].Attributes?["select"]?.InnerText ?? string.Empty;
+                                    int.TryParse(objXmlVehicleMod["rating"]?.InnerText, out int intRating);
+
+                                    objMod.Extra = strForcedValue;
+                                    objMod.Create(objXmlMod, intRating, this, 0, strForcedValue);
+                                    objMod.IncludedInVehicle = true;
+
+                                    XmlNode xmlSubsystemsNode = objXmlVehicleMod["subsystems"];
+                                    if (xmlSubsystemsNode != null)
+                                    {
+                                        // Load Cyberware subsystems first
+                                        using (XmlNodeList objXmlSubSystemNameList = xmlSubsystemsNode.SelectNodes("cyberware"))
+                                            if (objXmlSubSystemNameList?.Count > 0)
+                                            {
+                                                XmlDocument objXmlWareDocument = XmlManager.Load("cyberware.xml");
+                                                foreach (XmlNode objXmlSubsystemNode in objXmlSubSystemNameList)
+                                                {
+                                                    XmlNode objXmlSubsystem = objXmlWareDocument.SelectSingleNode(
+                                                        $"/chummer/cyberwares/cyberware[name = \"{objXmlSubsystemNode["name"]?.InnerText}\"]");
+
+                                                    if (objXmlSubsystem == null) continue;
+                                                    Cyberware objSubsystem = new Cyberware(_objCharacter);
+                                                    int intSubSystemRating = Convert.ToInt32(objXmlSubsystemNode["rating"]?.InnerText);
+                                                    objSubsystem.Create(objXmlSubsystem, new Grade(Improvement.ImprovementSource.Cyberware), Improvement.ImprovementSource.Cyberware,
+                                                        intSubSystemRating, _lstWeapons, _objCharacter.Vehicles, false, true,
+                                                        objXmlSubsystemNode["forced"]?.InnerText ?? string.Empty);
+                                                    objSubsystem.ParentID = InternalId;
+                                                    objSubsystem.Cost = "0";
+
+                                                    objMod.Cyberware.Add(objSubsystem);
+                                                }
+                                            }
+                                    }
                                     _lstVehicleMods.Add(objMod);
                                 }
                             }
@@ -3306,6 +3351,32 @@ namespace Chummer.Backend.Equipment
             if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
                 _objCachedSourceDetail = null;
             SourceDetail.SetControl(sourceControl);
+        }
+
+        public bool AllowPasteXml
+        {
+            get
+            {
+                switch (GlobalOptions.ClipboardContentType)
+                {
+                    case ClipboardContentType.Gear:
+                    {
+                        var xmlAddonCategoryList = GetNode()?.SelectNodes("addoncategory");
+                        if (xmlAddonCategoryList?.Count > 0)
+                            return xmlAddonCategoryList.Cast<XmlNode>().Any(xmlCategory =>
+                                xmlCategory.InnerText == GlobalOptions.Clipboard.SelectSingleNode("category").Value);
+
+                        return false;
+                    }
+                    default:
+                        return false;
+                }
+            }
+        }
+
+        public bool AllowPasteObject(object input)
+        {
+            throw new NotImplementedException();
         }
     }
 }

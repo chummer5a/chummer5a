@@ -10309,6 +10309,240 @@
       </bonus>
     </gear>
     <gear>
+      <id>2086797b-7297-4612-bf42-f85494992127</id>
+      <name>Tainted Reagents</name>
+      <category>Magical Supplies</category>
+      <rating>0</rating>
+      <source>FA</source>
+      <page>187</page>
+      <avail>0</avail>
+      <cost>20</cost>
+      <bonus>
+        <selecttradition />
+      </bonus>
+    </gear>
+    <gear>
+      <id>e61b191f-1cc8-4d6f-a4ab-8baed2591e88</id>
+      <name>Tainted Reagents, Refined</name>
+      <category>Magical Supplies</category>
+      <rating>0</rating>
+      <source>FA</source>
+      <page>187</page>
+      <avail>4</avail>
+      <cost>100</cost>
+      <bonus>
+        <selecttradition />
+      </bonus>
+    </gear>
+    <gear>
+      <id>a591c5c6-7916-4e3c-8d44-a2180be268dc</id>
+      <name>Tainted Reagents, Radical</name>
+      <category>Magical Supplies</category>
+      <rating>0</rating>
+      <source>FA</source>
+      <page>187</page>
+      <avail>8</avail>
+      <cost>500</cost>
+      <bonus>
+        <selecttradition />
+      </bonus>
+    </gear>
+    <gear>
+      <id>912ede4d-32c4-48ce-bcf2-88d0da386997</id>
+      <name>Inferior Reagents</name>
+      <category>Magical Supplies</category>
+      <rating>0</rating>
+      <source>FA</source>
+      <page>187</page>
+      <avail>1</avail>
+      <cost>30</cost>
+      <bonus>
+        <selecttradition />
+      </bonus>
+    </gear>
+    <gear>
+      <id>b0e7e907-c9c1-4648-9ff5-9962371eee05</id>
+      <name>Inferior Reagents, Refined</name>
+      <category>Magical Supplies</category>
+      <rating>0</rating>
+      <source>FA</source>
+      <page>187</page>
+      <avail>5</avail>
+      <cost>150</cost>
+      <bonus>
+        <selecttradition />
+      </bonus>
+    </gear>
+    <gear>
+      <id>6ea20805-fd4c-49ad-a4f7-43422289ca73</id>
+      <name>Inferior Reagents, Radical</name>
+      <category>Magical Supplies</category>
+      <rating>0</rating>
+      <source>FA</source>
+      <page>187</page>
+      <avail>9</avail>
+      <cost>750</cost>
+      <bonus>
+        <selecttradition />
+      </bonus>
+    </gear>
+    <gear>
+      <id>132d7f2a-ad01-4bfe-ae10-1c27ea707982</id>
+      <name>Subpar Reagents</name>
+      <category>Magical Supplies</category>
+      <rating>0</rating>
+      <source>FA</source>
+      <page>187</page>
+      <avail>4</avail>
+      <cost>40</cost>
+      <bonus>
+        <selecttradition />
+      </bonus>
+    </gear>
+    <gear>
+      <id>9d7c9076-bd88-4756-af44-26d2cbafb429</id>
+      <name>Subpar Reagents, Refined</name>
+      <category>Magical Supplies</category>
+      <rating>0</rating>
+      <source>FA</source>
+      <page>187</page>
+      <avail>8</avail>
+      <cost>200</cost>
+      <bonus>
+        <selecttradition />
+      </bonus>
+    </gear>
+    <gear>
+      <id>9276a770-b1b8-4f47-8341-6849c8bb305b</id>
+      <name>Subpar Reagents, Radical</name>
+      <category>Magical Supplies</category>
+      <rating>0</rating>
+      <source>FA</source>
+      <page>187</page>
+      <avail>12</avail>
+      <cost>1000</cost>
+      <bonus>
+        <selecttradition />
+      </bonus>
+    </gear>
+    <gear>
+      <id>4f2699a7-5980-41cb-aafb-c4285060179e</id>
+      <name>Baseline Reagents</name>
+      <category>Magical Supplies</category>
+      <rating>0</rating>
+      <source>FA</source>
+      <page>187</page>
+      <avail>6E</avail>
+      <cost>50</cost>
+      <bonus>
+        <selecttradition />
+      </bonus>
+    </gear>
+    <gear>
+      <id>f45f76ea-6c13-44c0-a828-2047f242e5eb</id>
+      <name>Baseline Reagents, Refined</name>
+      <category>Magical Supplies</category>
+      <rating>0</rating>
+      <source>FA</source>
+      <page>187</page>
+      <avail>10R</avail>
+      <cost>250</cost>
+      <bonus>
+        <selecttradition />
+      </bonus>
+    </gear>
+    <gear>
+      <id>1aadeffa-f917-430e-8436-48708c0e6504</id>
+      <name>Baseline Reagents, Radical</name>
+      <category>Magical Supplies</category>
+      <rating>0</rating>
+      <source>FA</source>
+      <page>187</page>
+      <avail>14R</avail>
+      <cost>1250</cost>
+      <bonus>
+        <selecttradition />
+      </bonus>
+    </gear>
+    <gear>
+      <id>e4d6fcbd-a319-4636-bd84-9caf06643dc6</id>
+      <name>Superior Reagents</name>
+      <category>Magical Supplies</category>
+      <rating>0</rating>
+      <source>FA</source>
+      <page>187</page>
+      <avail>60</avail>
+      <cost>14R</cost>
+      <bonus>
+        <selecttradition />
+      </bonus>
+    </gear>
+    <gear>
+      <id>fbab4af1-6b81-4a57-9d8c-d74b5a05ee10</id>
+      <name>Superior Reagents, Refined</name>
+      <category>Magical Supplies</category>
+      <rating>0</rating>
+      <source>FA</source>
+      <page>187</page>
+      <avail>18E</avail>
+      <cost>300</cost>
+      <bonus>
+        <selecttradition />
+      </bonus>
+    </gear>
+    <gear>
+      <id>a6bc216b-a210-4201-a970-d4477867595c</id>
+      <name>Superior Reagents, Radical</name>
+      <category>Magical Supplies</category>
+      <rating>0</rating>
+      <source>FA</source>
+      <page>187</page>
+      <avail>22R</avail>
+      <cost>1500</cost>
+      <bonus>
+        <selecttradition />
+      </bonus>
+    </gear>
+    <gear>
+      <id>e6bc2ba8-c895-495e-88c7-d673ea2d4751</id>
+      <name>Prime Reagents</name>
+      <category>Magical Supplies</category>
+      <rating>0</rating>
+      <source>FA</source>
+      <page>187</page>
+      <avail>20R</avail>
+      <cost>70</cost>
+      <bonus>
+        <selecttradition />
+      </bonus>
+    </gear>
+    <gear>
+      <id>f90b26bb-1817-4672-b42e-49c2e0d0a0a2</id>
+      <name>Prime Reagents, Refined</name>
+      <category>Magical Supplies</category>
+      <rating>0</rating>
+      <source>FA</source>
+      <page>187</page>
+      <avail>24R</avail>
+      <cost>350</cost>
+      <bonus>
+        <selecttradition />
+      </bonus>
+    </gear>
+    <gear>
+      <id>c0ea9634-4cd0-4f8f-aba8-cf2ed1b73129</id>
+      <name>Prime Reagents, Radical</name>
+      <category>Magical Supplies</category>
+      <rating>0</rating>
+      <source>FA</source>
+      <page>187</page>
+      <avail>28R</avail>
+      <cost>1750</cost>
+      <bonus>
+        <selecttradition />
+      </bonus>
+    </gear>
+    <gear>
       <id>a1c4884b-b9b2-471e-99fd-6fb31a62ad52</id>
       <name>Orichalcum</name>
       <category>Magical Supplies</category>

@@ -3598,6 +3598,26 @@
       <key>String_SuppressiveFire</key>
       <text>Suppressive Fire ({0} {1})</text>
     </string>
+      <string>
+        <key>String_SingleShotNA</key>
+        <text>Single Shot (N/A)</text>
+      </string>
+      <string>
+        <key>String_ShortBurstNA</key>
+        <text>Short Burst (N/A)</text>
+      </string>
+      <string>
+        <key>String_LongBurstNA</key>
+        <text>Long Burst (N/A)</text>
+      </string>
+      <string>
+        <key>String_FullBurstNA</key>
+        <text>Full Burst (N/A)</text>
+      </string>
+      <string>
+        <key>String_SuppressiveFireNA</key>
+        <text>Suppressive Fire (N/A)</text>
+      </string>
     <string>
       <key>String_SelectVariableCost</key>
       <text>Select a Cost for {0}.</text>
@@ -5584,6 +5604,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
     <string>
       <key>Checkbox_Options_IncreasedImprovedAbilityModifier</key>
       <text>Improved Ability is capped by Learned Rating x 1.5 instead of 0.5</text>
+    </string>
+    <string>
+      <key>Checkbox_Options_HideCharts</key>
+      <text>Hide charts that cause issues with Wine</text>
     </string>
     <string>
       <key>String_SelectBP_LifeModuleSummary</key>
@@ -9797,6 +9821,11 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <key>Menu_ShareChummer</key>
       <text>Share Chummer</text>
     </string>
+    <string>
+      <key>Menu_ShowMySINners</key>
+      <text>Show all my data</text>
+    </string>
+      
     <!-- Region Rating Strings -->
       <string>
           <key>Label_RatingFormat</key>
@@ -9815,5 +9844,14 @@ Only one attribute may be at its Maximum value during character creation.</text>
         <key>String_SINners_HowToGroupParentDescription</key>
         <text>A group can be appointed as sub-group per drag'n'drop after its creation.</text>
       </string>
+      <string>
+        <key>String_SINners_EnterGroupPassword</key>
+        <text>This group is password protected. Please enter it's password:</text>
+      </string>
+      <string>
+        <key>String_SINners_EnterGroupPasswordTitle</key>
+        <text>Enter Password</text>
+      </string>
+      
   </strings>
 </chummer>

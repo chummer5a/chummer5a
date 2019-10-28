@@ -28,6 +28,7 @@ using Chummer.Backend.Attributes;
 using System.Text;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.Xml.XPath;
 using NLog;
 
 namespace Chummer.Backend.Equipment
@@ -37,7 +38,7 @@ namespace Chummer.Backend.Equipment
     /// </summary>
     [HubClassTag("SourceID", true, "Name", null)]
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Weapon : IHasChildren<Weapon>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName, IHasLocation, ICanEquip, IHasSource, ICanSort, IHasWirelessBonus, IHasStolenProperty
+    public class Weapon : IHasChildren<Weapon>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName, IHasLocation, ICanEquip, IHasSource, ICanSort, IHasWirelessBonus, IHasStolenProperty, ICanPaste
 	{
         private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private Guid _guiSourceID = Guid.Empty;
@@ -1078,10 +1079,6 @@ namespace Chummer.Backend.Equipment
         /// Children as Underbarrel Weapon.
         /// </summary>
         public TaggedObservableCollection<Weapon> Children => UnderbarrelWeapons;
-        /// <summary>
-        /// Whether or not this Weapon is an Underbarrel Weapon.
-        /// </summary>
-        public bool IsUnderbarrelWeapon => Parent != null;
 
         /// <summary>
         /// Internal identifier which will be used to identify this Weapon.
@@ -2292,7 +2289,7 @@ namespace Chummer.Backend.Equipment
                     object objProcess = CommonFunctions.EvaluateInvariantXPath(strThisAmmo, out bool blnIsSuccess);
                     if (blnIsSuccess)
                     {
-                        int intAmmo = IsUnderbarrelWeapon && !IncludedInWeapon ? Convert.ToInt32(Math.Ceiling((double)objProcess)) / 2 : Convert.ToInt32(Math.Ceiling((double)objProcess));
+                        int intAmmo = Convert.ToInt32(Math.Ceiling((double)objProcess));
 
                         intAmmo += (intAmmo * intAmmoBonus + 99) / 100;
 
@@ -2338,11 +2335,9 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string CalculatedMode(string strLanguage)
         {
-            List<string> lstModes = new List<string>();
             string[] strModes = _strMode.Split('/');
             // Move the contents of the array to a list so it's easier to work with.
-            foreach (string strMode in strModes)
-                lstModes.Add(strMode);
+            List<string> lstModes = strModes.ToList();
 
             // Check if the Weapon has Ammunition loaded and look for any Damage bonus/replacement.
             if (!string.IsNullOrEmpty(AmmoLoaded))
@@ -2390,93 +2385,85 @@ namespace Chummer.Backend.Equipment
                     // Do the same for any plugins.
                     foreach (Gear objChild in objGear.Children.GetAllDescendants(x => x.Children))
                     {
-                        if (objChild.WeaponBonus != null)
+                        if (objChild.WeaponBonus == null) continue;
+                        string strFireMode = objChild.WeaponBonus["firemode"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strFireMode))
                         {
-                            string strFireMode = objChild.WeaponBonus["firemode"]?.InnerText;
-                            if (!string.IsNullOrEmpty(strFireMode))
+                            if (strFireMode.Contains('/'))
                             {
-                                if (strFireMode.Contains('/'))
-                                {
-                                    strModes = strFireMode.Split('/');
+                                strModes = strFireMode.Split('/');
 
-                                    // Move the contents of the array to a list so it's easier to work with.
-                                    foreach (string strMode in strModes)
-                                        lstModes.Add(strMode);
-                                }
-                                else
-                                {
-                                    lstModes.Add(strFireMode);
-                                }
+                                // Move the contents of the array to a list so it's easier to work with.
+                                foreach (string strMode in strModes)
+                                    lstModes.Add(strMode);
                             }
-                            strFireMode = objChild.WeaponBonus["modereplace"]?.InnerText;
-                            if (!string.IsNullOrEmpty(strFireMode))
+                            else
                             {
-                                lstModes.Clear();
-                                if (strFireMode.Contains('/'))
-                                {
-                                    strModes = strFireMode.Split('/');
-                                    // Move the contents of the array to a list so it's easier to work with.
-                                    foreach (string strMode in strModes)
-                                        lstModes.Add(strMode);
-                                }
-                                else
-                                {
-                                    lstModes.Add(strFireMode);
-                                }
-                                break;
+                                lstModes.Add(strFireMode);
                             }
+                        }
+                        strFireMode = objChild.WeaponBonus["modereplace"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strFireMode))
+                        {
+                            lstModes.Clear();
+                            if (strFireMode.Contains('/'))
+                            {
+                                strModes = strFireMode.Split('/');
+                                // Move the contents of the array to a list so it's easier to work with.
+                                foreach (string strMode in strModes)
+                                    lstModes.Add(strMode);
+                            }
+                            else
+                            {
+                                lstModes.Add(strFireMode);
+                            }
+                            break;
                         }
                     }
 
                     // Do the same for any accessories/modifications.
                     foreach (WeaponAccessory objAccessory in WeaponAccessories)
                     {
-                        if (objAccessory.Equipped)
+                        if (!objAccessory.Equipped) continue;
+                        if (!string.IsNullOrEmpty(objAccessory.FireMode))
                         {
-                            if (!string.IsNullOrEmpty(objAccessory.FireMode))
+                            if (objAccessory.FireMode.Contains('/'))
                             {
-                                if (objAccessory.FireMode.Contains('/'))
-                                {
-                                    strModes = objAccessory.FireMode.Split('/');
+                                strModes = objAccessory.FireMode.Split('/');
 
-                                    // Move the contents of the array to a list so it's easier to work with.
-                                    foreach (string strMode in strModes)
-                                        lstModes.Add(strMode);
-                                }
-                                else
-                                {
-                                    lstModes.Add(objAccessory.FireMode);
-                                }
+                                // Move the contents of the array to a list so it's easier to work with.
+                                foreach (string strMode in strModes)
+                                    lstModes.Add(strMode);
+                            }
+                            else
+                            {
+                                lstModes.Add(objAccessory.FireMode);
+                            }
+                        }
+
+                        if (!string.IsNullOrEmpty(objAccessory.FireModeReplacement))
+                        {
+                            lstModes.Clear();
+                            if (objAccessory.FireModeReplacement.Contains('/'))
+                            {
+                                strModes = objAccessory.FireModeReplacement.Split('/');
+
+                                // Move the contents of the array to a list so it's easier to work with.
+                                foreach (string strMode in strModes)
+                                    lstModes.Add(strMode);
+                            }
+                            else
+                            {
+                                lstModes.Add(objAccessory.FireModeReplacement);
                             }
 
-                            if (!string.IsNullOrEmpty(objAccessory.FireModeReplacement))
-                            {
-                                lstModes.Clear();
-                                if (objAccessory.FireModeReplacement.Contains('/'))
-                                {
-                                    strModes = objAccessory.FireModeReplacement.Split('/');
-
-                                    // Move the contents of the array to a list so it's easier to work with.
-                                    foreach (string strMode in strModes)
-                                        lstModes.Add(strMode);
-                                }
-                                else
-                                {
-                                    lstModes.Add(objAccessory.FireModeReplacement);
-                                }
-
-                                break;
-                            }
+                            break;
                         }
                     }
                 }
             }
 
-            foreach (WeaponAccessory objAccessory in WeaponAccessories)
-            {
-                if (objAccessory.Equipped && string.IsNullOrEmpty(objAccessory.AddMode))
-                    lstModes.Add(objAccessory.AddMode);
-            }
+            lstModes.AddRange(from objAccessory in WeaponAccessories where objAccessory.Equipped && !string.IsNullOrEmpty(objAccessory.AddMode) select objAccessory.AddMode);
 
             string strReturn = string.Empty;
             if (lstModes.Contains("SS"))
@@ -2544,6 +2531,8 @@ namespace Chummer.Backend.Equipment
                         strMounts.Append('/');
                     }
                 }
+
+                strMounts.Append("Internal/None");
 
                 // Remove the trailing /
                 if (strMounts.Length > 0)
@@ -5677,6 +5666,94 @@ namespace Chummer.Backend.Equipment
             if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
                 _objCachedSourceDetail = null;
             SourceDetail.SetControl(sourceControl);
+        }
+
+        public bool AllowPasteXml
+        {
+            get
+            {
+                switch (GlobalOptions.ClipboardContentType)
+                {
+                    case ClipboardContentType.WeaponAccessory:
+                        XPathNavigator checkNode = GlobalOptions.Clipboard.SelectSingleNode("/character/weaponaccessories/accessory")?.CreateNavigator();
+                        if (CheckAccessoryRequirements(checkNode)) return true;
+                        break;
+                    default:
+                        return false;
+                }
+
+                return false;
+            }
+        }
+
+        public bool AllowPasteObject(object input)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Checks whether a given WeaponAccessory is allowed to be added to this weapon.
+        /// </summary>
+        public bool CheckAccessoryRequirements(XPathNavigator objXmlAccessory)
+        {
+            if (objXmlAccessory == null) return false;
+            List<string> lstMounts = AccessoryMounts.Split('/').ToList();
+            XPathNavigator xmlMountNode = objXmlAccessory.SelectSingleNode("mount");
+            if (xmlMountNode != null)
+            {
+                if (lstMounts.Count > 1)
+                {
+                    if (xmlMountNode.Value.Split('/').Any(strItem =>
+                        !string.IsNullOrEmpty(strItem) && lstMounts.All(strAllowedMount => strAllowedMount != strItem)))
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            XPathNavigator xmlExtraMountNode = objXmlAccessory.SelectSingleNode("extramount");
+            if (xmlExtraMountNode != null)
+            {
+                if (lstMounts.Count > 1)
+                {
+                    if (xmlExtraMountNode.Value.Split('/').Any(strItem =>
+                        !string.IsNullOrEmpty(strItem) && lstMounts.All(strAllowedMount => strAllowedMount != strItem)))
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+            if (!objXmlAccessory.RequirementsMet(_objCharacter, this, string.Empty, string.Empty)) return false;
+
+            XPathNavigator xmlTestNode = objXmlAccessory.SelectSingleNode("forbidden/weapondetails");
+            if (xmlTestNode != null)
+            {
+                // Assumes topmost parent is an AND node
+                if (GetNode().CreateNavigator().ProcessFilterOperationNode(xmlTestNode, false))
+                {
+                    return false;
+                }
+            }
+
+            xmlTestNode = objXmlAccessory.SelectSingleNode("required/weapondetails");
+            if (xmlTestNode != null)
+            {
+                // Assumes topmost parent is an AND node
+                if (!GetNode().CreateNavigator().ProcessFilterOperationNode(xmlTestNode, false))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }

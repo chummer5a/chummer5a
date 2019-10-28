@@ -9566,5 +9566,125 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<key>String_Wireless</key>
 			<text>WiFi</text>
 		</string>
+		<string>
+			<key>String_ApplicationInsights_OnlyLocal</key>
+			<text>Enregistrement local uniquement</text>
+		</string>
+		<string>
+			<key>String_ApplicationInsights_OnlyMetric</key>
+			<text>Téléchargement des informations statistiques</text>
+		</string>
+		<string>
+			<key>String_ApplicationInsights_Crashes</key>
+			<text>Télécharger des plantages de programme</text>
+		</string>
+		<string>
+			<key>String_ApplicationInsights_Info</key>
+			<text>Télécharger les protocoles normaux</text>
+		</string>
+		<string>
+			<key>String_ApplicationInsights_Trace</key>
+			<text>Télécharger les protocoles détaillés</text>
+		</string>
+		<string>
+			<key>String_ApplicationInsights_NotSet</key>
+			<text>Chummer décide</text>
+		</string>
+		<string>
+			<key>Menu_Tools_SINners</key>
+			<text>Groupes de SINner</text>
+		</string>
+		<string>
+			<key>Menu_Tools_SINnersArchetypes</key>
+			<text>Archétypes</text>
+		</string>
+		<string>
+			<key>Label_SelectAdvancedLifestyle_Base</key>
+			<text>[{0}/{1}]</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_IncreasedImprovedAbilityModifier</key>
+			<text>La compétence améliorée est limitée par la puissance apprise à 1,5 au lieu de 0,5</text>
+		</string>
+		<string>
+			<key>Label_SummaryMetagenicQualities</key>
+			<text>Traits métagénétiques</text>
+		</string>
+		<string>
+			<key>Label_MetagenicKarmaValue</key>
+			<text>{0}P/{1}N - max. {2}</text>
+		</string>
+		<string>
+			<key>Label_MetagenicKarmaValueAppend</key>
+			<text> (1 Karma)</text>
+		</string>
+		<string>
+			<key>Message_InvalidPowerPoints</key>
+			<text>{0} de plus que les points de pouvoir maximum des adeptes ({1})</text>
+		</string>
+		<string>
+			<key>Label_RatingFormat</key>
+			<text>{0}:</text>
+		</string>
+		<string>
+			<key>Rating_LengthInCmBy10</key>
+			<text>Longueur (cm)x10</text>
+		</string>
+		<string>
+			<key>Rating_Meters</key>
+			<text>Mètres</text>
+		</string>
+		<string>
+			<key>String_SINners_HowToGroupParentDescription</key>
+			<text>Un groupe peut être assigné comme sous-groupe par glisser-déposer après sa création.</text>
+		</string>
+		<string>
+			<key>String_SINners_EnterGroupPassword</key>
+			<text>Ce groupe est protégé par un mot de passe. Entrer le mot de passe :</text>
+		</string>
+		<string>
+			<key>String_SINners_EnterGroupPasswordTitle</key>
+			<text>Entrez votre mot de passe</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_HideCharts</key>
+			<text>Masquer les tables qui causent des problèmes avec Wine</text>
+		</string>
+		<string>
+			<key>String_Bullet</key>
+			<text>Projectile</text>
+		</string>
+		<string>
+			<key>String_Bullets</key>
+			<text>Projectiles</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_EnablePlugins</key>
+			<text>Activer les plugins (expérimental)</text>
+		</string>
+		<string>
+			<key>Chummy_Intro</key>
+			<text>Salut ! C'est Chummy, l'assistante de Chummer à l'IA ! Il y a beaucoup de conseils et de recommandations utiles pour vos personnages !</text>
+		</string>
+		<string>
+			<key>String_online</key>
+			<text>Connecté</text>
+		</string>
+		<string>
+			<key>Menu_ShareChummer</key>
+			<text>Recommandez Chummer à un ami</text>
+		</string>
+		<string>
+			<key>Menu_Tools_SINnerSearch</key>
+			<text>Recherche par SINner</text>
+		</string>
+		<string>
+			<key>Menu_Main_SINnerSearch</key>
+			<text>Recherche dans la base de données des SIN</text>
+		</string>
+		<string>
+			<key>Menu_Main_SINners</key>
+			<text>SINner</text>
+		</string>
 	</strings>
 </chummer>

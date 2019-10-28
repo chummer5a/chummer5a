@@ -26,6 +26,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.XPath;
 using Chummer.Backend.Attributes;
 using NLog;
 
@@ -35,7 +36,7 @@ namespace Chummer.Backend.Equipment
     /// Weapon Accessory.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class WeaponAccessory : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, ICanEquip, IHasSource, IHasRating, ICanSort, IHasWirelessBonus, IHasStolenProperty
+    public class WeaponAccessory : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, ICanEquip, IHasSource, IHasRating, ICanSort, IHasWirelessBonus, IHasStolenProperty, ICanPaste
 	{
         private Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private Guid _guiID;
@@ -1376,6 +1377,45 @@ namespace Chummer.Backend.Equipment
             if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
                 _objCachedSourceDetail = null;
             SourceDetail.SetControl(sourceControl);
+        }
+
+        public bool AllowPasteXml
+        {
+            get
+            {
+                switch (GlobalOptions.ClipboardContentType)
+                {
+                    case ClipboardContentType.Gear:
+                        XPathNavigator checkNode = GlobalOptions.Clipboard.SelectSingleNode("/character/gears/gear")?.CreateNavigator();
+
+                        XmlNodeList xmlGearCategoryList = AllowGear?.SelectNodes("gearcategory");
+                        bool blnAdd = false;
+                        if (xmlGearCategoryList?.Count > 0)
+                        {
+                            if (xmlGearCategoryList.Cast<XmlNode>().Any(objAllowed => objAllowed.InnerText == checkNode.SelectSingleNode("category").Value))
+                            {
+                                blnAdd = true;
+                            }
+                        }
+                        XmlNodeList xmlGearNameList = AllowGear?.SelectNodes("gearname");
+                        if (xmlGearNameList?.Count > 0)
+                        {
+                            if (xmlGearCategoryList.Cast<XmlNode>().Any(objAllowed => objAllowed.InnerText == checkNode.SelectSingleNode("name").Value))
+                            {
+                                blnAdd = true;
+                            }
+                        }
+
+                        return blnAdd;
+                    default:
+                        return false;
+                }
+            }
+        }
+
+        public bool AllowPasteObject(object input)
+        {
+            throw new NotImplementedException();
         }
     }
 }

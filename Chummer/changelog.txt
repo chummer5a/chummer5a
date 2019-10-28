@@ -10,6 +10,15 @@ Application Changes:
 - Added a hidden Built-In weapon mount that allows all weapon categories. This can be used by vehicles that come with weapon mounts that are always installed. 
 - Critters can now start with cyberware and bioware.
 - Added support for weapons using required and forbidden nodes. This is mostly intended to support underbarrel weapons, but can be used in the same way as other objects. 
+- Critters can now be created with specialisations in skills they start with.
+- Added support for armormod requirements into selectionshared. If the sameparent attribute is set to True, then the armour mod must be on the same armour parent as the new mod. Otherwise, it will just check for any mod on any full piece of armour.
+- Added ICanPaste interface type that allows for checking whether the content of the Global Clipboard can be added to the currently selected item. Intent is to pull the logic out of frmCreate and into the base equipment class. 
+- Moved logic for checking whether a weapon accessory is allowed into a weapon into the Weapon class. 
+- All instances of the AllowGear node can now use gearname to allow limiting choices to individually named items (ie built-in medkit allows the Medkit item)
+- Weapon accessories can now be copied and pasted into other weapons in create mode.
+- Added support for vehicle mods coming with built-in cyberware. Supports the Caduceus drone's default snake fingers. 
+- Added a global option to disable the rendering of karma/nuyen charts that cause Chummer to run out of memory in in Linux. This is intended as a temporary shim until a replacement charting tool is developed or the UI is changed.
+- Added support for the selectskill improvement to prompt the user for a knowledge skill to use; if this skill is not found, it will be created, otherwise the bonus will be created for that skill.
 
 Application Fixes:
 - Fixed issues with the Balistic Shield Exotic Melee Weapon choice not being present in the Exotic Weapon skill selector window. Closes #3856
@@ -20,6 +29,13 @@ Application Fixes:
 - The SwapSkillAtribute Improvement now properly makes the attribute get swapped for the selected attribute.
 - Fixed a crash when binding Foci, if the treenode for the focus had not been selected. Closes #3905
 - Anthro drones now receive 8 base physical condition monitor boxes instead of 6, per Rigger 5 rules. I don't personally agree with this rule since it effectively means they have 10 base due to limbs, but whatever. 
+- addlimb improvement now supports the use of precedence nodes to allow preventing multiple sources of limbs from stacking, ie centaurs and Liminal Bodies. Closes #3550
+- Fixed an issue with enemies improperly showing warnings about quality limits if they're not set to add to negative quality karma.
+- Added missing DamageResistance improvement bonuses to the tooltip for Indirect Soak.
+- Added support for the optionalpowers improvement being taken multiple times. This is done by adding a count attribute to the base node, which can include attributes and basic math. A spirit could have "{MAG} div 3" for example, which allows for 1 optional power for every 3 full MAG the spirit has. 
+- Fixed a regression in SA-capable weapons not being able to fire Short Bursts in career mode. 
+- Weapon accessories that add fire modes properly show as such.
+- Fixed an issue with Armor Mods that are included in Armor improperly checking availability.
 
 Data Changes:
 - Tetrachromacy now adds adds +3 to Perception, with a (Visual) condition. This will be exposed to the Print method for character sheets at a later date. 
@@ -36,6 +52,18 @@ Data Changes:
 - Fixed the Glock MP Custodes (MPV) incorrectly being allowed to take a Concealed Quick-Draw Holster.
 - Added warforms from Howling Shadows. 
 - Underbarrel weapons are now properly restricted to weapons that can take them. 
+- All underbarrel weapons from Run and Gun have been properly created as weapons, where data exists for them. I'm not going to add the chainsaw, because there's no firm raw on what a chainsaw is. Closes #3553
+- Added a new customdata item to override the Acceleration of the Yamaha Kaburaya from 3 to 4, per German data changes. Closes #3908
+- Fixed a missing accuracy bonus for Raptor Foot cyberware when also equipped with digigrade legs. Closes #3863
+- Added missing additional reagents from Forbidden Arcana. Closes #2766
+- Added separately-priced SnS-Static Shaft crossbow bolts per German errata. Closes #2368
+- RIG Helmet has been set to a zero-cost armor mod that requires that the base mod be installed first. Closes #1561
+- Removed legacy softweave improvement from the YNT Softweave armor mod. 
+- Moved the Centaur Body improvement into the metatype improvements for Centaur and flagged the quality as hidden.
+- Added correct AP value (-5) to the Riot Shield.
+- Added missing Medkit and Snake Fingers cyberwares to the Shiawase Caduceus 'CAD' 7 drone.
+- Added an optional rule to add the optional powers rule for sprites from Kill Code to the core book sprites. 
+- Moved HTML file used by the "Print to File First" option for fixing issues with rendering sheets into appdata instead, in order to prevent issues with tools that synchronise special folders like desktop from causing the cleanup to fail.
 
 New Strings:
 - Label_MetagenicKarmaValue
