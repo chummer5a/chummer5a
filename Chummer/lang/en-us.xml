@@ -9821,6 +9821,11 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <key>Menu_ShareChummer</key>
       <text>Share Chummer</text>
     </string>
+    <string>
+      <key>Menu_ShowMySINners</key>
+      <text>Show all my data</text>
+    </string>
+      
     <!-- Region Rating Strings -->
       <string>
           <key>Label_RatingFormat</key>

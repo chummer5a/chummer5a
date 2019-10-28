@@ -78,39 +78,26 @@ namespace Chummer.Plugins
 
         bool IPlugin.SetCharacterRosterNode(TreeNode objNode)
         {
-            objNode.ContextMenuStrip = null;
-            if (objNode.Parent == null)
-                return true;
-            if (objNode.Tag is SINnerSearchGroup group)
-            {
-                return true;
-            }
-            var myCmsRoster = PluginHandler.MainForm.CharacterRoster.CreateContextMenuStrip();
-            var menuitems = myCmsRoster.Items.Cast<ToolStripItem>().ToArray();
-            foreach (var item in menuitems)
-            {
-                switch (item.Name)
-                {
-                    case "tsToggleFav":
-                        myCmsRoster.Items.Remove(item);
-                        break;
-                    case "tsCloseOpenCharacter":
-                        myCmsRoster.Items.Remove(item);
-                        break;
-                    case "tsSort":
-                        myCmsRoster.Items.Remove(item);
-                        break;
-                    case "tsDelete":
-                        myCmsRoster.Items.Remove(item);
-                        ToolStripMenuItem newDelete = new ToolStripMenuItem(item.Text, item.Image);
-                        newDelete.Click += PluginHandler.MainForm.CharacterRoster.tsDelete_Click;
-                        myCmsRoster.Items.Add(newDelete);
-                        break;
-                    default:
-                        break;
-                }
-            }
             
+            if (objNode.Parent == null)
+            {
+                ContextMenuStrip cmsRoster = new ContextMenuStrip();
+                ToolStripMenuItem tsShowMySINners = new ToolStripMenuItem()
+                {
+                    Name = "tsShowMySINners",
+                    Tag = "Menu_ShowMySINners",
+                    Text = "Show all my SINners",
+                    Size = new System.Drawing.Size(177, 22),
+                    Image = global::Chummer.Properties.Resources.link_add
+                };
+                cmsRoster.Items.Add(tsShowMySINners);
+                tsShowMySINners.Click += ShowMySINnersOnClick;
+                objNode.ContextMenuStrip = cmsRoster;
+                LanguageManager.TranslateWinForm(GlobalOptions.Language, objNode.ContextMenuStrip);
+                return true;
+            }
+            if (objNode.ContextMenuStrip == null)
+                objNode.ContextMenuStrip = PluginHandler.MainForm.CharacterRoster.CreateContextMenuStrip();
             if (objNode.Tag is frmCharacterRoster.CharacterCache member)
             {
                 PluginHandler.MainForm.DoThreadSafe(() =>
@@ -124,13 +111,58 @@ namespace Chummer.Plugins
                         Image = global::Chummer.Properties.Resources.link_add
                     };
                     newShare.Click += NewShareOnClick;
-                    objNode.ContextMenuStrip = myCmsRoster;
                     objNode.ContextMenuStrip.Items.Add(newShare);
-                    
                     LanguageManager.TranslateWinForm(GlobalOptions.Language, objNode.ContextMenuStrip);
-                    
                 });
             }
+
+
+            bool isPluginNode = false;
+            TreeNode checkNode = objNode;
+            while (isPluginNode == false && checkNode != null)
+            {
+                if (checkNode.Tag is PluginHandler)
+                    isPluginNode = true;
+                checkNode = checkNode.Parent;
+            }
+            if (!isPluginNode)
+            {
+                return true;
+            }
+            
+            if (objNode.Tag is SINnerSearchGroup group)
+            {
+                objNode.ContextMenuStrip = null;
+                return true;
+            }
+
+            
+            var menuitems = objNode.ContextMenuStrip.Items.Cast<ToolStripItem>().ToArray();
+            foreach (var item in menuitems)
+            {
+                switch (item.Name)
+                {
+                    case "tsToggleFav":
+                        objNode.ContextMenuStrip.Items.Remove(item);
+                        break;
+                    case "tsCloseOpenCharacter":
+                        objNode.ContextMenuStrip.Items.Remove(item);
+                        break;
+                    case "tsSort":
+                        objNode.ContextMenuStrip.Items.Remove(item);
+                        break;
+                    case "tsDelete":
+                        objNode.ContextMenuStrip.Items.Remove(item);
+                        ToolStripMenuItem newDelete = new ToolStripMenuItem(item.Text, item.Image);
+                        newDelete.Click += PluginHandler.MainForm.CharacterRoster.tsDelete_Click;
+                        objNode.ContextMenuStrip.Items.Add(newDelete);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            
+            
             return true;
         }
 
@@ -766,6 +798,38 @@ namespace Chummer.Plugins
                 };
                 node.Tag = objCache;
                 return new List<TreeNode>() { node };
+            }
+        }
+
+        
+        private async void ShowMySINnersOnClick(object sender, EventArgs e)
+        {
+            //TreeNode t = PluginHandler.MainForm.CharacterRoster.treCharacterList.SelectedNode;
+            try
+            {
+                using (new CursorWait(true, PluginHandler.MainForm.CharacterRoster))
+                {
+                    var MySINSearchGroupResult = await ucSINnerGroupSearch.SearchForGroups(null);
+                    var item = (from a in MySINSearchGroupResult.SinGroups
+                        where a.Groupname?.Contains("My Data") == true
+                        select a).FirstOrDefault();
+                    if (item != null)
+                    {
+                        var list = new List<SINnerSearchGroup>() { item };
+                        var nodelist = ChummerHub.Client.Backend.Utils.CharacterRosterTreeNodifyGroupList(list);
+                        foreach (var node in nodelist)
+                        {
+                            PluginHandler.MyTreeNodes2Add.AddOrUpdate(node.Name, node, (key, oldValue) => node);
+                        }
+                        PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false, true);
+                        PluginHandler.MainForm.CharacterRoster.BringToFront();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                Program.MainForm.ShowMessageBox(ex.Message);
             }
         }
 
