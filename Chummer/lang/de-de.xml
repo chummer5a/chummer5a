@@ -9618,6 +9618,10 @@
 			<key>Menu_ShareChummer</key>
 			<text>Chummer weiterempfehlen</text>
 		</string>
+        <string>
+          <key>Menu_ShowMySINners</key>
+          <text>Alle Daten anzeigen</text>
+        </string>
 		<string>
 			<key>String_ApplicationInsights_OnlyLocal</key>
 			<text>nur lokal loggen</text>
