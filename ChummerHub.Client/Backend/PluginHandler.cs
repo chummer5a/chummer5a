@@ -6,6 +6,7 @@ using ChummerHub.Client.UI;
 using Newtonsoft.Json;
 using SINners.Models;
 using System;
+using System.CodeDom;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Composition;
@@ -77,19 +78,59 @@ namespace Chummer.Plugins
 
         bool IPlugin.SetCharacterRosterNode(TreeNode objNode)
         {
-            if (objNode?.ContextMenuStrip == null)
-                return false;
-            ToolStripMenuItem newShare = new ToolStripMenuItem("Share")
+            objNode.ContextMenuStrip = null;
+            if (objNode.Parent == null)
+                return true;
+            if (objNode.Tag is SINnerSearchGroup group)
             {
-                Name = "tsShareChummer",
-                Tag = "Menu_ShareChummer",
-                Text = "Share chummer",
-                Size = new System.Drawing.Size(177, 22),
-                Image = global::Chummer.Properties.Resources.link_add
-            };
-            newShare.Click += NewShareOnClick;
-            objNode.ContextMenuStrip.Items.Add(newShare);
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, objNode.ContextMenuStrip);
+                return true;
+            }
+            var myCmsRoster = PluginHandler.MainForm.CharacterRoster.CreateContextMenuStrip();
+            var menuitems = myCmsRoster.Items.Cast<ToolStripItem>().ToArray();
+            foreach (var item in menuitems)
+            {
+                switch (item.Name)
+                {
+                    case "tsToggleFav":
+                        myCmsRoster.Items.Remove(item);
+                        break;
+                    case "tsCloseOpenCharacter":
+                        myCmsRoster.Items.Remove(item);
+                        break;
+                    case "tsSort":
+                        myCmsRoster.Items.Remove(item);
+                        break;
+                    case "tsDelete":
+                        myCmsRoster.Items.Remove(item);
+                        ToolStripMenuItem newDelete = new ToolStripMenuItem(item.Text, item.Image);
+                        newDelete.Click += PluginHandler.MainForm.CharacterRoster.tsDelete_Click;
+                        myCmsRoster.Items.Add(newDelete);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            
+            if (objNode.Tag is frmCharacterRoster.CharacterCache member)
+            {
+                PluginHandler.MainForm.DoThreadSafe(() =>
+                {
+                    ToolStripMenuItem newShare = new ToolStripMenuItem("Share")
+                    {
+                        Name = "tsShareChummer",
+                        Tag = "Menu_ShareChummer",
+                        Text = "Share chummer",
+                        Size = new System.Drawing.Size(177, 22),
+                        Image = global::Chummer.Properties.Resources.link_add
+                    };
+                    newShare.Click += NewShareOnClick;
+                    objNode.ContextMenuStrip = myCmsRoster;
+                    objNode.ContextMenuStrip.Items.Add(newShare);
+                    
+                    LanguageManager.TranslateWinForm(GlobalOptions.Language, objNode.ContextMenuStrip);
+                    
+                });
+            }
             return true;
         }
 
@@ -623,44 +664,44 @@ namespace Chummer.Plugins
                 List<TreeNode> list = new List<TreeNode>();
                 using (new CursorWait(true, frmCharRoster))
                 {
-                        frmCharRoster.DoThreadSafe(() =>
-                        {
-                            myContextMenuStrip = frmCharRoster.CreateContextMenuStrip();
-                            var menulist = myContextMenuStrip.Items.Cast<ToolStripMenuItem>().ToList();
-                            foreach (var item in menulist)
-                            {
-                                switch (item.Name)
-                                {
-                                    case "tsToggleFav":
-                                        myContextMenuStrip.Items.Remove(item);
-                                        break;
-                                    case "tsCloseOpenCharacter":
-                                        myContextMenuStrip.Items.Remove(item);
-                                        break;
-                                    case "tsSort":
-                                        myContextMenuStrip.Items.Remove(item);
-                                        break;
-                                    case "tsDelete":
-                                        ToolStripMenuItem newDelete = new ToolStripMenuItem(item.Text, item.Image);
-                                        newDelete.Click += frmCharRoster.tsDelete_Click;
-                                        myContextMenuStrip.Items.Add(newDelete);
-                                        break;
-                                    default:
-                                        break;
-                                }
-                            }
-                            ToolStripMenuItem newShare = new ToolStripMenuItem("Share")
-                            {
-                                Name = "tsShareChummer",
-                                Tag = "Menu_ShareChummer",
-                                Text = "Share chummer",
-                                Size = new System.Drawing.Size(177, 22),
-                                Image = global::Chummer.Properties.Resources.link_add
-                            };
-                            newShare.Click += NewShareOnClick;
-                            myContextMenuStrip.Items.Add(newShare);
-                            LanguageManager.TranslateWinForm(GlobalOptions.Language, myContextMenuStrip);
-                        });
+                    //frmCharRoster.DoThreadSafe(() =>
+                    //{
+                    //    myContextMenuStrip = frmCharRoster.CreateContextMenuStrip();
+                    //    var menulist = myContextMenuStrip.Items.Cast<ToolStripMenuItem>().ToList();
+                    //    foreach (var item in menulist)
+                    //    {
+                    //        switch (item.Name)
+                    //        {
+                    //            case "tsToggleFav":
+                    //                myContextMenuStrip.Items.Remove(item);
+                    //                break;
+                    //            case "tsCloseOpenCharacter":
+                    //                myContextMenuStrip.Items.Remove(item);
+                    //                break;
+                    //            case "tsSort":
+                    //                myContextMenuStrip.Items.Remove(item);
+                    //                break;
+                    //            case "tsDelete":
+                    //                ToolStripMenuItem newDelete = new ToolStripMenuItem(item.Text, item.Image);
+                    //                newDelete.Click += frmCharRoster.tsDelete_Click;
+                    //                myContextMenuStrip.Items.Add(newDelete);
+                    //                break;
+                    //            default:
+                    //                break;
+                    //        }
+                    //    }
+                    //    ToolStripMenuItem newShare = new ToolStripMenuItem("Share")
+                    //    {
+                    //        Name = "tsShareChummer",
+                    //        Tag = "Menu_ShareChummer",
+                    //        Text = "Share chummer",
+                    //        Size = new System.Drawing.Size(177, 22),
+                    //        Image = global::Chummer.Properties.Resources.link_add
+                    //    };
+                    //    newShare.Click += NewShareOnClick;
+                    //    myContextMenuStrip.Items.Add(newShare);
+                    //    LanguageManager.TranslateWinForm(GlobalOptions.Language, myContextMenuStrip);
+                    //});
                     if (ChummerHub.Client.Properties.Settings.Default.UserModeRegistered == true)
                     {
                         Log.Info("Loading CharacterRoster from SINners...");
@@ -691,7 +732,7 @@ namespace Chummer.Plugins
                     {
                         list.Add(addme.Value);
                     }
-                    AddContextMenuStripRecursive(list, myContextMenuStrip);
+                    //AddContextMenuStripRecursive(list, myContextMenuStrip);
                     return list;
                 }
                     
@@ -751,23 +792,29 @@ namespace Chummer.Plugins
             }
         }
 
-        private void AddContextMenuStripRecursive(List<TreeNode> list, ContextMenuStrip myCmsRoster)
-        {
-            foreach (var node in list)
-            {
-                
-                PluginHandler.MainForm.DoThreadSafe(() =>
-                {
-                    node.ContextMenuStrip = myCmsRoster;
-                });
-                
-                if (node.Nodes.Count > 0)
-                {
-                    var myList = node.Nodes.Cast<TreeNode>().ToList();
-                    AddContextMenuStripRecursive(myList, myCmsRoster);
-                }
-            }
-        }
+        //private void AddContextMenuStripRecursive(List<TreeNode> list, ContextMenuStrip myCmsRoster)
+        //{
+        //    foreach (var node in list)
+        //    {
+        //        if (node.Parent != null)
+        //        {
+        //            if (node.Tag is SINnerSearchGroup group)
+        //            {
+                        
+        //            }
+        //            else if (node.Tag is frmCharacterRoster.CharacterCache member)
+        //            {
+        //                PluginHandler.MainForm.DoThreadSafe(() => { node.ContextMenuStrip = myCmsRoster; });
+        //            }
+        //        }
+
+        //        if (node.Nodes.Count > 0)
+        //        {
+        //            var myList = node.Nodes.Cast<TreeNode>().ToList();
+        //            AddContextMenuStripRecursive(myList, myCmsRoster);
+        //        }
+        //    }
+        //}
 
         public bool BlnHasDuplicate { get; set; }
 
