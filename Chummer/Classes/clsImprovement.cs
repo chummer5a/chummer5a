@@ -2701,6 +2701,8 @@ namespace Chummer
                     intMinimumRating = ValueToInt(objCharacter, strMinimumRating, intRating);
                 int intMaximumRating = int.MaxValue;
                 string strMaximumRating = xmlBonusNode.Attributes?["maximumrating"]?.InnerText;
+                string strPrompt = xmlBonusNode.Attributes?["prompt"]?.InnerText ?? string.Empty;
+
                 if (!string.IsNullOrWhiteSpace(strMaximumRating))
                     intMaximumRating = ValueToInt(objCharacter, strMaximumRating, intRating);
 
@@ -2736,6 +2738,10 @@ namespace Chummer
                 {
                     setAllowedNames = new HashSet<string> {ForcedValue};
                 }
+                else if (!string.IsNullOrEmpty(strPrompt))
+                {
+                    setAllowedNames = new HashSet<string> { strPrompt };
+                }
                 else
                 {
                     string strLimitToSkill = xmlBonusNode.SelectSingleNode("@limittoskill")?.InnerText;
@@ -2768,6 +2774,12 @@ namespace Chummer
                         }
                     }
                     setProcessedSkillNames.Add(objKnowledgeSkill.Name);
+                }
+
+                if (strPrompt != string.Empty && !setProcessedSkillNames.Contains(strPrompt))
+                {
+                    lstDropdownItems.Add(new ListItem(strPrompt, LanguageManager.TranslateExtra(strPrompt, GlobalOptions.Language)));
+                    setProcessedSkillNames.Add(strPrompt);
                 }
                 if (intMinimumRating <= 0)
                 {
@@ -2855,9 +2867,10 @@ namespace Chummer
 
                 frmSelectItem frmPickSkill = new frmSelectItem
                 {
-                    Description = LanguageManager.GetString("Title_SelectSkill", GlobalOptions.Language)
+                    Description = LanguageManager.GetString("Title_SelectSkill", GlobalOptions.Language),
+                    AllowAutoSelect = string.IsNullOrWhiteSpace(strPrompt)
                 };
-                if (setAllowedNames != null)
+                if (setAllowedNames != null && string.IsNullOrWhiteSpace(strPrompt))
                     frmPickSkill.GeneralItems = lstDropdownItems;
                 else
                     frmPickSkill.DropdownItems = lstDropdownItems;
