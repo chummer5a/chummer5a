@@ -1330,7 +1330,7 @@ namespace ChummerHub.Controllers.V1
                     if (!String.IsNullOrEmpty(Groupname))
                     {
                         groupfoundseq = await (from a in _context.SINnerGroups
-                                               where a.Groupname.ToLowerInvariant().Contains(Groupname.ToLowerInvariant())
+                                               where a.Groupname != null && a.Groupname.ToLowerInvariant().Contains(Groupname.ToLowerInvariant())
                                                      && (a.Language == language || String.IsNullOrEmpty(language))
                                                select a.Id).ToListAsync();
                         if (!groupfoundseq.Any())
