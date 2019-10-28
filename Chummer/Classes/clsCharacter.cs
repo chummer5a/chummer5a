@@ -2160,6 +2160,7 @@ if (!Utils.IsUnitTest){
                         xmlCharacterNavigator.TryGetStringFieldQuickly("createdversion", ref _strVersionCreated);
 
                         // Metatype information.
+                        xmlCharacterNavigator.TryGetBoolFieldQuickly("iscritter", ref _blnIsCritter);
                         xmlCharacterNavigator.TryGetStringFieldQuickly("metatype", ref _strMetatype);
                         if (!xmlCharacterNavigator.TryGetGuidFieldQuickly("metatypeid", ref _guiMetatype))
                         {
@@ -2322,7 +2323,6 @@ if (!Utils.IsUnitTest){
                             !string.IsNullOrEmpty(strSkill2))
                             _lstPrioritySkills.Add(strSkill2);
 
-                        xmlCharacterNavigator.TryGetBoolFieldQuickly("iscritter", ref _blnIsCritter);
                         xmlCharacterNavigator.TryGetBoolFieldQuickly("possessed", ref _blnPossessed);
 
                         xmlCharacterNavigator.TryGetInt32FieldQuickly("contactpoints", ref _intCachedContactPoints);
