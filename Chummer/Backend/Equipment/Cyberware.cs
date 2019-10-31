@@ -1110,7 +1110,7 @@ namespace Chummer.Backend.Equipment
 
             objNode.TryGetStringFieldQuickly("subsystems", ref _strAllowSubsystems);
             if (objNode["grade"] != null)
-                _objGrade = ConvertToCyberwareGrade(objNode["grade"].InnerText, _objImprovementSource, _objCharacter);
+                _objGrade = Grade.ConvertToCyberwareGrade(objNode["grade"].InnerText, _objImprovementSource, _objCharacter);
             objNode.TryGetStringFieldQuickly("location", ref _strLocation);
             if (!objNode.TryGetStringFieldQuickly("extra", ref _strExtra) && _strLocation != "Left" &&
                 _strLocation != "Right")
@@ -1174,7 +1174,7 @@ namespace Chummer.Backend.Equipment
             {
                 _strForceGrade = GetNode()?["forcegrade"]?.InnerText;
                 if (!string.IsNullOrEmpty(_strForceGrade))
-                    _objGrade = ConvertToCyberwareGrade(_strForceGrade, _objImprovementSource, _objCharacter);
+                    _objGrade = Grade.ConvertToCyberwareGrade(_strForceGrade, _objImprovementSource, _objCharacter);
             }
 
             if (objNode["weaponguid"] != null)
@@ -2434,7 +2434,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (!string.IsNullOrWhiteSpace(ForceGrade) && ForceGrade != _objGrade.Name)
                 {
-                    return ConvertToCyberwareGrade(ForceGrade, SourceType, _objCharacter);
+                    return Grade.ConvertToCyberwareGrade(ForceGrade, SourceType, _objCharacter);
                 }
 
                 return _objGrade;

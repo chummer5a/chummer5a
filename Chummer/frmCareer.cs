@@ -3473,17 +3473,12 @@ namespace Chummer
 
         private void cmdDeleteArmor_Click(object sender, EventArgs e)
         {
-            object objSelectedNode = treArmor.SelectedNode?.Tag;
-            if (objSelectedNode == null)
-                return;
+            RemoveSelectedObject(treArmor.SelectedNode?.Tag);
+        }
 
-            if (objSelectedNode is ICanRemove selectedObject)
-            {
-                selectedObject.Remove(CharacterObject,CharacterObjectOptions.ConfirmDelete);
-            }
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
+        private void cmdDeleteCustomDrug_Click(object sender, EventArgs e)
+        {
+            RemoveSelectedObject(treCustomDrugs.SelectedNode?.Tag);
         }
 
         private void cmdAddBioware_Click(object sender, EventArgs e)
@@ -3585,17 +3580,17 @@ namespace Chummer
         private void cmdDeleteWeapon_Click(object sender, EventArgs e)
         {
             // Delete the selected Weapon.
-            if (treWeapons.SelectedNode == null) return;
+            RemoveSelectedObject(treWeapons.SelectedNode?.Tag);
+        }
 
-            // Locate the Weapon that is selected in the tree.
-            if (treWeapons.SelectedNode?.Tag is ICanRemove objRemovable)
+        private void RemoveSelectedObject(object selectedObject)
+        {
+            if (selectedObject is ICanRemove iRemovable)
             {
-                objRemovable.Remove(CharacterObject,CharacterObjectOptions.ConfirmDelete);
+                if (!iRemovable.Remove(CharacterObject, CharacterObjectOptions.ConfirmDelete)) return;
+                IsCharacterUpdateRequested = true;
+                IsDirty = true;
             }
-
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
         }
 
         private void cmdAddLifestyle_Click(object sender, EventArgs e)
@@ -3629,13 +3624,7 @@ namespace Chummer
 
         private void cmdDeleteLifestyle_Click(object sender, EventArgs e)
         {
-            // Delete the selected Lifestyle.
-            if (treLifestyles.SelectedNode?.Tag is ICanRemove selectedObject)
-            {
-                if (!selectedObject.Remove(CharacterObject,CharacterObjectOptions.ConfirmDelete)) return;
-                IsCharacterUpdateRequested = true;
-                IsDirty = true;
-            }
+            RemoveSelectedObject(treLifestyles.SelectedNode?.Tag);
         }
 
         private void cmdAddGear_Click(object sender, EventArgs e)
@@ -3652,12 +3641,7 @@ namespace Chummer
 
         private void cmdDeleteGear_Click(object sender, EventArgs e)
         {
-            if (treGear.SelectedNode?.Tag is ICanRemove objSelectedGear && objSelectedGear.Remove(CharacterObject, CharacterObjectOptions.ConfirmDelete))
-            {
-                IsCharacterUpdateRequested = true;
-
-                IsDirty = true;
-            }
+            RemoveSelectedObject(treGear.SelectedNode?.Tag);
         }
 
         private bool AddVehicle(Location objLocation = null)
@@ -3859,10 +3843,7 @@ namespace Chummer
 
         private void cmdDeleteMartialArt_Click(object sender, EventArgs e)
         {
-            if (!(treMartialArts.SelectedNode?.Tag is ICanRemove objSelectedNode)) return;
-            if (!objSelectedNode.Remove(CharacterObject,CharacterObjectOptions.ConfirmDelete)) return;
-            IsCharacterUpdateRequested = true;
-            IsDirty = true;
+            RemoveSelectedObject(treMartialArts.SelectedNode?.Tag);
         }
 
 #if LEGACY
@@ -4156,10 +4137,7 @@ namespace Chummer
 
         private void cmdDeleteMetamagic_Click(object sender, EventArgs e)
         {
-            if (!(treMetamagic.SelectedNode?.Tag is ICanRemove selectedObject)) return;
-            if (!selectedObject.Remove(CharacterObject,CharacterObjectOptions.ConfirmDelete)) return;
-            IsCharacterUpdateRequested = true;
-            IsDirty = true;
+            RemoveSelectedObject(treMetamagic.SelectedNode?.Tag);
         }
 
         private void cmdKarmaGained_Click(object sender, EventArgs e)
@@ -13329,7 +13307,7 @@ namespace Chummer
 
                 lblDrugName.Text = objDrug.Name;
                 lblDrugAvail.Text = objDrug.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                lblDrugGrade.Text = objDrug.Grade;
+                lblDrugGrade.Text = objDrug.Grade.DisplayName(GlobalOptions.Language);
                 lblDrugCost.Text = objDrug.Cost.ToString(CharacterObject.Options.NuyenFormat) + '¥';
                 lblDrugQty.Text = objDrug.Quantity.ToString(GlobalOptions.CultureInfo);
                 lblDrugCategory.Text = objDrug.Category;
@@ -16584,7 +16562,7 @@ private void RefreshSelectedSpell()
             CharacterObject.ExpenseEntries.AddWithSort(objExpense);
             CharacterObject.Nuyen -= decCost;
 
-            Grade objGrade = Cyberware.ConvertToCyberwareGrade(xmlSuite["grade"]?.InnerText, objSource, CharacterObject);
+            Grade objGrade = Grade.ConvertToCyberwareGrade(xmlSuite["grade"]?.InnerText, objSource, CharacterObject);
 
             // Run through each of the items in the Suite and add them to the character.
             using (XmlNodeList xmlItemList = xmlSuite.SelectNodes(strType + "s/" + strType))
@@ -17489,6 +17467,7 @@ private void RefreshSelectedSpell()
             Drug objCustomDrug = form.CustomDrug;
             objCustomDrug.Quantity = 0;
             CharacterObject.Drugs.Add(objCustomDrug);
+            objCustomDrug.GenerateImprovement();
         }
 
         private void btnIncreaseDrugQty_Click(object sender, EventArgs e)
@@ -17518,6 +17497,12 @@ private void RefreshSelectedSpell()
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
 
+            if (!CharacterObject.Improvements.Any(imp =>
+                imp.ImproveSource == Improvement.ImprovementSource.Drug && imp.SourceName == selectedDrug.InternalId))
+            {
+                selectedDrug.GenerateImprovement();
+            }
+
             // Create the Expense Log Entry.
             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
             objExpense.Create(decCost * -1,
@@ -17537,7 +17522,7 @@ private void RefreshSelectedSpell()
         {
             TreeNode objSelectedNode = treCustomDrugs.SelectedNode;
             if (!(objSelectedNode?.Tag is Drug objDrug)) return;
-
+            
             frmSelectNumber frmPickNumber = new frmSelectNumber()
             {
                 Minimum = 0,

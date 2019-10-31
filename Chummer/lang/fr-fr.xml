@@ -8437,10 +8437,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<text>Les armes utilisées avec des techniques de combat non armées reçoivent le bonus pour cette technique</text>
 		</string>
 		<string>
-			<key>Message_DuplicateDrugComponentWarning</key>
-			<text>Il est impossible d'ajouter deux fois le même composant.</text>
-		</string>
-		<string>
 			<key>Button_RemoveEcho</key>
 			<text>Enlever l'Écho</text>
 		</string>

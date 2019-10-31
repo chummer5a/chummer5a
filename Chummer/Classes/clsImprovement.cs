@@ -326,7 +326,10 @@ namespace Chummer
             ContactKarmaMinimum,
             GenetechEssMultiplier,
             AllowSpriteFettering,
-            NumImprovementTypes // 🡐 This one should always be the last defined enum           
+			DisableDrugGrade,
+            DrugDuration,
+            DrugDurationMultiplier,
+            NumImprovementTypes // 🡐 This one should always be the last defined enum
         }
 
         public enum ImprovementSource
