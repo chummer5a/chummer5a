@@ -17463,6 +17463,12 @@ private void RefreshSelectedSpell()
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
 
+            if (!CharacterObject.Improvements.Any(imp =>
+                imp.ImproveSource == Improvement.ImprovementSource.Drug && imp.SourceName == selectedDrug.InternalId))
+            {
+                selectedDrug.GenerateImprovement();
+            }
+
             // Create the Expense Log Entry.
             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
             objExpense.Create(decCost * -1,

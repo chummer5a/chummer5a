@@ -882,21 +882,17 @@ namespace Chummer.Backend.Equipment
         {
             if (_objCharacter.Improvements.Any(ig => ig.SourceName == InternalId)) return;
             _objCharacter.ImprovementGroups.Add(Name);
-            List<Improvement> lstImprovements = new List<Improvement>();
-
-            foreach (KeyValuePair<string, int> objAttribute in Attributes)
+            List<Improvement> lstImprovements = (from objAttribute in Attributes
+            where objAttribute.Value != 0
+            select new Improvement(_objCharacter)
             {
-                if (objAttribute.Value == 0) continue;
-                var i = new Improvement(_objCharacter)
-                {
-                    ImproveSource = Improvement.ImprovementSource.Drug,
-                    ImproveType = Improvement.ImprovementType.Attribute,
-                    SourceName = InternalId,
-                    Value = objAttribute.Value,
-                    ImprovedName = objAttribute.Key
-                };
-                lstImprovements.Add(i);
-            }
+                ImproveSource = Improvement.ImprovementSource.Drug,
+                ImproveType = Improvement.ImprovementType.Attribute,
+                SourceName = InternalId,
+                Augmented = objAttribute.Value,
+                ImprovedName = objAttribute.Key,
+                CustomName = $"{_strName} - {objAttribute.Key} {objAttribute.Value:+#;-#;0}"
+            }).ToList();
 
             foreach (KeyValuePair<string, int> objLimit in Limits)
             {
@@ -905,7 +901,8 @@ namespace Chummer.Backend.Equipment
                 {
                     ImproveSource = Improvement.ImprovementSource.Drug,
                     SourceName = InternalId,
-                    Value = objLimit.Value
+                    Value = objLimit.Value,
+                    CustomName = $"{_strName} - {objLimit.Key} {objLimit.Value:+#;-#;0}"
                 };
                 switch (objLimit.Key)
                 {
@@ -929,7 +926,8 @@ namespace Chummer.Backend.Equipment
                     ImproveSource = Improvement.ImprovementSource.Drug,
                     SourceName = InternalId,
                     ImproveType = Improvement.ImprovementType.Initiative,
-                    Value = Initiative
+                    Value = Initiative,
+                    CustomName = $"{_strName} - {LanguageManager.GetString("String_Initiative")} {Initiative:+#;-#;0}"
                 };
                 lstImprovements.Add(i);
             }
@@ -941,7 +939,8 @@ namespace Chummer.Backend.Equipment
                     ImproveSource = Improvement.ImprovementSource.Drug,
                     SourceName = InternalId,
                     ImproveType = Improvement.ImprovementType.InitiativeDice,
-                    Value = InitiativeDice
+                    Value = InitiativeDice,
+                    CustomName = $"{_strName} - {LanguageManager.GetString("Label_InitiativeDice")} {InitiativeDice:+#;-#;0}"
                 };
                 lstImprovements.Add(i);
             }
@@ -977,7 +976,16 @@ namespace Chummer.Backend.Equipment
                             _objCharacter.Qualities.Add(objAddQuality);
                             foreach (Weapon objWeapon in lstWeapons)
                                 _objCharacter.Weapons.Add(objWeapon);
-                            ImprovementManager.CreateImprovement(_objCharacter, objAddQuality.InternalId, Improvement.ImprovementSource.Drug, InternalId, Improvement.ImprovementType.SpecificQuality,"");
+                            var objImprovement = new Improvement(_objCharacter)
+                            {
+                                ImprovedName = objAddQuality.InternalId,
+                                ImproveSource = Improvement.ImprovementSource.Drug,
+                                SourceName = InternalId,
+                                ImproveType = Improvement.ImprovementType.SpecificQuality,
+                                CustomName =
+                                    $"{_strName} - {LanguageManager.GetString("String_InitiativeDice")} {objAddQuality.Name}"
+                            };
+                            lstImprovements.Add(objImprovement);
                         }
                         else
                         {
@@ -986,14 +994,13 @@ namespace Chummer.Backend.Equipment
                     }
                 }
             }
-            _objCharacter.Improvements.AddRange(lstImprovements);
-            foreach (Improvement i in _objCharacter.Improvements.Where(imp => imp.SourceName == InternalId))
+            foreach (Improvement i in lstImprovements)
             {
-                i.CustomName = "Figure out a cute way to name these";
                 i.CustomGroup = Name;
                 i.Custom = true;
                 i.Enabled = false;
             }
+            _objCharacter.Improvements.AddRange(lstImprovements);
         }
         public XmlNode GetNode()
         {

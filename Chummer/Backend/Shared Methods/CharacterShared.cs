@@ -4252,7 +4252,8 @@ namespace Chummer
                         {
                             foreach (Improvement objImprovement in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom)
+                                if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom ||
+                                    objImprovement.ImproveSource == Improvement.ImprovementSource.Drug)
                                 {
                                     AddToTree(objImprovement);
                                     AddToLimitTree(objImprovement);
@@ -4264,7 +4265,8 @@ namespace Chummer
                         {
                             foreach (Improvement objImprovement in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom)
+                                if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom ||
+                                    objImprovement.ImproveSource == Improvement.ImprovementSource.Drug)
                                 {
                                     TreeNode objNode = treImprovements.FindNodeByTag(objImprovement);
                                     if (objNode != null)
@@ -4296,7 +4298,8 @@ namespace Chummer
                             List<TreeNode> lstOldParents = new List<TreeNode>();
                             foreach (Improvement objImprovement in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom)
+                                if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom ||
+                                    objImprovement.ImproveSource == Improvement.ImprovementSource.Drug)
                                 {
                                     TreeNode objNode = treImprovements.FindNodeByTag(objImprovement);
                                     if (objNode != null)
@@ -4314,7 +4317,8 @@ namespace Chummer
                             }
                             foreach (Improvement objImprovement in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom)
+                                if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom ||
+                                    objImprovement.ImproveSource == Improvement.ImprovementSource.Drug)
                                 {
                                     AddToTree(objImprovement);
                                     AddToLimitTree(objImprovement);
