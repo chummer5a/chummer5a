@@ -665,7 +665,7 @@ namespace Chummer
         private void treCharacterList_OnDefaultDragDrop(object sender, DragEventArgs e)
         {
             // Do not allow the root element to be moved.
-            if(treCharacterList.SelectedNode == null || treCharacterList.SelectedNode.Level == 0 || treCharacterList.SelectedNode.Parent.Tag.ToString() == "Watch")
+            if(treCharacterList.SelectedNode == null || treCharacterList.SelectedNode.Level == 0 || treCharacterList.SelectedNode.Parent?.Tag?.ToString() == "Watch")
                 return;
 
             if(e.Data.GetDataPresent("System.Windows.Forms.TreeNode", false))
@@ -674,9 +674,9 @@ namespace Chummer
                     return;
                 Point pt = treSenderView.PointToClient(new Point(e.X, e.Y));
                 TreeNode nodDestinationNode = treSenderView.GetNodeAt(pt);
-                if (nodDestinationNode.Level > 0)
+                if (nodDestinationNode?.Level > 0)
                     nodDestinationNode = nodDestinationNode.Parent;
-                string strDestinationNode = nodDestinationNode.Tag.ToString();
+                string strDestinationNode = nodDestinationNode?.Tag?.ToString();
                 if(strDestinationNode != "Watch")
                 {
                     if(!(e.Data.GetData("System.Windows.Forms.TreeNode") is TreeNode nodNewNode))
@@ -695,9 +695,20 @@ namespace Chummer
                             case "Favourite":
                                 GlobalOptions.FavoritedCharacters.Add(objCache.FilePath);
                                 break;
+                            default:
+                                break;
                         }
                     }
                 }
+
+                IPlugin plugintag = null;
+                while (nodDestinationNode?.Tag != null && plugintag == null)
+                {
+                    if (nodDestinationNode.Tag is IPlugin temp)
+                        plugintag = temp;
+                    nodDestinationNode = nodDestinationNode.Parent;
+                }
+                plugintag?.DoCharacterList_DragDrop(sender, e, treCharacterList);
             }
         }
 

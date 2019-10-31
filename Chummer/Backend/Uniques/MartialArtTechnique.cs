@@ -72,7 +72,7 @@ namespace Chummer
 
         private SourceString _objCachedSourceDetail;
         public SourceString SourceDetail => _objCachedSourceDetail ?? (_objCachedSourceDetail =
-                                                new SourceString(Source, Page(GlobalOptions.Language), GlobalOptions.Language));
+                                                new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language));
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -86,7 +86,7 @@ namespace Chummer
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteElementString("source", _strSource);
-            objWriter.WriteElementString("page", _strSource);
+            objWriter.WriteElementString("page", _strPage);
             objWriter.WriteEndElement();
 
             _objCharacter.SourceProcess(_strSource);
@@ -126,7 +126,7 @@ namespace Chummer
             if (_objCharacter.Options.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
             objWriter.WriteElementString("source", Source);
-            objWriter.WriteElementString("page", Page(strLanguageToPrint));
+            objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteEndElement();
         }
         #endregion
@@ -195,15 +195,26 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Page Number.
+        /// Sourcebook Page Number.
         /// </summary>
-        public string Page(string strLanguage)
+        public string Page
         {
-            // Get the translated name if applicable.
-            if (strLanguage != GlobalOptions.DefaultLanguage)
-                return _strPage;
+            get => _strPage;
+            set => _strPage = value;
+        }
 
-            return GetNode(strLanguage)?["altpage"]?.InnerText ?? _strPage;
+        /// <summary>
+        /// Sourcebook Page Number using a given language file.
+        /// Returns Page if not found or the string is empty.
+        /// </summary>
+        /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <returns></returns>
+        public string DisplayPage(string strLanguage)
+        {
+            if (strLanguage == GlobalOptions.DefaultLanguage)
+                return Page;
+            string s = GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
+            return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 
         private XmlNode _objCachedMyXmlNode;

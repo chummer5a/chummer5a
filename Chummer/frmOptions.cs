@@ -192,6 +192,7 @@ namespace Chummer
             _characterOptions.FreeMartialArtSpecialization = chkFreeMartialArtSpecialization.Checked;
             _characterOptions.PrioritySpellsAsAdeptPowers = chkPrioritySpellsAsAdeptPowers.Checked;
             _characterOptions.EnemyKarmaQualityLimit = chkEnemyKarmaQualityLimit.Checked;
+            _characterOptions.IncreasedImprovedAbilityMultiplier = chkIncreasedImprovedAbilityModifier.Checked;
             string strLimbCount = cboLimbCount.SelectedValue?.ToString();
             if(string.IsNullOrEmpty(strLimbCount))
             {
@@ -706,6 +707,7 @@ namespace Chummer
             chkReverseAttributePriorityOrder.Checked = _characterOptions.ReverseAttributePriorityOrder;
             chkAllowHoverIncrement.Checked = _characterOptions.AllowHoverIncrement;
             chkSearchInCategoryOnly.Checked = _characterOptions.SearchInCategoryOnly;
+            chkIncreasedImprovedAbilityModifier.Checked = _characterOptions.IncreasedImprovedAbilityMultiplier;
             nudContactMultiplier.Enabled = _characterOptions.FreeContactsMultiplierEnabled;
             nudContactMultiplier.Value = _characterOptions.FreeContactsMultiplier;
             nudKnowledgeMultiplier.Enabled = _characterOptions.FreeKnowledgeMultiplierEnabled;
@@ -864,6 +866,7 @@ namespace Chummer
                 objRegistry.SetValue("createbackuponcareer", chkCreateBackupOnCareer.Checked);
                 objRegistry.SetValue("pluginsenabled", chkEnablePlugins.Checked);
                 objRegistry.SetValue("alloweastereggs", chkAllowEasterEggs.Checked);
+                objRegistry.SetValue("hidecharts", chkHideCharts.Checked);
 
                 //Save the Plugins-Dictionary
                 string jsonstring = Newtonsoft.Json.JsonConvert.SerializeObject(GlobalOptions.PluginsEnabledDic);
@@ -1916,22 +1919,22 @@ namespace Chummer
             if (this._blnLoading)
                 return;
             UseAILogging useAI = (UseAILogging) ((ListItem) cbUseLoggingApplicationInsights.SelectedItem).Value;
-            if (useAI == UseAILogging.Yes)
+            if (useAI > UseAILogging.Info)
             {
                 string msg = "Thank you for sharing logs and metrics";
                 msg += Environment.NewLine + "with the Chummer Dev-Team. You can";
                 msg += Environment.NewLine + "help us gain insight of what needs to";
-                msg += Environment.NewLine + "be improved and adressed the most.";
+                msg += Environment.NewLine + "be improved the most.";
                 msg += Environment.NewLine + Environment.NewLine;
                 msg += "Do you want to share your logs?";
-                var result = Program.MainForm.ShowMessageBox(msg, "Really enable upload?", MessageBoxButtons.OKCancel);
+                var result = Program.MainForm.ShowMessageBox(msg, "Really enable detailed upload?", MessageBoxButtons.OKCancel);
                 if (result == DialogResult.OK)
                 {
                     GlobalOptions.UseLoggingApplicationInsights = useAI;
                 }
                 else
                 {
-                    GlobalOptions.UseLoggingApplicationInsights = UseAILogging.Crashes;
+                    GlobalOptions.UseLoggingApplicationInsights = UseAILogging.Info;
                     this._blnLoading = true;
                     this.cbUseLoggingApplicationInsights.SelectedItem = GlobalOptions.UseLoggingApplicationInsights;
                     this._blnLoading = false;
@@ -1953,6 +1956,11 @@ namespace Chummer
         {
             //open the telemetry document
             System.Diagnostics.Process.Start("https://docs.google.com/document/d/1LThAg6U5qXzHAfIRrH0Kb7griHrPN0hy7ab8FSJDoFY/edit?usp=sharing");
+        }
+
+        private void cbPluginsHelp_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://docs.google.com/document/d/1WOPB7XJGgcmxg7REWxF6HdP3kQdtHpv6LJOXZtLggxM/edit?usp=sharing");
         }
     }
 }

@@ -24,8 +24,7 @@ using System.Xml;
 using System.Xml.XPath;
  using Chummer.Backend.Equipment;
  using Chummer.Backend.Skills;
-using MessageBox = System.Windows.Forms.MessageBox;
-using System.Text;
+ using System.Text;
 
 namespace Chummer
 {
@@ -186,24 +185,24 @@ namespace Chummer
         private void MetatypeSelected()
         {
             Cursor = Cursors.WaitCursor;
-            string strSelectedMetatype = lstMetatypes.SelectedValue?.ToString();
+            string strSelectedMetatype = lstMetatypes.SelectedValue.ToString();
             if (!string.IsNullOrEmpty(strSelectedMetatype))
             {
                 string strSelectedMetatypeCategory = cboCategory.SelectedValue?.ToString();
-                string strSelectedMetavariant = cboMetavariant.SelectedValue.ToString();
+                string strSelectedMetavariant = cboMetavariant.SelectedValue?.ToString() ?? Guid.Empty.ToString();
 
                 // If this is a Shapeshifter, a Metavariant must be selected. Default to Human if None is selected.
-                if (strSelectedMetatypeCategory == "Shapeshifter" && strSelectedMetavariant == "None")
-                    strSelectedMetavariant = "Human";
+                if (strSelectedMetatypeCategory == "Shapeshifter" && strSelectedMetavariant == Guid.Empty.ToString())
+                    strSelectedMetavariant = _xmlMetatypeDocumentMetatypesNode.SelectSingleNode("metatype[name = \"Human\"]/id").InnerText;
 
-                XmlNode objXmlMetatype = _xmlMetatypeDocumentMetatypesNode.SelectSingleNode("metatype[name = \"" + strSelectedMetatype + "\"]");
+                XmlNode objXmlMetatype = _xmlMetatypeDocumentMetatypesNode.SelectSingleNode("metatype[id = \"" + strSelectedMetatype + "\"]");
                 if (objXmlMetatype == null)
                 {
                     Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Metatype_SelectMetatype", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_Metatype_SelectMetatype", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     Cursor = Cursors.Default;
                     return;
                 }
-                XmlNode objXmlMetavariant = objXmlMetatype.SelectSingleNode("metavariants/metavariant[name = \"" + strSelectedMetavariant + "\"]");
+                XmlNode objXmlMetavariant = objXmlMetatype.SelectSingleNode("metavariants/metavariant[id = \"" + strSelectedMetavariant + "\"]");
                 int intForce = 0;
                 if (nudForce.Visible)
                     intForce = decimal.ToInt32(nudForce.Value);
@@ -211,12 +210,16 @@ namespace Chummer
                 // Set Metatype information.
                 int intMinModifier = 0;
                 int intMaxModifier = 0;
-                XmlNode charNode = strSelectedMetatypeCategory == "Shapeshifter" ? objXmlMetatype : objXmlMetavariant ?? objXmlMetatype;
+                XmlNode charNode = strSelectedMetatypeCategory == "Shapeshifter" || strSelectedMetavariant == Guid.Empty.ToString() ? objXmlMetatype : objXmlMetavariant ?? objXmlMetatype;
                 _objCharacter.AttributeSection.Create(charNode, intForce, intMinModifier, intMaxModifier);
-                _objCharacter.Metatype = strSelectedMetatype;
+                _objCharacter.MetatypeGuid = new Guid(strSelectedMetatype);
+                _objCharacter.Metatype = charNode["name"].InnerText;
                 _objCharacter.MetatypeCategory = strSelectedMetatypeCategory;
                 _objCharacter.MetatypeBP = Convert.ToInt32(lblKarma.Text);
-                _objCharacter.Metavariant = strSelectedMetavariant == "None" ? string.Empty : strSelectedMetavariant;
+                _objCharacter.MetavariantGuid = new Guid(strSelectedMetavariant);
+                _objCharacter.Metavariant = _objCharacter.MetavariantGuid != Guid.Empty ? objXmlMetavariant["name"].InnerText : "None";
+                _objCharacter.Source = charNode["source"].InnerText;
+                _objCharacter.Page = charNode["page"]?.InnerText ?? "0";
 
                 // We only reverted to the base metatype to get the attributes.
                 if (strSelectedMetatypeCategory == "Shapeshifter")
@@ -411,6 +414,13 @@ namespace Chummer
                         ImprovementManager.CreateImprovement(_objCharacter, xmlSkill.InnerText, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.SkillLevel, string.Empty, strRating == "F" ? intForce : Convert.ToInt32(strRating));
                         ImprovementManager.Commit(_objCharacter);
                     }
+                    string strSkill = xmlSkill.InnerText;
+                    Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill(strSkill);
+                    if (objSkill == null) continue;
+                    string strSpec = xmlSkill.Attributes?["spec"]?.InnerText ?? string.Empty;
+                    ImprovementManager.CreateImprovement(_objCharacter, strSkill, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.SkillSpecialization, strSpec);
+                    SkillSpecialization spec= new SkillSpecialization(strSpec, true, objSkill);
+                    objSkill.Specializations.Add(spec);
                 }
                 //Set the Skill Group Ratings for the Critter.
                 foreach (XmlNode xmlSkillGroup in charNode.SelectNodes("skills/group"))
@@ -484,6 +494,42 @@ namespace Chummer
                     _objCharacter.ComplexForms.Add(objComplexform);
 
                     ImprovementManager.CreateImprovement(_objCharacter, objComplexform.InternalId, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.ComplexForm, string.Empty);
+                    ImprovementManager.Commit(_objCharacter);
+                }
+
+                //Load any cyberware the character has.
+                XmlDocument xmlCyberwareDocument = XmlManager.Load("cyberware.xml");
+                foreach (XmlNode node in charNode.SelectNodes("cyberwares/cyberware"))
+                {
+                    XmlNode objXmlCyberwareNode = xmlCyberwareDocument.SelectSingleNode($"chummer/cyberwares/cyberware[name = \"{node.InnerText}\"]");
+                    var objWare = new Cyberware(_objCharacter);
+                    string strForcedValue = node.Attributes["select"]?.InnerText ?? string.Empty;
+                    int intRating = Convert.ToInt32(node.Attributes["rating"]?.InnerText);
+
+                    objWare.Create(objXmlCyberwareNode,
+                        _objCharacter.GetGradeList(Improvement.ImprovementSource.Cyberware, true)
+                            .FirstOrDefault(x => x.Name == "None"), Improvement.ImprovementSource.Metatype, intRating,
+                        _objCharacter.Weapons, _objCharacter.Vehicles, true, true, strForcedValue);
+                    _objCharacter.Cyberware.Add(objWare);
+                    ImprovementManager.CreateImprovement(_objCharacter, objWare.InternalId, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.FreeWare, string.Empty);
+                    ImprovementManager.Commit(_objCharacter);
+                }
+
+                //Load any bioware the character has.
+                XmlDocument xmlBiowareDocument = XmlManager.Load("bioware.xml");
+                foreach (XmlNode node in charNode.SelectNodes("biowares/bioware"))
+                {
+                    XmlNode objXmlCyberwareNode = xmlBiowareDocument.SelectSingleNode($"chummer/biowares/bioware[name = \"{node.InnerText}\"]");
+                    var objWare = new Cyberware(_objCharacter);
+                    string strForcedValue = node.Attributes["select"]?.InnerText ?? string.Empty;
+                    int intRating = Convert.ToInt32(node.Attributes["rating"]?.InnerText);
+
+                    objWare.Create(objXmlCyberwareNode,
+                        _objCharacter.GetGradeList(Improvement.ImprovementSource.Cyberware, true)
+                            .FirstOrDefault(x => x.Name == "None"), Improvement.ImprovementSource.Metatype, intRating,
+                        _objCharacter.Weapons, _objCharacter.Vehicles, true, true, strForcedValue);
+                    _objCharacter.Cyberware.Add(objWare);
+                    ImprovementManager.CreateImprovement(_objCharacter, objWare.InternalId, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.FreeWare, string.Empty);
                     ImprovementManager.Commit(_objCharacter);
                 }
 
@@ -604,11 +650,11 @@ namespace Chummer
             string strSelectedMetatype = lstMetatypes.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedMetatype))
             {
-                objXmlMetatype = _xmlBaseMetatypeDataNode.SelectSingleNode("metatypes/metatype[name = \"" + strSelectedMetatype + "\"]");
+                objXmlMetatype = _xmlBaseMetatypeDataNode.SelectSingleNode($"metatypes/metatype[id = \"{strSelectedMetatype}\"]");
                 string strSelectedMetavariant = cboMetavariant.SelectedValue?.ToString();
                 if (objXmlMetatype != null && !string.IsNullOrEmpty(strSelectedMetavariant) && strSelectedMetavariant != "None")
                 {
-                    objXmlMetavariant = objXmlMetatype.SelectSingleNode("metavariants/metavariant[name = \"" + strSelectedMetavariant + "\"]");
+                    objXmlMetavariant = objXmlMetatype.SelectSingleNode($"metavariants/metavariant[id = \"{strSelectedMetavariant}\"]");
                 }
             }
 
@@ -640,6 +686,7 @@ namespace Chummer
                     lblINI.Text = objXmlMetavariant.SelectSingleNode("inimin")?.Value ?? objXmlMetatype.SelectSingleNode("inimin")?.Value ?? 0.ToString(GlobalOptions.CultureInfo);
                 }
 
+                // ReSharper disable once IdentifierTypo
                 StringBuilder strbldQualities = new StringBuilder();
                 // Build a list of the Metavariant's Qualities.
                 foreach (XPathNavigator objXmlQuality in objXmlMetavariant.Select("qualities/*/quality"))
@@ -702,6 +749,7 @@ namespace Chummer
                     lblINI.Text = objXmlMetatype.SelectSingleNode("inimin")?.Value ?? 0.ToString(GlobalOptions.CultureInfo);
                 }
 
+                // ReSharper disable once IdentifierTypo
                 StringBuilder strbldQualities = new StringBuilder();
                 // Build a list of the Metatype's Positive Qualities.
                 foreach (XPathNavigator objXmlQuality in objXmlMetatype.Select("qualities/*/quality"))
@@ -772,22 +820,22 @@ namespace Chummer
             string strSelectedMetatype = lstMetatypes.SelectedValue?.ToString();
             XPathNavigator objXmlMetatype = null;
             if (!string.IsNullOrEmpty(strSelectedMetatype))
-                objXmlMetatype = _xmlBaseMetatypeDataNode.SelectSingleNode("metatypes/metatype[name = \"" + strSelectedMetatype + "\"]");
+                objXmlMetatype = _xmlBaseMetatypeDataNode.SelectSingleNode("metatypes/metatype[id = \"" + strSelectedMetatype + "\"]");
             // Don't attempt to do anything if nothing is selected.
             if (objXmlMetatype != null)
             {
                 List<ListItem> lstMetavariants = new List<ListItem>
                 {
-                    new ListItem("None", LanguageManager.GetString("String_None", GlobalOptions.Language))
+                    new ListItem(Guid.Empty, LanguageManager.GetString("String_None", GlobalOptions.Language))
                 };
+                lstMetavariants.AddRange(
+                    from XPathNavigator objXmlMetavariant in
+                        objXmlMetatype.Select("metavariants/metavariant[" + _objCharacter.Options.BookXPath() + "]")
+                    select new ListItem(objXmlMetavariant.SelectSingleNode("id")?.Value,
+                        objXmlMetavariant.SelectSingleNode("translate")?.Value ??
+                        objXmlMetavariant.SelectSingleNode("name")?.Value));
 
                 // Retrieve the list of Metavariants for the selected Metatype.
-                foreach (XPathNavigator objXmlMetavariant in objXmlMetatype.Select("metavariants/metavariant[" + _objCharacter.Options.BookXPath() + "]"))
-                {
-                    string strName = objXmlMetavariant.SelectSingleNode("name")?.Value;
-                    if (!string.IsNullOrEmpty(strName))
-                        lstMetavariants.Add(new ListItem(strName, objXmlMetavariant.SelectSingleNode("translate")?.Value ?? strName));
-                }
 
                 bool blnOldLoading = _blnLoading;
                 string strOldSelectedValue = cboMetavariant.SelectedValue?.ToString() ?? _objCharacter?.Metavariant;
@@ -884,14 +932,12 @@ namespace Chummer
             string strSelectedCategory = cboCategory.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedCategory))
             {
-                List<ListItem> lstMetatypeItems = new List<ListItem>();
-
-                foreach (XPathNavigator objXmlMetatype in _xmlBaseMetatypeDataNode.Select("metatypes/metatype[(" + _objCharacter.Options.BookXPath() + ") and category = \"" + strSelectedCategory + "\"]"))
-                {
-                    string strName = objXmlMetatype.SelectSingleNode("name")?.Value;
-                    if (!string.IsNullOrEmpty(strName))
-                        lstMetatypeItems.Add(new ListItem(strName, objXmlMetatype.SelectSingleNode("translate")?.Value ?? strName));
-                }
+                List<ListItem> lstMetatypeItems =
+                    (from XPathNavigator objXmlMetatype in _xmlBaseMetatypeDataNode.Select(
+                            $"metatypes/metatype[({_objCharacter.Options.BookXPath()}) and category = \"{strSelectedCategory}\"]")
+                        select new ListItem(objXmlMetatype.SelectSingleNode("id")?.Value,
+                            objXmlMetatype.SelectSingleNode("translate")?.Value ??
+                            objXmlMetatype.SelectSingleNode("name")?.Value)).ToList();
 
                 lstMetatypeItems.Sort(CompareListItems.CompareNames);
 

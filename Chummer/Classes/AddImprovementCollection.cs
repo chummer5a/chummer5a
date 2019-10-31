@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -5213,43 +5214,66 @@ namespace Chummer.Classes
             Log.Info("_strLimitSelection = " + LimitSelection);
 
             string strForcePower = !string.IsNullOrEmpty(LimitSelection) ? LimitSelection : string.Empty;
-
-            List<Tuple<string, string>> lstPowerExtraPairs = new List<Tuple<string, string>>();
-            using (XmlNodeList xmlOptionalPowerList = bonusNode.SelectNodes("optionalpower"))
-                if (xmlOptionalPowerList?.Count > 0)
-                    foreach (XmlNode objXmlOptionalPower in xmlOptionalPowerList)
-                    {
-                        string strPower = objXmlOptionalPower.InnerText;
-                        if (string.IsNullOrEmpty(strForcePower) || strForcePower == strPower)
-                        {
-                            lstPowerExtraPairs.Add(new Tuple<string, string>(strPower, objXmlOptionalPower.Attributes?["select"]?.InnerText));
-                        }
-                    }
-
-            // Display the Select Critter Power window and record which power was selected.
-            frmSelectOptionalPower frmPickPower = new frmSelectOptionalPower(lstPowerExtraPairs.ToArray())
+            int powerCount = 1;
+            if (strForcePower == string.Empty && bonusNode.Attributes?["count"] != null)
             {
-                Description = LanguageManager.GetString("String_Improvement_SelectOptionalPower", GlobalOptions.Language)
-            };
+                string strCount = bonusNode.Attributes?["count"]?.InnerText;
 
-            frmPickPower.ShowDialog();
+                StringBuilder objCountString = new StringBuilder(bonusNode.Attributes?["count"]?.InnerText);
+                foreach (string strAttribute in AttributeSection.AttributeStrings)
+                {
+                    CharacterAttrib objLoopAttribute = _objCharacter.GetAttribute(strAttribute);
+                    objCountString.CheapReplace(strCount, "{" + strAttribute + "}", () => objLoopAttribute.TotalValue.ToString());
+                    objCountString.CheapReplace(strCount, "{" + strAttribute + "Base}", () => objLoopAttribute.TotalBase.ToString());
+                }
 
-            // Make sure the dialogue window was not canceled.
-            if (frmPickPower.DialogResult == DialogResult.Cancel)
-            {
-                throw new AbortedException();
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(objCountString.ToString(), out bool blnIsSuccess);
+                powerCount = blnIsSuccess ? Convert.ToInt32(objProcess) : 1;
             }
 
-            // Record the improvement.
-            XmlNode objXmlPowerNode = XmlManager.Load("critterpowers.xml").SelectSingleNode("/chummer/powers/power[name = \"" + frmPickPower.SelectedPower + "\"]");
-            CritterPower objPower = new CritterPower(_objCharacter);
-            objPower.Create(objXmlPowerNode, 0, frmPickPower.SelectedPowerExtra);
-            if (objPower.InternalId.IsEmptyGuid())
-                throw new AbortedException();
+            for (int i = 0; i < powerCount; i++)
+            {
+                List<Tuple<string, string>> lstPowerExtraPairs = new List<Tuple<string, string>>();
+                using (XmlNodeList xmlOptionalPowerList = bonusNode.SelectNodes("optionalpower"))
+                    if (xmlOptionalPowerList?.Count > 0)
+                        foreach (XmlNode objXmlOptionalPower in xmlOptionalPowerList)
+                        {
+                            string strPower = objXmlOptionalPower.InnerText;
+                            if (string.IsNullOrEmpty(strForcePower) || strForcePower == strPower)
+                            {
+                                lstPowerExtraPairs.Add(new Tuple<string, string>(strPower,
+                                    objXmlOptionalPower.Attributes?["select"]?.InnerText));
+                            }
+                        }
 
-            objPower.Grade = -1;
-            _objCharacter.CritterPowers.Add(objPower);
-            CreateImprovement(objPower.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.CritterPower, _strUnique);
+                // Display the Select Critter Power window and record which power was selected.
+                frmSelectOptionalPower frmPickPower = new frmSelectOptionalPower(lstPowerExtraPairs.ToArray())
+                {
+                    Description = LanguageManager.GetString("String_Improvement_SelectOptionalPower",
+                        GlobalOptions.Language)
+                };
+
+                frmPickPower.ShowDialog();
+
+                // Make sure the dialogue window was not canceled.
+                if (frmPickPower.DialogResult == DialogResult.Cancel)
+                {
+                    throw new AbortedException();
+                }
+
+                // Record the improvement.
+                XmlNode objXmlPowerNode = XmlManager.Load("critterpowers.xml")
+                    .SelectSingleNode("/chummer/powers/power[name = \"" + frmPickPower.SelectedPower + "\"]");
+                CritterPower objPower = new CritterPower(_objCharacter);
+                objPower.Create(objXmlPowerNode, 0, frmPickPower.SelectedPowerExtra);
+                if (objPower.InternalId.IsEmptyGuid())
+                    throw new AbortedException();
+
+                objPower.Grade = -1;
+                _objCharacter.CritterPowers.Add(objPower);
+                CreateImprovement(objPower.InternalId, _objImprovementSource, SourceName,
+                    Improvement.ImprovementType.CritterPower, _strUnique);
+            }
         }
 
         public void critterpowers(XmlNode bonusNode)
@@ -5789,7 +5813,13 @@ namespace Chummer.Classes
             Log.Info("addlimb");
             Log.Info("addlimb = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
-            CreateImprovement(bonusNode["limbslot"]?.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.AddLimb, _strUnique,
+
+            string strUseUnique = _strUnique;
+            XmlNode xmlPrecedenceNode = bonusNode.SelectSingleNode("@precedence");
+            if (xmlPrecedenceNode != null)
+                strUseUnique = "precedence" + xmlPrecedenceNode.InnerText;
+
+            CreateImprovement(bonusNode["limbslot"]?.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.AddLimb, strUseUnique,
                 ImprovementManager.ValueToInt(_objCharacter, bonusNode["val"]?.InnerText, _intRating));
         }
 
@@ -6328,7 +6358,7 @@ namespace Chummer.Classes
                 ImprovementManager.ValueToInt(_objCharacter, strVal, _intRating));
         }
 
-        public void metageneticlimit(XmlNode bonusNode)
+        public void metageniclimit(XmlNode bonusNode)
         {
             Log.Info("spellresistance");
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.MetageneticLimit, _strUnique,
@@ -6377,6 +6407,15 @@ namespace Chummer.Classes
             Log.Info("contactkarmaminimum");
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.ContactKarmaMinimum, _strUnique,
                 ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
+        // Enable Sprite Fettering.
+        public void allowspritefettering(XmlNode bonusNode)
+        {
+            Log.Info("AllowSpriteFettering");
+            Log.Info("AllowSpriteFettering = " + bonusNode.OuterXml);
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.AllowSpriteFettering, _strUnique);
         }
         #endregion
     }

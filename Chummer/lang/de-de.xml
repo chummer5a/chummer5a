@@ -4909,11 +4909,11 @@
 			<text>Nur Gaben, die ich auswählen kann</text>
 		</string>
 		<string>
-			<key>Checkbox_SelectQuality_Metagenetic</key>
+			<key>Checkbox_SelectQuality_Metagenic</key>
 			<text>Nur metagenetische Gaben anzeigen</text>
 		</string>
 		<string>
-			<key>Checkbox_SelectQuality_Not_Metagenetic</key>
+			<key>Checkbox_SelectQuality_Not_Metagenic</key>
 			<text>Keine metagenetischen Gaben anzeigen</text>
 		</string>
 		<string>
@@ -7114,7 +7114,7 @@
 		</string>
 		<string>
 			<key>Checkbox_Options_UseLogging</key>
-			<text>Benutze Debug Logging</text>
+			<text>Benutze Logging</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_LicenseRestricted</key>
@@ -9614,37 +9614,105 @@
 			<key>Menu_ShareChummer</key>
 			<text>Chummer weiterempfehlen</text>
 		</string>
+        <string>
+          <key>Menu_ShowMySINners</key>
+          <text>Alle Daten anzeigen</text>
+        </string>
+		<string>
+			<key>String_ApplicationInsights_OnlyLocal</key>
+			<text>nur lokal loggen</text>
+		</string>
+		<string>
+			<key>String_ApplicationInsights_OnlyMetric</key>
+			<text>nur Statistiken hochladen</text>
+		</string>
+		<string>
+			<key>String_ApplicationInsights_Crashes</key>
+			<text>Programm-Abstürze hochladen</text>
+		</string>
+		<string>
+			<key>String_ApplicationInsights_Info</key>
+			<text>normale Logs hochladen</text>
+		</string>
+		<string>
+			<key>String_ApplicationInsights_Trace</key>
+			<text>detailierte Logs hochladen</text>
+		</string>
+		<string>
+			<key>String_ApplicationInsights_NotSet</key>
+			<text>lasse Chummer entscheiden</text>
+		</string>
+		<string>
+			<key>Label_SelectAdvancedLifestyle_Base</key>
+			<text>[{0}/{1}]</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_IncreasedImprovedAbilityModifier</key>
+			<text>Verbesserte Fertigkeit wird durch die erlernte Kraft mit 1,5 statt 0,5 begrenzt</text>
+		</string>
+		<string>
+			<key>Label_SummaryMetagenicQualities</key>
+			<text>Metagenetische Gaben</text>
+		</string>
+		<string>
+			<key>Label_MetagenicKarmaValue</key>
+			<text>{0}P/{1}N - Max. {2}</text>
+		</string>
+		<string>
+			<key>Label_MetagenicKarmaValueAppend</key>
+			<text> (1 Karma)</text>
+		</string>
+		<string>
+			<key>Message_InvalidPowerPoints</key>
+			<text>{0} über den maximalen Adeptenkraftpunkte ({1})</text>
+		</string>
+		<string>
+			<key>Label_RatingFormat</key>
+			<text>{0}:</text>
+		</string>
+		<string>
+			<key>Rating_LengthInCmBy10</key>
+			<text>Länge (cm)x10</text>
+		</string>
+		<string>
+			<key>Rating_Meters</key>
+			<text>Meter</text>
+		</string>
+        <string>
+          <key>String_SINners_HowToGroupParentDescription</key>
+          <text>Eine (fertig) erstellte Gruppe kann per Drag'n'Drop einer andere Gruppe (als Sub-Gruppe) zugeordnet werden.</text>
+        </string>
+        <string>
+          <key>String_SINners_EnterGroupPassword</key>
+          <text>Diese Gruppe ist passwortgeschützt. Bitte gib das Passwort ein:</text>
+        </string>
+        <string>
+          <key>String_SINners_EnterGroupPasswordTitle</key>
+          <text>Passwortabfrage</text>
+        </string>
+        <string>
+          <key>Checkbox_Options_HideCharts</key>
+          <text>Tabellen verbergen, die Probleme mit Wine verursachen</text>
+        </string>
+        <string>
+          <key>String_SuppressiveFireNA</key>
+          <text>Sperrfeuer (N/A)</text>
+        </string>
+        <string>
+          <key>String_FullBurstNA</key>
+          <text>Salvenmodus (N/A)</text>
+        </string>
+        <string>
+          <key>String_LongBurstNA</key>
+          <text>Lange Salve (N/A)</text>
+        </string>
+        <string>
+          <key>String_ShortBurstNA</key>
+          <text>Kurze Salve (N/A)</text>
+        </string>
+        <string>
+          <key>String_SingleShotNA</key>
+          <text>Einzelschussmodus (N/A)</text>
+        </string>
 	</strings>
-	<string>
-		<key>String_ApplicationInsights_OnlyLocal</key>
-		<text>nur lokal loggen</text>
-	</string>
-	<string>
-		<key>String_ApplicationInsights_OnlyMetric</key>
-		<text>nur Statistiken hochladen</text>
-	</string>
-	<string>
-		<key>String_ApplicationInsights_Crashes</key>
-		<text>Programm-Abstürze hochladen</text>
-	</string>
-	<string>
-		<key>String_ApplicationInsights_Yes</key>
-		<text>alle Fehler hochladen</text>
-	</string>
-	<string>
-		<key>String_ApplicationInsights_NotSet</key>
-		<text>lasse Chummer entscheiden</text>
-	</string>
-	<string>
-		<key>Menu_Tools_SINners</key>
-		<text>SINner Gruppen</text>
-	</string>
-	<string>
-		<key>Menu_Tools_SINnersArchetypes</key>
-		<text>Archetypen</text>
-	</string>
-	<string>
-		<key>Menu_Tools_SINnerSearch</key>
-		<text>SINner suchen</text>
-	</string>
 </chummer>

@@ -395,11 +395,9 @@ namespace Chummer.Backend.Attributes
                 objAttribute.UnbindAttribute();
             AttributeList.Clear();
 			SpecialAttributeList.Clear();
-            XmlDocument objXmlDocument = XmlManager.Load(_objCharacter.IsCritter ? "critters.xml" : "metatypes.xml");
-            XmlNode xmlMetatypeNode = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
-            XmlNode xmlCharNode = xmlMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = \"" + _objCharacter.Metavariant + "\"]") ?? xmlMetatypeNode;
+            XPathNavigator xmlCharNode = _objCharacter.GetNode();
             // We only want to remake attributes for shifters in career mode, because they only get their second set of attributes when exporting from create mode into career mode
-            XmlNode xmlCharNodeAnimalForm = _objCharacter.MetatypeCategory == "Shapeshifter" && _objCharacter.Created ? xmlMetatypeNode : null;
+            XPathNavigator xmlCharNodeAnimalForm = _objCharacter.MetatypeCategory == "Shapeshifter" && _objCharacter.Created ? _objCharacter.GetNode(true) : null;
             foreach (string strAttribute in AttributeStrings)
             {
                 XmlNodeList lstAttributeNodes = xmlSavedCharacterNode.SelectNodes("attributes/attribute[name = \"" + strAttribute + "\"]");
@@ -429,7 +427,7 @@ namespace Chummer.Backend.Attributes
                         case CharacterAttrib.AttributeCategory.Special:
                             SpecialAttributeList.Add(objAttribute);
                             break;
-                        case CharacterAttrib.AttributeCategory.Shapeshifter:
+                        case CharacterAttrib.AttributeCategory.Standard:
                             AttributeList.Add(objAttribute);
                             break;
                     }
@@ -470,15 +468,10 @@ namespace Chummer.Backend.Attributes
                 SpecialAttributeList.Clear();
                 XmlDocument objXmlDocument =
                     XmlManager.Load(_objCharacter.IsCritter ? "critters.xml" : "metatypes.xml");
-                XmlNode xmlMetatypeNode =
-                    objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype +
-                                                    "\"]");
-                XmlNode xmlCharNode =
-                    xmlMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = \"" + _objCharacter.Metavariant +
-                                                      "\"]") ?? xmlMetatypeNode;
+                XPathNavigator xmlCharNode = _objCharacter.GetNode();
                 // We only want to remake attributes for shifters in career mode, because they only get their second set of attributes when exporting from create mode into career mode
-                XmlNode xmlCharNodeAnimalForm =
-                    _objCharacter.MetatypeCategory == "Shapeshifter" && _objCharacter.Created ? xmlMetatypeNode : null;
+                XPathNavigator xmlCharNodeAnimalForm =
+                    _objCharacter.MetatypeCategory == "Shapeshifter" && _objCharacter.Created ? _objCharacter.GetNode(true) : null;
                 foreach (string strAttribute in AttributeStrings)
                 {
                     // First, remake the attribute
@@ -669,7 +662,7 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        private static CharacterAttrib RemakeAttribute(CharacterAttrib objNewAttribute, XmlNode objCharacterNode)
+        private static CharacterAttrib RemakeAttribute(CharacterAttrib objNewAttribute, XPathNavigator objCharacterNode)
         {
             string strAttributeLower = objNewAttribute.Abbrev.ToLowerInvariant();
             if (strAttributeLower == "magadept")
@@ -681,7 +674,7 @@ namespace Chummer.Backend.Attributes
             // This statement is wrapped in a try/catch since trying 1 div 2 results in an error with XSLT.
             try
             {
-                object objProcess = CommonFunctions.EvaluateInvariantXPath(objCharacterNode[strAttributeLower + "min"]?.InnerText.Replace("/", " div ").Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1",
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(objCharacterNode.SelectSingleNode(strAttributeLower + "min")?.Value.Replace("/", " div ").Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1",
                     out bool blnIsSuccess);
                 if (blnIsSuccess)
                     intMinValue = Convert.ToInt32(Math.Ceiling((double)objProcess));
@@ -691,7 +684,7 @@ namespace Chummer.Backend.Attributes
             catch (InvalidCastException) { intMinValue = 1; }
             try
             {
-                object objProcess = CommonFunctions.EvaluateInvariantXPath(objCharacterNode[strAttributeLower + "max"]?.InnerText.Replace("/", " div ").Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1",
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(objCharacterNode.SelectSingleNode(strAttributeLower + "max")?.Value.Replace("/", " div ").Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1",
                     out bool blnIsSuccess);
                 if (blnIsSuccess)
                     intMaxValue = Convert.ToInt32(Math.Ceiling((double)objProcess));
@@ -701,7 +694,7 @@ namespace Chummer.Backend.Attributes
             catch (InvalidCastException) { intMaxValue = 1; }
             try
             {
-                object objProcess = CommonFunctions.EvaluateInvariantXPath(objCharacterNode[strAttributeLower + "aug"]?.InnerText.Replace("/", " div ").Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1",
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(objCharacterNode.SelectSingleNode(strAttributeLower + "aug")?.Value.Replace("/", " div ").Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1",
                     out bool blnIsSuccess);
                 if (blnIsSuccess)
                     intAugValue = Convert.ToInt32(Math.Ceiling((double)objProcess));
@@ -710,8 +703,8 @@ namespace Chummer.Backend.Attributes
             catch (OverflowException) { intAugValue = 1; }
             catch (InvalidCastException) { intAugValue = 1; }
 
-            objNewAttribute.Base = Convert.ToInt32(objCharacterNode["base"]?.InnerText);
-            objNewAttribute.Karma = Convert.ToInt32(objCharacterNode["base"]?.InnerText);
+            objNewAttribute.Base = Convert.ToInt32(objCharacterNode.SelectSingleNode("base")?.Value);
+            objNewAttribute.Karma = Convert.ToInt32(objCharacterNode.SelectSingleNode("base")?.Value);
             objNewAttribute.AssignLimits(intMinValue.ToString(), intMaxValue.ToString(), intAugValue.ToString());
             return objNewAttribute;
         }
@@ -719,20 +712,17 @@ namespace Chummer.Backend.Attributes
 		internal void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
 		{
 		    if (_objCharacter.MetatypeCategory == "Shapeshifter")
-		    {
-		        XmlDocument xmlMetatypesDoc = XmlManager.Load("metatypes.xml", strLanguageToPrint);
-		        XmlNode xmlNode = xmlMetatypesDoc.SelectSingleNode($"/chummer/metatypes/metatype[name = \"{_objCharacter.Metatype}\"]");
-
-		        xmlNode = xmlNode?.SelectSingleNode($"metavariants/metavariant[name = \"{_objCharacter.Metavariant}\"]/name/@translate");
+            {
+                XPathNavigator xmlNode = _objCharacter.GetNode(true);
 
 		        if (AttributeCategory == CharacterAttrib.AttributeCategory.Standard)
 		        {
-		            objWriter.WriteElementString("attributecategory", xmlNode?.SelectSingleNode("name/@translate")?.InnerText ?? _objCharacter.Metatype);
+		            objWriter.WriteElementString("attributecategory", xmlNode?.SelectSingleNode("name/@translate")?.Value ?? _objCharacter.Metatype);
                 }
 		        else
 		        {
-		            xmlNode = xmlNode?.SelectSingleNode($"metavariants/metavariant[name = \"{_objCharacter.Metavariant}\"]/name/@translate");
-                    objWriter.WriteElementString("attributecategory", xmlNode?.InnerText ?? _objCharacter.Metavariant);
+		            xmlNode = xmlNode?.SelectSingleNode($"metavariants/metavariant[id = \"{_objCharacter.MetavariantGuid}\"]");
+                    objWriter.WriteElementString("attributecategory", xmlNode?.Value ?? _objCharacter.Metavariant);
                 }
 		    }
 		    objWriter.WriteElementString("attributecategory_english", AttributeCategory.ToString());

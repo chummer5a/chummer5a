@@ -381,7 +381,8 @@
         </xs:complexType>
       </xs:element>
       <xs:element name="friendsinhighplaces" type="xs:string" minOccurs="0" maxOccurs="1" />
-      <xs:element name="genetechcostmultiplier" minOccurs="0" maxOccurs="1" />
+      <xs:element name="genetechcostmultiplier" type="xs:integer" minOccurs="0" maxOccurs="1" />
+      <xs:element name="genetechessmultiplier" type="xs:integer" minOccurs="0" maxOccurs="1" />
       <xs:element name="hardwires" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:simpleContent>

@@ -123,6 +123,7 @@
     <category blackmarket="Bioware">Genemods</category>
     <category blackmarket="Bioware">Orthoskin Upgrades</category>
     <category blackmarket="Bioware">Symbionts</category>
+    <category blackmarket="Bioware">Genetic Restoration</category>
   </categories>
   <biowares>
     <!-- Region Shadowrun 5-->
@@ -2486,6 +2487,13 @@
       <avail>10</avail>
       <cost>8000</cost>
       <forcegrade>None</forcegrade>
+      <bonus>
+        <specificskill>
+          <name>Perception</name>
+          <bonus>3</bonus>
+          <condition>Visual</condition>
+        </specificskill>
+      </bonus>
       <source>CF</source>
       <page>161</page>
     </bioware>
@@ -3082,7 +3090,7 @@
       <name>Revitilization</name>
       <limit>False</limit>
       <category>Genetic Restoration</category>
-      <ess>0</ess>
+      <ess>-0.1</ess>
       <capacity>0</capacity>
       <avail>14</avail>
       <cost>110000</cost>

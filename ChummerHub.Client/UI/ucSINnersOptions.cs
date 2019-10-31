@@ -26,6 +26,7 @@ using Microsoft.Win32;
 using NLog;
 using MessageBox = System.Windows.Forms.MessageBox;
 using OpenFileDialog = System.Windows.Forms.OpenFileDialog;
+using Utils = ChummerHub.Client.Backend.Utils;
 
 //using Nemiro.OAuth;
 //using Nemiro.OAuth.LoginForms;
@@ -211,7 +212,8 @@ namespace ChummerHub.Client.UI
             this.cbSINnerUrl.DataSource = Properties.Settings.Default.SINnerUrls;
             this.cbSINnerUrl.SelectedItem = sinnerurl;
             this.cbVisibilityIsPublic.Checked = Properties.Settings.Default.VisibilityIsPublic;
-            //this.cbVisibilityIsGroupVisible.Checked = Properties.Settings.Default.VisibilityIsGroupVisible;
+            this.cbIgnoreWarnings.Checked = Properties.Settings.Default.IgnoreWarningsOnOpening;
+            this.cbOpenChummerFromSharedLinks.Checked = Properties.Settings.Default.OpenChummerFromSharedLinks;
             cbSINnerUrl.Enabled = false;
             if (ChummerHub.Client.Properties.Settings.Default.UserModeRegistered == true)
             {
@@ -241,26 +243,41 @@ namespace ChummerHub.Client.UI
             }
             cbUploadOnSave.Checked = ucSINnersOptions.UploadOnSave;
             cbSINnerUrl.SelectedValueChanged += CbSINnerUrl_SelectedValueChanged;
-            AddShieldToButton(bRegisterUriScheme);
+            //AddShieldToButton(bRegisterUriScheme);
             this.cbVisibilityIsPublic.CheckedChanged += cbVisibilityIsPublic_CheckedChanged;
             this.cbUploadOnSave.CheckedChanged += cbUploadOnSave_CheckedChanged;
             this.rbListUserMode.SelectedIndexChanged += RbListUserMode_SelectedIndexChanged;
+            this.cbIgnoreWarnings.CheckedChanged += CbIgnoreWarningsOnCheckedChanged;
+            this.cbOpenChummerFromSharedLinks.CheckedChanged += CbOpenChummerFromSharedLinksOnCheckedChanged;
+
         }
 
-        [DllImport("user32.dll")]
-        public static extern int SendMessage(IntPtr hWnd,
-            uint Msg, int wParam, int lParam);
-
-        // Make the button display the UAC shield.
-        public static void AddShieldToButton(Button btn)
+        private void CbIgnoreWarningsOnCheckedChanged(object sender, EventArgs e)
         {
-            const Int32 BCM_SETSHIELD = 0x160C;
-
-            // Give the button the flat style and make it
-            // display the UAC shield.
-            btn.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            SendMessage(btn.Handle, BCM_SETSHIELD, 0, 1);
+            OptionsUpdate();
         }
+
+        
+        private void CbOpenChummerFromSharedLinksOnCheckedChanged(object sender, EventArgs e)
+        {
+            OptionsUpdate();
+        }
+
+
+        //[DllImport("user32.dll")]
+        //public static extern int SendMessage(IntPtr hWnd,
+        //    uint Msg, int wParam, int lParam);
+
+        //// Make the button display the UAC shield.
+        //public static void AddShieldToButton(Button btn)
+        //{
+        //    const Int32 BCM_SETSHIELD = 0x160C;
+
+        //    // Give the button the flat style and make it
+        //    // display the UAC shield.
+        //    btn.FlatStyle = System.Windows.Forms.FlatStyle.System;
+        //    SendMessage(btn.Handle, BCM_SETSHIELD, 0, 1);
+        //}
 
         ~ucSINnersOptions()
         {
@@ -515,6 +532,8 @@ namespace ChummerHub.Client.UI
         {
             Properties.Settings.Default.TempDownloadPath = this.tbTempDownloadPath.Text;
             Properties.Settings.Default.VisibilityIsPublic = this.cbVisibilityIsPublic.Checked;
+            Properties.Settings.Default.IgnoreWarningsOnOpening = this.cbIgnoreWarnings.Checked;
+            Properties.Settings.Default.OpenChummerFromSharedLinks = this.cbOpenChummerFromSharedLinks.Checked;
             if (this.rbListUserMode.SelectedIndex <= 0)
                 Properties.Settings.Default.UserModeRegistered = false;
             else
@@ -547,38 +566,15 @@ namespace ChummerHub.Client.UI
             if (thisDialog.ShowDialog() != DialogResult.OK) return;
             foreach (var file in thisDialog.FileNames)
             {
-                try
-                {
-                    Log.Trace("Loading: " + file);
-                    var c = new Character { FileName = file };
-                    using (frmLoading frmLoadingForm = new frmLoading {CharacterFile = file})
-                    {
-                        frmLoadingForm.Reset(36);
-                        frmLoadingForm.TopMost = true;
-                        frmLoadingForm.Show();
-                        if (!(await c.Load(frmLoadingForm, false)))
-                            continue;
-                        Log.Trace("Character loaded: " + c.Name);
-                    }
-                    frmCharacterRoster.CharacterCache myCharacterCache = new frmCharacterRoster.CharacterCache(file);
-                    CharacterExtended ce = new CharacterExtended(c, null, null, myCharacterCache);
-                    await ce.Upload(null);
-                }
-                catch (Exception ex)
-                {
-                    string msg = "Exception while loading " + file + ":";
-                    msg += Environment.NewLine + ex.ToString();
-                    Log.Warn(msg);
-                    /* run your code here */
-                    Program.MainForm.ShowMessageBox(msg);
-                 
-                }
+                await Utils.UploadCharacterFromFile(file);
             }
 
             Program.MainForm.ShowMessageBox("Upload of " + thisDialog.FileNames.Length + " files finished (successful or not - its over).");
         }
 
-    
+        
+
+
         private void cbUploadOnSave_CheckedChanged(object sender, EventArgs e)
         {
             ucSINnersOptions.UploadOnSave = cbUploadOnSave.Checked;
@@ -735,76 +731,14 @@ namespace ChummerHub.Client.UI
 
         private void BEditDefaultVisibility_Click(object sender, EventArgs e)
         {
-            //Properties.Settings.Default.UserEmail = mail;
-            //bool createVis = false;
-            //if (String.IsNullOrEmpty(Properties.Settings.Default.SINnerVisibility))
-            //{
-            //    createVis = true;
-            //}
-            //else
-            //{
-            //    SINnerVisibility vis =
-            //        Newtonsoft.Json.JsonConvert.DeserializeObject<SINnerVisibility>(Properties.Settings
-            //            .Default.SINnerVisibility);
-            //    bool found = false;
-            //    foreach (var ur in vis.UserRights)
-            //    {
-            //        if (ur.EMail.ToLowerInvariant() == mail.ToLowerInvariant())
-            //        {
-            //            ur.CanEdit = true;
-            //            found = true;
-            //            break;
-            //        }
-            //    }
-
-            //    if (!found)
-            //    {
-            //        createVis = true;
-            //    }
-            //}
-
-            //if (createVis)
-            //{
-
-            //    SINnerVisibility vis = SINnersOptions.SINnerVisibility;
-            //    if (vis == null)
-            //    {
-            //        vis = new SINnerVisibility();
-            //        vis.Id = Guid.NewGuid();
-            //        vis.IsGroupVisible = true;
-            //        vis.IsPublic = true;
-            //        vis.UserRights = new List<SINerUserRight>();
-
-            //        SINnersOptions.SINnerVisibility = null;
-            //        SINnersOptions.SINnerVisibility = vis;
-            //    }
-
-            //    var foundseq = from a in vis.UserRights.ToList()
-            //        where a.EMail.ToLowerInvariant() == mail.ToLowerInvariant()
-            //        select a;
-            //    if (!foundseq.Any())
-            //    {
-            //        SINerUserRight ur = new SINerUserRight();
-            //        ur.Id = Guid.NewGuid();
-            //        ur.EMail = mail;
-            //        ur.CanEdit = true;
-            //        vis.UserRights.Add(ur);
-            //    }
-
-            //    SINnersOptions.SINnerVisibility = vis;
-            //    Properties.Settings.Default.SINnerVisibility =
-            //        Newtonsoft.Json.JsonConvert.SerializeObject(vis);
-            //    Properties.Settings.Default.Save();
-            //    FillVisibilityListBox();
-            //}
-
-
             var visfrm = new frmSINnerVisibility();
             visfrm.MyVisibility = SINnerVisibility;
             var result = visfrm.ShowDialog(this);
             if (result == DialogResult.OK)
             {
                 SINnerVisibility = visfrm.MyVisibility;
+                Properties.Settings.Default.SINnerVisibility = Newtonsoft.Json.JsonConvert.SerializeObject(SINnerVisibility);
+                Properties.Settings.Default.Save();
             }
         }
 
@@ -816,17 +750,5 @@ namespace ChummerHub.Client.UI
                 this.tlpOptions.Enabled = true;
             OptionsUpdate();
         }
-
-        private void BRegisterUriScheme_Click(object sender, EventArgs e)
-        {
-            if (StaticUtils.RegisterChummerProtocol(null))
-                Program.MainForm.ShowMessageBox("Url is registered!");
-            else
-            {
-                Program.MainForm.ShowMessageBox("Url is NOT registered!");
-            }
-        }
-
-       
     }
 }

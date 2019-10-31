@@ -671,6 +671,17 @@
       <page>396</page>
     </power>
     <power>
+      <id>79317297-becf-4c68-9778-6f00fd955a13</id>
+      <name>Hemorrhage</name>
+      <category>Paranormal</category>
+      <type>P</type>
+      <action>Complex</action>
+      <range>MAG</range>
+      <duration>Instant</duration>
+      <source>SG</source>
+      <page>91</page>
+    </power>
+    <power>
       <id>30918b00-6dae-4989-9b6e-219c4bd6ac7e</id>
       <name>Inhabitation</name>
       <category>Paranormal</category>
@@ -2620,6 +2631,7 @@
       </forbidden>
       <required>
         <oneof>
+          <quality>Dracoform (Feathered Drake)</quality>
           <quality>Dracoform (Western Drake)</quality>
         </oneof>
       </required>
@@ -4232,6 +4244,105 @@
     </power>
     <!-- End Region -->
     <!-- Region Kill Code -->
+    <power>
+      <id>765bf1cb-2e4b-46e8-aee4-f19004f031f3</id>
+      <name>Bodyguard</name>
+      <category>Emergent</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <source>KC</source>
+      <page>100</page>
+    </power>
+    <power>
+      <id>d8e72e33-d70e-4fd5-8ca2-b6cb7da87a96</id>
+      <name>Shield</name>
+      <category>Emergent</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <source>KC</source>
+      <page>100</page>
+    </power>
+    <power>
+      <id>3873ed1d-9f98-4a68-bccd-012d237a2522</id>
+      <name>Active Analytics</name>
+      <category>Emergent</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <source>KC</source>
+      <page>101</page>
+    </power>
+    <power>
+      <id>5455b362-4c9d-4841-8069-230f44a4a3f0</id>
+      <name>Borrowed IP</name>
+      <category>Emergent</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <source>KC</source>
+      <page>101</page>
+    </power>
+    <power>
+      <id>ad1c42e7-315b-4c6b-ae49-856b274a129b</id>
+      <name>Decompiling Resistance</name>
+      <category>Emergent</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <source>KC</source>
+      <page>101</page>
+    </power>
+    <power>
+      <id>68bcb1c1-581c-4756-9856-690a5c3a5397</id>
+      <name>Enhance</name>
+      <category>Emergent</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <source>KC</source>
+      <page>101</page>
+    </power>
+    <power>
+      <id>8e7e1bb4-ad16-4195-aef8-dd5b4c701603</id>
+      <name>Navi</name>
+      <category>Emergent</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <source>KC</source>
+      <page>101</page>
+    </power>
+    <power>
+      <id>67ec3e9a-3e21-4906-9d90-1255f6086ce7</id>
+      <name>Resilient Code</name>
+      <category>Emergent</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <source>KC</source>
+      <page>101</page>
+    </power>
+    <power>
+      <id>91a4d3a9-bf11-4080-94aa-37e462436b12</id>
+      <name>Resonance Spooling</name>
+      <category>Emergent</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <source>KC</source>
+      <page>101</page>
+    </power>
     <power>
       <id>1749d122-8d63-4790-ba8b-974b500d5bab</id>
       <name>Resonance Hosting</name>

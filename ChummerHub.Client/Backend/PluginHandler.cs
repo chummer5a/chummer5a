@@ -6,6 +6,7 @@ using ChummerHub.Client.UI;
 using Newtonsoft.Json;
 using SINners.Models;
 using System;
+using System.CodeDom;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Composition;
@@ -44,6 +45,7 @@ namespace Chummer.Plugins
     {
         private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
         public static UploadClient MyUploadClient = null;
+        public static IPlugin MyPluginHandlerInstance = null;
 
         public static frmChummerMain MainForm = null;
 
@@ -63,8 +65,8 @@ namespace Chummer.Plugins
                 Properties.Settings.Default.UploadClientId = Guid.NewGuid();
                 Properties.Settings.Default.Save();
             }
-
             MyUploadClient.Id = Properties.Settings.Default.UploadClientId;
+            MyPluginHandlerInstance = this;
         }
 
 
@@ -76,19 +78,91 @@ namespace Chummer.Plugins
 
         bool IPlugin.SetCharacterRosterNode(TreeNode objNode)
         {
-            if (objNode?.ContextMenuStrip == null)
-                return false;
-            ToolStripMenuItem newShare = new ToolStripMenuItem("Share")
+            
+            if (objNode.Parent == null)
             {
-                Name = "tsShareChummer",
-                Tag = "Menu_ShareChummer",
-                Text = "Share chummer",
-                Size = new System.Drawing.Size(177, 22),
-                Image = global::Chummer.Properties.Resources.link_add
-            };
-            newShare.Click += NewShareOnClick;
-            objNode.ContextMenuStrip.Items.Add(newShare);
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, objNode.ContextMenuStrip);
+                ContextMenuStrip cmsRoster = new ContextMenuStrip();
+                ToolStripMenuItem tsShowMySINners = new ToolStripMenuItem()
+                {
+                    Name = "tsShowMySINners",
+                    Tag = "Menu_ShowMySINners",
+                    Text = "Show all my SINners",
+                    Size = new System.Drawing.Size(177, 22),
+                    Image = global::Chummer.Properties.Resources.link_add
+                };
+                cmsRoster.Items.Add(tsShowMySINners);
+                tsShowMySINners.Click += ShowMySINnersOnClick;
+                objNode.ContextMenuStrip = cmsRoster;
+                LanguageManager.TranslateWinForm(GlobalOptions.Language, objNode.ContextMenuStrip);
+                return true;
+            }
+            if (objNode.ContextMenuStrip == null)
+                objNode.ContextMenuStrip = PluginHandler.MainForm.CharacterRoster.CreateContextMenuStrip();
+            if (objNode.Tag is frmCharacterRoster.CharacterCache member)
+            {
+                PluginHandler.MainForm.DoThreadSafe(() =>
+                {
+                    ToolStripMenuItem newShare = new ToolStripMenuItem("Share")
+                    {
+                        Name = "tsShareChummer",
+                        Tag = "Menu_ShareChummer",
+                        Text = "Share chummer",
+                        Size = new System.Drawing.Size(177, 22),
+                        Image = global::Chummer.Properties.Resources.link_add
+                    };
+                    newShare.Click += NewShareOnClick;
+                    objNode.ContextMenuStrip.Items.Add(newShare);
+                    LanguageManager.TranslateWinForm(GlobalOptions.Language, objNode.ContextMenuStrip);
+                });
+            }
+
+
+            bool isPluginNode = false;
+            TreeNode checkNode = objNode;
+            while (isPluginNode == false && checkNode != null)
+            {
+                if (checkNode.Tag is PluginHandler)
+                    isPluginNode = true;
+                checkNode = checkNode.Parent;
+            }
+            if (!isPluginNode)
+            {
+                return true;
+            }
+            
+            if (objNode.Tag is SINnerSearchGroup group)
+            {
+                objNode.ContextMenuStrip = null;
+                return true;
+            }
+
+            
+            var menuitems = objNode.ContextMenuStrip.Items.Cast<ToolStripItem>().ToArray();
+            foreach (var item in menuitems)
+            {
+                switch (item.Name)
+                {
+                    case "tsToggleFav":
+                        objNode.ContextMenuStrip.Items.Remove(item);
+                        break;
+                    case "tsCloseOpenCharacter":
+                        objNode.ContextMenuStrip.Items.Remove(item);
+                        break;
+                    case "tsSort":
+                        objNode.ContextMenuStrip.Items.Remove(item);
+                        break;
+                    case "tsDelete":
+                        objNode.ContextMenuStrip.Items.Remove(item);
+                        ToolStripMenuItem newDelete = new ToolStripMenuItem(item.Text, item.Image);
+                        newDelete.Click += PluginHandler.MainForm.CharacterRoster.tsDelete_Click;
+                        objNode.ContextMenuStrip.Items.Add(newDelete);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            
+            
             return true;
         }
 
@@ -116,13 +190,6 @@ namespace Chummer.Plugins
             }
             switch (onlyparameter)
             {
-                case "RegisterUriScheme":
-                    if (StaticUtils.RegisterChummerProtocol(argument))
-                        Environment.ExitCode = -1;
-                    else
-                        Environment.ExitCode = 0;
-                    return false;
-                    break;
                 case "Load":
                     return HandleLoadCommand(argument);
                     break;
@@ -172,6 +239,42 @@ namespace Chummer.Plugins
                 }
                 if (PipeManager != null)
                 {
+                    try
+                    {
+                        string SINnerIdvalue = argument.Substring(5);
+                        SINnerIdvalue = SINnerIdvalue.Trim('/');
+                        int transactionInt = SINnerIdvalue.IndexOf(':');
+                        string transaction = null;
+                        int callbackInt = -1;
+                        string callback = null;
+                        if (transactionInt != -1)
+                        {
+                            transaction = SINnerIdvalue.Substring(transactionInt);
+                            SINnerIdvalue = SINnerIdvalue.Substring(0, transactionInt);
+                            SINnerIdvalue = SINnerIdvalue.TrimEnd(':');
+                            transaction = transaction.TrimStart(':');
+                            callbackInt = transaction.IndexOf(':');
+                            if (callbackInt != -1)
+                            {
+                                callback = transaction.Substring(callbackInt);
+                                transaction = transaction.Substring(0, callbackInt);
+                                transaction = transaction.TrimEnd(':');
+                                callback = callback.TrimStart(':');
+                                callback = WebUtility.UrlDecode(callback);
+                            }
+                            var task = Task.Run(async () =>
+                            {
+                                await ChummerHub.Client.Backend.StaticUtils.WebCall(callback, 10,
+                                    "Sending Open Character Request");
+                            });
+                            task.Wait();
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Error(e);
+                        PluginHandler.MainForm.ShowMessageBox("Error loading SINner: " + e.Message);
+                    }
                     string msg = "Load:" + myargument;
                     Log.Trace("Sending argument to Pipeserver: " + msg);
                     PipeManager.Write(msg);
@@ -593,44 +696,44 @@ namespace Chummer.Plugins
                 List<TreeNode> list = new List<TreeNode>();
                 using (new CursorWait(true, frmCharRoster))
                 {
-                        frmCharRoster.DoThreadSafe(() =>
-                        {
-                            myContextMenuStrip = frmCharRoster.CreateContextMenuStrip();
-                            var menulist = myContextMenuStrip.Items.Cast<ToolStripMenuItem>().ToList();
-                            foreach (var item in menulist)
-                            {
-                                switch (item.Name)
-                                {
-                                    case "tsToggleFav":
-                                        myContextMenuStrip.Items.Remove(item);
-                                        break;
-                                    case "tsCloseOpenCharacter":
-                                        myContextMenuStrip.Items.Remove(item);
-                                        break;
-                                    case "tsSort":
-                                        myContextMenuStrip.Items.Remove(item);
-                                        break;
-                                    case "tsDelete":
-                                        ToolStripMenuItem newDelete = new ToolStripMenuItem(item.Text, item.Image);
-                                        newDelete.Click += frmCharRoster.tsDelete_Click;
-                                        myContextMenuStrip.Items.Add(newDelete);
-                                        break;
-                                    default:
-                                        break;
-                                }
-                            }
-                            ToolStripMenuItem newShare = new ToolStripMenuItem("Share")
-                            {
-                                Name = "tsShareChummer",
-                                Tag = "Menu_ShareChummer",
-                                Text = "Share chummer",
-                                Size = new System.Drawing.Size(177, 22),
-                                Image = global::Chummer.Properties.Resources.link_add
-                            };
-                            newShare.Click += NewShareOnClick;
-                            myContextMenuStrip.Items.Add(newShare);
-                            LanguageManager.TranslateWinForm(GlobalOptions.Language, myContextMenuStrip);
-                        });
+                    //frmCharRoster.DoThreadSafe(() =>
+                    //{
+                    //    myContextMenuStrip = frmCharRoster.CreateContextMenuStrip();
+                    //    var menulist = myContextMenuStrip.Items.Cast<ToolStripMenuItem>().ToList();
+                    //    foreach (var item in menulist)
+                    //    {
+                    //        switch (item.Name)
+                    //        {
+                    //            case "tsToggleFav":
+                    //                myContextMenuStrip.Items.Remove(item);
+                    //                break;
+                    //            case "tsCloseOpenCharacter":
+                    //                myContextMenuStrip.Items.Remove(item);
+                    //                break;
+                    //            case "tsSort":
+                    //                myContextMenuStrip.Items.Remove(item);
+                    //                break;
+                    //            case "tsDelete":
+                    //                ToolStripMenuItem newDelete = new ToolStripMenuItem(item.Text, item.Image);
+                    //                newDelete.Click += frmCharRoster.tsDelete_Click;
+                    //                myContextMenuStrip.Items.Add(newDelete);
+                    //                break;
+                    //            default:
+                    //                break;
+                    //        }
+                    //    }
+                    //    ToolStripMenuItem newShare = new ToolStripMenuItem("Share")
+                    //    {
+                    //        Name = "tsShareChummer",
+                    //        Tag = "Menu_ShareChummer",
+                    //        Text = "Share chummer",
+                    //        Size = new System.Drawing.Size(177, 22),
+                    //        Image = global::Chummer.Properties.Resources.link_add
+                    //    };
+                    //    newShare.Click += NewShareOnClick;
+                    //    myContextMenuStrip.Items.Add(newShare);
+                    //    LanguageManager.TranslateWinForm(GlobalOptions.Language, myContextMenuStrip);
+                    //});
                     if (ChummerHub.Client.Properties.Settings.Default.UserModeRegistered == true)
                     {
                         Log.Info("Loading CharacterRoster from SINners...");
@@ -661,7 +764,7 @@ namespace Chummer.Plugins
                     {
                         list.Add(addme.Value);
                     }
-                    AddContextMenuStripRecursive(list, myContextMenuStrip);
+                    //AddContextMenuStripRecursive(list, myContextMenuStrip);
                     return list;
                 }
                     
@@ -698,6 +801,38 @@ namespace Chummer.Plugins
             }
         }
 
+        
+        private async void ShowMySINnersOnClick(object sender, EventArgs e)
+        {
+            //TreeNode t = PluginHandler.MainForm.CharacterRoster.treCharacterList.SelectedNode;
+            try
+            {
+                using (new CursorWait(true, PluginHandler.MainForm.CharacterRoster))
+                {
+                    var MySINSearchGroupResult = await ucSINnerGroupSearch.SearchForGroups(null);
+                    var item = (from a in MySINSearchGroupResult.SinGroups
+                        where a.Groupname?.Contains("My Data") == true
+                        select a).FirstOrDefault();
+                    if (item != null)
+                    {
+                        var list = new List<SINnerSearchGroup>() { item };
+                        var nodelist = ChummerHub.Client.Backend.Utils.CharacterRosterTreeNodifyGroupList(list);
+                        foreach (var node in nodelist)
+                        {
+                            PluginHandler.MyTreeNodes2Add.AddOrUpdate(node.Name, node, (key, oldValue) => node);
+                        }
+                        PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false, true);
+                        PluginHandler.MainForm.CharacterRoster.BringToFront();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                Program.MainForm.ShowMessageBox(ex.Message);
+            }
+        }
+
         private async void NewShareOnClick(object sender, EventArgs e)
         {
             TreeNode t = PluginHandler.MainForm.CharacterRoster.treCharacterList.SelectedNode;
@@ -708,27 +843,42 @@ namespace Chummer.Plugins
                 share.MyUcSINnerShare.MyCharacterCache = objCache;
                 share.TopMost = true;
                 share.Show(PluginHandler.MainForm);
-                await share.MyUcSINnerShare.DoWork();
+                try
+                {
+                    await share.MyUcSINnerShare.DoWork();
+                }
+                catch (Exception exception)
+                {
+                    Log.Error(exception);
+                    PluginHandler.MainForm.ShowMessageBox("Error sharing SINner: " + exception.Message);
+                }
+                
             }
         }
 
-        private void AddContextMenuStripRecursive(List<TreeNode> list, ContextMenuStrip myCmsRoster)
-        {
-            foreach (var node in list)
-            {
-                
-                PluginHandler.MainForm.DoThreadSafe(() =>
-                {
-                    node.ContextMenuStrip = myCmsRoster;
-                });
-                
-                if (node.Nodes.Count > 0)
-                {
-                    var myList = node.Nodes.Cast<TreeNode>().ToList();
-                    AddContextMenuStripRecursive(myList, myCmsRoster);
-                }
-            }
-        }
+        //private void AddContextMenuStripRecursive(List<TreeNode> list, ContextMenuStrip myCmsRoster)
+        //{
+        //    foreach (var node in list)
+        //    {
+        //        if (node.Parent != null)
+        //        {
+        //            if (node.Tag is SINnerSearchGroup group)
+        //            {
+                        
+        //            }
+        //            else if (node.Tag is frmCharacterRoster.CharacterCache member)
+        //            {
+        //                PluginHandler.MainForm.DoThreadSafe(() => { node.ContextMenuStrip = myCmsRoster; });
+        //            }
+        //        }
+
+        //        if (node.Nodes.Count > 0)
+        //        {
+        //            var myList = node.Nodes.Cast<TreeNode>().ToList();
+        //            AddContextMenuStripRecursive(myList, myCmsRoster);
+        //        }
+        //    }
+        //}
 
         public bool BlnHasDuplicate { get; set; }
 
@@ -805,6 +955,30 @@ namespace Chummer.Plugins
                     {
                         string SINnerIdvalue = argument.Substring(5);
                         SINnerIdvalue = SINnerIdvalue.Trim('/');
+                        int transactionInt = SINnerIdvalue.IndexOf(':');
+                        string transaction = null;
+                        int callbackInt = -1;
+                        string callback = null;
+                        if (transactionInt != -1)
+                        {
+                            transaction = SINnerIdvalue.Substring(transactionInt);
+                            SINnerIdvalue = SINnerIdvalue.Substring(0, transactionInt);
+                            SINnerIdvalue = SINnerIdvalue.TrimEnd(':');
+                            transaction = transaction.TrimStart(':');
+                            callbackInt = transaction.IndexOf(':');
+                            if (callbackInt != -1)
+                            {
+                                callback = transaction.Substring(callbackInt);
+                                transaction = transaction.Substring(0, callbackInt);
+                                transaction = transaction.TrimEnd(':');
+                                callback = callback.TrimStart(':');
+                                callback = WebUtility.UrlDecode(callback);
+                            }
+
+                            await ChummerHub.Client.Backend.StaticUtils.WebCall(callback, 30,
+                                "Open Character Request received!");
+                        }
+
                         if (Guid.TryParse(SINnerIdvalue, out Guid SINnerId))
                         {
                                 
@@ -812,11 +986,19 @@ namespace Chummer.Plugins
                             await ChummerHub.Client.Backend.Utils.HandleError(found, found?.Body);
                             if (found?.Response.StatusCode == System.Net.HttpStatusCode.OK)
                             {
+                                await ChummerHub.Client.Backend.StaticUtils.WebCall(callback, 40,
+                                    "Character found online");
                                 fileNameToLoad = await ChummerHub.Client.Backend.Utils.DownloadFileTask(found.Body.MySINner, null);
+                                await ChummerHub.Client.Backend.StaticUtils.WebCall(callback, 70,
+                                    "Character downloaded");
                                 await MainFormLoadChar(fileNameToLoad);
+                                await ChummerHub.Client.Backend.StaticUtils.WebCall(callback, 100,
+                                    "Character opened");
                             }
                             else if (found?.Response.StatusCode == HttpStatusCode.NotFound)
                             {
+                                await ChummerHub.Client.Backend.StaticUtils.WebCall(callback, 0,
+                                    "Character not found");
                                 PluginHandler.MainForm.ShowMessageBox("Could not find a SINner with Id " + SINnerId + " online!");
                             }
 
@@ -858,7 +1040,7 @@ namespace Chummer.Plugins
                         frmLoadingForm.Reset(36);
                         frmLoadingForm.TopMost = true;
                         frmLoadingForm.Show();
-                        if (await objCharacter.Load(frmLoadingForm, true))
+                        if (await objCharacter.Load(frmLoadingForm, ChummerHub.Client.Properties.Settings.Default.IgnoreWarningsOnOpening))
                             PluginHandler.MainForm.OpenCharacters.Add(objCharacter);
                         else
                             return objCharacter;
@@ -881,6 +1063,100 @@ namespace Chummer.Plugins
                     return objCharacter;
                 }
       
+        }
+
+        public async Task<bool> DoCharacterList_DragDrop(object sender, DragEventArgs e, System.Windows.Forms.TreeView treCharacterList )
+        {
+            try
+            {
+                // Do not allow the root element to be moved.
+                if (treCharacterList.SelectedNode == null || treCharacterList.SelectedNode.Level == 0 ||
+                    treCharacterList.SelectedNode.Parent?.Tag?.ToString() == "Watch")
+                    return false;
+
+                if (e.Data.GetDataPresent("System.Windows.Forms.TreeNode", false))
+                {
+                    if (!(sender is System.Windows.Forms.TreeView treSenderView))
+                        return false;
+                    System.Drawing.Point pt = treSenderView.PointToClient(new System.Drawing.Point(e.X, e.Y));
+                    TreeNode nodDestinationNode = treSenderView.GetNodeAt(pt);
+                    if (nodDestinationNode.Level > 0)
+                        nodDestinationNode = nodDestinationNode.Parent;
+                    string strDestinationNode = nodDestinationNode.Tag?.ToString();
+                    if (strDestinationNode != "Watch")
+                    {
+                        if (!(e.Data.GetData("System.Windows.Forms.TreeNode") is TreeNode nodNewNode))
+                            return false;
+                        var client = StaticUtils.GetClient();
+                        Guid? mySiNnerId = null;
+                        if (nodNewNode.Tag is SINnerSearchGroup sinGroup)
+                        {
+                            if (nodDestinationNode.Tag == PluginHandler.MyPluginHandlerInstance)
+                            {
+                                var res = await client.PutGroupInGroupWithHttpMessagesAsync(sinGroup.Id, sinGroup.Groupname, null);
+                                var handle = await ChummerHub.Client.Backend.Utils.HandleError(res);
+                                return true;
+                            }
+                            else if (nodDestinationNode.Tag is SINnerSearchGroup destGroup)
+                            {
+                                var res = await client.PutGroupInGroupWithHttpMessagesAsync(sinGroup.Id, sinGroup.Groupname, destGroup.Id, sinGroup.MyAdminIdentityRole, sinGroup.IsPublic);
+                                var handle = await ChummerHub.Client.Backend.Utils.HandleError(res);
+                                return true;
+                            }
+                        }
+                        else if (nodNewNode.Tag is frmCharacterRoster.CharacterCache objCache)
+                        {
+                            Object sinidob = null;
+                            if (objCache.MyPluginDataDic?.TryGetValue("SINnerId", out sinidob) == true)
+                            {
+                                mySiNnerId = (Guid?) sinidob;
+                            }
+                            else
+                            {
+                                var ce = await ChummerHub.Client.Backend.Utils.UploadCharacterFromFile(objCache.FilePath);
+                                mySiNnerId = ce?.MySINnerFile?.Id;
+                            }
+                        }
+                        else if (nodNewNode.Tag is SINner sinner)
+                        {
+                            mySiNnerId = sinner.Id;
+                        }
+
+                        if (mySiNnerId != null)
+                        {
+                            if (nodDestinationNode.Tag == PluginHandler.MyPluginHandlerInstance)
+                            {
+                                var res = await client.PutSINerInGroupWithHttpMessagesAsync(null, mySiNnerId);
+                                var handle = await ChummerHub.Client.Backend.Utils.HandleError(res);
+                                return true;
+                            }
+                            else if (nodDestinationNode.Tag is SINnerSearchGroup destGroup)
+                            {
+                                string passwd = null;
+                                if (destGroup.HasPassword == true)
+                                {
+                                    ChummerHub.Client.UI.frmSINnerPassword getPWD = new frmSINnerPassword();
+                                    var pwdquestion = LanguageManager.GetString("String_SINners_EnterGroupPassword", true);
+                                    var pwdcaption = LanguageManager.GetString("String_SINners_EnterGroupPasswordTitle", true);
+                                    passwd = getPWD.ShowDialog(pwdquestion, pwdcaption);
+                                }
+                                var res = await client.PutSINerInGroupWithHttpMessagesAsync(destGroup.Id, mySiNnerId, passwd);
+                                var handle = await ChummerHub.Client.Backend.Utils.HandleError(res);
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception exception)
+            {
+                Log.Error(exception);
+            }
+            finally
+            {
+                PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false, true);
+            }
+            return true;
         }
     }
 }

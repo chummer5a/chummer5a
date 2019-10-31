@@ -1,8 +1,7 @@
-using ChummerHub.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace ChummerHub.Models.V1
 {
@@ -27,18 +26,14 @@ namespace ChummerHub.Models.V1
     {
 
         public List<SINnerSearchGroup> MySINSearchGroups { get; set; }
-
         public string ErrorText { get; set; }
-
         public List<SINnerSearchGroupMember> MyMembers { get; set; }
-
         public SINnerSearchGroup()
         {
             MyMembers = new List<SINnerSearchGroupMember>();
             this.MyGroups = new List<SINnerGroup>();
             MySINSearchGroups = new List<SINnerSearchGroup>();
         }
-
         public SINnerSearchGroup(SINnerGroup groupbyname)
         {
             this.MyParentGroupId = groupbyname?.MyParentGroupId;
@@ -53,16 +48,15 @@ namespace ChummerHub.Models.V1
             this.Language = groupbyname?.Language;
             this.PasswordHash = groupbyname?.PasswordHash;
             this.MySettings = groupbyname?.MySettings;
+            this.HasPassword = this.PasswordHash?.Any() == true;
         }
-        
+
     }
 
     public class SINnerSearchGroupMember
     {
         public SINner MySINner { get; set; }
-
         public string Username { get; set; }
-
         public SINnerSearchGroupMember()
         {
             MySINner = new SINner();

@@ -225,19 +225,20 @@ namespace Chummer.Backend.Skills
         /// </summary>
         /// <param name="intAttributeTotalValue">The value of the used attribute</param>
         /// <param name="strAttribute">The English abbreviation of the used attribute.</param>
+        /// <param name="blnIncludeConditionals">Whether to include improvements that don't apply under all circumstances.</param>
         /// <returns></returns>
-        public int PoolOtherAttribute(int intAttributeTotalValue, string strAttribute)
+        public int PoolOtherAttribute(int intAttributeTotalValue, string strAttribute, bool blnIncludeConditionals = false)
         {
             if (!Enabled)
                 return 0;
             int intRating = Rating;
             if (intRating > 0)
             {
-                return Math.Max(0, intRating + intAttributeTotalValue + PoolModifiers(strAttribute) + CharacterObject.WoundModifier);
+                return Math.Max(0, intRating + intAttributeTotalValue + PoolModifiers(strAttribute, blnIncludeConditionals) + CharacterObject.WoundModifier);
             }
             if (Default)
             {
-                return Math.Max(0, intAttributeTotalValue + PoolModifiers(strAttribute) + DefaultModifier + CharacterObject.WoundModifier);
+                return Math.Max(0, intAttributeTotalValue + PoolModifiers(strAttribute, blnIncludeConditionals) + DefaultModifier + CharacterObject.WoundModifier);
             }
             return 0;
         }
@@ -262,20 +263,20 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// Things that modify the dicepool of the skill
         /// </summary>
-        public int PoolModifiers(string strUseAttribute) => Bonus(false, strUseAttribute);
+        public int PoolModifiers(string strUseAttribute, bool blnIncludeConditionals = false) => Bonus(false, strUseAttribute, blnIncludeConditionals);
 
         /// <summary>
         /// Things that modify the dicepool of the skill
         /// </summary>
-        public int RatingModifiers(string strUseAttribute) => Bonus(true, strUseAttribute);
+        public int RatingModifiers(string strUseAttribute, bool blnIncludeConditionals = false) => Bonus(true, strUseAttribute, blnIncludeConditionals);
 
-        protected int Bonus(bool blnAddToRating, string strUseAttribute)
+        protected int Bonus(bool blnAddToRating, string strUseAttribute, bool blnIncludeConditionals = false)
         {
             //Some of this is not future proof. Rating that don't stack is not supported but i'm not aware of any cases where that will happen (for skills)
-            return RelevantImprovements(x => x.AddToRating == blnAddToRating, strUseAttribute).Sum(x => x.Value);
+            return RelevantImprovements(x => x.AddToRating == blnAddToRating, strUseAttribute, blnIncludeConditionals).Sum(x => x.Value);
         }
 
-        private IEnumerable<Improvement> RelevantImprovements(Func<Improvement, bool> funcWherePredicate = null, string strUseAttribute = "")
+        private IEnumerable<Improvement> RelevantImprovements(Func<Improvement, bool> funcWherePredicate = null, string strUseAttribute = "", bool blnIncludeConditionals = false)
         {
             string strNameToUse = Name;
             if (!string.IsNullOrWhiteSpace(strNameToUse))
@@ -286,43 +287,42 @@ namespace Chummer.Backend.Skills
                     strUseAttribute = Attribute;
                 foreach (Improvement objImprovement in CharacterObject.Improvements)
                 {
-                    if (objImprovement.Enabled && funcWherePredicate?.Invoke(objImprovement) != false)
+                    if (!objImprovement.Enabled || funcWherePredicate?.Invoke(objImprovement) == false) continue;
+                    if (!blnIncludeConditionals && !string.IsNullOrWhiteSpace(objImprovement.Condition)) continue;
+                    switch (objImprovement.ImproveType)
                     {
-                        switch (objImprovement.ImproveType)
-                        {
-                            case Improvement.ImprovementType.Skill:
-                            case Improvement.ImprovementType.SwapSkillAttribute:
-                            case Improvement.ImprovementType.SwapSkillSpecAttribute:
-                            case Improvement.ImprovementType.SkillDisable:
-                                if (objImprovement.ImprovedName == Name || objImprovement.ImprovedName == strNameToUse)
-                                    yield return objImprovement;
-                                break;
-                            case Improvement.ImprovementType.SkillGroup:
-                            case Improvement.ImprovementType.SkillGroupDisable:
-                                if (objImprovement.ImprovedName == SkillGroup && !objImprovement.Exclude.Contains(Name) && !objImprovement.Exclude.Contains(strNameToUse) && !objImprovement.Exclude.Contains(SkillCategory))
-                                    yield return objImprovement;
-                                break;
-                            case Improvement.ImprovementType.SkillCategory:
-                                if (objImprovement.ImprovedName == SkillCategory && !objImprovement.Exclude.Contains(Name) && !objImprovement.Exclude.Contains(strNameToUse))
-                                    yield return objImprovement;
-                                break;
-                            case Improvement.ImprovementType.SkillAttribute:
-                                if (objImprovement.ImprovedName == strUseAttribute && !objImprovement.Exclude.Contains(Name) && !objImprovement.Exclude.Contains(strNameToUse))
-                                    yield return objImprovement;
-                                break;
-                            case Improvement.ImprovementType.SkillLinkedAttribute:
-                                if (objImprovement.ImprovedName == Attribute && !objImprovement.Exclude.Contains(Name) && !objImprovement.Exclude.Contains(strNameToUse))
-                                    yield return objImprovement;
-                                break;
-                            case Improvement.ImprovementType.BlockSkillDefault:
-                                if (objImprovement.ImprovedName == SkillGroup)
-                                    yield return objImprovement;
-                                break;
-                            case Improvement.ImprovementType.EnhancedArticulation:
-                                if (SkillCategory == "Physical Active" && AttributeSection.PhysicalAttributes.Contains(Attribute))
-                                    yield return objImprovement;
-                                break;
-                        }
+                        case Improvement.ImprovementType.Skill:
+                        case Improvement.ImprovementType.SwapSkillAttribute:
+                        case Improvement.ImprovementType.SwapSkillSpecAttribute:
+                        case Improvement.ImprovementType.SkillDisable:
+                            if ((objImprovement.ImprovedName == Name || objImprovement.ImprovedName == strNameToUse))
+                                yield return objImprovement;
+                            break;
+                        case Improvement.ImprovementType.SkillGroup:
+                        case Improvement.ImprovementType.SkillGroupDisable:
+                            if (objImprovement.ImprovedName == SkillGroup && !objImprovement.Exclude.Contains(Name) && !objImprovement.Exclude.Contains(strNameToUse) && !objImprovement.Exclude.Contains(SkillCategory))
+                                yield return objImprovement;
+                            break;
+                        case Improvement.ImprovementType.SkillCategory:
+                            if (objImprovement.ImprovedName == SkillCategory && !objImprovement.Exclude.Contains(Name) && !objImprovement.Exclude.Contains(strNameToUse))
+                                yield return objImprovement;
+                            break;
+                        case Improvement.ImprovementType.SkillAttribute:
+                            if (objImprovement.ImprovedName == strUseAttribute && !objImprovement.Exclude.Contains(Name) && !objImprovement.Exclude.Contains(strNameToUse))
+                                yield return objImprovement;
+                            break;
+                        case Improvement.ImprovementType.SkillLinkedAttribute:
+                            if (objImprovement.ImprovedName == Attribute && !objImprovement.Exclude.Contains(Name) && !objImprovement.Exclude.Contains(strNameToUse))
+                                yield return objImprovement;
+                            break;
+                        case Improvement.ImprovementType.BlockSkillDefault:
+                            if (objImprovement.ImprovedName == SkillGroup)
+                                yield return objImprovement;
+                            break;
+                        case Improvement.ImprovementType.EnhancedArticulation:
+                            if (SkillCategory == "Physical Active" && AttributeSection.PhysicalAttributes.Contains(Attribute))
+                                yield return objImprovement;
+                            break;
                     }
                 }
             }

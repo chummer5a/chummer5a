@@ -990,6 +990,7 @@
       <wirelesspairinclude>
         <name>Wired Reflexes</name>
       </wirelesspairinclude>
+      <minrating>1</minrating>
     </cyberware>
     <cyberware>
       <id>60485c4e-042f-44f6-ad89-324003223f73</id>
@@ -2974,6 +2975,7 @@
       <source>CF</source>
       <page>73</page>
       <rating>10</rating>
+      <ratinglabel>Rating_LengthInCmBy10</ratinglabel>
     </cyberware>
     <cyberware>
       <id>cb86075d-7d60-4618-9698-9e9268a28989</id>
@@ -3139,10 +3141,12 @@
       <ess>0.1</ess>
       <capacity>0</capacity>
       <avail>2</avail>
-      <cost>Rating * 100</cost>
+      <cost>Variable(100-20000)</cost>
+      <bonus>
+          <selecttext />
+      </bonus>
       <source>CF</source>
       <page>72</page>
-      <rating>200</rating>
     </cyberware>
     <!-- End Region -->
     <!-- Region Cyberlimb -->
@@ -3317,6 +3321,9 @@
       <name>Built-in Medkit</name>
       <limit>False</limit>
       <category>Cyberlimb Enhancement</category>
+      <allowgear>
+        <gearname>Medkit</gearname>
+      </allowgear>
       <ess>0.45</ess>
       <capacity>[10]</capacity>
       <avail>8</avail>
@@ -3489,6 +3496,10 @@
           <val>1</val>
           <category>Ground</category>
         </runmultiplier>
+        <weaponaccuracy>
+          <name>Raptor Foot</name>
+          <value>1</value>
+        </weaponaccuracy>
       </pairbonus>
       <required>
         <parentdetails>
@@ -4273,6 +4284,7 @@
       <page>90</page>
       <blocksmounts>elbow, knee</blocksmounts>
       <rating>2</rating>
+      <ratinglabel>Rating_Meters</ratinglabel>
       <required>
         <parentdetails>
           <OR>
@@ -4547,6 +4559,10 @@
       <page>87</page>
       <blocksmounts>ankle,knee,hip</blocksmounts>
       <bonus>
+        <addlimb precedence="0">
+          <limbslot>leg</limbslot>
+          <val>2</val>
+        </addlimb>
         <runmultiplier>
           <category>Ground</category>
           <percent>100</percent>

@@ -1970,7 +1970,7 @@
       <advantage>Gain +4 ranks of (Choose Holy Text) Knowledge Skill.</advantage>
       <disadvantage>When a follower of a Holy Text wishes to take an action that is contrary to the teaching of the text (whatever that text is), they must pass a Charisma + Willpower (4) Test to take the action.</disadvantage>
       <bonus>
-        <selectskill knowledgeskills="True" limittoskill="Holy Text">
+        <selectskill knowledgeskills="True" prompt="Holy Text">
           <val>4</val>
           <applytorating>True</applytorating>
         </selectskill>

@@ -34,17 +34,18 @@ namespace Chummer
         private readonly XPathNavigator _objParentNode;
         private readonly XPathNavigator _xmlBaseDataNode;
         private readonly Character _objCharacter;
+        private readonly Armor _objArmor;
         private readonly HashSet<string> _setBlackMarketMaps;
 
         #region Control Events
-        public frmSelectArmorMod(Character objCharacter, object objParentNode = null)
+        public frmSelectArmorMod(Character objCharacter, Armor objParentNode = null)
         {
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             // Load the Armor information.
             _xmlBaseDataNode = XmlManager.Load("armor.xml").GetFastNavigator().SelectSingleNode("/chummer");
-            _objParentNode = (objParentNode as IHasXmlNode)?.GetNode()?.CreateNavigator();
+            _objArmor = objParentNode;
             _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_xmlBaseDataNode);
         }
 
@@ -232,6 +233,12 @@ namespace Chummer
             lblA.Text = objXmlMod.SelectSingleNode("armor")?.Value;
             lblALabel.Visible = !string.IsNullOrEmpty(lblA.Text);
 
+
+            lblRatingLabel.Text = objXmlMod.SelectSingleNode("ratinglabel") != null
+                ? LanguageManager.GetString("Label_RatingFormat").Replace("{0}",
+                    LanguageManager.GetString(objXmlMod.SelectSingleNode("ratinglabel").Value,
+                        GlobalOptions.Language))
+                : LanguageManager.GetString("Label_Rating");
             nudRating.Maximum = Convert.ToDecimal(objXmlMod.SelectSingleNode("maxrating")?.Value, GlobalOptions.InvariantCultureInfo);
             if (chkHideOverAvailLimit.Checked)
             {
@@ -432,9 +439,9 @@ namespace Chummer
                     decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
                     if (_setBlackMarketMaps.Contains(objXmlMod.SelectSingleNode("category")?.Value))
                         decCostMultiplier *= 0.9m;
-                    if (!chkHideOverAvailLimit.Checked || SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter) &&
+                    if (!chkHideOverAvailLimit.Checked || objXmlMod.CheckAvailRestriction(_objCharacter) &&
                         (chkFreeItem.Checked || !chkShowOnlyAffordItems.Checked ||
-                         SelectionShared.CheckNuyenRestriction(objXmlMod, _objCharacter.Nuyen, decCostMultiplier)))
+                         objXmlMod.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier)) && objXmlMod.RequirementsMet(_objCharacter, _objArmor))
                     {
                         lstMods.Add(new ListItem(strId, objXmlMod.SelectSingleNode("translate")?.Value ?? objXmlMod.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language)));
                     }

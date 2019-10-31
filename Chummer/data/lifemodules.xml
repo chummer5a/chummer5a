@@ -1776,7 +1776,7 @@
         </knowledgeskilllevel>
         <freepositivequalities>5</freepositivequalities>
         <addqualities>
-          <addquality>Rank</addquality>
+          <addquality>Rank (Neither Military nor Law Enforcement) I</addquality>
           <addquality>Code of Honor</addquality>
         </addqualities>
       </bonus>
@@ -2624,6 +2624,9 @@
       <name>Military Academy</name>
       <karma>115</karma>
       <bonus>
+        <addqualities>
+          <addquality>Rank (Military or Law Enforcement) I</addquality>
+        </addqualities>
         <attributelevel>
           <name>BOD</name>
         </attributelevel>
@@ -4652,7 +4655,7 @@
           <val>2</val>
         </knowledgeskilllevel>
         <addqualities>
-          <addquality>In Debt V</addquality>
+          <addquality rating="5">In Debt</addquality>
         </addqualities>
       </bonus>
       <!--<required>
@@ -12078,7 +12081,7 @@
     </module>
     <module>
       <id>5544cbc8-d77e-43fa-ab07-dbc160f9b403</id>
-      <stage>Teen Years</stage>
+      <stage>Real Life</stage>
       <category>LifeModule</category>
       <name>Lost At Sea</name>
       <karma>100</karma>

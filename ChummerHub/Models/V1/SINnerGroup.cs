@@ -1,3 +1,6 @@
+using ChummerHub.Data;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -6,24 +9,17 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Transactions;
 using System.Xml.Serialization;
-using ChummerHub.Data;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 
 namespace ChummerHub.Models.V1
 {
+
     public class SINnerGroup
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid? Id { get; set; }
-
-        
         public Guid? MyParentGroupId { get; set; }
-        
         public bool IsPublic { get; set; }
-
         public string GroupCreatorUserName { get; set; }
 
         [Obsolete]
@@ -31,12 +27,10 @@ namespace ChummerHub.Models.V1
         [JsonIgnore]
         [XmlIgnore]
         public string GameMasterUsername { get; set; }
-
         public SINnerGroupSetting MySettings { get; set; }
 
         [MaxLength(64)]
         public string Groupname { get; set; }
-
         public string PasswordHash { get; set; }
 
         [NotMapped]
@@ -51,7 +45,7 @@ namespace ChummerHub.Models.V1
         {
             MyGroups = new List<SINnerGroup>();
             MySettings = new SINnerGroupSetting();
-            HasPassword = false;
+            this.HasPassword = this.PasswordHash?.Any() == true ? true : false;
         }
 
         public async Task<List<SINner>> GetGroupMembers(ApplicationDbContext context, bool addTags)
@@ -83,26 +77,29 @@ namespace ChummerHub.Models.V1
                             groupmembers = await (from a in context.SINners
                                     .Include(a => a.MyGroup)
                                     .Include(a => a.SINnerMetaData)
+                                    .Include(a => a.SINnerMetaData.Visibility)
+                                    .Include(a => a.SINnerMetaData.Visibility.UserRights)
                                     .Include(a => a.SINnerMetaData.Tags)
                                     .ThenInclude(b => b.Tags)
                                     .ThenInclude(b => b.Tags)
                                     .ThenInclude(b => b.Tags)
                                     .ThenInclude(b => b.Tags)
                                     .ThenInclude(b => b.Tags)
-                                where a.MyGroup.Id == this.Id
-                                      && this.Id != null
-                                select a).ToListAsync();
+                                                  where a.MyGroup.Id == this.Id
+                                                        && this.Id != null
+                                                  select a).ToListAsync();
                         }
                         else
                         {
                             groupmembers = await (from a in context.SINners
-                                //.Include(a => a.MyGroup)
-                                //.Include(a => a.SINnerMetaData)
-                                //.Include(a => a.MyExtendedAttributes)
-                                //.Include(a => a.SINnerMetaData.Visibility)
-                                where a.MyGroup.Id == this.Id
-                                && this.Id != null
-                            select a).ToListAsync();
+                                                      //.Include(a => a.MyGroup)
+                                                      .Include(a => a.SINnerMetaData)
+                                                      //.Include(a => a.MyExtendedAttributes)
+                                                      .Include(a => a.SINnerMetaData.Visibility)
+                                                      .Include(a => a.SINnerMetaData.Visibility.UserRights)
+                                                  where a.MyGroup.Id == this.Id
+                                                  && this.Id != null
+                                                  select a).ToListAsync();
                         }
 
                         var res = groupmembers;
@@ -133,27 +130,39 @@ namespace ChummerHub.Models.V1
 
         }
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerGroup.MyGroups'
         public List<SINnerGroup> MyGroups { get; set; }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerGroup.MyGroups'
 
         [ForeignKey("MyParentGroupId")]
         [JsonIgnore]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerGroup.MyParentGroup'
         public SINnerGroup MyParentGroup { get; set; }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerGroup.MyParentGroup'
 
         /// <summary>
         /// Only users of the specified Role can join this group
         /// </summary>
         [MaxLength(64)]
         public string MyAdminIdentityRole { get; set; }
-        
+
     }
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerGroupSetting'
     public class SINnerGroupSetting : SINnerUploadAble
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerGroupSetting'
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerGroupSetting.Id'
+#pragma warning disable CS0108 // 'SINnerGroupSetting.Id' hides inherited member 'SINnerUploadAble.Id'. Use the new keyword if hiding was intended.
         public Guid? Id { get; set; }
+#pragma warning restore CS0108 // 'SINnerGroupSetting.Id' hides inherited member 'SINnerUploadAble.Id'. Use the new keyword if hiding was intended.
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerGroupSetting.Id'
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerGroupSetting.MyGroupId'
         public Guid MyGroupId { get; set; }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerGroupSetting.MyGroupId'
     }
 }
 

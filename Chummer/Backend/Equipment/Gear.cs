@@ -40,7 +40,7 @@ namespace Chummer.Backend.Equipment
     /// </summary>
     [HubClassTag("SourceID", true, "Name", "Extra")]
     [DebuggerDisplay("{DisplayName(GlobalOptions.InvariantCultureInfo, GlobalOptions.DefaultLanguage)}")]
-    public class Gear : IHasChildrenAndCost<Gear>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasLocation, ICanEquip, IHasSource, IHasRating, INotifyMultiplePropertyChanged, ICanSort, IHasStolenProperty
+    public class Gear : IHasChildrenAndCost<Gear>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasLocation, ICanEquip, IHasSource, IHasRating, INotifyMultiplePropertyChanged, ICanSort, IHasStolenProperty, ICanPaste
     {
         private Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private Guid _guiID;
@@ -49,6 +49,7 @@ namespace Chummer.Backend.Equipment
         private string _strCategory = string.Empty;
         private string _strMaxRating = string.Empty;
         private string _strMinRating = string.Empty;
+        private string _strRatingLabel = "String_Rating";
         private int _intRating;
         private decimal _decQty = 1.0m;
         private string _strCapacity = string.Empty;
@@ -167,6 +168,7 @@ namespace Chummer.Backend.Equipment
             _nodBonus = objXmlGear["bonus"];
             _nodWirelessBonus = objXmlGear["wirelessbonus"];
             _blnWirelessOn = false;
+            objXmlGear.TryGetStringFieldQuickly("ratinglabel", ref _strRatingLabel);
 			objXmlGear.TryGetStringFieldQuickly("rating", ref _strMaxRating);
             if (_strMaxRating == "0")
                 _strMaxRating = string.Empty;
@@ -1462,6 +1464,12 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        public string RatingLabel
+        {
+            get => _strRatingLabel;
+            set => _strRatingLabel = value;
+        }
+
         /// <summary>
         /// Quantity.
         /// </summary>
@@ -2016,7 +2024,7 @@ namespace Chummer.Backend.Equipment
                     strAvail = strAvail.Substring(0, strAvail.Length - 1);
                 }
 
-                blnModifyParentAvail = strAvail.StartsWith('+', '-');
+                blnModifyParentAvail = strAvail.StartsWith('+', '-') && !IncludedInParent;
                 StringBuilder objAvail = new StringBuilder(strAvail.TrimStart('+'));
                 objAvail.CheapReplace(strAvail, "MinRating", () => MinRatingValue.ToString(GlobalOptions.InvariantCultureInfo));
                 objAvail.CheapReplace(strAvail, "Parent Rating", () => (Parent as IHasRating)?.Rating.ToString(GlobalOptions.InvariantCultureInfo));
@@ -2055,7 +2063,7 @@ namespace Chummer.Backend.Equipment
             if (intAvail < 0)
                 intAvail = 0;
 
-            return new AvailabilityValue(intAvail, chrLastAvailChar, blnModifyParentAvail);
+            return new AvailabilityValue(intAvail, chrLastAvailChar, blnModifyParentAvail, IncludedInParent);
         }
 
         /// <summary>
@@ -2448,7 +2456,7 @@ namespace Chummer.Backend.Equipment
             if (Quantity != 1.0m || Category == "Currency")
                 strReturn = Quantity.ToString(Name.StartsWith("Nuyen") ? _objCharacter.Options.NuyenFormat : Category == "Currency" ? "#,0.00" : "#,0.##", objCulture) + strSpaceCharacter + strReturn;
             if (Rating > 0)
-                strReturn += strSpaceCharacter + '(' + LanguageManager.GetString("String_Rating", strLanguage) + strSpaceCharacter + Rating.ToString(objCulture) + ')';
+                strReturn += strSpaceCharacter + '(' + LanguageManager.GetString(RatingLabel, strLanguage) + strSpaceCharacter + Rating.ToString(objCulture) + ')';
             if (!string.IsNullOrEmpty(Extra))
                 strReturn += strSpaceCharacter + '(' + LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
 
@@ -2802,6 +2810,53 @@ namespace Chummer.Backend.Equipment
                 objChild.ReaddImprovements(treGears, strOutdatedItems, lstInternalIdFilter, eSource, blnStackEquipped);
         }
 
+        /// <summary>
+        /// Checks a nominated piece of gear for Availability requirements.
+        /// </summary>
+        /// <param name="blnRestrictedGearUsed">Whether Restricted Gear is already being used.</param>
+        /// <param name="intRestrictedCount">Amount of gear that is currently over the availability limit.</param>
+        /// <param name="strAvailItems">String used to list names of gear that are currently over the availability limit.</param>
+        /// <param name="strRestrictedItem">Item that is being used for Restricted Gear.</param>
+        /// <param name="blnOutRestrictedGearUsed">Whether Restricted Gear is already being used (tracked across gear children).</param>
+        /// <param name="intOutRestrictedCount">Amount of gear that is currently over the availability limit (tracked across gear children).</param>
+        /// <param name="strOutAvailItems">String used to list names of gear that are currently over the availability limit (tracked across gear children).</param>
+        /// <param name="strOutRestrictedItem">Item that is being used for Restricted Gear (tracked across gear children).</param>
+        public void CheckRestrictedGear(bool blnRestrictedGearUsed, int intRestrictedCount, string strAvailItems, string strRestrictedItem, out bool blnOutRestrictedGearUsed, out int intOutRestrictedCount, out string strOutAvailItems, out string strOutRestrictedItem)
+        {
+            if (!IncludedInParent)
+            {
+                AvailabilityValue objTotalAvail = TotalAvailTuple();
+                if (!objTotalAvail.AddToParent)
+                {
+                    int intAvailInt = objTotalAvail.Value;
+                    //TODO: Make this dynamically update without having to validate the character.
+                    if (intAvailInt > CharacterObject.MaximumAvailability)
+                    {
+                        if (intAvailInt <= CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
+                        {
+                            blnRestrictedGearUsed = true;
+                            strRestrictedItem = Parent == null
+                                ? DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)
+                                : $"{DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)} ({Parent})";
+                        }
+                        else
+                        {
+                            intRestrictedCount++;
+                            strAvailItems += Environment.NewLine + "\t\t" + DisplayNameShort(GlobalOptions.Language);
+                        }
+                    }
+                }
+            }
+
+            foreach (Gear objChild in Children)
+            {
+                objChild.CheckRestrictedGear(blnRestrictedGearUsed, intRestrictedCount, strAvailItems, strRestrictedItem, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems, out strRestrictedItem);
+            }
+            strOutAvailItems = strAvailItems;
+            intOutRestrictedCount = intRestrictedCount;
+            blnOutRestrictedGearUsed = blnRestrictedGearUsed;
+            strOutRestrictedItem = strRestrictedItem;
+        }
         #region UI Methods
         /// <summary>
         /// Collection of TreeNodes to update when a relevant property is changed
@@ -2930,7 +2985,7 @@ namespace Chummer.Backend.Equipment
                         TreeNode nodFocus = treFoci.FindNodeByTag(this);
                         if (nodFocus != null)
                         {
-                            nodFocus.Text = DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language).Replace(LanguageManager.GetString("String_Rating", GlobalOptions.Language), LanguageManager.GetString("String_Force", GlobalOptions.Language));
+                            nodFocus.Text = DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language).Replace(LanguageManager.GetString(RatingLabel, GlobalOptions.Language), LanguageManager.GetString("String_Force", GlobalOptions.Language));
                         }
                     }
                     break;
@@ -2938,19 +2993,17 @@ namespace Chummer.Backend.Equipment
                     {
                         for (int i = _objCharacter.StackedFoci.Count - 1; i >= 0; --i)
                         {
-                            if (i < _objCharacter.StackedFoci.Count)
+                            if (i >= _objCharacter.StackedFoci.Count) continue;
+                            StackedFocus objStack = _objCharacter.StackedFoci[i];
+                            if (objStack.GearId != InternalId) continue;
+                            TreeNode nodFocus = treFoci.FindNode(objStack.InternalId);
+                            if (nodFocus != null)
                             {
-                                StackedFocus objStack = _objCharacter.StackedFoci[i];
-                                if (objStack.GearId == InternalId)
-                                {
-                                    TreeNode nodFocus = treFoci.FindNode(objStack.InternalId);
-                                    if (nodFocus != null)
-                                    {
-                                        nodFocus.Text = DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language).Replace(LanguageManager.GetString("String_Rating", GlobalOptions.Language), LanguageManager.GetString("String_Force", GlobalOptions.Language));
-                                    }
-                                    break;
-                                }
+                                nodFocus.Text = DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)
+                                    .Replace(LanguageManager.GetString(RatingLabel, GlobalOptions.Language),
+                                        LanguageManager.GetString("String_Force", GlobalOptions.Language));
                             }
+                            break;
                         }
                     }
                     break;
@@ -3358,6 +3411,32 @@ namespace Chummer.Backend.Equipment
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
             }
+        }
+
+        public bool AllowPasteXml
+        {
+            get
+            {
+                switch (GlobalOptions.ClipboardContentType)
+                {
+                    case ClipboardContentType.Gear:
+                    {
+                        var xmlAddonCategoryList = GetNode()?.SelectNodes("addoncategory");
+                        if (xmlAddonCategoryList?.Count > 0)
+                            return xmlAddonCategoryList.Cast<XmlNode>().Any(xmlCategory =>
+                                xmlCategory.InnerText == GlobalOptions.Clipboard.SelectSingleNode("category").Value);
+
+                        return false;
+                    }
+                    default:
+                        return false;
+                }
+            }
+        }
+
+        public bool AllowPasteObject(object input)
+        {
+            throw new NotImplementedException();
         }
     }
 }

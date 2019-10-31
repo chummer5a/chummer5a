@@ -34,6 +34,7 @@ namespace ChummerHub.Client.UI
             this.tbVisibilityAddEmail = new System.Windows.Forms.TextBox();
             this.bVisibilityAddEmail = new System.Windows.Forms.Button();
             this.bVisibilityRemove = new System.Windows.Forms.Button();
+            this.cbVisibleInGroups = new System.Windows.Forms.CheckBox();
             this.gpVisibilityToUserList.SuspendLayout();
             this.tlpVisibilityToUsers.SuspendLayout();
             this.SuspendLayout();
@@ -64,11 +65,13 @@ namespace ChummerHub.Client.UI
             this.tlpVisibilityToUsers.Controls.Add(this.tbVisibilityAddEmail, 0, 1);
             this.tlpVisibilityToUsers.Controls.Add(this.bVisibilityAddEmail, 1, 1);
             this.tlpVisibilityToUsers.Controls.Add(this.bVisibilityRemove, 2, 1);
+            this.tlpVisibilityToUsers.Controls.Add(this.cbVisibleInGroups, 0, 2);
             this.tlpVisibilityToUsers.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpVisibilityToUsers.Location = new System.Drawing.Point(3, 16);
             this.tlpVisibilityToUsers.Name = "tlpVisibilityToUsers";
-            this.tlpVisibilityToUsers.RowCount = 2;
+            this.tlpVisibilityToUsers.RowCount = 3;
             this.tlpVisibilityToUsers.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpVisibilityToUsers.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpVisibilityToUsers.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpVisibilityToUsers.Size = new System.Drawing.Size(314, 212);
             this.tlpVisibilityToUsers.TabIndex = 0;
@@ -81,13 +84,13 @@ namespace ChummerHub.Client.UI
             this.clbVisibilityToUsers.Location = new System.Drawing.Point(3, 3);
             this.clbVisibilityToUsers.MinimumSize = new System.Drawing.Size(75, 60);
             this.clbVisibilityToUsers.Name = "clbVisibilityToUsers";
-            this.clbVisibilityToUsers.Size = new System.Drawing.Size(308, 177);
+            this.clbVisibilityToUsers.Size = new System.Drawing.Size(308, 154);
             this.clbVisibilityToUsers.TabIndex = 0;
             // 
             // tbVisibilityAddEmail
             // 
             this.tbVisibilityAddEmail.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbVisibilityAddEmail.Location = new System.Drawing.Point(3, 187);
+            this.tbVisibilityAddEmail.Location = new System.Drawing.Point(3, 164);
             this.tbVisibilityAddEmail.Name = "tbVisibilityAddEmail";
             this.tbVisibilityAddEmail.Size = new System.Drawing.Size(171, 20);
             this.tbVisibilityAddEmail.TabIndex = 1;
@@ -95,7 +98,7 @@ namespace ChummerHub.Client.UI
             // bVisibilityAddEmail
             // 
             this.bVisibilityAddEmail.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.bVisibilityAddEmail.Location = new System.Drawing.Point(180, 186);
+            this.bVisibilityAddEmail.Location = new System.Drawing.Point(180, 163);
             this.bVisibilityAddEmail.Name = "bVisibilityAddEmail";
             this.bVisibilityAddEmail.Size = new System.Drawing.Size(62, 23);
             this.bVisibilityAddEmail.TabIndex = 2;
@@ -106,13 +109,26 @@ namespace ChummerHub.Client.UI
             // bVisibilityRemove
             // 
             this.bVisibilityRemove.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.bVisibilityRemove.Location = new System.Drawing.Point(248, 186);
+            this.bVisibilityRemove.Location = new System.Drawing.Point(248, 163);
             this.bVisibilityRemove.Name = "bVisibilityRemove";
             this.bVisibilityRemove.Size = new System.Drawing.Size(63, 23);
             this.bVisibilityRemove.TabIndex = 3;
             this.bVisibilityRemove.Text = "Remove";
             this.bVisibilityRemove.UseVisualStyleBackColor = true;
             this.bVisibilityRemove.Click += new System.EventHandler(this.bVisibilityRemove_Click);
+            // 
+            // cbVisibleInGroups
+            // 
+            this.cbVisibleInGroups.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.cbVisibleInGroups.AutoSize = true;
+            this.tlpVisibilityToUsers.SetColumnSpan(this.cbVisibleInGroups, 3);
+            this.cbVisibleInGroups.Location = new System.Drawing.Point(106, 192);
+            this.cbVisibleInGroups.Name = "cbVisibleInGroups";
+            this.cbVisibleInGroups.Size = new System.Drawing.Size(101, 17);
+            this.cbVisibleInGroups.TabIndex = 4;
+            this.cbVisibleInGroups.Text = "visible in groups";
+            this.cbVisibleInGroups.UseVisualStyleBackColor = true;
+            this.cbVisibleInGroups.Click += new System.EventHandler(this.CbVisibleInGroups_Click);
             // 
             // ucSINnerVisibility
             // 
@@ -139,5 +155,6 @@ namespace ChummerHub.Client.UI
         private System.Windows.Forms.TextBox tbVisibilityAddEmail;
         private System.Windows.Forms.Button bVisibilityAddEmail;
         private System.Windows.Forms.Button bVisibilityRemove;
+        private System.Windows.Forms.CheckBox cbVisibleInGroups;
     }
 }

@@ -75,7 +75,7 @@ namespace SINners.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "hasPassword")]
-        public bool? HasPassword { get; private set; }
+        public bool? HasPassword { get; set; }
 
         /// <summary>
         /// </summary>

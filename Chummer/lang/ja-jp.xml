@@ -5932,11 +5932,11 @@
 			<text>習得できる資質のみを表示</text>
 		</string>
 		<string>
-			<key>Checkbox_SelectQuality_Metagenetic</key>
+			<key>Checkbox_SelectQuality_Metagenic</key>
 			<text>メタジェネティックの資質のみを表示</text>
 		</string>
 		<string>
-			<key>Checkbox_SelectQuality_Not_Metagenetic</key>
+			<key>Checkbox_SelectQuality_Not_Metagenic</key>
 			<text>メタ遺伝的資質を表示しません</text>
 		</string>
 		<string>

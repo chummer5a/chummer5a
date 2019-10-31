@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+using Chummer.Backend.Skills;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -24,7 +25,6 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
-using Chummer.Backend.Skills;
 using NLog;
 
 namespace Chummer
@@ -158,7 +158,7 @@ namespace Chummer
             objWriter.WriteElementString("fv", DisplayFV(strLanguageToPrint));
             objWriter.WriteElementString("target", DisplayTarget(strLanguageToPrint));
             objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
-            objWriter.WriteElementString("page", Page(strLanguageToPrint));
+            objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             if (_objCharacter.Options.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
@@ -204,7 +204,7 @@ namespace Chummer
             }
         }
         public SourceString SourceDetail => _objCachedSourceDetail ?? (_objCachedSourceDetail =
-                                                new SourceString(Source, Page(GlobalOptions.Language), GlobalOptions.Language));
+                                                new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language));
 
         /// <summary>
         /// Complex Form's extra info.
@@ -443,16 +443,28 @@ namespace Chummer
             set => _strSource = value;
         }
 
+
         /// <summary>
         /// Sourcebook Page Number.
         /// </summary>
-        public string Page(string strLanguage)
+        public string Page
         {
-            // Get the translated name if applicable.
-            if (strLanguage == GlobalOptions.DefaultLanguage)
-                return _strPage;
+            get => _strPage;
+            set => _strPage = value;
+        }
 
-            return GetNode(strLanguage)?["altpage"]?.InnerText ?? _strPage;
+        /// <summary>
+        /// Sourcebook Page Number using a given language file.
+        /// Returns Page if not found or the string is empty.
+        /// </summary>
+        /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <returns></returns>
+        public string DisplayPage(string strLanguage)
+        {
+            if (strLanguage == GlobalOptions.DefaultLanguage)
+                return Page;
+            string s = GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
+            return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 
         /// <summary>
@@ -464,21 +476,22 @@ namespace Chummer
             set => _strNotes = value;
         }
 
+        public Skill Skill => _objCharacter.SkillsSection.GetActiveSkill("Software");
+
         /// <summary>
-        /// The Dice Pool size for the Active Skill required to cast the Spell.
+        /// The Dice Pool size for the Active Skill required to thread the Complex Form.
         /// </summary>
         public int DicePool
         {
             get
             {
                 int intReturn = 0;
-                Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill("Software");
-                if (objSkill != null)
+                if (Skill != null)
                 {
-                    intReturn = objSkill.Pool;
-                    // Add any Specialization bonus if applicable.
-                    if (objSkill.HasSpecialization(DisplayName))
-                        intReturn += 2;
+                  intReturn = Skill.PoolOtherAttribute(_objCharacter.RES.TotalValue, "RES");
+                  // Add any Specialization bonus if applicable.
+                  if (Skill.HasSpecialization(DisplayName))
+                    intReturn += 2;
                 }
 
                 // Include any Improvements to Threading.
@@ -497,10 +510,9 @@ namespace Chummer
             {
                 string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                 string strReturn = string.Empty;
-                Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill("Software");
-                if (objSkill != null)
+                if (Skill != null)
                 {
-                    strReturn = objSkill.FormattedDicePool(objSkill.Pool, strSpaceCharacter, DisplayName);
+                    strReturn = Skill.FormattedDicePool(Skill.PoolOtherAttribute(_objCharacter.RES.TotalValue, "RES"), strSpaceCharacter, DisplayName);
                 }
 
                 // Include any Improvements to the Spell Category.

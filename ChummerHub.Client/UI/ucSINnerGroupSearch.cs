@@ -27,7 +27,7 @@ namespace ChummerHub.Client.UI
 {
     public partial class ucSINnerGroupSearch : UserControl
     {
-        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
         public CharacterExtended MyCE { get; set; }
         public EventHandler<SINnerGroup> OnGroupJoinCallback = null;
 
@@ -199,7 +199,7 @@ namespace ChummerHub.Client.UI
             
         }
 
-        private async Task<SINSearchGroupResult> SearchForGroups(string groupname)
+        public static async Task<SINSearchGroupResult> SearchForGroups(string groupname)
         {
             try
             {
@@ -214,7 +214,7 @@ namespace ChummerHub.Client.UI
             
         }
 
-        private async Task<SINSearchGroupResult> SearchForGroupsTask(string groupname)
+        private static async Task<SINSearchGroupResult> SearchForGroupsTask(string groupname)
         {
             try
             {
@@ -902,12 +902,12 @@ namespace ChummerHub.Client.UI
                 var group = new SINnerGroup();
                 group.Groupname = this.tbSearchGroupname.Text;
                 group.IsPublic = false;
-                if ((MyCE?.MySINnerFile.MyGroup != null)
-                    && ((String.IsNullOrEmpty(tbSearchGroupname.Text))
-                        || (tbSearchGroupname.Text == MyCE?.MySINnerFile.MyGroup?.Groupname)))
-                {
-                    group = MyCE?.MySINnerFile.MyGroup;
-                }
+                //if ((MyCE?.MySINnerFile.MyGroup != null)
+                //    && ((String.IsNullOrEmpty(tbSearchGroupname.Text))
+                //        || (tbSearchGroupname.Text == MyCE?.MySINnerFile.MyGroup?.Groupname)))
+                //{
+                //    group = MyCE?.MySINnerFile.MyGroup;
+                //}
 
                 if (this.tvGroupSearchResult.SelectedNode != null)
                 {

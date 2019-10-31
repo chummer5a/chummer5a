@@ -53,10 +53,11 @@ namespace Chummer
 
         private readonly List<ListItem> _lstCategory = new List<ListItem>();
         private readonly HashSet<string> _setAllowedCategories = new HashSet<string>();
+        private readonly HashSet<string> _setAllowedNames = new HashSet<string>();
         private readonly HashSet<string> _setBlackMarketMaps;
 
         #region Control Events
-        public frmSelectGear(Character objCharacter, int intAvailModifier = 0, int intCostMultiplier = 1, object objGearParent = null, string strAllowedCategories = "")
+        public frmSelectGear(Character objCharacter, int intAvailModifier = 0, int intCostMultiplier = 1, object objGearParent = null, string strAllowedCategories = "", string strAllowedNames = "")
         {
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
@@ -81,8 +82,13 @@ namespace Chummer
             foreach (string strCategory in strAllowedCategories.TrimEndOnce(',').Split(','))
             {
                 string strLoop = strCategory.Trim();
-                if (!string.IsNullOrEmpty(strLoop))
-                    _setAllowedCategories.Add(strLoop);
+                if (!string.IsNullOrWhiteSpace(strLoop)) _setAllowedCategories.Add(strLoop);
+            }
+
+            foreach (string strName in strAllowedNames.TrimEndOnce(',').Split(','))
+            {
+                string strLoop = strName.Trim();
+                if (!string.IsNullOrWhiteSpace(strLoop)) _setAllowedNames.Add(strLoop);
             }
         }
 
@@ -248,6 +254,12 @@ namespace Chummer
                     nudGearQty.Visible = true;
                     lblGearQtyLabel.Visible = true;
                     chkStack.Visible = _objCharacter.Created;
+
+                    lblRatingLabel.Text = objXmlGear.SelectSingleNode("ratinglabel") != null
+                        ? LanguageManager.GetString("Label_RatingFormat").Replace("{0}",
+                            LanguageManager.GetString(objXmlGear.SelectSingleNode("ratinglabel").Value,
+                                GlobalOptions.Language))
+                        : LanguageManager.GetString("Label_Rating");
                 }
                 else
                 {
@@ -939,6 +951,18 @@ namespace Chummer
                     strFilter.Append(" and (" + objCategoryFilter.ToString().TrimEndOnce(" or ") + ')');
                 }
             }
+            if (_setAllowedNames.Count > 0)
+            {
+                StringBuilder objNameFilter = new StringBuilder();
+                foreach (var strItem in _setAllowedNames.Where(strItem => !string.IsNullOrEmpty(strItem)))
+                {
+                    objNameFilter.Append("name = \"" + strItem + "\" or ");
+                }
+                if (objNameFilter.Length > 0)
+                {
+                    strFilter.Append($" and ({objNameFilter.ToString().TrimEndOnce(" or ")})");
+                }
+            }
             if (ShowArmorCapacityOnly)
                 strFilter.Append(" and (contains(armorcapacity, \"[\") or category = \"Custom\")");
             else if (ShowPositiveCapacityOnly)
@@ -1012,9 +1036,9 @@ namespace Chummer
                 if (_setBlackMarketMaps.Contains(objXmlGear.SelectSingleNode("category")?.Value))
                     decCostMultiplier *= 0.9m;
                 if (!blnDoUIUpdate ||
-                    ((!chkHideOverAvailLimit.Checked || SelectionShared.CheckAvailRestriction(objXmlGear, _objCharacter, 1, _intAvailModifier) &&
+                    ((!chkHideOverAvailLimit.Checked || objXmlGear.CheckAvailRestriction(_objCharacter, 1, _intAvailModifier) &&
                     (chkFreeItem.Checked || !chkShowOnlyAffordItems.Checked ||
-                    SelectionShared.CheckNuyenRestriction(objXmlGear, _objCharacter.Nuyen, decCostMultiplier)))))
+                    objXmlGear.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier)))))
                 {
                     string strDisplayName = objXmlGear.SelectSingleNode("translate")?.Value ?? objXmlGear.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
 

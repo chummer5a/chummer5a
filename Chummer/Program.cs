@@ -33,6 +33,7 @@ using System.Linq;
  using System.Threading.Tasks;
  using System.Windows.Forms;
 ﻿using Chummer.Backend;
+ using Chummer.Classes;
  using Chummer.Plugins;
  using Microsoft.ApplicationInsights;
  using Microsoft.ApplicationInsights.DataContracts;
@@ -187,15 +188,12 @@ namespace Chummer
                                 rule.EnableLoggingForLevels(LogLevel.Debug, LogLevel.Fatal);
                         }
                     }
-                    Log.Info(strInfo);
-
+                    
                     if (Chummer.Properties.Settings.Default.UploadClientId == Guid.Empty)
                     {
                         Chummer.Properties.Settings.Default.UploadClientId = Guid.NewGuid();
                         Chummer.Properties.Settings.Default.Save();
                     }
-
-                    Log.Info("Logging options are set to " + GlobalOptions.UseLogging + " and Upload-Options are set to " + GlobalOptions.UseLoggingApplicationInsights + " (Installation-Id: " + Chummer.Properties.Settings.Default.UploadClientId + ").");
 
                     if (GlobalOptions.UseLoggingApplicationInsights >= UseAILogging.OnlyMetric)
                     {
@@ -243,6 +241,9 @@ namespace Chummer
                     if (Utils.IsUnitTest)
                         TelemetryConfiguration.Active.DisableTelemetry = true;
 
+                    Log.Info(strInfo);
+                    Log.Info("Logging options are set to " + GlobalOptions.UseLogging + " and Upload-Options are set to " + GlobalOptions.UseLoggingApplicationInsights + " (Installation-Id: " + Chummer.Properties.Settings.Default.UploadClientId + ").");
+
                     //make sure the Settings are upgraded/preserved after an upgrade
                     //see for details: https://stackoverflow.com/questions/534261/how-do-you-keep-user-config-settings-across-different-assembly-versions-in-net/534335#534335
                     if (Properties.Settings.Default.UpgradeRequired)
@@ -258,12 +259,14 @@ namespace Chummer
                             Log.Warn("Files could not be unblocked in " + AppDomain.CurrentDomain.BaseDirectory);
                         }
                     }
+                    
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine(e);
                     Log.Error(e);
                 }
+
                 //load the plugins and maybe work of any command line arguments
                 //arguments come in the form of
                 //              /plugin:Name:Parameter:Argument
@@ -290,16 +293,42 @@ namespace Chummer
                         {
                             if (strArgs[i].Contains("/plugin"))
                             {
-                                string whatplugin = strArgs[i].Substring(strArgs[i].IndexOf("/plugin") + 8);
-                                //some external apps choose to add a '/' before a ':' even in the middle of an url...
-                                whatplugin = whatplugin.TrimStart(':');
-                                int endplugin = whatplugin.IndexOf(':');
-                                string parameter = whatplugin.Substring(endplugin + 1);
-                                whatplugin = whatplugin.Substring(0, endplugin);
-                                var plugin = Program.PluginLoader.MyActivePlugins.FirstOrDefault(a => a.ToString() == whatplugin);
-                                if (plugin != null)
+                                if (GlobalOptions.PluginsEnabled == false)
                                 {
-                                    showMainForm &= plugin.ProcessCommandLine(parameter);
+                                    string msg =
+                                        "Please enable Plugins to use command-line arguments invoking specific plugin-functions!";
+                                    Log.Warn(msg);
+                                    MessageBox.Show(msg, "Plugins not enabled", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                }
+                                else
+                                {
+                                    string whatplugin = strArgs[i].Substring(strArgs[i].IndexOf("/plugin") + 8);
+                                    //some external apps choose to add a '/' before a ':' even in the middle of an url...
+                                    whatplugin = whatplugin.TrimStart(':');
+                                    int endplugin = whatplugin.IndexOf(':');
+                                    string parameter = whatplugin.Substring(endplugin + 1);
+                                    whatplugin = whatplugin.Substring(0, endplugin);
+                                    var plugin =
+                                        Program.PluginLoader.MyActivePlugins.FirstOrDefault(a =>
+                                            a.ToString() == whatplugin);
+                                    if (plugin == null)
+                                    {
+                                        var notactive =
+                                            Program.PluginLoader.MyPlugins.FirstOrDefault(a =>
+                                                a.ToString() == whatplugin);
+                                        if (notactive != null)
+                                        {
+                                            string msg = "Plugin " + whatplugin + " is not enabled in the options!" + Environment.NewLine;
+                                            msg +=
+                                                "If you want to use command-line arguments, please enable this plugin and restart the program.";
+                                            Log.Warn(msg);
+                                            MessageBox.Show(msg, whatplugin + " not enabled", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                        }
+                                    }
+                                    if (plugin != null)
+                                    {
+                                        showMainForm &= plugin.ProcessCommandLine(parameter);
+                                    }
                                 }
                             }
                         });

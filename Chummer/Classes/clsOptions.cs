@@ -37,21 +37,24 @@ namespace Chummer
     public enum ClipboardContentType
     {
         None = 0,
-        Gear,
-        Cyberware,
         Armor,
-        Weapon,
-        Vehicle,
+        ArmorMod,
+        Cyberware,
+        Gear,
         Lifestyle,
+        Vehicle,
+        Weapon,
+        WeaponAccessory
     }
 
     public enum UseAILogging
     {
-        NotSet = -1,
-        OnlyLocal,
+        OnlyLocal = 0,
         OnlyMetric,
         Crashes,
-        Yes
+        NotSet,
+        Info,
+        Trace
     }
 
     public sealed class SourcebookInfo : IDisposable
@@ -196,6 +199,7 @@ namespace Chummer
         private static bool _blnCreateBackupOnCareer;
         private static bool _blnPluginsEnabled;
         private static bool _blnAllowEasterEggs;
+        private static bool _blnHideCharts;
         private static string _strDefaultBuildMethod = DefaultBuildMethodDefaultValue;
         private static string _strDefaultGameplayOption = DefaultGameplayOptionDefaultValue;
 
@@ -421,7 +425,10 @@ namespace Chummer
                             break;
                         //legacy convert of checkbox bool
                         case "True":
-                            _enumUseLoggingApplicationInsights = UseAILogging.Yes;
+                            _enumUseLoggingApplicationInsights = UseAILogging.Info;
+                            break;
+                        case "Yes":
+                            _enumUseLoggingApplicationInsights = UseAILogging.Info;
                             break;
                         default:
                             _enumUseLoggingApplicationInsights = (UseAILogging) Enum.Parse(typeof(UseAILogging), useAI);
@@ -534,6 +541,9 @@ namespace Chummer
             
             // Prefer Nightly Updates.
             LoadBoolFromRegistry(ref _blnPreferNightlyUpdates, "prefernightlybuilds");
+
+            // Prefer Nightly Updates.
+            LoadBoolFromRegistry(ref _blnHideCharts, "hidecharts");
 
             RebuildCustomDataDirectoryInfoList();
 
@@ -997,10 +1007,22 @@ namespace Chummer
             set => _omaeEnabled = value;
         }
 
+        /// <summary>
+        /// Should the updater check for Release builds, or Nightly builds
+        /// </summary>
         public static bool PreferNightlyBuilds
         {
             get => _blnPreferNightlyUpdates;
             set => _blnPreferNightlyUpdates = value;
+        }
+
+        /// <summary>
+        /// Should charts that can cause crash behaviour in Wine be shown
+        /// </summary>
+        public static bool HideCharts
+        {
+            get => _blnHideCharts;
+            set => _blnHideCharts = value;
         }
 
         public static string CharacterRosterPath

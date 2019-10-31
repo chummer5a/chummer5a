@@ -325,6 +325,7 @@ namespace Chummer
             ContactKarmaDiscount,
             ContactKarmaMinimum,
             GenetechEssMultiplier,
+            AllowSpriteFettering,
 			DisableDrugGrade,
             DrugDuration,
             DrugDurationMultiplier,
@@ -426,7 +427,6 @@ namespace Chummer
                 strValue = "MartialArtTechnique";
             return (ImprovementSource) Enum.Parse(typeof (ImprovementSource), strValue);
         }
-
         #endregion
 
         #region Save and Load Methods
@@ -1888,7 +1888,7 @@ namespace Chummer
                     break;
                 case ImprovementType.MetageneticLimit:
                     {
-                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.MetageneticLimit));
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.MetagenicLimit));
                     }
                     break;
             }
@@ -2017,7 +2017,7 @@ namespace Chummer
         #region Properties
         /// <summary>
         /// Limit what can be selected in Pick forms to a single value. This is typically used when selecting the Qualities for a Metavariant that has a specifiec
-        /// CharacterAttribute selection for Qualities like Metagenetic Improvement.
+        /// CharacterAttribute selection for Qualities like Metagenic Improvement.
         /// </summary>
         public static string LimitSelection
         {
@@ -2087,7 +2087,7 @@ namespace Chummer
         /// <param name="blnAddToRating">Whether or not we should only retrieve values that have AddToRating enabled.</param>
         /// <param name="strImprovedName">Name to assign to the Improvement.</param>
         /// <param name="blnUnconditionalOnly">Whether to only fetch values for improvements that do not have a condition.</param>
-        /// <param name="blnIncludeUnimproved">Whether to only fetch values for improvements that do not have an improvedname when specifying ImprovedNames.</param> 
+        /// <param name="blnIncludeNonImproved">Whether to only fetch values for improvements that do not have an improvedname when specifying ImprovedNames.</param> 
         public static int ValueOf(Character objCharacter, Improvement.ImprovementType objImprovementType, bool blnAddToRating = false, string strImprovedName = "", bool blnUnconditionalOnly = true, bool blnIncludeNonImproved = false)
         {
             //Log.Enter("ValueOf");
@@ -2704,6 +2704,8 @@ namespace Chummer
                     intMinimumRating = ValueToInt(objCharacter, strMinimumRating, intRating);
                 int intMaximumRating = int.MaxValue;
                 string strMaximumRating = xmlBonusNode.Attributes?["maximumrating"]?.InnerText;
+                string strPrompt = xmlBonusNode.Attributes?["prompt"]?.InnerText ?? string.Empty;
+
                 if (!string.IsNullOrWhiteSpace(strMaximumRating))
                     intMaximumRating = ValueToInt(objCharacter, strMaximumRating, intRating);
 
@@ -2739,6 +2741,10 @@ namespace Chummer
                 {
                     setAllowedNames = new HashSet<string> {ForcedValue};
                 }
+                else if (!string.IsNullOrEmpty(strPrompt))
+                {
+                    setAllowedNames = new HashSet<string> { strPrompt };
+                }
                 else
                 {
                     string strLimitToSkill = xmlBonusNode.SelectSingleNode("@limittoskill")?.InnerText;
@@ -2771,6 +2777,12 @@ namespace Chummer
                         }
                     }
                     setProcessedSkillNames.Add(objKnowledgeSkill.Name);
+                }
+
+                if (strPrompt != string.Empty && !setProcessedSkillNames.Contains(strPrompt))
+                {
+                    lstDropdownItems.Add(new ListItem(strPrompt, LanguageManager.TranslateExtra(strPrompt, GlobalOptions.Language)));
+                    setProcessedSkillNames.Add(strPrompt);
                 }
                 if (intMinimumRating <= 0)
                 {
@@ -2858,9 +2870,10 @@ namespace Chummer
 
                 frmSelectItem frmPickSkill = new frmSelectItem
                 {
-                    Description = LanguageManager.GetString("Title_SelectSkill", GlobalOptions.Language)
+                    Description = LanguageManager.GetString("Title_SelectSkill", GlobalOptions.Language),
+                    AllowAutoSelect = string.IsNullOrWhiteSpace(strPrompt)
                 };
-                if (setAllowedNames != null)
+                if (setAllowedNames != null && string.IsNullOrWhiteSpace(strPrompt))
                     frmPickSkill.GeneralItems = lstDropdownItems;
                 else
                     frmPickSkill.DropdownItems = lstDropdownItems;

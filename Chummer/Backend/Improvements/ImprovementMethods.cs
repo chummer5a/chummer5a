@@ -19,6 +19,7 @@
 using System;
 using System.Xml;
 using Chummer.Classes;
+// ReSharper disable StringLiteralTypo
 
 namespace Chummer
 {
@@ -421,6 +422,7 @@ namespace Chummer
                     return objImprovementAdder.spelllimit;
                 case "FREESPELLS":
                     return objImprovementAdder.freespells;
+                case "SPELLCATEGORY":
                 case "SPELLCATEGORYDICEPOOL":
                     return objImprovementAdder.spellcategorydicepool;
                 case "SPELLDICEPOOL":
@@ -590,7 +592,8 @@ namespace Chummer
                 case "WEAPONSKILLACCURACY":
                     return objImprovementAdder.weaponskillaccuracy;
                 case "METAGENETICLIMIT":
-                    return objImprovementAdder.metageneticlimit;
+                case "METAGENICLIMIT":
+                    return objImprovementAdder.metageniclimit;
                 case "SPECIALMODIFICATIONLIMIT":
                     return objImprovementAdder.specialmodificationlimit;
                 case "CYBERADEPTDAEMON":
@@ -601,6 +604,8 @@ namespace Chummer
                     return objImprovementAdder.contactkarma;
                 case "CONTACTKARMAMINIMUM":
                     return objImprovementAdder.contactkarmaminimum;
+                case "ALLOWSPRITEFETTERING":
+                    return objImprovementAdder.allowspritefettering;
                 // No method matches, return a null pointer
                 default:
                     return null;

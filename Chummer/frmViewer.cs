@@ -46,7 +46,7 @@ namespace Chummer
         private bool _blnQueueRefresherRun;
         private readonly BackgroundWorker _workerOutputGenerator = new BackgroundWorker();
         private bool _blnQueueOutputGeneratorRun;
-        private readonly string _strName = Guid.NewGuid().ToString() + ".htm";
+        private readonly string _strFilePathName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),Guid.NewGuid() + ".htm");
         #region Control Events
         public frmViewer()
         {
@@ -435,9 +435,8 @@ namespace Chummer
 
                 StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
                 string strOutput = objReader.ReadToEnd();
-                File.WriteAllText(_strName, strOutput);
-                string curDir = Directory.GetCurrentDirectory();
-                webBrowser1.Url = new Uri(string.Format("file:///{0}/" + _strName, curDir));
+                File.WriteAllText(_strFilePathName, strOutput);
+                webBrowser1.Url = new Uri($"file:///{_strFilePathName}");
             }
         }
 
@@ -451,7 +450,7 @@ namespace Chummer
                 cmdSaveAsPdf.Enabled = true;
             }
             if (GlobalOptions.PrintToFileFirst)
-                File.Delete(_strName);
+                File.Delete(_strFilePathName);
 
             Cursor = Cursors.Default;
         }
