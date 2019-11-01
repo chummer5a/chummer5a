@@ -8771,10 +8771,6 @@
 			<text>Möchten Sie diese Waffenhalterung wirklich löschen?</text>
 		</string>
 		<string>
-			<key>Message_DuplicateDrugComponentWarning</key>
-			<text>Sie können denselben Baustein nicht zweimal hinzufügen.</text>
-		</string>
-		<string>
 			<key>Message_DuplicateDrugFoundationWarning</key>
 			<text>Sie können nicht mehr als eine Basis zu einer Droge hinzufügen.</text>
 		</string>

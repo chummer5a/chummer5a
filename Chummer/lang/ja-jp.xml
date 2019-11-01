@@ -8231,10 +8231,6 @@
 			<text>Selected Drugs</text>
 		</string>
 		<string>
-			<key>Message_DuplicateDrugComponentWarning</key>
-			<text>You cannot add the same component twice.</text>
-		</string>
-		<string>
 			<key>Message_DuplicateDrugFoundationWarning</key>
 			<text>You cannot add more than one Foundation to a drug.</text>
 		</string>

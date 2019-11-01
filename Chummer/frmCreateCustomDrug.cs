@@ -30,7 +30,7 @@ namespace Chummer
     public partial class frmCreateCustomDrug : Form
 	{
         private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
-        private readonly Dictionary<string, DrugComponent> _dicDrugComponents = new Dictionary<string, DrugComponent>();
+		private readonly Dictionary<string, DrugComponent> _dicDrugComponents = new Dictionary<string, DrugComponent>();
         private readonly List<clsNodeData> _lstSelectedDrugComponents;
 		private readonly List<ListItem> _lstGrade = new List<ListItem>();
 		private readonly Character _objCharacter;
@@ -126,7 +126,7 @@ namespace Chummer
             {
                 Name = txtDrugName.Text,
                 Category = "Custom Drug",
-                Grade = cboGrade.SelectedValue?.ToString()
+                Grade = Grade.ConvertToCyberwareGrade(cboGrade.SelectedValue.ToString(),Improvement.ImprovementSource.Drug,_objCharacter)
             };
 
             foreach (clsNodeData objNodeData in _lstSelectedDrugComponents)
@@ -172,12 +172,13 @@ namespace Chummer
                 return;
             }
 
-            if (!string.IsNullOrEmpty(txtDrugName.Text))
-
-            //prevent adding same component twice
-            if (_lstSelectedDrugComponents.Any(c => c.DrugComponent.Name == objNodeData.DrugComponent.Name))
+            //prevent adding same component multiple times. 
+            if (_lstSelectedDrugComponents.Count(c => c.DrugComponent.Name == objNodeData.DrugComponent.Name) >=
+                objNodeData.DrugComponent.Limit && objNodeData.DrugComponent.Limit != 0)
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_DuplicateDrugComponentWarning"));
+                Program.MainForm.ShowMessageBox(this,
+                    LanguageManager.GetString("Message_DuplicateDrugComponentWarning")
+                        .Replace("{0}", objNodeData.DrugComponent.Limit.ToString()));
                 return;
             }
 
@@ -263,15 +264,13 @@ namespace Chummer
 
         private void btnRemoveComponent_Click(object sender, EventArgs e)
         {
-            if (treChosenComponents.SelectedNode?.Tag is clsNodeData objNodeData)
-            {
-                treChosenComponents.Nodes.Remove(treChosenComponents.SelectedNode);
+            if (!(treChosenComponents.SelectedNode?.Tag is clsNodeData objNodeData)) return;
+            treChosenComponents.Nodes.Remove(treChosenComponents.SelectedNode);
 
-                _lstSelectedDrugComponents.Remove(objNodeData);
+            _lstSelectedDrugComponents.Remove(objNodeData);
 
-                UpdateCustomDrugStats();
-                lblDrugDescription.Text = _objDrug.GenerateDescription(0);
-            }
+            UpdateCustomDrugStats();
+            lblDrugDescription.Text = _objDrug.GenerateDescription(0);
         }
 
         private void txtDrugName_TextChanged(object sender, EventArgs e)

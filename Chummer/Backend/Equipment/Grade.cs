@@ -17,7 +17,9 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Xml;
 
 namespace Chummer.Backend.Equipment
@@ -60,8 +62,14 @@ namespace Chummer.Backend.Equipment
             }
             if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
-                XmlNode node = GetNode(GlobalOptions.Language);
-                node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                var xmlDataNode = XmlManager.Load(_eSource == Improvement.ImprovementSource.Bioware
+                        ? "bioware.xml"
+                        : _eSource == Improvement.ImprovementSource.Drug
+                            ? "drugcomponents.xml"
+                            : "cyberware.xml", GlobalOptions.Language)
+                    .SelectSingleNode("/chummer/grades/grade[name = " + Name.CleanXPath() + "]");
+                if (xmlDataNode?.TryGetField("id", Guid.TryParse, out _guiSourceID) != true)
+                    _guiSourceID = Guid.NewGuid();
             }
             objNode.TryGetDecFieldQuickly("ess", ref _decEss);
             objNode.TryGetDecFieldQuickly("cost", ref _decCost);
@@ -94,16 +102,32 @@ namespace Chummer.Backend.Equipment
         public XmlNode GetNode(string strLanguage)
         {
             if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.LiveCustomData) return _objCachedMyXmlNode;
-            _objCachedMyXmlNode = SourceID == Guid.Empty
-                ? XmlManager
-                    .Load(_eSource == Improvement.ImprovementSource.Bioware ? "bioware.xml" : "cyberware.xml",
-                        strLanguage).SelectSingleNode($"/chummer/grades/grade[name = \"{Name}\"]")
-                : XmlManager
-                    .Load(_eSource == Improvement.ImprovementSource.Bioware ? "bioware.xml" : "cyberware.xml",
-                        strLanguage).SelectSingleNode($"/chummer/grades/grade[id = \"{SourceIDString}\" or id = \"{SourceIDString}\"]");
+            _objCachedMyXmlNode = SourceId == Guid.Empty
+                ? XmlManager.Load(_eSource == Improvement.ImprovementSource.Bioware ? "bioware.xml" : _eSource == Improvement.ImprovementSource.Drug ? "drugcomponents.xml" : "cyberware.xml", strLanguage).SelectSingleNode($"/chummer/grades/grade[name = \"{Name}\"]")
+                : XmlManager.Load(_eSource == Improvement.ImprovementSource.Bioware ? "bioware.xml" : _eSource == Improvement.ImprovementSource.Drug ? "drugcomponents.xml" : "cyberware.xml", strLanguage).SelectSingleNode($"/chummer/grades/grade[id = \"{SourceId}\"]");
 
             _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;
+        }
+        #endregion
+
+        #region Helper Methods
+        /// <summary>
+        /// Convert a string to a Grade.
+        /// </summary>
+        /// <param name="strValue">String value to convert.</param>
+        /// <param name="objSource">Source representing whether this is a cyberware, drug or bioware grade.</param>
+        /// <param name="objCharacter">Character from which to fetch a grade list</param>
+        public static Grade ConvertToCyberwareGrade(string strValue, Improvement.ImprovementSource objSource, Character objCharacter)
+        {
+            IList<Grade> lstGrades = objCharacter.GetGradeList(objSource, true);
+            foreach (Grade objGrade in lstGrades)
+            {
+                if (objGrade.Name == strValue)
+                    return objGrade;
+            }
+
+            return lstGrades.FirstOrDefault(x => x.Name == "Standard");
         }
         #endregion
 
@@ -116,7 +140,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Identifier of the object within data files.
         /// </summary>
-        public Guid SourceID => _guiSourceID;
+        public Guid SourceId => _guiSourceID;
 
         /// <summary>
         /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
