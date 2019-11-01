@@ -2519,7 +2519,7 @@ Data Changes:
         - Shadowrun 2050 (5th Edition)<
     - Critter Powers
         - Vestigial Wings
-        - Underwater Adapation
+        - Underwater Adaptation
         - Magical Flight
     - Cyberware
         - Remote Cyberhand
