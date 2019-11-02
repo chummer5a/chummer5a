@@ -271,7 +271,7 @@ namespace Chummer.Backend.Equipment
         public string InternalId => _guiID.ToString();
 
         /// <summary>
-        /// Grade level of the Cyberware.
+        /// Grade level of the Drug.
         /// </summary>
         public Grade Grade { get; set; }
 
@@ -1034,7 +1034,6 @@ namespace Chummer.Backend.Equipment
             return true;
         }
         #endregion
-
     }
 	/// <summary>
 	/// Drug Component.
@@ -1617,4 +1616,106 @@ namespace Chummer.Backend.Equipment
 
         public int Level { get; set; }
 	}
+
+    public class DrugRecipe
+    {
+        private Guid _guiId;
+        private string _strName = "";
+        private readonly Character _objCharacter;
+        private const int _intSpeed = 9; //Default Speed for a drug is 3 Combat Turns
+                                         //1 Combat Turn == 3 seconds
+        private int _intSortOrder;
+
+        public DrugRecipe(Character objCharacter)
+        {
+            _objCharacter = objCharacter;
+        }
+
+        #region Constructor, Create, Save and Load Methods
+
+        public void Create(string strName, List<DrugComponent> drugComponents)
+        {
+            InternalId = Guid.NewGuid();
+            _strName = strName;
+            Components = drugComponents;
+            UpdateComponentProperties();
+        }
+
+        public void Load(XmlNode objXmlData)
+        {
+            objXmlData.TryGetStringFieldQuickly("name", ref _strName);
+            objXmlData.TryGetGuidFieldQuickly("id", ref _guiId);
+
+            XmlNodeList xmlComponentsNodeList = objXmlData.SelectNodes("drugcomponents/drugcomponent");
+            if (xmlComponentsNodeList?.Count > 0)
+            {
+                foreach (XmlNode objXmlLevel in xmlComponentsNodeList)
+                {
+                    DrugComponent c = new DrugComponent(_objCharacter);
+                    c.Load(objXmlLevel);
+                    Components.Add(c);
+                }
+            }
+            objXmlData.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
+            UpdateComponentProperties();
+        }
+
+        public void Save(XmlWriter objXmlWriter)
+        {
+            objXmlWriter.WriteStartElement("drug");
+            objXmlWriter.WriteElementString("name", _strName);
+            objXmlWriter.WriteStartElement("drugcomponents");
+            foreach (DrugComponent objDrugComponent in Components)
+            {
+                objXmlWriter.WriteStartElement("drugcomponent");
+                objDrugComponent.Save(objXmlWriter);
+                objXmlWriter.WriteEndElement();
+            }
+            objXmlWriter.WriteEndElement();
+            objXmlWriter.WriteElementString("sortorder", _intSortOrder.ToString());
+            objXmlWriter.WriteEndElement();
+        }
+        #endregion
+        #region Properties
+
+        public Grade Grade { get; set; }
+        public List<DrugComponent> Components { get; set; } 
+
+        public Guid InternalId
+        {
+            get => _guiId;
+            private set => _guiId = value;
+        }
+
+        public AvailabilityValue Avail { get; set; }
+
+        public int AddictionThreshold { get; internal set; }
+
+        public int AddictionRating { get; internal set; }
+
+        public decimal Cost { get; internal set; }
+        public int Speed { get; internal set; }
+        public int DurationDice { get; internal set; }
+        #endregion
+        #region Methods
+
+        private void UpdateComponentProperties()
+        {
+            AddictionRating = Components.Sum(component => component.AddictionRating);
+            AddictionThreshold = Components.Sum(component => component.AddictionThreshold);
+            Cost = Components.Sum(component => component.CostPerLevel);
+            DurationDice = 1 + Components.Sum(component => component.ActiveDrugEffect.Duration);
+            Speed = _intSpeed + Components.Sum(component => component.ActiveDrugEffect.Speed);
+            #region Availability
+            var suffix = ' ';
+            var avail = Components.Select(objComponent => objComponent.TotalAvailTuple())
+                .Sum(objLoopAvail => objLoopAvail.Value);
+            if (Components.Any(objComponent => objComponent.TotalAvailTuple().Suffix == 'F')) suffix = 'F';
+            else if (Components.Any(objComponent => objComponent.TotalAvailTuple().Suffix == 'R')) suffix = 'R';
+            if (avail < 0) avail = 0;
+            Avail = new AvailabilityValue(avail, suffix, false);
+            #endregion
+        }
+        #endregion
+    }
 }
