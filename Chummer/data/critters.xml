@@ -41107,7 +41107,7 @@
         <power select="Sonar">Enhanced Senses</power>
         <power rating="2">Armor</power>
         <power>AR-Parallelism</power>
-        <power>Cozenage</power>
+        <power>Cozenge</power>
         <power>Gremlins</power>
         <power>Tunnel</power>
       </powers>
@@ -41536,7 +41536,7 @@
         <power>Gestalt Consciousness</power>
         <power rating="3">Fragile</power>
         <power>AR-Parallelism</power>
-        <power>Cozenage</power>
+        <power>Cozenge</power>
         <power>Gremlins</power>
         <power>Tunnel</power>
       </powers>
@@ -41623,7 +41623,7 @@
       <powers>
         <power>AR-Parallelism</power>
         <power>Anthropomorphism</power>
-        <power>Cozenage</power>
+        <power>Cozenge</power>
         <power select="Biowire">Technovantage [Echo]</power>
       </powers>
       <skills>
