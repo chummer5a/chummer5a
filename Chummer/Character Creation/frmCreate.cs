@@ -796,6 +796,8 @@ namespace Chummer
 
                         lblComposure.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.ComposureToolTip));
                         lblComposure.DoDatabinding("Text", CharacterObject, nameof(Character.Composure));
+                        lblSurprise.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.SurpriseToolTip));
+                        lblSurprise.DoDatabinding("Text", CharacterObject, nameof(Character.Surprise));
                         lblJudgeIntentions.DoDatabinding("ToolTipText", CharacterObject,
                             nameof(Character.JudgeIntentionsToolTip));
                         lblJudgeIntentions.DoDatabinding("Text", CharacterObject, nameof(Character.JudgeIntentions));
@@ -13811,6 +13813,7 @@ namespace Chummer
             lblSwimLabel.SetToolTip(LanguageManager.GetString("Tip_OtherSwim", GlobalOptions.Language));
             lblFlyLabel.SetToolTip(LanguageManager.GetString("Tip_OtherFly", GlobalOptions.Language));
             lblComposureLabel.SetToolTip(LanguageManager.GetString("Tip_OtherComposure", GlobalOptions.Language));
+            lblSurpriseLabel.SetToolTip(LanguageManager.GetString("Tip_OtherSurprise", GlobalOptions.Language));
             lblJudgeIntentionsLabel.SetToolTip(LanguageManager.GetString("Tip_OtherJudgeIntentions", GlobalOptions.Language));
             lblLiftCarryLabel.SetToolTip(LanguageManager.GetString("Tip_OtherLiftAndCarry", GlobalOptions.Language));
             lblMemoryLabel.SetToolTip(LanguageManager.GetString("Tip_OtherMemory", GlobalOptions.Language));

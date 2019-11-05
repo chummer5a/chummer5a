@@ -329,6 +329,7 @@ namespace Chummer
 			DisableDrugGrade,
             DrugDuration,
             DrugDurationMultiplier,
+            Surprise,
             NumImprovementTypes // 🡐 This one should always be the last defined enum
         }
 

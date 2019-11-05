@@ -128,6 +128,9 @@
       <limit>1</limit>
       <source>SR5</source>
       <page>309</page>
+      <bonus>
+        <surprise>Rating</surprise>
+      </bonus>
     </power>
     <power>
       <id>974d2aba-1772-474b-aaff-c84a12766e5f</id>

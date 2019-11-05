@@ -1235,9 +1235,9 @@
       <name>Combat Paralysis</name>
       <karma>-12</karma>
       <category>Negative</category>
-      <implemented>False</implemented>
       <bonus>
         <notoriety>1</notoriety>
+        <surprise>-3</surprise>
       </bonus>
       <source>SR5</source>
       <page>80</page>

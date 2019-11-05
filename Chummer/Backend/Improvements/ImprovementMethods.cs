@@ -40,6 +40,8 @@ namespace Chummer
                     return objImprovementAdder.qualitylevel;
                 case "SELECTTEXT":
                     return objImprovementAdder.selecttext;
+                case "SURPRISE":
+                    return objImprovementAdder.surprise;
                 case "SPELLRESISTANCE":
                     return objImprovementAdder.spellresistance;
                 case "MENTALMANIPULATIONRESIST":

@@ -64,9 +64,6 @@ namespace Chummer
         private Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private XmlNode _oldSkillsBackup;
         private XmlNode _oldSkillGroupBackup;
-
-        private readonly CharacterOptions _objOptions;
-
         private string _strFileName = string.Empty;
         private DateTime _dateFileLastWriteTime = DateTime.MinValue;
         private string _strSettingsFileName = "default.xml";
@@ -272,7 +269,7 @@ namespace Chummer
         /// </summary>
         public Character()
         {
-            _objOptions = new CharacterOptions(this);
+            Options = new CharacterOptions(this);
             AttributeSection = new AttributeSection(this);
             AttributeSection.Reset();
             AttributeSection.PropertyChanged += AttributeSectionOnPropertyChanged;
@@ -665,6 +662,9 @@ namespace Chummer
                     new DependancyGraphNode<string>(nameof(ComposureToolTip),
                         new DependancyGraphNode<string>(nameof(Composure))
                     ),
+                    new DependancyGraphNode<string>(nameof(SurpriseToolTip),
+                        new DependancyGraphNode<string>(nameof(Surprise))
+                    ),
                     new DependancyGraphNode<string>(nameof(JudgeIntentionsToolTip),
                         new DependancyGraphNode<string>(nameof(JudgeIntentions))
                     ),
@@ -749,9 +749,9 @@ namespace Chummer
                             new DependancyGraphNode<string>(nameof(CalculatedPublicAwareness),
                                 new DependancyGraphNode<string>(nameof(PublicAwareness)),
                                 new DependancyGraphNode<string>(nameof(TotalStreetCred),
-                                    () => _objOptions.UseCalculatedPublicAwareness),
+                                    () => Options.UseCalculatedPublicAwareness),
                                 new DependancyGraphNode<string>(nameof(TotalNotoriety),
-                                    () => _objOptions.UseCalculatedPublicAwareness)
+                                    () => Options.UseCalculatedPublicAwareness)
                             )
                         )
                     ),
@@ -1843,7 +1843,7 @@ namespace Chummer
 
             // <sources>
             objWriter.WriteStartElement("customdatadirectorynames");
-            foreach(string strItem in _objOptions.CustomDataDirectoryNames)
+            foreach(string strItem in Options.CustomDataDirectoryNames)
             {
                 objWriter.WriteElementString("directoryname", strItem);
             }
@@ -2068,7 +2068,7 @@ if (!Utils.IsUnitTest){
                         xmlCharacterNavigator.TryGetStringFieldQuickly("settings", ref _strSettingsFileName);
 
                         // Load the character's settings file.
-                        if (!_objOptions.Load(_strSettingsFileName))
+                        if (!Options.Load(_strSettingsFileName))
                         {
                             IsLoading = false;
                             return false;
@@ -2080,7 +2080,7 @@ if (!Utils.IsUnitTest){
                         foreach (XPathNavigator xmlSourceNode in xmlCharacterNavigator.Select("sources/source"))
                         {
                             string strLoopString = xmlSourceNode.Value;
-                            if (strLoopString.Length > 0 && !_objOptions.Books.Contains(strLoopString))
+                            if (strLoopString.Length > 0 && !Options.Books.Contains(strLoopString))
                             {
                                 strMissingBooks += strLoopString + ';';
                             }
@@ -2118,7 +2118,7 @@ if (!Utils.IsUnitTest){
                         {
                             string strLoopString = xmlDirectoryName.Value;
                             if (strLoopString.Length > 0 &&
-                                !_objOptions.CustomDataDirectoryNames.Contains(strLoopString))
+                                !Options.CustomDataDirectoryNames.Contains(strLoopString))
                             {
                                 strMissingSourceNames += strLoopString + ';' + Environment.NewLine;
                             }
@@ -3630,8 +3630,8 @@ if (!Utils.IsUnitTest){
                             {
                                 string strKarma = objXmlGameplayOption["karma"]?.InnerText;
                                 string strNuyen = objXmlGameplayOption["maxnuyen"]?.InnerText;
-                                string strContactMultiplier = _objOptions.FreeContactsMultiplierEnabled
-                                    ? _objOptions.FreeContactsMultiplier.ToString()
+                                string strContactMultiplier = Options.FreeContactsMultiplierEnabled
+                                    ? Options.FreeContactsMultiplier.ToString()
                                     : objXmlGameplayOption["contactmultiplier"]?.InnerText;
                                 _intMaxKarma = Convert.ToInt32(strKarma);
                                 _decMaxNuyen = Convert.ToDecimal(strNuyen);
@@ -3973,7 +3973,7 @@ if (!Utils.IsUnitTest){
             // <critter />
             objWriter.WriteElementString("critter", CritterEnabled.ToString());
 
-            objWriter.WriteElementString("totaless", Essence().ToString(_objOptions.EssenceFormat, objCulture));
+            objWriter.WriteElementString("totaless", Essence().ToString(Options.EssenceFormat, objCulture));
 
             // <tradition />
             if(MagicTradition.Type != TraditionType.None)
@@ -4119,7 +4119,8 @@ if (!Utils.IsUnitTest){
             objWriter.WriteElementString("groupname", GroupName);
             // <groupnotes />
             objWriter.WriteElementString("groupnotes", GroupNotes);
-
+            // <surprise />
+            objWriter.WriteElementString("surprise", Surprise.ToString(objCulture));
             // <composure />
             objWriter.WriteElementString("composure", Composure.ToString(objCulture));
             // <judgeintentions />
@@ -6392,7 +6393,7 @@ if (!Utils.IsUnitTest){
         /// <summary>
         /// Character Options object.
         /// </summary>
-        public CharacterOptions Options => _objOptions;
+        public CharacterOptions Options { get; }
 
         /// <summary>
         /// Name of the file the Character is saved to.
@@ -6426,7 +6427,7 @@ if (!Utils.IsUnitTest){
                 if(_strSettingsFileName != value)
                 {
                     _strSettingsFileName = value;
-                    _objOptions.Load(_strSettingsFileName);
+                    Options.Load(_strSettingsFileName);
                     OnPropertyChanged();
                 }
             }
@@ -7278,7 +7279,7 @@ if (!Utils.IsUnitTest){
             {
                 if(_intCachedContactPoints == int.MinValue)
                 {
-                    _intCachedContactPoints = (_objOptions.UseTotalValueForFreeContacts ? CHA.TotalValue : CHA.Value) *
+                    _intCachedContactPoints = (Options.UseTotalValueForFreeContacts ? CHA.TotalValue : CHA.Value) *
                                               ContactMultiplier;
                 }
 
@@ -7502,7 +7503,7 @@ if (!Utils.IsUnitTest){
         }
 
         public string DisplayCareerNuyen =>
-            CareerNuyen.ToString(_objOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+            CareerNuyen.ToString(Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
         /// <summary>
         /// Whether or not the character is a Critter.
@@ -8545,7 +8546,7 @@ if (!Utils.IsUnitTest){
             }
         }
 
-        public string DisplayEssence => Essence().ToString(_objOptions.EssenceFormat, GlobalOptions.CultureInfo);
+        public string DisplayEssence => Essence().ToString(Options.EssenceFormat, GlobalOptions.CultureInfo);
 
         /// <summary>
         /// This is only here for Reflection
@@ -8554,16 +8555,16 @@ if (!Utils.IsUnitTest){
         public decimal EssenceDecimal => Essence();
 
         public string DisplayCyberwareEssence =>
-            CyberwareEssence.ToString(_objOptions.EssenceFormat, GlobalOptions.CultureInfo);
+            CyberwareEssence.ToString(Options.EssenceFormat, GlobalOptions.CultureInfo);
 
         public string DisplayBiowareEssence =>
-            BiowareEssence.ToString(_objOptions.EssenceFormat, GlobalOptions.CultureInfo);
+            BiowareEssence.ToString(Options.EssenceFormat, GlobalOptions.CultureInfo);
 
-        public string DisplayEssenceHole => EssenceHole.ToString(_objOptions.EssenceFormat, GlobalOptions.CultureInfo);
+        public string DisplayEssenceHole => EssenceHole.ToString(Options.EssenceFormat, GlobalOptions.CultureInfo);
 
         public string DisplayPrototypeTranshumanEssenceUsed =>
-            PrototypeTranshumanEssenceUsed.ToString(_objOptions.EssenceFormat, GlobalOptions.CultureInfo) + " / " +
-            PrototypeTranshuman.ToString(_objOptions.EssenceFormat, GlobalOptions.CultureInfo);
+            PrototypeTranshumanEssenceUsed.ToString(Options.EssenceFormat, GlobalOptions.CultureInfo) + " / " +
+            PrototypeTranshuman.ToString(Options.EssenceFormat, GlobalOptions.CultureInfo);
 
         #region Initiative
 
@@ -9552,7 +9553,7 @@ if (!Utils.IsUnitTest){
             get
             {
                 int intReturn = ImprovementManager.ValueOf(this, Improvement.ImprovementType.PublicAwareness);
-                if(_objOptions.UseCalculatedPublicAwareness)
+                if(Options.UseCalculatedPublicAwareness)
                 {
                     // Public Awareness is calculated as (Street Cred + Notoriety) / 3, rounded down.
                     intReturn += (TotalStreetCred + TotalNotoriety) / 3;
@@ -9611,7 +9612,7 @@ if (!Utils.IsUnitTest){
                                          '(' + objImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
                 }
 
-                if(_objOptions.UseCalculatedPublicAwareness)
+                if(Options.UseCalculatedPublicAwareness)
                 {
                     objReturn.Append(strSpaceCharacter + '+' + strSpaceCharacter + '[' +
                                      LanguageManager.GetString("String_StreetCred", GlobalOptions.Language) +
@@ -10546,6 +10547,38 @@ if (!Utils.IsUnitTest){
             }
         }
 
+        public int Surprise => REA.TotalValue + INT.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.Surprise);
+
+        public string SurpriseToolTip
+        {
+            get
+            {
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                StringBuilder objToolTip = new StringBuilder(REA.DisplayAbbrev + strSpaceCharacter + '(' +
+                                                             REA.TotalValue.ToString(GlobalOptions.CultureInfo) + ')' +
+                                                             strSpaceCharacter + '+' + strSpaceCharacter +
+                                                             INT.DisplayAbbrev + strSpaceCharacter + '(' +
+                                                             INT.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
+
+                if (CurrentCounterspellingDice != 0)
+                    objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
+                                      LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Language) +
+                                      strSpaceCharacter + '(' +
+                                      CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
+
+                int intModifiers = ImprovementManager.ValueOf(this, Improvement.ImprovementType.Surprise);
+
+                if (intModifiers != 0)
+                {
+                    FormatImprovementModifiers(objToolTip,
+                        new HashSet<Improvement.ImprovementType>(new[] {Improvement.ImprovementType.Surprise}),
+                        strSpaceCharacter, intModifiers);
+                }
+
+                return objToolTip.ToString();
+            }
+        }
+
         /// <summary>
         /// Custom Drugs created by the character.
         /// </summary>
@@ -11259,9 +11292,9 @@ if (!Utils.IsUnitTest){
             }
         }
 
-        public string DisplayNuyen => Nuyen.ToString(_objOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+        public string DisplayNuyen => Nuyen.ToString(Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
-        public string DisplayStolenNuyen => StolenNuyen.ToString(_objOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+        public string DisplayStolenNuyen => StolenNuyen.ToString(Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
         /// <summary>
         /// Amount of Nuyen the character started with via the priority system.
@@ -12079,7 +12112,7 @@ if (!Utils.IsUnitTest){
 
             int intAGI = AGI.CalculatedTotalValue(false);
             int intSTR = STR.CalculatedTotalValue(false);
-            if(_objOptions.CyberlegMovement && blnUseCyberlegs)
+            if(Options.CyberlegMovement && blnUseCyberlegs)
             {
                 int intTempAGI = int.MaxValue;
                 int intTempSTR = int.MaxValue;
@@ -14208,7 +14241,8 @@ if (!Utils.IsUnitTest){
                 OnMultiplePropertyChanged(nameof(LimitPhysical),
                     nameof(InitiativeValue),
                     nameof(SpellDefenseIndirectDodge),
-                    nameof(SpellDefenseDecreaseREA));
+                    nameof(SpellDefenseDecreaseREA),
+                    nameof(Surprise));
             }
         }
 
@@ -14229,7 +14263,7 @@ if (!Utils.IsUnitTest){
         {
             if(e.PropertyName == nameof(CharacterAttrib.TotalValue))
             {
-                if(_objOptions.UseTotalValueForFreeContacts)
+                if(Options.UseTotalValueForFreeContacts)
                     OnMultiplePropertyChanged(nameof(ContactPoints),
                         nameof(LimitSocial),
                         nameof(Composure),
@@ -14245,7 +14279,7 @@ if (!Utils.IsUnitTest){
             }
             else if(e.PropertyName == nameof(CharacterAttrib.Value))
             {
-                if(!_objOptions.UseTotalValueForFreeContacts)
+                if(!Options.UseTotalValueForFreeContacts)
                     OnPropertyChanged(nameof(ContactPoints));
             }
         }
@@ -14263,7 +14297,8 @@ if (!Utils.IsUnitTest){
                     nameof(MatrixInitiativeHotValue),
                     nameof(SpellDefenseIndirectDodge),
                     nameof(SpellDefenseDecreaseINT),
-                    nameof(SpellDefenseIllusionPhysical));
+                    nameof(SpellDefenseIllusionPhysical),
+                    nameof(Surprise));
             }
         }
 
@@ -14449,7 +14484,7 @@ if (!Utils.IsUnitTest){
         /// <summary>
         /// Could this character buy Power Points in career mode if the optional/house rule is enabled
         /// </summary>
-        public bool CanAffordCareerPP => MysAdeptAllowPPCareer && Karma >= _objOptions.KarmaMysticAdeptPowerPoint &&
+        public bool CanAffordCareerPP => MysAdeptAllowPPCareer && Karma >= Options.KarmaMysticAdeptPowerPoint &&
                                          MAG.TotalValue > MysticAdeptPowerPoints;
         /// <summary>
         /// Whether the character is allowed to gain free spells that are limited to the Touch range. 
@@ -14956,7 +14991,7 @@ if (!Utils.IsUnitTest){
                         _strSettingsFileName = strSettingsName;
 
                         // Load the character's settings file.
-                        if (!_objOptions.Load(_strSettingsFileName))
+                        if (!Options.Load(_strSettingsFileName))
                             return false;
 
                         // Metatype information.
@@ -16674,8 +16709,8 @@ if (!Utils.IsUnitTest){
                             {
                                 string strKarma = objXmlGameplayOption["karma"]?.InnerText;
                                 string strNuyen = objXmlGameplayOption["maxnuyen"]?.InnerText;
-                                string strContactMultiplier = _objOptions.FreeContactsMultiplierEnabled
-                                    ? _objOptions.FreeContactsMultiplier.ToString()
+                                string strContactMultiplier = Options.FreeContactsMultiplierEnabled
+                                    ? Options.FreeContactsMultiplier.ToString()
                                     : objXmlGameplayOption["contactmultiplier"]?.InnerText;
                                 _intMaxKarma = Convert.ToInt32(strKarma);
                                 _decMaxNuyen = Convert.ToDecimal(strNuyen);

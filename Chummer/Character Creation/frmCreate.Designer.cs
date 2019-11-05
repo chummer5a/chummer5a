@@ -1036,6 +1036,8 @@ namespace Chummer
             this.tsAIProgramNotes = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsGearAllowRename = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsGearAllowRenameExtra = new System.Windows.Forms.ToolStripMenuItem();
+            this.lblSurprise = new Chummer.LabelWithToolTip();
+            this.lblSurpriseLabel = new Chummer.LabelWithToolTip();
             this.StatusStrip.SuspendLayout();
             this.cmsMartialArts.SuspendLayout();
             this.cmsSpellButton.SuspendLayout();
@@ -1702,7 +1704,7 @@ namespace Chummer
             // 
             this.lblMemoryLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblMemoryLabel.AutoSize = true;
-            this.lblMemoryLabel.Location = new System.Drawing.Point(91, 356);
+            this.lblMemoryLabel.Location = new System.Drawing.Point(91, 381);
             this.lblMemoryLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMemoryLabel.Name = "lblMemoryLabel";
             this.lblMemoryLabel.Size = new System.Drawing.Size(47, 13);
@@ -1714,7 +1716,7 @@ namespace Chummer
             // 
             this.lblLiftCarryLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblLiftCarryLabel.AutoSize = true;
-            this.lblLiftCarryLabel.Location = new System.Drawing.Point(66, 331);
+            this.lblLiftCarryLabel.Location = new System.Drawing.Point(66, 356);
             this.lblLiftCarryLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblLiftCarryLabel.Name = "lblLiftCarryLabel";
             this.lblLiftCarryLabel.Size = new System.Drawing.Size(72, 13);
@@ -1743,7 +1745,7 @@ namespace Chummer
             this.lblComposureLabel.Name = "lblComposureLabel";
             this.lblComposureLabel.Size = new System.Drawing.Size(63, 13);
             this.lblComposureLabel.TabIndex = 44;
-            this.lblComposureLabel.Tag = "Label_OtherCmposure";
+            this.lblComposureLabel.Tag = "Label_OtherComposure";
             this.lblComposureLabel.Text = "Composure:";
             // 
             // lblRemainingNuyenLabel
@@ -2137,13 +2139,13 @@ namespace Chummer
             this.tsMartialArtsAddAdvantage,
             this.tsMartialArtsNotes});
             this.cmsMartialArts.Name = "cmsWeapon";
-            this.cmsMartialArts.Size = new System.Drawing.Size(155, 48);
+            this.cmsMartialArts.Size = new System.Drawing.Size(154, 48);
             // 
             // tsMartialArtsAddAdvantage
             // 
             this.tsMartialArtsAddAdvantage.Image = global::Chummer.Properties.Resources.medal_gold_add;
             this.tsMartialArtsAddAdvantage.Name = "tsMartialArtsAddAdvantage";
-            this.tsMartialArtsAddAdvantage.Size = new System.Drawing.Size(154, 22);
+            this.tsMartialArtsAddAdvantage.Size = new System.Drawing.Size(153, 22);
             this.tsMartialArtsAddAdvantage.Tag = "Menu_AddAdvantage";
             this.tsMartialArtsAddAdvantage.Text = "&Add Technique";
             this.tsMartialArtsAddAdvantage.Click += new System.EventHandler(this.tsMartialArtsAddAdvantage_Click);
@@ -2152,7 +2154,7 @@ namespace Chummer
             // 
             this.tsMartialArtsNotes.Image = global::Chummer.Properties.Resources.note_edit;
             this.tsMartialArtsNotes.Name = "tsMartialArtsNotes";
-            this.tsMartialArtsNotes.Size = new System.Drawing.Size(154, 22);
+            this.tsMartialArtsNotes.Size = new System.Drawing.Size(153, 22);
             this.tsMartialArtsNotes.Tag = "Menu_Notes";
             this.tsMartialArtsNotes.Text = "&Notes";
             this.tsMartialArtsNotes.Click += new System.EventHandler(this.tsMartialArtsNotes_Click);
@@ -3029,7 +3031,7 @@ namespace Chummer
             // 
             this.tsGearAllowRenameAddAsPlugin.Image = global::Chummer.Properties.Resources.brick_add;
             this.tsGearAllowRenameAddAsPlugin.Name = "tsGearAllowRenameAddAsPlugin";
-            this.tsGearAllowRenameAddAsPlugin.Size = new System.Drawing.Size(169, 22);
+            this.tsGearAllowRenameAddAsPlugin.Size = new System.Drawing.Size(170, 22);
             this.tsGearAllowRenameAddAsPlugin.Tag = "Menu_AddAsPlugin";
             this.tsGearAllowRenameAddAsPlugin.Text = "&Add as Plugin";
             this.tsGearAllowRenameAddAsPlugin.Click += new System.EventHandler(this.tsGearAddAsPlugin_Click);
@@ -3038,7 +3040,7 @@ namespace Chummer
             // 
             this.tsGearAllowRenameName.Image = global::Chummer.Properties.Resources.tag_red;
             this.tsGearAllowRenameName.Name = "tsGearAllowRenameName";
-            this.tsGearAllowRenameName.Size = new System.Drawing.Size(169, 22);
+            this.tsGearAllowRenameName.Size = new System.Drawing.Size(170, 22);
             this.tsGearAllowRenameName.Tag = "Menu_NameGear";
             this.tsGearAllowRenameName.Text = "Name Gear";
             this.tsGearAllowRenameName.Click += new System.EventHandler(this.tsGearName_Click);
@@ -3047,7 +3049,7 @@ namespace Chummer
             // 
             this.tsGearAllowRenameNotes.Image = global::Chummer.Properties.Resources.note_edit;
             this.tsGearAllowRenameNotes.Name = "tsGearAllowRenameNotes";
-            this.tsGearAllowRenameNotes.Size = new System.Drawing.Size(169, 22);
+            this.tsGearAllowRenameNotes.Size = new System.Drawing.Size(170, 22);
             this.tsGearAllowRenameNotes.Tag = "Menu_Notes";
             this.tsGearAllowRenameNotes.Text = "&Notes";
             this.tsGearAllowRenameNotes.Click += new System.EventHandler(this.tsGearNotes_Click);
@@ -13031,23 +13033,23 @@ namespace Chummer
             this.tlpOtherInfo.ColumnCount = 2;
             this.tlpOtherInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 65F));
             this.tlpOtherInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35F));
-            this.tlpOtherInfo.Controls.Add(this.lblFly, 1, 17);
+            this.tlpOtherInfo.Controls.Add(this.lblFly, 1, 18);
             this.tlpOtherInfo.Controls.Add(this.lblRiggingINI, 1, 7);
-            this.tlpOtherInfo.Controls.Add(this.lblFlyLabel, 0, 17);
+            this.tlpOtherInfo.Controls.Add(this.lblFlyLabel, 0, 18);
             this.tlpOtherInfo.Controls.Add(this.lblCMPhysicalLabel, 0, 0);
-            this.tlpOtherInfo.Controls.Add(this.lblSwim, 1, 16);
+            this.tlpOtherInfo.Controls.Add(this.lblSwim, 1, 17);
             this.tlpOtherInfo.Controls.Add(this.lblRiggingINILabel, 0, 7);
-            this.tlpOtherInfo.Controls.Add(this.lblSwimLabel, 0, 16);
+            this.tlpOtherInfo.Controls.Add(this.lblSwimLabel, 0, 17);
             this.tlpOtherInfo.Controls.Add(this.lblCMPhysical, 1, 0);
-            this.tlpOtherInfo.Controls.Add(this.lblMovement, 1, 15);
-            this.tlpOtherInfo.Controls.Add(this.lblMemory, 1, 14);
-            this.tlpOtherInfo.Controls.Add(this.lblMovementLabel, 0, 15);
+            this.tlpOtherInfo.Controls.Add(this.lblMovement, 1, 16);
+            this.tlpOtherInfo.Controls.Add(this.lblMemory, 1, 15);
+            this.tlpOtherInfo.Controls.Add(this.lblMovementLabel, 0, 16);
             this.tlpOtherInfo.Controls.Add(this.lblMatrixINIHot, 1, 6);
-            this.tlpOtherInfo.Controls.Add(this.lblMemoryLabel, 0, 14);
+            this.tlpOtherInfo.Controls.Add(this.lblMemoryLabel, 0, 15);
             this.tlpOtherInfo.Controls.Add(this.lblCMStunLabel, 0, 1);
-            this.tlpOtherInfo.Controls.Add(this.lblLiftCarry, 1, 13);
+            this.tlpOtherInfo.Controls.Add(this.lblLiftCarry, 1, 14);
             this.tlpOtherInfo.Controls.Add(this.lblMatrixINICold, 1, 5);
-            this.tlpOtherInfo.Controls.Add(this.lblLiftCarryLabel, 0, 13);
+            this.tlpOtherInfo.Controls.Add(this.lblLiftCarryLabel, 0, 14);
             this.tlpOtherInfo.Controls.Add(this.lblMatrixINIHotLabel, 0, 6);
             this.tlpOtherInfo.Controls.Add(this.lblJudgeIntentions, 1, 12);
             this.tlpOtherInfo.Controls.Add(this.lblCMStun, 1, 1);
@@ -13067,11 +13069,14 @@ namespace Chummer
             this.tlpOtherInfo.Controls.Add(this.lblArmorLabel, 0, 8);
             this.tlpOtherInfo.Controls.Add(this.lblArmor, 1, 8);
             this.tlpOtherInfo.Controls.Add(this.lblESS, 0, 9);
+            this.tlpOtherInfo.Controls.Add(this.lblSurprise, 1, 13);
+            this.tlpOtherInfo.Controls.Add(this.lblSurpriseLabel, 0, 13);
             this.tlpOtherInfo.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpOtherInfo.Location = new System.Drawing.Point(3, 3);
             this.tlpOtherInfo.Margin = new System.Windows.Forms.Padding(0);
             this.tlpOtherInfo.Name = "tlpOtherInfo";
-            this.tlpOtherInfo.RowCount = 18;
+            this.tlpOtherInfo.RowCount = 19;
+            this.tlpOtherInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpOtherInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpOtherInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpOtherInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -13096,7 +13101,7 @@ namespace Chummer
             // lblFly
             // 
             this.lblFly.AutoSize = true;
-            this.lblFly.Location = new System.Drawing.Point(144, 431);
+            this.lblFly.Location = new System.Drawing.Point(144, 456);
             this.lblFly.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblFly.Name = "lblFly";
             this.lblFly.Size = new System.Drawing.Size(13, 13);
@@ -13118,7 +13123,7 @@ namespace Chummer
             // 
             this.lblFlyLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblFlyLabel.AutoSize = true;
-            this.lblFlyLabel.Location = new System.Drawing.Point(115, 431);
+            this.lblFlyLabel.Location = new System.Drawing.Point(115, 456);
             this.lblFlyLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblFlyLabel.Name = "lblFlyLabel";
             this.lblFlyLabel.Size = new System.Drawing.Size(23, 13);
@@ -13129,7 +13134,7 @@ namespace Chummer
             // lblSwim
             // 
             this.lblSwim.AutoSize = true;
-            this.lblSwim.Location = new System.Drawing.Point(144, 406);
+            this.lblSwim.Location = new System.Drawing.Point(144, 431);
             this.lblSwim.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSwim.Name = "lblSwim";
             this.lblSwim.Size = new System.Drawing.Size(13, 13);
@@ -13140,7 +13145,7 @@ namespace Chummer
             // 
             this.lblSwimLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblSwimLabel.AutoSize = true;
-            this.lblSwimLabel.Location = new System.Drawing.Point(103, 406);
+            this.lblSwimLabel.Location = new System.Drawing.Point(103, 431);
             this.lblSwimLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSwimLabel.Name = "lblSwimLabel";
             this.lblSwimLabel.Size = new System.Drawing.Size(35, 13);
@@ -13162,7 +13167,7 @@ namespace Chummer
             // lblMovement
             // 
             this.lblMovement.AutoSize = true;
-            this.lblMovement.Location = new System.Drawing.Point(144, 381);
+            this.lblMovement.Location = new System.Drawing.Point(144, 406);
             this.lblMovement.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMovement.Name = "lblMovement";
             this.lblMovement.Size = new System.Drawing.Size(13, 13);
@@ -13172,7 +13177,7 @@ namespace Chummer
             // lblMemory
             // 
             this.lblMemory.AutoSize = true;
-            this.lblMemory.Location = new System.Drawing.Point(144, 356);
+            this.lblMemory.Location = new System.Drawing.Point(144, 381);
             this.lblMemory.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMemory.Name = "lblMemory";
             this.lblMemory.Size = new System.Drawing.Size(13, 13);
@@ -13184,7 +13189,7 @@ namespace Chummer
             // 
             this.lblMovementLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblMovementLabel.AutoSize = true;
-            this.lblMovementLabel.Location = new System.Drawing.Point(78, 381);
+            this.lblMovementLabel.Location = new System.Drawing.Point(78, 406);
             this.lblMovementLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMovementLabel.Name = "lblMovementLabel";
             this.lblMovementLabel.Size = new System.Drawing.Size(60, 13);
@@ -13206,7 +13211,7 @@ namespace Chummer
             // lblLiftCarry
             // 
             this.lblLiftCarry.AutoSize = true;
-            this.lblLiftCarry.Location = new System.Drawing.Point(144, 331);
+            this.lblLiftCarry.Location = new System.Drawing.Point(144, 356);
             this.lblLiftCarry.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblLiftCarry.Name = "lblLiftCarry";
             this.lblLiftCarry.Size = new System.Drawing.Size(13, 13);
@@ -13729,16 +13734,40 @@ namespace Chummer
             this.tsGearAllowRenameNotes,
             this.tsGearAllowRenameExtra});
             this.cmsGearAllowRename.Name = "cmsGearAllowRename";
-            this.cmsGearAllowRename.Size = new System.Drawing.Size(170, 92);
+            this.cmsGearAllowRename.Size = new System.Drawing.Size(171, 92);
             // 
             // tsGearAllowRenameExtra
             // 
             this.tsGearAllowRenameExtra.Image = global::Chummer.Properties.Resources.note_edit;
             this.tsGearAllowRenameExtra.Name = "tsGearAllowRenameExtra";
-            this.tsGearAllowRenameExtra.Size = new System.Drawing.Size(169, 22);
+            this.tsGearAllowRenameExtra.Size = new System.Drawing.Size(170, 22);
             this.tsGearAllowRenameExtra.Tag = "Menu_RenameExtraText";
             this.tsGearAllowRenameExtra.Text = "&Rename Extra Text";
             this.tsGearAllowRenameExtra.Click += new System.EventHandler(this.tsGearRename_Click);
+            // 
+            // lblSurprise
+            // 
+            this.lblSurprise.AutoSize = true;
+            this.lblSurprise.Location = new System.Drawing.Point(144, 331);
+            this.lblSurprise.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSurprise.Name = "lblSurprise";
+            this.lblSurprise.Size = new System.Drawing.Size(13, 13);
+            this.lblSurprise.TabIndex = 77;
+            this.lblSurprise.Text = "0";
+            this.lblSurprise.ToolTipText = "";
+            // 
+            // lblSurpriseLabel
+            // 
+            this.lblSurpriseLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSurpriseLabel.AutoSize = true;
+            this.lblSurpriseLabel.Location = new System.Drawing.Point(90, 331);
+            this.lblSurpriseLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSurpriseLabel.Name = "lblSurpriseLabel";
+            this.lblSurpriseLabel.Size = new System.Drawing.Size(48, 13);
+            this.lblSurpriseLabel.TabIndex = 78;
+            this.lblSurpriseLabel.Tag = "Label_OtherSurprise";
+            this.lblSurpriseLabel.Text = "Surprise:";
+            this.lblSurpriseLabel.ToolTipText = "";
             // 
             // frmCreate
             // 
@@ -15068,5 +15097,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblVehicleWeaponMode;
         private System.Windows.Forms.Label lblMetagenicQualities;
         private System.Windows.Forms.Label lblMetagenicQualitiesLabel;
+        private LabelWithToolTip lblSurprise;
+        private LabelWithToolTip lblSurpriseLabel;
     }
 }

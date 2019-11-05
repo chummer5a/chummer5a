@@ -814,6 +814,8 @@ namespace Chummer
                         lblParagonInformation.DoDatabinding("Text", CharacterObject,
                             nameof(Character.FirstMentorSpiritDisplayInformation));
 
+                        lblSurprise.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.SurpriseToolTip));
+                        lblSurprise.DoDatabinding("Text", CharacterObject, nameof(Character.Surprise));
                         lblComposure.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.ComposureToolTip));
                         lblComposure.DoDatabinding("Text", CharacterObject, nameof(Character.Composure));
                         lblJudgeIntentions.DoDatabinding("ToolTipText", CharacterObject,
@@ -16208,6 +16210,7 @@ namespace Chummer
             lblSwimLabel.SetToolTip(LanguageManager.GetString("Tip_OtherSwim"));
             lblFlyLabel.SetToolTip(LanguageManager.GetString("Tip_OtherFly"));
             lblComposureLabel.SetToolTip(LanguageManager.GetString("Tip_OtherComposure"));
+            lblSurpriseLabel.SetToolTip(LanguageManager.GetString("Tip_OtherSurprise"));
             lblJudgeIntentionsLabel.SetToolTip(LanguageManager.GetString("Tip_OtherJudgeIntentions"));
             lblLiftCarryLabel.SetToolTip(LanguageManager.GetString("Tip_OtherLiftAndCarry"));
             lblMemoryLabel.SetToolTip(LanguageManager.GetString("Tip_OtherMemory"));

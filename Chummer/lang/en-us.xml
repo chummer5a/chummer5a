@@ -5724,8 +5724,12 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Fly:</text>
     </string>
     <string>
-      <key>Label_OtherCmposure</key>
+      <key>Label_OtherComposure</key>
       <text>Composure:</text>
+    </string>
+    <string>
+      <key>Label_OtherSurprise</key>
+      <text>Surprise:</text>
     </string>
     <string>
       <key>Label_OtherJudgeIntention</key>
@@ -5810,6 +5814,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
     <string>
       <key>Tip_OtherMemory</key>
       <text>Memory is calculated as LOG + WIL.</text>
+    </string>
+    <string>
+      <key>Tip_OtherSurprise</key>
+      <text>Surprise is calculated as REA + INT.</text>
     </string>
     <string>
       <key>Tip_OtherCareerKarma</key>
