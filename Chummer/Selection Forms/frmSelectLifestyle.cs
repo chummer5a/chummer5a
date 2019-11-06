@@ -21,11 +21,13 @@ using System.Collections.Generic;
  using System.Windows.Forms;
 using System.Xml;
  using Chummer.Backend.Equipment;
+ using NLog;
 
 namespace Chummer
 {
     public partial class frmSelectLifestyle : Form
     {
+        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private bool _blnAddAgain;
         private readonly Lifestyle _objLifestyle;
         private Lifestyle _objSourceLifestyle;
@@ -42,7 +44,6 @@ namespace Chummer
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             _objLifestyle = new Lifestyle(objCharacter);
-            MoveControls();
             // Load the Lifestyles information.
             _objXmlDocument = XmlManager.Load("lifestyles.xml");
         }
@@ -60,7 +61,7 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(strLifeStyleId) && !strLifeStyleId.IsEmptyGuid())
                         {
                             string strName = objXmlLifestyle["name"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
-                            if (strName == _objLifestyle?.BaseLifestyle)
+                            if (strName == _objSourceLifestyle?.BaseLifestyle)
                                 strSelectedId = strLifeStyleId;
                             lstLifestyle.Add(new ListItem(strLifeStyleId, objXmlLifestyle["translate"]?.InnerText ?? strName));
                         }
@@ -120,7 +121,7 @@ namespace Chummer
                 nudPercentage.Value = _objSourceLifestyle.Percentage;
                 foreach (LifestyleQuality objQuality in _objSourceLifestyle.LifestyleQualities)
                 {
-                    TreeNode objNode = treQualities.FindNode(objQuality.SourceID);
+                    TreeNode objNode = treQualities.FindNode(objQuality.SourceIDString);
                     if (objNode != null)
                         objNode.Checked = true;
                 }
@@ -134,7 +135,7 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(txtLifestyleName.Text))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_SelectAdvancedLifestyle_LifestyleName", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectAdvancedLifestyle_LifestyleName", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_SelectAdvancedLifestyle_LifestyleName", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectAdvancedLifestyle_LifestyleName", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             _blnAddAgain = false;
@@ -176,10 +177,10 @@ namespace Chummer
         {
             string strSource = string.Empty;
             string strPage = string.Empty;
-            string strQualityId = treQualities.SelectedNode?.Tag.ToString();
-            if (!string.IsNullOrEmpty(strQualityId))
+            string strSourceIDString = treQualities.SelectedNode?.Tag.ToString();
+            if (!string.IsNullOrEmpty(strSourceIDString))
             {
-                XmlNode objXmlQuality = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + strQualityId + "\"]");
+                XmlNode objXmlQuality = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + strSourceIDString + "\"]");
                 if (objXmlQuality != null)
                 {
                     strSource = objXmlQuality["source"]?.InnerText ?? string.Empty;
@@ -253,18 +254,16 @@ namespace Chummer
                 }
                 else
                 {
-                    Log.Warning(new object[] { "Missing id field for lifestyle xmlnode", objXmlLifestyle });
+                    Log.Warn(new object[] { "Missing id field for xmlnode", objXmlLifestyle });
                     Utils.BreakIfDebug();
                 }
                 foreach (TreeNode objNode in treQualities.Nodes)
                 {
-                    if (objNode.Checked)
-                    {
-                        XmlNode objXmlLifestyleQuality = _objXmlDocument.SelectSingleNode($"/chummer/qualities/quality[id = \"{objNode.Tag}\"]");
-                        LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
-                        objQuality.Create(objXmlLifestyleQuality, _objLifestyle, _objCharacter, QualitySource.Selected);
-                        _objLifestyle.LifestyleQualities.Add(objQuality);
-                    }
+                    if (!objNode.Checked) continue;
+                    XmlNode objXmlLifestyleQuality = _objXmlDocument.SelectSingleNode($"/chummer/qualities/quality[id = \"{objNode.Tag}\"]");
+                    LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
+                    objQuality.Create(objXmlLifestyleQuality, _objLifestyle, _objCharacter, QualitySource.Selected);
+                    _objLifestyle.LifestyleQualities.Add(objQuality);
                 }
                 DialogResult = DialogResult.OK;
             }
@@ -356,7 +355,7 @@ namespace Chummer
             {
                 decimal decDiscount = decNuyen;
                 decDiscount = decDiscount * (nudPercentage.Value / 100);
-                lblCost.Text += " (" + decDiscount.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + "¥)";
+                lblCost.Text += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + decDiscount.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + "¥)";
             }
 
             lblCostLabel.Visible = !string.IsNullOrEmpty(lblCost.Text);
@@ -391,14 +390,6 @@ namespace Chummer
             }
             foreach (TreeNode objNode in lstNodes)
                 treTree.Nodes.Add(objNode);
-        }
-
-        private void MoveControls()
-        {
-            int intLeft = Math.Max(lblLifestyleNameLabel.Left + lblLifestyleNameLabel.Width, lblLifestyles.Left + lblLifestyles.Width);
-
-            txtLifestyleName.Left = intLeft + 6;
-            cboLifestyle.Left = intLeft + 6;
         }
 
         private void OpenSourceFromLabel(object sender, EventArgs e)

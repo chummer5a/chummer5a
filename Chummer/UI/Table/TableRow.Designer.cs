@@ -36,6 +36,7 @@ namespace Chummer.UI.Table
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Name = "TableRow";
             this.Padding = new System.Windows.Forms.Padding(0, 2, 0, 2);
+            this.Load += OnLoad;
             this.ResumeLayout(false);
 
         }

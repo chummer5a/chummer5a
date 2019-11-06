@@ -50,7 +50,7 @@ namespace Chummer
             {
                 if (quality.Type == QualityType.LifeModule)
                 {
-                    modules.Add(Quality.GetNodeOverrideable(quality.QualityId, xdoc));
+                    modules.Add(Quality.GetNodeOverrideable(quality.SourceIDString, xdoc));
                 }
             }
 

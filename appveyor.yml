@@ -1,4 +1,4 @@
-version: "5.202.{build}"
+version: "5.208.{build}"
 branches:
   only:
   - master
@@ -20,6 +20,7 @@ environment:
   - project_name: Chummer
     api_token: 'secure: Ez1QcWiKJJWMAO+xXkQglJNI4OnWM5/JMjXgy6gwJH5IuUX4ttzrpthVYNjHWS12'
 init:
+
 - ps: |
     $headers = @{
     "Authorization" = "Bearer $token"
@@ -111,3 +112,9 @@ deploy:
   artifact: Chummer
   draft: false
   prerelease: true
+test:
+  # all except assemblies to test
+  assemblies:
+    except:
+      - ChummerHub.Client.Tests.dll
+      - '**\ChummerHub.Client.Tests.dll'

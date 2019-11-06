@@ -80,6 +80,7 @@ namespace Chummer
         private bool _blnFree;
         private readonly List<Image> _lstMugshots = new List<Image>();
         private int _intMainMugshotIndex = -1;
+        private int _intKarmaMinimum = 2;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -119,12 +120,9 @@ namespace Chummer
                 _intCachedFreeFromImprovement = -1;
             }
 
-            if (PropertyChanged != null)
+            foreach (string strPropertyToChange in lstNamesOfChangedProperties)
             {
-                foreach (string strPropertyToChange in lstNamesOfChangedProperties)
-                {
-                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
-                }
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
             }
         }
 
@@ -366,7 +364,7 @@ namespace Chummer
         public bool ReadOnly => _blnReadOnly;
 
         public bool NotReadOnly => !ReadOnly;
-        
+
         /// <summary>
         /// Total points used for this contact.
         /// </summary>
@@ -381,6 +379,10 @@ namespace Chummer
                     intReturn += 1;
                 if (Blackmail)
                     intReturn += 2;
+                intReturn +=
+                    ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ContactKarmaDiscount);
+                intReturn = Math.Max(intReturn,
+                    _intKarmaMinimum + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ContactKarmaMinimum));
                 return intReturn;
             }
         }
@@ -498,25 +500,17 @@ namespace Chummer
             if (LinkedCharacter != null)
             {
                 // Update character information fields.
-                XmlDocument objMetatypeDoc = XmlManager.Load("metatypes.xml", strLanguage);
-                XmlNode objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + LinkedCharacter.Metatype + "\"]");
-                if (objMetatypeNode == null)
-                {
-                    objMetatypeDoc = XmlManager.Load("critters.xml", strLanguage);
-                    objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + LinkedCharacter.Metatype + "\"]");
-                }
+                XPathNavigator objMetatypeNode = _objCharacter.GetNode(true);
 
-                strReturn = objMetatypeNode?["translate"]?.InnerText ?? LanguageManager.TranslateExtra(LinkedCharacter.Metatype, strLanguage);
+                strReturn = objMetatypeNode.SelectSingleNode("translate")?.Value ?? LanguageManager.TranslateExtra(LinkedCharacter.Metatype, strLanguage);
 
-                if (!string.IsNullOrEmpty(LinkedCharacter.Metavariant))
-                {
-                    objMetatypeNode = objMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = \"" + LinkedCharacter.Metavariant + "\"]");
+                if (LinkedCharacter.MetavariantGuid == Guid.Empty) return strReturn;
+                objMetatypeNode = objMetatypeNode?.SelectSingleNode($"metavariants/metavariant[id = \"{LinkedCharacter.MetavariantGuid}\"]");
 
-                    string strMetatypeTranslate = objMetatypeNode?["translate"]?.InnerText;
-                    strReturn += !string.IsNullOrEmpty(strMetatypeTranslate)
-                        ? LanguageManager.GetString("String_Space", strLanguage) + '(' + strMetatypeTranslate + ')'
-                        : LanguageManager.GetString("String_Space", strLanguage) + '(' + LanguageManager.TranslateExtra(LinkedCharacter.Metavariant, strLanguage) + ')';
-                }
+                string strMetatypeTranslate = objMetatypeNode.SelectSingleNode("translate")?.Value;
+                strReturn += !string.IsNullOrEmpty(strMetatypeTranslate)
+                    ? LanguageManager.GetString("String_Space", strLanguage) + '(' + strMetatypeTranslate + ')'
+                    : LanguageManager.GetString("String_Space", strLanguage) + '(' + LanguageManager.TranslateExtra(LinkedCharacter.Metavariant, strLanguage) + ')';
             }
             else
                 strReturn = LanguageManager.TranslateExtra(strReturn, strLanguage);
@@ -877,7 +871,8 @@ namespace Chummer
         {
             get
             {
-                if (_blnFree) return _blnFree;
+                if (_blnFree)
+                    return _blnFree;
 
                 if (_intCachedFreeFromImprovement < 0)
                 {
@@ -886,10 +881,7 @@ namespace Chummer
 
                 return _intCachedFreeFromImprovement > 0;
             }
-            set
-            {
-                _blnFree = value;
-            }
+            set => _blnFree = value;
         }
 
         public bool FreeEnabled => _intCachedFreeFromImprovement < 1;
@@ -971,7 +963,7 @@ namespace Chummer
 
         public bool NoLinkedCharacter => _objLinkedCharacter == null;
 
-        public void RefreshLinkedCharacter(bool blnShowError = false)
+        public async void RefreshLinkedCharacter(bool blnShowError = false)
         {
             Character objOldLinkedCharacter = _objLinkedCharacter;
             CharacterObject.LinkedCharacters.Remove(_objLinkedCharacter);
@@ -991,7 +983,8 @@ namespace Chummer
 
                 if (blnError && blnShowError)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_FileNotFound", GlobalOptions.Language).Replace("{0}", FileName), LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_FileNotFound", GlobalOptions.Language), FileName),
+                        LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             if (!blnError)
@@ -1000,7 +993,7 @@ namespace Chummer
                 if (strFile.EndsWith(".chum5"))
                 {
                     Character objOpenCharacter = Program.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
-                    _objLinkedCharacter = objOpenCharacter ?? Program.MainForm.LoadCharacter(strFile, string.Empty, false, false);
+                    _objLinkedCharacter = objOpenCharacter ?? (await Program.MainForm.LoadCharacter(strFile, string.Empty, false, false));
                     if (_objLinkedCharacter != null)
                         CharacterObject.LinkedCharacters.Add(_objLinkedCharacter);
                 }
@@ -1184,7 +1177,7 @@ namespace Chummer
                 // Since IE is retarded and can't handle base64 images before IE9, we need to dump the image to a temporary directory and re-write the information.
                 // If you give it an extension of jpg, gif, or png, it expects the file to be in that format and won't render the image unless it was originally that type.
                 // But if you give it the extension img, it will render whatever you give it (which doesn't make any damn sense, but that's IE for you).
-                string strMugshotsDirectoryPath = Path.Combine(Application.StartupPath, "mugshots");
+                string strMugshotsDirectoryPath = Path.Combine(Utils.GetStartupPath, "mugshots");
                 if (!Directory.Exists(strMugshotsDirectoryPath))
                 {
                     try
@@ -1193,7 +1186,7 @@ namespace Chummer
                     }
                     catch (UnauthorizedAccessException)
                     {
-                        MessageBox.Show(LanguageManager.GetString("Message_Insufficient_Permissions_Warning", GlobalOptions.Language));
+                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Insufficient_Permissions_Warning", GlobalOptions.Language));
                     }
                 }
                 Guid guiImage = Guid.NewGuid();

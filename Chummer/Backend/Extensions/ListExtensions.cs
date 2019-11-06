@@ -26,7 +26,7 @@ namespace Chummer
         public static void AddWithSort<T>(this IList<T> lstCollection, T objNewItem, bool blnReverse = false) where T : IComparable
         {
             if (lstCollection == null)
-                throw new ArgumentNullException(nameof(IList<T>));
+                throw new ArgumentNullException(nameof(lstCollection));
             int intTargetIndex = 0;
             for (; intTargetIndex < lstCollection.Count; ++intTargetIndex)
             {
@@ -42,9 +42,9 @@ namespace Chummer
         public static void AddWithSort<T>(this IList<T> lstCollection, T objNewItem, IComparer<T> comparer, bool blnReverse = false)
         {
             if (lstCollection == null)
-                throw new ArgumentNullException(nameof(IList<T>));
+                throw new ArgumentNullException(nameof(lstCollection));
             if (comparer == null)
-                throw new ArgumentNullException(nameof(IComparer<T>));
+                throw new ArgumentNullException(nameof(comparer));
             int intTargetIndex = 0;
             for (; intTargetIndex < lstCollection.Count; ++intTargetIndex)
             {
@@ -61,6 +61,14 @@ namespace Chummer
         {
             foreach (T objItem in lstToAdd)
                 lstCollection.Add(objItem);
+        }
+
+        public static void AddRangeWithSort<T>(this IList<T> lstCollection, IEnumerable<T> lstToAdd, IComparer<T> comparer, bool blnReverse = false)
+        {
+            foreach (T objItem in lstToAdd)
+            {
+                AddWithSort(lstCollection, objItem, comparer, blnReverse);
+            }
         }
     }
 }

@@ -1729,6 +1729,15 @@
       </specs>
     </skill>
     <skill>
+      <id>c0be1393-e4a1-4af6-8c0d-f9eef89a93b1</id>
+      <name>Zoology</name>
+      <attribute>LOG</attribute>
+      <category>Academic</category>
+      <default>False</default>
+      <skillgroup />
+      <specs />
+    </skill>
+    <skill>
       <id>6331a44a-ad26-4b08-8b7a-2dbe3c2d0584</id>
       <name>Black Markets</name>
       <attribute>INT</attribute>
@@ -4625,6 +4634,20 @@
     <skill>
       <id>79a0069c-4517-4698-91b5-3d24b928c5ee</id>
       <name>Salish</name>
+      <attribute>INT</attribute>
+      <category>Language</category>
+      <default>False</default>
+      <skillgroup />
+      <specs>
+        <spec>Read/Write</spec>
+        <spec>Speak</spec>
+        <spec>Dialect</spec>
+        <spec>Lingo</spec>
+      </specs>
+    </skill>
+    <skill>
+      <id>1708eff8-a7fe-491f-b349-a6130c83e8d0</id>
+      <name>Serbo-Croatian</name>
       <attribute>INT</attribute>
       <category>Language</category>
       <default>False</default>

@@ -10,6 +10,7 @@ namespace Chummer
 {
     public class CritterPower : Power
     {
+        #region Constructor, Print, Save and Load Methods
         public CritterPower(Character objCharacter) : base(objCharacter)
         {
             _improvementSource = Improvement.ImprovementSource.CritterPower;
@@ -19,45 +20,53 @@ namespace Chummer
             // Create the GUID for the new Power.
             _guiID = Guid.NewGuid();
             CharacterObject = objCharacter;
-            CharacterObject.PropertyChanged += OnCharacterChanged;
-            if (CharacterObject.Options.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
-            {
-                MAGAttributeObject = CharacterObject.MAGAdept;
-            }
-            else
-            {
-                MAGAttributeObject = CharacterObject.MAG;
-            }
         }
-
-        private void OnCharacterChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(Character.IsMysticAdept))
-            {
-                if (CharacterObject.Options.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
-                {
-                    MAGAttributeObject = CharacterObject.MAGAdept;
-                }
-                else
-                {
-                    MAGAttributeObject = CharacterObject.MAG;
-                }
-            }
-        }
-
-        #region Methods
-
         #endregion
         #region Properties
-        public XmlNode GetNode(string strLanguage)
+        public string Category { get; set; }
+        public bool CountTowardsLimit { get; set; }
+        public int Karma { get; set; }
+
+        /// <summary>
+        /// Type.
+        /// </summary>
+        public string Type { get; set; }
+
+        /// <summary>
+        /// Translated Type.
+        /// </summary>
+        public string DisplayType(string strLanguage)
         {
-            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
+            string strReturn = Type;
+
+            switch (strReturn)
             {
-                _objCachedMyXmlNode = XmlManager.Load("critterpowers.xml", strLanguage).SelectSingleNode("/chummer/powers/power[name = \"" + Name + "\"]");
-                _strCachedXmlNodeLanguage = strLanguage;
+                case "M":
+                    strReturn = LanguageManager.GetString("String_SpellTypeMana", strLanguage);
+                    break;
+                case "P":
+                    strReturn = LanguageManager.GetString("String_SpellTypePhysical", strLanguage);
+                    break;
+                default:
+                    strReturn = LanguageManager.GetString("String_None", strLanguage);
+                    break;
             }
-            return _objCachedMyXmlNode;
+
+            return strReturn;
         }
+
+        /// <summary>
+        /// Translated Category.
+        /// </summary>
+        public string DisplayCategory(string strLanguage)
+        {
+            // Get the translated name if applicable.
+            if (strLanguage == GlobalOptions.DefaultLanguage)
+                return Category;
+
+            return XmlManager.Load("critterpowers.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@translate")?.InnerText ?? Category;
+        }
+
         #endregion
     }
 }

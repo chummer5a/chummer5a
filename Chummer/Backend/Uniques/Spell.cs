@@ -26,16 +26,20 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
+using NLog;
 
 namespace Chummer
 {
     /// <summary>
     /// A Magician Spell.
     /// </summary>
+    [HubClassTag("SourceID", true, "Name", "Extra")]
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     public class Spell : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove, IHasSource
     {
+        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private Guid _guiID;
+        private Guid _guiSourceID = Guid.Empty;
         private string _strName = string.Empty;
         private string _strDescriptors = string.Empty;
         private string _strCategory = string.Empty;
@@ -74,8 +78,12 @@ namespace Chummer
         /// <param name="objSource">Enum representing the actual type of spell this object represents. Used for initiation benefits that would grant spells.</param>
         public void Create(XmlNode objXmlSpellNode, string strForcedValue = "", bool blnLimited = false, bool blnExtended = false, bool blnAlchemical = false, Improvement.ImprovementSource objSource = Improvement.ImprovementSource.Spell)
         {
-            if (objXmlSpellNode.TryGetStringFieldQuickly("name", ref _strName))
-                _objCachedMyXmlNode = null;
+            if (!objXmlSpellNode.TryGetField("id", Guid.TryParse, out _guiSourceID))
+            {
+                Log.Warn(new object[] { "Missing id field for xmlnode", objXmlSpellNode });
+                Utils.BreakIfDebug();
+            }
+            objXmlSpellNode.TryGetStringFieldQuickly("name", ref _strName);
             _blnExtended = blnExtended;
 
             ImprovementManager.ForcedValue = strForcedValue;
@@ -106,15 +114,16 @@ namespace Chummer
             objXmlSpellNode.TryGetStringFieldQuickly("page", ref _strPage);
             _objImprovementSource = objSource;
 
-            SourceDetail = new SourceString(_strSource, _strPage);
             /*
-            if (_strNotes == string.Empty)
+            if (string.IsNullOrEmpty(_strNotes))
             {
                 _strNotes = CommonFunctions.GetText($"{_strSource} {_strPage}", Name);
             }*/
         }
 
-        public SourceString SourceDetail { get; set; }
+        private SourceString _objCachedSourceDetail;
+        public SourceString SourceDetail => _objCachedSourceDetail ?? (_objCachedSourceDetail =
+                                                new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language));
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -123,7 +132,8 @@ namespace Chummer
         public void Save(XmlTextWriter objWriter)
         {
             objWriter.WriteStartElement("spell");
-            objWriter.WriteElementString("guid", _guiID.ToString("D"));
+            objWriter.WriteElementString("sourceid", SourceIDString);
+            objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("descriptors", _strDescriptors);
             objWriter.WriteElementString("category", _strCategory);
@@ -144,7 +154,9 @@ namespace Chummer
             objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
             objWriter.WriteElementString("grade", _intGrade.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteEndElement();
-            _objCharacter.SourceProcess(_strSource);
+
+            if (Grade >= 0)
+                _objCharacter.SourceProcess(_strSource);
         }
 
         /// <summary>
@@ -153,9 +165,17 @@ namespace Chummer
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
-            objNode.TryGetField("guid", Guid.TryParse, out _guiID);
-            if (objNode.TryGetStringFieldQuickly("name", ref _strName))
-                _objCachedMyXmlNode = null;
+            if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
+            {
+                _guiID = Guid.NewGuid();
+            }
+            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+            {
+                XmlNode node = GetNode(GlobalOptions.Language);
+                node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+            }
+
             objNode.TryGetStringFieldQuickly("descriptors", ref _strDescriptors);
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
             objNode.TryGetStringFieldQuickly("type", ref _strType);
@@ -181,7 +201,6 @@ namespace Chummer
 
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
-            SourceDetail = new SourceString(_strSource, _strPage);
         }
 
         /// <summary>
@@ -220,6 +239,18 @@ namespace Chummer
         #endregion
 
         #region Properties
+
+
+        /// <summary>
+        /// Identifier of the object within data files.
+        /// </summary>
+        public Guid SourceID => _guiSourceID;
+
+        /// <summary>
+        /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
+        /// </summary>
+        public string SourceIDString => _guiSourceID.ToString("D");
+
         /// <summary>
         /// Internal identifier which will be used to identify this Spell in the Improvement system.
         /// </summary>
@@ -268,103 +299,42 @@ namespace Chummer
 
             string[] strDescriptorsIn = Descriptors.Split(',');
             bool blnExtendedFound = false;
-            foreach (string strDescriptor in strDescriptorsIn)
+            if (strDescriptorsIn.Length > 0)
             {
-                switch (strDescriptor.Trim())
+                foreach (string strDescriptor in strDescriptorsIn)
                 {
-                    case "Active":
-                        objReturn.Append(LanguageManager.GetString("String_DescActive", strLanguage));
-                        break;
-                    case "Adept":
-                        objReturn.Append(LanguageManager.GetString("String_DescAdept", strLanguage));
-                        break;
-                    case "Alchemical Preparation":
-                        objReturn.Append(LanguageManager.GetString("String_DescAlchemicalPreparation", strLanguage));
-                        break;
-                    case "Anchored":
-                        objReturn.Append(LanguageManager.GetString("String_DescAnchored", strLanguage));
-                        break;
-                    case "Area":
-                        objReturn.Append(LanguageManager.GetString("String_DescArea", strLanguage));
-                        break;
-                    case "Blood":
-                        objReturn.Append(LanguageManager.GetString("String_DescBlood", strLanguage));
-                        break;
-                    case "Contractual":
-                        objReturn.Append(LanguageManager.GetString("String_DescContractual", strLanguage));
-                        break;
-                    case "Direct":
-                        objReturn.Append(LanguageManager.GetString("String_DescDirect", strLanguage));
-                        break;
-                    case "Directional":
-                        objReturn.Append(LanguageManager.GetString("String_DescDirectional", strLanguage));
-                        break;
-                    case "Elemental":
-                        objReturn.Append(LanguageManager.GetString("String_DescElemental", strLanguage));
-                        break;
-                    case "Environmental":
-                        objReturn.Append(LanguageManager.GetString("String_DescEnvironmental", strLanguage));
-                        break;
-                    case "Extended Area":
-                        blnExtendedFound = true;
-                        objReturn.Append(LanguageManager.GetString("String_DescExtendedArea", GlobalOptions.Language));
-                        break;
-                    case "Geomancy":
-                        objReturn.Append(LanguageManager.GetString("String_DescGeomancy", strLanguage));
-                        break;
-                    case "Indirect":
-                        objReturn.Append(LanguageManager.GetString("String_DescIndirect", strLanguage));
-                        break;
-                    case "Mana":
-                        objReturn.Append(LanguageManager.GetString("String_DescMana", strLanguage));
-                        break;
-                    case "Material Link":
-                        objReturn.Append(LanguageManager.GetString("String_DescMaterialLink", strLanguage));
-                        break;
-                    case "Mental":
-                        objReturn.Append(LanguageManager.GetString("String_DescMental", strLanguage));
-                        break;
-                    case "Minion":
-                        objReturn.Append(LanguageManager.GetString("String_DescMinion", strLanguage));
-                        break;
-                    case "Multi-Sense":
-                        objReturn.Append(LanguageManager.GetString("String_DescMultiSense", strLanguage));
-                        break;
-                    case "Negative":
-                        objReturn.Append(LanguageManager.GetString("String_DescNegative", strLanguage));
-                        break;
-                    case "Obvious":
-                        objReturn.Append(LanguageManager.GetString("String_DescObvious", strLanguage));
-                        break;
-                    case "Organic Link":
-                        objReturn.Append(LanguageManager.GetString("String_DescOrganicLink", strLanguage));
-                        break;
-                    case "Passive":
-                        objReturn.Append(LanguageManager.GetString("String_DescPassive", strLanguage));
-                        break;
-                    case "Physical":
-                        objReturn.Append(LanguageManager.GetString("String_DescPhysical", strLanguage));
-                        break;
-                    case "Psychic":
-                        objReturn.Append(LanguageManager.GetString("String_DescPsychic", strLanguage));
-                        break;
-                    case "Realistic":
-                        objReturn.Append(LanguageManager.GetString("String_DescRealistic", strLanguage));
-                        break;
-                    case "Single-Sense":
-                        objReturn.Append(LanguageManager.GetString("String_DescSingleSense", strLanguage));
-                        break;
-                    case "Touch":
-                        objReturn.Append(LanguageManager.GetString("String_DescTouch", strLanguage));
-                        break;
-                    case "Spell":
-                        objReturn.Append(LanguageManager.GetString("String_DescSpell", strLanguage));
-                        break;
-                    case "Spotter":
-                        objReturn.Append(LanguageManager.GetString("String_DescSpotter", strLanguage));
-                        break;
+                    switch (strDescriptor.Trim())
+                    {
+                        case "Alchemical Preparation":
+                            objReturn.Append(LanguageManager.GetString("String_DescAlchemicalPreparation",
+                                strLanguage));
+                            break;
+                        case "Extended Area":
+                            blnExtendedFound = true;
+                            objReturn.Append(LanguageManager.GetString("String_DescExtendedArea",
+                                GlobalOptions.Language));
+                            break;
+                        case "Material Link":
+                            objReturn.Append(LanguageManager.GetString("String_DescMaterialLink", strLanguage));
+                            break;
+                        case "Multi-Sense":
+                            objReturn.Append(LanguageManager.GetString("String_DescMultiSense", strLanguage));
+                            break;
+                        case "Organic Link":
+                            objReturn.Append(LanguageManager.GetString("String_DescOrganicLink", strLanguage));
+                            break;
+                        case "Single-Sense":
+                            objReturn.Append(LanguageManager.GetString("String_DescSingleSense", strLanguage));
+                            break;
+                        default:
+                            objReturn.Append(LanguageManager.GetString($"String_Desc{strDescriptor.Trim()}",
+                                strLanguage));
+                            break;
+
+                    }
+
+                    objReturn.Append(", ");
                 }
-                objReturn.Append(", ");
             }
 
             // If Extended Area was not found and the Extended flag is enabled, add Extended Area to the list of Descriptors.
@@ -460,19 +430,20 @@ namespace Chummer
                     {
                         int intDV = Convert.ToInt32(Math.Floor(Convert.ToDouble(xprResult.ToString(), GlobalOptions.InvariantCultureInfo)));
 
-                        if (Limited)
-                        {
-                            intDV -= 2;
-                        }
-                        if (Extended && !Name.EndsWith("Extended"))
-                        {
-                            intDV += 2;
-                        }
-
                         // Drain cannot be lower than 2.
                         if (intDV < 2)
                             intDV = 2;
-                        strTip.Append(Environment.NewLine + LanguageManager.GetString("String_Force", GlobalOptions.Language) + strSpaceCharacter + i.ToString() + ':' + strSpaceCharacter + intDV.ToString());
+                        strTip.Append(Environment.NewLine + LanguageManager.GetString("String_Force", GlobalOptions.Language) + strSpaceCharacter + i.ToString(GlobalOptions.CultureInfo)
+                                      + LanguageManager.GetString("String_Colon", GlobalOptions.Language) + strSpaceCharacter + intDV);
+
+                        if (Limited)
+                        {
+                            strTip.Append($"{strSpaceCharacter}({LanguageManager.GetString("String_SpellLimited", GlobalOptions.Language)}{strSpaceCharacter}:{strSpaceCharacter}-2");
+                        }
+                        if (Extended && !Name.EndsWith("Extended"))
+                        {
+                            strTip.Append($"{strSpaceCharacter}({LanguageManager.GetString("String_SpellExtended", GlobalOptions.Language)}{strSpaceCharacter}:{strSpaceCharacter}+2");
+                        }
                     }
                     else
                     {
@@ -482,16 +453,12 @@ namespace Chummer
                     }
                 }
 
-                List<Improvement> lstDrainImprovements = _objCharacter.Improvements
-                    .Where(o => (o.ImproveType == Improvement.ImprovementType.DrainValue || (o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain && (string.IsNullOrEmpty(o.ImprovedName) || o.ImprovedName == Category))) &&
-                                o.Enabled).ToList();
-                if (lstDrainImprovements.Count > 0)
+                List<Improvement> lstDrainImprovements = RelevantImprovements(o => o.ImproveType == Improvement.ImprovementType.DrainValue || o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain).ToList();
+                if (lstDrainImprovements.Count <= 0) return strTip.ToString();
+                strTip.Append(Environment.NewLine + LanguageManager.GetString("Label_Bonus", GlobalOptions.Language));
+                foreach (Improvement objLoopImprovement in lstDrainImprovements)
                 {
-                    strTip.Append(Environment.NewLine + LanguageManager.GetString("Label_Bonus", GlobalOptions.Language));
-                    foreach (Improvement objLoopImprovement in lstDrainImprovements)
-                    {
-                        strTip.Append($"{Environment.NewLine}{_objCharacter.GetObjectName(objLoopImprovement, GlobalOptions.Language)}{strSpaceCharacter}({objLoopImprovement.Value:0;-0;0})");
-                    }
+                    strTip.Append($"{Environment.NewLine}{_objCharacter.GetObjectName(objLoopImprovement, GlobalOptions.Language)}{strSpaceCharacter}({objLoopImprovement.Value:0;-0;0})");
                 }
 
                 return strTip.ToString();
@@ -588,57 +555,52 @@ namespace Chummer
             get
             {
                 string strReturn = _strDV;
+                if (!Limited && (!Extended || Name.EndsWith("Extended")) && !RelevantImprovements(o =>
+                        o.ImproveType == Improvement.ImprovementType.DrainValue ||
+                         o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain).Any()) return strReturn;
                 bool force = strReturn.StartsWith('F');
-                if (Limited || (Extended && !Name.EndsWith("Extended")) || _objCharacter.Improvements.Any(o => (o.ImproveType == Improvement.ImprovementType.DrainValue || o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain) &&
-                                                                   (string.IsNullOrEmpty(o.ImprovedName) || o.ImprovedName == Category) && o.Enabled))
+                string strDV = strReturn.TrimStartOnce('F');
+                //Navigator can't do math on a single value, so inject a mathable value.
+                if (string.IsNullOrEmpty(strDV))
                 {
-                    string strDV = strReturn.TrimStartOnce('F');
-                    //Navigator can't do math on a single value, so inject a mathable value.
-                    if (string.IsNullOrEmpty(strDV))
+                    strDV = "0";
+                }
+                else
+                {
+                    int intPos = strReturn.IndexOf('-');
+                    if (intPos != -1)
                     {
-                        strDV = "0";
+                        strDV = strReturn.Substring(intPos);
                     }
                     else
                     {
-                        int intPos = strReturn.IndexOf('-');
+                        intPos = strReturn.IndexOf('+');
                         if (intPos != -1)
                         {
                             strDV = strReturn.Substring(intPos);
                         }
-                        else
-                        {
-                            intPos = strReturn.IndexOf('+');
-                            if (intPos != -1)
-                            {
-                                strDV = strReturn.Substring(intPos);
-                            }
-                        }
                     }
-                    foreach (Improvement imp in _objCharacter.Improvements.Where(i => (i.ImproveType == Improvement.ImprovementType.DrainValue || i.ImproveType == Improvement.ImprovementType.SpellCategoryDrain) &&
-                                                                                      (string.IsNullOrEmpty(i.ImprovedName) || i.ImprovedName == Category) && i.Enabled))
-                    {
-                        strDV += $" + {imp.Value:0;-0;0}";
-                    }
-                    if (Limited)
-                    {
-                        strDV += " + -2";
-                    }
-                    if (Extended && !Name.EndsWith("Extended"))
-                    {
-                        strDV += " + 2";
-                    }
-                    object xprResult = CommonFunctions.EvaluateInvariantXPath(strDV.TrimStart('+'), out bool blnIsSuccess);
-                    if (blnIsSuccess)
-                    {
-                        if (force)
-                        {
-                            strReturn = $"F{xprResult:+0;-0;}";
-                        }
-                        else if (xprResult.ToString() != "0")
-                        {
-                            strReturn += xprResult;
-                        }
-                    }
+                }
+
+                foreach (var improvement in RelevantImprovements(i => i.ImproveType == Improvement.ImprovementType.DrainValue || i.ImproveType == Improvement.ImprovementType.SpellCategoryDrain))
+                    strDV = strDV + $" + {improvement.Value:0;-0;0}";
+                if (Limited)
+                {
+                    strDV += " + -2";
+                }
+                if (Extended && !Name.EndsWith("Extended"))
+                {
+                    strDV += " + 2";
+                }
+                object xprResult = CommonFunctions.EvaluateInvariantXPath(strDV.TrimStart('+'), out bool blnIsSuccess);
+                if (!blnIsSuccess) return strReturn;
+                if (force)
+                {
+                    strReturn = $"F{xprResult:+0;-0;}";
+                }
+                else if (xprResult.ToString() != "0")
+                {
+                    strReturn += xprResult;
                 }
                 return strReturn;
             }
@@ -663,12 +625,18 @@ namespace Chummer
             set => _strPage = value;
         }
 
+        /// <summary>
+        /// Sourcebook Page Number using a given language file.
+        /// Returns Page if not found or the string is empty.
+        /// </summary>
+        /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <returns></returns>
         public string DisplayPage(string strLanguage)
         {
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Page;
-
-            return GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
+            string s = GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
+            return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 
         /// <summary>
@@ -810,8 +778,10 @@ namespace Chummer
                         intReturn += 2;
                 }
 
-                // Include any Improvements to the Spell Category.
-                intReturn += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.SpellCategory, false, Category);
+                // Include any Improvements to the Spell's dicepool.
+                intReturn += RelevantImprovements(x =>
+                    x.ImproveType == Improvement.ImprovementType.SpellCategory ||
+                    x.ImproveType == Improvement.ImprovementType.SpellDicePool).Sum(x => x.Value);
 
                 return intReturn;
             }
@@ -830,18 +800,17 @@ namespace Chummer
                 if (objSkill != null)
                 {
                     int intPool = UsesUnarmed ? objSkill.PoolOtherAttribute(_objCharacter.MAG.TotalValue, "MAG") : objSkill.Pool;
-                    strReturn = objSkill.DisplayNameMethod(GlobalOptions.Language) + strSpaceCharacter + '(' + intPool.ToString(GlobalOptions.CultureInfo) + ')';
-                    // Add any Specialization bonus if applicable.
-                    if (objSkill.HasSpecialization(Category))
-                        strReturn += strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("String_ExpenseSpecialization", GlobalOptions.Language) + ':' + strSpaceCharacter + DisplayCategory(GlobalOptions.Language) + strSpaceCharacter + '(' + 2.ToString(GlobalOptions.CultureInfo) + ')';
+                    strReturn = objSkill.FormattedDicePool(intPool, strSpaceCharacter, Category);
                 }
 
-                // Include any Improvements to the Spell Category.
-                int intSpellImprovements = ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.SpellCategory, false, Category);
-                if (intSpellImprovements != 0)
-                    strReturn += strSpaceCharacter + '+' + strSpaceCharacter + DisplayCategory(GlobalOptions.Language) + strSpaceCharacter + '(' + intSpellImprovements.ToString(GlobalOptions.CultureInfo) + ')';
-
-                return strReturn;
+                // Include any Improvements to the Spell Category or Spell Name.
+                return RelevantImprovements(x =>
+                    x.ImproveType == Improvement.ImprovementType.SpellCategory ||
+                    x.ImproveType == Improvement.ImprovementType.SpellDicePool).Aggregate(strReturn,
+                    (current, objImprovement) =>
+                        current +
+                        $"{strSpaceCharacter}+{strSpaceCharacter}{_objCharacter.GetObjectName(objImprovement, GlobalOptions.Language)}{strSpaceCharacter}({objImprovement.Value.ToString(GlobalOptions.CultureInfo)})"
+                        );
             }
         }
 
@@ -857,10 +826,38 @@ namespace Chummer
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load("spells.xml", strLanguage).SelectSingleNode("/chummer/spells/spell[name = \"" + Name + "\" and category = \"" + Category + "\"]");
+                _objCachedMyXmlNode = SourceID == Guid.Empty
+                    ? XmlManager.Load("spells.xml", strLanguage)
+                        .SelectSingleNode($"/chummer/spells/spell[name = \"{Name}\"]")
+                    : XmlManager.Load("spells.xml", strLanguage)
+                        .SelectSingleNode($"/chummer/spells/spell[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;
+        }
+
+
+
+        private IEnumerable<Improvement> RelevantImprovements(Func<Improvement, bool> funcWherePredicate = null)
+        {
+            foreach (Improvement objImprovement in _objCharacter.Improvements.Where(i => i.Enabled && funcWherePredicate?.Invoke(i) == true))
+            {
+                switch (objImprovement.ImproveType)
+                {
+                    case Improvement.ImprovementType.SpellDicePool:
+                        if (objImprovement.ImprovedName == Name || objImprovement.ImprovedName == SourceID.ToString())
+                            yield return objImprovement;
+                        break;
+                    case Improvement.ImprovementType.SpellCategory:
+                    case Improvement.ImprovementType.SpellCategoryDrain:
+                        if (objImprovement.ImprovedName == Category)
+                            yield return objImprovement;
+                        break;
+                    case Improvement.ImprovementType.DrainValue:
+                        yield return objImprovement;
+                        break;
+                }
+            }
         }
         #endregion
 
@@ -925,19 +922,9 @@ namespace Chummer
 
         public void SetSourceDetail(Control sourceControl)
         {
-            if (SourceDetail != null)
-            {
-                SourceDetail.SetControl(sourceControl);
-            }
-            else if (!string.IsNullOrWhiteSpace(_strPage) && !string.IsNullOrWhiteSpace(_strSource))
-            {
-                SourceDetail = new SourceString(_strSource, _strPage);
-                SourceDetail.SetControl(sourceControl);
-            }
-            else
-            {
-                Utils.BreakIfDebug();
-            }
+            if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
+                _objCachedSourceDetail = null;
+            SourceDetail.SetControl(sourceControl);
         }
     }
 }

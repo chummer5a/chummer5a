@@ -47,7 +47,7 @@ namespace WpfApplication1
 	        _attValues = new List<string>(lines[1].Split(' '));
 	        if (_attAbbrevs.Count != _attValues.Count)
 	        {
-		        MessageBox.Show("Mismatched attribute lengths!");
+                MessageBox.Show("Mismatched attribute lengths!");
 		        return;
 	        }
 
@@ -153,7 +153,7 @@ namespace WpfApplication1
 			        var line = lines[i].Replace("Physical Skills ", string.Empty).Replace("Matrix Skills ", string.Empty).Replace("Magic Skills ", string.Empty).Replace("Skills ", string.Empty);
 			        var split = line.Split(',');
 			        XmlNode xmlParentNode = doc.CreateElement("skills");
-			        foreach (var s in split.Where(s => s != string.Empty))
+			        foreach (var s in split.Where(s => !string.IsNullOrEmpty(s)))
 			        {
 				        xmlNode = doc.CreateElement("skill");
 				        int index = s.LastIndexOf(" R", StringComparison.Ordinal);
@@ -177,7 +177,7 @@ namespace WpfApplication1
 			        var line = lines[i].Replace("Complex Forms ", string.Empty);
 			        var split = line.Split(',');
 			        XmlNode xmlParentNode = doc.CreateElement("complexforms");
-					foreach (var s in split.Where(s => s != string.Empty))
+					foreach (var s in split.Where(s => !string.IsNullOrEmpty(s)))
 					{
 						xmlNode = doc.CreateElement("complexform");
 						if (s.Contains('('))
@@ -197,7 +197,7 @@ namespace WpfApplication1
 			        var line = lines[i].Replace("Powers ", string.Empty);
 			        var split = line.Split(',');
 			        XmlNode xmlParentNode = doc.CreateElement("powers");
-					foreach (var s in split.Where(s => s != string.Empty))
+					foreach (var s in split.Where(s => !string.IsNullOrEmpty(s)))
 					{
 						xmlNode = doc.CreateElement("power");
 						if (s.Contains(':'))
@@ -228,7 +228,7 @@ namespace WpfApplication1
 			        var line = lines[i].Replace("Programs ", string.Empty);
 			        var split = line.Split(',');
 			        XmlNode xmlParentNode = doc.CreateElement("gears");
-					foreach (var s in split.Where(s => s != string.Empty))
+					foreach (var s in split.Where(s => !string.IsNullOrEmpty(s)))
 					{
 						xmlNode = doc.CreateElement("quality");
 						if (s.Contains('('))
@@ -248,7 +248,7 @@ namespace WpfApplication1
 			        var line = lines[i].Replace("Qualities ", string.Empty);
 			        var split = line.Split(',');
 			        XmlNode xmlParentNode = doc.CreateElement("qualities");
-			        foreach (var s in split.Where(s => s != string.Empty))
+			        foreach (var s in split.Where(s => !string.IsNullOrEmpty(s)))
 			        {
 				        xmlNode = doc.CreateElement("quality");
 				        if (s.Contains('('))

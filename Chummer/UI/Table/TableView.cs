@@ -512,9 +512,7 @@ namespace Chummer.UI.Table
                     SuspendLayout();
                     for (int i = 0; i < _columns.Count; i++)
                     {
-                        TableColumn<T> column = _columns[i];
                         List<TableCell> cells = _lstCells[i].cells;
-                        TableCell oldCell = cells[e.NewIndex];
                         cells.RemoveAt(e.NewIndex);
                     }
                     row = _lstRowCells[e.NewIndex];
@@ -660,18 +658,8 @@ namespace Chummer.UI.Table
 
         public TableColumnCollection<T> Columns => _columns;
 
-        public override LayoutEngine LayoutEngine
-        {
-            get
-            {
-                if (_layoutEngine == null)
-                {
-                    _layoutEngine = new TableLayoutEngine(this);
-                }
-                return _layoutEngine;
-            }
-        }
-        
+        public override LayoutEngine LayoutEngine => _layoutEngine ?? (_layoutEngine = new TableLayoutEngine(this));
+
         public SortOrder SortOrder
         {
             get => _eSortType;

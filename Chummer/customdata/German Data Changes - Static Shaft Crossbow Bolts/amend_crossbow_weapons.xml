@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<chummer>
+  <gears>
+    <gear>
+      <id>aa012c52-d39c-4b4a-bdca-a7387832cbb3</id>
+      <name>Bolt: Stick-n-Shock w/Static Shaft (Pistol Crossbow)</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>RG</source>
+      <page>24</page>
+      <avail>6R</avail>
+      <cost>50</cost>
+      <costfor>1</costfor>
+      <weaponbonus>
+        <ap>-5</ap>
+        <damagereplace>12S(e)</damagereplace>
+      </weaponbonus>
+    </gear>
+    <gear>
+      <id>c4fecc98-0cf7-4e81-adde-bbed821850d6</id>
+      <name>Bolt: Stick-n-Shock w/Static Shaft (Light Crossbow)</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>RG</source>
+      <page>24</page>
+      <avail>6R</avail>
+      <cost>75</cost>
+      <costfor>1</costfor>
+      <weaponbonus>
+        <ap>-5</ap>
+        <damagereplace>12S(e)</damagereplace>
+      </weaponbonus>
+    </gear>
+    <gear>
+      <id>c4fecc98-0cf7-4e81-adde-bbed821850d6</id>
+      <name>Bolt: Stick-n-Shock w/Static Shaft (Medium Crossbow)</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>RG</source>
+      <page>24</page>
+      <avail>6R</avail>
+      <cost>125</cost>
+      <costfor>1</costfor>
+      <weaponbonus>
+        <ap>-5</ap>
+        <damagereplace>12S(e)</damagereplace>
+      </weaponbonus>
+    </gear>
+    <gear>
+      <id>c4fecc98-0cf7-4e81-adde-bbed821850d6</id>
+      <name>Bolt: Stick-n-Shock w/Static Shaft (Heavy Crossbow)</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>RG</source>
+      <page>24</page>
+      <avail>6R</avail>
+      <cost>200</cost>
+      <costfor>1</costfor>
+      <weaponbonus>
+        <ap>-5</ap>
+        <damagereplace>12S(e)</damagereplace>
+      </weaponbonus>
+    </gear>
+  </gears>
+</chummer>

@@ -568,6 +568,7 @@
       <category>Entertainment - Outing</category>
       <lp>1</lp>
       <allowed>Low,Medium,High,Luxury</allowed>
+      <allowmultiple />
       <bonus>
         <selecttext />
       </bonus>
@@ -794,7 +795,7 @@
       <name>Workshop/Facility</name>
       <category>Entertainment - Asset</category>
       <lp>2</lp>
-      <allowed>Medium,Commercial</allowed>
+      <allowed>Commercial</allowed>
       <bonus>
         <selectskill />
       </bonus>
@@ -810,7 +811,7 @@
       <bonus>
         <selectskill />
       </bonus>
-      <allowed>Medium,Commercial</allowed>
+      <allowed>Commercial</allowed>
       <source>RF</source>
       <cost>2250</cost>
       <page>224</page>
@@ -1253,7 +1254,7 @@
       <category>Negative</category>
       <lp>0</lp>
       <source>HT</source>
-      <cost>-1600</cost>
+      <cost>-600</cost>
       <page>141</page>
       <id>a7d85c5f-74b9-4f02-ab00-916cd7337d47</id>
     </quality>

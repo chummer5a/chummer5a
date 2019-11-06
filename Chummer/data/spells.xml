@@ -130,7 +130,7 @@
       <source>SR5</source>
       <category>Combat</category>
       <damage>P</damage>
-      <descriptor>Direct</descriptor>
+      <descriptor>Direct, Area</descriptor>
       <duration>I</duration>
       <dv>F</dv>
       <range>LOS (A)</range>
@@ -1018,7 +1018,7 @@
       <descriptor>Mental</descriptor>
       <duration>S</duration>
       <dv>F+1</dv>
-      <range>LOS</range>
+      <range>LOS (A)</range>
       <type>M</type>
     </spell>
     <spell>
@@ -1267,6 +1267,11 @@
       <dv>Special</dv>
       <range>Special</range>
       <type>M</type>
+      <bonus>
+        <addspirit>
+          <spirit>Watcher</spirit>
+        </addspirit>
+      </bonus>
     </spell>
     <spell>
       <id>f99ab85f-2cc7-4c09-8ea4-581f75e40487</id>
@@ -1280,6 +1285,44 @@
       <dv>Special</dv>
       <range>Special</range>
       <type>M</type>
+      <bonus>
+        <addspirit>
+          <addtoselected>False</addtoselected>
+          <spirit>Homonculus (Fragile)</spirit>
+        </addspirit>
+        <addspirit>
+          <addtoselected>False</addtoselected>
+          <spirit>Homonculus (Cheap Material)</spirit>
+        </addspirit>
+        <addspirit>
+          <addtoselected>False</addtoselected>
+          <spirit>Homonculus (Average Material)</spirit>
+        </addspirit>
+        <addspirit>
+          <addtoselected>False</addtoselected>
+          <spirit>Homonculus (Heavy Material)</spirit>
+        </addspirit>
+        <addspirit>
+          <addtoselected>False</addtoselected>
+          <spirit>Homonculus (Reinforced Material)</spirit>
+        </addspirit>
+        <addspirit>
+          <addtoselected>False</addtoselected>
+          <spirit>Homonculus (Structural Material)</spirit>
+        </addspirit>
+        <addspirit>
+          <addtoselected>False</addtoselected>
+          <spirit>Homonculus (Heavy Structural Material)</spirit>
+        </addspirit>
+        <addspirit>
+          <addtoselected>False</addtoselected>
+          <spirit>Homonculus (Armored Material)</spirit>
+        </addspirit>
+        <addspirit>
+          <addtoselected>False</addtoselected>
+          <spirit>Homonculus (Hardened Material)</spirit>
+        </addspirit>
+      </bonus>
     </spell>
     <!-- End Region -->
     <!-- Region Street Grimoire -->
@@ -2805,6 +2848,19 @@
       <range>LOS</range>
       <type>P</type>
     </spell>
+	<spell>
+      <id>4b214e1a-4800-4787-b5fe-55672b359dec</id>
+      <name>Convince</name>
+      <page>132</page>
+      <source>SGG</source>
+      <category>Manipulation</category>
+      <damage>0</damage>
+      <descriptor />
+      <duration>S</duration>
+      <dv>F-2</dv>
+      <range>LOS</range>
+      <type>P</type>
+    </spell>
     <spell>
       <id>ae2bddcc-9899-4549-b0ff-1dc7c1bb291a</id>
       <name>Aspect Mana Line</name>
@@ -2848,6 +2904,11 @@
       <dv>Special</dv>
       <range>Special</range>
       <type>M</type>
+      <bonus>
+        <addspirit>
+          <spirit>Ally Spirit</spirit>
+        </addspirit>
+      </bonus>
       <required>
         <allof>
           <metamagicart>Invocation</metamagicart>
@@ -3035,6 +3096,11 @@
       <dv>Special</dv>
       <range>Special</range>
       <type>M</type>
+      <bonus>
+        <addspirit>
+          <spirit>Ally Spirit</spirit>
+        </addspirit>
+      </bonus>
     </spell>
     <spell>
       <id>d0a24ff2-ca52-4d76-856a-60c30bf0ecf0</id>
@@ -4348,7 +4414,7 @@
       <duration>S</duration>
       <dv>F-2</dv>
       <range>Special</range>
-      <type>M</type>
+      <type>P</type>
     </spell>
     <spell>
       <id>1f10cb4f-67d6-4193-b897-1a7f5ab67c2a</id>
@@ -4362,6 +4428,11 @@
       <dv>Special</dv>
       <range>Special</range>
       <type>M</type>
+      <bonus>
+        <addspirit>
+          <spirit>Corpse Cadavre</spirit>
+        </addspirit>
+      </bonus>
     </spell>
     <spell>
       <id>bd2bfef0-9de4-4870-9822-cdd504f7560f</id>
@@ -4598,7 +4669,7 @@
       <descriptor>Physical, Area</descriptor>
       <duration>S</duration>
       <dv>F+3</dv>
-      <range>LOS</range>
+      <range>LOS (A)</range>
       <type>P</type>
     </spell>
     <spell>
@@ -4657,6 +4728,15 @@
       <dv>Special</dv>
       <range>LOS</range>
       <type>P</type>
+      <bonus>
+        <addspirit>
+            <spirit>Carcass Spirit</spirit>
+            <spirit>Corpse Spirit</spirit>
+            <spirit>Rot Spirit</spirit>
+            <spirit>Palefire Spirit</spirit>
+            <spirit>Detritus Spirit</spirit>
+        </addspirit>
+      </bonus>
     </spell>
     <!-- Region Blood Magic Spells -->
     <spell>
@@ -5058,6 +5138,34 @@
       </required>
     </spell>
     <!-- End Region -->
+    <!-- End Region -->
+    <!-- Region Better Than Bad -->
+    <spell>
+      <id>89046778-a77a-4f21-a448-a750af0898eb</id>
+      <name>Astral Disruption</name>
+      <page>158</page>
+      <source>BTB</source>
+      <category>Manipulation</category>
+      <damage>0</damage>
+      <descriptor>Mana</descriptor>
+      <duration>S</duration>
+      <dv>F-2</dv>
+      <range>LOS</range>
+      <type>M</type>
+    </spell>
+    <spell>
+      <id>4c595074-add0-40da-a707-598d2b94ae4f</id>
+      <name>Mass Astral Disruption</name>
+      <page>158</page>
+      <source>BTB</source>
+      <category>Manipulation</category>
+      <damage>0</damage>
+      <descriptor>Mana, Area</descriptor>
+      <duration>S</duration>
+      <dv>F</dv>
+      <range>LOS</range>
+      <type>M</type>
+    </spell>
     <!-- End Region -->
   </spells>
 </chummer>

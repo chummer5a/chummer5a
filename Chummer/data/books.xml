@@ -148,11 +148,6 @@
       <code>HS</code>
     </book>
     <book>
-      <id>9b88873f-61fa-4419-b733-49b96997bd42</id>
-      <name>Battle Of Manhattan</name>
-      <code>BOM</code>
-    </book>
-    <book>
       <id>2fba52dd-bc97-450f-9d07-e1d86885911d</id>
       <name>The Vladivostok Gauntlet</name>
       <code>TVG</code>
@@ -241,6 +236,36 @@
       <id>35f513da-865a-45ce-a8f9-eb0336e47427</id>
       <name>Kill Code</name>
       <code>KC</code>
+    </book>
+    <book>
+      <id>6c97c3e8-8f13-43aa-b692-6218983c9396</id>
+      <name>Hamburg (German-exclusive)</name>
+      <code>HAMG</code>
+    </book>
+    <book>
+	  <id>612af603-65e6-442c-91b8-8b8cc0c77e4a</id>
+      <name>Better Than Bad</name>
+      <code>BTB</code>
+    </book>
+    <book>
+	  <id>be47e4b5-cc4f-427a-b4cd-cb5c1c8821ce</id>
+      <name>Aetherology</name>
+      <code>AET</code>
+    </book>
+    <book>
+      <id>e65d69fd-8717-4e2b-88b0-73bf7a22bca0</id>
+      <name>No Future</name>
+      <code>NF</code>
+    </book>
+    <book>
+      <id>b20a20e5-e9d4-4f54-9caa-57a001cb904e</id>
+      <name>Datapuls SOTA 2080 (German-exclusive)</name>
+      <code>SOTG</code>
+    </book>
+    <book>
+      <id>3ece5592-c3c1-4cf8-97a2-ef773388289d</id>
+      <name>Datapuls Verschlusssache (German-exclusive)</name>
+      <code>DPVG</code>
     </book>
   </books>
 </chummer>

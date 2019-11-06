@@ -55,7 +55,6 @@ namespace Chummer
             nudMarkup.Visible = objCharacter.Created;
             lblMarkupPercentLabel.Visible = objCharacter.Created;
             _objCharacter = objCharacter;
-            MoveControls();
             // Load the Vehicle information.
             _xmlBaseVehicleDataNode = XmlManager.Load("vehicles.xml").GetFastNavigator().SelectSingleNode("/chummer");
             _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_xmlBaseVehicleDataNode);
@@ -76,7 +75,7 @@ namespace Chummer
             }
             else
             {
-                chkHideOverAvailLimit.Text = chkHideOverAvailLimit.Text.Replace("{0}", _objCharacter.MaximumAvailability.ToString());
+                chkHideOverAvailLimit.Text = string.Format(chkHideOverAvailLimit.Text, _objCharacter.MaximumAvailability.ToString(GlobalOptions.CultureInfo));
                 chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
             }
 
@@ -333,30 +332,13 @@ namespace Chummer
             lblVehicleArmorLabel.Visible = !string.IsNullOrEmpty(lblVehicleArmor.Text);
             lblVehicleSeatsLabel.Visible = !string.IsNullOrEmpty(lblVehicleSeats.Text);
             lblVehicleSensorLabel.Visible = !string.IsNullOrEmpty(lblVehicleSensor.Text);
+            AvailabilityValue objTotalAvail = new AvailabilityValue(0, objXmlVehicle.SelectSingleNode("avail")?.Value);
 
-            string strAvail = objXmlVehicle.SelectSingleNode("avail")?.Value ?? string.Empty;
-            if (!string.IsNullOrEmpty(strAvail))
+            if (chkUsedVehicle.Checked)
             {
-                string strSuffix = string.Empty;
-                char chrLastChar = strAvail.Length > 0 ? strAvail[strAvail.Length - 1] : ' ';
-                if (chrLastChar == 'F')
-                {
-                    strSuffix = LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language);
-                    strAvail = strAvail.Substring(0, strAvail.Length - 1);
-                }
-                else if (chrLastChar == 'R')
-                {
-                    strSuffix = LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language);
-                    strAvail = strAvail.Substring(0, strAvail.Length - 1);
-                }
-                if (chkUsedVehicle.Checked)
-                {
-                    if (int.TryParse(strAvail, out int intTmp))
-                        strAvail = intTmp + 4.ToString();
-                }
-                strAvail += strSuffix;
+                objTotalAvail.Value -= 4;
             }
-            lblVehicleAvail.Text = strAvail;
+            lblVehicleAvail.Text = objTotalAvail.ToString();
             lblVehicleAvailLabel.Visible = !string.IsNullOrEmpty(lblVehicleAvail.Text);
 
             chkBlackMarketDiscount.Checked = _setBlackMarketMaps.Contains(objXmlVehicle.SelectSingleNode("category")?.Value);
@@ -519,11 +501,6 @@ namespace Chummer
             _decMarkup = nudMarkup.Value;
 
             DialogResult = DialogResult.OK;
-        }
-
-        private void MoveControls()
-        {
-            lblSearchLabel.Left = txtSearch.Left - 6 - lblSearchLabel.Width;
         }
 
         private void OpenSourceFromLabel(object sender, EventArgs e)

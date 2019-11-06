@@ -48,17 +48,33 @@ namespace Chummer
             _xmlBaseChummerNode = XmlManager.Load("martialarts.xml").GetFastNavigator().SelectSingleNode("/chummer");
             // Populate the Martial Art Tecnnique list.
             XPathNavigator xmlMartialArtNode = _xmlBaseChummerNode?.SelectSingleNode("martialarts/martialart[name = \"" + _objMartialArt.Name + "\"]");
-            if (xmlMartialArtNode != null && !xmlMartialArtNode.NodeExists("alltechniques"))
+            if (xmlMartialArtNode != null)
             {
-                foreach (XPathNavigator xmlTechnique in xmlMartialArtNode.Select("techniques/technique"))
+                if (!xmlMartialArtNode.NodeExists("alltechniques"))
                 {
-                    string strTechniqueName = xmlTechnique.Value;
-                    if (_objMartialArt.Techniques.All(x => x.Name != strTechniqueName))
+                    foreach (XPathNavigator xmlTechnique in xmlMartialArtNode.Select("techniques/technique"))
                     {
-                        _setAllowedTechniques.Add(strTechniqueName);
+                        string strTechniqueName = xmlTechnique.Value;
+                        if (_objMartialArt.Techniques.All(x => x.Name != strTechniqueName))
+                        {
+                            _setAllowedTechniques.Add(strTechniqueName);
+                        }
+                    }
+                }
+                else if (_objMartialArt.Techniques.Count == 0)
+                {
+                    //TODO: Support for allowing all techniques  > 0.
+                    string strFilter = '(' + _objCharacter.Options.BookXPath() + ')';
+                    XPathNodeIterator objTechniquesList = _xmlBaseChummerNode.Select("techniques/technique[" + strFilter + "]");
+
+                    foreach (XPathNavigator xmlTechnique in objTechniquesList)
+                    {
+                        if (_objMartialArt.Techniques.Any(x => x.Name == xmlTechnique.Value) || xmlTechnique.SelectSingleNode("name") == null) continue;
+                            _setAllowedTechniques.Add(xmlTechnique.SelectSingleNode("name")?.Value);
                     }
                 }
             }
+
         }
 
         private void frmSelectMartialArtTechnique_Load(object sender, EventArgs e)

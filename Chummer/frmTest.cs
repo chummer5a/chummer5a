@@ -591,7 +591,7 @@ namespace Chummer
                             Cyberware objTemp = new Cyberware(objCharacter);
                             List<Weapon> lstWeapons = new List<Weapon>();
                             List<Vehicle> objVehicles = new List<Vehicle>();
-                            objTemp.Create(objXmlGear, objCharacter, objTestGrade, objSource, 1, lstWeapons, objVehicles, false);
+                            objTemp.Create(objXmlGear, objTestGrade, objSource, 1, lstWeapons, objVehicles, false);
 
                             Type objType = objTemp.GetType();
 

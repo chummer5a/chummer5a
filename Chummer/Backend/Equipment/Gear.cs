@@ -31,21 +31,25 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Annotations;
+using NLog;
 
 namespace Chummer.Backend.Equipment
 {
     /// <summary>
     /// Standard Character Gear.
     /// </summary>
+    [HubClassTag("SourceID", true, "Name", "Extra")]
     [DebuggerDisplay("{DisplayName(GlobalOptions.InvariantCultureInfo, GlobalOptions.DefaultLanguage)}")]
-    public class Gear : IHasChildrenAndCost<Gear>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasLocation, ICanEquip, IHasSource, IHasRating, INotifyMultiplePropertyChanged
+    public class Gear : IHasChildrenAndCost<Gear>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasLocation, ICanEquip, IHasSource, IHasRating, INotifyMultiplePropertyChanged, ICanSort, IHasStolenProperty, ICanPaste
     {
+        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private Guid _guiID;
-        private string _SourceGuid;
+        private Guid _guiSourceID;
         private string _strName = string.Empty;
         private string _strCategory = string.Empty;
         private string _strMaxRating = string.Empty;
         private string _strMinRating = string.Empty;
+        private string _strRatingLabel = "String_Rating";
         private int _intRating;
         private decimal _decQty = 1.0m;
         private string _strCapacity = string.Empty;
@@ -60,14 +64,14 @@ namespace Chummer.Backend.Equipment
         private string _strCanFormPersona = string.Empty;
         private bool _blnBonded;
         private bool _blnEquipped = true;
-        private bool _blnWirelessOn = true;
+        private bool _blnWirelessOn = false;
         private XmlNode _nodBonus;
         private XmlNode _nodWirelessBonus;
         private XmlNode _nodWeaponBonus;
         private Guid _guiWeaponID = Guid.Empty;
         private readonly TaggedObservableCollection<Gear> _lstChildren = new TaggedObservableCollection<Gear>();
         private string _strNotes = string.Empty;
-        private Location _objLocation = null;
+        private Location _objLocation;
         private readonly Character _objCharacter;
         private int _intChildCostMultiplier = 1;
         private int _intChildAvailModifier;
@@ -91,6 +95,8 @@ namespace Chummer.Backend.Equipment
         private string _strProgramLimit = string.Empty;
         private string _strOverclocked = "None";
         private bool _blnCanSwapAttributes;
+        private int _intSortOrder;
+        private bool _blnStolen;
 
         #region Constructor, Create, Save, Load, and Print Methods
         public Gear(Character objCharacter)
@@ -142,7 +148,12 @@ namespace Chummer.Backend.Equipment
                 return;
             _strForcedValue = strForceValue;
             XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
-            if (objXmlGear.TryGetStringFieldQuickly("id", ref _SourceGuid))
+            if (!objXmlGear.TryGetField("id", Guid.TryParse, out _guiSourceID))
+            {
+                Log.Warn(new object[] { "Missing id field for armor xmlnode", objXmlGear });
+                Utils.BreakIfDebug();
+            }
+            else
                 _objCachedMyXmlNode = null;
             if (objXmlGear.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
@@ -156,8 +167,9 @@ namespace Chummer.Backend.Equipment
             objXmlGear.TryGetStringFieldQuickly("cost", ref _strCost);
             _nodBonus = objXmlGear["bonus"];
             _nodWirelessBonus = objXmlGear["wirelessbonus"];
-            _blnWirelessOn = _nodWirelessBonus != null;
-            objXmlGear.TryGetStringFieldQuickly("rating", ref _strMaxRating);
+            _blnWirelessOn = false;
+            objXmlGear.TryGetStringFieldQuickly("ratinglabel", ref _strRatingLabel);
+			objXmlGear.TryGetStringFieldQuickly("rating", ref _strMaxRating);
             if (_strMaxRating == "0")
                 _strMaxRating = string.Empty;
             objXmlGear.TryGetStringFieldQuickly("minrating", ref _strMinRating);
@@ -172,8 +184,8 @@ namespace Chummer.Backend.Equipment
             objXmlGear.TryGetInt32FieldQuickly("childcostmultiplier", ref _intChildCostMultiplier);
             objXmlGear.TryGetInt32FieldQuickly("childavailmodifier", ref _intChildAvailModifier);
             objXmlGear.TryGetBoolFieldQuickly("allowrename", ref _blnAllowRename);
+            objXmlGear.TryGetBoolFieldQuickly("stolen", ref _blnStolen);
 
-            SourceDetail = new SourceString(_strSource, _strPage);
             // Check for a Custom name
             if (_strName == "Custom Item")
             {
@@ -229,7 +241,7 @@ namespace Chummer.Backend.Equipment
                             decMax = 1000000;
                         frmPickNumber.Minimum = decMin;
                         frmPickNumber.Maximum = decMax;
-                        frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language).Replace("{0}", DisplayNameShort(GlobalOptions.Language));
+                        frmPickNumber.Description = string.Format(LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language), DisplayNameShort(GlobalOptions.Language));
                         frmPickNumber.AllowCancel = false;
                         frmPickNumber.ShowDialog();
                         _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
@@ -380,7 +392,9 @@ namespace Chummer.Backend.Equipment
             objXmlGear.TryGetStringFieldQuickly("programs", ref _strProgramLimit);
         }
 
-        public SourceString SourceDetail { get; set; }
+        private SourceString _objCachedSourceDetail;
+        public SourceString SourceDetail => _objCachedSourceDetail ?? (_objCachedSourceDetail =
+                                                new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language));
 
         public void CreateChildren(XmlDocument xmlGearDocument, XmlNode xmlParentGearNode, bool blnAddImprovements)
         {
@@ -456,7 +470,7 @@ namespace Chummer.Backend.Equipment
                                 strFriendlyName = LanguageManager.TranslateExtra(strChooseGearNodeName, GlobalOptions.Language);
                             frmSelectItem frmPickItem = new frmSelectItem
                             {
-                                Description = LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language).Replace("{0}", strFriendlyName),
+                                Description = string.Format(LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language), strFriendlyName),
                                 GeneralItems = lstGears
                             };
 
@@ -538,7 +552,7 @@ namespace Chummer.Backend.Equipment
         /// Create a gear from an XmlNode attached to another object type.
         /// </summary>
         /// <param name="xmlGearsDocument">XmlDocument containing information about all possible gear items.</param>
-        /// <param name="xmlChildGearNode">XmlNode containing information about the child gear that needs to be created.</param>
+        /// <param name="xmlGearNode">XmlNode containing information about the child gear that needs to be created.</param>
         /// <param name="lstWeapons">List of weapons that this (and other children) gear creates.</param>
         /// <param name="blnAddImprovements">Whether to create improvements for the gear or not (for Selection Windows, set to False).</param>
         /// <returns></returns>
@@ -554,10 +568,10 @@ namespace Chummer.Backend.Equipment
             if (xmlGearNode["name"] != null)
             {
                 xmlGearDataNode = xmlGearsDocument.SelectSingleNode("/chummer/gears/gear[name = " + xmlGearNode["name"].InnerText.CleanXPath() + "]");
-                XmlNode xmlInnerGears = xmlGearNode["gears"];
-                if (xmlInnerGears != null)
+                XmlNodeList xmlInnerGears = xmlGearNode.SelectNodes("gears/gear");
+                if (xmlInnerGears?.Count > 0)
                 {
-                    foreach (XmlNode xmlChildGearNode in xmlInnerGears.SelectNodes("gear"))
+                    foreach (XmlNode xmlChildGearNode in xmlInnerGears)
                     {
                         Gear objChildGear = new Gear(_objCharacter);
                         if (objChildGear.CreateFromNode(xmlGearsDocument, xmlChildGearNode, lstWeapons, blnAddImprovements))
@@ -618,7 +632,7 @@ namespace Chummer.Backend.Equipment
         public void Copy(Gear objGear)
         {
             _objCachedMyXmlNode = objGear.GetNode();
-            _SourceGuid = objGear._SourceGuid;
+            SourceID = objGear.SourceID;
             _blnAllowRename = objGear.AllowRename;
             _strName = objGear.Name;
             _strCategory = objGear.Category;
@@ -678,8 +692,8 @@ namespace Chummer.Backend.Equipment
         {
             objWriter.WriteStartElement("gear");
 
-            objWriter.WriteElementString("guid", _guiID.ToString("D"));
-            objWriter.WriteElementString("id", _SourceGuid);
+            objWriter.WriteElementString("sourceid", SourceIDString);
+            objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("category", _strCategory);
             objWriter.WriteElementString("capacity", _strCapacity);
@@ -696,6 +710,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("bonded", _blnBonded.ToString());
             objWriter.WriteElementString("equipped", _blnEquipped.ToString());
             objWriter.WriteElementString("wirelesson", _blnWirelessOn.ToString());
+            objWriter.WriteElementString("stolen", _blnStolen.ToString());
             if (_guiWeaponID != Guid.Empty)
                 objWriter.WriteElementString("weaponguid", _guiWeaponID.ToString("D"));
             if (_nodBonus != null)
@@ -747,9 +762,12 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("canswapattributes", _blnCanSwapAttributes.ToString());
             objWriter.WriteElementString("active", this.IsActiveCommlink(_objCharacter).ToString());
             objWriter.WriteElementString("homenode", this.IsHomeNode(_objCharacter).ToString());
+            objWriter.WriteElementString("sortorder", _intSortOrder.ToString());
 
             objWriter.WriteEndElement();
-            _objCharacter.SourceProcess(_strSource);
+
+            if (!IncludedInParent)
+                _objCharacter.SourceProcess(_strSource);
         }
 
         /// <summary>
@@ -757,14 +775,22 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
         /// <param name="blnCopy">Whether or not we are loading a copy of an existing gear.</param>
-        public void Load(XmlNode objNode, bool blnCopy = false, object objForParent = null)
+        public void Load(XmlNode objNode, bool blnCopy = false)
         {
-            objNode.TryGetField("guid", Guid.TryParse, out _guiID);
-            if (objNode.TryGetStringFieldQuickly("id", ref _SourceGuid))
-                _objCachedMyXmlNode = null;
-            if (objNode.TryGetStringFieldQuickly("name", ref _strName))
-                _objCachedMyXmlNode = null;
-            if (objNode.TryGetStringFieldQuickly("category", ref _strCategory))
+            if (blnCopy || !objNode.TryGetField("guid", Guid.TryParse, out _guiID))
+            {
+                _guiID = Guid.NewGuid();
+            }
+            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            objNode.TryGetStringFieldQuickly("category", ref _strCategory);
+            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+            {
+                if (!objNode.TryGetGuidFieldQuickly("id", ref _guiSourceID))
+                {
+                    XmlNode node = GetNode(GlobalOptions.Language, objNode["name"]?.InnerText, objNode["category"]?.InnerText);
+                    node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                }
+            }
                 _objCachedMyXmlNode = null;
             objNode.TryGetInt32FieldQuickly("matrixcmfilled", ref _intMatrixCMFilled);
             objNode.TryGetInt32FieldQuickly("matrixcmbonus", ref _intMatrixCMBonus);
@@ -797,11 +823,11 @@ namespace Chummer.Backend.Equipment
             _nodBonus = objNode["bonus"];
             _nodWirelessBonus = objNode["wirelessbonus"];
             if (!objNode.TryGetBoolFieldQuickly("wirelesson", ref _blnWirelessOn))
-                _blnWirelessOn = _nodWirelessBonus != null;
+                _blnWirelessOn = false;
             _nodWeaponBonus = objNode["weaponbonus"];
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
-            SourceDetail = new SourceString(_strSource, _strPage);
+            objNode.TryGetBoolFieldQuickly("stolen", ref _blnStolen);
             bool blnNeedCommlinkLegacyShim = !objNode.TryGetStringFieldQuickly("canformpersona", ref _strCanFormPersona);
             if (!objNode.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating))
                 GetNode()?.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating);
@@ -860,9 +886,10 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            if (objNode["location"] != null)
+            string strLocation = objNode["location"]?.InnerText;
+            if (!string.IsNullOrEmpty(strLocation))
             {
-                if (Guid.TryParse(objNode["location"].InnerText, out Guid temp))
+                if (Guid.TryParse(strLocation, out Guid temp))
                 {
                     // Location is an object. Look for it based on the InternalId. Requires that locations have been loaded already!
                     _objLocation =
@@ -871,10 +898,10 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    //Legacy. Location is a string. 
+                    //Legacy. Location is a string.
                     _objLocation =
                         CharacterObject.GearLocations.FirstOrDefault(location =>
-                            location.Name == objNode["location"].InnerText);
+                            location.Name == strLocation);
                 }
                 _objLocation?.Children.Add(this);
             }
@@ -882,6 +909,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
 
             objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
+            objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
 
             // Convert old qi foci to the new bonus. In order to force the user to update their powers, unequip the focus and remove all improvements.
             if (_strName == "Qi Focus")
@@ -907,7 +935,6 @@ namespace Chummer.Backend.Equipment
 
             if (blnCopy)
             {
-                _guiID = Guid.NewGuid();
                 _objLocation = null;
 
                 if (Bonus != null || WirelessBonus != null)
@@ -1017,7 +1044,7 @@ namespace Chummer.Backend.Equipment
                 }
                 ChangeEquippedStatus(false);
             }
-            
+
             if (!objNode.TryGetStringFieldQuickly("programlimit", ref _strProgramLimit))
                 GetNode()?.TryGetStringFieldQuickly("programs", ref _strProgramLimit);
             objNode.TryGetStringFieldQuickly("overclocked", ref _strOverclocked);
@@ -1174,12 +1201,25 @@ namespace Chummer.Backend.Equipment
         #endregion
 
         #region Properties
+
+        /// <summary>
+        /// Guid of the object from the data. You probably want to use SourceIDString instead.
+        /// </summary>
+        public Guid SourceID
+        {
+            get => _guiSourceID;
+            set => _guiSourceID = value;
+        }
+
+        /// <summary>
+        /// String-formatted Guid of the <inheritdoc cref="SourceID"/> from the data files.
+        /// </summary>
+        public string SourceIDString => _guiSourceID.ToString("D");
+
         /// <summary>
         /// Internal identifier which will be used to identify this piece of Gear in the Character.
         /// </summary>
         public string InternalId => _guiID.ToString("D");
-
-        public string SourceID => _SourceGuid;
 
         /// <summary>
         /// Guid of a Cyberware Weapon.
@@ -1328,32 +1368,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 string strExpression = MinRating;
-                if (string.IsNullOrEmpty(strExpression))
-                    return 0;
-
-                if (strExpression.StartsWith("FixedValues("))
-                {
-                    string[] strValues = strExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
-                    strExpression = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)].Trim('[', ']');
-                }
-
-                if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
-                {
-                    StringBuilder objValue = new StringBuilder(strExpression);
-                    objValue.Replace("{Rating}", Rating.ToString(GlobalOptions.InvariantCultureInfo));
-                    objValue.CheapReplace(strExpression, "{Parent Rating}", () => (Parent as IHasRating)?.Rating.ToString(GlobalOptions.InvariantCultureInfo) ?? "0");
-                    foreach (string strCharAttributeName in AttributeSection.AttributeStrings)
-                    {
-                        objValue.CheapReplace(strExpression, '{' + strCharAttributeName + '}', () => CharacterObject.GetAttribute(strCharAttributeName).TotalValue.ToString());
-                        objValue.CheapReplace(strExpression, '{' + strCharAttributeName + "Base}", () => CharacterObject.GetAttribute(strCharAttributeName).TotalBase.ToString());
-                    }
-                    // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                    object objProcess = CommonFunctions.EvaluateInvariantXPath(objValue.ToString(), out bool blnIsSuccess);
-                    return blnIsSuccess ? Convert.ToInt32(Math.Ceiling((double)objProcess)) : 0;
-                }
-                int.TryParse(strExpression, out int intReturn);
-
-                return intReturn;
+                return string.IsNullOrEmpty(strExpression) ? 0 : ProcessRatingString(strExpression);
             }
             set => MinRating = value.ToString(GlobalOptions.InvariantCultureInfo);
         }
@@ -1366,34 +1381,63 @@ namespace Chummer.Backend.Equipment
             get
             {
                 string strExpression = MaxRating;
-                if (string.IsNullOrEmpty(strExpression))
-                    return int.MaxValue;
-
-                if (strExpression.StartsWith("FixedValues("))
-                {
-                    string[] strValues = strExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
-                    strExpression = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)].Trim('[', ']');
-                }
-
-                if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
-                {
-                    StringBuilder objValue = new StringBuilder(strExpression);
-                    objValue.Replace("{Rating}", Rating.ToString(GlobalOptions.InvariantCultureInfo));
-                    objValue.CheapReplace(strExpression, "{Parent Rating}", () => (Parent as IHasRating)?.Rating.ToString(GlobalOptions.InvariantCultureInfo) ?? int.MaxValue.ToString(GlobalOptions.InvariantCultureInfo));
-                    foreach (string strCharAttributeName in AttributeSection.AttributeStrings)
-                    {
-                        objValue.CheapReplace(strExpression, '{' + strCharAttributeName + '}', () => CharacterObject.GetAttribute(strCharAttributeName).TotalValue.ToString());
-                        objValue.CheapReplace(strExpression, '{' + strCharAttributeName + "Base}", () => CharacterObject.GetAttribute(strCharAttributeName).TotalBase.ToString());
-                    }
-                    // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                    object objProcess = CommonFunctions.EvaluateInvariantXPath(objValue.ToString(), out bool blnIsSuccess);
-                    return blnIsSuccess ? Convert.ToInt32(Math.Ceiling((double)objProcess)) : 0;
-                }
-                int.TryParse(strExpression, out int intReturn);
-
-                return intReturn;
+                return string.IsNullOrEmpty(strExpression) ? int.MaxValue : ProcessRatingString(strExpression);
             }
             set => MaxRating = value.ToString(GlobalOptions.InvariantCultureInfo);
+        }
+
+        /// <summary>
+        /// Processes a string into an int based on logical processing.
+        /// </summary>
+        /// <param name="strExpression"></param>
+        /// <returns></returns>
+        private int ProcessRatingString(string strExpression)
+        {
+            if (strExpression.StartsWith("FixedValues("))
+            {
+                string[] strValues = strExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                strExpression = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)].Trim('[', ']');
+            }
+
+            if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+            {
+                StringBuilder objValue = new StringBuilder(strExpression);
+                objValue.Replace("{Rating}", Rating.ToString(GlobalOptions.InvariantCultureInfo));
+                objValue.CheapReplace(strExpression, "{Parent Rating}",
+                    () => (Parent as IHasRating)?.Rating.ToString(GlobalOptions.InvariantCultureInfo) ??
+                          int.MaxValue.ToString(GlobalOptions.InvariantCultureInfo));
+                foreach (string strCharAttributeName in AttributeSection.AttributeStrings)
+                {
+                    objValue.CheapReplace(strExpression, '{' + strCharAttributeName + '}',
+                        () => CharacterObject.GetAttribute(strCharAttributeName).TotalValue.ToString());
+                    objValue.CheapReplace(strExpression, '{' + strCharAttributeName + "Base}",
+                        () => CharacterObject.GetAttribute(strCharAttributeName).TotalBase.ToString());
+                }
+
+                foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
+                {
+                    objValue.CheapReplace(strExpression, "{Gear " + strMatrixAttribute + '}',
+                        () => ((Parent as IHasMatrixAttributes)?.GetBaseMatrixAttribute(strMatrixAttribute) ?? 0).ToString(
+                            GlobalOptions.InvariantCultureInfo));
+                    objValue.CheapReplace(strExpression, "{Parent " + strMatrixAttribute + '}',
+                        () => (Parent as IHasMatrixAttributes).GetMatrixAttributeString(strMatrixAttribute) ?? "0");
+                    if (Children.Count <= 0 || !strExpression.Contains("{Children " + strMatrixAttribute + '}'))
+                        continue;
+                    int intTotalChildrenValue = Children.Where(g => g.Equipped)
+                        .Sum(loopGear => loopGear.GetBaseMatrixAttribute(strMatrixAttribute));
+
+                    objValue.Replace("{Children " + strMatrixAttribute + '}',
+                        intTotalChildrenValue.ToString(GlobalOptions.InvariantCultureInfo));
+                }
+
+                // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(objValue.ToString(), out bool blnIsSuccess);
+                return blnIsSuccess ? Convert.ToInt32(Math.Ceiling((double) objProcess)) : 0;
+            }
+
+            int.TryParse(strExpression, out int intReturn);
+
+            return intReturn;
         }
 
         /// <summary>
@@ -1418,6 +1462,12 @@ namespace Chummer.Backend.Equipment
                     }
                 }
             }
+        }
+
+        public string RatingLabel
+        {
+            get => _strRatingLabel;
+            set => _strRatingLabel = value;
         }
 
         /// <summary>
@@ -1472,9 +1522,9 @@ namespace Chummer.Backend.Equipment
             set
             {
                 string strNewValue = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
-                if (_strGearName != strNewValue)
+                if (_strExtra != strNewValue)
                 {
-                    _strGearName = strNewValue;
+                    _strExtra = strNewValue;
                     OnPropertyChanged();
                 }
             }
@@ -1525,12 +1575,19 @@ namespace Chummer.Backend.Equipment
             set => _strPage = value;
         }
 
+
+        /// <summary>
+        /// Sourcebook Page Number using a given language file.
+        /// Returns Page if not found or the string is empty.
+        /// </summary>
+        /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <returns></returns>
         public string DisplayPage(string strLanguage)
         {
             if (strLanguage == GlobalOptions.DefaultLanguage)
-                return _strPage;
-
-            return GetNode(strLanguage)?["altpage"]?.InnerText ?? _strPage;
+                return Page;
+            string s = GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
+            return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 
         /// <summary>
@@ -1549,7 +1606,7 @@ namespace Chummer.Backend.Equipment
                 return _strCanFormPersona.Contains("Self") || Children.Any(x => x.CanFormPersona.Contains("Parent"));
             }
         }
-        
+
         /// <summary>
         /// A List of child pieces of Gear.
         /// </summary>
@@ -1655,40 +1712,7 @@ namespace Chummer.Backend.Equipment
                 if (!string.IsNullOrEmpty(strExtraExpression))
                     strExpression += strExtraExpression;
             }
-
-            if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
-            {
-                StringBuilder objValue = new StringBuilder(strExpression);
-                objValue.Replace("{Rating}", Rating.ToString(GlobalOptions.InvariantCultureInfo));
-                objValue.CheapReplace(strExpression, "{Parent Rating}", () => (Parent as IHasRating)?.Rating.ToString(GlobalOptions.InvariantCultureInfo));
-                foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
-                {
-                    objValue.CheapReplace(strExpression, "{Gear " + strMatrixAttribute + '}', () => ((Parent as IHasMatrixAttributes)?.GetBaseMatrixAttribute(strMatrixAttribute) ?? 0).ToString(GlobalOptions.InvariantCultureInfo));
-                    objValue.CheapReplace(strExpression, "{Parent " + strMatrixAttribute + '}', () => (Parent as IHasMatrixAttributes).GetMatrixAttributeString(strMatrixAttribute) ?? "0");
-                    if (Children.Count > 0 && strExpression.Contains("{Children " + strMatrixAttribute + '}'))
-                    {
-                        int intTotalChildrenValue = 0;
-                        foreach (Gear loopGear in Children)
-                        {
-                            if (loopGear.Equipped)
-                            {
-                                intTotalChildrenValue += loopGear.GetBaseMatrixAttribute(strMatrixAttribute);
-                            }
-                        }
-                        objValue.Replace("{Children " + strMatrixAttribute + '}', intTotalChildrenValue.ToString(GlobalOptions.InvariantCultureInfo));
-                    }
-                }
-                foreach (string strCharAttributeName in AttributeSection.AttributeStrings)
-                {
-                    objValue.CheapReplace(strExpression, '{' + strCharAttributeName + '}', () => CharacterObject.GetAttribute(strCharAttributeName).TotalValue.ToString());
-                    objValue.CheapReplace(strExpression, '{' + strCharAttributeName + "Base}", () => CharacterObject.GetAttribute(strCharAttributeName).TotalBase.ToString());
-                }
-                // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                object objProcess = CommonFunctions.EvaluateInvariantXPath(objValue.ToString(), out bool blnIsSuccess);
-                return blnIsSuccess ? Convert.ToInt32(Math.Ceiling((double)objProcess)) : 0;
-            }
-            int.TryParse(strExpression, out int intReturn);
-            return intReturn;
+            return string.IsNullOrEmpty(strExpression) ? 0 : ProcessRatingString(strExpression);
         }
 
         /// <summary>
@@ -1737,7 +1761,7 @@ namespace Chummer.Backend.Equipment
                                  Category == "Tactical AR Software" ||
                                  Category == "Telematics Infrastructure Software" ||
                                  Category == "Sensor Software";
-        
+
         /// <summary>
         /// Cost multiplier for Children attached to this Gear.
         /// </summary>
@@ -1908,6 +1932,15 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Used by our sorting algorithm to remember which order the user moves things to
+        /// </summary>
+        public int SortOrder
+        {
+            get => _intSortOrder;
+            set => _intSortOrder = value;
+        }
+
+        /// <summary>
         /// Whether or not the Gear is included in its parent item when purchased (currently applies to Armor only).
         /// </summary>
         public bool IncludedInParent => !string.IsNullOrEmpty(ParentID);
@@ -1938,18 +1971,20 @@ namespace Chummer.Backend.Equipment
             return GetNode(GlobalOptions.Language);
         }
 
-        public XmlNode GetNode(string strLanguage)
+        public XmlNode GetNode(string strLanguage, string strName = "", string strCategory = "")
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
                 XmlDocument objDoc = XmlManager.Load("gear.xml", strLanguage);
                 string strNameWithQuotes = Name.CleanXPath();
-                _objCachedMyXmlNode = objDoc.SelectSingleNode("/chummer/gears/gear[(id = \"" + _SourceGuid + "\") or (name = " + strNameWithQuotes + " and category = \"" + Category + "\")]");
+                _objCachedMyXmlNode = !string.IsNullOrWhiteSpace(strName)
+                    ? objDoc.SelectSingleNode($"/chummer/gears/gear[(name = \"{strName}\" and category = \"{strCategory}\")]")
+                    : objDoc.SelectSingleNode($"/chummer/gears/gear[(id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\") or (name = {strNameWithQuotes} and category = \"{Category}\")]");
                 if (_objCachedMyXmlNode == null)
                 {
-                    _objCachedMyXmlNode = objDoc.SelectSingleNode("/chummer/gears/gear[(name = " + strNameWithQuotes + ")]") ??
-                                          objDoc.SelectSingleNode("/chummer/gears/gear[contains(name, " + strNameWithQuotes + ")]");
-                    _objCachedMyXmlNode?.TryGetStringFieldQuickly("id", ref _SourceGuid);
+                    _objCachedMyXmlNode = objDoc.SelectSingleNode($"/chummer/gears/gear[name = {strNameWithQuotes}]") ??
+                                          objDoc.SelectSingleNode($"/chummer/gears/gear[contains(name, {strNameWithQuotes})]");
+                    _objCachedMyXmlNode?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
                 }
                 _strCachedXmlNodeLanguage = strLanguage;
             }
@@ -1989,7 +2024,7 @@ namespace Chummer.Backend.Equipment
                     strAvail = strAvail.Substring(0, strAvail.Length - 1);
                 }
 
-                blnModifyParentAvail = strAvail.StartsWith('+', '-');
+                blnModifyParentAvail = strAvail.StartsWith('+', '-') && !IncludedInParent;
                 StringBuilder objAvail = new StringBuilder(strAvail.TrimStart('+'));
                 objAvail.CheapReplace(strAvail, "MinRating", () => MinRatingValue.ToString(GlobalOptions.InvariantCultureInfo));
                 objAvail.CheapReplace(strAvail, "Parent Rating", () => (Parent as IHasRating)?.Rating.ToString(GlobalOptions.InvariantCultureInfo));
@@ -2028,7 +2063,7 @@ namespace Chummer.Backend.Equipment
             if (intAvail < 0)
                 intAvail = 0;
 
-            return new AvailabilityValue(intAvail, chrLastAvailChar, blnModifyParentAvail);
+            return new AvailabilityValue(intAvail, chrLastAvailChar, blnModifyParentAvail, IncludedInParent);
         }
 
         /// <summary>
@@ -2073,7 +2108,7 @@ namespace Chummer.Backend.Equipment
                     if (!string.IsNullOrEmpty(strSecondHalf))
                         strReturn += '/' + strSecondHalf;
                 }
-                else if (strReturn.Contains("Rating"))
+                else
                 {
                     // If the Capaicty is determined by the Rating, evaluate the expression.
                     // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
@@ -2081,22 +2116,25 @@ namespace Chummer.Backend.Equipment
                     if (blnSquareBrackets)
                         strReturn = strReturn.Substring(1, strReturn.Length - 2);
 
-                    // This has resulted in a non-whole number, so round it (minimum of 1).
-                    object objProcess = CommonFunctions.EvaluateInvariantXPath(strReturn
-                        .CheapReplace("Parent Rating", () => (Parent as IHasRating)?.Rating.ToString(GlobalOptions.InvariantCultureInfo))
-                        .Replace("Rating", Rating.ToString()), out bool blnIsSuccess);
-                    double dblNumber = blnIsSuccess ? (double)objProcess : 1;
-                    if (dblNumber < 1)
-                        dblNumber = 1;
-                    strReturn = dblNumber.ToString("#,0.##", GlobalOptions.CultureInfo);
+                    if (strReturn.Contains("Rating"))
+                    {
+                        // This has resulted in a non-whole number, so round it (minimum of 1).
+                        object objProcess = CommonFunctions.EvaluateInvariantXPath(strReturn
+                            .CheapReplace("Parent Rating", () => (Parent as IHasRating)?.Rating.ToString(GlobalOptions.InvariantCultureInfo))
+                            .Replace("Rating", Rating.ToString()), out bool blnIsSuccess);
+                        double dblNumber = blnIsSuccess ? (double) objProcess : 1;
+                        if (dblNumber < 1)
+                            dblNumber = 1;
+                        strReturn = dblNumber.ToString("#,0.##", GlobalOptions.CultureInfo);
+                    }
+                    else if (decimal.TryParse(strReturn, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decimal decReturn))
+                    {
+                        // Just a straight Capacity, so return the value.
+                        strReturn = decReturn.ToString("#,0.##", GlobalOptions.CultureInfo);
+                    }
 
                     if (blnSquareBrackets)
                         strReturn = '[' + strReturn + ']';
-                }
-                else if (decimal.TryParse(strReturn, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decimal decReturn))
-                {
-                    // Just a straight Capacity, so return the value.
-                    strReturn = decReturn.ToString("#,0.##", GlobalOptions.CultureInfo);
                 }
 
                 return strReturn;
@@ -2134,7 +2172,7 @@ namespace Chummer.Backend.Equipment
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strFirstHalf.Replace("Rating", Rating.ToString()), out bool blnIsSuccess);
                         strReturn = blnIsSuccess ? ((double)objProcess).ToString("#,0.##", GlobalOptions.CultureInfo) : strFirstHalf;
                     }
-                    
+
                     if (blnSquareBrackets)
                         strReturn = '[' + strReturn + ']';
                     strReturn += '/' + strSecondHalf;
@@ -2265,6 +2303,42 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Total cost of the Weapon Accessory.
+        /// </summary>
+        public decimal StolenTotalCost
+        {
+            get
+            {
+
+                decimal decReturn = 0;
+                if (Stolen)
+                    decReturn = OwnCostPreMultipliers;
+
+                decimal decPlugin = 0;
+                if (Children.Count > 0)
+                {
+                    // Add in the cost of all child components.
+                    object decPluginLock = new object();
+                    Parallel.ForEach(Children, objChild =>
+                    {
+                        decimal decLoop = objChild.StolenTotalCost;
+                        lock (decPluginLock)
+                            decPlugin += decLoop;
+                    });
+                }
+
+                // The number is divided at the end for ammo purposes. This is done since the cost is per "costfor" but is being multiplied by the actual number of rounds.
+                int intParentMultiplier = (Parent as IHasChildrenAndCost<Gear>)?.ChildCostMultiplier ?? 1;
+
+                decReturn = (decReturn * Quantity * intParentMultiplier) / CostFor;
+                // Add in the cost of the plugins separate since their value is not based on the Cost For number (it is always cost x qty).
+                decReturn += decPlugin * Quantity;
+
+                return decReturn;
+            }
+        }
+
+        /// <summary>
         /// The cost of just the Gear itself.
         /// </summary>
         public decimal OwnCost => (OwnCostPreMultipliers * (Parent as IHasChildrenAndCost<Gear>)?.ChildCostMultiplier ?? 1) / CostFor;
@@ -2286,9 +2360,9 @@ namespace Chummer.Backend.Equipment
 
                 // Only items that contain square brackets should consume Capacity. Everything else is treated as [0].
                 strCapacity = strCapacity.StartsWith('[') ? strCapacity.Substring(1, strCapacity.Length - 2) : "0";
-                if (strCapacity == "*")
-                    return 0;
-                return Convert.ToDecimal(strCapacity, GlobalOptions.CultureInfo);
+                if (decimal.TryParse(strCapacity, NumberStyles.Any, GlobalOptions.CultureInfo, out decimal decReturn))
+                    return decReturn;
+                return 0;
             }
         }
 
@@ -2332,10 +2406,11 @@ namespace Chummer.Backend.Equipment
                     {
                         // If this is a multiple-capacity item, use only the first half.
                         strMyCapacity = strMyCapacity.Substring(0, intPos);
-                        decCapacity = Convert.ToDecimal(strMyCapacity, GlobalOptions.CultureInfo);
+                        if (!decimal.TryParse(strMyCapacity, NumberStyles.Any, GlobalOptions.CultureInfo, out decCapacity))
+                            decCapacity = 0;
                     }
-                    else
-                        decCapacity = Convert.ToDecimal(strMyCapacity, GlobalOptions.CultureInfo);
+                    else if (!decimal.TryParse(strMyCapacity, NumberStyles.Any, GlobalOptions.CultureInfo, out decCapacity))
+                        decCapacity = 0;
 
                     if (Children.Count > 0)
                     {
@@ -2381,7 +2456,7 @@ namespace Chummer.Backend.Equipment
             if (Quantity != 1.0m || Category == "Currency")
                 strReturn = Quantity.ToString(Name.StartsWith("Nuyen") ? _objCharacter.Options.NuyenFormat : Category == "Currency" ? "#,0.00" : "#,0.##", objCulture) + strSpaceCharacter + strReturn;
             if (Rating > 0)
-                strReturn += strSpaceCharacter + '(' + LanguageManager.GetString("String_Rating", strLanguage) + strSpaceCharacter + Rating.ToString(objCulture) + ')';
+                strReturn += strSpaceCharacter + '(' + LanguageManager.GetString(RatingLabel, strLanguage) + strSpaceCharacter + Rating.ToString(objCulture) + ')';
             if (!string.IsNullOrEmpty(Extra))
                 strReturn += strSpaceCharacter + '(' + LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
 
@@ -2485,46 +2560,10 @@ namespace Chummer.Backend.Equipment
                 if (Name == "Living Persona")
                 {
                     string strExpression = string.Concat(CharacterObject.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.LivingPersonaMatrixCM && x.Enabled).Select(x => x.ImprovedName));
-                    if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
-                    {
-                        StringBuilder objValue = new StringBuilder(strExpression);
-                        objValue.Replace("{Rating}", Rating.ToString(GlobalOptions.InvariantCultureInfo));
-                        objValue.CheapReplace(strExpression, "{Parent Rating}", () => (Parent as IHasRating)?.Rating.ToString(GlobalOptions.InvariantCultureInfo));
-                        foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
-                        {
-                            objValue.CheapReplace(strExpression, "{Gear " + strMatrixAttribute + '}', () => ((Parent as IHasMatrixAttributes)?.GetBaseMatrixAttribute(strMatrixAttribute) ?? 0).ToString(GlobalOptions.InvariantCultureInfo));
-                            objValue.CheapReplace(strExpression, "{Parent " + strMatrixAttribute + '}', () => (Parent as IHasMatrixAttributes).GetMatrixAttributeString(strMatrixAttribute) ?? "0");
-                            if (Children.Count > 0 && strExpression.Contains("{Children " + strMatrixAttribute + '}'))
-                            {
-                                int intTotalChildrenValue = 0;
-                                foreach (Gear loopGear in Children)
-                                {
-                                    if (loopGear.Equipped)
-                                    {
-                                        intTotalChildrenValue += loopGear.GetBaseMatrixAttribute(strMatrixAttribute);
-                                    }
-                                }
-                                objValue.Replace("{Children " + strMatrixAttribute + '}', intTotalChildrenValue.ToString(GlobalOptions.InvariantCultureInfo));
-                            }
-                        }
-                        foreach (string strCharAttributeName in AttributeSection.AttributeStrings)
-                        {
-                            objValue.CheapReplace(strExpression, '{' + strCharAttributeName + '}', () => CharacterObject.GetAttribute(strCharAttributeName).TotalValue.ToString());
-                            objValue.CheapReplace(strExpression, '{' + strCharAttributeName + "Base}", () => CharacterObject.GetAttribute(strCharAttributeName).TotalBase.ToString());
-                        }
-                        // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                        object objProcess = CommonFunctions.EvaluateInvariantXPath(objValue.ToString(), out bool blnIsSuccess);
-                        if (blnIsSuccess)
-                            intReturn += Convert.ToInt32(Math.Ceiling((double) objProcess));
-                    }
+                    intReturn += string.IsNullOrEmpty(strExpression) ? 0 : ProcessRatingString(strExpression);
                 }
-                foreach (Gear objGear in Children)
-                {
-                    if (objGear.Equipped)
-                    {
-                        intReturn += objGear.TotalBonusMatrixBoxes;
-                    }
-                }
+                intReturn += Children.Where(g => g.Equipped)
+                    .Sum(loopGear => loopGear.TotalBonusMatrixBoxes);
                 return intReturn;
             }
         }
@@ -2771,6 +2810,53 @@ namespace Chummer.Backend.Equipment
                 objChild.ReaddImprovements(treGears, strOutdatedItems, lstInternalIdFilter, eSource, blnStackEquipped);
         }
 
+        /// <summary>
+        /// Checks a nominated piece of gear for Availability requirements.
+        /// </summary>
+        /// <param name="blnRestrictedGearUsed">Whether Restricted Gear is already being used.</param>
+        /// <param name="intRestrictedCount">Amount of gear that is currently over the availability limit.</param>
+        /// <param name="strAvailItems">String used to list names of gear that are currently over the availability limit.</param>
+        /// <param name="strRestrictedItem">Item that is being used for Restricted Gear.</param>
+        /// <param name="blnOutRestrictedGearUsed">Whether Restricted Gear is already being used (tracked across gear children).</param>
+        /// <param name="intOutRestrictedCount">Amount of gear that is currently over the availability limit (tracked across gear children).</param>
+        /// <param name="strOutAvailItems">String used to list names of gear that are currently over the availability limit (tracked across gear children).</param>
+        /// <param name="strOutRestrictedItem">Item that is being used for Restricted Gear (tracked across gear children).</param>
+        public void CheckRestrictedGear(bool blnRestrictedGearUsed, int intRestrictedCount, string strAvailItems, string strRestrictedItem, out bool blnOutRestrictedGearUsed, out int intOutRestrictedCount, out string strOutAvailItems, out string strOutRestrictedItem)
+        {
+            if (!IncludedInParent)
+            {
+                AvailabilityValue objTotalAvail = TotalAvailTuple();
+                if (!objTotalAvail.AddToParent)
+                {
+                    int intAvailInt = objTotalAvail.Value;
+                    //TODO: Make this dynamically update without having to validate the character.
+                    if (intAvailInt > CharacterObject.MaximumAvailability)
+                    {
+                        if (intAvailInt <= CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
+                        {
+                            blnRestrictedGearUsed = true;
+                            strRestrictedItem = Parent == null
+                                ? DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)
+                                : $"{DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)} ({Parent})";
+                        }
+                        else
+                        {
+                            intRestrictedCount++;
+                            strAvailItems += Environment.NewLine + "\t\t" + DisplayNameShort(GlobalOptions.Language);
+                        }
+                    }
+                }
+            }
+
+            foreach (Gear objChild in Children)
+            {
+                objChild.CheckRestrictedGear(blnRestrictedGearUsed, intRestrictedCount, strAvailItems, strRestrictedItem, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems, out strRestrictedItem);
+            }
+            strOutAvailItems = strAvailItems;
+            intOutRestrictedCount = intRestrictedCount;
+            blnOutRestrictedGearUsed = blnRestrictedGearUsed;
+            strOutRestrictedItem = strRestrictedItem;
+        }
         #region UI Methods
         /// <summary>
         /// Collection of TreeNodes to update when a relevant property is changed
@@ -2818,6 +2904,12 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        public bool Stolen
+        {
+            get => _blnStolen;
+            set => _blnStolen = value;
+        }
+
         /// <summary>
         /// Build up the Tree for the current piece of Gear's children.
         /// </summary>
@@ -2838,6 +2930,349 @@ namespace Chummer.Backend.Equipment
             }
             if (blnExpandNode)
                 objParentNode.Expand();
+        }
+
+        public void SetupChildrenGearsCollectionChanged(bool blnAdd, TreeView treGear, ContextMenuStrip cmsGear = null)
+        {
+            if (blnAdd)
+            {
+                Children.AddTaggedCollectionChanged(treGear, (x, y) => this.RefreshChildrenGears(treGear, cmsGear, null, y));
+                foreach (Gear objChild in Children)
+                {
+                    objChild.SetupChildrenGearsCollectionChanged(true, treGear, cmsGear);
+                }
+            }
+            else
+            {
+                Children.RemoveTaggedCollectionChanged(treGear);
+                foreach (Gear objChild in Children)
+                {
+                    objChild.SetupChildrenGearsCollectionChanged(false, treGear);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Refreshes a single focus' rating (for changing ratings in create mode)
+        /// </summary>
+        /// <param name="treFoci">TreeView of foci.</param>
+        /// <param name="intNewRating">New rating that the focus is supposed to have.</param>
+        /// <returns>True if the new rating complies by focus limits or the gear is not bonded, false otherwise</returns>
+        public bool RefreshSingleFocusRating(TreeView treFoci, int intNewRating)
+        {
+            if (Bonded)
+            {
+                int intMaxFocusTotal = _objCharacter.MAG.TotalValue * 5;
+                if (_objCharacter.Options.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
+                    intMaxFocusTotal = Math.Min(intMaxFocusTotal, _objCharacter.MAGAdept.TotalValue * 5);
+
+                int intFociTotal = _objCharacter.Foci.Where(x => x.GearObject != this).Sum(x => x.Rating);
+
+                if (intFociTotal + intNewRating > intMaxFocusTotal && !_objCharacter.IgnoreRules)
+                {
+                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_FocusMaximumForce", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_FocusMaximum", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return false;
+                }
+            }
+
+            Rating = intNewRating;
+
+            switch (Category)
+            {
+                case "Foci":
+                case "Metamagic Foci":
+                    {
+                        TreeNode nodFocus = treFoci.FindNodeByTag(this);
+                        if (nodFocus != null)
+                        {
+                            nodFocus.Text = DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language).Replace(LanguageManager.GetString(RatingLabel, GlobalOptions.Language), LanguageManager.GetString("String_Force", GlobalOptions.Language));
+                        }
+                    }
+                    break;
+                case "Stacked Focus":
+                    {
+                        for (int i = _objCharacter.StackedFoci.Count - 1; i >= 0; --i)
+                        {
+                            if (i >= _objCharacter.StackedFoci.Count) continue;
+                            StackedFocus objStack = _objCharacter.StackedFoci[i];
+                            if (objStack.GearId != InternalId) continue;
+                            TreeNode nodFocus = treFoci.FindNode(objStack.InternalId);
+                            if (nodFocus != null)
+                            {
+                                nodFocus.Text = DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)
+                                    .Replace(LanguageManager.GetString(RatingLabel, GlobalOptions.Language),
+                                        LanguageManager.GetString("String_Force", GlobalOptions.Language));
+                            }
+                            break;
+                        }
+                    }
+                    break;
+            }
+
+            return true;
+        }
+        #endregion
+
+        #region Hero Lab Importing Methods
+        public bool ImportHeroLabGear(XmlNode xmlGearImportNode, XmlNode xmlParentGearNode, IList<Weapon> lstWeapons)
+        {
+            if (xmlGearImportNode == null)
+                return false;
+            string strOriginalName = xmlGearImportNode.Attributes?["name"]?.InnerText ?? string.Empty;
+            if (!string.IsNullOrEmpty(strOriginalName))
+            {
+                XmlDocument xmlGearDocument = XmlManager.Load("gear.xml");
+                string strForceValue = string.Empty;
+                XmlNode xmlGearDataNode = null;
+                using (XmlNodeList xmlGearDataList = xmlGearDocument.SelectNodes("/chummer/gears/gear[contains(name, \"" + strOriginalName + "\")]"))
+                {
+                    if (xmlGearDataList?.Count > 0)
+                    {
+                        foreach (XmlNode xmlLoopNode in xmlGearDataList)
+                        {
+                            XmlNode xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
+                            if (xmlTestNode != null)
+                            {
+                                // Assumes topmost parent is an AND node
+                                if (xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                {
+                                    continue;
+                                }
+                            }
+
+                            xmlTestNode = xmlLoopNode.SelectSingleNode("required/parentdetails");
+                            if (xmlTestNode != null)
+                            {
+                                // Assumes topmost parent is an AND node
+                                if (!xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                {
+                                    continue;
+                                }
+                            }
+
+                            xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/geardetails");
+                            if (xmlTestNode != null)
+                            {
+                                // Assumes topmost parent is an AND node
+                                if (xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                {
+                                    continue;
+                                }
+                            }
+
+                            xmlTestNode = xmlLoopNode.SelectSingleNode("required/geardetails");
+                            if (xmlTestNode != null)
+                            {
+                                // Assumes topmost parent is an AND node
+                                if (!xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                {
+                                    continue;
+                                }
+                            }
+
+                            xmlGearDataNode = xmlLoopNode;
+                            break;
+                        }
+                    }
+                }
+
+                if (xmlGearDataNode == null)
+                {
+                    string[] astrOriginalNameSplit = strOriginalName.Split(':');
+                    if (astrOriginalNameSplit.Length > 1)
+                    {
+                        string strName = astrOriginalNameSplit[0].Trim();
+                        using (XmlNodeList xmlGearDataList = xmlGearDocument.SelectNodes("/chummer/gears/gear[contains(name, \"" + strName + "\")]"))
+                        {
+                            if (xmlGearDataList?.Count > 0)
+                            {
+                                foreach (XmlNode xmlLoopNode in xmlGearDataList)
+                                {
+                                    XmlNode xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
+                                    if (xmlTestNode != null)
+                                    {
+                                        // Assumes topmost parent is an AND node
+                                        if (xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                        {
+                                            continue;
+                                        }
+                                    }
+
+                                    xmlTestNode = xmlLoopNode.SelectSingleNode("required/parentdetails");
+                                    if (xmlTestNode != null)
+                                    {
+                                        // Assumes topmost parent is an AND node
+                                        if (!xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                        {
+                                            continue;
+                                        }
+                                    }
+
+                                    xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/geardetails");
+                                    if (xmlTestNode != null)
+                                    {
+                                        // Assumes topmost parent is an AND node
+                                        if (xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                        {
+                                            continue;
+                                        }
+                                    }
+
+                                    xmlTestNode = xmlLoopNode.SelectSingleNode("required/geardetails");
+                                    if (xmlTestNode != null)
+                                    {
+                                        // Assumes topmost parent is an AND node
+                                        if (!xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                        {
+                                            continue;
+                                        }
+                                    }
+
+                                    xmlGearDataNode = xmlLoopNode;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (xmlGearDataNode != null)
+                            strForceValue = astrOriginalNameSplit[1].Trim();
+                    }
+                    if (xmlGearDataNode == null)
+                    {
+                        astrOriginalNameSplit = strOriginalName.Split(',');
+                        if (astrOriginalNameSplit.Length > 1)
+                        {
+                            string strName = astrOriginalNameSplit[0].Trim();
+                            using (XmlNodeList xmlGearDataList = xmlGearDocument.SelectNodes("/chummer/gears/gear[contains(name, \"" + strName + "\")]"))
+                            {
+                                if (xmlGearDataList?.Count > 0)
+                                {
+                                    foreach (XmlNode xmlLoopNode in xmlGearDataList)
+                                    {
+                                        XmlNode xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
+                                        if (xmlTestNode != null)
+                                        {
+                                            // Assumes topmost parent is an AND node
+                                            if (xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                            {
+                                                continue;
+                                            }
+                                        }
+
+                                        xmlTestNode = xmlLoopNode.SelectSingleNode("required/parentdetails");
+                                        if (xmlTestNode != null)
+                                        {
+                                            // Assumes topmost parent is an AND node
+                                            if (!xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                            {
+                                                continue;
+                                            }
+                                        }
+
+                                        xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/geardetails");
+                                        if (xmlTestNode != null)
+                                        {
+                                            // Assumes topmost parent is an AND node
+                                            if (xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                            {
+                                                continue;
+                                            }
+                                        }
+
+                                        xmlTestNode = xmlLoopNode.SelectSingleNode("required/geardetails");
+                                        if (xmlTestNode != null)
+                                        {
+                                            // Assumes topmost parent is an AND node
+                                            if (!xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                            {
+                                                continue;
+                                            }
+                                        }
+
+                                        xmlGearDataNode = xmlLoopNode;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if (xmlGearDataNode != null)
+                                strForceValue = astrOriginalNameSplit[1].Trim();
+                        }
+                    }
+                }
+                if (xmlGearDataNode != null)
+                {
+                    Create(xmlGearDataNode, Convert.ToInt32(xmlGearImportNode.Attributes?["rating"]?.InnerText), lstWeapons, strForceValue);
+                }
+                else
+                {
+                    XmlNode xmlCustomGearDataNode = xmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = 'Custom Item']");
+                    if (xmlCustomGearDataNode != null)
+                    {
+                        Create(xmlCustomGearDataNode, Convert.ToInt32(xmlGearImportNode.Attributes?["rating"]?.InnerText), lstWeapons, strOriginalName);
+                        Cost = xmlGearImportNode.SelectSingleNode("gearcost/@value")?.InnerText;
+                    }
+                    else
+                        return false;
+                }
+
+                if (InternalId.IsEmptyGuid())
+                    return false;
+
+                Quantity = Convert.ToDecimal(xmlGearImportNode.Attributes?["quantity"]?.InnerText ?? "1", GlobalOptions.InvariantCultureInfo);
+                Notes = xmlGearImportNode["description"]?.InnerText;
+
+                ProcessHeroLabGearPlugins(xmlGearImportNode, lstWeapons);
+
+                return true;
+            }
+            return false;
+        }
+
+        public void ProcessHeroLabGearPlugins(XmlNode xmlGearImportNode, IList<Weapon> lstWeapons)
+        {
+            if (xmlGearImportNode == null)
+                return;
+            foreach (string strPluginNodeName in Character.HeroLabPluginNodeNames)
+            {
+                using (XmlNodeList xmlPluginsList = xmlGearImportNode.SelectNodes(strPluginNodeName + "/item[@useradded != \"no\"]"))
+                {
+                    if (xmlPluginsList?.Count > 0)
+                    {
+                        foreach (XmlNode xmlPluginToAdd in xmlPluginsList)
+                        {
+                            Gear objPlugin = new Gear(_objCharacter);
+                            if (objPlugin.ImportHeroLabGear(xmlPluginToAdd, GetNode(), lstWeapons))
+                            {
+                                objPlugin.Parent = this;
+                                Children.Add(objPlugin);
+                            }
+                        }
+                    }
+                }
+
+                using (XmlNodeList xmlPluginsList = xmlGearImportNode.SelectNodes(strPluginNodeName + "/item[@useradded = \"no\"]"))
+                {
+                    if (xmlPluginsList?.Count > 0)
+                    {
+                        foreach (XmlNode xmlPluginToAdd in xmlPluginsList)
+                        {
+                            string strName = xmlPluginToAdd.Attributes?["name"]?.InnerText ?? string.Empty;
+                            if (!string.IsNullOrEmpty(strName))
+                            {
+                                Gear objPlugin = Children.FirstOrDefault(x => x.IncludedInParent && (x.Name.Contains(strName) || strName.Contains(x.Name)));
+                                if (objPlugin != null)
+                                {
+                                    objPlugin.Quantity = Convert.ToDecimal(xmlPluginToAdd.Attributes?["quantity"]?.InnerText ?? "1", GlobalOptions.InvariantCultureInfo);
+                                    objPlugin.Notes = xmlPluginToAdd["description"]?.InnerText;
+                                    objPlugin.ProcessHeroLabGearPlugins(xmlPluginToAdd, lstWeapons);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            this.RefreshMatrixAttributeArray();
         }
         #endregion
         #endregion
@@ -2864,7 +3299,28 @@ namespace Chummer.Backend.Equipment
                     new DependancyGraphNode<string>(nameof(ParentID))
                 )
             );
+
         #endregion
+
+        /// <summary>
+        /// Recursive method to add a Gear's Improvements to a character when moving them from a Vehicle.
+        /// </summary>
+        public void AddGearImprovements()
+        {
+            string strForce = string.Empty;
+            if (Bonus != null || (WirelessOn && WirelessBonus != null))
+            {
+                if (!string.IsNullOrEmpty(Extra))
+                    strForce = Extra;
+                ImprovementManager.ForcedValue = strForce;
+                if (Bonus != null)
+                    ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, InternalId, Bonus, true, Rating, DisplayNameShort(GlobalOptions.Language));
+                if (WirelessOn && WirelessBonus != null)
+                    ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, InternalId, WirelessBonus, true, Rating, DisplayNameShort(GlobalOptions.Language));
+            }
+            foreach (Gear objChild in Children)
+                objChild.AddGearImprovements();
+        }
 
         public bool Remove(Character characterObject, bool blnConfirmDelete = true)
         {
@@ -2875,15 +3331,20 @@ namespace Chummer.Backend.Equipment
                     return false;
             }
 
-            if (Parent is IHasChildren<Gear> objHasChildren)
+            switch (Parent)
             {
-                DeleteGear();
-                objHasChildren.Children.Remove(this);
-            }
-            else
-            {
-                DeleteGear();
-                characterObject.Gear.Remove(this);
+                case IHasGear objHasChildren:
+                    DeleteGear();
+                    objHasChildren.Gear.Remove(this);
+                    break;
+                case IHasChildren<Gear> objHasChildren:
+                    DeleteGear();
+                    objHasChildren.Children.Remove(this);
+                    break;
+                default:
+                    DeleteGear();
+                    characterObject.Gear.Remove(this);
+                    break;
             }
 
             return true;
@@ -2918,19 +3379,9 @@ namespace Chummer.Backend.Equipment
 
         public void SetSourceDetail(Control sourceControl)
         {
-            if (SourceDetail != null)
-            {
-                SourceDetail.SetControl(sourceControl);
-            }
-            else if (!string.IsNullOrWhiteSpace(_strPage) && !string.IsNullOrWhiteSpace(_strSource))
-            {
-                SourceDetail = new SourceString(_strSource, _strPage);
-                SourceDetail.SetControl(sourceControl);
-            }
-            else
-            {
-                Utils.BreakIfDebug();
-            }
+            if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
+                _objCachedSourceDetail = null;
+            SourceDetail.SetControl(sourceControl);
         }
 
         [NotifyPropertyChangedInvocator]
@@ -2955,14 +3406,37 @@ namespace Chummer.Backend.Equipment
 
             if ((lstNamesOfChangedProperties?.Count > 0) != true)
                 return;
-            
-            if (PropertyChanged != null)
+
+            foreach (string strPropertyToChange in lstNamesOfChangedProperties)
             {
-                foreach (string strPropertyToChange in lstNamesOfChangedProperties)
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+            }
+        }
+
+        public bool AllowPasteXml
+        {
+            get
+            {
+                switch (GlobalOptions.ClipboardContentType)
                 {
-                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                    case ClipboardContentType.Gear:
+                    {
+                        var xmlAddonCategoryList = GetNode()?.SelectNodes("addoncategory");
+                        if (xmlAddonCategoryList?.Count > 0)
+                            return xmlAddonCategoryList.Cast<XmlNode>().Any(xmlCategory =>
+                                xmlCategory.InnerText == GlobalOptions.Clipboard.SelectSingleNode("category").Value);
+
+                        return false;
+                    }
+                    default:
+                        return false;
                 }
             }
+        }
+
+        public bool AllowPasteObject(object input)
+        {
+            throw new NotImplementedException();
         }
     }
 }

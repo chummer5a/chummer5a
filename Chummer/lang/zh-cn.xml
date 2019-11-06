@@ -23,6 +23,7 @@
 <chummer>
 	<version>-350</version>
 	<name>汉语 (zh-CN)</name>
+  <righttoleft>False</righttoleft>
 	<strings>
 		<!-- Meta Strings -->
 		<string>
@@ -153,6 +154,10 @@
 		<string>
 			<key>Label_LP</key>
 			<text>生活方式点数：</text>
+		</string>
+    <string>
+			<key>String_KarmaRemaining</key>
+			<text>剩余业力</text>
 		</string>
 		<string>
 			<key>Label_KarmaRemaining</key>
@@ -3594,6 +3599,10 @@
 			<key>Label_OtherEssence</key>
 			<text>精华：</text>
 		</string>
+    <string>
+      <key>String_NuyenRemaining</key>
+      <text>剩余新円</text>
+    </string>
 		<string>
 			<key>Label_OtherNuyenRemain</key>
 			<text>剩余新円：</text>
@@ -3619,7 +3628,7 @@
 			<text>飞行：</text>
 		</string>
 		<string>
-			<key>Label_OtherCmposure</key>
+			<key>Label_OtherComposure</key>
 			<text>沉着：</text>
 		</string>
 		<string>
@@ -4374,7 +4383,7 @@
 		</string>
 		<string>
 			<key>Tab_Options_Character</key>
-			<text>角色与打印</text>
+			<text>角色</text>
 		</string>
 		<string>
 			<key>Tab_Options_Miscellaneous</key>
@@ -4779,6 +4788,10 @@
 		<string>
 			<key>Checkbox_Options_SpecialKarmaCost</key>
 			<text>提升特殊属性的业力消耗不会因为损失精华而减少</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_IgnoreComplexFormLimit</key>
+			<text>TL NEEDED: Ignore complex form limit in career mode</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_UseRestrictionsToRecoilCompensation</key>
@@ -5472,11 +5485,11 @@
 			<text>只显示我可以选择的特质</text>
 		</string>
 		<string>
-			<key>Checkbox_SelectQuality_Metagenetic</key>
+			<key>Checkbox_SelectQuality_Metagenic</key>
 			<text>只显示泛遗传学特质</text>
 		</string>
 		<string>
-			<key>Checkbox_SelectQuality_Not_Metagenetic</key>
+			<key>Checkbox_SelectQuality_Not_Metagenic</key>
 			<text>不显示泛遗传学特质</text>
 		</string>
 		<string>

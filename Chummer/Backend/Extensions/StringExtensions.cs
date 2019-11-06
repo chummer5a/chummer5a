@@ -672,12 +672,19 @@ namespace Chummer
         /// <param name="strInput">Base string in which the replacing takes place.</param>
         /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
         /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
+        /// <param name="ToLowerInvariant">Should the match be caseINsensitiv?</param>
         /// <returns>The result of a string::Replace() method if a replacement is made, the original string otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string CheapReplace(this string strInput, string strOldValue, Func<string> funcNewValueFactory)
+        public static string CheapReplace(this string strInput, string strOldValue, Func<string> funcNewValueFactory, bool ToLowerInvariant = false)
         {
             if (strInput?.Contains(strOldValue) == true)
-                return strInput.Replace(strOldValue, funcNewValueFactory.Invoke());
+                    return strInput.Replace(strOldValue, funcNewValueFactory.Invoke());
+            if (ToLowerInvariant)
+            {
+                if (strInput?.ToLowerInvariant().Contains(strOldValue.ToLowerInvariant()) == true)
+                    return strInput.ToLowerInvariant().Replace(strOldValue.ToLowerInvariant(), funcNewValueFactory.Invoke());
+            }
+
             return strInput;
         }
 
@@ -805,6 +812,8 @@ namespace Chummer
         /// <param name="strSearch">String to clean.</param>
         public static string CleanXPath(this string strSearch)
         {
+            if(String.IsNullOrEmpty(strSearch))
+                return null;
             int intQuotePos = strSearch.IndexOf('"');
             if (intQuotePos == -1)
             {

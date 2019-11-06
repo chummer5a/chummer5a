@@ -16,6 +16,8 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
+using System;
 using System.Windows.Forms;
 
 namespace Chummer.UI.Table
@@ -31,8 +33,12 @@ namespace Chummer.UI.Table
             contentField = _lblText;
             Controls.Add(_lblText);
             _lblText.AutoSize = true;
-            MinimumSize = _lblText.Size;
             _lblText.Click += CommonFunctions.OpenPDFFromControl;
+        }
+
+        private void OnLoad(object sender, EventArgs eventArgs)
+        {
+            MinimumSize = _lblText.Size;
         }
 
         protected internal override void UpdateValue(object newValue)

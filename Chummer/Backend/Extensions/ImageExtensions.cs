@@ -21,11 +21,13 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.CompilerServices;
+using NLog;
 
 namespace Chummer
 {
     public static class ImageExtensions
     {
+        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
         /// <summary>
         /// Converts a Base64 String into an Image.
         /// </summary>
@@ -35,15 +37,23 @@ namespace Chummer
         public static Image ToImage(this string strBase64String)
         {
             Image imgReturn = null;
-            byte[] bytImage = Convert.FromBase64String(strBase64String);
-            if (bytImage.Length > 0)
+            try
             {
-                using (MemoryStream objStream = new MemoryStream(bytImage, 0, bytImage.Length))
+                byte[] bytImage = Convert.FromBase64String(strBase64String);
+                if (bytImage.Length > 0)
                 {
-                    objStream.Write(bytImage, 0, bytImage.Length);
-                    imgReturn = Image.FromStream(objStream, true);
+                    using (MemoryStream objStream = new MemoryStream(bytImage, 0, bytImage.Length))
+                    {
+                        objStream.Write(bytImage, 0, bytImage.Length);
+                        imgReturn = Image.FromStream(objStream, true);
+                    }
                 }
             }
+            catch (Exception e)
+            {
+                Log.Warn(e);
+            }
+
             return imgReturn;
         }
 

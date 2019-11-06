@@ -73,12 +73,9 @@ namespace Chummer.Backend.Skills
             if ((lstNamesOfChangedProperties?.Count > 0) != true)
                 return;
 
-            if (PropertyChanged != null)
+            foreach (string strPropertyToChange in lstNamesOfChangedProperties)
             {
-                foreach (string strPropertyToChange in lstNamesOfChangedProperties)
-                {
-                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
-                }
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
             }
         }
 
@@ -186,45 +183,295 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        internal void Load(XmlNode xmlSkillNode, bool blnLegacy = false)
+        internal async void Load(XmlNode xmlSkillNode, bool blnLegacy, CustomActivity parentActivity)
         {
             if (xmlSkillNode == null)
                 return;
-            Timekeeper.Start("load_char_skills");
-
-            if (!blnLegacy)
+            using (var op_load_char_skills = Timekeeper.StartSyncron("load_char_skills_skillnode", parentActivity))
             {
-                Timekeeper.Start("load_char_skills_groups");
+
+                if (!blnLegacy)
+                {
+                    using (var op_load_char_skills_groups = Timekeeper.StartSyncron("load_char_skills_groups", op_load_char_skills))
+                    {
+                        List<SkillGroup> lstLoadingSkillGroups = new List<SkillGroup>();
+                        using (XmlNodeList xmlGroupsList = xmlSkillNode.SelectNodes("groups/group"))
+                            if (xmlGroupsList != null)
+                                foreach (XmlNode xmlNode in xmlGroupsList)
+                                {
+                                    SkillGroup objGroup = new SkillGroup(_objCharacter);
+                                    objGroup.Load(xmlNode);
+                                    lstLoadingSkillGroups.Add(objGroup);
+                                }
+
+                        lstLoadingSkillGroups.Sort((i1, i2) =>
+                            string.Compare(i2.DisplayName, i1.DisplayName, StringComparison.Ordinal));
+                        foreach (SkillGroup skillgroup in lstLoadingSkillGroups)
+                        {
+                            SkillGroups.Add(skillgroup);
+                        }
+
+                        //Timekeeper.Finish("load_char_skills_groups");
+                    }
+
+                    using (var op_load_char_skills_groups = Timekeeper.StartSyncron("load_char_skills_normal", op_load_char_skills))
+                    {
+                        //Load skills. Because sorting a BindingList is complicated we use a temporery normal list
+                        List<Skill> lstLoadingSkills = new List<Skill>();
+                        using (XmlNodeList xmlSkillsList = xmlSkillNode.SelectNodes("skills/skill"))
+                            if (xmlSkillsList != null)
+                                foreach (XmlNode xmlNode in xmlSkillsList)
+                                {
+                                    Skill objSkill = Skill.Load(_objCharacter, xmlNode);
+                                    if (objSkill != null)
+                                        lstLoadingSkills.Add(objSkill);
+                                }
+
+                        lstLoadingSkills.Sort(CompareSkills);
+
+                        foreach (Skill objSkill in lstLoadingSkills)
+                        {
+                            string strName = objSkill.IsExoticSkill
+                                ? $"{objSkill.Name} ({objSkill.DisplaySpecializationMethod(GlobalOptions.DefaultLanguage)})"
+                                : objSkill.Name;
+                            bool blnDoAddToDictionary = true;
+                            _lstSkills.MergeInto(objSkill, CompareSkills, (objExistSkill, objNewSkill) =>
+                            {
+                                blnDoAddToDictionary = false;
+                                if (objNewSkill.Base > objExistSkill.Base)
+                                    objExistSkill.Base = objNewSkill.Base;
+                                if (objNewSkill.Karma > objExistSkill.Karma)
+                                    objExistSkill.Karma = objNewSkill.Karma;
+                                objExistSkill.Specializations.MergeInto(objNewSkill.Specializations,
+                                    (x, y) => x.Free == y.Free
+                                        ? string.Compare(x.DisplayName(GlobalOptions.Language),
+                                            y.DisplayName(GlobalOptions.Language), StringComparison.Ordinal)
+                                        : (x.Free ? 1 : -1));
+                            });
+                            if (blnDoAddToDictionary)
+                                _dicSkills.Add(strName, objSkill);
+                        }
+
+                        // TODO: Skill groups don't refresh their CanIncrease property correctly when the last of their skills is being added, as the total basse rating will be zero. Call this here to force a refresh.
+                        foreach (SkillGroup g in SkillGroups)
+                        {
+                            g.OnPropertyChanged(nameof(SkillGroup.SkillList));
+                        }
+
+                        //Timekeeper.Finish("load_char_skills_normal");
+                    }
+
+                    using (var op_load_char_skills_kno = Timekeeper.StartSyncron("load_char_skills_kno", op_load_char_skills))
+                    {
+                        using (XmlNodeList xmlSkillsList = xmlSkillNode.SelectNodes("knoskills/skill"))
+                            if (xmlSkillsList != null)
+                                foreach (XmlNode xmlNode in xmlSkillsList)
+                                {
+                                    if (Skill.Load(_objCharacter, xmlNode) is KnowledgeSkill objSkill)
+                                        KnowledgeSkills.Add(objSkill);
+                                }
+
+                        //Timekeeper.Finish("load_char_skills_kno");
+                    }
+
+                    using (var op_load_char_skills_kno = Timekeeper.StartSyncron("load_char_knowsoft_buffer", op_load_char_skills))
+                    {
+                        // Knowsoft Buffer.
+                        using (XmlNodeList xmlSkillsList = xmlSkillNode.SelectNodes("skilljackknowledgeskills/skill"))
+                            if (xmlSkillsList != null)
+                                foreach (XmlNode xmlNode in xmlSkillsList)
+                                {
+                                    string strName = string.Empty;
+                                    if (xmlNode.TryGetStringFieldQuickly("name", ref strName))
+                                        KnowsoftSkills.Add(new KnowledgeSkill(_objCharacter, strName, false));
+                                }
+
+                        //Timekeeper.Finish("load_char_knowsoft_buffer");
+                    }
+                }
+                else
+                {
+                    List<Skill> lstTempSkillList = new List<Skill>();
+                    using (XmlNodeList xmlSkillsList = xmlSkillNode.SelectNodes("skills/skill"))
+                        if (xmlSkillsList != null)
+                            foreach (XmlNode xmlNode in xmlSkillsList)
+                            {
+                                Skill objSkill = Skill.LegacyLoad(_objCharacter, xmlNode);
+                                if (objSkill != null)
+                                    lstTempSkillList.Add(objSkill);
+                            }
+
+                    if (lstTempSkillList.Count > 0)
+                    {
+                        List<Skill> lstUnsortedSkills = new List<Skill>();
+
+                        //Variable/Anon method as to not clutter anywhere else. Not sure if clever or stupid
+                        bool OldSkillFilter(Skill skill)
+                        {
+                            if (skill.Rating > 0)
+                                return true;
+
+                            if (skill.SkillCategory == "Resonance Active" && !_objCharacter.RESEnabled)
+                                return false;
+
+                            //This could be more fine grained, but frankly i don't care
+                            if (skill.SkillCategory == "Magical Active" && !_objCharacter.MAGEnabled)
+                                return false;
+
+                            return true;
+                        }
+
+                        foreach (Skill objSkill in lstTempSkillList)
+                        {
+                            if (objSkill is KnowledgeSkill objKnoSkill)
+                            {
+                                KnowledgeSkills.Add(objKnoSkill);
+                            }
+                            else if (OldSkillFilter(objSkill))
+                            {
+                                lstUnsortedSkills.Add(objSkill);
+                            }
+                        }
+
+                        lstUnsortedSkills.Sort(CompareSkills);
+
+                        foreach (Skill objSkill in lstUnsortedSkills)
+                        {
+                            _lstSkills.Add(objSkill);
+                            _dicSkills.Add(
+                                objSkill.IsExoticSkill
+                                    ? objSkill.Name + " (" +
+                                      objSkill.DisplaySpecializationMethod(GlobalOptions.DefaultLanguage) + ')'
+                                    : objSkill.Name, objSkill);
+                        }
+
+                        UpdateUndoList(xmlSkillNode);
+                    }
+                }
+
+                //This might give subtle bugs in the future,
+                //but right now it needs to be run once when upgrading or it might crash.
+                //As some didn't they crashed on loading skills.
+                //After this have run, it won't (for the crash i'm aware)
+                //TODO: Move it to the other side of the if someday?
+
+                if (!_objCharacter.Created)
+                {
+                    // zero out any skillgroups whose skills did not make the final cut
+                    foreach (SkillGroup objSkillGroup in SkillGroups)
+                    {
+                        if (!objSkillGroup.SkillList.Any(x => SkillsDictionary.ContainsKey(x.Name)))
+                        {
+                            objSkillGroup.Base = 0;
+                            objSkillGroup.Karma = 0;
+                        }
+                    }
+                }
+
+                //Workaround for probably breaking compability between earlier beta builds
+                if (xmlSkillNode["skillptsmax"] == null)
+                {
+                    xmlSkillNode = xmlSkillNode.OwnerDocument?["character"];
+                }
+
+                int intTmp = 0;
+                if (xmlSkillNode.TryGetInt32FieldQuickly("skillptsmax", ref intTmp))
+                    SkillPointsMaximum = intTmp;
+                if (xmlSkillNode.TryGetInt32FieldQuickly("skillgrpsmax", ref intTmp))
+                    SkillGroupPointsMaximum = intTmp;
+
+                //Timekeeper.Finish("load_char_skills");
+            }
+        }
+
+        internal async void LoadFromHeroLab(XmlNode xmlSkillNode, CustomActivity parentActivity)
+        {
+            using (var op_load_char_skills_groups = Timekeeper.StartSyncron("load_char_skills_groups", parentActivity))
+            {
                 List<SkillGroup> lstLoadingSkillGroups = new List<SkillGroup>();
-                using (XmlNodeList xmlGroupsList = xmlSkillNode.SelectNodes("groups/group"))
+                using (XmlNodeList xmlGroupsList = xmlSkillNode.SelectNodes("groups/skill"))
                     if (xmlGroupsList != null)
                         foreach (XmlNode xmlNode in xmlGroupsList)
                         {
                             SkillGroup objGroup = new SkillGroup(_objCharacter);
-                            objGroup.Load(xmlNode);
+                            objGroup.LoadFromHeroLab(xmlNode);
                             lstLoadingSkillGroups.Add(objGroup);
                         }
-                lstLoadingSkillGroups.Sort((i1, i2) => string.Compare(i2.DisplayName, i1.DisplayName, StringComparison.Ordinal));
+
+                lstLoadingSkillGroups.Sort((i1, i2) =>
+                    string.Compare(i2.DisplayName, i1.DisplayName, StringComparison.Ordinal));
                 foreach (SkillGroup skillgroup in lstLoadingSkillGroups)
                 {
                     SkillGroups.Add(skillgroup);
                 }
-                Timekeeper.Finish("load_char_skills_groups");
 
-                Timekeeper.Start("load_char_skills_normal");
-                //Load skills. Because sorting a BindingList is complicated we use a temporery normal list
-                List<Skill> lstLoadingSkills = new List<Skill>();
-                using (XmlNodeList xmlSkillsList = xmlSkillNode.SelectNodes("skills/skill"))
-                    if (xmlSkillsList != null)
+                //Timekeeper.Finish("load_char_skills_groups");
+            }
+
+            using (var op_load_char_skills = Timekeeper.StartSyncron("load_char_skills", parentActivity))
+            {
+
+                List<Skill> lstTempSkillList = new List<Skill>();
+                using (XmlNodeList xmlSkillsList = xmlSkillNode.SelectNodes("active/skill"))
+                    if (xmlSkillsList?.Count > 0)
                         foreach (XmlNode xmlNode in xmlSkillsList)
                         {
-                            Skill objSkill = Skill.Load(_objCharacter, xmlNode);
+                            Skill objSkill = Skill.LoadFromHeroLab(_objCharacter, xmlNode, false);
                             if (objSkill != null)
-                                lstLoadingSkills.Add(objSkill);
+                                lstTempSkillList.Add(objSkill);
                         }
-                lstLoadingSkills.Sort(CompareSkills);
 
-                foreach (Skill objSkill in lstLoadingSkills)
+                using (XmlNodeList xmlSkillsList = xmlSkillNode.SelectNodes("knowledge/skill"))
+                    if (xmlSkillsList?.Count > 0)
+                        foreach (XmlNode xmlNode in xmlSkillsList)
+                        {
+                            Skill objSkill = Skill.LoadFromHeroLab(_objCharacter, xmlNode, true);
+                            if (objSkill != null)
+                                lstTempSkillList.Add(objSkill);
+                        }
+
+                using (XmlNodeList xmlSkillsList = xmlSkillNode.SelectNodes("language/skill"))
+                    if (xmlSkillsList?.Count > 0)
+                        foreach (XmlNode xmlNode in xmlSkillsList)
+                        {
+                            Skill objSkill = Skill.LoadFromHeroLab(_objCharacter, xmlNode, true, "Language");
+                            if (objSkill != null)
+                                lstTempSkillList.Add(objSkill);
+                        }
+
+                List<Skill> lstUnsortedSkills = new List<Skill>();
+
+                //Variable/Anon method as to not clutter anywhere else. Not sure if clever or stupid
+                bool OldSkillFilter(Skill skill)
+                {
+                    if (skill.Rating > 0)
+                        return true;
+
+                    if (skill.SkillCategory == "Resonance Active" && !_objCharacter.RESEnabled)
+                        return false;
+
+                    //This could be more fine grained, but frankly i don't care
+                    if (skill.SkillCategory == "Magical Active" && !_objCharacter.MAGEnabled)
+                        return false;
+
+                    return true;
+                }
+
+                foreach (Skill objSkill in lstTempSkillList)
+                {
+                    if (objSkill is KnowledgeSkill objKnoSkill)
+                    {
+                        KnowledgeSkills.Add(objKnoSkill);
+                    }
+                    else if (OldSkillFilter(objSkill))
+                    {
+                        lstUnsortedSkills.Add(objSkill);
+                    }
+                }
+
+                lstUnsortedSkills.Sort(CompareSkills);
+
+                foreach (Skill objSkill in lstUnsortedSkills)
                 {
                     string strName = objSkill.IsExoticSkill
                         ? $"{objSkill.Name} ({objSkill.DisplaySpecializationMethod(GlobalOptions.DefaultLanguage)})"
@@ -237,128 +484,172 @@ namespace Chummer.Backend.Skills
                             objExistSkill.Base = objNewSkill.Base;
                         if (objNewSkill.Karma > objExistSkill.Karma)
                             objExistSkill.Karma = objNewSkill.Karma;
-                        objExistSkill.Specializations.MergeInto(objNewSkill.Specializations, (x, y) => x.Free == y.Free ? string.Compare(x.DisplayName(GlobalOptions.Language), y.DisplayName(GlobalOptions.Language), StringComparison.Ordinal) : (x.Free ? 1 : -1));
+                        objExistSkill.Specializations.MergeInto(objNewSkill.Specializations,
+                            (x, y) => x.Free == y.Free
+                                ? string.Compare(x.DisplayName(GlobalOptions.Language),
+                                    y.DisplayName(GlobalOptions.Language), StringComparison.Ordinal)
+                                : (x.Free ? 1 : -1));
                     });
                     if (blnDoAddToDictionary)
                         _dicSkills.Add(strName, objSkill);
                 }
-                // TODO: Skill groups don't refresh their CanIncrease property correctly when the last of their skills is being added, as the total basse rating will be zero. Call this here to force a refresh.
-                foreach (SkillGroup g in SkillGroups)
+
+                UpdateUndoList(xmlSkillNode);
+
+                //This might give subtle bugs in the future,
+                //but right now it needs to be run once when upgrading or it might crash.
+                //As some didn't they crashed on loading skills.
+                //After this have run, it won't (for the crash i'm aware)
+                //TODO: Move it to the other side of the if someday?
+
+                if (!_objCharacter.Created)
                 {
-                    g.OnPropertyChanged(nameof(SkillGroup.SkillList));
+                    // zero out any skillgroups whose skills did not make the final cut
+                    foreach (SkillGroup objSkillGroup in SkillGroups)
+                    {
+                        if (!objSkillGroup.SkillList.Any(x => SkillsDictionary.ContainsKey(x.Name)))
+                        {
+                            objSkillGroup.Base = 0;
+                            objSkillGroup.Karma = 0;
+                        }
+                    }
+
+                    if (_objCharacter.BuildMethodHasSkillPoints)
+                    {
+                        // Allocate Skill Points
+                        int intSkillPointCount = SkillPointsMaximum;
+                        Skill objSkillToPutPointsInto;
+
+                        // First loop through skills where costs can be 100% covered with points
+                        do
+                        {
+                            objSkillToPutPointsInto = null;
+                            int intSkillToPutPointsIntoTotalKarmaCost = 0;
+                            foreach (Skill objLoopSkill in Skills)
+                            {
+                                if (objLoopSkill.Karma == 0)
+                                    continue;
+                                // Put points into the attribute with the highest total karma cost.
+                                // In case of ties, pick the one that would need more points to cover it (the other one will hopefully get picked up at a later cycle)
+                                int intLoopTotalKarmaCost = objLoopSkill.CurrentKarmaCost;
+                                if (objSkillToPutPointsInto == null || (objLoopSkill.Karma <= intSkillPointCount &&
+                                                                        (intLoopTotalKarmaCost >
+                                                                         intSkillToPutPointsIntoTotalKarmaCost ||
+                                                                         (intLoopTotalKarmaCost ==
+                                                                          intSkillToPutPointsIntoTotalKarmaCost &&
+                                                                          objLoopSkill.Karma >
+                                                                          objSkillToPutPointsInto.Karma))))
+                                {
+                                    objSkillToPutPointsInto = objLoopSkill;
+                                    intSkillToPutPointsIntoTotalKarmaCost = intLoopTotalKarmaCost;
+                                }
+                            }
+
+                            if (objSkillToPutPointsInto != null)
+                            {
+                                objSkillToPutPointsInto.Base = objSkillToPutPointsInto.Karma;
+                                intSkillPointCount -= objSkillToPutPointsInto.Karma;
+                                objSkillToPutPointsInto.Karma = 0;
+                            }
+                        } while (objSkillToPutPointsInto != null && intSkillPointCount > 0);
+
+                        // If any points left over, then put them all into the attribute with the highest karma cost
+                        if (intSkillPointCount > 0 && Skills.Any(x => x.Karma != 0))
+                        {
+                            int intHighestTotalKarmaCost = 0;
+                            foreach (Skill objLoopSkill in Skills)
+                            {
+                                if (objLoopSkill.Karma == 0)
+                                    continue;
+                                // Put points into the attribute with the highest total karma cost.
+                                // In case of ties, pick the one that would need more points to cover it (the other one will hopefully get picked up at a later cycle)
+                                int intLoopTotalKarmaCost = objLoopSkill.CurrentKarmaCost;
+                                if (objSkillToPutPointsInto == null ||
+                                    intLoopTotalKarmaCost > intHighestTotalKarmaCost ||
+                                    (intLoopTotalKarmaCost == intHighestTotalKarmaCost &&
+                                     objLoopSkill.Karma > objSkillToPutPointsInto.Karma))
+                                {
+                                    objSkillToPutPointsInto = objLoopSkill;
+                                    intHighestTotalKarmaCost = intLoopTotalKarmaCost;
+                                }
+                            }
+
+                            if (objSkillToPutPointsInto != null)
+                            {
+                                objSkillToPutPointsInto.Base = intSkillPointCount;
+                                objSkillToPutPointsInto.Karma -= intSkillPointCount;
+                            }
+                        }
+                    }
+
+                    // Allocate Knowledge Skill Points
+                    int intKnowledgeSkillPointCount = KnowledgeSkillPoints;
+                    Skill objKnowledgeSkillToPutPointsInto;
+
+                    // First loop through skills where costs can be 100% covered with points
+                    do
+                    {
+                        objKnowledgeSkillToPutPointsInto = null;
+                        int intKnowledgeSkillToPutPointsIntoTotalKarmaCost = 0;
+                        foreach (KnowledgeSkill objLoopKnowledgeSkill in KnowledgeSkills)
+                        {
+                            if (objLoopKnowledgeSkill.Karma == 0)
+                                continue;
+                            // Put points into the attribute with the highest total karma cost.
+                            // In case of ties, pick the one that would need more points to cover it (the other one will hopefully get picked up at a later cycle)
+                            int intLoopTotalKarmaCost = objLoopKnowledgeSkill.CurrentKarmaCost;
+                            if (objKnowledgeSkillToPutPointsInto == null ||
+                                (objLoopKnowledgeSkill.Karma <= intKnowledgeSkillPointCount &&
+                                 (intLoopTotalKarmaCost > intKnowledgeSkillToPutPointsIntoTotalKarmaCost ||
+                                  (intLoopTotalKarmaCost == intKnowledgeSkillToPutPointsIntoTotalKarmaCost &&
+                                   objLoopKnowledgeSkill.Karma > objKnowledgeSkillToPutPointsInto.Karma))))
+                            {
+                                objKnowledgeSkillToPutPointsInto = objLoopKnowledgeSkill;
+                                intKnowledgeSkillToPutPointsIntoTotalKarmaCost = intLoopTotalKarmaCost;
+                            }
+                        }
+
+                        if (objKnowledgeSkillToPutPointsInto != null)
+                        {
+                            objKnowledgeSkillToPutPointsInto.Base = objKnowledgeSkillToPutPointsInto.Karma;
+                            intKnowledgeSkillPointCount -= objKnowledgeSkillToPutPointsInto.Karma;
+                            objKnowledgeSkillToPutPointsInto.Karma = 0;
+                        }
+                    } while (objKnowledgeSkillToPutPointsInto != null && intKnowledgeSkillPointCount > 0);
+
+                    // If any points left over, then put them all into the attribute with the highest karma cost
+                    if (intKnowledgeSkillPointCount > 0 && KnowledgeSkills.Any(x => x.Karma != 0))
+                    {
+                        int intHighestTotalKarmaCost = 0;
+                        foreach (KnowledgeSkill objLoopKnowledgeSkill in KnowledgeSkills)
+                        {
+                            if (objLoopKnowledgeSkill.Karma == 0)
+                                continue;
+                            // Put points into the attribute with the highest total karma cost.
+                            // In case of ties, pick the one that would need more points to cover it (the other one will hopefully get picked up at a later cycle)
+                            int intLoopTotalKarmaCost = objLoopKnowledgeSkill.CurrentKarmaCost;
+                            if (objKnowledgeSkillToPutPointsInto == null ||
+                                intLoopTotalKarmaCost > intHighestTotalKarmaCost ||
+                                (intLoopTotalKarmaCost == intHighestTotalKarmaCost && objLoopKnowledgeSkill.Karma >
+                                 objKnowledgeSkillToPutPointsInto.Karma))
+                            {
+                                objKnowledgeSkillToPutPointsInto = objLoopKnowledgeSkill;
+                                intHighestTotalKarmaCost = intLoopTotalKarmaCost;
+                            }
+                        }
+
+                        if (objKnowledgeSkillToPutPointsInto != null)
+                        {
+                            objKnowledgeSkillToPutPointsInto.Base = intKnowledgeSkillPointCount;
+                            objKnowledgeSkillToPutPointsInto.Karma -= intKnowledgeSkillPointCount;
+                        }
+                    }
+
                 }
-                Timekeeper.Finish("load_char_skills_normal");
 
-                Timekeeper.Start("load_char_skills_kno");
-                using (XmlNodeList xmlSkillsList = xmlSkillNode.SelectNodes("knoskills/skill"))
-                    if (xmlSkillsList != null)
-                        foreach (XmlNode xmlNode in xmlSkillsList)
-                        {
-                            if (Skill.Load(_objCharacter, xmlNode) is KnowledgeSkill objSkill)
-                                KnowledgeSkills.Add(objSkill);
-                        }
-                Timekeeper.Finish("load_char_skills_kno");
-
-                Timekeeper.Start("load_char_knowsoft_buffer");
-                // Knowsoft Buffer.
-                using (XmlNodeList xmlSkillsList = xmlSkillNode.SelectNodes("skilljackknowledgeskills/skill"))
-                    if (xmlSkillsList != null)
-                        foreach (XmlNode xmlNode in xmlSkillsList)
-                        {
-                            string strName = string.Empty;
-                            if (xmlNode.TryGetStringFieldQuickly("name", ref strName))
-                                KnowsoftSkills.Add(new KnowledgeSkill(_objCharacter, strName));
-                        }
-                Timekeeper.Finish("load_char_knowsoft_buffer");
-            }
-            else
-            {
-                List<Skill> lstTempSkillList = new List<Skill>();
-                using (XmlNodeList xmlSkillsList = xmlSkillNode.SelectNodes("skills/skill"))
-                    if (xmlSkillsList != null)
-                        foreach (XmlNode xmlNode in xmlSkillsList)
-                        {
-                            Skill objSkill = Skill.LegacyLoad(_objCharacter, xmlNode);
-                            if (objSkill != null)
-                                lstTempSkillList.Add(objSkill);
-                        }
-
-                if (lstTempSkillList.Count > 0)
-                {
-                    List<Skill> lstUnsortedSkills = new List<Skill>();
-
-                    //Variable/Anon method as to not clutter anywhere else. Not sure if clever or stupid
-                    bool OldSkillFilter(Skill skill)
-                    {
-                        if (skill.Rating > 0)
-                            return true;
-
-                        if (skill.SkillCategory == "Resonance Active" && !_objCharacter.RESEnabled)
-                            return false;
-
-                        //This could be more fine grained, but frankly i don't care
-                        if (skill.SkillCategory == "Magical Active" && !_objCharacter.MAGEnabled)
-                            return false;
-
-                        return true;
-                    }
-
-                    foreach (Skill objSkill in lstTempSkillList)
-                    {
-                        if (objSkill is KnowledgeSkill objKnoSkill)
-                        {
-                            KnowledgeSkills.Add(objKnoSkill);
-                        }
-                        else if (OldSkillFilter(objSkill))
-                        {
-                            lstUnsortedSkills.Add(objSkill);
-                        }
-                    }
-
-                    lstUnsortedSkills.Sort(CompareSkills);
-
-                    foreach (Skill objSkill in lstUnsortedSkills)
-                    {
-                        _lstSkills.Add(objSkill);
-                        _dicSkills.Add(objSkill.IsExoticSkill ? objSkill.Name + " (" + objSkill.DisplaySpecializationMethod(GlobalOptions.DefaultLanguage) + ')' : objSkill.Name, objSkill);
-                    }
-
-                    UpdateUndoList(xmlSkillNode);
-                }
+                //Timekeeper.Finish("load_char_skills");
             }
 
-            //This might give subtle bugs in the future,
-            //but right now it needs to be run once when upgrading or it might crash.
-            //As some didn't they crashed on loading skills.
-            //After this have run, it won't (for the crash i'm aware)
-            //TODO: Move it to the other side of the if someday?
-
-            if (!_objCharacter.Created)
-            {
-                // zero out any skillgroups whose skills did not make the final cut
-                foreach (SkillGroup objSkillGroup in SkillGroups)
-                {
-                    if (!objSkillGroup.SkillList.Any(x => SkillsDictionary.ContainsKey(x.Name)))
-                    {
-                        objSkillGroup.Base = 0;
-                        objSkillGroup.Karma = 0;
-                    }
-                }
-            }
-
-            //Workaround for probably breaking compability between earlier beta builds
-            if (xmlSkillNode["skillptsmax"] == null)
-            {
-                xmlSkillNode = xmlSkillNode.OwnerDocument?["character"];
-            }
-
-            int intTmp = 0;
-            if (xmlSkillNode.TryGetInt32FieldQuickly("skillptsmax", ref intTmp))
-                SkillPointsMaximum = intTmp;
-            if (xmlSkillNode.TryGetInt32FieldQuickly("skillgrpsmax", ref intTmp))
-                SkillGroupPointsMaximum = intTmp;
-
-            Timekeeper.Finish("load_char_skills");
         }
 
         private void UpdateUndoList(XmlNode skillNode)
@@ -517,6 +808,24 @@ namespace Chummer.Backend.Skills
             return objReturn;
         }
 
+        /// <summary>
+        /// This is only used for reflection, so that all zero ratings skills are not uploaded
+        /// </summary>
+        [HubTag]
+        public List<Skill> NotZeroRatingSkills
+        {
+            get
+            {
+                List<Skill> resultList = new List<Skill>();
+                foreach (Skill objLoopSkill in _lstSkills)
+                {
+                    if (objLoopSkill.Rating > 0)
+                        resultList.Add(objLoopSkill);
+                }
+                return resultList;
+            }
+        }
+
         public BindingList<KnowledgeSkill> KnowledgeSkills { get; } = new BindingList<KnowledgeSkill>();
 
 
@@ -570,7 +879,7 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public int KnowledgeSkillRanksSum
         {
-            get { return KnowledgeSkills.Sum(x => x.CurrentSpCost); }
+            get { return KnowledgeSkills.AsParallel().Sum(x => x.CurrentSpCost); }
         }
 
         /// <summary>
@@ -627,8 +936,8 @@ namespace Chummer.Backend.Skills
 
         public static int CompareSkills(Skill rhs, Skill lhs)
         {
-            ExoticSkill lhsExoticSkill = (lhs.IsExoticSkill ? lhs : null) as ExoticSkill;
-            if ((rhs.IsExoticSkill ? rhs : null) is ExoticSkill rhsExoticSkill)
+            ExoticSkill lhsExoticSkill = lhs as ExoticSkill;
+            if (rhs is ExoticSkill rhsExoticSkill)
             {
                 if (lhsExoticSkill != null)
                 {
@@ -786,7 +1095,7 @@ namespace Chummer.Backend.Skills
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        
+
         private void UpdateKnowledgePointsFromAttributes(object sender, PropertyChangedEventArgs e)
         {
             if ((_objCharacter.Options.UseTotalValueForFreeKnowledge && e.PropertyName == nameof(CharacterAttrib.TotalValue)) ||

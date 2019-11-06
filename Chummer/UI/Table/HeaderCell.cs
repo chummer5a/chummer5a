@@ -148,7 +148,7 @@ namespace Chummer.UI.Table
                     intTipY = intBottomY;
                     intBottomY = intTemp;
                 }
-                e.Graphics.FillPolygon(_objArrowBrush, new Point[] { new Point(intLeft, intBottomY), new Point(intTipX, intTipY), new Point(intRight, intBottomY) });
+                e.Graphics.FillPolygon(_objArrowBrush, new [] { new Point(intLeft, intBottomY), new Point(intTipX, intTipY), new Point(intRight, intBottomY) });
             }
             base.OnPaint(e);
         }

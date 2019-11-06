@@ -17,22 +17,19 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Backend.Equipment;
+using NLog;
 
 namespace Chummer
 {
     public partial class frmCreateCustomDrug : Form
 	{
+        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
 		private readonly Dictionary<string, DrugComponent> _dicDrugComponents = new Dictionary<string, DrugComponent>();
         private readonly List<clsNodeData> _lstSelectedDrugComponents;
 		private readonly List<ListItem> _lstGrade = new List<ListItem>();
@@ -63,7 +60,7 @@ namespace Chummer
                 TreeNode nodCategoryNode = treAvailableComponents.FindNode("Node_" + strCategory);
                 if (nodCategoryNode == null)
                 {
-                    Log.Warning(string.Format("Unknown category %s in component %s", strCategory, objItem.Key));
+                    Log.Warn($"Unknown category {strCategory} in component {objItem.Key}");
                     return;
                 }
                 TreeNode objNode = nodCategoryNode.Nodes.Add(objItem.Value.DisplayNameShort(GlobalOptions.Language));
@@ -91,13 +88,17 @@ namespace Chummer
 
         private void LoadData()
         {
-            foreach (XmlNode objXmlComponent in _objXmlDocument.SelectNodes("chummer/drugcomponents/drugcomponent"))
+            XmlNodeList xmlComponentsNodeList = _objXmlDocument.SelectNodes("chummer/drugcomponents/drugcomponent");
+            if (xmlComponentsNodeList?.Count > 0)
             {
-                DrugComponent objDrugComponent = new DrugComponent(_objCharacter);
-                objDrugComponent.Load(objXmlComponent);
-                _dicDrugComponents[objDrugComponent.Name] = objDrugComponent;
-			}
-		}
+                foreach (XmlNode objXmlComponent in xmlComponentsNodeList)
+                {
+                    DrugComponent objDrugComponent = new DrugComponent(_objCharacter);
+                    objDrugComponent.Load(objXmlComponent);
+                    _dicDrugComponents[objDrugComponent.Name] = objDrugComponent;
+                }
+            }
+        }
 		
 		/// <summary>
 		/// Populate the list of Drug Grades.
@@ -125,7 +126,7 @@ namespace Chummer
             {
                 Name = txtDrugName.Text,
                 Category = "Custom Drug",
-                Grade = cboGrade.SelectedValue.ToString()
+                Grade = Grade.ConvertToCyberwareGrade(cboGrade.SelectedValue.ToString(),Improvement.ImprovementSource.Drug,_objCharacter)
             };
 
             foreach (clsNodeData objNodeData in _lstSelectedDrugComponents)
@@ -138,8 +139,23 @@ namespace Chummer
 
 		private void AcceptForm()
 		{
-			_objDrug.Quantity = 1;
-		}
+		    // Make sure the suite and file name fields are populated.
+		    if (string.IsNullOrEmpty(txtDrugName.Text))
+		    {
+		        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CustomDrug_Name", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CustomDrug_Name", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+		    }
+
+		    if (_objDrug.Components.Count(o => o.Category == "Foundation") != 1)
+		    {
+		        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CustomDrug_MissingFoundation", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CustomDrug_Foundation", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+		        return;
+            }
+
+            _objDrug.Quantity = 1;
+		    DialogResult = DialogResult.OK;
+		    Close();
+        }
 
 		private void AddSelectedComponent()
         {
@@ -152,16 +168,17 @@ namespace Chummer
             TreeNode nodCategoryNode = treChosenComponents.FindNode("Node_" + strCategory);
             if (nodCategoryNode == null)
             {
-                Log.Warning(string.Format("Unknown category %s in component %s", strCategory, objNodeData.DrugComponent.Name));
+                Log.Warn($"Unknown category {strCategory} in component {objNodeData.DrugComponent.Name}");
                 return;
             }
 
-            if (!string.IsNullOrEmpty(txtDrugName.Text))
-
-            //prevent adding same component twice
-            if (_lstSelectedDrugComponents.Any(c => c.DrugComponent.Name == objNodeData.DrugComponent.Name))
+            //prevent adding same component multiple times. 
+            if (_lstSelectedDrugComponents.Count(c => c.DrugComponent.Name == objNodeData.DrugComponent.Name) >=
+                objNodeData.DrugComponent.Limit && objNodeData.DrugComponent.Limit != 0)
             {
-                MessageBox.Show(this, LanguageManager.GetString("Message_DuplicateDrugComponentWarning"));
+                Program.MainForm.ShowMessageBox(this,
+                    LanguageManager.GetString("Message_DuplicateDrugComponentWarning")
+                        .Replace("{0}", objNodeData.DrugComponent.Limit.ToString()));
                 return;
             }
 
@@ -170,7 +187,7 @@ namespace Chummer
             {
                 if (_lstSelectedDrugComponents.Any(c => c.DrugComponent.Category == "Foundation"))
                 {
-                    MessageBox.Show(this, LanguageManager.GetString("Message_DuplicateDrugFoundationWarning"));
+                    Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_DuplicateDrugFoundationWarning"));
                     return;
                 }
             }
@@ -197,7 +214,7 @@ namespace Chummer
                                 Append(objFoundationNodeData.DrugComponent.CurrentDisplayName).Append(strColonString).Append(strSpaceString).Append(objItem.Key).Append(objItem.Value.ToString("+#;-#;")).AppendLine().
                                 Append(objNodeData.DrugComponent.CurrentDisplayName).Append(strColonString).Append(strSpaceString).Append(objItem.Key).Append(intBlockAttrValue.ToString("+#;-#;")).
                                 ToString();
-                            MessageBox.Show(this, message);
+                            Program.MainForm.ShowMessageBox(this, message);
                             return;
                         }
                     }
@@ -247,15 +264,13 @@ namespace Chummer
 
         private void btnRemoveComponent_Click(object sender, EventArgs e)
         {
-            if (treChosenComponents.SelectedNode?.Tag is clsNodeData objNodeData)
-            {
-                treChosenComponents.Nodes.Remove(treChosenComponents.SelectedNode);
+            if (!(treChosenComponents.SelectedNode?.Tag is clsNodeData objNodeData)) return;
+            treChosenComponents.Nodes.Remove(treChosenComponents.SelectedNode);
 
-                _lstSelectedDrugComponents.Remove(objNodeData);
+            _lstSelectedDrugComponents.Remove(objNodeData);
 
-                UpdateCustomDrugStats();
-                lblDrugDescription.Text = _objDrug.GenerateDescription(0);
-            }
+            UpdateCustomDrugStats();
+            lblDrugDescription.Text = _objDrug.GenerateDescription(0);
         }
 
         private void txtDrugName_TextChanged(object sender, EventArgs e)
@@ -267,8 +282,6 @@ namespace Chummer
         private void btnOk_Click(object sender, EventArgs e)
         {
 	        AcceptForm();
-            DialogResult = DialogResult.OK;
-            Close();
         }
 
 		private void btnCancel_Click(object sender, EventArgs e)
@@ -286,9 +299,11 @@ namespace Chummer
 			// Update the Essence and Cost multipliers based on the Grade that has been selected.
 			// Retrieve the information for the selected Grade.
 			XmlNode objXmlGrade = _objXmlDocument.SelectSingleNode("/chummer/grades/grade[name = \"" + cboGrade.SelectedValue + "\"]");
-			_dblCostMultiplier = Convert.ToDouble(objXmlGrade["cost"].InnerText, GlobalOptions.CultureInfo);
-			objXmlGrade.TryGetField("addictionthreshold", out _intAddictionThreshold, 0);
-			UpdateCustomDrugStats();
+		    if (!objXmlGrade.TryGetDoubleFieldQuickly("cost", ref _dblCostMultiplier))
+		        _dblCostMultiplier = 1.0;
+            if (!objXmlGrade.TryGetInt32FieldQuickly("addictionthreshold", ref _intAddictionThreshold))
+		        _intAddictionThreshold = 0;
+            UpdateCustomDrugStats();
 			lblDrugDescription.Text = _objDrug.GenerateDescription(0);
 		}
 	}

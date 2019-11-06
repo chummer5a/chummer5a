@@ -48,25 +48,10 @@ namespace Chummer
             _objCharacter = objCharacter;
             _blnAdvancedProgramAllowed = blnAdvancedProgramAllowed;
             _blnInherentProgram = blnInherentProgram;
-            MoveControls();
             // Load the Programs information.
             _xmlBaseChummerNode = XmlManager.Load("programs.xml").GetFastNavigator().SelectSingleNode("/chummer");
-            if (_objCharacter.IsCritter)
-            {
-                _xmlOptionalAIProgramsNode = XmlManager.Load("critters.xml").GetFastNavigator().SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]") ??
-                                            XmlManager.Load("metatypes.xml").GetFastNavigator().SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
-                if (_xmlOptionalAIProgramsNode != null)
-                {
-                    if (!string.IsNullOrEmpty(_objCharacter.Metavariant) && _objCharacter.Metavariant != "None")
-                    {
-                        XPathNavigator xmlMetavariantNode = _xmlOptionalAIProgramsNode.SelectSingleNode("metavariants/metavariant[name = \"" + _objCharacter.Metavariant + "\"]");
-                        if (xmlMetavariantNode != null)
-                            _xmlOptionalAIProgramsNode = xmlMetavariantNode;
-                    }
-
-                    _xmlOptionalAIProgramsNode = _xmlOptionalAIProgramsNode.SelectSingleNode("optionalaiprograms");
-                }
-            }
+            if (!_objCharacter.IsCritter) return;
+            _xmlOptionalAIProgramsNode = _objCharacter.GetNode().SelectSingleNode("optionalaiprograms");
         }
 
         private void frmSelectProgram_Load(object sender, EventArgs e)
@@ -380,25 +365,9 @@ namespace Chummer
                     return;
 
                 // Check to make sure requirement is met
-                string strRequiresProgram = xmlProgram.SelectSingleNode("require")?.Value;
-                if (!string.IsNullOrEmpty(strRequiresProgram))
+                if (!xmlProgram.RequirementsMet(_objCharacter, null, LanguageManager.GetString("String_Program", GlobalOptions.Language)))
                 {
-                    bool blnRequirementsMet = false;
-                    foreach (AIProgram objLoopAIProgram in _objCharacter.AIPrograms)
-                    {
-                        if (objLoopAIProgram.Name == strRequiresProgram)
-                        {
-                            blnRequirementsMet = true;
-                            break;
-                        }
-                    }
-                    if (!blnRequirementsMet)
-                    {
-                        MessageBox.Show(LanguageManager.GetString("Message_SelectAIProgram_AdvancedProgramRequirement", GlobalOptions.Language) + strRequiresProgram,
-                            LanguageManager.GetString("MessageTitle_SelectAIProgram_AdvancedProgramRequirement", GlobalOptions.Language),
-                            MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        return;
-                    }
+                    return;
                 }
 
                 _strSelectedAIProgram = strSelectedId;
@@ -406,17 +375,6 @@ namespace Chummer
 
                 DialogResult = DialogResult.OK;
             }
-        }
-
-        private void MoveControls()
-        {
-            int intLeft = lblRequiresProgramLabel.Width;
-            intLeft = Math.Max(intLeft, lblSourceLabel.Width);
-
-            lblRequiresProgram.Left = lblRequiresProgramLabel.Left + intLeft + 6;
-            lblSource.Left = lblSourceLabel.Left + intLeft + 6;
-
-            lblSearchLabel.Left = txtSearch.Left - 6 - lblSearchLabel.Width;
         }
 
         private void OpenSourceFromLabel(object sender, EventArgs e)

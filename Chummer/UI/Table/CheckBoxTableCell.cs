@@ -22,7 +22,7 @@ namespace Chummer.UI.Table
 {
     public partial class CheckBoxTableCell<T> : TableCell where T : class
     {
-        private bool _blnUpdating = false;
+        private bool _blnUpdating;
 
         public CheckBoxTableCell(string text = "", string tag = null)
         {

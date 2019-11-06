@@ -21,6 +21,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -30,22 +31,21 @@ namespace Chummer
     /// A Location.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Location : IHasInternalId, IHasName, IHasNotes, ICanRemove
+    public class Location : IHasInternalId, IHasName, IHasNotes, ICanRemove, ICanSort
     {
         private Guid _guiID;
         private string _strName;
         private string _strNotes = string.Empty;
+        private int _intSortOrder;
         private readonly Character _objCharacter;
         #region Constructor, Create, Save, Load, and Print Methods
-        public Location(Character objCharacter, ObservableCollection<Location> parent, string name = "", bool addToList = true)
+        public Location(Character objCharacter, ObservableCollection<Location> objParent, string strName = "")
         {
             // Create the GUID for the new art.
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
-            _strName = name;
-            Parent = parent;
-            if (addToList)
-                Parent.Add(this);
+            _strName = strName;
+            Parent = objParent;
             Children.CollectionChanged += ChildrenOnCollectionChanged;
         }
 
@@ -59,6 +59,7 @@ namespace Chummer
             objWriter.WriteElementString("guid", _guiID.ToString("D"));
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("notes", _strNotes);
+            objWriter.WriteElementString("sortorder", _intSortOrder.ToString());
             objWriter.WriteEndElement();
         }
 
@@ -78,7 +79,10 @@ namespace Chummer
                 objNode.TryGetStringFieldQuickly("name", ref _strName);
                 objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             }
-            if (Parent == null || Parent.Contains(this)) return;
+
+            objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
+
+            if (Parent?.Contains(this) == false)
                 Parent.Add(this);
         }
 
@@ -141,9 +145,18 @@ namespace Chummer
             set => _strNotes = value;
         }
 
+        /// <summary>
+        /// Used by our sorting algorithm to remember which order the user moves things to
+        /// </summary>
+        public int SortOrder
+        {
+            get => _intSortOrder;
+            set => _intSortOrder = value;
+        }
+
         public TaggedObservableCollection<IHasLocation> Children { get; } = new TaggedObservableCollection<IHasLocation>();
 
-        public ObservableCollection<Location> Parent { get; set; }
+        public ObservableCollection<Location> Parent { get; }
         #endregion
 
         #region UI Methods
@@ -215,7 +228,8 @@ namespace Chummer
             {
                 item.Location = null;
             }
-            return Parent.Remove(this);
+
+            return Parent.Remove(Parent.SingleOrDefault(i => i.InternalId == InternalId));
         }
     }
 }

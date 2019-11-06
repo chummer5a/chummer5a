@@ -205,7 +205,7 @@ namespace Chummer
                                 Text = objNode.SelectSingleNode("translate")?.Value ?? objXmlQuality.Value
                             };
 
-                            string strSelect = objXmlQuality.SelectSingleNode("@select").Value;
+                            string strSelect = objXmlQuality.SelectSingleNode("@select")?.Value;
                             if (!string.IsNullOrEmpty(strSelect))
                                 objChild.Text += $" ({LanguageManager.TranslateExtra(strSelect, GlobalOptions.Language)})";
                             objParent.Nodes.Add(objChild);
@@ -225,7 +225,7 @@ namespace Chummer
                                 Text = objNode.SelectSingleNode("translate")?.Value ?? objXmlQuality.Value
                             };
 
-                            string strSelect = objXmlQuality.SelectSingleNode("@select").Value;
+                            string strSelect = objXmlQuality.SelectSingleNode("@select")?.Value;
                             if (!string.IsNullOrEmpty(strSelect))
                                 objChild.Text += $" ({LanguageManager.TranslateExtra(strSelect, GlobalOptions.Language)})";
                             objParent.Nodes.Add(objChild);
@@ -529,8 +529,9 @@ namespace Chummer
 
                             TreeNode objChild = new TreeNode
                             {
-                                Text =
-                                    $"{(objXmlLifestyle.SelectSingleNode("translate") ?? objXmlLifestyle.SelectSingleNode("name")).Value}{strSpaceCharacter}{objXmlLifestyle.SelectSingleNode("months").Value}{strSpaceCharacter}{strIncrementString + LanguageManager.GetString("Label_LifestylePermanent", GlobalOptions.Language).Replace("{0}", intPermanentAmount.ToString(GlobalOptions.CultureInfo))}"
+                                Text = (objXmlLifestyle.SelectSingleNode("translate") ?? objXmlLifestyle.SelectSingleNode("baselifestyle")).Value
+                                       + strSpaceCharacter + objXmlLifestyle.SelectSingleNode("months").Value
+                                       + strSpaceCharacter + strIncrementString + string.Format(LanguageManager.GetString("Label_LifestylePermanent", GlobalOptions.Language), intPermanentAmount.ToString(GlobalOptions.CultureInfo))
                             };
 
                             // Check for Qualities.
@@ -886,12 +887,13 @@ namespace Chummer
             if (string.IsNullOrEmpty(strSelectedKit))
                 return;
 
-            if (MessageBox.Show(LanguageManager.GetString("Message_DeletePACKSKit", GlobalOptions.Language).Replace("{0}", strSelectedKit), LanguageManager.GetString("MessageTitle_Delete", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.No)
+            if (MessageBox.Show(string.Format(LanguageManager.GetString("Message_DeletePACKSKit", GlobalOptions.Language), strSelectedKit),
+                    LanguageManager.GetString("MessageTitle_Delete", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.No)
                 return;
 
             // Delete the selectec custom PACKS Kit.
             // Find a custom PACKS Kit with the name. This is done without the XmlManager since we need to check each file individually.
-            string strCustomPath = Path.Combine(Application.StartupPath, "data");
+            string strCustomPath = Path.Combine(Utils.GetStartupPath, "data");
             foreach (string strFile in Directory.GetFiles(strCustomPath, "custom*_packs.xml"))
             {
                 XmlDocument objXmlDocument = new XmlDocument();

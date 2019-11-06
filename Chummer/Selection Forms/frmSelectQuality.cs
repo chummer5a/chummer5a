@@ -18,9 +18,11 @@
  */
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 using System.Text;
+using System.Xml;
 using System.Xml.XPath;
 
 namespace Chummer
@@ -34,7 +36,7 @@ namespace Chummer
 
         private readonly XPathNavigator _xmlBaseQualityDataNode;
         private readonly XPathNavigator _xmlMetatypeQualityRestrictionNode;
-
+        
         private readonly List<ListItem> _lstCategory = new List<ListItem>();
 
         private static string s_StrSelectCategory = string.Empty;
@@ -45,19 +47,10 @@ namespace Chummer
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
-
-            MoveControls();
+            
             // Load the Quality information.
             _xmlBaseQualityDataNode = XmlManager.Load("qualities.xml").GetFastNavigator().SelectSingleNode("/chummer");
-
-            string strMetatypeXPath = "/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype;
-            if (!string.IsNullOrEmpty(_objCharacter.Metavariant) && _objCharacter.Metavariant != "None")
-            {
-                strMetatypeXPath += "\"]/metavariants/metavariant[name = \"" + _objCharacter.Metavariant;
-            }
-            strMetatypeXPath += "\"]/qualityrestriction";
-            _xmlMetatypeQualityRestrictionNode = XmlManager.Load("metatypes.xml").GetFastNavigator().SelectSingleNode(strMetatypeXPath) ??
-                                                 XmlManager.Load("critters.xml").GetFastNavigator().SelectSingleNode(strMetatypeXPath);
+            _xmlMetatypeQualityRestrictionNode = _objCharacter.GetNode().SelectSingleNode("qualityrestriction");
         }
 
         private void frmSelectQuality_Load(object sender, EventArgs e)
@@ -77,7 +70,9 @@ namespace Chummer
             cboCategory.BeginUpdate();
             cboCategory.ValueMember = "Value";
             cboCategory.DisplayMember = "Name";
-            cboCategory.DataSource = _lstCategory;
+            //this could help circumvent a exception like this?	"InvalidArgument=Value of '0' is not valid for 'SelectedIndex'. Parameter name: SelectedIndex" 
+            BindingList<ListItem> templist = new BindingList<ListItem>(_lstCategory);
+            cboCategory.DataSource = templist;
 
             // Select the first Category in the list.
             if (string.IsNullOrEmpty(s_StrSelectCategory))
@@ -92,8 +87,8 @@ namespace Chummer
             cboCategory.Enabled = _lstCategory.Count > 1;
             cboCategory.EndUpdate();
 
-            if (_objCharacter.MetageneticLimit == 0)
-                chkNotMetagenetic.Checked = true;
+            if (_objCharacter.MetagenicLimit == 0)
+                chkNotMetagenic.Checked = true;
 
             lblBPLabel.Text = LanguageManager.GetString("Label_Karma", GlobalOptions.Language);
             _blnLoading = false;
@@ -146,7 +141,20 @@ namespace Chummer
                     else
                     {
                         int.TryParse(strKarma, out int intBP);
-
+                        
+                        if (xmlQuality.SelectSingleNode("costdiscount").RequirementsMet(_objCharacter) && !chkFree.Checked)
+                        {
+                            string strValue = xmlQuality.SelectSingleNode("costdiscount/value")?.Value;
+                            switch (xmlQuality.SelectSingleNode("category")?.Value)
+                            {
+                                case "Positive":
+                                    intBP += Convert.ToInt32(strValue);
+                                    break;
+                                case "Negative":
+                                    intBP -= Convert.ToInt32(strValue);
+                                    break;
+                            }
+                        }
                         if (_objCharacter.Created && !_objCharacter.Options.DontDoubleQualityPurchases)
                         {
                             string strDoubleCostCareer = xmlQuality.SelectSingleNode("doublecareer")?.Value;
@@ -156,23 +164,40 @@ namespace Chummer
                             }
                         }
                         lblBP.Text = (intBP * _objCharacter.Options.KarmaQuality).ToString();
+                        if (!_objCharacter.Created && _objCharacter.FreeSpells > 0 && Convert.ToBoolean(xmlQuality.SelectSingleNode("canbuywithspellpoints")?.Value))
+                        {
+                            int i = (intBP * _objCharacter.Options.KarmaQuality);
+                            int spellPoints = 0;
+                            while (i > 0)
+                            {
+                                i -= 5;
+                                spellPoints++;
+                            }
+
+                            lblBP.Text += $" / {spellPoints} {LanguageManager.GetString("String_SpellPoints")}";
+                            lblBP.ToolTipText = LanguageManager.GetString("Tip_SelectSpell_MasteryQuality");
+                        }
+                        else
+                        {
+                            lblBP.ToolTipText = string.Empty;
+                        }
                     }
                 }
-                lblBPLabel.Visible = !string.IsNullOrEmpty(lblBP.Text);
+                lblBPLabel.Visible = lblBP.Visible = !string.IsNullOrEmpty(lblBP.Text);
 
                 string strSource = xmlQuality.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
                 string strPage = xmlQuality.SelectSingleNode("altpage")?.Value ?? xmlQuality.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
                 string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                 lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
                 lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
-                lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
+                lblSourceLabel.Visible = lblSource.Visible = !string.IsNullOrEmpty(lblSource.Text);
             }
             else
             {
                 lblBPLabel.Visible = false;
-                lblBP.Text = string.Empty;
+                lblBP.Visible = false;
                 lblSourceLabel.Visible = false;
-                lblSource.Text = string.Empty;
+                lblSource.Visible = false;
                 lblSource.SetToolTip(string.Empty);
             }
         }
@@ -210,17 +235,17 @@ namespace Chummer
             lstQualities_SelectedIndexChanged(sender, e);
         }
 
-        private void chkMetagenetic_CheckedChanged(object sender, EventArgs e)
+        private void chkMetagenic_CheckedChanged(object sender, EventArgs e)
         {
-            if (chkMetagenetic.Checked)
-                chkNotMetagenetic.Checked = false;
+            if (chkMetagenic.Checked)
+                chkNotMetagenic.Checked = false;
             BuildQualityList();
         }
 
-        private void chkNotMetagenetic_CheckedChanged(object sender, EventArgs e)
+        private void chkNotMetagenic_CheckedChanged(object sender, EventArgs e)
         {
-            if (chkNotMetagenetic.Checked)
-                chkMetagenetic.Checked = false;
+            if (chkNotMetagenic.Checked)
+                chkMetagenic.Checked = false;
             BuildQualityList();
         }
 
@@ -356,13 +381,13 @@ namespace Chummer
                     strFilter.Append(')');
                 }
             }
-            if (chkMetagenetic.Checked)
+            if (chkMetagenic.Checked)
             {
-                strFilter.Append(" and (metagenetic = 'True' or required/oneof[contains(., 'Changeling')])");
+                strFilter.Append(" and (metagenic = 'True' or required/oneof[contains(., 'Changeling')])");
             }
-            else if (chkNotMetagenetic.Checked)
+            else if (chkNotMetagenic.Checked)
             {
-                strFilter.Append(" and not(metagenetic = 'True') and not(required/oneof[contains(., 'Changeling')])");
+                strFilter.Append(" and not(metagenic = 'True') and not(required/oneof[contains(., 'Changeling')])");
             }
             if (nudValueBP.Value != 0)
             {
@@ -439,15 +464,6 @@ namespace Chummer
             _strSelectedQuality = strSelectedQuality;
             s_StrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode.SelectSingleNode("category")?.Value;
             DialogResult = DialogResult.OK;
-        }
-
-        private void MoveControls()
-        {
-            int intWidth = Math.Max(lblBPLabel.Width, lblSourceLabel.Width);
-            lblBP.Left = lblBPLabel.Left + intWidth + 6;
-            lblSource.Left = lblSourceLabel.Left + intWidth + 6;
-
-            lblSearchLabel.Left = txtSearch.Left - 6 - lblSearchLabel.Width;
         }
 
         private void OpenSourceFromLabel(object sender, EventArgs e)
