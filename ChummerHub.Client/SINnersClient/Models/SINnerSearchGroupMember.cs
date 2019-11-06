@@ -21,10 +21,11 @@ namespace SINners.Models
         /// <summary>
         /// Initializes a new instance of the SINnerSearchGroupMember class.
         /// </summary>
-        public SINnerSearchGroupMember(SINner mySINner = default(SINner), string username = default(string))
+        public SINnerSearchGroupMember(SINner mySINner = default(SINner), string username = default(string), bool? isFavorite = default(bool?))
         {
             MySINner = mySINner;
             Username = username;
+            IsFavorite = isFavorite;
         }
 
         /// <summary>
@@ -36,6 +37,11 @@ namespace SINners.Models
         /// </summary>
         [JsonProperty(PropertyName = "username")]
         public string Username { get; set; }
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "isFavorite")]
+        public bool? IsFavorite { get; set; }
 
         /// <summary>
         /// Validate the object. Throws ValidationException if validation fails.

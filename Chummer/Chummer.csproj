@@ -2306,7 +2306,7 @@
     <Content Include="icons\bullet_pink.png" />
     <Content Include="icons\bullet_purple.png" />
     <Content Include="icons\bullet_red.png" />
-    <Content Include="icons\bullet_star.png" />
+    <None Include="icons\bullet_star.png" />
     <Content Include="icons\bullet_toggle_minus.png" />
     <Content Include="icons\bullet_toggle_plus.png" />
     <Content Include="icons\bullet_white.png" />
@@ -3339,7 +3339,7 @@
     <Content Include="icons\tux.png" />
     <Content Include="icons\user.png" />
     <Content Include="icons\user_comment.png" />
-    <Content Include="icons\user_delete.png" />
+    <None Include="icons\user_delete.png" />
     <Content Include="icons\user_edit.png" />
     <Content Include="icons\user_female.png" />
     <Content Include="icons\user_gray.png" />

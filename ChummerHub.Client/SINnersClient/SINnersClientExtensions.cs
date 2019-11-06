@@ -298,6 +298,37 @@ namespace SINners
             /// </param>
             /// <param name='hash'>
             /// </param>
+            /// <param name='open'>
+            /// </param>
+            /// <param name='apiVersion'>
+            /// </param>
+            public static void O(this ISINnersClient operations, string hash, string open = default(string), string apiVersion = default(string))
+            {
+                Task.Factory.StartNew(s => ((ISINnersClient)s).OAsync(hash, open, apiVersion), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
+            }
+
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='hash'>
+            /// </param>
+            /// <param name='open'>
+            /// </param>
+            /// <param name='apiVersion'>
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task OAsync(this ISINnersClient operations, string hash, string open = default(string), string apiVersion = default(string), CancellationToken cancellationToken = default(CancellationToken))
+            {
+                await operations.OWithHttpMessagesAsync(hash, open, apiVersion, null, cancellationToken).ConfigureAwait(false);
+            }
+
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='hash'>
+            /// </param>
             /// <param name='apiVersion'>
             /// </param>
             public static void Open(this ISINnersClient operations, string hash, string apiVersion = default(string))

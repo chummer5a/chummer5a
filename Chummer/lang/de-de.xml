@@ -9618,6 +9618,18 @@
           <key>Menu_ShowMySINners</key>
           <text>Alle Daten anzeigen</text>
         </string>
+        <string>
+          <key>Menu_RemoveFavChummer</key>
+          <text>aus SINner-Favoriten entfernen</text>
+        </string>
+        <string>
+          <key>Menu_AddFavChummer</key>
+          <text>zu SINner favoriten hinzufügen</text>
+        </string>
+        <string>
+          <key>Menu_ShareChummerGroup</key>
+          <text>ganze Gruppe teilen/sharen</text>
+        </string>
 		<string>
 			<key>String_ApplicationInsights_OnlyLocal</key>
 			<text>nur lokal loggen</text>

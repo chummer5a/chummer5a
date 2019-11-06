@@ -9825,7 +9825,22 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <key>Menu_ShowMySINners</key>
       <text>Show all my data</text>
     </string>
+      <string>
+        <key>Menu_RemoveFavChummer</key>
+        <text>Remove Chummer from SINner-favorites</text>
+      </string>
+      <string>
+        <key>Menu_AddFavChummer</key>
+        <text>Add Chummer from SINner-favorites</text>
+      </string>
+      <string>
+        <key>Menu_ShareChummerGroup</key>
+        <text>Share Chummer Group</text>
+      </string>
+    
+    
       
+
     <!-- Region Rating Strings -->
       <string>
           <key>Label_RatingFormat</key>
