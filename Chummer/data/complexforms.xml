@@ -20,7 +20,7 @@
 -->
 <chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.w3.org/2001/XMLSchema complexforms.xsd">
-  <version>0</version>
+
   <complexforms>
     <complexform>
       <id>373638b9-4334-4645-99f5-c3673e4f809b</id>

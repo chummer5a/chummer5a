@@ -20,7 +20,7 @@
 -->
 <chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.w3.org/2001/XMLSchema critters.xsd">
-  <version>0</version>
+
   <categories>
     <category>A.I.s</category>
     <category>Dracoforms</category>

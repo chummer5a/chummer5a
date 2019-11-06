@@ -19,7 +19,6 @@
   https://github.com/chummer5a/chummer5a
 -->
 <chummer>
-  <version>-875</version>
   <stages>
     <stage order="1">Nationality</stage>
     <stage order="2">Formative Years</stage>
@@ -8478,7 +8477,7 @@
       <!--<selectable/>-->
       <versions>
         <version>
-          <id>f9e684bb-d7fa-4fc7-87e0-d140cc6fc64d</id>
+          <id>047e3fb2-1d43-480c-baed-2b333472eb7d</id>
           <name>Metropole - Rio de Janeiro</name>
           <story>$real was born in Rio de Janeiro.</story>
           <bonus>
@@ -10645,7 +10644,7 @@
           <story>$real did E-Sports.</story>
         </version>
         <version>
-          <id>9b9f3b96-10ed-497c-816c-9692cfe3e523</id>
+          <id>b28917e0-5ef1-444d-bf4a-484da992cccd</id>
           <name>Vehicle/Drone Sports</name>
           <bonus>
             <skilllevel>
@@ -10664,7 +10663,7 @@
           <story>$real did drone sports.</story>
         </version>
         <version>
-          <id>14dfb0c8-4748-490c-876d-f65f55e81d95</id>
+          <id>b9b0906c-a795-44c6-a0de-aaccc2fa7795</id>
           <name>Physical Sports</name>
           <bonus>
             <addqualities>
@@ -10714,7 +10713,7 @@
       </bonus>
       <versions>
         <version>
-          <id>45057214-38fd-4824-ba7c-985a3da22ef5</id>
+          <id>ad321336-0a5d-46df-a713-bb67d9340e7d</id>
           <name>Awakened Athlete</name>
           <bonus>
             <attributelevel>
@@ -10743,7 +10742,7 @@
           </bonus>
         </version>
         <version>
-          <id>d3036633-bbd5-4f6e-af7d-56b71285918c</id>
+          <id>32d88731-8174-437e-b150-86bfa669968d</id>
           <name>Combat Biker/Urban Brawl Outrider</name>
           <bonus>
             <attributelevel>
@@ -10784,7 +10783,7 @@
           </bonus>
         </version>
         <version>
-          <id>f68a6aee-f1d5-47b0-bbac-a610e1fbe7df</id>
+          <id>dc646f6c-6ff8-4017-bfd6-2cc4d83b1c77</id>
           <name>Courtballer</name>
           <bonus>
             <attributelevel>
@@ -10817,7 +10816,7 @@
           </bonus>
         </version>
         <version>
-          <id>4bb46314-5447-4ddb-bb71-ee5037fa5f5f</id>
+          <id>c1d9d00d-01bc-48e3-a7c4-fb357dcc2732</id>
           <name>Drone Racer</name>
           <bonus>
             <attributelevel>
@@ -10857,7 +10856,7 @@
           </bonus>
         </version>
         <version>
-          <id>b697c892-67e5-4298-8784-33bdb0c405ce</id>
+          <id>62aebe0f-513a-45c6-8826-d356160ce13d</id>
           <name>Freestyle Fighter</name>
           <bonus>
             <attributelevel>
@@ -11606,7 +11605,7 @@
       <page>127</page>
     </module>
     <module>
-      <id>b697c892-67e5-4298-8784-33bdb0c405ce</id>
+      <id>8b05f9be-4713-4d96-9c8b-25952b538b3a</id>
       <stage>Formative Years</stage>
       <category>LifeModule</category>
       <name>Corp Silver Spooner</name>
@@ -12276,7 +12275,7 @@
       <page>180</page>
     </module>
     <module>
-      <id>d3036633-bbd5-4f6e-af7d-56b71285918c</id>
+      <id>ad4fea0f-037e-43c2-a153-55ea606d46a2</id>
       <stage>Real Life</stage>
       <category>LifeModule</category>
       <name>In The Thick</name>
@@ -12332,7 +12331,7 @@
       <page>180</page>
     </module>
     <module>
-      <id>f68a6aee-f1d5-47b0-bbac-a610e1fbe7df</id>
+      <id>0f4e4c01-f781-44a7-a630-a92e59b63a28</id>
       <stage>Real Life</stage>
       <category>LifeModule</category>
       <name>Gone AWOL</name>
@@ -12445,7 +12444,7 @@
       <page>180</page>
     </module>
     <module>
-      <id>4bb46314-5447-4ddb-bb71-ee5037fa5f5f</id>
+      <id>3e6efacd-4503-45f7-a5a8-4fbed9c2f5bc</id>
       <stage>Real Life</stage>
       <category>LifeModule</category>
       <name>Lost In The Wilds</name>

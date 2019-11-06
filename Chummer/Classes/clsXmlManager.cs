@@ -261,8 +261,7 @@ namespace Chummer
                     {
                         foreach (XmlNode objNode in xmlNodeList)
                         {
-                            // Only process nodes that have children and are not the version node
-                            if (objNode.Name != "version" && objNode.HasChildNodes)
+                            if (objNode.HasChildNodes)
                             {
                                 // Parsing the node into an XDocument for LINQ parsing would result in slightly slower overall code (31 samples vs. 30 samples).
                                 CheckIdNodes(objNode, strFileName);
@@ -291,39 +290,7 @@ namespace Chummer
             List<string> lstItemsWithMalformedIDs = new List<string>();
             // Key is ID, Value is a list of the names of all items with that ID.
             Dictionary<string, List<string>> dicItemsWithIDs = new Dictionary<string, List<string>>();
-
-            using (XmlNodeList xmlChildNodeList = xmlParentNode.SelectNodes("*"))
-            {
-                if (xmlChildNodeList?.Count > 0)
-                {
-                    foreach (XmlNode xmlLoopNode in xmlChildNodeList)
-                    {
-                        string strId = xmlLoopNode["id"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strId))
-                        {
-                            string strItemName = xmlLoopNode["name"]?.InnerText ?? xmlLoopNode["stage"]?.InnerText ?? xmlLoopNode["category"]?.InnerText ?? strId;
-                            if (!strId.IsGuid())
-                                lstItemsWithMalformedIDs.Add(strItemName);
-                            else if (dicItemsWithIDs.TryGetValue(strId, out List<string> lstNamesList))
-                            {
-                                if (!setDuplicateIDs.Contains(strId))
-                                {
-                                    setDuplicateIDs.Add(strId);
-                                    if (strItemName == strId)
-                                        strItemName = string.Empty;
-                                }
-
-                                lstNamesList.Add(strItemName);
-                            }
-                            else
-                                dicItemsWithIDs.Add(strId, new List<string> {strItemName});
-                        }
-
-                        // Perform recursion so that nested elements that also have ids are also checked (e.g. Metavariants)
-                        CheckIdNodes(xmlLoopNode, strFileName);
-                    }
-                }
-            }
+            CheckIdNode(xmlParentNode, ref setDuplicateIDs, ref lstItemsWithMalformedIDs, ref dicItemsWithIDs);
 
             if (setDuplicateIDs.Count > 0)
             {
@@ -337,9 +304,9 @@ namespace Chummer
                 if (!Utils.IsUnitTest)
                 {
                     Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_DuplicateGuidWarning", GlobalOptions.Language)
-                            , setDuplicateIDs.Count.ToString(GlobalOptions.CultureInfo)
-                            , strFileName
-                            , strDuplicatesNames));
+                        , setDuplicateIDs.Count.ToString(GlobalOptions.CultureInfo)
+                        , strFileName
+                        , strDuplicatesNames));
                 }
             }
 
@@ -350,6 +317,42 @@ namespace Chummer
                     , lstItemsWithMalformedIDs.Count.ToString(GlobalOptions.CultureInfo)
                     , strFileName
                     , strMalformedIdNames));
+            }
+        }
+
+        private static void CheckIdNode(XmlNode xmlParentNode, ref HashSet<string> setDuplicateIDs, ref List<string> lstItemsWithMalformedIDs, ref Dictionary<string, List<string>> dicItemsWithIDs)
+        {
+            using (XmlNodeList xmlChildNodeList = xmlParentNode.SelectNodes("*"))
+            {
+                if (!(xmlChildNodeList?.Count > 0)) return;
+
+                foreach (XmlNode xmlLoopNode in xmlChildNodeList)
+                {
+                    string strId = xmlLoopNode["id"]?.InnerText.ToLowerInvariant();
+                    if (!string.IsNullOrEmpty(strId))
+                    {
+                        if (xmlLoopNode.Name == "knowledgeskilllevel") continue; //TODO: knowledgeskilllevel node in lifemodules.xml uses ids instead of name references. Find a better way to manage this!
+                        string strItemName = xmlLoopNode["name"]?.InnerText ?? xmlLoopNode["stage"]?.InnerText ?? xmlLoopNode["category"]?.InnerText ?? strId;
+                        if (!strId.IsGuid())
+                            lstItemsWithMalformedIDs.Add(strItemName);
+                        else if (dicItemsWithIDs.TryGetValue(strId, out List<string> lstNamesList))
+                        {
+                            if (!setDuplicateIDs.Contains(strId))
+                            {
+                                setDuplicateIDs.Add(strId);
+                                if (strItemName == strId)
+                                    strItemName = string.Empty;
+                            }
+
+                            lstNamesList.Add(strItemName);
+                        }
+                        else
+                            dicItemsWithIDs.Add(strId, new List<string> { strItemName });
+                    }
+
+                    // Perform recursion so that nested elements that also have ids are also checked (e.g. Metavariants)
+                    CheckIdNode(xmlLoopNode, ref setDuplicateIDs, ref lstItemsWithMalformedIDs, ref dicItemsWithIDs);
+                }
             }
         }
         
@@ -1016,7 +1019,7 @@ namespace Chummer
 
                                 if (blnContinue)
                                 {
-                                    if (strTypeName != "version" && !((strTypeName == "costs" || strTypeName == "safehousecosts" || strTypeName == "comforts" || strTypeName == "neighborhoods" || strTypeName == "securities") && strFile.EndsWith("lifestyles.xml")))
+                                    if (!((strTypeName == "costs" || strTypeName == "safehousecosts" || strTypeName == "comforts" || strTypeName == "neighborhoods" || strTypeName == "securities") && strFile.EndsWith("lifestyles.xml")))
                                     {
                                         string strChildName = objChild.Name;
                                         XPathNavigator xmlTranslatedType = objLanguageRoot.SelectSingleNode(strTypeName);

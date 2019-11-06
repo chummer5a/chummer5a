@@ -20,7 +20,7 @@
 -->
 <chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.w3.org/2001/XMLSchema bioware.xsd">
-  <version>0</version>
+
   <grades>
     <grade>
       <id>ee71d4f8-0fd0-4992-8b4e-70ef4dfbcce1</id>

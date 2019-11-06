@@ -68,6 +68,7 @@ Data Changes:
 - Added an optional rule to add the optional powers rule for sprites from Kill Code to the core book sprites. 
 - Moved HTML file used by the "Print to File First" option for fixing issues with rendering sheets into appdata instead, in order to prevent issues with tools that synchronise special folders like desktop from causing the cleanup to fail.
 - Added surprise bonuses for Combat Paralysis quality and Danger Sense adept power
+- Adjusted duplicate GUIDs in lifemodules.xml.
 
 New Strings:
 - Label_MetagenicKarmaValue

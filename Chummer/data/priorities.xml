@@ -20,7 +20,7 @@
 -->
 <chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.w3.org/2001/XMLSchema priorities.xsd">
-  <version>0</version>
+
   <categories>
     <category>Heritage</category>
     <category>Talent</category>

@@ -20,7 +20,7 @@
 -->
 <chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xsi:schemaLocation="http://www.w3.org/2001/XMLSchema weapons.xsd">
-  <version>0</version>
+
   <categories>
     <category blackmarket="Weapons" type="melee">Blades</category>
     <category blackmarket="Weapons" type="melee">Clubs</category>
