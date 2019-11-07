@@ -298,9 +298,17 @@ namespace Chummer.UI.Powers
             {
                 Text = "Rating",
                 Tag = "String_Rating",
-                Sorter = (o1, o2) => ((Power)o1).Rating - ((Power)o2).Rating
+                
             };
-
+            ratingColumn.Sorter = (o1, o2) =>
+            {
+                if ((o1 is Power) && (o2 is Power))
+                    return ((Power) o1).Rating - ((Power) o2).Rating;
+                string msg = "Can't sort an Object of Type " + o1.GetType() + " against another one of Type " +
+                             o2.GetType() + " in the ratingColumn." + Environment.NewLine;
+                msg += "Both objects SHOULD be of the type \"Power\".";
+                throw new ArgumentException(msg, nameof(o1));
+            };
 
             ratingColumn.AddDependency(nameof(Power.LevelsEnabled));
             ratingColumn.AddDependency(nameof(Power.FreeLevels));
@@ -311,7 +319,16 @@ namespace Chummer.UI.Powers
                 Text = "Total Rating",
                 Extractor = (power => power.TotalRating),
                 Tag = "String_TotalRating",
-                Sorter = (o1, o2) => ((Power)o1).TotalRating - ((Power)o2).TotalRating
+                
+            };
+            totalRatingColumn.Sorter = (o1, o2) =>
+            {
+                if ((o1 is Power) && (o2 is Power))
+                    return ((Power) o1).TotalRating - ((Power) o2).TotalRating;
+                string msg = "Can't sort an Object of Type " + o1.GetType() + " against another one of Type " +
+                             o2.GetType() + " in the totalRatingColumn." + Environment.NewLine;
+                msg += "Both objects SHOULD be of the type \"Power\".";
+                throw new ArgumentException(msg, nameof(o1));
             };
             totalRatingColumn.AddDependency(nameof(Power.TotalRating));
 
