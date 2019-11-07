@@ -41,6 +41,26 @@ namespace ChummerHub.Models.V1
         [MaxLength(6)]
         public string Language { get; set; }
 
+        [JsonIgnore]
+        [XmlIgnore]
+        [MaxLength(8)]
+        internal string Hash { get; set; }
+
+        [NotMapped]
+        [MaxLength(8)]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINner.MyHash'
+        public string MyHash
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINner.MyHash'
+        {
+            get
+            {
+                if (String.IsNullOrEmpty(Hash))
+                    Hash = String.Format("{0:X}", this.Id.ToString().GetHashCode());
+                return Hash;
+            }
+            set { Hash = value; }
+        }
+
         public SINnerGroup()
         {
             MyGroups = new List<SINnerGroup>();

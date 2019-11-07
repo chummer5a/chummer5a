@@ -21,11 +21,12 @@ namespace SINners.Models
         /// <summary>
         /// Initializes a new instance of the SINnerSearchGroup class.
         /// </summary>
-        public SINnerSearchGroup(IList<SINnerSearchGroup> mySINSearchGroups = default(IList<SINnerSearchGroup>), string errorText = default(string), IList<SINnerSearchGroupMember> myMembers = default(IList<SINnerSearchGroupMember>), Guid? id = default(Guid?), Guid? myParentGroupId = default(Guid?), bool? isPublic = default(bool?), string groupCreatorUserName = default(string), SINnerGroupSetting mySettings = default(SINnerGroupSetting), string groupname = default(string), string passwordHash = default(string), bool? hasPassword = default(bool?), string description = default(string), string language = default(string), IList<SINnerGroup> myGroups = default(IList<SINnerGroup>), string myAdminIdentityRole = default(string))
+        public SINnerSearchGroup(IList<SINnerSearchGroup> mySINSearchGroups = default(IList<SINnerSearchGroup>), string errorText = default(string), IList<SINnerSearchGroupMember> myMembers = default(IList<SINnerSearchGroupMember>), bool? isFavorite = default(bool?), Guid? id = default(Guid?), Guid? myParentGroupId = default(Guid?), bool? isPublic = default(bool?), string groupCreatorUserName = default(string), SINnerGroupSetting mySettings = default(SINnerGroupSetting), string groupname = default(string), string passwordHash = default(string), bool? hasPassword = default(bool?), string description = default(string), string language = default(string), string myHash = default(string), IList<SINnerGroup> myGroups = default(IList<SINnerGroup>), string myAdminIdentityRole = default(string))
         {
             MySINSearchGroups = mySINSearchGroups;
             ErrorText = errorText;
             MyMembers = myMembers;
+            IsFavorite = isFavorite;
             Id = id;
             MyParentGroupId = myParentGroupId;
             IsPublic = isPublic;
@@ -36,6 +37,7 @@ namespace SINners.Models
             HasPassword = hasPassword;
             Description = description;
             Language = language;
+            MyHash = myHash;
             MyGroups = myGroups;
             MyAdminIdentityRole = myAdminIdentityRole;
         }
@@ -54,6 +56,11 @@ namespace SINners.Models
         /// </summary>
         [JsonProperty(PropertyName = "myMembers")]
         public IList<SINnerSearchGroupMember> MyMembers { get; set; }
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "isFavorite")]
+        public bool? IsFavorite { get; set; }
 
         /// <summary>
         /// </summary>
@@ -107,6 +114,11 @@ namespace SINners.Models
 
         /// <summary>
         /// </summary>
+        [JsonProperty(PropertyName = "myHash")]
+        public string MyHash { get; set; }
+
+        /// <summary>
+        /// </summary>
         [JsonProperty(PropertyName = "myGroups")]
         public IList<SINnerGroup> MyGroups { get; set; }
 
@@ -153,6 +165,13 @@ namespace SINners.Models
                 if (this.Language.Length > 6)
                 {
                     throw new ValidationException(ValidationRules.MaxLength, "Language", 6);
+                }
+            }
+            if (this.MyHash != null)
+            {
+                if (this.MyHash.Length > 8)
+                {
+                    throw new ValidationException(ValidationRules.MaxLength, "MyHash", 8);
                 }
             }
             if (this.MyGroups != null)

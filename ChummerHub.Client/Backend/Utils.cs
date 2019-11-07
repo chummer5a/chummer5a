@@ -800,6 +800,10 @@ namespace ChummerHub.Client.Backend
                         BuildMethod = "online"
                     };
                 }
+
+                if (objCache.MyPluginDataDic.ContainsKey("IsSINnerFavorite"))
+                    objCache.MyPluginDataDic.Remove("IsSINnerFavorite");
+                objCache.MyPluginDataDic.Add("IsSINnerFavorite", member.IsFavorite);
                 SetEventHandlers(sinner, objCache);
                 TreeNode memberNode = new TreeNode
                 {
