@@ -52,14 +52,18 @@ namespace ChummerHub.Models.V1
             this.PasswordHash = groupbyname?.PasswordHash;
             this.MySettings = groupbyname?.MySettings;
             this.HasPassword = this.PasswordHash?.Any() == true;
-            if (user == null)
-                throw new ArgumentNullException(nameof(user));
-            if (user.FavoriteGroups.Any() == false)
-                user.FavoriteGroups = user.FavoriteGroups.GroupBy(a => a.FavoriteGuid).Select(b => b.First()).ToList();
-            if (user.FavoriteGroups.Any(a => a.FavoriteGuid == this.Id))
-                IsFavorite = true;
-            else
-                IsFavorite = false;
+            IsFavorite = false;
+            if (user != null)
+            {
+
+                if (user.FavoriteGroups.Any() == false)
+                    user.FavoriteGroups =
+                        user.FavoriteGroups.GroupBy(a => a.FavoriteGuid).Select(b => b.First()).ToList();
+                if (user.FavoriteGroups.Any(a => a.FavoriteGuid == this.Id))
+                    IsFavorite = true;
+                else
+                    IsFavorite = false;
+            }
         }
 
     }

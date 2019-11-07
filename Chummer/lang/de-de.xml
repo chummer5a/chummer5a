@@ -9619,13 +9619,22 @@
           <text>Alle Daten anzeigen</text>
         </string>
         <string>
-          <key>Menu_RemoveFavChummer</key>
-          <text>aus SINner-Favoriten entfernen</text>
+          <key>Menu_RemovePinnedChummer</key>
+          <text>Charakter un-pinnen</text>
         </string>
         <string>
-          <key>Menu_AddFavChummer</key>
-          <text>zu SINner favoriten hinzufügen</text>
+          <key>Menu_AddPinnedChummer</key>
+          <text>pinne den Charakter</text>
         </string>
+        <string>
+          <key>Menu_RemovePinnedGroup</key>
+          <text>Gruppe un-pinnen</text>
+        </string>
+        <string>
+          <key>Menu_AddPinnedGroup</key>
+          <text>Pinne Gruppe</text>
+        </string>
+
         <string>
           <key>Menu_ShareChummerGroup</key>
           <text>ganze Gruppe teilen/sharen</text>

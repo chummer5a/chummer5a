@@ -9826,12 +9826,20 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Show all my data</text>
     </string>
       <string>
-        <key>Menu_RemoveFavChummer</key>
-        <text>Remove Chummer from SINner-favorites</text>
+        <key>Menu_RemovePinnedChummer</key>
+        <text>Remove Chummer from pinned</text>
       </string>
       <string>
-        <key>Menu_AddFavChummer</key>
-        <text>Add Chummer from SINner-favorites</text>
+        <key>Menu_RemovePinnedGroup</key>
+        <text>Remove Group from pinned</text>
+      </string>
+      <string>
+        <key>Menu_AddPinnedChummer</key>
+        <text>Pin Chummer</text>
+      </string>
+      <string>
+        <key>Menu_AddPinnedGroup</key>
+        <text>Pin Group</text>
       </string>
       <string>
         <key>Menu_ShareChummerGroup</key>

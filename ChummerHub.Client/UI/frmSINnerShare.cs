@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using SINners.Models;
 
 namespace ChummerHub.Client.UI
 {
@@ -17,6 +18,8 @@ namespace ChummerHub.Client.UI
             InitializeComponent();
             MyUcSINnerShare.MyFrmSINnerShare = this;
         }
+
+       
 
         public ucSINnerShare MyUcSINnerShare
         {

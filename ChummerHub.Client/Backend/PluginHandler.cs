@@ -78,26 +78,21 @@ namespace Chummer.Plugins
 
         bool IPlugin.SetCharacterRosterNode(TreeNode objNode)
         {
-            
-            if (objNode.Parent == null)
-            {
-                ContextMenuStrip cmsRoster = new ContextMenuStrip();
-                ToolStripMenuItem tsShowMySINners = new ToolStripMenuItem()
-                {
-                    Name = "tsShowMySINners",
-                    Tag = "Menu_ShowMySINners",
-                    Text = "Show all my SINners",
-                    Size = new System.Drawing.Size(177, 22),
-                    Image = global::Chummer.Properties.Resources.group
-                };
-                cmsRoster.Items.Add(tsShowMySINners);
-                tsShowMySINners.Click += ShowMySINnersOnClick;
-                objNode.ContextMenuStrip = cmsRoster;
-                LanguageManager.TranslateWinForm(GlobalOptions.Language, objNode.ContextMenuStrip);
-                return true;
-            }
             if (objNode.ContextMenuStrip == null)
                 objNode.ContextMenuStrip = PluginHandler.MainForm.CharacterRoster.CreateContextMenuStrip();
+            ContextMenuStrip cmsRoster = new ContextMenuStrip();
+            ToolStripMenuItem tsShowMySINners = new ToolStripMenuItem()
+            {
+                Name = "tsShowMySINners",
+                Tag = "Menu_ShowMySINners",
+                Text = "Show all my SINners",
+                Size = new System.Drawing.Size(177, 22),
+                Image = global::Chummer.Properties.Resources.group
+            };
+            cmsRoster.Items.Add(tsShowMySINners);
+            tsShowMySINners.Click += ShowMySINnersOnClick;
+            objNode.ContextMenuStrip = cmsRoster;
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, objNode.ContextMenuStrip);
             if (objNode.Tag is frmCharacterRoster.CharacterCache member)
             {
                 PluginHandler.MainForm.DoThreadSafe(() =>
@@ -119,28 +114,28 @@ namespace Chummer.Plugins
                     {
                         if ((objFavorite is bool isFavorite) && (isFavorite == true))
                         {
-                            ToolStripMenuItem newFavorite = new ToolStripMenuItem("RemoveFavorite")
+                            ToolStripMenuItem newFavorite = new ToolStripMenuItem("RemovePinned")
                             {
-                                Name = "tsRemoveFavChummer",
-                                Tag = "Menu_RemoveFavChummer",
-                                Text = "remove from favorites",
+                                Name = "tsRemovePinnedChummer",
+                                Tag = "Menu_RemovePinnedChummer",
+                                Text = "remove from pinned Chummers",
                                 Size = new System.Drawing.Size(177, 22),
                                 Image = global::Chummer.Properties.Resources.user_delete
                             };
-                            newFavorite.Click += RemoveFavOnClick;
+                            newFavorite.Click += RemovePinnedOnClick;
                             objNode.ContextMenuStrip.Items.Add(newFavorite);
                         }
                         else
                         {
-                            ToolStripMenuItem newFavorite = new ToolStripMenuItem("AddFavorite")
+                            ToolStripMenuItem newFavorite = new ToolStripMenuItem("AddPinned")
                             {
-                                Name = "tsAddFavChummer",
-                                Tag = "Menu_AddFavChummer",
-                                Text = "add to favorites",
+                                Name = "tsAddPinnedChummer",
+                                Tag = "Menu_AddPinnedChummer",
+                                Text = "add to pinned Chummers",
                                 Size = new System.Drawing.Size(177, 22),
                                 Image = global::Chummer.Properties.Resources.user_add
                             };
-                            newFavorite.Click += AddFavOnClick;
+                            newFavorite.Click += AddPinnedOnClick;
                             objNode.ContextMenuStrip.Items.Add(newFavorite);
                         }
                     
@@ -182,28 +177,28 @@ namespace Chummer.Plugins
                     Object objFavorite = null;
                     if (group.IsFavorite == true)
                     {
-                        ToolStripMenuItem newFavorite = new ToolStripMenuItem("RemoveFavorite")
+                        ToolStripMenuItem newFavorite = new ToolStripMenuItem("RemovePinned")
                         {
-                            Name = "tsRemoveFavChummer",
-                            Tag = "Menu_RemoveFavChummer",
-                            Text = "remove from favorites",
+                            Name = "tsRemovePinnedGroup",
+                            Tag = "Menu_RemovePinnedGroup",
+                            Text = "remove from pinned",
                             Size = new System.Drawing.Size(177, 22),
                             Image = global::Chummer.Properties.Resources.user_delete
                         };
-                        newFavorite.Click += RemoveFavOnClick;
+                        newFavorite.Click += RemovePinnedOnClick;
                         objNode.ContextMenuStrip.Items.Add(newFavorite);
                     }
                     else
                     {
-                        ToolStripMenuItem newFavorite = new ToolStripMenuItem("AddFavorite")
+                        ToolStripMenuItem newFavorite = new ToolStripMenuItem("AddPinned")
                         {
-                            Name = "tsAddFavChummer",
-                            Tag = "Menu_AddFavChummer",
-                            Text = "add to favorites",
+                            Name = "tsAddPinnedGroup",
+                            Tag = "Menu_AddPinnedGroup",
+                            Text = "Pin Chummer",
                             Size = new System.Drawing.Size(177, 22),
                             Image = global::Chummer.Properties.Resources.user_add
                         };
-                        newFavorite.Click += AddFavOnClick;
+                        newFavorite.Click += AddPinnedOnClick;
                         objNode.ContextMenuStrip.Items.Add(newFavorite);
                     }
                     LanguageManager.TranslateWinForm(GlobalOptions.Language, objNode.ContextMenuStrip);
@@ -869,7 +864,7 @@ namespace Chummer.Plugins
             }
         }
 
-        private async void AddFavOnClick(object sender, EventArgs e)
+        private async void AddPinnedOnClick(object sender, EventArgs e)
         {
             TreeNode t = PluginHandler.MainForm.CharacterRoster.treCharacterList.SelectedNode;
 
@@ -928,7 +923,7 @@ namespace Chummer.Plugins
             }
         }
 
-        private async void RemoveFavOnClick(object sender, EventArgs e)
+        private async void RemovePinnedOnClick(object sender, EventArgs e)
         {
             TreeNode t = PluginHandler.MainForm.CharacterRoster.treCharacterList.SelectedNode;
 
@@ -1008,6 +1003,22 @@ namespace Chummer.Plugins
                     PluginHandler.MainForm.ShowMessageBox("Error sharing SINner: " + exception.Message);
                 }
                 
+            }
+            else if (t?.Tag is SINnerSearchGroup ssg)
+            {
+                frmSINnerShare share = new frmSINnerShare();
+                share.MyUcSINnerShare.MySINnerSearchGroup = ssg;
+                share.TopMost = true;
+                share.Show(PluginHandler.MainForm);
+                try
+                {
+                    await share.MyUcSINnerShare.DoWork();
+                }
+                catch (Exception exception)
+                {
+                    Log.Error(exception);
+                    PluginHandler.MainForm.ShowMessageBox("Error sharing Group: " + exception.Message);
+                }
             }
         }
 
