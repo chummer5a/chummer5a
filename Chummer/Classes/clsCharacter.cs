@@ -11371,6 +11371,56 @@ if (!Utils.IsUnitTest){
             }
         }
 
+        private int FormattedExpression(string strExpression)
+        {
+            StringBuilder objValue = new StringBuilder(strExpression);
+
+            foreach (string strCharAttributeName in AttributeSection.AttributeStrings)
+            {
+                objValue.CheapReplace(strExpression, "{" + strCharAttributeName + "}",
+                    () => GetAttribute(strCharAttributeName).TotalValue.ToString());
+                objValue.CheapReplace(strExpression, "{" + strCharAttributeName + "Base}",
+                    () => GetAttribute(strCharAttributeName).TotalBase.ToString());
+            }
+
+            // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+            object objProcess = CommonFunctions.EvaluateInvariantXPath(objValue.ToString(), out bool blnIsSuccess);
+            return Convert.ToInt32(Math.Ceiling((double)objProcess));
+        }
+
+        private int FormattedExpression(string strExpression, Improvement.ImprovementType objImprovementType)
+        {
+            return FormattedExpression(strExpression) + ImprovementManager.ValueOf(this, objImprovementType);
+        }
+
+        private string FormattedToolTip(string strExpression, string strSpaceCharacter,
+            Improvement.ImprovementType objImprovementType)
+        {
+            StringBuilder objString = new StringBuilder(strExpression);
+
+            foreach (string strCharAttributeName in AttributeSection.AttributeStrings)
+            {
+                objString.CheapReplace(strExpression, "{" + strCharAttributeName + "}",
+                    () => '(' + GetAttribute(strCharAttributeName).DisplayAbbrev + strSpaceCharacter + '[' +
+                          GetAttribute(strCharAttributeName).TotalValue.ToString(GlobalOptions.CultureInfo) + ']');
+                objString.CheapReplace(strExpression, "{" + strCharAttributeName + "Base}",
+                    () => '(' + GetAttribute(strCharAttributeName).DisplayAbbrev + strSpaceCharacter + '[' +
+                          GetAttribute(strCharAttributeName).TotalBase.ToString(GlobalOptions.CultureInfo) + ']');
+            }
+
+            foreach (Improvement objLoopImprovement in Improvements.Where(objLoopImprovement =>
+                objLoopImprovement.ImproveType == objImprovementType &&
+                objLoopImprovement.Enabled))
+            {
+                objString.Append(strSpaceCharacter + '+' + strSpaceCharacter +
+                                  GetObjectName(objLoopImprovement, GlobalOptions.Language) +
+                                  strSpaceCharacter + '(' +
+                                  objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
+            }
+
+            return objString.ToString();
+        }
+
         /// <summary>
         /// The calculated Astral Limit.
         /// </summary>
@@ -11403,8 +11453,10 @@ if (!Utils.IsUnitTest){
                     return objHomeNodeVehicle?.Handling ?? 0;
                 }
 
-                int intLimit = (STR.TotalValue * 2 + BOD.TotalValue + REA.TotalValue + 2) / 3;
-                return intLimit + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalLimit);
+                string strExpression = XmlManager.Load("options.xml")
+                    .SelectSingleNode("/chummer/calculations/limitphysical").InnerText;
+
+                return FormattedExpression(strExpression, Improvement.ImprovementType.PhysicalLimit);
             }
         }
 
@@ -11420,30 +11472,9 @@ if (!Utils.IsUnitTest){
                            '[' + (objHomeNodeVehicle?.Handling ?? 0).ToString(GlobalOptions.CultureInfo) + ']';
                 }
 
-                StringBuilder objToolTip = new StringBuilder(
-                    '(' + STR.DisplayAbbrev + strSpaceCharacter + '[' +
-                    STR.TotalValue.ToString(GlobalOptions.CultureInfo) + ']' + strSpaceCharacter + '×' +
-                    strSpaceCharacter + 2.ToString(GlobalOptions.CultureInfo) +
-                    strSpaceCharacter + '+' + strSpaceCharacter +
-                    BOD.DisplayAbbrev + strSpaceCharacter + '[' + BOD.TotalValue.ToString(GlobalOptions.CultureInfo) +
-                    ']' +
-                    strSpaceCharacter + '+' + strSpaceCharacter +
-                    REA.DisplayAbbrev + strSpaceCharacter + '[' + REA.TotalValue.ToString(GlobalOptions.CultureInfo) +
-                    "])" + strSpaceCharacter + '/' + strSpaceCharacter + 3.ToString(GlobalOptions.CultureInfo));
+                string strExpression = XmlManager.Load("options.xml").SelectSingleNode("/chummer/calculations/limitphysical").InnerText;
 
-                foreach(Improvement objLoopImprovement in Improvements)
-                {
-                    if(objLoopImprovement.ImproveType == Improvement.ImprovementType.PhysicalLimit &&
-                        objLoopImprovement.Enabled)
-                    {
-                        objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                          GetObjectName(objLoopImprovement, GlobalOptions.Language) +
-                                          strSpaceCharacter + '(' +
-                                          objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
-                    }
-                }
-
-                return objToolTip.ToString();
+                return FormattedToolTip(strExpression, strSpaceCharacter, Improvement.ImprovementType.PhysicalLimit);
             }
         }
 
@@ -11454,29 +11485,35 @@ if (!Utils.IsUnitTest){
         {
             get
             {
-                int intLimit = (LOG.TotalValue * 2 + INT.TotalValue + WIL.TotalValue + 2) / 3;
-                if(IsAI)
+
+                if (IsAI)
                 {
-                    if(HomeNode != null)
+                    int intLimit = 0;
+                    if (HomeNode != null)
                     {
-                        if(HomeNode is Vehicle objHomeNodeVehicle)
+                        if (HomeNode is Vehicle objHomeNodeVehicle)
                         {
                             int intHomeNodeSensor = objHomeNodeVehicle.CalculatedSensor;
-                            if(intHomeNodeSensor > intLimit)
+                            if (intHomeNodeSensor > intLimit)
                             {
                                 intLimit = intHomeNodeSensor;
                             }
                         }
 
                         int intHomeNodeDP = HomeNode.GetTotalMatrixAttribute("Data Processing");
-                        if(intHomeNodeDP > intLimit)
+                        if (intHomeNodeDP > intLimit)
                         {
                             intLimit = intHomeNodeDP;
                         }
                     }
+
+                    return intLimit += ImprovementManager.ValueOf(this, Improvement.ImprovementType.MentalLimit);
                 }
 
-                return intLimit + ImprovementManager.ValueOf(this, Improvement.ImprovementType.MentalLimit);
+                string strExpression = XmlManager.Load("options.xml")
+                    .SelectSingleNode("/chummer/calculations/limitmental").InnerText;
+
+                return FormattedExpression(strExpression, Improvement.ImprovementType.MentalLimit);
             }
         }
 
@@ -11484,21 +11521,13 @@ if (!Utils.IsUnitTest){
         {
             get
             {
+                string strExpression = XmlManager.Load("options.xml")
+                    .SelectSingleNode("/chummer/calculations/limitmental").InnerText;
                 string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
-                StringBuilder objToolTip = new StringBuilder(
-                    '(' + LOG.DisplayAbbrev + strSpaceCharacter + '[' +
-                    LOG.TotalValue.ToString(GlobalOptions.CultureInfo) + ']' + strSpaceCharacter + '×' +
-                    strSpaceCharacter + 2.ToString(GlobalOptions.CultureInfo) +
-                    strSpaceCharacter + '+' + strSpaceCharacter +
-                    INT.DisplayAbbrev + strSpaceCharacter + '[' + INT.TotalValue.ToString(GlobalOptions.CultureInfo) +
-                    ']' +
-                    strSpaceCharacter + '+' + strSpaceCharacter +
-                    WIL.DisplayAbbrev + strSpaceCharacter + '[' + WIL.TotalValue.ToString(GlobalOptions.CultureInfo) +
-                    "])" + strSpaceCharacter + '/' + strSpaceCharacter + 3.ToString(GlobalOptions.CultureInfo));
-
-                if(IsAI)
+                StringBuilder objToolTip = new StringBuilder();
+                if (IsAI)
                 {
-                    int intLimit = (LOG.TotalValue * 2 + INT.TotalValue + WIL.TotalValue + 2) / 3;
+                    int intLimit = FormattedExpression(strExpression);
                     if(HomeNode != null)
                     {
                         if(HomeNode is Vehicle objHomeNodeVehicle)
@@ -11524,12 +11553,10 @@ if (!Utils.IsUnitTest){
                                     strSpaceCharacter + '[' + intLimit.ToString(GlobalOptions.CultureInfo) + ']');
                         }
                     }
-                }
 
-                foreach(Improvement objLoopImprovement in Improvements)
-                {
-                    if(objLoopImprovement.ImproveType == Improvement.ImprovementType.MentalLimit &&
-                        objLoopImprovement.Enabled)
+                    foreach (Improvement objLoopImprovement in Improvements.Where(objLoopImprovement =>
+                        objLoopImprovement.ImproveType == Improvement.ImprovementType.MentalLimit &&
+                        objLoopImprovement.Enabled))
                     {
                         objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
                                           GetObjectName(objLoopImprovement, GlobalOptions.Language) +
@@ -11538,7 +11565,7 @@ if (!Utils.IsUnitTest){
                     }
                 }
 
-                return objToolTip.ToString();
+                return FormattedToolTip(strExpression, strSpaceCharacter, Improvement.ImprovementType.MentalLimit);
             }
         }
 

@@ -72,4 +72,9 @@
     <category>Vehicles</category>
     <category>Weapons</category>
   </blackmarketpipelinecategories>
+  <calculations>
+    <limitmental>({STR} * 2 + {BOD} + {REA}) div 3</limitmental>
+    <limitphysical>({STR} * 2 + {BOD} + {REA}) div 3</limitphysical>
+    <limitsocial>({STR} * 2 + {BOD} + {REA}) div 3</limitsocial>
+  </calculations>
 </chummer>
