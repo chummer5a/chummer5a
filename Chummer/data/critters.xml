@@ -27806,7 +27806,9 @@
       <essmin>0</essmin>
       <essmax>6</essmax>
       <essaug>6</essaug>
-      <movement>Fly 15/75</movement>
+      <walk>2/2/2</walk>
+      <run>4/4/4</run>
+      <sprint>2/2/2</sprint>
       <bonus>
         <enableattribute>
           <name>MAG</name>
@@ -28437,7 +28439,9 @@
       <essmin>0</essmin>
       <essmax>6</essmax>
       <essaug>6</essaug>
-      <movement>0/0</movement>
+      <walk>0/0/0</walk>
+      <run>0/0/0</run>
+      <sprint>0/0/0</sprint>
       <bonus>
         <enableattribute>
           <name>MAG</name>
@@ -28511,7 +28515,9 @@
       <essmin>0</essmin>
       <essmax>6</essmax>
       <essaug>6</essaug>
-      <movement>15/40</movement>
+      <walk>2/2/2</walk>
+      <run>4/4/4</run>
+      <sprint>2/2/2</sprint>
       <bonus>
         <enableattribute>
           <name>MAG</name>
@@ -28603,7 +28609,9 @@
       <essmin>0</essmin>
       <essmax>6</essmax>
       <essaug>6</essaug>
-      <movement>10/25</movement>
+      <walk>2/2/2</walk>
+      <run>4/4/4</run>
+      <sprint>2/2/2</sprint>
       <bonus>
         <enableattribute>
           <name>MAG</name>
@@ -28696,7 +28704,9 @@
       <essmin>0</essmin>
       <essmax>6</essmax>
       <essaug>6</essaug>
-      <movement>5/15</movement>
+      <walk>2/2/2</walk>
+      <run>4/4/4</run>
+      <sprint>2/2/2</sprint>
       <bonus>
         <enableattribute>
           <name>MAG</name>
@@ -28787,7 +28797,9 @@
       <essmin>0</essmin>
       <essmax>6</essmax>
       <essaug>6</essaug>
-      <movement>10/25</movement>
+      <walk>2/2/2</walk>
+      <run>4/4/4</run>
+      <sprint>2/2/2</sprint>
       <bonus>
         <enableattribute>
           <name>MAG</name>
