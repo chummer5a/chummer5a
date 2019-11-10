@@ -6327,6 +6327,8 @@ namespace Chummer
                     }
                 }
 
+                objAccessory.DiscountCost = frmPickWeaponAccessory.BlackMarketDiscount;
+
                 // Check the item's Cost and make sure the character can afford it.
                 decimal decOriginalCost = objWeapon.TotalCost;
                 objWeapon.WeaponAccessories.Add(objAccessory);

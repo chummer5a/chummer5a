@@ -39,6 +39,7 @@ Application Fixes:
 - Weapon accessories that add fire modes properly show as such.
 - Fixed an issue with Armor Mods that are included in Armor improperly checking availability.
 - Fixed a typo in the Cozenge critter power (previously called "Cozenage").
+- Fixed an issue with weapon accessories in career mode not properly picking up their Black Market Discount.
 
 Data Changes:
 - Tetrachromacy now adds adds +3 to Perception, with a (Visual) condition. This will be exposed to the Print method for character sheets at a later date. 
