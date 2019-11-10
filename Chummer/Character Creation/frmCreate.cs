@@ -14767,7 +14767,8 @@ namespace Chummer
             if (form.DialogResult == DialogResult.Cancel)
                 return;
 
-            Drug objCustomDrug = form.CustomDrug;
+            Drug objCustomDrug = new Drug(CharacterObject);
+                objCustomDrug.Create(form.CustomDrug, form.DrugGrade);
             CharacterObject.Drugs.Add(objCustomDrug);
         }
 		private void OpenSourceFromLabel(object sender, EventArgs e)

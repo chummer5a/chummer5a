@@ -35,6 +35,8 @@ namespace Chummer
 		private readonly List<ListItem> _lstGrade = new List<ListItem>();
 		private readonly Character _objCharacter;
 	    private Drug _objDrug;
+        private DrugRecipe _objRecipe;
+        private Grade _objGrade;
 	    readonly XmlDocument _objXmlDocument = XmlManager.Load("drugcomponents.xml");
 		private double _dblCostMultiplier;
 		private int _intAddictionThreshold;
@@ -45,6 +47,8 @@ namespace Chummer
 	        {
 	            objDrug = new Drug(objCharacter);
 	        }
+
+            _objDrug = objDrug;
 	        _objCharacter = objCharacter;
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
@@ -122,19 +126,18 @@ namespace Chummer
 
 		private void UpdateCustomDrugStats()
         {
-            _objDrug = new Drug(_objCharacter)
-            {
-                Name = txtDrugName.Text,
-                Category = "Custom Drug",
-                Grade = Grade.ConvertToCyberwareGrade(cboGrade.SelectedValue.ToString(),Improvement.ImprovementSource.Drug,_objCharacter)
-            };
+            _objRecipe = new DrugRecipe(_objCharacter);
 
             foreach (clsNodeData objNodeData in _lstSelectedDrugComponents)
             {
                 DrugComponent objDrugComponent = objNodeData.DrugComponent;
                 objDrugComponent.Level = objNodeData.Level;
-                _objDrug.Components.Add(objDrugComponent);
+                _objRecipe.Components.Add(objDrugComponent);
             }
+
+            _objDrug.Create(_objRecipe,
+                Grade.ConvertToCyberwareGrade(cboGrade.SelectedValue.ToString(), Improvement.ImprovementSource.Drug,
+                    _objCharacter));
         }
 
 		private void AcceptForm()
@@ -151,8 +154,7 @@ namespace Chummer
 		        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CustomDrug_MissingFoundation", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CustomDrug_Foundation", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
 		        return;
             }
-
-            _objDrug.Quantity = 1;
+            
 		    DialogResult = DialogResult.OK;
 		    Close();
         }
@@ -233,10 +235,17 @@ namespace Chummer
             UpdateCustomDrugStats();
             lblDrugDescription.Text = _objDrug.GenerateDescription(0);
         }
+        #region Properties
+        public Grade DrugGrade
+        {
+            get => _objGrade;
+            set => _objGrade = value;
+        }
 
-        public Drug CustomDrug => _objDrug;
-
-	    private void treAvailableComponents_AfterSelect(object sender, TreeViewEventArgs e)
+        public DrugRecipe CustomDrug => _objRecipe;
+        #endregion
+        #region Events
+        private void treAvailableComponents_AfterSelect(object sender, TreeViewEventArgs e)
         {
             if (treAvailableComponents.SelectedNode?.Tag is clsNodeData objNodeData)
             {
@@ -303,10 +312,12 @@ namespace Chummer
 		        _dblCostMultiplier = 1.0;
             if (!objXmlGrade.TryGetInt32FieldQuickly("addictionthreshold", ref _intAddictionThreshold))
 		        _intAddictionThreshold = 0;
+            _objGrade = Grade.ConvertToCyberwareGrade(cboGrade.SelectedValue.ToString(), Improvement.ImprovementSource.Drug, _objCharacter);
             UpdateCustomDrugStats();
 			lblDrugDescription.Text = _objDrug.GenerateDescription(0);
 		}
-	}
+        #endregion
+    }
 
 	class clsNodeData : Object
     {

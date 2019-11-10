@@ -17464,7 +17464,8 @@ private void RefreshSelectedSpell()
             if (form.DialogResult == DialogResult.Cancel)
                 return;
 
-            Drug objCustomDrug = form.CustomDrug;
+            Drug objCustomDrug = new Drug(CharacterObject);
+            objCustomDrug.Create(form.CustomDrug, form.DrugGrade);
             objCustomDrug.Quantity = 0;
             CharacterObject.Drugs.Add(objCustomDrug);
             objCustomDrug.GenerateImprovement();
