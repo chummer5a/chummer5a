@@ -34,7 +34,6 @@ namespace Chummer
         private readonly string _strNoneGradeId;
 
         private decimal _decCostMultiplier = 1.0m;
-        private decimal _decESSMultiplier = 1.0m;
         private int _intAvailModifier;
 
         private Grade _objForcedGrade;
@@ -105,8 +104,7 @@ namespace Chummer
             }
 
             chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
-
-            // Populate the Grade list. Do not show the Adapsin Grades if Adapsin is not enabled for the character.
+            
             PopulateGrades(false, true, _objForcedGrade?.SourceId.ToString("D") ?? string.Empty, chkHideBannedGrades.Checked);
 
             if (_objForcedGrade != null)
@@ -138,7 +136,6 @@ namespace Chummer
             if (xmlGrade != null)
             {
                 _decCostMultiplier = Convert.ToDecimal(xmlGrade.SelectSingleNode("cost")?.Value, GlobalOptions.InvariantCultureInfo);
-                _decESSMultiplier = Convert.ToDecimal(xmlGrade.SelectSingleNode("ess")?.Value, GlobalOptions.InvariantCultureInfo);
                 _intAvailModifier = Convert.ToInt32(xmlGrade.SelectSingleNode("avail")?.Value);
 
                 _blnLoading = false;
