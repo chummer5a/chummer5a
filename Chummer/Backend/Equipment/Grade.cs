@@ -120,6 +120,8 @@ namespace Chummer.Backend.Equipment
         /// <param name="objCharacter">Character from which to fetch a grade list</param>
         public static Grade ConvertToCyberwareGrade(string strValue, Improvement.ImprovementSource objSource, Character objCharacter)
         {
+            if (objCharacter == null)
+                throw new ArgumentNullException(nameof(objCharacter));
             IList<Grade> lstGrades = objCharacter.GetGradeList(objSource, true);
             foreach (Grade objGrade in lstGrades)
             {

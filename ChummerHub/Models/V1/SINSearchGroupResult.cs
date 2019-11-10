@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Internal;
 
 namespace ChummerHub.Models.V1
@@ -28,14 +29,16 @@ namespace ChummerHub.Models.V1
         public List<SINnerSearchGroup> MySINSearchGroups { get; set; }
         public string ErrorText { get; set; }
         public List<SINnerSearchGroupMember> MyMembers { get; set; }
+        public bool IsFavorite { get; set; }
         public SINnerSearchGroup()
         {
             MyMembers = new List<SINnerSearchGroupMember>();
             this.MyGroups = new List<SINnerGroup>();
             MySINSearchGroups = new List<SINnerSearchGroup>();
         }
-        public SINnerSearchGroup(SINnerGroup groupbyname)
+        public SINnerSearchGroup(SINnerGroup groupbyname, ApplicationUser user)
         {
+            
             this.MyParentGroupId = groupbyname?.MyParentGroupId;
             this.Id = groupbyname?.Id;
             if (groupbyname != null)
@@ -49,6 +52,18 @@ namespace ChummerHub.Models.V1
             this.PasswordHash = groupbyname?.PasswordHash;
             this.MySettings = groupbyname?.MySettings;
             this.HasPassword = this.PasswordHash?.Any() == true;
+            IsFavorite = false;
+            if (user != null)
+            {
+
+                if (user.FavoriteGroups.Any() == false)
+                    user.FavoriteGroups =
+                        user.FavoriteGroups.GroupBy(a => a.FavoriteGuid).Select(b => b.First()).ToList();
+                if (user.FavoriteGroups.Any(a => a.FavoriteGuid == this.Id))
+                    IsFavorite = true;
+                else
+                    IsFavorite = false;
+            }
         }
 
     }
@@ -57,6 +72,21 @@ namespace ChummerHub.Models.V1
     {
         public SINner MySINner { get; set; }
         public string Username { get; set; }
+        public bool IsFavorite { get; set; }
+
+        public SINnerSearchGroupMember(ApplicationUser user, SINner member)
+        {
+            if (user == null)
+                throw new ArgumentNullException(nameof(user));
+            Username = user.UserName;
+            MySINner = member ?? throw new ArgumentNullException(nameof(member));
+            if (user.FavoriteGroups.Any() == false)
+                user.FavoriteGroups = user.FavoriteGroups.GroupBy(a => a.FavoriteGuid).Select(b => b.First()).ToList();
+            if (user.FavoriteGroups.Any(a => a.FavoriteGuid == MySINner.Id))
+                IsFavorite = true;
+            else
+                IsFavorite = false;
+        }
         public SINnerSearchGroupMember()
         {
             MySINner = new SINner();
