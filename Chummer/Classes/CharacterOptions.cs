@@ -1608,7 +1608,11 @@ namespace Chummer
                 if (intNewEssenceDecimals < intCurrentEssenceDecimals)
                 {
                     if (intNewEssenceDecimals > 0)
-                        EssenceFormat = EssenceFormat.Substring(0, EssenceFormat.Length - (intNewEssenceDecimals - intCurrentEssenceDecimals));
+                    {
+                        int length = EssenceFormat.Length - (intCurrentEssenceDecimals - intNewEssenceDecimals);
+                        if (length < 3) length = 3;
+                        EssenceFormat = EssenceFormat.Substring(0, length);
+                    }
                     else
                     {
                         int intDecimalPlaces = EssenceFormat.IndexOf('.');

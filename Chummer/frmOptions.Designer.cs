@@ -1795,11 +1795,6 @@ namespace Chummer
             this.nudEssenceDecimals.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.nudEssenceDecimals.Location = new System.Drawing.Point(576, 257);
-            this.nudEssenceDecimals.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
             this.nudEssenceDecimals.Name = "nudEssenceDecimals";
             this.nudEssenceDecimals.Size = new System.Drawing.Size(42, 20);
             this.nudEssenceDecimals.TabIndex = 17;
