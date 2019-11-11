@@ -9845,6 +9845,11 @@ Only one attribute may be at its Maximum value during character creation.</text>
         <text>Pin Chummer</text>
       </string>
       <string>
+        <key>Menu_DeleteFromSINners</key>
+        <text>Delete Chummer from SINners registry</text>
+      </string>
+      
+    <string>
         <key>Menu_AddPinnedGroup</key>
         <text>Pin Group</text>
       </string>

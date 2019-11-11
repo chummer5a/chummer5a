@@ -498,7 +498,7 @@ namespace ChummerHub.Controllers.V1
                         {
                             try
                             {
-                                Utils.DbUpdateConcurrencyExceptionHandler(entry, _logger);
+                                Utils.DbUpdateExceptionHandler(entry, _logger);
                             }
                             catch (Exception e)
                             {
