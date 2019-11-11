@@ -138,8 +138,17 @@ namespace Chummer.Plugins
                             newFavorite.Click += AddPinnedOnClick;
                             objNode.ContextMenuStrip.Items.Add(newFavorite);
                         }
-                    
                     }
+                    ToolStripMenuItem newDelete = new ToolStripMenuItem("DeleteFromSINners")
+                    {
+                        Name = "tsDeleteFromSINners",
+                        Tag = "Menu_DeleteFromSINners",
+                        Text = "delete chummer from SINners registry",
+                        Size = new System.Drawing.Size(177, 22),
+                        Image = global::Chummer.Properties.Resources.delete
+                    };
+                    newDelete.Click += PluginHandler.MainForm.CharacterRoster.tsDelete_Click; 
+                    objNode.ContextMenuStrip.Items.Add(newDelete);
                     LanguageManager.TranslateWinForm(GlobalOptions.Language, objNode.ContextMenuStrip);
                 });
             }
