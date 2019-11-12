@@ -70,6 +70,7 @@ Data Changes:
 - Moved HTML file used by the "Print to File First" option for fixing issues with rendering sheets into appdata instead, in order to prevent issues with tools that synchronise special folders like desktop from causing the cleanup to fail.
 - Added surprise bonuses for Combat Paralysis quality and Danger Sense adept power
 - Adjusted duplicate GUIDs in lifemodules.xml.
+- Fixed an issue with the ProCam that could cause Chummer to crash when added to a non-Gear parent. Closes #3931
 
 New Strings:
 - Label_MetagenicKarmaValue

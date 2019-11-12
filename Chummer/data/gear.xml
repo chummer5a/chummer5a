@@ -18460,6 +18460,14 @@
       <bonus />
       <cost>{Parent Cost}x2</cost>
       <requireparent />
+      <required>
+        <geardetails>
+          <OR>
+            <name operation="contains">Camera</name>
+            <name>ProCam</name>
+          </OR>
+        </geardetails>
+      </required>
     </gear>
     <!-- End Region -->
     <!-- Region Printing Presses -->
