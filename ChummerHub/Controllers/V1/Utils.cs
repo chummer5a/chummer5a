@@ -10,7 +10,7 @@ namespace ChummerHub.Controllers.V1
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Utils'
     {
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Utils.DbUpdateConcurrencyExceptionHandler(EntityEntry, ILogger)'
-        public static ResultBase DbUpdateConcurrencyExceptionHandler(Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry entry, ILogger logger)
+        public static ResultBase DbUpdateExceptionHandler(Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry entry, ILogger logger)
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Utils.DbUpdateConcurrencyExceptionHandler(EntityEntry, ILogger)'
         {
             var proposedValues = entry.CurrentValues;

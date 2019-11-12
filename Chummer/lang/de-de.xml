@@ -9627,6 +9627,10 @@
           <text>pinne den Charakter</text>
         </string>
         <string>
+          <key>Menu_DeleteFromSINners</key>
+          <text>Lösche Chummer aus der SINners-Registry</text>
+        </string>
+        <string>
           <key>Menu_RemovePinnedGroup</key>
           <text>Gruppe un-pinnen</text>
         </string>
