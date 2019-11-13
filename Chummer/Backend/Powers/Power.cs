@@ -59,7 +59,7 @@ namespace Chummer
         private string _strAdeptWayDiscount = "0";
         private string _strBonusSource = string.Empty;
         private decimal _decFreePoints;
-        private string _strCachedPowerPoints = string.Empty;
+        internal string _strCachedPowerPoints = string.Empty;
         private bool _blnLevelsEnabled;
         private int _intRating = 1;
         private int _cachedLearnedRating;
@@ -81,6 +81,21 @@ namespace Chummer
             CharacterObject.PropertyChanged -= OnCharacterChanged;
             MAGAttributeObject = null;
             BoostedSkill = null;
+        }
+
+        protected void OnCharacterChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Character.IsMysticAdept))
+            {
+                if (CharacterObject.Options.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
+                {
+                    MAGAttributeObject = CharacterObject.MAGAdept;
+                }
+                else
+                {
+                    MAGAttributeObject = CharacterObject.MAG;
+                }
+            }
         }
 
         public void DeletePower()
@@ -207,6 +222,100 @@ namespace Chummer
                 Rating = TotalMaximumLevels;
             }
             return true;
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
+        {
+            switch (this)
+            {
+                case AdeptPower objPower:
+                    objPower.OnPropertyChanged(strPropertyName);
+                    break;
+                case CritterPower objPower:
+                    objPower.OnPropertyChanged(strPropertyName);
+                    break;
+            }
+        }
+        protected void OnLinkedAttributeChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(CharacterAttrib.TotalValue))
+                OnPropertyChanged(nameof(TotalMaximumLevels));
+        }
+
+        protected void OnBoostedSkillChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Skill.LearnedRating))
+            {
+                if (BoostedSkill.LearnedRating != _cachedLearnedRating && _cachedLearnedRating != TotalMaximumLevels)
+                {
+                    _cachedLearnedRating = ((Skill)sender).LearnedRating;
+                    OnPropertyChanged(nameof(TotalMaximumLevels));
+                }
+            }
+        }
+
+        public void OnMultiplePropertyChanged(params string[] lstPropertyNames)
+        {
+            ICollection<string> lstNamesOfChangedProperties = null;
+            DependancyGraph<string> objDependencyGraph = null;
+            switch (this)
+            {
+                case CritterPower _:
+                    objDependencyGraph = CritterPower.PowerDependencyGraph;
+                    break;
+                case AdeptPower _:
+                default:
+                    objDependencyGraph = AdeptPower.PowerDependencyGraph;
+                    break;
+            }
+            foreach (string strPropertyName in lstPropertyNames)
+            {
+                if (lstNamesOfChangedProperties == null)
+                    lstNamesOfChangedProperties = objDependencyGraph.GetWithAllDependants(strPropertyName);
+                else
+                {
+                    foreach (string strLoopChangedProperty in objDependencyGraph.GetWithAllDependants(strPropertyName))
+                        lstNamesOfChangedProperties.Add(strLoopChangedProperty);
+                }
+            }
+
+            if ((lstNamesOfChangedProperties?.Count > 0) != true)
+                return;
+
+            if (lstNamesOfChangedProperties.Contains(nameof(DisplayPoints)))
+                _strCachedPowerPoints = string.Empty;
+            if (lstNamesOfChangedProperties.Contains(nameof(FreeLevels)))
+                _intCachedFreeLevels = int.MinValue;
+            if (lstNamesOfChangedProperties.Contains(nameof(PowerPoints)))
+                _decCachedPowerPoints = decimal.MinValue;
+
+            // If the Bonus contains "Rating", remove the existing Improvements and create new ones.
+            if (lstNamesOfChangedProperties.Contains(nameof(TotalRating)))
+            {
+                if (Bonus?.InnerXml.Contains("Rating") == true)
+                {
+                    ImprovementManager.RemoveImprovements(CharacterObject, _improvementSource, InternalId);
+                    int intTotalRating = TotalRating;
+                    if (intTotalRating > 0)
+                    {
+                        ImprovementManager.ForcedValue = Extra;
+                        ImprovementManager.CreateImprovements(CharacterObject, _improvementSource, InternalId, Bonus, false, intTotalRating, DisplayNameShort(GlobalOptions.Language));
+                    }
+                }
+            }
+
+            if (this is AdeptPower objPower && lstNamesOfChangedProperties.Contains(nameof(AdeptPower.AdeptWayDiscountEnabled)))
+            {
+                objPower.RefreshDiscountedAdeptWay(objPower.AdeptWayDiscountEnabled);
+            }
+
+            foreach (string strPropertyToChange in lstNamesOfChangedProperties)
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+            }
         }
 
         private SourceString _objCachedSourceDetail;
@@ -547,16 +656,6 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Calculated Power Point cost per level of the Power (including discounts).
-        /// </summary>
-        public decimal CalculatedPointsPerLevel => PointsPerLevel;
-
-        /// <summary>
-        /// Calculate the discount that is applied to the Power.
-        /// </summary>
-        private decimal Discount => DiscountedAdeptWay ? AdeptWayDiscount : 0;
-
-        /// <summary>
         /// The current 'paid' Rating of the Power.
         /// </summary>
         public int Rating
@@ -589,7 +688,7 @@ namespace Chummer
 
         public bool DoesNotHaveFreeLevels => FreeLevels == 0;
 
-        private int _intCachedFreeLevels = int.MinValue;
+        internal int _intCachedFreeLevels = int.MinValue;
 
         /// <summary>
         /// Free levels of the power.
@@ -629,11 +728,11 @@ namespace Chummer
             }
         }
 
-        private decimal _decCachedPowerPoints = decimal.MinValue;
+        internal decimal _decCachedPowerPoints = decimal.MinValue;
         /// <summary>
         /// Total number of Power Points the Power costs.
         /// </summary>
-        public decimal PowerPoints
+        public virtual decimal PowerPoints
         {
             get
             {
@@ -656,7 +755,12 @@ namespace Chummer
                     decReturn = TotalRating * PointsPerLevel + ExtraPointCost;
                     decReturn -= FreePoints;
                 }
-                decReturn -= Discount;
+
+                if (this is AdeptPower objPower)
+                {
+                    decReturn -= objPower.Discount;
+                }
+
                 return _decCachedPowerPoints = Math.Max(decReturn, 0.0m);
             }
         }
@@ -758,38 +862,6 @@ namespace Chummer
                 if (_intMaxLevels == value) return;
                 _intMaxLevels = value;
                 OnPropertyChanged();
-            }
-        }
-
-        /// <summary>
-        /// Whether or not the Power Cost is discounted by 50% from Adept Way.
-        /// </summary>
-        public bool DiscountedAdeptWay
-        {
-            get => _blnDiscountedAdeptWay;
-            set
-            {
-                if (value != _blnDiscountedAdeptWay)
-                {
-                    _blnDiscountedAdeptWay = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Whether or not the Power Cost is discounted by 25% from Geas.
-        /// </summary>
-        public bool DiscountedGeas
-        {
-            get => _blnDiscountedGeas;
-            set
-            {
-                if (value != _blnDiscountedGeas)
-                {
-                    _blnDiscountedGeas = value;
-                    OnPropertyChanged();
-                }
             }
         }
 
@@ -953,169 +1025,6 @@ namespace Chummer
                     intReturn = Math.Min(intReturn, MAGAttributeObject?.TotalValue ?? 0);
                 }
                 return intReturn;
-            }
-        }
-
-        /// <summary>
-        /// Whether the power can be discounted due to presence of an Adept Way.
-        /// </summary>
-        public bool AdeptWayDiscountEnabled
-        {
-            get
-            {
-                if (AdeptWayDiscount == 0)
-                {
-                    return false;
-                }
-                bool blnReturn = false;
-                //If the Adept Way Requirements node is missing OR the Adept Way Requirements node doesn't have magicianswayforbids, check for the magician's way discount.
-                if (_nodAdeptWayRequirements?["magicianswayforbids"] == null)
-                {
-                    blnReturn = CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.MagiciansWayDiscount && x.Enabled);
-                }
-                if (!blnReturn && _nodAdeptWayRequirements?.ChildNodes.Count > 0)
-                {
-                    blnReturn = _nodAdeptWayRequirements.RequirementsMet(CharacterObject);
-                }
-
-                return blnReturn;
-            }
-        }
-
-        public void RefreshDiscountedAdeptWay(bool blnAdeptWayDiscountEnabled)
-        {
-            if (DiscountedAdeptWay && !blnAdeptWayDiscountEnabled)
-                DiscountedAdeptWay = false;
-        }
-
-        private static readonly DependancyGraph<string> PowerDependencyGraph =
-            new DependancyGraph<string>(
-                new DependancyGraphNode<string>(nameof(DisplayPoints),
-                    new DependancyGraphNode<string>(nameof(PowerPoints),
-                        new DependancyGraphNode<string>(nameof(TotalRating),
-                            new DependancyGraphNode<string>(nameof(Rating)),
-                            new DependancyGraphNode<string>(nameof(FreeLevels),
-                                new DependancyGraphNode<string>(nameof(FreePoints)),
-                                new DependancyGraphNode<string>(nameof(ExtraPointCost)),
-                                new DependancyGraphNode<string>(nameof(PointsPerLevel))
-                            ),
-                            new DependancyGraphNode<string>(nameof(TotalMaximumLevels),
-                                new DependancyGraphNode<string>(nameof(LevelsEnabled)),
-                                new DependancyGraphNode<string>(nameof(MaxLevels))
-                            )
-                        ),
-                        new DependancyGraphNode<string>(nameof(Rating)),
-                        new DependancyGraphNode<string>(nameof(LevelsEnabled)),
-                        new DependancyGraphNode<string>(nameof(FreeLevels)),
-                        new DependancyGraphNode<string>(nameof(PointsPerLevel)),
-                        new DependancyGraphNode<string>(nameof(FreePoints)),
-                        new DependancyGraphNode<string>(nameof(ExtraPointCost)),
-                        new DependancyGraphNode<string>(nameof(Discount),
-                            new DependancyGraphNode<string>(nameof(DiscountedAdeptWay)),
-                            new DependancyGraphNode<string>(nameof(AdeptWayDiscount))
-                        )
-                    )
-                ),
-                new DependancyGraphNode<string>(nameof(ToolTip),
-                    new DependancyGraphNode<string>(nameof(Rating)),
-                    new DependancyGraphNode<string>(nameof(PointsPerLevel))
-                ),
-                new DependancyGraphNode<string>(nameof(DoesNotHaveFreeLevels),
-                    new DependancyGraphNode<string>(nameof(FreeLevels))
-                ),
-                new DependancyGraphNode<string>(nameof(AdeptWayDiscountEnabled),
-                    new DependancyGraphNode<string>(nameof(AdeptWayDiscount))
-                )
-            );
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
-        {
-            OnMultiplePropertyChanged(strPropertyName);
-        }
-
-        public void OnMultiplePropertyChanged(params string[] lstPropertyNames)
-        {
-            ICollection<string> lstNamesOfChangedProperties = null;
-            foreach (string strPropertyName in lstPropertyNames)
-            {
-                if (lstNamesOfChangedProperties == null)
-                    lstNamesOfChangedProperties = PowerDependencyGraph.GetWithAllDependants(strPropertyName);
-                else
-                {
-                    foreach (string strLoopChangedProperty in PowerDependencyGraph.GetWithAllDependants(strPropertyName))
-                        lstNamesOfChangedProperties.Add(strLoopChangedProperty);
-                }
-            }
-
-            if ((lstNamesOfChangedProperties?.Count > 0) != true)
-                return;
-
-            if (lstNamesOfChangedProperties.Contains(nameof(DisplayPoints)))
-                _strCachedPowerPoints = string.Empty;
-            if (lstNamesOfChangedProperties.Contains(nameof(FreeLevels)))
-                _intCachedFreeLevels = int.MinValue;
-            if (lstNamesOfChangedProperties.Contains(nameof(PowerPoints)))
-                _decCachedPowerPoints = decimal.MinValue;
-
-            // If the Bonus contains "Rating", remove the existing Improvements and create new ones.
-            if (lstNamesOfChangedProperties.Contains(nameof(TotalRating)))
-            {
-                if (Bonus?.InnerXml.Contains("Rating") == true)
-                {
-                    ImprovementManager.RemoveImprovements(CharacterObject, _improvementSource, InternalId);
-                    int intTotalRating = TotalRating;
-                    if (intTotalRating > 0)
-                    {
-                        ImprovementManager.ForcedValue = Extra;
-                        ImprovementManager.CreateImprovements(CharacterObject, _improvementSource, InternalId, Bonus, false, intTotalRating, DisplayNameShort(GlobalOptions.Language));
-                    }
-                }
-            }
-
-            if (lstNamesOfChangedProperties.Contains(nameof(AdeptWayDiscountEnabled)))
-            {
-                RefreshDiscountedAdeptWay(AdeptWayDiscountEnabled);
-            }
-
-            foreach (string strPropertyToChange in lstNamesOfChangedProperties)
-            {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
-            }
-        }
-
-        protected void OnLinkedAttributeChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(CharacterAttrib.TotalValue))
-                OnPropertyChanged(nameof(TotalMaximumLevels));
-        }
-
-        protected void OnBoostedSkillChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(Skill.LearnedRating))
-            {
-                if (BoostedSkill.LearnedRating != _cachedLearnedRating && _cachedLearnedRating != TotalMaximumLevels)
-                {
-                    _cachedLearnedRating = ((Skill)sender).LearnedRating;
-                    OnPropertyChanged(nameof(TotalMaximumLevels));
-                }
-            }
-        }
-
-        private void OnCharacterChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
-        {
-            if (propertyChangedEventArgs.PropertyName == nameof(Character.IsMysticAdept))
-            {
-                if (CharacterObject.Options.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
-                {
-                    MAGAttributeObject = CharacterObject.MAGAdept;
-                }
-                else
-                {
-                    MAGAttributeObject = CharacterObject.MAG;
-                }
             }
         }
 

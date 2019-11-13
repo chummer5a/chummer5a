@@ -1850,9 +1850,9 @@ namespace Chummer
                     break;
                 case ImprovementType.MagiciansWayDiscount:
                 {
-                    foreach (Power objLoopPower in _objCharacter.Powers.Where(x => x.AdeptWayDiscount != 0))
+                    foreach (AdeptPower objLoopPower in _objCharacter.Powers.Where(x => x.AdeptWayDiscount != 0))
                     {
-                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objLoopPower, nameof(Power.AdeptWayDiscountEnabled));
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objLoopPower, nameof(AdeptPower.AdeptWayDiscountEnabled));
                     }
                 }
                     break;

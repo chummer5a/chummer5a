@@ -993,9 +993,9 @@ namespace Chummer
         {
             if(e.Action != NotifyCollectionChangedAction.Move)
             {
-                foreach(Power objPower in Powers)
+                foreach(AdeptPower objPower in Powers)
                 {
-                    objPower.OnPropertyChanged(nameof(Power.AdeptWayDiscountEnabled));
+                    objPower.OnPropertyChanged(nameof(AdeptPower.AdeptWayDiscountEnabled));
                 }
             }
             OnPropertyChanged(nameof(Character.Qualities));

@@ -3388,7 +3388,7 @@ namespace Chummer
                 XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[id = \"" + frmPickCritterPower.SelectedPower + "\"]");
                 CritterPower objPower = new CritterPower(CharacterObject);
                 objPower.Create(objXmlPower, frmPickCritterPower.SelectedRating);
-                objPower.PowerPoints = frmPickCritterPower.PowerPoints;
+                //objPower.PowerPoints = frmPickCritterPower.PowerPoints;
                 if (objPower.InternalId.IsEmptyGuid())
                 {
                     frmPickCritterPower.Dispose();
