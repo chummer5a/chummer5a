@@ -131,10 +131,16 @@ namespace Chummer
             SuspendLayout();
             if(e?.Text != "mru")
             {
-                treCharacterList.Nodes.Clear();
-                //_lstCharacterCache.Clear();
-                LoadCharacters(true, true, true, false);
-                GC.Collect();
+                try
+                {
+                    treCharacterList.Nodes.Clear();
+                    LoadCharacters(true, true, true, false);
+                    GC.Collect();
+                }
+                catch (ObjectDisposedException)
+                {
+                    //swallow this
+                }
             }
             else
             {
