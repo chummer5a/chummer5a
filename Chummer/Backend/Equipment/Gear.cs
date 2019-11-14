@@ -3424,7 +3424,7 @@ namespace Chummer.Backend.Equipment
                         var xmlAddonCategoryList = GetNode()?.SelectNodes("addoncategory");
                         if (xmlAddonCategoryList?.Count > 0)
                             return xmlAddonCategoryList.Cast<XmlNode>().Any(xmlCategory =>
-                                xmlCategory.InnerText == GlobalOptions.Clipboard.SelectSingleNode("category").Value);
+                                xmlCategory.InnerText == GlobalOptions.Clipboard.SelectSingleNode("category")?.Value);
 
                         return false;
                     }
