@@ -46,6 +46,7 @@ namespace Chummer
             // Load the Armor information.
             _xmlBaseDataNode = XmlManager.Load("armor.xml").GetFastNavigator().SelectSingleNode("/chummer");
             _objArmor = objParentNode;
+            _objParentNode = (_objArmor as IHasXmlNode)?.GetNode()?.CreateNavigator();
             _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_xmlBaseDataNode);
         }
 
