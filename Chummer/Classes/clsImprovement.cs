@@ -1430,7 +1430,18 @@ namespace Chummer
                 case ImprovementType.AIProgram:
                     break;
                 case ImprovementType.CritterPowerLevel:
+                {
+                    // Get the power improved by this improvement
+                    CritterPower objImprovedPower = _objCharacter.CritterPowers.FirstOrDefault(objPower =>
+                        objPower.Name == ImprovedName && objPower.Extra == UniqueName);
+                    if (objImprovedPower != null)
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objImprovedPower,
+                            nameof(CritterPower.FreeLevels));
+                    }
+
                     break;
+                }
                 case ImprovementType.CritterPower:
                     break;
                 case ImprovementType.SpellResistance:
