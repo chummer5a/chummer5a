@@ -41,6 +41,9 @@ namespace Chummer
             objWriter.WriteElementString("extra", Extra);
             objWriter.WriteElementString("pointsperlevel", _strPointsPerLevel);
             objWriter.WriteElementString("action", _strAction);
+            objWriter.WriteElementString("category", _strCategory);
+            objWriter.WriteElementString("duration", _strDuration);
+            objWriter.WriteElementString("range", _strDuration);
             objWriter.WriteElementString("rating", _intRating.ToString());
             objWriter.WriteElementString("karma", _intKarma.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("extrapointcost", _decExtraPointCost.ToString(GlobalOptions.InvariantCultureInfo));
