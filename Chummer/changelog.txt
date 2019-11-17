@@ -1,4 +1,4 @@
-Future Build 209
+Build 209
 
 Application Changes:
 - Metagenic quality balances are now shown in the Karma summary tab while in create mode. This allows for more easily seeing how many qualities you need to take to even up, and properly accounts for the karma lost to balance up positive and negative metagenic qualities.
