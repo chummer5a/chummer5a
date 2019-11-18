@@ -513,6 +513,8 @@ namespace Chummer
                     return objImprovementAdder.skilldisable;
                 case "SKILLGROUPDISABLE":
                     return objImprovementAdder.skillgroupdisable;
+                case "SKILLGROUPDISABLECHOICE":
+                    return objImprovementAdder.skillgroupdisablechoice;
                 case "SKILLGROUPCATEGORYDISABLE":
                     return objImprovementAdder.skillgroupcategorydisable;
                 case "SKILLGROUPCATEGORYKARMACOST":

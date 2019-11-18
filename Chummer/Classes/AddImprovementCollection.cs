@@ -5890,6 +5890,54 @@ namespace Chummer.Classes
             CreateImprovement(bonusNode.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillGroupDisable, _strUnique);
         }
 
+        public void skillgroupdisablechoice(XmlNode bonusNode)
+        {
+            Log.Info("skillgroupdisablechoice");
+            if (!string.IsNullOrEmpty(ForcedValue))
+            {
+                SelectedValue = ForcedValue;
+            }
+            else
+            {
+                List<ListItem> lstSkills = new List<ListItem>();
+                using (XmlNodeList objXmlGroups = bonusNode.SelectNodes("skillgroup"))
+                    if (objXmlGroups != null)
+                        foreach (XmlNode objXmlGroup in objXmlGroups)
+                        {
+                            lstSkills.Add(new ListItem(objXmlGroup.InnerText,
+                                LanguageManager.TranslateExtra(objXmlGroup.InnerText, GlobalOptions.Language)));
+                        }
+
+                if (lstSkills.Count > 1)
+                {
+                    lstSkills.Sort(CompareListItems.CompareNames);
+                }
+
+                frmSelectItem frmPickItem = new frmSelectItem
+                {
+                    GeneralItems = lstSkills,
+                    SelectedItem = _objCharacter.MagicTradition.SourceIDString,
+                    AllowAutoSelect = false,
+                    Description = LanguageManager.GetString("String_DisableSkillGroupPrompt")
+                };
+                frmPickItem.ShowDialog();
+
+                // Make sure the dialogue window was not canceled.
+                if (frmPickItem.DialogResult == DialogResult.Cancel)
+                {
+                    throw new AbortedException();
+                }
+
+                SelectedValue = frmPickItem.SelectedName;
+            }
+
+            Log.Info("skillgroupdisablechoice");
+            Log.Info("skillgroupdisablechoice = " + bonusNode.OuterXml);
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(SelectedValue, _objImprovementSource, SourceName,
+                Improvement.ImprovementType.SkillGroupDisable, _strUnique);
+        }
+
         public void skillgroupcategorydisable(XmlNode bonusNode)
         {
             Log.Info("skillgroupcategorydisable");

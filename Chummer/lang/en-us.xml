@@ -9881,12 +9881,15 @@ Only one attribute may be at its Maximum value during character creation.</text>
       </string>
       <string>
         <key>String_SINners_EnterGroupPassword</key>
-        <text>This group is password protected. Please enter it's password:</text>
+        <text>This group is password protected. Please enter its password:</text>
       </string>
       <string>
         <key>String_SINners_EnterGroupPasswordTitle</key>
         <text>Enter Password</text>
       </string>
-      
+      <string>
+        <key>String_DisableSkillGroupPrompt</key>
+        <text>Choose one Skill Group to disable.</text>
+      </string>
   </strings>
 </chummer>
