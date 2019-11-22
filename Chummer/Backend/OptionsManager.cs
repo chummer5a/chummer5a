@@ -26,6 +26,8 @@ namespace Chummer
 
         private static ProgramOptions _instance;
         public static ProgramOptions Instance => _instance;
+        //Lazy shim to make it simpler to merge master changes. 
+        public static string Language => Instance.Language;
         public static List<MRUEntry> MostRecentlyUsedList { get; } = new List<MRUEntry>();
 
         private const string PROGRAM_SETTINGS_FILE = "programdata.local.xml";
