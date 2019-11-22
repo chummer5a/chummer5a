@@ -891,8 +891,8 @@
 			<text>Ihre Essenz muss kleiner als 0 sein.</text>
 		</string>
 		<string>
-			<key>Message_CyberzombieRequirementsStimulator</key>
-			<text>Sie müssen einen aktiven Gedächtnisverstärker besitzen.</text>
+			<key>Message_CyberzombieRequirementsFlashbackSystem</key>
+			<text>Muss ein Flashback-System haben.</text>
 		</string>
 		<string>
 			<key>MessageTitle_CyberzombieRequirements</key>

@@ -1928,7 +1928,7 @@ namespace Chummer
             // Make sure the character has an Invoked Memory Stimulator.
             foreach (Cyberware objCyberware in CharacterObject.Cyberware)
             {
-                if (objCyberware.Name == "Invoked Memory Stimulator")
+                if (objCyberware.Name == "Flashback System")
                 {
                     blnCyberware = true;
                     break;

@@ -1821,8 +1821,8 @@
       <text>Must have an Essence lower than 0.</text>
     </string>
     <string>
-      <key>Message_CyberzombieRequirementsStimulator</key>
-      <text>Must have an Invoked Memory Stimulator</text>
+      <key>Message_CyberzombieRequirementsFlashbackSystem</key>
+      <text>Deve ter um sistema de flashback</text>
     </string>
       <string>
           <key>MessageTitle_CyberzombieRequirements</key>

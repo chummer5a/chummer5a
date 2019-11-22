@@ -1029,8 +1029,8 @@
 			<text>精华必须为0以下。</text>
 		</string>
 		<string>
-			<key>Message_CyberzombieRequirementsStimulator</key>
-			<text>Must have an Invoked Memory Stimulator</text>
+			<key>Message_CyberzombieRequirementsFlashbackSystem</key>
+			<text>必須具有閃回系統</text>
 		</string>
 		<string>
 			<key>MessageTitle_CyberzombieRequirements</key>

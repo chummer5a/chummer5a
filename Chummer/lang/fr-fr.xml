@@ -1010,8 +1010,8 @@
 			<text>Le personnage doit avoir une Essence négative.</text>
 		</string>
 		<string>
-			<key>Message_CyberzombieRequirementsStimulator</key>
-			<text>Le personnage doit avoir un stimulateur de mémoire évoquée.</text>
+			<key>Message_CyberzombieRequirementsFlashbackSystem</key>
+			<text>Doit avoir un système de flashback</text>
 		</string>
 		<string>
 			<key>MessageTitle_CyberzombieRequirements</key>
