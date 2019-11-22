@@ -1936,7 +1936,7 @@ namespace Chummer
             }
 
             if (!blnCyberware)
-                strMessage += Environment.NewLine + '\t' + LanguageManager.GetString("Message_CyberzombieRequirementsStimulator");
+                strMessage += Environment.NewLine + '\t' + LanguageManager.GetString("Message_CyberzombieRequirementsFlashbackSystem");
 
             if (!blnEssence || !blnCyberware)
             {
