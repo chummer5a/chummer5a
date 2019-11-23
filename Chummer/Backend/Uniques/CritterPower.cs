@@ -84,7 +84,7 @@ namespace Chummer
             if (_nodBonus != null)
             {
                 ImprovementManager.ForcedValue = strForcedValue;
-                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.CritterPower, _guiID.ToString("D"), _nodBonus, true, intRating, DisplayNameShort(GlobalOptions.Instance.Language)))
+                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.CritterPower, _guiID.ToString("D"), _nodBonus, true, intRating, DisplayNameShort(GlobalOptions.Language)))
                 {
                     _guiID = Guid.Empty;
                     return;
@@ -115,14 +115,14 @@ namespace Chummer
                 _strNotes = CommonFunctions.GetTextFromPDF($"{_strSource} {_strPage}", _strName);
                 if (string.IsNullOrEmpty(_strNotes))
                 {
-                    _strNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page(GlobalOptions.Instance.Language)}", DisplayName(GlobalOptions.Instance.Language));
+                    _strNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page(GlobalOptions.Language)}", DisplayName(GlobalOptions.Language));
                 }
             }*/
         }
 
         private SourceString _objCachedSourceDetail;
         public SourceString SourceDetail => _objCachedSourceDetail ?? (_objCachedSourceDetail =
-                                                new SourceString(Source, Page(GlobalOptions.Instance.Language), GlobalOptions.Instance.Language));
+                                                new SourceString(Source, Page(GlobalOptions.Language), GlobalOptions.Language));
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -135,17 +135,17 @@ namespace Chummer
             objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("extra", _strExtra);
-            objWriter.WriteElementString("rating", _intRating.ToString(GlobalOptions.Instance.InvariantCultureInfo));
+            objWriter.WriteElementString("rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("category", _strCategory);
             objWriter.WriteElementString("type", _strType);
             objWriter.WriteElementString("action", _strAction);
             objWriter.WriteElementString("range", _strRange);
             objWriter.WriteElementString("duration", _strDuration);
-            objWriter.WriteElementString("grade", _intGrade.ToString(GlobalOptions.Instance.InvariantCultureInfo));
+            objWriter.WriteElementString("grade", _intGrade.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
-            objWriter.WriteElementString("karma", _intKarma.ToString(GlobalOptions.Instance.InvariantCultureInfo));
-            objWriter.WriteElementString("points", _decPowerPoints.ToString(GlobalOptions.Instance.InvariantCultureInfo));
+            objWriter.WriteElementString("karma", _intKarma.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("points", _decPowerPoints.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("counttowardslimit", _blnCountTowardsLimit.ToString());
             if (_nodBonus != null)
                 objWriter.WriteRaw("<bonus>" + _nodBonus.InnerXml + "</bonus>");
@@ -171,7 +171,7 @@ namespace Chummer
             }
             if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
-                XmlNode node = GetNode(GlobalOptions.Instance.Language);
+                XmlNode node = GetNode(GlobalOptions.Language);
                 node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
             if (objNode.TryGetStringFieldQuickly("name", ref _strName))
@@ -310,7 +310,7 @@ namespace Chummer
         public string Extra
         {
             get => _strExtra;
-            set => _strExtra = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Instance.Language);
+            set => _strExtra = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
         }
 
         /// <summary>
@@ -558,12 +558,12 @@ namespace Chummer
 
         public XmlNode GetNode()
         {
-            return GetNode(GlobalOptions.Instance.Language);
+            return GetNode(GlobalOptions.Language);
         }
 
         public XmlNode GetNode(string strLanguage)
         {
-            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.Instance.LiveCustomData)
+            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
                 _objCachedMyXmlNode = XmlManager.Load("critterpowers.xml", strLanguage)
                     .SelectSingleNode(SourceID == Guid.Empty
@@ -585,7 +585,7 @@ namespace Chummer
             {
                 Name = InternalId,
                 ContextMenuStrip = cmsCritterPower,
-                Text = DisplayName(GlobalOptions.Instance.Language),
+                Text = DisplayName(GlobalOptions.Language),
                 Tag = this,
                 ForeColor = PreferredColor,
                 ToolTipText = Notes.WordWrap(100)
@@ -616,7 +616,7 @@ namespace Chummer
             if (blnConfirmDelete)
             {
                 if (!characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteCritterPower",
-                    GlobalOptions.Instance.Language)))
+                    GlobalOptions.Language)))
                     return false;
             }
 
@@ -627,7 +627,7 @@ namespace Chummer
 
         public void SetSourceDetail(Control sourceControl)
         {
-            if (_objCachedSourceDetail?.Language != GlobalOptions.Instance.Language)
+            if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
                 _objCachedSourceDetail = null;
             SourceDetail.SetControl(sourceControl);
         }

@@ -27,7 +27,7 @@ namespace Chummer
         public frmSellItem()
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
         }
 
         private void cmdOK_Click(object sender, EventArgs e)

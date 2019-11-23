@@ -32,7 +32,7 @@ namespace Chummer.UI.Skills
             _skillGroup = skillGroup;
             InitializeComponent();
 
-            LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 
             //This is apparently a factor 30 faster than placed in load. NFI why
             Stopwatch sw = Stopwatch.StartNew();
@@ -79,7 +79,7 @@ namespace Chummer.UI.Skills
         #region Control Events
         private void btnCareerIncrease_Click(object sender, EventArgs e)
         {
-            string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpense", GlobalOptions.Instance.Language),
+            string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpense", GlobalOptions.Language),
                     _skillGroup.DisplayName, _skillGroup.Rating + 1, _skillGroup.UpgradeKarmaCost);
 
             if (!_skillGroup.CharacterObject.ConfirmKarmaExpense(confirmstring))

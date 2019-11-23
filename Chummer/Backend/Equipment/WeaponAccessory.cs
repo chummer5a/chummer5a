@@ -144,11 +144,11 @@ namespace Chummer.Backend.Equipment
                     if (strCost.Contains('-'))
                     {
                         string[] strValues = strCost.Split('-');
-                        decMin = Convert.ToDecimal(strValues[0], GlobalOptions.Instance.InvariantCultureInfo);
-                        decMax = Convert.ToDecimal(strValues[1], GlobalOptions.Instance.InvariantCultureInfo);
+                        decMin = Convert.ToDecimal(strValues[0], GlobalOptions.InvariantCultureInfo);
+                        decMax = Convert.ToDecimal(strValues[1], GlobalOptions.InvariantCultureInfo);
                     }
                     else
-                        decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalOptions.Instance.InvariantCultureInfo);
+                        decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalOptions.InvariantCultureInfo);
 
                     if (decMin != 0 || decMax != decimal.MaxValue)
                     {
@@ -157,10 +157,10 @@ namespace Chummer.Backend.Equipment
                             decMax = 1000000;
                         frmPickNumber.Minimum = decMin;
                         frmPickNumber.Maximum = decMax;
-                        frmPickNumber.Description = string.Format(LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Instance.Language), DisplayNameShort(GlobalOptions.Instance.Language));
+                        frmPickNumber.Description = string.Format(LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language), DisplayNameShort(GlobalOptions.Language));
                         frmPickNumber.AllowCancel = false;
                         frmPickNumber.ShowDialog();
-                        _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.Instance.InvariantCultureInfo);
+                        _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
                     }
                 }
             }
@@ -216,7 +216,7 @@ namespace Chummer.Backend.Equipment
                             if (objXmlAccessoryGear["rating"] != null)
                                 intGearRating = Convert.ToInt32(objXmlAccessoryGear["rating"].InnerText);
                             if (objXmlAccessoryGearNameAttributes?["qty"] != null)
-                                decGearQty = Convert.ToDecimal(objXmlAccessoryGearNameAttributes["qty"].InnerText, GlobalOptions.Instance.InvariantCultureInfo);
+                                decGearQty = Convert.ToDecimal(objXmlAccessoryGearNameAttributes["qty"].InnerText, GlobalOptions.InvariantCultureInfo);
 
                             XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = " + objXmlAccessoryGearName?.InnerText.CleanXPath() + " and category = " + objXmlAccessoryGear["category"].InnerText.CleanXPath() + "]");
                             Gear objGear = new Gear(_objCharacter);
@@ -244,7 +244,7 @@ namespace Chummer.Backend.Equipment
 
         private SourceString _objCachedSourceDetail;
 	    public SourceString SourceDetail => _objCachedSourceDetail ?? (_objCachedSourceDetail =
-	                                            new SourceString(Source, Page(GlobalOptions.Instance.Language), GlobalOptions.Instance.Language));
+	                                            new SourceString(Source, Page(GlobalOptions.Language), GlobalOptions.Language));
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -259,9 +259,9 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("mount", _strMount);
             objWriter.WriteElementString("extramount", _strExtraMount);
             objWriter.WriteElementString("rc", _strRC);
-            objWriter.WriteElementString("maxrating", _intMaxRating.ToString(GlobalOptions.Instance.InvariantCultureInfo));
-            objWriter.WriteElementString("rating", _intRating.ToString(GlobalOptions.Instance.InvariantCultureInfo));
-            objWriter.WriteElementString("rcgroup", _intRCGroup.ToString(GlobalOptions.Instance.InvariantCultureInfo));
+            objWriter.WriteElementString("maxrating", _intMaxRating.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("rcgroup", _intRCGroup.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("rcdeployable", _blnDeployable.ToString());
             objWriter.WriteElementString("specialmodification", _blnSpecialModification.ToString());
             objWriter.WriteElementString("conceal", _strConceal);
@@ -275,7 +275,7 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteRaw(_nodAllowGear.OuterXml);
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
-            objWriter.WriteElementString("accuracy", _intAccuracy.ToString(GlobalOptions.Instance.InvariantCultureInfo));
+            objWriter.WriteElementString("accuracy", _intAccuracy.ToString(GlobalOptions.InvariantCultureInfo));
             if (_lstGear.Count > 0)
             {
                 objWriter.WriteStartElement("gears");
@@ -328,7 +328,7 @@ namespace Chummer.Backend.Equipment
             }
             if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
-                XmlNode node = GetNode(GlobalOptions.Instance.Language);
+                XmlNode node = GetNode(GlobalOptions.Language);
                 node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
 
@@ -985,9 +985,9 @@ namespace Chummer.Backend.Equipment
                 }
 
                 StringBuilder objCost = new StringBuilder(strCostExpr.TrimStart('+'));
-                objCost.CheapReplace(strCostExpr, "Rating", () => Rating.ToString(GlobalOptions.Instance.InvariantCultureInfo));
-                objCost.CheapReplace(strCostExpr, "Weapon Cost", () => (Parent?.OwnCost ?? 0.0m).ToString(GlobalOptions.Instance.InvariantCultureInfo));
-                objCost.CheapReplace(strCostExpr, "Weapon Total Cost", () => (Parent?.MultipliableCost(this) ?? 0.0m).ToString(GlobalOptions.Instance.InvariantCultureInfo));
+                objCost.CheapReplace(strCostExpr, "Rating", () => Rating.ToString(GlobalOptions.InvariantCultureInfo));
+                objCost.CheapReplace(strCostExpr, "Weapon Cost", () => (Parent?.OwnCost ?? 0.0m).ToString(GlobalOptions.InvariantCultureInfo));
+                objCost.CheapReplace(strCostExpr, "Weapon Total Cost", () => (Parent?.MultipliableCost(this) ?? 0.0m).ToString(GlobalOptions.InvariantCultureInfo));
 
                 foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
                 {
@@ -996,7 +996,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(objCost.ToString(), out bool blnIsSuccess);
-                decimal decReturn = blnIsSuccess ? Convert.ToDecimal(objProcess, GlobalOptions.Instance.InvariantCultureInfo) : 0;
+                decimal decReturn = blnIsSuccess ? Convert.ToDecimal(objProcess, GlobalOptions.InvariantCultureInfo) : 0;
 
                 if (DiscountCost)
                     decReturn *= 0.9m;
@@ -1097,12 +1097,12 @@ namespace Chummer.Backend.Equipment
 
         public XmlNode GetNode()
         {
-            return GetNode(GlobalOptions.Instance.Language);
+            return GetNode(GlobalOptions.Language);
         }
 
         public XmlNode GetNode(string strLanguage)
         {
-            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.Instance.LiveCustomData)
+            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
                 _objCachedMyXmlNode = SourceID == Guid.Empty
                     ? XmlManager.Load("weapons.xml", strLanguage)
@@ -1160,7 +1160,7 @@ namespace Chummer.Backend.Equipment
                 {
                     ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.WeaponAccessory,
                         _guiID.ToString("D") + "Wireless", WirelessBonus, false, Rating,
-                        DisplayNameShort(GlobalOptions.Instance.Language));
+                        DisplayNameShort(GlobalOptions.Language));
                 }
 
                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))
@@ -1199,7 +1199,7 @@ namespace Chummer.Backend.Equipment
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,
-                Text = DisplayName(GlobalOptions.Instance.Language),
+                Text = DisplayName(GlobalOptions.Language),
                 Tag = this,
                 ContextMenuStrip = cmsWeaponAccessory,
                 ForeColor = PreferredColor,
@@ -1244,7 +1244,7 @@ namespace Chummer.Backend.Equipment
             if (blnConfirmDelete)
             {
                 if (!characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteWeapon",
-                    GlobalOptions.Instance.Language)))
+                    GlobalOptions.Language)))
                     return false;
             }
             DeleteWeaponAccessory();
@@ -1260,14 +1260,14 @@ namespace Chummer.Backend.Equipment
             decimal decAmount = TotalCost * percentage;
             decAmount += DeleteWeaponAccessory() * percentage;
             ExpenseLogEntry objExpense = new ExpenseLogEntry(characterObject);
-            objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldWeaponAccessory", GlobalOptions.Instance.Language) + ' ' + DisplayNameShort(GlobalOptions.Instance.Language), ExpenseType.Nuyen, DateTime.Now);
+            objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldWeaponAccessory", GlobalOptions.Language) + ' ' + DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
             characterObject.ExpenseEntries.AddWithSort(objExpense);
             characterObject.Nuyen += decAmount;
         }
 
         public void SetSourceDetail(Control sourceControl)
         {
-            if (_objCachedSourceDetail?.Language != GlobalOptions.Instance.Language)
+            if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
                 _objCachedSourceDetail = null;
             SourceDetail.SetControl(sourceControl);
         }

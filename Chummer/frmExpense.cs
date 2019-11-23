@@ -33,21 +33,21 @@ namespace Chummer
             _objCharacterOptions = objCharacterOptions;
 
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 
             // Determine the DateTime format and use that to display the date field (removing seconds since they're not important).
-            DateTimeFormatInfo objDateTimeInfo = GlobalOptions.Instance.CultureInfo.DateTimeFormat;
-            datDate.CustomFormat = GlobalOptions.Instance.DatesIncludeTime ? objDateTimeInfo.FullDateTimePattern.FastEscapeOnceFromEnd(":ss") : objDateTimeInfo.LongDatePattern;
+            DateTimeFormatInfo objDateTimeInfo = GlobalOptions.CultureInfo.DateTimeFormat;
+            datDate.CustomFormat = GlobalOptions.DatesIncludeTime ? objDateTimeInfo.FullDateTimePattern.FastEscapeOnceFromEnd(":ss") : objDateTimeInfo.LongDatePattern;
             datDate.Value = DateTime.Now;
 
-            txtDescription.Text = LanguageManager.GetString("String_ExpenseDefault", GlobalOptions.Instance.Language);
+            txtDescription.Text = LanguageManager.GetString("String_ExpenseDefault", GlobalOptions.Language);
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
             if (KarmaNuyenExchange && _objMode == ExpenseType.Nuyen && nudAmount.Value % _objCharacterOptions.NuyenPerBP != 0)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_KarmaNuyenExchange", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_KarmaNuyenExchange", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_KarmaNuyenExchange", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_KarmaNuyenExchange", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
             {
@@ -120,16 +120,16 @@ namespace Chummer
             {
                 if (value == ExpenseType.Nuyen)
                 {
-                    lblKarma.Text = LanguageManager.GetString("Label_Expense_NuyenAmount", GlobalOptions.Instance.Language);
-                    Text = LanguageManager.GetString("Title_Expense_Nuyen", GlobalOptions.Instance.Language);
-                    chkRefund.Text = LanguageManager.GetString("Checkbox_Expense_RefundNuyen", GlobalOptions.Instance.Language);
+                    lblKarma.Text = LanguageManager.GetString("Label_Expense_NuyenAmount", GlobalOptions.Language);
+                    Text = LanguageManager.GetString("Title_Expense_Nuyen", GlobalOptions.Language);
+                    chkRefund.Text = LanguageManager.GetString("Checkbox_Expense_RefundNuyen", GlobalOptions.Language);
                     nudPercent.Visible = true;
                     lblPercent.Visible = true;
                 }
                 else
                 {
-                    lblKarma.Text = LanguageManager.GetString("Label_Expense_KarmaAmount", GlobalOptions.Instance.Language);
-                    Text = LanguageManager.GetString("Title_Expense_Karma", GlobalOptions.Instance.Language);
+                    lblKarma.Text = LanguageManager.GetString("Label_Expense_KarmaAmount", GlobalOptions.Language);
+                    Text = LanguageManager.GetString("Title_Expense_Karma", GlobalOptions.Language);
                     nudPercent.Visible = false;
                     lblPercent.Visible = false;
                 }

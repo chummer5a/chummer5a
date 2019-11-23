@@ -646,7 +646,7 @@ namespace Chummer.Backend.Skills
                 int intTotalBaseRating = TotalBaseRating;
                 //If data file contains {4} this crashes but...
                 string upgradetext =
-                    $"{LanguageManager.GetString(IsKnowledgeSkill ? "String_ExpenseKnowledgeSkill" : "String_ExpenseActiveSkill", GlobalOptions.Instance.Language)} {DisplayNameMethod(GlobalOptions.Instance.Language)} {intTotalBaseRating} -> {(intTotalBaseRating + 1)}";
+                    $"{LanguageManager.GetString(IsKnowledgeSkill ? "String_ExpenseKnowledgeSkill" : "String_ExpenseActiveSkill", GlobalOptions.Language)} {DisplayNameMethod(GlobalOptions.Language)} {intTotalBaseRating} -> {(intTotalBaseRating + 1)}";
 
                 ExpenseLogEntry entry = new ExpenseLogEntry(CharacterObject);
                 entry.Create(price * -1, upgradetext, ExpenseType.Karma, DateTime.Now);
@@ -736,7 +736,7 @@ namespace Chummer.Backend.Skills
 
                 //If data file contains {4} this crashes but...
                 string upgradetext = //TODO WRONG
-                $"{LanguageManager.GetString("String_ExpenseLearnSpecialization", GlobalOptions.Instance.Language)} {DisplayNameMethod(GlobalOptions.Instance.Language)} ({strName})";
+                $"{LanguageManager.GetString("String_ExpenseLearnSpecialization", GlobalOptions.Language)} {DisplayNameMethod(GlobalOptions.Language)} ({strName})";
 
                 ExpenseLogEntry entry = new ExpenseLogEntry(CharacterObject);
                 entry.Create(intPrice * -1, upgradetext, ExpenseType.Karma, DateTime.Now);
@@ -835,13 +835,13 @@ namespace Chummer.Backend.Skills
         /// <returns></returns>
         public string FormattedDicePool(int pool, string space, string validSpec = "")
         {
-            string strReturn = $"{DisplayNameMethod(GlobalOptions.Instance.Language)}{space}({pool.ToString(GlobalOptions.Instance.CultureInfo)})";
+            string strReturn = $"{DisplayNameMethod(GlobalOptions.Language)}{space}({pool.ToString(GlobalOptions.CultureInfo)})";
             // Add any Specialization bonus if applicable.
             if (HasSpecialization(validSpec) && !string.IsNullOrWhiteSpace(validSpec))
                 strReturn +=
-                    $"{space}{'+'}{space}{LanguageManager.GetString("String_ExpenseSpecialization", GlobalOptions.Instance.Language)}" +
-                    $"{LanguageManager.GetString("String_Colon", GlobalOptions.Instance.Language)}{space}" +
-                    $"{DisplayCategory(GlobalOptions.Instance.Language)}{space}{'('}{2.ToString(GlobalOptions.Instance.CultureInfo)}{')'}";
+                    $"{space}{'+'}{space}{LanguageManager.GetString("String_ExpenseSpecialization", GlobalOptions.Language)}" +
+                    $"{LanguageManager.GetString("String_Colon", GlobalOptions.Language)}{space}" +
+                    $"{DisplayCategory(GlobalOptions.Language)}{space}{'('}{2.ToString(GlobalOptions.CultureInfo)}{')'}";
             return strReturn;
         }
     }

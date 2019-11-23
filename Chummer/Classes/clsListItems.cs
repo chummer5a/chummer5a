@@ -116,7 +116,7 @@ namespace Chummer
             }
             else if (ty == null)
                 return 1;
-            return string.Compare(tx.Text.FastEscape('[', ']'), ty.Text.FastEscape('[', ']'), false, GlobalOptions.Instance.CultureInfo);
+            return string.Compare(tx.Text.FastEscape('[', ']'), ty.Text.FastEscape('[', ']'), false, GlobalOptions.CultureInfo);
         }
 
         public class TextComparer : IComparer
@@ -136,14 +136,14 @@ namespace Chummer
         public static int CompareTextAsDates(ListViewItem lx, ListViewItem ly)
         {
             DateTime datY;
-            if (lx == null || !DateTime.TryParse(lx.Text, GlobalOptions.Instance.CultureInfo, System.Globalization.DateTimeStyles.None, out DateTime datX))
+            if (lx == null || !DateTime.TryParse(lx.Text, GlobalOptions.CultureInfo, System.Globalization.DateTimeStyles.None, out DateTime datX))
             {
-                if (ly == null || !DateTime.TryParse(ly.Text, GlobalOptions.Instance.CultureInfo, System.Globalization.DateTimeStyles.None, out datY))
+                if (ly == null || !DateTime.TryParse(ly.Text, GlobalOptions.CultureInfo, System.Globalization.DateTimeStyles.None, out datY))
                     return 0;
                 else
                     return -1;
             }
-            else if (ly == null || !DateTime.TryParse(ly.Text, GlobalOptions.Instance.CultureInfo, System.Globalization.DateTimeStyles.None, out datY))
+            else if (ly == null || !DateTime.TryParse(ly.Text, GlobalOptions.CultureInfo, System.Globalization.DateTimeStyles.None, out datY))
                 return 1;
 
             return DateTime.Compare(datY, datX);
@@ -157,7 +157,7 @@ namespace Chummer
         /// </summary>
         public static int CompareNames(ListItem objX, ListItem objY)
         {
-            return string.Compare(objX.Name, objY.Name, false, GlobalOptions.Instance.CultureInfo);
+            return string.Compare(objX.Name, objY.Name, false, GlobalOptions.CultureInfo);
         }
     }
 
@@ -189,11 +189,11 @@ namespace Chummer
             {
                 string strX = listviewX?.SubItems[_intColumnToSort].Text.FastEscape('¥');
                 string strY = listviewY?.SubItems[_intColumnToSort].Text.FastEscape('¥');
-                if (decimal.TryParse(strX, System.Globalization.NumberStyles.Any, GlobalOptions.Instance.CultureInfo, out decimal decX) &&
-                    decimal.TryParse(strY, System.Globalization.NumberStyles.Any, GlobalOptions.Instance.CultureInfo, out decimal decY))
+                if (decimal.TryParse(strX, System.Globalization.NumberStyles.Any, GlobalOptions.CultureInfo, out decimal decX) &&
+                    decimal.TryParse(strY, System.Globalization.NumberStyles.Any, GlobalOptions.CultureInfo, out decimal decY))
                     intCompareResult = decimal.Compare(decX, decY);
                 else
-                    intCompareResult = string.Compare(strX, strY, true, GlobalOptions.Instance.CultureInfo);
+                    intCompareResult = string.Compare(strX, strY, true, GlobalOptions.CultureInfo);
             }
 
             // Calculate correct return value based on object comparison
@@ -244,25 +244,25 @@ namespace Chummer
             string strX = datagridviewrowX?.Cells[_intColumnToSort].Value.ToString();
             string strY = datagridviewrowY?.Cells[_intColumnToSort].Value.ToString();
             string strNumberX = datagridviewrowX?.Cells[_intColumnToSort].Value.ToString().TrimEnd('¥', '+')
-                .TrimEndOnce(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Instance.Language))
-                .TrimEndOnce(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Instance.Language));
+                .TrimEndOnce(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language))
+                .TrimEndOnce(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language));
             string strNumberY = datagridviewrowY?.Cells[_intColumnToSort].Value.ToString().TrimEnd('¥', '+')
-                .TrimEndOnce(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Instance.Language))
-                .TrimEndOnce(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Instance.Language));
-            if (decimal.TryParse(strNumberX, System.Globalization.NumberStyles.Any, GlobalOptions.Instance.CultureInfo, out decimal decX))
+                .TrimEndOnce(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language))
+                .TrimEndOnce(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language));
+            if (decimal.TryParse(strNumberX, System.Globalization.NumberStyles.Any, GlobalOptions.CultureInfo, out decimal decX))
             {
-                if (decimal.TryParse(strNumberY, System.Globalization.NumberStyles.Any, GlobalOptions.Instance.CultureInfo, out decimal decY))
+                if (decimal.TryParse(strNumberY, System.Globalization.NumberStyles.Any, GlobalOptions.CultureInfo, out decimal decY))
 
                     intCompareResult = decimal.Compare(decX, decY);
                 else
                     intCompareResult = -1;
             }
-            else if (decimal.TryParse(strNumberY, System.Globalization.NumberStyles.Any, GlobalOptions.Instance.CultureInfo, out decimal _))
+            else if (decimal.TryParse(strNumberY, System.Globalization.NumberStyles.Any, GlobalOptions.CultureInfo, out decimal _))
             {
                 intCompareResult = 1;
             }
             else
-                intCompareResult = string.Compare(strX, strY, true, GlobalOptions.Instance.CultureInfo);
+                intCompareResult = string.Compare(strX, strY, true, GlobalOptions.CultureInfo);
 
             // Calculate correct return value based on object comparison
             if (_objOrderOfSort == SortOrder.Ascending)

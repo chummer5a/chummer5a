@@ -49,7 +49,7 @@ namespace Chummer
         public frmCharacterRoster()
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 
             ContextMenuStrip[] lstCMSToTranslate =
             {
@@ -62,14 +62,14 @@ namespace Chummer
                 {
                     foreach(ToolStripMenuItem objItem in objCMS.Items.OfType<ToolStripMenuItem>())
                     {
-                        LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Instance.Language);
+                        LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Language);
                     }
                 }
             }
 
-            if(!string.IsNullOrEmpty(GlobalOptions.Instance.CharacterRosterPath) && Directory.Exists(GlobalOptions.Instance.CharacterRosterPath))
+            if(!string.IsNullOrEmpty(GlobalOptions.CharacterRosterPath) && Directory.Exists(GlobalOptions.CharacterRosterPath))
             {
-                watcherCharacterRosterFolder = new FileSystemWatcher(GlobalOptions.Instance.CharacterRosterPath, "*.chum5");
+                watcherCharacterRosterFolder = new FileSystemWatcher(GlobalOptions.CharacterRosterPath, "*.chum5");
             }
         }
 
@@ -171,10 +171,10 @@ namespace Chummer
                             objCharacterNode.ToolTipText += Environment.NewLine + Environment.NewLine
                                                                                 + LanguageManager.GetString(
                                                                                     "String_Error",
-                                                                                    GlobalOptions.Instance.Language) +
+                                                                                    GlobalOptions.Language) +
                                                                                 LanguageManager.GetString(
                                                                                     "String_Colon",
-                                                                                    GlobalOptions.Instance.Language)
+                                                                                    GlobalOptions.Language)
                                                                                 + Environment.NewLine +
                                                                                 objCache.ErrorText;
                         }
@@ -187,7 +187,7 @@ namespace Chummer
 
         public void LoadCharacters(bool blnRefreshFavorites = true, bool blnRefreshRecents = true, bool blnRefreshWatch = true, bool blnRefreshPlugins = true)
         {
-            ReadOnlyObservableCollection<string> lstFavorites = new ReadOnlyObservableCollection<string>(GlobalOptions.Instance.FavoritedCharacters);
+            ReadOnlyObservableCollection<string> lstFavorites = new ReadOnlyObservableCollection<string>(GlobalOptions.FavoritedCharacters);
             bool blnAddFavouriteNode = false;
             TreeNode objFavouriteNode = null;
             TreeNode[] lstFavoritesNodes = null;
@@ -196,19 +196,19 @@ namespace Chummer
                 objFavouriteNode = treCharacterList.FindNode("Favourite", false);
                 if(objFavouriteNode == null)
                 {
-                    objFavouriteNode = new TreeNode(LanguageManager.GetString("Treenode_Roster_FavouriteCharacters", GlobalOptions.Instance.Language)) { Tag = "Favourite" };
+                    objFavouriteNode = new TreeNode(LanguageManager.GetString("Treenode_Roster_FavouriteCharacters", GlobalOptions.Language)) { Tag = "Favourite" };
                     blnAddFavouriteNode = true;
                 }
 
                 lstFavoritesNodes = new TreeNode[lstFavorites.Count];
             }
 
-            IList<string> lstRecents = new List<string>(GlobalOptions.Instance.MostRecentlyUsedCharacters);
+            IList<string> lstRecents = new List<string>(GlobalOptions.MostRecentlyUsedCharacters);
 
             List<string> lstWatch = new List<string>();
-            if(!string.IsNullOrEmpty(GlobalOptions.Instance.CharacterRosterPath) && Directory.Exists(GlobalOptions.Instance.CharacterRosterPath))
+            if(!string.IsNullOrEmpty(GlobalOptions.CharacterRosterPath) && Directory.Exists(GlobalOptions.CharacterRosterPath))
             {
-                string[] objFiles = Directory.GetFiles(GlobalOptions.Instance.CharacterRosterPath, "*.chum5");
+                string[] objFiles = Directory.GetFiles(GlobalOptions.CharacterRosterPath, "*.chum5");
                 for(int i = 0; i < objFiles.Length; ++i)
                 {
                     string strFile = objFiles[i];
@@ -229,7 +229,7 @@ namespace Chummer
                 objWatchNode = treCharacterList.FindNode("Watch", false);
                 if(objWatchNode == null && lstWatch.Count > 0)
                 {
-                    objWatchNode = new TreeNode(LanguageManager.GetString("Treenode_Roster_WatchFolder", GlobalOptions.Instance.Language)) { Tag = "Watch" };
+                    objWatchNode = new TreeNode(LanguageManager.GetString("Treenode_Roster_WatchFolder", GlobalOptions.Language)) { Tag = "Watch" };
                     blnAddWatchNode = true;
                 }
 
@@ -260,7 +260,7 @@ namespace Chummer
                 objRecentNode = treCharacterList.FindNode("Recent", false);
                 if(objRecentNode == null && lstRecents.Count > 0)
                 {
-                    objRecentNode = new TreeNode(LanguageManager.GetString("Treenode_Roster_RecentCharacters", GlobalOptions.Instance.Language)) { Tag = "Recent" };
+                    objRecentNode = new TreeNode(LanguageManager.GetString("Treenode_Roster_RecentCharacters", GlobalOptions.Language)) { Tag = "Recent" };
                     blnAddRecentNode = true;
                 }
 
@@ -460,8 +460,8 @@ namespace Chummer
             if(!string.IsNullOrEmpty(objCache.ErrorText))
             {
                 objNode.ForeColor = Color.Red;
-                objNode.ToolTipText += Environment.NewLine + Environment.NewLine + LanguageManager.GetString("String_Error", GlobalOptions.Instance.Language)
-                                       + LanguageManager.GetString("String_Colon", GlobalOptions.Instance.Language) + Environment.NewLine + objCache.ErrorText;
+                objNode.ToolTipText += Environment.NewLine + Environment.NewLine + LanguageManager.GetString("String_Error", GlobalOptions.Language)
+                                       + LanguageManager.GetString("String_Colon", GlobalOptions.Language) + Environment.NewLine + objCache.ErrorText;
             }
 
             return objNode;
@@ -477,8 +477,8 @@ namespace Chummer
         {
             if(objCache != null)
             {
-                string strUnknown = LanguageManager.GetString("String_Unknown", GlobalOptions.Instance.Language);
-                string strNone = LanguageManager.GetString("String_None", GlobalOptions.Instance.Language);
+                string strUnknown = LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+                string strNone = LanguageManager.GetString("String_None", GlobalOptions.Language);
                 txtCharacterBio.Text = objCache.Description;
                 txtCharacterBackground.Text = objCache.Background;
                 txtCharacterNotes.Text = objCache.CharacterNotes;
@@ -501,7 +501,7 @@ namespace Chummer
                     lblEssence.Text = strUnknown;
                 lblFilePath.Text = objCache.FileName;
                 if(string.IsNullOrEmpty(lblFilePath.Text))
-                    lblFilePath.Text = LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Instance.Language);
+                    lblFilePath.Text = LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language);
                 lblSettings.Text = objCache.SettingsFile;
                 if(string.IsNullOrEmpty(lblSettings.Text))
                     lblSettings.Text = strUnknown;
@@ -525,7 +525,7 @@ namespace Chummer
                     {
                         objMetatypeNode = objMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = " + objCache.Metavariant.CleanXPath() + "]");
 
-                        strMetatype += LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language) + '(' + (objMetatypeNode?["translate"]?.InnerText ?? objCache.Metavariant) + ')';
+                        strMetatype += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + (objMetatypeNode?["translate"]?.InnerText ?? objCache.Metavariant) + ')';
                     }
                     lblMetatype.Text = strMetatype;
                 }
@@ -668,11 +668,11 @@ namespace Chummer
                         switch(strDestinationNode)
                         {
                             case "Recent":
-                                GlobalOptions.Instance.FavoritedCharacters.Remove(objCache.FilePath);
-                                GlobalOptions.Instance.MostRecentlyUsedCharacters.Insert(0, objCache.FilePath);
+                                GlobalOptions.FavoritedCharacters.Remove(objCache.FilePath);
+                                GlobalOptions.MostRecentlyUsedCharacters.Insert(0, objCache.FilePath);
                                 break;
                             case "Favourite":
-                                GlobalOptions.Instance.FavoritedCharacters.Add(objCache.FilePath);
+                                GlobalOptions.FavoritedCharacters.Add(objCache.FilePath);
                                 break;
                         }
                     }
@@ -799,7 +799,7 @@ namespace Chummer
                 if(!File.Exists(strFile))
                 {
                     xmlSourceNode = null;
-                    strErrorText = LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Instance.Language);
+                    strErrorText = LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language);
                 }
                 else
                 {
@@ -837,7 +837,7 @@ namespace Chummer
                     Created = xmlSourceNode.SelectSingleNode("created")?.Value == bool.TrueString;
                     Essence = xmlSourceNode.SelectSingleNode("totaless")?.Value;
                     string strSettings = xmlSourceNode.SelectSingleNode("settings")?.Value ?? string.Empty;
-                    SettingsFile = !File.Exists(Path.Combine(Utils.GetStartupPath, "settings", strSettings)) ? LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Instance.Language) : strSettings;
+                    SettingsFile = !File.Exists(Path.Combine(Utils.GetStartupPath, "settings", strSettings)) ? LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language) : strSettings;
                     MugshotBase64 = xmlSourceNode.SelectSingleNode("mugshot")?.Value ?? string.Empty;
                     if(string.IsNullOrEmpty(MugshotBase64))
                     {
@@ -889,7 +889,7 @@ namespace Chummer
                 string strReturn;
                 if(!string.IsNullOrEmpty(this.ErrorText))
                 {
-                    strReturn = Path.GetFileNameWithoutExtension(this.FileName) + LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language) + '(' + LanguageManager.GetString("String_Error", GlobalOptions.Instance.Language) + ')';
+                    strReturn = Path.GetFileNameWithoutExtension(this.FileName) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + LanguageManager.GetString("String_Error", GlobalOptions.Language) + ')';
                 }
                 else
                 {
@@ -898,13 +898,13 @@ namespace Chummer
                     {
                         strReturn = this.CharacterName;
                         if(string.IsNullOrEmpty(strReturn))
-                            strReturn = LanguageManager.GetString("String_UnnamedCharacter", GlobalOptions.Instance.Language);
+                            strReturn = LanguageManager.GetString("String_UnnamedCharacter", GlobalOptions.Language);
                     }
 
-                    string strBuildMethod = LanguageManager.GetString("String_" + this.BuildMethod, GlobalOptions.Instance.Language, false);
+                    string strBuildMethod = LanguageManager.GetString("String_" + this.BuildMethod, GlobalOptions.Language, false);
                     if(string.IsNullOrEmpty(strBuildMethod))
-                        strBuildMethod = LanguageManager.GetString("String_Unknown", GlobalOptions.Instance.Language);
-                    string strCreated = LanguageManager.GetString(this.Created ? "Title_CareerMode" : "Title_CreateMode", GlobalOptions.Instance.Language);
+                        strBuildMethod = LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+                    string strCreated = LanguageManager.GetString(this.Created ? "Title_CareerMode" : "Title_CreateMode", GlobalOptions.Language);
                     strReturn += $" ({strBuildMethod} - {strCreated})";
                 }
                 if(blnAddMarkerIfOpen && Program.MainForm.OpenCharacterForms.Any(x => x.CharacterObject.FileName == this.FilePath))
@@ -924,10 +924,10 @@ namespace Chummer
                     switch(args.Item2.Parent.Tag.ToString())
                     {
                         case "Recent":
-                            GlobalOptions.Instance.MostRecentlyUsedCharacters.Remove(this.FilePath);
+                            GlobalOptions.MostRecentlyUsedCharacters.Remove(this.FilePath);
                             break;
                         case "Favourite":
-                            GlobalOptions.Instance.FavoritedCharacters.Remove(this.FilePath);
+                            GlobalOptions.FavoritedCharacters.Remove(this.FilePath);
                             break;
                     }
                 }
@@ -950,10 +950,10 @@ namespace Chummer
                 switch(t.Parent.Tag.ToString())
                 {
                     case "Recent":
-                        GlobalOptions.Instance.MostRecentlyUsedCharacters.Remove(objCache.FilePath);
+                        GlobalOptions.MostRecentlyUsedCharacters.Remove(objCache.FilePath);
                         break;
                     case "Favourite":
-                        GlobalOptions.Instance.FavoritedCharacters.Remove(objCache.FilePath);
+                        GlobalOptions.FavoritedCharacters.Remove(objCache.FilePath);
                         break;
                 }
             }
@@ -975,9 +975,9 @@ namespace Chummer
         //                        SuspendLayout();
 
         //                        List<Tuple<string, string>> lstSorted = new List<Tuple<string, string>>();
-        //                        for(int i = 0; i < GlobalOptions.Instance.MostRecentlyUsedCharacters.Count; ++i)
+        //                        for(int i = 0; i < GlobalOptions.MostRecentlyUsedCharacters.Count; ++i)
         //                        {
-        //                            string strLoopFile = GlobalOptions.Instance.MostRecentlyUsedCharacters[i];
+        //                            string strLoopFile = GlobalOptions.MostRecentlyUsedCharacters[i];
 
         //                            if(_lstCharacterCache.TryGetValue(strLoopFile, out CharacterCache objLoopCache) && objLoopCache != null)
         //                                lstSorted.Add(new Tuple<string, string>(objLoopCache.CalculatedName(false), strLoopFile));
@@ -987,7 +987,7 @@ namespace Chummer
 
         //                        lstSorted.Sort();
         //                        for(int i = 0; i < lstSorted.Count; ++i)
-        //                            GlobalOptions.Instance.MostRecentlyUsedCharacters.Move(GlobalOptions.Instance.MostRecentlyUsedCharacters.IndexOf(lstSorted[i].Item2), i);
+        //                            GlobalOptions.MostRecentlyUsedCharacters.Move(GlobalOptions.MostRecentlyUsedCharacters.IndexOf(lstSorted[i].Item2), i);
 
         //                        LoadCharacters(false, true, false);
         //                        ResumeLayout();
@@ -1000,9 +1000,9 @@ namespace Chummer
         //                        SuspendLayout();
 
         //                        List<Tuple<string, string>> lstSorted = new List<Tuple<string, string>>();
-        //                        for(int i = 0; i < GlobalOptions.Instance.GlobalOptions.Instance.FavoritedCharacters.Count; ++i)
+        //                        for(int i = 0; i < GlobalOptions.GlobalOptions.FavoritedCharacters.Count; ++i)
         //                        {
-        //                            string strLoopFile = GlobalOptions.Instance.GlobalOptions.Instance.FavoritedCharacters[i];
+        //                            string strLoopFile = GlobalOptions.GlobalOptions.FavoritedCharacters[i];
         //                            if(_lstCharacterCache.TryGetValue(strLoopFile, out CharacterCache objLoopCache) && objLoopCache != null)
         //                                lstSorted.Add(new Tuple<string, string>(objLoopCache.CalculatedName(false), strLoopFile));
         //                            else
@@ -1011,7 +1011,7 @@ namespace Chummer
 
         //                        lstSorted.Sort();
         //                        for(int i = 0; i < lstSorted.Count; ++i)
-        //                            GlobalOptions.Instance.GlobalOptions.Instance.FavoritedCharacters.Move(GlobalOptions.Instance.GlobalOptions.Instance.FavoritedCharacters.IndexOf(lstSorted[i].Item2), i);
+        //                            GlobalOptions.GlobalOptions.FavoritedCharacters.Move(GlobalOptions.GlobalOptions.FavoritedCharacters.IndexOf(lstSorted[i].Item2), i);
 
         //                        _blnSkipUpdate = false;
 
@@ -1034,14 +1034,14 @@ namespace Chummer
                 switch(t.Parent.Tag.ToString())
                 {
                     case "Recent":
-                        GlobalOptions.Instance.FavoritedCharacters.Add(objCache.FilePath);
+                        GlobalOptions.FavoritedCharacters.Add(objCache.FilePath);
                         break;
                     case "Favourite":
-                        GlobalOptions.Instance.FavoritedCharacters.Remove(objCache.FilePath);
-                        GlobalOptions.Instance.MostRecentlyUsedCharacters.Insert(0, objCache.FilePath);
+                        GlobalOptions.FavoritedCharacters.Remove(objCache.FilePath);
+                        GlobalOptions.MostRecentlyUsedCharacters.Insert(0, objCache.FilePath);
                         break;
                     case "Watch":
-                        GlobalOptions.Instance.FavoritedCharacters.Add(objCache.FilePath);
+                        GlobalOptions.FavoritedCharacters.Add(objCache.FilePath);
                         break;
                 }
                 treCharacterList.SelectedNode = t;

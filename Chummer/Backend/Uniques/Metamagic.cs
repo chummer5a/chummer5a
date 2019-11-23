@@ -83,7 +83,7 @@ namespace Chummer
                 string strOldFocedValue = ImprovementManager.ForcedValue;
                 string strOldSelectedValue = ImprovementManager.SelectedValue;
                 ImprovementManager.ForcedValue = strForcedValue;
-                if (!ImprovementManager.CreateImprovements(_objCharacter, objSource, _guiID.ToString("D"), _nodBonus, true, intRating, DisplayNameShort(GlobalOptions.Instance.Language)))
+                if (!ImprovementManager.CreateImprovements(_objCharacter, objSource, _guiID.ToString("D"), _nodBonus, true, intRating, DisplayNameShort(GlobalOptions.Language)))
                 {
                     _guiID = Guid.Empty;
                     ImprovementManager.ForcedValue = strOldFocedValue;
@@ -91,7 +91,7 @@ namespace Chummer
                 }
                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                 {
-                    _strName += LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language) + '(' + ImprovementManager.SelectedValue + ')';
+                    _strName += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + ImprovementManager.SelectedValue + ')';
                     _objCachedMyXmlNode = null;
                 }
                 ImprovementManager.ForcedValue = strOldFocedValue;
@@ -103,14 +103,14 @@ namespace Chummer
                 _strNotes = CommonFunctions.GetTextFromPDF($"{_strSource} {_strPage}", _strName);
                 if (string.IsNullOrEmpty(_strNotes))
                 {
-                    _strNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page(GlobalOptions.Instance.Language)}", DisplayName(GlobalOptions.Instance.Language));
+                    _strNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page(GlobalOptions.Language)}", DisplayName(GlobalOptions.Language));
                 }
             }*/
         }
 
         private SourceString _objCachedSourceDetail;
         public SourceString SourceDetail => _objCachedSourceDetail ?? (_objCachedSourceDetail =
-                                                new SourceString(Source, Page(GlobalOptions.Instance.Language), GlobalOptions.Instance.Language));
+                                                new SourceString(Source, Page(GlobalOptions.Language), GlobalOptions.Language));
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -125,7 +125,7 @@ namespace Chummer
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("paidwithkarma", _blnPaidWithKarma.ToString());
             objWriter.WriteElementString("page", _strPage);
-            objWriter.WriteElementString("grade", _intGrade.ToString(GlobalOptions.Instance.InvariantCultureInfo));
+            objWriter.WriteElementString("grade", _intGrade.ToString(GlobalOptions.InvariantCultureInfo));
             if (_nodBonus != null)
                 objWriter.WriteRaw(_nodBonus.OuterXml);
             else
@@ -150,7 +150,7 @@ namespace Chummer
             }
             if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
-                XmlNode node = GetNode(GlobalOptions.Instance.Language);
+                XmlNode node = GetNode(GlobalOptions.Language);
                 node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
 
@@ -323,12 +323,12 @@ namespace Chummer
 
         public XmlNode GetNode()
         {
-            return GetNode(GlobalOptions.Instance.Language);
+            return GetNode(GlobalOptions.Language);
         }
 
         public XmlNode GetNode(string strLanguage)
         {
-            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.Instance.LiveCustomData)
+            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
                 string doc = "metamagic.xml";
                 string path = "metamagics/metamagic";
@@ -355,9 +355,9 @@ namespace Chummer
             if (Grade == -1 && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
                 return null;
 
-            string strText = DisplayName(GlobalOptions.Instance.Language);
+            string strText = DisplayName(GlobalOptions.Language);
             if (blnAddCategory)
-                strText = LanguageManager.GetString(SourceType == Improvement.ImprovementSource.Metamagic ? "Label_Metamagic" : "Label_Echo", GlobalOptions.Instance.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language) + strText;
+                strText = LanguageManager.GetString(SourceType == Improvement.ImprovementSource.Metamagic ? "Label_Metamagic" : "Label_Echo", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + strText;
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,
@@ -397,9 +397,9 @@ namespace Chummer
             {
                 string strMessage;
                 if (characterObject.MAGEnabled)
-                    strMessage = LanguageManager.GetString("Message_DeleteMetamagic", GlobalOptions.Instance.Language);
+                    strMessage = LanguageManager.GetString("Message_DeleteMetamagic", GlobalOptions.Language);
                 else if (characterObject.RESEnabled)
-                    strMessage = LanguageManager.GetString("Message_DeleteEcho", GlobalOptions.Instance.Language);
+                    strMessage = LanguageManager.GetString("Message_DeleteEcho", GlobalOptions.Language);
                 else
                     return false;
                 if (!characterObject.ConfirmDelete(strMessage))
@@ -413,7 +413,7 @@ namespace Chummer
 
         public void SetSourceDetail(Control sourceControl)
         {
-            if (_objCachedSourceDetail?.Language != GlobalOptions.Instance.Language)
+            if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
                 _objCachedSourceDetail = null;
             SourceDetail.SetControl(sourceControl);
         }

@@ -1067,7 +1067,7 @@ namespace Chummer
                 {
                     Skill objTargetSkill = _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.Name == ImprovedName) ??
                                            (_objCharacter.SkillsSection.Skills.OfType<ExoticSkill>().FirstOrDefault(x => x.Name + " (" + x.Specific + ')' == ImprovedName) ??
-                                            (Skill)_objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(x => x.Name == ImprovedName || x.DisplayNameMethod(GlobalOptions.Instance.Language) == ImprovedName));
+                                            (Skill)_objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(x => x.Name == ImprovedName || x.DisplayNameMethod(GlobalOptions.Language) == ImprovedName));
                     if (objTargetSkill != null)
                     {
                         yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill, nameof(Skill.PoolToolTip));
@@ -1243,7 +1243,7 @@ namespace Chummer
                 {
                     Skill objTargetSkill = _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.Name == ImprovedName) ??
                                            (_objCharacter.SkillsSection.Skills.OfType<ExoticSkill>().FirstOrDefault(x => x.Name + " (" + x.Specific + ')' == ImprovedName) ??
-                                            (Skill) _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(x => x.InternalId == ImprovedName || x.DisplayNameMethod(GlobalOptions.Instance.Language) == ImprovedName));
+                                            (Skill) _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(x => x.InternalId == ImprovedName || x.DisplayNameMethod(GlobalOptions.Language) == ImprovedName));
                     if (objTargetSkill != null)
                     {
                         yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill, nameof(Skill.CyberwareRating));
@@ -1327,7 +1327,7 @@ namespace Chummer
                     break;
                 case ImprovementType.Skillsoft:
                 {
-                    KnowledgeSkill objTargetSkill = _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(x => x.InternalId == ImprovedName || x.DisplayNameMethod(GlobalOptions.Instance.Language) == ImprovedName);
+                    KnowledgeSkill objTargetSkill = _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(x => x.InternalId == ImprovedName || x.DisplayNameMethod(GlobalOptions.Language) == ImprovedName);
                     if (objTargetSkill != null)
                     {
                         yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill, nameof(Skill.CyberwareRating));
@@ -1617,7 +1617,7 @@ namespace Chummer
                 {
                     if (!string.IsNullOrEmpty(ImprovedName))
                     {
-                        KnowledgeSkill objTargetSkill = _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(x => x.Name == ImprovedName || x.DisplayNameMethod(GlobalOptions.Instance.Language) == ImprovedName);
+                        KnowledgeSkill objTargetSkill = _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(x => x.Name == ImprovedName || x.DisplayNameMethod(GlobalOptions.Language) == ImprovedName);
                         if (objTargetSkill != null)
                         {
                             yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill, nameof(Skill.UpgradeKarmaCost));
@@ -2700,7 +2700,7 @@ namespace Chummer
                         int intSkillRating = objKnowledgeSkill.Rating;
                         if (intSkillRating >= intMinimumRating && intRating < intMaximumRating)
                         {
-                            lstDropdownItems.Add(new ListItem(objKnowledgeSkill.Name, objKnowledgeSkill.DisplayNameMethod(GlobalOptions.Instance.Language)));
+                            lstDropdownItems.Add(new ListItem(objKnowledgeSkill.Name, objKnowledgeSkill.DisplayNameMethod(GlobalOptions.Language)));
                         }
                     }
                     setProcessedSkillNames.Add(objKnowledgeSkill.Name);
@@ -2773,7 +2773,7 @@ namespace Chummer
                     }
 
                     string strFilter = objFilter.Length > 0 ? ") and (" + objFilter.ToString() : string.Empty;
-                    using (XmlNodeList xmlSkillList = XmlManager.Load("skills.xml", GlobalOptions.Instance.Language).SelectNodes("/chummer/knowledgeskills/skill[(not(hide)" + strFilter + ")]"))
+                    using (XmlNodeList xmlSkillList = XmlManager.Load("skills.xml", GlobalOptions.Language).SelectNodes("/chummer/knowledgeskills/skill[(not(hide)" + strFilter + ")]"))
                     {
                         if (xmlSkillList?.Count > 0)
                         {
@@ -2791,7 +2791,7 @@ namespace Chummer
 
                 frmSelectItem frmPickSkill = new frmSelectItem
                 {
-                    Description = LanguageManager.GetString("Title_SelectSkill", GlobalOptions.Instance.Language)
+                    Description = LanguageManager.GetString("Title_SelectSkill", GlobalOptions.Language)
                 };
                 if (setAllowedNames != null)
                     frmPickSkill.GeneralItems = lstDropdownItems;
@@ -2813,8 +2813,8 @@ namespace Chummer
                 frmSelectSkill frmPickSkill = new frmSelectSkill(objCharacter, strFriendlyName)
                 {
                     Description = !string.IsNullOrEmpty(strFriendlyName)
-                        ? string.Format(LanguageManager.GetString("String_Improvement_SelectSkillNamed", GlobalOptions.Instance.Language), strFriendlyName)
-                        : LanguageManager.GetString("String_Improvement_SelectSkill", GlobalOptions.Instance.Language)
+                        ? string.Format(LanguageManager.GetString("String_Improvement_SelectSkillNamed", GlobalOptions.Language), strFriendlyName)
+                        : LanguageManager.GetString("String_Improvement_SelectSkill", GlobalOptions.Language)
                 };
                 string strMinimumRating = xmlBonusNode.Attributes?["minimumrating"]?.InnerText;
                 if (!string.IsNullOrWhiteSpace(strMinimumRating))
@@ -2951,7 +2951,7 @@ namespace Chummer
                         // Display the Select Text window and record the value that was entered.
                         frmSelectText frmPickText = new frmSelectText
                         {
-                            Description = string.Format(LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Instance.Language), strFriendlyName)
+                            Description = string.Format(LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language), strFriendlyName)
                         };
                         frmPickText.ShowDialog();
 
@@ -2968,7 +2968,7 @@ namespace Chummer
                         s_StrSelectedValue = frmPickText.SelectedValue;
                     }
                     if (blnConcatSelectedValue)
-                        strSourceName += LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language) + '(' + SelectedValue + ')';
+                        strSourceName += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + SelectedValue + ')';
                     Log.Info("_strSelectedValue = " + SelectedValue);
                     Log.Info("strSourceName = " + strSourceName);
 

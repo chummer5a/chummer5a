@@ -37,7 +37,7 @@ namespace Chummer
         public frmSelectContactConnection()
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
         }
 
         private void cboMembership_SelectedIndexChanged(object sender, EventArgs e)
@@ -84,30 +84,30 @@ namespace Chummer
         {
             // Populate the fields with their data.
             // Membership.
-            cboMembership.Items.Add("+0: " + LanguageManager.GetString("String_None", GlobalOptions.Instance.Language));
-            cboMembership.Items.Add("+1: " + string.Format(LanguageManager.GetString("String_SelectContactConnection_Members", GlobalOptions.Instance.Language), "2-19"));
-            cboMembership.Items.Add("+2: " + string.Format(LanguageManager.GetString("String_SelectContactConnection_Members", GlobalOptions.Instance.Language), "20-99"));
-            cboMembership.Items.Add("+4: " + string.Format(LanguageManager.GetString("String_SelectContactConnection_Members", GlobalOptions.Instance.Language), "100-1000"));
-            cboMembership.Items.Add("+6: " + string.Format(LanguageManager.GetString("String_SelectContactConnection_Members", GlobalOptions.Instance.Language), "1000+"));
+            cboMembership.Items.Add("+0: " + LanguageManager.GetString("String_None", GlobalOptions.Language));
+            cboMembership.Items.Add("+1: " + string.Format(LanguageManager.GetString("String_SelectContactConnection_Members", GlobalOptions.Language), "2-19"));
+            cboMembership.Items.Add("+2: " + string.Format(LanguageManager.GetString("String_SelectContactConnection_Members", GlobalOptions.Language), "20-99"));
+            cboMembership.Items.Add("+4: " + string.Format(LanguageManager.GetString("String_SelectContactConnection_Members", GlobalOptions.Language), "100-1000"));
+            cboMembership.Items.Add("+6: " + string.Format(LanguageManager.GetString("String_SelectContactConnection_Members", GlobalOptions.Language), "1000+"));
 
             // Area of Influence.
-            cboAreaOfInfluence.Items.Add("+0: " + LanguageManager.GetString("String_None", GlobalOptions.Instance.Language));
-            cboAreaOfInfluence.Items.Add("+1: " + LanguageManager.GetString("String_SelectContactConnection_AreaDistrict", GlobalOptions.Instance.Language));
-            cboAreaOfInfluence.Items.Add("+2: " + LanguageManager.GetString("String_SelectContactConnection_AreaSprawlwide", GlobalOptions.Instance.Language));
-            cboAreaOfInfluence.Items.Add("+4: " + LanguageManager.GetString("String_SelectContactConnection_AreaNational", GlobalOptions.Instance.Language));
-            cboAreaOfInfluence.Items.Add("+6: " + LanguageManager.GetString("String_SelectContactConnection_AreaGlobal", GlobalOptions.Instance.Language));
+            cboAreaOfInfluence.Items.Add("+0: " + LanguageManager.GetString("String_None", GlobalOptions.Language));
+            cboAreaOfInfluence.Items.Add("+1: " + LanguageManager.GetString("String_SelectContactConnection_AreaDistrict", GlobalOptions.Language));
+            cboAreaOfInfluence.Items.Add("+2: " + LanguageManager.GetString("String_SelectContactConnection_AreaSprawlwide", GlobalOptions.Language));
+            cboAreaOfInfluence.Items.Add("+4: " + LanguageManager.GetString("String_SelectContactConnection_AreaNational", GlobalOptions.Language));
+            cboAreaOfInfluence.Items.Add("+6: " + LanguageManager.GetString("String_SelectContactConnection_AreaGlobal", GlobalOptions.Language));
 
             // Magical Resources.
-            cboMagicalResources.Items.Add("+0: " + LanguageManager.GetString("String_None", GlobalOptions.Instance.Language));
-            cboMagicalResources.Items.Add("+1: " + LanguageManager.GetString("String_SelectContactConnection_MagicalMinority", GlobalOptions.Instance.Language));
-            cboMagicalResources.Items.Add("+4: " + LanguageManager.GetString("String_SelectContactConnection_MagicalMost", GlobalOptions.Instance.Language));
-            cboMagicalResources.Items.Add("+6: " + LanguageManager.GetString("String_SelectContactConnection_MagicalVast", GlobalOptions.Instance.Language));
+            cboMagicalResources.Items.Add("+0: " + LanguageManager.GetString("String_None", GlobalOptions.Language));
+            cboMagicalResources.Items.Add("+1: " + LanguageManager.GetString("String_SelectContactConnection_MagicalMinority", GlobalOptions.Language));
+            cboMagicalResources.Items.Add("+4: " + LanguageManager.GetString("String_SelectContactConnection_MagicalMost", GlobalOptions.Language));
+            cboMagicalResources.Items.Add("+6: " + LanguageManager.GetString("String_SelectContactConnection_MagicalVast", GlobalOptions.Language));
 
             // Matrix Resources.
-            cboMatrixResources.Items.Add("+0: " + LanguageManager.GetString("String_None", GlobalOptions.Instance.Language));
-            cboMatrixResources.Items.Add("+1: " + LanguageManager.GetString("String_SelectContactConnection_MatrixActive", GlobalOptions.Instance.Language));
-            cboMatrixResources.Items.Add("+2: " + LanguageManager.GetString("String_SelectContactConnection_MatrixBroad", GlobalOptions.Instance.Language));
-            cboMatrixResources.Items.Add("+4: " + LanguageManager.GetString("String_SelectContactConnection_MatrixPervasive", GlobalOptions.Instance.Language));
+            cboMatrixResources.Items.Add("+0: " + LanguageManager.GetString("String_None", GlobalOptions.Language));
+            cboMatrixResources.Items.Add("+1: " + LanguageManager.GetString("String_SelectContactConnection_MatrixActive", GlobalOptions.Language));
+            cboMatrixResources.Items.Add("+2: " + LanguageManager.GetString("String_SelectContactConnection_MatrixBroad", GlobalOptions.Language));
+            cboMatrixResources.Items.Add("+4: " + LanguageManager.GetString("String_SelectContactConnection_MatrixPervasive", GlobalOptions.Language));
 
             // Select the appropriate field values.
             _blnSkipUpdate = true;

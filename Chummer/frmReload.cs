@@ -32,32 +32,32 @@ namespace Chummer
         public frmReload()
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
         }
 
         private void frmReload_Load(object sender, EventArgs e)
         {
             List<ListItem> lstAmmo = new List<ListItem>();
-            string strSpace = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
+            string strSpace = LanguageManager.GetString("String_Space", GlobalOptions.Language);
             // Add each of the items to a new List since we need to also grab their plugin information.
             foreach (Gear objGear in _lstAmmo)
             {
-                string strName = objGear.DisplayNameShort(GlobalOptions.Instance.Language) + " x" + objGear.Quantity.ToString(GlobalOptions.Instance.InvariantCultureInfo);
+                string strName = objGear.DisplayNameShort(GlobalOptions.Language) + " x" + objGear.Quantity.ToString(GlobalOptions.InvariantCultureInfo);
                 if (objGear.Rating > 0)
-                    strName += strSpace + '(' + LanguageManager.GetString("String_Rating", GlobalOptions.Instance.Language) + strSpace + objGear.Rating.ToString(GlobalOptions.Instance.CultureInfo) + ')';
+                    strName += strSpace + '(' + LanguageManager.GetString("String_Rating", GlobalOptions.Language) + strSpace + objGear.Rating.ToString(GlobalOptions.CultureInfo) + ')';
 
                 if (objGear.Parent is Gear objParent)
                 {
-                    if (!string.IsNullOrEmpty(objParent.DisplayNameShort(GlobalOptions.Instance.Language)))
+                    if (!string.IsNullOrEmpty(objParent.DisplayNameShort(GlobalOptions.Language)))
                     {
-                        strName += strSpace + '(' + objParent.DisplayNameShort(GlobalOptions.Instance.Language);
+                        strName += strSpace + '(' + objParent.DisplayNameShort(GlobalOptions.Language);
                         if (objParent.Location != null)
-                            strName += strSpace + '@' + strSpace + objParent.Location.DisplayName(GlobalOptions.Instance.Language);
+                            strName += strSpace + '@' + strSpace + objParent.Location.DisplayName(GlobalOptions.Language);
                         strName += ')';
                     }
                 }
                 else if (objGear.Location != null)
-                    strName += strSpace + '(' + objGear.Location.DisplayName(GlobalOptions.Instance.Language) + ')';
+                    strName += strSpace + '(' + objGear.Location.DisplayName(GlobalOptions.Language) + ')';
                 
                 // Retrieve the plugin information if it has any.
                 if (objGear.Children.Count > 0)
@@ -65,7 +65,7 @@ namespace Chummer
                     string strPlugins = string.Empty;
                     foreach (Gear objChild in objGear.Children)
                     {
-                        strPlugins += objChild.DisplayNameShort(GlobalOptions.Instance.Language) + ',' + strSpace;
+                        strPlugins += objChild.DisplayNameShort(GlobalOptions.Language) + ',' + strSpace;
                     }
                     // Remove the trailing comma.
                     strPlugins = strPlugins.Substring(0, strPlugins.Length - 1 - strSpace.Length);

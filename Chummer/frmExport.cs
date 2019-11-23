@@ -39,7 +39,7 @@ namespace Chummer
         {
             _objCharacterXML = objCharacterXML;
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             MoveControls();
         }
 
@@ -139,7 +139,7 @@ namespace Chummer
             objFile.Close();
 
             SaveFileDialog1.Filter = strExtension.ToUpper() + "|*." + strExtension;
-            SaveFileDialog1.Title = LanguageManager.GetString("Button_Viewer_SaveAsHtml", GlobalOptions.Instance.Language);
+            SaveFileDialog1.Title = LanguageManager.GetString("Button_Viewer_SaveAsHtml", GlobalOptions.Language);
             SaveFileDialog1.ShowDialog();
             string strSaveFile = SaveFileDialog1.FileName;
 
@@ -194,8 +194,8 @@ namespace Chummer
         {
             SaveFileDialog1.AddExtension = true;
             SaveFileDialog1.DefaultExt = "json";
-            SaveFileDialog1.Filter = LanguageManager.GetString("DialogFilter_Json", GlobalOptions.Instance.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Instance.Language);
-            SaveFileDialog1.Title = LanguageManager.GetString("Button_Export_SaveJsonAs", GlobalOptions.Instance.Language);
+            SaveFileDialog1.Filter = LanguageManager.GetString("DialogFilter_Json", GlobalOptions.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language);
+            SaveFileDialog1.Title = LanguageManager.GetString("Button_Export_SaveJsonAs", GlobalOptions.Language);
             SaveFileDialog1.ShowDialog();
 
             if (string.IsNullOrWhiteSpace(SaveFileDialog1.FileName))

@@ -824,18 +824,18 @@ namespace Chummer
         public static void OpenPDF(string strSource, string strPDFParamaters = "", string strPDFAppPath = "")
         {
             if (string.IsNullOrEmpty(strPDFParamaters))
-                strPDFParamaters = GlobalOptions.Instance.PDFParameters;
+                strPDFParamaters = GlobalOptions.PDFParameters;
             // The user must have specified the arguments of their PDF application in order to use this functionality.
             if (string.IsNullOrWhiteSpace(strPDFParamaters))
                 return;
 
             if (string.IsNullOrEmpty(strPDFAppPath))
-                strPDFAppPath = GlobalOptions.Instance.PDFAppPath;
+                strPDFAppPath = GlobalOptions.PDFAppPath;
             // The user must have specified the arguments of their PDF application in order to use this functionality.
             if (string.IsNullOrWhiteSpace(strPDFAppPath) || !File.Exists(strPDFAppPath))
                 return;
 
-            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
+            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
             string[] astrSourceParts;
             if (!string.IsNullOrEmpty(strSpaceCharacter))
                 astrSourceParts = strSource.Split(strSpaceCharacter[0]);
@@ -869,10 +869,10 @@ namespace Chummer
                 return;
 
             // Revert the sourcebook code to the one from the XML file if necessary.
-            string strBook = LanguageBookCodeFromAltCode(astrSourceParts[0], GlobalOptions.Instance.Language);
+            string strBook = LanguageBookCodeFromAltCode(astrSourceParts[0], GlobalOptions.Language);
 
             // Retrieve the sourcebook information including page offset and PDF application name.
-            SourcebookInfo objBookInfo = GlobalOptions.Instance.SourcebookInfo.FirstOrDefault(objInfo => objInfo.Code == strBook && !string.IsNullOrEmpty(objInfo.Path));
+            SourcebookInfo objBookInfo = GlobalOptions.SourcebookInfo.FirstOrDefault(objInfo => objInfo.Code == strBook && !string.IsNullOrEmpty(objInfo.Path));
             // If the sourcebook was not found, we can't open anything.
             if (objBookInfo == null)
                 return;
@@ -917,10 +917,10 @@ namespace Chummer
                 return string.Empty;
 
             // Revert the sourcebook code to the one from the XML file if necessary.
-            string strBook = LanguageBookCodeFromAltCode(strTemp[0], GlobalOptions.Instance.Language);
+            string strBook = LanguageBookCodeFromAltCode(strTemp[0], GlobalOptions.Language);
 
             // Retrieve the sourcebook information including page offset and PDF application name.
-            SourcebookInfo objBookInfo = GlobalOptions.Instance.SourcebookInfo.FirstOrDefault(objInfo => objInfo.Code == strBook && !string.IsNullOrEmpty(objInfo.Path));
+            SourcebookInfo objBookInfo = GlobalOptions.SourcebookInfo.FirstOrDefault(objInfo => objInfo.Code == strBook && !string.IsNullOrEmpty(objInfo.Path));
             // If the sourcebook was not found, we can't open anything.
             if (objBookInfo == null)
                 return string.Empty;

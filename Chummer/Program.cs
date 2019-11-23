@@ -120,9 +120,9 @@ namespace Chummer
                     return;
                 }
 
-                if (!string.IsNullOrEmpty(GlobalOptions.Instance.ErrorMessage))
+                if (!string.IsNullOrEmpty(GlobalOptions.ErrorMessage))
                 {
-                    MessageBox.Show(GlobalOptions.Instance.ErrorMessage, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(GlobalOptions.ErrorMessage, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
@@ -134,7 +134,7 @@ namespace Chummer
                         typeof(Microsoft.ApplicationInsights.NLogTarget.ApplicationInsightsTarget)
                     );
                     Log = NLog.LogManager.GetCurrentClassLogger();
-                    if (GlobalOptions.Instance.UseLogging)
+                    if (GlobalOptions.UseLogging)
                     {
                         foreach (var rule in NLog.LogManager.Configuration.LoggingRules.ToList())
                         {
@@ -145,7 +145,7 @@ namespace Chummer
                     }
                     Log.Info(strInfo);
                     Log.Info("NLog initialized");
-                    if (GlobalOptions.Instance.UseLoggingApplicationInsights)
+                    if (GlobalOptions.UseLoggingApplicationInsights)
                     {
 #if DEBUG
                         //If you set true as DeveloperMode (see above), you can see the sending telemetry in the debugging output window in IDE.
@@ -194,11 +194,11 @@ namespace Chummer
                 }
 
                 // Make sure the default language has been loaded before attempting to open the Main Form.
-                LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, null);
+                LanguageManager.TranslateWinForm(GlobalOptions.Language, null);
 
                 MainForm = new frmChummerMain();
                 Application.Run(MainForm);
-                if (GlobalOptions.Instance.UseLoggingApplicationInsights)
+                if (GlobalOptions.UseLoggingApplicationInsights)
                 {
                     if (ApplicationInsightsTelemetryClient != null)
                     {
@@ -253,7 +253,7 @@ namespace Chummer
             //as getting the cached image is much less work than creating it
             //This way, both keep working until they pass each other and 
             //everything needed is in cache
-            foreach (SourcebookInfo book in Enumerable.Reverse(GlobalOptions.Instance.SourcebookInfo))
+            foreach (SourcebookInfo book in Enumerable.Reverse(GlobalOptions.SourcebookInfo))
             {
                 BookImageManager.GetImage(book.Code, GlobalOptions.Default.Books[book.Code], false, UI.Options.BookControl.SCALE);
             }

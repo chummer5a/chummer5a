@@ -50,7 +50,7 @@ namespace Chummer
         public frmSelectWeapon(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             lblMarkupLabel.Visible = objCharacter.Created;
             nudMarkup.Visible = objCharacter.Created;
             lblMarkupPercentLabel.Visible = objCharacter.Created;
@@ -77,7 +77,7 @@ namespace Chummer
             }
             else
             {
-                chkHideOverAvailLimit.Text = string.Format(chkHideOverAvailLimit.Text, _objCharacter.MaximumAvailability.ToString(GlobalOptions.Instance.CultureInfo));
+                chkHideOverAvailLimit.Text = string.Format(chkHideOverAvailLimit.Text, _objCharacter.MaximumAvailability.ToString(GlobalOptions.CultureInfo));
                 chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
             }
 
@@ -98,7 +98,7 @@ namespace Chummer
 
             if (_lstCategory.Count > 0)
             {
-                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll", GlobalOptions.Instance.Language)));
+                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll", GlobalOptions.Language)));
             }
 
             cboCategory.BeginUpdate();
@@ -160,26 +160,26 @@ namespace Chummer
 
                 _objSelectedWeapon.DiscountCost = chkBlackMarketDiscount.Checked;
                 
-                lblWeaponReach.Text = _objSelectedWeapon.TotalReach.ToString(GlobalOptions.Instance.CultureInfo);
+                lblWeaponReach.Text = _objSelectedWeapon.TotalReach.ToString(GlobalOptions.CultureInfo);
                 lblWeaponReachLabel.Visible = !string.IsNullOrEmpty(lblWeaponReach.Text);
-                lblWeaponDamage.Text = _objSelectedWeapon.CalculatedDamage(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
+                lblWeaponDamage.Text = _objSelectedWeapon.CalculatedDamage(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 lblWeaponDamageLabel.Visible = !string.IsNullOrEmpty(lblWeaponDamage.Text);
-                lblWeaponAP.Text = _objSelectedWeapon.TotalAP(GlobalOptions.Instance.Language);
+                lblWeaponAP.Text = _objSelectedWeapon.TotalAP(GlobalOptions.Language);
                 lblWeaponAPLabel.Visible = !string.IsNullOrEmpty(lblWeaponAP.Text);
-                lblWeaponMode.Text = _objSelectedWeapon.CalculatedMode(GlobalOptions.Instance.Language);
+                lblWeaponMode.Text = _objSelectedWeapon.CalculatedMode(GlobalOptions.Language);
                 lblWeaponModeLabel.Visible = !string.IsNullOrEmpty(lblWeaponMode.Text);
-                lblWeaponRC.Text = _objSelectedWeapon.TotalRC(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language, true);
+                lblWeaponRC.Text = _objSelectedWeapon.TotalRC(GlobalOptions.CultureInfo, GlobalOptions.Language, true);
                 lblWeaponRC.SetToolTip(_objSelectedWeapon.RCToolTip);
                 lblWeaponRCLabel.Visible = !string.IsNullOrEmpty(lblWeaponRC.Text);
-                lblWeaponAmmo.Text = _objSelectedWeapon.CalculatedAmmo(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
+                lblWeaponAmmo.Text = _objSelectedWeapon.CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 lblWeaponAmmoLabel.Visible = !string.IsNullOrEmpty(lblWeaponAmmo.Text);
-                lblWeaponAccuracy.Text = _objSelectedWeapon.DisplayAccuracy(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
+                lblWeaponAccuracy.Text = _objSelectedWeapon.DisplayAccuracy(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 lblWeaponAccuracyLabel.Visible = !string.IsNullOrEmpty(lblWeaponAccuracy.Text);
 
                 decimal decItemCost = 0;
                 if (chkFreeItem.Checked)
                 {
-                    lblWeaponCost.Text = (0.0m).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.Instance.CultureInfo) + '¥';
+                    lblWeaponCost.Text = (0.0m).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 }
                 else
                 {
@@ -188,7 +188,7 @@ namespace Chummer
                 lblWeaponCostLabel.Visible = !string.IsNullOrEmpty(lblWeaponCost.Text);
 
                 AvailabilityValue objTotalAvail = _objSelectedWeapon.TotalAvailTuple();
-                lblWeaponAvail.Text = objTotalAvail.ToString(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
+                lblWeaponAvail.Text = objTotalAvail.ToString(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 lblWeaponAvailLabel.Visible = !string.IsNullOrEmpty(lblWeaponAvail.Text);
                 lblTest.Text = _objCharacter.AvailTest(decItemCost, objTotalAvail);
                 lblTestLabel.Visible = !string.IsNullOrEmpty(lblTest.Text);
@@ -199,12 +199,12 @@ namespace Chummer
                 StringBuilder strAccessories = new StringBuilder();
                 foreach (WeaponAccessory objAccessory in _objSelectedWeapon.WeaponAccessories)
                 {
-                    strAccessories.AppendLine(objAccessory.DisplayName(GlobalOptions.Instance.Language));
+                    strAccessories.AppendLine(objAccessory.DisplayName(GlobalOptions.Language));
                 }
                 if (strAccessories.Length > 0)
                     strAccessories.Length -= Environment.NewLine.Length;
 
-                lblIncludedAccessories.Text = strAccessories.Length == 0 ? LanguageManager.GetString("String_None", GlobalOptions.Instance.Language) : strAccessories.ToString();
+                lblIncludedAccessories.Text = strAccessories.Length == 0 ? LanguageManager.GetString("String_None", GlobalOptions.Language) : strAccessories.ToString();
                 lblIncludedAccessoriesLabel.Visible = !string.IsNullOrEmpty(lblIncludedAccessories.Text);
             }
             else
@@ -288,26 +288,26 @@ namespace Chummer
                     objWeapon.Create(objXmlWeapon, null, true, false, true);
 
                     string strID = objWeapon.SourceIDString;
-                    string strWeaponName = objWeapon.DisplayName(GlobalOptions.Instance.Language);
-                    string strDice = objWeapon.GetDicePool(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
-                    string strAccuracy = objWeapon.DisplayAccuracy(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
-                    string strDamage = objWeapon.CalculatedDamage(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
-                    string strAP = objWeapon.TotalAP(GlobalOptions.Instance.Language);
+                    string strWeaponName = objWeapon.DisplayName(GlobalOptions.Language);
+                    string strDice = objWeapon.GetDicePool(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                    string strAccuracy = objWeapon.DisplayAccuracy(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                    string strDamage = objWeapon.CalculatedDamage(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                    string strAP = objWeapon.TotalAP(GlobalOptions.Language);
                     if (strAP == "-")
                         strAP = "0";
-                    string strRC = objWeapon.TotalRC(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language, true);
-                    string strAmmo = objWeapon.CalculatedAmmo(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
-                    string strMode = objWeapon.CalculatedMode(GlobalOptions.Instance.Language);
+                    string strRC = objWeapon.TotalRC(GlobalOptions.CultureInfo, GlobalOptions.Language, true);
+                    string strAmmo = objWeapon.CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                    string strMode = objWeapon.CalculatedMode(GlobalOptions.Language);
                     string strReach = objWeapon.TotalReach.ToString();
                     StringBuilder strbldAccessories = new StringBuilder();
                     foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                     {
-                        strbldAccessories.AppendLine(objAccessory.DisplayName(GlobalOptions.Instance.Language));
+                        strbldAccessories.AppendLine(objAccessory.DisplayName(GlobalOptions.Language));
                     }
                     if (strbldAccessories.Length > 0)
                         strbldAccessories.Length -= Environment.NewLine.Length;
                     AvailabilityValue objAvail = objWeapon.TotalAvailTuple();
-                    SourceString strSource = new SourceString(objWeapon.Source, objWeapon.DisplayPage(GlobalOptions.Instance.Language), GlobalOptions.Instance.Language);
+                    SourceString strSource = new SourceString(objWeapon.Source, objWeapon.DisplayPage(GlobalOptions.Language), GlobalOptions.Language);
                     NuyenString strCost = new NuyenString(objWeapon.DisplayCost(out decimal _));
 
                     tabWeapons.Rows.Add(strID, strWeaponName, strDice, strAccuracy, strDamage, strAP, strRC, strAmmo, strMode, strReach, strbldAccessories.ToString(), objAvail, strSource, strCost);

@@ -48,10 +48,10 @@ namespace Chummer
         public frmSelectSpell(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
-            chkLimited.SetToolTip(LanguageManager.GetString("Tip_SelectSpell_LimitedSpell", GlobalOptions.Instance.Language));
-            chkExtended.SetToolTip(LanguageManager.GetString("Tip_SelectSpell_ExtendedSpell", GlobalOptions.Instance.Language));
+            chkLimited.SetToolTip(LanguageManager.GetString("Tip_SelectSpell_LimitedSpell", GlobalOptions.Language));
+            chkExtended.SetToolTip(LanguageManager.GetString("Tip_SelectSpell_ExtendedSpell", GlobalOptions.Language));
             
             // Load the Spells information.
             _xmlBaseSpellDataNode = XmlManager.Load("spells.xml").GetFastNavigator().SelectSingleNode("/chummer");
@@ -136,7 +136,7 @@ namespace Chummer
 
             if (_lstCategory.Count > 0)
             {
-                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll", GlobalOptions.Instance.Language)));
+                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll", GlobalOptions.Language)));
             }
 
             cboCategory.BeginUpdate();
@@ -346,7 +346,7 @@ namespace Chummer
 
                 if (limit.Count != 0 && limit.Any(l => strDescriptor.Contains(l)))
                     continue;
-                string strDisplayName = objXmlSpell.SelectSingleNode("translate")?.Value ?? objXmlSpell.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Instance.Language);
+                string strDisplayName = objXmlSpell.SelectSingleNode("translate")?.Value ?? objXmlSpell.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
                 if (!_objCharacter.Options.SearchInCategoryOnly && txtSearch.TextLength != 0)
                 {
                     if (!string.IsNullOrEmpty(strSpellCategory))
@@ -411,7 +411,7 @@ namespace Chummer
                     {
                         if (intAlchPrepCount >= intSpellLimit)
                         {
-                            MessageBox.Show(LanguageManager.GetString("Message_SpellLimit", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_SpellLimit", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            MessageBox.Show(LanguageManager.GetString("Message_SpellLimit", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SpellLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                             return;
                         }
                     }
@@ -419,18 +419,18 @@ namespace Chummer
                     {
                         if (intRitualCount >= intSpellLimit)
                         {
-                            MessageBox.Show(LanguageManager.GetString("Message_SpellLimit", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_SpellLimit", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            MessageBox.Show(LanguageManager.GetString("Message_SpellLimit", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SpellLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                             return;
                         }
                     }
                     else if (intSpellCount >= intSpellLimit)
                     {
-                        MessageBox.Show(LanguageManager.GetString("Message_SpellLimit", GlobalOptions.Instance.Language),
-                            LanguageManager.GetString("MessageTitle_SpellLimit", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show(LanguageManager.GetString("Message_SpellLimit", GlobalOptions.Language),
+                            LanguageManager.GetString("MessageTitle_SpellLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return;
                     }
                 }
-                if (!objXmlSpell.RequirementsMet(_objCharacter, null, LanguageManager.GetString("String_DescSpell", GlobalOptions.Instance.Language)))
+                if (!objXmlSpell.RequirementsMet(_objCharacter, null, LanguageManager.GetString("String_DescSpell", GlobalOptions.Language)))
                 {
                     return;
                 }
@@ -502,32 +502,32 @@ namespace Chummer
                 {
                     case "Alchemical Preparation":
                         blnAlchemicalFound = true;
-                        objDescriptors.Append(LanguageManager.GetString("String_DescAlchemicalPreparation", GlobalOptions.Instance.Language));
+                        objDescriptors.Append(LanguageManager.GetString("String_DescAlchemicalPreparation", GlobalOptions.Language));
                         objDescriptors.Append(", ");
                         break;
                     case "Extended Area":
                         blnExtendedFound = true;
-                        objDescriptors.Append(LanguageManager.GetString("String_DescExtendedArea", GlobalOptions.Instance.Language));
+                        objDescriptors.Append(LanguageManager.GetString("String_DescExtendedArea", GlobalOptions.Language));
                         objDescriptors.Append(", ");
                         break;
                     case "Material Link":
-                        objDescriptors.Append(LanguageManager.GetString("String_DescMaterialLink", GlobalOptions.Instance.Language));
+                        objDescriptors.Append(LanguageManager.GetString("String_DescMaterialLink", GlobalOptions.Language));
                         objDescriptors.Append(", ");
                         break;
                     case "Multi-Sense":
-                        objDescriptors.Append(LanguageManager.GetString("String_DescMultiSense", GlobalOptions.Instance.Language));
+                        objDescriptors.Append(LanguageManager.GetString("String_DescMultiSense", GlobalOptions.Language));
                         objDescriptors.Append(", ");
                         break;
                     case "Organic Link":
-                        objDescriptors.Append(LanguageManager.GetString("String_DescOrganicLink", GlobalOptions.Instance.Language));
+                        objDescriptors.Append(LanguageManager.GetString("String_DescOrganicLink", GlobalOptions.Language));
                         objDescriptors.Append(", ");
                         break;
                     case "Single-Sense":
-                        objDescriptors.Append(LanguageManager.GetString("String_DescSingleSense", GlobalOptions.Instance.Language));
+                        objDescriptors.Append(LanguageManager.GetString("String_DescSingleSense", GlobalOptions.Language));
                         objDescriptors.Append(", ");
                         break;
                     default:
-                        objDescriptors.Append(LanguageManager.GetString($"String_Desc{strDescriptor.Trim()}", GlobalOptions.Instance.Language));
+                        objDescriptors.Append(LanguageManager.GetString($"String_Desc{strDescriptor.Trim()}", GlobalOptions.Language));
                         objDescriptors.Append(", ");
                         break;
 
@@ -554,13 +554,13 @@ namespace Chummer
             // If Extended Area was not found and the Extended checkbox is checked, add Extended Area to the list of Descriptors.
             if (chkExtended.Checked && !blnExtendedFound)
             {
-                objDescriptors.Append(LanguageManager.GetString("String_DescExtendedArea", GlobalOptions.Instance.Language));
+                objDescriptors.Append(LanguageManager.GetString("String_DescExtendedArea", GlobalOptions.Language));
                 objDescriptors.Append(", ");
             }
 
             if (chkAlchemical.Checked && !blnAlchemicalFound)
             {
-                objDescriptors.Append(LanguageManager.GetString("String_DescAlchemicalPreparation", GlobalOptions.Instance.Language));
+                objDescriptors.Append(LanguageManager.GetString("String_DescAlchemicalPreparation", GlobalOptions.Language));
                 objDescriptors.Append(", ");
             }
 
@@ -573,10 +573,10 @@ namespace Chummer
             switch (xmlSpell.SelectSingleNode("type")?.Value)
             {
                 case "M":
-                    lblType.Text = LanguageManager.GetString("String_SpellTypeMana", GlobalOptions.Instance.Language);
+                    lblType.Text = LanguageManager.GetString("String_SpellTypeMana", GlobalOptions.Language);
                     break;
                 default:
-                    lblType.Text = LanguageManager.GetString("String_SpellTypePhysical", GlobalOptions.Instance.Language);
+                    lblType.Text = LanguageManager.GetString("String_SpellTypePhysical", GlobalOptions.Language);
                     break;
             }
             lblTypeLabel.Visible = !string.IsNullOrEmpty(lblType.Text);
@@ -584,13 +584,13 @@ namespace Chummer
             switch (xmlSpell.SelectSingleNode("duration")?.Value)
             {
                 case "P":
-                    lblDuration.Text = LanguageManager.GetString("String_SpellDurationPermanent", GlobalOptions.Instance.Language);
+                    lblDuration.Text = LanguageManager.GetString("String_SpellDurationPermanent", GlobalOptions.Language);
                     break;
                 case "S":
-                    lblDuration.Text = LanguageManager.GetString("String_SpellDurationSustained", GlobalOptions.Instance.Language);
+                    lblDuration.Text = LanguageManager.GetString("String_SpellDurationSustained", GlobalOptions.Language);
                     break;
                 default:
-                    lblDuration.Text = LanguageManager.GetString("String_SpellDurationInstant", GlobalOptions.Instance.Language);
+                    lblDuration.Text = LanguageManager.GetString("String_SpellDurationInstant", GlobalOptions.Language);
                     break;
             }
             lblDurationLabel.Visible = !string.IsNullOrEmpty(lblDuration.Text);
@@ -613,14 +613,14 @@ namespace Chummer
             }
 
             string strRange = xmlSpell.SelectSingleNode("range")?.Value ?? string.Empty;
-            if (GlobalOptions.Instance.Language != GlobalOptions.DefaultLanguage)
+            if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
             {
-                strRange = strRange.CheapReplace("Self", () => LanguageManager.GetString("String_SpellRangeSelf", GlobalOptions.Instance.Language))
-                    .CheapReplace("LOS", () => LanguageManager.GetString("String_SpellRangeLineOfSight", GlobalOptions.Instance.Language))
-                    .CheapReplace("LOI", () => LanguageManager.GetString("String_SpellRangeLineOfInfluence", GlobalOptions.Instance.Language))
-                    .CheapReplace("T", () => LanguageManager.GetString("String_SpellRangeTouch", GlobalOptions.Instance.Language))
-                    .CheapReplace("(A)", () => '(' + LanguageManager.GetString("String_SpellRangeArea", GlobalOptions.Instance.Language) + ')')
-                    .CheapReplace("MAG", () => LanguageManager.GetString("String_AttributeMAGShort", GlobalOptions.Instance.Language));
+                strRange = strRange.CheapReplace("Self", () => LanguageManager.GetString("String_SpellRangeSelf", GlobalOptions.Language))
+                    .CheapReplace("LOS", () => LanguageManager.GetString("String_SpellRangeLineOfSight", GlobalOptions.Language))
+                    .CheapReplace("LOI", () => LanguageManager.GetString("String_SpellRangeLineOfInfluence", GlobalOptions.Language))
+                    .CheapReplace("T", () => LanguageManager.GetString("String_SpellRangeTouch", GlobalOptions.Language))
+                    .CheapReplace("(A)", () => '(' + LanguageManager.GetString("String_SpellRangeArea", GlobalOptions.Language) + ')')
+                    .CheapReplace("MAG", () => LanguageManager.GetString("String_AttributeMAGShort", GlobalOptions.Language));
             }
             lblRange.Text = strRange;
             lblRangeLabel.Visible = !string.IsNullOrEmpty(lblRange.Text);
@@ -629,11 +629,11 @@ namespace Chummer
             {
                 case "P":
                     lblDamageLabel.Visible = true;
-                    lblDamage.Text = LanguageManager.GetString("String_DamagePhysical", GlobalOptions.Instance.Language);
+                    lblDamage.Text = LanguageManager.GetString("String_DamagePhysical", GlobalOptions.Language);
                     break;
                 case "S":
                     lblDamageLabel.Visible = true;
-                    lblDamage.Text = LanguageManager.GetString("String_DamageStun", GlobalOptions.Instance.Language);
+                    lblDamage.Text = LanguageManager.GetString("String_DamageStun", GlobalOptions.Language);
                     break;
                 default:
                     lblDamageLabel.Visible = false;
@@ -642,14 +642,14 @@ namespace Chummer
             }
 
             string strDV = xmlSpell.SelectSingleNode("dv")?.Value.Replace('/', '÷') ?? string.Empty;
-            if (GlobalOptions.Instance.Language != GlobalOptions.DefaultLanguage)
+            if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
             {
-                strDV = strDV.CheapReplace("F", () => LanguageManager.GetString("String_SpellForce", GlobalOptions.Instance.Language))
-                    .CheapReplace("Overflow damage", () => LanguageManager.GetString("String_SpellOverflowDamage", GlobalOptions.Instance.Language))
-                    .CheapReplace("Damage Value", () => LanguageManager.GetString("String_SpellDamageValue", GlobalOptions.Instance.Language))
-                    .CheapReplace("Toxin DV", () => LanguageManager.GetString("String_SpellToxinDV", GlobalOptions.Instance.Language))
-                    .CheapReplace("Disease DV", () => LanguageManager.GetString("String_SpellDiseaseDV", GlobalOptions.Instance.Language))
-                    .CheapReplace("Radiation Power", () => LanguageManager.GetString("String_SpellRadiationPower", GlobalOptions.Instance.Language));
+                strDV = strDV.CheapReplace("F", () => LanguageManager.GetString("String_SpellForce", GlobalOptions.Language))
+                    .CheapReplace("Overflow damage", () => LanguageManager.GetString("String_SpellOverflowDamage", GlobalOptions.Language))
+                    .CheapReplace("Damage Value", () => LanguageManager.GetString("String_SpellDamageValue", GlobalOptions.Language))
+                    .CheapReplace("Toxin DV", () => LanguageManager.GetString("String_SpellToxinDV", GlobalOptions.Language))
+                    .CheapReplace("Disease DV", () => LanguageManager.GetString("String_SpellDiseaseDV", GlobalOptions.Language))
+                    .CheapReplace("Radiation Power", () => LanguageManager.GetString("String_SpellRadiationPower", GlobalOptions.Language));
             }
 
             if (chkExtended.Checked && !blnExtendedFound)
@@ -731,12 +731,12 @@ namespace Chummer
                 chkFreeBonus.Enabled = true;
             }
 
-            string strSource = xmlSpell.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Instance.Language);
-            string strPage = xmlSpell.SelectSingleNode("altpage")?.Value ?? xmlSpell.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Instance.Language);
-            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
-            lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Instance.Language) + strSpaceCharacter + strPage;
-            lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Instance.Language) + strSpaceCharacter +
-                                 LanguageManager.GetString("String_Page", GlobalOptions.Instance.Language) + strSpaceCharacter + strPage);
+            string strSource = xmlSpell.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+            string strPage = xmlSpell.SelectSingleNode("altpage")?.Value ?? xmlSpell.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+            lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
+            lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter +
+                                 LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
             _blnRefresh = false;
         }

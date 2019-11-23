@@ -89,7 +89,7 @@ namespace Chummer.Backend.Skills
                     objExistSkill.Base = objNewSkill.Base;
                 if (objNewSkill.Karma > objExistSkill.Karma)
                     objExistSkill.Karma = objNewSkill.Karma;
-                objExistSkill.Specializations.MergeInto(objNewSkill.Specializations, (x, y) => x.Free == y.Free ? string.Compare(x.DisplayName(GlobalOptions.Instance.Language), y.DisplayName(GlobalOptions.Instance.Language), StringComparison.Ordinal) : (x.Free ? 1 : -1));
+                objExistSkill.Specializations.MergeInto(objNewSkill.Specializations, (x, y) => x.Free == y.Free ? string.Compare(x.DisplayName(GlobalOptions.Language), y.DisplayName(GlobalOptions.Language), StringComparison.Ordinal) : (x.Free ? 1 : -1));
             });
             foreach (Skill objSkill in lstExistingSkills)
             {
@@ -164,7 +164,7 @@ namespace Chummer.Backend.Skills
                                 objExistSkill.Base = objNewSkill.Base;
                             if (objNewSkill.Karma > objExistSkill.Karma)
                                 objExistSkill.Karma = objNewSkill.Karma;
-                            objExistSkill.Specializations.MergeInto(objNewSkill.Specializations, (x, y) => x.Free == y.Free ? string.Compare(x.DisplayName(GlobalOptions.Instance.Language), y.DisplayName(GlobalOptions.Instance.Language), StringComparison.Ordinal) : (x.Free ? 1 : -1));
+                            objExistSkill.Specializations.MergeInto(objNewSkill.Specializations, (x, y) => x.Free == y.Free ? string.Compare(x.DisplayName(GlobalOptions.Language), y.DisplayName(GlobalOptions.Language), StringComparison.Ordinal) : (x.Free ? 1 : -1));
                         });
                     }
                 }
@@ -235,7 +235,7 @@ namespace Chummer.Backend.Skills
                             objExistSkill.Base = objNewSkill.Base;
                         if (objNewSkill.Karma > objExistSkill.Karma)
                             objExistSkill.Karma = objNewSkill.Karma;
-                        objExistSkill.Specializations.MergeInto(objNewSkill.Specializations, (x, y) => x.Free == y.Free ? string.Compare(x.DisplayName(GlobalOptions.Instance.Language), y.DisplayName(GlobalOptions.Instance.Language), StringComparison.Ordinal) : (x.Free ? 1 : -1));
+                        objExistSkill.Specializations.MergeInto(objNewSkill.Specializations, (x, y) => x.Free == y.Free ? string.Compare(x.DisplayName(GlobalOptions.Language), y.DisplayName(GlobalOptions.Language), StringComparison.Ordinal) : (x.Free ? 1 : -1));
                     });
                     if (blnDoAddToDictionary)
                         _dicSkills.Add(strName, objSkill);
@@ -450,7 +450,7 @@ namespace Chummer.Backend.Skills
                         objExistSkill.Base = objNewSkill.Base;
                     if (objNewSkill.Karma > objExistSkill.Karma)
                         objExistSkill.Karma = objNewSkill.Karma;
-                    objExistSkill.Specializations.MergeInto(objNewSkill.Specializations, (x, y) => x.Free == y.Free ? string.Compare(x.DisplayName(GlobalOptions.Instance.Language), y.DisplayName(GlobalOptions.Instance.Language), StringComparison.Ordinal) : (x.Free ? 1 : -1));
+                    objExistSkill.Specializations.MergeInto(objNewSkill.Specializations, (x, y) => x.Free == y.Free ? string.Compare(x.DisplayName(GlobalOptions.Language), y.DisplayName(GlobalOptions.Language), StringComparison.Ordinal) : (x.Free ? 1 : -1));
                 });
                 if (blnDoAddToDictionary)
                     _dicSkills.Add(strName, objSkill);
@@ -666,8 +666,8 @@ namespace Chummer.Backend.Skills
         {
             objWriter.WriteStartElement("newskills");
 
-            objWriter.WriteElementString("skillptsmax", SkillPointsMaximum.ToString(GlobalOptions.Instance.InvariantCultureInfo));
-            objWriter.WriteElementString("skillgrpsmax", SkillGroupPointsMaximum.ToString(GlobalOptions.Instance.InvariantCultureInfo));
+            objWriter.WriteElementString("skillptsmax", SkillPointsMaximum.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("skillgrpsmax", SkillGroupPointsMaximum.ToString(GlobalOptions.InvariantCultureInfo));
 
             objWriter.WriteStartElement("skills");
             foreach (Skill objSkill in Skills)
@@ -875,7 +875,7 @@ namespace Chummer.Backend.Skills
             {
                 if (lhsExoticSkill != null)
                 {
-                    return string.Compare(rhsExoticSkill.DisplaySpecific(GlobalOptions.Instance.Language), lhsExoticSkill.DisplaySpecific(GlobalOptions.Instance.Language) ?? string.Empty, StringComparison.Ordinal);
+                    return string.Compare(rhsExoticSkill.DisplaySpecific(GlobalOptions.Language), lhsExoticSkill.DisplaySpecific(GlobalOptions.Language) ?? string.Empty, StringComparison.Ordinal);
                 }
                 else
                 {
@@ -887,7 +887,7 @@ namespace Chummer.Backend.Skills
                 return -1;
             }
 
-            return string.Compare(rhs.DisplayNameMethod(GlobalOptions.Instance.Language), lhs.DisplayNameMethod(GlobalOptions.Instance.Language), StringComparison.Ordinal);
+            return string.Compare(rhs.DisplayNameMethod(GlobalOptions.Language), lhs.DisplayNameMethod(GlobalOptions.Language), StringComparison.Ordinal);
         }
 
         public static int CompareSkillGroups(SkillGroup objXGroup, SkillGroup objYGroup)

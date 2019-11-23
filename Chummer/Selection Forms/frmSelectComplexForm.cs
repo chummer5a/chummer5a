@@ -40,7 +40,7 @@ namespace Chummer
         public frmSelectComplexForm(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             // Load the Complex Form information.
             _xmlBaseComplexFormsNode = XmlManager.Load("complexforms.xml").GetFastNavigator().SelectSingleNode("/chummer/complexforms");
@@ -88,66 +88,66 @@ namespace Chummer
                 switch (xmlComplexForm.SelectSingleNode("duration")?.Value)
                 {
                     case "P":
-                        lblDuration.Text = LanguageManager.GetString("String_SpellDurationPermanent", GlobalOptions.Instance.Language);
+                        lblDuration.Text = LanguageManager.GetString("String_SpellDurationPermanent", GlobalOptions.Language);
                         break;
                     case "S":
-                        lblDuration.Text = LanguageManager.GetString("String_SpellDurationSustained", GlobalOptions.Instance.Language);
+                        lblDuration.Text = LanguageManager.GetString("String_SpellDurationSustained", GlobalOptions.Language);
                         break;
                     case "Special":
-                        lblDuration.Text = LanguageManager.GetString("String_SpellDurationSpecial", GlobalOptions.Instance.Language);
+                        lblDuration.Text = LanguageManager.GetString("String_SpellDurationSpecial", GlobalOptions.Language);
                         break;
                     default:
-                        lblDuration.Text = LanguageManager.GetString("String_SpellDurationInstant", GlobalOptions.Instance.Language);
+                        lblDuration.Text = LanguageManager.GetString("String_SpellDurationInstant", GlobalOptions.Language);
                         break;
                 }
                 switch (xmlComplexForm.SelectSingleNode("target")?.Value)
                 {
                     case "Persona":
-                        lblTarget.Text = LanguageManager.GetString("String_ComplexFormTargetPersona", GlobalOptions.Instance.Language);
+                        lblTarget.Text = LanguageManager.GetString("String_ComplexFormTargetPersona", GlobalOptions.Language);
                         break;
                     case "Device":
-                        lblTarget.Text = LanguageManager.GetString("String_ComplexFormTargetDevice", GlobalOptions.Instance.Language);
+                        lblTarget.Text = LanguageManager.GetString("String_ComplexFormTargetDevice", GlobalOptions.Language);
                         break;
                     case "File":
-                        lblTarget.Text = LanguageManager.GetString("String_ComplexFormTargetFile", GlobalOptions.Instance.Language);
+                        lblTarget.Text = LanguageManager.GetString("String_ComplexFormTargetFile", GlobalOptions.Language);
                         break;
                     case "Self":
-                        lblTarget.Text = LanguageManager.GetString("String_SpellRangeSelf", GlobalOptions.Instance.Language);
+                        lblTarget.Text = LanguageManager.GetString("String_SpellRangeSelf", GlobalOptions.Language);
                         break;
                     case "Sprite":
-                        lblTarget.Text = LanguageManager.GetString("String_ComplexFormTargetSprite", GlobalOptions.Instance.Language);
+                        lblTarget.Text = LanguageManager.GetString("String_ComplexFormTargetSprite", GlobalOptions.Language);
                         break;
                     case "Host":
-                        lblTarget.Text = LanguageManager.GetString("String_ComplexFormTargetHost", GlobalOptions.Instance.Language);
+                        lblTarget.Text = LanguageManager.GetString("String_ComplexFormTargetHost", GlobalOptions.Language);
                         break;
                     case "IC":
-                        lblTarget.Text = LanguageManager.GetString("String_ComplexFormTargetIC", GlobalOptions.Instance.Language);
+                        lblTarget.Text = LanguageManager.GetString("String_ComplexFormTargetIC", GlobalOptions.Language);
                         break;
                     default:
-                        lblTarget.Text = LanguageManager.GetString("String_None", GlobalOptions.Instance.Language);
+                        lblTarget.Text = LanguageManager.GetString("String_None", GlobalOptions.Language);
                         break;
                 }
 
                 string strFV = xmlComplexForm.SelectSingleNode("fv")?.Value.Replace('/', '÷') ?? string.Empty;
-                if (GlobalOptions.Instance.Language != GlobalOptions.DefaultLanguage)
+                if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
-                    strFV = strFV.CheapReplace("L", () => LanguageManager.GetString("String_ComplexFormLevel", GlobalOptions.Instance.Language))
-                        .CheapReplace("Overflow damage", () => LanguageManager.GetString("String_SpellOverflowDamage", GlobalOptions.Instance.Language))
-                        .CheapReplace("Damage Value", () => LanguageManager.GetString("String_SpellDamageValue", GlobalOptions.Instance.Language))
-                        .CheapReplace("Toxin DV", () => LanguageManager.GetString("String_SpellToxinDV", GlobalOptions.Instance.Language))
-                        .CheapReplace("Disease DV", () => LanguageManager.GetString("String_SpellDiseaseDV", GlobalOptions.Instance.Language))
-                        .CheapReplace("Radiation Power", () => LanguageManager.GetString("String_SpellRadiationPower", GlobalOptions.Instance.Language));
+                    strFV = strFV.CheapReplace("L", () => LanguageManager.GetString("String_ComplexFormLevel", GlobalOptions.Language))
+                        .CheapReplace("Overflow damage", () => LanguageManager.GetString("String_SpellOverflowDamage", GlobalOptions.Language))
+                        .CheapReplace("Damage Value", () => LanguageManager.GetString("String_SpellDamageValue", GlobalOptions.Language))
+                        .CheapReplace("Toxin DV", () => LanguageManager.GetString("String_SpellToxinDV", GlobalOptions.Language))
+                        .CheapReplace("Disease DV", () => LanguageManager.GetString("String_SpellDiseaseDV", GlobalOptions.Language))
+                        .CheapReplace("Radiation Power", () => LanguageManager.GetString("String_SpellRadiationPower", GlobalOptions.Language));
                 }
 
                 lblFV.Text = strFV;
 
-                string strSource = xmlComplexForm.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Instance.Language);
-                string strPage = xmlComplexForm.SelectSingleNode("altpage")?.Value ?? xmlComplexForm.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Instance.Language);
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
-                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Instance.Language) + strSpaceCharacter + strPage;
+                string strSource = xmlComplexForm.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+                string strPage = xmlComplexForm.SelectSingleNode("altpage")?.Value ?? xmlComplexForm.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
 
-                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Instance.Language) + strSpaceCharacter +
-                    LanguageManager.GetString("String_Page", GlobalOptions.Instance.Language) + strSpaceCharacter + strPage);
+                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter +
+                    LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
             }
             else
             {
@@ -254,7 +254,7 @@ namespace Chummer
                 if (string.IsNullOrEmpty(strId))
                     continue;
 
-                string strName = xmlComplexForm.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Instance.Language);
+                string strName = xmlComplexForm.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
                 // If this is a Sprite with Optional Complex Forms, see if this Complex Form is allowed.
                 if (_xmlOptionalComplexFormNode?.SelectSingleNode("complexform") != null)
                 {

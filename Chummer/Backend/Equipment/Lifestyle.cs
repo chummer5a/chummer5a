@@ -184,7 +184,7 @@ namespace Chummer.Backend.Equipment
 
         private SourceString _objCachedSourceDetail;
         public SourceString SourceDetail => _objCachedSourceDetail ?? (_objCachedSourceDetail =
-                                                new SourceString(Source, DisplayPage(GlobalOptions.Instance.Language), GlobalOptions.Instance.Language));
+                                                new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language));
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -196,24 +196,24 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("sourceid", SourceIDString);
             objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("name", _strName);
-            objWriter.WriteElementString("cost", _decCost.ToString(GlobalOptions.Instance.InvariantCultureInfo));
-            objWriter.WriteElementString("dice", _intDice.ToString(GlobalOptions.Instance.InvariantCultureInfo));
+            objWriter.WriteElementString("cost", _decCost.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("dice", _intDice.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("baselifestyle", _strBaseLifestyle);
-            objWriter.WriteElementString("multiplier", _decMultiplier.ToString(GlobalOptions.Instance.InvariantCultureInfo));
-            objWriter.WriteElementString("months", _intIncrements.ToString(GlobalOptions.Instance.InvariantCultureInfo));
-            objWriter.WriteElementString("roommates", _intRoommates.ToString(GlobalOptions.Instance.InvariantCultureInfo));
-            objWriter.WriteElementString("percentage", _decPercentage.ToString(GlobalOptions.Instance.InvariantCultureInfo));
-            objWriter.WriteElementString("area", _intArea.ToString(GlobalOptions.Instance.InvariantCultureInfo));
-            objWriter.WriteElementString("comforts", _intComforts.ToString(GlobalOptions.Instance.InvariantCultureInfo));
-            objWriter.WriteElementString("security", _intSecurity.ToString(GlobalOptions.Instance.InvariantCultureInfo));
-            objWriter.WriteElementString("basearea", _intBaseArea.ToString(GlobalOptions.Instance.InvariantCultureInfo));
-            objWriter.WriteElementString("basecomforts", _intBaseComforts.ToString(GlobalOptions.Instance.InvariantCultureInfo));
-            objWriter.WriteElementString("basesecurity", _intBaseSecurity.ToString(GlobalOptions.Instance.InvariantCultureInfo));
-            objWriter.WriteElementString("costforearea", _decCostForArea.ToString(GlobalOptions.Instance.InvariantCultureInfo));
-            objWriter.WriteElementString("costforcomforts", _decCostForComforts.ToString(GlobalOptions.Instance.InvariantCultureInfo));
-            objWriter.WriteElementString("costforsecurity", _decCostForSecurity.ToString(GlobalOptions.Instance.InvariantCultureInfo));
+            objWriter.WriteElementString("multiplier", _decMultiplier.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("months", _intIncrements.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("roommates", _intRoommates.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("percentage", _decPercentage.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("area", _intArea.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("comforts", _intComforts.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("security", _intSecurity.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("basearea", _intBaseArea.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("basecomforts", _intBaseComforts.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("basesecurity", _intBaseSecurity.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("costforearea", _decCostForArea.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("costforcomforts", _decCostForComforts.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("costforsecurity", _decCostForSecurity.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("allowbonuslp", _blnAllowBonusLP.ToString());
-            objWriter.WriteElementString("bonuslp", _intBonusLP.ToString(GlobalOptions.Instance.InvariantCultureInfo));
+            objWriter.WriteElementString("bonuslp", _intBonusLP.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
             objWriter.WriteElementString("trustfund", _blnTrustFund.ToString());
@@ -254,7 +254,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("name", ref _strName);
             if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
-                XmlNode node = GetNode(GlobalOptions.Instance.Language);
+                XmlNode node = GetNode(GlobalOptions.Language);
                 node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
             if (blnCopy)
@@ -300,13 +300,13 @@ namespace Chummer.Backend.Equipment
                             if (xmlLifestyleList != null)
                                 foreach (XmlNode xmlLifestyle in xmlLifestyleList)
                                 {
-                                    string strName = xmlLifestyle["name"]?.InnerText ?? LanguageManager.GetString("String_Error", GlobalOptions.Instance.Language);
+                                    string strName = xmlLifestyle["name"]?.InnerText ?? LanguageManager.GetString("String_Error", GlobalOptions.Language);
                                     lstQualities.Add(new ListItem(strName, xmlLifestyle["translate"]?.InnerText ?? strName));
                                 }
                         frmSelectItem frmSelect = new frmSelectItem
                         {
                             GeneralItems = lstQualities,
-                            Description = string.Format(LanguageManager.GetString("String_CannotFindLifestyle", GlobalOptions.Instance.Language), _strName)
+                            Description = string.Format(LanguageManager.GetString("String_CannotFindLifestyle", GlobalOptions.Language), _strName)
                         };
                         frmSelect.ShowDialog();
                         if (frmSelect.DialogResult == DialogResult.Cancel)
@@ -319,7 +319,7 @@ namespace Chummer.Backend.Equipment
             if (!objNode.TryGetBoolFieldQuickly("allowbonuslp", ref _blnAllowBonusLP))
                 GetNode()?.TryGetBoolFieldQuickly("allowbonuslp", ref _blnAllowBonusLP);
             if (!objNode.TryGetInt32FieldQuickly("bonuslp", ref _intBonusLP) && _strBaseLifestyle == "Traveler")
-                _intBonusLP = 1 + GlobalOptions.Instance.RandomGenerator.NextD6ModuloBiasRemoved();
+                _intBonusLP = 1 + GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetBoolFieldQuickly("trustfund", ref _blnTrustFund);
             if (objNode["primarytenant"] == null)
@@ -876,12 +876,12 @@ namespace Chummer.Backend.Equipment
 
         public XmlNode GetNode()
         {
-            return GetNode(GlobalOptions.Instance.Language);
+            return GetNode(GlobalOptions.Language);
         }
 
         public XmlNode GetNode(string strLanguage)
         {
-            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.Instance.LiveCustomData)
+            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
                 _objCachedMyXmlNode = SourceID == Guid.Empty
                     ? XmlManager.Load("lifestyles.xml", strLanguage)
@@ -905,15 +905,15 @@ namespace Chummer.Backend.Equipment
             get
             {
                 decimal d = (Roommates + Area + Comforts + Security) * 10;
-                d += Convert.ToDecimal(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.LifestyleCost, false, BaseLifestyle, true, true), GlobalOptions.Instance.InvariantCultureInfo);
+                d += Convert.ToDecimal(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.LifestyleCost, false, BaseLifestyle, true, true), GlobalOptions.InvariantCultureInfo);
                 if (_eType == LifestyleType.Standard)
                 {
                     d += Convert.ToDecimal(
                         ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.BasicLifestyleCost),
-                        GlobalOptions.Instance.InvariantCultureInfo);
+                        GlobalOptions.InvariantCultureInfo);
                     d += Convert.ToDecimal(
                         ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.BasicLifestyleCost, false,
-                            BaseLifestyle), GlobalOptions.Instance.InvariantCultureInfo);
+                            BaseLifestyle), GlobalOptions.InvariantCultureInfo);
                 }
 
                 d += LifestyleQualities.Sum(lq => lq.Multiplier);
@@ -945,7 +945,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Base Cost Multiplier from any Lifestyle Qualities the Lifestyle has.
         /// </summary>
-        public decimal BaseCostMultiplier => Convert.ToDecimal(LifestyleQualities.Sum(lq => lq.BaseMultiplier) / 100, GlobalOptions.Instance.InvariantCultureInfo);
+        public decimal BaseCostMultiplier => Convert.ToDecimal(LifestyleQualities.Sum(lq => lq.BaseMultiplier) / 100, GlobalOptions.InvariantCultureInfo);
 
         /// <summary>
         /// Total monthly cost of the Lifestyle.
@@ -1039,12 +1039,12 @@ namespace Chummer.Backend.Equipment
             decimal decAmount = TotalMonthlyCost;
                 if (decAmount > CharacterObject.Nuyen)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_NotEnoughNuyen", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughNuyen", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-            objExpense.Create(decAmount* -1, LanguageManager.GetString("String_ExpenseLifestyle", GlobalOptions.Instance.Language) + ' ' + DisplayNameShort(GlobalOptions.Instance.Language), ExpenseType.Nuyen, DateTime.Now);
+            objExpense.Create(decAmount* -1, LanguageManager.GetString("String_ExpenseLifestyle", GlobalOptions.Language) + ' ' + DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
             CharacterObject.ExpenseEntries.AddWithSort(objExpense);
             CharacterObject.Nuyen -= decAmount;
 
@@ -1063,7 +1063,7 @@ namespace Chummer.Backend.Equipment
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,
-                Text = DisplayName(GlobalOptions.Instance.Language),
+                Text = DisplayName(GlobalOptions.Language),
                 Tag = this,
                 ContextMenuStrip = StyleType == LifestyleType.Standard ? cmsBasicLifestyle : cmsAdvancedLifestyle,
                 ForeColor = PreferredColor,
@@ -1090,12 +1090,12 @@ namespace Chummer.Backend.Equipment
         public bool Remove(Character characterObject, bool blnConfirmDelete = true)
         {
             if (!blnConfirmDelete) return characterObject.Lifestyles.Remove(this);
-            return characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteLifestyle", GlobalOptions.Instance.Language)) && characterObject.Lifestyles.Remove(this);
+            return characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteLifestyle", GlobalOptions.Language)) && characterObject.Lifestyles.Remove(this);
         }
 
         public void SetSourceDetail(Control sourceControl)
         {
-            if (_objCachedSourceDetail?.Language != GlobalOptions.Instance.Language)
+            if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
                 _objCachedSourceDetail = null;
             SourceDetail.SetControl(sourceControl);
         }

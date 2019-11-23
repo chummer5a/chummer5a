@@ -66,7 +66,7 @@ namespace Chummer
             }
             if (objXmlProgramNode.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
-            _strRequiresProgram = LanguageManager.GetString("String_None", GlobalOptions.Instance.Language);
+            _strRequiresProgram = LanguageManager.GetString("String_None", GlobalOptions.Language);
             _boolCanDelete = boolCanDelete;
             objXmlProgramNode.TryGetStringFieldQuickly("require", ref _strRequiresProgram);
             objXmlProgramNode.TryGetStringFieldQuickly("source", ref _strSource);
@@ -81,7 +81,7 @@ namespace Chummer
 
         private SourceString _objCachedSourceDetail;
         public SourceString SourceDetail => _objCachedSourceDetail ?? (_objCachedSourceDetail =
-                                                new SourceString(Source, Page(GlobalOptions.Instance.Language), GlobalOptions.Instance.Language));
+                                                new SourceString(Source, Page(GlobalOptions.Language), GlobalOptions.Language));
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -115,7 +115,7 @@ namespace Chummer
             }
             if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
-                XmlNode node = GetNode(GlobalOptions.Instance.Language);
+                XmlNode node = GetNode(GlobalOptions.Language);
                 node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
 
@@ -190,7 +190,7 @@ namespace Chummer
         public string Extra
         {
             get => _strExtra;
-            set => _strExtra = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Instance.Language);
+            set => _strExtra = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
         }
 
         /// <summary>
@@ -216,7 +216,7 @@ namespace Chummer
         /// <summary>
         /// The name of the object as it should be displayed in lists. Name (Extra).
         /// </summary>
-        public string DisplayName => DisplayNameShort(GlobalOptions.Instance.Language);
+        public string DisplayName => DisplayNameShort(GlobalOptions.Language);
 
         /// <summary>
         /// AI Advanced Program's requirement program.
@@ -234,7 +234,7 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(RequiresProgram))
                 return LanguageManager.GetString("String_None", strLanguage);
-            if (strLanguage == GlobalOptions.Instance.Language)
+            if (strLanguage == GlobalOptions.Language)
                 return RequiresProgram;
 
             return XmlManager.Load("programs.xml", strLanguage).SelectSingleNode("/chummer/programs/program[name = \"" + RequiresProgram + "\"]/translate")?.InnerText ?? RequiresProgram;
@@ -289,12 +289,12 @@ namespace Chummer
 
         public XmlNode GetNode()
         {
-            return GetNode(GlobalOptions.Instance.Language);
+            return GetNode(GlobalOptions.Language);
         }
 
         public XmlNode GetNode(string strLanguage)
         {
-            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.Instance.LiveCustomData)
+            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
                 _objCachedMyXmlNode = SourceID == Guid.Empty
                     ? XmlManager.Load("programs.xml", strLanguage)
@@ -349,7 +349,7 @@ namespace Chummer
             if (blnConfirmDelete)
             {
                 if (!characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteAIProgram",
-                    GlobalOptions.Instance.Language)))
+                    GlobalOptions.Language)))
                     return false;
             }
 
@@ -361,7 +361,7 @@ namespace Chummer
 
         public void SetSourceDetail(Control sourceControl)
         {
-            if (_objCachedSourceDetail?.Language != GlobalOptions.Instance.Language)
+            if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
                 _objCachedSourceDetail = null;
             SourceDetail.SetControl(sourceControl);
         }

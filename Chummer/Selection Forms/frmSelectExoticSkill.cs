@@ -33,7 +33,7 @@ namespace Chummer
         public frmSelectExoticSkill(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
         }
 
@@ -92,7 +92,7 @@ namespace Chummer
         /// <summary>
         /// Skill specialisation that was selected in the dialogue.
         /// </summary>
-        public string SelectedExoticSkillSpecialisation => cboSkillSpecialisations.SelectedValue?.ToString() ?? LanguageManager.ReverseTranslateExtra(cboSkillSpecialisations.Text, GlobalOptions.Instance.Language);
+        public string SelectedExoticSkillSpecialisation => cboSkillSpecialisations.SelectedValue?.ToString() ?? LanguageManager.ReverseTranslateExtra(cboSkillSpecialisations.Text, GlobalOptions.Language);
 
         #endregion
 

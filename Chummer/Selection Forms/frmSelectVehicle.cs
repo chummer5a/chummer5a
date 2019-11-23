@@ -50,7 +50,7 @@ namespace Chummer
         public frmSelectVehicle(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             lblMarkupLabel.Visible = objCharacter.Created;
             nudMarkup.Visible = objCharacter.Created;
             lblMarkupPercentLabel.Visible = objCharacter.Created;
@@ -75,7 +75,7 @@ namespace Chummer
             }
             else
             {
-                chkHideOverAvailLimit.Text = string.Format(chkHideOverAvailLimit.Text, _objCharacter.MaximumAvailability.ToString(GlobalOptions.Instance.CultureInfo));
+                chkHideOverAvailLimit.Text = string.Format(chkHideOverAvailLimit.Text, _objCharacter.MaximumAvailability.ToString(GlobalOptions.CultureInfo));
                 chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
             }
 
@@ -89,7 +89,7 @@ namespace Chummer
 
             if (_lstCategory.Count > 0)
             {
-                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll", GlobalOptions.Instance.Language)));
+                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll", GlobalOptions.Language)));
             }
             chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
 
@@ -357,7 +357,7 @@ namespace Chummer
                 decimal decCost = 0.0m;
                 if (!chkFreeItem.Checked)
                 {
-                    if (decimal.TryParse(strCost, NumberStyles.Any, GlobalOptions.Instance.InvariantCultureInfo, out decimal decTmp))
+                    if (decimal.TryParse(strCost, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decimal decTmp))
                     {
                         decCost = decTmp;
                     }
@@ -379,18 +379,18 @@ namespace Chummer
                     }
                 }
 
-                lblVehicleCost.Text = decCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.Instance.CultureInfo) + '¥';
+                lblVehicleCost.Text = decCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 lblVehicleCostLabel.Visible = !string.IsNullOrEmpty(lblVehicleCost.Text);
                 lblTest.Text = _objCharacter.AvailTest(decCost, lblVehicleAvail.Text);
                 lblTestLabel.Visible = !string.IsNullOrEmpty(lblTest.Text);
             }
 
 
-            string strSource = objXmlVehicle.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Instance.Language);
-            string strPage = objXmlVehicle.SelectSingleNode("altpage")?.Value ?? objXmlVehicle.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Instance.Language);
-            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
-            lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Instance.Language) + strSpaceCharacter + strPage;
-            lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Instance.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Instance.Language) + strSpaceCharacter + strPage);
+            string strSource = objXmlVehicle.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+            string strPage = objXmlVehicle.SelectSingleNode("altpage")?.Value ?? objXmlVehicle.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+            lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
+            lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
         }
 
@@ -440,7 +440,7 @@ namespace Chummer
                         continue;
                 }
 
-                string strDisplayname = objXmlVehicle.SelectSingleNode("translate")?.Value ?? objXmlVehicle.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Instance.Language);
+                string strDisplayname = objXmlVehicle.SelectSingleNode("translate")?.Value ?? objXmlVehicle.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
 
                 if (!_objCharacter.Options.SearchInCategoryOnly && txtSearch.TextLength != 0)
                 {
@@ -487,11 +487,11 @@ namespace Chummer
 
             if (chkUsedVehicle.Checked)
             {
-                decimal decCost = Convert.ToDecimal(xmlVehicle.SelectSingleNode("cost")?.Value, GlobalOptions.Instance.InvariantCultureInfo);
+                decimal decCost = Convert.ToDecimal(xmlVehicle.SelectSingleNode("cost")?.Value, GlobalOptions.InvariantCultureInfo);
                 decCost *= 1 - (nudUsedVehicleDiscount.Value / 100.0m);
 
                 _blnUsedVehicle = true;
-                _strUsedAvail = lblVehicleAvail.Text.Replace(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Instance.Language), "R").Replace(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Instance.Language), "F");
+                _strUsedAvail = lblVehicleAvail.Text.Replace(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language), "R").Replace(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language), "F");
                 _decUsedCost = decCost;
             }
 

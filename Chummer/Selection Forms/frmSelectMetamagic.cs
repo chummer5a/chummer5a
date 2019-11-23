@@ -48,7 +48,7 @@ namespace Chummer
         public frmSelectMetamagic(Character objCharacter, Mode objMode)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
 
             // Load the Metamagic information.
@@ -57,20 +57,20 @@ namespace Chummer
                 case Mode.Metamagic:
                     _strRootXPath = "/chummer/metamagics/metamagic";
                     _objXmlDocument = XmlManager.Load("metamagic.xml");
-                    _strType = LanguageManager.GetString("String_Metamagic", GlobalOptions.Instance.Language);
+                    _strType = LanguageManager.GetString("String_Metamagic", GlobalOptions.Language);
                     break;
                 case Mode.Echo:
                     _strRootXPath = "/chummer/echoes/echo";
                     _objXmlDocument = XmlManager.Load("echoes.xml");
-                    _strType = LanguageManager.GetString("String_Echo", GlobalOptions.Instance.Language);
+                    _strType = LanguageManager.GetString("String_Echo", GlobalOptions.Language);
                     break;
             }
         }
 
         private void frmSelectMetamagic_Load(object sender, EventArgs e)
         {
-            Text = string.Format(LanguageManager.GetString("Title_SelectGeneric", GlobalOptions.Instance.Language), _strType);
-            chkLimitList.Text = string.Format(LanguageManager.GetString("Checkbox_SelectGeneric_LimitList", GlobalOptions.Instance.Language), _strType);
+            Text = string.Format(LanguageManager.GetString("Title_SelectGeneric", GlobalOptions.Language), _strType);
+            chkLimitList.Text = string.Format(LanguageManager.GetString("Checkbox_SelectGeneric_LimitList", GlobalOptions.Language), _strType);
 
             _blnLoading = false;
             BuildMetamagicList();
@@ -91,9 +91,9 @@ namespace Chummer
                 {
                     string strSource = objXmlMetamagic["source"]?.InnerText;
                     string strPage = objXmlMetamagic["altpage"]?.InnerText ?? objXmlMetamagic["page"]?.InnerText;
-                    string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
-                    lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Instance.Language) + strSpaceCharacter + strPage;
-                    lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Instance.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Instance.Language) + strSpaceCharacter + strPage);
+                    string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                    lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
+                    lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
                 }
                 else
                 {
@@ -175,7 +175,7 @@ namespace Chummer
                         {
                             if (!chkLimitList.Checked || objXmlMetamagic.RequirementsMet(_objCharacter))
                             {
-                                lstMetamagics.Add(new ListItem(strId, objXmlMetamagic["translate"]?.InnerText ?? objXmlMetamagic["name"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Instance.Language)));
+                                lstMetamagics.Add(new ListItem(strId, objXmlMetamagic["translate"]?.InnerText ?? objXmlMetamagic["name"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language)));
                             }
                         }
                     }

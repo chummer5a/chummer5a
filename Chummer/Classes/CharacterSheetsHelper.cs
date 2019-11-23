@@ -25,12 +25,12 @@ namespace Chummer.Classes
                     .Select(name => new ListItem<string>(name, name))
                     .ToList();
 
-            if (GlobalOptions.Instance.Language != "en-us")
+            if (GlobalOptions.Language != "en-us")
             {
-                string langSheets = Path.Combine(sheetsDirectoryPath, GlobalOptions.Instance.Language);
+                string langSheets = Path.Combine(sheetsDirectoryPath, GlobalOptions.Language);
                 if (Directory.Exists(langSheets))
                 {
-                    string langfolder = LanguageManager.DictionaryLanguages[GlobalOptions.Instance.Language].LanguageName;
+                    string langfolder = LanguageManager.DictionaryLanguages[GlobalOptions.Language].LanguageName;
 
                     names.AddRange(
                         Directory.GetFileSystemEntries(langSheets)

@@ -32,7 +32,7 @@ namespace Chummer
         public frmSelectNexus(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             _objGear = new Gear(objCharacter);
             MoveControls();
@@ -148,17 +148,17 @@ namespace Chummer
             int intSystemCost = 0;
             if (intSystem <= 3)
             {
-                strSystemAvail = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(intPersona, GlobalOptions.Instance.InvariantCultureInfo) / 5.0)).ToString();
+                strSystemAvail = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(intPersona, GlobalOptions.InvariantCultureInfo) / 5.0)).ToString();
                 intSystemCost = intSystem * intPersona * 25;
             }
             else if (intSystem <= 6)
             {
-                strSystemAvail = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(intPersona, GlobalOptions.Instance.InvariantCultureInfo) / 2.0)).ToString();
+                strSystemAvail = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(intPersona, GlobalOptions.InvariantCultureInfo) / 2.0)).ToString();
                 intSystemCost = intSystem * intPersona * 50;
             }
             else
             {
-                strSystemAvail = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(intPersona, GlobalOptions.Instance.InvariantCultureInfo) / 2.0)).ToString() + "F";
+                strSystemAvail = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(intPersona, GlobalOptions.InvariantCultureInfo) / 2.0)).ToString() + "F";
                 intSystemCost = intSystem * intPersona * 300;
             }
 
@@ -167,17 +167,17 @@ namespace Chummer
             int intFirewallCost = 0;
             if (intFirewall <= 3)
             {
-                strFirewallAvail = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(intProcessor, GlobalOptions.Instance.InvariantCultureInfo) / 10.0)).ToString();
+                strFirewallAvail = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(intProcessor, GlobalOptions.InvariantCultureInfo) / 10.0)).ToString();
                 intFirewallCost = intFirewall * intProcessor * 25;
             }
             else if (intFirewall <= 6)
             {
-                strFirewallAvail = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(intProcessor, GlobalOptions.Instance.InvariantCultureInfo) / 5.0)).ToString();
+                strFirewallAvail = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(intProcessor, GlobalOptions.InvariantCultureInfo) / 5.0)).ToString();
                 intFirewallCost = intFirewall * intProcessor * 50;
             }
             else
             {
-                strFirewallAvail = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(intProcessor, GlobalOptions.Instance.InvariantCultureInfo) / 5.0)).ToString() + "F";
+                strFirewallAvail = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(intProcessor, GlobalOptions.InvariantCultureInfo) / 5.0)).ToString() + "F";
                 intFirewallCost = intFirewall * intProcessor * 250;
             }
 
@@ -222,15 +222,15 @@ namespace Chummer
                 decCost = 0;
 
             // Update the labels.
-            lblResponseAvail.Text = strResponseAvail.CheapReplace("R", () => LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Instance.Language)).CheapReplace("F", () => LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Instance.Language));
-            lblSystemAvail.Text = strSystemAvail.CheapReplace("R", () => LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Instance.Language)).CheapReplace("F", () => LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Instance.Language));
-            lblFirewallAvail.Text = strFirewallAvail.CheapReplace("R", () => LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Instance.Language)).CheapReplace("F", () => LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Instance.Language));
-            lblCost.Text = decCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.Instance.CultureInfo) + '¥';
+            lblResponseAvail.Text = strResponseAvail.CheapReplace("R", () => LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language)).CheapReplace("F", () => LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language));
+            lblSystemAvail.Text = strSystemAvail.CheapReplace("R", () => LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language)).CheapReplace("F", () => LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language));
+            lblFirewallAvail.Text = strFirewallAvail.CheapReplace("R", () => LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language)).CheapReplace("F", () => LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language));
+            lblCost.Text = decCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
             Gear objNexus = new Gear(_objCharacter)
             {
-                Name = LanguageManager.GetString("String_SelectNexus_Nexus", GlobalOptions.Instance.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language) + '(' + LanguageManager.GetString("String_SelectNexus_Processor", GlobalOptions.Instance.Language) + ' ' + intProcessor.ToString() + ')',
-                Cost = decCost.ToString(GlobalOptions.Instance.InvariantCultureInfo),
+                Name = LanguageManager.GetString("String_SelectNexus_Nexus", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + LanguageManager.GetString("String_SelectNexus_Processor", GlobalOptions.Language) + ' ' + intProcessor.ToString() + ')',
+                Cost = decCost.ToString(GlobalOptions.InvariantCultureInfo),
                 Avail = "0",
                 Category = "Nexus",
                 Source = "UN",
@@ -239,7 +239,7 @@ namespace Chummer
 
             Gear objResponse = new Gear(_objCharacter)
             {
-                Name = LanguageManager.GetString("String_Response", GlobalOptions.Instance.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language) + '(' + LanguageManager.GetString("String_Rating", GlobalOptions.Instance.Language) + ' ' + intResponse.ToString() + ')',
+                Name = LanguageManager.GetString("String_Response", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + LanguageManager.GetString("String_Rating", GlobalOptions.Language) + ' ' + intResponse.ToString() + ')',
                 Category = "Nexus Module",
                 Cost = "0",
                 Avail = strResponseAvail,
@@ -250,7 +250,7 @@ namespace Chummer
 
             Gear objSignal = new Gear(_objCharacter)
             {
-                Name = LanguageManager.GetString("String_Signal", GlobalOptions.Instance.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language) + '(' + LanguageManager.GetString("String_Rating", GlobalOptions.Instance.Language) + ' ' + intSignal.ToString() + ')',
+                Name = LanguageManager.GetString("String_Signal", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + LanguageManager.GetString("String_Rating", GlobalOptions.Language) + ' ' + intSignal.ToString() + ')',
                 Category = "Nexus Module",
                 Cost = "0",
                 Avail = "0",
@@ -261,7 +261,7 @@ namespace Chummer
 
             Gear objSystem = new Gear(_objCharacter)
             {
-                Name = LanguageManager.GetString("String_System", GlobalOptions.Instance.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language) + '(' + LanguageManager.GetString("String_Rating", GlobalOptions.Instance.Language) + ' ' + intSystem.ToString() + ')',
+                Name = LanguageManager.GetString("String_System", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + LanguageManager.GetString("String_Rating", GlobalOptions.Language) + ' ' + intSystem.ToString() + ')',
                 Category = "Nexus Module",
                 Cost = "0",
                 Avail = strSystemAvail,
@@ -272,7 +272,7 @@ namespace Chummer
 
             Gear objFirewall = new Gear(_objCharacter)
             {
-                Name = LanguageManager.GetString("String_Firewall", GlobalOptions.Instance.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language) + '(' + LanguageManager.GetString("String_Rating", GlobalOptions.Instance.Language) + ' ' + intFirewall.ToString() + ')',
+                Name = LanguageManager.GetString("String_Firewall", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + LanguageManager.GetString("String_Rating", GlobalOptions.Language) + ' ' + intFirewall.ToString() + ')',
                 Category = "Nexus Module",
                 Cost = "0",
                 Avail = strFirewallAvail,
@@ -283,7 +283,7 @@ namespace Chummer
 
             Gear objPersona = new Gear(_objCharacter)
             {
-                Name = LanguageManager.GetString("String_SelectNexus_PersonaLimit", GlobalOptions.Instance.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language) + '(' + intPersona.ToString() + ')',
+                Name = LanguageManager.GetString("String_SelectNexus_PersonaLimit", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + intPersona.ToString() + ')',
                 Category = "Nexus Module",
                 Cost = "0",
                 Avail = "0",

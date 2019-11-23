@@ -51,7 +51,7 @@ namespace Chummer
         public frmSelectVehicleMod(Character objCharacter, IEnumerable<VehicleMod> lstExistingMods)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             // Load the Vehicle information.
             _xmlBaseVehicleDataNode = XmlManager.Load("vehicles.xml").GetFastNavigator().SelectSingleNode("/chummer");
@@ -75,7 +75,7 @@ namespace Chummer
                 lblMarkupLabel.Visible = false;
                 nudMarkup.Visible = false;
                 lblMarkupPercentLabel.Visible = false;
-                chkHideOverAvailLimit.Text = string.Format(chkHideOverAvailLimit.Text, _objCharacter.MaximumAvailability.ToString(GlobalOptions.Instance.CultureInfo));
+                chkHideOverAvailLimit.Text = string.Format(chkHideOverAvailLimit.Text, _objCharacter.MaximumAvailability.ToString(GlobalOptions.CultureInfo));
                 chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
             }
             chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
@@ -94,7 +94,7 @@ namespace Chummer
             _lstCategory.Sort(CompareListItems.CompareNames);
             if (_lstCategory.Count > 0)
             {
-                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll", GlobalOptions.Instance.Language)));
+                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll", GlobalOptions.Language)));
             }
             cboCategory.BeginUpdate();
             cboCategory.ValueMember = "Value";
@@ -379,7 +379,7 @@ namespace Chummer
                 if ((!chkHideOverAvailLimit.Checked || SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter)) &&
                     (!chkShowOnlyAffordItems.Checked || chkFreeItem.Checked || SelectionShared.CheckNuyenRestriction(objXmlMod, _objCharacter.Nuyen, decCostMultiplier)))
                 {
-                    lstMods.Add(new ListItem(objXmlMod.SelectSingleNode("id")?.Value, objXmlMod.SelectSingleNode("translate")?.Value ?? objXmlMod.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Instance.Language)));
+                    lstMods.Add(new ListItem(objXmlMod.SelectSingleNode("id")?.Value, objXmlMod.SelectSingleNode("translate")?.Value ?? objXmlMod.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language)));
                 }
             }
             lstMods.Sort(CompareListItems.CompareNames);
@@ -459,7 +459,7 @@ namespace Chummer
                 if (strRating == "qty")
                 {
                     nudRating.Maximum = 20;
-                    lblRatingLabel.Text = LanguageManager.GetString("Label_Qty", GlobalOptions.Instance.Language);
+                    lblRatingLabel.Text = LanguageManager.GetString("Label_Qty", GlobalOptions.Language);
                     lblRatingLabel.Visible = true;
                     nudRating.Visible = true;
                     lblRatingNALabel.Visible = false;
@@ -468,7 +468,7 @@ namespace Chummer
                 else if (strRating == "body")
                 {
                     nudRating.Maximum = _objVehicle.Body;
-                    lblRatingLabel.Text = LanguageManager.GetString("Label_Body", GlobalOptions.Instance.Language);
+                    lblRatingLabel.Text = LanguageManager.GetString("Label_Body", GlobalOptions.Language);
                     lblRatingLabel.Visible = true;
                     nudRating.Visible = true;
                     lblRatingNALabel.Visible = false;
@@ -477,14 +477,14 @@ namespace Chummer
                 else if (strRating == "seats")
                 {
                     nudRating.Maximum = _objVehicle.TotalSeats;
-                    lblRatingLabel.Text = LanguageManager.GetString("Label_Seats", GlobalOptions.Instance.Language);
+                    lblRatingLabel.Text = LanguageManager.GetString("Label_Seats", GlobalOptions.Language);
                     lblRatingLabel.Visible = true;
                     nudRating.Visible = true;
                     lblRatingNALabel.Visible = false;
                 }
                 else
                 {
-                    lblRatingLabel.Text = LanguageManager.GetString("Label_Rating", GlobalOptions.Instance.Language);
+                    lblRatingLabel.Text = LanguageManager.GetString("Label_Rating", GlobalOptions.Language);
                     lblRatingLabel.Visible = true;
                     int intRating = Convert.ToInt32(strRating);
                     if (intRating > 0)
@@ -548,7 +548,7 @@ namespace Chummer
                 // Cost.
                 decimal decItemCost = 0;
                 if (chkFreeItem.Checked)
-                    lblCost.Text = (0.0m).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.Instance.CultureInfo) + '¥';
+                    lblCost.Text = (0.0m).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 else
                 {
                     string strCost = xmlVehicleMod.SelectSingleNode("cost")?.Value ?? string.Empty;
@@ -560,18 +560,18 @@ namespace Chummer
                         if (strCost.Contains('-'))
                         {
                             string[] strValues = strCost.Split('-');
-                            decMin = Convert.ToDecimal(strValues[0], GlobalOptions.Instance.InvariantCultureInfo);
-                            decMax = Convert.ToDecimal(strValues[1], GlobalOptions.Instance.InvariantCultureInfo);
+                            decMin = Convert.ToDecimal(strValues[0], GlobalOptions.InvariantCultureInfo);
+                            decMax = Convert.ToDecimal(strValues[1], GlobalOptions.InvariantCultureInfo);
                         }
                         else
-                            decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalOptions.Instance.InvariantCultureInfo);
+                            decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalOptions.InvariantCultureInfo);
 
                         if (decMax == decimal.MaxValue)
-                            lblCost.Text = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.Instance.CultureInfo) + "¥+";
+                            lblCost.Text = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + "¥+";
                         else
-                            lblCost.Text = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.Instance.CultureInfo) + " - " + decMax.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.Instance.CultureInfo) + '¥';
+                            lblCost.Text = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + " - " + decMax.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
-                        strCost = decMin.ToString(GlobalOptions.Instance.InvariantCultureInfo);
+                        strCost = decMin.ToString(GlobalOptions.InvariantCultureInfo);
                     }
                     else if (strCost.StartsWith("FixedValues("))
                     {
@@ -588,7 +588,7 @@ namespace Chummer
 
                     objProcess = CommonFunctions.EvaluateInvariantXPath(strCost, out blnIsSuccess);
                     if (blnIsSuccess)
-                        decItemCost = Convert.ToDecimal(objProcess, GlobalOptions.Instance.InvariantCultureInfo);
+                        decItemCost = Convert.ToDecimal(objProcess, GlobalOptions.InvariantCultureInfo);
                     decItemCost *= _intModMultiplier;
 
                     // Apply any markup.
@@ -599,7 +599,7 @@ namespace Chummer
                         decItemCost *= 0.9m;
                     }
 
-                    lblCost.Text = decItemCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.Instance.CultureInfo) + '¥';
+                    lblCost.Text = decItemCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 }
                 lblCostLabel.Visible = !string.IsNullOrEmpty(lblCost.Text);
 
@@ -615,7 +615,7 @@ namespace Chummer
                         lblVehicleCapacityLabel.Visible = true;
                         lblVehicleCapacity.Visible = true;
                         lblVehicleCapacity.Text = GetRemainingModCapacity(strCategory, Convert.ToInt32(lblSlots.Text));
-                        lblVehicleCapacityLabel.SetToolTip(LanguageManager.GetString("Tip_RemainingVehicleModCapacity", GlobalOptions.Instance.Language));
+                        lblVehicleCapacityLabel.SetToolTip(LanguageManager.GetString("Tip_RemainingVehicleModCapacity", GlobalOptions.Language));
                     }
                     else
                     {
@@ -624,9 +624,9 @@ namespace Chummer
                     }
 
                     if (strCategory == "Weapon Mod")
-                        lblCategory.Text = LanguageManager.GetString("String_WeaponModification", GlobalOptions.Instance.Language);
+                        lblCategory.Text = LanguageManager.GetString("String_WeaponModification", GlobalOptions.Language);
                     // Translate the Category if possible.
-                    else if (GlobalOptions.Instance.Language != GlobalOptions.DefaultLanguage)
+                    else if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                     {
                         XPathNavigator objXmlCategoryTranslate = _xmlBaseVehicleDataNode.SelectSingleNode("modcategories/category[. = \"" + strCategory + "\"]/@translate");
                         lblCategory.Text = objXmlCategoryTranslate?.Value ?? strCategory;
@@ -646,22 +646,22 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(strLimit))
                 {
                     // Translate the Limit if possible.
-                    if (GlobalOptions.Instance.Language != GlobalOptions.DefaultLanguage)
+                    if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                     {
                         XPathNavigator objXmlLimit = _xmlBaseVehicleDataNode.SelectSingleNode("limits/limit[. = \"" + strLimit + "\"/@translate]");
-                        lblLimit.Text = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language) + '(' + objXmlLimit?.Value ?? strLimit + ')';
+                        lblLimit.Text = LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + objXmlLimit?.Value ?? strLimit + ')';
                     }
                     else
-                        lblLimit.Text = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language) + '(' + strLimit + ')';
+                        lblLimit.Text = LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + strLimit + ')';
                 }
                 else
                     lblLimit.Text = string.Empty;
 
-                string strSource = xmlVehicleMod.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Instance.Language);
-                string strPage = xmlVehicleMod.SelectSingleNode("altpage")?.Value ?? xmlVehicleMod.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Instance.Language);
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
-                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Instance.Language) + strSpaceCharacter + strPage;
-                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Instance.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Instance.Language) + strSpaceCharacter + strPage);
+                string strSource = xmlVehicleMod.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+                string strPage = xmlVehicleMod.SelectSingleNode("altpage")?.Value ?? xmlVehicleMod.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
+                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
                 lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
             }
             else
@@ -714,7 +714,7 @@ namespace Chummer
         private string ReplaceStrings(string strInput, int intExtraSlots = 0)
         {
             StringBuilder objInputBuilder = new StringBuilder(strInput);
-            objInputBuilder.Replace("Rating", nudRating.Value.ToString(GlobalOptions.Instance.InvariantCultureInfo));
+            objInputBuilder.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo));
             objInputBuilder.Replace("Vehicle Cost", _objVehicle.Cost);
             objInputBuilder.Replace("Weapon Cost", 0.ToString());
             objInputBuilder.Replace("Total Cost", 0.ToString());

@@ -47,7 +47,7 @@ namespace Chummer
 	        }
 	        _objCharacter = objCharacter;
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             LoadData();
 
             _lstSelectedDrugComponents = new List<clsNodeData>();
@@ -63,7 +63,7 @@ namespace Chummer
                     Log.Warn($"Unknown category {strCategory} in component {objItem.Key}");
                     return;
                 }
-                TreeNode objNode = nodCategoryNode.Nodes.Add(objItem.Value.DisplayNameShort(GlobalOptions.Instance.Language));
+                TreeNode objNode = nodCategoryNode.Nodes.Add(objItem.Value.DisplayNameShort(GlobalOptions.Language));
                 int intLevelCount = objItem.Value.DrugEffects.Count;
                 if (intLevelCount == 1)
                 {
@@ -110,7 +110,7 @@ namespace Chummer
 			_lstGrade.Clear();
 			foreach (Grade objGrade in objGradeList)
 			{
-			    _lstGrade.Add(new ListItem(objGrade.Name, objGrade.DisplayName(GlobalOptions.Instance.Language)));
+			    _lstGrade.Add(new ListItem(objGrade.Name, objGrade.DisplayName(GlobalOptions.Language)));
 			}
             cboGrade.BeginUpdate();
 			cboGrade.DataSource = null;
@@ -142,13 +142,13 @@ namespace Chummer
 		    // Make sure the suite and file name fields are populated.
 		    if (string.IsNullOrEmpty(txtDrugName.Text))
 		    {
-		        MessageBox.Show(LanguageManager.GetString("Message_CustomDrug_Name", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_CustomDrug_Name", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+		        MessageBox.Show(LanguageManager.GetString("Message_CustomDrug_Name", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CustomDrug_Name", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
 		    }
 
 		    if (_objDrug.Components.Count(o => o.Category == "Foundation") != 1)
 		    {
-		        MessageBox.Show(LanguageManager.GetString("Message_CustomDrug_MissingFoundation", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_CustomDrug_Foundation", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+		        MessageBox.Show(LanguageManager.GetString("Message_CustomDrug_MissingFoundation", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CustomDrug_Foundation", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
 		        return;
             }
 
@@ -223,7 +223,7 @@ namespace Chummer
 
             string strNodeText = objNodeData.DrugComponent.CurrentDisplayName;
             if (objNodeData.DrugComponent.Level <= 0 && objNodeData.DrugComponent.DrugEffects.Count > 1)
-                strNodeText += strSpaceString + '(' + LanguageManager.GetString("String_Level") + strSpaceString + (objNodeData.Level + 1).ToString(GlobalOptions.Instance.CultureInfo) + ")";
+                strNodeText += strSpaceString + '(' + LanguageManager.GetString("String_Level") + strSpaceString + (objNodeData.Level + 1).ToString(GlobalOptions.CultureInfo) + ")";
             TreeNode objNewNode = nodCategoryNode.Nodes.Add(strNodeText);
             objNewNode.Tag = objNodeData;
             objNewNode.EnsureVisible();

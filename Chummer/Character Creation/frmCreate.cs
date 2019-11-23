@@ -88,7 +88,7 @@ namespace Chummer
             lmtControl.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
             lmtControl.MakeDirty += MakeDirty;
 
-            LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             ContextMenuStrip[] lstCMSToTranslate = {
                 cmsAdvancedLifestyle,
                 cmsAdvancedProgram,
@@ -134,7 +134,7 @@ namespace Chummer
             // Update the text in the Menus so they can be merged with frmMain properly.
             foreach (ToolStripMenuItem objItem in mnuCreateMenu.Items.OfType<ToolStripMenuItem>())
             {
-                LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Instance.Language);
+                LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Language);
             }
             foreach (ContextMenuStrip objCMS in lstCMSToTranslate)
             {
@@ -142,7 +142,7 @@ namespace Chummer
                 {
                     foreach (ToolStripMenuItem objItem in objCMS.Items.OfType<ToolStripMenuItem>())
                     {
-                        LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Instance.Language);
+                        LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Language);
                     }
                 }
             }
@@ -265,10 +265,10 @@ namespace Chummer
                 txtAlias.DoDatabinding("Text", CharacterObject, nameof(Character.Alias));
                 txtPlayerName.DoDatabinding("Text", CharacterObject, nameof(Character.PlayerName));
 
-                tssBPLabel.Text = LanguageManager.GetString("Label_Karma", GlobalOptions.Instance.Language);
-                tssBPRemainLabel.Text = LanguageManager.GetString("Label_KarmaRemaining", GlobalOptions.Instance.Language);
-                tabBPSummary.Text = LanguageManager.GetString("Tab_BPSummary_Karma", GlobalOptions.Instance.Language);
-                lblQualityBPLabel.Text = LanguageManager.GetString("Label_Karma", GlobalOptions.Instance.Language);
+                tssBPLabel.Text = LanguageManager.GetString("Label_Karma", GlobalOptions.Language);
+                tssBPRemainLabel.Text = LanguageManager.GetString("Label_KarmaRemaining", GlobalOptions.Language);
+                tabBPSummary.Text = LanguageManager.GetString("Tab_BPSummary_Karma", GlobalOptions.Language);
+                lblQualityBPLabel.Text = LanguageManager.GetString("Label_Karma", GlobalOptions.Language);
 
 
                 // Set the visibility of the Bioware Suites menu options.
@@ -292,8 +292,8 @@ namespace Chummer
                     nudMugshotIndex.Value = 0;
                 }
 
-                lblNumMugshots.Text = LanguageManager.GetString("String_Of", GlobalOptions.Instance.Language) +
-                                      CharacterObject.Mugshots.Count.ToString(GlobalOptions.Instance.CultureInfo);
+                lblNumMugshots.Text = LanguageManager.GetString("String_Of", GlobalOptions.Language) +
+                                      CharacterObject.Mugshots.Count.ToString(GlobalOptions.CultureInfo);
 
                 // Refresh character information fields.
                 RefreshMetatypeFields();
@@ -392,7 +392,7 @@ namespace Chummer
                 {
                     lstTraditions.Sort(CompareListItems.CompareNames);
                     lstTraditions.Insert(0,
-                        new ListItem("None", LanguageManager.GetString("String_None", GlobalOptions.Instance.Language)));
+                        new ListItem("None", LanguageManager.GetString("String_None", GlobalOptions.Language)));
                     cboTradition.BeginUpdate();
                     cboTradition.ValueMember = "Value";
                     cboTradition.DisplayMember = "Name";
@@ -561,7 +561,7 @@ namespace Chummer
                 {
                     lstStreams.Sort(CompareListItems.CompareNames);
                     lstStreams.Insert(0,
-                        new ListItem("None", LanguageManager.GetString("String_None", GlobalOptions.Instance.Language)));
+                        new ListItem("None", LanguageManager.GetString("String_None", GlobalOptions.Language)));
                     cboStream.BeginUpdate();
                     cboStream.ValueMember = "Value";
                     cboStream.DisplayMember = "Name";
@@ -799,8 +799,8 @@ namespace Chummer
                 if (CharacterObject.InternalIdsNeedingReapplyImprovements.Count > 0)
                 {
                     if (MessageBox.Show(
-                            LanguageManager.GetString("Message_ImprovementLoadError", GlobalOptions.Instance.Language),
-                            LanguageManager.GetString("MessageTitle_ImprovementLoadError", GlobalOptions.Instance.Language),
+                            LanguageManager.GetString("Message_ImprovementLoadError", GlobalOptions.Language),
+                            LanguageManager.GetString("MessageTitle_ImprovementLoadError", GlobalOptions.Language),
                             MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                     {
                         DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements);
@@ -832,8 +832,8 @@ namespace Chummer
             if (IsDirty)
             {
                 string strCharacterName = CharacterObject.CharacterName;
-                DialogResult objResult = MessageBox.Show(string.Format(LanguageManager.GetString("Message_UnsavedChanges", GlobalOptions.Instance.Language), strCharacterName),
-                    LanguageManager.GetString("MessageTitle_UnsavedChanges", GlobalOptions.Instance.Language), MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                DialogResult objResult = MessageBox.Show(string.Format(LanguageManager.GetString("Message_UnsavedChanges", GlobalOptions.Language), strCharacterName),
+                    LanguageManager.GetString("MessageTitle_UnsavedChanges", GlobalOptions.Language), MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
                 if (objResult == DialogResult.Yes)
                 {
                     // Attempt to save the Character. If the user cancels the Save As dialogue that may open, cancel the closing event so that changes are not lost.
@@ -1015,25 +1015,25 @@ namespace Chummer
                             // If the character options permit initiation in create mode, show the Initiation page.
                             UpdateInitiationCost();
 
-                            tabInitiation.Text = LanguageManager.GetString("Tab_Initiation", GlobalOptions.Instance.Language);
-                            tsMetamagicAddMetamagic.Text = LanguageManager.GetString("Button_AddMetamagic", GlobalOptions.Instance.Language);
-                            cmdAddMetamagic.Text = LanguageManager.GetString("Button_AddInitiateGrade", GlobalOptions.Instance.Language);
-                            cmdDeleteMetamagic.Text = LanguageManager.GetString("Button_RemoveInitiateGrade", GlobalOptions.Instance.Language);
-                            chkInitiationOrdeal.Text = LanguageManager.GetString("Checkbox_InitiationOrdeal", GlobalOptions.Instance.Language);
-                            gpbInitiationType.Text = LanguageManager.GetString("String_InitiationType", GlobalOptions.Instance.Language);
-                            gpbInitiationGroup.Text = LanguageManager.GetString("String_InitiationGroup", GlobalOptions.Instance.Language);
+                            tabInitiation.Text = LanguageManager.GetString("Tab_Initiation", GlobalOptions.Language);
+                            tsMetamagicAddMetamagic.Text = LanguageManager.GetString("Button_AddMetamagic", GlobalOptions.Language);
+                            cmdAddMetamagic.Text = LanguageManager.GetString("Button_AddInitiateGrade", GlobalOptions.Language);
+                            cmdDeleteMetamagic.Text = LanguageManager.GetString("Button_RemoveInitiateGrade", GlobalOptions.Language);
+                            chkInitiationOrdeal.Text = LanguageManager.GetString("Checkbox_InitiationOrdeal", GlobalOptions.Language);
+                            gpbInitiationType.Text = LanguageManager.GetString("String_InitiationType", GlobalOptions.Language);
+                            gpbInitiationGroup.Text = LanguageManager.GetString("String_InitiationGroup", GlobalOptions.Language);
 
                             tsMetamagicAddArt.Visible = true;
                             tsMetamagicAddEnchantment.Visible = true;
                             tsMetamagicAddEnhancement.Visible = true;
                             tsMetamagicAddRitual.Visible = true;
 
-                            string strInitTip = string.Format(LanguageManager.GetString("Tip_ImproveInitiateGrade", GlobalOptions.Instance.Language)
-                                , (CharacterObject.InitiateGrade + 1).ToString(GlobalOptions.Instance.CultureInfo)
-                                , (CharacterObjectOptions.KarmaInititationFlat + ((CharacterObject.InitiateGrade + 1) * CharacterObjectOptions.KarmaInitiation)).ToString(GlobalOptions.Instance.CultureInfo));
+                            string strInitTip = string.Format(LanguageManager.GetString("Tip_ImproveInitiateGrade", GlobalOptions.Language)
+                                , (CharacterObject.InitiateGrade + 1).ToString(GlobalOptions.CultureInfo)
+                                , (CharacterObjectOptions.KarmaInititationFlat + ((CharacterObject.InitiateGrade + 1) * CharacterObjectOptions.KarmaInitiation)).ToString(GlobalOptions.CultureInfo));
                             cmdAddMetamagic.SetToolTip(strInitTip);
-                            chkJoinGroup.Text = LanguageManager.GetString("Checkbox_JoinedGroup", GlobalOptions.Instance.Language);
-                            chkInitiationGroup.Text = LanguageManager.GetString("Checkbox_GroupInitiation", GlobalOptions.Instance.Language);
+                            chkJoinGroup.Text = LanguageManager.GetString("Checkbox_JoinedGroup", GlobalOptions.Language);
+                            chkInitiationGroup.Text = LanguageManager.GetString("Checkbox_GroupInitiation", GlobalOptions.Language);
 
                             if (!CharacterObject.AttributeSection.Attributes.Contains(CharacterObject.MAG))
                             {
@@ -1081,25 +1081,25 @@ namespace Chummer
                             if (!tabCharacterTabs.TabPages.Contains(tabInitiation))
                                 tabCharacterTabs.TabPages.Insert(3, tabInitiation);
 
-                            tabInitiation.Text = LanguageManager.GetString("Tab_Submersion", GlobalOptions.Instance.Language);
-                            tsMetamagicAddMetamagic.Text = LanguageManager.GetString("Button_AddEcho", GlobalOptions.Instance.Language);
-                            cmdAddMetamagic.Text = LanguageManager.GetString("Button_AddSubmersionGrade", GlobalOptions.Instance.Language);
-                            cmdDeleteMetamagic.Text = LanguageManager.GetString("Button_RemoveSubmersionGrade", GlobalOptions.Instance.Language);
-                            chkInitiationOrdeal.Text = LanguageManager.GetString("Checkbox_SubmersionTask", GlobalOptions.Instance.Language);
-                            gpbInitiationType.Text = LanguageManager.GetString("String_SubmersionType", GlobalOptions.Instance.Language);
-                            gpbInitiationGroup.Text = LanguageManager.GetString("String_SubmersionNetwork", GlobalOptions.Instance.Language);
+                            tabInitiation.Text = LanguageManager.GetString("Tab_Submersion", GlobalOptions.Language);
+                            tsMetamagicAddMetamagic.Text = LanguageManager.GetString("Button_AddEcho", GlobalOptions.Language);
+                            cmdAddMetamagic.Text = LanguageManager.GetString("Button_AddSubmersionGrade", GlobalOptions.Language);
+                            cmdDeleteMetamagic.Text = LanguageManager.GetString("Button_RemoveSubmersionGrade", GlobalOptions.Language);
+                            chkInitiationOrdeal.Text = LanguageManager.GetString("Checkbox_SubmersionTask", GlobalOptions.Language);
+                            gpbInitiationType.Text = LanguageManager.GetString("String_SubmersionType", GlobalOptions.Language);
+                            gpbInitiationGroup.Text = LanguageManager.GetString("String_SubmersionNetwork", GlobalOptions.Language);
 
                             tsMetamagicAddArt.Visible = false;
                             tsMetamagicAddEnchantment.Visible = false;
                             tsMetamagicAddEnhancement.Visible = false;
                             tsMetamagicAddRitual.Visible = false;
 
-                            string strInitTip = string.Format(LanguageManager.GetString("Tip_ImproveSubmersionGrade", GlobalOptions.Instance.Language)
-                                , (CharacterObject.SubmersionGrade + 1).ToString(GlobalOptions.Instance.CultureInfo)
-                                , (CharacterObjectOptions.KarmaInititationFlat + ((CharacterObject.SubmersionGrade + 1) * CharacterObjectOptions.KarmaInitiation)).ToString(GlobalOptions.Instance.CultureInfo));
+                            string strInitTip = string.Format(LanguageManager.GetString("Tip_ImproveSubmersionGrade", GlobalOptions.Language)
+                                , (CharacterObject.SubmersionGrade + 1).ToString(GlobalOptions.CultureInfo)
+                                , (CharacterObjectOptions.KarmaInititationFlat + ((CharacterObject.SubmersionGrade + 1) * CharacterObjectOptions.KarmaInitiation)).ToString(GlobalOptions.CultureInfo));
                             cmdAddMetamagic.SetToolTip(strInitTip);
-                            chkJoinGroup.Text = LanguageManager.GetString("Checkbox_JoinedNetwork", GlobalOptions.Instance.Language);
-                            chkInitiationGroup.Text = LanguageManager.GetString("Checkbox_NetworkSubmersion", GlobalOptions.Instance.Language);
+                            chkJoinGroup.Text = LanguageManager.GetString("Checkbox_JoinedNetwork", GlobalOptions.Language);
+                            chkInitiationGroup.Text = LanguageManager.GetString("Checkbox_NetworkSubmersion", GlobalOptions.Language);
 
                             if (CharacterObject.AttributeSection.Attributes != null && !CharacterObject.AttributeSection.Attributes.Contains(CharacterObject.RES))
                             {
@@ -1147,7 +1147,7 @@ namespace Chummer
                         {
                             lstPrimaryArm = new List<ListItem>
                             {
-                                new ListItem("Ambidextrous", LanguageManager.GetString("String_Ambidextrous", GlobalOptions.Instance.Language))
+                                new ListItem("Ambidextrous", LanguageManager.GetString("String_Ambidextrous", GlobalOptions.Language))
                             };
                             cboPrimaryArm.Enabled = false;
                         }
@@ -1156,8 +1156,8 @@ namespace Chummer
                             //Create the dropdown for the character's primary arm.
                             lstPrimaryArm = new List<ListItem>
                             {
-                                new ListItem("Left", LanguageManager.GetString("String_Improvement_SideLeft", GlobalOptions.Instance.Language)),
-                                new ListItem("Right", LanguageManager.GetString("String_Improvement_SideRight", GlobalOptions.Instance.Language))
+                                new ListItem("Left", LanguageManager.GetString("String_Improvement_SideLeft", GlobalOptions.Language)),
+                                new ListItem("Right", LanguageManager.GetString("String_Improvement_SideRight", GlobalOptions.Language))
                             };
                             lstPrimaryArm.Sort(CompareListItems.CompareNames);
                             cboPrimaryArm.Enabled = true;
@@ -1506,7 +1506,7 @@ namespace Chummer
             string strFilePath = Path.Combine(Utils.GetStartupPath, "settings", "default.xml");
             if (!File.Exists(strFilePath))
             {
-                if (MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_OpenOptions", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_CharacterOptions_OpenOptions", GlobalOptions.Instance.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                if (MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_OpenOptions", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CharacterOptions_OpenOptions", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
                     Cursor = Cursors.WaitCursor;
                     frmNewOptions frmOptions = new frmNewOptions();
@@ -1542,12 +1542,12 @@ namespace Chummer
         {
             bool blnEssence = true;
             bool blnCyberware = false;
-            string strMessage = LanguageManager.GetString("Message_CyberzombieRequirements", GlobalOptions.Instance.Language);
+            string strMessage = LanguageManager.GetString("Message_CyberzombieRequirements", GlobalOptions.Language);
 
             // Make sure the character has an Essence lower than 0.
             if (CharacterObject.Essence() >= 0)
             {
-                strMessage += Environment.NewLine + '\t' + LanguageManager.GetString("Message_CyberzombieRequirementsEssence", GlobalOptions.Instance.Language);
+                strMessage += Environment.NewLine + '\t' + LanguageManager.GetString("Message_CyberzombieRequirementsEssence", GlobalOptions.Language);
                 blnEssence = false;
             }
 
@@ -1562,22 +1562,22 @@ namespace Chummer
             }
 
             if (!blnCyberware)
-                strMessage += Environment.NewLine + '\t' + LanguageManager.GetString("Message_CyberzombieRequirementsStimulator", GlobalOptions.Instance.Language);
+                strMessage += Environment.NewLine + '\t' + LanguageManager.GetString("Message_CyberzombieRequirementsStimulator", GlobalOptions.Language);
 
             if (!blnEssence || !blnCyberware)
             {
-                MessageBox.Show(strMessage, LanguageManager.GetString("MessageTitle_CyberzombieRequirements", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(strMessage, LanguageManager.GetString("MessageTitle_CyberzombieRequirements", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            if (MessageBox.Show(LanguageManager.GetString("Message_CyberzombieConfirm", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_CyberzombieConfirm", GlobalOptions.Instance.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+            if (MessageBox.Show(LanguageManager.GetString("Message_CyberzombieConfirm", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CyberzombieConfirm", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 return;
 
             // Get the player to roll Dice to make a WIL Test and record the result.
             frmDiceHits frmWILHits = new frmDiceHits
             {
-                Text = LanguageManager.GetString("String_CyberzombieWILText", GlobalOptions.Instance.Language),
-                Description = LanguageManager.GetString("String_CyberzombieWILDescription", GlobalOptions.Instance.Language),
+                Text = LanguageManager.GetString("String_CyberzombieWILText", GlobalOptions.Language),
+                Description = LanguageManager.GetString("String_CyberzombieWILDescription", GlobalOptions.Language),
                 Dice = CharacterObject.WIL.TotalValue
             };
             frmWILHits.ShowDialog(this);
@@ -1684,7 +1684,7 @@ namespace Chummer
         {
             // This only re-applies the Improvements for everything the character has. If a match is not found in the data files, the current Improvement information is left as-is.
             // Verify that the user wants to go through with it.
-            if (MessageBox.Show(LanguageManager.GetString("Message_ConfirmReapplyImprovements", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_ConfirmReapplyImprovements", GlobalOptions.Instance.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+            if (MessageBox.Show(LanguageManager.GetString("Message_ConfirmReapplyImprovements", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_ConfirmReapplyImprovements", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 return;
 
             DoReapplyImprovements();
@@ -1760,13 +1760,13 @@ namespace Chummer
                     if (objQuality.Bonus != null)
                     {
                         ImprovementManager.ForcedValue = strSelected;
-                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId, objQuality.Bonus, false, 1, objQuality.DisplayNameShort(GlobalOptions.Instance.Language));
+                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId, objQuality.Bonus, false, 1, objQuality.DisplayNameShort(GlobalOptions.Language));
                         if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                         {
                             objQuality.Extra = ImprovementManager.SelectedValue;
                             TreeNode objTreeNode = treQualities.FindNodeByTag(objQuality);
                             if (objTreeNode != null)
-                                objTreeNode.Text = objQuality.DisplayName(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
+                                objTreeNode.Text = objQuality.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
                         }
                     }
                     objQuality.FirstLevelBonus = objNode["firstlevelbonus"];
@@ -1788,20 +1788,20 @@ namespace Chummer
                         if (blnDoFirstLevel)
                         {
                             ImprovementManager.ForcedValue = strSelected;
-                            ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId, objQuality.FirstLevelBonus, false, 1, objQuality.DisplayNameShort(GlobalOptions.Instance.Language));
+                            ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId, objQuality.FirstLevelBonus, false, 1, objQuality.DisplayNameShort(GlobalOptions.Language));
                             if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                             {
                                 objQuality.Extra = ImprovementManager.SelectedValue;
                                 TreeNode objTreeNode = treQualities.FindNodeByTag(objQuality);
                                 if (objTreeNode != null)
-                                    objTreeNode.Text = objQuality.DisplayName(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
+                                    objTreeNode.Text = objQuality.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
                             }
                         }
                     }
                 }
                 else
                 {
-                    strOutdatedItems.AppendLine(objQuality.DisplayName(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language));
+                    strOutdatedItems.AppendLine(objQuality.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language));
                 }
             }
 
@@ -1816,7 +1816,7 @@ namespace Chummer
                     {
                         if (objMartialArtNode["bonus"] != null)
                         {
-                            ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.MartialArt, objMartialArt.InternalId, objMartialArtNode["bonus"], false, 1, objMartialArt.DisplayNameShort(GlobalOptions.Instance.Language));
+                            ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.MartialArt, objMartialArt.InternalId, objMartialArtNode["bonus"], false, 1, objMartialArt.DisplayNameShort(GlobalOptions.Language));
                         }
                     }
                     foreach (MartialArtTechnique objTechnique in objMartialArt.Techniques.Where(x => lstInternalIdFilter == null || !lstInternalIdFilter.Contains(x.InternalId)))
@@ -1825,17 +1825,17 @@ namespace Chummer
                         if (objNode != null)
                         {
                             if (objNode["bonus"] != null)
-                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.MartialArtTechnique, objTechnique.InternalId, objNode["bonus"], false, 1, objTechnique.DisplayName(GlobalOptions.Instance.Language));
+                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.MartialArtTechnique, objTechnique.InternalId, objNode["bonus"], false, 1, objTechnique.DisplayName(GlobalOptions.Language));
                         }
                         else
                         {
-                            strOutdatedItems.AppendLine(objMartialArt.DisplayName(GlobalOptions.Instance.Language));
+                            strOutdatedItems.AppendLine(objMartialArt.DisplayName(GlobalOptions.Language));
                         }
                     }
                 }
                 else
                 {
-                    strOutdatedItems.AppendLine(objMartialArt.DisplayName(GlobalOptions.Instance.Language));
+                    strOutdatedItems.AppendLine(objMartialArt.DisplayName(GlobalOptions.Language));
                 }
             }
 
@@ -1848,19 +1848,19 @@ namespace Chummer
                     if (objNode["bonus"] != null)
                     {
                         ImprovementManager.ForcedValue = objSpell.Extra;
-                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Spell, objSpell.InternalId, objNode["bonus"], false, 1, objSpell.DisplayNameShort(GlobalOptions.Instance.Language));
+                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Spell, objSpell.InternalId, objNode["bonus"], false, 1, objSpell.DisplayNameShort(GlobalOptions.Language));
                         if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                         {
                             objSpell.Extra = ImprovementManager.SelectedValue;
                             TreeNode objSpellNode = treSpells.FindNode(objSpell.InternalId);
                             if (objSpellNode != null)
-                                objSpellNode.Text = objSpell.DisplayName(GlobalOptions.Instance.Language);
+                                objSpellNode.Text = objSpell.DisplayName(GlobalOptions.Language);
                         }
                     }
                 }
                 else
                 {
-                    strOutdatedItems.AppendLine(objSpell.DisplayName(GlobalOptions.Instance.Language));
+                    strOutdatedItems.AppendLine(objSpell.DisplayName(GlobalOptions.Language));
                 }
             }
 
@@ -1874,7 +1874,7 @@ namespace Chummer
                     if (objPower.Bonus != null)
                     {
                         ImprovementManager.ForcedValue = objPower.Extra;
-                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Power, objPower.InternalId, objPower.Bonus, false, Convert.ToInt32(objPower.TotalRating), objPower.DisplayNameShort(GlobalOptions.Instance.Language));
+                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Power, objPower.InternalId, objPower.Bonus, false, Convert.ToInt32(objPower.TotalRating), objPower.DisplayNameShort(GlobalOptions.Language));
                     }
                 }
                 else
@@ -1892,7 +1892,7 @@ namespace Chummer
                     if (objNode["bonus"] != null)
                     {
                         ImprovementManager.ForcedValue = objComplexForm.Extra;
-                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.ComplexForm, objComplexForm.InternalId, objNode["bonus"], false, 1, objComplexForm.DisplayNameShort(GlobalOptions.Instance.Language));
+                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.ComplexForm, objComplexForm.InternalId, objNode["bonus"], false, 1, objComplexForm.DisplayNameShort(GlobalOptions.Language));
                         if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                         {
                             objComplexForm.Extra = ImprovementManager.SelectedValue;
@@ -1917,7 +1917,7 @@ namespace Chummer
                     if (objNode["bonus"] != null)
                     {
                         ImprovementManager.ForcedValue = objProgram.Extra;
-                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.AIProgram, objProgram.InternalId, objNode["bonus"], false, 1, objProgram.DisplayNameShort(GlobalOptions.Instance.Language));
+                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.AIProgram, objProgram.InternalId, objNode["bonus"], false, 1, objProgram.DisplayNameShort(GlobalOptions.Language));
                         if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                         {
                             objProgram.Extra = ImprovementManager.SelectedValue;
@@ -1948,19 +1948,19 @@ namespace Chummer
                             intRating = 1;
                             ImprovementManager.ForcedValue = strSelected;
                         }
-                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.CritterPower, objPower.InternalId, objPower.Bonus, false, intRating, objPower.DisplayNameShort(GlobalOptions.Instance.Language));
+                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.CritterPower, objPower.InternalId, objPower.Bonus, false, intRating, objPower.DisplayNameShort(GlobalOptions.Language));
                         if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                         {
                             objPower.Extra = ImprovementManager.SelectedValue;
                             TreeNode objPowerNode = treCritterPowers.FindNode(objPower.InternalId);
                             if (objPowerNode != null)
-                                objPowerNode.Text = objPower.DisplayName(GlobalOptions.Instance.Language);
+                                objPowerNode.Text = objPower.DisplayName(GlobalOptions.Language);
                         }
                     }
                 }
                 else
                 {
-                    strOutdatedItems.AppendLine(objPower.DisplayName(GlobalOptions.Instance.Language));
+                    strOutdatedItems.AppendLine(objPower.DisplayName(GlobalOptions.Language));
                 }
             }
 
@@ -1980,12 +1980,12 @@ namespace Chummer
                     objMetamagic.Bonus = objNode["bonus"];
                     if (objMetamagic.Bonus != null)
                     {
-                        ImprovementManager.CreateImprovements(CharacterObject, objMetamagic.SourceType, objMetamagic.InternalId, objMetamagic.Bonus, false, 1, objMetamagic.DisplayNameShort(GlobalOptions.Instance.Language));
+                        ImprovementManager.CreateImprovements(CharacterObject, objMetamagic.SourceType, objMetamagic.InternalId, objMetamagic.Bonus, false, 1, objMetamagic.DisplayNameShort(GlobalOptions.Language));
                     }
                 }
                 else
                 {
-                    strOutdatedItems.AppendLine(objMetamagic.DisplayName(GlobalOptions.Instance.Language));
+                    strOutdatedItems.AppendLine(objMetamagic.DisplayName(GlobalOptions.Language));
                 }
             }
 
@@ -2006,13 +2006,13 @@ namespace Chummer
                             ImprovementManager.ForcedValue = objCyberware.Forced;
                         if (objCyberware.Bonus != null)
                         {
-                            ImprovementManager.CreateImprovements(CharacterObject, objCyberware.SourceType, objCyberware.InternalId, objCyberware.Bonus, false, objCyberware.Rating, objCyberware.DisplayNameShort(GlobalOptions.Instance.Language));
+                            ImprovementManager.CreateImprovements(CharacterObject, objCyberware.SourceType, objCyberware.InternalId, objCyberware.Bonus, false, objCyberware.Rating, objCyberware.DisplayNameShort(GlobalOptions.Language));
                             if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                 objCyberware.Extra = ImprovementManager.SelectedValue;
                         }
                         if (objCyberware.WirelessOn && objCyberware.WirelessBonus != null)
                         {
-                            ImprovementManager.CreateImprovements(CharacterObject, objCyberware.SourceType, objCyberware.InternalId, objCyberware.WirelessBonus, false, objCyberware.Rating, objCyberware.DisplayNameShort(GlobalOptions.Instance.Language));
+                            ImprovementManager.CreateImprovements(CharacterObject, objCyberware.SourceType, objCyberware.InternalId, objCyberware.WirelessBonus, false, objCyberware.Rating, objCyberware.DisplayNameShort(GlobalOptions.Language));
                             if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(objCyberware.Extra))
                                 objCyberware.Extra = ImprovementManager.SelectedValue;
                         }
@@ -2030,11 +2030,11 @@ namespace Chummer
                             ? treCyberware.FindNode(objCyberware.SourceIDString)
                             : treCyberware.FindNode(objCyberware.InternalId);
                         if (objWareNode != null)
-                            objWareNode.Text = objCyberware.DisplayName(GlobalOptions.Instance.Language);
+                            objWareNode.Text = objCyberware.DisplayName(GlobalOptions.Language);
                     }
                     else
                     {
-                        strOutdatedItems.AppendLine(objCyberware.DisplayName(GlobalOptions.Instance.Language));
+                        strOutdatedItems.AppendLine(objCyberware.DisplayName(GlobalOptions.Language));
                     }
                 }
                 foreach (Gear objGear in objCyberware.Gear)
@@ -2071,14 +2071,14 @@ namespace Chummer
                         {
                             if (!string.IsNullOrEmpty(objCyberware.Forced) && objCyberware.Forced != "Right" && objCyberware.Forced != "Left")
                                 ImprovementManager.ForcedValue = objCyberware.Forced;
-                            ImprovementManager.CreateImprovements(CharacterObject, objLoopCyberware.SourceType, objLoopCyberware.InternalId + "Pair", objLoopCyberware.PairBonus, false, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort(GlobalOptions.Instance.Language));
+                            ImprovementManager.CreateImprovements(CharacterObject, objLoopCyberware.SourceType, objLoopCyberware.InternalId + "Pair", objLoopCyberware.PairBonus, false, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort(GlobalOptions.Language));
                             if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(objCyberware.Extra))
                                 objCyberware.Extra = ImprovementManager.SelectedValue;
                             TreeNode objNode = objLoopCyberware.SourceID == Cyberware.EssenceHoleGUID || objCyberware.SourceID == Cyberware.EssenceAntiHoleGUID
                                 ? treCyberware.FindNode(objCyberware.SourceIDString)
                                 : treCyberware.FindNode(objLoopCyberware.InternalId);
                             if (objNode != null)
-                                objNode.Text = objLoopCyberware.DisplayName(GlobalOptions.Instance.Language);
+                                objNode.Text = objLoopCyberware.DisplayName(GlobalOptions.Language);
                         }
                         intCyberwaresCount -= 1;
                         if (intCyberwaresCount <= 0)
@@ -2102,21 +2102,21 @@ namespace Chummer
                             if (objArmor.Equipped)
                             {
                                 ImprovementManager.ForcedValue = objArmor.Extra;
-                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Armor, objArmor.InternalId, objArmor.Bonus, false, objArmor.Rating, objArmor.DisplayNameShort(GlobalOptions.Instance.Language));
+                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Armor, objArmor.InternalId, objArmor.Bonus, false, objArmor.Rating, objArmor.DisplayNameShort(GlobalOptions.Language));
                                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                 {
                                     objArmor.Extra = ImprovementManager.SelectedValue;
 
                                     TreeNode objArmorNode = treArmor.FindNode(objArmor.InternalId);
                                     if (objArmorNode != null)
-                                        objArmorNode.Text = objArmor.DisplayName(GlobalOptions.Instance.Language);
+                                        objArmorNode.Text = objArmor.DisplayName(GlobalOptions.Language);
                                 }
                             }
                         }
                     }
                     else
                     {
-                        strOutdatedItems.AppendLine(objArmor.DisplayName(GlobalOptions.Instance.Language));
+                        strOutdatedItems.AppendLine(objArmor.DisplayName(GlobalOptions.Language));
                     }
                 }
 
@@ -2135,21 +2135,21 @@ namespace Chummer
                                 if (objMod.Equipped)
                                 {
                                     ImprovementManager.ForcedValue = objMod.Extra;
-                                    ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.ArmorMod, objMod.InternalId, objMod.Bonus, false, objMod.Rating, objMod.DisplayNameShort(GlobalOptions.Instance.Language));
+                                    ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.ArmorMod, objMod.InternalId, objMod.Bonus, false, objMod.Rating, objMod.DisplayNameShort(GlobalOptions.Language));
                                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                     {
                                         objMod.Extra = ImprovementManager.SelectedValue;
 
                                         TreeNode objPluginNode = treArmor.FindNode(objMod.InternalId);
                                         if (objPluginNode != null)
-                                            objPluginNode.Text = objMod.DisplayName(GlobalOptions.Instance.Language);
+                                            objPluginNode.Text = objMod.DisplayName(GlobalOptions.Language);
                                     }
                                 }
                             }
                         }
                         else
                         {
-                            strOutdatedItems.AppendLine(objMod.DisplayName(GlobalOptions.Instance.Language));
+                            strOutdatedItems.AppendLine(objMod.DisplayName(GlobalOptions.Language));
                         }
                     }
                     foreach (Gear objGear in objMod.Gear)
@@ -2201,9 +2201,9 @@ namespace Chummer
 
             if (strOutdatedItems.Length > 0)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_ReapplyImprovementsFoundOutdatedItems_Top", GlobalOptions.Instance.Language) +
+                MessageBox.Show(LanguageManager.GetString("Message_ReapplyImprovementsFoundOutdatedItems_Top", GlobalOptions.Language) +
                                 strOutdatedItems.ToString() +
-                                LanguageManager.GetString("Message_ReapplyImprovementsFoundOutdatedItems_Bottom", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_ConfirmReapplyImprovements", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                LanguageManager.GetString("Message_ReapplyImprovementsFoundOutdatedItems_Bottom", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_ConfirmReapplyImprovements", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             IsDirty = true;
@@ -3385,7 +3385,7 @@ namespace Chummer
             if (!(treSpells.SelectedNode?.Tag is Spell objSpell)) return;
             // Spells that come from Initiation Grades can't be deleted normally. 
             if (objSpell.Grade != 0) return;
-            if (!objSpell.Remove(CharacterObject,GlobalOptions.Instance.ConfirmDelete)) return;
+            if (!objSpell.Remove(CharacterObject,GlobalOptions.ConfirmDelete)) return;
             IsCharacterUpdateRequested = true;
             IsDirty = true;
         }
@@ -3433,7 +3433,7 @@ namespace Chummer
         private void cmdDeleteCyberware_Click(object sender, EventArgs e)
         {
             if (!(treCyberware.SelectedNode?.Tag is ICanRemove selectedObject)) return;
-            if (!selectedObject.Remove(CharacterObject,GlobalOptions.Instance.ConfirmDelete)) return;
+            if (!selectedObject.Remove(CharacterObject,GlobalOptions.ConfirmDelete)) return;
 
             IsCharacterUpdateRequested = true;
             IsDirty = true;
@@ -3449,7 +3449,7 @@ namespace Chummer
                 // The number of Complex Forms cannot exceed twice the character's RES.
                 if (CharacterObject.ComplexForms.Count >= ((CharacterObject.RES.Value * 2) + ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.ComplexFormLimit)) && !CharacterObject.IgnoreRules)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_ComplexFormLimit", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_ComplexFormLimit", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_ComplexFormLimit", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_ComplexFormLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     break;
                 }
 
@@ -3477,7 +3477,7 @@ namespace Chummer
                 {
                     frmSelectText frmPickText = new frmSelectText
                     {
-                        Description = string.Format(LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Instance.Language), objXmlComplexForm["translate"]?.InnerText ?? objXmlComplexForm["name"]?.InnerText)
+                        Description = string.Format(LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language), objXmlComplexForm["translate"]?.InnerText ?? objXmlComplexForm["name"]?.InnerText)
                     };
                     frmPickText.ShowDialog(this);
                     strExtra = frmPickText.SelectedValue;
@@ -3527,7 +3527,7 @@ namespace Chummer
                 {
                     frmSelectText frmPickText = new frmSelectText
                     {
-                        Description = string.Format(LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Instance.Language), objXmlProgram["translate"]?.InnerText ?? objXmlProgram["name"]?.InnerText)
+                        Description = string.Format(LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language), objXmlProgram["translate"]?.InnerText ?? objXmlProgram["name"]?.InnerText)
                     };
                     frmPickText.ShowDialog(this);
                     strExtra = frmPickText.SelectedValue;
@@ -3550,7 +3550,7 @@ namespace Chummer
         private void cmdDeleteArmor_Click(object sender, EventArgs e)
         {
             if (!(treArmor.SelectedNode?.Tag is ICanRemove selectedObject)) return;
-            if (!selectedObject.Remove(CharacterObject,GlobalOptions.Instance.ConfirmDelete)) return;
+            if (!selectedObject.Remove(CharacterObject,GlobalOptions.ConfirmDelete)) return;
 
             IsCharacterUpdateRequested = true;
             IsDirty = true;
@@ -3624,7 +3624,7 @@ namespace Chummer
         {
             if (treWeapons.SelectedNode?.Tag is ICanRemove objselectedNode)
             {
-                if (!objselectedNode.Remove(CharacterObject,GlobalOptions.Instance.ConfirmDelete)) return;
+                if (!objselectedNode.Remove(CharacterObject,GlobalOptions.ConfirmDelete)) return;
                 IsCharacterUpdateRequested = true;
                 IsDirty = true;
             }
@@ -3663,7 +3663,7 @@ namespace Chummer
             // Delete the selected Lifestyle.
             if (treLifestyles.SelectedNode?.Tag is ICanRemove selectedObject)
             {
-                if (!selectedObject.Remove(CharacterObject,GlobalOptions.Instance.ConfirmDelete)) return;
+                if (!selectedObject.Remove(CharacterObject,GlobalOptions.ConfirmDelete)) return;
                 IsCharacterUpdateRequested = true;
                 IsDirty = true;
             }
@@ -3686,7 +3686,7 @@ namespace Chummer
 
         private void cmdDeleteGear_Click(object sender, EventArgs e)
         {
-            if (treGear.SelectedNode?.Tag is ICanRemove objSelectedGear && objSelectedGear.Remove(CharacterObject, GlobalOptions.Instance.ConfirmDelete))
+            if (treGear.SelectedNode?.Tag is ICanRemove objSelectedGear && objSelectedGear.Remove(CharacterObject, GlobalOptions.ConfirmDelete))
             {
                 IsCharacterUpdateRequested = true;
 
@@ -3714,7 +3714,7 @@ namespace Chummer
             if (frmPickVehicle.UsedVehicle)
             {
                 objVehicle.Avail = frmPickVehicle.UsedAvail;
-                objVehicle.Cost = frmPickVehicle.UsedCost.ToString(GlobalOptions.Instance.InvariantCultureInfo);
+                objVehicle.Cost = frmPickVehicle.UsedCost.ToString(GlobalOptions.InvariantCultureInfo);
             }
             objVehicle.BlackMarketDiscount = frmPickVehicle.BlackMarketDiscount;
             if (frmPickVehicle.FreeCost)
@@ -3771,7 +3771,7 @@ namespace Chummer
                     {
                         Minimum = 0,
                         Maximum = 1000000,
-                        Description = LanguageManager.GetString("String_Retrofit", GlobalOptions.Instance.Language)
+                        Description = LanguageManager.GetString("String_Retrofit", GlobalOptions.Language)
                     };
                     frmModPercent.ShowDialog(this);
 
@@ -3790,7 +3790,7 @@ namespace Chummer
                     XmlDocument objVehiclesDoc = XmlManager.Load("vehicles.xml");
                     XmlNode objXmlNode = objVehiclesDoc.SelectSingleNode("/chummer/mods/mod[name = \"Retrofit\"]");
                     objRetrofit.Create(objXmlNode, 0, objMod.Parent);
-                    objRetrofit.Cost = decCost.ToString(GlobalOptions.Instance.InvariantCultureInfo);
+                    objRetrofit.Cost = decCost.ToString(GlobalOptions.InvariantCultureInfo);
                     objRetrofit.IncludedInVehicle = true;
                     objMod.Parent.Mods.Add(objRetrofit);
                 }
@@ -3806,7 +3806,7 @@ namespace Chummer
             }
             else if (objSelectedNodeTag is ICanRemove selectedObject)
             {
-                if (selectedObject.Remove(CharacterObject, GlobalOptions.Instance.ConfirmDelete))
+                if (selectedObject.Remove(CharacterObject, GlobalOptions.ConfirmDelete))
                 {
                     IsCharacterUpdateRequested = true;
                     IsDirty = true;
@@ -3826,7 +3826,7 @@ namespace Chummer
         {
             if (treMartialArts.SelectedNode?.Tag is ICanRemove objSelectedNode)
             {
-                if (objSelectedNode.Remove(CharacterObject,GlobalOptions.Instance.ConfirmDelete))
+                if (objSelectedNode.Remove(CharacterObject,GlobalOptions.ConfirmDelete))
                 {
                     IsCharacterUpdateRequested = true;
                     IsDirty = true;
@@ -3844,7 +3844,7 @@ namespace Chummer
 
             if (CharacterObject.MartialArtManeuvers.Count >= intTotalRating && !CharacterObject.IgnoreRules)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_MartialArtManeuverLimit", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_MartialArtManeuverLimit", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_MartialArtManeuverLimit", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_MartialArtManeuverLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -3877,7 +3877,7 @@ namespace Chummer
         {
             if (AddMugshot())
             {
-                lblNumMugshots.Text = LanguageManager.GetString("String_Of", GlobalOptions.Instance.Language) + CharacterObject.Mugshots.Count.ToString(GlobalOptions.Instance.CultureInfo);
+                lblNumMugshots.Text = LanguageManager.GetString("String_Of", GlobalOptions.Language) + CharacterObject.Mugshots.Count.ToString(GlobalOptions.CultureInfo);
                 nudMugshotIndex.Maximum += 1;
                 nudMugshotIndex.Value = CharacterObject.Mugshots.Count;
                 IsDirty = true;
@@ -3890,7 +3890,7 @@ namespace Chummer
             {
                 RemoveMugshot(decimal.ToInt32(nudMugshotIndex.Value) - 1);
 
-                lblNumMugshots.Text = LanguageManager.GetString("String_Of", GlobalOptions.Instance.Language) + CharacterObject.Mugshots.Count.ToString(GlobalOptions.Instance.CultureInfo);
+                lblNumMugshots.Text = LanguageManager.GetString("String_Of", GlobalOptions.Language) + CharacterObject.Mugshots.Count.ToString(GlobalOptions.CultureInfo);
                 nudMugshotIndex.Maximum -= 1;
                 if (nudMugshotIndex.Value > nudMugshotIndex.Maximum)
                     nudMugshotIndex.Value = nudMugshotIndex.Maximum;
@@ -3961,7 +3961,7 @@ namespace Chummer
                 if (CharacterObject.InitiateGrade + 1 > CharacterObject.MAG.TotalValue ||
                     (CharacterObjectOptions.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept && CharacterObject.InitiateGrade + 1 > CharacterObject.MAGAdept.TotalValue))
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_CannotIncreaseInitiateGrade", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_CannotIncreaseInitiateGrade", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_CannotIncreaseInitiateGrade", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CannotIncreaseInitiateGrade", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
 
@@ -3976,12 +3976,12 @@ namespace Chummer
                 tsMetamagicAddEnchantment.Visible = false;
                 tsMetamagicAddEnhancement.Visible = false;
                 tsMetamagicAddRitual.Visible = false;
-                tsMetamagicAddMetamagic.Text = LanguageManager.GetString("Button_AddEcho", GlobalOptions.Instance.Language);
+                tsMetamagicAddMetamagic.Text = LanguageManager.GetString("Button_AddEcho", GlobalOptions.Language);
 
                 // Make sure that the Initiate Grade is not attempting to go above the character's RES CharacterAttribute.
                 if (CharacterObject.SubmersionGrade + 1 > CharacterObject.RES.TotalValue)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_CannotIncreaseSubmersionGrade", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_CannotIncreaseSubmersionGrade", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_CannotIncreaseSubmersionGrade", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CannotIncreaseSubmersionGrade", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
 
@@ -3999,7 +3999,7 @@ namespace Chummer
         private void cmdDeleteMetamagic_Click(object sender, EventArgs e)
         {
             if (!(treMetamagic.SelectedNode?.Tag is ICanRemove selectedObject)) return;
-            if (!selectedObject.Remove(CharacterObject, GlobalOptions.Instance.ConfirmDelete)) return;
+            if (!selectedObject.Remove(CharacterObject, GlobalOptions.ConfirmDelete)) return;
             IsCharacterUpdateRequested = true;
             IsDirty = true;
         }
@@ -4047,7 +4047,7 @@ namespace Chummer
         {
             // If the selected object is not a critter or it comes from an initiate grade, we don't want to remove it.
             if (!(treCritterPowers.SelectedNode?.Tag is CritterPower objCritterPower) || objCritterPower.Grade != 0) return;
-            if (!objCritterPower.Remove(CharacterObject,GlobalOptions.Instance.ConfirmDelete)) return;
+            if (!objCritterPower.Remove(CharacterObject,GlobalOptions.ConfirmDelete)) return;
 
             IsCharacterUpdateRequested = true;
             IsDirty = true;
@@ -4056,7 +4056,7 @@ namespace Chummer
         private void cmdDeleteComplexForm_Click(object sender, EventArgs e)
         {
             if (!(treComplexForms.SelectedNode?.Tag is ICanRemove selectedObject)) return;
-            if (!selectedObject.Remove(CharacterObject,GlobalOptions.Instance.ConfirmDelete)) return;
+            if (!selectedObject.Remove(CharacterObject,GlobalOptions.ConfirmDelete)) return;
             IsCharacterUpdateRequested = true;
             IsDirty = true;
         }
@@ -4065,7 +4065,7 @@ namespace Chummer
         {
             // Delete the selected AI Program.
             if (!(treAIPrograms.SelectedNode?.Tag is ICanRemove selectedObject)) return;
-            if (!selectedObject.Remove(CharacterObject,GlobalOptions.Instance.ConfirmDelete)) return;
+            if (!selectedObject.Remove(CharacterObject,GlobalOptions.ConfirmDelete)) return;
 
             IsCharacterUpdateRequested = true;
             IsDirty = true;
@@ -4171,7 +4171,7 @@ namespace Chummer
                     objQuality.BP = 0;
 
                 // If the item being checked would cause the limit of 25 BP spent on Positive Qualities to be exceed, do not let it be checked and display a message.
-                string strAmount = CharacterObject.GameplayOptionQualityLimit.ToString(GlobalOptions.Instance.CultureInfo) + LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language) + LanguageManager.GetString("String_Karma", GlobalOptions.Instance.Language);
+                string strAmount = CharacterObject.GameplayOptionQualityLimit.ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + LanguageManager.GetString("String_Karma", GlobalOptions.Language);
                 int intMaxQualityAmount = CharacterObject.GameplayOptionQualityLimit;
 
                 // Make sure that adding the Quality would not cause the character to exceed their BP limits.
@@ -4195,7 +4195,7 @@ namespace Chummer
                     if (CharacterObjectOptions.EnemyKarmaQualityLimit)
                     {
                         // Include the BP used by Enemies.
-                        string strEnemiesBPText = lblEnemiesBP.Text.FastEscapeOnceFromEnd(LanguageManager.GetString("String_Karma", GlobalOptions.Instance.Language)).NormalizeWhiteSpace();
+                        string strEnemiesBPText = lblEnemiesBP.Text.FastEscapeOnceFromEnd(LanguageManager.GetString("String_Karma", GlobalOptions.Language)).NormalizeWhiteSpace();
                         if (int.TryParse(strEnemiesBPText, out int intTemp))
                             intBP += intTemp;
                     }
@@ -4208,16 +4208,16 @@ namespace Chummer
                     {
                         if (intBP < (intMaxQualityAmount * -1) && !CharacterObject.IgnoreRules)
                         {
-                            MessageBox.Show(string.Format(LanguageManager.GetString("Message_NegativeQualityLimit", GlobalOptions.Instance.Language), strAmount),
-                                LanguageManager.GetString("MessageTitle_NegativeQualityLimit", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            MessageBox.Show(string.Format(LanguageManager.GetString("Message_NegativeQualityLimit", GlobalOptions.Language), strAmount),
+                                LanguageManager.GetString("MessageTitle_NegativeQualityLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                             blnAddItem = false;
                         }
                         if (CharacterObject.MetatypeBP < 0)
                         {
                             if ((intBP + CharacterObject.MetatypeBP) < (intMaxQualityAmount * -1) && !CharacterObject.IgnoreRules)
                             {
-                                MessageBox.Show(string.Format(LanguageManager.GetString("Message_NegativeQualityAndMetatypeLimit", GlobalOptions.Instance.Language), strAmount),
-                                    LanguageManager.GetString("MessageTitle_NegativeQualityLimit", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                MessageBox.Show(string.Format(LanguageManager.GetString("Message_NegativeQualityAndMetatypeLimit", GlobalOptions.Language), strAmount),
+                                    LanguageManager.GetString("MessageTitle_NegativeQualityLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                                 blnAddItem = false;
                             }
                         }
@@ -4246,8 +4246,8 @@ namespace Chummer
                             if (intBP > intMaxQualityAmount && !CharacterObject.IgnoreRules)
                             {
                                 MessageBox.Show(
-                                    string.Format(LanguageManager.GetString("Message_PositiveQualityLimit", GlobalOptions.Instance.Language), strAmount),
-                                    LanguageManager.GetString("MessageTitle_PositiveQualityLimit", GlobalOptions.Instance.Language),
+                                    string.Format(LanguageManager.GetString("Message_PositiveQualityLimit", GlobalOptions.Language), strAmount),
+                                    LanguageManager.GetString("MessageTitle_PositiveQualityLimit", GlobalOptions.Language),
                                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                                 blnAddItem = false;
                             }
@@ -4323,14 +4323,14 @@ namespace Chummer
             // Qualities that come from a Metatype cannot be removed.
             if (objSelectedQuality.OriginSource == QualitySource.Metatype)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_MetavariantQuality", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_MetavariantQuality", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_MetavariantQuality", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_MetavariantQuality", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return false;
             }
 
             if (objSelectedQuality.OriginSource == QualitySource.Improvement)
             {
-                MessageBox.Show(string.Format(LanguageManager.GetString("Message_ImprovementQuality", GlobalOptions.Instance.Language), objSelectedQuality.GetSourceName(GlobalOptions.Instance.Language)),
-                    LanguageManager.GetString("MessageTitle_MetavariantQuality", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(string.Format(LanguageManager.GetString("Message_ImprovementQuality", GlobalOptions.Language), objSelectedQuality.GetSourceName(GlobalOptions.Language)),
+                    LanguageManager.GetString("MessageTitle_MetavariantQuality", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return false;
             }
 
@@ -4345,10 +4345,10 @@ namespace Chummer
                 int intShowBP = intBP;
                 if (blnCompleteDelete)
                     intShowBP *= objSelectedQuality.Levels;
-                string strBP = intShowBP.ToString(GlobalOptions.Instance.CultureInfo) + LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language) + LanguageManager.GetString("String_Karma", GlobalOptions.Instance.Language);
+                string strBP = intShowBP.ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + LanguageManager.GetString("String_Karma", GlobalOptions.Language);
 
                 if (blnConfirmDelete &&
-                    !CharacterObject.ConfirmDelete(string.Format(LanguageManager.GetString(blnCompleteDelete ? "Message_DeleteMetatypeQuality" : "Message_LowerMetatypeQualityLevel", GlobalOptions.Instance.Language), strBP)))
+                    !CharacterObject.ConfirmDelete(string.Format(LanguageManager.GetString(blnCompleteDelete ? "Message_DeleteMetatypeQuality" : "Message_LowerMetatypeQualityLevel", GlobalOptions.Language), strBP)))
                     return false;
 
                 // Remove any Improvements that the Quality might have.
@@ -4366,15 +4366,15 @@ namespace Chummer
                 {
                     objReplaceQuality.Type = QualityType.Negative;
                     if (!string.IsNullOrEmpty(objReplaceQuality.Extra))
-                        objReplaceQuality.Extra += ',' + LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
-                    objReplaceQuality.Extra += LanguageManager.GetString("String_ExpenseRemovePositiveQuality", GlobalOptions.Instance.Language);
+                        objReplaceQuality.Extra += ',' + LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                    objReplaceQuality.Extra += LanguageManager.GetString("String_ExpenseRemovePositiveQuality", GlobalOptions.Language);
                 }
                 else
                 {
                     objReplaceQuality.Type = QualityType.Positive;
                     if (!string.IsNullOrEmpty(objReplaceQuality.Extra))
-                        objReplaceQuality.Extra += ',' + LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
-                    objReplaceQuality.Extra += LanguageManager.GetString("String_ExpenseRemoveNegativeQuality", GlobalOptions.Instance.Language);
+                        objReplaceQuality.Extra += ',' + LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                    objReplaceQuality.Extra += LanguageManager.GetString("String_ExpenseRemoveNegativeQuality", GlobalOptions.Language);
                 }
                 // The replacement Quality does not count towards the BP limit of the new type, nor should it be printed.
                 objReplaceQuality.AllowPrint = false;
@@ -4384,13 +4384,13 @@ namespace Chummer
             }
             else
             {
-                if (blnConfirmDelete && !CharacterObject.ConfirmDelete(blnCompleteDelete ? LanguageManager.GetString("Message_DeleteQuality", GlobalOptions.Instance.Language) : LanguageManager.GetString("Message_LowerQualityLevel", GlobalOptions.Instance.Language)))
+                if (blnConfirmDelete && !CharacterObject.ConfirmDelete(blnCompleteDelete ? LanguageManager.GetString("Message_DeleteQuality", GlobalOptions.Language) : LanguageManager.GetString("Message_LowerQualityLevel", GlobalOptions.Language)))
                     return false;
             }
             
             if (objSelectedQuality.Type == QualityType.LifeModule)
             {
-                objXmlDeleteQuality = Quality.GetNodeOverrideable(objSelectedQuality.SourceIDString, XmlManager.Load("lifemodules.xml", GlobalOptions.Instance.Language));
+                objXmlDeleteQuality = Quality.GetNodeOverrideable(objSelectedQuality.SourceIDString, XmlManager.Load("lifemodules.xml", GlobalOptions.Language));
             }
             
             // Fix for legacy characters with old addqualities improvements.
@@ -4497,7 +4497,7 @@ namespace Chummer
             // Add a new location to the Armor Tree.
             frmSelectText frmPickText = new frmSelectText
             {
-                Description = LanguageManager.GetString("String_AddLocation", GlobalOptions.Instance.Language)
+                Description = LanguageManager.GetString("String_AddLocation", GlobalOptions.Language)
             };
             frmPickText.ShowDialog(this);
 
@@ -4514,7 +4514,7 @@ namespace Chummer
             // Add a new location to the Armor Tree.
             frmSelectText frmPickText = new frmSelectText
             {
-                Description = LanguageManager.GetString("String_AddLocation", GlobalOptions.Instance.Language)
+                Description = LanguageManager.GetString("String_AddLocation", GlobalOptions.Language)
             };
             frmPickText.ShowDialog(this);
 
@@ -4548,7 +4548,7 @@ namespace Chummer
             // If the character does not have at least 2 un-Bonded Foci, display an error and leave.
             if (intFree < 2)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_CannotStackFoci", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_CannotStackFoci", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_CannotStackFoci", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CannotStackFoci", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -4559,7 +4559,7 @@ namespace Chummer
             {
                 frmPickItem.Gear = lstGear;
                 frmPickItem.AllowAutoSelect = false;
-                frmPickItem.Description = LanguageManager.GetString("String_SelectItemFocus", GlobalOptions.Instance.Language);
+                frmPickItem.Description = LanguageManager.GetString("String_SelectItemFocus", GlobalOptions.Language);
                 frmPickItem.ShowDialog(this);
 
                 if (frmPickItem.DialogResult == DialogResult.OK)
@@ -4581,7 +4581,7 @@ namespace Chummer
             // Make sure at least 2 Foci were selected.
             if (lstStack.Count < 2)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_StackedFocusMinimum", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_CannotStackFoci", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_StackedFocusMinimum", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CannotStackFoci", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -4595,7 +4595,7 @@ namespace Chummer
                 {
                     foreach (Gear objGear in lstStack)
                         objGear.Bonded = false;
-                    MessageBox.Show(LanguageManager.GetString("Message_StackedFocusForce", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_CannotStackFoci", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_StackedFocusForce", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CannotStackFoci", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
             }
@@ -4617,12 +4617,12 @@ namespace Chummer
             Gear objStackItem = new Gear(CharacterObject)
             {
                 Category = "Stacked Focus",
-                Name = "Stacked Focus: " + objStack.Name(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language),
+                Name = "Stacked Focus: " + objStack.Name(GlobalOptions.CultureInfo, GlobalOptions.Language),
                 MinRating = string.Empty,
                 MaxRating = string.Empty,
                 Source = "SR5",
                 Page = "1",
-                Cost = decCost.ToString(GlobalOptions.Instance.CultureInfo),
+                Cost = decCost.ToString(GlobalOptions.CultureInfo),
                 Avail = "0"
             };
 
@@ -4692,7 +4692,7 @@ namespace Chummer
             // Add a new location to the Armor Tree.
             frmSelectText frmPickText = new frmSelectText
             {
-                Description = LanguageManager.GetString("String_AddLocation", GlobalOptions.Instance.Language)
+                Description = LanguageManager.GetString("String_AddLocation", GlobalOptions.Language)
             };
             frmPickText.ShowDialog(this);
 
@@ -4738,12 +4738,12 @@ namespace Chummer
             Vehicle objVehicle = treVehicles.SelectedNode?.Tag as Vehicle;
             if (!(objVehicle == null || treVehicles.SelectedNode?.Tag == null))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_SelectVehicleLocation", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_SelectVehicle", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_SelectVehicleLocation", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectVehicle", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             frmSelectText frmPickText = new frmSelectText
             {
-                Description = LanguageManager.GetString("String_AddLocation", GlobalOptions.Instance.Language)
+                Description = LanguageManager.GetString("String_AddLocation", GlobalOptions.Language)
             };
             frmPickText.ShowDialog(this);
 
@@ -4763,7 +4763,7 @@ namespace Chummer
             // Make sure a parent items is selected, then open the Select Cyberware window.
             if (!(treCyberware.SelectedNode?.Tag is Cyberware objCyberware && !string.IsNullOrWhiteSpace(objCyberware?.AllowedSubsystems)))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_SelectCyberware", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_SelectCyberware", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_SelectCyberware", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectCyberware", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -4780,7 +4780,7 @@ namespace Chummer
             // Make sure a parent items is selected, then open the Select Cyberware window.
             if (!(treVehicles.SelectedNode?.Tag is Cyberware objCyberware && !string.IsNullOrWhiteSpace(objCyberware?.AllowedSubsystems)))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_SelectCyberware", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_SelectCyberware", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_SelectCyberware", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectCyberware", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -4796,15 +4796,15 @@ namespace Chummer
         {
             if (!(treWeapons.SelectedNode?.Tag is Weapon objWeapon))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_SelectWeaponAccessory", GlobalOptions.Instance.Language),
-                    LanguageManager.GetString("MessageTitle_SelectWeapon", GlobalOptions.Instance.Language),
+                MessageBox.Show(LanguageManager.GetString("Message_SelectWeaponAccessory", GlobalOptions.Language),
+                    LanguageManager.GetString("MessageTitle_SelectWeapon", GlobalOptions.Language),
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             // Accessories cannot be added to Cyberweapons.
             if (objWeapon.Cyberware)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_CyberweaponNoAccessory", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_CyberweaponNoAccessory", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_CyberweaponNoAccessory", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CyberweaponNoAccessory", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -4812,7 +4812,7 @@ namespace Chummer
             XmlNode objXmlWeapon = objWeapon.GetNode();
             if (objXmlWeapon == null)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_CannotFindWeapon", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_CannotModifyWeapon", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_CannotFindWeapon", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CannotModifyWeapon", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -4822,7 +4822,7 @@ namespace Chummer
                 // Make sure the Weapon allows Accessories to be added to it.
                 if (!objWeapon.AllowAccessory)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_CannotModifyWeapon", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_CannotModifyWeapon", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_CannotModifyWeapon", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CannotModifyWeapon", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     break;
                 }
                 frmSelectWeaponAccessory frmPickWeaponAccessory = new frmSelectWeaponAccessory(CharacterObject)
@@ -4858,11 +4858,11 @@ namespace Chummer
                     if (strCost.Contains('-'))
                     {
                         string[] strValues = strCost.Split('-');
-                        decMin = Convert.ToDecimal(strValues[0], GlobalOptions.Instance.InvariantCultureInfo);
-                        decMax = Convert.ToDecimal(strValues[1], GlobalOptions.Instance.InvariantCultureInfo);
+                        decMin = Convert.ToDecimal(strValues[0], GlobalOptions.InvariantCultureInfo);
+                        decMax = Convert.ToDecimal(strValues[1], GlobalOptions.InvariantCultureInfo);
                     }
                     else
-                        decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalOptions.Instance.InvariantCultureInfo);
+                        decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalOptions.InvariantCultureInfo);
 
                     if (decMin != 0 || decMax != decimal.MaxValue)
                     {
@@ -4871,10 +4871,10 @@ namespace Chummer
                             decMax = 1000000;
                         frmPickNumber.Minimum = decMin;
                         frmPickNumber.Maximum = decMax;
-                        frmPickNumber.Description = string.Format(LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Instance.Language), objAccessory.DisplayNameShort(GlobalOptions.Instance.Language));
+                        frmPickNumber.Description = string.Format(LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language), objAccessory.DisplayNameShort(GlobalOptions.Language));
                         frmPickNumber.AllowCancel = false;
                         frmPickNumber.ShowDialog();
-                        objAccessory.Cost = frmPickNumber.SelectedValue.ToString(GlobalOptions.Instance.InvariantCultureInfo);
+                        objAccessory.Cost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
                     }
                 }
                 objWeapon.WeaponAccessories.Add(objAccessory);
@@ -4892,7 +4892,7 @@ namespace Chummer
             // Make sure a parent item is selected, then open the Select Accessory window.
             if (!(treArmor.SelectedNode?.Tag is Armor objArmor))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_SelectArmor", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_SelectArmor", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_SelectArmor", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectArmor", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -4907,7 +4907,7 @@ namespace Chummer
                 frmSelectArmorMod frmPickArmorMod = new frmSelectArmorMod(CharacterObject, objArmor)
                 {
                     ArmorCost = objArmor.OwnCost,
-                    ArmorCapacity = Convert.ToDecimal(objArmor.CalculatedCapacity, GlobalOptions.Instance.CultureInfo),
+                    ArmorCapacity = Convert.ToDecimal(objArmor.CalculatedCapacity, GlobalOptions.CultureInfo),
                     AllowedCategories = objArmor.Category + "," + objArmor.Name,
                     CapacityDisplayStyle = objArmor.CapacityDisplayStyle
                 };
@@ -4976,7 +4976,7 @@ namespace Chummer
             // Make sure a parent items is selected, then open the Select Cyberware window.
             if (!(treGear.SelectedNode?.Tag is Gear objGear))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_SelectGear", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_SelectGear", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_SelectGear", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectGear", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -5016,7 +5016,7 @@ namespace Chummer
             // Make sure a parent items is selected, then open the Select Vehicle Mod window.
             if (!(objSelectedNode?.Tag is Vehicle objVehicle))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_SelectVehicle", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_SelectVehicle", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_SelectVehicle", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectVehicle", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -5149,7 +5149,7 @@ namespace Chummer
 
             if (objWeaponMount == null && objMod == null)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_CannotAddWeapon", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_CannotAddWeapon", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_CannotAddWeapon", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CannotAddWeapon", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -5210,7 +5210,7 @@ namespace Chummer
             // Attempt to locate the selected VehicleWeapon.
             if (!(treVehicles.SelectedNode?.Tag is Weapon objWeapon))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_VehicleWeaponAccessories", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_VehicleWeaponAccessories", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_VehicleWeaponAccessories", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_VehicleWeaponAccessories", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -5220,7 +5220,7 @@ namespace Chummer
             XmlNode objXmlWeapon = objWeapon.GetNode();
             if (objXmlWeapon == null)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_CannotFindWeapon", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_CannotModifyWeapon", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_CannotFindWeapon", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CannotModifyWeapon", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -5231,7 +5231,7 @@ namespace Chummer
                 // Make sure the Weapon allows Accessories to be added to it.
                 if (!objWeapon.AllowAccessory)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_CannotModifyWeapon", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_CannotModifyWeapon", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_CannotModifyWeapon", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CannotModifyWeapon", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
 
@@ -5274,7 +5274,7 @@ namespace Chummer
             // Attempt to locate the selected VehicleWeapon.
             if (!(treVehicles.SelectedNode?.Tag is Weapon objSelectedWeapon))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_VehicleWeaponUnderbarrel", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_VehicleWeaponUnderbarrel", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_VehicleWeaponUnderbarrel", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_VehicleWeaponUnderbarrel", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -5343,13 +5343,13 @@ namespace Chummer
 
             if (treMartialArts.SelectedNode == null || treMartialArts.SelectedNode.Level <= 0)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_SelectMartialArtTechnique", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_SelectMartialArtTechnique", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_SelectMartialArtTechnique", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectMartialArtTechnique", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             if (!(treMartialArts.SelectedNode?.Tag is MartialArt objMartialArt))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_SelectMartialArtTechnique", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_SelectMartialArtTechnique", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_SelectMartialArtTechnique", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectMartialArtTechnique", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -5387,7 +5387,7 @@ namespace Chummer
             // Locate the selected Vehicle.
             if (!(treVehicles.SelectedNode?.Tag is Vehicle objSelectedVehicle))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_SelectGearVehicle", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_SelectGearVehicle", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_SelectGearVehicle", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectGearVehicle", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -5464,7 +5464,7 @@ namespace Chummer
 
                             TreeNode objGearNode = objSelectedNode.FindNode(objVehicleGear.InternalId);
                             if (objGearNode != null)
-                                objGearNode.Text = objVehicleGear.DisplayName(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
+                                objGearNode.Text = objVehicleGear.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
 
                             break;
                         }
@@ -5497,14 +5497,14 @@ namespace Chummer
             // Make sure a parent items is selected, then open the Select Gear window.
             if (objSelectedNode == null || objSelectedNode.Level < 2)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_ModifyVehicleGear", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_ModifyVehicleGear", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_ModifyVehicleGear", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_ModifyVehicleGear", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Make sure the Gear was found.
             if (!(objSelectedNode.Tag is Gear objSensor))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_ModifyVehicleGear", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_ModifyVehicleGear", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_ModifyVehicleGear", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_ModifyVehicleGear", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -5658,20 +5658,20 @@ namespace Chummer
             // Make sure a parent item is selected, then open the Select Accessory window.
             if (treWeapons.SelectedNode == null || treWeapons.SelectedNode.Level <= 0)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_SelectWeaponName", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_SelectWeapon", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_SelectWeaponName", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectWeapon", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Get the information for the currently selected Weapon.
             if (!(treWeapons.SelectedNode?.Tag is Weapon objWeapon))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_SelectWeaponName", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_SelectWeapon", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_SelectWeaponName", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectWeapon", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             frmSelectText frmPickText = new frmSelectText
             {
-                Description = LanguageManager.GetString("String_WeaponName", GlobalOptions.Instance.Language),
+                Description = LanguageManager.GetString("String_WeaponName", GlobalOptions.Language),
                 DefaultString = objWeapon.CustomName
             };
             frmPickText.ShowDialog(this);
@@ -5680,7 +5680,7 @@ namespace Chummer
                 return;
 
             objWeapon.CustomName = frmPickText.SelectedValue;
-            treWeapons.SelectedNode.Text = objWeapon.DisplayName(GlobalOptions.Instance.Language);
+            treWeapons.SelectedNode.Text = objWeapon.DisplayName(GlobalOptions.Language);
 
             IsDirty = true;
         }
@@ -5689,20 +5689,20 @@ namespace Chummer
         {
             if (treGear.SelectedNode == null || treGear.SelectedNode.Level <= 0)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_SelectGearName", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_SelectGear", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_SelectGearName", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectGear", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Get the information for the currently selected Gear.
             if (!(treGear.SelectedNode?.Tag is Gear objGear))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_SelectGearName", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_SelectGear", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_SelectGearName", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectGear", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             frmSelectText frmPickText = new frmSelectText
             {
-                Description = LanguageManager.GetString("String_GearName", GlobalOptions.Instance.Language),
+                Description = LanguageManager.GetString("String_GearName", GlobalOptions.Language),
                 DefaultString = objGear.GearName
             };
             frmPickText.ShowDialog(this);
@@ -5711,7 +5711,7 @@ namespace Chummer
                 return;
 
             objGear.GearName = frmPickText.SelectedValue;
-            treGear.SelectedNode.Text = objGear.DisplayName(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
+            treGear.SelectedNode.Text = objGear.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
 
             IsDirty = true;
         }
@@ -5722,13 +5722,13 @@ namespace Chummer
             // Locate the Weapon that is selected in the tree.
             if (!(objSelectedNode?.Tag is Weapon objSelectedWeapon))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_SelectWeaponUnderbarrel", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_SelectWeapon", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_SelectWeaponUnderbarrel", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectWeapon", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             if (objSelectedWeapon.Cyberware)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_CyberwareUnderbarrel", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_WeaponUnderbarrel", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_CyberwareUnderbarrel", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_WeaponUnderbarrel", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -5786,7 +5786,7 @@ namespace Chummer
             if (treGear.SelectedNode?.Tag is Gear objGear)
             {
                 objGear.Extra = frmPickText.SelectedValue;
-                treGear.SelectedNode.Text = objGear.DisplayName(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
+                treGear.SelectedNode.Text = objGear.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 IsDirty = true;
             }
         }
@@ -5817,14 +5817,14 @@ namespace Chummer
             // Make sure a parent items is selected, then open the Select Gear window.
             if (treVehicles.SelectedNode == null || treVehicles.SelectedNode.Level <= 0)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_SelectGearVehicle", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_SelectGearVehicle", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_SelectGearVehicle", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectGearVehicle", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Attempt to locate the selected Vehicle.
             if (!(treVehicles.SelectedNode?.Tag is Vehicle objVehicle))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_SelectGearVehicle", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_SelectGearVehicle", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_SelectGearVehicle", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectGearVehicle", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -5858,7 +5858,7 @@ namespace Chummer
             // Make sure a parent items is selected, then open the Select Gear window.
             if (!(treArmor.SelectedNode?.Tag is Armor objArmor))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_SelectArmor", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_SelectArmor", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_SelectArmor", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectArmor", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -5877,7 +5877,7 @@ namespace Chummer
             // Make sure a parent items is selected, then open the Select Gear window.
             if (objSelectedNode == null || objSelectedNode.Level <= 0)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_SelectArmor", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_SelectArmor", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_SelectArmor", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectArmor", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -5888,7 +5888,7 @@ namespace Chummer
             {
                 if (string.IsNullOrEmpty(objMod.GearCapacity))
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_SelectArmor", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_SelectArmor", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_SelectArmor", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectArmor", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
                 capacityOnly = true;
@@ -6054,7 +6054,7 @@ namespace Chummer
             {
                 frmSelectText frmPickText = new frmSelectText
                 {
-                    Description = LanguageManager.GetString("String_VehicleName", GlobalOptions.Instance.Language),
+                    Description = LanguageManager.GetString("String_VehicleName", GlobalOptions.Language),
                     DefaultString = objWeaponMount.Location
                 };
 
@@ -6064,7 +6064,7 @@ namespace Chummer
                     return;
 
                 objWeaponMount.Location = frmPickText.SelectedValue;
-                treVehicles.SelectedNode.Text = objWeaponMount.DisplayName(GlobalOptions.Instance.Language);
+                treVehicles.SelectedNode.Text = objWeaponMount.DisplayName(GlobalOptions.Language);
             }
         }
 
@@ -6078,20 +6078,20 @@ namespace Chummer
             // Make sure a parent item is selected.
             if (treVehicles.SelectedNode == null || treVehicles.SelectedNode.Level <= 0)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_SelectVehicleName", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_SelectVehicle", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_SelectVehicleName", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectVehicle", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Get the information for the currently selected Vehicle.
             if (!(treVehicles.SelectedNode?.Tag is Vehicle objVehicle))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_SelectVehicleName", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_SelectVehicle", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_SelectVehicleName", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectVehicle", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             frmSelectText frmPickText = new frmSelectText
             {
-                Description = LanguageManager.GetString("String_VehicleName", GlobalOptions.Instance.Language),
+                Description = LanguageManager.GetString("String_VehicleName", GlobalOptions.Language),
                 DefaultString = objVehicle.CustomName
             };
 
@@ -6101,14 +6101,14 @@ namespace Chummer
                 return;
 
             objVehicle.CustomName = frmPickText.SelectedValue;
-            treVehicles.SelectedNode.Text = objVehicle.DisplayName(GlobalOptions.Instance.Language);
+            treVehicles.SelectedNode.Text = objVehicle.DisplayName(GlobalOptions.Language);
         }
 
         private void tsVehicleAddCyberware_Click(object sender, EventArgs e)
         {
             if (treVehicles.SelectedNode?.Tag is string)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_VehicleCyberwarePlugin", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_NoCyberware", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_VehicleCyberwarePlugin", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NoCyberware", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -6120,7 +6120,7 @@ namespace Chummer
 
             if (objCyberwareParent == null && (objMod == null || !objMod.AllowCyberware))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_VehicleCyberwarePlugin", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_NoCyberware", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_VehicleCyberwarePlugin", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NoCyberware", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -6178,7 +6178,7 @@ namespace Chummer
                         // Do not allow the user to add a new piece of Cyberware if its Capacity has been reached.
                         if (CharacterObjectOptions.EnforceCapacity && objCyberwareParent.CapacityRemaining < 0)
                         {
-                            MessageBox.Show(LanguageManager.GetString("Message_CapacityReached", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_CapacityReached", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            MessageBox.Show(LanguageManager.GetString("Message_CapacityReached", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CapacityReached", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                             frmPickCyberware.Dispose();
                             break;
                         }
@@ -6253,20 +6253,20 @@ namespace Chummer
             // Make sure a parent item is selected, then open the Select Accessory window.
             if (treArmor.SelectedNode == null || treArmor.SelectedNode.Level <= 0)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_SelectArmorName", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_SelectArmor", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_SelectArmorName", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectArmor", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Get the information for the currently selected Armor.
             if (!(treArmor.SelectedNode?.Tag is Armor objArmor))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_SelectArmorName", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_SelectArmor", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_SelectArmorName", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectArmor", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             frmSelectText frmPickText = new frmSelectText
             {
-                Description = LanguageManager.GetString("String_ArmorName", GlobalOptions.Instance.Language),
+                Description = LanguageManager.GetString("String_ArmorName", GlobalOptions.Language),
                 DefaultString = objArmor.CustomName
             };
             frmPickText.ShowDialog(this);
@@ -6275,7 +6275,7 @@ namespace Chummer
                 return;
 
             objArmor.CustomName = frmPickText.SelectedValue;
-            treArmor.SelectedNode.Text = objArmor.DisplayName(GlobalOptions.Instance.Language);
+            treArmor.SelectedNode.Text = objArmor.DisplayName(GlobalOptions.Language);
         }
 
         private void tsEditAdvancedLifestyle_Click(object sender, EventArgs e)
@@ -6298,13 +6298,13 @@ namespace Chummer
             // Get the information for the currently selected Lifestyle.
             if (!(treLifestyles.SelectedNode?.Tag is IHasCustomName objCustomName))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_SelectLifestyleName", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_SelectLifestyle", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_SelectLifestyleName", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectLifestyle", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             frmSelectText frmPickText = new frmSelectText
             {
-                Description = LanguageManager.GetString("String_LifestyleName", GlobalOptions.Instance.Language),
+                Description = LanguageManager.GetString("String_LifestyleName", GlobalOptions.Language),
                 DefaultString = objCustomName.CustomName
             };
             frmPickText.ShowDialog(this);
@@ -6316,7 +6316,7 @@ namespace Chummer
             {
                 objCustomName.CustomName = frmPickText.SelectedValue;
 
-                treLifestyles.SelectedNode.Text = objCustomName.DisplayName(GlobalOptions.Instance.Language);
+                treLifestyles.SelectedNode.Text = objCustomName.DisplayName(GlobalOptions.Language);
 
                 IsDirty = true;
             }
@@ -6327,7 +6327,7 @@ namespace Chummer
             if (!(treGear.SelectedNode?.Tag is Location objLocation)) return;
             frmSelectText frmPickText = new frmSelectText
             {
-                Description = LanguageManager.GetString("String_AddLocation", GlobalOptions.Instance.Language),
+                Description = LanguageManager.GetString("String_AddLocation", GlobalOptions.Language),
                 DefaultString = objLocation.Name
             };
 
@@ -6337,7 +6337,7 @@ namespace Chummer
                 return;
 
             objLocation.Name = frmPickText.SelectedValue;
-            treGear.SelectedNode.Text = objLocation.DisplayName(GlobalOptions.Instance.Language);
+            treGear.SelectedNode.Text = objLocation.DisplayName(GlobalOptions.Language);
 
             IsDirty = true;
         }
@@ -6347,7 +6347,7 @@ namespace Chummer
             if (!(treWeapons.SelectedNode?.Tag is Location objLocation)) return;
             frmSelectText frmPickText = new frmSelectText
             {
-                Description = LanguageManager.GetString("String_AddLocation", GlobalOptions.Instance.Language),
+                Description = LanguageManager.GetString("String_AddLocation", GlobalOptions.Language),
                 DefaultString = objLocation.Name
             };
             
@@ -6357,7 +6357,7 @@ namespace Chummer
                 return;
 
             objLocation.Name = frmPickText.SelectedValue;
-            treWeapons.SelectedNode.Text = objLocation.DisplayName(GlobalOptions.Instance.Language);
+            treWeapons.SelectedNode.Text = objLocation.DisplayName(GlobalOptions.Language);
 
             IsDirty = true;
         }
@@ -6370,7 +6370,7 @@ namespace Chummer
             // The maximum number of Spells a character can start with is 2 x (highest of Spellcasting or Ritual Spellcasting Skill).
             if (CharacterObject.Spells.Count >= (2 * intSkillValue + ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.SpellLimit)) && !CharacterObject.IgnoreRules)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_SpellLimit", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_SpellLimit", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_SpellLimit", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SpellLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -6394,7 +6394,7 @@ namespace Chummer
             if (!(treArmor.SelectedNode?.Tag is Location objLocation)) return;
             frmSelectText frmPickText = new frmSelectText
             {
-                Description = LanguageManager.GetString("String_AddLocation", GlobalOptions.Instance.Language),
+                Description = LanguageManager.GetString("String_AddLocation", GlobalOptions.Language),
                 DefaultString = objLocation.Name
             };
 
@@ -6404,7 +6404,7 @@ namespace Chummer
                 return;
 
             objLocation.Name = frmPickText.SelectedValue;
-            treArmor.SelectedNode.Text = objLocation.DisplayName(GlobalOptions.Instance.Language);
+            treArmor.SelectedNode.Text = objLocation.DisplayName(GlobalOptions.Language);
 
             IsDirty = true;
         }
@@ -6415,14 +6415,14 @@ namespace Chummer
             // Make sure a parent items is selected, then open the Select Gear window.
             if (objSelectedNode == null || objSelectedNode.Level <= 0)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_SelectCyberware", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_SelectCyberware", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_SelectCyberware", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectCyberware", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Make sure the Cyberware is allowed to accept Gear.
             if (!(objSelectedNode.Tag is Cyberware objCyberware) ||  objCyberware.AllowGear == null)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_CyberwareGear", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_CyberwareGear", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_CyberwareGear", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CyberwareGear", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -6498,14 +6498,14 @@ namespace Chummer
             // Make sure a parent items is selected, then open the Select Gear window.
             if (!(treVehicles.SelectedNode?.Tag is Cyberware objCyberware))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_SelectCyberware", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_SelectCyberware", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_SelectCyberware", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectCyberware", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Make sure the Cyberware is allowed to accept Gear.
             if (objCyberware.AllowGear == null)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_CyberwareGear", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_CyberwareGear", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_CyberwareGear", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CyberwareGear", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -6582,14 +6582,14 @@ namespace Chummer
             // Make sure a parent items is selected, then open the Select Gear window.
             if (objSelectedNode == null || objSelectedNode.Level < 2)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_ModifyVehicleGear", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_SelectGear", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_ModifyVehicleGear", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectGear", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Locate the Vehicle Sensor Gear.
             if (!(objSelectedNode.Tag is Gear objSensor))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_ModifyVehicleGear", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_SelectGear", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_ModifyVehicleGear", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectGear", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -6671,14 +6671,14 @@ namespace Chummer
             // Make sure a parent items is selected, then open the Select Gear window.
             if (objSelectedNode == null)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_ModifyVehicleGear", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_SelectGear", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_ModifyVehicleGear", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectGear", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Locate the Vehicle Sensor Gear.
             if (!(objSelectedNode.Tag is Gear objSensor))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_ModifyVehicleGear", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_SelectGear", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_ModifyVehicleGear", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectGear", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -6761,7 +6761,7 @@ namespace Chummer
             // Make sure the Weapon Accessory is allowed to accept Gear.
             if (!(objSelectedNode?.Tag is WeaponAccessory objAccessory) || objAccessory.AllowGear == null)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_WeaponGear", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_CyberwareGear", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_WeaponGear", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CyberwareGear", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -6836,7 +6836,7 @@ namespace Chummer
             if (!(treWeapons.SelectedNode?.Tag is Gear objSensor))
             // Make sure the Gear was found.
             {
-                MessageBox.Show(LanguageManager.GetString("Message_ModifyVehicleGear", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_SelectGear", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_ModifyVehicleGear", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectGear", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -6919,7 +6919,7 @@ namespace Chummer
 
             frmSelectText frmPickText = new frmSelectText
             {
-                Description = LanguageManager.GetString("String_AddLocation", GlobalOptions.Instance.Language)
+                Description = LanguageManager.GetString("String_AddLocation", GlobalOptions.Language)
             };
             frmPickText.ShowDialog(this);
 
@@ -6927,7 +6927,7 @@ namespace Chummer
                 return;
 
             objLocation.Name = frmPickText.SelectedValue;
-            treVehicles.SelectedNode.Text = objLocation.DisplayName(GlobalOptions.Instance.Language);
+            treVehicles.SelectedNode.Text = objLocation.DisplayName(GlobalOptions.Language);
             IsDirty = true;
         }
 
@@ -6952,7 +6952,7 @@ namespace Chummer
             // Make sure the Gear was found.
             if (!(treVehicles.SelectedNode?.Tag is Gear objSensor))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_ModifyVehicleGear", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_SelectGear", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_ModifyVehicleGear", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectGear", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -7040,7 +7040,7 @@ namespace Chummer
             // Make sure the Weapon Accessory is allowed to accept Gear.
             if (!(objSelectedNode?.Tag is WeaponAccessory objAccessory) || objAccessory.AllowGear == null)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_WeaponGear", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_CyberwareGear", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_WeaponGear", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CyberwareGear", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -7132,8 +7132,8 @@ namespace Chummer
                 lblQualitySource.Visible = true;
                 lblQualityBP.Visible = true;
                 objQuality.SetSourceDetail(lblQualitySource);
-                lblQualityBP.Text = (objQuality.BP * objQuality.Levels * CharacterObjectOptions.KarmaQuality).ToString(GlobalOptions.Instance.CultureInfo) +
-                                    LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language) + LanguageManager.GetString("String_Karma", GlobalOptions.Instance.Language);
+                lblQualityBP.Text = (objQuality.BP * objQuality.Levels * CharacterObjectOptions.KarmaQuality).ToString(GlobalOptions.CultureInfo) +
+                                    LanguageManager.GetString("String_Space", GlobalOptions.Language) + LanguageManager.GetString("String_Karma", GlobalOptions.Language);
             }
         }
 
@@ -7172,7 +7172,7 @@ namespace Chummer
                 for (; nudQualityLevel.Value > intCurrentLevels; ++intCurrentLevels)
                 {
                     XmlNode objXmlSelectedQuality = objSelectedQuality.GetNode();
-                    if (!objXmlSelectedQuality.RequirementsMet(CharacterObject, LanguageManager.GetString("String_Quality", GlobalOptions.Instance.Language)))
+                    if (!objXmlSelectedQuality.RequirementsMet(CharacterObject, LanguageManager.GetString("String_Quality", GlobalOptions.Language)))
                     {
                         UpdateQualityLevelValue(objSelectedQuality);
                         break;
@@ -7193,7 +7193,7 @@ namespace Chummer
                     objQuality.ContributeToLimit = objSelectedQuality.ContributeToLimit;
 
                     // If the item being checked would cause the limit of 25 BP spent on Positive Qualities to be exceed, do not let it be checked and display a message.
-                    string strAmount = CharacterObject.GameplayOptionQualityLimit.ToString() + LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language) + LanguageManager.GetString("String_Karma", GlobalOptions.Instance.Language);
+                    string strAmount = CharacterObject.GameplayOptionQualityLimit.ToString() + LanguageManager.GetString("String_Space", GlobalOptions.Language) + LanguageManager.GetString("String_Karma", GlobalOptions.Language);
                     int intMaxQualityAmount = CharacterObject.GameplayOptionQualityLimit;
 
                     // Make sure that adding the Quality would not cause the character to exceed their BP limits.
@@ -7217,7 +7217,7 @@ namespace Chummer
                         if (CharacterObjectOptions.EnemyKarmaQualityLimit)
                         {
                             // Include the BP used by Enemies.
-                            string strEnemiesBPText = lblEnemiesBP.Text.FastEscapeOnceFromEnd(LanguageManager.GetString("String_Karma", GlobalOptions.Instance.Language)).NormalizeWhiteSpace();
+                            string strEnemiesBPText = lblEnemiesBP.Text.FastEscapeOnceFromEnd(LanguageManager.GetString("String_Karma", GlobalOptions.Language)).NormalizeWhiteSpace();
                             if (int.TryParse(strEnemiesBPText, out int intTemp))
                                 intBP += intTemp;
                         }
@@ -7230,16 +7230,16 @@ namespace Chummer
                         {
                             if (intBP < (intMaxQualityAmount * -1) && !CharacterObject.IgnoreRules)
                             {
-                                MessageBox.Show(string.Format(LanguageManager.GetString("Message_NegativeQualityLimit", GlobalOptions.Instance.Language), strAmount),
-                                    LanguageManager.GetString("MessageTitle_NegativeQualityLimit", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                MessageBox.Show(string.Format(LanguageManager.GetString("Message_NegativeQualityLimit", GlobalOptions.Language), strAmount),
+                                    LanguageManager.GetString("MessageTitle_NegativeQualityLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                                 blnAddItem = false;
                             }
                             else if (CharacterObject.MetatypeBP < 0)
                             {
                                 if ((intBP + CharacterObject.MetatypeBP) < (intMaxQualityAmount * -1) && !CharacterObject.IgnoreRules)
                                 {
-                                    MessageBox.Show(string.Format(LanguageManager.GetString("Message_NegativeQualityAndMetatypeLimit", GlobalOptions.Instance.Language), strAmount),
-                                        LanguageManager.GetString("MessageTitle_NegativeQualityLimit", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    MessageBox.Show(string.Format(LanguageManager.GetString("Message_NegativeQualityAndMetatypeLimit", GlobalOptions.Language), strAmount),
+                                        LanguageManager.GetString("MessageTitle_NegativeQualityLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                                     blnAddItem = false;
                                 }
                             }
@@ -7267,8 +7267,8 @@ namespace Chummer
                             {
                                 if (intBP > intMaxQualityAmount && !CharacterObject.IgnoreRules)
                                 {
-                                    MessageBox.Show(string.Format(LanguageManager.GetString("Message_PositiveQualityLimit", GlobalOptions.Instance.Language), strAmount),
-                                        LanguageManager.GetString("MessageTitle_PositiveQualityLimit", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    MessageBox.Show(string.Format(LanguageManager.GetString("Message_PositiveQualityLimit", GlobalOptions.Language), strAmount),
+                                        LanguageManager.GetString("MessageTitle_PositiveQualityLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                                     blnAddItem = false;
                                 }
                             }
@@ -7387,9 +7387,9 @@ namespace Chummer
                         // If the Bonus contains "Rating", remove the existing Improvements and create new ones.
                         ImprovementManager.RemoveImprovements(CharacterObject, objCyberware.SourceType, objCyberware.InternalId);
                         if (objCyberware.Bonus != null)
-                            ImprovementManager.CreateImprovements(CharacterObject, objCyberware.SourceType, objCyberware.InternalId, objCyberware.Bonus, false, objCyberware.Rating, objCyberware.DisplayNameShort(GlobalOptions.Instance.Language));
+                            ImprovementManager.CreateImprovements(CharacterObject, objCyberware.SourceType, objCyberware.InternalId, objCyberware.Bonus, false, objCyberware.Rating, objCyberware.DisplayNameShort(GlobalOptions.Language));
                         if (objCyberware.WirelessOn && objCyberware.WirelessBonus != null)
-                            ImprovementManager.CreateImprovements(CharacterObject, objCyberware.SourceType, objCyberware.InternalId, objCyberware.WirelessBonus, false, objCyberware.Rating, objCyberware.DisplayNameShort(GlobalOptions.Instance.Language));
+                            ImprovementManager.CreateImprovements(CharacterObject, objCyberware.SourceType, objCyberware.InternalId, objCyberware.WirelessBonus, false, objCyberware.Rating, objCyberware.DisplayNameShort(GlobalOptions.Language));
 
                         if (objCyberware.PairBonus != null)
                         {
@@ -7416,7 +7416,7 @@ namespace Chummer
                                 // Go down the list and create pair bonuses for every second item
                                 if (intCyberwaresCount > 0 && (intCyberwaresCount & 1) == 0)
                                 {
-                                    ImprovementManager.CreateImprovements(CharacterObject, objLoopCyberware.SourceType, objLoopCyberware.InternalId + "Pair", objLoopCyberware.PairBonus, false, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort(GlobalOptions.Instance.Language));
+                                    ImprovementManager.CreateImprovements(CharacterObject, objLoopCyberware.SourceType, objLoopCyberware.InternalId + "Pair", objLoopCyberware.PairBonus, false, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort(GlobalOptions.Language));
                                 }
                                 intCyberwaresCount -= 1;
                             }
@@ -7426,7 +7426,7 @@ namespace Chummer
                             objCyberware.ChangeModularEquip(false);
                     }
 
-                    treCyberware.SelectedNode.Text = objCyberware.DisplayName(GlobalOptions.Instance.Language);
+                    treCyberware.SelectedNode.Text = objCyberware.DisplayName(GlobalOptions.Language);
                 }
                 else if (treCyberware.SelectedNode?.Tag is Gear objGear)
                 {
@@ -7453,15 +7453,15 @@ namespace Chummer
                             ImprovementManager.ForcedValue = objGear.Extra.TrimEndOnce(", Hacked");
                         }
                         if (objGear.Bonus != null)
-                            ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort(GlobalOptions.Instance.Language));
+                            ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort(GlobalOptions.Language));
                         if (objGear.WirelessOn && objGear.WirelessBonus != null)
-                            ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort(GlobalOptions.Instance.Language));
+                            ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort(GlobalOptions.Language));
 
                         if (!objGear.Equipped)
                             objGear.ChangeEquippedStatus(false);
                     }
 
-                    treCyberware.SelectedNode.Text = objGear.DisplayName(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
+                    treCyberware.SelectedNode.Text = objGear.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 }
 
                 IsCharacterUpdateRequested = true;
@@ -7670,7 +7670,7 @@ namespace Chummer
             
             objLifestyle.SetInternalId(strGuid);
             CharacterObject.Lifestyles[intPosition] = objLifestyle;
-            treLifestyles.SelectedNode.Text = objLifestyle.DisplayName(GlobalOptions.Instance.Language);
+            treLifestyles.SelectedNode.Text = objLifestyle.DisplayName(GlobalOptions.Language);
             treLifestyles.SelectedNode.Tag = objLifestyle;
 
             IsCharacterUpdateRequested = true;
@@ -7803,9 +7803,9 @@ namespace Chummer
                     if (blnAddBonus)
                     {
                         if (objGear.Bonus != null)
-                            ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort(GlobalOptions.Instance.Language));
+                            ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort(GlobalOptions.Language));
                         if (objGear.WirelessOn && objGear.WirelessBonus != null)
-                            ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort(GlobalOptions.Instance.Language));
+                            ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort(GlobalOptions.Language));
                     }
 
                     if (!objGear.Equipped)
@@ -8429,7 +8429,7 @@ namespace Chummer
             if (treVehicles.SelectedNode?.Tag is VehicleMod objMod)
             {
                 objMod.Rating = decimal.ToInt32(nudVehicleRating.Value);
-                treVehicles.SelectedNode.Text = objMod.DisplayName(GlobalOptions.Instance.Language);
+                treVehicles.SelectedNode.Text = objMod.DisplayName(GlobalOptions.Language);
             }
             else if (treVehicles.SelectedNode?.Tag is Gear objGear)
             {
@@ -8445,17 +8445,17 @@ namespace Chummer
                 }
                 else
                     objGear.Rating = decimal.ToInt32(nudVehicleRating.Value);
-                treVehicles.SelectedNode.Text = objGear.DisplayName(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
+                treVehicles.SelectedNode.Text = objGear.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
             }
             else if (treVehicles.SelectedNode?.Tag is WeaponAccessory objAccessory)
             {
                 objAccessory.Rating = decimal.ToInt32(nudVehicleRating.Value);
-                treVehicles.SelectedNode.Text = objAccessory.DisplayName(GlobalOptions.Instance.Language);
+                treVehicles.SelectedNode.Text = objAccessory.DisplayName(GlobalOptions.Language);
             }
             else if (treVehicles.SelectedNode?.Tag is Cyberware objCyberware)
             {
                 objCyberware.Rating = decimal.ToInt32(nudVehicleRating.Value);
-                treVehicles.SelectedNode.Text = objCyberware.DisplayName(GlobalOptions.Instance.Language);
+                treVehicles.SelectedNode.Text = objCyberware.DisplayName(GlobalOptions.Language);
             }
             else
             {
@@ -8502,7 +8502,7 @@ namespace Chummer
             if (treVehicles.SelectedNode?.Tag is Gear objGear)
             {
                 objGear.Quantity = nudVehicleGearQty.Value;
-                treVehicles.SelectedNode.Text = objGear.DisplayName(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
+                treVehicles.SelectedNode.Text = objGear.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
 
                 IsCharacterUpdateRequested = true;
                 IsDirty = true;
@@ -8603,7 +8603,7 @@ namespace Chummer
                 if (intFociTotal > CharacterObject.MAG.TotalValue * 5 ||
                     (CharacterObjectOptions.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept && CharacterObject.InitiateGrade + 1 > CharacterObject.MAGAdept.TotalValue))
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_FocusMaximumForce", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_FocusMaximum", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_FocusMaximumForce", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_FocusMaximum", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     e.Cancel = true;
                     return;
                 }
@@ -8611,7 +8611,7 @@ namespace Chummer
                 if (intFociCount > CharacterObject.MAG.TotalValue ||
                     (CharacterObjectOptions.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept && intFociCount > CharacterObject.MAGAdept.TotalValue))
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_FocusMaximumNumber", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_FocusMaximum", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_FocusMaximumNumber", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_FocusMaximum", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     e.Cancel = true;
                     return;
                 }
@@ -8632,7 +8632,7 @@ namespace Chummer
                             ImprovementManager.ForcedValue = objSelectedFocus.Extra;
                         if (objSelectedFocus.Bonus != null)
                         {
-                            if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objSelectedFocus.InternalId, objSelectedFocus.Bonus, false, objSelectedFocus.Rating, objSelectedFocus.DisplayNameShort(GlobalOptions.Instance.Language)))
+                            if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objSelectedFocus.InternalId, objSelectedFocus.Bonus, false, objSelectedFocus.Rating, objSelectedFocus.DisplayNameShort(GlobalOptions.Language)))
                             {
                                 // Clear created improvements
                                 objSelectedFocus.ChangeEquippedStatus(false);
@@ -8644,7 +8644,7 @@ namespace Chummer
                         }
                         if (objSelectedFocus.WirelessOn && objSelectedFocus.WirelessBonus != null)
                         {
-                            if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objSelectedFocus.InternalId, objSelectedFocus.WirelessBonus, false, objSelectedFocus.Rating, objSelectedFocus.DisplayNameShort(GlobalOptions.Instance.Language)))
+                            if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objSelectedFocus.InternalId, objSelectedFocus.WirelessBonus, false, objSelectedFocus.Rating, objSelectedFocus.DisplayNameShort(GlobalOptions.Language)))
                             {
                                 // Clear created improvements
                                 objSelectedFocus.ChangeEquippedStatus(false);
@@ -8656,7 +8656,7 @@ namespace Chummer
                     }
                 }
 
-                treFoci.SelectedNode.Text = objSelectedFocus.DisplayName(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
+                treFoci.SelectedNode.Text = objSelectedFocus.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 CharacterObject.Foci.Add(objFocus);
                 objSelectedFocus.Bonded = true;
             }
@@ -8677,7 +8677,7 @@ namespace Chummer
                                     ImprovementManager.ForcedValue = objGear.Extra;
                                 if (objGear.Bonus != null)
                                 {
-                                    if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort(GlobalOptions.Instance.Language)))
+                                    if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort(GlobalOptions.Language)))
                                     {
                                         // Clear created improvements
                                         objStackGear.ChangeEquippedStatus(false);
@@ -8689,7 +8689,7 @@ namespace Chummer
                                 }
                                 if (objGear.WirelessOn && objGear.WirelessBonus != null)
                                 {
-                                    if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort(GlobalOptions.Instance.Language)))
+                                    if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort(GlobalOptions.Language)))
                                     {
                                         // Clear created improvements
                                         objStackGear.ChangeEquippedStatus(false);
@@ -8702,7 +8702,7 @@ namespace Chummer
                         }
                     }
                     objStack.Bonded = true;
-                    treFoci.SelectedNode.Text = objStackGear.DisplayName(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
+                    treFoci.SelectedNode.Text = objStackGear.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 }
             }
 
@@ -8720,7 +8720,7 @@ namespace Chummer
             if (treArmor.SelectedNode?.Tag is ArmorMod objMod)
             {
                 objMod.Rating = decimal.ToInt32(nudArmorRating.Value);
-                treArmor.SelectedNode.Text = objMod.DisplayName(GlobalOptions.Instance.Language);
+                treArmor.SelectedNode.Text = objMod.DisplayName(GlobalOptions.Language);
 
                 // See if a Bonus node exists.
                 if ((objMod.Bonus != null && objMod.Bonus.InnerXml.Contains("Rating")) || (objMod.WirelessOn && objMod.WirelessBonus != null && objMod.WirelessBonus.InnerXml.Contains("Rating")))
@@ -8728,9 +8728,9 @@ namespace Chummer
                     // If the Bonus contains "Rating", remove the existing Improvements and create new ones.
                     ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.ArmorMod, objMod.InternalId);
                     if (objMod.Bonus != null)
-                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.ArmorMod, objMod.InternalId, objMod.Bonus, false, objMod.Rating, objMod.DisplayNameShort(GlobalOptions.Instance.Language));
+                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.ArmorMod, objMod.InternalId, objMod.Bonus, false, objMod.Rating, objMod.DisplayNameShort(GlobalOptions.Language));
                     if (objMod.WirelessOn && objMod.WirelessBonus != null)
-                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.ArmorMod, objMod.InternalId, objMod.WirelessBonus, false, objMod.Rating, objMod.DisplayNameShort(GlobalOptions.Instance.Language));
+                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.ArmorMod, objMod.InternalId, objMod.WirelessBonus, false, objMod.Rating, objMod.DisplayNameShort(GlobalOptions.Language));
                 }
             }
             else if (treArmor.SelectedNode?.Tag is Gear objGear)
@@ -8747,7 +8747,7 @@ namespace Chummer
                 }
                 else
                     objGear.Rating = decimal.ToInt32(nudArmorRating.Value);
-                treArmor.SelectedNode.Text = objGear.DisplayName(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
+                treArmor.SelectedNode.Text = objGear.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
 
                 // See if a Bonus node exists.
                 if ((objGear.Bonus != null && objGear.Bonus.InnerXml.Contains("Rating")) || (objGear.WirelessOn && objGear.WirelessBonus != null && objGear.WirelessBonus.InnerXml.Contains("Rating")))
@@ -8755,9 +8755,9 @@ namespace Chummer
                     // If the Bonus contains "Rating", remove the existing Improvements and create new ones.
                     ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId);
                     if (objGear.Bonus != null)
-                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort(GlobalOptions.Instance.Language));
+                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort(GlobalOptions.Language));
                     if (objGear.WirelessOn && objGear.WirelessBonus != null)
-                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort(GlobalOptions.Instance.Language));
+                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort(GlobalOptions.Language));
 
                     if (!objGear.Equipped)
                         objGear.ChangeEquippedStatus(false);
@@ -8766,7 +8766,7 @@ namespace Chummer
             else if (treArmor.SelectedNode?.Tag is Armor objArmor)
             {
                 objArmor.Rating = decimal.ToInt32(nudArmorRating.Value);
-                treArmor.SelectedNode.Text = objArmor.DisplayName(GlobalOptions.Instance.Language);
+                treArmor.SelectedNode.Text = objArmor.DisplayName(GlobalOptions.Language);
             }
 
             IsCharacterUpdateRequested = true;
@@ -8926,7 +8926,7 @@ namespace Chummer
             // Locate the Program that is selected in the tree.
             if (treAIPrograms.SelectedNode?.Tag is AIProgram objProgram)
             {
-                lblAIProgramsRequires.Text = objProgram.DisplayRequiresProgram(GlobalOptions.Instance.Language);
+                lblAIProgramsRequires.Text = objProgram.DisplayRequiresProgram(GlobalOptions.Language);
 
                 objProgram.SetSourceDetail(lblAIProgramsSource);
             }
@@ -8977,41 +8977,41 @@ namespace Chummer
             {
                 case Metamagic objMetamagic:
                 {
-                    cmdDeleteMetamagic.Text = LanguageManager.GetString(objMetamagic.SourceType == Improvement.ImprovementSource.Metamagic ? "Button_RemoveMetamagic" : "Button_RemoveEcho", GlobalOptions.Instance.Language);
+                    cmdDeleteMetamagic.Text = LanguageManager.GetString(objMetamagic.SourceType == Improvement.ImprovementSource.Metamagic ? "Button_RemoveMetamagic" : "Button_RemoveEcho", GlobalOptions.Language);
                     cmdDeleteMetamagic.Enabled = objMetamagic.Grade >= 0;
                     objMetamagic.SetSourceDetail(lblMetamagicSource);
                     break;
                 }
                 case Art objArt:
                 {
-                    cmdDeleteMetamagic.Text = LanguageManager.GetString(objArt.SourceType == Improvement.ImprovementSource.Metamagic ? "Button_RemoveMetamagic" : "Button_RemoveEcho", GlobalOptions.Instance.Language);
+                    cmdDeleteMetamagic.Text = LanguageManager.GetString(objArt.SourceType == Improvement.ImprovementSource.Metamagic ? "Button_RemoveMetamagic" : "Button_RemoveEcho", GlobalOptions.Language);
                     cmdDeleteMetamagic.Enabled = objArt.Grade >= 0;
                     objArt.SetSourceDetail(lblMetamagicSource);
                         break;
                 }
                 case Spell objSpell:
                 {
-                    cmdDeleteMetamagic.Text = LanguageManager.GetString("Button_RemoveMetamagic", GlobalOptions.Instance.Language);
+                    cmdDeleteMetamagic.Text = LanguageManager.GetString("Button_RemoveMetamagic", GlobalOptions.Language);
                     cmdDeleteMetamagic.Enabled = objSpell.Grade >= 0;
                     objSpell.SetSourceDetail(lblMetamagicSource);
                         break;
                 }
                 case ComplexForm objComplexForm:
                 {
-                    cmdDeleteMetamagic.Text = LanguageManager.GetString("Button_RemoveEcho", GlobalOptions.Instance.Language);
+                    cmdDeleteMetamagic.Text = LanguageManager.GetString("Button_RemoveEcho", GlobalOptions.Language);
                     cmdDeleteMetamagic.Enabled = objComplexForm.Grade >= 0;
                     objComplexForm.SetSourceDetail(lblMetamagicSource);
                         break;
                 }
                 case Enhancement objEnhancement:
                 {
-                    cmdDeleteMetamagic.Text = LanguageManager.GetString(objEnhancement.SourceType == Improvement.ImprovementSource.Metamagic ? "Button_RemoveMetamagic" : "Button_RemoveEcho", GlobalOptions.Instance.Language);
+                    cmdDeleteMetamagic.Text = LanguageManager.GetString(objEnhancement.SourceType == Improvement.ImprovementSource.Metamagic ? "Button_RemoveMetamagic" : "Button_RemoveEcho", GlobalOptions.Language);
                     cmdDeleteMetamagic.Enabled = objEnhancement.Grade >= 0;
                     objEnhancement.SetSourceDetail(lblMetamagicSource);
                         break;
                 }
                 default:
-                    cmdDeleteMetamagic.Text = LanguageManager.GetString(CharacterObject.MAGEnabled ? "Button_RemoveInitiateGrade" : "Button_RemoveSubmersionGrade", GlobalOptions.Instance.Language);
+                    cmdDeleteMetamagic.Text = LanguageManager.GetString(CharacterObject.MAGEnabled ? "Button_RemoveInitiateGrade" : "Button_RemoveSubmersionGrade", GlobalOptions.Language);
                     cmdDeleteMetamagic.Enabled = true;
                     lblMetamagicSource.Text = string.Empty;
                     lblMetamagicSource.SetToolTip(string.Empty);
@@ -9036,18 +9036,18 @@ namespace Chummer
             if (treCritterPowers.SelectedNode?.Tag is CritterPower objPower)
             {
                 cmdDeleteCritterPower.Enabled = objPower.Grade == 0;
-                lblCritterPowerName.Text = objPower.DisplayName(GlobalOptions.Instance.Language);
-                lblCritterPowerCategory.Text = objPower.DisplayCategory(GlobalOptions.Instance.Language);
-                lblCritterPowerType.Text = objPower.DisplayType(GlobalOptions.Instance.Language);
-                lblCritterPowerAction.Text = objPower.DisplayAction(GlobalOptions.Instance.Language);
-                lblCritterPowerRange.Text = objPower.DisplayRange(GlobalOptions.Instance.Language);
-                lblCritterPowerDuration.Text = objPower.DisplayDuration(GlobalOptions.Instance.Language);
+                lblCritterPowerName.Text = objPower.DisplayName(GlobalOptions.Language);
+                lblCritterPowerCategory.Text = objPower.DisplayCategory(GlobalOptions.Language);
+                lblCritterPowerType.Text = objPower.DisplayType(GlobalOptions.Language);
+                lblCritterPowerAction.Text = objPower.DisplayAction(GlobalOptions.Language);
+                lblCritterPowerRange.Text = objPower.DisplayRange(GlobalOptions.Language);
+                lblCritterPowerDuration.Text = objPower.DisplayDuration(GlobalOptions.Language);
                 chkCritterPowerCount.Checked = objPower.CountTowardsLimit;
                 objPower.SetSourceDetail(lblCritterPowerSource);
 
                 if (objPower.PowerPoints > 0)
                 {
-                    lblCritterPowerPointCost.Text = objPower.PowerPoints.ToString(GlobalOptions.Instance.CultureInfo);
+                    lblCritterPowerPointCost.Text = objPower.PowerPoints.ToString(GlobalOptions.CultureInfo);
                     lblCritterPowerPointCost.Visible = true;
                     lblCritterPowerPointCostLabel.Visible = true;
                 }
@@ -9302,9 +9302,9 @@ namespace Chummer
                XmlManager.Load("critters.xml").SelectSingleNode("/chummer/metatypes/metatype[name = \"" + CharacterObject.Metatype + "\"]");
 
             string strMetatype = objMetatypeNode?["translate"]?.InnerText ?? CharacterObject.Metatype;
-            string strSource = objMetatypeNode?["source"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Instance.Language);
-            string strPage = objMetatypeNode?["altpage"]?.InnerText ?? objMetatypeNode?["page"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Instance.Language);
-            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
+            string strSource = objMetatypeNode?["source"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+            string strPage = objMetatypeNode?["altpage"]?.InnerText ?? objMetatypeNode?["page"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
 
             if (!string.IsNullOrEmpty(CharacterObject.Metavariant) && CharacterObject.Metavariant != "None")
             {
@@ -9320,18 +9320,18 @@ namespace Chummer
             }
             lblMetatype.Text = strMetatype;
 
-            lblMetatypeSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Instance.Language) + strSpaceCharacter + strPage;
-            lblMetatypeSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Instance.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Instance.Language) + strSpaceCharacter + strPage);
+            lblMetatypeSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
+            lblMetatypeSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
 
             if (CharacterObject.BuildMethod == CharacterBuildMethod.Karma || CharacterObject.BuildMethod == CharacterBuildMethod.LifeModule)
             {
-                lblKarmaMetatypeBP.Text = (CharacterObject.MetatypeBP * CharacterObjectOptions.MetatypeCostsKarmaMultiplier).ToString(GlobalOptions.Instance.CultureInfo) + strSpaceCharacter +
-                                          LanguageManager.GetString("String_Karma", GlobalOptions.Instance.Language);
+                lblKarmaMetatypeBP.Text = (CharacterObject.MetatypeBP * CharacterObjectOptions.MetatypeCostsKarmaMultiplier).ToString(GlobalOptions.CultureInfo) + strSpaceCharacter +
+                                          LanguageManager.GetString("String_Karma", GlobalOptions.Language);
             }
             else if (CharacterObject.BuildMethod == CharacterBuildMethod.Priority || CharacterObject.BuildMethod == CharacterBuildMethod.SumtoTen)
             {
-                lblKarmaMetatypeBP.Text = (CharacterObject.MetatypeBP).ToString(GlobalOptions.Instance.CultureInfo) + strSpaceCharacter +
-                                          LanguageManager.GetString("String_Karma", GlobalOptions.Instance.Language);
+                lblKarmaMetatypeBP.Text = (CharacterObject.MetatypeBP).ToString(GlobalOptions.CultureInfo) + strSpaceCharacter +
+                                          LanguageManager.GetString("String_Karma", GlobalOptions.Language);
             }
             
             string strToolTip = strMetatype + strSpaceCharacter + '(' + CharacterObject.MetatypeBP + ')';
@@ -9390,7 +9390,7 @@ namespace Chummer
         private string BuildAttributes(ICollection<CharacterAttrib> attribs, ICollection<CharacterAttrib> extraAttribs = null, bool special = false)
         {
             int bp = CalculateAttributeBP(attribs, extraAttribs);
-            string s = $"{bp} {LanguageManager.GetString("String_Karma", GlobalOptions.Instance.Language)}";
+            string s = $"{bp} {LanguageManager.GetString("String_Karma", GlobalOptions.Language)}";
             int att = CalculateAttributePriorityPoints(attribs, extraAttribs);
             int total = special ? CharacterObject.TotalSpecial : CharacterObject.TotalAttributes;
             if ((CharacterObject.BuildMethod == CharacterBuildMethod.Priority) ||
@@ -9398,12 +9398,12 @@ namespace Chummer
             {
                 if (bp > 0)
                 {
-                    s = string.Format(LanguageManager.GetString("String_OverPriorityPoints", GlobalOptions.Instance.Language),
-                        (total - att).ToString(GlobalOptions.Instance.CultureInfo), total.ToString(GlobalOptions.Instance.CultureInfo), bp.ToString(GlobalOptions.Instance.CultureInfo));
+                    s = string.Format(LanguageManager.GetString("String_OverPriorityPoints", GlobalOptions.Language),
+                        (total - att).ToString(GlobalOptions.CultureInfo), total.ToString(GlobalOptions.CultureInfo), bp.ToString(GlobalOptions.CultureInfo));
                 }
                 else
                 {
-                    s = (total - att).ToString(GlobalOptions.Instance.CultureInfo) + LanguageManager.GetString("String_Of", GlobalOptions.Instance.Language) + total.ToString(GlobalOptions.Instance.CultureInfo);
+                    s = (total - att).ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Of", GlobalOptions.Language) + total.ToString(GlobalOptions.CultureInfo);
                 }
             }
             return s;
@@ -9420,7 +9420,7 @@ namespace Chummer
             int intFreestyleBP = 0;
             string strPositiveQualityTooltip = string.Empty;
             string strNegativeQualityTooltip = string.Empty;
-            string strPoints = blnDoUIUpdate ? LanguageManager.GetString("String_Karma", GlobalOptions.Instance.Language) : string.Empty;
+            string strPoints = blnDoUIUpdate ? LanguageManager.GetString("String_Karma", GlobalOptions.Language) : string.Empty;
 
             // ------------------------------------------------------------------------------
             // Metatype/Metavariant only cost points when working with BP (or when the Metatype Costs Karma option is enabled when working with Karma).
@@ -9524,29 +9524,29 @@ namespace Chummer
                             else
                                 intPositiveQualities += objLoopQuality.BP * CharacterObjectOptions.KarmaQuality;
                             strPositiveQualityTooltip +=
-                                $"{objLoopQuality.DisplayName(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language)} ({objLoopQuality.BP * CharacterObjectOptions.KarmaQuality})\n";
+                                $"{objLoopQuality.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)} ({objLoopQuality.BP * CharacterObjectOptions.KarmaQuality})\n";
                         }
                         else if (objLoopQuality.Type == QualityType.Negative)
                         {
                             intNegativeQualities += objLoopQuality.BP * CharacterObjectOptions.KarmaQuality;
-                            strNegativeQualityTooltip += $"{objLoopQuality.DisplayName(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language)} ({objLoopQuality.BP})\n";
+                            strNegativeQualityTooltip += $"{objLoopQuality.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)} ({objLoopQuality.BP})\n";
                         }
                         else if (objLoopQuality.Type == QualityType.LifeModule)
                         {
                             intLifeModuleQualities += objLoopQuality.BP * CharacterObjectOptions.KarmaQuality;
                             strPositiveQualityTooltip +=
-                                $"{objLoopQuality.DisplayName(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language)} ({objLoopQuality.BP * CharacterObjectOptions.KarmaQuality})\n";
+                                $"{objLoopQuality.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)} ({objLoopQuality.BP * CharacterObjectOptions.KarmaQuality})\n";
                         }
                     }
                     else if (objLoopQuality.Type == QualityType.Positive)
                     {
                         intUnlimitedPositive += objLoopQuality.BP * CharacterObjectOptions.KarmaQuality;
-                        strPositiveQualityTooltip += $"{objLoopQuality.DisplayName(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language)} ({objLoopQuality.BP})\n";
+                        strPositiveQualityTooltip += $"{objLoopQuality.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)} ({objLoopQuality.BP})\n";
                     }
                     else if (objLoopQuality.Type == QualityType.Negative)
                     {
                         intUnlimitedNegative += objLoopQuality.BP * CharacterObjectOptions.KarmaQuality;
-                        strNegativeQualityTooltip += $"{objLoopQuality.DisplayName(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language)} ({objLoopQuality.BP})\n";
+                        strNegativeQualityTooltip += $"{objLoopQuality.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)} ({objLoopQuality.BP})\n";
                     }
                 }
             }
@@ -9604,9 +9604,9 @@ namespace Chummer
             // ------------------------------------------------------------------------------
             // Include the BP used by Martial Arts.
             int intMartialArtsPoints = 0;
-            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
-            string strColon = LanguageManager.GetString("String_Colon", GlobalOptions.Instance.Language);
-            string strOf = LanguageManager.GetString("String_Of", GlobalOptions.Instance.Language);
+            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+            string strColon = LanguageManager.GetString("String_Colon", GlobalOptions.Language);
+            string strOf = LanguageManager.GetString("String_Of", GlobalOptions.Language);
             StringBuilder strMartialArtsBPToolTip = new StringBuilder();
             foreach (MartialArt objMartialArt in CharacterObject.MartialArts)
             {
@@ -9619,7 +9619,7 @@ namespace Chummer
                     {
                         if (strMartialArtsBPToolTip.Length > 0)
                             strMartialArtsBPToolTip.Append(Environment.NewLine + strSpaceCharacter + '+' + strSpaceCharacter);
-                        strMartialArtsBPToolTip.Append(objMartialArt.DisplayName(GlobalOptions.Instance.Language) + strSpaceCharacter + '(' + intLoopCost.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                        strMartialArtsBPToolTip.Append(objMartialArt.DisplayName(GlobalOptions.Language) + strSpaceCharacter + '(' + intLoopCost.ToString(GlobalOptions.CultureInfo) + ')');
 
                         bool blnIsFirst = true;
                         foreach (MartialArtTechnique objTechnique in objMartialArt.Techniques)
@@ -9633,7 +9633,7 @@ namespace Chummer
                             intLoopCost = 5 * CharacterObjectOptions.KarmaQuality;
                             intMartialArtsPoints += intLoopCost;
 
-                            strMartialArtsBPToolTip.Append(Environment.NewLine + strSpaceCharacter + '+' + strSpaceCharacter + objTechnique.DisplayName(GlobalOptions.Instance.Language) + strSpaceCharacter + '(' + intLoopCost.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                            strMartialArtsBPToolTip.Append(Environment.NewLine + strSpaceCharacter + '+' + strSpaceCharacter + objTechnique.DisplayName(GlobalOptions.Language) + strSpaceCharacter + '(' + intLoopCost.ToString(GlobalOptions.CultureInfo) + ')');
                         }
                     }
                     else
@@ -9782,44 +9782,44 @@ namespace Chummer
                 intPrepPointsUsed += Math.Max(Math.Max(0, preps) * prepCost, 0);
                 if (blnDoUIUpdate)
                 {
-                    lblSpellsBP.SetToolTip($"{spells.ToString(GlobalOptions.Instance.CultureInfo)}{strSpaceCharacter}×{strSpaceCharacter}{spellCost.ToString(GlobalOptions.Instance.CultureInfo)}{strSpaceCharacter}+{strSpaceCharacter}{LanguageManager.GetString("String_Karma", GlobalOptions.Instance.Language)}{strSpaceCharacter}={strSpaceCharacter}{intSpellPointsUsed.ToString(GlobalOptions.Instance.CultureInfo)}{strSpaceCharacter}{LanguageManager.GetString("String_Karma", GlobalOptions.Instance.Language)}");
-                    lblBuildRitualsBP.SetToolTip($"{rituals.ToString(GlobalOptions.Instance.CultureInfo)}{strSpaceCharacter}×{strSpaceCharacter}{spellCost.ToString(GlobalOptions.Instance.CultureInfo)}{strSpaceCharacter}+{strSpaceCharacter}{LanguageManager.GetString("String_Karma", GlobalOptions.Instance.Language)}{strSpaceCharacter}={strSpaceCharacter}{intRitualPointsUsed.ToString(GlobalOptions.Instance.CultureInfo)}{strSpaceCharacter}{LanguageManager.GetString("String_Karma", GlobalOptions.Instance.Language)}");
-                    lblBuildPrepsBP.SetToolTip($"{preps.ToString(GlobalOptions.Instance.CultureInfo)}{strSpaceCharacter}×{strSpaceCharacter}{spellCost.ToString(GlobalOptions.Instance.CultureInfo)}{strSpaceCharacter}+{strSpaceCharacter}{LanguageManager.GetString("String_Karma", GlobalOptions.Instance.Language)}{strSpaceCharacter}={strSpaceCharacter}{intPrepPointsUsed.ToString(GlobalOptions.Instance.CultureInfo)}{strSpaceCharacter}{LanguageManager.GetString("String_Karma", GlobalOptions.Instance.Language)}");
+                    lblSpellsBP.SetToolTip($"{spells.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}×{strSpaceCharacter}{spellCost.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}+{strSpaceCharacter}{LanguageManager.GetString("String_Karma", GlobalOptions.Language)}{strSpaceCharacter}={strSpaceCharacter}{intSpellPointsUsed.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}{LanguageManager.GetString("String_Karma", GlobalOptions.Language)}");
+                    lblBuildRitualsBP.SetToolTip($"{rituals.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}×{strSpaceCharacter}{spellCost.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}+{strSpaceCharacter}{LanguageManager.GetString("String_Karma", GlobalOptions.Language)}{strSpaceCharacter}={strSpaceCharacter}{intRitualPointsUsed.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}{LanguageManager.GetString("String_Karma", GlobalOptions.Language)}");
+                    lblBuildPrepsBP.SetToolTip($"{preps.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}×{strSpaceCharacter}{spellCost.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}+{strSpaceCharacter}{LanguageManager.GetString("String_Karma", GlobalOptions.Language)}{strSpaceCharacter}={strSpaceCharacter}{intPrepPointsUsed.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}{LanguageManager.GetString("String_Karma", GlobalOptions.Language)}");
                     if (limit + limitMod > 0)
                     {
                         lblBuildPrepsBP.Text =
                             string.Format(
-                                $"{prepPoints.ToString(GlobalOptions.Instance.CultureInfo)}{strOf}{(limit + limitMod).ToString(GlobalOptions.Instance.CultureInfo)}{strColon}{strSpaceCharacter}{intPrepPointsUsed.ToString(GlobalOptions.Instance.CultureInfo)}{strSpaceCharacter}{strPoints}");
+                                $"{prepPoints.ToString(GlobalOptions.CultureInfo)}{strOf}{(limit + limitMod).ToString(GlobalOptions.CultureInfo)}{strColon}{strSpaceCharacter}{intPrepPointsUsed.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}{strPoints}");
                         lblSpellsBP.Text =
                             string.Format(
-                                $"{spellPoints.ToString(GlobalOptions.Instance.CultureInfo)}{strOf}{(limit + limitMod).ToString(GlobalOptions.Instance.CultureInfo)}{strColon}{strSpaceCharacter}{intSpellPointsUsed.ToString(GlobalOptions.Instance.CultureInfo)}{strSpaceCharacter}{strPoints}");
+                                $"{spellPoints.ToString(GlobalOptions.CultureInfo)}{strOf}{(limit + limitMod).ToString(GlobalOptions.CultureInfo)}{strColon}{strSpaceCharacter}{intSpellPointsUsed.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}{strPoints}");
                         lblBuildRitualsBP.Text =
                             string.Format(
-                                $"{ritualPoints.ToString(GlobalOptions.Instance.CultureInfo)}{strOf}{(limit + limitMod).ToString(GlobalOptions.Instance.CultureInfo)}{strColon}{strSpaceCharacter}{intRitualPointsUsed.ToString(GlobalOptions.Instance.CultureInfo)}{strSpaceCharacter}{strPoints}");
+                                $"{ritualPoints.ToString(GlobalOptions.CultureInfo)}{strOf}{(limit + limitMod).ToString(GlobalOptions.CultureInfo)}{strColon}{strSpaceCharacter}{intRitualPointsUsed.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}{strPoints}");
                     }
                     else
                     {
                         if (limitMod == 0)
                         {
                             lblBuildPrepsBP.Text =
-                                intPrepPointsUsed.ToString(GlobalOptions.Instance.CultureInfo) + strSpaceCharacter + strPoints;
+                                intPrepPointsUsed.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + strPoints;
                             lblSpellsBP.Text =
-                                intSpellPointsUsed.ToString(GlobalOptions.Instance.CultureInfo) + strSpaceCharacter + strPoints;
+                                intSpellPointsUsed.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + strPoints;
                             lblBuildRitualsBP.Text =
-                                intRitualPointsUsed.ToString(GlobalOptions.Instance.CultureInfo) + strSpaceCharacter + strPoints;
+                                intRitualPointsUsed.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + strPoints;
                         }
                         else
                         {
                             //TODO: Make the costs render better, currently looks wrong as hell
                             lblBuildPrepsBP.Text =
                                 string.Format(
-                                    $"{prepPoints.ToString(GlobalOptions.Instance.CultureInfo)}{strOf}{limitMod.ToString(GlobalOptions.Instance.CultureInfo)}{strColon}{strSpaceCharacter}{intPrepPointsUsed.ToString(GlobalOptions.Instance.CultureInfo)}{strSpaceCharacter}{strPoints}");
+                                    $"{prepPoints.ToString(GlobalOptions.CultureInfo)}{strOf}{limitMod.ToString(GlobalOptions.CultureInfo)}{strColon}{strSpaceCharacter}{intPrepPointsUsed.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}{strPoints}");
                             lblSpellsBP.Text =
                                 string.Format(
-                                    $"{spellPoints.ToString(GlobalOptions.Instance.CultureInfo)}{strOf}{limitMod.ToString(GlobalOptions.Instance.CultureInfo)}{strColon}{strSpaceCharacter}{intSpellPointsUsed.ToString(GlobalOptions.Instance.CultureInfo)}{strSpaceCharacter}{strPoints}");
+                                    $"{spellPoints.ToString(GlobalOptions.CultureInfo)}{strOf}{limitMod.ToString(GlobalOptions.CultureInfo)}{strColon}{strSpaceCharacter}{intSpellPointsUsed.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}{strPoints}");
                             lblBuildRitualsBP.Text =
                                 string.Format(
-                                    $"{ritualPoints.ToString(GlobalOptions.Instance.CultureInfo)}{strOf}{limitMod.ToString(GlobalOptions.Instance.CultureInfo)}{strColon}{strSpaceCharacter}{intRitualPointsUsed.ToString(GlobalOptions.Instance.CultureInfo)}{strSpaceCharacter}{strPoints}");
+                                    $"{ritualPoints.ToString(GlobalOptions.CultureInfo)}{strOf}{limitMod.ToString(GlobalOptions.CultureInfo)}{strColon}{strSpaceCharacter}{intRitualPointsUsed.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}{strPoints}");
                         }
                     }
                 }
@@ -9911,7 +9911,7 @@ namespace Chummer
                 {
                     if (strFociPointsTooltip.Length > 0)
                         strFociPointsTooltip.Append(Environment.NewLine + strSpaceCharacter + '+' + strSpaceCharacter);
-                    strFociPointsTooltip.Append(objFocusGear.DisplayName(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language) + strSpaceCharacter + '(' + intLoopCost.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                    strFociPointsTooltip.Append(objFocusGear.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language) + strSpaceCharacter + '(' + intLoopCost.ToString(GlobalOptions.CultureInfo) + ')');
                 }
             }
             intKarmaPointsRemain -= intFociPointsUsed;
@@ -9929,7 +9929,7 @@ namespace Chummer
                     {
                         if (strFociPointsTooltip.Length > 0)
                             strFociPointsTooltip.Append(Environment.NewLine + strSpaceCharacter + '+' + strSpaceCharacter);
-                        strFociPointsTooltip.Append(objFocus.Name(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language) + strSpaceCharacter + '(' + intBindingCost.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                        strFociPointsTooltip.Append(objFocus.Name(GlobalOptions.CultureInfo, GlobalOptions.Language) + strSpaceCharacter + '(' + intBindingCost.ToString(GlobalOptions.CultureInfo) + ')');
                     }
                 }
             }
@@ -10080,15 +10080,15 @@ namespace Chummer
 
                 lblContactsBP.Text = strContactPoints;
                 lblContactPoints.Text = strContactPoints;
-                lblEnemiesBP.Text = intEnemyPoints.ToString(GlobalOptions.Instance.CultureInfo) + strSpaceCharacter + strPoints;
+                lblEnemiesBP.Text = intEnemyPoints.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + strPoints;
 
                 lblPositiveQualitiesBP.Text = intUnlimitedPositive > 0
-                   ? $"{intPositiveQualities.ToString(GlobalOptions.Instance.CultureInfo)}/{CharacterObject.GameplayOptionQualityLimit.ToString(GlobalOptions.Instance.CultureInfo)}{strSpaceCharacter}{strPoints}{strSpaceCharacter}({(intPositiveQualities + intUnlimitedPositive).ToString(GlobalOptions.Instance.CultureInfo)})"
-                   : $"{intPositiveQualities.ToString(GlobalOptions.Instance.CultureInfo)}/{CharacterObject.GameplayOptionQualityLimit.ToString(GlobalOptions.Instance.CultureInfo)}{strSpaceCharacter}{strPoints}";
+                   ? $"{intPositiveQualities.ToString(GlobalOptions.CultureInfo)}/{CharacterObject.GameplayOptionQualityLimit.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}{strPoints}{strSpaceCharacter}({(intPositiveQualities + intUnlimitedPositive).ToString(GlobalOptions.CultureInfo)})"
+                   : $"{intPositiveQualities.ToString(GlobalOptions.CultureInfo)}/{CharacterObject.GameplayOptionQualityLimit.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}{strPoints}";
 
                 lblNegativeQualitiesBP.Text = intUnlimitedNegative > 0
-                    ? $"{(-intNegativeQualities).ToString(GlobalOptions.Instance.CultureInfo)}/{CharacterObject.GameplayOptionQualityLimit.ToString(GlobalOptions.Instance.CultureInfo)}{strSpaceCharacter}{strPoints}{strSpaceCharacter}({(intNegativeQualities + intUnlimitedNegative).ToString(GlobalOptions.Instance.CultureInfo)})"
-                    : $"{(-intNegativeQualities).ToString(GlobalOptions.Instance.CultureInfo)}/{CharacterObject.GameplayOptionQualityLimit.ToString(GlobalOptions.Instance.CultureInfo)}{strSpaceCharacter}{strPoints}";
+                    ? $"{(-intNegativeQualities).ToString(GlobalOptions.CultureInfo)}/{CharacterObject.GameplayOptionQualityLimit.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}{strPoints}{strSpaceCharacter}({(intNegativeQualities + intUnlimitedNegative).ToString(GlobalOptions.CultureInfo)})"
+                    : $"{(-intNegativeQualities).ToString(GlobalOptions.CultureInfo)}/{CharacterObject.GameplayOptionQualityLimit.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}{strPoints}";
 
                 lblPositiveQualitiesBP.SetToolTip(strPositiveQualityTooltip);
                 lblNegativeQualitiesBP.SetToolTip(strNegativeQualityTooltip);
@@ -10098,48 +10098,48 @@ namespace Chummer
 
                 tabSkillUc.MissingDatabindingsWorkaround();
 
-                lblMartialArtsBP.Text = intMartialArtsPoints.ToString(GlobalOptions.Instance.CultureInfo) + strSpaceCharacter + strPoints;
+                lblMartialArtsBP.Text = intMartialArtsPoints.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + strPoints;
                 lblBuildMartialArts.SetToolTip(strMartialArtsBPToolTip.ToString());
 
-                lblNuyenBP.Text = intNuyenBP.ToString(GlobalOptions.Instance.CultureInfo) + strSpaceCharacter + strPoints;
+                lblNuyenBP.Text = intNuyenBP.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + strPoints;
 
-                lblFociBP.Text = intFociPointsUsed.ToString(GlobalOptions.Instance.CultureInfo) + strSpaceCharacter + strPoints;
+                lblFociBP.Text = intFociPointsUsed.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + strPoints;
                 lblBuildFoci.SetToolTip(strFociPointsTooltip.ToString());
 
-                lblSpiritsBP.Text = intSpiritPointsUsed.ToString(GlobalOptions.Instance.CultureInfo) + strSpaceCharacter + strPoints;
+                lblSpiritsBP.Text = intSpiritPointsUsed.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + strPoints;
 
-                lblSpritesBP.Text = intSpritePointsUsed.ToString(GlobalOptions.Instance.CultureInfo) + strSpaceCharacter + strPoints;
+                lblSpritesBP.Text = intSpritePointsUsed.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + strPoints;
 
                 string strComplexFormsBP;
                 if (CharacterObject.CFPLimit > 0)
                 {
-                    strComplexFormsBP = intFormsPointsUsed.ToString(GlobalOptions.Instance.CultureInfo) + strOf + CharacterObject.CFPLimit.ToString(GlobalOptions.Instance.CultureInfo);
+                    strComplexFormsBP = intFormsPointsUsed.ToString(GlobalOptions.CultureInfo) + strOf + CharacterObject.CFPLimit.ToString(GlobalOptions.CultureInfo);
                     if (intFormsPointsUsed > CharacterObject.CFPLimit)
                     {
-                        strComplexFormsBP += strColon + strSpaceCharacter + ((intFormsPointsUsed - CharacterObject.CFPLimit) * CharacterObject.ComplexFormKarmaCost).ToString(GlobalOptions.Instance.CultureInfo) + strSpaceCharacter + strPoints;
+                        strComplexFormsBP += strColon + strSpaceCharacter + ((intFormsPointsUsed - CharacterObject.CFPLimit) * CharacterObject.ComplexFormKarmaCost).ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + strPoints;
                     }
                 }
                 else
                 {
-                    strComplexFormsBP = ((intFormsPointsUsed - CharacterObject.CFPLimit) * CharacterObject.ComplexFormKarmaCost).ToString(GlobalOptions.Instance.CultureInfo) + strSpaceCharacter + strPoints;
+                    strComplexFormsBP = ((intFormsPointsUsed - CharacterObject.CFPLimit) * CharacterObject.ComplexFormKarmaCost).ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + strPoints;
                 }
                 lblComplexFormsBP.Text = strComplexFormsBP;
                 
-                lblAINormalProgramsBP.Text = ((intAINormalProgramPointsUsed - CharacterObject.AINormalProgramLimit) * CharacterObject.AIProgramKarmaCost).ToString(GlobalOptions.Instance.CultureInfo) + strSpaceCharacter + strPoints;
-                lblAIAdvancedProgramsBP.Text = ((intAIAdvancedProgramPointsUsed - CharacterObject.AIAdvancedProgramLimit) * CharacterObject.AIAdvancedProgramKarmaCost).ToString(GlobalOptions.Instance.CultureInfo) + strSpaceCharacter + strPoints;
+                lblAINormalProgramsBP.Text = ((intAINormalProgramPointsUsed - CharacterObject.AINormalProgramLimit) * CharacterObject.AIProgramKarmaCost).ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + strPoints;
+                lblAIAdvancedProgramsBP.Text = ((intAIAdvancedProgramPointsUsed - CharacterObject.AIAdvancedProgramLimit) * CharacterObject.AIAdvancedProgramKarmaCost).ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + strPoints;
 
-                lblInitiationBP.Text = intInitiationPoints.ToString(GlobalOptions.Instance.CultureInfo) + strSpaceCharacter + strPoints;
+                lblInitiationBP.Text = intInitiationPoints.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + strPoints;
                 // ------------------------------------------------------------------------------
                 // Update the number of BP remaining in the StatusBar.
-                tssBPRemain.Text = intKarmaPointsRemain.ToString(GlobalOptions.Instance.CultureInfo);
+                tssBPRemain.Text = intKarmaPointsRemain.ToString(GlobalOptions.CultureInfo);
                 if (_blnFreestyle)
                 {
-                    tssBP.Text = Math.Max(intFreestyleBP, intFreestyleBPMin).ToString(GlobalOptions.Instance.CultureInfo);
+                    tssBP.Text = Math.Max(intFreestyleBP, intFreestyleBPMin).ToString(GlobalOptions.CultureInfo);
                     tssBP.ForeColor = intFreestyleBP < intFreestyleBPMin ? Color.OrangeRed : SystemColors.ControlText;
                 }
                 else
                 {
-                    tssBP.Text = CharacterObject.BuildKarma.ToString(GlobalOptions.Instance.CultureInfo);
+                    tssBP.Text = CharacterObject.BuildKarma.ToString(GlobalOptions.CultureInfo);
                     tssBP.ForeColor = SystemColors.ControlText;
                 }
             }
@@ -10149,29 +10149,29 @@ namespace Chummer
 
         private void UpdateSkillRelatedInfo()
         {
-            string strKarma = LanguageManager.GetString("String_Karma", GlobalOptions.Instance.Language);
-            string strOf = LanguageManager.GetString("String_Of", GlobalOptions.Instance.Language);
-            string strColon = LanguageManager.GetString("String_Colon", GlobalOptions.Instance.Language);
-            string strSpace = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
-            string strZeroKarma = 0.ToString(GlobalOptions.Instance.CultureInfo) + strSpace + strKarma;
+            string strKarma = LanguageManager.GetString("String_Karma", GlobalOptions.Language);
+            string strOf = LanguageManager.GetString("String_Of", GlobalOptions.Language);
+            string strColon = LanguageManager.GetString("String_Colon", GlobalOptions.Language);
+            string strSpace = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+            string strZeroKarma = 0.ToString(GlobalOptions.CultureInfo) + strSpace + strKarma;
             //Update Skill Labels
             //Active skills
             string strTemp = strZeroKarma;
             int intActiveSkillPointsMaximum = CharacterObject.SkillsSection.SkillPointsMaximum;
             if (intActiveSkillPointsMaximum > 0)
             {
-                strTemp = CharacterObject.SkillsSection.SkillPoints.ToString(GlobalOptions.Instance.CultureInfo) + strOf + intActiveSkillPointsMaximum.ToString(GlobalOptions.Instance.CultureInfo);
+                strTemp = CharacterObject.SkillsSection.SkillPoints.ToString(GlobalOptions.CultureInfo) + strOf + intActiveSkillPointsMaximum.ToString(GlobalOptions.CultureInfo);
             }
             int intActiveSkillsTotalCostKarma = CharacterObject.SkillsSection.Skills.TotalCostKarma();
             if (intActiveSkillsTotalCostKarma > 0)
             {
                 if (strTemp != strZeroKarma)
                 {
-                    strTemp += strColon + strSpace + intActiveSkillsTotalCostKarma.ToString(GlobalOptions.Instance.CultureInfo) + strSpace + strKarma;
+                    strTemp += strColon + strSpace + intActiveSkillsTotalCostKarma.ToString(GlobalOptions.CultureInfo) + strSpace + strKarma;
                 }
                 else
                 {
-                    strTemp = intActiveSkillsTotalCostKarma.ToString(GlobalOptions.Instance.CultureInfo) + strSpace + strKarma;
+                    strTemp = intActiveSkillsTotalCostKarma.ToString(GlobalOptions.CultureInfo) + strSpace + strKarma;
                 }
 
             }
@@ -10181,18 +10181,18 @@ namespace Chummer
             int intKnowledgeSkillPointsMaximum = CharacterObject.SkillsSection.KnowledgeSkillPoints;
             if (intKnowledgeSkillPointsMaximum > 0)
             {
-                strTemp = CharacterObject.SkillsSection.KnowledgeSkillPointsRemain.ToString(GlobalOptions.Instance.CultureInfo) + strOf + intKnowledgeSkillPointsMaximum.ToString(GlobalOptions.Instance.CultureInfo);
+                strTemp = CharacterObject.SkillsSection.KnowledgeSkillPointsRemain.ToString(GlobalOptions.CultureInfo) + strOf + intKnowledgeSkillPointsMaximum.ToString(GlobalOptions.CultureInfo);
             }
             int intKnowledgeSkillsTotalCostKarma = CharacterObject.SkillsSection.KnowledgeSkills.TotalCostKarma();
             if (intKnowledgeSkillsTotalCostKarma > 0)
             {
                 if (strTemp != strZeroKarma)
                 {
-                    strTemp += strColon + strSpace + intKnowledgeSkillsTotalCostKarma.ToString(GlobalOptions.Instance.CultureInfo) + strSpace + strKarma;
+                    strTemp += strColon + strSpace + intKnowledgeSkillsTotalCostKarma.ToString(GlobalOptions.CultureInfo) + strSpace + strKarma;
                 }
                 else
                 {
-                    strTemp = intKnowledgeSkillsTotalCostKarma.ToString(GlobalOptions.Instance.CultureInfo) + strSpace + strKarma;
+                    strTemp = intKnowledgeSkillsTotalCostKarma.ToString(GlobalOptions.CultureInfo) + strSpace + strKarma;
                 }
             }
             lblKnowledgeSkillsBP.Text = strTemp;
@@ -10201,18 +10201,18 @@ namespace Chummer
             int intSkillGroupPointsMaximum = CharacterObject.SkillsSection.SkillGroupPointsMaximum;
             if (intSkillGroupPointsMaximum > 0)
             {
-                strTemp = CharacterObject.SkillsSection.SkillGroupPoints.ToString(GlobalOptions.Instance.CultureInfo) + strOf + intSkillGroupPointsMaximum.ToString(GlobalOptions.Instance.CultureInfo);
+                strTemp = CharacterObject.SkillsSection.SkillGroupPoints.ToString(GlobalOptions.CultureInfo) + strOf + intSkillGroupPointsMaximum.ToString(GlobalOptions.CultureInfo);
             }
             int intSkillGroupsTotalCostKarma = CharacterObject.SkillsSection.SkillGroups.TotalCostKarma();
             if (intSkillGroupsTotalCostKarma > 0)
             {
                 if (strTemp != strZeroKarma)
                 {
-                    strTemp += strColon + strSpace + intSkillGroupsTotalCostKarma.ToString(GlobalOptions.Instance.CultureInfo) + strSpace + strKarma;
+                    strTemp += strColon + strSpace + intSkillGroupsTotalCostKarma.ToString(GlobalOptions.CultureInfo) + strSpace + strKarma;
                 }
                 else
                 {
-                    strTemp = intSkillGroupsTotalCostKarma.ToString(GlobalOptions.Instance.CultureInfo) + strSpace + strKarma;
+                    strTemp = intSkillGroupsTotalCostKarma.ToString(GlobalOptions.CultureInfo) + strSpace + strKarma;
                 }
 
             }
@@ -10221,7 +10221,7 @@ namespace Chummer
 
         private void LiveUpdateFromCharacterFile(object sender, EventArgs e)
         {
-            if (IsDirty || !GlobalOptions.Instance.LiveUpdateCleanCharacterFiles || IsLoading || _blnSkipUpdate || IsCharacterUpdateRequested)
+            if (IsDirty || !GlobalOptions.LiveUpdateCleanCharacterFiles || IsLoading || _blnSkipUpdate || IsCharacterUpdateRequested)
                 return;
 
             string strCharacterFile = CharacterObject.FileName;
@@ -10270,8 +10270,8 @@ namespace Chummer
 
             if (CharacterObject.InternalIdsNeedingReapplyImprovements.Count > 0)
             {
-                if (MessageBox.Show(LanguageManager.GetString("Message_ImprovementLoadError", GlobalOptions.Instance.Language),
-                    LanguageManager.GetString("MessageTitle_ImprovementLoadError", GlobalOptions.Instance.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+                if (MessageBox.Show(LanguageManager.GetString("Message_ImprovementLoadError", GlobalOptions.Language),
+                    LanguageManager.GetString("MessageTitle_ImprovementLoadError", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                 {
                     DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements);
                     CharacterObject.InternalIdsNeedingReapplyImprovements.Clear();
@@ -10437,7 +10437,7 @@ namespace Chummer
                 return;
             }
 
-            string strSpace = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
+            string strSpace = LanguageManager.GetString("String_Space", GlobalOptions.Language);
             string strESSFormat = CharacterObjectOptions.EssenceFormat;
             if (treCyberware.SelectedNode?.Tag is IHasSource objSelected)
             {
@@ -10470,8 +10470,8 @@ namespace Chummer
                 cmdDeleteCyberware.Enabled = string.IsNullOrEmpty(objCyberware.ParentID);
 
                 // gpbCyberwareCommon
-                lblCyberwareName.Text = objCyberware.DisplayNameShort(GlobalOptions.Instance.Language);
-                lblCyberwareCategory.Text = objCyberware.DisplayCategory(GlobalOptions.Instance.Language);
+                lblCyberwareName.Text = objCyberware.DisplayNameShort(GlobalOptions.Language);
+                lblCyberwareCategory.Text = objCyberware.DisplayCategory(GlobalOptions.Language);
                 // Cyberware Grade is not available for Genetech items.
                 // Cyberware Grade is only available on root-level items (sub-components cannot have a different Grade than the piece they belong to).
                 if (objCyberware.Parent == null && !objCyberware.Suite && string.IsNullOrWhiteSpace(objCyberware.ForceGrade))
@@ -10488,12 +10488,12 @@ namespace Chummer
                 lblCyberwareEssenceLabel.Visible = true;
                 lblCyberwareEssence.Visible = true;
                 if (objCyberware.Parent == null)
-                    lblCyberwareEssence.Text = objCyberware.CalculatedESS().ToString(strESSFormat, GlobalOptions.Instance.CultureInfo);
+                    lblCyberwareEssence.Text = objCyberware.CalculatedESS().ToString(strESSFormat, GlobalOptions.CultureInfo);
                 else if (objCyberware.AddToParentESS)
-                    lblCyberwareEssence.Text = '+' + objCyberware.CalculatedESS().ToString(strESSFormat, GlobalOptions.Instance.CultureInfo);
+                    lblCyberwareEssence.Text = '+' + objCyberware.CalculatedESS().ToString(strESSFormat, GlobalOptions.CultureInfo);
                 else
-                    lblCyberwareEssence.Text = (0.0m).ToString(strESSFormat, GlobalOptions.Instance.CultureInfo);
-                lblCyberwareAvail.Text = objCyberware.TotalAvail(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
+                    lblCyberwareEssence.Text = (0.0m).ToString(strESSFormat, GlobalOptions.CultureInfo);
+                lblCyberwareAvail.Text = objCyberware.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 cmdCyberwareChangeMount.Visible = !string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount);
                 // Enable and set the Rating values as needed.
                 if (objCyberware.MaxRating == 0)
@@ -10506,16 +10506,16 @@ namespace Chummer
                 }
                 else
                 {
-                    nudCyberwareRating.Maximum = Convert.ToDecimal(objCyberware.MaxRating, GlobalOptions.Instance.CultureInfo);
-                    nudCyberwareRating.Minimum = Convert.ToDecimal(objCyberware.MinRating, GlobalOptions.Instance.CultureInfo);
-                    nudCyberwareRating.Value = Convert.ToDecimal(objCyberware.Rating, GlobalOptions.Instance.CultureInfo);
+                    nudCyberwareRating.Maximum = Convert.ToDecimal(objCyberware.MaxRating, GlobalOptions.CultureInfo);
+                    nudCyberwareRating.Minimum = Convert.ToDecimal(objCyberware.MinRating, GlobalOptions.CultureInfo);
+                    nudCyberwareRating.Value = Convert.ToDecimal(objCyberware.Rating, GlobalOptions.CultureInfo);
                     nudCyberwareRating.Visible = true;
                     nudCyberwareRating.Enabled = true;
                     lblCyberwareRatingLabel.Visible = true;
                 }
-                lblCyberwareCapacity.Text = objCyberware.CalculatedCapacity + strSpace + '(' + objCyberware.CapacityRemaining.ToString("#,0.##", GlobalOptions.Instance.CultureInfo) +
-                                            strSpace + LanguageManager.GetString("String_Remaining", GlobalOptions.Instance.Language) + ')';
-                lblCyberwareCost.Text = objCyberware.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.Instance.CultureInfo) + '¥';
+                lblCyberwareCapacity.Text = objCyberware.CalculatedCapacity + strSpace + '(' + objCyberware.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) +
+                                            strSpace + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
+                lblCyberwareCost.Text = objCyberware.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 if (objCyberware.Category.Equals("Cyberlimb") || objCyberware.AllowedSubsystems.Contains("Cyberlimb"))
                 {
                     lblCyberlimbAGILabel.Visible = true;
@@ -10540,7 +10540,7 @@ namespace Chummer
                 if (gpbCyberwareMatrix.Visible)
                 {
                     int intDeviceRating = objCyberware.GetTotalMatrixAttribute("Device Rating");
-                    lblCyberDeviceRating.Text = intDeviceRating.ToString(GlobalOptions.Instance.CultureInfo);
+                    lblCyberDeviceRating.Text = intDeviceRating.ToString(GlobalOptions.CultureInfo);
                     objCyberware.RefreshMatrixAttributeCBOs(cboCyberwareAttack, cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall);
 
                     chkCyberwareActiveCommlink.Visible = objCyberware.IsCommlink;
@@ -10556,7 +10556,7 @@ namespace Chummer
                         chkCyberwareHomeNode.Visible = false;
                 }
                 
-                treCyberware.SelectedNode.Text = objCyberware.DisplayName(GlobalOptions.Instance.Language);
+                treCyberware.SelectedNode.Text = objCyberware.DisplayName(GlobalOptions.Language);
             }
             else if (treCyberware.SelectedNode?.Tag is Gear objGear)
             {
@@ -10567,13 +10567,13 @@ namespace Chummer
                 cmdDeleteCyberware.Enabled = !objGear.IncludedInParent;
 
                 // gpbCyberwareCommon
-                lblCyberwareName.Text = objGear.DisplayNameShort(GlobalOptions.Instance.Language);
-                lblCyberwareCategory.Text = objGear.DisplayCategory(GlobalOptions.Instance.Language);
+                lblCyberwareName.Text = objGear.DisplayNameShort(GlobalOptions.Language);
+                lblCyberwareCategory.Text = objGear.DisplayCategory(GlobalOptions.Language);
                 lblCyberwareGradeLabel.Visible = false;
                 cboCyberwareGrade.Visible = false;
                 lblCyberwareEssenceLabel.Visible = false;
                 lblCyberwareEssence.Visible = false;
-                lblCyberwareAvail.Text = objGear.TotalAvail(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
+                lblCyberwareAvail.Text = objGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 cmdCyberwareChangeMount.Visible = false;
                 int intGearMaxRatingValue = objGear.MaxRatingValue;
                 if (intGearMaxRatingValue > 0 && intGearMaxRatingValue != int.MaxValue)
@@ -10598,10 +10598,10 @@ namespace Chummer
                     nudCyberwareRating.Visible = false;
                     lblCyberwareRatingLabel.Visible = false;
                 }
-                lblCyberwareCapacity.Text = objGear.CalculatedCapacity + strSpace + '(' + objGear.CapacityRemaining.ToString("#,0.##", GlobalOptions.Instance.CultureInfo) +
-                                            strSpace + LanguageManager.GetString("String_Remaining", GlobalOptions.Instance.Language) + ')';
+                lblCyberwareCapacity.Text = objGear.CalculatedCapacity + strSpace + '(' + objGear.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) +
+                                            strSpace + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
                 lblCyberwareCost.Text =
-                    objGear.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.Instance.CultureInfo) + '¥';
+                    objGear.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 lblCyberlimbAGILabel.Visible = false;
                 lblCyberlimbAGI.Visible = false;
                 lblCyberlimbSTRLabel.Visible = false;
@@ -10610,7 +10610,7 @@ namespace Chummer
 
                 // gpbCyberwareMatrix
                 int intDeviceRating = objGear.GetTotalMatrixAttribute("Device Rating");
-                lblCyberDeviceRating.Text = intDeviceRating.ToString(GlobalOptions.Instance.CultureInfo);
+                lblCyberDeviceRating.Text = intDeviceRating.ToString(GlobalOptions.CultureInfo);
                 objGear.RefreshMatrixAttributeCBOs(cboCyberwareAttack, cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall);
 
                 chkCyberwareActiveCommlink.Visible = objGear.IsCommlink;
@@ -10624,7 +10624,7 @@ namespace Chummer
                 else
                     chkCyberwareHomeNode.Visible = false;
                 
-                treCyberware.SelectedNode.Text = objGear.DisplayName(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
+                treCyberware.SelectedNode.Text = objGear.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
             }
             IsRefreshing = false;
             flpCyberware.ResumeLayout();
@@ -10652,7 +10652,7 @@ namespace Chummer
 
                 return;
             }
-            string strSpace = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
+            string strSpace = LanguageManager.GetString("String_Space", GlobalOptions.Language);
             if (treWeapons.SelectedNode?.Tag is IHasSource objSelected)
             {
                 lblWeaponSourceLabel.Visible = true;
@@ -10689,24 +10689,24 @@ namespace Chummer
                                           string.IsNullOrEmpty(objWeapon.ParentID);
 
                 // gpbWeaponsCommon
-                lblWeaponName.Text = objWeapon.DisplayNameShort(GlobalOptions.Instance.Language);
-                lblWeaponCategory.Text = objWeapon.DisplayCategory(GlobalOptions.Instance.Language);
+                lblWeaponName.Text = objWeapon.DisplayNameShort(GlobalOptions.Language);
+                lblWeaponCategory.Text = objWeapon.DisplayCategory(GlobalOptions.Language);
                 lblWeaponRatingLabel.Visible = false;
                 lblWeaponRating.Visible = false;
                 lblWeaponCapacityLabel.Visible = false;
                 lblWeaponCapacity.Visible = false;
-                lblWeaponAvail.Text = objWeapon.TotalAvail(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
-                lblWeaponCost.Text = objWeapon.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.Instance.CultureInfo) + '¥';
+                lblWeaponAvail.Text = objWeapon.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                lblWeaponCost.Text = objWeapon.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 lblWeaponSlotsLabel.Visible = true;
                 lblWeaponSlots.Visible = true;
                 if (!string.IsNullOrWhiteSpace(objWeapon.AccessoryMounts))
                 {
-                    if (GlobalOptions.Instance.Language != GlobalOptions.DefaultLanguage)
+                    if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                     {
                         StringBuilder strSlotsText = new StringBuilder();
                         foreach (string strMount in objWeapon.AccessoryMounts.Split('/'))
                         {
-                            strSlotsText.Append(LanguageManager.GetString("String_Mount" + strMount, GlobalOptions.Instance.Language));
+                            strSlotsText.Append(LanguageManager.GetString("String_Mount" + strMount, GlobalOptions.Language));
                             strSlotsText.Append('/');
                         }
                         strSlotsText.Length -= 1;
@@ -10716,10 +10716,10 @@ namespace Chummer
                         lblWeaponSlots.Text = objWeapon.AccessoryMounts;
                 }
                 else
-                    lblWeaponSlots.Text = LanguageManager.GetString("String_None", GlobalOptions.Instance.Language);
+                    lblWeaponSlots.Text = LanguageManager.GetString("String_None", GlobalOptions.Language);
                 lblWeaponConcealLabel.Visible = true;
                 lblWeaponConceal.Visible = true;
-                lblWeaponConceal.Text = objWeapon.CalculatedConcealability(GlobalOptions.Instance.CultureInfo);
+                lblWeaponConceal.Text = objWeapon.CalculatedConcealability(GlobalOptions.CultureInfo);
                 chkWeaponAccessoryInstalled.Visible = true;
                 chkWeaponAccessoryInstalled.Enabled = objWeapon.Parent != null;
                 chkWeaponAccessoryInstalled.Checked = objWeapon.Equipped;
@@ -10728,19 +10728,19 @@ namespace Chummer
                 chkIncludedInWeapon.Checked = objWeapon.IncludedInWeapon;
 
                 // gpbWeaponsWeapon
-                gpbWeaponsWeapon.Text = LanguageManager.GetString("String_Weapon", GlobalOptions.Instance.Language);
+                gpbWeaponsWeapon.Text = LanguageManager.GetString("String_Weapon", GlobalOptions.Language);
                 lblWeaponDamageLabel.Visible = true;
                 lblWeaponDamage.Visible = true;
-                lblWeaponDamage.Text = objWeapon.CalculatedDamage(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
+                lblWeaponDamage.Text = objWeapon.CalculatedDamage(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 lblWeaponAPLabel.Visible = true;
                 lblWeaponAP.Visible = true;
-                lblWeaponAP.Text = objWeapon.TotalAP(GlobalOptions.Instance.Language);
+                lblWeaponAP.Text = objWeapon.TotalAP(GlobalOptions.Language);
                 lblWeaponAccuracyLabel.Visible = true;
                 lblWeaponAccuracy.Visible = true;
-                lblWeaponAccuracy.Text = objWeapon.DisplayAccuracy(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
+                lblWeaponAccuracy.Text = objWeapon.DisplayAccuracy(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 lblWeaponDicePoolLabel.Visible = true;
                 lblWeaponDicePool.Visible = true;
-                lblWeaponDicePool.Text = objWeapon.GetDicePool(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
+                lblWeaponDicePool.Text = objWeapon.GetDicePool(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 lblWeaponDicePool.SetToolTip(objWeapon.DicePoolTooltip);
                 if (objWeapon.WeaponType == "Ranged")
                 {
@@ -10748,19 +10748,19 @@ namespace Chummer
                     lblWeaponReach.Visible = false;
                     lblWeaponRCLabel.Visible = true;
                     lblWeaponRC.Visible = true;
-                    lblWeaponRC.Text = objWeapon.TotalRC(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language, true);
+                    lblWeaponRC.Text = objWeapon.TotalRC(GlobalOptions.CultureInfo, GlobalOptions.Language, true);
                     lblWeaponRC.SetToolTip(objWeapon.RCToolTip);
                     lblWeaponAmmoLabel.Visible = true;
                     lblWeaponAmmo.Visible = true;
-                    lblWeaponAmmo.Text = objWeapon.CalculatedAmmo(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
+                    lblWeaponAmmo.Text = objWeapon.CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.Language);
                     lblWeaponModeLabel.Visible = true;
                     lblWeaponMode.Visible = true;
-                    lblWeaponMode.Text = objWeapon.CalculatedMode(GlobalOptions.Instance.Language);
+                    lblWeaponMode.Text = objWeapon.CalculatedMode(GlobalOptions.Language);
 
                     tlpWeaponsRanges.Visible = true;
-                    lblWeaponRangeMain.Text = objWeapon.DisplayRange(GlobalOptions.Instance.Language);
-                    lblWeaponRangeAlternate.Text = objWeapon.DisplayAlternateRange(GlobalOptions.Instance.Language);
-                    IDictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalOptions.Instance.CultureInfo);
+                    lblWeaponRangeMain.Text = objWeapon.DisplayRange(GlobalOptions.Language);
+                    lblWeaponRangeAlternate.Text = objWeapon.DisplayAlternateRange(GlobalOptions.Language);
+                    IDictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
                     lblWeaponRangeShort.Text = dictionaryRanges["short"];
                     lblWeaponRangeMedium.Text = dictionaryRanges["medium"];
                     lblWeaponRangeLong.Text = dictionaryRanges["long"];
@@ -10781,7 +10781,7 @@ namespace Chummer
                     {
                         lblWeaponAmmoLabel.Visible = true;
                         lblWeaponAmmo.Visible = true;
-                        lblWeaponAmmo.Text = objWeapon.CalculatedAmmo(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
+                        lblWeaponAmmo.Text = objWeapon.CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.Language);
                     }
                     else
                     {
@@ -10811,13 +10811,13 @@ namespace Chummer
                 cmdDeleteWeapon.Enabled = !objSelectedAccessory.IncludedInWeapon;
 
                 // gpbWeaponsCommon
-                lblWeaponName.Text = objSelectedAccessory.DisplayNameShort(GlobalOptions.Instance.Language);
-                lblWeaponCategory.Text = LanguageManager.GetString("String_WeaponAccessory", GlobalOptions.Instance.Language);
+                lblWeaponName.Text = objSelectedAccessory.DisplayNameShort(GlobalOptions.Language);
+                lblWeaponCategory.Text = LanguageManager.GetString("String_WeaponAccessory", GlobalOptions.Language);
                 if (objSelectedAccessory.MaxRating > 0)
                 {
                     lblWeaponRatingLabel.Visible = true;
                     lblWeaponRating.Visible = true;
-                    lblWeaponRating.Text = objSelectedAccessory.Rating.ToString(GlobalOptions.Instance.CultureInfo);
+                    lblWeaponRating.Text = objSelectedAccessory.Rating.ToString(GlobalOptions.CultureInfo);
                 }
                 else
                 {
@@ -10826,17 +10826,17 @@ namespace Chummer
                 }
                 lblWeaponCapacityLabel.Visible = false;
                 lblWeaponCapacity.Visible = false;
-                lblWeaponAvail.Text = objSelectedAccessory.TotalAvail(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
-                lblWeaponCost.Text = objSelectedAccessory.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.Instance.CultureInfo) + '¥';
+                lblWeaponAvail.Text = objSelectedAccessory.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                lblWeaponCost.Text = objSelectedAccessory.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 lblWeaponSlotsLabel.Visible = true;
                 lblWeaponSlots.Visible = true;
                 StringBuilder strSlotsText = new StringBuilder(objSelectedAccessory.Mount);
-                if (strSlotsText.Length > 0 && GlobalOptions.Instance.Language != GlobalOptions.DefaultLanguage)
+                if (strSlotsText.Length > 0 && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
                     strSlotsText.Clear();
                     foreach (string strMount in objSelectedAccessory.Mount.Split('/'))
                     {
-                        strSlotsText.Append(LanguageManager.GetString("String_Mount" + strMount, GlobalOptions.Instance.Language));
+                        strSlotsText.Append(LanguageManager.GetString("String_Mount" + strMount, GlobalOptions.Language));
                         strSlotsText.Append('/');
                     }
                     strSlotsText.Length -= 1;
@@ -10855,7 +10855,7 @@ namespace Chummer
                                 strSlotsText.Append(" + ");
                                 boolHaveAddedItem = true;
                             }
-                            strSlotsText.Append(LanguageManager.GetString("String_Mount" + strCurrentExtraMount, GlobalOptions.Instance.Language));
+                            strSlotsText.Append(LanguageManager.GetString("String_Mount" + strCurrentExtraMount, GlobalOptions.Language));
                             strSlotsText.Append('/');
                         }
                     }
@@ -10866,7 +10866,7 @@ namespace Chummer
                 lblWeaponSlots.Text = strSlotsText.ToString();
                 lblWeaponConcealLabel.Visible = objSelectedAccessory.TotalConcealability != 0;
                 lblWeaponConceal.Visible = objSelectedAccessory.TotalConcealability != 0;
-                lblWeaponConceal.Text = objSelectedAccessory.TotalConcealability.ToString("+#,0;-#,0;0", GlobalOptions.Instance.CultureInfo);
+                lblWeaponConceal.Text = objSelectedAccessory.TotalConcealability.ToString("+#,0;-#,0;0", GlobalOptions.CultureInfo);
                 chkWeaponAccessoryInstalled.Visible = true;
                 chkWeaponAccessoryInstalled.Enabled = objSelectedAccessory.Parent != null;
                 chkWeaponAccessoryInstalled.Checked = objSelectedAccessory.Equipped;
@@ -10875,7 +10875,7 @@ namespace Chummer
                 chkIncludedInWeapon.Checked = objSelectedAccessory.IncludedInWeapon;
 
                 // gpbWeaponsWeapon
-                gpbWeaponsWeapon.Text = LanguageManager.GetString("String_WeaponAccessory", GlobalOptions.Instance.Language);
+                gpbWeaponsWeapon.Text = LanguageManager.GetString("String_WeaponAccessory", GlobalOptions.Language);
                 if (string.IsNullOrEmpty(objSelectedAccessory.Damage))
                 {
                     lblWeaponDamageLabel.Visible = false;
@@ -10885,7 +10885,7 @@ namespace Chummer
                 {
                     lblWeaponDamageLabel.Visible = !string.IsNullOrEmpty(objSelectedAccessory.Damage);
                     lblWeaponDamage.Visible = !string.IsNullOrEmpty(objSelectedAccessory.Damage);
-                    lblWeaponDamage.Text = Convert.ToInt32(objSelectedAccessory.Damage).ToString("+#,0;-#,0;0", GlobalOptions.Instance.CultureInfo);
+                    lblWeaponDamage.Text = Convert.ToInt32(objSelectedAccessory.Damage).ToString("+#,0;-#,0;0", GlobalOptions.CultureInfo);
                 }
                 if (string.IsNullOrEmpty(objSelectedAccessory.AP))
                 {
@@ -10896,7 +10896,7 @@ namespace Chummer
                 {
                     lblWeaponAPLabel.Visible = true;
                     lblWeaponAP.Visible = true;
-                    lblWeaponAP.Text = Convert.ToInt32(objSelectedAccessory.AP).ToString("+#,0;-#,0;0", GlobalOptions.Instance.CultureInfo);
+                    lblWeaponAP.Text = Convert.ToInt32(objSelectedAccessory.AP).ToString("+#,0;-#,0;0", GlobalOptions.CultureInfo);
                 }
                 if (objSelectedAccessory.Accuracy == 0)
                 {
@@ -10907,7 +10907,7 @@ namespace Chummer
                 {
                     lblWeaponAccuracyLabel.Visible = true;
                     lblWeaponAccuracy.Visible = true;
-                    lblWeaponAccuracy.Text = objSelectedAccessory.Accuracy.ToString("+#,0;-#,0;0", GlobalOptions.Instance.CultureInfo);
+                    lblWeaponAccuracy.Text = objSelectedAccessory.Accuracy.ToString("+#,0;-#,0;0", GlobalOptions.CultureInfo);
                 }
                 if (objSelectedAccessory.DicePool == 0)
                 {
@@ -10918,7 +10918,7 @@ namespace Chummer
                 {
                     lblWeaponDicePoolLabel.Visible = true;
                     lblWeaponDicePool.Visible = true;
-                    lblWeaponDicePool.Text = objSelectedAccessory.DicePool.ToString("+#,0;-#,0;0", GlobalOptions.Instance.CultureInfo);
+                    lblWeaponDicePool.Text = objSelectedAccessory.DicePool.ToString("+#,0;-#,0;0", GlobalOptions.CultureInfo);
                 }
                 lblWeaponReachLabel.Visible = false;
                 lblWeaponReach.Visible = false;
@@ -10931,7 +10931,7 @@ namespace Chummer
                 {
                     lblWeaponRCLabel.Visible = true;
                     lblWeaponRC.Visible = true;
-                    lblWeaponRC.Text = Convert.ToInt32(objSelectedAccessory.RC).ToString("+#,0;-#,0;0", GlobalOptions.Instance.CultureInfo);
+                    lblWeaponRC.Text = Convert.ToInt32(objSelectedAccessory.RC).ToString("+#,0;-#,0;0", GlobalOptions.CultureInfo);
                 }
                 if (objSelectedAccessory.AmmoBonus != 0 && !string.IsNullOrEmpty(objSelectedAccessory.ModifyAmmoCapacity) && objSelectedAccessory.ModifyAmmoCapacity != "0")
                 {
@@ -10939,7 +10939,7 @@ namespace Chummer
                     lblWeaponAmmo.Visible = true;
                     StringBuilder strbldAmmoBonus = new StringBuilder();
                     if (objSelectedAccessory.AmmoBonus != 0)
-                        strbldAmmoBonus.Append(objSelectedAccessory.AmmoBonus.ToString("+#,0%;-#,0%;0%", GlobalOptions.Instance.CultureInfo));
+                        strbldAmmoBonus.Append(objSelectedAccessory.AmmoBonus.ToString("+#,0%;-#,0%;0%", GlobalOptions.CultureInfo));
                     if (!string.IsNullOrEmpty(objSelectedAccessory.ModifyAmmoCapacity) && objSelectedAccessory.ModifyAmmoCapacity != "0")
                         strbldAmmoBonus.Append(objSelectedAccessory.ModifyAmmoCapacity);
                     lblWeaponAmmo.Text = strbldAmmoBonus.ToString();
@@ -10964,14 +10964,14 @@ namespace Chummer
                 cmdDeleteWeapon.Enabled = !objGear.IncludedInParent;
 
                 // gpbWeaponsCommon
-                lblWeaponName.Text = objGear.DisplayNameShort(GlobalOptions.Instance.Language);
-                lblWeaponCategory.Text = objGear.DisplayCategory(GlobalOptions.Instance.Language);
+                lblWeaponName.Text = objGear.DisplayNameShort(GlobalOptions.Language);
+                lblWeaponCategory.Text = objGear.DisplayCategory(GlobalOptions.Language);
                 int intGearMaxRatingValue = objGear.MaxRatingValue;
                 if (intGearMaxRatingValue > 0 && intGearMaxRatingValue != int.MaxValue)
                 {
                     lblWeaponRatingLabel.Visible = true;
                     lblWeaponRating.Visible = true;
-                    lblWeaponRating.Text = objGear.Rating.ToString(GlobalOptions.Instance.CultureInfo);
+                    lblWeaponRating.Text = objGear.Rating.ToString(GlobalOptions.CultureInfo);
                 }
                 else
                 {
@@ -10980,10 +10980,10 @@ namespace Chummer
                 }
                 lblWeaponCapacityLabel.Visible = true;
                 lblWeaponCapacity.Visible = true;
-                lblWeaponCapacity.Text = objGear.CalculatedCapacity + strSpace + '(' + objGear.CapacityRemaining.ToString("#,0.##", GlobalOptions.Instance.CultureInfo)
-                                         + strSpace + LanguageManager.GetString("String_Remaining", GlobalOptions.Instance.Language) + ')';
-                lblWeaponAvail.Text = objGear.TotalAvail(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
-                lblWeaponCost.Text = objGear.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.Instance.CultureInfo) + '¥';
+                lblWeaponCapacity.Text = objGear.CalculatedCapacity + strSpace + '(' + objGear.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo)
+                                         + strSpace + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
+                lblWeaponAvail.Text = objGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                lblWeaponCost.Text = objGear.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 lblWeaponSlotsLabel.Visible = false;
                 lblWeaponSlots.Visible = false;
                 lblWeaponConcealLabel.Visible = false;
@@ -11057,7 +11057,7 @@ namespace Chummer
                 chkArmorStolen.Visible = false;
             }
 
-            string strSpace = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
+            string strSpace = LanguageManager.GetString("String_Space", GlobalOptions.Language);
 
             if (treArmor.SelectedNode?.Tag is Armor objArmor)
             {
@@ -11072,12 +11072,12 @@ namespace Chummer
                 lblArmorValueLabel.Visible = true;
                 lblArmorValue.Visible = true;
                 lblArmorValue.Text = objArmor.DisplayArmorValue;
-                lblArmorAvail.Text = objArmor.TotalAvail(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
-                lblArmorCapacity.Text = objArmor.CalculatedCapacity + strSpace + '(' + objArmor.CapacityRemaining.ToString("#,0.##", GlobalOptions.Instance.CultureInfo)
-                                        + strSpace + LanguageManager.GetString("String_Remaining", GlobalOptions.Instance.Language) + ')';
+                lblArmorAvail.Text = objArmor.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                lblArmorCapacity.Text = objArmor.CalculatedCapacity + strSpace + '(' + objArmor.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo)
+                                        + strSpace + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
                 lblArmorRatingLabel.Visible = false;
                 nudArmorRating.Visible = false;
-                lblArmorCost.Text = objArmor.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.Instance.CultureInfo) + '¥';
+                lblArmorCost.Text = objArmor.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 chkArmorEquipped.Visible = true;
                 chkArmorEquipped.Checked = objArmor.Equipped;
                 chkArmorEquipped.Enabled = true;
@@ -11105,14 +11105,14 @@ namespace Chummer
                     lblArmorValue.Visible = false;
                 }
 
-                lblArmorAvail.Text = objArmorMod.TotalAvail(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
+                lblArmorAvail.Text = objArmorMod.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 lblArmorCapacity.Text = objArmorMod.Parent.CapacityDisplayStyle == CapacityStyle.Zero
                     ? "[0]"
                     : objArmorMod.CalculatedCapacity;
                 if (!string.IsNullOrEmpty(objArmorMod.GearCapacity))
                     lblArmorCapacity.Text = objArmorMod.GearCapacity + '/' + lblArmorCapacity.Text + strSpace + '(' +
-                                            objArmorMod.GearCapacityRemaining.ToString("#,0.##", GlobalOptions.Instance.CultureInfo) +
-                                            strSpace + LanguageManager.GetString("String_Remaining", GlobalOptions.Instance.Language) + ')';
+                                            objArmorMod.GearCapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) +
+                                            strSpace + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
                 if (objArmorMod.MaximumRating > 1)
                 {
                     lblArmorRatingLabel.Visible = true;
@@ -11126,7 +11126,7 @@ namespace Chummer
                     lblArmorRatingLabel.Visible = false;
                     nudArmorRating.Visible = false;
                 }
-                lblArmorCost.Text = objArmorMod.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.Instance.CultureInfo) + '¥';
+                lblArmorCost.Text = objArmorMod.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 chkArmorEquipped.Visible = true;
                 chkArmorEquipped.Checked = objArmorMod.Equipped;
                 chkArmorEquipped.Enabled = true;
@@ -11145,7 +11145,7 @@ namespace Chummer
                 // gpbArmorCommon
                 lblArmorValueLabel.Visible = false;
                 lblArmorValue.Visible = false;
-                lblArmorAvail.Text = objSelectedGear.TotalAvail(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
+                lblArmorAvail.Text = objSelectedGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 CharacterObject.Armor.FindArmorGear(objSelectedGear.InternalId, out objArmor, out objArmorMod);
                 if (objArmorMod != null)
                     lblArmorCapacity.Text = objSelectedGear.CalculatedCapacity;
@@ -11169,7 +11169,7 @@ namespace Chummer
                     lblArmorRatingLabel.Visible = false;
                     nudArmorRating.Visible = false;
                 }
-                lblArmorCost.Text = objSelectedGear.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.Instance.CultureInfo) + '¥';
+                lblArmorCost.Text = objSelectedGear.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 chkArmorEquipped.Visible = true;
                 chkArmorEquipped.Checked = objSelectedGear.Equipped;
                 chkArmorEquipped.Enabled = true;
@@ -11196,7 +11196,7 @@ namespace Chummer
                 StringBuilder strArmorEquipped = new StringBuilder();
                 foreach (Armor objLoopArmor in CharacterObject.Armor.Where(objLoopArmor => objLoopArmor.Equipped && objLoopArmor.Location == objLocation))
                 {
-                    strArmorEquipped.Append(objLoopArmor.DisplayName(GlobalOptions.Instance.Language));
+                    strArmorEquipped.Append(objLoopArmor.DisplayName(GlobalOptions.Language));
                     strArmorEquipped.Append(strSpace + '(');
                     strArmorEquipped.Append(objLoopArmor.DisplayArmorValue);
                     strArmorEquipped.AppendLine(")");
@@ -11207,7 +11207,7 @@ namespace Chummer
                     lblArmorEquipped.Text = strArmorEquipped.ToString();
                 }
                 else
-                    lblArmorEquipped.Text = LanguageManager.GetString("String_None", GlobalOptions.Instance.Language);
+                    lblArmorEquipped.Text = LanguageManager.GetString("String_None", GlobalOptions.Language);
             }
             else if (treArmor.SelectedNode?.Tag.ToString() == "Node_SelectedArmor")
             {
@@ -11221,7 +11221,7 @@ namespace Chummer
                 StringBuilder strArmorEquipped = new StringBuilder();
                 foreach (Armor objLoopArmor in CharacterObject.Armor.Where(objLoopArmor => objLoopArmor.Equipped && objLoopArmor.Location == null))
                 {
-                    strArmorEquipped.Append(objLoopArmor.DisplayName(GlobalOptions.Instance.Language));
+                    strArmorEquipped.Append(objLoopArmor.DisplayName(GlobalOptions.Language));
                     strArmorEquipped.Append(strSpace + '(');
                     strArmorEquipped.Append(objLoopArmor.DisplayArmorValue);
                     strArmorEquipped.AppendLine(")");
@@ -11232,7 +11232,7 @@ namespace Chummer
                     lblArmorEquipped.Text = strArmorEquipped.ToString();
                 }
                 else
-                    lblArmorEquipped.Text = LanguageManager.GetString("String_None", GlobalOptions.Instance.Language);
+                    lblArmorEquipped.Text = LanguageManager.GetString("String_None", GlobalOptions.Language);
             }
             else
             {
@@ -11291,7 +11291,7 @@ namespace Chummer
                 lblGearSource.Visible = false;
             }
 
-            string strSpace = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
+            string strSpace = LanguageManager.GetString("String_Space", GlobalOptions.Language);
 
             if (treGear.SelectedNode?.Tag is Gear objGear)
             {
@@ -11302,8 +11302,8 @@ namespace Chummer
                 cmdDeleteGear.Enabled = !objGear.IncludedInParent;
 
                 // gpbGearCommon
-                lblGearName.Text = objGear.DisplayNameShort(GlobalOptions.Instance.Language);
-                lblGearCategory.Text = objGear.DisplayCategory(GlobalOptions.Instance.Language);
+                lblGearName.Text = objGear.DisplayNameShort(GlobalOptions.Language);
+                lblGearCategory.Text = objGear.DisplayCategory(GlobalOptions.Language);
                 int intGearMaxRatingValue = objGear.MaxRatingValue;
                 if (intGearMaxRatingValue > 0 && intGearMaxRatingValue != int.MaxValue)
                 {
@@ -11358,33 +11358,33 @@ namespace Chummer
                 nudGearQty.Enabled = !objGear.IncludedInParent;
                 try
                 {
-                    lblGearCost.Text = objGear.TotalCost.ToString(CharacterObjectOptions.NuyenFormat + '¥', GlobalOptions.Instance.CultureInfo);
+                    lblGearCost.Text = objGear.TotalCost.ToString(CharacterObjectOptions.NuyenFormat + '¥', GlobalOptions.CultureInfo);
                 }
                 catch (FormatException)
                 {
                     lblGearCost.Text = objGear.Cost + "¥";
                 }
-                lblGearAvail.Text = objGear.TotalAvail(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
+                lblGearAvail.Text = objGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 try
                 {
-                    lblGearCost.Text = objGear.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.Instance.CultureInfo) + '¥';
+                    lblGearCost.Text = objGear.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 }
                 catch (FormatException)
                 {
                     lblGearCost.Text = objGear.Cost + "¥";
                 }
-                lblGearCapacity.Text = objGear.CalculatedCapacity + strSpace + '(' + objGear.CapacityRemaining.ToString("#,0.##", GlobalOptions.Instance.CultureInfo)
-                                       + strSpace + LanguageManager.GetString("String_Remaining", GlobalOptions.Instance.Language) + ')';
+                lblGearCapacity.Text = objGear.CalculatedCapacity + strSpace + '(' + objGear.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo)
+                                       + strSpace + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
                 chkGearEquipped.Visible = true;
                 chkGearEquipped.Checked = objGear.Equipped;
                 // If this is a Program, determine if its parent Gear (if any) is a Commlink. If so, show the Equipped checkbox.
                 if (objGear.IsProgram && objGear.Parent is IHasMatrixAttributes objCommlink && objCommlink.IsCommlink)
                 {
-                    chkGearEquipped.Text = LanguageManager.GetString("Checkbox_SoftwareRunning", GlobalOptions.Instance.Language);
+                    chkGearEquipped.Text = LanguageManager.GetString("Checkbox_SoftwareRunning", GlobalOptions.Language);
                 }
                 else
                 {
-                    chkGearEquipped.Text = LanguageManager.GetString("Checkbox_Equipped", GlobalOptions.Instance.Language);
+                    chkGearEquipped.Text = LanguageManager.GetString("Checkbox_Equipped", GlobalOptions.Language);
                 }
 
 
@@ -11405,7 +11405,7 @@ namespace Chummer
                 chkGearActiveCommlink.Checked = objGear.IsActiveCommlink(CharacterObject);
                 chkGearActiveCommlink.Visible = objGear.IsCommlink;
 
-                treGear.SelectedNode.Text = objGear.DisplayName(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
+                treGear.SelectedNode.Text = objGear.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
             }
             else
             {
@@ -11420,7 +11420,7 @@ namespace Chummer
             flpGear.ResumeLayout();
         }
 
-        protected override string FormMode => LanguageManager.GetString("Title_CreateNewCharacter", GlobalOptions.Instance.Language);
+        protected override string FormMode => LanguageManager.GetString("Title_CreateNewCharacter", GlobalOptions.Language);
 
         /// <summary>
         /// Save the Character.
@@ -11449,7 +11449,7 @@ namespace Chummer
             if (CharacterObject.Karma > 0)
             {
                 ExpenseLogEntry objKarma = new ExpenseLogEntry(CharacterObject);
-                objKarma.Create(CharacterObject.Karma, LanguageManager.GetString("Label_SelectBP_StartingKarma", GlobalOptions.Instance.Language), ExpenseType.Karma, DateTime.Now);
+                objKarma.Create(CharacterObject.Karma, LanguageManager.GetString("Label_SelectBP_StartingKarma", GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
                 CharacterObject.ExpenseEntries.AddWithSort(objKarma);
 
                 // Create an Undo entry so that the starting Karma amount can be modified if needed.
@@ -11477,7 +11477,7 @@ namespace Chummer
 
             // Create an Expense Entry for Starting Nuyen.
             ExpenseLogEntry objNuyen = new ExpenseLogEntry(CharacterObject);
-            objNuyen.Create(CharacterObject.Nuyen, LanguageManager.GetString("Title_LifestyleNuyen", GlobalOptions.Instance.Language), ExpenseType.Nuyen, DateTime.Now);
+            objNuyen.Create(CharacterObject.Nuyen, LanguageManager.GetString("Title_LifestyleNuyen", GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
             CharacterObject.ExpenseEntries.AddWithSort(objNuyen);
 
             // Create an Undo entry so that the Starting Nuyen amount can be modified if needed.
@@ -11515,7 +11515,7 @@ namespace Chummer
                     foreach (Improvement objImprovement in CharacterObject.Improvements)
                     {
                         if (objImprovement.ImproveType == Improvement.ImprovementType.CyberwareEssCost && objImprovement.Enabled)
-                            decMultiplier -= (1.0m - (Convert.ToDecimal(objImprovement.Value, GlobalOptions.Instance.InvariantCultureInfo) / 100.0m));
+                            decMultiplier -= (1.0m - (Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100.0m));
                     }
                     frmPickCyberware.CharacterESSMultiplier *= decMultiplier;
                 }
@@ -11525,7 +11525,7 @@ namespace Chummer
                     foreach (Improvement objImprovement in CharacterObject.Improvements)
                     {
                         if (objImprovement.ImproveType == Improvement.ImprovementType.CyberwareTotalEssMultiplier && objImprovement.Enabled)
-                            decMultiplier *= (Convert.ToDecimal(objImprovement.Value, GlobalOptions.Instance.InvariantCultureInfo) / 100.0m);
+                            decMultiplier *= (Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100.0m);
                     }
                     frmPickCyberware.CharacterTotalESSMultiplier *= decMultiplier;
                 }
@@ -11535,7 +11535,7 @@ namespace Chummer
                     foreach (Improvement objImprovement in CharacterObject.Improvements)
                     {
                         if (objImprovement.ImproveType == Improvement.ImprovementType.CyberwareEssCostNonRetroactive && objImprovement.Enabled)
-                            decMultiplier -= (1.0m - (Convert.ToDecimal(objImprovement.Value, GlobalOptions.Instance.InvariantCultureInfo) / 100.0m));
+                            decMultiplier -= (1.0m - (Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100.0m));
                     }
                     frmPickCyberware.CharacterESSMultiplier *= decMultiplier;
                 }
@@ -11545,7 +11545,7 @@ namespace Chummer
                     foreach (Improvement objImprovement in CharacterObject.Improvements)
                     {
                         if (objImprovement.ImproveType == Improvement.ImprovementType.CyberwareTotalEssMultiplierNonRetroactive && objImprovement.Enabled)
-                            decMultiplier *= (Convert.ToDecimal(objImprovement.Value, GlobalOptions.Instance.InvariantCultureInfo) / 100.0m);
+                            decMultiplier *= (Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100.0m);
                     }
                     frmPickCyberware.CharacterTotalESSMultiplier *= decMultiplier;
                 }
@@ -11558,7 +11558,7 @@ namespace Chummer
                     foreach (Improvement objImprovement in CharacterObject.Improvements)
                     {
                         if (objImprovement.ImproveType == Improvement.ImprovementType.BiowareEssCost && objImprovement.Enabled)
-                            decMultiplier -= (1.0m - (Convert.ToDecimal(objImprovement.Value, GlobalOptions.Instance.InvariantCultureInfo) / 100.0m));
+                            decMultiplier -= (1.0m - (Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100.0m));
                     }
                     frmPickCyberware.CharacterESSMultiplier = decMultiplier;
                 }
@@ -11568,7 +11568,7 @@ namespace Chummer
                     foreach (Improvement objImprovement in CharacterObject.Improvements)
                     {
                         if (objImprovement.ImproveType == Improvement.ImprovementType.BiowareTotalEssMultiplier && objImprovement.Enabled)
-                            decMultiplier *= (Convert.ToDecimal(objImprovement.Value, GlobalOptions.Instance.InvariantCultureInfo) / 100.0m);
+                            decMultiplier *= (Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100.0m);
                     }
                     frmPickCyberware.CharacterTotalESSMultiplier *= decMultiplier;
                 }
@@ -11578,7 +11578,7 @@ namespace Chummer
                     foreach (Improvement objImprovement in CharacterObject.Improvements)
                     {
                         if (objImprovement.ImproveType == Improvement.ImprovementType.BiowareEssCostNonRetroactive && objImprovement.Enabled)
-                            decMultiplier -= (1.0m - (Convert.ToDecimal(objImprovement.Value, GlobalOptions.Instance.InvariantCultureInfo) / 100.0m));
+                            decMultiplier -= (1.0m - (Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100.0m));
                     }
                     frmPickCyberware.CharacterESSMultiplier = decMultiplier;
                 }
@@ -11588,7 +11588,7 @@ namespace Chummer
                     foreach (Improvement objImprovement in CharacterObject.Improvements)
                     {
                         if (objImprovement.ImproveType == Improvement.ImprovementType.BiowareTotalEssMultiplierNonRetroactive && objImprovement.Enabled)
-                            decMultiplier *= (Convert.ToDecimal(objImprovement.Value, GlobalOptions.Instance.InvariantCultureInfo) / 100.0m);
+                            decMultiplier *= (Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100.0m);
                     }
                     frmPickCyberware.CharacterTotalESSMultiplier *= decMultiplier;
                 }
@@ -11601,7 +11601,7 @@ namespace Chummer
                 foreach (Improvement objImprovement in CharacterObject.Improvements)
                 {
                     if (objImprovement.ImproveType == Improvement.ImprovementType.BasicBiowareEssCost && objImprovement.Enabled)
-                        decMultiplier -= (1.0m - (Convert.ToDecimal(objImprovement.Value, GlobalOptions.Instance.InvariantCultureInfo) / 100.0m));
+                        decMultiplier -= (1.0m - (Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100.0m));
                 }
                 frmPickCyberware.BasicBiowareESSMultiplier = decMultiplier;
             }
@@ -11613,7 +11613,7 @@ namespace Chummer
                 foreach (Improvement objImprovement in CharacterObject.Improvements)
                 {
                     if (objImprovement.ImproveType == Improvement.ImprovementType.GenetechCostMultiplier && objImprovement.Enabled)
-                        decMultiplier -= (1.0m - (Convert.ToDecimal(objImprovement.Value, GlobalOptions.Instance.InvariantCultureInfo) / 100.0m));
+                        decMultiplier -= (1.0m - (Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100.0m));
                 }
                 frmPickCyberware.GenetechCostMultiplier = decMultiplier;
             }
@@ -11978,35 +11978,35 @@ namespace Chummer
             flpLifestyleDetails.Visible = true;
             cmdDeleteLifestyle.Enabled = true;
 
-            string strSpace = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
-            lblLifestyleCost.Text = objLifestyle.TotalMonthlyCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.Instance.CultureInfo) + '¥';
-            nudLifestyleMonths.Value = Convert.ToDecimal(objLifestyle.Increments, GlobalOptions.Instance.InvariantCultureInfo);
-            lblLifestyleStartingNuyen.Text = objLifestyle.Dice + LanguageManager.GetString("String_D6", GlobalOptions.Instance.Language) + strSpace + '×' + strSpace + objLifestyle.Multiplier.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.Instance.CultureInfo) + '¥';
+            string strSpace = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+            lblLifestyleCost.Text = objLifestyle.TotalMonthlyCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+            nudLifestyleMonths.Value = Convert.ToDecimal(objLifestyle.Increments, GlobalOptions.InvariantCultureInfo);
+            lblLifestyleStartingNuyen.Text = objLifestyle.Dice + LanguageManager.GetString("String_D6", GlobalOptions.Language) + strSpace + '×' + strSpace + objLifestyle.Multiplier.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
             objLifestyle.SetSourceDetail(lblLifestyleSource);
-            lblLifestyleTotalCost.Text = objLifestyle.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.Instance.CultureInfo) + '¥';
+            lblLifestyleTotalCost.Text = objLifestyle.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
             string strIncrementString;
             // Change the Cost/Month label.
             switch (objLifestyle.IncrementType)
             {
                 case LifestyleIncrement.Day:
-                    lblLifestyleCostLabel.Text = LanguageManager.GetString("Label_SelectLifestyle_CostPerDay", GlobalOptions.Instance.Language);
-                    strIncrementString = LanguageManager.GetString("String_Days", GlobalOptions.Instance.Language);
+                    lblLifestyleCostLabel.Text = LanguageManager.GetString("Label_SelectLifestyle_CostPerDay", GlobalOptions.Language);
+                    strIncrementString = LanguageManager.GetString("String_Days", GlobalOptions.Language);
                     break;
                 case LifestyleIncrement.Week:
-                    lblLifestyleCostLabel.Text = LanguageManager.GetString("Label_SelectLifestyle_CostPerWeek", GlobalOptions.Instance.Language);
-                    strIncrementString = LanguageManager.GetString("String_Weeks", GlobalOptions.Instance.Language);
+                    lblLifestyleCostLabel.Text = LanguageManager.GetString("Label_SelectLifestyle_CostPerWeek", GlobalOptions.Language);
+                    strIncrementString = LanguageManager.GetString("String_Weeks", GlobalOptions.Language);
                     break;
                 default:
-                    lblLifestyleCostLabel.Text = LanguageManager.GetString("Label_SelectLifestyle_CostPerMonth", GlobalOptions.Instance.Language);
-                    strIncrementString = LanguageManager.GetString("String_Months", GlobalOptions.Instance.Language);
+                    lblLifestyleCostLabel.Text = LanguageManager.GetString("Label_SelectLifestyle_CostPerMonth", GlobalOptions.Language);
+                    strIncrementString = LanguageManager.GetString("String_Months", GlobalOptions.Language);
                     break;
             }
-            lblLifestyleMonthsLabel.Text = strIncrementString + string.Format(LanguageManager.GetString("Label_LifestylePermanent", GlobalOptions.Instance.Language), objLifestyle.IncrementsRequiredForPermanent.ToString(GlobalOptions.Instance.CultureInfo));
+            lblLifestyleMonthsLabel.Text = strIncrementString + string.Format(LanguageManager.GetString("Label_LifestylePermanent", GlobalOptions.Language), objLifestyle.IncrementsRequiredForPermanent.ToString(GlobalOptions.CultureInfo));
 
             if (!string.IsNullOrEmpty(objLifestyle.BaseLifestyle))
             {
-                string strQualities = string.Join(",\n", objLifestyle.LifestyleQualities.Select(r => r.FormattedDisplayName(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language)));
+                string strQualities = string.Join(",\n", objLifestyle.LifestyleQualities.Select(r => r.FormattedDisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)));
                 
                 foreach (Improvement objImprovement in CharacterObject.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.LifestyleCost && x.Enabled))
                 {
@@ -12014,8 +12014,8 @@ namespace Chummer
                         strQualities += ",\n";
 
                     strQualities += objImprovement.Value > 0
-                        ? objImprovement.ImproveSource + LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language) + "[+" + objImprovement.Value + "%]"
-                        : objImprovement.ImproveSource + LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language) + '[' + objImprovement.Value + "%]";
+                        ? objImprovement.ImproveSource + LanguageManager.GetString("String_Space", GlobalOptions.Language) + "[+" + objImprovement.Value + "%]"
+                        : objImprovement.ImproveSource + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '[' + objImprovement.Value + "%]";
                 }
 
                 if (objLifestyle.FreeGrids.Count > 0)
@@ -12023,17 +12023,17 @@ namespace Chummer
                     if (strQualities.Length > 0)
                         strQualities += ",\n";
 
-                    strQualities += string.Join(",\n", objLifestyle.FreeGrids.Select(r => r.DisplayName(GlobalOptions.Instance.Language)));
+                    strQualities += string.Join(",\n", objLifestyle.FreeGrids.Select(r => r.DisplayName(GlobalOptions.Language)));
                 }
                 
-                lblBaseLifestyle.Text = objLifestyle.DisplayNameShort(GlobalOptions.Instance.Language);
+                lblBaseLifestyle.Text = objLifestyle.DisplayNameShort(GlobalOptions.Language);
                 lblLifestyleQualities.Text = strQualities;
                 lblLifestyleQualitiesLabel.Visible = true;
                 lblLifestyleQualities.Visible = true;
             }
             else
             {
-                lblBaseLifestyle.Text = LanguageManager.GetString("String_Error", GlobalOptions.Instance.Language);
+                lblBaseLifestyle.Text = LanguageManager.GetString("String_Error", GlobalOptions.Language);
                 lblLifestyleQualitiesLabel.Visible = false;
                 lblLifestyleQualities.Visible = false;
             }
@@ -12066,7 +12066,7 @@ namespace Chummer
                 return;
             }
 
-            string strSpace = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
+            string strSpace = LanguageManager.GetString("String_Space", GlobalOptions.Language);
             if (treVehicles.SelectedNode?.Tag is IHasStolenProperty selectedLoot)
             {
                 chkVehicleStolen.Visible = true;
@@ -12099,19 +12099,19 @@ namespace Chummer
                 cmdDeleteVehicle.Enabled = string.IsNullOrEmpty(objVehicle.ParentID);
 
                 // gpbVehiclesCommon
-                lblVehicleName.Text = objVehicle.DisplayNameShort(GlobalOptions.Instance.Language);
-                lblVehicleCategory.Text = objVehicle.DisplayCategory(GlobalOptions.Instance.Language);
+                lblVehicleName.Text = objVehicle.DisplayNameShort(GlobalOptions.Language);
+                lblVehicleCategory.Text = objVehicle.DisplayCategory(GlobalOptions.Language);
                 lblVehicleRatingLabel.Visible = false;
                 nudVehicleRating.Visible = false;
                 lblVehicleGearQtyLabel.Visible = false;
                 nudVehicleGearQty.Visible = false;
-                lblVehicleAvail.Text = objVehicle.TotalAvail(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
-                lblVehicleCost.Text = objVehicle.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.Instance.CultureInfo) + '¥';
+                lblVehicleAvail.Text = objVehicle.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                lblVehicleCost.Text = objVehicle.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 lblVehicleSlotsLabel.Visible = !CharacterObjectOptions.BookEnabled("R5");
                 lblVehicleSlots.Visible = !CharacterObjectOptions.BookEnabled("R5");
                 if (!CharacterObjectOptions.BookEnabled("R5"))
                     lblVehicleSlots.Text = objVehicle.Slots + strSpace + '(' + (objVehicle.Slots - objVehicle.SlotsUsed) +
-                                           strSpace + LanguageManager.GetString("String_Remaining", GlobalOptions.Instance.Language) + ')';
+                                           strSpace + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
                 cmdVehicleCyberwareChangeMount.Visible = false;
                 chkVehicleWeaponAccessoryInstalled.Visible = false;
                 chkVehicleIncludedInWeapon.Visible = false;
@@ -12120,14 +12120,14 @@ namespace Chummer
                 lblVehicleHandling.Text = objVehicle.TotalHandling;
                 lblVehicleAccel.Text = objVehicle.TotalAccel;
                 lblVehicleSpeed.Text = objVehicle.TotalSpeed;
-                lblVehiclePilot.Text = objVehicle.Pilot.ToString(GlobalOptions.Instance.CultureInfo);
-                lblVehicleBody.Text = objVehicle.TotalBody.ToString(GlobalOptions.Instance.CultureInfo);
-                lblVehicleArmor.Text = objVehicle.TotalArmor.ToString(GlobalOptions.Instance.CultureInfo);
-                lblVehicleSeats.Text = objVehicle.TotalSeats.ToString(GlobalOptions.Instance.CultureInfo);
-                lblVehicleSensor.Text = objVehicle.CalculatedSensor.ToString(GlobalOptions.Instance.CultureInfo);
+                lblVehiclePilot.Text = objVehicle.Pilot.ToString(GlobalOptions.CultureInfo);
+                lblVehicleBody.Text = objVehicle.TotalBody.ToString(GlobalOptions.CultureInfo);
+                lblVehicleArmor.Text = objVehicle.TotalArmor.ToString(GlobalOptions.CultureInfo);
+                lblVehicleSeats.Text = objVehicle.TotalSeats.ToString(GlobalOptions.CultureInfo);
+                lblVehicleSensor.Text = objVehicle.CalculatedSensor.ToString(GlobalOptions.CultureInfo);
                 if (CharacterObjectOptions.BookEnabled("R5"))
                 {
-                    if (objVehicle.IsDrone && GlobalOptions.Instance.Dronemods)
+                    if (objVehicle.IsDrone && GlobalOptions.Dronemods)
                     {
                         lblVehiclePowertrainLabel.Visible = false;
                         lblVehiclePowertrain.Visible = false;
@@ -12189,7 +12189,7 @@ namespace Chummer
 
                 // gpbVehiclesMatrix
                 int intDeviceRating = objVehicle.GetTotalMatrixAttribute("Device Rating");
-                lblVehicleDevice.Text = intDeviceRating.ToString(GlobalOptions.Instance.CultureInfo);
+                lblVehicleDevice.Text = intDeviceRating.ToString(GlobalOptions.CultureInfo);
                 objVehicle.RefreshMatrixAttributeCBOs(cboVehicleAttack, cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall);
                 chkVehicleActiveCommlink.Visible = objVehicle.IsCommlink;
                 chkVehicleActiveCommlink.Checked = objVehicle.IsActiveCommlink(CharacterObject);
@@ -12215,14 +12215,14 @@ namespace Chummer
                 cmdDeleteVehicle.Enabled = !objWeaponMount.IncludedInVehicle;
 
                 // gpbVehiclesCommon
-                lblVehicleCategory.Text = objWeaponMount.DisplayCategory(GlobalOptions.Instance.Language);
-                lblVehicleName.Text = objWeaponMount.DisplayNameShort(GlobalOptions.Instance.Language);
+                lblVehicleCategory.Text = objWeaponMount.DisplayCategory(GlobalOptions.Language);
+                lblVehicleName.Text = objWeaponMount.DisplayNameShort(GlobalOptions.Language);
                 lblVehicleRatingLabel.Visible = false;
                 nudVehicleRating.Visible = false;
                 lblVehicleGearQtyLabel.Visible = false;
                 nudVehicleGearQty.Visible = false;
-                lblVehicleAvail.Text = objWeaponMount.TotalAvail(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
-                lblVehicleCost.Text = objWeaponMount.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.Instance.CultureInfo);
+                lblVehicleAvail.Text = objWeaponMount.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                lblVehicleCost.Text = objWeaponMount.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo);
                 lblVehicleSlotsLabel.Visible = true;
                 lblVehicleSlots.Visible = true;
                 lblVehicleSlots.Text = objWeaponMount.CalculatedSlots.ToString();
@@ -12244,8 +12244,8 @@ namespace Chummer
                 cmdDeleteVehicle.Enabled = !objMod.IncludedInVehicle;
 
                 // gpbVehiclesCommon
-                lblVehicleName.Text = objMod.DisplayNameShort(GlobalOptions.Instance.Language);
-                lblVehicleCategory.Text = LanguageManager.GetString("String_VehicleModification", GlobalOptions.Instance.Language);
+                lblVehicleName.Text = objMod.DisplayNameShort(GlobalOptions.Language);
+                lblVehicleCategory.Text = LanguageManager.GetString("String_VehicleModification", GlobalOptions.Language);
                 if (objMod.MaxRating != "qty")
                 {
                     if (objMod.MaxRating == "Seats")
@@ -12258,7 +12258,7 @@ namespace Chummer
                     }
                     if (Convert.ToInt32(objMod.MaxRating) > 0)
                     {
-                        lblVehicleRatingLabel.Text = LanguageManager.GetString("Label_Rating", GlobalOptions.Instance.Language);
+                        lblVehicleRatingLabel.Text = LanguageManager.GetString("Label_Rating", GlobalOptions.Language);
                         lblVehicleRatingLabel.Visible = true;
                         // If the Mod is Armor, use the lower of the Mod's maximum Rating and MaxArmor value for the Vehicle instead.
                         nudVehicleRating.Maximum = objMod.Name.StartsWith("Armor,") ? Math.Min(Convert.ToInt32(objMod.MaxRating), objMod.Parent.MaxArmor) : Convert.ToInt32(objMod.MaxRating);
@@ -12280,7 +12280,7 @@ namespace Chummer
                 }
                 else
                 {
-                    lblVehicleRatingLabel.Text = LanguageManager.GetString("Label_Qty", GlobalOptions.Instance.Language);
+                    lblVehicleRatingLabel.Text = LanguageManager.GetString("Label_Qty", GlobalOptions.Language);
                     lblVehicleRatingLabel.Visible = true;
                     nudVehicleRating.Visible = true;
                     nudVehicleRating.Minimum = 1;
@@ -12291,8 +12291,8 @@ namespace Chummer
                 }
                 nudVehicleGearQty.Visible = false;
                 lblVehicleGearQtyLabel.Visible = false;
-                lblVehicleAvail.Text = objMod.TotalAvail(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
-                lblVehicleCost.Text = objMod.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.Instance.CultureInfo) + '¥';
+                lblVehicleAvail.Text = objMod.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                lblVehicleCost.Text = objMod.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 lblVehicleSlotsLabel.Visible = true;
                 lblVehicleSlots.Visible = true;
                 lblVehicleSlots.Text = objMod.CalculatedSlots.ToString();
@@ -12313,24 +12313,24 @@ namespace Chummer
                 cmdDeleteVehicle.Enabled = !objWeapon.Cyberware && objWeapon.Category != "Gear" && !objWeapon.IncludedInWeapon && string.IsNullOrEmpty(objWeapon.ParentID) && !objWeapon.Category.StartsWith("Quality");
 
                 // gpbVehiclesCommon
-                lblVehicleName.Text = objWeapon.DisplayNameShort(GlobalOptions.Instance.Language);
-                lblVehicleCategory.Text = objWeapon.DisplayCategory(GlobalOptions.Instance.Language);
+                lblVehicleName.Text = objWeapon.DisplayNameShort(GlobalOptions.Language);
+                lblVehicleCategory.Text = objWeapon.DisplayCategory(GlobalOptions.Language);
                 lblVehicleRatingLabel.Visible = false;
                 nudVehicleRating.Visible = false;
                 lblVehicleGearQtyLabel.Visible = false;
                 nudVehicleGearQty.Visible = false;
-                lblVehicleAvail.Text = objWeapon.TotalAvail(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
-                lblVehicleCost.Text = objWeapon.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.Instance.CultureInfo) + '¥';
+                lblVehicleAvail.Text = objWeapon.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                lblVehicleCost.Text = objWeapon.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 lblVehicleSlotsLabel.Visible = true;
                 lblVehicleSlots.Visible = true;
                 if (!string.IsNullOrWhiteSpace(objWeapon.AccessoryMounts))
                 {
-                    if (GlobalOptions.Instance.Language != GlobalOptions.DefaultLanguage)
+                    if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                     {
                         StringBuilder strSlotsText = new StringBuilder();
                         foreach (string strMount in objWeapon.AccessoryMounts.Split('/'))
                         {
-                            strSlotsText.Append(LanguageManager.GetString("String_Mount" + strMount, GlobalOptions.Instance.Language));
+                            strSlotsText.Append(LanguageManager.GetString("String_Mount" + strMount, GlobalOptions.Language));
                             strSlotsText.Append('/');
                         }
                         strSlotsText.Length -= 1;
@@ -12340,7 +12340,7 @@ namespace Chummer
                         lblWeaponSlots.Text = objWeapon.AccessoryMounts;
                 }
                 else
-                    lblWeaponSlots.Text = LanguageManager.GetString("String_None", GlobalOptions.Instance.Language);
+                    lblWeaponSlots.Text = LanguageManager.GetString("String_None", GlobalOptions.Language);
                 cmdVehicleCyberwareChangeMount.Visible = false;
                 chkVehicleWeaponAccessoryInstalled.Visible = true;
                 chkVehicleWeaponAccessoryInstalled.Checked = objWeapon.Equipped;
@@ -12349,9 +12349,9 @@ namespace Chummer
                 chkVehicleIncludedInWeapon.Checked = objWeapon.IncludedInWeapon;
 
                 // gpbVehiclesWeapon
-                lblVehicleWeaponDamage.Text = objWeapon.CalculatedDamage(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
-                lblVehicleWeaponAP.Text = objWeapon.TotalAP(GlobalOptions.Instance.Language);
-                lblVehicleWeaponAccuracy.Text = objWeapon.DisplayAccuracy(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
+                lblVehicleWeaponDamage.Text = objWeapon.CalculatedDamage(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                lblVehicleWeaponAP.Text = objWeapon.TotalAP(GlobalOptions.Language);
+                lblVehicleWeaponAccuracy.Text = objWeapon.DisplayAccuracy(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 // Determine the Dice Pool size.
                 int intPilot = objWeapon.ParentVehicle.Pilot;
                 int intAutosoft = 0;
@@ -12373,15 +12373,15 @@ namespace Chummer
                 {
                     lblVehicleWeaponAmmoLabel.Visible = true;
                     lblVehicleWeaponAmmo.Visible = true;
-                    lblVehicleWeaponAmmo.Text = objWeapon.CalculatedAmmo(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
+                    lblVehicleWeaponAmmo.Text = objWeapon.CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.Language);
                     lblVehicleWeaponModeLabel.Visible = true;
                     lblVehicleWeaponMode.Visible = true;
-                    lblVehicleWeaponMode.Text = objWeapon.CalculatedMode(GlobalOptions.Instance.Language);
+                    lblVehicleWeaponMode.Text = objWeapon.CalculatedMode(GlobalOptions.Language);
 
                     tlpVehiclesWeaponRanges.Visible = true;
-                    lblVehicleWeaponRangeMain.Text = objWeapon.DisplayRange(GlobalOptions.Instance.Language);
-                    lblVehicleWeaponRangeAlternate.Text = objWeapon.DisplayAlternateRange(GlobalOptions.Instance.Language);
-                    IDictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalOptions.Instance.CultureInfo);
+                    lblVehicleWeaponRangeMain.Text = objWeapon.DisplayRange(GlobalOptions.Language);
+                    lblVehicleWeaponRangeAlternate.Text = objWeapon.DisplayAlternateRange(GlobalOptions.Language);
+                    IDictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
                     lblVehicleWeaponRangeShort.Text = dictionaryRanges["short"];
                     lblVehicleWeaponRangeMedium.Text = dictionaryRanges["medium"];
                     lblVehicleWeaponRangeLong.Text = dictionaryRanges["long"];
@@ -12397,7 +12397,7 @@ namespace Chummer
                     {
                         lblVehicleWeaponAmmoLabel.Visible = true;
                         lblVehicleWeaponAmmo.Visible = true;
-                        lblVehicleWeaponAmmo.Text = objWeapon.CalculatedAmmo(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
+                        lblVehicleWeaponAmmo.Text = objWeapon.CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.Language);
                     }
                     else
                     {
@@ -12412,7 +12412,7 @@ namespace Chummer
                 
                 // gpbVehiclesMatrix
                 int intDeviceRating = objWeapon.GetTotalMatrixAttribute("Device Rating");
-                lblVehicleDevice.Text = intDeviceRating.ToString(GlobalOptions.Instance.CultureInfo);
+                lblVehicleDevice.Text = intDeviceRating.ToString(GlobalOptions.CultureInfo);
                 objWeapon.RefreshMatrixAttributeCBOs(cboVehicleAttack, cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall);
                 chkVehicleActiveCommlink.Visible = objWeapon.IsCommlink;
                 chkVehicleActiveCommlink.Checked = objWeapon.IsActiveCommlink(CharacterObject);
@@ -12436,8 +12436,8 @@ namespace Chummer
                 cmdDeleteVehicle.Enabled = !objAccessory.IncludedInWeapon;
                 
                 // gpbVehiclesCommon
-                lblVehicleName.Text = objAccessory.DisplayNameShort(GlobalOptions.Instance.Language);
-                lblVehicleCategory.Text = LanguageManager.GetString("String_VehicleWeaponAccessory", GlobalOptions.Instance.Language);
+                lblVehicleName.Text = objAccessory.DisplayNameShort(GlobalOptions.Language);
+                lblVehicleCategory.Text = LanguageManager.GetString("String_VehicleWeaponAccessory", GlobalOptions.Language);
                 if (objAccessory.MaxRating > 0)
                 {
                     lblVehicleRatingLabel.Visible = true;
@@ -12456,14 +12456,14 @@ namespace Chummer
 
                 lblVehicleGearQtyLabel.Visible = false;
                 nudVehicleGearQty.Visible = false;
-                lblVehicleAvail.Text = objAccessory.TotalAvail(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
-                lblVehicleCost.Text = objAccessory.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.Instance.CultureInfo) + '¥';
+                lblVehicleAvail.Text = objAccessory.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                lblVehicleCost.Text = objAccessory.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 string[] strMounts = objAccessory.Mount.Split('/');
                 StringBuilder strMount = new StringBuilder();
                 foreach (string strCurrentMount in strMounts)
                 {
                     if (!string.IsNullOrEmpty(strCurrentMount))
-                        strMount.Append(LanguageManager.GetString("String_Mount" + strCurrentMount, GlobalOptions.Instance.Language) + '/');
+                        strMount.Append(LanguageManager.GetString("String_Mount" + strCurrentMount, GlobalOptions.Language) + '/');
                 }
                 // Remove the trailing /
                 if (strMount.Length > 0)
@@ -12481,7 +12481,7 @@ namespace Chummer
                                 strMount.Append(" + ");
                                 boolHaveAddedItem = true;
                             }
-                            strMount.Append(LanguageManager.GetString("String_Mount" + strCurrentExtraMount, GlobalOptions.Instance.Language) + '/');
+                            strMount.Append(LanguageManager.GetString("String_Mount" + strCurrentExtraMount, GlobalOptions.Language) + '/');
                         }
                     }
                     // Remove the trailing /
@@ -12509,8 +12509,8 @@ namespace Chummer
                 cmdDeleteVehicle.Enabled = string.IsNullOrEmpty(objCyberware.ParentID);
 
                 // gpbVehiclesCommon
-                lblVehicleName.Text = objCyberware.DisplayNameShort(GlobalOptions.Instance.Language);
-                lblVehicleCategory.Text = objCyberware.DisplayCategory(GlobalOptions.Instance.Language);
+                lblVehicleName.Text = objCyberware.DisplayNameShort(GlobalOptions.Language);
+                lblVehicleCategory.Text = objCyberware.DisplayCategory(GlobalOptions.Language);
                 if (objCyberware.MaxRating == 0)
                 {
                     nudVehicleRating.Maximum = 0;
@@ -12521,24 +12521,24 @@ namespace Chummer
                 }
                 else
                 {
-                    nudVehicleRating.Maximum = Convert.ToDecimal(objCyberware.MaxRating, GlobalOptions.Instance.CultureInfo);
-                    nudVehicleRating.Minimum = Convert.ToDecimal(objCyberware.MinRating, GlobalOptions.Instance.CultureInfo);
-                    nudVehicleRating.Value = Convert.ToDecimal(objCyberware.Rating, GlobalOptions.Instance.CultureInfo);
+                    nudVehicleRating.Maximum = Convert.ToDecimal(objCyberware.MaxRating, GlobalOptions.CultureInfo);
+                    nudVehicleRating.Minimum = Convert.ToDecimal(objCyberware.MinRating, GlobalOptions.CultureInfo);
+                    nudVehicleRating.Value = Convert.ToDecimal(objCyberware.Rating, GlobalOptions.CultureInfo);
                     nudVehicleRating.Visible = true;
                     lblVehicleRatingLabel.Visible = true;
-                    lblVehicleRatingLabel.Text = LanguageManager.GetString("Label_Rating", GlobalOptions.Instance.Language);
+                    lblVehicleRatingLabel.Text = LanguageManager.GetString("Label_Rating", GlobalOptions.Language);
                 }
                 lblVehicleGearQtyLabel.Visible = false;
                 nudVehicleGearQty.Visible = false;
-                lblVehicleAvail.Text = objCyberware.TotalAvail(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
-                lblVehicleCost.Text = objCyberware.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.Instance.CultureInfo) + '¥';
+                lblVehicleAvail.Text = objCyberware.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                lblVehicleCost.Text = objCyberware.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 cmdVehicleCyberwareChangeMount.Visible = !string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount);
                 chkVehicleWeaponAccessoryInstalled.Visible = false;
                 chkVehicleIncludedInWeapon.Visible = false;
 
                 // gpbVehiclesMatrix
                 int intDeviceRating = objCyberware.GetTotalMatrixAttribute("Device Rating");
-                lblVehicleDevice.Text = intDeviceRating.ToString(GlobalOptions.Instance.CultureInfo);
+                lblVehicleDevice.Text = intDeviceRating.ToString(GlobalOptions.CultureInfo);
                 objCyberware.RefreshMatrixAttributeCBOs(cboVehicleAttack, cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall);
                 
                 chkVehicleActiveCommlink.Visible = objCyberware.IsCommlink;
@@ -12563,12 +12563,12 @@ namespace Chummer
                 cmdDeleteVehicle.Enabled = !objGear.IncludedInParent;
 
                 // gpbVehiclesCommon
-                lblVehicleName.Text = objGear.DisplayNameShort(GlobalOptions.Instance.Language);
-                lblVehicleCategory.Text = objGear.DisplayCategory(GlobalOptions.Instance.Language);
+                lblVehicleName.Text = objGear.DisplayNameShort(GlobalOptions.Language);
+                lblVehicleCategory.Text = objGear.DisplayCategory(GlobalOptions.Language);
                 int intGearMaxRatingValue = objGear.MaxRatingValue;
                 if (intGearMaxRatingValue > 0 && intGearMaxRatingValue != int.MaxValue)
                 {
-                    lblVehicleRatingLabel.Text = LanguageManager.GetString("Label_Rating", GlobalOptions.Instance.Language);
+                    lblVehicleRatingLabel.Text = LanguageManager.GetString("Label_Rating", GlobalOptions.Language);
                     lblVehicleRatingLabel.Visible = true;
                     nudVehicleRating.Visible = true;
                     nudVehicleRating.Enabled = true;
@@ -12614,19 +12614,19 @@ namespace Chummer
                 nudVehicleGearQty.Increment = objGear.CostFor;
                 nudVehicleGearQty.Visible = true;
                 lblVehicleGearQtyLabel.Visible = true;
-                lblVehicleAvail.Text = objGear.TotalAvail(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
-                lblVehicleCost.Text = objGear.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.Instance.CultureInfo) + '¥';
+                lblVehicleAvail.Text = objGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                lblVehicleCost.Text = objGear.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 lblVehicleSlotsLabel.Visible = true;
                 lblVehicleSlots.Visible = true;
-                lblVehicleSlots.Text = objGear.CalculatedCapacity + strSpace + '(' + objGear.CapacityRemaining.ToString("#,0.##", GlobalOptions.Instance.CultureInfo) +
-                                       strSpace + LanguageManager.GetString("String_Remaining", GlobalOptions.Instance.Language) + ')';
+                lblVehicleSlots.Text = objGear.CalculatedCapacity + strSpace + '(' + objGear.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) +
+                                       strSpace + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
                 cmdVehicleCyberwareChangeMount.Visible = false;
                 chkVehicleWeaponAccessoryInstalled.Visible = false;
                 chkVehicleIncludedInWeapon.Visible = false;
 
                 // gpbVehiclesMatrix
                 int intDeviceRating = objGear.GetTotalMatrixAttribute("Device Rating");
-                lblVehicleDevice.Text = intDeviceRating.ToString(GlobalOptions.Instance.CultureInfo);
+                lblVehicleDevice.Text = intDeviceRating.ToString(GlobalOptions.CultureInfo);
                 objGear.RefreshMatrixAttributeCBOs(cboVehicleAttack, cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall);
 
                 chkVehicleActiveCommlink.Visible = objGear.IsCommlink;
@@ -12669,13 +12669,13 @@ namespace Chummer
                 btnDeleteCustomDrug.Enabled = true;
 
                 lblDrugName.Text = objDrug.Name;
-                lblDrugAvail.Text = objDrug.TotalAvail(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
+                lblDrugAvail.Text = objDrug.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 lblDrugGrade.Text = objDrug.Grade;
                 lblDrugCost.Text = objDrug.Cost.ToString(CharacterObject.Options.NuyenFormat) + '¥';
                 nudDrugQty.Value = objDrug.Quantity;
                 lblDrugCategory.Text = objDrug.Category;
-                lblDrugAddictionRating.Text = objDrug.AddictionRating.ToString(GlobalOptions.Instance.CultureInfo);
-                lblDrugAddictionThreshold.Text = objDrug.AddictionThreshold.ToString(GlobalOptions.Instance.CultureInfo);
+                lblDrugAddictionRating.Text = objDrug.AddictionRating.ToString(GlobalOptions.CultureInfo);
+                lblDrugAddictionThreshold.Text = objDrug.AddictionThreshold.ToString(GlobalOptions.CultureInfo);
                 lblDrugEffect.Text = objDrug.EffectDescription;
                 lblDrugComponents.Text = string.Empty;
                 foreach (DrugComponent objComponent in objDrug.Components)
@@ -12708,15 +12708,15 @@ namespace Chummer
                 gpbMagicianSpell.Visible = true;
                 cmdDeleteSpell.Enabled = objSpell.Grade == 0;
 
-                lblSpellDescriptors.Text = objSpell.DisplayDescriptors(GlobalOptions.Instance.Language);
+                lblSpellDescriptors.Text = objSpell.DisplayDescriptors(GlobalOptions.Language);
                 if (string.IsNullOrEmpty(lblSpellDescriptors.Text))
-                    lblSpellDescriptors.Text = LanguageManager.GetString("String_None", GlobalOptions.Instance.Language);
-                lblSpellCategory.Text = objSpell.DisplayCategory(GlobalOptions.Instance.Language);
-                lblSpellType.Text = objSpell.DisplayType(GlobalOptions.Instance.Language);
-                lblSpellRange.Text = objSpell.DisplayRange(GlobalOptions.Instance.Language);
-                lblSpellDamage.Text = objSpell.DisplayDamage(GlobalOptions.Instance.Language);
-                lblSpellDuration.Text = objSpell.DisplayDuration(GlobalOptions.Instance.Language);
-                lblSpellDV.Text = objSpell.DisplayDV(GlobalOptions.Instance.Language);
+                    lblSpellDescriptors.Text = LanguageManager.GetString("String_None", GlobalOptions.Language);
+                lblSpellCategory.Text = objSpell.DisplayCategory(GlobalOptions.Language);
+                lblSpellType.Text = objSpell.DisplayType(GlobalOptions.Language);
+                lblSpellRange.Text = objSpell.DisplayRange(GlobalOptions.Language);
+                lblSpellDamage.Text = objSpell.DisplayDamage(GlobalOptions.Language);
+                lblSpellDuration.Text = objSpell.DisplayDuration(GlobalOptions.Language);
+                lblSpellDV.Text = objSpell.DisplayDV(GlobalOptions.Language);
 
                 objSpell.SetSourceDetail(lblSpellSource);
 
@@ -12730,7 +12730,7 @@ namespace Chummer
                 // Update the Drain CharacterAttribute Value.
                 if (CharacterObject.MAGEnabled && !string.IsNullOrEmpty(lblDrainAttributes.Text))
                 {
-                    string strSpace = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
+                    string strSpace = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                     string strDrain = lblDrainAttributes.Text;
 
                     foreach (string strAttribute in AttributeSection.AttributeStrings)
@@ -12748,14 +12748,14 @@ namespace Chummer
                     foreach (string strAttribute in AttributeSection.AttributeStrings)
                     {
                         CharacterAttrib objAttrib = CharacterObject.GetAttribute(strAttribute);
-                        strTip = strTip.CheapReplace(objAttrib.DisplayAbbrev, () => objAttrib.DisplayAbbrev + strSpace + '(' + objAttrib.TotalValue.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                        strTip = strTip.CheapReplace(objAttrib.DisplayAbbrev, () => objAttrib.DisplayAbbrev + strSpace + '(' + objAttrib.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
                     }
 
                     foreach (Improvement objImprovement in CharacterObject.Improvements)
                     {
                         if (objImprovement.ImproveType == Improvement.ImprovementType.DrainResistance && objImprovement.Enabled)
                         {
-                            strTip += strSpace + '+' + strSpace + CharacterObject.GetObjectName(objImprovement, GlobalOptions.Instance.Language) + strSpace + '(' + objImprovement.Value.ToString(GlobalOptions.Instance.CultureInfo) + ')';
+                            strTip += strSpace + '+' + strSpace + CharacterObject.GetObjectName(objImprovement, GlobalOptions.Language) + strSpace + '(' + objImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')';
                         }
                     }
                     //if (objSpell.Limited)
@@ -12763,7 +12763,7 @@ namespace Chummer
                     //    intDrain += 2;
                     //    strTip += " + " + LanguageManager.GetString("String_SpellLimited") + " (2)";
                     //}
-                    lblDrainAttributesValue.Text = intDrain.ToString(GlobalOptions.Instance.CultureInfo);
+                    lblDrainAttributesValue.Text = intDrain.ToString(GlobalOptions.CultureInfo);
                     lblDrainAttributesValue.SetToolTip(strTip);
                 }
             }
@@ -12790,13 +12790,13 @@ namespace Chummer
             {
                 gpbTechnomancerComplexForm.Visible = true;
                 cmdDeleteComplexForm.Enabled = objComplexForm.Grade == 0;
-                lblDuration.Text = objComplexForm.DisplayDuration(GlobalOptions.Instance.Language);
-                lblTarget.Text = objComplexForm.DisplayTarget(GlobalOptions.Instance.Language);
-                lblFV.Text = objComplexForm.DisplayFV(GlobalOptions.Instance.Language);
+                lblDuration.Text = objComplexForm.DisplayDuration(GlobalOptions.Language);
+                lblTarget.Text = objComplexForm.DisplayTarget(GlobalOptions.Language);
+                lblFV.Text = objComplexForm.DisplayFV(GlobalOptions.Language);
                 lblFV.SetToolTip(objComplexForm.FVTooltip);
 
                 // Determine the size of the Threading Dice Pool.
-                lblComplexFormDicePool.Text = objComplexForm.DicePool.ToString(GlobalOptions.Instance.CultureInfo);
+                lblComplexFormDicePool.Text = objComplexForm.DicePool.ToString(GlobalOptions.CultureInfo);
                 lblComplexFormDicePool.SetToolTip(objComplexForm.DicePoolTooltip);
 
                 objComplexForm.SetSourceDetail(lblComplexFormSource);
@@ -12848,7 +12848,7 @@ namespace Chummer
                 if (CharacterObject.BannedWareGrades.Any(s => objWareGrade.Name.Contains(s)) && !CharacterObject.IgnoreRules)
                     continue;
 
-                lstCyberwareGrades.Add(new ListItem(objWareGrade.Name, objWareGrade.DisplayName(GlobalOptions.Instance.Language)));
+                lstCyberwareGrades.Add(new ListItem(objWareGrade.Name, objWareGrade.DisplayName(GlobalOptions.Language)));
             }
             cboCyberwareGrade.BeginUpdate();
             //cboCyberwareGrade.DataSource = null;
@@ -12868,7 +12868,7 @@ namespace Chummer
                 return true;
             Cursor = Cursors.WaitCursor;
             bool blnValid = true;
-            string strMessage = LanguageManager.GetString("Message_InvalidBeginning", GlobalOptions.Instance.Language);
+            string strMessage = LanguageManager.GetString("Message_InvalidBeginning", GlobalOptions.Language);
 
             // Number of items over the specified Availability the character is allowed to have (typically from the Restricted Gear Quality).
             int intRestrictedAllowed = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.RestrictedItemCount);
@@ -12883,9 +12883,9 @@ namespace Chummer
             {
                 blnValid = false;
                 strMessage += Environment.NewLine + '\t' +
-                              string.Format(LanguageManager.GetString("Message_InvalidPointExcess", GlobalOptions.Instance.Language)
-                                  , ((1 - intMartialArts) * -1).ToString(GlobalOptions.Instance.CultureInfo) + LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language) +
-                                      LanguageManager.GetString("String_MartialArtsCount", GlobalOptions.Instance.Language));
+                              string.Format(LanguageManager.GetString("Message_InvalidPointExcess", GlobalOptions.Language)
+                                  , ((1 - intMartialArts) * -1).ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space", GlobalOptions.Language) +
+                                      LanguageManager.GetString("String_MartialArtsCount", GlobalOptions.Language));
             }
 
             // Check if the character has more than 5 Techniques in a Martial Art
@@ -12898,9 +12898,9 @@ namespace Chummer
                 {
                     blnValid = false;
                     strMessage += Environment.NewLine + '\t' +
-                                  string.Format(LanguageManager.GetString("Message_InvalidPointExcess", GlobalOptions.Instance.Language)
-                                      , ((5 - intTechniques) * -1).ToString(GlobalOptions.Instance.CultureInfo) + LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language) +
-                                          LanguageManager.GetString("String_TechniquesCount", GlobalOptions.Instance.Language));
+                                  string.Format(LanguageManager.GetString("Message_InvalidPointExcess", GlobalOptions.Language)
+                                      , ((5 - intTechniques) * -1).ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space", GlobalOptions.Language) +
+                                          LanguageManager.GetString("String_TechniquesCount", GlobalOptions.Language));
                 }
             }
 
@@ -12943,7 +12943,7 @@ namespace Chummer
             intContactPointsUsed += Math.Max(0, intHighPlaces - (CharacterObject.CHA.TotalValue * 4));
 
             if (intContactPointsUsed > _objCharacter.ContactPoints)
-                strMessage += Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_InvalidPointExcess"), ((_objCharacter.ContactPoints - intContactPointsUsed) * -1).ToString(GlobalOptions.Instance.CultureInfo) + LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language) + LanguageManager.GetString("String_Contacts"));
+                strMessage += Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_InvalidPointExcess"), ((_objCharacter.ContactPoints - intContactPointsUsed) * -1).ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + LanguageManager.GetString("String_Contacts"));
             */
 
             // Calculate the BP used by Enemies. These are added to the BP since they are technically
@@ -12981,8 +12981,8 @@ namespace Chummer
             if (intPositivePointsUsed > CharacterObject.GameplayOptionQualityLimit && !CharacterObjectOptions.ExceedPositiveQualities)
             {
                 strMessage += Environment.NewLine + '\t' +
-                              string.Format(LanguageManager.GetString("Message_PositiveQualityLimit", GlobalOptions.Instance.Language)
-                                  , (CharacterObject.GameplayOptionQualityLimit).ToString(GlobalOptions.Instance.CultureInfo));
+                              string.Format(LanguageManager.GetString("Message_PositiveQualityLimit", GlobalOptions.Language)
+                                  , (CharacterObject.GameplayOptionQualityLimit).ToString(GlobalOptions.CultureInfo));
                 blnValid = false;
             }
             int totalNeg = CharacterObjectOptions.EnemyKarmaQualityLimit
@@ -12992,15 +12992,15 @@ namespace Chummer
             if (totalNeg < (CharacterObject.GameplayOptionQualityLimit * -1) && !CharacterObjectOptions.ExceedNegativeQualities)
             {
                 strMessage += Environment.NewLine + '\t' +
-                              string.Format(LanguageManager.GetString("Message_NegativeQualityLimit", GlobalOptions.Instance.Language)
-                                  , (CharacterObject.GameplayOptionQualityLimit).ToString(GlobalOptions.Instance.CultureInfo));
+                              string.Format(LanguageManager.GetString("Message_NegativeQualityLimit", GlobalOptions.Language)
+                                  , (CharacterObject.GameplayOptionQualityLimit).ToString(GlobalOptions.CultureInfo));
                 blnValid = false;
             }
 
             if (CharacterObject.Contacts.Any(x => (!CharacterObject.FriendsInHighPlaces || x.Connection < 8) && (!CharacterObject.FriendsInHighPlaces && (Math.Max(0, x.Connection) + Math.Max(0, x.Loyalty)) > 7) && !x.Free))
             {
                 blnValid = false;
-                strMessage += Environment.NewLine + '\t' + LanguageManager.GetString("Message_HighContact", GlobalOptions.Instance.Language);
+                strMessage += Environment.NewLine + '\t' + LanguageManager.GetString("Message_HighContact", GlobalOptions.Language);
             }
 
             // Check if the character has gone over the Build Point total.
@@ -13009,8 +13009,8 @@ namespace Chummer
             if (intBuildPoints < 0 && !_blnFreestyle)
             {
                 blnValid = false;
-                strMessage += Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_InvalidPointExcess", GlobalOptions.Instance.Language)
-                                  , (intBuildPoints * -1).ToString(GlobalOptions.Instance.CultureInfo) + LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language) + LanguageManager.GetString("String_Karma", GlobalOptions.Instance.Language));
+                strMessage += Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_InvalidPointExcess", GlobalOptions.Language)
+                                  , (intBuildPoints * -1).ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + LanguageManager.GetString("String_Karma", GlobalOptions.Language));
             }
 
             // if character has more than permitted Metagenetic qualities
@@ -13032,27 +13032,27 @@ namespace Chummer
                 if (metageneticNegativeQualities > CharacterObject.MetageneticLimit)
                 {
                     strMessage += Environment.NewLine + '\t' +
-                                  string.Format(LanguageManager.GetString("Message_OverNegativeMetagenicQualities", GlobalOptions.Instance.Language)
-                                      , metageneticNegativeQualities.ToString(GlobalOptions.Instance.CultureInfo)
-                                      , CharacterObject.MetageneticLimit.ToString(GlobalOptions.Instance.CultureInfo));
+                                  string.Format(LanguageManager.GetString("Message_OverNegativeMetagenicQualities", GlobalOptions.Language)
+                                      , metageneticNegativeQualities.ToString(GlobalOptions.CultureInfo)
+                                      , CharacterObject.MetageneticLimit.ToString(GlobalOptions.CultureInfo));
                     blnValid = false;
                 }
                 if (metageneticPositiveQualities > CharacterObject.MetageneticLimit)
                 {
                     strMessage += Environment.NewLine + '\t' +
-                                  string.Format(LanguageManager.GetString("Message_OverPositiveMetagenicQualities", GlobalOptions.Instance.Language)
-                                      , metageneticPositiveQualities.ToString(GlobalOptions.Instance.CultureInfo)
-                                      , CharacterObject.MetageneticLimit.ToString(GlobalOptions.Instance.CultureInfo));
+                                  string.Format(LanguageManager.GetString("Message_OverPositiveMetagenicQualities", GlobalOptions.Language)
+                                      , metageneticPositiveQualities.ToString(GlobalOptions.CultureInfo)
+                                      , CharacterObject.MetageneticLimit.ToString(GlobalOptions.CultureInfo));
                     blnValid = false;
                 }
 
                 if (metageneticNegativeQualities != metageneticPositiveQualities && metageneticNegativeQualities != (metageneticPositiveQualities - 1))
                 {
                     strMessage += Environment.NewLine + '\t' +
-                                  string.Format(LanguageManager.GetString("Message_MetagenicQualitiesUnbalanced", GlobalOptions.Instance.Language)
-                                      , metageneticNegativeQualities.ToString(GlobalOptions.Instance.CultureInfo)
-                                      , (metageneticPositiveQualities - 1).ToString(GlobalOptions.Instance.CultureInfo)
-                                      , metageneticPositiveQualities.ToString(GlobalOptions.Instance.CultureInfo));
+                                  string.Format(LanguageManager.GetString("Message_MetagenicQualitiesUnbalanced", GlobalOptions.Language)
+                                      , metageneticNegativeQualities.ToString(GlobalOptions.CultureInfo)
+                                      , (metageneticPositiveQualities - 1).ToString(GlobalOptions.CultureInfo)
+                                      , metageneticPositiveQualities.ToString(GlobalOptions.CultureInfo));
                     blnValid = false;
                 }
                 //Subtract 1 karma to balance Metagenic Qualities
@@ -13060,8 +13060,8 @@ namespace Chummer
                 {
                     if (CharacterObject.Karma > 0)
                     {
-                        if (MessageBox.Show(string.Format(LanguageManager.GetString("Message_MetagenicQualitiesSubtractingKarma", GlobalOptions.Instance.Language), intBuildPoints.ToString(GlobalOptions.Instance.CultureInfo)),
-                                LanguageManager.GetString("MessageTitle_ExtraKarma", GlobalOptions.Instance.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+                        if (MessageBox.Show(string.Format(LanguageManager.GetString("Message_MetagenicQualitiesSubtractingKarma", GlobalOptions.Language), intBuildPoints.ToString(GlobalOptions.CultureInfo)),
+                                LanguageManager.GetString("MessageTitle_ExtraKarma", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
                         {
                             CharacterObject.Karma -= 1;
                         }
@@ -13072,7 +13072,7 @@ namespace Chummer
                     }
                     else
                     {
-                        strMessage += Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_MetagenicQualitiesInsufficientKarma", GlobalOptions.Instance.Language), intBuildPoints.ToString(GlobalOptions.Instance.CultureInfo));
+                        strMessage += Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_MetagenicQualitiesInsufficientKarma", GlobalOptions.Language), intBuildPoints.ToString(GlobalOptions.CultureInfo));
                         blnValid = false;
                     }
                 }
@@ -13084,7 +13084,7 @@ namespace Chummer
             {
                 //TODO: ATTACH TO ATTRIBUTE SECTION
                 blnValid = false;
-                strMessage += Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_InvalidAttributeExcess", GlobalOptions.Instance.Language), (i * -1).ToString(GlobalOptions.Instance.CultureInfo));
+                strMessage += Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_InvalidAttributeExcess", GlobalOptions.Language), (i * -1).ToString(GlobalOptions.CultureInfo));
             }
 
             i = CharacterObject.TotalSpecial - CalculateAttributePriorityPoints(CharacterObject.AttributeSection.SpecialAttributeList);
@@ -13093,28 +13093,28 @@ namespace Chummer
             {
                 //TODO: ATTACH TO ATTRIBUTE SECTION
                 blnValid = false;
-                strMessage += Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_InvalidSpecialExcess", GlobalOptions.Instance.Language), (i * -1).ToString(GlobalOptions.Instance.CultureInfo));
+                strMessage += Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_InvalidSpecialExcess", GlobalOptions.Language), (i * -1).ToString(GlobalOptions.CultureInfo));
             }
 
             // Check if the character has gone over on Skill Groups
             if (CharacterObject.SkillsSection.SkillGroupPoints < 0)
             {
                 blnValid = false;
-                strMessage += Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_InvalidSkillGroupExcess", GlobalOptions.Instance.Language), ((CharacterObject.SkillsSection.SkillGroupPoints) * -1).ToString(GlobalOptions.Instance.CultureInfo));
+                strMessage += Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_InvalidSkillGroupExcess", GlobalOptions.Language), ((CharacterObject.SkillsSection.SkillGroupPoints) * -1).ToString(GlobalOptions.CultureInfo));
             }
 
             // Check if the character has gone over on Active Skills
             if (CharacterObject.SkillsSection.SkillPoints < 0)
             {
                 blnValid = false;
-                strMessage += Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_InvalidActiveSkillExcess", GlobalOptions.Instance.Language), ((CharacterObject.SkillsSection.SkillPoints) * -1).ToString(GlobalOptions.Instance.CultureInfo));
+                strMessage += Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_InvalidActiveSkillExcess", GlobalOptions.Language), ((CharacterObject.SkillsSection.SkillPoints) * -1).ToString(GlobalOptions.CultureInfo));
             }
 
             // Check if the character has gone over on Knowledge Skills
             if (CharacterObject.SkillsSection.KnowledgeSkillPointsRemain < 0)
             {
                 blnValid = false;
-                strMessage += Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_InvalidKnowledgeSkillExcess", GlobalOptions.Instance.Language), ((CharacterObject.SkillsSection.KnowledgeSkillPointsRemain) * -1).ToString(GlobalOptions.Instance.CultureInfo));
+                strMessage += Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_InvalidKnowledgeSkillExcess", GlobalOptions.Language), ((CharacterObject.SkillsSection.KnowledgeSkillPointsRemain) * -1).ToString(GlobalOptions.CultureInfo));
             }
 
             // Check if the character has gone over the Nuyen limit.
@@ -13122,15 +13122,15 @@ namespace Chummer
             if (decNuyen < 0)
             {
                 blnValid = false;
-                strMessage += Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_InvalidNuyenExcess", GlobalOptions.Instance.Language), (decNuyen * -1).ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.Instance.CultureInfo) + '¥');
+                strMessage += Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_InvalidNuyenExcess", GlobalOptions.Language), (decNuyen * -1).ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥');
             }
             if (CharacterObject.StolenNuyen < 0)
             {
                 blnValid = false;
                 strMessage += Environment.NewLine + '\t' + string.Format(
-                                  LanguageManager.GetString("Message_InvalidStolenNuyenExcess", GlobalOptions.Instance.Language),
+                                  LanguageManager.GetString("Message_InvalidStolenNuyenExcess", GlobalOptions.Language),
                                   (CharacterObject.StolenNuyen * -1).ToString(CharacterObjectOptions.NuyenFormat,
-                                      GlobalOptions.Instance.CultureInfo) + '¥');
+                                      GlobalOptions.CultureInfo) + '¥');
             }
 
             // Check if the character's Essence is above 0.
@@ -13139,21 +13139,21 @@ namespace Chummer
             if (dblEss < dblMinEss && CharacterObject.ESS.MetatypeMaximum > 0)
             {
                 blnValid = false;
-                strMessage += Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_InvalidEssenceExcess", GlobalOptions.Instance.Language), (dblMinEss - dblEss).ToString(GlobalOptions.Instance.CultureInfo));
+                strMessage += Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_InvalidEssenceExcess", GlobalOptions.Language), (dblMinEss - dblEss).ToString(GlobalOptions.CultureInfo));
             }
 
             // If the character has the Spells & Spirits Tab enabled, make sure a Tradition has been selected.
             if ((CharacterObject.MagicianEnabled || CharacterObject.AdeptEnabled) && CharacterObject.MagicTradition.Type != TraditionType.MAG)
             {
                 blnValid = false;
-                strMessage += Environment.NewLine + '\t' + LanguageManager.GetString("Message_InvalidNoTradition", GlobalOptions.Instance.Language);
+                strMessage += Environment.NewLine + '\t' + LanguageManager.GetString("Message_InvalidNoTradition", GlobalOptions.Language);
             }
 
             // If the character has the Technomencer Tab enabled, make sure a Stream has been selected.
             if (CharacterObject.TechnomancerEnabled && CharacterObject.MagicTradition.Type != TraditionType.RES)
             {
                 blnValid = false;
-                strMessage += Environment.NewLine + '\t' + LanguageManager.GetString("Message_InvalidNoStream", GlobalOptions.Instance.Language);
+                strMessage += Environment.NewLine + '\t' + LanguageManager.GetString("Message_InvalidNoStream", GlobalOptions.Language);
             }
 
             // Check if the character has more than the permitted amount of native languages.
@@ -13164,7 +13164,7 @@ namespace Chummer
             if (intLanguages > intLanguageLimit)
             {
                 blnValid = false;
-                strMessage += Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_OverLanguageLimit", GlobalOptions.Instance.Language), intLanguages.ToString(GlobalOptions.Instance.CultureInfo), intLanguageLimit.ToString(GlobalOptions.Instance.CultureInfo));
+                strMessage += Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_OverLanguageLimit", GlobalOptions.Language), intLanguages.ToString(GlobalOptions.CultureInfo), intLanguageLimit.ToString(GlobalOptions.CultureInfo));
             }
 
 
@@ -13183,7 +13183,7 @@ namespace Chummer
                 if (string.IsNullOrEmpty(objCyberware.ParentID))
                 {
                     if (CharacterObject.BannedWareGrades.Any(s => objCyberware.Grade.Name.Contains(s)))
-                        strCyberwareGrade += Environment.NewLine + "\t\t" + objCyberware.DisplayNameShort(GlobalOptions.Instance.Language);
+                        strCyberwareGrade += Environment.NewLine + "\t\t" + objCyberware.DisplayNameShort(GlobalOptions.Language);
 
                     AvailabilityValue objTotalAvail = objCyberware.TotalAvailTuple();
                     if (!objTotalAvail.AddToParent)
@@ -13194,12 +13194,12 @@ namespace Chummer
                             if (intAvailInt <= CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
                             {
                                 blnRestrictedGearUsed = true;
-                                strRestrictedItem = objCyberware.DisplayName(GlobalOptions.Instance.Language);
+                                strRestrictedItem = objCyberware.DisplayName(GlobalOptions.Language);
                             }
                             else
                             {
                                 intRestrictedCount++;
-                                strAvailItems += Environment.NewLine + "\t\t" + objCyberware.DisplayNameShort(GlobalOptions.Instance.Language);
+                                strAvailItems += Environment.NewLine + "\t\t" + objCyberware.DisplayNameShort(GlobalOptions.Language);
                             }
                         }
                     }
@@ -13219,7 +13219,7 @@ namespace Chummer
                 if (decPrototypeTranshumanEssenceMax < decPrototypeTranshumanEssenceUsed)
                 {
                     blnValid = false;
-                    strMessage += Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_OverPrototypeLimit", GlobalOptions.Instance.Language), decPrototypeTranshumanEssenceUsed.ToString(CharacterObjectOptions.EssenceFormat, GlobalOptions.Instance.CultureInfo), decPrototypeTranshumanEssenceMax.ToString(CharacterObjectOptions.EssenceFormat, GlobalOptions.Instance.CultureInfo));
+                    strMessage += Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_OverPrototypeLimit", GlobalOptions.Language), decPrototypeTranshumanEssenceUsed.ToString(CharacterObjectOptions.EssenceFormat, GlobalOptions.CultureInfo), decPrototypeTranshumanEssenceMax.ToString(CharacterObjectOptions.EssenceFormat, GlobalOptions.CultureInfo));
                 }
             }
 
@@ -13232,12 +13232,12 @@ namespace Chummer
                     if (intAvailInt <= CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
                     {
                         blnRestrictedGearUsed = true;
-                        strRestrictedItem = objArmor.DisplayName(GlobalOptions.Instance.Language);
+                        strRestrictedItem = objArmor.DisplayName(GlobalOptions.Language);
                     }
                     else
                     {
                         intRestrictedCount++;
-                        strAvailItems += Environment.NewLine + "\t\t" + objArmor.DisplayNameShort(GlobalOptions.Instance.Language);
+                        strAvailItems += Environment.NewLine + "\t\t" + objArmor.DisplayNameShort(GlobalOptions.Language);
                     }
                 }
 
@@ -13254,12 +13254,12 @@ namespace Chummer
                                 if (intModAvailInt <= CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
                                 {
                                     blnRestrictedGearUsed = true;
-                                    strRestrictedItem = objMod.DisplayName(GlobalOptions.Instance.Language);
+                                    strRestrictedItem = objMod.DisplayName(GlobalOptions.Language);
                                 }
                                 else
                                 {
                                     intRestrictedCount++;
-                                    strAvailItems += Environment.NewLine + "\t\t" + objMod.DisplayNameShort(GlobalOptions.Instance.Language);
+                                    strAvailItems += Environment.NewLine + "\t\t" + objMod.DisplayNameShort(GlobalOptions.Language);
                                 }
                             }
                         }
@@ -13291,12 +13291,12 @@ namespace Chummer
                             if (intAvailInt <= CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
                             {
                                 blnRestrictedGearUsed = true;
-                                strRestrictedItem = objWeapon.DisplayName(GlobalOptions.Instance.Language);
+                                strRestrictedItem = objWeapon.DisplayName(GlobalOptions.Language);
                             }
                             else
                             {
                                 intRestrictedCount++;
-                                strAvailItems += Environment.NewLine + "\t\t" + objWeapon.DisplayNameShort(GlobalOptions.Instance.Language);
+                                strAvailItems += Environment.NewLine + "\t\t" + objWeapon.DisplayNameShort(GlobalOptions.Language);
                             }
                         }
                     }
@@ -13315,12 +13315,12 @@ namespace Chummer
                                 if (intAccessoryAvailInt <= CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
                                 {
                                     blnRestrictedGearUsed = true;
-                                    strRestrictedItem = objAccessory.DisplayName(GlobalOptions.Instance.Language);
+                                    strRestrictedItem = objAccessory.DisplayName(GlobalOptions.Language);
                                 }
                                 else
                                 {
                                     intRestrictedCount++;
-                                    strAvailItems += Environment.NewLine + "\t\t" + objAccessory.DisplayNameShort(GlobalOptions.Instance.Language);
+                                    strAvailItems += Environment.NewLine + "\t\t" + objAccessory.DisplayNameShort(GlobalOptions.Language);
                                 }
                             }
                         }
@@ -13344,12 +13344,12 @@ namespace Chummer
                         if (intAvailInt <= CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
                         {
                             blnRestrictedGearUsed = true;
-                            strRestrictedItem = objVehicle.DisplayName(GlobalOptions.Instance.Language);
+                            strRestrictedItem = objVehicle.DisplayName(GlobalOptions.Language);
                         }
                         else
                         {
                             intRestrictedCount++;
-                            strAvailItems += Environment.NewLine + "\t\t" + objVehicle.DisplayNameShort(GlobalOptions.Instance.Language);
+                            strAvailItems += Environment.NewLine + "\t\t" + objVehicle.DisplayNameShort(GlobalOptions.Language);
                         }
                     }
                 }
@@ -13367,12 +13367,12 @@ namespace Chummer
                                 if (intModAvailInt <= CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
                                 {
                                     blnRestrictedGearUsed = true;
-                                    strRestrictedItem = objVehicleMod.DisplayName(GlobalOptions.Instance.Language);
+                                    strRestrictedItem = objVehicleMod.DisplayName(GlobalOptions.Language);
                                 }
                                 else
                                 {
                                     intRestrictedCount++;
-                                    strAvailItems += Environment.NewLine + "\t\t" + objVehicleMod.DisplayNameShort(GlobalOptions.Instance.Language);
+                                    strAvailItems += Environment.NewLine + "\t\t" + objVehicleMod.DisplayNameShort(GlobalOptions.Language);
                                 }
                             }
                         }
@@ -13383,7 +13383,7 @@ namespace Chummer
                         if (string.IsNullOrEmpty(objCyberware.ParentID))
                         {
                             if (CharacterObject.BannedWareGrades.Any(s => objCyberware.Grade.Name.Contains(s)))
-                                strCyberwareGrade += Environment.NewLine + "\t\t" + objCyberware.DisplayNameShort(GlobalOptions.Instance.Language);
+                                strCyberwareGrade += Environment.NewLine + "\t\t" + objCyberware.DisplayNameShort(GlobalOptions.Language);
 
                             AvailabilityValue objTotalAvail = objCyberware.TotalAvailTuple();
                             if (!objTotalAvail.AddToParent)
@@ -13394,12 +13394,12 @@ namespace Chummer
                                     if (intAvailInt <= CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
                                     {
                                         blnRestrictedGearUsed = true;
-                                        strRestrictedItem = objCyberware.DisplayName(GlobalOptions.Instance.Language);
+                                        strRestrictedItem = objCyberware.DisplayName(GlobalOptions.Language);
                                     }
                                     else
                                     {
                                         intRestrictedCount++;
-                                        strAvailItems += Environment.NewLine + "\t\t" + objCyberware.DisplayNameShort(GlobalOptions.Instance.Language);
+                                        strAvailItems += Environment.NewLine + "\t\t" + objCyberware.DisplayNameShort(GlobalOptions.Language);
                                     }
                                 }
                             }
@@ -13424,12 +13424,12 @@ namespace Chummer
                                     if (intWeaponAvailInt <= CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
                                     {
                                         blnRestrictedGearUsed = true;
-                                        strRestrictedItem = objWeapon.DisplayName(GlobalOptions.Instance.Language);
+                                        strRestrictedItem = objWeapon.DisplayName(GlobalOptions.Language);
                                     }
                                     else
                                     {
                                         intRestrictedCount++;
-                                        strAvailItems += Environment.NewLine + "\t\t" + objWeapon.DisplayNameShort(GlobalOptions.Instance.Language);
+                                        strAvailItems += Environment.NewLine + "\t\t" + objWeapon.DisplayNameShort(GlobalOptions.Language);
                                     }
                                 }
                             }
@@ -13447,12 +13447,12 @@ namespace Chummer
                                         if (intAccessoryAvailInt <= CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
                                         {
                                             blnRestrictedGearUsed = true;
-                                            strRestrictedItem = objAccessory.DisplayName(GlobalOptions.Instance.Language);
+                                            strRestrictedItem = objAccessory.DisplayName(GlobalOptions.Language);
                                         }
                                         else
                                         {
                                             intRestrictedCount++;
-                                            strAvailItems += Environment.NewLine + "\t\t" + objAccessory.DisplayName(GlobalOptions.Instance.Language);
+                                            strAvailItems += Environment.NewLine + "\t\t" + objAccessory.DisplayName(GlobalOptions.Language);
                                         }
                                     }
                                 }
@@ -13480,12 +13480,12 @@ namespace Chummer
                                         if (intWeaponAvailInt <= CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
                                         {
                                             blnRestrictedGearUsed = true;
-                                            strRestrictedItem = objWeapon.DisplayName(GlobalOptions.Instance.Language);
+                                            strRestrictedItem = objWeapon.DisplayName(GlobalOptions.Language);
                                         }
                                         else
                                         {
                                             intRestrictedCount++;
-                                            strAvailItems += Environment.NewLine + "\t\t" + objWeapon.DisplayNameShort(GlobalOptions.Instance.Language);
+                                            strAvailItems += Environment.NewLine + "\t\t" + objWeapon.DisplayNameShort(GlobalOptions.Language);
                                         }
                                     }
                                 }
@@ -13504,12 +13504,12 @@ namespace Chummer
                                             if (intAccessoryAvailInt <= CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
                                             {
                                                 blnRestrictedGearUsed = true;
-                                                strRestrictedItem = objAccessory.DisplayName(GlobalOptions.Instance.Language);
+                                                strRestrictedItem = objAccessory.DisplayName(GlobalOptions.Language);
                                             }
                                             else
                                             {
                                                 intRestrictedCount++;
-                                                strAvailItems += Environment.NewLine + "\t\t" + objAccessory.DisplayName(GlobalOptions.Instance.Language);
+                                                strAvailItems += Environment.NewLine + "\t\t" + objAccessory.DisplayName(GlobalOptions.Language);
                                             }
                                         }
                                     }
@@ -13535,12 +13535,12 @@ namespace Chummer
                                         if (intModAvailInt <= CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
                                         {
                                             blnRestrictedGearUsed = true;
-                                            strRestrictedItem = objWeaponMountMod.DisplayName(GlobalOptions.Instance.Language);
+                                            strRestrictedItem = objWeaponMountMod.DisplayName(GlobalOptions.Language);
                                         }
                                         else
                                         {
                                             intRestrictedCount++;
-                                            strAvailItems += Environment.NewLine + "\t\t" + objWeaponMountMod.DisplayNameShort(GlobalOptions.Instance.Language);
+                                            strAvailItems += Environment.NewLine + "\t\t" + objWeaponMountMod.DisplayNameShort(GlobalOptions.Language);
                                         }
                                     }
                                 }
@@ -13551,7 +13551,7 @@ namespace Chummer
                                 if (string.IsNullOrEmpty(objCyberware.ParentID))
                                 {
                                     if (CharacterObject.BannedWareGrades.Any(s => objCyberware.Grade.Name.Contains(s)))
-                                        strCyberwareGrade += Environment.NewLine + "\t\t" + objCyberware.DisplayNameShort(GlobalOptions.Instance.Language);
+                                        strCyberwareGrade += Environment.NewLine + "\t\t" + objCyberware.DisplayNameShort(GlobalOptions.Language);
 
                                     AvailabilityValue objTotalAvail = objCyberware.TotalAvailTuple();
                                     if (!objTotalAvail.AddToParent)
@@ -13562,12 +13562,12 @@ namespace Chummer
                                             if (intAvailInt <= CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
                                             {
                                                 blnRestrictedGearUsed = true;
-                                                strRestrictedItem = objCyberware.DisplayName(GlobalOptions.Instance.Language);
+                                                strRestrictedItem = objCyberware.DisplayName(GlobalOptions.Language);
                                             }
                                             else
                                             {
                                                 intRestrictedCount++;
-                                                strAvailItems += Environment.NewLine + "\t\t" + objCyberware.DisplayNameShort(GlobalOptions.Instance.Language);
+                                                strAvailItems += Environment.NewLine + "\t\t" + objCyberware.DisplayNameShort(GlobalOptions.Language);
                                             }
                                         }
                                     }
@@ -13592,12 +13592,12 @@ namespace Chummer
                                             if (intWeaponAvailInt <= CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
                                             {
                                                 blnRestrictedGearUsed = true;
-                                                strRestrictedItem = objWeapon.DisplayName(GlobalOptions.Instance.Language);
+                                                strRestrictedItem = objWeapon.DisplayName(GlobalOptions.Language);
                                             }
                                             else
                                             {
                                                 intRestrictedCount++;
-                                                strAvailItems += Environment.NewLine + "\t\t" + objWeapon.DisplayNameShort(GlobalOptions.Instance.Language);
+                                                strAvailItems += Environment.NewLine + "\t\t" + objWeapon.DisplayNameShort(GlobalOptions.Language);
                                             }
                                         }
                                     }
@@ -13616,12 +13616,12 @@ namespace Chummer
                                                 if (intAccessoryAvailInt <= CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
                                                 {
                                                     blnRestrictedGearUsed = true;
-                                                    strRestrictedItem = objAccessory.DisplayName(GlobalOptions.Instance.Language);
+                                                    strRestrictedItem = objAccessory.DisplayName(GlobalOptions.Language);
                                                 }
                                                 else
                                                 {
                                                     intRestrictedCount++;
-                                                    strAvailItems += Environment.NewLine + "\t\t" + objAccessory.DisplayName(GlobalOptions.Instance.Language);
+                                                    strAvailItems += Environment.NewLine + "\t\t" + objAccessory.DisplayName(GlobalOptions.Language);
                                                 }
                                             }
                                         }
@@ -13647,24 +13647,24 @@ namespace Chummer
             if (intRestrictedCount > intRestrictedAllowed)
             {
                 blnValid = false;
-                strMessage += Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_InvalidAvail", GlobalOptions.Instance.Language)
-                                  , (intRestrictedCount - intRestrictedAllowed).ToString(GlobalOptions.Instance.CultureInfo)
-                                  , CharacterObject.MaximumAvailability.ToString(GlobalOptions.Instance.CultureInfo));
+                strMessage += Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_InvalidAvail", GlobalOptions.Language)
+                                  , (intRestrictedCount - intRestrictedAllowed).ToString(GlobalOptions.CultureInfo)
+                                  , CharacterObject.MaximumAvailability.ToString(GlobalOptions.CultureInfo));
                 strMessage += strAvailItems;
-                strMessage += Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_RestrictedGearUsed", GlobalOptions.Instance.Language), strRestrictedItem);
+                strMessage += Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_RestrictedGearUsed", GlobalOptions.Language), strRestrictedItem);
             }
 
             if (!string.IsNullOrWhiteSpace(strExConItems))
             {
                 blnValid = false;
-                strMessage += Environment.NewLine + '\t' + LanguageManager.GetString("Message_InvalidExConWare", GlobalOptions.Instance.Language);
+                strMessage += Environment.NewLine + '\t' + LanguageManager.GetString("Message_InvalidExConWare", GlobalOptions.Language);
                 strMessage += strExConItems;
             }
 
             if (!string.IsNullOrWhiteSpace(strCyberwareGrade))
             {
                 blnValid = false;
-                strMessage += Environment.NewLine + '\t' + LanguageManager.GetString("Message_InvalidCyberwareGrades", GlobalOptions.Instance.Language);
+                strMessage += Environment.NewLine + '\t' + LanguageManager.GetString("Message_InvalidCyberwareGrades", GlobalOptions.Language);
                 strMessage += strCyberwareGrade;
             }
 
@@ -13724,7 +13724,7 @@ namespace Chummer
                 {
                     if (CharacterObjectOptions.BookEnabled("R5"))
                     {
-                        if (objVehicle.IsDrone && GlobalOptions.Instance.Dronemods)
+                        if (objVehicle.IsDrone && GlobalOptions.Dronemods)
                         {
                             if (objVehicle.DroneModSlotsUsed > objVehicle.DroneModSlots)
                             {
@@ -13771,7 +13771,7 @@ namespace Chummer
                 if (blnOverCapacity)
                 {
                     blnValid = false;
-                    strMessage += Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_CapacityReachedValidate", GlobalOptions.Instance.Language), intCapacityOver.ToString(GlobalOptions.Instance.CultureInfo));
+                    strMessage += Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_CapacityReachedValidate", GlobalOptions.Language), intCapacityOver.ToString(GlobalOptions.CultureInfo));
                     foreach (string strItem in lstOverCapacity)
                     {
                         strMessage += Environment.NewLine + "\t- " + strItem;
@@ -13787,7 +13787,7 @@ namespace Chummer
                 int intIllegalDowngrades = 0;
                 foreach (Vehicle objVehicle in CharacterObject.Vehicles)
                 {
-                    if (objVehicle.IsDrone && GlobalOptions.Instance.Dronemods)
+                    if (objVehicle.IsDrone && GlobalOptions.Dronemods)
                     {
                         foreach (VehicleMod objMod in objVehicle.Mods.Where(objMod => !objMod.IncludedInVehicle && objMod.Equipped && objMod.Downgrade))
                         {
@@ -13810,7 +13810,7 @@ namespace Chummer
                 if (blnIllegalDowngrades)
                 {
                     blnValid = false;
-                    strMessage += Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_DroneIllegalDowngrade", GlobalOptions.Instance.Language), intIllegalDowngrades.ToString(GlobalOptions.Instance.CultureInfo));
+                    strMessage += Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_DroneIllegalDowngrade", GlobalOptions.Language), intIllegalDowngrades.ToString(GlobalOptions.CultureInfo));
                     foreach (string strItem in lstDronesIllegalDowngrades)
                     {
                         strMessage += Environment.NewLine + "\t- " + strItem;
@@ -13824,10 +13824,10 @@ namespace Chummer
             if (blnValid && i > 0)
             {
                 if (MessageBox.Show(
-                    string.Format(LanguageManager.GetString("Message_ExtraPoints", GlobalOptions.Instance.Language)
-                        , i.ToString(GlobalOptions.Instance.CultureInfo)
-                        , LanguageManager.GetString("Label_SummaryPrimaryAttributes", GlobalOptions.Instance.Language)),
-                    LanguageManager.GetString("MessageTitle_ExtraPoints", GlobalOptions.Instance.Language), MessageBoxButtons.YesNo,
+                    string.Format(LanguageManager.GetString("Message_ExtraPoints", GlobalOptions.Language)
+                        , i.ToString(GlobalOptions.CultureInfo)
+                        , LanguageManager.GetString("Label_SummaryPrimaryAttributes", GlobalOptions.Language)),
+                    LanguageManager.GetString("MessageTitle_ExtraPoints", GlobalOptions.Language), MessageBoxButtons.YesNo,
                     MessageBoxIcon.Warning) == DialogResult.No)
                 {
                     blnValid = false;
@@ -13840,10 +13840,10 @@ namespace Chummer
             {
                 if (
                     MessageBox.Show(
-                        string.Format(LanguageManager.GetString("Message_ExtraPoints", GlobalOptions.Instance.Language)
-                            , i.ToString(GlobalOptions.Instance.CultureInfo)
-                            , LanguageManager.GetString("Label_SummarySpecialAttributes", GlobalOptions.Instance.Language)),
-                        LanguageManager.GetString("MessageTitle_ExtraPoints", GlobalOptions.Instance.Language), MessageBoxButtons.YesNo,
+                        string.Format(LanguageManager.GetString("Message_ExtraPoints", GlobalOptions.Language)
+                            , i.ToString(GlobalOptions.CultureInfo)
+                            , LanguageManager.GetString("Label_SummarySpecialAttributes", GlobalOptions.Language)),
+                        LanguageManager.GetString("MessageTitle_ExtraPoints", GlobalOptions.Language), MessageBoxButtons.YesNo,
                         MessageBoxIcon.Warning) == DialogResult.No)
                     blnValid = false;
             }
@@ -13853,10 +13853,10 @@ namespace Chummer
             {
                 if (
                     MessageBox.Show(
-                        string.Format(LanguageManager.GetString("Message_ExtraPoints", GlobalOptions.Instance.Language)
-                            , CharacterObject.SkillsSection.SkillGroupPoints.ToString(GlobalOptions.Instance.CultureInfo)
-                            , LanguageManager.GetString("Label_SummarySkillGroups", GlobalOptions.Instance.Language)),
-                        LanguageManager.GetString("MessageTitle_ExtraPoints", GlobalOptions.Instance.Language), MessageBoxButtons.YesNo,
+                        string.Format(LanguageManager.GetString("Message_ExtraPoints", GlobalOptions.Language)
+                            , CharacterObject.SkillsSection.SkillGroupPoints.ToString(GlobalOptions.CultureInfo)
+                            , LanguageManager.GetString("Label_SummarySkillGroups", GlobalOptions.Language)),
+                        LanguageManager.GetString("MessageTitle_ExtraPoints", GlobalOptions.Language), MessageBoxButtons.YesNo,
                         MessageBoxIcon.Warning) == DialogResult.No)
                     blnValid = false;
             }
@@ -13866,10 +13866,10 @@ namespace Chummer
             {
                 if (
                     MessageBox.Show(
-                        string.Format(LanguageManager.GetString("Message_ExtraPoints", GlobalOptions.Instance.Language)
-                            , CharacterObject.SkillsSection.SkillPoints.ToString(GlobalOptions.Instance.CultureInfo)
-                            , LanguageManager.GetString("Label_SummaryActiveSkills", GlobalOptions.Instance.Language)),
-                        LanguageManager.GetString("MessageTitle_ExtraPoints", GlobalOptions.Instance.Language), MessageBoxButtons.YesNo,
+                        string.Format(LanguageManager.GetString("Message_ExtraPoints", GlobalOptions.Language)
+                            , CharacterObject.SkillsSection.SkillPoints.ToString(GlobalOptions.CultureInfo)
+                            , LanguageManager.GetString("Label_SummaryActiveSkills", GlobalOptions.Language)),
+                        LanguageManager.GetString("MessageTitle_ExtraPoints", GlobalOptions.Language), MessageBoxButtons.YesNo,
                         MessageBoxIcon.Warning) == DialogResult.No)
                     blnValid = false;
             }
@@ -13879,16 +13879,16 @@ namespace Chummer
             {
                 if (
                     MessageBox.Show(
-                        string.Format(LanguageManager.GetString("Message_ExtraPoints", GlobalOptions.Instance.Language)
-                            , CharacterObject.SkillsSection.KnowledgeSkillPointsRemain.ToString(GlobalOptions.Instance.CultureInfo)
-                            , LanguageManager.GetString("Label_SummaryKnowledgeSkills", GlobalOptions.Instance.Language)),
-                        LanguageManager.GetString("MessageTitle_ExtraPoints", GlobalOptions.Instance.Language), MessageBoxButtons.YesNo,
+                        string.Format(LanguageManager.GetString("Message_ExtraPoints", GlobalOptions.Language)
+                            , CharacterObject.SkillsSection.KnowledgeSkillPointsRemain.ToString(GlobalOptions.CultureInfo)
+                            , LanguageManager.GetString("Label_SummaryKnowledgeSkills", GlobalOptions.Language)),
+                        LanguageManager.GetString("MessageTitle_ExtraPoints", GlobalOptions.Language), MessageBoxButtons.YesNo,
                         MessageBoxIcon.Warning) == DialogResult.No)
                     blnValid = false;
             }
             Cursor = Cursors.Default;
-            if (!blnValid && strMessage.Length > LanguageManager.GetString("Message_InvalidBeginning", GlobalOptions.Instance.Language).Length)
-                MessageBox.Show(strMessage, LanguageManager.GetString("MessageTitle_Invalid", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+            if (!blnValid && strMessage.Length > LanguageManager.GetString("Message_InvalidBeginning", GlobalOptions.Language).Length)
+                MessageBox.Show(strMessage, LanguageManager.GetString("MessageTitle_Invalid", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
             return blnValid;
         }
 
@@ -13919,13 +13919,13 @@ namespace Chummer
                         {
                             blnRestrictedGearUsed = true;
                             strRestrictedItem = objGear.Parent == null
-                                ? objGear.DisplayName(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language)
-                                : $"{objGear.DisplayName(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language)} ({objGear.Parent})";
+                                ? objGear.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)
+                                : $"{objGear.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)} ({objGear.Parent})";
                         }
                         else
                         {
                             intRestrictedCount++;
-                            strAvailItems += Environment.NewLine + "\t\t" + objGear.DisplayNameShort(GlobalOptions.Instance.Language);
+                            strAvailItems += Environment.NewLine + "\t\t" + objGear.DisplayNameShort(GlobalOptions.Language);
                         }
                     }
                 }
@@ -13955,28 +13955,28 @@ namespace Chummer
                 {
                     if (CharacterObject.BuildMethod == CharacterBuildMethod.Karma)
                     {
-                        if (MessageBox.Show(string.Format(LanguageManager.GetString("Message_NoExtraKarma", GlobalOptions.Instance.Language), intBuildPoints.ToString(GlobalOptions.Instance.CultureInfo)),
-                                LanguageManager.GetString("MessageTitle_ExtraKarma", GlobalOptions.Instance.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
+                        if (MessageBox.Show(string.Format(LanguageManager.GetString("Message_NoExtraKarma", GlobalOptions.Language), intBuildPoints.ToString(GlobalOptions.CultureInfo)),
+                                LanguageManager.GetString("MessageTitle_ExtraKarma", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
                             return false;
                     }
                     else
                     {
-                        if (MessageBox.Show(string.Format(LanguageManager.GetString("Message_ExtraKarma", GlobalOptions.Instance.Language)
-                                , intBuildPoints.ToString(GlobalOptions.Instance.CultureInfo)
-                                , CharacterObjectOptions.KarmaCarryover.ToString(GlobalOptions.Instance.CultureInfo)),
-                                LanguageManager.GetString("MessageTitle_ExtraKarma", GlobalOptions.Instance.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
+                        if (MessageBox.Show(string.Format(LanguageManager.GetString("Message_ExtraKarma", GlobalOptions.Language)
+                                , intBuildPoints.ToString(GlobalOptions.CultureInfo)
+                                , CharacterObjectOptions.KarmaCarryover.ToString(GlobalOptions.CultureInfo)),
+                                LanguageManager.GetString("MessageTitle_ExtraKarma", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
                             return false;
                     }
                 }
                 if (CharacterObject.Nuyen > 5000)
                 {
-                    if (MessageBox.Show(string.Format(LanguageManager.GetString("Message_ExtraNuyen", GlobalOptions.Instance.Language)
-                            , CharacterObject.Nuyen.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.Instance.CultureInfo)
-                            , (5000).ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.Instance.CultureInfo)),
-                            LanguageManager.GetString("MessageTitle_ExtraNuyen", GlobalOptions.Instance.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
+                    if (MessageBox.Show(string.Format(LanguageManager.GetString("Message_ExtraNuyen", GlobalOptions.Language)
+                            , CharacterObject.Nuyen.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo)
+                            , (5000).ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo)),
+                            LanguageManager.GetString("MessageTitle_ExtraNuyen", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
                         return false;
                 }
-                if (GlobalOptions.Instance.CreateBackupOnCareer && chkCharacterCreated.Checked)
+                if (GlobalOptions.CreateBackupOnCareer && chkCharacterCreated.Checked)
                 {
                     // Create a pre-Career Mode backup of the character.
                     // Make sure the backup directory exists.
@@ -13988,7 +13988,7 @@ namespace Chummer
                         }
                         catch (UnauthorizedAccessException)
                         {
-                            MessageBox.Show(LanguageManager.GetString("Message_Insufficient_Permissions_Warning", GlobalOptions.Instance.Language));
+                            MessageBox.Show(LanguageManager.GetString("Message_Insufficient_Permissions_Warning", GlobalOptions.Language));
                             return false;
                         }
                     }
@@ -14004,7 +14004,7 @@ namespace Chummer
                                 strNewName = Guid.NewGuid().ToString("N");
                         }
                     }
-                    strNewName += LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language) + '(' + LanguageManager.GetString("Title_CreateMode", GlobalOptions.Instance.Language) + ").chum5";
+                    strNewName += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + LanguageManager.GetString("Title_CreateMode", GlobalOptions.Language) + ").chum5";
 
                     strNewName = Path.Combine(Utils.GetStartupPath, "saves", "backup", strNewName);
 
@@ -14081,7 +14081,7 @@ namespace Chummer
         /// </summary>
         public override bool ConfirmSaveCreatedCharacter()
         {
-            if (MessageBox.Show(LanguageManager.GetString("Message_ConfirmCreate", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_ConfirmCreate", GlobalOptions.Instance.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+            if (MessageBox.Show(LanguageManager.GetString("Message_ConfirmCreate", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_ConfirmCreate", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 return false;
 
             if (!ValidateCharacter())
@@ -14386,7 +14386,7 @@ namespace Chummer
 
             // Update NuyenBP.
             string strNuyenBP = objXmlKit["nuyenbp"]?.InnerText;
-            if (!string.IsNullOrEmpty(strNuyenBP) && decimal.TryParse(strNuyenBP, System.Globalization.NumberStyles.Any, GlobalOptions.Instance.InvariantCultureInfo, out decimal decAmount))
+            if (!string.IsNullOrEmpty(strNuyenBP) && decimal.TryParse(strNuyenBP, System.Globalization.NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decimal decAmount))
             {
                 //if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
                 //decAmount *= 2;
@@ -14799,11 +14799,11 @@ namespace Chummer
                     decMultiplier -= 0.1m;
                 if (chkInitiationSchooling.Checked)
                     decMultiplier -= 0.1m;
-                intAmount = decimal.ToInt32(decimal.Ceiling(Convert.ToDecimal(CharacterObjectOptions.KarmaInititationFlat + (CharacterObject.InitiateGrade + 1) * CharacterObjectOptions.KarmaInitiation, GlobalOptions.Instance.CultureInfo) * decMultiplier));
+                intAmount = decimal.ToInt32(decimal.Ceiling(Convert.ToDecimal(CharacterObjectOptions.KarmaInititationFlat + (CharacterObject.InitiateGrade + 1) * CharacterObjectOptions.KarmaInitiation, GlobalOptions.CultureInfo) * decMultiplier));
 
-                strInitTip = string.Format(LanguageManager.GetString("Tip_ImproveInitiateGrade", GlobalOptions.Instance.Language)
-                    , (CharacterObject.InitiateGrade + 1).ToString(GlobalOptions.Instance.CultureInfo)
-                    , intAmount.ToString(GlobalOptions.Instance.CultureInfo));
+                strInitTip = string.Format(LanguageManager.GetString("Tip_ImproveInitiateGrade", GlobalOptions.Language)
+                    , (CharacterObject.InitiateGrade + 1).ToString(GlobalOptions.CultureInfo)
+                    , intAmount.ToString(GlobalOptions.CultureInfo));
             }
             else
             {
@@ -14813,11 +14813,11 @@ namespace Chummer
                     decMultiplier -= 0.2m;
                 if (chkInitiationSchooling.Checked)
                     decMultiplier -= 0.1m;
-                intAmount = decimal.ToInt32(decimal.Ceiling(Convert.ToDecimal(CharacterObjectOptions.KarmaInititationFlat + (CharacterObject.SubmersionGrade + 1) * CharacterObjectOptions.KarmaInitiation, GlobalOptions.Instance.CultureInfo) * decMultiplier));
+                intAmount = decimal.ToInt32(decimal.Ceiling(Convert.ToDecimal(CharacterObjectOptions.KarmaInititationFlat + (CharacterObject.SubmersionGrade + 1) * CharacterObjectOptions.KarmaInitiation, GlobalOptions.CultureInfo) * decMultiplier));
 
-                strInitTip = string.Format(LanguageManager.GetString("Tip_ImproveSubmersionGrade", GlobalOptions.Instance.Language)
-                    , (CharacterObject.SubmersionGrade + 1).ToString(GlobalOptions.Instance.CultureInfo)
-                    , intAmount.ToString(GlobalOptions.Instance.CultureInfo));
+                strInitTip = string.Format(LanguageManager.GetString("Tip_ImproveSubmersionGrade", GlobalOptions.Language)
+                    , (CharacterObject.SubmersionGrade + 1).ToString(GlobalOptions.CultureInfo)
+                    , intAmount.ToString(GlobalOptions.CultureInfo));
             }
 
             cmdAddMetamagic.SetToolTip(strInitTip);
@@ -14839,16 +14839,16 @@ namespace Chummer
                     {
                         if (xmlQualityRequired.SelectNodes("oneof/metatype[. = \"" + CharacterObject.Metatype + "\"]")?.Count > 0 ||
                             xmlQualityRequired.SelectNodes("oneof/metavariant[. = \"" + CharacterObject.Metavariant + "\"]")?.Count > 0)
-                            strQualities += Environment.NewLine + '\t' + objQuality.DisplayNameShort(GlobalOptions.Instance.Language);
+                            strQualities += Environment.NewLine + '\t' + objQuality.DisplayNameShort(GlobalOptions.Language);
                         if (xmlQualityRequired.SelectNodes("allof/metatype[. = \"" + CharacterObject.Metatype + "\"]")?.Count > 0 ||
                             xmlQualityRequired.SelectNodes("allof/metavariant[. = \"" + CharacterObject.Metavariant + "\"]")?.Count > 0)
-                            strQualities += Environment.NewLine + '\t' + objQuality.DisplayNameShort(GlobalOptions.Instance.Language);
+                            strQualities += Environment.NewLine + '\t' + objQuality.DisplayNameShort(GlobalOptions.Language);
                     }
                 }
             }
             if (!string.IsNullOrEmpty(strQualities))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_CannotChangeMetatype", GlobalOptions.Instance.Language) + strQualities, LanguageManager.GetString("MessageTitle_CannotChangeMetatype", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_CannotChangeMetatype", GlobalOptions.Language) + strQualities, LanguageManager.GetString("MessageTitle_CannotChangeMetatype", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -14970,7 +14970,7 @@ namespace Chummer
                         strGrade = objCyberware.Grade.ToString();
                     else if (strGrade != objCyberware.Grade.ToString())
                     {
-                        MessageBox.Show(LanguageManager.GetString("Message_CyberwareGradeMismatch", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_CyberwareGradeMismatch", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show(LanguageManager.GetString("Message_CyberwareGradeMismatch", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CyberwareGradeMismatch", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
                 }
@@ -14978,7 +14978,7 @@ namespace Chummer
             // The character has no Cyberware!
             if (string.IsNullOrEmpty(strGrade))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_NoCyberware", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_NoCyberware", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show(LanguageManager.GetString("Message_NoCyberware", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NoCyberware", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
 
@@ -14992,59 +14992,59 @@ namespace Chummer
         private void SetTooltips()
         {
             // Common Tab.
-            lblAttributes.SetToolTip(LanguageManager.GetString("Tip_CommonAttributes", GlobalOptions.Instance.Language));
-            lblAttributesBase.SetToolTip(LanguageManager.GetString("Tip_CommonAttributesBase", GlobalOptions.Instance.Language));
-            lblAttributesAug.SetToolTip(LanguageManager.GetString("Tip_CommonAttributesAug", GlobalOptions.Instance.Language));
-            lblAttributesMetatype.SetToolTip(LanguageManager.GetString("Tip_CommonAttributesMetatypeLimits", GlobalOptions.Instance.Language));
-            lblNuyen.SetToolTip(string.Format(LanguageManager.GetString("Tip_CommonNuyen", GlobalOptions.Instance.Language), CharacterObjectOptions.KarmaNuyenPer));
+            lblAttributes.SetToolTip(LanguageManager.GetString("Tip_CommonAttributes", GlobalOptions.Language));
+            lblAttributesBase.SetToolTip(LanguageManager.GetString("Tip_CommonAttributesBase", GlobalOptions.Language));
+            lblAttributesAug.SetToolTip(LanguageManager.GetString("Tip_CommonAttributesAug", GlobalOptions.Language));
+            lblAttributesMetatype.SetToolTip(LanguageManager.GetString("Tip_CommonAttributesMetatypeLimits", GlobalOptions.Language));
+            lblNuyen.SetToolTip(string.Format(LanguageManager.GetString("Tip_CommonNuyen", GlobalOptions.Language), CharacterObjectOptions.KarmaNuyenPer));
             // Armor Tab.
-            chkArmorEquipped.SetToolTip(LanguageManager.GetString("Tip_ArmorEquipped", GlobalOptions.Instance.Language));
+            chkArmorEquipped.SetToolTip(LanguageManager.GetString("Tip_ArmorEquipped", GlobalOptions.Language));
             // Weapon Tab.
-            chkWeaponAccessoryInstalled.SetToolTip(LanguageManager.GetString("Tip_WeaponInstalled", GlobalOptions.Instance.Language));
+            chkWeaponAccessoryInstalled.SetToolTip(LanguageManager.GetString("Tip_WeaponInstalled", GlobalOptions.Language));
             // Gear Tab.
-            chkGearActiveCommlink.SetToolTip(LanguageManager.GetString("Tip_ActiveCommlink", GlobalOptions.Instance.Language));
-            chkCyberwareActiveCommlink.SetToolTip(LanguageManager.GetString("Tip_ActiveCommlink", GlobalOptions.Instance.Language));
+            chkGearActiveCommlink.SetToolTip(LanguageManager.GetString("Tip_ActiveCommlink", GlobalOptions.Language));
+            chkCyberwareActiveCommlink.SetToolTip(LanguageManager.GetString("Tip_ActiveCommlink", GlobalOptions.Language));
             // Vehicles Tab.
-            chkVehicleWeaponAccessoryInstalled.SetToolTip(LanguageManager.GetString("Tip_WeaponInstalled", GlobalOptions.Instance.Language));
-            chkVehicleActiveCommlink.SetToolTip(LanguageManager.GetString("Tip_ActiveCommlink", GlobalOptions.Instance.Language));
-            lblVehiclePowertrainLabel.SetToolTip(LanguageManager.GetString("Tip_TotalVehicleModCapacity", GlobalOptions.Instance.Language));
-            lblVehicleCosmeticLabel.SetToolTip(LanguageManager.GetString("Tip_TotalVehicleModCapacity", GlobalOptions.Instance.Language));
-            lblVehicleElectromagneticLabel.SetToolTip(LanguageManager.GetString("Tip_TotalVehicleModCapacity", GlobalOptions.Instance.Language));
-            lblVehicleBodymodLabel.SetToolTip(LanguageManager.GetString("Tip_TotalVehicleModCapacity", GlobalOptions.Instance.Language));
-            lblVehicleWeaponsmodLabel.SetToolTip(LanguageManager.GetString("Tip_TotalVehicleModCapacity", GlobalOptions.Instance.Language));
-            lblVehicleProtectionLabel.SetToolTip(LanguageManager.GetString("Tip_TotalVehicleModCapacity", GlobalOptions.Instance.Language));
+            chkVehicleWeaponAccessoryInstalled.SetToolTip(LanguageManager.GetString("Tip_WeaponInstalled", GlobalOptions.Language));
+            chkVehicleActiveCommlink.SetToolTip(LanguageManager.GetString("Tip_ActiveCommlink", GlobalOptions.Language));
+            lblVehiclePowertrainLabel.SetToolTip(LanguageManager.GetString("Tip_TotalVehicleModCapacity", GlobalOptions.Language));
+            lblVehicleCosmeticLabel.SetToolTip(LanguageManager.GetString("Tip_TotalVehicleModCapacity", GlobalOptions.Language));
+            lblVehicleElectromagneticLabel.SetToolTip(LanguageManager.GetString("Tip_TotalVehicleModCapacity", GlobalOptions.Language));
+            lblVehicleBodymodLabel.SetToolTip(LanguageManager.GetString("Tip_TotalVehicleModCapacity", GlobalOptions.Language));
+            lblVehicleWeaponsmodLabel.SetToolTip(LanguageManager.GetString("Tip_TotalVehicleModCapacity", GlobalOptions.Language));
+            lblVehicleProtectionLabel.SetToolTip(LanguageManager.GetString("Tip_TotalVehicleModCapacity", GlobalOptions.Language));
             // Character Info Tab.
-            chkCharacterCreated.SetToolTip(LanguageManager.GetString("Tip_CharacterCreated", GlobalOptions.Instance.Language));
+            chkCharacterCreated.SetToolTip(LanguageManager.GetString("Tip_CharacterCreated", GlobalOptions.Language));
             // Build Point Summary Tab.
-            lblBuildPrimaryAttributes.SetToolTip(LanguageManager.GetString("Tip_CommonAttributes", GlobalOptions.Instance.Language));
-            lblBuildPositiveQualities.SetToolTip(LanguageManager.GetString("Tip_BuildPositiveQualities", GlobalOptions.Instance.Language));
-            lblBuildNegativeQualities.SetToolTip(LanguageManager.GetString("Tip_BuildNegativeQualities", GlobalOptions.Instance.Language));
-            lblBuildContacts.SetToolTip(string.Format(LanguageManager.GetString("Tip_CommonContacts", GlobalOptions.Instance.Language), CharacterObjectOptions.KarmaContact.ToString(GlobalOptions.Instance.CultureInfo)));
-            lblBuildEnemies.SetToolTip(LanguageManager.GetString("Tip_CommonEnemies", GlobalOptions.Instance.Language));
-            lblBuildNuyen.SetToolTip(string.Format(LanguageManager.GetString("Tip_CommonNuyen", GlobalOptions.Instance.Language), CharacterObjectOptions.NuyenPerBP.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.Instance.CultureInfo) + '¥'));
-            lblBuildSkillGroups.SetToolTip(string.Format(LanguageManager.GetString("Tip_SkillsSkillGroups", GlobalOptions.Instance.Language), CharacterObjectOptions.KarmaImproveSkillGroup.ToString(GlobalOptions.Instance.CultureInfo)));
-            lblBuildActiveSkills.SetToolTip(string.Format(LanguageManager.GetString("Tip_SkillsActiveSkills", GlobalOptions.Instance.Language), CharacterObjectOptions.KarmaImproveActiveSkill.ToString(GlobalOptions.Instance.CultureInfo), CharacterObjectOptions.KarmaSpecialization.ToString(GlobalOptions.Instance.CultureInfo)));
-            lblBuildKnowledgeSkills.SetToolTip(string.Format(LanguageManager.GetString("Tip_SkillsKnowledgeSkills", GlobalOptions.Instance.Language), CharacterObjectOptions.FreeKnowledgeMultiplier.ToString(GlobalOptions.Instance.CultureInfo), CharacterObjectOptions.KarmaImproveKnowledgeSkill.ToString(GlobalOptions.Instance.CultureInfo)));
-            lblBuildSpells.SetToolTip(string.Format(LanguageManager.GetString("Tip_SpellsSelectedSpells", GlobalOptions.Instance.Language), CharacterObjectOptions.KarmaSpell.ToString(GlobalOptions.Instance.CultureInfo)));
-            lblBuildSpirits.SetToolTip(string.Format(LanguageManager.GetString("Tip_SpellsSpirits", GlobalOptions.Instance.Language), CharacterObjectOptions.KarmaSpirit.ToString(GlobalOptions.Instance.CultureInfo)));
-            lblBuildSprites.SetToolTip(string.Format(LanguageManager.GetString("Tip_TechnomancerSprites", GlobalOptions.Instance.Language), CharacterObjectOptions.KarmaSpirit.ToString(GlobalOptions.Instance.CultureInfo)));
-            lblBuildComplexForms.SetToolTip(string.Format(LanguageManager.GetString("Tip_TechnomancerComplexForms", GlobalOptions.Instance.Language), CharacterObjectOptions.KarmaNewComplexForm.ToString(GlobalOptions.Instance.CultureInfo)));
+            lblBuildPrimaryAttributes.SetToolTip(LanguageManager.GetString("Tip_CommonAttributes", GlobalOptions.Language));
+            lblBuildPositiveQualities.SetToolTip(LanguageManager.GetString("Tip_BuildPositiveQualities", GlobalOptions.Language));
+            lblBuildNegativeQualities.SetToolTip(LanguageManager.GetString("Tip_BuildNegativeQualities", GlobalOptions.Language));
+            lblBuildContacts.SetToolTip(string.Format(LanguageManager.GetString("Tip_CommonContacts", GlobalOptions.Language), CharacterObjectOptions.KarmaContact.ToString(GlobalOptions.CultureInfo)));
+            lblBuildEnemies.SetToolTip(LanguageManager.GetString("Tip_CommonEnemies", GlobalOptions.Language));
+            lblBuildNuyen.SetToolTip(string.Format(LanguageManager.GetString("Tip_CommonNuyen", GlobalOptions.Language), CharacterObjectOptions.NuyenPerBP.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥'));
+            lblBuildSkillGroups.SetToolTip(string.Format(LanguageManager.GetString("Tip_SkillsSkillGroups", GlobalOptions.Language), CharacterObjectOptions.KarmaImproveSkillGroup.ToString(GlobalOptions.CultureInfo)));
+            lblBuildActiveSkills.SetToolTip(string.Format(LanguageManager.GetString("Tip_SkillsActiveSkills", GlobalOptions.Language), CharacterObjectOptions.KarmaImproveActiveSkill.ToString(GlobalOptions.CultureInfo), CharacterObjectOptions.KarmaSpecialization.ToString(GlobalOptions.CultureInfo)));
+            lblBuildKnowledgeSkills.SetToolTip(string.Format(LanguageManager.GetString("Tip_SkillsKnowledgeSkills", GlobalOptions.Language), CharacterObjectOptions.FreeKnowledgeMultiplier.ToString(GlobalOptions.CultureInfo), CharacterObjectOptions.KarmaImproveKnowledgeSkill.ToString(GlobalOptions.CultureInfo)));
+            lblBuildSpells.SetToolTip(string.Format(LanguageManager.GetString("Tip_SpellsSelectedSpells", GlobalOptions.Language), CharacterObjectOptions.KarmaSpell.ToString(GlobalOptions.CultureInfo)));
+            lblBuildSpirits.SetToolTip(string.Format(LanguageManager.GetString("Tip_SpellsSpirits", GlobalOptions.Language), CharacterObjectOptions.KarmaSpirit.ToString(GlobalOptions.CultureInfo)));
+            lblBuildSprites.SetToolTip(string.Format(LanguageManager.GetString("Tip_TechnomancerSprites", GlobalOptions.Language), CharacterObjectOptions.KarmaSpirit.ToString(GlobalOptions.CultureInfo)));
+            lblBuildComplexForms.SetToolTip(string.Format(LanguageManager.GetString("Tip_TechnomancerComplexForms", GlobalOptions.Language), CharacterObjectOptions.KarmaNewComplexForm.ToString(GlobalOptions.CultureInfo)));
             // Other Info Tab.
-            lblCMPhysicalLabel.SetToolTip(LanguageManager.GetString("Tip_OtherCMPhysical", GlobalOptions.Instance.Language));
-            lblCMStunLabel.SetToolTip(LanguageManager.GetString("Tip_OtherCMStun", GlobalOptions.Instance.Language));
-            lblINILabel.SetToolTip(LanguageManager.GetString("Tip_OtherInitiative", GlobalOptions.Instance.Language));
-            lblMatrixINILabel.SetToolTip(LanguageManager.GetString("Tip_OtherMatrixInitiative", GlobalOptions.Instance.Language));
-            lblAstralINILabel.SetToolTip(LanguageManager.GetString("Tip_OtherAstralInitiative", GlobalOptions.Instance.Language));
-            lblArmorLabel.SetToolTip(LanguageManager.GetString("Tip_OtherArmor", GlobalOptions.Instance.Language));
-            lblESS.SetToolTip(LanguageManager.GetString("Tip_OtherEssence", GlobalOptions.Instance.Language));
-            lblRemainingNuyenLabel.SetToolTip(LanguageManager.GetString("Tip_OtherNuyen", GlobalOptions.Instance.Language));
-            lblMovementLabel.SetToolTip(LanguageManager.GetString("Tip_OtherMovement", GlobalOptions.Instance.Language));
-            lblSwimLabel.SetToolTip(LanguageManager.GetString("Tip_OtherSwim", GlobalOptions.Instance.Language));
-            lblFlyLabel.SetToolTip(LanguageManager.GetString("Tip_OtherFly", GlobalOptions.Instance.Language));
-            lblComposureLabel.SetToolTip(LanguageManager.GetString("Tip_OtherComposure", GlobalOptions.Instance.Language));
-            lblJudgeIntentionsLabel.SetToolTip(LanguageManager.GetString("Tip_OtherJudgeIntentions", GlobalOptions.Instance.Language));
-            lblLiftCarryLabel.SetToolTip(LanguageManager.GetString("Tip_OtherLiftAndCarry", GlobalOptions.Instance.Language));
-            lblMemoryLabel.SetToolTip(LanguageManager.GetString("Tip_OtherMemory", GlobalOptions.Instance.Language));
+            lblCMPhysicalLabel.SetToolTip(LanguageManager.GetString("Tip_OtherCMPhysical", GlobalOptions.Language));
+            lblCMStunLabel.SetToolTip(LanguageManager.GetString("Tip_OtherCMStun", GlobalOptions.Language));
+            lblINILabel.SetToolTip(LanguageManager.GetString("Tip_OtherInitiative", GlobalOptions.Language));
+            lblMatrixINILabel.SetToolTip(LanguageManager.GetString("Tip_OtherMatrixInitiative", GlobalOptions.Language));
+            lblAstralINILabel.SetToolTip(LanguageManager.GetString("Tip_OtherAstralInitiative", GlobalOptions.Language));
+            lblArmorLabel.SetToolTip(LanguageManager.GetString("Tip_OtherArmor", GlobalOptions.Language));
+            lblESS.SetToolTip(LanguageManager.GetString("Tip_OtherEssence", GlobalOptions.Language));
+            lblRemainingNuyenLabel.SetToolTip(LanguageManager.GetString("Tip_OtherNuyen", GlobalOptions.Language));
+            lblMovementLabel.SetToolTip(LanguageManager.GetString("Tip_OtherMovement", GlobalOptions.Language));
+            lblSwimLabel.SetToolTip(LanguageManager.GetString("Tip_OtherSwim", GlobalOptions.Language));
+            lblFlyLabel.SetToolTip(LanguageManager.GetString("Tip_OtherFly", GlobalOptions.Language));
+            lblComposureLabel.SetToolTip(LanguageManager.GetString("Tip_OtherComposure", GlobalOptions.Language));
+            lblJudgeIntentionsLabel.SetToolTip(LanguageManager.GetString("Tip_OtherJudgeIntentions", GlobalOptions.Language));
+            lblLiftCarryLabel.SetToolTip(LanguageManager.GetString("Tip_OtherLiftAndCarry", GlobalOptions.Language));
+            lblMemoryLabel.SetToolTip(LanguageManager.GetString("Tip_OtherMemory", GlobalOptions.Language));
         }
 
         /// <summary>
@@ -15060,7 +15060,7 @@ namespace Chummer
                     // Update the name of the item in the TreeView.
                     TreeNode objNode = treVehicles.FindNode(objGear.InternalId);
                     if (objNode != null)
-                        objNode.Text = objGear.DisplayName(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
+                        objNode.Text = objGear.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 }
             }
         }
@@ -15299,7 +15299,7 @@ namespace Chummer
             decimal decQty = 1;
             string strQty = objXmlGear["qty"]?.InnerText;
             if (!string.IsNullOrEmpty(strQty))
-                decQty = Convert.ToDecimal(strQty, GlobalOptions.Instance.InvariantCultureInfo);
+                decQty = Convert.ToDecimal(strQty, GlobalOptions.InvariantCultureInfo);
 
             List<Weapon> lstWeapons = new List<Weapon>();
             string strForceValue = objXmlGear.SelectSingleNode("name/@select")?.InnerText ?? string.Empty;
@@ -15665,7 +15665,7 @@ namespace Chummer
         {
             if (_objStoryBuilder == null)
                 _objStoryBuilder = new StoryBuilder(CharacterObject);
-            CharacterObject.Background = _objStoryBuilder.GetStory(GlobalOptions.Instance.Language);
+            CharacterObject.Background = _objStoryBuilder.GetStory(GlobalOptions.Language);
         }
         
         private void chkInitiationSchooling_CheckedChanged(object sender, EventArgs e)
@@ -15682,7 +15682,7 @@ namespace Chummer
         {
             if (CheckCharacterValidity())
             {
-                MessageBox.Show(LanguageManager.GetString("Message_ValidCharacter", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_ValidCharacter", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_ValidCharacter", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_ValidCharacter", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
@@ -15835,8 +15835,8 @@ namespace Chummer
 
         private void mnuSpecialKarmaValue_Click(object sender, EventArgs e)
         {
-            MessageBox.Show(CharacterObject.CalculateKarmaValue(GlobalOptions.Instance.Language, out int _),
-                LanguageManager.GetString("MessageTitle_KarmaValue", GlobalOptions.Instance.Language),
+            MessageBox.Show(CharacterObject.CalculateKarmaValue(GlobalOptions.Language, out int _),
+                LanguageManager.GetString("MessageTitle_KarmaValue", GlobalOptions.Language),
                 MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
@@ -15850,7 +15850,7 @@ namespace Chummer
             frmSelectItem frmPickMount = new frmSelectItem
             {
                 GeneralItems = CharacterObject.ConstructModularCyberlimbList(objModularCyberware),
-                Description = LanguageManager.GetString("MessageTitle_SelectCyberware", GlobalOptions.Instance.Language)
+                Description = LanguageManager.GetString("MessageTitle_SelectCyberware", GlobalOptions.Language)
             };
             frmPickMount.ShowDialog();
 
@@ -15929,7 +15929,7 @@ namespace Chummer
             frmSelectItem frmPickMount = new frmSelectItem
             {
                 GeneralItems = CharacterObject.ConstructModularCyberlimbList(objModularCyberware),
-                Description = LanguageManager.GetString("MessageTitle_SelectCyberware", GlobalOptions.Instance.Language)
+                Description = LanguageManager.GetString("MessageTitle_SelectCyberware", GlobalOptions.Language)
             };
             frmPickMount.ShowDialog();
 
@@ -16135,7 +16135,7 @@ namespace Chummer
         private void btnDeleteCustomDrug_Click(object sender, EventArgs e)
         {
             if (!(treCustomDrugs.SelectedNode?.Tag is ICanRemove selectedObject)) return;
-            if (!selectedObject.Remove(CharacterObject, GlobalOptions.Instance.ConfirmDelete)) return;
+            if (!selectedObject.Remove(CharacterObject, GlobalOptions.ConfirmDelete)) return;
 
             IsCharacterUpdateRequested = true;
             IsDirty = true;

@@ -44,11 +44,11 @@ namespace Chummer
         public frmOmaeUploadLanguage(string strUserName)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, null);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, null);
             _strUserName = strUserName;
 
-            NO_CONNECTION_MESSAGE = LanguageManager.GetString("Message_Omae_CannotConnection", GlobalOptions.Instance.Language);
-            NO_CONNECTION_TITLE = LanguageManager.GetString("MessageTitle_Omae_CannotConnection", GlobalOptions.Instance.Language);
+            NO_CONNECTION_MESSAGE = LanguageManager.GetString("Message_Omae_CannotConnection", GlobalOptions.Language);
+            NO_CONNECTION_TITLE = LanguageManager.GetString("MessageTitle_Omae_CannotConnection", GlobalOptions.Language);
         }
 
         private void frmOmaeUploadLanguage_Load(object sender, EventArgs e)

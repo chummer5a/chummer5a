@@ -39,14 +39,14 @@ namespace Chummer
         public frmOmaeUploadData(string strUserName, int intDataID = 0, string strDescription = "", string strName = "")
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _strUserName = strUserName;
             _intDataID = intDataID;
             txtDescription.Text = strDescription;
             txtName.Text = strName;
 
-            NO_CONNECTION_MESSAGE = LanguageManager.GetString("Message_Omae_CannotConnection", GlobalOptions.Instance.Language);
-            NO_CONNECTION_TITLE = LanguageManager.GetString("MessageTitle_Omae_CannotConnection", GlobalOptions.Instance.Language);
+            NO_CONNECTION_MESSAGE = LanguageManager.GetString("Message_Omae_CannotConnection", GlobalOptions.Language);
+            NO_CONNECTION_TITLE = LanguageManager.GetString("MessageTitle_Omae_CannotConnection", GlobalOptions.Language);
 
             MoveControls();
         }
@@ -81,14 +81,14 @@ namespace Chummer
             // Make sure a name has been entered.
             if (string.IsNullOrWhiteSpace(txtName.Text))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_OmaeUpload_DataName", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_OmaeUpload_DataName", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_OmaeUpload_DataName", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_OmaeUpload_DataName", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Make sure there is at least some sort of description.
             if (string.IsNullOrWhiteSpace(txtDescription.Text))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_OameUpload_DataDescription", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_OmaeUpload_DataDescription", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_OameUpload_DataDescription", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_OmaeUpload_DataDescription", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -102,7 +102,7 @@ namespace Chummer
 
             if (intCount == 0)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_OmaeUpload_DataSelectFiles", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_OmaeUpload_SelectFile", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_OmaeUpload_DataSelectFiles", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_OmaeUpload_SelectFile", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             
@@ -209,7 +209,7 @@ namespace Chummer
             // Make sure the file doesn't exceed 250K in size (256,000 bytes).
             if (bytFile.Length > 256000)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_OmaeUpload_FileTooLarge", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_OmaeUpload_FileTooLarge", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(LanguageManager.GetString("Message_OmaeUpload_FileTooLarge", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_OmaeUpload_FileTooLarge", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -223,11 +223,11 @@ namespace Chummer
                 if (objService.UploadDataFile(_strUserName, _intDataID, txtName.Text, txtDescription.Text, strFilesIncluded, bytFile))
                 {
                     blnSuccess = true;
-                    MessageBox.Show(LanguageManager.GetString("Message_OmaeUpload_UploadComplete", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_OmaeUpload_UploadComplete", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_OmaeUpload_UploadComplete", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_OmaeUpload_UploadComplete", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_OmaeUpload_UploadFailed", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_OmaeUpload_UploadFailed", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(LanguageManager.GetString("Message_OmaeUpload_UploadFailed", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_OmaeUpload_UploadFailed", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             catch (EndpointNotFoundException)

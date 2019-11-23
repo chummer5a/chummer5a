@@ -1257,7 +1257,7 @@ namespace Chummer
 
             // <essenceatspecialstart />
             objWriter.WriteElementString("essenceatspecialstart",
-                _decEssenceAtSpecialStart.ToString(GlobalOptions.Instance.InvariantCultureInfo));
+                _decEssenceAtSpecialStart.ToString(GlobalOptions.InvariantCultureInfo));
 
             // <name />
             objWriter.WriteElementString("name", _strName);
@@ -1336,10 +1336,10 @@ namespace Chummer
             // <maxavail />
             objWriter.WriteElementString("maxavail", _intMaxAvail.ToString());
             // <nuyen />
-            objWriter.WriteElementString("nuyen", _decNuyen.ToString(GlobalOptions.Instance.InvariantCultureInfo));
+            objWriter.WriteElementString("nuyen", _decNuyen.ToString(GlobalOptions.InvariantCultureInfo));
             // <nuyen />
             objWriter.WriteElementString("startingnuyen",
-                _decStartingNuyen.ToString(GlobalOptions.Instance.InvariantCultureInfo));
+                _decStartingNuyen.ToString(GlobalOptions.InvariantCultureInfo));
             // <sumtoten />
             objWriter.WriteElementString("sumtoten", _intSumtoTen.ToString());
             // <buildkarma />
@@ -1351,7 +1351,7 @@ namespace Chummer
             // <gameplayoptionqualitylimit />
             objWriter.WriteElementString("gameplayoptionqualitylimit", _intGameplayOptionQualityLimit.ToString());
             // <maxnuyen />
-            objWriter.WriteElementString("maxnuyen", _decMaxNuyen.ToString(GlobalOptions.Instance.InvariantCultureInfo));
+            objWriter.WriteElementString("maxnuyen", _decMaxNuyen.ToString(GlobalOptions.InvariantCultureInfo));
             // <maxkarma />
             objWriter.WriteElementString("maxkarma", _intMaxKarma.ToString());
             // <contactmultiplier />
@@ -1368,9 +1368,9 @@ namespace Chummer
             objWriter.WriteEndElement();
 
             // <nuyenbp />
-            objWriter.WriteElementString("nuyenbp", _decNuyenBP.ToString(GlobalOptions.Instance.InvariantCultureInfo));
+            objWriter.WriteElementString("nuyenbp", _decNuyenBP.ToString(GlobalOptions.InvariantCultureInfo));
             // <nuyenmaxbp />
-            objWriter.WriteElementString("nuyenmaxbp", _decNuyenMaximumBP.ToString(GlobalOptions.Instance.InvariantCultureInfo));
+            objWriter.WriteElementString("nuyenmaxbp", _decNuyenMaximumBP.ToString(GlobalOptions.InvariantCultureInfo));
 
             // <adept />
             objWriter.WriteElementString("adept", _blnAdeptEnabled.ToString());
@@ -1389,7 +1389,7 @@ namespace Chummer
 
             // <prototypetranshuman />
             objWriter.WriteElementString("prototypetranshuman",
-                _decPrototypeTranshuman.ToString(GlobalOptions.Instance.InvariantCultureInfo));
+                _decPrototypeTranshuman.ToString(GlobalOptions.InvariantCultureInfo));
 
             // <attributes>
             objWriter.WriteStartElement("attributes");
@@ -1415,7 +1415,7 @@ namespace Chummer
             objWriter.WriteElementString("groupnotes", _strGroupNotes);
 
             // External reader friendly stuff.
-            objWriter.WriteElementString("totaless", Essence().ToString(GlobalOptions.Instance.InvariantCultureInfo));
+            objWriter.WriteElementString("totaless", Essence().ToString(GlobalOptions.InvariantCultureInfo));
 
             // Write out the Mystic Adept MAG split info.
             if(_blnAdeptEnabled && _blnMagicianEnabled)
@@ -1837,18 +1837,18 @@ namespace Chummer
             }
             catch(XmlException)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_Save_Error_Warning", GlobalOptions.Instance.Language));
+                MessageBox.Show(LanguageManager.GetString("Message_Save_Error_Warning", GlobalOptions.Language));
                 blnErrorFree = false;
             }
             catch(UnauthorizedAccessException)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_Save_Error_Warning", GlobalOptions.Instance.Language));
+                MessageBox.Show(LanguageManager.GetString("Message_Save_Error_Warning", GlobalOptions.Language));
                 blnErrorFree = false;
             }
 
             objWriter.Close();
             if(addToMRU)
-                GlobalOptions.Instance.MostRecentlyUsedCharacters.Insert(0, this.FileName);
+                GlobalOptions.MostRecentlyUsedCharacters.Insert(0, this.FileName);
 
             IsSaving = false;
             _dateFileLastWriteTime = File.GetLastWriteTimeUtc(strFileName);
@@ -1895,9 +1895,9 @@ namespace Chummer
                         if (showWarnings)
                         {
                             MessageBox.Show(
-                                string.Format(LanguageManager.GetString("Message_FailedLoad", GlobalOptions.Instance.Language),
+                                string.Format(LanguageManager.GetString("Message_FailedLoad", GlobalOptions.Language),
                                     ex.Message),
-                                LanguageManager.GetString("MessageTitle_FailedLoad", GlobalOptions.Instance.Language),
+                                LanguageManager.GetString("MessageTitle_FailedLoad", GlobalOptions.Language),
                                 MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
 
@@ -1930,8 +1930,8 @@ namespace Chummer
                     !Utils.IsUnitTest)
                 {
                     MessageBox.Show(
-                        LanguageManager.GetString("Message_IncorrectGameVersion_SR4", GlobalOptions.Instance.Language),
-                        LanguageManager.GetString("MessageTitle_IncorrectGameVersion", GlobalOptions.Instance.Language),
+                        LanguageManager.GetString("Message_IncorrectGameVersion_SR4", GlobalOptions.Language),
+                        LanguageManager.GetString("MessageTitle_IncorrectGameVersion", GlobalOptions.Language),
                         MessageBoxButtons.YesNo,
                         MessageBoxIcon.Error);
                     IsLoading = false;
@@ -1957,8 +1957,8 @@ if (!Utils.IsUnitTest){
                 if (intResult == -1)
                 {
                     DialogResult result =
- MessageBox.Show(string.Format(LanguageManager.GetString("Message_OutdatedChummerSave", GlobalOptions.Instance.Language), _verSavedVersion.ToString(), verCurrentversion.ToString()),
-                        LanguageManager.GetString("MessageTitle_IncorrectGameVersion", GlobalOptions.Instance.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+ MessageBox.Show(string.Format(LanguageManager.GetString("Message_OutdatedChummerSave", GlobalOptions.Language), _verSavedVersion.ToString(), verCurrentversion.ToString()),
+                        LanguageManager.GetString("MessageTitle_IncorrectGameVersion", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Error);
 
                     if (result != DialogResult.Yes)
                     {
@@ -1994,9 +1994,9 @@ if (!Utils.IsUnitTest){
                 {
                     if (MessageBox.Show(new Form {TopMost = true},
                             string.Format(
-                                LanguageManager.GetString("Message_MissingSourceBooks", GlobalOptions.Instance.Language),
-                                TranslatedBookList(strMissingBooks, GlobalOptions.Instance.Language)),
-                            LanguageManager.GetString("Message_MissingSourceBooks_Title", GlobalOptions.Instance.Language),
+                                LanguageManager.GetString("Message_MissingSourceBooks", GlobalOptions.Language),
+                                TranslatedBookList(strMissingBooks, GlobalOptions.Language)),
+                            LanguageManager.GetString("Message_MissingSourceBooks_Title", GlobalOptions.Language),
                             MessageBoxButtons.YesNo) == DialogResult.No)
                     {
                         IsLoading = false;
@@ -2022,9 +2022,9 @@ if (!Utils.IsUnitTest){
                     if (MessageBox.Show(
                             string.Format(
                                 LanguageManager.GetString("Message_MissingCustomDataDirectories",
-                                    GlobalOptions.Instance.Language), strMissingSourceNames),
+                                    GlobalOptions.Language), strMissingSourceNames),
                             LanguageManager.GetString("Message_MissingCustomDataDirectories_Title",
-                                GlobalOptions.Instance.Language),
+                                GlobalOptions.Language),
                             MessageBoxButtons.YesNo) == DialogResult.No)
                     {
                         IsLoading = false;
@@ -2117,9 +2117,9 @@ if (!Utils.IsUnitTest){
                 {
                     if (MessageBox.Show(
                             string.Format(
-                                LanguageManager.GetString("Message_MissingGameplayOption", GlobalOptions.Instance.Language),
+                                LanguageManager.GetString("Message_MissingGameplayOption", GlobalOptions.Language),
                                 GameplayOption),
-                            LanguageManager.GetString("Message_MissingGameplayOption_Title", GlobalOptions.Instance.Language),
+                            LanguageManager.GetString("Message_MissingGameplayOption_Title", GlobalOptions.Language),
                             MessageBoxButtons.OKCancel, MessageBoxIcon.Error) == DialogResult.OK)
                     {
                         frmSelectBuildMethod frmPickBP = new frmSelectBuildMethod(this, true);
@@ -2363,7 +2363,7 @@ if (!Utils.IsUnitTest){
                                         ImprovementManager.CreateImprovements(this,
                                             Improvement.ImprovementSource.Quality,
                                             objQuality.InternalId, objQuality.Bonus, false, 1,
-                                            objQuality.DisplayNameShort(GlobalOptions.Instance.Language));
+                                            objQuality.DisplayNameShort(GlobalOptions.Language));
                                         if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                         {
                                             objQuality.Extra = ImprovementManager.SelectedValue;
@@ -2392,7 +2392,7 @@ if (!Utils.IsUnitTest){
                                             ImprovementManager.CreateImprovements(this,
                                                 Improvement.ImprovementSource.Quality, objQuality.InternalId,
                                                 objQuality.FirstLevelBonus, false, 1,
-                                                objQuality.DisplayNameShort(GlobalOptions.Instance.Language));
+                                                objQuality.DisplayNameShort(GlobalOptions.Language));
                                             if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                             {
                                                 objQuality.Extra = ImprovementManager.SelectedValue;
@@ -2457,23 +2457,23 @@ if (!Utils.IsUnitTest){
                                 ImprovementManager.CreateImprovement(this, string.Empty,
                                     Improvement.ImprovementSource.Quality, objQuality.InternalId,
                                     Improvement.ImprovementType.MadeMan,
-                                    objQuality.DisplayNameShort(GlobalOptions.Instance.Language));
+                                    objQuality.DisplayNameShort(GlobalOptions.Language));
                                 ImprovementManager.CreateImprovement(this, selectedContactGUID,
                                     Improvement.ImprovementSource.Quality, objQuality.InternalId,
                                     Improvement.ImprovementType.AddContact,
-                                    objQuality.DisplayNameShort(GlobalOptions.Instance.Language));
+                                    objQuality.DisplayNameShort(GlobalOptions.Language));
                                 ImprovementManager.CreateImprovement(this, selectedContactGUID,
                                     Improvement.ImprovementSource.Quality, objQuality.InternalId,
                                     Improvement.ImprovementType.ContactForcedLoyalty,
-                                    objQuality.DisplayNameShort(GlobalOptions.Instance.Language));
+                                    objQuality.DisplayNameShort(GlobalOptions.Language));
                                 ImprovementManager.CreateImprovement(this, selectedContactGUID,
                                     Improvement.ImprovementSource.Quality, objQuality.InternalId,
                                     Improvement.ImprovementType.ContactForceGroup,
-                                    objQuality.DisplayNameShort(GlobalOptions.Instance.Language));
+                                    objQuality.DisplayNameShort(GlobalOptions.Language));
                                 ImprovementManager.CreateImprovement(this, selectedContactGUID,
                                     Improvement.ImprovementSource.Quality, objQuality.InternalId,
                                     Improvement.ImprovementType.ContactMakeFree,
-                                    objQuality.DisplayNameShort(GlobalOptions.Instance.Language));
+                                    objQuality.DisplayNameShort(GlobalOptions.Language));
                             }
                         }
                     }
@@ -2777,7 +2777,7 @@ if (!Utils.IsUnitTest){
                             {
                                 ImprovementManager.CreateImprovements(this, objCyberware.SourceType,
                                     objCyberware.InternalId, objCyberware.Bonus, false, objCyberware.Rating,
-                                    objCyberware.DisplayNameShort(GlobalOptions.Instance.Language));
+                                    objCyberware.DisplayNameShort(GlobalOptions.Language));
                                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                     objCyberware.Extra = ImprovementManager.SelectedValue;
                             }
@@ -2786,7 +2786,7 @@ if (!Utils.IsUnitTest){
                             {
                                 ImprovementManager.CreateImprovements(this, objCyberware.SourceType,
                                     objCyberware.InternalId, objCyberware.WirelessBonus, false, objCyberware.Rating,
-                                    objCyberware.DisplayNameShort(GlobalOptions.Instance.Language));
+                                    objCyberware.DisplayNameShort(GlobalOptions.Language));
                                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) &&
                                     string.IsNullOrEmpty(objCyberware.Extra))
                                     objCyberware.Extra = ImprovementManager.SelectedValue;
@@ -2840,7 +2840,7 @@ if (!Utils.IsUnitTest){
                                 {
                                     ImprovementManager.CreateImprovements(this, objCyberware.SourceType,
                                         objCyberware.InternalId, objCyberware.Bonus, false, objCyberware.Rating,
-                                        objCyberware.DisplayNameShort(GlobalOptions.Instance.Language));
+                                        objCyberware.DisplayNameShort(GlobalOptions.Language));
                                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                         objCyberware.Extra = ImprovementManager.SelectedValue;
                                 }
@@ -2849,7 +2849,7 @@ if (!Utils.IsUnitTest){
                                 {
                                     ImprovementManager.CreateImprovements(this, objCyberware.SourceType,
                                         objCyberware.InternalId, objCyberware.WirelessBonus, false, objCyberware.Rating,
-                                        objCyberware.DisplayNameShort(GlobalOptions.Instance.Language));
+                                        objCyberware.DisplayNameShort(GlobalOptions.Language));
                                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) &&
                                         string.IsNullOrEmpty(objCyberware.Extra))
                                         objCyberware.Extra = ImprovementManager.SelectedValue;
@@ -2913,7 +2913,7 @@ if (!Utils.IsUnitTest){
                                     ImprovementManager.ForcedValue = objCyberware.Forced;
                                 ImprovementManager.CreateImprovements(this, objLoopCyberware.SourceType,
                                     objLoopCyberware.InternalId + "Pair", objLoopCyberware.PairBonus, false,
-                                    objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort(GlobalOptions.Instance.Language));
+                                    objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort(GlobalOptions.Language));
                                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) &&
                                     string.IsNullOrEmpty(objCyberware.Extra))
                                     objCyberware.Extra = ImprovementManager.SelectedValue;
@@ -3099,7 +3099,7 @@ if (!Utils.IsUnitTest){
                             ImprovementManager.ForcedValue = objLivingPersonaQuality.Extra;
                             ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Quality,
                                 objLivingPersonaQuality.InternalId, objLivingPersonaQuality.Bonus, false, 1,
-                                objLivingPersonaQuality.DisplayNameShort(GlobalOptions.Instance.Language));
+                                objLivingPersonaQuality.DisplayNameShort(GlobalOptions.Language));
                             if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                             {
                                 objLivingPersonaQuality.Extra = ImprovementManager.SelectedValue;
@@ -3128,7 +3128,7 @@ if (!Utils.IsUnitTest){
                                 ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Quality,
                                     objLivingPersonaQuality.InternalId, objLivingPersonaQuality.FirstLevelBonus, false,
                                     1,
-                                    objLivingPersonaQuality.DisplayNameShort(GlobalOptions.Instance.Language));
+                                    objLivingPersonaQuality.DisplayNameShort(GlobalOptions.Language));
                                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                 {
                                     objLivingPersonaQuality.Extra = ImprovementManager.SelectedValue;
@@ -3604,31 +3604,31 @@ if (!Utils.IsUnitTest){
 
             // <sex />
             objWriter.WriteElementString("sex",
-                LanguageManager.TranslateExtra(LanguageManager.ReverseTranslateExtra(Sex, GlobalOptions.Instance.Language),
+                LanguageManager.TranslateExtra(LanguageManager.ReverseTranslateExtra(Sex, GlobalOptions.Language),
                     strLanguageToPrint));
             // <age />
             objWriter.WriteElementString("age",
-                LanguageManager.TranslateExtra(LanguageManager.ReverseTranslateExtra(Age, GlobalOptions.Instance.Language),
+                LanguageManager.TranslateExtra(LanguageManager.ReverseTranslateExtra(Age, GlobalOptions.Language),
                     strLanguageToPrint));
             // <eyes />
             objWriter.WriteElementString("eyes",
-                LanguageManager.TranslateExtra(LanguageManager.ReverseTranslateExtra(Eyes, GlobalOptions.Instance.Language),
+                LanguageManager.TranslateExtra(LanguageManager.ReverseTranslateExtra(Eyes, GlobalOptions.Language),
                     strLanguageToPrint));
             // <height />
             objWriter.WriteElementString("height",
-                LanguageManager.TranslateExtra(LanguageManager.ReverseTranslateExtra(Height, GlobalOptions.Instance.Language),
+                LanguageManager.TranslateExtra(LanguageManager.ReverseTranslateExtra(Height, GlobalOptions.Language),
                     strLanguageToPrint));
             // <weight />
             objWriter.WriteElementString("weight",
-                LanguageManager.TranslateExtra(LanguageManager.ReverseTranslateExtra(Weight, GlobalOptions.Instance.Language),
+                LanguageManager.TranslateExtra(LanguageManager.ReverseTranslateExtra(Weight, GlobalOptions.Language),
                     strLanguageToPrint));
             // <skin />
             objWriter.WriteElementString("skin",
-                LanguageManager.TranslateExtra(LanguageManager.ReverseTranslateExtra(Skin, GlobalOptions.Instance.Language),
+                LanguageManager.TranslateExtra(LanguageManager.ReverseTranslateExtra(Skin, GlobalOptions.Language),
                     strLanguageToPrint));
             // <hair />
             objWriter.WriteElementString("hair",
-                LanguageManager.TranslateExtra(LanguageManager.ReverseTranslateExtra(Hair, GlobalOptions.Instance.Language),
+                LanguageManager.TranslateExtra(LanguageManager.ReverseTranslateExtra(Hair, GlobalOptions.Language),
                     strLanguageToPrint));
             // <description />
             objWriter.WriteElementString("description", Description);
@@ -3786,11 +3786,11 @@ if (!Utils.IsUnitTest){
             int intPhysicalCM = PhysicalCM;
             objWriter.WriteElementString("physicalcm", intPhysicalCM.ToString(objCulture));
             objWriter.WriteElementString("physicalcmiscorecm",
-                blnPhysicalTrackIsCore.ToString(GlobalOptions.Instance.InvariantCultureInfo));
+                blnPhysicalTrackIsCore.ToString(GlobalOptions.InvariantCultureInfo));
             // <stuncm />
             int intStunCM = StunCM;
             objWriter.WriteElementString("stuncm", intStunCM.ToString(objCulture));
-            objWriter.WriteElementString("stuncmismatrixcm", blnIsAI.ToString(GlobalOptions.Instance.InvariantCultureInfo));
+            objWriter.WriteElementString("stuncmismatrixcm", blnIsAI.ToString(GlobalOptions.InvariantCultureInfo));
 
             // Condition Monitor Progress.
             // <physicalcmfilled />
@@ -5029,7 +5029,7 @@ if (!Utils.IsUnitTest){
         public string CalculateFreeSpiritPowerPoints()
         {
             string strReturn;
-            string strSpace = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
+            string strSpace = LanguageManager.GetString("String_Space", GlobalOptions.Language);
 
             if(Metatype == "Free Spirit" && !IsCritter)
             {
@@ -5050,8 +5050,8 @@ if (!Utils.IsUnitTest){
                                      ImprovementManager.ValueOf(this,
                                          Improvement.ImprovementType.FreeSpiritPowerPoints);
 
-                strReturn = intPowerPoints.ToString(GlobalOptions.Instance.CultureInfo) + strSpace + '(' + (intPowerPoints - decPowerPoints).ToString(GlobalOptions.Instance.CultureInfo)
-                            + strSpace + LanguageManager.GetString("String_Remaining", GlobalOptions.Instance.Language) + ')';
+                strReturn = intPowerPoints.ToString(GlobalOptions.CultureInfo) + strSpace + '(' + (intPowerPoints - decPowerPoints).ToString(GlobalOptions.CultureInfo)
+                            + strSpace + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
             }
             else
             {
@@ -5080,8 +5080,8 @@ if (!Utils.IsUnitTest){
                         intUsed += 1;
                 }
 
-                strReturn = intPowerPoints.ToString(GlobalOptions.Instance.CultureInfo) + strSpace + '(' + (intPowerPoints - intUsed).ToString(GlobalOptions.Instance.CultureInfo)
-                            + strSpace + LanguageManager.GetString("String_Remaining", GlobalOptions.Instance.Language) + ')';
+                strReturn = intPowerPoints.ToString(GlobalOptions.CultureInfo) + strSpace + '(' + (intPowerPoints - intUsed).ToString(GlobalOptions.CultureInfo)
+                            + strSpace + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
             }
 
             return strReturn;
@@ -5103,10 +5103,10 @@ if (!Utils.IsUnitTest){
 
             int intPowerPoints = EDG.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.FreeSpiritPowerPoints);
 
-            string strSpace = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
+            string strSpace = LanguageManager.GetString("String_Space", GlobalOptions.Language);
 
-            return intPowerPoints.ToString(GlobalOptions.Instance.CultureInfo) + strSpace + '(' + (intPowerPoints - intUsedPowerPoints).ToString(GlobalOptions.Instance.CultureInfo)
-                        + strSpace + LanguageManager.GetString("String_Remaining", GlobalOptions.Instance.Language) + ')';
+            return intPowerPoints.ToString(GlobalOptions.CultureInfo) + strSpace + '(' + (intPowerPoints - intUsedPowerPoints).ToString(GlobalOptions.CultureInfo)
+                        + strSpace + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
         }
 
         /// <summary>
@@ -5116,10 +5116,10 @@ if (!Utils.IsUnitTest){
         /// <returns></returns>
         public IList<ListItem> ConstructModularCyberlimbList(Cyberware objModularCyberware)
         {
-            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
+            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
             List<ListItem> lstReturn = new List<ListItem>
             {
-                new ListItem("None", LanguageManager.GetString("String_None", GlobalOptions.Instance.Language))
+                new ListItem("None", LanguageManager.GetString("String_None", GlobalOptions.Language))
             };
 
             foreach(Cyberware objLoopCyberware in Cyberware.GetAllDescendants(x => x.Children))
@@ -5134,8 +5134,8 @@ if (!Utils.IsUnitTest){
                     // Make sure it's not the place where the mount is already occupied (either by us or something else)
                     if(objLoopCyberware.Children.All(x => x.PlugsIntoModularMount != objLoopCyberware.HasModularMount))
                     {
-                        string strName = objLoopCyberware.Parent?.DisplayName(GlobalOptions.Instance.Language) ??
-                                         objLoopCyberware.DisplayName(GlobalOptions.Instance.Language);
+                        string strName = objLoopCyberware.Parent?.DisplayName(GlobalOptions.Language) ??
+                                         objLoopCyberware.DisplayName(GlobalOptions.Language);
                         lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
                     }
                 }
@@ -5158,10 +5158,10 @@ if (!Utils.IsUnitTest){
                             if(objLoopCyberware.Children.All(x =>
                                x.PlugsIntoModularMount != objLoopCyberware.HasModularMount))
                             {
-                                string strName = objLoopVehicle.DisplayName(GlobalOptions.Instance.Language) +
+                                string strName = objLoopVehicle.DisplayName(GlobalOptions.Language) +
                                                  strSpaceCharacter +
-                                                 (objLoopCyberware.Parent?.DisplayName(GlobalOptions.Instance.Language) ??
-                                                  objLoopVehicleMod.DisplayName(GlobalOptions.Instance.Language));
+                                                 (objLoopCyberware.Parent?.DisplayName(GlobalOptions.Language) ??
+                                                  objLoopVehicleMod.DisplayName(GlobalOptions.Language));
                                 lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
                             }
                         }
@@ -5185,10 +5185,10 @@ if (!Utils.IsUnitTest){
                                 if(objLoopCyberware.Children.All(x =>
                                    x.PlugsIntoModularMount != objLoopCyberware.HasModularMount))
                                 {
-                                    string strName = objLoopVehicle.DisplayName(GlobalOptions.Instance.Language) +
+                                    string strName = objLoopVehicle.DisplayName(GlobalOptions.Language) +
                                                      strSpaceCharacter +
-                                                     (objLoopCyberware.Parent?.DisplayName(GlobalOptions.Instance.Language) ??
-                                                      objLoopVehicleMod.DisplayName(GlobalOptions.Instance.Language));
+                                                     (objLoopCyberware.Parent?.DisplayName(GlobalOptions.Language) ??
+                                                      objLoopVehicleMod.DisplayName(GlobalOptions.Language));
                                     lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
                                 }
                             }
@@ -5202,8 +5202,8 @@ if (!Utils.IsUnitTest){
 
         public string CalculateKarmaValue(string strLanguage, out int intReturn)
         {
-            string strColonCharacter = LanguageManager.GetString("String_Colon", GlobalOptions.Instance.Language);
-            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
+            string strColonCharacter = LanguageManager.GetString("String_Colon", GlobalOptions.Language);
+            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
             string strMessage = LanguageManager.GetString("Message_KarmaValue", strLanguage) + Environment.NewLine;
             string strKarmaString = LanguageManager.GetString("String_Karma", strLanguage);
             int intExtraKarmaToRemoveForPointBuyComparison = 0;
@@ -5215,7 +5215,7 @@ if (!Utils.IsUnitTest){
             }
 
             strMessage += Environment.NewLine + LanguageManager.GetString("Label_Base", strLanguage) + strColonCharacter +
-                          strSpaceCharacter + intReturn.ToString(GlobalOptions.Instance.CultureInfo) + strSpaceCharacter +
+                          strSpaceCharacter + intReturn.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter +
                           strKarmaString;
 
             if(BuildMethod != CharacterBuildMethod.Karma)
@@ -5275,14 +5275,14 @@ if (!Utils.IsUnitTest){
                 {
                     strMessage += Environment.NewLine +
                                   LanguageManager.GetString("Label_SumtoTenHeritage", strLanguage) + strSpaceCharacter +
-                                  (intTemp - intAttributesValue + intMetatypeQualitiesValue).ToString(GlobalOptions.Instance.CultureInfo) + strSpaceCharacter + strKarmaString;
+                                  (intTemp - intAttributesValue + intMetatypeQualitiesValue).ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + strKarmaString;
                 }
 
                 if(intAttributesValue != 0)
                 {
                     strMessage += Environment.NewLine +
                                   LanguageManager.GetString("Label_SumtoTenAttributes", strLanguage) +
-                                  strSpaceCharacter + intAttributesValue.ToString(GlobalOptions.Instance.CultureInfo) +
+                                  strSpaceCharacter + intAttributesValue.ToString(GlobalOptions.CultureInfo) +
                                   strSpaceCharacter + strKarmaString;
                 }
 
@@ -5303,7 +5303,7 @@ if (!Utils.IsUnitTest){
                 if(intTemp != 0)
                 {
                     strMessage += Environment.NewLine + LanguageManager.GetString("String_Qualities", strLanguage) +
-                                  strColonCharacter + strSpaceCharacter + intTemp.ToString(GlobalOptions.Instance.CultureInfo) +
+                                  strColonCharacter + strSpaceCharacter + intTemp.ToString(GlobalOptions.CultureInfo) +
                                   strSpaceCharacter + strKarmaString;
                     intReturn += intTemp;
                 }
@@ -5313,7 +5313,7 @@ if (!Utils.IsUnitTest){
                 if(intTemp != 0)
                 {
                     strMessage += Environment.NewLine + LanguageManager.GetString("String_FreeSpells", strLanguage) +
-                                  strColonCharacter + strSpaceCharacter + intTemp.ToString(GlobalOptions.Instance.CultureInfo) +
+                                  strColonCharacter + strSpaceCharacter + intTemp.ToString(GlobalOptions.CultureInfo) +
                                   strSpaceCharacter + strKarmaString;
                     intReturn += intTemp;
                 }
@@ -5323,7 +5323,7 @@ if (!Utils.IsUnitTest){
                 if(intTemp != 0)
                 {
                     strMessage += Environment.NewLine + LanguageManager.GetString("String_FreeCFs", strLanguage) + strColonCharacter +
-                                  strSpaceCharacter + intTemp.ToString(GlobalOptions.Instance.CultureInfo) + strSpaceCharacter +
+                                  strSpaceCharacter + intTemp.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter +
                                   strKarmaString;
                     intReturn += intTemp;
                 }
@@ -5351,7 +5351,7 @@ if (!Utils.IsUnitTest){
                 if(intTemp != 0)
                 {
                     strMessage += Environment.NewLine + LanguageManager.GetString("String_SkillPoints", strLanguage) +
-                                  strColonCharacter + strSpaceCharacter + intTemp.ToString(GlobalOptions.Instance.CultureInfo) +
+                                  strColonCharacter + strSpaceCharacter + intTemp.ToString(GlobalOptions.CultureInfo) +
                                   strSpaceCharacter + strKarmaString;
                     intReturn += intTemp;
                 }
@@ -5372,7 +5372,7 @@ if (!Utils.IsUnitTest){
                 {
                     strMessage += Environment.NewLine +
                                   LanguageManager.GetString("String_SkillGroupPoints", strLanguage) + strColonCharacter +
-                                  strSpaceCharacter + intTemp.ToString(GlobalOptions.Instance.CultureInfo) + strSpaceCharacter +
+                                  strSpaceCharacter + intTemp.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter +
                                   strKarmaString;
                     intReturn += intTemp;
                 }
@@ -5383,7 +5383,7 @@ if (!Utils.IsUnitTest){
                 {
                     strMessage += Environment.NewLine +
                                   LanguageManager.GetString("Checkbox_CreatePACKSKit_StartingNuyen", strLanguage) +
-                                  strColonCharacter + strSpaceCharacter + intTemp.ToString(GlobalOptions.Instance.CultureInfo) +
+                                  strColonCharacter + strSpaceCharacter + intTemp.ToString(GlobalOptions.CultureInfo) +
                                   strSpaceCharacter + strKarmaString;
                     intReturn += intTemp;
                 }
@@ -5393,7 +5393,7 @@ if (!Utils.IsUnitTest){
             if(intContactPointsValue != 0)
             {
                 strMessage += Environment.NewLine + LanguageManager.GetString("String_Contacts", strLanguage) + strColonCharacter +
-                              strSpaceCharacter + intContactPointsValue.ToString(GlobalOptions.Instance.CultureInfo) +
+                              strSpaceCharacter + intContactPointsValue.ToString(GlobalOptions.CultureInfo) +
                               strSpaceCharacter + strKarmaString;
                 intReturn += intContactPointsValue;
                 intExtraKarmaToRemoveForPointBuyComparison += intContactPointsValue;
@@ -5420,7 +5420,7 @@ if (!Utils.IsUnitTest){
             if(intKnowledgePointsValue != 0)
             {
                 strMessage += Environment.NewLine + LanguageManager.GetString("Label_KnowledgeSkills", strLanguage) +
-                              strColonCharacter + strSpaceCharacter + intKnowledgePointsValue.ToString(GlobalOptions.Instance.CultureInfo) +
+                              strColonCharacter + strSpaceCharacter + intKnowledgePointsValue.ToString(GlobalOptions.CultureInfo) +
                               strSpaceCharacter + strKarmaString;
                 intReturn += intKnowledgePointsValue;
                 intExtraKarmaToRemoveForPointBuyComparison += intKnowledgePointsValue;
@@ -5428,11 +5428,11 @@ if (!Utils.IsUnitTest){
 
             strMessage += Environment.NewLine + Environment.NewLine +
                           LanguageManager.GetString("String_Total", strLanguage) + strColonCharacter + strSpaceCharacter +
-                          intReturn.ToString(GlobalOptions.Instance.CultureInfo) + strSpaceCharacter + strKarmaString;
+                          intReturn.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + strKarmaString;
             strMessage += Environment.NewLine + Environment.NewLine +
                           LanguageManager.GetString("String_TotalComparisonWithPointBuy", strLanguage) + strColonCharacter +
                           strSpaceCharacter +
-                          (intReturn - intExtraKarmaToRemoveForPointBuyComparison).ToString(GlobalOptions.Instance.CultureInfo) +
+                          (intReturn - intExtraKarmaToRemoveForPointBuyComparison).ToString(GlobalOptions.CultureInfo) +
                           strSpaceCharacter + strKarmaString;
 
             return strMessage;
@@ -5515,8 +5515,8 @@ if (!Utils.IsUnitTest){
         /// </summary>
         public bool ConfirmDelete(string strMessage)
         {
-            return !GlobalOptions.Instance.ConfirmDelete ||
-                   MessageBox.Show(strMessage, LanguageManager.GetString("MessageTitle_Delete", GlobalOptions.Instance.Language),
+            return !GlobalOptions.ConfirmDelete ||
+                   MessageBox.Show(strMessage, LanguageManager.GetString("MessageTitle_Delete", GlobalOptions.Language),
                        MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
         }
 
@@ -5525,9 +5525,9 @@ if (!Utils.IsUnitTest){
         /// </summary>
         public bool ConfirmKarmaExpense(string strMessage)
         {
-            if(GlobalOptions.Instance.ConfirmKarmaExpense &&
+            if(GlobalOptions.ConfirmKarmaExpense &&
                 MessageBox.Show(strMessage,
-                    LanguageManager.GetString("MessageTitle_ConfirmKarmaExpense", GlobalOptions.Instance.Language),
+                    LanguageManager.GetString("MessageTitle_ConfirmKarmaExpense", GlobalOptions.Language),
                     MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 return false;
             else
@@ -6318,7 +6318,7 @@ if (!Utils.IsUnitTest){
                     catch(UnauthorizedAccessException)
                     {
                         MessageBox.Show(LanguageManager.GetString("Message_Insufficient_Permissions_Warning",
-                            GlobalOptions.Instance.Language));
+                            GlobalOptions.Language));
                     }
                 }
 
@@ -6576,7 +6576,7 @@ if (!Utils.IsUnitTest){
             {
                 if(!string.IsNullOrEmpty(_strCachedCharacterGrammaticGender))
                     return _strCachedCharacterGrammaticGender;
-                switch(LanguageManager.ReverseTranslateExtra(Sex, GlobalOptions.Instance.Language).ToLower())
+                switch(LanguageManager.ReverseTranslateExtra(Sex, GlobalOptions.Language).ToLower())
                 {
                     case "m":
                     case "male":
@@ -6836,7 +6836,7 @@ if (!Utils.IsUnitTest){
                     return Alias;
                 if(!string.IsNullOrWhiteSpace(Name))
                     return Name;
-                return LanguageManager.GetString("String_UnnamedCharacter", GlobalOptions.Instance.Language);
+                return LanguageManager.GetString("String_UnnamedCharacter", GlobalOptions.Language);
             }
         }
 
@@ -7102,7 +7102,7 @@ if (!Utils.IsUnitTest){
             }
         }
 
-        public string DisplayKarma => Karma.ToString(GlobalOptions.Instance.CultureInfo);
+        public string DisplayKarma => Karma.ToString(GlobalOptions.CultureInfo);
 
         /// <summary>
         /// Special.
@@ -7194,7 +7194,7 @@ if (!Utils.IsUnitTest){
             }
         }
 
-        public string DisplayCareerKarma => CareerKarma.ToString(GlobalOptions.Instance.CultureInfo);
+        public string DisplayCareerKarma => CareerKarma.ToString(GlobalOptions.CultureInfo);
 
         private decimal _decCachedCareerNuyen = decimal.MinValue;
 
@@ -7222,7 +7222,7 @@ if (!Utils.IsUnitTest){
         }
 
         public string DisplayCareerNuyen =>
-            CareerNuyen.ToString(_objOptions.NuyenFormat, GlobalOptions.Instance.CultureInfo) + '¥';
+            CareerNuyen.ToString(_objOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
         /// <summary>
         /// Whether or not the character is a Critter.
@@ -7674,10 +7674,10 @@ if (!Utils.IsUnitTest){
         {
             get
             {
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
-                return PowerPointsTotal.ToString(GlobalOptions.Instance.CultureInfo) + strSpaceCharacter + '(' +
-                       (PowerPointsTotal - PowerPointsUsed).ToString(GlobalOptions.Instance.CultureInfo) + strSpaceCharacter +
-                       LanguageManager.GetString("String_Remaining", GlobalOptions.Instance.Language) + ')';
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                return PowerPointsTotal.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + '(' +
+                       (PowerPointsTotal - PowerPointsUsed).ToString(GlobalOptions.CultureInfo) + strSpaceCharacter +
+                       LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
             }
         }
 
@@ -8235,19 +8235,19 @@ if (!Utils.IsUnitTest){
             }
         }
 
-        public string DisplayEssence => Essence().ToString(_objOptions.EssenceFormat, GlobalOptions.Instance.CultureInfo);
+        public string DisplayEssence => Essence().ToString(_objOptions.EssenceFormat, GlobalOptions.CultureInfo);
 
         public string DisplayCyberwareEssence =>
-            CyberwareEssence.ToString(_objOptions.EssenceFormat, GlobalOptions.Instance.CultureInfo);
+            CyberwareEssence.ToString(_objOptions.EssenceFormat, GlobalOptions.CultureInfo);
 
         public string DisplayBiowareEssence =>
-            BiowareEssence.ToString(_objOptions.EssenceFormat, GlobalOptions.Instance.CultureInfo);
+            BiowareEssence.ToString(_objOptions.EssenceFormat, GlobalOptions.CultureInfo);
 
-        public string DisplayEssenceHole => EssenceHole.ToString(_objOptions.EssenceFormat, GlobalOptions.Instance.CultureInfo);
+        public string DisplayEssenceHole => EssenceHole.ToString(_objOptions.EssenceFormat, GlobalOptions.CultureInfo);
 
         public string DisplayPrototypeTranshumanEssenceUsed =>
-            PrototypeTranshumanEssenceUsed.ToString(_objOptions.EssenceFormat, GlobalOptions.Instance.CultureInfo) + " / " +
-            PrototypeTranshuman.ToString(_objOptions.EssenceFormat, GlobalOptions.Instance.CultureInfo);
+            PrototypeTranshumanEssenceUsed.ToString(_objOptions.EssenceFormat, GlobalOptions.CultureInfo) + " / " +
+            PrototypeTranshuman.ToString(_objOptions.EssenceFormat, GlobalOptions.CultureInfo);
 
         #region Initiative
 
@@ -8256,9 +8256,9 @@ if (!Utils.IsUnitTest){
         /// <summary>
         /// Physical Initiative.
         /// </summary>
-        public string Initiative => string.Format(LanguageManager.GetString("String_Initiative", GlobalOptions.Instance.Language),
-            InitiativeValue.ToString(GlobalOptions.Instance.CultureInfo),
-            InitiativeDice.ToString(GlobalOptions.Instance.CultureInfo));
+        public string Initiative => string.Format(LanguageManager.GetString("String_Initiative", GlobalOptions.Language),
+            InitiativeValue.ToString(GlobalOptions.CultureInfo),
+            InitiativeDice.ToString(GlobalOptions.CultureInfo));
 
         public string GetInitiative(CultureInfo objCulture, string strLanguage)
         {
@@ -8273,17 +8273,17 @@ if (!Utils.IsUnitTest){
             {
                 int intINTAttributeModifiers = INT.AttributeModifiers;
                 int intREAAttributeModifiers = REA.AttributeModifiers;
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
 
-                string strInit = REA.DisplayAbbrev + strSpaceCharacter + '(' + REA.Value.ToString(GlobalOptions.Instance.CultureInfo) + ')'
-                                 + strSpaceCharacter + '+' + strSpaceCharacter + INT.DisplayAbbrev + strSpaceCharacter + '(' + INT.Value.ToString(GlobalOptions.Instance.CultureInfo) + ')';
+                string strInit = REA.DisplayAbbrev + strSpaceCharacter + '(' + REA.Value.ToString(GlobalOptions.CultureInfo) + ')'
+                                 + strSpaceCharacter + '+' + strSpaceCharacter + INT.DisplayAbbrev + strSpaceCharacter + '(' + INT.Value.ToString(GlobalOptions.CultureInfo) + ')';
                 if(ImprovementManager.ValueOf(this, Improvement.ImprovementType.Initiative) != 0 || intINTAttributeModifiers != 0 || intREAAttributeModifiers != 0 || WoundModifier != 0)
                 {
-                    strInit += strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Instance.Language) + strSpaceCharacter +
-                               '(' + (ImprovementManager.ValueOf(this, Improvement.ImprovementType.Initiative) + intINTAttributeModifiers + intREAAttributeModifiers + WoundModifier).ToString(GlobalOptions.Instance.CultureInfo) + ')';
+                    strInit += strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + strSpaceCharacter +
+                               '(' + (ImprovementManager.ValueOf(this, Improvement.ImprovementType.Initiative) + intINTAttributeModifiers + intREAAttributeModifiers + WoundModifier).ToString(GlobalOptions.CultureInfo) + ')';
                 }
 
-                return string.Format(LanguageManager.GetString("String_Initiative", GlobalOptions.Instance.Language), strInit, InitiativeDice.ToString(GlobalOptions.Instance.CultureInfo));
+                return string.Format(LanguageManager.GetString("String_Initiative", GlobalOptions.Language), strInit, InitiativeDice.ToString(GlobalOptions.CultureInfo));
             }
         }
 
@@ -8322,9 +8322,9 @@ if (!Utils.IsUnitTest){
         /// <summary>
         /// Astral Initiative.
         /// </summary>
-        public string AstralInitiative => string.Format(LanguageManager.GetString("String_Initiative", GlobalOptions.Instance.Language),
-                AstralInitiativeValue.ToString(GlobalOptions.Instance.CultureInfo),
-                AstralInitiativeDice.ToString(GlobalOptions.Instance.CultureInfo));
+        public string AstralInitiative => string.Format(LanguageManager.GetString("String_Initiative", GlobalOptions.Language),
+                AstralInitiativeValue.ToString(GlobalOptions.CultureInfo),
+                AstralInitiativeDice.ToString(GlobalOptions.CultureInfo));
 
         public string GetAstralInitiative(CultureInfo objCulture, string strLanguageToPrint)
         {
@@ -8340,12 +8340,12 @@ if (!Utils.IsUnitTest){
                 if(!MAGEnabled)
                     return string.Empty;
                 int intINTAttributeModifiers = INT.AttributeModifiers;
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
-                string strInit = INT.DisplayAbbrev + strSpaceCharacter + '(' + INT.Value.ToString(GlobalOptions.Instance.CultureInfo) + ')' +
-                                 strSpaceCharacter + '×' + strSpaceCharacter + 2.ToString(GlobalOptions.Instance.CultureInfo);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                string strInit = INT.DisplayAbbrev + strSpaceCharacter + '(' + INT.Value.ToString(GlobalOptions.CultureInfo) + ')' +
+                                 strSpaceCharacter + '×' + strSpaceCharacter + 2.ToString(GlobalOptions.CultureInfo);
                 if(intINTAttributeModifiers != 0 || WoundModifier != 0)
-                    strInit += LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Instance.Language) + strSpaceCharacter + '(' + (intINTAttributeModifiers + WoundModifier).ToString(GlobalOptions.Instance.CultureInfo) + ')';
-                return string.Format(LanguageManager.GetString("String_Initiative", GlobalOptions.Instance.Language), strInit, AstralInitiativeDice.ToString());
+                    strInit += LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + strSpaceCharacter + '(' + (intINTAttributeModifiers + WoundModifier).ToString(GlobalOptions.CultureInfo) + ')';
+                return string.Format(LanguageManager.GetString("String_Initiative", GlobalOptions.Language), strInit, AstralInitiativeDice.ToString());
             }
         }
 
@@ -8368,7 +8368,7 @@ if (!Utils.IsUnitTest){
         /// <summary>
         /// Formatted AR Matrix Initiative.
         /// </summary>
-        public string MatrixInitiative => string.Format(LanguageManager.GetString("String_Initiative", GlobalOptions.Instance.Language),
+        public string MatrixInitiative => string.Format(LanguageManager.GetString("String_Initiative", GlobalOptions.Language),
             MatrixInitiativeValue.ToString(),
             MatrixInitiativeDice.ToString());
 
@@ -8385,12 +8385,12 @@ if (!Utils.IsUnitTest){
             {
                 int intINTAttributeModifiers = INT.AttributeModifiers;
 
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
 
                 string strInit;
                 if(IsAI)
                 {
-                    strInit = INT.DisplayAbbrev + strSpaceCharacter + '(' + INT.Value.ToString(GlobalOptions.Instance.CultureInfo) + ')';
+                    strInit = INT.DisplayAbbrev + strSpaceCharacter + '(' + INT.Value.ToString(GlobalOptions.CultureInfo) + ')';
 
                     if(HomeNode != null)
                     {
@@ -8402,29 +8402,29 @@ if (!Utils.IsUnitTest){
                                 intHomeNodeDP = intHomeNodePilot;
                         }
 
-                        strInit += strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("String_DataProcessing") + strSpaceCharacter + '(' + intHomeNodeDP.ToString(GlobalOptions.Instance.CultureInfo) + ')';
+                        strInit += strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("String_DataProcessing") + strSpaceCharacter + '(' + intHomeNodeDP.ToString(GlobalOptions.CultureInfo) + ')';
                     }
 
                     if(intINTAttributeModifiers != 0 || WoundModifier != 0)
                     {
-                        strInit += strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Instance.Language) + strSpaceCharacter +
-                                   '(' + (intINTAttributeModifiers + WoundModifier).ToString(GlobalOptions.Instance.CultureInfo) + ')';
+                        strInit += strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + strSpaceCharacter +
+                                   '(' + (intINTAttributeModifiers + WoundModifier).ToString(GlobalOptions.CultureInfo) + ')';
                     }
                 }
                 else
                 {
                     int intREAAttributeModifiers = REA.AttributeModifiers;
 
-                    strInit = REA.DisplayAbbrev + strSpaceCharacter + '(' + REA.Value.ToString(GlobalOptions.Instance.CultureInfo) + ')'
-                              + strSpaceCharacter + '+' + strSpaceCharacter + INT.DisplayAbbrev + strSpaceCharacter + '(' + INT.Value.ToString(GlobalOptions.Instance.CultureInfo) + ')';
+                    strInit = REA.DisplayAbbrev + strSpaceCharacter + '(' + REA.Value.ToString(GlobalOptions.CultureInfo) + ')'
+                              + strSpaceCharacter + '+' + strSpaceCharacter + INT.DisplayAbbrev + strSpaceCharacter + '(' + INT.Value.ToString(GlobalOptions.CultureInfo) + ')';
                     if(ImprovementManager.ValueOf(this, Improvement.ImprovementType.Initiative) != 0 || intINTAttributeModifiers != 0 || intREAAttributeModifiers != 0 || WoundModifier != 0)
                     {
-                        strInit += strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Instance.Language) + strSpaceCharacter +
-                                   '(' + (ImprovementManager.ValueOf(this, Improvement.ImprovementType.Initiative) + intINTAttributeModifiers + intREAAttributeModifiers + WoundModifier).ToString(GlobalOptions.Instance.CultureInfo) + ')';
+                        strInit += strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + strSpaceCharacter +
+                                   '(' + (ImprovementManager.ValueOf(this, Improvement.ImprovementType.Initiative) + intINTAttributeModifiers + intREAAttributeModifiers + WoundModifier).ToString(GlobalOptions.CultureInfo) + ')';
                     }
                 }
 
-                return string.Format(LanguageManager.GetString("String_Initiative", GlobalOptions.Instance.Language), strInit, MatrixInitiativeDice.ToString(GlobalOptions.Instance.CultureInfo));
+                return string.Format(LanguageManager.GetString("String_Initiative", GlobalOptions.Language), strInit, MatrixInitiativeDice.ToString(GlobalOptions.CultureInfo));
             }
         }
 
@@ -8495,7 +8495,7 @@ if (!Utils.IsUnitTest){
                     return MatrixInitiative;
                 }
 
-                return string.Format(LanguageManager.GetString(ActiveCommlink == null ? "String_MatrixInitiative" : "String_Initiative", GlobalOptions.Instance.Language),
+                return string.Format(LanguageManager.GetString(ActiveCommlink == null ? "String_MatrixInitiative" : "String_Initiative", GlobalOptions.Language),
                     MatrixInitiativeColdValue.ToString(),
                     MatrixInitiativeColdDice.ToString());
             }
@@ -8524,22 +8524,22 @@ if (!Utils.IsUnitTest){
 
                 int intINTAttributeModifiers = INT.AttributeModifiers;
 
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
 
 
-                string strInit = INT.DisplayAbbrev + strSpaceCharacter + '(' + INT.Value.ToString(GlobalOptions.Instance.CultureInfo) + ')';
+                string strInit = INT.DisplayAbbrev + strSpaceCharacter + '(' + INT.Value.ToString(GlobalOptions.CultureInfo) + ')';
                 if(ActiveCommlink != null)
                 {
-                    strInit += strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("String_DataProcessing") + strSpaceCharacter + '(' + ActiveCommlink.GetTotalMatrixAttribute("Data Processing").ToString(GlobalOptions.Instance.CultureInfo) + ')';
+                    strInit += strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("String_DataProcessing") + strSpaceCharacter + '(' + ActiveCommlink.GetTotalMatrixAttribute("Data Processing").ToString(GlobalOptions.CultureInfo) + ')';
                 }
 
                 if(ImprovementManager.ValueOf(this, Improvement.ImprovementType.MatrixInitiative) != 0 || intINTAttributeModifiers != 0 || WoundModifier != 0)
                 {
-                    strInit += strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Instance.Language) + strSpaceCharacter +
-                               '(' + (ImprovementManager.ValueOf(this, Improvement.ImprovementType.MatrixInitiative) + intINTAttributeModifiers + WoundModifier).ToString(GlobalOptions.Instance.CultureInfo) + ')';
+                    strInit += strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + strSpaceCharacter +
+                               '(' + (ImprovementManager.ValueOf(this, Improvement.ImprovementType.MatrixInitiative) + intINTAttributeModifiers + WoundModifier).ToString(GlobalOptions.CultureInfo) + ')';
                 }
 
-                return string.Format(LanguageManager.GetString(ActiveCommlink == null ? "String_MatrixInitiativeLong" : "String_Initiative", GlobalOptions.Instance.Language),
+                return string.Format(LanguageManager.GetString(ActiveCommlink == null ? "String_MatrixInitiativeLong" : "String_Initiative", GlobalOptions.Language),
                     strInit, MatrixInitiativeColdDice.ToString());
             }
         }
@@ -8595,7 +8595,7 @@ if (!Utils.IsUnitTest){
                     return MatrixInitiative;
                 }
 
-                return string.Format(LanguageManager.GetString(ActiveCommlink == null ? "String_MatrixInitiative" : "String_Initiative", GlobalOptions.Instance.Language),
+                return string.Format(LanguageManager.GetString(ActiveCommlink == null ? "String_MatrixInitiative" : "String_Initiative", GlobalOptions.Language),
                         MatrixInitiativeHotValue.ToString(),
                         MatrixInitiativeHotDice.ToString());
             }
@@ -8624,22 +8624,22 @@ if (!Utils.IsUnitTest){
 
                 int intINTAttributeModifiers = INT.AttributeModifiers;
 
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
 
 
-                string strInit = INT.DisplayAbbrev + strSpaceCharacter + '(' + INT.Value.ToString(GlobalOptions.Instance.CultureInfo) + ')';
+                string strInit = INT.DisplayAbbrev + strSpaceCharacter + '(' + INT.Value.ToString(GlobalOptions.CultureInfo) + ')';
                 if(ActiveCommlink != null)
                 {
-                    strInit += strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("String_DataProcessing") + strSpaceCharacter + '(' + ActiveCommlink.GetTotalMatrixAttribute("Data Processing").ToString(GlobalOptions.Instance.CultureInfo) + ')';
+                    strInit += strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("String_DataProcessing") + strSpaceCharacter + '(' + ActiveCommlink.GetTotalMatrixAttribute("Data Processing").ToString(GlobalOptions.CultureInfo) + ')';
                 }
 
                 if(ImprovementManager.ValueOf(this, Improvement.ImprovementType.MatrixInitiative) != 0 || intINTAttributeModifiers != 0 || WoundModifier != 0)
                 {
-                    strInit += strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Instance.Language) + strSpaceCharacter +
-                               '(' + (ImprovementManager.ValueOf(this, Improvement.ImprovementType.MatrixInitiative) + intINTAttributeModifiers + WoundModifier).ToString(GlobalOptions.Instance.CultureInfo) + ')';
+                    strInit += strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + strSpaceCharacter +
+                               '(' + (ImprovementManager.ValueOf(this, Improvement.ImprovementType.MatrixInitiative) + intINTAttributeModifiers + WoundModifier).ToString(GlobalOptions.CultureInfo) + ')';
                 }
 
-                return string.Format(LanguageManager.GetString(ActiveCommlink == null ? "String_MatrixInitiativeLong" : "String_Initiative", GlobalOptions.Instance.Language),
+                return string.Format(LanguageManager.GetString(ActiveCommlink == null ? "String_MatrixInitiativeLong" : "String_Initiative", GlobalOptions.Language),
                     strInit, MatrixInitiativeHotDice.ToString());
             }
         }
@@ -8704,12 +8704,12 @@ if (!Utils.IsUnitTest){
         {
             get
             {
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                 StringBuilder objToolTip = new StringBuilder(
-                    CHA.DisplayAbbrev + strSpaceCharacter + '(' + CHA.TotalValue.ToString(GlobalOptions.Instance.CultureInfo) +
+                    CHA.DisplayAbbrev + strSpaceCharacter + '(' + CHA.TotalValue.ToString(GlobalOptions.CultureInfo) +
                     ')' +
                     strSpaceCharacter + '+' + strSpaceCharacter +
-                    WIL.DisplayAbbrev + strSpaceCharacter + '(' + WIL.TotalValue.ToString(GlobalOptions.Instance.CultureInfo) +
+                    WIL.DisplayAbbrev + strSpaceCharacter + '(' + WIL.TotalValue.ToString(GlobalOptions.CultureInfo) +
                     ')');
                 foreach(Improvement objLoopImprovement in Improvements)
                 {
@@ -8717,9 +8717,9 @@ if (!Utils.IsUnitTest){
                         objLoopImprovement.Enabled)
                     {
                         objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                          GetObjectName(objLoopImprovement, GlobalOptions.Instance.Language) +
+                                          GetObjectName(objLoopImprovement, GlobalOptions.Language) +
                                           strSpaceCharacter + '(' +
-                                          objLoopImprovement.Value.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                                          objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
                     }
                 }
 
@@ -8739,12 +8739,12 @@ if (!Utils.IsUnitTest){
         {
             get
             {
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                 StringBuilder objToolTip = new StringBuilder(
-                    CHA.DisplayAbbrev + strSpaceCharacter + '(' + CHA.TotalValue.ToString(GlobalOptions.Instance.CultureInfo) +
+                    CHA.DisplayAbbrev + strSpaceCharacter + '(' + CHA.TotalValue.ToString(GlobalOptions.CultureInfo) +
                     ')' +
                     strSpaceCharacter + '+' + strSpaceCharacter +
-                    INT.DisplayAbbrev + strSpaceCharacter + '(' + INT.TotalValue.ToString(GlobalOptions.Instance.CultureInfo) +
+                    INT.DisplayAbbrev + strSpaceCharacter + '(' + INT.TotalValue.ToString(GlobalOptions.CultureInfo) +
                     ')');
                 foreach(Improvement objLoopImprovement in Improvements)
                 {
@@ -8753,9 +8753,9 @@ if (!Utils.IsUnitTest){
                         objLoopImprovement.Enabled)
                     {
                         objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                          GetObjectName(objLoopImprovement, GlobalOptions.Instance.Language) +
+                                          GetObjectName(objLoopImprovement, GlobalOptions.Language) +
                                           strSpaceCharacter + '(' +
-                                          objLoopImprovement.Value.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                                          objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
                     }
                 }
 
@@ -8776,12 +8776,12 @@ if (!Utils.IsUnitTest){
         {
             get
             {
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                 StringBuilder objToolTip = new StringBuilder(
-                    CHA.DisplayAbbrev + strSpaceCharacter + '(' + CHA.TotalValue.ToString(GlobalOptions.Instance.CultureInfo) +
+                    CHA.DisplayAbbrev + strSpaceCharacter + '(' + CHA.TotalValue.ToString(GlobalOptions.CultureInfo) +
                     ')' +
                     strSpaceCharacter + '+' + strSpaceCharacter +
-                    WIL.DisplayAbbrev + strSpaceCharacter + '(' + WIL.TotalValue.ToString(GlobalOptions.Instance.CultureInfo) +
+                    WIL.DisplayAbbrev + strSpaceCharacter + '(' + WIL.TotalValue.ToString(GlobalOptions.CultureInfo) +
                     ')');
                 foreach(Improvement objLoopImprovement in Improvements)
                 {
@@ -8790,9 +8790,9 @@ if (!Utils.IsUnitTest){
                         objLoopImprovement.Enabled)
                     {
                         objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                          GetObjectName(objLoopImprovement, GlobalOptions.Instance.Language) +
+                                          GetObjectName(objLoopImprovement, GlobalOptions.Language) +
                                           strSpaceCharacter + '(' +
-                                          objLoopImprovement.Value.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                                          objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
                     }
                 }
 
@@ -8810,12 +8810,12 @@ if (!Utils.IsUnitTest){
         {
             get
             {
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                 StringBuilder objToolTip = new StringBuilder(
-                    BOD.DisplayAbbrev + strSpaceCharacter + '(' + BOD.TotalValue.ToString(GlobalOptions.Instance.CultureInfo) +
+                    BOD.DisplayAbbrev + strSpaceCharacter + '(' + BOD.TotalValue.ToString(GlobalOptions.CultureInfo) +
                     ')' +
                     strSpaceCharacter + '+' + strSpaceCharacter +
-                    STR.DisplayAbbrev + strSpaceCharacter + '(' + STR.TotalValue.ToString(GlobalOptions.Instance.CultureInfo) +
+                    STR.DisplayAbbrev + strSpaceCharacter + '(' + STR.TotalValue.ToString(GlobalOptions.CultureInfo) +
                     ')');
                 foreach(Improvement objLoopImprovement in Improvements)
                 {
@@ -8823,16 +8823,16 @@ if (!Utils.IsUnitTest){
                         objLoopImprovement.Enabled)
                     {
                         objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                          GetObjectName(objLoopImprovement, GlobalOptions.Instance.Language) +
+                                          GetObjectName(objLoopImprovement, GlobalOptions.Language) +
                                           strSpaceCharacter + '(' +
-                                          objLoopImprovement.Value.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                                          objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
                     }
                 }
 
                 objToolTip.Append(Environment.NewLine +
-                                  string.Format(LanguageManager.GetString("Tip_LiftAndCarry", GlobalOptions.Instance.Language)
-                                      , (STR.TotalValue * 15).ToString(GlobalOptions.Instance.CultureInfo)
-                                      , (STR.TotalValue * 10).ToString(GlobalOptions.Instance.CultureInfo)));
+                                  string.Format(LanguageManager.GetString("Tip_LiftAndCarry", GlobalOptions.Language)
+                                      , (STR.TotalValue * 15).ToString(GlobalOptions.CultureInfo)
+                                      , (STR.TotalValue * 10).ToString(GlobalOptions.CultureInfo)));
                 return objToolTip.ToString();
             }
         }
@@ -8847,12 +8847,12 @@ if (!Utils.IsUnitTest){
         {
             get
             {
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                 StringBuilder objToolTip = new StringBuilder(
-                    LOG.DisplayAbbrev + strSpaceCharacter + '(' + LOG.TotalValue.ToString(GlobalOptions.Instance.CultureInfo) +
+                    LOG.DisplayAbbrev + strSpaceCharacter + '(' + LOG.TotalValue.ToString(GlobalOptions.CultureInfo) +
                     ')' +
                     strSpaceCharacter + '+' + strSpaceCharacter +
-                    WIL.DisplayAbbrev + strSpaceCharacter + '(' + WIL.TotalValue.ToString(GlobalOptions.Instance.CultureInfo) +
+                    WIL.DisplayAbbrev + strSpaceCharacter + '(' + WIL.TotalValue.ToString(GlobalOptions.CultureInfo) +
                     ')');
                 foreach(Improvement objLoopImprovement in Improvements)
                 {
@@ -8860,9 +8860,9 @@ if (!Utils.IsUnitTest){
                         objLoopImprovement.Enabled)
                     {
                         objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                          GetObjectName(objLoopImprovement, GlobalOptions.Instance.Language) +
+                                          GetObjectName(objLoopImprovement, GlobalOptions.Language) +
                                           strSpaceCharacter + '(' +
-                                          objLoopImprovement.Value.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                                          objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
                     }
                 }
 
@@ -9112,9 +9112,9 @@ if (!Utils.IsUnitTest){
                 int intTotalStreetCred = TotalStreetCred;
                 int intCalculatedStreetCred = intTotalStreetCred - StreetCred;
                 return (intCalculatedStreetCred >= 0
-                           ? " + " + intCalculatedStreetCred.ToString(GlobalOptions.Instance.CultureInfo)
-                           : " - " + (-intCalculatedStreetCred).ToString(GlobalOptions.Instance.CultureInfo)) + " = " +
-                       intTotalStreetCred.ToString(GlobalOptions.Instance.CultureInfo);
+                           ? " + " + intCalculatedStreetCred.ToString(GlobalOptions.CultureInfo)
+                           : " - " + (-intCalculatedStreetCred).ToString(GlobalOptions.CultureInfo)) + " = " +
+                       intTotalStreetCred.ToString(GlobalOptions.CultureInfo);
             }
         }
 
@@ -9127,30 +9127,30 @@ if (!Utils.IsUnitTest){
         {
             get
             {
-                StringBuilder objReturn = new StringBuilder(StreetCred.ToString(GlobalOptions.Instance.CultureInfo));
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
+                StringBuilder objReturn = new StringBuilder(StreetCred.ToString(GlobalOptions.CultureInfo));
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
 
                 foreach(Improvement objImprovement in _lstImprovements)
                 {
                     if(objImprovement.ImproveType == Improvement.ImprovementType.StreetCred && objImprovement.Enabled)
                         objReturn.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                         GetObjectName(objImprovement, GlobalOptions.Instance.Language) + strSpaceCharacter +
-                                         '(' + objImprovement.Value.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                                         GetObjectName(objImprovement, GlobalOptions.Language) + strSpaceCharacter +
+                                         '(' + objImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
                 }
 
                 objReturn.Append(strSpaceCharacter + '+' + strSpaceCharacter + '[' +
-                                 LanguageManager.GetString("String_CareerKarma", GlobalOptions.Instance.Language) +
+                                 LanguageManager.GetString("String_CareerKarma", GlobalOptions.Language) +
                                  strSpaceCharacter + '÷' + strSpaceCharacter +
                                  (10 + ImprovementManager.ValueOf(this,
                                       Improvement.ImprovementType.StreetCredMultiplier))
-                                 .ToString(GlobalOptions.Instance.CultureInfo) + ']' + strSpaceCharacter + '(' +
+                                 .ToString(GlobalOptions.CultureInfo) + ']' + strSpaceCharacter + '(' +
                                  (CareerKarma / (10 + ImprovementManager.ValueOf(this,
                                                      Improvement.ImprovementType.StreetCredMultiplier)))
-                                 .ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                                 .ToString(GlobalOptions.CultureInfo) + ')');
 
                 if(BurntStreetCred != 0)
                     objReturn.Append(strSpaceCharacter + '-' + strSpaceCharacter +
-                                     LanguageManager.GetString("String_BurntStreetCred", GlobalOptions.Instance.Language) +
+                                     LanguageManager.GetString("String_BurntStreetCred", GlobalOptions.Language) +
                                      strSpaceCharacter + '(' + BurntStreetCred + ')');
 
                 return objReturn.ToString();
@@ -9181,14 +9181,14 @@ if (!Utils.IsUnitTest){
         {
             get
             {
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                 int intCalculatedNotoriety = CalculatedNotoriety;
                 return (intCalculatedNotoriety >= 0
                            ? strSpaceCharacter + '+' + strSpaceCharacter +
-                             intCalculatedNotoriety.ToString(GlobalOptions.Instance.CultureInfo)
+                             intCalculatedNotoriety.ToString(GlobalOptions.CultureInfo)
                            : strSpaceCharacter + '-' + strSpaceCharacter +
-                             (-intCalculatedNotoriety).ToString(GlobalOptions.Instance.CultureInfo)) + strSpaceCharacter + '=' +
-                       strSpaceCharacter + TotalNotoriety.ToString(GlobalOptions.Instance.CultureInfo);
+                             (-intCalculatedNotoriety).ToString(GlobalOptions.CultureInfo)) + strSpaceCharacter + '=' +
+                       strSpaceCharacter + TotalNotoriety.ToString(GlobalOptions.CultureInfo);
             }
         }
 
@@ -9199,28 +9199,28 @@ if (!Utils.IsUnitTest){
         {
             get
             {
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
-                StringBuilder objReturn = new StringBuilder(Notoriety.ToString(GlobalOptions.Instance.CultureInfo));
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                StringBuilder objReturn = new StringBuilder(Notoriety.ToString(GlobalOptions.CultureInfo));
 
                 foreach(Improvement objImprovement in _lstImprovements)
                 {
                     if(objImprovement.ImproveType == Improvement.ImprovementType.Notoriety && objImprovement.Enabled)
                         objReturn.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                         GetObjectName(objImprovement, GlobalOptions.Instance.Language) + strSpaceCharacter +
-                                         '(' + objImprovement.Value.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                                         GetObjectName(objImprovement, GlobalOptions.Language) + strSpaceCharacter +
+                                         '(' + objImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
                 }
 
                 /*
                 int intEnemies = Contacts.Count(x => x.EntityType == ContactType.Enemy);
                 if (intEnemies > 0)
-                    objReturn.Append(strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Label_SummaryEnemies", GlobalOptions.Instance.Language) + strSpaceCharacter + '(' + intEnemies.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                    objReturn.Append(strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Label_SummaryEnemies", GlobalOptions.Language) + strSpaceCharacter + '(' + intEnemies.ToString(GlobalOptions.CultureInfo) + ')');
                     */
 
                 if(BurntStreetCred > 0)
                     objReturn.Append(strSpaceCharacter + '-' + strSpaceCharacter +
-                                     LanguageManager.GetString("String_BurntStreetCred", GlobalOptions.Instance.Language) +
+                                     LanguageManager.GetString("String_BurntStreetCred", GlobalOptions.Language) +
                                      strSpaceCharacter + '(' +
-                                     (BurntStreetCred / 2).ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                                     (BurntStreetCred / 2).ToString(GlobalOptions.CultureInfo) + ')');
 
                 string strReturn = objReturn.ToString();
 
@@ -9264,15 +9264,15 @@ if (!Utils.IsUnitTest){
         {
             get
             {
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                 int intTotalPublicAwareness = TotalPublicAwareness;
                 int intCalculatedPublicAwareness = intTotalPublicAwareness - PublicAwareness;
                 return (intCalculatedPublicAwareness >= 0
                            ? strSpaceCharacter + '+' + strSpaceCharacter +
-                             intCalculatedPublicAwareness.ToString(GlobalOptions.Instance.CultureInfo)
+                             intCalculatedPublicAwareness.ToString(GlobalOptions.CultureInfo)
                            : strSpaceCharacter + '-' + strSpaceCharacter +
-                             (-intCalculatedPublicAwareness).ToString(GlobalOptions.Instance.CultureInfo)) + strSpaceCharacter +
-                       '=' + strSpaceCharacter + intTotalPublicAwareness.ToString(GlobalOptions.Instance.CultureInfo);
+                             (-intCalculatedPublicAwareness).ToString(GlobalOptions.CultureInfo)) + strSpaceCharacter +
+                       '=' + strSpaceCharacter + intTotalPublicAwareness.ToString(GlobalOptions.CultureInfo);
             }
         }
 
@@ -9283,27 +9283,27 @@ if (!Utils.IsUnitTest){
         {
             get
             {
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
-                StringBuilder objReturn = new StringBuilder(PublicAwareness.ToString(GlobalOptions.Instance.CultureInfo));
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                StringBuilder objReturn = new StringBuilder(PublicAwareness.ToString(GlobalOptions.CultureInfo));
 
                 foreach(Improvement objImprovement in _lstImprovements)
                 {
                     if(objImprovement.ImproveType == Improvement.ImprovementType.PublicAwareness &&
                         objImprovement.Enabled)
                         objReturn.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                         GetObjectName(objImprovement, GlobalOptions.Instance.Language) + strSpaceCharacter +
-                                         '(' + objImprovement.Value.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                                         GetObjectName(objImprovement, GlobalOptions.Language) + strSpaceCharacter +
+                                         '(' + objImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
                 }
 
                 if(_objOptions.UseCalculatedPublicAwareness)
                 {
                     objReturn.Append(strSpaceCharacter + '+' + strSpaceCharacter + '[' +
-                                     LanguageManager.GetString("String_StreetCred", GlobalOptions.Instance.Language) +
+                                     LanguageManager.GetString("String_StreetCred", GlobalOptions.Language) +
                                      strSpaceCharacter + '+' + strSpaceCharacter +
-                                     LanguageManager.GetString("String_Notoriety", GlobalOptions.Instance.Language) + ']' +
+                                     LanguageManager.GetString("String_Notoriety", GlobalOptions.Language) + ']' +
                                      strSpaceCharacter + '÷' + strSpaceCharacter +
-                                     3.ToString(GlobalOptions.Instance.CultureInfo) + strSpaceCharacter + '('
-                                     + ((TotalStreetCred + TotalNotoriety) / 3).ToString(GlobalOptions.Instance.CultureInfo) +
+                                     3.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + '('
+                                     + ((TotalStreetCred + TotalNotoriety) / 3).ToString(GlobalOptions.CultureInfo) +
                                      ')');
                 }
 
@@ -9313,7 +9313,7 @@ if (!Utils.IsUnitTest){
                     if(intTotalPublicAwareness > 1)
                     {
                         string strErasedString = Qualities.FirstOrDefault(x => x.Name == "Erased")
-                            ?.DisplayNameShort(GlobalOptions.Instance.Language);
+                            ?.DisplayNameShort(GlobalOptions.Language);
                         if(string.IsNullOrEmpty(strErasedString))
                         {
                             XmlNode xmlErasedQuality = XmlManager.Load("qualities.xml")
@@ -9635,11 +9635,11 @@ if (!Utils.IsUnitTest){
         {
             get
             {
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                 StringBuilder objToolTip = new StringBuilder();
                 if(IsAI)
                 {
-                    objToolTip.Append(LanguageManager.GetString("String_VehicleBody", GlobalOptions.Instance.Language) +
+                    objToolTip.Append(LanguageManager.GetString("String_VehicleBody", GlobalOptions.Language) +
                                       strSpaceCharacter + '(' +
                                       (HomeNode is Vehicle objVehicle ? objVehicle.TotalBody : 0).ToString(GlobalOptions
                                           .Instance.CultureInfo) + ')');
@@ -9647,21 +9647,21 @@ if (!Utils.IsUnitTest){
                 else
                 {
                     objToolTip.Append(BOD.DisplayAbbrev + strSpaceCharacter + '(' +
-                                      BOD.TotalValue.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                                      BOD.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
                 }
 
                 objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                  LanguageManager.GetString("Tip_Armor", GlobalOptions.Instance.Language) + strSpaceCharacter +
-                                  '(' + TotalArmorRating.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                                  LanguageManager.GetString("Tip_Armor", GlobalOptions.Language) + strSpaceCharacter +
+                                  '(' + TotalArmorRating.ToString(GlobalOptions.CultureInfo) + ')');
                 foreach(Improvement objLoopImprovement in Improvements)
                 {
                     if(objLoopImprovement.ImproveType == Improvement.ImprovementType.DamageResistance &&
                         objLoopImprovement.Enabled)
                     {
                         objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                          GetObjectName(objLoopImprovement, GlobalOptions.Instance.Language) +
+                                          GetObjectName(objLoopImprovement, GlobalOptions.Language) +
                                           strSpaceCharacter + '(' +
-                                          objLoopImprovement.Value.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                                          objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
                     }
                 }
 
@@ -9685,34 +9685,34 @@ if (!Utils.IsUnitTest){
         public int SpellDefenseIndirectDodge => REA.TotalValue + INT.TotalValue + TotalBonusDodgeRating;
 
         public string DisplaySpellDefenseIndirectDodge => CurrentCounterspellingDice == 0
-            ? SpellDefenseIndirectDodge.ToString(GlobalOptions.Instance.CultureInfo)
-            : SpellDefenseIndirectDodge.ToString(GlobalOptions.Instance.CultureInfo) +
-              LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language) + '(' +
-              (SpellDefenseIndirectDodge + CurrentCounterspellingDice).ToString(GlobalOptions.Instance.CultureInfo) + ')';
+            ? SpellDefenseIndirectDodge.ToString(GlobalOptions.CultureInfo)
+            : SpellDefenseIndirectDodge.ToString(GlobalOptions.CultureInfo) +
+              LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' +
+              (SpellDefenseIndirectDodge + CurrentCounterspellingDice).ToString(GlobalOptions.CultureInfo) + ')';
 
         public string SpellDefenseIndirectDodgeToolTip
         {
             get
             {
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                 StringBuilder objToolTip = new StringBuilder(REA.DisplayAbbrev + strSpaceCharacter + '(' +
-                                                             REA.TotalValue.ToString(GlobalOptions.Instance.CultureInfo) + ')' +
+                                                             REA.TotalValue.ToString(GlobalOptions.CultureInfo) + ')' +
                                                              strSpaceCharacter + '+' + strSpaceCharacter +
                                                              INT.DisplayAbbrev + strSpaceCharacter + '(' +
-                                                             INT.TotalValue.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                                                             INT.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
 
                 if(CurrentCounterspellingDice != 0)
                     objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                      LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Instance.Language) +
+                                      LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Language) +
                                       strSpaceCharacter + '(' +
-                                      CurrentCounterspellingDice.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                                      CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
 
                 int intModifiers = TotalBonusDodgeRating;
 
                 if(intModifiers != 0)
                 {
                     objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                      LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Instance.Language));
+                                      LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language));
                     bool blnFirstModifier = true;
                     foreach(Improvement objLoopImprovement in Improvements)
                     {
@@ -9728,11 +9728,11 @@ if (!Utils.IsUnitTest){
                                 objToolTip.Append(',');
 
                             objToolTip.Append(strSpaceCharacter +
-                                              GetObjectName(objLoopImprovement, GlobalOptions.Instance.Language));
+                                              GetObjectName(objLoopImprovement, GlobalOptions.Language));
                         }
                     }
 
-                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.CultureInfo) + ')');
                 }
 
                 return objToolTip.ToString();
@@ -9744,45 +9744,45 @@ if (!Utils.IsUnitTest){
             SpellResistance;
 
         public string DisplaySpellDefenseIndirectSoak => CurrentCounterspellingDice == 0
-            ? SpellDefenseIndirectSoak.ToString(GlobalOptions.Instance.CultureInfo)
-            : SpellDefenseIndirectSoak.ToString(GlobalOptions.Instance.CultureInfo) +
-              LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language) + '(' +
-              (SpellDefenseIndirectSoak + CurrentCounterspellingDice).ToString(GlobalOptions.Instance.CultureInfo) + ')';
+            ? SpellDefenseIndirectSoak.ToString(GlobalOptions.CultureInfo)
+            : SpellDefenseIndirectSoak.ToString(GlobalOptions.CultureInfo) +
+              LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' +
+              (SpellDefenseIndirectSoak + CurrentCounterspellingDice).ToString(GlobalOptions.CultureInfo) + ')';
 
         public string SpellDefenseIndirectSoakToolTip
         {
             get
             {
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                 StringBuilder objToolTip = new StringBuilder();
                 if(IsAI)
                 {
-                    objToolTip.Append(LanguageManager.GetString("String_VehicleBody", GlobalOptions.Instance.Language) +
+                    objToolTip.Append(LanguageManager.GetString("String_VehicleBody", GlobalOptions.Language) +
                                       strSpaceCharacter + '(' +
-                                      (HomeNode is Vehicle objVehicle ? objVehicle.TotalBody : 0).ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                                      (HomeNode is Vehicle objVehicle ? objVehicle.TotalBody : 0).ToString(GlobalOptions.CultureInfo) + ')');
                 }
                 else
                 {
                     objToolTip.Append(BOD.DisplayAbbrev + strSpaceCharacter + '(' +
-                                      BOD.TotalValue.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                                      BOD.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
                 }
 
                 objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                  LanguageManager.GetString("Tip_Armor", GlobalOptions.Instance.Language) + strSpaceCharacter +
-                                  '(' + TotalArmorRating.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                                  LanguageManager.GetString("Tip_Armor", GlobalOptions.Language) + strSpaceCharacter +
+                                  '(' + TotalArmorRating.ToString(GlobalOptions.CultureInfo) + ')');
 
                 if(CurrentCounterspellingDice != 0)
                     objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                      LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Instance.Language) +
+                                      LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Language) +
                                       strSpaceCharacter + '(' +
-                                      CurrentCounterspellingDice.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                                      CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
 
                 int intModifiers = SpellResistance;
 
                 if(intModifiers != 0)
                 {
                     objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                      LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Instance.Language));
+                                      LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language));
                     bool blnFirstModifier = true;
                     foreach(Improvement objLoopImprovement in Improvements)
                     {
@@ -9798,11 +9798,11 @@ if (!Utils.IsUnitTest){
                                 objToolTip.Append(',');
 
                             objToolTip.Append(strSpaceCharacter +
-                                              GetObjectName(objLoopImprovement, GlobalOptions.Instance.Language));
+                                              GetObjectName(objLoopImprovement, GlobalOptions.Language));
                         }
                     }
 
-                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.CultureInfo) + ')');
                 }
 
                 return objToolTip.ToString();
@@ -9812,31 +9812,31 @@ if (!Utils.IsUnitTest){
         public int SpellDefenseDirectSoakMana => WIL.TotalValue + SpellResistance;
 
         public string DisplaySpellDefenseDirectSoakMana => CurrentCounterspellingDice == 0
-            ? SpellDefenseDirectSoakMana.ToString(GlobalOptions.Instance.CultureInfo)
-            : SpellDefenseDirectSoakMana.ToString(GlobalOptions.Instance.CultureInfo) +
-              LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language) + '(' +
-              (SpellDefenseDirectSoakMana + CurrentCounterspellingDice).ToString(GlobalOptions.Instance.CultureInfo) + ')';
+            ? SpellDefenseDirectSoakMana.ToString(GlobalOptions.CultureInfo)
+            : SpellDefenseDirectSoakMana.ToString(GlobalOptions.CultureInfo) +
+              LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' +
+              (SpellDefenseDirectSoakMana + CurrentCounterspellingDice).ToString(GlobalOptions.CultureInfo) + ')';
 
         public string SpellDefenseDirectSoakManaToolTip
         {
             get
             {
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                 StringBuilder objToolTip = new StringBuilder(WIL.DisplayAbbrev + strSpaceCharacter + '(' +
-                                                             WIL.TotalValue.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                                                             WIL.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
 
                 if(CurrentCounterspellingDice != 0)
                     objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                      LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Instance.Language) +
+                                      LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Language) +
                                       strSpaceCharacter + '(' +
-                                      CurrentCounterspellingDice.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                                      CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
 
                 int intModifiers = SpellResistance;
 
                 if(intModifiers != 0)
                 {
                     objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                      LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Instance.Language));
+                                      LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language));
                     bool blnFirstModifier = true;
                     foreach(Improvement objLoopImprovement in Improvements)
                     {
@@ -9852,11 +9852,11 @@ if (!Utils.IsUnitTest){
                                 objToolTip.Append(',');
 
                             objToolTip.Append(strSpaceCharacter +
-                                              GetObjectName(objLoopImprovement, GlobalOptions.Instance.Language));
+                                              GetObjectName(objLoopImprovement, GlobalOptions.Language));
                         }
                     }
 
-                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.CultureInfo) + ')');
                 }
 
                 return objToolTip.ToString();
@@ -9867,41 +9867,41 @@ if (!Utils.IsUnitTest){
             (IsAI ? (HomeNode is Vehicle objVehicle ? objVehicle.TotalBody : 0) : BOD.TotalValue) + SpellResistance;
 
         public string DisplaySpellDefenseDirectSoakPhysical => CurrentCounterspellingDice == 0
-            ? SpellDefenseDirectSoakPhysical.ToString(GlobalOptions.Instance.CultureInfo)
-            : SpellDefenseDirectSoakPhysical.ToString(GlobalOptions.Instance.CultureInfo) +
-              LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language) + '(' +
-              (SpellDefenseDirectSoakPhysical + CurrentCounterspellingDice).ToString(GlobalOptions.Instance.CultureInfo) + ')';
+            ? SpellDefenseDirectSoakPhysical.ToString(GlobalOptions.CultureInfo)
+            : SpellDefenseDirectSoakPhysical.ToString(GlobalOptions.CultureInfo) +
+              LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' +
+              (SpellDefenseDirectSoakPhysical + CurrentCounterspellingDice).ToString(GlobalOptions.CultureInfo) + ')';
 
         public string SpellDefenseDirectSoakPhysicalToolTip
         {
             get
             {
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                 StringBuilder objToolTip = new StringBuilder();
                 if(IsAI)
                 {
-                    objToolTip.Append(LanguageManager.GetString("String_VehicleBody", GlobalOptions.Instance.Language) +
+                    objToolTip.Append(LanguageManager.GetString("String_VehicleBody", GlobalOptions.Language) +
                                       strSpaceCharacter + '(' +
-                                      (HomeNode is Vehicle objVehicle ? objVehicle.TotalBody : 0).ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                                      (HomeNode is Vehicle objVehicle ? objVehicle.TotalBody : 0).ToString(GlobalOptions.CultureInfo) + ')');
                 }
                 else
                 {
                     objToolTip.Append(BOD.DisplayAbbrev + strSpaceCharacter + '(' +
-                                      BOD.TotalValue.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                                      BOD.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
                 }
 
                 if(CurrentCounterspellingDice != 0)
                     objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                      LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Instance.Language) +
+                                      LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Language) +
                                       strSpaceCharacter + '(' +
-                                      CurrentCounterspellingDice.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                                      CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
 
                 int intModifiers = SpellResistance;
 
                 if(intModifiers != 0)
                 {
                     objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                      LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Instance.Language));
+                                      LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language));
                     bool blnFirstModifier = true;
                     foreach(Improvement objLoopImprovement in Improvements)
                     {
@@ -9917,11 +9917,11 @@ if (!Utils.IsUnitTest){
                                 objToolTip.Append(',');
 
                             objToolTip.Append(strSpaceCharacter +
-                                              GetObjectName(objLoopImprovement, GlobalOptions.Instance.Language));
+                                              GetObjectName(objLoopImprovement, GlobalOptions.Language));
                         }
                     }
 
-                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.CultureInfo) + ')');
                 }
 
                 return objToolTip.ToString();
@@ -9933,27 +9933,27 @@ if (!Utils.IsUnitTest){
                                                 Improvement.ImprovementType.DetectionSpellResist);
 
         public string DisplaySpellDefenseDetection => CurrentCounterspellingDice == 0
-            ? SpellDefenseDetection.ToString(GlobalOptions.Instance.CultureInfo)
-            : SpellDefenseDetection.ToString(GlobalOptions.Instance.CultureInfo) +
-              LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language) + '(' +
-              (SpellDefenseDetection + CurrentCounterspellingDice).ToString(GlobalOptions.Instance.CultureInfo) + ')';
+            ? SpellDefenseDetection.ToString(GlobalOptions.CultureInfo)
+            : SpellDefenseDetection.ToString(GlobalOptions.CultureInfo) +
+              LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' +
+              (SpellDefenseDetection + CurrentCounterspellingDice).ToString(GlobalOptions.CultureInfo) + ')';
 
         public string SpellDefenseDetectionToolTip
         {
             get
             {
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                 StringBuilder objToolTip = new StringBuilder(LOG.DisplayAbbrev + strSpaceCharacter + '(' +
-                                                             LOG.TotalValue.ToString(GlobalOptions.Instance.CultureInfo) + ')' +
+                                                             LOG.TotalValue.ToString(GlobalOptions.CultureInfo) + ')' +
                                                              strSpaceCharacter + '+' + strSpaceCharacter +
                                                              WIL.DisplayAbbrev + strSpaceCharacter + '(' +
-                                                             WIL.TotalValue.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                                                             WIL.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
 
                 if(CurrentCounterspellingDice != 0)
                     objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                      LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Instance.Language) +
+                                      LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Language) +
                                       strSpaceCharacter + '(' +
-                                      CurrentCounterspellingDice.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                                      CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
 
                 int intModifiers = SpellResistance +
                                    ImprovementManager.ValueOf(this, Improvement.ImprovementType.DetectionSpellResist);
@@ -9961,7 +9961,7 @@ if (!Utils.IsUnitTest){
                 if(intModifiers != 0)
                 {
                     objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                      LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Instance.Language));
+                                      LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language));
                     bool blnFirstModifier = true;
                     foreach(Improvement objLoopImprovement in Improvements)
                     {
@@ -9978,11 +9978,11 @@ if (!Utils.IsUnitTest){
                                 objToolTip.Append(',');
 
                             objToolTip.Append(strSpaceCharacter +
-                                              GetObjectName(objLoopImprovement, GlobalOptions.Instance.Language));
+                                              GetObjectName(objLoopImprovement, GlobalOptions.Language));
                         }
                     }
 
-                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.CultureInfo) + ')');
                 }
 
                 return objToolTip.ToString();
@@ -9992,34 +9992,34 @@ if (!Utils.IsUnitTest){
         public int SpellDefenseDecreaseBOD => BOD.TotalValue + WIL.TotalValue + SpellResistance;
 
         public string DisplaySpellDefenseDecreaseBOD => CurrentCounterspellingDice == 0
-            ? SpellDefenseDecreaseBOD.ToString(GlobalOptions.Instance.CultureInfo)
-            : SpellDefenseDecreaseBOD.ToString(GlobalOptions.Instance.CultureInfo) +
-              LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language) + '(' +
-              (SpellDefenseDecreaseBOD + CurrentCounterspellingDice).ToString(GlobalOptions.Instance.CultureInfo) + ')';
+            ? SpellDefenseDecreaseBOD.ToString(GlobalOptions.CultureInfo)
+            : SpellDefenseDecreaseBOD.ToString(GlobalOptions.CultureInfo) +
+              LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' +
+              (SpellDefenseDecreaseBOD + CurrentCounterspellingDice).ToString(GlobalOptions.CultureInfo) + ')';
 
         public string SpellDefenseDecreaseBODToolTip
         {
             get
             {
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                 StringBuilder objToolTip = new StringBuilder(BOD.DisplayAbbrev + strSpaceCharacter + '(' +
-                                                             BOD.TotalValue.ToString(GlobalOptions.Instance.CultureInfo) + ')' +
+                                                             BOD.TotalValue.ToString(GlobalOptions.CultureInfo) + ')' +
                                                              strSpaceCharacter + '+' + strSpaceCharacter +
                                                              WIL.DisplayAbbrev + strSpaceCharacter + '(' +
-                                                             WIL.TotalValue.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                                                             WIL.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
 
                 if(CurrentCounterspellingDice != 0)
                     objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                      LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Instance.Language) +
+                                      LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Language) +
                                       strSpaceCharacter + '(' +
-                                      CurrentCounterspellingDice.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                                      CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
 
                 int intModifiers = SpellResistance;
 
                 if(intModifiers != 0)
                 {
                     objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                      LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Instance.Language));
+                                      LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language));
                     bool blnFirstModifier = true;
                     foreach(Improvement objLoopImprovement in Improvements)
                     {
@@ -10035,11 +10035,11 @@ if (!Utils.IsUnitTest){
                                 objToolTip.Append(',');
 
                             objToolTip.Append(strSpaceCharacter +
-                                              GetObjectName(objLoopImprovement, GlobalOptions.Instance.Language));
+                                              GetObjectName(objLoopImprovement, GlobalOptions.Language));
                         }
                     }
 
-                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.CultureInfo) + ')');
                 }
 
                 return objToolTip.ToString();
@@ -10049,34 +10049,34 @@ if (!Utils.IsUnitTest){
         public int SpellDefenseDecreaseAGI => AGI.TotalValue + WIL.TotalValue + SpellResistance;
 
         public string DisplaySpellDefenseDecreaseAGI => CurrentCounterspellingDice == 0
-            ? SpellDefenseDecreaseAGI.ToString(GlobalOptions.Instance.CultureInfo)
-            : SpellDefenseDecreaseAGI.ToString(GlobalOptions.Instance.CultureInfo) +
-              LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language) + '(' +
-              (SpellDefenseDecreaseAGI + CurrentCounterspellingDice).ToString(GlobalOptions.Instance.CultureInfo) + ')';
+            ? SpellDefenseDecreaseAGI.ToString(GlobalOptions.CultureInfo)
+            : SpellDefenseDecreaseAGI.ToString(GlobalOptions.CultureInfo) +
+              LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' +
+              (SpellDefenseDecreaseAGI + CurrentCounterspellingDice).ToString(GlobalOptions.CultureInfo) + ')';
 
         public string SpellDefenseDecreaseAGIToolTip
         {
             get
             {
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                 StringBuilder objToolTip = new StringBuilder(AGI.DisplayAbbrev + strSpaceCharacter + '(' +
-                                                             AGI.TotalValue.ToString(GlobalOptions.Instance.CultureInfo) + ')' +
+                                                             AGI.TotalValue.ToString(GlobalOptions.CultureInfo) + ')' +
                                                              strSpaceCharacter + '+' + strSpaceCharacter +
                                                              WIL.DisplayAbbrev + strSpaceCharacter + '(' +
-                                                             WIL.TotalValue.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                                                             WIL.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
 
                 if(CurrentCounterspellingDice != 0)
                     objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                      LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Instance.Language) +
+                                      LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Language) +
                                       strSpaceCharacter + '(' +
-                                      CurrentCounterspellingDice.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                                      CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
 
                 int intModifiers = SpellResistance;
 
                 if(intModifiers != 0)
                 {
                     objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                      LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Instance.Language));
+                                      LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language));
                     bool blnFirstModifier = true;
                     foreach(Improvement objLoopImprovement in Improvements)
                     {
@@ -10092,11 +10092,11 @@ if (!Utils.IsUnitTest){
                                 objToolTip.Append(',');
 
                             objToolTip.Append(strSpaceCharacter +
-                                              GetObjectName(objLoopImprovement, GlobalOptions.Instance.Language));
+                                              GetObjectName(objLoopImprovement, GlobalOptions.Language));
                         }
                     }
 
-                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.CultureInfo) + ')');
                 }
 
                 return objToolTip.ToString();
@@ -10106,34 +10106,34 @@ if (!Utils.IsUnitTest){
         public int SpellDefenseDecreaseREA => REA.TotalValue + WIL.TotalValue + SpellResistance;
 
         public string DisplaySpellDefenseDecreaseREA => CurrentCounterspellingDice == 0
-            ? SpellDefenseDecreaseREA.ToString(GlobalOptions.Instance.CultureInfo)
-            : SpellDefenseDecreaseREA.ToString(GlobalOptions.Instance.CultureInfo) +
-              LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language) + '(' +
-              (SpellDefenseDecreaseREA + CurrentCounterspellingDice).ToString(GlobalOptions.Instance.CultureInfo) + ')';
+            ? SpellDefenseDecreaseREA.ToString(GlobalOptions.CultureInfo)
+            : SpellDefenseDecreaseREA.ToString(GlobalOptions.CultureInfo) +
+              LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' +
+              (SpellDefenseDecreaseREA + CurrentCounterspellingDice).ToString(GlobalOptions.CultureInfo) + ')';
 
         public string SpellDefenseDecreaseREAToolTip
         {
             get
             {
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                 StringBuilder objToolTip = new StringBuilder(REA.DisplayAbbrev + strSpaceCharacter + '(' +
-                                                             REA.TotalValue.ToString(GlobalOptions.Instance.CultureInfo) + ')' +
+                                                             REA.TotalValue.ToString(GlobalOptions.CultureInfo) + ')' +
                                                              strSpaceCharacter + '+' + strSpaceCharacter +
                                                              WIL.DisplayAbbrev + strSpaceCharacter + '(' +
-                                                             WIL.TotalValue.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                                                             WIL.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
 
                 if(CurrentCounterspellingDice != 0)
                     objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                      LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Instance.Language) +
+                                      LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Language) +
                                       strSpaceCharacter + '(' +
-                                      CurrentCounterspellingDice.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                                      CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
 
                 int intModifiers = SpellResistance;
 
                 if(intModifiers != 0)
                 {
                     objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                      LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Instance.Language));
+                                      LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language));
                     bool blnFirstModifier = true;
                     foreach(Improvement objLoopImprovement in Improvements)
                     {
@@ -10149,11 +10149,11 @@ if (!Utils.IsUnitTest){
                                 objToolTip.Append(',');
 
                             objToolTip.Append(strSpaceCharacter +
-                                              GetObjectName(objLoopImprovement, GlobalOptions.Instance.Language));
+                                              GetObjectName(objLoopImprovement, GlobalOptions.Language));
                         }
                     }
 
-                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.CultureInfo) + ')');
                 }
 
                 return objToolTip.ToString();
@@ -10163,34 +10163,34 @@ if (!Utils.IsUnitTest){
         public int SpellDefenseDecreaseSTR => STR.TotalValue + WIL.TotalValue + SpellResistance;
 
         public string DisplaySpellDefenseDecreaseSTR => CurrentCounterspellingDice == 0
-            ? SpellDefenseDecreaseSTR.ToString(GlobalOptions.Instance.CultureInfo)
-            : SpellDefenseDecreaseSTR.ToString(GlobalOptions.Instance.CultureInfo) +
-              LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language) + '(' +
-              (SpellDefenseDecreaseSTR + CurrentCounterspellingDice).ToString(GlobalOptions.Instance.CultureInfo) + ')';
+            ? SpellDefenseDecreaseSTR.ToString(GlobalOptions.CultureInfo)
+            : SpellDefenseDecreaseSTR.ToString(GlobalOptions.CultureInfo) +
+              LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' +
+              (SpellDefenseDecreaseSTR + CurrentCounterspellingDice).ToString(GlobalOptions.CultureInfo) + ')';
 
         public string SpellDefenseDecreaseSTRToolTip
         {
             get
             {
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                 StringBuilder objToolTip = new StringBuilder(STR.DisplayAbbrev + strSpaceCharacter + '(' +
-                                                             STR.TotalValue.ToString(GlobalOptions.Instance.CultureInfo) + ')' +
+                                                             STR.TotalValue.ToString(GlobalOptions.CultureInfo) + ')' +
                                                              strSpaceCharacter + '+' + strSpaceCharacter +
                                                              WIL.DisplayAbbrev + strSpaceCharacter + '(' +
-                                                             WIL.TotalValue.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                                                             WIL.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
 
                 if(CurrentCounterspellingDice != 0)
                     objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                      LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Instance.Language) +
+                                      LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Language) +
                                       strSpaceCharacter + '(' +
-                                      CurrentCounterspellingDice.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                                      CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
 
                 int intModifiers = SpellResistance;
 
                 if(intModifiers != 0)
                 {
                     objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                      LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Instance.Language));
+                                      LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language));
                     bool blnFirstModifier = true;
                     foreach(Improvement objLoopImprovement in Improvements)
                     {
@@ -10206,11 +10206,11 @@ if (!Utils.IsUnitTest){
                                 objToolTip.Append(',');
 
                             objToolTip.Append(strSpaceCharacter +
-                                              GetObjectName(objLoopImprovement, GlobalOptions.Instance.Language));
+                                              GetObjectName(objLoopImprovement, GlobalOptions.Language));
                         }
                     }
 
-                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.CultureInfo) + ')');
                 }
 
                 return objToolTip.ToString();
@@ -10220,34 +10220,34 @@ if (!Utils.IsUnitTest){
         public int SpellDefenseDecreaseCHA => CHA.TotalValue + WIL.TotalValue + SpellResistance;
 
         public string DisplaySpellDefenseDecreaseCHA => CurrentCounterspellingDice == 0
-            ? SpellDefenseDecreaseCHA.ToString(GlobalOptions.Instance.CultureInfo)
-            : SpellDefenseDecreaseCHA.ToString(GlobalOptions.Instance.CultureInfo) +
-              LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language) + '(' +
-              (SpellDefenseDecreaseCHA + CurrentCounterspellingDice).ToString(GlobalOptions.Instance.CultureInfo) + ')';
+            ? SpellDefenseDecreaseCHA.ToString(GlobalOptions.CultureInfo)
+            : SpellDefenseDecreaseCHA.ToString(GlobalOptions.CultureInfo) +
+              LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' +
+              (SpellDefenseDecreaseCHA + CurrentCounterspellingDice).ToString(GlobalOptions.CultureInfo) + ')';
 
         public string SpellDefenseDecreaseCHAToolTip
         {
             get
             {
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                 StringBuilder objToolTip = new StringBuilder(CHA.DisplayAbbrev + strSpaceCharacter + '(' +
-                                                             CHA.TotalValue.ToString(GlobalOptions.Instance.CultureInfo) + ')' +
+                                                             CHA.TotalValue.ToString(GlobalOptions.CultureInfo) + ')' +
                                                              strSpaceCharacter + '+' + strSpaceCharacter +
                                                              WIL.DisplayAbbrev + strSpaceCharacter + '(' +
-                                                             WIL.TotalValue.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                                                             WIL.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
 
                 if(CurrentCounterspellingDice != 0)
                     objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                      LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Instance.Language) +
+                                      LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Language) +
                                       strSpaceCharacter + '(' +
-                                      CurrentCounterspellingDice.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                                      CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
 
                 int intModifiers = SpellResistance;
 
                 if(intModifiers != 0)
                 {
                     objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                      LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Instance.Language));
+                                      LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language));
                     bool blnFirstModifier = true;
                     foreach(Improvement objLoopImprovement in Improvements)
                     {
@@ -10263,11 +10263,11 @@ if (!Utils.IsUnitTest){
                                 objToolTip.Append(',');
 
                             objToolTip.Append(strSpaceCharacter +
-                                              GetObjectName(objLoopImprovement, GlobalOptions.Instance.Language));
+                                              GetObjectName(objLoopImprovement, GlobalOptions.Language));
                         }
                     }
 
-                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.CultureInfo) + ')');
                 }
 
                 return objToolTip.ToString();
@@ -10277,34 +10277,34 @@ if (!Utils.IsUnitTest){
         public int SpellDefenseDecreaseINT => INT.TotalValue + WIL.TotalValue + SpellResistance;
 
         public string DisplaySpellDefenseDecreaseINT => CurrentCounterspellingDice == 0
-            ? SpellDefenseDecreaseINT.ToString(GlobalOptions.Instance.CultureInfo)
-            : SpellDefenseDecreaseINT.ToString(GlobalOptions.Instance.CultureInfo) +
-              LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language) + '(' +
-              (SpellDefenseDecreaseINT + CurrentCounterspellingDice).ToString(GlobalOptions.Instance.CultureInfo) + ')';
+            ? SpellDefenseDecreaseINT.ToString(GlobalOptions.CultureInfo)
+            : SpellDefenseDecreaseINT.ToString(GlobalOptions.CultureInfo) +
+              LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' +
+              (SpellDefenseDecreaseINT + CurrentCounterspellingDice).ToString(GlobalOptions.CultureInfo) + ')';
 
         public string SpellDefenseDecreaseINTToolTip
         {
             get
             {
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                 StringBuilder objToolTip = new StringBuilder(INT.DisplayAbbrev + strSpaceCharacter + '(' +
-                                                             INT.TotalValue.ToString(GlobalOptions.Instance.CultureInfo) + ')' +
+                                                             INT.TotalValue.ToString(GlobalOptions.CultureInfo) + ')' +
                                                              strSpaceCharacter + '+' + strSpaceCharacter +
                                                              WIL.DisplayAbbrev + strSpaceCharacter + '(' +
-                                                             WIL.TotalValue.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                                                             WIL.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
 
                 if(CurrentCounterspellingDice != 0)
                     objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                      LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Instance.Language) +
+                                      LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Language) +
                                       strSpaceCharacter + '(' +
-                                      CurrentCounterspellingDice.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                                      CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
 
                 int intModifiers = SpellResistance;
 
                 if(intModifiers != 0)
                 {
                     objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                      LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Instance.Language));
+                                      LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language));
                     bool blnFirstModifier = true;
                     foreach(Improvement objLoopImprovement in Improvements)
                     {
@@ -10320,11 +10320,11 @@ if (!Utils.IsUnitTest){
                                 objToolTip.Append(',');
 
                             objToolTip.Append(strSpaceCharacter +
-                                              GetObjectName(objLoopImprovement, GlobalOptions.Instance.Language));
+                                              GetObjectName(objLoopImprovement, GlobalOptions.Language));
                         }
                     }
 
-                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.CultureInfo) + ')');
                 }
 
                 return objToolTip.ToString();
@@ -10334,34 +10334,34 @@ if (!Utils.IsUnitTest){
         public int SpellDefenseDecreaseLOG => LOG.TotalValue + WIL.TotalValue + SpellResistance;
 
         public string DisplaySpellDefenseDecreaseLOG => CurrentCounterspellingDice == 0
-            ? SpellDefenseDecreaseLOG.ToString(GlobalOptions.Instance.CultureInfo)
-            : SpellDefenseDecreaseLOG.ToString(GlobalOptions.Instance.CultureInfo) +
-              LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language) + '(' +
-              (SpellDefenseDecreaseLOG + CurrentCounterspellingDice).ToString(GlobalOptions.Instance.CultureInfo) + ')';
+            ? SpellDefenseDecreaseLOG.ToString(GlobalOptions.CultureInfo)
+            : SpellDefenseDecreaseLOG.ToString(GlobalOptions.CultureInfo) +
+              LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' +
+              (SpellDefenseDecreaseLOG + CurrentCounterspellingDice).ToString(GlobalOptions.CultureInfo) + ')';
 
         public string SpellDefenseDecreaseLOGToolTip
         {
             get
             {
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                 StringBuilder objToolTip = new StringBuilder(LOG.DisplayAbbrev + strSpaceCharacter + '(' +
-                                                             LOG.TotalValue.ToString(GlobalOptions.Instance.CultureInfo) + ')' +
+                                                             LOG.TotalValue.ToString(GlobalOptions.CultureInfo) + ')' +
                                                              strSpaceCharacter + '+' + strSpaceCharacter +
                                                              WIL.DisplayAbbrev + strSpaceCharacter + '(' +
-                                                             WIL.TotalValue.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                                                             WIL.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
 
                 if(CurrentCounterspellingDice != 0)
                     objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                      LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Instance.Language) +
+                                      LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Language) +
                                       strSpaceCharacter + '(' +
-                                      CurrentCounterspellingDice.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                                      CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
 
                 int intModifiers = SpellResistance;
 
                 if(intModifiers != 0)
                 {
                     objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                      LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Instance.Language));
+                                      LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language));
                     bool blnFirstModifier = true;
                     foreach(Improvement objLoopImprovement in Improvements)
                     {
@@ -10377,11 +10377,11 @@ if (!Utils.IsUnitTest){
                                 objToolTip.Append(',');
 
                             objToolTip.Append(strSpaceCharacter +
-                                              GetObjectName(objLoopImprovement, GlobalOptions.Instance.Language));
+                                              GetObjectName(objLoopImprovement, GlobalOptions.Language));
                         }
                     }
 
-                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.CultureInfo) + ')');
                 }
 
                 return objToolTip.ToString();
@@ -10391,34 +10391,34 @@ if (!Utils.IsUnitTest){
         public int SpellDefenseDecreaseWIL => WIL.TotalValue + WIL.TotalValue + SpellResistance;
 
         public string DisplaySpellDefenseDecreaseWIL => CurrentCounterspellingDice == 0
-            ? SpellDefenseDecreaseWIL.ToString(GlobalOptions.Instance.CultureInfo)
-            : SpellDefenseDecreaseWIL.ToString(GlobalOptions.Instance.CultureInfo) +
-              LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language) + '(' +
-              (SpellDefenseDecreaseWIL + CurrentCounterspellingDice).ToString(GlobalOptions.Instance.CultureInfo) + ')';
+            ? SpellDefenseDecreaseWIL.ToString(GlobalOptions.CultureInfo)
+            : SpellDefenseDecreaseWIL.ToString(GlobalOptions.CultureInfo) +
+              LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' +
+              (SpellDefenseDecreaseWIL + CurrentCounterspellingDice).ToString(GlobalOptions.CultureInfo) + ')';
 
         public string SpellDefenseDecreaseWILToolTip
         {
             get
             {
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                 StringBuilder objToolTip = new StringBuilder(WIL.DisplayAbbrev + strSpaceCharacter + '(' +
-                                                             WIL.TotalValue.ToString(GlobalOptions.Instance.CultureInfo) + ')' +
+                                                             WIL.TotalValue.ToString(GlobalOptions.CultureInfo) + ')' +
                                                              strSpaceCharacter + '+' + strSpaceCharacter +
                                                              WIL.DisplayAbbrev + strSpaceCharacter + '(' +
-                                                             WIL.TotalValue.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                                                             WIL.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
 
                 if(CurrentCounterspellingDice != 0)
                     objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                      LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Instance.Language) +
+                                      LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Language) +
                                       strSpaceCharacter + '(' +
-                                      CurrentCounterspellingDice.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                                      CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
 
                 int intModifiers = SpellResistance;
 
                 if(intModifiers != 0)
                 {
                     objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                      LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Instance.Language));
+                                      LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language));
                     bool blnFirstModifier = true;
                     foreach(Improvement objLoopImprovement in Improvements)
                     {
@@ -10434,11 +10434,11 @@ if (!Utils.IsUnitTest){
                                 objToolTip.Append(',');
 
                             objToolTip.Append(strSpaceCharacter +
-                                              GetObjectName(objLoopImprovement, GlobalOptions.Instance.Language));
+                                              GetObjectName(objLoopImprovement, GlobalOptions.Language));
                         }
                     }
 
-                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.CultureInfo) + ')');
                 }
 
                 return objToolTip.ToString();
@@ -10457,27 +10457,27 @@ if (!Utils.IsUnitTest){
                                                    Improvement.ImprovementType.ManaIllusionResist);
 
         public string DisplaySpellDefenseIllusionMana => CurrentCounterspellingDice == 0
-            ? SpellDefenseIllusionMana.ToString(GlobalOptions.Instance.CultureInfo)
-            : SpellDefenseIllusionMana.ToString(GlobalOptions.Instance.CultureInfo) +
-              LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language) + '(' +
-              (SpellDefenseIllusionMana + CurrentCounterspellingDice).ToString(GlobalOptions.Instance.CultureInfo) + ')';
+            ? SpellDefenseIllusionMana.ToString(GlobalOptions.CultureInfo)
+            : SpellDefenseIllusionMana.ToString(GlobalOptions.CultureInfo) +
+              LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' +
+              (SpellDefenseIllusionMana + CurrentCounterspellingDice).ToString(GlobalOptions.CultureInfo) + ')';
 
         public string SpellDefenseIllusionManaToolTip
         {
             get
             {
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                 StringBuilder objToolTip = new StringBuilder(LOG.DisplayAbbrev + strSpaceCharacter + '(' +
-                                                             LOG.TotalValue.ToString(GlobalOptions.Instance.CultureInfo) + ')' +
+                                                             LOG.TotalValue.ToString(GlobalOptions.CultureInfo) + ')' +
                                                              strSpaceCharacter + '+' + strSpaceCharacter +
                                                              WIL.DisplayAbbrev + strSpaceCharacter + '(' +
-                                                             WIL.TotalValue.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                                                             WIL.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
 
                 if(CurrentCounterspellingDice != 0)
                     objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                      LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Instance.Language) +
+                                      LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Language) +
                                       strSpaceCharacter + '(' +
-                                      CurrentCounterspellingDice.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                                      CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
 
                 int intModifiers = SpellResistance +
                                    ImprovementManager.ValueOf(this, Improvement.ImprovementType.ManaIllusionResist);
@@ -10485,7 +10485,7 @@ if (!Utils.IsUnitTest){
                 if(intModifiers != 0)
                 {
                     objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                      LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Instance.Language));
+                                      LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language));
                     bool blnFirstModifier = true;
                     foreach(Improvement objLoopImprovement in Improvements)
                     {
@@ -10502,11 +10502,11 @@ if (!Utils.IsUnitTest){
                                 objToolTip.Append(',');
 
                             objToolTip.Append(strSpaceCharacter +
-                                              GetObjectName(objLoopImprovement, GlobalOptions.Instance.Language));
+                                              GetObjectName(objLoopImprovement, GlobalOptions.Language));
                         }
                     }
 
-                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.CultureInfo) + ')');
                 }
 
                 return objToolTip.ToString();
@@ -10518,27 +10518,27 @@ if (!Utils.IsUnitTest){
                                                        Improvement.ImprovementType.PhysicalIllusionResist);
 
         public string DisplaySpellDefenseIllusionPhysical => CurrentCounterspellingDice == 0
-            ? SpellDefenseIllusionPhysical.ToString(GlobalOptions.Instance.CultureInfo)
-            : SpellDefenseIllusionPhysical.ToString(GlobalOptions.Instance.CultureInfo) +
-              LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language) + '(' +
-              (SpellDefenseIllusionPhysical + CurrentCounterspellingDice).ToString(GlobalOptions.Instance.CultureInfo) + ')';
+            ? SpellDefenseIllusionPhysical.ToString(GlobalOptions.CultureInfo)
+            : SpellDefenseIllusionPhysical.ToString(GlobalOptions.CultureInfo) +
+              LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' +
+              (SpellDefenseIllusionPhysical + CurrentCounterspellingDice).ToString(GlobalOptions.CultureInfo) + ')';
 
         public string SpellDefenseIllusionPhysicalToolTip
         {
             get
             {
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                 StringBuilder objToolTip = new StringBuilder(LOG.DisplayAbbrev + strSpaceCharacter + '(' +
-                                                             LOG.TotalValue.ToString(GlobalOptions.Instance.CultureInfo) + ')' +
+                                                             LOG.TotalValue.ToString(GlobalOptions.CultureInfo) + ')' +
                                                              strSpaceCharacter + '+' + strSpaceCharacter +
                                                              INT.DisplayAbbrev + strSpaceCharacter + '(' +
-                                                             INT.TotalValue.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                                                             INT.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
 
                 if(CurrentCounterspellingDice != 0)
                     objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                      LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Instance.Language) +
+                                      LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Language) +
                                       strSpaceCharacter + '(' +
-                                      CurrentCounterspellingDice.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                                      CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
 
                 int intModifiers = SpellResistance +
                                    ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalIllusionResist);
@@ -10546,7 +10546,7 @@ if (!Utils.IsUnitTest){
                 if(intModifiers != 0)
                 {
                     objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                      LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Instance.Language));
+                                      LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language));
                     bool blnFirstModifier = true;
                     foreach(Improvement objLoopImprovement in Improvements)
                     {
@@ -10563,11 +10563,11 @@ if (!Utils.IsUnitTest){
                                 objToolTip.Append(',');
 
                             objToolTip.Append(strSpaceCharacter +
-                                              GetObjectName(objLoopImprovement, GlobalOptions.Instance.Language));
+                                              GetObjectName(objLoopImprovement, GlobalOptions.Language));
                         }
                     }
 
-                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.CultureInfo) + ')');
                 }
 
                 return objToolTip.ToString();
@@ -10579,27 +10579,27 @@ if (!Utils.IsUnitTest){
                                                          Improvement.ImprovementType.MentalManipulationResist);
 
         public string DisplaySpellDefenseManipulationMental => CurrentCounterspellingDice == 0
-            ? SpellDefenseManipulationMental.ToString(GlobalOptions.Instance.CultureInfo)
-            : SpellDefenseManipulationMental.ToString(GlobalOptions.Instance.CultureInfo) +
-              LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language) + '(' +
-              (SpellDefenseManipulationMental + CurrentCounterspellingDice).ToString(GlobalOptions.Instance.CultureInfo) + ')';
+            ? SpellDefenseManipulationMental.ToString(GlobalOptions.CultureInfo)
+            : SpellDefenseManipulationMental.ToString(GlobalOptions.CultureInfo) +
+              LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' +
+              (SpellDefenseManipulationMental + CurrentCounterspellingDice).ToString(GlobalOptions.CultureInfo) + ')';
 
         public string SpellDefenseManipulationMentalToolTip
         {
             get
             {
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                 StringBuilder objToolTip = new StringBuilder(LOG.DisplayAbbrev + strSpaceCharacter + '(' +
-                                                             LOG.TotalValue.ToString(GlobalOptions.Instance.CultureInfo) + ')' +
+                                                             LOG.TotalValue.ToString(GlobalOptions.CultureInfo) + ')' +
                                                              strSpaceCharacter + '+' + strSpaceCharacter +
                                                              WIL.DisplayAbbrev + strSpaceCharacter + '(' +
-                                                             WIL.TotalValue.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                                                             WIL.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
 
                 if(CurrentCounterspellingDice != 0)
                     objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                      LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Instance.Language) +
+                                      LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Language) +
                                       strSpaceCharacter + '(' +
-                                      CurrentCounterspellingDice.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                                      CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
 
                 int intModifiers = SpellResistance +
                                    ImprovementManager.ValueOf(this,
@@ -10608,7 +10608,7 @@ if (!Utils.IsUnitTest){
                 if(intModifiers != 0)
                 {
                     objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                      LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Instance.Language));
+                                      LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language));
                     bool blnFirstModifier = true;
                     foreach(Improvement objLoopImprovement in Improvements)
                     {
@@ -10625,11 +10625,11 @@ if (!Utils.IsUnitTest){
                                 objToolTip.Append(',');
 
                             objToolTip.Append(strSpaceCharacter +
-                                              GetObjectName(objLoopImprovement, GlobalOptions.Instance.Language));
+                                              GetObjectName(objLoopImprovement, GlobalOptions.Language));
                         }
                     }
 
-                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.CultureInfo) + ')');
                 }
 
                 return objToolTip.ToString();
@@ -10641,16 +10641,16 @@ if (!Utils.IsUnitTest){
             SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalManipulationResist);
 
         public string DisplaySpellDefenseManipulationPhysical => CurrentCounterspellingDice == 0
-            ? SpellDefenseManipulationPhysical.ToString(GlobalOptions.Instance.CultureInfo)
-            : SpellDefenseManipulationPhysical.ToString(GlobalOptions.Instance.CultureInfo) +
-              LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language) + '(' +
-              (SpellDefenseManipulationPhysical + CurrentCounterspellingDice).ToString(GlobalOptions.Instance.CultureInfo) + ')';
+            ? SpellDefenseManipulationPhysical.ToString(GlobalOptions.CultureInfo)
+            : SpellDefenseManipulationPhysical.ToString(GlobalOptions.CultureInfo) +
+              LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' +
+              (SpellDefenseManipulationPhysical + CurrentCounterspellingDice).ToString(GlobalOptions.CultureInfo) + ')';
 
         public string SpellDefenseManipulationPhysicalToolTip
         {
             get
             {
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                 int intBody;
                 int intStrength;
                 string strBodyAbbrev;
@@ -10659,7 +10659,7 @@ if (!Utils.IsUnitTest){
                 {
                     intBody = intStrength = (HomeNode is Vehicle objVehicle ? objVehicle.TotalBody : 0);
                     strBodyAbbrev = strStrengthAbbrev =
-                        LanguageManager.GetString("String_VehicleBody", GlobalOptions.Instance.Language);
+                        LanguageManager.GetString("String_VehicleBody", GlobalOptions.Language);
                 }
                 else
                 {
@@ -10670,16 +10670,16 @@ if (!Utils.IsUnitTest){
                 }
 
                 StringBuilder objToolTip = new StringBuilder(strBodyAbbrev + strSpaceCharacter + '(' +
-                                                             intBody.ToString(GlobalOptions.Instance.CultureInfo) + ')' +
+                                                             intBody.ToString(GlobalOptions.CultureInfo) + ')' +
                                                              strSpaceCharacter + '+' + strSpaceCharacter +
                                                              strStrengthAbbrev + strSpaceCharacter + '(' +
-                                                             intStrength.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                                                             intStrength.ToString(GlobalOptions.CultureInfo) + ')');
 
                 if(CurrentCounterspellingDice != 0)
                     objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                      LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Instance.Language) +
+                                      LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Language) +
                                       strSpaceCharacter + '(' +
-                                      CurrentCounterspellingDice.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                                      CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
 
                 int intModifiers = SpellResistance +
                                    ImprovementManager.ValueOf(this,
@@ -10688,7 +10688,7 @@ if (!Utils.IsUnitTest){
                 if(intModifiers != 0)
                 {
                     objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                      LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Instance.Language));
+                                      LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language));
                     bool blnFirstModifier = true;
                     foreach(Improvement objLoopImprovement in Improvements)
                     {
@@ -10705,11 +10705,11 @@ if (!Utils.IsUnitTest){
                                 objToolTip.Append(',');
 
                             objToolTip.Append(strSpaceCharacter +
-                                              GetObjectName(objLoopImprovement, GlobalOptions.Instance.Language));
+                                              GetObjectName(objLoopImprovement, GlobalOptions.Language));
                         }
                     }
 
-                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                    objToolTip.Append(strSpaceCharacter + '(' + intModifiers.ToString(GlobalOptions.CultureInfo) + ')');
                 }
 
                 return objToolTip.ToString();
@@ -10726,19 +10726,19 @@ if (!Utils.IsUnitTest){
         {
             get
             {
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                 StringBuilder objToolTip =
-                    new StringBuilder(LanguageManager.GetString("Tip_Armor", GlobalOptions.Instance.Language) +
-                                      strSpaceCharacter + '(' + ArmorRating.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                    new StringBuilder(LanguageManager.GetString("Tip_Armor", GlobalOptions.Language) +
+                                      strSpaceCharacter + '(' + ArmorRating.ToString(GlobalOptions.CultureInfo) + ')');
                 foreach(Improvement objLoopImprovement in Improvements)
                 {
                     if(objLoopImprovement.ImproveType == Improvement.ImprovementType.Armor &&
                         objLoopImprovement.Enabled)
                     {
                         objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                          GetObjectName(objLoopImprovement, GlobalOptions.Instance.Language) +
+                                          GetObjectName(objLoopImprovement, GlobalOptions.Language) +
                                           strSpaceCharacter + '(' +
-                                          objLoopImprovement.Value.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                                          objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
                     }
                 }
 
@@ -10911,10 +10911,10 @@ if (!Utils.IsUnitTest){
                 if(IsAI)
                 {
                     return HomeNode == null
-                        ? LanguageManager.GetString("Label_OtherCoreCM", GlobalOptions.Instance.Language)
-                        : LanguageManager.GetString(HomeNode is Vehicle ? "Label_OtherPhysicalCM" : "Label_OtherCoreCM", GlobalOptions.Instance.Language);
+                        ? LanguageManager.GetString("Label_OtherCoreCM", GlobalOptions.Language)
+                        : LanguageManager.GetString(HomeNode is Vehicle ? "Label_OtherPhysicalCM" : "Label_OtherCoreCM", GlobalOptions.Language);
                 }
-                return LanguageManager.GetString("Label_OtherPhysicalCM", GlobalOptions.Instance.Language);
+                return LanguageManager.GetString("Label_OtherPhysicalCM", GlobalOptions.Language);
             }
         }
 
@@ -10922,42 +10922,42 @@ if (!Utils.IsUnitTest){
         {
             get
             {
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
-                string strModifiers = LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Instance.Language);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                string strModifiers = LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language);
                 string strCM;
                 int intBonus;
                 if(IsAI)
                 {
                     if(HomeNode is Vehicle objVehicleHomeNode)
                     {
-                        strCM = objVehicleHomeNode.BasePhysicalBoxes.ToString(GlobalOptions.Instance.CultureInfo) + strSpaceCharacter + '+' + strSpaceCharacter +
-                                       '(' + BOD.DisplayAbbrev + '÷' + 2.ToString(GlobalOptions.Instance.CultureInfo) + ')' + strSpaceCharacter +
-                                       '(' + ((objVehicleHomeNode.TotalBody + 1) / 2).ToString(GlobalOptions.Instance.CultureInfo) + ')';
+                        strCM = objVehicleHomeNode.BasePhysicalBoxes.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + '+' + strSpaceCharacter +
+                                       '(' + BOD.DisplayAbbrev + '÷' + 2.ToString(GlobalOptions.CultureInfo) + ')' + strSpaceCharacter +
+                                       '(' + ((objVehicleHomeNode.TotalBody + 1) / 2).ToString(GlobalOptions.CultureInfo) + ')';
 
                         intBonus = objVehicleHomeNode.Mods.Sum(objMod => objMod.ConditionMonitor);
                         if(intBonus != 0)
-                            strCM += strSpaceCharacter + '+' + strSpaceCharacter + strModifiers + strSpaceCharacter + '(' + intBonus.ToString(GlobalOptions.Instance.CultureInfo) + ')';
+                            strCM += strSpaceCharacter + '+' + strSpaceCharacter + strModifiers + strSpaceCharacter + '(' + intBonus.ToString(GlobalOptions.CultureInfo) + ')';
                     }
                     else
                     {
-                        strCM = 8.ToString(GlobalOptions.Instance.CultureInfo) + strSpaceCharacter + '+' + strSpaceCharacter +
-                                '(' + DEP.DisplayAbbrev + '÷' + 2.ToString(GlobalOptions.Instance.CultureInfo) + ')' + strSpaceCharacter +
-                                '(' + ((DEP.TotalValue + 1) / 2).ToString(GlobalOptions.Instance.CultureInfo) + ')';
+                        strCM = 8.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + '+' + strSpaceCharacter +
+                                '(' + DEP.DisplayAbbrev + '÷' + 2.ToString(GlobalOptions.CultureInfo) + ')' + strSpaceCharacter +
+                                '(' + ((DEP.TotalValue + 1) / 2).ToString(GlobalOptions.CultureInfo) + ')';
 
                         intBonus = ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalCM);
                         if(intBonus != 0)
-                            strCM += strSpaceCharacter + '+' + strSpaceCharacter + strModifiers + strSpaceCharacter + '(' + intBonus.ToString(GlobalOptions.Instance.CultureInfo) + ')';
+                            strCM += strSpaceCharacter + '+' + strSpaceCharacter + strModifiers + strSpaceCharacter + '(' + intBonus.ToString(GlobalOptions.CultureInfo) + ')';
                     }
                 }
                 else
                 {
-                    strCM = 8.ToString(GlobalOptions.Instance.CultureInfo) + strSpaceCharacter + '+' + strSpaceCharacter +
-                            '(' + BOD.DisplayAbbrev + '÷' + 2.ToString(GlobalOptions.Instance.CultureInfo) + ')' + strSpaceCharacter +
-                            '(' + ((BOD.TotalValue + 1) / 2).ToString(GlobalOptions.Instance.CultureInfo) + ')';
+                    strCM = 8.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + '+' + strSpaceCharacter +
+                            '(' + BOD.DisplayAbbrev + '÷' + 2.ToString(GlobalOptions.CultureInfo) + ')' + strSpaceCharacter +
+                            '(' + ((BOD.TotalValue + 1) / 2).ToString(GlobalOptions.CultureInfo) + ')';
 
                     intBonus = ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalCM);
                     if(intBonus != 0)
-                        strCM += strSpaceCharacter + '+' + strSpaceCharacter + strModifiers + strSpaceCharacter + '(' + intBonus.ToString(GlobalOptions.Instance.CultureInfo) + ')';
+                        strCM += strSpaceCharacter + '+' + strSpaceCharacter + strModifiers + strSpaceCharacter + '(' + intBonus.ToString(GlobalOptions.CultureInfo) + ')';
                 }
 
                 return strCM;
@@ -10999,9 +10999,9 @@ if (!Utils.IsUnitTest){
             {
                 if(IsAI)
                 {
-                    return HomeNode == null ? string.Empty : LanguageManager.GetString("Label_OtherMatrixCM", GlobalOptions.Instance.Language);
+                    return HomeNode == null ? string.Empty : LanguageManager.GetString("Label_OtherMatrixCM", GlobalOptions.Language);
                 }
-                return LanguageManager.GetString("Label_OtherStunCM", GlobalOptions.Instance.Language);
+                return LanguageManager.GetString("Label_OtherStunCM", GlobalOptions.Language);
             }
         }
 
@@ -11009,8 +11009,8 @@ if (!Utils.IsUnitTest){
         {
             get
             {
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
-                string strModifiers = LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Instance.Language);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                string strModifiers = LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language);
                 string strCM = string.Empty;
                 int intBonus;
 
@@ -11018,24 +11018,24 @@ if (!Utils.IsUnitTest){
                 {
                     if(HomeNode != null)
                     {
-                        strCM = 8.ToString(GlobalOptions.Instance.CultureInfo) + strSpaceCharacter + '+' + strSpaceCharacter +
-                                       '(' + LanguageManager.GetString("String_DeviceRating", GlobalOptions.Instance.Language) + '÷' + 2.ToString(GlobalOptions.Instance.CultureInfo) + ')' + strSpaceCharacter +
-                                       '(' + ((HomeNode.GetTotalMatrixAttribute("Device Rating") + 1) / 2).ToString(GlobalOptions.Instance.CultureInfo) + ')';
+                        strCM = 8.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + '+' + strSpaceCharacter +
+                                       '(' + LanguageManager.GetString("String_DeviceRating", GlobalOptions.Language) + '÷' + 2.ToString(GlobalOptions.CultureInfo) + ')' + strSpaceCharacter +
+                                       '(' + ((HomeNode.GetTotalMatrixAttribute("Device Rating") + 1) / 2).ToString(GlobalOptions.CultureInfo) + ')';
 
                         intBonus = HomeNode.TotalBonusMatrixBoxes;
                         if(intBonus != 0)
-                            strCM += strSpaceCharacter + '+' + strSpaceCharacter + strModifiers + strSpaceCharacter + '(' + intBonus.ToString(GlobalOptions.Instance.CultureInfo) + ')';
+                            strCM += strSpaceCharacter + '+' + strSpaceCharacter + strModifiers + strSpaceCharacter + '(' + intBonus.ToString(GlobalOptions.CultureInfo) + ')';
                     }
                 }
                 else
                 {
-                    strCM = 8.ToString(GlobalOptions.Instance.CultureInfo) + strSpaceCharacter + '+' + strSpaceCharacter +
-                            '(' + WIL.DisplayAbbrev + '÷' + 2.ToString(GlobalOptions.Instance.CultureInfo) + ')' + strSpaceCharacter +
-                            '(' + ((WIL.TotalValue + 1) / 2).ToString(GlobalOptions.Instance.CultureInfo) + ')';
+                    strCM = 8.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + '+' + strSpaceCharacter +
+                            '(' + WIL.DisplayAbbrev + '÷' + 2.ToString(GlobalOptions.CultureInfo) + ')' + strSpaceCharacter +
+                            '(' + ((WIL.TotalValue + 1) / 2).ToString(GlobalOptions.CultureInfo) + ')';
 
                     intBonus = ImprovementManager.ValueOf(this, Improvement.ImprovementType.StunCM);
                     if(intBonus != 0)
-                        strCM += strSpaceCharacter + '+' + strSpaceCharacter + strModifiers + strSpaceCharacter + '(' + intBonus.ToString(GlobalOptions.Instance.CultureInfo) + ')';
+                        strCM += strSpaceCharacter + '+' + strSpaceCharacter + strModifiers + strSpaceCharacter + '(' + intBonus.ToString(GlobalOptions.CultureInfo) + ')';
                 }
 
                 return strCM;
@@ -11223,9 +11223,9 @@ if (!Utils.IsUnitTest){
             }
         }
 
-        public string DisplayNuyen => Nuyen.ToString(_objOptions.NuyenFormat, GlobalOptions.Instance.CultureInfo) + '¥';
+        public string DisplayNuyen => Nuyen.ToString(_objOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
-        public string DisplayStolenNuyen => StolenNuyen.ToString(_objOptions.NuyenFormat, GlobalOptions.Instance.CultureInfo) + '¥';
+        public string DisplayStolenNuyen => StolenNuyen.ToString(_objOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
         /// <summary>
         /// Amount of Nuyen the character started with via the priority system.
@@ -11249,8 +11249,8 @@ if (!Utils.IsUnitTest){
         public decimal TotalStartingNuyen => StartingNuyen + StartingNuyenModifiers + (NuyenBP * Options.NuyenPerBP);
 
         public string DisplayTotalStartingNuyen =>
-            '=' + LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language) +
-            TotalStartingNuyen.ToString(Options.NuyenFormat, GlobalOptions.Instance.CultureInfo) + '¥';
+            '=' + LanguageManager.GetString("String_Space", GlobalOptions.Language) +
+            TotalStartingNuyen.ToString(Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
         /// <summary>
         /// Number of Build Points put into Nuyen.
@@ -11311,12 +11311,12 @@ if (!Utils.IsUnitTest){
         {
             get
             {
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
-                return LanguageManager.GetString("Label_Options_Maximum", GlobalOptions.Instance.Language) + strSpaceCharacter +
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                return LanguageManager.GetString("Label_Options_Maximum", GlobalOptions.Language) + strSpaceCharacter +
                        '(' +
-                       LanguageManager.GetString("String_LimitMentalShort", GlobalOptions.Instance.Language) +
+                       LanguageManager.GetString("String_LimitMentalShort", GlobalOptions.Language) +
                        strSpaceCharacter + '[' + LimitMental + ']' + ',' + strSpaceCharacter +
-                       LanguageManager.GetString("String_LimitSocialShort", GlobalOptions.Instance.Language) +
+                       LanguageManager.GetString("String_LimitSocialShort", GlobalOptions.Language) +
                        strSpaceCharacter + '[' + LimitSocial + ']' + ')';
             }
         }
@@ -11343,24 +11343,24 @@ if (!Utils.IsUnitTest){
         {
             get
             {
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                 if(IsAI)
                 {
                     Vehicle objHomeNodeVehicle = HomeNode as Vehicle;
-                    return LanguageManager.GetString("String_Handling", GlobalOptions.Instance.Language) + strSpaceCharacter +
-                           '[' + (objHomeNodeVehicle?.Handling ?? 0).ToString(GlobalOptions.Instance.CultureInfo) + ']';
+                    return LanguageManager.GetString("String_Handling", GlobalOptions.Language) + strSpaceCharacter +
+                           '[' + (objHomeNodeVehicle?.Handling ?? 0).ToString(GlobalOptions.CultureInfo) + ']';
                 }
 
                 StringBuilder objToolTip = new StringBuilder(
                     '(' + STR.DisplayAbbrev + strSpaceCharacter + '[' +
-                    STR.TotalValue.ToString(GlobalOptions.Instance.CultureInfo) + ']' + strSpaceCharacter + '×' +
-                    strSpaceCharacter + 2.ToString(GlobalOptions.Instance.CultureInfo) +
+                    STR.TotalValue.ToString(GlobalOptions.CultureInfo) + ']' + strSpaceCharacter + '×' +
+                    strSpaceCharacter + 2.ToString(GlobalOptions.CultureInfo) +
                     strSpaceCharacter + '+' + strSpaceCharacter +
-                    BOD.DisplayAbbrev + strSpaceCharacter + '[' + BOD.TotalValue.ToString(GlobalOptions.Instance.CultureInfo) +
+                    BOD.DisplayAbbrev + strSpaceCharacter + '[' + BOD.TotalValue.ToString(GlobalOptions.CultureInfo) +
                     ']' +
                     strSpaceCharacter + '+' + strSpaceCharacter +
-                    REA.DisplayAbbrev + strSpaceCharacter + '[' + REA.TotalValue.ToString(GlobalOptions.Instance.CultureInfo) +
-                    "])" + strSpaceCharacter + '/' + strSpaceCharacter + 3.ToString(GlobalOptions.Instance.CultureInfo));
+                    REA.DisplayAbbrev + strSpaceCharacter + '[' + REA.TotalValue.ToString(GlobalOptions.CultureInfo) +
+                    "])" + strSpaceCharacter + '/' + strSpaceCharacter + 3.ToString(GlobalOptions.CultureInfo));
 
                 foreach(Improvement objLoopImprovement in Improvements)
                 {
@@ -11368,9 +11368,9 @@ if (!Utils.IsUnitTest){
                         objLoopImprovement.Enabled)
                     {
                         objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                          GetObjectName(objLoopImprovement, GlobalOptions.Instance.Language) +
+                                          GetObjectName(objLoopImprovement, GlobalOptions.Language) +
                                           strSpaceCharacter + '(' +
-                                          objLoopImprovement.Value.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                                          objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
                     }
                 }
 
@@ -11415,17 +11415,17 @@ if (!Utils.IsUnitTest){
         {
             get
             {
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                 StringBuilder objToolTip = new StringBuilder(
                     '(' + LOG.DisplayAbbrev + strSpaceCharacter + '[' +
-                    LOG.TotalValue.ToString(GlobalOptions.Instance.CultureInfo) + ']' + strSpaceCharacter + '×' +
-                    strSpaceCharacter + 2.ToString(GlobalOptions.Instance.CultureInfo) +
+                    LOG.TotalValue.ToString(GlobalOptions.CultureInfo) + ']' + strSpaceCharacter + '×' +
+                    strSpaceCharacter + 2.ToString(GlobalOptions.CultureInfo) +
                     strSpaceCharacter + '+' + strSpaceCharacter +
-                    INT.DisplayAbbrev + strSpaceCharacter + '[' + INT.TotalValue.ToString(GlobalOptions.Instance.CultureInfo) +
+                    INT.DisplayAbbrev + strSpaceCharacter + '[' + INT.TotalValue.ToString(GlobalOptions.CultureInfo) +
                     ']' +
                     strSpaceCharacter + '+' + strSpaceCharacter +
-                    WIL.DisplayAbbrev + strSpaceCharacter + '[' + WIL.TotalValue.ToString(GlobalOptions.Instance.CultureInfo) +
-                    "])" + strSpaceCharacter + '/' + strSpaceCharacter + 3.ToString(GlobalOptions.Instance.CultureInfo));
+                    WIL.DisplayAbbrev + strSpaceCharacter + '[' + WIL.TotalValue.ToString(GlobalOptions.CultureInfo) +
+                    "])" + strSpaceCharacter + '/' + strSpaceCharacter + 3.ToString(GlobalOptions.CultureInfo));
 
                 if(IsAI)
                 {
@@ -11440,8 +11440,8 @@ if (!Utils.IsUnitTest){
                                 intLimit = intHomeNodeSensor;
                                 objToolTip =
                                     new StringBuilder(
-                                        LanguageManager.GetString("String_Sensor", GlobalOptions.Instance.Language) +
-                                        strSpaceCharacter + '[' + intLimit.ToString(GlobalOptions.Instance.CultureInfo) + ']');
+                                        LanguageManager.GetString("String_Sensor", GlobalOptions.Language) +
+                                        strSpaceCharacter + '[' + intLimit.ToString(GlobalOptions.CultureInfo) + ']');
                             }
                         }
 
@@ -11451,8 +11451,8 @@ if (!Utils.IsUnitTest){
                             intLimit = intHomeNodeDP;
                             objToolTip =
                                 new StringBuilder(
-                                    LanguageManager.GetString("String_DataProcessing", GlobalOptions.Instance.Language) +
-                                    strSpaceCharacter + '[' + intLimit.ToString(GlobalOptions.Instance.CultureInfo) + ']');
+                                    LanguageManager.GetString("String_DataProcessing", GlobalOptions.Language) +
+                                    strSpaceCharacter + '[' + intLimit.ToString(GlobalOptions.CultureInfo) + ']');
                         }
                     }
                 }
@@ -11463,9 +11463,9 @@ if (!Utils.IsUnitTest){
                         objLoopImprovement.Enabled)
                     {
                         objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                          GetObjectName(objLoopImprovement, GlobalOptions.Instance.Language) +
+                                          GetObjectName(objLoopImprovement, GlobalOptions.Language) +
                                           strSpaceCharacter + '(' +
-                                          objLoopImprovement.Value.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                                          objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
                     }
                 }
 
@@ -11509,21 +11509,21 @@ if (!Utils.IsUnitTest){
         {
             get
             {
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                 StringBuilder objToolTip = new StringBuilder('(' + CHA.DisplayAbbrev + strSpaceCharacter + '[' +
-                                                             CHA.TotalValue.ToString(GlobalOptions.Instance.CultureInfo) + ']');
+                                                             CHA.TotalValue.ToString(GlobalOptions.CultureInfo) + ']');
 
                 if(IsAI && HomeNode != null)
                 {
                     int intHomeNodeDP = HomeNode.GetTotalMatrixAttribute("Data Processing");
-                    string strDPString = LanguageManager.GetString("String_DataProcessing", GlobalOptions.Instance.Language);
+                    string strDPString = LanguageManager.GetString("String_DataProcessing", GlobalOptions.Language);
                     if(HomeNode is Vehicle objHomeNodeVehicle)
                     {
                         int intHomeNodePilot = objHomeNodeVehicle.Pilot;
                         if(intHomeNodePilot > intHomeNodeDP)
                         {
                             intHomeNodeDP = intHomeNodePilot;
-                            strDPString = LanguageManager.GetString("String_Pilot", GlobalOptions.Instance.Language);
+                            strDPString = LanguageManager.GetString("String_Pilot", GlobalOptions.Language);
                         }
                     }
 
@@ -11533,15 +11533,15 @@ if (!Utils.IsUnitTest){
                 else
                 {
                     objToolTip.Append(strSpaceCharacter + '×' + strSpaceCharacter +
-                                      2.ToString(GlobalOptions.Instance.CultureInfo));
+                                      2.ToString(GlobalOptions.CultureInfo));
                 }
 
                 objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
                                   WIL.DisplayAbbrev + strSpaceCharacter + '[' +
-                                  WIL.TotalValue.ToString(GlobalOptions.Instance.CultureInfo) + ']' +
+                                  WIL.TotalValue.ToString(GlobalOptions.CultureInfo) + ']' +
                                   strSpaceCharacter + '+' + strSpaceCharacter +
                                   ESS.DisplayAbbrev + strSpaceCharacter + '[' + DisplayEssence + "])" +
-                                  strSpaceCharacter + '/' + strSpaceCharacter + 3.ToString(GlobalOptions.Instance.CultureInfo));
+                                  strSpaceCharacter + '/' + strSpaceCharacter + 3.ToString(GlobalOptions.CultureInfo));
 
                 foreach(Improvement objLoopImprovement in Improvements)
                 {
@@ -11549,9 +11549,9 @@ if (!Utils.IsUnitTest){
                         objLoopImprovement.Enabled)
                     {
                         objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                          GetObjectName(objLoopImprovement, GlobalOptions.Instance.Language) +
+                                          GetObjectName(objLoopImprovement, GlobalOptions.Language) +
                                           strSpaceCharacter + '(' +
-                                          objLoopImprovement.Value.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                                          objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
                     }
                 }
 
@@ -11562,7 +11562,7 @@ if (!Utils.IsUnitTest){
         public bool HasMentorSpirit => MentorSpirits.Count > 0;
 
         public string FirstMentorSpiritDisplayName => MentorSpirits.Count > 0
-            ? MentorSpirits[0].DisplayNameShort(GlobalOptions.Instance.Language)
+            ? MentorSpirits[0].DisplayNameShort(GlobalOptions.Language)
             : string.Empty;
 
         public string FirstMentorSpiritDisplayInformation
@@ -11573,12 +11573,12 @@ if (!Utils.IsUnitTest){
                     return string.Empty;
 
                 MentorSpirit objMentorSpirit = MentorSpirits[0];
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
-                return LanguageManager.GetString("Label_SelectMentorSpirit_Advantage", GlobalOptions.Instance.Language) +
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                return LanguageManager.GetString("Label_SelectMentorSpirit_Advantage", GlobalOptions.Language) +
                        strSpaceCharacter +
-                       objMentorSpirit.DisplayAdvantage(GlobalOptions.Instance.Language) + Environment.NewLine +
+                       objMentorSpirit.DisplayAdvantage(GlobalOptions.Language) + Environment.NewLine +
                        Environment.NewLine +
-                       LanguageManager.GetString("Label_SelectMetamagic_Disadvantage", GlobalOptions.Instance.Language) +
+                       LanguageManager.GetString("Label_SelectMetamagic_Disadvantage", GlobalOptions.Language) +
                        strSpaceCharacter +
                        objMentorSpirit.Disadvantage;
             }
@@ -11653,7 +11653,7 @@ if (!Utils.IsUnitTest){
             return intReturn;
         }
 
-        public string DisplayMovement => GetMovement(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
+        public string DisplayMovement => GetMovement(GlobalOptions.CultureInfo, GlobalOptions.Language);
 
         /// <summary>
         /// Character's Movement rate (Culture-dependent).
@@ -11679,7 +11679,7 @@ if (!Utils.IsUnitTest){
                 if(string.IsNullOrWhiteSpace(_strMovement))
                 {
                     XmlNode xmlMetatypeNode = XmlManager
-                        .Load(IsCritter ? "critters.xml" : "metatypes.xml", GlobalOptions.Instance.Language)
+                        .Load(IsCritter ? "critters.xml" : "metatypes.xml", GlobalOptions.Language)
                         .SelectSingleNode("/chummer/metatypes/metatype[name = \"" + Metatype + "\"]");
                     XmlNode xmlMetavariantNode =
                         xmlMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = \"" + Metavariant + "\"]");
@@ -11709,7 +11709,7 @@ if (!Utils.IsUnitTest){
                 if(string.IsNullOrWhiteSpace(_strRun))
                 {
                     XmlNode xmlMetatypeNode = XmlManager
-                        .Load(IsCritter ? "critters.xml" : "metatypes.xml", GlobalOptions.Instance.Language)
+                        .Load(IsCritter ? "critters.xml" : "metatypes.xml", GlobalOptions.Language)
                         .SelectSingleNode("/chummer/metatypes/metatype[name = \"" + Metatype + "\"]");
                     XmlNode xmlMetavariantNode =
                         xmlMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = \"" + Metavariant + "\"]");
@@ -11739,7 +11739,7 @@ if (!Utils.IsUnitTest){
                 if(string.IsNullOrWhiteSpace(_strRunAlt))
                 {
                     XmlNode xmlMetatypeNode = XmlManager
-                        .Load(IsCritter ? "critters.xml" : "metatypes.xml", GlobalOptions.Instance.Language)
+                        .Load(IsCritter ? "critters.xml" : "metatypes.xml", GlobalOptions.Language)
                         .SelectSingleNode("/chummer/metatypes/metatype[name = \"" + Metatype + "\"]");
                     XmlNode xmlMetavariantNode =
                         xmlMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = \"" + Metavariant + "\"]");
@@ -11769,7 +11769,7 @@ if (!Utils.IsUnitTest){
                 if(string.IsNullOrWhiteSpace(_strWalk))
                 {
                     XmlNode xmlMetatypeNode = XmlManager
-                        .Load(IsCritter ? "critters.xml" : "metatypes.xml", GlobalOptions.Instance.Language)
+                        .Load(IsCritter ? "critters.xml" : "metatypes.xml", GlobalOptions.Language)
                         .SelectSingleNode("/chummer/metatypes/metatype[name = \"" + Metatype + "\"]");
                     XmlNode xmlMetavariantNode =
                         xmlMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = \"" + Metavariant + "\"]");
@@ -11799,7 +11799,7 @@ if (!Utils.IsUnitTest){
                 if(string.IsNullOrWhiteSpace(_strWalkAlt))
                 {
                     XmlNode xmlMetatypeNode = XmlManager
-                        .Load(IsCritter ? "critters.xml" : "metatypes.xml", GlobalOptions.Instance.Language)
+                        .Load(IsCritter ? "critters.xml" : "metatypes.xml", GlobalOptions.Language)
                         .SelectSingleNode("/chummer/metatypes/metatype[name = \"" + Metatype + "\"]");
                     XmlNode xmlMetavariantNode =
                         xmlMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = \"" + Metavariant + "\"]");
@@ -11829,7 +11829,7 @@ if (!Utils.IsUnitTest){
                 if(string.IsNullOrWhiteSpace(_strSprint))
                 {
                     XmlNode xmlMetatypeNode = XmlManager
-                        .Load(IsCritter ? "critters.xml" : "metatypes.xml", GlobalOptions.Instance.Language)
+                        .Load(IsCritter ? "critters.xml" : "metatypes.xml", GlobalOptions.Language)
                         .SelectSingleNode("/chummer/metatypes/metatype[name = \"" + Metatype + "\"]");
                     XmlNode xmlMetavariantNode =
                         xmlMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = \"" + Metavariant + "\"]");
@@ -11859,7 +11859,7 @@ if (!Utils.IsUnitTest){
                 if(string.IsNullOrWhiteSpace(_strSprintAlt))
                 {
                     XmlNode xmlMetatypeNode = XmlManager
-                        .Load(IsCritter ? "critters.xml" : "metatypes.xml", GlobalOptions.Instance.Language)
+                        .Load(IsCritter ? "critters.xml" : "metatypes.xml", GlobalOptions.Language)
                         .SelectSingleNode("/chummer/metatypes/metatype[name = \"" + Metatype + "\"]");
                     XmlNode xmlMetavariantNode =
                         xmlMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = \"" + Metavariant + "\"]");
@@ -11988,17 +11988,17 @@ if (!Utils.IsUnitTest){
             {
                 case "Fly":
                     if(strReturn.Length > 2)
-                        decimal.TryParse(strReturn[2], NumberStyles.Any, GlobalOptions.Instance.InvariantCultureInfo,
+                        decimal.TryParse(strReturn[2], NumberStyles.Any, GlobalOptions.InvariantCultureInfo,
                             out decTmp);
                     break;
                 case "Swim":
                     if(strReturn.Length > 1)
-                        decimal.TryParse(strReturn[1], NumberStyles.Any, GlobalOptions.Instance.InvariantCultureInfo,
+                        decimal.TryParse(strReturn[1], NumberStyles.Any, GlobalOptions.InvariantCultureInfo,
                             out decTmp);
                     break;
                 case "Ground":
                     if(strReturn.Length > 0)
-                        decimal.TryParse(strReturn[0], NumberStyles.Any, GlobalOptions.Instance.InvariantCultureInfo,
+                        decimal.TryParse(strReturn[0], NumberStyles.Any, GlobalOptions.InvariantCultureInfo,
                             out decTmp);
                     break;
             }
@@ -12051,7 +12051,7 @@ if (!Utils.IsUnitTest){
             }
 
             if(objCulture == null)
-                objCulture = GlobalOptions.Instance.CultureInfo;
+                objCulture = GlobalOptions.CultureInfo;
             string strReturn;
             if(strMovementType == "Swim")
             {
@@ -12070,7 +12070,7 @@ if (!Utils.IsUnitTest){
             return strReturn;
         }
 
-        public string DisplaySwim => GetSwim(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
+        public string DisplaySwim => GetSwim(GlobalOptions.CultureInfo, GlobalOptions.Language);
 
         /// <summary>
         /// Character's Swim rate.
@@ -12086,7 +12086,7 @@ if (!Utils.IsUnitTest){
             return CalculatedMovement("Swim", false, objCulture);
         }
 
-        public string DisplayFly => GetFly(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
+        public string DisplayFly => GetFly(GlobalOptions.CultureInfo, GlobalOptions.Language);
 
         /// <summary>
         /// Character's Fly rate.
@@ -12568,7 +12568,7 @@ if (!Utils.IsUnitTest){
         public string AvailTest(decimal decCost, string strAvail)
         {
             bool blnShowTest = false;
-            string strTestSuffix = LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Instance.Language);
+            string strTestSuffix = LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language);
             if(strAvail.EndsWith(strTestSuffix))
             {
                 blnShowTest = true;
@@ -12576,7 +12576,7 @@ if (!Utils.IsUnitTest){
             }
             else
             {
-                strTestSuffix = LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Instance.Language);
+                strTestSuffix = LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language);
                 if(strAvail.EndsWith(strTestSuffix))
                 {
                     blnShowTest = true;
@@ -12589,7 +12589,7 @@ if (!Utils.IsUnitTest){
                 return GetAvailTestString(decCost, intAvail);
             }
 
-            return LanguageManager.GetString("String_None", GlobalOptions.Instance.Language);
+            return LanguageManager.GetString("String_None", GlobalOptions.Language);
         }
 
         /// <summary>
@@ -12604,33 +12604,33 @@ if (!Utils.IsUnitTest){
                 return GetAvailTestString(decCost, objAvailability.Value);
             }
 
-            return LanguageManager.GetString("String_None", GlobalOptions.Instance.Language);
+            return LanguageManager.GetString("String_None", GlobalOptions.Language);
         }
 
         private string GetAvailTestString(decimal decCost, int intAvailValue)
         {
-            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
+            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
             string strInterval;
             // Find the character's Negotiation total.
             int intPool = SkillsSection.GetActiveSkill("Negotiation")?.Pool ?? 0;
             // Determine the interval based on the item's price.
             if(decCost <= 100.0m)
                 strInterval = "6" + strSpaceCharacter +
-                              LanguageManager.GetString("String_Hours", GlobalOptions.Instance.Language);
+                              LanguageManager.GetString("String_Hours", GlobalOptions.Language);
             else if(decCost <= 1000.0m)
-                strInterval = "1" + strSpaceCharacter + LanguageManager.GetString("String_Day", GlobalOptions.Instance.Language);
+                strInterval = "1" + strSpaceCharacter + LanguageManager.GetString("String_Day", GlobalOptions.Language);
             else if(decCost <= 10000.0m)
                 strInterval = "2" + strSpaceCharacter +
-                              LanguageManager.GetString("String_Days", GlobalOptions.Instance.Language);
+                              LanguageManager.GetString("String_Days", GlobalOptions.Language);
             else if(decCost <= 100000.0m)
                 strInterval = "1" + strSpaceCharacter +
-                              LanguageManager.GetString("String_Week", GlobalOptions.Instance.Language);
+                              LanguageManager.GetString("String_Week", GlobalOptions.Language);
             else
                 strInterval = "1" + strSpaceCharacter +
-                              LanguageManager.GetString("String_Month", GlobalOptions.Instance.Language);
+                              LanguageManager.GetString("String_Month", GlobalOptions.Language);
 
-            return intPool.ToString(GlobalOptions.Instance.CultureInfo) + strSpaceCharacter + '(' +
-                   intAvailValue.ToString(GlobalOptions.Instance.CultureInfo) + ',' + strSpaceCharacter + strInterval + ')';
+            return intPool.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + '(' +
+                   intAvailValue.ToString(GlobalOptions.CultureInfo) + ',' + strSpaceCharacter + strInterval + ')';
         }
 
         /// <summary>
@@ -13417,12 +13417,12 @@ if (!Utils.IsUnitTest){
                 XmlNode objXmlBook = objXmlDocument.SelectSingleNode("/chummer/books/book[code = \"" + strBook + "\"]");
                 if(objXmlBook != null)
                 {
-                    strReturn.AppendLine((objXmlBook["translate"]?.InnerText ?? objXmlBook["name"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Instance.Language)) +
-                                         LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language) + '(' + (objXmlBook["altcode"]?.InnerText ?? strBook) + ')');
+                    strReturn.AppendLine((objXmlBook["translate"]?.InnerText ?? objXmlBook["name"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language)) +
+                                         LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + (objXmlBook["altcode"]?.InnerText ?? strBook) + ')');
                 }
                 else
                 {
-                    strReturn.AppendLine(LanguageManager.GetString("String_Unknown", GlobalOptions.Instance.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language) + strBook);
+                    strReturn.AppendLine(LanguageManager.GetString("String_Unknown", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + strBook);
                 }
             }
 
@@ -14700,9 +14700,9 @@ if (!Utils.IsUnitTest){
                     if (loadOperation?.Telemetry != null)
                         loadOperation.Telemetry.Success = false;
                     MessageBox.Show(
-                        LanguageManager.GetString("Message_FailedLoad", GlobalOptions.Instance.Language)
+                        LanguageManager.GetString("Message_FailedLoad", GlobalOptions.Language)
                             .Replace("{0}", ex.Message),
-                        LanguageManager.GetString("MessageTitle_FailedLoad", GlobalOptions.Instance.Language),
+                        LanguageManager.GetString("MessageTitle_FailedLoad", GlobalOptions.Language),
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
                 }
@@ -14711,9 +14711,9 @@ if (!Utils.IsUnitTest){
                     if (loadOperation?.Telemetry != null)
                         loadOperation.Telemetry.Success = false;
                     MessageBox.Show(
-                        LanguageManager.GetString("Message_FailedLoad", GlobalOptions.Instance.Language)
+                        LanguageManager.GetString("Message_FailedLoad", GlobalOptions.Language)
                             .Replace("{0}", ex.Message),
-                        LanguageManager.GetString("MessageTitle_FailedLoad", GlobalOptions.Instance.Language),
+                        LanguageManager.GetString("MessageTitle_FailedLoad", GlobalOptions.Language),
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
                 }
@@ -14722,9 +14722,9 @@ if (!Utils.IsUnitTest){
                     if (loadOperation?.Telemetry != null)
                         loadOperation.Telemetry.Success = false;
                     MessageBox.Show(
-                        LanguageManager.GetString("Message_FailedLoad", GlobalOptions.Instance.Language)
+                        LanguageManager.GetString("Message_FailedLoad", GlobalOptions.Language)
                             .Replace("{0}", ex.Message),
-                        LanguageManager.GetString("MessageTitle_FailedLoad", GlobalOptions.Instance.Language),
+                        LanguageManager.GetString("MessageTitle_FailedLoad", GlobalOptions.Language),
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
                 }
@@ -14960,10 +14960,10 @@ if (!Utils.IsUnitTest){
                 if (xmlGameplayOption == null)
                 {
                     string strMessage = LanguageManager
-                        .GetString("Message_MissingGameplayOption", GlobalOptions.Instance.Language)
+                        .GetString("Message_MissingGameplayOption", GlobalOptions.Language)
                         .Replace("{0}", GameplayOption);
                     if (MessageBox.Show(strMessage,
-                            LanguageManager.GetString("Message_MissingGameplayOption_Title", GlobalOptions.Instance.Language),
+                            LanguageManager.GetString("Message_MissingGameplayOption_Title", GlobalOptions.Language),
                             MessageBoxButtons.OKCancel, MessageBoxIcon.Error) == DialogResult.OK)
                     {
                         frmSelectBuildMethod frmPickBP = new frmSelectBuildMethod(this, true);
@@ -14983,7 +14983,7 @@ if (!Utils.IsUnitTest){
                         _intGameplayOptionQualityLimit =
                             _intMaxKarma = Convert.ToInt32(xmlGameplayOption["karma"].InnerText);
                         _decNuyenMaximumBP = _decMaxNuyen = Convert.ToDecimal(xmlGameplayOption["maxnuyen"].InnerText,
-                            GlobalOptions.Instance.InvariantCultureInfo);
+                            GlobalOptions.InvariantCultureInfo);
                         _intMaxAvail = Convert.ToInt32(xmlGameplayOption["maxavailability"].InnerText);
                     }
                 }
@@ -15078,7 +15078,7 @@ if (!Utils.IsUnitTest){
                 if (Created)
                 {
                     decimal.TryParse(xmlStatBlockBaseNode.SelectSingleNode("cash/@total")?.InnerText, NumberStyles.Any,
-                        GlobalOptions.Instance.InvariantCultureInfo, out _decNuyen);
+                        GlobalOptions.InvariantCultureInfo, out _decNuyen);
                 }
 
                 /* TODO: Initiation, Submersion Grades
@@ -15111,7 +15111,7 @@ if (!Utils.IsUnitTest){
                         int intQuantity = 1;
                         for (int i = 1; i <= 15; ++i)
                         {
-                            string strLoopString = " (" + i.ToString(GlobalOptions.Instance.InvariantCultureInfo) + ')';
+                            string strLoopString = " (" + i.ToString(GlobalOptions.InvariantCultureInfo) + ')';
                             if (strQualityName.EndsWith(strLoopString))
                             {
                                 strQualityName = strQualityName.TrimEndOnce(strLoopString, true);
@@ -15202,7 +15202,7 @@ if (!Utils.IsUnitTest){
                         int intQuantity = 1;
                         for (int i = 1; i <= 15; ++i)
                         {
-                            string strLoopString = " (" + i.ToString(GlobalOptions.Instance.InvariantCultureInfo) + ')';
+                            string strLoopString = " (" + i.ToString(GlobalOptions.InvariantCultureInfo) + ')';
                             if (strQualityName.EndsWith(strLoopString))
                             {
                                 strQualityName = strQualityName.TrimEndOnce(strLoopString, true);
@@ -15524,7 +15524,7 @@ if (!Utils.IsUnitTest){
                                                             objPlugin.Quantity =
                                                                 Convert.ToDecimal(
                                                                     xmlPluginToAdd.Attributes["quantity"]?.InnerText ??
-                                                                    "1", GlobalOptions.Instance.InvariantCultureInfo);
+                                                                    "1", GlobalOptions.InvariantCultureInfo);
                                                             objPlugin.Notes = xmlPluginToAdd["description"]?.InnerText;
                                                             objPlugin.ProcessHeroLabGearPlugins(xmlPluginToAdd,
                                                                 lstWeapons);
@@ -15581,7 +15581,7 @@ if (!Utils.IsUnitTest){
                                                             objPlugin.Quantity =
                                                                 Convert.ToDecimal(
                                                                     xmlPluginToAdd.Attributes["quantity"]?.InnerText ??
-                                                                    "1", GlobalOptions.Instance.InvariantCultureInfo);
+                                                                    "1", GlobalOptions.InvariantCultureInfo);
                                                             objPlugin.Notes = xmlPluginToAdd["description"]?.InnerText;
                                                             objPlugin.ProcessHeroLabGearPlugins(xmlPluginToAdd,
                                                                 lstWeapons);
@@ -15599,7 +15599,7 @@ if (!Utils.IsUnitTest){
                                             {
                                                 objPlugin.Quantity = Convert.ToDecimal(
                                                     xmlArmorModToImport.Attributes["quantity"]?.InnerText ?? "1",
-                                                    GlobalOptions.Instance.InvariantCultureInfo);
+                                                    GlobalOptions.InvariantCultureInfo);
                                                 objPlugin.Notes = xmlArmorModToImport["description"]?.InnerText;
                                                 objPlugin.ProcessHeroLabGearPlugins(xmlArmorModToImport, lstWeapons);
                                             }
@@ -16240,7 +16240,7 @@ if (!Utils.IsUnitTest){
                         {
                             objPlugin.Quantity =
                                 Convert.ToDecimal(xmlPluginToAdd.Attributes["quantity"]?.InnerText ?? "1",
-                                    GlobalOptions.Instance.InvariantCultureInfo);
+                                    GlobalOptions.InvariantCultureInfo);
                             objPlugin.Notes = xmlPluginToAdd["description"]?.InnerText;
                             objPlugin.ProcessHeroLabGearPlugins(xmlPluginToAdd, lstWeapons);
                         }

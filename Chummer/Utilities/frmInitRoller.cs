@@ -27,7 +27,7 @@ namespace Chummer
         public frmInitRoller()
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
         }
 
         private void frmInitRoller_Load(object sender, EventArgs e)

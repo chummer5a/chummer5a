@@ -40,21 +40,21 @@ namespace Chummer
         {
             _objCharacter = objCharacter;
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 
             _xmlGameplayOptionsDataGameplayOptionsNode = XmlManager.Load("gameplayoptions.xml").GetFastNavigator().SelectSingleNode("/chummer/gameplayoptions");
 
             // Populate the Build Method list.
             List<ListItem> lstBuildMethod = new List<ListItem>
             {
-                new ListItem("Karma", LanguageManager.GetString("String_Karma", GlobalOptions.Instance.Language)),
-                new ListItem("Priority", LanguageManager.GetString("String_Priority", GlobalOptions.Instance.Language)),
-                new ListItem("SumtoTen", LanguageManager.GetString("String_SumtoTen", GlobalOptions.Instance.Language)),
+                new ListItem("Karma", LanguageManager.GetString("String_Karma", GlobalOptions.Language)),
+                new ListItem("Priority", LanguageManager.GetString("String_Priority", GlobalOptions.Language)),
+                new ListItem("SumtoTen", LanguageManager.GetString("String_SumtoTen", GlobalOptions.Language)),
             };
 
-            if (GlobalOptions.Instance.LifeModuleEnabled)
+            if (GlobalOptions.LifeModuleEnabled)
             {
-                lstBuildMethod.Add(new ListItem("LifeModule", LanguageManager.GetString("String_LifeModule", GlobalOptions.Instance.Language)));
+                lstBuildMethod.Add(new ListItem("LifeModule", LanguageManager.GetString("String_LifeModule", GlobalOptions.Language)));
             }
 
             cboBuildMethod.BeginUpdate();
@@ -92,7 +92,7 @@ namespace Chummer
             cboGamePlay.SelectedValue = _strDefaultOption;
             cboGamePlay.EndUpdate();
 
-            chkIgnoreRules.SetToolTip(LanguageManager.GetString("Tip_SelectKarma_IgnoreRules", GlobalOptions.Instance.Language));
+            chkIgnoreRules.SetToolTip(LanguageManager.GetString("Tip_SelectKarma_IgnoreRules", GlobalOptions.Language));
 
             if (blnUseCurrentValues)
             {
@@ -194,7 +194,7 @@ namespace Chummer
                     nudKarma.Enabled = true;
                     nudMaxNuyen.Value = 225 + _decNuyenBP;
                     nudMaxNuyen.Enabled = true;
-                    lblDescription.Text = string.Format(LanguageManager.GetString("String_SelectBP_KarmaSummary", GlobalOptions.Instance.Language), nudKarma.Value.ToString(GlobalOptions.Instance.InvariantCultureInfo));
+                    lblDescription.Text = string.Format(LanguageManager.GetString("String_SelectBP_KarmaSummary", GlobalOptions.Language), nudKarma.Value.ToString(GlobalOptions.InvariantCultureInfo));
                     break;
                 }
                 case "LifeModule":
@@ -205,7 +205,7 @@ namespace Chummer
                     nudKarma.Enabled = true;
                     nudMaxNuyen.Value = 225 + _decNuyenBP;
                     nudMaxNuyen.Enabled = true;
-                    lblDescription.Text = string.Format(LanguageManager.GetString("String_SelectBP_LifeModuleSummary", GlobalOptions.Instance.Language), nudKarma.Value.ToString(GlobalOptions.Instance.InvariantCultureInfo));
+                    lblDescription.Text = string.Format(LanguageManager.GetString("String_SelectBP_LifeModuleSummary", GlobalOptions.Language), nudKarma.Value.ToString(GlobalOptions.InvariantCultureInfo));
                     break;
                 }
                 case "SumtoTen":
@@ -217,7 +217,7 @@ namespace Chummer
                     nudKarma.Enabled = false;
                     nudMaxNuyen.Value = _decNuyenBP;
                     nudMaxNuyen.Enabled = false;
-                    lblDescription.Text = LanguageManager.GetString("String_SelectBP_PrioritySummary", GlobalOptions.Instance.Language);
+                    lblDescription.Text = LanguageManager.GetString("String_SelectBP_PrioritySummary", GlobalOptions.Language);
                     break;
             }
 

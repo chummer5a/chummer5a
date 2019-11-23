@@ -163,12 +163,12 @@ namespace Chummer
 			}
 			strPath = strPath.Substring(0, strPath.Length - 4) + ")";
 
-			if (GlobalOptions.Instance.MissionsOnly)
+			if (GlobalOptions.MissionsOnly)
 			{
 				strPath += " and not(nomission)";
 			}
 
-			if (!GlobalOptions.Instance.Dronemods)
+			if (!GlobalOptions.Dronemods)
 			{
 				strPath += " and not(optionaldrone)";
 			}
@@ -879,7 +879,7 @@ namespace Chummer
 	    /// <summary>
 	    /// Sourcebooks.
 	    /// </summary>
-	    public Dictionary<string, bool> Books { get; } = GlobalOptions.Instance.SourcebookInfo.ToDictionary(x => x.Code, x => x.Code == "SR5");
+	    public Dictionary<string, bool> Books { get; } = GlobalOptions.SourcebookInfo.ToDictionary(x => x.Code, x => x.Code == "SR5");
 
 	    public IEnumerable<string> EnabledBooks()
 	    {

@@ -32,15 +32,15 @@ namespace Chummer
         public frmSelectAttribute(params string[] lstAttributeAbbrevs)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 
             // Build the list of Attributes.
             _lstAttributes = new List<ListItem>(lstAttributeAbbrevs.Length);
             foreach (string strAbbrev in lstAttributeAbbrevs)
             {
                 string strAttributeDisplayName = strAbbrev == "MAGAdept"
-                    ? LanguageManager.GetString("String_AttributeMAGShort", GlobalOptions.Instance.Language) + " (" + LanguageManager.GetString("String_DescAdept", GlobalOptions.Instance.Language) + ')'
-                    : LanguageManager.GetString("String_Attribute" + strAbbrev + "Short", GlobalOptions.Instance.Language);
+                    ? LanguageManager.GetString("String_AttributeMAGShort", GlobalOptions.Language) + " (" + LanguageManager.GetString("String_DescAdept", GlobalOptions.Language) + ')'
+                    : LanguageManager.GetString("String_Attribute" + strAbbrev + "Short", GlobalOptions.Language);
                 _lstAttributes.Add(new ListItem(strAbbrev, strAttributeDisplayName));
             }
 

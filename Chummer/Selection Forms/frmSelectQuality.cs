@@ -44,7 +44,7 @@ namespace Chummer
         public frmSelectQuality(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             
             // Load the Quality information.
@@ -71,7 +71,7 @@ namespace Chummer
 
             if (_lstCategory.Count > 0)
             {
-                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll", GlobalOptions.Instance.Language)));
+                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll", GlobalOptions.Language)));
             }
 
             cboCategory.BeginUpdate();
@@ -95,7 +95,7 @@ namespace Chummer
             if (_objCharacter.MetageneticLimit == 0)
                 chkNotMetagenetic.Checked = true;
 
-            lblBPLabel.Text = LanguageManager.GetString("Label_Karma", GlobalOptions.Instance.Language);
+            lblBPLabel.Text = LanguageManager.GetString("Label_Karma", GlobalOptions.Language);
             _blnLoading = false;
             BuildQualityList();
         }
@@ -120,7 +120,7 @@ namespace Chummer
             if (xmlQuality != null)
             {
                 if (chkFree.Checked)
-                    lblBP.Text = 0.ToString(GlobalOptions.Instance.CultureInfo);
+                    lblBP.Text = 0.ToString(GlobalOptions.CultureInfo);
                 else
                 {
                     string strKarma = xmlQuality.SelectSingleNode("karma")?.Value ?? string.Empty;
@@ -139,9 +139,9 @@ namespace Chummer
                             int.TryParse(strCost.FastEscape('+'), out intMin);
 
                         if (intMax == int.MaxValue)
-                            lblBP.Text = intMin.ToString(GlobalOptions.Instance.CultureInfo);
+                            lblBP.Text = intMin.ToString(GlobalOptions.CultureInfo);
                         else
-                            lblBP.Text = intMin.ToString(GlobalOptions.Instance.CultureInfo) + " - " + intMax.ToString(GlobalOptions.Instance.CultureInfo);
+                            lblBP.Text = intMin.ToString(GlobalOptions.CultureInfo) + " - " + intMax.ToString(GlobalOptions.CultureInfo);
                     }
                     else
                     {
@@ -190,11 +190,11 @@ namespace Chummer
                 }
                 lblBPLabel.Visible = lblBP.Visible = !string.IsNullOrEmpty(lblBP.Text);
 
-                string strSource = xmlQuality.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Instance.Language);
-                string strPage = xmlQuality.SelectSingleNode("altpage")?.Value ?? xmlQuality.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Instance.Language);
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
-                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Instance.Language) + strSpaceCharacter + strPage;
-                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Instance.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Instance.Language) + strSpaceCharacter + strPage);
+                string strSource = xmlQuality.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+                string strPage = xmlQuality.SelectSingleNode("altpage")?.Value ?? xmlQuality.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
+                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
                 lblSourceLabel.Visible = lblSource.Visible = !string.IsNullOrEmpty(lblSource.Text);
             }
             else
@@ -397,20 +397,20 @@ namespace Chummer
             if (nudValueBP.Value != 0)
             {
                 strFilter.Append(" and karma = ");
-                strFilter.Append(nudValueBP.Value.ToString(GlobalOptions.Instance.InvariantCultureInfo));
+                strFilter.Append(nudValueBP.Value.ToString(GlobalOptions.InvariantCultureInfo));
             }
             else
             {
                 if (nudMinimumBP.Value != 0)
                 {
                     strFilter.Append(" and karma >= ");
-                    strFilter.Append(nudMinimumBP.Value.ToString(GlobalOptions.Instance.InvariantCultureInfo));
+                    strFilter.Append(nudMinimumBP.Value.ToString(GlobalOptions.InvariantCultureInfo));
                 }
 
                 if (nudMaximumBP.Value != 0)
                 {
                     strFilter.Append(" and karma <= ");
-                    strFilter.Append(nudMaximumBP.Value.ToString(GlobalOptions.Instance.InvariantCultureInfo));
+                    strFilter.Append(nudMaximumBP.Value.ToString(GlobalOptions.InvariantCultureInfo));
                 }
             }
             string strSearch = CommonFunctions.GenerateSearchXPath(txtSearch.Text);
@@ -463,7 +463,7 @@ namespace Chummer
 
             XPathNavigator objNode = _xmlBaseQualityDataNode.SelectSingleNode("qualities/quality[id = \"" + strSelectedQuality + "\"]");
 
-            if (objNode == null || !objNode.RequirementsMet(_objCharacter, null, LanguageManager.GetString("String_Quality", GlobalOptions.Instance.Language), IgnoreQuality))
+            if (objNode == null || !objNode.RequirementsMet(_objCharacter, null, LanguageManager.GetString("String_Quality", GlobalOptions.Language), IgnoreQuality))
                 return;
 
             _strSelectedQuality = strSelectedQuality;

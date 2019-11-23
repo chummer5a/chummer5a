@@ -90,7 +90,7 @@ namespace Chummer
                     break;
             }
 
-            LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 
             _lstGrades = _objCharacter.GetGradeList(objWareSource);
             _strNoneGradeId = _lstGrades.FirstOrDefault(x => x.Name == "None")?.SourceIDString;
@@ -114,7 +114,7 @@ namespace Chummer
                 nudMarkup.Visible = false;
                 lblMarkupPercentLabel.Visible = false;
                 chkHideBannedGrades.Visible = !_objCharacter.IgnoreRules;
-                chkHideOverAvailLimit.Text = string.Format(chkHideOverAvailLimit.Text, _objCharacter.MaximumAvailability.ToString(GlobalOptions.Instance.CultureInfo));
+                chkHideOverAvailLimit.Text = string.Format(chkHideOverAvailLimit.Text, _objCharacter.MaximumAvailability.ToString(GlobalOptions.CultureInfo));
                 chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
             }
 
@@ -171,8 +171,8 @@ namespace Chummer
             // Update the Essence and Cost multipliers based on the Grade that has been selected.
             if (xmlGrade != null)
             {
-                _decCostMultiplier = Convert.ToDecimal(xmlGrade.SelectSingleNode("cost")?.Value, GlobalOptions.Instance.InvariantCultureInfo);
-                _decESSMultiplier = Convert.ToDecimal(xmlGrade.SelectSingleNode("ess")?.Value, GlobalOptions.Instance.InvariantCultureInfo);
+                _decCostMultiplier = Convert.ToDecimal(xmlGrade.SelectSingleNode("cost")?.Value, GlobalOptions.InvariantCultureInfo);
+                _decESSMultiplier = Convert.ToDecimal(xmlGrade.SelectSingleNode("ess")?.Value, GlobalOptions.InvariantCultureInfo);
                 _intAvailModifier = Convert.ToInt32(xmlGrade.SelectSingleNode("avail")?.Value);
 
                 PopulateCategories();
@@ -299,11 +299,11 @@ namespace Chummer
                     nudRating.Visible = false;
                 }
 
-                string strSource = xmlCyberware.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Instance.Language);
-                string strPage = xmlCyberware.SelectSingleNode("altpage")?.Value ?? xmlCyberware.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Instance.Language);
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
-                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Instance.Language) + strSpaceCharacter + strPage;
-                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Instance.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Instance.Language) + ' ' + strPage);
+                string strSource = xmlCyberware.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+                string strPage = xmlCyberware.SelectSingleNode("altpage")?.Value ?? xmlCyberware.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
+                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
                 lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
 
                 Grade objForcedGrade = null;
@@ -539,7 +539,7 @@ namespace Chummer
             set
             {
                 _decMaximumCapacity = value;
-                lblMaximumCapacity.Text = $"{LanguageManager.GetString("Label_MaximumCapacityAllowed", GlobalOptions.Instance.Language)} {_decMaximumCapacity:#,0.##}";
+                lblMaximumCapacity.Text = $"{LanguageManager.GetString("Label_MaximumCapacityAllowed", GlobalOptions.Language)} {_decMaximumCapacity:#,0.##}";
             }
         }
 
@@ -674,7 +674,7 @@ namespace Chummer
             decimal decItemCost = 0;
             if (chkFree.Checked)
             {
-                lblCost.Text = (0.0m).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.Instance.CultureInfo) + '¥';
+                lblCost.Text = (0.0m).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
             }
             else
             {
@@ -702,29 +702,29 @@ namespace Chummer
                         if (strCost.Contains('-'))
                         {
                             string[] strValues = strCost.Split('-');
-                            decMin = Convert.ToDecimal(strValues[0], GlobalOptions.Instance.InvariantCultureInfo);
-                            decMax = Convert.ToDecimal(strValues[1], GlobalOptions.Instance.InvariantCultureInfo);
+                            decMin = Convert.ToDecimal(strValues[0], GlobalOptions.InvariantCultureInfo);
+                            decMax = Convert.ToDecimal(strValues[1], GlobalOptions.InvariantCultureInfo);
                         }
                         else
-                            decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalOptions.Instance.InvariantCultureInfo);
+                            decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalOptions.InvariantCultureInfo);
 
                         lblCost.Text = decMax == decimal.MaxValue ?
-                            decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.Instance.CultureInfo) + "¥+" :
-                            decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.Instance.CultureInfo) + " - " + decMax.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.Instance.CultureInfo) + '¥';
+                            decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + "¥+" :
+                            decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + " - " + decMax.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
                         decItemCost = decMin;
                     }
                     else
                     {
                         strCost = strCost.CheapReplace("Parent Cost", () => CyberwareParent?.Cost ?? "0")
-                            .CheapReplace("Parent Gear Cost", () => CyberwareParent?.Gear.AsParallel().Sum(x => x.TotalCost).ToString(GlobalOptions.Instance.InvariantCultureInfo) ?? "0")
-                            .CheapReplace("MinRating", () => nudRating.Minimum.ToString(GlobalOptions.Instance.InvariantCultureInfo))
-                            .CheapReplace("Rating", () => nudRating.Value.ToString(GlobalOptions.Instance.InvariantCultureInfo));
+                            .CheapReplace("Parent Gear Cost", () => CyberwareParent?.Gear.AsParallel().Sum(x => x.TotalCost).ToString(GlobalOptions.InvariantCultureInfo) ?? "0")
+                            .CheapReplace("MinRating", () => nudRating.Minimum.ToString(GlobalOptions.InvariantCultureInfo))
+                            .CheapReplace("Rating", () => nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo));
 
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strCost, out bool blnIsSuccess);
                         if (blnIsSuccess)
                         {
-                            decItemCost = (Convert.ToDecimal(objProcess, GlobalOptions.Instance.InvariantCultureInfo) * _decCostMultiplier * decGenetechCostModifier);
+                            decItemCost = (Convert.ToDecimal(objProcess, GlobalOptions.InvariantCultureInfo) * _decCostMultiplier * decGenetechCostModifier);
                             decItemCost *= 1 + (nudMarkup.Value / 100.0m);
 
                             if (chkBlackMarketDiscount.Checked)
@@ -732,7 +732,7 @@ namespace Chummer
                                 decItemCost *= 0.9m;
                             }
 
-                            lblCost.Text = decItemCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.Instance.CultureInfo) + '¥';
+                            lblCost.Text = decItemCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                         }
                         else
                         {
@@ -741,7 +741,7 @@ namespace Chummer
                     }
                 }
                 else
-                    lblCost.Text = (0.0m).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.Instance.CultureInfo) + '¥';
+                    lblCost.Text = (0.0m).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
             }
 
             lblCostLabel.Visible = !string.IsNullOrEmpty(lblCost.Text);
@@ -796,21 +796,21 @@ namespace Chummer
                         strEss += strSuffix;
                     }
 
-                    object objProcess = CommonFunctions.EvaluateInvariantXPath(strEss.Replace("Rating", nudRating.Value.ToString(GlobalOptions.Instance.InvariantCultureInfo)), out bool blnIsSuccess);
+                    object objProcess = CommonFunctions.EvaluateInvariantXPath(strEss.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
                     if (blnIsSuccess)
                     {
-                        decESS = decCharacterESSModifier * Convert.ToDecimal(objProcess, GlobalOptions.Instance.InvariantCultureInfo);
+                        decESS = decCharacterESSModifier * Convert.ToDecimal(objProcess, GlobalOptions.InvariantCultureInfo);
                         if (!_objCharacter.Options.DontRoundEssenceInternally)
                             decESS = decimal.Round(decESS, _objCharacter.Options.EssenceDecimals, MidpointRounding.AwayFromZero);
                     }
                 }
 
-                lblEssence.Text = decESS.ToString(_objCharacter.Options.EssenceFormat, GlobalOptions.Instance.CultureInfo);
+                lblEssence.Text = decESS.ToString(_objCharacter.Options.EssenceFormat, GlobalOptions.CultureInfo);
                 if (blnAddToParentESS)
                     lblEssence.Text = '+' + lblEssence.Text;
             }
             else
-                lblEssence.Text = (0.0m).ToString(_objCharacter.Options.EssenceFormat, GlobalOptions.Instance.CultureInfo);
+                lblEssence.Text = (0.0m).ToString(_objCharacter.Options.EssenceFormat, GlobalOptions.CultureInfo);
 
             lblEssenceLabel.Visible = !string.IsNullOrEmpty(lblEssence.Text);
 
@@ -821,7 +821,7 @@ namespace Chummer
             bool blnSquareBrackets = strCapacity.StartsWith('[');
             if (string.IsNullOrEmpty(strCapacity))
             {
-                lblCapacity.Text = 0.ToString(GlobalOptions.Instance.CultureInfo);
+                lblCapacity.Text = 0.ToString(GlobalOptions.CultureInfo);
             }
             else
             {
@@ -846,21 +846,21 @@ namespace Chummer
                         if (blnSquareBrackets && strFirstHalf.Length > 1)
                             strFirstHalf = strFirstHalf.Substring(1, strCapacity.Length - 2);
 
-                        object objProcess = CommonFunctions.EvaluateInvariantXPath(strFirstHalf.Replace("Rating", nudRating.Value.ToString(GlobalOptions.Instance.InvariantCultureInfo)), out bool blnIsSuccess);
+                        object objProcess = CommonFunctions.EvaluateInvariantXPath(strFirstHalf.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
                         lblCapacity.Text = blnIsSuccess ? objProcess.ToString() : strFirstHalf;
 
                         if (blnSquareBrackets)
                             lblCapacity.Text = $"[{lblCapacity.Text}]";
 
                         strSecondHalf = strSecondHalf.Trim('[', ']');
-                        objProcess = CommonFunctions.EvaluateInvariantXPath(strSecondHalf.Replace("Rating", nudRating.Value.ToString(GlobalOptions.Instance.InvariantCultureInfo)), out blnIsSuccess);
+                        objProcess = CommonFunctions.EvaluateInvariantXPath(strSecondHalf.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)), out blnIsSuccess);
                         strSecondHalf = (blnAddToParentCapacity ? "+[" : "[") + (blnIsSuccess ? objProcess.ToString() : strSecondHalf) + ']';
 
                         lblCapacity.Text += '/' + strSecondHalf;
                     }
                     else
                     {
-                        object objProcess = CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", nudRating.Value.ToString(GlobalOptions.Instance.InvariantCultureInfo)), out bool blnIsSuccess);
+                        object objProcess = CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
                         lblCapacity.Text = blnIsSuccess ? objProcess.ToString() : strCapacity;
                         if (blnSquareBrackets)
                             lblCapacity.Text = blnAddToParentCapacity ? $"+[{lblCapacity.Text}]" : $"[{lblCapacity.Text}]";
@@ -1122,8 +1122,8 @@ namespace Chummer
             if (cboGrade.Text.StartsWith("*"))
             {
                 MessageBox.Show(
-                    LanguageManager.GetString("Message_BannedGrade", GlobalOptions.Instance.Language),
-                    LanguageManager.GetString("MessageTitle_BannedGrade", GlobalOptions.Instance.Language),
+                    LanguageManager.GetString("Message_BannedGrade", GlobalOptions.Language),
+                    LanguageManager.GetString("MessageTitle_BannedGrade", GlobalOptions.Language),
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
@@ -1150,24 +1150,24 @@ namespace Chummer
 
                     if (strCapacity != "*")
                     {
-                        object objProcess = CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", nudRating.Value.ToString(GlobalOptions.Instance.InvariantCultureInfo)), out bool blnIsSuccess);
+                        object objProcess = CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
                         if (blnIsSuccess)
-                            decCapacity = Convert.ToDecimal(objProcess, GlobalOptions.Instance.InvariantCultureInfo);
+                            decCapacity = Convert.ToDecimal(objProcess, GlobalOptions.InvariantCultureInfo);
                     }
 
                     decimal decMaximumCapacityUsed = blnAddToParentCapacity ? (_objParentObject as Cyberware)?.Parent?.CapacityRemaining ?? decimal.MaxValue : MaximumCapacity;
 
                     if (decMaximumCapacityUsed - decCapacity < 0)
                     {
-                        MessageBox.Show(string.Format(LanguageManager.GetString("Message_OverCapacityLimit", GlobalOptions.Instance.Language)
-                                , decMaximumCapacityUsed.ToString("#,0.##", GlobalOptions.Instance.CultureInfo)
-                                , decCapacity.ToString("#,0.##", GlobalOptions.Instance.CultureInfo)),
-                            LanguageManager.GetString("MessageTitle_OverCapacityLimit", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show(string.Format(LanguageManager.GetString("Message_OverCapacityLimit", GlobalOptions.Language)
+                                , decMaximumCapacityUsed.ToString("#,0.##", GlobalOptions.CultureInfo)
+                                , decCapacity.ToString("#,0.##", GlobalOptions.CultureInfo)),
+                            LanguageManager.GetString("MessageTitle_OverCapacityLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return;
                     }
                 }
             }
-            if (!Upgrading && ParentVehicle == null && !objCyberwareNode.RequirementsMet(_objCharacter, null, LanguageManager.GetString(_objMode == Mode.Cyberware ? "String_SelectPACKSKit_Cyberware" : "String_SelectPACKSKit_Bioware", GlobalOptions.Instance.Language)))
+            if (!Upgrading && ParentVehicle == null && !objCyberwareNode.RequirementsMet(_objCharacter, null, LanguageManager.GetString(_objMode == Mode.Cyberware ? "String_SelectPACKSKit_Cyberware" : "String_SelectPACKSKit_Bioware", GlobalOptions.Language)))
                 return;
 
             string strForceGrade = objCyberwareNode.SelectSingleNode("forcegrade")?.Value;
@@ -1245,11 +1245,11 @@ namespace Chummer
                         continue;
                     if (!blnHideBannedGrades && !_objCharacter.Created && !_objCharacter.IgnoreRules && _objCharacter.BannedWareGrades.Any(s => objWareGrade.Name.Contains(s)))
                     {
-                        lstGrade.Add(new ListItem(objWareGrade.SourceIDString, $"*{objWareGrade.DisplayName(GlobalOptions.Instance.Language)}"));
+                        lstGrade.Add(new ListItem(objWareGrade.SourceIDString, $"*{objWareGrade.DisplayName(GlobalOptions.Language)}"));
                     }
                     else
                     {
-                        lstGrade.Add(new ListItem(objWareGrade.SourceIDString, objWareGrade.DisplayName(GlobalOptions.Instance.Language)));
+                        lstGrade.Add(new ListItem(objWareGrade.SourceIDString, objWareGrade.DisplayName(GlobalOptions.Language)));
                     }
                 }
 
@@ -1310,7 +1310,7 @@ namespace Chummer
 
             if (lstCategory.Count > 0)
             {
-                lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll", GlobalOptions.Instance.Language)));
+                lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll", GlobalOptions.Language)));
             }
 
             string strOldSelected = _strSelectedCategory;

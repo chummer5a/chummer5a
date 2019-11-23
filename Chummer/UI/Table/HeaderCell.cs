@@ -155,7 +155,7 @@ namespace Chummer.UI.Table
 
         public void Translate()
         {
-            LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
         }
     }
 }

@@ -30,13 +30,13 @@ namespace Chummer
         public frmSelectSide()
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 
             // Create a list for the sides.
             List<ListItem> lstSides = new List<ListItem>
             {
-                new ListItem("Left", LanguageManager.GetString("String_Improvement_SideLeft", GlobalOptions.Instance.Language)),
-                new ListItem("Right", LanguageManager.GetString("String_Improvement_SideRight", GlobalOptions.Instance.Language))
+                new ListItem("Left", LanguageManager.GetString("String_Improvement_SideLeft", GlobalOptions.Language)),
+                new ListItem("Right", LanguageManager.GetString("String_Improvement_SideRight", GlobalOptions.Language))
             };
 
             cboSide.BeginUpdate();

@@ -31,7 +31,7 @@ namespace Chummer
         public frmAddToken(InitiativeUserControl init)
         {
             InitializeComponent();
-            //LanguageManager.Load(GlobalOptions.Instance.Language, this);
+            //LanguageManager.Load(GlobalOptions.Language, this);
             CenterToParent();
             parentControl = init;
 
@@ -44,7 +44,7 @@ namespace Chummer
         {
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
-                Filter = LanguageManager.GetString("DialogFilter_Chum5", GlobalOptions.Instance.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Instance.Language)
+                Filter = LanguageManager.GetString("DialogFilter_Chum5", GlobalOptions.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language)
             };
 
             if (openFileDialog.ShowDialog(this) == DialogResult.OK)
@@ -119,7 +119,7 @@ namespace Chummer
                 int intInitRoll = intInitPasses;
                 for (int j = 0; j < intInitPasses; ++j)
                 {
-                    intInitRoll += GlobalOptions.Instance.RandomGenerator.NextD6ModuloBiasRemoved();
+                    intInitRoll += GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
                 }
                 _character.InitRoll = intInitRoll + _character.InitialInit;
             }

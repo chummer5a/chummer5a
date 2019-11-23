@@ -40,7 +40,7 @@ namespace Chummer
             _objXmlSkillsDocument = XmlManager.Load("skills.xml").GetFastNavigator().SelectSingleNode("/chummer");
 
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             MoveControls();
         }
 
@@ -67,8 +67,8 @@ namespace Chummer
 
             List<ListItem> lstDVType = new List<ListItem>
             {
-                new ListItem("P", LanguageManager.GetString("String_DamagePhysical", GlobalOptions.Instance.Language)),
-                new ListItem("S", LanguageManager.GetString("String_DamageStun", GlobalOptions.Instance.Language))
+                new ListItem("P", LanguageManager.GetString("String_DamagePhysical", GlobalOptions.Language)),
+                new ListItem("S", LanguageManager.GetString("String_DamageStun", GlobalOptions.Language))
             };
 
             // Bind the Lists to the ComboBoxes.
@@ -129,9 +129,9 @@ namespace Chummer
             if (decimal.ToInt32(nudDVMod.Value) != 0)
             {
                 if (nudDVMod.Value < 0)
-                    strDamage += nudDVMod.Value.ToString(GlobalOptions.Instance.InvariantCultureInfo);
+                    strDamage += nudDVMod.Value.ToString(GlobalOptions.InvariantCultureInfo);
                 else
-                    strDamage += '+' + nudDVMod.Value.ToString(GlobalOptions.Instance.InvariantCultureInfo);
+                    strDamage += '+' + nudDVMod.Value.ToString(GlobalOptions.InvariantCultureInfo);
             }
             strDamage += cboDVType.SelectedValue.ToString();
 
@@ -140,9 +140,9 @@ namespace Chummer
             if (nudAP.Value == 0)
                 strAP = "0";
             else if (nudAP.Value > 0)
-                strAP = '+' + nudAP.Value.ToString(GlobalOptions.Instance.InvariantCultureInfo);
+                strAP = '+' + nudAP.Value.ToString(GlobalOptions.InvariantCultureInfo);
             else
-                strAP = nudAP.Value.ToString(GlobalOptions.Instance.InvariantCultureInfo);
+                strAP = nudAP.Value.ToString(GlobalOptions.InvariantCultureInfo);
 
             // Get the information for the Natural Weapon Critter Power.
             XPathNavigator objPower = _objXmlPowersDocument.SelectSingleNode("powers/power[name = \"Natural Weapon\"]");
@@ -153,7 +153,7 @@ namespace Chummer
                 _objWeapon = new Weapon(_objCharacter)
                 {
                     Name = txtName.Text,
-                    Category = LanguageManager.GetString("Tab_Critter", GlobalOptions.Instance.Language),
+                    Category = LanguageManager.GetString("Tab_Critter", GlobalOptions.Language),
                     WeaponType = "Melee",
                     Reach = decimal.ToInt32(nudReach.Value),
                     Damage = strDamage,

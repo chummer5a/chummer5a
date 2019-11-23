@@ -73,7 +73,7 @@ namespace Chummer
             objWriter.WriteStartElement("initiationgrade");
             objWriter.WriteElementString("guid", _guiID.ToString("D"));
             objWriter.WriteElementString("res", _blnTechnomancer.ToString());
-            objWriter.WriteElementString("grade", _intGrade.ToString(GlobalOptions.Instance.InvariantCultureInfo));
+            objWriter.WriteElementString("grade", _intGrade.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("group", _blnGroup.ToString());
             objWriter.WriteElementString("ordeal", _blnOrdeal.ToString());
             objWriter.WriteElementString("schooling", _blnSchooling.ToString());
@@ -259,7 +259,7 @@ namespace Chummer
             {
                 ContextMenuStrip = cmsInitiationGrade,
                 Name = InternalId,
-                Text = Text(GlobalOptions.Instance.Language),
+                Text = Text(GlobalOptions.Language),
                 Tag = this,
                 ForeColor = PreferredColor,
                 ToolTipText = Notes.WordWrap(100)
@@ -285,14 +285,14 @@ namespace Chummer
             {
                 if (Grade != characterObject.InitiateGrade)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_DeleteGrade", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_DeleteGrade", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(LanguageManager.GetString("Message_DeleteGrade", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_DeleteGrade", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
                 }
 
                 if (blnConfirmDelete)
                 {
                     if (!characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteInitiateGrade",
-                        GlobalOptions.Instance.Language)))
+                        GlobalOptions.Language)))
                         return false;
                 }
 
@@ -302,14 +302,14 @@ namespace Chummer
             {
                 if (Grade != characterObject.SubmersionGrade)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_DeleteGrade", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_DeleteGrade", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(LanguageManager.GetString("Message_DeleteGrade", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_DeleteGrade", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
                 }
 
                 if (blnConfirmDelete)
                 {
                     if (!characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteSubmersionGrade",
-                        GlobalOptions.Instance.Language)))
+                        GlobalOptions.Language)))
                         return false;
                 }
 

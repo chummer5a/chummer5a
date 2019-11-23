@@ -121,7 +121,7 @@ namespace Chummer
         /// </summary>
         public string SourceIDString => _guiSourceID.ToString("D");
 
-        public string DisplayName => DisplayNameMethod(GlobalOptions.Instance.Language);
+        public string DisplayName => DisplayNameMethod(GlobalOptions.Language);
 
         public string DisplayNameMethod(string strLanguage)
         {
@@ -258,7 +258,7 @@ namespace Chummer
             {
                 case "$ReverseTranslateExtra":
                 {
-                    return LanguageManager.ReverseTranslateExtra(strArguments, GlobalOptions.Instance.Language);
+                    return LanguageManager.ReverseTranslateExtra(strArguments, GlobalOptions.Language);
                 }
                 case "$XmlNameFriendly":
                 {
@@ -410,12 +410,12 @@ namespace Chummer
 
         public XmlNode GetNode()
         {
-            return GetNode(GlobalOptions.Instance.Language);
+            return GetNode(GlobalOptions.Language);
         }
 
         public XmlNode GetNode(string strLanguage)
         {
-            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.Instance.LiveCustomData) return _objCachedMyXmlNode;
+            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.LiveCustomData) return _objCachedMyXmlNode;
             _objCachedMyXmlNode = XmlManager.Load("stories.xml", strLanguage).SelectSingleNode($"/chummer/stories/story[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
             _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;

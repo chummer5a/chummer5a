@@ -197,11 +197,11 @@ namespace Chummer.Backend.Equipment
                     decimal decMax = decimal.MaxValue;
                     if (intHyphenIndex != -1)
                     {
-                        decMin = Convert.ToDecimal(strFirstHalf, GlobalOptions.Instance.InvariantCultureInfo);
-                        decMax = Convert.ToDecimal(strSecondHalf, GlobalOptions.Instance.InvariantCultureInfo);
+                        decMin = Convert.ToDecimal(strFirstHalf, GlobalOptions.InvariantCultureInfo);
+                        decMax = Convert.ToDecimal(strSecondHalf, GlobalOptions.InvariantCultureInfo);
                     }
                     else
-                        decMin = Convert.ToDecimal(strFirstHalf.FastEscape('+'), GlobalOptions.Instance.InvariantCultureInfo);
+                        decMin = Convert.ToDecimal(strFirstHalf.FastEscape('+'), GlobalOptions.InvariantCultureInfo);
 
                     if (decMin != decimal.MinValue || decMax != decimal.MaxValue)
                     {
@@ -210,10 +210,10 @@ namespace Chummer.Backend.Equipment
                             decMax = 1000000;
                         frmPickNumber.Minimum = decMin;
                         frmPickNumber.Maximum = decMax;
-                        frmPickNumber.Description = string.Format(LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Instance.Language), DisplayNameShort(GlobalOptions.Instance.Language));
+                        frmPickNumber.Description = string.Format(LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language), DisplayNameShort(GlobalOptions.Language));
                         frmPickNumber.AllowCancel = false;
                         frmPickNumber.ShowDialog();
-                        _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.Instance.InvariantCultureInfo);
+                        _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
                     }
                     else
                         _strCost = strFirstHalf;
@@ -226,7 +226,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (Bonus != null)
                 {
-                    if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Armor, _guiID.ToString("D"), Bonus, false, 1, DisplayNameShort(GlobalOptions.Instance.Language)))
+                    if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Armor, _guiID.ToString("D"), Bonus, false, 1, DisplayNameShort(GlobalOptions.Language)))
                     {
                         _guiID = Guid.Empty;
                         return;
@@ -409,9 +409,9 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("equipped", _blnEquipped.ToString());
             objWriter.WriteElementString("wirelesson", _blnWirelessOn.ToString());
             objWriter.WriteElementString("extra", _strExtra);
-            objWriter.WriteElementString("damage", _intDamage.ToString(GlobalOptions.Instance.InvariantCultureInfo));
-            objWriter.WriteElementString("rating", _intRating.ToString(GlobalOptions.Instance.InvariantCultureInfo));
-            objWriter.WriteElementString("maxrating", _intMaxRating.ToString(GlobalOptions.Instance.InvariantCultureInfo));
+            objWriter.WriteElementString("damage", _intDamage.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("maxrating", _intMaxRating.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("stolen", _blnStolen.ToString());
             objWriter.WriteStartElement("armormods");
             foreach (ArmorMod objMod in _lstArmorMods)
@@ -466,7 +466,7 @@ namespace Chummer.Backend.Equipment
                 }
                 if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
                 {
-                    XmlNode node = GetNode(GlobalOptions.Instance.Language);
+                    XmlNode node = GetNode(GlobalOptions.Language);
                     node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
                 }
                 if (objNode["location"] != null)
@@ -545,7 +545,7 @@ namespace Chummer.Backend.Equipment
                 {
                     if (!string.IsNullOrEmpty(Extra))
                         ImprovementManager.ForcedValue = Extra;
-                    ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Armor, _guiID.ToString("D"), Bonus, false, 1, DisplayNameShort(GlobalOptions.Instance.Language));
+                    ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Armor, _guiID.ToString("D"), Bonus, false, 1, DisplayNameShort(GlobalOptions.Language));
                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                     {
                         Extra = ImprovementManager.SelectedValue;
@@ -556,7 +556,7 @@ namespace Chummer.Backend.Equipment
                 {
                     ImprovementManager.ForcedValue = Extra;
 
-                    if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Armor, _guiID.ToString("D"), WirelessBonus, false, 1, DisplayNameShort(GlobalOptions.Instance.Language)))
+                    if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Armor, _guiID.ToString("D"), WirelessBonus, false, 1, DisplayNameShort(GlobalOptions.Language)))
                     {
                         _guiID = Guid.Empty;
                         return;
@@ -607,7 +607,7 @@ namespace Chummer.Backend.Equipment
             }
             objWriter.WriteEndElement();
             objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(Extra, strLanguageToPrint));
-            objWriter.WriteElementString("location", Location?.DisplayNameShort(GlobalOptions.Instance.Language));
+            objWriter.WriteElementString("location", Location?.DisplayNameShort(GlobalOptions.Language));
             if (_objCharacter.Options.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
@@ -658,7 +658,7 @@ namespace Chummer.Backend.Equipment
         public string Extra
         {
             get => _strExtra;
-            set => _strExtra = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Instance.Language);
+            set => _strExtra = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
         }
 
         /// <summary>
@@ -803,14 +803,14 @@ namespace Chummer.Backend.Equipment
                         strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
 
                     object objProcess = CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", Rating.ToString()), out bool blnIsSuccess);
-                    string strReturn = blnIsSuccess ? ((double)objProcess).ToString("#,0.##", GlobalOptions.Instance.CultureInfo) : objProcess.ToString();
+                    string strReturn = blnIsSuccess ? ((double)objProcess).ToString("#,0.##", GlobalOptions.CultureInfo) : objProcess.ToString();
                     if (blnSquareBrackets)
                         strReturn = '[' + strReturn + ']';
 
                     return strReturn;
                 }
-                else if (decimal.TryParse(strArmorCapacity, NumberStyles.Any, GlobalOptions.Instance.InvariantCultureInfo, out decimal decReturn))
-                    return decReturn.ToString("#,0.##", GlobalOptions.Instance.CultureInfo);
+                else if (decimal.TryParse(strArmorCapacity, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decimal decReturn))
+                    return decReturn.ToString("#,0.##", GlobalOptions.CultureInfo);
 
                 return strArmorCapacity;
             }
@@ -846,16 +846,16 @@ namespace Chummer.Backend.Equipment
                 if (strReturn.Contains('-'))
                 {
                     string[] strValues = strReturn.Split('-');
-                    decMin = Convert.ToDecimal(strValues[0], GlobalOptions.Instance.InvariantCultureInfo);
-                    decMax = Convert.ToDecimal(strValues[1], GlobalOptions.Instance.InvariantCultureInfo);
+                    decMin = Convert.ToDecimal(strValues[0], GlobalOptions.InvariantCultureInfo);
+                    decMax = Convert.ToDecimal(strValues[1], GlobalOptions.InvariantCultureInfo);
                 }
                 else
-                    decMin = Convert.ToDecimal(strReturn.FastEscape('+'), GlobalOptions.Instance.InvariantCultureInfo);
+                    decMin = Convert.ToDecimal(strReturn.FastEscape('+'), GlobalOptions.InvariantCultureInfo);
 
                 if (decMax == decimal.MaxValue)
-                    strReturn = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.Instance.CultureInfo) + "¥+";
+                    strReturn = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + "¥+";
                 else
-                    strReturn = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.Instance.CultureInfo) + " - " + decMax.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.Instance.CultureInfo) + '¥';
+                    strReturn = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + " - " + decMax.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
                 decItemCost = decMin;
                 return strReturn;
@@ -869,11 +869,11 @@ namespace Chummer.Backend.Equipment
                 {
                     string strCost = strReturn.Replace("Rating", Rating.ToString());
                     object objProcess = CommonFunctions.EvaluateInvariantXPath(strCost, out bool blnIsSuccess);
-                    decTotalCost = blnIsSuccess ? Convert.ToDecimal(objProcess.ToString(), GlobalOptions.Instance.InvariantCultureInfo) : 0;
+                    decTotalCost = blnIsSuccess ? Convert.ToDecimal(objProcess.ToString(), GlobalOptions.InvariantCultureInfo) : 0;
                 }
                 else
                 {
-                    decTotalCost = Convert.ToDecimal(strReturn, GlobalOptions.Instance.InvariantCultureInfo);
+                    decTotalCost = Convert.ToDecimal(strReturn, GlobalOptions.InvariantCultureInfo);
                 }
 
                 decTotalCost *= 1.0m + decMarkup;
@@ -883,16 +883,16 @@ namespace Chummer.Backend.Equipment
 
                 decItemCost = decTotalCost;
 
-                return decTotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.Instance.CultureInfo) + '¥';
+                return decTotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
             }
 
-            return strReturn.CheapReplace("Rating", () => LanguageManager.GetString("String_Rating", GlobalOptions.Instance.Language)) + '¥';
+            return strReturn.CheapReplace("Rating", () => LanguageManager.GetString("String_Rating", GlobalOptions.Language)) + '¥';
         }
 
 
         private SourceString _objCachedSourceDetail;
 	    public SourceString SourceDetail => _objCachedSourceDetail ?? (_objCachedSourceDetail =
-	                                            new SourceString(Source, Page(GlobalOptions.Instance.Language), GlobalOptions.Instance.Language));
+	                                            new SourceString(Source, Page(GlobalOptions.Language), GlobalOptions.Language));
 
         /// <summary>
         /// Armor's Sourcebook.
@@ -1118,7 +1118,7 @@ namespace Chummer.Backend.Equipment
                 string strCostExpression = Cost;
 
                 StringBuilder objCost = new StringBuilder(strCostExpression.TrimStart('+'));
-                objCost.Replace("Rating", Rating.ToString(GlobalOptions.Instance.InvariantCultureInfo));
+                objCost.Replace("Rating", Rating.ToString(GlobalOptions.InvariantCultureInfo));
 
                 foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
                 {
@@ -1127,7 +1127,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(objCost.ToString(), out bool blnIsSuccess);
-                decimal decTotalCost = blnIsSuccess ? Convert.ToDecimal(objProcess, GlobalOptions.Instance.InvariantCultureInfo) : 0;
+                decimal decTotalCost = blnIsSuccess ? Convert.ToDecimal(objProcess, GlobalOptions.InvariantCultureInfo) : 0;
 
                 if (DiscountCost)
                     decTotalCost *= 0.9m;
@@ -1300,11 +1300,11 @@ namespace Chummer.Backend.Equipment
 
                 // If an Armor Capacity is specified for the Armor, use that value.
                 if (string.IsNullOrEmpty(strReturn) || strReturn == "0")
-                    strReturn = (0.0m).ToString("#,0.##", GlobalOptions.Instance.CultureInfo);
+                    strReturn = (0.0m).ToString("#,0.##", GlobalOptions.CultureInfo);
                 else if (strReturn == "Rating")
                     strReturn = Rating.ToString();
-                else if (decimal.TryParse(strReturn, NumberStyles.Any, GlobalOptions.Instance.InvariantCultureInfo, out decimal decReturn))
-                    strReturn = decReturn.ToString("#,0.##", GlobalOptions.Instance.CultureInfo);
+                else if (decimal.TryParse(strReturn, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decimal decReturn))
+                    strReturn = decReturn.ToString("#,0.##", GlobalOptions.CultureInfo);
 
                 foreach (ArmorMod objArmorMod in ArmorMods)
                 {
@@ -1320,7 +1320,7 @@ namespace Chummer.Backend.Equipment
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strCapacity, out bool blnIsSuccess);
                         if (blnIsSuccess)
                         {
-                            strCapacity = (Convert.ToDecimal(strReturn) - Convert.ToDecimal(objProcess, GlobalOptions.Instance.CultureInfo)).ToString("#,0.##", GlobalOptions.Instance.CultureInfo);
+                            strCapacity = (Convert.ToDecimal(strReturn) - Convert.ToDecimal(objProcess, GlobalOptions.CultureInfo)).ToString("#,0.##", GlobalOptions.CultureInfo);
                         }
                         strReturn = strCapacity;
                     }
@@ -1338,7 +1338,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 // Get the Armor base Capacity.
-                decimal decCapacity = Convert.ToDecimal(CalculatedCapacity, GlobalOptions.Instance.CultureInfo);
+                decimal decCapacity = Convert.ToDecimal(CalculatedCapacity, GlobalOptions.CultureInfo);
 
                 // If there is no Capacity (meaning that the Armor Suit Capacity or Maximum Armor Modification rule is turned off depending on the type of Armor), don't bother to calculate the remaining
                 // Capacity since it's disabled and return 0 instead.
@@ -1375,7 +1375,7 @@ namespace Chummer.Backend.Equipment
                             strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
                         if (strCapacity == "*")
                             strCapacity = "0";
-                        decCapacity -= Convert.ToDecimal(strCapacity, GlobalOptions.Instance.CultureInfo);
+                        decCapacity -= Convert.ToDecimal(strCapacity, GlobalOptions.CultureInfo);
                     }
 
                     // Run through its Gear and deduct the Armor Capacity costs.
@@ -1473,12 +1473,12 @@ namespace Chummer.Backend.Equipment
 
         public XmlNode GetNode()
         {
-            return GetNode(GlobalOptions.Instance.Language);
+            return GetNode(GlobalOptions.Language);
         }
 
         public XmlNode GetNode(string strLanguage)
         {
-            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.Instance.LiveCustomData) return _objCachedMyXmlNode;
+            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.LiveCustomData) return _objCachedMyXmlNode;
             _objCachedMyXmlNode = SourceID == Guid.Empty
                 ? XmlManager.Load("armor.xml", strLanguage)
                     .SelectSingleNode($"/chummer/armors/armor[name = \"{Name}\"]")
@@ -1577,7 +1577,7 @@ namespace Chummer.Backend.Equipment
                 {
                     ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Armor,
                         _guiID.ToString("D") + "Wireless", WirelessBonus, false, Rating,
-                        DisplayNameShort(GlobalOptions.Instance.Language));
+                        DisplayNameShort(GlobalOptions.Language));
                 }
 
                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))
@@ -1611,7 +1611,7 @@ namespace Chummer.Backend.Equipment
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,
-                Text = DisplayName(GlobalOptions.Instance.Language),
+                Text = DisplayName(GlobalOptions.Language),
                 Tag = this,
                 ContextMenuStrip = cmsArmor,
                 ForeColor = PreferredColor,
@@ -1657,7 +1657,7 @@ namespace Chummer.Backend.Equipment
             if (blnConfirmDelete)
             {
                 if (!characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteArmor",
-                    GlobalOptions.Instance.Language)))
+                    GlobalOptions.Language)))
                     return false;
             }
             DeleteArmor();
@@ -1672,7 +1672,7 @@ namespace Chummer.Backend.Equipment
             decimal decAmount = TotalCost * percentage;
             decAmount += DeleteArmor() * percentage;
             ExpenseLogEntry objExpense = new ExpenseLogEntry(characterObject);
-            objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldArmor", GlobalOptions.Instance.Language) + ' ' + DisplayNameShort(GlobalOptions.Instance.Language), ExpenseType.Nuyen, DateTime.Now);
+            objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldArmor", GlobalOptions.Language) + ' ' + DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
             characterObject.ExpenseEntries.AddWithSort(objExpense);
             characterObject.Nuyen += decAmount;
         }
@@ -1683,7 +1683,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="sourceControl"></param>
         public void SetSourceDetail(Control sourceControl)
         {
-            if (_objCachedSourceDetail?.Language != GlobalOptions.Instance.Language)
+            if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
                 _objCachedSourceDetail = null;
             SourceDetail.SetControl(sourceControl);
         }

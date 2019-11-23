@@ -37,7 +37,7 @@ namespace Chummer
         public frmHeroLabImporter()
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
         }
 
         private void cmdSelectFile_Click(object sender, EventArgs e)
@@ -73,7 +73,7 @@ namespace Chummer
         {
             if (!File.Exists(strFile))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Instance.Language) + "\n\n" + strFile);
+                MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Language) + "\n\n" + strFile);
                 return null;
             }
 
@@ -121,17 +121,17 @@ namespace Chummer
             }
             catch (IOException)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Instance.Language) + "\n\n" + strFile);
+                MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Language) + "\n\n" + strFile);
                 return null;
             }
             catch (NotSupportedException)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Instance.Language) + "\n\n" + strFile);
+                MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Language) + "\n\n" + strFile);
                 return null;
             }
             catch (UnauthorizedAccessException)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_Insufficient_Permissions_Warning", GlobalOptions.Instance.Language));
+                MessageBox.Show(LanguageManager.GetString("Message_Insufficient_Permissions_Warning", GlobalOptions.Language));
                 return null;
             }
 
@@ -287,12 +287,12 @@ namespace Chummer
             {
                 strName = objCache.CharacterName;
                 if (string.IsNullOrEmpty(strName))
-                    strName = LanguageManager.GetString("String_UnnamedCharacter", GlobalOptions.Instance.Language);
+                    strName = LanguageManager.GetString("String_UnnamedCharacter", GlobalOptions.Language);
             }
-            string strBuildMethod = LanguageManager.GetString("String_" + objCache.BuildMethod, GlobalOptions.Instance.Language, false);
+            string strBuildMethod = LanguageManager.GetString("String_" + objCache.BuildMethod, GlobalOptions.Language, false);
             if (string.IsNullOrEmpty(strBuildMethod))
                 strBuildMethod = "Unknown build method";
-            string strCreated = LanguageManager.GetString(objCache.Created ? "Title_CareerMode" : "Title_CreateMode", GlobalOptions.Instance.Language);
+            string strCreated = LanguageManager.GetString(objCache.Created ? "Title_CareerMode" : "Title_CreateMode", GlobalOptions.Language);
             string strReturn = $"{strName} ({strBuildMethod} - {strCreated})";
             return strReturn;
         }
@@ -307,8 +307,8 @@ namespace Chummer
             {
                 txtCharacterBio.Text = objCache.Description;
 
-                string strUnknown = LanguageManager.GetString("String_Unknown", GlobalOptions.Instance.Language);
-                string strNone = LanguageManager.GetString("String_None", GlobalOptions.Instance.Language);
+                string strUnknown = LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+                string strNone = LanguageManager.GetString("String_None", GlobalOptions.Language);
                 
                 lblCharacterName.Text = objCache.CharacterName;
                 if (string.IsNullOrEmpty(lblCharacterName.Text))
@@ -442,7 +442,7 @@ namespace Chummer
                         Cursor objOldCursor = Cursor;
                         if (!File.Exists(strFilePath))
                         {
-                            if (MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_OpenOptions", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_CharacterOptions_OpenOptions", GlobalOptions.Instance.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                            if (MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_OpenOptions", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CharacterOptions_OpenOptions", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                             {
                                 Cursor = Cursors.WaitCursor;
                                 frmNewOptions frmOptions = new frmNewOptions();

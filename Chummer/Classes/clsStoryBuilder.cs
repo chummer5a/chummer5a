@@ -211,7 +211,7 @@ namespace Chummer
                                     ++i;
                                 }
 
-                                strSelectedNodeName = strNames[strNames.Length > 1 ? GlobalOptions.Instance.RandomGenerator.NextModuloBiasRemoved(strNames.Length) : 0];
+                                strSelectedNodeName = strNames[strNames.Length > 1 ? GlobalOptions.RandomGenerator.NextModuloBiasRemoved(strNames.Length) : 0];
                             }
                         }
                         else if (xmlUserMacroFirstChild.Name == "persistent")
@@ -228,7 +228,7 @@ namespace Chummer
                                     ++i;
                                 }
 
-                                strSelectedNodeName = strNames[strNames.Length > 1 ? GlobalOptions.Instance.RandomGenerator.NextModuloBiasRemoved(strNames.Length) : 0];
+                                strSelectedNodeName = strNames[strNames.Length > 1 ? GlobalOptions.RandomGenerator.NextModuloBiasRemoved(strNames.Length) : 0];
                                 if (!persistenceDictionary.TryAdd(macroPool, strSelectedNodeName))
                                     persistenceDictionary.TryGetValue(macroPool, out strSelectedNodeName);
                             }

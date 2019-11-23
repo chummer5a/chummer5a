@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -26,7 +27,10 @@ namespace Chummer
 
         private static ProgramOptions _instance;
         public static ProgramOptions Instance => _instance;
-        //Lazy shim to make it simpler to merge master changes. 
+
+        //TODO: Lazy shim to make it simpler to merge master changes. Revert later.
+        public static CultureInfo InvariantCultureInfo => _instance.InvariantCultureInfo;
+        public static CultureInfo CultureInfo => _instance.CultureInfo;
         public static string Language => Instance.Language;
         public static List<MRUEntry> MostRecentlyUsedList { get; } = new List<MRUEntry>();
 
@@ -424,7 +428,7 @@ namespace Chummer
                     ClassSaver.Save(GlobalOptions.Instance, writer);
 
                     writer.WriteStartElement("books");
-                    foreach (SourcebookInfo book in GlobalOptions.Instance.SourcebookInfo)
+                    foreach (SourcebookInfo book in GlobalOptions.SourcebookInfo)
                     {
                         writer.WriteStartElement("book");
                         ClassSaver.Save(book, writer);
@@ -443,7 +447,7 @@ namespace Chummer
                 ClassSaver.Save(GlobalOptions.Instance, rootKey);
                 int count = 0;
                 RegistryKey bookKey = Registry.CurrentUser.CreateSubKey("Software\\Chummer5\\Books");
-                foreach (SourcebookInfo book in GlobalOptions.Instance.SourcebookInfo)
+                foreach (SourcebookInfo book in GlobalOptions.SourcebookInfo)
                 {
                     RegistryKey k2 = bookKey.CreateSubKey(count.ToString("D2"));
                     ClassSaver.Save(book, k2);

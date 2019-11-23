@@ -187,11 +187,11 @@ namespace Chummer.Backend.Equipment
                 if (strCost.Contains('-'))
                 {
                     string[] strValues = strCost.Split('-');
-                    decMin = Convert.ToDecimal(strValues[0], GlobalOptions.Instance.InvariantCultureInfo);
-                    decMax = Convert.ToDecimal(strValues[1], GlobalOptions.Instance.InvariantCultureInfo);
+                    decMin = Convert.ToDecimal(strValues[0], GlobalOptions.InvariantCultureInfo);
+                    decMax = Convert.ToDecimal(strValues[1], GlobalOptions.InvariantCultureInfo);
                 }
                 else
-                    decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalOptions.Instance.InvariantCultureInfo);
+                    decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalOptions.InvariantCultureInfo);
 
                 if (decMin != 0 || decMax != decimal.MaxValue)
                 {
@@ -200,10 +200,10 @@ namespace Chummer.Backend.Equipment
                         decMax = 1000000;
                     frmPickNumber.Minimum = decMin;
                     frmPickNumber.Maximum = decMax;
-                    frmPickNumber.Description = string.Format(LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Instance.Language), DisplayNameShort(GlobalOptions.Instance.Language));
+                    frmPickNumber.Description = string.Format(LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language), DisplayNameShort(GlobalOptions.Language));
                     frmPickNumber.AllowCancel = false;
                     frmPickNumber.ShowDialog();
-                    _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.Instance.InvariantCultureInfo);
+                    _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
                 }
             }
             _decMarkup = decMarkup;
@@ -217,7 +217,7 @@ namespace Chummer.Backend.Equipment
             if (Bonus != null)
             {
                 ImprovementManager.ForcedValue = strForcedValue;
-                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.VehicleMod, InternalId, Bonus, false, intRating, DisplayNameShort(GlobalOptions.Instance.Language), false))
+                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.VehicleMod, InternalId, Bonus, false, intRating, DisplayNameShort(GlobalOptions.Language), false))
                 {
                     _guiID = Guid.Empty;
                     return;
@@ -231,7 +231,7 @@ namespace Chummer.Backend.Equipment
 
         private SourceString _objCachedSourceDetail;
         public SourceString SourceDetail => _objCachedSourceDetail ?? (_objCachedSourceDetail =
-                                                new SourceString(Source, Page(GlobalOptions.Instance.Language), GlobalOptions.Instance.Language));
+                                                new SourceString(Source, Page(GlobalOptions.Language), GlobalOptions.Language));
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -247,12 +247,12 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("limit", _strLimit);
             objWriter.WriteElementString("slots", _strSlots);
             objWriter.WriteElementString("capacity", _strCapacity);
-            objWriter.WriteElementString("rating", _intRating.ToString(GlobalOptions.Instance.InvariantCultureInfo));
+            objWriter.WriteElementString("rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("maxrating", _strMaxRating);
-            objWriter.WriteElementString("conditionmonitor", _intConditionMonitor.ToString(GlobalOptions.Instance.InvariantCultureInfo));
+            objWriter.WriteElementString("conditionmonitor", _intConditionMonitor.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("avail", _strAvail);
             objWriter.WriteElementString("cost", _strCost);
-            objWriter.WriteElementString("markup", _decMarkup.ToString(GlobalOptions.Instance.InvariantCultureInfo));
+            objWriter.WriteElementString("markup", _decMarkup.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("extra", _strExtra);
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
@@ -301,7 +301,7 @@ namespace Chummer.Backend.Equipment
             }
             if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
-                XmlNode node = GetNode(GlobalOptions.Instance.Language);
+                XmlNode node = GetNode(GlobalOptions.Language);
                 node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
 
@@ -802,7 +802,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 // If the availability is determined by the Rating, evaluate the expression.
-                objAvail.CheapReplace(strAvail, "Vehicle Cost", () => Parent?.OwnCost.ToString(GlobalOptions.Instance.InvariantCultureInfo) ?? "0");
+                objAvail.CheapReplace(strAvail, "Vehicle Cost", () => Parent?.OwnCost.ToString(GlobalOptions.InvariantCultureInfo) ?? "0");
                 // If the Body is 0 (Microdrone), treat it as 0.5 for the purposes of determine Modification cost.
                 objAvail.CheapReplace(strAvail, "Body", () => Parent?.Body > 0 ? Parent.Body.ToString() : "0.5");
                 objAvail.CheapReplace(strAvail, "Speed", () => Parent?.Speed.ToString() ?? "0");
@@ -859,7 +859,7 @@ namespace Chummer.Backend.Equipment
             {
                 string strReturn = _strCapacity;
                 if (string.IsNullOrEmpty(strReturn))
-                    return (0.0m).ToString("#,0.##", GlobalOptions.Instance.CultureInfo);
+                    return (0.0m).ToString("#,0.##", GlobalOptions.CultureInfo);
 
                 if (strReturn.StartsWith("FixedValues("))
                 {
@@ -890,7 +890,7 @@ namespace Chummer.Backend.Equipment
                         try
                         {
                             object objProcess = CommonFunctions.EvaluateInvariantXPath(strFirstHalf.Replace("Rating", Rating.ToString()), out bool blnIsSuccess);
-                            strReturn = blnIsSuccess ? ((double)objProcess).ToString("#,0.##", GlobalOptions.Instance.CultureInfo) : strFirstHalf;
+                            strReturn = blnIsSuccess ? ((double)objProcess).ToString("#,0.##", GlobalOptions.CultureInfo) : strFirstHalf;
                         }
                         catch (OverflowException) // Result is text and not a double
                         {
@@ -911,7 +911,7 @@ namespace Chummer.Backend.Equipment
                         try
                         {
                             object objProcess = CommonFunctions.EvaluateInvariantXPath(strSecondHalf.Replace("Rating", Rating.ToString()), out bool blnIsSuccess);
-                            strSecondHalf = '[' + (blnIsSuccess ? ((double)objProcess).ToString("#,0.##", GlobalOptions.Instance.CultureInfo) : strSecondHalf) + ']';
+                            strSecondHalf = '[' + (blnIsSuccess ? ((double)objProcess).ToString("#,0.##", GlobalOptions.CultureInfo) : strSecondHalf) + ']';
                         }
                         catch (OverflowException) // Result is text and not a double
                         {
@@ -934,12 +934,12 @@ namespace Chummer.Backend.Equipment
                     if (blnSquareBrackets)
                         strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
                     object objProcess = CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", Rating.ToString()), out bool blnIsSuccess);
-                    strReturn = blnIsSuccess ? ((double)objProcess).ToString("#,0.##", GlobalOptions.Instance.CultureInfo) : strCapacity;
+                    strReturn = blnIsSuccess ? ((double)objProcess).ToString("#,0.##", GlobalOptions.CultureInfo) : strCapacity;
                     if (blnSquareBrackets)
                         strReturn = '[' + strReturn + ']';
                 }
-                else if (decimal.TryParse(strReturn, NumberStyles.Any, GlobalOptions.Instance.InvariantCultureInfo, out decimal decReturn))
-                    return decReturn.ToString("#,0.##", GlobalOptions.Instance.CultureInfo);
+                else if (decimal.TryParse(strReturn, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decimal decReturn))
+                    return decReturn.ToString("#,0.##", GlobalOptions.CultureInfo);
 
                 return strReturn;
             }
@@ -960,7 +960,7 @@ namespace Chummer.Backend.Equipment
                     // Get the Cyberware base Capacity.
                     string strBaseCapacity = CalculatedCapacity;
                     strBaseCapacity = strBaseCapacity.Substring(0, strBaseCapacity.IndexOf('/'));
-                    decCapacity = Convert.ToDecimal(strBaseCapacity, GlobalOptions.Instance.CultureInfo);
+                    decCapacity = Convert.ToDecimal(strBaseCapacity, GlobalOptions.CultureInfo);
 
                     // Run through its Children and deduct the Capacity costs.
                     foreach (Cyberware objChildCyberware in Cyberware)
@@ -973,13 +973,13 @@ namespace Chummer.Backend.Equipment
                             strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
                         if (strCapacity == "*")
                             strCapacity = "0";
-                        decCapacity -= Convert.ToDecimal(strCapacity, GlobalOptions.Instance.CultureInfo);
+                        decCapacity -= Convert.ToDecimal(strCapacity, GlobalOptions.CultureInfo);
                     }
                 }
                 else if (!_strCapacity.Contains('['))
                 {
                     // Get the Cyberware base Capacity.
-                    decCapacity = Convert.ToDecimal(CalculatedCapacity, GlobalOptions.Instance.CultureInfo);
+                    decCapacity = Convert.ToDecimal(CalculatedCapacity, GlobalOptions.CultureInfo);
 
                     // Run through its Children and deduct the Capacity costs.
                     foreach (Cyberware objChildCyberware in Cyberware)
@@ -992,7 +992,7 @@ namespace Chummer.Backend.Equipment
                             strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
                         if (strCapacity == "*")
                             strCapacity = "0";
-                        decCapacity -= Convert.ToDecimal(strCapacity, GlobalOptions.Instance.CultureInfo);
+                        decCapacity -= Convert.ToDecimal(strCapacity, GlobalOptions.CultureInfo);
                     }
                 }
 
@@ -1014,7 +1014,7 @@ namespace Chummer.Backend.Equipment
             }
 
             StringBuilder objCost = new StringBuilder(strCostExpr.TrimStart('+'));
-            objCost.Replace("Rating", Rating.ToString(GlobalOptions.Instance.InvariantCultureInfo));
+            objCost.Replace("Rating", Rating.ToString(GlobalOptions.InvariantCultureInfo));
 
             foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
             {
@@ -1022,7 +1022,7 @@ namespace Chummer.Backend.Equipment
                 objCost.CheapReplace(strCostExpr, objLoopAttribute.Abbrev + "Base", () => objLoopAttribute.TotalBase.ToString());
             }
 
-            objCost.CheapReplace(strCostExpr, "Vehicle Cost", () => Parent?.OwnCost.ToString(GlobalOptions.Instance.InvariantCultureInfo) ?? "0");
+            objCost.CheapReplace(strCostExpr, "Vehicle Cost", () => Parent?.OwnCost.ToString(GlobalOptions.InvariantCultureInfo) ?? "0");
             // If the Body is 0 (Microdrone), treat it as 0.5 for the purposes of determine Modification cost.
             objCost.CheapReplace(strCostExpr, "Body", () => Parent?.Body > 0 ? Parent.Body.ToString() : "0.5");
             objCost.CheapReplace(strCostExpr, "Speed", () => Parent?.Speed.ToString() ?? "0");
@@ -1031,7 +1031,7 @@ namespace Chummer.Backend.Equipment
             objCost.Replace("Slots", intSlots.ToString());
 
             object objProcess = CommonFunctions.EvaluateInvariantXPath(objCost.ToString(), out bool blnIsSuccess);
-            decimal decReturn = blnIsSuccess ? Convert.ToDecimal(objProcess, GlobalOptions.Instance.InvariantCultureInfo) : 0;
+            decimal decReturn = blnIsSuccess ? Convert.ToDecimal(objProcess, GlobalOptions.InvariantCultureInfo) : 0;
 
             if (DiscountCost)
                 decReturn *= 0.9m;
@@ -1072,7 +1072,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 StringBuilder objCost = new StringBuilder(strCostExpr.TrimStart('+'));
-                objCost.Replace("Rating", Rating.ToString(GlobalOptions.Instance.InvariantCultureInfo));
+                objCost.Replace("Rating", Rating.ToString(GlobalOptions.InvariantCultureInfo));
 
                 foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
                 {
@@ -1080,7 +1080,7 @@ namespace Chummer.Backend.Equipment
                     objCost.CheapReplace(strCostExpr, objLoopAttribute.Abbrev + "Base", () => objLoopAttribute.TotalBase.ToString());
                 }
 
-                objCost.CheapReplace(strCostExpr, "Vehicle Cost", () => Parent?.OwnCost.ToString(GlobalOptions.Instance.InvariantCultureInfo) ?? "0");
+                objCost.CheapReplace(strCostExpr, "Vehicle Cost", () => Parent?.OwnCost.ToString(GlobalOptions.InvariantCultureInfo) ?? "0");
                 // If the Body is 0 (Microdrone), treat it as 0.5 for the purposes of determine Modification cost.
                 objCost.CheapReplace(strCostExpr, "Body", () => Parent?.Body > 0 ? Parent.Body.ToString() : "0.5");
                 objCost.CheapReplace(strCostExpr, "Speed", () => Parent?.Speed.ToString() ?? "0");
@@ -1089,7 +1089,7 @@ namespace Chummer.Backend.Equipment
                 objCost.CheapReplace(strCostExpr, "Slots", () => WeaponMountParent?.CalculatedSlots.ToString() ?? "0");
 
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(objCost.ToString(), out bool blnIsSuccess);
-                decimal decReturn = blnIsSuccess ? Convert.ToDecimal(objProcess, GlobalOptions.Instance.InvariantCultureInfo) : 0;
+                decimal decReturn = blnIsSuccess ? Convert.ToDecimal(objProcess, GlobalOptions.InvariantCultureInfo) : 0;
 
                 if (DiscountCost)
                     decReturn *= 0.9m;
@@ -1119,14 +1119,14 @@ namespace Chummer.Backend.Equipment
                 }
 
                 StringBuilder objSlots = new StringBuilder(strSlotsExpression.TrimStart('+'));
-                objSlots.Replace("Rating", Rating.ToString(GlobalOptions.Instance.InvariantCultureInfo));
+                objSlots.Replace("Rating", Rating.ToString(GlobalOptions.InvariantCultureInfo));
 
                 foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
                 {
                     objSlots.CheapReplace(strSlotsExpression, objLoopAttribute.Abbrev, () => objLoopAttribute.TotalValue.ToString());
                     objSlots.CheapReplace(strSlotsExpression, objLoopAttribute.Abbrev + "Base", () => objLoopAttribute.TotalBase.ToString());
                 }
-                objSlots.CheapReplace(strSlotsExpression, "Vehicle Cost", () => Parent?.OwnCost.ToString(GlobalOptions.Instance.InvariantCultureInfo) ?? "0");
+                objSlots.CheapReplace(strSlotsExpression, "Vehicle Cost", () => Parent?.OwnCost.ToString(GlobalOptions.InvariantCultureInfo) ?? "0");
                 // If the Body is 0 (Microdrone), treat it as 0.5 for the purposes of determine Modification cost.
                 objSlots.CheapReplace(strSlotsExpression, "Body", () => Parent?.Body > 0 ? Parent.Body.ToString() : "0.5");
                 objSlots.CheapReplace(strSlotsExpression, "Speed", () => Parent?.Speed.ToString() ?? "0");
@@ -1242,12 +1242,12 @@ namespace Chummer.Backend.Equipment
 
         public XmlNode GetNode()
         {
-            return GetNode(GlobalOptions.Instance.Language);
+            return GetNode(GlobalOptions.Language);
         }
 
         public XmlNode GetNode(string strLanguage)
         {
-            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.Instance.LiveCustomData)
+            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
                 XmlDocument objDoc = XmlManager.Load("vehicles.xml", strLanguage);
                 _objCachedMyXmlNode = (XmlManager.Load("vehicles.xml", strLanguage)
@@ -1291,7 +1291,7 @@ namespace Chummer.Backend.Equipment
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,
-                Text = DisplayName(GlobalOptions.Instance.Language),
+                Text = DisplayName(GlobalOptions.Language),
                 Tag = this,
                 ContextMenuStrip = cmsVehicleMod,
                 ForeColor = PreferredColor,
@@ -1356,7 +1356,7 @@ namespace Chummer.Backend.Equipment
 
         public void SetSourceDetail(Control sourceControl)
         {
-            if (_objCachedSourceDetail?.Language != GlobalOptions.Instance.Language)
+            if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
                 _objCachedSourceDetail = null;
             SourceDetail.SetControl(sourceControl);
         }

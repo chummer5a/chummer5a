@@ -248,7 +248,7 @@ namespace Chummer
             TreeNode objNode = objGear.CreateTreeNode(cmsStackedFocus);
 
             objNode.Name = InternalId;
-            objNode.Text = LanguageManager.GetString("String_StackedFocus", GlobalOptions.Instance.Language) + ": " + Name(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
+            objNode.Text = LanguageManager.GetString("String_StackedFocus", GlobalOptions.Language) + ": " + Name(GlobalOptions.CultureInfo, GlobalOptions.Language);
             objNode.Tag = this;
             objNode.Checked = Bonded;
 

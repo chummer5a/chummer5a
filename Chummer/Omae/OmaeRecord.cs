@@ -45,7 +45,7 @@ namespace Chummer
 		public OmaeRecord(XmlNode objNode, int intTypeID, OmaeMode objMode)
 		{
 			InitializeComponent();
-			LanguageManager.Load(GlobalOptions.Instance.Language, this);
+			LanguageManager.Load(GlobalOptions.Language, this);
 
 			// Populate the basic information.
 			_intCharacterID = Convert.ToInt32(objNode["id"].InnerText);
@@ -56,7 +56,7 @@ namespace Chummer
 				lblDescription.Text = LanguageManager.GetString("Omae_NoDescription");
 			else
 				lblDescription.Text = objNode["description"].InnerText;
-			DateTime datDate = DateTime.Parse(objNode["date"].InnerText, GlobalOptions.Instance.CultureInfo);
+			DateTime datDate = DateTime.Parse(objNode["date"].InnerText, GlobalOptions.CultureInfo);
 			lblDate.Text = LanguageManager.GetString("Omae_UpdatedDate") + " " + datDate.ToShortDateString();
 			lblCount.Text = LanguageManager.GetString("Omae_DownloadCount").Replace("{0}", objNode["count"].InnerText);
 
@@ -244,19 +244,19 @@ namespace Chummer
         public OmaeRecord(XmlNode objNode, int intTypeID, OmaeMode objMode)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 
             // Populate the basic information.
             _intCharacterID = Convert.ToInt32(objNode["id"].InnerText);
             _strCharacterName = objNode["name"].InnerText;
             lblCharacterName.Text = objNode["name"].InnerText;
             lblUser.Text = objNode["user"].InnerText;
-            lblDescription.Text = objNode["description"]?.InnerText ?? LanguageManager.GetString("Omae_NoDescription", GlobalOptions.Instance.Language);
-            if (DateTime.TryParse(objNode["date"].InnerText, GlobalOptions.Instance.InvariantCultureInfo, System.Globalization.DateTimeStyles.None, out DateTime datDate))
-                lblDate.Text = LanguageManager.GetString("Omae_UpdatedDate", GlobalOptions.Instance.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language) + datDate.ToShortDateString();
+            lblDescription.Text = objNode["description"]?.InnerText ?? LanguageManager.GetString("Omae_NoDescription", GlobalOptions.Language);
+            if (DateTime.TryParse(objNode["date"].InnerText, GlobalOptions.InvariantCultureInfo, System.Globalization.DateTimeStyles.None, out DateTime datDate))
+                lblDate.Text = LanguageManager.GetString("Omae_UpdatedDate", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + datDate.ToShortDateString();
             else
-                lblDate.Text = LanguageManager.GetString("Omae_UpdatedDate", GlobalOptions.Instance.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language) + LanguageManager.GetString("String_None", GlobalOptions.Instance.Language);
-            lblCount.Text = string.Format(LanguageManager.GetString("Omae_DownloadCount", GlobalOptions.Instance.Language), objNode["count"].InnerText);
+                lblDate.Text = LanguageManager.GetString("Omae_UpdatedDate", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + LanguageManager.GetString("String_None", GlobalOptions.Language);
+            lblCount.Text = string.Format(LanguageManager.GetString("Omae_DownloadCount", GlobalOptions.Language), objNode["count"].InnerText);
 
             if (objMode == OmaeMode.Character)
             {
@@ -264,7 +264,7 @@ namespace Chummer
                 string strMetatype = objNode["metatype"].InnerText;
                 if (!string.IsNullOrEmpty(objNode["metavariant"].InnerText))
                     strMetatype += '(' + objNode["metavariant"].InnerText;
-                lblMetatype.Text = LanguageManager.GetString("Label_Metatype", GlobalOptions.Instance.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language) + strMetatype;
+                lblMetatype.Text = LanguageManager.GetString("Label_Metatype", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + strMetatype;
             }
             else if (objMode == OmaeMode.Data)
             {

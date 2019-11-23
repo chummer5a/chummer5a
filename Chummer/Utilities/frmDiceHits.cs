@@ -27,14 +27,14 @@ namespace Chummer
         public frmDiceHits()
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
         }
 
         private void frmDiceHits_Load(object sender, EventArgs e)
         {
-            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
-            lblDice.Text = LanguageManager.GetString("String_DiceHits_HitsOn", GlobalOptions.Instance.Language) + strSpaceCharacter + Dice.ToString(GlobalOptions.Instance.CultureInfo)
-                           + LanguageManager.GetString("String_D6", GlobalOptions.Instance.Language) + LanguageManager.GetString("String_Colon", GlobalOptions.Instance.Language) + strSpaceCharacter;
+            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+            lblDice.Text = LanguageManager.GetString("String_DiceHits_HitsOn", GlobalOptions.Language) + strSpaceCharacter + Dice.ToString(GlobalOptions.CultureInfo)
+                           + LanguageManager.GetString("String_D6", GlobalOptions.Language) + LanguageManager.GetString("String_Colon", GlobalOptions.Language) + strSpaceCharacter;
             nudDiceResult.Maximum = Dice;
             nudDiceResult.Minimum = 0;
         }

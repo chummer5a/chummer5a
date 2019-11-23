@@ -295,7 +295,7 @@ namespace Chummer.Backend.Skills
 
                 //If data file contains {4} this crashes but...
                 string strUpgradetext =
-                    $"{LanguageManager.GetString("String_ExpenseSkillGroup", GlobalOptions.Instance.Language)} {DisplayName} {Rating} -> {(Rating + 1)}";
+                    $"{LanguageManager.GetString("String_ExpenseSkillGroup", GlobalOptions.Language)} {DisplayName} {Rating} -> {(Rating + 1)}";
 
                 ExpenseLogEntry objEntry = new ExpenseLogEntry(_objCharacter);
                 objEntry.Create(intPrice * -1, strUpgradetext, ExpenseType.Karma, DateTime.Now);
@@ -514,7 +514,7 @@ namespace Chummer.Backend.Skills
             }
         }
         
-        public string DisplayName => DisplayNameMethod(GlobalOptions.Instance.Language);
+        public string DisplayName => DisplayNameMethod(GlobalOptions.Language);
 
         public string DisplayNameMethod(string strLanguage)
         {
@@ -529,7 +529,7 @@ namespace Chummer.Backend.Skills
             {
                 if (_objCharacter.Created && !CareerIncrease)
                 {
-                    return LanguageManager.GetString("Label_SkillGroup_Broken", GlobalOptions.Instance.Language);
+                    return LanguageManager.GetString("Label_SkillGroup_Broken", GlobalOptions.Language);
                 }
 
                 return SkillList.Any(x => x.Enabled && x.TotalBaseRating > 0) ? SkillList.Where(x => x.Enabled).Min(x => x.TotalBaseRating).ToString() : 0.ToString();
@@ -543,8 +543,8 @@ namespace Chummer.Backend.Skills
             {
                 if (string.IsNullOrEmpty(_strToolTip))
                 {
-                    string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
-                    _strToolTip = LanguageManager.GetString("Tip_SkillGroup_Skills", GlobalOptions.Instance.Language) + strSpaceCharacter + string.Join(',' + strSpaceCharacter, _lstAffectedSkills.Select(x => x.DisplayNameMethod(GlobalOptions.Instance.Language)));
+                    string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                    _strToolTip = LanguageManager.GetString("Tip_SkillGroup_Skills", GlobalOptions.Language) + strSpaceCharacter + string.Join(',' + strSpaceCharacter, _lstAffectedSkills.Select(x => x.DisplayNameMethod(GlobalOptions.Language)));
                 }
                 return _strToolTip;
             }
@@ -552,7 +552,7 @@ namespace Chummer.Backend.Skills
 
         public string UpgradeToolTip
         {
-            get { return string.Format(LanguageManager.GetString("Tip_ImproveItem", GlobalOptions.Instance.Language), SkillList.Where(x => x.Enabled).Select(x => x.TotalBaseRating).DefaultIfEmpty().Min() + 1, UpgradeKarmaCost); }
+            get { return string.Format(LanguageManager.GetString("Tip_ImproveItem", GlobalOptions.Language), SkillList.Where(x => x.Enabled).Select(x => x.TotalBaseRating).DefaultIfEmpty().Min() + 1, UpgradeKarmaCost); }
         }
 
         private Guid _guidId = Guid.NewGuid();

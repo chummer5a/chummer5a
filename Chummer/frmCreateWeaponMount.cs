@@ -51,7 +51,7 @@ namespace Chummer
             List<ListItem> lstSize = new List<ListItem>();
             // Populate the Weapon Mount Category list.
             string strSizeFilter = "category = \"Size\" and " + _objCharacter.Options.BookXPath();
-            if (!_objVehicle.IsDrone && GlobalOptions.Instance.Dronemods)
+            if (!_objVehicle.IsDrone && GlobalOptions.Dronemods)
                 strSizeFilter += " and not(optionaldrone)";
             using (XmlNodeList xmlSizeNodeList = _xmlDoc.SelectNodes("/chummer/weaponmounts/weaponmount[" + strSizeFilter + "]"))
                 if (xmlSizeNodeList?.Count > 0)
@@ -80,7 +80,7 @@ namespace Chummer
                             }
                         }
 
-                        lstSize.Add(new ListItem(strId, xmlSizeNode["translate"]?.InnerText ?? xmlSizeNode["name"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Instance.Language)));
+                        lstSize.Add(new ListItem(strId, xmlSizeNode["translate"]?.InnerText ?? xmlSizeNode["name"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language)));
                     }
 
             cboSize.BeginUpdate();
@@ -95,7 +95,7 @@ namespace Chummer
                 TreeNode objModsParentNode = new TreeNode
                 {
                     Tag = "Node_AdditionalMods",
-                    Text = LanguageManager.GetString("Node_AdditionalMods", GlobalOptions.Instance.Language)
+                    Text = LanguageManager.GetString("Node_AdditionalMods", GlobalOptions.Language)
                 };
                 treMods.Nodes.Add(objModsParentNode);
                 objModsParentNode.Expand();
@@ -138,7 +138,7 @@ namespace Chummer
 
             _blnLoading = false;
             UpdateInfo();
-            LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
         }
 
 		private void cmdOK_Click(object sender, EventArgs e)
@@ -367,7 +367,7 @@ namespace Chummer
 
             cmdDeleteMod.Enabled = false;
             string strSelectedModId = treMods.SelectedNode?.Tag.ToString();
-            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
+            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
             if (!string.IsNullOrEmpty(strSelectedModId) && strSelectedModId.IsGuid())
             {
                 VehicleMod objMod = _lstMods.FirstOrDefault(x => x.InternalId == strSelectedModId);
@@ -375,11 +375,11 @@ namespace Chummer
                 {
                     cmdDeleteMod.Enabled = !objMod.IncludedInVehicle;
                     lblSlots.Text = objMod.CalculatedSlots.ToString();
-                    lblAvailability.Text = objMod.TotalAvail(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
+                    lblAvailability.Text = objMod.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
 
                     if (chkFreeItem.Checked)
                     {
-                        lblCost.Text = (0.0m).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.Instance.CultureInfo) + '¥';
+                        lblCost.Text = (0.0m).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                     }
                     else
                     {
@@ -400,7 +400,7 @@ namespace Chummer
                         {
                             intTotalSlots += objLoopMod.CalculatedSlots;
                         }
-                        lblCost.Text = (objMod.TotalCostInMountCreation(intTotalSlots) * (1 + (nudMarkup.Value / 100.0m))).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.Instance.CultureInfo) + '¥';
+                        lblCost.Text = (objMod.TotalCostInMountCreation(intTotalSlots) * (1 + (nudMarkup.Value / 100.0m))).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                     }
 
                     objMod.SetSourceDetail(lblSource);
@@ -422,7 +422,7 @@ namespace Chummer
                 lblAvailabilityLabel.Visible = false;
                 return;
             }
-	        decimal decCost = !chkFreeItem.Checked ? Convert.ToDecimal(xmlSelectedMount["cost"]?.InnerText, GlobalOptions.Instance.InvariantCultureInfo) : 0;
+	        decimal decCost = !chkFreeItem.Checked ? Convert.ToDecimal(xmlSelectedMount["cost"]?.InnerText, GlobalOptions.InvariantCultureInfo) : 0;
             int intSlots = Convert.ToInt32(xmlSelectedMount["slots"]?.InnerText);
 
             string strAvail = xmlSelectedMount["avail"]?.InnerText ?? string.Empty;
@@ -482,25 +482,25 @@ namespace Chummer
                 }
             }
 
-            string strAvailText = intAvail.ToString(GlobalOptions.Instance.CultureInfo);
+            string strAvailText = intAvail.ToString(GlobalOptions.CultureInfo);
             if (chrAvailSuffix == 'F')
-                strAvailText += LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Instance.Language);
+                strAvailText += LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language);
             else if (chrAvailSuffix == 'R')
-                strAvailText += LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Instance.Language);
+                strAvailText += LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language);
 
 	        decCost *= 1 + (nudMarkup.Value / 100.0m);
-	        lblCost.Text = decCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.Instance.CultureInfo) + '¥';
+	        lblCost.Text = decCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 	        lblSlots.Text = intSlots.ToString();
 	        lblAvailability.Text = strAvailText;
 	        lblCostLabel.Visible = !string.IsNullOrEmpty(lblCost.Text);
 	        lblSlotsLabel.Visible = !string.IsNullOrEmpty(lblSlots.Text);
 	        lblAvailabilityLabel.Visible = !string.IsNullOrEmpty(lblAvailability.Text);
 
-            string strSource = xmlSelectedMount["source"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Instance.Language);
-            string strPage = xmlSelectedMount["altpage"]?.InnerText ?? xmlSelectedMount["page"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Instance.Language);
-            lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Instance.Language) + strSpaceCharacter + strPage;
-            lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Instance.Language) + strSpaceCharacter +
-                LanguageManager.GetString("String_Page", GlobalOptions.Instance.Language) + strSpaceCharacter + strPage);
+            string strSource = xmlSelectedMount["source"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+            string strPage = xmlSelectedMount["altpage"]?.InnerText ?? xmlSelectedMount["page"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+            lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
+            lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter +
+                LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
 	        lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
 	    }
 
@@ -533,7 +533,7 @@ namespace Chummer
                 intSlots += objMod.CalculatedSlots;
             }
 
-            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
+            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
             TreeNode objModsParentNode = treMods.FindNode("Node_AdditionalMods");
             do
             {
@@ -574,7 +574,7 @@ namespace Chummer
                     bool blnOverCapacity = false;
                     if (_objCharacter.Options.BookEnabled("R5"))
                     {
-                        if (_objVehicle.IsDrone && GlobalOptions.Instance.Dronemods)
+                        if (_objVehicle.IsDrone && GlobalOptions.Dronemods)
                         {
                             if (_objVehicle.DroneModSlotsUsed > _objVehicle.DroneModSlots)
                                 blnOverCapacity = true;
@@ -594,7 +594,7 @@ namespace Chummer
 
                     if (blnOverCapacity)
                     {
-                        MessageBox.Show(LanguageManager.GetString("Message_CapacityReached", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_CapacityReached", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show(LanguageManager.GetString("Message_CapacityReached", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CapacityReached", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         continue;
                     }
                 }
@@ -611,16 +611,16 @@ namespace Chummer
 
                     if (decCost > _objCharacter.Nuyen)
                     {
-                        MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen", GlobalOptions.Instance.Language),
-                            LanguageManager.GetString("MessageTitle_NotEnoughNuyen", GlobalOptions.Instance.Language),
+                        MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen", GlobalOptions.Language),
+                            LanguageManager.GetString("MessageTitle_NotEnoughNuyen", GlobalOptions.Language),
                             MessageBoxButtons.OK, MessageBoxIcon.Information);
                         continue;
                     }
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                     objExpense.Create(decCost * -1,
-                        LanguageManager.GetString("String_ExpensePurchaseVehicleMod", GlobalOptions.Instance.Language) +
-                        strSpaceCharacter + objMod.DisplayNameShort(GlobalOptions.Instance.Language), ExpenseType.Nuyen, DateTime.Now);
+                        LanguageManager.GetString("String_ExpensePurchaseVehicleMod", GlobalOptions.Language) +
+                        strSpaceCharacter + objMod.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.AddWithSort(objExpense);
                     _objCharacter.Nuyen -= decCost;
 
@@ -638,7 +638,7 @@ namespace Chummer
                     objModsParentNode = new TreeNode
                     {
                         Tag = "Node_AdditionalMods",
-                        Text = LanguageManager.GetString("Node_AdditionalMods", GlobalOptions.Instance.Language)
+                        Text = LanguageManager.GetString("Node_AdditionalMods", GlobalOptions.Language)
                     };
                     treMods.Nodes.Add(objModsParentNode);
                     objModsParentNode.Expand();
@@ -659,7 +659,7 @@ namespace Chummer
                 VehicleMod objMod = _lstMods.FirstOrDefault(x => x.InternalId == strSelectedId);
                 if (objMod != null && !objMod.IncludedInVehicle)
                 {
-                    if (!_objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteVehicle", GlobalOptions.Instance.Language)))
+                    if (!_objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteVehicle", GlobalOptions.Language)))
                         return;
 
                     _lstMods.Remove(objMod);
@@ -705,7 +705,7 @@ namespace Chummer
             List<ListItem> lstControl = new List<ListItem>();
             // Populate the Weapon Mount Category list.
             string strFilter = "category != \"Size\" and not(hide)";
-            if (!_objVehicle.IsDrone || !GlobalOptions.Instance.Dronemods)
+            if (!_objVehicle.IsDrone || !GlobalOptions.Dronemods)
                 strFilter += " and not(optionaldrone)";
             using (XmlNodeList xmlWeaponMountOptionNodeList = _xmlDoc.SelectNodes("/chummer/weaponmounts/weaponmount[" + strFilter + "]"))
                 if (xmlWeaponMountOptionNodeList?.Count > 0)
@@ -734,7 +734,7 @@ namespace Chummer
                             }
                         }
 
-                        string strName = xmlWeaponMountOptionNode["name"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Instance.Language);
+                        string strName = xmlWeaponMountOptionNode["name"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
                         bool blnAddItem = true;
                         switch (xmlWeaponMountOptionNode["category"]?.InnerText)
                         {

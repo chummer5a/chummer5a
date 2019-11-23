@@ -423,14 +423,14 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Overload for standard GetString method, using GlobalOptions.Instance.Language as default string.
+        /// Overload for standard GetString method, using GlobalOptions.Language as default string.
         /// </summary>
         /// <param name="strKey">Key to retrieve.</param>
         /// <param name="blnReturnError">Should an error string be returned if the key isn't found?</param>
         /// <returns></returns>
         public static string GetString(string strKey, bool blnReturnError = true)
         {
-            return GetString(strKey, GlobalOptions.Instance.Language, blnReturnError);
+            return GetString(strKey, GlobalOptions.Language, blnReturnError);
         }
         /// <summary>
         /// Retrieve a string from the language file.
@@ -463,7 +463,7 @@ namespace Chummer
 
         public static bool TryGetString(string key, out string value)
         {
-            if (LoadLanguage(GlobalOptions.Instance.Language) && DictionaryLanguages.TryGetValue(GlobalOptions.Instance.Language, out LanguageData objLanguageData))
+            if (LoadLanguage(GlobalOptions.Language) && DictionaryLanguages.TryGetValue(GlobalOptions.Language, out LanguageData objLanguageData))
                 return objLanguageData.TranslatedStrings.TryGetValue(key, out value);
 
             return s_DictionaryEnglishStrings.TryGetValue(key, out value);

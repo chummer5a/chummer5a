@@ -83,7 +83,7 @@ namespace Chummer
                 return c;
 	        });
 
-            LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 
             textBox1.WatermarkText = LanguageManager.GetString("String_Search");
         }

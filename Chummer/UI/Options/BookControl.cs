@@ -70,7 +70,7 @@ namespace Chummer.UI.Options
             };
 
             System.Diagnostics.Stopwatch sw = Stopwatch.StartNew();
-            foreach (SourcebookInfo book in GlobalOptions.Instance.SourcebookInfo)
+            foreach (SourcebookInfo book in GlobalOptions.SourcebookInfo)
             {
                 PictureBox bookBox = new PictureBox { Tag = book.Code };
                 _bookPanel.Controls.Add(bookBox);

@@ -42,7 +42,7 @@ namespace Chummer
             if (strXmlFile == "paragons.xml")
                 Tag = "Title_SelectMentorSpirit_Paragon";
 
-            LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             _blnEverShowMentorMask = strXmlFile == "mentors.xml" && _objCharacter.Options.BookEnabled("FA");
         }
@@ -131,18 +131,18 @@ namespace Chummer
                 // Get the information for the selected Mentor.
                 lblAdvantage.Text = objXmlMentor.SelectSingleNode("altadvantage")?.Value ??
                                     objXmlMentor.SelectSingleNode("advantage")?.Value ??
-                                    LanguageManager.GetString("String_Unknown", GlobalOptions.Instance.Language);
+                                    LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
                 lblAdvantageLabel.Visible = !string.IsNullOrEmpty(lblAdvantage.Text);
                 lblDisadvantage.Text = objXmlMentor.SelectSingleNode("altdisadvantage")?.Value ??
                                        objXmlMentor.SelectSingleNode("disadvantage")?.Value ??
-                                       LanguageManager.GetString("String_Unknown", GlobalOptions.Instance.Language);
+                                       LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
                 lblDisadvantageLabel.Visible = !string.IsNullOrEmpty(lblDisadvantage.Text);
 
-                string strSource = objXmlMentor.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Instance.Language);
-                string strPage = objXmlMentor.SelectSingleNode("altpage")?.Value ?? objXmlMentor.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Instance.Language);
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
-                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Instance.Language) + strSpaceCharacter + strPage;
-                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Instance.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Instance.Language) + strSpaceCharacter + strPage);
+                string strSource = objXmlMentor.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+                string strPage = objXmlMentor.SelectSingleNode("altpage")?.Value ?? objXmlMentor.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
+                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
                 lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
                 cmdOK.Enabled = true;
             }
@@ -230,7 +230,7 @@ namespace Chummer
             List<ListItem> lstMentors = new List<ListItem>();
             foreach (XPathNavigator objXmlMentor in _xmlBaseMentorSpiritDataNode.Select("mentors/mentor[" + strFilter + "]"))
             {
-                string strName = objXmlMentor.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Instance.Language);
+                string strName = objXmlMentor.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
                 string strId = objXmlMentor.SelectSingleNode("id")?.Value ?? string.Empty;
                 if (strName == _strForceMentor)
                     strForceId = strId;

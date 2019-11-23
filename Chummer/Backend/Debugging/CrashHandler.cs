@@ -66,7 +66,7 @@ namespace Chummer.Backend
 
                 try
                 {
-                    _dicAttributes.Add("chummer-ui-language", GlobalOptions.Instance.Language);
+                    _dicAttributes.Add("chummer-ui-language", GlobalOptions.Language);
                 }
                 catch (Exception e)
                 {
@@ -74,7 +74,7 @@ namespace Chummer.Backend
                 }
                 try
                 {
-                    _dicAttributes.Add("chummer-cultureinfo", GlobalOptions.Instance.CultureInfo.ToString());
+                    _dicAttributes.Add("chummer-cultureinfo", GlobalOptions.CultureInfo.ToString());
                 }
                 catch (Exception e)
                 {

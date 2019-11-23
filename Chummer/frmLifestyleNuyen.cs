@@ -30,7 +30,7 @@ namespace Chummer
         {
             _objCharacter = objCharacter;
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
         }
 
         [Obsolete("This constructor is for use by form designers only.", true)]
@@ -46,7 +46,7 @@ namespace Chummer
 
         private void frmLifestyleNuyen_Load(object sender, EventArgs e)
         {
-            lblDice.Text = string.Format(LanguageManager.GetString("Label_LifestyleNuyen_ResultOf", GlobalOptions.Instance.Language), Dice.ToString(GlobalOptions.Instance.CultureInfo));
+            lblDice.Text = string.Format(LanguageManager.GetString("Label_LifestyleNuyen_ResultOf", GlobalOptions.Language), Dice.ToString(GlobalOptions.CultureInfo));
             nudDiceResult.Maximum = Dice * 6;
             nudDiceResult.Minimum = Dice;
             nudDiceResult_ValueChanged(sender, e);
@@ -54,10 +54,10 @@ namespace Chummer
 
         private void nudDiceResult_ValueChanged(object sender, EventArgs e)
         {
-            string strSpace = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
-            lblResult.Text = strSpace + '+' + strSpace + Extra.ToString("#,0", GlobalOptions.Instance.CultureInfo) + ')' + strSpace + '×'
-                             + strSpace + Multiplier.ToString(_objCharacter.Options.NuyenFormat + '¥', GlobalOptions.Instance.CultureInfo)
-                             + strSpace + '=' + strSpace + StartingNuyen.ToString(_objCharacter.Options.NuyenFormat + '¥', GlobalOptions.Instance.CultureInfo);
+            string strSpace = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+            lblResult.Text = strSpace + '+' + strSpace + Extra.ToString("#,0", GlobalOptions.CultureInfo) + ')' + strSpace + '×'
+                             + strSpace + Multiplier.ToString(_objCharacter.Options.NuyenFormat + '¥', GlobalOptions.CultureInfo)
+                             + strSpace + '=' + strSpace + StartingNuyen.ToString(_objCharacter.Options.NuyenFormat + '¥', GlobalOptions.CultureInfo);
         }
         #endregion
 

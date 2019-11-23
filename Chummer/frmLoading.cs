@@ -40,7 +40,7 @@ namespace Chummer
         public frmLoading()
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
         }
 
         /// <summary>

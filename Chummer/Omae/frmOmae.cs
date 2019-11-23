@@ -58,7 +58,7 @@ namespace Chummer
         {
             List<ListItem> lstSort = new List<ListItem>
             {
-                new ListItem("0", LanguageManager.GetString("String_Name", GlobalOptions.Instance.Language)),
+                new ListItem("0", LanguageManager.GetString("String_Name", GlobalOptions.Language)),
                 new ListItem("1", "Most Recent"),
                 new ListItem("2", "Most Downloaded")
             };
@@ -231,8 +231,8 @@ namespace Chummer
                     string strFullPath = Path.Combine(omaeDirectoryPath, strFileName);
                     if (File.Exists(strFullPath))
                     {
-                        if (MessageBox.Show(string.Format(LanguageManager.GetString("Message_Omae_FileExists", GlobalOptions.Instance.Language), strFileName),
-                                LanguageManager.GetString("MessageTitle_Omae_FileExists", GlobalOptions.Instance.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                        if (MessageBox.Show(string.Format(LanguageManager.GetString("Message_Omae_FileExists", GlobalOptions.Language), strFileName),
+                                LanguageManager.GetString("MessageTitle_Omae_FileExists", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                             return;
                     }
 
@@ -243,7 +243,7 @@ namespace Chummer
 
                         if (bytFile.Length == 0)
                         {
-                            MessageBox.Show(LanguageManager.GetString("Message_Omae_CannotFindCharacter", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_Omae_CannotFindCharacter", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageBox.Show(LanguageManager.GetString("Message_Omae_CannotFindCharacter", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_Omae_CannotFindCharacter", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                             objService.Close();
                             return;
                         }
@@ -251,7 +251,7 @@ namespace Chummer
                         // Decompress the byte array and write it to a file.
                         bytFile = OmaeHelper.Decompress(bytFile);
                         File.WriteAllBytes(strFullPath, bytFile);
-                        if (MessageBox.Show(LanguageManager.GetString("Message_Omae_CharacterDownloaded", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_Omae_CharacterDownloaded", GlobalOptions.Instance.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                        if (MessageBox.Show(LanguageManager.GetString("Message_Omae_CharacterDownloaded", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_Omae_CharacterDownloaded", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                         {
                             Cursor = Cursors.WaitCursor;
                             Character objOpenCharacter = Program.MainForm.LoadCharacter(strFullPath);
@@ -282,14 +282,14 @@ namespace Chummer
 
                         if (bytFile.Length == 0)
                         {
-                            MessageBox.Show(LanguageManager.GetString("Message_Omae_CannotFindCharacter", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_Omae_CannotFindCharacter", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageBox.Show(LanguageManager.GetString("Message_Omae_CannotFindCharacter", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_Omae_CannotFindCharacter", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                             objService.Close();
                             return;
                         }
 
                         // Decompress the byte array and write it to a file.
                         OmaeHelper.DecompressNPCs(bytFile);
-                        MessageBox.Show(LanguageManager.GetString("Message_Omae_NPCPackDownloaded", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_Omae_CharacterDownloaded", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show(LanguageManager.GetString("Message_Omae_NPCPackDownloaded", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_Omae_CharacterDownloaded", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     catch (EndpointNotFoundException)
                     {
@@ -306,7 +306,7 @@ namespace Chummer
 
                     if (bytFile.Length == 0)
                     {
-                        MessageBox.Show(LanguageManager.GetString("Message_Omae_CannotFindData", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_Omae_CannotFindData", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show(LanguageManager.GetString("Message_Omae_CannotFindData", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_Omae_CannotFindData", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                         objService.Close();
                         return;
                     }
@@ -314,7 +314,7 @@ namespace Chummer
                     // Decompress the byte array and write it to a file.
                     OmaeHelper.DecompressDataFile(bytFile, objRecord.CharacterID.ToString());
                     // Show a message saying everything is done.
-                    MessageBox.Show(LanguageManager.GetString("Message_Omae_DataDownloaded", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_Omae_DataDownloaded", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_Omae_DataDownloaded", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_Omae_DataDownloaded", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 catch (EndpointNotFoundException)
                 {
@@ -335,7 +335,7 @@ namespace Chummer
 
                     if (bytFile.Length == 0)
                     {
-                        MessageBox.Show(LanguageManager.GetString("Message_Omae_CannotFindSheet", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_Omae_CannotFindSheet", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show(LanguageManager.GetString("Message_Omae_CannotFindSheet", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_Omae_CannotFindSheet", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                         objService.Close();
                         return;
                     }
@@ -343,7 +343,7 @@ namespace Chummer
                     // Decompress the byte array and write it to a file.
                     OmaeHelper.DecompressCharacterSheet(bytFile);
                     // Show a message saying everything is done.
-                    MessageBox.Show(LanguageManager.GetString("Message_Omae_SheetDownloaded", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_Omae_SheetDownloaded", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_Omae_SheetDownloaded", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_Omae_SheetDownloaded", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 catch (EndpointNotFoundException)
                 {
@@ -380,7 +380,7 @@ namespace Chummer
             if (_objMode == OmaeMode.Character)
             {
                 // Make sure the user wants to delete the character.
-                if (MessageBox.Show(LanguageManager.GetString("Message_Omae_ConfirmDelete", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_Omae_DeleteCharacter", GlobalOptions.Instance.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                if (MessageBox.Show(LanguageManager.GetString("Message_Omae_ConfirmDelete", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_Omae_DeleteCharacter", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                     return;
 
                 // Delete the character.
@@ -388,14 +388,14 @@ namespace Chummer
                 omaeSoapClient objService = OmaeHelper.GetOmaeService();
 
                 if (objService.DeleteCharacter(objRecord.CharacterID))
-                    MessageBox.Show(LanguageManager.GetString("Message_Omae_CharacterDeleted", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_Omae_DeleteCharacter", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_Omae_CharacterDeleted", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_Omae_DeleteCharacter", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 else
-                    MessageBox.Show(LanguageManager.GetString("Message_Omae_CharacterDeleteError", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_Omae_DeleteCharacter", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(LanguageManager.GetString("Message_Omae_CharacterDeleteError", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_Omae_DeleteCharacter", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             else if (_objMode == OmaeMode.Data)
             {
                 // Make sure the user wants to delete the data.
-                if (MessageBox.Show(LanguageManager.GetString("Message_Omae_ConfirmData", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_Omae_DeleteData", GlobalOptions.Instance.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                if (MessageBox.Show(LanguageManager.GetString("Message_Omae_ConfirmData", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_Omae_DeleteData", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                     return;
 
                 // Delete the data.
@@ -403,14 +403,14 @@ namespace Chummer
                 omaeSoapClient objService = OmaeHelper.GetOmaeService();
 
                 if (objService.DeleteDataFile(objRecord.CharacterID))
-                    MessageBox.Show(LanguageManager.GetString("Message_Omae_DataDeleted", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_Omae_DeleteData", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_Omae_DataDeleted", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_Omae_DeleteData", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 else
-                    MessageBox.Show(LanguageManager.GetString("Message_Omae_DataDeleteError", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_Omae_DeleteData", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(LanguageManager.GetString("Message_Omae_DataDeleteError", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_Omae_DeleteData", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             else if (_objMode == OmaeMode.Sheets)
             {
                 // Make sure the user wants to delete the character sheet.
-                if (MessageBox.Show(LanguageManager.GetString("Message_Omae_ConfirmSheet", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_Omae_DeleteData", GlobalOptions.Instance.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                if (MessageBox.Show(LanguageManager.GetString("Message_Omae_ConfirmSheet", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_Omae_DeleteData", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                     return;
 
                 // Delete the data.
@@ -418,9 +418,9 @@ namespace Chummer
                 omaeSoapClient objService = OmaeHelper.GetOmaeService();
 
                 if (objService.DeleteSheet(objRecord.CharacterID))
-                    MessageBox.Show(LanguageManager.GetString("Message_Omae_SheetDeleted", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_Omae_DeleteData", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_Omae_SheetDeleted", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_Omae_DeleteData", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 else
-                    MessageBox.Show(LanguageManager.GetString("Message_Omae_SheetDeleteError", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_Omae_DeleteData", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(LanguageManager.GetString("Message_Omae_SheetDeleteError", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_Omae_DeleteData", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
         #endregion
@@ -429,11 +429,11 @@ namespace Chummer
         public frmOmae(frmChummerMain frmMainForm)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _frmMain = frmMainForm;
 
-            NO_CONNECTION_MESSAGE = LanguageManager.GetString("Message_Omae_CannotConnection", GlobalOptions.Instance.Language);
-            NO_CONNECTION_TITLE = LanguageManager.GetString("MessageTitle_Omae_CannotConnection", GlobalOptions.Instance.Language);
+            NO_CONNECTION_MESSAGE = LanguageManager.GetString("Message_Omae_CannotConnection", GlobalOptions.Language);
+            NO_CONNECTION_TITLE = LanguageManager.GetString("MessageTitle_Omae_CannotConnection", GlobalOptions.Language);
         }
 
         private void frmOmae_Load(object sender, EventArgs e)
@@ -475,12 +475,12 @@ namespace Chummer
             // Make sure User Name and Password are provided.
             if (string.IsNullOrWhiteSpace(txtUserName.Text))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_Omae_ChooseUsername", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_Omae_ChooseUsername", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show(LanguageManager.GetString("Message_Omae_ChooseUsername", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_Omae_ChooseUsername", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
             if (string.IsNullOrWhiteSpace(txtPassword.Text))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_Omae_ChoosePassword", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_Omae_ChoosePassword", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show(LanguageManager.GetString("Message_Omae_ChoosePassword", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_Omae_ChoosePassword", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
 
@@ -492,13 +492,13 @@ namespace Chummer
                 if (intResult == 0)
                 {
                     // Registered successfully.
-                    MessageBox.Show(LanguageManager.GetString("Message_Omae_AccountCreated", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_Omae_Registration", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_Omae_AccountCreated", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_Omae_Registration", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
                 else if (intResult == -1)
                 {
                     // Username already exists.
-                    MessageBox.Show(LanguageManager.GetString("Message_Omae_AccountExists", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_Omae_Registration", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_Omae_AccountExists", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_Omae_Registration", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
             }
@@ -514,12 +514,12 @@ namespace Chummer
             // Make sure User Name and Password are provided.
             if (string.IsNullOrWhiteSpace(txtUserName.Text))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_Omae_EnterUsername", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_Omae_ChooseUsername", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show(LanguageManager.GetString("Message_Omae_EnterUsername", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_Omae_ChooseUsername", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
             if (string.IsNullOrWhiteSpace(txtPassword.Text))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_Omae_EnterPassword", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_Omae_ChoosePassword", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show(LanguageManager.GetString("Message_Omae_EnterPassword", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_Omae_ChoosePassword", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
 
@@ -532,7 +532,7 @@ namespace Chummer
                 {
                     _strUserName = txtUserName.Text;
                     _blnLoggedIn = true;
-                    lblLoggedIn.Text = string.Format(LanguageManager.GetString("Label_Omae_LoggedInAs", GlobalOptions.Instance.Language), txtUserName.Text);
+                    lblLoggedIn.Text = string.Format(LanguageManager.GetString("Label_Omae_LoggedInAs", GlobalOptions.Language), txtUserName.Text);
                     panLogin.Visible = false;
                     panLoggedIn.Visible = true;
 
@@ -557,7 +557,7 @@ namespace Chummer
                     objRegistry.Close();
                 }
                 else
-                    MessageBox.Show(LanguageManager.GetString("Message_Omae_CannotLogin", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_Omae_OmaeLogin", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_Omae_CannotLogin", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_Omae_OmaeLogin", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (EndpointNotFoundException)
             {
@@ -571,7 +571,7 @@ namespace Chummer
         {
             if (!_blnLoggedIn)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_Omae_MustLogin", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_Omae_OmaeLogin", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_Omae_MustLogin", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_Omae_OmaeLogin", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -659,7 +659,7 @@ namespace Chummer
                     {
                         Label lblResults = new Label
                         {
-                            Text = LanguageManager.GetString("String_Omae_NoCharacters", GlobalOptions.Instance.Language),
+                            Text = LanguageManager.GetString("String_Omae_NoCharacters", GlobalOptions.Language),
                             Width = 200
                         };
                         panOmae.Controls.Add(lblResults);
@@ -709,7 +709,7 @@ namespace Chummer
                     {
                         Label lblResults = new Label
                         {
-                            Text = LanguageManager.GetString("String_Omae_NoData", GlobalOptions.Instance.Language),
+                            Text = LanguageManager.GetString("String_Omae_NoData", GlobalOptions.Language),
                             Width = 200
                         };
                         panOmae.Controls.Add(lblResults);
@@ -759,7 +759,7 @@ namespace Chummer
                     {
                         Label lblResults = new Label
                         {
-                            Text = LanguageManager.GetString("String_Omae_NoSheets", GlobalOptions.Instance.Language),
+                            Text = LanguageManager.GetString("String_Omae_NoSheets", GlobalOptions.Language),
                             Width = 200
                         };
                         panOmae.Controls.Add(lblResults);
@@ -795,12 +795,12 @@ namespace Chummer
             if (panFilter.Height == 31)
             {
                 panFilter.Height = 120;
-                cmdFilterToggle.Text = LanguageManager.GetString("Button_Omae_HideFilter", GlobalOptions.Instance.Language);
+                cmdFilterToggle.Text = LanguageManager.GetString("Button_Omae_HideFilter", GlobalOptions.Language);
             }
             else
             {
                 panFilter.Height = 31;
-                cmdFilterToggle.Text = LanguageManager.GetString("Button_Omae_ShowFilter", GlobalOptions.Instance.Language);
+                cmdFilterToggle.Text = LanguageManager.GetString("Button_Omae_ShowFilter", GlobalOptions.Language);
             }
             flowLayoutPanel1_Resize(sender, e);
         }
@@ -827,16 +827,16 @@ namespace Chummer
         {
             omaeSoapClient objService = OmaeHelper.GetOmaeService();
             if (!objService.ResetPassword(txtUserName.Text))
-                MessageBox.Show(LanguageManager.GetString("Message_Omae_PasswordNoEmail", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_Omae_PasswordReset", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(LanguageManager.GetString("Message_Omae_PasswordNoEmail", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_Omae_PasswordReset", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
             else
-                MessageBox.Show(LanguageManager.GetString("Message_Omae_PasswordReset", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_Omae_PasswordReset", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_Omae_PasswordReset", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_Omae_PasswordReset", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void cmdMyAccount_Click(object sender, EventArgs e)
         {
             if (!_blnLoggedIn)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_Omae_InfoRequiresLogin", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_Omae_OmaeLogin", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_Omae_InfoRequiresLogin", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_Omae_OmaeLogin", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -880,9 +880,9 @@ namespace Chummer
                 cboFilterMode.Enabled = blnEnabled;
 
                 if (cboCharacterTypes.SelectedValue.ToString() == "data" || cboCharacterTypes.SelectedValue.ToString() == "sheets")
-                    cmdUpload.Text = LanguageManager.GetString("Button_Omae_UploadData", GlobalOptions.Instance.Language);
+                    cmdUpload.Text = LanguageManager.GetString("Button_Omae_UploadData", GlobalOptions.Language);
                 else
-                    cmdUpload.Text = LanguageManager.GetString("Button_Omae_Upload", GlobalOptions.Instance.Language);
+                    cmdUpload.Text = LanguageManager.GetString("Button_Omae_Upload", GlobalOptions.Language);
             }
             catch
             {

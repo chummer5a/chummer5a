@@ -53,7 +53,7 @@ namespace Chummer
         public frmSelectLifestyleQuality(Character objCharacter, string strSelectedLifestyle, IList<LifestyleQuality> lstExistingQualities)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             _strSelectedLifestyle = strSelectedLifestyle;
             _lstExistingQualities = lstExistingQualities;
@@ -81,7 +81,7 @@ namespace Chummer
 
             if (_lstCategory.Count > 0)
             {
-                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll", GlobalOptions.Instance.Language)));
+                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll", GlobalOptions.Language)));
             }
             cboCategory.BeginUpdate();
             cboCategory.ValueMember = "Value";
@@ -98,7 +98,7 @@ namespace Chummer
 
             // Change the BP Label to Karma if the character is being built with Karma instead (or is in Career Mode).
             if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma || _objCharacter.BuildMethod == CharacterBuildMethod.LifeModule || _objCharacter.Created)
-                lblBPLabel.Text = LanguageManager.GetString("Label_LP", GlobalOptions.Instance.Language);
+                lblBPLabel.Text = LanguageManager.GetString("Label_LP", GlobalOptions.Language);
 
             _blnLoading = false;
 
@@ -147,16 +147,16 @@ namespace Chummer
 
             int intBP = 0;
             objXmlQuality.TryGetInt32FieldQuickly("lp", ref intBP);
-            lblBP.Text = chkFree.Checked ? LanguageManager.GetString("Checkbox_Free", GlobalOptions.Instance.Language) : intBP.ToString();
+            lblBP.Text = chkFree.Checked ? LanguageManager.GetString("Checkbox_Free", GlobalOptions.Language) : intBP.ToString();
             lblBPLabel.Visible = !string.IsNullOrEmpty(lblBP.Text);
 
-            string strSource = objXmlQuality["source"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Instance.Language);
-            string strPage = objXmlQuality["altpage"]?.InnerText ?? objXmlQuality["page"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Instance.Language);
+            string strSource = objXmlQuality["source"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+            string strPage = objXmlQuality["altpage"]?.InnerText ?? objXmlQuality["page"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
             if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
             {
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
-                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Instance.Language) + strSpaceCharacter + strPage;
-                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Instance.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Instance.Language) + strSpaceCharacter + strPage);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
+                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
             }
             else
             {
@@ -180,18 +180,18 @@ namespace Chummer
             {
                 if (chkFree.Checked)
                 {
-                    lblCost.Text = LanguageManager.GetString("Checkbox_Free", GlobalOptions.Instance.Language);
+                    lblCost.Text = LanguageManager.GetString("Checkbox_Free", GlobalOptions.Language);
                 }
                 else if (objXmlQuality["allowed"]?.InnerText.Contains(_strSelectedLifestyle) == true)
                 {
-                    lblCost.Text = LanguageManager.GetString("String_LifestyleFreeNuyen", GlobalOptions.Instance.Language);
+                    lblCost.Text = LanguageManager.GetString("String_LifestyleFreeNuyen", GlobalOptions.Language);
                 }
                 else
                 {
                     string strCost = objXmlQuality["cost"]?.InnerText;
                     object objProcess = CommonFunctions.EvaluateInvariantXPath(strCost, out bool blnIsSuccess);
                     decimal decCost = blnIsSuccess ? Convert.ToDecimal((double)objProcess) : 0;
-                    lblCost.Text = decCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.Instance.CultureInfo) + '¥';
+                    lblCost.Text = decCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 }
                 lblCost.Visible = true;
                 lblCostLabel.Visible = true;
@@ -376,7 +376,7 @@ namespace Chummer
                             continue;
                         if (!blnDoUIUpdate || !chkLimitList.Checked || RequirementMet(objXmlQuality, false))
                         {
-                            lstLifestyleQuality.Add(new ListItem(strId, objXmlQuality["translate"]?.InnerText ?? objXmlQuality["name"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Instance.Language)));
+                            lstLifestyleQuality.Add(new ListItem(strId, objXmlQuality["translate"]?.InnerText ?? objXmlQuality["name"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language)));
                             if (blnTerminateAfterFirst)
                                 break;
                         }
@@ -441,7 +441,7 @@ namespace Chummer
                     if (objXmlQuality["allowmultiple"] == null && objQuality.Name == objXmlQuality["name"].InnerText)
                     {
                         if (blnShowMessage)
-                            MessageBox.Show(LanguageManager.GetString("Message_SelectQuality_QualityLimit", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_SelectQuality_QualityLimit", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            MessageBox.Show(LanguageManager.GetString("Message_SelectQuality_QualityLimit", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectQuality_QualityLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return false;
                     }
                 }
@@ -470,7 +470,7 @@ namespace Chummer
                                     if (objQuality.Name == objXmlForbidden.InnerText && objQuality.Name != _strIgnoreQuality)
                                     {
                                         blnRequirementForbidden = true;
-                                        strForbidden += Environment.NewLine + '\t' + objQuality.DisplayNameShort(GlobalOptions.Instance.Language);
+                                        strForbidden += Environment.NewLine + '\t' + objQuality.DisplayNameShort(GlobalOptions.Language);
                                     }
                                 }
                                 break;
@@ -482,7 +482,7 @@ namespace Chummer
                                     if (objQuality.Name == objXmlForbidden.InnerText && objQuality.Name != _strIgnoreQuality)
                                     {
                                         blnRequirementForbidden = true;
-                                        strForbidden += Environment.NewLine + '\t' + objQuality.DisplayNameShort(GlobalOptions.Instance.Language);
+                                        strForbidden += Environment.NewLine + '\t' + objQuality.DisplayNameShort(GlobalOptions.Language);
                                     }
                                 }
                                 break;
@@ -524,7 +524,7 @@ namespace Chummer
                                     if (objXmlCheck["metagenetic"]?.InnerText == bool.TrueString)
                                     {
                                         blnRequirementForbidden = true;
-                                        strForbidden += Environment.NewLine + '\t' + objQuality.DisplayName(GlobalOptions.Instance.CultureInfo, GlobalOptions.Instance.Language);
+                                        strForbidden += Environment.NewLine + '\t' + objQuality.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
                                         break;
                                     }
                                 }
@@ -537,7 +537,7 @@ namespace Chummer
                 if (blnRequirementForbidden)
                 {
                     if (blnShowMessage)
-                        MessageBox.Show(LanguageManager.GetString("Message_SelectQuality_QualityRestriction", GlobalOptions.Instance.Language) + strForbidden, LanguageManager.GetString("MessageTitle_SelectQuality_QualityRestriction", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show(LanguageManager.GetString("Message_SelectQuality_QualityRestriction", GlobalOptions.Language) + strForbidden, LanguageManager.GetString("MessageTitle_SelectQuality_QualityRestriction", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return false;
                 }
             }
@@ -553,7 +553,7 @@ namespace Chummer
                 foreach (XmlNode objXmlOneOf in objXmlRequiredList)
                 {
                     bool blnOneOfMet = false;
-                    string strThisRequirement = Environment.NewLine + LanguageManager.GetString("Message_SelectQuality_OneOf", GlobalOptions.Instance.Language);
+                    string strThisRequirement = Environment.NewLine + LanguageManager.GetString("Message_SelectQuality_OneOf", GlobalOptions.Language);
                     XmlNodeList objXmlOneOfList = objXmlOneOf.ChildNodes;
                     foreach (XmlNode objXmlRequired in objXmlOneOfList)
                     {
@@ -634,27 +634,27 @@ namespace Chummer
                                 }
                                 break;
                             case "inherited":
-                                strThisRequirement += Environment.NewLine + '\t' + LanguageManager.GetString("Message_SelectQuality_Inherit", GlobalOptions.Instance.Language);
+                                strThisRequirement += Environment.NewLine + '\t' + LanguageManager.GetString("Message_SelectQuality_Inherit", GlobalOptions.Language);
                                 break;
                             case "careerkarma":
                                 // Check Career Karma requirement.
                                 if (_objCharacter.CareerKarma >= Convert.ToInt32(objXmlRequired.InnerText))
                                     blnOneOfMet = true;
                                 else
-                                    strThisRequirement = Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_SelectQuality_RequireKarma", GlobalOptions.Instance.Language), objXmlRequired.InnerText);
+                                    strThisRequirement = Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_SelectQuality_RequireKarma", GlobalOptions.Language), objXmlRequired.InnerText);
                                 break;
                             case "ess":
                                 // Check Essence requirement.
                                 if (objXmlRequired.InnerText.StartsWith('-'))
                                 {
                                     // Essence must be less than the value.
-                                    if (_objCharacter.Essence() < Convert.ToDecimal(objXmlRequired.InnerText.TrimStart('-'), GlobalOptions.Instance.InvariantCultureInfo))
+                                    if (_objCharacter.Essence() < Convert.ToDecimal(objXmlRequired.InnerText.TrimStart('-'), GlobalOptions.InvariantCultureInfo))
                                         blnOneOfMet = true;
                                 }
                                 else
                                 {
                                     // Essence must be equal to or greater than the value.
-                                    if (_objCharacter.Essence() >= Convert.ToDecimal(objXmlRequired.InnerText, GlobalOptions.Instance.InvariantCultureInfo))
+                                    if (_objCharacter.Essence() >= Convert.ToDecimal(objXmlRequired.InnerText, GlobalOptions.InvariantCultureInfo))
                                         blnOneOfMet = true;
                                 }
                                 break;
@@ -830,7 +830,7 @@ namespace Chummer
                 foreach (XmlNode objXmlAllOf in objXmlRequiredList)
                 {
                     bool blnAllOfMet = true;
-                    string strThisRequirement = Environment.NewLine + LanguageManager.GetString("Message_SelectQuality_AllOf", GlobalOptions.Instance.Language);
+                    string strThisRequirement = Environment.NewLine + LanguageManager.GetString("Message_SelectQuality_AllOf", GlobalOptions.Language);
                     XmlNodeList objXmlAllOfList = objXmlAllOf.ChildNodes;
                     foreach (XmlNode objXmlRequired in objXmlAllOfList)
                     {
@@ -887,27 +887,27 @@ namespace Chummer
                                 }
                                 break;
                             case "inherited":
-                                strThisRequirement += Environment.NewLine + '\t' + LanguageManager.GetString("Message_SelectQuality_Inherit", GlobalOptions.Instance.Language);
+                                strThisRequirement += Environment.NewLine + '\t' + LanguageManager.GetString("Message_SelectQuality_Inherit", GlobalOptions.Language);
                                 break;
                             case "careerkarma":
                                 // Check Career Karma requirement.
                                 if (_objCharacter.CareerKarma >= Convert.ToInt32(objXmlRequired.InnerText))
                                     blnFound = true;
                                 else
-                                    strThisRequirement = Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_SelectQuality_RequireKarma", GlobalOptions.Instance.Language), objXmlRequired.InnerText);
+                                    strThisRequirement = Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_SelectQuality_RequireKarma", GlobalOptions.Language), objXmlRequired.InnerText);
                                 break;
                             case "ess":
                                 // Check Essence requirement.
                                 if (objXmlRequired.InnerText.StartsWith('-'))
                                 {
                                     // Essence must be less than the value.
-                                    if (_objCharacter.Essence() < Convert.ToDecimal(objXmlRequired.InnerText.TrimStart('-'), GlobalOptions.Instance.InvariantCultureInfo))
+                                    if (_objCharacter.Essence() < Convert.ToDecimal(objXmlRequired.InnerText.TrimStart('-'), GlobalOptions.InvariantCultureInfo))
                                         blnFound = true;
                                 }
                                 else
                                 {
                                     // Essence must be equal to or greater than the value.
-                                    if (_objCharacter.Essence() >= Convert.ToDecimal(objXmlRequired.InnerText, GlobalOptions.Instance.InvariantCultureInfo))
+                                    if (_objCharacter.Essence() >= Convert.ToDecimal(objXmlRequired.InnerText, GlobalOptions.InvariantCultureInfo))
                                         blnFound = true;
                                 }
                                 break;
@@ -1079,11 +1079,11 @@ namespace Chummer
                 // The character has not met the requirements, so display a message and uncheck the item.
                 if (!blnRequirementMet)
                 {
-                    string strMessage = LanguageManager.GetString("Message_SelectQuality_QualityRequirement", GlobalOptions.Instance.Language);
+                    string strMessage = LanguageManager.GetString("Message_SelectQuality_QualityRequirement", GlobalOptions.Language);
                     strMessage += strRequirement;
 
                     if (blnShowMessage)
-                        MessageBox.Show(strMessage, LanguageManager.GetString("MessageTitle_SelectQuality_QualityRequirement", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show(strMessage, LanguageManager.GetString("MessageTitle_SelectQuality_QualityRequirement", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return false;
                 }
             }

@@ -41,7 +41,7 @@ namespace Chummer
         public frmSelectLifeModule(Character objCharacter, int intStage)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             _intStage = intStage;
         }
@@ -151,7 +151,7 @@ namespace Chummer
             }
 
             _strSelectedId = (string)e.Node.Tag;
-            XmlNode xmlSelectedNodeInfo = Quality.GetNodeOverrideable(_strSelectedId, XmlManager.Load("lifemodules.xml", GlobalOptions.Instance.Language));
+            XmlNode xmlSelectedNodeInfo = Quality.GetNodeOverrideable(_strSelectedId, XmlManager.Load("lifemodules.xml", GlobalOptions.Language));
 
             if (xmlSelectedNodeInfo != null)
             {
@@ -159,14 +159,14 @@ namespace Chummer
                 cmdOKAdd.Enabled = blnSelectAble;
 
                 lblBP.Text = xmlSelectedNodeInfo["karma"]?.InnerText ?? string.Empty;
-                lblSource.Text = xmlSelectedNodeInfo["source"]?.InnerText ?? string.Empty + LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language) + xmlSelectedNodeInfo["page"]?.InnerText;
+                lblSource.Text = xmlSelectedNodeInfo["source"]?.InnerText ?? string.Empty + LanguageManager.GetString("String_Space", GlobalOptions.Language) + xmlSelectedNodeInfo["page"]?.InnerText;
                 lblStage.Text = xmlSelectedNodeInfo["stage"]?.InnerText ?? string.Empty;
             }
             else
             {
-                lblBP.Text = LanguageManager.GetString("String_Error", GlobalOptions.Instance.Language);
-                lblStage.Text = LanguageManager.GetString("String_Error", GlobalOptions.Instance.Language);
-                lblSource.Text = LanguageManager.GetString("String_Error", GlobalOptions.Instance.Language);
+                lblBP.Text = LanguageManager.GetString("String_Error", GlobalOptions.Language);
+                lblStage.Text = LanguageManager.GetString("String_Error", GlobalOptions.Language);
+                lblSource.Text = LanguageManager.GetString("String_Error", GlobalOptions.Language);
 
                 cmdOK.Enabled = false;
                 cmdOKAdd.Enabled = false;
@@ -174,7 +174,7 @@ namespace Chummer
 
         }
 
-        public XmlNode SelectedNode => Quality.GetNodeOverrideable(_strSelectedId, XmlManager.Load("lifemodules.xml", GlobalOptions.Instance.Language));
+        public XmlNode SelectedNode => Quality.GetNodeOverrideable(_strSelectedId, XmlManager.Load("lifemodules.xml", GlobalOptions.Language));
 
         private void treModules_DoubleClick(object sender, EventArgs e)
         {
@@ -197,7 +197,7 @@ namespace Chummer
                 {
                     List<ListItem> Stages = new List<ListItem>()
                     {
-                        new ListItem("0", LanguageManager.GetString("String_All", GlobalOptions.Instance.Language))
+                        new ListItem("0", LanguageManager.GetString("String_All", GlobalOptions.Language))
                     };
 
                     using (XmlNodeList xmlNodes = _xmlDocument.SelectNodes("/chummer/stages/stage"))

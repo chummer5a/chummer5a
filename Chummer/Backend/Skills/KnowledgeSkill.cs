@@ -114,7 +114,7 @@ namespace Chummer.Backend.Skills
         private void LoadSkillFromData(string strInputSkillName)
         {
             string strSkillName = GetSkillNameFromData(strInputSkillName);
-            XmlNode xmlSkillNode = XmlManager.Load("skills.xml", GlobalOptions.Instance.Language).SelectSingleNode($"/chummer/knowledgeskills/skill[name = \"{ strSkillName }\"]");
+            XmlNode xmlSkillNode = XmlManager.Load("skills.xml", GlobalOptions.Language).SelectSingleNode($"/chummer/knowledgeskills/skill[name = \"{ strSkillName }\"]");
 
             if (xmlSkillNode == null)
             {
@@ -143,16 +143,16 @@ namespace Chummer.Backend.Skills
 
         private static string GetSkillNameFromData(string strInputSkillName)
         {
-            if (GlobalOptions.Instance.Language == GlobalOptions.DefaultLanguage)
+            if (GlobalOptions.Language == GlobalOptions.DefaultLanguage)
             {
                 return strInputSkillName;
             }
             
-            XmlNode xmlSkillTranslationNode = XmlManager.Load("skills.xml", GlobalOptions.Instance.Language).SelectSingleNode($"/chummer/knowledgeskills/skill[translate = \"{ strInputSkillName }\"]");
+            XmlNode xmlSkillTranslationNode = XmlManager.Load("skills.xml", GlobalOptions.Language).SelectSingleNode($"/chummer/knowledgeskills/skill[translate = \"{ strInputSkillName }\"]");
 
             if (xmlSkillTranslationNode == null)
             {
-                return LanguageManager.ReverseTranslateExtra(strInputSkillName, GlobalOptions.Instance.Language);
+                return LanguageManager.ReverseTranslateExtra(strInputSkillName, GlobalOptions.Language);
             }
 
             return xmlSkillTranslationNode["name"]?.InnerText ?? strInputSkillName;
@@ -166,7 +166,7 @@ namespace Chummer.Backend.Skills
             {
                 if (Rating == 0 && Type == "Language")
                 {
-                    return LanguageManager.GetString("Skill_NativeLanguageShort",GlobalOptions.Instance.Language);
+                    return LanguageManager.GetString("Skill_NativeLanguageShort",GlobalOptions.Language);
                 }
                 else
                 {
@@ -186,7 +186,7 @@ namespace Chummer.Backend.Skills
                 if (_intCachedCyberwareRating != int.MinValue)
                     return _intCachedCyberwareRating;
 
-                string strTranslatedName = DisplayNameMethod(GlobalOptions.Instance.Language);
+                string strTranslatedName = DisplayNameMethod(GlobalOptions.Language);
                 int intMaxHardwire = CharacterObject.Improvements
                     .Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.Hardwire &&
                                             (objImprovement.ImprovedName == Name || objImprovement.ImprovedName == strTranslatedName) &&
@@ -408,8 +408,8 @@ namespace Chummer.Backend.Skills
             objWriter.WriteElementString("suid", SkillId.ToString("D"));
             objWriter.WriteElementString("isknowledge", bool.TrueString);
             objWriter.WriteElementString("skillcategory", SkillCategory);
-            objWriter.WriteElementString("karma", KarmaPoints.ToString(GlobalOptions.Instance.InvariantCultureInfo));
-            objWriter.WriteElementString("base", BasePoints.ToString(GlobalOptions.Instance.InvariantCultureInfo)); //this could acctually be saved in karma too during career
+            objWriter.WriteElementString("karma", KarmaPoints.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("base", BasePoints.ToString(GlobalOptions.InvariantCultureInfo)); //this could acctually be saved in karma too during career
             objWriter.WriteElementString("notes", Notes);
             if (!CharacterObject.Created)
             {
@@ -450,7 +450,7 @@ namespace Chummer.Backend.Skills
             // Legacy shim
             if (SkillId.Equals(Guid.Empty))
             {
-                XmlNode objDataNode = XmlManager.Load("skills.xml", GlobalOptions.Instance.Language).SelectSingleNode("/chummer/knowledgeskills/skill[name = \"" + Name + "\"]");
+                XmlNode objDataNode = XmlManager.Load("skills.xml", GlobalOptions.Language).SelectSingleNode("/chummer/knowledgeskills/skill[name = \"" + Name + "\"]");
                 if (objDataNode.TryGetField("id", Guid.TryParse, out Guid guidTemp))
                     SkillId = guidTemp;
             }

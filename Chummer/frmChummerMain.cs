@@ -74,8 +74,8 @@ namespace Chummer
         {
             get
             {
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
-                string title = Application.ProductName + strSpaceCharacter + '-' + strSpaceCharacter + LanguageManager.GetString("String_Version", GlobalOptions.Instance.Language) + strSpaceCharacter + _strCurrentVersion;
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                string title = Application.ProductName + strSpaceCharacter + '-' + strSpaceCharacter + LanguageManager.GetString("String_Version", GlobalOptions.Language) + strSpaceCharacter + _strCurrentVersion;
 #if DEBUG
                 title += " DEBUG BUILD";
 #endif
@@ -106,7 +106,7 @@ namespace Chummer
 
 
 
-                LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, this);
+                LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 
                 /** Dashboard **/
                 //this.toolsMenu.DropDownItems.Add("GM Dashboard").Click += this.dashboardToolStripMenuItem_Click;
@@ -141,7 +141,7 @@ namespace Chummer
 
                 Program.MainForm = this;
                 PluginLoader.LoadPlugins();
-                if (GlobalOptions.Instance.AllowEasterEggs)
+                if (GlobalOptions.AllowEasterEggs)
                 {
                     _mascotChummy = new Chummy();
                     _mascotChummy.Show(this);
@@ -150,7 +150,7 @@ namespace Chummer
                 // Set the Tag for each ToolStrip item so it can be translated.
                 foreach (ToolStripMenuItem objItem in menuStrip.Items.OfType<ToolStripMenuItem>())
                 {
-                    LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Instance.Language);
+                    LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Language);
                 }
 
                 frmLoading frmLoadingForm = new frmLoading {CharacterFile = Text};
@@ -198,7 +198,7 @@ namespace Chummer
                 );
                 Timekeeper.Finish("cache_load", loadOperation);
                 frmLoadingForm.PerformStep(LanguageManager.GetString("String_UI"));
-                CharacterRoster = GlobalOptions.Instance.HideCharacterRoster
+                CharacterRoster = GlobalOptions.HideCharacterRoster
                     ? null
                     : new frmCharacterRoster
                     {
@@ -246,7 +246,7 @@ namespace Chummer
                 }
 
                 OpenCharacterList(lstCharactersToLoad);
-                if (!GlobalOptions.Instance.HideCharacterRoster)
+                if (!GlobalOptions.HideCharacterRoster)
                 {
                     CharacterRoster.WindowState = FormWindowState.Maximized;
                     CharacterRoster.Show();
@@ -284,7 +284,7 @@ namespace Chummer
                             bool blnRefreshSticky = false;
                             foreach(CharacterShared objClosedForm in e.OldItems)
                             {
-                                if(GlobalOptions.Instance.FavoritedCharacters.Contains(objClosedForm.CharacterObject.FileName))
+                                if(GlobalOptions.FavoritedCharacters.Contains(objClosedForm.CharacterObject.FileName))
                                 {
                                     blnRefreshSticky = true;
                                     break;
@@ -300,7 +300,7 @@ namespace Chummer
                             bool blnRefreshSticky = false;
                             foreach(CharacterShared objClosedForm in e.OldItems)
                             {
-                                if(GlobalOptions.Instance.FavoritedCharacters.Contains(objClosedForm.CharacterObject.FileName))
+                                if(GlobalOptions.FavoritedCharacters.Contains(objClosedForm.CharacterObject.FileName))
                                 {
                                     blnRefreshSticky = true;
                                     break;
@@ -311,7 +311,7 @@ namespace Chummer
                             {
                                 foreach(CharacterShared objNewForm in e.NewItems)
                                 {
-                                    if(GlobalOptions.Instance.FavoritedCharacters.Contains(objNewForm.CharacterObject.FileName))
+                                    if(GlobalOptions.FavoritedCharacters.Contains(objNewForm.CharacterObject.FileName))
                                     {
                                         blnRefreshSticky = true;
                                         break;
@@ -361,7 +361,7 @@ namespace Chummer
 
         private void DoCacheGitVersion(object sender, DoWorkEventArgs e)
         {
-            string strUpdateLocation = GlobalOptions.Instance.PreferNightlyBuilds
+            string strUpdateLocation = GlobalOptions.PreferNightlyBuilds
                 ? "https://api.github.com/repos/chummer5a/chummer5a/releases"
                 : "https://api.github.com/repos/chummer5a/chummer5a/releases/latest";
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
@@ -513,7 +513,7 @@ namespace Chummer
         {
             if(!e.Cancelled && Utils.GitUpdateAvailable() > 0)
             {
-                if(GlobalOptions.Instance.AutomaticUpdate)
+                if(GlobalOptions.AutomaticUpdate)
                 {
                     if(_frmUpdate == null)
                     {
@@ -522,10 +522,10 @@ namespace Chummer
                         _frmUpdate.SilentMode = true;
                     }
                 }
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                 Text = Application.ProductName + strSpaceCharacter + '-' + strSpaceCharacter +
-                       LanguageManager.GetString("String_Version", GlobalOptions.Instance.Language) + strSpaceCharacter + _strCurrentVersion + strSpaceCharacter + '-' + strSpaceCharacter +
-                       string.Format(LanguageManager.GetString("String_Update_Available", GlobalOptions.Instance.Language), Utils.CachedGitVersion);
+                       LanguageManager.GetString("String_Version", GlobalOptions.Language) + strSpaceCharacter + _strCurrentVersion + strSpaceCharacter + '-' + strSpaceCharacter +
+                       string.Format(LanguageManager.GetString("String_Update_Available", GlobalOptions.Language), Utils.CachedGitVersion);
             }
         }
 
@@ -726,7 +726,7 @@ namespace Chummer
                 string strFileName = ((ToolStripMenuItem)sender).Text;
                 strFileName = strFileName.Substring(3, strFileName.Length - 3).Trim();
 
-                GlobalOptions.Instance.FavoritedCharacters.Add(strFileName);
+                GlobalOptions.FavoritedCharacters.Add(strFileName);
             }
         }
 
@@ -746,8 +746,8 @@ namespace Chummer
             {
                 string strFileName = ((ToolStripMenuItem)sender).Text;
 
-                GlobalOptions.Instance.FavoritedCharacters.Remove(strFileName);
-                GlobalOptions.Instance.MostRecentlyUsedCharacters.Insert(0, strFileName);
+                GlobalOptions.FavoritedCharacters.Remove(strFileName);
+                GlobalOptions.MostRecentlyUsedCharacters.Insert(0, strFileName);
             }
         }
 
@@ -774,14 +774,14 @@ namespace Chummer
                     if(ActiveMdiChild is CharacterShared frmCharacterShared)
                     {
                         tp.Text = frmCharacterShared.CharacterObject.CharacterName;
-                        if (GlobalOptions.Instance.AllowEasterEggs && _mascotChummy != null)
+                        if (GlobalOptions.AllowEasterEggs && _mascotChummy != null)
                         {
                             _mascotChummy.CharacterObject = frmCharacterShared.CharacterObject;
                         }
                     }
                     else
                     {
-                        string strTagText = LanguageManager.GetString(ActiveMdiChild.Tag?.ToString(), GlobalOptions.Instance.Language, false);
+                        string strTagText = LanguageManager.GetString(ActiveMdiChild.Tag?.ToString(), GlobalOptions.Language, false);
                         if(!string.IsNullOrEmpty(strTagText))
                             tp.Text = strTagText;
                     }
@@ -860,7 +860,7 @@ namespace Chummer
 
         private void mnuToolsDiceRoller_Click(object sender, EventArgs e)
         {
-            if(GlobalOptions.Instance.SingleDiceRoller)
+            if(GlobalOptions.SingleDiceRoller)
             {
                 // Only a single instance of the Dice Roller window is allowed, so either find the existing one and focus on it, or create a new one.
                 if(_frmRoller == null)
@@ -902,7 +902,7 @@ namespace Chummer
             // Translate the items in the menu by finding their Tags in the translation file.
             foreach(ToolStripItem objItem in menuStrip.Items.OfType<ToolStripItem>())
             {
-                LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Instance.Language);
+                LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Language);
             }
         }
 
@@ -913,7 +913,7 @@ namespace Chummer
             {
                 foreach(ToolStripItem objItem in objToolStrip.Items.OfType<ToolStripItem>())
                 {
-                    LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Instance.Language);
+                    LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Language);
                 }
             }
         }
@@ -925,7 +925,7 @@ namespace Chummer
             {
                 foreach(ToolStripItem objItem in objToolStrip.Items.OfType<ToolStripItem>())
                 {
-                    LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Instance.Language);
+                    LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Language);
                 }
             }
         }
@@ -947,10 +947,10 @@ namespace Chummer
                 Size = Properties.Settings.Default.Size;
             }
 
-            if(GlobalOptions.Instance.StartupFullscreen)
+            if(GlobalOptions.StartupFullscreen)
                 WindowState = FormWindowState.Maximized;
 
-            mnuToolsOmae.Visible = GlobalOptions.Instance.OmaeEnabled;
+            mnuToolsOmae.Visible = GlobalOptions.OmaeEnabled;
 
             //        if (GlobalOptions.UseLogging)
             //        {
@@ -1005,7 +1005,7 @@ namespace Chummer
             Cursor objOldCursor = Cursor;
             if(!File.Exists(strFilePath))
             {
-                if(MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_OpenOptions", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_CharacterOptions_OpenOptions", GlobalOptions.Instance.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                if(MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_OpenOptions", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CharacterOptions_OpenOptions", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
                     Cursor = Cursors.WaitCursor;
                     frmNewOptions frmOptions = new frmNewOptions();
@@ -1098,7 +1098,7 @@ namespace Chummer
         {
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
-                Filter = LanguageManager.GetString("DialogFilter_Chum5", GlobalOptions.Instance.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Instance.Language),
+                Filter = LanguageManager.GetString("DialogFilter_Chum5", GlobalOptions.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language),
                 Multiselect = true
             };
 
@@ -1189,7 +1189,7 @@ namespace Chummer
                 }
 
                 if(blnIncludeInMRU && !string.IsNullOrEmpty(objCharacter.FileName) && File.Exists(objCharacter.FileName))
-                    GlobalOptions.Instance.MostRecentlyUsedCharacters.Insert(0, objCharacter.FileName);
+                    GlobalOptions.MostRecentlyUsedCharacters.Insert(0, objCharacter.FileName);
 
                 UpdateCharacterTabTitle(objCharacter, new PropertyChangedEventArgs(nameof(Character.CharacterName)));
 
@@ -1240,9 +1240,9 @@ namespace Chummer
                             if (blnShowErrors)
                                 MessageBox.Show(
                                     string.Format(
-                                        LanguageManager.GetString("Message_FailedLoad", GlobalOptions.Instance.Language),
+                                        LanguageManager.GetString("Message_FailedLoad", GlobalOptions.Language),
                                         ex.Message),
-                                    LanguageManager.GetString("MessageTitle_FailedLoad", GlobalOptions.Instance.Language),
+                                    LanguageManager.GetString("MessageTitle_FailedLoad", GlobalOptions.Language),
                                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                             frmLoadingForm?.Close();
                             return null;
@@ -1294,8 +1294,8 @@ namespace Chummer
             }
             else if(blnShowErrors)
             {
-                MessageBox.Show(string.Format(LanguageManager.GetString("Message_FileNotFound", GlobalOptions.Instance.Language), strFileName),
-                    LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(string.Format(LanguageManager.GetString("Message_FileNotFound", GlobalOptions.Language), strFileName),
+                    LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             return objCharacter;
         }
@@ -1305,8 +1305,8 @@ namespace Chummer
         /// </summary>
         public void PopulateMRUToolstripMenu(object sender, TextEventArgs e)
         {
-            ReadOnlyObservableCollection<string> strStickyMRUList = new ReadOnlyObservableCollection<string>(GlobalOptions.Instance.FavoritedCharacters);
-            ReadOnlyObservableCollection<string> strMRUList = new ReadOnlyObservableCollection<string>(GlobalOptions.Instance.MostRecentlyUsedCharacters);
+            ReadOnlyObservableCollection<string> strStickyMRUList = new ReadOnlyObservableCollection<string>(GlobalOptions.FavoritedCharacters);
+            ReadOnlyObservableCollection<string> strMRUList = new ReadOnlyObservableCollection<string>(GlobalOptions.MostRecentlyUsedCharacters);
 
             SuspendLayout();
             mnuFileMRUSeparator.Visible = strStickyMRUList.Count > 0 || strMRUList.Count > 0;
@@ -1442,7 +1442,7 @@ namespace Chummer
 
         private void objCareer_DiceRollerOpenedInt(Character objCharacter, int intDice)
         {
-            if(GlobalOptions.Instance.SingleDiceRoller)
+            if(GlobalOptions.SingleDiceRoller)
             {
                 if(_frmRoller == null)
                 {
@@ -1465,12 +1465,12 @@ namespace Chummer
 
         private void mnuClearUnpinnedItems_Click(object sender, EventArgs e)
         {
-            GlobalOptions.Instance.MostRecentlyUsedCharacters.Clear();
+            GlobalOptions.MostRecentlyUsedCharacters.Clear();
         }
 
         private void mnuRestart_Click(object sender, EventArgs e)
         {
-            Utils.RestartApplication(GlobalOptions.Instance.Language, "Message_Options_Restart");
+            Utils.RestartApplication(GlobalOptions.Language, "Message_Options_Restart");
         }
         #endregion
 
@@ -1528,8 +1528,8 @@ namespace Chummer
 
         private void mnuHeroLabImporter_Click(object sender, EventArgs e)
         {
-            if(MessageBox.Show(LanguageManager.GetString("Message_HeroLabImporterWarning", GlobalOptions.Instance.Language),
-                    LanguageManager.GetString("Message_HeroLabImporterWarning_Title", GlobalOptions.Instance.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+            if(MessageBox.Show(LanguageManager.GetString("Message_HeroLabImporterWarning", GlobalOptions.Language),
+                    LanguageManager.GetString("Message_HeroLabImporterWarning_Title", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
                 return;
 
             frmHeroLabImporter frmHeroLabImporter = new frmHeroLabImporter();

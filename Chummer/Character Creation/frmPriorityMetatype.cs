@@ -48,7 +48,7 @@ namespace Chummer
         {
             _objCharacter = objCharacter;
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 
             _lstPrioritySkills = new List<string>(objCharacter.PriorityBonusSkillList);
             XmlDocument xmlMetatypeDoc = XmlManager.Load(strXmlFile);
@@ -95,7 +95,7 @@ namespace Chummer
                             lstItems.Add(new ListItem(objXmlPriority.SelectSingleNode("value")?.Value ?? string.Empty,
                                 objXmlPriority.SelectSingleNode("translate")?.Value ??
                                 objXmlPriority.SelectSingleNode("name")?.Value ??
-                                LanguageManager.GetString("String_Unknown", GlobalOptions.Instance.Language)));
+                                LanguageManager.GetString("String_Unknown", GlobalOptions.Language)));
                         }
 
                         lstItems.Sort(CompareListItems.CompareNames);
@@ -312,7 +312,7 @@ namespace Chummer
                             {
                                 foreach (XPathNavigator objXmlSkill in xmlSkillsList)
                                 {
-                                    string strName = objXmlSkill.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Instance.Language);
+                                    string strName = objXmlSkill.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
                                     lstSkills.Add(new ListItem(strName, objXmlSkill.SelectSingleNode("translate")?.Value ?? strName));
                                 }
                             }
@@ -382,11 +382,11 @@ namespace Chummer
                                     }
                                 }
                             }
-                            string strMetamagicSkillSelection = string.Format(LanguageManager.GetString("String_MetamagicSkillBase", GlobalOptions.Instance.Language),
-                                LanguageManager.GetString("String_MetamagicSkills", GlobalOptions.Instance.Language));
+                            string strMetamagicSkillSelection = string.Format(LanguageManager.GetString("String_MetamagicSkillBase", GlobalOptions.Language),
+                                LanguageManager.GetString("String_MetamagicSkills", GlobalOptions.Language));
                             // strSkillType can have the following values: magic, resonance, matrix, active, specific, grouped
                             // So the language file should contain each of those like String_MetamagicSkillType_magic
-                            lblMetatypeSkillSelection.Text = string.Format(strMetamagicSkillSelection, strSkillCount, LanguageManager.GetString("String_MetamagicSkillType_"+strSkillType, GlobalOptions.Instance.Language), strSkillVal);
+                            lblMetatypeSkillSelection.Text = string.Format(strMetamagicSkillSelection, strSkillCount, LanguageManager.GetString("String_MetamagicSkillType_"+strSkillType, GlobalOptions.Language), strSkillVal);
                             lblMetatypeSkillSelection.Visible = true;
                         }
 
@@ -547,13 +547,13 @@ namespace Chummer
                 int intSumToTen = SumtoTen(false);
                 if (intSumToTen != _objCharacter.SumtoTen)
                 {
-                    MessageBox.Show(string.Format(LanguageManager.GetString("Message_SumtoTen", GlobalOptions.Instance.Language), _objCharacter.SumtoTen.ToString(GlobalOptions.Instance.CultureInfo), intSumToTen.ToString(GlobalOptions.Instance.CultureInfo)));
+                    MessageBox.Show(string.Format(LanguageManager.GetString("Message_SumtoTen", GlobalOptions.Language), _objCharacter.SumtoTen.ToString(GlobalOptions.CultureInfo), intSumToTen.ToString(GlobalOptions.CultureInfo)));
                     return;
                 }
             }
             if (cboTalents.SelectedIndex == -1)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_Metatype_SelectTalent", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_Metatype_SelectTalent", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_Metatype_SelectTalent", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_Metatype_SelectTalent", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -565,7 +565,7 @@ namespace Chummer
                 (cboSkill2.Visible && string.IsNullOrEmpty(strSkill2)) ||
                 (cboSkill3.Visible && string.IsNullOrEmpty(strSkill3)))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_Metatype_SelectSkill", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_Metatype_SelectSkill", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_Metatype_SelectSkill", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_Metatype_SelectSkill", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -573,7 +573,7 @@ namespace Chummer
                 (cboSkill1.Visible && cboSkill3.Visible && strSkill1 == strSkill3) ||
                 (cboSkill2.Visible && cboSkill3.Visible && strSkill2 == strSkill3))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_Metatype_Duplicate", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_Metatype_Duplicate", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_Metatype_Duplicate", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_Metatype_Duplicate", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -671,7 +671,7 @@ namespace Chummer
                     Weapon objWeapon = new Weapon(_objCharacter)
                     {
                         Name = objXmlNaturalWeapon["name"].InnerText,
-                        Category = LanguageManager.GetString("Tab_Critter", GlobalOptions.Instance.Language),
+                        Category = LanguageManager.GetString("Tab_Critter", GlobalOptions.Language),
                         WeaponType = "Melee",
                         Reach = Convert.ToInt32(objXmlNaturalWeapon["reach"].InnerText),
                         Damage = objXmlNaturalWeapon["damage"].InnerText,
@@ -859,7 +859,7 @@ namespace Chummer
             }
             else
             {
-                MessageBox.Show(LanguageManager.GetString("Message_Metatype_SelectMetatype", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_Metatype_SelectMetatype", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_Metatype_SelectMetatype", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_Metatype_SelectMetatype", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             Cursor = Cursors.Default;
         }
@@ -967,7 +967,7 @@ namespace Chummer
 
         void RefreshSelectedMetatype()
         {
-            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
+            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
             string strSelectedMetatype = lstMetatypes.SelectedValue?.ToString();
             string strSelectedMetavariant = cboMetavariant.SelectedValue?.ToString();
             string strSelectedHeritage = cboHeritage.SelectedValue?.ToString();
@@ -991,7 +991,7 @@ namespace Chummer
             {
                 if (objXmlMetavariantPriorityNode == null)
                 {
-                    MessageBox.Show(LanguageManager.GetString("String_NotSupported", GlobalOptions.Instance.Language), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(LanguageManager.GetString("String_NotSupported", GlobalOptions.Language), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     cmdOK.Enabled = false;
                 }
                 else
@@ -1009,7 +1009,7 @@ namespace Chummer
                 lblWIL.Text = $"{objXmlMetavariant.SelectSingleNode("wilmin")?.Value}/{objXmlMetavariant.SelectSingleNode("wilmax")?.Value} ({objXmlMetavariant.SelectSingleNode("wilaug")?.Value})";
                 lblINI.Text = $"{objXmlMetavariant.SelectSingleNode("inimin")?.Value}/{objXmlMetavariant.SelectSingleNode("inimax")?.Value} ({objXmlMetavariant.SelectSingleNode("iniaug")?.Value})";
 
-                lblMetavariantKarma.Text = objXmlMetavariantPriorityNode.SelectSingleNode("karma")?.Value ?? 0.ToString(GlobalOptions.Instance.CultureInfo);
+                lblMetavariantKarma.Text = objXmlMetavariantPriorityNode.SelectSingleNode("karma")?.Value ?? 0.ToString(GlobalOptions.CultureInfo);
 
                 // Set the special attributes label.
                 int.TryParse(objXmlMetavariantPriorityNode?.SelectSingleNode("value")?.Value, out int intSpecialAttribPoints);
@@ -1033,13 +1033,13 @@ namespace Chummer
                 foreach (XPathNavigator objXmlQuality in objXmlMetavariant.Select("qualities/*/quality"))
                 {
                     string strQuality;
-                    if (GlobalOptions.Instance.Language != GlobalOptions.DefaultLanguage)
+                    if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                     {
                         strQuality = _xmlBaseQualityDataNode.SelectSingleNode("qualities/quality[name = \"" + objXmlQuality.Value + "\"]/translate")?.Value ?? objXmlQuality.Value;
 
                         string strSelect = objXmlQuality.SelectSingleNode("@select")?.Value;
                         if (!string.IsNullOrEmpty(strSelect))
-                            strQuality += strSpaceCharacter + '(' + LanguageManager.TranslateExtra(strSelect, GlobalOptions.Instance.Language) + ')';
+                            strQuality += strSpaceCharacter + '(' + LanguageManager.TranslateExtra(strSelect, GlobalOptions.Language) + ')';
                     }
                     else
                     {
@@ -1065,7 +1065,7 @@ namespace Chummer
                         if (objLoopQuality.Value > 1)
                         {
                             strQualities.Append(strSpaceCharacter);
-                            strQualities.Append(objLoopQuality.Value.ToString(GlobalOptions.Instance.CultureInfo));
+                            strQualities.Append(objLoopQuality.Value.ToString(GlobalOptions.CultureInfo));
                         }
                         strQualities.Append(',' + strSpaceCharacter);
                     }
@@ -1074,7 +1074,7 @@ namespace Chummer
                 }
                 else
                 {
-                    lblMetavariantQualities.Text = LanguageManager.GetString("String_None", GlobalOptions.Instance.Language);
+                    lblMetavariantQualities.Text = LanguageManager.GetString("String_None", GlobalOptions.Language);
                 }
             }
             else if (objXmlMetatype != null)
@@ -1095,14 +1095,14 @@ namespace Chummer
                 foreach (XPathNavigator xmlQuality in objXmlMetatype.Select("qualities/*/quality"))
                 {
                     string strQuality;
-                    if (GlobalOptions.Instance.Language != GlobalOptions.DefaultLanguage)
+                    if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                     {
                         XPathNavigator objQuality = _xmlBaseQualityDataNode.SelectSingleNode("qualities/quality[name = \"" + xmlQuality.Value + "\"]");
                         strQuality = objQuality.SelectSingleNode("translate")?.Value ?? xmlQuality.Value;
 
                         string strSelect = xmlQuality.SelectSingleNode("@select")?.Value;
                         if (!string.IsNullOrEmpty(strSelect))
-                            strQuality += strSpaceCharacter + '(' + LanguageManager.TranslateExtra(strSelect, GlobalOptions.Instance.Language) + ')';
+                            strQuality += strSpaceCharacter + '(' + LanguageManager.TranslateExtra(strSelect, GlobalOptions.Language) + ')';
                     }
                     else
                     {
@@ -1128,7 +1128,7 @@ namespace Chummer
                         if (objLoopQuality.Value > 1)
                         {
                             strQualities.Append(strSpaceCharacter);
-                            strQualities.Append(objLoopQuality.Value.ToString(GlobalOptions.Instance.CultureInfo));
+                            strQualities.Append(objLoopQuality.Value.ToString(GlobalOptions.CultureInfo));
                         }
                         strQualities.Append(',' + strSpaceCharacter);
                     }
@@ -1137,10 +1137,10 @@ namespace Chummer
                 }
                 else
                 {
-                    lblMetavariantQualities.Text = LanguageManager.GetString("String_None", GlobalOptions.Instance.Language);
+                    lblMetavariantQualities.Text = LanguageManager.GetString("String_None", GlobalOptions.Language);
                 }
 
-                lblMetavariantKarma.Text = objXmlMetatypePriorityNode.SelectSingleNode("karma")?.Value ?? 0.ToString(GlobalOptions.Instance.CultureInfo);
+                lblMetavariantKarma.Text = objXmlMetatypePriorityNode.SelectSingleNode("karma")?.Value ?? 0.ToString(GlobalOptions.CultureInfo);
                 // Set the special attributes label.
                 int.TryParse(objXmlMetatypePriorityNode.SelectSingleNode("value")?.Value, out int intSpecialAttribPoints);
 
@@ -1329,7 +1329,7 @@ namespace Chummer
                         lstTalent.Add(new ListItem(objXmlPriorityTalent.SelectSingleNode("value")?.Value,
                             objXmlPriorityTalent.SelectSingleNode("translate")?.Value ??
                             objXmlPriorityTalent.SelectSingleNode("name")?.Value ??
-                            LanguageManager.GetString("String_Unknown", GlobalOptions.Instance.Language)));
+                            LanguageManager.GetString("String_Unknown", GlobalOptions.Language)));
                     }
                     break;
                 }
@@ -1377,7 +1377,7 @@ namespace Chummer
 
                 List<ListItem> lstMetavariants = new List<ListItem>
                 {
-                    new ListItem("None", LanguageManager.GetString("String_None", GlobalOptions.Instance.Language))
+                    new ListItem("None", LanguageManager.GetString("String_None", GlobalOptions.Language))
                 };
 
                 if (objXmlMetatype != null && objXmlMetatypeBP != null)
@@ -1385,7 +1385,7 @@ namespace Chummer
                     // Retrieve the list of Metavariants for the selected Metatype.
                     foreach (XPathNavigator objXmlMetavariant in objXmlMetatype.Select("metavariants/metavariant[" + _objCharacter.Options.BookXPath() + "]"))
                     {
-                        string strName = objXmlMetavariant.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Instance.Language);
+                        string strName = objXmlMetavariant.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
                         lstMetavariants.Add(new ListItem(strName, objXmlMetavariant.SelectSingleNode("translate")?.Value ?? strName));
                     }
 
@@ -1428,7 +1428,7 @@ namespace Chummer
                         }
                         else
                         {
-                            lblForceLabel.Text = LanguageManager.GetString("String_Force", GlobalOptions.Instance.Language);
+                            lblForceLabel.Text = LanguageManager.GetString("String_Force", GlobalOptions.Language);
                             nudForce.Maximum = 100;
                         }
                     }
@@ -1456,7 +1456,7 @@ namespace Chummer
                 // Clear the Metavariant list if nothing is currently selected.
                 List<ListItem> lstMetavariants = new List<ListItem>
                 {
-                    new ListItem("None", LanguageManager.GetString("String_None", GlobalOptions.Instance.Language))
+                    new ListItem("None", LanguageManager.GetString("String_None", GlobalOptions.Language))
                 };
 
                 cboMetavariant.BeginUpdate();

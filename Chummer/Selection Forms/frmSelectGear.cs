@@ -59,7 +59,7 @@ namespace Chummer
         public frmSelectGear(Character objCharacter, int intAvailModifier = 0, int intCostMultiplier = 1, object objGearParent = null, string strAllowedCategories = "")
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             lblMarkupLabel.Visible = objCharacter.Created;
             nudMarkup.Visible = objCharacter.Created;
             lblMarkupPercentLabel.Visible = objCharacter.Created;
@@ -95,7 +95,7 @@ namespace Chummer
             }
             else
             {
-                chkHideOverAvailLimit.Text = string.Format(chkHideOverAvailLimit.Text, _objCharacter.MaximumAvailability.ToString(GlobalOptions.Instance.CultureInfo));
+                chkHideOverAvailLimit.Text = string.Format(chkHideOverAvailLimit.Text, _objCharacter.MaximumAvailability.ToString(GlobalOptions.CultureInfo));
                 chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
             }
 
@@ -137,7 +137,7 @@ namespace Chummer
 
             if (_lstCategory.Count > 0)
             {
-                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll", GlobalOptions.Instance.Language)));
+                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll", GlobalOptions.Language)));
             }
 
             cboCategory.BeginUpdate();
@@ -208,8 +208,8 @@ namespace Chummer
                     string strCostFor = objXmlGear.SelectSingleNode("costfor")?.Value;
                     if (!string.IsNullOrEmpty(strCostFor))
                     {
-                        nudGearQty.Value = Convert.ToDecimal(strCostFor, GlobalOptions.Instance.InvariantCultureInfo);
-                        nudGearQty.Increment = Convert.ToDecimal(strCostFor, GlobalOptions.Instance.InvariantCultureInfo);
+                        nudGearQty.Value = Convert.ToDecimal(strCostFor, GlobalOptions.InvariantCultureInfo);
+                        nudGearQty.Increment = Convert.ToDecimal(strCostFor, GlobalOptions.InvariantCultureInfo);
                     }
                     else
                     {
@@ -439,7 +439,7 @@ namespace Chummer
             set
             {
                 _decMaximumCapacity = value;
-                lblMaximumCapacity.Text = LanguageManager.GetString("Label_MaximumCapacityAllowed", GlobalOptions.Instance.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language) + _decMaximumCapacity.ToString("#,0.##", GlobalOptions.Instance.CultureInfo);
+                lblMaximumCapacity.Text = LanguageManager.GetString("Label_MaximumCapacityAllowed", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + _decMaximumCapacity.ToString("#,0.##", GlobalOptions.CultureInfo);
             }
         }
 
@@ -571,11 +571,11 @@ namespace Chummer
             lblGearDeviceRating.Text = strDeviceRating;
             lblGearDeviceRatingLabel.Visible = !string.IsNullOrEmpty(strDeviceRating);
 
-            string strSource = objXmlGear.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Instance.Language);
-            string strPage = objXmlGear.SelectSingleNode("altpage")?.Value ?? objXmlGear.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Instance.Language);
-            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
-            lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Instance.Language) + strSpaceCharacter + strPage;
-            lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Instance.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Instance.Language) + ' ' + strPage);
+            string strSource = objXmlGear.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+            string strPage = objXmlGear.SelectSingleNode("altpage")?.Value ?? objXmlGear.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+            lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
+            lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
             lblAvail.Text = new AvailabilityValue(Convert.ToInt32(nudRating.Value), objXmlGear.SelectSingleNode("avail")?.Value).ToString();
             lblAvailLabel.Visible = !string.IsNullOrEmpty(lblAvail.Text);
@@ -592,7 +592,7 @@ namespace Chummer
             object objProcess;
             if (chkFreeItem.Checked)
             {
-                lblCost.Text = (0.0m).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.Instance.CultureInfo) + '¥';
+                lblCost.Text = (0.0m).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
             }
             else
             {
@@ -614,7 +614,7 @@ namespace Chummer
                     objCostNode = objXmlGear.SelectSingleNode("cost" + intHighestCostNode);
                     for (int i = decimal.ToInt32(nudRating.Value); i <= intHighestCostNode; ++i)
                     {
-                        XPathNavigator objLoopNode = objXmlGear.SelectSingleNode("cost" + i.ToString(GlobalOptions.Instance.InvariantCultureInfo));
+                        XPathNavigator objLoopNode = objXmlGear.SelectSingleNode("cost" + i.ToString(GlobalOptions.InvariantCultureInfo));
                         if (objLoopNode != null)
                         {
                             objCostNode = objLoopNode;
@@ -626,21 +626,21 @@ namespace Chummer
                 {
                     try
                     {
-                        objProcess = CommonFunctions.EvaluateInvariantXPath(objCostNode.Value.Replace("Rating", nudRating.Value.ToString(GlobalOptions.Instance.InvariantCultureInfo)), out blnIsSuccess);
-                        decimal decCost = blnIsSuccess ? Convert.ToDecimal(objProcess, GlobalOptions.Instance.InvariantCultureInfo) * decMultiplier : 0;
+                        objProcess = CommonFunctions.EvaluateInvariantXPath(objCostNode.Value.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)), out blnIsSuccess);
+                        decimal decCost = blnIsSuccess ? Convert.ToDecimal(objProcess, GlobalOptions.InvariantCultureInfo) * decMultiplier : 0;
                         decCost *= 1 + (nudMarkup.Value / 100.0m);
                         if (chkBlackMarketDiscount.Checked)
                             decCost *= 0.9m;
-                        lblCost.Text = (decCost * _intCostMultiplier).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.Instance.CultureInfo) + '¥';
+                        lblCost.Text = (decCost * _intCostMultiplier).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                         decItemCost = decCost;
                     }
                     catch (XPathException)
                     {
                         lblCost.Text = objCostNode.Value;
-                        if (decimal.TryParse(objCostNode.Value, NumberStyles.Any, GlobalOptions.Instance.InvariantCultureInfo, out decimal decTemp))
+                        if (decimal.TryParse(objCostNode.Value, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decimal decTemp))
                         {
                             decItemCost = decTemp;
-                            lblCost.Text = (decItemCost * _intCostMultiplier).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.Instance.CultureInfo) + '¥';
+                            lblCost.Text = (decItemCost * _intCostMultiplier).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                         }
                     }
 
@@ -650,11 +650,11 @@ namespace Chummer
                         string strCost = "0";
                         if (nudRating.Value > 0)
                             strCost = strValues[decimal.ToInt32(nudRating.Value) - 1].Trim('[', ']');
-                        decimal decCost = Convert.ToDecimal(strCost, GlobalOptions.Instance.InvariantCultureInfo) * decMultiplier;
+                        decimal decCost = Convert.ToDecimal(strCost, GlobalOptions.InvariantCultureInfo) * decMultiplier;
                         decCost *= 1 + (nudMarkup.Value / 100.0m);
                         if (chkBlackMarketDiscount.Checked)
                             decCost *= 0.9m;
-                        lblCost.Text = (decCost * _intCostMultiplier).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.Instance.CultureInfo) + "¥+";
+                        lblCost.Text = (decCost * _intCostMultiplier).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + "¥+";
                         decItemCost = decCost;
                     }
                     else if (objCostNode.Value.StartsWith("Variable("))
@@ -665,16 +665,16 @@ namespace Chummer
                         if (strCost.Contains('-'))
                         {
                             string[] strValues = strCost.Split('-');
-                            decMin = Convert.ToDecimal(strValues[0], GlobalOptions.Instance.InvariantCultureInfo);
-                            decMax = Convert.ToDecimal(strValues[1], GlobalOptions.Instance.InvariantCultureInfo);
+                            decMin = Convert.ToDecimal(strValues[0], GlobalOptions.InvariantCultureInfo);
+                            decMax = Convert.ToDecimal(strValues[1], GlobalOptions.InvariantCultureInfo);
                         }
                         else
-                            decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalOptions.Instance.InvariantCultureInfo);
+                            decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalOptions.InvariantCultureInfo);
 
                         if (decMax == decimal.MaxValue)
-                            lblCost.Text = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.Instance.CultureInfo) + "¥+";
+                            lblCost.Text = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + "¥+";
                         else
-                            lblCost.Text = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.Instance.CultureInfo) + " - " + decMax.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.Instance.CultureInfo) + '¥';
+                            lblCost.Text = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + " - " + decMax.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
                         decItemCost = decMin;
                     }
@@ -691,7 +691,7 @@ namespace Chummer
             string strCapacityField = ShowArmorCapacityOnly ? "armorcapacity" : "capacity";
 
             if (_eCapacityStyle == CapacityStyle.Zero)
-                lblCapacity.Text = '[' + 0.ToString(GlobalOptions.Instance.CultureInfo) + ']';
+                lblCapacity.Text = '[' + 0.ToString(GlobalOptions.CultureInfo) + ']';
             else
             {
                 string strCapacityText = objXmlGear.SelectSingleNode(strCapacityField)?.Value;
@@ -722,8 +722,8 @@ namespace Chummer
                                 {
                                     try
                                     {
-                                        objProcess = CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", nudRating.Value.ToString(GlobalOptions.Instance.InvariantCultureInfo)), out blnIsSuccess);
-                                        lblCapacity.Text = blnIsSuccess ? ((double)objProcess).ToString("#,0.##", GlobalOptions.Instance.CultureInfo) : strCapacity;
+                                        objProcess = CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)), out blnIsSuccess);
+                                        lblCapacity.Text = blnIsSuccess ? ((double)objProcess).ToString("#,0.##", GlobalOptions.CultureInfo) : strCapacity;
                                     }
                                     catch (XPathException)
                                     {
@@ -743,8 +743,8 @@ namespace Chummer
                             {
                                 try
                                 {
-                                    objProcess = CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", nudRating.Value.ToString(GlobalOptions.Instance.InvariantCultureInfo)), out blnIsSuccess);
-                                    lblCapacity.Text = blnIsSuccess ? ((double)objProcess).ToString("#,0.##", GlobalOptions.Instance.CultureInfo) : strCapacity;
+                                    objProcess = CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)), out blnIsSuccess);
+                                    lblCapacity.Text = blnIsSuccess ? ((double)objProcess).ToString("#,0.##", GlobalOptions.CultureInfo) : strCapacity;
                                 }
                                 catch (XPathException)
                                 {
@@ -783,8 +783,8 @@ namespace Chummer
                         {
                             try
                             {
-                                objProcess = CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", nudRating.Value.ToString(GlobalOptions.Instance.InvariantCultureInfo)), out blnIsSuccess);
-                                lblCapacity.Text = blnIsSuccess ? ((double)objProcess).ToString("#,0.##", GlobalOptions.Instance.CultureInfo) : strCapacity;
+                                objProcess = CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)), out blnIsSuccess);
+                                lblCapacity.Text = blnIsSuccess ? ((double)objProcess).ToString("#,0.##", GlobalOptions.CultureInfo) : strCapacity;
                             }
                             catch (OverflowException) // Result is text and not a double
                             {
@@ -801,7 +801,7 @@ namespace Chummer
                 }
                 else
                 {
-                    lblCapacity.Text = 0.ToString(GlobalOptions.Instance.CultureInfo);
+                    lblCapacity.Text = 0.ToString(GlobalOptions.CultureInfo);
                 }
             }
             lblCapacityLabel.Visible = !string.IsNullOrEmpty(lblCapacity.Text);
@@ -822,8 +822,8 @@ namespace Chummer
                 if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
                 {
                     StringBuilder objValue = new StringBuilder(strExpression);
-                    objValue.Replace("{Rating}", decimal.ToInt32(nudRating.Value).ToString(GlobalOptions.Instance.InvariantCultureInfo));
-                    objValue.CheapReplace(strExpression, "{Parent Rating}", () => (_objGearParent as IHasRating)?.Rating.ToString(GlobalOptions.Instance.InvariantCultureInfo) ?? int.MaxValue.ToString(GlobalOptions.Instance.InvariantCultureInfo));
+                    objValue.Replace("{Rating}", decimal.ToInt32(nudRating.Value).ToString(GlobalOptions.InvariantCultureInfo));
+                    objValue.CheapReplace(strExpression, "{Parent Rating}", () => (_objGearParent as IHasRating)?.Rating.ToString(GlobalOptions.InvariantCultureInfo) ?? int.MaxValue.ToString(GlobalOptions.InvariantCultureInfo));
                     foreach (string strCharAttributeName in Backend.Attributes.AttributeSection.AttributeStrings)
                     {
                         objValue.CheapReplace(strExpression, '{' + strCharAttributeName + '}', () => _objCharacter.GetAttribute(strCharAttributeName).TotalValue.ToString());
@@ -858,8 +858,8 @@ namespace Chummer
                         if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
                         {
                             StringBuilder objValue = new StringBuilder(strExpression);
-                            objValue.Replace("{Rating}", decimal.ToInt32(nudRating.Value).ToString(GlobalOptions.Instance.InvariantCultureInfo));
-                            objValue.CheapReplace(strExpression, "{Parent Rating}", () => (_objGearParent as IHasRating)?.Rating.ToString(GlobalOptions.Instance.InvariantCultureInfo) ?? "0");
+                            objValue.Replace("{Rating}", decimal.ToInt32(nudRating.Value).ToString(GlobalOptions.InvariantCultureInfo));
+                            objValue.CheapReplace(strExpression, "{Parent Rating}", () => (_objGearParent as IHasRating)?.Rating.ToString(GlobalOptions.InvariantCultureInfo) ?? "0");
                             foreach (string strCharAttributeName in Backend.Attributes.AttributeSection.AttributeStrings)
                             {
                                 objValue.CheapReplace(strExpression, '{' + strCharAttributeName + '}', () => _objCharacter.GetAttribute(strCharAttributeName).TotalValue.ToString());
@@ -1016,7 +1016,7 @@ namespace Chummer
                     (chkFreeItem.Checked || !chkShowOnlyAffordItems.Checked ||
                     SelectionShared.CheckNuyenRestriction(objXmlGear, _objCharacter.Nuyen, decCostMultiplier)))))
                 {
-                    string strDisplayName = objXmlGear.SelectSingleNode("translate")?.Value ?? objXmlGear.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Instance.Language);
+                    string strDisplayName = objXmlGear.SelectSingleNode("translate")?.Value ?? objXmlGear.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
 
                     if (!_objCharacter.Options.SearchInCategoryOnly && txtSearch.TextLength != 0)
                     {

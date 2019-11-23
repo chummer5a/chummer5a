@@ -41,7 +41,7 @@ namespace Chummer
         public frmSelectMartialArt(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
 
             // Load the Martial Arts information.
@@ -97,7 +97,7 @@ namespace Chummer
 
                 if (objXmlArt != null)
                 {
-                    lblKarmaCost.Text = objXmlArt.SelectSingleNode("cost")?.Value ?? 7.ToString(GlobalOptions.Instance.CultureInfo);
+                    lblKarmaCost.Text = objXmlArt.SelectSingleNode("cost")?.Value ?? 7.ToString(GlobalOptions.CultureInfo);
                     lblKarmaCostLabel.Visible = !string.IsNullOrEmpty(lblKarmaCost.Text);
 
                     StringBuilder objTechniqueStringBuilder = new StringBuilder();
@@ -112,18 +112,18 @@ namespace Chummer
                                 if (objTechniqueStringBuilder.Length > 0)
                                     objTechniqueStringBuilder.AppendLine(",");
                                 
-                                objTechniqueStringBuilder.Append(GlobalOptions.Instance.Language != GlobalOptions.DefaultLanguage ? xmlTechniqueNode.SelectSingleNode("translate")?.Value ?? strLoopTechniqueName: strLoopTechniqueName);
+                                objTechniqueStringBuilder.Append(GlobalOptions.Language != GlobalOptions.DefaultLanguage ? xmlTechniqueNode.SelectSingleNode("translate")?.Value ?? strLoopTechniqueName: strLoopTechniqueName);
                             }
                         }
                     }
                     lblIncludedTechniques.Text = objTechniqueStringBuilder.ToString();
                     lblIncludedTechniquesLabel.Visible = !string.IsNullOrEmpty(lblIncludedTechniques.Text);
 
-                    string strSource = objXmlArt.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Instance.Language);
-                    string strPage = objXmlArt.SelectSingleNode("altpage")?.Value ?? objXmlArt.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Instance.Language);
-                    string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
-                    lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Instance.Language) + strSpaceCharacter + strPage;
-                    lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Instance.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Instance.Language) + strSpaceCharacter + strPage);
+                    string strSource = objXmlArt.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+                    string strPage = objXmlArt.SelectSingleNode("altpage")?.Value ?? objXmlArt.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+                    string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                    lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
+                    lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
                     lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
                 }
                 else
@@ -225,7 +225,7 @@ namespace Chummer
                 string strId = objXmlArt.SelectSingleNode("id")?.Value;
                 if (!string.IsNullOrEmpty(strId) && objXmlArt.RequirementsMet(_objCharacter))
                 {
-                    lstMartialArt.Add(new ListItem(strId, objXmlArt.SelectSingleNode("translate")?.Value ?? objXmlArt.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Instance.Language)));
+                    lstMartialArt.Add(new ListItem(strId, objXmlArt.SelectSingleNode("translate")?.Value ?? objXmlArt.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language)));
                 }
             }
             lstMartialArt.Sort(CompareListItems.CompareNames);

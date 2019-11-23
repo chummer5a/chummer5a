@@ -34,8 +34,8 @@ namespace Chummer
         public frmPrintMultiple()
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, this);
-            dlgOpenFile.Filter = LanguageManager.GetString("DialogFilter_Chum5", GlobalOptions.Instance.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Instance.Language);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            dlgOpenFile.Filter = LanguageManager.GetString("DialogFilter_Chum5", GlobalOptions.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language);
 
             _workerPrinter.WorkerReportsProgress = true;
             _workerPrinter.WorkerSupportsCancellation = true;
@@ -59,7 +59,7 @@ namespace Chummer
                 {
                     TreeNode objNode = new TreeNode
                     {
-                        Text = Path.GetFileName(strFileName) ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Instance.Language),
+                        Text = Path.GetFileName(strFileName) ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language),
                         Tag = strFileName
                     };
                     treCharacters.Nodes.Add(objNode);

@@ -39,7 +39,7 @@ namespace Chummer
         public Story(Character objCharacter)
         {
             _objCharacter = objCharacter;
-            _xmlStoryDocumentBaseNode = XmlManager.Load("stories.xml", GlobalOptions.Instance.Language).GetFastNavigator().SelectSingleNode("/chummer");
+            _xmlStoryDocumentBaseNode = XmlManager.Load("stories.xml", GlobalOptions.Language).GetFastNavigator().SelectSingleNode("/chummer");
             _lstStoryModules.CollectionChanged += LstStoryModulesOnCollectionChanged;
         }
 
@@ -105,7 +105,7 @@ namespace Chummer
                     }
                 }
 
-                int intRandomResult = GlobalOptions.Instance.RandomGenerator.NextModuloBiasRemoved(intTotalWeight);
+                int intRandomResult = GlobalOptions.RandomGenerator.NextModuloBiasRemoved(intTotalWeight);
                 string strSelectedId = string.Empty;
                 foreach (KeyValuePair<string, int> objStoryId in dicStoriesListWithWeights)
                 {

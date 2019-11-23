@@ -38,10 +38,10 @@ namespace Chummer
         private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private List<Character> _lstCharacters = new List<Character>();
         private XmlDocument _objCharacterXml = new XmlDocument();
-        private string _strSelectedSheet = GlobalOptions.Instance.DefaultCharacterSheet;
+        private string _strSelectedSheet = GlobalOptions.DefaultCharacterSheet;
         private bool _blnLoading;
-        private CultureInfo _objPrintCulture = GlobalOptions.Instance.CultureInfo;
-        private string _strPrintLanguage = GlobalOptions.Instance.Language;
+        private CultureInfo _objPrintCulture = GlobalOptions.CultureInfo;
+        private string _strPrintLanguage = GlobalOptions.Language;
         private readonly BackgroundWorker _workerRefresher = new BackgroundWorker();
         private bool _blnQueueRefresherRun;
         private readonly BackgroundWorker _workerOutputGenerator = new BackgroundWorker();
@@ -62,38 +62,38 @@ namespace Chummer
             {
                 _strSelectedSheet = GlobalOptions.DefaultCharacterSheetDefaultValue;
             }
-            if (GlobalOptions.Instance.Language != GlobalOptions.DefaultLanguage)
+            if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
             {
                 if (!_strSelectedSheet.Contains(Path.DirectorySeparatorChar))
-                    _strSelectedSheet = Path.Combine(GlobalOptions.Instance.Language, _strSelectedSheet);
-                else if (!_strSelectedSheet.Contains(GlobalOptions.Instance.Language) && _strSelectedSheet.Contains(GlobalOptions.Instance.Language.Substring(0, 2)))
+                    _strSelectedSheet = Path.Combine(GlobalOptions.Language, _strSelectedSheet);
+                else if (!_strSelectedSheet.Contains(GlobalOptions.Language) && _strSelectedSheet.Contains(GlobalOptions.Language.Substring(0, 2)))
                 {
-                    _strSelectedSheet = _strSelectedSheet.Replace(GlobalOptions.Instance.Language.Substring(0, 2), GlobalOptions.Instance.Language);
+                    _strSelectedSheet = _strSelectedSheet.Replace(GlobalOptions.Language.Substring(0, 2), GlobalOptions.Language);
                 }
             }
             else
             {
                 int intLastIndexDirectorySeparator = _strSelectedSheet.LastIndexOf(Path.DirectorySeparatorChar);
-                if (intLastIndexDirectorySeparator != -1 && _strSelectedSheet.Contains(GlobalOptions.Instance.Language.Substring(0, 2)))
+                if (intLastIndexDirectorySeparator != -1 && _strSelectedSheet.Contains(GlobalOptions.Language.Substring(0, 2)))
                     _strSelectedSheet = _strSelectedSheet.Substring(intLastIndexDirectorySeparator + 1);
             }
 
             RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey("Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION");
             if (objRegistry != null)
             {
-                objRegistry.SetValue(AppDomain.CurrentDomain.FriendlyName, GlobalOptions.Instance.EmulatedBrowserVersion * 1000, RegistryValueKind.DWord);
+                objRegistry.SetValue(AppDomain.CurrentDomain.FriendlyName, GlobalOptions.EmulatedBrowserVersion * 1000, RegistryValueKind.DWord);
                 objRegistry.Close();
             }
 
             objRegistry = Registry.CurrentUser.CreateSubKey("Software\\WOW6432Node\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION");
             if (objRegistry != null)
             {
-                objRegistry.SetValue(AppDomain.CurrentDomain.FriendlyName, GlobalOptions.Instance.EmulatedBrowserVersion * 1000, RegistryValueKind.DWord);
+                objRegistry.SetValue(AppDomain.CurrentDomain.FriendlyName, GlobalOptions.EmulatedBrowserVersion * 1000, RegistryValueKind.DWord);
                 objRegistry.Close();
             }
 
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             ContextMenuStrip[] lstCMSToTranslate = {
                 cmsPrintButton,
                 cmsSaveButton
@@ -104,7 +104,7 @@ namespace Chummer
                 {
                     foreach (ToolStripMenuItem objItem in objCMS.Items.OfType<ToolStripMenuItem>())
                     {
-                        LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Instance.Language);
+                        LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Language);
                     }
                 }
             }
@@ -124,9 +124,9 @@ namespace Chummer
                 string strLanguage = cboLanguage.SelectedValue?.ToString();
                 int intNameIndex;
                 if (string.IsNullOrEmpty(strLanguage) || strLanguage == GlobalOptions.DefaultLanguage)
-                    intNameIndex = cboXSLT.FindStringExact(GlobalOptions.Instance.DefaultCharacterSheet);
+                    intNameIndex = cboXSLT.FindStringExact(GlobalOptions.DefaultCharacterSheet);
                 else
-                    intNameIndex = cboXSLT.FindStringExact(GlobalOptions.Instance.DefaultCharacterSheet.Substring(GlobalOptions.DefaultLanguage.LastIndexOf(Path.DirectorySeparatorChar) + 1));
+                    intNameIndex = cboXSLT.FindStringExact(GlobalOptions.DefaultCharacterSheet.Substring(GlobalOptions.DefaultLanguage.LastIndexOf(Path.DirectorySeparatorChar) + 1));
                 if (intNameIndex != -1)
                     cboXSLT.SelectedIndex = intNameIndex;
                 else if (cboXSLT.Items.Count > 0)
@@ -144,7 +144,7 @@ namespace Chummer
                 }
             }
             _blnLoading = false;
-            SetDocumentText(LanguageManager.GetString("String_Loading_Characters", GlobalOptions.Instance.Language));
+            SetDocumentText(LanguageManager.GetString("String_Loading_Characters", GlobalOptions.Language));
 
             Application.Idle += RunQueuedWorkers;
         }
@@ -186,8 +186,8 @@ namespace Chummer
         private void tsSaveAsHTML_Click(object sender, EventArgs e)
         {
             // Save the generated output as HTML.
-            SaveFileDialog1.Filter = LanguageManager.GetString("DialogFilter_Html", GlobalOptions.Instance.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Instance.Language);
-            SaveFileDialog1.Title = LanguageManager.GetString("Button_Viewer_SaveAsHtml", GlobalOptions.Instance.Language);
+            SaveFileDialog1.Filter = LanguageManager.GetString("DialogFilter_Html", GlobalOptions.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language);
+            SaveFileDialog1.Title = LanguageManager.GetString("Button_Viewer_SaveAsHtml", GlobalOptions.Language);
             SaveFileDialog1.ShowDialog();
             string strSaveFile = SaveFileDialog1.FileName;
 
@@ -202,8 +202,8 @@ namespace Chummer
         private void tsSaveAsXml_Click(object sender, EventArgs e)
         {
             // Save the printout XML generated by the character.
-            SaveFileDialog1.Filter = LanguageManager.GetString("DialogFilter_Xml", GlobalOptions.Instance.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Instance.Language);
-            SaveFileDialog1.Title = LanguageManager.GetString("Button_Viewer_SaveAsXml", GlobalOptions.Instance.Language);
+            SaveFileDialog1.Filter = LanguageManager.GetString("DialogFilter_Xml", GlobalOptions.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language);
+            SaveFileDialog1.Title = LanguageManager.GetString("Button_Viewer_SaveAsXml", GlobalOptions.Language);
             SaveFileDialog1.ShowDialog();
             string strSaveFile = SaveFileDialog1.FileName;
 
@@ -216,11 +216,11 @@ namespace Chummer
             }
             catch (XmlException)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_Save_Error_Warning", GlobalOptions.Instance.Language));
+                MessageBox.Show(LanguageManager.GetString("Message_Save_Error_Warning", GlobalOptions.Language));
             }
             catch (UnauthorizedAccessException)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_Save_Error_Warning", GlobalOptions.Instance.Language));
+                MessageBox.Show(LanguageManager.GetString("Message_Save_Error_Warning", GlobalOptions.Language));
             }
         }
 
@@ -290,7 +290,7 @@ namespace Chummer
         public void RefreshSheet()
         {
             Cursor = Cursors.AppStarting;
-            SetDocumentText(LanguageManager.GetString("String_Generating_Sheet", GlobalOptions.Instance.Language));
+            SetDocumentText(LanguageManager.GetString("String_Generating_Sheet", GlobalOptions.Language));
             if (_workerOutputGenerator.IsBusy)
                 _workerOutputGenerator.CancelAsync();
             _blnQueueOutputGeneratorRun = true;
@@ -423,7 +423,7 @@ namespace Chummer
             //objXSLTransform.Transform("D:\\temp\\print.xml", "D:\\temp\\output.htm");
             //webBrowser1.Navigate("D:\\temp\\output.htm");
 
-            if (!GlobalOptions.Instance.PrintToFileFirst)
+            if (!GlobalOptions.PrintToFileFirst)
             {
                 // Populate the browser using the DocumentStream.
                 webBrowser1.DocumentStream = objStream;
@@ -450,7 +450,7 @@ namespace Chummer
                 tsSaveAsHtml.Enabled = true;
                 cmdSaveAsPdf.Enabled = true;
             }
-            if (GlobalOptions.Instance.PrintToFileFirst)
+            if (GlobalOptions.PrintToFileFirst)
                 File.Delete(_strName);
 
             Cursor = Cursors.Default;
@@ -459,8 +459,8 @@ namespace Chummer
         private void cmdSaveAsPdf_Click(object sender, EventArgs e)
         {
             // Save the generated output as PDF.
-            SaveFileDialog1.Filter = LanguageManager.GetString("DialogFilter_Pdf", GlobalOptions.Instance.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Instance.Language);
-            SaveFileDialog1.Title = LanguageManager.GetString("Button_Viewer_SaveAsPdf", GlobalOptions.Instance.Language);
+            SaveFileDialog1.Filter = LanguageManager.GetString("DialogFilter_Pdf", GlobalOptions.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language);
+            SaveFileDialog1.Title = LanguageManager.GetString("Button_Viewer_SaveAsPdf", GlobalOptions.Language);
             SaveFileDialog1.ShowDialog();
             string strSaveFile = SaveFileDialog1.FileName;
 
@@ -469,7 +469,7 @@ namespace Chummer
 
             if (!Directory.Exists(Path.GetDirectoryName(strSaveFile)))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Instance.Language));
+                MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Language));
                 return;
             }
             if (File.Exists(strSaveFile))
@@ -480,12 +480,12 @@ namespace Chummer
                 }
                 catch (IOException)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Instance.Language));
+                    MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Language));
                     return;
                 }
                 catch (UnauthorizedAccessException)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Instance.Language));
+                    MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Language));
                     return;
                 }
             }
@@ -515,16 +515,16 @@ namespace Chummer
                     OutputFilePath = strSaveFile
                 });
 
-                if (!string.IsNullOrWhiteSpace(GlobalOptions.Instance.PDFAppPath))
+                if (!string.IsNullOrWhiteSpace(GlobalOptions.PDFAppPath))
                 {
                     Uri uriPath = new Uri(strSaveFile);
-                    string strParams = GlobalOptions.Instance.PDFParameters;
+                    string strParams = GlobalOptions.PDFParameters;
                     strParams = strParams.Replace("{page}", "1");
                     strParams = strParams.Replace("{localpath}", uriPath.LocalPath);
                     strParams = strParams.Replace("{absolutepath}", uriPath.AbsolutePath);
                     ProcessStartInfo objPdfProgramProcess = new ProcessStartInfo
                     {
-                        FileName = GlobalOptions.Instance.PDFAppPath,
+                        FileName = GlobalOptions.PDFAppPath,
                         Arguments = strParams,
                         WindowStyle = ProcessWindowStyle.Hidden
                     };
@@ -558,13 +558,13 @@ namespace Chummer
 
             // Populate the XSLT list with all of the XSL files found in the sheets\omae directory.
             string omaeDirectoryPath = Path.Combine(Utils.GetStartupPath, "sheets", "omae");
-            string menuMainOmae = LanguageManager.GetString("Menu_Main_Omae", GlobalOptions.Instance.Language);
+            string menuMainOmae = LanguageManager.GetString("Menu_Main_Omae", GlobalOptions.Language);
 
             // Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets
             // (hidden because they are partial templates that cannot be used on their own).
             foreach (string fileName in ReadXslFileNamesWithoutExtensionFromDirectory(omaeDirectoryPath))
             {
-                lstItems.Add(new ListItem(Path.Combine("omae", fileName), menuMainOmae + LanguageManager.GetString("String_Colon", GlobalOptions.Instance.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language) + fileName));
+                lstItems.Add(new ListItem(Path.Combine("omae", fileName), menuMainOmae + LanguageManager.GetString("String_Colon", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + fileName));
             }
 
             return lstItems;
@@ -582,7 +582,7 @@ namespace Chummer
         private void PopulateXsltList()
         {
             IList<ListItem> lstFiles = GetXslFilesFromLocalDirectory(cboLanguage.SelectedValue?.ToString() ?? GlobalOptions.DefaultLanguage);
-            if (GlobalOptions.Instance.OmaeEnabled)
+            if (GlobalOptions.OmaeEnabled)
             {
                 foreach (ListItem objFile in GetXslFilesFromOmaeDirectory())
                     lstFiles.Add(objFile);
@@ -597,7 +597,7 @@ namespace Chummer
 
         public static ElasticComboBox PopulateLanguageList(ElasticComboBox myCboLanguage, string myStrSelectedSheet)
         {
-            string strDefaultSheetLanguage = GlobalOptions.Instance.Language;
+            string strDefaultSheetLanguage = GlobalOptions.Language;
             int? intLastIndexDirectorySeparator = myStrSelectedSheet?.LastIndexOf(Path.DirectorySeparatorChar);
             if (intLastIndexDirectorySeparator.HasValue && (intLastIndexDirectorySeparator != -1))
             {
@@ -705,7 +705,7 @@ namespace Chummer
 
         private void cboLanguage_SelectedIndexChanged(object sender, EventArgs e)
         {
-            _strPrintLanguage = cboLanguage.SelectedValue?.ToString() ?? GlobalOptions.Instance.Language;
+            _strPrintLanguage = cboLanguage.SelectedValue?.ToString() ?? GlobalOptions.Language;
             imgSheetLanguageFlag.Image = FlagImageGetter.GetFlagFromCountryCode(_strPrintLanguage.Substring(3, 2));
             try
             {
@@ -732,7 +732,7 @@ namespace Chummer
             // If the desired sheet was not found, fall back to the Shadowrun 5 sheet.
             if (cboXSLT.SelectedIndex == -1)
             {
-                var intNameIndex = cboXSLT.FindStringExact(strNewLanguage == GlobalOptions.DefaultLanguage ? GlobalOptions.Instance.DefaultCharacterSheet : GlobalOptions.Instance.DefaultCharacterSheet.Substring(strNewLanguage.LastIndexOf(Path.DirectorySeparatorChar) + 1));
+                var intNameIndex = cboXSLT.FindStringExact(strNewLanguage == GlobalOptions.DefaultLanguage ? GlobalOptions.DefaultCharacterSheet : GlobalOptions.DefaultCharacterSheet.Substring(strNewLanguage.LastIndexOf(Path.DirectorySeparatorChar) + 1));
                 if (intNameIndex != -1)
                     cboXSLT.SelectedIndex = intNameIndex;
                 else if (cboXSLT.Items.Count > 0)

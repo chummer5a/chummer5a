@@ -34,7 +34,7 @@ namespace Chummer.Backend.Skills
         #region Constructor, Create, Save, Load, and Print Methods
         public SkillSpecialization(string strName, bool free, Skill objParent)
         {
-            _strName = LanguageManager.ReverseTranslateExtra(strName, GlobalOptions.Instance.Language);
+            _strName = LanguageManager.ReverseTranslateExtra(strName, GlobalOptions.Language);
             _guiID = Guid.NewGuid();
             _strFree = free;
             _objParent = objParent;
@@ -106,12 +106,12 @@ namespace Chummer.Backend.Skills
 
         public XmlNode GetNode()
         {
-            return GetNode(GlobalOptions.Instance.Language);
+            return GetNode(GlobalOptions.Language);
         }
 
         public XmlNode GetNode(string strLanguage)
         {
-            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.Instance.LiveCustomData)
+            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
                 _objCachedMyXmlNode = _objParent?.GetNode(strLanguage)?.SelectSingleNode("specs/spec[text() = \"" + Name + "\"]");
                 _strCachedXmlNodeLanguage = strLanguage;

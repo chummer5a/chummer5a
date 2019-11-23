@@ -43,7 +43,7 @@ namespace Chummer
         public frmSelectCritterPower(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             _xmlBaseCritterPowerDataNode = XmlManager.Load("critterpowers.xml").GetFastNavigator().SelectSingleNode("/chummer");
             if (_objCharacter.IsCritter)
@@ -172,7 +172,7 @@ namespace Chummer
 
             if (_lstCategory.Count > 0)
             {
-                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll", GlobalOptions.Instance.Language)));
+                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll", GlobalOptions.Language)));
             }
 
             cboCategory.BeginUpdate();
@@ -220,10 +220,10 @@ namespace Chummer
                     switch (objXmlPower.SelectSingleNode("type")?.Value)
                     {
                         case "M":
-                            lblCritterPowerType.Text = LanguageManager.GetString("String_SpellTypeMana", GlobalOptions.Instance.Language);
+                            lblCritterPowerType.Text = LanguageManager.GetString("String_SpellTypeMana", GlobalOptions.Language);
                             break;
                         case "P":
-                            lblCritterPowerType.Text = LanguageManager.GetString("String_SpellTypePhysical", GlobalOptions.Instance.Language);
+                            lblCritterPowerType.Text = LanguageManager.GetString("String_SpellTypePhysical", GlobalOptions.Language);
                             break;
                         default:
                             lblCritterPowerType.Text = string.Empty;
@@ -233,19 +233,19 @@ namespace Chummer
                     switch (objXmlPower.SelectSingleNode("action")?.Value)
                     {
                         case "Auto":
-                            lblCritterPowerAction.Text = LanguageManager.GetString("String_ActionAutomatic", GlobalOptions.Instance.Language);
+                            lblCritterPowerAction.Text = LanguageManager.GetString("String_ActionAutomatic", GlobalOptions.Language);
                             break;
                         case "Free":
-                            lblCritterPowerAction.Text = LanguageManager.GetString("String_ActionFree", GlobalOptions.Instance.Language);
+                            lblCritterPowerAction.Text = LanguageManager.GetString("String_ActionFree", GlobalOptions.Language);
                             break;
                         case "Simple":
-                            lblCritterPowerAction.Text = LanguageManager.GetString("String_ActionSimple", GlobalOptions.Instance.Language);
+                            lblCritterPowerAction.Text = LanguageManager.GetString("String_ActionSimple", GlobalOptions.Language);
                             break;
                         case "Complex":
-                            lblCritterPowerAction.Text = LanguageManager.GetString("String_ActionComplex", GlobalOptions.Instance.Language);
+                            lblCritterPowerAction.Text = LanguageManager.GetString("String_ActionComplex", GlobalOptions.Language);
                             break;
                         case "Special":
-                            lblCritterPowerAction.Text = LanguageManager.GetString("String_SpellDurationSpecial", GlobalOptions.Instance.Language);
+                            lblCritterPowerAction.Text = LanguageManager.GetString("String_SpellDurationSpecial", GlobalOptions.Language);
                             break;
                         default:
                             lblCritterPowerAction.Text = string.Empty;
@@ -255,13 +255,13 @@ namespace Chummer
                     string strRange = objXmlPower.SelectSingleNode("range")?.Value ?? string.Empty;
                     if (!string.IsNullOrEmpty(strRange))
                     {
-                        strRange = strRange.CheapReplace("Self", () => LanguageManager.GetString("String_SpellRangeSelf", GlobalOptions.Instance.Language))
-                            .CheapReplace("Special", () => LanguageManager.GetString("String_SpellDurationSpecial", GlobalOptions.Instance.Language))
-                            .CheapReplace("LOS", () => LanguageManager.GetString("String_SpellRangeLineOfSight", GlobalOptions.Instance.Language))
-                            .CheapReplace("LOI", () => LanguageManager.GetString("String_SpellRangeLineOfInfluence", GlobalOptions.Instance.Language))
-                            .CheapReplace("T", () => LanguageManager.GetString("String_SpellRangeTouch", GlobalOptions.Instance.Language))
-                            .CheapReplace("(A)", () => "(" + LanguageManager.GetString("String_SpellRangeArea", GlobalOptions.Instance.Language) + ')')
-                            .CheapReplace("MAG", () => LanguageManager.GetString("String_AttributeMAGShort", GlobalOptions.Instance.Language));
+                        strRange = strRange.CheapReplace("Self", () => LanguageManager.GetString("String_SpellRangeSelf", GlobalOptions.Language))
+                            .CheapReplace("Special", () => LanguageManager.GetString("String_SpellDurationSpecial", GlobalOptions.Language))
+                            .CheapReplace("LOS", () => LanguageManager.GetString("String_SpellRangeLineOfSight", GlobalOptions.Language))
+                            .CheapReplace("LOI", () => LanguageManager.GetString("String_SpellRangeLineOfInfluence", GlobalOptions.Language))
+                            .CheapReplace("T", () => LanguageManager.GetString("String_SpellRangeTouch", GlobalOptions.Language))
+                            .CheapReplace("(A)", () => "(" + LanguageManager.GetString("String_SpellRangeArea", GlobalOptions.Language) + ')')
+                            .CheapReplace("MAG", () => LanguageManager.GetString("String_AttributeMAGShort", GlobalOptions.Language));
                     }
                     lblCritterPowerRange.Text = strRange;
 
@@ -269,27 +269,27 @@ namespace Chummer
                     switch (strDuration)
                     {
                         case "Instant":
-                            lblCritterPowerDuration.Text = LanguageManager.GetString("String_SpellDurationInstantLong", GlobalOptions.Instance.Language);
+                            lblCritterPowerDuration.Text = LanguageManager.GetString("String_SpellDurationInstantLong", GlobalOptions.Language);
                             break;
                         case "Sustained":
-                            lblCritterPowerDuration.Text = LanguageManager.GetString("String_SpellDurationSustained", GlobalOptions.Instance.Language);
+                            lblCritterPowerDuration.Text = LanguageManager.GetString("String_SpellDurationSustained", GlobalOptions.Language);
                             break;
                         case "Always":
-                            lblCritterPowerDuration.Text = LanguageManager.GetString("String_SpellDurationAlways", GlobalOptions.Instance.Language);
+                            lblCritterPowerDuration.Text = LanguageManager.GetString("String_SpellDurationAlways", GlobalOptions.Language);
                             break;
                         case "Special":
-                            lblCritterPowerDuration.Text = LanguageManager.GetString("String_SpellDurationSpecial", GlobalOptions.Instance.Language);
+                            lblCritterPowerDuration.Text = LanguageManager.GetString("String_SpellDurationSpecial", GlobalOptions.Language);
                             break;
                         default:
                             lblCritterPowerDuration.Text = strDuration;
                             break;
                     }
 
-                    string strSource = objXmlPower.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Instance.Language);
-                    string strPage = objXmlPower.SelectSingleNode("altpage")?.Value ?? objXmlPower.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Instance.Language);
-                    string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language);
-                    lblCritterPowerSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Instance.Language) + strSpaceCharacter + strPage;
-                    lblCritterPowerSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Instance.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Instance.Language) + ' ' + strPage);
+                    string strSource = objXmlPower.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+                    string strPage = objXmlPower.SelectSingleNode("altpage")?.Value ?? objXmlPower.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+                    string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                    lblCritterPowerSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
+                    lblCritterPowerSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
 
                     nudCritterPowerRating.Visible = objXmlPower.SelectSingleNode("rating") != null;
 
@@ -423,7 +423,7 @@ namespace Chummer
             strFilter += CommonFunctions.GenerateSearchXPath(txtSearch.Text);
             foreach (XPathNavigator objXmlPower in _xmlBaseCritterPowerDataNode.Select("powers/power[" + strFilter + "]"))
             {
-                string strPowerName = objXmlPower.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Instance.Language);
+                string strPowerName = objXmlPower.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
                 if (!lstPowerWhitelist.Contains(strPowerName) && lstPowerWhitelist.Count != 0) continue;
                 if (!objXmlPower.RequirementsMet(_objCharacter, string.Empty, string.Empty)) continue;
                 TreeNode objNode = new TreeNode
@@ -479,7 +479,7 @@ namespace Chummer
             {
                 XPathNavigator objXmlOptionalPowerCost = _xmlMetatypeDataNode.SelectSingleNode("optionalpowers/power[. = \"" + objXmlPower.SelectSingleNode("name")?.Value + "\"]/@cost");
                 if (objXmlOptionalPowerCost != null)
-                    _decPowerPoints = Convert.ToDecimal(objXmlOptionalPowerCost.Value, GlobalOptions.Instance.InvariantCultureInfo);
+                    _decPowerPoints = Convert.ToDecimal(objXmlOptionalPowerCost.Value, GlobalOptions.InvariantCultureInfo);
             }
 
             DialogResult = DialogResult.OK;

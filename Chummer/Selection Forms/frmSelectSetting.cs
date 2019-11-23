@@ -33,7 +33,7 @@ namespace Chummer
         public frmSelectSetting()
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
         }
 
         private void frmSelectSetting_Load(object sender, EventArgs e)
@@ -61,7 +61,7 @@ namespace Chummer
                     continue;
                 }
 
-                lstSettings.Add(new ListItem(Path.GetFileName(strFileName), objXmlDocument.SelectSingleNode("/settings/name")?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Instance.Language)));
+                lstSettings.Add(new ListItem(Path.GetFileName(strFileName), objXmlDocument.SelectSingleNode("/settings/name")?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language)));
             }
             lstSettings.Sort(CompareListItems.CompareNames);
             cboSetting.BeginUpdate();

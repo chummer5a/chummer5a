@@ -31,7 +31,7 @@ namespace Chummer
         public frmNotes()
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _blnLoading = true;
             Width = s_IntWidth;
             Height = s_IntHeight;

@@ -33,7 +33,7 @@ namespace Chummer
         static Log()
         {
             Stopwatch sw = Stopwatch.StartNew();
-            IsLoggerEnabled = GlobalOptions.Instance.UseLogging;
+            IsLoggerEnabled = GlobalOptions.UseLogging;
             sw.TaskEnd("log open");
         }
 

@@ -81,9 +81,9 @@ namespace Chummer
             objWriter.WriteElementString("guid", _guiID.ToString("D"));
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("limit", _strLimit);
-            objWriter.WriteElementString("bonus", _intBonus.ToString(GlobalOptions.Instance.InvariantCultureInfo));
+            objWriter.WriteElementString("bonus", _intBonus.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("condition", _strCondition);
-            objWriter.WriteElementString("candelete", _blnCanDelete.ToString(GlobalOptions.Instance.InvariantCultureInfo));
+            objWriter.WriteElementString("candelete", _blnCanDelete.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteEndElement();
         }
@@ -205,9 +205,9 @@ namespace Chummer
                 else
                     strBonus = _intBonus.ToString();
 
-                string strReturn = DisplayNameShort + LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language) + '[' + strBonus + ']';
+                string strReturn = DisplayNameShort + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '[' + strBonus + ']';
                 if (!string.IsNullOrEmpty(_strCondition))
-                    strReturn += LanguageManager.GetString("String_Space", GlobalOptions.Instance.Language) + '(' + _strCondition + ')';
+                    strReturn += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + _strCondition + ')';
                 return strReturn;
             }
         }
@@ -253,13 +253,13 @@ namespace Chummer
                 if (blnConfirmDelete)
                 {
                     return characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteLimitModifier",
-                               GlobalOptions.Instance.Language)) && characterObject.LimitModifiers.Remove(this);
+                               GlobalOptions.Language)) && characterObject.LimitModifiers.Remove(this);
                 }
             }
 
             // No character-created limits found, which means it comes from an improvement.
             // TODO: ImprovementSource exists for a reason.
-            MessageBox.Show(LanguageManager.GetString("Message_CannotDeleteLimitModifier", GlobalOptions.Instance.Language), LanguageManager.GetString("MessageTitle_CannotDeleteLimitModifier", GlobalOptions.Instance.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show(LanguageManager.GetString("Message_CannotDeleteLimitModifier", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CannotDeleteLimitModifier", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
             return false;
         }
     }

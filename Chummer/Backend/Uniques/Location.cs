@@ -162,7 +162,7 @@ namespace Chummer
         #region UI Methods
         public TreeNode CreateTreeNode(ContextMenuStrip cmsLocation, bool blnAddCategory = false)
         {
-            string strText = DisplayName(GlobalOptions.Instance.Language);
+            string strText = DisplayName(GlobalOptions.Language);
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,
@@ -222,7 +222,7 @@ namespace Chummer
         {
             if (blnConfirmDelete)
             {
-                character.ConfirmDelete(LanguageManager.GetString("Message_DeleteGearLocation", GlobalOptions.Instance.Language));
+                character.ConfirmDelete(LanguageManager.GetString("Message_DeleteGearLocation", GlobalOptions.Language));
             }
             foreach (IHasLocation item in Children)
             {

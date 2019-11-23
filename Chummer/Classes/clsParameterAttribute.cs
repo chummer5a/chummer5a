@@ -72,7 +72,7 @@ namespace Chummer
                 List<double> lstValues = new List<double>();
                 foreach (Match objMatch in m2)
                 {
-                    if (double.TryParse(objMatch.Groups[1].Value, System.Globalization.NumberStyles.Any, GlobalOptions.Instance.InvariantCultureInfo, out double dblValue))
+                    if (double.TryParse(objMatch.Groups[1].Value, System.Globalization.NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out double dblValue))
                         lstValues.Add(dblValue);
                 }
                 fixedDoubles = lstValues.ToArray();

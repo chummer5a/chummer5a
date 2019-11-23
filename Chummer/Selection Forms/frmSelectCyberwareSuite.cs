@@ -41,15 +41,15 @@ namespace Chummer
         {
             InitializeComponent();
             _eSource = eSource;
-            LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 
             if (_eSource == Improvement.ImprovementSource.Cyberware)
                 _strType = "cyberware";
             else
             {
                 _strType = "bioware";
-                Text = LanguageManager.GetString("Title_SelectBiowareSuite", GlobalOptions.Instance.Language);
-                lblCyberwareLabel.Text = LanguageManager.GetString("Label_SelectBiowareSuite_PartsInSuite", GlobalOptions.Instance.Language);
+                Text = LanguageManager.GetString("Title_SelectBiowareSuite", GlobalOptions.Language);
+                lblCyberwareLabel.Text = LanguageManager.GetString("Label_SelectBiowareSuite_PartsInSuite", GlobalOptions.Language);
             }
 
             _objCharacter = objCharacter;
@@ -142,9 +142,9 @@ namespace Chummer
             }
 
             lblCyberware.Text = objCyberwareLabelString.ToString();
-            lblEssence.Text = decTotalESS.ToString(_objCharacter.Options.EssenceFormat, GlobalOptions.Instance.CultureInfo);
-            lblCost.Text = decTotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.Instance.CultureInfo) + '¥';
-            lblGrade.Text = objGrade.DisplayName(GlobalOptions.Instance.Language);
+            lblEssence.Text = decTotalESS.ToString(_objCharacter.Options.EssenceFormat, GlobalOptions.CultureInfo);
+            lblCost.Text = decTotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+            lblGrade.Text = objGrade.DisplayName(GlobalOptions.Language);
             _decCost = decTotalCost;
         }
         #endregion
@@ -259,7 +259,7 @@ namespace Chummer
             for (int i = 0; i <= intDepth; ++i)
                 objCyberwareLabelString.Append("   ");
 
-            objCyberwareLabelString.AppendLine(objCyberware.DisplayName(GlobalOptions.Instance.Language));
+            objCyberwareLabelString.AppendLine(objCyberware.DisplayName(GlobalOptions.Language));
 
             foreach (Cyberware objPlugin in objCyberware.Children)
                 WriteList(objCyberwareLabelString, objPlugin, intDepth + 1);
