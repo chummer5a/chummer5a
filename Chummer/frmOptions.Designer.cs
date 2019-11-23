@@ -30,8 +30,6 @@ namespace Chummer
         {
             this.components = new System.ComponentModel.Container();
             this.mainPanel = new System.Windows.Forms.Panel();
-            this.cmdOK = new System.Windows.Forms.Button();
-            this.cmdCancel = new System.Windows.Forms.Button();
             this.tlpOptions = new Chummer.BufferedTableLayoutPanel(this.components);
             this.txtSettingName = new System.Windows.Forms.TextBox();
             this.lblSetting = new System.Windows.Forms.Label();
@@ -311,6 +309,8 @@ namespace Chummer
             this.clbPlugins = new System.Windows.Forms.CheckedListBox();
             this.panelPluginOption = new System.Windows.Forms.Panel();
             this.flpOKCancel = new System.Windows.Forms.FlowLayoutPanel();
+            this.cmdOK = new System.Windows.Forms.Button();
+            this.cmdCancel = new System.Windows.Forms.Button();
             this.mainPanel.SuspendLayout();
             this.tlpOptions.SuspendLayout();
             this.tabOptions.SuspendLayout();
@@ -403,37 +403,8 @@ namespace Chummer
             this.mainPanel.Location = new System.Drawing.Point(9, 9);
             this.mainPanel.MinimumSize = new System.Drawing.Size(300, 300);
             this.mainPanel.Name = "mainPanel";
-            this.mainPanel.Size = new System.Drawing.Size(990, 744);
+            this.mainPanel.Size = new System.Drawing.Size(1043, 825);
             this.mainPanel.TabIndex = 0;
-            // 
-            // cmdOK
-            // 
-            this.cmdOK.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cmdOK.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdOK.Location = new System.Drawing.Point(86, 0);
-            this.cmdOK.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
-            this.cmdOK.Name = "cmdOK";
-            this.cmdOK.Size = new System.Drawing.Size(80, 30);
-            this.cmdOK.TabIndex = 5;
-            this.cmdOK.Tag = "String_OK";
-            this.cmdOK.Text = "OK";
-            this.cmdOK.UseVisualStyleBackColor = true;
-            this.cmdOK.Click += new System.EventHandler(this.cmdOK_Click);
-            // 
-            // cmdCancel
-            // 
-            this.cmdCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmdCancel.AutoSize = true;
-            this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cmdCancel.Location = new System.Drawing.Point(0, 0);
-            this.cmdCancel.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
-            this.cmdCancel.Name = "cmdCancel";
-            this.cmdCancel.Size = new System.Drawing.Size(80, 30);
-            this.cmdCancel.TabIndex = 6;
-            this.cmdCancel.Tag = "String_Cancel";
-            this.cmdCancel.Text = "Cancel";
-            this.cmdCancel.UseVisualStyleBackColor = true;
-            this.cmdCancel.Click += new System.EventHandler(this.cmdCancel_Click);
             // 
             // tlpOptions
             // 
@@ -455,16 +426,16 @@ namespace Chummer
             this.tlpOptions.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpOptions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpOptions.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpOptions.Size = new System.Drawing.Size(975, 731);
+            this.tlpOptions.Size = new System.Drawing.Size(1031, 813);
             this.tlpOptions.TabIndex = 6;
             // 
             // txtSettingName
             // 
             this.txtSettingName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtSettingName.Location = new System.Drawing.Point(567, 3);
+            this.txtSettingName.Location = new System.Drawing.Point(595, 3);
             this.txtSettingName.Name = "txtSettingName";
-            this.txtSettingName.Size = new System.Drawing.Size(405, 20);
+            this.txtSettingName.Size = new System.Drawing.Size(433, 20);
             this.txtSettingName.TabIndex = 3;
             // 
             // lblSetting
@@ -483,7 +454,7 @@ namespace Chummer
             // 
             this.lblSettingName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblSettingName.AutoSize = true;
-            this.lblSettingName.Location = new System.Drawing.Point(487, 6);
+            this.lblSettingName.Location = new System.Drawing.Point(515, 6);
             this.lblSettingName.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSettingName.Name = "lblSettingName";
             this.lblSettingName.Size = new System.Drawing.Size(74, 13);
@@ -499,7 +470,7 @@ namespace Chummer
             this.cboSetting.FormattingEnabled = true;
             this.cboSetting.Location = new System.Drawing.Point(76, 3);
             this.cboSetting.Name = "cboSetting";
-            this.cboSetting.Size = new System.Drawing.Size(405, 21);
+            this.cboSetting.Size = new System.Drawing.Size(433, 21);
             this.cboSetting.TabIndex = 1;
             this.cboSetting.TooltipText = "";
             this.cboSetting.SelectedIndexChanged += new System.EventHandler(this.cboSetting_SelectedIndexChanged);
@@ -518,7 +489,7 @@ namespace Chummer
             this.tabOptions.Location = new System.Drawing.Point(3, 30);
             this.tabOptions.Name = "tabOptions";
             this.tabOptions.SelectedIndex = 0;
-            this.tabOptions.Size = new System.Drawing.Size(969, 662);
+            this.tabOptions.Size = new System.Drawing.Size(1025, 744);
             this.tabOptions.TabIndex = 4;
             // 
             // tabGlobal
@@ -528,7 +499,7 @@ namespace Chummer
             this.tabGlobal.Location = new System.Drawing.Point(4, 22);
             this.tabGlobal.Name = "tabGlobal";
             this.tabGlobal.Padding = new System.Windows.Forms.Padding(9);
-            this.tabGlobal.Size = new System.Drawing.Size(961, 636);
+            this.tabGlobal.Size = new System.Drawing.Size(1017, 718);
             this.tabGlobal.TabIndex = 5;
             this.tabGlobal.Tag = "Tab_Options_Global";
             this.tabGlobal.Text = "Global Options";
@@ -618,7 +589,7 @@ namespace Chummer
             this.tlpGlobal.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpGlobal.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpGlobal.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpGlobal.Size = new System.Drawing.Size(943, 618);
+            this.tlpGlobal.Size = new System.Drawing.Size(999, 700);
             this.tlpGlobal.TabIndex = 39;
             // 
             // chkHideCharts
@@ -631,7 +602,7 @@ namespace Chummer
             this.chkHideCharts.Location = new System.Drawing.Point(304, 311);
             this.chkHideCharts.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkHideCharts.Name = "chkHideCharts";
-            this.chkHideCharts.Size = new System.Drawing.Size(636, 17);
+            this.chkHideCharts.Size = new System.Drawing.Size(692, 17);
             this.chkHideCharts.TabIndex = 58;
             this.chkHideCharts.Tag = "Checkbox_Options_HideCharts";
             this.chkHideCharts.Text = "Hide charts that cause issues with Wine";
@@ -648,7 +619,7 @@ namespace Chummer
             this.chkAllowEasterEggs.Location = new System.Drawing.Point(304, 157);
             this.chkAllowEasterEggs.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkAllowEasterEggs.Name = "chkAllowEasterEggs";
-            this.chkAllowEasterEggs.Size = new System.Drawing.Size(308, 17);
+            this.chkAllowEasterEggs.Size = new System.Drawing.Size(324, 17);
             this.chkAllowEasterEggs.TabIndex = 52;
             this.chkAllowEasterEggs.Tag = "Checkbox_Options_AllowEasterEggs";
             this.chkAllowEasterEggs.Text = "Allow Easter Eggs";
@@ -677,10 +648,10 @@ namespace Chummer
             this.chkSearchInCategoryOnly.Checked = true;
             this.chkSearchInCategoryOnly.CheckState = System.Windows.Forms.CheckState.Checked;
             this.tlpGlobal.SetColumnSpan(this.chkSearchInCategoryOnly, 4);
-            this.chkSearchInCategoryOnly.Location = new System.Drawing.Point(618, 260);
+            this.chkSearchInCategoryOnly.Location = new System.Drawing.Point(634, 260);
             this.chkSearchInCategoryOnly.Name = "chkSearchInCategoryOnly";
             this.tlpGlobal.SetRowSpan(this.chkSearchInCategoryOnly, 2);
-            this.chkSearchInCategoryOnly.Size = new System.Drawing.Size(322, 44);
+            this.chkSearchInCategoryOnly.Size = new System.Drawing.Size(362, 44);
             this.chkSearchInCategoryOnly.TabIndex = 21;
             this.chkSearchInCategoryOnly.Tag = "Checkbox_Options_SearchInCategoryOnly";
             this.chkSearchInCategoryOnly.Text = "Searching in selection forms is restricted to the current Category";
@@ -692,7 +663,7 @@ namespace Chummer
             // 
             this.cmdPDFAppPath.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdPDFAppPath.AutoSize = true;
-            this.cmdPDFAppPath.Location = new System.Drawing.Point(696, 548);
+            this.cmdPDFAppPath.Location = new System.Drawing.Point(722, 548);
             this.cmdPDFAppPath.Name = "cmdPDFAppPath";
             this.cmdPDFAppPath.Size = new System.Drawing.Size(31, 30);
             this.cmdPDFAppPath.TabIndex = 11;
@@ -734,7 +705,7 @@ namespace Chummer
             this.chkHideCharacterRoster.Location = new System.Drawing.Point(304, 386);
             this.chkHideCharacterRoster.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkHideCharacterRoster.Name = "chkHideCharacterRoster";
-            this.chkHideCharacterRoster.Size = new System.Drawing.Size(308, 17);
+            this.chkHideCharacterRoster.Size = new System.Drawing.Size(324, 17);
             this.chkHideCharacterRoster.TabIndex = 35;
             this.chkHideCharacterRoster.Tag = "Checkbox_Options_HideCharacterRoster";
             this.chkHideCharacterRoster.Text = "Hide the Character Roster";
@@ -745,9 +716,9 @@ namespace Chummer
             // 
             this.cmdVerify.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdVerify.Enabled = false;
-            this.cmdVerify.Location = new System.Drawing.Point(696, 3);
+            this.cmdVerify.Location = new System.Drawing.Point(722, 3);
             this.cmdVerify.Name = "cmdVerify";
-            this.cmdVerify.Size = new System.Drawing.Size(120, 28);
+            this.cmdVerify.Size = new System.Drawing.Size(135, 28);
             this.cmdVerify.TabIndex = 2;
             this.cmdVerify.Text = "Verify";
             this.cmdVerify.UseVisualStyleBackColor = true;
@@ -758,9 +729,9 @@ namespace Chummer
             this.tlpGlobal.SetColumnSpan(this.cmdVerifyData, 2);
             this.cmdVerifyData.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdVerifyData.Enabled = false;
-            this.cmdVerifyData.Location = new System.Drawing.Point(822, 3);
+            this.cmdVerifyData.Location = new System.Drawing.Point(863, 3);
             this.cmdVerifyData.Name = "cmdVerifyData";
-            this.cmdVerifyData.Size = new System.Drawing.Size(118, 28);
+            this.cmdVerifyData.Size = new System.Drawing.Size(133, 28);
             this.cmdVerifyData.TabIndex = 3;
             this.cmdVerifyData.Text = "Verify Data File";
             this.cmdVerifyData.UseVisualStyleBackColor = true;
@@ -773,9 +744,9 @@ namespace Chummer
             this.tlpGlobal.SetColumnSpan(this.cboXSLT, 3);
             this.cboXSLT.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboXSLT.FormattingEnabled = true;
-            this.cboXSLT.Location = new System.Drawing.Point(696, 37);
+            this.cboXSLT.Location = new System.Drawing.Point(722, 37);
             this.cboXSLT.Name = "cboXSLT";
-            this.cboXSLT.Size = new System.Drawing.Size(244, 21);
+            this.cboXSLT.Size = new System.Drawing.Size(274, 21);
             this.cboXSLT.TabIndex = 8;
             this.cboXSLT.TooltipText = "";
             // 
@@ -801,7 +772,7 @@ namespace Chummer
             this.chkLifeModule.Location = new System.Drawing.Point(304, 72);
             this.chkLifeModule.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkLifeModule.Name = "chkLifeModule";
-            this.chkLifeModule.Size = new System.Drawing.Size(308, 17);
+            this.chkLifeModule.Size = new System.Drawing.Size(324, 17);
             this.chkLifeModule.TabIndex = 22;
             this.chkLifeModule.Tag = "Checkbox_Options_UseLifeModule";
             this.chkLifeModule.Text = "Life modules visible";
@@ -818,7 +789,7 @@ namespace Chummer
             this.chkLiveCustomData.Location = new System.Drawing.Point(304, 182);
             this.chkLiveCustomData.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkLiveCustomData.Name = "chkLiveCustomData";
-            this.chkLiveCustomData.Size = new System.Drawing.Size(308, 21);
+            this.chkLiveCustomData.Size = new System.Drawing.Size(324, 21);
             this.chkLiveCustomData.TabIndex = 28;
             this.chkLiveCustomData.Tag = "Checkbox_Options_Live_CustomData";
             this.chkLiveCustomData.Text = "Allow Live Custom Data Updates from customdata Directory";
@@ -851,7 +822,7 @@ namespace Chummer
             this.chkAutomaticUpdate.Location = new System.Drawing.Point(304, 132);
             this.chkAutomaticUpdate.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkAutomaticUpdate.Name = "chkAutomaticUpdate";
-            this.chkAutomaticUpdate.Size = new System.Drawing.Size(308, 17);
+            this.chkAutomaticUpdate.Size = new System.Drawing.Size(324, 17);
             this.chkAutomaticUpdate.TabIndex = 5;
             this.chkAutomaticUpdate.Tag = "Checkbox_Options_AutomaticUpdates";
             this.chkAutomaticUpdate.Text = "Automatic Updates";
@@ -868,7 +839,7 @@ namespace Chummer
             this.chkOmaeEnabled.Location = new System.Drawing.Point(304, 286);
             this.chkOmaeEnabled.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkOmaeEnabled.Name = "chkOmaeEnabled";
-            this.chkOmaeEnabled.Size = new System.Drawing.Size(308, 17);
+            this.chkOmaeEnabled.Size = new System.Drawing.Size(324, 17);
             this.chkOmaeEnabled.TabIndex = 24;
             this.chkOmaeEnabled.Tag = "Checkbox_Options_OmaeEnabled";
             this.chkOmaeEnabled.Text = "[Omae enabled]";
@@ -885,7 +856,7 @@ namespace Chummer
             this.chkStartupFullscreen.Location = new System.Drawing.Point(304, 211);
             this.chkStartupFullscreen.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkStartupFullscreen.Name = "chkStartupFullscreen";
-            this.chkStartupFullscreen.Size = new System.Drawing.Size(308, 17);
+            this.chkStartupFullscreen.Size = new System.Drawing.Size(324, 17);
             this.chkStartupFullscreen.TabIndex = 7;
             this.chkStartupFullscreen.Tag = "Checkbox_Options_StartupFullscreen";
             this.chkStartupFullscreen.Text = "Start Chummer in fullscreen";
@@ -902,7 +873,7 @@ namespace Chummer
             this.chkSingleDiceRoller.Location = new System.Drawing.Point(304, 236);
             this.chkSingleDiceRoller.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkSingleDiceRoller.Name = "chkSingleDiceRoller";
-            this.chkSingleDiceRoller.Size = new System.Drawing.Size(308, 17);
+            this.chkSingleDiceRoller.Size = new System.Drawing.Size(324, 17);
             this.chkSingleDiceRoller.TabIndex = 8;
             this.chkSingleDiceRoller.Tag = "Checkbox_Options_SingleDiceRoller";
             this.chkSingleDiceRoller.Text = "Use a single instance of the Dice Roller window";
@@ -919,7 +890,7 @@ namespace Chummer
             this.chkDatesIncludeTime.Location = new System.Drawing.Point(304, 261);
             this.chkDatesIncludeTime.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkDatesIncludeTime.Name = "chkDatesIncludeTime";
-            this.chkDatesIncludeTime.Size = new System.Drawing.Size(308, 17);
+            this.chkDatesIncludeTime.Size = new System.Drawing.Size(324, 17);
             this.chkDatesIncludeTime.TabIndex = 9;
             this.chkDatesIncludeTime.Tag = "Checkbox_Options_DatesIncludeTime";
             this.chkDatesIncludeTime.Text = "Expense dates should include time";
@@ -971,7 +942,7 @@ namespace Chummer
             this.grpSelectedSourcebook.Location = new System.Drawing.Point(304, 584);
             this.grpSelectedSourcebook.MaximumSize = new System.Drawing.Size(500, 10000);
             this.grpSelectedSourcebook.Name = "grpSelectedSourcebook";
-            this.grpSelectedSourcebook.Size = new System.Drawing.Size(434, 31);
+            this.grpSelectedSourcebook.Size = new System.Drawing.Size(434, 84);
             this.grpSelectedSourcebook.TabIndex = 27;
             this.grpSelectedSourcebook.TabStop = false;
             this.grpSelectedSourcebook.Tag = "Label_Options_SelectedSourcebook";
@@ -997,7 +968,7 @@ namespace Chummer
             this.tlpSelectedSourcebook.RowCount = 2;
             this.tlpSelectedSourcebook.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpSelectedSourcebook.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpSelectedSourcebook.Size = new System.Drawing.Size(428, 12);
+            this.tlpSelectedSourcebook.Size = new System.Drawing.Size(428, 65);
             this.tlpSelectedSourcebook.TabIndex = 18;
             // 
             // txtPDFLocation
@@ -1103,7 +1074,7 @@ namespace Chummer
             this.cboLanguage.FormattingEnabled = true;
             this.cboLanguage.Location = new System.Drawing.Point(489, 3);
             this.cboLanguage.Name = "cboLanguage";
-            this.cboLanguage.Size = new System.Drawing.Size(201, 21);
+            this.cboLanguage.Size = new System.Drawing.Size(227, 21);
             this.cboLanguage.TabIndex = 1;
             this.cboLanguage.TooltipText = "";
             this.cboLanguage.SelectedIndexChanged += new System.EventHandler(this.cboLanguage_SelectedIndexChanged);
@@ -1117,7 +1088,7 @@ namespace Chummer
             this.cboSheetLanguage.FormattingEnabled = true;
             this.cboSheetLanguage.Location = new System.Drawing.Point(489, 37);
             this.cboSheetLanguage.Name = "cboSheetLanguage";
-            this.cboSheetLanguage.Size = new System.Drawing.Size(201, 21);
+            this.cboSheetLanguage.Size = new System.Drawing.Size(227, 21);
             this.cboSheetLanguage.TabIndex = 34;
             this.cboSheetLanguage.TooltipText = "";
             this.cboSheetLanguage.SelectedIndexChanged += new System.EventHandler(this.cboSheetLanguage_SelectedIndexChanged);
@@ -1129,10 +1100,10 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Right)));
             this.chkConfirmDelete.AutoSize = true;
             this.tlpGlobal.SetColumnSpan(this.chkConfirmDelete, 4);
-            this.chkConfirmDelete.Location = new System.Drawing.Point(618, 72);
+            this.chkConfirmDelete.Location = new System.Drawing.Point(634, 72);
             this.chkConfirmDelete.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkConfirmDelete.Name = "chkConfirmDelete";
-            this.chkConfirmDelete.Size = new System.Drawing.Size(322, 17);
+            this.chkConfirmDelete.Size = new System.Drawing.Size(362, 17);
             this.chkConfirmDelete.TabIndex = 38;
             this.chkConfirmDelete.Tag = "Checkbox_Options_ConfirmDelete";
             this.chkConfirmDelete.Text = "Ask for confirmation when deleting items";
@@ -1146,10 +1117,10 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Right)));
             this.chkConfirmKarmaExpense.AutoSize = true;
             this.tlpGlobal.SetColumnSpan(this.chkConfirmKarmaExpense, 4);
-            this.chkConfirmKarmaExpense.Location = new System.Drawing.Point(618, 97);
+            this.chkConfirmKarmaExpense.Location = new System.Drawing.Point(634, 97);
             this.chkConfirmKarmaExpense.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkConfirmKarmaExpense.Name = "chkConfirmKarmaExpense";
-            this.chkConfirmKarmaExpense.Size = new System.Drawing.Size(322, 27);
+            this.chkConfirmKarmaExpense.Size = new System.Drawing.Size(362, 27);
             this.chkConfirmKarmaExpense.TabIndex = 39;
             this.chkConfirmKarmaExpense.Tag = "Checkbox_Options_ConfirmKarmaExpense";
             this.chkConfirmKarmaExpense.Text = "Ask for confirmation for Karma expenses";
@@ -1166,10 +1137,10 @@ namespace Chummer
             this.chkHideItemsOverAvail.Checked = true;
             this.chkHideItemsOverAvail.CheckState = System.Windows.Forms.CheckState.Checked;
             this.tlpGlobal.SetColumnSpan(this.chkHideItemsOverAvail, 4);
-            this.chkHideItemsOverAvail.Location = new System.Drawing.Point(618, 131);
+            this.chkHideItemsOverAvail.Location = new System.Drawing.Point(634, 131);
             this.chkHideItemsOverAvail.Name = "chkHideItemsOverAvail";
             this.tlpGlobal.SetRowSpan(this.chkHideItemsOverAvail, 2);
-            this.chkHideItemsOverAvail.Size = new System.Drawing.Size(322, 44);
+            this.chkHideItemsOverAvail.Size = new System.Drawing.Size(362, 44);
             this.chkHideItemsOverAvail.TabIndex = 40;
             this.chkHideItemsOverAvail.Tag = "Checkbox_Option_HideItemsOverAvailLimit";
             this.chkHideItemsOverAvail.Text = "Hide items that are over the Availability Limit during character creation";
@@ -1187,10 +1158,10 @@ namespace Chummer
             this.chkAllowHoverIncrement.Checked = true;
             this.chkAllowHoverIncrement.CheckState = System.Windows.Forms.CheckState.Checked;
             this.tlpGlobal.SetColumnSpan(this.chkAllowHoverIncrement, 4);
-            this.chkAllowHoverIncrement.Location = new System.Drawing.Point(618, 210);
+            this.chkAllowHoverIncrement.Location = new System.Drawing.Point(634, 210);
             this.chkAllowHoverIncrement.Name = "chkAllowHoverIncrement";
             this.tlpGlobal.SetRowSpan(this.chkAllowHoverIncrement, 2);
-            this.chkAllowHoverIncrement.Size = new System.Drawing.Size(322, 44);
+            this.chkAllowHoverIncrement.Size = new System.Drawing.Size(362, 44);
             this.chkAllowHoverIncrement.TabIndex = 41;
             this.chkAllowHoverIncrement.Tag = "Checkbox_Options_AllowHoverIncrement";
             this.chkAllowHoverIncrement.Text = "Allow incrementingvalues of numericupdown controls by hovering over the control";
@@ -1208,7 +1179,7 @@ namespace Chummer
             this.chkLiveUpdateCleanCharacterFiles.Location = new System.Drawing.Point(304, 336);
             this.chkLiveUpdateCleanCharacterFiles.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkLiveUpdateCleanCharacterFiles.Name = "chkLiveUpdateCleanCharacterFiles";
-            this.chkLiveUpdateCleanCharacterFiles.Size = new System.Drawing.Size(636, 17);
+            this.chkLiveUpdateCleanCharacterFiles.Size = new System.Drawing.Size(692, 17);
             this.chkLiveUpdateCleanCharacterFiles.TabIndex = 33;
             this.chkLiveUpdateCleanCharacterFiles.Tag = "Checkbox_Options_LiveUpdateCleanCharacterFiles";
             this.chkLiveUpdateCleanCharacterFiles.Text = "Automatically load changes from open characters\' save files if there are no pendi" +
@@ -1226,7 +1197,7 @@ namespace Chummer
             this.chkPreferNightlyBuilds.Location = new System.Drawing.Point(304, 361);
             this.chkPreferNightlyBuilds.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkPreferNightlyBuilds.Name = "chkPreferNightlyBuilds";
-            this.chkPreferNightlyBuilds.Size = new System.Drawing.Size(308, 17);
+            this.chkPreferNightlyBuilds.Size = new System.Drawing.Size(324, 17);
             this.chkPreferNightlyBuilds.TabIndex = 25;
             this.chkPreferNightlyBuilds.Tag = "Checkbox_Options_PreferNightlyBuilds";
             this.chkPreferNightlyBuilds.Text = "Prefer Nightly Builds";
@@ -1259,7 +1230,7 @@ namespace Chummer
             // cmdCharacterRoster
             // 
             this.cmdCharacterRoster.Dock = System.Windows.Forms.DockStyle.Left;
-            this.cmdCharacterRoster.Location = new System.Drawing.Point(696, 489);
+            this.cmdCharacterRoster.Location = new System.Drawing.Point(722, 489);
             this.cmdCharacterRoster.Name = "cmdCharacterRoster";
             this.cmdCharacterRoster.Size = new System.Drawing.Size(27, 26);
             this.cmdCharacterRoster.TabIndex = 46;
@@ -1278,7 +1249,7 @@ namespace Chummer
             this.chkCreateBackupOnCareer.Location = new System.Drawing.Point(304, 465);
             this.chkCreateBackupOnCareer.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkCreateBackupOnCareer.Name = "chkCreateBackupOnCareer";
-            this.chkCreateBackupOnCareer.Size = new System.Drawing.Size(512, 17);
+            this.chkCreateBackupOnCareer.Size = new System.Drawing.Size(553, 17);
             this.chkCreateBackupOnCareer.TabIndex = 24;
             this.chkCreateBackupOnCareer.Tag = "Checkbox_Option_CreateBackupOnCareer";
             this.chkCreateBackupOnCareer.Text = "Create backup of characters before moving them to Career Mode";
@@ -1296,7 +1267,7 @@ namespace Chummer
             this.chkPrintToFileFirst.Location = new System.Drawing.Point(304, 411);
             this.chkPrintToFileFirst.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkPrintToFileFirst.Name = "chkPrintToFileFirst";
-            this.chkPrintToFileFirst.Size = new System.Drawing.Size(308, 17);
+            this.chkPrintToFileFirst.Size = new System.Drawing.Size(324, 17);
             this.chkPrintToFileFirst.TabIndex = 43;
             this.chkPrintToFileFirst.Tag = "Checkbox_Option_PrintToFileFirst";
             this.chkPrintToFileFirst.Text = "Apply Linux printing fix";
@@ -1310,12 +1281,12 @@ namespace Chummer
             this.tlpGlobal.SetColumnSpan(this.grpCharacterDefaults, 4);
             this.grpCharacterDefaults.Controls.Add(this.tableLayoutPanel7);
             this.grpCharacterDefaults.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.grpCharacterDefaults.Location = new System.Drawing.Point(618, 372);
+            this.grpCharacterDefaults.Location = new System.Drawing.Point(634, 372);
             this.grpCharacterDefaults.Margin = new System.Windows.Forms.Padding(3, 15, 3, 16);
             this.grpCharacterDefaults.MaximumSize = new System.Drawing.Size(500, 10000);
             this.grpCharacterDefaults.Name = "grpCharacterDefaults";
             this.tlpGlobal.SetRowSpan(this.grpCharacterDefaults, 4);
-            this.grpCharacterDefaults.Size = new System.Drawing.Size(322, 73);
+            this.grpCharacterDefaults.Size = new System.Drawing.Size(362, 73);
             this.grpCharacterDefaults.TabIndex = 42;
             this.grpCharacterDefaults.TabStop = false;
             this.grpCharacterDefaults.Tag = "Label_Options_Defaults";
@@ -1334,7 +1305,7 @@ namespace Chummer
             this.tableLayoutPanel7.RowCount = 2;
             this.tableLayoutPanel7.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel7.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel7.Size = new System.Drawing.Size(316, 54);
+            this.tableLayoutPanel7.Size = new System.Drawing.Size(356, 54);
             this.tableLayoutPanel7.TabIndex = 0;
             // 
             // cboBuildMethod
@@ -1379,7 +1350,7 @@ namespace Chummer
             this.lstGlobalSourcebookInfos.Location = new System.Drawing.Point(3, 37);
             this.lstGlobalSourcebookInfos.Name = "lstGlobalSourcebookInfos";
             this.tlpGlobal.SetRowSpan(this.lstGlobalSourcebookInfos, 21);
-            this.lstGlobalSourcebookInfos.Size = new System.Drawing.Size(295, 578);
+            this.lstGlobalSourcebookInfos.Size = new System.Drawing.Size(295, 660);
             this.lstGlobalSourcebookInfos.TabIndex = 48;
             this.lstGlobalSourcebookInfos.SelectedIndexChanged += new System.EventHandler(this.lstGlobalSourcebookInfos_SelectedIndexChanged);
             // 
@@ -1402,9 +1373,9 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Right)));
             this.chkEnablePlugins.AutoSize = true;
             this.tlpGlobal.SetColumnSpan(this.chkEnablePlugins, 2);
-            this.chkEnablePlugins.Location = new System.Drawing.Point(618, 181);
+            this.chkEnablePlugins.Location = new System.Drawing.Point(634, 181);
             this.chkEnablePlugins.Name = "chkEnablePlugins";
-            this.chkEnablePlugins.Size = new System.Drawing.Size(198, 23);
+            this.chkEnablePlugins.Size = new System.Drawing.Size(223, 23);
             this.chkEnablePlugins.TabIndex = 51;
             this.chkEnablePlugins.Tag = "Checkbox_Options_EnablePlugins";
             this.chkEnablePlugins.Text = "Enable Plugins (experimental)";
@@ -1455,7 +1426,7 @@ namespace Chummer
             this.cbUseLoggingApplicationInsights.Location = new System.Drawing.Point(492, 100);
             this.cbUseLoggingApplicationInsights.Margin = new System.Windows.Forms.Padding(6, 3, 3, 3);
             this.cbUseLoggingApplicationInsights.Name = "cbUseLoggingApplicationInsights";
-            this.cbUseLoggingApplicationInsights.Size = new System.Drawing.Size(120, 21);
+            this.cbUseLoggingApplicationInsights.Size = new System.Drawing.Size(136, 21);
             this.cbUseLoggingApplicationInsights.TabIndex = 55;
             this.cbUseLoggingApplicationInsights.SelectedIndexChanged += new System.EventHandler(this.cbUseLoggingApplicationInsights_SelectedIndexChanged);
             // 
@@ -1475,7 +1446,7 @@ namespace Chummer
             // 
             // cbPluginsHelp
             // 
-            this.cbPluginsHelp.Location = new System.Drawing.Point(822, 181);
+            this.cbPluginsHelp.Location = new System.Drawing.Point(863, 181);
             this.cbPluginsHelp.MaximumSize = new System.Drawing.Size(23, 23);
             this.cbPluginsHelp.MinimumSize = new System.Drawing.Size(23, 23);
             this.cbPluginsHelp.Name = "cbPluginsHelp";
@@ -4584,10 +4555,39 @@ namespace Chummer
             this.flpOKCancel.Controls.Add(this.cmdOK);
             this.flpOKCancel.Controls.Add(this.cmdCancel);
             this.flpOKCancel.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flpOKCancel.Location = new System.Drawing.Point(806, 698);
+            this.flpOKCancel.Location = new System.Drawing.Point(862, 780);
             this.flpOKCancel.Name = "flpOKCancel";
             this.flpOKCancel.Size = new System.Drawing.Size(166, 30);
             this.flpOKCancel.TabIndex = 5;
+            // 
+            // cmdOK
+            // 
+            this.cmdOK.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.cmdOK.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdOK.Location = new System.Drawing.Point(86, 0);
+            this.cmdOK.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
+            this.cmdOK.Name = "cmdOK";
+            this.cmdOK.Size = new System.Drawing.Size(80, 30);
+            this.cmdOK.TabIndex = 5;
+            this.cmdOK.Tag = "String_OK";
+            this.cmdOK.Text = "OK";
+            this.cmdOK.UseVisualStyleBackColor = true;
+            this.cmdOK.Click += new System.EventHandler(this.cmdOK_Click);
+            // 
+            // cmdCancel
+            // 
+            this.cmdCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmdCancel.AutoSize = true;
+            this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.cmdCancel.Location = new System.Drawing.Point(0, 0);
+            this.cmdCancel.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
+            this.cmdCancel.Name = "cmdCancel";
+            this.cmdCancel.Size = new System.Drawing.Size(80, 30);
+            this.cmdCancel.TabIndex = 6;
+            this.cmdCancel.Tag = "String_Cancel";
+            this.cmdCancel.Text = "Cancel";
+            this.cmdCancel.UseVisualStyleBackColor = true;
+            this.cmdCancel.Click += new System.EventHandler(this.cmdCancel_Click);
             // 
             // frmOptions
             // 
@@ -4596,7 +4596,7 @@ namespace Chummer
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.CancelButton = this.cmdCancel;
-            this.ClientSize = new System.Drawing.Size(1008, 762);
+            this.ClientSize = new System.Drawing.Size(1061, 843);
             this.Controls.Add(this.mainPanel);
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(48, 50);
