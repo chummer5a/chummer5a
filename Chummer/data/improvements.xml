@@ -735,5 +735,12 @@
       <xml><![CDATA[{val}]]></xml>
       <page>Increases the character's Dodge pool by the listed value.</page>
     </improvement>
+    <improvement>
+      <name>Enable Cyberzombie Conversion</name>
+      <id>enablecyberzombie</id>
+      <internal>enablecyberzombie</internal>
+      <xml />
+      <page>Allows the character to be converted into a Cyberzombie.</page>
+    </improvement>
   </improvements>
 </chummer>
