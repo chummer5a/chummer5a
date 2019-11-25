@@ -3865,6 +3865,7 @@
     <power>
       <id>b1cef6fe-aa5f-4b12-a621-a3eb24568dbf</id>
       <name>Mystic Armor (Infected)</name>
+	  <rating>True</rating>
       <category>Paranormal</category>
       <type>M</type>
       <action>Auto</action>
