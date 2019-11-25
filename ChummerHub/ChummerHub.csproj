@@ -42,7 +42,7 @@
   </PropertyGroup>-->
   
   <ItemGroup>
-    <PackageReference Include="Google.Apis.Drive.v3" Version="1.41.1.1748" />
+    <PackageReference Include="Google.Apis.Drive.v3" Version="1.42.0.1750" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.8.2" />
     <PackageReference Include="Microsoft.ApplicationInsights.DependencyCollector" Version="2.11.2" />
     <PackageReference Include="Microsoft.ApplicationInsights.PerfCounterCollector" Version="2.11.2" />
@@ -72,7 +72,7 @@
     <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="4.0.1" />
     <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="4.5.5" />
     <PackageReference Include="Serilog" Version="2.9.0" />
-    <PackageReference Include="Serilog.AspNetCore" Version="3.1.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="3.2.0" />
     <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
     <PackageReference Include="Serilog.Sinks.File" Version="4.1.0" />
     <PackageReference Include="Veldrid.ImageSharp" Version="4.7.0" />
