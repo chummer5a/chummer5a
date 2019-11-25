@@ -29,6 +29,8 @@ using System.Reflection;
 using System.Collections.Generic;
  using System.Linq;
  using System.Threading;
+ using System.Threading.Tasks;
+ using Chummer.Plugins;
  using NLog;
 
 namespace Chummer
@@ -72,6 +74,13 @@ namespace Chummer
             wp.Credentials = CredentialCache.DefaultCredentials;
             _clientChangelogDownloader.Proxy = WebRequest.DefaultWebProxy;
             _clientChangelogDownloader.Encoding = Encoding.UTF8;
+        }
+
+        ~frmUpdate()
+        {
+            _clientDownloader.Dispose();
+            _clientChangelogDownloader.Dispose();
+            _workerConnectionLoader.Dispose();
         }
 
         private void frmUpdate_Load(object sender, EventArgs e)
@@ -424,11 +433,11 @@ namespace Chummer
                 lblUpdaterStatus.Text += strSpaceCharacter + LanguageManager.GetString("String_Nightly_Changelog_Warning", GlobalOptions.Language);
         }
 
-        private void cmdDownload_Click(object sender, EventArgs e)
+        private async void cmdDownload_Click(object sender, EventArgs e)
         {
             Log.Info("cmdUpdate_Click");
             Log.Info("Download updates");
-            DownloadUpdates();
+            await DownloadUpdates();
         }
 
         private void cmdRestart_Click(object sender, EventArgs e)
@@ -618,6 +627,8 @@ namespace Chummer
             }
             if (blnDoRestart)
             {
+                //unload all Plugins to release all blocked files.
+                PluginControl.Container.Dispose();
                 List<string> lstBlocked = new List<string>();
                 foreach (var strFileToDelete in lstFilesToDelete)
                 {
@@ -669,19 +680,22 @@ namespace Chummer
             }
         }
 
-        private void DownloadUpdates()
+        private async Task<string> DownloadUpdates()
         {
             if (!Uri.TryCreate(_strDownloadFile, UriKind.Absolute, out Uri uriDownloadFileAddress))
-                return;
+                return null;
             Log.Debug("DownloadUpdates");
             cmdUpdate.Enabled = false;
             cmdRestart.Enabled = false;
             cmdCleanReinstall.Enabled = false;
             if (File.Exists(_strTempPath))
+            {
                 File.Delete(_strTempPath);
+            }
             try
             {
-                _clientDownloader.DownloadFileAsync(uriDownloadFileAddress, _strTempPath);
+                await _clientDownloader.DownloadFileTaskAsync(uriDownloadFileAddress, _strTempPath);
+                //_clientDownloader.DownloadFileAsync(uriDownloadFileAddress, _strTempPath);
             }
             catch (WebException ex)
             {
@@ -695,6 +709,11 @@ namespace Chummer
                 Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Warning_Update_CouldNotConnectException", GlobalOptions.Language), strException), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 cmdUpdate.Enabled = true;
             }
+            if (File.Exists(_strTempPath))
+            {
+                return _strTempPath;
+            }
+            return null;
         }
 
         /// <summary>

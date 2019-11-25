@@ -59,12 +59,54 @@ namespace Chummer
             set => _pluginLoader = value;
         }
 
+        [STAThread]
+        public static void Main(string[] args)
+        {
+            if (AppDomain.CurrentDomain.IsDefaultAppDomain())
+            {
+                // Loader
+                var entryPoint = System.Reflection.Assembly
+                    .GetExecutingAssembly();
+
+                var applicationName = entryPoint.GetName().Name;
+                // Create the setup for the new domain:
+                var setup = new AppDomainSetup
+                {
+                    ApplicationName = applicationName,
+                    ShadowCopyFiles = "true" // note: it isn't a bool
+                };
+
+                // Create the application domain. The evidence of this
+                // running assembly is used for the new domain:
+                AppDomain domain = AppDomain.CreateDomain(
+                    applicationName,
+                    AppDomain.CurrentDomain.Evidence,
+                    setup);
+
+                try
+                {
+                    // Start MyApplication by executing the assembly:
+                    domain.ExecuteAssembly(entryPoint.Location, args);
+                }
+                finally
+                {
+                    // After the MyApplication has finished clean up:
+                    AppDomain.Unload(domain);
+                }
+            }
+            else
+            {
+                // Main
+                ActualMain(args);
+            }
+        }
+
 
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
-        [STAThread]
-        static void Main()
+        //[STAThread]
+        private static void ActualMain(string[] args)
         {
             //for some fun try out this command line parameter: chummer://plugin:SINners:Load:5ff55b9d-7d1c-4067-a2f5-774127346f4e
             PageViewTelemetry pvt = null;
