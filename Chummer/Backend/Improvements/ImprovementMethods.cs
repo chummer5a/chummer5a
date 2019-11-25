@@ -610,6 +610,8 @@ namespace Chummer
                     return objImprovementAdder.contactkarmaminimum;
                 case "ALLOWSPRITEFETTERING":
                     return objImprovementAdder.allowspritefettering;
+                case "ENABLECYBERZOMBIE":
+                    return objImprovementAdder.enablecyberzombie;
                 // No method matches, return a null pointer
                 default:
                     return null;

@@ -6472,6 +6472,15 @@ namespace Chummer.Classes
             Log.Info("Calling CreateImprovement");
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.AllowSpriteFettering, _strUnique);
         }
+
+        // Enable the Convert to Cyberzombie methods.
+        public void enablecyberzombie(XmlNode bonusNode)
+        {
+            Log.Info("enablecyberzombie");
+            Log.Info("enablecyberzombie = " + bonusNode.OuterXml);
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.EnableCyberzombie, _strUnique);
+        }
         #endregion
     }
 

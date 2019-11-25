@@ -1821,12 +1821,12 @@
       <text>Must have an Essence lower than 0.</text>
     </string>
     <string>
-      <key>Message_CyberzombieRequirementsStimulator</key>
-      <text>Must have an Invoked Memory Stimulator</text>
+      <key>Message_CyberzombieRequirementsImprovement</key>
+      <text>Must have an Improvement that allows becoming a cyberzombie.</text>
     </string>
-      <string>
-          <key>MessageTitle_CyberzombieRequirements</key>
-          <text>Cyberzombie Requirements</text>
+    <string>
+      <key>MessageTitle_CyberzombieRequirements</key>
+      <text>Cyberzombie Requirements</text>
     </string>
     <string>
       <key>MessageTitle_NoValidWeaponMount</key>

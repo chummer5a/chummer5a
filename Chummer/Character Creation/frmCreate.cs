@@ -1638,7 +1638,7 @@ namespace Chummer
         private void mnuSpecialCyberzombie_Click(object sender, EventArgs e)
         {
             bool blnEssence = true;
-            bool blnCyberware = false;
+            bool blnEnabled = false;
             string strMessage = LanguageManager.GetString("Message_CyberzombieRequirements", GlobalOptions.Language);
 
             // Make sure the character has an Essence lower than 0.
@@ -1648,26 +1648,24 @@ namespace Chummer
                 blnEssence = false;
             }
 
-            // Make sure the character has an Invoked Memory Stimulator.
-            foreach (Cyberware objCyberware in CharacterObject.Cyberware)
-            {
-                if (objCyberware.Name == "Invoked Memory Stimulator")
-                {
-                    blnCyberware = true;
-                    break;
-                }
-            }
+            blnEnabled =
+                CharacterObject.Improvements.Any(
+                    imp => imp.ImproveType == Improvement.ImprovementType.EnableCyberzombie);
 
-            if (!blnCyberware)
-                strMessage += Environment.NewLine + '\t' + LanguageManager.GetString("Message_CyberzombieRequirementsStimulator", GlobalOptions.Language);
+            if (!blnEnabled)
+                strMessage += Environment.NewLine + '\t' + LanguageManager.GetString("Message_CyberzombieRequirementsImprovement", GlobalOptions.Language);
 
-            if (!blnEssence || !blnCyberware)
+            if (!blnEssence || !blnEnabled)
             {
-                Program.MainForm.ShowMessageBox(strMessage, LanguageManager.GetString("MessageTitle_CyberzombieRequirements", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Program.MainForm.ShowMessageBox(strMessage,
+                    LanguageManager.GetString("MessageTitle_CyberzombieRequirements", GlobalOptions.Language),
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            if (MessageBox.Show(LanguageManager.GetString("Message_CyberzombieConfirm", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CyberzombieConfirm", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+            if (Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CyberzombieConfirm", GlobalOptions.Language),
+                    LanguageManager.GetString("MessageTitle_CyberzombieConfirm", GlobalOptions.Language),
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 return;
 
             // Get the player to roll Dice to make a WIL Test and record the result.
