@@ -709,6 +709,9 @@
       <name>Street Cred Multiplier</name>
       <id>streetcredmultiplier</id>
       <internal>streetcredmultiplier</internal>
+      <fields>
+        <field>val</field>
+      </fields>
       <xml><![CDATA[{val}]]></xml>
       <page>Increases or reduces the multiplier used to calculate Street Cred.</page>
     </improvement>
@@ -716,6 +719,9 @@
       <name>Bonus Street Cred</name>
       <id>streetcred</id>
       <internal>streetcred</internal>
+      <fields>
+        <field>val</field>
+      </fields>
       <xml><![CDATA[{val}]]></xml>
       <page>Increases the character's Street Cred by the listed value.</page>
     </improvement>
@@ -723,6 +729,9 @@
       <name>Dodge</name>
       <id>dodge</id>
       <internal>dodge</internal>
+      <fields>
+        <field>val</field>
+      </fields>
       <xml><![CDATA[{val}]]></xml>
       <page>Increases the character's Dodge pool by the listed value.</page>
     </improvement>

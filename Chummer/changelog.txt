@@ -2,6 +2,9 @@ Future Build 210
 Application Changes:
 - Added a new improvement type that can disable a skill group selected by the user. To be used by RunnerHub customdata ruleset. 
 
+Data Changes:
+- Fixed issues with the Dodge, Bonus Street Cred and Street Cred Multiplier custom improvements. 
+
 New Strings:
 - String_DisableSkillGroupPrompt
 
