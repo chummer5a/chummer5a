@@ -852,6 +852,7 @@ namespace Chummer
                         // We need to do some checking to make sure this is the most powerful foci before we add it in
                         if (objImprovement.ImproveSource == Improvement.ImprovementSource.Gear )
                         {
+                            // we are returning either the original improvement, null or a newly instantiated improvement
                             Improvement? bestFocus = CompareFocusPower(objImprovement);
                             if (bestFocus is Improvement)
                             {
