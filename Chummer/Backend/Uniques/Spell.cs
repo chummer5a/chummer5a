@@ -849,12 +849,15 @@ namespace Chummer
                             yield return objImprovement;
                         break;
                     case Improvement.ImprovementType.SpellCategory:
-                        // We need to do some checking to make sure this is the most powerful foci before we add it in
-                        if (objImprovement.ImproveSource == Improvement.ImprovementSource.Gear )
+                        // SR5 318: Regardless of the number of bonded foci you have,
+                        // only one focus may add its Force to a dicepool for any given test.
+                        // We need to do some checking to make sure this is the most powerful focus before we add it in
+                        if (objImprovement.ImproveSource == Improvement.ImprovementSource.Gear)
                         {
+                            //TODO: THIS IS NOT SAFE. While we can mostly assume that Gear that add to SpellCategory are Foci, it's not reliable.
                             // we are returning either the original improvement, null or a newly instantiated improvement
-                            Improvement? bestFocus = CompareFocusPower(objImprovement);
-                            if (bestFocus is Improvement)
+                            Improvement bestFocus = CompareFocusPower(objImprovement);
+                            if (bestFocus != null)
                             {
                                 yield return bestFocus;
                             }
@@ -882,11 +885,10 @@ namespace Chummer
         private Improvement CompareFocusPower(Improvement objImprovement)
         {
             // get any bonded foci that add to the base magic stat and return the highest rated one's rating
-            IEnumerable<Focus> fociList =
-                _objCharacter.Foci.Where(x => x.GearObject.Bonus.InnerText == "MAGRating" && x.GearObject.Bonded);
-            int powerFocusRating = fociList.Any()
-                ? fociList.OrderByDescending(x => x.Rating)?.FirstOrDefault().Rating ?? default(int)
-                : default(int);
+            var powerFocusRating = _objCharacter.Foci
+                .Where(x => x.GearObject.Bonus.InnerText == "MAGRating" && x.GearObject.Bonded)
+                .Max(x => x.Rating);
+
             // If our focus is higher, add in a partial bonus
             if (powerFocusRating > 0 && powerFocusRating < objImprovement.Value)
             {
@@ -902,13 +904,7 @@ namespace Chummer
                 };
             }
 
-            if (powerFocusRating > 0)
-            {
-                // if the focus adding directly to magic is higher, this focus does nothing
-                return null;
-            }
-
-            return objImprovement;
+            return powerFocusRating > 0 ? null : objImprovement;
         }
 
         #endregion
