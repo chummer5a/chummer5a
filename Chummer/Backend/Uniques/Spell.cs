@@ -849,6 +849,21 @@ namespace Chummer
                             yield return objImprovement;
                         break;
                     case Improvement.ImprovementType.SpellCategory:
+                        // We need to do some checking to make sure this is the most powerful foci before we add it in
+                        if (objImprovement.ImproveSource == Improvement.ImprovementSource.Gear )
+                        {
+                            Improvement? bestFocus = CompareFocusPower(objImprovement);
+                            if (bestFocus is Improvement)
+                            {
+                                yield return bestFocus;
+                            }
+                            break;
+                        }
+                        else
+                        {
+                            yield return objImprovement;
+                            break;
+                        }
                     case Improvement.ImprovementType.SpellCategoryDrain:
                         if (objImprovement.ImprovedName == Category)
                             yield return objImprovement;
@@ -859,6 +874,42 @@ namespace Chummer
                 }
             }
         }
+
+        /// <summary>
+        /// Method to check we are only applying the highest focus to the spell dicepool
+        /// </summary>
+        private Improvement CompareFocusPower(Improvement objImprovement)
+        {
+            // get any bonded foci that add to the base magic stat and return the highest rated one's rating
+            IEnumerable<Focus> fociList =
+                _objCharacter.Foci.Where(x => x.GearObject.Bonus.InnerText == "MAGRating" && x.GearObject.Bonded);
+            int powerFocusRating = fociList.Any()
+                ? fociList.OrderByDescending(x => x.Rating)?.FirstOrDefault().Rating ?? default(int)
+                : default(int);
+            // If our focus is higher, add in a partial bonus
+            if (powerFocusRating > 0 && powerFocusRating < objImprovement.Value)
+            {
+                // This is hackz -- because we don't want to lose the original improvement's value
+                // we instantiate a fake version of the improvement that isn't saved to represent the diff
+                return new Improvement(_objCharacter)
+                {
+                    Value = objImprovement.Value - powerFocusRating,
+                    SourceName = objImprovement.SourceName,
+                    ImprovedName = objImprovement.ImprovedName,
+                    ImproveSource = objImprovement.ImproveSource,
+                    ImproveType = objImprovement.ImproveType,
+                };
+            }
+
+            if (powerFocusRating > 0)
+            {
+                // if the focus adding directly to magic is higher, this focus does nothing
+                return null;
+            }
+
+            return objImprovement;
+        }
+
         #endregion
 
         #region UI Methods
