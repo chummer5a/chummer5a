@@ -13,4 +13,4 @@ jobs:
         DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
       uses: Ilshidur/action-discord@master
       with:
-        args: 'A new build has been released: get.chummer.net'
+        args: 'A new build has been released: https://get.chummer.net'
