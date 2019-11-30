@@ -2534,10 +2534,6 @@ namespace Chummer.Backend.Equipment
 
                 strMounts.Append("Internal/None");
 
-                // Remove the trailing /
-                if (strMounts.Length > 0)
-                    strMounts.Length -= 1;
-
                 return strMounts.ToString();
             }
         }
@@ -5699,36 +5695,18 @@ namespace Chummer.Backend.Equipment
             if (objXmlAccessory == null) return false;
             List<string> lstMounts = AccessoryMounts.Split('/').ToList();
             XPathNavigator xmlMountNode = objXmlAccessory.SelectSingleNode("mount");
-            if (xmlMountNode != null)
+            if (lstMounts.Count == 0 || xmlMountNode != null && (xmlMountNode.Value.Split('/').All(strItem =>
+                                             !string.IsNullOrEmpty(strItem) && lstMounts.All(strAllowedMount =>
+                                                 strAllowedMount != strItem))))
             {
-                if (lstMounts.Count > 1)
-                {
-                    if (xmlMountNode.Value.Split('/').Any(strItem =>
-                        !string.IsNullOrEmpty(strItem) && lstMounts.All(strAllowedMount => strAllowedMount != strItem)))
-                    {
-                        return false;
-                    }
-                }
-                else
-                {
-                    return false;
-                }
+                return false;
             }
-            XPathNavigator xmlExtraMountNode = objXmlAccessory.SelectSingleNode("extramount");
-            if (xmlExtraMountNode != null)
+            xmlMountNode = objXmlAccessory.SelectSingleNode("extramount");
+            if (lstMounts.Count == 0 || xmlMountNode != null && (xmlMountNode.Value.Split('/').All(strItem =>
+                    !string.IsNullOrEmpty(strItem) && lstMounts.All(strAllowedMount =>
+                        strAllowedMount != strItem))))
             {
-                if (lstMounts.Count > 1)
-                {
-                    if (xmlExtraMountNode.Value.Split('/').Any(strItem =>
-                        !string.IsNullOrEmpty(strItem) && lstMounts.All(strAllowedMount => strAllowedMount != strItem)))
-                    {
-                        return false;
-                    }
-                }
-                else
-                {
-                    return false;
-                }
+                return false;
             }
 
             if (!objXmlAccessory.RequirementsMet(_objCharacter, this, string.Empty, string.Empty)) return false;
