@@ -9,6 +9,7 @@ Application Changes:
 
 Data Changes:
 - Fixed issues with the Dodge, Bonus Street Cred and Street Cred Multiplier custom improvements. 
+- Added missing adept way discounts to the Mystic Aptitude and State of Purity powers to render them compatible with the Magician's Way.
 
 New Strings:
 - String_DisableSkillGroupPrompt

@@ -1765,6 +1765,7 @@
       <limit>1</limit>
       <source>BTB</source>
       <page>153</page>
+      <adeptway>0.25</adeptway>
       <action>Simple</action>
       <maxlevels>3</maxlevels>
     </power>
@@ -1776,6 +1777,7 @@
       <limit>1</limit>
       <source>BTB</source>
       <page>160</page>
+      <adeptway>0.75</adeptway>
       <required>
         <oneof>
           <ess>6</ess>
