@@ -295,6 +295,7 @@ namespace Chummer.Backend.Equipment
                 }
                 objWriter.WriteEndElement();
             }
+            objWriter.WriteElementString("ammoreplace", _strAmmoReplace);
             objWriter.WriteElementString("ammoslots", _intAmmoSlots.ToString());
             objWriter.WriteElementString("modifyammocapacity", _strModifyAmmoCapacity);
             objWriter.WriteElementString("damagetype", _strDamageType);
@@ -378,6 +379,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             objNode.TryGetStringFieldQuickly("dicepool", ref _strDicePool);
 
+            objNode.TryGetStringFieldQuickly("ammoreplace", ref _strAmmoReplace);
             objNode.TryGetInt32FieldQuickly("ammoslots", ref _intAmmoSlots);
             objNode.TryGetStringFieldQuickly("modifyammocapacity", ref _strModifyAmmoCapacity);
 
