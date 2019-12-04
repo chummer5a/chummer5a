@@ -213,7 +213,7 @@ namespace Chummer
                 XmlNode charNode = strSelectedMetatypeCategory == "Shapeshifter" || strSelectedMetavariant == Guid.Empty.ToString() ? objXmlMetatype : objXmlMetavariant ?? objXmlMetatype;
                 _objCharacter.AttributeSection.Create(charNode, intForce, intMinModifier, intMaxModifier);
                 _objCharacter.MetatypeGuid = new Guid(strSelectedMetatype);
-                _objCharacter.Metatype = charNode["name"].InnerText;
+                _objCharacter.Metatype = objXmlMetatype["name"].InnerText;
                 _objCharacter.MetatypeCategory = strSelectedMetatypeCategory;
                 _objCharacter.MetatypeBP = Convert.ToInt32(lblKarma.Text);
                 _objCharacter.MetavariantGuid = new Guid(strSelectedMetavariant);

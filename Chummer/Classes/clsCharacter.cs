@@ -2184,6 +2184,13 @@ if (!Utils.IsUnitTest){
                             _strMetavariant = "Cyclops";
                         }
 
+                        //Shim for metavariants that were saved with an incorrect metatype string. 
+                        if (_strMetavariant != string.Empty && _strMetatype == _strMetavariant)
+                        {
+                            _strMetatype = GetNode(true).SelectSingleNode("name").Value;
+                        }
+
+
                         if (!xmlCharacterNavigator.TryGetGuidFieldQuickly("metavariantid", ref _guiMetavariant) && _strMetavariant != string.Empty)
                         {
                             _guiMetavariant = Guid.Parse(GetNode()?.SelectSingleNode("id")?.Value);

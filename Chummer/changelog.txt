@@ -4,6 +4,9 @@ Application Changes:
 - Added a new improvement type that governs whether a character can become a cyberzombie. Customdata has been provided to apply this to the Flashback System from Chrome Flesh.
 - Power Foci and Spellcasting Foci now only provide the highest of their dicepool to a given spell's dicepool per SR5 318. Implemented by https://github.com/MemeticContagion
 
+Application Fixes:
+- Fixed an issue with the Point Buy form incorrectly setting metavariant metatypes to be themselves (ie Dryad (Dryad)).
+
 Data Changes:
 - Fixed issues with the Dodge, Bonus Street Cred and Street Cred Multiplier custom improvements. 
 
