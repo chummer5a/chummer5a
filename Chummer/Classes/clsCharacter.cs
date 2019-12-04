@@ -893,9 +893,14 @@ namespace Chummer
                 : $"/chummer/metatypes/metatype[id = \"{MetatypeGuid}\"]");
             if (MetavariantGuid != Guid.Empty && Metavariant != string.Empty)
             {
-                XPathNavigator xmlMetavariantNode = _xmlMetatypeNode.SelectSingleNode(MetatypeGuid == Guid.Empty
-                    ? $"/chummer/metavariants/metavariant[name = \"{Metavariant}\"]"
-                    : $"/chummer/metavariants/metavariant[id = \"{MetavariantGuid}\"]");
+                XPathNavigator xmlMetavariantNode = _xmlMetatypeNode.SelectSingleNode(MetavariantGuid == Guid.Empty
+                    ? $"metavariants/metavariant[name = \"{Metavariant}\"]"
+                    : $"metavariants/metavariant[id = \"{MetavariantGuid}\"]");
+                if (xmlMetavariantNode == null && MetavariantGuid != Guid.Empty)
+                {
+                    xmlMetavariantNode =
+                        _xmlMetatypeNode.SelectSingleNode($"metavariants/metavariant[name = \"{Metavariant}\"]");
+                }
                 if (xmlMetavariantNode != null) _xmlMetatypeNode = xmlMetavariantNode;
             }
 
