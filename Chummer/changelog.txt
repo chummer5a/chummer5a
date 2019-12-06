@@ -12,6 +12,7 @@ Application Changes:
 Data Changes:
 - Fixed issues with the Dodge, Bonus Street Cred and Street Cred Multiplier custom improvements. 
 - Added missing adept way discounts to the Mystic Aptitude and State of Purity powers to render them compatible with the Magician's Way.
+- Dareadrenaline properly allows the Poor Self Control (Thrill Seeker) to be taken in addition to it. To accommodate this, a hidden version of the quality has been added.
 
 New Strings:
 - String_DisableSkillGroupPrompt
