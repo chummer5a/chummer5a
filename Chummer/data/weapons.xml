@@ -15681,6 +15681,7 @@
       <cost>30</cost>
       <source>RG</source>
       <page>51</page>
+      <hide />
       <rating>0</rating>
       <rc>1</rc>
       <rcgroup>2</rcgroup>
