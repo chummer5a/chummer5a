@@ -17,6 +17,7 @@ Data Changes:
 - Added missing adept way discounts to the Mystic Aptitude and State of Purity powers to render them compatible with the Magician's Way.
 - Dareadrenaline properly allows the Poor Self Control (Thrill Seeker) to be taken in addition to it. To accommodate this, a hidden version of the quality has been added.
 - The Stock weapon accessory, apparently a legacy item from 4e Arsenal, has been flagged as hidden. Customdata folder has been created to unhide it. 
+- The Technoshaman quality/stream now properly allows the creation of a Sprite Pet. 
 
 New Strings:
 - String_DisableSkillGroupPrompt
