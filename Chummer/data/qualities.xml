@@ -18583,7 +18583,9 @@
       <karma>20</karma>
       <category>Positive</category>
       <doublecareer>False</doublecareer>
-      <bonus />
+      <bonus>
+        <allowspritefettering />
+      </bonus>
       <forbidden>
         <oneof>
           <quality>Resonant Stream: Cyberadept</quality>
