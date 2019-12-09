@@ -7043,6 +7043,7 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <reach>1</reach>
         <replaceattributes>
           <replaceattribute>
@@ -7171,6 +7172,7 @@
           <name>critter</name>
         </enabletab>
         <initiativepass precedence="-1">1</initiativepass>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <optionalpowers>
           <optionalpower select="Hearing">Enhanced Senses</optionalpower>
           <optionalpower select="Toxins">Immunity</optionalpower>
@@ -7324,6 +7326,7 @@
           <name>critter</name>
         </enabletab>
         <initiativepass precedence="-1">1</initiativepass>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <optionalpowers>
           <optionalpower>Armor</optionalpower>
           <optionalpower select="Hearing">Enhanced Senses</optionalpower>
@@ -7478,6 +7481,7 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <reach>1</reach>
         <replaceattributes>
           <replaceattribute>
@@ -7613,6 +7617,7 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <replaceattributes>
           <replaceattribute>
             <name>BOD</name>
@@ -7755,6 +7760,7 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <replaceattributes>
           <replaceattribute>
             <name>BOD</name>
@@ -7897,6 +7903,7 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <replaceattributes>
           <replaceattribute>
             <name>BOD</name>
@@ -8039,6 +8046,7 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <replaceattributes>
           <replaceattribute>
             <name>BOD</name>
@@ -8181,6 +8189,7 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <replaceattributes>
           <replaceattribute>
             <name>BOD</name>
@@ -8323,6 +8332,7 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <replaceattributes>
           <replaceattribute>
             <name>BOD</name>
@@ -8457,6 +8467,7 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <replaceattributes>
           <replaceattribute>
             <name>BOD</name>
@@ -8592,6 +8603,7 @@
           <name>critter</name>
         </enabletab>
         <initiativepass precedence="-1">1</initiativepass>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <optionalpowers>
           <optionalpower select="Smell">Enhanced Senses</optionalpower>
           <optionalpower select="Taste">Enhanced Senses</optionalpower>
@@ -8758,6 +8770,7 @@
           <name>critter</name>
         </enabletab>
         <initiative>1</initiative>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <optionalpowers>
           <optionalpower select="Hearing">Enhanced Senses</optionalpower>
           <optionalpower select="Taste">Enhanced Senses</optionalpower>
@@ -8909,6 +8922,7 @@
         </enabletab>
         <initiative>1</initiative>
         <initiativepass precedence="-1">1</initiativepass>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <replaceattributes>
           <replaceattribute>
             <name>BOD</name>
@@ -9069,6 +9083,7 @@
         </enabletab>
         <initiative>1</initiative>
         <initiativepass precedence="-1">1</initiativepass>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <replaceattributes>
           <replaceattribute>
             <name>BOD</name>
@@ -9237,6 +9252,7 @@
           <name>critter</name>
         </enabletab>
         <initiativepass precedence="-1">1</initiativepass>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <optionalpowers>
           <optionalpower select="Hearing">Enhanced Senses</optionalpower>
           <optionalpower select="Low-Light Vision">Enhanced Senses</optionalpower>
@@ -9403,6 +9419,7 @@
           <name>critter</name>
         </enabletab>
         <initiativepass precedence="-1">1</initiativepass>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <optionalpowers>
           <optionalpower select="Hearing">Enhanced Senses</optionalpower>
           <optionalpower select="Lowlight Vision">Enhanced Senses</optionalpower>
@@ -9553,6 +9570,7 @@
           <name>critter</name>
         </enabletab>
         <initiativepass precedence="-1">1</initiativepass>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <optionalpowers>
           <optionalpower select="Hearing">Enhanced Senses</optionalpower>
           <optionalpower select="Smell">Enhanced Senses</optionalpower>
@@ -9698,6 +9716,7 @@
           <name>critter</name>
         </enabletab>
         <initiativepass precedence="-1">1</initiativepass>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <optionalpowers>
           <optionalpower select="Hearing">Enhanced Senses</optionalpower>
           <optionalpower select="Smell">Enhanced Senses</optionalpower>
@@ -9842,6 +9861,7 @@
           <name>critter</name>
         </enabletab>
         <initiativepass precedence="-1">1</initiativepass>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <optionalpowers>
           <optionalpower select="Hearing">Enhanced Senses</optionalpower>
           <optionalpower select="Smell">Enhanced Senses</optionalpower>
@@ -9988,6 +10008,7 @@
           <name>critter</name>
         </enabletab>
         <initiativepass precedence="-1">1</initiativepass>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <optionalpowers>
           <optionalpower select="Hearing">Enhanced Senses</optionalpower>
           <optionalpower select="Smell">Enhanced Senses</optionalpower>
@@ -10154,6 +10175,7 @@
           <name>critter</name>
         </enabletab>
         <initiativepass precedence="-1">1</initiativepass>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <optionalpowers>
           <optionalpower select="Hearing">Enhanced Senses</optionalpower>
           <optionalpower select="Smell">Enhanced Senses</optionalpower>
@@ -12336,6 +12358,7 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
+        <limitcritterpowercategory>Drake</limitcritterpowercategory>
         <specificattribute>
           <name>BOD</name>
           <val>1</val>
@@ -12401,6 +12424,7 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
+        <limitcritterpowercategory>Drake</limitcritterpowercategory>
         <specificattribute>
           <name>BOD</name>
           <val>2</val>
@@ -12462,6 +12486,7 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
+        <limitcritterpowercategory>Drake</limitcritterpowercategory>
         <specificattribute>
           <name>BOD</name>
           <val>1</val>
@@ -12531,6 +12556,7 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
+        <limitcritterpowercategory>Drake</limitcritterpowercategory>
         <specificattribute>
           <name>BOD</name>
           <val>1</val>

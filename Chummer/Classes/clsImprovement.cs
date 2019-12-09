@@ -331,6 +331,8 @@ namespace Chummer
             DrugDurationMultiplier,
             Surprise,
             EnableCyberzombie,
+            AllowCritterPowerCategory,
+            LimitCritterPowerCategory,
             NumImprovementTypes // 🡐 This one should always be the last defined enum
         }
 

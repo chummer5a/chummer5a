@@ -22,15 +22,14 @@
    xsi:schemaLocation="http://www.w3.org/2001/XMLSchema critterpowers.xsd">
 
   <categories>
-    <category>Allowed Optional Powers</category>
-    <category>Drake</category>
-    <category>Echoes</category>
-    <category>Emergent</category>
-    <category>Free Spirit</category>
+    <category whitelist="true">Drake</category>
+    <category whitelist="true">Echoes</category>
+    <category whitelist="true">Emergent</category>
+    <category whitelist="true">Free Spirit</category>
+    <category whitelist="true">Infected</category>
     <category>Mundane</category>
     <category>Paranormal</category>
-    <category>Shapeshifter</category>
-    <category>Toxic Critter Powers</category>
+    <category whitelist="true">Toxic Critter Powers</category>
     <category>Weakness</category>
   </categories>
   <powers>
@@ -1668,13 +1667,18 @@
       <action>Complex</action>
       <range>Self</range>
       <duration>Special</duration>
+      <required>
+        <oneof>
+          <metatypecategory>Shapeshifter</metatypecategory>
+        </oneof>
+      </required>
       <source>RF</source>
       <page>102</page>
     </power>
     <power>
       <id>14d33e71-88c5-4fdb-8456-0b61ab70e8f4</id>
       <name>Shift (Dracoform)</name>
-      <category>Shapeshifter</category>
+      <category>Drake</category>
       <type>M</type>
       <action>Complex</action>
       <range>Self</range>
@@ -1892,7 +1896,7 @@
       <name>Multiprocessing</name>
       <category>Echoes</category>
       <type>P</type>
-      <action>Special</action>
+      <action>Special</action>re
       <range>Special</range>
       <duration>Special</duration>
       <bonus />
@@ -3232,7 +3236,7 @@
     <power>
       <id>9163fb4f-0531-4f11-8894-ed681306ebfd</id>
       <name>Amphibious</name>
-      <category>Paranormal</category>
+      <category>Paranormal/Infected</category>
       <type>M</type>
       <action>Auto</action>
       <range>Self</range>
@@ -3270,7 +3274,7 @@
     <power>
       <id>c330495b-c6af-4744-b399-c6e068864a8d</id>
       <name>Astral Brute</name>
-      <category>Paranormal</category>
+      <category>Paranormal/Infected</category>
       <type>M</type>
       <action>Auto</action>
       <range>Self</range>
@@ -3308,7 +3312,7 @@
     <power>
       <id>c788063f-8daa-4e32-8017-9562513541a0</id>
       <name>Bacchanal</name>
-      <category>Paranormal</category>
+      <category>Paranormal/Infected</category>
       <type>P</type>
       <action>Complex</action>
       <range>Self</range>
@@ -3346,7 +3350,7 @@
     <power>
       <id>f79f9ee8-f5db-4673-9225-e6a375aed465</id>
       <name>Bone Spikes</name>
-      <category>Paranormal</category>
+      <category>Paranormal/Infected</category>
       <type>P</type>
       <action>Auto</action>
       <range>Self</range>
@@ -3390,7 +3394,7 @@
     <power>
       <id>363c3991-5d17-4ca7-963f-e3f2ef395fda</id>
       <name>Calcified Hide</name>
-      <category>Paranormal</category>
+      <category>Paranormal/Infected</category>
       <type>P</type>
       <action>Auto</action>
       <range>Self</range>
@@ -3433,7 +3437,7 @@
     <power>
       <id>ea3a7442-477a-440f-adcd-4b5050c67b52</id>
       <name>Corrosive Spit (Infected)</name>
-      <category>Paranormal</category>
+      <category>Paranormal/Infected</category>
       <type>P</type>
       <action>Complex</action>
       <range>Special</range>
@@ -3471,7 +3475,7 @@
     <power>
       <id>090c0194-3ac9-4ed8-8e82-7a60f18853e8</id>
       <name>Deathlock Venom</name>
-      <category>Paranormal</category>
+      <category>Paranormal/Infected</category>
       <type>P</type>
       <action>Auto</action>
       <range>Self</range>
@@ -3509,7 +3513,7 @@
     <power>
       <id>6cbf07be-1491-46c1-ab67-d5f1dd4aa709</id>
       <name>Digitigrade Legs</name>
-      <category>Paranormal</category>
+      <category>Paranormal/Infected</category>
       <type>P</type>
       <action>Auto</action>
       <range>Self</range>
@@ -3558,7 +3562,7 @@
     <power>
       <id>00461512-b49c-4759-bc91-e41167682f22</id>
       <name>Drag Down</name>
-      <category>Paranormal</category>
+      <category>Paranormal/Infected</category>
       <type>P</type>
       <action>Auto</action>
       <range>Self</range>
@@ -3596,7 +3600,7 @@
     <power>
       <id>dc0d00da-1d10-42b2-a57a-c336da372df7</id>
       <name>Dread Feast</name>
-      <category>Paranormal</category>
+      <category>Paranormal/Infected</category>
       <type>P</type>
       <action>Auto</action>
       <range>Self</range>
@@ -3634,7 +3638,7 @@
     <power>
       <id>9a4bde71-3d1b-4852-a613-5a7a8b1898ee</id>
       <name>Dual Concealment</name>
-      <category>Paranormal</category>
+      <category>Paranormal/Infected</category>
       <type>M</type>
       <action>Simple</action>
       <range>LOS</range>
@@ -3672,7 +3676,7 @@
     <power>
       <id>a9809219-9291-4efe-8f74-23a58e144d73</id>
       <name>Evolved Reflexes</name>
-      <category>Paranormal</category>
+      <category>Paranormal/Infected</category>
       <type>P</type>
       <action>Auto</action>
       <range>Self</range>
@@ -3713,7 +3717,7 @@
     <power>
       <id>3f607df5-a2af-4fc7-b1ae-9ae2de40964f</id>
       <name>Feral Dash</name>
-      <category>Paranormal</category>
+      <category>Paranormal/Infected</category>
       <type>P</type>
       <action>Auto</action>
       <range>Self</range>
@@ -3751,7 +3755,7 @@
     <power>
       <id>cd9ffa1a-d300-4650-8127-4f27fce3a14b</id>
       <name>Gnashing Teeth</name>
-      <category>Paranormal</category>
+      <category>Paranormal/Infected</category>
       <type>P</type>
       <action>Auto</action>
       <range>Self</range>
@@ -3789,7 +3793,7 @@
     <power>
       <id>53a990fc-ed69-44eb-98d5-5363bf9139f7</id>
       <name>Metahuman Masque</name>
-      <category>Paranormal</category>
+      <category>Paranormal/Infected</category>
       <type>M</type>
       <action>Complex</action>
       <range>Self</range>
@@ -3827,7 +3831,7 @@
     <power>
       <id>09fb492d-0aa0-4a2e-8542-53e2cf97f432</id>
       <name>Morningstar Fall</name>
-      <category>Paranormal</category>
+      <category>Paranormal/Infected</category>
       <type>P</type>
       <action>Auto</action>
       <range>Self</range>
@@ -3865,8 +3869,8 @@
     <power>
       <id>b1cef6fe-aa5f-4b12-a621-a3eb24568dbf</id>
       <name>Mystic Armor (Infected)</name>
-	  <rating>True</rating>
-      <category>Paranormal</category>
+      <rating>True</rating>
+      <category>Paranormal/Infected</category>
       <type>M</type>
       <action>Auto</action>
       <range>Self</range>
@@ -3904,7 +3908,7 @@
     <power>
       <id>53dfd3bb-8c93-4d28-a88f-646c187f7940</id>
       <name>Plague Bearer</name>
-      <category>Paranormal</category>
+      <category>Paranormal/Infected</category>
       <type>P</type>
       <action>Auto</action>
       <range>Self</range>
@@ -3942,7 +3946,7 @@
     <power>
       <id>f61e6df3-bd1a-4ce8-9c75-b49df275cfb3</id>
       <name>Predator's Glamour</name>
-      <category>Paranormal</category>
+      <category>Paranormal/Infected</category>
       <type>M</type>
       <action>Complex</action>
       <range>Self</range>
@@ -3980,7 +3984,7 @@
     <power>
       <id>80d692d9-6f13-4148-b346-bb8fc7b78d34</id>
       <name>Rat King</name>
-      <category>Paranormal</category>
+      <category>Paranormal/Infected</category>
       <type>M</type>
       <action>Auto</action>
       <range>MAG x 25 m</range>
@@ -4018,7 +4022,7 @@
     <power>
       <id>0daa8f5c-f4de-4558-aca8-82354eecb941</id>
       <name>Scythe Claws</name>
-      <category>Paranormal</category>
+      <category>Paranormal/Infected</category>
       <type>P</type>
       <action>Auto</action>
       <range>Self</range>
@@ -4056,7 +4060,7 @@
     <power>
       <id>96ce4db8-74c5-47ea-8305-1096858ba8ee</id>
       <name>Sonic Shriek</name>
-      <category>Paranormal</category>
+      <category>Paranormal/Infected</category>
       <type>P</type>
       <action>Complex</action>
       <range>Special</range>
@@ -4094,7 +4098,7 @@
     <power>
       <id>a2346acb-c604-4c9d-83b6-e374348f1749</id>
       <name>Spines</name>
-      <category>Paranormal</category>
+      <category>Paranormal/Infected</category>
       <type>P</type>
       <action>Auto</action>
       <range>Self</range>
@@ -4132,7 +4136,7 @@
     <power>
       <id>9b2033d3-be97-440e-a5f4-f9d8a230c09c</id>
       <name>Stupefying Miasma</name>
-      <category>Paranormal</category>
+      <category>Paranormal/Infected</category>
       <type>P</type>
       <action>Simple</action>
       <range>Self</range>
@@ -4170,7 +4174,7 @@
     <power>
       <id>5589e7d4-0573-40c4-9798-eb6b604ef82c</id>
       <name>Terrorscape</name>
-      <category>Paranormal</category>
+      <category>Paranormal/Infected</category>
       <type>M</type>
       <action>Complex</action>
       <range>Special</range>
@@ -4208,7 +4212,7 @@
     <power>
       <id>97829992-2433-463d-8df7-d8ef0db20e00</id>
       <name>Traceless Walk</name>
-      <category>Paranormal</category>
+      <category>Paranormal/Infected</category>
       <type>P</type>
       <action>Auto</action>
       <range>Self</range>

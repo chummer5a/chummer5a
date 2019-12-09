@@ -612,6 +612,10 @@ namespace Chummer
                     return objImprovementAdder.allowspritefettering;
                 case "ENABLECYBERZOMBIE":
                     return objImprovementAdder.enablecyberzombie;
+                case "ALLOWCRITTERPOWERCATEGORY":
+                    return objImprovementAdder.allowcritterpowercategory;
+                case "LIMITCRITTERPOWERCATEGORY":
+                    return objImprovementAdder.limitcritterpowercategory;
                 // No method matches, return a null pointer
                 default:
                     return null;
