@@ -6481,6 +6481,21 @@ namespace Chummer.Classes
             Log.Info("Calling CreateImprovement");
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.EnableCyberzombie, _strUnique);
         }
+        public void allowcritterpowercategory(XmlNode bonusNode)
+        {
+            Log.Info("allowcritterpowercategory");
+            Log.Info("allowcritterpowercategory = " + bonusNode.OuterXml);
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(bonusNode.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.AllowCritterPowerCategory, _strUnique);
+        }
+
+        public void limitcritterpowercategory(XmlNode bonusNode)
+        {
+            Log.Info("limitcritterpowercategory");
+            Log.Info("limitcritterpowercategory = " + bonusNode.OuterXml);
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(bonusNode.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.LimitCritterPowerCategory, _strUnique);
+        }
         #endregion
     }
 

@@ -60,84 +60,28 @@ namespace Chummer
             foreach (XPathNavigator objXmlCategory in _xmlBaseCritterPowerDataNode.Select("categories/category"))
             {
                 string strInnerText = objXmlCategory.Value;
-                _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNode("@translate")?.Value ?? strInnerText));
-            }
-
-            // Remove Optional Powers if the Critter does not have access to them.
-            if (_xmlMetatypeDataNode.SelectSingleNode("optionalpowers") == null)
-            {
-                foreach (var objItem in _lstCategory.Where(objItem => objItem.Value.ToString() == "Allowed Optional Powers"))
+                if (_objCharacter.Improvements.Any(imp =>
+                        imp.ImproveType == Improvement.ImprovementType.AllowCritterPowerCategory &&
+                        strInnerText.Contains(imp.ImprovedName)) &&
+                    objXmlCategory.SelectSingleNode("@whitelist")?.Value == bool.TrueString ||
+                    _objCharacter.Improvements.Any(imp =>
+                        imp.ImproveType == Improvement.ImprovementType.LimitCritterPowerCategory &&
+                        strInnerText.Contains(imp.ImprovedName)))
                 {
-                    _lstCategory.Remove(objItem);
-                    break;
+                    _lstCategory.Add(new ListItem(strInnerText,
+                        objXmlCategory.SelectSingleNode("@translate")?.Value ?? strInnerText));
+                    continue;
                 }
-            }
-
-            // Remove Free Spirit Powers if the critter is not a Free Spirit.
-            if (_objCharacter.Metatype != "Free Spirit")
-            {
-                foreach (var objItem in _lstCategory.Where(objItem => objItem.Value.ToString() == "Free Spirit"))
+                if (_objCharacter.Improvements.Any(imp =>
+                        imp.ImproveType == Improvement.ImprovementType.LimitCritterPowerCategory &&
+                        !strInnerText.Contains(imp.ImprovedName)))
                 {
-                    _lstCategory.Remove(objItem);
-                    break;
+                    continue;
                 }
+                _lstCategory.Add(new ListItem(strInnerText,
+                    objXmlCategory.SelectSingleNode("@translate")?.Value ?? strInnerText));
             }
 
-            // Remove Toxic Critter Powers if the critter is not a Toxic Critter.
-            if (_objCharacter.MetatypeCategory != "Toxic Critters")
-            {
-                foreach (var objItem in _lstCategory.Where(objItem => objItem.Value.ToString() == "Toxic Critter Powers"))
-                {
-                    _lstCategory.Remove(objItem);
-                    break;
-                }
-            }
-
-            // Remove Emergent Powers if the critter is not a Sprite or A.I.
-            if (!_objCharacter.MetatypeCategory.EndsWith("Sprites") &&
-                !_objCharacter.MetatypeCategory.EndsWith("Sprite") &&
-                !_objCharacter.MetatypeCategory.EndsWith("A.I.s") &&
-                _objCharacter.MetatypeCategory != "Technocritters" && _objCharacter.MetatypeCategory != "Protosapients")
-            {
-                foreach (var objItem in _lstCategory.Where(objItem => objItem.Value.ToString() == "Emergent"))
-                {
-                    _lstCategory.Remove(objItem);
-                    break;
-                }
-            }
-
-            // Remove Echoes Powers if the critter is not a Free Sprite.
-            if (!_objCharacter.IsFreeSprite)
-            {
-                foreach (var objItem in _lstCategory.Where(objItem => objItem.Value.ToString() == "Echoes"))
-                {
-                    _lstCategory.Remove(objItem);
-                    break;
-                }
-            }
-
-            // Remove Shapeshifter Powers if the critter is not a Shapeshifter.
-            if (_objCharacter.MetatypeCategory != "Shapeshifter")
-            {
-                foreach (var objItem in _lstCategory.Where(objItem => objItem.Value.ToString() == "Shapeshifter"))
-                {
-                    _lstCategory.Remove(objItem);
-                    break;
-                }
-            }
-
-            bool blnIsDrake = _objCharacter.Qualities.Any(objQuality =>
-            objQuality.Name == "Dracoform (Eastern Drake)" || objQuality.Name == "Dracoform (Western Drake)" ||
-            objQuality.Name == "Dracoform (Sea Drake)" || objQuality.Name == "Dracoform (Feathered Drake)");
-
-            if (!blnIsDrake)
-            {
-                foreach (var objItem in _lstCategory.Where(objItem => objItem.Value.ToString() != "Drake"))
-                {
-                    _lstCategory.Remove(objItem);
-                    break;
-                }
-            }
             _lstCategory.Sort(CompareListItems.CompareNames);
 
             if (_lstCategory.Count > 0)
@@ -361,10 +305,7 @@ namespace Chummer
             string strFilter = "(" + _objCharacter.Options.BookXPath() + ')';
             if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All")
             {
-                if (strCategory == "Toxic Critter Powers")
-                    strFilter += " and (category = \"" + strCategory + "\" or toxic = \"True\")";
-                else
-                    strFilter += " and category = \"" + strCategory + '\"';
+                strFilter += " and (contains(category,\"" + strCategory + "\"))";
             }
             else
             {
@@ -374,7 +315,7 @@ namespace Chummer
                 {
                     if (!string.IsNullOrEmpty(strItem))
                     {
-                        objCategoryFilter.Append("category = \"" + strItem + "\" or ");
+                        objCategoryFilter.Append("(contains(category,\"" + strItem + "\")) or ");
                         if (strItem == "Toxic Critter Powers")
                         {
                             objCategoryFilter.Append("toxic = \"True\" or ");
