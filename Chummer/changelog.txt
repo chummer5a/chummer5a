@@ -3,6 +3,7 @@ Application Fixes:
 - Fixed behaviour of the Weapon Accessory mount checks to properly work with accessories that can occupy multiple slots when one of those slots is occupied.
 - Fixed a regression in the behaviour of weapon accessories to ensure they properly save and load their ammoreplace property. Existing accessories that should have this property will need to be re-added.Closes #3947
 - Fixed a regression in the behaviour of the GetNode method for Characters that could cause them to fetch incorrect values from XML. Closes #3948
+- Purchasing cyberware in career mode with the house rule to allow customisation of essence costs now works poperly. Closes #3941
 
 Application Changes:
 - Added a new improvement type that can disable a skill group selected by the user. To be used by RunnerHub customdata ruleset. 
