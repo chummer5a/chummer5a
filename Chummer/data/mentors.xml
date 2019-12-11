@@ -264,7 +264,7 @@
       <id>a1faab23-0214-4c83-96ac-d5bb71d4aebb</id>
       <name>Mountain</name>
       <advantage>All: +2 dice to Survival Tests.</advantage>
-      <disadvantage>When a Mountain magician makes a plan, she sticks to it. You must make a Charisma + Willpower (3) Test to abandon a planned course of action in favor of a new one. If you fail, you must endeavor to continue with your original plan, even if it means going on alone. Similarly, you must succeed in a Charisma + Willpower (3) Test to proceed in anything withouta plan.</disadvantage>
+      <disadvantage>When a Mountain magician makes a plan, she sticks to it. You must make a Charisma + Willpower (3) Test to abandon a planned course of action in favor of a new one. If you fail, you must endeavor to continue with your original plan, even if it means going on alone. Similarly, you must succeed in a Charisma + Willpower (3) Test to proceed in anything without a plan.</disadvantage>
       <bonus>
         <specificskill>
           <name>Survival</name>
@@ -457,7 +457,7 @@
           </bonus>
         </choice>
         <choice>
-          <name>Adept: 1 free level of Improved Ability for a skill in the Acting or Inﬂuence skill group</name>
+          <name>Adept: 1 free level of Improved Ability for a skill in the Acting or Influence skill group</name>
           <bonus>
             <specificpower>
               <name>Improved Ability (skill)</name>
@@ -733,9 +733,11 @@
         <choice>
           <name>Adept: 2 free levels of Improved Potential</name>
           <bonus>
+            <selectpowers>
             <selectpower limittopowers="Improved Potential (Social),Improved Potential (Physical),Improved Potential (Mental)">
               <val>1</val>
             </selectpower>
+            </selectpowers>
             <specificpower>Improved Potential (Chaos Mentor)</specificpower>
           </bonus>
         </choice>
@@ -993,7 +995,7 @@
       <id>b58c7771-bc30-48c7-aa3d-694c8bbba00a</id>
       <name>The Adversary</name>
       <advantage>All: +2 dice to demolitions tests.</advantage>
-      <disadvantage>Because of their deep-seated hatred for authority, a teammate’s use of leadership skill is counterproductive to followers of Adversary, invoking either a negative dice penalty or loss of initiative. If the plan doesn’t go the way that the adversary follower wants it to go, it takes a Charisma + Willpower (3) Test for him to get him to cooperate.</disadvantage>
+      <disadvantage>Because of their deep-seated hatred for authority, a teammate’s use of leadership skill is counterproductive to followers of Adversary, invoking either a negative dice penalty or loss of initiative. If the plan doesn't go the way that the adversary follower wants it to go, it takes a Charisma + Willpower (3) Test for him to get him to cooperate.</disadvantage>
       <bonus>
         <specificskill>
           <name>Demolitions</name>
@@ -1211,9 +1213,9 @@
           <name>Adept: 1 free level of Improved Potential.</name>
           <bonus>
             <selectpowers>
-              <selectpower limittopowers="Improved Potential (Social),Improved Potential (Physical),Improved Potential (Mental)">
-                <val>1</val>
-              </selectpower>
+            <selectpower limittopowers="Improved Potential (Social),Improved Potential (Physical),Improved Potential (Mental)">
+              <val>1</val>
+            </selectpower>
             </selectpowers>
           </bonus>
         </choice>
@@ -1225,7 +1227,7 @@
       <id>66f968d6-96da-404e-b1ef-a4d7377ac3cf</id>
       <name>Blacksmith</name>
       <advantage>All: +2 dice to Artisan or Alchemy tests.</advantage>
-      <disadvantage>You have to pass a CHA + WIL (3) check to refrain from instantanously avenging an insult.</disadvantage>
+      <disadvantage>You have to pass a CHA + WIL (3) check to refrain from instantaneously avenging an insult.</disadvantage>
       <bonus>
         <selectskill limittoskill="Artisan,Alchemy">
           <val>2</val>
@@ -1719,7 +1721,7 @@
       <id>924e0d72-a83a-44c2-90ba-24455c389207</id>
       <name>Spider</name>
       <advantage>All:+2 dice to Computer skill tests</advantage>
-      <disadvantage>Followers of Spider are already paranoid about people having any misconceptions about them being insect shamans. They will keep such detailsfrom casual conversation. Followers of Spider also have taken advantage of the Matrix more than more traditional shamas in creating connections. This makes followers more agoraphobic as they avoid uncontrolled social situations and unfamiliar environments. They receive a –1 dice pool modifier to Magic tests while out in the open (this includes very large indoor rooms such as auditoriums, theatres, and stadiums). The penalty doubles if there is a large crowd of people to deal with.</disadvantage>
+      <disadvantage>Followers of Spider are already paranoid about people having any misconceptions about them being insect shamans. They will keep such details from casual conversation. Followers of Spider also have taken advantage of the Matrix more than more traditional shamans in creating connections. This makes followers more agoraphobic as they avoid uncontrolled social situations and unfamiliar environments. They receive a –1 dice pool modifier to Magic tests while out in the open (this includes very large indoor rooms such as auditoriums, theaters, and stadiums). The penalty doubles if there is a large crowd of people to deal with.</disadvantage>
       <bonus>
         <specificskill>
           <name>Computer</name>
@@ -1787,7 +1789,7 @@
       <id>c9b8f607-43f7-4707-aaac-60da183f22ac</id>
       <name>Lion</name>
       <advantage>All: +2 dice pool modifier for Survival Tests, Running Tests, or Tracking Tests (Choose One)</advantage>
-      <disadvantage>In combat situations, a Lion will never leave a comrade behind, and will fght to the death to protect an ally. Unless you succeed in a Charisma + Willpower Test (3), you cannot ﬂee combat before your team members are safe. Further, whenever taking actions that don’t beneft the team somehow, your physical and mental limits are reduced by 2.</disadvantage>
+      <disadvantage>In combat situations, a Lion will never leave a comrade behind, and will fight to the death to protect an ally. Unless you succeed in a Charisma + Willpower Test (3), you cannot ﬂee combat before your team members are safe. Further, whenever taking actions that don’t benefit the team somehow, your physical and mental limits are reduced by 2.</disadvantage>
       <bonus>
         <selectskill limittoskill="Survival,Running,Tracking">
           <val>2</val>
@@ -1939,7 +1941,7 @@
     <mentor>
       <id>19d69029-259a-4ed6-b66b-944b4ddbc172</id>
       <name>Arcana</name>
-      <advantage>All: Once per day, when making a decision or test inﬂuenced by a Tarot reading/card, may re-roll misses as if they had used Edge.</advantage>
+      <advantage>All: Once per day, when making a decision or test influenced by a Tarot reading/card, may re-roll misses as if they had used Edge.</advantage>
       <disadvantage>Followers of the Arcana must use Tarot decks or individual cards as foci and fetishes, or else take –2 when attempting to use them. The Tarot Arcana plays such a major part in the lives of its adherents that when a follower of Arcana becomes a grade 1 initiate, they must choose centering or adept centering for their frst beneft, with the cards of Tarot being the focus of their centering.</disadvantage>
       <choices>
         <choice>
@@ -1998,8 +2000,9 @@
           <name>Adept: Gain 1 free level of Mystic Armor or Empathic Healing (choose one).</name>
           <bonus>
             <selectpowers>
-              <selectpower limittopowers="Mystic Armor,Empathic Healing" />
+            <selectpower limittopowers="Mystic Armor,Empathic Healing">
               <val>1</val>
+            </selectpower>
             </selectpowers>
           </bonus>
         </choice>
@@ -2141,7 +2144,7 @@
       <id>0855eb9d-65b2-4168-ae58-6b07c38b86c3</id>
       <name>Green Man</name>
       <advantage>All: +2 dice pool modifier for Negotiation Tests.</advantage>
-      <disadvantage>When signifcant damage is being done to vegetation, they must pass a Charisma + Willpower (3) Test or use all means possible to stop the destruction.</disadvantage>
+      <disadvantage>When significant damage is being done to vegetation, they must pass a Charisma + Willpower (3) Test or use all means possible to stop the destruction.</disadvantage>
       <bonus>
         <specificskill>
           <name>Negotiation</name>
@@ -2259,7 +2262,7 @@
       <id>b1a5d0cd-b4f1-4de2-86ee-3965f1c36034</id>
       <name>Oak</name>
       <advantage>All: +1 to Damage Resistance tests.</advantage>
-      <disadvantage>Must have a natural (meaning unaugmented) Body and Strength of 4 or greater to select this mentor spirit.</disadvantage>
+      <disadvantage>Must have a natural (meaning un-augmented) Body and Strength of 4 or greater to select this mentor spirit.</disadvantage>
       <bonus>
         <damageresistance>1</damageresistance>
       </bonus>
@@ -2340,7 +2343,7 @@
       <id>26eed20e-86c6-4245-be55-231370fff939</id>
       <name>Spider (Alt)</name>
       <advantage>All: +2 dice pool modifier for tests using the Stealth skill group.</advantage>
-      <disadvantage>When not following a plan or a plan doesn’t go according to plan, followers of Spider must pass a Charisma + Willpower (4) Test or suffer –2 to all rolls until a new plan is established.</disadvantage>
+      <disadvantage>When not following a plan or a plan doesn't go according to plan, followers of Spider must pass a Charisma + Willpower (4) Test or suffer –2 to all rolls until a new plan is established.</disadvantage>
       <bonus>
         <skillgroup>
           <name>Stealth</name>
@@ -2374,7 +2377,7 @@
       <id>a7532966-cdeb-4732-b486-59cbf5552f83</id>
       <name>Wolf (Alt)</name>
       <advantage>All: +1 dice pool modifier for tests using the Sneaking, Perception, Survival, and Tracking skills.</advantage>
-      <disadvantage>Whenever a follower of Wolf sees an opportunity to survive by attacking or sacrifcing the weak, they must pass a Charisma + Willpower (4) Test or attempt to seize the opportunity. This does not apply to those the Wolf considers friends or family.</disadvantage>
+      <disadvantage>Whenever a follower of Wolf sees an opportunity to survive by attacking or sacrificing the weak, they must pass a Charisma + Willpower (4) Test or attempt to seize the opportunity. This does not apply to those the Wolf considers friends or family.</disadvantage>
       <bonus>
         <specificskill>
           <name>Sneaking</name>
@@ -2514,7 +2517,7 @@
       <id>bcf60ea4-577a-4487-9996-6c40a86294c5</id>
       <name>Squirrel</name>
       <advantage>All: +2 dice pool modifier for tests using the Gymnastics skill.</advantage>
-      <disadvantage>When followers of Squirrel are in confined spaces, they must make a Willpower + Chrisma (3) Tests or take a -1 dice pool modifier on all tests while feeling cramped.</disadvantage>
+      <disadvantage>When followers of Squirrel are in confined spaces, they must make a Willpower + Charisma (3) Tests or take a -1 dice pool modifier on all tests while feeling cramped.</disadvantage>
       <bonus>
         <specificskill>
           <name>Gymnastics</name>
@@ -2656,7 +2659,7 @@
       <id>128ba60a-7825-4d29-8b94-8dd291fdc468</id>
       <name>Groundhog</name>
       <advantage>All: +1 dice pool modifier for tests using the Perception and Etiquette skills.</advantage>
-      <disadvantage>If a follower of Grounghog get into a fight (intentionally or unintentionally), they'll have to make a Willpower + Chraisma (3) Test to not flee immediately.</disadvantage>
+      <disadvantage>If a follower of Groundhog get into a fight (intentionally or unintentionally), they'll have to make a Willpower + Charisma (3) Test to not flee immediately.</disadvantage>
       <bonus>
         <specificskill>
           <name>Perception</name>
@@ -2851,7 +2854,7 @@
       <id>7397da6e-29b8-400f-9708-c99bd04d5c07</id>
       <name>Guanyin</name>
       <advantage>All: +2 dice for First Aid tests.</advantage>
-      <disadvantage>A Guanyin magician is highly motivated to save other beings. If the Magician is offered a run that doesn’t involve hooding, she must make a Charisma + Willpower (3) test before she can accept the run. Failure on this test means she turns down the job.</disadvantage>
+      <disadvantage>A Guanyin magician is highly motivated to save other beings. If the Magician is offered a run that doesn't involve hooding, she must make a Charisma + Willpower (3) test before she can accept the run. Failure on this test means she turns down the job.</disadvantage>
       <bonus>
         <specificskill>
           <name>First Aid</name>
@@ -2962,7 +2965,7 @@
       <id>bdb4fa0b-3c9d-4164-b2d6-76b7c04c43d8</id>
       <name>Doberman</name>
       <advantage>All: +1 die to Perception and one combat skill (choose one)</advantage>
-      <disadvantage>Dobermann is very self-confident. In order to accept a subordinate role to someone or follow a stranger's plans, they have to succeed on a WIL + CHA (3) test.</disadvantage>
+      <disadvantage>Doberman is very self-confident. In order to accept a subordinate role to someone or follow a stranger's plans, they have to succeed on a WIL + CHA (3) test.</disadvantage>
       <bonus>
         <specificskill>
           <name>Perception</name>
@@ -3254,7 +3257,7 @@
       <id>bea9796a-c5d3-4388-97ec-14969db470fe</id>
       <name>Treasure Hunter</name>
       <advantage>All: +1 die to Navigation and Locksmith</advantage>
-      <disadvantage>A follower of this spirit devotes their full attention to the desired object, as a result, slacking or tackling tasks not directly related to obtaining it in a half-hearted fashion. After the meet with the J, they must succeed at a WIL + WIL (3) test or incur a -1 penalty to all tests which don't directly involve the object of their desire.</disadvantage>
+      <disadvantage>A follower of this spirit devotes their full attention to the desired object, as a result, slacking or tackling tasks not directly related to obtaining it in a halfhearted fashion. After the meet with the J, they must succeed at a WIL + WIL (3) test or incur a -1 penalty to all tests which don't directly involve the object of their desire.</disadvantage>
       <bonus>
         <specificskill>
           <name>Navigation</name>
