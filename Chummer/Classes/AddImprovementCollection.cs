@@ -75,6 +75,7 @@ namespace Chummer.Classes
         }
 
         #region Improvement Methods
+        #pragma warning disable IDE1006 // Naming Styles
         public void qualitylevel(XmlNode bonusNode)
         {
             /*
@@ -5625,31 +5626,41 @@ namespace Chummer.Classes
         public void limitspellcategory(XmlNode bonusNode)
         {
             Log.Info("limitspellcategory");
-            // Display the Select Spell window.
-            frmSelectSpellCategory frmPickSpellCategory = new frmSelectSpellCategory
+            if (bonusNode.InnerXml != string.Empty)
             {
-                Description = LanguageManager.GetString("Title_SelectSpellCategory", GlobalOptions.Language)
-            };
-            frmPickSpellCategory.ShowDialog();
-
-            // Make sure the dialogue window was not canceled.
-            if (frmPickSpellCategory.DialogResult == DialogResult.Cancel)
-            {
-                throw new AbortedException();
+                Create(bonusNode.InnerText);
             }
-
-            if (string.IsNullOrEmpty(SelectedValue))
-                SelectedValue = frmPickSpellCategory.SelectedCategory;
             else
-                SelectedValue += ", " + frmPickSpellCategory.SelectedCategory;
-            if (_blnConcatSelectedValue)
-                SourceName += " (" + frmPickSpellCategory.SelectedCategory + ')';
+            {
+                // Display the Select Spell window.
+                frmSelectSpellCategory frmPickSpellCategory = new frmSelectSpellCategory
+                {
+                    Description = LanguageManager.GetString("Title_SelectSpellCategory", GlobalOptions.Language)
+                };
+                frmPickSpellCategory.ShowDialog();
 
-            Log.Info("_strSelectedValue = " + frmPickSpellCategory.SelectedCategory);
-            Log.Info("SourceName = " + SourceName);
+                // Make sure the dialogue window was not canceled.
+                if (frmPickSpellCategory.DialogResult == DialogResult.Cancel)
+                {
+                    throw new AbortedException();
+                }
+                Create(frmPickSpellCategory.SelectedCategory);
+            }
+            
+            void Create(string selectedValue)
+            {
+                if (string.IsNullOrEmpty(SelectedValue))
+                    SelectedValue = selectedValue;
+                else
+                    SelectedValue += ", " + selectedValue;
+                if (_blnConcatSelectedValue)
+                    SourceName += " (" + selectedValue + ')';
+                Log.Info("_strSelectedValue = " + selectedValue);
+                Log.Info("SourceName = " + SourceName);
 
-            Log.Info("Calling CreateImprovement");
-            CreateImprovement(frmPickSpellCategory.SelectedCategory, _objImprovementSource, SourceName, Improvement.ImprovementType.LimitSpellCategory, _strUnique);
+                Log.Info("Calling CreateImprovement");
+                CreateImprovement(selectedValue, _objImprovementSource, SourceName, Improvement.ImprovementType.LimitSpellCategory, _strUnique);
+            }
         }
 
         public void limitspelldescriptor(XmlNode bonusNode)
@@ -6496,6 +6507,7 @@ namespace Chummer.Classes
             Log.Info("Calling CreateImprovement");
             CreateImprovement(bonusNode.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.LimitCritterPowerCategory, _strUnique);
         }
+        #pragma warning restore IDE1006 // Naming Styles
         #endregion
     }
 

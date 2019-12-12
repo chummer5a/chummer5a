@@ -1777,6 +1777,7 @@
       <limit>1</limit>
       <source>BTB</source>
       <page>160</page>
+      <action>Complex</action>
       <adeptway>0.75</adeptway>
       <required>
         <oneof>
@@ -1785,6 +1786,17 @@
       </required>
     </power>
     <!-- End Region -->
+    <power>
+      <id>ad6f8984-f0c2-41e9-a2d1-73a719d21a06</id>
+      <name>Berserker Temper</name>
+      <points>0</points>
+      <levels>False</levels>
+      <limit>1</limit>
+      <source>FA</source>
+      <page>62</page>
+      <action>Free</action>
+      <hide />
+    </power>
   </powers>
   <enhancements>
     <enhancement>

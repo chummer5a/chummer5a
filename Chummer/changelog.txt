@@ -10,6 +10,7 @@ Application Changes:
 - Added a new improvement type that governs whether a character can become a cyberzombie. Customdata has been provided to apply this to the Flashback System from Chrome Flesh.
 - Power Foci and Spellcasting Foci now only provide the highest of their dicepool to a given spell's dicepool per SR5 318. Implemented by https://github.com/MemeticContagion
 - Critter power categories can now be whitelisted via the Improvement system. This filtering is done through a Contains operation, which means that a quality flagged as the Paranormal/Infected category matches either Paranormal OR Infected. This means that characters that should have access to the Drake, Echoes, Emergent, Free Spirit, Infected and Toxic Critter Powers categories will need to Reapply Improvements for them to be visible. Closes #3951
+- The limitspellcategory improvement now supports specifying the category of spell in the bonus node.
 
 Application Fixes:
 - Fixed an issue with the Point Buy form incorrectly setting metavariant metatypes to be themselves (ie Dryad (Dryad)).
@@ -21,6 +22,11 @@ Data Changes:
 - The Stock weapon accessory, apparently a legacy item from 4e Arsenal, has been flagged as hidden. Customdata folder has been created to unhide it. 
 - The Technoshaman quality/stream now properly allows the creation of a Sprite Pet. 
 - Fixed typos in mentors.xml. Fixed issues with the Chaos and Holy Text not poroperly being able to take their powers for free. Closes #3955
+- Added customdata to allow the Hold the Door and Escaped Custody qualities to be taken by anyone, instead of just technomancers. Fix provided by Keeper M.
+- Added action type to State of Purity power. Fix provided by Keeper M.
+- Added 'traditional' traditions with bonuses from FA. Fix provided by Keeper M.
+- Added customdata for Morrissey Alta's availability. Fix provided by Keeper M.
+- Fixed typo in the Renraku Red Samurai Katana. Fix provided by Keeper M.
 
 New Strings:
 - String_DisableSkillGroupPrompt
