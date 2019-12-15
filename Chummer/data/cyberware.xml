@@ -7225,9 +7225,21 @@
     </cyberware>
     <cyberware>
       <id>a94e3b9d-d87e-494b-a898-7a1c40befc3a</id>
-      <name>Cosmetic Modifcations Eye (2050)</name>
+      <name>Cosmetic Modifications Eye (2050)</name>
       <limit>False</limit>
       <category>Eyeware</category>
+      <ess>0</ess>
+      <capacity>0</capacity>
+      <avail>2</avail>
+      <cost>1000</cost>
+      <source>2050</source>
+      <page>201</page>
+    </cyberware>
+    <cyberware>
+      <id>23ee3559-2347-4f3f-9ae5-1a3ba3e47edd</id>
+      <name>Cosmetic Modifications Ear (2050)</name>
+      <limit>False</limit>
+      <category>Earware</category>
       <ess>0</ess>
       <capacity>0</capacity>
       <avail>2</avail>
