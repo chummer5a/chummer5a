@@ -987,7 +987,7 @@
         </specificattribute>
       </wirelesspairbonus>
       <rating>3</rating>
-      <wirelesspairinclude>
+      <wirelesspairinclude includeself="False">
         <name>Wired Reflexes</name>
       </wirelesspairinclude>
       <minrating>1</minrating>
@@ -1062,7 +1062,7 @@
           <aug>FixedValues(0,0,1)</aug>
         </specificattribute>
       </wirelesspairbonus>
-      <wirelesspairinclude>
+      <wirelesspairinclude includeself="False">
         <name>Reaction Enhancers</name>
       </wirelesspairinclude>
       <minrating>1</minrating>

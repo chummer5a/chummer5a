@@ -41,7 +41,7 @@ namespace Chummer.Backend.Equipment
         IHasMatrixAttributes, IHasNotes, ICanSell, IHasRating, IHasSource, ICanSort, IHasStolenProperty,
         IHasWirelessBonus
     {
-        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private Logger Log = LogManager.GetCurrentClassLogger();
         private Guid _guiSourceID = Guid.Empty;
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -119,7 +119,7 @@ namespace Chummer.Backend.Equipment
         private static readonly char[] s_MathOperators = new char[] {'"', '*', '/', '+', '-'};
 
         // I don't like this, but it's easier than making it a specific property of the cyberware.
-        private static readonly HashSet<string> s_AgilityCustomisationStrings = new HashSet<string>
+        private static readonly HashSet<string> s_AgilityCustomizationStrings = new HashSet<string>
             {"Customized Agility", "Cyberlimb Customization, Agility (2050)"};
 
         private static readonly HashSet<string> s_AgilityEnhancementStrings = new HashSet<string>
@@ -128,7 +128,7 @@ namespace Chummer.Backend.Equipment
         private static readonly HashSet<string> s_AgilityCombinedStrings =
             new HashSet<string>(s_AgilityEnhancementStrings.Union(s_AgilityEnhancementStrings));
 
-        private static readonly HashSet<string> s_StrengthCustomisationStrings = new HashSet<string>
+        private static readonly HashSet<string> s_StrengthCustomizationStrings = new HashSet<string>
             {"Customized Strength", "Cyberlimb Customization, Strength (2050)"};
 
         private static readonly HashSet<string> s_StrengthEnhancementStrings = new HashSet<string>
@@ -438,7 +438,7 @@ namespace Chummer.Backend.Equipment
             _nodPairBonus = objXmlCyberware["pairbonus"];
             _nodWirelessBonus = objXmlCyberware["wirelessbonus"];
             _nodWirelessPairBonus = objXmlCyberware["wirelesspairbonus"];
-            _blnWirelessOn = false || _nodWirelessPairBonus != null;
+            _blnWirelessOn = _nodWirelessPairBonus != null;
             _nodAllowGear = objXmlCyberware["allowgear"];
             objXmlCyberware.TryGetStringFieldQuickly("mountsto", ref _strPlugsIntoModularMount);
             objXmlCyberware.TryGetStringFieldQuickly("modularmount", ref _strHasModularMount);
@@ -497,13 +497,21 @@ namespace Chummer.Backend.Equipment
                 _strAllowSubsystems = strSubsystem;
             }
 
-            _lstIncludeInPairBonus.Add(Name);
+            if (objXmlCyberware.SelectSingleNode("pairinclude")?.Attributes?["includeself"]?.InnerText !=
+                bool.FalseString)
+            {
+                _lstIncludeInPairBonus.Add(Name);
+            }
             foreach (XmlNode objPairNameNode in objXmlCyberware.SelectNodes("pairinclude/name"))
             {
                 _lstIncludeInPairBonus.Add(objPairNameNode.InnerText);
             }
 
-            _lstIncludeInWirelessPairBonus.Add(Name);
+            if (objXmlCyberware.SelectSingleNode("wirelesspairinclude")?.Attributes?["includeself"]?.InnerText !=
+                bool.FalseString)
+            {
+                _lstIncludeInWirelessPairBonus.Add(Name);
+            }
             foreach (XmlNode objPairNameNode in objXmlCyberware.SelectNodes("wirelesspairinclude/name"))
             {
                 _lstIncludeInWirelessPairBonus.Add(objPairNameNode.InnerText);
@@ -1058,7 +1066,7 @@ namespace Chummer.Backend.Equipment
                 _objCachedMyXmlNode = null;
             }
 
-            // Legacy shim for misformatted name of Reflex Recorder
+            // Legacy shim for mis-formatted name of Reflex Recorder
             if (_strName == "Reflex Recorder (Skill)" && _objCharacter.LastSavedVersion <= new Version("5.198.31"))
             {
                 // This step is needed in case there's a custom data file that has the name "Reflex Recorder (Skill)", in which case we wouldn't want to rename the 'ware
@@ -1792,7 +1800,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// How many cyberlimbs does this cyberware have?
+        /// How many limbs does this cyberware have?
         /// </summary>
         public int GetCyberlimbCount(List<string> lstExcludeLimbs)
         {
@@ -1822,7 +1830,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Original Forced Extra string associted with the 'ware.
+        /// Original Forced Extra string associated with the 'ware.
         /// </summary>
         public string Forced
         {
@@ -1831,7 +1839,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Extra string associted with the 'ware.
+        /// Extra string associated with the 'ware.
         /// </summary>
         public string Extra
         {
@@ -2037,6 +2045,11 @@ namespace Chummer.Backend.Equipment
                 {
                     ImprovementManager.RemoveImprovements(_objCharacter, objLoopCyberware.SourceType,
                         objLoopCyberware.InternalId + "WirelessPair");
+                    if (objLoopCyberware.WirelessPairBonus?.Attributes?["mode"]?.InnerText == "replace")
+                    {
+                        ImprovementManager.RemoveImprovements(_objCharacter, objLoopCyberware.SourceType,
+                            objLoopCyberware.InternalId);
+                    }
                     // Go down the list and create pair bonuses for every second item
                     if (intCount > 0 && intCount % 2 == 1)
                     {
@@ -2512,7 +2525,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Extra Essence cost multiplier (multiplicatively stacking, starts at 1).
+        /// Extra Essence cost multiplier (multiplicative stacking, starts at 1).
         /// </summary>
         public decimal ExtraESSMultiplicativeMultiplier
         {
@@ -2705,7 +2718,7 @@ namespace Chummer.Backend.Equipment
         public string ForceGrade => _strForceGrade;
 
         /// <summary>
-        /// Is the bioware's cost affected by Prototype Transhuman?
+        /// Is the Bioware's cost affected by Prototype Transhuman?
         /// </summary>
         public bool PrototypeTranshuman
         {
@@ -2789,7 +2802,7 @@ namespace Chummer.Backend.Equipment
         #region Complex Properties
 
         /// <summary>
-        /// Total Availablility of the Cyberware and its plugins.
+        /// Total Availability of the Cyberware and its plugins.
         /// </summary>
         public string TotalAvail(CultureInfo objCulture, string strLanguage)
         {
@@ -2903,7 +2916,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Caculated Capacity of the Cyberware.
+        /// Calculated Capacity of the Cyberware.
         /// </summary>
         public string CalculatedCapacity
         {
@@ -3001,7 +3014,7 @@ namespace Chummer.Backend.Equipment
                 else if (strCapacity.Contains("Rating") ||
                          (strCapacity.StartsWith('[') && Children.Any(x => x.AddToParentCapacity)))
                 {
-                    // If the Capaicty is determined by the Rating, evaluate the expression.
+                    // If the Capacity is determined by the Rating, evaluate the expression.
                     // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
                     bool blnSquareBrackets = strCapacity.StartsWith('[');
                     if (blnSquareBrackets)
@@ -3068,7 +3081,7 @@ namespace Chummer.Backend.Equipment
                 return Convert.ToDecimal(Rating, GlobalOptions.InvariantCultureInfo) / 100m;
             }
 
-            if (SourceID == EssenceAntiHoleGUID) // Essence antihole
+            if (SourceID == EssenceAntiHoleGUID) // Essence anti-hole
             {
                 return Convert.ToDecimal(Rating, GlobalOptions.InvariantCultureInfo) / 100m * -1;
             }
@@ -3170,7 +3183,7 @@ namespace Chummer.Backend.Equipment
                                                    GlobalOptions.InvariantCultureInfo) / 100m));
                         decESSMultiplier =
                             Math.Floor((decESSMultiplier - 1.0m + decMultiplier) * 10.0m) /
-                            10; // round down to nearest 0.1 as per biocompatibility text
+                            10; // round down to nearest 0.1 as per bio-compatibility text
                     }
 
                     if (ImprovementManager.ValueOf(_objCharacter,
@@ -3431,7 +3444,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Identical to TotalCost, but without the Improvement and Suite multpliers which would otherwise be doubled.
+        /// Identical to TotalCost, but without the Improvement and Suite multipliers which would otherwise be doubled.
         /// </summary>
         private decimal TotalCostWithoutModifiers
         {
@@ -3720,7 +3733,7 @@ namespace Chummer.Backend.Equipment
                     if (s_StrengthEnhancementStrings.Contains(objChild.Name))
                         intBonus = objChild.Rating;
                     // If the limb has Customized Strength, this is its new base value.
-                    if (s_StrengthCustomisationStrings.Contains(objChild.Name))
+                    if (s_StrengthCustomizationStrings.Contains(objChild.Name))
                         intAttribute = objChild.Rating;
                 }
 
@@ -3782,7 +3795,7 @@ namespace Chummer.Backend.Equipment
                 foreach (Cyberware objChild in Children)
                 {
                     // If the limb has Customized Agility, this is its new base value.
-                    if (s_AgilityCustomisationStrings.Contains(objChild.Name))
+                    if (s_AgilityCustomizationStrings.Contains(objChild.Name))
                         intAttribute = objChild.Rating;
                     // If the limb has Enhanced Agility, this adds to the limb's value.
                     if (s_AgilityEnhancementStrings.Contains(objChild.Name))
@@ -3954,7 +3967,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Returns true if this is a cyberdeck whose attributes we could swap around.
+        /// Returns true if this is a Cyberdeck whose attributes we could swap around.
         /// </summary>
         public bool CanSwapAttributes
         {
@@ -4164,6 +4177,11 @@ namespace Chummer.Backend.Equipment
                 {
                     ImprovementManager.RemoveImprovements(_objCharacter, objLoopCyberware.SourceType,
                         objLoopCyberware.InternalId + "WirelessPair");
+                    if (objLoopCyberware.WirelessPairBonus?.Attributes?["mode"]?.InnerText == "replace")
+                    {
+                        ImprovementManager.RemoveImprovements(_objCharacter, objLoopCyberware.SourceType,
+                            objLoopCyberware.InternalId);
+                    }
                     // Go down the list and create pair bonuses for every second item
                     if (intCount > 0 && intCount % 2 == 0)
                     {
@@ -4188,12 +4206,10 @@ namespace Chummer.Backend.Equipment
                 foreach (XmlNode objNode in xmlOldAddQualitiesList)
                 {
                     Quality objQuality = _objCharacter.Qualities.FirstOrDefault(x => x.Name == objNode.InnerText);
-                    if (objQuality != null)
-                    {
-                        _objCharacter.Qualities.Remove(objQuality);
-                        decReturn += ImprovementManager.RemoveImprovements(_objCharacter,
-                            Improvement.ImprovementSource.CritterPower, objQuality.InternalId);
-                    }
+                    if (objQuality == null) continue;
+                    _objCharacter.Qualities.Remove(objQuality);
+                    decReturn += ImprovementManager.RemoveImprovements(_objCharacter,
+                        Improvement.ImprovementSource.CritterPower, objQuality.InternalId);
                 }
             }
 
@@ -4212,6 +4228,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="intOutRestrictedCount">Amount of gear that is currently over the availability limit (tracked across gear children).</param>
         /// <param name="strOutAvailItems">String used to list names of gear that are currently over the availability limit (tracked across gear children).</param>
         /// <param name="strOutRestrictedItem">Item that is being used for Restricted Gear (tracked across gear children).</param>
+        /// <param name="strOutCyberwareGrade">String used to return list names of cyberware that have a banned cyberware grade</param>
         public void CheckRestrictedGear(bool blnRestrictedGearUsed, int intRestrictedCount, string strAvailItems,
             string strRestrictedItem, string strCyberwareGrade, out bool blnOutRestrictedGearUsed,
             out int intOutRestrictedCount, out string strOutAvailItems, out string strOutRestrictedItem,
@@ -4401,38 +4418,8 @@ namespace Chummer.Backend.Equipment
                 XmlNodeList xmlCyberwareNodeList =
                     xmlCyberwareDocument.SelectNodes("/chummer/cyberwares/cyberware[contains(name, \"" +
                                                      strOriginalName + "\")]");
-                foreach (XmlNode xmlLoopNode in xmlCyberwareNodeList)
+                if (xmlCyberwareNodeList != null)
                 {
-                    XmlNode xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
-                    if (xmlTestNode != null)
-                    {
-                        // Assumes topmost parent is an AND node
-                        if (xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
-                        {
-                            continue;
-                        }
-                    }
-
-                    xmlTestNode = xmlLoopNode.SelectSingleNode("required/parentdetails");
-                    if (xmlTestNode != null)
-                    {
-                        // Assumes topmost parent is an AND node
-                        if (!xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
-                        {
-                            continue;
-                        }
-                    }
-
-                    xmlCyberwareDataNode = xmlLoopNode;
-                    break;
-                }
-
-                if (xmlCyberwareDataNode == null)
-                {
-                    blnCyberware = false;
-                    xmlCyberwareNodeList =
-                        xmlBiowareDocument.SelectNodes("/chummer/biowares/bioware[contains(name, \"" + strOriginalName +
-                                                       "\")]");
                     foreach (XmlNode xmlLoopNode in xmlCyberwareNodeList)
                     {
                         XmlNode xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
@@ -4462,14 +4449,12 @@ namespace Chummer.Backend.Equipment
 
                 if (xmlCyberwareDataNode == null)
                 {
-                    string[] astrOriginalNameSplit = strOriginalName.Split(':');
-                    if (astrOriginalNameSplit.Length > 1)
+                    blnCyberware = false;
+                    xmlCyberwareNodeList =
+                        xmlBiowareDocument.SelectNodes("/chummer/biowares/bioware[contains(name, \"" + strOriginalName +
+                                                       "\")]");
+                    if (xmlCyberwareNodeList != null)
                     {
-                        string strName = astrOriginalNameSplit[0].Trim();
-                        blnCyberware = true;
-                        xmlCyberwareNodeList =
-                            xmlCyberwareDocument.SelectNodes(
-                                "/chummer/cyberwares/cyberware[contains(name, \"" + strName + "\")]");
                         foreach (XmlNode xmlLoopNode in xmlCyberwareNodeList)
                         {
                             XmlNode xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
@@ -4495,56 +4480,21 @@ namespace Chummer.Backend.Equipment
                             xmlCyberwareDataNode = xmlLoopNode;
                             break;
                         }
-
-                        if (xmlCyberwareDataNode != null)
-                            strForceValue = astrOriginalNameSplit[1].Trim();
-                        else
-                        {
-                            blnCyberware = false;
-                            xmlCyberwareNodeList =
-                                xmlBiowareDocument.SelectNodes(
-                                    "/chummer/biowares/bioware[contains(name, \"" + strName + "\")]");
-                            foreach (XmlNode xmlLoopNode in xmlCyberwareNodeList)
-                            {
-                                XmlNode xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
-                                if (xmlTestNode != null)
-                                {
-                                    // Assumes topmost parent is an AND node
-                                    if (xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
-                                    {
-                                        continue;
-                                    }
-                                }
-
-                                xmlTestNode = xmlLoopNode.SelectSingleNode("required/parentdetails");
-                                if (xmlTestNode != null)
-                                {
-                                    // Assumes topmost parent is an AND node
-                                    if (!xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
-                                    {
-                                        continue;
-                                    }
-                                }
-
-                                xmlCyberwareDataNode = xmlLoopNode;
-                                break;
-                            }
-
-                            if (xmlCyberwareDataNode != null)
-                                strForceValue = astrOriginalNameSplit[1].Trim();
-                        }
                     }
+                }
 
-                    if (xmlCyberwareDataNode == null)
+                if (xmlCyberwareDataNode == null)
+                {
+                    string[] astrOriginalNameSplit = strOriginalName.Split(':');
+                    if (astrOriginalNameSplit.Length > 1)
                     {
-                        astrOriginalNameSplit = strOriginalName.Split(',');
-                        if (astrOriginalNameSplit.Length > 1)
+                        string strName = astrOriginalNameSplit[0].Trim();
+                        blnCyberware = true;
+                        xmlCyberwareNodeList =
+                            xmlCyberwareDocument.SelectNodes(
+                                "/chummer/cyberwares/cyberware[contains(name, \"" + strName + "\")]");
+                        if (xmlCyberwareNodeList != null)
                         {
-                            string strName = astrOriginalNameSplit[0].Trim();
-                            blnCyberware = true;
-                            xmlCyberwareNodeList =
-                                xmlCyberwareDocument.SelectNodes(
-                                    "/chummer/cyberwares/cyberware[contains(name, \"" + strName + "\")]");
                             foreach (XmlNode xmlLoopNode in xmlCyberwareNodeList)
                             {
                                 XmlNode xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
@@ -4579,6 +4529,51 @@ namespace Chummer.Backend.Equipment
                                 xmlCyberwareNodeList =
                                     xmlBiowareDocument.SelectNodes(
                                         "/chummer/biowares/bioware[contains(name, \"" + strName + "\")]");
+                                if (xmlCyberwareNodeList != null)
+                                    foreach (XmlNode xmlLoopNode in xmlCyberwareNodeList)
+                                    {
+                                        XmlNode xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
+                                        if (xmlTestNode != null)
+                                        {
+                                            // Assumes topmost parent is an AND node
+                                            if (xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                            {
+                                                continue;
+                                            }
+                                        }
+
+                                        xmlTestNode = xmlLoopNode.SelectSingleNode("required/parentdetails");
+                                        if (xmlTestNode != null)
+                                        {
+                                            // Assumes topmost parent is an AND node
+                                            if (!xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                            {
+                                                continue;
+                                            }
+                                        }
+
+                                        xmlCyberwareDataNode = xmlLoopNode;
+                                        break;
+                                    }
+
+                                if (xmlCyberwareDataNode != null)
+                                    strForceValue = astrOriginalNameSplit[1].Trim();
+                            }
+                        }
+                    }
+
+                    if (xmlCyberwareDataNode == null)
+                    {
+                        astrOriginalNameSplit = strOriginalName.Split(',');
+                        if (astrOriginalNameSplit.Length > 1)
+                        {
+                            string strName = astrOriginalNameSplit[0].Trim();
+                            blnCyberware = true;
+                            xmlCyberwareNodeList =
+                                xmlCyberwareDocument.SelectNodes(
+                                    "/chummer/cyberwares/cyberware[contains(name, \"" + strName + "\")]");
+                            if (xmlCyberwareNodeList != null)
+                            {
                                 foreach (XmlNode xmlLoopNode in xmlCyberwareNodeList)
                                 {
                                     XmlNode xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
@@ -4603,6 +4598,45 @@ namespace Chummer.Backend.Equipment
 
                                     xmlCyberwareDataNode = xmlLoopNode;
                                     break;
+                                }
+
+                                if (xmlCyberwareDataNode != null)
+                                    strForceValue = astrOriginalNameSplit[1].Trim();
+                                else
+                                {
+                                    blnCyberware = false;
+                                    xmlCyberwareNodeList =
+                                        xmlBiowareDocument.SelectNodes(
+                                            "/chummer/biowares/bioware[contains(name, \"" + strName + "\")]");
+                                    if (xmlCyberwareNodeList != null)
+                                        foreach (XmlNode xmlLoopNode in xmlCyberwareNodeList)
+                                        {
+                                            XmlNode xmlTestNode =
+                                                xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
+                                            if (xmlTestNode != null)
+                                            {
+                                                // Assumes topmost parent is an AND node
+                                                if (xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode,
+                                                    false))
+                                                {
+                                                    continue;
+                                                }
+                                            }
+
+                                            xmlTestNode = xmlLoopNode.SelectSingleNode("required/parentdetails");
+                                            if (xmlTestNode != null)
+                                            {
+                                                // Assumes topmost parent is an AND node
+                                                if (!xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode,
+                                                    false))
+                                                {
+                                                    continue;
+                                                }
+                                            }
+
+                                            xmlCyberwareDataNode = xmlLoopNode;
+                                            break;
+                                        }
                                 }
                             }
                         }
