@@ -5,6 +5,7 @@ Application Fixes:
 - Fixed a regression in the behaviour of the GetNode method for Characters that could cause them to fetch incorrect values from XML. Closes #3948
 - Purchasing cyberware in career mode with the house rule to allow customisation of essence costs now works poperly. Closes #3941
 - Cyberware that has a wireless pair bonus and the replace mode will now properly remove its base improvements.
+Metavariants now properly fetch their base metatype's movement speed(s) if not specified in data. Resolves an issue in which active skill checking would cause a crash when initialising, if the character was not capable of Flight.
 
 Application Changes:
 - Added a new improvement type that can disable a skill group selected by the user. To be used by RunnerHub customdata ruleset. 
