@@ -5,7 +5,7 @@ Application Fixes:
 - Fixed a regression in the behaviour of the GetNode method for Characters that could cause them to fetch incorrect values from XML. Closes #3948
 - Purchasing cyberware in career mode with the house rule to allow customisation of essence costs now works poperly. Closes #3941
 - Cyberware that has a wireless pair bonus and the replace mode will now properly remove its base improvements.
-Metavariants now properly fetch their base metatype's movement speed(s) if not specified in data. Resolves an issue in which active skill checking would cause a crash when initialising, if the character was not capable of Flight.
+- Metavariants now properly fetch their base metatype's movement speed(s) if not specified in data. Resolves an issue in which active skill checking would cause a crash when initialising, if the character was not capable of Flight.
 
 Application Changes:
 - Added a new improvement type that can disable a skill group selected by the user. To be used by RunnerHub customdata ruleset. 
@@ -14,6 +14,7 @@ Application Changes:
 - Critter power categories can now be whitelisted via the Improvement system. This filtering is done through a Contains operation, which means that a quality flagged as the Paranormal/Infected category matches either Paranormal OR Infected. This means that characters that should have access to the Drake, Echoes, Emergent, Free Spirit, Infected and Toxic Critter Powers categories will need to Reapply Improvements for them to be visible. Closes #3951
 - Cyberware pair bonuses now allow the option to exclude themselves from the bonus by adding includeself="False" to the wirelesspairinclude node that lists which cyberwares the item pairs with. This is to prevent interaction with things like Wired Reflexes from cybersuite upgrades causing a stack. 
 - The limitspellcategory improvement now supports specifying the category of spell in the bonus node.
+- Added support for non-Sapient critters not being able to unlock all skills. Now, critters without this Power that do not have at least Rating 1 in the relevant skill will be prevented from taking it.
 
 Application Fixes:
 - Fixed an issue with the Point Buy form incorrectly setting metavariant metatypes to be themselves (ie Dryad (Dryad)).

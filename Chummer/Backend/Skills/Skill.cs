@@ -806,6 +806,14 @@ namespace Chummer.Backend.Skills
                     _intCachedEnabled = 0;
                     return false;
                 }
+                // SR5 400 : Critters that don't have the Sapience Power are unable to default in skills they don't possess. 
+                if (CharacterObject.IsCritter && !CharacterObject.Improvements.Any(x =>
+                        x.ImproveType == Improvement.ImprovementType.AllowSkillDefault &&
+                        (x.ImprovedName == Name || x.ImprovedName == string.Empty) && x.Enabled) && Rating == 0)
+                {
+                    _intCachedEnabled = 0;
+                    return false;
+                }
 
                 if (CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.SkillDisable && x.ImprovedName == Name && x.Enabled))
                 {

@@ -551,6 +551,9 @@
       <action>Auto</action>
       <range>Self</range>
       <duration>Always</duration>
+      <bonus>
+        <allowskilldefaulting />
+      </bonus>
       <source>SR5</source>
       <page>400</page>
     </power>
