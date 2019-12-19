@@ -31,6 +31,7 @@ Data Changes:
 - Added 'traditional' traditions with bonuses from FA. Fix provided by Keeper M.
 - Added customdata for Morrissey Alta's availability. Fix provided by Keeper M.
 - Fixed typo in the Renraku Red Samurai Katana. Fix provided by Keeper M.
+- Added missing MAG attributes to the Banshee, Dzoo-Noo-Qua, Goblin, Vampire and Sukuyan qualities. Closes #3611
 
 New Strings:
 - String_DisableSkillGroupPrompt
