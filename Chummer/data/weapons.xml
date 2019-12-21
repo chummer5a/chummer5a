@@ -14474,14 +14474,14 @@
       </weapon>
       <weapon>
           <id>64efe703-1381-464a-b9ea-26c85b1837e3</id>
-          <name>Rolling Blades</name>
+          <name>Hardened Rolling Blades</name>
           <category>Exotic Melee Weapons</category>
           <type>Melee</type>
           <conceal>-4</conceal>
           <accuracy>4</accuracy>
           <reach>0</reach>
           <damage>(STR+2)P</damage>
-          <ap>-1</ap>
+          <ap>0</ap>
           <mode>0</mode>
           <rc>0</rc>
           <ammo>0</ammo>
@@ -14489,7 +14489,6 @@
           <cost>600</cost>
           <source>NF</source>
           <page>171</page>
-          <spec>Hardened Rolling Blades</spec>
           <useskill>Exotic Melee Weapon</useskill>
       </weapon>
       <weapon>
@@ -14526,25 +14525,26 @@
           <avail>4</avail>
           <cost>25</cost>
           <source>NF</source>
-          <page>172</page>
+         <page>172</page>
       </weapon>
       <weapon>
-          <id>a83ce374-cb7b-45e2-b937-dff5520bd5ae</id>
-          <name>Rolling Blades</name>
-          <category>Clubs</category>
-          <type>Melee</type>
-          <conceal>0</conceal>
-          <accuracy>4</accuracy>
-          <reach>0</reach>
-          <damage>(STR+2)P</damage>
-          <ap>-1</ap>
-          <mode>0</mode>
-          <rc>0</rc>
-          <ammo>0</ammo>
-          <avail>8</avail>
-          <cost>600</cost>
-          <source>NF</source>
-          <page>172</page>
+        <id>a83ce374-cb7b-45e2-b937-dff5520bd5ae</id>
+        <name>Rolling Blades</name>
+        <category>Exotic Melee Weapons</category>
+        <type>Melee</type>
+        <conceal>-4</conceal>
+        <accuracy>4</accuracy>
+        <reach>0</reach>
+        <damage>(STR+2)P</damage>
+        <ap>-1</ap>
+        <mode>0</mode>
+        <rc>0</rc>
+        <ammo>0</ammo>
+        <avail>12R</avail>
+        <cost>600</cost>
+        <source>NF</source>
+        <page>171</page>
+        <useskill>Exotic Melee Weapon</useskill>
       </weapon>
       <weapon>
           <id>c5861520-b344-45b3-8497-ec1b935ef531</id>
