@@ -197,7 +197,11 @@ namespace Chummer
             CritterPower,
             SwapSkillSpecAttribute,
             SpellResistance,
+            AllowSpellCategory,
             LimitSpellCategory,
+            AllowSpellRange,
+            LimitSpellRange,
+            BlockSpellDescriptor,
             LimitSpellDescriptor,
             LimitSpiritCategory,
             WalkSpeed,
@@ -3091,6 +3095,11 @@ namespace Chummer
                 Log.Info("Returned from scheduled Rollback");
             }
 
+            // If the bonus should not bubble up SelectedValues from its improvements, reset it to empty. 
+            if (nodBonus.Attributes?["useselectedvalue"]?.InnerText == bool.FalseString)
+            {
+                SelectedValue = string.Empty;
+            }
             // Clear the Forced Value and Limit Selection strings once we're done to prevent these from forcing their values on other Improvements.
             s_StrForcedValue = string.Empty;
             s_StrLimitSelection = string.Empty;

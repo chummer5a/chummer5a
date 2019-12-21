@@ -74,8 +74,23 @@ namespace Chummer.Classes
                 intAugmentedMaximum, strExclude, blnAddToRating, strTarget, strCondition);
         }
 
+        private void CreateImprovement(string selectedValue, Improvement.ImprovementType improvementType)
+        {
+            if (string.IsNullOrEmpty(SelectedValue))
+                SelectedValue = selectedValue;
+            else
+                SelectedValue += ", " + selectedValue;
+            if (_blnConcatSelectedValue)
+                SourceName += " (" + selectedValue + ')';
+            Log.Info("_strSelectedValue = " + selectedValue);
+            Log.Info("SourceName = " + SourceName);
+
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(selectedValue, _objImprovementSource, SourceName, improvementType, _strUnique);
+        }
+
         #region Improvement Methods
-        #pragma warning disable IDE1006 // Naming Styles
+#pragma warning disable IDE1006 // Naming Styles
         public void qualitylevel(XmlNode bonusNode)
         {
             /*
@@ -756,6 +771,7 @@ namespace Chummer.Classes
 
         public void selectattributes(XmlNode bonusNode)
         {
+            List<string> selectedValues = new List<string>();
             using (XmlNodeList xmlSelectAttributeList = bonusNode.SelectNodes("selectattribute"))
                 if (xmlSelectAttributeList != null)
                     foreach (XmlNode objXmlAttribute in xmlSelectAttributeList)
@@ -823,10 +839,7 @@ namespace Chummer.Classes
                         {
                             throw new AbortedException();
                         }
-
-                        SelectedValue = frmPickAttribute.SelectedAttribute;
-                        if (_blnConcatSelectedValue)
-                            SourceName += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + SelectedValue + ')';
+                        selectedValues.Add(frmPickAttribute.SelectedAttribute);
 
                         Log.Info("_strSelectedValue = " + frmPickAttribute.SelectedAttribute);
                         Log.Info("SourceName = " + SourceName);
@@ -861,6 +874,23 @@ namespace Chummer.Classes
                             _strUnique,
                             0, 1, intMin, intMax, intAug, intAugMax);
                     }
+            StringBuilder sBld = new StringBuilder();
+            foreach (string s in AttributeSection.AttributeStrings)
+            {
+                int i = selectedValues.Count(c => c == s);
+                if (i > 0)
+                {
+                    if (sBld.Length > 0)
+                    {
+                        sBld.Append(", ");
+                    }
+                    sBld.Append($"{s} ({i})");
+                }
+            }
+
+            SelectedValue = sBld.ToString();
+            if (_blnConcatSelectedValue)
+                SourceName += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + SelectedValue + ')';
         }
 
         // Select an CharacterAttribute.
@@ -5623,12 +5653,18 @@ namespace Chummer.Classes
             }
         }
 
-        public void limitspellcategory(XmlNode bonusNode)
+        public void allowspellrange(XmlNode bonusNode)
         {
-            Log.Info("limitspellcategory");
+            Log.Info("allowspellrange");
+            CreateImprovement(bonusNode.InnerText, Improvement.ImprovementType.AllowSpellRange);
+        }
+
+        public void allowspellcategory(XmlNode bonusNode)
+        {
+            Log.Info("allowspellcategory");
             if (bonusNode.InnerXml != string.Empty)
             {
-                Create(bonusNode.InnerText);
+                CreateImprovement(bonusNode.InnerText, Improvement.ImprovementType.AllowSpellCategory);
             }
             else
             {
@@ -5644,22 +5680,38 @@ namespace Chummer.Classes
                 {
                     throw new AbortedException();
                 }
-                Create(frmPickSpellCategory.SelectedCategory);
+                CreateImprovement(frmPickSpellCategory.SelectedCategory, Improvement.ImprovementType.AllowSpellCategory);
             }
-            
-            void Create(string selectedValue)
-            {
-                if (string.IsNullOrEmpty(SelectedValue))
-                    SelectedValue = selectedValue;
-                else
-                    SelectedValue += ", " + selectedValue;
-                if (_blnConcatSelectedValue)
-                    SourceName += " (" + selectedValue + ')';
-                Log.Info("_strSelectedValue = " + selectedValue);
-                Log.Info("SourceName = " + SourceName);
+        }
 
-                Log.Info("Calling CreateImprovement");
-                CreateImprovement(selectedValue, _objImprovementSource, SourceName, Improvement.ImprovementType.LimitSpellCategory, _strUnique);
+        public void limitspellrange(XmlNode bonusNode)
+        {
+            Log.Info("limitspellrange");
+            CreateImprovement(bonusNode.InnerText, Improvement.ImprovementType.LimitSpellRange);
+        }
+
+        public void limitspellcategory(XmlNode bonusNode)
+        {
+            Log.Info("limitspellcategory");
+            if (bonusNode.InnerXml != string.Empty)
+            {
+                CreateImprovement(bonusNode.InnerText, Improvement.ImprovementType.LimitSpellCategory);
+            }
+            else
+            {
+                // Display the Select Spell window.
+                frmSelectSpellCategory frmPickSpellCategory = new frmSelectSpellCategory
+                {
+                    Description = LanguageManager.GetString("Title_SelectSpellCategory", GlobalOptions.Language)
+                };
+                frmPickSpellCategory.ShowDialog();
+
+                // Make sure the dialogue window was not canceled.
+                if (frmPickSpellCategory.DialogResult == DialogResult.Cancel)
+                {
+                    throw new AbortedException();
+                }
+                CreateImprovement(frmPickSpellCategory.SelectedCategory, Improvement.ImprovementType.LimitSpellCategory);
             }
         }
 
@@ -5687,19 +5739,34 @@ namespace Chummer.Classes
                 }
                 strSelected = frmPickItem.SelectedItem;
             }
+            CreateImprovement(strSelected, Improvement.ImprovementType.LimitSpellDescriptor);
+        }
 
-            if (string.IsNullOrEmpty(SelectedValue))
-                SelectedValue = strSelected;
+        public void blockspelldescriptor(XmlNode bonusNode)
+        {
+            Log.Info("blockspelldescriptor");
+            // Display the Select Spell window.
+            string strSelected;
+            if (!string.IsNullOrWhiteSpace(bonusNode.InnerText))
+            {
+                strSelected = bonusNode.InnerText;
+            }
             else
-                SelectedValue += ", " + strSelected;
-            if (_blnConcatSelectedValue)
-                SourceName += " (" + strSelected + ')';
+            {
+                frmSelectItem frmPickItem = new frmSelectItem
+                {
+                    Description = LanguageManager.GetString("Title_SelectSpellDescriptor", GlobalOptions.Language)
+                };
+                frmPickItem.ShowDialog();
 
-            Log.Info("_strSelectedValue = " + strSelected);
-            Log.Info("SourceName = " + SourceName);
-
-            Log.Info("Calling CreateImprovement");
-            CreateImprovement(strSelected, _objImprovementSource, SourceName, Improvement.ImprovementType.LimitSpellDescriptor, _strUnique);
+                // Make sure the dialogue window was not canceled.
+                if (frmPickItem.DialogResult == DialogResult.Cancel)
+                {
+                    throw new AbortedException();
+                }
+                strSelected = frmPickItem.SelectedItem;
+            }
+            CreateImprovement(strSelected, Improvement.ImprovementType.BlockSpellDescriptor);
         }
         #region addspiritorsprite
         /// <summary>

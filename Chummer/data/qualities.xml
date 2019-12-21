@@ -842,13 +842,15 @@
       <category>Positive</category>
       <contributetolimit>False</contributetolimit>
       <onlyprioritygiven />
-      <bonus>
+      <bonus useselectedvalue="False">
+        <blockspelldescriptor>Spell</blockspelldescriptor>
         <enableattribute>
           <name>MAG</name>
         </enableattribute>
         <enabletab>
           <name>adept</name>
         </enabletab>
+        <limitspellcategory>Rituals</limitspellcategory>
         <unlockskills>Adept</unlockskills>
       </bonus>
       <forbidden>
@@ -7030,7 +7032,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
+      <bonus useselected="False">
         <essencepenalty>-1</essencepenalty>
         <critterpowers>
           <power>Adaptive Coloration</power>
@@ -7311,7 +7313,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
+      <bonus useselected="False">
         <armor>1</armor>
         <critterpowers>
           <power>Dual Natured</power>
@@ -7463,7 +7465,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
+      <bonus useselected="False">
         <essencepenalty>-1</essencepenalty>
         <armor>1</armor>
         <critterpowers>
@@ -7601,7 +7603,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
+      <bonus useselected="False">
         <essencepenalty>-1</essencepenalty>
         <armor>1</armor>
         <critterpowers>
@@ -7744,7 +7746,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
+      <bonus useselected="False">
         <essencepenalty>-1</essencepenalty>
         <armor>1</armor>
         <critterpowers>
@@ -7887,7 +7889,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
+      <bonus useselected="False">
         <essencepenalty>-1</essencepenalty>
         <armor>1</armor>
         <critterpowers>
@@ -8030,7 +8032,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
+      <bonus useselected="False">
         <essencepenalty>-1</essencepenalty>
         <armor>1</armor>
         <critterpowers>
@@ -8173,7 +8175,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
+      <bonus useselected="False">
         <essencepenalty>-1</essencepenalty>
         <armor>1</armor>
         <critterpowers>
@@ -8316,7 +8318,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
+      <bonus useselected="False">
         <essencepenalty>-1</essencepenalty>
         <armor>1</armor>
         <critterpowers>
@@ -8449,7 +8451,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
+      <bonus useselected="False">
         <essencepenalty>-1</essencepenalty>
         <armor>1</armor>
         <critterpowers>
@@ -8586,7 +8588,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
+      <bonus useselected="False">
         <armor>1</armor>
         <critterpowers>
           <power>Dual Natured</power>
@@ -8749,7 +8751,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
+      <bonus useselected="False">
         <essencepenalty>-1</essencepenalty>
         <armor>1</armor>
         <critterpowers>
@@ -8903,7 +8905,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
+      <bonus useselected="False">
         <essencepenalty>-1</essencepenalty>
         <armor>2</armor>
         <critterpowers>
@@ -9061,7 +9063,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
+      <bonus useselected="False">
         <essencepenalty>-1</essencepenalty>
         <armor>2</armor>
         <critterpowers>
@@ -9232,7 +9234,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
+      <bonus useselected="False">
         <armor>1</armor>
         <critterpowers>
           <power>Essence Drain</power>
@@ -9399,7 +9401,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
+      <bonus useselected="False">
         <critterpowers>
           <power>Essence Drain</power>
           <power>Infection</power>
@@ -9554,7 +9556,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
+      <bonus useselected="False">
         <critterpowers>
           <power>Essence Drain</power>
           <power select="Age">Immunity</power>
@@ -9700,7 +9702,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
+      <bonus useselected="False">
         <critterpowers>
           <power>Essence Drain</power>
           <power>Infection</power>
@@ -9844,7 +9846,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
+      <bonus useselected="False">
         <critterpowers>
           <power>Essence Drain</power>
           <power select="Age">Immunity</power>
@@ -9991,7 +9993,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
+      <bonus useselected="False">
         <critterpowers>
           <power>Essence Drain</power>
           <power>Infection</power>
@@ -10156,7 +10158,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
+      <bonus useselected="False">
         <critterpowers>
           <power>Essence Drain</power>
           <power>Infection</power>
@@ -14240,6 +14242,8 @@
       <doublecareer>False</doublecareer>
       <!-- TODO: Source code for this is super hacky, so it definitely needs cleaning up at the next opportunity -->
       <bonus>
+        <allowspellrange>T</allowspellrange>
+        <allowspellrange>T (A)</allowspellrange>
         <freespells attribute="MAG" limit="half,touchonly" />
       </bonus>
       <required>

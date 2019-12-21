@@ -489,8 +489,16 @@ namespace Chummer
                     return objImprovementAdder.addskillspecializationoption;
                 case "LIMITSPELLCATEGORY":
                     return objImprovementAdder.limitspellcategory;
+                case "BLOCKSPELLDESCRIPTOR":
+                    return objImprovementAdder.blockspelldescriptor;
                 case "LIMITSPELLDESCRIPTOR":
                     return objImprovementAdder.limitspelldescriptor;
+                case "ALLOWSPELLRANGE":
+                    return objImprovementAdder.allowspellrange;
+                case "LIMITSPELLRANGE":
+                    return objImprovementAdder.limitspellrange;
+                case "ALLOWSPELLCATEGORY":
+                    return objImprovementAdder.allowspellcategory;
                 case "ADDSPRITE":
                     return objImprovementAdder.addsprite;
                 case "ADDSPIRIT":

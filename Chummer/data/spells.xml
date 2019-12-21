@@ -2956,6 +2956,12 @@
       <bonus>
         <selecttext />
       </bonus>
+      <required>
+        <oneof>
+          <quality>Adept</quality>
+          <quality>Mystic Adept</quality>
+        </oneof>
+      </required>
     </spell>
     <spell>
       <id>a31197f4-c687-485b-a924-e88f2c76df76</id>
@@ -2972,6 +2978,15 @@
       <bonus>
         <selecttext />
       </bonus>
+      <required>
+        <allof>
+          <metamagicart>Advanced Ritual Casting</metamagicart>
+        </allof>
+        <oneof>
+          <quality>Adept</quality>
+          <quality>Mystic Adept</quality>
+        </oneof>
+      </required>
     </spell>
     <spell>
       <id>b0bde155-75b7-4200-8656-8414e4ba746a</id>
@@ -3168,6 +3183,18 @@
       <dv>Special</dv>
       <range>Special</range>
       <type>M</type>
+      <required>
+        <allof>
+          <spell>Attune Animal</spell>
+        </allof>
+        <oneof>
+          <group>
+            <quality>Adept</quality>
+            <quality>Mystic Adept</quality>
+          </group>
+          <metamagicart>Advanced Ritual Casting</metamagicart>
+        </oneof>
+      </required>
     </spell>
     <spell>
       <id>884b16b4-dc92-4a32-8dde-197b37819b24</id>
@@ -3213,8 +3240,10 @@
       <range>Special</range>
       <type>M</type>
       <required>
-        <oneof>
+        <allof>
           <metamagicart>Advanced Ritual Casting</metamagicart>
+        </allof>
+        <oneof>
           <quality>Adept</quality>
           <quality>Mystic Adept</quality>
         </oneof>
@@ -4317,7 +4346,7 @@
       <source>SSP</source>
       <category>Rituals</category>
       <damage>0</damage>
-      <descriptor>Anchor</descriptor>
+      <descriptor>Anchored</descriptor>
       <duration>Special</duration>
       <dv>Special</dv>
       <range>Special</range>
@@ -5078,6 +5107,10 @@
           <metamagic>Sacrifice</metamagic>
           <metamagicart>Blood Magic</metamagicart>
         </allof>
+        <oneof>
+          <quality>Adept</quality>
+          <quality>Mystic Adept</quality>
+        </oneof>
       </required>
     </spell>
     <spell>
