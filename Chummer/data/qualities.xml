@@ -7170,6 +7170,9 @@
           <power select="Silver">Vulnerability</power>
           <power select="Wood">Vulnerability</power>
         </critterpowers>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
         <enabletab>
           <name>critter</name>
         </enabletab>
@@ -7324,6 +7327,9 @@
           <power select="Sunlight, Moderate">Allergy</power>
           <power select="Metahuman Flesh">Dietary Requirement</power>
         </critterpowers>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
         <enabletab>
           <name>critter</name>
         </enabletab>
@@ -8601,6 +8607,9 @@
           <power select="Metahuman Flesh">Dietary Requirement</power>
           <power select="Iron">Vulnerability</power>
         </critterpowers>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
         <enabletab>
           <name>critter</name>
         </enabletab>
@@ -9568,6 +9577,9 @@
           <power select="Metahuman Blood">Dietary Requirement</power>
           <power select="Lack of Air (Essence) Minutes">Induced Dormancy</power>
         </critterpowers>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
         <enabletab>
           <name>critter</name>
         </enabletab>
@@ -9714,6 +9726,9 @@
           <power select="Metahuman Blood">Dietary Requirement</power>
           <power select="Lack of Air (Essence) Minutes">Induced Dormancy</power>
         </critterpowers>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
         <enabletab>
           <name>critter</name>
         </enabletab>
@@ -9859,6 +9874,9 @@
           <power select="Salt">Dietary Requirement</power>
           <power select="Wood">Vulnerability</power>
         </critterpowers>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
         <enabletab>
           <name>critter</name>
         </enabletab>
@@ -10006,6 +10024,9 @@
           <power select="Salt">Dietary Requirement</power>
           <power select="Wood">Vulnerability</power>
         </critterpowers>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
         <enabletab>
           <name>critter</name>
         </enabletab>

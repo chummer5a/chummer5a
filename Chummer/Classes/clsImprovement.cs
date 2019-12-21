@@ -185,6 +185,7 @@ namespace Chummer
             SpecialSkills,
             ReflexRecorderOptimization,
             BlockSkillDefault,
+            AllowSkillDefault,
             Ambidextrous,
             UnarmedReach,
             SkillSpecialization,
@@ -1275,6 +1276,33 @@ namespace Chummer
                 }
                     break;
                 case ImprovementType.DealerConnection:
+                    break;
+                case ImprovementType.AllowSkillDefault:
+                {
+                    if (ImprovedName == string.Empty)
+                    {
+                        // Kludgiest of kludges, but it fits spec and Sapience isn't exactly getting turned off and on constantly. 
+                        foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
+                        {
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objSkill,
+                                nameof(Skill.Enabled));
+                        }
+                        foreach (KnowledgeSkill objSkill in _objCharacter.SkillsSection.KnowledgeSkills)
+                        {
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objSkill,
+                                nameof(Skill.Enabled));
+                        }
+                    }
+                    else
+                    {
+                        Skill objTargetSkill = _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.Name == ImprovedName) ??
+                                               _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(x => x.Name == ImprovedName);
+                        if (objTargetSkill != null)
+                        {
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill, nameof(Skill.Enabled));
+                        }
+                    }
+                }
                     break;
                 case ImprovementType.Skill:
                 {

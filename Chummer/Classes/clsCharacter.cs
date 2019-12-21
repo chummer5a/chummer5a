@@ -11813,7 +11813,9 @@ if (!Utils.IsUnitTest){
             {
                 if(string.IsNullOrWhiteSpace(_strMovement))
                 {
-                    _strMovement = GetNode().SelectSingleNode("movement")?.Value ?? string.Empty;
+                    _strMovement = GetNode().SelectSingleNode("movement")?.Value ??
+                                   GetNode(true).SelectSingleNode("movement")?.Value ??
+                                   string.Empty;
                 }
 
                 return _strMovement;
@@ -11837,7 +11839,9 @@ if (!Utils.IsUnitTest){
             {
                 if(string.IsNullOrWhiteSpace(_strRun))
                 {
-                    _strRun = GetNode().SelectSingleNode("run")?.Value ?? string.Empty;
+                    _strRun = GetNode().SelectSingleNode("run")?.Value ??
+                              GetNode(true).SelectSingleNode("run")?.Value ??
+                              string.Empty;
                 }
 
                 return _strRun;
@@ -11861,7 +11865,9 @@ if (!Utils.IsUnitTest){
             {
                 if(string.IsNullOrWhiteSpace(_strRunAlt))
                 {
-                    _strRunAlt = GetNode().SelectSingleNode("run").GetAttribute("alt","");
+                    _strRunAlt = GetNode().SelectSingleNode("run")?.GetAttribute("alt","") ??
+                                 GetNode(true).SelectSingleNode("run")?.GetAttribute("alt", "") ??
+                                 string.Empty;
                 }
 
                 return _strRunAlt;
@@ -11885,7 +11891,9 @@ if (!Utils.IsUnitTest){
             {
                 if(string.IsNullOrWhiteSpace(_strWalk))
                 {
-                    _strWalk = GetNode().SelectSingleNode("walk")?.Value ?? string.Empty;
+                    _strWalk = GetNode().SelectSingleNode("walk")?.Value ??
+                               GetNode(true).SelectSingleNode("walk")?.Value ??
+                               string.Empty;
                 }
 
                 return _strWalk;
@@ -11909,7 +11917,9 @@ if (!Utils.IsUnitTest){
             {
                 if(string.IsNullOrWhiteSpace(_strWalkAlt))
                 {
-                    _strWalkAlt = GetNode().SelectSingleNode("walk").GetAttribute("alt", "");
+                    _strWalkAlt = GetNode().SelectSingleNode("walk")?.GetAttribute("alt", "") ??
+                                  GetNode(true).SelectSingleNode("walk")?.GetAttribute("alt", "") ??
+                                  string.Empty;
                 }
 
                 return _strWalkAlt;
@@ -11933,7 +11943,9 @@ if (!Utils.IsUnitTest){
             {
                 if(string.IsNullOrWhiteSpace(_strSprint))
                 {
-                    _strSprint = GetNode().SelectSingleNode("sprint").Value;
+                    _strSprint = GetNode().SelectSingleNode("sprint")?.Value ??
+                                 GetNode(true).SelectSingleNode("sprint")?.Value ??
+                                 string.Empty;
                 }
 
                 return _strSprint;
@@ -11957,7 +11969,9 @@ if (!Utils.IsUnitTest){
             {
                 if(string.IsNullOrWhiteSpace(_strSprintAlt))
                 {
-                    _strSprintAlt = GetNode().SelectSingleNode("sprint").GetAttribute("alt", "");
+                    _strSprintAlt = GetNode().SelectSingleNode("sprint")?.GetAttribute("alt", "") ??
+                                    GetNode(true).SelectSingleNode("sprint")?.GetAttribute("alt", "") ??
+                                    string.Empty;
                 }
 
                 return _strSprintAlt;

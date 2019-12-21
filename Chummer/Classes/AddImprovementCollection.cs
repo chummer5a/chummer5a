@@ -527,8 +527,18 @@ namespace Chummer.Classes
             Log.Info("_strSelectedValue = " + SelectedValue);
             Log.Info("SourceName = " + SourceName);
             Log.Info("Calling CreateImprovement");
-            CreateImprovement(SelectedValue, _objImprovementSource, SourceName, Improvement.ImprovementType.BlockSkillDefault,
-                _strUnique, 0, 0, 0, 1, 0, 0, strExclude);
+            CreateImprovement(SelectedValue, _objImprovementSource, SourceName,
+                Improvement.ImprovementType.BlockSkillDefault, _strUnique, 0, 0, 0, 1, 0, 0, strExclude);
+        }
+
+        public void allowskilldefaulting(XmlNode bonusNode)
+        {
+            Log.Info("allowskilldefaulting");
+            Log.Info("allowskilldefaulting = " + bonusNode.OuterXml);
+            Log.Info("Calling CreateImprovement");
+            // Expected values are either a Skill Name or an empty string. 
+            CreateImprovement(bonusNode.InnerText, _objImprovementSource, SourceName,
+                Improvement.ImprovementType.AllowSkillDefault, _strUnique);
         }
 
         // Select a Skill.
@@ -6574,7 +6584,7 @@ namespace Chummer.Classes
             Log.Info("Calling CreateImprovement");
             CreateImprovement(bonusNode.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.LimitCritterPowerCategory, _strUnique);
         }
-        #pragma warning restore IDE1006 // Naming Styles
+#pragma warning restore IDE1006 // Naming Styles
         #endregion
     }
 

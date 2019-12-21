@@ -5,6 +5,7 @@ Application Fixes:
 - Fixed a regression in the behaviour of the GetNode method for Characters that could cause them to fetch incorrect values from XML. Closes #3948
 - Purchasing cyberware in career mode with the house rule to allow customisation of essence costs now works poperly. Closes #3941
 - Cyberware that has a wireless pair bonus and the replace mode will now properly remove its base improvements.
+- Metavariants now properly fetch their base metatype's movement speed(s) if not specified in data. Resolves an issue in which active skill checking would cause a crash when initialising, if the character was not capable of Flight.
 - Added an attribute (useselected) to bonus nodes that allows preventing the improvements from providing text to the parent object. This allow for preventing Infected qualities from listing the attributes they selected.
 - Fixed behaviour of the selectattributes bonus to properly concatenate the selected values. 
 - Fixed implementation of the LimitSpellDescriptor improvement to properly function as a whitelist instead of blacklist.
@@ -16,6 +17,7 @@ Application Changes:
 - Critter power categories can now be whitelisted via the Improvement system. This filtering is done through a Contains operation, which means that a quality flagged as the Paranormal/Infected category matches either Paranormal OR Infected. This means that characters that should have access to the Drake, Echoes, Emergent, Free Spirit, Infected and Toxic Critter Powers categories will need to Reapply Improvements for them to be visible. Closes #3951
 - Cyberware pair bonuses now allow the option to exclude themselves from the bonus by adding includeself="False" to the wirelesspairinclude node that lists which cyberwares the item pairs with. This is to prevent interaction with things like Wired Reflexes from cybersuite upgrades causing a stack. 
 - The limitspellcategory improvement now supports specifying the category of spell in the bonus node.
+- Added support for non-Sapient critters not being able to unlock all skills. Now, critters without this Power that do not have at least Rating 1 in the relevant skill will be prevented from taking it.
 - Added new improvement types to allow selectively restricting access to spells.
   - LimitSpellCategory restricts the character to a specific Category of spells. Replaces the hardcoded Adept restriction on taking Rituals. IMPORTANT: This restriction will not take effect unless the character uses the Reapply Improvements window. 
   - AllowSpellCategory allows additional specific Category of spells to be taken. Mostly expected to be used in conjunction with limitSpellcategory for custom content. 
@@ -39,6 +41,7 @@ Data Changes:
 - Added customdata for Morrissey Alta's availability. Fix provided by Keeper M.
 - Fixed typo in the Renraku Red Samurai Katana. Fix provided by Keeper M.
 - Adjusted spells that require being taken by Adept to use Required tags instead of being a hardcoded blacklist for non-Adepts. IMPORTANT: 
+- Added missing MAG attributes to the Banshee, Dzoo-Noo-Qua, Goblin, Vampire and Sukuyan qualities. Closes #3611
 
 New Strings:
 - String_DisableSkillGroupPrompt

@@ -90,6 +90,8 @@ namespace Chummer
                     return objImprovementAdder.cyberseeker;
                 case "BLOCKSKILLGROUPDEFAULTING":
                     return objImprovementAdder.blockskillgroupdefaulting;
+                case "ALLOWSKILLDEFAULTING":
+                    return objImprovementAdder.allowskilldefaulting;
                 case "SELECTSKILL":
                     return objImprovementAdder.selectskill;
                 case "SELECTSKILLGROUP":
