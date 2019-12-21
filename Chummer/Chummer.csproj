@@ -469,6 +469,10 @@
     <None Include="data\gameplayoptions.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="data\SchemaExtensions.xsd">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="frmGMDashboard.cs">
       <SubType>Form</SubType>
     </None>

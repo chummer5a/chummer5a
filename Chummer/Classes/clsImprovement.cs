@@ -3124,7 +3124,7 @@ namespace Chummer
             }
 
             // If the bonus should not bubble up SelectedValues from its improvements, reset it to empty. 
-            if (nodBonus.Attributes?["useselectedvalue"]?.InnerText == bool.FalseString)
+            if (nodBonus.Attributes?["useselected"]?.InnerText == bool.FalseString)
             {
                 SelectedValue = string.Empty;
             }
