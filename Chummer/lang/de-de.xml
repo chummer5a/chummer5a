@@ -9739,5 +9739,25 @@
           <key>String_SingleShotNA</key>
           <text>Einzelschussmodus (N/A)</text>
         </string>
+        <string>
+          <key>String_DisableSkillGroupPrompt</key>
+          <text>Wählen Sie eine Fertigkeitsgruppe zum Deaktivieren aus.</text>
+        </string>
+        <string>
+          <key>Tip_OtherSurprise</key>
+          <text>Überraschung wird mit REA + INT berechnet.</text>
+        </string>
+        <string>
+          <key>Label_OtherSurprise</key>
+          <text>Überraschung:</text>
+        </string>
+        <string>
+          <key>Message_DuplicateDrugComponentWarning</key>
+          <text>Sie können die gleiche Komponente nicht mehr als {0} Mal hinzufügen.</text>
+        </string>
+        <string>
+          <key>Message_CyberzombieRequirementsImprovement</key>
+          <text>Sie müssen eine Fertigkeit haben, die es erlaubt, ein Cyberzombie zu werden.</text>
+        </string>
 	</strings>
 </chummer>

@@ -3275,6 +3275,7 @@
 			<category translate="Erlaubte zusätzliche Kräfte" translated="True">Allowed Optional Powers</category>
 			<category translate="Drake-Kräfte">Drake</category>
 			<category translate="Emergent" translated="True">Emergent</category>
+			<category translate="Infiziert" translated="True">Infected</category>
 			<category translate="Freier Geist">Free Spirit</category>
 			<category translate="Mundan">Mundane</category>
 			<category translate="Paranormal" translated="True">Paranormal</category>
@@ -8358,6 +8359,96 @@
 				<translate>Schlachtross</translate>
 				<altpage>173</altpage>
 			</metatype>
+			<metatype translated="True">
+				<id>0b1c6eeb-682f-4f71-bc61-81b5c9c47241</id>
+				<name>Companion Sprite</name>
+				<translate>Begleiter-Sprite</translate>
+				<altpage>100</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>8e85cfeb-8058-404f-928c-7f8dc09a8840</id>
+				<name>Generalist Sprite</name>
+				<translate>Generalisten-Sprite</translate>
+				<altpage>100</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>588b1381-da7a-4f8d-a1d2-67af53ffade9</id>
+				<name>Yogi</name>
+				<translate>Yogi</translate>
+				<altpage>171</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>b1361f50-d533-437d-bf86-54c671edc486</id>
+				<name>Pachyderm</name>
+				<translate>Elephantidae</translate>
+				<altpage>172</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>590b0d62-0676-4c18-983d-72f453c4e381</id>
+				<name>Saltwater Crocodile</name>
+				<translate>Salzwasserkrokodil</translate>
+				<altpage>39</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>a3a4e69a-2804-4f07-af03-e543f48769e6</id>
+				<name>Crocodilian</name>
+				<translate>Crocodylia</translate>
+				<altpage>172</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>94c43469-221c-491a-88a4-8274735a1796</id>
+				<name>Gef</name>
+				<translate>Gef</translate>
+				<altpage>175</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>8f7e0bfe-ce38-489b-ace7-b0aa4f7e320c</id>
+				<name>Energizer</name>
+				<translate>Energizer</translate>
+				<altpage>178</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>e9320c19-eb43-4159-be28-aa299e696fa6</id>
+				<name>G33ko</name>
+				<translate>G33ko</translate>
+				<altpage>178</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>aa00a742-89ed-40c8-9474-a94387927001</id>
+				<name>Rybbyt</name>
+				<translate>Rybbyt</translate>
+				<altpage>179</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>58d2a981-ebe5-4075-a92b-01bdf6454978</id>
+				<name>Migaloo</name>
+				<translate>Migaloo</translate>
+				<altpage>183</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>1783296b-6033-4d1a-acfc-7930ee3990a3</id>
+				<name>Ravager</name>
+				<translate>Verwüster</translate>
+				<altpage>182</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>e4abe40c-bf0d-4d79-8ab0-d0c09299f795</id>
+				<name>E-Fish</name>
+				<translate>E-Fisch</translate>
+				<altpage>182</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>75d165db-e0eb-48a4-8bfd-b99aeebf04c7</id>
+				<name>Dot-Camel</name>
+				<translate>Datenkamel</translate>
+				<altpage>181</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>290161e4-8b73-4e1d-b24a-00ffea4e79d5</id>
+				<name>Techworm</name>
+				<translate>Techwurm</translate>
+				<altpage>180</altpage>
+			</metatype>
 		</metatypes>
 	</chummer>
 	<chummer file="cyberware.xml">
@@ -9086,8 +9177,8 @@
 			</cyberware>
 			<cyberware>
 				<id>a94e3b9d-d87e-494b-a898-7a1c40befc3a</id>
-				<name>Cosmetic Modifcations Eye (2050)</name>
-				<translate>Kosmetische Augen Modifikation</translate>
+				<name>Cosmetic Modifications Eye (2050)</name>
+				<translate>Kosmetische Augenmodifikation</translate>
 				<altpage>201</altpage>
 			</cyberware>
 			<cyberware>
@@ -10663,6 +10754,12 @@
 				<name>Foot Blade</name>
 				<translate>Fußklinge</translate>
 				<altpage>178</altpage>
+			</cyberware>
+			<cyberware translated="True">
+				<id>23ee3559-2347-4f3f-9ae5-1a3ba3e47edd</id>
+				<name>Cosmetic Modifications Ear (2050)</name>
+				<translate>Kosmetische Ohrmodifikation</translate>
+				<altpage>201</altpage>
 			</cyberware>
 		</cyberwares>
 	</chummer>
@@ -25389,6 +25486,12 @@
 				<translate>Erhöhtes Potential (Chaos Schutzgeist)</translate>
 				<altpage>309</altpage>
 			</power>
+			<power translated="True">
+				<id>ad6f8984-f0c2-41e9-a2d1-73a719d21a06</id>
+				<name>Berserker Temper</name>
+				<translate>Berserkertemperament</translate>
+				<altpage>71</altpage>
+			</power>
 		</powers>
 		<enhancements>
 			<enhancement>
@@ -29630,7 +29733,7 @@
 			</quality>
 			<quality>
 				<id>1b5acdf3-66ae-4ed7-b5fa-614668721774</id>
-				<name>Dishevelled</name>
+				<name>Disheveled</name>
 				<translate>Ungepflegt</translate>
 				<altpage>155</altpage>
 			</quality>
@@ -31115,6 +31218,24 @@
 				<name>Free Insect Spirit: Silverfish</name>
 				<translate>Freier Insektengeist: Silberfisch</translate>
 				<altpage>27</altpage>
+			</quality>
+			<quality translated="True">
+				<id>bbb3bce6-8adc-4992-94b5-7248556a391a</id>
+				<name>Poor Self Control (Thrill Seeker) (Dareadrenaline)</name>
+				<translate>Schlechte Selbstbeherrschung (Adreinalinjunkie) (Daredrenalin)</translate>
+				<altpage>161</altpage>
+			</quality>
+			<quality translated="True">
+				<id>59d9baa1-6705-49e8-940b-ea42ffc02692</id>
+				<name>Infected Advanced Optional Power: Mimicry</name>
+				<translate>Infizierten Erweiterte optionale Kräfte: Mimikry</translate>
+				<altpage>398</altpage>
+			</quality>
+			<quality translated="True">
+				<id>8dbc6b92-18a7-4007-b37f-295d21f8ab82</id>
+				<name>Infected Advanced Optional Power: Psychokinesis</name>
+				<translate>Infizierten Erweiterte optionale Kräfte: Psychokinese</translate>
+				<altpage>399</altpage>
 			</quality>
 		</qualities>
 	</chummer>
@@ -44811,7 +44932,7 @@
 			</weapon>
 			<weapon translated="True">
 				<id>79599718-2154-45ad-ba32-bbb65c0a5bf4</id>
-				<name>Renkaru Red Samurai Katana</name>
+				<name>Renraku Red Samurai Katana</name>
 				<translate>Katana der roten Samurai</translate>
 				<altpage>139</altpage>
 			</weapon>
@@ -44976,6 +45097,12 @@
 				<name>Underbarrel Grapple Gun</name>
 				<translate>Unterlauf-Enterhakenkanone</translate>
 				<altpage>52</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>64efe703-1381-464a-b9ea-26c85b1837e3</id>
+				<name>Hardened Rolling Blades</name>
+				<translate>Rollschuhe mit gehärteten Klingen</translate>
+				<altpage>179</altpage>
 			</weapon>
 		</weapons>
 		<accessories>
@@ -46456,6 +46583,12 @@
 				<name>Specific Spell Dicepool</name>
 				<translate>Spezieller Zauberwürfelpool</translate>
 				<altpage>Passt den Zauberpool des Charakters an, wenn er Zauber in der ausgewählten Kategorie wirkt. Positive Werte erhöhen die Fähigkeit für Zauber. Negative Werte reduzieren die Fähigkeit für Zauber.</altpage>
+			</improvement>
+			<improvement>
+				<id>enablecyberzombie</id>
+				<name>Enable Cyberzombie Conversion</name>
+				<translate>Cyberzombie-Umwandlung aktivieren</translate>
+				<altpage>Ermöglicht die Umwandlung des Charakters in einen Cyberzombie.</altpage>
 			</improvement>
 		</improvements>
 	</chummer>
