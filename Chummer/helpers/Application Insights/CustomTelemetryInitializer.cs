@@ -48,6 +48,7 @@ namespace Chummer
             if (!telemetry.Context.GlobalProperties.ContainsKey("Milestone"))
                 telemetry.Context.GlobalProperties.Add("Milestone", IsMilestone.ToString());
             telemetry.Context.Session.Id = SessionId;
+            telemetry.Context.User.Id = SessionId;
             telemetry.Context.Device.OperatingSystem = Environment.OSVersion.ToString();
             if (Properties.Settings.Default.UploadClientId != Guid.Empty)
             {
@@ -62,6 +63,7 @@ namespace Chummer
                 telemetry.Context.Cloud.RoleInstance = Properties.Settings.Default.UploadClientId.ToString();
                 telemetry.Context.Device.Id = Properties.Settings.Default.UploadClientId.ToString();
             }
+            telemetry.Context.User.Id = telemetry.Context.Device.Id;
             telemetry.Context.Component.Version = Version;
             if (System.Diagnostics.Debugger.IsAttached)
             {
