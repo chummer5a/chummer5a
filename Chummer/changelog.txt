@@ -9,6 +9,7 @@ Application Fixes:
 - Added an attribute (useselected) to bonus nodes that allows preventing the improvements from providing text to the parent object. This allow for preventing Infected qualities from listing the attributes they selected.
 - Fixed behaviour of the selectattributes bonus to properly concatenate the selected values. 
 - Fixed implementation of the LimitSpellDescriptor improvement to properly function as a whitelist instead of blacklist.
+- Added support for Geneware actually benefiting from the genetechessmultiplier improvement.  Closes #3741
 
 Application Changes:
 - Added a new improvement type that can disable a skill group selected by the user. To be used by RunnerHub customdata ruleset. 

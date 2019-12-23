@@ -46,6 +46,7 @@ namespace Chummer
 
         public enum ImprovementType
         {
+            None,
             Attribute,
             Text,
             Armor,

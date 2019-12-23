@@ -1176,9 +1176,7 @@ namespace Chummer.Backend.Equipment
 
             _nodAllowGear = objNode["allowgear"];
             // Legacy Sweep
-            if (_strForceGrade != "None" && (_strCategory.StartsWith("Genetech") ||
-                                             _strCategory.StartsWith("Genetic Infusions") ||
-                                             _strCategory.StartsWith("Genemods")))
+            if (_strForceGrade != "None" && IsGeneware)
             {
                 _strForceGrade = GetNode()?["forcegrade"]?.InnerText;
                 if (!string.IsNullOrEmpty(_strForceGrade))
@@ -2802,6 +2800,14 @@ namespace Chummer.Backend.Equipment
         #region Complex Properties
 
         /// <summary>
+        /// Ghetto workaround for flagging an object as geneware. 
+        /// </summary>
+        public bool IsGeneware =>
+            (SourceType == Improvement.ImprovementSource.Bioware &&
+             (Category.StartsWith("Genetech") || Category.StartsWith("Genetic Infusions") ||
+              Category.StartsWith("Genemods")));
+
+        /// <summary>
         /// Total Availability of the Cyberware and its plugins.
         /// </summary>
         public string TotalAvail(CultureInfo objCulture, string strLanguage)
@@ -3129,9 +3135,34 @@ namespace Chummer.Backend.Equipment
                 decTotalESSMultiplier *= 1.0m - decDiscount;
             }
 
+            void UpdateMultipliers(Improvement.ImprovementType baseMultiplier, Improvement.ImprovementType totalMultiplier, ref decimal decMultiplier, ref decimal decTotalMultiplier)
+            {
+                if (ImprovementManager.ValueOf(_objCharacter, baseMultiplier) != 0)
+                {
+                    decMultiplier = _objCharacter.Improvements
+                        .Where(objImprovement =>
+                            objImprovement.ImproveType == baseMultiplier &&
+                            objImprovement.Enabled)
+                        .Aggregate(decMultiplier,
+                            (current, objImprovement) =>
+                                current - (1m - Convert.ToDecimal(objImprovement.Value,
+                                               GlobalOptions.InvariantCultureInfo) / 100m));
+                    decESSMultiplier = Math.Floor((decESSMultiplier - 1.0m + decMultiplier) * 10.0m) / 10;
+                }
 
-            // Retrieve the Bioware or Cyberware ESS Cost Multiplier. Bioware Modifiers do not apply to Genetech.
-            if (ForceGrade == "None")
+                if (totalMultiplier == Improvement.ImprovementType.None) return;
+                if (ImprovementManager.ValueOf(_objCharacter, totalMultiplier) != 0)
+                {
+                    decTotalMultiplier = _objCharacter.Improvements
+                        .Where(x => x.Enabled && x.ImproveType == totalMultiplier)
+                        .Aggregate(decTotalESSMultiplier,
+                            (current, objImprovement) =>
+                                current * (Convert.ToDecimal(objImprovement.Value,
+                                               GlobalOptions.InvariantCultureInfo) / 100m));
+                }
+            }
+            // Retrieve the Bioware, Geneware or Cyberware ESS Cost Multiplier.
+            if (ForceGrade == "None" && !IsGeneware)
             {
                 decESSMultiplier = 1.0m;
                 decTotalESSMultiplier = 1.0m;
@@ -3139,64 +3170,20 @@ namespace Chummer.Backend.Equipment
             else
             {
                 decimal decMultiplier = 1;
-                // Apply the character's Cyberware Essence cost multiplier if applicable.
-                if (_objImprovementSource == Improvement.ImprovementSource.Cyberware)
+                switch (_objImprovementSource)
                 {
-                    if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.CyberwareEssCost) != 0)
-                    {
-                        decMultiplier = _objCharacter.Improvements
-                            .Where(objImprovement =>
-                                objImprovement.ImproveType == Improvement.ImprovementType.CyberwareEssCost &&
-                                objImprovement.Enabled)
-                            .Aggregate(decMultiplier,
-                                (current, objImprovement) =>
-                                    current - (1m - Convert.ToDecimal(objImprovement.Value,
-                                                   GlobalOptions.InvariantCultureInfo) / 100m));
-                        decESSMultiplier = Math.Floor((decESSMultiplier - 1.0m + decMultiplier) * 10.0m) / 10;
-                    }
-
-                    if (ImprovementManager.ValueOf(_objCharacter,
-                            Improvement.ImprovementType.CyberwareTotalEssMultiplier) != 0)
-                    {
-                        decTotalESSMultiplier = _objCharacter.Improvements
-                            .Where(x => x.Enabled &&
-                                        x.ImproveType == Improvement.ImprovementType.CyberwareTotalEssMultiplier)
-                            .Aggregate(decTotalESSMultiplier,
-                                (current, objImprovement) =>
-                                    current * (Convert.ToDecimal(objImprovement.Value,
-                                                   GlobalOptions.InvariantCultureInfo) / 100m));
-                    }
-                }
-
-                // Apply the character's Bioware Essence cost multiplier if applicable.
-                else if (_objImprovementSource == Improvement.ImprovementSource.Bioware)
-                {
-                    if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.BiowareEssCost) != 0)
-                    {
-                        decMultiplier = _objCharacter.Improvements
-                            .Where(objImprovement =>
-                                objImprovement.ImproveType == Improvement.ImprovementType.BiowareEssCost &&
-                                objImprovement.Enabled)
-                            .Aggregate(decMultiplier,
-                                (current, objImprovement) =>
-                                    current - (1m - Convert.ToDecimal(objImprovement.Value,
-                                                   GlobalOptions.InvariantCultureInfo) / 100m));
-                        decESSMultiplier =
-                            Math.Floor((decESSMultiplier - 1.0m + decMultiplier) * 10.0m) /
-                            10; // round down to nearest 0.1 as per bio-compatibility text
-                    }
-
-                    if (ImprovementManager.ValueOf(_objCharacter,
-                            Improvement.ImprovementType.BiowareTotalEssMultiplier) != 0)
-                    {
-                        decTotalESSMultiplier = _objCharacter.Improvements
-                            .Where(x => x.Enabled &&
-                                        x.ImproveType == Improvement.ImprovementType.BiowareTotalEssMultiplier)
-                            .Aggregate(decTotalESSMultiplier,
-                                (current, objImprovement) =>
-                                    current * (Convert.ToDecimal(objImprovement.Value,
-                                                   GlobalOptions.InvariantCultureInfo) / 100m));
-                    }
+                    // Apply the character's Cyberware Essence cost multiplier if applicable.
+                    case Improvement.ImprovementSource.Cyberware:
+                        UpdateMultipliers(Improvement.ImprovementType.CyberwareEssCost, Improvement.ImprovementType.CyberwareTotalEssMultiplier, ref decMultiplier, ref decTotalESSMultiplier);
+                        break;
+                    // Apply the character's Bioware Essence cost multiplier if applicable.
+                    case Improvement.ImprovementSource.Bioware when !IsGeneware:
+                        UpdateMultipliers(Improvement.ImprovementType.BiowareEssCost, Improvement.ImprovementType.BiowareTotalEssMultiplier, ref decMultiplier, ref decTotalESSMultiplier);
+                        break;
+                    // Apply the character's Geneware Essence cost multiplier if applicable. Since Geneware does not use Grades, we only check the genetechessmultiplier improvement.
+                    case Improvement.ImprovementSource.Bioware when IsGeneware:
+                        UpdateMultipliers(Improvement.ImprovementType.GenetechEssMultiplier, Improvement.ImprovementType.None, ref decMultiplier, ref decTotalESSMultiplier);
+                        break;
                 }
 
                 // Apply the character's Basic Bioware Essence cost multiplier if applicable.
@@ -3460,10 +3447,7 @@ namespace Chummer.Backend.Equipment
                     decReturn *= 0.9m;
 
                 // Genetech Cost multiplier.
-                if (SourceType == Improvement.ImprovementSource.Bioware &&
-                    (Category.StartsWith("Genetech") || Category.StartsWith("Genetic Infusions") ||
-                     Category.StartsWith("Genemods")) &&
-                    ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.GenetechCostMultiplier) != 0)
+                if (IsGeneware && ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.GenetechCostMultiplier) != 0)
                 {
                     decimal decMultiplier = 1.0m;
                     foreach (Improvement objImprovement in _objCharacter.Improvements)
