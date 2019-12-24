@@ -2,6 +2,10 @@
 <chummer>
   <gears>
     <gear>
+      <id>c4fecc98-0cf7-4e81-adde-bbed821850d6</id>
+	  <hide />
+	</gear>
+    <gear>
       <id>aa012c52-d39c-4b4a-bdca-a7387832cbb3</id>
       <name>Bolt: Stick-n-Shock w/Static Shaft (Pistol Crossbow)</name>
       <category>Ammunition</category>
@@ -17,7 +21,7 @@
       </weaponbonus>
     </gear>
     <gear>
-      <id>c4fecc98-0cf7-4e81-adde-bbed821850d6</id>
+      <id>114964c1-5bc3-4157-ab24-42c2e97e6d8e</id>
       <name>Bolt: Stick-n-Shock w/Static Shaft (Light Crossbow)</name>
       <category>Ammunition</category>
       <rating>0</rating>

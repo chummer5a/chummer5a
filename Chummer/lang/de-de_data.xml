@@ -19203,6 +19203,30 @@
 				<translate>Exzellente Reagenzien, radikal</translate>
 				<altpage>180</altpage>
 			</gear>
+			<gear translated="True">
+				<id>aa012c52-d39c-4b4a-bdca-a7387832cbb3</id>
+				<name>Bolt: Stick-n-Shock w/Static Shaft (Pistol Crossbow)</name>
+				<translate>Bolzen: Schockerspitze mit Statikschaft (Pistolenarmbrust)</translate>
+				<altpage>180</altpage>
+			</gear>
+			<gear translated="True">
+				<id>114964c1-5bc3-4157-ab24-42c2e97e6d8e</id>
+				<name>Bolt: Stick-n-Shock w/Static Shaft (Light Crossbow)</name>
+				<translate>Bolzen: Schockerspitze mit Statikschaft (Leichte Armbrust)</translate>
+				<altpage>180</altpage>
+			</gear>
+			<gear translated="True">
+				<id>77c757f7-d597-4668-8a25-22383f10e7a0</id>
+				<name>Bolt: Stick-n-Shock w/Static Shaft (Medium Crossbow)</name>
+				<translate>Bolzen: Schockerspitze mit Statikschaft (Mittlere Armbrust)</translate>
+				<altpage>180</altpage>
+			</gear>
+			<gear translated="True">
+				<id>7dedd68b-baae-496f-a978-aede00403950</id>
+				<name>Bolt: Stick-n-Shock w/Static Shaft (Heavy Crossbow)</name>
+				<translate>Bolzen: Schockerspitze mit Statikschaft (Schwere Armbrust)</translate>
+				<altpage>180</altpage>
+			</gear>
 		</gears>
 	</chummer>
 	<chummer file="lifestyles.xml">
