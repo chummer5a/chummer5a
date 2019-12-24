@@ -4887,7 +4887,7 @@ namespace Chummer.Backend.Equipment
             }
             else
             {
-                if (_objCharacter.Created && objVehicle == null)
+                if (_objCharacter.Created && objVehicle == null && _objParent == null)
                 {
                     _objCharacter.DecreaseEssenceHole((int) (CalculatedESS() * 100),
                         SourceID == Cyberware.EssenceAntiHoleGUID);
