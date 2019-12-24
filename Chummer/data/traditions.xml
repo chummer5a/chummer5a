@@ -515,7 +515,6 @@
       <drain>WIL + CHA</drain>
       <source>FA</source>
       <page>64</page>
-      <page>62</page>
       <bonus>
         <addmetamagic>Exorcism</addmetamagic>
         <skilldisable>Binding</skilldisable>

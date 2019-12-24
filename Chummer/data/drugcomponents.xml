@@ -382,7 +382,7 @@
     </drug>
     <drug>
       <id>1135e850-8371-4827-b2fe-94f5659583d4</id>
-      <name>Ondanstron</name>
+      <name>Ondansetron</name>
       <category>Drugs</category>
       <rating>0</rating>
       <source>BB</source>
@@ -748,7 +748,7 @@
     </drug>
     <drug>
       <id>7fdde8cd-95f8-4316-9ca4-2ad06f77cb15</id>
-      <name>Oxygenated Flurocarbons</name>
+      <name>Oxygenated Fluorocarbons</name>
       <category>Drugs</category>
       <rating>0</rating>
       <source>CF</source>
