@@ -1108,6 +1108,7 @@ namespace Chummer
                             gpbInitiationType.Text = LanguageManager.GetString("String_InitiationType", GlobalOptions.Language);
                             gpbInitiationGroup.Text = LanguageManager.GetString("String_InitiationGroup", GlobalOptions.Language);
 
+                            chkInitiationSchooling.Enabled = true;
                             tsMetamagicAddArt.Visible = true;
                             tsMetamagicAddEnchantment.Visible = true;
                             tsMetamagicAddEnhancement.Visible = true;
@@ -1174,6 +1175,7 @@ namespace Chummer
                             gpbInitiationType.Text = LanguageManager.GetString("String_SubmersionType", GlobalOptions.Language);
                             gpbInitiationGroup.Text = LanguageManager.GetString("String_SubmersionNetwork", GlobalOptions.Language);
 
+                            chkInitiationSchooling.Enabled = CharacterObjectOptions.AllowTechnomancerSchooling;
                             tsMetamagicAddArt.Visible = false;
                             tsMetamagicAddEnchantment.Visible = false;
                             tsMetamagicAddEnhancement.Visible = false;
@@ -8369,6 +8371,24 @@ namespace Chummer
             IsCharacterUpdateRequested = true;
         }
 
+        private void chkInitiationSchooling_CheckedChanged(object sender, EventArgs e)
+        {
+            if (IsRefreshing)
+                return;
+
+            IsCharacterUpdateRequested = true;
+
+            IsDirty = true;
+        }
+
+        private void chkInitiationSchooling_EnabledChanged(object sender, EventArgs e)
+        {
+            if (!chkInitiationSchooling.Enabled)
+            {
+                chkInitiationSchooling.Checked = false;
+            }
+        }
+
         private void treMetamagic_AfterSelect(object sender, TreeViewEventArgs e)
         {
             switch (treMetamagic.SelectedNode?.Tag)
@@ -14365,16 +14385,6 @@ namespace Chummer
             if (_objStoryBuilder == null)
                 _objStoryBuilder = new StoryBuilder(CharacterObject);
             CharacterObject.Background = _objStoryBuilder.GetStory(GlobalOptions.Language);
-        }
-
-        private void chkInitiationSchooling_CheckedChanged(object sender, EventArgs e)
-        {
-            if (IsRefreshing)
-                return;
-
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
         }
 
         private void mnuSpecialConfirmValidity_Click(object sender, EventArgs e)

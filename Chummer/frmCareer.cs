@@ -1300,6 +1300,7 @@ namespace Chummer
                             LanguageManager.GetString("String_InitiationType");
                         gpbInitiationGroup.Text =
                             LanguageManager.GetString("String_InitiationGroup");
+                        chkInitiationSchooling.Enabled = true;
                         tsMetamagicAddArt.Visible = true;
                         tsMetamagicAddEnchantment.Visible = true;
                         tsMetamagicAddEnhancement.Visible = true;
@@ -1362,6 +1363,7 @@ namespace Chummer
                             LanguageManager.GetString("String_SubmersionType");
                         gpbInitiationGroup.Text =
                             LanguageManager.GetString("String_SubmersionNetwork");
+                        chkInitiationSchooling.Enabled = CharacterObjectOptions.AllowTechnomancerSchooling;
                         tsMetamagicAddArt.Visible = false;
                         tsMetamagicAddEnchantment.Visible = false;
                         tsMetamagicAddEnhancement.Visible = false;
@@ -12150,6 +12152,14 @@ namespace Chummer
             if (!chkInitiationGroup.Enabled)
             {
                 chkInitiationGroup.Checked = false;
+            }
+        }
+
+        private void chkInitiationSchooling_EnabledChanged(object sender, EventArgs e)
+        {
+            if (!chkInitiationSchooling.Enabled)
+            {
+                chkInitiationSchooling.Checked = false;
             }
         }
 

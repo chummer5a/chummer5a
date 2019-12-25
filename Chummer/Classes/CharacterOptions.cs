@@ -115,7 +115,7 @@ namespace Chummer
         private bool _blnCompensateSkillGroupKarmaDifference;
         private bool _cyberwareRounding;
         private bool _increasedImprovedAbilityMultiplier;
-
+        private bool _blnAllowTechnomancerSchooling;
         private string _strBookXPath = string.Empty;
         private string _strExcludeLimbSlot = string.Empty;
         
@@ -406,6 +406,8 @@ namespace Chummer
             objWriter.WriteElementString("usecalculatedpublicawareness", _blnUseCalculatedPublicAwareness.ToString());
             // <increasedimprovedabilitymodifier />
             objWriter.WriteElementString("increasedimprovedabilitymodifier", _increasedImprovedAbilityMultiplier.ToString());
+            // <allowtechnomancerschooling />
+            objWriter.WriteElementString("allowtechnomancerschooling", _blnAllowTechnomancerSchooling.ToString());
 
             // <karmacost>
             objWriter.WriteStartElement("karmacost");
@@ -769,6 +771,8 @@ namespace Chummer
             objXmlNode.TryGetBoolFieldQuickly("usecalculatedpublicawareness", ref _blnUseCalculatedPublicAwareness);
             // House Rule: Whether Improved Ability should be capped at 0.5 (false) or 1.5 (true) of the target skill's Learned Rating.
             objXmlNode.TryGetBoolFieldQuickly("increasedimprovedabilitymodifier", ref _increasedImprovedAbilityMultiplier);
+            // House Rule: Whether Technomancers should be allowed to receive Schooling discounts in the same manner as Awakened. 
+            objXmlNode.TryGetBoolFieldQuickly("allowtechnomancerschooling", ref _blnAllowTechnomancerSchooling);
             
             objXmlNode = objXmlDocument.SelectSingleNode("//settings/karmacost");
             // Attempt to populate the Karma values.
@@ -2379,6 +2383,15 @@ namespace Chummer
         {
             get => _increasedImprovedAbilityMultiplier;
             set => _increasedImprovedAbilityMultiplier = value;
+        }
+
+        /// <summary>
+        /// Whether Technomancers are allowed to use the Schooling discount on their initiations in the same manner as awakened. 
+        /// </summary>
+        public bool AllowTechnomancerSchooling
+        {
+            get => _blnAllowTechnomancerSchooling;
+            set => _blnAllowTechnomancerSchooling = value;
         }
 
         #endregion

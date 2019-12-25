@@ -7956,6 +7956,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Searching in selection forms is restricted to the current Category</text>
     </string>
     <string>
+      <key>Checkbox_Options_AllowTechnomancerSchooling</key>
+      <text>Technomancer: Allow \'Schooling\' Initiation discounts</text>
+    </string>
+    <string>
       <key>Button_ToggleSourcebooks</key>
       <text>Toggle all Sourcebooks On/Off</text>
     </string>

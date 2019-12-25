@@ -26,6 +26,7 @@ Application Changes:
   - LimitSpellRange prevents taking spells that do not match a given Range.
   - AllowSpellRange allows purchasing Spells of a given Range that would otherwise be filtered by Improvements such as LimitSpell.
   - BlockSpellDescriptor prevents taking Spells that have a given Descriptor. Replaces the previous implementation of LimitSpellDescriptor.
+- Added an optional rule to suppress Technomancers taking the Schooling Initiation discount, as this isn't present in any of the sourcebooks.
 
 Application Fixes:
 - Fixed an issue with the Point Buy form incorrectly setting metavariant metatypes to be themselves (ie Dryad (Dryad)).
@@ -49,6 +50,7 @@ Data Changes:
 New Strings:
 - String_DisableSkillGroupPrompt
 - Message_CyberzombieRequirementsImprovement
+- Checkbox_Options_AllowTechnomancerSchooling
 
 Build 209
 
