@@ -12330,6 +12330,22 @@ namespace Chummer
                 strMessage += Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_InvalidKnowledgeSkillExcess", GlobalOptions.Language), ((CharacterObject.SkillsSection.KnowledgeSkillPointsRemain) * -1).ToString(GlobalOptions.CultureInfo));
             }
 
+            if (CharacterObject.SkillsSection.Skills.Any(s => s.Specializations.Count > 1))
+            {
+                blnValid = false;
+                strMessage += Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_InvalidActiveSkillExcessSpecializations", GlobalOptions.Language), ((CharacterObject.SkillsSection.KnowledgeSkillPointsRemain) * -1).ToString(GlobalOptions.CultureInfo));
+                foreach (Skill objSkill in CharacterObject.SkillsSection.Skills.Where(s => s.Specializations.Count > 1))
+                {
+                    string s = string.Empty;
+                    foreach (SkillSpecialization spec in objSkill.Specializations)
+                    {
+                        s += spec.DisplayName(GlobalOptions.Language);
+                    }
+
+                    strMessage += Environment.NewLine + $"{objSkill.DisplayName} ({s})";
+                }
+            }
+
             // Check if the character has gone over the Nuyen limit.
             decimal decNuyen = CalculateNuyen();
             if (decNuyen < 0)

@@ -2553,6 +2553,10 @@
       <text>{0} over allotted Active Skill point limit</text>
     </string>
     <string>
+      <key>Message_InvalidActiveSkillExcessSpecializations</key>
+      <text>One or more Active Skills have more than one Specialization:</text>
+    </string>
+    <string>
       <key>Message_InvalidKnowledgeSkillExcess</key>
       <text>{0} over allotted Knowledge Skill point limit</text>
     </string>

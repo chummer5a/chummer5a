@@ -11,6 +11,7 @@ Application Fixes:
 - Fixed implementation of the LimitSpellDescriptor improvement to properly function as a whitelist instead of blacklist.
 - Added support for Geneware actually benefiting from the genetechessmultiplier improvement.  Closes #3741
 - Fixed an issue with the Purchase method for cyberware that would cause Child items to always consume Essence Holes, even if being installed in parent items. Clsoes #3959
+- Added a validity check for whether a character has been given two specialisations incorrectly in some cases during create mode. Mostly should only happen with house rules active.
 
 Application Changes:
 - Added a new improvement type that can disable a skill group selected by the user. To be used by RunnerHub customdata ruleset. 
