@@ -3549,6 +3549,64 @@ namespace Chummer.Classes
             }
         }
 
+        public void weaponspecificdice(XmlNode bonusNode)
+        {
+            Log.Info("weaponspecificdice");
+            Log.Info("weaponspecificdice = " + bonusNode.OuterXml);
+            List<ListItem> lstGeneralItems = new List<ListItem>();
+            if (bonusNode.Attributes?["type"] != null)
+            {
+                foreach (Weapon objWeapon in _objCharacter.Weapons.Where(weapon =>
+                    weapon.WeaponType == bonusNode.Attributes?["type"].InnerText))
+                {
+                    lstGeneralItems.Add(new ListItem(objWeapon.InternalId, objWeapon.DisplayName(GlobalOptions.Language)));
+                }
+            }
+            else
+            {
+                foreach (Weapon objWeapon in _objCharacter.Weapons)
+                {
+                    lstGeneralItems.Add(new ListItem(objWeapon.InternalId, objWeapon.DisplayName(GlobalOptions.Language)));
+                }
+            }
+
+            frmSelectItem frmPickWeapon = new frmSelectItem
+            {
+                GeneralItems = lstGeneralItems,
+                Description = !string.IsNullOrEmpty(_strFriendlyName)
+                    ? string.Format(
+                        LanguageManager.GetString("String_Improvement_SelectSkillNamed", GlobalOptions.Language),
+                        _strFriendlyName)
+                    : LanguageManager.GetString("Title_SelectWeapon", GlobalOptions.Language)
+            };
+            Log.Info("_strForcedValue = " + ForcedValue);
+            if (!string.IsNullOrEmpty(ForcedValue))
+            {
+                frmPickWeapon.Opacity = 0;
+                frmPickWeapon.ForceItem = ForcedValue;
+            }
+
+            frmPickWeapon.ShowDialog();
+
+            // Make sure the dialogue window was not canceled.
+            if (frmPickWeapon.DialogResult == DialogResult.Cancel)
+            {
+                throw new AbortedException();
+            }
+
+            Weapon objSelectedWeapon = _objCharacter.Weapons.FirstOrDefault(weapon => weapon.InternalId == frmPickWeapon.SelectedItem);
+            if (objSelectedWeapon == null)
+            {
+                throw new AbortedException();
+            }
+            SelectedValue = objSelectedWeapon.Name;
+            frmPickWeapon.Dispose();
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(objSelectedWeapon.InternalId, _objImprovementSource, SourceName,
+                Improvement.ImprovementType.WeaponSpecificDice, _strUnique,
+                ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
         // Check for Mentor Spirit bonuses.
         public void selectmentorspirit(XmlNode bonusNode)
         {

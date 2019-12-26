@@ -12,6 +12,7 @@ Application Fixes:
 - Added support for Geneware actually benefiting from the genetechessmultiplier improvement.  Closes #3741
 - Fixed an issue with the Purchase method for cyberware that would cause Child items to always consume Essence Holes, even if being installed in parent items. Clsoes #3959
 - Added a validity check for whether a character has been given two specialisations incorrectly in some cases during create mode. Mostly should only happen with house rules active.
+- Refactored tooltip code for weapons to properly show sources of bonuses.
 
 Application Changes:
 - Added a new improvement type that can disable a skill group selected by the user. To be used by RunnerHub customdata ruleset. 
@@ -28,6 +29,8 @@ Application Changes:
   - AllowSpellRange allows purchasing Spells of a given Range that would otherwise be filtered by Improvements such as LimitSpell.
   - BlockSpellDescriptor prevents taking Spells that have a given Descriptor. Replaces the previous implementation of LimitSpellDescriptor.
 - Added an optional rule to suppress Technomancers taking the Schooling Initiation discount, as this isn't present in any of the sourcebooks.
+- Added a new improvement type, weaponspecificdice. This provides a dicepool bonus to a specific weapon, idenfiied by its internalid. Optional attribute "type" allows filtering by ranged or melee weapons. Used by weapon foci.
+- Replaced selectweapon bonus on weapon foci with weaponspecificdice, as above.
 
 Application Fixes:
 - Fixed an issue with the Point Buy form incorrectly setting metavariant metatypes to be themselves (ie Dryad (Dryad)).

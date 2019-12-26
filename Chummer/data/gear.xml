@@ -9748,7 +9748,7 @@
       <page>320</page>
       <avail>(Rating * 4)R</avail>
       <bonus>
-        <selectweapon />
+        <weaponspecificdice type="Melee">Rating</weaponspecificdice>
       </bonus>
       <cost>Rating * 7000</cost>
     </gear>

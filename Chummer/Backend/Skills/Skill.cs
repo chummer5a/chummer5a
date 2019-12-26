@@ -1039,12 +1039,21 @@ namespace Chummer.Backend.Skills
 
         public bool HasSpecialization(string strSpecialization)
         {
-
             if (IsExoticSkill)
             {
                 return ((ExoticSkill)this).Specific == strSpecialization;
             }
             return Specializations.Any(x => (x.Name == strSpecialization || x.DisplayName(GlobalOptions.Language) == strSpecialization)) && !CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects && x.UniqueName == Name && string.IsNullOrEmpty(x.Condition) && x.Enabled);
+        }
+
+        public SkillSpecialization GetSpecialization(string strSpecialization)
+        {
+
+            if (IsExoticSkill && ((ExoticSkill)this).Specific == strSpecialization)
+            {
+                return Specializations[0];
+            }
+            return HasSpecialization(strSpecialization) ? Specializations.FirstOrDefault(x => x.Name == strSpecialization || x.DisplayName(GlobalOptions.Language) == strSpecialization) : null;
         }
 
         public string PoolToolTip => CompileDicepoolTooltip(Attribute);

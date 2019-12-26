@@ -69,6 +69,7 @@ namespace Chummer
             EnhancedArticulation,
             WeaponCategoryDV,
             WeaponCategoryDice,
+            WeaponSpecificDice,
             CyberwareEssCost,
             CyberwareTotalEssMultiplier,
             CyberwareEssCostNonRetroactive,

@@ -3813,18 +3813,11 @@ namespace Chummer.Backend.Equipment
                                 intDicePoolModifier++;
                             }
                         }
-
-                        string strWeaponBonusPool = ParentVehicle.Gear.DeepFindById(AmmoLoaded)?.WeaponBonus?["pool"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strWeaponBonusPool))
-                            intDicePoolModifier += Convert.ToInt32(strWeaponBonusPool);
                         break;
                     }
                 case FiringMode.GunneryCommandDevice:
                     {
                         intDicePool = _objCharacter.SkillsSection.GetActiveSkill("Gunnery").PoolOtherAttribute(_objCharacter.LOG.TotalValue, "LOG");
-                        string strWeaponBonusPool = ParentVehicle.Gear.DeepFindById(AmmoLoaded)?.WeaponBonus?["pool"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strWeaponBonusPool))
-                            intDicePoolModifier += Convert.ToInt32(strWeaponBonusPool);
 
                         if (WeaponAccessories.FirstOrDefault(accessory => accessory.Name.StartsWith("Smartgun") && accessory.WirelessOn) != null)
                         {
@@ -3838,9 +3831,6 @@ namespace Chummer.Backend.Equipment
                 case FiringMode.RemoteOperated:
                     {
                         intDicePool = _objCharacter.SkillsSection.GetActiveSkill("Gunnery").PoolOtherAttribute(_objCharacter.LOG.TotalValue, "LOG");
-                        string strWeaponBonusPool = ParentVehicle.Gear.DeepFindById(AmmoLoaded)?.WeaponBonus?["pool"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strWeaponBonusPool))
-                            intDicePoolModifier += Convert.ToInt32(strWeaponBonusPool);
 
                         if (WeaponAccessories.FirstOrDefault(accessory => accessory.Name.StartsWith("Smartgun") && accessory.WirelessOn) != null)
                         {
@@ -3854,9 +3844,6 @@ namespace Chummer.Backend.Equipment
                 case FiringMode.ManualOperation:
                     {
                         intDicePool = _objCharacter.SkillsSection.GetActiveSkill("Gunnery").Pool;
-                        string strWeaponBonusPool = ParentVehicle.Gear.DeepFindById(AmmoLoaded)?.WeaponBonus?["pool"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strWeaponBonusPool))
-                            intDicePoolModifier += Convert.ToInt32(strWeaponBonusPool);
 
                         if (WeaponAccessories.FirstOrDefault(accessory => accessory.Name.StartsWith("Smartgun") && accessory.WirelessOn) != null)
                         {
@@ -3881,10 +3868,6 @@ namespace Chummer.Backend.Equipment
                             }
                         }
 
-                        string strWeaponBonusPool = _objCharacter.Gear.DeepFindById(AmmoLoaded)?.WeaponBonus?["pool"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strWeaponBonusPool))
-                            intDicePoolModifier += Convert.ToInt32(strWeaponBonusPool);
-
                         if (WeaponAccessories.FirstOrDefault(accessory => accessory.Name.StartsWith("Smartgun") && accessory.WirelessOn) != null)
                         {
                             intDicePoolModifier +=
@@ -3892,11 +3875,19 @@ namespace Chummer.Backend.Equipment
                         }
 
                         intDicePoolModifier += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponCategoryDice, false, Category);
+                        intDicePoolModifier += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponSpecificDice, false, InternalId);
                         break;
                     }
                 default:
                     throw new ArgumentOutOfRangeException(nameof(FireMode));
             }
+
+            string strWeaponBonusPool = ParentVehicle != null
+                ? ParentVehicle.Gear.DeepFindById(AmmoLoaded)?.WeaponBonus?["pool"]?.InnerText
+                : _objCharacter.Gear.DeepFindById(AmmoLoaded)?.WeaponBonus?["pool"]?.InnerText;
+
+            if (!string.IsNullOrEmpty(strWeaponBonusPool))
+                intDicePoolModifier += Convert.ToInt32(strWeaponBonusPool);
 
             return (intDicePool + intDicePoolModifier).ToString(objCulture) + strExtra;
         }
@@ -4016,97 +4007,121 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                string strCategory = Category;
-                string strSkill = UseSkill;
-                string strSpec  = UseSkillSpec;
-
-                // If this is a Special Weapon, use the Range to determine the required Active Skill (if present).
-                if (strCategory == "Special Weapons" && !string.IsNullOrEmpty(Range))
-                    strCategory = Range;
-
-                // Exotic Skills require a matching Specialization.
-                if (string.IsNullOrEmpty(strSkill))
+                StringBuilder strBld = new StringBuilder();
+                string strSpaceCharacter = LanguageManager.GetString("String_Space");
+                switch (FireMode)
                 {
-                    switch (strCategory)
+                    //TODO: Gunnery specialisations (Dear god why is Ballistic a specialisation)
+                    case FiringMode.DogBrain:
+                        {
+                            Gear objAutosoft = ParentVehicle.Gear.DeepFirstOrDefault(x => x.Children,
+                                x => x.Name == "[Weapon] Targeting Autosoft" &&
+                                     (x.Extra == Name || x.Extra == DisplayName(GlobalOptions.Language)));
+
+                            if (objAutosoft != null)
+                            {
+                                strBld.Append(
+                                    $"{LanguageManager.GetString("String_Pilot")}{strSpaceCharacter}({ParentVehicle.Pilot})" +
+                                    $"{strSpaceCharacter}+{strSpaceCharacter}" +
+                                    $"{objAutosoft.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)}" +
+                                    $"{strSpaceCharacter}({objAutosoft.Rating})");
+                            }
+                            else
+                            {
+                                return "";
+                            }
+                            break;
+                        }
+                    case FiringMode.RemoteOperated:
+                        //TODO: how/why are these different?
+                    case FiringMode.GunneryCommandDevice:
+                        {
+                            Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill("Gunnery");
+                            strBld.Append($"{strSpaceCharacter}+{objSkill.DisplayName}[{_objCharacter.LOG.DisplayAbbrev}]{strSpaceCharacter}" +
+                                          $"({objSkill.PoolOtherAttribute(_objCharacter.LOG.TotalValue, "LOG")})");
+                            break;
+                        }
+                    case FiringMode.ManualOperation:
+                        {
+                            Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill("Gunnery");
+                            strBld.Append($"{strSpaceCharacter}+{objSkill.DisplayName}[{objSkill.AttributeObject.DisplayAbbrev}]{strSpaceCharacter}({objSkill.Pool})");
+                            break;
+                        }
+                    case FiringMode.Skill:
+                        {
+                            Skill objSkill = Skill;
+                            if (objSkill != null)
+                            {
+                                strBld.Append($"{objSkill.DisplayName}[{objSkill.AttributeObject.DisplayAbbrev}] ({objSkill.Pool})");
+                                // If the character has a Specialization, include it in the Dice Pool string.
+                                if (objSkill.Specializations.Count > 0 && !objSkill.IsExoticSkill)
+                                {
+                                    SkillSpecialization spec =
+                                        objSkill.GetSpecialization(DisplayNameShort(GlobalOptions.Language)) ??
+                                        objSkill.GetSpecialization(Name) ??
+                                        objSkill.GetSpecialization(DisplayCategory(GlobalOptions.DefaultLanguage)) ??
+                                        objSkill.GetSpecialization(Category);
+
+                                        if (spec == null && !string.IsNullOrWhiteSpace(objSkill.Specialization))
+                                        {
+                                            spec = objSkill.GetSpecialization(Spec) ?? objSkill.GetSpecialization(Spec2);
+                                        }
+
+                                    if (spec != null)
+                                    {
+                                        strBld.Append($"{strSpaceCharacter}({2.ToString(GlobalOptions.CultureInfo)})");
+                                    }
+                                }
+                            }
+
+                            break;
+                        }
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(FireMode));
+                }
+
+                foreach (WeaponAccessory wa in WeaponAccessories.Where(a => a.Equipped && a.DicePool != 0))
+                {
+                    strBld.Append($"{strSpaceCharacter}+{wa.DisplayName(GlobalOptions.Language)} ({wa.DicePool})");
+                }
+
+                Gear objLoadedAmmo = ParentVehicle != null
+                    ? ParentVehicle.Gear.DeepFindById(AmmoLoaded)
+                    : _objCharacter.Gear.DeepFindById(AmmoLoaded);
+                if (objLoadedAmmo != null && objLoadedAmmo.WeaponBonus?["pool"]?.InnerText != string.Empty)
+                {
+                    strBld.Append($"{strSpaceCharacter}+{objLoadedAmmo.DisplayNameShort(GlobalOptions.Language)}" +
+                                  $"{strSpaceCharacter}({objLoadedAmmo?.WeaponBonus?["pool"]?.InnerText})");
+                }
+                if (ParentVehicle == null)
+                {
+                    if (WeaponAccessories.FirstOrDefault(accessory => accessory.Name.StartsWith("Smartgun") && accessory.WirelessOn) != null)
                     {
-                        case "Bows":
-                        case "Crossbows":
-                            strSkill = "Archery";
-                            break;
-                        case "Assault Rifles":
-                        case "Carbines":
-                        case "Machine Pistols":
-                        case "Submachine Guns":
-                            strSkill = "Automatics";
-                            break;
-                        case "Blades":
-                            strSkill = "Blades";
-                            break;
-                        case "Clubs":
-                        case "Improvised Weapons":
-                            strSkill = "Clubs";
-                            break;
-                        case "Exotic Melee Weapons":
-                            strSkill = "Exotic Melee Weapon";
-                            strSpec = UseSkillSpec;
-                            break;
-                        case "Exotic Ranged Weapons":
-                        case "Special Weapons":
-                            strSkill = "Exotic Ranged Weapon";
-                            strSpec = UseSkillSpec;
-                            break;
-                        case "Flamethrowers":
-                            strSkill = "Exotic Ranged Weapon";
-                            strSpec = "Flamethrowers";
-                            break;
-                        case "Laser Weapons":
-                            strSkill = "Exotic Ranged Weapon";
-                            strSpec = "Laser Weapons";
-                            break;
-                        case "Assault Cannons":
-                        case "Grenade Launchers":
-                        case "Missile Launchers":
-                        case "Light Machine Guns":
-                        case "Medium Machine Guns":
-                        case "Heavy Machine Guns":
-                            strSkill = "Heavy Weapons";
-                            break;
-                        case "Shotguns":
-                        case "Sniper Rifles":
-                        case "Sporting Rifles":
-                            strSkill = "Longarms";
-                            break;
-                        case "Throwing Weapons":
-                            strSkill = "Throwing Weapons";
-                            break;
-                        case "Unarmed":
-                            strSkill = "Unarmed Combat";
-                            break;
-                        default:
-                            strSkill = "Pistols";
-                            break;
+                        strBld.Append($"{strSpaceCharacter}+{LanguageManager.GetString("Tip_Skill_Smartlink")}"+$"{strSpaceCharacter}" +
+                                      $"({ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Smartlink)})");
+                    }
+
+                    foreach (Improvement objImprovement in _objCharacter.Improvements
+                        .Where(objImprovement => objImprovement.Enabled && (objImprovement.ImproveType == Improvement.ImprovementType.WeaponCategoryDice &&
+                                                 objImprovement.ImprovedName == Category || objImprovement.ImproveType == Improvement.ImprovementType.WeaponSpecificDice &&
+                                                 objImprovement.ImprovedName == InternalId)  && string.IsNullOrEmpty(objImprovement.Condition)))
+                    {
+                        strBld.Append($"{strSpaceCharacter}+{strSpaceCharacter}{_objCharacter.GetObjectName(objImprovement, GlobalOptions.Language)}" +
+                                      $"{strSpaceCharacter}({objImprovement.Value.ToString(GlobalOptions.CultureInfo)})");
+                    }
+                }
+                else
+                {
+                    if (WeaponAccessories.FirstOrDefault(accessory => accessory.Name.StartsWith("Smartgun") && accessory.WirelessOn) != null)
+                    {
+                        if (ParentVehicle.Gear.DeepFirstOrDefault(x => x.Children, x => x.Name == "Smartsoft") != null)
+                        {
+                            strBld.Append($" + {LanguageManager.GetString("Tip_Skill_Smartlink")} (1)");
+                        }
                     }
                 }
 
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
-                // Locate the Active Skill to be used.
-                string strKey = strSkill;
-                if (!string.IsNullOrEmpty(strSpec))
-                    strKey += strSpaceCharacter + '(' + strSpec + ')';
-                Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill(strKey);
-                int intDicePool = 0;
-                if (objSkill != null)
-                {
-                    intDicePool = objSkill.Pool;
-                    strKey = objSkill.IsExoticSkill ? $"{objSkill.DisplayName}: {((ExoticSkill) objSkill).Specific}" : objSkill.DisplayName;
-                }
-                string strReturn = $"{strKey}{strSpaceCharacter}({intDicePool.ToString(GlobalOptions.CultureInfo)})";
-
-                if (string.IsNullOrEmpty(objSkill?.Specialization) || objSkill.IsExoticSkill) return strReturn;
-                if (objSkill.HasSpecialization(DisplayNameShort(GlobalOptions.Language)) || objSkill.HasSpecialization(Name) || objSkill.HasSpecialization(DisplayCategory(GlobalOptions.DefaultLanguage)) || objSkill.HasSpecialization(Category) || (!string.IsNullOrEmpty(objSkill.Specialization) && (objSkill.HasSpecialization(Spec) || objSkill.HasSpecialization(Spec2))))
-                    strReturn += strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("String_ExpenseSpecialization", GlobalOptions.Language) + strSpaceCharacter + '(' + 2.ToString(GlobalOptions.CultureInfo) + ')';
-
-                return strReturn;
+                return strBld.ToString();
             }
         }
 

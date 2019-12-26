@@ -274,6 +274,8 @@ namespace Chummer
                     return objImprovementAdder.weaponcategorydv;
                 case "WEAPONCATEGORYDICE":
                     return objImprovementAdder.weaponcategorydice;
+                case "WEAPONSPECIFICDICE":
+                    return objImprovementAdder.weaponspecificdice;
                 case "SELECTMENTORSPIRIT":
                     return objImprovementAdder.selectmentorspirit;
                 case "SELECTPARAGON":

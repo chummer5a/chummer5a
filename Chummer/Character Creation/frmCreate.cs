@@ -7195,7 +7195,7 @@ namespace Chummer
                         ImprovementManager.ForcedValue = objGear.Extra.TrimEndOnce(", Hacked");
                     }
                     bool blnAddBonus = true;
-                    if (objGear.Name == "Qi Focus")
+                    if (objGear.Category == "Foci" || objGear.Category == "Metamagic Foci" || objGear.Category == "Stacked Focus")
                     {
                         if (!objGear.Bonded)
                             blnAddBonus = false;
@@ -9746,7 +9746,8 @@ namespace Chummer
                 lblCyberwareSource.Visible = false;
             }
 
-            if (treCyberware.SelectedNode?.Tag is IHasStolenProperty loot)
+            if (treCyberware.SelectedNode?.Tag is IHasStolenProperty loot && CharacterObject.Improvements.Any(i =>
+                    i.ImproveType == Improvement.ImprovementType.Nuyen && i.ImprovedName == "Stolen"))
             {
                 chkCyberwareStolen.Visible = true;
                 chkCyberwareStolen.Checked = loot.Stolen;
@@ -9965,7 +9966,8 @@ namespace Chummer
                 lblWeaponRatingLabel.Text = LanguageManager.GetString("Label_RatingFormat").Replace("{0}", LanguageManager.GetString(objHasRating.RatingLabel, GlobalOptions.Language));
             }
 
-            if (treWeapons.SelectedNode?.Tag is IHasStolenProperty loot)
+            if (treWeapons.SelectedNode?.Tag is IHasStolenProperty loot && CharacterObject.Improvements.Any(i =>
+                    i.ImproveType == Improvement.ImprovementType.Nuyen && i.ImprovedName == "Stolen"))
             {
                 chkWeaponStolen.Visible = true;
                 chkWeaponStolen.Checked = loot.Stolen;
@@ -10347,7 +10349,8 @@ namespace Chummer
                 lblArmorSource.Visible = false;
             }
 
-            if (treArmor.SelectedNode?.Tag is IHasStolenProperty loot)
+            if (treArmor.SelectedNode?.Tag is IHasStolenProperty loot && CharacterObject.Improvements.Any(i =>
+                    i.ImproveType == Improvement.ImprovementType.Nuyen && i.ImprovedName == "Stolen"))
             {
                 chkArmorStolen.Visible = true;
                 chkArmorStolen.Checked = loot.Stolen;
@@ -10574,7 +10577,8 @@ namespace Chummer
                 return;
             }
 
-            if (treGear.SelectedNode?.Tag is IHasStolenProperty loot)
+            if (treGear.SelectedNode?.Tag is IHasStolenProperty loot && CharacterObject.Improvements.Any(i =>
+                    i.ImproveType == Improvement.ImprovementType.Nuyen && i.ImprovedName == "Stolen"))
             {
                 chkGearStolen.Visible = true;
                 chkGearStolen.Checked = loot.Stolen;
@@ -11389,7 +11393,8 @@ namespace Chummer
             }
 
             string strSpace = LanguageManager.GetString("String_Space", GlobalOptions.Language);
-            if (treVehicles.SelectedNode?.Tag is IHasStolenProperty selectedLoot)
+            if (treVehicles.SelectedNode?.Tag is IHasStolenProperty selectedLoot && CharacterObject.Improvements.Any(i =>
+                    i.ImproveType == Improvement.ImprovementType.Nuyen && i.ImprovedName == "Stolen"))
             {
                 chkVehicleStolen.Visible = true;
                 chkVehicleStolen.Checked = selectedLoot.Stolen;
