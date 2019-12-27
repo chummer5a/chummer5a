@@ -891,10 +891,6 @@
 			<text>Ihre Essenz muss kleiner als 0 sein.</text>
 		</string>
 		<string>
-			<key>Message_CyberzombieRequirementsStimulator</key>
-			<text>Sie müssen einen aktiven Gedächtnisverstärker besitzen.</text>
-		</string>
-		<string>
 			<key>MessageTitle_CyberzombieRequirements</key>
 			<text>Anforderungen für Cyberzombies</text>
 		</string>
@@ -7357,10 +7353,6 @@
 			<text>KI Programm oder fortgeschrittenes Programm auswählen</text>
 		</string>
 		<string>
-			<key>Message_SelectAIProgram_AdvancedProgramRequirement</key>
-			<text>Sie erfüllen nicht alle Anforderungen für dieses fortgeschrittene Programm. Die folgenden Programme müssen gelernt werden: </text>
-		</string>
-		<string>
 			<key>MessageTitle_SelectAIProgram_AdvancedProgramRequirement</key>
 			<text>Anforderung des fortgeschrittenen Programms</text>
 		</string>
@@ -7475,10 +7467,6 @@
 			<text>Charakternotizen</text>
 		</string>
 		<string>
-			<key>Label_SelectAdvancedLifestyle_Base_Comforts</key>
-			<text>[{0}/{1}]</text>
-		</string>
-		<string>
 			<key>String_DataProcessing</key>
 			<text>Datenverarbeitung</text>
 		</string>
@@ -7583,10 +7571,6 @@
 			<text>Zweite Chance</text>
 		</string>
 		<string>
-			<key>Label_SelectAdvancedLifestyle_Base_Security</key>
-			<text>[{0}/{1}]</text>
-		</string>
-		<string>
 			<key>String_KnowledgeSkillFilterAll</key>
 			<text>Zeige alle Wissensfertigkeiten</text>
 		</string>
@@ -7669,10 +7653,6 @@
 		<string>
 			<key>Label_SummaryRituals</key>
 			<text>Rituale</text>
-		</string>
-		<string>
-			<key>Label_SelectAdvancedLifestyle_Base_Neighborhood</key>
-			<text>[{0}/{1}]</text>
 		</string>
 		<string>
 			<key>Label_SelectAdvancedLifestyle_UnusedLP</key>
@@ -9559,10 +9539,6 @@
 			<text>Chummer entscheiden lassen</text>
 		</string>
 		<string>
-			<key>String_ApplicationInsights_Yes</key>
-			<text>Alle Fehlermeldungen übertragen</text>
-		</string>
-		<string>
 			<key>String_ApplicationInsights_Crashes</key>
 			<text>Abstürze übertragen</text>
 		</string>
@@ -9758,6 +9734,14 @@
         <string>
           <key>Message_CyberzombieRequirementsImprovement</key>
           <text>Sie müssen eine Fertigkeit haben, die es erlaubt, ein Cyberzombie zu werden.</text>
+        </string>
+        <string>
+          <key>Checkbox_Options_AllowTechnomancerSchooling</key>
+          <text>Technomancer: Zulassen von Initiationsvorteilen zur \'Ausbildung\'</text>
+        </string>
+        <string>
+          <key>Message_InvalidActiveSkillExcessSpecializations</key>
+          <text>Eine oder mehrere Aktionsfertigkeiten haben mehr als eine Spezialisierung:</text>
         </string>
 	</strings>
 </chummer>
