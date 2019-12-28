@@ -886,8 +886,8 @@ namespace Chummer
         {
             // get any bonded foci that add to the base magic stat and return the highest rated one's rating
             var powerFocusRating = _objCharacter.Foci
-                .Where(x => x.GearObject.Bonus.InnerText == "MAGRating" && x.GearObject.Bonded)
-                .Max(x => x.Rating);
+                .Where(x => x.GearObject.Bonus.InnerText == "MAGRating" && x.GearObject.Bonded).Select(x => x.Rating)
+                .DefaultIfEmpty().Max();
 
             // If our focus is higher, add in a partial bonus
             if (powerFocusRating > 0 && powerFocusRating < objImprovement.Value)
