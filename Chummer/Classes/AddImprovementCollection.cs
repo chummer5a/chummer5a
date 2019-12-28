@@ -6642,6 +6642,14 @@ namespace Chummer.Classes
             Log.Info("Calling CreateImprovement");
             CreateImprovement(bonusNode.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.LimitCritterPowerCategory, _strUnique);
         }
+
+        public void attributemaxclamp(XmlNode bonusNode)
+        {
+            Log.Info("attributemaxclamp");
+            Log.Info("attributemaxclamp = " + bonusNode.OuterXml);
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(bonusNode.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.AttributeMaxClamp, _strUnique);
+        }
 #pragma warning restore IDE1006 // Naming Styles
         #endregion
     }

@@ -3877,22 +3877,10 @@
         </specificattribute>
       </bonus>
       <firstlevelbonus>
-        <specificattribute>
-          <name>BOD</name>
-          <aug>-4</aug>
-        </specificattribute>
-        <specificattribute>
-          <name>AGI</name>
-          <aug>-4</aug>
-        </specificattribute>
-        <specificattribute>
-          <name>REA</name>
-          <aug>-4</aug>
-        </specificattribute>
-        <specificattribute>
-          <name>STR</name>
-          <aug>-4</aug>
-        </specificattribute>
+        <attributemaxclamp>AGI</attributemaxclamp>
+        <attributemaxclamp>BOD</attributemaxclamp>
+        <attributemaxclamp>REA</attributemaxclamp>
+        <attributemaxclamp>STR</attributemaxclamp>
       </firstlevelbonus>
       <source>RF</source>
       <page>156</page>

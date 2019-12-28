@@ -340,6 +340,7 @@ namespace Chummer
             EnableCyberzombie,
             AllowCritterPowerCategory,
             LimitCritterPowerCategory,
+            AttributeMaxClamp,
             NumImprovementTypes // 🡐 This one should always be the last defined enum
         }
 
