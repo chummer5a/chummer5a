@@ -93,7 +93,39 @@
       <armorcapacity>[-8]</armorcapacity>
       <required>
         <parentdetails>
-          <name>Hardened Mil-Spec Battle Armor</name>
+          <name>Hardened Mil-Spec Battle Armor: Light</name>
+        </parentdetails>
+      </required>
+      <avail>8F</avail>
+      <cost>10000</cost>
+      <source>RG</source>
+      <page>66</page>
+    </mod>
+	<mod>
+      <id>d55752d4-d96c-4d88-8cda-ab8ed35aa300</id>
+      <name>Hardened Mil-Spec Battle Armor: Helmet</name>
+      <category>Full Body Armor Mods</category>
+      <armor>+3</armor>
+      <armorcapacity>[-8]</armorcapacity>
+      <required>
+        <parentdetails>
+          <name>Hardened Mil-Spec Battle Armor: Medium</name>
+        </parentdetails>
+      </required>
+      <avail>8F</avail>
+      <cost>10000</cost>
+      <source>RG</source>
+      <page>66</page>
+    </mod>
+	<mod>
+      <id>01037ca8-6c02-4501-9978-77aa65735cf2</id>
+      <name>Hardened Mil-Spec Battle Armor: Helmet</name>
+      <category>Full Body Armor Mods</category>
+      <armor>+3</armor>
+      <armorcapacity>[-8]</armorcapacity>
+      <required>
+        <parentdetails>
+          <name>Hardened Mil-Spec Battle Armor: Heavy</name>
         </parentdetails>
       </required>
       <avail>8F</avail>
