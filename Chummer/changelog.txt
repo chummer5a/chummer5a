@@ -50,6 +50,7 @@ Data Changes:
 - Adjusted spells that require being taken by Adept to use Required tags instead of being a hardcoded blacklist for non-Adepts. IMPORTANT: 
 - Added missing MAG attributes to the Banshee, Dzoo-Noo-Qua, Goblin, Vampire and Sukuyan qualities. Closes #3611
 - Fixed incorrect stats (AP mismatch, availability) on the Rolling Blades from No Future.
+- Fixed an issue with the Armor Mod Helmet customdata rule not working for hardned mil-spec suits.
 
 New Strings:
 - String_DisableSkillGroupPrompt

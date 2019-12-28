@@ -93,7 +93,7 @@
       <armorcapacity>[-8]</armorcapacity>
       <required>
         <parentdetails>
-          <name>Hardened Mil-Spec Battle Armor</name>
+          <name operation="contains">Hardened Mil-Spec Battle Armor</name>
         </parentdetails>
       </required>
       <avail>8F</avail>
