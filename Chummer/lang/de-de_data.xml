@@ -48276,6 +48276,12 @@
 				<translate>Shiva II</translate>
 				<altpage>97</altpage>
 			</drug>
+			<drug>
+				<id>1e391e72-1c21-44b3-b935-7abfba2dca43</id>
+				<name>Evo Aphrodite Reactive Biomatter</name>
+				<translate>Evo Aphrodite Reaktive Biomaterie</translate>
+				<altpage>19</altpage>
+			</drug>
 		</drugs>
 		<drugcomponents>
 			<drugcomponent translated="True">
