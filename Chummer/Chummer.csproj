@@ -546,7 +546,12 @@
     <Content Include="customdata\German Data Changes - Reduced Weapon Mount Prices\amend_vehicles.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="customdata\German Data Changes - Static Shaft Crossbow Bolts\amend_crossbow_gear.xml" />
+    <Content Include="customdata\German Data Changes - Static Shaft Crossbow Bolts\amend_crossbow_gear.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\German Data Changes - Static Shaft Crossbow Bolts\custom_crossbow_gear.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\German Data Changes - Yamaha Kaburaya\amend_kaburaya_vehicles.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
