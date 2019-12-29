@@ -14,6 +14,7 @@ Application Fixes:
 - Added a validity check for whether a character has been given two specialisations incorrectly in some cases during create mode. Mostly should only happen with house rules active.
 - Refactored tooltip code for weapons to properly show sources of bonuses.
 - Added a new improvement type to clamp attribute maximums (attributemaxclamp) to the metatype maximum instead of the metatype augmented maximum. This is used by the Infirm quality to prevent taking attribute bonuses that are higher than the metatype maximum.
+- Altered some logic in the Weapon class to better support the Improved Ammunition Capacity accessory provided by Special Modifications.
 
 Application Changes:
 - Spells, rituals and preparations now count down from maximum, in the same way as other counters in create mode.

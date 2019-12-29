@@ -28,6 +28,7 @@ using Chummer.Backend.Attributes;
 using System.Text;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 using System.Xml.XPath;
 using NLog;
 
@@ -1352,6 +1353,49 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// The total number of rounds that the weapon can load. 
+        /// </summary>
+        public string AmmoCapacity(string ammoString)
+        {
+            // Determine which loading methods are available to the Weapon.
+            if (ammoString.IndexOfAny('x', '+') != -1 || ammoString.Contains("Special"))
+            {
+                string strWeaponAmmo = ammoString.ToLower();
+                // Get rid of external source, special, or belt, and + energy.
+                strWeaponAmmo = strWeaponAmmo.Replace("external source", "100")
+                    .Replace("special", "100")
+                    .FastEscapeOnceFromEnd(" + energy");
+
+                // Assuming base text of 10(ml)x2
+                // matches [2x]10(ml) or [10x]2(ml)
+                foreach (Match m in Regex.Matches(strWeaponAmmo, "^[0-9]*[0-9]*x"))
+                {
+                    strWeaponAmmo = strWeaponAmmo.TrimStartOnce(m.Value);
+                }
+
+                // Matches 2(ml[)x10] (But does not capture the ')') or 10(ml)[x2]
+                foreach (Match m in Regex.Matches(strWeaponAmmo, "(?<=\\))(x[0-9]*[0-9]*$)*"))
+                {
+                    strWeaponAmmo = strWeaponAmmo.TrimEndOnce(m.Value);
+                }
+
+                int intPos = strWeaponAmmo.IndexOf('(');
+                if (intPos != -1)
+                    strWeaponAmmo = strWeaponAmmo.Substring(0, intPos);
+                return strWeaponAmmo;
+            }
+            else
+            {
+                // Nothing weird in the ammo string, so just use the number given.
+                string strAmmo = ammoString;
+                int intPos = strAmmo.IndexOf('(');
+                if (intPos != -1)
+                    strAmmo = strAmmo.Substring(0, intPos);
+                return strAmmo;
+            }
+        }
+
+        /// <summary>
         /// The type of Ammuniation loaded in the Weapon.
         /// </summary>
         public string AmmoLoaded
@@ -2282,7 +2326,7 @@ namespace Chummer.Backend.Equipment
                             }
                         }
                     }
-                    strThisAmmo = strThisAmmo.CheapReplace("Weapon", () => Ammo);
+                    strThisAmmo = strThisAmmo.CheapReplace("Weapon", () => AmmoCapacity(Ammo));
                     // Replace the division sign with "div" since we're using XPath.
                     strThisAmmo = strThisAmmo.Replace("/", " div ");
                     // If this is an Underbarrel Weapons that has been added, cut the Ammo capacity in half.
@@ -4923,13 +4967,7 @@ namespace Chummer.Backend.Equipment
 
                 foreach (string strAmmo in strAmmos)
                 {
-                    string strThisAmmo = strAmmo.TrimStartOnce("2x", "3x", "4x").TrimEndOnce("x2", "x3", "x4");
-
-                    int intPos = strThisAmmo.IndexOf('(');
-                    if (intPos != -1)
-                        strThisAmmo = strThisAmmo.Substring(0, intPos);
-
-                    lstCount.Add(strThisAmmo);
+                    lstCount.Add(AmmoCapacity(strAmmo));
                 }
             }
             else
