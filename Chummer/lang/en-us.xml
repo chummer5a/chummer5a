@@ -9856,7 +9856,6 @@ Only one attribute may be at its Maximum value during character creation.</text>
         <key>Menu_DeleteFromSINners</key>
         <text>Delete Chummer from SINners registry</text>
       </string>
-      
     <string>
         <key>Menu_AddPinnedGroup</key>
         <text>Pin Group</text>
@@ -9865,10 +9864,6 @@ Only one attribute may be at its Maximum value during character creation.</text>
         <key>Menu_ShareChummerGroup</key>
         <text>Share Chummer Group</text>
       </string>
-    
-    
-      
-
     <!-- Region Rating Strings -->
       <string>
           <key>Label_RatingFormat</key>
