@@ -8971,9 +8971,6 @@ namespace Chummer
             int intSpellPointsUsed = 0;
             int intRitualPointsUsed = 0;
             int intPrepPointsUsed = 0;
-            int spellPoints = 0;
-            int ritualPoints = 0;
-            int prepPoints = 0;
             if (CharacterObject.MagicianEnabled ||
                     CharacterObject.Improvements.Any(objImprovement => (objImprovement.ImproveType == Improvement.ImprovementType.FreeSpells ||
                                                                      objImprovement.ImproveType == Improvement.ImprovementType.FreeSpellsATT ||
@@ -9050,22 +9047,25 @@ namespace Chummer
                 }
                 spells -= intTouchOnlySpells - Math.Max(0, intTouchOnlySpells - limitModTouchOnly);
 
+                int spellPoints  = limit + limitMod;
+                int ritualPoints = limit + limitMod;
+                int prepPoints   = limit + limitMod;
                 for (int i = limit + limitMod; i > 0; i--)
                 {
                     if (spells > 0)
                     {
                         spells--;
-                        spellPoints++;
+                        spellPoints--;
                     }
                     else if (rituals > 0)
                     {
                         rituals--;
-                        ritualPoints++;
+                        ritualPoints--;
                     }
                     else if (preps > 0)
                     {
                         preps--;
-                        prepPoints++;
+                        prepPoints--;
                     }
                     else
                     {
@@ -9089,15 +9089,20 @@ namespace Chummer
                     lblBuildPrepsBP?.SetToolTip($"{preps.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}×{strSpaceCharacter}{spellCost.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}+{strSpaceCharacter}{LanguageManager.GetString("String_Karma", GlobalOptions.Language)}{strSpaceCharacter}={strSpaceCharacter}{intPrepPointsUsed.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}{LanguageManager.GetString("String_Karma", GlobalOptions.Language)}");
                     if (limit + limitMod > 0)
                     {
-                        lblBuildPrepsBP.Text =
-                            string.Format(
-                                $"{prepPoints.ToString(GlobalOptions.CultureInfo)}{strOf}{(limit + limitMod).ToString(GlobalOptions.CultureInfo)}{strColon}{strSpaceCharacter}{intPrepPointsUsed.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}{strPoints}");
-                        lblSpellsBP.Text =
-                            string.Format(
-                                $"{spellPoints.ToString(GlobalOptions.CultureInfo)}{strOf}{(limit + limitMod).ToString(GlobalOptions.CultureInfo)}{strColon}{strSpaceCharacter}{intSpellPointsUsed.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}{strPoints}");
-                        lblBuildRitualsBP.Text =
-                            string.Format(
-                                $"{ritualPoints.ToString(GlobalOptions.CultureInfo)}{strOf}{(limit + limitMod).ToString(GlobalOptions.CultureInfo)}{strColon}{strSpaceCharacter}{intRitualPointsUsed.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}{strPoints}");
+                        StringBuilder strBld = new StringBuilder($"{prepPoints}{strOf}{(limit + limitMod).ToString(GlobalOptions.CultureInfo)}");
+                        if (intPrepPointsUsed > 0)
+                            strBld.Append($"{strColon}{strSpaceCharacter}{intPrepPointsUsed.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}{strPoints}");
+                        lblBuildPrepsBP.Text = strBld.ToString();
+
+                        strBld = new StringBuilder($"{spellPoints}{strOf}{(limit + limitMod).ToString(GlobalOptions.CultureInfo)}");
+                        if (intSpellPointsUsed > 0)
+                            strBld.Append($"{strColon}{strSpaceCharacter}{intSpellPointsUsed}{strSpaceCharacter}{strPoints}");
+                        lblSpellsBP.Text = strBld.ToString();
+
+                        strBld = new StringBuilder($"{ritualPoints}{strOf}{(limit + limitMod).ToString(GlobalOptions.CultureInfo)}");
+                        if (intSpellPointsUsed > 0)
+                            strBld.Append($"{strColon}{strSpaceCharacter}{intRitualPointsUsed.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}{strPoints}");
+                        lblBuildRitualsBP.Text = strBld.ToString();
                     }
                     else
                     {

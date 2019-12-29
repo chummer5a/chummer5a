@@ -16,6 +16,7 @@ Application Fixes:
 - Added a new improvement type to clamp attribute maximums (attributemaxclamp) to the metatype maximum instead of the metatype augmented maximum. This is used by the Infirm quality to prevent taking attribute bonuses that are higher than the metatype maximum.
 
 Application Changes:
+- Spells, rituals and preparations now count down from maximum, in the same way as other counters in create mode.
 - Added a new improvement type that can disable a skill group selected by the user. To be used by RunnerHub customdata ruleset. 
 - Added a new improvement type that governs whether a character can become a cyberzombie. Customdata has been provided to apply this to the Flashback System from Chrome Flesh.
 - Power Foci and Spellcasting Foci now only provide the highest of their dicepool to a given spell's dicepool per SR5 318. Implemented by https://github.com/MemeticContagion
