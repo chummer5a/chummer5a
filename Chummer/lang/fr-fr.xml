@@ -1010,10 +1010,6 @@
 			<text>Le personnage doit avoir une Essence négative.</text>
 		</string>
 		<string>
-			<key>Message_CyberzombieRequirementsStimulator</key>
-			<text>Le personnage doit avoir un stimulateur de mémoire évoquée.</text>
-		</string>
-		<string>
 			<key>MessageTitle_CyberzombieRequirements</key>
 			<text>Prérequis à la transformation en cyberzombie</text>
 		</string>
@@ -7301,10 +7297,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<text>Sélection d'un Programme ou Programme Avancé</text>
 		</string>
 		<string>
-			<key>Message_SelectAIProgram_AdvancedProgramRequirement</key>
-			<text>Vous ne réunissez pas les conditions minimales pour ce programme avancé. Vous devez savoir tout les programmes suivants: </text>
-		</string>
-		<string>
 			<key>MessageTitle_SelectAIProgram_AdvancedProgramRequirement</key>
 			<text>Prérequis du Programme Avancé</text>
 		</string>
@@ -9275,24 +9267,12 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<text>[{0}/{1}]</text>
 		</string>
 		<string>
-			<key>Label_SelectAdvancedLifestyle_Base_Comforts</key>
-			<text>[{0}/{1}]</text>
-		</string>
-		<string>
 			<key>Node_SelectAdvancedLifestyle_Entertainments</key>
 			<text>Loisirs</text>
 		</string>
 		<string>
 			<key>Label_SelectAdvancedLifestyle_Rating</key>
 			<text>Indice :</text>
-		</string>
-		<string>
-			<key>Label_SelectAdvancedLifestyle_Base_Neighborhood</key>
-			<text>[{0}/{1}]</text>
-		</string>
-		<string>
-			<key>Label_SelectAdvancedLifestyle_Base_Security</key>
-			<text>[{0}/{1}]</text>
 		</string>
 		<string>
 			<key>MessageTitle_SelectAdvancedLifestyle_OverLPLimit</key>
@@ -9681,6 +9661,66 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		<string>
 			<key>Menu_Main_SINners</key>
 			<text>SINner</text>
+		</string>
+		<string>
+			<key>Menu_ShareChummerGroup</key>
+			<text>Partager tout le groupe</text>
+		</string>
+		<string>
+			<key>Menu_AddPinnedGroup</key>
+			<text>Epingler le groupe</text>
+		</string>
+		<string>
+			<key>Checkbox_CreateImprovementIgnoreLimits</key>
+			<text>Ignorer des limites</text>
+		</string>
+		<string>
+			<key>Tip_ImproveItemAtMaximum</key>
+			<text>Non augmentable, maximum atteint</text>
+		</string>
+		<string>
+			<key>Tip_OtherSurprise</key>
+			<text>Surprise est calculé comme RÉA + INT.</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_AllowEasterEggs</key>
+			<text>Permettre les œufs de Pâques</text>
+		</string>
+		<string>
+			<key>Message_DuplicateDrugComponentWarning</key>
+			<text>Vous ne pouvez pas ajouter le même composant plus de {0} fois.</text>
+		</string>
+		<string>
+			<key>Message_CustomDrug_Name</key>
+			<text>Entrez un nom pour votre drogue.</text>
+		</string>
+		<string>
+			<key>MessageTitle_CustomDrug_MissingFoundation</key>
+			<text>Base manquante</text>
+		</string>
+		<string>
+			<key>Label_Options_BrowserVersion</key>
+			<text>Aperçu utilise la version d'Internet Explorer</text>
+		</string>
+		<string>
+			<key>Label_OtherSurprise</key>
+			<text>Surprise :</text>
+		</string>
+		<string>
+			<key>Message_CyberzombieRequirementsImprovement</key>
+			<text>Il faut que vous ayez une amélioration qui vous permette de devenir un cyberzombie.</text>
+		</string>
+		<string>
+			<key>Message_InvalidActiveSkillExcessSpecializations</key>
+			<text>Une ou plusieurs compétences actives ont plus d'une spécialisation :</text>
+		</string>
+		<string>
+			<key>Message_DeleteDrug</key>
+			<text>Vous êtes sûr de vouloir supprimer cette recette de drogue ?</text>
+		</string>
+		<string>
+			<key>Message_CustomDrug_MissingFoundation</key>
+			<text>Il faut que les drogues aient un base.</text>
 		</string>
 	</strings>
 </chummer>
