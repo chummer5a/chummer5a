@@ -306,34 +306,16 @@ namespace Chummer.Backend.Equipment
                 _strExtra = frmPickWeaponCategory.SelectedCategory;
             }
 
-            // Add Gear Weapons if applicable.
-            using (XmlNodeList xmlWeaponList = objXmlGear.SelectNodes("addweapon"))
-            {
-                if (xmlWeaponList != null)
-                {
-                    XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml");
-
-                    // More than one Weapon can be added, so loop through all occurrences.
-                    foreach (XmlNode objXmlAddWeapon in xmlWeaponList)
+            // Add Weapons if applicable.
+            // More than one Weapon can be added, so loop through all occurrences.
+            using (XmlNodeList xmlAddWeaponList = objXmlGear.SelectNodes("addweapon"))
+                if (xmlAddWeaponList != null)
+                    foreach (XmlNode objXmlAddWeapon in xmlAddWeaponList)
                     {
-                        string strLoopID = objXmlAddWeapon.InnerText;
-                        XmlNode objXmlWeapon = strLoopID.IsGuid()
-                            ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = " + strLoopID.CleanXPath() + "]")
-                            : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = " + strLoopID.CleanXPath() + "]");
-
-                        if (objXmlWeapon != null)
-                        {
-                            Weapon objGearWeapon = new Weapon(_objCharacter);
-                            objGearWeapon.Create(objXmlWeapon, lstWeapons, true, blnAddImprovements, !blnAddImprovements);
-                            objGearWeapon.ParentID = InternalId;
-                            objGearWeapon.Cost = "0";
-                            lstWeapons.Add(objGearWeapon);
-
-                            Guid.TryParse(objGearWeapon.InternalId, out _guiWeaponID);
-                        }
+                        Weapon objGearWeapon = new Weapon(_objCharacter);
+                        objGearWeapon.CreateFromNode(objXmlAddWeapon.InnerText, InternalId, lstWeapons, true,
+                            blnAddImprovements, true, Location);
                     }
-                }
-            }
 
             // If the item grants a bonus, pass the information to the Improvement Manager.
             if (Bonus != null && blnAddImprovements)

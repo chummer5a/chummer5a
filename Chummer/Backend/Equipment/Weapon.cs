@@ -167,7 +167,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        /// Create a Weapon from an XmlNode and return the TreeNodes for it.
+        /// Create a Weapon from an XmlNode.
         /// <param name="objXmlWeapon">XmlNode to create the object from.</param>
         /// <param name="lstWeapons">List of child Weapons to generate.</param>
         /// <param name="blnCreateChildren">Whether or not child items should be created.</param>
@@ -447,29 +447,53 @@ namespace Chummer.Backend.Equipment
             // Add Subweapons (not underbarrels) if applicable.
             if (lstWeapons == null)
                 return;
+            // Add Weapons if applicable.
             // More than one Weapon can be added, so loop through all occurrences.
-            foreach (XmlNode objXmlAddWeapon in objXmlWeapon.SelectNodes("addweapon"))
-            {
-                string strLoopID = objXmlAddWeapon.InnerText;
-                XmlNode objXmlSubWeapon = strLoopID.IsGuid()
-                    ? objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + strLoopID + "\"]")
-                    : objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strLoopID + "\"]");
-
-                Weapon objSubWeapon = new Weapon(_objCharacter)
-                {
-                    ParentVehicle = ParentVehicle
-                };
-                objSubWeapon.Create(objXmlSubWeapon, lstWeapons, blnCreateChildren, blnCreateImprovements, blnSkipCost);
-                objSubWeapon.ParentID = InternalId;
-                objSubWeapon.Cost = "0";
-                lstWeapons.Add(objSubWeapon);
-            }
+            using (XmlNodeList xmlAddWeaponList = objXmlWeapon.SelectNodes("addweapon"))
+                if (xmlAddWeaponList != null)
+                    foreach (XmlNode objXmlAddWeapon in xmlAddWeaponList)
+                    {
+                        Weapon objGearWeapon = new Weapon(_objCharacter) {ParentVehicle = ParentVehicle};
+                        objGearWeapon.CreateFromNode(objXmlAddWeapon.InnerText, InternalId, lstWeapons, true,
+                            blnCreateImprovements, blnSkipCost, Location);
+                    }
             foreach (Weapon objLoopWeapon in lstWeapons)
                 objLoopWeapon.ParentVehicle = ParentVehicle;
 
             ToggleWirelessBonuses(WirelessOn);
         }
 
+
+        /// Create a Weapon from an addweapon XmlNode.
+        /// <param name="strParentId">String guid of the parent that created this object.</param>
+        /// <param name="strWeaponId">String guid of the object to be created. Expected values are either the Name or source ID.</param>
+        /// <param name="lstWeapons">List of child Weapons to generate.</param>
+        /// <param name="blnCreateChildren">Whether or not child items should be created.</param>
+        /// <param name="blnCreateImprovements">Whether or not bonuses should be created.</param>
+        /// <param name="blnSkipCost">Whether or not forms asking to determine variable costs should be displayed.</param>
+        /// <param name="objLocation">Location of the parent object.</param>
+        public void CreateFromNode(string strWeaponId, string strParentId, IList<Weapon> lstWeapons, bool blnCreateChildren = true, bool blnCreateImprovements = true, bool blnSkipCost = false, Location objLocation = null)
+        {
+            XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml");
+            XmlNode objXmlWeapon = strWeaponId.IsGuid()
+                ? objXmlWeaponDocument.SelectSingleNode($"/chummer/weapons/weapon[id = \"{strWeaponId}\"]")
+                : objXmlWeaponDocument.SelectSingleNode($"/chummer/weapons/weapon[name = \"{strWeaponId}\"]");
+            Create(objXmlWeapon, lstWeapons, blnCreateChildren, blnCreateImprovements, blnSkipCost);
+            ParentID = strParentId;
+            Cost = "0";
+            
+            lstWeapons.Add(this);
+            if (objLocation != null && ParentVehicle == null)
+            {
+                if (_objCharacter.WeaponLocations.All(l => l.Name != objLocation.Name))
+                {
+                    _objCharacter.WeaponLocations.Add(new Location(_objCharacter, _objCharacter.WeaponLocations,
+                        Location.Name));
+                }
+
+                Location = _objCharacter.WeaponLocations.First(l => l.Name == objLocation.Name);
+            }
+        }
         private SourceString _objCachedSourceDetail;
 	    public SourceString SourceDetail => _objCachedSourceDetail ?? (_objCachedSourceDetail =
 	                                            new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language));

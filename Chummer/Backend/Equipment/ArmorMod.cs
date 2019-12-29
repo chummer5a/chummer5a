@@ -194,25 +194,14 @@ namespace Chummer.Backend.Equipment
             // Add Weapons if applicable.
             if (objXmlArmorNode.InnerXml.Contains("<addweapon>"))
             {
-                XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml");
-
                 // More than one Weapon can be added, so loop through all occurrences.
                 using (XmlNodeList xmlAddWeaponList = objXmlArmorNode.SelectNodes("addweapon"))
                     if (xmlAddWeaponList != null)
                         foreach (XmlNode objXmlAddWeapon in xmlAddWeaponList)
                         {
-                            string strLoopID = objXmlAddWeapon.InnerText;
-                            XmlNode objXmlWeapon = strLoopID.IsGuid()
-                                ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + strLoopID + "\"]")
-                                : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strLoopID + "\"]");
-
                             Weapon objGearWeapon = new Weapon(_objCharacter);
-                            objGearWeapon.Create(objXmlWeapon, lstWeapons, true, !blnSkipSelectForms, blnSkipCost);
-                            objGearWeapon.ParentID = InternalId;
-                            objGearWeapon.Cost = "0";
-                            lstWeapons.Add(objGearWeapon);
-
-                            Guid.TryParse(objGearWeapon.InternalId, out _guiWeaponID);
+                            objGearWeapon.CreateFromNode(objXmlAddWeapon.InnerText, InternalId, lstWeapons, true,
+                                !blnSkipSelectForms, blnSkipCost, Parent.Location);
                         }
             }
         }

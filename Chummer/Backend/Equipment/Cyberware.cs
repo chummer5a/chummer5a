@@ -550,30 +550,15 @@ namespace Chummer.Backend.Equipment
             }
 
             // Add Cyberweapons if applicable.
-            XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml");
-
             // More than one Weapon can be added, so loop through all occurrences.
-            foreach (XmlNode objXmlAddWeapon in objXmlCyberware.SelectNodes("addweapon"))
-            {
-                string strLoopID = objXmlAddWeapon.InnerText;
-                XmlNode objXmlWeapon = strLoopID.IsGuid()
-                    ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + strLoopID + "\"]")
-                    : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strLoopID + "\"]");
-
-                if (objXmlWeapon != null)
-                {
-                    Weapon objGearWeapon = new Weapon(_objCharacter)
+            using (XmlNodeList xmlAddWeaponList = objXmlCyberware.SelectNodes("addweapon"))
+                if (xmlAddWeaponList != null)
+                    foreach (XmlNode objXmlAddWeapon in xmlAddWeaponList)
                     {
-                        ParentVehicle = ParentVehicle
-                    };
-                    objGearWeapon.Create(objXmlWeapon, lstWeapons);
-                    objGearWeapon.ParentID = InternalId;
-                    objGearWeapon.Cost = "0";
-                    lstWeapons.Add(objGearWeapon);
-
-                    Guid.TryParse(objGearWeapon.InternalId, out _guiWeaponID);
-                }
-            }
+                        Weapon objGearWeapon = new Weapon(_objCharacter);
+                        objGearWeapon.CreateFromNode(objXmlAddWeapon.InnerText, InternalId, lstWeapons, true,
+                            blnCreateImprovements, true);
+                    }
 
             // Add Drone Bodyparts if applicable.
             XmlDocument objXmlVehicleDocument = XmlManager.Load("vehicles.xml");
