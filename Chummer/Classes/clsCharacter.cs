@@ -40,9 +40,12 @@ using System.Xml.XPath;
 using Chummer.Backend.Uniques;
 using System.Xml.Serialization;
 using System.Runtime.Serialization;
+using System.Windows;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.DataContracts;
 using NLog;
+using Application = System.Windows.Forms.Application;
+using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace Chummer
 {
@@ -10592,9 +10595,162 @@ if (!Utils.IsUnitTest){
         }
 
         /// <summary>
-        /// Custom Drugs created by the character.
+        /// The Character's total Armor Rating.
         /// </summary>
-        public TaggedObservableCollection<Drug> Drugs => _lstDrugs;
+        [HubTag]
+        public int TotalArmorRating =>
+            ArmorRating + ImprovementManager.ValueOf(this, Improvement.ImprovementType.Armor);
+
+        public string TotalArmorRatingToolTip
+        {
+            get
+            {
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                StringBuilder objToolTip =
+                    new StringBuilder(LanguageManager.GetString("Tip_Armor", GlobalOptions.Language) +
+                                      strSpaceCharacter + '(' + ArmorRating.ToString(GlobalOptions.CultureInfo) + ')');
+                foreach (Improvement objLoopImprovement in Improvements)
+                {
+                    if (objLoopImprovement.ImproveType == Improvement.ImprovementType.Armor &&
+                        objLoopImprovement.Enabled)
+                    {
+                        objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
+                                          GetObjectName(objLoopImprovement, GlobalOptions.Language) +
+                                          strSpaceCharacter + '(' +
+                                          objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
+                    }
+                }
+
+                return objToolTip.ToString();
+            }
+        }
+
+        /// <summary>
+        /// The Character's total Armor Rating against Fire attacks.
+        /// </summary>
+        public int TotalFireArmorRating =>
+            TotalArmorRating + ImprovementManager.ValueOf(this, Improvement.ImprovementType.FireArmor);
+
+        /// <summary>
+        /// The Character's total Armor Rating against Cold attacks.
+        /// </summary>
+        public int TotalColdArmorRating =>
+            TotalArmorRating + ImprovementManager.ValueOf(this, Improvement.ImprovementType.ColdArmor);
+
+        /// <summary>
+        /// The Character's total Armor Rating against Electricity attacks.
+        /// </summary>
+        public int TotalElectricityArmorRating => TotalArmorRating +
+                                                  ImprovementManager.ValueOf(this,
+                                                      Improvement.ImprovementType.ElectricityArmor);
+
+        /// <summary>
+        /// The Character's total Armor Rating against Acid attacks.
+        /// </summary>
+        public int TotalAcidArmorRating =>
+            TotalArmorRating + ImprovementManager.ValueOf(this, Improvement.ImprovementType.AcidArmor);
+
+        /// <summary>
+        /// The Character's total Armor Rating against falling damage (AP -4 not factored in).
+        /// </summary>
+        public int TotalFallingArmorRating =>
+            TotalArmorRating + ImprovementManager.ValueOf(this, Improvement.ImprovementType.FallingArmor);
+
+        /// <summary>
+        /// The Character's total bonus to Dodge Rating (to add on top of REA + INT).
+        /// </summary>
+        public int TotalBonusDodgeRating => ImprovementManager.ValueOf(this, Improvement.ImprovementType.Dodge);
+
+        /// <summary>
+        /// Armor Encumbrance modifier from Armor.
+        /// </summary>
+        public int ArmorEncumbrance
+        {
+            get
+            {
+                string strHighest = string.Empty;
+                int intHighest = 0;
+                int intTotalA = 0;
+                // Run through the list of Armor currently worn and retrieve the highest total Armor rating.
+                // This is used for Custom-Fit armour's stacking.
+                foreach (Armor objArmor in Armor.Where(objArmor =>
+                    objArmor.Equipped && !objArmor.ArmorValue.StartsWith('+')))
+                {
+                    int intLoopTotal = objArmor.TotalArmor;
+                    string strArmorName = objArmor.Name;
+                    if (objArmor.Category == "High-Fashion Armor Clothing")
+                    {
+                        foreach (Armor a in Armor.Where(a =>
+                            (a.Category == "High-Fashion Armor Clothing" || a.ArmorOverrideValue.StartsWith('+')) &&
+                            a.Equipped))
+                        {
+                            if (a.ArmorMods.Any(objMod =>
+                                objMod.Name == "Custom Fit (Stack)" && objMod.Extra == strArmorName))
+                                intLoopTotal += Convert.ToInt32(a.ArmorOverrideValue);
+                        }
+                    }
+
+                    if (intLoopTotal > intHighest)
+                    {
+                        intHighest = intLoopTotal;
+                        strHighest = strArmorName;
+                    }
+                }
+
+                // Run through the list of Armor currently worn again and look at Clothing items that start with '+' since they stack with eachother.
+                int intClothing = 0;
+                foreach (Armor objArmor in Armor.Where(objArmor =>
+                    (objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorOverrideValue.StartsWith('+')) &&
+                    objArmor.Name != strHighest && objArmor.Category == "Clothing" && objArmor.Equipped))
+                {
+                    if (objArmor.ArmorValue.StartsWith('+'))
+                        intClothing += objArmor.TotalArmor;
+                    else
+                        intClothing += objArmor.TotalOverrideArmor;
+                }
+
+                if (intClothing > intHighest)
+                {
+                    strHighest = string.Empty;
+                }
+
+                foreach (Armor objArmor in Armor.Where(objArmor =>
+                    (objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorOverrideValue.StartsWith('+')) &&
+                    objArmor.Name != strHighest && objArmor.Category != "Clothing" && objArmor.Equipped))
+                {
+                    bool blnDoAdd = true;
+                    if (objArmor.Category == "High-Fashion Armor Clothing")
+                    {
+                        foreach (ArmorMod objMod in objArmor.ArmorMods)
+                        {
+                            if (objMod.Name == "Custom Fit (Stack)")
+                            {
+                                blnDoAdd = objMod.Extra == strHighest && !string.IsNullOrEmpty(strHighest);
+                                break;
+                            }
+                        }
+                    }
+
+                    if (blnDoAdd)
+                    {
+                        if (objArmor.ArmorValue.StartsWith('+'))
+                            intTotalA += objArmor.TotalArmor;
+                        else
+                            intTotalA += objArmor.TotalOverrideArmor;
+                    }
+                }
+
+                // Highest armor was overwritten by Clothing '+' values, so factor those '+' values into encumbrance
+                if (string.IsNullOrEmpty(strHighest))
+                    intTotalA += intClothing;
+
+                // calculate armor encumberance
+                int intSTRTotalValue = STR.TotalValue;
+                if (intTotalA > intSTRTotalValue + 1)
+                    return (intSTRTotalValue - intTotalA) / 2; // a negative number is expected
+                return 0;
+            }
+        }
 
         #endregion
 
@@ -10797,162 +10953,9 @@ if (!Utils.IsUnitTest){
         #endregion
 
         /// <summary>
-        /// The Character's total Armor Rating.
+        /// Custom Drugs created by the character.
         /// </summary>
-        [HubTag]
-        public int TotalArmorRating =>
-            ArmorRating + ImprovementManager.ValueOf(this, Improvement.ImprovementType.Armor);
-
-        public string TotalArmorRatingToolTip
-        {
-            get
-            {
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
-                StringBuilder objToolTip =
-                    new StringBuilder(LanguageManager.GetString("Tip_Armor", GlobalOptions.Language) +
-                                      strSpaceCharacter + '(' + ArmorRating.ToString(GlobalOptions.CultureInfo) + ')');
-                foreach(Improvement objLoopImprovement in Improvements)
-                {
-                    if(objLoopImprovement.ImproveType == Improvement.ImprovementType.Armor &&
-                        objLoopImprovement.Enabled)
-                    {
-                        objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                          GetObjectName(objLoopImprovement, GlobalOptions.Language) +
-                                          strSpaceCharacter + '(' +
-                                          objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
-                    }
-                }
-
-                return objToolTip.ToString();
-            }
-        }
-
-        /// <summary>
-        /// The Character's total Armor Rating against Fire attacks.
-        /// </summary>
-        public int TotalFireArmorRating =>
-            TotalArmorRating + ImprovementManager.ValueOf(this, Improvement.ImprovementType.FireArmor);
-
-        /// <summary>
-        /// The Character's total Armor Rating against Cold attacks.
-        /// </summary>
-        public int TotalColdArmorRating =>
-            TotalArmorRating + ImprovementManager.ValueOf(this, Improvement.ImprovementType.ColdArmor);
-
-        /// <summary>
-        /// The Character's total Armor Rating against Electricity attacks.
-        /// </summary>
-        public int TotalElectricityArmorRating => TotalArmorRating +
-                                                  ImprovementManager.ValueOf(this,
-                                                      Improvement.ImprovementType.ElectricityArmor);
-
-        /// <summary>
-        /// The Character's total Armor Rating against Acid attacks.
-        /// </summary>
-        public int TotalAcidArmorRating =>
-            TotalArmorRating + ImprovementManager.ValueOf(this, Improvement.ImprovementType.AcidArmor);
-
-        /// <summary>
-        /// The Character's total Armor Rating against falling damage (AP -4 not factored in).
-        /// </summary>
-        public int TotalFallingArmorRating =>
-            TotalArmorRating + ImprovementManager.ValueOf(this, Improvement.ImprovementType.FallingArmor);
-
-        /// <summary>
-        /// The Character's total bonus to Dodge Rating (to add on top of REA + INT).
-        /// </summary>
-        public int TotalBonusDodgeRating => ImprovementManager.ValueOf(this, Improvement.ImprovementType.Dodge);
-
-        /// <summary>
-        /// Armor Encumbrance modifier from Armor.
-        /// </summary>
-        public int ArmorEncumbrance
-        {
-            get
-            {
-                string strHighest = string.Empty;
-                int intHighest = 0;
-                int intTotalA = 0;
-                // Run through the list of Armor currently worn and retrieve the highest total Armor rating.
-                // This is used for Custom-Fit armour's stacking.
-                foreach(Armor objArmor in Armor.Where(objArmor =>
-                   objArmor.Equipped && !objArmor.ArmorValue.StartsWith('+')))
-                {
-                    int intLoopTotal = objArmor.TotalArmor;
-                    string strArmorName = objArmor.Name;
-                    if(objArmor.Category == "High-Fashion Armor Clothing")
-                    {
-                        foreach(Armor a in Armor.Where(a =>
-                           (a.Category == "High-Fashion Armor Clothing" || a.ArmorOverrideValue.StartsWith('+')) &&
-                           a.Equipped))
-                        {
-                            if(a.ArmorMods.Any(objMod =>
-                               objMod.Name == "Custom Fit (Stack)" && objMod.Extra == strArmorName))
-                                intLoopTotal += Convert.ToInt32(a.ArmorOverrideValue);
-                        }
-                    }
-
-                    if(intLoopTotal > intHighest)
-                    {
-                        intHighest = intLoopTotal;
-                        strHighest = strArmorName;
-                    }
-                }
-
-                // Run through the list of Armor currently worn again and look at Clothing items that start with '+' since they stack with eachother.
-                int intClothing = 0;
-                foreach(Armor objArmor in Armor.Where(objArmor =>
-                   (objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorOverrideValue.StartsWith('+')) &&
-                   objArmor.Name != strHighest && objArmor.Category == "Clothing" && objArmor.Equipped))
-                {
-                    if(objArmor.ArmorValue.StartsWith('+'))
-                        intClothing += objArmor.TotalArmor;
-                    else
-                        intClothing += objArmor.TotalOverrideArmor;
-                }
-
-                if(intClothing > intHighest)
-                {
-                    strHighest = string.Empty;
-                }
-
-                foreach(Armor objArmor in Armor.Where(objArmor =>
-                   (objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorOverrideValue.StartsWith('+')) &&
-                   objArmor.Name != strHighest && objArmor.Category != "Clothing" && objArmor.Equipped))
-                {
-                    bool blnDoAdd = true;
-                    if(objArmor.Category == "High-Fashion Armor Clothing")
-                    {
-                        foreach(ArmorMod objMod in objArmor.ArmorMods)
-                        {
-                            if(objMod.Name == "Custom Fit (Stack)")
-                            {
-                                blnDoAdd = objMod.Extra == strHighest && !string.IsNullOrEmpty(strHighest);
-                                break;
-                            }
-                        }
-                    }
-
-                    if(blnDoAdd)
-                    {
-                        if(objArmor.ArmorValue.StartsWith('+'))
-                            intTotalA += objArmor.TotalArmor;
-                        else
-                            intTotalA += objArmor.TotalOverrideArmor;
-                    }
-                }
-
-                // Highest armor was overwritten by Clothing '+' values, so factor those '+' values into encumbrance
-                if(string.IsNullOrEmpty(strHighest))
-                    intTotalA += intClothing;
-
-                // calculate armor encumberance
-                int intSTRTotalValue = STR.TotalValue;
-                if(intTotalA > intSTRTotalValue + 1)
-                    return (intSTRTotalValue - intTotalA) / 2; // a negative number is expected
-                return 0;
-            }
-        }
+        public TaggedObservableCollection<Drug> Drugs => _lstDrugs;
 
         #region Condition Monitors
 
@@ -17043,6 +17046,124 @@ if (!Utils.IsUnitTest){
             if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
                 _objCachedSourceDetail = null;
             SourceDetail.SetControl(sourceControl);
+        }
+        #endregion
+
+        #region Special Methods
+
+        public bool ConvertCyberzombie()
+        {
+            bool blnEssence = true;
+            bool blnEnabled = false;
+            string strMessage = LanguageManager.GetString("Message_CyberzombieRequirements", GlobalOptions.Language);
+
+            // Make sure the character has an Essence lower than 0.
+            if (Essence() >= 0)
+            {
+                strMessage += Environment.NewLine + '\t' + LanguageManager.GetString("Message_CyberzombieRequirementsEssence", GlobalOptions.Language);
+                blnEssence = false;
+            }
+
+            blnEnabled =
+                Improvements.Any(
+                    imp => imp.ImproveType == Improvement.ImprovementType.EnableCyberzombie);
+
+            if (!blnEnabled)
+                strMessage += Environment.NewLine + '\t' + LanguageManager.GetString("Message_CyberzombieRequirementsImprovement", GlobalOptions.Language);
+
+            if (!blnEssence || !blnEnabled)
+            {
+                Program.MainForm.ShowMessageBox(strMessage,
+                    LanguageManager.GetString("MessageTitle_CyberzombieRequirements", GlobalOptions.Language),
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            if (Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CyberzombieConfirm", GlobalOptions.Language),
+                    LanguageManager.GetString("MessageTitle_CyberzombieConfirm", GlobalOptions.Language),
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                return false;
+
+            // Get the player to roll Dice to make a WIL Test and record the result.
+            frmDiceHits frmWILHits = new frmDiceHits
+            {
+                Text = LanguageManager.GetString("String_CyberzombieWILText", GlobalOptions.Language),
+                Description = LanguageManager.GetString("String_CyberzombieWILDescription", GlobalOptions.Language),
+                Dice = WIL.TotalValue
+            };
+            frmWILHits.ShowDialog(Program.MainForm);
+
+            if (frmWILHits.DialogResult != DialogResult.OK)
+                return false;
+
+            int intWILResult = frmWILHits.Result;
+
+            // The character gains 10 + ((Threshold - Hits) * 10)BP worth of Negative Qualities.
+            int intThreshold = 3 + decimal.ToInt32(decimal.Floor(Essence() - ESS.MetatypeMaximum));
+            int intResult = 10;
+            if (intWILResult < intThreshold)
+            {
+                intResult = (intThreshold - intWILResult) * 10;
+            }
+            ImprovementManager.CreateImprovement(this, string.Empty, Improvement.ImprovementSource.Cyberzombie, string.Empty, Improvement.ImprovementType.FreeNegativeQualities, string.Empty, intResult * -1);
+            ImprovementManager.Commit(this);
+
+            // Convert the character.
+            // Characters lose access to Resonance.
+            RESEnabled = false;
+
+            // Gain MAG that is permanently set to 1.
+            MAGEnabled = true;
+            MAG.MetatypeMinimum = 1;
+            MAG.MetatypeMaximum = 1;
+
+            // Add the Cyberzombie Lifestyle if it is not already taken.
+            if (Lifestyles.All(x => x.BaseLifestyle != "Cyberzombie Lifestyle Addition"))
+            {
+                XmlDocument objXmlLifestyleDocument = XmlManager.Load("lifestyles.xml");
+                XmlNode objXmlLifestyle = objXmlLifestyleDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"Cyberzombie Lifestyle Addition\"]");
+
+                if (objXmlLifestyle != null)
+                {
+                    Lifestyle objLifestyle = new Lifestyle(this);
+                    objLifestyle.Create(objXmlLifestyle);
+                    Lifestyles.Add(objLifestyle);
+                }
+            }
+
+            // Change the MetatypeCategory to Cyberzombie.
+            MetatypeCategory = "Cyberzombie";
+
+            // Gain access to Critter Powers.
+            CritterEnabled = true;
+
+            // Gain the Dual Natured Critter Power if it does not yet exist.
+            if (CritterPowers.All(x => x.Name != "Dual Natured"))
+            {
+                XmlNode objXmlPowerNode = XmlManager.Load("critterpowers.xml").SelectSingleNode("/chummer/powers/power[name = \"Dual Natured\"]");
+
+                if (objXmlPowerNode != null)
+                {
+                    CritterPower objCritterPower = new CritterPower(this);
+                    objCritterPower.Create(objXmlPowerNode);
+                    CritterPowers.Add(objCritterPower);
+                }
+            }
+
+            // Gain the Immunity (Normal Weapons) Critter Power if it does not yet exist.
+            if (!CritterPowers.Any(x => x.Name == "Immunity" && x.Extra == "Normal Weapons"))
+            {
+                XmlNode objXmlPowerNode = XmlManager.Load("critterpowers.xml").SelectSingleNode("/chummer/powers/power[name = \"Immunity\"]");
+
+                if (objXmlPowerNode != null)
+                {
+                    CritterPower objCritterPower = new CritterPower(this);
+                    objCritterPower.Create(objXmlPowerNode, 0, "Normal Weapons");
+                    CritterPowers.Add(objCritterPower);
+                }
+            }
+
+            return true;
         }
         #endregion
     }

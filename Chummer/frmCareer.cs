@@ -1916,92 +1916,11 @@ namespace Chummer
 
         private void mnuSpecialCyberzombie_Click(object sender, EventArgs e)
         {
-            bool blnEssence = true;
-            bool blnEnabled = false;
-            string strMessage = LanguageManager.GetString("Message_CyberzombieRequirements", GlobalOptions.Language);
-
-            // Make sure the character has an Essence lower than 0.
-            if (CharacterObject.Essence() >= 0)
+            if (CharacterObject.ConvertCyberzombie())
             {
-                strMessage += Environment.NewLine + '\t' + LanguageManager.GetString("Message_CyberzombieRequirementsEssence", GlobalOptions.Language);
-                blnEssence = false;
+                IsCharacterUpdateRequested = true;
+                IsDirty = true;
             }
-
-            blnEnabled =
-                CharacterObject.Improvements.Any(
-                    imp => imp.ImproveType == Improvement.ImprovementType.EnableCyberzombie);
-
-            if (!blnEnabled)
-                strMessage += Environment.NewLine + '\t' + LanguageManager.GetString("Message_CyberzombieRequirementsImprovement", GlobalOptions.Language);
-
-            if (!blnEssence || !blnEnabled)
-            {
-                Program.MainForm.ShowMessageBox(strMessage,
-                    LanguageManager.GetString("MessageTitle_CyberzombieRequirements", GlobalOptions.Language),
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            if (MessageBox.Show(LanguageManager.GetString("Message_CyberzombieConfirm"), LanguageManager.GetString("MessageTitle_CyberzombieConfirm"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
-                return;
-
-            // Convert the character.
-            // Characters lose access to Resonance.
-            CharacterObject.RESEnabled = false;
-
-            // Gain MAG that is permanently set to 1.
-            CharacterObject.MAGEnabled = true;
-            CharacterObject.MAG.MetatypeMinimum = 1;
-            CharacterObject.MAG.MetatypeMaximum = 1;
-
-            // Add the Cyberzombie Lifestyle if it is not already taken.
-            if (CharacterObject.Lifestyles.All(x => x.BaseLifestyle != "Cyberzombie Lifestyle Addition"))
-            {
-                XmlDocument objXmlLifestyleDocument = XmlManager.Load("lifestyles.xml");
-                XmlNode objXmlLifestyle = objXmlLifestyleDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"Cyberzombie Lifestyle Addition\"]");
-
-                if (objXmlLifestyle != null)
-                {
-                    Lifestyle objLifestyle = new Lifestyle(CharacterObject);
-                    objLifestyle.Create(objXmlLifestyle);
-                    CharacterObject.Lifestyles.Add(objLifestyle);
-                }
-            }
-
-            // Change the MetatypeCategory to Cyberzombie.
-            CharacterObject.MetatypeCategory = "Cyberzombie";
-
-            // Gain access to Critter Powers.
-            CharacterObject.CritterEnabled = true;
-
-            // Gain the Dual Natured Critter Power if it does not yet exist.
-            if (CharacterObject.CritterPowers.All(x => x.Name != "Dual Natured"))
-            {
-                XmlNode objXmlPowerNode = XmlManager.Load("critterpowers.xml").SelectSingleNode("/chummer/powers/power[name = \"Dual Natured\"]");
-
-                if (objXmlPowerNode != null)
-                {
-                    CritterPower objCritterPower = new CritterPower(CharacterObject);
-                    objCritterPower.Create(objXmlPowerNode);
-                    CharacterObject.CritterPowers.Add(objCritterPower);
-                }
-            }
-
-            // Gain the Immunity (Normal Weapons) Critter Power if it does not yet exist.
-            if (!CharacterObject.CritterPowers.Any(x => x.Name == "Immunity" && x.Extra == "Normal Weapons"))
-            {
-                XmlNode objXmlPowerNode = XmlManager.Load("critterpowers.xml").SelectSingleNode("/chummer/powers/power[name = \"Immunity\"]");
-
-                if (objXmlPowerNode != null)
-                {
-                    CritterPower objCritterPower = new CritterPower(CharacterObject);
-                    objCritterPower.Create(objXmlPowerNode, 0, "Normal Weapons");
-                    CharacterObject.CritterPowers.Add(objCritterPower);
-                }
-            }
-
-            IsCharacterUpdateRequested = true;
-            IsDirty = true;
         }
 
         private void mnuSpecialReduceAttribute_Click(object sender, EventArgs e)
