@@ -1972,7 +1972,7 @@
     <Content Include="customdata\Education Qualities Apply Karma Discount in Create Mode\amend_qualities.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="customdata\German Data Changes - Commanding Voice in Street Grimoire\amend_commandingvoice_powers.xml">
+    <Content Include="customdata\German Data Changes - Commanding Voice and Authoritative Tone are equal\amend_powers.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\German Data Changes - Commlink App Prices\amend_commlinkappsprices_gear.xml">
