@@ -115,6 +115,7 @@ namespace Chummer
         private bool _blnCompensateSkillGroupKarmaDifference;
         private bool _cyberwareRounding;
         private bool _increasedImprovedAbilityMultiplier;
+        private bool _allowFreeGrids;
         private bool _blnAllowTechnomancerSchooling;
         private string _strBookXPath = string.Empty;
         private string _strExcludeLimbSlot = string.Empty;
@@ -406,6 +407,8 @@ namespace Chummer
             objWriter.WriteElementString("usecalculatedpublicawareness", _blnUseCalculatedPublicAwareness.ToString());
             // <increasedimprovedabilitymodifier />
             objWriter.WriteElementString("increasedimprovedabilitymodifier", _increasedImprovedAbilityMultiplier.ToString());
+            // <allowFreeGrids />
+            objWriter.WriteElementString("allowFreeGrids", _allowFreeGrids.ToString());
             // <allowtechnomancerschooling />
             objWriter.WriteElementString("allowtechnomancerschooling", _blnAllowTechnomancerSchooling.ToString());
 
@@ -771,6 +774,8 @@ namespace Chummer
             objXmlNode.TryGetBoolFieldQuickly("usecalculatedpublicawareness", ref _blnUseCalculatedPublicAwareness);
             // House Rule: Whether Improved Ability should be capped at 0.5 (false) or 1.5 (true) of the target skill's Learned Rating.
             objXmlNode.TryGetBoolFieldQuickly("increasedimprovedabilitymodifier", ref _increasedImprovedAbilityMultiplier);
+            // House Rule: Whether lifestyles will give free grid subscriptions found in HT to players. 
+            objXmlNode.TryGetBoolFieldQuickly("allowFreeGrids", ref _allowFreeGrids);
             // House Rule: Whether Technomancers should be allowed to receive Schooling discounts in the same manner as Awakened. 
             objXmlNode.TryGetBoolFieldQuickly("allowtechnomancerschooling", ref _blnAllowTechnomancerSchooling);
             
@@ -2383,6 +2388,14 @@ namespace Chummer
         {
             get => _increasedImprovedAbilityMultiplier;
             set => _increasedImprovedAbilityMultiplier = value;
+        }
+        /// <summary>
+        /// Whether lifestyles will automatically give free grid subscriptions found in (HT)
+        /// </summary>
+        public bool AllowFreeGrids
+        {
+            get => _allowFreeGrids;
+            set => _allowFreeGrids = value;
         }
 
         /// <summary>

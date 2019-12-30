@@ -301,6 +301,7 @@ namespace Chummer
             this.chkAllowSkillRegrouping = new System.Windows.Forms.CheckBox();
             this.chkNoArmorEncumbrance = new System.Windows.Forms.CheckBox();
             this.chkIncreasedImprovedAbilityModifier = new System.Windows.Forms.CheckBox();
+            this.chkAllowFreeGrids = new System.Windows.Forms.CheckBox();
             this.tabGitHubIssues = new System.Windows.Forms.TabPage();
             this.cmdUploadPastebin = new System.Windows.Forms.Button();
             this.tabPlugins = new System.Windows.Forms.TabPage();
@@ -3718,6 +3719,7 @@ namespace Chummer
             this.tlpHouseRules.Controls.Add(this.chkAllowSkillRegrouping, 4, 11);
             this.tlpHouseRules.Controls.Add(this.chkNoArmorEncumbrance, 4, 10);
             this.tlpHouseRules.Controls.Add(this.chkIncreasedImprovedAbilityModifier, 4, 16);
+            this.tlpHouseRules.Controls.Add(this.chkAllowFreeGrids, 4, 17);
             this.tlpHouseRules.Controls.Add(this.chkAllowTechnomancerSchooling, 0, 7);
             this.tlpHouseRules.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpHouseRules.Location = new System.Drawing.Point(9, 9);
@@ -4461,7 +4463,22 @@ namespace Chummer
             this.chkIncreasedImprovedAbilityModifier.Text = "Improved Ability is capped by Learned Rating x 1.5 instead of 0.5";
             this.chkIncreasedImprovedAbilityModifier.UseVisualStyleBackColor = true;
             this.chkIncreasedImprovedAbilityModifier.CheckedChanged += new System.EventHandler(this.OptionsChanged);
-            // 
+            //
+            // chkAllowFreeGrids
+            //
+            this.chkAllowFreeGrids.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkAllowFreeGrids.AutoSize = true;
+            this.tlpHouseRules.SetColumnSpan(this.chkAllowFreeGrids, 5);
+            this.chkAllowFreeGrids.Location = new System.Drawing.Point(499, 430);
+            this.chkAllowFreeGrids.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkAllowFreeGrids.Name = "chkIncreasedImprovedAbilityModifier";
+            this.chkAllowFreeGrids.Size = new System.Drawing.Size(497, 17);
+            this.chkAllowFreeGrids.TabIndex = 45;
+            this.chkAllowFreeGrids.Tag = "Checkbox_Options_AllowFreeGrids";
+            this.chkAllowFreeGrids.Text = "Free Grids are allowed on lifestyle";
+            this.chkAllowFreeGrids.UseVisualStyleBackColor = true;            // 
             // tabGitHubIssues
             // 
             this.tabGitHubIssues.BackColor = System.Drawing.SystemColors.Control;
@@ -5011,6 +5028,7 @@ namespace Chummer
         private System.Windows.Forms.ComboBox cbUseLoggingApplicationInsights;
         private ButtonWithToolTip cbUseLoggingHelp;
         private System.Windows.Forms.CheckBox chkIncreasedImprovedAbilityModifier;
+        private System.Windows.Forms.CheckBox chkAllowFreeGrids;
         private System.Windows.Forms.Button cbPluginsHelp;
         private System.Windows.Forms.CheckBox chkHideCharts;
         private System.Windows.Forms.CheckBox chkAllowTechnomancerSchooling;
