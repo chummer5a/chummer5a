@@ -24920,7 +24920,7 @@
 				<id>5f1ebcd8-9571-4716-b7fd-ec674306b833</id>
 				<name>Authoritative Tone</name>
 				<translate>Gebieterischer Ton</translate>
-				<altpage>207</altpage>
+				<altpage>199</altpage>
 			</power>
 			<power translated="True">
 				<id>deec22db-cf2c-47b6-ac34-95a13bcd0bf8</id>
@@ -25315,7 +25315,7 @@
 			<power translated="True">
 				<id>9fd628cc-dd06-435c-80d3-5261e7e5b1e5</id>
 				<name>Commanding Voice</name>
-				<translate>Befehlsstimme</translate>
+				<translate>Gebieterischer Ton</translate>
 				<altpage>207</altpage>
 			</power>
 			<power>
