@@ -34,6 +34,7 @@ Application Changes:
 - Added an optional rule to suppress Technomancers taking the Schooling Initiation discount, as this isn't present in any of the sourcebooks.
 - Added a new improvement type, weaponspecificdice. This provides a dicepool bonus to a specific weapon, idenfiied by its internalid. Optional attribute "type" allows filtering by ranged or melee weapons. Used by weapon foci.
 - Replaced selectweapon bonus on weapon foci with weaponspecificdice, as above.
+- Allowed alphabetic sorting of Favorite and Recent roster lists. Note that this sorting is based on the TAG of the node, which is the full filename path.
 
 Application Fixes:
 - Fixed an issue with the Point Buy form incorrectly setting metavariant metatypes to be themselves (ie Dryad (Dryad)).
