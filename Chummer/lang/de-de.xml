@@ -7120,6 +7120,10 @@
 			<key>Checkbox_Options_IgnoreArt</key>
 			<text>Ignoriere Anforderungen für Künste aus dem Straßengrimoire</text>
 		</string>
+        <string>
+          <key>Checkbox_Options_AllowFreeGrids</key>
+          <text>Zulassen von beliebigen Gitter-Abonnements für Lebensstile, auch wenn 'Harte Ziele' nicht als Quellenbuch ausgewählt ist</text>
+        </string>
 		<string>
 			<key>Checkbox_Options_CyberlegMovement</key>
 			<text>Werte von Cyberbeinen für Bewegung verwenden</text>

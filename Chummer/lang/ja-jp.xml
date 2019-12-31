@@ -7048,6 +7048,10 @@
 			<key>Checkbox_Options_IgnoreArt</key>
 			<text>Ignore Art Requirements from Street Grimoire</text>
 		</string>
+        <string>
+          <key>Checkbox_Options_AllowFreeGrids</key>
+          <text>Allow Free Grid Subscription Qualities for lifestyles even if Hard Targets is not an active book</text>
+        </string>
 		<string>
 			<key>Checkbox_Options_CyberlegMovement</key>
 			<text>移動時にサイバーレッグのステータスを使用する</text>

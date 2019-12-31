@@ -6633,6 +6633,10 @@
 			<key>Checkbox_Options_IgnoreArt</key>
 			<text>忽略《街头魔典SG》要求的技艺</text>
 		</string>
+        <string>
+          <key>Checkbox_Options_AllowFreeGrids</key>
+          <text>Allow Free Grid Subscription Qualities for lifestyles even if Hard Targets is not an active book</text>
+        </string>
 		<string>
 			<key>Checkbox_Options_CyberlegMovement</key>
 			<text>计算移动速度时，使用赛博腿的属性</text>

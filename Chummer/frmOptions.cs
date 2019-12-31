@@ -206,6 +206,7 @@ namespace Chummer
             _characterOptions.PrioritySpellsAsAdeptPowers = chkPrioritySpellsAsAdeptPowers.Checked;
             _characterOptions.EnemyKarmaQualityLimit = chkEnemyKarmaQualityLimit.Checked;
             _characterOptions.IncreasedImprovedAbilityMultiplier = chkIncreasedImprovedAbilityModifier.Checked;
+            _characterOptions.AllowFreeGrids = chkAllowFreeGrids.Checked;
             _characterOptions.AllowTechnomancerSchooling = chkAllowTechnomancerSchooling.Checked;
             string strLimbCount = cboLimbCount.SelectedValue?.ToString();
             if(string.IsNullOrEmpty(strLimbCount))
@@ -730,6 +731,7 @@ namespace Chummer
             chkAllowHoverIncrement.Checked = _characterOptions.AllowHoverIncrement;
             chkSearchInCategoryOnly.Checked = _characterOptions.SearchInCategoryOnly;
             chkIncreasedImprovedAbilityModifier.Checked = _characterOptions.IncreasedImprovedAbilityMultiplier;
+            chkAllowFreeGrids.Checked = _characterOptions.AllowFreeGrids;
             nudContactMultiplier.Enabled = _characterOptions.FreeContactsMultiplierEnabled;
             nudContactMultiplier.Value = _characterOptions.FreeContactsMultiplier;
             nudKnowledgeMultiplier.Enabled = _characterOptions.FreeKnowledgeMultiplierEnabled;

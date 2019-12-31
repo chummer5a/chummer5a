@@ -6672,6 +6672,10 @@
       <text>Ignorar requisitos de Arte do Street Grimoire</text>
     </string>
     <string>
+      <key>Checkbox_Options_AllowFreeGrids</key>
+      <text>Allow Free Grid Subscription Qualities for lifestyles even if Hard Targets is not an active book</text>
+    </string>
+    <string>
       <key>Checkbox_Options_CyberlegMovement</key>
       <text>Usar estatísticas de Ciberperna para Movimento</text>
     </string>
