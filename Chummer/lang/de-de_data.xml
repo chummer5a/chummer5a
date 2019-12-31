@@ -45194,6 +45194,12 @@
 				<translate>Rollschuhe mit gehärteten Klingen</translate>
 				<altpage>179</altpage>
 			</weapon>
+			<weapon translated="True">
+				<id>c73077d0-fc16-474c-a8e6-ce9635a36224</id>
+				<name>Foot Anchor</name>
+				<translate>Fußanker</translate>
+				<altpage>87</altpage>
+			</weapon>
 		</weapons>
 		<accessories>
 			<accessory>
