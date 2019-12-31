@@ -15,6 +15,7 @@ Application Fixes:
 - Refactored tooltip code for weapons to properly show sources of bonuses.
 - Added a new improvement type to clamp attribute maximums (attributemaxclamp) to the metatype maximum instead of the metatype augmented maximum. This is used by the Infirm quality to prevent taking attribute bonuses that are higher than the metatype maximum.
 - Altered some logic in the Weapon class to better support the Improved Ammunition Capacity accessory provided by Special Modifications.
+- Fixed behaviour of cyberzombification improperly reducing metatype limits instead of increasing them. 
 
 Application Changes:
 - Spells, rituals and preparations now count down from maximum, in the same way as other counters in create mode.
@@ -56,6 +57,7 @@ Data Changes:
 - Fixed incorrect stats (AP mismatch, availability) on the Rolling Blades from No Future.
 - Fixed an issue with the Armor Mod Helmet customdata rule not working for hardned mil-spec suits.
 - Replaced existing firstlevel bonus for the Infirm quality with new attributemaxclamp improvements. 
+- Added Foot Anchor weapon to the Foot Anchor cyberware.
 
 New Strings:
 - String_DisableSkillGroupPrompt

@@ -2708,6 +2708,7 @@
       <cost>2000</cost>
       <source>CF</source>
       <page>84</page>
+      <addweapon>Foot Anchor</addweapon>
       <blocksmounts>ankle,knee,hip</blocksmounts>
       <selectside />
       <bonus>

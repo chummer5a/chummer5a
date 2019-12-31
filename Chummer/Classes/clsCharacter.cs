@@ -14200,7 +14200,7 @@ if (!Utils.IsUnitTest){
             // If the character is Cyberzombie, adjust their Attributes based on their Essence.
             if(MetatypeCategory == "Cyberzombie")
             {
-                int intESSModifier = decimal.ToInt32(decimal.Ceiling(Essence() - ESS.MetatypeMaximum));
+                int intESSModifier = decimal.ToInt32(decimal.Ceiling(Essence() * -1));
                 ImprovementManager.RemoveImprovements(this,
                     Improvements.Where(x =>
                         x.ImproveSource == Improvement.ImprovementSource.Cyberzombie &&

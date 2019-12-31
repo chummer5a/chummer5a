@@ -7624,6 +7624,28 @@
     <!-- Region Chrome Flesh-->
     <!-- Region Chrome Flesh Cyber-Weapons -->
     <weapon>
+      <id>c73077d0-fc16-474c-a8e6-ce9635a36224</id>
+      <name>Foot Anchor</name>
+      <category>Blades</category>
+      <type>Melee</type>
+      <conceal>0</conceal>
+      <accuracy>Physical</accuracy>
+      <reach>0</reach>
+      <damage>(STR+3)P</damage>
+      <ap>-2</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>CF</source>
+      <page>84</page>
+      <cyberware>True</cyberware>
+      <hide />
+      <spec>Cyber Implants</spec>
+      <useskill>Unarmed Combat</useskill>
+    </weapon>
+    <weapon>
       <id>0b43e7a8-892d-403a-a0e2-0d015556b1af</id>
       <name>Oral Slasher</name>
       <category>Cyberweapon</category>
