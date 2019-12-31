@@ -21,7 +21,7 @@
   <vehicles>
     <vehicle>
       <id>945d3c12-d119-4441-a6f5-d69c6317aff2</id>
-      <body>17</body>
+      <body amendoperation="replace">17</body>
     </vehicle>
   </vehicles>
 </chummer>
