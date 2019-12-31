@@ -4473,11 +4473,11 @@ namespace Chummer
             this.tlpHouseRules.SetColumnSpan(this.chkAllowFreeGrids, 5);
             this.chkAllowFreeGrids.Location = new System.Drawing.Point(499, 430);
             this.chkAllowFreeGrids.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chkAllowFreeGrids.Name = "chkIncreasedImprovedAbilityModifier";
+            this.chkAllowFreeGrids.Name = "chkAllowFreeGrids";
             this.chkAllowFreeGrids.Size = new System.Drawing.Size(497, 17);
             this.chkAllowFreeGrids.TabIndex = 45;
             this.chkAllowFreeGrids.Tag = "Checkbox_Options_AllowFreeGrids";
-            this.chkAllowFreeGrids.Text = "Free Grids are allowed on lifestyle";
+            this.chkAllowFreeGrids.Text = "Allow Free Grid Subscription Qualities for lifestyles even if Hard Targets is not an active book";
             this.chkAllowFreeGrids.UseVisualStyleBackColor = true;            // 
             // tabGitHubIssues
             // 
