@@ -273,6 +273,26 @@ namespace Chummer
         public bool AllowUpgrade => LevelsEnabled && Karma > 0 ||
                                     (PointsPerLevel > 0 && CharacterObject.CritterPowerPointsTotal > 0);
 
+        /// <summary>
+        /// Free levels of the power.
+        /// </summary>
+        public int FreeLevels
+        {
+            get
+            {
+                if (_intCachedFreeLevels != int.MinValue)
+                    return _intCachedFreeLevels;
+                //TODO: This does much less than the FreeLevels for adept powers. If this turns out to be needed, reintegrate with the base Power class.
+                int intReturn = CharacterObject.Improvements.Where(objImprovement =>
+                        objImprovement.ImproveType == _freeLevelImprovementType &&
+                        objImprovement.ImprovedName == Name &&
+                        objImprovement.UniqueName == Extra && objImprovement.Enabled)
+                    .Sum(objImprovement => objImprovement.Rating);
+                
+                return _intCachedFreeLevels = intReturn;
+            }
+        }
+
         #endregion
         #region PropertyChanged
         public static readonly DependancyGraph<string> PowerDependencyGraph =
@@ -315,7 +335,7 @@ namespace Chummer
             OnMultiplePropertyChanged(strPropertyName);
         }
 
-        public void OnMultiplePropertyChanged(params string[] lstPropertyNames)
+        public new void OnMultiplePropertyChanged(params string[] lstPropertyNames)
         {
             ICollection<string> lstNamesOfChangedProperties = null;
             foreach (string strPropertyName in lstPropertyNames)
