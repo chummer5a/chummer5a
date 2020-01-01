@@ -184,23 +184,27 @@ namespace Chummer.Backend.Equipment
                 xmlLifestyleDocument.SelectSingleNode($"/chummer/securities/security[name = \"{_strBaseLifestyle}\"]");
             xmlLifestyleNode.TryGetInt32FieldQuickly("minimum", ref _intBaseSecurity);
             xmlLifestyleNode.TryGetInt32FieldQuickly("limit", ref _intSecurityMaximum);
-            using (XmlNodeList lstGridNodes = objXmlLifestyle.SelectNodes("freegrids/freegrid"))
+            if (_objCharacter.Options.BookEnabled("HT") || _objCharacter.Options.AllowFreeGrids)
             {
-                if (!(lstGridNodes?.Count > 0)) return;
-                FreeGrids.Clear();
-                foreach (XmlNode xmlNode in lstGridNodes)
+                using (XmlNodeList lstGridNodes = objXmlLifestyle.SelectNodes("freegrids/freegrid"))
                 {
-                    XmlNode xmlQuality = xmlLifestyleDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + xmlNode.InnerText + "\"]");
-                    LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
-                    string strPush = xmlNode.Attributes?["select"]?.InnerText;
-                    if (!string.IsNullOrWhiteSpace(strPush))
+                    if (!(lstGridNodes?.Count > 0)) return;
+
+                    FreeGrids.Clear();
+                    foreach (XmlNode xmlNode in lstGridNodes)
                     {
-                        _objCharacter.Pushtext.Push(strPush);
+                        XmlNode xmlQuality = xmlLifestyleDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + xmlNode.InnerText + "\"]");
+                        LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
+                        string strPush = xmlNode.Attributes?["select"]?.InnerText;
+                        if (!string.IsNullOrWhiteSpace(strPush))
+                        {
+                            _objCharacter.Pushtext.Push(strPush);
+                        }
+
+                        objQuality.Create(xmlQuality, this, _objCharacter, QualitySource.BuiltIn);
+
+                        FreeGrids.Add(objQuality);
                     }
-
-                    objQuality.Create(xmlQuality, this, _objCharacter, QualitySource.BuiltIn);
-
-                    FreeGrids.Add(objQuality);
                 }
             }
         }

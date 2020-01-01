@@ -7600,6 +7600,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Ignore Art Requirements from Street Grimoire</text>
     </string>
     <string>
+      <key>Checkbox_Options_AllowFreeGrids</key>
+      <text>Allow Free Grid Subscription Qualities for lifestyles even if Hard Targets is not an active book</text>
+    </string>
+    <string>
       <key>Checkbox_Options_CyberlegMovement</key>
       <text>Use Cyberleg Stats for Movement</text>
     </string>

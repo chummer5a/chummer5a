@@ -7068,6 +7068,10 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<key>Checkbox_Options_IgnoreArt</key>
 			<text>Ignorer les prérequis du Grimoire des rues pour les Talents</text>
 		</string>
+        <string>
+          <key>Checkbox_Options_AllowFreeGrids</key>
+          <text>Allow Free Grid Subscription Qualities for lifestyles even if Hard Targets is not an active book</text>
+        </string>
 		<string>
 			<key>Message_UndoNotHighestGrade</key>
 			<text>Vous devez d'abord annuler les entrées des grades d'initiation.</text>
