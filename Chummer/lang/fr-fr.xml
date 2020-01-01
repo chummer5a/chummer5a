@@ -7070,7 +7070,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
         <string>
           <key>Checkbox_Options_AllowFreeGrids</key>
-          <text>Allow Free Grid Subscription Qualities for lifestyles even if Hard Targets is not an active book</text>
+          <text>Permettre les abonnements de grille disponibles pour les niveau de vie, même si 'Hard Targets' n'est pas sélectionné comme livre source</text>
         </string>
 		<string>
 			<key>Message_UndoNotHighestGrade</key>
