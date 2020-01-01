@@ -32,27 +32,27 @@
     <category blackmarket="Weapons" type="melee">Unarmed</category>
     <category blackmarket="Weapons" type="bow">Bows</category>
     <category blackmarket="Weapons" type="crossbow">Crossbows</category>
-    <category blackmarket="Weapons" type="taser">Tasers</category>
-    <category blackmarket="Weapons" type="gun">Holdouts</category>
-    <category blackmarket="Weapons" type="gun">Light Pistols</category>
-    <category blackmarket="Weapons" type="gun">Heavy Pistols</category>
-    <category blackmarket="Weapons" type="gun">Machine Pistols</category>
-    <category blackmarket="Weapons" type="gun">Submachine Guns</category>
-    <category blackmarket="Weapons" type="gun">Assault Rifles</category>
-    <category blackmarket="Weapons" type="gun">Carbines</category>
-    <category blackmarket="Weapons" type="gun">Sporting Rifles</category>
-    <category blackmarket="Weapons" type="gun">Sniper Rifles</category>
-    <category blackmarket="Weapons" type="gun">Shotguns</category>
-    <category blackmarket="Weapons" type="gun">Light Machine Guns</category>
-    <category blackmarket="Weapons" type="gun">Medium Machine Guns</category>
-    <category blackmarket="Weapons" type="gun">Heavy Machine Guns</category>
+    <category blackmarket="Weapons" type="taser" gunneryspec="Energy">Tasers</category>
+    <category blackmarket="Weapons" type="gun" gunneryspec="Ballistic">Holdouts</category>
+    <category blackmarket="Weapons" type="gun" gunneryspec="Ballistic">Light Pistols</category>
+    <category blackmarket="Weapons" type="gun" gunneryspec="Ballistic">Heavy Pistols</category>
+    <category blackmarket="Weapons" type="gun" gunneryspec="Ballistic">Machine Pistols</category>
+    <category blackmarket="Weapons" type="gun" gunneryspec="Ballistic">Submachine Guns</category>
+    <category blackmarket="Weapons" type="gun" gunneryspec="Ballistic">Assault Rifles</category>
+    <category blackmarket="Weapons" type="gun" gunneryspec="Ballistic">Carbines</category>
+    <category blackmarket="Weapons" type="gun" gunneryspec="Ballistic">Sporting Rifles</category>
+    <category blackmarket="Weapons" type="gun" gunneryspec="Ballistic">Sniper Rifles</category>
+    <category blackmarket="Weapons" type="gun" gunneryspec="Ballistic">Shotguns</category>
+    <category blackmarket="Weapons" type="gun" gunneryspec="Ballistic">Light Machine Guns</category>
+    <category blackmarket="Weapons" type="gun" gunneryspec="Ballistic">Medium Machine Guns</category>
+    <category blackmarket="Weapons" type="gun" gunneryspec="Ballistic">Heavy Machine Guns</category>
     <category blackmarket="Weapons" type="gun">Underbarrel Weapons</category>
     <category blackmarket="Weapons" type="gun">Micro-Drone Weapons</category>
-    <category blackmarket="Weapons" type="cannon">Assault Cannons</category>
-    <category blackmarket="Weapons" type="flame">Flamethrowers</category>
-    <category blackmarket="Weapons" type="laser">Laser Weapons</category>
-    <category blackmarket="Weapons" type="glauncher">Grenade Launchers</category>
-    <category blackmarket="Weapons" type="mlauncher">Missile Launchers</category>
+    <category blackmarket="Weapons" type="cannon" gunneryspec="Ballistic">Assault Cannons</category>
+    <category blackmarket="Weapons" type="flame" gunneryspec="Energy">Flamethrowers</category>
+    <category blackmarket="Weapons" type="laser" gunneryspec="Energy">Laser Weapons</category>
+    <category blackmarket="Weapons" type="glauncher" gunneryspec="Artillery">Grenade Launchers</category>
+    <category blackmarket="Weapons" type="mlauncher" gunneryspec="Rocket">Missile Launchers</category>
   </categories>
   <weapons>
     <!-- Region Shadowrun 5 -->

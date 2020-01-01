@@ -3926,6 +3926,20 @@ namespace Chummer.Backend.Equipment
                     throw new ArgumentOutOfRangeException(nameof(FireMode));
             }
 
+            if (FireMode == FiringMode.GunneryCommandDevice || FireMode == FiringMode.RemoteOperated ||
+                FireMode == FiringMode.ManualOperation)
+            {
+                if (_objCharacter.SkillsSection.GetActiveSkill("Gunnery").Specializations.Count > 0 &&
+                    RelevantSpecialization != "None")
+                {
+                    if (_objCharacter.SkillsSection.GetActiveSkill("Gunnery").Specializations
+                        .Any(s => s.Name == RelevantSpecialization))
+                    {
+                        intDicePool += _objCharacter.Options.SpecializationBonus;
+                    }
+                }
+            }
+
             string strWeaponBonusPool = ParentVehicle != null
                 ? ParentVehicle.Gear.DeepFindById(AmmoLoaded)?.WeaponBonus?["pool"]?.InnerText
                 : _objCharacter.Gear.DeepFindById(AmmoLoaded)?.WeaponBonus?["pool"]?.InnerText;
@@ -3934,6 +3948,29 @@ namespace Chummer.Backend.Equipment
                 intDicePoolModifier += Convert.ToInt32(strWeaponBonusPool);
 
             return (intDicePool + intDicePoolModifier).ToString(objCulture) + strExtra;
+        }
+
+        private string _strRelevantSpec = string.Empty;
+        internal string RelevantSpecialization
+        {
+            get
+            {
+                if (_strRelevantSpec != string.Empty)
+                {
+                    return _strRelevantSpec;
+                }
+
+                string spec = GetNode()?["category"]?.Attributes["gunneryspec"]?.InnerText ?? string.Empty;
+                if (spec == string.Empty)
+                {
+                    spec = XmlManager.Load("weapons.xml")
+                               .SelectSingleNode($"/chummer/categories/category[. = \"{Category}\"]")
+                               ?.Attributes?["gunneryspec"]?.InnerText ?? "None";
+                }
+
+                _strRelevantSpec = spec;
+                return _strRelevantSpec;
+            }
         }
 
         private Skill Skill
@@ -4055,7 +4092,6 @@ namespace Chummer.Backend.Equipment
                 string strSpaceCharacter = LanguageManager.GetString("String_Space");
                 switch (FireMode)
                 {
-                    //TODO: Gunnery specialisations (Dear god why is Ballistic a specialisation)
                     case FiringMode.DogBrain:
                         {
                             Gear objAutosoft = ParentVehicle.Gear.DeepFirstOrDefault(x => x.Children,
@@ -4113,7 +4149,7 @@ namespace Chummer.Backend.Equipment
 
                                     if (spec != null)
                                     {
-                                        strBld.Append($"{strSpaceCharacter}({2.ToString(GlobalOptions.CultureInfo)})");
+                                        strBld.Append($"{strSpaceCharacter}{spec.DisplayName(GlobalOptions.Language)}{strSpaceCharacter}({_objCharacter.Options.SpecializationBonus.ToString(GlobalOptions.CultureInfo)})");
                                     }
                                 }
                             }
@@ -4122,6 +4158,21 @@ namespace Chummer.Backend.Equipment
                         }
                     default:
                         throw new ArgumentOutOfRangeException(nameof(FireMode));
+                }
+
+                if (FireMode == FiringMode.GunneryCommandDevice || FireMode == FiringMode.RemoteOperated ||
+                    FireMode == FiringMode.ManualOperation)
+                {
+                    Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill("Gunnery");
+                    if (objSkill != null && (objSkill.Specializations.Count > 0 && RelevantSpecialization != "None"))
+                    {
+                        SkillSpecialization spec = objSkill.GetSpecialization(RelevantSpecialization);
+                        if (spec != null)
+                        {
+                            strBld.Append($"{strSpaceCharacter}{spec.DisplayName(GlobalOptions.Language)}" +
+                                          $"{strSpaceCharacter}({_objCharacter.Options.SpecializationBonus.ToString(GlobalOptions.CultureInfo)})");
+                        }
+                    }
                 }
 
                 foreach (WeaponAccessory wa in WeaponAccessories.Where(a => a.Equipped && a.DicePool != 0))

@@ -36,6 +36,7 @@ Application Changes:
 - Added a new improvement type, weaponspecificdice. This provides a dicepool bonus to a specific weapon, idenfiied by its internalid. Optional attribute "type" allows filtering by ranged or melee weapons. Used by weapon foci.
 - Replaced selectweapon bonus on weapon foci with weaponspecificdice, as above.
 - Allowed alphabetic sorting of Favorite and Recent roster lists. Note that this sorting is based on the TAG of the node, which is the full filename path.
+- Added basic support for the Gunnery specialisation adding to dicepool for vehicle-mounted weapons. This is done by applying a 'gunneryspec' attribute to either the root category node, or the category node of the weapon itself. The weapon is checked first, then the category.
 
 Application Fixes:
 - Fixed an issue with the Point Buy form incorrectly setting metavariant metatypes to be themselves (ie Dryad (Dryad)).
@@ -58,6 +59,7 @@ Data Changes:
 - Fixed an issue with the Armor Mod Helmet customdata rule not working for hardned mil-spec suits.
 - Replaced existing firstlevel bonus for the Infirm quality with new attributemaxclamp improvements. 
 - Added Foot Anchor weapon to the Foot Anchor cyberware.
+- Added gunneryspec to most categories of weapon; most categories have been mapped as Ballistic for now, with other weapons needing to be mapped manually. Please contact the chummer dev team if you'd like to assist with this, though any pull requests will be welcomed as per normal.
 
 New Strings:
 - String_DisableSkillGroupPrompt

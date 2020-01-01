@@ -2395,5 +2395,13 @@ namespace Chummer
         }
 
         #endregion
+
+        #region Constant Values
+        /// <summary>
+        /// The value by which Specializations add to dicepool. 
+        /// </summary>
+        public int SpecializationBonus = 2;
+
+        #endregion
     }
 }
