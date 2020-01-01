@@ -1021,7 +1021,7 @@ namespace Chummer
                     break;
                 case ImprovementType.AdeptPowerPoints:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.PowerPointsTotal));
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.AdeptPowerPointsTotal));
                 }
                     break;
                 case ImprovementType.ArmorEncumbrancePenalty:

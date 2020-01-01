@@ -461,6 +461,8 @@ namespace Chummer
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdAddCritterPower = new System.Windows.Forms.Button();
             this.cmdDeleteCritterPower = new System.Windows.Forms.Button();
+            this.lblCritterPowerRatingLabel = new System.Windows.Forms.Label();
+            this.nudCritterPowerRating = new Chummer.NumericUpDownEx();
             this.tabInitiation = new System.Windows.Forms.TabPage();
             this.tlpInitiation = new Chummer.BufferedTableLayoutPanel(this.components);
             this.treMetamagic = new System.Windows.Forms.TreeView();
@@ -1122,6 +1124,7 @@ namespace Chummer
             this.tabCritter.SuspendLayout();
             this.tlpCritter.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCritterPowerRating)).BeginInit();
             this.tabInitiation.SuspendLayout();
             this.tlpInitiation.SuspendLayout();
             this.flpInitiationButtons.SuspendLayout();
@@ -5634,7 +5637,7 @@ namespace Chummer
             this.tlpCritter.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpCritter.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpCritter.Controls.Add(this.treCritterPowers, 0, 1);
-            this.tlpCritter.Controls.Add(this.chkCritterPowerCount, 1, 9);
+            this.tlpCritter.Controls.Add(this.chkCritterPowerCount, 1, 10);
             this.tlpCritter.Controls.Add(this.lblCritterPowerPointsLabel, 1, 0);
             this.tlpCritter.Controls.Add(this.lblCritterPowerPointCost, 2, 8);
             this.tlpCritter.Controls.Add(this.lblCritterPowerPoints, 2, 0);
@@ -5654,10 +5657,13 @@ namespace Chummer
             this.tlpCritter.Controls.Add(this.lblCritterPowerAction, 2, 4);
             this.tlpCritter.Controls.Add(this.lblCritterPowerRangeLabel, 1, 5);
             this.tlpCritter.Controls.Add(this.flowLayoutPanel1, 0, 0);
+            this.tlpCritter.Controls.Add(this.lblCritterPowerRatingLabel, 1, 9);
+            this.tlpCritter.Controls.Add(this.nudCritterPowerRating, 2, 9);
             this.tlpCritter.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpCritter.Location = new System.Drawing.Point(3, 3);
             this.tlpCritter.Name = "tlpCritter";
-            this.tlpCritter.RowCount = 10;
+            this.tlpCritter.RowCount = 11;
+            this.tlpCritter.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCritter.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCritter.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCritter.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -5688,7 +5694,7 @@ namespace Chummer
             this.treCritterPowers.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode14,
             treeNode15});
-            this.tlpCritter.SetRowSpan(this.treCritterPowers, 9);
+            this.tlpCritter.SetRowSpan(this.treCritterPowers, 10);
             this.treCritterPowers.ShowNodeToolTips = true;
             this.treCritterPowers.ShowPlusMinus = false;
             this.treCritterPowers.ShowRootLines = false;
@@ -5955,6 +5961,26 @@ namespace Chummer
             this.cmdDeleteCritterPower.Text = "Delete";
             this.cmdDeleteCritterPower.UseVisualStyleBackColor = true;
             this.cmdDeleteCritterPower.Click += new System.EventHandler(this.cmdDeleteCritterPower_Click);
+            // 
+            // lblCritterPowerRatingLabel
+            // 
+            this.lblCritterPowerRatingLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblCritterPowerRatingLabel.AutoSize = true;
+            this.lblCritterPowerRatingLabel.Location = new System.Drawing.Point(335, 235);
+            this.lblCritterPowerRatingLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblCritterPowerRatingLabel.Name = "lblCritterPowerRatingLabel";
+            this.lblCritterPowerRatingLabel.Size = new System.Drawing.Size(41, 13);
+            this.lblCritterPowerRatingLabel.TabIndex = 23;
+            this.lblCritterPowerRatingLabel.Tag = "Label_Rating";
+            this.lblCritterPowerRatingLabel.Text = "Rating:";
+            // 
+            // nudCritterPowerRating
+            // 
+            this.nudCritterPowerRating.Location = new System.Drawing.Point(382, 232);
+            this.nudCritterPowerRating.Name = "nudCritterPowerRating";
+            this.nudCritterPowerRating.Size = new System.Drawing.Size(120, 20);
+            this.nudCritterPowerRating.TabIndex = 24;
+            this.nudCritterPowerRating.ValueChanged += new System.EventHandler(this.nudCritterPowerRating_ValueChanged);
             // 
             // tabInitiation
             // 
@@ -12625,7 +12651,7 @@ namespace Chummer
             this.tabInfo.Location = new System.Drawing.Point(0, 0);
             this.tabInfo.Name = "tabInfo";
             this.tabInfo.SelectedIndex = 0;
-            this.tabInfo.Size = new System.Drawing.Size(232, 657);
+            this.tabInfo.Size = new System.Drawing.Size(269, 786);
             this.tabInfo.TabIndex = 50;
             // 
             // tabBPSummary
@@ -12635,7 +12661,7 @@ namespace Chummer
             this.tabBPSummary.Location = new System.Drawing.Point(4, 22);
             this.tabBPSummary.Name = "tabBPSummary";
             this.tabBPSummary.Padding = new System.Windows.Forms.Padding(3);
-            this.tabBPSummary.Size = new System.Drawing.Size(224, 631);
+            this.tabBPSummary.Size = new System.Drawing.Size(261, 760);
             this.tabBPSummary.TabIndex = 0;
             this.tabBPSummary.Tag = "Tab_BPSummary";
             this.tabBPSummary.Text = "Karma Summary";
@@ -12917,7 +12943,7 @@ namespace Chummer
             // lblAttributesBP
             // 
             this.lblAttributesBP.AutoSize = true;
-            this.lblAttributesBP.Location = new System.Drawing.Point(122, 31);
+            this.lblAttributesBP.Location = new System.Drawing.Point(143, 31);
             this.lblAttributesBP.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblAttributesBP.Name = "lblAttributesBP";
             this.lblAttributesBP.Size = new System.Drawing.Size(30, 13);
@@ -13907,6 +13933,7 @@ namespace Chummer
             this.tlpCritter.PerformLayout();
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCritterPowerRating)).EndInit();
             this.tabInitiation.ResumeLayout(false);
             this.tlpInitiation.ResumeLayout(false);
             this.tlpInitiation.PerformLayout();
@@ -14470,8 +14497,6 @@ namespace Chummer
         private System.Windows.Forms.Label lblMovementLabel;
         private System.Windows.Forms.Label lblCritterPowerPoints;
         private System.Windows.Forms.Label lblCritterPowerPointsLabel;
-        private System.Windows.Forms.Label lblCritterPowerPointCost;
-        private System.Windows.Forms.Label lblCritterPowerPointCostLabel;
         private System.Windows.Forms.ToolStripMenuItem mnuSpecialChangeMetatype;
         private System.Windows.Forms.ToolStripMenuItem mnuSpecialChangeOptions;
         private System.Windows.Forms.ToolStripMenuItem mnuSpecialCreatePACKSKit;
@@ -15099,5 +15124,9 @@ namespace Chummer
         private System.Windows.Forms.Label lblMetagenicQualitiesLabel;
         private LabelWithToolTip lblSurprise;
         private LabelWithToolTip lblSurpriseLabel;
+        private System.Windows.Forms.Label lblCritterPowerRatingLabel;
+        private System.Windows.Forms.Label lblCritterPowerPointCost;
+        private System.Windows.Forms.Label lblCritterPowerPointCostLabel;
+        private NumericUpDownEx nudCritterPowerRating;
     }
 }

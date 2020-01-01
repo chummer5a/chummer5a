@@ -8442,35 +8442,29 @@ namespace Chummer
                 lblCritterPowerAction.Text = objPower.DisplayAction;
                 lblCritterPowerRange.Text = objPower.DisplayRange(GlobalOptions.Language);
                 lblCritterPowerDuration.Text = objPower.DisplayDuration(GlobalOptions.Language);
+                chkCritterPowerCount.Visible = true;
                 chkCritterPowerCount.Checked = objPower.CountTowardsLimit;
                 objPower.SetSourceDetail(lblCritterPowerSource);
 
-                if (objPower.PowerPoints > 0)
-                {
-                    lblCritterPowerPointCost.Text = objPower.PowerPoints.ToString(GlobalOptions.CultureInfo);
-                    lblCritterPowerPointCost.Visible = true;
-                    lblCritterPowerPointCostLabel.Visible = true;
-                }
-                else
-                {
-                    lblCritterPowerPointCost.Visible = false;
-                    lblCritterPowerPointCostLabel.Visible = false;
-                }
+                nudCritterPowerRating.Visible = true;
+                lblCritterPowerRatingLabel.Visible = true;
+                nudCritterPowerRating.Enabled = objPower.AllowUpgrade;
             }
             else
             {
-                cmdDeleteCritterPower.Enabled = false;
-                lblCritterPowerName.Text = string.Empty;
-                lblCritterPowerCategory.Text = string.Empty;
-                lblCritterPowerType.Text = string.Empty;
-                lblCritterPowerAction.Text = string.Empty;
-                lblCritterPowerRange.Text = string.Empty;
-                lblCritterPowerDuration.Text = string.Empty;
-                chkCritterPowerCount.Checked = false;
-                lblCritterPowerSource.Text = string.Empty;
+                cmdDeleteCritterPower.Enabled      = false;
+                lblCritterPowerName.Text           = string.Empty;
+                lblCritterPowerCategory.Text       = string.Empty;
+                lblCritterPowerType.Text           = string.Empty;
+                lblCritterPowerAction.Text         = string.Empty;
+                lblCritterPowerRange.Text          = string.Empty;
+                lblCritterPowerDuration.Text       = string.Empty;
+                chkCritterPowerCount.Checked       = false;
+                lblCritterPowerSource.Text         = string.Empty;
                 lblCritterPowerSource.SetToolTip(null);
-                lblCritterPowerPointCost.Visible = false;
-                lblCritterPowerPointCostLabel.Visible = false;
+                nudCritterPowerRating.Visible      = false;
+                lblCritterPowerRatingLabel.Visible = false;
+                chkCritterPowerCount.Visible       = false;
             }
         }
 
@@ -9340,7 +9334,14 @@ namespace Chummer
             // Add the Karma cost of any Critter Powers.
             foreach (CritterPower objPower in CharacterObject.CritterPowers)
             {
-                intKarmaPointsRemain -= objPower.Karma;
+                if (objPower.Rating > 0)
+                {
+                    intKarmaPointsRemain -= (objPower.Karma * objPower.Rating);
+                }
+                else
+                {
+                    intKarmaPointsRemain -= objPower.Karma;
+                }
             }
 
             CharacterObject.Karma = intKarmaPointsRemain;
@@ -12345,14 +12346,14 @@ namespace Chummer
             }
 
             // If the character has the Spells & Spirits Tab enabled, make sure a Tradition has been selected.
-            if (CharacterObject.AdeptEnabled && CharacterObject.PowerPointsUsed > CharacterObject.PowerPointsTotal)
+            if (CharacterObject.AdeptEnabled && CharacterObject.PowerPointsUsed > CharacterObject.AdeptPowerPointsTotal)
             {
                 blnValid = false;
                 strMessage += Environment.NewLine + '\t' +
                               string.Format(
                                   LanguageManager.GetString("Message_InvalidPowerPoints", GlobalOptions.Language),
-                                  (CharacterObject.PowerPointsUsed - CharacterObject.PowerPointsTotal).ToString(),
-                                  CharacterObject.PowerPointsTotal.ToString());
+                                  (CharacterObject.PowerPointsUsed - CharacterObject.AdeptPowerPointsTotal).ToString(),
+                                  CharacterObject.AdeptPowerPointsTotal.ToString());
             }
 
             // If the character has the Technomencer Tab enabled, make sure a Stream has been selected.
@@ -14859,6 +14860,17 @@ namespace Chummer
                 }
                 RefreshSelectedVehicle();
 
+                IsDirty = true;
+            }
+        }
+
+        private void nudCritterPowerRating_ValueChanged(object sender, EventArgs e)
+        {
+            // Locate the selected Quality.
+            if (treCritterPowers.SelectedNode?.Tag is CritterPower objSelectedPower && objSelectedPower.TotalMaximumLevels > 1)
+            {
+                objSelectedPower.Rating = (int) nudCritterPowerRating.Value;
+                IsCharacterUpdateRequested = true;
                 IsDirty = true;
             }
         }

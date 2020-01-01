@@ -294,7 +294,7 @@ namespace Chummer
                         new DependancyGraphNode<string>(nameof(Name), () => string.IsNullOrWhiteSpace(Alias))
                     ),
                     new DependancyGraphNode<string>(nameof(DisplayPowerPointsRemaining),
-                        new DependancyGraphNode<string>(nameof(PowerPointsTotal),
+                        new DependancyGraphNode<string>(nameof(AdeptPowerPointsTotal),
                             new DependancyGraphNode<string>(nameof(UseMysticAdeptPPs),
                                 new DependancyGraphNode<string>(nameof(IsMysticAdept),
                                     new DependancyGraphNode<string>(nameof(AdeptEnabled)),
@@ -7952,9 +7952,9 @@ if (!Utils.IsUnitTest){
         }
 
         /// <summary>
-        /// Total Amount of Power Points this character has.
+        /// Total Amount of Adept Power Points this character has.
         /// </summary>
-        public int PowerPointsTotal
+        public int AdeptPowerPointsTotal
         {
             get
             {
@@ -7964,6 +7964,22 @@ if (!Utils.IsUnitTest){
                 intMAG += ImprovementManager.ValueOf(this, Improvement.ImprovementType.AdeptPowerPoints);
 
                 return Math.Max(intMAG, 0);
+            }
+        }
+
+        /// <summary>
+        /// Total Amount of Critter Power Points this character has.
+        /// </summary>
+        public int CritterPowerPointsTotal
+        {
+            get
+            {
+                int intReturn = 0;
+
+                // Add any Power Point Improvements.
+                // intReturn += ImprovementManager.ValueOf(this, Improvement.ImprovementType.CritterPowerPoints);
+
+                return Math.Max(intReturn, 0);
             }
         }
 
@@ -7984,8 +8000,8 @@ if (!Utils.IsUnitTest){
             get
             {
                 string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
-                return PowerPointsTotal.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + '(' +
-                       (PowerPointsTotal - PowerPointsUsed).ToString(GlobalOptions.CultureInfo) + strSpaceCharacter +
+                return AdeptPowerPointsTotal.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + '(' +
+                       (AdeptPowerPointsTotal - PowerPointsUsed).ToString(GlobalOptions.CultureInfo) + strSpaceCharacter +
                        LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
             }
         }
@@ -14365,7 +14381,7 @@ if (!Utils.IsUnitTest){
                 if(MysAdeptAllowPPCareer)
                     setPropertiesChanged.Add(nameof(CanAffordCareerPP));
                 if(!UseMysticAdeptPPs && MAG == MAGAdept)
-                    setPropertiesChanged.Add(nameof(PowerPointsTotal));
+                    setPropertiesChanged.Add(nameof(AdeptPowerPointsTotal));
 
                 OnMultiplePropertyChanged(setPropertiesChanged.ToArray());
             }
@@ -14384,7 +14400,7 @@ if (!Utils.IsUnitTest){
             if(e.PropertyName == nameof(CharacterAttrib.TotalValue))
             {
                 if(!UseMysticAdeptPPs)
-                    OnPropertyChanged(nameof(PowerPointsTotal));
+                    OnPropertyChanged(nameof(AdeptPowerPointsTotal));
             }
         }
 

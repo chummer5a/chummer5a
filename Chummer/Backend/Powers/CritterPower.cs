@@ -71,7 +71,7 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
             objNode.TryGetStringFieldQuickly("points", ref _strPointsPerLevel);
             objNode.TryGetInt32FieldQuickly("karma", ref _intKarma);
-            objNode.TryGetBoolFieldQuickly("levels", ref _blnLevelsEnabled);
+            objNode.TryGetBoolFieldQuickly("rating", ref _blnLevelsEnabled);
             _intRating = intRating;
             if (!objNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
                 objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
@@ -162,11 +162,6 @@ namespace Chummer
                 Utils.BreakIfDebug();
                 Rating = TotalMaximumLevels;
             }
-            else if (Rating + FreeLevels > TotalMaximumLevels)
-            {
-                Utils.BreakIfDebug();
-                TotalRating = TotalMaximumLevels;
-            }
         }
 
         /// <summary>
@@ -204,6 +199,9 @@ namespace Chummer
         /// </summary>
         public bool CountTowardsLimit { get; set; }
 
+        /// <summary>
+        /// Karma cost of the power. 
+        /// </summary>
         public int Karma
         {
             get => _intKarma;
@@ -215,6 +213,24 @@ namespace Chummer
         /// Type.
         /// </summary>
         public string Type { get; set; }
+
+        /// <summary>
+        /// Total maximum number of levels the power can have. Unlike Adept powers, Free Levels are applied on top of the maximum. 
+        /// </summary>
+        public new int TotalMaximumLevels
+        {
+            get
+            {
+                if (!LevelsEnabled)
+                    return 1;
+                int intReturn = MaxLevels + FreeLevels;
+                if (intReturn == 0)
+                {
+                    intReturn = int.MaxValue;
+                }
+                return intReturn;
+            }
+        }
 
         /// <summary>
         /// Translated Type.
@@ -251,8 +267,14 @@ namespace Chummer
             return XmlManager.Load("critterpowers.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@translate")?.InnerText ?? Category;
         }
 
-        #endregion
+        /// <summary>
+        /// Whether the Power is allowed to be upgraded by the user. 
+        /// </summary>
+        public bool AllowUpgrade => LevelsEnabled && Karma > 0 ||
+                                    (PointsPerLevel > 0 && CharacterObject.CritterPowerPointsTotal > 0);
 
+        #endregion
+        #region PropertyChanged
         public static readonly DependancyGraph<string> PowerDependencyGraph =
             new DependancyGraph<string>(
                 new DependancyGraphNode<string>(nameof(DisplayPoints),
@@ -285,7 +307,6 @@ namespace Chummer
                     new DependancyGraphNode<string>(nameof(FreeLevels))
                 )
             );
-
         public new event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
@@ -338,6 +359,8 @@ namespace Chummer
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
             }
         }
+        #endregion
+        #region Methods
         public bool Remove(Character characterObject, bool blnConfirmDelete = true)
         {
             if (blnConfirmDelete)
@@ -351,5 +374,6 @@ namespace Chummer
 
             return characterObject.CritterPowers.Remove(this);
         }
+        #endregion
     }
 }
