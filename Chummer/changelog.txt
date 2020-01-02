@@ -16,6 +16,7 @@ Application Fixes:
 - Added a new improvement type to clamp attribute maximums (attributemaxclamp) to the metatype maximum instead of the metatype augmented maximum. This is used by the Infirm quality to prevent taking attribute bonuses that are higher than the metatype maximum.
 - Altered some logic in the Weapon class to better support the Improved Ammunition Capacity accessory provided by Special Modifications.
 - Fixed behaviour of cyberzombification improperly reducing metatype limits instead of increasing them. 
+- Select Armor/Weapon windows now properly support translated headers on their datagrid views.
 
 Application Changes:
 - Spells, rituals and preparations now count down from maximum, in the same way as other counters in create mode.
@@ -65,6 +66,19 @@ New Strings:
 - String_DisableSkillGroupPrompt
 - Message_CyberzombieRequirementsImprovement
 - Checkbox_Options_AllowTechnomancerSchooling
+- String_Avail
+- String_Capacity
+- String_Cost
+- String_Source
+- String_Accessories
+- String_Accuracy
+- String_Ammo
+- String_AP
+- String_Damage
+- String_Dicepool
+- String_Mode
+- String_RC
+- String_Reach
 
 Build 209
 
