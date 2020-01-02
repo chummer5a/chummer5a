@@ -302,6 +302,7 @@ namespace Chummer
             this.chkNoArmorEncumbrance = new System.Windows.Forms.CheckBox();
             this.chkIncreasedImprovedAbilityModifier = new System.Windows.Forms.CheckBox();
             this.chkAllowFreeGrids = new System.Windows.Forms.CheckBox();
+            this.chkAllowTechnomancerSchooling = new System.Windows.Forms.CheckBox();
             this.tabGitHubIssues = new System.Windows.Forms.TabPage();
             this.cmdUploadPastebin = new System.Windows.Forms.Button();
             this.tabPlugins = new System.Windows.Forms.TabPage();
@@ -312,7 +313,6 @@ namespace Chummer
             this.flpOKCancel = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdOK = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
-            this.chkAllowTechnomancerSchooling = new System.Windows.Forms.CheckBox();
             this.mainPanel.SuspendLayout();
             this.tlpOptions.SuspendLayout();
             this.tabOptions.SuspendLayout();
@@ -4463,12 +4463,12 @@ namespace Chummer
             this.chkIncreasedImprovedAbilityModifier.Text = "Improved Ability is capped by Learned Rating x 1.5 instead of 0.5";
             this.chkIncreasedImprovedAbilityModifier.UseVisualStyleBackColor = true;
             this.chkIncreasedImprovedAbilityModifier.CheckedChanged += new System.EventHandler(this.OptionsChanged);
-            //
+            // 
             // chkAllowFreeGrids
-            //
-            this.chkAllowFreeGrids.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            this.chkAllowFreeGrids.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.chkAllowFreeGrids.AutoSize = true;
             this.tlpHouseRules.SetColumnSpan(this.chkAllowFreeGrids, 5);
             this.chkAllowFreeGrids.Location = new System.Drawing.Point(499, 430);
@@ -4477,8 +4477,22 @@ namespace Chummer
             this.chkAllowFreeGrids.Size = new System.Drawing.Size(497, 17);
             this.chkAllowFreeGrids.TabIndex = 45;
             this.chkAllowFreeGrids.Tag = "Checkbox_Options_AllowFreeGrids";
-            this.chkAllowFreeGrids.Text = "Allow Free Grid Subscription Qualities for lifestyles even if Hard Targets is not an active book";
-            this.chkAllowFreeGrids.UseVisualStyleBackColor = true;            // 
+            this.chkAllowFreeGrids.Text = "Allow Free Grid Subscription Qualities for lifestyles even if Hard Targets is not" +
+    " an active book";
+            this.chkAllowFreeGrids.UseVisualStyleBackColor = true;
+            // 
+            // chkAllowTechnomancerSchooling
+            // 
+            this.chkAllowTechnomancerSchooling.AutoSize = true;
+            this.chkAllowTechnomancerSchooling.Location = new System.Drawing.Point(3, 180);
+            this.chkAllowTechnomancerSchooling.Name = "chkAllowTechnomancerSchooling";
+            this.chkAllowTechnomancerSchooling.Size = new System.Drawing.Size(273, 17);
+            this.chkAllowTechnomancerSchooling.TabIndex = 45;
+            this.chkAllowTechnomancerSchooling.Tag = "Checkbox_Options_AllowTechnomancerSchooling";
+            this.chkAllowTechnomancerSchooling.Text = "Technomancer: Allow \'Schooling\' Initiation discounts";
+            this.chkAllowTechnomancerSchooling.UseVisualStyleBackColor = true;
+            this.chkAllowTechnomancerSchooling.CheckedChanged += new System.EventHandler(this.OptionsChanged);
+            // 
             // tabGitHubIssues
             // 
             this.tabGitHubIssues.BackColor = System.Drawing.SystemColors.Control;
@@ -4610,18 +4624,6 @@ namespace Chummer
             this.cmdCancel.Text = "Cancel";
             this.cmdCancel.UseVisualStyleBackColor = true;
             this.cmdCancel.Click += new System.EventHandler(this.cmdCancel_Click);
-            // 
-            // chkAllowTechnomancerSchooling
-            // 
-            this.chkAllowTechnomancerSchooling.AutoSize = true;
-            this.chkAllowTechnomancerSchooling.Location = new System.Drawing.Point(3, 180);
-            this.chkAllowTechnomancerSchooling.Name = "chkAllowTechnomancerSchooling";
-            this.chkAllowTechnomancerSchooling.Size = new System.Drawing.Size(274, 17);
-            this.chkAllowTechnomancerSchooling.TabIndex = 45;
-            this.chkAllowTechnomancerSchooling.Tag = "Checkbox_Options_AllowTechnomancerSchooling";
-            this.chkAllowTechnomancerSchooling.Text = "Technomancer: Allow \'Schooling\' Initiation discounts";
-            this.chkAllowTechnomancerSchooling.UseVisualStyleBackColor = true;
-            this.chkAllowTechnomancerSchooling.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // frmOptions
             // 

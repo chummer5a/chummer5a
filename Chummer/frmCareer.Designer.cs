@@ -283,6 +283,8 @@ namespace Chummer
             this.lblAstralINI = new Chummer.LabelWithToolTip();
             this.lblRemainingNuyen = new System.Windows.Forms.Label();
             this.lblESSMax = new System.Windows.Forms.Label();
+            this.lblSurpriseLabel = new Chummer.LabelWithToolTip();
+            this.lblSurprise = new Chummer.LabelWithToolTip();
             this.tabDefences = new System.Windows.Forms.TabPage();
             this.tlpSpellDefense = new Chummer.BufferedTableLayoutPanel(this.components);
             this.nudCounterspellingDice = new System.Windows.Forms.NumericUpDown();
@@ -560,7 +562,7 @@ namespace Chummer
             this.lblMetamagicSource = new System.Windows.Forms.Label();
             this.lblMetamagicSourceLabel = new System.Windows.Forms.Label();
             this.flpInitiationButtons = new System.Windows.Forms.FlowLayoutPanel();
-            this.cmdAddMetamagic = new System.Windows.Forms.Button();
+            this.cmdAddMetamagic = new SplitButton();
             this.cmdDeleteMetamagic = new System.Windows.Forms.Button();
             this.flpInitiation = new System.Windows.Forms.FlowLayoutPanel();
             this.gpbInitiationType = new System.Windows.Forms.GroupBox();
@@ -1355,8 +1357,6 @@ namespace Chummer
             this.tsVehicleWeaponMountAddUnderbarrel = new System.Windows.Forms.ToolStripMenuItem();
             this.tsVehicleWeaponMountNotes = new System.Windows.Forms.ToolStripMenuItem();
             this.tsWeaponMountLocation = new System.Windows.Forms.ToolStripMenuItem();
-            this.lblSurpriseLabel = new Chummer.LabelWithToolTip();
-            this.lblSurprise = new Chummer.LabelWithToolTip();
             this.StatusStrip.SuspendLayout();
             this.cmsMartialArts.SuspendLayout();
             this.cmsSpellButton.SuspendLayout();
@@ -4260,6 +4260,29 @@ namespace Chummer
             this.lblESSMax.Size = new System.Drawing.Size(13, 13);
             this.lblESSMax.TabIndex = 35;
             this.lblESSMax.Text = "0";
+            // 
+            // lblSurpriseLabel
+            // 
+            this.lblSurpriseLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSurpriseLabel.AutoSize = true;
+            this.lblSurpriseLabel.Location = new System.Drawing.Point(90, 356);
+            this.lblSurpriseLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSurpriseLabel.Name = "lblSurpriseLabel";
+            this.lblSurpriseLabel.Size = new System.Drawing.Size(48, 13);
+            this.lblSurpriseLabel.TabIndex = 89;
+            this.lblSurpriseLabel.Text = "Surprise:";
+            this.lblSurpriseLabel.ToolTipText = "";
+            // 
+            // lblSurprise
+            // 
+            this.lblSurprise.AutoSize = true;
+            this.lblSurprise.Location = new System.Drawing.Point(144, 356);
+            this.lblSurprise.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSurprise.Name = "lblSurprise";
+            this.lblSurprise.Size = new System.Drawing.Size(13, 13);
+            this.lblSurprise.TabIndex = 90;
+            this.lblSurprise.Text = "0";
+            this.lblSurprise.ToolTipText = "";
             // 
             // tabDefences
             // 
@@ -7800,16 +7823,18 @@ namespace Chummer
             this.flpInitiationButtons.Location = new System.Drawing.Point(0, 0);
             this.flpInitiationButtons.Margin = new System.Windows.Forms.Padding(0);
             this.flpInitiationButtons.Name = "flpInitiationButtons";
-            this.flpInitiationButtons.Size = new System.Drawing.Size(237, 29);
+            this.flpInitiationButtons.Size = new System.Drawing.Size(255, 29);
             this.flpInitiationButtons.TabIndex = 130;
             // 
             // cmdAddMetamagic
             // 
             this.cmdAddMetamagic.AutoSize = true;
             this.cmdAddMetamagic.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdAddMetamagic.ContextMenuStrip = this.cmsInitiationNotes;
             this.cmdAddMetamagic.Location = new System.Drawing.Point(3, 3);
             this.cmdAddMetamagic.Name = "cmdAddMetamagic";
-            this.cmdAddMetamagic.Size = new System.Drawing.Size(102, 23);
+            this.cmdAddMetamagic.Size = new System.Drawing.Size(120, 23);
+            this.cmdAddMetamagic.SplitMenuStrip = this.cmsMetamagic;
             this.cmdAddMetamagic.TabIndex = 93;
             this.cmdAddMetamagic.Tag = "Button_AddInitiateGrade";
             this.cmdAddMetamagic.Text = "&Add Initiate Grade";
@@ -7820,7 +7845,7 @@ namespace Chummer
             // 
             this.cmdDeleteMetamagic.AutoSize = true;
             this.cmdDeleteMetamagic.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdDeleteMetamagic.Location = new System.Drawing.Point(111, 3);
+            this.cmdDeleteMetamagic.Location = new System.Drawing.Point(129, 3);
             this.cmdDeleteMetamagic.Name = "cmdDeleteMetamagic";
             this.cmdDeleteMetamagic.Size = new System.Drawing.Size(123, 23);
             this.cmdDeleteMetamagic.TabIndex = 94;
@@ -10490,7 +10515,7 @@ namespace Chummer
             this.tabArmor.Location = new System.Drawing.Point(4, 22);
             this.tabArmor.Name = "tabArmor";
             this.tabArmor.Padding = new System.Windows.Forms.Padding(3);
-            this.tabArmor.Size = new System.Drawing.Size(184, 48);
+            this.tabArmor.Size = new System.Drawing.Size(833, 605);
             this.tabArmor.TabIndex = 1;
             this.tabArmor.Tag = "Tab_Armor";
             this.tabArmor.Text = "Armor";
@@ -10517,7 +10542,7 @@ namespace Chummer
             this.tlpArmor.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpArmor.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpArmor.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpArmor.Size = new System.Drawing.Size(178, 42);
+            this.tlpArmor.Size = new System.Drawing.Size(827, 599);
             this.tlpArmor.TabIndex = 186;
             // 
             // treArmor
@@ -10525,7 +10550,7 @@ namespace Chummer
             this.treArmor.AllowDrop = true;
             this.treArmor.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treArmor.HideSelection = false;
-            this.treArmor.Location = new System.Drawing.Point(3, 61);
+            this.treArmor.Location = new System.Drawing.Point(3, 32);
             this.treArmor.Name = "treArmor";
             treeNode20.Name = "nodArmorRoot";
             treeNode20.Tag = "Node_SelectedArmor";
@@ -10533,7 +10558,7 @@ namespace Chummer
             this.treArmor.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode20});
             this.treArmor.ShowNodeToolTips = true;
-            this.treArmor.Size = new System.Drawing.Size(295, 1);
+            this.treArmor.Size = new System.Drawing.Size(295, 564);
             this.treArmor.TabIndex = 69;
             this.treArmor.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treArmor_AfterSelect);
             this.treArmor.DragOver += new System.Windows.Forms.DragEventHandler(this.treArmor_DragOver);
@@ -10550,7 +10575,7 @@ namespace Chummer
             this.flpArmorButtons.Location = new System.Drawing.Point(0, 0);
             this.flpArmorButtons.Margin = new System.Windows.Forms.Padding(0);
             this.flpArmorButtons.Name = "flpArmorButtons";
-            this.flpArmorButtons.Size = new System.Drawing.Size(162, 58);
+            this.flpArmorButtons.Size = new System.Drawing.Size(270, 29);
             this.flpArmorButtons.TabIndex = 70;
             // 
             // cmdAddArmor
@@ -10584,7 +10609,7 @@ namespace Chummer
             // cmdAddArmorBundle
             // 
             this.cmdAddArmorBundle.AutoSize = true;
-            this.cmdAddArmorBundle.Location = new System.Drawing.Point(3, 32);
+            this.cmdAddArmorBundle.Location = new System.Drawing.Point(165, 3);
             this.cmdAddArmorBundle.Name = "cmdAddArmorBundle";
             this.cmdAddArmorBundle.Size = new System.Drawing.Size(102, 23);
             this.cmdAddArmorBundle.TabIndex = 105;
@@ -10601,10 +10626,10 @@ namespace Chummer
             this.flpArmor.Controls.Add(this.gpbArmorMatrix);
             this.flpArmor.Controls.Add(this.gpbArmorLocation);
             this.flpArmor.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flpArmor.Location = new System.Drawing.Point(301, 58);
+            this.flpArmor.Location = new System.Drawing.Point(301, 29);
             this.flpArmor.Margin = new System.Windows.Forms.Padding(0);
             this.flpArmor.Name = "flpArmor";
-            this.flpArmor.Size = new System.Drawing.Size(1, 1);
+            this.flpArmor.Size = new System.Drawing.Size(526, 570);
             this.flpArmor.TabIndex = 186;
             // 
             // gpbArmorCommon
@@ -18194,29 +18219,6 @@ namespace Chummer
             this.tsWeaponMountLocation.Tag = "Menu_RenameLocation";
             this.tsWeaponMountLocation.Text = "Rename &Location";
             // 
-            // lblSurpriseLabel
-            // 
-            this.lblSurpriseLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblSurpriseLabel.AutoSize = true;
-            this.lblSurpriseLabel.Location = new System.Drawing.Point(90, 356);
-            this.lblSurpriseLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSurpriseLabel.Name = "lblSurpriseLabel";
-            this.lblSurpriseLabel.Size = new System.Drawing.Size(48, 13);
-            this.lblSurpriseLabel.TabIndex = 89;
-            this.lblSurpriseLabel.Text = "Surprise:";
-            this.lblSurpriseLabel.ToolTipText = "";
-            // 
-            // lblSurprise
-            // 
-            this.lblSurprise.AutoSize = true;
-            this.lblSurprise.Location = new System.Drawing.Point(144, 356);
-            this.lblSurprise.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSurprise.Name = "lblSurprise";
-            this.lblSurprise.Size = new System.Drawing.Size(13, 13);
-            this.lblSurprise.TabIndex = 90;
-            this.lblSurprise.Text = "0";
-            this.lblSurprise.ToolTipText = "";
-            // 
             // frmCareer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -19094,7 +19096,6 @@ namespace Chummer
         private System.Windows.Forms.Label lblMetamagicSource;
         private System.Windows.Forms.Label lblMetamagicSourceLabel;
         private System.Windows.Forms.TreeView treMetamagic;
-        private System.Windows.Forms.Button cmdAddMetamagic;
         private System.Windows.Forms.Button cmdDeleteMetamagic;
         private System.Windows.Forms.TabPage tabCyberware;
         private System.Windows.Forms.Label lblCyberlimbSTR;
@@ -19961,5 +19962,6 @@ namespace Chummer
         private Label lblCMStunRecoveryPool;
         private LabelWithToolTip lblSurpriseLabel;
         private LabelWithToolTip lblSurprise;
+        private SplitButton cmdAddMetamagic;
     }
 }
