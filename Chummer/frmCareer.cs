@@ -16553,7 +16553,7 @@ private void RefreshSelectedSpell()
 
         private void tsMetamagicAddMetamagic_Click(object sender, EventArgs e)
         {
-            if (treMetamagic.SelectedNode.Level != 0)
+            if (treMetamagic.SelectedNode?.Level != 0)
                 return;
 
             // Character can only have a number of Metamagics/Echoes equal to their Initiate Grade. Additional ones cost Karma.
@@ -16663,7 +16663,7 @@ private void RefreshSelectedSpell()
 
         private void tsMetamagicAddArt_Click(object sender, EventArgs e)
         {
-            if (treMetamagic.SelectedNode.Level != 0)
+            if (treMetamagic.SelectedNode?.Level != 0)
                 return;
 
             int intGrade = 0;
@@ -16728,7 +16728,7 @@ private void RefreshSelectedSpell()
             // Character can only have a number of Metamagics/Echoes equal to their Initiate Grade. Additional ones cost Karma.
             bool blnPayWithKarma = false;
 
-            if (treMetamagic.SelectedNode.Level != 0)
+            if (treMetamagic.SelectedNode?.Level != 0)
                 return;
 
             int intGrade = 0;
@@ -16808,7 +16808,7 @@ private void RefreshSelectedSpell()
             // Character can only have a number of Metamagics/Echoes equal to their Initiate Grade. Additional ones cost Karma.
             bool blnPayWithKarma = false;
 
-            if (treMetamagic.SelectedNode.Level != 0)
+            if (treMetamagic.SelectedNode?.Level != 0)
                 return;
 
             int intGrade = 0;
@@ -16901,7 +16901,7 @@ private void RefreshSelectedSpell()
 
         private void tsMetamagicAddEnhancement_Click(object sender, EventArgs e)
         {
-            if (treMetamagic.SelectedNode.Level != 0)
+            if (treMetamagic.SelectedNode?.Level != 0)
                 return;
 
             int intGrade = 0;
