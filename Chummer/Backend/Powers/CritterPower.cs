@@ -94,7 +94,7 @@ namespace Chummer
             {
                 string strOldForce = ImprovementManager.ForcedValue;
                 string strOldSelected = ImprovementManager.SelectedValue;
-                ImprovementManager.ForcedValue = Extra;
+                ImprovementManager.ForcedValue = strForcedValue;
                 if (!ImprovementManager.CreateImprovements(CharacterObject, _improvementSource, InternalId, Bonus, false, TotalRating, DisplayNameShort(GlobalOptions.Language)))
                 {
                     ImprovementManager.ForcedValue = strOldForce;
@@ -214,6 +214,29 @@ namespace Chummer
         /// </summary>
         public string Type { get; set; }
 
+
+
+        /// <summary>
+        /// The current 'paid' Rating of the Power.
+        /// </summary>
+        public new int Rating
+        {
+            get => _intRating;
+            set
+            {
+                if (_intRating != value)
+                {
+                    _intRating = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// The current Rating of the Power, including any Free Levels.
+        /// </summary>
+        public new int TotalRating => Rating + FreeLevels;
+
         /// <summary>
         /// Total maximum number of levels the power can have. Unlike Adept powers, Free Levels are applied on top of the maximum. 
         /// </summary>
@@ -276,7 +299,7 @@ namespace Chummer
         /// <summary>
         /// Free levels of the power.
         /// </summary>
-        public int FreeLevels
+        public new int FreeLevels
         {
             get
             {
@@ -330,7 +353,7 @@ namespace Chummer
         public new event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
-        public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
+        public new void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
         {
             OnMultiplePropertyChanged(strPropertyName);
         }
