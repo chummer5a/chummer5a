@@ -8639,6 +8639,12 @@ if (!Utils.IsUnitTest){
         {
             get
             {
+                if ((INT == null) || (REA == null))
+                {
+                    Debugger.Break();
+                    return 0;
+                }
+                    
                 int intINI = (INT.TotalValue + REA.TotalValue) + WoundModifier;
                 intINI += ImprovementManager.ValueOf(this, Improvement.ImprovementType.Initiative);
                 if(intINI < 0)
