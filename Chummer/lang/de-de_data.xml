@@ -47807,6 +47807,11 @@
 				<name>Street Scum</name>
 				<translate>Straßenabschaum</translate>
 			</gameplayoption>
+			<gameplayoption>
+				<id>e6ac4dae-23bc-4b77-9e00-a6bfdacd0760</id>
+				<name>High Life</name>
+				<translate>Luxusleben</translate>
+			</gameplayoption>
 		</gameplayoptions>
 	</chummer>
 	<chummer file="vessels.xml">
