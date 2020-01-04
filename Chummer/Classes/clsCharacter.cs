@@ -17029,6 +17029,8 @@ if (!Utils.IsUnitTest){
             set => _strPage = value;
         }
 
+        public string PriorityArray { get; set; }
+
         /// <summary>
         /// Sourcebook Page Number using a given language file.
         /// Returns Page if not found or the string is empty.

@@ -73,6 +73,36 @@ namespace Chummer
                 _intBuildMethod = 1;
                 lblSumtoTen.Visible = true;
             }
+            List<string> objPriorities = new List<string>(5);
+            if (_objCharacter.PriorityArray != string.Empty)
+            {
+                foreach (char c in _objCharacter.PriorityArray)
+                {
+                    switch (c)
+                    {
+                        case 'A':
+                            objPriorities.Add("A,4");
+                            break;
+                        case 'B':
+                            objPriorities.Add("B,3");
+                            break;
+                        case 'C':
+                            objPriorities.Add("C,2");
+                            break;
+                        case 'D':
+                            objPriorities.Add("D,1");
+                            break;
+                        case 'E':
+                            objPriorities.Add("E,0");
+                            break;
+                    }
+                }
+            }
+            else
+            {
+                objPriorities = new List<string> { "A,4", "B,3", "C,2", "D,1", "E,0" };
+            }
+
             // Populate the Priority Category list.
             XPathNavigator xmlBasePrioritiesNode = _xmlBasePriorityDataNode.SelectSingleNode("priorities");
             if (xmlBasePrioritiesNode != null)
@@ -89,13 +119,21 @@ namespace Chummer
                     if (objItems.Count > 0)
                     {
                         List<ListItem> lstItems = new List<ListItem>();
-                        // lstItems.Add(new ListItem());
-                        foreach (XPathNavigator objXmlPriority in objItems)
+
+                        foreach (string s in objPriorities)
                         {
-                            lstItems.Add(new ListItem(objXmlPriority.SelectSingleNode("value")?.Value ?? string.Empty,
-                                objXmlPriority.SelectSingleNode("translate")?.Value ??
-                                objXmlPriority.SelectSingleNode("name")?.Value ??
-                                LanguageManager.GetString("String_Unknown", GlobalOptions.Language)));
+                            foreach (XPathNavigator objXmlPriority in objItems)
+                            {
+                                if (objXmlPriority.SelectSingleNode("value")?.Value == s)
+                                {
+                                    lstItems.Add(new ListItem(
+                                        objXmlPriority.SelectSingleNode("value")?.Value ?? string.Empty,
+                                        objXmlPriority.SelectSingleNode("translate")?.Value ??
+                                        objXmlPriority.SelectSingleNode("name")?.Value ??
+                                        LanguageManager.GetString("String_Unknown", GlobalOptions.Language)));
+                                    break;
+                                }
+                            }
                         }
 
                         lstItems.Sort(CompareListItems.CompareNames);
@@ -841,12 +879,9 @@ namespace Chummer
                 XmlNode objXmlGameplayOption = XmlManager.Load("gameplayoptions.xml").SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" + _objCharacter.GameplayOption + "\"]");
                 if (objXmlGameplayOption != null)
                 {
-                    string strKarma = objXmlGameplayOption["karma"].InnerText;
-                    string strNuyen = objXmlGameplayOption["maxnuyen"].InnerText;
-                    string strContactMultiplier = objXmlGameplayOption["contactmultiplier"].InnerText;
-                    _objCharacter.MaxKarma = Convert.ToInt32(strKarma);
-                    _objCharacter.MaxNuyen = Convert.ToInt32(strNuyen);
-                    _objCharacter.ContactMultiplier = Convert.ToInt32(strContactMultiplier);
+                    _objCharacter.MaxKarma = Convert.ToInt32(objXmlGameplayOption["karma"].InnerText);
+                    _objCharacter.MaxNuyen = Convert.ToInt32(objXmlGameplayOption["maxnuyen"].InnerText);
+                    _objCharacter.ContactMultiplier = Convert.ToInt32(objXmlGameplayOption["contactmultiplier"].InnerText);
                 }
 
                 // Set free contact points
@@ -919,7 +954,35 @@ namespace Chummer
         {
             if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority)
             {
-                List<string> objPriorities = new List<string>() { "A,4", "B,3", "C,2", "D,1", "E,0" };
+                List<string> objPriorities = new List<string>(5);
+                if (_objCharacter.PriorityArray != string.Empty)
+                {
+                    foreach (char c in _objCharacter.PriorityArray)
+                    {
+                        switch (c)
+                        {
+                            case 'A':
+                                objPriorities.Add("A,4");
+                                break;
+                            case 'B':
+                                objPriorities.Add("B,3");
+                                break;
+                            case 'C':
+                                objPriorities.Add("C,2");
+                                break;
+                            case 'D':
+                                objPriorities.Add("D,1");
+                                break;
+                            case 'E':
+                                objPriorities.Add("E,0");
+                                break;
+                        }
+                    }
+                }
+                else
+                {
+                    objPriorities = new List<string> { "A,4", "B,3", "C,2", "D,1", "E,0" };
+                }
 
                 string strHeritageSelected = cboHeritage.SelectedValue.ToString();
                 string strTalentSelected = cboTalent.SelectedValue.ToString();

@@ -19,6 +19,7 @@ Application Fixes:
 - Select Armor/Weapon windows now properly support translated headers on their datagrid views.
 
 Application Changes:
+- Added support for Priority mode using non-ABCDE arrays.
 - Spells, rituals and preparations now count down from maximum, in the same way as other counters in create mode.
 - Added a new improvement type that can disable a skill group selected by the user. To be used by RunnerHub customdata ruleset. 
 - Added a new improvement type that governs whether a character can become a cyberzombie. Customdata has been provided to apply this to the Flashback System from Chrome Flesh.
@@ -63,6 +64,7 @@ Data Changes:
 - Added Foot Anchor weapon to the Foot Anchor cyberware.
 - Added gunneryspec to most categories of weapon; most categories have been mapped as Ballistic for now, with other weapons needing to be mapped manually. Please contact the chummer dev team if you'd like to assist with this, though any pull requests will be welcomed as per normal.
 - Added customdata for the above to support the SRM 1.3 ruling that the cyberweapons from SR5 benefit from Reach when used as a pair.
+- Added array choices to Street Scum in gameplayoptions.xml. Added High Life gameplay option; due to lack of ruling otherwise, based off Standard Prime Runner with a different array.
 
 New Strings:
 - String_DisableSkillGroupPrompt
