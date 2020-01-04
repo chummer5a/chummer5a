@@ -47556,6 +47556,11 @@
 				<name>Street Scum</name>
 				<translate>Déchet des rues</translate>
 			</gameplayoption>
+			<gameplayoption>
+				<id>e6ac4dae-23bc-4b77-9e00-a6bfdacd0760</id>
+				<name>High Life</name>
+				<translate>Vie de luxe</translate>
+			</gameplayoption>
 		</gameplayoptions>
 	</chummer>
 	<chummer file="ranges.xml">
