@@ -9747,5 +9747,57 @@
           <key>Message_InvalidActiveSkillExcessSpecializations</key>
           <text>Eine oder mehrere Aktionsfertigkeiten haben mehr als eine Spezialisierung:</text>
         </string>
+		<string>
+			<key>String_Avail</key>
+			<text>Verfügbarkeit</text>
+		</string>
+		<string>
+			<key>String_Capacity</key>
+			<text>Kapazität</text>
+		</string>
+		<string>
+			<key>String_Cost</key>
+			<text>Kosten</text>
+		</string>
+		<string>
+			<key>String_Source</key>
+			<text>Quelle</text>
+		</string>
+		<string>
+			<key>String_Accessories</key>
+			<text>Zubehör</text>
+		</string>
+		<string>
+			<key>String_Accuracy</key>
+			<text>Präzision</text>
+		</string>
+		<string>
+			<key>String_Ammo</key>
+			<text>Munition</text>
+		</string>
+		<string>
+			<key>String_AP</key>
+			<text>DK</text>
+		</string>
+		<string>
+			<key>String_Damage</key>
+			<text>Schaden</text>
+		</string>
+		<string>
+			<key>String_Dicepool</key>
+			<text>Würfelpool</text>
+		</string>
+		<string>
+			<key>String_Mode</key>
+			<text>Modus</text>
+		</string>
+		<string>
+			<key>String_RC</key>
+			<text>RK</text>
+		</string>
+		<string>
+			<key>String_Reach</key>
+			<text>Reichweite</text>
+		</string>
 	</strings>
 </chummer>

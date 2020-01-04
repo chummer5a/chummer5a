@@ -3212,7 +3212,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Label_DicePool</key>
-			<text>Réserve de dés :</text>
+			<text>Nombre de Dés :</text>
 		</string>
 		<string>
 			<key>Checkbox_BaseWeapon</key>
@@ -4068,7 +4068,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Tip_Skill_DicePoolModifiers</key>
-			<text>Modificateur de Réserve de Dés</text>
+			<text>Modificateur de Nombre de Dés</text>
 		</string>
 		<string>
 			<key>Tip_Skill_NativeLanguage</key>
@@ -9725,6 +9725,58 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		<string>
 			<key>Message_CustomDrug_MissingFoundation</key>
 			<text>Il faut que les drogues aient un base.</text>
+		</string>
+		<string>
+			<key>String_Avail</key>
+			<text>Disponibilité</text>
+		</string>
+		<string>
+			<key>String_Capacity</key>
+			<text>Capacité</text>
+		</string>
+		<string>
+			<key>String_Cost</key>
+			<text>Coût</text>
+		</string>
+		<string>
+			<key>String_Source</key>
+			<text>Source</text>
+		</string>
+		<string>
+			<key>String_Accessories</key>
+			<text>Accessoires</text>
+		</string>
+		<string>
+			<key>String_Accuracy</key>
+			<text>Précision</text>
+		</string>
+		<string>
+			<key>String_Ammo</key>
+			<text>Munitions</text>
+		</string>
+		<string>
+			<key>String_AP</key>
+			<text>PA</text>
+		</string>
+		<string>
+			<key>String_Damage</key>
+			<text>Dommages</text>
+		</string>
+		<string>
+			<key>String_Dicepool</key>
+			<text>Nombre de Dés</text>
+		</string>
+		<string>
+			<key>String_Mode</key>
+			<text>Mode</text>
+		</string>
+		<string>
+			<key>String_RC</key>
+			<text>CR</text>
+		</string>
+		<string>
+			<key>String_Reach</key>
+			<text>Allonge</text>
 		</string>
 	</strings>
 </chummer>
