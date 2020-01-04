@@ -3024,8 +3024,9 @@ namespace Chummer.Classes
             Log.Info("reach");
             Log.Info("reach = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
-            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Reach, _strUnique,
-                ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+            string strWeapon = bonusNode.Attributes["name"]?.InnerText ?? string.Empty;
+            CreateImprovement(strWeapon, _objImprovementSource, SourceName, Improvement.ImprovementType.Reach,
+                _strUnique, ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
         // Check for Unarmed Damage Value modifiers.

@@ -3112,7 +3112,9 @@ namespace Chummer.Backend.Equipment
                     // Run through the Character's Improvements and add any Reach Improvements.
                     intReach += _objCharacter.Improvements
                         .Where(objImprovement =>
-                            objImprovement.ImproveType == Improvement.ImprovementType.Reach && objImprovement.Enabled)
+                            objImprovement.ImproveType == Improvement.ImprovementType.Reach &&
+                            (objImprovement.ImprovedName == Name || objImprovement.ImprovedName == string.Empty) &&
+                            objImprovement.Enabled)
                         .Sum(objImprovement => objImprovement.Value);
                 }
 
