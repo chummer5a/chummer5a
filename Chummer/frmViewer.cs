@@ -449,8 +449,18 @@ namespace Chummer
                 tsSaveAsHtml.Enabled = true;
                 cmdSaveAsPdf.Enabled = true;
             }
+
             if (GlobalOptions.PrintToFileFirst)
-                File.Delete(_strFilePathName);
+            {
+                try
+                {
+                    File.Delete(_strFilePathName);
+                }
+                catch (IOException)
+                {
+                    Utils.BreakIfDebug();
+                }
+            }
 
             Cursor = Cursors.Default;
         }
