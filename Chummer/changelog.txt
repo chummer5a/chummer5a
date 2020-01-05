@@ -40,6 +40,7 @@ Application Changes:
 - Allowed alphabetic sorting of Favorite and Recent roster lists. Note that this sorting is based on the TAG of the node, which is the full filename path.
 - Added basic support for the Gunnery specialisation adding to dicepool for vehicle-mounted weapons. This is done by applying a 'gunneryspec' attribute to either the root category node, or the category node of the weapon itself. The weapon is checked first, then the category.
 - Added support for the Reach improvement to apply to specifically named weapons only. This is used by adding a Name attribute to the node. 
+- Added support for martial arts, techniques and maneuvers fetching notes from their books.
 
 Application Fixes:
 - Fixed an issue with the Point Buy form incorrectly setting metavariant metatypes to be themselves (ie Dryad (Dryad)).
@@ -65,6 +66,7 @@ Data Changes:
 - Added gunneryspec to most categories of weapon; most categories have been mapped as Ballistic for now, with other weapons needing to be mapped manually. Please contact the chummer dev team if you'd like to assist with this, though any pull requests will be welcomed as per normal.
 - Added customdata for the above to support the SRM 1.3 ruling that the cyberweapons from SR5 benefit from Reach when used as a pair.
 - Added array choices to Street Scum in gameplayoptions.xml. Added High Life gameplay option; due to lack of ruling otherwise, based off Standard Prime Runner with a different array.
+- Altered the page for all Techniques that contain 'see page xx' references to referto the proper pages.
 
 New Strings:
 - String_DisableSkillGroupPrompt
