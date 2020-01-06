@@ -67,6 +67,8 @@ Data Changes:
 - Added customdata for the above to support the SRM 1.3 ruling that the cyberweapons from SR5 benefit from Reach when used as a pair.
 - Added array choices to Street Scum in gameplayoptions.xml. Added High Life gameplay option; due to lack of ruling otherwise, based off Standard Prime Runner with a different array.
 - Altered the page for all Techniques that contain 'see page xx' references to referto the proper pages.
+- Restricted advanced critter powers for infected from dark terrors to appropriate qualities. Need to revisist and add as qualities instead. 
+- Added adrenaline filter from dark terrors.
 
 New Strings:
 - String_DisableSkillGroupPrompt

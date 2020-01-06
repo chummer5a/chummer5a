@@ -3719,6 +3719,21 @@
       <page>175</page>
     </bioware>
     <!-- End Region -->
+    <!-- Region Dark Terrors -->
+    <bioware>
+      <id>81b90755-de0b-42d5-a7c9-6c7c72a1db05</id>
+      <name>Adrenaline Filter</name>
+      <limit>1</limit>
+      <category>Basic</category>
+      <ess>(Rating)*0.5</ess>
+      <rating>3</rating>
+      <capacity>0</capacity>
+      <avail>(Rating*3)R</avail>
+      <cost>Rating*35000</cost>
+      <source>DTR</source>
+      <page>163</page>
+    </bioware>
+    <!-- End Region -->
     <!-- End Region -->
   </biowares>
 </chummer>

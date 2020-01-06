@@ -3246,28 +3246,7 @@
       <duration>Always</duration>
       <required>
         <oneof>
-          <quality>Infected: Bandersnatch</quality>
-          <quality>Infected: Banshee</quality>
-          <quality>Infected: Dzoo-Noo-Qua</quality>
           <quality>Infected: Fomoraig</quality>
-          <quality>Infected: Ghoul (Dwarf)</quality>
-          <quality>Infected: Ghoul (Elf)</quality>
-          <quality>Infected: Ghoul (Human)</quality>
-          <quality>Infected: Ghoul (Ork)</quality>
-          <quality>Infected: Ghoul (Sasquatch)</quality>
-          <quality>Infected: Ghoul (Troll)</quality>
-          <quality>Infected: Gnawer</quality>
-          <quality>Infected: Goblin</quality>
-          <quality>Infected: Grendel</quality>
-          <quality>Infected: Harvester</quality>
-          <quality>Infected: Loup-Garou</quality>
-          <quality>Infected: Mutaqua</quality>
-          <quality>Infected: Nosferatu</quality>
-          <quality>Infected: Vampire (Human)</quality>
-          <quality>Infected: Vampire (Non-Human)</quality>
-          <quality>Infected: Sukuyan (Human)</quality>
-          <quality>Infected: Sukuyan (Non-Human)</quality>
-          <quality>Infected: Wendigo</quality>
         </oneof>
       </required>
       <karma>6</karma>
@@ -3284,28 +3263,7 @@
       <duration>Always</duration>
       <required>
         <oneof>
-          <quality>Infected: Bandersnatch</quality>
-          <quality>Infected: Banshee</quality>
-          <quality>Infected: Dzoo-Noo-Qua</quality>
-          <quality>Infected: Fomoraig</quality>
-          <quality>Infected: Ghoul (Dwarf)</quality>
-          <quality>Infected: Ghoul (Elf)</quality>
-          <quality>Infected: Ghoul (Human)</quality>
-          <quality>Infected: Ghoul (Ork)</quality>
-          <quality>Infected: Ghoul (Sasquatch)</quality>
-          <quality>Infected: Ghoul (Troll)</quality>
-          <quality>Infected: Gnawer</quality>
-          <quality>Infected: Goblin</quality>
-          <quality>Infected: Grendel</quality>
-          <quality>Infected: Harvester</quality>
-          <quality>Infected: Loup-Garou</quality>
           <quality>Infected: Mutaqua</quality>
-          <quality>Infected: Nosferatu</quality>
-          <quality>Infected: Vampire (Human)</quality>
-          <quality>Infected: Vampire (Non-Human)</quality>
-          <quality>Infected: Sukuyan (Human)</quality>
-          <quality>Infected: Sukuyan (Non-Human)</quality>
-          <quality>Infected: Wendigo</quality>
         </oneof>
       </required>
       <karma>9</karma>
@@ -3322,28 +3280,7 @@
       <duration>Sustained</duration>
       <required>
         <oneof>
-          <quality>Infected: Bandersnatch</quality>
-          <quality>Infected: Banshee</quality>
-          <quality>Infected: Dzoo-Noo-Qua</quality>
-          <quality>Infected: Fomoraig</quality>
-          <quality>Infected: Ghoul (Dwarf)</quality>
-          <quality>Infected: Ghoul (Elf)</quality>
-          <quality>Infected: Ghoul (Human)</quality>
-          <quality>Infected: Ghoul (Ork)</quality>
-          <quality>Infected: Ghoul (Sasquatch)</quality>
-          <quality>Infected: Ghoul (Troll)</quality>
-          <quality>Infected: Gnawer</quality>
-          <quality>Infected: Goblin</quality>
-          <quality>Infected: Grendel</quality>
-          <quality>Infected: Harvester</quality>
-          <quality>Infected: Loup-Garou</quality>
-          <quality>Infected: Mutaqua</quality>
-          <quality>Infected: Nosferatu</quality>
-          <quality>Infected: Vampire (Human)</quality>
-          <quality>Infected: Vampire (Non-Human)</quality>
-          <quality>Infected: Sukuyan (Human)</quality>
-          <quality>Infected: Sukuyan (Non-Human)</quality>
-          <quality>Infected: Wendigo</quality>
+          <quality>Infected: Chiron</quality>
         </oneof>
       </required>
       <karma>9</karma>
@@ -3366,28 +3303,7 @@
       </bonus>
       <required>
         <oneof>
-          <quality>Infected: Bandersnatch</quality>
-          <quality>Infected: Banshee</quality>
           <quality>Infected: Dzoo-Noo-Qua</quality>
-          <quality>Infected: Fomoraig</quality>
-          <quality>Infected: Ghoul (Dwarf)</quality>
-          <quality>Infected: Ghoul (Elf)</quality>
-          <quality>Infected: Ghoul (Human)</quality>
-          <quality>Infected: Ghoul (Ork)</quality>
-          <quality>Infected: Ghoul (Sasquatch)</quality>
-          <quality>Infected: Ghoul (Troll)</quality>
-          <quality>Infected: Gnawer</quality>
-          <quality>Infected: Goblin</quality>
-          <quality>Infected: Grendel</quality>
-          <quality>Infected: Harvester</quality>
-          <quality>Infected: Loup-Garou</quality>
-          <quality>Infected: Mutaqua</quality>
-          <quality>Infected: Nosferatu</quality>
-          <quality>Infected: Vampire (Human)</quality>
-          <quality>Infected: Vampire (Non-Human)</quality>
-          <quality>Infected: Sukuyan (Human)</quality>
-          <quality>Infected: Sukuyan (Non-Human)</quality>
-          <quality>Infected: Wendigo</quality>
         </oneof>
       </required>
       <karma>5</karma>
@@ -3405,28 +3321,7 @@
       <required>
         <allof>
           <group>
-            <quality>Infected: Bandersnatch</quality>
-            <quality>Infected: Banshee</quality>
-            <quality>Infected: Dzoo-Noo-Qua</quality>
             <quality>Infected: Fomoraig</quality>
-            <quality>Infected: Ghoul (Dwarf)</quality>
-            <quality>Infected: Ghoul (Elf)</quality>
-            <quality>Infected: Ghoul (Human)</quality>
-            <quality>Infected: Ghoul (Ork)</quality>
-            <quality>Infected: Ghoul (Sasquatch)</quality>
-            <quality>Infected: Ghoul (Troll)</quality>
-            <quality>Infected: Gnawer</quality>
-            <quality>Infected: Goblin</quality>
-            <quality>Infected: Grendel</quality>
-            <quality>Infected: Harvester</quality>
-            <quality>Infected: Loup-Garou</quality>
-            <quality>Infected: Mutaqua</quality>
-            <quality>Infected: Nosferatu</quality>
-            <quality>Infected: Vampire (Human)</quality>
-            <quality>Infected: Vampire (Non-Human)</quality>
-            <quality>Infected: Sukuyan (Human)</quality>
-            <quality>Infected: Sukuyan (Non-Human)</quality>
-            <quality>Infected: Wendigo</quality>
           </group>
           <group>
             <critterpower>Armor</critterpower>
@@ -3447,28 +3342,12 @@
       <duration>Instant</duration>
       <required>
         <oneof>
-          <quality>Infected: Bandersnatch</quality>
-          <quality>Infected: Banshee</quality>
-          <quality>Infected: Dzoo-Noo-Qua</quality>
-          <quality>Infected: Fomoraig</quality>
           <quality>Infected: Ghoul (Dwarf)</quality>
           <quality>Infected: Ghoul (Elf)</quality>
           <quality>Infected: Ghoul (Human)</quality>
           <quality>Infected: Ghoul (Ork)</quality>
           <quality>Infected: Ghoul (Sasquatch)</quality>
           <quality>Infected: Ghoul (Troll)</quality>
-          <quality>Infected: Gnawer</quality>
-          <quality>Infected: Goblin</quality>
-          <quality>Infected: Grendel</quality>
-          <quality>Infected: Harvester</quality>
-          <quality>Infected: Loup-Garou</quality>
-          <quality>Infected: Mutaqua</quality>
-          <quality>Infected: Nosferatu</quality>
-          <quality>Infected: Vampire (Human)</quality>
-          <quality>Infected: Vampire (Non-Human)</quality>
-          <quality>Infected: Sukuyan (Human)</quality>
-          <quality>Infected: Sukuyan (Non-Human)</quality>
-          <quality>Infected: Wendigo</quality>
         </oneof>
       </required>
       <karma>9</karma>
@@ -3485,28 +3364,7 @@
       <duration>Always</duration>
       <required>
         <oneof>
-          <quality>Infected: Bandersnatch</quality>
-          <quality>Infected: Banshee</quality>
-          <quality>Infected: Dzoo-Noo-Qua</quality>
-          <quality>Infected: Fomoraig</quality>
-          <quality>Infected: Ghoul (Dwarf)</quality>
-          <quality>Infected: Ghoul (Elf)</quality>
-          <quality>Infected: Ghoul (Human)</quality>
-          <quality>Infected: Ghoul (Ork)</quality>
-          <quality>Infected: Ghoul (Sasquatch)</quality>
-          <quality>Infected: Ghoul (Troll)</quality>
-          <quality>Infected: Gnawer</quality>
-          <quality>Infected: Goblin</quality>
-          <quality>Infected: Grendel</quality>
-          <quality>Infected: Harvester</quality>
-          <quality>Infected: Loup-Garou</quality>
-          <quality>Infected: Mutaqua</quality>
-          <quality>Infected: Nosferatu</quality>
-          <quality>Infected: Vampire (Human)</quality>
-          <quality>Infected: Vampire (Non-Human)</quality>
-          <quality>Infected: Sukuyan (Human)</quality>
-          <quality>Infected: Sukuyan (Non-Human)</quality>
-          <quality>Infected: Wendigo</quality>
+          <quality>Infected: Lamia</quality>
         </oneof>
       </required>
       <karma>9</karma>
@@ -3534,28 +3392,7 @@
       </bonus>
       <required>
         <oneof>
-          <quality>Infected: Bandersnatch</quality>
-          <quality>Infected: Banshee</quality>
-          <quality>Infected: Dzoo-Noo-Qua</quality>
-          <quality>Infected: Fomoraig</quality>
-          <quality>Infected: Ghoul (Dwarf)</quality>
-          <quality>Infected: Ghoul (Elf)</quality>
-          <quality>Infected: Ghoul (Human)</quality>
-          <quality>Infected: Ghoul (Ork)</quality>
-          <quality>Infected: Ghoul (Sasquatch)</quality>
-          <quality>Infected: Ghoul (Troll)</quality>
-          <quality>Infected: Gnawer</quality>
-          <quality>Infected: Goblin</quality>
-          <quality>Infected: Grendel</quality>
-          <quality>Infected: Harvester</quality>
           <quality>Infected: Loup-Garou</quality>
-          <quality>Infected: Mutaqua</quality>
-          <quality>Infected: Nosferatu</quality>
-          <quality>Infected: Vampire (Human)</quality>
-          <quality>Infected: Vampire (Non-Human)</quality>
-          <quality>Infected: Sukuyan (Human)</quality>
-          <quality>Infected: Sukuyan (Non-Human)</quality>
-          <quality>Infected: Wendigo</quality>
         </oneof>
       </required>
       <karma>6</karma>
@@ -3572,28 +3409,7 @@
       <duration>Always</duration>
       <required>
         <oneof>
-          <quality>Infected: Bandersnatch</quality>
-          <quality>Infected: Banshee</quality>
-          <quality>Infected: Dzoo-Noo-Qua</quality>
-          <quality>Infected: Fomoraig</quality>
-          <quality>Infected: Ghoul (Dwarf)</quality>
-          <quality>Infected: Ghoul (Elf)</quality>
-          <quality>Infected: Ghoul (Human)</quality>
-          <quality>Infected: Ghoul (Ork)</quality>
-          <quality>Infected: Ghoul (Sasquatch)</quality>
-          <quality>Infected: Ghoul (Troll)</quality>
-          <quality>Infected: Gnawer</quality>
-          <quality>Infected: Goblin</quality>
-          <quality>Infected: Grendel</quality>
-          <quality>Infected: Harvester</quality>
-          <quality>Infected: Loup-Garou</quality>
-          <quality>Infected: Mutaqua</quality>
-          <quality>Infected: Nosferatu</quality>
-          <quality>Infected: Vampire (Human)</quality>
-          <quality>Infected: Vampire (Non-Human)</quality>
-          <quality>Infected: Sukuyan (Human)</quality>
-          <quality>Infected: Sukuyan (Non-Human)</quality>
-          <quality>Infected: Wendigo</quality>
+          <quality>Infected: Nibiinaabe</quality>
         </oneof>
       </required>
       <karma>6</karma>
@@ -3610,28 +3426,7 @@
       <duration>Always</duration>
       <required>
         <oneof>
-          <quality>Infected: Bandersnatch</quality>
-          <quality>Infected: Banshee</quality>
-          <quality>Infected: Dzoo-Noo-Qua</quality>
-          <quality>Infected: Fomoraig</quality>
-          <quality>Infected: Ghoul (Dwarf)</quality>
-          <quality>Infected: Ghoul (Elf)</quality>
-          <quality>Infected: Ghoul (Human)</quality>
-          <quality>Infected: Ghoul (Ork)</quality>
-          <quality>Infected: Ghoul (Sasquatch)</quality>
-          <quality>Infected: Ghoul (Troll)</quality>
-          <quality>Infected: Gnawer</quality>
-          <quality>Infected: Goblin</quality>
-          <quality>Infected: Grendel</quality>
-          <quality>Infected: Harvester</quality>
-          <quality>Infected: Loup-Garou</quality>
-          <quality>Infected: Mutaqua</quality>
-          <quality>Infected: Nosferatu</quality>
-          <quality>Infected: Vampire (Human)</quality>
-          <quality>Infected: Vampire (Non-Human)</quality>
-          <quality>Infected: Sukuyan (Human)</quality>
-          <quality>Infected: Sukuyan (Non-Human)</quality>
-          <quality>Infected: Wendigo</quality>
+          <quality>Infected: Chiron</quality>
         </oneof>
       </required>
       <karma>12</karma>
@@ -3648,28 +3443,7 @@
       <duration>Sustained</duration>
       <required>
         <oneof>
-          <quality>Infected: Bandersnatch</quality>
-          <quality>Infected: Banshee</quality>
-          <quality>Infected: Dzoo-Noo-Qua</quality>
-          <quality>Infected: Fomoraig</quality>
-          <quality>Infected: Ghoul (Dwarf)</quality>
-          <quality>Infected: Ghoul (Elf)</quality>
-          <quality>Infected: Ghoul (Human)</quality>
-          <quality>Infected: Ghoul (Ork)</quality>
-          <quality>Infected: Ghoul (Sasquatch)</quality>
-          <quality>Infected: Ghoul (Troll)</quality>
-          <quality>Infected: Gnawer</quality>
-          <quality>Infected: Goblin</quality>
-          <quality>Infected: Grendel</quality>
-          <quality>Infected: Harvester</quality>
-          <quality>Infected: Loup-Garou</quality>
-          <quality>Infected: Mutaqua</quality>
-          <quality>Infected: Nosferatu</quality>
-          <quality>Infected: Vampire (Human)</quality>
-          <quality>Infected: Vampire (Non-Human)</quality>
-          <quality>Infected: Sukuyan (Human)</quality>
-          <quality>Infected: Sukuyan (Non-Human)</quality>
-          <quality>Infected: Wendigo</quality>
+          <quality>Infected: Jabberwock</quality>
         </oneof>
       </required>
       <karma>9</karma>
@@ -3690,27 +3464,6 @@
       <required>
         <oneof>
           <quality>Infected: Bandersnatch</quality>
-          <quality>Infected: Banshee</quality>
-          <quality>Infected: Dzoo-Noo-Qua</quality>
-          <quality>Infected: Fomoraig</quality>
-          <quality>Infected: Ghoul (Dwarf)</quality>
-          <quality>Infected: Ghoul (Elf)</quality>
-          <quality>Infected: Ghoul (Human)</quality>
-          <quality>Infected: Ghoul (Ork)</quality>
-          <quality>Infected: Ghoul (Sasquatch)</quality>
-          <quality>Infected: Ghoul (Troll)</quality>
-          <quality>Infected: Gnawer</quality>
-          <quality>Infected: Goblin</quality>
-          <quality>Infected: Grendel</quality>
-          <quality>Infected: Harvester</quality>
-          <quality>Infected: Loup-Garou</quality>
-          <quality>Infected: Mutaqua</quality>
-          <quality>Infected: Nosferatu</quality>
-          <quality>Infected: Vampire (Human)</quality>
-          <quality>Infected: Vampire (Non-Human)</quality>
-          <quality>Infected: Sukuyan (Human)</quality>
-          <quality>Infected: Sukuyan (Non-Human)</quality>
-          <quality>Infected: Wendigo</quality>
         </oneof>
       </required>
       <karma>12</karma>
@@ -3727,28 +3480,7 @@
       <duration>Always</duration>
       <required>
         <oneof>
-          <quality>Infected: Bandersnatch</quality>
-          <quality>Infected: Banshee</quality>
-          <quality>Infected: Dzoo-Noo-Qua</quality>
-          <quality>Infected: Fomoraig</quality>
-          <quality>Infected: Ghoul (Dwarf)</quality>
-          <quality>Infected: Ghoul (Elf)</quality>
-          <quality>Infected: Ghoul (Human)</quality>
-          <quality>Infected: Ghoul (Ork)</quality>
-          <quality>Infected: Ghoul (Sasquatch)</quality>
-          <quality>Infected: Ghoul (Troll)</quality>
-          <quality>Infected: Gnawer</quality>
-          <quality>Infected: Goblin</quality>
           <quality>Infected: Grendel</quality>
-          <quality>Infected: Harvester</quality>
-          <quality>Infected: Loup-Garou</quality>
-          <quality>Infected: Mutaqua</quality>
-          <quality>Infected: Nosferatu</quality>
-          <quality>Infected: Vampire (Human)</quality>
-          <quality>Infected: Vampire (Non-Human)</quality>
-          <quality>Infected: Sukuyan (Human)</quality>
-          <quality>Infected: Sukuyan (Non-Human)</quality>
-          <quality>Infected: Wendigo</quality>
         </oneof>
       </required>
       <karma>5</karma>
@@ -3765,28 +3497,7 @@
       <duration>Always</duration>
       <required>
         <oneof>
-          <quality>Infected: Bandersnatch</quality>
-          <quality>Infected: Banshee</quality>
-          <quality>Infected: Dzoo-Noo-Qua</quality>
-          <quality>Infected: Fomoraig</quality>
-          <quality>Infected: Ghoul (Dwarf)</quality>
-          <quality>Infected: Ghoul (Elf)</quality>
-          <quality>Infected: Ghoul (Human)</quality>
-          <quality>Infected: Ghoul (Ork)</quality>
-          <quality>Infected: Ghoul (Sasquatch)</quality>
-          <quality>Infected: Ghoul (Troll)</quality>
           <quality>Infected: Gnawer</quality>
-          <quality>Infected: Goblin</quality>
-          <quality>Infected: Grendel</quality>
-          <quality>Infected: Harvester</quality>
-          <quality>Infected: Loup-Garou</quality>
-          <quality>Infected: Mutaqua</quality>
-          <quality>Infected: Nosferatu</quality>
-          <quality>Infected: Vampire (Human)</quality>
-          <quality>Infected: Vampire (Non-Human)</quality>
-          <quality>Infected: Sukuyan (Human)</quality>
-          <quality>Infected: Sukuyan (Non-Human)</quality>
-          <quality>Infected: Wendigo</quality>
         </oneof>
       </required>
       <karma>6</karma>
@@ -3803,28 +3514,7 @@
       <duration>Sustained</duration>
       <required>
         <oneof>
-          <quality>Infected: Bandersnatch</quality>
-          <quality>Infected: Banshee</quality>
-          <quality>Infected: Dzoo-Noo-Qua</quality>
-          <quality>Infected: Fomoraig</quality>
-          <quality>Infected: Ghoul (Dwarf)</quality>
-          <quality>Infected: Ghoul (Elf)</quality>
-          <quality>Infected: Ghoul (Human)</quality>
-          <quality>Infected: Ghoul (Ork)</quality>
-          <quality>Infected: Ghoul (Sasquatch)</quality>
-          <quality>Infected: Ghoul (Troll)</quality>
-          <quality>Infected: Gnawer</quality>
-          <quality>Infected: Goblin</quality>
-          <quality>Infected: Grendel</quality>
-          <quality>Infected: Harvester</quality>
-          <quality>Infected: Loup-Garou</quality>
-          <quality>Infected: Mutaqua</quality>
-          <quality>Infected: Nosferatu</quality>
-          <quality>Infected: Vampire (Human)</quality>
-          <quality>Infected: Vampire (Non-Human)</quality>
-          <quality>Infected: Sukuyan (Human)</quality>
-          <quality>Infected: Sukuyan (Non-Human)</quality>
-          <quality>Infected: Wendigo</quality>
+          <quality>Infected: Lamia</quality>
         </oneof>
       </required>
       <karma>12</karma>
@@ -3841,28 +3531,7 @@
       <duration>Always</duration>
       <required>
         <oneof>
-          <quality>Infected: Bandersnatch</quality>
-          <quality>Infected: Banshee</quality>
-          <quality>Infected: Dzoo-Noo-Qua</quality>
-          <quality>Infected: Fomoraig</quality>
-          <quality>Infected: Ghoul (Dwarf)</quality>
-          <quality>Infected: Ghoul (Elf)</quality>
-          <quality>Infected: Ghoul (Human)</quality>
-          <quality>Infected: Ghoul (Ork)</quality>
-          <quality>Infected: Ghoul (Sasquatch)</quality>
-          <quality>Infected: Ghoul (Troll)</quality>
-          <quality>Infected: Gnawer</quality>
-          <quality>Infected: Goblin</quality>
-          <quality>Infected: Grendel</quality>
-          <quality>Infected: Harvester</quality>
-          <quality>Infected: Loup-Garou</quality>
-          <quality>Infected: Mutaqua</quality>
-          <quality>Infected: Nosferatu</quality>
-          <quality>Infected: Vampire (Human)</quality>
-          <quality>Infected: Vampire (Non-Human)</quality>
-          <quality>Infected: Sukuyan (Human)</quality>
-          <quality>Infected: Sukuyan (Non-Human)</quality>
-          <quality>Infected: Wendigo</quality>
+          <quality>Infected: Jabberwock</quality>
         </oneof>
       </required>
       <karma>9</karma>
@@ -3880,28 +3549,7 @@
       <duration>Always</duration>
       <required>
         <oneof>
-          <quality>Infected: Bandersnatch</quality>
-          <quality>Infected: Banshee</quality>
-          <quality>Infected: Dzoo-Noo-Qua</quality>
-          <quality>Infected: Fomoraig</quality>
-          <quality>Infected: Ghoul (Dwarf)</quality>
-          <quality>Infected: Ghoul (Elf)</quality>
-          <quality>Infected: Ghoul (Human)</quality>
-          <quality>Infected: Ghoul (Ork)</quality>
-          <quality>Infected: Ghoul (Sasquatch)</quality>
-          <quality>Infected: Ghoul (Troll)</quality>
-          <quality>Infected: Gnawer</quality>
-          <quality>Infected: Goblin</quality>
-          <quality>Infected: Grendel</quality>
-          <quality>Infected: Harvester</quality>
-          <quality>Infected: Loup-Garou</quality>
-          <quality>Infected: Mutaqua</quality>
           <quality>Infected: Nosferatu</quality>
-          <quality>Infected: Vampire (Human)</quality>
-          <quality>Infected: Vampire (Non-Human)</quality>
-          <quality>Infected: Sukuyan (Human)</quality>
-          <quality>Infected: Sukuyan (Non-Human)</quality>
-          <quality>Infected: Wendigo</quality>
         </oneof>
       </required>
       <karma>6</karma>
@@ -3918,28 +3566,7 @@
       <duration>Always</duration>
       <required>
         <oneof>
-          <quality>Infected: Bandersnatch</quality>
-          <quality>Infected: Banshee</quality>
-          <quality>Infected: Dzoo-Noo-Qua</quality>
-          <quality>Infected: Fomoraig</quality>
-          <quality>Infected: Ghoul (Dwarf)</quality>
-          <quality>Infected: Ghoul (Elf)</quality>
-          <quality>Infected: Ghoul (Human)</quality>
-          <quality>Infected: Ghoul (Ork)</quality>
-          <quality>Infected: Ghoul (Sasquatch)</quality>
-          <quality>Infected: Ghoul (Troll)</quality>
-          <quality>Infected: Gnawer</quality>
           <quality>Infected: Goblin</quality>
-          <quality>Infected: Grendel</quality>
-          <quality>Infected: Harvester</quality>
-          <quality>Infected: Loup-Garou</quality>
-          <quality>Infected: Mutaqua</quality>
-          <quality>Infected: Nosferatu</quality>
-          <quality>Infected: Vampire (Human)</quality>
-          <quality>Infected: Vampire (Non-Human)</quality>
-          <quality>Infected: Sukuyan (Human)</quality>
-          <quality>Infected: Sukuyan (Non-Human)</quality>
-          <quality>Infected: Wendigo</quality>
         </oneof>
       </required>
       <karma>12</karma>
@@ -3956,28 +3583,7 @@
       <duration>Sustained</duration>
       <required>
         <oneof>
-          <quality>Infected: Bandersnatch</quality>
-          <quality>Infected: Banshee</quality>
-          <quality>Infected: Dzoo-Noo-Qua</quality>
-          <quality>Infected: Fomoraig</quality>
-          <quality>Infected: Ghoul (Dwarf)</quality>
-          <quality>Infected: Ghoul (Elf)</quality>
-          <quality>Infected: Ghoul (Human)</quality>
-          <quality>Infected: Ghoul (Ork)</quality>
-          <quality>Infected: Ghoul (Sasquatch)</quality>
-          <quality>Infected: Ghoul (Troll)</quality>
-          <quality>Infected: Gnawer</quality>
-          <quality>Infected: Goblin</quality>
-          <quality>Infected: Grendel</quality>
-          <quality>Infected: Harvester</quality>
-          <quality>Infected: Loup-Garou</quality>
           <quality>Infected: Mutaqua</quality>
-          <quality>Infected: Nosferatu</quality>
-          <quality>Infected: Vampire (Human)</quality>
-          <quality>Infected: Vampire (Non-Human)</quality>
-          <quality>Infected: Sukuyan (Human)</quality>
-          <quality>Infected: Sukuyan (Non-Human)</quality>
-          <quality>Infected: Wendigo</quality>
         </oneof>
       </required>
       <karma>9</karma>
@@ -3994,28 +3600,7 @@
       <duration>Always</duration>
       <required>
         <oneof>
-          <quality>Infected: Bandersnatch</quality>
-          <quality>Infected: Banshee</quality>
-          <quality>Infected: Dzoo-Noo-Qua</quality>
-          <quality>Infected: Fomoraig</quality>
-          <quality>Infected: Ghoul (Dwarf)</quality>
-          <quality>Infected: Ghoul (Elf)</quality>
-          <quality>Infected: Ghoul (Human)</quality>
-          <quality>Infected: Ghoul (Ork)</quality>
-          <quality>Infected: Ghoul (Sasquatch)</quality>
-          <quality>Infected: Ghoul (Troll)</quality>
           <quality>Infected: Gnawer</quality>
-          <quality>Infected: Goblin</quality>
-          <quality>Infected: Grendel</quality>
-          <quality>Infected: Harvester</quality>
-          <quality>Infected: Loup-Garou</quality>
-          <quality>Infected: Mutaqua</quality>
-          <quality>Infected: Nosferatu</quality>
-          <quality>Infected: Vampire (Human)</quality>
-          <quality>Infected: Vampire (Non-Human)</quality>
-          <quality>Infected: Sukuyan (Human)</quality>
-          <quality>Infected: Sukuyan (Non-Human)</quality>
-          <quality>Infected: Wendigo</quality>
         </oneof>
       </required>
       <karma>12</karma>
@@ -4032,28 +3617,7 @@
       <duration>Always</duration>
       <required>
         <oneof>
-          <quality>Infected: Bandersnatch</quality>
-          <quality>Infected: Banshee</quality>
-          <quality>Infected: Dzoo-Noo-Qua</quality>
-          <quality>Infected: Fomoraig</quality>
-          <quality>Infected: Ghoul (Dwarf)</quality>
-          <quality>Infected: Ghoul (Elf)</quality>
-          <quality>Infected: Ghoul (Human)</quality>
-          <quality>Infected: Ghoul (Ork)</quality>
-          <quality>Infected: Ghoul (Sasquatch)</quality>
-          <quality>Infected: Ghoul (Troll)</quality>
-          <quality>Infected: Gnawer</quality>
-          <quality>Infected: Goblin</quality>
-          <quality>Infected: Grendel</quality>
           <quality>Infected: Harvester</quality>
-          <quality>Infected: Loup-Garou</quality>
-          <quality>Infected: Mutaqua</quality>
-          <quality>Infected: Nosferatu</quality>
-          <quality>Infected: Vampire (Human)</quality>
-          <quality>Infected: Vampire (Non-Human)</quality>
-          <quality>Infected: Sukuyan (Human)</quality>
-          <quality>Infected: Sukuyan (Non-Human)</quality>
-          <quality>Infected: Wendigo</quality>
         </oneof>
       </required>
       <karma>6</karma>
@@ -4070,28 +3634,7 @@
       <duration>Sustained</duration>
       <required>
         <oneof>
-          <quality>Infected: Bandersnatch</quality>
           <quality>Infected: Banshee</quality>
-          <quality>Infected: Dzoo-Noo-Qua</quality>
-          <quality>Infected: Fomoraig</quality>
-          <quality>Infected: Ghoul (Dwarf)</quality>
-          <quality>Infected: Ghoul (Elf)</quality>
-          <quality>Infected: Ghoul (Human)</quality>
-          <quality>Infected: Ghoul (Ork)</quality>
-          <quality>Infected: Ghoul (Sasquatch)</quality>
-          <quality>Infected: Ghoul (Troll)</quality>
-          <quality>Infected: Gnawer</quality>
-          <quality>Infected: Goblin</quality>
-          <quality>Infected: Grendel</quality>
-          <quality>Infected: Harvester</quality>
-          <quality>Infected: Loup-Garou</quality>
-          <quality>Infected: Mutaqua</quality>
-          <quality>Infected: Nosferatu</quality>
-          <quality>Infected: Vampire (Human)</quality>
-          <quality>Infected: Vampire (Non-Human)</quality>
-          <quality>Infected: Sukuyan (Human)</quality>
-          <quality>Infected: Sukuyan (Non-Human)</quality>
-          <quality>Infected: Wendigo</quality>
         </oneof>
       </required>
       <karma>9</karma>
@@ -4108,28 +3651,7 @@
       <duration>Always</duration>
       <required>
         <oneof>
-          <quality>Infected: Bandersnatch</quality>
-          <quality>Infected: Banshee</quality>
-          <quality>Infected: Dzoo-Noo-Qua</quality>
-          <quality>Infected: Fomoraig</quality>
-          <quality>Infected: Ghoul (Dwarf)</quality>
-          <quality>Infected: Ghoul (Elf)</quality>
-          <quality>Infected: Ghoul (Human)</quality>
-          <quality>Infected: Ghoul (Ork)</quality>
-          <quality>Infected: Ghoul (Sasquatch)</quality>
-          <quality>Infected: Ghoul (Troll)</quality>
-          <quality>Infected: Gnawer</quality>
-          <quality>Infected: Goblin</quality>
-          <quality>Infected: Grendel</quality>
-          <quality>Infected: Harvester</quality>
-          <quality>Infected: Loup-Garou</quality>
-          <quality>Infected: Mutaqua</quality>
-          <quality>Infected: Nosferatu</quality>
-          <quality>Infected: Vampire (Human)</quality>
-          <quality>Infected: Vampire (Non-Human)</quality>
-          <quality>Infected: Sukuyan (Human)</quality>
-          <quality>Infected: Sukuyan (Non-Human)</quality>
-          <quality>Infected: Wendigo</quality>
+          <quality>Infected: Nibiinaabe</quality>
         </oneof>
       </required>
       <karma>6</karma>
@@ -4146,28 +3668,7 @@
       <duration>Sustained</duration>
       <required>
         <oneof>
-          <quality>Infected: Bandersnatch</quality>
-          <quality>Infected: Banshee</quality>
-          <quality>Infected: Dzoo-Noo-Qua</quality>
-          <quality>Infected: Fomoraig</quality>
-          <quality>Infected: Ghoul (Dwarf)</quality>
-          <quality>Infected: Ghoul (Elf)</quality>
-          <quality>Infected: Ghoul (Human)</quality>
-          <quality>Infected: Ghoul (Ork)</quality>
-          <quality>Infected: Ghoul (Sasquatch)</quality>
-          <quality>Infected: Ghoul (Troll)</quality>
-          <quality>Infected: Gnawer</quality>
           <quality>Infected: Goblin</quality>
-          <quality>Infected: Grendel</quality>
-          <quality>Infected: Harvester</quality>
-          <quality>Infected: Loup-Garou</quality>
-          <quality>Infected: Mutaqua</quality>
-          <quality>Infected: Nosferatu</quality>
-          <quality>Infected: Vampire (Human)</quality>
-          <quality>Infected: Vampire (Non-Human)</quality>
-          <quality>Infected: Sukuyan (Human)</quality>
-          <quality>Infected: Sukuyan (Non-Human)</quality>
-          <quality>Infected: Wendigo</quality>
         </oneof>
       </required>
       <karma>9</karma>
@@ -4184,28 +3685,8 @@
       <duration>Sustained</duration>
       <required>
         <oneof>
-          <quality>Infected: Bandersnatch</quality>
-          <quality>Infected: Banshee</quality>
-          <quality>Infected: Dzoo-Noo-Qua</quality>
-          <quality>Infected: Fomoraig</quality>
-          <quality>Infected: Ghoul (Dwarf)</quality>
-          <quality>Infected: Ghoul (Elf)</quality>
-          <quality>Infected: Ghoul (Human)</quality>
-          <quality>Infected: Ghoul (Ork)</quality>
-          <quality>Infected: Ghoul (Sasquatch)</quality>
-          <quality>Infected: Ghoul (Troll)</quality>
-          <quality>Infected: Gnawer</quality>
-          <quality>Infected: Goblin</quality>
-          <quality>Infected: Grendel</quality>
-          <quality>Infected: Harvester</quality>
-          <quality>Infected: Loup-Garou</quality>
-          <quality>Infected: Mutaqua</quality>
-          <quality>Infected: Nosferatu</quality>
           <quality>Infected: Vampire (Human)</quality>
           <quality>Infected: Vampire (Non-Human)</quality>
-          <quality>Infected: Sukuyan (Human)</quality>
-          <quality>Infected: Sukuyan (Non-Human)</quality>
-          <quality>Infected: Wendigo</quality>
         </oneof>
       </required>
       <karma>12</karma>
@@ -4222,27 +3703,6 @@
       <duration>Always</duration>
       <required>
         <oneof>
-          <quality>Infected: Bandersnatch</quality>
-          <quality>Infected: Banshee</quality>
-          <quality>Infected: Dzoo-Noo-Qua</quality>
-          <quality>Infected: Fomoraig</quality>
-          <quality>Infected: Ghoul (Dwarf)</quality>
-          <quality>Infected: Ghoul (Elf)</quality>
-          <quality>Infected: Ghoul (Human)</quality>
-          <quality>Infected: Ghoul (Ork)</quality>
-          <quality>Infected: Ghoul (Sasquatch)</quality>
-          <quality>Infected: Ghoul (Troll)</quality>
-          <quality>Infected: Gnawer</quality>
-          <quality>Infected: Goblin</quality>
-          <quality>Infected: Grendel</quality>
-          <quality>Infected: Harvester</quality>
-          <quality>Infected: Loup-Garou</quality>
-          <quality>Infected: Mutaqua</quality>
-          <quality>Infected: Nosferatu</quality>
-          <quality>Infected: Vampire (Human)</quality>
-          <quality>Infected: Vampire (Non-Human)</quality>
-          <quality>Infected: Sukuyan (Human)</quality>
-          <quality>Infected: Sukuyan (Non-Human)</quality>
           <quality>Infected: Wendigo</quality>
         </oneof>
       </required>
