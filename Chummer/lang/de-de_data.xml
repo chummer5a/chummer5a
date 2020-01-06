@@ -2970,6 +2970,12 @@
 				<translate>Stimmverstärker</translate>
 				<altpage>185</altpage>
 			</bioware>
+			<bioware translated="True">
+				<id>81b90755-de0b-42d5-a7c9-6c7c72a1db05</id>
+				<name>Adrenaline Filter</name>
+				<translate>Adrenalinfilter</translate>
+				<altpage>164</altpage>
+			</bioware>
 		</biowares>
 	</chummer>
 	<chummer file="books.xml">
@@ -4898,6 +4904,36 @@
 				<name>Resonance Spooling</name>
 				<translate>Resonanzwicklungen</translate>
 				<altpage>101</altpage>
+			</power>
+			<power translated="True">
+				<id>6414b273-897d-451a-839a-4d530f1baaab</id>
+				<name>Anchored Resident</name>
+				<translate>Verankerter Bewohner</translate>
+				<altpage>49</altpage>
+			</power>
+			<power translated="True">
+				<id>9ae68e9e-65dc-49a0-bf06-72054396d371</id>
+				<name>Shell Game</name>
+				<translate>Hütchenspiel</translate>
+				<altpage>48</altpage>
+			</power>
+			<power translated="True">
+				<id>5fca2f99-9b2a-4fb0-b5b3-dd0626b8ed39</id>
+				<name>Superior Banishing Resistance</name>
+				<translate>Verbesserte Verbannungsresistenz</translate>
+				<altpage>49</altpage>
+			</power>
+			<power translated="True">
+				<id>6d43c580-0285-4d93-bd43-b4edfa091c0e</id>
+				<name>Superior Regeneration</name>
+				<translate>Verbesserte Regeneration</translate>
+				<altpage>49</altpage>
+			</power>
+			<power translated="True">
+				<id>d0615070-d0c7-4c8b-ae02-442cadd1f38d</id>
+				<name>Wounded Fury</name>
+				<translate>Zorn der Verwundeten</translate>
+				<altpage>49</altpage>
 			</power>
 		</powers>
 	</chummer>
