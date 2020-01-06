@@ -17,6 +17,8 @@ Application Fixes:
 - Altered some logic in the Weapon class to better support the Improved Ammunition Capacity accessory provided by Special Modifications.
 - Fixed behaviour of cyberzombification improperly reducing metatype limits instead of increasing them. 
 - Select Armor/Weapon windows now properly support translated headers on their datagrid views.
+- Fixed an issue with the Point Buy form incorrectly setting metavariant metatypes to be themselves (ie Dryad (Dryad)).
+- Fixed an inappropriate bracket for improvements to skills that don't have a condition.
 
 Application Changes:
 - Added support for Priority mode using non-ABCDE arrays.
@@ -41,9 +43,6 @@ Application Changes:
 - Added basic support for the Gunnery specialisation adding to dicepool for vehicle-mounted weapons. This is done by applying a 'gunneryspec' attribute to either the root category node, or the category node of the weapon itself. The weapon is checked first, then the category.
 - Added support for the Reach improvement to apply to specifically named weapons only. This is used by adding a Name attribute to the node. 
 - Added support for martial arts, techniques and maneuvers fetching notes from their books.
-
-Application Fixes:
-- Fixed an issue with the Point Buy form incorrectly setting metavariant metatypes to be themselves (ie Dryad (Dryad)).
 
 Data Changes:
 - Fixed issues with the Dodge, Bonus Street Cred and Street Cred Multiplier custom improvements. 

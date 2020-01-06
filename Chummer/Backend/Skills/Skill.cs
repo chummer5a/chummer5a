@@ -1121,9 +1121,13 @@ namespace Chummer.Backend.Skills
             {
                 s.Append(strSpaceCharacter + '+' + strSpaceCharacter);
                 s.Append(CharacterObject.GetObjectName(source, GlobalOptions.Language));
-                s.Append(strSpaceCharacter + '(');
-                s.Append(source.Condition.ToString(GlobalOptions.CultureInfo));
-                s.Append(')');
+                if (source.Condition != string.Empty)
+                {
+                    s.Append(strSpaceCharacter + '(');
+                    s.Append(source.Condition.ToString(GlobalOptions.CultureInfo));
+                    s.Append(')');
+                }
+
                 s.Append(strSpaceCharacter + '(');
                 s.Append(source.Value.ToString(GlobalOptions.CultureInfo));
                 s.Append(')');
