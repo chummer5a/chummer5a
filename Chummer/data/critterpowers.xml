@@ -3236,6 +3236,66 @@
       <page>400</page>
     </power>
     <!-- End Region -->
+    <!-- Region Dark Terrors -->
+    <!-- Region Shedim Powers -->
+
+    <power>
+      <id>6414b273-897d-451a-839a-4d530f1baaab</id>
+      <name>Anchored Resident</name>
+      <category>Paranormal</category>
+      <type>M</type>
+      <action>Auto</action>
+      <range>Self</range>
+      <duration>Always</duration>
+      <source>DTR</source>
+      <page>49</page>
+    </power>
+    <power>
+      <id>9ae68e9e-65dc-49a0-bf06-72054396d371</id>
+      <name>Shell Game</name>
+      <category>Paranormal</category>
+      <type>M</type>
+      <action>Auto</action>
+      <range>Self</range>
+      <duration>Always</duration>
+      <source>DTR</source>
+      <page>49</page>
+    </power>
+    <power>
+      <id>5fca2f99-9b2a-4fb0-b5b3-dd0626b8ed39</id>
+      <name>Superior Banishing Resistance</name>
+      <category>Paranormal</category>
+      <type>M</type>
+      <action>Simple</action>
+      <range>Self</range>
+      <duration>Instant</duration>
+      <source>DTR</source>
+      <page>50</page>
+    </power>
+    <power>
+      <id>6d43c580-0285-4d93-bd43-b4edfa091c0e</id>
+      <name>Superior Regeneration</name>
+      <category>Paranormal</category>
+      <type>M</type>
+      <action>Simple</action>
+      <range>Self</range>
+      <duration>Permanent</duration>
+      <source>DTR</source>
+      <page>49</page>
+    </power>
+    <power>
+      <id>d0615070-d0c7-4c8b-ae02-442cadd1f38d</id>
+      <name>Wounded Fury</name>
+      <category>Paranormal</category>
+      <type>M</type>
+      <action>Auto</action>
+      <range>Self</range>
+      <duration>Always</duration>
+      <source>DTR</source>
+      <page>49</page>
+    </power>
+    <!-- End Region -->
+    <!-- Region Infected Powers -->
     <power>
       <id>9163fb4f-0531-4f11-8894-ed681306ebfd</id>
       <name>Amphibious</name>
@@ -3710,6 +3770,7 @@
       <source>DTR</source>
       <page>163</page>
     </power>
+    <!-- End Region -->
     <!-- End Region -->
     <!-- Region Kill Code -->
     <power>

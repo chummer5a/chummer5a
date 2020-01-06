@@ -69,6 +69,7 @@ Data Changes:
 - Altered the page for all Techniques that contain 'see page xx' references to referto the proper pages.
 - Restricted advanced critter powers for infected from dark terrors to appropriate qualities. Need to revisist and add as qualities instead. 
 - Added adrenaline filter from dark terrors.
+- Added missing Shedim critter Powers from Dark Terrors.
 
 New Strings:
 - String_DisableSkillGroupPrompt
