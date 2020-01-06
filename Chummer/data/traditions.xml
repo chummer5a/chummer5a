@@ -682,8 +682,14 @@
       <source>FA</source>
       <page>69</page>
       <bonus>
-        <disableskill>Ritual Spellcasting</disableskill>
-        <disableskill>Spellcasting</disableskill>
+        <skilldisable>Ritual Spellcasting</skilldisable>
+        <skilldisable>Spellcasting</skilldisable>
+        <metamagiclimit>
+          <metamagic grade="1">Fixation</metamagic>
+          <metamagic grade="2">Quickening</metamagic>
+          <metamagic grade="3">Advanced Alchemy</metamagic>
+          <metamagic grade="4">Anchoring</metamagic>
+        </metamagiclimit>
       </bonus>
       <spirits>
         <spiritcombat>Guardian Spirit</spiritcombat>
@@ -699,6 +705,12 @@
       <drain>WIL + LOG</drain>
       <source>FA</source>
       <page>69</page>
+      <bonus>
+        <metamagiclimit>
+          <metamagic grade="1">Centering</metamagic>
+          <metamagic grade="2">Structured Spellcasting</metamagic>
+        </metamagiclimit>
+      </bonus>
       <spirits>
         <spiritcombat>Guardian Spirit</spiritcombat>
         <spiritdetection>Spirit of Earth</spiritdetection>

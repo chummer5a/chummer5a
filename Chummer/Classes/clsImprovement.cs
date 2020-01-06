@@ -341,6 +341,7 @@ namespace Chummer
             AllowCritterPowerCategory,
             LimitCritterPowerCategory,
             AttributeMaxClamp,
+            MetamagicLimit,
             NumImprovementTypes // 🡐 This one should always be the last defined enum
         }
 

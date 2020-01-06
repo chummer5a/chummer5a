@@ -6651,6 +6651,19 @@ namespace Chummer.Classes
             Log.Info("Calling CreateImprovement");
             CreateImprovement(bonusNode.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.AttributeMaxClamp, _strUnique);
         }
+
+        public void metamagiclimit(XmlNode bonusNode)
+        {
+            Log.Info("metamagiclimit");
+            Log.Info("metamagiclimit = " + bonusNode.OuterXml);
+            Log.Info("Calling CreateImprovement");
+            foreach (XmlNode child in bonusNode.SelectNodes("metamagic"))
+            {
+                int intRating = Convert.ToInt32(child.Attributes["grade"]?.InnerText ?? "-1");
+                CreateImprovement(child.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.MetamagicLimit, _strUnique, 0, intRating);
+            }
+            
+        }
 #pragma warning restore IDE1006 // Naming Styles
         #endregion
     }

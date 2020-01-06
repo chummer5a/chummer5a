@@ -630,6 +630,8 @@ namespace Chummer
                     return objImprovementAdder.limitcritterpowercategory;
                 case "ATTRIBUTEMAXCLAMP":
                     return objImprovementAdder.attributemaxclamp;
+                case "METAMAGICLIMIT":
+                    return objImprovementAdder.metamagiclimit;
                 // No method matches, return a null pointer
                 default:
                     return null;

@@ -1166,6 +1166,18 @@ namespace Chummer
                         }
                         return objCharacter.MagicTradition.Name == strNodeInnerText;
                     }
+                case "traditionspiritform":
+                {
+                    // Character needs a specific spirit form provided by their Tradition.
+                    if (blnShowMessage)
+                    {
+                        string strTranslate = XmlManager.Load("critterpowers.xml").SelectSingleNode($"/chummer/powers/power[name = {strNodeInnerText.CleanXPath()}]/translate")?.InnerText;
+                        strName = !string.IsNullOrEmpty(strTranslate)
+                            ? $"{Environment.NewLine}\t{strTranslate} ({LanguageManager.GetString("String_Tradition", GlobalOptions.Language)})"
+                            : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_Tradition", GlobalOptions.Language)})";
+                    }
+                    return objCharacter.MagicTradition.SpiritForm == strNodeInnerText;
+                }
                 case "weapon":
                 {
                     // Character needs a specific Weapon.
