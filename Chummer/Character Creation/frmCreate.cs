@@ -695,6 +695,10 @@ namespace Chummer
                         lblArmor.DoDatabinding("ToolTipText", CharacterObject,
                             nameof(Character.TotalArmorRatingToolTip));
 
+                        lblDodge.DoDatabinding("Text", CharacterObject, nameof(Character.DisplayDodge));
+                        lblDodge.DoDatabinding("ToolTipText", CharacterObject,
+                            nameof(Character.DodgeToolTip));
+
                         lblSpellDefenceIndirectDodge.DoDatabinding("Text", CharacterObject,
                             nameof(Character.DisplaySpellDefenseIndirectDodge));
                         lblSpellDefenceIndirectDodge.DoDatabinding("ToolTipText", CharacterObject,

@@ -467,6 +467,11 @@ namespace Chummer
                             new DependancyGraphNode<string>(nameof(TotalBonusDodgeRating))
                         )
                     ),
+                    new DependancyGraphNode<string>(nameof(DodgeToolTip),
+                        new DependancyGraphNode<string>(nameof(Dodge),
+                            new DependancyGraphNode<string>(nameof(TotalBonusDodgeRating))
+                        )
+                    ),
                     new DependancyGraphNode<string>(nameof(DisplaySpellDefenseIndirectDodge),
                         new DependancyGraphNode<string>(nameof(CurrentCounterspellingDice)),
                         new DependancyGraphNode<string>(nameof(SpellDefenseIndirectDodge))
@@ -10019,8 +10024,40 @@ if (!Utils.IsUnitTest){
                 }
             }
         }
+        #region Dodge
+        public int Dodge => REA.TotalValue + INT.TotalValue + TotalBonusDodgeRating;
 
-        public int SpellDefenseIndirectDodge => REA.TotalValue + INT.TotalValue + TotalBonusDodgeRating;
+        public string DisplayDodge => Dodge.ToString(GlobalOptions.CultureInfo);
+
+        public string DodgeToolTip
+        {
+            get
+            {
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                StringBuilder objToolTip = new StringBuilder(REA.DisplayAbbrev + strSpaceCharacter + '(' +
+                                                             REA.TotalValue.ToString(GlobalOptions.CultureInfo) + ')' +
+                                                             strSpaceCharacter + '+' + strSpaceCharacter +
+                                                             INT.DisplayAbbrev + strSpaceCharacter + '(' +
+                                                             INT.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
+
+                int intModifiers = TotalBonusDodgeRating;
+
+                if (intModifiers != 0)
+                {
+                    FormatImprovementModifiers(objToolTip,
+                        new HashSet<Improvement.ImprovementType>(new[]
+                        {
+                            Improvement.ImprovementType.Dodge
+                        }), strSpaceCharacter, intModifiers);
+                }
+
+                return objToolTip.ToString();
+            }
+        }
+        #endregion
+        #region Spell Defense
+        #region Indirect Dodge
+        public int SpellDefenseIndirectDodge => Dodge;
 
         public string DisplaySpellDefenseIndirectDodge => CurrentCounterspellingDice == 0
             ? SpellDefenseIndirectDodge.ToString(GlobalOptions.CultureInfo)
@@ -10033,11 +10070,7 @@ if (!Utils.IsUnitTest){
             get
             {
                 string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
-                StringBuilder objToolTip = new StringBuilder(REA.DisplayAbbrev + strSpaceCharacter + '(' +
-                                                             REA.TotalValue.ToString(GlobalOptions.CultureInfo) + ')' +
-                                                             strSpaceCharacter + '+' + strSpaceCharacter +
-                                                             INT.DisplayAbbrev + strSpaceCharacter + '(' +
-                                                             INT.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
+                StringBuilder objToolTip = new StringBuilder(DodgeToolTip);
 
                 if(CurrentCounterspellingDice != 0)
                     objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
@@ -10045,21 +10078,11 @@ if (!Utils.IsUnitTest){
                                       strSpaceCharacter + '(' +
                                       CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
 
-                int intModifiers = TotalBonusDodgeRating;
-
-                if(intModifiers != 0)
-                {
-                    FormatImprovementModifiers(objToolTip,
-                        new HashSet<Improvement.ImprovementType>(new[]
-                        {
-                            Improvement.ImprovementType.Dodge
-                        }), strSpaceCharacter, intModifiers);
-                }
-
                 return objToolTip.ToString();
             }
         }
-
+        #endregion
+        #region Indirect Soak
         public int SpellDefenseIndirectSoak =>
             (IsAI ? (HomeNode is Vehicle objVehicle ? objVehicle.TotalBody : 0) : BOD.TotalValue) + TotalArmorRating +
             SpellResistance + ImprovementManager.ValueOf(this,Improvement.ImprovementType.DamageResistance);
@@ -10114,7 +10137,8 @@ if (!Utils.IsUnitTest){
                 return objToolTip.ToString();
             }
         }
-
+        #endregion
+        #region Direct Soak Mana
         public int SpellDefenseDirectSoakMana => WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DirectManaSpellResist) + SpellResistance;
 
         public string DisplaySpellDefenseDirectSoakMana => CurrentCounterspellingDice == 0
@@ -10149,7 +10173,8 @@ if (!Utils.IsUnitTest){
                 return objToolTip.ToString();
             }
         }
-
+        #endregion
+        #region Direct Soak Physical
         public int SpellDefenseDirectSoakPhysical =>
             (IsAI ? (HomeNode is Vehicle objVehicle ? objVehicle.TotalBody : 0) : BOD.TotalValue) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DirectPhysicalSpellResist) + SpellResistance;
 
@@ -10196,7 +10221,8 @@ if (!Utils.IsUnitTest){
                 return objToolTip.ToString();
             }
         }
-
+        #endregion
+        #region Detection
         public int SpellDefenseDetection => LOG.TotalValue + WIL.TotalValue + SpellResistance +
                                             ImprovementManager.ValueOf(this,
                                                 Improvement.ImprovementType.DetectionSpellResist);
@@ -10240,7 +10266,8 @@ if (!Utils.IsUnitTest){
                 return objToolTip.ToString();
             }
         }
-
+        #endregion
+        #region Decrease Attributes
         public int SpellDefenseDecreaseBOD => BOD.TotalValue + WIL.TotalValue + SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseBODResist);
 
         public string DisplaySpellDefenseDecreaseBOD => CurrentCounterspellingDice == 0
@@ -10567,6 +10594,8 @@ if (!Utils.IsUnitTest){
                 return objToolTip.ToString();
             }
         }
+        #endregion
+        #endregion
 
         public int Surprise => REA.TotalValue + INT.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.Surprise);
 
@@ -14275,7 +14304,7 @@ if (!Utils.IsUnitTest){
             {
                 OnMultiplePropertyChanged(nameof(LimitPhysical),
                     nameof(InitiativeValue),
-                    nameof(SpellDefenseIndirectDodge),
+                    nameof(Dodge),
                     nameof(SpellDefenseDecreaseREA),
                     nameof(Surprise));
             }
@@ -14330,7 +14359,7 @@ if (!Utils.IsUnitTest){
                     nameof(MatrixInitiativeValue),
                     nameof(MatrixInitiativeColdValue),
                     nameof(MatrixInitiativeHotValue),
-                    nameof(SpellDefenseIndirectDodge),
+                    nameof(Dodge),
                     nameof(SpellDefenseDecreaseINT),
                     nameof(SpellDefenseIllusionPhysical),
                     nameof(Surprise));
