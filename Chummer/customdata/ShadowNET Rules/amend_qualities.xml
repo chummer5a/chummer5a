@@ -60,6 +60,10 @@
       <name>Amnesia (Neural Deletion)</name>
       <hide />
     </quality>
+	<quality>
+      <name>Amnesia (Surface Loss)</name>
+      <hide />
+    </quality>
     <quality>
       <name>Carrier (HMHVV Strain II)</name>
       <hide />
@@ -90,10 +94,6 @@
     </quality>
     <!-- End Region -->
     <!-- Region Run Faster Infected Qualities -->
-    <quality>
-      <name>Infected: Loup-Garou</name>
-      <hide />
-    </quality>
     <quality>
       <name>Infected: Mutaqua</name>
       <hide />
@@ -237,26 +237,6 @@
     <!-- End Region -->
     <!-- End Region -->
     <!-- Region Howling Shadows -->
-    <quality>
-      <name>Latent Dracomorphosis</name>
-      <hide />
-    </quality>
-    <quality>
-      <name>Dracoform (Eastern Drake)</name>
-      <hide />
-    </quality>
-    <quality>
-      <name>Dracoform (Western Drake)</name>
-      <hide />
-    </quality>
-    <quality>
-      <name>Dracoform (Feathered Drake)</name>
-      <hide />
-    </quality>
-    <quality>
-      <name>Dracoform (Sea Drake)</name>
-      <hide />
-    </quality>
     <!-- End Region -->
     <!-- Region Cutting Aces -->
     <!-- Region Negative Qualities -->
@@ -451,5 +431,50 @@
     </quality>
     <!-- End Region -->
     <!-- End Region -->
+	<!--Region Dark Terrors -->
+	<quality>
+		<name>Wildcard Chimera</name>
+		<hide />
+	</quality>
+	<!-- Region Street Lethal -->
+	<quality>
+      <name>Stay Out of My Way</name>
+      <hide />
+    </quality>
+	<quality>
+		<name>This Is Your Last Chance</name>
+		<hide />
+	</quality>
+	<!-- End Region -->
+	<!-- Region Kill Code -->
+	<quality>
+      <name>Echo Chamber</name>
+      <hide />
+    </quality>
+	<!-- End Region -->
+	<!-- Region Better Than Bad -->
+	<quality>
+      <name>Dead SIN</name>
+      <hide />
+    </quality>
+	<quality>
+      <name>Quadriplegic</name>
+      <hide />
+    </quality>
+	<!-- End Region -->
+	<!-- Region Better Than Bad -->
+	<quality>
+      <name>Stolen Gear</name>
+      <hide />
+    </quality>
+	<quality>
+      <name>Massive Network</name>
+      <hide />
+    </quality>
+	<quality>
+      <name>Networker</name>
+      <hide />
+    </quality>
+	<!-- End Region -->
   </qualities>
 </chummer>

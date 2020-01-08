@@ -95,6 +95,8 @@ namespace Chummer
                             lstCyberware.Items.Add(new ListItem(objXmlSuite["id"]?.InnerText ?? strName, strName));
                         }
                     }
+            lstCyberware.ValueMember = "Value";
+            lstCyberware.DisplayMember = "Name";
         }
 
         private void lstCyberware_SelectedIndexChanged(object sender, EventArgs e)
@@ -103,9 +105,9 @@ namespace Chummer
             XmlNode xmlSuite = null;
             string strGrade;
             Grade objGrade = null;
-            if (!string.IsNullOrEmpty(lstCyberware.Text))
+            if (strSelectedSuite != null)
             {
-                xmlSuite = _objXmlDocument.SelectSingleNode("/chummer/suites/suite[id = \"" + strSelectedSuite + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
+                xmlSuite = _objXmlDocument.SelectSingleNode("/chummer/suites/suite[id = \"" + strSelectedSuite + "\"]");
                 string strSuiteGradeEntry = xmlSuite?["grade"]?.InnerText;
                 if (!string.IsNullOrEmpty(strSuiteGradeEntry))
                 {
@@ -237,7 +239,7 @@ namespace Chummer
                         List<Weapon> lstWeapons = new List<Weapon>();
                         List<Vehicle> lstVehicles = new List<Vehicle>();
                         Cyberware objCyberware = new Cyberware(_objCharacter);
-                        objCyberware.Create(objXmlCyberware, _objCharacter, objGrade, _eSource, intRating, lstWeapons, lstVehicles, false, false);
+                        objCyberware.Create(objXmlCyberware, objGrade, _eSource, intRating, lstWeapons, lstVehicles, false, false);
                         objCyberware.Suite = true;
 
                         lstChildren.Add(objCyberware);

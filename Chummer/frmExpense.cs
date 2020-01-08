@@ -47,7 +47,7 @@ namespace Chummer
         {
             if (KarmaNuyenExchange && _objMode == ExpenseType.Nuyen && nudAmount.Value % _objCharacterOptions.NuyenPerBP != 0)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_KarmaNuyenExchange", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_KarmaNuyenExchange", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_KarmaNuyenExchange", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_KarmaNuyenExchange", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
             {
@@ -159,7 +159,7 @@ namespace Chummer
 
         private void chkKarmaNuyenExchange_CheckedChanged(object sender, EventArgs e)
         {
-            if (chkKarmaNuyenExchange.Checked)
+            if (chkKarmaNuyenExchange.Checked && !string.IsNullOrWhiteSpace(KarmaNuyenExchangeString))
             {
                 txtDescription.Text = KarmaNuyenExchangeString;
             }
@@ -177,6 +177,7 @@ namespace Chummer
 
         private void frmExpanse_Load(object sender, EventArgs e)
         {
+            chkKarmaNuyenExchange.Visible = !string.IsNullOrWhiteSpace(KarmaNuyenExchangeString);
             chkKarmaNuyenExchange.Text = KarmaNuyenExchangeString;
         }
     }

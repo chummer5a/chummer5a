@@ -16,6 +16,8 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -23,52 +25,55 @@ namespace Chummer.UI.Table
 {
     public partial class TableRow : UserControl
     {
-
-        private int _index;
-        private bool _selected = false;
+        private int _intIndex;
+        private bool _blnSelected;
 
         public TableRow()
         {
             InitializeComponent();
             Layout += (sender, evt) => DoLayout();
+        }
+
+        private void OnLoad(object sender, EventArgs eventArgs)
+        {
             Update(Index, Selected);
         }
 
         protected virtual void DoLayout() {
         }
 
-        protected virtual void Update(int index, bool selected)
+        protected virtual void Update(int intIndex, bool blnSelected)
         {
-            if (selected)
+            if (blnSelected)
             {
                 BackColor = SystemColors.Highlight;
             }
             else
             {
-                BackColor = (index % 2 == 0) ? Color.White : Color.LightGray;
+                BackColor = (intIndex & 1 ) == 0 ? Color.White : Color.LightGray;
             }
         }
 
         public int Index
         {
-            get => _index;
+            get => _intIndex;
             set
             {
-                if (_index != value)
+                if (_intIndex != value)
                 {
-                    _index = value;
+                    _intIndex = value;
                     Update(Index, Selected);
                 }
             }
         }
 
         public bool Selected {
-            get => _selected;
+            get => _blnSelected;
             set
             {
-                if (_selected != value)
+                if (_blnSelected != value)
                 {
-                    _selected = value;
+                    _blnSelected = value;
                     Update(Index, Selected);
                 }
             }

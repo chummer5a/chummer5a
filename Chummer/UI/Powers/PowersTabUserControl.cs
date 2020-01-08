@@ -26,8 +26,6 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Backend.Equipment;
-using Chummer.Backend.Powers;
-using Chummer.UI.Shared;
 using Chummer.UI.Table;
 
 // ReSharper disable StringCompareToIsCultureSpecific
@@ -37,7 +35,7 @@ namespace Chummer.UI.Powers
     public partial class PowersTabUserControl : UserControl
     {
         // TODO: check, if this can be removed???
-        public event PropertyChangedEventHandler MakeDirtyWithCharacterUpdate; 
+        public event PropertyChangedEventHandler MakeDirtyWithCharacterUpdate;
         
         private TableView<Power> _table;
 
@@ -82,7 +80,7 @@ namespace Chummer.UI.Powers
             _objCharacter.Powers.ListChanged += (sender, e) => {
                 if (e.ListChangedType == ListChangedType.ItemChanged)
                 {
-                    string propertyName = e.PropertyDescriptor.Name;
+                    string propertyName = e.PropertyDescriptor?.Name;
                     if (propertyName == nameof(Power.FreeLevels) || propertyName == nameof(Power.TotalRating))
                     {
                         // recalculation of power points on rating/free levels change
@@ -210,6 +208,8 @@ namespace Chummer.UI.Powers
                 if (objPower.Create(objXmlPower))
                 {
                     _objCharacter.Powers.Add(objPower);
+
+                    MakeDirtyWithCharacterUpdate?.Invoke(null, null);
                 }
             }
             while (blnAddAgain);
@@ -255,18 +255,18 @@ namespace Chummer.UI.Powers
 
         private void InitializeTable()
         {
-            _table = new TableView<Power>()
+            _table = new TableView<Power>
             {
-                Location = new Point(3, 3)
+                Location = new Point(3, 3),
+                ToolTip = _tipTooltip
             };
-            _table.ToolTip = _tipTooltip;
             // create columns
             TableColumn<Power> nameColumn = new TableColumn<Power>(() => new TextTableCell())
             {
                 Text = "Power",
                 Extractor = (power => power.DisplayName),
                 Tag = "String_Power",
-                Sorter = (name1, name2) => string.Compare((string)name1, (string)name2)
+                Sorter = (name1, name2) => string.Compare((string)name1, (string)name2, GlobalOptions.CultureInfo, CompareOptions.Ordinal)
             };
             nameColumn.AddDependency(nameof(Power.DisplayName));
 
@@ -275,35 +275,62 @@ namespace Chummer.UI.Powers
                 Text = "Action",
                 Extractor = (power => power.DisplayAction),
                 Tag = "ColumnHeader_Action",
-                Sorter = (action1, action2) => string.Compare((string)action1, (string)action2)
+                Sorter = (action1, action2) => string.Compare((string)action1, (string)action2, GlobalOptions.CultureInfo, CompareOptions.Ordinal)
             };
             actionColumn.AddDependency(nameof(Power.DisplayAction));
 
             TableColumn<Power> ratingColumn = new TableColumn<Power>(() => new SpinnerTableCell<Power>(_table)
             {
                 EnabledExtractor = (p => p.LevelsEnabled),
-                MinExtractor = (p => p.FreeLevels),
-                MaxExtractor = (p => p.TotalMaximumLevels),
+                MaxExtractor = (p => Math.Max(p.TotalMaximumLevels - p.FreeLevels, 0)),
                 ValueUpdater = (p, newRating) =>
                 {
-                    int delta = ((int)newRating) - p.TotalRating;
+                    int delta = ((int)newRating) - p.Rating;
                     if (delta != 0)
                     {
                         p.Rating += delta;
                     }
 
                 },
-                ValueGetter = (p => p.TotalRating),
+                MinExtractor = (p => 0),
+                ValueGetter = (p => p.Rating),
             })
             {
                 Text = "Rating",
                 Tag = "String_Rating",
-                Sorter = (o1, o2) => ((Power)o1).Rating - ((Power)o2).Rating
+                
             };
+            ratingColumn.Sorter = (o1, o2) =>
+            {
+                if ((o1 is Power) && (o2 is Power))
+                    return ((Power) o1).Rating - ((Power) o2).Rating;
+                string msg = "Can't sort an Object of Type " + o1.GetType() + " against another one of Type " +
+                             o2.GetType() + " in the ratingColumn." + Environment.NewLine;
+                msg += "Both objects SHOULD be of the type \"Power\".";
+                throw new ArgumentException(msg, nameof(o1));
+            };
+
             ratingColumn.AddDependency(nameof(Power.LevelsEnabled));
             ratingColumn.AddDependency(nameof(Power.FreeLevels));
             ratingColumn.AddDependency(nameof(Power.TotalMaximumLevels));
             ratingColumn.AddDependency(nameof(Power.TotalRating));
+            TableColumn<Power> totalRatingColumn = new TableColumn<Power>(() => new TextTableCell())
+            {
+                Text = "Total Rating",
+                Extractor = (power => power.TotalRating),
+                Tag = "String_TotalRating",
+                
+            };
+            totalRatingColumn.Sorter = (o1, o2) =>
+            {
+                if ((o1 is Power) && (o2 is Power))
+                    return ((Power) o1).TotalRating - ((Power) o2).TotalRating;
+                string msg = "Can't sort an Object of Type " + o1.GetType() + " against another one of Type " +
+                             o2.GetType() + " in the totalRatingColumn." + Environment.NewLine;
+                msg += "Both objects SHOULD be of the type \"Power\".";
+                throw new ArgumentException(msg, nameof(o1));
+            };
+            totalRatingColumn.AddDependency(nameof(Power.TotalRating));
 
             TableColumn<Power> powerPointsColumn = new TableColumn<Power>(() => new TextTableCell())
             {
@@ -314,6 +341,15 @@ namespace Chummer.UI.Powers
             };
             powerPointsColumn.AddDependency(nameof(Power.DisplayPoints));
             powerPointsColumn.AddDependency(nameof(Power.ToolTip));
+
+            TableColumn<Power> sourceColumn = new TableColumn<Power>(() => new TextTableCell())
+            {
+                Text = "Source",
+                Extractor = (power => power.SourceDetail),
+                Tag = "Label_Source",
+                ToolTipExtractor = (item => item.SourceDetail.LanguageBookTooltip)
+            };
+            powerPointsColumn.AddDependency(nameof(Power.Source));
 
             TableColumn<Power> adeptWayColumn = new TableColumn<Power>(() => new CheckBoxTableCell<Power>()
             {
@@ -346,8 +382,8 @@ namespace Chummer.UI.Powers
 
             TableColumn<Power> noteColumn = new TableColumn<Power>(() => new ButtonTableCell<Power>(new PictureBox()
             {
-                Image = Chummer.Properties.Resources.note_edit,
-                Size = GetImageSize(Chummer.Properties.Resources.note_edit),
+                Image = Properties.Resources.note_edit,
+                Size = GetImageSize(Properties.Resources.note_edit),
             })
             {
                 ClickHandler = p => {
@@ -403,10 +439,12 @@ namespace Chummer.UI.Powers
             _table.Columns.Add(nameColumn);
             _table.Columns.Add(actionColumn);
             _table.Columns.Add(ratingColumn);
+            _table.Columns.Add(totalRatingColumn);
             _table.Columns.Add(powerPointsColumn);
             _table.Columns.Add(adeptWayColumn);
             //_table.Columns.Add(geasColumn);
             _table.Columns.Add(noteColumn);
+            _table.Columns.Add(sourceColumn);
             _table.Columns.Add(deleteColumn);
             LanguageManager.TranslateWinForm(GlobalOptions.Language, _table);
 

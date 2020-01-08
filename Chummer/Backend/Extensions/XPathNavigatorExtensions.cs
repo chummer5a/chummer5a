@@ -79,10 +79,20 @@ namespace Chummer
                     blnOperationChildNodeResult =
                         ProcessFilterOperationNode(xmlParentNode, xmlOperationChildNode, true) != blnInvert;
                 }
+                else if (strNodeName == "NOR")
+                {
+                    blnOperationChildNodeResult =
+                        ProcessFilterOperationNode(xmlParentNode, xmlOperationChildNode, true) == blnInvert;
+                }
                 else if (strNodeName == "AND")
                 {
                     blnOperationChildNodeResult =
                         ProcessFilterOperationNode(xmlParentNode, xmlOperationChildNode, false) != blnInvert;
+                }
+                else if (strNodeName == "NAND")
+                {
+                    blnOperationChildNodeResult =
+                        ProcessFilterOperationNode(xmlParentNode, xmlOperationChildNode, false) == blnInvert;
                 }
                 else if (strNodeName == "NONE")
                 {
@@ -325,6 +335,27 @@ namespace Chummer
                 }
             }
             return false;
+        }
+
+        /// <summary>
+        /// Like TryGetField for guids, but taking advantage of guid.TryParse. Allows for returning false if the guid is Empty.
+        /// </summary>
+        /// <param name="node">XPathNavigator node of the object.</param>
+        /// <param name="field">Field name of the InnerXML element we're looking for.</param>
+        /// <param name="read">Guid that will be returned.</param>
+        /// <param name="falseIfEmpty">Defaults to true. If false, will return an empty Guid if the returned Guid field is empty.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryGetGuidFieldQuickly(this XPathNavigator node, string field, ref Guid read, bool falseIfEmpty = true)
+        {
+            XPathNavigator objField = node.SelectSingleNode(field);
+            if (objField == null) return false;
+            if (!Guid.TryParse(objField.Value, out Guid fltTmp)) return false;
+            if (fltTmp == Guid.Empty && falseIfEmpty)
+            {
+                return false;
+            }
+            read = fltTmp;
+            return true;
         }
 
         /// <summary>

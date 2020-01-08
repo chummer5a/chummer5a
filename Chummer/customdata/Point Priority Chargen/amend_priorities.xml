@@ -1,0 +1,2064 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<chummer>
+  <priorities amendoperation="replace">
+    <!-- Region Standard -->
+    <priority>
+      <id>55bc32fb-e097-4234-bdd5-a70e4f043b3d</id>
+      <name>A - Any metatype</name>
+      <value>A,4</value>
+      <category>Heritage</category>
+      <gameplayoption>Standard</gameplayoption>
+      <metatypes>
+        <!-- TODO: Add AIs -->
+        <metatype>
+          <name>Human</name>
+          <value>0</value>
+          <karma>-235</karma>
+          <metavariants>
+            <metavariant>
+              <name>Nartaki</name>
+              <value>0</value>
+              <karma>-230</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+        <metatype>
+          <name>Elf</name>
+          <value>0</value>
+          <karma>-160</karma>
+          <metavariants>
+            <metavariant>
+              <name>Dryad</name>
+              <value>0</value>
+              <karma>-155</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nocturna</name>
+              <value>0</value>
+              <karma>-160</karma>
+            </metavariant>
+            <metavariant>
+              <name>Wakyambi</name>
+              <value>0</value>
+              <karma>-160</karma>
+            </metavariant>
+            <metavariant>
+              <name>Xapiri Thëpë</name>
+              <value>0</value>
+              <karma>-160</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+        <metatype>
+          <name>Dwarf</name>
+          <value>0</value>
+          <karma>-160</karma>
+          <metavariants>
+            <metavariant>
+              <name>Gnome</name>
+              <value>0</value>
+              <karma>-160</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hanuman</name>
+              <value>0</value>
+              <karma>-160</karma>
+            </metavariant>
+            <metavariant>
+              <name>Koborokuru</name>
+              <value>0</value>
+              <karma>-160</karma>
+            </metavariant>
+            <metavariant>
+              <name>Menehune</name>
+              <value>0</value>
+              <karma>-160</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+        <metatype>
+          <name>Ork</name>
+          <value>0</value>
+          <karma>-165</karma>
+          <metavariants>
+            <metavariant>
+              <name>Hobgoblin</name>
+              <value>0</value>
+              <karma>-165</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ogre</name>
+              <value>0</value>
+              <karma>-150</karma>
+            </metavariant>
+            <metavariant>
+              <name>Oni</name>
+              <value>0</value>
+              <karma>-165</karma>
+            </metavariant>
+            <metavariant>
+              <name>Satyr</name>
+              <value>0</value>
+              <karma>-165</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+        <metatype>
+          <name>Troll</name>
+          <value>0</value>
+          <karma>-95</karma>
+          <metavariants>
+            <metavariant>
+              <name>Cyclops</name>
+              <value>0</value>
+              <karma>-65</karma>
+            </metavariant>
+            <metavariant>
+              <name>Fomorian</name>
+              <value>0</value>
+              <karma>-95</karma>
+            </metavariant>
+            <metavariant>
+              <name>Giant</name>
+              <value>0</value>
+              <karma>-95</karma>
+            </metavariant>
+            <metavariant>
+              <name>Minotaur</name>
+              <value>0</value>
+              <karma>-45</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+        <metatype>
+          <name>Centaur</name>
+          <value>0</value>
+          <karma>-140</karma>
+        </metatype>
+        <metatype>
+          <name>Naga</name>
+          <value>0</value>
+          <karma>-80</karma>
+        </metatype>
+        <metatype>
+          <name>Pixie</name>
+          <value>0</value>
+          <karma>0</karma>
+        </metatype>
+        <metatype>
+          <name>Sasquatch</name>
+          <value>0</value>
+          <karma>-30</karma>
+          <metavariants />
+        </metatype>
+      </metatypes>
+    </priority>
+    <priority>
+      <id>f9aa712d-7140-4ddd-9e88-4a06e8bae222</id>
+      <name>B - Any metatype</name>
+      <value>B,3</value>
+      <category>Heritage</category>
+      <gameplayoption>Standard</gameplayoption>
+      <metatypes>
+        <!-- TODO: Re-add AIs -->
+        <metatype>
+          <name>Human</name>
+          <value>0</value>
+          <karma>-140</karma>
+          <metavariants>
+            <metavariant>
+              <name>Nartaki</name>
+              <value>0</value>
+              <karma>-135</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+        <metatype>
+          <name>Elf</name>
+          <value>0</value>
+          <karma>-65</karma>
+          <metavariants>
+            <metavariant>
+              <name>Dryad</name>
+              <value>0</value>
+              <karma>-60</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nocturna</name>
+              <value>0</value>
+              <karma>-65</karma>
+            </metavariant>
+            <metavariant>
+              <name>Wakyambi</name>
+              <value>0</value>
+              <karma>-65</karma>
+            </metavariant>
+            <metavariant>
+              <name>Xapiri Thëpë</name>
+              <value>0</value>
+              <karma>-65</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+        <metatype>
+          <name>Dwarf</name>
+          <value>0</value>
+          <karma>-65</karma>
+          <metavariants>
+            <metavariant>
+              <name>Gnome</name>
+              <value>0</value>
+              <karma>-65</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hanuman</name>
+              <value>0</value>
+              <karma>-65</karma>
+            </metavariant>
+            <metavariant>
+              <name>Koborokuru</name>
+              <value>0</value>
+              <karma>-65</karma>
+            </metavariant>
+            <metavariant>
+              <name>Menehune</name>
+              <value>0</value>
+              <karma>-65</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+        <metatype>
+          <name>Ork</name>
+          <value>0</value>
+          <karma>-70</karma>
+          <metavariants>
+            <metavariant>
+              <name>Hobgoblin</name>
+              <value>0</value>
+              <karma>-70</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ogre</name>
+              <value>0</value>
+              <karma>-55</karma>
+            </metavariant>
+            <metavariant>
+              <name>Oni</name>
+              <value>0</value>
+              <karma>-70</karma>
+            </metavariant>
+            <metavariant>
+              <name>Satyr</name>
+              <value>0</value>
+              <karma>-70</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+        <metatype>
+          <name>Troll</name>
+          <value>0</value>
+          <karma>0</karma>
+          <metavariants>
+            <metavariant>
+              <name>Fomorian</name>
+              <value>0</value>
+              <karma>0</karma>
+            </metavariant>
+            <metavariant>
+              <name>Giant</name>
+              <value>0</value>
+              <karma>0</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+        <metatype>
+          <name>Centaur</name>
+          <value>0</value>
+          <karma>-45</karma>
+        </metatype>
+        <metatype>
+          <name>Naga</name>
+          <value>0</value>
+          <karma>15</karma>
+        </metatype>
+      </metatypes>
+    </priority>
+    <priority>
+      <id>988b7ce3-5739-4300-bc21-a6c92b869262</id>
+      <name>C - Human, Dwarf, Elf, or Ork</name>
+      <value>C,2</value>
+      <category>Heritage</category>
+      <gameplayoption>Standard</gameplayoption>
+      <metatypes>
+        <!-- TODO: Re-add AIs -->
+        <metatype>
+          <name>Human</name>
+          <value>0</value>
+          <karma>-85</karma>
+          <metavariants>
+            <metavariant>
+              <name>Nartaki</name>
+              <value>0</value>
+              <karma>-80</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+        <metatype>
+          <name>Elf</name>
+          <value>0</value>
+          <karma>-10</karma>
+          <metavariants>
+            <metavariant>
+              <name>Dryad</name>
+              <value>0</value>
+              <karma>-5</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nocturna</name>
+              <value>0</value>
+              <karma>-10</karma>
+            </metavariant>
+            <metavariant>
+              <name>Wakyambi</name>
+              <value>0</value>
+              <karma>-10</karma>
+            </metavariant>
+            <metavariant>
+              <name>Xapiri Thëpë</name>
+              <value>0</value>
+              <karma>-10</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+        <metatype>
+          <name>Dwarf</name>
+          <value>0</value>
+          <karma>-10</karma>
+          <metavariants>
+            <metavariant>
+              <name>Gnome</name>
+              <value>0</value>
+              <karma>-10</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hanuman</name>
+              <value>0</value>
+              <karma>-10</karma>
+            </metavariant>
+            <metavariant>
+              <name>Koborokuru</name>
+              <value>0</value>
+              <karma>-10</karma>
+            </metavariant>
+            <metavariant>
+              <name>Menehune</name>
+              <value>0</value>
+              <karma>-10</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+        <metatype>
+          <name>Ork</name>
+          <value>0</value>
+          <karma>-15</karma>
+          <metavariants>
+            <metavariant>
+              <name>Hobgoblin</name>
+              <value>0</value>
+              <karma>-15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ogre</name>
+              <value>0</value>
+              <karma>0</karma>
+            </metavariant>
+            <metavariant>
+              <name>Oni</name>
+              <value>0</value>
+              <karma>-15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Satyr</name>
+              <value>0</value>
+              <karma>-15</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+        <metatype>
+          <name>Centaur</name>
+          <value>0</value>
+          <karma>10</karma>
+        </metatype>
+      </metatypes>
+    </priority>
+    <priority>
+      <id>255da2ba-8d21-4a73-9f81-37156901db72</id>
+      <name>D - Human, Dwarf, Elf, or Ork</name>
+      <value>D,1</value>
+      <category>Heritage</category>
+      <gameplayoption>Standard</gameplayoption>
+      <metatypes>
+        <metatype>
+          <name>Human</name>
+          <value>0</value>
+          <karma>-50</karma>
+          <metavariants>
+            <metavariant>
+              <name>Nartaki</name>
+              <value>0</value>
+              <karma>-45</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+        <metatype>
+          <name>Elf</name>
+          <value>0</value>
+          <karma>25</karma>
+          <metavariants>
+            <metavariant>
+              <name>Nocturna</name>
+              <value>0</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Wakyambi</name>
+              <value>0</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Xapiri Thëpë</name>
+              <value>0</value>
+              <karma>25</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+        <metatype>
+          <name>Dwarf</name>
+          <value>0</value>
+          <karma>25</karma>
+          <metavariants>
+            <metavariant>
+              <name>Gnome</name>
+              <value>0</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hanuman</name>
+              <value>0</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Koborokuru</name>
+              <value>0</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Menehune</name>
+              <value>0</value>
+              <karma>25</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+        <metatype>
+          <name>Ork</name>
+          <value>0</value>
+          <karma>20</karma>
+          <metavariants>
+            <metavariant>
+              <name>Hobgoblin</name>
+              <value>0</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Oni</name>
+              <value>0</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Satyr</name>
+              <value>0</value>
+              <karma>20</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+      </metatypes>
+    </priority>
+    <priority>
+      <id>91dccab9-c3fc-4868-abf8-1825b70e8a6c</id>
+      <name>E - Human</name>
+      <value>E,0</value>
+      <category>Heritage</category>
+      <gameplayoption>Standard</gameplayoption>
+      <metatypes>
+        <metatype>
+          <name>Human</name>
+          <value>0</value>
+          <karma>-15</karma>
+          <metavariants>
+            <metavariant>
+              <name>Nartaki</name>
+              <value>0</value>
+              <karma>-10</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+      </metatypes>
+    </priority>
+    <!-- End Region -->
+    <!-- Region Attributes -->
+    <priority>
+      <id>892eb376-65ca-4967-855e-3f22429588ea</id>
+      <name>A - 24 Attributes</name>
+      <value>A,4</value>
+      <category>Attributes</category>
+      <gameplayoption>Standard</gameplayoption>
+      <attributes>24</attributes>
+    </priority>
+    <priority>
+      <id>479e57af-b772-47eb-924c-366620055dd9</id>
+      <name>B - 19 Attributes</name>
+      <value>B,3</value>
+      <category>Attributes</category>
+      <gameplayoption>Standard</gameplayoption>
+      <attributes>19</attributes>
+    </priority>
+    <priority>
+      <id>87b22c7b-d756-4224-97c7-6a7053111ba7</id>
+      <name>C - 16 Attributes</name>
+      <value>C,2</value>
+      <category>Attributes</category>
+      <gameplayoption>Standard</gameplayoption>
+      <attributes>16</attributes>
+    </priority>
+    <priority>
+      <id>0ce12d18-40ea-4378-962a-64c2ab5dc769</id>
+      <name>D - 14 Attributes</name>
+      <value>D,1</value>
+      <category>Attributes</category>
+      <gameplayoption>Standard</gameplayoption>
+      <attributes>14</attributes>
+    </priority>
+    <priority>
+      <id>235ee7a1-1f19-4511-a7a2-67b61194f301</id>
+      <name>E - 12 Attributes</name>
+      <value>E,0</value>
+      <category>Attributes</category>
+      <gameplayoption>Standard</gameplayoption>
+      <attributes>12</attributes>
+    </priority>
+    <!-- End Region -->
+    <!-- Region Talents -->
+    <priority>
+      <id>9d58a295-7c59-4d3f-8001-a5565da6b836</id>
+      <name>A - 11 Special Attribute Points</name>
+      <value>A,4</value>
+      <category>Talent</category>
+      <gameplayoption>Standard</gameplayoption>
+      <talents>
+        <talent>
+          <name>11 Special Attribute Points</name>
+          <value>Special</value>
+          <specialattribpoints>11</specialattribpoints>
+        </talent>
+      </talents>
+    </priority>
+    <priority>
+      <id>774fd89a-ecea-4f5f-ad2b-c4476ca46f70</id>
+      <name>B - 7 Special Attribute Points</name>
+      <value>B,3</value>
+      <category>Talent</category>
+      <gameplayoption>Standard</gameplayoption>
+      <talents>
+        <talent>
+          <name>7 Special Attribute Points</name>
+          <value>Special</value>
+          <specialattribpoints>7</specialattribpoints>
+        </talent>
+      </talents>
+    </priority>
+    <priority>
+      <id>aae3a140-d306-4811-a9d2-874140600150</id>
+      <name>C - 5 Special Attribute Points</name>
+      <value>C,2</value>
+      <category>Talent</category>
+      <gameplayoption>Standard</gameplayoption>
+      <talents>
+        <talent>
+          <name>5 Special Attribute Points</name>
+          <value>Special</value>
+          <specialattribpoints>5</specialattribpoints>
+        </talent>
+      </talents>
+    </priority>
+    <priority>
+      <id>b97be625-a732-4c3c-80e4-06c4d88bac91</id>
+      <name>D - 3 Special Attribute Points</name>
+      <value>D,1</value>
+      <category>Talent</category>
+      <gameplayoption>Standard</gameplayoption>
+      <talents>
+        <talent>
+          <name>3 Special Attribute Points</name>
+          <value>Special</value>
+          <specialattribpoints>3</specialattribpoints>
+        </talent>
+      </talents>
+    </priority>
+    <priority>
+      <id>9753a254-94b0-46e8-83f4-e7627bdb8571</id>
+      <name>E - 1 Special Attribute Point</name>
+      <value>E,0</value>
+      <category>Talent</category>
+      <gameplayoption>Standard</gameplayoption>
+      <talents>
+        <talent>
+          <name>1 Special Attribute Point</name>
+          <value>Special</value>
+          <specialattribpoints>1</specialattribpoints>
+        </talent>
+      </talents>
+    </priority>
+    <!-- End Region -->
+    <!-- Region Skills -->
+    <priority>
+      <id>45a5f7b4-c152-4e05-839f-1b3d14e56058</id>
+      <name>A - 46 Skill Points</name>
+      <value>A,4</value>
+      <category>Skills</category>
+      <gameplayoption>Standard</gameplayoption>
+      <skills>46</skills>
+      <skillgroups>0</skillgroups>
+    </priority>
+    <priority>
+      <id>bde37645-6789-4401-bcec-4c0e61c7fe17</id>
+      <name>B - 32 Skill Points</name>
+      <value>B,3</value>
+      <category>Skills</category>
+      <gameplayoption>Standard</gameplayoption>
+      <skills>32</skills>
+      <skillgroups>0</skillgroups>
+    </priority>
+    <priority>
+      <id>57c52154-489e-4e8a-b885-13b341700deb</id>
+      <name>C - 24 Skill Points</name>
+      <value>C,2</value>
+      <category>Skills</category>
+      <gameplayoption>Standard</gameplayoption>
+      <skills>24</skills>
+      <skillgroups>0</skillgroups>
+    </priority>
+    <priority>
+      <id>61e1758f-e4ca-4e53-ad45-bb88a0e5ac04</id>
+      <name>D - 18 Skill Points</name>
+      <value>D,1</value>
+      <category>Skills</category>
+      <gameplayoption>Standard</gameplayoption>
+      <skills>18</skills>
+      <skillgroups>0</skillgroups>
+    </priority>
+    <priority>
+      <id>b1ca5551-46a4-4ef0-9d07-c33ae0abbcd1</id>
+      <name>E - 12 Skill Points</name>
+      <value>E,0</value>
+      <category>Skills</category>
+      <gameplayoption>Standard</gameplayoption>
+      <skills>12</skills>
+      <skillgroups>0</skillgroups>
+    </priority>
+    <!-- End Region -->
+    <!-- Region Resources -->
+    <priority>
+      <id>ee17af88-5564-4009-b0a1-4c8632bffaf4</id>
+      <name>A - 450,000 ¥</name>
+      <value>A,4</value>
+      <category>Resources</category>
+      <gameplayoption>Standard</gameplayoption>
+      <resources>450000</resources>
+    </priority>
+    <priority>
+      <id>ddb56487-f6ef-480d-9812-cf6077111c2b</id>
+      <name>B - 260,000 ¥</name>
+      <value>B,3</value>
+      <category>Resources</category>
+      <gameplayoption>Standard</gameplayoption>
+      <resources>260000</resources>
+    </priority>
+    <priority>
+      <id>be69802a-5379-457b-8084-87b22d2e9ea6</id>
+      <name>C - 150,000 ¥</name>
+      <value>C,2</value>
+      <category>Resources</category>
+      <gameplayoption>Standard</gameplayoption>
+      <resources>150000</resources>
+    </priority>
+    <priority>
+      <id>b977475b-9728-45a0-9873-a77bb036fb99</id>
+      <name>D - 80,000 ¥</name>
+      <value>D,1</value>
+      <category>Resources</category>
+      <gameplayoption>Standard</gameplayoption>
+      <resources>80000</resources>
+    </priority>
+    <priority>
+      <id>dd4eb137-e218-4d92-9ac2-db4d6bad4704</id>
+      <name>E - 10,000 ¥</name>
+      <value>E,0</value>
+      <category>Resources</category>
+      <gameplayoption>Standard</gameplayoption>
+      <resources>10000</resources>
+    </priority>
+    <!-- End Region -->
+    <!-- End Region -->
+    <!-- Region Street Scum -->
+    <priority>
+      <id>26664120-e7c7-4f03-b11d-9d0d0563746a</id>
+      <name>A - Any metatype</name>
+      <value>A,4</value>
+      <category>Heritage</category>
+      <gameplayoption>Street Scum</gameplayoption>
+      <metatypes>
+        <!-- TODO: Add AIs -->
+        <metatype>
+          <name>Human</name>
+          <value>0</value>
+          <karma>-175</karma>
+          <metavariants>
+            <metavariant>
+              <name>Nartaki</name>
+              <value>0</value>
+              <karma>-170</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+        <metatype>
+          <name>Elf</name>
+          <value>0</value>
+          <karma>-100</karma>
+          <metavariants>
+            <metavariant>
+              <name>Dryad</name>
+              <value>0</value>
+              <karma>-95</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nocturna</name>
+              <value>0</value>
+              <karma>-100</karma>
+            </metavariant>
+            <metavariant>
+              <name>Wakyambi</name>
+              <value>0</value>
+              <karma>-100</karma>
+            </metavariant>
+            <metavariant>
+              <name>Xapiri Thëpë</name>
+              <value>0</value>
+              <karma>-100</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+        <metatype>
+          <name>Dwarf</name>
+          <value>0</value>
+          <karma>-100</karma>
+          <metavariants>
+            <metavariant>
+              <name>Gnome</name>
+              <value>0</value>
+              <karma>-100</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hanuman</name>
+              <value>0</value>
+              <karma>-100</karma>
+            </metavariant>
+            <metavariant>
+              <name>Koborokuru</name>
+              <value>0</value>
+              <karma>-100</karma>
+            </metavariant>
+            <metavariant>
+              <name>Menehune</name>
+              <value>0</value>
+              <karma>-100</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+        <metatype>
+          <name>Ork</name>
+          <value>0</value>
+          <karma>-105</karma>
+          <metavariants>
+            <metavariant>
+              <name>Hobgoblin</name>
+              <value>0</value>
+              <karma>-105</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ogre</name>
+              <value>0</value>
+              <karma>-90</karma>
+            </metavariant>
+            <metavariant>
+              <name>Oni</name>
+              <value>0</value>
+              <karma>-105</karma>
+            </metavariant>
+            <metavariant>
+              <name>Satyr</name>
+              <value>0</value>
+              <karma>-105</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+        <metatype>
+          <name>Troll</name>
+          <value>0</value>
+          <karma>-35</karma>
+          <metavariants>
+            <metavariant>
+              <name>Cyclops</name>
+              <value>0</value>
+              <karma>-5</karma>
+            </metavariant>
+            <metavariant>
+              <name>Fomorian</name>
+              <value>0</value>
+              <karma>-35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Giant</name>
+              <value>0</value>
+              <karma>-35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Minotaur</name>
+              <value>0</value>
+              <karma>15</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+        <metatype>
+          <name>Centaur</name>
+          <value>0</value>
+          <karma>-80</karma>
+        </metatype>
+        <metatype>
+          <name>Naga</name>
+          <value>0</value>
+          <karma>-20</karma>
+        </metatype>
+      </metatypes>
+    </priority>
+    <priority>
+      <id>fa619160-156b-4788-a49b-d7c683cdd136</id>
+      <name>B - Human, Dwarf, Elf, or Ork</name>
+      <value>B,3</value>
+      <category>Heritage</category>
+      <gameplayoption>Street Scum</gameplayoption>
+      <metatypes>
+        <!-- TODO: Re-add AIs -->
+        <metatype>
+          <name>Human</name>
+          <value>0</value>
+          <karma>-100</karma>
+          <metavariants>
+            <metavariant>
+              <name>Nartaki</name>
+              <value>0</value>
+              <karma>-95</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+        <metatype>
+          <name>Elf</name>
+          <value>0</value>
+          <karma>-25</karma>
+          <metavariants>
+            <metavariant>
+              <name>Dryad</name>
+              <value>0</value>
+              <karma>-20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nocturna</name>
+              <value>0</value>
+              <karma>-25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Wakyambi</name>
+              <value>0</value>
+              <karma>-25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Xapiri Thëpë</name>
+              <value>0</value>
+              <karma>-25</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+        <metatype>
+          <name>Dwarf</name>
+          <value>0</value>
+          <karma>-25</karma>
+          <metavariants>
+            <metavariant>
+              <name>Gnome</name>
+              <value>0</value>
+              <karma>-25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hanuman</name>
+              <value>0</value>
+              <karma>-25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Koborokuru</name>
+              <value>0</value>
+              <karma>-25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Menehune</name>
+              <value>0</value>
+              <karma>-25</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+        <metatype>
+          <name>Ork</name>
+          <value>0</value>
+          <karma>-30</karma>
+          <metavariants>
+            <metavariant>
+              <name>Hobgoblin</name>
+              <value>0</value>
+              <karma>-30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ogre</name>
+              <value>0</value>
+              <karma>-15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Oni</name>
+              <value>0</value>
+              <karma>-30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Satyr</name>
+              <value>0</value>
+              <karma>-30</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+        <metatype>
+          <name>Centaur</name>
+          <value>0</value>
+          <karma>-5</karma>
+        </metatype>
+      </metatypes>
+    </priority>
+    <priority>
+      <id>3ca9be20-7048-4ca7-b1a4-99cccac5c40c</id>
+      <name>C - Human, Dwarf, Elf, or Ork</name>
+      <value>C,2</value>
+      <category>Heritage</category>
+      <gameplayoption>Street Scum</gameplayoption>
+      <metatypes>
+        <metatype>
+          <name>Human</name>
+          <value>0</value>
+          <karma>-60</karma>
+          <metavariants>
+            <metavariant>
+              <name>Nartaki</name>
+              <value>0</value>
+              <karma>-55</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+        <metatype>
+          <name>Elf</name>
+          <value>0</value>
+          <karma>15</karma>
+          <metavariants>
+            <metavariant>
+              <name>Dryad</name>
+              <value>0</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nocturna</name>
+              <value>0</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Wakyambi</name>
+              <value>0</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Xapiri Thëpë</name>
+              <value>0</value>
+              <karma>15</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+        <metatype>
+          <name>Dwarf</name>
+          <value>0</value>
+          <karma>15</karma>
+          <metavariants>
+            <metavariant>
+              <name>Gnome</name>
+              <value>0</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hanuman</name>
+              <value>0</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Koborokuru</name>
+              <value>0</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Menehune</name>
+              <value>0</value>
+              <karma>15</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+        <metatype>
+          <name>Ork</name>
+          <value>0</value>
+          <karma>10</karma>
+          <metavariants>
+            <metavariant>
+              <name>Hobgoblin</name>
+              <value>0</value>
+              <karma>10</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ogre</name>
+              <value>0</value>
+              <karma>25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Oni</name>
+              <value>0</value>
+              <karma>10</karma>
+            </metavariant>
+            <metavariant>
+              <name>Satyr</name>
+              <value>0</value>
+              <karma>10</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+      </metatypes>
+    </priority>
+    <priority>
+      <id>df13adae-8331-474f-9ad0-e66f36cc16db</id>
+      <name>D - Human</name>
+      <value>D,1</value>
+      <category>Heritage</category>
+      <gameplayoption>Street Scum</gameplayoption>
+      <metatypes>
+        <metatype>
+          <name>Human</name>
+          <value>0</value>
+          <karma>-35</karma>
+          <metavariants>
+            <metavariant>
+              <name>Nartaki</name>
+              <value>0</value>
+              <karma>-30</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+      </metatypes>
+    </priority>
+    <priority>
+      <id>ff2ad15d-f37f-44bc-9d33-7854cef719cc</id>
+      <name>E - Human</name>
+      <value>E,0</value>
+      <category>Heritage</category>
+      <gameplayoption>Street Scum</gameplayoption>
+      <metatypes>
+        <metatype>
+          <name>Human</name>
+          <value>0</value>
+          <karma>-10</karma>
+          <metavariants>
+            <metavariant>
+              <name>Nartaki</name>
+              <value>0</value>
+              <karma>-5</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+      </metatypes>
+    </priority>
+    <!-- End Region -->
+    <!-- Region Attributes -->
+    <priority>
+      <id>1c4a7955-1ae1-4a5b-9ed4-5ab8525d13b0</id>
+      <name>A - 19 Attributes</name>
+      <value>A,4</value>
+      <category>Attributes</category>
+      <gameplayoption>Street Scum</gameplayoption>
+      <attributes>19</attributes>
+    </priority>
+    <priority>
+      <id>521c1f60-f382-479e-af3b-a3eda5201f22</id>
+      <name>B - 16 Attributes</name>
+      <value>B,3</value>
+      <category>Attributes</category>
+      <gameplayoption>Street Scum</gameplayoption>
+      <attributes>16</attributes>
+    </priority>
+    <priority>
+      <id>0a224d86-d355-4cd6-8e4e-b94e31f97c4b</id>
+      <name>C - 13 Attributes</name>
+      <value>C,2</value>
+      <category>Attributes</category>
+      <gameplayoption>Street Scum</gameplayoption>
+      <attributes>13</attributes>
+    </priority>
+    <priority>
+      <id>984600d8-5b2f-437c-86eb-693a5bbff030</id>
+      <name>D - 12 Attributes</name>
+      <value>D,1</value>
+      <category>Attributes</category>
+      <gameplayoption>Street Scum</gameplayoption>
+      <attributes>12</attributes>
+    </priority>
+    <priority>
+      <id>f6a36071-41ab-4f8e-884d-3cee92d8f181</id>
+      <name>E - 11 Attributes</name>
+      <value>E,0</value>
+      <category>Attributes</category>
+      <gameplayoption>Street Scum</gameplayoption>
+      <attributes>11</attributes>
+    </priority>
+    <!-- End Region -->
+    <!-- Region Talents -->
+    <priority>
+      <id>d5d04dc3-4d82-48ba-9648-48176c5f01cd</id>
+      <name>A - 8 Special Attribute Points</name>
+      <value>A,4</value>
+      <category>Talent</category>
+      <gameplayoption>Street Scum</gameplayoption>
+      <talents>
+        <talent>
+          <name>8 Special Attribute Points</name>
+          <value>Special</value>
+          <specialattribpoints>8</specialattribpoints>
+        </talent>
+      </talents>
+    </priority>
+    <priority>
+      <id>725c0ef2-ae4a-432b-960a-71b46a247d35</id>
+      <name>B - 5 Special Attribute Points</name>
+      <value>B,3</value>
+      <category>Talent</category>
+      <gameplayoption>Street Scum</gameplayoption>
+      <talents>
+        <talent>
+          <name>5 Special Attribute Points</name>
+          <value>Special</value>
+          <specialattribpoints>5</specialattribpoints>
+        </talent>
+      </talents>
+    </priority>
+    <priority>
+      <id>857d7702-bb51-4eaa-ba28-d1827a5a9e84</id>
+      <name>C - 4 Special Attribute Points</name>
+      <value>C,2</value>
+      <category>Talent</category>
+      <gameplayoption>Street Scum</gameplayoption>
+      <talents>
+        <talent>
+          <name>4 Special Attribute Points</name>
+          <value>Special</value>
+          <specialattribpoints>4</specialattribpoints>
+        </talent>
+      </talents>
+    </priority>
+    <priority>
+      <id>62bf1ea4-6ba6-4c5e-8be1-2f3751329962</id>
+      <name>D - 2 Special Attribute Points</name>
+      <value>D,1</value>
+      <category>Talent</category>
+      <gameplayoption>Street Scum</gameplayoption>
+      <talents>
+        <talent>
+          <name>2 Special Attribute Points</name>
+          <value>Special</value>
+          <specialattribpoints>2</specialattribpoints>
+        </talent>
+      </talents>
+    </priority>
+    <priority>
+      <id>f3479d24-e989-41af-9748-2a61eb6a6ebf</id>
+      <name>E - 0 Special Attribute Points</name>
+      <value>E,0</value>
+      <category>Talent</category>
+      <gameplayoption>Street Scum</gameplayoption>
+      <talents>
+        <talent>
+          <name>0 Special Attribute Points</name>
+          <value>Special</value>
+          <specialattribpoints>0</specialattribpoints>
+        </talent>
+      </talents>
+    </priority>
+    <!-- End Region -->
+    <!-- Region Skills -->
+    <priority>
+      <id>2af70669-1c3e-49ff-a1c7-f93ee9907fd4</id>
+      <name>A - 32 Skill Points</name>
+      <value>A,4</value>
+      <category>Skills</category>
+      <gameplayoption>Street Scum</gameplayoption>
+      <skills>32</skills>
+      <skillgroups>0</skillgroups>
+    </priority>
+    <priority>
+      <id>6850bc90-1c9a-4ba8-9499-0afbc96c49c6</id>
+      <name>B - 22 Skill Points</name>
+      <value>B,3</value>
+      <category>Skills</category>
+      <gameplayoption>Street Scum</gameplayoption>
+      <skills>22</skills>
+      <skillgroups>0</skillgroups>
+    </priority>
+    <priority>
+      <id>8912219e-fded-4e01-b303-135fd2323d0e</id>
+      <name>C - 17 Skill Points</name>
+      <value>C,2</value>
+      <category>Skills</category>
+      <gameplayoption>Street Scum</gameplayoption>
+      <skills>17</skills>
+      <skillgroups>0</skillgroups>
+    </priority>
+    <priority>
+      <id>fcec747f-7f15-4a9d-8cd8-efad78ad3b42</id>
+      <name>D - 13 Skill Points</name>
+      <value>D,1</value>
+      <category>Skills</category>
+      <gameplayoption>Street Scum</gameplayoption>
+      <skills>13</skills>
+      <skillgroups>0</skillgroups>
+    </priority>
+    <priority>
+      <id>0e4b072d-9c9a-47a0-8b68-f0d162e750fe</id>
+      <name>E - 9 Skill Points</name>
+      <value>E,0</value>
+      <category>Skills</category>
+      <gameplayoption>Street Scum</gameplayoption>
+      <skills>9</skills>
+      <skillgroups>0</skillgroups>
+    </priority>
+    <!-- End Region -->
+    <!-- Region Resources -->
+    <priority>
+      <id>97add4d6-0487-4049-bbd1-33c00a709a86</id>
+      <name>A - 340,000 ¥</name>
+      <value>A,4</value>
+      <category>Resources</category>
+      <gameplayoption>Street Scum</gameplayoption>
+      <resources>340000</resources>
+    </priority>
+    <priority>
+      <id>694d834b-3138-4193-b191-dd103c37fa17</id>
+      <name>B - 190,000 ¥</name>
+      <value>B,3</value>
+      <category>Resources</category>
+      <gameplayoption>Street Scum</gameplayoption>
+      <resources>190000</resources>
+    </priority>
+    <priority>
+      <id>3d1da25b-3559-492a-b557-f5ebe9ec2ddd</id>
+      <name>C - 110,000 ¥</name>
+      <value>C,2</value>
+      <category>Resources</category>
+      <gameplayoption>Street Scum</gameplayoption>
+      <resources>110000</resources>
+    </priority>
+    <priority>
+      <id>ca440e77-6e83-406e-910b-aa76638b6988</id>
+      <name>D - 60,000 ¥</name>
+      <value>D,1</value>
+      <category>Resources</category>
+      <gameplayoption>Street Scum</gameplayoption>
+      <resources>60000</resources>
+    </priority>
+    <priority>
+      <id>769a2e7e-5fb9-4563-87c6-dfb49c2dda65</id>
+      <name>E - 10,000 ¥</name>
+      <value>E,0</value>
+      <category>Resources</category>
+      <gameplayoption>Street Scum</gameplayoption>
+      <resources>10000</resources>
+    </priority>
+    <!-- End Region -->
+    <!-- End Region -->
+    <!-- Region Prime Runner -->
+    <priority>
+      <id>33f40830-4f3c-4f90-b267-112fb628a116</id>
+      <name>A - Any metatype</name>
+      <value>A,4</value>
+      <category>Heritage</category>
+      <gameplayoption>Prime Runner</gameplayoption>
+      <metatypes>
+        <!-- TODO: Add AIs -->
+        <metatype>
+          <name>Human</name>
+          <value>0</value>
+          <karma>-305</karma>
+          <metavariants>
+            <metavariant>
+              <name>Nartaki</name>
+              <value>0</value>
+              <karma>-300</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+        <metatype>
+          <name>Elf</name>
+          <value>0</value>
+          <karma>-230</karma>
+          <metavariants>
+            <metavariant>
+              <name>Dryad</name>
+              <value>0</value>
+              <karma>-225</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nocturna</name>
+              <value>0</value>
+              <karma>-230</karma>
+            </metavariant>
+            <metavariant>
+              <name>Wakyambi</name>
+              <value>0</value>
+              <karma>-230</karma>
+            </metavariant>
+            <metavariant>
+              <name>Xapiri Thëpë</name>
+              <value>0</value>
+              <karma>-230</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+        <metatype>
+          <name>Dwarf</name>
+          <value>0</value>
+          <karma>-230</karma>
+          <metavariants>
+            <metavariant>
+              <name>Gnome</name>
+              <value>0</value>
+              <karma>-230</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hanuman</name>
+              <value>0</value>
+              <karma>-230</karma>
+            </metavariant>
+            <metavariant>
+              <name>Koborokuru</name>
+              <value>0</value>
+              <karma>-230</karma>
+            </metavariant>
+            <metavariant>
+              <name>Menehune</name>
+              <value>0</value>
+              <karma>-230</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+        <metatype>
+          <name>Ork</name>
+          <value>0</value>
+          <karma>-235</karma>
+          <metavariants>
+            <metavariant>
+              <name>Hobgoblin</name>
+              <value>0</value>
+              <karma>-235</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ogre</name>
+              <value>0</value>
+              <karma>-220</karma>
+            </metavariant>
+            <metavariant>
+              <name>Oni</name>
+              <value>0</value>
+              <karma>-235</karma>
+            </metavariant>
+            <metavariant>
+              <name>Satyr</name>
+              <value>0</value>
+              <karma>-235</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+        <metatype>
+          <name>Troll</name>
+          <value>0</value>
+          <karma>-165</karma>
+          <metavariants>
+            <metavariant>
+              <name>Cyclops</name>
+              <value>0</value>
+              <karma>-135</karma>
+            </metavariant>
+            <metavariant>
+              <name>Fomorian</name>
+              <value>0</value>
+              <karma>-165</karma>
+            </metavariant>
+            <metavariant>
+              <name>Giant</name>
+              <value>0</value>
+              <karma>-165</karma>
+            </metavariant>
+            <metavariant>
+              <name>Minotaur</name>
+              <value>0</value>
+              <karma>-115</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+        <metatype>
+          <name>Centaur</name>
+          <value>0</value>
+          <karma>-210</karma>
+        </metatype>
+        <metatype>
+          <name>Naga</name>
+          <value>0</value>
+          <karma>-150</karma>
+        </metatype>
+        <metatype>
+          <name>Pixie</name>
+          <value>0</value>
+          <karma>-70</karma>
+        </metatype>
+        <metatype>
+          <name>Sasquatch</name>
+          <value>0</value>
+          <karma>-100</karma>
+          <metavariants />
+        </metatype>
+      </metatypes>
+    </priority>
+    <priority>
+      <id>075ef9ca-36e8-4fa9-9fd1-3a70eb8c87b5</id>
+      <name>B - Any metatype</name>
+      <value>B,3</value>
+      <category>Heritage</category>
+      <gameplayoption>Prime Runner</gameplayoption>
+      <metatypes>
+        <!-- TODO: Re-add AIs -->
+        <metatype>
+          <name>Human</name>
+          <value>0</value>
+          <karma>-180</karma>
+          <metavariants>
+            <metavariant>
+              <name>Nartaki</name>
+              <value>0</value>
+              <karma>-175</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+        <metatype>
+          <name>Elf</name>
+          <value>0</value>
+          <karma>-105</karma>
+          <metavariants>
+            <metavariant>
+              <name>Dryad</name>
+              <value>0</value>
+              <karma>-100</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nocturna</name>
+              <value>0</value>
+              <karma>-105</karma>
+            </metavariant>
+            <metavariant>
+              <name>Wakyambi</name>
+              <value>0</value>
+              <karma>-105</karma>
+            </metavariant>
+            <metavariant>
+              <name>Xapiri Thëpë</name>
+              <value>0</value>
+              <karma>-105</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+        <metatype>
+          <name>Dwarf</name>
+          <value>0</value>
+          <karma>-105</karma>
+          <metavariants>
+            <metavariant>
+              <name>Gnome</name>
+              <value>0</value>
+              <karma>-105</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hanuman</name>
+              <value>0</value>
+              <karma>-105</karma>
+            </metavariant>
+            <metavariant>
+              <name>Koborokuru</name>
+              <value>0</value>
+              <karma>-105</karma>
+            </metavariant>
+            <metavariant>
+              <name>Menehune</name>
+              <value>0</value>
+              <karma>-105</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+        <metatype>
+          <name>Ork</name>
+          <value>0</value>
+          <karma>-110</karma>
+          <metavariants>
+            <metavariant>
+              <name>Hobgoblin</name>
+              <value>0</value>
+              <karma>-110</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ogre</name>
+              <value>0</value>
+              <karma>-95</karma>
+            </metavariant>
+            <metavariant>
+              <name>Oni</name>
+              <value>0</value>
+              <karma>-110</karma>
+            </metavariant>
+            <metavariant>
+              <name>Satyr</name>
+              <value>0</value>
+              <karma>-110</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+        <metatype>
+          <name>Troll</name>
+          <value>0</value>
+          <karma>-40</karma>
+          <metavariants>
+            <metavariant>
+              <name>Cyclops</name>
+              <value>0</value>
+              <karma>-10</karma>
+            </metavariant>
+            <metavariant>
+              <name>Fomorian</name>
+              <value>0</value>
+              <karma>-40</karma>
+            </metavariant>
+            <metavariant>
+              <name>Giant</name>
+              <value>0</value>
+              <karma>-40</karma>
+            </metavariant>
+            <metavariant>
+              <name>Minotaur</name>
+              <value>0</value>
+              <karma>10</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+        <metatype>
+          <name>Centaur</name>
+          <value>0</value>
+          <karma>-85</karma>
+        </metatype>
+        <metatype>
+          <name>Naga</name>
+          <value>0</value>
+          <karma>-25</karma>
+        </metatype>
+        <metatype>
+          <name>Sasquatch</name>
+          <value>0</value>
+          <karma>25</karma>
+          <metavariants />
+        </metatype>
+      </metatypes>
+    </priority>
+    <priority>
+      <id>280d95c9-e6ea-48b5-886e-1c28b9f06197</id>
+      <name>C - Human, Dwarf, Elf, or Ork</name>
+      <value>C,2</value>
+      <category>Heritage</category>
+      <gameplayoption>Prime Runner</gameplayoption>
+      <metatypes>
+        <!-- TODO: Re-add AIs -->
+        <metatype>
+          <name>Human</name>
+          <value>0</value>
+          <karma>-110</karma>
+          <metavariants>
+            <metavariant>
+              <name>Nartaki</name>
+              <value>0</value>
+              <karma>-105</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+        <metatype>
+          <name>Elf</name>
+          <value>0</value>
+          <karma>-35</karma>
+          <metavariants>
+            <metavariant>
+              <name>Dryad</name>
+              <value>0</value>
+              <karma>-30</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nocturna</name>
+              <value>0</value>
+              <karma>-35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Wakyambi</name>
+              <value>0</value>
+              <karma>-35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Xapiri Thëpë</name>
+              <value>0</value>
+              <karma>-35</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+        <metatype>
+          <name>Dwarf</name>
+          <value>0</value>
+          <karma>-35</karma>
+          <metavariants>
+            <metavariant>
+              <name>Gnome</name>
+              <value>0</value>
+              <karma>-35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hanuman</name>
+              <value>0</value>
+              <karma>-35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Koborokuru</name>
+              <value>0</value>
+              <karma>-35</karma>
+            </metavariant>
+            <metavariant>
+              <name>Menehune</name>
+              <value>0</value>
+              <karma>-35</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+        <metatype>
+          <name>Ork</name>
+          <value>0</value>
+          <karma>-40</karma>
+          <metavariants>
+            <metavariant>
+              <name>Hobgoblin</name>
+              <value>0</value>
+              <karma>-40</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ogre</name>
+              <value>0</value>
+              <karma>-25</karma>
+            </metavariant>
+            <metavariant>
+              <name>Oni</name>
+              <value>0</value>
+              <karma>-40</karma>
+            </metavariant>
+            <metavariant>
+              <name>Satyr</name>
+              <value>0</value>
+              <karma>-40</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+        <metatype>
+          <name>Centaur</name>
+          <value>0</value>
+          <karma>-15</karma>
+        </metatype>
+      </metatypes>
+    </priority>
+    <priority>
+      <id>6f02f78c-bda6-4684-9df7-57db3a8f8c8b</id>
+      <name>D - Human, Dwarf, Elf, or Ork</name>
+      <value>D,1</value>
+      <category>Heritage</category>
+      <gameplayoption>Prime Runner</gameplayoption>
+      <metatypes>
+        <metatype>
+          <name>Human</name>
+          <value>0</value>
+          <karma>-65</karma>
+          <metavariants>
+            <metavariant>
+              <name>Nartaki</name>
+              <value>0</value>
+              <karma>-60</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+        <metatype>
+          <name>Elf</name>
+          <value>0</value>
+          <karma>10</karma>
+          <metavariants>
+            <metavariant>
+              <name>Dryad</name>
+              <value>0</value>
+              <karma>15</karma>
+            </metavariant>
+            <metavariant>
+              <name>Nocturna</name>
+              <value>0</value>
+              <karma>10</karma>
+            </metavariant>
+            <metavariant>
+              <name>Wakyambi</name>
+              <value>0</value>
+              <karma>10</karma>
+            </metavariant>
+            <metavariant>
+              <name>Xapiri Thëpë</name>
+              <value>0</value>
+              <karma>10</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+        <metatype>
+          <name>Dwarf</name>
+          <value>0</value>
+          <karma>10</karma>
+          <metavariants>
+            <metavariant>
+              <name>Gnome</name>
+              <value>0</value>
+              <karma>10</karma>
+            </metavariant>
+            <metavariant>
+              <name>Hanuman</name>
+              <value>0</value>
+              <karma>10</karma>
+            </metavariant>
+            <metavariant>
+              <name>Koborokuru</name>
+              <value>0</value>
+              <karma>10</karma>
+            </metavariant>
+            <metavariant>
+              <name>Menehune</name>
+              <value>0</value>
+              <karma>10</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+        <metatype>
+          <name>Ork</name>
+          <value>0</value>
+          <karma>5</karma>
+          <metavariants>
+            <metavariant>
+              <name>Hobgoblin</name>
+              <value>0</value>
+              <karma>5</karma>
+            </metavariant>
+            <metavariant>
+              <name>Ogre</name>
+              <value>0</value>
+              <karma>20</karma>
+            </metavariant>
+            <metavariant>
+              <name>Oni</name>
+              <value>0</value>
+              <karma>5</karma>
+            </metavariant>
+            <metavariant>
+              <name>Satyr</name>
+              <value>0</value>
+              <karma>5</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+      </metatypes>
+    </priority>
+    <priority>
+      <id>628ba995-80a9-4140-a63f-46511fe79135</id>
+      <name>E - Human</name>
+      <value>E,0</value>
+      <category>Heritage</category>
+      <gameplayoption>Prime Runner</gameplayoption>
+      <metatypes>
+        <metatype>
+          <name>Human</name>
+          <value>0</value>
+          <karma>-20</karma>
+          <metavariants>
+            <metavariant>
+              <name>Nartaki</name>
+              <value>0</value>
+              <karma>-15</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+      </metatypes>
+    </priority>
+    <!-- End Region -->
+    <!-- Region Attributes -->
+    <priority>
+      <id>75d0d82b-67b3-4ecd-bd66-6223c5ada454</id>
+      <name>A - 30 Attributes</name>
+      <value>A,4</value>
+      <category>Attributes</category>
+      <gameplayoption>Prime Runner</gameplayoption>
+      <attributes>30</attributes>
+    </priority>
+    <priority>
+      <id>1b83c0b5-7e79-4ac4-9cd3-574ba7d0ef22</id>
+      <name>B - 23 Attributes</name>
+      <value>B,3</value>
+      <category>Attributes</category>
+      <gameplayoption>Prime Runner</gameplayoption>
+      <attributes>23</attributes>
+    </priority>
+    <priority>
+      <id>7b7dc5d7-c58a-4fe3-b542-bb63a9335f16</id>
+      <name>C - 19 Attributes</name>
+      <value>C,2</value>
+      <category>Attributes</category>
+      <gameplayoption>Prime Runner</gameplayoption>
+      <attributes>19</attributes>
+    </priority>
+    <priority>
+      <id>1d384a8d-e4eb-429c-b6f5-0d5aa971f7c2</id>
+      <name>D - 16 Attributes</name>
+      <value>D,1</value>
+      <category>Attributes</category>
+      <gameplayoption>Prime Runner</gameplayoption>
+      <attributes>16</attributes>
+    </priority>
+    <priority>
+      <id>09cb6bce-25e0-439c-8fec-43062dd1ca5e</id>
+      <name>E - 14 Attributes</name>
+      <value>E,0</value>
+      <category>Attributes</category>
+      <gameplayoption>Prime Runner</gameplayoption>
+      <attributes>14</attributes>
+    </priority>
+    <!-- End Region -->
+    <!-- Region Talents -->
+    <priority>
+      <id>cefea496-013d-4039-a61c-c2690420c307</id>
+      <name>A - 14 Special Attribute Points</name>
+      <value>A,4</value>
+      <category>Talent</category>
+      <gameplayoption>Prime Runner</gameplayoption>
+      <talents>
+        <talent>
+          <name>14 Special Attribute Points</name>
+          <value>Special</value>
+          <specialattribpoints>14</specialattribpoints>
+        </talent>
+      </talents>
+    </priority>
+    <priority>
+      <id>83afb1f2-8893-4ce2-9945-efb9bba1e09a</id>
+      <name>B - 9 Special Attribute Points</name>
+      <value>B,3</value>
+      <category>Talent</category>
+      <gameplayoption>Prime Runner</gameplayoption>
+      <talents>
+        <talent>
+          <name>9 Special Attribute Points</name>
+          <value>Special</value>
+          <specialattribpoints>9</specialattribpoints>
+        </talent>
+      </talents>
+    </priority>
+    <priority>
+      <id>bebe83cd-e00d-481a-98c8-92e8c0179b77</id>
+      <name>C - 6 Special Attribute Points</name>
+      <value>C,2</value>
+      <category>Talent</category>
+      <gameplayoption>Prime Runner</gameplayoption>
+      <talents>
+        <talent>
+          <name>6 Special Attribute Points</name>
+          <value>Special</value>
+          <specialattribpoints>6</specialattribpoints>
+        </talent>
+      </talents>
+    </priority>
+    <priority>
+      <id>aefa83f1-c63c-42db-836b-8fa3ccdd6b51</id>
+      <name>D - 4 Special Attribute Points</name>
+      <value>D,1</value>
+      <category>Talent</category>
+      <gameplayoption>Prime Runner</gameplayoption>
+      <talents>
+        <talent>
+          <name>4 Special Attribute Points</name>
+          <value>Special</value>
+          <specialattribpoints>4</specialattribpoints>
+        </talent>
+      </talents>
+    </priority>
+    <priority>
+      <id>21d33a27-1eb4-4c93-b611-18dec48476ca</id>
+      <name>E - 2 Special Attribute Points</name>
+      <value>E,0</value>
+      <category>Talent</category>
+      <gameplayoption>Prime Runner</gameplayoption>
+      <talents>
+        <talent>
+          <name>2 Special Attribute Points</name>
+          <value>Special</value>
+          <specialattribpoints>2</specialattribpoints>
+        </talent>
+      </talents>
+    </priority>
+    <!-- End Region -->
+    <!-- Region Skills -->
+    <priority>
+      <id>984be7cb-ac73-43f8-8f04-8564c176f0fa</id>
+      <name>A - 62 Skill Points</name>
+      <value>A,4</value>
+      <category>Skills</category>
+      <gameplayoption>Prime Runner</gameplayoption>
+      <skills>62</skills>
+      <skillgroups>0</skillgroups>
+    </priority>
+    <priority>
+      <id>1d5228d7-fa26-4fed-bb84-b5c3a4d14ba7</id>
+      <name>B - 43 Skill Points</name>
+      <value>B,3</value>
+      <category>Skills</category>
+      <gameplayoption>Prime Runner</gameplayoption>
+      <skills>43</skills>
+      <skillgroups>0</skillgroups>
+    </priority>
+    <priority>
+      <id>04d702b3-47bb-4c1d-9aab-cb57c8525557</id>
+      <name>C - 32 Skill Points</name>
+      <value>C,2</value>
+      <category>Skills</category>
+      <gameplayoption>Prime Runner</gameplayoption>
+      <skills>32</skills>
+      <skillgroups>0</skillgroups>
+    </priority>
+    <priority>
+      <id>ef9cd892-3884-4b3f-a1ef-d320b9240c66</id>
+      <name>D - 25 Skill Points</name>
+      <value>D,1</value>
+      <category>Skills</category>
+      <gameplayoption>Prime Runner</gameplayoption>
+      <skills>25</skills>
+      <skillgroups>0</skillgroups>
+    </priority>
+    <priority>
+      <id>c9519cd3-362e-4531-9cb7-88a5f5e5f12f</id>
+      <name>E - 18 Skill Points</name>
+      <value>E,0</value>
+      <category>Skills</category>
+      <gameplayoption>Prime Runner</gameplayoption>
+      <skills>18</skills>
+      <skillgroups>0</skillgroups>
+    </priority>
+    <!-- End Region -->
+    <!-- Region Resources -->
+    <priority>
+      <id>ab987433-16a7-4d29-87e2-93c06733588d</id>
+      <name>A - 600,000 ¥</name>
+      <value>A,4</value>
+      <category>Resources</category>
+      <gameplayoption>Prime Runner</gameplayoption>
+      <resources>600000</resources>
+    </priority>
+    <priority>
+      <id>6dfb5508-a6ef-4c49-af27-33644390e067</id>
+      <name>B - 350,000 ¥</name>
+      <value>B,3</value>
+      <category>Resources</category>
+      <gameplayoption>Prime Runner</gameplayoption>
+      <resources>350000</resources>
+    </priority>
+    <priority>
+      <id>23088881-d3e5-4ae0-a1a1-0f5526f4f2c0</id>
+      <name>C - 210,000 ¥</name>
+      <value>C,2</value>
+      <category>Resources</category>
+      <gameplayoption>Prime Runner</gameplayoption>
+      <resources>210000</resources>
+    </priority>
+    <priority>
+      <id>957977f4-0467-4a5a-9dee-149612b5b53e</id>
+      <name>D - 120,000 ¥</name>
+      <value>D,1</value>
+      <category>Resources</category>
+      <gameplayoption>Prime Runner</gameplayoption>
+      <resources>120000</resources>
+    </priority>
+    <priority>
+      <id>18ac7618-669a-481c-a04b-7eb207489dfc</id>
+      <name>E - 30,000 ¥</name>
+      <value>E,0</value>
+      <category>Resources</category>
+      <gameplayoption>Prime Runner</gameplayoption>
+      <resources>30000</resources>
+    </priority>
+    <!-- End Region -->
+    <!-- End Region -->
+  </priorities>
+</chummer>

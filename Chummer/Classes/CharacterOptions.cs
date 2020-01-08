@@ -23,6 +23,7 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
+// ReSharper disable StringLiteralTypo
 
 namespace Chummer
 {
@@ -52,7 +53,6 @@ namespace Chummer
         private bool _blnCalculateCommlinkResponse = true;
         private bool _blnConfirmDelete = true;
         private bool _blnConfirmKarmaExpense = true;
-        private bool _blnCreateBackupOnCareer;
         private bool _blnCyberlegMovement;
         private bool _blnDontDoubleQualityPurchaseCost;
         private bool _blnDontDoubleQualityRefundCost;
@@ -69,6 +69,7 @@ namespace Chummer
         private bool _blnFreeSpiritPowerPointsMAG;
         private bool _blnNoArmorEncumbrance;
         private bool _blnIgnoreArt;
+        private bool _blnIgnoreComplexFormLimit;
         private bool _blnUnarmedImprovementsApplyToWeapons;
         private bool _blnLicenseRestrictedItems;
         private bool _blnMaximumArmorModifications;
@@ -112,7 +113,10 @@ namespace Chummer
         private bool _blnSearchInCategoryOnly = true;
         private string _strNuyenFormat = "#,0.##";
         private bool _blnCompensateSkillGroupKarmaDifference;
-
+        private bool _cyberwareRounding;
+        private bool _increasedImprovedAbilityMultiplier;
+        private bool _allowFreeGrids;
+        private bool _blnAllowTechnomancerSchooling;
         private string _strBookXPath = string.Empty;
         private string _strExcludeLimbSlot = string.Empty;
         
@@ -195,7 +199,7 @@ namespace Chummer
                 return;
 
             // Create the settings directory if it does not exist.
-            string settingsDirectoryPath = Path.Combine(Application.StartupPath, "settings");
+            string settingsDirectoryPath = Path.Combine(Utils.GetStartupPath, "settings");
             if (!Directory.Exists(settingsDirectoryPath))
             {
                 try
@@ -204,7 +208,7 @@ namespace Chummer
                 }
                 catch (UnauthorizedAccessException)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_Insufficient_Permissions_Warning", GlobalOptions.Language));
+                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Insufficient_Permissions_Warning", GlobalOptions.Language));
                 }
             }
 
@@ -223,7 +227,7 @@ namespace Chummer
         /// </summary>
         public void Save()
         {
-            string strFilePath = Path.Combine(Application.StartupPath, "settings", _strFileName);
+            string strFilePath = Path.Combine(Utils.GetStartupPath, "settings", _strFileName);
             FileStream objStream = new FileStream(strFilePath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
             XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
             {
@@ -299,6 +303,8 @@ namespace Chummer
             objWriter.WriteElementString("usetotalvalueforcontacts", _blnUseTotalValueForFreeContacts.ToString());
             // <nosinglearmorencumbrance />
             objWriter.WriteElementString("nosinglearmorencumbrance", _blnNoSingleArmorEncumbrance.ToString());
+            // <ignorecomplexformlimit />
+            objWriter.WriteElementString("ignorecomplexformlimit", _blnIgnoreComplexFormLimit.ToString());
             // <NoArmorEncumbrance />
             objWriter.WriteElementString("noarmorencumbrance", _blnNoArmorEncumbrance.ToString());
             // <esslossreducesmaximumonly />
@@ -377,8 +383,6 @@ namespace Chummer
             objWriter.WriteElementString("alternatemetatypeattributekarma", _blnAlternateMetatypeAttributeKarma.ToString());
             // <reversekarmapriorityorder />
             objWriter.WriteElementString("reverseattributepriorityorder", ReverseAttributePriorityOrder.ToString());
-            // <createbackuponcareer />
-            objWriter.WriteElementString("createbackuponcareer", _blnCreateBackupOnCareer.ToString());
             // <printnotes />
             objWriter.WriteElementString("printnotes", _blnPrintNotes.ToString());
             // <allowobsolescentupgrade />
@@ -401,6 +405,12 @@ namespace Chummer
             objWriter.WriteElementString("priorityspellsasadeptpowers", _blnPrioritySpellsAsAdeptPowers.ToString());
             // <usecalculatedpublicawareness />
             objWriter.WriteElementString("usecalculatedpublicawareness", _blnUseCalculatedPublicAwareness.ToString());
+            // <increasedimprovedabilitymodifier />
+            objWriter.WriteElementString("increasedimprovedabilitymodifier", _increasedImprovedAbilityMultiplier.ToString());
+            // <allowfreegrids />
+            objWriter.WriteElementString("allowfreegrids", _allowFreeGrids.ToString());
+            // <allowtechnomancerschooling />
+            objWriter.WriteElementString("allowtechnomancerschooling", _blnAllowTechnomancerSchooling.ToString());
 
             // <karmacost>
             objWriter.WriteStartElement("karmacost");
@@ -540,7 +550,7 @@ namespace Chummer
         public bool Load(string strFileName)
         {
             _strFileName = strFileName;
-            string strFilePath = Path.Combine(Application.StartupPath, "settings", _strFileName);
+            string strFilePath = Path.Combine(Utils.GetStartupPath, "settings", _strFileName);
             XmlDocument objXmlDocument = new XmlDocument();
             // Make sure the settings file exists. If not, ask the user if they would like to use the default settings file instead. A character cannot be loaded without a settings file.
             if (File.Exists(strFilePath))
@@ -554,26 +564,26 @@ namespace Chummer
                 }
                 catch (IOException)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
                 }
                 catch (XmlException)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
                 }
             }
             else
             {
-                if (MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_CannotLoadSetting", GlobalOptions.Language).Replace("{0}", _strFileName), LanguageManager.GetString("MessageTitle_CharacterOptions_CannotLoadSetting", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                if (MessageBox.Show(string.Format(LanguageManager.GetString("Message_CharacterOptions_CannotLoadSetting", GlobalOptions.Language), _strFileName), LanguageManager.GetString("MessageTitle_CharacterOptions_CannotLoadSetting", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
                 }
                 else
                 {
                     _strFileName = "default.xml";
-                    strFilePath = Path.Combine(Application.StartupPath, "settings", _strFileName);
+                    strFilePath = Path.Combine(Utils.GetStartupPath, "settings", _strFileName);
                     try
                     {
                         using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))
@@ -583,12 +593,12 @@ namespace Chummer
                     }
                     catch (IOException)
                     {
-                        MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return false;
                     }
                     catch (XmlException)
                     {
-                        MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return false;
                     }
                 }
@@ -656,6 +666,8 @@ namespace Chummer
             objXmlNode.TryGetBoolFieldQuickly("nosinglearmorencumbrance", ref _blnNoSingleArmorEncumbrance);
             // Ignore Armor Encumbrance
             objXmlNode.TryGetBoolFieldQuickly("noarmorencumbrance", ref _blnNoArmorEncumbrance);
+            // Ignore Complex Form Limit
+            objXmlNode.TryGetBoolFieldQuickly("ignorecomplexformlimit", ref _blnIgnoreComplexFormLimit);
             // Essence Loss Reduces Maximum Only.
             objXmlNode.TryGetBoolFieldQuickly("esslossreducesmaximumonly", ref _blnESSLossReducesMaximumOnly);
             // Allow Skill Regrouping.
@@ -742,8 +754,6 @@ namespace Chummer
             objXmlNode.TryGetBoolFieldQuickly("dontusecyberlimbcalculation", ref _blnDontUseCyberlimbCalculation);
             // House rule: Treat the Metatype Attribute Minimum as 1 for the purpose of calculating Karma costs.
             objXmlNode.TryGetBoolFieldQuickly("alternatemetatypeattributekarma", ref _blnAlternateMetatypeAttributeKarma);
-            // Whether or not a backup copy of the character should be created before they are placed into Career Mode.
-            objXmlNode.TryGetBoolFieldQuickly("createbackuponcareer", ref _blnCreateBackupOnCareer);
             // Whether or not Notes should be printed.
             objXmlNode.TryGetBoolFieldQuickly("printnotes", ref _blnPrintNotes);
             // Whether or not Obsolescent can be removed/upgrade in the same manner as Obsolete.
@@ -762,6 +772,12 @@ namespace Chummer
             objXmlNode.TryGetBoolFieldQuickly("autobackstory", ref _blnAutomaticBackstory);
             // House Rule: Whether Public Awareness should be a calculated attribute based on Street Cred and Notoriety.
             objXmlNode.TryGetBoolFieldQuickly("usecalculatedpublicawareness", ref _blnUseCalculatedPublicAwareness);
+            // House Rule: Whether Improved Ability should be capped at 0.5 (false) or 1.5 (true) of the target skill's Learned Rating.
+            objXmlNode.TryGetBoolFieldQuickly("increasedimprovedabilitymodifier", ref _increasedImprovedAbilityMultiplier);
+            // House Rule: Whether lifestyles will give free grid subscriptions found in HT to players. 
+            objXmlNode.TryGetBoolFieldQuickly("allowfreegrids", ref _allowFreeGrids);
+            // House Rule: Whether Technomancers should be allowed to receive Schooling discounts in the same manner as Awakened. 
+            objXmlNode.TryGetBoolFieldQuickly("allowtechnomancerschooling", ref _blnAllowTechnomancerSchooling);
             
             objXmlNode = objXmlDocument.SelectSingleNode("//settings/karmacost");
             // Attempt to populate the Karma values.
@@ -770,7 +786,7 @@ namespace Chummer
                 objXmlNode.TryGetInt32FieldQuickly("karmaattribute", ref _intKarmaAttribute);
                 objXmlNode.TryGetInt32FieldQuickly("karmaquality", ref _intKarmaQuality);
                 objXmlNode.TryGetInt32FieldQuickly("karmaspecialization", ref _intKarmaSpecialization);
-                objXmlNode.TryGetInt32FieldQuickly("karmaknowspecialization", ref _intKarmaKnoSpecialization);
+                objXmlNode.TryGetInt32FieldQuickly("karmaknospecialization", ref _intKarmaKnoSpecialization);
                 objXmlNode.TryGetInt32FieldQuickly("karmanewknowledgeskill", ref _intKarmaNewKnowledgeSkill);
                 objXmlNode.TryGetInt32FieldQuickly("karmanewactiveskill", ref _intKarmaNewActiveSkill);
                 objXmlNode.TryGetInt32FieldQuickly("karmanewskillgroup", ref _intKarmaNewSkillGroup);
@@ -868,7 +884,7 @@ namespace Chummer
             // Spirit Force Based on Total MAG.
             GlobalOptions.LoadBoolFromRegistry(ref _blnSpiritForceBasedOnTotalMAG, "spiritforcebasedontotalmag", string.Empty, true);
 
-            // Skill Defaulting Includes Modifers.
+            // Skill Defaulting Includes modifiers.
             bool blnTemp = false;
             GlobalOptions.LoadBoolFromRegistry(ref blnTemp, "skilldefaultingincludesmodifiers", string.Empty, true);
 
@@ -952,7 +968,7 @@ namespace Chummer
 
             foreach (string strBookName in strBooks)
             {
-                string strCode = objXmlDocument.SelectSingleNode("/chummer/books/book[name = \"" + strBookName + "\" and not(hide)]/code")?.InnerText;
+                string strCode = objXmlDocument.SelectSingleNode("/chummer/books/book[name = " + strBookName.CleanXPath() + " and not(hide)]/code")?.InnerText;
                 if (!string.IsNullOrEmpty(strCode))
                 {
                     _lstBooks.Add(strCode);
@@ -974,14 +990,27 @@ namespace Chummer
         }
 
         /// <summary>
-        /// XPath query used to filter items based on the user's selected source books.
+        /// XPath query used to filter items based on the user's selected source books and optional rules.
         /// </summary>
-        public string BookXPath()
+        public string BookXPath(bool excludeHidden = true)
         {
-            string strPath = "not(hide)";
-            if (!string.IsNullOrEmpty(_strBookXPath))
+            string strPath = string.Empty;
+
+            if (excludeHidden)
             {
-                strPath += " and " + _strBookXPath;
+                strPath = "not(hide)";
+            }
+            if (string.IsNullOrWhiteSpace(_strBookXPath))
+            {
+                RecalculateBookXPath();
+            }
+            if (string.IsNullOrWhiteSpace(strPath))
+            {
+                strPath = _strBookXPath;
+            }
+            else
+            {
+                strPath += $" and {_strBookXPath}";
             }
             if (!GlobalOptions.Dronemods)
             {
@@ -1081,7 +1110,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not UnarmedAP and UnarmedDV Improvements apply to weapons that use the Unarmed Combat skill.
+        /// Whether or not UnarmedAP, UnarmedReach and UnarmedDV Improvements apply to weapons that use the Unarmed Combat skill.
         /// </summary>
         public bool UnarmedImprovementsApplyToWeapons
         {
@@ -1139,6 +1168,15 @@ namespace Chummer
         {
             get => _blnIgnoreArt;
             set => _blnIgnoreArt = value;
+        }
+
+        /// <summary>
+        /// Whether or not to ignore the limit on Complex Forms in Career mode.
+        /// </summary>
+        public bool IgnoreComplexFormLimit
+        {
+            get => _blnIgnoreComplexFormLimit;
+            set => _blnIgnoreComplexFormLimit = value;
         }
 
         /// <summary>
@@ -1264,15 +1302,6 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Optional Rule: Whether or not Armor Encumbrance is ignored if only a single piece of Armor is worn.
-        /// </summary>
-        public bool NoSingleArmorEncumbrance
-        {
-            get => _blnNoSingleArmorEncumbrance;
-            set => _blnNoSingleArmorEncumbrance = value;
-        }
-
-        /// <summary>
         /// House Rule: Ignore Armor Encumbrance entirely.
         /// </summary>
         public bool NoArmorEncumbrance
@@ -1381,15 +1410,6 @@ namespace Chummer
             set => _blnAllowCyberwareESSDiscounts = value;
         }
         
-        /// <summary>
-        /// Whether or not Maximum Armor Modifications is in use.
-        /// </summary>
-        public bool MaximumArmorModifications
-        {
-            get => _blnMaximumArmorModifications;
-            set => _blnMaximumArmorModifications = value;
-        }
-
         /// <summary>
         /// Whether or not Armor Degredation is allowed.
         /// </summary>
@@ -1571,6 +1591,7 @@ namespace Chummer
         }
 
         private int _intCachedEssenceDecimals = -1;
+
         /// <summary>
         /// Number of decimal places to round to when calculating Essence.
         /// </summary>
@@ -1596,7 +1617,11 @@ namespace Chummer
                 if (intNewEssenceDecimals < intCurrentEssenceDecimals)
                 {
                     if (intNewEssenceDecimals > 0)
-                        EssenceFormat = EssenceFormat.Substring(0, EssenceFormat.Length - (intNewEssenceDecimals - intCurrentEssenceDecimals));
+                    {
+                        int length = EssenceFormat.Length - (intCurrentEssenceDecimals - intNewEssenceDecimals);
+                        if (length < 3) length = 3;
+                        EssenceFormat = EssenceFormat.Substring(0, length);
+                    }
                     else
                     {
                         int intDecimalPlaces = EssenceFormat.IndexOf('.');
@@ -1698,15 +1723,6 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not a Commlink's Response should be calculated based on the number of programs running on it.
-        /// </summary>
-        public bool CalculateCommlinkResponse
-        {
-            get => _blnCalculateCommlinkResponse;
-            set => _blnCalculateCommlinkResponse = value;
-        }
-
-        /// <summary>
         /// Whether or not Stacked Foci can have a combined Force higher than 6.
         /// </summary>
         public bool AllowHigherStackedFoci
@@ -1785,15 +1801,6 @@ namespace Chummer
         {
             get => _blnCompensateSkillGroupKarmaDifference;
             set => _blnCompensateSkillGroupKarmaDifference = value;
-        }
-
-        /// <summary>
-        /// Whether or not a backup copy of the character should be created before they are placed into Career Mode.
-        /// </summary>
-        public bool CreateBackupOnCareer
-        {
-            get => _blnCreateBackupOnCareer;
-            set => _blnCreateBackupOnCareer = value;
         }
 
         /// <summary>
@@ -2259,33 +2266,6 @@ namespace Chummer
 
         #region Default Build
         /// <summary>
-        /// Default build method.
-        /// </summary>
-        public string BuildMethod
-        {
-            get => _strBuildMethod;
-            set => _strBuildMethod = value;
-        }
-
-        /// <summary>
-        /// Default number of build points.
-        /// </summary>
-        public int BuildPoints
-        {
-            get => _intBuildPoints;
-            set => _intBuildPoints = value;
-        }
-
-        /// <summary>
-        /// Default Availability.
-        /// </summary>
-        public int Availability
-        {
-            get => _intAvailability;
-            set => _intAvailability = value;
-        }
-
-        /// <summary>
         /// Whether Life Modules should automatically generate a character background.
         /// </summary>
         public bool AutomaticBackstory
@@ -2391,6 +2371,50 @@ namespace Chummer
         }
 
         public NumericUpDownEx.InterceptMouseWheelMode InterceptMode => AllowHoverIncrement ? NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver : NumericUpDownEx.InterceptMouseWheelMode.WhenFocus;
+
+        /// <summary>
+        /// Whether to use floor-based rounding for Cyberware. If enabled, 
+        /// </summary>
+        public bool CyberwareRounding
+        {
+            get => _cyberwareRounding;
+            set => _cyberwareRounding = value;
+        }
+
+        /// <summary>
+        /// Whether the Improved Ability power (SR5 309) should be capped at 0.5 of current Rating or 1.5 of current Rating. 
+        /// </summary>
+        public bool IncreasedImprovedAbilityMultiplier
+        {
+            get => _increasedImprovedAbilityMultiplier;
+            set => _increasedImprovedAbilityMultiplier = value;
+        }
+        /// <summary>
+        /// Whether lifestyles will automatically give free grid subscriptions found in (HT)
+        /// </summary>
+        public bool AllowFreeGrids
+        {
+            get => _allowFreeGrids;
+            set => _allowFreeGrids = value;
+        }
+
+        /// <summary>
+        /// Whether Technomancers are allowed to use the Schooling discount on their initiations in the same manner as awakened. 
+        /// </summary>
+        public bool AllowTechnomancerSchooling
+        {
+            get => _blnAllowTechnomancerSchooling;
+            set => _blnAllowTechnomancerSchooling = value;
+        }
+
+        #endregion
+
+        #region Constant Values
+        /// <summary>
+        /// The value by which Specializations add to dicepool. 
+        /// </summary>
+        public int SpecializationBonus = 2;
+
         #endregion
     }
 }

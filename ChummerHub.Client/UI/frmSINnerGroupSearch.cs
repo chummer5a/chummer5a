@@ -1,0 +1,70 @@
+using ChummerHub.Client.Model;
+using SINners.Models;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using Chummer;
+using Chummer.Plugins;
+using NLog;
+
+namespace ChummerHub.Client.UI
+{
+    public partial class frmSINnerGroupSearch : Form
+    {
+        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private CharacterExtended MyCE { get; }
+        public ucSINnersBasic MyParentForm { get; }
+
+        public ucSINnerGroupSearch MySINnerGroupSearch
+        {
+            get { return this.siNnerGroupSearch1; }
+        }
+        public frmSINnerGroupSearch(CharacterExtended ce, ucSINnersBasic parentBasic)
+        {
+            MyCE = ce;
+            MyParentForm = parentBasic;
+            InitializeComponent();
+            this.siNnerGroupSearch1.MyCE = ce;
+            this.siNnerGroupSearch1.MyParentForm = this;
+            this.VisibleChanged += (sender, args) =>
+            {
+                if (this.Visible == true)
+                    ReallyCenterToScreen();
+            };
+
+        }
+        protected void ReallyCenterToScreen()
+        {
+            Screen screen = Screen.FromControl(PluginHandler.MainForm);
+
+            Rectangle workingArea = screen.WorkingArea;
+            this.Location = new Point()
+            {
+                X = Math.Max(workingArea.X, workingArea.X + (workingArea.Width - this.Width) / 2),
+                Y = Math.Max(workingArea.Y, workingArea.Y + (workingArea.Height - this.Height) / 2)
+            };
+        }
+
+        private void FrmSINnerGroupSearch_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            try
+            {
+                PluginHandler.MainForm.CharacterRoster.DoThreadSafe(() =>
+                {
+                    PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false, true);
+                });
+            }
+            catch (Exception exception)
+            {
+                Log.Warn(exception);
+            }
+            
+        }
+    }
+}

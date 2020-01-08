@@ -23,7 +23,7 @@ namespace Chummer.UI.Table
 {
     public partial class SpinnerTableCell<T> : TableCell where T : class, INotifyPropertyChanged
     {
-        private bool updating = false;
+        private bool _blnUpdating;
 
         public SpinnerTableCell(TableView<T> table)
         {
@@ -31,6 +31,10 @@ namespace Chummer.UI.Table
             contentField = _spinner;
             Enter += (a, b) => table.PauseSort(this);
             Leave += (a, b) => table.ResumeSort(this);
+        }
+
+        private void OnLoad(object sender, EventArgs eventArgs)
+        {
             MinimumSize = _spinner.Size;
         }
 
@@ -51,13 +55,13 @@ namespace Chummer.UI.Table
                 _spinner.Enabled = EnabledExtractor(tValue);
             }
             
-            if (!updating && ValueGetter != null)
+            if (!_blnUpdating && ValueGetter != null)
             {
                 decimal value = Convert.ToDecimal(ValueGetter(tValue));
 
-                updating = true;
+                _blnUpdating = true;
                 _spinner.Value = value;
-                updating = false;
+                _blnUpdating = false;
             }
         }
         
@@ -92,15 +96,15 @@ namespace Chummer.UI.Table
         /// <param name="e"></param>
         private void value_changed(object sender, EventArgs e)
         {
-            if (updating || ValueUpdater == null) return;
-            updating = true;
+            if (_blnUpdating || ValueUpdater == null) return;
+            _blnUpdating = true;
             try
             {
                 ValueUpdater(Value as T, _spinner.Value);
             }
             finally
             {
-                updating = false;
+                _blnUpdating = false;
             }
 
         }

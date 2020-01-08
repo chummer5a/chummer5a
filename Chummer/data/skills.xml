@@ -20,7 +20,7 @@
 -->
 <chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.w3.org/2001/XMLSchema skills.xsd">
-  <version>0</version>
+
   <skillgroups>
     <name>Acting</name>
     <name>Athletics</name>
@@ -1569,6 +1569,15 @@
       <specs />
     </skill>
     <skill>
+      <id>8879baa1-4e10-4667-bd00-62f4f594dbbb</id>
+      <name>Area Knowledge: Neo-Tokyo</name>
+      <attribute>INT</attribute>
+      <category>Street</category>
+      <default>False</default>
+      <skillgroup />
+      <specs />
+    </skill>
+    <skill>
       <id>f9f9badb-0f5e-4662-8b34-fdd8e2994caa</id>
       <name>Area Knowledge: Portland</name>
       <attribute>INT</attribute>
@@ -1718,6 +1727,15 @@
         <spec>Physiology</spec>
         <spec>Parazoology</spec>
       </specs>
+    </skill>
+    <skill>
+      <id>c0be1393-e4a1-4af6-8c0d-f9eef89a93b1</id>
+      <name>Zoology</name>
+      <attribute>LOG</attribute>
+      <category>Academic</category>
+      <default>False</default>
+      <skillgroup />
+      <specs />
     </skill>
     <skill>
       <id>6331a44a-ad26-4b08-8b7a-2dbe3c2d0584</id>
@@ -2775,6 +2793,23 @@
         <spec>Marines</spec>
         <spec>Navy</spec>
         <spec>Special Forces</spec>
+      </specs>
+    </skill>
+    <skill>
+      <id>0e5b89c5-1143-4e73-ab71-0700910fcaaa</id>
+      <name>Mixed Unit Tactics</name>
+      <attribute>INT</attribute>
+      <category>Interest</category>
+      <default>False</default>
+      <skillgroup />
+      <specs>
+        <spec>Aerial/Aircraft</spec>
+        <spec>Armored Infantry</spec>
+        <spec>Artillery</spec>
+        <spec>Naval</spec>
+        <spec>Mechanized Infantry</spec>
+        <spec>Standard Infantry</spec>
+        <spec>[Single Unit Type]</spec>
       </specs>
     </skill>
     <skill>
@@ -4599,6 +4634,20 @@
     <skill>
       <id>79a0069c-4517-4698-91b5-3d24b928c5ee</id>
       <name>Salish</name>
+      <attribute>INT</attribute>
+      <category>Language</category>
+      <default>False</default>
+      <skillgroup />
+      <specs>
+        <spec>Read/Write</spec>
+        <spec>Speak</spec>
+        <spec>Dialect</spec>
+        <spec>Lingo</spec>
+      </specs>
+    </skill>
+    <skill>
+      <id>1708eff8-a7fe-491f-b349-a6130c83e8d0</id>
+      <name>Serbo-Croatian</name>
       <attribute>INT</attribute>
       <category>Language</category>
       <default>False</default>

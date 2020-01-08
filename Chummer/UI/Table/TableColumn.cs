@@ -33,14 +33,14 @@ namespace Chummer.UI.Table
 
         private readonly Func<TableCell> _cellFactory;
         private Comparison<object> _sorter;
-        private bool _live = false;
-        private string _text;
-        private string _tag;
-        private int _minWidth = 0;
-        private int _prefWidth = 0;
-        private Func<T, object> _extractor;
+        private bool _blnLive;
+        private string _strText;
+        private string _strTag;
+        private int _intMinWidth;
+        private int _intPrefWidth;
+        private Func<T, object> _funcExtractor;
         private Comparison<T> _itemSorter;
-        private readonly HashSet<string> _dependencies = new HashSet<string>();
+        private readonly HashSet<string> _setDependencies = new HashSet<string>();
 
         public TableColumn(Func<TableCell> cellFactory)
         {
@@ -59,20 +59,20 @@ namespace Chummer.UI.Table
         /// Add an additional dependency to the dependencies
         /// of this column.
         /// </summary>
-        /// <param name="dependency">the dependency to add</param>
-        public void AddDependency(string dependency)
+        /// <param name="strDependency">the dependency to add</param>
+        public void AddDependency(string strDependency)
         {
             CheckLive();
-            _dependencies.Add(dependency);
+            _setDependencies.Add(strDependency);
         }
 
         /// <summary>
         /// Throw an InvalidOperationException in case the column is in
         /// live state.
         /// </summary>
-        protected void CheckLive(bool expectedValue = false)
+        protected void CheckLive(bool blnExpectedValue = false)
         {
-            if (_live != expectedValue)
+            if (_blnLive != blnExpectedValue)
             {
                 throw new InvalidOperationException();
             }
@@ -88,13 +88,13 @@ namespace Chummer.UI.Table
         {
             if (_itemSorter == null && _sorter != null)
             {
-                if (_extractor == null)
+                if (_funcExtractor == null)
                 {
                     _itemSorter = (i1, i2) => _sorter(i1, i2);
                 }
                 else
                 {
-                    _itemSorter = (i1, i2) => _sorter(_extractor(i1), _extractor(i2));
+                    _itemSorter = (i1, i2) => _sorter(_funcExtractor(i1), _funcExtractor(i2));
                 }
             }
             return _itemSorter;
@@ -104,7 +104,7 @@ namespace Chummer.UI.Table
         /// <summary>
         /// The dependencies as enumerable.
         /// </summary>
-        internal IEnumerable<string> Dependencies => _dependencies;
+        internal IEnumerable<string> Dependencies => _setDependencies;
 
         /// <summary>
         /// Method for extracting the value for the cell from
@@ -112,31 +112,31 @@ namespace Chummer.UI.Table
         /// </summary>
         public Func<T, object> Extractor
         {
-            get => _extractor;
+            get => _funcExtractor;
             set {
                 CheckLive();
-                _extractor = value;
+                _funcExtractor = value;
             }
         }
 
         /// <summary>
         /// Property indicating whether this column is live or not.
         /// </summary>
-        protected bool Live => _live;
+        protected bool Live => _blnLive;
 
         /// <summary>
         /// The minimal width for this column.
         /// </summary>
         public int MinWidth
         {
-            get => _minWidth;
+            get => _intMinWidth;
             set {
                 CheckLive();
                 if (value < 0)
                 {
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException(nameof(MinWidth));
                 }
-                _minWidth = value;
+                _intMinWidth = value;
             }
         }
 
@@ -158,11 +158,11 @@ namespace Chummer.UI.Table
         /// </summary>
         public string Text
         {
-            get => _text;
+            get => _strText;
             set
             {
                 CheckLive();
-                _text = value;
+                _strText = value;
             }
         }
 
@@ -171,11 +171,11 @@ namespace Chummer.UI.Table
         /// </summary>
         public string Tag
         {
-            get => _tag;
+            get => _strTag;
             set
             {
                 CheckLive();
-                _tag = value;
+                _strTag = value;
             }
         }
 
@@ -184,11 +184,11 @@ namespace Chummer.UI.Table
         /// </summary>
         public int PrefWidth
         {
-            get => _prefWidth;
+            get => _intPrefWidth;
             set {
-                if (value >= _minWidth)
+                if (value >= _intMinWidth)
                 {
-                    _prefWidth = value;
+                    _intPrefWidth = value;
                 }
             }
         }
@@ -204,7 +204,7 @@ namespace Chummer.UI.Table
         internal void MakeLive()
         {
             CheckLive();
-            _live = true;
+            _blnLive = true;
         }
         #endregion
     }

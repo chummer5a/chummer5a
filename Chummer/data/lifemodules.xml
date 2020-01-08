@@ -2,24 +2,23 @@
 
 <!--This file is part of Chummer5a.
 
-    Chummer5a is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+  Chummer5a is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-    Chummer5a is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+  Chummer5a is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+  You should have received a copy of the GNU General Public License
+  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
 
-    You can obtain the full source code for Chummer5a at
-    https://github.com/chummer5a/chummer5a
+  You can obtain the full source code for Chummer5a at
+  https://github.com/chummer5a/chummer5a
 -->
 <chummer>
-  <version>-875</version>
   <stages>
     <stage order="1">Nationality</stage>
     <stage order="2">Formative Years</stage>
@@ -142,7 +141,7 @@
             <knowledgeskilllevel>
               <group>Street</group>
               <name>Seattle</name>
-              <value>2</value>
+              <val>2</val>
             </knowledgeskilllevel>
             <freenegativequalities>-5</freenegativequalities>
             <pushtext>United Canadian American States</pushtext>
@@ -421,7 +420,7 @@
               <group>Language</group>
             </knowledgeskilllevel>
             <skillgrouplevel>
-              <name>Outdoor</name>
+              <name>Outdoors</name>
               <val>1</val>
             </skillgrouplevel>
             <skilllevel>
@@ -579,7 +578,7 @@
               <group>Language</group>
             </knowledgeskilllevel>
             <skillgrouplevel>
-              <name>Outdoor</name>
+              <name>Outdoors</name>
             </skillgrouplevel>
             <skilllevel>
               <name>Blades</name>
@@ -988,7 +987,7 @@
           <val>2</val>
         </skillgrouplevel>
         <skilllevel>
-          <name>Negotiation&gt;</name>
+          <name>Negotiation</name>
         </skilllevel>
         <skilllevel>
           <name>Perception</name>
@@ -1776,7 +1775,7 @@
         </knowledgeskilllevel>
         <freepositivequalities>5</freepositivequalities>
         <addqualities>
-          <addquality>Rank</addquality>
+          <addquality>Rank (Neither Military nor Law Enforcement) I</addquality>
           <addquality>Code of Honor</addquality>
         </addqualities>
       </bonus>
@@ -2624,6 +2623,9 @@
       <name>Military Academy</name>
       <karma>115</karma>
       <bonus>
+        <addqualities>
+          <addquality>Rank (Military or Law Enforcement) I</addquality>
+        </addqualities>
         <attributelevel>
           <name>BOD</name>
         </attributelevel>
@@ -3301,7 +3303,7 @@
           <name>LOG</name>
         </attributelevel>
         <skilllevel>
-          <name>Computers</name>
+          <name>Computer</name>
         </skilllevel>
         <skilllevel>
           <name>Gymnastics</name>
@@ -3314,7 +3316,7 @@
           <name>LOG</name>
         </attributelevel>
         <skilllevel>
-          <name>Computers</name>
+          <name>Computer</name>
         </skilllevel>
         <skilllevel>
           <name>Gymnastics</name>
@@ -3486,6 +3488,77 @@
             </knowledgeskilllevel>
           </bonus>
         </version>
+        <version>
+          <id>53720714-f91b-43d9-97d8-317f4def9d29</id>
+          <name>Divinity School/Seminary</name>
+          <bonus>
+            <skilllevel>
+              <name>Etiquette</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Negotiation</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Performance</name>
+            </skilllevel>
+            <knowledgeskilllevel>
+              <name>[Ancient Language]</name>
+              <val>2</val>
+              <group>Academic</group>
+            </knowledgeskilllevel>
+            <knowledgeskilllevel>
+              <name>[Religion]</name>
+              <val>5</val>
+              <group>Academic</group>
+            </knowledgeskilllevel>
+          </bonus>
+          <source>BTB</source>
+          <page>163</page>
+        </version>
+        <version>
+          <id>83e7a3b7-0d32-4288-839d-3de22389da33</id>
+          <name>Divinity School Dropout</name>
+          <bonus>
+            <addqualities>
+              <addquality>Cynic</addquality>
+            </addqualities>
+            <skilllevel>
+              <name>Performance</name>
+            </skilllevel>
+            <knowledgeskilllevel>
+              <name>[Religion]</name>
+              <val>4</val>
+              <group>Academic</group>
+            </knowledgeskilllevel>
+            <knowledgeskilllevel>
+              <name>[Ancient Language]</name>
+              <val>2</val>
+              <group>Academic</group>
+            </knowledgeskilllevel>
+          </bonus>
+          <source>BTB</source>
+          <page>163</page>
+        </version>
+        <version>
+          <id>e1ba9a64-a528-493f-b2d2-86b1eeeaca47</id>
+          <name>Counseling/Behavioral Therapy</name>
+          <bonus>
+            <skilllevel>
+              <name>Etiquette</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Negotiation</name>
+            </skilllevel>
+            <knowledgeskilllevel>
+              <name>Psychology</name>
+              <val>4</val>
+              <group>Professional</group>
+            </knowledgeskilllevel>
+          </bonus>
+          <source>BTB</source>
+          <page>163</page>
+        </version>
+        <!--End Region-->
       </versions>
       <story>Not even capable of making it into a community college, $real had to settle for a trade school, which taught practical things they could use in their future life.</story>
       <source>RF</source>
@@ -3846,12 +3919,12 @@
           <id>2c0070c5-2284-4161-8a90-2c89e0482b85</id>
           <name>Wage Slave</name>
           <bonus>
-            <skilllevel>
-              <name>Charisma</name>
-            </skilllevel>
-            <skilllevel>
-              <name>Willpower</name>
-            </skilllevel>
+            <attributelevel>
+              <name>CHA</name>
+            </attributelevel>
+            <attributelevel>
+              <name>WIL</name>
+            </attributelevel>
             <skilllevel>
               <name>Con</name>
             </skilllevel>
@@ -4030,7 +4103,7 @@
           <val>3</val>
         </knowledgeskilllevel>
         <addqualities>
-          <addquality>High Pain Tolerance (Rating 1)</addquality>
+          <addquality>High Pain Tolerance</addquality>
           <addquality>Sense of Direction</addquality>
         </addqualities>
       </bonus>
@@ -4383,7 +4456,7 @@
           <val>2</val>
         </skilllevel>
         <skilllevel>
-          <name>Piloting Ground Craft</name>
+          <name>Pilot Ground Craft</name>
         </skilllevel>
         <skillgrouplevel>
           <name>Stealth</name>
@@ -4459,7 +4532,7 @@
           <val>2</val>
         </skilllevel>
         <skilllevel>
-          <name>Piloting Ground Craft</name>
+          <name>Pilot Ground Craft</name>
         </skilllevel>
         <skilllevel>
           <name>Pistols</name>
@@ -4581,16 +4654,16 @@
           <val>2</val>
         </knowledgeskilllevel>
         <addqualities>
-          <addqiality>In Debt V</addqiality>
+          <addquality rating="5">In Debt</addquality>
         </addqualities>
       </bonus>
       <!--<required>
-    <oneof>
-     <quality>Tour of Duty (Mercenary)</quality>
-     <quality>Tour of Duty (NAN)</quality>
-     <quality>Tour of Duty (Tír Tairngire)</quality>
-     <quality>Tour of Duty (UCAS, CAS and CFS)</quality>
-    </oneof>
+  <oneof>
+   <quality>Tour of Duty (Mercenary)</quality>
+   <quality>Tour of Duty (NAN)</quality>
+   <quality>Tour of Duty (Tír Tairngire)</quality>
+   <quality>Tour of Duty (UCAS, CAS and CFS)</quality>
+  </oneof>
    </required> Needs way to not select individual stuff (shadow work vs face)-->
       <story>$real overdosed on $CRIMEDESC decided to become a private investigator.</story>
       <source>RF</source>
@@ -4700,9 +4773,9 @@
             <skilllevel>
               <name>Forgery</name>
             </skilllevel>
-            <skilllevel>
-              <name>Intuition</name>
-            </skilllevel>
+            <attributelevel>
+              <name>INT</name>
+            </attributelevel>
             <skilllevel>
               <name>Perception</name>
             </skilllevel>
@@ -4915,9 +4988,9 @@
           <bonus>
             <skillgrouplevel>
               <options>
-                <alchemy>Alchemy</alchemy>
+                <enchanting>Enchanting</enchanting>
                 <conjuring>Conjuring</conjuring>
-                <spellcasting>Spellcasting</spellcasting>
+                <sorcery>Sorcery</sorcery>
               </options>
             </skillgrouplevel>
             <skilllevel>
@@ -5487,7 +5560,7 @@
               <name>Blades</name>
             </skilllevel>
             <skilllevel>
-              <name>Demolition</name>
+              <name>Demolitions</name>
             </skilllevel>
             <skilllevel>
               <name>Perception</name>
@@ -5609,7 +5682,7 @@
               <name>Demolitions</name>
             </skilllevel>
             <skillgrouplevel>
-              <name>Engineer</name>
+              <name>Engineering</name>
               <val>1</val>
             </skillgrouplevel>
             <skilllevel>
@@ -5790,9 +5863,9 @@
               <name>Pilot Aircraft</name>
               <val>2</val>
             </skilllevel>
-            <skilllevel>
-              <name>Reaction</name>
-            </skilllevel>
+            <attributelevel>
+              <name>REA</name>
+            </attributelevel>
             <skilllevel>
               <name>Survival</name>
             </skilllevel>
@@ -5958,9 +6031,9 @@
             <skilllevel>
               <name>Swimming</name>
             </skilllevel>
-            <skilllevel>
-              <name>Body</name>
-            </skilllevel>
+            <attributelevel>
+              <name>BOD</name>
+            </attributelevel>
           </bonus>
         </version>
         <version>
@@ -5975,9 +6048,9 @@
               <name>Electronics</name>
               <val>1</val>
             </skillgrouplevel>
-            <skilllevel>
-              <name>Intuition</name>
-            </skilllevel>
+            <attributelevel>
+              <name>INT</name>
+            </attributelevel>
             <skilllevel>
               <name>Perception</name>
             </skilllevel>
@@ -6834,7 +6907,7 @@
           <name>Sneaking</name>
         </skilllevel>
         <skilllevel>
-          <name>Unarmed</name>
+          <name>Unarmed Combat</name>
         </skilllevel>
         <addqualities>
           <addquality>Blandness</addquality>
@@ -6875,12 +6948,12 @@
           <val>3</val>
         </knowledgeskilllevel>
         <nuyenamt>32000</nuyenamt>
+        <addqualities>
+          <!--per raw, there is no rating for flashbacks-->
+          <addquality>Flashbacks I</addquality>
+          <addquality>Uneducated</addquality>
+        </addqualities>
       </bonus>
-      <addqialities>
-        <!--per raw, there is no rating for flashbacks-->
-        <addquality>Flashbacks I</addquality>
-        <addquality>Uneducated</addquality>
-      </addqialities>
       <!--todo: Special: You may pick 32,000 nuyen worth of bioware. Normal Essence costs apply-->
       <story>$real was used as a host for bioware, as implanting it in a metahuman is cheaper than keeping it on ice. One day, $real knew they would be killed, and their organs $BAGORGAN . On the other hand, free bioware! Score!</story>
       <source>CF</source>
@@ -8404,7 +8477,7 @@
       <!--<selectable/>-->
       <versions>
         <version>
-          <id>f9e684bb-d7fa-4fc7-87e0-d140cc6fc64d</id>
+          <id>047e3fb2-1d43-480c-baed-2b333472eb7d</id>
           <name>Metropole - Rio de Janeiro</name>
           <story>$real was born in Rio de Janeiro.</story>
           <bonus>
@@ -8832,7 +8905,7 @@
               <name>BOD</name>
             </attributelevel>
             <skilllevel>
-              <name>Stealth</name>
+              <name>Sneaking</name>
             </skilllevel>
             <skilllevel>
               <name>Survival</name>
@@ -9374,7 +9447,7 @@
         <addqualities>
           <addquality>Prejudiced (Common, Outspoken)</addquality>
           <addquality>Uneducated</addquality>
-          <addqiality>Toughness</addqiality>
+          <addquality>Toughness</addquality>
         </addqualities>
       </bonus>
       <story>$real was brought up consistently exposed to the Anarchist's way of seeing the world.</story>
@@ -9411,7 +9484,7 @@
         </knowledgeskilllevel>
         <addqualities>
           <addquality>Uneducated</addquality>
-          <addqiality>Toughness</addqiality>
+          <addquality>Toughness</addquality>
         </addqualities>
       </bonus>
       <story>$real was brought up in one of the few small coastal towns around the world.</story>
@@ -9452,9 +9525,9 @@
         </knowledgeskilllevel>
         <addqualities>
           <addquality>Uneducated</addquality>
-          <addqiality>Toughness</addqiality>
-          <addqiality>Blighted (24 Months)</addqiality>
-          <addqiality>Perceptive</addqiality>
+          <addquality>Toughness</addquality>
+          <addquality>Blighted (24 Months)</addquality>
+          <addquality>Perceptive</addquality>
         </addqualities>
       </bonus>
       <story>$real was brought up in proximity to of the world's many blighted coasts.</story>
@@ -9495,7 +9568,7 @@
         </knowledgeskilllevel>
         <addqualities>
           <addquality>Driven</addquality>
-          <addqiality>Bilingual</addqiality>
+          <addquality>Bilingual</addquality>
         </addqualities>
       </bonus>
       <story>$real and their family may have been war refugees or hoping for a better life elsewhere, as they where leaving their home country. You are part of the next generation, brought in between two cultures.</story>
@@ -9567,7 +9640,7 @@
           <name>First Aid</name>
         </skilllevel>
         <skilllevel>
-          <name>Industrial Mechanics</name>
+          <name>Industrial Mechanic</name>
         </skilllevel>
         <skilllevel>
           <name>Clubs</name>
@@ -9715,7 +9788,7 @@
           <group>Street</group>
         </knowledgeskilllevel>
         <addqualities>
-          <addqiality>Blighted (24 Months)</addqiality>
+          <addquality>Blighted (24 Months)</addquality>
         </addqualities>
       </bonus>
       <story>$real spent his teen years helping his small community at the toxic coast.</story>
@@ -10068,6 +10141,2819 @@
     </module>
     <!-- End Region -->
     <!--Region Real Life-->
+    <!-- End Region -->
+    <!-- End Region -->
+    <!--Region The Complete Trog-->
+    <!--Region Formative Years-->
+    <module>
+      <id>db8443eb-94e0-4922-a2a2-f3824e4f6e2c</id>
+      <stage>Formative Years</stage>
+      <category>LifeModule</category>
+      <name>Ork/Troll Slum Dweller</name>
+      <karma>40</karma>
+      <required>
+        <oneof>
+          <metatype>Ork</metatype>
+          <metatype>Troll</metatype>
+        </oneof>
+      </required>
+      <bonus>
+        <attributelevel>
+          <name>WIL</name>
+        </attributelevel>
+        <attributelevel>
+          <name>INT</name>
+        </attributelevel>
+        <addqualities>
+          <addquality>Trog Networker</addquality>
+        </addqualities>
+        <skilllevel>
+          <name>Clubs</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Perception</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Sneaking</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Survival</name>
+          <spec>Urban</spec>
+        </skilllevel>
+        <skilllevel>
+          <name>Unarmed Combat</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>[City]</name>
+          <group>Street</group>
+          <val>3</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <story>$real lived in the sprawl and learned how to survive in difficult circumstances.</story>
+      <source>TCG</source>
+      <page>189</page>
+    </module>
+    <module>
+      <id>054a1a00-7745-495b-86b0-301c7917ac76</id>
+      <stage>Formative Years</stage>
+      <category>LifeModule</category>
+      <name>Black Forest Baby</name>
+      <karma>40</karma>
+      <required>
+        <oneof>
+          <metatype>Ork</metatype>
+          <metatype>Troll</metatype>
+        </oneof>
+      </required>
+      <bonus>
+        <attributelevel>
+          <name>WIL</name>
+        </attributelevel>
+        <attributelevel>
+          <name>LOG</name>
+        </attributelevel>
+        <addqualities>
+          <addquality>Black Forest Native</addquality>
+        </addqualities>
+        <skilllevel>
+          <name>Etiquette</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Leadership</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Longarms</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Negotiation</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Survival</name>
+          <spec>Forests</spec>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>Black Forest Government</name>
+          <group>Street</group>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>Black Forest History</name>
+          <group>Street</group>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>Black Forest People</name>
+          <group>Street</group>
+        </knowledgeskilllevel>
+      </bonus>
+      <story>$real was born in the Black Forest Kingdom and saw it evolve into the Black Forest Troll Republic.</story>
+      <source>TCG</source>
+      <page>190</page>
+    </module>
+    <!-- End Region -->
+    <!-- Region Teen Years -->
+    <module>
+      <id>ce6dbac8-6016-44dc-90f0-719a8928bf98</id>
+      <stage>Teen Years</stage>
+      <category>LifeModule</category>
+      <name>Trog Ganger</name>
+      <karma>50</karma>
+      <required>
+        <oneof>
+          <metatype>Ork</metatype>
+          <metatype>Troll</metatype>
+        </oneof>
+      </required>
+      <bonus>
+        <attributelevel>
+          <name>AGI</name>
+          <val>1</val>
+        </attributelevel>
+        <attributelevel>
+          <name>WIL</name>
+          <val>1</val>
+        </attributelevel>
+        <addqualities>
+          <addquality>Bad Rep</addquality>
+          <addquality>Nasty Trog</addquality>
+        </addqualities>
+        <skillgrouplevel>
+          <name>Close Combat</name>
+          <val>2</val>
+        </skillgrouplevel>
+        <skilllevel>
+          <name>Escape Artist</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Gymnastics</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Intimidation</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Palming</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Sneaking</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Survival</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>[City]</name>
+          <group>Street</group>
+        </knowledgeskilllevel>
+      </bonus>
+      <story>$real was involved in trog gangs.</story>
+      <source>TCG</source>
+      <page>190</page>
+    </module>
+    <module>
+      <id>a9007966-38dd-429f-a661-cff06a776729</id>
+      <stage>Teen Years</stage>
+      <category>LifeModule</category>
+      <name>Survivor</name>
+      <karma>50</karma>
+      <required>
+        <oneof>
+          <metatype>Ork</metatype>
+          <metatype>Troll</metatype>
+        </oneof>
+      </required>
+      <bonus>
+        <attributelevel>
+          <name>BOD</name>
+        </attributelevel>
+        <attributelevel>
+          <name>WIL</name>
+        </attributelevel>
+        <attributelevel>
+          <name>INT</name>
+        </attributelevel>
+        <addqualities>
+          <addquality>Bad Credit</addquality>
+          <addquality>Trog Networker</addquality>
+        </addqualities>
+        <skilllevel>
+          <name>Blades</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Clubs</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Con</name>
+        </skilllevel>
+        <skilllevel>
+          <name>First Aid</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Gymnastics</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Running</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Sneaking</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Survival</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Swimming</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Tracking</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>[City]</name>
+          <group>Street</group>
+        </knowledgeskilllevel>
+      </bonus>
+      <story>$real had a tough set of teen years but managed to survive.</story>
+      <source>TCG</source>
+      <page>190</page>
+    </module>
+    <!-- End Region -->
+    <!--Region Further Education -->
+    <module>
+      <id>9220f169-be3f-48f1-bfa3-cb7fb4dec985</id>
+      <stage>Further Education</stage>
+      <category>LifeModule</category>
+      <name>Biloxi Technical Institute</name>
+      <karma>65</karma>
+      <required>
+        <oneof>
+          <metatype>Ork</metatype>
+          <metatype>Troll</metatype>
+        </oneof>
+      </required>
+      <versions>
+        <version>
+          <id>d381b167-b5f5-425c-ba33-5a6876b4e45c</id>
+          <name>Computer Science</name>
+          <story>$name studied Computer Science.</story>
+          <bonus>
+            <skilllevel>
+              <name>Cybercombat</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Hacking</name>
+            </skilllevel>
+            <skillgrouplevel>
+              <name>Electronics</name>
+            </skillgrouplevel>
+            <knowledgeskilllevel>
+              <name>Hardware Design</name>
+              <group>Academic</group>
+              <val>2</val>
+            </knowledgeskilllevel>
+          </bonus>
+        </version>
+        <version>
+          <id>57893be6-0a91-4d93-bc4f-f1484e93c889</id>
+          <name>Computer Science</name>
+          <story>$name studied Engineering.</story>
+          <bonus>
+            <skilllevel>
+              <name>Chemistry</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Hardware</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Industrial Mechanic</name>
+            </skilllevel>
+            <knowledgeskilllevel>
+              <name>Engineering</name>
+              <group>Academic</group>
+              <val>4</val>
+            </knowledgeskilllevel>
+          </bonus>
+        </version>
+      </versions>
+      <bonus>
+        <attributelevel>
+          <name>LOG</name>
+        </attributelevel>
+        <attributelevel>
+          <name>WIL</name>
+        </attributelevel>
+        <addqualities>
+          <addquality>Trog Historian</addquality>
+        </addqualities>
+        <skilllevel>
+          <name>Computer</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Perception</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Etiquette</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>[Any]</name>
+          <group>Academic</group>
+          <val>2</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <story>$real had a tough set of teen years but managed to survive.</story>
+      <source>TCG</source>
+      <page>190</page>
+    </module>
+    <!-- End Region -->
+    <!--Region Real Life-->
+    <module>
+      <id>6b55f9a1-257f-4ee2-b735-7a61772c8a3c</id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Trog Professional</name>
+      <karma>100</karma>
+      <required>
+        <oneof>
+          <metatype>Ork</metatype>
+          <metatype>Troll</metatype>
+        </oneof>
+      </required>
+      <bonus>
+        <addqualities>
+          <addquality>SINner (Corporate Limited)</addquality>
+        </addqualities>
+        <attributelevel>
+          <name>LOG</name>
+        </attributelevel>
+        <attributelevel>
+          <name>INT</name>
+        </attributelevel>
+        <skilllevel>
+          <name>Computer</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Etiquette</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Hardware</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Instruction</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Leadership</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Medicine</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Perception</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Pilot Ground Craft</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Software</name>
+        </skilllevel>
+        <skillgrouplevel>
+          <name>Firearms</name>
+          <val>2</val>
+        </skillgrouplevel>
+        <knowledgeskilllevel>
+          <name>Corporate Procedures</name>
+          <group>Professional</group>
+          <val>3</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <story>$real worked for a corp.</story>
+      <source>TCG</source>
+      <page>191</page>
+    </module>
+    <module>
+      <id>d20c08f7-0e54-4a48-bd61-31279d99689f</id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Trog Rebel</name>
+      <karma>100</karma>
+      <required>
+        <oneof>
+          <metatype>Ork</metatype>
+          <metatype>Troll</metatype>
+        </oneof>
+      </required>
+      <bonus>
+        <attributelevel>
+          <name>WIL</name>
+        </attributelevel>
+        <attributelevel>
+          <name>INT</name>
+        </attributelevel>
+        <addqualities>
+          <addquality>Force of Chaos</addquality>
+          <addquality>Nasty Trog</addquality>
+        </addqualities>
+        <skilllevel>
+          <name>Con</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Demolitions</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Escape Artist</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Gymnastics</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Perception</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Sneaking</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Survival</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Tracking</name>
+        </skilllevel>
+        <skillgrouplevel>
+          <name>Firearms</name>
+          <val>2</val>
+        </skillgrouplevel>
+        <knowledgeskilllevel>
+          <name>Covert Tactics</name>
+          <group>Professional</group>
+          <val>3</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <story>$real spent time rebelling against society with explosives.</story>
+      <source>TCG</source>
+      <page>191</page>
+    </module>
+    <!-- End Region -->
+    <!-- End Region -->
+    <!--Region No Future-->
+    <!-- Region Further Education -->
+    <module>
+      <id>c674ae2c-e5ef-4bfa-8993-884769560644</id>
+      <stage>Further Education</stage>
+      <category>LifeModule</category>
+      <name>Student Athlete</name>
+      <karma>55</karma>
+      <bonus>
+        <attributelevel>
+          <name>BOD</name>
+        </attributelevel>
+        <attributelevel>
+          <name>LOG</name>
+        </attributelevel>
+        <addqualities>
+          <addquality>Fame: Local</addquality>
+        </addqualities>
+        <skilllevel>
+          <name>Computer</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Etiquette</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>[Any]</name>
+          <val>1</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[Any]</name>
+          <val>1</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <versions>
+        <version>
+          <id>e3a7c927-6e82-453d-b24c-80bcbe8f6bc3</id>
+          <name>E-Sports</name>
+          <bonus>
+            <skilllevel>
+              <name>Computer</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Electronic Warfare</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Hardware</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Software</name>
+            </skilllevel>
+          </bonus>
+          <story>$real did E-Sports.</story>
+        </version>
+        <version>
+          <id>b28917e0-5ef1-444d-bf4a-484da992cccd</id>
+          <name>Vehicle/Drone Sports</name>
+          <bonus>
+            <skilllevel>
+              <options>
+                <pilotaircraft>Pilot Aircraft</pilotaircraft>
+                <pilotexoticvehicle>Pilot Exotic Vehicle</pilotexoticvehicle>
+                <pilotgroundcraft>Pilot Ground Craft</pilotgroundcraft>
+                <pilotwalker>Pilot Walker</pilotwalker>
+                <pilotwatercraft>Pilot Watercraft</pilotwatercraft>
+              </options>
+            </skilllevel>
+            <skillgrouplevel>
+              <name>Engineering</name>
+            </skillgrouplevel>
+          </bonus>
+          <story>$real did drone sports.</story>
+        </version>
+        <version>
+          <id>b9b0906c-a795-44c6-a0de-aaccc2fa7795</id>
+          <name>Physical Sports</name>
+          <bonus>
+            <addqualities>
+              <addquality>Natural Athlete</addquality>
+            </addqualities>
+            <skillgrouplevel>
+              <name>Athletics</name>
+            </skillgrouplevel>
+          </bonus>
+          <story>$real did physical sports.</story>
+        </version>
+      </versions>
+      <story>$real was a student athlete.</story>
+    </module>
+    <!-- End Region -->
+    <!-- Region Real Life -->
+    <module>
+      <id>51a990d8-3e7b-497e-b6dc-6b85ab3d1fe6</id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Professional Athlete</name>
+      <karma>100</karma>
+      <bonus>
+        <attributelevel>
+          <name>REA</name>
+        </attributelevel>
+        <attributelevel>
+          <name>INT</name>
+        </attributelevel>
+        <addqualities>
+          <addquality>Fame: National</addquality>
+          <addquality>SINner (Corporate Limited)</addquality>
+        </addqualities>
+        <knowledgeskilllevel>
+          <name>[Any]</name>
+          <group>Language</group>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[Chosen Sport]</name>
+          <group>Professional</group>
+          <val>4</val>
+        </knowledgeskilllevel>
+        <skilllevel>
+          <name>Etiquette</name>
+          <val>2</val>
+        </skilllevel>
+      </bonus>
+      <versions>
+        <version>
+          <id>ad321336-0a5d-46df-a713-bb67d9340e7d</id>
+          <name>Awakened Athlete</name>
+          <bonus>
+            <attributelevel>
+              <name>BOD</name>
+            </attributelevel>
+            <attributelevel>
+              <name>WIL</name>
+            </attributelevel>
+            <skillgrouplevel>
+              <name>Sorcery</name>
+              <val>2</val>
+            </skillgrouplevel>
+            <addqualities>
+              <addquality>Focused Concentration</addquality>
+            </addqualities>
+            <knowledgeskilllevel>
+              <name>Magical Theory</name>
+              <group>Professional</group>
+              <val>2</val>
+            </knowledgeskilllevel>
+            <knowledgeskilllevel>
+              <name>Magical Law</name>
+              <group>Professional</group>
+              <val>2</val>
+            </knowledgeskilllevel>
+          </bonus>
+        </version>
+        <version>
+          <id>32d88731-8174-437e-b150-86bfa669968d</id>
+          <name>Combat Biker/Urban Brawl Outrider</name>
+          <bonus>
+            <attributelevel>
+              <name>BOD</name>
+            </attributelevel>
+            <attributelevel>
+              <name>REA</name>
+            </attributelevel>
+            <addqualities>
+              <addquality>Steely Eyed Wheelman</addquality>
+            </addqualities>
+            <skilllevel>
+              <name>Automotive Mechanic</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Pilot Ground Craft</name>
+              <val>2</val>
+            </skilllevel>
+            <!-- todo: shouldn't be able to select the same skill twice for these -->
+            <skilllevel>
+              <options>
+                <clubs>Clubs</clubs>
+                <gunnery>Gunnery</gunnery>
+                <longarms>Longarms</longarms>
+                <unarmedcombat>Unarmed Combat</unarmedcombat>
+              </options>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <options>
+                <clubs>Clubs</clubs>
+                <gunnery>Gunnery</gunnery>
+                <longarms>Longarms</longarms>
+                <unarmedcombat>Unarmed Combat</unarmedcombat>
+              </options>
+              <val>2</val>
+            </skilllevel>
+          </bonus>
+        </version>
+        <version>
+          <id>dc646f6c-6ff8-4017-bfd6-2cc4d83b1c77</id>
+          <name>Courtballer</name>
+          <bonus>
+            <attributelevel>
+              <name>BOD</name>
+            </attributelevel>
+            <attributelevel>
+              <name>STR</name>
+            </attributelevel>
+            <knowledgeskilllevel>
+              <name>Spanish</name>
+              <group>Language</group>
+              <val>2</val>
+            </knowledgeskilllevel>
+            <skilllevel>
+              <name>Blades</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Clubs</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Intimidation</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Unarmed Combat</name>
+            </skilllevel>
+            <addqualities>
+              <addquality>Toughness</addquality>
+            </addqualities>
+          </bonus>
+        </version>
+        <version>
+          <id>c1d9d00d-01bc-48e3-a7c4-fb357dcc2732</id>
+          <name>Drone Racer</name>
+          <bonus>
+            <attributelevel>
+              <name>REA</name>
+            </attributelevel>
+            <skilllevel>
+              <name>Electronic Warfare</name>
+            </skilllevel>
+            <skillgrouplevel>
+              <name>Engineering</name>
+              <val>2</val>
+            </skillgrouplevel>
+            <addqualities>
+              <addquality>Gearhead</addquality>
+            </addqualities>
+            <!-- todo: should not be able to double up on these -->
+            <skilllevel>
+              <options>
+                <pilotaircraft>Pilot Aircraft</pilotaircraft>
+                <pilotexoticvehicle>Pilot Exotic Vehicle</pilotexoticvehicle>
+                <pilotgroundcraft>Pilot Ground Craft</pilotgroundcraft>
+                <pilotwalker>Pilot Walker</pilotwalker>
+                <pilotwatercraft>Pilot Watercraft</pilotwatercraft>
+              </options>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <options>
+                <pilotaircraft>Pilot Aircraft</pilotaircraft>
+                <pilotexoticvehicle>Pilot Exotic Vehicle</pilotexoticvehicle>
+                <pilotgroundcraft>Pilot Ground Craft</pilotgroundcraft>
+                <pilotwalker>Pilot Walker</pilotwalker>
+                <pilotwatercraft>Pilot Watercraft</pilotwatercraft>
+              </options>
+              <val>2</val>
+            </skilllevel>
+          </bonus>
+        </version>
+        <version>
+          <id>62aebe0f-513a-45c6-8826-d356160ce13d</id>
+          <name>Freestyle Fighter</name>
+          <bonus>
+            <attributelevel>
+              <name>REA</name>
+            </attributelevel>
+            <attributelevel>
+              <name>STR</name>
+            </attributelevel>
+            <skilllevel>
+              <name>First Aid</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Intimidation</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Unarmed Combat</name>
+              <val>2</val>
+            </skilllevel>
+            <knowledgeskilllevel>
+              <name>Martial Arts</name>
+              <group>Professional</group>
+              <val>2</val>
+            </knowledgeskilllevel>
+          </bonus>
+        </version>
+        <version>
+          <id>4de8cbb4-de52-480c-9113-30bbe6454436</id>
+          <name>Hurler/Stickballer</name>
+          <bonus>
+            <attributelevel>
+              <name>REA</name>
+            </attributelevel>
+            <skilllevel>
+              <name>Clubs</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Running</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Gymnastics</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Throwing Weapons</name>
+            </skilllevel>
+            <knowledgeskilllevel>
+              <name>[Sperethiel or any NAN]</name>
+              <group>Language</group>
+              <val>2</val>
+            </knowledgeskilllevel>
+            <addqualities>
+              <addquality>Natural Athlete</addquality>
+            </addqualities>
+          </bonus>
+        </version>
+        <version>
+          <id>3f2de14d-6538-410d-bcb0-a877f855af92</id>
+          <name>Miracle Shooter</name>
+          <bonus>
+            <attributelevel>
+              <name>AGI</name>
+            </attributelevel>
+            <skilllevel>
+              <name>Computer</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Gymnastics</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Running</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Software</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Running</name>
+            </skilllevel>
+            <skillgrouplevel>
+              <name>Firearms</name>
+              <val>2</val>
+            </skillgrouplevel>
+          </bonus>
+        </version>
+        <version>
+          <id>6f06bb2c-a3e6-425a-bde9-fb8488bc558f</id>
+          <name>Professional Gamer</name>
+          <bonus>
+            <attributelevel>
+              <name>LOG</name>
+            </attributelevel>
+            <skilllevel>
+              <name>Computer</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Cybercombat</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Electronic Warfare</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Leadership</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Software</name>
+              <val>2</val>
+            </skilllevel>
+            <addqualities>
+              <addquality>Overclocker</addquality>
+            </addqualities>
+            <knowledgeskilllevel>
+              <name>Video Games</name>
+              <val>3</val>
+              <group>Professional</group>
+            </knowledgeskilllevel>
+          </bonus>
+        </version>
+      </versions>
+      <story />
+      <source>NF</source>
+      <page>178</page>
+    </module>
+    <module>
+      <id>392b5600-34ac-40a9-a246-f3b5a11689ee</id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Teen Diva</name>
+      <karma>100</karma>
+      <bonus>
+        <attributelevel>
+          <name>AGI</name>
+        </attributelevel>
+        <attributelevel>
+          <name>CHA</name>
+        </attributelevel>
+        <addqualities>
+          <addquality>Fame: National</addquality>
+        </addqualities>
+        <skillgrouplevel>
+          <name>Athletics</name>
+        </skillgrouplevel>
+        <skilllevel>
+          <name>Artisan</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Performance</name>
+          <val>2</val>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>Dance</name>
+          <group>Interest</group>
+          <val>2</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>High Fashion</name>
+          <group>Interest</group>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>Music</name>
+          <group>Interest</group>
+          <val>2</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>Entertainment Industry</name>
+          <group>Street</group>
+          <val>2</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[Corporate Sponsor]</name>
+          <group>Street</group>
+          <val>1</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <story />
+      <source>NF</source>
+      <page>179</page>
+    </module>
+    <!-- End Region -->
+    <!-- End Region -->
+    <!--Region Better Than Bad-->
+    <!--Region Nationality-->
+    <module>
+      <id>baa9a6cc-2fb8-49d3-b503-d1f74bd0d915</id>
+      <stage>Nationality</stage>
+      <category>LifeModule</category>
+      <name>Azanian Confederation</name>
+      <karma>15</karma>
+      <bonus>
+        <knowledgeskilllevel>
+          <option>
+            <afrikaans>Afrikaans</afrikaans>
+            <bantu>Bantu</bantu>
+            <english>English</english>
+            <german>German</german>
+            <isindebele>IsiNdebele</isindebele>
+            <isixhosa>IsiXhosa</isixhosa>
+            <isizulu>IsiZulu</isizulu>
+            <sedepi>Sedepi</sedepi>
+            <sesotho>Sesotho</sesotho>
+            <setswana>Setswana</setswana>
+            <siswati>SiSwati</siswati>
+            <tshivenda>Tshivenda</tshivenda>
+            <xitsonga>Xitsonga</xitsonga>
+          </option>
+          <val>0</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <option>
+            <afrikaans>Afrikaans</afrikaans>
+            <bantu>Bantu</bantu>
+            <english>English</english>
+            <german>German</german>
+            <isindebele>IsiNdebele</isindebele>
+            <isixhosa>IsiXhosa</isixhosa>
+            <isizulu>IsiZulu</isizulu>
+            <sedepi>Sedepi</sedepi>
+            <sesotho>Sesotho</sesotho>
+            <setswana>Setswana</setswana>
+            <siswati>SiSwati</siswati>
+            <tshivenda>Tshivenda</tshivenda>
+            <xitsonga>Xitsonga</xitsonga>
+          </option>
+          <val>1</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>History</name>
+          <group>Academic</group>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>Azanian Confederation</name>
+          <group>Academic</group>
+        </knowledgeskilllevel>
+      </bonus>
+      <versions>
+        <version>
+          <id>dd15394c-da02-49d4-9f12-bc07b781dbdd</id>
+          <name>General Azania</name>
+          <bonus>
+            <attributelevel>
+              <name>WIL</name>
+            </attributelevel>
+            <skilllevel>
+              <name>Survival</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Negotiation</name>
+            </skilllevel>
+            <knowledgeskilllevel>
+              <name>[City]</name>
+              <group>Street</group>
+              <val>2</val>
+            </knowledgeskilllevel>
+            <addqualities>
+              <addquality>SINner: National</addquality>
+            </addqualities>
+          </bonus>
+        </version>
+        <version>
+          <id>b715f0ad-4385-44d8-a9d9-415ed7219a4a</id>
+          <name>Pretoria (PWV Metroplex)</name>
+          <bonus>
+            <attributelevel>
+              <name>BOD</name>
+            </attributelevel>
+            <skilllevel>
+              <name>Perception</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Etiquette</name>
+            </skilllevel>
+            <knowledgeskilllevel>
+              <name>Pretoria</name>
+              <group>Street</group>
+              <val>2</val>
+            </knowledgeskilllevel>
+            <addqualities>
+              <addquality>SINner: National</addquality>
+            </addqualities>
+          </bonus>
+        </version>
+        <version>
+          <id>614be459-0eb9-4eb8-b75f-92b6520d6661</id>
+          <name>SINless</name>
+          <bonus>
+            <attributelevel>
+              <name>REA</name>
+            </attributelevel>
+            <knowledgeskilllevel>
+              <name>[City]</name>
+              <group>Street</group>
+              <val>2</val>
+            </knowledgeskilllevel>
+          </bonus>
+        </version>
+        <version>
+          <id>c36e13c7-561b-4fe5-9335-7f300b5b70fe</id>
+          <name>Zulu Nation</name>
+          <bonus>
+            <attributelevel>
+              <name>CHA</name>
+            </attributelevel>
+            <skilllevel>
+              <name>Etiquette</name>
+            </skilllevel>
+            <knowledgeskilllevel>
+              <option>
+                <newhlobane>New Hlobane</newhlobane>
+                <city>[City]</city>
+              </option>
+              <group>Street</group>
+              <val>2</val>
+            </knowledgeskilllevel>
+            <addqualities>
+              <addquality>SINner: National</addquality>
+            </addqualities>
+          </bonus>
+        </version>
+      </versions>
+      <source>BTB</source>
+      <page>162</page>
+      <story />
+    </module>
+    <!--End Region-->
+    <!--Region Formative Years-->
+    <module>
+      <id>476490f9-24d8-4eef-b397-22cad0d578f6</id>
+      <stage>Formative Years</stage>
+      <category>LifeModule</category>
+      <name>Devout</name>
+      <karma>40</karma>
+      <bonus>
+        <attributelevel>
+          <name>CHA</name>
+        </attributelevel>
+        <attributelevel>
+          <name>INT</name>
+        </attributelevel>
+        <addqualities>
+          <addquality>Trustworthy</addquality>
+        </addqualities>
+        <knowledgeskilllevel>
+          <name>[Religious Text]</name>
+          <group>Academic</group>
+          <val>3</val>
+        </knowledgeskilllevel>
+        <skilllevel>
+          <name>Etiquette</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Performance</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Artisan</name>
+          <val>2</val>
+        </skilllevel>
+      </bonus>
+      <story />
+      <source>BTB</source>
+      <page></page>
+    </module>
+    <module>
+      <id>4c51d90e-7bcd-486f-b119-3adcc4cfd050</id>
+      <stage>Formative Years</stage>
+      <category>LifeModule</category>
+      <name>Pastor's Kid</name>
+      <karma>40</karma>
+      <bonus>
+        <attributelevel>
+          <name>CHA</name>
+        </attributelevel>
+        <attributelevel>
+          <name>INT</name>
+        </attributelevel>
+        <addqualities>
+          <addquality>First Impression</addquality>
+        </addqualities>
+        <skilllevel>
+          <name>Con</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Etiquette</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Perception</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Performance</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Artisan</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>[Religion]</name>
+          <val>2</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <story />
+      <source>BTB</source>
+      <page>163</page>
+    </module>
+    <module>
+      <id>39fe4e90-e3ba-463d-9a6d-410c863c41a4</id>
+      <stage>Formative Years</stage>
+      <category>LifeModule</category>
+      <name>Raised By Hooders</name>
+      <karma>40</karma>
+      <bonus>
+        <attributelevel>
+          <name>INT</name>
+        </attributelevel>
+        <attributelevel>
+          <name>WIL</name>
+        </attributelevel>
+        <addqualities>
+          <addquality>Cynic</addquality>
+        </addqualities>
+        <skilllevel>
+          <name>Escape Artist</name>
+        </skilllevel>
+        <skilllevel>
+          <name>First Aid</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Perception</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Running</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Sneaking</name>
+        </skilllevel>
+      </bonus>
+      <story />
+      <source>BTB</source>
+      <page>163</page>
+    </module>
+    <module>
+      <id>550d0752-da63-400d-a8bb-4f0778abafc5</id>
+      <stage>Formative Years</stage>
+      <category>LifeModule</category>
+      <name>Tribal</name>
+      <karma>40</karma>
+      <bonus>
+        <attributelevel>
+          <name>INT</name>
+        </attributelevel>
+        <attributelevel>
+          <name>BOD</name>
+        </attributelevel>
+        <addqualities>
+          <addquality>Favored (Specific Target, Biased)</addquality>
+        </addqualities>
+        <skilllevel>
+          <name>Throwing Weapons</name>
+        </skilllevel>
+        <skillgrouplevel>
+          <name>Outdoors</name>
+          <val>2</val>
+        </skillgrouplevel>
+        <skilllevel>
+          <name>Perception</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Running</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Survival</name>
+        </skilllevel>
+      </bonus>
+      <story />
+      <source>BTB</source>
+      <page>163</page>
+    </module>
+    <module>
+      <id>b5d7eafe-1d7e-493a-b0de-7e8dfc1502b8</id>
+      <stage>Formative Years</stage>
+      <category>LifeModule</category>
+      <name>Poor Kid</name>
+      <karma>40</karma>
+      <bonus>
+        <attributelevel>
+          <name>INT</name>
+        </attributelevel>
+        <addqualities>
+          <addquality>Home Ground (You Know A Guy)</addquality>
+        </addqualities>
+        <skilllevel>
+          <name>Survival</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Etiquette</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Perception</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Unarmed Combat</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>Food Banks</name>
+          <group>Street</group>
+          <val>2</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <story />
+      <source>BTB</source>
+      <page>163</page>
+    </module>
+    <!--End Region-->
+    <!--Region Teen Years-->
+    <!--End Region-->
+    <!--Region Real Life-->
+    <module>
+      <id>cc2de2db-31c3-470d-b209-3ef019bd797b</id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Framed</name>
+      <karma>100</karma>
+      <bonus>
+        <attributelevel>
+          <name>REA</name>
+        </attributelevel>
+        <attributelevel>
+          <name>INT</name>
+        </attributelevel>
+        <addqualities>
+          <addquality>SINner (Criminal)</addquality>
+        </addqualities>
+        <skilllevel>
+          <name>Disguise</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Sneaking</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Perception</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Running</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Survival</name>
+        </skilllevel>
+      </bonus>
+      <story />
+      <source>BTB</source>
+      <page>163</page>
+    </module>
+    <module>
+      <id>64250875-5ffe-425e-9651-f09737f2bb2b</id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Dead</name>
+      <karma>100</karma>
+      <bonus>
+        <attributelevel>
+          <name>REA</name>
+        </attributelevel>
+        <addqualities>
+          <addquality>Blandness</addquality>
+          <addquality>Dead SIN</addquality>
+        </addqualities>
+        <skilllevel>
+          <name>Con</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Escape Artist</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Negotiation</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Running</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Sneaking</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Survival</name>
+          <val>2</val>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>Police Hangouts and Checkpoints</name>
+          <group>Street</group>
+          <val>3</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <story />
+      <source>BTB</source>
+      <page>164</page>
+    </module>
+    <!--End Region-->
+    <!--End Region-->
+    <!-- Region Street Lethal -->
+    <!-- Region Formative Years -->
+    <module>
+      <id>5b8db9d6-4a23-435a-8ec0-2749b23cbec6</id>
+      <stage>Formative Years</stage>
+      <category>LifeModule</category>
+      <name>Merc Kid</name>
+      <karma>40</karma>
+      <bonus>
+        <attributelevel>
+          <name>BOD</name>
+        </attributelevel>
+        <attributelevel>
+          <name>CHA</name>
+        </attributelevel>
+        <addqualities>
+          <addquality>Poor Self Control (Attention-Seeking)</addquality>
+          <addquality>Common Sense</addquality>
+        </addqualities>
+        <skilllevel>
+          <name>Sneaking</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Con</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Palming</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Running</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Negotiation</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Swimming</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Unarmed Combat</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>Mercenary Units</name>
+          <group>Street</group>
+          <val>2</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <story />
+      <source>SL</source>
+      <page>179</page>
+    </module>
+    <module>
+      <id>00a565e8-4094-46fc-a9e0-6b8a9468b68d</id>
+      <stage>Formative Years</stage>
+      <category>LifeModule</category>
+      <name>Dock Rat</name>
+      <karma>40</karma>
+      <bonus>
+        <attributelevel>
+          <name>STR</name>
+        </attributelevel>
+        <attributelevel>
+          <name>WIL</name>
+        </attributelevel>
+        <addqualities>
+          <addquality>Phobia (Mild, Common)</addquality>
+          <addquality>Barrens Rat</addquality>
+        </addqualities>
+        <skilllevel>
+          <name>Swimming</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Con</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Survival</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Palming</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Running</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Gymnastics</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>Shipping Corps</name>
+          <group>Street</group>
+          <val>2</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <story />
+      <source>SL</source>
+      <page>179</page>
+    </module>
+    <module>
+      <id>0b6d0f7d-79e5-48c7-acc1-493344d8f363</id>
+      <stage>Formative Years</stage>
+      <category>LifeModule</category>
+      <name>Corp Kid</name>
+      <karma>40</karma>
+      <bonus>
+        <attributelevel>
+          <name>CHA</name>
+        </attributelevel>
+        <attributelevel>
+          <name>INT</name>
+        </attributelevel>
+        <addqualities>
+          <addquality>Common Sense</addquality>
+          <addquality>SINner (Corporate Limited)</addquality>
+          <addquality>Perceptive</addquality>
+        </addqualities>
+        <skilllevel>
+          <name>Con</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Negotiation</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Perception</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Sneaking</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Etiquette</name>
+          <spec>Corporate</spec>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>Corp Politics</name>
+          <group>Street</group>
+          <val>1</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[Any]</name>
+          <group>Language</group>
+          <val>1</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <story />
+      <source>SL</source>
+      <page>127</page>
+    </module>
+    <module>
+      <id>8b05f9be-4713-4d96-9c8b-25952b538b3a</id>
+      <stage>Formative Years</stage>
+      <category>LifeModule</category>
+      <name>Corp Silver Spooner</name>
+      <karma>40</karma>
+      <bonus>
+        <attributelevel>
+          <name>CHA</name>
+        </attributelevel>
+        <attributelevel>
+          <name>LOG</name>
+        </attributelevel>
+        <addqualities>
+          <addquality>Born Rich</addquality>
+          <addquality>Privileged Family Name</addquality>
+          <addquality>SINner (Corporate Limited)</addquality>
+        </addqualities>
+        <skilllevel>
+          <name>Etiquette</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Intimidation</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Leadership</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Negotiation</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Perception</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>[Any]</name>
+          <group>Academic</group>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>Corporate</name>
+          <group>Street</group>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[Any]</name>
+          <group>Language</group>
+        </knowledgeskilllevel>
+      </bonus>
+      <story />
+      <source>SL</source>
+      <page>128</page>
+    </module>
+    <!--End Region-->
+    <!-- Region Teen Years -->
+    <module>
+      <id>5b6feab4-e5dc-4c71-aa06-8303faf010a3</id>
+      <stage>Teen Years</stage>
+      <category>LifeModule</category>
+      <name>Corp Teen</name>
+      <karma>50</karma>
+      <bonus>
+        <attributelevel>
+          <name>INT</name>
+        </attributelevel>
+        <attributelevel>
+          <name>LOG</name>
+        </attributelevel>
+        <addqualities>
+          <!-- todo: should have 3 levels of records on file -->
+          <addquality>Daredevil</addquality>
+          <addquality>Records On File</addquality>
+          <addquality>SINner (Corporate Limited)</addquality>
+        </addqualities>
+        <skilllevel>
+          <name>Intimidation</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Con</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Perception</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Performance</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Running</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Sneaking</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>[Any]</name>
+          <group>Academic</group>
+        </knowledgeskilllevel>
+      </bonus>
+      <story />
+      <source>SL</source>
+      <page>128</page>
+    </module>
+    <module>
+      <id>e5af6b42-a73c-4580-ab46-ac98718369cb</id>
+      <stage>Teen Years</stage>
+      <category>LifeModule</category>
+      <name>Merc Teen</name>
+      <karma>50</karma>
+      <bonus>
+        <attributelevel>
+          <name>REA</name>
+        </attributelevel>
+        <attributelevel>
+          <name>INT</name>
+        </attributelevel>
+        <addqualities>
+          <addquality>Antipathy</addquality>
+        </addqualities>
+        <skillgrouplevel>
+          <name>Close Combat</name>
+        </skillgrouplevel>
+        <skillgrouplevel>
+          <name>Firearms</name>
+        </skillgrouplevel>
+        <skillgrouplevel>
+          <name>Athletics</name>
+        </skillgrouplevel>
+        <skilllevel>
+          <name>Sneaking</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Con</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Demolitions</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>Merc Corps</name>
+          <group>Street</group>
+          <val>2</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>Geography</name>
+          <group>Street</group>
+          <val>2</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <story />
+      <source>SL</source>
+      <page>179</page>
+    </module>
+    <module>
+      <id>0ce0e867-5fa9-4492-8452-1459ecf392a2</id>
+      <stage>Teen Years</stage>
+      <category>LifeModule</category>
+      <name>Boat Brat</name>
+      <karma>50</karma>
+      <bonus>
+        <attributelevel>
+          <name>LOG</name>
+        </attributelevel>
+        <attributelevel>
+          <name>CHA</name>
+        </attributelevel>
+        <addqualities>
+          <addquality>Born Rich</addquality>
+        </addqualities>
+        <skilllevel>
+          <name>Nautical Mechanic</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Diving</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Swimming</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Pilot Watercraft</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Navigation</name>
+          <val>3</val>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>[Specific location near lake, river, or ocean]</name>
+          <group>Street</group>
+          <val>4</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <story />
+      <source>SL</source>
+      <page>179</page>
+    </module>
+    <!-- End Region -->
+    <!--Region Further Education-->
+    <module>
+      <id>d886934b-b937-4791-9512-cd7257ca721d</id>
+      <stage>Further Education</stage>
+      <category>LifeModule</category>
+      <name>Corp College Student</name>
+      <!-- per RAW there is no karma cost listed -->
+      <karma>65</karma>
+      <bonus>
+        <attributelevel>
+          <name>LOG</name>
+        </attributelevel>
+        <attributelevel>
+          <name>INT</name>
+        </attributelevel>
+        <addqualities>
+          <addquality>
+            <options>
+              <collegeeducation>College Education</collegeeducation>
+              <technicalschooleducation>Technical School Education</technicalschooleducation>
+            </options>
+          </addquality>
+          <addquality>Common Sense</addquality>
+          <addquality>Day Job</addquality>
+          <addquality>Perceptive</addquality>
+        </addqualities>
+        <skilllevel>
+          <name>Etiquette</name>
+          <spec>Academic</spec>
+          <val>1</val>
+        </skilllevel>
+        <skilllevel>
+          <name>First Aid</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Instruction</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Performance</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Perception</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>[Any]</name>
+          <group>
+            <options>
+              <academic>Academic</academic>
+              <professional>Professional</professional>
+            </options>
+          </group>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[Any]</name>
+          <group>Language</group>
+        </knowledgeskilllevel>
+      </bonus>
+      <story />
+      <source>SL</source>
+      <page>128</page>
+    </module>
+    <!--End Region-->
+    <!-- Region Real Life -->
+    <module>
+      <id>14dfb0c8-4748-490c-876d-f65f55e81d95</id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Warm Body</name>
+      <karma>100</karma>
+      <bonus>
+        <attributelevel>
+          <name>INT</name>
+        </attributelevel>
+        <attributelevel>
+          <name>LOG</name>
+        </attributelevel>
+        <addqualities>
+          <addquality>Blandness</addquality>
+          <addquality>Corporate Pariah</addquality>
+          <addquality>Location Attunement II</addquality>
+          <addquality>This Is Your Last Chance</addquality>
+        </addqualities>
+        <skilllevel>
+          <name>Con</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Etiquette</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Palming</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Perception</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Running</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Sneaking</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Tracking</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>[Local] Geography</name>
+          <group>Street</group>
+          <val>1</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <story />
+      <source>SL</source>
+      <page>129</page>
+    </module>
+    <module>
+      <id>9b9f3b96-10ed-497c-816c-9692cfe3e523</id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Rising Star</name>
+      <karma>100</karma>
+      <bonus>
+        <attributelevel>
+          <name>INT</name>
+        </attributelevel>
+        <attributelevel>
+          <name>CHA</name>
+        </attributelevel>
+        <addqualities>
+          <addquality>Driven</addquality>
+          <addquality>Natural Leader</addquality>
+          <addquality>Legendary Rep</addquality>
+          <addquality>Stay Out Of My Way</addquality>
+        </addqualities>
+        <skilllevel>
+          <name>Con</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Etiquette</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Intimidation</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Leadership</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Palming</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Perception</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>[Any]</name>
+          <group>Professional</group>
+          <val>1</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[Any]</name>
+          <group>Language</group>
+          <val>1</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <story />
+      <source>SL</source>
+      <page>129</page>
+    </module>
+    <module>
+      <id>d847b2bc-1ff6-4fce-a799-17129fef4ff7</id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Company Troubleshooter</name>
+      <karma>100</karma>
+      <bonus>
+        <attributelevel>
+          <name>LOG</name>
+        </attributelevel>
+        <attributelevel>
+          <name>CHA</name>
+        </attributelevel>
+        <addqualities>
+          <!-- todo: should have 4 ratings of records on file -->
+          <addquality>Records On File</addquality>
+          <addquality>Solid Rep</addquality>
+          <addquality>Observant</addquality>
+          <addquality>SINner (Corporate Limited)</addquality>
+        </addqualities>
+        <skilllevel>
+          <name>Automatics</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Con</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Etiquette</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Instruction</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Intimidation</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Leadership</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Pistols</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Sneaking</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Tracking</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Pilot Ground Craft</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Unarmed Combat</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>Small Unit Tactics</name>
+          <group>Professional</group>
+          <val>1</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <story />
+      <source>SL</source>
+      <page>129</page>
+    </module>
+    <module>
+      <id>040e3551-315a-41b4-aceb-181479ef9841</id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Corpsec Officer, Basic</name>
+      <karma>100</karma>
+      <bonus>
+        <attributelevel>
+          <name>BOD</name>
+        </attributelevel>
+        <attributelevel>
+          <name>AGI</name>
+        </attributelevel>
+        <addqualities>
+          <addquality>Day Job (40 hrs)</addquality>
+          <addquality>Location Attunement I</addquality>
+          <addquality>Observant</addquality>
+          <addquality>Perceptive</addquality>
+        </addqualities>
+        <skilllevel>
+          <name>First Aid</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Leadership</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Intimidation</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Perception</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Pistols</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Running</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Tracking</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>Small Unit Tactics</name>
+          <group>Professional</group>
+          <val>1</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <story />
+      <source>SL</source>
+      <page>128</page>
+    </module>
+    <module>
+      <id>5544cbc8-d77e-43fa-ab07-dbc160f9b403</id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Lost At Sea</name>
+      <karma>100</karma>
+      <bonus>
+        <attributelevel>
+          <name>BOD</name>
+        </attributelevel>
+        <attributelevel>
+          <name>AGI</name>
+        </attributelevel>
+        <attributelevel>
+          <name>WIL</name>
+        </attributelevel>
+        <addqualities>
+          <addquality>Daredevil</addquality>
+          <addquality>Perceptive</addquality>
+          <addquality>Sense of Direction</addquality>
+          <addquality>Water Sprite</addquality>
+          <addquality>Hung Out to Dry</addquality>
+        </addqualities>
+        <skilllevel>
+          <name>First Aid</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Diving</name>
+          <val>4</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Swimming</name>
+          <val>4</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Survival</name>
+          <val>4</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Throwing Weapons</name>
+          <val>3</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Pilot Watercraft</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Navigation</name>
+          <val>3</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Nautical Mechanic</name>
+          <val>2</val>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>[Local] Nature</name>
+          <group>Street</group>
+          <val>3</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <story />
+      <source>SL</source>
+      <page>180</page>
+    </module>
+    <module>
+      <id>7349cc93-667b-4b36-8cc7-f42134c2b319</id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Environmental Combat Specialist (By Type)</name>
+      <karma>100</karma>
+      <bonus>
+        <attributelevel>
+          <name>BOD</name>
+        </attributelevel>
+        <attributelevel>
+          <name>REA</name>
+        </attributelevel>
+        <attributelevel>
+          <name>WIL</name>
+        </attributelevel>
+        <attributelevel>
+          <name>INT</name>
+        </attributelevel>
+        <addqualities>
+          <addquality>High Pain Tolerance (Rating 2)</addquality>
+          <addquality>Outdoorsman</addquality>
+          <addquality>Will to Live</addquality>
+        </addqualities>
+        <skilllevel>
+          <name>First Aid</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Navigation</name>
+          <spec>[Specialization]</spec>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Survival</name>
+          <spec>[Specialization]</spec>
+          <val>3</val>
+        </skilllevel>
+        <skillgrouplevel>
+          <name>Athletics</name>
+          <val>2</val>
+        </skillgrouplevel>
+        <knowledgeskilllevel>
+          <name>Geography [Area]</name>
+          <group>Street</group>
+          <val>2</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <story />
+      <source>SL</source>
+      <page>180</page>
+    </module>
+    <module>
+      <id>45057214-38fd-4824-ba7c-985a3da22ef5</id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Tour of Duty (Desert Wars)</name>
+      <karma>100</karma>
+      <bonus>
+        <attributelevel>
+          <name>BOD</name>
+        </attributelevel>
+        <attributelevel>
+          <name>REA</name>
+        </attributelevel>
+        <attributelevel>
+          <name>WIL</name>
+        </attributelevel>
+        <attributelevel>
+          <name>CHA</name>
+        </attributelevel>
+        <addqualities>
+          <addquality>Adrenaline Surge</addquality>
+          <addquality>Battle Hardened</addquality>
+          <addquality>Thousand Yard Stare</addquality>
+        </addqualities>
+        <skilllevel>
+          <name>Blades</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Con</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Etiquette</name>
+          <spec>Corporate</spec>
+          <val>1</val>
+        </skilllevel>
+        <skilllevel>
+          <name>First Aid</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Heavy Weapons</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Navigation</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Performance</name>
+          <val>3</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Pilot Ground Craft</name>
+          <val>1</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Running</name>
+          <val>1</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Swimming</name>
+          <val>1</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Throwing Weapons</name>
+          <val>2</val>
+        </skilllevel>
+        <skillgrouplevel>
+          <name>Firearms</name>
+          <val>2</val>
+        </skillgrouplevel>
+        <knowledgeskilllevel>
+          <name>Megacorporate Military</name>
+          <group>Professional</group>
+          <val>3</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <story />
+      <source>SL</source>
+      <page>180</page>
+    </module>
+    <module>
+      <id>ad4fea0f-037e-43c2-a153-55ea606d46a2</id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>In The Thick</name>
+      <karma>100</karma>
+      <bonus>
+        <attributelevel>
+          <name>BOD</name>
+        </attributelevel>
+        <attributelevel>
+          <name>REA</name>
+        </attributelevel>
+        <attributelevel>
+          <name>WIL</name>
+        </attributelevel>
+        <attributelevel>
+          <name>INT</name>
+        </attributelevel>
+        <addqualities>
+          <addquality>Battle Hardened</addquality>
+          <addquality>Tough As Nails (Physical)</addquality>
+          <addquality>Impassive</addquality>
+          <addquality>Social Stress</addquality>
+        </addqualities>
+        <skilllevel>
+          <name>First Aid</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Heavy Weapons</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Intimidation</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Throwing Weapons</name>
+          <val>3</val>
+        </skilllevel>
+        <skillgrouplevel>
+          <name>Athletics</name>
+        </skillgrouplevel>
+        <skillgrouplevel>
+          <name>Close Combat</name>
+        </skillgrouplevel>
+        <skillgrouplevel>
+          <name>Firearms</name>
+          <val>3</val>
+        </skillgrouplevel>
+      </bonus>
+      <story />
+      <source>SL</source>
+      <page>180</page>
+    </module>
+    <module>
+      <id>0f4e4c01-f781-44a7-a630-a92e59b63a28</id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Gone AWOL</name>
+      <karma>100</karma>
+      <bonus>
+        <attributelevel>
+          <name>WIL</name>
+        </attributelevel>
+        <attributelevel>
+          <name>REA</name>
+        </attributelevel>
+        <attributelevel>
+          <name>CHA</name>
+        </attributelevel>
+        <addqualities>
+          <addquality>Battle Hardened</addquality>
+          <addquality>SINner (Criminal)</addquality>
+          <addquality>Paranoia</addquality>
+          <addquality>Wanted</addquality>
+        </addqualities>
+        <skilllevel>
+          <name>Automotive Mechanic</name>
+          <val>3</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Clubs</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Computer</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Locksmith</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Pilot Ground Craft</name>
+          <val>3</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Pistols</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Running</name>
+          <val>2</val>
+        </skilllevel>
+        <skillgrouplevel>
+          <name>Acting</name>
+          <val>3</val>
+        </skillgrouplevel>
+        <skillgrouplevel>
+          <name>Stealth</name>
+          <val>3</val>
+        </skillgrouplevel>
+      </bonus>
+      <story />
+      <source>SL</source>
+      <page>181</page>
+    </module>
+    <module>
+      <id>991a62d3-456e-4c86-94a2-2c20ea11c7e1</id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Gone Native</name>
+      <karma>100</karma>
+      <bonus>
+        <attributelevel>
+          <name>BOD</name>
+        </attributelevel>
+        <attributelevel>
+          <name>AGI</name>
+        </attributelevel>
+        <attributelevel>
+          <name>INT</name>
+        </attributelevel>
+        <attributelevel>
+          <name>CHA</name>
+        </attributelevel>
+        <addqualities>
+          <addquality>Pacifist</addquality>
+          <addquality>Prejudiced (Common, Biased)</addquality>
+        </addqualities>
+        <skilllevel>
+          <name>Throwing Weapons</name>
+          <val>4</val>
+        </skilllevel>
+        <skillgrouplevel>
+          <name>Athletics</name>
+          <val>3</val>
+        </skillgrouplevel>
+        <skillgrouplevel>
+          <name>Outdoors</name>
+          <val>3</val>
+        </skillgrouplevel>
+        <knowledgeskilllevel>
+          <name>[Native Language]</name>
+          <group>Language</group>
+          <val>3</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[Local] Nature</name>
+          <group>Street</group>
+          <val>4</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <story />
+      <source>SL</source>
+      <page>180</page>
+    </module>
+    <module>
+      <id>3e6efacd-4503-45f7-a5a8-4fbed9c2f5bc</id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Lost In The Wilds</name>
+      <karma>100</karma>
+      <bonus>
+        <attributelevel>
+          <name>STR</name>
+        </attributelevel>
+        <attributelevel>
+          <name>WIL</name>
+        </attributelevel>
+        <attributelevel>
+          <name>INT</name>
+        </attributelevel>
+        <attributelevel>
+          <name>BOD</name>
+        </attributelevel>
+        <addqualities>
+          <addquality>Outdoorsman</addquality>
+          <addquality>Uncouth</addquality>
+        </addqualities>
+        <skilllevel>
+          <name>Blades</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Sneaking</name>
+          <val>4</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Throwing Weapons</name>
+        </skilllevel>
+        <skillgrouplevel>
+          <name>Outdoors</name>
+          <val>4</val>
+        </skillgrouplevel>
+        <skillgrouplevel>
+          <name>Athletics</name>
+        </skillgrouplevel>
+      </bonus>
+      <story />
+      <source>SL</source>
+      <page>180</page>
+    </module>
+    <!-- End Region -->
+    <!-- End Region -->
+    <!--Region Kill Code-->
+    <!--Region Formative Years-->
+    <module>
+      <id>bab07751-2d37-4079-aa0d-274cf1038c92</id>
+      <stage>Formative Years</stage>
+      <category>LifeModule</category>
+      <name>Bootstrap Cliche</name>
+      <karma>40</karma>
+      <bonus>
+        <attributelevel>
+          <name>LOG</name>
+        </attributelevel>
+        <attributelevel>
+          <name>WIL</name>
+        </attributelevel>
+        <addqualities>
+          <addquality>Deck Builder</addquality>
+        </addqualities>
+        <skilllevel>
+          <name>Hardware</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Locksmith</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Sneaking</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Software</name>
+          <spec>Data Bombs</spec>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>Sprawl Life</name>
+          <group>Street</group>
+          <val>2</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>Public Grid</name>
+          <group>Professional</group>
+        </knowledgeskilllevel>
+      </bonus>
+      <story />
+      <source>KC</source>
+      <page>79</page>
+    </module>
+    <module>
+      <id>516ece95-6b51-48b6-9806-24087dc344c2</id>
+      <stage>Formative Years</stage>
+      <category>LifeModule</category>
+      <name>Hacking Savant</name>
+      <karma>40</karma>
+      <bonus>
+        <attributelevel>
+          <name>INT</name>
+        </attributelevel>
+        <attributelevel>
+          <name>LOG</name>
+        </attributelevel>
+        <skilllevel>
+          <name>Computer</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Hacking</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Hardware</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Software</name>
+          <val>2</val>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>[Matrix-related]</name>
+          <group>Interest</group>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>Grid</name>
+          <group>Interest</group>
+        </knowledgeskilllevel>
+      </bonus>
+      <story />
+      <source>KC</source>
+      <page>80</page>
+    </module>
+    <module>
+      <id>22d06d59-ccf0-49ce-a17d-5bb3431a03cf</id>
+      <stage>Formative Years</stage>
+      <category>LifeModule</category>
+      <name>Have You Heard The Good Word?</name>
+      <karma>40</karma>
+      <bonus>
+        <attributelevel>
+          <name>CHA</name>
+        </attributelevel>
+        <attributelevel>
+          <name>INT</name>
+        </attributelevel>
+        <addqualities>
+          <addquality>Silence Is Golden</addquality>
+        </addqualities>
+        <skilllevel>
+          <name>Computer</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Con</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Hardware</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Perception</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>[Hobby]</name>
+          <group>Interest</group>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[Religion]</name>
+          <group>Academic</group>
+        </knowledgeskilllevel>
+      </bonus>
+      <story />
+      <source>KC</source>
+      <page>80</page>
+    </module>
+    <module>
+      <id>ed378222-f6c4-4d7f-971c-6d6b2d01a6b3</id>
+      <stage>Formative Years</stage>
+      <category>LifeModule</category>
+      <name>The Itsy-Bitsy Spider</name>
+      <karma>40</karma>
+      <bonus>
+        <attributelevel>
+          <name>LOG</name>
+        </attributelevel>
+        <attributelevel>
+          <name>WIL</name>
+        </attributelevel>
+        <skilllevel>
+          <name>Cybercombat</name>
+          <spec>Personas</spec>
+        </skilllevel>
+        <skilllevel>
+          <name>Electronic Warfare</name>
+          <spec>Communications</spec>
+        </skilllevel>
+        <skilllevel>
+          <name>Hacking</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Software</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>Matrix Security</name>
+          <group>Academic</group>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[Technical]</name>
+          <group>Academic</group>
+        </knowledgeskilllevel>
+      </bonus>
+      <story />
+      <source>KC</source>
+      <page>80</page>
+    </module>
+    <!-- End Region -->
+    <!--Region Teen Years-->
+    <!-- End Region -->
+    <module>
+      <id>2dff667c-7d61-496c-9999-cffdebb56007</id>
+      <stage>Teen Years</stage>
+      <category>LifeModule</category>
+      <name>ATH133T</name>
+      <karma>50</karma>
+      <bonus>
+        <attributelevel>
+          <name>RES</name>
+        </attributelevel>
+        <attributelevel>
+          <name>STR</name>
+        </attributelevel>
+        <addqualities>
+          <addquality>Will to Live</addquality>
+        </addqualities>
+        <skilllevel>
+          <name>Software</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Unarmed Combat</name>
+        </skilllevel>
+        <skillgrouplevel>
+          <name>Athletics</name>
+        </skillgrouplevel>
+        <knowledgeskilllevel>
+          <name>[Sports]</name>
+          <group>Professional</group>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[Technomancers]</name>
+          <group>Interest</group>
+        </knowledgeskilllevel>
+      </bonus>
+      <story />
+      <source>KC</source>
+      <page>80</page>
+    </module>
+    <module>
+      <id>8e34871f-d1e0-4c3b-8c63-5c06b21553f0</id>
+      <stage>Teen Years</stage>
+      <category>LifeModule</category>
+      <name>Destined For Greatness</name>
+      <karma>50</karma>
+      <bonus>
+        <attributelevel>
+          <name>RES</name>
+        </attributelevel>
+        <attributelevel>
+          <name>LOG</name>
+        </attributelevel>
+        <addqualities>
+          <addquality>Focused Concentration</addquality>
+        </addqualities>
+        <skilllevel>
+          <name>Leadership</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Negotiation</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Registering</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Software</name>
+          <val>2</val>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>Corp Culture</name>
+          <group>Interest</group>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>Business</name>
+          <group>Professional</group>
+        </knowledgeskilllevel>
+      </bonus>
+      <story />
+      <source>KC</source>
+      <page>80</page>
+    </module>
+    <module>
+      <id>4ba4b426-c333-4216-af95-58c1114c447a</id>
+      <stage>Teen Years</stage>
+      <category>LifeModule</category>
+      <name>Hack-A-Thon Medalist</name>
+      <karma>50</karma>
+      <bonus>
+        <attributelevel>
+          <name>LOG</name>
+        </attributelevel>
+        <attributelevel>
+          <name>AGI</name>
+        </attributelevel>
+        <addqualities>
+          <addquality>Quick Healer</addquality>
+        </addqualities>
+        <skilllevel>
+          <name>First Aid</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Perception</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Software</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Sneaking</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>[Matrix Related]</name>
+          <group>Interest</group>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[Any]</name>
+          <group>Academic</group>
+          <val>2</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <story />
+      <source>KC</source>
+      <page>80</page>
+    </module>
+    <module>
+      <id>30f5af48-0df1-431e-9ae7-6d5266e0ab92</id>
+      <stage>Teen Years</stage>
+      <category>LifeModule</category>
+      <name>The Flow</name>
+      <karma>50</karma>
+      <bonus>
+        <attributelevel>
+          <name>WIL</name>
+        </attributelevel>
+        <attributelevel>
+          <name>BOD</name>
+        </attributelevel>
+        <addqualities>
+          <addquality>Common Sense</addquality>
+        </addqualities>
+        <skilllevel>
+          <name>Chemistry</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Hacking</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Palming</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Software</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>[Matrix Related]</name>
+          <group>Interest</group>
+          <val>2</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[Drug Related]</name>
+          <group>Interest</group>
+        </knowledgeskilllevel>
+      </bonus>
+      <story />
+      <source>KC</source>
+      <page>81</page>
+    </module>
+    <module>
+      <id>fc502702-45f4-4b70-9e09-cb3c6cad5da0</id>
+      <stage>Teen Years</stage>
+      <category>LifeModule</category>
+      <name>Jacked Out</name>
+      <karma>50</karma>
+      <bonus>
+        <attributelevel>
+          <name>RES</name>
+        </attributelevel>
+        <attributelevel>
+          <name>WIL</name>
+        </attributelevel>
+        <addqualities>
+          <addquality>Profiler</addquality>
+        </addqualities>
+        <skilllevel>
+          <name>Perception</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Registering</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Software</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>[Any]</name>
+          <group>Interest</group>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[Matrix Related]</name>
+          <group>Professional</group>
+          <val>2</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <story />
+      <source>KC</source>
+      <page>79</page>
+    </module>
+    <module>
+      <id>c1133c0e-1c5a-4ba0-a207-0274cd90b25c</id>
+      <stage>Teen Years</stage>
+      <category>LifeModule</category>
+      <name>Matrix Royalty</name>
+      <karma>50</karma>
+      <bonus>
+        <attributelevel>
+          <name>LOG</name>
+        </attributelevel>
+        <attributelevel>
+          <name>CHA</name>
+        </attributelevel>
+        <addqualities>
+          <addquality>Too Pretty to Hit</addquality>
+        </addqualities>
+        <skilllevel>
+          <name>Computer</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Con</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Electronic Warfare</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Intimidation</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>Psychology</name>
+          <group>Professional</group>
+          <val>2</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[Matrix Related]</name>
+          <group>Interest</group>
+        </knowledgeskilllevel>
+      </bonus>
+      <story />
+      <source>KC</source>
+      <page>81</page>
+    </module>
+    <module>
+      <id>801d6ce7-080b-4a87-b49e-cc83c467a1bf</id>
+      <stage>Teen Years</stage>
+      <category>LifeModule</category>
+      <name>Techno-Rigger, Qu'est Que C'est</name>
+      <karma>50</karma>
+      <bonus>
+        <attributelevel>
+          <name>RES</name>
+        </attributelevel>
+        <attributelevel>
+          <name>REA</name>
+        </attributelevel>
+        <addqualities>
+          <addquality>Dealer Connection</addquality>
+        </addqualities>
+        <skilllevel>
+          <name>Compiling</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Pilot Aircraft</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Pilot Ground Craft</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Registering</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>Vehicles</name>
+          <group>Professional</group>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[City]</name>
+          <group>Street</group>
+        </knowledgeskilllevel>
+      </bonus>
+      <story />
+      <source>KC</source>
+      <page>81</page>
+    </module>
     <!-- End Region -->
     <!-- End Region -->
   </modules>

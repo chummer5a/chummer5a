@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<chummer>
+  <weapons>
+    <weapon>
+      <name>Morrissey Alta</name>
+      <avail>7R</avail>
+    </weapon>
+  </weapons>
+</chummer>

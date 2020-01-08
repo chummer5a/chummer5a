@@ -17,30 +17,47 @@
  *  https://github.com/chummer5a/chummer5a
  */
  using System;
+ using System.ComponentModel;
  using System.Diagnostics;
 ﻿using System.IO;
- using System.Reflection;
+using System.Reflection;
  using System.Windows.Forms;
+ using NLog;
 
 namespace Chummer
 {
-    static class Utils
+    public static class Utils
     {
+        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
         public static void BreakIfDebug()
         {
 #if DEBUG
-            if (Debugger.IsAttached)
+            if (Debugger.IsAttached && !IsUnitTest)
                 Debugger.Break();
 #endif
         }
 
         public static bool IsRunningInVisualStudio => Process.GetCurrentProcess().ProcessName == "devenv";
 
-        private static Version s_VersionCachedGitVersion;
-        public static Version CachedGitVersion
+        public static bool IsDesignerMode => LicenseManager.UsageMode == LicenseUsageMode.Designtime;
+
+        public static Version CachedGitVersion { get; set; }
+
+        /// <summary>
+        /// This property is set in the Constructor of frmChummerMain (and NO where else!)
+        /// </summary>
+        public static bool IsUnitTest { get; set; }
+
+        /// <summary>
+        /// Returns the actuall path of the Chummer-Directory regardless of running as Unit test or not.
+        /// </summary>
+
+        public static string GetStartupPath
         {
-            get => s_VersionCachedGitVersion;
-            set => s_VersionCachedGitVersion = value;
+            get
+            {
+                return !IsUnitTest ? Application.StartupPath : AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
+            }
         }
 
         public static int GitUpdateAvailable()
@@ -73,7 +90,7 @@ namespace Chummer
                 if (objOpenCharacterForm.IsDirty)
                 {
                     string strCharacterName = objOpenCharacterForm.CharacterObject.CharacterName;
-                    DialogResult objResult = MessageBox.Show(LanguageManager.GetString("Message_UnsavedChanges", strLanguage).Replace("{0}", strCharacterName), LanguageManager.GetString("MessageTitle_UnsavedChanges", strLanguage), MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                    DialogResult objResult = Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_UnsavedChanges", strLanguage), strCharacterName), LanguageManager.GetString("MessageTitle_UnsavedChanges", strLanguage), MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
                     if (objResult == DialogResult.Yes)
                     {
                         // Attempt to save the Character. If the user cancels the Save As dialogue that may open, cancel the closing event so that changes are not lost.
@@ -107,20 +124,11 @@ namespace Chummer
             }
             ProcessStartInfo startInfo = new ProcessStartInfo
             {
-                FileName = Application.StartupPath + Path.DirectorySeparatorChar + AppDomain.CurrentDomain.FriendlyName,
+                FileName = GetStartupPath + Path.DirectorySeparatorChar + AppDomain.CurrentDomain.FriendlyName,
                 Arguments = arguments
             };
             Application.Exit();
             Process.Start(startInfo);
-        }
-
-        public static void DoDatabinding(Control objControl, string PropertyName, object dataSource, string dataMember)
-        {
-            if (!objControl.IsHandleCreated)
-            {
-                objControl.CreateControl();
-            }
-            objControl.DataBindings.Add(PropertyName, dataSource, dataMember, false, DataSourceUpdateMode.OnPropertyChanged);
         }
     }
 }

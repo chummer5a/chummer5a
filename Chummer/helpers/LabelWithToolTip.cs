@@ -25,8 +25,12 @@ namespace Chummer
         private readonly int _intToolTipWrap;
 
         private ToolTip _tt;
+        // ReSharper disable once MemberCanBePrivate.Global
+        // Used by databinding
         public ToolTip ToolTipObject
         {
+            // ReSharper disable once UnusedMember.Global
+            // Used by databinding
             get => _tt;
             private set
             {
@@ -41,6 +45,8 @@ namespace Chummer
         private string _strToolTipText = string.Empty;
         public string ToolTipText
         {
+            // ReSharper disable once UnusedMember.Global
+            // Used by databinding
             get => _strToolTipText;
             set
             {
@@ -53,8 +59,9 @@ namespace Chummer
             }
         }
 
-        public LabelWithToolTip() : this(GlobalOptions.ToolTipProcessor) { }
-
+        public LabelWithToolTip() : this(ToolTipFactory.ToolTip) { }
+        
+        // ReSharper disable once MemberCanBePrivate.Global
         public LabelWithToolTip(ToolTip objToolTip, int intToolTipWrap = 100)
         {
             ToolTipObject = objToolTip;
@@ -65,7 +72,7 @@ namespace Chummer
         {
             if (disposing)
             {
-                if (_tt != null && _tt != GlobalOptions.ToolTipProcessor)
+                if (_tt != null && _tt != ToolTipFactory.ToolTip)
                     _tt.Dispose();
             }
             base.Dispose(disposing);

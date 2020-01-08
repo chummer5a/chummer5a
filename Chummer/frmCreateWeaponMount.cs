@@ -107,7 +107,7 @@ namespace Chummer
                 }
                 _lstMods.AddRange(_objMount.Mods);
 
-                cboSize.SelectedValue = _objMount.SourceId;
+                cboSize.SelectedValue = _objMount.SourceIDString;
             }
             if (cboSize.SelectedIndex == -1)
                 if (lstSize.Count > 0)
@@ -261,7 +261,7 @@ namespace Chummer
 		        _objMount = new WeaponMount(_objCharacter, _objVehicle);
 		        _objMount.Create(xmlSelectedMount);
 		    }
-            else if (_objMount.SourceId != strSelectedMount)
+            else if (_objMount.SourceIDString != strSelectedMount)
             {
                 _objMount.Create(xmlSelectedMount);
             }
@@ -403,12 +403,11 @@ namespace Chummer
                         lblCost.Text = (objMod.TotalCostInMountCreation(intTotalSlots) * (1 + (nudMarkup.Value / 100.0m))).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                     }
 
-                    string strModPage = objMod.Page(GlobalOptions.Language);
-                    lblSource.Text = CommonFunctions.LanguageBookShort(objMod.Source, GlobalOptions.Language) + strSpaceCharacter + strModPage;
-
-                    GlobalOptions.ToolTipProcessor.SetToolTip(lblSource,
-                        CommonFunctions.LanguageBookLong(objMod.Source, GlobalOptions.Language) + strSpaceCharacter +
-                        LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strModPage);
+                    objMod.SetSourceDetail(lblSource);
+                    lblCostLabel.Visible = !string.IsNullOrEmpty(lblCost.Text);
+                    lblSlotsLabel.Visible = !string.IsNullOrEmpty(lblSlots.Text);
+                    lblAvailabilityLabel.Visible = !string.IsNullOrEmpty(lblAvailability.Text);
+                    lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
                     return;
                 }
             }
@@ -418,6 +417,9 @@ namespace Chummer
                 lblCost.Text = string.Empty;
                 lblSlots.Text = string.Empty;
                 lblAvailability.Text = string.Empty;
+                lblCostLabel.Visible = false;
+                lblSlotsLabel.Visible = false;
+                lblAvailabilityLabel.Visible = false;
                 return;
             }
 	        decimal decCost = !chkFreeItem.Checked ? Convert.ToDecimal(xmlSelectedMount["cost"]?.InnerText, GlobalOptions.InvariantCultureInfo) : 0;
@@ -490,15 +492,17 @@ namespace Chummer
 	        lblCost.Text = decCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 	        lblSlots.Text = intSlots.ToString();
 	        lblAvailability.Text = strAvailText;
+	        lblCostLabel.Visible = !string.IsNullOrEmpty(lblCost.Text);
+	        lblSlotsLabel.Visible = !string.IsNullOrEmpty(lblSlots.Text);
+	        lblAvailabilityLabel.Visible = !string.IsNullOrEmpty(lblAvailability.Text);
 
             string strSource = xmlSelectedMount["source"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
             string strPage = xmlSelectedMount["altpage"]?.InnerText ?? xmlSelectedMount["page"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
             lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
-
-            GlobalOptions.ToolTipProcessor.SetToolTip(lblSource,
-                CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter +
+            lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter +
                 LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
-        }
+	        lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
+	    }
 
         private void cmdAddMod_Click(object sender, EventArgs e)
         {
@@ -590,7 +594,7 @@ namespace Chummer
 
                     if (blnOverCapacity)
                     {
-                        MessageBox.Show(LanguageManager.GetString("Message_CapacityReached", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CapacityReached", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CapacityReached", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CapacityReached", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         continue;
                     }
                 }
@@ -607,7 +611,7 @@ namespace Chummer
 
                     if (decCost > _objCharacter.Nuyen)
                     {
-                        MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen", GlobalOptions.Language),
+                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NotEnoughNuyen", GlobalOptions.Language),
                             LanguageManager.GetString("MessageTitle_NotEnoughNuyen", GlobalOptions.Language),
                             MessageBoxButtons.OK, MessageBoxIcon.Information);
                         continue;

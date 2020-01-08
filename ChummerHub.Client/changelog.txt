@@ -1,0 +1,89 @@
+Future Build 1.0.0.3
+
+Application Changes:
+
+- creating a new character with the plugin enabled no longer crashes the program
+
+Build 1.0.0.2
+
+WebService Changes:
+
+- when retouring the groupmembers of a sinner, the sinner itself is now excluded from the result
+- the group of a character is now perserved even if he gets reposted
+- added two parameters to addsqlusers to set the azure firewall rule
+- added the ability to add sqlusers to the Azure-Database (Swagger GetAddSqlDbUser), so that Admins can connect via SSMS or Azure Data Studio 
+- added a "JoinGroup" function to the Groupscontroller
+- added a GM-Property (string username) to groups
+- added a SINGroupSettings-Object to the DataModel for an upcomming online-settings-archive.
+- searching for a group implemented by name, user, sinner
+- corrected a Bug where POST to the repository did not change the Visibility of the character if updated.
+- sinneruserright for uploading user will now be added if not existent
+- uploading user is now checked if he/she actually may update a existing sinner
+- added a SetUserRole-Call, so that Admins can set roles (like other Admins or "ArchetypeAdmin or whatever")
+- added the ability to create a group (with name)
+- found a bug that prevented uploading for none-admins (damn - I'm just used to have all the rights...)
+
+Application Changes:
+
+- Tags are now shown in the SinnersAdvanced-Tab
+- fixed a bug where a new Id is given to an already uploaded character.
+- removed the #ifdebug-braces, so that the SINners-Tab will be visible in release (SinnerSearch-Menuitem is still returning null in Release)
+- fixed a bug that deleted the freshly downloaded characterfile while loading the charfile (yes, I was confused as well)
+- after the Post of the metadata, now the actual file is uploaded as well in the SINnersBasic-Tab
+- added a check, if a character is already uploaded before enabling the "open group dialog"-button
+- Runtime now allows (or should allow) code from remote sources (plugin-dlls are not loaded otherwise under Windows-UAC)
+- Globaloptions now saves which plugins are enabled in the registry
+- Changing the URL of the Chummerhub-Repository in the options no longer crashes the program.
+- refractored the CharacterTreeNodes, to support Groups in the frmCharacterRoster (not finished yet)
+- hopefully fixed a IndexOutOfRangeException, that would occur when saving the options from the sinner-optionsdialog.
+- searchdialog prototyped and search implemented
+- Id of SINnerVisibility is now generated and not reused from the options for each Sinner (DuplicateKeyError)
+- added a post prior to creating a new group, so the current sinner can be added automatically
+- added the ability to create a group.
+- added a "Archetype"-Checkbox for ArchetypeAdmins only (including a name)
+
+Build 1.0.0.1
+
+WebService Changes:
+
+- added some telemetry data events and traces (only into the WebServer - no phoneing home in the client)
+- patched a Bug in handling different SINners with the same Id. That should not happen, unless people are editing the Guids directly - but nethertheless, they can be deleted now withouth Primary Key constraints.
+- implemented AdminGetSinners to create a backup of the whole Database. Plz note, that the Chummerfiles themself are NOT affected because they are on GDrive
+- changed the initial search for the SINners by Authorization: SINners are grouped now: edit, group, view
+- fixed a bug were the check if a Chummer is already on GDrive used the new uploaded (and always empty) GDriveID from the Client - now this ID is kept from the database if it's empty on upload (which it SHOULD be)
+- added a DeploymentSlot "Beta" for Azure reachable under https://sinners-beta.azurewebsites.net/ - doubles the cost, halves the chance of me messing things up in production later
+- fixed a Bug where Properties were not updated in the Database on POST
+- Files at GDrive are checked for existance before uploading and are only updated, if they exist
+- added ApplicationInsights Livetracking to see what's going on in the Azure Portal
+- added a Role "ConfirmedUser" (Email Address confirmed) for future use (maybe allow versioning only for these users?)
+- set the daily Data-Volume Cap to 1GB (for now, can be raised - just to avoid unpleasant surprises)
+- DELETE now actually deletes all database-entries in every table, not only the head.
+- fixed a bug, where Tags where only added but not removed if not present anymore on a sinner
+- added Flat Tags for better searchability (only on the server and hidden)
+- Tags now have a Property "TagComment", which should help to find errors (Debugging)
+- SinnerID is set in every tag now
+- wiped the Database clean (because it WAS really messed up)
+- added function GetDeleteAndRecreateDb() for cases where it's really messed up
+- added basic validation in the Post WebService function in SinnersController
+- changed LastChange (Sinner-Property) from DateTime? to DateTime
+
+Application Changes:
+
+- added a backup and restore-Button for Admins in the Options-Dialog (working, but no visual feedback)
+- Online-Sinners are now shown as part of their "group": edit, group(name), view. This will be extended with "search", as soon as it is implemented
+- changed FileSaveElement (now SINnerMetaData is serialized, so that the Mugshot is not stored twice in the save-file)
+- added http://sinners-beta.azurewebsites.net/ to the selectable SINnerUrls
+- OnSave checkes first, if the uploaded version is already up to date and either skips upload or does it
+- frmWebBrowser closes after successfull login and saves the users EMail in his Visibility-Object
+- fixed a bug, where the upload DID finish, but the execution of the program didn't resume
+- Added the "Extra" for each HubClassTagAttribute (so that Increase [Attribute] gets a + WIL-Childtag)
+- Show TagComment in the TreeNodeList of the Tags
+- HubClassTags saves it's children in the Comment (SourceID should be enough to identify it)
+- tweaked Login/Logout (no spamming of frmWebBrowser anymore)
+- TagType was not set correctly in the TagExtractor-Reflection
+- SinnerId is taken into account after the first POST to the WebService
+- moved Uploadfunction into CharacterExtended
+- added a ToolTip to the Online-Treenode in case something goes wrong with the ChummerHub-Query
+- reworked Multi-Upload Button in Options-Dialog
+- Fixed NullReferenceException when no spell was selected in the Sinner-Search dialog.
+- added Changelog ;)

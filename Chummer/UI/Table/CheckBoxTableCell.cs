@@ -22,7 +22,7 @@ namespace Chummer.UI.Table
 {
     public partial class CheckBoxTableCell<T> : TableCell where T : class
     {
-        private bool updating = false;
+        private bool _blnUpdating;
 
         public CheckBoxTableCell(string text = "", string tag = null)
         {
@@ -41,11 +41,11 @@ namespace Chummer.UI.Table
             if (VisibleExtractor != null) {
                 _checkBox.Visible = VisibleExtractor(tValue);
             }
-            if (!updating && ValueGetter != null)
+            if (!_blnUpdating && ValueGetter != null)
             {
-                updating = true;
+                _blnUpdating = true;
                 _checkBox.Checked = ValueGetter(tValue);
-                updating = false;
+                _blnUpdating = false;
             }
         }
 
@@ -65,11 +65,11 @@ namespace Chummer.UI.Table
 
         private void checked_changed(object sender, EventArgs e)
         {
-            if (!updating && ValueUpdater != null)
+            if (!_blnUpdating && ValueUpdater != null)
             {
-                updating = true;
+                _blnUpdating = true;
                 ValueUpdater(Value as T, _checkBox.Checked);
-                updating = false;
+                _blnUpdating = false;
             }
         }
 

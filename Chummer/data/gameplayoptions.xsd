@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:element name="chummer">
     <xs:complexType>
@@ -11,12 +11,30 @@
                   <xs:sequence>
                     <xs:element name="id" type="xs:string" />
                     <xs:element name="name" type="xs:string" />
-					<xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="karma" type="xs:unsignedByte" />
-                    <xs:element name="maxavailability" type="xs:unsignedByte" />
-                    <xs:element name="maxnuyen" type="xs:unsignedByte" />
-                    <xs:element name="contactmultiplier" type="xs:unsignedByte" />
+                    <xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="karma" type="xs:integer" minOccurs="0" maxOccurs="1"  />
+                    <xs:element name="qualitylimit" type="xs:integer" />
+                    <xs:element name="pointbuykarma" type="xs:integer" />
+                    <xs:element name="lifemoduleskarma" type="xs:integer" />
+                    <xs:element name="sumtoten" type="xs:integer" />
+                    <xs:element name="maxavailability" type="xs:integer" />
+                    <xs:element name="maxnuyen" type="xs:integer" />
+                    <xs:element name="contactmultiplier" type="xs:integer" />
                     <xs:element minOccurs="0" name="default" type="xs:string" />
+                    <xs:element maxOccurs="unbounded" name="bannedwaregrades">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="grade" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element maxOccurs="unbounded" name="redlinerexclusion">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="limb" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>

@@ -16,29 +16,36 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
+using System;
 using System.Windows.Forms;
 
 namespace Chummer.UI.Table
 {
     public partial class TextTableCell : TableCell
     {
-        private Label _label;
+        private readonly Label _lblText;
         
         public TextTableCell()
         {
             InitializeComponent();
-            _label = new Label();
-            contentField = _label;
-            Controls.Add(_label);
-            _label.AutoSize = true;
-            MinimumSize = _label.Size;
+            _lblText = new Label();
+            contentField = _lblText;
+            Controls.Add(_lblText);
+            _lblText.AutoSize = true;
+            _lblText.Click += CommonFunctions.OpenPDFFromControl;
+        }
+
+        private void OnLoad(object sender, EventArgs eventArgs)
+        {
+            MinimumSize = _lblText.Size;
         }
 
         protected internal override void UpdateValue(object newValue)
         {
             base.UpdateValue(newValue);
-            _label.Text = newValue == null ? "" : newValue.ToString();
-            MinimumSize = _label.Size;
+            _lblText.Text = newValue?.ToString() ?? string.Empty;
+            MinimumSize = _lblText.Size;
         }
     }
 }

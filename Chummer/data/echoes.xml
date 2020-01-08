@@ -20,8 +20,9 @@
 -->
 <chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.w3.org/2001/XMLSchema echoes.xsd">
-  <version>0</version>
+
   <echoes>
+    <!-- Region Shadowrun 5-->
     <echo>
       <id>36aa9af4-5c04-40d9-ba09-31b401cc1ff0</id>
       <name>Attack Upgrade</name>
@@ -110,6 +111,8 @@
       </bonus>
       <limit>False</limit>
     </echo>
+    <!-- End Region -->
+    <!-- Region Data Trails -->
     <echo>
       <id>18269d5a-2750-4636-8ae3-f9f268d44577</id>
       <name>Fight or Flight Filter</name>
@@ -187,6 +190,8 @@
       <page>165</page>
       <limit>False</limit>
     </echo>
+    <!-- End Region -->
+    <!-- Region Dark Terrors -->
     <echo>
       <id>2c5953bf-3680-4ce5-9087-2e1e419937b2</id>
       <name>Defrag</name>
@@ -194,5 +199,77 @@
       <page>85</page>
       <limit>False</limit>
     </echo>
+    <!-- End Region -->
+    <!-- Region Kill Code-->
+    <echo>
+      <id>64710f70-897a-4505-829d-7d0ade750b24</id>
+      <name>Aegis</name>
+      <source>KC</source>
+      <page>101</page>
+    </echo>
+    <echo>
+      <id>8aa97815-eacb-412d-99ac-1acda562fb52</id>
+      <name>Draining Spike</name>
+      <source>KC</source>
+      <page>101</page>
+    </echo>
+    <echo>
+      <id>a6f9a6cd-4727-4de6-a774-bb93ab67940a</id>
+      <name>Neural Synergy</name>
+      <source>KC</source>
+      <page>101</page>
+      <bonus>
+        <specificattribute>
+          <name>LOG</name>
+          <val>1</val>
+        </specificattribute>
+      </bonus>
+      <limit>3</limit>
+    </echo>
+    <echo>
+      <id>96f534c0-b53b-43af-bdac-54de468f0d70</id>
+      <name>Predictive Analytics</name>
+      <source>KC</source>
+      <page>101</page>
+      <!-- TODO: Matrix AR Initiative bonus -->
+      <limit>4</limit>
+    </echo>
+    <echo>
+      <id>37e8342f-9aad-4ee0-8e68-7a5c00f2678b</id>
+      <name>Resonance Resistance</name>
+      <source>KC</source>
+      <page>102</page>
+      <limit>False</limit>
+    </echo>
+    <echo>
+      <id>1e0405f3-3872-4a53-afd7-bd643899e7d9</id>
+      <name>The Van der Waals Effect</name>
+      <source>KC</source>
+      <page>102</page>
+      <limit>False</limit>
+    </echo>
+    <echo>
+      <id>6cb9bc65-7b64-44dd-ba9a-f96f3c09c741</id>
+      <name>Will of the Resonance</name>
+      <source>KC</source>
+      <page>102</page>
+      <bonus>
+        <specificattribute>
+          <name>WIL</name>
+          <val>1</val>
+        </specificattribute>
+      </bonus>
+      <limit>3</limit>
+    </echo>
+    <echo>
+      <id>f7bd6993-efa4-494c-8c58-e9f0950af7b9</id>
+      <name>Daemon: Cyberadept</name>
+      <source>KC</source>
+      <page>90</page>
+      <bonus>
+          <cyberadeptdaemon>Rating</cyberadeptdaemon>
+      </bonus>
+    </echo>
+    <!-- End Region -->
   </echoes>
 </chummer>

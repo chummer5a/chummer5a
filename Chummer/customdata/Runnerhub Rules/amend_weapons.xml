@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<chummer>
+  <weapons>
+    <weapon>
+      <name>Krime Gloves</name>
+      <notes>These will refill their charge following the same induction rules as standard shock gloves.
+      </notes>
+    </weapon>
+    <weapon>
+      <name>Barrens Special</name>
+      <notes>Variations on the statline for this gun are up to GM decision and do not carry past a single session.
+      </notes>
+    </weapon>
+    <weapon>
+      <name>Onotari HL-13</name>
+      <notes>Following the pattern of the XM30, configurations may be changed using an "automatics + logic [mental]" (5, 1 minute) extended test.        
+      </notes>
+    </weapon>
+    <weapon>
+      <name>Stoner-Ares M-22A1</name>
+      <hide/>
+    </weapon>
+    <weapon>
+      <name>Aztechnology Blood Drinker Combat Axe</name>
+      <notes>This weapon's accuracy remains as written, and is equal to the physical limit of the user and may not be modified through weapon customization. It has a reach of 1.
+      </notes>
+    </weapon>
+    <weapon xpathfilter="contains(name, 'Horizon-Flynn Defense-Com Commlink')">
+      <avail>10R</avail>
+    </weapon>
+    <weapon amendoperation="addnode">
+  	  <id>6456a878-737a-41db-b8a4-118122476b3c</id>
+  	  <name>One-shot Dartgun</name>
+  	  <category>Exotic Ranged Weapons</category>
+  	  <type>Ranged</type>
+  	  <conceal>0</conceal>
+  	  <accuracy>4</accuracy>
+  	  <reach>0</reach>
+  	  <damage>4P</damage>
+  	  <ap>-</ap>
+  	  <mode>SS</mode>
+  	  <rc>0</rc>
+  	  <ammo>1(m)</ammo>
+  	  <avail>0</avail>
+  	  <cost>0</cost>
+  	  <source>CF</source>
+  	  <page>91</page>
+  	  <cyberware>True</cyberware>
+  	  <range>Tasers</range>
+  	  <hide />
+  	</weapon>
+  	<weapon>
+  	  <id>40bf3eed-b239-4521-ac1d-80a4e472451e</id>
+  	  <accuracy>5</accuracy>
+  	  <damage>11P</damage>
+  	  <ap>-2</ap>
+  	  <mode>SA/BF</mode>
+  	  <avail>8R</avail>
+  	</weapon>
+  	<weapon>
+  		<name>Stinger Pen Gun</name>
+  		<rc>-</rc>
+  	</weapon>
+    <weapon amendoperation="addnode">
+      <id>fc6199bd-26cb-4de8-98ff-98d3d3fe7445</id>
+      <name>Grenade: Painade</name>
+      <category>Gear</category>
+      <type>Ranged</type>
+      <conceal>0</conceal>
+      <accuracy>Physical</accuracy>
+      <reach>0</reach>
+      <damage>special</damage>
+      <ap>-</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>9R</avail>
+      <cost>300</cost>
+      <source>CA</source>
+      <page>135</page>
+      <range>Standard Grenade</range>
+      <spec>Non-Aerodynamic</spec>
+      <useskill>Throwing Weapons</useskill>
+    </weapon>
+    <weapon>
+      <name>Fichetti Pain Inducer</name>
+      <damage>special</damage>
+    </weapon>
+  </weapons>
+</chummer>
