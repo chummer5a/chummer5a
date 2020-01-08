@@ -19,6 +19,7 @@ Application Fixes:
 - Select Armor/Weapon windows now properly support translated headers on their datagrid views.
 - Fixed an issue with the Point Buy form incorrectly setting metavariant metatypes to be themselves (ie Dryad (Dryad)).
 - Fixed an inappropriate bracket for improvements to skills that don't have a condition.
+- Fixed behaviour of html tooltips used by skill controls not properly being rendered for html. Fixes newlines in notes not working. 
 
 Application Changes:
 - Added support for Priority mode using non-ABCDE arrays.

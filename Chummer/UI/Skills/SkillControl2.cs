@@ -62,7 +62,7 @@ namespace Chummer.UI.Skills
             
             lblName.DoDatabinding("Text", skill, nameof(Skill.DisplayName));
             lblName.DoDatabinding("ForeColor", skill, nameof(Skill.PreferredColor));
-            lblName.DoDatabinding("ToolTipText", skill, nameof(Skill.SkillToolTip));
+            lblName.DoDatabinding("ToolTipText", skill, nameof(Skill.HtmlSkillToolTip));
 
             lblModifiedRating.DoDatabinding("ToolTipText", skill, nameof(Skill.PoolToolTip));
             lblModifiedRating.DoDatabinding("Text", skill, nameof(Skill.DisplayPool));

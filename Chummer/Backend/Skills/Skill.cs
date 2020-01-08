@@ -555,14 +555,15 @@ namespace Chummer.Backend.Skills
                 new DependancyGraphNode<string>(nameof(DisplayName),
                     new DependancyGraphNode<string>(nameof(Name))
                 ),
-                new DependancyGraphNode<string>(nameof(SkillToolTip),
-                    new DependancyGraphNode<string>(nameof(Notes)),
-                    new DependancyGraphNode<string>(nameof(DisplayCategory),
-                        new DependancyGraphNode<string>(nameof(SkillCategory),
-                            new DependancyGraphNode<string>(nameof(KnowledgeSkill.Type), () => IsKnowledgeSkill)
+                new DependancyGraphNode<string>(nameof(HtmlSkillToolTip),
+                    new DependancyGraphNode<string>(nameof(SkillToolTip),
+                        new DependancyGraphNode<string>(nameof(Notes)),
+                        new DependancyGraphNode<string>(nameof(DisplayCategory),
+                            new DependancyGraphNode<string>(nameof(SkillCategory),
+                                new DependancyGraphNode<string>(nameof(KnowledgeSkill.Type), () => IsKnowledgeSkill)
+                            )
                         )
-                    )
-                ),
+                    )),
                 new DependancyGraphNode<string>(nameof(PreferredControlColor),
                     new DependancyGraphNode<string>(nameof(Leveled))
                 ),
@@ -1278,6 +1279,8 @@ namespace Chummer.Backend.Skills
             }
         }
 
+        public string HtmlSkillToolTip => SkillToolTip.CleanForHTML();
+
         public string SkillToolTip
         {
             get
@@ -1292,11 +1295,10 @@ namespace Chummer.Backend.Skills
                 }
                 if (!string.IsNullOrEmpty(Notes))
                 {
-                    strReturn = LanguageManager.GetString("Label_Notes", GlobalOptions.Language) + strSpaceCharacter + Notes.WordWrap(100) + Environment.NewLine + Environment.NewLine;
+                    strReturn = LanguageManager.GetString("Label_Notes", GlobalOptions.Language) + strSpaceCharacter + Notes + Environment.NewLine + Environment.NewLine;
                 }
 
                 strReturn += $"{DisplayCategory(GlobalOptions.Language)}{Environment.NewLine}{strMiddle}{CommonFunctions.LanguageBookLong(Source, GlobalOptions.Language)}{strSpaceCharacter}{LanguageManager.GetString("String_Page", GlobalOptions.Language)}{strSpaceCharacter}{DisplayPage(GlobalOptions.Language)}";
-
                 return strReturn;
             }
         }
