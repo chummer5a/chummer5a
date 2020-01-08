@@ -467,7 +467,7 @@ namespace Chummer
             this.lblMetamagicSourceLabel = new System.Windows.Forms.Label();
             this.lblMetamagicSource = new System.Windows.Forms.Label();
             this.flpInitiationButtons = new System.Windows.Forms.FlowLayoutPanel();
-            this.cmdAddMetamagic = new System.Windows.Forms.Button();
+            this.cmdAddMetamagic = new SplitButton();
             this.cmdDeleteMetamagic = new System.Windows.Forms.Button();
             this.flpInitiation = new System.Windows.Forms.FlowLayoutPanel();
             this.gpbInitiationType = new System.Windows.Forms.GroupBox();
@@ -999,6 +999,10 @@ namespace Chummer
             this.lblMatrixINI = new Chummer.LabelWithToolTip();
             this.lblESSMax = new System.Windows.Forms.Label();
             this.lblArmor = new Chummer.LabelWithToolTip();
+            this.lblSurprise = new Chummer.LabelWithToolTip();
+            this.lblSurpriseLabel = new Chummer.LabelWithToolTip();
+            this.lblDodgeLabel = new Chummer.LabelWithToolTip();
+            this.lblDodge = new Chummer.LabelWithToolTip();
             this.tabDefences = new System.Windows.Forms.TabPage();
             this.tlpSpellDefense = new Chummer.BufferedTableLayoutPanel(this.components);
             this.lblSpellDefenceManipPhysical = new Chummer.LabelWithToolTip();
@@ -1036,10 +1040,6 @@ namespace Chummer
             this.tsAIProgramNotes = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsGearAllowRename = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsGearAllowRenameExtra = new System.Windows.Forms.ToolStripMenuItem();
-            this.lblSurprise = new Chummer.LabelWithToolTip();
-            this.lblSurpriseLabel = new Chummer.LabelWithToolTip();
-            this.lblDodgeLabel = new Chummer.LabelWithToolTip();
-            this.lblDodge = new Chummer.LabelWithToolTip();
             this.StatusStrip.SuspendLayout();
             this.cmsMartialArts.SuspendLayout();
             this.cmsSpellButton.SuspendLayout();
@@ -6060,6 +6060,7 @@ namespace Chummer
             this.cmdAddMetamagic.Tag = "Button_AddInitiateGrade";
             this.cmdAddMetamagic.Text = "&Add Initiate Grade";
             this.cmdAddMetamagic.UseVisualStyleBackColor = true;
+            this.cmdAddMetamagic.ContextMenuStrip = this.cmsMetamagic;
             this.cmdAddMetamagic.Click += new System.EventHandler(this.cmdAddMetamagic_Click);
             // 
             // cmdDeleteMetamagic
@@ -13357,6 +13358,29 @@ namespace Chummer
             this.lblSurpriseLabel.Text = "Surprise:";
             this.lblSurpriseLabel.ToolTipText = "";
             // 
+            // lblDodgeLabel
+            // 
+            this.lblDodgeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblDodgeLabel.AutoSize = true;
+            this.lblDodgeLabel.Location = new System.Drawing.Point(96, 231);
+            this.lblDodgeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblDodgeLabel.Name = "lblDodgeLabel";
+            this.lblDodgeLabel.Size = new System.Drawing.Size(42, 13);
+            this.lblDodgeLabel.TabIndex = 79;
+            this.lblDodgeLabel.Text = "Dodge:";
+            this.lblDodgeLabel.ToolTipText = "";
+            // 
+            // lblDodge
+            // 
+            this.lblDodge.AutoSize = true;
+            this.lblDodge.Location = new System.Drawing.Point(144, 231);
+            this.lblDodge.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblDodge.Name = "lblDodge";
+            this.lblDodge.Size = new System.Drawing.Size(13, 13);
+            this.lblDodge.TabIndex = 80;
+            this.lblDodge.Text = "0";
+            this.lblDodge.ToolTipText = "";
+            // 
             // tabDefences
             // 
             this.tabDefences.BackColor = System.Drawing.SystemColors.Control;
@@ -13774,51 +13798,6 @@ namespace Chummer
             this.tsGearAllowRenameExtra.Tag = "Menu_RenameExtraText";
             this.tsGearAllowRenameExtra.Text = "&Rename Extra Text";
             this.tsGearAllowRenameExtra.Click += new System.EventHandler(this.tsGearRename_Click);
-            // 
-            // lblSurprise
-            // 
-            this.lblSurprise.AutoSize = true;
-            this.lblSurprise.Location = new System.Drawing.Point(144, 331);
-            this.lblSurprise.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSurprise.Name = "lblSurprise";
-            this.lblSurprise.Size = new System.Drawing.Size(13, 13);
-            this.lblSurprise.TabIndex = 77;
-            this.lblSurprise.Text = "0";
-            this.lblSurprise.ToolTipText = "";
-            // 
-            // lblSurpriseLabel
-            // 
-            this.lblSurpriseLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblSurpriseLabel.AutoSize = true;
-            this.lblSurpriseLabel.Location = new System.Drawing.Point(90, 331);
-            this.lblSurpriseLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSurpriseLabel.Name = "lblSurpriseLabel";
-            this.lblSurpriseLabel.Size = new System.Drawing.Size(48, 13);
-            this.lblSurpriseLabel.TabIndex = 78;
-            this.lblSurpriseLabel.Tag = "Label_OtherSurprise";
-            this.lblSurpriseLabel.Text = "Surprise:";
-            this.lblSurpriseLabel.ToolTipText = "";
-            //
-            // lblDodgeLabel
-            // 
-            this.lblDodgeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblDodgeLabel.AutoSize = true;
-            this.lblDodgeLabel.Location = new System.Drawing.Point(96, 231);
-            this.lblDodgeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblDodgeLabel.Name = "lblDodgeLabel";
-            this.lblDodgeLabel.Size = new System.Drawing.Size(42, 13);
-            this.lblDodgeLabel.TabIndex = 79;
-            this.lblDodgeLabel.Text = "Dodge:";
-            // 
-            // lblDodge
-            // 
-            this.lblDodge.AutoSize = true;
-            this.lblDodge.Location = new System.Drawing.Point(144, 231);
-            this.lblDodge.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblDodge.Name = "lblDodge";
-            this.lblDodge.Size = new System.Drawing.Size(13, 13);
-            this.lblDodge.TabIndex = 80;
-            this.lblDodge.Text = "0";
             // 
             // frmCreate
             // 
@@ -14432,7 +14411,7 @@ namespace Chummer
         private System.Windows.Forms.ToolStripMenuItem mnuFilePrint;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.TabPage tabInitiation;
-        private System.Windows.Forms.Button cmdAddMetamagic;
+        private SplitButton cmdAddMetamagic;
         private System.Windows.Forms.Button cmdDeleteMetamagic;
         private System.Windows.Forms.Label lblInitiationBP;
         private System.Windows.Forms.Label lblMartialArtsBP;
