@@ -45,6 +45,7 @@ Application Changes:
 - Added support for the Reach improvement to apply to specifically named weapons only. This is used by adding a Name attribute to the node. 
 - Added support for martial arts, techniques and maneuvers fetching notes from their books.
 - Added support for metamagics being gated behind certain initiate grades, as used by the Islamic traditions from Forbidden Arcana. This is done through an improvement type, metamagiclimit. For each metamagic child node, the name of the Metamagic (or Echo) is specified in the inner text, while the 'grade' attribute limits the metamagic to being taken at that specific grade. If the grade is not specified, this acts as a whitelist for metamagics, ONLY allowing those metamagics.
+- Added Dodge to the Other Info and Condition Monitor panels in Create and Career modes.
 
 Data Changes:
 - Fixed issues with the Dodge, Bonus Street Cred and Street Cred Multiplier custom improvements. 
