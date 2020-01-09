@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -31,7 +32,7 @@ namespace Chummer.Backend.Equipment
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     public class LifestyleQuality : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, IHasSource
     {
-        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private readonly Logger Log = LogManager.GetCurrentClassLogger();
         private Guid _guiID;
         private Guid _guiSourceID;
         private string _strName = string.Empty;
@@ -46,17 +47,22 @@ namespace Chummer.Backend.Equipment
         private string _strCost = string.Empty;
         private int _intMultiplier;
         private int _intBaseMultiplier;
+        private XmlNode _objCachedMyXmlNode;
+        private string _strCachedXmlNodeLanguage = string.Empty;
+        private int _intAreaMaximum;
+        private int _intArea;
+        private int _intSecurity;
+        private int _intSecurityMaximum;
+        private int _intComfortMaximum;
+        private int _intComfort;
         private List<string> _lstAllowedFreeLifestyles = new List<string>();
-        private Lifestyle _objParentLifestyle;
-        private QualityType _objLifestyleQualityType = QualityType.Positive;
-        private QualitySource _objLifestyleQualitySource = QualitySource.Selected;
-        private XmlNode _nodBonus;
         private readonly Character _objCharacter;
         private bool _blnFree;
 
         #region Helper Methods
+
         /// <summary>
-        /// Convert a string to a LifestyleQualityType.
+        ///     Convert a string to a LifestyleQualityType.
         /// </summary>
         /// <param name="strValue">String value to convert.</param>
         public static QualityType ConvertToLifestyleQualityType(string strValue)
@@ -92,10 +98,12 @@ namespace Chummer.Backend.Equipment
             return QualitySource.Selected;
 #endif
         }
-    #endregion
+
+        #endregion
 
         #region Constructor, Create, Save, Load, and Print Methods
-    public LifestyleQuality(Character objCharacter)
+
+        public LifestyleQuality(Character objCharacter)
         {
             // Create the GUID for the new LifestyleQuality.
             _guiID = Guid.NewGuid();
@@ -103,23 +111,27 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Create a LifestyleQuality from an XmlNode.
+        ///     Create a LifestyleQuality from an XmlNode.
         /// </summary>
         /// <param name="objXmlLifestyleQuality">XmlNode to create the object from.</param>
         /// <param name="objCharacter">Character object the LifestyleQuality will be added to.</param>
         /// <param name="objParentLifestyle">Lifestyle object to which the LifestyleQuality will be added.</param>
         /// <param name="objLifestyleQualitySource">Source of the LifestyleQuality.</param>
         /// <param name="strExtra">Forced value for the LifestyleQuality's Extra string (also used by its bonus node).</param>
-        public void Create(XmlNode objXmlLifestyleQuality, Lifestyle objParentLifestyle, Character objCharacter, QualitySource objLifestyleQualitySource, string strExtra = "")
+        public void Create(XmlNode objXmlLifestyleQuality, Lifestyle objParentLifestyle, Character objCharacter,
+            QualitySource objLifestyleQualitySource, string strExtra = "")
         {
-            _objParentLifestyle = objParentLifestyle;
+            ParentLifestyle = objParentLifestyle;
             if (!objXmlLifestyleQuality.TryGetField("id", Guid.TryParse, out _guiSourceID))
             {
-                Log.Warn(new object[] { "Missing id field for xmlnode", objXmlLifestyleQuality });
+                Log.Warn(new object[] {"Missing id field for xmlnode", objXmlLifestyleQuality});
                 Utils.BreakIfDebug();
             }
             else
+            {
                 _objCachedMyXmlNode = null;
+            }
+
             if (objXmlLifestyleQuality.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
             objXmlLifestyleQuality.TryGetInt32FieldQuickly("lp", ref _intLP);
@@ -127,59 +139,62 @@ namespace Chummer.Backend.Equipment
             objXmlLifestyleQuality.TryGetInt32FieldQuickly("multiplier", ref _intMultiplier);
             objXmlLifestyleQuality.TryGetInt32FieldQuickly("multiplierbaseonly", ref _intBaseMultiplier);
             if (objXmlLifestyleQuality.TryGetStringFieldQuickly("category", ref _strCategory))
-            {
-                _objLifestyleQualityType = ConvertToLifestyleQualityType(_strCategory);
-            }
-            _objLifestyleQualitySource = objLifestyleQualitySource;
+                Type = ConvertToLifestyleQualityType(_strCategory);
+            OriginSource = objLifestyleQualitySource;
+            objXmlLifestyleQuality.TryGetInt32FieldQuickly("areamaximum", ref _intAreaMaximum);
+            objXmlLifestyleQuality.TryGetInt32FieldQuickly("comfortsmaximum", ref _intComfortMaximum);
+            objXmlLifestyleQuality.TryGetInt32FieldQuickly("securitymaximum", ref _intSecurityMaximum);
+            objXmlLifestyleQuality.TryGetInt32FieldQuickly("area", ref _intArea);
+            objXmlLifestyleQuality.TryGetInt32FieldQuickly("comforts", ref _intComfort);
+            objXmlLifestyleQuality.TryGetInt32FieldQuickly("security", ref _intSecurity);
             objXmlLifestyleQuality.TryGetBoolFieldQuickly("print", ref _blnPrint);
             objXmlLifestyleQuality.TryGetBoolFieldQuickly("contributetolimit", ref _blnContributeToLP);
             if (!objXmlLifestyleQuality.TryGetStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlLifestyleQuality.TryGetStringFieldQuickly("notes", ref _strNotes);
             objXmlLifestyleQuality.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlLifestyleQuality.TryGetStringFieldQuickly("page", ref _strPage);
-            string strAllowedFreeLifestyles = string.Empty;
+            var strAllowedFreeLifestyles = string.Empty;
             if (objXmlLifestyleQuality.TryGetStringFieldQuickly("allowed", ref strAllowedFreeLifestyles))
                 _lstAllowedFreeLifestyles = strAllowedFreeLifestyles.Split(',').ToList();
             _strExtra = strExtra;
-            int intParenthesesIndex = _strExtra.IndexOf('(');
+            var intParenthesesIndex = _strExtra.IndexOf('(');
             if (intParenthesesIndex != -1)
-            {
-                _strExtra = intParenthesesIndex + 1 < strExtra.Length ? strExtra.Substring(intParenthesesIndex + 1).TrimEndOnce(')') : string.Empty;
-            }
+                _strExtra = intParenthesesIndex + 1 < strExtra.Length
+                    ? strExtra.Substring(intParenthesesIndex + 1).TrimEndOnce(')')
+                    : string.Empty;
 
             // If the item grants a bonus, pass the information to the Improvement Manager.
             XmlNode xmlBonus = objXmlLifestyleQuality["bonus"];
             if (xmlBonus != null)
             {
-                string strOldFoced = ImprovementManager.ForcedValue;
+                var strOldForced = ImprovementManager.ForcedValue;
                 if (!string.IsNullOrEmpty(_strExtra))
                     ImprovementManager.ForcedValue = _strExtra;
-                if (!ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Quality, InternalId, xmlBonus, false, 1, DisplayNameShort(GlobalOptions.Language)))
+                if (!ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Quality,
+                    InternalId, xmlBonus, false, 1, DisplayNameShort(GlobalOptions.Language)))
                 {
                     _guiID = Guid.Empty;
-                    ImprovementManager.ForcedValue = strOldFoced;
+                    ImprovementManager.ForcedValue = strOldForced;
                     return;
                 }
+
                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
-                {
                     _strExtra = ImprovementManager.SelectedValue;
-                }
-                ImprovementManager.ForcedValue = strOldFoced;
+                ImprovementManager.ForcedValue = strOldForced;
             }
 
             // Built-In Qualities appear as grey text to show that they cannot be removed.
-            if (objLifestyleQualitySource == QualitySource.BuiltIn)
-            {
-                Free = true;
-            }
+            if (objLifestyleQualitySource == QualitySource.BuiltIn) Free = true;
         }
 
         private SourceString _objCachedSourceDetail;
+
         public SourceString SourceDetail => _objCachedSourceDetail ?? (_objCachedSourceDetail =
-                                                new SourceString(Source, Page(GlobalOptions.Language), GlobalOptions.Language));
+                                                new SourceString(Source, DisplayPage(GlobalOptions.Language),
+                                                    GlobalOptions.Language));
 
         /// <summary>
-        /// Save the object's XML to the XmlWriter.
+        ///     Save the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         public void Save(XmlTextWriter objWriter)
@@ -191,18 +206,25 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("category", _strCategory);
             objWriter.WriteElementString("extra", _strExtra);
             objWriter.WriteElementString("cost", _strCost);
-            objWriter.WriteElementString("multiplier", _intMultiplier.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("basemultiplier", _intBaseMultiplier.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("multiplier", _intMultiplier.ToString(GlobalOptions.Instance.InvariantCultureInfo));
+            objWriter.WriteElementString("basemultiplier",
+                _intBaseMultiplier.ToString(GlobalOptions.Instance.InvariantCultureInfo));
             objWriter.WriteElementString("lp", _intLP.ToString());
+            objWriter.WriteElementString("areamaximum", _intAreaMaximum.ToString());
+            objWriter.WriteElementString("comfortsmaximum", _intComfortMaximum.ToString());
+            objWriter.WriteElementString("securitymaximum", _intSecurityMaximum.ToString());
+            objWriter.WriteElementString("area", _intArea.ToString());
+            objWriter.WriteElementString("comforts", _intComfort.ToString());
+            objWriter.WriteElementString("security", _intSecurity.ToString());
             objWriter.WriteElementString("contributetolimit", _blnContributeToLP.ToString());
             objWriter.WriteElementString("print", _blnPrint.ToString());
-            objWriter.WriteElementString("lifestylequalitytype", _objLifestyleQualityType.ToString());
-            objWriter.WriteElementString("lifestylequalitysource", _objLifestyleQualitySource.ToString());
+            objWriter.WriteElementString("lifestylequalitytype", Type.ToString());
+            objWriter.WriteElementString("lifestylequalitysource", OriginSource.ToString());
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
             objWriter.WriteElementString("allowed", string.Join(",", _lstAllowedFreeLifestyles));
-            if (_nodBonus != null)
-                objWriter.WriteRaw("<bonus>" + _nodBonus.InnerXml + "</bonus>");
+            if (Bonus != null)
+                objWriter.WriteRaw("<bonus>" + Bonus.InnerXml + "</bonus>");
             else
                 objWriter.WriteElementString("bonus", string.Empty);
             objWriter.WriteElementString("notes", _strNotes);
@@ -213,22 +235,20 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Load the CharacterAttribute from the XmlNode.
+        ///     Load the CharacterAttribute from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
         /// <param name="objParentLifestyle">Lifestyle object to which this LifestyleQuality belongs.</param>
         public void Load(XmlNode objNode, Lifestyle objParentLifestyle)
         {
             ParentLifestyle = objParentLifestyle;
-            if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
+            if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID)) _guiID = Guid.NewGuid();
+            if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
-                _guiID = Guid.NewGuid();
-            }
-            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
-            {
-                XmlNode node = GetNode(GlobalOptions.Language);
+                var node = GetNode(GlobalOptions.Language);
                 node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
+
             if (objNode.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
@@ -237,91 +257,106 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetInt32FieldQuickly("multiplier", ref _intMultiplier);
             objNode.TryGetInt32FieldQuickly("basemultiplier", ref _intBaseMultiplier);
             objNode.TryGetBoolFieldQuickly("contributetolimit", ref _blnContributeToLP);
+            if (!objNode.TryGetInt32FieldQuickly("areamaximum", ref _intAreaMaximum))
+                _objCachedMyXmlNode.TryGetInt32FieldQuickly("areamaximum", ref _intAreaMaximum);
+            if (!objNode.TryGetInt32FieldQuickly("area", ref _intArea))
+                _objCachedMyXmlNode.TryGetInt32FieldQuickly("area", ref _intArea);
+            if (!objNode.TryGetInt32FieldQuickly("securitymaximum", ref _intSecurityMaximum))
+                _objCachedMyXmlNode.TryGetInt32FieldQuickly("securitymaximum", ref _intSecurityMaximum);
+            if (!objNode.TryGetInt32FieldQuickly("security", ref _intSecurity))
+                _objCachedMyXmlNode.TryGetInt32FieldQuickly("security", ref _intSecurity);
+            if (!objNode.TryGetInt32FieldQuickly("comforts", ref _intComfort))
+                _objCachedMyXmlNode.TryGetInt32FieldQuickly("comforts", ref _intComfort);
+            if (!objNode.TryGetInt32FieldQuickly("comfortsmaximum", ref _intComfortMaximum))
+                _objCachedMyXmlNode.TryGetInt32FieldQuickly("comfortsmaximum", ref _intComfortMaximum);
             objNode.TryGetBoolFieldQuickly("print", ref _blnPrint);
             if (objNode["lifestylequalitytype"] != null)
-                _objLifestyleQualityType = ConvertToLifestyleQualityType(objNode["lifestylequalitytype"].InnerText);
+                Type = ConvertToLifestyleQualityType(objNode["lifestylequalitytype"].InnerText);
 #if DEBUG
             if (objNode["lifestylequalitysource"] != null)
-                _objLifestyleQualitySource = ConvertToLifestyleQualitySource(objNode["lifestylequalitysource"].InnerText);
+                OriginSource = ConvertToLifestyleQualitySource(objNode["lifestylequalitysource"].InnerText);
 #else
-            _objLifestyleQualitySource = QualitySource.Selected;
+            OriginSource = QualitySource.Selected;
 #endif
             if (!objNode.TryGetStringFieldQuickly("category", ref _strCategory))
-            {
                 _strCategory = GetNode()?["category"]?.InnerText ?? string.Empty;
-            }
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
-            string strAllowedFreeLifestyles = string.Empty;
+            var strAllowedFreeLifestyles = string.Empty;
             if (!objNode.TryGetStringFieldQuickly("allowed", ref strAllowedFreeLifestyles))
-            {
                 strAllowedFreeLifestyles = GetNode()?["allowed"]?.InnerText ?? string.Empty;
-            }
             _lstAllowedFreeLifestyles = strAllowedFreeLifestyles.Split(',').ToList();
-            _nodBonus = objNode["bonus"];
+            Bonus = objNode["bonus"];
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
-            
+
             LegacyShim();
         }
 
         /// <summary>
-        /// Performs actions based on the character's last loaded AppVersion attribute.
+        ///     Performs actions based on the character's last loaded AppVersion attribute.
         /// </summary>
         private void LegacyShim()
         {
             //Unstored Cost and LP values prior to 5.190.2 nightlies.
-            if (_objCharacter.LastSavedVersion <= new Version("5.190.0"))
+            if (_objCharacter.LastSavedVersion > new Version("5.190.0")) return;
+            var objXmlDocument = XmlManager.Load("lifestyles.xml");
+            var objLifestyleQualityNode = GetNode() ??
+                                          objXmlDocument.SelectSingleNode(
+                                              "/chummer/qualities/quality[name = \"" + _strName + "\"]");
+            if (objLifestyleQualityNode == null)
             {
-                XmlDocument objXmlDocument = XmlManager.Load("lifestyles.xml");
-                XmlNode objLifestyleQualityNode = GetNode() ??
-                                                  objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + _strName + "\"]");
-                if (objLifestyleQualityNode == null)
+                var lstQualities = new List<ListItem>();
+                using (var xmlQualityList = objXmlDocument.SelectNodes("/chummer/qualities/quality"))
                 {
-                    List<ListItem> lstQualities = new List<ListItem>();
-                    using (XmlNodeList xmlQualityList = objXmlDocument.SelectNodes("/chummer/qualities/quality"))
-                        if (xmlQualityList != null)
-                            foreach (XmlNode xmlNode in xmlQualityList)
-                            {
-                                lstQualities.Add(new ListItem(xmlNode["id"]?.InnerText, xmlNode["translate"]?.InnerText ?? xmlNode["name"]?.InnerText));
-                            }
-                    frmSelectItem frmSelect = new frmSelectItem
-                    {
-                        GeneralItems = lstQualities,
-                        Description = string.Format(LanguageManager.GetString("String_CannotFindLifestyleQuality", GlobalOptions.Language), _strName)
-                    };
-                    frmSelect.ShowDialog();
-                    if (frmSelect.DialogResult == DialogResult.Cancel)
-                        return;
-
-                    objLifestyleQualityNode = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + frmSelect.SelectedItem + "\"]");
+                    if (xmlQualityList != null)
+                        foreach (XmlNode xmlNode in xmlQualityList)
+                            lstQualities.Add(new ListItem(xmlNode["id"]?.InnerText,
+                                xmlNode["translate"]?.InnerText ?? xmlNode["name"]?.InnerText));
                 }
-                int intTemp = 0;
-                string strTemp = string.Empty;
-                if (objLifestyleQualityNode.TryGetStringFieldQuickly("cost", ref strTemp))
-                    CostString = strTemp;
-                if (objLifestyleQualityNode.TryGetInt32FieldQuickly("lp", ref intTemp))
-                    LP = intTemp;
-                if (objLifestyleQualityNode.TryGetInt32FieldQuickly("areamaximum", ref intTemp))
-                    AreaMaximum = intTemp;
-                if (objLifestyleQualityNode.TryGetInt32FieldQuickly("comfortsmaximum", ref intTemp))
-                    ComfortMaximum = intTemp;
-                if (objLifestyleQualityNode.TryGetInt32FieldQuickly("securitymaximum", ref intTemp))
-                    SecurityMaximum = intTemp;
-                if (objLifestyleQualityNode.TryGetInt32FieldQuickly("area", ref intTemp))
-                    Area = intTemp;
-                if (objLifestyleQualityNode.TryGetInt32FieldQuickly("comforts", ref intTemp))
-                    Comfort = intTemp;
-                if (objLifestyleQualityNode.TryGetInt32FieldQuickly("security", ref intTemp))
-                    Security = intTemp;
-                if (objLifestyleQualityNode.TryGetInt32FieldQuickly("multiplier", ref intTemp))
-                    Multiplier = intTemp;
-                if (objLifestyleQualityNode.TryGetInt32FieldQuickly("multiplierbaseonly", ref intTemp))
-                    BaseMultiplier = intTemp;
+
+                var frmSelect = new frmSelectItem
+                {
+                    GeneralItems = lstQualities,
+                    Description =
+                        string.Format(
+                            LanguageManager.GetString("String_intCannotFindLifestyleQuality",
+                                GlobalOptions.Language), _strName)
+                };
+                frmSelect.ShowDialog();
+                if (frmSelect.DialogResult == DialogResult.Cancel)
+                    return;
+
+                objLifestyleQualityNode =
+                    objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + frmSelect.SelectedItem +
+                                                    "\"]");
             }
+
+            var intTemp = 0;
+            var strTemp = string.Empty;
+            if (objLifestyleQualityNode.TryGetStringFieldQuickly("cost", ref strTemp))
+                CostString = strTemp;
+            if (objLifestyleQualityNode.TryGetInt32FieldQuickly("lp", ref intTemp))
+                LP = intTemp;
+            if (objLifestyleQualityNode.TryGetInt32FieldQuickly("areamaximum", ref intTemp))
+                AreaMaximum = intTemp;
+            if (objLifestyleQualityNode.TryGetInt32FieldQuickly("comfortsmaximum", ref intTemp))
+                ComfortMaximum = intTemp;
+            if (objLifestyleQualityNode.TryGetInt32FieldQuickly("securitymaximum", ref intTemp))
+                SecurityMaximum = intTemp;
+            if (objLifestyleQualityNode.TryGetInt32FieldQuickly("area", ref intTemp))
+                Area = intTemp;
+            if (objLifestyleQualityNode.TryGetInt32FieldQuickly("comforts", ref intTemp))
+                Comfort = intTemp;
+            if (objLifestyleQualityNode.TryGetInt32FieldQuickly("security", ref intTemp))
+                Security = intTemp;
+            if (objLifestyleQualityNode.TryGetInt32FieldQuickly("multiplier", ref intTemp))
+                Multiplier = intTemp;
+            if (objLifestyleQualityNode.TryGetInt32FieldQuickly("multiplierbaseonly", ref intTemp))
+                BaseMultiplier = intTemp;
         }
 
         /// <summary>
-        /// Print the object's XML to the XmlWriter.
+        ///     Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print.</param>
@@ -337,41 +372,45 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(Extra, strLanguageToPrint));
             objWriter.WriteElementString("lp", LP.ToString(objCulture));
             objWriter.WriteElementString("cost", Cost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
-            string strLifestyleQualityType = Type.ToString();
+            var strLifestyleQualityType = Type.ToString();
             if (strLanguageToPrint != GlobalOptions.DefaultLanguage)
             {
-                XmlNode objNode = XmlManager.Load("lifestyles.xml", strLanguageToPrint).SelectSingleNode("/chummer/categories/category[. = \"" + strLifestyleQualityType + "\"]");
+                var objNode = XmlManager.Load("lifestyles.xml", strLanguageToPrint)
+                    .SelectSingleNode("/chummer/categories/category[. = \"" + strLifestyleQualityType + "\"]");
                 strLifestyleQualityType = objNode?.Attributes?["translate"]?.InnerText ?? strLifestyleQualityType;
             }
+
             objWriter.WriteElementString("lifestylequalitytype", strLifestyleQualityType);
             objWriter.WriteElementString("lifestylequalitytype_english", Type.ToString());
             objWriter.WriteElementString("lifestylequalitysource", OriginSource.ToString());
             objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
-            objWriter.WriteElementString("page", Page(strLanguageToPrint));
+            objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             if (_objCharacter.Options.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
         }
-#endregion
+
+        #endregion
 
         #region Properties
+
         /// <summary>
-        /// Internal identifier which will be used to identify this LifestyleQuality in the Improvement system.
+        ///     Internal identifier which will be used to identify this LifestyleQuality in the Improvement system.
         /// </summary>
         public string InternalId => _guiID.ToString("D");
 
         /// <summary>
-        /// Identifier of the object within data files.
+        ///     Identifier of the object within data files.
         /// </summary>
         public Guid SourceID => _guiSourceID;
 
         /// <summary>
-        /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
+        ///     String-formatted identifier of the <inheritdoc cref="SourceID" /> from the data files.
         /// </summary>
         public string SourceIDString => _guiSourceID.ToString("D");
 
         /// <summary>
-        /// LifestyleQuality's name.
+        ///     LifestyleQuality's name.
         /// </summary>
         public string Name
         {
@@ -385,16 +424,12 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// LifestyleQuality's parent lifestyle.
+        ///     LifestyleQuality's parent lifestyle.
         /// </summary>
-        public Lifestyle ParentLifestyle
-        {
-            get => _objParentLifestyle;
-            set => _objParentLifestyle = value;
-        }
+        public Lifestyle ParentLifestyle { get; set; }
 
         /// <summary>
-        /// Extra information that should be applied to the name, like a linked CharacterAttribute.
+        ///     Extra information that should be applied to the name, like a linked CharacterAttribute.
         /// </summary>
         public string Extra
         {
@@ -403,7 +438,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Sourcebook.
+        ///     Sourcebook.
         /// </summary>
         public string Source
         {
@@ -411,42 +446,47 @@ namespace Chummer.Backend.Equipment
             set => _strSource = value;
         }
 
+
         /// <summary>
-        /// Page Number.
+        /// Sourcebook Page Number.
         /// </summary>
-        public string Page(string strLanguage)
+        public string Page
+        {
+            get => _strPage;
+            set => _strPage = value;
+        }
+
+        /// <summary>
+        /// Sourcebook Page Number using a given language file.
+        /// Returns Page if not found or the string is empty.
+        /// </summary>
+        /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <returns></returns>
+        public string DisplayPage(string strLanguage)
         {
             if (strLanguage == GlobalOptions.DefaultLanguage)
-                return _strPage;
-
-            return GetNode(strLanguage)?["altpage"]?.InnerText ?? _strPage;
+                return Page;
+            string s = GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
+            return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 
         /// <summary>
-        /// Bonus node from the XML file.
+        ///     Bonus node from the XML file.
         /// </summary>
-        public XmlNode Bonus
-        {
-            get => _nodBonus;
-            set => _nodBonus = value;
-        }
+        public XmlNode Bonus { get; set; }
 
         /// <summary>
-        /// LifestyleQuality Type.
+        ///     LifestyleQuality Type.
         /// </summary>
-        public QualityType Type => _objLifestyleQualityType;
+        public QualityType Type { get; private set; } = QualityType.Positive;
 
         /// <summary>
-        /// Source of the LifestyleQuality.
+        ///     Source of the LifestyleQuality.
         /// </summary>
-        public QualitySource OriginSource
-        {
-            get => _objLifestyleQualitySource;
-            set => _objLifestyleQualitySource = value;
-        }
+        public QualitySource OriginSource { get; set; } = QualitySource.Selected;
 
         /// <summary>
-        /// Number of Build Points the LifestyleQuality costs.
+        ///     Number of Build Points the LifestyleQuality costs.
         /// </summary>
         public int LP
         {
@@ -455,7 +495,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// The name of the object as it should be displayed on printouts (translated name only).
+        ///     The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
         public string DisplayNameShort(string strLanguage)
         {
@@ -466,46 +506,35 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// The name of the object as it should be displayed in lists. Name (Extra).
+        ///     The name of the object as it should be displayed in lists. Name (Extra).
         /// </summary>
         public string DisplayName(string strLanguage)
         {
-            string strReturn = DisplayNameShort(strLanguage);
+            var strReturn = DisplayNameShort(strLanguage);
 
             if (!string.IsNullOrEmpty(Extra))
-            {
                 // Attempt to retrieve the CharacterAttribute name.
-                strReturn += LanguageManager.GetString("String_Space", strLanguage) + '(' + LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
-            }
+                strReturn += LanguageManager.GetString("String_Space", strLanguage) + '(' +
+                             LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
             return strReturn;
         }
 
         public string FormattedDisplayName(CultureInfo objCulture, string strLanguage)
         {
-            string strReturn = DisplayName(strLanguage);
+            var strReturn = DisplayName(strLanguage);
 
             if (Multiplier > 0)
-            {
                 strReturn += $" [+{Multiplier}%]";
-            }
-            else if (Multiplier < 0)
-            {
-                strReturn += $" [{Multiplier}%]";
-            }
+            else if (Multiplier < 0) strReturn += $" [{Multiplier}%]";
 
             if (Cost > 0)
-            {
                 strReturn += " [+" + Cost.ToString(_objCharacter.Options.NuyenFormat, objCulture) + "¥]";
-            }
-            else if (Cost < 0)
-            {
-                strReturn += " [" + Cost.ToString(_objCharacter.Options.NuyenFormat, objCulture) + "¥]";
-            }
+            else if (Cost < 0) strReturn += " [" + Cost.ToString(_objCharacter.Options.NuyenFormat, objCulture) + "¥]";
             return strReturn;
         }
 
         /// <summary>
-        /// Whether or not the LifestyleQuality appears on the printouts.
+        ///     Whether or not the LifestyleQuality appears on the printouts.
         /// </summary>
         public bool AllowPrint
         {
@@ -514,7 +543,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Notes.
+        ///     Notes.
         /// </summary>
         public string Notes
         {
@@ -523,7 +552,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Nuyen cost of the Quality.
+        ///     Nuyen cost of the Quality.
         /// </summary>
         public decimal Cost
         {
@@ -531,18 +560,20 @@ namespace Chummer.Backend.Equipment
             {
                 if (Free || FreeByLifestyle)
                     return 0;
-                if (!decimal.TryParse(CostString, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decimal decReturn))
+                if (!decimal.TryParse(CostString, NumberStyles.Any, GlobalOptions.Instance.InvariantCultureInfo,
+                    out var decReturn))
                 {
-                    object objProcess = CommonFunctions.EvaluateInvariantXPath(CostString, out bool blnIsSuccess);
+                    var objProcess = CommonFunctions.EvaluateInvariantXPath(CostString, out var blnIsSuccess);
                     if (blnIsSuccess)
                         return Convert.ToDecimal(objProcess);
                 }
+
                 return decReturn;
             }
         }
 
         /// <summary>
-        /// String for the nuyen cost of the Quality.
+        ///     String for the nuyen cost of the Quality.
         /// </summary>
         public string CostString
         {
@@ -551,7 +582,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Does the Quality have a Nuyen or LP cost?
+        ///     Does the Quality have a Nuyen or LP cost?
         /// </summary>
         public bool Free
         {
@@ -566,7 +597,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Are the costs of this Quality included in base lifestyle costs?
+        ///     Are the costs of this Quality included in base lifestyle costs?
         /// </summary>
         public bool FreeByLifestyle
         {
@@ -574,57 +605,73 @@ namespace Chummer.Backend.Equipment
             {
                 if (Type == QualityType.Entertainment || Type == QualityType.Contracts)
                 {
-                    string strLifestyleEquivalent = Lifestyle.GetEquivalentLifestyle(_objParentLifestyle.BaseLifestyle);
-                    if (!string.IsNullOrEmpty(_objParentLifestyle?.BaseLifestyle) &&
-                        _lstAllowedFreeLifestyles.Any(strLifestyle => strLifestyle == strLifestyleEquivalent || strLifestyle == _objParentLifestyle.BaseLifestyle))
-                    {
+                    var strLifestyleEquivalent = Lifestyle.GetEquivalentLifestyle(ParentLifestyle.BaseLifestyle);
+                    if (!string.IsNullOrEmpty(ParentLifestyle?.BaseLifestyle) &&
+                        _lstAllowedFreeLifestyles.Any(strLifestyle =>
+                            strLifestyle == strLifestyleEquivalent || strLifestyle == ParentLifestyle.BaseLifestyle))
                         return true;
-                    }
                 }
+
                 return false;
             }
         }
 
         /// <summary>
-        /// Comfort LP is increased/reduced by this Quality.
+        ///     Comfort LP is increased/reduced by this Quality.
         /// </summary>
-        public int Comfort { get; set; }
+        public int Comfort
+        {
+            get => _intComfort;
+            set => _intComfort = value;
+        }
 
         /// <summary>
-        /// Comfort LP maximum is increased/reduced by this Quality.
+        ///     Comfort LP maximum is increased/reduced by this Quality.
         /// </summary>
-        public int ComfortMaximum { get; set; }
+        public int ComfortMaximum
+        {
+            get => _intComfortMaximum;
+            set => _intComfortMaximum = value;
+        }
 
         /// <summary>
-        /// Security LP value is increased/reduced by this Quality.
+        ///     Security LP value is increased/reduced by this Quality.
         /// </summary>
-        public int SecurityMaximum { get; set; }
+        public int SecurityMaximum
+        {
+            get => _intSecurityMaximum;
+            set => _intSecurityMaximum = value;
+        }
 
         /// <summary>
-        /// Security LP value is increased/reduced by this Quality.
+        ///     Security LP value is increased/reduced by this Quality.
         /// </summary>
-        public int Security { get; set; }
+        public int Security
+        {
+            get => _intSecurity;
+            set => _intSecurity = value;
+        }
 
         /// <summary>
-        /// Percentage by which the quality increases the overall Lifestyle Cost.
+        ///     Percentage by which the quality increases the overall Lifestyle Cost.
         /// </summary>
         public int Multiplier
         {
-            get => (Free || FreeByLifestyle) ? 0 : _intMultiplier;
+            get => Free || FreeByLifestyle ? 0 : _intMultiplier;
             set => _intMultiplier = value;
         }
 
         /// <summary>
-        /// Percentage by which the quality increases the Lifestyle Cost ONLY, without affecting other qualities.
+        ///     Percentage by which the quality increases the Lifestyle Cost ONLY, without affecting other qualities.
         /// </summary>
         public int BaseMultiplier
         {
-            get => (Free || FreeByLifestyle) ? 0 : _intBaseMultiplier;
+            get => Free || FreeByLifestyle ? 0 : _intBaseMultiplier;
             set => _intBaseMultiplier = value;
         }
 
         /// <summary>
-        /// Category of the Quality.
+        ///     Category of the Quality.
         /// </summary>
         public string Category
         {
@@ -633,17 +680,22 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Area/Neighborhood LP Cost/Benefit of the Quality.
+        ///     Area/Neighborhood LP Cost/Benefit of the Quality.
         /// </summary>
-        public int AreaMaximum { get; set; }
+        public int AreaMaximum
+        {
+            get => _intAreaMaximum;
+            set => _intAreaMaximum = value;
+        }
 
         /// <summary>
-        /// Area/Neighborhood minimum is increased/reduced by this Quality.
+        ///     Area/Neighborhood minimum is increased/reduced by this Quality.
         /// </summary>
-        public int Area { get; set; }
-
-        private XmlNode _objCachedMyXmlNode;
-        private string _strCachedXmlNodeLanguage = string.Empty;
+        public int Area
+        {
+            get => _intArea;
+            set => _intArea = value;
+        }
 
         public XmlNode GetNode()
         {
@@ -652,32 +704,38 @@ namespace Chummer.Backend.Equipment
 
         public XmlNode GetNode(string strLanguage)
         {
-            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
+            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage ||
+                GlobalOptions.Instance.LiveCustomData)
             {
-
-                if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.LiveCustomData) return _objCachedMyXmlNode;
+                if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage &&
+                    !GlobalOptions.Instance.LiveCustomData) return _objCachedMyXmlNode;
                 _objCachedMyXmlNode = SourceID == Guid.Empty
                     ? XmlManager.Load("lifestyles.xml", strLanguage)
                         .SelectSingleNode($"/chummer/qualities/quality[name = \"{Name}\"]")
                     : XmlManager.Load("lifestyles.xml", strLanguage)
-                        .SelectSingleNode($"/chummer/qualities/quality[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
+                        .SelectSingleNode(
+                            $"/chummer/qualities/quality[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
                 return _objCachedMyXmlNode;
             }
+
             return _objCachedMyXmlNode;
         }
+
         #endregion
 
         #region UI Methods
+
         public TreeNode CreateTreeNode()
         {
-            if (OriginSource == QualitySource.BuiltIn && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
+            if (OriginSource == QualitySource.BuiltIn && !string.IsNullOrEmpty(Source) &&
+                !_objCharacter.Options.BookEnabled(Source))
                 return null;
 
-            TreeNode objNode = new TreeNode
+            var objNode = new TreeNode
             {
                 Name = InternalId,
-                Text = FormattedDisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language),
+                Text = FormattedDisplayName(GlobalOptions.Instance.CultureInfo, GlobalOptions.Language),
                 Tag = this,
                 ForeColor = PreferredColor,
                 ToolTipText = Notes.WordWrap(100)
@@ -689,17 +747,12 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                if (!string.IsNullOrEmpty(Notes))
-                {
-                    return Color.SaddleBrown;
-                }
-                if (OriginSource == QualitySource.BuiltIn)
-                {
-                    return SystemColors.GrayText;
-                }
+                if (!string.IsNullOrEmpty(Notes)) return Color.SaddleBrown;
+                if (OriginSource == QualitySource.BuiltIn) return SystemColors.GrayText;
                 return SystemColors.WindowText;
             }
         }
+
         #endregion
 
         public void SetSourceDetail(Control sourceControl)

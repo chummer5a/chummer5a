@@ -80,6 +80,11 @@ namespace ChummerHub.Client.UI
                     //we are logged in!
                     GetCookieContainer();
                     var client = StaticUtils.GetClient();
+                    if (client == null)
+                    {
+                        Log.Error("Cloud not create an instance of SINnersclient!");
+                        return;
+                    }
                     var user = await client.GetUserByAuthorizationWithHttpMessagesAsync();
                     if (user.Body?.CallSuccess == true)
                     {
@@ -89,8 +94,7 @@ namespace ChummerHub.Client.UI
                             SINnerVisibility tempvis;
                             if (!String.IsNullOrEmpty(Properties.Settings.Default.SINnerVisibility))
                             {
-                                tempvis = JsonConvert.DeserializeObject<SINnerVisibility>(Properties.Settings.Default
-                                    .SINnerVisibility);
+                                tempvis = JsonConvert.DeserializeObject<SINnerVisibility>(Properties.Settings.Default.SINnerVisibility);
                             }
                             else
                             {
@@ -129,7 +133,7 @@ namespace ChummerHub.Client.UI
                     Properties.Settings.Default.CookieData = null;
                     Properties.Settings.Default.Save();
                     var cookies =
-                        StaticUtils.AuthorizationCookieContainer.GetCookies(new Uri(Properties.Settings.Default
+                        StaticUtils.AuthorizationCookieContainer?.GetCookies(new Uri(Properties.Settings.Default
                             .SINnerUrl));
                     var client = StaticUtils.GetClient(true);
                 }

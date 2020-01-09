@@ -71,7 +71,7 @@ namespace Chummer
         static XmlManager()
         {
             s_LstDataDirectories.Add(Path.Combine(Utils.GetStartupPath, "data"));
-            foreach (CustomDataDirectoryInfo objCustomDataDirectory in GlobalOptions.CustomDataDirectoryInfo.Where(x => x.Enabled))
+            foreach (CustomDataDirectoryInfo objCustomDataDirectory in GlobalOptions.Instance.CustomDataDirectoryInfo.Where(x => x.Enabled))
             {
                 s_LstDataDirectories.Add(objCustomDataDirectory.Path);
             }
@@ -85,7 +85,7 @@ namespace Chummer
                 s_SetFilesWithCachedDocs.Clear();
             s_LstDataDirectories.Clear();
             s_LstDataDirectories.Add(Path.Combine(Utils.GetStartupPath, "data"));
-            foreach (CustomDataDirectoryInfo objCustomDataDirectory in GlobalOptions.CustomDataDirectoryInfo.Where(x => x.Enabled))
+            foreach (CustomDataDirectoryInfo objCustomDataDirectory in GlobalOptions.Instance.CustomDataDirectoryInfo.Where(x => x.Enabled))
             {
                 s_LstDataDirectories.Add(objCustomDataDirectory.Path);
             }
@@ -217,7 +217,7 @@ namespace Chummer
                 objReference.FileDate = datDate;
                 objReference.FileName = strFileName;
                 objReference.Language = strLanguage;
-                if (GlobalOptions.LiveCustomData)
+                if (GlobalOptions.Instance.LiveCustomData)
                     objReference.XmlContent = objDoc.Clone() as XmlDocument;
                 else
                     objReference.XmlContent = objDoc;
@@ -230,7 +230,7 @@ namespace Chummer
                 // A new XmlDocument is created by loading the a copy of the cached one so that we don't stuff custom content into the cached copy
                 // (which we don't want and also results in multiple copies of each custom item).
                 // Pull the document from cache.
-                if (GlobalOptions.LiveCustomData)
+                if (GlobalOptions.Instance.LiveCustomData)
                     objDoc = objReference.XmlContent.Clone() as XmlDocument;
                 else
                     objDoc = objReference.XmlContent;
@@ -243,7 +243,7 @@ namespace Chummer
 
             // Load any custom data files the user might have. Do not attempt this if we're loading the Improvements file.
             bool blnHasLiveCustomData = false;
-            if (GlobalOptions.LiveCustomData)
+            if (GlobalOptions.Instance.LiveCustomData)
             {
                 strPath = Path.Combine(Utils.GetStartupPath, "livecustomdata");
                 if (Directory.Exists(strPath))
@@ -261,8 +261,7 @@ namespace Chummer
                     {
                         foreach (XmlNode objNode in xmlNodeList)
                         {
-                            // Only process nodes that have children and are not the version node
-                            if (objNode.Name != "version" && objNode.HasChildNodes)
+                            if (objNode.HasChildNodes)
                             {
                                 // Parsing the node into an XDocument for LINQ parsing would result in slightly slower overall code (31 samples vs. 30 samples).
                                 CheckIdNodes(objNode, strFileName);
@@ -291,39 +290,7 @@ namespace Chummer
             List<string> lstItemsWithMalformedIDs = new List<string>();
             // Key is ID, Value is a list of the names of all items with that ID.
             Dictionary<string, List<string>> dicItemsWithIDs = new Dictionary<string, List<string>>();
-
-            using (XmlNodeList xmlChildNodeList = xmlParentNode.SelectNodes("*"))
-            {
-                if (xmlChildNodeList?.Count > 0)
-                {
-                    foreach (XmlNode xmlLoopNode in xmlChildNodeList)
-                    {
-                        string strId = xmlLoopNode["id"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strId))
-                        {
-                            string strItemName = xmlLoopNode["name"]?.InnerText ?? xmlLoopNode["stage"]?.InnerText ?? xmlLoopNode["category"]?.InnerText ?? strId;
-                            if (!strId.IsGuid())
-                                lstItemsWithMalformedIDs.Add(strItemName);
-                            else if (dicItemsWithIDs.TryGetValue(strId, out List<string> lstNamesList))
-                            {
-                                if (!setDuplicateIDs.Contains(strId))
-                                {
-                                    setDuplicateIDs.Add(strId);
-                                    if (strItemName == strId)
-                                        strItemName = string.Empty;
-                                }
-
-                                lstNamesList.Add(strItemName);
-                            }
-                            else
-                                dicItemsWithIDs.Add(strId, new List<string> {strItemName});
-                        }
-
-                        // Perform recursion so that nested elements that also have ids are also checked (e.g. Metavariants)
-                        CheckIdNodes(xmlLoopNode, strFileName);
-                    }
-                }
-            }
+            CheckIdNode(xmlParentNode, ref setDuplicateIDs, ref lstItemsWithMalformedIDs, ref dicItemsWithIDs);
 
             if (setDuplicateIDs.Count > 0)
             {
@@ -334,19 +301,58 @@ namespace Chummer
                         strDuplicatesNames += Environment.NewLine;
                     strDuplicatesNames += string.Join(Environment.NewLine, lstDuplicateNames);
                 }
-                MessageBox.Show(string.Format(LanguageManager.GetString("Message_DuplicateGuidWarning", GlobalOptions.Language)
-                        , setDuplicateIDs.Count.ToString(GlobalOptions.CultureInfo)
+                if (!Utils.IsUnitTest)
+                {
+                    Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_DuplicateGuidWarning", GlobalOptions.Language)
+                        , setDuplicateIDs.Count.ToString(GlobalOptions.Instance.CultureInfo)
                         , strFileName
                         , strDuplicatesNames));
+                }
             }
 
-            if (lstItemsWithMalformedIDs.Count > 0)
+            if (lstItemsWithMalformedIDs.Count > 0 && !Utils.IsUnitTest)
             {
                 string strMalformedIdNames = string.Join(Environment.NewLine, lstItemsWithMalformedIDs);
-                MessageBox.Show(string.Format(LanguageManager.GetString("Message_NonGuidIdWarning", GlobalOptions.Language)
-                    , lstItemsWithMalformedIDs.Count.ToString(GlobalOptions.CultureInfo)
+                Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_NonGuidIdWarning", GlobalOptions.Language)
+                    , lstItemsWithMalformedIDs.Count.ToString(GlobalOptions.Instance.CultureInfo)
                     , strFileName
                     , strMalformedIdNames));
+            }
+        }
+
+        private static void CheckIdNode(XmlNode xmlParentNode, ref HashSet<string> setDuplicateIDs, ref List<string> lstItemsWithMalformedIDs, ref Dictionary<string, List<string>> dicItemsWithIDs)
+        {
+            using (XmlNodeList xmlChildNodeList = xmlParentNode.SelectNodes("*"))
+            {
+                if (!(xmlChildNodeList?.Count > 0)) return;
+
+                foreach (XmlNode xmlLoopNode in xmlChildNodeList)
+                {
+                    string strId = xmlLoopNode["id"]?.InnerText.ToLowerInvariant();
+                    if (!string.IsNullOrEmpty(strId))
+                    {
+                        if (xmlLoopNode.Name == "knowledgeskilllevel") continue; //TODO: knowledgeskilllevel node in lifemodules.xml uses ids instead of name references. Find a better way to manage this!
+                        string strItemName = xmlLoopNode["name"]?.InnerText ?? xmlLoopNode["stage"]?.InnerText ?? xmlLoopNode["category"]?.InnerText ?? strId;
+                        if (!strId.IsGuid())
+                            lstItemsWithMalformedIDs.Add(strItemName);
+                        else if (dicItemsWithIDs.TryGetValue(strId, out List<string> lstNamesList))
+                        {
+                            if (!setDuplicateIDs.Contains(strId))
+                            {
+                                setDuplicateIDs.Add(strId);
+                                if (strItemName == strId)
+                                    strItemName = string.Empty;
+                            }
+
+                            lstNamesList.Add(strItemName);
+                        }
+                        else
+                            dicItemsWithIDs.Add(strId, new List<string> { strItemName });
+                    }
+
+                    // Perform recursion so that nested elements that also have ids are also checked (e.g. Metavariants)
+                    CheckIdNode(xmlLoopNode, ref setDuplicateIDs, ref lstItemsWithMalformedIDs, ref dicItemsWithIDs);
+                }
             }
         }
         
@@ -933,12 +939,12 @@ namespace Chummer
             }
             catch (IOException ex)
             {
-                MessageBox.Show(ex.ToString());
+                Program.MainForm.ShowMessageBox(ex.ToString());
                 return;
             }
             catch (XmlException ex)
             {
-                MessageBox.Show(ex.ToString());
+                Program.MainForm.ShowMessageBox(ex.ToString());
                 return;
             }
 
@@ -1013,7 +1019,7 @@ namespace Chummer
 
                                 if (blnContinue)
                                 {
-                                    if (strTypeName != "version" && !((strTypeName == "costs" || strTypeName == "safehousecosts" || strTypeName == "comforts" || strTypeName == "neighborhoods" || strTypeName == "securities") && strFile.EndsWith("lifestyles.xml")))
+                                    if (!((strTypeName == "costs" || strTypeName == "safehousecosts" || strTypeName == "comforts" || strTypeName == "neighborhoods" || strTypeName == "securities") && strFile.EndsWith("lifestyles.xml")))
                                     {
                                         string strChildName = objChild.Name;
                                         XPathNavigator xmlTranslatedType = objLanguageRoot.SelectSingleNode(strTypeName);
@@ -1162,6 +1168,55 @@ namespace Chummer
                                         else if (strChildName == "#comment")
                                         {
                                             //Ignore this node, as it's a comment node.
+                                        }
+                                        else if (strFile.EndsWith("tips.xml"))
+                                        {
+                                            XPathNavigator xmlText = objChild.SelectSingleNode("text");
+                                            // Look for a matching entry in the Language file.
+                                            if (xmlText != null)
+                                            {
+                                                string strChildTextElement = xmlText.Value;
+                                                XPathNavigator xmlNode = xmlTranslatedType?.SelectSingleNode(strChildName + "[text = " + strChildTextElement.CleanXPath() + "]");
+                                                if (xmlNode != null)
+                                                {
+                                                    // A match was found, so see what elements, if any, are missing.
+                                                    bool blnTranslate = xmlNode.SelectSingleNode("translate") != null || xmlNode.SelectSingleNode("@translated")?.Value == bool.TrueString;
+
+                                                    // At least one pice of data was missing so write out the result node.
+                                                    if (!blnTranslate)
+                                                    {
+                                                        if (!blnTypeWritten)
+                                                        {
+                                                            blnTypeWritten = true;
+                                                            objWriter.WriteStartElement(strTypeName);
+                                                        }
+
+                                                        // <results>
+                                                        objWriter.WriteStartElement(strChildName);
+                                                        objWriter.WriteElementString("text", strChildTextElement);
+                                                        if (!blnTranslate)
+                                                            objWriter.WriteElementString("missing", "translate");
+                                                        // </results>
+                                                        objWriter.WriteEndElement();
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    if (!blnTypeWritten)
+                                                    {
+                                                        blnTypeWritten = true;
+                                                        objWriter.WriteStartElement(strTypeName);
+                                                    }
+
+                                                    // No match was found, so write out that the data item is missing.
+                                                    // <result>
+                                                    objWriter.WriteStartElement(strChildName);
+                                                    objWriter.WriteAttributeString("needstobeadded", bool.TrueString);
+                                                    objWriter.WriteElementString("text", strChildTextElement);
+                                                    // </result>
+                                                    objWriter.WriteEndElement();
+                                                }
+                                            }
                                         }
                                         else
                                         {

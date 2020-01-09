@@ -2,9 +2,13 @@
 
 namespace ChummerHub.Migrations
 {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'cumulativeMigration'
     public partial class cumulativeMigration : Migration
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'cumulativeMigration'
     {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'cumulativeMigration.Up(MigrationBuilder)'
         protected override void Up(MigrationBuilder migrationBuilder)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'cumulativeMigration.Up(MigrationBuilder)'
         {
             migrationBuilder.AlterColumn<string>(
                 name: "EMail",
@@ -85,7 +89,9 @@ namespace ChummerHub.Migrations
                 column: "Language");
         }
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'cumulativeMigration.Down(MigrationBuilder)'
         protected override void Down(MigrationBuilder migrationBuilder)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'cumulativeMigration.Down(MigrationBuilder)'
         {
             migrationBuilder.DropIndex(
                 name: "IX_SINnerGroups_Language",

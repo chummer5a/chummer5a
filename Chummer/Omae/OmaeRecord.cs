@@ -56,7 +56,7 @@ namespace Chummer
 				lblDescription.Text = LanguageManager.GetString("Omae_NoDescription");
 			else
 				lblDescription.Text = objNode["description"].InnerText;
-			DateTime datDate = DateTime.Parse(objNode["date"].InnerText, GlobalOptions.CultureInfo);
+			DateTime datDate = DateTime.Parse(objNode["date"].InnerText, GlobalOptions.Instance.CultureInfo);
 			lblDate.Text = LanguageManager.GetString("Omae_UpdatedDate") + " " + datDate.ToShortDateString();
 			lblCount.Text = LanguageManager.GetString("Omae_DownloadCount").Replace("{0}", objNode["count"].InnerText);
 
@@ -252,7 +252,7 @@ namespace Chummer
             lblCharacterName.Text = objNode["name"].InnerText;
             lblUser.Text = objNode["user"].InnerText;
             lblDescription.Text = objNode["description"]?.InnerText ?? LanguageManager.GetString("Omae_NoDescription", GlobalOptions.Language);
-            if (DateTime.TryParse(objNode["date"].InnerText, GlobalOptions.InvariantCultureInfo, System.Globalization.DateTimeStyles.None, out DateTime datDate))
+            if (DateTime.TryParse(objNode["date"].InnerText, GlobalOptions.Instance.InvariantCultureInfo, System.Globalization.DateTimeStyles.None, out DateTime datDate))
                 lblDate.Text = LanguageManager.GetString("Omae_UpdatedDate", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + datDate.ToShortDateString();
             else
                 lblDate.Text = LanguageManager.GetString("Omae_UpdatedDate", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + LanguageManager.GetString("String_None", GlobalOptions.Language);

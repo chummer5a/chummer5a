@@ -30,6 +30,8 @@ namespace ChummerHub.Client.UI
         private void BOk_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.OK;
+            this.MyVisibility.IsGroupVisible = this.ucSINnerVisibility1.MyCheckBoxGroupVisible.Checked;
+            this.MyVisibility.UserRights = this.MyVisibility.UserRightsObservable.ToList();
             this.Close();
         }
     }

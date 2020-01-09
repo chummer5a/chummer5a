@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -18,11 +18,10 @@
     https://github.com/chummer5a/chummer5a
 -->
 <chummer>
-    <powers>
-        <power>
-            <id>9fd628cc-dd06-435c-80d3-5261e7e5b1e5</id>
-            <source>SG</source>
-            <page>199</page>
-        </power>
-    </powers>
+  <gears>
+    <gear>
+      <id>c4fecc98-0cf7-4e81-adde-bbed821850d6</id>
+      <hide />
+    </gear>
+  </gears>
 </chummer>

@@ -20,7 +20,7 @@
 -->
 <chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.w3.org/2001/XMLSchema martialarts.xsd">
-  <version>0</version>
+
   <martialarts>
     <!-- Region Run and Gun -->
     <martialart>
@@ -1814,7 +1814,7 @@
       <id>d2234863-297d-4a61-a939-ff263381e209</id>
       <name>Ballestra</name>
       <source>RG</source>
-      <page>135</page>
+      <page>119</page>
     </technique>
     <technique>
       <id>c46f550f-3148-4b91-a0fa-299a57e7879c</id>
@@ -1838,31 +1838,31 @@
       <id>eb766a12-66c7-44f4-bdc8-a3ae6f8f6770</id>
       <name>Called Shot (Break Weapon)</name>
       <source>RG</source>
-      <page>136</page>
+      <page>111</page>
     </technique>
     <technique>
       <id>56ec87e6-d962-4b97-88e8-947cd09ea161</id>
       <name>Called Shot (Disarm)</name>
       <source>RG</source>
-      <page>136</page>
+      <page>111</page>
     </technique>
     <technique>
       <id>d9e3774b-4b68-4dff-8c0b-3234a6a3f878</id>
       <name>Called Shot (Entanglement)</name>
       <source>RG</source>
-      <page>136</page>
+      <page>111</page>
     </technique>
     <technique>
       <id>57bc4b34-1f4d-4a19-8413-54f2ddafecd9</id>
       <name>Called Shot (Feint)</name>
       <source>RG</source>
-      <page>136</page>
+      <page>111</page>
     </technique>
     <technique>
       <id>a24a6c9f-6edd-4852-9d3d-785c51a40f25</id>
       <name>Called Shot (Pin)</name>
       <source>RG</source>
-      <page>136</page>
+      <page>112</page>
     </technique>
     <technique>
       <id>3d22777f-39c5-472f-b54a-703ed042d8b3</id>
@@ -1874,7 +1874,7 @@
       <id>e2bedc2b-59c3-45a1-9e0f-2e4f0234a0cf</id>
       <name>Clinch</name>
       <source>RG</source>
-      <page>136</page>
+      <page>119</page>
     </technique>
     <technique>
       <id>0f324bd2-3fad-4721-9335-f82aaaee86cf</id>
@@ -1934,7 +1934,7 @@
       <id>11a90b83-af42-4972-a028-0ab4c60e1c33</id>
       <name>Counterstrike</name>
       <source>RG</source>
-      <page>137</page>
+      <page>124</page>
     </technique>
     <technique>
       <id>ec74b517-5c0d-46e6-a61b-5ab1b7316d5d</id>
@@ -1958,19 +1958,19 @@
       <id>3aba0ece-6ced-48ab-a873-3787c58df995</id>
       <name>Finishing Move</name>
       <source>RG</source>
-      <page>137</page>
+      <page>120</page>
     </technique>
     <technique>
       <id>601d98dd-5897-4974-af2e-72b5053bde62</id>
       <name>Flying Kick</name>
       <source>RG</source>
-      <page>137</page>
+      <page>121</page>
     </technique>
     <technique>
       <id>d98d277b-a727-4381-9512-e8f64ad275ff</id>
       <name>Full Offense</name>
       <source>RG</source>
-      <page>137</page>
+      <page>121</page>
     </technique>
     <technique>
       <id>1df1bc89-a5d5-47e6-8685-7c09078ba17f</id>
@@ -1982,7 +1982,7 @@
       <id>f79771b2-067e-4fa4-b295-b5e6a48fc5f0</id>
       <name>Half Sword</name>
       <source>RG</source>
-      <page>137</page>
+      <page>121</page>
     </technique>
     <technique>
       <id>2a28146f-cbd9-4cdd-98ba-59bd6eb65ded</id>
@@ -1994,19 +1994,19 @@
       <id>dbeae1ec-ebb5-4283-b80e-e66ab08c892d</id>
       <name>Haymaker</name>
       <source>RG</source>
-      <page>138</page>
+      <page>121</page>
     </technique>
     <technique>
       <id>971cac23-8ac2-4419-8d6b-f1de2641d7b3</id>
       <name>Herding</name>
       <source>RG</source>
-      <page>138</page>
+      <page>121</page>
     </technique>
     <technique>
       <id>6de0cc4b-d9b5-485c-9b4a-c6e4abeaf7d4</id>
       <name>Iaijutsu</name>
       <source>RG</source>
-      <page>138</page>
+      <page>122</page>
     </technique>
     <technique>
       <id>e812caf9-7e6b-4963-bb9b-ea7ce8e46ea3</id>
@@ -2045,7 +2045,7 @@
       <id>daa9edc5-d5dd-466a-8df9-7abb6a358db1</id>
       <name>Kip-Up</name>
       <source>RG</source>
-      <page>139</page>
+      <page>122</page>
     </technique>
     <technique>
       <id>d89b18bb-9146-4ad4-8aef-efcb25a537a2</id>
@@ -2141,7 +2141,7 @@
       <id>a620e473-4127-4863-b9da-ac8e96c84535</id>
       <name>Riposte</name>
       <source>RG</source>
-      <page>140</page>
+      <page>125</page>
     </technique>
     <technique>
       <id>456dfdc7-d1e5-4ec2-86bd-85bf82d81e46</id>
@@ -2153,13 +2153,13 @@
       <id>845d010e-036b-488c-8ff6-5eec6c2b7c21</id>
       <name>Sacrifice Throw</name>
       <source>RG</source>
-      <page>140</page>
+      <page>125</page>
     </technique>
     <technique>
       <id>a10cc1a4-c5cb-492d-aa87-448ace3d7f88</id>
       <name>Shadow Block</name>
       <source>RG</source>
-      <page>140</page>
+      <page>125</page>
     </technique>
     <technique>
       <id>d728ad1e-259a-4af3-ba52-383ffa3e90b4</id>
@@ -2183,7 +2183,7 @@
       <id>81b9073d-305e-4bcf-90a9-56855f4076f4</id>
       <name>Pouncing Dragon</name>
       <source>RG</source>
-      <page>141</page>
+      <page>122</page>
     </technique>
     <technique>
       <id>5e00496f-5e91-4fb7-96d9-9c176ff8b80f</id>
@@ -2201,7 +2201,7 @@
       <id>9d355a11-5e68-4c03-9676-9a3f555f977f</id>
       <name>Throw Person</name>
       <source>RG</source>
-      <page>141</page>
+      <page>123</page>
     </technique>
     <technique>
       <id>335d2151-9137-4071-af91-3e0688ef67d9</id>

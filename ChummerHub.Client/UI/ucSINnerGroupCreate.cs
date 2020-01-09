@@ -72,14 +72,12 @@ namespace ChummerHub.Client.UI
             tbGroupname.ReadOnly = !EditMode;
             cboLanguage1.Enabled = EditMode;
             cbIsPublic.Enabled = EditMode;
-            tbParentGroupId.ReadOnly = true;
             tbPassword.ReadOnly = !EditMode;
 
             if (StaticUtils.UserRoles?.Contains("GroupAdmin") == true)
             {
                 tbAdminRole.ReadOnly = !EditMode;
                 tbGroupId.ReadOnly = true;
-                tbParentGroupId.ReadOnly = !EditMode;
                 tbGroupCreatorUsername.ReadOnly = !EditMode;
             }
 
@@ -94,7 +92,13 @@ namespace ChummerHub.Client.UI
                 cboLanguage1.Enabled = false;
                 tbParentGroupId.ReadOnly = true;
                 tbPassword.ReadOnly = false;
+                tbGroupCreatorUsername.Enabled = false;
+                cbIsPublic.Enabled = false;
+                tbDescription.Enabled = false;
+                this.ActiveControl = tbPassword;
             }
+            if (this.ParentForm != null)
+                this.ParentForm.AcceptButton = bOk;
 
         }
 
@@ -140,6 +144,15 @@ namespace ChummerHub.Client.UI
             {
                 BOk_Click(this, new EventArgs());
             }
+        }
+
+        private void bParentGroupId_Click(object sender, EventArgs e)
+        {
+            var text = LanguageManager.GetString("String_SINners_HowToGroupParentDescription", _strSelectedLanguage);
+            this.DoThreadSafe(() =>
+            {
+                PluginHandler.MainForm.ShowMessageBox(this.Parent, text, "How to ...", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            });
         }
     }
 }

@@ -95,7 +95,7 @@ namespace Chummer
 
             try
             {
-                read = (T) Convert.ChangeType(fieldValue, typeof (T), GlobalOptions.InvariantCultureInfo);
+                read = (T) Convert.ChangeType(fieldValue, typeof (T), GlobalOptions.Instance.InvariantCultureInfo);
                 return true;
             }
             catch (Exception)
@@ -407,7 +407,7 @@ namespace Chummer
             XmlElement objField = node?[field];
             if (objField == null) return false;
             if (objCulture == null)
-                objCulture = GlobalOptions.InvariantCultureInfo;
+                objCulture = GlobalOptions.Instance.InvariantCultureInfo;
             if (!int.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out int intTmp)) return false;
             read = intTmp;
             return true;
@@ -435,7 +435,7 @@ namespace Chummer
             XmlElement objField = node?[field];
             if (objField == null) return false;
             if (objCulture == null)
-                objCulture = GlobalOptions.InvariantCultureInfo;
+                objCulture = GlobalOptions.Instance.InvariantCultureInfo;
             if (!decimal.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out decimal decTmp)) return false;
             read = decTmp;
             return true;
@@ -450,7 +450,7 @@ namespace Chummer
             XmlElement objField = node?[field];
             if (objField == null) return false;
             if (objCulture == null)
-                objCulture = GlobalOptions.InvariantCultureInfo;
+                objCulture = GlobalOptions.Instance.InvariantCultureInfo;
             if (!double.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out double dblTmp)) return false;
             read = dblTmp;
             return true;
@@ -465,7 +465,7 @@ namespace Chummer
             XmlElement objField = node?[field];
             if (objField == null) return false;
             if (objCulture == null)
-                objCulture = GlobalOptions.InvariantCultureInfo;
+                objCulture = GlobalOptions.Instance.InvariantCultureInfo;
             if (!float.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out float fltTmp)) return false;
             read = fltTmp;
             return true;

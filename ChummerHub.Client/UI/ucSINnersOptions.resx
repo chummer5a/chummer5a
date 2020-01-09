@@ -118,14 +118,19 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="tbHelptext.Text" xml:space="preserve">
-    <value>When this setting is enabled, every character file (SINner) that is saved by your client will be automatically uploaded into ChummerHub, using the Visibility settings above. 
-Changes are NOT retroactive until a character is saved again; if you change your mind about whether your characters should be visible to different users, you'll have to open and save them again. 
-While this plugin is active, you will see an additional tab in the Character view, SINners. This tab controls the groups that the character is visible to, online status, presence in groups and other settings. 
-Important note: Only the owner of a character can make changes to a character in a group. 
-Please note that this feature is PRE ALPHA, and - although we will take all due care with your character files and attempt to maintain backwards compatibility as development progresses - we make no guarantees as to the retention of data and strongly recommend that you keep an offline save of any characters you choose to upload.
+    <value>When this setting is enabled, every character file (SINner) that is saved by your client will be automatically uploaded into ChummerHub, using the Visibility settings above. Changes are NOT retroactive until a character is saved again; if you change your mind about whether your characters should be visible to different users, you'll have to open and save them again. While this plugin is active, you will see an additional tab in the Character view, SINners. This tab controls the groups that the character is visible to, online status, presence in groups and other settings. 
+Important note: Only the owner of a character can make changes to a character in a group. Please note that this feature is ALPHA, and - although we will take all due care with your character files and attempt to maintain backwards compatibility as development progresses - we make no guarantees as to the retention of data and strongly recommend that you keep an offline save of any characters you choose to upload.
 
-That said, we greatly appreciate your patience and feedback as we implement this exciting new feature. </value>
+That said, we greatly appreciate your patience and feedback as we implement this exciting new feature. 
+
+</value>
   </data>
+  <metadata name="backgroundWorker1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
+  <metadata name="backgroundWorker2.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>181, 17</value>
+  </metadata>
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>47</value>
   </metadata>

@@ -1,21 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 namespace ChummerHub.Areas.Identity.Pages.Account.Manage
 {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ChangePasswordModel'
     public class ChangePasswordModel : PageModel
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ChangePasswordModel'
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ILogger<ChangePasswordModel> _logger;
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ChangePasswordModel.ChangePasswordModel(UserManager<ApplicationUser>, SignInManager<ApplicationUser>, ILogger<ChangePasswordModel>)'
         public ChangePasswordModel(
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ChangePasswordModel.ChangePasswordModel(UserManager<ApplicationUser>, SignInManager<ApplicationUser>, ILogger<ChangePasswordModel>)'
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             ILogger<ChangePasswordModel> logger)
@@ -26,31 +27,45 @@ namespace ChummerHub.Areas.Identity.Pages.Account.Manage
         }
 
         [BindProperty]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ChangePasswordModel.Input'
         public InputModel Input { get; set; }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ChangePasswordModel.Input'
 
         [TempData]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ChangePasswordModel.StatusMessage'
         public string StatusMessage { get; set; }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ChangePasswordModel.StatusMessage'
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ChangePasswordModel.InputModel'
         public class InputModel
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ChangePasswordModel.InputModel'
         {
             [Required]
             [DataType(DataType.Password)]
             [Display(Name = "Current password")]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ChangePasswordModel.InputModel.OldPassword'
             public string OldPassword { get; set; }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ChangePasswordModel.InputModel.OldPassword'
 
             [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "New password")]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ChangePasswordModel.InputModel.NewPassword'
             public string NewPassword { get; set; }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ChangePasswordModel.InputModel.NewPassword'
 
             [DataType(DataType.Password)]
             [Display(Name = "Confirm new password")]
             [Compare("NewPassword", ErrorMessage = "The new password and confirmation password do not match.")]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ChangePasswordModel.InputModel.ConfirmPassword'
             public string ConfirmPassword { get; set; }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ChangePasswordModel.InputModel.ConfirmPassword'
         }
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ChangePasswordModel.OnGetAsync()'
         public async Task<IActionResult> OnGetAsync()
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ChangePasswordModel.OnGetAsync()'
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -67,7 +82,9 @@ namespace ChummerHub.Areas.Identity.Pages.Account.Manage
             return Page();
         }
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ChangePasswordModel.OnPostAsync()'
         public async Task<IActionResult> OnPostAsync()
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ChangePasswordModel.OnPostAsync()'
         {
             if (!ModelState.IsValid)
             {

@@ -123,7 +123,7 @@ namespace Chummer
                         }
                         try
                         {
-                            string _ = objTemp.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                            string _ = objTemp.TotalAvail(GlobalOptions.Instance.CultureInfo, GlobalOptions.Language);
                         }
                         catch (Exception e)
                         {
@@ -176,7 +176,7 @@ namespace Chummer
                         }
                         try
                         {
-                            string _ = objTemp.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.DefaultLanguage);
+                            string _ = objTemp.TotalAvail(GlobalOptions.Instance.CultureInfo, GlobalOptions.DefaultLanguage);
                         }
                         catch (Exception e)
                         {
@@ -255,7 +255,7 @@ namespace Chummer
 
                         try
                         {
-                            string _ = objTemp.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                            string _ = objTemp.TotalAvail(GlobalOptions.Instance.CultureInfo, GlobalOptions.Language);
                         }
                         catch (Exception e)
                         {
@@ -267,7 +267,7 @@ namespace Chummer
 
                         try
                         {
-                            string _ = objTemp.CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                            string _ = objTemp.CalculatedAmmo(GlobalOptions.Instance.CultureInfo, GlobalOptions.Language);
                         }
                         catch (Exception e)
                         {
@@ -279,7 +279,7 @@ namespace Chummer
 
                         try
                         {
-                            string _ = objTemp.CalculatedConcealability(GlobalOptions.CultureInfo);
+                            string _ = objTemp.CalculatedConcealability(GlobalOptions.Instance.CultureInfo);
                         }
                         catch (Exception e)
                         {
@@ -291,7 +291,7 @@ namespace Chummer
 
                         try
                         {
-                            string _ = objTemp.CalculatedDamage(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                            string _ = objTemp.CalculatedDamage(GlobalOptions.Instance.CultureInfo, GlobalOptions.Language);
                         }
                         catch (Exception e)
                         {
@@ -345,7 +345,7 @@ namespace Chummer
 
                         try
                         {
-                            string _ = objTemp.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                            string _ = objTemp.TotalAvail(GlobalOptions.Instance.CultureInfo, GlobalOptions.Language);
                         }
                         catch (Exception e)
                         {
@@ -413,7 +413,7 @@ namespace Chummer
                         }
                         try
                         {
-                            string _ = objTemp.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                            string _ = objTemp.TotalAvail(GlobalOptions.Instance.CultureInfo, GlobalOptions.Language);
                         }
                         catch (Exception e)
                         {
@@ -467,7 +467,7 @@ namespace Chummer
                         }
                         try
                         {
-                            string _ = objTemp.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                            string _ = objTemp.TotalAvail(GlobalOptions.Instance.CultureInfo, GlobalOptions.Language);
                         }
                         catch (Exception e)
                         {
@@ -532,7 +532,7 @@ namespace Chummer
                             }
                             try
                             {
-                                string _ = objTemp.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                                string _ = objTemp.TotalAvail(GlobalOptions.Instance.CultureInfo, GlobalOptions.Language);
                             }
                             catch (Exception e)
                             {
@@ -611,7 +611,7 @@ namespace Chummer
                             }
                             try
                             {
-                                string _ = objTemp.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                                string _ = objTemp.TotalAvail(GlobalOptions.Instance.CultureInfo, GlobalOptions.Language);
                             }
                             catch (Exception e)
                             {

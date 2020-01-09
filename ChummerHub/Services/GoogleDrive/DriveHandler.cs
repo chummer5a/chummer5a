@@ -1,43 +1,41 @@
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.IO;
-using System.IO.Compression;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading;
-using System.Threading.Tasks;
 using ChummerHub.API;
 using ChummerHub.Models;
-using ChummerHub.Models.V1;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Drive.v3;
-using Google.Apis.Drive.v3.Data;
 using Google.Apis.Http;
 using Google.Apis.Services;
-using Google.Apis.Util.Store;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-
-using static Google.Apis.Drive.v3.DriveService;
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace ChummerHub.Services.GoogleDrive
 {
-    public class DriveHandler 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'DriveHandler'
+    public class DriveHandler
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'DriveHandler'
 
     {
+#pragma warning disable CS0414 // The field 'DriveHandler.Credential' is assigned but its value is never used
         GoogleCredential Credential = null;
+#pragma warning restore CS0414 // The field 'DriveHandler.Credential' is assigned but its value is never used
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'DriveHandler.Scopes'
         public static string[] Scopes = {
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'DriveHandler.Scopes'
             DriveService.Scope.DriveFile,
             DriveService.Scope.Drive,
             DriveService.Scope.DriveAppdata,
             DriveService.Scope.DriveMetadata
 
         };
+#pragma warning disable CS0414 // The field 'DriveHandler.ApplicationName' is assigned but its value is never used
         static string ApplicationName = "SINners";
+#pragma warning restore CS0414 // The field 'DriveHandler.ApplicationName' is assigned but its value is never used
         private readonly ILogger _logger;
 
         private static string _contentType = "application/octet-stream";
@@ -50,7 +48,9 @@ namespace ChummerHub.Services.GoogleDrive
 
 
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'DriveHandler.GetUserCredential(IConfiguration)'
         public async Task<UserCredential> GetUserCredential(IConfiguration configuration)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'DriveHandler.GetUserCredential(IConfiguration)'
         {
             try
             {
@@ -98,7 +98,7 @@ namespace ChummerHub.Services.GoogleDrive
                     DataStore = new GoogleIDataStore("me", refreshToken, _logger)
                 });
 
-                
+
                 UserCredential credential = new UserCredential(flow, "me", token);
                 return credential;
             }
@@ -109,10 +109,14 @@ namespace ChummerHub.Services.GoogleDrive
             }
         }
 
+#pragma warning disable CS0414 // The field 'DriveHandler.flow' is assigned but its value is never used
         private static IAuthorizationCodeFlow flow = null;
-       
+#pragma warning restore CS0414 // The field 'DriveHandler.flow' is assigned but its value is never used
 
+
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'DriveHandler.DriveHandler(ILogger<Startup>, IConfiguration)'
         public DriveHandler(ILogger<Startup> Logger, IConfiguration configuration)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'DriveHandler.DriveHandler(ILogger<Startup>, IConfiguration)'
         {
             Configuration = configuration;
             _logger = Logger;
@@ -140,14 +144,16 @@ namespace ChummerHub.Services.GoogleDrive
                     ApplicationName = "SINners",
                     GZipEnabled = true,
                 };
+#pragma warning disable CS0219 // The variable 'cancellationToken' is assigned but its value is never used
                 CancellationToken cancellationToken = new CancellationToken();
+#pragma warning restore CS0219 // The variable 'cancellationToken' is assigned but its value is never used
 
 
                 // Create Drive API service.
                 var service = new DriveService(initializer);
 
                 if (String.IsNullOrEmpty(_folderId))
-                { 
+                {
                     Google.Apis.Drive.v3.Data.File fileMetadata = new Google.Apis.Drive.v3.Data.File();
                     fileMetadata.Name = "Chummer";
                     fileMetadata.MimeType = "application/vnd.google-apps.folder";
@@ -156,10 +162,10 @@ namespace ChummerHub.Services.GoogleDrive
                     _logger.LogCritical(msg);
                     throw new HubException("HubException: " + msg);
                 }
-                if(String.IsNullOrEmpty(uploadFile.GoogleDriveFileId))
+                if (String.IsNullOrEmpty(uploadFile.GoogleDriveFileId))
                 {
                     uploadFile.DownloadUrl = UploadFileToDrive(service, uploadedFile, _contentType, uploadFile);
-                   
+
                 }
                 else
                 {
@@ -169,9 +175,9 @@ namespace ChummerHub.Services.GoogleDrive
                 // Define parameters of request.
                 FilesResource.ListRequest listRequest = service.Files.List();
                 listRequest.PageSize = 10;
-                listRequest.Q = "'"+ _folderId + "' in parents";
+                listRequest.Q = "'" + _folderId + "' in parents";
                 listRequest.Fields = "nextPageToken, files(id, name, webContentLink)";
-                
+
                 // List files.
                 IList<Google.Apis.Drive.v3.Data.File> files = listRequest.Execute()
                     .Files;
@@ -188,7 +194,7 @@ namespace ChummerHub.Services.GoogleDrive
                     url += " No files found.";
                 }
 
-                
+
 
                 // Define parameters of request.
                 listRequest = service.Files.List();
@@ -213,7 +219,7 @@ namespace ChummerHub.Services.GoogleDrive
 
                 //_logger.LogError("ParentUrl: " + url);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
 
                 _logger.LogError("Could not store file on GDrive: " + e.ToString());
@@ -239,14 +245,14 @@ namespace ChummerHub.Services.GoogleDrive
                 _logger.LogError("Uploading " + fileMetaData.FileName + " as " + fileMetadata.Name);// + " to folder: " + _folderId);
                 //fileMetadata.MimeType = _contentType;
                 fileMetadata.OriginalFilename = fileMetaData.FileName;
-            
+
                 request = service.Files.Create(fileMetadata, uploadFile.OpenReadStream(), conentType);
                 request.Fields = "id, webContentLink";
                 var uploadprogress = request.Upload();
-                
+
                 while ((uploadprogress.Status != Google.Apis.Upload.UploadStatus.Completed)
                     && (uploadprogress.Status != Google.Apis.Upload.UploadStatus.Failed))
-                {   
+                {
                     if (uploadprogress.Exception != null)
                         throw uploadprogress.Exception;
                     uploadprogress = request.Resume();
@@ -258,17 +264,17 @@ namespace ChummerHub.Services.GoogleDrive
                 }
 
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Exception innere = e;
-                while(innere.InnerException != null)
+                while (innere.InnerException != null)
                 {
                     innere = innere.InnerException;
                 }
                 _logger.LogError(innere.ToString());
                 throw;
             }
-            
+
             _logger.LogError("Chummer \"" + fileMetaData.Id.ToString() + "\" uploaded: " + request.ResponseBody?.WebContentLink.ToString());
 
             fileMetaData.GoogleDriveFileId = request.ResponseBody?.Id;
@@ -303,24 +309,24 @@ namespace ChummerHub.Services.GoogleDrive
                 request.Fields = "id, webContentLink";
                 var uploadprogress = request.Upload();
 
-                while((uploadprogress.Status != Google.Apis.Upload.UploadStatus.Completed)
+                while ((uploadprogress.Status != Google.Apis.Upload.UploadStatus.Completed)
                     && (uploadprogress.Status != Google.Apis.Upload.UploadStatus.Failed))
                 {
-                    if(uploadprogress.Exception != null)
+                    if (uploadprogress.Exception != null)
                         throw uploadprogress.Exception;
                     uploadprogress = request.Resume();
                 }
-                if(uploadprogress.Status == Google.Apis.Upload.UploadStatus.Failed)
+                if (uploadprogress.Status == Google.Apis.Upload.UploadStatus.Failed)
                 {
                     _logger.LogError("Chummer \"" + fileMetaData.Id.ToString() + "\" upload failed: " + uploadprogress.Exception?.ToString());
                     throw uploadprogress.Exception;
                 }
 
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Exception innere = e;
-                while(innere.InnerException != null)
+                while (innere.InnerException != null)
                 {
                     innere = innere.InnerException;
                 }
@@ -356,7 +362,7 @@ namespace ChummerHub.Services.GoogleDrive
                 request.Fields = "id";
                 request.Execute();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 string msg = "Error while setting permissions for " + fileMetaData.Id + ": " + Environment.NewLine;
                 msg += e.ToString();

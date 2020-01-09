@@ -129,9 +129,9 @@ namespace Chummer
             if (decimal.ToInt32(nudDVMod.Value) != 0)
             {
                 if (nudDVMod.Value < 0)
-                    strDamage += nudDVMod.Value.ToString(GlobalOptions.InvariantCultureInfo);
+                    strDamage += nudDVMod.Value.ToString(GlobalOptions.Instance.InvariantCultureInfo);
                 else
-                    strDamage += '+' + nudDVMod.Value.ToString(GlobalOptions.InvariantCultureInfo);
+                    strDamage += '+' + nudDVMod.Value.ToString(GlobalOptions.Instance.InvariantCultureInfo);
             }
             strDamage += cboDVType.SelectedValue.ToString();
 
@@ -140,9 +140,9 @@ namespace Chummer
             if (nudAP.Value == 0)
                 strAP = "0";
             else if (nudAP.Value > 0)
-                strAP = '+' + nudAP.Value.ToString(GlobalOptions.InvariantCultureInfo);
+                strAP = '+' + nudAP.Value.ToString(GlobalOptions.Instance.InvariantCultureInfo);
             else
-                strAP = nudAP.Value.ToString(GlobalOptions.InvariantCultureInfo);
+                strAP = nudAP.Value.ToString(GlobalOptions.Instance.InvariantCultureInfo);
 
             // Get the information for the Natural Weapon Critter Power.
             XPathNavigator objPower = _objXmlPowersDocument.SelectSingleNode("powers/power[name = \"Natural Weapon\"]");

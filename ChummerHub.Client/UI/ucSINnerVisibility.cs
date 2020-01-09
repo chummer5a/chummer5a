@@ -34,9 +34,15 @@ namespace ChummerHub.Client.UI
             get { return this.clbVisibilityToUsers; }
         }
 
+        public CheckBox MyCheckBoxGroupVisible
+        {
+            get { return this.cbVisibleInGroups; }
+        }
+
         public ucSINnerVisibility()
         {
             InitializeComponent();
+            this.cbVisibleInGroups.Checked = true;
             MyVisibility = new SINnerVisibility()
             {
                 UserRights = new List<SINnerUserRight>()
@@ -48,6 +54,10 @@ namespace ChummerHub.Client.UI
         {
             MyVisibility = vis;
             InitializeComponent();
+            if (MyVisibility?.IsGroupVisible.HasValue == true)
+                this.cbVisibleInGroups.Checked = MyVisibility.IsGroupVisible.Value;
+            else
+                this.cbVisibleInGroups.Checked = true;
             this.clbVisibilityToUsers.ItemCheck += clbVisibilityToUsers_ItemCheck;
         }
 
@@ -70,6 +80,10 @@ namespace ChummerHub.Client.UI
                         clbVisibilityToUsers.SetItemChecked(i, obj.CanEdit != null && obj.CanEdit.Value);
                     }
                     clbVisibilityToUsers.Refresh();
+                    if (MyVisibility?.IsGroupVisible.HasValue == true)
+                        this.cbVisibleInGroups.Checked = MyVisibility.IsGroupVisible.Value;
+                    else
+                        this.cbVisibleInGroups.Checked = true;
                 }
                 catch (Exception e)
                 {
@@ -87,6 +101,7 @@ namespace ChummerHub.Client.UI
             string email = this.tbVisibilityAddEmail.Text;
             MyVisibility.AddVisibilityForEmail(email);
             FillVisibilityListBox();
+            
         }
 
         
@@ -113,7 +128,7 @@ namespace ChummerHub.Client.UI
                 }
             }
             else
-                MessageBox.Show("No email selected!");
+                Program.MainForm.ShowMessageBox("No email selected!");
         }
 
         private void bVisibilityRemove_Click(object sender, EventArgs e)
@@ -131,9 +146,12 @@ namespace ChummerHub.Client.UI
                 FillVisibilityListBox();
             }
             else
-                MessageBox.Show("No email selected!");
+                Program.MainForm.ShowMessageBox("No email selected!");
         }
 
-     
+        private void CbVisibleInGroups_Click(object sender, EventArgs e)
+        {
+            this.MyVisibility.IsGroupVisible = this.cbVisibleInGroups.Checked;
+        }
     }
 }

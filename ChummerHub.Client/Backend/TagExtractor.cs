@@ -78,7 +78,7 @@ namespace ChummerHub.Client.Backend
                                     throw new ArgumentOutOfRangeException("Could not find property " + classprop.Item1.ListInstanceNameFromProperty + " on instance of type " + obj.GetType().ToString() + ".");
                                 tag.TagValue += childprop.FirstOrDefault().GetValue(obj);
                                 if (Double.TryParse(tag.TagValue, out double outdouble))
-                                    tag.TagValueDouble = outdouble;
+                                    tag.TagValueFloat = outdouble;
                             }
                             if (String.IsNullOrEmpty(tag.TagName))
                                 tag.TagName = obj.ToString();
@@ -123,7 +123,7 @@ namespace ChummerHub.Client.Backend
                                     throw new ArgumentOutOfRangeException("Could not find property " + classprop.Item1.ListInstanceNameFromProperty + " on instance of type " + item.GetType().ToString() + ".");
                                 tag.TagValue += childprop.FirstOrDefault().GetValue(item);
                                 if (Double.TryParse(tag.TagValue, out double outdouble))
-                                    tag.TagValueDouble = outdouble;
+                                    tag.TagValueFloat = outdouble;
                             }
                             if (String.IsNullOrEmpty(tag.TagName))
                                 tag.TagName = item.ToString();
@@ -192,7 +192,7 @@ namespace ChummerHub.Client.Backend
                     SetTagTypeEnumFromCLRType(instanceTag, obj.GetType());
                     instanceTag.TagValue = includeInstance.ToString();
                     if (Double.TryParse(tag.TagValue, out double outdouble))
-                        tag.TagValueDouble = outdouble;
+                        tag.TagValueFloat = outdouble;
                 }
             }
             
@@ -211,6 +211,11 @@ namespace ChummerHub.Client.Backend
             else
             {
                 propValue = property.GetValue(prop.Item3);
+                if (propValue == null)
+                {
+                    //dont save "null" values
+                    return proptaglist;
+                }
                 if(propValue.GetType().IsAssignableFrom(typeof(bool)))
                 {
                     if(propValue as bool? == false)
@@ -246,12 +251,24 @@ namespace ChummerHub.Client.Backend
             Type t = prop.Item3.GetType();
             if(!String.IsNullOrEmpty(attribute.TagNameFromProperty))
             {
-                var addObject = t.GetProperty(attribute.TagNameFromProperty).GetValue(prop.Item3, null);
-                tag.TagName += String.Format("{0}", addObject);
+                try
+                {
+                    var addObject = t.GetProperty(attribute.TagNameFromProperty).GetValue(prop.Item3, null);
+                    tag.TagName += String.Format("{0}", addObject);
+                }
+                catch (Exception e)
+                {
+#if DEBUG
+                    Debugger.Break();
+#else
+                    throw;
+#endif
+                }
+                
             }
             tag.TagValue = String.Format("{0}", tag.MyRuntimeObject);
             if (Double.TryParse(tag.TagValue, out double outdouble1))
-                tag.TagValueDouble = outdouble1;
+                tag.TagValueFloat = outdouble1;
             Type typeValue = tag.MyRuntimeObject.GetType();
             SetTagTypeEnumFromCLRType(tag, typeValue);
             if(!String.IsNullOrEmpty(attribute.TagValueFromProperty))
@@ -259,7 +276,7 @@ namespace ChummerHub.Client.Backend
                 var addObject = t.GetProperty(attribute.TagValueFromProperty).GetValue(prop.Item3, null);
                 tag.TagValue = String.Format("{0}", addObject);
                 if (Double.TryParse(tag.TagValue, out double outdouble2))
-                    tag.TagValueDouble = outdouble2;
+                    tag.TagValueFloat = outdouble2;
             }
             proptaglist.Add(tag);
             if(prop.Item1 != null)
@@ -311,7 +328,7 @@ namespace ChummerHub.Client.Backend
             if (tag.TagValue == typeValue.FullName)
             {
                 tag.TagValue = "";
-                tag.TagValueDouble = null;
+                tag.TagValueFloat = null;
             }
 
             if((typeof(IEnumerable).IsAssignableFrom(typeValue)
@@ -320,7 +337,7 @@ namespace ChummerHub.Client.Backend
             {
                 tag.TagType = "list";
                 tag.TagValue = "";
-                tag.TagValueDouble = null;
+                tag.TagValueFloat = null;
             }
         }
 
@@ -398,7 +415,7 @@ namespace ChummerHub.Client.Backend
                     tag.MyRuntimeObject = propValue1;
                     tag.TagValue = String.Format("{0}", propValue1);
                     if (Double.TryParse(tag.TagValue, out double outdouble))
-                        tag.TagValueDouble = outdouble;
+                        tag.TagValueFloat = outdouble;
 
                     if (level > 0)
                     {

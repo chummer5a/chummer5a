@@ -1,11 +1,15 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
+using System;
 
 namespace ChummerHub.Migrations
 {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'sinneruploadable'
     public partial class sinneruploadable : Migration
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'sinneruploadable'
     {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'sinneruploadable.Up(MigrationBuilder)'
         protected override void Up(MigrationBuilder migrationBuilder)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'sinneruploadable.Up(MigrationBuilder)'
         {
             migrationBuilder.AddColumn<DateTime>(
                 name: "LastChange",
@@ -19,7 +23,9 @@ namespace ChummerHub.Migrations
                 nullable: true);
         }
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'sinneruploadable.Down(MigrationBuilder)'
         protected override void Down(MigrationBuilder migrationBuilder)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'sinneruploadable.Down(MigrationBuilder)'
         {
             migrationBuilder.DropColumn(
                 name: "LastChange",

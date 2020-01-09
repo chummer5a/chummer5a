@@ -20,7 +20,7 @@
 -->
 <chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.w3.org/2001/XMLSchema cyberware.xsd">
-  <version>0</version>
+
   <grades>
     <!-- Region Standard -->
     <grade>
@@ -987,9 +987,10 @@
         </specificattribute>
       </wirelesspairbonus>
       <rating>3</rating>
-      <wirelesspairinclude>
+      <wirelesspairinclude includeself="False">
         <name>Wired Reflexes</name>
       </wirelesspairinclude>
+      <minrating>1</minrating>
     </cyberware>
     <cyberware>
       <id>60485c4e-042f-44f6-ad89-324003223f73</id>
@@ -1061,7 +1062,7 @@
           <aug>FixedValues(0,0,1)</aug>
         </specificattribute>
       </wirelesspairbonus>
-      <wirelesspairinclude>
+      <wirelesspairinclude includeself="False">
         <name>Reaction Enhancers</name>
       </wirelesspairinclude>
       <minrating>1</minrating>
@@ -2707,6 +2708,7 @@
       <cost>2000</cost>
       <source>CF</source>
       <page>84</page>
+      <addweapon>Foot Anchor</addweapon>
       <blocksmounts>ankle,knee,hip</blocksmounts>
       <selectside />
       <bonus>
@@ -2974,6 +2976,7 @@
       <source>CF</source>
       <page>73</page>
       <rating>10</rating>
+      <ratinglabel>Rating_LengthInCmBy10</ratinglabel>
     </cyberware>
     <cyberware>
       <id>cb86075d-7d60-4618-9698-9e9268a28989</id>
@@ -3139,10 +3142,12 @@
       <ess>0.1</ess>
       <capacity>0</capacity>
       <avail>2</avail>
-      <cost>Rating * 100</cost>
+      <cost>Variable(100-20000)</cost>
+      <bonus>
+          <selecttext />
+      </bonus>
       <source>CF</source>
       <page>72</page>
-      <rating>200</rating>
     </cyberware>
     <!-- End Region -->
     <!-- Region Cyberlimb -->
@@ -3317,6 +3322,9 @@
       <name>Built-in Medkit</name>
       <limit>False</limit>
       <category>Cyberlimb Enhancement</category>
+      <allowgear>
+        <gearname>Medkit</gearname>
+      </allowgear>
       <ess>0.45</ess>
       <capacity>[10]</capacity>
       <avail>8</avail>
@@ -3489,6 +3497,10 @@
           <val>1</val>
           <category>Ground</category>
         </runmultiplier>
+        <weaponaccuracy>
+          <name>Raptor Foot</name>
+          <value>1</value>
+        </weaponaccuracy>
       </pairbonus>
       <required>
         <parentdetails>
@@ -4273,6 +4285,7 @@
       <page>90</page>
       <blocksmounts>elbow, knee</blocksmounts>
       <rating>2</rating>
+      <ratinglabel>Rating_Meters</ratinglabel>
       <required>
         <parentdetails>
           <OR>
@@ -4547,6 +4560,10 @@
       <page>87</page>
       <blocksmounts>ankle,knee,hip</blocksmounts>
       <bonus>
+        <addlimb precedence="0">
+          <limbslot>leg</limbslot>
+          <val>2</val>
+        </addlimb>
         <runmultiplier>
           <category>Ground</category>
           <percent>100</percent>
@@ -7209,9 +7226,21 @@
     </cyberware>
     <cyberware>
       <id>a94e3b9d-d87e-494b-a898-7a1c40befc3a</id>
-      <name>Cosmetic Modifcations Eye (2050)</name>
+      <name>Cosmetic Modifications Eye (2050)</name>
       <limit>False</limit>
       <category>Eyeware</category>
+      <ess>0</ess>
+      <capacity>0</capacity>
+      <avail>2</avail>
+      <cost>1000</cost>
+      <source>2050</source>
+      <page>201</page>
+    </cyberware>
+    <cyberware>
+      <id>23ee3559-2347-4f3f-9ae5-1a3ba3e47edd</id>
+      <name>Cosmetic Modifications Ear (2050)</name>
+      <limit>False</limit>
+      <category>Earware</category>
       <ess>0</ess>
       <capacity>0</capacity>
       <avail>2</avail>

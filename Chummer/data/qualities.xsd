@@ -2,6 +2,7 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:include schemaLocation="bonuses.xsd" />
   <xs:include schemaLocation="conditions.xsd" />
+  <xs:include schemaLocation="SchemaExtensions.xsd" />
   <xs:element name="chummer">
     <xs:complexType>
       <xs:sequence>
@@ -87,7 +88,7 @@
                     </xs:element>
                     <xs:element name="limit" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="limitwithinclusions" type="xs:string" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="metagenetic" type="xs:string" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="metagenic" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="mutant" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="naturalweapons" minOccurs="0" maxOccurs="1">
                       <xs:complexType>

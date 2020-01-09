@@ -101,7 +101,7 @@ namespace Chummer.UI.Shared
         private void cmdDeleteLimitModifier_Click(object sender, EventArgs e)
         {
             if (!(treLimit.SelectedNode?.Tag is ICanRemove selectedObject)) return;
-            if (!selectedObject.Remove(_objCharacter, GlobalOptions.ConfirmDelete)) return;
+            if (!selectedObject.Remove(_objCharacter, GlobalOptions.Instance.ConfirmDelete)) return;
             MakeDirtyWithCharacterUpdate?.Invoke(null, null);
         }
         private void treLimit_KeyDown(object sender, KeyEventArgs e)
@@ -413,7 +413,7 @@ namespace Chummer.UI.Shared
             //If the LimitModifier couldn't be found (Ie it comes from an Improvement or the user hasn't properly selected a treenode, fail out early.
             if (objLimitModifier == null)
             {
-                MessageBox.Show(LanguageManager.GetString("Warning_NoLimitFound", GlobalOptions.Language));
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Warning_NoLimitFound", GlobalOptions.Language));
                 return;
             }
             using (frmSelectLimitModifier frmPickLimitModifier = new frmSelectLimitModifier(objLimitModifier, "Physical", "Mental", "Social"))

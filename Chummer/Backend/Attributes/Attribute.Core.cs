@@ -34,7 +34,7 @@ namespace Chummer.Backend.Attributes
     /// Character CharacterAttribute.
     /// If using databinding, you should generally be using AttributeSection.{ATT}Binding
     /// </summary>
-    [HubClassTag("Abbrev", true, "TotalValue", null)]
+    [HubClassTag("Abbrev", true, "TotalValue", "TotalValue")]
     [DebuggerDisplay("{" + nameof(_strAbbrev) + "}")]
     public class CharacterAttrib : INotifyMultiplePropertyChanged
     {
@@ -484,9 +484,18 @@ namespace Chummer.Backend.Attributes
             if (_objCharacter.MetatypeCategory == "Cyberzombie" && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
                 return 1;
 
-            //The most that any attribute can be increased by is 4, plus/minus any improvements that affect the augmented max. 
+            int intMeat = Value;
+            //The most that any attribute can be increased by is 4, plus/minus any improvements that affect the augmented max.
             //TODO: Should probably be in AttributeModifiers property directly?
-            int intMeat = Value + Math.Min(AttributeModifiers, MetatypeAugmentedMaximum - MetatypeMaximum + AugmentedMaximumModifiers);
+            if (_objCharacter.Improvements.Any(imp =>
+                imp.ImproveType == Improvement.ImprovementType.AttributeMaxClamp && imp.ImprovedName == Abbrev))
+            {
+                intMeat += Math.Min(AttributeModifiers, Math.Min(MetatypeAugmentedMaximum - MetatypeMaximum + AugmentedMaximumModifiers, TotalMaximum - intMeat));
+            }
+            else
+            {
+                intMeat += Math.Min(AttributeModifiers, MetatypeAugmentedMaximum - MetatypeMaximum + AugmentedMaximumModifiers);
+            }
             int intReturn = intMeat;
 
             //// If this is AGI or STR, factor in any Cyberlimbs.
@@ -507,7 +516,7 @@ namespace Chummer.Backend.Attributes
                             break;
                     }
                 }
-                //TODO: TEST THIS. There's probably some stupid combination of cybersuites that will cause a weird conflict with this and regular limbs. Something something extra limbs, idk. 
+                //TODO: TEST THIS. There's probably some stupid combination of cybersuites that will cause a weird conflict with this and regular limbs. Something something extra limbs, idk.
                 foreach (Cyberware objCyberSuite in _objCharacter.Cyberware.Where(objCyberware =>
                     objCyberware.Category == "Cybersuite"))
                 {
@@ -554,6 +563,7 @@ namespace Chummer.Backend.Attributes
         /// <summary>
         /// The CharacterAttribute's total value (Value + Modifiers).
         /// </summary>
+        [HubTag("TotalValue")]
         public int TotalValue
         {
             get
@@ -602,7 +612,7 @@ namespace Chummer.Backend.Attributes
                 // If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
                 if (_objCharacter.MetatypeCategory == "Cyberzombie" && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
                     return 1;
-                
+
                 return Math.Max(0, MetatypeMaximum + MaximumModifiers);
             }
         }
@@ -617,7 +627,12 @@ namespace Chummer.Backend.Attributes
                 // If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
                 if (_objCharacter.MetatypeCategory == "Cyberzombie" && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
                     return 1;
-                
+
+                if (_objCharacter.Improvements.Any(imp =>
+                    imp.ImproveType == Improvement.ImprovementType.AttributeMaxClamp && imp.ImprovedName == Abbrev))
+                {
+                    return TotalMaximum;
+                }
                 return Math.Max(0, MetatypeAugmentedMaximum + MaximumModifiers + AugmentedMaximumModifiers);
             }
         }
@@ -664,9 +679,9 @@ namespace Chummer.Backend.Attributes
         /// </summary>
         public string AugmentedMetatypeLimits => $"{TotalMinimum} / {TotalMaximum} ({TotalAugmentedMaximum})";
 
-        public string CareerRemainingString => TotalValue.ToString(GlobalOptions.CultureInfo) +
+        public string CareerRemainingString => TotalValue.ToString(GlobalOptions.Instance.CultureInfo) +
             LanguageManager.GetString("String_Of", GlobalOptions.Language) +
-            Value.ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space", GlobalOptions.Language)
+            Value.ToString(GlobalOptions.Instance.CultureInfo) + LanguageManager.GetString("String_Space", GlobalOptions.Language)
             + LanguageManager.GetString("String_Remaining", GlobalOptions.Language);
         #endregion
 
@@ -684,7 +699,9 @@ namespace Chummer.Backend.Attributes
             MetatypeAugmentedMaximum = Convert.ToInt32(strAug);
         }
 
-        public string UpgradeToolTip => string.Format(LanguageManager.GetString("Tip_ImproveItem", GlobalOptions.Language), (Value + 1), UpgradeKarmaCost);
+        public string UpgradeToolTip => UpgradeKarmaCost < 0
+            ? LanguageManager.GetString("Tip_ImproveItemAtMaximum", GlobalOptions.Language)
+            : string.Format(LanguageManager.GetString("Tip_ImproveItem", GlobalOptions.Language), (Value + 1), UpgradeKarmaCost);
 
         private string _strCachedToolTip = string.Empty;
         /// <summary>
@@ -721,7 +738,7 @@ namespace Chummer.Backend.Attributes
                     {
                         int intValue = objImprovement.Augmented * objImprovement.Rating;
                         strModifier.Append(strSpaceCharacter + '+' + strSpaceCharacter + _objCharacter.GetObjectName(objImprovement, GlobalOptions.Language) + strSpaceCharacter + '(' +
-                                           (intValue).ToString(GlobalOptions.CultureInfo) + ')');
+                                           (intValue).ToString(GlobalOptions.Instance.CultureInfo) + ')');
                         intBaseValue += intValue;
                     }
                 }
@@ -740,7 +757,7 @@ namespace Chummer.Backend.Attributes
                             if (strValues.Item2 > intHighest)
                             {
                                 intHighest = strValues.Item2;
-                                strNewModifier = new StringBuilder(strSpaceCharacter + '+' + strSpaceCharacter + strValues.Item3 + strSpaceCharacter + '(' + strValues.Item2.ToString(GlobalOptions.CultureInfo) + ')');
+                                strNewModifier = new StringBuilder(strSpaceCharacter + '+' + strSpaceCharacter + strValues.Item3 + strSpaceCharacter + '(' + strValues.Item2.ToString(GlobalOptions.Instance.CultureInfo) + ')');
                             }
                         }
                     }
@@ -751,7 +768,7 @@ namespace Chummer.Backend.Attributes
                             if (strValues.Item1 == "precedence-1")
                             {
                                 intHighest += strValues.Item2;
-                                strNewModifier.Append(strSpaceCharacter + '+' + strSpaceCharacter + strValues.Item3 + strSpaceCharacter + '(' + strValues.Item2.ToString(GlobalOptions.CultureInfo) + ')');
+                                strNewModifier.Append(strSpaceCharacter + '+' + strSpaceCharacter + strValues.Item3 + strSpaceCharacter + '(' + strValues.Item2.ToString(GlobalOptions.Instance.CultureInfo) + ')');
                             }
                         }
                     }
@@ -762,18 +779,13 @@ namespace Chummer.Backend.Attributes
                 else if (lstUniqueName.Contains("precedence1"))
                 {
                     // Retrieve all of the items that are precedence1 and nothing else.
-                    int intHighest = int.MinValue;
                     StringBuilder strNewModifier = new StringBuilder();
-                    foreach (Tuple<string, int, string> strValues in lstUniquePair)
+                    foreach (Tuple<string, int, string> strValues in lstUniquePair.Where(s => s.Item1 == "precedence1" || s.Item1 == "precedence-1"))
                     {
-                        if (strValues.Item1 == "precedence1" || strValues.Item1 == "precedence-1")
-                        {
-                            strNewModifier.Append(strSpaceCharacter + '+' + strSpaceCharacter + strValues.Item3 + strSpaceCharacter + '(' + strValues.Item2.ToString(GlobalOptions.CultureInfo) + ')');
-                            intHighest += strValues.Item2;
-                        }
+                        strNewModifier.Append(
+                            $"{strSpaceCharacter}+{strSpaceCharacter}{strValues.Item3}{strSpaceCharacter}({strValues.Item2.ToString(GlobalOptions.Instance.CultureInfo)})");
                     }
-                    if (intHighest >= intBaseValue)
-                        strModifier = strNewModifier;
+                    strModifier = strNewModifier;
                 }
                 else
                 {
@@ -788,7 +800,7 @@ namespace Chummer.Backend.Attributes
                                 if (strValues.Item2 > intHighest)
                                 {
                                     intHighest = strValues.Item2;
-                                    strModifier.Append(strSpaceCharacter + '+' + strSpaceCharacter + strValues.Item3 + strSpaceCharacter + '(' + strValues.Item2.ToString(GlobalOptions.CultureInfo) + ')');
+                                    strModifier.Append(strSpaceCharacter + '+' + strSpaceCharacter + strValues.Item3 + strSpaceCharacter + '(' + strValues.Item2.ToString(GlobalOptions.Instance.CultureInfo) + ')');
                                 }
                             }
                         }
@@ -815,7 +827,7 @@ namespace Chummer.Backend.Attributes
                     else
                     {
                         strModifier.Append(strSpaceCharacter + '+' + strSpaceCharacter + _objCharacter.GetObjectName(objImprovement, GlobalOptions.Language) + strSpaceCharacter + '(' +
-                                           (objImprovement.Augmented * objImprovement.Rating).ToString(GlobalOptions.CultureInfo) + ')');
+                                           (objImprovement.Augmented * objImprovement.Rating).ToString(GlobalOptions.Instance.CultureInfo) + ')');
                     }
                 }
 
@@ -830,7 +842,7 @@ namespace Chummer.Backend.Attributes
                             if (strValues.Item2 > intHighest)
                             {
                                 intHighest = strValues.Item2;
-                                strModifier.Append(strSpaceCharacter + '+' + strSpaceCharacter + strValues.Item3 + strSpaceCharacter + '(' + strValues.Item2.ToString(GlobalOptions.CultureInfo) + ')');
+                                strModifier.Append(strSpaceCharacter + '+' + strSpaceCharacter + strValues.Item3 + strSpaceCharacter + '(' + strValues.Item2.ToString(GlobalOptions.Instance.CultureInfo) + ')');
                             }
                         }
                     }
@@ -845,13 +857,13 @@ namespace Chummer.Backend.Attributes
                         {
                             strModifier.Append(Environment.NewLine);
                             strModifier.Append(objCyberware.DisplayName(GlobalOptions.Language) + strSpaceCharacter + '(');
-                            strModifier.Append(Abbrev == "AGI" ? objCyberware.TotalAgility.ToString(GlobalOptions.CultureInfo) : objCyberware.TotalStrength.ToString(GlobalOptions.CultureInfo));
+                            strModifier.Append(Abbrev == "AGI" ? objCyberware.TotalAgility.ToString(GlobalOptions.Instance.CultureInfo) : objCyberware.TotalStrength.ToString(GlobalOptions.Instance.CultureInfo));
                             strModifier.Append(')');
                         }
                     }
                 }
 
-                return _strCachedToolTip = DisplayAbbrev + strSpaceCharacter + '(' + Value.ToString() + ')' + strModifier.ToString();
+                return _strCachedToolTip = DisplayAbbrev + strSpaceCharacter + '(' + Value.ToString(GlobalOptions.Instance.CultureInfo) + ')' + strModifier.ToString();
             }
         }
 
@@ -902,22 +914,22 @@ namespace Chummer.Backend.Attributes
                     return _intCachedUpgradeKarmaCost;
 
                 int intValue = Value;
-                int upgrade;
-                int intOptionsCost = _objCharacter.Options.KarmaAttribute;
                 if (intValue >= TotalMaximum)
                 {
                     return -1;
                 }
+                int intUpgradeCost;
+                int intOptionsCost = _objCharacter.Options.KarmaAttribute;
                 if (intValue == 0)
                 {
-                    upgrade = intOptionsCost;
+                    intUpgradeCost = intOptionsCost;
                 }
                 else
                 {
-                    upgrade = (intValue + 1) * intOptionsCost;
+                    intUpgradeCost = (intValue + 1) * intOptionsCost;
                 }
                 if (_objCharacter.Options.AlternateMetatypeAttributeKarma)
-                    upgrade -= (MetatypeMinimum - 1) * intOptionsCost;
+                    intUpgradeCost -= (MetatypeMinimum - 1) * intOptionsCost;
 
                 int intExtra = 0;
                 decimal decMultiplier = 1.0m;
@@ -934,10 +946,10 @@ namespace Chummer.Backend.Attributes
                     }
                 }
                 if (decMultiplier != 1.0m)
-                    upgrade = decimal.ToInt32(decimal.Ceiling(upgrade * decMultiplier));
-                upgrade += intExtra;
+                    intUpgradeCost = decimal.ToInt32(decimal.Ceiling(intUpgradeCost * decMultiplier));
+                intUpgradeCost += intExtra;
 
-                return _intCachedUpgradeKarmaCost = Math.Max(upgrade, Math.Min(1, intOptionsCost));
+                return _intCachedUpgradeKarmaCost = Math.Max(intUpgradeCost, Math.Min(1, intOptionsCost));
             }
         }
 

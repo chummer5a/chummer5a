@@ -138,9 +138,9 @@ namespace Chummer.Backend.Options
 
             foreach (OptionDictionaryEntryProxy<string,bool> bookProxy in options)
             {
-	            if (globalOptions.SourcebookInfo.Any(x => x.Code == bookProxy.Key))
+	            if (GlobalOptions.Instance.SourcebookInfo.Any(x => x.Code == bookProxy.Key))
 	            {
-		            SourcebookInfo info = globalOptions.SourcebookInfo.First(x => x.Code == bookProxy.Key);
+		            SourcebookInfo info = GlobalOptions.Instance.SourcebookInfo.First(x => x.Code == bookProxy.Key);
 		            List<OptionItem> children = new List<OptionItem>
 		            {
 			            bookProxy

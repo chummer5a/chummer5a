@@ -114,7 +114,7 @@ namespace Chummer
 
             return lstTreeNodes.ToArray();
         }
-        
+
         private void cmdOK_Click(object sender, EventArgs e)
         {
             AddAgain = false;

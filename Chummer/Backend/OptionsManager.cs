@@ -428,7 +428,7 @@ namespace Chummer
                     ClassSaver.Save(GlobalOptions.Instance, writer);
 
                     writer.WriteStartElement("books");
-                    foreach (SourcebookInfo book in GlobalOptions.SourcebookInfo)
+                    foreach (SourcebookInfo book in GlobalOptions.Instance.SourcebookInfo)
                     {
                         writer.WriteStartElement("book");
                         ClassSaver.Save(book, writer);
@@ -447,7 +447,7 @@ namespace Chummer
                 ClassSaver.Save(GlobalOptions.Instance, rootKey);
                 int count = 0;
                 RegistryKey bookKey = Registry.CurrentUser.CreateSubKey("Software\\Chummer5\\Books");
-                foreach (SourcebookInfo book in GlobalOptions.SourcebookInfo)
+                foreach (SourcebookInfo book in GlobalOptions.Instance.SourcebookInfo)
                 {
                     RegistryKey k2 = bookKey.CreateSubKey(count.ToString("D2"));
                     ClassSaver.Save(book, k2);
@@ -493,7 +493,7 @@ namespace Chummer
                 Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
                 ".config", 
                 "Chummer5a", 
-                "globaloptions.xml"
+                "GlobalOptions.Instance.xml"
             );
         }
 

@@ -51,7 +51,7 @@ namespace Chummer
         private string _strPointsPerLevel = "0";
         private string _strAction = string.Empty;
         private decimal _decExtraPointCost;
-        private int _intMaxLevel;
+        private int _intMaxLevels;
         private bool _blnDiscountedAdeptWay;
         private bool _blnDiscountedGeas;
         private XmlNode _nodAdeptWayRequirements;
@@ -110,13 +110,13 @@ namespace Chummer
             objWriter.WriteElementString("adeptway", _strAdeptWayDiscount);
             objWriter.WriteElementString("action", _strAction);
             objWriter.WriteElementString("rating", _intRating.ToString());
-            objWriter.WriteElementString("extrapointcost", _decExtraPointCost.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("extrapointcost", _decExtraPointCost.ToString(GlobalOptions.Instance.InvariantCultureInfo));
             objWriter.WriteElementString("levels", _blnLevelsEnabled.ToString());
-            objWriter.WriteElementString("maxlevel", _intMaxLevel.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("maxlevels", _intMaxLevels.ToString(GlobalOptions.Instance.InvariantCultureInfo));
             objWriter.WriteElementString("discounted", _blnDiscountedAdeptWay.ToString());
             objWriter.WriteElementString("discountedgeas", _blnDiscountedGeas.ToString());
             objWriter.WriteElementString("bonussource", _strBonusSource);
-            objWriter.WriteElementString("freepoints", _decFreePoints.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("freepoints", _decFreePoints.ToString(GlobalOptions.Instance.InvariantCultureInfo));
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
             if (Bonus != null)
@@ -135,7 +135,7 @@ namespace Chummer
             objWriter.WriteEndElement();
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteEndElement();
-            
+
             CharacterObject.SourceProcess(_strSource);
         }
 
@@ -150,7 +150,10 @@ namespace Chummer
             _intRating = intRating;
             if (!objNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
                 objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
-            objNode.TryGetInt32FieldQuickly("maxlevels", ref _intMaxLevel);
+            if (!objNode.TryGetInt32FieldQuickly("maxlevel", ref _intMaxLevels))
+            {
+                objNode.TryGetInt32FieldQuickly("maxlevels", ref _intMaxLevels);
+            }
             objNode.TryGetBoolFieldQuickly("discounted", ref _blnDiscountedAdeptWay);
             objNode.TryGetBoolFieldQuickly("discountedgeas", ref _blnDiscountedGeas);
             objNode.TryGetStringFieldQuickly("bonussource", ref _strBonusSource);
@@ -204,7 +207,7 @@ namespace Chummer
 
         private SourceString _objCachedSourceDetail;
         public SourceString SourceDetail => _objCachedSourceDetail ?? (_objCachedSourceDetail =
-                                                new SourceString(Source, Page(GlobalOptions.Language), GlobalOptions.Language));
+                                                new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language));
 
         /// <summary>
         /// Load the Power from the XmlNode.
@@ -249,7 +252,10 @@ namespace Chummer
             }
             objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
             objNode.TryGetBoolFieldQuickly("levels", ref _blnLevelsEnabled);
-            objNode.TryGetInt32FieldQuickly("maxlevel", ref _intMaxLevel);
+            if (!objNode.TryGetInt32FieldQuickly("maxlevel", ref _intMaxLevels))
+            {
+                objNode.TryGetInt32FieldQuickly("maxlevels", ref _intMaxLevels);
+            }
             objNode.TryGetBoolFieldQuickly("discounted", ref _blnDiscountedAdeptWay);
             objNode.TryGetBoolFieldQuickly("discountedgeas", ref _blnDiscountedGeas);
             objNode.TryGetStringFieldQuickly("bonussource", ref _strBonusSource);
@@ -321,7 +327,7 @@ namespace Chummer
             objWriter.WriteElementString("totalpoints", PowerPoints.ToString(objCulture));
             objWriter.WriteElementString("action", DisplayActionMethod(strLanguageToPrint));
             objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
-            objWriter.WriteElementString("page", Page(strLanguageToPrint));
+            objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             if (CharacterObject.Options.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
             objWriter.WriteStartElement("enhancements");
@@ -484,12 +490,12 @@ namespace Chummer
         {
             get
             {
-                decimal decReturn = Convert.ToDecimal(_strPointsPerLevel, GlobalOptions.InvariantCultureInfo);
+                decimal decReturn = Convert.ToDecimal(_strPointsPerLevel, GlobalOptions.Instance.InvariantCultureInfo);
                 return decReturn;
             }
             set
             {
-                string strNewValue = value.ToString(GlobalOptions.InvariantCultureInfo);
+                string strNewValue = value.ToString(GlobalOptions.Instance.InvariantCultureInfo);
                 if (_strPointsPerLevel != strNewValue)
                 {
                     _strPointsPerLevel = strNewValue;
@@ -522,12 +528,12 @@ namespace Chummer
         {
             get
             {
-                decimal decReturn = Convert.ToDecimal(_strAdeptWayDiscount, GlobalOptions.InvariantCultureInfo);
+                decimal decReturn = Convert.ToDecimal(_strAdeptWayDiscount, GlobalOptions.Instance.InvariantCultureInfo);
                 return decReturn;
             }
             set
             {
-                string strNewValue = value.ToString(GlobalOptions.InvariantCultureInfo);
+                string strNewValue = value.ToString(GlobalOptions.Instance.InvariantCultureInfo);
                 if (_strAdeptWayDiscount != strNewValue)
                 {
                     _strAdeptWayDiscount = strNewValue;
@@ -553,7 +559,7 @@ namespace Chummer
         {
             get
             {
-                //TODO: This isn't super safe, but it's more reliable than checking it at load as improvement effects like Essence Loss take effect after powers are loaded. Might need another solution. 
+                //TODO: This isn't super safe, but it's more reliable than checking it at load as improvement effects like Essence Loss take effect after powers are loaded. Might need another solution.
                 if (_intRating <= TotalMaximumLevels) return _intRating;
                 _intRating = TotalMaximumLevels;
                 return _intRating;
@@ -656,7 +662,7 @@ namespace Chummer
             get
             {
                 if (string.IsNullOrEmpty(_strCachedPowerPoints))
-                    _strCachedPowerPoints = PowerPoints.ToString(GlobalOptions.CultureInfo);
+                    _strCachedPowerPoints = PowerPoints.ToString(GlobalOptions.Instance.CultureInfo);
                 return _strCachedPowerPoints;
             }
         }
@@ -692,16 +698,28 @@ namespace Chummer
             set => _strSource = value;
         }
 
-        /// <summary>
-        /// Page Number.
-        /// </summary>
-        public string Page(string strLanguage)
-        {
-            // Get the translated name if applicable.
-            if (strLanguage == GlobalOptions.DefaultLanguage)
-                return _strPage;
 
-            return GetNode(strLanguage)?["altpage"]?.InnerText ?? _strPage;
+        /// <summary>
+        /// Sourcebook Page Number.
+        /// </summary>
+        public string Page
+        {
+            get => _strPage;
+            set => _strPage = value;
+        }
+
+        /// <summary>
+        /// Sourcebook Page Number using a given language file.
+        /// Returns Page if not found or the string is empty.
+        /// </summary>
+        /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <returns></returns>
+        public string DisplayPage(string strLanguage)
+        {
+            if (strLanguage == GlobalOptions.DefaultLanguage)
+                return Page;
+            string s = GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
+            return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 
         /// <summary>
@@ -730,14 +748,12 @@ namespace Chummer
         /// </summary>
         public int MaxLevels
         {
-            get => _intMaxLevel;
+            get => _intMaxLevels;
             set
             {
-                if (_intMaxLevel != value)
-                {
-                    _intMaxLevel = value;
-                    OnPropertyChanged();
-                }
+                if (_intMaxLevels == value) return;
+                _intMaxLevels = value;
+                OnPropertyChanged();
             }
         }
 
@@ -860,7 +876,11 @@ namespace Chummer
                 if (BoostedSkill != null)
                 {
                     // +1 at the end so that division of 2 always rounds up, and integer division by 2 is significantly less expensive than decimal/double division
-                    intReturn = Math.Min(intReturn, (BoostedSkill.LearnedRating + 1) / 2);
+                    intReturn = Math.Min(intReturn, ( + (BoostedSkill.LearnedRating + 1)) / 2);
+                    if (CharacterObject.Options.IncreasedImprovedAbilityMultiplier)
+                    {
+                        intReturn += BoostedSkill.LearnedRating;
+                    }
                 }
                 if (!CharacterObject.IgnoreRules)
                 {
@@ -1032,7 +1052,7 @@ namespace Chummer
                 }
             }
         }
-        
+
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
@@ -1043,7 +1063,7 @@ namespace Chummer
 
         public XmlNode GetNode(string strLanguage)
         {
-            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
+            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.Instance.LiveCustomData)
             {
                 _objCachedMyXmlNode = SourceID == Guid.Empty
                     ? XmlManager.Load("powers.xml", strLanguage)
@@ -1063,10 +1083,10 @@ namespace Chummer
             get
             {
                 string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
-                StringBuilder strbldModifier = new StringBuilder("Rating" + strSpaceCharacter + '(' + Rating.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + '×' + strSpaceCharacter + PointsPerLevel.ToString(GlobalOptions.CultureInfo) + ')');
+                StringBuilder strbldModifier = new StringBuilder("Rating" + strSpaceCharacter + '(' + Rating.ToString(GlobalOptions.Instance.CultureInfo) + strSpaceCharacter + '×' + strSpaceCharacter + PointsPerLevel.ToString(GlobalOptions.Instance.CultureInfo) + ')');
                 foreach (Improvement objImprovement in CharacterObject.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.AdeptPower && objImprovement.ImprovedName == Name && objImprovement.UniqueName == Extra && objImprovement.Enabled))
                 {
-                    strbldModifier.Append(strSpaceCharacter + '+' + strSpaceCharacter + CharacterObject.GetObjectName(objImprovement, GlobalOptions.Language) + strSpaceCharacter + '(' + objImprovement.Rating.ToString(GlobalOptions.CultureInfo) + ')');
+                    strbldModifier.Append(strSpaceCharacter + '+' + strSpaceCharacter + CharacterObject.GetObjectName(objImprovement, GlobalOptions.Language) + strSpaceCharacter + '(' + objImprovement.Rating.ToString(GlobalOptions.Instance.CultureInfo) + ')');
                 }
 
                 return strbldModifier.ToString();

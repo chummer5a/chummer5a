@@ -19,7 +19,7 @@
     https://github.com/chummer5a/chummer5a
 -->
 <chummer>
-  <version>0</version>
+
   <categories>
     <category>Metahuman</category>
     <category>Metavariant</category>
@@ -83,6 +83,7 @@
       <page>50</page>
       <metavariants>
         <metavariant>
+          <id>abfd41e2-3db6-4c02-b404-11f92e426279</id>
           <name>Nartaki</name>
           <category>Metavariant</category>
           <karma>40</karma>
@@ -202,6 +203,7 @@
       <page>50</page>
       <metavariants>
         <metavariant>
+          <id>bdb50e49-57c6-4179-a78f-9f56003b40ef</id>
           <name>Dryad</name>
           <karma>90</karma>
           <category>Metavariant</category>
@@ -261,6 +263,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>55295969-101d-48fb-a009-b8289c2a6af9</id>
           <name>Nocturna</name>
           <category>Metavariant</category>
           <bodmin>1</bodmin>
@@ -322,6 +325,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>21f940f2-bad1-4311-a1bb-d3b63bfb5dd4</id>
           <name>Xapiri Thëpë</name>
           <category>Metavariant</category>
           <bodmin>1</bodmin>
@@ -381,6 +385,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>89f62241-aae6-4afe-9152-b6ddbcc18291</id>
           <name>Wakyambi</name>
           <category>Metavariant</category>
           <bodmin>1</bodmin>
@@ -502,6 +507,7 @@
       <page>50</page>
       <metavariants>
         <metavariant>
+          <id>2819315d-468c-4910-a185-c7ea8bc3690d</id>
           <name>Gnome</name>
           <category>Metavariant</category>
           <karma>50</karma>
@@ -564,6 +570,7 @@
           <page>89</page>
         </metavariant>
         <metavariant>
+          <id>d04fedc3-5595-4b36-8f5b-4250e265d8b2</id>
           <name>Hanuman</name>
           <category>Metavariant</category>
           <karma>100</karma>
@@ -626,6 +633,7 @@
           <page>89</page>
         </metavariant>
         <metavariant>
+          <id>d04545bd-e0fd-49d9-a213-a41a42c4cb53</id>
           <name>Koborokuru</name>
           <category>Metavariant</category>
           <karma>70</karma>
@@ -688,6 +696,7 @@
           <page>90</page>
         </metavariant>
         <metavariant>
+          <id>46e73ddf-5e6e-45ec-97ec-55ae3ca6b6ca</id>
           <name>Menehune</name>
           <category>Metavariant</category>
           <karma>50</karma>
@@ -806,6 +815,7 @@
       <page>50</page>
       <metavariants>
         <metavariant>
+          <id>6781163b-5f5e-4ca6-91bc-bc4a7fbe725b</id>
           <name>Hobgoblin</name>
           <category>Metavariant</category>
           <karma>40</karma>
@@ -867,6 +877,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>349189e0-0815-49fb-8691-84b516372c1f</id>
           <name>Ogre</name>
           <karma>40</karma>
           <category>Metavariant</category>
@@ -924,6 +935,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>0950b72c-f8b7-4a7d-9680-b1eab3f714e5</id>
           <name>Oni</name>
           <karma>50</karma>
           <category>Metavariant</category>
@@ -983,6 +995,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>cad7a71e-030e-4940-b148-2f340091485c</id>
           <name>Satyr</name>
           <category>Metavariant</category>
           <bodmin>2</bodmin>
@@ -1107,6 +1120,7 @@
       <page>50</page>
       <metavariants>
         <metavariant>
+          <id>02716eab-97fc-4616-97f3-bcf40437517a</id>
           <name>Cyclops</name>
           <category>Metavariant</category>
           <karma>100</karma>
@@ -1169,6 +1183,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>238ba2c1-445a-4683-b5bc-837d52d75fc4</id>
           <name>Fomorian</name>
           <category>Metavariant</category>
           <karma>100</karma>
@@ -1229,6 +1244,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>bfe77671-2e04-4bd3-85aa-7bceaa0ad65c</id>
           <name>Giant</name>
           <category>Metavariant</category>
           <karma>90</karma>
@@ -1289,6 +1305,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>3c4cf9d3-66be-461d-b74e-bff42f24aeca</id>
           <name>Minotaur</name>
           <category>Metavariant</category>
           <karma>100</karma>
@@ -1403,6 +1420,10 @@
       <run>4/0/0</run>
       <sprint>4/1/0</sprint>
       <bonus>
+        <addlimb precedence="0">
+          <limbslot>leg</limbslot>
+          <val>2</val>
+        </addlimb>
         <enableattribute>
           <name>MAG</name>
         </enableattribute>
@@ -1417,7 +1438,6 @@
           <quality>Thermographic Vision</quality>
           <quality>Natural Weapon: Kick (Centaur)</quality>
           <quality>Magic Sense</quality>
-          <quality>Centaur Body</quality>
         </positive>
       </qualities>
       <powers>
@@ -1836,6 +1856,7 @@
       <page>135</page>
       <metavariants>
         <metavariant>
+          <id>465785ac-5a63-4aa8-bd3b-a664138d2d99</id>
           <name>E-Ghost</name>
           <category>Metavariant</category>
           <karma>180</karma>
@@ -2020,6 +2041,7 @@
           <page>161</page>
         </metavariant>
         <metavariant>
+          <id>27f3cfae-93fc-48cb-b6d2-05a435b4d384</id>
           <name>Xenosapient</name>
           <category>Metavariant</category>
           <karma>180</karma>
@@ -2204,6 +2226,7 @@
           <page>135</page>
         </metavariant>
         <metavariant>
+          <id>2130cd24-4380-4776-a4c6-e83288792cf9</id>
           <name>Protosapient</name>
           <category>Metavariant</category>
           <karma>180</karma>
@@ -2447,6 +2470,7 @@
       <page>105</page>
       <metavariants>
         <metavariant>
+          <id>23d1c16f-6409-465e-ba9f-b34e78bce8ca</id>
           <name>Human</name>
           <karma>100</karma>
           <bodmin>1</bodmin>
@@ -2518,6 +2542,7 @@
           <page>50</page>
         </metavariant>
         <metavariant>
+          <id>f6c17ada-3754-4525-b33b-d4ce58fc0683</id>
           <name>Nartaki</name>
           <karma>100</karma>
           <bodmin>1</bodmin>
@@ -2594,6 +2619,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>22a22529-5866-4ef2-b187-ffe947e2a206</id>
           <name>Elf</name>
           <karma>105</karma>
           <bodmin>1</bodmin>
@@ -2669,6 +2695,7 @@
           <page>50</page>
         </metavariant>
         <metavariant>
+          <id>0f0b71f5-5215-4352-af23-7c1cbaa6a7d5</id>
           <name>Dryad</name>
           <karma>102</karma>
           <bodmin>1</bodmin>
@@ -2742,6 +2769,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>0c9b4e18-e29b-49ac-9e6d-188da6ea0c76</id>
           <name>Nocturna</name>
           <karma>105</karma>
           <bodmin>1</bodmin>
@@ -2818,6 +2846,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>edcaf8a0-e2b4-4995-a2f2-1526ddc449d6</id>
           <name>Xapiri Thëpë</name>
           <bodmin>1</bodmin>
           <bodmax>6</bodmax>
@@ -2891,6 +2920,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>872bb022-8ab7-4ec7-b267-ee91324082d5</id>
           <name>Wakyambi</name>
           <bodmin>1</bodmin>
           <bodmax>6</bodmax>
@@ -2965,6 +2995,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>ad9cf827-9965-4722-966c-7d8916071c12</id>
           <name>Dwarf</name>
           <karma>108</karma>
           <bodmin>3</bodmin>
@@ -3039,6 +3070,7 @@
           <page>50</page>
         </metavariant>
         <metavariant>
+          <id>e0083f6c-14a0-473d-9956-98f8879a7951</id>
           <name>Gnome</name>
           <karma>100</karma>
           <bodmin>1</bodmin>
@@ -3113,6 +3145,7 @@
           <page>89</page>
         </metavariant>
         <metavariant>
+          <id>9588891b-6352-457b-8c69-a71ac55ae088</id>
           <name>Hanuman</name>
           <karma>113</karma>
           <bodmin>1</bodmin>
@@ -3189,6 +3222,7 @@
           <page>89</page>
         </metavariant>
         <metavariant>
+          <id>2a6b473d-f22f-48d1-b9a6-ff64e51afe67</id>
           <name>Koborokuru</name>
           <karma>108</karma>
           <bodmin>2</bodmin>
@@ -3265,6 +3299,7 @@
           <page>90</page>
         </metavariant>
         <metavariant>
+          <id>47e4e7cb-8ac9-44f0-816e-51119b29bbf4</id>
           <name>Menehune</name>
           <karma>110</karma>
           <bodmin>2</bodmin>
@@ -3341,6 +3376,7 @@
           <page>90</page>
         </metavariant>
         <metavariant>
+          <id>933ad738-9fc0-4c33-858b-811529ef8e0b</id>
           <name>Ork</name>
           <karma>110</karma>
           <bodmin>4</bodmin>
@@ -3410,6 +3446,7 @@
           <page>50</page>
         </metavariant>
         <metavariant>
+          <id>59acc04d-8bde-492d-a0cd-3f986bb23455</id>
           <name>Hobgoblin</name>
           <karma>110</karma>
           <bodmin>3</bodmin>
@@ -3481,6 +3518,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>a13f10da-b9ef-40ae-901d-7e491831c092</id>
           <name>Ogre</name>
           <karma>113</karma>
           <bodmin>4</bodmin>
@@ -3550,6 +3588,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>faae7233-c8da-4d74-91ad-69fc0a0c4135</id>
           <name>Oni</name>
           <karma>110</karma>
           <bodmin>3</bodmin>
@@ -3622,6 +3661,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>ef081e82-36b1-4460-b493-a7818a0f5e63</id>
           <name>Satyr</name>
           <bodmin>2</bodmin>
           <bodmax>7</bodmax>
@@ -3692,6 +3732,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>f5bd54c5-1ec8-42b5-94ea-40ab98ff1662</id>
           <name>Troll</name>
           <karma>120</karma>
           <bodmin>5</bodmin>
@@ -3766,6 +3807,7 @@
           </forms>
         </metavariant>
         <metavariant>
+          <id>7235828d-96dd-4347-b290-a58284daed89</id>
           <name>Cyclops</name>
           <karma>115</karma>
           <bodmin>5</bodmin>
@@ -3841,6 +3883,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>9b2378ae-86a5-4217-a2bc-2db1241018fa</id>
           <name>Fomorian</name>
           <karma>118</karma>
           <bodmin>4</bodmin>
@@ -3912,6 +3955,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>500b9635-b70c-47fd-822b-04eff2c20a56</id>
           <name>Giant</name>
           <karma>120</karma>
           <bodmin>5</bodmin>
@@ -3983,6 +4027,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>b54a50d0-11b0-4e92-abba-b78c144ff0ab</id>
           <name>Minotaur</name>
           <karma>120</karma>
           <bodmin>6</bodmin>
@@ -4110,6 +4155,7 @@
       <page>105</page>
       <metavariants>
         <metavariant>
+          <id>72c6c3e9-2bee-4e72-978a-1598cbcdec34</id>
           <name>Human</name>
           <karma>110</karma>
           <bodmin>1</bodmin>
@@ -4190,6 +4236,7 @@
           <page>50</page>
         </metavariant>
         <metavariant>
+          <id>603217fe-d029-4f8c-acb4-f325e0037973</id>
           <name>Nartaki</name>
           <karma>110</karma>
           <bodmin>1</bodmin>
@@ -4274,6 +4321,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>817a2d06-9d49-4e02-809e-7aaf34784bd8</id>
           <name>Elf</name>
           <karma>115</karma>
           <bodmin>1</bodmin>
@@ -4354,6 +4402,7 @@
           <page>50</page>
         </metavariant>
         <metavariant>
+          <id>ba868f1d-45dd-4941-b2f4-016191c6cab6</id>
           <name>Dryad</name>
           <karma>112</karma>
           <bodmin>1</bodmin>
@@ -4437,6 +4486,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>70ed7830-b01c-44fd-a978-c95e2fd80337</id>
           <name>Nocturna</name>
           <karma>115</karma>
           <bodmin>1</bodmin>
@@ -4525,6 +4575,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>ea35e1a6-a1e9-4d8d-9af3-0dfb5c389e25</id>
           <name>Xapiri Thëpë</name>
           <karma>113</karma>
           <bodmin>1</bodmin>
@@ -4608,6 +4659,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>9ba4dea4-ec92-4caa-b6ee-448de9265df8</id>
           <name>Wakyambi</name>
           <bodmin>1</bodmin>
           <bodmax>6</bodmax>
@@ -4690,6 +4742,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>3c9ad8e5-6216-4c07-8b2f-dc900ed1b1a0</id>
           <name>Dwarf</name>
           <karma>118</karma>
           <bodmin>3</bodmin>
@@ -4773,6 +4826,7 @@
           <page>50</page>
         </metavariant>
         <metavariant>
+          <id>514b541e-caba-4142-8416-b35b4ee80282</id>
           <name>Gnome</name>
           <karma>110</karma>
           <bodmin>1</bodmin>
@@ -4858,6 +4912,7 @@
           <page>89</page>
         </metavariant>
         <metavariant>
+          <id>b4cae2a0-272d-4b6d-b68f-bca48e371666</id>
           <name>Hanuman</name>
           <karma>123</karma>
           <bodmin>1</bodmin>
@@ -4945,6 +5000,7 @@
           <page>89</page>
         </metavariant>
         <metavariant>
+          <id>67ccb04b-b255-4c2a-aabd-3b75c6068b93</id>
           <name>Koborokuru</name>
           <karma>118</karma>
           <bodmin>2</bodmin>
@@ -5032,6 +5088,7 @@
           <page>90</page>
         </metavariant>
         <metavariant>
+          <id>f3f72cdc-6eb4-42e2-9af5-a00c066f4f4e</id>
           <name>Menehune</name>
           <karma>120</karma>
           <bodmin>2</bodmin>
@@ -5117,6 +5174,7 @@
           <page>90</page>
         </metavariant>
         <metavariant>
+          <id>241a9ce9-cc5e-41e6-a3de-4af32d5c349b</id>
           <name>Ork</name>
           <karma>120</karma>
           <bodmin>4</bodmin>
@@ -5198,6 +5256,7 @@
           <page>50</page>
         </metavariant>
         <metavariant>
+          <id>1c071edb-fead-4034-89c1-b2463f53d082</id>
           <name>Hobgoblin</name>
           <karma>120</karma>
           <bodmin>3</bodmin>
@@ -5280,6 +5339,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>466dc8a5-d0b9-466d-af01-caa006592471</id>
           <name>Ogre</name>
           <karma>123</karma>
           <bodmin>4</bodmin>
@@ -5360,6 +5420,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>49f38c9d-3a3c-4db4-80cc-157aeacb5552</id>
           <name>Oni</name>
           <karma>120</karma>
           <bodmin>3</bodmin>
@@ -5444,6 +5505,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>9857c790-b7a7-492a-bc06-bd1b14919e05</id>
           <name>Satyr</name>
           <bodmin>2</bodmin>
           <bodmax>7</bodmax>
@@ -5525,6 +5587,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>15bde68b-8682-4b3b-81ea-c2bbafeb8ee2</id>
           <name>Troll</name>
           <karma>130</karma>
           <bodmin>5</bodmin>
@@ -5609,6 +5672,7 @@
           <page>50</page>
         </metavariant>
         <metavariant>
+          <id>6309019d-ff05-4a55-a898-7675b51100b4</id>
           <name>Cyclops</name>
           <karma>125</karma>
           <bodmin>5</bodmin>
@@ -5696,6 +5760,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>b2460346-7c24-4eb3-be0b-258a68d820e1</id>
           <name>Fomorian</name>
           <karma>128</karma>
           <bodmin>4</bodmin>
@@ -5780,6 +5845,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>f64b9593-17f3-429c-86e4-74f6fdd4c2a5</id>
           <name>Giant</name>
           <karma>130</karma>
           <bodmin>5</bodmin>
@@ -5864,6 +5930,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>a8202bb5-a5ff-4746-babd-e4c003a79b18</id>
           <name>Minotaur</name>
           <karma>130</karma>
           <bodmin>6</bodmin>
@@ -6004,6 +6071,7 @@
       <page>105</page>
       <metavariants>
         <metavariant>
+          <id>9ae0a8a2-792c-432b-9c8b-3987d537d18e</id>
           <name>Human</name>
           <karma>120</karma>
           <bodmin>1</bodmin>
@@ -6075,6 +6143,7 @@
           <page>50</page>
         </metavariant>
         <metavariant>
+          <id>e072faaa-0fd4-4316-aa3d-ae867de27201</id>
           <name>Nartaki</name>
           <karma>120</karma>
           <bodmin>1</bodmin>
@@ -6148,6 +6217,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>74edc397-beab-4bd3-8f58-3c1247426f78</id>
           <name>Elf</name>
           <karma>125</karma>
           <bodmin>1</bodmin>
@@ -6220,6 +6290,7 @@
           <page>50</page>
         </metavariant>
         <metavariant>
+          <id>937f2d80-47f0-458c-8885-ca0062724604</id>
           <name>Dryad</name>
           <karma>122</karma>
           <bodmin>1</bodmin>
@@ -6293,6 +6364,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>98098ae3-d537-48d1-af19-cf97368913cf</id>
           <name>Nocturna</name>
           <bodmin>121</bodmin>
           <karma>125</karma>
@@ -6369,6 +6441,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>85e4372f-642a-46e7-bfcd-3142c87533e2</id>
           <name>Xapiri Thëpë</name>
           <karma>123</karma>
           <bodmin>1</bodmin>
@@ -6442,6 +6515,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>413f8f8f-7f57-4424-bce1-6057d8491a39</id>
           <name>Wakyambi</name>
           <bodmin>1</bodmin>
           <bodmax>6</bodmax>
@@ -6516,6 +6590,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>ad946a35-9133-46b4-8343-480b31c2f265</id>
           <name>Dwarf</name>
           <karma>128</karma>
           <bodmin>3</bodmin>
@@ -6590,6 +6665,7 @@
           <page>50</page>
         </metavariant>
         <metavariant>
+          <id>dc386b73-2ce1-4ea1-a5d0-63bff82cb321</id>
           <name>Gnome</name>
           <karma>120</karma>
           <bodmin>1</bodmin>
@@ -6664,6 +6740,7 @@
           <page>89</page>
         </metavariant>
         <metavariant>
+          <id>ab644d31-3360-4b68-a180-90dbcc3bfb01</id>
           <name>Hanuman</name>
           <karma>133</karma>
           <bodmin>1</bodmin>
@@ -6740,6 +6817,7 @@
           <page>89</page>
         </metavariant>
         <metavariant>
+          <id>5b517f19-ca0a-4112-b798-fd508c6ec965</id>
           <name>Koborokuru</name>
           <karma>128</karma>
           <bodmin>2</bodmin>
@@ -6813,6 +6891,7 @@
           <page>90</page>
         </metavariant>
         <metavariant>
+          <id>aae29da6-7af8-4851-b257-171dc24add00</id>
           <name>Menehune</name>
           <karma>130</karma>
           <bodmin>2</bodmin>
@@ -6888,6 +6967,7 @@
           <page>90</page>
         </metavariant>
         <metavariant>
+          <id>4880d7d0-682b-4e13-ad10-4ff9322abaf3</id>
           <name>Ork</name>
           <karma>130</karma>
           <bodmin>4</bodmin>
@@ -6960,6 +7040,7 @@
           <page>50</page>
         </metavariant>
         <metavariant>
+          <id>cc2c6704-1d61-48d4-8c03-cc9056a9b1c6</id>
           <name>Hobgoblin</name>
           <karma>130</karma>
           <bodmin>3</bodmin>
@@ -7033,6 +7114,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>858d224b-0a40-428c-b4c5-a3727e9d7596</id>
           <name>Ogre</name>
           <karma>133</karma>
           <bodmin>4</bodmin>
@@ -7106,6 +7188,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>2f45890e-3ac0-4491-96c9-e2ce235be88b</id>
           <name>Oni</name>
           <karma>130</karma>
           <bodmin>3</bodmin>
@@ -7179,6 +7262,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>c4b8edba-6c67-4e64-ab6f-7eda06f57d46</id>
           <name>Satyr</name>
           <bodmin>2</bodmin>
           <bodmax>7</bodmax>
@@ -7252,6 +7336,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>11ab2967-3c85-4d2c-b27d-9ff244510e66</id>
           <name>Troll</name>
           <karma>140</karma>
           <bodmin>5</bodmin>
@@ -7329,6 +7414,7 @@
           </forms>
         </metavariant>
         <metavariant>
+          <id>f88587f3-f3c4-415b-89a4-a2205cdbbb44</id>
           <name>Cyclops</name>
           <karma>135</karma>
           <bodmin>5</bodmin>
@@ -7404,6 +7490,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>5353d303-9a86-417f-8fb5-3ee56e5adc14</id>
           <name>Fomorian</name>
           <karma>138</karma>
           <bodmin>4</bodmin>
@@ -7479,6 +7566,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>fcd502a2-35e5-4226-abbc-aa046c771016</id>
           <name>Giant</name>
           <karma>140</karma>
           <bodmin>5</bodmin>
@@ -7550,6 +7638,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>364c87ab-ae95-491b-b1e5-9b75ac406e7c</id>
           <name>Minotaur</name>
           <karma>140</karma>
           <bodmin>6</bodmin>
@@ -7680,6 +7769,7 @@
       <page>105</page>
       <metavariants>
         <metavariant>
+          <id>a67075d9-b539-49ad-990e-e11e8b470c8f</id>
           <name>Human</name>
           <karma>110</karma>
           <bodmin>1</bodmin>
@@ -7771,6 +7861,7 @@
           <page>50</page>
         </metavariant>
         <metavariant>
+          <id>e441e585-2095-4ce7-be9b-f7fa3fa4b83c</id>
           <name>Nartaki</name>
           <karma>110</karma>
           <bodmin>1</bodmin>
@@ -7864,6 +7955,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>4943b696-fdcb-456a-8482-7193c54e24cb</id>
           <name>Elf</name>
           <karma>115</karma>
           <bodmin>1</bodmin>
@@ -7956,6 +8048,7 @@
           <page>50</page>
         </metavariant>
         <metavariant>
+          <id>f10ea4c4-538b-402f-bd55-d78585a1b8bc</id>
           <name>Dryad</name>
           <karma>112</karma>
           <bodmin>1</bodmin>
@@ -8049,6 +8142,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>41b0b548-c7c5-4fa8-992f-3bd9d06e68f7</id>
           <name>Nocturna</name>
           <bodmin>1</bodmin>
           <karma>115</karma>
@@ -8145,6 +8239,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>038381fb-d1d4-4831-a80c-fcf0e9d75462</id>
           <name>Xapiri Thëpë</name>
           <bodmin>1</bodmin>
           <bodmax>6</bodmax>
@@ -8238,6 +8333,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>c92f5e79-348b-4edf-8df9-5926bddb8d70</id>
           <name>Wakyambi</name>
           <bodmin>1</bodmin>
           <bodmax>6</bodmax>
@@ -8332,6 +8428,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>55d45617-67d2-46a4-8a9a-4bbb72a25374</id>
           <name>Dwarf</name>
           <karma>118</karma>
           <bodmin>3</bodmin>
@@ -8426,6 +8523,7 @@
           <page>50</page>
         </metavariant>
         <metavariant>
+          <id>73023ab3-d59f-4b00-b0f5-de7e00058663</id>
           <name>Gnome</name>
           <karma>110</karma>
           <bodmin>1</bodmin>
@@ -8520,6 +8618,7 @@
           <page>89</page>
         </metavariant>
         <metavariant>
+          <id>7673e640-9d6a-4f9b-b3eb-a7cabe61087a</id>
           <name>Hanuman</name>
           <karma>123</karma>
           <bodmin>1</bodmin>
@@ -8616,6 +8715,7 @@
           <page>89</page>
         </metavariant>
         <metavariant>
+          <id>ec46bebc-38e6-46ad-bd4c-6ea84521450c</id>
           <name>Koborokuru</name>
           <karma>118</karma>
           <bodmin>2</bodmin>
@@ -8713,6 +8813,7 @@
           <page>90</page>
         </metavariant>
         <metavariant>
+          <id>e7edd712-47c5-41aa-986e-aaa9f62302ba</id>
           <name>Menehune</name>
           <karma>120</karma>
           <bodmin>2</bodmin>
@@ -8809,6 +8910,7 @@
           <page>90</page>
         </metavariant>
         <metavariant>
+          <id>fdd3c8fa-8e33-4e83-920c-a7125c5f5ab3</id>
           <name>Ork</name>
           <karma>120</karma>
           <bodmin>4</bodmin>
@@ -8901,6 +9003,7 @@
           <page>50</page>
         </metavariant>
         <metavariant>
+          <id>c347f4d5-1dc5-4fe7-93d2-f5847376f875</id>
           <name>Hobgoblin</name>
           <karma>120</karma>
           <bodmin>3</bodmin>
@@ -8995,6 +9098,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>44d749da-4d0c-4bdf-a97c-31880af186de</id>
           <name>Ogre</name>
           <karma>123</karma>
           <bodmin>4</bodmin>
@@ -9087,6 +9191,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>f5b620d0-3d08-44a9-bb88-68ad4602d8b1</id>
           <name>Oni</name>
           <karma>120</karma>
           <bodmin>3</bodmin>
@@ -9180,6 +9285,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>1db85cb2-2e9a-42b6-a7bc-72d53336050f</id>
           <name>Satyr</name>
           <bodmin>2</bodmin>
           <bodmax>7</bodmax>
@@ -9273,6 +9379,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>0c35835a-f508-4714-b36f-ccf5eb16cb7d</id>
           <name>Troll</name>
           <karma>130</karma>
           <bodmin>5</bodmin>
@@ -9370,6 +9477,7 @@
           </forms>
         </metavariant>
         <metavariant>
+          <id>89e0cae9-3666-45ab-8c0c-0df30fdd23bb</id>
           <name>Cyclops</name>
           <karma>125</karma>
           <bodmin>5</bodmin>
@@ -9465,6 +9573,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>0d90af12-ad92-4c76-a79c-98e93dc0e64f</id>
           <name>Fomorian</name>
           <karma>128</karma>
           <bodmin>4</bodmin>
@@ -9559,6 +9668,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>4f512b5b-5d7b-4e45-bc44-95998013153b</id>
           <name>Giant</name>
           <karma>130</karma>
           <bodmin>5</bodmin>
@@ -9653,6 +9763,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>998dddc8-39de-4447-901b-67812bff31d7</id>
           <name>Minotaur</name>
           <karma>130</karma>
           <bodmin>6</bodmin>
@@ -9803,6 +9914,7 @@
       <page>105</page>
       <metavariants>
         <metavariant>
+          <id>f139ce11-4d2c-43a4-9f3a-964bd05b0f9a</id>
           <name>Human</name>
           <karma>160</karma>
           <bodmin>1</bodmin>
@@ -9896,6 +10008,7 @@
           <page>50</page>
         </metavariant>
         <metavariant>
+          <id>568b8c29-ea29-47bf-b576-b771d4072f3b</id>
           <name>Nartaki</name>
           <karma>160</karma>
           <bodmin>1</bodmin>
@@ -9991,6 +10104,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>5a332a03-331b-4973-9c7b-b4dc13aaa7c0</id>
           <name>Elf</name>
           <karma>165</karma>
           <bodmin>1</bodmin>
@@ -10084,6 +10198,7 @@
           <page>50</page>
         </metavariant>
         <metavariant>
+          <id>f6d4a77e-e35d-4734-9f33-22f1d2c48de6</id>
           <name>Dryad</name>
           <karma>162</karma>
           <bodmin>1</bodmin>
@@ -10178,6 +10293,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>9a694756-9fc2-4522-8fb1-ad45fea3561c</id>
           <name>Nocturna</name>
           <bodmin>1</bodmin>
           <karma>165</karma>
@@ -10275,6 +10391,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>9567d06a-9f6f-4b6a-9dc8-e5fea960b669</id>
           <name>Xapiri Thëpë</name>
           <bodmin>1</bodmin>
           <bodmax>6</bodmax>
@@ -10369,6 +10486,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>4dda08c8-20f9-47a1-bda4-342a948a0b48</id>
           <name>Wakyambi</name>
           <bodmin>1</bodmin>
           <bodmax>6</bodmax>
@@ -10464,6 +10582,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>5aa2cf77-0e1e-4370-ba57-ba85a3c94ca6</id>
           <name>Dwarf</name>
           <karma>168</karma>
           <bodmin>3</bodmin>
@@ -10560,6 +10679,7 @@
           <page>50</page>
         </metavariant>
         <metavariant>
+          <id>3408a702-feae-4722-aee4-7118a5b4f6f4</id>
           <name>Gnome</name>
           <karma>160</karma>
           <bodmin>1</bodmin>
@@ -10656,6 +10776,7 @@
           <page>89</page>
         </metavariant>
         <metavariant>
+          <id>5f479700-9a53-45cb-975c-f3b57e59ad3b</id>
           <name>Hanuman</name>
           <karma>173</karma>
           <bodmin>1</bodmin>
@@ -10754,6 +10875,7 @@
           <page>89</page>
         </metavariant>
         <metavariant>
+          <id>2cdc77fe-173c-40af-ad4c-b285290bd8a8</id>
           <name>Koborokuru</name>
           <karma>168</karma>
           <bodmin>2</bodmin>
@@ -10851,6 +10973,7 @@
           <page>90</page>
         </metavariant>
         <metavariant>
+          <id>c1072b44-660b-4c3a-bb80-6d2abb628521</id>
           <name>Menehune</name>
           <karma>170</karma>
           <bodmin>2</bodmin>
@@ -10948,6 +11071,7 @@
           <page>90</page>
         </metavariant>
         <metavariant>
+          <id>df82ab4e-a3b6-4960-b100-71c0f88d75be</id>
           <name>Ork</name>
           <karma>170</karma>
           <bodmin>4</bodmin>
@@ -11041,6 +11165,7 @@
           <page>50</page>
         </metavariant>
         <metavariant>
+          <id>6f96817c-f5e6-427a-9b6d-09e00e69315c</id>
           <name>Hobgoblin</name>
           <karma>170</karma>
           <bodmin>3</bodmin>
@@ -11135,6 +11260,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>c6a241b5-1c64-4c50-88f4-f878fe08bec0</id>
           <name>Ogre</name>
           <karma>173</karma>
           <bodmin>4</bodmin>
@@ -11228,6 +11354,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>0424408d-0939-462d-99a9-98d8cf2e9870</id>
           <name>Oni</name>
           <karma>170</karma>
           <bodmin>3</bodmin>
@@ -11322,6 +11449,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>a3c67363-19a6-40f1-a230-ba25de6f29a0</id>
           <name>Satyr</name>
           <bodmin>2</bodmin>
           <bodmax>7</bodmax>
@@ -11416,6 +11544,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>88517143-484c-4d5f-b121-a1524ad1ac53</id>
           <name>Troll</name>
           <karma>180</karma>
           <bodmin>5</bodmin>
@@ -11515,6 +11644,7 @@
           </forms>
         </metavariant>
         <metavariant>
+          <id>e9bb10d3-958b-419d-93f9-27f8b523cc76</id>
           <name>Cyclops</name>
           <karma>175</karma>
           <bodmin>5</bodmin>
@@ -11613,6 +11743,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>9164d4ef-3af1-4de8-987e-2c133c40b20a</id>
           <name>Fomorian</name>
           <karma>178</karma>
           <bodmin>4</bodmin>
@@ -11709,6 +11840,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>df1fb360-a357-4ab1-a292-fdbcf3489fbf</id>
           <name>Giant</name>
           <karma>180</karma>
           <bodmin>5</bodmin>
@@ -11805,6 +11937,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>27dab849-834e-4cd7-a483-9723d5d247d3</id>
           <name>Minotaur</name>
           <karma>180</karma>
           <bodmin>6</bodmin>
@@ -11956,6 +12089,7 @@
       <page>105</page>
       <metavariants>
         <metavariant>
+          <id>00496098-35dc-4d56-a129-61e5cf53e572</id>
           <name>Human</name>
           <karma>120</karma>
           <bodmin>1</bodmin>
@@ -12039,6 +12173,7 @@
           <page>50</page>
         </metavariant>
         <metavariant>
+          <id>a67e3c43-8091-460e-953a-d4c26f7d3910</id>
           <name>Nartaki</name>
           <karma>120</karma>
           <bodmin>1</bodmin>
@@ -12124,6 +12259,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>aa6df1c1-fd67-4c80-b842-ed45ab940f1d</id>
           <name>Elf</name>
           <karma>125</karma>
           <bodmin>1</bodmin>
@@ -12207,6 +12343,7 @@
           <page>50</page>
         </metavariant>
         <metavariant>
+          <id>58f7112d-8948-487a-a1b7-4155c9bec08b</id>
           <name>Dryad</name>
           <karma>122</karma>
           <bodmin>1</bodmin>
@@ -12291,6 +12428,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>13b31bda-db05-45df-824c-4ec8cc50a590</id>
           <name>Nocturna</name>
           <karma>125</karma>
           <bodmin>1</bodmin>
@@ -12378,6 +12516,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>a185f8ac-eac5-49d1-a124-86caaa84738e</id>
           <name>Xapiri Thëpë</name>
           <bodmin>1</bodmin>
           <bodmax>6</bodmax>
@@ -12462,6 +12601,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>0b163023-30ee-48b6-a6d6-2d93756f276e</id>
           <name>Wakyambi</name>
           <bodmin>1</bodmin>
           <bodmax>6</bodmax>
@@ -12547,6 +12687,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>3252f602-465b-4985-8280-92a8f5282af2</id>
           <name>Dwarf</name>
           <karma>128</karma>
           <bodmin>3</bodmin>
@@ -12633,6 +12774,7 @@
           <page>50</page>
         </metavariant>
         <metavariant>
+          <id>19c29d57-50f3-4055-aa10-b7291d3daccf</id>
           <name>Gnome</name>
           <karma>120</karma>
           <bodmin>1</bodmin>
@@ -12720,6 +12862,7 @@
           <page>89</page>
         </metavariant>
         <metavariant>
+          <id>daf4bb2d-0336-4ecd-ac50-f44115b1b36b</id>
           <name>Hanuman</name>
           <karma>133</karma>
           <bodmin>1</bodmin>
@@ -12809,6 +12952,7 @@
           <page>89</page>
         </metavariant>
         <metavariant>
+          <id>7e6377f7-bf5d-4c0a-9464-46b147042c84</id>
           <name>Koborokuru</name>
           <karma>128</karma>
           <bodmin>2</bodmin>
@@ -12897,6 +13041,7 @@
           <page>90</page>
         </metavariant>
         <metavariant>
+          <id>1e773e25-0898-4562-87b6-0b5f9c3cc2bf</id>
           <name>Menehune</name>
           <karma>130</karma>
           <bodmin>2</bodmin>
@@ -12985,6 +13130,7 @@
           <page>90</page>
         </metavariant>
         <metavariant>
+          <id>5df1bf0b-08ba-4642-ae08-4bd6fb0e6d38</id>
           <name>Ork</name>
           <karma>130</karma>
           <bodmin>4</bodmin>
@@ -13068,6 +13214,7 @@
           <page>50</page>
         </metavariant>
         <metavariant>
+          <id>91347c07-07cb-4b46-8f6f-9153df227488</id>
           <name>Hobgoblin</name>
           <karma>130</karma>
           <bodmin>3</bodmin>
@@ -13152,6 +13299,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>f8be2809-25c6-49b0-8930-e9846a1dee2d</id>
           <name>Ogre</name>
           <karma>133</karma>
           <bodmin>4</bodmin>
@@ -13235,6 +13383,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>c35f607c-d72c-4dfd-b9d3-2bfcb0fb9522</id>
           <name>Oni</name>
           <karma>130</karma>
           <bodmin>3</bodmin>
@@ -13319,6 +13468,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>166c27db-8b57-423c-a396-802f37529b9d</id>
           <name>Satyr</name>
           <bodmin>2</bodmin>
           <bodmax>7</bodmax>
@@ -13403,6 +13553,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>0137eb3a-a693-46b1-a7ec-931494b4c867</id>
           <name>Troll</name>
           <karma>140</karma>
           <bodmin>5</bodmin>
@@ -13492,6 +13643,7 @@
           </forms>
         </metavariant>
         <metavariant>
+          <id>7fd21e21-bc71-40ae-9e1e-3389ef461a6c</id>
           <name>Cyclops</name>
           <karma>135</karma>
           <bodmin>5</bodmin>
@@ -13580,6 +13732,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>8b40cce0-7d6c-4337-879b-4808775bcf48</id>
           <name>Fomorian</name>
           <karma>138</karma>
           <bodmin>4</bodmin>
@@ -13666,6 +13819,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>89b2a0b1-4ba5-4ad9-a3cf-6d5042bf40fa</id>
           <name>Giant</name>
           <karma>140</karma>
           <bodmin>5</bodmin>
@@ -13753,6 +13907,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>bb8ad15a-73bd-402d-8f0e-7cd978ba2cca</id>
           <name>Minotaur</name>
           <karma>140</karma>
           <bodmin>6</bodmin>
@@ -13895,6 +14050,7 @@
       <page>105</page>
       <metavariants>
         <metavariant>
+          <id>ba9ced16-63aa-44dd-a40b-74dd17563452</id>
           <name>Human</name>
           <karma>150</karma>
           <bodmin>1</bodmin>
@@ -13987,6 +14143,7 @@
           <page>50</page>
         </metavariant>
         <metavariant>
+          <id>926f9df2-5e90-4afe-b357-91a0f759f21f</id>
           <name>Nartaki</name>
           <karma>150</karma>
           <bodmin>1</bodmin>
@@ -14081,6 +14238,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>12ebd2ed-5c9b-47b2-a5bc-7d20fbcd7443</id>
           <name>Elf</name>
           <karma>155</karma>
           <bodmin>1</bodmin>
@@ -14173,6 +14331,7 @@
           <page>50</page>
         </metavariant>
         <metavariant>
+          <id>857c589f-ab6d-4998-a2f0-9a17a1efa0b2</id>
           <name>Dryad</name>
           <karma>152</karma>
           <bodmin>1</bodmin>
@@ -14266,6 +14425,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>a5b9e7a2-a81d-4b86-a8d7-f3c9393d9920</id>
           <name>Nocturna</name>
           <bodmin>1</bodmin>
           <karma>155</karma>
@@ -14362,6 +14522,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>f231bce9-8427-457e-a05a-e6cd31df7692</id>
           <name>Xapiri Thëpë</name>
           <bodmin>1</bodmin>
           <bodmax>6</bodmax>
@@ -14456,6 +14617,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>a4751f49-e5ca-4051-aed6-c8f02693d108</id>
           <name>Wakyambi</name>
           <bodmin>1</bodmin>
           <bodmax>6</bodmax>
@@ -14550,6 +14712,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>8396338f-42be-4aa2-b99b-d3ec549f5c2b</id>
           <name>Dwarf</name>
           <karma>158</karma>
           <bodmin>3</bodmin>
@@ -14645,6 +14808,7 @@
           <page>50</page>
         </metavariant>
         <metavariant>
+          <id>b8caa086-c4e0-495f-b2fc-c11376ad49e6</id>
           <name>Gnome</name>
           <karma>150</karma>
           <bodmin>1</bodmin>
@@ -14740,6 +14904,7 @@
           <page>89</page>
         </metavariant>
         <metavariant>
+          <id>46c5cf34-e042-46f0-b763-26ce1310ddcc</id>
           <name>Hanuman</name>
           <karma>163</karma>
           <bodmin>1</bodmin>
@@ -14837,6 +15002,7 @@
           <page>89</page>
         </metavariant>
         <metavariant>
+          <id>463defe9-108e-4b6e-9d72-4797afe412bd</id>
           <name>Koborokuru</name>
           <karma>158</karma>
           <bodmin>2</bodmin>
@@ -14934,6 +15100,7 @@
           <page>90</page>
         </metavariant>
         <metavariant>
+          <id>148034b8-c5d6-43f8-9690-97cb524a8fbb</id>
           <name>Menehune</name>
           <karma>160</karma>
           <bodmin>2</bodmin>
@@ -15031,6 +15198,7 @@
           <page>90</page>
         </metavariant>
         <metavariant>
+          <id>3b55e173-7dfb-4883-9880-688367aac476</id>
           <name>Ork</name>
           <karma>160</karma>
           <bodmin>4</bodmin>
@@ -15124,6 +15292,7 @@
           <page>50</page>
         </metavariant>
         <metavariant>
+          <id>efc03595-cea6-49cf-9379-f834d67f4ea2</id>
           <name>Hobgoblin</name>
           <karma>160</karma>
           <bodmin>3</bodmin>
@@ -15218,6 +15387,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>03dc46a8-5048-433f-8bb6-21f62830bd33</id>
           <name>Ogre</name>
           <karma>163</karma>
           <bodmin>4</bodmin>
@@ -15310,6 +15480,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>2741c61c-5700-4d53-8daa-bd483a227539</id>
           <name>Oni</name>
           <karma>160</karma>
           <bodmin>3</bodmin>
@@ -15403,6 +15574,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>bbd8fffe-a794-4d5c-852a-ee1b0215be72</id>
           <name>Satyr</name>
           <bodmin>2</bodmin>
           <bodmax>7</bodmax>
@@ -15496,6 +15668,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>da6d8882-913f-483f-8a53-89b872a3c6f5</id>
           <name>Troll</name>
           <karma>170</karma>
           <bodmin>5</bodmin>
@@ -15594,6 +15767,7 @@
           </forms>
         </metavariant>
         <metavariant>
+          <id>25b842cf-4a17-4862-9ef8-0803b35b22d4</id>
           <name>Cyclops</name>
           <karma>165</karma>
           <bodmin>5</bodmin>
@@ -15690,6 +15864,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>0c887cb8-a13b-4e8b-9626-2ce5b9e5afa0</id>
           <name>Fomorian</name>
           <karma>168</karma>
           <bodmin>4</bodmin>
@@ -15785,6 +15960,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>2d0cd92d-fe0e-4944-8ae2-3567e3a12ab6</id>
           <name>Giant</name>
           <karma>170</karma>
           <bodmin>5</bodmin>
@@ -15880,6 +16056,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>7bb9c395-bf66-44ff-a129-b10f59d48075</id>
           <name>Minotaur</name>
           <karma>170</karma>
           <bodmin>6</bodmin>
@@ -16030,6 +16207,7 @@
       <page>105</page>
       <metavariants>
         <metavariant>
+          <id>1d5d44ad-5742-4a5c-af9f-f60990b5ceac</id>
           <name>Human</name>
           <karma>150</karma>
           <bodmin>1</bodmin>
@@ -16123,6 +16301,7 @@
           <page>50</page>
         </metavariant>
         <metavariant>
+          <id>1441ac93-a7f9-4e57-b984-112aa001f614</id>
           <name>Nartaki</name>
           <karma>150</karma>
           <bodmin>1</bodmin>
@@ -16218,6 +16397,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>7078cf11-f825-4480-8800-624c6ed7b432</id>
           <name>Elf</name>
           <karma>155</karma>
           <bodmin>1</bodmin>
@@ -16311,6 +16491,7 @@
           <page>50</page>
         </metavariant>
         <metavariant>
+          <id>06fac7f5-a601-4b54-b116-8f94def0d29a</id>
           <name>Dryad</name>
           <karma>152</karma>
           <bodmin>1</bodmin>
@@ -16405,6 +16586,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>e603ad34-3e73-4226-ad31-0c5068619406</id>
           <name>Nocturna</name>
           <bodmin>1</bodmin>
           <karma>155</karma>
@@ -16502,6 +16684,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>c3bdca8f-22c8-4de5-a6c2-4f4b0d9757ff</id>
           <name>Xapiri Thëpë</name>
           <bodmin>1</bodmin>
           <bodmax>6</bodmax>
@@ -16596,6 +16779,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>039ec906-6cd6-4680-a4ed-e0bcd529596e</id>
           <name>Wakyambi</name>
           <bodmin>1</bodmin>
           <bodmax>6</bodmax>
@@ -16691,6 +16875,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>37028dc9-5f08-48f7-b070-05e15974b146</id>
           <name>Dwarf</name>
           <karma>158</karma>
           <bodmin>3</bodmin>
@@ -16787,6 +16972,7 @@
           <page>50</page>
         </metavariant>
         <metavariant>
+          <id>29b7ac0f-b6e1-4667-87f5-42547555dbc2</id>
           <name>Gnome</name>
           <karma>150</karma>
           <bodmin>1</bodmin>
@@ -16883,6 +17069,7 @@
           <page>89</page>
         </metavariant>
         <metavariant>
+          <id>73d38653-e57e-4b3d-b5d2-5df8939aec11</id>
           <name>Hanuman</name>
           <karma>163</karma>
           <bodmin>1</bodmin>
@@ -16981,6 +17168,7 @@
           <page>89</page>
         </metavariant>
         <metavariant>
+          <id>b9e01b0f-814e-4db2-a69d-e6bd5586c0da</id>
           <name>Koborokuru</name>
           <karma>158</karma>
           <bodmin>2</bodmin>
@@ -17079,6 +17267,7 @@
           <page>90</page>
         </metavariant>
         <metavariant>
+          <id>98e74217-2d9f-45f6-88a3-ae5393b7b7d8</id>
           <name>Menehune</name>
           <karma>160</karma>
           <bodmin>2</bodmin>
@@ -17176,6 +17365,7 @@
           <page>90</page>
         </metavariant>
         <metavariant>
+          <id>48198209-8de0-41ea-87bb-56553cca0d33</id>
           <name>Ork</name>
           <karma>160</karma>
           <bodmin>4</bodmin>
@@ -17269,6 +17459,7 @@
           <page>50</page>
         </metavariant>
         <metavariant>
+          <id>c7aaa3ac-236d-467b-867d-961d7ba1d40f</id>
           <name>Hobgoblin</name>
           <karma>160</karma>
           <bodmin>3</bodmin>
@@ -17364,6 +17555,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>ad1f3d13-47d5-419a-b384-edbe0d5b46cd</id>
           <name>Ogre</name>
           <karma>163</karma>
           <bodmin>4</bodmin>
@@ -17457,6 +17649,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>249d9cdb-ffa8-4ba4-af01-e1979eb03f4d</id>
           <name>Oni</name>
           <karma>160</karma>
           <bodmin>3</bodmin>
@@ -17551,6 +17744,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>ff8db8bd-6dcd-4ff0-a8bf-04ad88ef90fe</id>
           <name>Satyr</name>
           <bodmin>2</bodmin>
           <bodmax>7</bodmax>
@@ -17645,6 +17839,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>886c7bac-d1df-4b26-ac48-bdbb7699c646</id>
           <name>Troll</name>
           <karma>170</karma>
           <bodmin>5</bodmin>
@@ -17744,6 +17939,7 @@
           </forms>
         </metavariant>
         <metavariant>
+          <id>db747301-5aff-4ed8-849a-8c12c80424fd</id>
           <name>Cyclops</name>
           <karma>165</karma>
           <bodmin>5</bodmin>
@@ -17841,6 +18037,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>5b894937-9c91-492e-bd08-c3dd0f71a262</id>
           <name>Fomorian</name>
           <karma>168</karma>
           <bodmin>4</bodmin>
@@ -17937,6 +18134,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>0e2c8217-dddc-4e22-a380-4691ba857f41</id>
           <name>Giant</name>
           <karma>170</karma>
           <bodmin>5</bodmin>
@@ -18033,6 +18231,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>13c04dd9-32f9-4f88-b068-ccc52d3bcbf1</id>
           <name>Minotaur</name>
           <karma>170</karma>
           <bodmin>6</bodmin>
@@ -18184,6 +18383,7 @@
       <page>105</page>
       <metavariants>
         <metavariant>
+          <id>63eaeb51-bb63-4126-9c4e-d35a7e460d53</id>
           <name>Human</name>
           <karma>160</karma>
           <bodmin>1</bodmin>
@@ -18278,6 +18478,7 @@
           <page>50</page>
         </metavariant>
         <metavariant>
+          <id>ff100955-5a67-4ddb-9fba-5303ee42d568</id>
           <name>Nartaki</name>
           <karma>160</karma>
           <bodmin>1</bodmin>
@@ -18374,6 +18575,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>b771cc0a-d070-4882-bcd5-9c8a753e9c2a</id>
           <name>Elf</name>
           <karma>165</karma>
           <bodmin>1</bodmin>
@@ -18468,6 +18670,7 @@
           <page>50</page>
         </metavariant>
         <metavariant>
+          <id>06ef0d3a-204c-44e4-9773-3422519b0cc5</id>
           <name>Dryad</name>
           <karma>162</karma>
           <bodmin>1</bodmin>
@@ -18563,6 +18766,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>26fef240-95cc-4a6c-829f-b85ae8907b50</id>
           <name>Nocturna</name>
           <bodmin>1</bodmin>
           <karma>165</karma>
@@ -18660,6 +18864,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>e196167a-6963-4457-b29b-5eff2d7e630d</id>
           <name>Xapiri Thëpë</name>
           <bodmin>1</bodmin>
           <bodmax>6</bodmax>
@@ -18755,6 +18960,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>1758e939-77a2-4075-b6fe-c5c105d2062d</id>
           <name>Wakyambi</name>
           <bodmin>1</bodmin>
           <bodmax>6</bodmax>
@@ -18851,6 +19057,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>6f73af8c-1a5f-4dba-b934-6120638232e6</id>
           <name>Dwarf</name>
           <karma>168</karma>
           <bodmin>3</bodmin>
@@ -18948,6 +19155,7 @@
           <page>50</page>
         </metavariant>
         <metavariant>
+          <id>23253f86-b01d-4f58-bf43-8c093af47e49</id>
           <name>Gnome</name>
           <karma>160</karma>
           <bodmin>1</bodmin>
@@ -19046,6 +19254,7 @@
           <page>89</page>
         </metavariant>
         <metavariant>
+          <id>4f03017a-4844-489f-a987-7987a1ccffde</id>
           <name>Hanuman</name>
           <karma>173</karma>
           <bodmin>1</bodmin>
@@ -19146,6 +19355,7 @@
           <page>89</page>
         </metavariant>
         <metavariant>
+          <id>4dd6acdf-bc94-44d2-b80f-f30e797b8185</id>
           <name>Koborokuru</name>
           <karma>168</karma>
           <bodmin>2</bodmin>
@@ -19245,6 +19455,7 @@
           <page>90</page>
         </metavariant>
         <metavariant>
+          <id>9516fca8-49c7-448f-9e1f-c22709bfd746</id>
           <name>Menehune</name>
           <karma>170</karma>
           <bodmin>2</bodmin>
@@ -19348,6 +19559,7 @@
           <page>90</page>
         </metavariant>
         <metavariant>
+          <id>bd888868-780e-4343-988f-a58174ce7eb2</id>
           <name>Ork</name>
           <karma>170</karma>
           <bodmin>4</bodmin>
@@ -19442,6 +19654,7 @@
           <page>50</page>
         </metavariant>
         <metavariant>
+          <id>e71ca147-19c2-4333-b2e9-3ef5daae8e52</id>
           <name>Hobgoblin</name>
           <karma>170</karma>
           <bodmin>3</bodmin>
@@ -19538,6 +19751,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>b0da977b-83f5-4185-97ad-51de5e148c1e</id>
           <name>Ogre</name>
           <karma>173</karma>
           <bodmin>4</bodmin>
@@ -19632,6 +19846,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>b6afcdd8-10b8-484d-b8ff-d34b99552efa</id>
           <name>Oni</name>
           <karma>170</karma>
           <bodmin>3</bodmin>
@@ -19727,6 +19942,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>b2ff8840-666c-459b-8e90-075bd573267f</id>
           <name>Satyr</name>
           <bodmin>2</bodmin>
           <bodmax>7</bodmax>
@@ -19822,6 +20038,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>889e1841-d278-47c9-ac51-d49888ff832a</id>
           <name>Troll</name>
           <karma>180</karma>
           <bodmin>5</bodmin>
@@ -19922,6 +20139,7 @@
           </forms>
         </metavariant>
         <metavariant>
+          <id>89f30470-d939-4dc0-b7b0-e5af72fe5f37</id>
           <name>Cyclops</name>
           <karma>175</karma>
           <bodmin>5</bodmin>
@@ -20020,6 +20238,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>90a1f321-e061-4530-8683-6bfb67d00c2d</id>
           <name>Fomorian</name>
           <karma>178</karma>
           <bodmin>4</bodmin>
@@ -20117,6 +20336,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>b8dfd055-377e-42ae-9039-4cb92fd8124c</id>
           <name>Giant</name>
           <karma>180</karma>
           <bodmin>5</bodmin>
@@ -20214,6 +20434,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>a2db509b-0465-46c7-9aee-c5b6d5e1775d</id>
           <name>Minotaur</name>
           <karma>180</karma>
           <bodmin>6</bodmin>
@@ -20366,6 +20587,7 @@
       <page>105</page>
       <metavariants>
         <metavariant>
+          <id>572a678f-6fe3-4a02-b240-e9c289d20696</id>
           <name>Human</name>
           <karma>100</karma>
           <bodmin>1</bodmin>
@@ -20450,6 +20672,7 @@
           <page>50</page>
         </metavariant>
         <metavariant>
+          <id>ff9d2f6b-54c4-47c1-8ba5-5c035b33c625</id>
           <name>Nartaki</name>
           <karma>100</karma>
           <bodmin>1</bodmin>
@@ -20536,6 +20759,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>9c2d1471-27b8-43f9-a10a-efe1cb72c817</id>
           <name>Elf</name>
           <karma>105</karma>
           <bodmin>1</bodmin>
@@ -20620,6 +20844,7 @@
           <page>50</page>
         </metavariant>
         <metavariant>
+          <id>90c4a0e0-790d-4c30-b341-182b807523d4</id>
           <name>Dryad</name>
           <karma>102</karma>
           <bodmin>1</bodmin>
@@ -20705,6 +20930,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>8e2c11b5-81e9-49de-879e-a21824cb2e79</id>
           <name>Nocturna</name>
           <karma>105</karma>
           <bodmin>1</bodmin>
@@ -20792,6 +21018,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>06a2ab89-4c05-4328-8ced-76d81ccf3776</id>
           <name>Xapiri Thëpë</name>
           <bodmin>1</bodmin>
           <bodmax>6</bodmax>
@@ -20877,6 +21104,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>faaaf899-c3f7-40e9-a107-1b607c4debaa</id>
           <name>Wakyambi</name>
           <bodmin>1</bodmin>
           <bodmax>6</bodmax>
@@ -20963,6 +21191,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>e6e1af34-af56-4ba3-9730-9be12d0b565e</id>
           <name>Dwarf</name>
           <karma>108</karma>
           <bodmin>3</bodmin>
@@ -21050,6 +21279,7 @@
           <page>50</page>
         </metavariant>
         <metavariant>
+          <id>5601777e-4bc4-4786-8738-bb684dbbb3f8</id>
           <name>Gnome</name>
           <karma>100</karma>
           <bodmin>1</bodmin>
@@ -21138,6 +21368,7 @@
           <page>89</page>
         </metavariant>
         <metavariant>
+          <id>1ffe580b-6f50-4537-ac6a-c737e5f72670</id>
           <name>Hanuman</name>
           <karma>113</karma>
           <bodmin>1</bodmin>
@@ -21228,6 +21459,7 @@
           <page>89</page>
         </metavariant>
         <metavariant>
+          <id>d42581db-4995-48f2-8b2a-ae6261b78412</id>
           <name>Koborokuru</name>
           <karma>108</karma>
           <bodmin>2</bodmin>
@@ -21317,6 +21549,7 @@
           <page>90</page>
         </metavariant>
         <metavariant>
+          <id>7be624bd-073a-49ee-a629-cd6ee01443aa</id>
           <name>Menehune</name>
           <karma>110</karma>
           <bodmin>2</bodmin>
@@ -21406,6 +21639,7 @@
           <page>90</page>
         </metavariant>
         <metavariant>
+          <id>76a90543-edd3-4b24-a864-9f084378b98c</id>
           <name>Ork</name>
           <karma>110</karma>
           <bodmin>4</bodmin>
@@ -21490,6 +21724,7 @@
           <page>50</page>
         </metavariant>
         <metavariant>
+          <id>236f86ef-9d3c-4b9e-9f39-423af4158052</id>
           <name>Hobgoblin</name>
           <karma>110</karma>
           <bodmin>3</bodmin>
@@ -21575,6 +21810,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>3a37b882-6cd8-4367-ac56-957a4191d19b</id>
           <name>Ogre</name>
           <karma>113</karma>
           <bodmin>4</bodmin>
@@ -21659,6 +21895,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>b25f5d40-67d5-4ecf-975d-61aec600e1d5</id>
           <name>Oni</name>
           <karma>110</karma>
           <bodmin>3</bodmin>
@@ -21744,6 +21981,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>48f2afed-bc6b-42f3-9210-d18b0d0bd8c7</id>
           <name>Satyr</name>
           <bodmin>2</bodmin>
           <bodmax>7</bodmax>
@@ -21829,6 +22067,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>ab1a9b28-ea34-482f-9bf3-c638076622e9</id>
           <name>Troll</name>
           <karma>120</karma>
           <bodmin>5</bodmin>
@@ -21919,6 +22158,7 @@
           </forms>
         </metavariant>
         <metavariant>
+          <id>5f5f87ff-2477-4c21-97b4-c34b40be129f</id>
           <name>Cyclops</name>
           <karma>115</karma>
           <bodmin>5</bodmin>
@@ -22007,6 +22247,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>2711a31f-b498-4c87-9705-2d8115760ed6</id>
           <name>Fomorian</name>
           <karma>118</karma>
           <bodmin>4</bodmin>
@@ -22094,6 +22335,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>b82d90ac-2868-490b-ad7b-3802544b868b</id>
           <name>Giant</name>
           <karma>120</karma>
           <bodmin>5</bodmin>
@@ -22181,6 +22423,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>bcee0f21-bd99-4c59-a711-3ecedd83236e</id>
           <name>Minotaur</name>
           <karma>120</karma>
           <bodmin>6</bodmin>
@@ -22323,6 +22566,7 @@
       <page>147</page>
       <metavariants>
         <metavariant>
+          <id>07a1e053-5c16-4dfa-8527-ecee04561967</id>
           <name>Human</name>
           <karma>140</karma>
           <bodmin>1</bodmin>
@@ -22410,6 +22654,7 @@
           <page>50</page>
         </metavariant>
         <metavariant>
+          <id>c2b900b0-7547-4cce-a12c-cc91e51d1380</id>
           <name>Nartaki</name>
           <karma>140</karma>
           <bodmin>1</bodmin>
@@ -22498,6 +22743,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>8226d397-58ed-45ba-b3b0-dd80ee7f32d7</id>
           <name>Elf</name>
           <karma>145</karma>
           <bodmin>1</bodmin>
@@ -22584,6 +22830,7 @@
           <page>50</page>
         </metavariant>
         <metavariant>
+          <id>931a519d-8a77-4870-b395-51a66c3d34fd</id>
           <name>Dryad</name>
           <karma>142</karma>
           <bodmin>1</bodmin>
@@ -22670,6 +22917,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>2a6ae9dc-baa7-4265-8eee-e4c3eb3f5af3</id>
           <name>Nocturna</name>
           <karma>145</karma>
           <bodmin>1</bodmin>
@@ -22759,6 +23007,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>21c90429-265e-46bd-9f71-1358ae099512</id>
           <name>Xapiri Thëpë</name>
           <karma>143</karma>
           <bodmin>1</bodmin>
@@ -22847,6 +23096,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>578dcaa9-2857-46a5-b0e0-f16ea37718d9</id>
           <name>Wakyambi</name>
           <karma>155</karma>
           <bodmin>1</bodmin>
@@ -22935,6 +23185,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>e02e165f-cbf0-443d-8615-fb331250c63b</id>
           <name>Dwarf</name>
           <karma>148</karma>
           <bodmin>3</bodmin>
@@ -23024,6 +23275,7 @@
           <page>50</page>
         </metavariant>
         <metavariant>
+          <id>f0ae10a2-2a47-4752-bda0-4072912b73b3</id>
           <name>Gnome</name>
           <karma>140</karma>
           <bodmin>1</bodmin>
@@ -23113,6 +23365,7 @@
           <page>89</page>
         </metavariant>
         <metavariant>
+          <id>ae124d01-dd89-4476-9901-2737416af16f</id>
           <name>Hanuman</name>
           <karma>153</karma>
           <bodmin>1</bodmin>
@@ -23204,6 +23457,7 @@
           <page>89</page>
         </metavariant>
         <metavariant>
+          <id>b18e9b32-8b82-48b5-8bab-65b9014583c7</id>
           <name>Koborokuru</name>
           <karma>148</karma>
           <bodmin>2</bodmin>
@@ -23295,6 +23549,7 @@
           <page>90</page>
         </metavariant>
         <metavariant>
+          <id>ba4ef71f-9eae-49dd-81c4-52e7ba6cbd41</id>
           <name>Menehune</name>
           <karma>150</karma>
           <bodmin>2</bodmin>
@@ -23384,6 +23639,7 @@
           <page>90</page>
         </metavariant>
         <metavariant>
+          <id>94d47062-6811-4125-a24c-0a48e55ea1df</id>
           <name>Ork</name>
           <karma>150</karma>
           <bodmin>4</bodmin>
@@ -23470,6 +23726,7 @@
           <page>50</page>
         </metavariant>
         <metavariant>
+          <id>ffbc799f-c723-410a-bde7-c6ef6638b3d2</id>
           <name>Hobgoblin</name>
           <karma>150</karma>
           <bodmin>3</bodmin>
@@ -23558,6 +23815,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>fcace559-3f5e-437d-92e7-cd952d9cde88</id>
           <name>Ogre</name>
           <karma>153</karma>
           <bodmin>4</bodmin>
@@ -23644,6 +23902,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>20d2d524-4cb2-42ae-b230-c594ede95528</id>
           <name>Oni</name>
           <karma>150</karma>
           <bodmin>3</bodmin>
@@ -23731,6 +23990,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>9c73f71c-18b4-4376-ba86-7a9c4f322391</id>
           <name>Satyr</name>
           <karma>160</karma>
           <bodmin>2</bodmin>
@@ -23815,6 +24075,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>d72ea784-8865-4306-836e-cde49c992d99</id>
           <name>Troll</name>
           <karma>160</karma>
           <bodmin>5</bodmin>
@@ -23909,6 +24170,7 @@
           </forms>
         </metavariant>
         <metavariant>
+          <id>939d369e-fcac-4cd2-98f2-4f7f524879d2</id>
           <name>Cyclops</name>
           <karma>155</karma>
           <bodmin>5</bodmin>
@@ -24001,6 +24263,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>8b423695-1687-4b42-b598-95eef297e006</id>
           <name>Fomorian</name>
           <karma>158</karma>
           <bodmin>4</bodmin>
@@ -24092,6 +24355,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>5e95065d-361b-4a37-9cbf-118682bf7008</id>
           <name>Giant</name>
           <karma>160</karma>
           <bodmin>5</bodmin>
@@ -24183,6 +24447,7 @@
           <page>104</page>
         </metavariant>
         <metavariant>
+          <id>a7aa6fd6-886b-4829-b3cc-d0bd918886be</id>
           <name>Minotaur</name>
           <karma>160</karma>
           <bodmin>6</bodmin>

@@ -51,8 +51,8 @@ namespace Chummer.Backend.Skills
             objWriter.WriteElementString("suid", SkillId.ToString("D"));
             objWriter.WriteElementString("isknowledge", bool.FalseString);
             objWriter.WriteElementString("skillcategory", SkillCategory);
-            objWriter.WriteElementString("karma", KarmaPoints.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("base", BasePoints.ToString(GlobalOptions.InvariantCultureInfo)); //this could acctually be saved in karma too during career
+            objWriter.WriteElementString("karma", KarmaPoints.ToString(GlobalOptions.Instance.InvariantCultureInfo));
+            objWriter.WriteElementString("base", BasePoints.ToString(GlobalOptions.Instance.InvariantCultureInfo)); //this could acctually be saved in karma too during career
             objWriter.WriteElementString("notes", Notes);
             if (!CharacterObject.Created)
             {

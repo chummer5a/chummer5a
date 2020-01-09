@@ -18,7 +18,6 @@
     https://github.com/chummer5a/chummer5a
 -->
 <chummer>
-  <version>-500</version>
   <name>Português (pt-BR)</name>
   <righttoleft>False</righttoleft>
   <strings>
@@ -1182,7 +1181,7 @@
       <text>Observar Pasta</text>
     </string>
     <string>
-      <key>Treenode_Roster_FavouriteCharacters</key>
+      <key>Treenode_Roster_FavoriteCharacters</key>
       <text>Personagens Favoritos</text>
     </string>
     <!-- End Region -->
@@ -4948,7 +4947,7 @@
       <text>Voo:</text>
     </string>
     <string>
-      <key>Label_OtherCmposure</key>
+      <key>Label_OtherComposure</key>
       <text>Compostura:</text>
     </string>
     <string>
@@ -6673,6 +6672,10 @@
       <text>Ignorar requisitos de Arte do Street Grimoire</text>
     </string>
     <string>
+      <key>Checkbox_Options_AllowFreeGrids</key>
+      <text>Allow Free Grid Subscription Qualities for lifestyles even if Hard Targets is not an active book</text>
+    </string>
+    <string>
       <key>Checkbox_Options_CyberlegMovement</key>
       <text>Usar estatísticas de Ciberperna para Movimento</text>
     </string>
@@ -7702,11 +7705,11 @@
       <text>Mostrar apenas Qualidades que eu posso pegar</text>
     </string>
     <string>
-      <key>Checkbox_SelectQuality_Metagenetic</key>
+      <key>Checkbox_SelectQuality_Metagenic</key>
       <text>Mostrar apenas Qualidades Metagênicas</text>
     </string>
     <string>
-      <key>Checkbox_SelectQuality_Not_Metagenetic</key>
+      <key>Checkbox_SelectQuality_Not_Metagenic</key>
       <text>Não mostrar Qualidades Metagênicas</text>
     </string>
     <string>

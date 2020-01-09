@@ -19,6 +19,7 @@
 using System;
 using System.Xml;
 using Chummer.Classes;
+// ReSharper disable StringLiteralTypo
 
 namespace Chummer
 {
@@ -39,6 +40,8 @@ namespace Chummer
                     return objImprovementAdder.qualitylevel;
                 case "SELECTTEXT":
                     return objImprovementAdder.selecttext;
+                case "SURPRISE":
+                    return objImprovementAdder.surprise;
                 case "SPELLRESISTANCE":
                     return objImprovementAdder.spellresistance;
                 case "MENTALMANIPULATIONRESIST":
@@ -51,6 +54,26 @@ namespace Chummer
                     return objImprovementAdder.physicalillusionresist;
                 case "DETECTIONSPELLRESIST":
                     return objImprovementAdder.detectionspellresist;
+                case "DIRECTMANASPELLRESIST":
+                    return objImprovementAdder.directmanaspellresist;
+                case "DIRECTPHYSICALSPELLRESIST":
+                    return objImprovementAdder.directphysicalspellresist;
+                case "DECREASEBODRESIST":
+                    return objImprovementAdder.decreasebodresist;
+                case "DECREASEAGIRESIST":
+                    return objImprovementAdder.decreaseagiresist;
+                case "DECREASEREARESIST":
+                    return objImprovementAdder.decreaserearesist;
+                case "DECREASESTRRESIST":
+                    return objImprovementAdder.decreasestrresist;
+                case "DECREASECHARESIST":
+                    return objImprovementAdder.decreasecharesist;
+                case "DECREASEINTRESIST":
+                    return objImprovementAdder.decreaseintresist;
+                case "DECREASELOGRESIST":
+                    return objImprovementAdder.decreaselogresist;
+                case "DECREASEWILRESIST":
+                    return objImprovementAdder.decreasewilresist;
                 case "ENABLEATTRIBUTE":
                     return objImprovementAdder.enableattribute;
                 case "REPLACEATTRIBUTES":
@@ -67,6 +90,8 @@ namespace Chummer
                     return objImprovementAdder.cyberseeker;
                 case "BLOCKSKILLGROUPDEFAULTING":
                     return objImprovementAdder.blockskillgroupdefaulting;
+                case "ALLOWSKILLDEFAULTING":
+                    return objImprovementAdder.allowskilldefaulting;
                 case "SELECTSKILL":
                     return objImprovementAdder.selectskill;
                 case "SELECTSKILLGROUP":
@@ -203,6 +228,8 @@ namespace Chummer
                     return objImprovementAdder.basiclifestylecost;
                 case "GENETECHCOSTMULTIPLIER":
                     return objImprovementAdder.genetechcostmultiplier;
+                case "GENETECHESSMULTIPLIER":
+                    return objImprovementAdder.genetechessmultiplier;
                 case "BASICBIOWAREESSMULTIPLIER":
                     return objImprovementAdder.basicbiowareessmultiplier;
                 case "BIOWAREESSMULTIPLIER":
@@ -247,6 +274,8 @@ namespace Chummer
                     return objImprovementAdder.weaponcategorydv;
                 case "WEAPONCATEGORYDICE":
                     return objImprovementAdder.weaponcategorydice;
+                case "WEAPONSPECIFICDICE":
+                    return objImprovementAdder.weaponspecificdice;
                 case "SELECTMENTORSPIRIT":
                     return objImprovementAdder.selectmentorspirit;
                 case "SELECTPARAGON":
@@ -399,11 +428,11 @@ namespace Chummer
                     return objImprovementAdder.spelllimit;
                 case "FREESPELLS":
                     return objImprovementAdder.freespells;
-                case "SPELLDICEPOOL":
-                    return objImprovementAdder.spelldicepool;
                 case "SPELLCATEGORY":
                 case "SPELLCATEGORYDICEPOOL":
                     return objImprovementAdder.spellcategorydicepool;
+                case "SPELLDICEPOOL":
+                    return objImprovementAdder.spelldicepool;
                 case "SPELLCATEGORYDRAIN":
                     return objImprovementAdder.spellcategorydrain;
                 case "SPELLCATEGORYDAMAGE":
@@ -464,14 +493,22 @@ namespace Chummer
                     return objImprovementAdder.addskillspecializationoption;
                 case "LIMITSPELLCATEGORY":
                     return objImprovementAdder.limitspellcategory;
+                case "BLOCKSPELLDESCRIPTOR":
+                    return objImprovementAdder.blockspelldescriptor;
                 case "LIMITSPELLDESCRIPTOR":
                     return objImprovementAdder.limitspelldescriptor;
-                case "LIMITSPIRITCATEGORY":
-                    return objImprovementAdder.limitspiritcategory;
+                case "ALLOWSPELLRANGE":
+                    return objImprovementAdder.allowspellrange;
+                case "LIMITSPELLRANGE":
+                    return objImprovementAdder.limitspellrange;
+                case "ALLOWSPELLCATEGORY":
+                    return objImprovementAdder.allowspellcategory;
                 case "ADDSPRITE":
                     return objImprovementAdder.addsprite;
                 case "ADDSPIRIT":
                     return objImprovementAdder.addspirit;
+                case "LIMITSPIRITCATEGORY":
+                    return objImprovementAdder.limitspiritcategory;
                 case "MOVEMENTREPLACE":
                     return objImprovementAdder.movementreplace;
                 case "ADDLIMB":
@@ -488,6 +525,8 @@ namespace Chummer
                     return objImprovementAdder.skilldisable;
                 case "SKILLGROUPDISABLE":
                     return objImprovementAdder.skillgroupdisable;
+                case "SKILLGROUPDISABLECHOICE":
+                    return objImprovementAdder.skillgroupdisablechoice;
                 case "SKILLGROUPCATEGORYDISABLE":
                     return objImprovementAdder.skillgroupcategorydisable;
                 case "SKILLGROUPCATEGORYKARMACOST":
@@ -569,13 +608,30 @@ namespace Chummer
                 case "WEAPONSKILLACCURACY":
                     return objImprovementAdder.weaponskillaccuracy;
                 case "METAGENETICLIMIT":
-                    return objImprovementAdder.metageneticlimit;
+                case "METAGENICLIMIT":
+                    return objImprovementAdder.metageniclimit;
+                case "SPECIALMODIFICATIONLIMIT":
+                    return objImprovementAdder.specialmodificationlimit;
                 case "CYBERADEPTDAEMON":
                     return objImprovementAdder.cyberadeptdaemon;
                 case "ACTIONDICEPOOL":
                     return objImprovementAdder.actiondicepool;
-                case "SPECIALMODIFICATIONLIMIT":
-                    return objImprovementAdder.specialmodificationlimit;
+                case "CONTACTKARMA":
+                    return objImprovementAdder.contactkarma;
+                case "CONTACTKARMAMINIMUM":
+                    return objImprovementAdder.contactkarmaminimum;
+                case "ALLOWSPRITEFETTERING":
+                    return objImprovementAdder.allowspritefettering;
+                case "ENABLECYBERZOMBIE":
+                    return objImprovementAdder.enablecyberzombie;
+                case "ALLOWCRITTERPOWERCATEGORY":
+                    return objImprovementAdder.allowcritterpowercategory;
+                case "LIMITCRITTERPOWERCATEGORY":
+                    return objImprovementAdder.limitcritterpowercategory;
+                case "ATTRIBUTEMAXCLAMP":
+                    return objImprovementAdder.attributemaxclamp;
+                case "METAMAGICLIMIT":
+                    return objImprovementAdder.metamagiclimit;
                 // No method matches, return a null pointer
                 default:
                     return null;

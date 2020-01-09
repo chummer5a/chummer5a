@@ -57,8 +57,8 @@ namespace Chummer
         {
             objWriter.WriteStartElement("week");
             objWriter.WriteElementString("guid", _guiID.ToString("D"));
-            objWriter.WriteElementString("year", _intYear.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("week", _intWeek.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("year", _intYear.ToString(GlobalOptions.Instance.InvariantCultureInfo));
+            objWriter.WriteElementString("week", _intWeek.ToString(GlobalOptions.Instance.InvariantCultureInfo));
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteEndElement();
         }

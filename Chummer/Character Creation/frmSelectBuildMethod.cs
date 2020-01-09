@@ -18,7 +18,10 @@
  */
  using System;
 using System.Collections.Generic;
+ using System.Linq;
+ using System.Text;
  using System.Windows.Forms;
+ using System.Xml;
  using System.Xml.XPath;
 
 namespace Chummer
@@ -52,7 +55,7 @@ namespace Chummer
                 new ListItem("SumtoTen", LanguageManager.GetString("String_SumtoTen", GlobalOptions.Language)),
             };
 
-            if (GlobalOptions.LifeModuleEnabled)
+            if (GlobalOptions.Instance.LifeModuleEnabled)
             {
                 lstBuildMethod.Add(new ListItem("LifeModule", LanguageManager.GetString("String_LifeModule", GlobalOptions.Language)));
             }
@@ -63,7 +66,7 @@ namespace Chummer
             cboBuildMethod.DataSource = lstBuildMethod;
             cboBuildMethod.SelectedValue = GlobalOptions.DefaultBuildMethod;
             cboBuildMethod.EndUpdate();
-            
+
             // Populate the Gameplay Options list.
             List<ListItem> lstGameplayOptions = new List<ListItem>();
             if (_xmlGameplayOptionsDataGameplayOptionsNode != null)
@@ -80,7 +83,19 @@ namespace Chummer
                             objXmlGameplayOption.TryGetInt32FieldQuickly("pointbuykarma", ref _intDefaultPointBuyKarma);
                             objXmlGameplayOption.TryGetInt32FieldQuickly("lifemoduleskarma", ref _intDefaultLifeModulesKarma);
                         }
-                        lstGameplayOptions.Add(new ListItem(strName, objXmlGameplayOption.SelectSingleNode("translate")?.Value ?? strName));
+
+                        if (objXmlGameplayOption.SelectSingleNode("priorityarrays") != null)
+                        {
+                            XPathNodeIterator iterator = objXmlGameplayOption.Select("priorityarrays/priorityarray");
+                            lstGameplayOptions.AddRange(from XPathNavigator node in iterator
+                                select new ListItem($"{strName}|{node.Value}",
+                                    $"{objXmlGameplayOption.SelectSingleNode("translate")?.Value ?? strName} ({node.Value})"));
+                        }
+                        else
+                        {
+                            lstGameplayOptions.Add(new ListItem(strName,
+                                objXmlGameplayOption.SelectSingleNode("translate")?.Value ?? strName));
+                        }
                     }
                 }
             }
@@ -113,7 +128,7 @@ namespace Chummer
             }
             else if (_xmlGameplayOptionsDataGameplayOptionsNode != null)
             {
-                XPathNavigator objXmlSelectedGameplayOption = _xmlGameplayOptionsDataGameplayOptionsNode.SelectSingleNode("gameplayoption[name = \"" + cboGamePlay.SelectedValue.ToString() + "\"]");
+                XPathNavigator objXmlSelectedGameplayOption = _xmlGameplayOptionsDataGameplayOptionsNode.SelectSingleNode("gameplayoption[name = \"" + (cboGamePlay.SelectedValue?.ToString() ?? string.Empty) + "\"]");
                 objXmlSelectedGameplayOption.TryGetInt32FieldQuickly("karma", ref _intQualityLimits);
                 objXmlSelectedGameplayOption.TryGetDecFieldQuickly("maxnuyen", ref _decNuyenBP);
                 nudMaxNuyen.Value = _decNuyenBP;
@@ -130,6 +145,11 @@ namespace Chummer
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
+            string strSelectedGameplayOption = cboGamePlay.SelectedValue?.ToString() ?? string.Empty;
+            if (string.IsNullOrEmpty(strSelectedGameplayOption))
+            {
+                return;
+            }
             switch (cboBuildMethod.SelectedValue.ToString())
             {
                 case "Karma":
@@ -148,7 +168,16 @@ namespace Chummer
             _objCharacter.NuyenMaximumBP = decimal.ToInt32(nudMaxNuyen.Value);
             _objCharacter.SumtoTen = decimal.ToInt32(nudSumtoTen.Value);
 
-            XPathNavigator xmlGameplayOption = _xmlGameplayOptionsDataGameplayOptionsNode.SelectSingleNode("gameplayoption[name = \"" + cboGamePlay.SelectedValue.ToString() + "\"]");
+            string strPriorityArray = string.Empty;
+            if (strSelectedGameplayOption.IndexOf('|') != -1)
+            {
+                strPriorityArray = strSelectedGameplayOption.Split('|')[1];
+                strSelectedGameplayOption = strSelectedGameplayOption.Split('|')[0];
+            }
+
+            XPathNavigator xmlGameplayOption =
+                _xmlGameplayOptionsDataGameplayOptionsNode.SelectSingleNode($"gameplayoption[name = \"{strSelectedGameplayOption}\"]");
+
             if (xmlGameplayOption != null)
             {
                 _objCharacter.BannedWareGrades.Clear();
@@ -164,8 +193,10 @@ namespace Chummer
                 if (xmlGameplayOption.TryGetDecFieldQuickly("maxnuyen", ref decTemp))
                     _objCharacter.MaxNuyen = decTemp;
             }
+
+            _objCharacter.PriorityArray = strPriorityArray;
             _objCharacter.BuildKarma = decimal.ToInt32(nudKarma.Value);
-            _objCharacter.GameplayOption = cboGamePlay.SelectedValue.ToString();
+            _objCharacter.GameplayOption = strSelectedGameplayOption;
             _objCharacter.GameplayOptionQualityLimit = _intQualityLimits;
             _objCharacter.IgnoreRules = chkIgnoreRules.Checked;
             _objCharacter.MaximumAvailability = decimal.ToInt32(nudMaxAvail.Value);
@@ -182,7 +213,7 @@ namespace Chummer
         {
             nudSumtoTen.Visible = false;
             lblSumToX.Visible = false;
-            XPathNavigator xmlSelectedGameplayOption = _xmlGameplayOptionsDataGameplayOptionsNode.SelectSingleNode("gameplayoption[name = \"" + cboGamePlay.SelectedValue?.ToString() + "\"]");
+            XPathNavigator xmlSelectedGameplayOption = _xmlGameplayOptionsDataGameplayOptionsNode.SelectSingleNode("gameplayoption[name = \"" + (cboGamePlay.SelectedValue?.ToString() ?? string.Empty) + "\"]");
             string strSelectedBuildMethod = cboBuildMethod.SelectedValue?.ToString();
             switch (strSelectedBuildMethod)
             {
@@ -194,7 +225,7 @@ namespace Chummer
                     nudKarma.Enabled = true;
                     nudMaxNuyen.Value = 225 + _decNuyenBP;
                     nudMaxNuyen.Enabled = true;
-                    lblDescription.Text = string.Format(LanguageManager.GetString("String_SelectBP_KarmaSummary", GlobalOptions.Language), nudKarma.Value.ToString(GlobalOptions.InvariantCultureInfo));
+                    lblDescription.Text = string.Format(LanguageManager.GetString("String_SelectBP_KarmaSummary", GlobalOptions.Language), nudKarma.Value.ToString(GlobalOptions.Instance.InvariantCultureInfo));
                     break;
                 }
                 case "LifeModule":
@@ -205,7 +236,7 @@ namespace Chummer
                     nudKarma.Enabled = true;
                     nudMaxNuyen.Value = 225 + _decNuyenBP;
                     nudMaxNuyen.Enabled = true;
-                    lblDescription.Text = string.Format(LanguageManager.GetString("String_SelectBP_LifeModuleSummary", GlobalOptions.Language), nudKarma.Value.ToString(GlobalOptions.InvariantCultureInfo));
+                    lblDescription.Text = string.Format(LanguageManager.GetString("String_SelectBP_LifeModuleSummary", GlobalOptions.Language), nudKarma.Value.ToString(GlobalOptions.Instance.InvariantCultureInfo));
                     break;
                 }
                 case "SumtoTen":
@@ -237,7 +268,7 @@ namespace Chummer
         private void cboGamePlay_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Load the Priority information.
-            XPathNavigator objXmlGameplayOption = _xmlGameplayOptionsDataGameplayOptionsNode.SelectSingleNode("gameplayoption[name = \"" + cboGamePlay.SelectedValue?.ToString() + "\"]");
+            XPathNavigator objXmlGameplayOption = _xmlGameplayOptionsDataGameplayOptionsNode.SelectSingleNode("gameplayoption[name = \"" + (cboGamePlay.SelectedValue?.ToString() ?? string.Empty) + "\"]");
             if (objXmlGameplayOption != null)
             {
                 int intTemp = _intDefaultMaxAvail;

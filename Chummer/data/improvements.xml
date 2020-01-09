@@ -19,7 +19,7 @@
     https://github.com/chummer5a/chummer5a
 -->
 <chummer>
-  <version>0</version>
+
   <improvements>
     <improvement>
       <name>Action Dice-Pool Modifier</name>
@@ -443,6 +443,16 @@
       <page>Adjusts the Essence cost of Bioware by the percent value entered. All Bioware Essence costs will now be X% of their original value. Numbers lower than 100 reduce the Essence cost. Numbers higher than 100 increase the Essence cost.</page>
     </improvement>
     <improvement>
+      <name>Genetech Essence Cost</name>
+      <id>genetechessmultiplier</id>
+      <internal>genetechessmultiplier</internal>
+      <fields>
+        <field>val</field>
+      </fields>
+      <xml><![CDATA[{val}]]></xml>
+      <page>Adjusts the Essence cost of Genetech by the percent value entered. All Genetech Essence costs will now be X% of their original value. Numbers lower than 100 reduce the Essence cost. Numbers higher than 100 increase the Essence cost.</page>
+    </improvement>
+    <improvement>
       <name>Cyberware Essence Cost</name>
       <id>cyberwareessmultiplier</id>
       <internal>cyberwareessmultiplier</internal>
@@ -586,7 +596,7 @@
     </improvement>
     <improvement>
       <name>Specific Spell Dicepool</name>
-      <id>spellcategory</id>
+      <id>spelldicepool</id>
       <internal>spelldicepool</internal>
       <fields>
         <field>SelectSpell</field>
@@ -699,6 +709,9 @@
       <name>Street Cred Multiplier</name>
       <id>streetcredmultiplier</id>
       <internal>streetcredmultiplier</internal>
+      <fields>
+        <field>val</field>
+      </fields>
       <xml><![CDATA[{val}]]></xml>
       <page>Increases or reduces the multiplier used to calculate Street Cred.</page>
     </improvement>
@@ -706,6 +719,9 @@
       <name>Bonus Street Cred</name>
       <id>streetcred</id>
       <internal>streetcred</internal>
+      <fields>
+        <field>val</field>
+      </fields>
       <xml><![CDATA[{val}]]></xml>
       <page>Increases the character's Street Cred by the listed value.</page>
     </improvement>
@@ -713,8 +729,18 @@
       <name>Dodge</name>
       <id>dodge</id>
       <internal>dodge</internal>
+      <fields>
+        <field>val</field>
+      </fields>
       <xml><![CDATA[{val}]]></xml>
       <page>Increases the character's Dodge pool by the listed value.</page>
+    </improvement>
+    <improvement>
+      <name>Enable Cyberzombie Conversion</name>
+      <id>enablecyberzombie</id>
+      <internal>enablecyberzombie</internal>
+      <xml />
+      <page>Allows the character to be converted into a Cyberzombie.</page>
     </improvement>
   </improvements>
 </chummer>

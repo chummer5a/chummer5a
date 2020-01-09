@@ -23,36 +23,30 @@ namespace Chummer
 {
     public struct AvailabilityValue : IComparable
     {
-        private readonly bool _blnAddToParent;
-        private int _intValue;
-        private readonly char _chrSuffix;
+        public bool AddToParent { get; }
+        public bool IncludedInParent { get; }
+        public int Value { get; set; }
 
-        public bool AddToParent => _blnAddToParent;
-        public int Value
+        public char Suffix { get; }
+
+        public AvailabilityValue(int intValue, char chrSuffix, bool blnAddToParent, bool blnIncludedInParent = false)
         {
-            get => _intValue;
-            set => _intValue = value;
-        }
-
-        public char Suffix => _chrSuffix;
-
-        public AvailabilityValue(int intValue, char chrSuffix, bool blnAddToParent)
-        {
-            _intValue = intValue;
-            _blnAddToParent = blnAddToParent;
+            Value = intValue;
+            AddToParent = blnAddToParent;
+            IncludedInParent = blnIncludedInParent;
             switch (chrSuffix)
             {
                 case 'F':
                 case 'R':
-                    _chrSuffix = chrSuffix;
+                    Suffix = chrSuffix;
                     break;
                 default:
-                    _chrSuffix = 'Z';
+                    Suffix = 'Z';
                     break;
             }
         }
 
-        public AvailabilityValue(int intRating, string strInput)
+        public AvailabilityValue(int intRating, string strInput, int intBonus = 0, bool blnIncludedInParent = false)
         {
             string strAvailExpr = strInput;
             if (strAvailExpr.StartsWith("FixedValues("))
@@ -61,24 +55,28 @@ namespace Chummer
                 strAvailExpr = strValues[(int)Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
             }
 
-            _chrSuffix = strAvailExpr[strAvailExpr.Length - 1];
-            _blnAddToParent = strAvailExpr.StartsWith('+') || strAvailExpr.StartsWith('-');
-            if (_chrSuffix == 'F' || _chrSuffix == 'R') strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
-            object objProcess = CommonFunctions.EvaluateInvariantXPath(strAvailExpr.Replace("Rating", intRating.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
-            _intValue = blnIsSuccess ? Convert.ToInt32(objProcess) : 0;
+            Suffix = strAvailExpr[strAvailExpr.Length - 1];
+            AddToParent = strAvailExpr.StartsWith('+') || strAvailExpr.StartsWith('-');
+            IncludedInParent = blnIncludedInParent;
+            if (Suffix == 'F' || Suffix == 'R') strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
+            object objProcess = CommonFunctions.EvaluateInvariantXPath(strAvailExpr.Replace("Rating", intRating.ToString(GlobalOptions.Instance.InvariantCultureInfo)), out bool blnIsSuccess);
+            Value = blnIsSuccess ? Convert.ToInt32(objProcess) : 0;
+            Value += intBonus;
+            if (Value < 0)
+                Value = 0;
         }
 
         public override string ToString()
         {
-            return ToString(GlobalOptions.CultureInfo, GlobalOptions.Language);
+            return ToString(GlobalOptions.Instance.CultureInfo, GlobalOptions.Language);
         }
 
         public string ToString(CultureInfo objCulture, string strLanguage)
         {
-            string strBaseAvail = _intValue.ToString(objCulture);
-            if (_blnAddToParent && _intValue >= 0)
+            string strBaseAvail = Value.ToString(objCulture);
+            if (AddToParent && Value >= 0)
                 strBaseAvail = '+' + strBaseAvail;
-            switch (_chrSuffix)
+            switch (Suffix)
             {
                 case 'F':
                     return strBaseAvail + LanguageManager.GetString("String_AvailForbidden", strLanguage);
@@ -95,13 +93,13 @@ namespace Chummer
 
         public int CompareTo(AvailabilityValue objOther)
         {
-            int intCompareResult = _intValue.CompareTo(objOther.Value);
+            int intCompareResult = Value.CompareTo(objOther.Value);
             if (intCompareResult == 0)
             {
-                intCompareResult = _chrSuffix.CompareTo(objOther.Suffix);
+                intCompareResult = Suffix.CompareTo(objOther.Suffix);
                 if (intCompareResult == 0)
                 {
-                    intCompareResult = _blnAddToParent.CompareTo(objOther.AddToParent);
+                    intCompareResult = AddToParent.CompareTo(objOther.AddToParent);
                 }
             }
             return intCompareResult;

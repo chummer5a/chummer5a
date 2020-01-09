@@ -182,7 +182,7 @@ namespace Chummer
                             string strNameUpper = objXmlAttribute.Name.ToUpper();
                             TreeNode objChild = new TreeNode
                             {
-                                Text = LanguageManager.GetString("String_Attribute" + strNameUpper + "Short", GlobalOptions.Language) + strSpaceCharacter + (Convert.ToInt32(objXmlAttribute.Value) - (6 - _objCharacter.GetAttribute(strNameUpper).MetatypeMaximum)).ToString(GlobalOptions.CultureInfo)
+                                Text = LanguageManager.GetString("String_Attribute" + strNameUpper + "Short", GlobalOptions.Language) + strSpaceCharacter + (Convert.ToInt32(objXmlAttribute.Value) - (6 - _objCharacter.GetAttribute(strNameUpper).MetatypeMaximum)).ToString(GlobalOptions.Instance.CultureInfo)
                             };
 
                             objParent.Nodes.Add(objChild);
@@ -321,7 +321,7 @@ namespace Chummer
 
                             TreeNode objMartialArt = new TreeNode
                             {
-                                Text = strSelect + strSpaceCharacter + LanguageManager.GetString("String_Rating", GlobalOptions.Language) + strSpaceCharacter + intRating.ToString(GlobalOptions.CultureInfo)
+                                Text = strSelect + strSpaceCharacter + LanguageManager.GetString("String_Rating", GlobalOptions.Language) + strSpaceCharacter + intRating.ToString(GlobalOptions.Instance.CultureInfo)
                             };
                             objParent.Nodes.Add(objMartialArt);
                             objParent.Expand();
@@ -531,7 +531,7 @@ namespace Chummer
                             {
                                 Text = (objXmlLifestyle.SelectSingleNode("translate") ?? objXmlLifestyle.SelectSingleNode("baselifestyle")).Value
                                        + strSpaceCharacter + objXmlLifestyle.SelectSingleNode("months").Value
-                                       + strSpaceCharacter + strIncrementString + string.Format(LanguageManager.GetString("Label_LifestylePermanent", GlobalOptions.Language), intPermanentAmount.ToString(GlobalOptions.CultureInfo))
+                                       + strSpaceCharacter + strIncrementString + string.Format(LanguageManager.GetString("Label_LifestylePermanent", GlobalOptions.Language), intPermanentAmount.ToString(GlobalOptions.Instance.CultureInfo))
                             };
 
                             // Check for Qualities.

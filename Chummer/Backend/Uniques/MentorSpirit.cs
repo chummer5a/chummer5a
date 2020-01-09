@@ -47,11 +47,20 @@ namespace Chummer
         private bool _blnMentorMask;
 
         #region Constructor
-        public MentorSpirit(Character objCharacter)
+        public MentorSpirit(Character objCharacter, XmlNode xmlNodeMentor = null)
         {
             // Create the GUID for the new Mentor Spirit.
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
+            XmlNode namenode = xmlNodeMentor?.SelectSingleNode("name");
+            if(namenode != null)
+                Name = namenode.InnerText;
+            XmlNode typenode = xmlNodeMentor?.SelectSingleNode("mentortype");
+            if (typenode != null)
+            {
+                if(Enum.TryParse(typenode.InnerText, true, out Improvement.ImprovementType outEnum))
+                    _eMentorType = outEnum;
+            }
         }
 
         /// <summary>
@@ -164,7 +173,7 @@ namespace Chummer
 
         private SourceString _objCachedSourceDetail;
         public SourceString SourceDetail => _objCachedSourceDetail ?? (_objCachedSourceDetail =
-                                                new SourceString(Source, Page(GlobalOptions.Language), GlobalOptions.Language));
+                                                new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language));
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -260,7 +269,7 @@ namespace Chummer
             objWriter.WriteElementString("disadvantage", Disadvantage);
             objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(Extra, strLanguageToPrint));
             objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
-            objWriter.WriteElementString("page", Page(strLanguageToPrint));
+            objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteElementString("mentormask", MentorMask.ToString());
             if (_objCharacter.Options.PrintNotes)
                 objWriter.WriteElementString("notes", _strNotes);
@@ -286,7 +295,15 @@ namespace Chummer
         /// </summary>
         public string Name
         {
-            get => _strName;
+            get
+            {
+                if (String.IsNullOrEmpty(_strName))
+                {
+                    if (_objCharacter.MentorSpirits.Count > 0 && _objCharacter.MentorSpirits[0] == this)
+                        _strName = _objCharacter.MentorSpirits[0].Name;
+                }
+                return _strName;
+            }
             set
             {
                 if (_strName != value)
@@ -396,14 +413,26 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Page Number.
+        /// Sourcebook Page Number.
         /// </summary>
-        public string Page(string strLanguage)
+        public string Page
+        {
+            get => _strPage;
+            set => _strPage = value;
+        }
+
+        /// <summary>
+        /// Sourcebook Page Number using a given language file.
+        /// Returns Page if not found or the string is empty.
+        /// </summary>
+        /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <returns></returns>
+        public string DisplayPage(string strLanguage)
         {
             if (strLanguage == GlobalOptions.DefaultLanguage)
-                return _strPage;
-
-            return GetNode(strLanguage)?["altpage"]?.InnerText ?? _strPage;
+                return Page;
+            string s = GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
+            return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 
         /// <summary>
@@ -421,10 +450,12 @@ namespace Chummer
 
         public XmlNode GetNode(string strLanguage)
         {
-            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
+            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.Instance.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load(_eMentorType == Improvement.ImprovementType.MentorSpirit ? "mentors.xml" : "paragons.xml", strLanguage)
-                    .SelectSingleNode(SourceID == Guid.Empty
+                var xdoc = XmlManager.Load(
+                    _eMentorType == Improvement.ImprovementType.MentorSpirit ? "mentors.xml" : "paragons.xml",
+                    strLanguage);
+                _objCachedMyXmlNode = xdoc.SelectSingleNode(SourceID == Guid.Empty
                         ? $"/chummer/mentors/mentor[name = \"{Name}\"]"
                         : $"/chummer/mentors/mentor[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
                 _strCachedXmlNodeLanguage = strLanguage;

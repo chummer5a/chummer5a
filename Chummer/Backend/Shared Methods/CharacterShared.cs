@@ -34,7 +34,10 @@ using System.Text;
 using System.ComponentModel;
 using Chummer.UI.Attributes;
 using System.Collections.ObjectModel;
+using Microsoft.ApplicationInsights;
 using Chummer.Classes;
+using Microsoft.ApplicationInsights.DataContracts;
+using NLog;
 
 namespace Chummer
 {
@@ -44,6 +47,8 @@ namespace Chummer
     [DesignerCategory("")]
     public class CharacterShared : Form
     {
+        private static Logger Log = LogManager.GetCurrentClassLogger();
+        private static readonly TelemetryClient TelemetryClient = new TelemetryClient();
         private readonly Character _objCharacter;
         private readonly CharacterOptions _objOptions;
         private bool _blnIsDirty;
@@ -55,6 +60,24 @@ namespace Chummer
         {
             _objCharacter = objCharacter;
             _objOptions = _objCharacter.Options;
+            string name = "Show_Form_" + this.GetType();
+            PageViewTelemetry pvt = new PageViewTelemetry(name);
+            pvt.Id = Guid.NewGuid().ToString();
+            pvt.Name = name;
+            pvt.Context.Operation.Name = "Operation CharacterShared.Constructor()";
+            pvt.Properties.Add("Name", objCharacter?.Name);
+            pvt.Properties.Add("Path", objCharacter?.FileName);
+            pvt.Timestamp = DateTimeOffset.UtcNow;
+            this.Shown += delegate(object sender, EventArgs args)
+            {
+                pvt.Duration = DateTimeOffset.UtcNow-pvt.Timestamp;
+                if (objCharacter != null)
+                {
+                    if (Uri.TryCreate(objCharacter.FileName, UriKind.Absolute, out Uri Uriresult))
+                        pvt.Url = Uriresult;
+                }
+                TelemetryClient.TrackPageView(pvt);
+            };
         }
 
         [Obsolete("This constructor is for use by form designers only.", true)]
@@ -118,7 +141,17 @@ namespace Chummer
         {
             Cursor objOldCursor = Cursor;
             Cursor = Cursors.WaitCursor;
-            string strAutosavePath = Path.Combine(Utils.GetStartupPath, "saves", "autosave");
+            string strAutosavePath = string.Empty;
+            try
+            {
+                strAutosavePath = Path.Combine(Utils.GetStartupPath, "saves", "autosave");
+            }
+            catch (System.ArgumentException e)
+            {
+                Log.Error(e, "Path: " + Utils.GetStartupPath);
+                return;
+            }
+
             if (!Directory.Exists(strAutosavePath))
             {
                 try
@@ -128,7 +161,7 @@ namespace Chummer
                 catch (UnauthorizedAccessException)
                 {
                     Cursor = Cursors.Default;
-                    MessageBox.Show(LanguageManager.GetString("Message_Insufficient_Permissions_Warning", GlobalOptions.Language));
+                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Insufficient_Permissions_Warning", GlobalOptions.Language));
                     AutosaveStopWatch.Restart();
                     return;
                 }
@@ -139,6 +172,11 @@ namespace Chummer
 
             if (string.IsNullOrEmpty(strShowFileName))
                 strShowFileName = _objCharacter.CharacterName;
+            var replaceChars = System.IO.Path.GetInvalidFileNameChars();
+            foreach (var invalidChar in replaceChars)
+            {
+                strShowFileName = strShowFileName.Replace(invalidChar, '_');
+            }
             string strFilePath = Path.Combine(strAutosavePath, strShowFileName);
             _objCharacter.Save(strFilePath, false, false);
             Cursor = objOldCursor;
@@ -161,7 +199,7 @@ namespace Chummer
                 //If the LimitModifier couldn't be found (Ie it comes from an Improvement or the user hasn't properly selected a treenode, fail out early.
                 if (objLimitModifier == null)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Warning_NoLimitFound", GlobalOptions.Language));
+                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Warning_NoLimitFound", GlobalOptions.Language));
                     return;
                 }
                 using (frmSelectLimitModifier frmPickLimitModifier = new frmSelectLimitModifier(objLimitModifier, "Physical", "Mental", "Social"))
@@ -190,6 +228,7 @@ namespace Chummer
         /// 
         /// </summary>
         /// <param name="objNotes"></param>
+        /// <param name="treNode"></param>
         protected void WriteNotes(IHasNotes objNotes, TreeNode treNode)
         {
             string strOldValue = objNotes.Notes;
@@ -1809,7 +1848,7 @@ namespace Chummer
             {
                 foreach (TreeNode objQualityNode in objQualityTypeNode.Nodes)
                 {
-                    objQualityNode.Text = ((Quality)objQualityNode.Tag).DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                    objQualityNode.Text = ((Quality)objQualityNode.Tag).DisplayName(GlobalOptions.Instance.CultureInfo, GlobalOptions.Language);
                 }
             }
             treQualities.SortCustomAlphabetically(objSelectedNode?.Tag);
@@ -3592,7 +3631,8 @@ namespace Chummer
                                 TreeNode objNode = objGear.CreateTreeNode(cmsFocus);
                                 if (objNode == null)
                                     continue;
-                                objNode.Text = objNode.Text.Replace(LanguageManager.GetString("String_Rating", GlobalOptions.Language), LanguageManager.GetString("String_Force", GlobalOptions.Language));
+                                objNode.Text = objNode.Text.CheapReplace(LanguageManager.GetString("String_Rating", GlobalOptions.Language),
+                                            () => LanguageManager.GetString(objGear.RatingLabel, GlobalOptions.Language));
                                 for (int i = _objCharacter.Foci.Count - 1; i >= 0; --i)
                                 {
                                     if (i < _objCharacter.Foci.Count)
@@ -3672,7 +3712,8 @@ namespace Chummer
                                             TreeNode objNode = objGear.CreateTreeNode(cmsFocus);
                                             if (objNode == null)
                                                 continue;
-                                            objNode.Text = objNode.Text.Replace(LanguageManager.GetString("String_Rating", GlobalOptions.Language), LanguageManager.GetString("String_Force", GlobalOptions.Language));
+                                            objNode.Text = objNode.Text.CheapReplace(LanguageManager.GetString("String_Rating", GlobalOptions.Language),
+                                                () => LanguageManager.GetString("String_Force", GlobalOptions.Language));
                                             for (int i = _objCharacter.Foci.Count - 1; i >= 0; --i)
                                             {
                                                 if (i < _objCharacter.Foci.Count)
@@ -3690,7 +3731,7 @@ namespace Chummer
                                                             objNode.Checked = false;
                                                             if (!blnWarned)
                                                             {
-                                                                MessageBox.Show(LanguageManager.GetString("Message_FocusMaximumForce", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_FocusMaximum", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                                                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_FocusMaximumForce", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_FocusMaximum", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                                                                 blnWarned = true;
                                                                 break;
                                                             }
@@ -3838,7 +3879,8 @@ namespace Chummer
                                             TreeNode objNode = objGear.CreateTreeNode(cmsFocus);
                                             if (objNode == null)
                                                 continue;
-                                            objNode.Text = objNode.Text.Replace(LanguageManager.GetString("String_Rating", GlobalOptions.Language), LanguageManager.GetString("String_Force", GlobalOptions.Language));
+                                            objNode.Text = objNode.Text.CheapReplace(LanguageManager.GetString("String_Rating", GlobalOptions.Language),
+                                                () => LanguageManager.GetString("String_Force", GlobalOptions.Language));
                                             for (int i = _objCharacter.Foci.Count - 1; i >= 0; --i)
                                             {
                                                 if (i < _objCharacter.Foci.Count)
@@ -3856,7 +3898,7 @@ namespace Chummer
                                                             objNode.Checked = false;
                                                             if (!blnWarned)
                                                             {
-                                                                MessageBox.Show(LanguageManager.GetString("Message_FocusMaximumForce", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_FocusMaximum", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                                                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_FocusMaximumForce", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_FocusMaximum", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                                                                 blnWarned = true;
                                                                 break;
                                                             }
@@ -4186,7 +4228,7 @@ namespace Chummer
 
                 foreach (Improvement objImprovement in CharacterObject.Improvements)
                 {
-                    if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom)
+                    if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom || objImprovement.ImproveSource == Improvement.ImprovementSource.Drug)
                     {
                         AddToTree(objImprovement, false);
                     }
@@ -4212,7 +4254,8 @@ namespace Chummer
                         {
                             foreach (Improvement objImprovement in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom)
+                                if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom ||
+                                    objImprovement.ImproveSource == Improvement.ImprovementSource.Drug)
                                 {
                                     AddToTree(objImprovement);
                                     AddToLimitTree(objImprovement);
@@ -4224,7 +4267,8 @@ namespace Chummer
                         {
                             foreach (Improvement objImprovement in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom)
+                                if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom ||
+                                    objImprovement.ImproveSource == Improvement.ImprovementSource.Drug)
                                 {
                                     TreeNode objNode = treImprovements.FindNodeByTag(objImprovement);
                                     if (objNode != null)
@@ -4256,7 +4300,8 @@ namespace Chummer
                             List<TreeNode> lstOldParents = new List<TreeNode>();
                             foreach (Improvement objImprovement in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom)
+                                if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom ||
+                                    objImprovement.ImproveSource == Improvement.ImprovementSource.Drug)
                                 {
                                     TreeNode objNode = treImprovements.FindNodeByTag(objImprovement);
                                     if (objNode != null)
@@ -4274,7 +4319,8 @@ namespace Chummer
                             }
                             foreach (Improvement objImprovement in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom)
+                                if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom ||
+                                    objImprovement.ImproveSource == Improvement.ImprovementSource.Drug)
                                 {
                                     AddToTree(objImprovement);
                                     AddToLimitTree(objImprovement);
@@ -4972,10 +5018,9 @@ namespace Chummer
         /// <param name="intNewIndex">The new index in the parent array</param>
         public void MoveTreeNode(TreeNode objNode, int intNewIndex)
         {
-            if (objNode == null || !(objNode.Tag is ICanSort))
+            if (objNode == null || !(objNode.Tag is ICanSort objSortable))
                 return;
 
-            ICanSort objSortable = objNode.Tag as ICanSort;
             TreeView treOwningTree = objNode.TreeView;
             TreeNode objParent = objNode.Parent;
             TreeNodeCollection lstNodes = objParent?.Nodes ?? treOwningTree.Nodes;
@@ -5005,53 +5050,13 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Adds the selected Object and child items to the clipboard as appropriate. 
+        /// Adds the selected Object and child items to the clipboard as appropriate.
         /// </summary>
         /// <param name="selectedObject"></param>
         public void CopyObject(object selectedObject)
         {
             switch (selectedObject)
             {
-                case Lifestyle objCopyLifestyle:
-                    {
-                        MemoryStream objStream = new MemoryStream();
-                        XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
-                        {
-                            Formatting = Formatting.Indented,
-                            Indentation = 1,
-                            IndentChar = '\t'
-                        };
-
-                        objWriter.WriteStartDocument();
-
-                        // </characters>
-                        objWriter.WriteStartElement("character");
-
-                        objCopyLifestyle.Save(objWriter);
-
-                        // </characters>
-                        objWriter.WriteEndElement();
-
-                        // Finish the document and flush the Writer and Stream.
-                        objWriter.WriteEndDocument();
-                        objWriter.Flush();
-
-                        // Read the stream.
-                        StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
-                        objStream.Position = 0;
-                        XmlDocument objCharacterXML = new XmlDocument();
-
-                        // Put the stream into an XmlDocument.
-                        string strXML = objReader.ReadToEnd();
-                        objCharacterXML.LoadXml(strXML);
-
-                        objWriter.Close();
-
-                        ClipboardManager.Clipboard = objCharacterXML;
-                        ClipboardManager.ClipboardContentType = ClipboardContentType.Lifestyle;
-                        //Clipboard.SetText(objCharacterXML.OuterXml);
-                        break;
-                    }
                 case Armor objCopyArmor:
                     {
                         MemoryStream objStream = new MemoryStream();
@@ -5102,6 +5107,123 @@ namespace Chummer
                         objWriter.Close();
 
                         ClipboardManager.Clipboard = objCharacterXML;
+                        break;
+                    }
+                case ArmorMod objCopyArmorMod:
+                    {
+                        MemoryStream objStream = new MemoryStream();
+                        XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
+                        {
+                            Formatting = Formatting.Indented,
+                            Indentation = 1,
+                            IndentChar = '\t'
+                        };
+
+                        objWriter.WriteStartDocument();
+
+                        // </characters>
+                        objWriter.WriteStartElement("character");
+
+                        objCopyArmorMod.Save(objWriter);
+                        ClipboardManager.ClipboardContentType = ClipboardContentType.Armor;
+
+                        if (!objCopyArmorMod.WeaponID.IsEmptyGuid())
+                        {
+                            // <weapons>
+                            objWriter.WriteStartElement("weapons");
+                            // Copy any Weapon that comes with the Gear.
+                            foreach (Weapon objCopyWeapon in CharacterObject.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objCopyArmorMod.InternalId))
+                            {
+                                objCopyWeapon.Save(objWriter);
+                            }
+
+                            objWriter.WriteEndElement();
+                        }
+
+                        // </characters>
+                        objWriter.WriteEndElement();
+
+                        // Finish the document and flush the Writer and Stream.
+                        objWriter.WriteEndDocument();
+                        objWriter.Flush();
+
+                        // Read the stream.
+                        StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
+                        objStream.Position = 0;
+                        XmlDocument objCharacterXML = new XmlDocument();
+
+                        // Put the stream into an XmlDocument.
+                        string strXML = objReader.ReadToEnd();
+                        objCharacterXML.LoadXml(strXML);
+
+                        objWriter.Close();
+
+                        ClipboardManager.Clipboard = objCharacterXML;
+                        break;
+                    }
+                case Cyberware objCopyCyberware:
+                    {
+                        MemoryStream objStream = new MemoryStream();
+                        XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
+                        {
+                            Formatting = Formatting.Indented,
+                            Indentation = 1,
+                            IndentChar = '\t'
+                        };
+
+                        objWriter.WriteStartDocument();
+
+                        // </characters>
+                        objWriter.WriteStartElement("character");
+
+                        objCopyCyberware.Save(objWriter);
+                        ClipboardManager.ClipboardContentType = ClipboardContentType.Cyberware;
+
+                        if (!objCopyCyberware.WeaponID.IsEmptyGuid())
+                        {
+                            // <weapons>
+                            objWriter.WriteStartElement("weapons");
+                            // Copy any Weapon that comes with the Gear.
+                            foreach (Weapon objCopyWeapon in CharacterObject.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objCopyCyberware.InternalId))
+                            {
+                                objCopyWeapon.Save(objWriter);
+                            }
+
+                            objWriter.WriteEndElement();
+                        }
+                        if (!objCopyCyberware.VehicleID.IsEmptyGuid())
+                        {
+                            // <vehicles>
+                            objWriter.WriteStartElement("vehicles");
+                            // Copy any Vehicle that comes with the Gear.
+                            foreach (Vehicle objCopyVehicle in CharacterObject.Vehicles.Where(x => x.ParentID == objCopyCyberware.InternalId))
+                            {
+                                objCopyVehicle.Save(objWriter);
+                            }
+
+                            objWriter.WriteEndElement();
+                        }
+
+                        // </characters>
+                        objWriter.WriteEndElement();
+
+                        // Finish the document and flush the Writer and Stream.
+                        objWriter.WriteEndDocument();
+                        objWriter.Flush();
+
+                        // Read the stream.
+                        StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
+                        objStream.Position = 0;
+                        XmlDocument objCharacterXML = new XmlDocument();
+
+                        // Put the stream into an XmlDocument.
+                        string strXML = objReader.ReadToEnd();
+                        objCharacterXML.LoadXml(strXML);
+
+                        objWriter.Close();
+
+                        ClipboardManager.Clipboard = objCharacterXML;
+                        //Clipboard.SetText(objCharacterXML.OuterXml);
                         break;
                     }
                 case Gear objCopyGear:
@@ -5156,111 +5278,86 @@ namespace Chummer
                         ClipboardManager.Clipboard = objCharacterXML;
                         break;
                     }
+                case Lifestyle objCopyLifestyle:
+                    {
+                    MemoryStream objStream = new MemoryStream();
+                    XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
+                    {
+                        Formatting = Formatting.Indented,
+                        Indentation = 1,
+                        IndentChar = '\t'
+                    };
+
+                    objWriter.WriteStartDocument();
+
+                    // </characters>
+                    objWriter.WriteStartElement("character");
+
+                    objCopyLifestyle.Save(objWriter);
+
+                    // </characters>
+                    objWriter.WriteEndElement();
+
+                    // Finish the document and flush the Writer and Stream.
+                    objWriter.WriteEndDocument();
+                    objWriter.Flush();
+
+                    // Read the stream.
+                    StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
+                    objStream.Position = 0;
+                    XmlDocument objCharacterXML = new XmlDocument();
+
+                    // Put the stream into an XmlDocument.
+                    string strXML = objReader.ReadToEnd();
+                    objCharacterXML.LoadXml(strXML);
+
+                    objWriter.Close();
+
+                    ClipboardManager.Clipboard = objCharacterXML;
+                    ClipboardManager.ClipboardContentType = ClipboardContentType.Lifestyle;
+                    //Clipboard.SetText(objCharacterXML.OuterXml);
+                    break;
+                    }
                 case Vehicle objCopyVehicle:
                     {
-                        MemoryStream objStream = new MemoryStream();
-                        XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
-                        {
-                            Formatting = Formatting.Indented,
-                            Indentation = 1,
-                            IndentChar = '\t'
-                        };
-
-                        objWriter.WriteStartDocument();
-
-                        // </characters>
-                        objWriter.WriteStartElement("character");
-
-                        objCopyVehicle.Save(objWriter);
-
-                        // </characters>
-                        objWriter.WriteEndElement();
-
-                        // Finish the document and flush the Writer and Stream.
-                        objWriter.WriteEndDocument();
-                        objWriter.Flush();
-
-                        // Read the stream.
-                        StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
-                        objStream.Position = 0;
-                        XmlDocument objCharacterXML = new XmlDocument();
-
-                        // Put the stream into an XmlDocument.
-                        string strXML = objReader.ReadToEnd();
-                        objCharacterXML.LoadXml(strXML);
-
-                        objWriter.Close();
-
-                        ClipboardManager.Clipboard = objCharacterXML;
-                        ClipboardManager.ClipboardContentType = ClipboardContentType.Vehicle;
-                        //Clipboard.SetText(objCharacterXML.OuterXml);
-                        break;
-                    }
-                case Cyberware objCopyCyberware:
+                    MemoryStream objStream = new MemoryStream();
+                    XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
                     {
-                        MemoryStream objStream = new MemoryStream();
-                        XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
-                        {
-                            Formatting = Formatting.Indented,
-                            Indentation = 1,
-                            IndentChar = '\t'
-                        };
+                        Formatting = Formatting.Indented,
+                        Indentation = 1,
+                        IndentChar = '\t'
+                    };
 
-                        objWriter.WriteStartDocument();
+                    objWriter.WriteStartDocument();
 
-                        // </characters>
-                        objWriter.WriteStartElement("character");
+                    // </characters>
+                    objWriter.WriteStartElement("character");
 
-                        objCopyCyberware.Save(objWriter);
-                        ClipboardManager.ClipboardContentType = ClipboardContentType.Cyberware;
+                    objCopyVehicle.Save(objWriter);
 
-                        if (!objCopyCyberware.WeaponID.IsEmptyGuid())
-                        {
-                            // <weapons>
-                            objWriter.WriteStartElement("weapons");
-                            // Copy any Weapon that comes with the Gear.
-                            foreach (Weapon objCopyWeapon in CharacterObject.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objCopyCyberware.InternalId))
-                            {
-                                objCopyWeapon.Save(objWriter);
-                            }
+                    // </characters>
+                    objWriter.WriteEndElement();
 
-                            objWriter.WriteEndElement();
-                        }
-                        if (!objCopyCyberware.VehicleID.IsEmptyGuid())
-                        {
-                            // <weapons>
-                            objWriter.WriteStartElement("vehicles");
-                            // Copy any Weapon that comes with the Gear.
-                            foreach (Vehicle objCopyVehicle in CharacterObject.Vehicles.Where(x => x.ParentID == objCopyCyberware.InternalId))
-                            {
-                                objCopyVehicle.Save(objWriter);
-                            }
+                    // Finish the document and flush the Writer and Stream.
+                    objWriter.WriteEndDocument();
+                    objWriter.Flush();
 
-                            objWriter.WriteEndElement();
-                        }
+                    // Read the stream.
+                    StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
+                    objStream.Position = 0;
+                    XmlDocument objCharacterXML = new XmlDocument();
 
-                        // </characters>
-                        objWriter.WriteEndElement();
+                    // Put the stream into an XmlDocument.
+                    string strXML = objReader.ReadToEnd();
+                    objCharacterXML.LoadXml(strXML);
 
-                        // Finish the document and flush the Writer and Stream.
-                        objWriter.WriteEndDocument();
-                        objWriter.Flush();
+                    objWriter.Close();
 
-                        // Read the stream.
-                        StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
-                        objStream.Position = 0;
-                        XmlDocument objCharacterXML = new XmlDocument();
-
-                        // Put the stream into an XmlDocument.
-                        string strXML = objReader.ReadToEnd();
-                        objCharacterXML.LoadXml(strXML);
-
-                        objWriter.Close();
-
-                        ClipboardManager.Clipboard = objCharacterXML;
-                        //Clipboard.SetText(objCharacterXML.OuterXml);
-                        break;
-                    }
+                    ClipboardManager.Clipboard = objCharacterXML;
+                    ClipboardManager.ClipboardContentType = ClipboardContentType.Vehicle;
+                    //Clipboard.SetText(objCharacterXML.OuterXml);
+                    break;
+                }
                 case Weapon objCopyWeapon:
                     {
                         // Do not let the user copy Gear or Cyberware Weapons.
@@ -5303,6 +5400,49 @@ namespace Chummer
                         ClipboardManager.Clipboard = objCharacterXML;
                         ClipboardManager.ClipboardContentType = ClipboardContentType.Weapon;
                         break;
+                    }
+                case WeaponAccessory objCopyAccessory:
+                    {
+                    // Do not let the user copy accessories that are unique to its parent.
+                    if (objCopyAccessory.IncludedInWeapon)
+                        return;
+
+                    MemoryStream objStream = new MemoryStream();
+                    XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
+                    {
+                        Formatting = Formatting.Indented,
+                        Indentation = 1,
+                        IndentChar = '\t'
+                    };
+
+                    objWriter.WriteStartDocument();
+
+                    // </characters>
+                    objWriter.WriteStartElement("character");
+
+                    objCopyAccessory.Save(objWriter);
+
+                    // </characters>
+                    objWriter.WriteEndElement();
+
+                    // Finish the document and flush the Writer and Stream.
+                    objWriter.WriteEndDocument();
+                    objWriter.Flush();
+
+                    // Read the stream.
+                    StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
+                    objStream.Position = 0;
+                    XmlDocument objCharacterXML = new XmlDocument();
+
+                    // Put the stream into an XmlDocument.
+                    string strXML = objReader.ReadToEnd();
+                    objCharacterXML.LoadXml(strXML);
+
+                    objWriter.Close();
+
+                    ClipboardManager.Clipboard = objCharacterXML;
+                    ClipboardManager.ClipboardContentType = ClipboardContentType.WeaponAccessory;
+                    break;
                     }
             }
         }
@@ -5392,7 +5532,7 @@ namespace Chummer
         protected void EnemyChanged(object sender, TextEventArgs e)
         {
             ContactControl objSenderControl = sender as ContactControl;
-            
+
             // Handle the ConnectionRatingChanged Event for the ContactControl object.
             int intNegativeQualityBP = 0;
             // Calculate the BP used for Negative Qualities.
@@ -5423,9 +5563,9 @@ namespace Chummer
             string strEnemyPoints = intEnemyMax.ToString() + strSpaceCharacter + LanguageManager.GetString("String_Karma", GlobalOptions.Language);
             string strQualityPoints = intQualityMax.ToString() + strSpaceCharacter + LanguageManager.GetString("String_Karma", GlobalOptions.Language);
 
-            if (intBPUsed < (intEnemyMax * -1) && !CharacterObject.IgnoreRules)
+            if (intBPUsed < (intEnemyMax * -1) && !CharacterObject.IgnoreRules && CharacterObjectOptions.EnemyKarmaQualityLimit)
             {
-                MessageBox.Show(string.Format(LanguageManager.GetString("Message_EnemyLimit", GlobalOptions.Language), strEnemyPoints),
+                Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_EnemyLimit", GlobalOptions.Language), strEnemyPoints),
                     LanguageManager.GetString("MessageTitle_EnemyLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 Contact objSenderContact = objSenderControl?.ContactObject;
                 if (objSenderContact != null)
@@ -5445,11 +5585,11 @@ namespace Chummer
                 return;
             }
 
-            if (!CharacterObjectOptions.ExceedNegativeQualities)
+            if (!CharacterObjectOptions.ExceedNegativeQualities && CharacterObjectOptions.EnemyKarmaQualityLimit)
             {
                 if (intBPUsed + intNegativeQualityBP < (intQualityMax * -1) && !CharacterObject.IgnoreRules)
                 {
-                    MessageBox.Show(string.Format(LanguageManager.GetString("Message_NegativeQualityLimit", GlobalOptions.Language), strQualityPoints),
+                    Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_NegativeQualityLimit", GlobalOptions.Language), strQualityPoints),
                         LanguageManager.GetString("MessageTitle_NegativeQualityLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     Contact objSenderContact = objSenderControl?.ContactObject;
                     if (objSenderContact != null)
@@ -5514,12 +5654,12 @@ namespace Chummer
             }
             catch (IOException ex)
             {
-                MessageBox.Show(ex.ToString());
+                Program.MainForm.ShowMessageBox(ex.ToString());
                 return;
             }
             catch (XmlException ex)
             {
-                MessageBox.Show(ex.ToString());
+                Program.MainForm.ShowMessageBox(ex.ToString());
                 return;
             }
 
@@ -5742,7 +5882,7 @@ namespace Chummer
             // The number of bound Spirits cannot exeed the character's CHA.
             if (!CharacterObject.IgnoreRules && CharacterObject.Spirits.Count(x => x.EntityType == SpiritType.Spirit) >= CharacterObject.CHA.Value)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_BoundSpiritLimit", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_BoundSpiritLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_BoundSpiritLimit", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_BoundSpiritLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -5762,8 +5902,8 @@ namespace Chummer
         {
             if (CharacterObject.Created && CharacterObject.Spirits.Count(x => x.EntityType == SpiritType.Sprite && !x.Bound && !x.Fettered) > 0)
             {
-                // Once created, new sprites are added as Unbound first. We're not permitted to have more than 1 at a time. 
-                MessageBox.Show(LanguageManager.GetString("Message_UnregisteredSpriteLimit", GlobalOptions.Language),
+                // Once created, new sprites are added as Unbound first. We're not permitted to have more than 1 at a time.
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_UnregisteredSpriteLimit", GlobalOptions.Language),
                     LanguageManager.GetString("MessageTitle_UnregisteredSpriteLimit", GlobalOptions.Language),
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -5772,10 +5912,10 @@ namespace Chummer
             {
                 // In create, all sprites are added as Bound/Registered. The number of registered Sprites cannot exceed the character's LOG.
                 if (!CharacterObject.IgnoreRules &&
-                    CharacterObject.Spirits.Count(x => x.EntityType == SpiritType.Sprite && x.Bound) >=
-                    CharacterObject.LOG.Value)
+                    CharacterObject.Spirits.Count(x => x.EntityType == SpiritType.Sprite && x.Bound && !x.Fettered) >=
+                    CharacterObject.LOG.TotalValue)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_RegisteredSpriteLimit", GlobalOptions.Language),
+                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_RegisteredSpriteLimit", GlobalOptions.Language),
                         LanguageManager.GetString("MessageTitle_RegisteredSpriteLimit", GlobalOptions.Language),
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
@@ -6026,7 +6166,7 @@ namespace Chummer
             Cursor = Cursors.WaitCursor;
             if (_objCharacter.Save())
             {
-                GlobalOptions.MostRecentlyUsedCharacters.Insert(0, _objCharacter.FileName);
+                GlobalOptions.Instance.MostRecentlyUsedCharacters.Insert(0, _objCharacter.FileName);
                 IsDirty = false;
                 Cursor = objOldCursor;
 

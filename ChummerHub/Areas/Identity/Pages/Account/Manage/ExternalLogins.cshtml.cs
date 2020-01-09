@@ -1,20 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ChummerHub.Areas.Identity.Pages.Account.Manage
 {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginsModel'
     public class ExternalLoginsModel : PageModel
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginsModel'
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginsModel.ExternalLoginsModel(UserManager<ApplicationUser>, SignInManager<ApplicationUser>)'
         public ExternalLoginsModel(
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginsModel.ExternalLoginsModel(UserManager<ApplicationUser>, SignInManager<ApplicationUser>)'
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager)
         {
@@ -22,16 +26,26 @@ namespace ChummerHub.Areas.Identity.Pages.Account.Manage
             _signInManager = signInManager;
         }
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginsModel.CurrentLogins'
         public IList<UserLoginInfo> CurrentLogins { get; set; }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginsModel.CurrentLogins'
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginsModel.OtherLogins'
         public IList<AuthenticationScheme> OtherLogins { get; set; }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginsModel.OtherLogins'
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginsModel.ShowRemoveButton'
         public bool ShowRemoveButton { get; set; }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginsModel.ShowRemoveButton'
 
         [TempData]
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginsModel.StatusMessage'
         public string StatusMessage { get; set; }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginsModel.StatusMessage'
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginsModel.OnGetAsync()'
         public async Task<IActionResult> OnGetAsync()
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginsModel.OnGetAsync()'
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -47,7 +61,9 @@ namespace ChummerHub.Areas.Identity.Pages.Account.Manage
             return Page();
         }
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginsModel.OnPostRemoveLoginAsync(string, string)'
         public async Task<IActionResult> OnPostRemoveLoginAsync(string loginProvider, string providerKey)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginsModel.OnPostRemoveLoginAsync(string, string)'
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -67,7 +83,9 @@ namespace ChummerHub.Areas.Identity.Pages.Account.Manage
             return RedirectToPage();
         }
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginsModel.OnPostLinkLoginAsync(string)'
         public async Task<IActionResult> OnPostLinkLoginAsync(string provider)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginsModel.OnPostLinkLoginAsync(string)'
         {
             // Clear the existing external cookie to ensure a clean login process
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
@@ -78,7 +96,9 @@ namespace ChummerHub.Areas.Identity.Pages.Account.Manage
             return new ChallengeResult(provider, properties);
         }
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginsModel.OnGetLinkLoginCallbackAsync()'
         public async Task<IActionResult> OnGetLinkLoginCallbackAsync()
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginsModel.OnGetLinkLoginCallbackAsync()'
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)

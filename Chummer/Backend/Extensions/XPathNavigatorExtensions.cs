@@ -249,7 +249,7 @@ namespace Chummer
             if (objField != null)
             {
                 if (objCulture == null)
-                    objCulture = GlobalOptions.InvariantCultureInfo;
+                    objCulture = GlobalOptions.Instance.InvariantCultureInfo;
                 if (int.TryParse(objField.Value, NumberStyles.Any, objCulture, out int intTmp))
                 {
                     read = intTmp;
@@ -287,7 +287,7 @@ namespace Chummer
             if (objField != null)
             {
                 if (objCulture == null)
-                    objCulture = GlobalOptions.InvariantCultureInfo;
+                    objCulture = GlobalOptions.Instance.InvariantCultureInfo;
                 if (decimal.TryParse(objField.Value, NumberStyles.Any, objCulture, out decimal decTmp))
                 {
                     read = decTmp;
@@ -307,7 +307,7 @@ namespace Chummer
             if (objField != null)
             {
                 if (objCulture == null)
-                    objCulture = GlobalOptions.InvariantCultureInfo;
+                    objCulture = GlobalOptions.Instance.InvariantCultureInfo;
                 if (double.TryParse(objField.Value, NumberStyles.Any, objCulture, out double dblTmp))
                 {
                     read = dblTmp;
@@ -327,7 +327,7 @@ namespace Chummer
             if (objField != null)
             {
                 if (objCulture == null)
-                    objCulture = GlobalOptions.InvariantCultureInfo;
+                    objCulture = GlobalOptions.Instance.InvariantCultureInfo;
                 if (float.TryParse(objField.Value, NumberStyles.Any, objCulture, out float fltTmp))
                 {
                     read = fltTmp;
@@ -338,7 +338,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Like TryGetField for guids, but taking advantage of guid.TryParse. Allows for returning false if the guid is Empty. 
+        /// Like TryGetField for guids, but taking advantage of guid.TryParse. Allows for returning false if the guid is Empty.
         /// </summary>
         /// <param name="node">XPathNavigator node of the object.</param>
         /// <param name="field">Field name of the InnerXML element we're looking for.</param>

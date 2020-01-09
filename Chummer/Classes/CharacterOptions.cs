@@ -1,23 +1,23 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Xml;
 using Chummer.Annotations;
 using Chummer.Backend.Attributes.OptionAttributes;
 using Chummer.Backend.Attributes.SaveAttributes;
 using Chummer.Backend.Options;
+// ReSharper disable StringLiteralTypo
 // ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
 // ReSharper disable UnusedMember.Global
 
 namespace Chummer
 {
 	public class CharacterOptions
-	{
-	    #region Default Values
-		public readonly string FileName;
-
-
-
-	    // Settings.
+    {
+        public string FileName { get; internal set; }
+        #region Default Values
+        // Settings.
         //TODO: Im sure they had some effect. Or remove them
         /*
 		private bool _blnAllow2ndMaxAttribute;
@@ -40,7 +40,7 @@ namespace Chummer
 	    private int _intFreeContactsFlatNumber = 0;
         */
 
-	    private readonly XmlDocument _objBookDoc = new XmlDocument();
+        private readonly XmlDocument _objBookDoc = new XmlDocument();
 		private string _strBookXPath = "";
 
 	    #endregion
@@ -146,38 +146,65 @@ namespace Chummer
 		    return Books[strCode];
 		}
 
-		/// <summary>
-		/// XPath query used to filter items based on the user's selected source books.
-		/// </summary>
-		public string BookXPath()
-		{
-			if (_strBookXPath != "")
-				return _strBookXPath;
+        /// <summary>
+        /// XPath query used to filter items based on the user's selected source books and optional rules.
+        /// </summary>
+        public string BookXPath(bool excludeHidden = true)
+        {
+            string strPath = string.Empty;
 
-			string strPath = "(";
+            if (excludeHidden)
+            {
+                strPath = "not(hide)";
+            }
+            if (string.IsNullOrWhiteSpace(_strBookXPath))
+            {
+                RecalculateBookXPath();
+            }
+            if (string.IsNullOrWhiteSpace(strPath))
+            {
+                strPath = _strBookXPath;
+            }
+            else
+            {
+                strPath += $" and {_strBookXPath}";
+            }
+            if (!GlobalOptions.Instance.Dronemods)
+            {
+                strPath += " and not(optionaldrone)";
+            }
+            return strPath;
+        }
 
-			foreach (string strBook in EnabledBooks())
-			{
-				if (strBook != "")
-					strPath += "source = \"" + strBook + "\" or ";
-			}
-			strPath = strPath.Substring(0, strPath.Length - 4) + ")";
+        /// <summary>
+        /// XPath query used to filter items based on the user's selected source books.
+        /// </summary>
+        public void RecalculateBookXPath()
+        {
+            StringBuilder strBookXPath = new StringBuilder("(");
+            _strBookXPath = string.Empty;
 
-			if (GlobalOptions.MissionsOnly)
-			{
-				strPath += " and not(nomission)";
-			}
+            foreach (string strBook in EnabledBooks())
+            {
+                if (!string.IsNullOrWhiteSpace(strBook))
+                {
+                    strBookXPath.Append("source = \"");
+                    strBookXPath.Append(strBook);
+                    strBookXPath.Append("\" or ");
+                }
+            }
+            if (strBookXPath.Length >= 4)
+            {
+                strBookXPath.Length -= 4;
+                strBookXPath.Append(')');
+                _strBookXPath = strBookXPath.ToString();
+            }
+            else
+                _strBookXPath = string.Empty;
+        }
 
-			if (!GlobalOptions.Dronemods)
-			{
-				strPath += " and not(optionaldrone)";
-			}
-			_strBookXPath = strPath;
-			
-			return strPath;
-		}
 
-		public List<string> BookLinq()
+        public List<string> BookLinq()
 		{
 			return EnabledBooks().ToList();
 		}
@@ -458,6 +485,9 @@ namespace Chummer
         /// </summary>
         [DisplayIgnore] //TODO: should actually display
         public bool MysAdeptSecondMAGAttribute { get; set; }
+        private bool _blnAllowTechnomancerSchooling;
+        private bool _allowFreeGrids;
+        private bool _increasedImprovedAbilityMultiplier;
 
         [OptionAttributes("OptionHeader_CharacterOptions/Display_OptionalRules")]
         public bool DroneMods { get; set; } = false;
@@ -688,6 +718,7 @@ namespace Chummer
 		/// </summary>
 		[SavePropertyAs("karmanewskillgroup")]
 		public int KarmaNewSkillGroup { get; set; } = 5;
+        private bool _cyberwareRounding;
 
 	    /// <summary>
 		/// Karma cost to improve a Knowledge Skill = New Rating x this value.
@@ -879,7 +910,7 @@ namespace Chummer
 	    /// <summary>
 	    /// Sourcebooks.
 	    /// </summary>
-	    public Dictionary<string, bool> Books { get; } = GlobalOptions.SourcebookInfo.ToDictionary(x => x.Code, x => x.Code == "SR5");
+	    public Dictionary<string, bool> Books { get; } = GlobalOptions.Instance.SourcebookInfo.ToDictionary(x => x.Code, x => x.Code == "SR5");
 
 	    public IEnumerable<string> EnabledBooks()
 	    {
@@ -1092,16 +1123,74 @@ namespace Chummer
             get { return _essenceDecimals; }
             set
             {
-                _essenceDecimals = value;
-                EssenceFormat = "#,0" + (value > 0 ? ("." + new string('0', value)) : "");
+                int intCurrentEssenceDecimals = EssenceDecimals;
+                int intNewEssenceDecimals = Math.Max(value, 0);
+                if (intNewEssenceDecimals < intCurrentEssenceDecimals)
+                {
+                    if (intNewEssenceDecimals > 0)
+                    {
+                        int length = EssenceFormat.Length - (intCurrentEssenceDecimals - intNewEssenceDecimals);
+                        if (length < 3) length = 3;
+                        EssenceFormat = EssenceFormat.Substring(0, length);
+                    }
+                    else
+                    {
+                        int intDecimalPlaces = EssenceFormat.IndexOf('.');
+                        if (intDecimalPlaces != -1)
+                            EssenceFormat = EssenceFormat.Substring(0, intDecimalPlaces);
+                    }
+                }
+                else if (intNewEssenceDecimals > intCurrentEssenceDecimals)
+                {
+                    StringBuilder objEssenceFormat = string.IsNullOrEmpty(EssenceFormat) ? new StringBuilder("#,0") : new StringBuilder(EssenceFormat);
+                    if (intCurrentEssenceDecimals == 0)
+                    {
+                        objEssenceFormat.Append(".");
+                    }
+                    intNewEssenceDecimals -= intCurrentEssenceDecimals;
+                    for (int i = 0; i < intNewEssenceDecimals; ++i)
+                    {
+                        objEssenceFormat.Append("0");
+                    }
+                    EssenceFormat = objEssenceFormat.ToString();
+                }
             }
         }
+
+        /// <summary>
+        /// Whether the Improved Ability power (SR5 309) should be capped at 0.5 of current Rating or 1.5 of current Rating. 
+        /// </summary>
+        public bool IncreasedImprovedAbilityMultiplier
+        {
+            get => _increasedImprovedAbilityMultiplier;
+            set => _increasedImprovedAbilityMultiplier = value;
+        }
+        /// <summary>
+        /// Whether lifestyles will automatically give free grid subscriptions found in (HT)
+        /// </summary>
+        public bool AllowFreeGrids
+        {
+            get => _allowFreeGrids;
+            set => _allowFreeGrids = value;
+        }
+
+        /// <summary>
+        /// Whether Technomancers are allowed to use the Schooling discount on their initiations in the same manner as awakened. 
+        /// </summary>
+        public bool AllowTechnomancerSchooling
+        {
+            get => _blnAllowTechnomancerSchooling;
+            set => _blnAllowTechnomancerSchooling = value;
+        }
+        /// <summary>
+        /// The value by which Specializations add to dicepool. 
+        /// </summary>
+        public int SpecializationBonus = 2;
 
         [DisplayIgnore]
         public string EssenceFormat { get; private set; } = "0.00";
 
         public bool DronemodsMaximumPilot { get; set; }
-
     }
 
     public enum LimbCount
