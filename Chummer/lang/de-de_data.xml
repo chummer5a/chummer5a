@@ -46722,6 +46722,12 @@
 				<translate>Cyberzombie-Umwandlung aktivieren</translate>
 				<altpage>Ermöglicht die Umwandlung des Charakters in einen Cyberzombie.</altpage>
 			</improvement>
+			<improvement>
+				<id>freespells</id>
+				<name>Free Spells</name>
+				<translate>Kostenlose Zauber</translate>
+				<altpage>Erlaubt dem Charakter, einige Zauber als kostenlos zu markieren, um Karmakosten zu vermeiden.</altpage>
+			</improvement>
 		</improvements>
 	</chummer>
 	<chummer file="licenses.xml">
