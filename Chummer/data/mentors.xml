@@ -2551,7 +2551,7 @@
       <id>50b20b8c-8cf4-4b92-95ea-b0c8bbf560b0</id>
       <name>Fox</name>
       <advantage>All: +2 dice pool modifier for tests using the Perception skill.</advantage>
-      <disadvantage>If Fox fights, it'll fight to kill. A follower of this mentor spirit must make a Willpower + Charisma (3) Test to spare a bettered foe.</disadvantage>
+      <disadvantage>If Fox fights, it'll fight to kill. A follower of this mentor spirit must make a Willpower + Intuition (3) Test to spare an overpowered foe.</disadvantage>
       <bonus>
         <specificskill>
           <name>Perception</name>
