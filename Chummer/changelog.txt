@@ -81,6 +81,7 @@ New Strings:
 - String_DisableSkillGroupPrompt
 - Message_CyberzombieRequirementsImprovement
 - Checkbox_Options_AllowTechnomancerSchooling
+- Label_Dodge
 - String_Avail
 - String_Capacity
 - String_Cost
