@@ -18974,6 +18974,12 @@
 				<translate>Bonus de moniteur de condition de cyber-singularité</translate>
 				<altpage>Grants bonuses to the character's physical Condition Monitor based on the number of cyberlimbs a character has. See Redliner in Chrome Flesh for more details.</altpage>
 			</improvement>
+			<improvement>
+				<id>freespells</id>
+				<name>Free Spells</name>
+				<translate>Spells gratuits</translate>
+				<altpage>Permet au personnage de marquer certains spells comme gratuits pour éviter des coûts de karma.</altpage>
+			</improvement>
 		</improvements>
 	</chummer>
 	<chummer file="lifestyles.xml">
