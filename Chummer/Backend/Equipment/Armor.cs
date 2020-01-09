@@ -70,6 +70,7 @@ namespace Chummer.Backend.Equipment
         private bool _blnDiscountCost;
         private int _intSortOrder;
 	    private bool _blnStolen;
+        private bool _blnEncumbrance;
 
         #region Constructor, Create, Save, Load, and Print Methods
         public Armor(Character objCharacter)
@@ -174,6 +175,15 @@ namespace Chummer.Backend.Equipment
             objXmlArmorNode.TryGetStringFieldQuickly("page", ref _strPage);
             if (!objXmlArmorNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlArmorNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+
+            if (objXmlArmorNode.TryGetBoolFieldQuickly("encumbrance", ref _blnEncumbrance))
+            {
+                objXmlArmorNode.TryGetBoolFieldQuickly("encumbrance", ref _blnEncumbrance);
+            }
+            else
+            {
+                _blnEncumbrance = true;
+            }
             _nodBonus = objXmlArmorNode["bonus"];
             _nodWirelessBonus = objXmlArmorNode["wirelessbonus"];
             _blnWirelessOn = false;
@@ -416,6 +426,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("maxrating", _intMaxRating.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("ratinglabel", _strRatingLabel);
             objWriter.WriteElementString("stolen", _blnStolen.ToString());
+            objWriter.WriteElementString("emcumbrance", _blnEncumbrance.ToString());
             objWriter.WriteStartElement("armormods");
             foreach (ArmorMod objMod in _lstArmorMods)
             {
@@ -490,6 +501,14 @@ namespace Chummer.Backend.Equipment
                     }
                     _objLocation?.Children.Add(this);
                 }
+            }
+            if (objNode.TryGetBoolFieldQuickly("encumbrance", ref _blnEncumbrance))
+            {
+                objNode.TryGetBoolFieldQuickly("encumbrance", ref _blnEncumbrance);
+            }
+            else
+            {
+                _blnEncumbrance = true;
             }
 
             if (objNode.TryGetStringFieldQuickly("name", ref _strName))
@@ -685,6 +704,11 @@ namespace Chummer.Backend.Equipment
             get => _strCategory;
             set => _strCategory = value;
         }
+
+        /// <summary>
+        /// Whether or not the Armor contributes to Encumbrance. 
+        /// </summary>
+        public bool Encumbrance => _blnEncumbrance;
 
         /// <summary>
         /// Armor's Armor value.
