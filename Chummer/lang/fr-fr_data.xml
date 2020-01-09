@@ -18977,8 +18977,8 @@
 			<improvement>
 				<id>freespells</id>
 				<name>Free Spells</name>
-				<translate>Spells gratuits</translate>
-				<altpage>Permet au personnage de marquer certains spells comme gratuits pour éviter des coûts de karma.</altpage>
+				<translate>Sorts gratuits</translate>
+				<altpage>Permet au personnage de marquer certains sorts comme gratuits pour éviter des coûts en karma.</altpage>
 			</improvement>
 		</improvements>
 	</chummer>
