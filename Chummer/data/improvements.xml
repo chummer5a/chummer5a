@@ -742,5 +742,15 @@
       <xml />
       <page>Allows the character to be converted into a Cyberzombie.</page>
     </improvement>
+    <improvement>
+      <name>Free Spells</name>
+      <id>freespells</id>
+      <internal>freespells</internal>
+      <fields>
+        <field>val</field>
+      </fields>
+      <xml><![CDATA[{val}]]></xml>
+      <page>Allows the character to mark some spells as Free, avoiding Karma costs.</page>
+    </improvement>
   </improvements>
 </chummer>

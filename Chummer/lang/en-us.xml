@@ -619,6 +619,10 @@
       <text>Armor:</text>
     </string>
     <string>
+      <key>Label_Dodge</key>
+      <text>Armor:</text>
+    </string>
+    <string>
       <key>Label_Seats</key>
       <text>Seats:</text>
     </string>
