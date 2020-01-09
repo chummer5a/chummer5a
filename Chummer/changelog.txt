@@ -75,6 +75,7 @@ Data Changes:
 - Added missing Shedim critter Powers from Dark Terrors.
 - Fixed incorrect quality names on the Cactus Cat critter and Drifter life module that prevented them from being selected.
 - Fixed incorrect bonuses on the Islamic traditions from Forbidden Arcana that caused them to throw an error when added. 
+- Added freespells custom improvement to improvements.xml
 
 New Strings:
 - String_DisableSkillGroupPrompt
