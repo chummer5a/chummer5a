@@ -21,6 +21,7 @@ Application Fixes:
 - Fixed an inappropriate bracket for improvements to skills that don't have a condition.
 - Fixed behaviour of html tooltips used by skill controls not properly being rendered for html. Fixes newlines in notes not working. 
 - Added confirmation prompt to Delete action for skills. 
+- Fixed Extra values not being properly translated for Cyberware when printed. Closes #3990
 
 Application Changes:
 - Added support for Priority mode using non-ABCDE arrays.
