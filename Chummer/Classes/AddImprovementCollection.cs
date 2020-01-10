@@ -6021,6 +6021,17 @@ namespace Chummer.Classes
                 0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerText ?? string.Empty);
         }
 
+        public void knowledgeskillkarmacostmin(XmlNode bonusNode)
+        {
+            Log.Info("knowledgeskillkarmacostmin");
+            Log.Info("knowledgeskillkarmacostmin = " + bonusNode.OuterXml);
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.KnowledgeSkillKarmaCostMinimum, _strUnique,
+                ImprovementManager.ValueToInt(_objCharacter, bonusNode["val"]?.InnerText, _intRating),
+                1, ImprovementManager.ValueToInt(_objCharacter, bonusNode["min"]?.InnerText, _intRating), ImprovementManager.ValueToInt(_objCharacter, bonusNode["max"]?.InnerText, _intRating),
+                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerText ?? string.Empty);
+        }
+
         public void skilldisable(XmlNode bonusNode)
         {
             Log.Info("skilldisable");

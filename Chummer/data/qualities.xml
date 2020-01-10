@@ -2872,6 +2872,12 @@
           <min>6</min>
           <condition>career</condition>
         </activeskillkarmacost>
+        <knowledgeskillkarmacostmin>
+          <name />
+          <val>1</val>
+          <max>5</max>
+          <condition>career</condition>
+        </knowledgeskillkarmacostmin>
         <knowledgeskillkarmacost>
           <name />
           <val>-1</val>

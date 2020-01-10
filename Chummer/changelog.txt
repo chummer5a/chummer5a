@@ -48,6 +48,7 @@ Application Changes:
 - Added support for metamagics being gated behind certain initiate grades, as used by the Islamic traditions from Forbidden Arcana. This is done through an improvement type, metamagiclimit. For each metamagic child node, the name of the Metamagic (or Echo) is specified in the inner text, while the 'grade' attribute limits the metamagic to being taken at that specific grade. If the grade is not specified, this acts as a whitelist for metamagics, ONLY allowing those metamagics.
 - Added Dodge to the Other Info and Condition Monitor panels in Create and Career modes.
 - Added basic support for right-clicking on a character tab and saving, printing or closing the file. Currently only works for the currently-selected tab.
+- Added a new bonus type that sets the minimum Karma cost of increasing a Knowledge skill.  This is used by objects such as the Learning Stimulus nanoware to force the minimum to be higher than one. Closes #3229
 
 Data Changes:
 - Fixed issues with the Dodge, Bonus Street Cred and Street Cred Multiplier custom improvements. 
@@ -77,6 +78,7 @@ Data Changes:
 - Fixed incorrect quality names on the Cactus Cat critter and Drifter life module that prevented them from being selected.
 - Fixed incorrect bonuses on the Islamic traditions from Forbidden Arcana that caused them to throw an error when added. 
 - Added freespells custom improvement to improvements.xml
+- Added knowledgeskillkarmacostmin bonus to the Jack of All Trades quality and Learning Stimulator nanoware. 
 
 New Strings:
 - String_DisableSkillGroupPrompt
