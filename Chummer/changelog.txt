@@ -20,6 +20,7 @@ Application Fixes:
 - Fixed an issue with the Point Buy form incorrectly setting metavariant metatypes to be themselves (ie Dryad (Dryad)).
 - Fixed an inappropriate bracket for improvements to skills that don't have a condition.
 - Fixed behaviour of html tooltips used by skill controls not properly being rendered for html. Fixes newlines in notes not working. 
+- Added confirmation prompt to Delete action for skills. 
 
 Application Changes:
 - Added support for Priority mode using non-ABCDE arrays.
@@ -95,6 +96,7 @@ New Strings:
 - String_Mode
 - String_RC
 - String_Reach
+- Message_DeleteSkill
 
 Build 209
 

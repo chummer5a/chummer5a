@@ -154,6 +154,9 @@ namespace Chummer.UI.Skills
             {
                 cmdDelete.Click += (sender, args) =>
                 {
+                    if (!skill.CharacterObject.ConfirmDelete(LanguageManager.GetString(skill.IsExoticSkill ? "Message_DeleteExoticSkill" : "Message_DeleteSkill",
+                        GlobalOptions.Language)))
+                        return;
                     skill.UnbindSkill();
                     skill.CharacterObject.SkillsSection.Skills.Remove(skill);
                     skill.CharacterObject.SkillsSection.SkillsDictionary.Remove(skill.IsExoticSkill ? skill.Name + " (" + skill.DisplaySpecializationMethod(GlobalOptions.Language) + ')' : skill.Name);

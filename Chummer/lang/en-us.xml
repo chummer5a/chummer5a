@@ -2049,6 +2049,10 @@
       <text>Are you sure you want to delete this Exotic Skill?</text>
     </string>
     <string>
+      <key>Message_DeleteSkill</key>
+      <text>Are you sure you want to delete this Skill?</text>
+    </string>
+    <string>
       <key>Message_DeletePositiveQualityCareer</key>
       <text>Are you sure you want to delete this Positive Quality? You will not receive any Karma for removing it.</text>
     </string>
