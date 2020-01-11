@@ -9799,5 +9799,13 @@
 			<key>String_Reach</key>
 			<text>Reichweite</text>
 		</string>
+		<string>
+			<key>Message_DeleteSkill</key>
+			<text>Möchten Sie die Fertigkeit wirklich löschen?</text>
+		</string>
+		<string>
+			<key>Label_Dodge</key>
+			<text>Panzerung:</text>
+		</string>
 	</strings>
 </chummer>
