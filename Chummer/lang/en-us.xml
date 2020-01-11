@@ -9690,6 +9690,10 @@
       <key>String_SpecialModificationLimit</key>
       <text>Special Modification Limit</text>
     </string>
+    <string>
+      <key>String_MetersPerHit</key>
+      <text>m/ hit</text>
+    </string>
     <!-- End Region -->
     <!-- Region Loading Form -->
     <string>

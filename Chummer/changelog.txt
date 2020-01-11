@@ -100,6 +100,7 @@ New Strings:
 - String_RC
 - String_Reach
 - Message_DeleteSkill
+- String_MetersPerHit
 
 Build 209
 

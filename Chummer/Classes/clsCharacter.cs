@@ -12202,14 +12202,14 @@ if (!Utils.IsUnitTest){
             {
                 decWalk *= (intAGI + intSTR) * 0.5m;
                 strReturn = decWalk.ToString("#,0.##", objCulture) + ", " + decSprint.ToString("#,0.##", objCulture) +
-                            "m/ hit";
+                            LanguageManager.GetString("String_MetersPerHit");
             }
             else
             {
                 decWalk *= intAGI;
                 decRun *= intAGI;
                 strReturn = decWalk.ToString("#,0.##", objCulture) + '/' + decRun.ToString("#,0.##", objCulture) +
-                            ", " + decSprint.ToString("#,0.##", objCulture) + "m/ hit";
+                            ", " + decSprint.ToString("#,0.##", objCulture) + LanguageManager.GetString("String_MetersPerHit");
             }
 
             return strReturn;
