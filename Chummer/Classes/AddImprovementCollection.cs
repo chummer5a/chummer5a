@@ -5851,7 +5851,7 @@ namespace Chummer.Classes
             {
                 addToSelected = Convert.ToBoolean(bonusNode.SelectSingleNode("addtoselected")?.Value);
             }
-            AddSpiritOrSprite("streams.xml", xmlAllowedSpirits, Improvement.ImprovementType.AddSprite, addToSelected);
+            AddSpiritOrSprite("streams.xml", xmlAllowedSpirits, Improvement.ImprovementType.AddSprite, addToSelected, "Sprites");
         }
 
         /// <summary>
@@ -5867,7 +5867,7 @@ namespace Chummer.Classes
             {
                 addToSelected = Convert.ToBoolean(bonusNode.SelectSingleNode("addtoselected")?.Value);
             }
-            AddSpiritOrSprite("traditions.xml",xmlAllowedSpirits, Improvement.ImprovementType.AddSpirit, addToSelected);
+            AddSpiritOrSprite("traditions.xml",xmlAllowedSpirits, Improvement.ImprovementType.AddSpirit, addToSelected, "Spirits");
         }
         /// <summary>
         /// Improvement type that limits the spirits a character can summon to a particular category.
@@ -5885,7 +5885,7 @@ namespace Chummer.Classes
             AddSpiritOrSprite("traditions.xml", xmlAllowedSpirits, Improvement.ImprovementType.LimitSpiritCategory, addToSelected);
         }
 
-        private void AddSpiritOrSprite(string xmlDoc, XmlNodeList xmlAllowedSpirits, Improvement.ImprovementType impType, bool addToSelectedValue = true)
+        private void AddSpiritOrSprite(string xmlDoc, XmlNodeList xmlAllowedSpirits, Improvement.ImprovementType impType, bool addToSelectedValue = true, string strCritterCategory = "")
         {
             Log.Info("addspiritorsprite");
             HashSet<string> setAllowed = new HashSet<string>();
@@ -5905,7 +5905,20 @@ namespace Chummer.Classes
                             xmlSpirit["translate"]?.InnerText ?? strSpiritName));
                     }
 
-			frmSelectItem frmSelect = new frmSelectItem { GeneralItems = lstSpirits };
+            if (strCritterCategory != string.Empty)
+            {
+                using (XmlNodeList xmlSpirits = XmlManager.Load("critters.xml").SelectNodes($"/chummer/critters/critter[category = \"{strCritterCategory}\"]"))
+                    if (xmlSpirits?.Count > 0)
+                        foreach (XmlNode xmlSpirit in xmlSpirits)
+                        {
+                            string strSpiritName = xmlSpirit["name"]?.InnerText;
+                            if (!setAllowed.Any(l => strSpiritName == l) && setAllowed.Count != 0) continue;
+                            lstSpirits.Add(new ListItem(strSpiritName,
+                                xmlSpirit["translate"]?.InnerText ?? strSpiritName));
+                        }
+            }
+
+            frmSelectItem frmSelect = new frmSelectItem { GeneralItems = lstSpirits };
             frmSelect.ShowDialog();
             if (frmSelect.DialogResult == DialogResult.Cancel)
             {

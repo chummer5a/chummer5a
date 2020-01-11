@@ -50,6 +50,7 @@ Application Changes:
 - Added Dodge to the Other Info and Condition Monitor panels in Create and Career modes.
 - Added basic support for right-clicking on a character tab and saving, printing or closing the file. Currently only works for the currently-selected tab.
 - Added a new bonus type that sets the minimum Karma cost of increasing a Knowledge skill.  This is used by objects such as the Learning Stimulus nanoware to force the minimum to be higher than one. Closes #3229
+- Added support for the various 'addspirit/sprite' improvements pulling from the critters.xml file as well as traditions.xml.
 
 Data Changes:
 - Fixed issues with the Dodge, Bonus Street Cred and Street Cred Multiplier custom improvements. 
@@ -80,6 +81,7 @@ Data Changes:
 - Fixed incorrect bonuses on the Islamic traditions from Forbidden Arcana that caused them to throw an error when added. 
 - Added freespells custom improvement to improvements.xml
 - Added knowledgeskillkarmacostmin bonus to the Jack of All Trades quality and Learning Stimulator nanoware. 
+- Added missing Black Magic [alt] tradition from FA. Personal Demons bonus not implemented; will need a new bonus created for it.
 
 New Strings:
 - String_DisableSkillGroupPrompt

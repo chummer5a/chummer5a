@@ -14547,7 +14547,9 @@
       <category>Positive</category>
       <canbuywithspellpoints>True</canbuywithspellpoints>
       <doublecareer>False</doublecareer>
-      <bonus />
+      <bonus>
+        <addspirit />
+      </bonus>
       <required>
         <allof>
           <attribute>
