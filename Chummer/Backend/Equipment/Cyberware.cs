@@ -1421,7 +1421,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("wirelesson", WirelessOn.ToString());
             objWriter.WriteElementString("grade", Grade.DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("location", Location);
-            objWriter.WriteElementString("extra", Extra);
+            objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(Extra, strLanguageToPrint));
             objWriter.WriteElementString("improvementsource", SourceType.ToString());
             if (Gear.Count > 0)
             {

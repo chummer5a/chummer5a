@@ -286,6 +286,7 @@ namespace Chummer
             SkillGroupDisable,
             SkillDisable,
             KnowledgeSkillKarmaCost,
+            KnowledgeSkillKarmaCostMinimum,
             SkillCategorySpecializationKarmaCostMultiplier,
             SkillCategorySpecializationKarmaCost,
             SkillCategoryKarmaCostMultiplier,
@@ -1720,6 +1721,7 @@ namespace Chummer
                 }
                     break;
                 case ImprovementType.KnowledgeSkillKarmaCost:
+                case ImprovementType.KnowledgeSkillKarmaCostMinimum:
                 case ImprovementType.KnowledgeSkillKarmaCostMultiplier:
                 {
                     if (!string.IsNullOrEmpty(ImprovedName))

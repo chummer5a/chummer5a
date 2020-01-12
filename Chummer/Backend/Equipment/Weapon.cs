@@ -3656,6 +3656,18 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        public string RangeModifier(string range)
+        {
+            int i = Convert.ToInt32(XmlManager.Load("ranges.xml")
+                .SelectSingleNode($"chummer/modifiers/{range.ToLowerInvariant()}")
+                ?.InnerText);
+            i += WeaponAccessories.Sum(wa => wa.RangeModifier);
+            i = Math.Min(0, i);
+            string strReturn = LanguageManager.GetString($"Label_Range{range}")
+                .Replace("{0}",i.ToString());
+            return strReturn;
+        }
+
         /// <summary>
         /// Dictionary where keys are range categories (short, medium, long, extreme, alternateshort, etc.), values are strings depicting range values for the category.
         /// </summary>

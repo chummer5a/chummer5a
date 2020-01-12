@@ -3200,15 +3200,15 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Label_RangeMedium</key>
-			<text>Moyenne (-1)</text>
+			<text>Moyenne ({0})</text>
 		</string>
 		<string>
 			<key>Label_RangeLong</key>
-			<text>Longue (-3)</text>
+			<text>Longue ({0})</text>
 		</string>
 		<string>
 			<key>Label_RangeExtreme</key>
-			<text>Extrême (-6)</text>
+			<text>Extrême ({0})</text>
 		</string>
 		<string>
 			<key>Label_DicePool</key>

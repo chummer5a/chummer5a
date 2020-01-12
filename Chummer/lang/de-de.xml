@@ -2846,19 +2846,19 @@
 		</string>
 		<string>
 			<key>Label_RangeShort</key>
-			<text>kurz</text>
+			<text>kurz ({0})</text>
 		</string>
 		<string>
 			<key>Label_RangeMedium</key>
-			<text>mittel</text>
+			<text>mittel ({0})</text>
 		</string>
 		<string>
 			<key>Label_RangeLong</key>
-			<text>lang</text>
+			<text>lang ({0})</text>
 		</string>
 		<string>
 			<key>Label_RangeExtreme</key>
-			<text>extrem</text>
+			<text>extrem ({0})</text>
 		</string>
 		<string>
 			<key>Label_DicePool</key>
@@ -9798,6 +9798,18 @@
 		<string>
 			<key>String_Reach</key>
 			<text>Reichweite</text>
+		</string>
+		<string>
+			<key>Message_DeleteSkill</key>
+			<text>Möchten Sie die Fertigkeit wirklich löschen?</text>
+		</string>
+		<string>
+			<key>Label_Dodge</key>
+			<text>Ausweichen:</text>
+		</string>
+		<string>
+			<key>String_MetersPerHit</key>
+			<text>m/Erfolg</text>
 		</string>
 	</strings>
 </chummer>

@@ -353,9 +353,10 @@ namespace Chummer.UI.Powers
 
             TableColumn<Power> adeptWayColumn = new TableColumn<Power>(() => new CheckBoxTableCell<Power>()
             {
-                ValueGetter = (p => p.DiscountedAdeptWay),
+                ValueGetter = p => p.DiscountedAdeptWay,
                 ValueUpdater = (p, check) => p.DiscountedAdeptWay = check,
-                VisibleExtractor = (p => p.AdeptWayDiscountEnabled),
+                VisibleExtractor = p => p.AdeptWayDiscountEnabled,
+                EnabledExtractor = p => (p.CharacterObject.AllowAdeptWayPowerDiscount || p.DiscountedAdeptWay),
                 Alignment = Alignment.Center
             })
             {
@@ -364,6 +365,7 @@ namespace Chummer.UI.Powers
             };
             adeptWayColumn.AddDependency(nameof(Power.DiscountedAdeptWay));
             adeptWayColumn.AddDependency(nameof(Power.AdeptWayDiscountEnabled));
+            adeptWayColumn.AddDependency(nameof(Character.AllowAdeptWayPowerDiscount));
             adeptWayColumn.AddDependency(nameof(Power.Rating));
 
             /*

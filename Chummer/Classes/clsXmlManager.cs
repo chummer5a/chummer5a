@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Xml;
 using System.Windows.Forms;
 using System.Xml.XPath;
@@ -651,6 +652,7 @@ namespace Chummer
             bool blnReturn = false;
             string strFilter = string.Empty;
             string strOperation = string.Empty;
+            string strRegexPattern = string.Empty;
             bool blnAddIfNotFound = true;
             XmlAttributeCollection objAmendingNodeAttribs = xmlAmendingNode.Attributes;
             if (objAmendingNodeAttribs != null)
@@ -708,6 +710,13 @@ namespace Chummer
                 {
                     blnAddIfNotFound = objAddIfNotFound.InnerText == bool.TrueString;
                 }
+
+                // Gets the RegEx pattern for if the node is meant to be a RegEx replace operation
+                XmlNode objRegExPattern = objAmendingNodeAttribs.RemoveNamedItem("regexpattern");
+                if (objRegExPattern != null)
+                {
+                    strRegexPattern = objRegExPattern.InnerText;
+                }
             }
 
             if (!string.IsNullOrEmpty(strFilter))
@@ -762,6 +771,22 @@ namespace Chummer
                     // Replace operation with "addifnotfound" offers identical functionality to "custom_*", but with all the extra bells and whistles of the amend system for targeting where to replace/add the item
                 case "replace":
                 case "append":
+                    break;
+                case "regexreplace":
+                    // Operation only supported if a pattern is actually defined
+                    if (string.IsNullOrWhiteSpace(strRegexPattern))
+                        goto case "replace";
+                    // Test to make sure RegEx pattern is properly formatted before actual amend code starts
+                    // Exit out early if it is not properly formatted
+                    try
+                    {
+                        bool blnDummy = Regex.IsMatch("Test for properly formatted Regular Expression pattern.", strRegexPattern);
+                    }
+                    catch (ArgumentException ex)
+                    {
+                        Program.MainForm.ShowMessageBox(ex.ToString());
+                        return false;
+                    }
                     break;
                 case "recurse":
                     // Operation only supported if we have children
@@ -870,6 +895,72 @@ namespace Chummer
                                     StripAmendAttributesRecursively(xmlAmendingNode);
                                     xmlParentNode?.ReplaceChild(xmlDoc.ImportNode(xmlAmendingNode, true), objNodeToEdit);
                                     break;
+                                case "regexreplace":
+                                    if (xmlAmendingNode.HasChildNodes)
+                                    {
+                                        foreach (XmlNode xmlChild in xmlAmendingNode.ChildNodes)
+                                        {
+                                            XmlNodeType eChildNodeType = xmlChild.NodeType;
+
+                                            // Text, Attributes, and CDATA are subject to the RegexReplace
+                                            if (eChildNodeType == XmlNodeType.Text ||
+                                                eChildNodeType == XmlNodeType.Attribute ||
+                                                eChildNodeType == XmlNodeType.CDATA)
+                                            {
+                                                if (objNodeToEdit.HasChildNodes)
+                                                {
+                                                    foreach (XmlNode objChildToEdit in objNodeToEdit.ChildNodes)
+                                                    {
+                                                        if (objChildToEdit.NodeType == eChildNodeType)
+                                                        {
+                                                            if (eChildNodeType != XmlNodeType.Attribute || objChildToEdit.Name == xmlChild.Name)
+                                                            {
+                                                                // Try-Catch just in case initial RegEx pattern validity check overlooked something
+                                                                try
+                                                                {
+                                                                    objChildToEdit.Value = Regex.Replace(objChildToEdit.Value, strRegexPattern, xmlChild.Value);
+                                                                }
+                                                                catch (ArgumentException ex)
+                                                                {
+                                                                    Program.MainForm.ShowMessageBox(ex.ToString());
+                                                                    // If we get a RegEx parse error for the first node, we'll get it for all nodes being modified by this amend
+                                                                    // So just exit out early instead of spamming the user with a bunch of error messages
+                                                                    if (!blnReturn)
+                                                                        return blnReturn;
+                                                                }
+                                                                break;
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    // If amending node has no contents, then treat it as if it just had an empty string Text data as its only content
+                                    else if (objNodeToEdit.HasChildNodes)
+                                    {
+                                        foreach (XmlNode objChildToEdit in objNodeToEdit.ChildNodes)
+                                        {
+                                            if (objChildToEdit.NodeType == XmlNodeType.Text)
+                                            {
+                                                // Try-Catch just in case initial RegEx pattern validity check overlooked something
+                                                try
+                                                {
+                                                    objChildToEdit.Value = Regex.Replace(objChildToEdit.Value, strRegexPattern, string.Empty);
+                                                }
+                                                catch (ArgumentException ex)
+                                                {
+                                                    Program.MainForm.ShowMessageBox(ex.ToString());
+                                                    // If we get a RegEx parse error for the first node, we'll get it for all nodes being modified by this amend
+                                                    // So just exit out early instead of spamming the user with a bunch of error messages
+                                                    if (!blnReturn)
+                                                        return blnReturn;
+                                                }
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    break;
                             }
                         }
                     }
@@ -910,6 +1001,7 @@ namespace Chummer
                 objAmendingNodeAttribs.RemoveNamedItem("xpathfilter");
                 objAmendingNodeAttribs.RemoveNamedItem("amendoperation");
                 objAmendingNodeAttribs.RemoveNamedItem("addifnotfound");
+                objAmendingNodeAttribs.RemoveNamedItem("regexpattern");
             }
 
             if (xmlNodeToStrip.HasChildNodes)
