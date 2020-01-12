@@ -304,15 +304,15 @@
   <xsl:variable name="lang.InitiationNotes"   select="concat('Remarques d',$APOS,'initiation')"/>
   <xsl:variable name="lang.JudgeIntentions"  select="'Jauger les intentions'"/>
   <xsl:variable name="lang.KnowledgeSkills"  select="'Compétences de connaissance'"/>
-  <xsl:variable name="lang.LiftCarry"      select="'Soulever/Transporter'"/>
+  <xsl:variable name="lang.LiftCarry"      select="'Soulever / transporter'"/>
   <xsl:variable name="lang.LineofSight"    select="'Ligne de mire'"/>
   <xsl:variable name="lang.LinkedSIN"      select="'SIN lié'"/>
   <xsl:variable name="lang.MartialArt"    select="'Art martial'"/>
   <xsl:variable name="lang.MartialArts"    select="'Arts martiaux'"/>
-  <xsl:variable name="lang.MatrixAR"      select="'RA matricielle'"/>
-  <xsl:variable name="lang.MatrixCold"    select="'Cold SIM'"/>
+  <xsl:variable name="lang.MatrixAR"      select="'Init. RA'"/>
+  <xsl:variable name="lang.MatrixCold"    select="'Init. Cold SIM'"/>
   <xsl:variable name="lang.MatrixDevices"    select="'Equipement matriciel'"/>
-  <xsl:variable name="lang.MatrixHot"      select="'Hot SIM'"/>
+  <xsl:variable name="lang.MatrixHot"      select="'Init. Hot SIM'"/>
   <xsl:variable name="lang.MatrixTrack"    select="'Moniteur de condition matricielle'"/>
   <xsl:variable name="lang.MeleeWeapons"    select="'Armes de corps à corps'"/>
   <xsl:variable name="lang.MentalAttributes"  select="'Attributs mentaux'"/>
@@ -332,7 +332,7 @@
   <xsl:variable name="lang.PhysicalNaturalRecovery"  select="'Guérison naturelle (1 jour)'"/>
   <xsl:variable name="lang.PhysicalTrack"  select="'Moniteur physique'"/>
   <xsl:variable name="lang.PreferredPayment"    select="'Paiement préféré'"/>
-  <xsl:variable name="lang.PrimaryArm"    select="'Bras primaire'"/>
+  <xsl:variable name="lang.PrimaryArm"    select="'Main directrice'"/>
   <xsl:variable name="lang.PublicAwareness"  select="'Renommée'"/>
   <xsl:variable name="lang.RangedWeapons"    select="'Armes à distance'"/>
   <xsl:variable name="lang.RemainingAvailable"  select="'Disponible'"/>

@@ -7440,7 +7440,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Tab_Roster_CharacterNotes</key>
-			<text>Notes de caractère</text>
+			<text>Notes de personnage</text>
 		</string>
 		<string>
 			<key>Tab_Roster_GameNotes</key>
@@ -7936,7 +7936,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>String_Unknown</key>
-			<text>Inconnue</text>
+			<text>Inconnu</text>
 		</string>
 		<string>
 			<key>String_Up_To_Date</key>
@@ -8390,11 +8390,11 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Button_Clean_Reinstall</key>
-			<text>Propre Réinstaller</text>
+			<text>Réinstallation complète</text>
 		</string>
 		<string>
 			<key>MessageTitle_Updater_CleanReinstallPrompt</key>
-			<text>Propre Réinstaller ?</text>
+			<text>Effectuer une réinstallation complète ?</text>
 		</string>
 		<string>
 			<key>Button_Redownload</key>
