@@ -9805,7 +9805,11 @@
 		</string>
 		<string>
 			<key>Label_Dodge</key>
-			<text>Panzerung:</text>
+			<text>Ausweichen:</text>
+		</string>
+		<string>
+			<key>String_MetersPerHit</key>
+			<text>m/Erfolg</text>
 		</string>
 	</strings>
 </chummer>
