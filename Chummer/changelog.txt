@@ -23,6 +23,7 @@ Application Fixes:
 - Added confirmation prompt to Delete action for skills. 
 - Fixed Extra values not being properly translated for Cyberware when printed. Closes #3990
 - Adept Power Way Discounts are now properly limited to MAG /2. Closes #3618
+- Fixed search filtering not working properly in the Weapon Accessory selection window.
 
 Application Changes:
 - Added support for Priority mode using non-ABCDE arrays.
