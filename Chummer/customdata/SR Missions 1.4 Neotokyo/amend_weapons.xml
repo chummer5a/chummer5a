@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<chummer>
+  <weapons>
+    <weapon xpathfilter="category = 'Light Pistols'">
+      <avail amendoperation="regexreplace" regexpattern="([0-9]+)">2+$&amp;</avail>
+    </weapon>
+    <weapon xpathfilter="category = 'Heavy Pistols' or category = 'Machine Pistols'">
+      <avail amendoperation="regexreplace" regexpattern="([0-9]+)">4+$&amp;</avail>
+    </weapon>
+    <weapon xpathfilter="category = 'Shotguns' or contains(category,'Rifles')">
+      <avail amendoperation="regexreplace" regexpattern="([0-9]+)">6+$&amp;</avail>
+    </weapon>
+    <weapon xpathfilter="category = 'Missile Launchers' or category = 'Grenade Launchers' or category = 'Laser Weapons' or category = 'Flamethrowers' or category = 'Assault Cannons' or category = 'Light Machine Guns' or category = 'Medium Machine Guns' or category = 'Heavy Machine Guns'">
+      <avail amendoperation="regexreplace" regexpattern="([0-9]+)">8+$&amp;</avail>
+    </weapon>
+  </weapons>
+</chummer>
