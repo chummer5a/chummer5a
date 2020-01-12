@@ -2846,19 +2846,19 @@
 		</string>
 		<string>
 			<key>Label_RangeShort</key>
-			<text>kurz</text>
+			<text>kurz ({0})</text>
 		</string>
 		<string>
 			<key>Label_RangeMedium</key>
-			<text>mittel</text>
+			<text>mittel ({0})</text>
 		</string>
 		<string>
 			<key>Label_RangeLong</key>
-			<text>lang</text>
+			<text>lang ({0})</text>
 		</string>
 		<string>
 			<key>Label_RangeExtreme</key>
-			<text>extrem</text>
+			<text>extrem ({0})</text>
 		</string>
 		<string>
 			<key>Label_DicePool</key>

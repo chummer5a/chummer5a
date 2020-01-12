@@ -4916,19 +4916,19 @@
     </string>
     <string>
       <key>Label_RangeShort</key>
-      <text>Short (-0)</text>
+      <text>Short ({0})</text>
     </string>
     <string>
       <key>Label_RangeMedium</key>
-      <text>Medium (-1)</text>
+      <text>Medium ({0})</text>
     </string>
     <string>
       <key>Label_RangeLong</key>
-      <text>Long (-3)</text>
+      <text>Long ({0})</text>
     </string>
     <string>
       <key>Label_RangeExtreme</key>
-      <text>Extreme (-6)</text>
+      <text>Extreme ({0})</text>
     </string>
     <string>
       <key>Label_DicePool</key>
