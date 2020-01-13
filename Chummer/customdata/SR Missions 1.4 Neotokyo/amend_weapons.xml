@@ -7,7 +7,7 @@
     <weapon xpathfilter="category = 'Heavy Pistols' or category = 'Machine Pistols'">
       <avail amendoperation="regexreplace" regexpattern="([0-9]+)([FR]*)">4+$1F</avail>
     </weapon>
-    <weapon xpathfilter="category = 'Shotguns' or contains(category,'Rifles')">
+    <weapon xpathfilter="category = 'Shotguns' or contains(category,'Rifles') or category = 'Submachine Guns'">
       <avail amendoperation="regexreplace" regexpattern="([0-9]+)([FR]*)">6+$1F</avail>
     </weapon>
     <weapon xpathfilter="category = 'Missile Launchers' or category = 'Grenade Launchers' or category = 'Laser Weapons' or category = 'Flamethrowers' or category = 'Assault Cannons' or category = 'Light Machine Guns' or category = 'Medium Machine Guns' or category = 'Heavy Machine Guns'">
