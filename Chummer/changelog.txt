@@ -90,6 +90,7 @@ Data Changes:
 - Added knowledgeskillkarmacostmin bonus to the Jack of All Trades quality and Learning Stimulator nanoware. 
 - Added missing Black Magic [alt] tradition from FA. Personal Demons bonus not implemented; will need a new bonus created for it.
 - Range Modifiers are now specified in ranges.xml
+- Added SR Missions 1.4 Neotokyo customdata folder. This customdata set hides qualities used in Neo-Tokyo Missions and adjusts the Availability of all Firearms according to the SRM Neo-Tokyo 1.0 document.
 - Added Mental, Physical and Social Limit improvement types to improvements.xml. Closes #3456
 
 New Strings:
