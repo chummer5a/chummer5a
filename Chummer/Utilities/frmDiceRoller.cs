@@ -78,13 +78,13 @@ namespace Chummer
                     int intResult;
                     do
                     {
-                        intResult = 1 + GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
+                        intResult = 1 + GlobalOptions.Instance.RandomGenerator.NextD6ModuloBiasRemoved();
                         lstRandom.Add(intResult);
                     } while (intResult == 6);
                 }
                 else
                 {
-                    int intResult = 1 + GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
+                    int intResult = 1 + GlobalOptions.Instance.RandomGenerator.NextD6ModuloBiasRemoved();
                     lstRandom.Add(intResult);
                 }
             }
@@ -133,7 +133,7 @@ namespace Chummer
             {
                 if (chkVariableGlitch.Checked || (intGlitchCount == intGlitchThreshold - 1 && (decimal.ToInt32(nudDice.Value) & 1) == 0))
                 {
-                    int intBubbleDieResult = 1 + GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
+                    int intBubbleDieResult = 1 + GlobalOptions.Instance.RandomGenerator.NextD6ModuloBiasRemoved();
                     _lstResults.Add(new ListItem(intBubbleDieResult.ToString(GlobalOptions.InvariantCultureInfo), LanguageManager.GetString("String_BubbleDie", GlobalOptions.Language) +
                                                                                                                   strSpaceCharacter + '(' + intBubbleDieResult.ToString(GlobalOptions.CultureInfo) + ')'));
                     if (cboMethod.SelectedValue.ToString() == "Standard" || cboMethod.SelectedValue.ToString() == "Large")
@@ -235,13 +235,13 @@ namespace Chummer
                 {
                     do
                     {
-                        intResult = 1 + GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
+                        intResult = 1 + GlobalOptions.Instance.RandomGenerator.NextD6ModuloBiasRemoved();
                         lstRandom.Add(intResult);
                     } while (intResult == 6);
                 }
                 else
                 {
-                    intResult = 1 + GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
+                    intResult = 1 + GlobalOptions.Instance.RandomGenerator.NextD6ModuloBiasRemoved();
                     lstRandom.Add(intResult);
                 }
             }
@@ -284,7 +284,7 @@ namespace Chummer
             {
                 if (chkVariableGlitch.Checked || (intGlitchCount == intGlitchThreshold - 1 && (decimal.ToInt32(nudDice.Value) & 1) == 0))
                 {
-                    int intBubbleDieResult = 1 + GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
+                    int intBubbleDieResult = 1 + GlobalOptions.Instance.RandomGenerator.NextD6ModuloBiasRemoved();
                     _lstResults.Add(new ListItem(intBubbleDieResult.ToString(), LanguageManager.GetString("String_BubbleDie", GlobalOptions.Language)
                                                                                 + strSpaceCharacter + '(' + intBubbleDieResult.ToString(GlobalOptions.CultureInfo) + ')'));
 

@@ -93,7 +93,7 @@ namespace Chummer.Backend.Equipment
 
         public XmlNode GetNode(string strLanguage)
         {
-            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.LiveCustomData) return _objCachedMyXmlNode;
+            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.Instance.LiveCustomData) return _objCachedMyXmlNode;
             _objCachedMyXmlNode = SourceID == Guid.Empty
                 ? XmlManager
                     .Load(_eSource == Improvement.ImprovementSource.Bioware ? "bioware.xml" : "cyberware.xml",

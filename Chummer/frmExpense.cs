@@ -37,7 +37,7 @@ namespace Chummer
 
             // Determine the DateTime format and use that to display the date field (removing seconds since they're not important).
             DateTimeFormatInfo objDateTimeInfo = GlobalOptions.CultureInfo.DateTimeFormat;
-            datDate.CustomFormat = GlobalOptions.DatesIncludeTime ? objDateTimeInfo.FullDateTimePattern.FastEscapeOnceFromEnd(":ss") : objDateTimeInfo.LongDatePattern;
+            datDate.CustomFormat = GlobalOptions.Instance.DatesIncludeTime ? objDateTimeInfo.FullDateTimePattern.FastEscapeOnceFromEnd(":ss") : objDateTimeInfo.LongDatePattern;
             datDate.Value = DateTime.Now;
 
             txtDescription.Text = LanguageManager.GetString("String_ExpenseDefault", GlobalOptions.Language);

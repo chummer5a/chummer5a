@@ -57,7 +57,7 @@ namespace Chummer
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             CurrentVersion = $"{_objCurrentVersion.Major}.{_objCurrentVersion.Minor}.{_objCurrentVersion.Build}";
-            _blnPreferNightly = GlobalOptions.PreferNightlyBuilds;
+            _blnPreferNightly = GlobalOptions.Instance.PreferNightlyBuilds;
             _strTempUpdatePath = Path.Combine(Path.GetTempPath(), "changelog.txt");
 
             _workerConnectionLoader.WorkerReportsProgress = false;

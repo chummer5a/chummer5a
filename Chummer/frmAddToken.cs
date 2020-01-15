@@ -119,7 +119,7 @@ namespace Chummer
                 int intInitRoll = intInitPasses;
                 for (int j = 0; j < intInitPasses; ++j)
                 {
-                    intInitRoll += GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
+                    intInitRoll += GlobalOptions.Instance.RandomGenerator.NextD6ModuloBiasRemoved();
                 }
                 _character.InitRoll = intInitRoll + _character.InitialInit;
             }

@@ -65,7 +65,7 @@ namespace Chummer.Tests
             Debug.WriteLine("Unit test initialized for: LoadCharacter()");
             
             string strPath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, "TestFiles");
-            string strTestPath = Path.Combine(strPath, DateTime.Now.ToString("yyyy-MM-dd-HH-mm", GlobalOptions.InvariantCultureInfo));
+            string strTestPath = Path.Combine(strPath, DateTime.Now.ToString("yyyy-MM-dd-HH-mm"));
             DirectoryInfo objTestPath = Directory.CreateDirectory(strTestPath);
             DirectoryInfo objPathInfo = new DirectoryInfo(strPath);//Assuming Test is your Folder
             FileInfo[] aobjFiles = objPathInfo.GetFiles("*.chum5"); //Getting Text files

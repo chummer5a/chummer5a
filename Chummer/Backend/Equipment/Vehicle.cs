@@ -1690,7 +1690,7 @@ namespace Chummer.Backend.Equipment
                                 intBaseOffroadSpeed = Math.Max(intBaseOffroadSpeed, Convert.ToInt32(strSpeed.Replace("Rating", objMod.Rating.ToString())));
                             }
                         }
-                        if (IsDrone && GlobalOptions.Dronemods)
+                        if (IsDrone && GlobalOptions.Instance.Dronemods)
                         {
                             string strArmor = objMod.Bonus["armor"]?.InnerText;
                             if (!string.IsNullOrEmpty(strArmor))
@@ -1719,7 +1719,7 @@ namespace Chummer.Backend.Equipment
                                 intBaseOffroadSpeed = Math.Max(intBaseOffroadSpeed, Convert.ToInt32(strSpeed.Replace("Rating", objMod.Rating.ToString())));
                             }
                         }
-                        if (IsDrone && GlobalOptions.Dronemods)
+                        if (IsDrone && GlobalOptions.Instance.Dronemods)
                         {
                             string strArmor = objMod.WirelessBonus["armor"]?.InnerText;
                             if (!string.IsNullOrEmpty(strArmor))
@@ -1840,7 +1840,7 @@ namespace Chummer.Backend.Equipment
                                 intBaseOffroadAccel = Math.Max(intBaseOffroadAccel, Convert.ToInt32(strAccel.Replace("Rating", objMod.Rating.ToString())));
                             }
                         }
-                        if (IsDrone && GlobalOptions.Dronemods)
+                        if (IsDrone && GlobalOptions.Instance.Dronemods)
                         {
                             string strArmor = objMod.Bonus["armor"]?.InnerText;
                             if (!string.IsNullOrEmpty(strArmor))
@@ -1869,7 +1869,7 @@ namespace Chummer.Backend.Equipment
                                 intBaseOffroadAccel = Math.Max(intBaseOffroadAccel, Convert.ToInt32(strAccel.Replace("Rating", objMod.Rating.ToString())));
                             }
                         }
-                        if (IsDrone && GlobalOptions.Dronemods)
+                        if (IsDrone && GlobalOptions.Instance.Dronemods)
                         {
                             string strArmor = objMod.WirelessBonus["armor"]?.InnerText;
                             if (!string.IsNullOrEmpty(strArmor))
@@ -2046,7 +2046,7 @@ namespace Chummer.Backend.Equipment
                                 intBaseOffroadHandling = Math.Max(intBaseOffroadHandling, Convert.ToInt32(strHandling.Replace("Rating", objMod.Rating.ToString())));
                             }
                         }
-                        if (IsDrone && GlobalOptions.Dronemods)
+                        if (IsDrone && GlobalOptions.Instance.Dronemods)
                         {
                             string strArmor = objMod.Bonus["armor"]?.InnerText;
                             if (!string.IsNullOrEmpty(strArmor))
@@ -2075,7 +2075,7 @@ namespace Chummer.Backend.Equipment
                                 intBaseOffroadHandling = Math.Max(intBaseOffroadHandling, Convert.ToInt32(strHandling.Replace("Rating", objMod.Rating.ToString())));
                             }
                         }
-                        if (IsDrone && GlobalOptions.Dronemods)
+                        if (IsDrone && GlobalOptions.Instance.Dronemods)
                         {
                             string strArmor = objMod.WirelessBonus["armor"]?.InnerText;
                             if (!string.IsNullOrEmpty(strArmor))
@@ -2188,12 +2188,12 @@ namespace Chummer.Backend.Equipment
                     }
                 }
                 // Rigger5 Drone Armor starts at 0. All other vehicles start with their base armor.
-                if (IsDrone && GlobalOptions.Dronemods && intModArmor <= 0)
+                if (IsDrone && GlobalOptions.Instance.Dronemods && intModArmor <= 0)
                 {
                     intModArmor += _intArmor;
                 }
                 // Drones have no theoretical armor cap in the optional rules, otherwise, it's capped
-                if (!IsDrone || !GlobalOptions.Dronemods)
+                if (!IsDrone || !GlobalOptions.Instance.Dronemods)
                 {
                     intModArmor = Math.Min(MaxArmor, intModArmor + _intArmor);
                 }
@@ -2533,7 +2533,7 @@ namespace Chummer.Backend.Equipment
 
         public XmlNode GetNode(string strLanguage)
         {
-            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.LiveCustomData) return _objCachedMyXmlNode;
+            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.Instance.LiveCustomData) return _objCachedMyXmlNode;
             _objCachedMyXmlNode = SourceID == Guid.Empty
                 ? XmlManager.Load("vehicles.xml", strLanguage)
                     .SelectSingleNode($"/chummer/vehicles/vehicle[name = \"{Name}\"]")

@@ -141,7 +141,7 @@ namespace Chummer
 
                 Program.MainForm = this;
                 PluginLoader.LoadPlugins();
-                if (GlobalOptions.AllowEasterEggs)
+                if (GlobalOptions.Instance.AllowEasterEggs)
                 {
                     _mascotChummy = new Chummy();
                     _mascotChummy.Show(this);
@@ -198,7 +198,7 @@ namespace Chummer
                 );
                 Timekeeper.Finish("cache_load", loadOperation);
                 frmLoadingForm.PerformStep(LanguageManager.GetString("String_UI"));
-                CharacterRoster = GlobalOptions.HideCharacterRoster
+                CharacterRoster = GlobalOptions.Instance.HideCharacterRoster
                     ? null
                     : new frmCharacterRoster
                     {
@@ -246,7 +246,7 @@ namespace Chummer
                 }
 
                 OpenCharacterList(lstCharactersToLoad);
-                if (!GlobalOptions.HideCharacterRoster)
+                if (!GlobalOptions.Instance.HideCharacterRoster)
                 {
                     CharacterRoster.WindowState = FormWindowState.Maximized;
                     CharacterRoster.Show();
@@ -284,7 +284,7 @@ namespace Chummer
                             bool blnRefreshSticky = false;
                             foreach(CharacterShared objClosedForm in e.OldItems)
                             {
-                                if(GlobalOptions.FavoritedCharacters.Contains(objClosedForm.CharacterObject.FileName))
+                                if(GlobalOptions.Instance.FavoritedCharacters.Contains(objClosedForm.CharacterObject.FileName))
                                 {
                                     blnRefreshSticky = true;
                                     break;
@@ -300,7 +300,7 @@ namespace Chummer
                             bool blnRefreshSticky = false;
                             foreach(CharacterShared objClosedForm in e.OldItems)
                             {
-                                if(GlobalOptions.FavoritedCharacters.Contains(objClosedForm.CharacterObject.FileName))
+                                if(GlobalOptions.Instance.FavoritedCharacters.Contains(objClosedForm.CharacterObject.FileName))
                                 {
                                     blnRefreshSticky = true;
                                     break;
@@ -311,7 +311,7 @@ namespace Chummer
                             {
                                 foreach(CharacterShared objNewForm in e.NewItems)
                                 {
-                                    if(GlobalOptions.FavoritedCharacters.Contains(objNewForm.CharacterObject.FileName))
+                                    if(GlobalOptions.Instance.FavoritedCharacters.Contains(objNewForm.CharacterObject.FileName))
                                     {
                                         blnRefreshSticky = true;
                                         break;
@@ -361,7 +361,7 @@ namespace Chummer
 
         private void DoCacheGitVersion(object sender, DoWorkEventArgs e)
         {
-            string strUpdateLocation = GlobalOptions.PreferNightlyBuilds
+            string strUpdateLocation = GlobalOptions.Instance.PreferNightlyBuilds
                 ? "https://api.github.com/repos/chummer5a/chummer5a/releases"
                 : "https://api.github.com/repos/chummer5a/chummer5a/releases/latest";
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
@@ -513,7 +513,7 @@ namespace Chummer
         {
             if(!e.Cancelled && Utils.GitUpdateAvailable() > 0)
             {
-                if(GlobalOptions.AutomaticUpdate)
+                if(GlobalOptions.Instance.AutomaticUpdate)
                 {
                     if(_frmUpdate == null)
                     {
@@ -726,7 +726,7 @@ namespace Chummer
                 string strFileName = ((ToolStripMenuItem)sender).Text;
                 strFileName = strFileName.Substring(3, strFileName.Length - 3).Trim();
 
-                GlobalOptions.FavoritedCharacters.Add(strFileName);
+                GlobalOptions.Instance.FavoritedCharacters.Add(strFileName);
             }
         }
 
@@ -746,8 +746,8 @@ namespace Chummer
             {
                 string strFileName = ((ToolStripMenuItem)sender).Text;
 
-                GlobalOptions.FavoritedCharacters.Remove(strFileName);
-                GlobalOptions.MostRecentlyUsedCharacters.Insert(0, strFileName);
+                GlobalOptions.Instance.FavoritedCharacters.Remove(strFileName);
+                GlobalOptions.Instance.MostRecentlyUsedCharacters.Insert(0, strFileName);
             }
         }
 
@@ -774,7 +774,7 @@ namespace Chummer
                     if(ActiveMdiChild is CharacterShared frmCharacterShared)
                     {
                         tp.Text = frmCharacterShared.CharacterObject.CharacterName;
-                        if (GlobalOptions.AllowEasterEggs && _mascotChummy != null)
+                        if (GlobalOptions.Instance.AllowEasterEggs && _mascotChummy != null)
                         {
                             _mascotChummy.CharacterObject = frmCharacterShared.CharacterObject;
                         }
@@ -860,7 +860,7 @@ namespace Chummer
 
         private void mnuToolsDiceRoller_Click(object sender, EventArgs e)
         {
-            if(GlobalOptions.SingleDiceRoller)
+            if(GlobalOptions.Instance.SingleDiceRoller)
             {
                 // Only a single instance of the Dice Roller window is allowed, so either find the existing one and focus on it, or create a new one.
                 if(_frmRoller == null)
@@ -947,10 +947,10 @@ namespace Chummer
                 Size = Properties.Settings.Default.Size;
             }
 
-            if(GlobalOptions.StartupFullscreen)
+            if(GlobalOptions.Instance.StartupFullscreen)
                 WindowState = FormWindowState.Maximized;
 
-            mnuToolsOmae.Visible = GlobalOptions.OmaeEnabled;
+            mnuToolsOmae.Visible = GlobalOptions.Instance.OmaeEnabled;
 
             //        if (GlobalOptions.UseLogging)
             //        {
@@ -1189,7 +1189,7 @@ namespace Chummer
                 }
 
                 if(blnIncludeInMRU && !string.IsNullOrEmpty(objCharacter.FileName) && File.Exists(objCharacter.FileName))
-                    GlobalOptions.MostRecentlyUsedCharacters.Insert(0, objCharacter.FileName);
+                    GlobalOptions.Instance.MostRecentlyUsedCharacters.Insert(0, objCharacter.FileName);
 
                 UpdateCharacterTabTitle(objCharacter, new PropertyChangedEventArgs(nameof(Character.CharacterName)));
 
@@ -1305,8 +1305,8 @@ namespace Chummer
         /// </summary>
         public void PopulateMRUToolstripMenu(object sender, TextEventArgs e)
         {
-            ReadOnlyObservableCollection<string> strStickyMRUList = new ReadOnlyObservableCollection<string>(GlobalOptions.FavoritedCharacters);
-            ReadOnlyObservableCollection<string> strMRUList = new ReadOnlyObservableCollection<string>(GlobalOptions.MostRecentlyUsedCharacters);
+            ReadOnlyObservableCollection<string> strStickyMRUList = new ReadOnlyObservableCollection<string>(GlobalOptions.Instance.FavoritedCharacters);
+            ReadOnlyObservableCollection<string> strMRUList = new ReadOnlyObservableCollection<string>(GlobalOptions.Instance.MostRecentlyUsedCharacters);
 
             SuspendLayout();
             mnuFileMRUSeparator.Visible = strStickyMRUList.Count > 0 || strMRUList.Count > 0;
@@ -1442,7 +1442,7 @@ namespace Chummer
 
         private void objCareer_DiceRollerOpenedInt(Character objCharacter, int intDice)
         {
-            if(GlobalOptions.SingleDiceRoller)
+            if(GlobalOptions.Instance.SingleDiceRoller)
             {
                 if(_frmRoller == null)
                 {
@@ -1465,7 +1465,7 @@ namespace Chummer
 
         private void mnuClearUnpinnedItems_Click(object sender, EventArgs e)
         {
-            GlobalOptions.MostRecentlyUsedCharacters.Clear();
+            GlobalOptions.Instance.MostRecentlyUsedCharacters.Clear();
         }
 
         private void mnuRestart_Click(object sender, EventArgs e)

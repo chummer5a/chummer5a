@@ -1965,7 +1965,7 @@ namespace Chummer.Backend.Equipment
 
         public XmlNode GetNode(string strLanguage, string strName = "", string strCategory = "")
         {
-            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
+            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.Instance.LiveCustomData)
             {
                 XmlDocument objDoc = XmlManager.Load("gear.xml", strLanguage);
                 string strNameWithQuotes = Name.CleanXPath();

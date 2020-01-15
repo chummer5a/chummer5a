@@ -319,7 +319,7 @@ namespace Chummer.Backend.Equipment
             if (!objNode.TryGetBoolFieldQuickly("allowbonuslp", ref _blnAllowBonusLP))
                 GetNode()?.TryGetBoolFieldQuickly("allowbonuslp", ref _blnAllowBonusLP);
             if (!objNode.TryGetInt32FieldQuickly("bonuslp", ref _intBonusLP) && _strBaseLifestyle == "Traveler")
-                _intBonusLP = 1 + GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
+                _intBonusLP = 1 + GlobalOptions.Instance.RandomGenerator.NextD6ModuloBiasRemoved();
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetBoolFieldQuickly("trustfund", ref _blnTrustFund);
             if (objNode["primarytenant"] == null)
@@ -881,7 +881,7 @@ namespace Chummer.Backend.Equipment
 
         public XmlNode GetNode(string strLanguage)
         {
-            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
+            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.Instance.LiveCustomData)
             {
                 _objCachedMyXmlNode = SourceID == Guid.Empty
                     ? XmlManager.Load("lifestyles.xml", strLanguage)

@@ -425,10 +425,10 @@ namespace Chummer
                     XmlTextWriter writer = new XmlTextWriter(fs, Encoding.UTF8);
                     writer.WriteStartElement("settings");
 
-                    ClassSaver.Save(GlobalOptions.Instance, writer);
+                    ClassSaver.Save(Instance, writer);
 
                     writer.WriteStartElement("books");
-                    foreach (SourcebookInfo book in GlobalOptions.SourcebookInfo)
+                    foreach (SourcebookInfo book in Instance.SourcebookInfo)
                     {
                         writer.WriteStartElement("book");
                         ClassSaver.Save(book, writer);
@@ -444,10 +444,10 @@ namespace Chummer
             else
             {
                 RegistryKey rootKey = Registry.CurrentUser.CreateSubKey("Software\\Chummer5");
-                ClassSaver.Save(GlobalOptions.Instance, rootKey);
+                ClassSaver.Save(Instance, rootKey);
                 int count = 0;
                 RegistryKey bookKey = Registry.CurrentUser.CreateSubKey("Software\\Chummer5\\Books");
-                foreach (SourcebookInfo book in GlobalOptions.SourcebookInfo)
+                foreach (SourcebookInfo book in Instance.SourcebookInfo)
                 {
                     RegistryKey k2 = bookKey.CreateSubKey(count.ToString("D2"));
                     ClassSaver.Save(book, k2);

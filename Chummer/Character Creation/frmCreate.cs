@@ -3385,7 +3385,7 @@ namespace Chummer
             if (!(treSpells.SelectedNode?.Tag is Spell objSpell)) return;
             // Spells that come from Initiation Grades can't be deleted normally. 
             if (objSpell.Grade != 0) return;
-            if (!objSpell.Remove(CharacterObject,GlobalOptions.ConfirmDelete)) return;
+            if (!objSpell.Remove(CharacterObject,GlobalOptions.Instance.ConfirmDelete)) return;
             IsCharacterUpdateRequested = true;
             IsDirty = true;
         }
@@ -3433,7 +3433,7 @@ namespace Chummer
         private void cmdDeleteCyberware_Click(object sender, EventArgs e)
         {
             if (!(treCyberware.SelectedNode?.Tag is ICanRemove selectedObject)) return;
-            if (!selectedObject.Remove(CharacterObject,GlobalOptions.ConfirmDelete)) return;
+            if (!selectedObject.Remove(CharacterObject,GlobalOptions.Instance.ConfirmDelete)) return;
 
             IsCharacterUpdateRequested = true;
             IsDirty = true;
@@ -3550,7 +3550,7 @@ namespace Chummer
         private void cmdDeleteArmor_Click(object sender, EventArgs e)
         {
             if (!(treArmor.SelectedNode?.Tag is ICanRemove selectedObject)) return;
-            if (!selectedObject.Remove(CharacterObject,GlobalOptions.ConfirmDelete)) return;
+            if (!selectedObject.Remove(CharacterObject,GlobalOptions.Instance.ConfirmDelete)) return;
 
             IsCharacterUpdateRequested = true;
             IsDirty = true;
@@ -3624,7 +3624,7 @@ namespace Chummer
         {
             if (treWeapons.SelectedNode?.Tag is ICanRemove objselectedNode)
             {
-                if (!objselectedNode.Remove(CharacterObject,GlobalOptions.ConfirmDelete)) return;
+                if (!objselectedNode.Remove(CharacterObject,GlobalOptions.Instance.ConfirmDelete)) return;
                 IsCharacterUpdateRequested = true;
                 IsDirty = true;
             }
@@ -3663,7 +3663,7 @@ namespace Chummer
             // Delete the selected Lifestyle.
             if (treLifestyles.SelectedNode?.Tag is ICanRemove selectedObject)
             {
-                if (!selectedObject.Remove(CharacterObject,GlobalOptions.ConfirmDelete)) return;
+                if (!selectedObject.Remove(CharacterObject,GlobalOptions.Instance.ConfirmDelete)) return;
                 IsCharacterUpdateRequested = true;
                 IsDirty = true;
             }
@@ -3686,7 +3686,7 @@ namespace Chummer
 
         private void cmdDeleteGear_Click(object sender, EventArgs e)
         {
-            if (treGear.SelectedNode?.Tag is ICanRemove objSelectedGear && objSelectedGear.Remove(CharacterObject, GlobalOptions.ConfirmDelete))
+            if (treGear.SelectedNode?.Tag is ICanRemove objSelectedGear && objSelectedGear.Remove(CharacterObject, GlobalOptions.Instance.ConfirmDelete))
             {
                 IsCharacterUpdateRequested = true;
 
@@ -3806,7 +3806,7 @@ namespace Chummer
             }
             else if (objSelectedNodeTag is ICanRemove selectedObject)
             {
-                if (selectedObject.Remove(CharacterObject, GlobalOptions.ConfirmDelete))
+                if (selectedObject.Remove(CharacterObject, GlobalOptions.Instance.ConfirmDelete))
                 {
                     IsCharacterUpdateRequested = true;
                     IsDirty = true;
@@ -3826,7 +3826,7 @@ namespace Chummer
         {
             if (treMartialArts.SelectedNode?.Tag is ICanRemove objSelectedNode)
             {
-                if (objSelectedNode.Remove(CharacterObject,GlobalOptions.ConfirmDelete))
+                if (objSelectedNode.Remove(CharacterObject,GlobalOptions.Instance.ConfirmDelete))
                 {
                     IsCharacterUpdateRequested = true;
                     IsDirty = true;
@@ -3999,7 +3999,7 @@ namespace Chummer
         private void cmdDeleteMetamagic_Click(object sender, EventArgs e)
         {
             if (!(treMetamagic.SelectedNode?.Tag is ICanRemove selectedObject)) return;
-            if (!selectedObject.Remove(CharacterObject, GlobalOptions.ConfirmDelete)) return;
+            if (!selectedObject.Remove(CharacterObject, GlobalOptions.Instance.ConfirmDelete)) return;
             IsCharacterUpdateRequested = true;
             IsDirty = true;
         }
@@ -4047,7 +4047,7 @@ namespace Chummer
         {
             // If the selected object is not a critter or it comes from an initiate grade, we don't want to remove it.
             if (!(treCritterPowers.SelectedNode?.Tag is CritterPower objCritterPower) || objCritterPower.Grade != 0) return;
-            if (!objCritterPower.Remove(CharacterObject,GlobalOptions.ConfirmDelete)) return;
+            if (!objCritterPower.Remove(CharacterObject,GlobalOptions.Instance.ConfirmDelete)) return;
 
             IsCharacterUpdateRequested = true;
             IsDirty = true;
@@ -4056,7 +4056,7 @@ namespace Chummer
         private void cmdDeleteComplexForm_Click(object sender, EventArgs e)
         {
             if (!(treComplexForms.SelectedNode?.Tag is ICanRemove selectedObject)) return;
-            if (!selectedObject.Remove(CharacterObject,GlobalOptions.ConfirmDelete)) return;
+            if (!selectedObject.Remove(CharacterObject,GlobalOptions.Instance.ConfirmDelete)) return;
             IsCharacterUpdateRequested = true;
             IsDirty = true;
         }
@@ -4065,7 +4065,7 @@ namespace Chummer
         {
             // Delete the selected AI Program.
             if (!(treAIPrograms.SelectedNode?.Tag is ICanRemove selectedObject)) return;
-            if (!selectedObject.Remove(CharacterObject,GlobalOptions.ConfirmDelete)) return;
+            if (!selectedObject.Remove(CharacterObject,GlobalOptions.Instance.ConfirmDelete)) return;
 
             IsCharacterUpdateRequested = true;
             IsDirty = true;
@@ -10221,7 +10221,7 @@ namespace Chummer
 
         private void LiveUpdateFromCharacterFile(object sender, EventArgs e)
         {
-            if (IsDirty || !GlobalOptions.LiveUpdateCleanCharacterFiles || IsLoading || _blnSkipUpdate || IsCharacterUpdateRequested)
+            if (IsDirty || !GlobalOptions.Instance.LiveUpdateCleanCharacterFiles || IsLoading || _blnSkipUpdate || IsCharacterUpdateRequested)
                 return;
 
             string strCharacterFile = CharacterObject.FileName;
@@ -12127,7 +12127,7 @@ namespace Chummer
                 lblVehicleSensor.Text = objVehicle.CalculatedSensor.ToString(GlobalOptions.CultureInfo);
                 if (CharacterObjectOptions.BookEnabled("R5"))
                 {
-                    if (objVehicle.IsDrone && GlobalOptions.Dronemods)
+                    if (objVehicle.IsDrone && GlobalOptions.Instance.Dronemods)
                     {
                         lblVehiclePowertrainLabel.Visible = false;
                         lblVehiclePowertrain.Visible = false;
@@ -13724,7 +13724,7 @@ namespace Chummer
                 {
                     if (CharacterObjectOptions.BookEnabled("R5"))
                     {
-                        if (objVehicle.IsDrone && GlobalOptions.Dronemods)
+                        if (objVehicle.IsDrone && GlobalOptions.Instance.Dronemods)
                         {
                             if (objVehicle.DroneModSlotsUsed > objVehicle.DroneModSlots)
                             {
@@ -13787,7 +13787,7 @@ namespace Chummer
                 int intIllegalDowngrades = 0;
                 foreach (Vehicle objVehicle in CharacterObject.Vehicles)
                 {
-                    if (objVehicle.IsDrone && GlobalOptions.Dronemods)
+                    if (objVehicle.IsDrone && GlobalOptions.Instance.Dronemods)
                     {
                         foreach (VehicleMod objMod in objVehicle.Mods.Where(objMod => !objMod.IncludedInVehicle && objMod.Equipped && objMod.Downgrade))
                         {
@@ -13976,7 +13976,7 @@ namespace Chummer
                             LanguageManager.GetString("MessageTitle_ExtraNuyen", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
                         return false;
                 }
-                if (GlobalOptions.CreateBackupOnCareer && chkCharacterCreated.Checked)
+                if (GlobalOptions.Instance.CreateBackupOnCareer && chkCharacterCreated.Checked)
                 {
                     // Create a pre-Career Mode backup of the character.
                     // Make sure the backup directory exists.
@@ -16135,7 +16135,7 @@ namespace Chummer
         private void btnDeleteCustomDrug_Click(object sender, EventArgs e)
         {
             if (!(treCustomDrugs.SelectedNode?.Tag is ICanRemove selectedObject)) return;
-            if (!selectedObject.Remove(CharacterObject, GlobalOptions.ConfirmDelete)) return;
+            if (!selectedObject.Remove(CharacterObject, GlobalOptions.Instance.ConfirmDelete)) return;
 
             IsCharacterUpdateRequested = true;
             IsDirty = true;

@@ -761,7 +761,7 @@ namespace Chummer.UI.Shared
                 lblVehicleSeats.Text = objVehicle.TotalSeats.ToString();
 
                 // Update the vehicle mod slots
-                if (objVehicle.IsDrone && GlobalOptions.Dronemods)
+                if (objVehicle.IsDrone && GlobalOptions.Instance.Dronemods)
                 {
                     lblVehicleDroneModSlots.Text = objVehicle.DroneModSlotsUsed.ToString() + '/' + objVehicle.DroneModSlots;
                 }
@@ -800,8 +800,8 @@ namespace Chummer.UI.Shared
                 
                 if (_objCharacter.Options.BookEnabled("R5"))
                 {
-                    DisplayVehicleDroneMods(objVehicle.IsDrone && GlobalOptions.Dronemods);
-                    DisplayVehicleMods(!(objVehicle.IsDrone && GlobalOptions.Dronemods));
+                    DisplayVehicleDroneMods(objVehicle.IsDrone && GlobalOptions.Instance.Dronemods);
+                    DisplayVehicleMods(!(objVehicle.IsDrone && GlobalOptions.Instance.Dronemods));
                 }
                 else
                 {
@@ -2679,7 +2679,7 @@ namespace Chummer.UI.Shared
                     bool blnOverCapacity = false;
                     if (_objCharacter.Options.BookEnabled("R5"))
                     {
-                        if (objVehicle.IsDrone && GlobalOptions.Dronemods)
+                        if (objVehicle.IsDrone && GlobalOptions.Instance.Dronemods)
                         {
                             if (objVehicle.DroneModSlotsUsed > objVehicle.DroneModSlots)
                                 blnOverCapacity = true;

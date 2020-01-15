@@ -50,7 +50,7 @@ namespace Chummer.Plugins
         {
             try
             {
-                if (GlobalOptions.PluginsEnabled == false)
+                if (GlobalOptions.Instance.PluginsEnabled == false)
                 {
                     Log.Info("Plugins are globally disabled - exiting PluginControl.Initialize()");
                     return;
@@ -104,15 +104,14 @@ namespace Chummer.Plugins
         { get
           {
                 List<IPlugin> result = new List<IPlugin>();
-                if (GlobalOptions.PluginsEnabled == false)
+                if (GlobalOptions.Instance.PluginsEnabled == false)
                     return result;
                 if (MyPlugins == null)
                     return result;
                 var list = MyPlugins.ToList();
                 foreach(var plugin in list)
                 {
-                    bool enabled = false;
-                    if (GlobalOptions.PluginsEnabledDic.TryGetValue(plugin.ToString(), out enabled))
+                    if (GlobalOptions.Instance.PluginsEnabledDic.TryGetValue(plugin.ToString(), out bool enabled))
                     {
                         if (enabled)
                             result.Add(plugin);

@@ -71,7 +71,7 @@ namespace Chummer
         static XmlManager()
         {
             s_LstDataDirectories.Add(Path.Combine(Utils.GetStartupPath, "data"));
-            foreach (CustomDataDirectoryInfo objCustomDataDirectory in GlobalOptions.CustomDataDirectoryInfo.Where(x => x.Enabled))
+            foreach (CustomDataDirectoryInfo objCustomDataDirectory in GlobalOptions.Instance.CustomDataDirectoryInfo.Where(x => x.Enabled))
             {
                 s_LstDataDirectories.Add(objCustomDataDirectory.Path);
             }
@@ -85,7 +85,7 @@ namespace Chummer
                 s_SetFilesWithCachedDocs.Clear();
             s_LstDataDirectories.Clear();
             s_LstDataDirectories.Add(Path.Combine(Utils.GetStartupPath, "data"));
-            foreach (CustomDataDirectoryInfo objCustomDataDirectory in GlobalOptions.CustomDataDirectoryInfo.Where(x => x.Enabled))
+            foreach (CustomDataDirectoryInfo objCustomDataDirectory in GlobalOptions.Instance.CustomDataDirectoryInfo.Where(x => x.Enabled))
             {
                 s_LstDataDirectories.Add(objCustomDataDirectory.Path);
             }
@@ -217,7 +217,7 @@ namespace Chummer
                 objReference.FileDate = datDate;
                 objReference.FileName = strFileName;
                 objReference.Language = strLanguage;
-                if (GlobalOptions.LiveCustomData)
+                if (GlobalOptions.Instance.LiveCustomData)
                     objReference.XmlContent = objDoc.Clone() as XmlDocument;
                 else
                     objReference.XmlContent = objDoc;
@@ -230,7 +230,7 @@ namespace Chummer
                 // A new XmlDocument is created by loading the a copy of the cached one so that we don't stuff custom content into the cached copy
                 // (which we don't want and also results in multiple copies of each custom item).
                 // Pull the document from cache.
-                if (GlobalOptions.LiveCustomData)
+                if (GlobalOptions.Instance.LiveCustomData)
                     objDoc = objReference.XmlContent.Clone() as XmlDocument;
                 else
                     objDoc = objReference.XmlContent;
@@ -243,7 +243,7 @@ namespace Chummer
 
             // Load any custom data files the user might have. Do not attempt this if we're loading the Improvements file.
             bool blnHasLiveCustomData = false;
-            if (GlobalOptions.LiveCustomData)
+            if (GlobalOptions.Instance.LiveCustomData)
             {
                 strPath = Path.Combine(Utils.GetStartupPath, "livecustomdata");
                 if (Directory.Exists(strPath))

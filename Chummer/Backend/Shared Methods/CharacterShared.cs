@@ -6026,7 +6026,7 @@ namespace Chummer
             Cursor = Cursors.WaitCursor;
             if (_objCharacter.Save())
             {
-                GlobalOptions.MostRecentlyUsedCharacters.Insert(0, _objCharacter.FileName);
+                GlobalOptions.Instance.MostRecentlyUsedCharacters.Insert(0, _objCharacter.FileName);
                 IsDirty = false;
                 Cursor = objOldCursor;
 

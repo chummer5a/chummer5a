@@ -890,7 +890,7 @@ namespace Chummer.Backend.Uniques
         {
             if(Type == TraditionType.None)
                 return null;
-            if(_xmlCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
+            if(_xmlCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.Instance.LiveCustomData)
             {
                 _xmlCachedMyXmlNode = SourceID == Guid.Empty
                     ? GetTraditionDocument(strLanguage).SelectSingleNode($"/chummer/traditions/tradition[name = \"{Name}\"]")

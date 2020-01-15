@@ -793,7 +793,7 @@ namespace Chummer.Backend.Equipment
 
         public XmlNode GetNode(string strLanguage)
         {
-            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
+            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.Instance.LiveCustomData)
             {
                 _objCachedMyXmlNode = SourceID == Guid.Empty
                     ? XmlManager.Load("drugcomponents.xml", strLanguage)
@@ -1328,7 +1328,7 @@ namespace Chummer.Backend.Equipment
 
 	    public XmlNode GetNode(string strLanguage)
 	    {
-	        if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
+	        if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.Instance.LiveCustomData)
 	        {
 	            _objCachedMyXmlNode = SourceID == Guid.Empty
 	                ? XmlManager.Load("drugcomponents.xml", strLanguage)

@@ -52,7 +52,7 @@ namespace Chummer
                 new ListItem("SumtoTen", LanguageManager.GetString("String_SumtoTen", GlobalOptions.Language)),
             };
 
-            if (GlobalOptions.LifeModuleEnabled)
+            if (GlobalOptions.Instance.LifeModuleEnabled)
             {
                 lstBuildMethod.Add(new ListItem("LifeModule", LanguageManager.GetString("String_LifeModule", GlobalOptions.Language)));
             }
