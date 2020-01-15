@@ -6422,7 +6422,7 @@ if (!Utils.IsUnitTest){
         /// <summary>
         /// Character Options object.
         /// </summary>
-        public CharacterOptions Options { get; }
+        public CharacterOptions Options => _objOptions;
 
         /// <summary>
         /// Name of the file the Character is saved to.
