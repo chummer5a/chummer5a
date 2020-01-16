@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
 	Chummer5a is free software: you can redistribute it and/or modify
@@ -8484,6 +8484,150 @@
 				<name>Techworm</name>
 				<translate>Techwurm</translate>
 				<altpage>180</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>e5727729-0e19-4c1e-924d-b2bc4232e752</id>
+				<name>Anarch</name>
+				<translate>Anarch</translate>
+				<altpage>112</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>46f688ea-66ab-4b63-a2ea-ce797ad001e6</id>
+				<name>Arboreal</name>
+				<translate>Baumgeist</translate>
+				<altpage>112</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>c1989f9a-c4c7-4f08-83eb-e252663b5142</id>
+				<name>Blackjack</name>
+				<translate>Blackjack</translate>
+				<altpage>113</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>7499b2df-7a18-4390-a812-30c3ba528856</id>
+				<name>Boggle</name>
+				<translate>Zersetzer</translate>
+				<altpage>133</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>a2cf75f0-ab9c-4d27-84c5-cebefb0f0d98</id>
+				<name>Bugul</name>
+				<translate>Bugul</translate>
+				<altpage>113</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>42a1c03d-d70a-47df-a23f-2260615bdefe</id>
+				<name>Chindi</name>
+				<translate>Chindi</translate>
+				<altpage>113</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>a296f3ad-26c1-40c4-9cdb-732aa5b86f56</id>
+				<name>Corpselight</name>
+				<translate>Irrlicht</translate>
+				<altpage>119</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>943af23e-b4b0-4b0b-84ed-25d97a92ce77</id>
+				<name>Croki</name>
+				<translate>Croki</translate>
+				<altpage>114</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>d1d30016-6f62-4e08-8387-5de731f1086e</id>
+				<name>Duende</name>
+				<translate>Duende</translate>
+				<altpage>116</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>0919e53d-6e38-48b6-8c4b-f0c22f8cd41d</id>
+				<name>Elvar</name>
+				<translate>Elvar</translate>
+				<altpage>117</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>de407ebd-f896-4efe-b16e-511d0181d774</id>
+				<name>Ejerian</name>
+				<translate>Ejerian</translate>
+				<altpage>116</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>33951b3b-65f5-493f-8eb1-65e208f77a74</id>
+				<name>Erinyes</name>
+				<translate>Erinnyen</translate>
+				<altpage>117</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>6504cd2d-5e31-4dce-8c78-cbfcfda094f7</id>
+				<name>Green Man/Heart of the City</name>
+				<translate>Grüner Mann/Stadtherz</translate>
+				<altpage>118</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>7aa16d7a-4f70-4e3a-a9c0-9a3d9ab6e07e</id>
+				<name>Imp</name>
+				<translate>Kobold</translate>
+				<altpage>121</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>fb5ad9e1-f13e-4da7-b00e-30197cd5ef6c</id>
+				<name>Jarl</name>
+				<translate>Jarl</translate>
+				<altpage>119</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>17b642e0-f3ea-4b1c-8b51-a3eccf0a1ab8</id>
+				<name>Kappa</name>
+				<translate>Kappa</translate>
+				<altpage>120</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>5e37b646-6a2b-438d-92b2-4452d3d3599f</id>
+				<name>Morbi</name>
+				<translate>Morbi</translate>
+				<altpage>123</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>31fa84e3-5d2a-406f-8e6e-4c25ea7e3779</id>
+				<name>Nocnitsa</name>
+				<translate>Nocnitsa</translate>
+				<altpage>124</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>18ab8683-9c7e-4234-9d1d-35d0f779ec71</id>
+				<name>Phantom</name>
+				<translate>Phantom</translate>
+				<altpage>125</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>be973a8d-b997-4d64-b9a7-20d85bc48d08</id>
+				<name>Preta</name>
+				<translate>Preta</translate>
+				<altpage>127</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>d189dcde-b36c-45f4-9a6d-99905af063ba</id>
+				<name>Stabber</name>
+				<translate>Tausendstecher</translate>
+				<altpage>128</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>98c87b5e-24ad-4fbb-9ad5-29218b801b5b</id>
+				<name>Tungak</name>
+				<translate>Tungak</translate>
+				<altpage>128</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>d6fa5e21-29bd-4cbd-a678-1bf14327a98f</id>
+				<name>Ver</name>
+				<translate>Ver</translate>
+				<altpage>129</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>6cc44762-1e85-4097-bbb4-4f6e5eed2724</id>
+				<name>Vucub Caquix</name>
+				<translate>Vucub-Caquix</translate>
+				<altpage>130</altpage>
 			</metatype>
 		</metatypes>
 	</chummer>
@@ -37911,6 +38055,12 @@
 				<translate>Nordisch [Seidwerker]</translate>
 				<altpage>70</altpage>
 			</tradition>
+			<tradition>
+				<id>09843ed9-6fd1-4c43-9e9f-f6d66493ebdc</id>
+				<name>Black Magic [Alt]</name>
+				<translate>Schwarze Magie [alternativ]</translate>
+				<altpage>73</altpage>
+			</tradition>
 		</traditions>
 		<spirits>
 			<spirit>
@@ -46285,12 +46435,6 @@
 	<chummer file="improvements.xml">
 		<improvements>
 			<improvement>
-				<id>actiondicepool</id>
-				<name>Action Dice-Pool Modifier</name>
-				<translate>Würfelpoolmodifikator für Aktionen</translate>
-				<altpage>Stellt die Anzahl der Kästchen ein, die der Charakter in seinem geistigen Zustandsmonitor hat. Positive Zahlen erhöhen die Anzahl der Kästchen im Zustandsmonitor. Negative Zahlen reduzieren die Anzahl der Kästchen im Zustandsmonitor.</altpage>
-			</improvement>
-			<improvement>
 				<id>specificattribute</id>
 				<name>Attribute</name>
 				<translate>Attribut</translate>
@@ -46727,6 +46871,24 @@
 				<name>Free Spells</name>
 				<translate>Kostenlose Zauber</translate>
 				<altpage>Erlaubt dem Charakter, einige Zauber als kostenlos zu markieren, um Karmakosten zu vermeiden.</altpage>
+			</improvement>
+			<improvement>
+				<id>mentallimit</id>
+				<name>Mental Limit</name>
+				<translate>Geistiges Limit</translate>
+				<altpage>Passt das geistige Limit des Charakters um den angegebenen Wert an.</altpage>
+			</improvement>
+			<improvement>
+				<id>physicallimit</id>
+				<name>Physical Limit</name>
+				<translate>Körperliches Limit</translate>
+				<altpage>Passt das körperliche Limit des Charakters um den angegebenen Wert an.</altpage>
+			</improvement>
+			<improvement>
+				<id>sociallimit</id>
+				<name>Social Limit</name>
+				<translate>Soziales Limit</translate>
+				<altpage>Passt das soziale Limit des Charakters um den angegebenen Wert an.</altpage>
 			</improvement>
 		</improvements>
 	</chummer>
@@ -47279,6 +47441,8 @@
 		</hobbiesvices>
 	</chummer>
 	<chummer file="ranges.xml">
+		<modifiers>
+		</modifiers>
 		<ranges>
 			<range>
 				<name>Tasers</name>
