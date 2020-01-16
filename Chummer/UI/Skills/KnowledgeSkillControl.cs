@@ -129,6 +129,9 @@ namespace Chummer.UI.Skills
             cmdDelete.DataBindings.Add("Visible", skill, nameof(Skill.AllowDelete), false, DataSourceUpdateMode.OnPropertyChanged);
             cmdDelete.Click += (sender, args) =>
             {
+                if (!skill.CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteKnowledgeSkill",
+                    GlobalOptions.Language)))
+                    return;
                 skill.UnbindSkill();
                 skill.CharacterObject.SkillsSection.KnowledgeSkills.Remove(skill);
             };

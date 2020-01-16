@@ -5464,6 +5464,16 @@
       <cost>Rating * 5000</cost>
       <source>CF</source>
       <page>149</page>
+      <bonus>
+        <knowledgeskillkarmacost>
+          <name />
+          <val>-Rating</val>
+        </knowledgeskillkarmacost>
+        <knowledgeskillkarmacostmin>
+          <name />
+          <val>2</val>
+        </knowledgeskillkarmacostmin>
+      </bonus>
       <forcegrade>None</forcegrade>
       <rating>3</rating>
     </cyberware>

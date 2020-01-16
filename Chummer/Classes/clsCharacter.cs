@@ -965,13 +965,17 @@ namespace Chummer
                     {
                         setChangedProperties.Add(nameof(PowerPointsUsed));
                         setChangedProperties.Add(nameof(AnyPowerAdeptWayDiscountEnabled));
+                        setChangedProperties.Add(nameof(AllowAdeptWayPowerDiscount));
                     }
                     break;
                 case ListChangedType.ItemAdded:
                     {
                         setChangedProperties.Add(nameof(PowerPointsUsed));
-                        if(Powers[e.NewIndex].AdeptWayDiscountEnabled)
+                        if (Powers[e.NewIndex].AdeptWayDiscountEnabled)
+                        {
                             setChangedProperties.Add(nameof(AnyPowerAdeptWayDiscountEnabled));
+                            setChangedProperties.Add(nameof(AllowAdeptWayPowerDiscount));
+                        }
                     }
                     break;
                 case ListChangedType.ItemDeleted:
@@ -986,10 +990,24 @@ namespace Chummer
                             break;
                         }
 
-                        if(e.PropertyDescriptor.Name == nameof(Power.AdeptWayDiscountEnabled))
+                        if (e.PropertyDescriptor.Name == nameof(Power.AdeptWayDiscountEnabled))
+                        {
                             setChangedProperties.Add(nameof(AnyPowerAdeptWayDiscountEnabled));
-                        else if(e.PropertyDescriptor.Name == nameof(Power.PowerPoints))
+                            setChangedProperties.Add(nameof(AllowAdeptWayPowerDiscount));
+                        }
+                        else if (setChangedProperties.Add(nameof(Power.DiscountedAdeptWay)))
+                        {
+                            setChangedProperties.Add(nameof(AnyPowerAdeptWayDiscountEnabled));
+                            setChangedProperties.Add(nameof(AllowAdeptWayPowerDiscount));
+                            foreach (Power objPower in Powers)
+                            {
+                                objPower.OnPropertyChanged(nameof(Power.AdeptWayDiscountEnabled));
+                            }
+                        }
+                        else if (e.PropertyDescriptor.Name == nameof(Power.PowerPoints))
+                        {
                             setChangedProperties.Add(nameof(PowerPointsUsed));
+                        }
                     }
                     break;
             }
@@ -12202,14 +12220,14 @@ if (!Utils.IsUnitTest){
             {
                 decWalk *= (intAGI + intSTR) * 0.5m;
                 strReturn = decWalk.ToString("#,0.##", objCulture) + ", " + decSprint.ToString("#,0.##", objCulture) +
-                            "m/ hit";
+                            LanguageManager.GetString("String_MetersPerHit");
             }
             else
             {
                 decWalk *= intAGI;
                 decRun *= intAGI;
                 strReturn = decWalk.ToString("#,0.##", objCulture) + '/' + decRun.ToString("#,0.##", objCulture) +
-                            ", " + decSprint.ToString("#,0.##", objCulture) + "m/ hit";
+                            ", " + decSprint.ToString("#,0.##", objCulture) + LanguageManager.GetString("String_MetersPerHit");
             }
 
             return strReturn;
@@ -14433,7 +14451,10 @@ if (!Utils.IsUnitTest){
                     setPropertiesChanged.Add(nameof(CanAffordCareerPP));
                 if(!UseMysticAdeptPPs && MAG == MAGAdept)
                     setPropertiesChanged.Add(nameof(PowerPointsTotal));
-
+                if (AnyPowerAdeptWayDiscountEnabled)
+                {
+                    setPropertiesChanged.Add(nameof(AllowAdeptWayPowerDiscount));
+                }
                 OnMultiplePropertyChanged(setPropertiesChanged.ToArray());
             }
             else if(e.PropertyName == nameof(CharacterAttrib.Value))
@@ -17059,6 +17080,28 @@ if (!Utils.IsUnitTest){
         }
 
         public string PriorityArray { get; set; }
+        public bool AllowAdeptWayPowerDiscount
+        {
+            get
+            {
+                int intMAG;
+                if (IsMysticAdept)
+                {
+                    // If both Adept and Magician are enabled, this is a Mystic Adept, so use the MAG amount assigned to this portion.
+                    intMAG = Options.MysAdeptSecondMAGAttribute ? MAGAdept.TotalValue : MysticAdeptPowerPoints;
+                }
+                else
+                {
+                    // The character is just an Adept, so use the full value.
+                    intMAG = MAG.TotalValue;
+                }
+
+                // Add any Power Point Improvements to MAG.
+                intMAG += ImprovementManager.ValueOf(this, Improvement.ImprovementType.AdeptPowerPoints);
+
+                return AnyPowerAdeptWayDiscountEnabled && Powers.Count(p => p.DiscountedAdeptWay) < Math.Floor(Convert.ToDouble(intMAG / 2));
+            }
+        }
 
         /// <summary>
         /// Sourcebook Page Number using a given language file.

@@ -521,6 +521,8 @@ namespace Chummer
                     return objImprovementAdder.skillgroupkarmacost;
                 case "KNOWLEDGESKILLKARMACOST":
                     return objImprovementAdder.knowledgeskillkarmacost;
+                case "KNOWLEDGESKILLKARMACOSTMIN":
+                    return objImprovementAdder.knowledgeskillkarmacostmin;
                 case "SKILLDISABLE":
                     return objImprovementAdder.skilldisable;
                 case "SKILLGROUPDISABLE":

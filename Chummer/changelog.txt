@@ -20,6 +20,10 @@ Application Fixes:
 - Fixed an issue with the Point Buy form incorrectly setting metavariant metatypes to be themselves (ie Dryad (Dryad)).
 - Fixed an inappropriate bracket for improvements to skills that don't have a condition.
 - Fixed behaviour of html tooltips used by skill controls not properly being rendered for html. Fixes newlines in notes not working. 
+- Added confirmation prompt to Delete action for skills. 
+- Fixed Extra values not being properly translated for Cyberware when printed. Closes #3990
+- Adept Power Way Discounts are now properly limited to MAG /2. Closes #3618
+- Fixed search filtering not working properly in the Weapon Accessory selection window.
 
 Application Changes:
 - Added support for Priority mode using non-ABCDE arrays.
@@ -47,6 +51,13 @@ Application Changes:
 - Added support for metamagics being gated behind certain initiate grades, as used by the Islamic traditions from Forbidden Arcana. This is done through an improvement type, metamagiclimit. For each metamagic child node, the name of the Metamagic (or Echo) is specified in the inner text, while the 'grade' attribute limits the metamagic to being taken at that specific grade. If the grade is not specified, this acts as a whitelist for metamagics, ONLY allowing those metamagics.
 - Added Dodge to the Other Info and Condition Monitor panels in Create and Career modes.
 - Added basic support for right-clicking on a character tab and saving, printing or closing the file. Currently only works for the currently-selected tab.
+- Added a new bonus type that sets the minimum Karma cost of increasing a Knowledge skill.  This is used by objects such as the Learning Stimulus nanoware to force the minimum to be higher than one. Closes #3229
+- Added support for the various 'addspirit/sprite' improvements pulling from the critters.xml file as well as traditions.xml.
+- Added a new amendoperation for the amend system: "regexreplace". This operation modifies text data by parsing the starting data with a Regular Expression pattern and then replacing the matched patterns with the text data given by the amend node.
+  - When an amend node is specified with the amendoperation "regexreplace", it must also be specified with the attribute "regexpattern" whose contents must be a proper Regular Expression. If the attribute is not specified, the amend node will instead run as if it had the amend operation "replace". If the attribute is specified, but its contents are not a proper Regular Expression, the program will display an error for the faulty amend node and then continue with the rest of the amend file.
+  - A "regexreplace" amend node will pattern-match and modify all instances of Chummer5a-relevant text data in the base data node (i.e. text contents, attributes) that have corresponding replacement values specified in the amend node. This means that e.g. if one only wishes to modify an attribute, they should make sure the amend node doesn't have an end tag (i.e. "<node />", not "<node></node>"), otherwise the amend node will pattern-match the base node's main text contents and modify the contents by replacing matches with an empty string (i.e. it will remove parts of the contents that match the Regular Expression pattern). If one wishes to regexreplace multiple instances of text data within a base data node (e.g. two different attributes), but have a different Regular Expression pattern for each one, they will need to do so via separate amend nodes for each pattern.
+  - For more information on how Regular Expression replacing works, please consult this page: https://docs.microsoft.com/en-us/dotnet/standard/base-types/substitutions-in-regular-expressions . The way "regexreplace" works internally is that it uses the Regex.Replace() function and takes the base data node's text contents as the input, the contents of the "regexpattern" attribute as the pattern, and the amend node's text contents as the replacement, then sets the base data node's text contents to be equal to the output from the Regex.Replace() operation.
+- Added rangemodifier property to weapon accessories. This modifies the base range modifier according to the given range. 
 
 Data Changes:
 - Fixed issues with the Dodge, Bonus Street Cred and Street Cred Multiplier custom improvements. 
@@ -76,6 +87,11 @@ Data Changes:
 - Fixed incorrect quality names on the Cactus Cat critter and Drifter life module that prevented them from being selected.
 - Fixed incorrect bonuses on the Islamic traditions from Forbidden Arcana that caused them to throw an error when added. 
 - Added freespells custom improvement to improvements.xml
+- Added knowledgeskillkarmacostmin bonus to the Jack of All Trades quality and Learning Stimulator nanoware. 
+- Added missing Black Magic [alt] tradition from FA. Personal Demons bonus not implemented; will need a new bonus created for it.
+- Range Modifiers are now specified in ranges.xml
+- Added SR Missions 1.4 Neotokyo customdata folder. This customdata set hides qualities used in Neo-Tokyo Missions and adjusts the Availability of all Firearms according to the SRM Neo-Tokyo 1.0 document.
+- Added Mental, Physical and Social Limit improvement types to improvements.xml. Closes #3456
 
 New Strings:
 - String_DisableSkillGroupPrompt
@@ -95,6 +111,8 @@ New Strings:
 - String_Mode
 - String_RC
 - String_Reach
+- Message_DeleteSkill
+- String_MetersPerHit
 
 Build 209
 

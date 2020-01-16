@@ -87,12 +87,15 @@ namespace Chummer
             List<ListItem> lstAccessories = new List<ListItem>();
 
             // Populate the Accessory list.
-            StringBuilder strMount = new StringBuilder("contains(mount, \"Internal\") or contains(mount, \"None\") or mount = \"\"");
+            StringBuilder strMount = new StringBuilder("(contains(mount, \"Internal\") or contains(mount, \"None\") or mount = \"\"");
             foreach (var strAllowedMount in _lstAllowedMounts.Where(strAllowedMount => !string.IsNullOrEmpty(strAllowedMount)))
             {
                 strMount.Append(" or contains(mount, \"" + strAllowedMount + "\")");
             }
+
+            strMount.Append(")");
             strMount.Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
+            
             foreach (XPathNavigator objXmlAccessory in _xmlBaseChummerNode.Select("accessories/accessory[(" + strMount + ") and (" + _objCharacter.Options.BookXPath() + ")]"))
             {
                 string strId = objXmlAccessory.SelectSingleNode("id")?.Value;
