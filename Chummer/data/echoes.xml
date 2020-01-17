@@ -20,7 +20,7 @@
 -->
 <chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.w3.org/2001/XMLSchema echoes.xsd">
-  <version>0</version>
+
   <echoes>
     <!-- Region Shadowrun 5-->
     <echo>

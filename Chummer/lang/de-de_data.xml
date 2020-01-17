@@ -1615,12 +1615,6 @@
 				<altpage>70</altpage>
 			</mod>
 			<mod translated="True">
-				<id>a1c9f8ee-d58d-4583-8ff3-12517dbf76f5</id>
-				<name>Personal Drone Rack</name>
-				<translate>Tragbare Drohnenhalterung</translate>
-				<altpage>70</altpage>
-			</mod>
-			<mod translated="True">
 				<id>b7be75a4-72ff-49a2-8b7b-0bf36a9f40d8</id>
 				<name>Internal Air Tank (5 Minutes)</name>
 				<translate>Interner Lufttank (5 Minuten)</translate>
@@ -1701,6 +1695,7 @@
 			<category translate="Gentech">Genemods</category>
 			<category translate="Symbionten">Symbionts</category>
 			<category translate="Orthoskin-Upgrades">Orthoskin Upgrades</category>
+			<category translate="Genetische Wiederherstellung">Genetic Restoration</category>
 		</categories>
 		<biowares>
 			<bioware>
@@ -2975,6 +2970,12 @@
 				<translate>Stimmverstärker</translate>
 				<altpage>185</altpage>
 			</bioware>
+			<bioware translated="True">
+				<id>81b90755-de0b-42d5-a7c9-6c7c72a1db05</id>
+				<name>Adrenaline Filter</name>
+				<translate>Adrenalinfilter</translate>
+				<altpage>164</altpage>
+			</bioware>
 		</biowares>
 	</chummer>
 	<chummer file="books.xml">
@@ -3266,7 +3267,13 @@
 				<name>Datapuls SOTA 2080 (German-exclusive)</name>
 				<translate>Datapuls SOTA 2080 (Deutsch-exklusiv)</translate>
 				<altcode>SOTG</altcode>
-			</book>			
+			</book>
+			<book>
+				<id>3ece5592-c3c1-4cf8-97a2-ef773388289d</id>
+				<name>Datapuls Verschlusssache (German-exclusive)</name>
+				<translate>Datapuls Verschlusssache (Deutsch-exklusiv)</translate>
+				<altcode>DPVG</altcode>
+			</book>
 		</books>
 	</chummer>
 	<chummer file="critterpowers.xml">
@@ -3274,6 +3281,7 @@
 			<category translate="Erlaubte zusätzliche Kräfte" translated="True">Allowed Optional Powers</category>
 			<category translate="Drake-Kräfte">Drake</category>
 			<category translate="Emergent" translated="True">Emergent</category>
+			<category translate="Infiziert" translated="True">Infected</category>
 			<category translate="Freier Geist">Free Spirit</category>
 			<category translate="Mundan">Mundane</category>
 			<category translate="Paranormal" translated="True">Paranormal</category>
@@ -3283,6 +3291,36 @@
 			<category translate="Echos">Echoes</category>
 		</categories>
 		<powers>
+			<power translated="True">
+				<id>d57dd33b3-7fea-421e-bcf3-336d56ea08b5</id>
+				<name>Combat Skill</name>
+				<translate>Kampffertigkeit</translate>
+				<altpage>130</altpage>
+			</power>
+			<power translated="True">
+				<id>a3f11764-2569-48a1-8eb8-8cdae58b23e8</id>
+				<name>Physical Skill</name>
+				<translate>Körperliche Fertigkeit</translate>
+				<altpage>132</altpage>
+			</power>
+			<power translated="True">
+				<id>410c17d0-0490-4e67-b2ca-4ad5e2feb016</id>
+				<name>Social Skill</name>
+				<translate>Soziale Fertigkeit</translate>
+				<altpage>137</altpage>
+			</power>
+			<power translated="True">
+				<id>07229dc9-3b46-4843-a30a-7b7c4c144ea0</id>
+				<name>Technical Skill</name>
+				<translate>Technische Fertigkeit</translate>
+				<altpage>144</altpage>
+			</power>
+			<power translated="True">
+				<id>bb55305e-0c6f-47bd-a92f-ce85df478096</id>
+				<name>Vehicle Skill</name>
+				<translate>Fahrzeug-Fertigkeit</translate>
+				<altpage>147</altpage>
+			</power>
 			<power translated="True">
 				<id>d9e0cc36-3183-4fa6-b9a6-b7e62d7d72fc</id>
 				<name>Sense Link</name>
@@ -3777,7 +3815,7 @@
 			</power>
 			<power translated="True">
 				<id>5aa8f042-2180-43f9-8f46-7053a20cbe45</id>
-				<name>Cozenage</name>
+				<name>Cozenge</name>
 				<translate>Betrug</translate>
 				<altpage>204</altpage>
 			</power>
@@ -4293,7 +4331,7 @@
 			</power>
 			<power>
 				<id>98928dbd-5b79-4dde-bc92-56dc317e293b</id>
-				<name>Underwater Adapation</name>
+				<name>Underwater Adaptation</name>
 				<translate>Unterwasseranpassung</translate>
 				<altpage>160</altpage>
 			</power>
@@ -4807,6 +4845,96 @@
 				<translate>Gesteigere Sinne (Ultraschall)</translate>
 				<altpage>397</altpage>
 			</power>
+			<power translated="True">
+				<id>79317297-becf-4c68-9778-6f00fd955a13</id>
+				<name>Hemorrhage</name>
+				<translate>Blutsturz</translate>
+				<altpage>96</altpage>
+			</power>
+			<power translated="True">
+				<id>765bf1cb-2e4b-46e8-aee4-f19004f031f3</id>
+				<name>Bodyguard</name>
+				<translate>Bodyguard</translate>
+				<altpage>101</altpage>
+			</power>
+			<power translated="True">
+				<id>d8e72e33-d70e-4fd5-8ca2-b6cb7da87a96</id>
+				<name>Shield</name>
+				<translate>Schild</translate>
+				<altpage>101</altpage>
+			</power>
+			<power translated="True">
+				<id>3873ed1d-9f98-4a68-bccd-012d237a2522</id>
+				<name>Active Analytics</name>
+				<translate>Aktive Analyse</translate>
+				<altpage>101</altpage>
+			</power>
+			<power translated="True">
+				<id>5455b362-4c9d-4841-8069-230f44a4a3f0</id>
+				<name>Borrowed IP</name>
+				<translate>Geborgtes Icon</translate>
+				<altpage>101</altpage>
+			</power>
+			<power translated="True">
+				<id>ad1c42e7-315b-4c6b-ae49-856b274a129b</id>
+				<name>Decompiling Resistance</name>
+				<translate>Dekompilierungsresistenz</translate>
+				<altpage>101</altpage>
+			</power>
+			<power translated="True">
+				<id>68bcb1c1-581c-4756-9856-690a5c3a5397</id>
+				<name>Enhance</name>
+				<translate>Verstärkung</translate>
+				<altpage>101</altpage>
+			</power>
+			<power translated="True">
+				<id>8e7e1bb4-ad16-4195-aef8-dd5b4c701603</id>
+				<name>Navi</name>
+				<translate>Navi</translate>
+				<altpage>101</altpage>
+			</power>
+			<power translated="True">
+				<id>67ec3e9a-3e21-4906-9d90-1255f6086ce7</id>
+				<name>Resilient Code</name>
+				<translate>Widerstandsfähiger Code</translate>
+				<altpage>101</altpage>
+			</power>
+			<power translated="True">
+				<id>91a4d3a9-bf11-4080-94aa-37e462436b12</id>
+				<name>Resonance Spooling</name>
+				<translate>Resonanzwicklungen</translate>
+				<altpage>101</altpage>
+			</power>
+			<power translated="True">
+				<id>6414b273-897d-451a-839a-4d530f1baaab</id>
+				<name>Anchored Resident</name>
+				<translate>Verankerter Bewohner</translate>
+				<altpage>49</altpage>
+			</power>
+			<power translated="True">
+				<id>9ae68e9e-65dc-49a0-bf06-72054396d371</id>
+				<name>Shell Game</name>
+				<translate>Hütchenspiel</translate>
+				<altpage>48</altpage>
+			</power>
+			<power translated="True">
+				<id>5fca2f99-9b2a-4fb0-b5b3-dd0626b8ed39</id>
+				<name>Superior Banishing Resistance</name>
+				<translate>Verbesserte Verbannungsresistenz</translate>
+				<altpage>49</altpage>
+			</power>
+			<power translated="True">
+				<id>6d43c580-0285-4d93-bd43-b4edfa091c0e</id>
+				<name>Superior Regeneration</name>
+				<translate>Verbesserte Regeneration</translate>
+				<altpage>49</altpage>
+			</power>
+			<power translated="True">
+				<id>d0615070-d0c7-4c8b-ae02-442cadd1f38d</id>
+				<name>Wounded Fury</name>
+				<translate>Zorn der Verwundeten</translate>
+				<altpage>49</altpage>
+			</power>
 		</powers>
 	</chummer>
 	<chummer file="critters.xml">
@@ -4832,6 +4960,7 @@
 			<category translate="Protosapiens">Protosapients</category>
 			<category translate="Technocritter">Technocritters</category>
 			<category translate="Schattengeister">Shadow Spirits</category>
+			<category translate="Kriegsformen">Warforms</category>
 		</categories>
 		<metatypes>
 			<metatype>
@@ -7942,18 +8071,6 @@
 				<translate>Gewitterhund</translate>
 				<altpage>78</altpage>
 			</metatype>
-			<!--<metatype>
-				<id>14ccfb1c-342d-4fce-b637-397308f03d03</id>
-				<name>Musk Ox</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</metatype>
-			<metatype>
-				<id>fde9e842-9a09-437d-bde9-61eaf4ccfd68</id>
-				<name>Ross Seal</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</metatype>-->
 			<metatype>
 				<id>09a65ad9-18f2-40bf-88c2-b4c057e2b1c6</id>
 				<name>Wendigo (Mystic Adept)</name>
@@ -8253,6 +8370,120 @@
 				<name>Tsuchigumo Warrior</name>
 				<translate>Tsuchigumo-Krieger</translate>
 				<altpage>37</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>61d8e6cd-e623-41ea-95af-54b00ba41582</id>
+				<name>Testudine</name>
+				<translate>Testudine</translate>
+				<altpage>173</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>beba6b35-2b2b-40f8-b943-ce690b6a96bb</id>
+				<name>War Hound</name>
+				<translate>Kriegshund</translate>
+				<altpage>173</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>fc2d14ee-4afb-4a38-9c73-4c35a68b2f42</id>
+				<name>War Dolphin</name>
+				<translate>Kriegsdelfin</translate>
+				<altpage>173</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>52d4e880-653f-4506-ae03-bcdf2583f325</id>
+				<name>War Horse</name>
+				<translate>Schlachtross</translate>
+				<altpage>173</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>0b1c6eeb-682f-4f71-bc61-81b5c9c47241</id>
+				<name>Companion Sprite</name>
+				<translate>Begleiter-Sprite</translate>
+				<altpage>100</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>8e85cfeb-8058-404f-928c-7f8dc09a8840</id>
+				<name>Generalist Sprite</name>
+				<translate>Generalisten-Sprite</translate>
+				<altpage>100</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>588b1381-da7a-4f8d-a1d2-67af53ffade9</id>
+				<name>Yogi</name>
+				<translate>Yogi</translate>
+				<altpage>171</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>b1361f50-d533-437d-bf86-54c671edc486</id>
+				<name>Pachyderm</name>
+				<translate>Elephantidae</translate>
+				<altpage>172</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>590b0d62-0676-4c18-983d-72f453c4e381</id>
+				<name>Saltwater Crocodile</name>
+				<translate>Salzwasserkrokodil</translate>
+				<altpage>39</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>a3a4e69a-2804-4f07-af03-e543f48769e6</id>
+				<name>Crocodilian</name>
+				<translate>Crocodylia</translate>
+				<altpage>172</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>94c43469-221c-491a-88a4-8274735a1796</id>
+				<name>Gef</name>
+				<translate>Gef</translate>
+				<altpage>175</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>8f7e0bfe-ce38-489b-ace7-b0aa4f7e320c</id>
+				<name>Energizer</name>
+				<translate>Energizer</translate>
+				<altpage>178</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>e9320c19-eb43-4159-be28-aa299e696fa6</id>
+				<name>G33ko</name>
+				<translate>G33ko</translate>
+				<altpage>178</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>aa00a742-89ed-40c8-9474-a94387927001</id>
+				<name>Rybbyt</name>
+				<translate>Rybbyt</translate>
+				<altpage>179</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>58d2a981-ebe5-4075-a92b-01bdf6454978</id>
+				<name>Migaloo</name>
+				<translate>Migaloo</translate>
+				<altpage>183</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>1783296b-6033-4d1a-acfc-7930ee3990a3</id>
+				<name>Ravager</name>
+				<translate>Verwüster</translate>
+				<altpage>182</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>e4abe40c-bf0d-4d79-8ab0-d0c09299f795</id>
+				<name>E-Fish</name>
+				<translate>E-Fisch</translate>
+				<altpage>182</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>75d165db-e0eb-48a4-8bfd-b99aeebf04c7</id>
+				<name>Dot-Camel</name>
+				<translate>Datenkamel</translate>
+				<altpage>181</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>290161e4-8b73-4e1d-b24a-00ffea4e79d5</id>
+				<name>Techworm</name>
+				<translate>Techwurm</translate>
+				<altpage>180</altpage>
 			</metatype>
 		</metatypes>
 	</chummer>
@@ -8982,8 +9213,8 @@
 			</cyberware>
 			<cyberware>
 				<id>a94e3b9d-d87e-494b-a898-7a1c40befc3a</id>
-				<name>Cosmetic Modifcations Eye (2050)</name>
-				<translate>Kosmetische Augen Modifikation</translate>
+				<name>Cosmetic Modifications Eye (2050)</name>
+				<translate>Kosmetische Augenmodifikation</translate>
 				<altpage>201</altpage>
 			</cyberware>
 			<cyberware>
@@ -9061,19 +9292,19 @@
 			<cyberware>
 				<id>7a6ed03f-d60f-465d-80e6-c2b37b55befd</id>
 				<name>Cyberlimb Augmentation, Armor (2050)</name>
-				<translate>Cyberglied-Verstärung, Panzerzng</translate>
+				<translate>Cyberglied-Verstärkung, Panzerung</translate>
 				<altpage>203</altpage>
 			</cyberware>
 			<cyberware>
 				<id>55738f72-0344-435d-8f92-b1e16a66c445</id>
 				<name>Cyberlimb Augmentation, Strength (2050)</name>
-				<translate>Cyberglied-Verstärung, Stärke</translate>
+				<translate>Cyberglied-Verstärkung, Stärke</translate>
 				<altpage>203</altpage>
 			</cyberware>
 			<cyberware>
 				<id>54b804b3-8a40-4a43-a1e7-41c27499e952</id>
 				<name>Cyberlimb Augmentation, Agility (2050)</name>
-				<translate>Cyberglied-Verstärung, Geschicklichkeit</translate>
+				<translate>Cyberglied-Verstärkung, Geschicklichkeit</translate>
 				<altpage>203</altpage>
 			</cyberware>
 			<cyberware>
@@ -10560,6 +10791,12 @@
 				<translate>Fußklinge</translate>
 				<altpage>178</altpage>
 			</cyberware>
+			<cyberware translated="True">
+				<id>23ee3559-2347-4f3f-9ae5-1a3ba3e47edd</id>
+				<name>Cosmetic Modifications Ear (2050)</name>
+				<translate>Kosmetische Ohrmodifikation</translate>
+				<altpage>201</altpage>
+			</cyberware>
 		</cyberwares>
 	</chummer>
 	<chummer file="echoes.xml">
@@ -10810,6 +11047,8 @@
 			<category translate="Erscheinungsmodifikatoren">Appearance Modification</category>
 			<category translate="Druckerpressen">Printing</category>
 			<category translate="Reporterausrüstung">Reporter Gear</category>
+			<category translate="Musikinstrumente">Musical Intruments</category>
+			<category translate="Paydata">Paydata</category>
 		</categories>
 		<gears>
 			<gear translated="True">
@@ -14733,7 +14972,7 @@
 			<gear>
 				<id>d2d3bd03-88fa-408e-bed7-56367c957a84</id>
 				<name>Response Increase (2050)</name>
-				<translate>Reaktionsverstärung</translate>
+				<translate>Reaktionsverstärkung</translate>
 				<altpage>170</altpage>
 			</gear>
 			<gear>
@@ -18880,6 +19119,150 @@
 				<translate>Farbtinte (für 500 Blatt)</translate>
 				<altpage>183</altpage>
 			</gear>
+			<gear translated="True">
+				<id>6976ac65-f8aa-482a-bc32-2986beae4c76</id>
+				<name>Tactical Grapple Gun</name>
+				<translate>Enterhakenkanone</translate>
+				<altpage>454</altpage>
+			</gear>
+			<gear translated="True">
+				<id>a1c9f8ee-d58d-4583-8ff3-12517dbf76f5</id>
+				<name>Personal Drone Rack</name>
+				<translate>Tragbare Drohnenhalterung</translate>
+				<altpage>70</altpage>
+			</gear>
+			<gear translated="True">
+				<id>2086797b-7297-4612-bf42-f85494992127</id>
+				<name>Tainted Reagents</name>
+				<translate>Verdorbene Reagenzien</translate>
+				<altpage>180</altpage>
+			</gear>
+			<gear translated="True">
+				<id>e61b191f-1cc8-4d6f-a4ab-8baed2591e88</id>
+				<name>Tainted Reagents, Refined</name>
+				<translate>Verdorbene Reagenzien, geläutert</translate>
+				<altpage>180</altpage>
+			</gear>
+			<gear translated="True">
+				<id>a591c5c6-7916-4e3c-8d44-a2180be268dc</id>
+				<name>Tainted Reagents, Radical</name>
+				<translate>Verdorbene Reagenzien, radikal</translate>
+				<altpage>180</altpage>
+			</gear>
+			<gear translated="True">
+				<id>912ede4d-32c4-48ce-bcf2-88d0da386997</id>
+				<name>Inferior Reagents</name>
+				<translate>Minderwertige Reagenzien</translate>
+				<altpage>180</altpage>
+			</gear>
+			<gear translated="True">
+				<id>b0e7e907-c9c1-4648-9ff5-9962371eee05</id>
+				<name>Inferior Reagents, Refined</name>
+				<translate>Minderwertige Reagenzien, geläutert</translate>
+				<altpage>180</altpage>
+			</gear>
+			<gear translated="True">
+				<id>6ea20805-fd4c-49ad-a4f7-43422289ca73</id>
+				<name>Inferior Reagents, Radical</name>
+				<translate>Minderwertige Reagenzien, radikal</translate>
+				<altpage>180</altpage>
+			</gear>
+			<gear translated="True">
+				<id>132d7f2a-ad01-4bfe-ae10-1c27ea707982</id>
+				<name>Subpar Reagents</name>
+				<translate>Unterdurchschnittliche Reagenzien</translate>
+				<altpage>180</altpage>
+			</gear>
+			<gear translated="True">
+				<id>9d7c9076-bd88-4756-af44-26d2cbafb429</id>
+				<name>Subpar Reagents, Refined</name>
+				<translate>Unterdurchschnittliche Reagenzien, geläutert</translate>
+				<altpage>180</altpage>
+			</gear>
+			<gear translated="True">
+				<id>9276a770-b1b8-4f47-8341-6849c8bb305b</id>
+				<name>Subpar Reagents, Radical</name>
+				<translate>Unterdurchschnittliche Reagenzien, radikal</translate>
+				<altpage>180</altpage>
+			</gear>
+			<gear translated="True">
+				<id>4f2699a7-5980-41cb-aafb-c4285060179e</id>
+				<name>Baseline Reagents</name>
+				<translate>Normale Reagenzien</translate>
+				<altpage>180</altpage>
+			</gear>
+			<gear translated="True">
+				<id>f45f76ea-6c13-44c0-a828-2047f242e5eb</id>
+				<name>Baseline Reagents, Refined</name>
+				<translate>Normale Reagenzien, geläutert</translate>
+				<altpage>180</altpage>
+			</gear>
+			<gear translated="True">
+				<id>1aadeffa-f917-430e-8436-48708c0e6504</id>
+				<name>Baseline Reagents, Radical</name>
+				<translate>Normale Reagenzien, radikal</translate>
+				<altpage>180</altpage>
+			</gear>
+			<gear translated="True">
+				<id>e4d6fcbd-a319-4636-bd84-9caf06643dc6</id>
+				<name>Superior Reagents</name>
+				<translate>Hervorragende Reagenzien</translate>
+				<altpage>180</altpage>
+			</gear>
+			<gear translated="True">
+				<id>fbab4af1-6b81-4a57-9d8c-d74b5a05ee10</id>
+				<name>Superior Reagents, Refined</name>
+				<translate>Hervorragende Reagenzien, geläutert</translate>
+				<altpage>180</altpage>
+			</gear>
+			<gear translated="True">
+				<id>a6bc216b-a210-4201-a970-d4477867595c</id>
+				<name>Superior Reagents, Radical</name>
+				<translate>Hervorragende Reagenzien, radikal</translate>
+				<altpage>180</altpage>
+			</gear>
+			<gear translated="True">
+				<id>e6bc2ba8-c895-495e-88c7-d673ea2d4751</id>
+				<name>Prime Reagents</name>
+				<translate>Exzellente Reagenzien</translate>
+				<altpage>180</altpage>
+			</gear>
+			<gear translated="True">
+				<id>f90b26bb-1817-4672-b42e-49c2e0d0a0a2</id>
+				<name>Prime Reagents, Refined</name>
+				<translate>Exzellente Reagenzien, geläutert</translate>
+				<altpage>180</altpage>
+			</gear>
+			<gear translated="True">
+				<id>c0ea9634-4cd0-4f8f-aba8-cf2ed1b73129</id>
+				<name>Prime Reagents, Radical</name>
+				<translate>Exzellente Reagenzien, radikal</translate>
+				<altpage>180</altpage>
+			</gear>
+			<gear translated="True">
+				<id>aa012c52-d39c-4b4a-bdca-a7387832cbb3</id>
+				<name>Bolt: Stick-n-Shock w/Static Shaft (Pistol Crossbow)</name>
+				<translate>Bolzen: Schockerspitze mit Statikschaft (Pistolenarmbrust)</translate>
+				<altpage>180</altpage>
+			</gear>
+			<gear translated="True">
+				<id>114964c1-5bc3-4157-ab24-42c2e97e6d8e</id>
+				<name>Bolt: Stick-n-Shock w/Static Shaft (Light Crossbow)</name>
+				<translate>Bolzen: Schockerspitze mit Statikschaft (Leichte Armbrust)</translate>
+				<altpage>180</altpage>
+			</gear>
+			<gear translated="True">
+				<id>77c757f7-d597-4668-8a25-22383f10e7a0</id>
+				<name>Bolt: Stick-n-Shock w/Static Shaft (Medium Crossbow)</name>
+				<translate>Bolzen: Schockerspitze mit Statikschaft (Mittlere Armbrust)</translate>
+				<altpage>180</altpage>
+			</gear>
+			<gear translated="True">
+				<id>7dedd68b-baae-496f-a978-aede00403950</id>
+				<name>Bolt: Stick-n-Shock w/Static Shaft (Heavy Crossbow)</name>
+				<translate>Bolzen: Schockerspitze mit Statikschaft (Schwere Armbrust)</translate>
+				<altpage>180</altpage>
+			</gear>
 		</gears>
 	</chummer>
 	<chummer file="lifestyles.xml">
@@ -20669,7 +21052,7 @@
 				<altadvantage>Allgemein: +2 Würfel für Proben auf Erste Hilfe</altadvantage>
 				<altdisadvantage>Anhänger der Großen Mutter sind Liebhaber und Heiler, keine Kämpfer. Dadurch leiden sie unter einem –1 Würfel-Pool Modifikator für alle Aktionen, die mit Kämpfen in Verbindung stehen (Kampffertigkeit, oder einen Zauberspruch aus der Kategorie Kampf).</altdisadvantage>
 				<altpage>33</altpage>
-			</mentor>    
+			</mentor>
 			<mentor>
 				<id>a1faab23-0214-4c83-96ac-d5bb71d4aebb</id>
 				<name>Mountain</name>
@@ -22210,7 +22593,7 @@
 			</mentor>
 			<mentor>
 				<id>5593f724-7b72-4927-a8c8-2c73844cc1b1</id>
-				<name>Architekt (SOTA 2080)</name>
+				<name>Architect</name>
 				<translate>Architekt (SOTA 2080)</translate>
 				<altadvantage>Allgemein: +2 Würfel für Proben auf Führung</altadvantage>
 				<altdisadvantage>Ein Anhänger dieses Schutzgeistes behält gerne die Initiative. Immer dann, wenn die Umstände eines Runs ihn in die Defensive drängen, muss ihm eine Probe auf Willenskraft + Intuition (3) gelingen. Misslingt die Probe, erhält der Anhänger von Architekt einen Würfelpoolmalus von -2 auf seine Proben, bis er das Heft wieder in der Hand hält.</altdisadvantage>
@@ -22228,7 +22611,7 @@
 			</mentor>
 			<mentor>
 				<id>db42c229-3403-4947-8626-3f70f87c8a3c</id>
-				<name>Deutscher Schäferhund</name>
+				<name>German Shepherd</name>
 				<translate>Deutscher Schäferhund</translate>
 				<altadvantage>Allgemein: +2 Würfel für Proben auf Führung</altadvantage>
 				<altdisadvantage>Bisweilen bricht die Ungeduld bei Schäferhund durch. Wird die Geduld eines Anhängers von Schäferhund auf die Probe gestellt (nach Spielleiterentscheid), muss ihm eine Willenskraft + Charisma (3) gelingen, um nicht scharf zu reagieren.</altdisadvantage>
@@ -22246,7 +22629,7 @@
 			</mentor>
 			<mentor>
 				<id>bdb4fa0b-3c9d-4164-b2d6-76b7c04c43d8</id>
-				<name>Dobermann</name>
+				<name>Doberman</name>
 				<translate>Dobermann</translate>
 				<altadvantage>Allgemein: +1 Würfel für Proben auf Wahrnehmung und eine Waffenfertigkeit nach Wahl</altadvantage>
 				<altdisadvantage>Dobermann ist sehr selbstbewusst. Um sich anderen unterzuordnen bzw. fremden Plänen zu folgen, muss einem Anhänger von Dobermann eine Probe auf Willenskraft + Charisma (3) gelingen.</altdisadvantage>
@@ -22322,7 +22705,7 @@
 			</mentor>
 			<mentor>
 				<id>5c465bf3-665f-41f2-865e-41abb879ee1f</id>
-				<name>Dachs</name>
+				<name>Badger</name>
 				<translate>Dachs</translate>
 				<altadvantage>Allgemein: Vorteil Aufmerksamkeit Stufe 2</altadvantage>
 				<altdisadvantage>Dachs beschützt sein Revier unerbittlich. Dringen Feinde in das Gebiet ein, das ein Anhänger von Dachs beschützt (zum Beispiel ein Gebäude), oder entwenden einen Gegenstand, der unter dem Schutz eines Anhängers von Dachs steht, muss ihm eine Probe auf Willenskraft + Charisma (3) gelingen, um nicht sofort mit allen Mitteln gegen die Eindringlinge bzw. Diebe vorzugehen.</altdisadvantage>
@@ -22340,7 +22723,7 @@
 			</mentor>
 			<mentor>
 				<id>b01976a5-2343-4308-846e-da5fb12328a8</id>
-				<name>Mystischer Wächter</name>
+				<name>Mystic Guardian</name>
 				<translate>Mystischer Wächter</translate>
 				<altadvantage>Allgemein: +2 Würfel für Proben auf eine Nahkampffertigkeit</altadvantage>
 				<altdisadvantage>Was macht ein Mystischer Wächter, wenn es nichts zu bewachen gibt? Solange ein Anhänger des Mystischen Wächters keinen konkreten Auftrag, Auftraggeber oder Schutzbefohlenen hat (beziehungsweise seinen selbstauferlegten Pflichten nicht nachkommt), erleidet er einen Würfelpoolmalus von -2 auf alle Proben.</altdisadvantage>
@@ -22374,7 +22757,7 @@
 			</mentor>
 			<mentor>
 				<id>296dc353-df11-4c94-a101-04bc501edf5e</id>
-				<name>Rotkäppchen</name>
+				<name>Little Red Riding Hood</name>
 				<translate>Rotkäppchen</translate>
 				<altadvantage>Allgemein: + 2 Würfel für Proben auf Überreden</altadvantage>
 				<altdisadvantage>In ihrer ungezügelten Neugier übersehen Anhänger von Rotkäppchen manchmal das Offensichtliche und Wichtige. Sie erhalten einen Würfelpoolmalus von -1 bei Wahrnehmungsproben in unbekannten Gebieten.</altdisadvantage>
@@ -22392,7 +22775,7 @@
 			</mentor>
 			<mentor>
 				<id>bea9796a-c5d3-4388-97ec-14969db470fe</id>
-				<name>Schatzjäger</name>
+				<name>Treasure Hunter</name>
 				<translate>Schatzjäger</translate>
 				<altadvantage>Allgemein: +1 Würfel für Proben auf Navigation und Schlosser</altadvantage>
 				<altdisadvantage>Ein Anhänger dieses Schutzgeistes ist so sehr auf das Objekt seines Strebens fixiert, dass er Aufgaben, die nichts damit zu tun haben, lustlos und halbherzig angeht: Nach dem Briefing mit Schmidt muss ihm eine Probe auf Willenskraft + Willenskraft (3) gelingen, damit er bei der Erledigung eines Runs, der nichts mit dem Objekt seines Strebens zu tun hat, keinen Würfelpoolmalus von -1 auf alle Proben erleidet.</altdisadvantage>
@@ -22410,7 +22793,7 @@
 			</mentor>
 			<mentor>
 				<id>f2cc5e2b-6538-4271-9f7f-5434076f9a6b</id>
-				<name>Waffenbruder</name>
+				<name>Brother at Arms</name>
 				<translate>Waffenbruder</translate>
 				<altadvantage>Allgemein: +1 Würfel für Proben auf Gebräuche und Unterricht</altadvantage>
 				<altdisadvantage>Anhänger von Waffenbruder erwählen in jedem Run drei Personen mit direkter Plot-Relevanz – das können Spielercharaktere sein, aber auch wichtige NSC – als diejenigen Leute, denen während der Mission ihre Loyalität gilt. Ihnen muss eine Probe auf Willenskraft + Intuition (3) gelingen, bevor sie diesen Personenkreis übervorteilen, anlügen oder gar im Stich lassen können. Selbst wenn sie sich dazu überwinden können, erleiden sie einen Würfelpoolmalus von -2 auf alle Proben, bis sie ihre Verfehlung wieder ausgebügelt haben.</altdisadvantage>
@@ -22489,6 +22872,18 @@
 				<name>Sensing</name>
 				<translate>Sensibilisierung</translate>
 				<altpage>180</altpage>
+			</metamagic>
+			<metamagic translated="True">
+				<id>215dbdc3-b4f5-4ca6-98b1-5d6ea5eb5fda</id>
+				<name>Taint</name>
+				<translate>Trübung</translate>
+				<altpage>91</altpage>
+			</metamagic>
+			<metamagic translated="True">
+				<id>920770d1-a705-4fc9-8814-f3a4a455e8fb</id>
+				<name>Corruption</name>
+				<translate>Korrumpierung</translate>
+				<altpage>91</altpage>
 			</metamagic>
 			<metamagic translated="True">
 				<id>9540267c-d53c-4547-9bd2-e1f06723caee</id>
@@ -22777,6 +23172,12 @@
 				<name>Spiritual Sacrifice</name>
 				<translate>Echoverbindung</translate>
 				<altpage>166</altpage>
+			</metamagic>
+			<metamagic>
+				<id>7b297dad-1111-4819-8c7a-ecdb95479011</id>
+				<name>Great Form Possession</name>
+				<translate>Große Besessenheit</translate>
+				<altpage>129</altpage>
 			</metamagic>
 		</metamagics>
 		<arts>
@@ -24478,9 +24879,9 @@
 			<mentor translated="True">
 				<id>df42911f-0542-4fae-80d1-39573547ff68</id>
 				<name>Intrusion Countermeasure (The Guardian)</name>
-				<translate>Daedalus (Der Erfinder)</translate>
-				<altadvantage>+1 Würfel bei Hardwareproben, +1 Limit bei Proben mit Fahrzeugfertigkeiten, wenn der Technomancer hineingesprungen ist</altadvantage>
-				<altdisadvantage>-1 auf Limit und Würfel bei allen Handlungen in der Tiefenresonanz</altdisadvantage>
+				<translate>Intrusion Countermeasure (Der Wächter)</translate>
+				<altadvantage>Limit +1 und +1 Würfel im Matrixkampf; Firewall +1</altadvantage>
+				<altdisadvantage>-1 Würfel bei Angreifen in IC im Matrixkampf</altdisadvantage>
 				<altpage>104</altpage>
 			</mentor>
 			<mentor translated="True">
@@ -24555,7 +24956,7 @@
 				<id>5f1ebcd8-9571-4716-b7fd-ec674306b833</id>
 				<name>Authoritative Tone</name>
 				<translate>Gebieterischer Ton</translate>
-				<altpage>207</altpage>
+				<altpage>199</altpage>
 			</power>
 			<power translated="True">
 				<id>deec22db-cf2c-47b6-ac34-95a13bcd0bf8</id>
@@ -24950,7 +25351,7 @@
 			<power translated="True">
 				<id>9fd628cc-dd06-435c-80d3-5261e7e5b1e5</id>
 				<name>Commanding Voice</name>
-				<translate>Befehlsstimme</translate>
+				<translate>Gebieterischer Ton</translate>
 				<altpage>207</altpage>
 			</power>
 			<power>
@@ -25138,6 +25539,18 @@
 				<name>State of Purity</name>
 				<translate>Innere Reinheit</translate>
 				<altpage>165</altpage>
+			</power>
+			<power>
+				<id>81cc6ee1-7c10-4a4a-baa8-f02cad4542c6</id>
+				<name>Improved Potential (Chaos Mentor)</name>
+				<translate>Erhöhtes Potential (Chaos Schutzgeist)</translate>
+				<altpage>309</altpage>
+			</power>
+			<power translated="True">
+				<id>ad6f8984-f0c2-41e9-a2d1-73a719d21a06</id>
+				<name>Berserker Temper</name>
+				<translate>Berserkertemperament</translate>
+				<altpage>71</altpage>
 			</power>
 		</powers>
 		<enhancements>
@@ -27848,56 +28261,56 @@
 			</quality>
 			<quality>
 				<id>2ffd990c-ced6-4484-955c-108473df5335</id>
-				<name>Metagenetic Improvement (Body)</name>
+				<name>Metagenic Improvement (Body)</name>
 				<source>RF</source>
 				<translate>Metagenetische Verbesserung (Konstitution)</translate>
 				<altpage>93</altpage>
 			</quality>
 			<quality>
 				<id>96c4c8e1-2f5d-431c-96c8-db83820f747b</id>
-				<name>Metagenetic Improvement (Agility)</name>
+				<name>Metagenic Improvement (Agility)</name>
 				<source>RF</source>
 				<translate>Metagenetische Verbesserung (Geschicklichkeit)</translate>
 				<altpage>93</altpage>
 			</quality>
 			<quality>
 				<id>c734c06d-c9e4-431d-93ba-033e82444efc</id>
-				<name>Metagenetic Improvement (Reaction)</name>
+				<name>Metagenic Improvement (Reaction)</name>
 				<source>RF</source>
 				<translate>Metagenetische Verbesserung (Reaktion)</translate>
 				<altpage>93</altpage>
 			</quality>
 			<quality>
 				<id>76ac03f1-b379-48a8-a6e8-d8611fce0adf</id>
-				<name>Metagenetic Improvement (Strength)</name>
+				<name>Metagenic Improvement (Strength)</name>
 				<source>RF</source>
 				<translate>Metagenetische Verbesserung (Stärke)</translate>
 				<altpage>93</altpage>
 			</quality>
 			<quality>
 				<id>f1609199-e601-4b69-837f-2029b2ea94f0</id>
-				<name>Metagenetic Improvement (Charisma)</name>
+				<name>Metagenic Improvement (Charisma)</name>
 				<source>RF</source>
 				<translate>Metagenetische Verbesserung (Charisma)</translate>
 				<altpage>93</altpage>
 			</quality>
 			<quality>
 				<id>7ee0765f-34f4-43ef-82c0-55c1b8bef8d8</id>
-				<name>Metagenetic Improvement (Intuition)</name>
+				<name>Metagenic Improvement (Intuition)</name>
 				<source>RF</source>
 				<translate>Metagenetische Verbesserung (Intuition)</translate>
 				<altpage>93</altpage>
 			</quality>
 			<quality>
 				<id>bfdffed5-b687-4cb4-ad6a-ac59788fdc8a</id>
-				<name>Metagenetic Improvement (Logic)</name>
+				<name>Metagenic Improvement (Logic)</name>
 				<source>RF</source>
 				<translate>Metagenetische Verbesserung (Logik)</translate>
 				<altpage>93</altpage>
 			</quality>
 			<quality>
 				<id>a6536e32-5f2f-4865-8f6a-d2ba268d4647</id>
-				<name>Metagenetic Improvement (Willpower)</name>
+				<name>Metagenic Improvement (Willpower)</name>
 				<source>RF</source>
 				<translate>Metagenetische Verbesserung (Willenskraft)</translate>
 				<altpage>93</altpage>
@@ -29380,7 +29793,7 @@
 			</quality>
 			<quality>
 				<id>1b5acdf3-66ae-4ed7-b5fa-614668721774</id>
-				<name>Dishevelled</name>
+				<name>Disheveled</name>
 				<translate>Ungepflegt</translate>
 				<altpage>155</altpage>
 			</quality>
@@ -30866,6 +31279,24 @@
 				<translate>Freier Insektengeist: Silberfisch</translate>
 				<altpage>27</altpage>
 			</quality>
+			<quality translated="True">
+				<id>bbb3bce6-8adc-4992-94b5-7248556a391a</id>
+				<name>Poor Self Control (Thrill Seeker) (Dareadrenaline)</name>
+				<translate>Schlechte Selbstbeherrschung (Adreinalinjunkie) (Daredrenalin)</translate>
+				<altpage>161</altpage>
+			</quality>
+			<quality translated="True">
+				<id>59d9baa1-6705-49e8-940b-ea42ffc02692</id>
+				<name>Infected Advanced Optional Power: Mimicry</name>
+				<translate>Infizierten Erweiterte optionale Kräfte: Mimikry</translate>
+				<altpage>398</altpage>
+			</quality>
+			<quality translated="True">
+				<id>8dbc6b92-18a7-4007-b37f-295d21f8ab82</id>
+				<name>Infected Advanced Optional Power: Psychokinesis</name>
+				<translate>Infizierten Erweiterte optionale Kräfte: Psychokinese</translate>
+				<altpage>399</altpage>
+			</quality>
 		</qualities>
 	</chummer>
 	<chummer file="skills.xml">
@@ -30964,7 +31395,7 @@
 					<spec translate="Feuerwaffen">Firearms</spec>
 					<spec translate="Schwere Waffen">Heavy Weapons</spec>
 					<spec translate="Waffenzubehör">Weapon Accessories</spec>
-					<spec translate="Nachkampfwaffen">Melee Weapons</spec>
+					<spec translate="Nahkampfwaffen">Melee Weapons</spec>
 				</specs>
 				<altpage>146</altpage>
 			</skill>
@@ -35819,6 +36250,12 @@
 				<translate>Sterilisieren</translate>
 				<altpage>132</altpage>
 			</spell>
+			<spell>
+				<id>4b214e1a-4800-4787-b5fe-55672b359dec</id>
+				<name>Convince</name>
+				<translate>Überzeugen</translate>
+				<altpage>132</altpage>
+			</spell>
 			<spell translated="True">
 				<id>96fdf1da-d4e7-460c-a172-3f7a7b56ac67</id>
 				<name>Detect Magic, Extended</name>
@@ -37024,52 +37461,52 @@
 	</chummer>
 	<chummer file="tips.xml">
 		<tips>
-			<tip>
+			<tip translated="True">
 				<id>528f605f-9994-46b5-8583-cafe006507e4</id>
 				<text>Looks like you're building a street samurai. Don't you need a code of honor?</text>
 				<translate>Es scheint, als würden Sie einen Straßensamurai erschaffen. Brauchen Sie keinen Ehrenkodex?</translate>
 			</tip>
-			<tip>
+			<tip translated="True">
 				<id>ccaae7df-40ba-4da9-837e-c0df92f07038</id>
 				<text>You have enough money to retire with a Low Lifestyle. Keep at it! A nuyen saved is a nuyen earned!</text>
 				<translate>Sie haben genug Geld, um sich mit einem Lebenstil der Unterschicht zurückzuziehen. Nicht aufgeben! Ein gesparter Nuyen ist ein verdienter Nuyen!</translate>
 			</tip>
-			<tip>
+			<tip translated="True">
 				<id>ff26b01d-1aa4-45ac-8685-0d199e115d1f</id>
-				<text>You have enough money to retire with a Low Lifestyle. Keep at it! A nuyen saved is a nuyen earned!</text>
+				<text>You have enough money to retire with a Medium Lifestyle. 2.5 kids, picket fence AR overlay, loving partner. Is it really worth saving up for that next upgrade?</text>
 				<translate>Sie haben genug Geld, um sich mit einem Lebenstil der Mittelschicht zurückzuziehen. Zweieinhalb Kinder, vier Wände, Virtuelle Realität, liebevoller Partner. Lohnt es sich wirklich, für mehr zu sparen?</translate>
 			</tip>
-			<tip>
+			<tip translated="True">
 				<id>b6da9d78-024d-4516-821c-93ad8207075d</id>
 				<text>You have enough money to retire with a Luxury Lifestyle. Molly Millions has nothing on you!</text>
 				<translate>Sie haben genug Geld, um sich mit einem luxuriösen Lebensstil zurückzuziehen. Molly Millions kann Ihnen nichts anhaben!</translate>
 			</tip>
-			<tip>
+			<tip translated="True">
 				<id>b669df07-528b-4df3-829b-54d095af1791</id>
 				<text>Why bother with any other weapon when you can have the Ares Alpha, the last word in automatics! This message brought to you by Ares Macrotech.</text>
 				<translate>Warum sich mit jeder anderen Waffe beschäftigen, wenn man die Ares Alpha haben kann, das Highend-Produkt der Automatik! Diese Nachricht wurde Ihnen von Ares Macrotech übermittelt.</translate>
 			</tip>
-			<tip>
+			<tip translated="True">
 				<id>1e98f6d1-dfca-4dc3-9248-dd3da3589989</id>
 				<text>You appear to be making an Alchemist. Are you sure you want to do that?</text>
 				<translate>Sie scheinen ein Alchemist zu werden. Sind Sie sicher, dass Sie das tun wollen?</translate>
 			</tip>
-			<tip>
+			<tip translated="True">
 				<id>42262ca7-b414-4dde-b1b3-b7f72bc160c1</id>
 				<text>Looks like you've chosen to make an A.I. Are you sure you wouldn't rather be playing Eclipse Phase?</text>
 				<translate>Sieht so aus, als hätten Sie sich für eine KI entschieden. Sind Sie sicher, dass Sie nicht lieber Eclipse Phase spielen möchten?</translate>
 			</tip>
-			<tip>
+			<tip translated="True">
 				<id>8bdb4ade-46e2-4ff6-b440-d8a8955766ed</id>
 				<text>Oni? More like horny elves!</text>
 				<translate>Oni? Eher wie heiße Elfen!</translate>
 			</tip>
-			<tip>
+			<tip translated="True">
 				<id>ab52155b-d99e-4e2e-816b-16535afc206f</id>
 				<text>Looks like you don't have any hobbies. Might I suggest competitive basket-weaving?</text>
 				<translate>Sieht so aus, als hätten Sie keine Hobbys. Darf ich ein Korbflechtwettkampf vorschlagen?</translate>
 			</tip>
-			<tip>
+			<tip translated="True">
 				<id>4bf9379e-101a-4664-8049-7db867073943</id>
 				<text>Looks like you're into some pretty fine shootin' there, Tex.</text>
 				<translate>Sieht so aus, als wären Sie in einer ziemlich guten Lage, Tex.</translate>
@@ -37408,6 +37845,72 @@
 				<translate>Druidisch [alternativ]</translate>
 				<altpage>64</altpage>
 			</tradition>
+			<tradition>
+				<id>8b7a391e-8d4c-40e8-93a8-9dd031cce0f5</id>
+				<name>Buddhism [Traditionalist]</name>
+				<translate>Buddhismus [Traditionalist]</translate>
+				<altpage>60</altpage>
+			</tradition>
+			<tradition>
+				<id>dd97bcc9-a731-41fb-a558-9175bc56b587</id>
+				<name>Christian Theurgy [Traditional]</name>
+				<translate>Christliche Theurgie [traditionell]</translate>
+				<altpage>61</altpage>
+			</tradition>
+			<tradition>
+				<id>ca673acd-961e-4491-8a8d-ddf0c577441b</id>
+				<name>Christian Theurgy [Vigila Evangelica]</name>
+				<translate>Christliche Theurgie [Vigila Evangelica]</translate>
+				<altpage>61</altpage>
+			</tradition>
+			<tradition>
+				<id>3a7bf066-7b13-4a92-ae31-37a58f84bc8e</id>
+				<name>Christian Theurgy [Westphalian]</name>
+				<translate>Christliche Theurgie [Westphälische Theurgen]</translate>
+				<altpage>61</altpage>
+			</tradition>
+			<tradition>
+				<id>77288f4d-e262-47b6-aad8-2edff23859cb</id>
+				<name>Druid [Traditional]</name>
+				<translate>Druidische [tranditionell]</translate>
+				<altpage>63</altpage>
+			</tradition>
+			<tradition>
+				<id>ad6f8984-f0c2-41e9-a2d1-73a719d21a06</id>
+				<name>Islam [Islamic Alchemist]</name>
+				<translate>Islam [Islamischer Alchemist]</translate>
+				<altpage>65</altpage>
+			</tradition>
+			<tradition>
+				<id>328d6c96-9e10-424f-bbed-b6e1d1035bd2</id>
+				<name>Islam [Licit Qur'anic]</name>
+				<translate>Islam [Erlaubter Koran]</translate>
+				<altpage>65</altpage>
+			</tradition>
+			<tradition>
+				<id>2ea02939-030b-407b-b569-c2f39f301999</id>
+				<name>Norse [Godi/Runemaster]</name>
+				<translate>Nordisch [Godi/Runenmeister]</translate>
+				<altpage>70</altpage>
+			</tradition>
+			<tradition>
+				<id>fa341243-5134-42ad-9259-454bf18a26fd</id>
+				<name>Norse [Cunning Woman]</name>
+				<translate>Nordisch [Schlaue Frau]</translate>
+				<altpage>70</altpage>
+			</tradition>
+			<tradition>
+				<id>52668f12-2895-48e1-8b84-2382ef0fcee0</id>
+				<name>Norse [Berserker]</name>
+				<translate>Nordisch [Berserker]</translate>
+				<altpage>70</altpage>
+			</tradition>
+			<tradition>
+				<id>990cdff5-2fd1-48aa-b085-a7d0ff183d00</id>
+				<name>Norse [Seidman]</name>
+				<translate>Nordisch [Seidwerker]</translate>
+				<altpage>70</altpage>
+			</tradition>
 		</traditions>
 		<spirits>
 			<spirit>
@@ -37661,6 +38164,72 @@
 				<name>Water Elemental</name>
 				<translate>Wasserelementar</translate>
 				<altpage>175</altpage>
+			</spirit>
+			<spirit>
+				<id>de5f01da-a334-4b64-b491-549e420ac6d3</id>
+				<name>Homonculus (Fragile)</name>
+				<translate>Homunkulus (zerbrechlich)</translate>
+				<altpage>297</altpage>
+			</spirit>
+			<spirit>
+				<id>28d8859b-21da-43f7-b401-181cf1284f97</id>
+				<name>Homonculus (Cheap Material)</name>
+				<translate>Homunkulus (billiges Material)</translate>
+				<altpage>297</altpage>
+			</spirit>
+			<spirit>
+				<id>2ed43bda-6773-462d-b850-db4b82d9bac0</id>
+				<name>Homonculus (Average Material)</name>
+				<translate>Homunkulus (durchschnittliches Material)</translate>
+				<altpage>297</altpage>
+			</spirit>
+			<spirit>
+				<id>f1262445-f4fd-43ab-b874-b9111f02ac96</id>
+				<name>Homonculus (Heavy Material)</name>
+				<translate>Homunkulus (schweres Material)</translate>
+				<altpage>297</altpage>
+			</spirit>
+			<spirit>
+				<id>eb454ca4-2260-4f1c-91c4-901abf010f2b</id>
+				<name>Homonculus (Reinforced Material)</name>
+				<translate>Homunkulus (verstärktes Material)</translate>
+				<altpage>297</altpage>
+			</spirit>
+			<spirit>
+				<id>ce4e5b8b-3d15-4cbe-b0ed-3ed150300779</id>
+				<name>Homonculus (Structural Material)</name>
+				<translate>Homunkulus (tragendes Material)</translate>
+				<altpage>297</altpage>
+			</spirit>
+			<spirit>
+				<id>d19a52fe-1c68-4032-9459-662b0b80a633</id>
+				<name>Homonculus (Heavy Structural Material)</name>
+				<translate>Homunkulus (schweres tragendes Material)</translate>
+				<altpage>297</altpage>
+			</spirit>
+			<spirit>
+				<id>d8a0781e-c5bf-451a-939c-97f68a3ceacb</id>
+				<name>Homonculus (Armored Material)</name>
+				<translate>Homunkulus (gepanzertes verstärktes Material)</translate>
+				<altpage>297</altpage>
+			</spirit>
+			<spirit>
+				<id>01cea6c7-1b92-4e71-a56c-4059ab105382</id>
+				<name>Homonculus (Hardened Material)</name>
+				<translate>Homunkulus (gehärtetes Material)</translate>
+				<altpage>297</altpage>
+			</spirit>
+			<spirit>
+				<id>04d2cdc8-7876-4865-93d6-76a46f628014</id>
+				<name>Watcher</name>
+				<translate>Watcher</translate>
+				<altpage>297</altpage>
+			</spirit>
+			<spirit>
+				<id>8011bd8a-847f-4527-89d1-58c559ef9480</id>
+				<name>Ally Spirit</name>
+				<translate>Verbündeter</translate>
+				<altpage>234</altpage>
 			</spirit>
 		</spirits>
 		<drainattributes>
@@ -39890,6 +40459,18 @@
 				<translate>Sikorsky-Bell Condor</translate>
 				<altpage>182</altpage>
 			</vehicle>
+			<vehicle translated="True">
+				<id>8e710ab0-637a-43a1-93a2-66120e7dbea5</id>
+				<name>Porsche-Dornier Aqua 503</name>
+				<translate>Porsche-Dornier Aqua 503</translate>
+				<altpage>18</altpage>
+			</vehicle>
+			<vehicle translated="True">
+				<id>bb04e470-621f-4eec-9d3d-09a718a3402f</id>
+				<name>Ruhrmetall Hovawart</name>
+				<translate>Ruhrmetall Hovawart</translate>
+				<altpage>19</altpage>
+			</vehicle>
 		</vehicles>
 		<mods>
 			<mod>
@@ -40972,6 +41553,12 @@
 				<translate>Daihatsu-Caterpillar Horseman Frachtmodul</translate>
 				<altpage>43</altpage>
 			</mod>
+			<mod>
+				<id>3433b962-0ed6-49e9-9807-0a160642ae91</id>
+				<name>Ejection seat</name>
+				<translate>Schleudersitz</translate>
+				<altpage>171</altpage>
+			</mod>
 		</mods>
 		<weaponmounts>
 			<weaponmount translated="True">
@@ -41123,6 +41710,12 @@
 				<name>None</name>
 				<translate>Keine</translate>
 				<altpage>168</altpage>
+			</weaponmount>
+			<weaponmount>
+				<id>ccc4f175-0a93-4a27-a069-29d5ba8375e2</id>
+				<name>Built-In</name>
+				<translate>eingebaut</translate>
+				<altpage>0</altpage>
 			</weaponmount>
 		</weaponmounts>
 		<weaponmountmods>
@@ -44465,7 +45058,7 @@
 			</weapon>
 			<weapon translated="True">
 				<id>79599718-2154-45ad-ba32-bbb65c0a5bf4</id>
-				<name>Renkaru Red Samurai Katana</name>
+				<name>Renraku Red Samurai Katana</name>
 				<translate>Katana der roten Samurai</translate>
 				<altpage>139</altpage>
 			</weapon>
@@ -44600,6 +45193,48 @@
 				<name>Grenade: Molotov Cocktail (Aerodynamic)</name>
 				<translate>Granate: Molotowcocktail (Aerodynamisch)</translate>
 				<altpage>11</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>51a64bcb-e321-4eab-a89b-0a58674923be</id>
+				<name>Walther P99</name>
+				<translate>Walther P99</translate>
+				<altpage>32</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>4260c424-10ab-4530-b6e1-6e1e5bb267ad</id>
+				<name>Jaws</name>
+				<translate>Gebiss</translate>
+				<altpage>146</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>e1b2576c-9f61-4257-913b-667ea53a4864</id>
+				<name>Melee Bite</name>
+				<translate>Nahkampf: Biss</translate>
+				<altpage>136</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>c166caeb-aaa8-4e13-b76d-ae9e567f7dcd</id>
+				<name>Underbarrel Bola Launcher</name>
+				<translate>Unterlauf-Bolawerfer</translate>
+				<altpage>52</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>7d711605-e6a9-42f9-846b-95ef80e8c575</id>
+				<name>Underbarrel Grapple Gun</name>
+				<translate>Unterlauf-Enterhakenkanone</translate>
+				<altpage>52</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>64efe703-1381-464a-b9ea-26c85b1837e3</id>
+				<name>Hardened Rolling Blades</name>
+				<translate>Rollschuhe mit gehärteten Klingen</translate>
+				<altpage>179</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>c73077d0-fc16-474c-a8e6-ce9635a36224</id>
+				<name>Foot Anchor</name>
+				<translate>Fußanker</translate>
+				<altpage>87</altpage>
 			</weapon>
 		</weapons>
 		<accessories>
@@ -45377,6 +46012,42 @@
 				<translate>Spezialmodifikation: Verbesserte Rückstoßkompensation</translate>
 				<altpage>167</altpage>
 			</accessory>
+			<accessory>
+				<id>91d1b0c0-3146-4435-b2ef-322e80dbbb59</id>
+				<name>Breeching Teeth</name>
+				<translate>Sturmzähne</translate>
+				<altpage>138</altpage>
+			</accessory>
+			<accessory>
+				<id>2eea1d98-8c6f-4f59-a8e8-e39b17c60869</id>
+				<name>Modified Pump Handle</name>
+				<translate>Modifizierter Repetiergriff</translate>
+				<altpage>138</altpage>
+			</accessory>
+			<accessory>
+				<id>6763996b-0458-46ee-a6a5-f50255ace664</id>
+				<name>Belt-Feed, 100-round</name>
+				<translate>Gurtmunition, 100-Schuss</translate>
+				<altpage>419</altpage>
+			</accessory>
+			<accessory>
+				<id>61ddc4d3-25fd-405c-af5d-2455efff2509</id>
+				<name>Drum Magazine, 24-round</name>
+				<translate>Trommelmagazin, 24-Schuss</translate>
+				<altpage>419</altpage>
+			</accessory>
+			<accessory>
+				<id>d45c3b70-0e12-48b5-9c69-9f86f14d593b</id>
+				<name>Drum Magazine, 32-round</name>
+				<translate>Trommelmagazin, 32-Schuss</translate>
+				<altpage>419</altpage>
+			</accessory>
+			<accessory>
+				<id>6598e5fa-f2d0-4c5c-a773-570cd9d16300</id>
+				<name>External Power Source</name>
+				<translate>Stangenmagazin</translate>
+				<altpage>419</altpage>
+			</accessory>
 		</accessories>
 	</chummer>
 	<chummer file="complexforms.xml">
@@ -45776,6 +46447,12 @@
 				<altpage>Passt die Essenzkosten von Cyberware um den eingegebenen Prozentwert an. Alle Essenzkosten für Cyberware betragen nun x % des ursprünglichen Wertes. Werte unter 100 reduzieren die Essenzkosten. Werte über 100 erhöhen die Essenzkosten.</altpage>
 			</improvement>
 			<improvement>
+				<id>genetechessmultiplier</id>
+				<name>Genetech Essence Cost</name>
+				<translate>Gentech Essenzkosten</translate>
+				<altpage>Passt die Essenzkosten von Gentech um den eingegebenen Prozentwert an. Alle Essenzkosten für Gentech betragen nun x % des ursprünglichen Wertes. Werte unter 100 reduzieren die Essenzkosten. Werte über 100 erhöhen die Essenzkosten.</altpage>
+			</improvement>
+			<improvement>
 				<id>weaponcategorydv</id>
 				<name>Weapon Category DV</name>
 				<translate>Waffenkategorie Schaden</translate>
@@ -46039,6 +46716,12 @@
 				<translate>Spezieller Zauberwürfelpool</translate>
 				<altpage>Passt den Zauberpool des Charakters an, wenn er Zauber in der ausgewählten Kategorie wirkt. Positive Werte erhöhen die Fähigkeit für Zauber. Negative Werte reduzieren die Fähigkeit für Zauber.</altpage>
 			</improvement>
+			<improvement>
+				<id>enablecyberzombie</id>
+				<name>Enable Cyberzombie Conversion</name>
+				<translate>Cyberzombie-Umwandlung aktivieren</translate>
+				<altpage>Ermöglicht die Umwandlung des Charakters in einen Cyberzombie.</altpage>
+			</improvement>
 		</improvements>
 	</chummer>
 	<chummer file="licenses.xml">
@@ -46077,7 +46760,7 @@
 			<license translate="Zulassung als Taliskrämer">Talismonger License</license>
 			<license translate="Waffenschein">Weapon License</license>
 			<license translate="Zulassung für ungewöhnliche Waffen">Exotic Weapons License</license>
-			<license translate="Zulassung für nicht frei erhältliche Waffen">Restricted Armor License</license>
+			<license translate="Zulassung für nicht frei erhältliche Rüstungen">Restricted Armor License</license>
 			<license translate="Schrottflintenlizenz">Shotgun License</license>
 		</licenses>
 	</chummer>
@@ -47160,6 +47843,11 @@
 				<name>Street Scum</name>
 				<translate>Straßenabschaum</translate>
 			</gameplayoption>
+			<gameplayoption>
+				<id>e6ac4dae-23bc-4b77-9e00-a6bfdacd0760</id>
+				<name>High Life</name>
+				<translate>Luxusleben</translate>
+			</gameplayoption>
 		</gameplayoptions>
 	</chummer>
 	<chummer file="vessels.xml">
@@ -47214,6 +47902,434 @@
 				<altpage>190</altpage>
 			</grade>
 		</grades>
+		<drugs>
+			<drug>
+				<id>62bffcd7-4a43-45cd-9cf7-3067ba9688f6</id>
+				<name>Bliss</name>
+				<translate>Bliss</translate>
+				<altpage>413</altpage>
+			</drug>
+			<drug>
+				<id>8dc829b9-8b94-4510-ab1a-2305cbad69c9</id>
+				<name>Cram</name>
+				<translate>Cram</translate>
+				<altpage>413</altpage>
+			</drug>
+			<drug>
+				<id>5f5bc907-ce31-4f34-b7cf-a48d9d5d10b3</id>
+				<name>Deepweed</name>
+				<translate>Deepweed</translate>
+				<altpage>413</altpage>
+			</drug>
+			<drug>
+				<id>929c4835-1754-4999-9215-9859e8ec5384</id>
+				<name>Jazz</name>
+				<translate>Jazz</translate>
+				<altpage>413</altpage>
+			</drug>
+			<drug>
+				<id>098bf489-bea9-4f17-b3d9-aead979fdc32</id>
+				<name>Kamikaze</name>
+				<translate>Kamikaze</translate>
+				<altpage>413</altpage>
+			</drug>
+			<drug>
+				<id>d4cf626d-0af1-41f7-bec0-e53b4dba2eb1</id>
+				<name>Long Haul</name>
+				<translate>Long Haul</translate>
+				<altpage>414</altpage>
+			</drug>
+			<drug>
+				<id>d7ec13fa-8601-4f9c-a59c-6a86573b40ee</id>
+				<name>Nitro</name>
+				<translate>Nitro</translate>
+				<altpage>414</altpage>
+			</drug>
+			<drug>
+				<id>836f54d5-1e11-49ea-b115-34c14ed843c9</id>
+				<name>Novacoke</name>
+				<translate>Novacoke</translate>
+				<altpage>414</altpage>
+			</drug>
+			<drug>
+				<id>778eefae-94ad-4f8c-ad03-8b9039b5c48e</id>
+				<name>Psyche</name>
+				<translate>Psyche</translate>
+				<altpage>414</altpage>
+			</drug>
+			<drug>
+				<id>3a946800-be1e-4bbb-899a-c3d1c48a3a31</id>
+				<name>Zen</name>
+				<translate>Zen</translate>
+				<altpage>414</altpage>
+			</drug>
+			<drug>
+				<id>35309aeb-0cbc-4b64-a809-34de50812564</id>
+				<name>Crash</name>
+				<translate>Crash</translate>
+				<altpage>20</altpage>
+			</drug>
+			<drug>
+				<id>c4ae816f-f683-469d-a7cd-ec1931740e1e</id>
+				<name>Cryo</name>
+				<translate>Cryo</translate>
+				<altpage>20</altpage>
+			</drug>
+			<drug>
+				<id>5929d3b9-451b-4be8-a292-8b6509d0aeb9</id>
+				<name>HemoSynth</name>
+				<translate>HemoSynth</translate>
+				<altpage>21</altpage>
+			</drug>
+			<drug>
+				<id>076825cd-dc6f-4e48-8c73-e958b21c1766</id>
+				<name>NanoScan</name>
+				<translate>NanoScan</translate>
+				<altpage>21</altpage>
+			</drug>
+			<drug>
+				<id>cf2dd622-8312-4807-97f0-c5d30f9f67b4</id>
+				<name>Neostigmine</name>
+				<translate>Neostigmin</translate>
+				<altpage>21</altpage>
+			</drug>
+			<drug>
+				<id>1135e850-8371-4827-b2fe-94f5659583d4</id>
+				<name>Ondansetron</name>
+				<translate>Ondansetron</translate>
+				<altpage>21</altpage>
+			</drug>
+			<drug>
+				<id>b14cc8cf-8d19-4306-a71a-9a7f761eb321</id>
+				<name>Sugammadex</name>
+				<translate>Sugammadex</translate>
+				<altpage>22</altpage>
+			</drug>
+			<drug>
+				<id>c113d0e8-8720-47fb-9ac6-fdc9e262c94b</id>
+				<name>Accelerator</name>
+				<translate>Accelerator</translate>
+				<altpage>247</altpage>
+			</drug>
+			<drug>
+				<id>ee783a4e-331f-4e03-bf47-7ecb93341919</id>
+				<name>Buffout</name>
+				<translate>Buffout</translate>
+				<altpage>248</altpage>
+			</drug>
+			<drug>
+				<id>31f51b7e-d2eb-4274-aead-72710b198c13</id>
+				<name>Numb</name>
+				<translate>Numb</translate>
+				<altpage>248</altpage>
+			</drug>
+			<drug>
+				<id>87186987-c004-439a-8958-d7b82198fb69</id>
+				<name>Pinpoint</name>
+				<translate>Pinpoint</translate>
+				<altpage>248</altpage>
+			</drug>
+			<drug>
+				<id>8cb8086b-3171-4a60-bee4-2996e29d5156</id>
+				<name>Liquid Nutrients</name>
+				<translate>Flüssignährstoffe</translate>
+				<altpage>204</altpage>
+			</drug>
+			<drug>
+				<id>8461fd87-ea93-4edb-92a1-4a20ad444471</id>
+				<name>Normal Saline</name>
+				<translate>Isotonische Kochsalzlösung</translate>
+				<altpage>204</altpage>
+			</drug>
+			<drug>
+				<id>93245f7f-2391-440c-b9ae-d0a5c8549fb2</id>
+				<name>Slab</name>
+				<translate>Slab</translate>
+				<altpage>205</altpage>
+			</drug>
+			<drug>
+				<id>cf54b977-b2d9-4572-8e92-c3cc949f2c42</id>
+				<name>AEXD</name>
+				<translate>AEXD</translate>
+				<altpage>179</altpage>
+			</drug>
+			<drug>
+				<id>53f656f4-bfa9-469e-a08d-ddf4fc71f824</id>
+				<name>Aisa</name>
+				<translate>Aisa</translate>
+				<altpage>179</altpage>
+			</drug>
+			<drug>
+				<id>d32f1811-5ffb-4cd4-9873-ddcf207e95cb</id>
+				<name>Animal Tongue</name>
+				<translate>Tierzunge</translate>
+				<altpage>187</altpage>
+			</drug>
+			<drug>
+				<id>009bd079-f7ee-4055-a86f-af03d6837cc8</id>
+				<name>Ayao's Will</name>
+				<translate>Ayaos Wille</translate>
+				<altpage>185</altpage>
+			</drug>
+			<drug>
+				<id>f4eb63ce-c182-406c-b625-5699047e33a9</id>
+				<name>Betameth</name>
+				<translate>Betameth</translate>
+				<altpage>179</altpage>
+			</drug>
+			<drug>
+				<id>67436993-439d-4e6b-b64a-3f506f44721a</id>
+				<name>Betel</name>
+				<translate>Betel</translate>
+				<altpage>179</altpage>
+			</drug>
+			<drug>
+				<id>440ae069-da45-4721-b45f-6441c931180f</id>
+				<name>Cereprax</name>
+				<translate>Cereprax</translate>
+				<altpage>180</altpage>
+			</drug>
+			<drug>
+				<id>68c65dca-e0e1-4291-8d1b-b23649027271</id>
+				<name>Crimson Orchid</name>
+				<translate>Blutorchidee</translate>
+				<altpage>185</altpage>
+			</drug>
+			<drug>
+				<id>c4f2a23f-8806-4333-92b3-81d6d09ff8b5</id>
+				<name>Dopadrine</name>
+				<translate>Dopadrin</translate>
+				<altpage>180</altpage>
+			</drug>
+			<drug>
+				<id>27b4ed38-dc23-4225-ad8d-146bdfe2e598</id>
+				<name>eX</name>
+				<translate>eX</translate>
+				<altpage>180</altpage>
+			</drug>
+			<drug>
+				<id>f7ed8b97-e26a-4296-b59d-e7c893696011</id>
+				<name>Forget-Me-Not</name>
+				<translate>Vergiss-Mein-Nicht</translate>
+				<altpage>184</altpage>
+			</drug>
+			<drug>
+				<id>75e9b82f-eb1a-4db1-8cde-29d2cf0eaba6</id>
+				<name>Galak</name>
+				<translate>Galak</translate>
+				<altpage>180</altpage>
+			</drug>
+			<drug>
+				<id>9195ee9e-c5b1-4e8f-9b1a-786393a302dc</id>
+				<name>G3</name>
+				<translate>G3</translate>
+				<altpage>180</altpage>
+			</drug>
+			<drug>
+				<id>0ed6e114-6a9f-4bd6-ba27-2b4f28b10305</id>
+				<name>Guts</name>
+				<translate>Guts</translate>
+				<altpage>181</altpage>
+			</drug>
+			<drug>
+				<id>df660e33-ce77-46e4-8c13-a92e3b5f37e8</id>
+				<name>Hecate's Blessing</name>
+				<translate>Hekates Segen</translate>
+				<altpage>186</altpage>
+			</drug>
+			<drug>
+				<id>a713f573-128b-4143-adc0-32f52e698587</id>
+				<name>Hurlg</name>
+				<translate>Hurlg</translate>
+				<altpage>181</altpage>
+			</drug>
+			<drug>
+				<id>d70434e3-183c-4243-8213-b9f9166387ea</id>
+				<name>Immortal Flower</name>
+				<translate>Ewige Blume</translate>
+				<altpage>187</altpage>
+			</drug>
+			<drug>
+				<id>3659055c-db84-4f75-bfa9-afe5d0f39803</id>
+				<name>K-10</name>
+				<translate>K-10</translate>
+				<altpage>181</altpage>
+			</drug>
+			<drug>
+				<id>f818d571-c817-49b2-86b6-ad9fb94ead54</id>
+				<name>Laés</name>
+				<translate>Laés</translate>
+				<altpage>186</altpage>
+			</drug>
+			<drug>
+				<id>1c672c5d-88f7-43dd-b4d0-42571eb07547</id>
+				<name>Leäl</name>
+				<translate>Lëal</translate>
+				<altpage>186</altpage>
+			</drug>
+			<drug>
+				<id>58319c25-b724-4db4-b492-1068ca44cb73</id>
+				<name>Little Smoke</name>
+				<translate>Kleiner Rauch</translate>
+				<altpage>187</altpage>
+			</drug>
+			<drug>
+				<id>65122a92-ae48-4e94-8c68-69c1bdc7d46a</id>
+				<name>Memory Fog</name>
+				<translate>Gedankennebel</translate>
+				<altpage>181</altpage>
+			</drug>
+			<drug>
+				<id>a2b0310b-5a8f-4b01-b478-967d345ce22c</id>
+				<name>Nightwatch</name>
+				<translate>Nachtwache</translate>
+				<altpage>181</altpage>
+			</drug>
+			<drug>
+				<id>6e219091-8e3c-4a65-bb1d-78a351d8bf54</id>
+				<name>NoPaint</name>
+				<translate>NoPaint</translate>
+				<altpage>181</altpage>
+			</drug>
+			<drug>
+				<id>11c547f4-37d1-4d6a-8760-1d11ef48c7f7</id>
+				<name>Oneiro</name>
+				<translate>Oneiro</translate>
+				<altpage>186</altpage>
+			</drug>
+			<drug>
+				<id>aa22ff52-1615-48cb-9e55-e63539ede39a</id>
+				<name>Overdrive</name>
+				<translate>Overdrive</translate>
+				<altpage>186</altpage>
+			</drug>
+			<drug>
+				<id>7fdde8cd-95f8-4316-9ca4-2ad06f77cb15</id>
+				<name>Oxygenated Fluorocarbons</name>
+				<translate>Oxygenierte Fluorkarbonae</translate>
+				<altpage>182</altpage>
+			</drug>
+			<drug>
+				<id>c3965bac-b2b0-47b1-96d8-0a1a7cb4e1b6</id>
+				<name>Pixie Dust</name>
+				<translate>Feenstaub</translate>
+				<altpage>185</altpage>
+			</drug>
+			<drug>
+				<id>9c3ae30d-dd3e-49da-a30b-acbe06b444ac</id>
+				<name>Push</name>
+				<translate>Push</translate>
+				<altpage>182</altpage>
+			</drug>
+			<drug>
+				<id>1131acde-3791-4870-8c05-1b261e3beaa1</id>
+				<name>PsychChips (Illegal)</name>
+				<translate>Psychochips (illegal)</translate>
+				<altpage>187</altpage>
+			</drug>
+			<drug>
+				<id>48c252e2-8bfd-46e4-ae77-b394b9e92773</id>
+				<name>PsychChips (Legal)</name>
+				<translate>Psychochips (legal)</translate>
+				<altpage>187</altpage>
+			</drug>
+			<drug>
+				<id>5fe2bf62-471e-4000-8ab8-641623983302</id>
+				<name>Red Mescaline</name>
+				<translate>Red Mescaline</translate>
+				<altpage>182</altpage>
+			</drug>
+			<drug>
+				<id>60cfe7ff-c634-405f-9894-7baee61e4445</id>
+				<name>Ripper</name>
+				<translate>Ripper</translate>
+				<altpage>183</altpage>
+			</drug>
+			<drug>
+				<id>68ac6703-8540-4efe-b9d9-51f9db14d6b7</id>
+				<name>Rock Lizard Blood</name>
+				<translate>Felsenechsenblut</translate>
+				<altpage>187</altpage>
+			</drug>
+			<drug>
+				<id>127e4e88-6966-44ad-a95b-eeaaa9a7472e</id>
+				<name>Shade</name>
+				<translate>Düsternis</translate>
+				<altpage>186</altpage>
+			</drug>
+			<drug>
+				<id>62d633d1-0e3a-4ea6-a4ba-f88ccdf72cf9</id>
+				<name>Slab</name>
+				<translate>Slab</translate>
+				<altpage>183</altpage>
+			</drug>
+			<drug>
+				<id>cd2dd310-464f-4f12-ae42-cdc293e3a2df</id>
+				<name>Snuff</name>
+				<translate>Snuff</translate>
+				<altpage>183</altpage>
+			</drug>
+			<drug>
+				<id>6c030daa-7dc0-4d7e-86a8-d36f4b15e13f</id>
+				<name>Sober Time</name>
+				<translate>Sober Time</translate>
+				<altpage>183</altpage>
+			</drug>
+			<drug>
+				<id>8a40ed45-a19c-47a6-8449-f3235492e809</id>
+				<name>Soothsayer</name>
+				<translate>Wahrsager</translate>
+				<altpage>184</altpage>
+			</drug>
+			<drug>
+				<id>7e8a18bd-f80f-432e-b985-823fc6be0d5a</id>
+				<name>Trance</name>
+				<translate>Trance</translate>
+				<altpage>186</altpage>
+			</drug>
+			<drug>
+				<id>8a01190e-f484-4fc6-981e-3e954ce17107</id>
+				<name>Woad</name>
+				<translate>Woad</translate>
+				<altpage>184</altpage>
+			</drug>
+			<drug>
+				<id>ca121b86-d4d1-411d-a524-389e6bd2091b</id>
+				<name>Wudu'aku</name>
+				<translate>Wudu'aku</translate>
+				<altpage>187</altpage>
+			</drug>
+			<drug>
+				<id>2d35de28-3b3d-4009-8ced-de5fd3869069</id>
+				<name>Zero</name>
+				<translate>Zero</translate>
+				<altpage>184</altpage>
+			</drug>
+			<drug>
+				<id>dace6412-6d90-4b98-b00c-86483b278e01</id>
+				<name>Zombie Dust</name>
+				<translate>Zombiestaub</translate>
+				<altpage>187</altpage>
+			</drug>
+			<drug>
+				<id>329f3767-f1ca-49ef-971a-6509ad3e8c41</id>
+				<name>Shiva (Vintage)</name>
+				<translate>Shiva (Vintage)</translate>
+				<altpage>97</altpage>
+			</drug>
+			<drug>
+				<id>c5c06863-d382-41b7-93de-bd10659515ca</id>
+				<name>Shiva II</name>
+				<translate>Shiva II</translate>
+				<altpage>97</altpage>
+			</drug>
+			<drug>
+				<id>1e391e72-1c21-44b3-b935-7abfba2dca43</id>
+				<name>Evo Aphrodite Reactive Biomatter</name>
+				<translate>Evo Aphrodite Reaktive Biomaterie</translate>
+				<altpage>19</altpage>
+			</drug>
+		</drugs>
 		<drugcomponents>
 			<drugcomponent translated="True">
 				<id>33ae6b1c-62f6-4824-967d-0e2b37c7d1b9</id>

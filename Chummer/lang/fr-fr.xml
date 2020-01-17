@@ -1010,10 +1010,6 @@
 			<text>Le personnage doit avoir une Essence négative.</text>
 		</string>
 		<string>
-			<key>Message_CyberzombieRequirementsStimulator</key>
-			<text>Le personnage doit avoir un stimulateur de mémoire évoquée.</text>
-		</string>
-		<string>
 			<key>MessageTitle_CyberzombieRequirements</key>
 			<text>Prérequis à la transformation en cyberzombie</text>
 		</string>
@@ -3216,7 +3212,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Label_DicePool</key>
-			<text>Réserve de dés :</text>
+			<text>Nombre de Dés :</text>
 		</string>
 		<string>
 			<key>Checkbox_BaseWeapon</key>
@@ -3716,7 +3712,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<text>Vol :</text>
 		</string>
 		<string>
-			<key>Label_OtherCmposure</key>
+			<key>Label_OtherComposure</key>
 			<text>Sang-froid :</text>
 		</string>
 		<string>
@@ -4072,7 +4068,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Tip_Skill_DicePoolModifiers</key>
-			<text>Modificateur de Réserve de Dés</text>
+			<text>Modificateur de Nombre de Dés</text>
 		</string>
 		<string>
 			<key>Tip_Skill_NativeLanguage</key>
@@ -5976,11 +5972,11 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<text>N'afficher que les traits disponibles</text>
 		</string>
 		<string>
-			<key>Checkbox_SelectQuality_Metagenetic</key>
+			<key>Checkbox_SelectQuality_Metagenic</key>
 			<text>N'afficher que les traits métagénétiques</text>
 		</string>
 		<string>
-			<key>Checkbox_SelectQuality_Not_Metagenetic</key>
+			<key>Checkbox_SelectQuality_Not_Metagenic</key>
 			<text>Ne pas afficher Qualités Meta génétiques</text>
 		</string>
 		<string>
@@ -7072,6 +7068,10 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<key>Checkbox_Options_IgnoreArt</key>
 			<text>Ignorer les prérequis du Grimoire des rues pour les Talents</text>
 		</string>
+        <string>
+          <key>Checkbox_Options_AllowFreeGrids</key>
+          <text>Permettre les abonnements de grille disponibles pour les niveau de vie, même si 'Hard Targets' n'est pas sélectionné comme livre source</text>
+        </string>
 		<string>
 			<key>Message_UndoNotHighestGrade</key>
 			<text>Vous devez d'abord annuler les entrées des grades d'initiation.</text>
@@ -7301,10 +7301,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<text>Sélection d'un Programme ou Programme Avancé</text>
 		</string>
 		<string>
-			<key>Message_SelectAIProgram_AdvancedProgramRequirement</key>
-			<text>Vous ne réunissez pas les conditions minimales pour ce programme avancé. Vous devez savoir tout les programmes suivants: </text>
-		</string>
-		<string>
 			<key>MessageTitle_SelectAIProgram_AdvancedProgramRequirement</key>
 			<text>Prérequis du Programme Avancé</text>
 		</string>
@@ -7455,7 +7451,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<text>Personnages récents</text>
 		</string>
 		<string>
-			<key>Treenode_Roster_FavouriteCharacters</key>
+			<key>Treenode_Roster_FavoriteCharacters</key>
 			<text>Personnages préférés</text>
 		</string>
 		<string>
@@ -8437,10 +8433,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<text>Les armes utilisées avec des techniques de combat non armées reçoivent le bonus pour cette technique</text>
 		</string>
 		<string>
-			<key>Message_DuplicateDrugComponentWarning</key>
-			<text>Il est impossible d'ajouter deux fois le même composant.</text>
-		</string>
-		<string>
 			<key>Button_RemoveEcho</key>
 			<text>Enlever l'Écho</text>
 		</string>
@@ -9279,24 +9271,12 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<text>[{0}/{1}]</text>
 		</string>
 		<string>
-			<key>Label_SelectAdvancedLifestyle_Base_Comforts</key>
-			<text>[{0}/{1}]</text>
-		</string>
-		<string>
 			<key>Node_SelectAdvancedLifestyle_Entertainments</key>
 			<text>Loisirs</text>
 		</string>
 		<string>
 			<key>Label_SelectAdvancedLifestyle_Rating</key>
 			<text>Indice :</text>
-		</string>
-		<string>
-			<key>Label_SelectAdvancedLifestyle_Base_Neighborhood</key>
-			<text>[{0}/{1}]</text>
-		</string>
-		<string>
-			<key>Label_SelectAdvancedLifestyle_Base_Security</key>
-			<text>[{0}/{1}]</text>
 		</string>
 		<string>
 			<key>MessageTitle_SelectAdvancedLifestyle_OverLPLimit</key>
@@ -9565,6 +9545,238 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		<string>
 			<key>String_Wireless</key>
 			<text>WiFi</text>
+		</string>
+		<string>
+			<key>String_ApplicationInsights_OnlyLocal</key>
+			<text>Enregistrement local uniquement</text>
+		</string>
+		<string>
+			<key>String_ApplicationInsights_OnlyMetric</key>
+			<text>Téléchargement des informations statistiques</text>
+		</string>
+		<string>
+			<key>String_ApplicationInsights_Crashes</key>
+			<text>Télécharger des plantages de programme</text>
+		</string>
+		<string>
+			<key>String_ApplicationInsights_Info</key>
+			<text>Télécharger les protocoles normaux</text>
+		</string>
+		<string>
+			<key>String_ApplicationInsights_Trace</key>
+			<text>Télécharger les protocoles détaillés</text>
+		</string>
+		<string>
+			<key>String_ApplicationInsights_NotSet</key>
+			<text>Chummer décide</text>
+		</string>
+		<string>
+			<key>Menu_Tools_SINners</key>
+			<text>Groupes de SINner</text>
+		</string>
+		<string>
+			<key>Menu_Tools_SINnersArchetypes</key>
+			<text>Archétypes</text>
+		</string>
+		<string>
+			<key>Label_SelectAdvancedLifestyle_Base</key>
+			<text>[{0}/{1}]</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_IncreasedImprovedAbilityModifier</key>
+			<text>La compétence améliorée est limitée par la puissance apprise à 1,5 au lieu de 0,5</text>
+		</string>
+		<string>
+			<key>Label_SummaryMetagenicQualities</key>
+			<text>Traits métagénétiques</text>
+		</string>
+		<string>
+			<key>Label_MetagenicKarmaValue</key>
+			<text>{0}P/{1}N - max. {2}</text>
+		</string>
+		<string>
+			<key>Label_MetagenicKarmaValueAppend</key>
+			<text> (1 Karma)</text>
+		</string>
+		<string>
+			<key>Message_InvalidPowerPoints</key>
+			<text>{0} de plus que les points de pouvoir maximum des adeptes ({1})</text>
+		</string>
+		<string>
+			<key>Label_RatingFormat</key>
+			<text>{0}:</text>
+		</string>
+		<string>
+			<key>Rating_LengthInCmBy10</key>
+			<text>Longueur (cm)x10</text>
+		</string>
+		<string>
+			<key>Rating_Meters</key>
+			<text>Mètres</text>
+		</string>
+		<string>
+			<key>String_SINners_HowToGroupParentDescription</key>
+			<text>Un groupe peut être assigné comme sous-groupe par glisser-déposer après sa création.</text>
+		</string>
+		<string>
+			<key>String_SINners_EnterGroupPassword</key>
+			<text>Ce groupe est protégé par un mot de passe. Entrer le mot de passe :</text>
+		</string>
+		<string>
+			<key>String_SINners_EnterGroupPasswordTitle</key>
+			<text>Entrez votre mot de passe</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_HideCharts</key>
+			<text>Masquer les tables qui causent des problèmes avec Wine</text>
+		</string>
+		<string>
+			<key>String_Bullet</key>
+			<text>Projectile</text>
+		</string>
+		<string>
+			<key>String_Bullets</key>
+			<text>Projectiles</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_EnablePlugins</key>
+			<text>Activer les plugins (expérimental)</text>
+		</string>
+		<string>
+			<key>Chummy_Intro</key>
+			<text>Salut ! C'est Chummy, l'assistante de Chummer à l'IA ! Il y a beaucoup de conseils et de recommandations utiles pour vos personnages !</text>
+		</string>
+		<string>
+			<key>String_online</key>
+			<text>Connecté</text>
+		</string>
+		<string>
+			<key>Menu_ShareChummer</key>
+			<text>Recommandez Chummer à un ami</text>
+		</string>
+		<string>
+			<key>Menu_Tools_SINnerSearch</key>
+			<text>Recherche par SINner</text>
+		</string>
+		<string>
+			<key>Menu_Main_SINnerSearch</key>
+			<text>Recherche dans la base de données des SIN</text>
+		</string>
+		<string>
+			<key>Menu_Main_SINners</key>
+			<text>SINner</text>
+		</string>
+		<string>
+			<key>Menu_ShareChummerGroup</key>
+			<text>Partager tout le groupe</text>
+		</string>
+		<string>
+			<key>Menu_AddPinnedGroup</key>
+			<text>Epingler le groupe</text>
+		</string>
+		<string>
+			<key>Checkbox_CreateImprovementIgnoreLimits</key>
+			<text>Ignorer des limites</text>
+		</string>
+		<string>
+			<key>Tip_ImproveItemAtMaximum</key>
+			<text>Non augmentable, maximum atteint</text>
+		</string>
+		<string>
+			<key>Tip_OtherSurprise</key>
+			<text>Surprise est calculé comme RÉA + INT.</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_AllowEasterEggs</key>
+			<text>Permettre les œufs de Pâques</text>
+		</string>
+		<string>
+			<key>Message_DuplicateDrugComponentWarning</key>
+			<text>Vous ne pouvez pas ajouter le même composant plus de {0} fois.</text>
+		</string>
+		<string>
+			<key>Message_CustomDrug_Name</key>
+			<text>Entrez un nom pour votre drogue.</text>
+		</string>
+		<string>
+			<key>MessageTitle_CustomDrug_MissingFoundation</key>
+			<text>Base manquante</text>
+		</string>
+		<string>
+			<key>Label_Options_BrowserVersion</key>
+			<text>Aperçu utilise la version d'Internet Explorer</text>
+		</string>
+		<string>
+			<key>Label_OtherSurprise</key>
+			<text>Surprise :</text>
+		</string>
+		<string>
+			<key>Message_CyberzombieRequirementsImprovement</key>
+			<text>Il faut que vous ayez une amélioration qui vous permette de devenir un cyberzombie.</text>
+		</string>
+		<string>
+			<key>Message_InvalidActiveSkillExcessSpecializations</key>
+			<text>Une ou plusieurs compétences actives ont plus d'une spécialisation :</text>
+		</string>
+		<string>
+			<key>Message_DeleteDrug</key>
+			<text>Vous êtes sûr de vouloir supprimer cette recette de drogue ?</text>
+		</string>
+		<string>
+			<key>Message_CustomDrug_MissingFoundation</key>
+			<text>Il faut que les drogues aient un base.</text>
+		</string>
+		<string>
+			<key>String_Avail</key>
+			<text>Disponibilité</text>
+		</string>
+		<string>
+			<key>String_Capacity</key>
+			<text>Capacité</text>
+		</string>
+		<string>
+			<key>String_Cost</key>
+			<text>Coût</text>
+		</string>
+		<string>
+			<key>String_Source</key>
+			<text>Source</text>
+		</string>
+		<string>
+			<key>String_Accessories</key>
+			<text>Accessoires</text>
+		</string>
+		<string>
+			<key>String_Accuracy</key>
+			<text>Précision</text>
+		</string>
+		<string>
+			<key>String_Ammo</key>
+			<text>Munitions</text>
+		</string>
+		<string>
+			<key>String_AP</key>
+			<text>PA</text>
+		</string>
+		<string>
+			<key>String_Damage</key>
+			<text>Dommages</text>
+		</string>
+		<string>
+			<key>String_Dicepool</key>
+			<text>Nombre de Dés</text>
+		</string>
+		<string>
+			<key>String_Mode</key>
+			<text>Mode</text>
+		</string>
+		<string>
+			<key>String_RC</key>
+			<text>CR</text>
+		</string>
+		<string>
+			<key>String_Reach</key>
+			<text>Allonge</text>
 		</string>
     <!-- Newoptions layout strings-->
     <string>

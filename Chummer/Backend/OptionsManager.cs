@@ -493,7 +493,7 @@ namespace Chummer
                 Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
                 ".config", 
                 "Chummer5a", 
-                "globaloptions.xml"
+                "GlobalOptions.Instance.xml"
             );
         }
 

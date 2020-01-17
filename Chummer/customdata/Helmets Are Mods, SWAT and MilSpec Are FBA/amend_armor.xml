@@ -1,4 +1,22 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
 <chummer>
   <armors>
     <armor>
@@ -15,6 +33,10 @@
     </armor>
     <armor>
       <name>Hardened Mil-Spec Battle Armor: Heavy</name>
+      <addmodcategory>Full Body Armor Mods</addmodcategory>
+    </armor>
+    <armor>
+      <name>Ares Arms Bug Stomper Custom Armor</name>
       <addmodcategory>Full Body Armor Mods</addmodcategory>
     </armor>
     <armor>
@@ -45,6 +67,10 @@
       <name>SWAT Helmet</name>
       <hide amendoperation="addnode" />
     </armor>
+    <armor>
+      <name>Urban Explorer Daedalus: Helmet</name>
+      <hide amendoperation="addnode" />
+    </armor>
   </armors>
   <mods>
     <mod>
@@ -52,7 +78,7 @@
       <name>SWAT Armor: Helmet</name>
       <category>Full Body Armor Mods</category>
       <armor>+3</armor>
-      <armorcapacity>8</armorcapacity>
+      <armorcapacity>[-8]</armorcapacity>
       <required>
         <parentdetails>
           <name>SWAT Armor</name>
@@ -68,10 +94,13 @@
       <name>Hardened Mil-Spec Battle Armor: Helmet</name>
       <category>Full Body Armor Mods</category>
       <armor>+3</armor>
-      <armorcapacity>8</armorcapacity>
+      <armorcapacity>[-8]</armorcapacity>
       <required>
         <parentdetails>
-          <name>Hardened Mil-Spec Battle Armor</name>
+          <OR>
+            <name>Ares Arms Bug Stomper Custom Armor</name>
+            <name operation="contains">Hardened Mil-Spec Battle Armor</name>
+          </OR>
         </parentdetails>
       </required>
       <avail>8F</avail>
@@ -84,10 +113,10 @@
       <name>Security Armor: Helmet</name>
       <category>Full Body Armor Mods</category>
       <armor>+3</armor>
-      <armorcapacity>5</armorcapacity>
+      <armorcapacity>[-5]</armorcapacity>
       <required>
         <parentdetails>
-          <name>Security Armor</name>
+          <name operation="contains">Security Armor</name>
         </parentdetails>
       </required>
       <avail>8R</avail>
@@ -101,7 +130,7 @@
       <category>Urban Explorer Jumpsuit Accessories</category>
       <armor>+2</armor>
       <maxrating>1</maxrating>
-      <armorcapacity>[0]</armorcapacity>
+      <armorcapacity>0</armorcapacity>
       <required>
         <parentdetails>
           <name>Urban Explorer Jumpsuit</name>
@@ -118,7 +147,7 @@
       <name>Urban Explorer Daedalus: Helmet</name>
       <category>Urban Explorer Jumpsuit Accessories</category>
       <armor>+2</armor>
-      <armorcapacity>6</armorcapacity>
+      <armorcapacity>[-6]</armorcapacity>
       <required>
         <parentdetails>
           <name>Urban Explorer Daedalus</name>

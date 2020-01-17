@@ -18,7 +18,8 @@
  */
  using System;
  using System.IO;
- using System.Windows.Forms;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Chummer
 {
@@ -40,7 +41,7 @@ namespace Chummer
         /// <summary>
         /// Show the Open File dialogue, then load the selected character.
         /// </summary>
-        private void OpenFile(object sender, EventArgs e)
+        private async void OpenFile(object sender, EventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
@@ -48,14 +49,14 @@ namespace Chummer
             };
 
             if (openFileDialog.ShowDialog(this) == DialogResult.OK)
-                LoadCharacter(openFileDialog.FileName);
+                await LoadCharacter(openFileDialog.FileName);
         }
 
         /// <summary>
         /// Loads the character
         /// </summary>
         /// <param name="fileName"></param>
-        private void LoadCharacter(string fileName)
+        private async Task<bool> LoadCharacter(string fileName)
         {
             if (File.Exists(fileName) && fileName.EndsWith("chum5"))
             {
@@ -64,10 +65,10 @@ namespace Chummer
                 {
                     FileName = fileName
                 };
-                if (!objCharacter.Load())
+                if (!(await objCharacter.Load()))
                 {
                     Cursor = Cursors.Default;   // TODO edward setup error page
-                    return; // we obviously cannot init
+                    return false; // we obviously cannot init
                 }
 
                 nudInit.Value = objCharacter.InitiativeDice;
@@ -76,7 +77,9 @@ namespace Chummer
                     nudInitStart.Value = intTemp;
                 _character = objCharacter;
                 Cursor = Cursors.Default;
+                return true;
             }
+            return false;
         }
 
         /// <summary>

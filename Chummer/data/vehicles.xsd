@@ -133,6 +133,28 @@
                       <xs:complexType>
                         <xs:sequence>
                           <xs:element name="addslots" type="xs:integer" minOccurs="0" maxOccurs="1" />
+                          <xs:element name="mod" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="name" minOccurs="0" maxOccurs="1" />
+                                <xs:element name="subsystems" minOccurs="0" maxOccurs="1">
+                                  <xs:complexType>
+                                    <xs:sequence>
+                                      <xs:element name="cyberware" minOccurs="0" maxOccurs="1">
+                                        <xs:complexType>
+                                          <xs:sequence>
+                                            <xs:element name="name" minOccurs="0" maxOccurs="1" />
+                                            <xs:element name="forced" minOccurs="0" maxOccurs="1" />
+                                            <xs:element name="rating" minOccurs="0" maxOccurs="1" />
+                                          </xs:sequence>
+                                        </xs:complexType>
+                                      </xs:element>
+                                    </xs:sequence>
+                                  </xs:complexType>
+                                </xs:element>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
                           <xs:element name="name" minOccurs="0" maxOccurs="unbounded">
                             <xs:complexType>
                               <xs:simpleContent>

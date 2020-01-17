@@ -30,7 +30,7 @@ namespace Chummer
     public partial class frmCreateCustomDrug : Form
 	{
         private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
-        private readonly Dictionary<string, DrugComponent> _dicDrugComponents = new Dictionary<string, DrugComponent>();
+		private readonly Dictionary<string, DrugComponent> _dicDrugComponents = new Dictionary<string, DrugComponent>();
         private readonly List<clsNodeData> _lstSelectedDrugComponents;
 		private readonly List<ListItem> _lstGrade = new List<ListItem>();
 		private readonly Character _objCharacter;
@@ -126,8 +126,10 @@ namespace Chummer
             {
                 Name = txtDrugName.Text,
                 Category = "Custom Drug",
-                Grade = cboGrade.SelectedValue.ToString()
             };
+            if ((_objCharacter != null) && (!String.IsNullOrEmpty(cboGrade?.SelectedValue?.ToString())))
+                _objDrug.Grade = Grade.ConvertToCyberwareGrade(cboGrade.SelectedValue.ToString(),
+                    Improvement.ImprovementSource.Drug, _objCharacter);
 
             foreach (clsNodeData objNodeData in _lstSelectedDrugComponents)
             {
@@ -142,13 +144,13 @@ namespace Chummer
 		    // Make sure the suite and file name fields are populated.
 		    if (string.IsNullOrEmpty(txtDrugName.Text))
 		    {
-		        MessageBox.Show(LanguageManager.GetString("Message_CustomDrug_Name", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CustomDrug_Name", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+		        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CustomDrug_Name", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CustomDrug_Name", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
 		    }
 
 		    if (_objDrug.Components.Count(o => o.Category == "Foundation") != 1)
 		    {
-		        MessageBox.Show(LanguageManager.GetString("Message_CustomDrug_MissingFoundation", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CustomDrug_Foundation", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+		        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CustomDrug_MissingFoundation", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CustomDrug_Foundation", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
 		        return;
             }
 
@@ -172,12 +174,13 @@ namespace Chummer
                 return;
             }
 
-            if (!string.IsNullOrEmpty(txtDrugName.Text))
-
-            //prevent adding same component twice
-            if (_lstSelectedDrugComponents.Any(c => c.DrugComponent.Name == objNodeData.DrugComponent.Name))
+            //prevent adding same component multiple times. 
+            if (_lstSelectedDrugComponents.Count(c => c.DrugComponent.Name == objNodeData.DrugComponent.Name) >=
+                objNodeData.DrugComponent.Limit && objNodeData.DrugComponent.Limit != 0)
             {
-                MessageBox.Show(this, LanguageManager.GetString("Message_DuplicateDrugComponentWarning"));
+                Program.MainForm.ShowMessageBox(this,
+                    LanguageManager.GetString("Message_DuplicateDrugComponentWarning")
+                        .Replace("{0}", objNodeData.DrugComponent.Limit.ToString()));
                 return;
             }
 
@@ -186,7 +189,7 @@ namespace Chummer
             {
                 if (_lstSelectedDrugComponents.Any(c => c.DrugComponent.Category == "Foundation"))
                 {
-                    MessageBox.Show(this, LanguageManager.GetString("Message_DuplicateDrugFoundationWarning"));
+                    Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_DuplicateDrugFoundationWarning"));
                     return;
                 }
             }
@@ -213,7 +216,7 @@ namespace Chummer
                                 Append(objFoundationNodeData.DrugComponent.CurrentDisplayName).Append(strColonString).Append(strSpaceString).Append(objItem.Key).Append(objItem.Value.ToString("+#;-#;")).AppendLine().
                                 Append(objNodeData.DrugComponent.CurrentDisplayName).Append(strColonString).Append(strSpaceString).Append(objItem.Key).Append(intBlockAttrValue.ToString("+#;-#;")).
                                 ToString();
-                            MessageBox.Show(this, message);
+                            Program.MainForm.ShowMessageBox(this, message);
                             return;
                         }
                     }
@@ -223,7 +226,7 @@ namespace Chummer
 
             string strNodeText = objNodeData.DrugComponent.CurrentDisplayName;
             if (objNodeData.DrugComponent.Level <= 0 && objNodeData.DrugComponent.DrugEffects.Count > 1)
-                strNodeText += strSpaceString + '(' + LanguageManager.GetString("String_Level") + strSpaceString + (objNodeData.Level + 1).ToString(GlobalOptions.CultureInfo) + ")";
+                strNodeText += strSpaceString + '(' + LanguageManager.GetString("String_Level") + strSpaceString + (objNodeData.Level + 1).ToString(GlobalOptions.Instance.CultureInfo) + ")";
             TreeNode objNewNode = nodCategoryNode.Nodes.Add(strNodeText);
             objNewNode.Tag = objNodeData;
             objNewNode.EnsureVisible();
@@ -263,15 +266,13 @@ namespace Chummer
 
         private void btnRemoveComponent_Click(object sender, EventArgs e)
         {
-            if (treChosenComponents.SelectedNode?.Tag is clsNodeData objNodeData)
-            {
-                treChosenComponents.Nodes.Remove(treChosenComponents.SelectedNode);
+            if (!(treChosenComponents.SelectedNode?.Tag is clsNodeData objNodeData)) return;
+            treChosenComponents.Nodes.Remove(treChosenComponents.SelectedNode);
 
-                _lstSelectedDrugComponents.Remove(objNodeData);
+            _lstSelectedDrugComponents.Remove(objNodeData);
 
-                UpdateCustomDrugStats();
-                lblDrugDescription.Text = _objDrug.GenerateDescription(0);
-            }
+            UpdateCustomDrugStats();
+            lblDrugDescription.Text = _objDrug.GenerateDescription(0);
         }
 
         private void txtDrugName_TextChanged(object sender, EventArgs e)

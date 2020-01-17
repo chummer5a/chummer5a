@@ -20,7 +20,6 @@
 -->
 <chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.w3.org/2001/XMLSchema vessels.xsd">
-  <version>0</version>
   <categories>
     <category>Inanimate Vessels</category>
   </categories>

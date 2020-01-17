@@ -3708,7 +3708,7 @@
 			<text>飛行:</text>
 		</string>
 		<string>
-			<key>Label_OtherCmposure</key>
+			<key>Label_OtherComposure</key>
 			<text>冷静テスト:</text>
 		</string>
 		<string>
@@ -5932,11 +5932,11 @@
 			<text>習得できる資質のみを表示</text>
 		</string>
 		<string>
-			<key>Checkbox_SelectQuality_Metagenetic</key>
+			<key>Checkbox_SelectQuality_Metagenic</key>
 			<text>メタジェネティックの資質のみを表示</text>
 		</string>
 		<string>
-			<key>Checkbox_SelectQuality_Not_Metagenetic</key>
+			<key>Checkbox_SelectQuality_Not_Metagenic</key>
 			<text>メタ遺伝的資質を表示しません</text>
 		</string>
 		<string>
@@ -7048,6 +7048,10 @@
 			<key>Checkbox_Options_IgnoreArt</key>
 			<text>Ignore Art Requirements from Street Grimoire</text>
 		</string>
+        <string>
+          <key>Checkbox_Options_AllowFreeGrids</key>
+          <text>Allow Free Grid Subscription Qualities for lifestyles even if Hard Targets is not an active book</text>
+        </string>
 		<string>
 			<key>Checkbox_Options_CyberlegMovement</key>
 			<text>移動時にサイバーレッグのステータスを使用する</text>
@@ -7699,7 +7703,7 @@
 			<text>Watch Folder</text>
 		</string>
 		<string>
-			<key>Treenode_Roster_FavouriteCharacters</key>
+			<key>Treenode_Roster_FavoriteCharacters</key>
 			<text>Favorite Characters</text>
 		</string>
 		<string>
@@ -8229,10 +8233,6 @@
 		<string>
 			<key>Node_SelectedDrugs</key>
 			<text>Selected Drugs</text>
-		</string>
-		<string>
-			<key>Message_DuplicateDrugComponentWarning</key>
-			<text>You cannot add the same component twice.</text>
 		</string>
 		<string>
 			<key>Message_DuplicateDrugFoundationWarning</key>

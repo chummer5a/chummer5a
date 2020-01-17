@@ -21,10 +21,11 @@ namespace SINners.Models
         /// <summary>
         /// Initializes a new instance of the UploadClient class.
         /// </summary>
-        public UploadClient(Guid? id = default(Guid?), string chummerVersion = default(string), string clientSecret = default(string), string userEmail = default(string))
+        public UploadClient(Guid? id = default(Guid?), string chummerVersion = default(string), Guid? installationId = default(Guid?), string clientSecret = default(string), string userEmail = default(string))
         {
             Id = id;
             ChummerVersion = chummerVersion;
+            InstallationId = installationId;
             ClientSecret = clientSecret;
             UserEmail = userEmail;
         }
@@ -38,6 +39,11 @@ namespace SINners.Models
         /// </summary>
         [JsonProperty(PropertyName = "chummerVersion")]
         public string ChummerVersion { get; set; }
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "installationId")]
+        public Guid? InstallationId { get; set; }
 
         /// <summary>
         /// </summary>

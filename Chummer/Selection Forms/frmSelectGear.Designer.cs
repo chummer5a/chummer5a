@@ -329,7 +329,7 @@ namespace Chummer
             // 
             this.nudGearQty.Location = new System.Drawing.Point(3, 3);
             this.nudGearQty.Maximum = new decimal(new int[] {
-            100000,
+            1000000000,
             0,
             0,
             0});

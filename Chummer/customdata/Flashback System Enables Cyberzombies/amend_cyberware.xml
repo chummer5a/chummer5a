@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<chummer>
+  <cyberwares>
+    <cyberware>
+      <name>Flashback System</name>
+      <bonus>
+        <enablecyberzombie  amendoperation="addnode"/>
+      </bonus>
+    </cyberware>
+  </cyberwares>
+</chummer>

@@ -20,7 +20,7 @@
 -->
 <chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.w3.org/2001/XMLSchema priorities.xsd">
-  <version>0</version>
+
   <categories>
     <category>Heritage</category>
     <category>Talent</category>
@@ -4502,11 +4502,11 @@
           <skillqty>3</skillqty>
           <skillval>5</skillval>
           <skilltype>resonance</skilltype>
-          <forbidden>
+          <required>
             <oneof>
-              <metatype>A.I.</metatype>
+              <metatypecategory>Metahuman</metatypecategory>
             </oneof>
-          </forbidden>
+          </required>
         </talent>
         <talent>
           <name>A.I. - 6 Depth</name>
@@ -4624,11 +4624,11 @@
           <skillqty>3</skillqty>
           <skillval>4</skillval>
           <skilltype>resonance</skilltype>
-          <forbidden>
+          <required>
             <oneof>
-              <metatype>A.I.</metatype>
+              <metatypecategory>Metahuman</metatypecategory>
             </oneof>
-          </forbidden>
+          </required>
         </talent>
         <talent>
           <name>A.I. - 4 Depth</name>
@@ -4780,11 +4780,11 @@
           <skillqty>3</skillqty>
           <skillval>2</skillval>
           <skilltype>resonance</skilltype>
-          <forbidden>
+          <required>
             <oneof>
-              <metatype>A.I.</metatype>
+              <metatypecategory>Metahuman</metatypecategory>
             </oneof>
-          </forbidden>
+          </required>
         </talent>
         <talent>
           <name>A.I. - 3 Depth</name>

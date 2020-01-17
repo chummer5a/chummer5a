@@ -98,10 +98,10 @@ namespace Chummer
 
         public int CompareTo(SourceString strOther)
         {
-            int intCompareResult = string.Compare(Language, strOther.Language, false, GlobalOptions.CultureInfo);
+            int intCompareResult = string.Compare(Language, strOther.Language, false, GlobalOptions.Instance.CultureInfo);
             if (intCompareResult == 0)
             {
-                intCompareResult = string.Compare(Code, strOther.Code, false, GlobalOptions.CultureInfo);
+                intCompareResult = string.Compare(Code, strOther.Code, false, GlobalOptions.Instance.CultureInfo);
                 if (intCompareResult == 0)
                 {
                     intCompareResult = _intPage.CompareTo(strOther.Page);

@@ -31,10 +31,10 @@ namespace Chummer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Positive Qualities");
-            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Negative Qualities");
-            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Entertainments");
-            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Free Matrix Grids");
+            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Positive Qualities");
+            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Negative Qualities");
+            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Entertainments");
+            System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Free Matrix Grids");
             this.Label_SelectAdvancedLifestyle_Upgrade_Comforts = new System.Windows.Forms.Label();
             this.cmdOKAdd = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
@@ -56,9 +56,9 @@ namespace Chummer
             this.nudSecurity = new System.Windows.Forms.NumericUpDown();
             this.nudArea = new System.Windows.Forms.NumericUpDown();
             this.nudComforts = new System.Windows.Forms.NumericUpDown();
-            this.Label_SelectAdvancedLifestyle_Comforts = new System.Windows.Forms.Label();
-            this.Label_SelectAdvancedLifestyle_Neighborhood = new System.Windows.Forms.Label();
-            this.Label_SelectAdvancedLifestyle_Securities = new System.Windows.Forms.Label();
+            this.lblComfortsLabel = new System.Windows.Forms.Label();
+            this.lblAreaLabel = new System.Windows.Forms.Label();
+            this.lblSecurityLabel = new System.Windows.Forms.Label();
             this.cmdAddQuality = new System.Windows.Forms.Button();
             this.cmdDeleteQuality = new System.Windows.Forms.Button();
             this.treLifestyleQualities = new System.Windows.Forms.TreeView();
@@ -78,9 +78,9 @@ namespace Chummer
             this.nudBonusLP = new System.Windows.Forms.NumericUpDown();
             this.chkBonusLPRandomize = new System.Windows.Forms.CheckBox();
             this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.Label_SelectAdvancedLifestyle_Base_Comforts = new System.Windows.Forms.Label();
-            this.Label_SelectAdvancedLifestyle_Base_Neighborhood = new System.Windows.Forms.Label();
-            this.Label_SelectAdvancedLifestyle_Base_Security = new System.Windows.Forms.Label();
+            this.lblComforts = new System.Windows.Forms.Label();
+            this.lblArea = new System.Windows.Forms.Label();
+            this.lblSecurity = new System.Windows.Forms.Label();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.nudPercentage)).BeginInit();
@@ -231,7 +231,6 @@ namespace Chummer
             0,
             0,
             0});
-            this.nudPercentage.ValueChanged += new System.EventHandler(this.nudPercentage_ValueChanged);
             // 
             // lblPercentage
             // 
@@ -329,7 +328,6 @@ namespace Chummer
             this.nudSecurity.Name = "nudSecurity";
             this.nudSecurity.Size = new System.Drawing.Size(71, 20);
             this.nudSecurity.TabIndex = 41;
-            this.nudSecurity.ValueChanged += new System.EventHandler(this.nudSecurity_ValueChanged);
             // 
             // nudArea
             // 
@@ -344,7 +342,6 @@ namespace Chummer
             this.nudArea.Name = "nudArea";
             this.nudArea.Size = new System.Drawing.Size(71, 20);
             this.nudArea.TabIndex = 40;
-            this.nudArea.ValueChanged += new System.EventHandler(this.nudArea_ValueChanged);
             // 
             // nudComforts
             // 
@@ -359,43 +356,42 @@ namespace Chummer
             this.nudComforts.Name = "nudComforts";
             this.nudComforts.Size = new System.Drawing.Size(71, 20);
             this.nudComforts.TabIndex = 39;
-            this.nudComforts.ValueChanged += new System.EventHandler(this.nudComforts_ValueChanged);
             // 
-            // Label_SelectAdvancedLifestyle_Comforts
+            // lblComfortsLabel
             // 
-            this.Label_SelectAdvancedLifestyle_Comforts.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.Label_SelectAdvancedLifestyle_Comforts.AutoSize = true;
-            this.Label_SelectAdvancedLifestyle_Comforts.Location = new System.Drawing.Point(332, 113);
-            this.Label_SelectAdvancedLifestyle_Comforts.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.Label_SelectAdvancedLifestyle_Comforts.Name = "Label_SelectAdvancedLifestyle_Comforts";
-            this.Label_SelectAdvancedLifestyle_Comforts.Size = new System.Drawing.Size(51, 13);
-            this.Label_SelectAdvancedLifestyle_Comforts.TabIndex = 42;
-            this.Label_SelectAdvancedLifestyle_Comforts.Tag = "Label_SelectAdvancedLifestyle_Comforts";
-            this.Label_SelectAdvancedLifestyle_Comforts.Text = "Comforts:";
+            this.lblComfortsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblComfortsLabel.AutoSize = true;
+            this.lblComfortsLabel.Location = new System.Drawing.Point(332, 113);
+            this.lblComfortsLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblComfortsLabel.Name = "lblComfortsLabel";
+            this.lblComfortsLabel.Size = new System.Drawing.Size(51, 13);
+            this.lblComfortsLabel.TabIndex = 42;
+            this.lblComfortsLabel.Tag = "Label_SelectAdvancedLifestyle_Comforts";
+            this.lblComfortsLabel.Text = "Comforts:";
             // 
-            // Label_SelectAdvancedLifestyle_Neighborhood
+            // lblAreaLabel
             // 
-            this.Label_SelectAdvancedLifestyle_Neighborhood.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.Label_SelectAdvancedLifestyle_Neighborhood.AutoSize = true;
-            this.Label_SelectAdvancedLifestyle_Neighborhood.Location = new System.Drawing.Point(306, 139);
-            this.Label_SelectAdvancedLifestyle_Neighborhood.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.Label_SelectAdvancedLifestyle_Neighborhood.Name = "Label_SelectAdvancedLifestyle_Neighborhood";
-            this.Label_SelectAdvancedLifestyle_Neighborhood.Size = new System.Drawing.Size(77, 13);
-            this.Label_SelectAdvancedLifestyle_Neighborhood.TabIndex = 46;
-            this.Label_SelectAdvancedLifestyle_Neighborhood.Tag = "Label_SelectAdvancedLifestyle_Neighborhood";
-            this.Label_SelectAdvancedLifestyle_Neighborhood.Text = "Neighborhood:";
+            this.lblAreaLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblAreaLabel.AutoSize = true;
+            this.lblAreaLabel.Location = new System.Drawing.Point(306, 139);
+            this.lblAreaLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblAreaLabel.Name = "lblAreaLabel";
+            this.lblAreaLabel.Size = new System.Drawing.Size(77, 13);
+            this.lblAreaLabel.TabIndex = 46;
+            this.lblAreaLabel.Tag = "Label_SelectAdvancedLifestyle_Neighborhood";
+            this.lblAreaLabel.Text = "Neighborhood:";
             // 
-            // Label_SelectAdvancedLifestyle_Securities
+            // lblSecurityLabel
             // 
-            this.Label_SelectAdvancedLifestyle_Securities.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.Label_SelectAdvancedLifestyle_Securities.AutoSize = true;
-            this.Label_SelectAdvancedLifestyle_Securities.Location = new System.Drawing.Point(335, 165);
-            this.Label_SelectAdvancedLifestyle_Securities.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.Label_SelectAdvancedLifestyle_Securities.Name = "Label_SelectAdvancedLifestyle_Securities";
-            this.Label_SelectAdvancedLifestyle_Securities.Size = new System.Drawing.Size(48, 13);
-            this.Label_SelectAdvancedLifestyle_Securities.TabIndex = 48;
-            this.Label_SelectAdvancedLifestyle_Securities.Tag = "Label_SelectAdvancedLifestyle_Security";
-            this.Label_SelectAdvancedLifestyle_Securities.Text = "Security:";
+            this.lblSecurityLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSecurityLabel.AutoSize = true;
+            this.lblSecurityLabel.Location = new System.Drawing.Point(335, 165);
+            this.lblSecurityLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSecurityLabel.Name = "lblSecurityLabel";
+            this.lblSecurityLabel.Size = new System.Drawing.Size(48, 13);
+            this.lblSecurityLabel.TabIndex = 48;
+            this.lblSecurityLabel.Tag = "Label_SelectAdvancedLifestyle_Security";
+            this.lblSecurityLabel.Text = "Security:";
             // 
             // cmdAddQuality
             // 
@@ -430,23 +426,23 @@ namespace Chummer
             this.treLifestyleQualities.HideSelection = false;
             this.treLifestyleQualities.Location = new System.Drawing.Point(3, 32);
             this.treLifestyleQualities.Name = "treLifestyleQualities";
-            treeNode1.Name = "nodPositiveLifestyleQualities";
-            treeNode1.Tag = "Node_SelectAdvancedLifestyle_PositiveQualities";
-            treeNode1.Text = "Positive Qualities";
-            treeNode2.Name = "nodNegativeLifestyleQualities";
-            treeNode2.Tag = "Node_SelectAdvancedLifestyle_NegativeQualities";
-            treeNode2.Text = "Negative Qualities";
-            treeNode3.Name = "nodLifestyleEntertainments";
-            treeNode3.Tag = "Node_SelectAdvancedLifestyle_Entertainments";
-            treeNode3.Text = "Entertainments";
-            treeNode4.Name = "nodFreeMatrixGrids";
-            treeNode4.Tag = "Node_SelectAdvancedLifestyle_FreeMatrixGrids";
-            treeNode4.Text = "Free Matrix Grids";
+            treeNode5.Name = "nodPositiveLifestyleQualities";
+            treeNode5.Tag = "Node_SelectAdvancedLifestyle_PositiveQualities";
+            treeNode5.Text = "Positive Qualities";
+            treeNode6.Name = "nodNegativeLifestyleQualities";
+            treeNode6.Tag = "Node_SelectAdvancedLifestyle_NegativeQualities";
+            treeNode6.Text = "Negative Qualities";
+            treeNode7.Name = "nodLifestyleEntertainments";
+            treeNode7.Tag = "Node_SelectAdvancedLifestyle_Entertainments";
+            treeNode7.Text = "Entertainments";
+            treeNode8.Name = "nodFreeMatrixGrids";
+            treeNode8.Tag = "Node_SelectAdvancedLifestyle_FreeMatrixGrids";
+            treeNode8.Text = "Free Matrix Grids";
             this.treLifestyleQualities.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode1,
-            treeNode2,
-            treeNode3,
-            treeNode4});
+            treeNode5,
+            treeNode6,
+            treeNode7,
+            treeNode8});
             this.tableLayoutPanel1.SetRowSpan(this.treLifestyleQualities, 15);
             this.treLifestyleQualities.Size = new System.Drawing.Size(295, 388);
             this.treLifestyleQualities.TabIndex = 53;
@@ -557,7 +553,6 @@ namespace Chummer
             this.chkPrimaryTenant.Tag = "Label_SelectAdvancedLifestyle_Tenant";
             this.chkPrimaryTenant.Text = "Primary Tenant";
             this.chkPrimaryTenant.UseVisualStyleBackColor = true;
-            this.chkPrimaryTenant.CheckedChanged += new System.EventHandler(this.chkPrimaryTenant_CheckedChanged);
             // 
             // lblSecurityTotal
             // 
@@ -643,7 +638,6 @@ namespace Chummer
             this.nudBonusLP.Size = new System.Drawing.Size(60, 20);
             this.nudBonusLP.TabIndex = 82;
             this.nudBonusLP.Visible = false;
-            this.nudBonusLP.ValueChanged += new System.EventHandler(this.nudBonusLP_ValueChanged);
             // 
             // chkBonusLPRandomize
             // 
@@ -694,11 +688,11 @@ namespace Chummer
             this.tableLayoutPanel1.Controls.Add(this.Label_SelectAdvancedLifestyle_Lifestyle, 1, 1);
             this.tableLayoutPanel1.Controls.Add(this.chkTrustFund, 3, 9);
             this.tableLayoutPanel1.Controls.Add(this.cboBaseLifestyle, 2, 1);
-            this.tableLayoutPanel1.Controls.Add(this.Label_SelectAdvancedLifestyle_Comforts, 1, 4);
+            this.tableLayoutPanel1.Controls.Add(this.lblComfortsLabel, 1, 4);
             this.tableLayoutPanel1.Controls.Add(this.lblSource, 2, 11);
-            this.tableLayoutPanel1.Controls.Add(this.Label_SelectAdvancedLifestyle_Neighborhood, 1, 5);
+            this.tableLayoutPanel1.Controls.Add(this.lblAreaLabel, 1, 5);
             this.tableLayoutPanel1.Controls.Add(this.lblSourceLabel, 1, 11);
-            this.tableLayoutPanel1.Controls.Add(this.Label_SelectAdvancedLifestyle_Securities, 1, 6);
+            this.tableLayoutPanel1.Controls.Add(this.lblSecurityLabel, 1, 6);
             this.tableLayoutPanel1.Controls.Add(this.lblCost, 2, 10);
             this.tableLayoutPanel1.Controls.Add(this.lblComfortTotal, 4, 4);
             this.tableLayoutPanel1.Controls.Add(this.lblCostLabel, 1, 10);
@@ -715,9 +709,9 @@ namespace Chummer
             this.tableLayoutPanel1.Controls.Add(this.lblTotalLPLabel, 1, 7);
             this.tableLayoutPanel1.Controls.Add(this.lblTotalLP, 2, 7);
             this.tableLayoutPanel1.Controls.Add(this.chkQualityContributesLP, 3, 12);
-            this.tableLayoutPanel1.Controls.Add(this.Label_SelectAdvancedLifestyle_Base_Comforts, 2, 4);
-            this.tableLayoutPanel1.Controls.Add(this.Label_SelectAdvancedLifestyle_Base_Neighborhood, 2, 5);
-            this.tableLayoutPanel1.Controls.Add(this.Label_SelectAdvancedLifestyle_Base_Security, 2, 6);
+            this.tableLayoutPanel1.Controls.Add(this.lblComforts, 2, 4);
+            this.tableLayoutPanel1.Controls.Add(this.lblArea, 2, 5);
+            this.tableLayoutPanel1.Controls.Add(this.lblSecurity, 2, 6);
             this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 1, 15);
             this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel2, 0, 0);
             this.tableLayoutPanel1.Location = new System.Drawing.Point(9, 9);
@@ -742,41 +736,41 @@ namespace Chummer
             this.tableLayoutPanel1.Size = new System.Drawing.Size(606, 423);
             this.tableLayoutPanel1.TabIndex = 84;
             // 
-            // Label_SelectAdvancedLifestyle_Base_Comforts
+            // lblComforts
             // 
-            this.Label_SelectAdvancedLifestyle_Base_Comforts.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.Label_SelectAdvancedLifestyle_Base_Comforts.AutoSize = true;
-            this.Label_SelectAdvancedLifestyle_Base_Comforts.Location = new System.Drawing.Point(403, 113);
-            this.Label_SelectAdvancedLifestyle_Base_Comforts.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.Label_SelectAdvancedLifestyle_Base_Comforts.Name = "Label_SelectAdvancedLifestyle_Base_Comforts";
-            this.Label_SelectAdvancedLifestyle_Base_Comforts.Size = new System.Drawing.Size(46, 13);
-            this.Label_SelectAdvancedLifestyle_Base_Comforts.TabIndex = 84;
-            this.Label_SelectAdvancedLifestyle_Base_Comforts.Tag = "Label_SelectAdvancedLifestyle_Base_Comforts";
-            this.Label_SelectAdvancedLifestyle_Base_Comforts.Text = "[{0}/{1}]";
+            this.lblComforts.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblComforts.AutoSize = true;
+            this.lblComforts.Location = new System.Drawing.Point(403, 113);
+            this.lblComforts.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblComforts.Name = "lblComforts";
+            this.lblComforts.Size = new System.Drawing.Size(46, 13);
+            this.lblComforts.TabIndex = 84;
+            this.lblComforts.Tag = "Label_SelectAdvancedLifestyle_Base_Comforts";
+            this.lblComforts.Text = "[{0}/{1}]";
             // 
-            // Label_SelectAdvancedLifestyle_Base_Neighborhood
+            // lblArea
             // 
-            this.Label_SelectAdvancedLifestyle_Base_Neighborhood.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.Label_SelectAdvancedLifestyle_Base_Neighborhood.AutoSize = true;
-            this.Label_SelectAdvancedLifestyle_Base_Neighborhood.Location = new System.Drawing.Point(403, 139);
-            this.Label_SelectAdvancedLifestyle_Base_Neighborhood.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.Label_SelectAdvancedLifestyle_Base_Neighborhood.Name = "Label_SelectAdvancedLifestyle_Base_Neighborhood";
-            this.Label_SelectAdvancedLifestyle_Base_Neighborhood.Size = new System.Drawing.Size(46, 13);
-            this.Label_SelectAdvancedLifestyle_Base_Neighborhood.TabIndex = 85;
-            this.Label_SelectAdvancedLifestyle_Base_Neighborhood.Tag = "Label_SelectAdvancedLifestyle_Base_Neighborhood";
-            this.Label_SelectAdvancedLifestyle_Base_Neighborhood.Text = "[{0}/{1}]";
+            this.lblArea.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblArea.AutoSize = true;
+            this.lblArea.Location = new System.Drawing.Point(403, 139);
+            this.lblArea.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblArea.Name = "lblArea";
+            this.lblArea.Size = new System.Drawing.Size(46, 13);
+            this.lblArea.TabIndex = 85;
+            this.lblArea.Tag = "Label_SelectAdvancedLifestyle_Base_Neighborhood";
+            this.lblArea.Text = "[{0}/{1}]";
             // 
-            // Label_SelectAdvancedLifestyle_Base_Security
+            // lblSecurity
             // 
-            this.Label_SelectAdvancedLifestyle_Base_Security.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.Label_SelectAdvancedLifestyle_Base_Security.AutoSize = true;
-            this.Label_SelectAdvancedLifestyle_Base_Security.Location = new System.Drawing.Point(403, 165);
-            this.Label_SelectAdvancedLifestyle_Base_Security.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.Label_SelectAdvancedLifestyle_Base_Security.Name = "Label_SelectAdvancedLifestyle_Base_Security";
-            this.Label_SelectAdvancedLifestyle_Base_Security.Size = new System.Drawing.Size(46, 13);
-            this.Label_SelectAdvancedLifestyle_Base_Security.TabIndex = 86;
-            this.Label_SelectAdvancedLifestyle_Base_Security.Tag = "Label_SelectAdvancedLifestyle_Base_Security";
-            this.Label_SelectAdvancedLifestyle_Base_Security.Text = "[{0}/{1}]";
+            this.lblSecurity.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSecurity.AutoSize = true;
+            this.lblSecurity.Location = new System.Drawing.Point(403, 165);
+            this.lblSecurity.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSecurity.Name = "lblSecurity";
+            this.lblSecurity.Size = new System.Drawing.Size(46, 13);
+            this.lblSecurity.TabIndex = 86;
+            this.lblSecurity.Tag = "Label_SelectAdvancedLifestyle_Base_Security";
+            this.lblSecurity.Text = "[{0}/{1}]";
             // 
             // flowLayoutPanel1
             // 
@@ -840,37 +834,6 @@ namespace Chummer
             this.PerformLayout();
 
         }
-
-        private void nudSecurity_ValueChanged(object sender, System.EventArgs e)
-        {
-            CalculateValues();
-        }
-
-        private void nudComforts_ValueChanged(object sender, System.EventArgs e)
-        {
-            CalculateValues();
-        }
-
-        private void nudArea_ValueChanged(object sender, System.EventArgs e)
-        {
-            CalculateValues();
-        }
-
-        private void nudSecurityEntertainment_ValueChanged(object sender, System.EventArgs e)
-        {
-            CalculateValues();
-        }
-
-        private void nudComfortsEntertainment_ValueChanged(object sender, System.EventArgs e)
-        {
-            CalculateValues();
-        }
-
-        private void nudAreaEntertainment_ValueChanged(object sender, System.EventArgs e)
-        {
-            CalculateValues();
-        }
-
         #endregion
 
         private System.Windows.Forms.Label Label_SelectAdvancedLifestyle_Upgrade_Comforts;
@@ -894,9 +857,9 @@ namespace Chummer
         private System.Windows.Forms.NumericUpDown nudSecurity;
         private System.Windows.Forms.NumericUpDown nudArea;
         private System.Windows.Forms.NumericUpDown nudComforts;
-        private System.Windows.Forms.Label Label_SelectAdvancedLifestyle_Comforts;
-        private System.Windows.Forms.Label Label_SelectAdvancedLifestyle_Neighborhood;
-        private System.Windows.Forms.Label Label_SelectAdvancedLifestyle_Securities;
+        private System.Windows.Forms.Label lblComfortsLabel;
+        private System.Windows.Forms.Label lblAreaLabel;
+        private System.Windows.Forms.Label lblSecurityLabel;
         private System.Windows.Forms.Button cmdAddQuality;
         private System.Windows.Forms.Button cmdDeleteQuality;
         private System.Windows.Forms.TreeView treLifestyleQualities;
@@ -915,9 +878,9 @@ namespace Chummer
         private System.Windows.Forms.Label lblBonusLP;
         private System.Windows.Forms.NumericUpDown nudBonusLP;
         private System.Windows.Forms.CheckBox chkBonusLPRandomize;
-        private Label Label_SelectAdvancedLifestyle_Base_Comforts;
-        private Label Label_SelectAdvancedLifestyle_Base_Neighborhood;
-        private Label Label_SelectAdvancedLifestyle_Base_Security;
+        private Label lblComforts;
+        private Label lblArea;
+        private Label lblSecurity;
         private FlowLayoutPanel flowLayoutPanel1;
         private BufferedTableLayoutPanel tableLayoutPanel1;
         private FlowLayoutPanel flowLayoutPanel2;

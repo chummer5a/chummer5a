@@ -100,8 +100,8 @@ namespace Chummer
             objWriter.WriteElementString("guid", _guiId.ToString("D"));
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("crittername", _strCritterName);
-            objWriter.WriteElementString("services", _intServicesOwed.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("force", _intForce.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("services", _intServicesOwed.ToString(GlobalOptions.Instance.InvariantCultureInfo));
+            objWriter.WriteElementString("force", _intForce.ToString(GlobalOptions.Instance.InvariantCultureInfo));
             objWriter.WriteElementString("bound", _blnBound.ToString());
             objWriter.WriteElementString("fettered", _blnFettered.ToString());
             objWriter.WriteElementString("type", _eEntityType.ToString());
@@ -166,10 +166,11 @@ namespace Chummer
             objWriter.WriteElementString("name", strName);
             objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("crittername", CritterName);
-            objWriter.WriteElementString("fettered", Fettered.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("bound", Bound.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("fettered", Fettered.ToString(GlobalOptions.Instance.InvariantCultureInfo));
+            objWriter.WriteElementString("bound", Bound.ToString(GlobalOptions.Instance.InvariantCultureInfo));
             objWriter.WriteElementString("services", ServicesOwed.ToString(objCulture));
             objWriter.WriteElementString("force", Force.ToString(objCulture));
+            objWriter.WriteElementString("ratinglabel", LanguageManager.GetString(RatingLabel, strLanguageToPrint));
 
             if (objXmlCritterNode != null)
             {
@@ -436,6 +437,22 @@ namespace Chummer
             }
         }
 
+        public string RatingLabel
+        {
+            get
+            {
+                switch (EntityType)
+                {
+                    case SpiritType.Spirit:
+                        return "String_Force";
+                    case SpiritType.Sprite:
+                        return "String_Level";
+                    default:
+                        return "String_Rating";
+                }
+            }
+        }
+
         /// <summary>
         /// Number of Services the Spirit owes.
         /// </summary>
@@ -451,7 +468,7 @@ namespace Chummer
 
                     if (value > intSkillValue)
                     {
-                        MessageBox.Show(LanguageManager.GetString(EntityType == SpiritType.Spirit ? "Message_SpiritServices" : "Message_SpriteServices", GlobalOptions.Language),
+                        Program.MainForm.ShowMessageBox(LanguageManager.GetString(EntityType == SpiritType.Spirit ? "Message_SpiritServices" : "Message_SpriteServices", GlobalOptions.Language),
                             LanguageManager.GetString(EntityType == SpiritType.Spirit ? "MessageTitle_SpiritServices" : "MessageTitle_SpriteServices", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         value = intSkillValue;
                     }
@@ -572,59 +589,71 @@ namespace Chummer
         }
 
         private bool _blnFettered;
+        private int _intCachedAllowFettering = int.MinValue;
+        /// <summary>
+        /// Whether the sprite/spirit has unlimited services due to Fettering.
+        /// See KC 91 and SG 192 for sprites and spirits, respectively. 
+        /// </summary>
         public bool Fettered
         {
-            get => _blnFettered;
+            get
+            {
+                if (_intCachedAllowFettering < 0)
+                    _intCachedAllowFettering = CharacterObject.AllowSpriteFettering
+                        ? 1
+                        : 0;
+                return _blnFettered && _intCachedAllowFettering > 0;
+            }
+
             set
             {
-                if (_blnFettered != value)
+                if (_blnFettered == value) return;
+                if (value)
                 {
-                    if (value)
+                    //Technomancers require the Sprite Pet Complex Form to Fetter sprites.
+                    if (!CharacterObject.AllowSpriteFettering && EntityType == SpiritType.Sprite) return;
+
+                    //Only one Fettered spirit is permitted.
+                    if (CharacterObject.Spirits.Any(objSpirit => objSpirit.Fettered)) return;
+
+                    if (CharacterObject.Created)
                     {
-                        //Only one Fettered spirit is permitted.
-                        if (CharacterObject.Spirits.Any(objSpirit => objSpirit.Fettered))
+                        // Sprites only cost Force in Karma to become Fettered. Spirits cost Force * 3.
+                        int fetteringCost = EntityType == SpiritType.Spirit ? Force * 3 : Force;
+                        if (!CharacterObject.ConfirmKarmaExpense(string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend", GlobalOptions.Language)
+                            , Name
+                            , fetteringCost.ToString(GlobalOptions.Instance.CultureInfo))))
                         {
                             return;
                         }
-                        if (CharacterObject.Created)
-                        {
-                            // Sprites only cost Force in Karma to become Fettered. Spirits cost Force * 3.
-                            int fetteringCost = EntityType == SpiritType.Spirit ? Force * 3 : Force;
-                            if (!CharacterObject.ConfirmKarmaExpense(string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend", GlobalOptions.Language)
-                                , Name
-                                , fetteringCost.ToString(GlobalOptions.CultureInfo))))
-                            {
-                                return;
-                            }
 
-                            // Create the Expense Log Entry.
-                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                            objExpense.Create(fetteringCost * -1,
-                                LanguageManager.GetString("String_ExpenseFetteredSpirit", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + Name,
-                                ExpenseType.Karma, DateTime.Now);
-                            CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-                            CharacterObject.Karma -= fetteringCost;
+                        // Create the Expense Log Entry.
+                        ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                        objExpense.Create(fetteringCost * -1,
+                            LanguageManager.GetString("String_ExpenseFetteredSpirit", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + Name,
+                            ExpenseType.Karma, DateTime.Now);
+                        CharacterObject.ExpenseEntries.AddWithSort(objExpense);
+                        CharacterObject.Karma -= fetteringCost;
 
-                            ExpenseUndo objUndo = new ExpenseUndo();
-                            objUndo.CreateKarma(KarmaExpenseType.SpiritFettering, InternalId);
-                            objExpense.Undo = objUndo;
-                        }
-
-                        if (EntityType == SpiritType.Spirit)
-                        {
-                            ImprovementManager.CreateImprovement(CharacterObject, "MAG",
-                                Improvement.ImprovementSource.SpiritFettering, string.Empty,
-                                Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -1);
-                            ImprovementManager.Commit(CharacterObject);
-                        }
+                        ExpenseUndo objUndo = new ExpenseUndo();
+                        objUndo.CreateKarma(KarmaExpenseType.SpiritFettering, InternalId);
+                        objExpense.Undo = objUndo;
                     }
-                    else
+
+                    if (EntityType == SpiritType.Spirit)
                     {
-                        ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.SpiritFettering);
+                        ImprovementManager.CreateImprovement(CharacterObject, "MAG",
+                            Improvement.ImprovementSource.SpiritFettering, string.Empty,
+                            Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -1);
+                        ImprovementManager.Commit(CharacterObject);
                     }
-                    _blnFettered = value;
-                    OnPropertyChanged();
                 }
+                else
+                {
+                    ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.SpiritFettering);
+                }
+                _blnFettered = value;
+                OnPropertyChanged();
             }
         }
 
@@ -718,7 +747,7 @@ namespace Chummer
 
         public bool NoLinkedCharacter => _objLinkedCharacter == null;
 
-        public void RefreshLinkedCharacter(bool blnShowError)
+        public async void RefreshLinkedCharacter(bool blnShowError)
         {
             Character objOldLinkedCharacter = _objLinkedCharacter;
             CharacterObject.LinkedCharacters.Remove(_objLinkedCharacter);
@@ -738,7 +767,7 @@ namespace Chummer
 
                 if (blnError && blnShowError)
                 {
-                    MessageBox.Show(string.Format(LanguageManager.GetString("Message_FileNotFound", GlobalOptions.Language), FileName),
+                    Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_FileNotFound", GlobalOptions.Language), FileName),
                         LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
@@ -748,7 +777,7 @@ namespace Chummer
                 if (strFile.EndsWith(".chum5"))
                 {
                     Character objOpenCharacter = Program.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
-                    _objLinkedCharacter = objOpenCharacter ?? Program.MainForm.LoadCharacter(strFile, string.Empty, false, false);
+                    _objLinkedCharacter = objOpenCharacter ?? (await Program.MainForm.LoadCharacter(strFile, string.Empty, false, false));
                     if (_objLinkedCharacter != null)
                         CharacterObject.LinkedCharacters.Add(_objLinkedCharacter);
                 }
@@ -785,6 +814,11 @@ namespace Chummer
                 OnPropertyChanged(nameof(MainMugshot));
             else if (e.PropertyName == nameof(Character.MainMugshotIndex))
                 OnPropertyChanged(nameof(MainMugshotIndex));
+            else if (e.PropertyName == nameof(Character.AllowSpriteFettering))
+            {
+                _intCachedAllowFettering = int.MinValue;
+                OnPropertyChanged(nameof(Fettered));
+            }
         }
         #endregion
 
@@ -927,7 +961,7 @@ namespace Chummer
                     }
                     catch (UnauthorizedAccessException)
                     {
-                        MessageBox.Show(LanguageManager.GetString("Message_Insufficient_Permissions_Warning", GlobalOptions.Language));
+                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Insufficient_Permissions_Warning", GlobalOptions.Language));
                     }
                 }
                 Guid guiImage = Guid.NewGuid();

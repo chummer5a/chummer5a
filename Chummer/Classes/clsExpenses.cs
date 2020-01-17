@@ -159,7 +159,7 @@ namespace Chummer
             objWriter.WriteElementString("karmatype", KarmaType.ToString());
             objWriter.WriteElementString("nuyentype", NuyenType.ToString());
             objWriter.WriteElementString("objectid", _strObjectId);
-            objWriter.WriteElementString("qty", _decQty.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("qty", _decQty.ToString(GlobalOptions.Instance.InvariantCultureInfo));
             objWriter.WriteElementString("extra", _strExtra);
             objWriter.WriteEndElement();
         }
@@ -297,8 +297,8 @@ namespace Chummer
         {
             objWriter.WriteStartElement("expense");
             objWriter.WriteElementString("guid", _guiID.ToString("D"));
-            objWriter.WriteElementString("date", _datDate.ToString("s", GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("amount", _decAmount.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("date", _datDate.ToString("s", GlobalOptions.Instance.InvariantCultureInfo));
+            objWriter.WriteElementString("amount", _decAmount.ToString(GlobalOptions.Instance.InvariantCultureInfo));
             objWriter.WriteElementString("reason", _strReason);
             objWriter.WriteElementString("type", _objExpenseType.ToString());
             objWriter.WriteElementString("refund", _blnRefund.ToString());
@@ -313,7 +313,7 @@ namespace Chummer
         public void Load(XmlNode objNode)
         {
             objNode.TryGetField("guid", Guid.TryParse, out _guiID);
-            DateTime.TryParse(objNode["date"]?.InnerText, GlobalOptions.InvariantCultureInfo, DateTimeStyles.None, out _datDate);
+            DateTime.TryParse(objNode["date"]?.InnerText, GlobalOptions.Instance.InvariantCultureInfo, DateTimeStyles.None, out _datDate);
             objNode.TryGetDecFieldQuickly("amount", ref _decAmount);
             if (objNode.TryGetStringFieldQuickly("reason", ref _strReason))
                 _strReason = _strReason.TrimEndOnce(" (" + LanguageManager.GetString("String_Expense_Refund", GlobalOptions.Language) + ')').Replace("🡒", "->");

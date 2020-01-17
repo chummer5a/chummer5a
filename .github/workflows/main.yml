@@ -1,0 +1,16 @@
+on:
+  release:
+    types: [created]
+name: Release Notification
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Discord notification
+      env:
+        DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+      uses: Ilshidur/action-discord@master
+      with:
+        args: 'A new build has been released: https://get.chummer.net'

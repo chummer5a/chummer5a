@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<chummer>
+  <qualities>
+    <quality>
+      <name>Escaped Custody</name>
+      <required>
+        <allof>
+          <quality amendoperation="remove">Technomancer</quality>
+        </allof>
+      </required>
+    </quality>
+    <quality>
+      <name>Hold the Door</name>
+      <required>
+        <allof>
+          <quality amendoperation="remove">Technomancer</quality>
+        </allof>
+      </required>
+    </quality>
+  </qualities>
+</chummer>

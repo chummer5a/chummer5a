@@ -22,5 +22,6 @@ namespace Chummer
     public interface IHasRating
     {
         int Rating { get; set; }
+        string RatingLabel { get; set; }
     }
 }

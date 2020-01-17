@@ -185,7 +185,7 @@ namespace Chummer
                 }
                 while (_intModuloTemp >= int.MaxValue - 1); // Modulo bias removal for 1d6
                 int intBubbleDieResult = 1 + _intModuloTemp % 6;
-                sb.Append(',' + strSpace + LanguageManager.GetString("String_BubbleDie", GlobalOptions.Language) + strSpace + '(' + intBubbleDieResult.ToString(GlobalOptions.CultureInfo) + ')');
+                sb.Append(',' + strSpace + LanguageManager.GetString("String_BubbleDie", GlobalOptions.Language) + strSpace + '(' + intBubbleDieResult.ToString(GlobalOptions.Instance.CultureInfo) + ')');
                 if (intBubbleDieResult == 1 || (chkRushJob.Checked && intBubbleDieResult == 2))
                 {
                     glitches++;
@@ -214,11 +214,11 @@ namespace Chummer
                     if (Threshold > 0)
                     {
                         sb.AppendFormat(LanguageManager.GetString(hits >= Threshold || limitAppliedHits >= Threshold ? "String_DiceRoller_Success" : "String_DiceRoller_Failure", GlobalOptions.Language) +
-                                        strSpace + '(' + LanguageManager.GetString("String_DiceRoller_Glitch", GlobalOptions.Language) + strLimitString + ')', hits.ToString(GlobalOptions.CultureInfo));
+                                        strSpace + '(' + LanguageManager.GetString("String_DiceRoller_Glitch", GlobalOptions.Language) + strLimitString + ')', hits.ToString(GlobalOptions.Instance.CultureInfo));
                     }
                     else
                     {
-                        sb.AppendFormat(LanguageManager.GetString("String_DiceRoller_Glitch", GlobalOptions.Language) + strLimitString, hits.ToString(GlobalOptions.CultureInfo));
+                        sb.AppendFormat(LanguageManager.GetString("String_DiceRoller_Glitch", GlobalOptions.Language) + strLimitString, hits.ToString(GlobalOptions.Instance.CultureInfo));
                     }
                 }
                 else
@@ -229,11 +229,11 @@ namespace Chummer
             else if (Threshold > 0)
             {
                 sb.AppendFormat(LanguageManager.GetString(hits >= Threshold || limitAppliedHits >= Threshold ? "String_DiceRoller_Success" : "String_DiceRoller_Failure", GlobalOptions.Language) +
-                                strSpace + '(' + LanguageManager.GetString("String_DiceRoller_Hits", GlobalOptions.Language) + strLimitString + ')', hits.ToString(GlobalOptions.CultureInfo));
+                                strSpace + '(' + LanguageManager.GetString("String_DiceRoller_Hits", GlobalOptions.Language) + strLimitString + ')', hits.ToString(GlobalOptions.Instance.CultureInfo));
             }
             else
             {
-                sb.AppendFormat(LanguageManager.GetString("String_DiceRoller_Hits", GlobalOptions.Language) + strLimitString, hits.ToString(GlobalOptions.CultureInfo));
+                sb.AppendFormat(LanguageManager.GetString("String_DiceRoller_Hits", GlobalOptions.Language) + strLimitString, hits.ToString(GlobalOptions.Instance.CultureInfo));
             }
 
             lblResults.Text = sb.ToString();

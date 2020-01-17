@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xs:include schemaLocation="SchemaExtensions.xsd" />
   <xs:complexType name="bonusTypes">
     <xs:sequence>
       <xs:element name="acidarmor" type="xs:string" minOccurs="0" maxOccurs="1" />
@@ -82,8 +83,8 @@
       <xs:element name="addcontact" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
-            <xs:element name="loyalty" type="xs:string" minOccurs="1" maxOccurs="1" />
-            <xs:element name="connection" type="xs:string" minOccurs="1" maxOccurs="1" />
+            <xs:element name="loyalty" type="xs:string" minOccurs="0" maxOccurs="1" />
+            <xs:element name="connection" type="xs:string" minOccurs="0" maxOccurs="1" />
             <xs:element name="forcedloyalty" type="xs:string" minOccurs="0" maxOccurs="1" />
             <xs:element name="forcegroup" type="xs:string" minOccurs="0" maxOccurs="1" />
             <xs:element name="free" type="xs:string" minOccurs="0" maxOccurs="1" />
@@ -101,6 +102,22 @@
             <xs:element name="rating" type="xs:string" minOccurs="0" maxOccurs="1" />
             <xs:element name="quantity" type="xs:string" minOccurs="0" maxOccurs="1" />
             <xs:element name="fullcost" type="xs:string" minOccurs="0" maxOccurs="1" />
+            <xs:element name="children" minOccurs="0" maxOccurs="1">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="child" minOccurs="0" maxOccurs="unbounded">
+                    <xs:complexType>
+                      <xs:sequence>
+                        <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+                        <xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
+                        <xs:element name="rating" type="xs:string" minOccurs="0" maxOccurs="1" />
+                        <xs:element name="quantity" type="xs:string" minOccurs="0" maxOccurs="1" />
+                      </xs:sequence>
+                    </xs:complexType>
+                  </xs:element>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -112,6 +129,15 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
+      <xs:element name="addmetamagic" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="xs:string">
+              <xs:attribute name="forced" type="xs:string" use="optional" />
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
       <xs:element name="addqualities" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
@@ -119,6 +145,7 @@
               <xs:complexType>
                 <xs:simpleContent>
                   <xs:extension base="xs:string">
+                    <xs:attribute name="forced" type="boolean" use="optional" />
                     <xs:attribute name="select" type="xs:string" use="optional" />
                     <xs:attribute name="rating" type="xs:string" use="optional" />
                   </xs:extension>
@@ -165,6 +192,10 @@
       </xs:element>
       <xs:element name="adeptlinguistics" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="adeptpowerpoints" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="allowspellcategory" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="allowspelldescriptor" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="allowspellrange" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="allowspritefettering" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
       <xs:element name="ambidextrous" minOccurs="0" maxOccurs="1" />
       <xs:element name="armor" minOccurs="0" maxOccurs="1">
         <xs:complexType>
@@ -230,6 +261,7 @@
       <xs:element name="blackmarketdiscount" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="blockskillcategoryspecializations" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="blockskillspecializations" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="blockspelldescriptor" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
       <xs:element name="bornrich" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="burnoutsway" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="coldarmor" type="xs:string" minOccurs="0" maxOccurs="1" />
@@ -263,6 +295,8 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
+      <xs:element name="contactkarma" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="contactkarmaminimum" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="critterpowers" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
@@ -292,6 +326,14 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
+	  <xs:element name="decreaseagiresist" type="xs:string" minOccurs="0" maxOccurs="1" />
+	  <xs:element name="decreasebodresist" type="xs:string" minOccurs="0" maxOccurs="1" />
+	  <xs:element name="decreasecharesist" type="xs:string" minOccurs="0" maxOccurs="1" />
+	  <xs:element name="decreaseintresist" type="xs:string" minOccurs="0" maxOccurs="1" />
+	  <xs:element name="decreaselogresist" type="xs:string" minOccurs="0" maxOccurs="1" />
+	  <xs:element name="decreaserearesist" type="xs:string" minOccurs="0" maxOccurs="1" />
+	  <xs:element name="decreasestrresist" type="xs:string" minOccurs="0" maxOccurs="1" />
+	  <xs:element name="decreasewilresist" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="detectionspellresist" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="drainresist" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="drainvalue" type="xs:string" minOccurs="0" maxOccurs="1" />
@@ -306,7 +348,9 @@
       <xs:element name="disablebiowaregrade" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
       <xs:element name="disablecyberware" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="dodge" type="xs:string" minOccurs="0" maxOccurs="1" />
-      <xs:element name="disablecyberwaregrade" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+	  <xs:element name="directmanaspellresist" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="directphysicalspellresist" type="xs:string" minOccurs="0" maxOccurs="1" />
+	  <xs:element name="disablecyberwaregrade" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
       <xs:element name="electricityarmor" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="enableattribute" minOccurs="0" maxOccurs="1">
         <xs:complexType>
@@ -371,7 +415,8 @@
         </xs:complexType>
       </xs:element>
       <xs:element name="friendsinhighplaces" type="xs:string" minOccurs="0" maxOccurs="1" />
-      <xs:element name="genetechcostmultiplier" minOccurs="0" maxOccurs="1" />
+      <xs:element name="genetechcostmultiplier" type="xs:integer" minOccurs="0" maxOccurs="1" />
+      <xs:element name="genetechessmultiplier" type="xs:integer" minOccurs="0" maxOccurs="1" />
       <xs:element name="hardwires" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:simpleContent>
@@ -464,7 +509,15 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="lifestylecost" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="lifestylecost" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="xs:integer">
+              <xs:attribute name="lifestyle" type="xs:string" use="optional" />
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
       <xs:element name="liftandcarry" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="lightningreflexes" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="limitmodifier" minOccurs="0" maxOccurs="unbounded">
@@ -476,8 +529,10 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="limitspellcategory" type="xs:string" minOccurs="0" maxOccurs="1" />
-      <xs:element name="limitspelldescriptor" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="limitcritterpowercategory" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="limitspellcategory" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="limitspelldescriptor" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="limitspellrange" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
       <xs:element name="limitspiritcategory" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
@@ -516,6 +571,7 @@
       <xs:element name="memory" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="mentallimit" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="mentalmanipulationresist" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="metageniclimit" type="xs:integer" minOccurs="0" maxOccurs="1" />
       <xs:element name="movementreplace" minOccurs="0" maxOccurs="8">
         <xs:complexType>
           <xs:sequence>
@@ -543,7 +599,15 @@
       </xs:element>
       <xs:element name="newspellkarmacostmultiplier" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="notoriety" type="xs:string" minOccurs="0" maxOccurs="1" />
-      <xs:element name="nuyenamt" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="nuyenamt" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="xs:string">
+              <xs:attribute name="condition" type="xs:string" use="optional" />
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
       <xs:element name="nuyenmaxbp" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="optionalpowers" minOccurs="0" maxOccurs="1">
         <xs:complexType>
@@ -855,6 +919,7 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
+      <xs:element name="skilldisable" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
       <xs:element name="skillgroup" minOccurs="0" maxOccurs="unbounded">
         <xs:complexType>
           <xs:sequence>
@@ -910,7 +975,7 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="skillgroupdisable" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="skillgroupdisable" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
       <xs:element name="skillgroupkarmacost" minOccurs="0" maxOccurs="unbounded">
         <xs:complexType>
           <xs:sequence>
@@ -930,6 +995,14 @@
             <xs:element name="min" type="xs:string" minOccurs="0" maxOccurs="1" />
             <xs:element name="max" type="xs:string" minOccurs="0" maxOccurs="1" />
             <xs:element name="condition" type="xs:string" minOccurs="0" maxOccurs="1" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="skillgrouplevel" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="name" minOccurs="0" maxOccurs="1" />
+            <xs:element name="val" type="xs:string" minOccurs="0" maxOccurs="1" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -1099,14 +1172,6 @@
           <xs:attribute name="precedence" type="xs:integer" use="optional" />
         </xs:complexType>
       </xs:element>
-      <xs:element name="skillgrouplevel" minOccurs="0" maxOccurs="unbounded">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element name="name" minOccurs="0" maxOccurs="1" />
-            <xs:element name="val" type="xs:string" minOccurs="0" maxOccurs="1" />
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
       <xs:element name="spellcategory" minOccurs="0" maxOccurs="unbounded">
         <xs:complexType>
           <xs:sequence>
@@ -1131,6 +1196,14 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
+      <xs:element name="spelldicepool" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+            <xs:element name="val" type="xs:string" minOccurs="1" maxOccurs="1" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
       <xs:element name="spelllimit" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="spellresistance" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="sprintbonus" minOccurs="0" maxOccurs="3">
@@ -1145,6 +1218,7 @@
       <xs:element name="streetcredmultiplier" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="stuncmrecovery" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="submersion" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="surprise" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="swapskillattribute" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
@@ -1278,5 +1352,6 @@
       </xs:element>
     </xs:sequence>
     <xs:attribute name="unique" type="xs:string" use="optional" />
+    <xs:attribute name="useselected" type="boolean" use="optional" />
   </xs:complexType>
 </xs:schema>

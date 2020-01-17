@@ -117,4 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="lGroupExplanation.Text" xml:space="preserve">
+    <value>Favorite groups are always displayed in the Character Roster. Other groups are displayed, if the user "owns" any character as member of the group. Drag'n'Drop should work, so please test that out for me.</value>
+  </data>
 </root>

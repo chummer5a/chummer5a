@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<chummer>
+  <metatypes>
+    <metatype xpathfilter="contains(name,' Sprite')" >
+      <bonus>
+        <optionalpowers count="{RES} div 3" amendoperation="addnode">
+          <optionalpower>Active Analytics</optionalpower>
+          <optionalpower>Borrowed IP</optionalpower>
+          <optionalpower>Decompiling Resistance</optionalpower>
+          <optionalpower>Enhance</optionalpower>
+          <optionalpower>Navi</optionalpower>
+          <optionalpower>Resilient Code</optionalpower>
+          <optionalpower>Resonance Spooling</optionalpower>
+        </optionalpowers>
+      </bonus>
+    </metatype>
+  </metatypes>
+</chummer>

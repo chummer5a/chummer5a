@@ -251,7 +251,7 @@ namespace Chummer
                 {
                     if (!objNewLanguage.ErrorAlreadyShown)
                     {
-                        MessageBox.Show("Language with code " + strLanguage + " could not be loaded for the following reasons:" + Environment.NewLine + Environment.NewLine + objNewLanguage.ErrorMessage, "Cannot Load Language", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Program.MainForm.ShowMessageBox("Language with code " + strLanguage + " could not be loaded for the following reasons:" + Environment.NewLine + Environment.NewLine + objNewLanguage.ErrorMessage, "Cannot Load Language", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         objNewLanguage.ErrorAlreadyShown = true;
                     }
                     return false;
@@ -298,6 +298,7 @@ namespace Chummer
                 }
                 catch (NotSupportedException)
                 {
+                    if (objChild.GetType() == typeof(WebBrowser)) continue;
                     Utils.BreakIfDebug();
                 }
 
@@ -689,7 +690,7 @@ namespace Chummer
 
             string strMessage = (objMissingMessage.ToString() + objUnusedMessage.ToString()).TrimEndOnce(Environment.NewLine);
             // Display the message.
-            MessageBox.Show(!string.IsNullOrEmpty(strMessage) ? strMessage : "Language file is OK.", "Language File Contents", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            Program.MainForm.ShowMessageBox(!string.IsNullOrEmpty(strMessage) ? strMessage : "Language file is OK.", "Language File Contents", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         // List of XPaths to search for extras. Item1 is Document, Item2 is XPath, Item3 is the Name getter, Item4 is the Translate getter
@@ -845,7 +846,7 @@ namespace Chummer
                         string strExtraNoQuotes = strExtra.FastEscape('\"');
 
                         object strReturnLock = new object();
-                        Parallel.For(0, s_LstXPathsToSearch.Length, (i, state) =>
+                        Parallel.For((long) 0, s_LstXPathsToSearch.Length, (i, state) =>
                         {
                             Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>> objXPathPair = s_LstXPathsToSearch[i];
                             using (XmlNodeList xmlNodeList = XmlManager.Load(objXPathPair.Item1, strIntoLanguage).SelectNodes(objXPathPair.Item2))
@@ -993,7 +994,7 @@ namespace Chummer
                 string strExtraNoQuotes = strExtra.FastEscape('\"');
 
                 object strReturnLock = new object();
-                Parallel.For(0, s_LstXPathsToSearch.Length, (i, state) =>
+                Parallel.For((long) 0, s_LstXPathsToSearch.Length, (i, state) =>
                 {
                     Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>> objXPathPair = s_LstXPathsToSearch[i];
                     using (XmlNodeList xmlNodeList = XmlManager.Load(objXPathPair.Item1, strFromLanguage).SelectNodes(objXPathPair.Item2))

@@ -197,7 +197,7 @@ namespace Chummer.UI.Shared
             else if (maxDelay > sw.Elapsed)
             {
                 _offScreenChunkSize++;
-                Log.Info("Offscreen chunck render size increased to " + _offScreenChunkSize);
+                Log.Info("Offscreen chunk render size increased to " + _offScreenChunkSize);
             }
         }
 

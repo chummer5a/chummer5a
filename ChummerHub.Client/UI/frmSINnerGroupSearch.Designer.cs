@@ -37,6 +37,8 @@ namespace ChummerHub.Client.UI
             this.siNnerGroupSearch1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.siNnerGroupSearch1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.siNnerGroupSearch1.Location = new System.Drawing.Point(0, 0);
+            this.siNnerGroupSearch1.MyCE = null;
+            this.siNnerGroupSearch1.MySINSearchGroupResult = null;
             this.siNnerGroupSearch1.Name = "siNnerGroupSearch1";
             this.siNnerGroupSearch1.Size = new System.Drawing.Size(400, 450);
             this.siNnerGroupSearch1.TabIndex = 0;
@@ -49,6 +51,7 @@ namespace ChummerHub.Client.UI
             this.Controls.Add(this.siNnerGroupSearch1);
             this.Name = "frmSINnerGroupSearch";
             this.Text = "frmSINnerGroupSearch";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FrmSINnerGroupSearch_FormClosing);
             this.ResumeLayout(false);
 
         }

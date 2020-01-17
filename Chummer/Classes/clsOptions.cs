@@ -28,12 +28,14 @@ namespace Chummer
     public enum ClipboardContentType
     {
         None = 0,
-        Gear,
-        Cyberware,
         Armor,
-        Weapon,
-        Vehicle,
+        ArmorMod,
+        Cyberware,
+        Gear,
         Lifestyle,
+        Vehicle,
+        Weapon,
+        WeaponAccessory
     }
 
 	public class SourcebookInfo

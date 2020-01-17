@@ -62,6 +62,7 @@ namespace Chummer
         /// <param name="intBonus">The bonus amount.</param>
         /// <param name="strLimit">The limit this modifies.</param>
         /// <param name="strCondition">Condition when the limit modifier is to be activated.</param>
+        /// <param name="blnCanDelete">Can this limit modifier be deleted.</param>
         public void Create(string strName, int intBonus, string strLimit, string strCondition, bool blnCanDelete)
         {
             _strName = strName;
@@ -81,9 +82,9 @@ namespace Chummer
             objWriter.WriteElementString("guid", _guiID.ToString("D"));
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("limit", _strLimit);
-            objWriter.WriteElementString("bonus", _intBonus.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("bonus", _intBonus.ToString(GlobalOptions.Instance.InvariantCultureInfo));
             objWriter.WriteElementString("condition", _strCondition);
-            objWriter.WriteElementString("candelete", _blnCanDelete.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("candelete", _blnCanDelete.ToString(GlobalOptions.Instance.InvariantCultureInfo));
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteEndElement();
         }
@@ -259,7 +260,7 @@ namespace Chummer
 
             // No character-created limits found, which means it comes from an improvement.
             // TODO: ImprovementSource exists for a reason.
-            MessageBox.Show(LanguageManager.GetString("Message_CannotDeleteLimitModifier", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CannotDeleteLimitModifier", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+            Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CannotDeleteLimitModifier", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CannotDeleteLimitModifier", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
             return false;
         }
     }

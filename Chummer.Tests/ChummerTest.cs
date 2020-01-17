@@ -78,7 +78,7 @@ namespace Chummer.Tests
                 {
                     FileName = destination
                 };
-                Assert.IsTrue(c.Load());
+                Assert.IsTrue(c.Load().Result);
             }
             objTestPath.Delete(true);
         }
@@ -96,7 +96,7 @@ namespace Chummer.Tests
                 {
                     FileName = objFileInfo.FullName
                 };
-                Assert.IsTrue(objCharacter.Load());
+                Assert.IsTrue(objCharacter.Load().Result);
                 Debug.WriteLine("Character loaded: " + c.Name);
                 /*
                 if (c.Created)

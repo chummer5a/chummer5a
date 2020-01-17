@@ -1,11 +1,15 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
+using System;
 
 namespace ChummerHub.Migrations
 {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'recursiveGroups'
     public partial class recursiveGroups : Migration
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'recursiveGroups'
     {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'recursiveGroups.Up(MigrationBuilder)'
         protected override void Up(MigrationBuilder migrationBuilder)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'recursiveGroups.Up(MigrationBuilder)'
         {
             migrationBuilder.AddColumn<string>(
                 name: "MyAdminIdentityRole",
@@ -31,7 +35,9 @@ namespace ChummerHub.Migrations
                 onDelete: ReferentialAction.Restrict);
         }
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'recursiveGroups.Down(MigrationBuilder)'
         protected override void Down(MigrationBuilder migrationBuilder)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'recursiveGroups.Down(MigrationBuilder)'
         {
             migrationBuilder.DropForeignKey(
                 name: "FK_SINnerGroups_SINnerGroups_MyParentGroupId",

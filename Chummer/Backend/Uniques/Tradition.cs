@@ -27,7 +27,6 @@ using System.Xml;
 using System.Xml.XPath;
 using Chummer.Annotations;
 using Chummer.Backend.Attributes;
-using Chummer;
 
 namespace Chummer.Backend.Uniques
 {
@@ -70,6 +69,13 @@ namespace Chummer.Backend.Uniques
             _objCharacter = objCharacter;
 
             _objCharacter.PropertyChanged += RefreshDrainExpression;
+        }
+
+        public override string ToString()
+        {
+            if (!String.IsNullOrEmpty(_strName))
+                return _strName;
+            return base.ToString();
         }
 
         public void UnbindTradition()
@@ -352,7 +358,7 @@ namespace Chummer.Backend.Uniques
             objWriter.WriteElementString("drainattributes", DisplayDrainExpressionMethod(strLanguageToPrint));
             objWriter.WriteElementString("drainvalue", DrainValue.ToString(objCulture));
             objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
-            objWriter.WriteElementString("page", Page(strLanguageToPrint));
+            objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteEndElement();
         }
         #endregion
@@ -377,7 +383,7 @@ namespace Chummer.Backend.Uniques
 
         private SourceString _objCachedSourceDetail;
         public SourceString SourceDetail => _objCachedSourceDetail ?? (_objCachedSourceDetail =
-                                                new SourceString(Source, Page(GlobalOptions.Language), GlobalOptions.Language));
+                                                new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language));
 
         /// <summary>
         /// Bonus node from the XML file.
@@ -600,7 +606,7 @@ namespace Chummer.Backend.Uniques
                     {
                         CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
                         return objAttrib.DisplayAbbrev + strSpaceCharacter + '(' +
-                               objAttrib.TotalValue.ToString(GlobalOptions.CultureInfo) + ')';
+                               objAttrib.TotalValue.ToString(GlobalOptions.Instance.CultureInfo) + ')';
                     });
                 }
 
@@ -613,7 +619,7 @@ namespace Chummer.Backend.Uniques
                         objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
                                           _objCharacter.GetObjectName(objLoopImprovement, GlobalOptions.Language) +
                                           strSpaceCharacter + '(' +
-                                          objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
+                                          objLoopImprovement.Value.ToString(GlobalOptions.Instance.CultureInfo) + ')');
                     }
                 }
 
@@ -867,13 +873,24 @@ namespace Chummer.Backend.Uniques
         /// <summary>
         /// Sourcebook Page Number.
         /// </summary>
-        public string Page(string strLanguage)
+        public string Page
         {
-            // Get the translated name if applicable.
-            if(strLanguage == GlobalOptions.DefaultLanguage)
-                return _strPage;
+            get => _strPage;
+            set => _strPage = value;
+        }
 
-            return GetNode(strLanguage)?["altpage"]?.InnerText ?? _strPage;
+        /// <summary>
+        /// Sourcebook Page Number using a given language file.
+        /// Returns Page if not found or the string is empty.
+        /// </summary>
+        /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <returns></returns>
+        public string DisplayPage(string strLanguage)
+        {
+            if (strLanguage == GlobalOptions.DefaultLanguage)
+                return Page;
+            string s = GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
+            return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 
         private XmlNode _xmlCachedMyXmlNode;

@@ -80,7 +80,7 @@ namespace Chummer
                 return 1;
             else
             {
-                return string.Compare(_strBaseString, strOther.BaseString, false, GlobalOptions.CultureInfo);
+                return string.Compare(_strBaseString, strOther.BaseString, false, GlobalOptions.Instance.CultureInfo);
             }
         }
     }

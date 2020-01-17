@@ -73,7 +73,7 @@ namespace Chummer
             objWriter.WriteStartElement("initiationgrade");
             objWriter.WriteElementString("guid", _guiID.ToString("D"));
             objWriter.WriteElementString("res", _blnTechnomancer.ToString());
-            objWriter.WriteElementString("grade", _intGrade.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("grade", _intGrade.ToString(GlobalOptions.Instance.InvariantCultureInfo));
             objWriter.WriteElementString("group", _blnGroup.ToString());
             objWriter.WriteElementString("ordeal", _blnOrdeal.ToString());
             objWriter.WriteElementString("schooling", _blnSchooling.ToString());
@@ -285,7 +285,7 @@ namespace Chummer
             {
                 if (Grade != characterObject.InitiateGrade)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_DeleteGrade", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_DeleteGrade", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_DeleteGrade", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_DeleteGrade", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
                 }
 
@@ -302,7 +302,7 @@ namespace Chummer
             {
                 if (Grade != characterObject.SubmersionGrade)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_DeleteGrade", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_DeleteGrade", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_DeleteGrade", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_DeleteGrade", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
                 }
 

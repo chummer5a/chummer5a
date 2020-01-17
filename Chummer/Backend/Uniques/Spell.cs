@@ -152,7 +152,7 @@ namespace Chummer
             objWriter.WriteElementString("freebonus", _blnFreeBonus.ToString());
             objWriter.WriteElementString("usesunarmed", _blnUsesUnarmed.ToString());
             objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
-            objWriter.WriteElementString("grade", _intGrade.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("grade", _intGrade.ToString(GlobalOptions.Instance.InvariantCultureInfo));
             objWriter.WriteEndElement();
 
             if (Grade >= 0)
@@ -299,103 +299,42 @@ namespace Chummer
 
             string[] strDescriptorsIn = Descriptors.Split(',');
             bool blnExtendedFound = false;
-            foreach (string strDescriptor in strDescriptorsIn)
+            if (strDescriptorsIn.Length > 0)
             {
-                switch (strDescriptor.Trim())
+                foreach (string strDescriptor in strDescriptorsIn)
                 {
-                    case "Active":
-                        objReturn.Append(LanguageManager.GetString("String_DescActive", strLanguage));
-                        break;
-                    case "Adept":
-                        objReturn.Append(LanguageManager.GetString("String_DescAdept", strLanguage));
-                        break;
-                    case "Alchemical Preparation":
-                        objReturn.Append(LanguageManager.GetString("String_DescAlchemicalPreparation", strLanguage));
-                        break;
-                    case "Anchored":
-                        objReturn.Append(LanguageManager.GetString("String_DescAnchored", strLanguage));
-                        break;
-                    case "Area":
-                        objReturn.Append(LanguageManager.GetString("String_DescArea", strLanguage));
-                        break;
-                    case "Blood":
-                        objReturn.Append(LanguageManager.GetString("String_DescBlood", strLanguage));
-                        break;
-                    case "Contractual":
-                        objReturn.Append(LanguageManager.GetString("String_DescContractual", strLanguage));
-                        break;
-                    case "Direct":
-                        objReturn.Append(LanguageManager.GetString("String_DescDirect", strLanguage));
-                        break;
-                    case "Directional":
-                        objReturn.Append(LanguageManager.GetString("String_DescDirectional", strLanguage));
-                        break;
-                    case "Elemental":
-                        objReturn.Append(LanguageManager.GetString("String_DescElemental", strLanguage));
-                        break;
-                    case "Environmental":
-                        objReturn.Append(LanguageManager.GetString("String_DescEnvironmental", strLanguage));
-                        break;
-                    case "Extended Area":
-                        blnExtendedFound = true;
-                        objReturn.Append(LanguageManager.GetString("String_DescExtendedArea", GlobalOptions.Language));
-                        break;
-                    case "Geomancy":
-                        objReturn.Append(LanguageManager.GetString("String_DescGeomancy", strLanguage));
-                        break;
-                    case "Indirect":
-                        objReturn.Append(LanguageManager.GetString("String_DescIndirect", strLanguage));
-                        break;
-                    case "Mana":
-                        objReturn.Append(LanguageManager.GetString("String_DescMana", strLanguage));
-                        break;
-                    case "Material Link":
-                        objReturn.Append(LanguageManager.GetString("String_DescMaterialLink", strLanguage));
-                        break;
-                    case "Mental":
-                        objReturn.Append(LanguageManager.GetString("String_DescMental", strLanguage));
-                        break;
-                    case "Minion":
-                        objReturn.Append(LanguageManager.GetString("String_DescMinion", strLanguage));
-                        break;
-                    case "Multi-Sense":
-                        objReturn.Append(LanguageManager.GetString("String_DescMultiSense", strLanguage));
-                        break;
-                    case "Negative":
-                        objReturn.Append(LanguageManager.GetString("String_DescNegative", strLanguage));
-                        break;
-                    case "Obvious":
-                        objReturn.Append(LanguageManager.GetString("String_DescObvious", strLanguage));
-                        break;
-                    case "Organic Link":
-                        objReturn.Append(LanguageManager.GetString("String_DescOrganicLink", strLanguage));
-                        break;
-                    case "Passive":
-                        objReturn.Append(LanguageManager.GetString("String_DescPassive", strLanguage));
-                        break;
-                    case "Physical":
-                        objReturn.Append(LanguageManager.GetString("String_DescPhysical", strLanguage));
-                        break;
-                    case "Psychic":
-                        objReturn.Append(LanguageManager.GetString("String_DescPsychic", strLanguage));
-                        break;
-                    case "Realistic":
-                        objReturn.Append(LanguageManager.GetString("String_DescRealistic", strLanguage));
-                        break;
-                    case "Single-Sense":
-                        objReturn.Append(LanguageManager.GetString("String_DescSingleSense", strLanguage));
-                        break;
-                    case "Touch":
-                        objReturn.Append(LanguageManager.GetString("String_DescTouch", strLanguage));
-                        break;
-                    case "Spell":
-                        objReturn.Append(LanguageManager.GetString("String_DescSpell", strLanguage));
-                        break;
-                    case "Spotter":
-                        objReturn.Append(LanguageManager.GetString("String_DescSpotter", strLanguage));
-                        break;
+                    switch (strDescriptor.Trim())
+                    {
+                        case "Alchemical Preparation":
+                            objReturn.Append(LanguageManager.GetString("String_DescAlchemicalPreparation",
+                                strLanguage));
+                            break;
+                        case "Extended Area":
+                            blnExtendedFound = true;
+                            objReturn.Append(LanguageManager.GetString("String_DescExtendedArea",
+                                GlobalOptions.Language));
+                            break;
+                        case "Material Link":
+                            objReturn.Append(LanguageManager.GetString("String_DescMaterialLink", strLanguage));
+                            break;
+                        case "Multi-Sense":
+                            objReturn.Append(LanguageManager.GetString("String_DescMultiSense", strLanguage));
+                            break;
+                        case "Organic Link":
+                            objReturn.Append(LanguageManager.GetString("String_DescOrganicLink", strLanguage));
+                            break;
+                        case "Single-Sense":
+                            objReturn.Append(LanguageManager.GetString("String_DescSingleSense", strLanguage));
+                            break;
+                        default:
+                            objReturn.Append(LanguageManager.GetString($"String_Desc{strDescriptor.Trim()}",
+                                strLanguage));
+                            break;
+
+                    }
+
+                    objReturn.Append(", ");
                 }
-                objReturn.Append(", ");
             }
 
             // If Extended Area was not found and the Extended flag is enabled, add Extended Area to the list of Descriptors.
@@ -489,12 +428,12 @@ namespace Chummer
 
                     if (blnIsSuccess && strDV != "Special")
                     {
-                        int intDV = Convert.ToInt32(Math.Floor(Convert.ToDouble(xprResult.ToString(), GlobalOptions.InvariantCultureInfo)));
+                        int intDV = Convert.ToInt32(Math.Floor(Convert.ToDouble(xprResult.ToString(), GlobalOptions.Instance.InvariantCultureInfo)));
 
                         // Drain cannot be lower than 2.
                         if (intDV < 2)
                             intDV = 2;
-                        strTip.Append(Environment.NewLine + LanguageManager.GetString("String_Force", GlobalOptions.Language) + strSpaceCharacter + i.ToString(GlobalOptions.CultureInfo)
+                        strTip.Append(Environment.NewLine + LanguageManager.GetString("String_Force", GlobalOptions.Language) + strSpaceCharacter + i.ToString(GlobalOptions.Instance.CultureInfo)
                                       + LanguageManager.GetString("String_Colon", GlobalOptions.Language) + strSpaceCharacter + intDV);
 
                         if (Limited)
@@ -643,9 +582,8 @@ namespace Chummer
                     }
                 }
 
-                strDV = RelevantImprovements(i => i.ImproveType == Improvement.ImprovementType.DrainValue ||
-                                                  i.ImproveType == Improvement.ImprovementType.SpellCategoryDrain)
-                    .Aggregate(strDV, (current, imp) => current + $" + {imp.Value:0;-0;0}");
+                foreach (var improvement in RelevantImprovements(i => i.ImproveType == Improvement.ImprovementType.DrainValue || i.ImproveType == Improvement.ImprovementType.SpellCategoryDrain))
+                    strDV = strDV + $" + {improvement.Value:0;-0;0}";
                 if (Limited)
                 {
                     strDV += " + -2";
@@ -689,7 +627,7 @@ namespace Chummer
 
         /// <summary>
         /// Sourcebook Page Number using a given language file.
-        /// Returns Page if not found or the string is empty. 
+        /// Returns Page if not found or the string is empty.
         /// </summary>
         /// <param name="strLanguage">Language file keyword to use.</param>
         /// <returns></returns>
@@ -871,7 +809,7 @@ namespace Chummer
                     x.ImproveType == Improvement.ImprovementType.SpellDicePool).Aggregate(strReturn,
                     (current, objImprovement) =>
                         current +
-                        $"{strSpaceCharacter}+{strSpaceCharacter}{_objCharacter.GetObjectName(objImprovement, GlobalOptions.Language)}{strSpaceCharacter}({objImprovement.Value.ToString(GlobalOptions.CultureInfo)})"
+                        $"{strSpaceCharacter}+{strSpaceCharacter}{_objCharacter.GetObjectName(objImprovement, GlobalOptions.Language)}{strSpaceCharacter}({objImprovement.Value.ToString(GlobalOptions.Instance.CultureInfo)})"
                         );
             }
         }
@@ -902,7 +840,7 @@ namespace Chummer
 
         private IEnumerable<Improvement> RelevantImprovements(Func<Improvement, bool> funcWherePredicate = null)
         {
-            foreach (Improvement objImprovement in _objCharacter.Improvements.Where(i => i.Enabled || funcWherePredicate?.Invoke(i) == true))
+            foreach (Improvement objImprovement in _objCharacter.Improvements.Where(i => i.Enabled && funcWherePredicate?.Invoke(i) == true))
             {
                 switch (objImprovement.ImproveType)
                 {
@@ -911,6 +849,25 @@ namespace Chummer
                             yield return objImprovement;
                         break;
                     case Improvement.ImprovementType.SpellCategory:
+                        // SR5 318: Regardless of the number of bonded foci you have,
+                        // only one focus may add its Force to a dicepool for any given test.
+                        // We need to do some checking to make sure this is the most powerful focus before we add it in
+                        if (objImprovement.ImproveSource == Improvement.ImprovementSource.Gear)
+                        {
+                            //TODO: THIS IS NOT SAFE. While we can mostly assume that Gear that add to SpellCategory are Foci, it's not reliable.
+                            // we are returning either the original improvement, null or a newly instantiated improvement
+                            Improvement bestFocus = CompareFocusPower(objImprovement);
+                            if (bestFocus != null)
+                            {
+                                yield return bestFocus;
+                            }
+                            break;
+                        }
+                        else
+                        {
+                            yield return objImprovement;
+                            break;
+                        }
                     case Improvement.ImprovementType.SpellCategoryDrain:
                         if (objImprovement.ImprovedName == Category)
                             yield return objImprovement;
@@ -921,6 +878,35 @@ namespace Chummer
                 }
             }
         }
+
+        /// <summary>
+        /// Method to check we are only applying the highest focus to the spell dicepool
+        /// </summary>
+        private Improvement CompareFocusPower(Improvement objImprovement)
+        {
+            // get any bonded foci that add to the base magic stat and return the highest rated one's rating
+            var powerFocusRating = _objCharacter.Foci
+                .Where(x => x.GearObject.Bonus.InnerText == "MAGRating" && x.GearObject.Bonded).Select(x => x.Rating)
+                .DefaultIfEmpty().Max();
+
+            // If our focus is higher, add in a partial bonus
+            if (powerFocusRating > 0 && powerFocusRating < objImprovement.Value)
+            {
+                // This is hackz -- because we don't want to lose the original improvement's value
+                // we instantiate a fake version of the improvement that isn't saved to represent the diff
+                return new Improvement(_objCharacter)
+                {
+                    Value = objImprovement.Value - powerFocusRating,
+                    SourceName = objImprovement.SourceName,
+                    ImprovedName = objImprovement.ImprovedName,
+                    ImproveSource = objImprovement.ImproveSource,
+                    ImproveType = objImprovement.ImproveType,
+                };
+            }
+
+            return powerFocusRating > 0 ? null : objImprovement;
+        }
+
         #endregion
 
         #region UI Methods

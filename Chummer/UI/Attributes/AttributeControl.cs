@@ -114,7 +114,7 @@ namespace Chummer.UI.Attributes
             if (intUpgradeKarmaCost == -1) return; //TODO: more descriptive
             if (intUpgradeKarmaCost > _objCharacter.Karma)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughKarma", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NotEnoughKarma", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughKarma", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -133,9 +133,8 @@ namespace Chummer.UI.Attributes
             if (d == _oldBase) return;
             if (!CanBeMetatypeMax(
                 Math.Max(
-                    decimal.ToInt32(d + nudKarma.Value) + attrib.FreeBase + attrib.RawMinimum +
-                    attrib.AttributeValueModifiers, attrib.TotalMinimum) +
-                decimal.ToInt32(nudKarma.Value)))
+                    decimal.ToInt32(nudKarma.Value) + attrib.FreeBase + attrib.RawMinimum +
+                    attrib.AttributeValueModifiers, attrib.TotalMinimum) + decimal.ToInt32(d)))
             {
                 decimal newValue = Math.Max(nudBase.Value - 1, 0);
                 if (newValue > nudBase.Maximum)
@@ -208,7 +207,7 @@ namespace Chummer.UI.Attributes
                 att.AtMetatypeMaximum && att.Abbrev != AttributeName && att.MetatypeCategory == CharacterAttrib.AttributeCategory.Standard);
 
             if (intNumOtherAttributeAtMax <= intMaxOtherAttributesAtMax) return true;
-            MessageBox.Show(LanguageManager.GetString("Message_AttributeMaximum", GlobalOptions.Language),
+            Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_AttributeMaximum", GlobalOptions.Language),
                 LanguageManager.GetString("MessageTitle_Attribute", GlobalOptions.Language), MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
             return false;
@@ -221,7 +220,7 @@ namespace Chummer.UI.Attributes
             // Edge cannot go below 1.
             if (_objAttribute.Value == 0)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_CannotBurnEdge", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CannotBurnEdge", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CannotBurnEdge", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CannotBurnEdge", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
 

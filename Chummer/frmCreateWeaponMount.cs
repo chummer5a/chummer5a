@@ -375,11 +375,11 @@ namespace Chummer
                 {
                     cmdDeleteMod.Enabled = !objMod.IncludedInVehicle;
                     lblSlots.Text = objMod.CalculatedSlots.ToString();
-                    lblAvailability.Text = objMod.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                    lblAvailability.Text = objMod.TotalAvail(GlobalOptions.Instance.CultureInfo, GlobalOptions.Language);
 
                     if (chkFreeItem.Checked)
                     {
-                        lblCost.Text = (0.0m).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                        lblCost.Text = (0.0m).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.Instance.CultureInfo) + '¥';
                     }
                     else
                     {
@@ -400,7 +400,7 @@ namespace Chummer
                         {
                             intTotalSlots += objLoopMod.CalculatedSlots;
                         }
-                        lblCost.Text = (objMod.TotalCostInMountCreation(intTotalSlots) * (1 + (nudMarkup.Value / 100.0m))).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                        lblCost.Text = (objMod.TotalCostInMountCreation(intTotalSlots) * (1 + (nudMarkup.Value / 100.0m))).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.Instance.CultureInfo) + '¥';
                     }
 
                     objMod.SetSourceDetail(lblSource);
@@ -422,7 +422,7 @@ namespace Chummer
                 lblAvailabilityLabel.Visible = false;
                 return;
             }
-	        decimal decCost = !chkFreeItem.Checked ? Convert.ToDecimal(xmlSelectedMount["cost"]?.InnerText, GlobalOptions.InvariantCultureInfo) : 0;
+	        decimal decCost = !chkFreeItem.Checked ? Convert.ToDecimal(xmlSelectedMount["cost"]?.InnerText, GlobalOptions.Instance.InvariantCultureInfo) : 0;
             int intSlots = Convert.ToInt32(xmlSelectedMount["slots"]?.InnerText);
 
             string strAvail = xmlSelectedMount["avail"]?.InnerText ?? string.Empty;
@@ -482,14 +482,14 @@ namespace Chummer
                 }
             }
 
-            string strAvailText = intAvail.ToString(GlobalOptions.CultureInfo);
+            string strAvailText = intAvail.ToString(GlobalOptions.Instance.CultureInfo);
             if (chrAvailSuffix == 'F')
                 strAvailText += LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language);
             else if (chrAvailSuffix == 'R')
                 strAvailText += LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language);
 
 	        decCost *= 1 + (nudMarkup.Value / 100.0m);
-	        lblCost.Text = decCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+	        lblCost.Text = decCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.Instance.CultureInfo) + '¥';
 	        lblSlots.Text = intSlots.ToString();
 	        lblAvailability.Text = strAvailText;
 	        lblCostLabel.Visible = !string.IsNullOrEmpty(lblCost.Text);
@@ -594,7 +594,7 @@ namespace Chummer
 
                     if (blnOverCapacity)
                     {
-                        MessageBox.Show(LanguageManager.GetString("Message_CapacityReached", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CapacityReached", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CapacityReached", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CapacityReached", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         continue;
                     }
                 }
@@ -611,7 +611,7 @@ namespace Chummer
 
                     if (decCost > _objCharacter.Nuyen)
                     {
-                        MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen", GlobalOptions.Language),
+                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NotEnoughNuyen", GlobalOptions.Language),
                             LanguageManager.GetString("MessageTitle_NotEnoughNuyen", GlobalOptions.Language),
                             MessageBoxButtons.OK, MessageBoxIcon.Information);
                         continue;

@@ -33,7 +33,7 @@ namespace ChummerHub.Client.Tests
                 try
                 {
                     Debug.WriteLine("Loading: " + file.Name);
-                    Character c = MainForm.LoadCharacter(file.FullName);
+                    Character c = await MainForm.LoadCharacter(file.FullName);
                     if (c == null)
                         continue;
                     Debug.WriteLine("Character loaded: " + c.Name);

@@ -4,9 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace ChummerHub.Models.V1
@@ -25,8 +23,8 @@ namespace ChummerHub.Models.V1
         [MaxLength(64)]
         public string TagValue { get; set; }
 
-
-        public Double? TagValueDouble { get; set; }
+        
+        public Single? TagValueFloat { get; set; }
 
         /// <summary>
         /// This has NO FUNCTION and is only here for Debugging reasons.
@@ -34,7 +32,7 @@ namespace ChummerHub.Models.V1
         ///
         [MaxLength(64)]
         public string TagComment { get; set; }
-        
+
         public Guid? ParentTagId { get; set; }
 
         [IgnoreDataMember]
@@ -82,7 +80,7 @@ namespace ChummerHub.Models.V1
             this.ParentTag = parent;
             this.TagName = "";
             this.TagValue = "";
-            this.TagValueDouble = null;
+            this.TagValueFloat = null;
             this.ParentTagId = Guid.Empty;
             if (parent != null)
                 this.ParentTagId = parent.Id;
@@ -96,7 +94,6 @@ namespace ChummerHub.Models.V1
         [XmlIgnore]
         [JsonIgnore]
         [NotMapped]
-       
         public string Display
         {
             get
@@ -121,7 +118,7 @@ namespace ChummerHub.Models.V1
         internal void SetSinnerIdRecursive(Guid? id)
         {
             this.SINnerId = id;
-            foreach(var child in this.Tags)
+            foreach (var child in this.Tags)
                 child.SetSinnerIdRecursive(id);
         }
     }

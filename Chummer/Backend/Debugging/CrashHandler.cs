@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -29,6 +30,8 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Web.Script.Serialization;
 using System.Windows.Forms;
+using Microsoft.ApplicationInsights;
+using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.Win32;
 
 namespace Chummer.Backend
@@ -61,7 +64,9 @@ namespace Chummer.Backend
                     {"current-dir", Utils.GetStartupPath},
                     {"application-dir", Application.ExecutablePath},
                     {"os-type", Environment.OSVersion.VersionString},
-                    {"visible-error-friendly", ex?.Message ?? "No description available"}
+                    {"visible-error-friendly", ex?.Message ?? "No description available"},
+                    { "installation-id", Chummer.Properties.Settings.Default.UploadClientId.ToString() },
+                    { "option-upload-logs-set", GlobalOptions.Instance.UseLoggingApplicationInsights.ToString() }
                 };
 
                 try
@@ -74,7 +79,7 @@ namespace Chummer.Backend
                 }
                 try
                 {
-                    _dicAttributes.Add("chummer-cultureinfo", GlobalOptions.CultureInfo.ToString());
+                    _dicAttributes.Add("chummer-cultureinfo", GlobalOptions.Instance.CultureInfo.ToString());
                 }
                 catch (Exception e)
                 {
@@ -190,6 +195,27 @@ namespace Chummer.Backend
                 byte[] info = new UTF8Encoding(true).GetBytes(dump.SerializeBase64());
                 File.WriteAllBytes(Path.Combine(Utils.GetStartupPath, "json.txt"), info);
 
+                if (GlobalOptions.Instance.UseLoggingApplicationInsights >= ProgramOptions.UseAILogging.Crashes)
+                {
+                    if (Program.TelemetryClient != null)
+                    {
+                        ex.Data.Add("IsCrash", true.ToString());
+                        ExceptionTelemetry et = new ExceptionTelemetry(ex)
+                        {
+                            SeverityLevel = SeverityLevel.Critical
+
+                        };
+                        //we have to enable the uploading of THIS message, so it isn't filtered out in the DropUserdataTelemetryProcessos
+                        foreach (DictionaryEntry d in ex.Data)
+                        {
+                            if ((d.Key != null) && (d.Value != null))
+                                et.Properties.Add(d.Key.ToString(), d.Value.ToString());
+                        }
+                        Program.TelemetryClient.TrackException(et);
+                        Program.TelemetryClient.Flush();
+                    }
+                }
+
                 //Process crashHandler = Process.Start("crashhandler", "crash " + Path.Combine(Utils.GetStartupPath, "json.txt") + " --debug");
                 Process crashHandler = Process.Start("crashhandler", "crash " + Path.Combine(Utils.GetStartupPath, "json.txt"));
 
@@ -197,7 +223,7 @@ namespace Chummer.Backend
             }
             catch(Exception nex)
             {
-                MessageBox.Show("Failed to create crash report." + Environment.NewLine +
+                Program.MainForm.ShowMessageBox("Failed to create crash report." + Environment.NewLine +
                                 "Here is some information to help the developers figure out why:" + Environment.NewLine + nex + Environment.NewLine + "Crash information:" + Environment.NewLine + ex);
             }
         }

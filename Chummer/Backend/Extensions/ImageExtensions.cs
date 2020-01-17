@@ -53,7 +53,7 @@ namespace Chummer
             {
                 Log.Warn(e);
             }
-          
+
             return imgReturn;
         }
 

@@ -220,14 +220,14 @@ namespace Chummer
             List<ListItem> lstPower = new List<ListItem>();
             foreach (XPathNavigator objXmlPower in _xmlBasePowerDataNode.Select("powers/power[" + strFilter + "]"))
             {
-                decimal decPoints = Convert.ToDecimal(objXmlPower.SelectSingleNode("points")?.Value, GlobalOptions.InvariantCultureInfo);
+                decimal decPoints = Convert.ToDecimal(objXmlPower.SelectSingleNode("points")?.Value, GlobalOptions.Instance.InvariantCultureInfo);
                 string strExtraPointCost = objXmlPower.SelectSingleNode("extrapointcost")?.Value;
                 string strName = objXmlPower.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
                 if (!string.IsNullOrEmpty(strExtraPointCost))
                 {
                     //If this power has already had its rating paid for with PP, we don't care about the extrapoints cost.
                     if (!_objCharacter.Powers.Any(power => power.Name == strName && power.TotalRating > 0))
-                        decPoints += Convert.ToDecimal(strExtraPointCost, GlobalOptions.InvariantCultureInfo);
+                        decPoints += Convert.ToDecimal(strExtraPointCost, GlobalOptions.Instance.InvariantCultureInfo);
                 }
                 if (_decLimitToRating > 0 && decPoints > _decLimitToRating)
                 {

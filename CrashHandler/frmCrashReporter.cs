@@ -55,7 +55,7 @@ namespace CrashHandler
 			timerRefreshTextFile.Stop();
 			timerRefreshTextFile.Start();
 			lblDescriptionWarning.Visible = txtUserStory.Text.Length == 0;
-            btnSend.Enabled = txtUserStory.Text.Length != 0;
+            btnSend.Enabled = Md5Hash(txtUserStory.Text) != _strDefaultUserStory;
         }
 
 		private void btnNo_Click(object sender, EventArgs e)
@@ -122,6 +122,8 @@ namespace CrashHandler
 			strBody += $"Chummer Version: {_dumper.Attributes["visible-version"]}\n";
 			strBody += $"Environment: {_dumper.Attributes["os-name"]}\n";
 			strBody += $"Runtime: {Environment.Version}\n";
+            strBody += $"Option upload logs set: {_dumper.Attributes["option-upload-logs-set"]}\n";
+            strBody += $"Installation ID: {_dumper.Attributes["installation-id"]}\n";
             strBody += txtUserStory.Text;
 			strBody = System.Net.WebUtility.HtmlEncode(strBody);
 			strBody = strBody

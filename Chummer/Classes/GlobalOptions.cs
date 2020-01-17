@@ -14,6 +14,7 @@ using Chummer.Classes;
 using MersenneTwister;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.Win32;
+using static Chummer.GlobalOptions;
 
 namespace Chummer
 {
@@ -22,10 +23,15 @@ namespace Chummer
 	/// </summary>
 	public sealed class ProgramOptions
 	{
-        
-        // Omae Information.
-
-
+        public enum UseAILogging
+        {
+            OnlyLocal = 0,
+            OnlyMetric,
+            Crashes,
+            NotSet,
+            Info,
+            Trace
+        }
 
         // PDF information.
 
@@ -35,24 +41,21 @@ namespace Chummer
 		{
 			
 		}
-		#endregion
+        #endregion
 
-		#region Properties
-		[OptionAttributes("OptionHeader_GlobalOptions")]
-		/// <summary>
-		/// Whether or not Automatic Updates are enabled.
-		/// </summary>
+        #region Properties
+
+        [OptionAttributes("OptionHeader_GlobalOptions")]
+
+        // ReSharper disable once InvalidXmlDocComment
+        /// <summary>
+        /// Whether or not Automatic Updates are enabled.
+        /// </summary>
 		[SavePropertyAs("autoupdate")]
-		public bool AutomaticUpdate { get; set; }
+        public bool AutomaticUpdate { get; set; }
 
 		[SavePropertyAs("lifemodule")]
 		public bool LifeModuleEnabled { get; set; }
-
-		/// <summary>
-		/// Whether or not the app should only download localised files in the user's selected language.
-		/// </summary>
-		[SavePropertyAs("localisedupdatesonly")]
-		public bool LocalisedUpdatesOnly { get; set; } = false;
 
 		/// <summary>
 		/// Whether or not the app should use logging.
@@ -66,24 +69,31 @@ namespace Chummer
 		[SavePropertyAs("datesincludetime")]
 		public bool DatesIncludeTime { get; set; } = true;
 
-		[SavePropertyAs("missionsonly")]
-		public bool MissionsOnly { get; set; } = false;
+        /// <summary>
+        /// Maximum size of the MostRecentlyUsed array for Recent characters.
+        /// </summary>
+        [SavePropertyAs("maxmrusize")]
+        public int MaxMruSize { get; set; } = 10;
 
-
-		[SavePropertyAs("dronemods")]
+        [SavePropertyAs("dronemods")]
 		public bool Dronemods { get; set; } = false;
-
-
+        
 		/// <summary>
 		/// Whether or not printouts should be sent to a file before loading them in the browser. This is a fix for getting printing to work properly on Linux using Wine.
 		/// </summary>
 		[SavePropertyAs("printtofilefirst")]
 		public bool PrintToFileFirst { get; set; } = false;
 
-		/// <summary>
-		/// Omae user name.
-		/// </summary>
-		[SavePropertyAs("omaeusername")]
+        /// <summary>
+        /// Whether or not Expense charts are shown. Compatibility issues with Wine cause them to time out, so provide the user with the option to not use them. 
+        /// </summary>
+        [SavePropertyAs("hidecharts")]
+        public bool HideCharts { get; set; } = false;
+
+        /// <summary>
+        /// Omae user name.
+        /// </summary>
+        [SavePropertyAs("omaeusername")]
 		public string OmaeUserName { get; set; } = "";
 
 		/// <summary>
@@ -280,20 +290,19 @@ namespace Chummer
         public bool PluginsEnabled { get; set; }
         [DisplayIgnore]
         public Dictionary<string, bool> PluginsEnabledDic { get; } = new Dictionary<string, bool>();
-
-
-
-        private bool _blnUseLoggingApplicationInsights;
+        
+        private static UseAILogging _enumUseLoggingApplicationInsights;
         /// <summary>
         /// Whether or not the app should use logging.
         /// </summary>
-        public bool UseLoggingApplicationInsights
+        public UseAILogging UseLoggingApplicationInsights
         {
-            get => _blnUseLoggingApplicationInsights;
+            get => _enumUseLoggingApplicationInsights;
             set
             {
-                _blnUseLoggingApplicationInsights = value;
-                TelemetryConfiguration.Active.DisableTelemetry = !value;
+                _enumUseLoggingApplicationInsights = value;
+                // Sets up logging if the option is changed during runtime
+                TelemetryConfiguration.Active.DisableTelemetry = _enumUseLoggingApplicationInsights > UseAILogging.OnlyLocal;
             }
         }
 
@@ -323,10 +332,7 @@ namespace Chummer
 		public CultureInfo CultureInfo { get; private set; } = CultureInfo.CurrentCulture;
 
 
-
-
-
-
+        public event EventHandler<TextEventArgs> MRUChanged;
     }
 
     public class CustomDataDirectoryInfo : IComparable

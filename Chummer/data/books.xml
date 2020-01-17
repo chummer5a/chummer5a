@@ -20,7 +20,7 @@
 -->
 <chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.w3.org/2001/XMLSchema books.xsd">
-  <version>0</version>
+
   <books>
     <book>
       <id>289bc41d-6dd5-4216-9bc7-e6f0cabae9ac</id>
@@ -261,6 +261,11 @@
       <id>b20a20e5-e9d4-4f54-9caa-57a001cb904e</id>
       <name>Datapuls SOTA 2080 (German-exclusive)</name>
       <code>SOTG</code>
+    </book>
+    <book>
+      <id>3ece5592-c3c1-4cf8-97a2-ef773388289d</id>
+      <name>Datapuls Verschlusssache (German-exclusive)</name>
+      <code>DPVG</code>
     </book>
   </books>
 </chummer>

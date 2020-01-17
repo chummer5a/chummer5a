@@ -148,17 +148,17 @@ namespace Chummer
             int intSystemCost = 0;
             if (intSystem <= 3)
             {
-                strSystemAvail = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(intPersona, GlobalOptions.InvariantCultureInfo) / 5.0)).ToString();
+                strSystemAvail = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(intPersona, GlobalOptions.Instance.InvariantCultureInfo) / 5.0)).ToString();
                 intSystemCost = intSystem * intPersona * 25;
             }
             else if (intSystem <= 6)
             {
-                strSystemAvail = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(intPersona, GlobalOptions.InvariantCultureInfo) / 2.0)).ToString();
+                strSystemAvail = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(intPersona, GlobalOptions.Instance.InvariantCultureInfo) / 2.0)).ToString();
                 intSystemCost = intSystem * intPersona * 50;
             }
             else
             {
-                strSystemAvail = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(intPersona, GlobalOptions.InvariantCultureInfo) / 2.0)).ToString() + "F";
+                strSystemAvail = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(intPersona, GlobalOptions.Instance.InvariantCultureInfo) / 2.0)).ToString() + "F";
                 intSystemCost = intSystem * intPersona * 300;
             }
 
@@ -167,17 +167,17 @@ namespace Chummer
             int intFirewallCost = 0;
             if (intFirewall <= 3)
             {
-                strFirewallAvail = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(intProcessor, GlobalOptions.InvariantCultureInfo) / 10.0)).ToString();
+                strFirewallAvail = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(intProcessor, GlobalOptions.Instance.InvariantCultureInfo) / 10.0)).ToString();
                 intFirewallCost = intFirewall * intProcessor * 25;
             }
             else if (intFirewall <= 6)
             {
-                strFirewallAvail = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(intProcessor, GlobalOptions.InvariantCultureInfo) / 5.0)).ToString();
+                strFirewallAvail = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(intProcessor, GlobalOptions.Instance.InvariantCultureInfo) / 5.0)).ToString();
                 intFirewallCost = intFirewall * intProcessor * 50;
             }
             else
             {
-                strFirewallAvail = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(intProcessor, GlobalOptions.InvariantCultureInfo) / 5.0)).ToString() + "F";
+                strFirewallAvail = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(intProcessor, GlobalOptions.Instance.InvariantCultureInfo) / 5.0)).ToString() + "F";
                 intFirewallCost = intFirewall * intProcessor * 250;
             }
 
@@ -225,12 +225,12 @@ namespace Chummer
             lblResponseAvail.Text = strResponseAvail.CheapReplace("R", () => LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language)).CheapReplace("F", () => LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language));
             lblSystemAvail.Text = strSystemAvail.CheapReplace("R", () => LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language)).CheapReplace("F", () => LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language));
             lblFirewallAvail.Text = strFirewallAvail.CheapReplace("R", () => LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language)).CheapReplace("F", () => LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language));
-            lblCost.Text = decCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+            lblCost.Text = decCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.Instance.CultureInfo) + '¥';
 
             Gear objNexus = new Gear(_objCharacter)
             {
                 Name = LanguageManager.GetString("String_SelectNexus_Nexus", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + LanguageManager.GetString("String_SelectNexus_Processor", GlobalOptions.Language) + ' ' + intProcessor.ToString() + ')',
-                Cost = decCost.ToString(GlobalOptions.InvariantCultureInfo),
+                Cost = decCost.ToString(GlobalOptions.Instance.InvariantCultureInfo),
                 Avail = "0",
                 Category = "Nexus",
                 Source = "UN",

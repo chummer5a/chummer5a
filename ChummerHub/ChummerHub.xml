@@ -170,6 +170,51 @@
             <param name="userpwd"></param>
             <returns></returns>
         </member>
+        <member name="T:ChummerHub.Services.Application_Insights.ExceptionDataProcessor">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:ChummerHub.Services.Application_Insights.ExceptionDataProcessor.#ctor(Microsoft.ApplicationInsights.Extensibility.ITelemetryProcessor)">
+            <summary>
+            
+            </summary>
+            <param name="next"></param>
+        </member>
+        <member name="M:ChummerHub.Services.Application_Insights.ExceptionDataProcessor.Process(Microsoft.ApplicationInsights.Channel.ITelemetry)">
+            <summary>
+            
+            </summary>
+            <param name="item"></param>
+        </member>
+        <member name="T:ChummerHub.Services.Application_Insights.GroupNotFoundFilter">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:ChummerHub.Services.Application_Insights.GroupNotFoundFilter.#ctor(Microsoft.ApplicationInsights.Extensibility.ITelemetryProcessor)">
+            <summary>
+            
+            </summary>
+            <param name="next"></param>
+        </member>
+        <member name="M:ChummerHub.Services.Application_Insights.GroupNotFoundFilter.Process(Microsoft.ApplicationInsights.Channel.ITelemetry)">
+            <summary>
+            
+            </summary>
+            <param name="item"></param>
+        </member>
+        <member name="T:ChummerHub.Services.Application_Insights.MyTelemetryInitializer">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:ChummerHub.Services.Application_Insights.MyTelemetryInitializer.Initialize(Microsoft.ApplicationInsights.Channel.ITelemetry)">
+            <summary>
+            
+            </summary>
+            <param name="telemetry"></param>
+        </member>
         <member name="T:ChummerHub.Services.GoogleDrive.GoogleIDataStore">
             <summary>
             Handles internal token storage, bypassing filesystem

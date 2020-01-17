@@ -15,7 +15,7 @@ namespace ChummerHub.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.4-servicing-10062")
+                .HasAnnotation("ProductVersion", "2.2.6-servicing-10079")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -45,6 +45,24 @@ namespace ChummerHub.Migrations
                     b.ToTable("AspNetRoles");
                 });
 
+            modelBuilder.Entity("ChummerHub.Data.ApplicationUserFavoriteGroup", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<Guid?>("ApplicationUserId");
+
+                    b.Property<Guid>("FavoriteGuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("FavoriteGuid");
+
+                    b.ToTable("ApplicationUserFavoriteGroup");
+                });
+
             modelBuilder.Entity("ChummerHub.Models.V1.SINner", b =>
                 {
                     b.Property<Guid?>("Id")
@@ -60,10 +78,15 @@ namespace ChummerHub.Migrations
 
                     b.Property<string>("GoogleDriveFileId");
 
+                    b.Property<string>("Hash")
+                        .HasMaxLength(8);
+
                     b.Property<string>("Language")
                         .HasMaxLength(6);
 
                     b.Property<DateTime>("LastChange");
+
+                    b.Property<DateTime?>("LastDownload");
 
                     b.Property<Guid?>("MyGroupId");
 
@@ -78,6 +101,8 @@ namespace ChummerHub.Migrations
                     b.HasIndex("Alias");
 
                     b.HasIndex("EditionNumber");
+
+                    b.HasIndex("Hash");
 
                     b.HasIndex("MyGroupId");
 
@@ -116,6 +141,9 @@ namespace ChummerHub.Migrations
                     b.Property<string>("Groupname")
                         .HasMaxLength(64);
 
+                    b.Property<string>("Hash")
+                        .HasMaxLength(8);
+
                     b.Property<bool>("IsPublic");
 
                     b.Property<string>("Language")
@@ -133,6 +161,8 @@ namespace ChummerHub.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("Groupname");
+
+                    b.HasIndex("Hash");
 
                     b.HasIndex("Language");
 
@@ -242,7 +272,7 @@ namespace ChummerHub.Migrations
                     b.Property<string>("TagValue")
                         .HasMaxLength(64);
 
-                    b.Property<double?>("TagValueDouble");
+                    b.Property<float?>("TagValueFloat");
 
                     b.HasKey("Id");
 
@@ -252,7 +282,7 @@ namespace ChummerHub.Migrations
 
                     b.HasIndex("TagId");
 
-                    b.HasIndex("TagValueDouble");
+                    b.HasIndex("TagValueFloat");
 
                     b.HasIndex("TagName", "TagValue");
 
@@ -267,6 +297,8 @@ namespace ChummerHub.Migrations
                     b.Property<string>("ChummerVersion");
 
                     b.Property<string>("ClientSecret");
+
+                    b.Property<Guid?>("InstallationId");
 
                     b.Property<string>("UserEmail");
 
@@ -409,6 +441,13 @@ namespace ChummerHub.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("ChummerHub.Data.ApplicationUserFavoriteGroup", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.ApplicationUser")
+                        .WithMany("FavoriteGroups")
+                        .HasForeignKey("ApplicationUserId");
                 });
 
             modelBuilder.Entity("ChummerHub.Models.V1.SINner", b =>
