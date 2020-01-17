@@ -47,6 +47,20 @@ namespace Chummer
 
         [OptionAttributes("OptionHeader_GlobalOptions")]
 
+        /// <summary>
+        /// Whether items that exceed the Availability Limit should be shown in Create Mode.
+        /// </summary>
+        [SavePropertyAs("hideitemsoveravaillimit")]
+        public bool HideItemsOverAvailLimit { get; set; } = true;
+
+        /// <summary>
+        /// Whether or not numeric updowns can increment values of numericupdown controls by hovering over the control.
+        /// </summary>
+        public bool AllowHoverIncrement { get; set; }
+
+        [DisplayIgnore]
+        public NumericUpDownEx.InterceptMouseWheelMode InterceptMode => AllowHoverIncrement ? NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver : NumericUpDownEx.InterceptMouseWheelMode.WhenFocus;
+
         // ReSharper disable once InvalidXmlDocComment
         /// <summary>
         /// Whether or not Automatic Updates are enabled.

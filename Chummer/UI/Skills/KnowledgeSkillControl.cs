@@ -97,11 +97,11 @@ namespace Chummer.UI.Skills
             {
                 //Up down boxes
                 nudKarma.DataBindings.Add("Value", skill, nameof(Skill.Karma), false, DataSourceUpdateMode.OnPropertyChanged);
-                nudKarma.DataBindings.Add("InterceptMouseWheel", skill.CharacterObject.Options, nameof(CharacterOptions.InterceptMode), false, DataSourceUpdateMode.OnPropertyChanged);
+                nudKarma.DataBindings.Add("InterceptMouseWheel", GlobalOptions.Instance, nameof(ProgramOptions.InterceptMode), false, DataSourceUpdateMode.OnPropertyChanged);
 
                 nudSkill.DataBindings.Add("Value", skill, nameof(Skill.Base), false, DataSourceUpdateMode.OnPropertyChanged);
                 nudSkill.DataBindings.Add("Enabled", skill.CharacterObject.SkillsSection, nameof(SkillsSection.HasKnowledgePoints), false, DataSourceUpdateMode.OnPropertyChanged);
-                nudSkill.DataBindings.Add("InterceptMouseWheel", skill.CharacterObject.Options, nameof(CharacterOptions.InterceptMode), false, DataSourceUpdateMode.OnPropertyChanged);
+                nudSkill.DataBindings.Add("InterceptMouseWheel", GlobalOptions.Instance, nameof(ProgramOptions.InterceptMode), false, DataSourceUpdateMode.OnPropertyChanged);
 
                 chkKarma.DataBindings.Add("Checked", skill, nameof(Skill.BuyWithKarma), false,
                         DataSourceUpdateMode.OnPropertyChanged);

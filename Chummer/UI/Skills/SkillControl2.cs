@@ -118,11 +118,11 @@ namespace Chummer.UI.Skills
                 nudSkill.DataBindings.Add("Visible", skill.CharacterObject, nameof(skill.CharacterObject.BuildMethodHasSkillPoints), false, DataSourceUpdateMode.OnPropertyChanged);
                 nudSkill.DataBindings.Add("Enabled", skill, nameof(Skill.BaseUnlocked), false,
                     DataSourceUpdateMode.OnPropertyChanged);
-                nudSkill.DataBindings.Add("InterceptMouseWheel", skill.CharacterObject.Options, nameof(CharacterOptions.InterceptMode), false,
+                nudSkill.DataBindings.Add("InterceptMouseWheel", GlobalOptions.Instance, nameof(ProgramOptions.InterceptMode), false,
                     DataSourceUpdateMode.OnPropertyChanged);
                 nudKarma.DataBindings.Add("Enabled", skill, nameof(Skill.KarmaUnlocked), false,
                     DataSourceUpdateMode.OnPropertyChanged);
-                nudKarma.DataBindings.Add("InterceptMouseWheel", skill.CharacterObject.Options, nameof(CharacterOptions.InterceptMode), false,
+                nudKarma.DataBindings.Add("InterceptMouseWheel", GlobalOptions.Instance, nameof(ProgramOptions.InterceptMode), false,
                     DataSourceUpdateMode.OnPropertyChanged);
 
                 chkKarma.DataBindings.Add("Visible", skill.CharacterObject, nameof(skill.CharacterObject.BuildMethodHasSkillPoints), false, DataSourceUpdateMode.OnPropertyChanged);

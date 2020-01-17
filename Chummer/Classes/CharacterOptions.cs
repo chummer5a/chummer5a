@@ -227,32 +227,20 @@ namespace Chummer
 	    //TODO: Handler for comboboxes
 	    public string ExcludeLimbSlot { get; set; } = "";
 
-	    #region Optional Rules
-		/// <summary>
-		/// Whether or not the More Lethal Gameplay optional rule is enabled.
-		/// </summary>
-		//
-		[OptionAttributes("OptionHeader_CharacterOptions/Display_HouseRules")]
-		[SavePropertyAs("morelethalgameplay")]
-		public bool MoreLethalGameplay { get; set; }
+        #region Optional Rules
+        [OptionAttributes("OptionHeader_CharacterOptions/Display_HouseRules")]
 
-	    /// <summary>
-		/// Whether or not to require licensing restricted items.
-		/// </summary>
-		[SavePropertyAs("licenserestricted")]
-		public bool LicenseRestricted { get; set; }
+        /// <summary>
+        /// Whether or not to require licensing restricted items.
+        /// </summary>
+        [SavePropertyAs("licenserestricted")]
+        public bool LicenseRestricted { get; set; }
 
 	    /// <summary>
 		/// Whether or not a Spirit's Maximum Force is based on the character's total MAG.
 		/// </summary>
 		[SavePropertyAs("spiritforcebasedontotalmag")]
 		public bool SpiritForceBasedOnTotalMAG { get; set; }
-
-	    /// <summary>
-		/// Whether or not Knucks benefit from improvements to Unarmed DV, such as Adept Powers.
-		/// </summary>
-		[SavePropertyAs("knucksuseunarmed")]
-		public bool KnucksUseUnarmed { get; set; }
 
 	    /// <summary>
 		/// Whether or not characters may use Initiation/Submersion in Create mode.
@@ -272,14 +260,8 @@ namespace Chummer
         [SavePropertyAs("allowcyberwareessdiscounts")]
 		public bool AllowCyberwareESSDiscounts { get; set; }
 
-        /// <summary>
-        /// Whether or not Maximum Armor Modifications is in use.
-        /// </summary>
-        [SavePropertyAs("maximumarmormodifications")]
-		public bool MaximumArmorModifications { get; set; }
-
 	    /// <summary>
-		/// Whether or not Armor Degredation is allowed.
+		/// Whether or not Armor Degradation is allowed.
 		/// </summary>
 		[SavePropertyAs("armordegredation")]
 		public bool ArmorDegradation { get; set; }
@@ -289,24 +271,6 @@ namespace Chummer
 		/// </summary>
 		[SavePropertyAs("specialkarmacostbasedonshownvalue")]
 		public bool SpecialKarmaCostBasedOnShownValue { get; set; }
-
-	    /// <summary>
-		/// Whether or not characters can have more than 25 BP in Positive Qualities.
-		/// </summary>
-		[SavePropertyAs("exceedpositivequalities")]
-		public bool ExceedPositiveQualities { get; set; }
-
-	    /// <summary>
-		/// Whether or not characters can have more than 25 BP in Negative Qualities.
-		/// </summary>
-		[SavePropertyAs("exceednegativequalities")]
-		public bool ExceedNegativeQualities { get; set; }
-
-	    /// <summary>
-		/// If true, the character will not receive additional BP from Negative Qualities past the initial 25
-		/// </summary>
-		[SavePropertyAs("exceednegativequalitieslimit")]
-		public bool ExceedNegativeQualitiesLimit { get; set; }
 
         /// <summary>
         /// Whether or not Restricted items have their cost multiplied.
@@ -382,8 +346,7 @@ namespace Chummer
 		/// </summary>
 		[SavePropertyAs("dronearmorflatnumber")]
 	    public int DroneArmorMultiplier { get; set; } = 2;
-
-
+        
 	    /// <summary>
 		/// Whether or not Capacity limits should be enforced.
 		/// </summary>
@@ -441,26 +404,6 @@ namespace Chummer
 		public bool DontUseCyberlimbCalculation { get; set; }
 
 	    /// <summary>
-		/// Whether or not characters in Career Mode should pay double for qualities.
-		/// </summary>
-		//TODO: HEADER[OptionAttributes("House Rules/Qualities")]
-		[SavePropertyAs("dontdoublequalities")]
-		public bool DontDoubleQualityPurchases { get; set; }
-
-	    /// <summary>
-		/// Whether or not characters in Career Mode should pay double for removing Negative Qualities.
-		/// </summary>
-		[SavePropertyAs("dontdoublequalityrefunds")]
-		public bool DontDoubleQualityRefunds { get; set; }
-
-	    /// <summary>
-		/// Whether or not Obsolescent can be removed/upgraded in the same way as Obsolete.
-		/// </summary>
-		//TODO: Does this still exist?
-		[SavePropertyAs("allowobsolescentupgrade")]
-		public bool AllowObsolescentUpgrade { get; set; }
-
-	    /// <summary>
 		/// Whether or not Bioware Suites can be added and created.
 		/// </summary>
 		[SavePropertyAs("allowbiowaresuites")]
@@ -487,6 +430,52 @@ namespace Chummer
         private bool _blnAllowTechnomancerSchooling;
         private bool _allowFreeGrids;
         private bool _increasedImprovedAbilityMultiplier;
+
+        [OptionAttributes("OptionHeader_CharacterOptions/Display_HouseRules/SR4")]
+        /// <summary>
+        /// Whether or not the More Lethal Gameplay optional rule is enabled.
+        /// </summary>
+        //
+        [SavePropertyAs("morelethalgameplay")]
+        public bool MoreLethalGameplay { get; set; }
+
+        /// <summary>
+        /// Whether or not Obsolescent can be removed/upgraded in the same way as Obsolete.
+        /// </summary>
+        //TODO: Does this still exist?
+        [SavePropertyAs("allowobsolescentupgrade")]
+        public bool AllowObsolescentUpgrade { get; set; }
+
+        /// <summary>
+        /// Whether or not characters in Career Mode should pay double for qualities.
+        /// </summary>
+        [OptionAttributes("OptionHeader_CharacterOptions/Display_HouseRules/String_Qualities")]
+        [SavePropertyAs("dontdoublequalities")]
+        public bool DontDoubleQualityPurchases { get; set; }
+
+        /// <summary>
+        /// Whether or not characters in Career Mode should pay double for removing Negative Qualities.
+        /// </summary>
+        [SavePropertyAs("dontdoublequalityrefunds")]
+        public bool DontDoubleQualityRefunds { get; set; }
+
+        /// <summary>
+        /// Whether or not characters can have more than 25 BP in Positive Qualities.
+        /// </summary>
+        [SavePropertyAs("exceedpositivequalities")]
+        public bool ExceedPositiveQualities { get; set; }
+
+        /// <summary>
+        /// Whether or not characters can have more than 25 BP in Negative Qualities.
+        /// </summary>
+        [SavePropertyAs("exceednegativequalities")]
+        public bool ExceedNegativeQualities { get; set; }
+
+        /// <summary>
+        /// If true, the character will not receive additional BP from Negative Qualities past the initial 25
+        /// </summary>
+        [SavePropertyAs("exceednegativequalitieslimit")]
+        public bool ExceedNegativeQualitiesLimit { get; set; }
 
         [OptionAttributes("OptionHeader_CharacterOptions/Display_OptionalRules")]
         public bool DroneMods { get; set; } = false;
@@ -963,9 +952,9 @@ namespace Chummer
         public bool CompensateSkillGroupKarmaDifference { get; set; }
 
         /// <summary>
-        /// Karma cost for an Initiation = this value + (New Rating x KarmaInititation).
+        /// Karma cost for an Initiation = this value + (New Rating x KarmaInitiation).
         /// </summary>
-        public int KarmaInititationFlat { get; set; } = 10;
+        public int KarmaInitiationFlat { get; set; } = 10;
 
         /// <summary>
         /// Karma cost to purchase a Specialization for a knowledge skill = this value.
@@ -978,7 +967,7 @@ namespace Chummer
         public int KarmaMysticAdeptPowerPoint { get; set; } = 5;
 
         /// <summary>
-        /// Amount of Nueyn objtained per Karma point.
+        /// Amount of Nuyen obtained per Karma point.
         /// </summary>
         public int KarmaNuyenPer { get; set; } = 5;
 
@@ -1019,27 +1008,10 @@ namespace Chummer
         /// </summary>
         public bool FreeMartialArtSpecialization { get; set; }
 
-
-        //TODO: I think this sould be global option, as this isn't a rule but merely how things gets displayed
-        /// <summary>
-        /// Whether items that exceed the Availability Limit should be shown in Create Mode.
-        /// </summary>
-        public bool HideItemsOverAvailLimit { get; set; } = true;
-
         /// <summary>
         /// Whether or not to ignore the art requirements from street grimoire.
         /// </summary>
         public bool IgnoreArt { get; set; }
-
-
-        //TODO: I think this should be global, as this is program behavior, not character behaviour
-        /// <summary>
-        /// Whether or not numeric updowns can increment values of numericupdown controls by hovering over the control.
-        /// </summary>
-        public bool AllowHoverIncrement { get; set; }
-
-        [DisplayIgnore]
-        public NumericUpDownEx.InterceptMouseWheelMode InterceptMode => AllowHoverIncrement ? NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver : NumericUpDownEx.InterceptMouseWheelMode.WhenFocus;
 
         /// <summary>
         /// Whether or not to ignore the limit on Complex Forms in Career mode.

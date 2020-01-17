@@ -102,7 +102,7 @@ namespace Chummer
             else
             {
                 chkHideOverAvailLimit.Text = string.Format(chkHideOverAvailLimit.Text, _objCharacter.MaximumAvailability.ToString(GlobalOptions.Instance.CultureInfo));
-                chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
+                chkHideOverAvailLimit.Checked = GlobalOptions.Instance.HideItemsOverAvailLimit;
             }
 
             XPathNodeIterator objXmlCategoryList;
