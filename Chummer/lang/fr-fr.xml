@@ -1053,20 +1053,37 @@
 			<key>String_LivingPersonaGear</key>
 			<text>Équipement du Persona incarné</text>
 		</string>
-		<string>
+	  <string>
+		<key>String_MountNone</key>
+		<text>Aucun</text>
+	  </string>
+	  <string>
 			<key>String_MountTop</key>
-			<text>Au dessus du canon</text>
+			<text>Au-dessus du canon</text>
 		</string>
 		<string>
 			<key>String_MountUnder</key>
-			<text>Sous le canon</text>
+			<text>En dessous du canon</text>
 		</string>
 		<string>
 			<key>String_MountBarrel</key>
 			<text>Sur le canon</text>
 		</string>
-		<!-- Common Message Boxes -->
-		<string>
+	  <string>
+		<key>String_MountSide</key>
+		<text>Latéral</text>
+	  </string>
+	  <string>
+		<key>String_MountInternal</key>
+		<text>Interne</text>
+	  </string>
+	  <string>
+		<key>String_MountStock</key>
+		<text>Réserve</text>
+	  </string>
+	  <!-- End Region-->
+	  <!-- Region Common Message Boxes -->
+	  <string>
 			<key>Message_FileNotFound</key>
 			<text>Le fichier de sauvegarde {0} n'a pas pu être trouvé.</text>
 		</string>
@@ -1076,13 +1093,17 @@
 		</string>
 		<string>
 			<key>Message_RemoveCharacterAssociation</key>
-			<text>Êtes-vous sûr de vouloir supprimer l'association de ce personnage ?\nNote : le fichier de sauvegarde du personnage ne sera pas effaçé.</text>
+			<text>Êtes-vous sûr de vouloir supprimer l'association de ce personnage ?\nNote : le fichier de sauvegarde du personnage ne sera pas effacé.</text>
 		</string>
 		<string>
 			<key>MessageTitle_RemoveCharacterAssociation</key>
 			<text>Supprimer l'association du personnage</text>
 		</string>
-		<string>
+	  <string>
+		<key>Message_OutdatedChummerSave</key>
+		<text>Ce fichier de sauvegarde a été créé dans une version antérieure de Chummer ({0}) que votre version actuelle ({1}). \nCe fichier peut ne pas se charger correctement. Il est fortement recommandé de mettre à jour vers la dernière version de Chummer. Êtes-vous sûr de vouloir continuer à charger ce personnage ?</text>
+	  </string>
+	  <string>
 			<key>Message_IncorrectGameVersion_SR4</key>
 			<text>Ce fichier de sauvegarde doit être utilisé pour la 4e Édition de Shadowrun, cependant cette version de Chummer est conçue pour la 5e Édition. Veuillez utiliser la version de Chummer conçue pour la 4e Édition pour ouvrir ce fichier.</text>
 		</string>
@@ -1094,8 +1115,9 @@
 			<key>MessageTitle_IncorrectGameVersion</key>
 			<text>Version incompatible du jeu</text>
 		</string>
-		<!-- Attributes -->
-		<string>
+	  <!-- End Region -->
+	  <!-- Region Attributes -->
+	  <string>
 			<key>String_AttributeBODLong</key>
 			<text>Constitution</text>
 		</string>
@@ -1165,7 +1187,7 @@
 		</string>
 		<string>
 			<key>String_AttributeEDGShort</key>
-			<text>CHN</text>
+			<text>CHC</text>
 		</string>
 		<string>
 			<key>String_AttributeMAGLong</key>
@@ -1183,7 +1205,15 @@
 			<key>String_AttributeRESShort</key>
 			<text>RÉS</text>
 		</string>
-		<string>
+	  <string>
+		<key>String_AttributeDEPLong</key>
+		<text>Profondeur</text>
+	  </string>
+	  <string>
+		<key>String_AttributeDEPShort</key>
+		<text>PRO</text>
+	  </string>
+	  <string>
 			<key>String_AttributeINILong</key>
 			<text>Initiative</text>
 		</string>
@@ -1191,18 +1221,31 @@
 			<key>String_AttributeINIShort</key>
 			<text>INI</text>
 		</string>
-		<!-- Main Window -->
-		<string>
+	  <string>
+		<key>String_AttributeESSLong</key>
+		<text>Essence</text>
+	  </string>
+	  <string>
+		<key>String_AttributeESSShort</key>
+		<text>ESS</text>
+	  </string>
+	  <!-- End Region -->
+	  <!-- Region Main Window -->
+	  <string>
 			<key>Title_CreateNewCharacter</key>
-			<text>Création</text>
+			<text>Créer un nouveau perso</text>
 		</string>
-		<string>
+	  <string>
+		<key>String_CharacterRoster</key>
+		<text>Liste des persos</text>
+	  </string>
+	  <string>
 			<key>Title_CareerMode</key>
-			<text>Carrière</text>
+			<text>Mode carrière</text>
 		</string>
 		<string>
 			<key>Title_CreateMode</key>
-			<text>Mode Création</text>
+			<text>Mode création</text>
 		</string>
 		<string>
 			<key>Message_Main_RunningWild</key>
@@ -1212,11 +1255,19 @@
 			<key>MessageTitle_Main_RunningWild</key>
 			<text>Supplément requis</text>
 		</string>
-		<string>
+	  <string>
+		<key>Menu_Main_IssueTracker</key>
+		<text>Issue Tracker</text>
+	  </string>
+	  <string>
 			<key>Menu_Main_File</key>
 			<text>&amp;Fichier</text>
 		</string>
-		<string>
+	  <string>
+		<key>Menu_Main_ClearUnpinnedItems</key>
+		<text>&amp;Effacer les éléments non épinglés</text>
+	  </string>
+	  <string>
 			<key>Menu_Main_Edit</key>
 			<text>É&amp;dition</text>
 		</string>
@@ -1254,7 +1305,7 @@
 		</string>
 		<string>
 			<key>Menu_Main_DiceRoller</key>
-			<text>&amp;Lancer les dés</text>
+			<text>&amp;Lanceur de dés</text>
 		</string>
 		<string>
 			<key>Menu_Main_Options</key>
@@ -1280,16 +1331,117 @@
 			<key>Menu_Main_ChummerWiki</key>
 			<text>&amp;Wiki de Chummer (anglais)</text>
 		</string>
-		<string>
+	  <string>
+		<key>Menu_Main_ChummerDiscord</key>
+		<text>Chummer Discord</text>
+	  </string>
+	  <string>
 			<key>Menu_Main_RevisionHistory</key>
 			<text>&amp;Notes de versions (en anglais)</text>
 		</string>
-		<string>
+	  <string>
+		<key>Menu_Main_DumpshockThread</key>
+		<text>&amp;Fil Dumpshock</text>
+	  </string>
+	  <string>
 			<key>Menu_Main_About</key>
 			<text>&amp;À propos de...</text>
 		</string>
-		<!-- Create/Career Window -->
-		<string>
+	  <string>
+		<key>Menu_Main_Translator</key>
+		<text>Traducteur</text>
+	  </string>
+	  <string>
+		<key>Menu_Main_HeroLabImporter</key>
+		<text>Importer depuis Hero Lab</text>
+	  </string>
+	  <!-- End Region -->
+	  <!-- Region About -->
+	  <string>
+		<key>About_Description_Text</key>
+		<text>Générateur de personnages pour Shadowrun 5e édition\n\r\n\rMerci à Keith pour tout le travail incroyable qu'il a fait pour créer et maintenir Chummer pour la 4e édition. Sans lui, rien de tout cela ne serait possible. Merci beaucoup à tous les membres de la communauté Dumpshock d'avoir soutenu ce projet avec tous leurs précieux commentaires, leurs bonnes idées, leurs rapports de problèmes, et avoir souligné mes erreurs stupides. Un grand merci aussi à tous ceux qui ont donné de leur temps pour traduire Chummer dans d'autres langues !</text>
+	  </string>
+	  <string>
+		<key>About_Company_Text</key>
+		<text>Version originale de Chummer pour la 4e édition par Keith Rudolph.\n\rChummer5 actualisé par Adam Schmidt : srchummer5@gmail.com\n\rChummer5a actualisé par Anonymous fa/tg/uy : chummer5isalive@gmail.com\n\rAutres actualisations 5a par Johannes Elgaard : joha4270@gmail.com</text>
+	  </string>
+	  <string>
+		<key>About_Copyright_Text</key>
+		<text>Copyright © Keith Rudolph 2013</text>
+	  </string>
+	  <string>
+		<key>About_Label_Contributors</key>
+		<text>Merci à tous les contributeurs de GitHub !</text>
+	  </string>
+	  <string>
+		<key>About_Label_Disclaimer</key>
+		<text>Mentions légales</text>
+	  </string>
+	  <string>
+		<key>About_Label_Disclaimer_Text</key>
+		<text>Chummer n'est pas du tout officiel et n'est en aucun cas endossé par 'The Topps Company, Inc' ou'Catalyst Game Labs'. 'The Topps Company, Inc.' a la propriété exclusive des noms, logos, illustrations, marques, photographies, sons, audio, vidéo et/ou tout matériel exclusif utilisé en rapport avec le jeu Shadowrun.\n\r\n\rSauf accord écrit, le développeur fournit l'œuvre (et chaque contributeur fournit ses contributions) " EN L'ÉTAT ", SANS GARANTIES OU CONDITIONS D'AUCUNE NATURE, expresse ou implicite, y compris, sans limitation, toute garantie ou condition de TITRE, de NON-IFFRAGENCE, de COMMERCIABILITÉ, ou d'AJUSTICULES POUR UN OBJET PARTICULIER.\n\r\n\rEn utilisant Chummer, vous acceptez d'être légalement propriétaire d'une copie du livre de règles Shadowrun et de tout livre source dont vous choisissez d'utiliser les informations. Vous êtes seul responsable de déterminer la pertinence d'utiliser ou de redistribuer le contenu que vous créez et vous assumez tous les risques associés à l'exercice de vos permissions en vertu de cette licence.\n\r\n\rChummer utilise les images de 'Silk icon set' réalisé par Mark James, disponible sur www.famfamfam.com.</text>
+	  </string>
+	  <!-- End Region -->
+	  <!-- Region Character Roster -->
+	  <string>
+		<key>Label_Roster_File_Name</key>
+		<text>Nom de fichier :</text>
+	  </string>
+	  <string>
+		<key>Label_Roster_Settings_File</key>
+		<text>Fichier des paramètres :</text>
+	  </string>
+	  <string>
+		<key>Tab_Roster_Description</key>
+		<text>Description</text>
+	  </string>
+	  <string>
+		<key>Tab_Roster_Concept</key>
+		<text>Concept</text>
+	  </string>
+	  <string>
+		<key>Tab_Roster_Background</key>
+		<text>Contexte</text>
+	  </string>
+	  <string>
+		<key>Tab_Roster_CharacterNotes</key>
+		<text>Notes de personnage</text>
+	  </string>
+	  <string>
+		<key>Tab_Roster_GameNotes</key>
+		<text>Notes de jeu</text>
+	  </string>
+	  <string>
+		<key>Treenode_Roster_RecentCharacters</key>
+		<text>Personnages récents</text>
+	  </string>
+	  <string>
+		<key>Treenode_Roster_WatchFolder</key>
+		<text>Dossier monitoré</text>
+	  </string>
+	  <string>
+		<key>Treenode_Roster_FavoriteCharacters</key>
+		<text>Personnages préférés</text>
+	  </string>
+	  <string>
+		<key>Menu_Delete</key>
+		<text>&amp;Effacer de cette liste</text>
+	  </string>
+	  <string>
+		<key>Menu_Sort</key>
+		<text>&amp;Trier cette liste par ordre alphabétique</text>
+	  </string>
+	  <string>
+		<key>Menu_ToggleFavorite</key>
+		<text>&amp;Changer le favori</text>
+	  </string>
+	  <string>
+		<key>Menu_Close</key>
+		<text>&amp;Fermer ce personnage</text>
+	  </string>
+	  <!-- End Region -->
+	  <!-- Region Create/Career Window -->
+	  <string>
 			<key>Menu_Special</key>
 			<text>&amp;Spécial</text>
 		</string>
@@ -1301,7 +1453,11 @@
 			<key>Menu_FileSaveAs</key>
 			<text>&amp;Sauvegarder sous...</text>
 		</string>
-		<string>
+	  <string>
+		<key>Menu_FileSaveAsCreated</key>
+		<text>Sauvegarder comme &amp;créé</text>
+	  </string>
+	  <string>
 			<key>Menu_FileExport</key>
 			<text>Exporter</text>
 		</string>
@@ -1309,39 +1465,51 @@
 			<key>Menu_FilePrint</key>
 			<text>&amp;Imprimer</text>
 		</string>
-		<string>
+	  <string>
+		<key>Menu_FilePrintPreview</key>
+		<text>&amp;Aperçu avant impression</text>
+	  </string>
+	  <string>
 			<key>Menu_FileClose</key>
 			<text>&amp;Fermer</text>
 		</string>
 		<string>
 			<key>Menu_SpecialAddCyberwareSuite</key>
-			<text>Ajouter une &amp;suite cybernétique...</text>
+			<text>Ajouter une suite &amp;cybernétique</text>
 		</string>
 		<string>
 			<key>Menu_SpecialAddBiowareSuite</key>
-			<text>Ajouter une suite bioware...</text>
+			<text>Ajouter une suite &amp;bioware</text>
 		</string>
 		<string>
 			<key>Menu_SpecialCreateCyberwareSuite</key>
-			<text>&amp;Créer une suite cybernétique...</text>
+			<text>Créer une suite cybernétique</text>
 		</string>
 		<string>
 			<key>Menu_SpecialCreateBiowareSuite</key>
-			<text>Créer une suite bioware...</text>
+			<text>Créer une suite bioware</text>
 		</string>
 		<string>
 			<key>Menu_SpecialAddPACKSKit</key>
-			<text>Ajouter un &amp;kit PACKS...</text>
+			<text>Ajouter un kit &amp;PACKS</text>
 		</string>
 		<string>
 			<key>Menu_SpecialCreatePACKSKit</key>
-			<text>C&amp;réer un kit PACKS...</text>
+			<text>Créer un kit PACKS</text>
 		</string>
-		<string>
+	  <string>
+		<key>Menu_SpecialChangePriorities</key>
+		<text>Changer de &amp;priorité</text>
+	  </string>
+	  <string>
 			<key>Menu_SpecialChangeMetatype</key>
-			<text>Changer de &amp;Métatype</text>
+			<text>Changer de &amp;métatype</text>
 		</string>
-		<string>
+	  <string>
+		<key>Menu_SpecialChangeOptions</key>
+		<text>Changer le fichier d'&amp;options</text>
+	  </string>
+	  <string>
 			<key>Menu_SpecialConvertToMutantCritter</key>
 			<text>Convertir en créature mutante</text>
 		</string>
@@ -1353,13 +1521,17 @@
 			<key>Menu_SpecialConverToCyberzombie</key>
 			<text>Convertir en cyberzombie</text>
 		</string>
-		<string>
+	  <string>
+		<key>String_MutantCritter</key>
+		<text>Animal mutant</text>
+	  </string>
+	  <string>
 			<key>Menu_SpecialReduceAttribute</key>
 			<text>Réduire l'attribut</text>
 		</string>
 		<string>
 			<key>Menu_SpecialCloningMachine</key>
-			<text>Cloner ce personnage...</text>
+			<text>Cloner ce personnage</text>
 		</string>
 		<string>
 			<key>Menu_SpecialReapplyImprovements</key>
@@ -1367,31 +1539,35 @@
 		</string>
 		<string>
 			<key>Menu_SpecialPossessLiving</key>
-			<text>Posséder/Habiter un réceptacle vivant</text>
+			<text>Posséder / habiter un réceptacle vivant</text>
 		</string>
 		<string>
 			<key>Menu_SpecialPossessInanimate</key>
-			<text>Posséder/Habiter un réceptacle inanimé</text>
+			<text>Posséder / habiter un réceptacle inanimé</text>
 		</string>
 		<string>
 			<key>Menu_SpecialBPAvailLimit</key>
-			<text>Modifier la limite de PC/Disponibilité</text>
+			<text>Modifier la limite de PC / disponibilité</text>
 		</string>
-		<string>
+	  <string>
+		<key>Menu_SpecialConvertToFreeSprite</key>
+		<text>Convertir en esprit libre</text>
+	  </string>
+	  <string>
 			<key>Menu_AddAsPlugin</key>
 			<text>&amp;Installer une extension</text>
 		</string>
 		<string>
 			<key>Menu_AddNaturalWeapon</key>
-			<text>Créer arme Naturelle</text>
+			<text>Créer arme naturelle</text>
 		</string>
 		<string>
 			<key>Menu_AddAccessory</key>
-			<text>Ajouter un &amp;accessoire...</text>
+			<text>Ajouter un &amp;accessoire</text>
 		</string>
 		<string>
 			<key>Menu_AddModification</key>
-			<text>Ajouter une &amp;modification...</text>
+			<text>Ajouter une &amp;modification</text>
 		</string>
 		<string>
 			<key>Menu_AddUnderbarrelWeapon</key>
@@ -1399,95 +1575,479 @@
 		</string>
 		<string>
 			<key>Menu_NameWeapon</key>
-			<text>Nommer ou renommer cette arme</text>
+			<text>Nommer cette arme</text>
 		</string>
 		<string>
 			<key>Menu_NameVehicle</key>
-			<text>Nommer ou renommer ce véhicle</text>
+			<text>Nommer ce véhicle</text>
 		</string>
 		<string>
 			<key>Menu_NameArmor</key>
-			<text>Nommer ou renommer cette armure</text>
+			<text>Nommer cette armure</text>
 		</string>
-		<string>
-			<key>Menu_EditLifestyle</key>
-			<text>Modifier ce niveau de vie</text>
-		</string>
-		<string>
-			<key>Menu_NameLifestyle</key>
-			<text>Nommer ou renommer ce niveau de vie</text>
-		</string>
-		<string>
-			<key>Menu_AddArmorMod</key>
-			<text>Ajouter une &amp;modification...</text>
-		</string>
-		<string>
-			<key>Menu_AddGear</key>
-			<text>Ajouter une &amp;amélioration...</text>
-		</string>
-		<string>
-			<key>Menu_AddNexus</key>
-			<text>Ajouter un &amp;nexus...</text>
-		</string>
-		<string>
-			<key>Menu_AddWeapon</key>
-			<text>Ajouter une &amp;arme...</text>
-		</string>
-		<string>
-			<key>Menu_AddAdvantage</key>
-			<text>&amp;Ajouter un trait...</text>
-		</string>
-		<string>
-			<key>Menu_Notes</key>
-			<text>Notes</text>
-		</string>
-		<string>
-			<key>Menu_Gear</key>
-			<text>&amp;Équipement</text>
-		</string>
-		<string>
-			<key>Menu_Weapons</key>
-			<text>&amp;Armes</text>
-		</string>
-		<string>
-			<key>Menu_AdvancedLifestyle</key>
-			<text>&amp;Niveau de vie avançé...</text>
-		</string>
-		<string>
-			<key>Menu_BoltHole</key>
-			<text>&amp;Refuge</text>
-		</string>
-		<string>
-			<key>Menu_Safehouse</key>
-			<text>&amp;Planque</text>
-		</string>
-		<string>
-			<key>Menu_EditAdvancedLifestyle</key>
-			<text>&amp;Modifier le niveau de vie avancé</text>
-		</string>
-		<string>
-			<key>Menu_AddOption</key>
-			<text>&amp;Ajouter une option...</text>
-		</string>
-		<string>
-			<key>Menu_SellItem</key>
-			<text>&amp;Vendre l'article</text>
-		</string>
-		<string>
-			<key>Menu_UndoExpense</key>
-			<text>Effacer l'entrée</text>
-		</string>
-		<string>
-			<key>Menu_AddCyberwarePlugin</key>
-			<text>Installer une extension cyberware</text>
-		</string>
-		<string>
+	  <string>
+		<key>Menu_NameLifestyle</key>
+		<text>Nommer ce niveau de vie</text>
+	  </string>
+	  <string>
+		<key>Menu_NameGear</key>
+		<text>Nommer l'équipement</text>
+	  </string>
+	  <string>
+		<key>Menu_AddArmorMod</key>
+		<text>Ajouter une &amp;modification d'armure</text>
+	  </string>
+	  <string>
+		<key>Menu_AddGear</key>
+		<text>Ajouter un &amp;équipement</text>
+	  </string>
+	  <string>
+		<key>Menu_AddNexus</key>
+		<text>Ajouter un &amp;nexus</text>
+	  </string>
+	  <string>
+		<key>Menu_AddWeapon</key>
+		<text>Ajouter une &amp;arme</text>
+	  </string>
+	  <string>
+		<key>Menu_AddAdvantage</key>
+		<text>&amp;Ajouter un trait</text>
+	  </string>
+	  <string>
+		<key>Menu_Notes</key>
+		<text>&amp;Notes</text>
+	  </string>
+	  <string>
+		<key>Menu_Gear</key>
+		<text>&amp;Équipement</text>
+	  </string>
+	  <string>
+		<key>Menu_Weapons</key>
+		<text>&amp;Armes</text>
+	  </string>
+	  <string>
+		<key>Menu_AdvancedLifestyle</key>
+		<text>&amp;Niveau de vie avancé</text>
+	  </string>
+	  <string>
+		<key>Menu_BoltHole</key>
+		<text>&amp;Refuge</text>
+	  </string>
+	  <string>
+		<key>Menu_Safehouse</key>
+		<text>&amp;Planque</text>
+	  </string>
+	  <string>
+		<key>Menu_EditAdvancedLifestyle</key>
+		<text>&amp;Modifier le niveau de vie avancé</text>
+	  </string>
+	  <string>
+		<key>Menu_EditLifestyle</key>
+		<text>Modifier le niveau de vie</text>
+	  </string>
+	  <string>
+		<key>Menu_AddOption</key>
+		<text>&amp;Ajouter une option</text>
+	  </string>
+	  <string>
+		<key>Menu_SellItem</key>
+		<text>&amp;Vendre l'article</text>
+	  </string>
+	  <string>
+		<key>Menu_UndoExpense</key>
+		<text>Effacer l'entrée</text>
+	  </string>
+	  <string>
+		<key>Menu_AddCyberwarePlugin</key>
+		<text>Installer une extension cyberware</text>
+	  </string>
+	  <string>
+		<key>Menu_RenameLocation</key>
+		<text>&amp;Renommer l'emplacement</text>
+	  </string>
+	  <string>
+		<key>Menu_CreateSpell</key>
+		<text>&amp;Créer un sort</text>
+	  </string>
+	  <string>
+		<key>Menu_EditCopy</key>
+		<text>Co&amp;pier</text>
+	  </string>
+	  <string>
+		<key>Menu_EditPaste</key>
+		<text>Co&amp;ller</text>
+	  </string>
+	  <string>
+		<key>Menu_AddFromFile</key>
+		<text>&amp;Ajouter depuis un fichier</text>
+	  </string>
+	  <string>
+		<key>Tab_Common</key>
+		<text>Commun</text>
+	  </string>
+	  <string>
+		<key>Tab_Skills</key>
+		<text>Compétences</text>
+	  </string>
+	  <string>
+		<key>Tab_MartialArts</key>
+		<text>Arts martiaux</text>
+	  </string>
+	  <string>
+		<key>Tab_Magician</key>
+		<text>Sorts et esprits</text>
+	  </string>
+	  <string>
+		<key>Tab_Adept</key>
+		<text>Pouvoirs d'adepte</text>
+	  </string>
+	  <string>
+		<key>Tab_Technomancer</key>
+		<text>Formes complexes et sprites</text>
+	  </string>
+	  <string>
+		<key>Tab_Critter</key>
+		<text>Pouvoirs de créatures</text>
+	  </string>
+	  <string>
+		<key>Tab_Initiation</key>
+		<text>Initiation</text>
+	  </string>
+	  <string>
+		<key>Tab_Submersion</key>
+		<text>Submersion</text>
+	  </string>
+	  <string>
+		<key>Tab_Cyberware</key>
+		<text>Bioware et cyberware</text>
+	  </string>
+	  <string>
+		<key>Tab_StreeGear</key>
+		<text>Équipement</text>
+	  </string>
+	  <string>
+		<key>Tab_Vehicles</key>
+		<text>Véhicules et drones</text>
+	  </string>
+	  <string>
+		<key>Tab_CharacterInfo</key>
+		<text>Informations</text>
+	  </string>
+	  <string>
+		<key>Tab_Karma</key>
+		<text>Karma et Nuyen</text>
+	  </string>
+	  <string>
+		<key>Tab_Improvements</key>
+		<text>Améliorations</text>
+	  </string>
+	  <string>
+		<key>Tab_Notes</key>
+		<text>Notes</text>
+	  </string>
+	  <string>
+		<key>Tab_Calendar</key>
+		<text>Calendrier</text>
+	  </string>
+	  <string>
+		<key>Tab_BPSummary</key>
+		<text>Distribution des points de création</text>
+	  </string>
+	  <string>
+		<key>Tab_BPSummary_Karma</key>
+		<text>Distribution des points de Karma</text>
+	  </string>
+	  <string>
+		<key>Tab_OtherInfo</key>
+		<text>Autres informations</text>
+	  </string>
+	  <string>
+		<key>Tab_Lifestyle</key>
+		<text>Niveau de vie</text>
+	  </string>
+	  <string>
+		<key>Tab_Armor</key>
+		<text>Vêtements et armures</text>
+	  </string>
+	  <string>
+		<key>Tab_Weapons</key>
+		<text>Armes</text>
+	  </string>
+	  <string>
+		<key>Tab_Gear</key>
+		<text>Équipement</text>
+	  </string>
+	  <string>
+		<key>Tab_Pets</key>
+		<text>Animaux</text>
+	  </string>
+	  <string>
+		<key>Tab_ConditionMonitor</key>
+		<text>Moniteur de condition</text>
+	  </string>
+	  <string>
+		<key>Tab_PhysicalConditionMonitor</key>
+		<text>Moniteur de condition physique</text>
+	  </string>
+	  <string>
+		<key>Tab_MatrixConditionMonitor</key>
+		<text>Moniteur de condition matriciel</text>
+	  </string>
+	  <string>
+		<key>MessageTitle_DeleteGrade</key>
+		<text>Impossible d'effacer</text>
+	  </string>
+	  <string>
+		<key>Message_DeleteGrade</key>
+		<text>Vous devez d'abord supprimer le grade le plus élevé.</text>
+	  </string>
+	  <string>
+		<key>Message_UnsavedChanges</key>
+		<text>Des changements non sauvegardés existent sur le personnage "{0}". Voulez-vous les sauvegarder avant de fermer cette fenêtre ?</text>
+	  </string>
+	  <string>
+		<key>MessageTitle_UnsavedChanges</key>
+		<text>Changements non sauvegardés</text>
+	  </string>
+	  <string>
+		<key>Message_CyberzombieRequirements</key>
+		<text>Ce personnage ne satisfait pas les conditions préalables pour devenir un cyberzombie :</text>
+	  </string>
+	  <string>
+		<key>Message_CyberzombieRequirementsEssence</key>
+		<text>Le personnage doit avoir une Essence négative.</text>
+	  </string>
+	  <string>
+		<key>Message_CyberzombieRequirementsImprovement</key>
+		<text>Il faut que vous ayez une amélioration qui vous permette de devenir un cyberzombie.</text>
+	  </string>
+	  <string>
+		<key>MessageTitle_CyberzombieRequirements</key>
+		<text>Prérequis à la transformation en cyberzombie</text>
+	  </string>
+	  <string>
+		<key>MessageTitle_NoValidWeaponMount</key>
+		<text>Aucun support d'arme valide trouvé</text>
+	  </string>
+	  <string>
+		<key>Message_NoValidWeaponMount</key>
+		<text>Le véhicule sélectionné n'a pas de supports d'armes valides auxquels ajouter cette arme.</text>
+	  </string>
+	  <string>
+		<key>Message_CyberzombieConfirm</key>
+		<text>Êtes-vous sûr de vouloir transformer ce personnage en cyberzombie ?</text>
+	  </string>
+	  <string>
+		<key>MessageTitle_CyberzombieConfirm</key>
+		<text>Convertir en cyberzombie</text>
+	  </string>
+	  <string>
+		<key>String_Cyberzombie</key>
+		<text>Cyberzombie</text>
+	  </string>
+	  <string>
+		<key>String_CyberzombieWILText</key>
+		<text>Test de Volonté</text>
+	  </string>
+	  <string>
+		<key>String_CyberzombieWILDescription</key>
+		<text>Lancez le nombre de dés indiqué et saisissez le nombre de succès obtenus pour déterminer la valeur totale des défauts que vous devrez prendre en tant que cyberzombie.</text>
+	  </string>
+	  <string>
+		<key>Message_EnemyLimit</key>
+		<text>Vous ne pouvez pas gagner plus de {0} au travers d'ennemis.</text>
+	  </string>
+	  <string>
+		<key>MessageTitle_EnemyLimit</key>
+		<text>Ennemis</text>
+	  </string>
+	  <string>
+		<key>Menu_ValidCharacter</key>
+		<text>Vérifier la validité des personnages</text>
+	  </string>
+	  <string>
+		<key>Message_ValidCharacter</key>
+		<text>Le personnage est valide et peut passer en mode carrière.</text>
+	  </string>
+	  <string>
+		<key>MessageTitle_ValidCharacter</key>
+		<text>Confirmation de la validité du personnage</text>
+	  </string>
+	  <string>
+		<key>Message_NegativeQualityLimit</key>
+		<text>Vous ne pouvez pas gagner plus de {0} au travers de défauts.</text>
+	  </string>
+	  <string>
+		<key>MessageTitle_NegativeQualityLimit</key>
+		<text>Défauts</text>
+	  </string>
+	  <string>
+		<key>MessageTitle_Delete</key>
+		<text>Supprimer l'entrée</text>
+	  </string>
+	  <string>
+		<key>Message_DeleteContact</key>
+		<text>Êtes-vous sûr de vouloir supprimer ce contact ?</text>
+	  </string>
+	  <string>
+		<key>MessageTitle_NoContactFound</key>
+		<text>Aucun contact disponible trouvé</text>
+	  </string>
+	  <string>
+		<key>Message_NoContactFound</key>
+		<text>Pas de contacts sélectionnables trouvés. Veuillez créer un contact et réessayer.</text>
+	  </string>
+	  <string>
+		<key>Message_DeleteEnemy</key>
+		<text>Êtes-vous sûr de vouloir supprimer cet ennemi ?</text>
+	  </string>
+	  <string>
+		<key>Message_DeleteSpirit</key>
+		<text>Êtes-vous sûr de vouloir supprimer cet esprit ?</text>
+	  </string>
+	  <string>
+		<key>Message_DeleteSprite</key>
+		<text>Êtes-vous sûr de vouloir supprimer ce sprite ?</text>
+	  </string>
+	  <string>
+		<key>Message_DeletePower</key>
+		<text>Êtes-vous sûr de vouloir supprimer ce pouvoir ?</text>
+	  </string>
+	  <string>
+		<key>Message_DeleteSpell</key>
+		<text>Êtes-vous sûr de vouloir supprimer ce sort ?</text>
+	  </string>
+	  <string>
+		<key>Message_DeleteCyberware</key>
+		<text>Êtes-vous sûr de vouloir supprimer cette pièce de cyberware ?</text>
+	  </string>
+	  <string>
+		<key>Message_DeleteBioware</key>
+		<text>Êtes-vous sûr de vouloir supprimer cette pièce de bioware ?</text>
+	  </string>
+	  <string>
+		<key>Message_DeleteArmor</key>
+		<text>Êtes-vous sûr de vouloir supprimer cette armure ou cette armure / extension ?</text>
+	  </string>
+	  <string>
+		<key>Message_DeleteArmorLocation</key>
+		<text>Êtes-vous sûr de vouloir supprimer ce groupe d'équipement ? Toutes les armures dans ce groupe vont être déplacées vers les Armures du personnage.</text>
+	  </string>
+	  <string>
+		<key>Message_DeleteWeapon</key>
+		<text>Êtes-vous sûr de vouloir supprimer cette arme ou cette arme / extension ?</text>
+	  </string>
+	  <string>
+		<key>Message_DeleteWeaponLocation</key>
+		<text>Êtes-vous sûr de vouloir supprimer ce groupe d'équipement ? Toutes les armes dans ce groupe vont être déplacées vers les armes sélectionnées.</text>
+	  </string>
+	  <string>
+		<key>Message_DeleteWeaponMount</key>
+		<text>Êtes-vous sûr de vouloir effacer cette monture d'arme ?</text>
+	  </string>
+	  <string>
+		<key>Message_DeleteLifestyle</key>
+		<text>Êtes-vous sûr de vouloir supprimer ce niveau de vie ?</text>
+	  </string>
+	  <string>
+		<key>Message_DeleteGear</key>
+		<text>Êtes-vous sûr de vouloir supprimer cet équipement ?</text>
+	  </string>
+	  <string>
+		<key>Message_DeleteGearLocation</key>
+		<text>Êtes-vous sûr de vouloir supprimer ce groupe d'équipement ? Toutes les pièces d'équipement placées dans ce groupe seront déplacées dans la liste principale d'équipement.</text>
+	  </string>
+	  <string>
+		<key>Message_DeleteVehicleLocationBase</key>
+		<text>Êtes-vous sûr de vouloir effacer cet emplacement ? Tous les véhicules de cet emplacement seront déplacés dans le conteneur du véhicule sélectionné.</text>
+	  </string>
+	  <string>
+		<key>Message_DeleteVehicle</key>
+		<text>Êtes-vous sûr de vouloir supprimer ce véhicule ou cette extension de véhicule ?</text>
+	  </string>
+	  <string>
+		<key>Message_DeleteVehicleLocation</key>
+		<text>Êtes-vous sûr de vouloir supprimer ce groupe d'équipement ? Tous les équipements dans ce groupe vont être déplacés vers le véhicule lui-même.</text>
+	  </string>
+	  <string>
+		<key>Message_DeleteLimitModifier</key>
+		<text>Êtes-vous sûr de vouloir supprimer cette limite modifiée ?</text>
+	  </string>
+	  <string>
+		<key>Message_DeleteMartialArt</key>
+		<text>Êtes-vous sûr de vouloir supprimer cet art martial ou cette manoeuvre ?</text>
+	  </string>
+	  <string>
+		<key>Message_DeleteMetamagic</key>
+		<text>Êtes-vous sûr de vouloir supprimer cette métamagie ?</text>
+	  </string>
+	  <string>
+		<key>Message_DeleteEcho</key>
+		<text>Êtes-vous sûr de vouloir supprimer cet écho ?</text>
+	  </string>
+	  <string>
+		<key>Message_DeleteInitiateGrade</key>
+		<text>Êtes-vous sûr de vouloir effacer ce grade d'Initiation et tous les bonus associés ?</text>
+	  </string>
+	  <string>
+		<key>Message_DeleteSubmersionGrade</key>
+		<text>Êtes-vous sûr de vouloir effacer ce grade de Submersion et tous les bonus associés ?</text>
+	  </string>
+	  <string>
+		<key>Message_DeleteArt</key>
+		<text>Êtes-vous sûr de vouloir effacer cet art ?</text>
+	  </string>
+	  <string>
+		<key>Message_DeleteEnhancement</key>
+		<text>Êtes-vous sûr de vouloir effacer cette amélioration ?</text>
+	  </string>
+	  <string>
+		<key>Message_DeleteCritterPower</key>
+		<text>Êtes-vous sûr de vouloir supprimer ce pouvoir de créature ?</text>
+	  </string>
+	  <string>
+		<key>Message_DeleteComplexForm</key>
+		<text>Êtes-vous sûr de vouloir supprimer cette forme complexe ?</text>
+	  </string>
+	  <string>
+		<key>Message_DeleteComplexFormOption</key>
+		<text>Êtes-vous sûr de vouloir supprimer cette option de forme complexe ?</text>
+	  </string>
+	  <string>
+		<key>Message_DeleteQuality</key>
+		<text>Êtes-vous sûr de vouloir supprimer ce trait ?</text>
+	  </string>
+	  <string>
+		<key>Message_LowerQualityLevel</key>
+		<text>Êtes-vous sûr de vouloir effacer un niveau de ce trait ?</text>
+	  </string>
+	  <string>
+		<key>Message_DeleteMetatypeQuality</key>
+		<text>Êtes-vous sûr de vouloir supprimer ce trait provenant de votre métatype pour {0} points de Karma ?</text>
+	  </string>
+	  <string>
+		<key>Message_LowerMetatypeQualityLevel</key>
+		<text>Êtes-vous sûr de vouloir effacer un niveau de ce trait provenant de votr metatype pour {0} points de Karma ?</text>
+	  </string>
+	  <string>
+		<key>Message_DeleteKnowledgeSkill</key>
+		<text>Êtes-vous sûr de vouloir supprimer cette compétence de connaissance ?</text>
+	  </string>
+	  <string>
+		<key>Message_DeleteExoticSkill</key>
+		<text>Êtes-vous sûr de vouloir effacer cette compétence exotique ?</text>
+	  </string>
+	  <string>
+		<key>Message_DeletePositiveQualityCareer</key>
+		<text>Êtes-vous sûr de vouloir supprimer cet avantage ? Vous ne recevrez aucun Karma pour l'avoir retiré.</text>
+	  </string>
+	  <string>
+		<key>Message_DeleteDrug</key>
+		<text>Êtes-vous sûr de vouloir supprimer cette recette de drogue ?</text>
+	  </string>
+	  <string>
 			<key>Button_AddBundle</key>
 			<text>Ajouter un groupe d'équipement</text>
-		</string>
-		<string>
-			<key>Menu_RenameLocation</key>
-			<text>&amp;Renommer le groupe d'équipement</text>
 		</string>
 		<string>
 			<key>Button_EquipAll</key>
@@ -1496,286 +2056,6 @@
 		<string>
 			<key>Button_UnEquipAll</key>
 			<text>Déséquiper tout</text>
-		</string>
-		<string>
-			<key>Menu_EditCopy</key>
-			<text>Copier</text>
-		</string>
-		<string>
-			<key>Menu_EditPaste</key>
-			<text>Coller</text>
-		</string>
-		<string>
-			<key>Menu_CreateSpell</key>
-			<text>&amp;Créer un sort</text>
-		</string>
-		<string>
-			<key>Tab_Common</key>
-			<text>Commun</text>
-		</string>
-		<string>
-			<key>Tab_Skills</key>
-			<text>Compétences</text>
-		</string>
-		<string>
-			<key>Tab_MartialArts</key>
-			<text>Arts martiaux</text>
-		</string>
-		<string>
-			<key>Tab_Magician</key>
-			<text>Sorts et esprits</text>
-		</string>
-		<string>
-			<key>Tab_Adept</key>
-			<text>Pouvoirs d'adepte</text>
-		</string>
-		<string>
-			<key>Tab_Technomancer</key>
-			<text>Formes complexes et sprites</text>
-		</string>
-		<string>
-			<key>Tab_Critter</key>
-			<text>Pouvoirs de créatures</text>
-		</string>
-		<string>
-			<key>Tab_Initiation</key>
-			<text>Initiation</text>
-		</string>
-		<string>
-			<key>Tab_Submersion</key>
-			<text>Submersion</text>
-		</string>
-		<string>
-			<key>Tab_Cyberware</key>
-			<text>Bioware et cyberware</text>
-		</string>
-		<string>
-			<key>Tab_StreeGear</key>
-			<text>Équipement</text>
-		</string>
-		<string>
-			<key>Tab_Vehicles</key>
-			<text>Véhicules et drones</text>
-		</string>
-		<string>
-			<key>Tab_CharacterInfo</key>
-			<text>Informations</text>
-		</string>
-		<string>
-			<key>Tab_Karma</key>
-			<text>Karma et Nuyen</text>
-		</string>
-		<string>
-			<key>Tab_Improvements</key>
-			<text>Améliorations</text>
-		</string>
-		<string>
-			<key>Tab_Notes</key>
-			<text>Notes</text>
-		</string>
-		<string>
-			<key>Tab_Calendar</key>
-			<text>Calendrier</text>
-		</string>
-		<string>
-			<key>Tab_BPSummary</key>
-			<text>Distribution des Points de création</text>
-		</string>
-		<string>
-			<key>Tab_BPSummary_Karma</key>
-			<text>Distribution des points de Karma</text>
-		</string>
-		<string>
-			<key>Tab_OtherInfo</key>
-			<text>Autres informations</text>
-		</string>
-		<string>
-			<key>Tab_Lifestyle</key>
-			<text>Niveau de vie</text>
-		</string>
-		<string>
-			<key>Tab_Armor</key>
-			<text>Armures</text>
-		</string>
-		<string>
-			<key>Tab_Weapons</key>
-			<text>Armes</text>
-		</string>
-		<string>
-			<key>Tab_Gear</key>
-			<text>Équipement</text>
-		</string>
-		<string>
-			<key>Tab_Pets</key>
-			<text>Animaux</text>
-		</string>
-		<string>
-			<key>Tab_ConditionMonitor</key>
-			<text>Moniteur de condition</text>
-		</string>
-		<string>
-			<key>Message_UnsavedChanges</key>
-			<text>Des changements non sauvegardés existent sur le personnage "{0}". Voulez-vous les sauvegarder avant de fermer cette fenêtre ?</text>
-		</string>
-		<string>
-			<key>MessageTitle_UnsavedChanges</key>
-			<text>Changements non sauvegardés</text>
-		</string>
-		<string>
-			<key>Message_CyberzombieRequirements</key>
-			<text>Ce personnage ne satisfait pas les conditions préalables pour devenir un cyberzombie :</text>
-		</string>
-		<string>
-			<key>Message_CyberzombieRequirementsEssence</key>
-			<text>Le personnage doit avoir une Essence négative.</text>
-		</string>
-		<string>
-			<key>MessageTitle_CyberzombieRequirements</key>
-			<text>Prérequis à la transformation en cyberzombie</text>
-		</string>
-		<string>
-			<key>Message_CyberzombieConfirm</key>
-			<text>Êtes-vous sûr de vouloir transformer ce personnage en cyberzombie ?</text>
-		</string>
-		<string>
-			<key>MessageTitle_CyberzombieConfirm</key>
-			<text>Convertir en cyberzombie</text>
-		</string>
-		<string>
-			<key>String_CyberzombieWILText</key>
-			<text>Test de Volonté</text>
-		</string>
-		<string>
-			<key>String_CyberzombieWILDescription</key>
-			<text>Lancez le nombre de dés indiqué et saisissez le nombre de succès obtenus pour déterminer la valeur totale des défauts que vous devrez prendre en tant que cyberzombie.</text>
-		</string>
-		<string>
-			<key>Message_EnemyLimit</key>
-			<text>Vous ne pouvez pas gagner plus de {0} au travers d'ennemis.</text>
-		</string>
-		<string>
-			<key>MessageTitle_EnemyLimit</key>
-			<text>Ennemis</text>
-		</string>
-		<string>
-			<key>Message_NegativeQualityLimit</key>
-			<text>Vous ne pouvez pas gagner plus de {0} au travers de défauts.</text>
-		</string>
-		<string>
-			<key>MessageTitle_NegativeQualityLimit</key>
-			<text>Défauts</text>
-		</string>
-		<string>
-			<key>MessageTitle_Delete</key>
-			<text>Supprimer l'entrée</text>
-		</string>
-		<string>
-			<key>Message_DeleteContact</key>
-			<text>Êtes-vous sûr de vouloir supprimer ce contact ?</text>
-		</string>
-		<string>
-			<key>Message_DeleteEnemy</key>
-			<text>Êtes-vous sûr de vouloir supprimer cet ennemi ?</text>
-		</string>
-		<string>
-			<key>Message_DeleteSpirit</key>
-			<text>Êtes-vous sûr de vouloir supprimer cet esprit ?</text>
-		</string>
-		<string>
-			<key>Message_DeleteSprite</key>
-			<text>Êtes-vous sûr de vouloir supprimer ce sprite ?</text>
-		</string>
-		<string>
-			<key>Message_DeletePower</key>
-			<text>Êtes-vous sûr de vouloir supprimer ce pouvoir ?</text>
-		</string>
-		<string>
-			<key>Message_DeleteSpell</key>
-			<text>Êtes-vous sûr de vouloir supprimer ce sort ?</text>
-		</string>
-		<string>
-			<key>Message_DeleteCyberware</key>
-			<text>Êtes-vous sûr de vouloir supprimer cette pièce de cyberware ?</text>
-		</string>
-		<string>
-			<key>Message_DeleteBioware</key>
-			<text>Êtes-vous sûr de vouloir supprimer cette pièce de bioware ?</text>
-		</string>
-		<string>
-			<key>Message_DeleteArmor</key>
-			<text>Êtes-vous sûr de vouloir supprimer cette armure ou cette extension d'armure ?</text>
-		</string>
-		<string>
-			<key>Message_DeleteArmorLocation</key>
-			<text>Êtes-vous sûr de vouloir supprimer ce groupe d'équipement ? Toutes les armures dans ce groupe vont être déplacées vers les Armures du personnage.</text>
-		</string>
-		<string>
-			<key>Message_DeleteWeapon</key>
-			<text>Êtes-vous sûr de vouloir supprimer cette arme ou cette extension d'arme ?</text>
-		</string>
-		<string>
-			<key>Message_DeleteWeaponLocation</key>
-			<text>Êtes-vous sûr de vouloir supprimer ce groupe d'équipement ? Toutes les armes dans ce groupe vont être déplacées vers les armes sélectionnées.</text>
-		</string>
-		<string>
-			<key>Message_DeleteLifestyle</key>
-			<text>Êtes-vous sûr de vouloir supprimer ce niveau de vie ?</text>
-		</string>
-		<string>
-			<key>Message_DeleteGear</key>
-			<text>Êtes-vous sûr de vouloir supprimer cet équipement ?</text>
-		</string>
-		<string>
-			<key>Message_DeleteGearLocation</key>
-			<text>Êtes-vous sûr de vouloir supprimer ce groupe d'équipement ? Toutes les pièces d'équipement placées dans ce groupe seront déplacées dans la liste principale d'équipement.</text>
-		</string>
-		<string>
-			<key>Message_DeleteVehicle</key>
-			<text>Êtes-vous sûr de vouloir supprimer ce véhicule ou cette extension de véhicule ?</text>
-		</string>
-		<string>
-			<key>Message_DeleteVehicleLocation</key>
-			<text>Êtes-vous sûr de vouloir supprimer ce groupe d'équipement ? Tous les équipements dans ce groupe vont être déplacés vers le véhicule lui-même.</text>
-		</string>
-		<string>
-			<key>Message_DeleteMartialArt</key>
-			<text>Êtes-vous sûr de vouloir supprimer cet art martial ou cette manoeuvre ?</text>
-		</string>
-		<string>
-			<key>Message_DeleteMetamagic</key>
-			<text>Êtes-vous sûr de vouloir supprimer cette métamagie ?</text>
-		</string>
-		<string>
-			<key>Message_DeleteEcho</key>
-			<text>Êtes-vous sûr de vouloir supprimer cet écho ?</text>
-		</string>
-		<string>
-			<key>Message_DeleteCritterPower</key>
-			<text>Êtes-vous sûr de vouloir supprimer ce pouvoir de créature ?</text>
-		</string>
-		<string>
-			<key>Message_DeleteComplexForm</key>
-			<text>Êtes-vous sûr de vouloir supprimer cette forme complexe ?</text>
-		</string>
-		<string>
-			<key>Message_DeleteComplexFormOption</key>
-			<text>Êtes-vous sûr de vouloir supprimer cette option de forme complexe ?</text>
-		</string>
-		<string>
-			<key>Message_DeleteQuality</key>
-			<text>Êtes-vous sûr de vouloir supprimer ce trait ?</text>
-		</string>
-		<string>
-			<key>Message_DeleteMetatypeQuality</key>
-			<text>Êtes-vous sûr de vouloir supprimer trait provenant de votre métatype pour {0} points de Karma?</text>
-		</string>
-		<string>
-			<key>Message_DeleteKnowledgeSkill</key>
-			<text>Êtes-vous sûr de vouloir supprimer cette Compétence de connaissance ?</text>
-		</string>
-		<string>
-			<key>Message_DeletePositiveQualityCareer</key>
-			<text>Êtes-vous sûr de vouloir supprimer cet avantage ? Vous ne recevrez aucun Karma pour l'avoir retiré.</text>
 		</string>
 		<string>
 			<key>Message_DeleteImprovement</key>
@@ -3790,10 +4070,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<text>Les armure et modifications équipées sont prises en compte pour l'encombrement d'armure et pour la determination du plus grand Indice d'armure d'un personnage.</text>
 		</string>
 		<!-- Street Gear/Weapon Tab -->
-		<string>
-			<key>Menu_NameGear</key>
-			<text>Nommer l'équipement</text>
-		</string>
 		<string>
 			<key>Label_Conceal</key>
 			<text>Dissimulation :</text>
@@ -7173,18 +7449,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<text>Métamagie</text>
 		</string>
 		<string>
-			<key>Menu_Main_DumpshockThread</key>
-			<text>&amp;Fil Dumpshock</text>
-		</string>
-		<string>
-			<key>Menu_SpecialConvertToFreeSprite</key>
-			<text>Convertir en Esprit Libre</text>
-		</string>
-		<string>
-			<key>Message_DeleteLimitModifier</key>
-			<text>Êtes-vous sûr de vouloir supprimer cette limite modifiée ?</text>
-		</string>
-		<string>
 			<key>Message_CannotDeleteLimitModifier</key>
 			<text>Vous devez supprimer la source de ce modificateur pour supprimer cet objet.</text>
 		</string>
@@ -7489,18 +7753,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<text>Contrat</text>
 		</string>
 		<string>
-			<key>String_MountSide</key>
-			<text>Latéral</text>
-		</string>
-		<string>
-			<key>String_MountInternal</key>
-			<text>Interne</text>
-		</string>
-		<string>
-			<key>String_MountStock</key>
-			<text>Réserve</text>
-		</string>
-		<string>
 			<key>Message_ConfirmKarmaandNuyenExpense</key>
 			<text>Êtes-vous sûr de vouloir dépenser {2} Karma et {3} Nuyen pour améliorer de {0} à {1} ?</text>
 		</string>
@@ -7531,30 +7783,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		<string>
 			<key>Message_UndoNotHighestGrade</key>
 			<text>Vous devez d'abord annuler les entrées des grades d'initiation.</text>
-		</string>
-		<string>
-			<key>MessageTitle_DeleteGrade</key>
-			<text>Impossible de effacer</text>
-		</string>
-		<string>
-			<key>Message_DeleteGrade</key>
-			<text>Vous devez d'abord supprimer le grade le plus élevé.</text>
-		</string>
-		<string>
-			<key>Message_DeleteInitiateGrade</key>
-			<text>Êtes-vous sûr de vouloir effacer ce Grade d'Initiation et tous les bonus associés ?</text>
-		</string>
-		<string>
-			<key>Message_DeleteSubmersionGrade</key>
-			<text>Êtes-vous sûr de vouloir effacer ce Grade de Submersion et tous les bonus associés ?</text>
-		</string>
-		<string>
-			<key>Message_DeleteArt</key>
-			<text>Êtes-vous sûr de vouloir effacer cet art ?</text>
-		</string>
-		<string>
-			<key>Message_DeleteEnhancement</key>
-			<text>Êtes-vous sûr de vouloir effacer cette amélioration ?</text>
 		</string>
 		<string>
 			<key>Message_InvalidAttributeExcess</key>
@@ -7767,110 +7995,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<text>secondes</text>
 		</string>
 		<string>
-			<key>String_MountNone</key>
-			<text>Aucun</text>
-		</string>
-		<string>
-			<key>Menu_Main_Translator</key>
-			<text>Traducteur</text>
-		</string>
-		<string>
-			<key>Label_Roster_File_Name</key>
-			<text>Nom de fichier:</text>
-		</string>
-		<string>
-			<key>Label_Roster_Settings_File</key>
-			<text>Fichier des paramètres:</text>
-		</string>
-		<string>
-			<key>Tab_Roster_Background</key>
-			<text>Contexte</text>
-		</string>
-		<string>
-			<key>Tab_Roster_CharacterNotes</key>
-			<text>Notes de personnage</text>
-		</string>
-		<string>
-			<key>Tab_Roster_GameNotes</key>
-			<text>Notes de jeu</text>
-		</string>
-		<string>
-			<key>Treenode_Roster_RecentCharacters</key>
-			<text>Personnages récents</text>
-		</string>
-		<string>
-			<key>Treenode_Roster_FavoriteCharacters</key>
-			<text>Personnages préférés</text>
-		</string>
-		<string>
-			<key>Menu_Delete</key>
-			<text>&amp;Effacer de cette liste</text>
-		</string>
-		<string>
-			<key>Menu_Sort</key>
-			<text>&amp;Trier cette liste par ordre alphabétique</text>
-		</string>
-		<string>
-			<key>Menu_ToggleFavorite</key>
-			<text>&amp;Changer le favori</text>
-		</string>
-		<string>
-			<key>Menu_Close</key>
-			<text>&amp;Fermer ce caractère</text>
-		</string>
-		<string>
-			<key>Menu_FilePrintPreview</key>
-			<text>&amp;Aperçu avant impression</text>
-		</string>
-		<string>
-			<key>Tab_PhysicalConditionMonitor</key>
-			<text>Moniteur de condition physique</text>
-		</string>
-		<string>
-			<key>Tab_MatrixConditionMonitor</key>
-			<text>Moniteur de condition de matrice</text>
-		</string>
-		<string>
-			<key>Message_NoValidWeaponMount</key>
-			<text>Le véhicule sélectionné n'a pas de supports d'armes valides auxquels ajouter cette arme.</text>
-		</string>
-		<string>
-			<key>Menu_ValidCharacter</key>
-			<text>Vérifier la validité des personnages</text>
-		</string>
-		<string>
-			<key>Message_ValidCharacter</key>
-			<text>Le personnage est valide et peut passer en mode carrière.</text>
-		</string>
-		<string>
-			<key>MessageTitle_ValidCharacter</key>
-			<text>Confirmation de la validité du caractère</text>
-		</string>
-		<string>
-			<key>Message_NoContactFound</key>
-			<text>Pas de contacts sélectionnables trouvés. Veuillez créer un contact et réessayer.</text>
-		</string>
-		<string>
-			<key>Message_DeleteWeaponMount</key>
-			<text>Êtes-vous sûr de vouloir effacer cette monture d'arme ?</text>
-		</string>
-		<string>
-			<key>Message_DeleteVehicleLocationBase</key>
-			<text>Êtes-vous sûr de vouloir effacer cet emplacement ? Tous les céhicules de cet emplacement seront déplacés dans le conteneur du céhicule sélectionné.</text>
-		</string>
-		<string>
-			<key>Message_LowerQualityLevel</key>
-			<text>Êtes-vous sûr de vouloir effacer un niveau de cette qualité?</text>
-		</string>
-		<string>
-			<key>Message_DeleteExoticSkill</key>
-			<text>Êtes-vous sûr de vouloir effacer cette compétence exotique?</text>
-		</string>
-		<string>
-			<key>Message_LowerMetatypeQualityLevel</key>
-			<text>Êtes-vous sûr de vouloir effacer un niveau de cette qualité metatype pour {0}?</text>
-		</string>
-		<string>
 			<key>Message_LowerPositiveQualityLevelCareer</key>
 			<text>Êtes-vous sûr de vouloir effacer un niveau de cette qualité positive ? Vous ne recevrez pas de Karma pour l'avoir enlevé.</text>
 		</string>
@@ -7897,14 +8021,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		<string>
 			<key>Title_CreateWeaponMount</key>
 			<text>Créer un support d'arme</text>
-		</string>
-		<string>
-			<key>MessageTitle_NoValidWeaponMount</key>
-			<text>Aucun support d'arme valide trouvé</text>
-		</string>
-		<string>
-			<key>MessageTitle_NoContactFound</key>
-			<text>Aucun contact disponible trouvé</text>
 		</string>
 		<string>
 			<key>Message_ImprovementQuality</key>
@@ -8275,22 +8391,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<text>Montrer des compétences actives dans des groupes de compétences brisées</text>
 		</string>
 		<string>
-			<key>Menu_Main_HeroLabImporter</key>
-			<text>Hero Lab Importateur</text>
-		</string>
-		<string>
-			<key>About_Label_Contributors</key>
-			<text>Merci à tous les participants de GitHub !</text>
-		</string>
-		<string>
-			<key>Treenode_Roster_WatchFolder</key>
-			<text>Dossier monitoré</text>
-		</string>
-		<string>
-			<key>Menu_AddFromFile</key>
-			<text>&amp;Ajouter à un fichier</text>
-		</string>
-		<string>
 			<key>Button_AddMod</key>
 			<text>Ajouter modification</text>
 		</string>
@@ -8313,14 +8413,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		<string>
 			<key>Message_ConfirmKarmaExpenseLowerLevel</key>
 			<text>Êtes-vous sûr de dépenser {1} Karma pour enlever un level de {0} ?</text>
-		</string>
-		<string>
-			<key>Menu_Main_ClearUnpinnedItems</key>
-			<text>&amp;Effacer éléments non épinglés</text>
-		</string>
-		<string>
-			<key>Message_NegativeQualityAndMetatypeLimit</key>
-			<text>Vous ne pouvez pas gagner plus de {0} à la qualité négative et au métatype.</text>
 		</string>
 		<string>
 			<key>Message_ReapplyImprovementsFoundOutdatedItems_Top</key>
@@ -8667,84 +8759,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		<string>
 			<key>Warning_NoLimitFound</key>
 			<text>Impossible de trouver la limite appropriée à modifier. Assurez-vous d'avoir sélectionné un modificateur de limite personnalisé.</text>
-		</string>
-		<string>
-			<key>Message_OutdatedChummerSave</key>
-			<text>Ce fichier de sauvegarde a été créé dans une version ultérieure de Chummer ({0}) que votre version actuelle de Chummer ({1}). \nCe fichier peut ne pas se charger correctement, et il est fortement recommandé de mettre à jour vers la dernière version de Chummer. Êtes-vous sûr de vouloir continuer à charger ce personnage ?</text>
-		</string>
-		<string>
-			<key>String_AttributeDEPLong</key>
-			<text>Profondeur</text>
-		</string>
-		<string>
-			<key>String_AttributeDEPShort</key>
-			<text>PRO</text>
-		</string>
-		<string>
-			<key>String_AttributeESSLong</key>
-			<text>Essence</text>
-		</string>
-		<string>
-			<key>String_AttributeESSShort</key>
-			<text>ESS</text>
-		</string>
-		<string>
-			<key>String_CharacterRoster</key>
-			<text>Liste des Persos</text>
-		</string>
-		<string>
-			<key>Menu_Main_IssueTracker</key>
-			<text>Issue Tracker</text>
-		</string>
-		<string>
-			<key>Menu_Main_ChummerDiscord</key>
-			<text>Chummer Discord</text>
-		</string>
-		<string>
-			<key>About_Description_Text</key>
-			<text>Générateur de personnages pour Shadowrun 5e édition\n\r\n\rMerci à Keith pour tout le travail incroyable qu'il a fait pour créer et maintenir Chummer pour 4e édition. Sans lui, rien de tout cela ne serait possible. Merci beaucoup à tous les membres de la communauté Dumpshock d'avoir soutenu ce projet avec tous leurs précieux commentaires, leurs bonnes idées, leurs rapports de problèmes, et avoir souligné mes erreurs stupides. Un grand merci aussi à tous ceux qui ont donné de leur temps pour traduire Chummer dans d'autres langues !
-
-</text>
-		</string>
-		<string>
-			<key>About_Company_Text</key>
-			<text>Chummer original de la 4e édition par Keith Rudolph.\n\rChummer5 actualisé par Adam Schmidt : srchummer5@gmail.com\n\rChummer5a actualisé par Anonymous fa/tg/uy : chummer5isalive@gmail.com\n\rAutres actualisations 5a par  Johannes Elgaard : joha4270@gmail.com</text>
-		</string>
-		<string>
-			<key>About_Copyright_Text</key>
-			<text>Copyright © Keith Rudolph 2013</text>
-		</string>
-		<string>
-			<key>About_Label_Disclaimer</key>
-			<text>Disclaimer</text>
-		</string>
-		<string>
-			<key>About_Label_Disclaimer_Text</key>
-			<text>Chummer n'est pas du tout officiel et n'est en aucun cas endossé par 'The Topps Company, Inc' ou'Catalyst Game Labs'. 'The Topps Company, Inc.' a la propriété exclusive des noms, logos, illustrations, marques, photographies, sons, sons, audio, vidéo et/ou tout matériel exclusif utilisé en rapport avec le jeu Shadowrun.\n\r\n\rSauf accord écrit, le développeur fournit l'œuvre (et chaque contributeur fournit ses contributions) " EN L'ÉTAT ", SANS GARANTIES OU CONDITIONS D'AUCUNE NATURE, expresse ou implicite, y compris, sans limitation, toute garantie ou condition de TITRE, de NON-IFFRAGENCE, de COMMERCIABILITÉ, ou d'AJUSTICULES POUR UN OBJET PARTICULIER.\n\r\n\rEn utilisant Chummer, vous acceptez d'être légalement propriétaire d'une copie du livre de règles Shadowrun et de tout livre source dont vous choisissez d'utiliser les informations. Vous êtes seul responsable de déterminer la pertinence d'utiliser ou de redistribuer le contenu que vous créez et vous assumez tous les risques associés à l'exercice de vos permissions en vertu de cette licence.\n\r\n\rChummer utilise les images de 'Silk icon set' réalisé par Mark James, disponible sur www.famfamfam.com.</text>
-		</string>
-		<string>
-			<key>Tab_Roster_Description</key>
-			<text>Description</text>
-		</string>
-		<string>
-			<key>Tab_Roster_Concept</key>
-			<text>Concept</text>
-		</string>
-		<string>
-			<key>Menu_SpecialChangePriorities</key>
-			<text>Changer de &amp;Priorité</text>
-		</string>
-		<string>
-			<key>Menu_SpecialChangeOptions</key>
-			<text>Changer fichier d'&amp;Options</text>
-		</string>
-		<string>
-			<key>String_MutantCritter</key>
-			<text>Faire muter l'animal</text>
-		</string>
-		<string>
-			<key>String_Cyberzombie</key>
-			<text>Cyberzombie</text>
 		</string>
 		<string>
 			<key>Message_InvalidCyberwareGrades</key>
@@ -9527,10 +9541,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<text>Volé</text>
 		</string>
 		<string>
-			<key>Menu_FileSaveAsCreated</key>
-			<text>Sauvegarder comme &amp;créé</text>
-		</string>
-		<string>
 			<key>String_ExpenseUpgradedCyberware</key>
 			<text>Cyberware modernisé</text>
 		</string>
@@ -9707,16 +9717,8 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<text>Surprise :</text>
 		</string>
 		<string>
-			<key>Message_CyberzombieRequirementsImprovement</key>
-			<text>Il faut que vous ayez une amélioration qui vous permette de devenir un cyberzombie.</text>
-		</string>
-		<string>
 			<key>Message_InvalidActiveSkillExcessSpecializations</key>
 			<text>Une ou plusieurs compétences actives ont plus d'une spécialisation :</text>
-		</string>
-		<string>
-			<key>Message_DeleteDrug</key>
-			<text>Vous êtes sûr de vouloir supprimer cette recette de drogue ?</text>
 		</string>
 		<string>
 			<key>Message_CustomDrug_MissingFoundation</key>
