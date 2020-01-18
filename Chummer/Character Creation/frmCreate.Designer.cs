@@ -3703,7 +3703,7 @@ namespace Chummer
             this.cmdLifeModule.Name = "cmdLifeModule";
             this.cmdLifeModule.Size = new System.Drawing.Size(95, 23);
             this.cmdLifeModule.TabIndex = 95;
-            this.cmdLifeModule.Tag = "String_Life_Module";
+            this.cmdLifeModule.Tag = "String_LifeModule";
             this.cmdLifeModule.Text = "Life Module";
             this.cmdLifeModule.UseVisualStyleBackColor = true;
             this.cmdLifeModule.Visible = false;
