@@ -65,7 +65,7 @@ namespace Chummer
         {
             if(!deleteThem)
             {
-                GlobalOptions.Instance.MRUChanged += PopulateCharacterList;
+                GlobalOptions.MRUChanged += PopulateCharacterList;
                 treCharacterList.ItemDrag += treCharacterList_OnDefaultItemDrag;
                 treCharacterList.DragEnter += treCharacterList_OnDefaultDragEnter;
                 treCharacterList.DragDrop += treCharacterList_OnDefaultDragDrop;
@@ -82,7 +82,7 @@ namespace Chummer
             }
             else
             {
-                GlobalOptions.Instance.MRUChanged -= PopulateCharacterList;
+                GlobalOptions.MRUChanged -= PopulateCharacterList;
                 treCharacterList.ItemDrag -= treCharacterList_OnDefaultItemDrag;
                 treCharacterList.DragEnter -= treCharacterList_OnDefaultDragEnter;
                 treCharacterList.DragDrop -= treCharacterList_OnDefaultDragDrop;
@@ -181,7 +181,7 @@ namespace Chummer
 
         public void LoadCharacters(bool blnRefreshFavorites = true, bool blnRefreshRecents = true, bool blnRefreshWatch = true, bool blnRefreshPlugins = true)
         {
-            ReadOnlyObservableCollection<string> lstFavorites = new ReadOnlyObservableCollection<string>(GlobalOptions.Instance.FavoritedCharacters);
+            ReadOnlyObservableCollection<string> lstFavorites = new ReadOnlyObservableCollection<string>(GlobalOptions.FavoritedCharacters);
             bool blnAddFavoriteNode = false;
             TreeNode objFavoriteNode = null;
             TreeNode[] lstFavoritesNodes = null;
@@ -197,7 +197,7 @@ namespace Chummer
                 lstFavoritesNodes = new TreeNode[lstFavorites.Count];
             }
 
-            IList<string> lstRecents = new List<string>(GlobalOptions.Instance.MostRecentlyUsedCharacters);
+            IList<string> lstRecents = new List<string>(GlobalOptions.MostRecentlyUsedCharacters);
 
             List<string> lstWatch = new List<string>();
             if(!string.IsNullOrEmpty(GlobalOptions.Instance.CharacterRosterPath) && Directory.Exists(GlobalOptions.Instance.CharacterRosterPath))
@@ -695,11 +695,11 @@ namespace Chummer
                         switch(strDestinationNode)
                         {
                             case "Recent":
-                                GlobalOptions.Instance.FavoritedCharacters.Remove(objCache.FilePath);
-                                GlobalOptions.Instance.MostRecentlyUsedCharacters.Insert(0, objCache.FilePath);
+                                GlobalOptions.FavoritedCharacters.Remove(objCache.FilePath);
+                                GlobalOptions.MostRecentlyUsedCharacters.Insert(0, objCache.FilePath);
                                 break;
                             case "Favorite":
-                                GlobalOptions.Instance.FavoritedCharacters.Add(objCache.FilePath);
+                                GlobalOptions.FavoritedCharacters.Add(objCache.FilePath);
                                 break;
                             default:
                                 break;
@@ -847,10 +847,10 @@ namespace Chummer
                     switch (t.Parent.Tag?.ToString())
                     {
                         case "Recent":
-                            GlobalOptions.Instance.MostRecentlyUsedCharacters.Remove(this.FilePath);
+                            GlobalOptions.MostRecentlyUsedCharacters.Remove(this.FilePath);
                             break;
                         case "Favorite":
-                            GlobalOptions.Instance.FavoritedCharacters.Remove(this.FilePath);
+                            GlobalOptions.FavoritedCharacters.Remove(this.FilePath);
                             break;
                     }
                 }
@@ -990,10 +990,10 @@ namespace Chummer
                     switch(args.Item2.Parent.Tag.ToString())
                     {
                         case "Recent":
-                            GlobalOptions.Instance.MostRecentlyUsedCharacters.Remove(this.FilePath);
+                            GlobalOptions.MostRecentlyUsedCharacters.Remove(this.FilePath);
                             break;
                         case "Favorite":
-                            GlobalOptions.Instance.FavoritedCharacters.Remove(this.FilePath);
+                            GlobalOptions.FavoritedCharacters.Remove(this.FilePath);
                             break;
                     }
                 }
@@ -1020,10 +1020,10 @@ namespace Chummer
                 switch (t.Parent.Tag.ToString())
                 {
                     case "Recent":
-                        GlobalOptions.Instance.MostRecentlyUsedCharacters.Sort();
+                        GlobalOptions.MostRecentlyUsedCharacters.Sort();
                         break;
                     case "Favorite":
-                        GlobalOptions.Instance.FavoritedCharacters.Sort();
+                        GlobalOptions.FavoritedCharacters.Sort();
                         break;
                 }
             }
@@ -1032,10 +1032,10 @@ namespace Chummer
                 switch (t.Tag.ToString())
                 {
                     case "Recent":
-                        GlobalOptions.Instance.MostRecentlyUsedCharacters.Sort();
+                        GlobalOptions.MostRecentlyUsedCharacters.Sort();
                         break;
                     case "Favorite":
-                        GlobalOptions.Instance.FavoritedCharacters.Sort();
+                        GlobalOptions.FavoritedCharacters.Sort();
                         break;
                 }
             }
@@ -1058,9 +1058,9 @@ namespace Chummer
         //                        SuspendLayout();
 
         //                        List<Tuple<string, string>> lstSorted = new List<Tuple<string, string>>();
-        //                        for(int i = 0; i < GlobalOptions.Instance.MostRecentlyUsedCharacters.Count; ++i)
+        //                        for(int i = 0; i < GlobalOptions.MostRecentlyUsedCharacters.Count; ++i)
         //                        {
-        //                            string strLoopFile = GlobalOptions.Instance.MostRecentlyUsedCharacters[i];
+        //                            string strLoopFile = GlobalOptions.MostRecentlyUsedCharacters[i];
 
         //                            if(_lstCharacterCache.TryGetValue(strLoopFile, out CharacterCache objLoopCache) && objLoopCache != null)
         //                                lstSorted.Add(new Tuple<string, string>(objLoopCache.CalculatedName(false), strLoopFile));
@@ -1070,7 +1070,7 @@ namespace Chummer
 
         //                        lstSorted.Sort();
         //                        for(int i = 0; i < lstSorted.Count; ++i)
-        //                            GlobalOptions.Instance.MostRecentlyUsedCharacters.Move(GlobalOptions.Instance.MostRecentlyUsedCharacters.IndexOf(lstSorted[i].Item2), i);
+        //                            GlobalOptions.MostRecentlyUsedCharacters.Move(GlobalOptions.MostRecentlyUsedCharacters.IndexOf(lstSorted[i].Item2), i);
 
         //                        LoadCharacters(false, true, false);
         //                        ResumeLayout();
@@ -1083,9 +1083,9 @@ namespace Chummer
         //                        SuspendLayout();
 
         //                        List<Tuple<string, string>> lstSorted = new List<Tuple<string, string>>();
-        //                        for(int i = 0; i < GlobalOptions.Instance.FavoritedCharacters.Count; ++i)
+        //                        for(int i = 0; i < GlobalOptions.FavoritedCharacters.Count; ++i)
         //                        {
-        //                            string strLoopFile = GlobalOptions.Instance.FavoritedCharacters[i];
+        //                            string strLoopFile = GlobalOptions.FavoritedCharacters[i];
         //                            if(_lstCharacterCache.TryGetValue(strLoopFile, out CharacterCache objLoopCache) && objLoopCache != null)
         //                                lstSorted.Add(new Tuple<string, string>(objLoopCache.CalculatedName(false), strLoopFile));
         //                            else
@@ -1094,7 +1094,7 @@ namespace Chummer
 
         //                        lstSorted.Sort();
         //                        for(int i = 0; i < lstSorted.Count; ++i)
-        //                            GlobalOptions.Instance.FavoritedCharacters.Move(GlobalOptions.Instance.FavoritedCharacters.IndexOf(lstSorted[i].Item2), i);
+        //                            GlobalOptions.FavoritedCharacters.Move(GlobalOptions.FavoritedCharacters.IndexOf(lstSorted[i].Item2), i);
 
         //                        _blnSkipUpdate = false;
 
@@ -1117,14 +1117,14 @@ namespace Chummer
                 switch(t.Parent.Tag.ToString())
                 {
                     case "Recent":
-                        GlobalOptions.Instance.FavoritedCharacters.Add(objCache.FilePath);
+                        GlobalOptions.FavoritedCharacters.Add(objCache.FilePath);
                         break;
                     case "Favorite":
-                        GlobalOptions.Instance.FavoritedCharacters.Remove(objCache.FilePath);
-                        GlobalOptions.Instance.MostRecentlyUsedCharacters.Insert(0, objCache.FilePath);
+                        GlobalOptions.FavoritedCharacters.Remove(objCache.FilePath);
+                        GlobalOptions.MostRecentlyUsedCharacters.Insert(0, objCache.FilePath);
                         break;
                     case "Watch":
-                        GlobalOptions.Instance.FavoritedCharacters.Add(objCache.FilePath);
+                        GlobalOptions.FavoritedCharacters.Add(objCache.FilePath);
                         break;
                 }
                 treCharacterList.SelectedNode = t;

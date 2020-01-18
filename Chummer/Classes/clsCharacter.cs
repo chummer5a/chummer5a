@@ -1948,7 +1948,7 @@ namespace Chummer
 
             objWriter.Close();
             if(addToMRU)
-                GlobalOptions.Instance.MostRecentlyUsedCharacters.Insert(0, this.FileName);
+                GlobalOptions.MostRecentlyUsedCharacters.Insert(0, this.FileName);
 
             IsSaving = false;
             _dateFileLastWriteTime = File.GetLastWriteTimeUtc(strFileName);

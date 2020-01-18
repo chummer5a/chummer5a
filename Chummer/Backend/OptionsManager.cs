@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -32,133 +34,202 @@ namespace Chummer
         public static CultureInfo InvariantCultureInfo => _instance.InvariantCultureInfo;
         public static CultureInfo CultureInfo => _instance.CultureInfo;
         public static string Language => Instance.Language;
-        public static List<MRUEntry> MostRecentlyUsedList { get; } = new List<MRUEntry>();
+
+        private static readonly MostRecentlyUsedCollection<string> _lstMostRecentlyUsedCharacters = new MostRecentlyUsedCollection<string>(MaxMruSize);
+        private static readonly MostRecentlyUsedCollection<string> _lstFavoritedCharacters = new MostRecentlyUsedCollection<string>(MaxMruSize);
 
         private const string PROGRAM_SETTINGS_FILE = "programdata.local.xml";
         private static List<CharacterOptions> fileOptions;
         private static CharacterOptions _default;
+        private static readonly RegistryKey _objBaseChummerKey = Registry.CurrentUser.CreateSubKey("Software\\Chummer5");
 
         #region MRU Methods
 
         public static event EventHandler<TextEventArgs> MRUChanged;
-
-
-        public static void MRUAdd(string entryPath)
+        private static void LstFavoritedCharactersOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            int progress;
-            for (progress = 0; progress < 10; progress++)
+            switch (e.Action)
             {
-                if (MostRecentlyUsedList[progress].Path == entryPath)
-                {
-                    return; //Found in sticky
-                }
+                case NotifyCollectionChangedAction.Add:
+                    {
+                        for (int i = e.NewStartingIndex + 1; i <= MaxMruSize; ++i)
+                        {
+                            if (i <= _lstFavoritedCharacters.Count)
+                                _objBaseChummerKey.SetValue("stickymru" + i.ToString(InvariantCultureInfo), _lstFavoritedCharacters[i - 1]);
+                            else
+                                _objBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo), false);
+                        }
 
-                //If not sticky anymore, need different logic
-                //Checking sticky after path. This means first after sticky returns above.
-                //This is fine, as refreshing top needs no action
-                if (!MostRecentlyUsedList[progress].Sticky) break;
+                        MRUChanged?.Invoke(sender, new TextEventArgs("stickymru"));
+                        break;
+                    }
+                case NotifyCollectionChangedAction.Remove:
+                    {
+                        for (int i = e.OldStartingIndex + 1; i <= MaxMruSize; ++i)
+                        {
+                            if (i <= _lstFavoritedCharacters.Count)
+                                _objBaseChummerKey.SetValue("stickymru" + i.ToString(InvariantCultureInfo), _lstFavoritedCharacters[i - 1]);
+                            else
+                                _objBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo), false);
+                        }
+                        MRUChanged?.Invoke(sender, new TextEventArgs("stickymru"));
+                        break;
+                    }
+                case NotifyCollectionChangedAction.Replace:
+                    {
+                        string strNewFile = e.NewItems.Count > 0 ? e.NewItems[0] as string : string.Empty;
+                        if (!string.IsNullOrEmpty(strNewFile))
+                            _objBaseChummerKey.SetValue("stickymru" + (e.OldStartingIndex + 1).ToString(InvariantCultureInfo), strNewFile);
+                        else
+                        {
+                            for (int i = e.OldStartingIndex + 1; i <= MaxMruSize; ++i)
+                            {
+                                if (i <= _lstFavoritedCharacters.Count)
+                                    _objBaseChummerKey.SetValue("stickymru" + i.ToString(InvariantCultureInfo), _lstFavoritedCharacters[i - 1]);
+                                else
+                                    _objBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo), false);
+                            }
+                        }
+
+                        MRUChanged?.Invoke(sender, new TextEventArgs("stickymru"));
+                        break;
+                    }
+                case NotifyCollectionChangedAction.Move:
+                    {
+                        int intOldStartingIndex = e.OldStartingIndex;
+                        int intNewStartingIndex = e.NewStartingIndex;
+                        if (intOldStartingIndex == intNewStartingIndex)
+                            break;
+
+                        int intUpdateFrom;
+                        int intUpdateTo;
+                        if (intOldStartingIndex > intNewStartingIndex)
+                        {
+                            intUpdateFrom = intNewStartingIndex;
+                            intUpdateTo = intOldStartingIndex;
+                        }
+                        else
+                        {
+                            intUpdateFrom = intOldStartingIndex;
+                            intUpdateTo = intNewStartingIndex;
+                        }
+
+                        for (int i = intUpdateFrom; i <= intUpdateTo; ++i)
+                        {
+                            _objBaseChummerKey.SetValue("stickymru" + (i + 1).ToString(InvariantCultureInfo), _lstFavoritedCharacters[i]);
+                        }
+                        MRUChanged?.Invoke(sender, new TextEventArgs("stickymru"));
+                        break;
+                    }
+                case NotifyCollectionChangedAction.Reset:
+                    {
+                        for (int i = 1; i <= MaxMruSize; ++i)
+                        {
+                            if (i <= _lstFavoritedCharacters.Count)
+                                _objBaseChummerKey.SetValue("stickymru" + i.ToString(InvariantCultureInfo), _lstFavoritedCharacters[i - 1]);
+                            else
+                                _objBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo), false);
+                        }
+                        MRUChanged?.Invoke(sender, new TextEventArgs("stickymru"));
+                        break;
+                    }
             }
-
-            int topOfSticky = progress;
-            int index = MostRecentlyUsedList.FindIndex(topOfSticky, mru => mru.Path == entryPath);
-
-            MRUEntry entry;
-            if (index == -1) //Not found
-            {
-                entry = new MRUEntry(entryPath);
-                MostRecentlyUsedList.Insert(topOfSticky, entry);
-
-                //Remove every over index 9, backwards from performance (hah) reasons
-                //I don't actually think there can be more than 10 entries atm, but not much more complicated than if
-                //What off by one error?
-                for (int i = MostRecentlyUsedList.Count - 1; i >= 9; i--)
-                {
-                    MostRecentlyUsedList.RemoveAt(i);
-                }
-            }
-            //Found
-            else
-            {
-                //Move to top and rotate down
-                entry = MostRecentlyUsedList[index];
-                MostRecentlyUsedList.RemoveAt(index);
-                MostRecentlyUsedList.Insert(topOfSticky, entry);
-            }
-
-            MRUChanged?.Invoke(entry, new TextEventArgs("mru"));
-            //Needs to handle
-            //Item already in list
-            //New item
-            //Stickies
-            //Full stickies
         }
 
-        public static void MruToggleSticky(MRUEntry entry)
+        private static void LstMostRecentlyUsedCharactersOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            //I'm sure this can be changed to a generalized case, but i can't see how right now
-            if (entry.Sticky)
+            switch (e.Action)
             {
-                int newIndex = MostRecentlyUsedList.FindIndex(x => !x.Sticky);
-                int oldIndex = MostRecentlyUsedList.IndexOf(entry);
-                entry.Sticky = false;
-                MostRecentlyUsedList.RemoveAt(oldIndex);
-                MostRecentlyUsedList.Insert(newIndex - 1, entry);
+                case NotifyCollectionChangedAction.Add:
+                    {
+                        for (int i = e.NewStartingIndex + 1; i <= MaxMruSize; ++i)
+                        {
+                            if (i <= _lstMostRecentlyUsedCharacters.Count)
+                                _objBaseChummerKey.SetValue("mru" + i.ToString(), _lstMostRecentlyUsedCharacters[i - 1]);
+                            else
+                                _objBaseChummerKey.DeleteValue("mru" + i.ToString(), false);
+                        }
+
+                        MRUChanged?.Invoke(sender, new TextEventArgs("mru"));
+                        break;
+                    }
+                case NotifyCollectionChangedAction.Remove:
+                    {
+                        for (int i = e.OldStartingIndex + 1; i <= MaxMruSize; ++i)
+                        {
+                            if (i <= _lstMostRecentlyUsedCharacters.Count)
+                                _objBaseChummerKey.SetValue("mru" + i.ToString(), _lstMostRecentlyUsedCharacters[i - 1]);
+                            else
+                                _objBaseChummerKey.DeleteValue("mru" + i.ToString(), false);
+                        }
+                        MRUChanged?.Invoke(sender, new TextEventArgs("mru"));
+                        break;
+                    }
+                case NotifyCollectionChangedAction.Replace:
+                    {
+                        string strNewFile = e.NewItems.Count > 0 ? e.NewItems[0] as string : string.Empty;
+                        if (!string.IsNullOrEmpty(strNewFile))
+                        {
+                            _objBaseChummerKey.SetValue("mru" + (e.OldStartingIndex + 1).ToString(), strNewFile);
+                        }
+                        else
+                        {
+                            for (int i = e.OldStartingIndex + 1; i <= MaxMruSize; ++i)
+                            {
+                                if (i <= _lstMostRecentlyUsedCharacters.Count)
+                                    _objBaseChummerKey.SetValue("mru" + i.ToString(), _lstMostRecentlyUsedCharacters[i - 1]);
+                                else
+                                    _objBaseChummerKey.DeleteValue("mru" + i.ToString(), false);
+                            }
+                        }
+                        MRUChanged?.Invoke(sender, new TextEventArgs("mru"));
+                        break;
+                    }
+                case NotifyCollectionChangedAction.Move:
+                    {
+                        int intOldStartingIndex = e.OldStartingIndex;
+                        int intNewStartingIndex = e.NewStartingIndex;
+                        if (intOldStartingIndex == intNewStartingIndex)
+                            break;
+
+                        int intUpdateFrom;
+                        int intUpdateTo;
+                        if (intOldStartingIndex > intNewStartingIndex)
+                        {
+                            intUpdateFrom = intNewStartingIndex;
+                            intUpdateTo = intOldStartingIndex;
+                        }
+                        else
+                        {
+                            intUpdateFrom = intOldStartingIndex;
+                            intUpdateTo = intNewStartingIndex;
+                        }
+
+                        for (int i = intUpdateFrom; i <= intUpdateTo; ++i)
+                        {
+                            _objBaseChummerKey.SetValue("mru" + (i + 1).ToString(), _lstMostRecentlyUsedCharacters[i]);
+                        }
+                        MRUChanged?.Invoke(sender, new TextEventArgs("mru"));
+                        break;
+                    }
+                case NotifyCollectionChangedAction.Reset:
+                    {
+                        for (int i = 1; i <= MaxMruSize; ++i)
+                        {
+                            if (i <= _lstMostRecentlyUsedCharacters.Count)
+                                _objBaseChummerKey.SetValue("mru" + i.ToString(), _lstMostRecentlyUsedCharacters[i - 1]);
+                            else
+                                _objBaseChummerKey.DeleteValue("mru" + i.ToString(), false);
+                        }
+                        MRUChanged?.Invoke(sender, new TextEventArgs("mru"));
+                        break;
+                    }
             }
-            else
-            {
-                int newIndex = MostRecentlyUsedList.FindLastIndex(x => x.Sticky);
-                int oldIndex = MostRecentlyUsedList.IndexOf(entry);
-                entry.Sticky = true;
-                MostRecentlyUsedList.RemoveAt(oldIndex);
-                MostRecentlyUsedList.Insert(newIndex + 1, entry);
-
-            }
-
-
-            //Intentionally swapped, I since sticky has changed
-            MRUChanged?.Invoke(entry, new TextEventArgs(entry.Sticky ? "mru" : "mrusticky"));
-
-
         }
 
-        /// <summary>
-        /// Retrieve the list of most recently used characters.
-        /// </summary>
-        private static List<string> ReadMRUList()
-        {
-            RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey("Software\\Chummer5");
-            List<string> lstFiles = new List<string>();
+        public static ObservableCollection<string> FavoritedCharacters => _lstFavoritedCharacters;
 
-            for (int i = 1; i <= 10; i++)
-            {
-                if ((objRegistry.GetValue("mru" + i.ToString())) != null)
-                {
-                    lstFiles.Add(objRegistry.GetValue("mru" + i.ToString()).ToString());
-                }
-            }
-
-            return lstFiles;
-        }
-
-        /// <summary>
-        /// Retrieve the list of sticky most recently used characters.
-        /// </summary>
-        private static List<string> ReadStickyMRUList()
-        {
-            RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey("Software\\Chummer5");
-            List<string> lstFiles = new List<string>();
-
-            for (int i = 1; i <= 10; i++)
-            {
-                if ((objRegistry.GetValue("stickymru" + i.ToString())) != null)
-                {
-                    lstFiles.Add(objRegistry.GetValue("stickymru" + i.ToString()).ToString());
-                }
-            }
-
-            return lstFiles;
-        }
-
+        public static ObservableCollection<string> MostRecentlyUsedCharacters => _lstMostRecentlyUsedCharacters;
         #endregion
 
         public static void Load()
@@ -186,43 +257,40 @@ namespace Chummer
             LoadGlobalOptions(xmlOptionDocument);
 
             //Load MRU
-            LoadMRUEntries(xmlOptionDocument);
+            LoadMRUEntries();
 
-            fileOptions = LoadCharacterOptionses();
+            fileOptions = LoadCharacterOptions();
 
             //TODO: find default characteroption
 
 
         }
 
-        private static void LoadMRUEntries([CanBeNull] XmlDocument xmlOptionSource)
+        private static void LoadMRUEntries()
         {
-            MostRecentlyUsedList.Clear();
-            if (Instance.SavedByVersion == null)
+            for (int i = 1; i <= MaxMruSize; i++)
             {
-                MostRecentlyUsedList.AddRange(ReadStickyMRUList().Select(x => new MRUEntry(x) {Sticky = true}));
-                MostRecentlyUsedList.AddRange(ReadMRUList().Select(x => new MRUEntry(x)));
-            }
-            else
-            {
-                for (int i = 0; i < 10; i++)
+                object objLoopValue = _objBaseChummerKey.GetValue("stickymru" + i.ToString(InvariantCultureInfo));
+                if (objLoopValue != null)
                 {
-                    MRUEntry entry = new MRUEntry(null);
-                    if (xmlOptionSource != null)
-                    {
-                        XmlNode mruNode = xmlOptionSource["settings"]?["mru"]?["mru" + i];
-                        if (mruNode == null) break;
-                        ClassSaver.Load(ref entry, mruNode);
-                    }
-                    else
-                    {
-                        RegistryKey mruKey = Registry.CurrentUser.CreateSubKey("Software\\Chummer5\\Mru\\" + i);
-                        if (mruKey == null) break;
-                        ClassSaver.Load(ref entry, mruKey);
-                    }
-                    MostRecentlyUsedList.Add(entry);
+                    string strFileName = objLoopValue.ToString();
+                    if (File.Exists(strFileName) && !_lstFavoritedCharacters.Contains(strFileName))
+                        _lstFavoritedCharacters.Add(strFileName);
                 }
             }
+            _lstFavoritedCharacters.CollectionChanged += LstFavoritedCharactersOnCollectionChanged;
+
+            for (int i = 1; i <= MaxMruSize; i++)
+            {
+                object objLoopValue = _objBaseChummerKey.GetValue("mru" + i.ToString(InvariantCultureInfo));
+                if (objLoopValue != null)
+                {
+                    string strFileName = objLoopValue.ToString();
+                    if (File.Exists(strFileName) && !_lstMostRecentlyUsedCharacters.Contains(strFileName))
+                        _lstMostRecentlyUsedCharacters.Add(strFileName);
+                }
+            }
+            _lstMostRecentlyUsedCharacters.CollectionChanged += LstMostRecentlyUsedCharactersOnCollectionChanged;
         }
 
         private static void LoadGlobalOptions([CanBeNull] XmlDocument xmlOptionSource)
@@ -250,7 +318,7 @@ namespace Chummer
             XmlNodeList objXmlBookList = XmlManager.Load("books.xml").SelectNodes("/chummer/books/book");
             foreach (XmlNode objXmlBook in objXmlBookList)
             {
-                SourcebookInfo objSource = new SourcebookInfo(objXmlBook["code"].InnerText, objXmlBook["name"].InnerText); //TODO: Localize
+                SourcebookInfo objSource = new SourcebookInfo(objXmlBook["code"].InnerText, objXmlBook["name"].InnerText);
                 _instance.SourcebookInfo.Add(objSource);
             }
 
@@ -281,19 +349,15 @@ namespace Chummer
                             if (info != null)
                                 ClassSaver.Load(ref info, specificBook);
                         }
-
-
                     }
                 }
                 catch
                 {
                 }
-
             }
-            
         }
 
-        public static List<CharacterOptions> LoadCharacterOptionses()
+        public static List<CharacterOptions> LoadCharacterOptions()
         {
             //todo: load globaloptions from somewhere (registry or file (LATER))
 
@@ -389,21 +453,26 @@ namespace Chummer
 
         private static void SaveMRUToRegistry()
         {
-            for (int i = 0; i < MostRecentlyUsedList.Count; i++)
+            for (int i = 0; i < MostRecentlyUsedCharacters.Count; i++)
             {
                 RegistryKey mruKey = Registry.CurrentUser.CreateSubKey("Software\\Chummer5\\Mru\\" + i);
-                ClassSaver.Save(MostRecentlyUsedList[i], mruKey);
+                ClassSaver.Save(MostRecentlyUsedCharacters[i], mruKey);
+            }
+            for (int i = 0; i < FavoritedCharacters.Count; i++)
+            {
+                RegistryKey mruKey = Registry.CurrentUser.CreateSubKey("Software\\Chummer5\\StickyMru\\" + i);
+                ClassSaver.Save(FavoritedCharacters[i], mruKey);
             }
         }
 
         private static void SaveMRUToXmlWriter(XmlWriter writer)
         {
             writer.WriteStartElement("mru");
-            for (int i = 0; i < MostRecentlyUsedList.Count; i++)
+            for (int i = 0; i < MostRecentlyUsedCharacters.Count; i++)
             {
                 writer.WriteStartElement("mru" + i);
 
-                ClassSaver.Save(MostRecentlyUsedList[i], writer);
+                ClassSaver.Save(MostRecentlyUsedCharacters[i], writer);
 
                 writer.WriteEndElement();
             }
@@ -413,7 +482,7 @@ namespace Chummer
 
         public static void SaveGlobalOptions()
         {
-            Instance.SavedByVersion = Assembly.GetEntryAssembly().GetName().Version;
+            Instance.SavedByVersion = Assembly.GetEntryAssembly()?.GetName().Version;
 
             if (Utils.IsLinux)
             {

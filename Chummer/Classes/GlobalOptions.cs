@@ -287,12 +287,6 @@ namespace Chummer
         [DisplayIgnore]
 		public bool LiveCustomData { get; set; }
 
-        [DisplayIgnore]
-        public ObservableCollection<string> MostRecentlyUsedCharacters = new MostRecentlyUsedCollection<string>(GlobalOptions.MaxMruSize);
-
-        [DisplayIgnore]
-        public ObservableCollection<string> FavoritedCharacters = new MostRecentlyUsedCollection<string>(GlobalOptions.MaxMruSize);
-
         /// <summary>
         /// Whether or not the Character Roster should be shown. If true, prevents the roster from being removed or hidden. 
         /// </summary>
@@ -344,9 +338,6 @@ namespace Chummer
 		/// </summary>
 		[DisplayIgnore]
 		public CultureInfo CultureInfo { get; private set; } = CultureInfo.CurrentCulture;
-
-
-        public event EventHandler<TextEventArgs> MRUChanged;
     }
 
     public class CustomDataDirectoryInfo : IComparable
@@ -383,16 +374,6 @@ namespace Chummer
             return string.Compare(Name, obj.ToString(), StringComparison.Ordinal);
         }
     }
-
-    public class MRUEntry
-	{
-		public bool Sticky { get; set; } = false;
-		public string Path { get; set; }
-		public MRUEntry(string path)
-		{
-			Path = path;
-		}
-	}
 
 	public enum PdfMode
 	{

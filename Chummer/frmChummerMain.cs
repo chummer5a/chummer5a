@@ -141,7 +141,7 @@ namespace Chummer
             _workerVersionUpdateChecker.RunWorkerAsync();
 #endif
 
-                    GlobalOptions.Instance.MRUChanged += (sender, e) =>
+                    GlobalOptions.MRUChanged += (sender, e) =>
                     {
                         this.DoThreadSafe(() => { PopulateMRUToolstripMenu(sender, e); });
                     };
@@ -363,7 +363,7 @@ namespace Chummer
                             bool blnRefreshSticky = false;
                             foreach(CharacterShared objClosedForm in e.OldItems)
                             {
-                                if(GlobalOptions.Instance.FavoritedCharacters.Contains(objClosedForm.CharacterObject.FileName))
+                                if(GlobalOptions.FavoritedCharacters.Contains(objClosedForm.CharacterObject.FileName))
                                 {
                                     blnRefreshSticky = true;
                                     break;
@@ -379,7 +379,7 @@ namespace Chummer
                             bool blnRefreshSticky = false;
                             foreach(CharacterShared objClosedForm in e.OldItems)
                             {
-                                if(GlobalOptions.Instance.FavoritedCharacters.Contains(objClosedForm.CharacterObject.FileName))
+                                if(GlobalOptions.FavoritedCharacters.Contains(objClosedForm.CharacterObject.FileName))
                                 {
                                     blnRefreshSticky = true;
                                     break;
@@ -390,7 +390,7 @@ namespace Chummer
                             {
                                 foreach(CharacterShared objNewForm in e.NewItems)
                                 {
-                                    if(GlobalOptions.Instance.FavoritedCharacters.Contains(objNewForm.CharacterObject.FileName))
+                                    if(GlobalOptions.FavoritedCharacters.Contains(objNewForm.CharacterObject.FileName))
                                     {
                                         blnRefreshSticky = true;
                                         break;
@@ -805,7 +805,7 @@ namespace Chummer
                 string strFileName = ((ToolStripMenuItem)sender).Text;
                 strFileName = strFileName.Substring(3, strFileName.Length - 3).Trim();
 
-                GlobalOptions.Instance.FavoritedCharacters.Add(strFileName);
+                GlobalOptions.FavoritedCharacters.Add(strFileName);
             }
         }
 
@@ -825,8 +825,8 @@ namespace Chummer
             {
                 string strFileName = ((ToolStripMenuItem)sender).Text;
 
-                GlobalOptions.Instance.FavoritedCharacters.Remove(strFileName);
-                GlobalOptions.Instance.MostRecentlyUsedCharacters.Insert(0, strFileName);
+                GlobalOptions.FavoritedCharacters.Remove(strFileName);
+                GlobalOptions.MostRecentlyUsedCharacters.Insert(0, strFileName);
             }
         }
 
@@ -1353,7 +1353,7 @@ namespace Chummer
                 }
 
                 if(blnIncludeInMRU && !string.IsNullOrEmpty(objCharacter.FileName) && File.Exists(objCharacter.FileName))
-                    GlobalOptions.Instance.MostRecentlyUsedCharacters.Insert(0, objCharacter.FileName);
+                    GlobalOptions.MostRecentlyUsedCharacters.Insert(0, objCharacter.FileName);
 
                 UpdateCharacterTabTitle(objCharacter, new PropertyChangedEventArgs(nameof(Character.CharacterName)));
 
@@ -1469,8 +1469,8 @@ namespace Chummer
         /// </summary>
         public void PopulateMRUToolstripMenu(object sender, TextEventArgs e)
         {
-            ReadOnlyObservableCollection<string> strStickyMRUList = new ReadOnlyObservableCollection<string>(GlobalOptions.Instance.FavoritedCharacters);
-            ReadOnlyObservableCollection<string> strMRUList = new ReadOnlyObservableCollection<string>(GlobalOptions.Instance.MostRecentlyUsedCharacters);
+            ReadOnlyObservableCollection<string> strStickyMRUList = new ReadOnlyObservableCollection<string>(GlobalOptions.FavoritedCharacters);
+            ReadOnlyObservableCollection<string> strMRUList = new ReadOnlyObservableCollection<string>(GlobalOptions.MostRecentlyUsedCharacters);
 
             SuspendLayout();
             mnuFileMRUSeparator.Visible = strStickyMRUList.Count > 0 || strMRUList.Count > 0;
@@ -1629,7 +1629,7 @@ namespace Chummer
 
         private void mnuClearUnpinnedItems_Click(object sender, EventArgs e)
         {
-            GlobalOptions.Instance.MostRecentlyUsedCharacters.Clear();
+            GlobalOptions.MostRecentlyUsedCharacters.Clear();
         }
 
         private void mnuRestart_Click(object sender, EventArgs e)
