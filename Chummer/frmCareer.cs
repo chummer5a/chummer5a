@@ -17575,7 +17575,7 @@ private void RefreshSelectedSpell()
                 if (pickCyber.DialogResult == DialogResult.Cancel)
                     return;
 
-                objCyberware.Upgrade(CharacterObject, pickCyber.SelectedGrade, pickCyber.SelectedRating, frmSell.SellPercent);
+                objCyberware.Upgrade(CharacterObject, pickCyber.SelectedGrade, pickCyber.SelectedRating, frmSell.SellPercent, pickCyber.FreeCost);
                 //TODO: Bind displayname to selectednode text properly.
                 treCyberware.SelectedNode.Text = objCyberware.DisplayName(GlobalOptions.Language);
             }
