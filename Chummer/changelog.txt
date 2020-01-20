@@ -27,6 +27,7 @@ Application Fixes:
 - Fixed an issue with cyberware upgrades not respecting the 'free' choice from the cyberwater selector.
 
 Application Changes:
+- The Character Roster's Watch Folder now includes subfolders. 
 - Added support for Priority mode using non-ABCDE arrays.
 - Spells, rituals and preparations now count down from maximum, in the same way as other counters in create mode.
 - Added a new improvement type that can disable a skill group selected by the user. To be used by RunnerHub customdata ruleset. 
