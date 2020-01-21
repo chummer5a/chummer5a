@@ -94,6 +94,7 @@ Data Changes:
 - Range Modifiers are now specified in ranges.xml
 - Added SR Missions 1.4 Neotokyo customdata folder. This customdata set hides qualities used in Neo-Tokyo Missions and adjusts the Availability of all Firearms according to the SRM Neo-Tokyo 1.0 document.
 - Added Mental, Physical and Social Limit improvement types to improvements.xml. Closes #3456
+- Fixed incorrect  REA maximum for the Wendigo quality.
 
 New Strings:
 - String_DisableSkillGroupPrompt

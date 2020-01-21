@@ -10216,8 +10216,8 @@
           <replaceattribute>
             <name>REA</name>
             <min>1</min>
-            <max>6</max>
-            <aug>10</aug>
+            <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>STR</name>
