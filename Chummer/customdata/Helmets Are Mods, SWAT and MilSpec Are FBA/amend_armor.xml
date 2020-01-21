@@ -36,6 +36,10 @@
       <addmodcategory>Full Body Armor Mods</addmodcategory>
     </armor>
     <armor>
+      <name>Ares Arms Bug Stomper Custom Armor</name>
+      <addmodcategory>Full Body Armor Mods</addmodcategory>
+    </armor>
+    <armor>
       <name>Security Armor: Light</name>
       <addmodcategory>Full Body Armor Mods</addmodcategory>
     </armor>
@@ -93,7 +97,10 @@
       <armorcapacity>[-8]</armorcapacity>
       <required>
         <parentdetails>
-          <name>Hardened Mil-Spec Battle Armor</name>
+          <OR>
+            <name>Ares Arms Bug Stomper Custom Armor</name>
+            <name operation="contains">Hardened Mil-Spec Battle Armor</name>
+          </OR>
         </parentdetails>
       </required>
       <avail>8F</avail>
@@ -109,7 +116,7 @@
       <armorcapacity>[-5]</armorcapacity>
       <required>
         <parentdetails>
-          <name>Security Armor</name>
+          <name operation="contains">Security Armor</name>
         </parentdetails>
       </required>
       <avail>8R</avail>

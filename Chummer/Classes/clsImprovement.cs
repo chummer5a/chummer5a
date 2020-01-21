@@ -46,6 +46,7 @@ namespace Chummer
 
         public enum ImprovementType
         {
+            None,
             Attribute,
             Text,
             Armor,
@@ -68,6 +69,7 @@ namespace Chummer
             EnhancedArticulation,
             WeaponCategoryDV,
             WeaponCategoryDice,
+            WeaponSpecificDice,
             CyberwareEssCost,
             CyberwareTotalEssMultiplier,
             CyberwareEssCostNonRetroactive,
@@ -185,6 +187,7 @@ namespace Chummer
             SpecialSkills,
             ReflexRecorderOptimization,
             BlockSkillDefault,
+            AllowSkillDefault,
             Ambidextrous,
             UnarmedReach,
             SkillSpecialization,
@@ -197,7 +200,11 @@ namespace Chummer
             CritterPower,
             SwapSkillSpecAttribute,
             SpellResistance,
+            AllowSpellCategory,
             LimitSpellCategory,
+            AllowSpellRange,
+            LimitSpellRange,
+            BlockSpellDescriptor,
             LimitSpellDescriptor,
             LimitSpiritCategory,
             WalkSpeed,
@@ -279,6 +286,7 @@ namespace Chummer
             SkillGroupDisable,
             SkillDisable,
             KnowledgeSkillKarmaCost,
+            KnowledgeSkillKarmaCostMinimum,
             SkillCategorySpecializationKarmaCostMultiplier,
             SkillCategorySpecializationKarmaCost,
             SkillCategoryKarmaCostMultiplier,
@@ -326,7 +334,18 @@ namespace Chummer
             ContactKarmaMinimum,
             GenetechEssMultiplier,
             AllowSpriteFettering,
-            NumImprovementTypes // 🡐 This one should always be the last defined enum           
+			DisableDrugGrade,
+            DrugDuration,
+            DrugDurationMultiplier,
+            Surprise,
+            EnableCyberzombie,
+            AllowCritterPowerCategory,
+            LimitCritterPowerCategory,
+            AttributeMaxClamp,
+            MetamagicLimit,
+            DisableQuality,
+            FreeQuality,
+            NumImprovementTypes // 🡐 This one should always be the last defined enum
         }
 
         public enum ImprovementSource
@@ -424,7 +443,6 @@ namespace Chummer
                 strValue = "MartialArtTechnique";
             return (ImprovementSource) Enum.Parse(typeof (ImprovementSource), strValue);
         }
-
         #endregion
 
         #region Save and Load Methods
@@ -1266,6 +1284,33 @@ namespace Chummer
                     break;
                 case ImprovementType.DealerConnection:
                     break;
+                case ImprovementType.AllowSkillDefault:
+                {
+                    if (ImprovedName == string.Empty)
+                    {
+                        // Kludgiest of kludges, but it fits spec and Sapience isn't exactly getting turned off and on constantly. 
+                        foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
+                        {
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objSkill,
+                                nameof(Skill.Enabled));
+                        }
+                        foreach (KnowledgeSkill objSkill in _objCharacter.SkillsSection.KnowledgeSkills)
+                        {
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objSkill,
+                                nameof(Skill.Enabled));
+                        }
+                    }
+                    else
+                    {
+                        Skill objTargetSkill = _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.Name == ImprovedName) ??
+                                               _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(x => x.Name == ImprovedName);
+                        if (objTargetSkill != null)
+                        {
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill, nameof(Skill.Enabled));
+                        }
+                    }
+                }
+                    break;
                 case ImprovementType.Skill:
                 {
                     Skill objTargetSkill = _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.Name == ImprovedName) ??
@@ -1678,6 +1723,7 @@ namespace Chummer
                 }
                     break;
                 case ImprovementType.KnowledgeSkillKarmaCost:
+                case ImprovementType.KnowledgeSkillKarmaCostMinimum:
                 case ImprovementType.KnowledgeSkillKarmaCostMultiplier:
                 {
                     if (!string.IsNullOrEmpty(ImprovedName))
@@ -1889,6 +1935,26 @@ namespace Chummer
                         yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.MetagenicLimit));
                     }
                     break;
+                case ImprovementType.DisableQuality:
+                {
+                    Quality objQuality = _objCharacter.Qualities.FirstOrDefault(x => x.Name == ImprovedName || x.SourceIDString == ImprovedName);
+                    if (objQuality != null)
+                    {
+                            //yield return new Tuple<INotifyMultiplePropertyChanged, string>(objQuality, nameof(Quality.Suppressed));
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.Qualities));
+                    }
+                }
+                    break;
+                case ImprovementType.FreeQuality:
+                    {
+                        Quality objQuality = _objCharacter.Qualities.FirstOrDefault(x => x.Name == ImprovedName || x.SourceIDString == ImprovedName);
+                        if (objQuality != null)
+                        {
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objQuality, nameof(Quality.ContributeToBP));
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objQuality, nameof(Quality.ContributeToLimit));
+                        }
+                    }
+                    break;
             }
         }
 
@@ -2085,7 +2151,7 @@ namespace Chummer
         /// <param name="blnAddToRating">Whether or not we should only retrieve values that have AddToRating enabled.</param>
         /// <param name="strImprovedName">Name to assign to the Improvement.</param>
         /// <param name="blnUnconditionalOnly">Whether to only fetch values for improvements that do not have a condition.</param>
-        /// <param name="blnIncludeUnimproved">Whether to only fetch values for improvements that do not have an improvedname when specifying ImprovedNames.</param> 
+        /// <param name="blnIncludeNonImproved">Whether to only fetch values for improvements that do not have an improvedname when specifying ImprovedNames.</param> 
         public static int ValueOf(Character objCharacter, Improvement.ImprovementType objImprovementType, bool blnAddToRating = false, string strImprovedName = "", bool blnUnconditionalOnly = true, bool blnIncludeNonImproved = false)
         {
             //Log.Enter("ValueOf");
@@ -2702,6 +2768,8 @@ namespace Chummer
                     intMinimumRating = ValueToInt(objCharacter, strMinimumRating, intRating);
                 int intMaximumRating = int.MaxValue;
                 string strMaximumRating = xmlBonusNode.Attributes?["maximumrating"]?.InnerText;
+                string strPrompt = xmlBonusNode.Attributes?["prompt"]?.InnerText ?? string.Empty;
+
                 if (!string.IsNullOrWhiteSpace(strMaximumRating))
                     intMaximumRating = ValueToInt(objCharacter, strMaximumRating, intRating);
 
@@ -2737,6 +2805,10 @@ namespace Chummer
                 {
                     setAllowedNames = new HashSet<string> {ForcedValue};
                 }
+                else if (!string.IsNullOrEmpty(strPrompt))
+                {
+                    setAllowedNames = new HashSet<string> { strPrompt };
+                }
                 else
                 {
                     string strLimitToSkill = xmlBonusNode.SelectSingleNode("@limittoskill")?.InnerText;
@@ -2769,6 +2841,12 @@ namespace Chummer
                         }
                     }
                     setProcessedSkillNames.Add(objKnowledgeSkill.Name);
+                }
+
+                if (strPrompt != string.Empty && !setProcessedSkillNames.Contains(strPrompt))
+                {
+                    lstDropdownItems.Add(new ListItem(strPrompt, LanguageManager.TranslateExtra(strPrompt, GlobalOptions.Language)));
+                    setProcessedSkillNames.Add(strPrompt);
                 }
                 if (intMinimumRating <= 0)
                 {
@@ -2856,9 +2934,10 @@ namespace Chummer
 
                 frmSelectItem frmPickSkill = new frmSelectItem
                 {
-                    Description = LanguageManager.GetString("Title_SelectSkill", GlobalOptions.Language)
+                    Description = LanguageManager.GetString("Title_SelectSkill", GlobalOptions.Language),
+                    AllowAutoSelect = string.IsNullOrWhiteSpace(strPrompt)
                 };
-                if (setAllowedNames != null)
+                if (setAllowedNames != null && string.IsNullOrWhiteSpace(strPrompt))
                     frmPickSkill.GeneralItems = lstDropdownItems;
                 else
                     frmPickSkill.DropdownItems = lstDropdownItems;
@@ -3072,6 +3151,11 @@ namespace Chummer
                 Log.Info("Returned from scheduled Rollback");
             }
 
+            // If the bonus should not bubble up SelectedValues from its improvements, reset it to empty. 
+            if (nodBonus.Attributes?["useselected"]?.InnerText == bool.FalseString)
+            {
+                SelectedValue = string.Empty;
+            }
             // Clear the Forced Value and Limit Selection strings once we're done to prevent these from forcing their values on other Improvements.
             s_StrForcedValue = string.Empty;
             s_StrLimitSelection = string.Empty;

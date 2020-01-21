@@ -467,7 +467,7 @@ namespace Chummer
             this.lblMetamagicSourceLabel = new System.Windows.Forms.Label();
             this.lblMetamagicSource = new System.Windows.Forms.Label();
             this.flpInitiationButtons = new System.Windows.Forms.FlowLayoutPanel();
-            this.cmdAddMetamagic = new System.Windows.Forms.Button();
+            this.cmdAddMetamagic = new SplitButton();
             this.cmdDeleteMetamagic = new System.Windows.Forms.Button();
             this.flpInitiation = new System.Windows.Forms.FlowLayoutPanel();
             this.gpbInitiationType = new System.Windows.Forms.GroupBox();
@@ -999,6 +999,10 @@ namespace Chummer
             this.lblMatrixINI = new Chummer.LabelWithToolTip();
             this.lblESSMax = new System.Windows.Forms.Label();
             this.lblArmor = new Chummer.LabelWithToolTip();
+            this.lblSurprise = new Chummer.LabelWithToolTip();
+            this.lblSurpriseLabel = new Chummer.LabelWithToolTip();
+            this.lblDodgeLabel = new Chummer.LabelWithToolTip();
+            this.lblDodge = new Chummer.LabelWithToolTip();
             this.tabDefences = new System.Windows.Forms.TabPage();
             this.tlpSpellDefense = new Chummer.BufferedTableLayoutPanel(this.components);
             this.lblSpellDefenceManipPhysical = new Chummer.LabelWithToolTip();
@@ -1702,7 +1706,7 @@ namespace Chummer
             // 
             this.lblMemoryLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblMemoryLabel.AutoSize = true;
-            this.lblMemoryLabel.Location = new System.Drawing.Point(91, 356);
+            this.lblMemoryLabel.Location = new System.Drawing.Point(91, 406);
             this.lblMemoryLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMemoryLabel.Name = "lblMemoryLabel";
             this.lblMemoryLabel.Size = new System.Drawing.Size(47, 13);
@@ -1714,7 +1718,7 @@ namespace Chummer
             // 
             this.lblLiftCarryLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblLiftCarryLabel.AutoSize = true;
-            this.lblLiftCarryLabel.Location = new System.Drawing.Point(66, 331);
+            this.lblLiftCarryLabel.Location = new System.Drawing.Point(66, 381);
             this.lblLiftCarryLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblLiftCarryLabel.Name = "lblLiftCarryLabel";
             this.lblLiftCarryLabel.Size = new System.Drawing.Size(72, 13);
@@ -1726,7 +1730,7 @@ namespace Chummer
             // 
             this.lblJudgeIntentionsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblJudgeIntentionsLabel.AutoSize = true;
-            this.lblJudgeIntentionsLabel.Location = new System.Drawing.Point(50, 306);
+            this.lblJudgeIntentionsLabel.Location = new System.Drawing.Point(50, 331);
             this.lblJudgeIntentionsLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblJudgeIntentionsLabel.Name = "lblJudgeIntentionsLabel";
             this.lblJudgeIntentionsLabel.Size = new System.Drawing.Size(88, 13);
@@ -1738,19 +1742,19 @@ namespace Chummer
             // 
             this.lblComposureLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblComposureLabel.AutoSize = true;
-            this.lblComposureLabel.Location = new System.Drawing.Point(75, 281);
+            this.lblComposureLabel.Location = new System.Drawing.Point(75, 306);
             this.lblComposureLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblComposureLabel.Name = "lblComposureLabel";
             this.lblComposureLabel.Size = new System.Drawing.Size(63, 13);
             this.lblComposureLabel.TabIndex = 44;
-            this.lblComposureLabel.Tag = "Label_OtherCmposure";
+            this.lblComposureLabel.Tag = "Label_OtherComposure";
             this.lblComposureLabel.Text = "Composure:";
             // 
             // lblRemainingNuyenLabel
             // 
             this.lblRemainingNuyenLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblRemainingNuyenLabel.AutoSize = true;
-            this.lblRemainingNuyenLabel.Location = new System.Drawing.Point(44, 256);
+            this.lblRemainingNuyenLabel.Location = new System.Drawing.Point(44, 281);
             this.lblRemainingNuyenLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblRemainingNuyenLabel.Name = "lblRemainingNuyenLabel";
             this.lblRemainingNuyenLabel.Size = new System.Drawing.Size(94, 13);
@@ -1762,7 +1766,7 @@ namespace Chummer
             // 
             this.lblESS.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblESS.AutoSize = true;
-            this.lblESS.Location = new System.Drawing.Point(87, 231);
+            this.lblESS.Location = new System.Drawing.Point(87, 256);
             this.lblESS.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblESS.Name = "lblESS";
             this.lblESS.Size = new System.Drawing.Size(51, 13);
@@ -2137,13 +2141,13 @@ namespace Chummer
             this.tsMartialArtsAddAdvantage,
             this.tsMartialArtsNotes});
             this.cmsMartialArts.Name = "cmsWeapon";
-            this.cmsMartialArts.Size = new System.Drawing.Size(155, 48);
+            this.cmsMartialArts.Size = new System.Drawing.Size(154, 48);
             // 
             // tsMartialArtsAddAdvantage
             // 
             this.tsMartialArtsAddAdvantage.Image = global::Chummer.Properties.Resources.medal_gold_add;
             this.tsMartialArtsAddAdvantage.Name = "tsMartialArtsAddAdvantage";
-            this.tsMartialArtsAddAdvantage.Size = new System.Drawing.Size(154, 22);
+            this.tsMartialArtsAddAdvantage.Size = new System.Drawing.Size(153, 22);
             this.tsMartialArtsAddAdvantage.Tag = "Menu_AddAdvantage";
             this.tsMartialArtsAddAdvantage.Text = "&Add Technique";
             this.tsMartialArtsAddAdvantage.Click += new System.EventHandler(this.tsMartialArtsAddAdvantage_Click);
@@ -2152,7 +2156,7 @@ namespace Chummer
             // 
             this.tsMartialArtsNotes.Image = global::Chummer.Properties.Resources.note_edit;
             this.tsMartialArtsNotes.Name = "tsMartialArtsNotes";
-            this.tsMartialArtsNotes.Size = new System.Drawing.Size(154, 22);
+            this.tsMartialArtsNotes.Size = new System.Drawing.Size(153, 22);
             this.tsMartialArtsNotes.Tag = "Menu_Notes";
             this.tsMartialArtsNotes.Text = "&Notes";
             this.tsMartialArtsNotes.Click += new System.EventHandler(this.tsMartialArtsNotes_Click);
@@ -3029,7 +3033,7 @@ namespace Chummer
             // 
             this.tsGearAllowRenameAddAsPlugin.Image = global::Chummer.Properties.Resources.brick_add;
             this.tsGearAllowRenameAddAsPlugin.Name = "tsGearAllowRenameAddAsPlugin";
-            this.tsGearAllowRenameAddAsPlugin.Size = new System.Drawing.Size(169, 22);
+            this.tsGearAllowRenameAddAsPlugin.Size = new System.Drawing.Size(170, 22);
             this.tsGearAllowRenameAddAsPlugin.Tag = "Menu_AddAsPlugin";
             this.tsGearAllowRenameAddAsPlugin.Text = "&Add as Plugin";
             this.tsGearAllowRenameAddAsPlugin.Click += new System.EventHandler(this.tsGearAddAsPlugin_Click);
@@ -3038,7 +3042,7 @@ namespace Chummer
             // 
             this.tsGearAllowRenameName.Image = global::Chummer.Properties.Resources.tag_red;
             this.tsGearAllowRenameName.Name = "tsGearAllowRenameName";
-            this.tsGearAllowRenameName.Size = new System.Drawing.Size(169, 22);
+            this.tsGearAllowRenameName.Size = new System.Drawing.Size(170, 22);
             this.tsGearAllowRenameName.Tag = "Menu_NameGear";
             this.tsGearAllowRenameName.Text = "Name Gear";
             this.tsGearAllowRenameName.Click += new System.EventHandler(this.tsGearName_Click);
@@ -3047,7 +3051,7 @@ namespace Chummer
             // 
             this.tsGearAllowRenameNotes.Image = global::Chummer.Properties.Resources.note_edit;
             this.tsGearAllowRenameNotes.Name = "tsGearAllowRenameNotes";
-            this.tsGearAllowRenameNotes.Size = new System.Drawing.Size(169, 22);
+            this.tsGearAllowRenameNotes.Size = new System.Drawing.Size(170, 22);
             this.tsGearAllowRenameNotes.Tag = "Menu_Notes";
             this.tsGearAllowRenameNotes.Text = "&Notes";
             this.tsGearAllowRenameNotes.Click += new System.EventHandler(this.tsGearNotes_Click);
@@ -3699,7 +3703,7 @@ namespace Chummer
             this.cmdLifeModule.Name = "cmdLifeModule";
             this.cmdLifeModule.Size = new System.Drawing.Size(95, 23);
             this.cmdLifeModule.TabIndex = 95;
-            this.cmdLifeModule.Tag = "String_Life_Module";
+            this.cmdLifeModule.Tag = "String_LifeModule";
             this.cmdLifeModule.Text = "Life Module";
             this.cmdLifeModule.UseVisualStyleBackColor = true;
             this.cmdLifeModule.Visible = false;
@@ -6056,6 +6060,7 @@ namespace Chummer
             this.cmdAddMetamagic.Tag = "Button_AddInitiateGrade";
             this.cmdAddMetamagic.Text = "&Add Initiate Grade";
             this.cmdAddMetamagic.UseVisualStyleBackColor = true;
+            this.cmdAddMetamagic.ContextMenuStrip = this.cmsMetamagic;
             this.cmdAddMetamagic.Click += new System.EventHandler(this.cmdAddMetamagic_Click);
             // 
             // cmdDeleteMetamagic
@@ -6144,6 +6149,7 @@ namespace Chummer
             this.chkInitiationSchooling.Text = "Schooling (-10%)";
             this.chkInitiationSchooling.UseVisualStyleBackColor = true;
             this.chkInitiationSchooling.CheckedChanged += new System.EventHandler(this.chkInitiationSchooling_CheckedChanged);
+            this.chkInitiationSchooling.EnabledChanged += new System.EventHandler(this.chkInitiationSchooling_EnabledChanged);
             // 
             // gpbInitiationGroup
             // 
@@ -13031,47 +13037,53 @@ namespace Chummer
             this.tlpOtherInfo.ColumnCount = 2;
             this.tlpOtherInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 65F));
             this.tlpOtherInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35F));
-            this.tlpOtherInfo.Controls.Add(this.lblFly, 1, 17);
+            this.tlpOtherInfo.Controls.Add(this.lblFly, 1, 19);
             this.tlpOtherInfo.Controls.Add(this.lblRiggingINI, 1, 7);
-            this.tlpOtherInfo.Controls.Add(this.lblFlyLabel, 0, 17);
+            this.tlpOtherInfo.Controls.Add(this.lblFlyLabel, 0, 19);
             this.tlpOtherInfo.Controls.Add(this.lblCMPhysicalLabel, 0, 0);
-            this.tlpOtherInfo.Controls.Add(this.lblSwim, 1, 16);
+            this.tlpOtherInfo.Controls.Add(this.lblSwim, 1, 18);
             this.tlpOtherInfo.Controls.Add(this.lblRiggingINILabel, 0, 7);
-            this.tlpOtherInfo.Controls.Add(this.lblSwimLabel, 0, 16);
+            this.tlpOtherInfo.Controls.Add(this.lblSwimLabel, 0, 18);
             this.tlpOtherInfo.Controls.Add(this.lblCMPhysical, 1, 0);
-            this.tlpOtherInfo.Controls.Add(this.lblMovement, 1, 15);
-            this.tlpOtherInfo.Controls.Add(this.lblMemory, 1, 14);
-            this.tlpOtherInfo.Controls.Add(this.lblMovementLabel, 0, 15);
+            this.tlpOtherInfo.Controls.Add(this.lblMovement, 1, 17);
+            this.tlpOtherInfo.Controls.Add(this.lblMemory, 1, 16);
+            this.tlpOtherInfo.Controls.Add(this.lblMovementLabel, 0, 17);
             this.tlpOtherInfo.Controls.Add(this.lblMatrixINIHot, 1, 6);
-            this.tlpOtherInfo.Controls.Add(this.lblMemoryLabel, 0, 14);
+            this.tlpOtherInfo.Controls.Add(this.lblMemoryLabel, 0, 16);
             this.tlpOtherInfo.Controls.Add(this.lblCMStunLabel, 0, 1);
-            this.tlpOtherInfo.Controls.Add(this.lblLiftCarry, 1, 13);
+            this.tlpOtherInfo.Controls.Add(this.lblLiftCarry, 1, 15);
             this.tlpOtherInfo.Controls.Add(this.lblMatrixINICold, 1, 5);
-            this.tlpOtherInfo.Controls.Add(this.lblLiftCarryLabel, 0, 13);
+            this.tlpOtherInfo.Controls.Add(this.lblLiftCarryLabel, 0, 15);
             this.tlpOtherInfo.Controls.Add(this.lblMatrixINIHotLabel, 0, 6);
-            this.tlpOtherInfo.Controls.Add(this.lblJudgeIntentions, 1, 12);
+            this.tlpOtherInfo.Controls.Add(this.lblJudgeIntentions, 1, 13);
             this.tlpOtherInfo.Controls.Add(this.lblCMStun, 1, 1);
-            this.tlpOtherInfo.Controls.Add(this.lblJudgeIntentionsLabel, 0, 12);
+            this.tlpOtherInfo.Controls.Add(this.lblJudgeIntentionsLabel, 0, 13);
             this.tlpOtherInfo.Controls.Add(this.lblINILabel, 0, 2);
-            this.tlpOtherInfo.Controls.Add(this.lblComposure, 1, 11);
+            this.tlpOtherInfo.Controls.Add(this.lblComposure, 1, 12);
             this.tlpOtherInfo.Controls.Add(this.lblMatrixINIColdLabel, 0, 5);
-            this.tlpOtherInfo.Controls.Add(this.lblComposureLabel, 0, 11);
+            this.tlpOtherInfo.Controls.Add(this.lblComposureLabel, 0, 12);
             this.tlpOtherInfo.Controls.Add(this.lblINI, 1, 2);
             this.tlpOtherInfo.Controls.Add(this.lblAstralINILabel, 0, 3);
             this.tlpOtherInfo.Controls.Add(this.lblMatrixINILabel, 0, 4);
-            this.tlpOtherInfo.Controls.Add(this.lblRemainingNuyen, 1, 10);
+            this.tlpOtherInfo.Controls.Add(this.lblRemainingNuyen, 1, 11);
             this.tlpOtherInfo.Controls.Add(this.lblAstralINI, 1, 3);
-            this.tlpOtherInfo.Controls.Add(this.lblRemainingNuyenLabel, 0, 10);
+            this.tlpOtherInfo.Controls.Add(this.lblRemainingNuyenLabel, 0, 11);
             this.tlpOtherInfo.Controls.Add(this.lblMatrixINI, 1, 4);
-            this.tlpOtherInfo.Controls.Add(this.lblESSMax, 1, 9);
+            this.tlpOtherInfo.Controls.Add(this.lblESSMax, 1, 10);
             this.tlpOtherInfo.Controls.Add(this.lblArmorLabel, 0, 8);
             this.tlpOtherInfo.Controls.Add(this.lblArmor, 1, 8);
-            this.tlpOtherInfo.Controls.Add(this.lblESS, 0, 9);
+            this.tlpOtherInfo.Controls.Add(this.lblESS, 0, 10);
+            this.tlpOtherInfo.Controls.Add(this.lblSurprise, 1, 14);
+            this.tlpOtherInfo.Controls.Add(this.lblSurpriseLabel, 0, 14);
+            this.tlpOtherInfo.Controls.Add(this.lblDodgeLabel, 0, 9);
+            this.tlpOtherInfo.Controls.Add(this.lblDodge, 1, 9);
             this.tlpOtherInfo.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpOtherInfo.Location = new System.Drawing.Point(3, 3);
             this.tlpOtherInfo.Margin = new System.Windows.Forms.Padding(0);
             this.tlpOtherInfo.Name = "tlpOtherInfo";
-            this.tlpOtherInfo.RowCount = 18;
+            this.tlpOtherInfo.RowCount = 20;
+            this.tlpOtherInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpOtherInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpOtherInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpOtherInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpOtherInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -13096,7 +13108,7 @@ namespace Chummer
             // lblFly
             // 
             this.lblFly.AutoSize = true;
-            this.lblFly.Location = new System.Drawing.Point(144, 431);
+            this.lblFly.Location = new System.Drawing.Point(144, 481);
             this.lblFly.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblFly.Name = "lblFly";
             this.lblFly.Size = new System.Drawing.Size(13, 13);
@@ -13118,7 +13130,7 @@ namespace Chummer
             // 
             this.lblFlyLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblFlyLabel.AutoSize = true;
-            this.lblFlyLabel.Location = new System.Drawing.Point(115, 431);
+            this.lblFlyLabel.Location = new System.Drawing.Point(115, 481);
             this.lblFlyLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblFlyLabel.Name = "lblFlyLabel";
             this.lblFlyLabel.Size = new System.Drawing.Size(23, 13);
@@ -13129,7 +13141,7 @@ namespace Chummer
             // lblSwim
             // 
             this.lblSwim.AutoSize = true;
-            this.lblSwim.Location = new System.Drawing.Point(144, 406);
+            this.lblSwim.Location = new System.Drawing.Point(144, 456);
             this.lblSwim.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSwim.Name = "lblSwim";
             this.lblSwim.Size = new System.Drawing.Size(13, 13);
@@ -13140,7 +13152,7 @@ namespace Chummer
             // 
             this.lblSwimLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblSwimLabel.AutoSize = true;
-            this.lblSwimLabel.Location = new System.Drawing.Point(103, 406);
+            this.lblSwimLabel.Location = new System.Drawing.Point(103, 456);
             this.lblSwimLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSwimLabel.Name = "lblSwimLabel";
             this.lblSwimLabel.Size = new System.Drawing.Size(35, 13);
@@ -13162,7 +13174,7 @@ namespace Chummer
             // lblMovement
             // 
             this.lblMovement.AutoSize = true;
-            this.lblMovement.Location = new System.Drawing.Point(144, 381);
+            this.lblMovement.Location = new System.Drawing.Point(144, 431);
             this.lblMovement.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMovement.Name = "lblMovement";
             this.lblMovement.Size = new System.Drawing.Size(13, 13);
@@ -13172,7 +13184,7 @@ namespace Chummer
             // lblMemory
             // 
             this.lblMemory.AutoSize = true;
-            this.lblMemory.Location = new System.Drawing.Point(144, 356);
+            this.lblMemory.Location = new System.Drawing.Point(144, 406);
             this.lblMemory.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMemory.Name = "lblMemory";
             this.lblMemory.Size = new System.Drawing.Size(13, 13);
@@ -13184,7 +13196,7 @@ namespace Chummer
             // 
             this.lblMovementLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblMovementLabel.AutoSize = true;
-            this.lblMovementLabel.Location = new System.Drawing.Point(78, 381);
+            this.lblMovementLabel.Location = new System.Drawing.Point(78, 431);
             this.lblMovementLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMovementLabel.Name = "lblMovementLabel";
             this.lblMovementLabel.Size = new System.Drawing.Size(60, 13);
@@ -13206,7 +13218,7 @@ namespace Chummer
             // lblLiftCarry
             // 
             this.lblLiftCarry.AutoSize = true;
-            this.lblLiftCarry.Location = new System.Drawing.Point(144, 331);
+            this.lblLiftCarry.Location = new System.Drawing.Point(144, 381);
             this.lblLiftCarry.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblLiftCarry.Name = "lblLiftCarry";
             this.lblLiftCarry.Size = new System.Drawing.Size(13, 13);
@@ -13228,7 +13240,7 @@ namespace Chummer
             // lblJudgeIntentions
             // 
             this.lblJudgeIntentions.AutoSize = true;
-            this.lblJudgeIntentions.Location = new System.Drawing.Point(144, 306);
+            this.lblJudgeIntentions.Location = new System.Drawing.Point(144, 331);
             this.lblJudgeIntentions.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblJudgeIntentions.Name = "lblJudgeIntentions";
             this.lblJudgeIntentions.Size = new System.Drawing.Size(13, 13);
@@ -13250,7 +13262,7 @@ namespace Chummer
             // lblComposure
             // 
             this.lblComposure.AutoSize = true;
-            this.lblComposure.Location = new System.Drawing.Point(144, 281);
+            this.lblComposure.Location = new System.Drawing.Point(144, 306);
             this.lblComposure.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblComposure.Name = "lblComposure";
             this.lblComposure.Size = new System.Drawing.Size(13, 13);
@@ -13272,7 +13284,7 @@ namespace Chummer
             // lblRemainingNuyen
             // 
             this.lblRemainingNuyen.AutoSize = true;
-            this.lblRemainingNuyen.Location = new System.Drawing.Point(144, 256);
+            this.lblRemainingNuyen.Location = new System.Drawing.Point(144, 281);
             this.lblRemainingNuyen.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblRemainingNuyen.Name = "lblRemainingNuyen";
             this.lblRemainingNuyen.Size = new System.Drawing.Size(13, 13);
@@ -13304,7 +13316,7 @@ namespace Chummer
             // lblESSMax
             // 
             this.lblESSMax.AutoSize = true;
-            this.lblESSMax.Location = new System.Drawing.Point(144, 231);
+            this.lblESSMax.Location = new System.Drawing.Point(144, 256);
             this.lblESSMax.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblESSMax.Name = "lblESSMax";
             this.lblESSMax.Size = new System.Drawing.Size(13, 13);
@@ -13321,6 +13333,53 @@ namespace Chummer
             this.lblArmor.TabIndex = 31;
             this.lblArmor.Text = "0";
             this.lblArmor.ToolTipText = "";
+            // 
+            // lblSurprise
+            // 
+            this.lblSurprise.AutoSize = true;
+            this.lblSurprise.Location = new System.Drawing.Point(144, 356);
+            this.lblSurprise.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSurprise.Name = "lblSurprise";
+            this.lblSurprise.Size = new System.Drawing.Size(13, 13);
+            this.lblSurprise.TabIndex = 77;
+            this.lblSurprise.Text = "0";
+            this.lblSurprise.ToolTipText = "";
+            // 
+            // lblSurpriseLabel
+            // 
+            this.lblSurpriseLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSurpriseLabel.AutoSize = true;
+            this.lblSurpriseLabel.Location = new System.Drawing.Point(90, 356);
+            this.lblSurpriseLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSurpriseLabel.Name = "lblSurpriseLabel";
+            this.lblSurpriseLabel.Size = new System.Drawing.Size(48, 13);
+            this.lblSurpriseLabel.TabIndex = 78;
+            this.lblSurpriseLabel.Tag = "Label_OtherSurprise";
+            this.lblSurpriseLabel.Text = "Surprise:";
+            this.lblSurpriseLabel.ToolTipText = "";
+            // 
+            // lblDodgeLabel
+            // 
+            this.lblDodgeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblDodgeLabel.AutoSize = true;
+            this.lblDodgeLabel.Location = new System.Drawing.Point(96, 231);
+            this.lblDodgeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblDodgeLabel.Name = "lblDodgeLabel";
+            this.lblDodgeLabel.Size = new System.Drawing.Size(42, 13);
+            this.lblDodgeLabel.TabIndex = 79;
+            this.lblDodgeLabel.Text = "Dodge:";
+            this.lblDodgeLabel.ToolTipText = "";
+            // 
+            // lblDodge
+            // 
+            this.lblDodge.AutoSize = true;
+            this.lblDodge.Location = new System.Drawing.Point(144, 231);
+            this.lblDodge.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblDodge.Name = "lblDodge";
+            this.lblDodge.Size = new System.Drawing.Size(13, 13);
+            this.lblDodge.TabIndex = 80;
+            this.lblDodge.Text = "0";
+            this.lblDodge.ToolTipText = "";
             // 
             // tabDefences
             // 
@@ -13729,13 +13788,13 @@ namespace Chummer
             this.tsGearAllowRenameNotes,
             this.tsGearAllowRenameExtra});
             this.cmsGearAllowRename.Name = "cmsGearAllowRename";
-            this.cmsGearAllowRename.Size = new System.Drawing.Size(170, 92);
+            this.cmsGearAllowRename.Size = new System.Drawing.Size(171, 92);
             // 
             // tsGearAllowRenameExtra
             // 
             this.tsGearAllowRenameExtra.Image = global::Chummer.Properties.Resources.note_edit;
             this.tsGearAllowRenameExtra.Name = "tsGearAllowRenameExtra";
-            this.tsGearAllowRenameExtra.Size = new System.Drawing.Size(169, 22);
+            this.tsGearAllowRenameExtra.Size = new System.Drawing.Size(170, 22);
             this.tsGearAllowRenameExtra.Tag = "Menu_RenameExtraText";
             this.tsGearAllowRenameExtra.Text = "&Rename Extra Text";
             this.tsGearAllowRenameExtra.Click += new System.EventHandler(this.tsGearRename_Click);
@@ -14352,7 +14411,7 @@ namespace Chummer
         private System.Windows.Forms.ToolStripMenuItem mnuFilePrint;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.TabPage tabInitiation;
-        private System.Windows.Forms.Button cmdAddMetamagic;
+        private SplitButton cmdAddMetamagic;
         private System.Windows.Forms.Button cmdDeleteMetamagic;
         private System.Windows.Forms.Label lblInitiationBP;
         private System.Windows.Forms.Label lblMartialArtsBP;
@@ -15068,5 +15127,9 @@ namespace Chummer
         private System.Windows.Forms.Label lblVehicleWeaponMode;
         private System.Windows.Forms.Label lblMetagenicQualities;
         private System.Windows.Forms.Label lblMetagenicQualitiesLabel;
+        private LabelWithToolTip lblSurprise;
+        private LabelWithToolTip lblSurpriseLabel;
+        private LabelWithToolTip lblDodgeLabel;
+        private LabelWithToolTip lblDodge;
     }
 }

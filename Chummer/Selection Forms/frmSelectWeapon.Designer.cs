@@ -253,7 +253,7 @@ namespace Chummer
             this.dgvc_Name.Name = "dgvc_Name";
             this.dgvc_Name.ReadOnly = true;
             this.dgvc_Name.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvc_Name.TranslationTag = null;
+            this.dgvc_Name.TranslationTag = "String_Name";
             this.dgvc_Name.Width = 60;
             // 
             // dgvc_Dice
@@ -265,7 +265,7 @@ namespace Chummer
             this.dgvc_Dice.Name = "dgvc_Dice";
             this.dgvc_Dice.ReadOnly = true;
             this.dgvc_Dice.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvc_Dice.TranslationTag = null;
+            this.dgvc_Dice.TranslationTag = "String_Dicepool";
             this.dgvc_Dice.Width = 78;
             // 
             // dgvc_Accuracy
@@ -277,7 +277,7 @@ namespace Chummer
             this.dgvc_Accuracy.Name = "dgvc_Accuracy";
             this.dgvc_Accuracy.ReadOnly = true;
             this.dgvc_Accuracy.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvc_Accuracy.TranslationTag = null;
+            this.dgvc_Accuracy.TranslationTag = "String_Accuracy";
             this.dgvc_Accuracy.Width = 77;
             // 
             // dgvc_Damage
@@ -289,7 +289,7 @@ namespace Chummer
             this.dgvc_Damage.Name = "dgvc_Damage";
             this.dgvc_Damage.ReadOnly = true;
             this.dgvc_Damage.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvc_Damage.TranslationTag = null;
+            this.dgvc_Damage.TranslationTag = "String_Damage";
             this.dgvc_Damage.Width = 72;
             // 
             // dgvc_AP
@@ -301,7 +301,7 @@ namespace Chummer
             this.dgvc_AP.Name = "dgvc_AP";
             this.dgvc_AP.ReadOnly = true;
             this.dgvc_AP.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvc_AP.TranslationTag = null;
+            this.dgvc_AP.TranslationTag = "String_AP";
             this.dgvc_AP.Width = 46;
             // 
             // dgvc_RC
@@ -313,7 +313,7 @@ namespace Chummer
             this.dgvc_RC.Name = "dgvc_RC";
             this.dgvc_RC.ReadOnly = true;
             this.dgvc_RC.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvc_RC.TranslationTag = null;
+            this.dgvc_RC.TranslationTag = "String_RC";
             this.dgvc_RC.Width = 47;
             // 
             // dgvc_Ammo
@@ -325,7 +325,7 @@ namespace Chummer
             this.dgvc_Ammo.Name = "dgvc_Ammo";
             this.dgvc_Ammo.ReadOnly = true;
             this.dgvc_Ammo.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvc_Ammo.TranslationTag = null;
+            this.dgvc_Ammo.TranslationTag = "String_Ammo";
             this.dgvc_Ammo.Width = 61;
             // 
             // dgvc_Mode
@@ -337,7 +337,7 @@ namespace Chummer
             this.dgvc_Mode.Name = "dgvc_Mode";
             this.dgvc_Mode.ReadOnly = true;
             this.dgvc_Mode.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvc_Mode.TranslationTag = null;
+            this.dgvc_Mode.TranslationTag = "String_Mode";
             this.dgvc_Mode.Width = 59;
             // 
             // dgvc_Reach
@@ -349,7 +349,7 @@ namespace Chummer
             this.dgvc_Reach.Name = "dgvc_Reach";
             this.dgvc_Reach.ReadOnly = true;
             this.dgvc_Reach.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvc_Reach.TranslationTag = null;
+            this.dgvc_Reach.TranslationTag = "String_Reach";
             this.dgvc_Reach.Width = 64;
             // 
             // dgvc_Accessories
@@ -362,7 +362,7 @@ namespace Chummer
             this.dgvc_Accessories.Name = "dgvc_Accessories";
             this.dgvc_Accessories.ReadOnly = true;
             this.dgvc_Accessories.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvc_Accessories.TranslationTag = null;
+            this.dgvc_Accessories.TranslationTag = "String_Accessories";
             this.dgvc_Accessories.Width = 89;
             // 
             // Label_Avail
@@ -374,7 +374,7 @@ namespace Chummer
             this.Label_Avail.Name = "Label_Avail";
             this.Label_Avail.ReadOnly = true;
             this.Label_Avail.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.Label_Avail.TranslationTag = null;
+            this.Label_Avail.TranslationTag = "String_Avail";
             this.Label_Avail.Width = 55;
             // 
             // Label_Source
@@ -385,7 +385,7 @@ namespace Chummer
             this.Label_Source.Name = "Label_Source";
             this.Label_Source.ReadOnly = true;
             this.Label_Source.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.Label_Source.TranslationTag = null;
+            this.Label_Source.TranslationTag = "String_Source";
             this.Label_Source.Width = 66;
             // 
             // dgvc_Cost
@@ -401,7 +401,7 @@ namespace Chummer
             this.dgvc_Cost.Name = "dgvc_Cost";
             this.dgvc_Cost.ReadOnly = true;
             this.dgvc_Cost.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvc_Cost.TranslationTag = null;
+            this.dgvc_Cost.TranslationTag = "String_Cost";
             this.dgvc_Cost.Width = 53;
             // 
             // tabControl

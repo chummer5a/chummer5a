@@ -18,7 +18,6 @@
     https://github.com/chummer5a/chummer5a
 -->
 <chummer>
-  <version>-500</version>
   <name>Português (pt-BR)</name>
   <righttoleft>False</righttoleft>
   <strings>
@@ -37,10 +36,6 @@
     </string>
     <string>
       <key>String_LifeModule</key>
-      <text>Módulo de Vida</text>
-    </string>
-    <string>
-      <key>String_Life_Module</key>
       <text>Módulo de Vida</text>
     </string>
     <string>
@@ -1182,7 +1177,7 @@
       <text>Observar Pasta</text>
     </string>
     <string>
-      <key>Treenode_Roster_FavouriteCharacters</key>
+      <key>Treenode_Roster_FavoriteCharacters</key>
       <text>Personagens Favoritos</text>
     </string>
     <!-- End Region -->
@@ -4948,7 +4943,7 @@
       <text>Voo:</text>
     </string>
     <string>
-      <key>Label_OtherCmposure</key>
+      <key>Label_OtherComposure</key>
       <text>Compostura:</text>
     </string>
     <string>
@@ -6671,6 +6666,10 @@
     <string>
       <key>Checkbox_Options_IgnoreArt</key>
       <text>Ignorar requisitos de Arte do Street Grimoire</text>
+    </string>
+    <string>
+      <key>Checkbox_Options_AllowFreeGrids</key>
+      <text>Allow Free Grid Subscription Qualities for lifestyles even if Hard Targets is not an active book</text>
     </string>
     <string>
       <key>Checkbox_Options_CyberlegMovement</key>

@@ -62,6 +62,7 @@ namespace Chummer.Plugins
         Assembly GetPluginAssembly();
         void Dispose();
         bool SetCharacterRosterNode(TreeNode objNode);
+        Task<bool> DoCharacterList_DragDrop(object sender, DragEventArgs dragEventArgs, System.Windows.Forms.TreeView treCharacterList);
     }
 
 

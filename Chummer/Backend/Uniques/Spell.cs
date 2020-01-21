@@ -849,6 +849,25 @@ namespace Chummer
                             yield return objImprovement;
                         break;
                     case Improvement.ImprovementType.SpellCategory:
+                        // SR5 318: Regardless of the number of bonded foci you have,
+                        // only one focus may add its Force to a dicepool for any given test.
+                        // We need to do some checking to make sure this is the most powerful focus before we add it in
+                        if (objImprovement.ImproveSource == Improvement.ImprovementSource.Gear)
+                        {
+                            //TODO: THIS IS NOT SAFE. While we can mostly assume that Gear that add to SpellCategory are Foci, it's not reliable.
+                            // we are returning either the original improvement, null or a newly instantiated improvement
+                            Improvement bestFocus = CompareFocusPower(objImprovement);
+                            if (bestFocus != null)
+                            {
+                                yield return bestFocus;
+                            }
+                            break;
+                        }
+                        else
+                        {
+                            yield return objImprovement;
+                            break;
+                        }
                     case Improvement.ImprovementType.SpellCategoryDrain:
                         if (objImprovement.ImprovedName == Category)
                             yield return objImprovement;
@@ -859,6 +878,35 @@ namespace Chummer
                 }
             }
         }
+
+        /// <summary>
+        /// Method to check we are only applying the highest focus to the spell dicepool
+        /// </summary>
+        private Improvement CompareFocusPower(Improvement objImprovement)
+        {
+            // get any bonded foci that add to the base magic stat and return the highest rated one's rating
+            var powerFocusRating = _objCharacter.Foci
+                .Where(x => x.GearObject.Bonus.InnerText == "MAGRating" && x.GearObject.Bonded).Select(x => x.Rating)
+                .DefaultIfEmpty().Max();
+
+            // If our focus is higher, add in a partial bonus
+            if (powerFocusRating > 0 && powerFocusRating < objImprovement.Value)
+            {
+                // This is hackz -- because we don't want to lose the original improvement's value
+                // we instantiate a fake version of the improvement that isn't saved to represent the diff
+                return new Improvement(_objCharacter)
+                {
+                    Value = objImprovement.Value - powerFocusRating,
+                    SourceName = objImprovement.SourceName,
+                    ImprovedName = objImprovement.ImprovedName,
+                    ImproveSource = objImprovement.ImproveSource,
+                    ImproveType = objImprovement.ImproveType,
+                };
+            }
+
+            return powerFocusRating > 0 ? null : objImprovement;
+        }
+
         #endregion
 
         #region UI Methods

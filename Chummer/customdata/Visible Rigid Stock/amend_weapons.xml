@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<chummer>
+  <accessories>
+    <accessory>
+      <name>Stock</name>
+      <hide amendoperation="remove" />
+    </accessory>
+  </accessories>
+</chummer>

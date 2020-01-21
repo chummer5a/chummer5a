@@ -1,4 +1,127 @@
-Future Build 209
+Future Build 210
+Application Fixes:
+- Fixed behaviour of the Weapon Accessory mount checks to properly work with accessories that can occupy multiple slots when one of those slots is occupied.
+- Fixed a regression in the behaviour of weapon accessories to ensure they properly save and load their ammoreplace property. Existing accessories that should have this property will need to be re-added.Closes #3947
+- Fixed a regression in the behaviour of the GetNode method for Characters that could cause them to fetch incorrect values from XML. Closes #3948
+- Purchasing cyberware in career mode with the house rule to allow customisation of essence costs now works poperly. Closes #3941
+- Cyberware that has a wireless pair bonus and the replace mode will now properly remove its base improvements.
+- Metavariants now properly fetch their base metatype's movement speed(s) if not specified in data. Resolves an issue in which active skill checking would cause a crash when initialising, if the character was not capable of Flight.
+- Added an attribute (useselected) to bonus nodes that allows preventing the improvements from providing text to the parent object. This allow for preventing Infected qualities from listing the attributes they selected.
+- Fixed behaviour of the selectattributes bonus to properly concatenate the selected values. 
+- Fixed implementation of the LimitSpellDescriptor improvement to properly function as a whitelist instead of blacklist.
+- Added support for Geneware actually benefiting from the genetechessmultiplier improvement.  Closes #3741
+- Fixed an issue with the Purchase method for cyberware that would cause Child items to always consume Essence Holes, even if being installed in parent items. Clsoes #3959
+- Added a validity check for whether a character has been given two specialisations incorrectly in some cases during create mode. Mostly should only happen with house rules active.
+- Refactored tooltip code for weapons to properly show sources of bonuses.
+- Added a new improvement type to clamp attribute maximums (attributemaxclamp) to the metatype maximum instead of the metatype augmented maximum. This is used by the Infirm quality to prevent taking attribute bonuses that are higher than the metatype maximum.
+- Altered some logic in the Weapon class to better support the Improved Ammunition Capacity accessory provided by Special Modifications.
+- Fixed behaviour of cyberzombification improperly reducing metatype limits instead of increasing them. 
+- Select Armor/Weapon windows now properly support translated headers on their datagrid views.
+- Fixed an issue with the Point Buy form incorrectly setting metavariant metatypes to be themselves (ie Dryad (Dryad)).
+- Fixed an inappropriate bracket for improvements to skills that don't have a condition.
+- Fixed behaviour of html tooltips used by skill controls not properly being rendered for html. Fixes newlines in notes not working. 
+- Added confirmation prompt to Delete action for skills. 
+- Fixed Extra values not being properly translated for Cyberware when printed. Closes #3990
+- Adept Power Way Discounts are now properly limited to MAG /2. Closes #3618
+- Fixed search filtering not working properly in the Weapon Accessory selection window.
+- Fixed an issue with cyberware upgrades not respecting the 'free' choice from the cyberwater selector.
+
+Application Changes:
+- Added a new improvement type to allow qualities to become free. Used to supplant existing code that flags the Mentor Spirit as free with certain qualities. 
+- Added a new improvement type to disable qualities and their associated bonuses. Has limited support for use in the UI at the moment, and only refreshes on load or when other qualities are removed or added. 
+- The Character Roster's Watch Folder now includes subfolders. 
+- Added support for Priority mode using non-ABCDE arrays.
+- Spells, rituals and preparations now count down from maximum, in the same way as other counters in create mode.
+- Added a new improvement type that can disable a skill group selected by the user. To be used by RunnerHub customdata ruleset. 
+- Added a new improvement type that governs whether a character can become a cyberzombie. Customdata has been provided to apply this to the Flashback System from Chrome Flesh.
+- Power Foci and Spellcasting Foci now only provide the highest of their dicepool to a given spell's dicepool per SR5 318. Implemented by https://github.com/MemeticContagion
+- Critter power categories can now be whitelisted via the Improvement system. This filtering is done through a Contains operation, which means that a quality flagged as the Paranormal/Infected category matches either Paranormal OR Infected. This means that characters that should have access to the Drake, Echoes, Emergent, Free Spirit, Infected and Toxic Critter Powers categories will need to Reapply Improvements for them to be visible. Closes #3951
+- Cyberware pair bonuses now allow the option to exclude themselves from the bonus by adding includeself="False" to the wirelesspairinclude node that lists which cyberwares the item pairs with. This is to prevent interaction with things like Wired Reflexes from cybersuite upgrades causing a stack. 
+- The limitspellcategory improvement now supports specifying the category of spell in the bonus node.
+- Added support for non-Sapient critters not being able to unlock all skills. Now, critters without this Power that do not have at least Rating 1 in the relevant skill will be prevented from taking it.
+- Added new improvement types to allow selectively restricting access to spells.
+  - LimitSpellCategory restricts the character to a specific Category of spells. Replaces the hardcoded Adept restriction on taking Rituals. IMPORTANT: This restriction will not take effect unless the character uses the Reapply Improvements window. 
+  - AllowSpellCategory allows additional specific Category of spells to be taken. Mostly expected to be used in conjunction with limitSpellcategory for custom content. 
+  - LimitSpellRange prevents taking spells that do not match a given Range.
+  - AllowSpellRange allows purchasing Spells of a given Range that would otherwise be filtered by Improvements such as LimitSpell.
+  - BlockSpellDescriptor prevents taking Spells that have a given Descriptor. Replaces the previous implementation of LimitSpellDescriptor.
+- Added an optional rule to suppress Technomancers taking the Schooling Initiation discount, as this isn't present in any of the sourcebooks.
+- Added a new improvement type, weaponspecificdice. This provides a dicepool bonus to a specific weapon, idenfiied by its internalid. Optional attribute "type" allows filtering by ranged or melee weapons. Used by weapon foci.
+- Replaced selectweapon bonus on weapon foci with weaponspecificdice, as above.
+- Allowed alphabetic sorting of Favorite and Recent roster lists. Note that this sorting is based on the TAG of the node, which is the full filename path.
+- Added basic support for the Gunnery specialisation adding to dicepool for vehicle-mounted weapons. This is done by applying a 'gunneryspec' attribute to either the root category node, or the category node of the weapon itself. The weapon is checked first, then the category.
+- Added support for the Reach improvement to apply to specifically named weapons only. This is used by adding a Name attribute to the node. 
+- Added support for martial arts, techniques and maneuvers fetching notes from their books.
+- Added support for metamagics being gated behind certain initiate grades, as used by the Islamic traditions from Forbidden Arcana. This is done through an improvement type, metamagiclimit. For each metamagic child node, the name of the Metamagic (or Echo) is specified in the inner text, while the 'grade' attribute limits the metamagic to being taken at that specific grade. If the grade is not specified, this acts as a whitelist for metamagics, ONLY allowing those metamagics.
+- Added Dodge to the Other Info and Condition Monitor panels in Create and Career modes.
+- Added basic support for right-clicking on a character tab and saving, printing or closing the file. Currently only works for the currently-selected tab.
+- Added a new bonus type that sets the minimum Karma cost of increasing a Knowledge skill.  This is used by objects such as the Learning Stimulus nanoware to force the minimum to be higher than one. Closes #3229
+- Added support for the various 'addspirit/sprite' improvements pulling from the critters.xml file as well as traditions.xml.
+- Added a new amendoperation for the amend system: "regexreplace". This operation modifies text data by parsing the starting data with a Regular Expression pattern and then replacing the matched patterns with the text data given by the amend node.
+  - When an amend node is specified with the amendoperation "regexreplace", it must also be specified with the attribute "regexpattern" whose contents must be a proper Regular Expression. If the attribute is not specified, the amend node will instead run as if it had the amend operation "replace". If the attribute is specified, but its contents are not a proper Regular Expression, the program will display an error for the faulty amend node and then continue with the rest of the amend file.
+  - A "regexreplace" amend node will pattern-match and modify all instances of Chummer5a-relevant text data in the base data node (i.e. text contents, attributes) that have corresponding replacement values specified in the amend node. This means that e.g. if one only wishes to modify an attribute, they should make sure the amend node doesn't have an end tag (i.e. "<node />", not "<node></node>"), otherwise the amend node will pattern-match the base node's main text contents and modify the contents by replacing matches with an empty string (i.e. it will remove parts of the contents that match the Regular Expression pattern). If one wishes to regexreplace multiple instances of text data within a base data node (e.g. two different attributes), but have a different Regular Expression pattern for each one, they will need to do so via separate amend nodes for each pattern.
+  - For more information on how Regular Expression replacing works, please consult this page: https://docs.microsoft.com/en-us/dotnet/standard/base-types/substitutions-in-regular-expressions . The way "regexreplace" works internally is that it uses the Regex.Replace() function and takes the base data node's text contents as the input, the contents of the "regexpattern" attribute as the pattern, and the amend node's text contents as the replacement, then sets the base data node's text contents to be equal to the output from the Regex.Replace() operation.
+- Added rangemodifier property to weapon accessories. This modifies the base range modifier according to the given range. 
+
+Data Changes:
+- Replaced all instances of 'forbidden/Celerity' in cyberware with the new disablequality improvement.
+- Added disablequality improvements for vision-based qualities to the Cybereyes Basic System. 
+- Fixed issues with the Dodge, Bonus Street Cred and Street Cred Multiplier custom improvements. 
+- Added missing adept way discounts to the Mystic Aptitude and State of Purity powers to render them compatible with the Magician's Way.
+- Dareadrenaline properly allows the Poor Self Control (Thrill Seeker) to be taken in addition to it. To accommodate this, a hidden version of the quality has been added.
+- The Stock weapon accessory, apparently a legacy item from 4e Arsenal, has been flagged as hidden. Customdata folder has been created to unhide it. 
+- The Technoshaman quality/stream now properly allows the creation of a Sprite Pet. 
+- Fixed typos in mentors.xml. Fixed issues with the Chaos and Holy Text not poroperly being able to take their powers for free. Closes #3955
+- Added customdata to allow the Hold the Door and Escaped Custody qualities to be taken by anyone, instead of just technomancers. Fix provided by Keeper M.
+- Added action type to State of Purity power. Fix provided by Keeper M.
+- Added 'traditional' traditions with bonuses from FA. Fix provided by Keeper M.
+- Added customdata for Morrissey Alta's availability. Fix provided by Keeper M.
+- Fixed typo in the Renraku Red Samurai Katana. Fix provided by Keeper M.
+- Adjusted spells that require being taken by Adept to use Required tags instead of being a hardcoded blacklist for non-Adepts. IMPORTANT: 
+- Added missing MAG attributes to the Banshee, Dzoo-Noo-Qua, Goblin, Vampire and Sukuyan qualities. Closes #3611
+- Fixed incorrect stats (AP mismatch, availability) on the Rolling Blades from No Future.
+- Fixed an issue with the Armor Mod Helmet customdata rule not working for hardned mil-spec suits.
+- Replaced existing firstlevel bonus for the Infirm quality with new attributemaxclamp improvements. 
+- Added Foot Anchor weapon to the Foot Anchor cyberware.
+- Added gunneryspec to most categories of weapon; most categories have been mapped as Ballistic for now, with other weapons needing to be mapped manually. Please contact the chummer dev team if you'd like to assist with this, though any pull requests will be welcomed as per normal.
+- Added customdata for the above to support the SRM 1.3 ruling that the cyberweapons from SR5 benefit from Reach when used as a pair.
+- Added array choices to Street Scum in gameplayoptions.xml. Added High Life gameplay option; due to lack of ruling otherwise, based off Standard Prime Runner with a different array.
+- Altered the page for all Techniques that contain 'see page xx' references to referto the proper pages.
+- Restricted advanced critter powers for infected from dark terrors to appropriate qualities. Need to revisist and add as qualities instead. 
+- Added adrenaline filter from dark terrors.
+- Added missing Shedim critter Powers from Dark Terrors.
+- Fixed incorrect quality names on the Cactus Cat critter and Drifter life module that prevented them from being selected.
+- Fixed incorrect bonuses on the Islamic traditions from Forbidden Arcana that caused them to throw an error when added. 
+- Added freespells custom improvement to improvements.xml
+- Added knowledgeskillkarmacostmin bonus to the Jack of All Trades quality and Learning Stimulator nanoware. 
+- Added missing Black Magic [alt] tradition from FA. Personal Demons bonus not implemented; will need a new bonus created for it.
+- Range Modifiers are now specified in ranges.xml
+- Added SR Missions 1.4 Neotokyo customdata folder. This customdata set hides qualities used in Neo-Tokyo Missions and adjusts the Availability of all Firearms according to the SRM Neo-Tokyo 1.0 document.
+- Added Mental, Physical and Social Limit improvement types to improvements.xml. Closes #3456
+- Fixed incorrect  REA maximum for the Wendigo quality.
+
+New Strings:
+- String_DisableSkillGroupPrompt
+- Message_CyberzombieRequirementsImprovement
+- Checkbox_Options_AllowTechnomancerSchooling
+- Label_Dodge
+- String_Avail
+- String_Capacity
+- String_Cost
+- String_Source
+- String_Accessories
+- String_Accuracy
+- String_Ammo
+- String_AP
+- String_Damage
+- String_Dicepool
+- String_Mode
+- String_RC
+- String_Reach
+- Message_DeleteSkill
+- String_MetersPerHit
+
+Build 209
 
 Application Changes:
 - Metagenic quality balances are now shown in the Karma summary tab while in create mode. This allows for more easily seeing how many qualities you need to take to even up, and properly accounts for the karma lost to balance up positive and negative metagenic qualities.
@@ -8,13 +131,38 @@ Application Changes:
 - Weapons can now use a 'useskillspec' node to force the specialisation they use in place of their name. Mostly intended to be used for Exotic Melee/Ranged weapons.
 - All equipment items that specify a Rating (Cyberware, Gear, Vehicle Mods, Weapon Accessories) can now specify a RatingLabel that is applied in place of the standard Rating. For example, Fiberoptic Hair can specify that the Rating is ten-centimetre increments of length. 
 - Added a hidden Built-In weapon mount that allows all weapon categories. This can be used by vehicles that come with weapon mounts that are always installed. 
+- Critters can now start with cyberware and bioware.
+- Added support for weapons using required and forbidden nodes. This is mostly intended to support underbarrel weapons, but can be used in the same way as other objects. 
+- Critters can now be created with specialisations in skills they start with.
+- Added support for armormod requirements into selectionshared. If the sameparent attribute is set to True, then the armour mod must be on the same armour parent as the new mod. Otherwise, it will just check for any mod on any full piece of armour.
+- Added ICanPaste interface type that allows for checking whether the content of the Global Clipboard can be added to the currently selected item. Intent is to pull the logic out of frmCreate and into the base equipment class. 
+- Moved logic for checking whether a weapon accessory is allowed into a weapon into the Weapon class. 
+- All instances of the AllowGear node can now use gearname to allow limiting choices to individually named items (ie built-in medkit allows the Medkit item)
+- Weapon accessories can now be copied and pasted into other weapons in create mode.
+- Added support for vehicle mods coming with built-in cyberware. Supports the Caduceus drone's default snake fingers. 
+- Added a global option to disable the rendering of karma/nuyen charts that cause Chummer to run out of memory in in Linux. This is intended as a temporary shim until a replacement charting tool is developed or the UI is changed.
+- Added support for the selectskill improvement to prompt the user for a knowledge skill to use; if this skill is not found, it will be created, otherwise the bonus will be created for that skill.
+- Added Surprise Test pool to the Other Info tab of career and create mode.
+- Added an improvement type for surprise.
+
 Application Fixes:
 - Fixed issues with the Balistic Shield Exotic Melee Weapon choice not being present in the Exotic Weapon skill selector window. Closes #3856
 - Dedicated Spellslinger properly allows for purchasing spells while the character does not have enough karma to afford it. Closes #3859
 - Fixed a regression with lifestyle qualities not properly storing their Area, Security and Comfort values. Closes #3869
 - Fixed an issue with martial arts techniques improperly storing their Source as the Page.
-- Fixed a regression in the behaviour of availability values improperly causing Built-In items to count towards availabiltiy at character creation. 
+- Fixed a regression in the behaviour of availability values improperly causing Built-In items to count towards availability at character creation. 
 - The SwapSkillAtribute Improvement now properly makes the attribute get swapped for the selected attribute.
+- Fixed a crash when binding Foci, if the treenode for the focus had not been selected. Closes #3905
+- Anthro drones now receive 8 base physical condition monitor boxes instead of 6, per Rigger 5 rules. I don't personally agree with this rule since it effectively means they have 10 base due to limbs, but whatever. 
+- addlimb improvement now supports the use of precedence nodes to allow preventing multiple sources of limbs from stacking, ie centaurs and Liminal Bodies. Closes #3550
+- Fixed an issue with enemies improperly showing warnings about quality limits if they're not set to add to negative quality karma.
+- Added missing DamageResistance improvement bonuses to the tooltip for Indirect Soak.
+- Added support for the optionalpowers improvement being taken multiple times. This is done by adding a count attribute to the base node, which can include attributes and basic math. A spirit could have "{MAG} div 3" for example, which allows for 1 optional power for every 3 full MAG the spirit has. 
+- Fixed a regression in SA-capable weapons not being able to fire Short Bursts in career mode. 
+- Weapon accessories that add fire modes properly show as such.
+- Fixed an issue with Armor Mods that are included in Armor improperly checking availability.
+- Fixed a typo in the Cozenge critter power (previously called "Cozenage").
+- Fixed an issue with weapon accessories in career mode not properly picking up their Black Market Discount.
 
 Data Changes:
 - Tetrachromacy now adds adds +3 to Perception, with a (Visual) condition. This will be exposed to the Print method for character sheets at a later date. 
@@ -28,6 +176,24 @@ Data Changes:
 - Added correct Rank qualities to the Military Academy and Military School life modules. 
 - Ares Cheetah and Cyberspace Designs Dragonfly now have their integrated weapons. 
 - Fixed missing Flight power for the Feathered Drake.
+- Fixed the Glock MP Custodes (MPV) incorrectly being allowed to take a Concealed Quick-Draw Holster.
+- Added warforms from Howling Shadows. 
+- Underbarrel weapons are now properly restricted to weapons that can take them. 
+- All underbarrel weapons from Run and Gun have been properly created as weapons, where data exists for them. I'm not going to add the chainsaw, because there's no firm raw on what a chainsaw is. Closes #3553
+- Added a new customdata item to override the Acceleration of the Yamaha Kaburaya from 3 to 4, per German data changes. Closes #3908
+- Fixed a missing accuracy bonus for Raptor Foot cyberware when also equipped with digigrade legs. Closes #3863
+- Added missing additional reagents from Forbidden Arcana. Closes #2766
+- Added separately-priced SnS-Static Shaft crossbow bolts per German errata. Closes #2368
+- RIG Helmet has been set to a zero-cost armor mod that requires that the base mod be installed first. Closes #1561
+- Removed legacy softweave improvement from the YNT Softweave armor mod. 
+- Moved the Centaur Body improvement into the metatype improvements for Centaur and flagged the quality as hidden.
+- Added correct AP value (-5) to the Riot Shield.
+- Added missing Medkit and Snake Fingers cyberwares to the Shiawase Caduceus 'CAD' 7 drone.
+- Added an optional rule to add the optional powers rule for sprites from Kill Code to the core book sprites. 
+- Moved HTML file used by the "Print to File First" option for fixing issues with rendering sheets into appdata instead, in order to prevent issues with tools that synchronise special folders like desktop from causing the cleanup to fail.
+- Added surprise bonuses for Combat Paralysis quality and Danger Sense adept power
+- Adjusted duplicate GUIDs in lifemodules.xml.
+- Fixed an issue with the ProCam that could cause Chummer to crash when added to a non-Gear parent. Closes #3931
 
 New Strings:
 - Label_MetagenicKarmaValue
@@ -36,6 +202,8 @@ New Strings:
 - Rating_Meters
 - Rating_LengthInCmBy10
 - Label_RatingFormat
+- Tip_OtherSurprise
+- Label_OtherSurprise
 
 - Changed Strings:
 - Message_OverPositiveMetagenicQualities
@@ -2483,7 +2651,7 @@ Data Changes:
         - Shadowrun 2050 (5th Edition)<
     - Critter Powers
         - Vestigial Wings
-        - Underwater Adapation
+        - Underwater Adaptation
         - Magical Flight
     - Cyberware
         - Remote Cyberhand

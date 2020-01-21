@@ -128,6 +128,8 @@ namespace ChummerHub.Data
                 .HasIndex(b => b.Hash);
             builder.Entity<ChummerHub.Models.V1.SINnerGroup>()
                 .HasIndex(b => b.Groupname);
+            builder.Entity<ChummerHub.Models.V1.SINnerGroup>()
+                .HasIndex(b => b.Hash);
             builder.Entity<ChummerHub.Models.V1.SINnerUserRight>()
                 .HasIndex(b => b.EMail);
             builder.Entity<ChummerHub.Models.V1.SINnerGroup>()

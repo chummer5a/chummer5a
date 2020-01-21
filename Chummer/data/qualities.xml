@@ -20,7 +20,7 @@
 -->
 <chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
      xsi:schemaLocation="http://www.w3.org/2001/XMLSchema qualities.xsd">
-  <version>0</version>
+
   <categories>
     <category>Positive</category>
     <category>Negative</category>
@@ -842,13 +842,15 @@
       <category>Positive</category>
       <contributetolimit>False</contributetolimit>
       <onlyprioritygiven />
-      <bonus>
+      <bonus useselected="False">
+        <blockspelldescriptor>Spell</blockspelldescriptor>
         <enableattribute>
           <name>MAG</name>
         </enableattribute>
         <enabletab>
           <name>adept</name>
         </enabletab>
+        <limitspellcategory>Rituals</limitspellcategory>
         <unlockskills>Adept</unlockskills>
       </bonus>
       <forbidden>
@@ -1235,9 +1237,9 @@
       <name>Combat Paralysis</name>
       <karma>-12</karma>
       <category>Negative</category>
-      <implemented>False</implemented>
       <bonus>
         <notoriety>1</notoriety>
+        <surprise>-3</surprise>
       </bonus>
       <source>SR5</source>
       <page>80</page>
@@ -2068,6 +2070,7 @@
       </costdiscount>
       <doublecareer>False</doublecareer>
       <bonus>
+        <freequality>ced3fecf-2277-4b20-b1e0-894162ca9ae2</freequality><!-- Mentor Spirit -->
         <specificskill>
           <name>Animal Handling</name>
           <bonus>1</bonus>
@@ -2332,6 +2335,7 @@
       <category>Positive</category>
       <doublecareer>False</doublecareer>
       <bonus>
+        <freequality>ced3fecf-2277-4b20-b1e0-894162ca9ae2</freequality><!-- Mentor Spirit -->
         <skillgroup>
           <name>Conjuring</name>
           <bonus>1</bonus>
@@ -2627,15 +2631,15 @@
           <val>50</val>
           <condition>create</condition>
         </skillcategorykarmacostmultiplier>
+        <skillcategorypointcostmultiplier>
+          <name>Academic</name>
+          <val>50</val>
+        </skillcategorypointcostmultiplier>
         <skillcategoryspecializationkarmacostmultiplier>
           <name>Academic</name>
           <val>50</val>
           <condition>create</condition>
         </skillcategoryspecializationkarmacostmultiplier>
-        <skillcategorypointcostmultiplier>
-          <name>Academic</name>
-          <val>50</val>
-        </skillcategorypointcostmultiplier>
       </bonus>
       <source>RF</source>
       <page>145</page>
@@ -2870,6 +2874,12 @@
           <min>6</min>
           <condition>career</condition>
         </activeskillkarmacost>
+        <knowledgeskillkarmacostmin>
+          <name />
+          <val>1</val>
+          <max>5</max>
+          <condition>career</condition>
+        </knowledgeskillkarmacostmin>
         <knowledgeskillkarmacost>
           <name />
           <val>-1</val>
@@ -2929,13 +2939,13 @@
       <karma>5</karma>
       <category>Positive</category>
       <bonus>
-        <mademan />
         <addcontact>
           <forcedloyalty>3</forcedloyalty>
+          <forcegroup />
           <free />
           <group />
-          <forcegroup />
         </addcontact>
+        <mademan />
       </bonus>
       <source>RF</source>
       <page>148</page>
@@ -3287,12 +3297,6 @@
       <bonus>
         <trustfund>1</trustfund>
       </bonus>
-      <required>
-        <oneof>
-          <quality>SINner (National)</quality>
-          <quality>SINner (Corporate)</quality>
-        </oneof>
-      </required>
       <forbidden>
         <oneof>
           <quality>Trust Fund II</quality>
@@ -3300,6 +3304,12 @@
           <quality>Trust Fund IV</quality>
         </oneof>
       </forbidden>
+      <required>
+        <oneof>
+          <quality>SINner (National)</quality>
+          <quality>SINner (Corporate)</quality>
+        </oneof>
+      </required>
       <source>RF</source>
       <page>151</page>
     </quality>
@@ -3311,12 +3321,6 @@
       <bonus>
         <trustfund>2</trustfund>
       </bonus>
-      <required>
-        <oneof>
-          <quality>SINner (National)</quality>
-          <quality>SINner (Corporate)</quality>
-        </oneof>
-      </required>
       <forbidden>
         <oneof>
           <quality>Trust Fund I</quality>
@@ -3324,6 +3328,12 @@
           <quality>Trust Fund IV</quality>
         </oneof>
       </forbidden>
+      <required>
+        <oneof>
+          <quality>SINner (National)</quality>
+          <quality>SINner (Corporate)</quality>
+        </oneof>
+      </required>
       <source>RF</source>
       <page>151</page>
     </quality>
@@ -3335,12 +3345,6 @@
       <bonus>
         <trustfund>3</trustfund>
       </bonus>
-      <required>
-        <oneof>
-          <quality>SINner (National)</quality>
-          <quality>SINner (Corporate)</quality>
-        </oneof>
-      </required>
       <forbidden>
         <oneof>
           <quality>Trust Fund I</quality>
@@ -3348,6 +3352,12 @@
           <quality>Trust Fund IV</quality>
         </oneof>
       </forbidden>
+      <required>
+        <oneof>
+          <quality>SINner (National)</quality>
+          <quality>SINner (Corporate)</quality>
+        </oneof>
+      </required>
       <source>RF</source>
       <page>151</page>
     </quality>
@@ -3359,12 +3369,6 @@
       <bonus>
         <trustfund>4</trustfund>
       </bonus>
-      <required>
-        <oneof>
-          <quality>SINner (National)</quality>
-          <quality>SINner (Corporate)</quality>
-        </oneof>
-      </required>
       <forbidden>
         <oneof>
           <quality>Trust Fund I</quality>
@@ -3372,6 +3376,12 @@
           <quality>Trust Fund III</quality>
         </oneof>
       </forbidden>
+      <required>
+        <oneof>
+          <quality>SINner (National)</quality>
+          <quality>SINner (Corporate)</quality>
+        </oneof>
+      </required>
       <source>RF</source>
       <page>151</page>
     </quality>
@@ -3875,22 +3885,10 @@
         </specificattribute>
       </bonus>
       <firstlevelbonus>
-        <specificattribute>
-          <name>BOD</name>
-          <aug>-4</aug>
-        </specificattribute>
-        <specificattribute>
-          <name>AGI</name>
-          <aug>-4</aug>
-        </specificattribute>
-        <specificattribute>
-          <name>REA</name>
-          <aug>-4</aug>
-        </specificattribute>
-        <specificattribute>
-          <name>STR</name>
-          <aug>-4</aug>
-        </specificattribute>
+        <attributemaxclamp>AGI</attributemaxclamp>
+        <attributemaxclamp>BOD</attributemaxclamp>
+        <attributemaxclamp>REA</attributemaxclamp>
+        <attributemaxclamp>STR</attributemaxclamp>
       </firstlevelbonus>
       <source>RF</source>
       <page>156</page>
@@ -4266,6 +4264,16 @@
       <page>158</page>
     </quality>
     <quality>
+      <id>bbb3bce6-8adc-4992-94b5-7248556a391a</id>
+      <name>Poor Self Control (Thrill Seeker) (Dareadrenaline)</name>
+      <karma>0</karma>
+      <category>Negative</category>
+      <hide />
+      <bonus />
+      <source>CF</source>
+      <page>160</page>
+    </quality>
+    <quality>
       <id>62de8226-b9a9-4065-9e82-b9ac4d4d027a</id>
       <name>Poor Self Control (Vindictive)</name>
       <karma>-5</karma>
@@ -4447,12 +4455,7 @@
       <name>Centaur Body</name>
       <karma>0</karma>
       <category>Positive</category>
-      <bonus>
-        <addlimb>
-          <limbslot>leg</limbslot>
-          <val>2</val>
-        </addlimb>
-      </bonus>
+      <hide />
       <required>
         <allof>
           <metatype>Centaur</metatype>
@@ -7025,8 +7028,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
-        <essencepenalty>-1</essencepenalty>
+      <bonus useselected="False">
         <critterpowers>
           <power>Adaptive Coloration</power>
           <power select="Sunlight, Mild">Allergy</power>
@@ -7038,6 +7040,8 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
+        <essencepenalty>-1</essencepenalty>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <reach>1</reach>
         <replaceattributes>
           <replaceattribute>
@@ -7162,10 +7166,14 @@
           <power select="Silver">Vulnerability</power>
           <power select="Wood">Vulnerability</power>
         </critterpowers>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
         <enabletab>
           <name>critter</name>
         </enabletab>
         <initiativepass precedence="-1">1</initiativepass>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <optionalpowers>
           <optionalpower select="Hearing">Enhanced Senses</optionalpower>
           <optionalpower select="Toxins">Immunity</optionalpower>
@@ -7304,7 +7312,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
+      <bonus useselected="False">
         <armor>1</armor>
         <critterpowers>
           <power>Dual Natured</power>
@@ -7315,10 +7323,14 @@
           <power select="Sunlight, Moderate">Allergy</power>
           <power select="Metahuman Flesh">Dietary Requirement</power>
         </critterpowers>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
         <enabletab>
           <name>critter</name>
         </enabletab>
         <initiativepass precedence="-1">1</initiativepass>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <optionalpowers>
           <optionalpower>Armor</optionalpower>
           <optionalpower select="Hearing">Enhanced Senses</optionalpower>
@@ -7455,8 +7467,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
-        <essencepenalty>-1</essencepenalty>
+      <bonus useselected="False">
         <armor>1</armor>
         <critterpowers>
           <power select="Corrosive">Secretion/Substance Extrusion</power>
@@ -7473,6 +7484,8 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
+        <essencepenalty>-1</essencepenalty>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <reach>1</reach>
         <replaceattributes>
           <replaceattribute>
@@ -7592,8 +7605,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
-        <essencepenalty>-1</essencepenalty>
+      <bonus useselected="False">
         <armor>1</armor>
         <critterpowers>
           <power>Dual Natured</power>
@@ -7608,6 +7620,8 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
+        <essencepenalty>-1</essencepenalty>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <replaceattributes>
           <replaceattribute>
             <name>BOD</name>
@@ -7734,8 +7748,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
-        <essencepenalty>-1</essencepenalty>
+      <bonus useselected="False">
         <armor>1</armor>
         <critterpowers>
           <power>Dual Natured</power>
@@ -7750,6 +7763,8 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
+        <essencepenalty>-1</essencepenalty>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <replaceattributes>
           <replaceattribute>
             <name>BOD</name>
@@ -7876,8 +7891,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
-        <essencepenalty>-1</essencepenalty>
+      <bonus useselected="False">
         <armor>1</armor>
         <critterpowers>
           <power>Dual Natured</power>
@@ -7892,6 +7906,8 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
+        <essencepenalty>-1</essencepenalty>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <replaceattributes>
           <replaceattribute>
             <name>BOD</name>
@@ -8018,8 +8034,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
-        <essencepenalty>-1</essencepenalty>
+      <bonus useselected="False">
         <armor>1</armor>
         <critterpowers>
           <power>Dual Natured</power>
@@ -8034,6 +8049,8 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
+        <essencepenalty>-1</essencepenalty>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <replaceattributes>
           <replaceattribute>
             <name>BOD</name>
@@ -8160,8 +8177,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
-        <essencepenalty>-1</essencepenalty>
+      <bonus useselected="False">
         <armor>1</armor>
         <critterpowers>
           <power>Dual Natured</power>
@@ -8176,6 +8192,8 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
+        <essencepenalty>-1</essencepenalty>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <replaceattributes>
           <replaceattribute>
             <name>BOD</name>
@@ -8302,8 +8320,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
-        <essencepenalty>-1</essencepenalty>
+      <bonus useselected="False">
         <armor>1</armor>
         <critterpowers>
           <power>Dual Natured</power>
@@ -8318,6 +8335,8 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
+        <essencepenalty>-1</essencepenalty>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <replaceattributes>
           <replaceattribute>
             <name>BOD</name>
@@ -8434,8 +8453,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
-        <essencepenalty>-1</essencepenalty>
+      <bonus useselected="False">
         <armor>1</armor>
         <critterpowers>
           <power select="Vermin">Animal Control</power>
@@ -8452,6 +8470,8 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
+        <essencepenalty>-1</essencepenalty>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <replaceattributes>
           <replaceattribute>
             <name>BOD</name>
@@ -8570,7 +8590,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
+      <bonus useselected="False">
         <armor>1</armor>
         <critterpowers>
           <power>Dual Natured</power>
@@ -8583,10 +8603,14 @@
           <power select="Metahuman Flesh">Dietary Requirement</power>
           <power select="Iron">Vulnerability</power>
         </critterpowers>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
         <enabletab>
           <name>critter</name>
         </enabletab>
         <initiativepass precedence="-1">1</initiativepass>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <optionalpowers>
           <optionalpower select="Smell">Enhanced Senses</optionalpower>
           <optionalpower select="Taste">Enhanced Senses</optionalpower>
@@ -8732,8 +8756,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
-        <essencepenalty>-1</essencepenalty>
+      <bonus useselected="False">
         <armor>1</armor>
         <critterpowers>
           <power>Animal Control</power>
@@ -8752,7 +8775,9 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
+        <essencepenalty>-1</essencepenalty>
         <initiative>1</initiative>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <optionalpowers>
           <optionalpower select="Hearing">Enhanced Senses</optionalpower>
           <optionalpower select="Taste">Enhanced Senses</optionalpower>
@@ -8885,8 +8910,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
-        <essencepenalty>-1</essencepenalty>
+      <bonus useselected="False">
         <armor>2</armor>
         <critterpowers>
           <power>Movement</power>
@@ -8902,8 +8926,10 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
+        <essencepenalty>-1</essencepenalty>
         <initiative>1</initiative>
         <initiativepass precedence="-1">1</initiativepass>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <replaceattributes>
           <replaceattribute>
             <name>BOD</name>
@@ -9042,8 +9068,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
-        <essencepenalty>-1</essencepenalty>
+      <bonus useselected="False">
         <armor>2</armor>
         <critterpowers>
           <power>Movement</power>
@@ -9062,8 +9087,10 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
+        <essencepenalty>-1</essencepenalty>
         <initiative>1</initiative>
         <initiativepass precedence="-1">1</initiativepass>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <replaceattributes>
           <replaceattribute>
             <name>BOD</name>
@@ -9212,7 +9239,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
+      <bonus useselected="False">
         <armor>1</armor>
         <critterpowers>
           <power>Essence Drain</power>
@@ -9232,6 +9259,7 @@
           <name>critter</name>
         </enabletab>
         <initiativepass precedence="-1">1</initiativepass>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <optionalpowers>
           <optionalpower select="Hearing">Enhanced Senses</optionalpower>
           <optionalpower select="Low-Light Vision">Enhanced Senses</optionalpower>
@@ -9378,7 +9406,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
+      <bonus useselected="False">
         <critterpowers>
           <power>Essence Drain</power>
           <power>Infection</power>
@@ -9398,6 +9426,7 @@
           <name>critter</name>
         </enabletab>
         <initiativepass precedence="-1">1</initiativepass>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <optionalpowers>
           <optionalpower select="Hearing">Enhanced Senses</optionalpower>
           <optionalpower select="Lowlight Vision">Enhanced Senses</optionalpower>
@@ -9532,7 +9561,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
+      <bonus useselected="False">
         <critterpowers>
           <power>Essence Drain</power>
           <power select="Age">Immunity</power>
@@ -9544,10 +9573,14 @@
           <power select="Metahuman Blood">Dietary Requirement</power>
           <power select="Lack of Air (Essence) Minutes">Induced Dormancy</power>
         </critterpowers>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
         <enabletab>
           <name>critter</name>
         </enabletab>
         <initiativepass precedence="-1">1</initiativepass>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <optionalpowers>
           <optionalpower select="Hearing">Enhanced Senses</optionalpower>
           <optionalpower select="Smell">Enhanced Senses</optionalpower>
@@ -9677,7 +9710,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
+      <bonus useselected="False">
         <critterpowers>
           <power>Essence Drain</power>
           <power>Infection</power>
@@ -9689,10 +9722,14 @@
           <power select="Metahuman Blood">Dietary Requirement</power>
           <power select="Lack of Air (Essence) Minutes">Induced Dormancy</power>
         </critterpowers>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
         <enabletab>
           <name>critter</name>
         </enabletab>
         <initiativepass precedence="-1">1</initiativepass>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <optionalpowers>
           <optionalpower select="Hearing">Enhanced Senses</optionalpower>
           <optionalpower select="Smell">Enhanced Senses</optionalpower>
@@ -9820,7 +9857,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
+      <bonus useselected="False">
         <critterpowers>
           <power>Essence Drain</power>
           <power select="Age">Immunity</power>
@@ -9833,10 +9870,14 @@
           <power select="Salt">Dietary Requirement</power>
           <power select="Wood">Vulnerability</power>
         </critterpowers>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
         <enabletab>
           <name>critter</name>
         </enabletab>
         <initiativepass precedence="-1">1</initiativepass>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <optionalpowers>
           <optionalpower select="Hearing">Enhanced Senses</optionalpower>
           <optionalpower select="Smell">Enhanced Senses</optionalpower>
@@ -9966,7 +10007,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
+      <bonus useselected="False">
         <critterpowers>
           <power>Essence Drain</power>
           <power>Infection</power>
@@ -9979,10 +10020,14 @@
           <power select="Salt">Dietary Requirement</power>
           <power select="Wood">Vulnerability</power>
         </critterpowers>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
         <enabletab>
           <name>critter</name>
         </enabletab>
         <initiativepass precedence="-1">1</initiativepass>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <optionalpowers>
           <optionalpower select="Hearing">Enhanced Senses</optionalpower>
           <optionalpower select="Smell">Enhanced Senses</optionalpower>
@@ -10130,7 +10175,7 @@
           <page>137</page>
         </naturalweapon>
       </naturalweapons>
-      <bonus>
+      <bonus useselected="False">
         <critterpowers>
           <power>Essence Drain</power>
           <power>Infection</power>
@@ -10149,10 +10194,11 @@
           <name>critter</name>
         </enabletab>
         <initiativepass precedence="-1">1</initiativepass>
+        <limitcritterpowercategory>Infected</limitcritterpowercategory>
         <optionalpowers>
           <optionalpower select="Hearing">Enhanced Senses</optionalpower>
           <optionalpower select="Smell">Enhanced Senses</optionalpower>
-          <optionalpower select="Visual Accuity">Enhanced Senses</optionalpower>
+          <optionalpower select="Visual Acuity">Enhanced Senses</optionalpower>
           <optionalpower select="Pathogens">Immunity</optionalpower>
           <optionalpower select="Toxins">Immunity</optionalpower>
         </optionalpowers>
@@ -10172,8 +10218,8 @@
           <replaceattribute>
             <name>REA</name>
             <min>1</min>
-            <max>6</max>
-            <aug>10</aug>
+            <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>STR</name>
@@ -10595,8 +10641,32 @@
       </required>
       <source>RF</source>
       <page>136</page>
-    </quality>
-    <quality>
+    </quality>	
+	<quality>
+      <id>59d9baa1-6705-49e8-940b-ea42ffc02692</id>
+      <name>Infected Advanced Optional Power: Mimicry</name>
+      <karma>9</karma>
+      <category>Positive</category>
+      <doublecareer>False</doublecareer>
+      <bonus>
+        <critterpowers>
+          <power>Mimicry</power>
+        </critterpowers>
+      </bonus>
+	  <forbidden>
+        <oneof>
+          <critterpower>Mimicry</critterpower>
+        </oneof>
+      </forbidden>
+      <required>
+        <oneof>
+          <quality>Infected: Nosferatu</quality>
+        </oneof>
+      </required>
+      <source>SR5</source>
+      <page>398</page>
+    </quality>    
+	<quality>
       <id>7843087c-30a3-4d87-aaa2-5ebdb90cccd8</id>
       <name>Infected Optional Power: Mist Form</name>
       <karma>12</karma>
@@ -10618,7 +10688,7 @@
       </required>
       <source>RF</source>
       <page>136</page>
-    </quality>
+    </quality>	
     <quality>
       <id>6d9f205e-52a0-4bb2-a4c2-e49232dd8346</id>
       <name>Infected Optional Power: Paralyzing Howl</name>
@@ -10643,6 +10713,30 @@
       <source>RF</source>
       <page>136</page>
     </quality>
+	<quality>
+      <id>8dbc6b92-18a7-4007-b37f-295d21f8ab82</id>
+      <name>Infected Advanced Optional Power: Psychokinesis</name>
+      <karma>9</karma>
+      <category>Positive</category>
+      <doublecareer>False</doublecareer>
+      <bonus>
+        <critterpowers>
+          <power>Psychokinesis</power>
+        </critterpowers>
+      </bonus>
+	  <forbidden>
+        <oneof>
+          <critterpower>Psychokinesis</critterpower>
+        </oneof>
+      </forbidden>
+      <required>
+        <oneof>
+          <quality>Infected: Nosferatu</quality>
+        </oneof>
+      </required>
+      <source>SR5</source>
+      <page>400</page>
+    </quality>    
     <quality>
       <id>311ebb96-bf65-483e-86b7-62702a43aae3</id>
       <name>Infected Optional Power: Regeneration</name>
@@ -10776,8 +10870,8 @@
       <category>Positive</category>
       <bonus>
         <addcontact>
-          <connection>5</connection>
           <loyalty>1</loyalty>
+          <connection>5</connection>
           <forcedloyalty>3</forcedloyalty>
           <free />
           <group />
@@ -10805,7 +10899,7 @@
       <page>46</page>
     </quality>
     <!-- End Region -->
-    <!-- Region Dark Terrors Negetive Qualities -->
+    <!-- Region Dark Terrors Negative Qualities -->
     <quality>
       <id>b0321887-df33-49d9-9d2e-e718eca9c7a0</id>
       <name>Wildcard Chimera</name>
@@ -12283,6 +12377,7 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
+        <limitcritterpowercategory>Drake</limitcritterpowercategory>
         <specificattribute>
           <name>BOD</name>
           <val>1</val>
@@ -12348,6 +12443,7 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
+        <limitcritterpowercategory>Drake</limitcritterpowercategory>
         <specificattribute>
           <name>BOD</name>
           <val>2</val>
@@ -12409,6 +12505,7 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
+        <limitcritterpowercategory>Drake</limitcritterpowercategory>
         <specificattribute>
           <name>BOD</name>
           <val>1</val>
@@ -12467,7 +12564,7 @@
         <critterpowers>
           <power>Dual Natured</power>
           <power>Shift (Dracoform)</power>
-          <power>Underwater Adapation</power>
+          <power>Underwater Adaptation</power>
           <power rating="2">Hardened Armor</power>
           <power rating="2">Hardened Mystic Armor</power>
           <power select="Fire">Elemental Attack</power>
@@ -12478,6 +12575,7 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
+        <limitcritterpowercategory>Drake</limitcritterpowercategory>
         <specificattribute>
           <name>BOD</name>
           <val>1</val>
@@ -12675,7 +12773,7 @@
     </quality>
     <quality>
       <id>1b5acdf3-66ae-4ed7-b5fa-614668721774</id>
-      <name>Dishevelled</name>
+      <name>Disheveled</name>
       <karma>-5</karma>
       <category>Negative</category>
       <bonus />
@@ -13094,13 +13192,13 @@
           <power>Realistic Form</power>
         <power select="Insecticides, Mild">Allergy</power>
         </critterpowers>
+        <damageresistance>4</damageresistance>
         <enableattribute>
           <name>MAG</name>
         </enableattribute>
         <enabletab>
           <name>critter</name>
         </enabletab>
-		<damageresistance>4</damageresistance>
         <skillgroupdisable>Conjuring</skillgroupdisable>
       </bonus>
       <forbidden>
@@ -13628,6 +13726,12 @@
           <power>Realistic Form</power>
           <power select="Insecticides, Mild">Allergy</power>
         </critterpowers>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
         <movementreplace>
           <category>Fly</category>
           <speed>walk</speed>
@@ -13643,12 +13747,6 @@
           <speed>sprint</speed>
           <val>500</val>
         </movementreplace>
-        <enableattribute>
-          <name>MAG</name>
-        </enableattribute>
-        <enabletab>
-          <name>critter</name>
-        </enabletab>
         <skillgroupdisable>Conjuring</skillgroupdisable>
       </bonus>
       <forbidden>
@@ -13679,7 +13777,14 @@
           <power select="Normal Weapons">Immunity</power>
           <power>Realistic Form</power>
           <power select="Insecticides, Mild">Allergy</power>
+          <power select="Foreboding">Innate Spell</power>
         </critterpowers>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
         <movementreplace>
           <category>Fly</category>
           <speed>walk</speed>
@@ -13695,14 +13800,7 @@
           <speed>sprint</speed>
           <val>500</val>
         </movementreplace>
-        <enableattribute>
-          <name>MAG</name>
-        </enableattribute>
-        <enabletab>
-          <name>critter</name>
-        </enabletab>
         <skillgroupdisable>Conjuring</skillgroupdisable>
-		<power select="Foreboding">Innate Spell</power>
       </bonus>
       <forbidden>
         <oneof>
@@ -14159,8 +14257,9 @@
       <category>Positive</category>
       <canbuywithspellpoints>True</canbuywithspellpoints>
       <doublecareer>False</doublecareer>
-      <!-- TODO: Source code for this is super hacky, so it definitely needs cleaning up at the next opportunity -->
       <bonus>
+        <allowspellrange>T</allowspellrange>
+        <allowspellrange>T (A)</allowspellrange>
         <freespells attribute="MAG" limit="half,touchonly" />
       </bonus>
       <required>
@@ -14450,7 +14549,9 @@
       <category>Positive</category>
       <canbuywithspellpoints>True</canbuywithspellpoints>
       <doublecareer>False</doublecareer>
-      <bonus />
+      <bonus>
+        <addspirit />
+      </bonus>
       <required>
         <allof>
           <attribute>
@@ -17228,11 +17329,11 @@
       <category>Positive</category>
       <contributetolimit>False</contributetolimit>
       <bonus>
+        <addmetamagic forced="True">Psychometry</addmetamagic>
+        <addmetamagic forced="True">Sensing</addmetamagic>
         <skillgroupdisable>Sorcery</skillgroupdisable>
         <skillgroupdisable>Conjuring</skillgroupdisable>
         <skillgroupdisable>Enchanting</skillgroupdisable>
-        <addmetamagic forced="True">Psychometry</addmetamagic>
-        <addmetamagic forced="True">Sensing</addmetamagic>
       </bonus>
       <required>
         <oneof>
@@ -17254,15 +17355,15 @@
       <category>Positive</category>
       <contributetolimit>False</contributetolimit>
       <bonus>
+        <addmetamagic forced="True">Reflection</addmetamagic>
+        <addqualities>
+          <addquality forced="True">Magic Resistance</addquality>
+        </addqualities>
         <skilldisable>Binding</skilldisable>
         <skilldisable>Spellcasting</skilldisable>
         <skilldisable>Ritual Spellcasting</skilldisable>
         <skilldisable>Alchemy</skilldisable>
         <skilldisable>Artificing</skilldisable>
-        <addmetamagic forced="True">Reflection</addmetamagic>
-        <addqualities>
-          <addquality forced="True">Magic Resistance</addquality>
-        </addqualities>
       </bonus>
       <required>
         <oneof>
@@ -18504,7 +18605,9 @@
       <karma>20</karma>
       <category>Positive</category>
       <doublecareer>False</doublecareer>
-      <bonus />
+      <bonus>
+        <allowspritefettering />
+      </bonus>
       <forbidden>
         <oneof>
           <quality>Resonant Stream: Cyberadept</quality>

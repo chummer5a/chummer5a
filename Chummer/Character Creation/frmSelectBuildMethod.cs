@@ -18,7 +18,10 @@
  */
  using System;
 using System.Collections.Generic;
+ using System.Linq;
+ using System.Text;
  using System.Windows.Forms;
+ using System.Xml;
  using System.Xml.XPath;
 
 namespace Chummer
@@ -80,7 +83,19 @@ namespace Chummer
                             objXmlGameplayOption.TryGetInt32FieldQuickly("pointbuykarma", ref _intDefaultPointBuyKarma);
                             objXmlGameplayOption.TryGetInt32FieldQuickly("lifemoduleskarma", ref _intDefaultLifeModulesKarma);
                         }
-                        lstGameplayOptions.Add(new ListItem(strName, objXmlGameplayOption.SelectSingleNode("translate")?.Value ?? strName));
+
+                        if (objXmlGameplayOption.SelectSingleNode("priorityarrays") != null)
+                        {
+                            XPathNodeIterator iterator = objXmlGameplayOption.Select("priorityarrays/priorityarray");
+                            lstGameplayOptions.AddRange(from XPathNavigator node in iterator
+                                select new ListItem($"{strName}|{node.Value}",
+                                    $"{objXmlGameplayOption.SelectSingleNode("translate")?.Value ?? strName} ({node.Value})"));
+                        }
+                        else
+                        {
+                            lstGameplayOptions.Add(new ListItem(strName,
+                                objXmlGameplayOption.SelectSingleNode("translate")?.Value ?? strName));
+                        }
                     }
                 }
             }
@@ -153,7 +168,16 @@ namespace Chummer
             _objCharacter.NuyenMaximumBP = decimal.ToInt32(nudMaxNuyen.Value);
             _objCharacter.SumtoTen = decimal.ToInt32(nudSumtoTen.Value);
 
-            XPathNavigator xmlGameplayOption = _xmlGameplayOptionsDataGameplayOptionsNode.SelectSingleNode("gameplayoption[name = \"" + strSelectedGameplayOption + "\"]");
+            string strPriorityArray = string.Empty;
+            if (strSelectedGameplayOption.IndexOf('|') != -1)
+            {
+                strPriorityArray = strSelectedGameplayOption.Split('|')[1];
+                strSelectedGameplayOption = strSelectedGameplayOption.Split('|')[0];
+            }
+
+            XPathNavigator xmlGameplayOption =
+                _xmlGameplayOptionsDataGameplayOptionsNode.SelectSingleNode($"gameplayoption[name = \"{strSelectedGameplayOption}\"]");
+
             if (xmlGameplayOption != null)
             {
                 _objCharacter.BannedWareGrades.Clear();
@@ -169,6 +193,8 @@ namespace Chummer
                 if (xmlGameplayOption.TryGetDecFieldQuickly("maxnuyen", ref decTemp))
                     _objCharacter.MaxNuyen = decTemp;
             }
+
+            _objCharacter.PriorityArray = strPriorityArray;
             _objCharacter.BuildKarma = decimal.ToInt32(nudKarma.Value);
             _objCharacter.GameplayOption = strSelectedGameplayOption;
             _objCharacter.GameplayOptionQualityLimit = _intQualityLimits;

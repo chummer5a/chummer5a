@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -38,6 +39,9 @@ namespace Chummer
 
         private readonly XmlDocument _objXmlDocument;
 
+        private readonly List<KeyValuePair<string, int>> _lstMetamagicLimits = new List<KeyValuePair<string, int>>();
+        private readonly Mode _objMode;
+
         public enum Mode
         {
             Metamagic = 0,
@@ -50,6 +54,17 @@ namespace Chummer
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
+            _objMode = objMode;
+
+            if (_objCharacter.Improvements.Any(imp =>
+                imp.ImproveType == Improvement.ImprovementType.MetamagicLimit))
+            {
+                foreach (Improvement imp in _objCharacter.Improvements.Where(imp =>
+                    imp.ImproveType == Improvement.ImprovementType.MetamagicLimit && imp.Enabled))
+                {
+                    _lstMetamagicLimits.Add(new KeyValuePair<string, int>(imp.ImprovedName, imp.Rating));
+                }
+            }
 
             // Load the Metamagic information.
             switch (objMode)
@@ -173,9 +188,16 @@ namespace Chummer
                         string strId = objXmlMetamagic["id"]?.InnerText;
                         if (!string.IsNullOrEmpty(strId))
                         {
+                            if (_lstMetamagicLimits.Count > 0 && (_objMode == Mode.Metamagic && !_lstMetamagicLimits.Any(item => item.Key == objXmlMetamagic["name"]?.InnerText && (item.Value == -1 || item.Value == _objCharacter.InitiateGrade)) ||
+                                                                  _objMode == Mode.Echo && !_lstMetamagicLimits.Any(item => item.Key == objXmlMetamagic["name"]?.InnerText && (item.Value == -1 || item.Value == _objCharacter.SubmersionGrade))))
+                            {
+                                continue;
+                            }
                             if (!chkLimitList.Checked || objXmlMetamagic.RequirementsMet(_objCharacter))
                             {
-                                lstMetamagics.Add(new ListItem(strId, objXmlMetamagic["translate"]?.InnerText ?? objXmlMetamagic["name"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language)));
+                                lstMetamagics.Add(new ListItem(strId,
+                                    objXmlMetamagic["translate"]?.InnerText ?? objXmlMetamagic["name"]?.InnerText ??
+                                    LanguageManager.GetString("String_Unknown", GlobalOptions.Language)));
                             }
                         }
                     }

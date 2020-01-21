@@ -841,12 +841,12 @@ namespace Chummer
         public static string CleanForHTML(this string strToClean)
         {
             return strToClean
-                .CheapReplace("<br />", () => "\n")
                 .CheapReplace("&", () => "&amp;")
                 .CheapReplace("&amp;amp;", () => "&amp;")
                 .CheapReplace("<", () => "&lt;")
                 .CheapReplace(">", () => "&gt;")
                 .CheapReplace("\n\r", () => "<br />")
+                .CheapReplace("\r\n", () => "<br />")
                 .CheapReplace("\n", () => "<br />")
                 .CheapReplace("\r", () => "<br />");
         }

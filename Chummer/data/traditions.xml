@@ -36,7 +36,7 @@
 -->
 <chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.w3.org/2001/XMLSchema traditions.xsd">
-  <version>0</version>
+
   <traditions>
     <tradition>
       <id>616ba093-306c-45fc-8f41-0b98c8cccb46</id>
@@ -94,6 +94,24 @@
       <drain>WIL + CHA</drain>
       <source>SG</source>
       <page>41</page>
+      <spirits>
+        <spiritcombat>Spirit of Fire</spiritcombat>
+        <spiritdetection>Spirit of Water</spiritdetection>
+        <spirithealth>Spirit of Earth</spirithealth>
+        <spiritillusion>Spirit of Air</spiritillusion>
+        <spiritmanipulation>Spirit of Man</spiritmanipulation>
+      </spirits>
+    </tradition>
+    <tradition>
+      <id>09843ed9-6fd1-4c43-9e9f-f6d66493ebdc</id>
+      <name>Black Magic [Alt]</name>
+      <drain>WIL + CHA</drain>
+      <source>FA</source>
+      <page>61</page>
+      <bonus>
+        <addquality>Animal Familiar</addquality>
+        <addquality select="Boggle">Dark Ally</addquality>
+      </bonus>
       <spirits>
         <spiritcombat>Spirit of Fire</spiritcombat>
         <spiritdetection>Spirit of Water</spiritdetection>
@@ -488,6 +506,96 @@
     <!-- End Region -->
     <!-- Region Forbidden Arcana -->
     <tradition>
+      <id>8b7a391e-8d4c-40e8-93a8-9dd031cce0f5</id>
+      <name>Buddhism [Traditionalist]</name>
+      <drain>WIL + INT</drain>
+      <source>FA</source>
+      <page>62</page>
+      <bonus>
+        <addqualities>
+          <addquality forced="True">Barehanded Adept</addquality>
+          <addquality forced="True">Spiritual Lodge</addquality>
+          <addquality forced="True">Spiritual Pilgrim</addquality>
+        </addqualities>
+        <skillgroupdisable>Enchanting</skillgroupdisable>
+      </bonus>
+      <spirits>
+        <spiritcombat>Spirit of Air</spiritcombat>
+        <spiritdetection>Guidance Spirit</spiritdetection>
+        <spirithealth>Spirit of Earth</spirithealth>
+        <spiritillusion>Spirit of Fire</spiritillusion>
+        <spiritmanipulation>Spirit of Water</spiritmanipulation>
+      </spirits>
+    </tradition>
+    <tradition>
+      <id>dd97bcc9-a731-41fb-a558-9175bc56b587</id>
+      <name>Christian Theurgy [Traditional]</name>
+      <drain>WIL + CHA</drain>
+      <source>FA</source>
+      <page>64</page>
+      <bonus>
+        <addmetamagic>Exorcism</addmetamagic>
+        <skilldisable>Binding</skilldisable>
+        <skillgroupdisable>Enchanting</skillgroupdisable>
+      </bonus>
+      <spirits>
+        <spiritcombat>Spirit of Fire</spiritcombat>
+        <spiritdetection>Spirit of Water</spiritdetection>
+        <spirithealth>Spirit of Air</spirithealth>
+        <spiritillusion>Spirit of Earth</spiritillusion>
+        <spiritmanipulation>Guidance Spirit</spiritmanipulation>
+      </spirits>
+    </tradition>
+    <tradition>
+      <id>ca673acd-961e-4491-8a8d-ddf0c577441b</id>
+      <name>Christian Theurgy [Vigila Evangelica]</name>
+      <drain>WIL + CHA</drain>
+      <source>FA</source>
+      <page>64</page>
+      <bonus>
+        <addqualities>
+          <addquality forced="True">Pacifist</addquality>
+        </addqualities>
+        <addmetamagic>Exorcism</addmetamagic>
+        <skilldisable>Binding</skilldisable>
+      </bonus>
+      <spirits>
+        <spiritcombat>Spirit of Fire</spiritcombat>
+        <spiritdetection>Spirit of Water</spiritdetection>
+        <spirithealth>Spirit of Air</spirithealth>
+        <spiritillusion>Spirit of Earth</spiritillusion>
+        <spiritmanipulation>Guidance Spirit</spiritmanipulation>
+      </spirits>
+    </tradition>
+    <tradition>
+      <id>3a7bf066-7b13-4a92-ae31-37a58f84bc8e</id>
+      <name>Christian Theurgy [Westphalian]</name>
+      <drain>WIL + CHA</drain>
+      <source>FA</source>
+      <page>64</page>
+      <bonus>
+        <addmetamagic forced="True">Exorcism</addmetamagic>
+        <addqualities>
+          <addquality forced="True">Vexcraft</addquality>
+        </addqualities>
+        <limitspellcategory>Combat</limitspellcategory>
+        <limitspellcategory>Health</limitspellcategory>
+        <skilldisable>Alchemy</skilldisable>
+        <skilldisable>Artificing</skilldisable>
+        <specificskill>
+          <name>Banishing</name>
+          <bonus>2</bonus>
+        </specificskill>
+      </bonus>
+      <spirits>
+        <spiritcombat>Spirit of Fire</spiritcombat>
+        <spiritdetection>Spirit of Water</spiritdetection>
+        <spirithealth>Spirit of Air</spirithealth>
+        <spiritillusion>Spirit of Earth</spiritillusion>
+        <spiritmanipulation>Guidance Spirit</spiritmanipulation>
+      </spirits>
+    </tradition>
+    <tradition>
       <id>54944188-d58b-4a45-859c-d62be9f966c2</id>
       <name>Cosmic</name>
       <drain>WIL + LOG</drain>
@@ -530,6 +638,27 @@
       </spirits>
     </tradition>
     <tradition>
+      <id>77288f4d-e262-47b6-aad8-2edff23859cb</id>
+      <name>Druid [Traditional]</name>
+      <drain>WIL + CHA</drain>
+      <source>FA</source>
+      <page>65</page>
+      <bonus>
+        <addqualities>
+          <addquality>Mentor Spirit</addquality>
+        </addqualities>
+        <skilldisable>Binding</skilldisable>
+        <skillgroupdisable>Enchanting</skillgroupdisable>
+      </bonus>
+      <spirits>
+        <spiritcombat>Spirit of Beasts</spiritcombat>
+        <spiritdetection>Spirit of Water</spiritdetection>
+        <spirithealth>Plant Spirit</spirithealth>
+        <spiritillusion>Spirit of Air</spiritillusion>
+        <spiritmanipulation>Spirit of Earth</spiritmanipulation>
+      </spirits>
+    </tradition>
+    <tradition>
       <id>4bbe470b-51a7-494b-8ccf-5c638e141049</id>
       <name>Elder God</name>
       <drain>WIL + INT</drain>
@@ -549,23 +678,6 @@
         <spiritillusion>Spirit of Fire</spiritillusion>
         <spiritmanipulation>Spirit of Water</spiritmanipulation>
       </spirits>
-      <bonus>
-        <drainresist>2</drainresist>
-      </bonus>
-    </tradition>
-    <tradition>
-      <id>9c211dbe-6a37-4872-80fa-37d845d76668</id>
-      <name>Norse [Alt]</name>
-      <drain>WIL + CHA</drain>
-      <source>FA</source>
-      <page>68</page>
-      <spirits>
-        <spiritcombat>Guardian Spirit</spiritcombat>
-        <spiritdetection>Spirit of Earth</spiritdetection>
-        <spirithealth>Plant Spirit</spirithealth>
-        <spiritillusion>Spirit of Air</spiritillusion>
-        <spiritmanipulation>Spirit of Fire</spiritmanipulation>
-      </spirits>
     </tradition>
     <tradition>
       <id>61819d3f-2ca6-4e1e-9d66-5d94c1560733</id>
@@ -577,6 +689,50 @@
         <spiritcombat>Plant Spirit</spiritcombat>
         <spiritdetection>Spirit of Earth</spiritdetection>
         <spirithealth>Spirit of Water</spirithealth>
+        <spiritillusion>Spirit of Air</spiritillusion>
+        <spiritmanipulation>Spirit of Fire</spiritmanipulation>
+      </spirits>
+    </tradition>
+    <tradition>
+      <id>ad6f8984-f0c2-41e9-a2d1-73a719d21a06</id>
+      <name>Islam [Islamic Alchemist]</name>
+      <drain>WIL + LOG</drain>
+      <source>FA</source>
+      <page>69</page>
+      <bonus>
+        <skilldisable>Ritual Spellcasting</skilldisable>
+        <skilldisable>Spellcasting</skilldisable>
+        <metamagiclimit>
+          <metamagic grade="1">Fixation</metamagic>
+          <metamagic grade="2">Quickening</metamagic>
+          <metamagic grade="3">Advanced Alchemy</metamagic>
+          <metamagic grade="4">Anchoring</metamagic>
+        </metamagiclimit>
+      </bonus>
+      <spirits>
+        <spiritcombat>Guardian Spirit</spiritcombat>
+        <spiritdetection>Spirit of Earth</spiritdetection>
+        <spirithealth>Plant Spirit</spirithealth>
+        <spiritillusion>Spirit of Air</spiritillusion>
+        <spiritmanipulation>Spirit of Fire</spiritmanipulation>
+      </spirits>
+    </tradition>
+    <tradition>
+      <id>328d6c96-9e10-424f-bbed-b6e1d1035bd2</id>
+      <name>Islam [Licit Qur'anic]</name>
+      <drain>WIL + LOG</drain>
+      <source>FA</source>
+      <page>69</page>
+      <bonus>
+        <metamagiclimit>
+          <metamagic grade="1">Centering</metamagic>
+          <metamagic grade="2">Structured Spellcasting</metamagic>
+        </metamagiclimit>
+      </bonus>
+      <spirits>
+        <spiritcombat>Guardian Spirit</spiritcombat>
+        <spiritdetection>Spirit of Earth</spiritdetection>
+        <spirithealth>Plant Spirit</spirithealth>
         <spiritillusion>Spirit of Air</spiritillusion>
         <spiritmanipulation>Spirit of Fire</spiritmanipulation>
       </spirits>
@@ -617,6 +773,91 @@
         <spirithealth>Rot Spirit</spirithealth>
         <spiritillusion>Detritus Spirit</spiritillusion>
         <spiritmanipulation>Palefire Spirit</spiritmanipulation>
+      </spirits>
+    </tradition>
+    <tradition>
+      <id>9c211dbe-6a37-4872-80fa-37d845d76668</id>
+      <name>Norse [Alt]</name>
+      <drain>WIL + CHA</drain>
+      <source>FA</source>
+      <page>68</page>
+      <spirits>
+        <spiritcombat>Guardian Spirit</spiritcombat>
+        <spiritdetection>Spirit of Earth</spiritdetection>
+        <spirithealth>Plant Spirit</spirithealth>
+        <spiritillusion>Spirit of Air</spiritillusion>
+        <spiritmanipulation>Spirit of Fire</spiritmanipulation>
+      </spirits>
+    </tradition>
+    <tradition>
+      <id>2ea02939-030b-407b-b569-c2f39f301999</id>
+      <name>Norse [Godi/Runemaster]</name>
+      <drain>WIL + CHA</drain>
+      <source>FA</source>
+      <page>68</page>
+      <spirits>
+        <spiritcombat>Guardian Spirit</spiritcombat>
+        <spiritdetection>Spirit of Earth</spiritdetection>
+        <spirithealth>Plant Spirit</spirithealth>
+        <spiritillusion>Spirit of Air</spiritillusion>
+        <spiritmanipulation>Spirit of Fire</spiritmanipulation>
+      </spirits>
+    </tradition>
+    <tradition>
+      <id>fa341243-5134-42ad-9259-454bf18a26fd</id>
+      <name>Norse [Cunning Woman]</name>
+      <drain>WIL + CHA</drain>
+      <source>FA</source>
+      <page>68</page>
+      <spirits>
+        <spiritcombat>Guardian Spirit</spiritcombat>
+        <spiritdetection>Spirit of Earth</spiritdetection>
+        <spirithealth>Plant Spirit</spirithealth>
+        <spiritillusion>Spirit of Air</spiritillusion>
+        <spiritmanipulation>Spirit of Fire</spiritmanipulation>
+      </spirits>
+    </tradition>
+    <tradition>
+      <id>52668f12-2895-48e1-8b84-2382ef0fcee0</id>
+      <name>Norse [Berserker]</name>
+      <drain>WIL + CHA</drain>
+      <source>FA</source>
+      <page>68</page>
+      <bonus>
+        <specificpower>Berserker Temper</specificpower>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Adept</quality>
+          <quality>Mystic Adept</quality>
+        </oneof>
+      </required>
+      <spirits>
+        <spiritcombat>Guardian Spirit</spiritcombat>
+        <spiritdetection>Spirit of Earth</spiritdetection>
+        <spirithealth>Plant Spirit</spirithealth>
+        <spiritillusion>Spirit of Air</spiritillusion>
+        <spiritmanipulation>Spirit of Fire</spiritmanipulation>
+      </spirits>
+    </tradition>
+    <tradition>
+      <id>990cdff5-2fd1-48aa-b085-a7d0ff183d00</id>
+      <name>Norse [Seidman]</name>
+      <drain>WIL + CHA</drain>
+      <source>FA</source>
+      <page>68</page>
+      <bonus>
+        <addqualities>
+          <addquality forced="True">Dedicated Conjurer</addquality>
+        </addqualities>
+        <skillgroupdisable>Sorcery</skillgroupdisable>
+      </bonus>
+      <spirits>
+        <spiritcombat>Guardian Spirit</spiritcombat>
+        <spiritdetection>Spirit of Earth</spiritdetection>
+        <spirithealth>Plant Spirit</spirithealth>
+        <spiritillusion>Spirit of Air</spiritillusion>
+        <spiritmanipulation>Spirit of Fire</spiritmanipulation>
       </spirits>
     </tradition>
     <tradition>

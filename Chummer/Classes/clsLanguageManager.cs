@@ -292,6 +292,7 @@ namespace Chummer
                 }
                 catch (NotSupportedException)
                 {
+                    if (objChild.GetType() == typeof(WebBrowser)) continue;
                     Utils.BreakIfDebug();
                 }
 

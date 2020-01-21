@@ -3204,19 +3204,19 @@
 		</string>
 		<string>
 			<key>Label_RangeShort</key>
-			<text>近 (-0)</text>
+			<text>近 ({0})</text>
 		</string>
 		<string>
 			<key>Label_RangeMedium</key>
-			<text>中 (-1)</text>
+			<text>中 ({0})</text>
 		</string>
 		<string>
 			<key>Label_RangeLong</key>
-			<text>遠 (-3)</text>
+			<text>遠 ({0})</text>
 		</string>
 		<string>
 			<key>Label_RangeExtreme</key>
-			<text>超遠 (-6)</text>
+			<text>超遠 ({0})</text>
 		</string>
 		<string>
 			<key>Label_DicePool</key>
@@ -3708,7 +3708,7 @@
 			<text>飛行:</text>
 		</string>
 		<string>
-			<key>Label_OtherCmposure</key>
+			<key>Label_OtherComposure</key>
 			<text>冷静テスト:</text>
 		</string>
 		<string>
@@ -7048,6 +7048,10 @@
 			<key>Checkbox_Options_IgnoreArt</key>
 			<text>Ignore Art Requirements from Street Grimoire</text>
 		</string>
+        <string>
+          <key>Checkbox_Options_AllowFreeGrids</key>
+          <text>Allow Free Grid Subscription Qualities for lifestyles even if Hard Targets is not an active book</text>
+        </string>
 		<string>
 			<key>Checkbox_Options_CyberlegMovement</key>
 			<text>移動時にサイバーレッグのステータスを使用する</text>
@@ -7284,10 +7288,6 @@
 		</string>
 		<string>
 			<key>String_LifeModule</key>
-			<text>Life Module</text>
-		</string>
-		<string>
-			<key>String_Life_Module</key>
 			<text>Life Module</text>
 		</string>
 		<string>
@@ -7699,7 +7699,7 @@
 			<text>Watch Folder</text>
 		</string>
 		<string>
-			<key>Treenode_Roster_FavouriteCharacters</key>
+			<key>Treenode_Roster_FavoriteCharacters</key>
 			<text>Favorite Characters</text>
 		</string>
 		<string>
@@ -8229,10 +8229,6 @@
 		<string>
 			<key>Node_SelectedDrugs</key>
 			<text>Selected Drugs</text>
-		</string>
-		<string>
-			<key>Message_DuplicateDrugComponentWarning</key>
-			<text>You cannot add the same component twice.</text>
 		</string>
 		<string>
 			<key>Message_DuplicateDrugFoundationWarning</key>

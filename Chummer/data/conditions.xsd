@@ -39,6 +39,12 @@
   <xs:group name="checks">
     <xs:sequence>
       <xs:element name="accessory" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="allowspiritfettering" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="armormod" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:attribute name="sameparent" type="xs:boolean" use="optional" />
+        </xs:complexType>
+      </xs:element>
       <xs:element name="art" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
       <xs:element name="attribute" minOccurs="0" maxOccurs="unbounded">
         <xs:complexType>
@@ -107,6 +113,7 @@
           </xs:simpleContent>
         </xs:complexType>
       </xs:element>
+      <xs:element name="gameplayoption" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="gear" minOccurs="0" maxOccurs="unbounded">
         <xs:complexType>
           <xs:simpleContent>
@@ -130,6 +137,7 @@
       </xs:element>
       <xs:element name="inherited" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="initiategrade" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="magenabled" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="martialart" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="martialtechnique" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="metamagic" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
@@ -148,6 +156,7 @@
           </xs:simpleContent>
         </xs:complexType>
       </xs:element>
+      <xs:element name="resenabled" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="skill" minOccurs="0" maxOccurs="unbounded">
         <xs:complexType>
           <xs:sequence>
@@ -184,6 +193,7 @@
         </xs:complexType>
       </xs:element>
       <xs:element name="streetcredvsnotoriety" minOccurs="0" maxOccurs="1" />
+      <xs:element name="submersiongrade" type="xs:integer" minOccurs="0" maxOccurs="1" />
       <xs:element name="tradition" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
       <xs:element name="traditionspiritform" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
     </xs:sequence>

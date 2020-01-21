@@ -555,14 +555,15 @@ namespace Chummer.Backend.Skills
                 new DependancyGraphNode<string>(nameof(DisplayName),
                     new DependancyGraphNode<string>(nameof(Name))
                 ),
-                new DependancyGraphNode<string>(nameof(SkillToolTip),
-                    new DependancyGraphNode<string>(nameof(Notes)),
-                    new DependancyGraphNode<string>(nameof(DisplayCategory),
-                        new DependancyGraphNode<string>(nameof(SkillCategory),
-                            new DependancyGraphNode<string>(nameof(KnowledgeSkill.Type), () => IsKnowledgeSkill)
+                new DependancyGraphNode<string>(nameof(HtmlSkillToolTip),
+                    new DependancyGraphNode<string>(nameof(SkillToolTip),
+                        new DependancyGraphNode<string>(nameof(Notes)),
+                        new DependancyGraphNode<string>(nameof(DisplayCategory),
+                            new DependancyGraphNode<string>(nameof(SkillCategory),
+                                new DependancyGraphNode<string>(nameof(KnowledgeSkill.Type), () => IsKnowledgeSkill)
+                            )
                         )
-                    )
-                ),
+                    )),
                 new DependancyGraphNode<string>(nameof(PreferredControlColor),
                     new DependancyGraphNode<string>(nameof(Leveled))
                 ),
@@ -806,6 +807,14 @@ namespace Chummer.Backend.Skills
                     _intCachedEnabled = 0;
                     return false;
                 }
+                // SR5 400 : Critters that don't have the Sapience Power are unable to default in skills they don't possess. 
+                if (CharacterObject.IsCritter && !CharacterObject.Improvements.Any(x =>
+                        x.ImproveType == Improvement.ImprovementType.AllowSkillDefault &&
+                        (x.ImprovedName == Name || x.ImprovedName == string.Empty) && x.Enabled) && Rating == 0)
+                {
+                    _intCachedEnabled = 0;
+                    return false;
+                }
 
                 if (CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.SkillDisable && x.ImprovedName == Name && x.Enabled))
                 {
@@ -1031,12 +1040,21 @@ namespace Chummer.Backend.Skills
 
         public bool HasSpecialization(string strSpecialization)
         {
-
             if (IsExoticSkill)
             {
                 return ((ExoticSkill)this).Specific == strSpecialization;
             }
             return Specializations.Any(x => (x.Name == strSpecialization || x.DisplayName(GlobalOptions.Language) == strSpecialization)) && !CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects && x.UniqueName == Name && string.IsNullOrEmpty(x.Condition) && x.Enabled);
+        }
+
+        public SkillSpecialization GetSpecialization(string strSpecialization)
+        {
+
+            if (IsExoticSkill && ((ExoticSkill)this).Specific == strSpecialization)
+            {
+                return Specializations[0];
+            }
+            return HasSpecialization(strSpecialization) ? Specializations.FirstOrDefault(x => x.Name == strSpecialization || x.DisplayName(GlobalOptions.Language) == strSpecialization) : null;
         }
 
         public string PoolToolTip => CompileDicepoolTooltip(Attribute);
@@ -1104,9 +1122,13 @@ namespace Chummer.Backend.Skills
             {
                 s.Append(strSpaceCharacter + '+' + strSpaceCharacter);
                 s.Append(CharacterObject.GetObjectName(source, GlobalOptions.Language));
-                s.Append(strSpaceCharacter + '(');
-                s.Append(source.Condition.ToString(GlobalOptions.CultureInfo));
-                s.Append(')');
+                if (source.Condition != string.Empty)
+                {
+                    s.Append(strSpaceCharacter + '(');
+                    s.Append(source.Condition.ToString(GlobalOptions.CultureInfo));
+                    s.Append(')');
+                }
+
                 s.Append(strSpaceCharacter + '(');
                 s.Append(source.Value.ToString(GlobalOptions.CultureInfo));
                 s.Append(')');
@@ -1257,6 +1279,8 @@ namespace Chummer.Backend.Skills
             }
         }
 
+        public string HtmlSkillToolTip => SkillToolTip.CleanForHTML();
+
         public string SkillToolTip
         {
             get
@@ -1271,11 +1295,10 @@ namespace Chummer.Backend.Skills
                 }
                 if (!string.IsNullOrEmpty(Notes))
                 {
-                    strReturn = LanguageManager.GetString("Label_Notes", GlobalOptions.Language) + strSpaceCharacter + Notes.WordWrap(100) + Environment.NewLine + Environment.NewLine;
+                    strReturn = LanguageManager.GetString("Label_Notes", GlobalOptions.Language) + strSpaceCharacter + Notes + Environment.NewLine + Environment.NewLine;
                 }
 
                 strReturn += $"{DisplayCategory(GlobalOptions.Language)}{Environment.NewLine}{strMiddle}{CommonFunctions.LanguageBookLong(Source, GlobalOptions.Language)}{strSpaceCharacter}{LanguageManager.GetString("String_Page", GlobalOptions.Language)}{strSpaceCharacter}{DisplayPage(GlobalOptions.Language)}";
-
                 return strReturn;
             }
         }

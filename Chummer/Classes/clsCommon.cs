@@ -1112,5 +1112,77 @@ namespace Chummer
             return string.Empty;
         }
         #endregion
+
+        #region Timescale
+        public enum Timescale
+        {
+            Instant = 0,
+            Seconds = 1,
+            CombatTurns = 2,
+            Minutes = 3,
+            Hours = 4,
+            Days = 5
+        }
+        /// <summary>
+        /// Convert a string to a Timescale.
+        /// </summary>
+        /// <param name="strValue">String value to convert.</param>
+        public static Timescale ConvertStringToTimescale(string strValue)
+        {
+            switch (strValue)
+            {
+                case "Instant":
+                    return Timescale.Instant;
+                case "Seconds":
+                    return Timescale.Seconds;
+                case "CombatTurns":
+                    return Timescale.CombatTurns;
+                case "Minutes":
+                    return Timescale.Minutes;
+                case "Hours":
+                    return Timescale.Hours;
+                case "Days":
+                    return Timescale.Days;
+                default:
+                    return Timescale.Instant;
+            }
+        }
+
+        /// <summary>
+        /// Convert a string to a Timescale.
+        /// </summary>
+        /// <param name="strValue">String value to convert.</param>
+        /// <param name="single">Whether to return multiple of the timescale (Hour vs Hours)</param>
+        public static string GetTimescaleString(Timescale strValue, bool single)
+        {
+            switch (strValue)
+            {
+                case Timescale.Seconds when single:
+                    return LanguageManager.GetString("String_Second");
+                case Timescale.Seconds:
+                    return LanguageManager.GetString("String_Seconds");
+                case Timescale.CombatTurns when single:
+                    return LanguageManager.GetString("String_CombatTurn");
+                case Timescale.CombatTurns:
+                    return LanguageManager.GetString("String_CombatTurns");
+                case Timescale.Minutes when single:
+                    return LanguageManager.GetString("String_Minute");
+                case Timescale.Minutes:
+                    return LanguageManager.GetString("String_Minutes");
+                case Timescale.Hours when single:
+                    return LanguageManager.GetString("String_Hour");
+                case Timescale.Hours:
+                    return LanguageManager.GetString("String_Hours");
+                case Timescale.Days when single:
+                    return LanguageManager.GetString("String_Day");
+                case Timescale.Days:
+                    return LanguageManager.GetString("String_Days");
+                case Timescale.Instant:
+                    return LanguageManager.GetString("String_Immediate");
+                default:
+                    return LanguageManager.GetString("String_Immediate");
+            }
+        }
+        #endregion
     }
 }

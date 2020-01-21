@@ -76,7 +76,7 @@ namespace Chummer.UI.Skills
                 lblName.Visible = true;
                 lblName.DataBindings.Add("Text", skill, nameof(KnowledgeSkill.WriteableName), false, DataSourceUpdateMode.OnPropertyChanged);
                 lblName.DataBindings.Add("ForeColor", skill, nameof(Skill.PreferredColor));
-                lblName.DataBindings.Add("ToolTipText", skill, nameof(Skill.SkillToolTip));
+                lblName.DataBindings.Add("ToolTipText", skill, nameof(Skill.HtmlSkillToolTip));
 
                 lblSpec.Visible = true;
                 lblSpec.DataBindings.Add("Text", skill, nameof(Skill.DisplaySpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
@@ -129,6 +129,9 @@ namespace Chummer.UI.Skills
             cmdDelete.DataBindings.Add("Visible", skill, nameof(Skill.AllowDelete), false, DataSourceUpdateMode.OnPropertyChanged);
             cmdDelete.Click += (sender, args) =>
             {
+                if (!skill.CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteKnowledgeSkill",
+                    GlobalOptions.Language)))
+                    return;
                 skill.UnbindSkill();
                 skill.CharacterObject.SkillsSection.KnowledgeSkills.Remove(skill);
             };

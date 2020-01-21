@@ -37,7 +37,7 @@ namespace Chummer.Backend.Equipment
     /// </summary>
     [HubClassTag("SourceID", true, "TotalArmor", "Extra")]
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Armor : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, IHasChildrenAndCost<Gear>, IHasCustomName, IHasLocation, ICanEquip, IHasSource, IHasRating, ICanSort, IHasWirelessBonus, IHasStolenProperty
+    public class Armor : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, IHasChildrenAndCost<Gear>, IHasCustomName, IHasLocation, ICanEquip, IHasSource, IHasRating, ICanSort, IHasWirelessBonus, IHasStolenProperty, ICanPaste
 	{
         private Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private Guid _guiSourceID = Guid.Empty;
@@ -1375,34 +1375,8 @@ namespace Chummer.Backend.Equipment
                 string strArmorCapacity = TotalArmorCapacity;
                 if (strArmorCapacity != "0" && !string.IsNullOrEmpty(strArmorCapacity)) // && _objCharacter.Options.ArmorSuitCapacity)
                 {
-                    // Run through its Armor Mods and deduct the Capacity costs.
-                    foreach (ArmorMod objMod in ArmorMods.Where(mod => !mod.IncludedInArmor))
-                    {
-                        bool blnSoftweave = false;
-                        if (objMod.Bonus != null)
-                        {
-                            blnSoftweave = objMod.Bonus.SelectSingleNode("softweave") != null;
-                        }
-                        if (objMod.WirelessOn && objMod.WirelessBonus != null)
-                        {
-                            blnSoftweave = objMod.WirelessBonus.SelectSingleNode("softweave") != null;
-                        }
-                        if (blnSoftweave)
-                            continue;
-                        string strCapacity = objMod.CalculatedCapacity;
-                        int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
-                        if (intPos != -1)
-                        {
-                            // If this is a multiple-capacity item, use only the second half.
-                            strCapacity = strCapacity.Substring(intPos + 1);
-                        }
-
-                        if (strCapacity.StartsWith('['))
-                            strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-                        if (strCapacity == "*")
-                            strCapacity = "0";
-                        decCapacity -= Convert.ToDecimal(strCapacity, GlobalOptions.CultureInfo);
-                    }
+                    // Run through its Armor Mods and deduct the Capacity costs. Mods that confer capacity (ie negative values) are excluded, as they're processed in TotalArmorCapacity.
+                    decCapacity = ArmorMods.Where(mod => !mod.IncludedInArmor && mod.TotalCapacity > 0).Aggregate(decCapacity, (current, objMod) => current - objMod.TotalCapacity);
 
                     // Run through its Gear and deduct the Armor Capacity costs.
                     if (Gear.Count <= 0) return decCapacity;
@@ -1758,6 +1732,41 @@ namespace Chummer.Backend.Equipment
             intOutRestrictedCount = intRestrictedCount;
             blnOutRestrictedGearUsed = blnRestrictedGearUsed;
             strOutRestrictedItem = strRestrictedItem;
+        }
+
+        public bool AllowPasteXml
+        {
+            get
+            {
+                switch (GlobalOptions.ClipboardContentType)
+                {
+                    case ClipboardContentType.ArmorMod:
+                    {
+                        var xmlAddonCategoryList = GetNode()?.SelectNodes("addoncategory");
+                        if (xmlAddonCategoryList?.Count > 0)
+                            return xmlAddonCategoryList.Cast<XmlNode>().Any(xmlCategory =>
+                                xmlCategory.InnerText == GlobalOptions.Clipboard.SelectSingleNode("category").Value);
+
+                        return false;
+                    }
+                    case ClipboardContentType.Gear:
+                    {
+                        var xmlAddonCategoryList = GetNode()?.SelectNodes("addoncategory");
+                        if (xmlAddonCategoryList?.Count > 0)
+                            return xmlAddonCategoryList.Cast<XmlNode>().Any(xmlCategory =>
+                                xmlCategory.InnerText == GlobalOptions.Clipboard.SelectSingleNode("category").Value);
+
+                        return false;
+                    }
+                    default:
+                        return false;
+                }
+            }
+        }
+
+        public bool AllowPasteObject(object input = null)
+        {
+            throw new NotImplementedException();
         }
     }
 }

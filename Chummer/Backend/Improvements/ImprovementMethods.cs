@@ -40,6 +40,8 @@ namespace Chummer
                     return objImprovementAdder.qualitylevel;
                 case "SELECTTEXT":
                     return objImprovementAdder.selecttext;
+                case "SURPRISE":
+                    return objImprovementAdder.surprise;
                 case "SPELLRESISTANCE":
                     return objImprovementAdder.spellresistance;
                 case "MENTALMANIPULATIONRESIST":
@@ -88,6 +90,8 @@ namespace Chummer
                     return objImprovementAdder.cyberseeker;
                 case "BLOCKSKILLGROUPDEFAULTING":
                     return objImprovementAdder.blockskillgroupdefaulting;
+                case "ALLOWSKILLDEFAULTING":
+                    return objImprovementAdder.allowskilldefaulting;
                 case "SELECTSKILL":
                     return objImprovementAdder.selectskill;
                 case "SELECTSKILLGROUP":
@@ -270,6 +274,8 @@ namespace Chummer
                     return objImprovementAdder.weaponcategorydv;
                 case "WEAPONCATEGORYDICE":
                     return objImprovementAdder.weaponcategorydice;
+                case "WEAPONSPECIFICDICE":
+                    return objImprovementAdder.weaponspecificdice;
                 case "SELECTMENTORSPIRIT":
                     return objImprovementAdder.selectmentorspirit;
                 case "SELECTPARAGON":
@@ -487,8 +493,16 @@ namespace Chummer
                     return objImprovementAdder.addskillspecializationoption;
                 case "LIMITSPELLCATEGORY":
                     return objImprovementAdder.limitspellcategory;
+                case "BLOCKSPELLDESCRIPTOR":
+                    return objImprovementAdder.blockspelldescriptor;
                 case "LIMITSPELLDESCRIPTOR":
                     return objImprovementAdder.limitspelldescriptor;
+                case "ALLOWSPELLRANGE":
+                    return objImprovementAdder.allowspellrange;
+                case "LIMITSPELLRANGE":
+                    return objImprovementAdder.limitspellrange;
+                case "ALLOWSPELLCATEGORY":
+                    return objImprovementAdder.allowspellcategory;
                 case "ADDSPRITE":
                     return objImprovementAdder.addsprite;
                 case "ADDSPIRIT":
@@ -507,10 +521,14 @@ namespace Chummer
                     return objImprovementAdder.skillgroupkarmacost;
                 case "KNOWLEDGESKILLKARMACOST":
                     return objImprovementAdder.knowledgeskillkarmacost;
+                case "KNOWLEDGESKILLKARMACOSTMIN":
+                    return objImprovementAdder.knowledgeskillkarmacostmin;
                 case "SKILLDISABLE":
                     return objImprovementAdder.skilldisable;
                 case "SKILLGROUPDISABLE":
                     return objImprovementAdder.skillgroupdisable;
+                case "SKILLGROUPDISABLECHOICE":
+                    return objImprovementAdder.skillgroupdisablechoice;
                 case "SKILLGROUPCATEGORYDISABLE":
                     return objImprovementAdder.skillgroupcategorydisable;
                 case "SKILLGROUPCATEGORYKARMACOST":
@@ -606,6 +624,20 @@ namespace Chummer
                     return objImprovementAdder.contactkarmaminimum;
                 case "ALLOWSPRITEFETTERING":
                     return objImprovementAdder.allowspritefettering;
+                case "ENABLECYBERZOMBIE":
+                    return objImprovementAdder.enablecyberzombie;
+                case "ALLOWCRITTERPOWERCATEGORY":
+                    return objImprovementAdder.allowcritterpowercategory;
+                case "LIMITCRITTERPOWERCATEGORY":
+                    return objImprovementAdder.limitcritterpowercategory;
+                case "ATTRIBUTEMAXCLAMP":
+                    return objImprovementAdder.attributemaxclamp;
+                case "METAMAGICLIMIT":
+                    return objImprovementAdder.metamagiclimit;
+                case "DISABLEQUALITY":
+                    return objImprovementAdder.disablequality;
+                case "FREEQUALITY":
+                    return objImprovementAdder.freequality;
                 // No method matches, return a null pointer
                 default:
                     return null;

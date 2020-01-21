@@ -1584,12 +1584,6 @@
 				<translate>Micro-emplacement</translate>
 				<altpage>73</altpage>
 			</mod>
-			<mod>
-				<id>a1c9f8ee-d58d-4583-8ff3-12517dbf76f5</id>
-				<name>Personal Drone Rack</name>
-				<translate>Rack de drone personnel PI-Tac</translate>
-				<altpage>73</altpage>
-			</mod>
 			<mod translated="True">
 				<id>b7be75a4-72ff-49a2-8b7b-0bf36a9f40d8</id>
 				<name>Internal Air Tank (5 Minutes)</name>
@@ -2970,7 +2964,7 @@
 			<book>
 				<id>3976dc50-f7db-481d-9372-fc2a5c1178ce</id>
 				<name>Street Grimoire</name>
-				<translate>Street Grimoire</translate>
+				<translate>Grimoire des Ombres</translate>
 				<altcode>SG</altcode>
 			</book>
 			<book>
@@ -2988,7 +2982,7 @@
 			<book>
 				<id>ab9fd70c-6b79-4780-ae3d-dfa5f1624c9d</id>
 				<name>Stolen Souls</name>
-				<translate>Stolen Souls</translate>
+				<translate>Âmes volées</translate>
 				<altcode>SS</altcode>
 			</book>
 			<book>
@@ -3000,7 +2994,7 @@
 			<book>
 				<id>f4cf7430-4c2d-4f3c-b1d2-fd1e08ad777d</id>
 				<name>Street Grimoire (German-exclusive Content)</name>
-				<translate>Street Grimoire (Contenu exclusif allemand)</translate>
+				<translate>Grimoire des Ombres (Contenu exclusif allemand)</translate>
 				<altcode>SGG</altcode>
 			</book>
 			<book>
@@ -3219,6 +3213,18 @@
 				<translate>Aetherology</translate>
 				<altcode>AET</altcode>
 			</book>
+			<book>
+				<id>b20a20e5-e9d4-4f54-9caa-57a001cb904e</id>
+				<name>Datapuls SOTA 2080 (German-exclusive)</name>
+				<translate>Datapuls SOTA 2080 (Livret allemand)</translate>
+				<altcode>SOTG</altcode>
+			</book>
+			<book>
+				<id>3ece5592-c3c1-4cf8-97a2-ef773388289d</id>
+				<name>Datapuls Verschlusssache (German-exclusive)</name>
+				<translate>Datapuls Verschlusssache (Livret allemand)</translate>
+				<altcode>DPVG</altcode>
+			</book>
 		</books>
 	</chummer>
 	<chummer file="critterpowers.xml">
@@ -3230,6 +3236,7 @@
 			<category translate="Pouvoirs paranormaux">Paranormal</category>
 			<category translate="Pouvoirs des Zoocanthropes">Shapeshifter</category>
 			<category translate="Pouvoirs des Toxiques">Toxic Critter Powers</category>
+			<category translate="Infectée">Infected</category>
 			<category translate="Faiblesses">Weakness</category>
 			<category translate="Echos">Echoes</category>
 			<category translate="Drakes">Drake</category>
@@ -3885,7 +3892,7 @@
 			</power>
 			<power>
 				<id>5aa8f042-2180-43f9-8f46-7053a20cbe45</id>
-				<name>Cozenage</name>
+				<name>Cozenge</name>
 				<translate>Tromperie</translate>
 				<altpage>252</altpage>
 			</power>
@@ -4251,7 +4258,7 @@
 			</power>
 			<power>
 				<id>98928dbd-5b79-4dde-bc92-56dc317e293b</id>
-				<name>Underwater Adapation</name>
+				<name>Underwater Adaptation</name>
 				<translate>Adaptation sous-marine</translate>
 				<altpage>164</altpage>
 			</power>
@@ -4574,6 +4581,7 @@
 			<category translate="Créatures toxiques">Toxic Critters</category>
 			<category translate="Esprits toxiques">Toxic Spirits</category>
 			<category translate="Esprits de l'ombre">Shadow Spirits</category>
+			<category translate="Formes de la guerre">Warforms</category>
 		</categories>
 		<metatypes>
 			<metatype>
@@ -9864,8 +9872,14 @@
 			</cyberware>
 			<cyberware>
 				<id>a94e3b9d-d87e-494b-a898-7a1c40befc3a</id>
-				<name>Cosmetic Modifcations Eye (2050)</name>
-				<translate>Cosmetic Modifcations Eye (2050)</translate>
+				<name>Cosmetic Modifications Eye (2050)</name>
+				<translate>Modification Cosmétique Oeil (2050)</translate>
+				<altpage>201</altpage>
+			</cyberware>
+			<cyberware>
+				<id>23ee3559-2347-4f3f-9ae5-1a3ba3e47edd</id>
+				<name>Cosmetic Modifications Ear (2050)</name>
+				<translate>Modification Cosmétique Oreille (2050)</translate>
 				<altpage>201</altpage>
 			</cyberware>
 			<cyberware>
@@ -10470,6 +10484,8 @@
 			<category translate="Accessoires matriciels">Matrix Accessories</category>
 			<category translate="Puces de boost">Booster Chips</category>
 			<category translate="Modificateurs d'apparence">Appearance Modification</category>
+			<category translate="Instruments de Musique">Musical Intruments</category>
+			<category translate="Imprimerie">Printing</category>
 		</categories>
 		<gears>
 			<gear translated="True">
@@ -18416,6 +18432,12 @@
 				<translate>Blight</translate>
 				<altpage>157</altpage>
 			</gear>
+			<gear>
+				<id>a1c9f8ee-d58d-4583-8ff3-12517dbf76f5</id>
+				<name>Personal Drone Rack</name>
+				<translate>Rack de drone personnel PI-Tac</translate>
+				<altpage>73</altpage>
+			</gear>
 		</gears>
 	</chummer>
 	<chummer file="improvements.xml">
@@ -18951,6 +18973,12 @@
 				<name>Cyber-Singularity Seeker/Redliner (Condition Monitor)</name>
 				<translate>Bonus de moniteur de condition de cyber-singularité</translate>
 				<altpage>Grants bonuses to the character's physical Condition Monitor based on the number of cyberlimbs a character has. See Redliner in Chrome Flesh for more details.</altpage>
+			</improvement>
+			<improvement>
+				<id>freespells</id>
+				<name>Free Spells</name>
+				<translate>Sorts gratuits</translate>
+				<altpage>Permet au personnage de marquer certains sorts comme gratuits pour éviter des coûts en karma.</altpage>
 			</improvement>
 		</improvements>
 	</chummer>
@@ -31130,7 +31158,7 @@
 			</quality>
 			<quality>
 				<id>1b5acdf3-66ae-4ed7-b5fa-614668721774</id>
-				<name>Dishevelled</name>
+				<name>Disheveled</name>
 				<translate>Ébouriffé</translate>
 				<altpage>152</altpage>
 				<altnameonpage></altnameonpage>
@@ -36401,6 +36429,11 @@
 					<spec translate="Dialecte">Dialect</spec>
 					<spec translate="Jargon">Lingo</spec>
 				</specs>
+			</skill>
+			<skill>
+				<id>c0be1393-e4a1-4af6-8c0d-f9eef89a93b1</id>
+				<name>Zoology</name>
+				<translate>Zoologie</translate>
 			</skill>
 		</knowledgeskills>
 	</chummer>
@@ -42460,6 +42493,12 @@
 				<translate>Remote Adaptation (2050)</translate>
 				<altpage>212</altpage>
 			</mod>
+			<mod>
+				<id>3433b962-0ed6-49e9-9807-0a160642ae91</id>
+				<name>Ejection seat</name>
+				<translate>Siège éjectable</translate>
+				<altpage>171</altpage>
+			</mod>
 		</mods>
 		<weaponmounts>
 			<weaponmount>
@@ -44635,7 +44674,7 @@
 			</weapon>
 			<weapon>
 				<id>1c738c1d-7abc-4756-a683-f5bf92902671</id>
-				<name>Cavalier Arms Adder Silvergun</name>
+				<name>Cavalier Arms Adder Slivergun</name>
 				<translate>Pistolet à aigulles Cavalier Arms Adder</translate>
 				<altpage>178</altpage>
 			</weapon>
@@ -45979,8 +46018,8 @@
 			</weapon>
 			<weapon>
 				<id>79599718-2154-45ad-ba32-bbb65c0a5bf4</id>
-				<name>Renkaru Red Samurai Katana</name>
-				<translate>Renkaru Red Samurai Katana</translate>
+				<name>Renraku Red Samurai Katana</name>
+				<translate>Renraku Red Samurai Katana</translate>
 				<altpage>132</altpage>
 			</weapon>
 			<weapon>
@@ -47522,6 +47561,11 @@
 				<id>b9d5c0ae-0d2c-4e86-9e09-f42a23ab27a6</id>
 				<name>Street Scum</name>
 				<translate>Déchet des rues</translate>
+			</gameplayoption>
+			<gameplayoption>
+				<id>e6ac4dae-23bc-4b77-9e00-a6bfdacd0760</id>
+				<name>High Life</name>
+				<translate>Vie de luxe</translate>
 			</gameplayoption>
 		</gameplayoptions>
 	</chummer>

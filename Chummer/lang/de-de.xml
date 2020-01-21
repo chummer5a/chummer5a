@@ -891,10 +891,6 @@
 			<text>Ihre Essenz muss kleiner als 0 sein.</text>
 		</string>
 		<string>
-			<key>Message_CyberzombieRequirementsStimulator</key>
-			<text>Sie müssen einen aktiven Gedächtnisverstärker besitzen.</text>
-		</string>
-		<string>
 			<key>MessageTitle_CyberzombieRequirements</key>
 			<text>Anforderungen für Cyberzombies</text>
 		</string>
@@ -912,7 +908,7 @@
 		</string>
 		<string>
 			<key>String_CyberzombieWILDescription</key>
-			<text>Werfen Sie die angegebene Anzahl an Würfeln und tragen Sie die Anzahl der Erfolge im dafür vorgesehenen Feld ein. Das bestimmt den Wert der negativen Eigenschaften, die Sie wählen müssen um ein Cyberzombie zu werden.</text>
+			<text>Werfen Sie die angegebene Anzahl an Würfeln und tragen Sie die Anzahl der Erfolge im dafür vorgesehenen Feld ein. Das bestimmt den Wert der negativen Eigenschaften, die Sie wählen müssen, um ein Cyberzombie zu werden.</text>
 		</string>
 		<string>
 			<key>Message_EnemyLimit</key>
@@ -2850,19 +2846,19 @@
 		</string>
 		<string>
 			<key>Label_RangeShort</key>
-			<text>kurz</text>
+			<text>kurz ({0})</text>
 		</string>
 		<string>
 			<key>Label_RangeMedium</key>
-			<text>mittel</text>
+			<text>mittel ({0})</text>
 		</string>
 		<string>
 			<key>Label_RangeLong</key>
-			<text>lang</text>
+			<text>lang ({0})</text>
 		</string>
 		<string>
 			<key>Label_RangeExtreme</key>
-			<text>extrem</text>
+			<text>extrem ({0})</text>
 		</string>
 		<string>
 			<key>Label_DicePool</key>
@@ -3261,7 +3257,7 @@
 			<text>Fliegen:</text>
 		</string>
 		<string>
-			<key>Label_OtherCmposure</key>
+			<key>Label_OtherComposure</key>
 			<text>Selbstbeherrschung:</text>
 		</string>
 		<string>
@@ -3642,7 +3638,7 @@
 		</string>
 		<string>
 			<key>Message_CyberwareSuite_FileName</key>
-			<text>Bitte geben Sie einen Namen ein unter dem dieses Cyberware-Set gespeichert werden soll.</text>
+			<text>Bitte geben Sie einen Namen ein, unter dem dieses Cyberware-Set gespeichert werden soll.</text>
 		</string>
 		<string>
 			<key>MessageTitle_CyberwareSuite_FileName</key>
@@ -6105,7 +6101,7 @@
 		</string>
 		<string>
 			<key>Message_DeleteImprovementGroup</key>
-			<text>Wollen Sie wirklich diesen Container mit Verbesserungen löschen? Alle beinhalteten Verbesserungen werden zurück in die Hauptgruppe verschoben.</text>
+			<text>Wollen Sie diesen Container mit Verbesserungen wirklich löschen? Alle beinhalteten Verbesserungen werden zurück in die Hauptgruppe verschoben.</text>
 		</string>
 		<string>
 			<key>Button_EnableAll</key>
@@ -7124,6 +7120,10 @@
 			<key>Checkbox_Options_IgnoreArt</key>
 			<text>Ignoriere Anforderungen für Künste aus dem Straßengrimoire</text>
 		</string>
+        <string>
+          <key>Checkbox_Options_AllowFreeGrids</key>
+          <text>Zulassen von beliebigen Gitter-Abonnements für Lebensstile, auch wenn 'Harte Ziele' nicht als Quellenbuch ausgewählt ist</text>
+        </string>
 		<string>
 			<key>Checkbox_Options_CyberlegMovement</key>
 			<text>Werte von Cyberbeinen für Bewegung verwenden</text>
@@ -7134,7 +7134,7 @@
 		</string>
 		<string>
 			<key>Checkbox_Options_ExceptionalNotMaxed</key>
-			<text>Exceptional attributes not at cap, are not maxed</text>
+			<text>Außergewöhnliche Attribute nicht an der Obergrenze, sind nicht begrenzt</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_PointsOnBrokenGroups</key>
@@ -7357,10 +7357,6 @@
 			<text>KI Programm oder fortgeschrittenes Programm auswählen</text>
 		</string>
 		<string>
-			<key>Message_SelectAIProgram_AdvancedProgramRequirement</key>
-			<text>Sie erfüllen nicht alle Anforderungen für dieses fortgeschrittene Programm. Die folgenden Programme müssen gelernt werden: </text>
-		</string>
-		<string>
 			<key>MessageTitle_SelectAIProgram_AdvancedProgramRequirement</key>
 			<text>Anforderung des fortgeschrittenen Programms</text>
 		</string>
@@ -7475,10 +7471,6 @@
 			<text>Charakternotizen</text>
 		</string>
 		<string>
-			<key>Label_SelectAdvancedLifestyle_Base_Comforts</key>
-			<text>[{0}/{1}]</text>
-		</string>
-		<string>
 			<key>String_DataProcessing</key>
 			<text>Datenverarbeitung</text>
 		</string>
@@ -7583,10 +7575,6 @@
 			<text>Zweite Chance</text>
 		</string>
 		<string>
-			<key>Label_SelectAdvancedLifestyle_Base_Security</key>
-			<text>[{0}/{1}]</text>
-		</string>
-		<string>
 			<key>String_KnowledgeSkillFilterAll</key>
 			<text>Zeige alle Wissensfertigkeiten</text>
 		</string>
@@ -7669,10 +7657,6 @@
 		<string>
 			<key>Label_SummaryRituals</key>
 			<text>Rituale</text>
-		</string>
-		<string>
-			<key>Label_SelectAdvancedLifestyle_Base_Neighborhood</key>
-			<text>[{0}/{1}]</text>
 		</string>
 		<string>
 			<key>Label_SelectAdvancedLifestyle_UnusedLP</key>
@@ -7859,7 +7843,7 @@
 			<text>&amp;Favorit umschalten</text>
 		</string>
 		<string>
-			<key>Treenode_Roster_FavouriteCharacters</key>
+			<key>Treenode_Roster_FavoriteCharacters</key>
 			<text>Favorisierte Charaktere</text>
 		</string>
 		<string>
@@ -7896,10 +7880,6 @@
 		</string>
 		<string>
 			<key>String_LifeModule</key>
-			<text>Lebensmodul</text>
-		</string>
-		<string>
-			<key>String_Life_Module</key>
 			<text>Lebensmodul</text>
 		</string>
 		<string>
@@ -8756,7 +8736,7 @@
 		</string>
 		<string>
 			<key>Label_AddictionThreshold</key>
-			<text>Schwellwert:</text>
+			<text>Schwellenwert:</text>
 		</string>
 		<string>
 			<key>Label_DrugEffects</key>
@@ -8769,10 +8749,6 @@
 		<string>
 			<key>Message_DeleteWeaponMount</key>
 			<text>Möchten Sie diese Waffenhalterung wirklich löschen?</text>
-		</string>
-		<string>
-			<key>Message_DuplicateDrugComponentWarning</key>
-			<text>Sie können denselben Baustein nicht zweimal hinzufügen.</text>
 		</string>
 		<string>
 			<key>Message_DuplicateDrugFoundationWarning</key>
@@ -9563,10 +9539,6 @@
 			<text>Chummer entscheiden lassen</text>
 		</string>
 		<string>
-			<key>String_ApplicationInsights_Yes</key>
-			<text>Alle Fehlermeldungen übertragen</text>
-		</string>
-		<string>
 			<key>String_ApplicationInsights_Crashes</key>
 			<text>Abstürze übertragen</text>
 		</string>
@@ -9618,6 +9590,35 @@
 			<key>Menu_ShareChummer</key>
 			<text>Chummer weiterempfehlen</text>
 		</string>
+        <string>
+          <key>Menu_ShowMySINners</key>
+          <text>Alle Daten anzeigen</text>
+        </string>
+        <string>
+          <key>Menu_RemovePinnedChummer</key>
+          <text>Charakter un-pinnen</text>
+        </string>
+        <string>
+          <key>Menu_AddPinnedChummer</key>
+          <text>pinne den Charakter</text>
+        </string>
+        <string>
+          <key>Menu_DeleteFromSINners</key>
+          <text>Lösche Chummer aus der SINners-Registry</text>
+        </string>
+        <string>
+          <key>Menu_RemovePinnedGroup</key>
+          <text>Gruppe un-pinnen</text>
+        </string>
+        <string>
+          <key>Menu_AddPinnedGroup</key>
+          <text>Pinne Gruppe</text>
+        </string>
+
+        <string>
+          <key>Menu_ShareChummerGroup</key>
+          <text>ganze Gruppe teilen/sharen</text>
+        </string>
 		<string>
 			<key>String_ApplicationInsights_OnlyLocal</key>
 			<text>nur lokal loggen</text>
@@ -9643,14 +9644,6 @@
 			<text>lasse Chummer entscheiden</text>
 		</string>
 		<string>
-			<key>Menu_Tools_SINners</key>
-			<text>SINner Gruppen</text>
-		</string>
-		<string>
-			<key>Menu_Tools_SINnersArchetypes</key>
-			<text>Archetypen</text>
-		</string>
-		<string>
 			<key>Label_SelectAdvancedLifestyle_Base</key>
 			<text>[{0}/{1}]</text>
 		</string>
@@ -9672,7 +9665,7 @@
 		</string>
 		<string>
 			<key>Message_InvalidPowerPoints</key>
-			<text>{0} über den maximalen Adeptenkraftpunkte ({1})</text>
+			<text>{0} über den maximalen Adeptenkraftpunkten ({1})</text>
 		</string>
 		<string>
 			<key>Label_RatingFormat</key>
@@ -9685,6 +9678,134 @@
 		<string>
 			<key>Rating_Meters</key>
 			<text>Meter</text>
+		</string>
+        <string>
+          <key>String_SINners_HowToGroupParentDescription</key>
+          <text>Eine (fertig) erstellte Gruppe kann per Drag'n'Drop einer andere Gruppe (als Sub-Gruppe) zugeordnet werden.</text>
+        </string>
+        <string>
+          <key>String_SINners_EnterGroupPassword</key>
+          <text>Diese Gruppe ist passwortgeschützt. Bitte gib das Passwort ein:</text>
+        </string>
+        <string>
+          <key>String_SINners_EnterGroupPasswordTitle</key>
+          <text>Passwortabfrage</text>
+        </string>
+        <string>
+          <key>Checkbox_Options_HideCharts</key>
+          <text>Tabellen verbergen, die Probleme mit Wine verursachen</text>
+        </string>
+        <string>
+          <key>String_SuppressiveFireNA</key>
+          <text>Sperrfeuer (N/A)</text>
+        </string>
+        <string>
+          <key>String_FullBurstNA</key>
+          <text>Salvenmodus (N/A)</text>
+        </string>
+        <string>
+          <key>String_LongBurstNA</key>
+          <text>Lange Salve (N/A)</text>
+        </string>
+        <string>
+          <key>String_ShortBurstNA</key>
+          <text>Kurze Salve (N/A)</text>
+        </string>
+        <string>
+          <key>String_SingleShotNA</key>
+          <text>Einzelschussmodus (N/A)</text>
+        </string>
+        <string>
+          <key>String_DisableSkillGroupPrompt</key>
+          <text>Wählen Sie eine Fertigkeitsgruppe zum Deaktivieren aus.</text>
+        </string>
+        <string>
+          <key>Tip_OtherSurprise</key>
+          <text>Überraschung wird mit REA + INT berechnet.</text>
+        </string>
+        <string>
+          <key>Label_OtherSurprise</key>
+          <text>Überraschung:</text>
+        </string>
+        <string>
+          <key>Message_DuplicateDrugComponentWarning</key>
+          <text>Sie können die gleiche Komponente nicht mehr als {0} Mal hinzufügen.</text>
+        </string>
+        <string>
+          <key>Message_CyberzombieRequirementsImprovement</key>
+          <text>Sie müssen eine Fertigkeit haben, die es erlaubt, ein Cyberzombie zu werden.</text>
+        </string>
+        <string>
+          <key>Checkbox_Options_AllowTechnomancerSchooling</key>
+          <text>Technomancer: Zulassen von Initiationsvorteilen zur \'Ausbildung\'</text>
+        </string>
+        <string>
+          <key>Message_InvalidActiveSkillExcessSpecializations</key>
+          <text>Eine oder mehrere Aktionsfertigkeiten haben mehr als eine Spezialisierung:</text>
+        </string>
+		<string>
+			<key>String_Avail</key>
+			<text>Verfügbarkeit</text>
+		</string>
+		<string>
+			<key>String_Capacity</key>
+			<text>Kapazität</text>
+		</string>
+		<string>
+			<key>String_Cost</key>
+			<text>Kosten</text>
+		</string>
+		<string>
+			<key>String_Source</key>
+			<text>Quelle</text>
+		</string>
+		<string>
+			<key>String_Accessories</key>
+			<text>Zubehör</text>
+		</string>
+		<string>
+			<key>String_Accuracy</key>
+			<text>Präzision</text>
+		</string>
+		<string>
+			<key>String_Ammo</key>
+			<text>Munition</text>
+		</string>
+		<string>
+			<key>String_AP</key>
+			<text>DK</text>
+		</string>
+		<string>
+			<key>String_Damage</key>
+			<text>Schaden</text>
+		</string>
+		<string>
+			<key>String_Dicepool</key>
+			<text>Würfelpool</text>
+		</string>
+		<string>
+			<key>String_Mode</key>
+			<text>Modus</text>
+		</string>
+		<string>
+			<key>String_RC</key>
+			<text>RK</text>
+		</string>
+		<string>
+			<key>String_Reach</key>
+			<text>Reichweite</text>
+		</string>
+		<string>
+			<key>Message_DeleteSkill</key>
+			<text>Möchten Sie die Fertigkeit wirklich löschen?</text>
+		</string>
+		<string>
+			<key>Label_Dodge</key>
+			<text>Ausweichen:</text>
+		</string>
+		<string>
+			<key>String_MetersPerHit</key>
+			<text>m/Erfolg</text>
 		</string>
 	</strings>
 </chummer>

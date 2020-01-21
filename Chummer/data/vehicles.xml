@@ -6702,16 +6702,35 @@
       <speed>2</speed>
       <gears>
         <gear>
+          <name>Medkit</name>
+          <rating>4</rating>
+        </gear>
+        <gear>
           <name>Sensor Array</name>
           <rating>2</rating>
           <maxrating>4</maxrating>
         </gear>
       </gears>
       <mods>
-        <name>Drone Arm</name>
-        <name>Drone Arm</name>
+        <mod>
+          <name>Drone Arm</name>
+          <subsystems>
+            <cyberware>
+              <name>Snake Fingers</name>
+            </cyberware>
+          </subsystems>
+        </mod>
+        <mod>
+          <name>Drone Arm</name>
+          <subsystems>
+            <cyberware>
+              <name>Snake Fingers</name>
+            </cyberware>
+          </subsystems>
+        </mod>
         <name>Drone Leg</name>
         <name>Drone Leg</name>
+        <name>Rigger Adaptation</name>
       </mods>
     </vehicle>
     <vehicle>

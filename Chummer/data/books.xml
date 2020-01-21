@@ -20,7 +20,7 @@
 -->
 <chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.w3.org/2001/XMLSchema books.xsd">
-  <version>0</version>
+
   <books>
     <book>
       <id>289bc41d-6dd5-4216-9bc7-e6f0cabae9ac</id>

@@ -213,7 +213,7 @@ namespace Chummer
                 XmlNode charNode = strSelectedMetatypeCategory == "Shapeshifter" || strSelectedMetavariant == Guid.Empty.ToString() ? objXmlMetatype : objXmlMetavariant ?? objXmlMetatype;
                 _objCharacter.AttributeSection.Create(charNode, intForce, intMinModifier, intMaxModifier);
                 _objCharacter.MetatypeGuid = new Guid(strSelectedMetatype);
-                _objCharacter.Metatype = charNode["name"].InnerText;
+                _objCharacter.Metatype = objXmlMetatype["name"].InnerText;
                 _objCharacter.MetatypeCategory = strSelectedMetatypeCategory;
                 _objCharacter.MetatypeBP = Convert.ToInt32(lblKarma.Text);
                 _objCharacter.MetavariantGuid = new Guid(strSelectedMetavariant);
@@ -414,6 +414,13 @@ namespace Chummer
                         ImprovementManager.CreateImprovement(_objCharacter, xmlSkill.InnerText, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.SkillLevel, string.Empty, strRating == "F" ? intForce : Convert.ToInt32(strRating));
                         ImprovementManager.Commit(_objCharacter);
                     }
+                    string strSkill = xmlSkill.InnerText;
+                    Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill(strSkill);
+                    if (objSkill == null) continue;
+                    string strSpec = xmlSkill.Attributes?["spec"]?.InnerText ?? string.Empty;
+                    ImprovementManager.CreateImprovement(_objCharacter, strSkill, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.SkillSpecialization, strSpec);
+                    SkillSpecialization spec= new SkillSpecialization(strSpec, true, objSkill);
+                    objSkill.Specializations.Add(spec);
                 }
                 //Set the Skill Group Ratings for the Critter.
                 foreach (XmlNode xmlSkillGroup in charNode.SelectNodes("skills/group"))
@@ -487,6 +494,42 @@ namespace Chummer
                     _objCharacter.ComplexForms.Add(objComplexform);
 
                     ImprovementManager.CreateImprovement(_objCharacter, objComplexform.InternalId, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.ComplexForm, string.Empty);
+                    ImprovementManager.Commit(_objCharacter);
+                }
+
+                //Load any cyberware the character has.
+                XmlDocument xmlCyberwareDocument = XmlManager.Load("cyberware.xml");
+                foreach (XmlNode node in charNode.SelectNodes("cyberwares/cyberware"))
+                {
+                    XmlNode objXmlCyberwareNode = xmlCyberwareDocument.SelectSingleNode($"chummer/cyberwares/cyberware[name = \"{node.InnerText}\"]");
+                    var objWare = new Cyberware(_objCharacter);
+                    string strForcedValue = node.Attributes["select"]?.InnerText ?? string.Empty;
+                    int intRating = Convert.ToInt32(node.Attributes["rating"]?.InnerText);
+
+                    objWare.Create(objXmlCyberwareNode,
+                        _objCharacter.GetGradeList(Improvement.ImprovementSource.Cyberware, true)
+                            .FirstOrDefault(x => x.Name == "None"), Improvement.ImprovementSource.Metatype, intRating,
+                        _objCharacter.Weapons, _objCharacter.Vehicles, true, true, strForcedValue);
+                    _objCharacter.Cyberware.Add(objWare);
+                    ImprovementManager.CreateImprovement(_objCharacter, objWare.InternalId, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.FreeWare, string.Empty);
+                    ImprovementManager.Commit(_objCharacter);
+                }
+
+                //Load any bioware the character has.
+                XmlDocument xmlBiowareDocument = XmlManager.Load("bioware.xml");
+                foreach (XmlNode node in charNode.SelectNodes("biowares/bioware"))
+                {
+                    XmlNode objXmlCyberwareNode = xmlBiowareDocument.SelectSingleNode($"chummer/biowares/bioware[name = \"{node.InnerText}\"]");
+                    var objWare = new Cyberware(_objCharacter);
+                    string strForcedValue = node.Attributes["select"]?.InnerText ?? string.Empty;
+                    int intRating = Convert.ToInt32(node.Attributes["rating"]?.InnerText);
+
+                    objWare.Create(objXmlCyberwareNode,
+                        _objCharacter.GetGradeList(Improvement.ImprovementSource.Cyberware, true)
+                            .FirstOrDefault(x => x.Name == "None"), Improvement.ImprovementSource.Metatype, intRating,
+                        _objCharacter.Weapons, _objCharacter.Vehicles, true, true, strForcedValue);
+                    _objCharacter.Cyberware.Add(objWare);
+                    ImprovementManager.CreateImprovement(_objCharacter, objWare.InternalId, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.FreeWare, string.Empty);
                     ImprovementManager.Commit(_objCharacter);
                 }
 

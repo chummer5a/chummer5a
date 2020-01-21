@@ -37,12 +37,14 @@ namespace Chummer
     public enum ClipboardContentType
     {
         None = 0,
-        Gear,
-        Cyberware,
         Armor,
-        Weapon,
-        Vehicle,
+        ArmorMod,
+        Cyberware,
+        Gear,
         Lifestyle,
+        Vehicle,
+        Weapon,
+        WeaponAccessory
     }
 
     public enum UseAILogging
@@ -197,26 +199,11 @@ namespace Chummer
         private static bool _blnCreateBackupOnCareer;
         private static bool _blnPluginsEnabled;
         private static bool _blnAllowEasterEggs;
+        private static bool _blnHideCharts;
         private static string _strDefaultBuildMethod = DefaultBuildMethodDefaultValue;
         private static string _strDefaultGameplayOption = DefaultGameplayOptionDefaultValue;
 
         public static ThreadSafeRandom RandomGenerator { get; } = new ThreadSafeRandom(DsfmtRandom.Create(DsfmtEdition.OptGen_216091));
-
-        public static ToolTip ToolTipProcessor { get; } = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip
-        {
-            UseAnimation = true,
-            AllowLinksHandling = true,
-            AutoPopDelay = 3600000,
-            BaseStylesheet = null,
-            InitialDelay = 250,
-            IsBalloon = false,
-            OwnerDraw = true,
-            ReshowDelay = 100,
-            ShowAlways = true,
-            TooltipCssClass = "htmltooltip",
-            //UseAnimation = true,
-            //UseFading = true
-        };
 
         // Omae Information.
         private static bool _omaeEnabled;
@@ -538,6 +525,9 @@ namespace Chummer
             
             // Prefer Nightly Updates.
             LoadBoolFromRegistry(ref _blnPreferNightlyUpdates, "prefernightlybuilds");
+
+            // Prefer Nightly Updates.
+            LoadBoolFromRegistry(ref _blnHideCharts, "hidecharts");
 
             RebuildCustomDataDirectoryInfoList();
 
@@ -1001,10 +991,22 @@ namespace Chummer
             set => _omaeEnabled = value;
         }
 
+        /// <summary>
+        /// Should the updater check for Release builds, or Nightly builds
+        /// </summary>
         public static bool PreferNightlyBuilds
         {
             get => _blnPreferNightlyUpdates;
             set => _blnPreferNightlyUpdates = value;
+        }
+
+        /// <summary>
+        /// Should charts that can cause crash behaviour in Wine be shown
+        /// </summary>
+        public static bool HideCharts
+        {
+            get => _blnHideCharts;
+            set => _blnHideCharts = value;
         }
 
         public static string CharacterRosterPath

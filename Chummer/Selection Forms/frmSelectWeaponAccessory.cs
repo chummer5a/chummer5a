@@ -87,66 +87,35 @@ namespace Chummer
             List<ListItem> lstAccessories = new List<ListItem>();
 
             // Populate the Accessory list.
-            StringBuilder strMount = new StringBuilder("contains(mount, \"Internal\") or contains(mount, \"None\") or mount = \"\"");
-            foreach (string strAllowedMount in _lstAllowedMounts)
+            StringBuilder strMount = new StringBuilder("(contains(mount, \"Internal\") or contains(mount, \"None\") or mount = \"\"");
+            foreach (var strAllowedMount in _lstAllowedMounts.Where(strAllowedMount => !string.IsNullOrEmpty(strAllowedMount)))
             {
-                if (!string.IsNullOrEmpty(strAllowedMount))
-                    strMount.Append(" or contains(mount, \"" + strAllowedMount + "\")");
+                strMount.Append(" or contains(mount, \"" + strAllowedMount + "\")");
             }
+
+            strMount.Append(")");
             strMount.Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
-            XPathNavigator xmlParentWeaponDataNode = _xmlBaseChummerNode.SelectSingleNode("weapons/weapon[id = \"" + _objParentWeapon.SourceIDString + "\"]");
+            
             foreach (XPathNavigator objXmlAccessory in _xmlBaseChummerNode.Select("accessories/accessory[(" + strMount + ") and (" + _objCharacter.Options.BookXPath() + ")]"))
             {
                 string strId = objXmlAccessory.SelectSingleNode("id")?.Value;
                 if (string.IsNullOrEmpty(strId))
                     continue;
-
-                XPathNavigator xmlExtraMountNode = objXmlAccessory.SelectSingleNode("extramount");
-                if (xmlExtraMountNode != null)
-                {
-                    if (_lstAllowedMounts.Count > 1)
-                    {
-                        foreach (string strItem in xmlExtraMountNode.Value.Split('/'))
-                        {
-                            if (!string.IsNullOrEmpty(strItem) && _lstAllowedMounts.All(strAllowedMount => strAllowedMount != strItem))
-                            {
-                                goto NextItem;
-                            }
-                        }
-                    }
-                }
-
-                if (!objXmlAccessory.RequirementsMet(_objCharacter, _objParentWeapon, string.Empty, string.Empty)) continue;
-
-                XPathNavigator xmlTestNode = objXmlAccessory.SelectSingleNode("forbidden/weapondetails");
-                if (xmlTestNode != null)
-                {
-                    // Assumes topmost parent is an AND node
-                    if (xmlParentWeaponDataNode.ProcessFilterOperationNode(xmlTestNode, false))
-                    {
-                        continue;
-                    }
-                }
-                xmlTestNode = objXmlAccessory.SelectSingleNode("required/weapondetails");
-                if (xmlTestNode != null)
-                {
-                    // Assumes topmost parent is an AND node
-                    if (!xmlParentWeaponDataNode.ProcessFilterOperationNode(xmlTestNode, false))
-                    {
-                        continue;
-                    }
-                }
+                if (!_objParentWeapon.CheckAccessoryRequirements(objXmlAccessory))
+                    continue;
 
                 decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
                 if (_blnIsParentWeaponBlackMarketAllowed)
                     decCostMultiplier *= 0.9m;
-                if ((!chkHideOverAvailLimit.Checked || SelectionShared.CheckAvailRestriction(objXmlAccessory, _objCharacter) &&
+                if ((!chkHideOverAvailLimit.Checked || objXmlAccessory.CheckAvailRestriction(_objCharacter) &&
                      (chkFreeItem.Checked || !chkShowOnlyAffordItems.Checked ||
-                      SelectionShared.CheckNuyenRestriction(objXmlAccessory, _objCharacter.Nuyen, decCostMultiplier))))
+                      objXmlAccessory.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier))))
                 {
-                    lstAccessories.Add(new ListItem(strId, objXmlAccessory.SelectSingleNode("translate")?.Value ?? objXmlAccessory.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language)));
+                    lstAccessories.Add(new ListItem(strId,
+                        objXmlAccessory.SelectSingleNode("translate")?.Value ??
+                        objXmlAccessory.SelectSingleNode("name")?.Value ??
+                        LanguageManager.GetString("String_Unknown", GlobalOptions.Language)));
                 }
-                NextItem:;
             }
             
             lstAccessories.Sort(CompareListItems.CompareNames);

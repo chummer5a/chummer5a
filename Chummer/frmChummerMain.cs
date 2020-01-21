@@ -1699,5 +1699,56 @@ namespace Chummer
             frmHeroLabImporter frmHeroLabImporter = new frmHeroLabImporter();
             frmHeroLabImporter.Show();
         }
+
+        private void tabForms_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                for (int i = 0; i < tabForms.TabCount; ++i)
+                {
+                    if (!tabForms.GetTabRect(i).Contains(e.Location)) continue;
+                    if (tabForms.SelectedTab.Tag is CharacterShared)
+                    {
+                        if (tabForms.SelectedIndex == i)
+                        {
+                            mnuProcessFile.Show(this, e.Location);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        private void tsSave_Click(object sender, EventArgs e)
+        {
+            if (tabForms.SelectedTab.Tag is CharacterShared objShared)
+            {
+                objShared.SaveCharacter();
+            }
+        }
+
+        private void tsSaveAs_Click(object sender, EventArgs e)
+        {
+            if (tabForms.SelectedTab.Tag is CharacterShared objShared)
+            {
+                objShared.SaveCharacterAs();
+            }
+        }
+
+        private void tsClose_Click(object sender, EventArgs e)
+        {
+            if (tabForms.SelectedTab.Tag is CharacterShared objShared)
+            {
+                objShared.Close();
+            }
+        }
+
+        private void tsPrint_Click(object sender, EventArgs e)
+        {
+            if (tabForms.SelectedTab.Tag is CharacterShared objShared)
+            {
+                objShared.DoPrint();
+            }
+        }
     }
 }
