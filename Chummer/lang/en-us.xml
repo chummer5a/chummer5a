@@ -9690,6 +9690,10 @@
       <key>String_MetersPerHit</key>
       <text>m/ hit</text>
     </string>
+    <string>
+      <key>String_SuppressedBy</key>
+      <text>Suppressed by {0}</text>
+    </string>
     <!-- End Region -->
     <!-- Region Loading Form -->
     <string>
