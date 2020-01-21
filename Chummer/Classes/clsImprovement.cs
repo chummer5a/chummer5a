@@ -343,6 +343,8 @@ namespace Chummer
             LimitCritterPowerCategory,
             AttributeMaxClamp,
             MetamagicLimit,
+            DisableQuality,
+            FreeQuality,
             NumImprovementTypes // 🡐 This one should always be the last defined enum
         }
 
@@ -1931,6 +1933,26 @@ namespace Chummer
                 case ImprovementType.MetageneticLimit:
                     {
                         yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.MetagenicLimit));
+                    }
+                    break;
+                case ImprovementType.DisableQuality:
+                {
+                    Quality objQuality = _objCharacter.Qualities.FirstOrDefault(x => x.Name == ImprovedName || x.SourceIDString == ImprovedName);
+                    if (objQuality != null)
+                    {
+                            //yield return new Tuple<INotifyMultiplePropertyChanged, string>(objQuality, nameof(Quality.Suppressed));
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.Qualities));
+                    }
+                }
+                    break;
+                case ImprovementType.FreeQuality:
+                    {
+                        Quality objQuality = _objCharacter.Qualities.FirstOrDefault(x => x.Name == ImprovedName || x.SourceIDString == ImprovedName);
+                        if (objQuality != null)
+                        {
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objQuality, nameof(Quality.ContributeToBP));
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objQuality, nameof(Quality.ContributeToLimit));
+                        }
                     }
                     break;
             }

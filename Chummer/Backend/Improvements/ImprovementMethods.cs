@@ -634,6 +634,10 @@ namespace Chummer
                     return objImprovementAdder.attributemaxclamp;
                 case "METAMAGICLIMIT":
                     return objImprovementAdder.metamagiclimit;
+                case "DISABLEQUALITY":
+                    return objImprovementAdder.disablequality;
+                case "FREEQUALITY":
+                    return objImprovementAdder.freequality;
                 // No method matches, return a null pointer
                 default:
                     return null;

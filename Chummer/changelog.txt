@@ -27,6 +27,8 @@ Application Fixes:
 - Fixed an issue with cyberware upgrades not respecting the 'free' choice from the cyberwater selector.
 
 Application Changes:
+- Added a new improvement type to allow qualities to become free. Used to supplant existing code that flags the Mentor Spirit as free with certain qualities. 
+- Added a new improvement type to disable qualities and their associated bonuses. Has limited support for use in the UI at the moment, and only refreshes on load or when other qualities are removed or added. 
 - The Character Roster's Watch Folder now includes subfolders. 
 - Added support for Priority mode using non-ABCDE arrays.
 - Spells, rituals and preparations now count down from maximum, in the same way as other counters in create mode.
@@ -62,6 +64,8 @@ Application Changes:
 - Added rangemodifier property to weapon accessories. This modifies the base range modifier according to the given range. 
 
 Data Changes:
+- Replaced all instances of 'forbidden/Celerity' in cyberware with the new disablequality improvement.
+- Added disablequality improvements for vision-based qualities to the Cybereyes Basic System. 
 - Fixed issues with the Dodge, Bonus Street Cred and Street Cred Multiplier custom improvements. 
 - Added missing adept way discounts to the Mystic Aptitude and State of Purity powers to render them compatible with the Magician's Way.
 - Dareadrenaline properly allows the Poor Self Control (Thrill Seeker) to be taken in addition to it. To accommodate this, a hidden version of the quality has been added.

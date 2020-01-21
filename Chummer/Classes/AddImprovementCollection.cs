@@ -6686,7 +6686,17 @@ namespace Chummer.Classes
                 int intRating = Convert.ToInt32(child.Attributes["grade"]?.InnerText ?? "-1");
                 CreateImprovement(child.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.MetamagicLimit, _strUnique, 0, intRating);
             }
-            
+
+        }
+
+        public void disablequality(XmlNode bonusNode)
+        {
+            CreateImprovement(bonusNode.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.DisableQuality, _strUnique);
+        }
+
+        public void freequality(XmlNode bonusNode)
+        {
+            CreateImprovement(bonusNode.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.FreeQuality, _strUnique);
         }
 #pragma warning restore IDE1006 // Naming Styles
         #endregion
