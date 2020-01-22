@@ -345,6 +345,7 @@ namespace Chummer
             MetamagicLimit,
             DisableQuality,
             FreeQuality,
+            AstralReputation,
             NumImprovementTypes // 🡐 This one should always be the last defined enum
         }
 

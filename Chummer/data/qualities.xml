@@ -2408,6 +2408,22 @@
       <source>SG</source>
       <page>199</page>
     </quality>
+    <quality>
+      <id>94a4cc04-d856-418f-ac60-165f327433d5</id>
+      <name>Conjuring Geas</name>
+      <karma>-5</karma>
+      <category>Negative</category>
+      <bonus>
+        <astralreputation>-1</astralreputation>
+      </bonus>
+      <required>
+        <oneof>
+          <careeronly />
+        </oneof>
+      </required>
+      <source>SG</source>
+      <page>199</page>
+    </quality>
     <!-- End Region -->
     <!--Region Bullets and Bandages Positive Qualities -->
     <quality>

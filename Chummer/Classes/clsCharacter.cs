@@ -181,6 +181,9 @@ namespace Chummer
         private int _intPhysicalCMFilled;
         private int _intStunCMFilled;
 
+        // Spirit Reputation
+        private int _intSpiritIndex;
+
         // Priority Selections.
         private string _strGameplayOption = "Standard";
         private string _strPriorityMetatype = "A,4";
@@ -7220,6 +7223,29 @@ if (!Utils.IsUnitTest){
                 if(_intPublicAwareness != value)
                 {
                     _intPublicAwareness = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Astral Reputation.
+        /// </summary>
+        public int AstralReputation =>
+            (int) Math.Max(Math.Floor((double) (SpiritIndex / 25)) +
+                ImprovementManager.ValueOf(this, Improvement.ImprovementType.AstralReputation), 0);
+
+        /// <summary>
+        /// Spirit Index (SG 207).
+        /// </summary>
+        public int SpiritIndex
+        {
+            get => _intSpiritIndex;
+            set
+            {
+                if (_intSpiritIndex != value)
+                {
+                    _intSpiritIndex = value;
                     OnPropertyChanged();
                 }
             }
