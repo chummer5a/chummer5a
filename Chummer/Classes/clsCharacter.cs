@@ -11026,13 +11026,14 @@ if (!Utils.IsUnitTest){
                     {
                         return objVehicle.PhysicalCM;
                     }
-
+                    if (DEP != null)
                     // A.I.s use Core Condition Monitors instead of Physical Condition Monitors if they are not in a vehicle or drone.
-                    intCMPhysical += (DEP.TotalValue + 1) / 2;
+                        intCMPhysical += (DEP.TotalValue + 1) / 2;
                 }
                 else
                 {
-                    intCMPhysical += (BOD.TotalValue + 1) / 2;
+                    if (BOD != null)
+                        intCMPhysical += (BOD.TotalValue + 1) / 2;
                 }
 
                 // Include Improvements in the Condition Monitor values.
