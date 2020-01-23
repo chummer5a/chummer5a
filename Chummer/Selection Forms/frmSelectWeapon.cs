@@ -666,6 +666,8 @@ namespace Chummer
                         DialogResult = DialogResult.OK;
                     }
                     break;
+                default:
+                    break;
             }
         }
 
