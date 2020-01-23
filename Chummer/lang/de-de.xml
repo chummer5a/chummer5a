@@ -9807,5 +9807,9 @@
 			<key>String_MetersPerHit</key>
 			<text>m/Erfolg</text>
 		</string>
+		<string>
+			<key>String_SuppressedBy</key>
+			<text>Verdrängt durch {0}</text>
+		</string>
 	</strings>
 </chummer>
