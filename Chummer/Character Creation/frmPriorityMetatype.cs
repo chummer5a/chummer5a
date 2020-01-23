@@ -46,7 +46,7 @@ namespace Chummer
         #region Form Events
         public frmPriorityMetatype(Character objCharacter, string strXmlFile = "metatypes.xml")
         {
-            _objCharacter = objCharacter;
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 

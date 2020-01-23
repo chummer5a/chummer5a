@@ -884,27 +884,35 @@ namespace Chummer
         /// </summary>
         private Improvement CompareFocusPower(Improvement objImprovement)
         {
-            // get any bonded foci that add to the base magic stat and return the highest rated one's rating
-            var powerFocusRating = _objCharacter.Foci
-                .Where(x => x.GearObject.Bonus.InnerText == "MAGRating" && x.GearObject.Bonded).Select(x => x.Rating)
-                .DefaultIfEmpty().Max();
-
-            // If our focus is higher, add in a partial bonus
-            if (powerFocusRating > 0 && powerFocusRating < objImprovement.Value)
+            var list = _objCharacter.Foci
+                .Where(x => x.GearObject.Bonus.InnerText == "MAGRating" && x.GearObject.Bonded).ToList();
+            if (list.Any())
             {
-                // This is hackz -- because we don't want to lose the original improvement's value
-                // we instantiate a fake version of the improvement that isn't saved to represent the diff
-                return new Improvement(_objCharacter)
-                {
-                    Value = objImprovement.Value - powerFocusRating,
-                    SourceName = objImprovement.SourceName,
-                    ImprovedName = objImprovement.ImprovedName,
-                    ImproveSource = objImprovement.ImproveSource,
-                    ImproveType = objImprovement.ImproveType,
-                };
-            }
+                // get any bonded foci that add to the base magic stat and return the highest rated one's rating
+                var powerFocusRating = list.Select(x => x.Rating)
+                    .DefaultIfEmpty().Max();
 
-            return powerFocusRating > 0 ? null : objImprovement;
+                // If our focus is higher, add in a partial bonus
+                if (powerFocusRating > 0 && powerFocusRating < objImprovement.Value)
+                {
+                    // This is hackz -- because we don't want to lose the original improvement's value
+                    // we instantiate a fake version of the improvement that isn't saved to represent the diff
+                    return new Improvement(_objCharacter)
+                    {
+                        Value = objImprovement.Value - powerFocusRating,
+                        SourceName = objImprovement.SourceName,
+                        ImprovedName = objImprovement.ImprovedName,
+                        ImproveSource = objImprovement.ImproveSource,
+                        ImproveType = objImprovement.ImproveType,
+                    };
+                }
+                return powerFocusRating > 0 ? null : objImprovement;
+            }
+            else
+            {
+                return objImprovement;
+            }
+            
         }
 
         #endregion

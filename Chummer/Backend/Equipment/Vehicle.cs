@@ -1081,7 +1081,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                return BasePhysicalBoxes + (TotalBody + 1) / 2 + Mods.Sum(objMod => objMod.ConditionMonitor);
+                return BasePhysicalBoxes + (TotalBody + 1) / 2 + Mods.Sum(objMod => objMod?.ConditionMonitor ?? 0);
             }
         }
 
