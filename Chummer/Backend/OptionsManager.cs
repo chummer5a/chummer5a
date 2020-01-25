@@ -15,7 +15,7 @@ using Microsoft.Win32;
 
 namespace Chummer
 {
-    static class GlobalOptions
+    public static class GlobalOptions
     {
         //For the record I totally don't think Options is the right place to throw constants, by their nature of being "constants"
         #region Constants

@@ -450,6 +450,7 @@ namespace Chummer
                 cmdSaveAsPdf.Enabled = true;
             }
 
+
             if (GlobalOptions.Instance.PrintToFileFirst)
             {
                 try

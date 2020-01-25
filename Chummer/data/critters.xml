@@ -46072,5 +46072,1569 @@
       <page>174</page>
     </metatype>
     <!-- End Region -->
+    <!-- Region Extraplanar Travelers -->
+    <metatype>
+      <id>e5727729-0e19-4c1e-924d-b2bc4232e752</id>
+      <name>Anarch</name>
+      <bodmin>F-1</bodmin>
+      <bodmax>F-1</bodmax>
+      <bodaug>F-1</bodaug>
+      <agimin>F-1</agimin>
+      <agimax>F-1</agimax>
+      <agiaug>F-1</agiaug>
+      <reamin>F+1</reamin>
+      <reamax>F+1</reamax>
+      <reaaug>F+1</reaaug>
+      <strmin>F-1</strmin>
+      <strmax>F-1</strmax>
+      <straug>F-1</straug>
+      <chamin>F</chamin>
+      <chamax>F</chamax>
+      <chaaug>F</chaaug>
+      <intmin>F</intmin>
+      <intmax>F</intmax>
+      <intaug>F</intaug>
+      <logmin>F</logmin>
+      <logmax>F</logmax>
+      <logaug>F</logaug>
+      <wilmin>F</wilmin>
+      <wilmax>F</wilmax>
+      <wilaug>F</wilaug>
+      <edgmin>F/2</edgmin>
+      <edgmax>F/2</edgmax>
+      <edgaug>F/2</edgaug>
+      <magmin>F</magmin>
+      <magmax>F</magmax>
+      <magaug>F</magaug>
+      <essmin>F</essmin>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
+      <walk>2/1/0</walk>
+      <run>4/0/0</run>
+      <sprint>2/1/0</sprint>
+      <armor>0</armor>
+      <skills>
+        <skill>Assensing</skill>
+        <skill>Automatics</skill>
+        <skill>Blades</skill>
+        <skill>Clubs</skill>
+        <skill>Con</skill>
+        <skill>Demolitions</skill>
+        <skill>Disguise</skill>
+        <skill>Forgery</skill>
+        <skill>Gymnastics</skill>
+        <skill>Impersonation</skill>
+        <skill>Locksmith</skill>
+        <skill>Palming</skill>
+        <skill>Perception</skill>
+        <skill>Pistols</skill>
+        <skill>Sneaking</skill>
+        <skill>Throwing Weapons</skill>
+        <skill>Unarmed Combat</skill>
+      </skills>
+      <powers>
+        <power>Accident</power>
+        <power>Aura Masking</power>
+        <power>Banishing Resistance</power>
+      </powers>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <source>HS</source>
+      <page>116</page>
+    </metatype>
+    <metatype>
+      <id>46f688ea-66ab-4b63-a2ea-ce797ad001e6</id>
+      <name>Arboreal</name>
+      <bodmin>F+2</bodmin>
+      <bodmax>F+2</bodmax>
+      <bodaug>F+2</bodaug>
+      <agimin>F</agimin>
+      <agimax>F</agimax>
+      <agiaug>F</agiaug>
+      <reamin>F</reamin>
+      <reamax>F</reamax>
+      <reaaug>F</reaaug>
+      <strmin>F+1</strmin>
+      <strmax>F+1</strmax>
+      <straug>F+1</straug>
+      <chamin>F</chamin>
+      <chamax>F</chamax>
+      <chaaug>F</chaaug>
+      <intmin>F</intmin>
+      <intmax>F</intmax>
+      <intaug>F</intaug>
+      <logmin>F</logmin>
+      <logmax>F</logmax>
+      <logaug>F</logaug>
+      <wilmin>F</wilmin>
+      <wilmax>F</wilmax>
+      <wilaug>F</wilaug>
+      <edgmin>F</edgmin>
+      <edgmax>F</edgmax>
+      <edgaug>F</edgaug>
+      <magmin>F</magmin>
+      <magmax>F</magmax>
+      <magaug>F</magaug>
+      <essmin>F-2</essmin>
+      <essmax>F-2</essmax>
+      <essaug>F-2</essaug>
+      <walk>2/1/0</walk>
+      <run>4/0/0</run>
+      <sprint>2/1/0</sprint>
+      <armor>0</armor>
+      <skills>
+        <group>Close Combat</group>
+        <skill>Assensing</skill>
+        <skill>Astral Combat</skill>
+        <skill select="Thorns">Exotic Ranged Weapon</skill>
+        <skill>Perception</skill>
+      </skills>
+      <optionalpowers>
+        <optionalpower>Guard</optionalpower>
+      </optionalpowers>
+      <powers>
+        <power>Astral Form</power>
+        <power>Aura Masking</power>
+        <power>Banishing Resistance</power>
+        <power>Compulsion</power>
+        <power>Engulf</power>
+        <power>Fear</power>
+        <power>Materialization</power>
+        <power select="Thorns (Force + 2)P, AP -">Natural Weapon</power>
+        <power>Possession</power>
+        <power>Regeneration</power>
+        <power>Sapience</power>
+        <power>Spirit Pact</power>
+      </powers>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <source>HS</source>
+      <page>116</page>
+    </metatype>
+    <metatype>
+      <id>c1989f9a-c4c7-4f08-83eb-e252663b5142</id>
+      <name>Blackjack</name>
+      <bodmin>F+2</bodmin>
+      <bodmax>F+2</bodmax>
+      <bodaug>F+2</bodaug>
+      <agimin>F+1</agimin>
+      <agimax>F+1</agimax>
+      <agiaug>F+1</agiaug>
+      <reamin>F+1</reamin>
+      <reamax>F+1</reamax>
+      <reaaug>F+1</reaaug>
+      <strmin>F</strmin>
+      <strmax>F</strmax>
+      <straug>F</straug>
+      <chamin>F</chamin>
+      <chamax>F</chamax>
+      <chaaug>F</chaaug>
+      <intmin>F</intmin>
+      <intmax>F</intmax>
+      <intaug>F</intaug>
+      <logmin>F</logmin>
+      <logmax>F</logmax>
+      <logaug>F</logaug>
+      <wilmin>F</wilmin>
+      <wilmax>F</wilmax>
+      <wilaug>F</wilaug>
+      <edgmin>F/2</edgmin>
+      <edgmax>F/2</edgmax>
+      <edgaug>F/2</edgaug>
+      <magmin>F</magmin>
+      <magmax>F</magmax>
+      <magaug>F</magaug>
+      <essmin>F</essmin>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
+      <walk>2/1/0</walk>
+      <run>4/0/0</run>
+      <sprint>2/1/0</sprint>
+      <skills>
+        <skill>Assensing</skill>
+        <skill>Automatics</skill>
+        <skill>Blades</skill>
+        <skill>Clubs</skill>
+        <skill>Computer</skill>
+        <skill>First Aid</skill>
+        <skill>Gymnastics</skill>
+        <skill>Intimidation</skill>
+        <skill>Locksmith</skill>
+        <skill>Longarms</skill>
+        <skill>Perception</skill>
+        <skill>Pilot Ground Craft</skill>
+        <skill>Pistols</skill>
+        <skill>Sneaking</skill>
+        <skill>Throwing Weapons</skill>
+        <skill>Unarmed Combat</skill>
+      </skills>
+      <powers>
+        <power>Aura Masking</power>
+        <power>Banishing Resistance</power>
+        <power>Guard</power>
+        <power select="Fist(DV F+2 AP —)">Natural Weapon</power>
+        <power>Realistic Form</power>
+        <power>Sapience</power>
+      </powers>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <source>HS</source>
+      <page>117</page>
+    </metatype>
+    <metatype>
+      <id>7499b2df-7a18-4390-a812-30c3ba528856</id>
+      <name>Boggle</name>
+      <category>Spirits</category>
+      <bod>F-2</bod>
+      <agi>F-1</agi>
+      <rea>F-1</rea>
+      <str>F-2</str>
+      <cha>F</cha>
+      <int>F</int>
+      <log>F</log>
+      <wil>F+2</wil>
+      <ini>0</ini>
+      <edg>F/2</edg>
+      <mag>F</mag>
+      <res>0</res>
+      <dep>0</dep>
+      <ess>F</ess>
+      <walk>2/1/0</walk>
+      <run>4/0/0</run>
+      <sprint>2/1/0</sprint>
+      <armor>0</armor>
+      <skills>
+        <group>Close Combat</group>
+        <skill>Assensing</skill>
+        <skill>Astral Combat</skill>
+      </skills>
+      <powers>
+        <power>Astral Form</power>
+        <power>Aura Masking</power>
+        <power>Banishing Resistance</power>
+      </powers>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <source>HS</source>
+      <page>117</page>
+    </metatype>
+    <metatype>
+      <id>a2cf75f0-ab9c-4d27-84c5-cebefb0f0d98</id>
+      <name>Bugul</name>
+      <bod>F</bod>
+      <agi>F-1</agi>
+      <rea>F-1</rea>
+      <str>F-2</str>
+      <cha>F</cha>
+      <int>F</int>
+      <log>F+2</log>
+      <wil>F+1</wil>
+      <ini>0</ini>
+      <edg>F/2</edg>
+      <mag>F</mag>
+      <res>0</res>
+      <dep>0</dep>
+      <ess>F</ess>
+      <walk>2/1/0</walk>
+      <run>4/0/0</run>
+      <sprint>2/1/0</sprint>
+      <armor>0</armor>
+      <skills>
+        <skill>Artisan</skill>
+        <skill>Assensing</skill>
+        <skill>Astral Combat</skill>
+        <skill>Con</skill>
+        <skill>Counterspelling</skill>
+        <skill>Disenchanting</skill>
+        <skill>Gymnastics</skill>
+        <skill>Negotiation</skill>
+        <skill>Perception</skill>
+        <skill>Unarmed Combat</skill>
+      </skills>
+      <powers>
+        <power>Astral Form</power>
+        <power>Aura Masking</power>
+        <power select="Smell">Improved Sense</power>
+        <power>Thermal)</power>
+        <power>Materialization</power>
+        <power>Sapience</power>
+        <power select="4">Spell Resistance</power>
+        <power>Spirit Pact</power>
+      </powers>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <source>HS</source>
+      <page>118</page>
+    </metatype>
+    <metatype>
+      <id>42a1c03d-d70a-47df-a23f-2260615bdefe</id>
+      <name>Chindi</name>
+      <bodmin>F+2</bodmin>
+      <bodmax>F+2</bodmax>
+      <bodaug>F+2</bodaug>
+      <agimin>F+1</agimin>
+      <agimax>F+1</agimax>
+      <agiaug>F+1</agiaug>
+      <reamin>F+2</reamin>
+      <reamax>F+2</reamax>
+      <reaaug>F+2</reaaug>
+      <strmin>F+1</strmin>
+      <strmax>F+1</strmax>
+      <straug>F+1</straug>
+      <chamin>F</chamin>
+      <chamax>F</chamax>
+      <chaaug>F</chaaug>
+      <intmin>F</intmin>
+      <intmax>F</intmax>
+      <intaug>F</intaug>
+      <logmin>F</logmin>
+      <logmax>F</logmax>
+      <logaug>F</logaug>
+      <wilmin>F</wilmin>
+      <wilmax>F</wilmax>
+      <wilaug>F</wilaug>
+      <edgmin>F/2</edgmin>
+      <edgmax>F/2</edgmax>
+      <edgaug>F/2</edgaug>
+      <magmin>F</magmin>
+      <magmax>F</magmax>
+      <magaug>F</magaug>
+      <essmin>F</essmin>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
+      <walk>2/1/0</walk>
+      <run>4/0/0</run>
+      <sprint>2/1/0</sprint>
+      <armor>F*2</armor>
+      <skills>
+        <skill>Archery</skill>
+        <skill>Blades</skill>
+        <skill>Clubs</skill>
+        <skill>First Aid</skill>
+        <skill>Gymnastics</skill>
+      </skills>
+      <powers>
+        <power>Accident</power>
+        <power>Astral Form</power>
+        <power>Aura Masking</power>
+        <power>Banishing</power>
+      </powers>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <source>HS</source>
+      <page>118</page>
+    </metatype>
+    <metatype>
+      <id>a296f3ad-26c1-40c4-9cdb-732aa5b86f56</id>
+      <name>Corpselight</name>
+      <bodmin>5</bodmin>
+      <bodmax>5</bodmax>
+      <bodaug>9</bodaug>
+      <agimin>10</agimin>
+      <agimax>10</agimax>
+      <agiaug>14</agiaug>
+      <reamin>10</reamin>
+      <reamax>10</reamax>
+      <reaaug>14</reaaug>
+      <strmin>1</strmin>
+      <strmax>1</strmax>
+      <straug>5</straug>
+      <chamin>1</chamin>
+      <chamax>1</chamax>
+      <chaaug>5</chaaug>
+      <intmin>5</intmin>
+      <intmax>5</intmax>
+      <intaug>9</intaug>
+      <logmin>2</logmin>
+      <logmax>2</logmax>
+      <logaug>6</logaug>
+      <wilmin>5</wilmin>
+      <wilmax>5</wilmax>
+      <wilaug>9</wilaug>
+      <edgmin>4</edgmin>
+      <edgmax>4</edgmax>
+      <edgaug>8</edgaug>
+      <magmin>6</magmin>
+      <magmax>6</magmax>
+      <magaug>10</magaug>
+      <essmin>2D6</essmin>
+      <essmax>2D6</essmax>
+      <essaug>2D6</essaug>
+      <walk>3/1/0</walk>
+      <run>6/0/0</run>
+      <sprint>3/1/0</sprint>
+      <armor>12</armor>
+      <skills>
+        <skill>Assensing 4</skill>
+        <skill>Counterspelling 6</skill>
+        <skill>Intimidation 3</skill>
+        <skill>Sneaking</skill>
+      </skills>
+      <powers>
+        <power>Essence Drain</power>
+        <power select="Normal Weapons">Immunity</power>
+      </powers>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <source>HS</source>
+      <page>118</page>
+    </metatype>
+    <metatype>
+      <id>943af23e-b4b0-4b0b-84ed-25d97a92ce77</id>
+      <name>Croki</name>
+      <bodmin>F</bodmin>
+      <bodmax>F</bodmax>
+      <bodaug>F</bodaug>
+      <agimin>F</agimin>
+      <agimax>F</agimax>
+      <agiaug>F</agiaug>
+      <reamin>F+2</reamin>
+      <reamax>F+2</reamax>
+      <reaaug>F+2</reaaug>
+      <strmin>F+2</strmin>
+      <strmax>F+2</strmax>
+      <straug>F+2</straug>
+      <chamin>F</chamin>
+      <chamax>F</chamax>
+      <chaaug>F</chaaug>
+      <intmin>F</intmin>
+      <intmax>F</intmax>
+      <intaug>F</intaug>
+      <logmin>F</logmin>
+      <logmax>F</logmax>
+      <logaug>F</logaug>
+      <wilmin>F</wilmin>
+      <wilmax>F</wilmax>
+      <wilaug>F</wilaug>
+      <edgmin>F</edgmin>
+      <edgmax>F</edgmax>
+      <edgaug>F</edgaug>
+      <magmin>F</magmin>
+      <magmax>F</magmax>
+      <magaug>F</magaug>
+      <essmin>F</essmin>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
+      <walk>2/1/0</walk>
+      <run>4/0/0</run>
+      <sprint>2/1/0</sprint>
+      <armor>0</armor>
+      <skills>
+        <skill>Artifcing</skill>
+        <skill>Assensing</skill>
+        <skill>Astral Combat</skill>
+        <skill>Gymnastics</skill>
+        <skill>Perception</skill>
+        <skill rating="Ritual Spellcasting"></skill>
+        <skill>Spellcasting</skill>
+      </skills>
+      <powers>
+        <power>Astral Form</power>
+        <power>Aura Masking</power>
+        <power>Fae Glamour</power>
+        <power>Flay Touch</power>
+        <power>Fold Perception</power>
+        <power select="Smell">Improved Sense</power>
+        <power>Thermal)</power>
+        <power>Materialization</power>
+        <power>Sapience</power>
+        <power>Spirit Pact</power>
+      </powers>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <source>HS</source>
+      <page>120</page>
+    </metatype>
+    <metatype>
+      <id>d1d30016-6f62-4e08-8387-5de731f1086e</id>
+      <name>Duende</name>
+      <bodmin>F</bodmin>
+      <bodmax>F</bodmax>
+      <bodaug>F</bodaug>
+      <agimin>F</agimin>
+      <agimax>F</agimax>
+      <agiaug>F</agiaug>
+      <reamin>F+2</reamin>
+      <reamax>F+2</reamax>
+      <reaaug>F+2</reaaug>
+      <strmin>F+2</strmin>
+      <strmax>F+2</strmax>
+      <straug>F+2</straug>
+      <chamin>F</chamin>
+      <chamax>F</chamax>
+      <chaaug>F</chaaug>
+      <intmin>F</intmin>
+      <intmax>F</intmax>
+      <intaug>F</intaug>
+      <logmin>F</logmin>
+      <logmax>F</logmax>
+      <logaug>F</logaug>
+      <wilmin>F</wilmin>
+      <wilmax>F</wilmax>
+      <wilaug>F</wilaug>
+      <edgmin>F</edgmin>
+      <edgmax>F</edgmax>
+      <edgaug>F</edgaug>
+      <magmin>F</magmin>
+      <magmax>F</magmax>
+      <magaug>F</magaug>
+      <essmin>F</essmin>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
+      <walk>2/1/0</walk>
+      <run>4/0/0</run>
+      <sprint>2/1/0</sprint>
+      <armor>0</armor>
+      <skills>
+        <skill>Assensing</skill>
+        <skill>Astral Combat</skill>
+        <skill>Con</skill>
+        <skill>Gymnastics</skill>
+        <skill>Perception</skill>
+      </skills>
+      <qualities>
+        <quality>Shiva Arms</quality>
+      </qualities>
+      <powers>
+        <power>Astral Form</power>
+        <power>Aura Masking</power>
+        <power select="Spirit Pact Only">Hidden Life</power>
+        <power select="Touch">Improved Sense</power>
+        <power>Materialization</power>
+        <power select="Spirit Pact Only">Regenerate</power>
+        <power>Sapience</power>
+        <power>Spirit Pact</power>
+      </powers>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <source>HS</source>
+      <page>121</page>
+    </metatype>
+    <metatype>
+      <id>0919e53d-6e38-48b6-8c4b-f0c22f8cd41d</id>
+      <name>Elvar</name>
+      <bodmin>F</bodmin>
+      <bodmax>F</bodmax>
+      <bodaug>F</bodaug>
+      <agimin>F</agimin>
+      <agimax>F</agimax>
+      <agiaug>F</agiaug>
+      <reamin>F+2</reamin>
+      <reamax>F+2</reamax>
+      <reaaug>F+2</reaaug>
+      <strmin>F+2</strmin>
+      <strmax>F+2</strmax>
+      <straug>F+2</straug>
+      <chamin>F</chamin>
+      <chamax>F</chamax>
+      <chaaug>F</chaaug>
+      <intmin>F</intmin>
+      <intmax>F</intmax>
+      <intaug>F</intaug>
+      <logmin>F</logmin>
+      <logmax>F</logmax>
+      <logaug>F</logaug>
+      <wilmin>F</wilmin>
+      <wilmax>F</wilmax>
+      <wilaug>F</wilaug>
+      <edgmin>F</edgmin>
+      <edgmax>F</edgmax>
+      <edgaug>F</edgaug>
+      <magmin>F</magmin>
+      <magmax>F</magmax>
+      <magaug>F</magaug>
+      <essmin>F</essmin>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
+      <walk>2/1/0</walk>
+      <run>4/0/0</run>
+      <sprint>2/1/0</sprint>
+      <armor>0</armor>
+      <skills>
+        <skill>Assensing</skill>
+        <skill>Astral Combat</skill>
+        <skill>Con</skill>
+        <skill>Counterspelling</skill>
+        <skill>Disenchanting</skill>
+        <skill>Gymnastics</skill>
+        <skill>Perception</skill>
+        <skill>Spellcasting</skill>
+      </skills>
+      <powers>
+        <power>Astral Form</power>
+        <power>Aura Masking</power>
+        <power>Materialization</power>
+        <power select="Essence">Energy Drain</power>
+        <power>Age)</power>
+        <power>Fey Glamour</power>
+        <power>Sapience</power>
+        <power>Spirit Pact</power>
+      </powers>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <source>HS</source>
+      <page>121</page>
+    </metatype>
+    <metatype>
+      <id>de407ebd-f896-4efe-b16e-511d0181d774</id>
+      <name>Ejerian</name>
+      <bodmin>F</bodmin>
+      <bodmax>F</bodmax>
+      <bodaug>F</bodaug>
+      <agimin>F</agimin>
+      <agimax>F</agimax>
+      <agiaug>F</agiaug>
+      <reamin>F</reamin>
+      <reamax>F</reamax>
+      <reaaug>F</reaaug>
+      <strmin>F</strmin>
+      <strmax>F</strmax>
+      <straug>F</straug>
+      <chamin>F</chamin>
+      <chamax>F</chamax>
+      <chaaug>F</chaaug>
+      <intmin>F</intmin>
+      <intmax>F</intmax>
+      <intaug>F</intaug>
+      <logmin>F</logmin>
+      <logmax>F</logmax>
+      <logaug>F</logaug>
+      <wilmin>F</wilmin>
+      <wilmax>F</wilmax>
+      <wilaug>F</wilaug>
+      <edgmin>F/2</edgmin>
+      <edgmax>F/2</edgmax>
+      <edgaug>F/2</edgaug>
+      <magmin>F</magmin>
+      <magmax>F</magmax>
+      <magaug>F</magaug>
+      <essmin>F</essmin>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
+      <walk>1/1/0</walk>
+      <run>4/0/0</run>
+      <sprint>1/1/0</sprint>
+      <skills>
+        <skill>Assensing</skill>
+        <skill>Astral Combat</skill>
+        <skill>Automatics</skill>
+        <skill>Blades</skill>
+        <skill>Clubs</skill>
+        <skill>Computer</skill>
+        <skill>First Aid</skill>
+        <skill>Gymnastics</skill>
+        <skill>Intimidation</skill>
+        <skill>Locksmith</skill>
+        <skill>Longarms</skill>
+        <skill>Perception</skill>
+        <skill>Pilot Ground Craft</skill>
+        <skill>Pistols</skill>
+        <skill>Sneaking</skill>
+        <skill>Throwing Weapons</skill>
+        <skill>Unarmed Combat</skill>
+      </skills>
+      <powers>
+        <power>Astral Form</power>
+        <power>Aura Masking</power>
+        <power>Banishing Resistance</power>
+        <power>Hardened Mystic Armor</power>
+        <power>Possession</power>
+        <power>Sapience</power>
+      </powers>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <source>HS</source>
+      <page>122</page>
+    </metatype>
+    <metatype>
+      <id>33951b3b-65f5-493f-8eb1-65e208f77a74</id>
+      <name>Erinyes</name>
+      <bodmin>F-1</bodmin>
+      <bodmax>F-1</bodmax>
+      <bodaug>F-1</bodaug>
+      <agimin>F+3</agimin>
+      <agimax>F+3</agimax>
+      <agiaug>F+3</agiaug>
+      <reamin>F+2</reamin>
+      <reamax>F+2</reamax>
+      <reaaug>F+2</reaaug>
+      <strmin>F</strmin>
+      <strmax>F</strmax>
+      <straug>F</straug>
+      <chamin>F</chamin>
+      <chamax>F</chamax>
+      <chaaug>F</chaaug>
+      <intmin>F</intmin>
+      <intmax>F</intmax>
+      <intaug>F</intaug>
+      <logmin>F</logmin>
+      <logmax>F</logmax>
+      <logaug>F</logaug>
+      <wilmin>F</wilmin>
+      <wilmax>F</wilmax>
+      <wilaug>F</wilaug>
+      <edgmin>F/2</edgmin>
+      <edgmax>F/2</edgmax>
+      <edgaug>F/2</edgaug>
+      <magmin>F</magmin>
+      <magmax>F</magmax>
+      <magaug>F</magaug>
+      <essmin>F</essmin>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
+      <walk>2/1/0</walk>
+      <run>5/0/0</run>
+      <sprint>4/1/0</sprint>
+      <armor>(F x 2)H</armor>
+      <skills>
+        <skill>Assensing</skill>
+        <skill>Astral Combat</skill>
+        <skill>Flight</skill>
+        <skill>Gymnastics</skill>
+        <skill>Perception</skill>
+        <skill>Sneaking</skill>
+        <skill>Unarmed Combat</skill>
+      </skills>
+      <powers>
+        <power>Accident</power>
+        <power>Astral Form</power>
+        <power>Banishing Resistance</power>
+        <power>Concealment</power>
+        <power select="Air">Engulf</power>
+        <power>Fear</power>
+        <power select="Normal Weapons">Immunity</power>
+        <power>Inﬂuence</power>
+        <power>Materialization</power>
+        <power select="Claws (DV (F+2)P AP –F)">Natural Weapon</power>
+        <power select="Wings (DV (F+6)S AP -F)">Natural Weapon</power>
+        <power>AP –Force</power>
+        <power>Knockdown)</power>
+        <power>Psychokinesis</power>
+        <power>Sapience</power>
+      </powers>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <source>HS</source>
+      <page>123</page>
+    </metatype>
+    <metatype>
+      <id>6504cd2d-5e31-4dce-8c78-cbfcfda094f7</id>
+      <name>Green Man/Heart of the City</name>
+      <bodmin>F+3</bodmin>
+      <bodmax>F+3</bodmax>
+      <bodaug>F+3</bodaug>
+      <agimin>F–1</agimin>
+      <agimax>F–1</agimax>
+      <agiaug>F–1</agiaug>
+      <reamin>F+2</reamin>
+      <reamax>F+2</reamax>
+      <reaaug>F+2</reaaug>
+      <strmin>F+4</strmin>
+      <strmax>F+4</strmax>
+      <straug>F+4</straug>
+      <chamin>F</chamin>
+      <chamax>F</chamax>
+      <chaaug>F</chaaug>
+      <intmin>F</intmin>
+      <intmax>F</intmax>
+      <intaug>F</intaug>
+      <logmin>F</logmin>
+      <logmax>F</logmax>
+      <logaug>F</logaug>
+      <wilmin>F</wilmin>
+      <wilmax>F</wilmax>
+      <wilaug>F</wilaug>
+      <edgmin>F/2</edgmin>
+      <edgmax>F/2</edgmax>
+      <edgaug>F/2</edgaug>
+      <magmin>F</magmin>
+      <magmax>F</magmax>
+      <magaug>F</magaug>
+      <essmin>F</essmin>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
+      <walk>2/1/0</walk>
+      <run>4/0/0</run>
+      <sprint>2/1/0</sprint>
+      <armor>0</armor>
+      <skills>
+        <skill>Assensing</skill>
+        <skill>Astral Combat</skill>
+        <skill>Counterspelling</skill>
+        <skill>Gymnastics</skill>
+      </skills>
+      <powers>
+        <power select="Domain">Accident</power>
+        <power>Alienate</power>
+        <power>Astral Form</power>
+        <power>Aura</power>
+      </powers>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <source>HS</source>
+      <page>123</page>
+    </metatype>
+    <metatype>
+      <id>7aa16d7a-4f70-4e3a-a9c0-9a3d9ab6e07e</id>
+      <name>Imp</name>
+      <bodmin>F</bodmin>
+      <bodmax>F</bodmax>
+      <bodaug>F</bodaug>
+      <agimin>F</agimin>
+      <agimax>F</agimax>
+      <agiaug>F</agiaug>
+      <reamin>F+3</reamin>
+      <reamax>F+3</reamax>
+      <reaaug>F+3</reaaug>
+      <strmin>F</strmin>
+      <strmax>F</strmax>
+      <straug>F</straug>
+      <chamin>F</chamin>
+      <chamax>F</chamax>
+      <chaaug>F</chaaug>
+      <intmin>F</intmin>
+      <intmax>F</intmax>
+      <intaug>F</intaug>
+      <logmin>F</logmin>
+      <logmax>F</logmax>
+      <logaug>F</logaug>
+      <wilmin>F</wilmin>
+      <wilmax>F</wilmax>
+      <wilaug>F</wilaug>
+      <edgmin>F</edgmin>
+      <edgmax>F</edgmax>
+      <edgaug>F</edgaug>
+      <magmin>F</magmin>
+      <magmax>F</magmax>
+      <magaug>F</magaug>
+      <essmin>F</essmin>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
+      <walk>2/1/0</walk>
+      <run>4/0/0</run>
+      <sprint>2/1/0</sprint>
+      <armor>0</armor>
+      <skills>
+        <skill>Alchemy</skill>
+        <skill>Assensing</skill>
+        <skill>Astral Combat</skill>
+        <skill>Con</skill>
+      </skills>
+      <powers>
+        <power>Astral Form</power>
+        <power>Aura Masking</power>
+        <power>Banishing Resistance</power>
+      </powers>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <source>HS</source>
+      <page>124</page>
+    </metatype>
+    <metatype>
+      <id>fb5ad9e1-f13e-4da7-b00e-30197cd5ef6c</id>
+      <name>Jarl</name>
+      <bodmin>F+2</bodmin>
+      <bodmax>F+2</bodmax>
+      <bodaug>F+2</bodaug>
+      <agimin>F–1</agimin>
+      <agimax>F–1</agimax>
+      <agiaug>F–1</agiaug>
+      <reamin>F+2</reamin>
+      <reamax>F+2</reamax>
+      <reaaug>F+2</reaaug>
+      <strmin>F+2</strmin>
+      <strmax>F+2</strmax>
+      <straug>F+2</straug>
+      <chamin>F</chamin>
+      <chamax>F</chamax>
+      <chaaug>F</chaaug>
+      <intmin>F+2</intmin>
+      <intmax>F+2</intmax>
+      <intaug>F+2</intaug>
+      <logmin>F</logmin>
+      <logmax>F</logmax>
+      <logaug>F</logaug>
+      <wilmin>F</wilmin>
+      <wilmax>F</wilmax>
+      <wilaug>F</wilaug>
+      <edgmin>F/2</edgmin>
+      <edgmax>F/2</edgmax>
+      <edgaug>F/2</edgaug>
+      <magmin>F</magmin>
+      <magmax>F</magmax>
+      <magaug>F</magaug>
+      <essmin>F</essmin>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
+      <walk>2/1/0</walk>
+      <run>4/0/0</run>
+      <sprint>2/1/0</sprint>
+      <armor>0</armor>
+      <skills>
+        <skill>Assensing</skill>
+        <skill>Astral Combat</skill>
+        <skill>Counterspelling</skill>
+        <skill>Gymnastics</skill>
+      </skills>
+      <powers>
+        <power>Astral Form</power>
+        <power>Aura Masking</power>
+        <power>Banishing Resistance</power>
+      </powers>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <source>HS</source>
+      <page>125</page>
+    </metatype>
+    <metatype>
+      <id>17b642e0-f3ea-4b1c-8b51-a3eccf0a1ab8</id>
+      <name>Kappa</name>
+      <bodmin>F+5</bodmin>
+      <bodmax>F+5</bodmax>
+      <bodaug>F+5</bodaug>
+      <agimin>F</agimin>
+      <agimax>F</agimax>
+      <agiaug>F</agiaug>
+      <reamin>F-1</reamin>
+      <reamax>F-1</reamax>
+      <reaaug>F-1</reaaug>
+      <strmin>F+1</strmin>
+      <strmax>F+1</strmax>
+      <straug>F+1</straug>
+      <chamin>F</chamin>
+      <chamax>F</chamax>
+      <chaaug>F</chaaug>
+      <intmin>F</intmin>
+      <intmax>F</intmax>
+      <intaug>F</intaug>
+      <logmin>F</logmin>
+      <logmax>F</logmax>
+      <logaug>F</logaug>
+      <wilmin>F</wilmin>
+      <wilmax>F</wilmax>
+      <wilaug>F</wilaug>
+      <edgmin>F</edgmin>
+      <edgmax>F</edgmax>
+      <edgaug>F</edgaug>
+      <magmin>F</magmin>
+      <magmax>F</magmax>
+      <magaug>F</magaug>
+      <essmin>F-2</essmin>
+      <essmax>F-2</essmax>
+      <essaug>F-2</essaug>
+      <walk>2/1/0</walk>
+      <run>4/0/0</run>
+      <sprint>1/1/0</sprint>
+      <armor>0</armor>
+      <skills>
+        <skill>Assensing</skill>
+        <skill>Astral Combat</skill>
+        <skill rating="Ranged Weapon">Exotic</skill>
+      </skills>
+      <powers>
+        <power>Astral Form</power>
+        <power>Banishing Resistance</power>
+        <power>Concealment</power>
+      </powers>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <source>HS</source>
+      <page>126</page>
+    </metatype>
+    <metatype>
+      <id>5e37b646-6a2b-438d-92b2-4452d3d3599f</id>
+      <name>Morbi</name>
+      <bodmin>F</bodmin>
+      <bodmax>F</bodmax>
+      <bodaug>F</bodaug>
+      <agimin>F</agimin>
+      <agimax>F</agimax>
+      <agiaug>F</agiaug>
+      <reamin>F+1</reamin>
+      <reamax>F+1</reamax>
+      <reaaug>F+1</reaaug>
+      <strmin>F–2</strmin>
+      <strmax>F–2</strmax>
+      <straug>F–2</straug>
+      <chamin>F+2</chamin>
+      <chamax>F+2</chamax>
+      <chaaug>F+2</chaaug>
+      <intmin>F+1</intmin>
+      <intmax>F+1</intmax>
+      <intaug>F+1</intaug>
+      <logmin>F</logmin>
+      <logmax>F</logmax>
+      <logaug>F</logaug>
+      <wilmin>F</wilmin>
+      <wilmax>F</wilmax>
+      <wilaug>F</wilaug>
+      <edgmin>F/2</edgmin>
+      <edgmax>F/2</edgmax>
+      <edgaug>F/2</edgaug>
+      <magmin>F</magmin>
+      <magmax>F</magmax>
+      <magaug>F</magaug>
+      <essmin>F</essmin>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
+      <walk>2/1/0</walk>
+      <run>4/0/0</run>
+      <sprint>2/1/0</sprint>
+      <armor>0</armor>
+      <skills>
+        <skill>Assensing</skill>
+        <skill>Astral Combat</skill>
+        <skill>Perception</skill>
+        <skill>Ritual Spellcasting</skill>
+        <skill>Sneaking</skill>
+        <skill>Unarmed Combat</skill>
+      </skills>
+      <powers>
+        <power>Accident</power>
+        <power>Astral Form</power>
+        <power>Banishing Resistance</power>
+        <power select="Low Light">Enhanced Senses</power>
+        <power select="Augury">Innate Ritual</power>
+        <power>Magic Sense</power>
+        <power>Materialization</power>
+        <power>Search</power>
+      </powers>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <source>HS</source>
+      <page>128</page>
+    </metatype>
+    <metatype>
+      <id>31fa84e3-5d2a-406f-8e6e-4c25ea7e3779</id>
+      <name>Nocnitsa</name>
+      <bodmin>F-3</bodmin>
+      <bodmax>F-3</bodmax>
+      <bodaug>F-3</bodaug>
+      <agimin>F+4</agimin>
+      <agimax>F+4</agimax>
+      <agiaug>F+4</agiaug>
+      <reamin>F+5</reamin>
+      <reamax>F+5</reamax>
+      <reaaug>F+5</reaaug>
+      <strmin>F-2</strmin>
+      <strmax>F-2</strmax>
+      <straug>F-2</straug>
+      <chamin>F</chamin>
+      <chamax>F</chamax>
+      <chaaug>F</chaaug>
+      <intmin>F</intmin>
+      <intmax>F</intmax>
+      <intaug>F</intaug>
+      <logmin>F</logmin>
+      <logmax>F</logmax>
+      <logaug>F</logaug>
+      <wilmin>F-1</wilmin>
+      <wilmax>F-1</wilmax>
+      <wilaug>F-1</wilaug>
+      <edgmin>F/2</edgmin>
+      <edgmax>F/2</edgmax>
+      <edgaug>F/2</edgaug>
+      <magmin>F</magmin>
+      <magmax>F</magmax>
+      <magaug>F</magaug>
+      <essmin>F</essmin>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
+      <walk>2/1/0</walk>
+      <run>5/0/0</run>
+      <sprint>2/1/0</sprint>
+      <skills>
+        <skill>Assensing</skill>
+        <skill>Astral Combat</skill>
+        <skill>Perception</skill>
+        <skill>Sneaking</skill>
+        <skill>Unarmed Combat</skill>
+      </skills>
+      <powers>
+        <power>Astral Form</power>
+        <power>Aura Masking</power>
+        <power>Banishing Resistance</power>
+        <power select="Electricity">Elemental Attack</power>
+        <power>Fear</power>
+        <power>Guard</power>
+        <power>Materialization</power>
+        <power select="Claw (DV (F-2)P AP+2)">Natural Weapon</power>
+        <power>Sapience</power>
+      </powers>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <source>HS</source>
+      <page>129</page>
+    </metatype>
+    <metatype>
+      <id>18ab8683-9c7e-4234-9d1d-35d0f779ec71</id>
+      <name>Phantom</name>
+      <bodmin>F+1</bodmin>
+      <bodmax>F+1</bodmax>
+      <bodaug>F+1</bodaug>
+      <agimin>F</agimin>
+      <agimax>F</agimax>
+      <agiaug>F</agiaug>
+      <reamin>F+2</reamin>
+      <reamax>F+2</reamax>
+      <reaaug>F+2</reaaug>
+      <strmin>F–2</strmin>
+      <strmax>F–2</strmax>
+      <straug>F–2</straug>
+      <chamin>F</chamin>
+      <chamax>F</chamax>
+      <chaaug>F</chaaug>
+      <intmin>F</intmin>
+      <intmax>F</intmax>
+      <intaug>F</intaug>
+      <logmin>F</logmin>
+      <logmax>F</logmax>
+      <logaug>F</logaug>
+      <wilmin>F</wilmin>
+      <wilmax>F</wilmax>
+      <wilaug>F</wilaug>
+      <edgmin>F/2</edgmin>
+      <edgmax>F/2</edgmax>
+      <edgaug>F/2</edgaug>
+      <magmin>F</magmin>
+      <magmax>F</magmax>
+      <magaug>F</magaug>
+      <essmin>F</essmin>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
+      <walk>2/1/0</walk>
+      <run>4/0/0</run>
+      <sprint>2/1/0</sprint>
+      <armor>0</armor>
+      <skills>
+        <skill>Assensing</skill>
+        <skill>Astral Combat</skill>
+        <skill>Gymnastics</skill>
+        <skill>Perception</skill>
+        <skill>Unarmed Combat</skill>
+      </skills>
+      <powers>
+        <power>Accident</power>
+        <power>Astral Form</power>
+        <power>Banishing Resistance</power>
+        <power>Compulsion</power>
+        <power select="Low-Light Vision">Enhanced Senses</power>
+        <power select="Thermographic Vision">Enhanced Senses</power>
+        <power>Fear</power>
+        <power>Haunt</power>
+        <power>Possession</power>
+        <power>Psychokinesis</power>
+      </powers>
+      <optionalpowers>
+        <power>Confusion</power>
+        <power>Deathlock</power>
+        <power>Ghost Chain</power>
+        <power>Howl</power>
+        <power>Movement</power>
+        <power>Noxious Breath</power>
+        <power>Paralyzing Touch</power>
+        <power>Sapience</power>
+        <power>Spirit Pact</power>
+      </optionalpowers>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <source>HS</source>
+      <page>130</page>
+    </metatype>
+    <metatype>
+      <id>be973a8d-b997-4d64-b9a7-20d85bc48d08</id>
+      <name>Preta</name>
+      <bodmin>F-1</bodmin>
+      <bodmax>F-1</bodmax>
+      <bodaug>F-1</bodaug>
+      <agimin>F+1</agimin>
+      <agimax>F+1</agimax>
+      <agiaug>F+1</agiaug>
+      <reamin>F+2</reamin>
+      <reamax>F+2</reamax>
+      <reaaug>F+2</reaaug>
+      <strmin>F-1</strmin>
+      <strmax>F-1</strmax>
+      <straug>F-1</straug>
+      <chamin>F</chamin>
+      <chamax>F</chamax>
+      <chaaug>F</chaaug>
+      <intmin>F</intmin>
+      <intmax>F</intmax>
+      <intaug>F</intaug>
+      <logmin>F</logmin>
+      <logmax>F</logmax>
+      <logaug>F</logaug>
+      <wilmin>F</wilmin>
+      <wilmax>F</wilmax>
+      <wilaug>F</wilaug>
+      <edgmin>F/2</edgmin>
+      <edgmax>F/2</edgmax>
+      <edgaug>F/2</edgaug>
+      <magmin>F</magmin>
+      <magmax>F</magmax>
+      <magaug>F</magaug>
+      <essmin>F</essmin>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
+      <walk>2/1/0</walk>
+      <run>4/0/0</run>
+      <sprint>2/1/0</sprint>
+      <armor>F</armor>
+      <skills>
+        <skill>Assensing</skill>
+        <skill>Astral Combat</skill>
+        <skill>Con</skill>
+        <skill>Intimidation</skill>
+        <skill>Negotiation</skill>
+        <skill>Perception</skill>
+        <skill>Sneaking</skill>
+        <skill>Unarmed Combat</skill>
+      </skills>
+      <powers>
+        <power>Accident</power>
+        <power>Astral Form</power>
+        <power>Aura Masking</power>
+        <power>Banishing Resistance</power>
+        <power>Binding</power>
+        <power>Compulsion</power>
+        <power>Concealment</power>
+        <power>Confusion</power>
+        <power>Fear</power>
+        <power select="F">Hardened Mystic Armor</power>
+        <power>Inﬂuence</power>
+        <power>Materialization</power>
+        <power select="DV (F-1)S">Natural Weapon (Fist</power>
+        <power>AP –Force)</power>
+        <power>Psychokinesis</power>
+        <power>Sapience</power>
+        <power>Search</power>
+      </powers>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <source>HS</source>
+      <page>131</page>
+    </metatype>
+    <metatype>
+      <id>d189dcde-b36c-45f4-9a6d-99905af063ba</id>
+      <name>Stabber</name>
+      <bodmin>F+1</bodmin>
+      <bodmax>F+1</bodmax>
+      <bodaug>F+1</bodaug>
+      <agimin>F+4</agimin>
+      <agimax>F+4</agimax>
+      <agiaug>F+4</agiaug>
+      <reamin>F+2</reamin>
+      <reamax>F+2</reamax>
+      <reaaug>F+2</reaaug>
+      <strmin>F+4</strmin>
+      <strmax>F+4</strmax>
+      <straug>F+4</straug>
+      <chamin>F</chamin>
+      <chamax>F</chamax>
+      <chaaug>F</chaaug>
+      <intmin>F</intmin>
+      <intmax>F</intmax>
+      <intaug>F</intaug>
+      <logmin>F</logmin>
+      <logmax>F</logmax>
+      <logaug>F</logaug>
+      <wilmin>F</wilmin>
+      <wilmax>F</wilmax>
+      <wilaug>F</wilaug>
+      <edgmin>F/2</edgmin>
+      <edgmax>F/2</edgmax>
+      <edgaug>F/2</edgaug>
+      <magmin>F</magmin>
+      <magmax>F</magmax>
+      <magaug>F</magaug>
+      <essmin>F</essmin>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
+      <walk>2/1/0</walk>
+      <run>4/0/0</run>
+      <sprint>2/1/0</sprint>
+      <armor>(F x 2)H</armor>
+      <skills>
+        <skill>Assensing</skill>
+        <skill>Astral Combat</skill>
+        <skill>Gymnastics</skill>
+        <skill>Perception</skill>
+        <skill>Unarmed Combat</skill>
+      </skills>
+      <powers>
+        <power select="double pain modifers">Agonizing Pain</power>
+        <power>Astral Form</power>
+        <power>Aura Masking</power>
+        <power>Banishing Resistance</power>
+        <power select="Normal Weapons">Immunity</power>
+        <power>Materialization</power>
+        <power select="Tentacle (DV (F+6)P AP –F)">Natural Weapon</power>
+        <power>Paralyzing Touch</power>
+        <power>Regeneration</power>
+        <power>Sapience</power>
+      </powers>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <source>HS</source>
+      <page>132</page>
+    </metatype>
+    <metatype>
+      <id>98c87b5e-24ad-4fbb-9ad5-29218b801b5b</id>
+      <name>Tungak</name>
+      <bodmin>F+1</bodmin>
+      <bodmax>F+1</bodmax>
+      <bodaug>F+1</bodaug>
+      <agimin>F</agimin>
+      <agimax>F</agimax>
+      <agiaug>F</agiaug>
+      <reamin>F+2</reamin>
+      <reamax>F+2</reamax>
+      <reaaug>F+2</reaaug>
+      <strmin>F-2</strmin>
+      <strmax>F-2</strmax>
+      <straug>F-2</straug>
+      <chamin>F</chamin>
+      <chamax>F</chamax>
+      <chaaug>F</chaaug>
+      <intmin>F</intmin>
+      <intmax>F</intmax>
+      <intaug>F</intaug>
+      <logmin>F</logmin>
+      <logmax>F</logmax>
+      <logaug>F</logaug>
+      <wilmin>F</wilmin>
+      <wilmax>F</wilmax>
+      <wilaug>F</wilaug>
+      <edgmin>F</edgmin>
+      <edgmax>F</edgmax>
+      <edgaug>F</edgaug>
+      <magmin>F</magmin>
+      <magmax>F</magmax>
+      <magaug>F</magaug>
+      <essmin>F</essmin>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
+      <armor>(F x 2)H</armor>
+      <skills>
+        <skill>Assensing</skill>
+        <skill>Astral Combat</skill>
+        <skill>Gymnastics</skill>
+        <skill>Perception</skill>
+        <skill>Unarmed Combat</skill>
+      </skills>
+      <powers>
+        <power>Accident</power>
+        <power>Astral Form</power>
+        <power>Banishing Resistance</power>
+        <power>Confusion</power>
+        <power select="Low-Light Vision">Enhanced Senses</power>
+        <power select="Thermographic Vision">Enhanced Senses</power>
+        <power>Guard</power>
+        <power select="Normal Weapons">Immunity</power>
+        <power select="Host">Pestilence</power>
+        <power>Possession</power>
+        <power>Sapience</power>
+        <power>Search</power>
+      </powers>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <source>HS</source>
+      <page>133</page>
+    </metatype>
+    <metatype>
+      <id>d6fa5e21-29bd-4cbd-a678-1bf14327a98f</id>
+      <name>Ver</name>
+      <bodmin>4</bodmin>
+      <bodmax>4</bodmax>
+      <bodaug>8</bodaug>
+      <agimin>5</agimin>
+      <agimax>5</agimax>
+      <agiaug>9</agiaug>
+      <reamin>5</reamin>
+      <reamax>5</reamax>
+      <reaaug>9</reaaug>
+      <strmin>5</strmin>
+      <strmax>5</strmax>
+      <straug>9</straug>
+      <chamin>3</chamin>
+      <chamax>3</chamax>
+      <chaaug>7</chaaug>
+      <intmin>3</intmin>
+      <intmax>3</intmax>
+      <intaug>7</intaug>
+      <logmin>4</logmin>
+      <logmax>4</logmax>
+      <logaug>8</logaug>
+      <wilmin>4</wilmin>
+      <wilmax>4</wilmax>
+      <wilaug>8</wilaug>
+      <edgmin>4</edgmin>
+      <edgmax>4</edgmax>
+      <edgaug>8</edgaug>
+      <magmin>6</magmin>
+      <magmax>6</magmax>
+      <magaug>10</magaug>
+      <essmin>6</essmin>
+      <essmax>6</essmax>
+      <essaug>10</essaug>
+      <walk>2/1/0</walk>
+      <run>4/0/0</run>
+      <sprint>2/1/0</sprint>
+      <armor>0</armor>
+      <skills>
+        <skill rating="4">Assensing</skill>
+        <skill rating="4">Astral Combat</skill>
+        <skill rating="4">Running</skill>
+        <skill rating="8">Sneaking</skill>
+      </skills>
+      <powers>
+        <power>Astral Form</power>
+        <power>Astral Venom</power>
+        <power>Banishing Resistance</power>
+      </powers>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <source>HS</source>
+      <page>134</page>
+    </metatype>
+    <metatype>
+      <id>6cc44762-1e85-4097-bbb4-4f6e5eed2724</id>
+      <name>Vucub Caquix</name>
+      <bodmin>F+3</bodmin>
+      <bodmax>F+3</bodmax>
+      <bodaug>F+3</bodaug>
+      <agimin>F+5</agimin>
+      <agimax>F+5</agimax>
+      <agiaug>F+5</agiaug>
+      <reamin>F+4</reamin>
+      <reamax>F+4</reamax>
+      <reaaug>F+4</reaaug>
+      <strmin>F+2</strmin>
+      <strmax>F+2</strmax>
+      <straug>F+2</straug>
+      <chamin>F+4</chamin>
+      <chamax>F+4</chamax>
+      <chaaug>F+4</chaaug>
+      <intmin>F+1</intmin>
+      <intmax>F+1</intmax>
+      <intaug>F+1</intaug>
+      <logmin>F</logmin>
+      <logmax>F</logmax>
+      <logaug>F</logaug>
+      <wilmin>F</wilmin>
+      <wilmax>F</wilmax>
+      <wilaug>F</wilaug>
+      <edgmin>F</edgmin>
+      <edgmax>F</edgmax>
+      <edgaug>F</edgaug>
+      <magmin>F</magmin>
+      <magmax>F</magmax>
+      <magaug>F</magaug>
+      <essmin>F</essmin>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
+      <walk>1/1/2</walk>
+      <run>2/0/5</run>
+      <sprint>1/1/5</sprint>
+      <armor>12H</armor>
+      <skills>
+        <skill>Assensing</skill>
+        <skill>Flight</skill>
+        <skill>Perception</skill>
+        <skill>Unarmed Combat</skill>
+      </skills>
+      <powers>
+        <power>Aura Masking</power>
+        <power>Banishing Resistance</power>
+        <power>Compulsion</power>
+        <power>Concealment</power>
+        <power select="Fire">Engulf</power>
+        <power>Fear</power>
+        <power select="Normal Weapons">Immunity</power>
+        <power>Materialization</power>
+        <power select="Claws/Bite (DV (Force+2)PAP —">Natural Weapon</power>
+        <power>Possession</power>
+        <power>Regeneration</power>
+        <power>Sapience</power>
+      </powers>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <source>HS</source>
+      <page>135</page>
+    </metatype>
+    <!-- End Region -->
   </metatypes>
 </chummer>

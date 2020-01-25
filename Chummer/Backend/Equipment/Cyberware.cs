@@ -1422,7 +1422,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("wirelesson", WirelessOn.ToString());
             objWriter.WriteElementString("grade", Grade.DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("location", Location);
-            objWriter.WriteElementString("extra", Extra);
+            objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(Extra, strLanguageToPrint));
             objWriter.WriteElementString("improvementsource", SourceType.ToString());
             if (Gear.Count > 0)
             {
@@ -4910,7 +4910,7 @@ namespace Chummer.Backend.Equipment
             return true;
         }
 
-        public void Upgrade(Character characterObject, Grade objGrade, int intRating, decimal refundPercentage)
+        public void Upgrade(Character characterObject, Grade objGrade, int intRating, decimal refundPercentage, bool blnFree)
         {
             decimal saleCost = TotalCost * refundPercentage;
             int oldRating = Rating;
@@ -4920,7 +4920,10 @@ namespace Chummer.Backend.Equipment
             Rating = intRating;
             Grade = objGrade;
             decimal newCost = TotalCost - saleCost;
-
+            if (blnFree)
+            {
+                newCost = 0;
+            }
             if (newCost > characterObject.Nuyen)
             {
                 Program.MainForm.ShowMessageBox(

@@ -111,10 +111,6 @@
       <text>Life Module</text>
     </string>
     <string>
-      <key>String_Life_Module</key>
-      <text>Life Module</text>
-    </string>
-    <string>
       <key>Label_Stage</key>
       <text>Stage:</text>
     </string>
@@ -617,6 +613,10 @@
     <string>
       <key>Label_Armor</key>
       <text>Armor:</text>
+    </string>
+    <string>
+      <key>Label_Dodge</key>
+      <text>Dodge:</text>
     </string>
     <string>
       <key>Label_Seats</key>
@@ -2043,6 +2043,10 @@
     <string>
       <key>Message_DeleteExoticSkill</key>
       <text>Are you sure you want to delete this Exotic Skill?</text>
+    </string>
+    <string>
+      <key>Message_DeleteSkill</key>
+      <text>Are you sure you want to delete this Skill?</text>
     </string>
     <string>
       <key>Message_DeletePositiveQualityCareer</key>
@@ -4908,19 +4912,19 @@
     </string>
     <string>
       <key>Label_RangeShort</key>
-      <text>Short (-0)</text>
+      <text>Short ({0})</text>
     </string>
     <string>
       <key>Label_RangeMedium</key>
-      <text>Medium (-1)</text>
+      <text>Medium ({0})</text>
     </string>
     <string>
       <key>Label_RangeLong</key>
-      <text>Long (-3)</text>
+      <text>Long ({0})</text>
     </string>
     <string>
       <key>Label_RangeExtreme</key>
-      <text>Extreme (-6)</text>
+      <text>Extreme ({0})</text>
     </string>
     <string>
       <key>Label_DicePool</key>
@@ -9681,6 +9685,14 @@
     <string>
       <key>String_SpecialModificationLimit</key>
       <text>Special Modification Limit</text>
+    </string>
+    <string>
+      <key>String_MetersPerHit</key>
+      <text>m/ hit</text>
+    </string>
+    <string>
+      <key>String_SuppressedBy</key>
+      <text>Suppressed by {0}</text>
     </string>
     <!-- End Region -->
     <!-- Region Loading Form -->

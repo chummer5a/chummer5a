@@ -67,9 +67,6 @@ namespace Chummer
         private Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private XmlNode _oldSkillsBackup;
 
-        //Was once readonly, but options no longer uses .Load as long as character has .Load it needs to be mutable :/
-        private CharacterOptions _objOptions;
-
         private string _strFileName = string.Empty;
         private XmlNode _oldSkillGroupBackup;
         private DateTime _dateFileLastWriteTime = DateTime.MinValue;
@@ -975,13 +972,17 @@ namespace Chummer
                     {
                         setChangedProperties.Add(nameof(PowerPointsUsed));
                         setChangedProperties.Add(nameof(AnyPowerAdeptWayDiscountEnabled));
+                        setChangedProperties.Add(nameof(AllowAdeptWayPowerDiscount));
                     }
                     break;
                 case ListChangedType.ItemAdded:
                     {
                         setChangedProperties.Add(nameof(PowerPointsUsed));
-                        if(Powers[e.NewIndex].AdeptWayDiscountEnabled)
+                        if (Powers[e.NewIndex].AdeptWayDiscountEnabled)
+                        {
                             setChangedProperties.Add(nameof(AnyPowerAdeptWayDiscountEnabled));
+                            setChangedProperties.Add(nameof(AllowAdeptWayPowerDiscount));
+                        }
                     }
                     break;
                 case ListChangedType.ItemDeleted:
@@ -996,10 +997,24 @@ namespace Chummer
                             break;
                         }
 
-                        if(e.PropertyDescriptor.Name == nameof(Power.AdeptWayDiscountEnabled))
+                        if (e.PropertyDescriptor.Name == nameof(Power.AdeptWayDiscountEnabled))
+                        {
                             setChangedProperties.Add(nameof(AnyPowerAdeptWayDiscountEnabled));
-                        else if(e.PropertyDescriptor.Name == nameof(Power.PowerPoints))
+                            setChangedProperties.Add(nameof(AllowAdeptWayPowerDiscount));
+                        }
+                        else if (setChangedProperties.Add(nameof(Power.DiscountedAdeptWay)))
+                        {
+                            setChangedProperties.Add(nameof(AnyPowerAdeptWayDiscountEnabled));
+                            setChangedProperties.Add(nameof(AllowAdeptWayPowerDiscount));
+                            foreach (Power objPower in Powers)
+                            {
+                                objPower.OnPropertyChanged(nameof(Power.AdeptWayDiscountEnabled));
+                            }
+                        }
+                        else if (e.PropertyDescriptor.Name == nameof(Power.PowerPoints))
+                        {
                             setChangedProperties.Add(nameof(PowerPointsUsed));
+                        }
                     }
                     break;
             }
@@ -2139,7 +2154,7 @@ if (!Utils.IsUnitTest){
                     "customdatadirectorynames/directoryname"))
                 {
                     string strLoopString = xmlDirectoryName.Value;
-                    if (strLoopString.Length > 0 && !_objOptions.CustomDataDirectoryNames.Contains(strLoopString))
+                    if (strLoopString.Length > 0 && !Options.CustomDataDirectoryNames.Contains(strLoopString))
                     {
                         strMissingSourceNames += strLoopString + ';' + Environment.NewLine;
                     }
@@ -10969,37 +10984,6 @@ if (!Utils.IsUnitTest){
 
         public bool StunCMVisible => !IsAI || HomeNode != null;
 
-        /// <summary>
-        /// The Character's total Armor Rating.
-        /// </summary>
-        [HubTag]
-        public int TotalArmorRating =>
-            ArmorRating + ImprovementManager.ValueOf(this, Improvement.ImprovementType.Armor);
-
-        public string TotalArmorRatingToolTip
-        {
-            get
-            {
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
-                StringBuilder objToolTip =
-                    new StringBuilder(LanguageManager.GetString("Tip_Armor", GlobalOptions.Language) +
-                                      strSpaceCharacter + '(' + ArmorRating.ToString(GlobalOptions.Instance.CultureInfo) + ')');
-                foreach(Improvement objLoopImprovement in Improvements)
-                {
-                    if(objLoopImprovement.ImproveType == Improvement.ImprovementType.Armor &&
-                        objLoopImprovement.Enabled)
-                    {
-                        objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                          GetObjectName(objLoopImprovement, GlobalOptions.Language) +
-                                          strSpaceCharacter + '(' +
-                                          objLoopImprovement.Value.ToString(GlobalOptions.Instance.CultureInfo) + ')');
-                    }
-                }
-
-                return objToolTip.ToString();
-            }
-        }
-
         public string StunCMLabelText
         {
             get
@@ -11011,37 +10995,6 @@ if (!Utils.IsUnitTest){
                 return LanguageManager.GetString("Label_OtherStunCM", GlobalOptions.Language);
             }
         }
-
-        /// <summary>
-        /// The Character's total Armor Rating against Fire attacks.
-        /// </summary>
-        public int TotalFireArmorRating =>
-            TotalArmorRating + ImprovementManager.ValueOf(this, Improvement.ImprovementType.FireArmor);
-
-        /// <summary>
-        /// The Character's total Armor Rating against Cold attacks.
-        /// </summary>
-        public int TotalColdArmorRating =>
-            TotalArmorRating + ImprovementManager.ValueOf(this, Improvement.ImprovementType.ColdArmor);
-
-        /// <summary>
-        /// The Character's total Armor Rating against Electricity attacks.
-        /// </summary>
-        public int TotalElectricityArmorRating => TotalArmorRating +
-                                                  ImprovementManager.ValueOf(this,
-                                                      Improvement.ImprovementType.ElectricityArmor);
-
-        /// <summary>
-        /// The Character's total Armor Rating against Acid attacks.
-        /// </summary>
-        public int TotalAcidArmorRating =>
-            TotalArmorRating + ImprovementManager.ValueOf(this, Improvement.ImprovementType.AcidArmor);
-
-        /// <summary>
-        /// The Character's total Armor Rating against falling damage (AP -4 not factored in).
-        /// </summary>
-        public int TotalFallingArmorRating =>
-            TotalArmorRating + ImprovementManager.ValueOf(this, Improvement.ImprovementType.FallingArmor);
 
         public string StunCMToolTip
         {
@@ -11170,6 +11123,68 @@ if (!Utils.IsUnitTest){
                 return 0;
             }
         }
+
+        /// <summary>
+        /// The Character's total Armor Rating.
+        /// </summary>
+        [HubTag]
+        public int TotalArmorRating =>
+            ArmorRating + ImprovementManager.ValueOf(this, Improvement.ImprovementType.Armor);
+
+        public string TotalArmorRatingToolTip
+        {
+            get
+            {
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                StringBuilder objToolTip =
+                    new StringBuilder(LanguageManager.GetString("Tip_Armor", GlobalOptions.Language) +
+                                      strSpaceCharacter + '(' + ArmorRating.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                foreach(Improvement objLoopImprovement in Improvements)
+                {
+                    if(objLoopImprovement.ImproveType == Improvement.ImprovementType.Armor &&
+                        objLoopImprovement.Enabled)
+                    {
+                        objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
+                                          GetObjectName(objLoopImprovement, GlobalOptions.Language) +
+                                          strSpaceCharacter + '(' +
+                                          objLoopImprovement.Value.ToString(GlobalOptions.Instance.CultureInfo) + ')');
+                    }
+                }
+
+                return objToolTip.ToString();
+            }
+        }
+
+        /// <summary>
+        /// The Character's total Armor Rating against Fire attacks.
+        /// </summary>
+        public int TotalFireArmorRating =>
+            TotalArmorRating + ImprovementManager.ValueOf(this, Improvement.ImprovementType.FireArmor);
+
+        /// <summary>
+        /// The Character's total Armor Rating against Cold attacks.
+        /// </summary>
+        public int TotalColdArmorRating =>
+            TotalArmorRating + ImprovementManager.ValueOf(this, Improvement.ImprovementType.ColdArmor);
+
+        /// <summary>
+        /// The Character's total Armor Rating against Electricity attacks.
+        /// </summary>
+        public int TotalElectricityArmorRating => TotalArmorRating +
+                                                  ImprovementManager.ValueOf(this,
+                                                      Improvement.ImprovementType.ElectricityArmor);
+
+        /// <summary>
+        /// The Character's total Armor Rating against Acid attacks.
+        /// </summary>
+        public int TotalAcidArmorRating =>
+            TotalArmorRating + ImprovementManager.ValueOf(this, Improvement.ImprovementType.AcidArmor);
+
+        /// <summary>
+        /// The Character's total Armor Rating against falling damage (AP -4 not factored in).
+        /// </summary>
+        public int TotalFallingArmorRating =>
+            TotalArmorRating + ImprovementManager.ValueOf(this, Improvement.ImprovementType.FallingArmor);
 
         /// <summary>
         /// Number of Condition Monitor boxes are needed to reach a Condition Monitor Threshold.
@@ -12212,14 +12227,14 @@ if (!Utils.IsUnitTest){
             {
                 decWalk *= (intAGI + intSTR) * 0.5m;
                 strReturn = decWalk.ToString("#,0.##", objCulture) + ", " + decSprint.ToString("#,0.##", objCulture) +
-                            "m/ hit";
+                            LanguageManager.GetString("String_MetersPerHit");
             }
             else
             {
                 decWalk *= intAGI;
                 decRun *= intAGI;
                 strReturn = decWalk.ToString("#,0.##", objCulture) + '/' + decRun.ToString("#,0.##", objCulture) +
-                            ", " + decSprint.ToString("#,0.##", objCulture) + "m/ hit";
+                            ", " + decSprint.ToString("#,0.##", objCulture) + LanguageManager.GetString("String_MetersPerHit");
             }
 
             return strReturn;
@@ -14442,7 +14457,10 @@ if (!Utils.IsUnitTest){
                     setPropertiesChanged.Add(nameof(CanAffordCareerPP));
                 if(!UseMysticAdeptPPs && MAG == MAGAdept)
                     setPropertiesChanged.Add(nameof(PowerPointsTotal));
-
+                if (AnyPowerAdeptWayDiscountEnabled)
+                {
+                    setPropertiesChanged.Add(nameof(AllowAdeptWayPowerDiscount));
+                }
                 OnMultiplePropertyChanged(setPropertiesChanged.ToArray());
             }
             else if(e.PropertyName == nameof(CharacterAttrib.Value))
@@ -14843,10 +14861,6 @@ if (!Utils.IsUnitTest){
             }
         }
 
-        #region Hero Lab Importing
-        public static string[] HeroLabPluginNodeNames { get; } = { "modifications", "accessories", "ammunition", "programs", "othergear" };
-        #endregion
-
         #region Karma Values
         private int _intCachedPositiveQualities = int.MinValue;
         /// <summary>
@@ -15215,6 +15229,9 @@ if (!Utils.IsUnitTest){
             return true;
         }
         #endregion
+        #region Hero Lab Importing
+        public static string[] HeroLabPluginNodeNames { get; } = { "modifications", "accessories", "ammunition", "programs", "othergear" };
+
         /// <summary>
         /// Load the Character from an XML file.
         /// </summary>
@@ -15431,29 +15448,30 @@ if (!Utils.IsUnitTest){
 
                         // Get the name of the settings file in use if possible.
                         _strSettingsFileName = strSettingsName;
-                // Load the character's settings file.
 
-                _objOptions = GlobalOptions.LoadedOptions().FirstOrDefault(x => x.FileName == _strSettingsFileName);
-                if (_objOptions == null)
-                {
-                    return false;
-                }
-                
-                // Metatype information.
-                string strRaceString = xmlStatBlockBaseNode.SelectSingleNode("race/@name")?.InnerText;
-                if (!string.IsNullOrEmpty(strRaceString))
-                {
-                    if (strRaceString == "Metasapient")
-                        strRaceString = "A.I.";
-                    foreach (XmlNode xmlMetatype in XmlManager.Load("metatypes.xml")
-                        .SelectNodes("/chummer/metatypes/metatype"))
-                    {
-                        string strMetatypeName = xmlMetatype["name"].InnerText;
-                        if (strMetatypeName == strRaceString)
+                        // Load the character's settings file.
+                        Options = GlobalOptions.LoadedOptions().FirstOrDefault(x => x.FileName == _strSettingsFileName);
+                        if (Options == null)
                         {
-                            _strMetatype = strMetatypeName;
-                            _strMetatypeCategory = xmlMetatype["category"].InnerText;
-                            _strMetavariant = "None";
+                            IsLoading = false;
+                            return false;
+                        }
+
+                        // Metatype information.
+                        string strRaceString = xmlStatBlockBaseNode.SelectSingleNode("race/@name")?.InnerText;
+                        if (!string.IsNullOrEmpty(strRaceString))
+                        {
+                            if (strRaceString == "Metasapient")
+                                strRaceString = "A.I.";
+                            foreach (XmlNode xmlMetatype in XmlManager.Load("metatypes.xml")
+                                .SelectNodes("/chummer/metatypes/metatype"))
+                            {
+                                string strMetatypeName = xmlMetatype["name"].InnerText;
+                                if (strMetatypeName == strRaceString)
+                                {
+                                    _strMetatype = strMetatypeName;
+                                    _strMetatypeCategory = xmlMetatype["category"].InnerText;
+                                    _strMetavariant = "None";
 
                                     XmlNode objRunNode = xmlMetatype?["run"];
                                     XmlNode objWalkNode = xmlMetatype?["walk"];
@@ -17212,6 +17230,29 @@ if (!Utils.IsUnitTest){
             }
 
             return true;
+        }
+        #endregion
+        public bool AllowAdeptWayPowerDiscount
+        {
+            get
+            {
+                int intMAG;
+                if (IsMysticAdept)
+                {
+                    // If both Adept and Magician are enabled, this is a Mystic Adept, so use the MAG amount assigned to this portion.
+                    intMAG = Options.MysAdeptSecondMAGAttribute ? MAGAdept.TotalValue : MysticAdeptPowerPoints;
+                }
+                else
+                {
+                    // The character is just an Adept, so use the full value.
+                    intMAG = MAG.TotalValue;
+                }
+
+                // Add any Power Point Improvements to MAG.
+                intMAG += ImprovementManager.ValueOf(this, Improvement.ImprovementType.AdeptPowerPoints);
+
+                return AnyPowerAdeptWayDiscountEnabled && Powers.Count(p => p.DiscountedAdeptWay) < Math.Floor(Convert.ToDouble(intMAG / 2));
+            }
         }
     }
 }

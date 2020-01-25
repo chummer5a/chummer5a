@@ -2121,9 +2121,9 @@ namespace Chummer.Backend.Equipment
                     {
                         // This has resulted in a non-whole number, so round it (minimum of 1).
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strReturn
-                            .CheapReplace("Parent Rating", () => (Parent as IHasRating)?.Rating.ToString(GlobalOptions.Instance.InvariantCultureInfo))
+                                .CheapReplace("Parent Rating", () => (Parent as IHasRating)?.Rating.ToString(GlobalOptions.Instance.InvariantCultureInfo))
                             .Replace("Rating", Rating.ToString()), out bool blnIsSuccess);
-                        double dblNumber = blnIsSuccess ? (double) objProcess : 1;
+                        double dblNumber = blnIsSuccess ? (double)objProcess : 1;
                         if (dblNumber < 1)
                             dblNumber = 1;
                         strReturn = dblNumber.ToString("#,0.##", GlobalOptions.Instance.CultureInfo);

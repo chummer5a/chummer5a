@@ -1880,7 +1880,14 @@ namespace Chummer
             {
                 if(!tabOptions.TabPages.Contains(tabPlugins))
                     tabOptions.TabPages.Add(tabPlugins);
-                Program.PluginLoader.LoadPlugins(null);
+                try
+                {
+                    Program.PluginLoader.LoadPlugins(null);
+                }
+                catch (ApplicationException e)
+                {
+                    //swallo this
+                }
             }
             else
             {
@@ -1900,15 +1907,23 @@ namespace Chummer
             {
                 foreach (var plugin in Program.PluginLoader.MyPlugins)
                 {
-                    plugin.CustomInitialize(Program.MainForm);
-                    if (GlobalOptions.PluginsEnabledDic.TryGetValue(plugin.ToString(), out var check))
+                    try
                     {
-                        clbPlugins.Items.Add(plugin, check);
+                        plugin.CustomInitialize(Program.MainForm);
+                        if (GlobalOptions.PluginsEnabledDic.TryGetValue(plugin.ToString(), out var check))
+                        {
+                            clbPlugins.Items.Add(plugin, check);
+                        }
+                        else
+                        {
+                            clbPlugins.Items.Add(plugin);
+                        }
                     }
-                    else
+                    catch (ApplicationException ae)
                     {
-                        clbPlugins.Items.Add(plugin);
+                        Log.Debug(ae);
                     }
+                    
                 }
 
                 if (clbPlugins.Items.Count > 0)

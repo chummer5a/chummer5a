@@ -92,7 +92,7 @@ namespace Chummer.Plugins
             cmsRoster.Items.Add(tsShowMySINners);
             tsShowMySINners.Click += ShowMySINnersOnClick;
             objNode.ContextMenuStrip = cmsRoster;
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, objNode.ContextMenuStrip);
+            LanguageManager.TranslateWinForm(GlobalOptions.Instance.Language, objNode.ContextMenuStrip);
             if (objNode.Tag is frmCharacterRoster.CharacterCache member)
             {
                 PluginHandler.MainForm.DoThreadSafe(() =>

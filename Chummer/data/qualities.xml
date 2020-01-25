@@ -2070,6 +2070,7 @@
       </costdiscount>
       <doublecareer>False</doublecareer>
       <bonus>
+        <freequality>ced3fecf-2277-4b20-b1e0-894162ca9ae2</freequality><!-- Mentor Spirit -->
         <specificskill>
           <name>Animal Handling</name>
           <bonus>1</bonus>
@@ -2334,6 +2335,7 @@
       <category>Positive</category>
       <doublecareer>False</doublecareer>
       <bonus>
+        <freequality>ced3fecf-2277-4b20-b1e0-894162ca9ae2</freequality><!-- Mentor Spirit -->
         <skillgroup>
           <name>Conjuring</name>
           <bonus>1</bonus>
@@ -2872,6 +2874,12 @@
           <min>6</min>
           <condition>career</condition>
         </activeskillkarmacost>
+        <knowledgeskillkarmacostmin>
+          <name />
+          <val>1</val>
+          <max>5</max>
+          <condition>career</condition>
+        </knowledgeskillkarmacostmin>
         <knowledgeskillkarmacost>
           <name />
           <val>-1</val>
@@ -10210,8 +10218,8 @@
           <replaceattribute>
             <name>REA</name>
             <min>1</min>
-            <max>6</max>
-            <aug>10</aug>
+            <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>STR</name>
@@ -14541,7 +14549,9 @@
       <category>Positive</category>
       <canbuywithspellpoints>True</canbuywithspellpoints>
       <doublecareer>False</doublecareer>
-      <bonus />
+      <bonus>
+        <addspirit />
+      </bonus>
       <required>
         <allof>
           <attribute>

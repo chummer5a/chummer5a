@@ -38,6 +38,16 @@ namespace Chummer
         WeaponAccessory
     }
 
+    public enum UseAILogging
+    {
+        OnlyLocal = 0,
+        OnlyMetric,
+        Crashes,
+        NotSet,
+        Info,
+        Trace
+    }
+
 	public class SourcebookInfo
 	{
 	    public SourcebookInfo(string code,string name)

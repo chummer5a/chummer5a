@@ -5851,7 +5851,7 @@ namespace Chummer.Classes
             {
                 addToSelected = Convert.ToBoolean(bonusNode.SelectSingleNode("addtoselected")?.Value);
             }
-            AddSpiritOrSprite("streams.xml", xmlAllowedSpirits, Improvement.ImprovementType.AddSprite, addToSelected);
+            AddSpiritOrSprite("streams.xml", xmlAllowedSpirits, Improvement.ImprovementType.AddSprite, addToSelected, "Sprites");
         }
 
         /// <summary>
@@ -5867,7 +5867,7 @@ namespace Chummer.Classes
             {
                 addToSelected = Convert.ToBoolean(bonusNode.SelectSingleNode("addtoselected")?.Value);
             }
-            AddSpiritOrSprite("traditions.xml",xmlAllowedSpirits, Improvement.ImprovementType.AddSpirit, addToSelected);
+            AddSpiritOrSprite("traditions.xml",xmlAllowedSpirits, Improvement.ImprovementType.AddSpirit, addToSelected, "Spirits");
         }
         /// <summary>
         /// Improvement type that limits the spirits a character can summon to a particular category.
@@ -5885,7 +5885,7 @@ namespace Chummer.Classes
             AddSpiritOrSprite("traditions.xml", xmlAllowedSpirits, Improvement.ImprovementType.LimitSpiritCategory, addToSelected);
         }
 
-        private void AddSpiritOrSprite(string xmlDoc, XmlNodeList xmlAllowedSpirits, Improvement.ImprovementType impType, bool addToSelectedValue = true)
+        private void AddSpiritOrSprite(string xmlDoc, XmlNodeList xmlAllowedSpirits, Improvement.ImprovementType impType, bool addToSelectedValue = true, string strCritterCategory = "")
         {
             Log.Info("addspiritorsprite");
             HashSet<string> setAllowed = new HashSet<string>();
@@ -5903,7 +5903,7 @@ namespace Chummer.Classes
                         if (!setAllowed.Any(l => strSpiritName == l) && setAllowed.Count != 0) continue;
                         lstSpirits.Add(new ListItem(strSpiritName,
                             xmlSpirit["translate"]?.InnerText ?? strSpiritName));
-                    }
+            }
 
 			frmSelectItem frmSelect = new frmSelectItem { GeneralItems = lstSpirits };
             frmSelect.ShowDialog();
@@ -6256,6 +6256,17 @@ namespace Chummer.Classes
             Log.Info("skillgroupkarmacostmultiplier = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
             CreateImprovement(bonusNode["name"]?.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillGroupKarmaCostMultiplier, _strUnique,
+                ImprovementManager.ValueToInt(_objCharacter, bonusNode["val"]?.InnerText, _intRating),
+                1, ImprovementManager.ValueToInt(_objCharacter, bonusNode["min"]?.InnerText, _intRating), ImprovementManager.ValueToInt(_objCharacter, bonusNode["max"]?.InnerText, _intRating),
+                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerText ?? string.Empty);
+        }
+
+        public void knowledgeskillkarmacostmin(XmlNode bonusNode)
+        {
+            Log.Info("knowledgeskillkarmacostmin");
+            Log.Info("knowledgeskillkarmacostmin = " + bonusNode.OuterXml);
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.KnowledgeSkillKarmaCostMinimum, _strUnique,
                 ImprovementManager.ValueToInt(_objCharacter, bonusNode["val"]?.InnerText, _intRating),
                 1, ImprovementManager.ValueToInt(_objCharacter, bonusNode["min"]?.InnerText, _intRating), ImprovementManager.ValueToInt(_objCharacter, bonusNode["max"]?.InnerText, _intRating),
                 0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerText ?? string.Empty);
@@ -6663,6 +6674,16 @@ namespace Chummer.Classes
                 CreateImprovement(child.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.MetamagicLimit, _strUnique, 0, intRating);
             }
             
+        }
+
+        public void disablequality(XmlNode bonusNode)
+        {
+            CreateImprovement(bonusNode.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.DisableQuality, _strUnique);
+        }
+
+        public void freequality(XmlNode bonusNode)
+        {
+            CreateImprovement(bonusNode.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.FreeQuality, _strUnique);
         }
 #pragma warning restore IDE1006 // Naming Styles
         #endregion

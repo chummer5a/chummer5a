@@ -3204,19 +3204,19 @@
 		</string>
 		<string>
 			<key>Label_RangeShort</key>
-			<text>近 (-0)</text>
+			<text>近 ({0})</text>
 		</string>
 		<string>
 			<key>Label_RangeMedium</key>
-			<text>中 (-1)</text>
+			<text>中 ({0})</text>
 		</string>
 		<string>
 			<key>Label_RangeLong</key>
-			<text>遠 (-3)</text>
+			<text>遠 ({0})</text>
 		</string>
 		<string>
 			<key>Label_RangeExtreme</key>
-			<text>超遠 (-6)</text>
+			<text>超遠 ({0})</text>
 		</string>
 		<string>
 			<key>Label_DicePool</key>
@@ -7288,10 +7288,6 @@
 		</string>
 		<string>
 			<key>String_LifeModule</key>
-			<text>Life Module</text>
-		</string>
-		<string>
-			<key>String_Life_Module</key>
 			<text>Life Module</text>
 		</string>
 		<string>

@@ -15804,6 +15804,7 @@
       <source>RG</source>
       <page>52</page>
       <rating>0</rating>
+      <rangemodifier>1</rangemodifier>
       <required>
         <oneof>
           <accessory>Smartgun System, External</accessory>

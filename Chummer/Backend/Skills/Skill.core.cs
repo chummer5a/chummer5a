@@ -251,10 +251,12 @@ namespace Chummer.Backend.Skills
             {
                 if (CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.ReflexRecorderOptimization && x.Enabled))
                 {
-                    Cyberware objReflexRecorderObject = CharacterObject.Cyberware.FirstOrDefault(x => x.SourceID == s_GuiReflexRecorderId);
-
-                    if (objReflexRecorderObject != null && SkillGroupObject?.SkillList.Any(x => x.Name == objReflexRecorderObject.Extra) == true)
+                    if (CharacterObject.Cyberware.Where(x => x.SourceID == s_GuiReflexRecorderId)
+                        .Any(objReflexRecorderObject => objReflexRecorderObject != null &&
+                                                        SkillGroupObject?.SkillList.Any(x => x.Name == objReflexRecorderObject.Extra) == true))
+                    {
                         return 0;
+                    }
                 }
                 return -1;
             }

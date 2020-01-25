@@ -555,6 +555,15 @@
       <allowsubsystems>
         <category>Eyeware</category>
       </allowsubsystems>
+      <bonus>
+        <disablequality>8ec5c9bb-aeb9-42f2-a436-a60f764adfe4</disablequality>
+        <disablequality>fd346177-3791-44c0-af8c-7cf176fc9aa3</disablequality>
+        <disablequality>02e76a38-304e-4a0e-93a3-ad2938306afc</disablequality>
+        <disablequality>7a468691-1362-439a-a096-76da6933b24c</disablequality>
+        <disablequality>2f080d13-92d7-4b16-9ee6-93b5a89206e4</disablequality>
+        <disablequality>210401d7-57fa-4260-9517-2725689a509e</disablequality>
+        <disablequality>4390735f-54fa-44a5-bce7-d23a67427f25</disablequality>
+      </bonus>
       <minrating>1</minrating>
       <rating>6</rating>
       <subsystems>
@@ -947,6 +956,7 @@
       <source>SR5</source>
       <page>455</page>
       <bonus>
+        <disablequality>Celerity</disablequality>
         <specificattribute>
           <name precedence="0">AGI</name>
           <val>Rating</val>
@@ -956,11 +966,6 @@
           <val>Rating</val>
         </specificattribute>
       </bonus>
-      <forbidden>
-        <oneof>
-          <quality>Celerity</quality>
-        </oneof>
-      </forbidden>
       <rating>4</rating>
     </cyberware>
     <cyberware>
@@ -1131,6 +1136,7 @@
       </allowsubsystems>
       <selectside />
       <bonus>
+        <disablequality>Celerity</disablequality>
         <conditionmonitor>
           <physical>1</physical>
         </conditionmonitor>
@@ -1138,7 +1144,6 @@
       <forbidden>
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
-          <quality>Celerity</quality>
           <cyberware>Smart Articulation</cyberware>
         </oneof>
       </forbidden>
@@ -1168,11 +1173,13 @@
         <category>Headware</category>
         <category>Nanocybernetics</category>
       </allowsubsystems>
+      <bonus>
+        <disablequality>Celerity</disablequality>
+      </bonus>
       <selectside />
       <forbidden>
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
-          <quality>Celerity</quality>
           <cyberware>Smart Articulation</cyberware>
         </oneof>
       </forbidden>
@@ -1277,11 +1284,13 @@
         <category>Headware</category>
         <category>Nanocybernetics</category>
       </allowsubsystems>
+      <bonus>
+        <disablequality>Celerity</disablequality>
+      </bonus>
       <selectside />
       <forbidden>
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
-          <quality>Celerity</quality>
         </oneof>
       </forbidden>
       <pairbonus>
@@ -1438,11 +1447,11 @@
         <conditionmonitor>
           <physical>1</physical>
         </conditionmonitor>
+        <disablequality>Celerity</disablequality>
       </bonus>
       <forbidden>
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
-          <quality>Celerity</quality>
           <cyberware>Smart Articulation</cyberware>
         </oneof>
       </forbidden>
@@ -1462,6 +1471,9 @@
       <allowgear>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
+      <bonus>
+        <disablequality>Celerity</disablequality>
+      </bonus>
       <allowsubsystems>
         <category>Bodyware</category>
         <category>Cosmetic Enhancement</category>
@@ -1476,7 +1488,6 @@
       <forbidden>
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
-          <quality>Celerity</quality>
           <cyberware>Smart Articulation</cyberware>
         </oneof>
       </forbidden>
@@ -1581,11 +1592,13 @@
         <category>Headware</category>
         <category>Nanocybernetics</category>
       </allowsubsystems>
+      <bonus>
+        <disablequality>Celerity</disablequality>
+      </bonus>
       <selectside />
       <forbidden>
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
-          <quality>Celerity</quality>
           <cyberware>Smart Articulation</cyberware>
         </oneof>
       </forbidden>
@@ -3231,6 +3244,7 @@
       </allowgear>
       <selectside />
       <bonus>
+        <disablequality>Celerity</disablequality>
         <walkmultiplier>
           <category>Ground</category>
           <percent>-50</percent>
@@ -3244,7 +3258,6 @@
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
           <cyberware>Smart Articulation</cyberware>
-          <quality>Celerity</quality>
         </oneof>
       </forbidden>
       <limbslot>leg</limbslot>
@@ -3265,6 +3278,7 @@
       </allowgear>
       <selectside />
       <bonus>
+        <disablequality>Celerity</disablequality>
         <walkmultiplier>
           <category>Ground</category>
           <percent>-50</percent>
@@ -3278,7 +3292,6 @@
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
           <cyberware>Smart Articulation</cyberware>
-          <quality>Celerity</quality>
         </oneof>
       </forbidden>
     </cyberware>
@@ -3298,6 +3311,7 @@
       </allowgear>
       <selectside />
       <bonus>
+        <disablequality>Celerity</disablequality>
         <walkmultiplier>
           <category>Ground</category>
           <percent>-50</percent>
@@ -3311,7 +3325,6 @@
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
           <cyberware>Smart Articulation</cyberware>
-          <quality>Celerity</quality>
         </oneof>
       </forbidden>
     </cyberware>
@@ -3690,6 +3703,9 @@
       <source>CF</source>
       <page>88</page>
       <blocksmounts>ankle,knee,hip</blocksmounts>
+      <bonus>
+        <disablequality>Celerity</disablequality>
+      </bonus>
       <pairbonus>
         <limitmodifier>
           <limit>Physical</limit>
@@ -4371,6 +4387,9 @@
       <cost>2000</cost>
       <source>CF</source>
       <page>88</page>
+      <bonus>
+        <disablequality>Celerity</disablequality>
+      </bonus>
       <modularmount>ankle</modularmount>
       <blocksmounts>ankle,knee,hip</blocksmounts>
       <selectside />
@@ -4386,11 +4405,6 @@
           </OR>
         </parentdetails>
       </required>
-      <forbidden>
-        <oneof>
-          <quality>Celerity</quality>
-        </oneof>
-      </forbidden>
     </cyberware>
     <cyberware>
       <id>251f792a-8887-4276-a5a9-0e01fec594ac</id>
@@ -4427,6 +4441,9 @@
       <cost>4000</cost>
       <source>CF</source>
       <page>88</page>
+      <bonus>
+        <disablequality>Celerity</disablequality>
+      </bonus>
       <modularmount>knee</modularmount>
       <blocksmounts>ankle,knee,hip</blocksmounts>
       <selectside />
@@ -4441,11 +4458,6 @@
           </OR>
         </parentdetails>
       </required>
-      <forbidden>
-        <oneof>
-          <quality>Celerity</quality>
-        </oneof>
-      </forbidden>
     </cyberware>
     <cyberware>
       <id>d4d12624-1754-4a67-8e5e-f41817cfc875</id>
@@ -4475,6 +4487,9 @@
       <cost>6000</cost>
       <source>CF</source>
       <page>88</page>
+      <bonus>
+        <disablequality>Celerity</disablequality>
+      </bonus>
       <inheritattributes />
       <modularmount>hip</modularmount>
       <blocksmounts>ankle,knee,hip</blocksmounts>
@@ -4482,7 +4497,6 @@
       <forbidden>
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
-          <quality>Celerity</quality>
         </oneof>
       </forbidden>
       <limbslot>leg</limbslot>
@@ -4564,6 +4578,7 @@
           <limbslot>leg</limbslot>
           <val>2</val>
         </addlimb>
+        <disablequality>Celerity</disablequality>
         <runmultiplier>
           <category>Ground</category>
           <percent>100</percent>
@@ -4572,7 +4587,6 @@
       <forbidden>
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
-          <quality>Celerity</quality>
           <cyberware>Smart Articulation</cyberware>
         </oneof>
       </forbidden>
@@ -4684,6 +4698,7 @@
         <category>Cyber Implant Weapon</category>
       </allowsubsystems>
       <bonus>
+        <disablequality>Celerity</disablequality>
         <runmultiplier>
           <category>Ground</category>
           <percent>100</percent>
@@ -4692,7 +4707,6 @@
       <forbidden>
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
-          <quality>Celerity</quality>
         </oneof>
       </forbidden>
       <limbslot>leg</limbslot>
@@ -4721,10 +4735,12 @@
         <category>Cyberlimb Accessory</category>
         <category>Cyber Implant Weapon</category>
       </allowsubsystems>
+      <bonus>
+        <disablequality>Celerity</disablequality>
+      </bonus>
       <forbidden>
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
-          <quality>Celerity</quality>
           <cyberware>Smart Articulation</cyberware>
         </oneof>
       </forbidden>
@@ -5464,6 +5480,16 @@
       <cost>Rating * 5000</cost>
       <source>CF</source>
       <page>149</page>
+      <bonus>
+        <knowledgeskillkarmacost>
+          <name />
+          <val>-Rating</val>
+        </knowledgeskillkarmacost>
+        <knowledgeskillkarmacostmin>
+          <name />
+          <val>2</val>
+        </knowledgeskillkarmacostmin>
+      </bonus>
       <forcegrade>None</forcegrade>
       <rating>3</rating>
     </cyberware>
@@ -7666,6 +7692,7 @@
       <source>2050</source>
       <page>203</page>
       <bonus>
+        <disablequality>Celerity</disablequality>
         <specificattribute>
           <name precedence="0">AGI</name>
           <val>Rating</val>
@@ -7675,11 +7702,6 @@
           <val>Rating</val>
         </specificattribute>
       </bonus>
-      <forbidden>
-        <oneof>
-          <quality>Celerity</quality>
-        </oneof>
-      </forbidden>
       <rating>4</rating>
     </cyberware>
     <cyberware>

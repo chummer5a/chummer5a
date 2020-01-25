@@ -1260,5 +1260,6 @@ namespace Chummer
             }
         }
         #endregion
+
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Xml;
@@ -152,11 +153,12 @@ namespace Chummer
         public string BookXPath(bool excludeHidden = true)
         {
             string strPath = string.Empty;
+
             if (excludeHidden)
             {
-	            strPath = "not(hide)";
+                strPath = "not(hide)";
             }
-			if (string.IsNullOrWhiteSpace(_strBookXPath))
+            if (string.IsNullOrWhiteSpace(_strBookXPath))
             {
                 RecalculateBookXPath();
             }
@@ -171,8 +173,8 @@ namespace Chummer
             if (!GlobalOptions.Instance.Dronemods)
             {
                 strPath += " and not(optionaldrone)";
-			}
-			return strPath;
+            }
+            return strPath;
         }
 
         /// <summary>
@@ -1162,6 +1164,8 @@ namespace Chummer
         public string EssenceFormat { get; private set; } = "0.00";
 
         public bool DronemodsMaximumPilot { get; set; }
+
+        public event EventHandler<PropertyChangedEventArgs> PropertyChanged;
     }
 
     public enum LimbCount

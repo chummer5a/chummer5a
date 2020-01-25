@@ -622,7 +622,7 @@ namespace Chummer
                         int fetteringCost = EntityType == SpiritType.Spirit ? Force * 3 : Force;
                         if (!CharacterObject.ConfirmKarmaExpense(string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend", GlobalOptions.Language)
                             , Name
-                            , fetteringCost.ToString(GlobalOptions.Instance.CultureInfo))))
+                        , fetteringCost.ToString(GlobalOptions.Instance.CultureInfo))))
                         {
                             return;
                         }
