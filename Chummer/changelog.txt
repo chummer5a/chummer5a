@@ -1,6 +1,7 @@
 Future Build 211
 Application Fixes:
 - Fixed an issue with the Skills tab not showing properly when first creating a character.
+- Fixed specialisations not properly being added to dicepool when firing weapons.
 
 Build 210
 Application Fixes:

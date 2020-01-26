@@ -3921,8 +3921,18 @@ namespace Chummer.Backend.Equipment
                             // If the character has a Specialization, include it in the Dice Pool string.
                             if (objSkill.Specializations.Count > 0 && !objSkill.IsExoticSkill)
                             {
-                                if (objSkill.HasSpecialization(DisplayNameShort(GlobalOptions.Language)) || objSkill.HasSpecialization(Name) || objSkill.HasSpecialization(DisplayCategory(GlobalOptions.DefaultLanguage)) || objSkill.HasSpecialization(Category) || (!string.IsNullOrEmpty(objSkill.Specialization) && (objSkill.HasSpecialization(Spec) || objSkill.HasSpecialization(Spec2))))
-                                    strExtra = LanguageManager.GetString("String_Space", strLanguage) + '(' + (intDicePool + intDicePoolModifier + 2).ToString(objCulture) + ')';
+                                if (objSkill.HasSpecialization(DisplayNameShort(GlobalOptions.Language)) ||
+                                    objSkill.HasSpecialization(Name) ||
+                                    objSkill.HasSpecialization(DisplayCategory(GlobalOptions.DefaultLanguage)) ||
+                                    objSkill.HasSpecialization(Category) ||
+                                    (!string.IsNullOrEmpty(objSkill.Specialization) &&
+                                     (objSkill.HasSpecialization(Spec) || objSkill.HasSpecialization(Spec2))))
+                                {
+                                    strExtra = LanguageManager.GetString("String_Space", strLanguage) + '(' +
+                                               (intDicePool + intDicePoolModifier +
+                                                _objCharacter.Options.SpecializationBonus).ToString(objCulture) + ')';
+                                    intDicePoolModifier += _objCharacter.Options.SpecializationBonus;
+                                }
                             }
                         }
 
