@@ -101,7 +101,7 @@ Data Changes:
 - Added Mental, Physical and Social Limit improvement types to improvements.xml. Closes #3456
 - Fixed incorrect  REA maximum for the Wendigo quality.
 - Added customdata entry for Orks getting free Tusks natural weapon from Chrome Flesh.
-
+- Bio-weapons now benefit from the Natural Weapons skill specialisation. 
 New Strings:
 - String_DisableSkillGroupPrompt
 - Message_CyberzombieRequirementsImprovement
