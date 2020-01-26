@@ -25,7 +25,7 @@ Application Fixes:
 - Adept Power Way Discounts are now properly limited to MAG /2. Closes #3618
 - Fixed search filtering not working properly in the Weapon Accessory selection window.
 - Fixed an issue with cyberware upgrades not respecting the 'free' choice from the cyberwater selector.
-Fixed Reflex Recorder Optimisation only selecting the first reflex recorder to compare for defaulting bonuses.
+- Fixed Reflex Recorder Optimisation only selecting the first reflex recorder to compare for defaulting bonuses.
 
 Application Changes:
 - Added a new improvement type to allow qualities to become free. Used to supplant existing code that flags the Mentor Spirit as free with certain qualities. 
@@ -100,6 +100,7 @@ Data Changes:
 - Added SR Missions 1.4 Neotokyo customdata folder. This customdata set hides qualities used in Neo-Tokyo Missions and adjusts the Availability of all Firearms according to the SRM Neo-Tokyo 1.0 document.
 - Added Mental, Physical and Social Limit improvement types to improvements.xml. Closes #3456
 - Fixed incorrect  REA maximum for the Wendigo quality.
+- Added customdata entry for Orks getting free Tusks natural weapon from Chrome Flesh.
 
 New Strings:
 - String_DisableSkillGroupPrompt
