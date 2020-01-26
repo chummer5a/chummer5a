@@ -202,7 +202,6 @@ namespace Chummer
             IList<string> lstRecents = new List<string>(GlobalOptions.MostRecentlyUsedCharacters);
 
             Dictionary<string,string> dicWatch = new Dictionary<string, string>();
-            HashSet<string> dicWatchRoot = new HashSet<string>();
             int intWatchFolderCount = 0;
             if(!string.IsNullOrEmpty(GlobalOptions.CharacterRosterPath) && Directory.Exists(GlobalOptions.CharacterRosterPath))
             {
@@ -235,10 +234,12 @@ namespace Chummer
             if(blnRefreshWatch)
             {
                 objWatchNode = treCharacterList.FindNode("Watch", false);
-                if(objWatchNode == null && dicWatch.Count > 0)
+                objWatchNode?.Remove();
+                blnAddWatchNode = dicWatch.Count > 0;
+
+                if (blnAddWatchNode)
                 {
                     objWatchNode = new TreeNode(LanguageManager.GetString("Treenode_Roster_WatchFolder", GlobalOptions.Language)) { Tag = "Watch" };
-                    blnAddWatchNode = true;
                 }
 
                 lstWatchNodes = new TreeNode[intWatchFolderCount];
