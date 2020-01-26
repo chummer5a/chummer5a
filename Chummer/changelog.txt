@@ -1,3 +1,7 @@
+Future Build 211
+Application Fixes:
+- Fixed an issue with the Skills tab not showing properly when first creating a character.
+
 Build 210
 Application Fixes:
 - Fixed behaviour of the Weapon Accessory mount checks to properly work with accessories that can occupy multiple slots when one of those slots is occupied.
