@@ -356,6 +356,10 @@ namespace Chummer.Backend.Equipment
                     }
                 }
             }
+            else if (_strForcedValue != string.Empty && _strExtra == string.Empty)
+            {
+                _strExtra = _strForcedValue;
+            }
 
             // Add the Copy Protection and Registration plugins to the Matrix program. This does not apply if Unwired is not enabled, Hacked is selected, or this is a Suite being added (individual programs will add it to themselves).
             if (blnCreateChildren)
