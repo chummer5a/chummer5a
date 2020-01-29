@@ -16874,7 +16874,20 @@ if (!Utils.IsUnitTest){
                     _intCachedPositiveQualities += Contacts
                         .Where(x => x.EntityType == ContactType.Contact && x.IsGroup && !x.Free)
                         .Sum(x => x.ContactPoints);
-
+                    // Each spell costs KarmaSpell.
+                    int spellCost = SpellKarmaCost("Spells");
+                    int spells = 0;
+                    // It is only karma-efficient to use spell points for Mastery qualities if real spell karma cost is not greater than unmodified spell karma cost
+                    if (spellCost <= Options.KarmaSpell && FreeSpells > 0)
+                    {
+                        // Assume that every [spell cost] karma spent on a Mastery quality is paid for with a priority-given spell point instead, as that is the most karma-efficient.
+                        int intQualityKarmaToSpellPoints = Options.KarmaSpell;
+                        if (Options.KarmaSpell != 0)
+                            intQualityKarmaToSpellPoints = Math.Min(FreeSpells, (Qualities.Where(objQuality => objQuality.CanBuyWithSpellPoints).Sum(objQuality => objQuality.BP) * Options.KarmaQuality) / Options.KarmaSpell);
+                        spells += intQualityKarmaToSpellPoints;
+                        // Add the karma paid for by spell points back into the available karma pool.
+                        _intCachedPositiveQualities -= intQualityKarmaToSpellPoints * Options.KarmaSpell;
+                    }
                     // Deduct the amount for free Qualities.
                     _intCachedPositiveQualities -=
                         ImprovementManager.ValueOf(this, Improvement.ImprovementType.FreePositiveQualities) * Options.KarmaQuality;
