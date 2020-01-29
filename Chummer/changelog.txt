@@ -7,6 +7,7 @@ Application Fixes:
 
 Data Changes:
 - Removed extraneous Magic Sense quality. Closes #4021
+- Added support to the SR Missions 1.4 Rules customdata file for the ruling that vehicles without defined sensor functions receive them according to the rating of the sensor array. Closes #2206
 
 Build 210
 Application Fixes:
