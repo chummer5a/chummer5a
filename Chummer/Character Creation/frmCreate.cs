@@ -8884,7 +8884,7 @@ namespace Chummer
                 int limit = CharacterObject.FreeSpells;
 
                 // It is only karma-efficient to use spell points for Mastery qualities if real spell karma cost is not greater than unmodified spell karma cost
-                if (spellCost <= CharacterObjectOptions.KarmaSpell)
+                if (spellCost <= CharacterObjectOptions.KarmaSpell && CharacterObject.FreeSpells > 0)
                 {
                     // Assume that every [spell cost] karma spent on a Mastery quality is paid for with a priority-given spell point instead, as that is the most karma-efficient.
                     int intQualityKarmaToSpellPoints = CharacterObjectOptions.KarmaSpell;

@@ -191,10 +191,6 @@ namespace Chummer
                 string strSelectedMetatypeCategory = cboCategory.SelectedValue?.ToString();
                 string strSelectedMetavariant = cboMetavariant.SelectedValue?.ToString() ?? Guid.Empty.ToString();
 
-                // If this is a Shapeshifter, a Metavariant must be selected. Default to Human if None is selected.
-                if (strSelectedMetatypeCategory == "Shapeshifter" && strSelectedMetavariant == Guid.Empty.ToString())
-                    strSelectedMetavariant = _xmlMetatypeDocumentMetatypesNode.SelectSingleNode("metatype[name = \"Human\"]/id").InnerText;
-
                 XmlNode objXmlMetatype = _xmlMetatypeDocumentMetatypesNode.SelectSingleNode("metatype[id = \"" + strSelectedMetatype + "\"]");
                 if (objXmlMetatype == null)
                 {
@@ -202,6 +198,10 @@ namespace Chummer
                     Cursor = Cursors.Default;
                     return;
                 }
+
+                // If this is a Shapeshifter, a Metavariant must be selected. Default to Human if None is selected.
+                if (strSelectedMetatypeCategory == "Shapeshifter" && strSelectedMetavariant == Guid.Empty.ToString())
+                    strSelectedMetavariant = objXmlMetatype.SelectSingleNode("metavariants/metavariant[name = \"Human\"]/id").InnerText;
                 XmlNode objXmlMetavariant = objXmlMetatype.SelectSingleNode("metavariants/metavariant[id = \"" + strSelectedMetavariant + "\"]");
                 int intForce = 0;
                 if (nudForce.Visible)
