@@ -17080,7 +17080,7 @@ if (!Utils.IsUnitTest){
             set => _strPage = value;
         }
 
-        public string PriorityArray { get; set; }
+        public string PriorityArray { get; set; } = string.Empty;
         public bool AllowAdeptWayPowerDiscount
         {
             get
