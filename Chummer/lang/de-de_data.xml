@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
 	Chummer5a is free software: you can redistribute it and/or modify
@@ -28384,9 +28384,9 @@
 			</quality>
 			<quality>
 				<id>912bef16-2f72-45e2-95bb-96ef7eea4811</id>
-				<name>Magic Sense (Changeling)</name>
+				<name>Magic Sense</name>
 				<source>RF</source>
-				<translate>Magiegespür (Wechselbalg)</translate>
+				<translate>Magiegespür</translate>
 				<altpage>93</altpage>
 			</quality>
 			<quality>
