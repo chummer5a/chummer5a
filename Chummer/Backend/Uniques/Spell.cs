@@ -904,7 +904,10 @@ namespace Chummer
                                 if (hash.StartsWith("NOT"))
                                 {
                                     if (_hashDescriptors.Any(s => hash == $"NOT({s})"))
+                                    {
+                                        allow = false;
                                         break;
+                                    }
                                 }
                                 else
                                 {
