@@ -134,6 +134,8 @@ namespace Chummer
             SpellCategory,
             SpellCategoryDamage,
             SpellCategoryDrain,
+            SpellDescriptorDamage,
+            SpellDescriptorDrain,
             SpellDicePool,
             ThrowRange,
             ThrowRangeSTR,

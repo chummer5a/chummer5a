@@ -3442,7 +3442,22 @@
       <name>Witness My Hate</name>
       <karma>7</karma>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+        <spelldescriptordamage>
+          <descriptor>Direct,NOT(Area)</descriptor>
+          <val>2</val>
+        </spelldescriptordamage>
+        <spelldescriptordrain>
+          <descriptor>Direct,NOT(Area)</descriptor>
+          <val>2</val>
+        </spelldescriptordrain>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Aspected Magician</quality>
+          <quality>Magician</quality>
+        </oneof>
+      </required>
       <source>RF</source>
       <page>151</page>
     </quality>

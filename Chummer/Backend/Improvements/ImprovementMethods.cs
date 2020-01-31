@@ -437,6 +437,10 @@ namespace Chummer
                     return objImprovementAdder.spellcategorydrain;
                 case "SPELLCATEGORYDAMAGE":
                     return objImprovementAdder.spellcategorydamage;
+                case "SPELLDESCRIPTORDRAIN":
+                    return objImprovementAdder.spelldescriptordrain;
+                case "SPELLDESCRIPTORDAMAGE":
+                    return objImprovementAdder.spelldescriptordamage;
                 case "THROWRANGE":
                     return objImprovementAdder.throwrange;
                 case "THROWRANGESTR":

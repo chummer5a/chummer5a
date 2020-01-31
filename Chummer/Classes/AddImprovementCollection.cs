@@ -4873,6 +4873,28 @@ namespace Chummer.Classes
                 Improvement.ImprovementType.SpellCategoryDamage, _strUnique, ImprovementManager.ValueToInt(_objCharacter, bonusNode["val"]?.InnerText, _intRating));
         }
 
+        // Check for Spell descriptor Damage bonuses.
+        public void spelldescriptordamage(XmlNode bonusNode)
+        {
+            Log.Info("spelldescriptordamage");
+            Log.Info("spelldescriptordamage = " + bonusNode.OuterXml);
+
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(bonusNode["descriptor"]?.InnerText, _objImprovementSource, SourceName,
+                Improvement.ImprovementType.SpellDescriptorDamage, _strUnique, ImprovementManager.ValueToInt(_objCharacter, bonusNode["val"]?.InnerText, _intRating));
+        }
+
+        // Check for Spell descriptor drain bonuses.
+        public void spelldescriptordrain(XmlNode bonusNode)
+        {
+            Log.Info("spelldescriptordrain");
+            Log.Info("spelldescriptordrain = " + bonusNode.OuterXml);
+
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(bonusNode["descriptor"]?.InnerText, _objImprovementSource, SourceName,
+                Improvement.ImprovementType.SpellDescriptorDrain, _strUnique, ImprovementManager.ValueToInt(_objCharacter, bonusNode["val"]?.InnerText, _intRating));
+        }
+
         // Check for Throwing Range bonuses.
         public void throwrange(XmlNode bonusNode)
         {

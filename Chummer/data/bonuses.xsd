@@ -1207,6 +1207,22 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
+      <xs:element name="spelldescriptordamage" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="descriptor" type="xs:string" minOccurs="1" maxOccurs="1" />
+            <xs:element name="val" type="xs:string" minOccurs="1" maxOccurs="1" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="spelldescriptordrain" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="descriptor" type="xs:string" minOccurs="1" maxOccurs="1" />
+            <xs:element name="val" type="xs:string" minOccurs="1" maxOccurs="1" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
       <xs:element name="spelldicepool" minOccurs="0" maxOccurs="unbounded">
         <xs:complexType>
           <xs:sequence>
