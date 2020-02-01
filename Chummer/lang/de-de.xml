@@ -9811,5 +9811,9 @@
 			<key>String_SuppressedBy</key>
 			<text>Verdrängt durch {0}</text>
 		</string>
+		<string>
+			<key>Checkbox_Options_CyberlimbAttributeBonusCap</key>
+			<text>Maximaler Bonus auf Stärke und Geschicklichkeit, den Cybergliedmaßen haben können (unterliegt unverändert dem erweiterten Maximum)</text>
+		</string>
 	</strings>
 </chummer>
