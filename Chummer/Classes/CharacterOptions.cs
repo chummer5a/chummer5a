@@ -2414,7 +2414,11 @@ namespace Chummer
         /// <summary>
         /// Maximum value of bonuses that can affect cyberlimbs.
         /// </summary>
-        public int CyberlimbAttributeBonusCap => _intCyberlimbAttributeBonusCap;
+        public int CyberlimbAttributeBonusCap
+        {
+            get => _intCyberlimbAttributeBonusCap;
+            set => _intCyberlimbAttributeBonusCap = value;
+        }
 
         #endregion
 
