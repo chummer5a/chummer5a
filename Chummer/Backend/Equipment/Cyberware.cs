@@ -3711,19 +3711,19 @@ namespace Chummer.Backend.Equipment
                 int intAttribute = BaseStrength;
                 int intBonus = 0;
 
-                foreach (Cyberware objChild in Children)
+                if (Children.Count > 0)
                 {
-                    // If the limb has Enhanced Strength, this adds to the limb's value.
-                    if (s_StrengthEnhancementStrings.Contains(objChild.Name))
-                        intBonus = objChild.Rating;
-                    // If the limb has Customized Strength, this is its new base value.
-                    if (s_StrengthCustomizationStrings.Contains(objChild.Name))
-                        intAttribute = objChild.Rating;
+                    intAttribute = Children.Where(s => s_StrengthCustomizationStrings.Contains(s.Name)).Max(s => s.Rating);
+                    intBonus = Children.Where(s => s_StrengthEnhancementStrings.Contains(s.Name)).Max(s => s.Rating);
                 }
+                if (ParentVehicle == null)
+                {
+                    intBonus += intBonus + _objCharacter.RedlinerBonus;
+                }
+                intBonus = Math.Min(intBonus, _objCharacter.Options.CyberlimbAttributeBonusCap);
 
                 return ParentVehicle == null
-                    ? Math.Min(intAttribute + intBonus + _objCharacter.RedlinerBonus,
-                        _objCharacter.STR.TotalAugmentedMaximum)
+                    ? Math.Min(intAttribute + intBonus, _objCharacter.STR.TotalAugmentedMaximum)
                     : Math.Min(intAttribute + intBonus, Math.Max(ParentVehicle.TotalBody * 2, 1));
             }
         }
@@ -3776,19 +3776,19 @@ namespace Chummer.Backend.Equipment
                 int intAttribute = BaseAgility;
                 int intBonus = 0;
 
-                foreach (Cyberware objChild in Children)
+                if (Children.Count > 0)
                 {
-                    // If the limb has Customized Agility, this is its new base value.
-                    if (s_AgilityCustomizationStrings.Contains(objChild.Name))
-                        intAttribute = objChild.Rating;
-                    // If the limb has Enhanced Agility, this adds to the limb's value.
-                    if (s_AgilityEnhancementStrings.Contains(objChild.Name))
-                        intBonus = objChild.Rating;
+                    intAttribute = Children.Where(s => s_AgilityCustomizationStrings.Contains(s.Name)).Max(s => s.Rating);
+                    intBonus     = Children.Where(s => s_AgilityEnhancementStrings  .Contains(s.Name)).Max(s => s.Rating);
                 }
+                if (ParentVehicle == null)
+                {
+                    intBonus += intBonus + _objCharacter.RedlinerBonus;
+                }
+                intBonus = Math.Min(intBonus, _objCharacter.Options.CyberlimbAttributeBonusCap);
 
                 return ParentVehicle == null
-                    ? Math.Min(intAttribute + intBonus + _objCharacter.RedlinerBonus,
-                        _objCharacter.AGI.TotalAugmentedMaximum)
+                    ? Math.Min(intAttribute + intBonus, _objCharacter.AGI.TotalAugmentedMaximum)
                     : Math.Min(intAttribute + intBonus, Math.Max(ParentVehicle.Pilot * 2, 1));
             }
         }

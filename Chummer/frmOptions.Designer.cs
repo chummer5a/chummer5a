@@ -313,6 +313,9 @@ namespace Chummer
             this.flpOKCancel = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdOK = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
+            this.chkCyberlimbAttributeBonusCap = new System.Windows.Forms.CheckBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.nudCyberlimbAttributeBonusCap = new System.Windows.Forms.NumericUpDown();
             this.mainPanel.SuspendLayout();
             this.tlpOptions.SuspendLayout();
             this.tabOptions.SuspendLayout();
@@ -394,6 +397,7 @@ namespace Chummer
             this.bufferedTableLayoutPanel1.SuspendLayout();
             this.grpAvailablePlugins.SuspendLayout();
             this.flpOKCancel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCyberlimbAttributeBonusCap)).BeginInit();
             this.SuspendLayout();
             // 
             // mainPanel
@@ -3678,6 +3682,9 @@ namespace Chummer
             this.tlpHouseRules.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 2.5F));
             this.tlpHouseRules.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 7.5F));
             this.tlpHouseRules.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 5F));
+            this.tlpHouseRules.Controls.Add(this.nudCyberlimbAttributeBonusCap, 6, 18);
+            this.tlpHouseRules.Controls.Add(this.label1, 5, 18);
+            this.tlpHouseRules.Controls.Add(this.chkCyberlimbAttributeBonusCap, 4, 18);
             this.tlpHouseRules.Controls.Add(this.chkIgnoreArt, 0, 0);
             this.tlpHouseRules.Controls.Add(this.chkExceedNegativeQualitiesLimit, 5, 8);
             this.tlpHouseRules.Controls.Add(this.chkUseTotalValueForFreeKnowledge, 4, 3);
@@ -3830,10 +3837,10 @@ namespace Chummer
             this.chkEnemyKarmaQualityLimit.AutoSize = true;
             this.chkEnemyKarmaQualityLimit.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
             this.tlpHouseRules.SetColumnSpan(this.chkEnemyKarmaQualityLimit, 4);
-            this.chkEnemyKarmaQualityLimit.Location = new System.Drawing.Point(3, 505);
+            this.chkEnemyKarmaQualityLimit.Location = new System.Drawing.Point(3, 506);
             this.chkEnemyKarmaQualityLimit.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkEnemyKarmaQualityLimit.Name = "chkEnemyKarmaQualityLimit";
-            this.chkEnemyKarmaQualityLimit.Size = new System.Drawing.Size(490, 191);
+            this.chkEnemyKarmaQualityLimit.Size = new System.Drawing.Size(490, 190);
             this.chkEnemyKarmaQualityLimit.TabIndex = 37;
             this.chkEnemyKarmaQualityLimit.Tag = "Checkbox_Options_EnemyKarmaQualityLimit";
             this.chkEnemyKarmaQualityLimit.Text = "Karma spent on enemies counts towards negative Quality limit in create mode";
@@ -3900,7 +3907,7 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Right)));
             this.chkCompensateSkillGroupKarmaDifference.AutoSize = true;
             this.tlpHouseRules.SetColumnSpan(this.chkCompensateSkillGroupKarmaDifference, 4);
-            this.chkCompensateSkillGroupKarmaDifference.Location = new System.Drawing.Point(3, 480);
+            this.chkCompensateSkillGroupKarmaDifference.Location = new System.Drawing.Point(3, 481);
             this.chkCompensateSkillGroupKarmaDifference.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkCompensateSkillGroupKarmaDifference.Name = "chkCompensateSkillGroupKarmaDifference";
             this.chkCompensateSkillGroupKarmaDifference.Size = new System.Drawing.Size(490, 17);
@@ -3938,7 +3945,7 @@ namespace Chummer
             this.chkMysAdeptSecondMAGAttribute.Location = new System.Drawing.Point(3, 455);
             this.chkMysAdeptSecondMAGAttribute.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkMysAdeptSecondMAGAttribute.Name = "chkMysAdeptSecondMAGAttribute";
-            this.chkMysAdeptSecondMAGAttribute.Size = new System.Drawing.Size(490, 17);
+            this.chkMysAdeptSecondMAGAttribute.Size = new System.Drawing.Size(490, 18);
             this.chkMysAdeptSecondMAGAttribute.TabIndex = 35;
             this.chkMysAdeptSecondMAGAttribute.Tag = "Checkbox_Options_MysAdeptSecondMAGAttribute";
             this.chkMysAdeptSecondMAGAttribute.Text = "Mystic Adepts use second MAG attribute for Adept abilities instead of special PP " +
@@ -4625,6 +4632,55 @@ namespace Chummer
             this.cmdCancel.UseVisualStyleBackColor = true;
             this.cmdCancel.Click += new System.EventHandler(this.cmdCancel_Click);
             // 
+            // chkCyberlimbAttributeBonusCap
+            // 
+            this.chkCyberlimbAttributeBonusCap.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkCyberlimbAttributeBonusCap.AutoSize = true;
+            this.tlpHouseRules.SetColumnSpan(this.chkCyberlimbAttributeBonusCap, 2);
+            this.chkCyberlimbAttributeBonusCap.Location = new System.Drawing.Point(499, 455);
+            this.chkCyberlimbAttributeBonusCap.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkCyberlimbAttributeBonusCap.Name = "chkCyberlimbAttributeBonusCap";
+            this.chkCyberlimbAttributeBonusCap.Size = new System.Drawing.Size(342, 18);
+            this.chkCyberlimbAttributeBonusCap.TabIndex = 46;
+            this.chkCyberlimbAttributeBonusCap.Tag = "Checkbox_Options_CyberlimbAttributeBonusCap";
+            this.chkCyberlimbAttributeBonusCap.Text = "Override maximum Bonus cap for Cyberlimbs";
+            this.chkCyberlimbAttributeBonusCap.UseVisualStyleBackColor = true;
+            this.chkCyberlimbAttributeBonusCap.CheckedChanged += new System.EventHandler(this.ChkCyberlimbAttributeBonusCap_CheckedChanged);
+            // 
+            // label1
+            // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(853, 457);
+            this.label1.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(12, 13);
+            this.label1.TabIndex = 47;
+            this.label1.Text = "x";
+            // 
+            // nudCyberlimbAttributeBonusCap
+            // 
+            this.nudCyberlimbAttributeBonusCap.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudCyberlimbAttributeBonusCap.Enabled = false;
+            this.nudCyberlimbAttributeBonusCap.Location = new System.Drawing.Point(871, 454);
+            this.nudCyberlimbAttributeBonusCap.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudCyberlimbAttributeBonusCap.Name = "nudCyberlimbAttributeBonusCap";
+            this.nudCyberlimbAttributeBonusCap.Size = new System.Drawing.Size(68, 20);
+            this.nudCyberlimbAttributeBonusCap.TabIndex = 48;
+            this.nudCyberlimbAttributeBonusCap.Value = new decimal(new int[] {
+            4,
+            0,
+            0,
+            0});
+            this.nudCyberlimbAttributeBonusCap.ValueChanged += new System.EventHandler(this.OptionsChanged);
+            // 
             // frmOptions
             // 
             this.AcceptButton = this.cmdOK;
@@ -4744,6 +4800,7 @@ namespace Chummer
             this.grpAvailablePlugins.ResumeLayout(false);
             this.flpOKCancel.ResumeLayout(false);
             this.flpOKCancel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCyberlimbAttributeBonusCap)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -5034,5 +5091,8 @@ namespace Chummer
         private System.Windows.Forms.Button cbPluginsHelp;
         private System.Windows.Forms.CheckBox chkHideCharts;
         private System.Windows.Forms.CheckBox chkAllowTechnomancerSchooling;
+        private System.Windows.Forms.NumericUpDown nudCyberlimbAttributeBonusCap;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.CheckBox chkCyberlimbAttributeBonusCap;
     }
 }

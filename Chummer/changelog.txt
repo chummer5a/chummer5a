@@ -1,5 +1,6 @@
 Future Build 211
 Application Changes:
+- Cyberlimb bonuses are now capped to 4 by default. An optional rule has been added to override this behaviour. Note that the maximum attribute value is still limited to the Total Augmented Maximum of the character's appropriate attribute, irrespective of how the limb arrives at that maximum value. 
 - If a Gear object does not have a bonus node but is provided with a select value in data (ie a Camera with select='Rear-Facing'), this value will now be assigned to the Extra value. 
 - Implemented bonuses for Spell Descriptors to Damage and Drain. Used by the Witness My Hate quality. The improvement type allows a comma-separated list of values; if a descriptor is wrapped in NOT (ie NOT(Area)), it will be prevented from being taken. Conversely, if a spell does not have the descriptor listed, it will not gain the bonus. 
 - Spells now properly show bonuses to Damage provided by improvements.
@@ -15,6 +16,9 @@ Data Changes:
 - Added support to the SR Missions 1.4 Rules customdata file for the ruling that vehicles without defined sensor functions receive them according to the rating of the sensor array. Closes #2206
 - Fixed incorrect name of the aerodynamic molotov cocktail.
 - Added conditions to taking the Witness My Hate quality.
+
+New Strings:
+- Checkbox_Options_CyberlimbAttributeBonusCap
 
 Build 210
 Application Fixes:

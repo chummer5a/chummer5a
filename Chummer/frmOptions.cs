@@ -2001,5 +2001,15 @@ namespace Chummer
         {
             System.Diagnostics.Process.Start("https://docs.google.com/document/d/1WOPB7XJGgcmxg7REWxF6HdP3kQdtHpv6LJOXZtLggxM/edit?usp=sharing");
         }
+
+        private void ChkCyberlimbAttributeBonusCap_CheckedChanged(object sender, EventArgs e)
+        {
+            nudCyberlimbAttributeBonusCap.Enabled = chkCyberlimbAttributeBonusCap.Checked;
+            if (!chkCyberlimbAttributeBonusCap.Checked)
+            {
+                nudCyberlimbAttributeBonusCap.Value = 4;
+                nudCyberlimbAttributeBonusCap.Enabled = false;
+            }
+        }
     }
 }
